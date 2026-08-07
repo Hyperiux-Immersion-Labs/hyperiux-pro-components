@@ -22,33 +22,28 @@ const SHIFT_BLUR = "4px";
 const SHIFT_DURATION_OUT = 0.7;
 const SHIFT_DURATION_IN = 0.8;
 
+function clampNumber(value, min, max, fallback) {
+  const next = Number(value);
+  if (!Number.isFinite(next)) return fallback;
+  return Math.min(max, Math.max(min, next));
+}
 
-/**
- * @typedef {Object} BlockTransitionProps
- * @property {import('react').ReactNode} [children]
- * @property {boolean} [enableContentShift]
- * @property {number} [rows]
- * @property {string} [color]
- */
-
-/** @param {BlockTransitionProps} props */
 export default function BlockTransition({
   children,
   enableContentShift = false,
   rows = ROWS,
   color = COLOR,
+  duration = 1,
 }) {
-  const wrapperRef = useRef(/** @type {HTMLDivElement | null} */ (null));
-  const rowRefs    = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
+  const wrapperRef = useRef(null);
+  const rowRefs    = useRef([]);
+  const safeRows = Math.round(clampNumber(rows, 2, 12, ROWS));
+  const safeDuration = clampNumber(duration, 0.25, 3, 1);
 
-  const getRows = () => /** @type {HTMLDivElement[]} */ (rowRefs.current.filter(Boolean));
+  const getRows = () => rowRefs.current.slice(0, safeRows).filter(Boolean);
 
 
 
-  /**
-   * @param {gsap.core.Timeline} timeline
-   * @param {'cover' | 'reveal'} direction
-   */
   const buildRowsAnimation = (timeline, direction) => {
     const rows = getRows();
     const orderedRows = direction === "cover" ? rows : [...rows].reverse();
@@ -63,7 +58,7 @@ export default function BlockTransition({
           [leftBlock, rightBlock],
           {
             xPercent: 0,
-            duration: COVER_DURATION,
+            duration: COVER_DURATION * safeDuration,
             ease: "power3.inOut",
           },
           delay
@@ -73,29 +68,30 @@ export default function BlockTransition({
           leftBlock,
           {
             xPercent: -BLOCK_OFFSET_PERCENT,
-            duration: REVEAL_DURATION,
+            duration: REVEAL_DURATION * safeDuration,
             ease: "power3.inOut",
           },
           delay
         );
-        timeline.set(leftBlock, { autoAlpha: 0 }, delay + REVEAL_DURATION);
+        timeline.set(leftBlock, { autoAlpha: 0 }, delay + REVEAL_DURATION * safeDuration);
 
         timeline.to(
           rightBlock,
           {
             xPercent: BLOCK_OFFSET_PERCENT,
-            duration: REVEAL_DURATION,
+            duration: REVEAL_DURATION * safeDuration,
             ease: "power3.inOut",
           },
           delay
         );
-        timeline.set(rightBlock, { autoAlpha: 0 }, delay + REVEAL_DURATION);
+        timeline.set(rightBlock, { autoAlpha: 0 }, delay + REVEAL_DURATION * safeDuration);
       }
     });
   };
 
 
   useLayoutEffect(() => {
+    rowRefs.current = rowRefs.current.slice(0, safeRows);
     getRows().forEach((row) => {
       const [leftBlock, rightBlock] = row.children;
       if (!leftBlock || !rightBlock) return;
@@ -110,7 +106,7 @@ export default function BlockTransition({
         autoAlpha: 0,
       });
     });
-  }, []);
+  }, [safeRows]);
 
 
   return (
@@ -132,7 +128,7 @@ export default function BlockTransition({
               scale: SHIFT_SCALE_OUT,
               filter: `blur(${SHIFT_BLUR})`,
               opacity: 0.85,
-              duration: SHIFT_DURATION_OUT,
+              duration: SHIFT_DURATION_OUT * safeDuration,
               ease: "power2.inOut",
             },
             0
@@ -159,7 +155,7 @@ export default function BlockTransition({
               scale: 1,
               filter: "blur(0px)",
               opacity: 1,
-              duration: SHIFT_DURATION_IN,
+              duration: SHIFT_DURATION_IN * safeDuration,
               ease: "power2.out",
             },
             0.08
@@ -172,7 +168,7 @@ export default function BlockTransition({
       }}
     >
       <div className="pointer-events-none fixed inset-0 z-999 overflow-hidden">
-        {Array.from({ length: rows }).map((_, index) => (
+        {Array.from({ length: safeRows }).map((_, index) => (
           <div
             key={index}
             ref={(node) => {
@@ -180,8 +176,8 @@ export default function BlockTransition({
             }}
             className="absolute left-0 w-full overflow-hidden"
             style={{
-              top: `${(index * 100) / rows}%`,
-              height: `calc(${100 / rows}% + 2px)`,
+              top: `${(index * 100) / safeRows}%`,
+              height: `calc(${100 / safeRows}% + 2px)`,
             }}
           >
             <span

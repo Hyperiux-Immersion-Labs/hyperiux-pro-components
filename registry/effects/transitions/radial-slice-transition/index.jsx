@@ -11,31 +11,30 @@ function prefersReducedMotion() {
     return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
-/**
- * @typedef {Object} RadialSliceTransitionProps
- * @property {import('react').ReactNode} [children]
- * @property {{ duration?: number, color?: string }} [config]
- */
+function clampNumber(value, min, max, fallback) {
+    const next = Number(value)
+    if (!Number.isFinite(next)) return fallback
+    return Math.min(max, Math.max(min, next))
+}
 
-/** @param {RadialSliceTransitionProps} props */
 export default function RadialSliceTransition({
     children,
     config = { duration: 4, color: '#0F2854' },
+    duration,
+    color,
 }) {
-    const { duration, color } = {
+    const resolvedConfig = {
         duration: 4,
         color: '#0F2854',
         ...config,
     }
-    const overlayRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+    const resolvedDuration = clampNumber(duration ?? resolvedConfig.duration, 0.75, 8, 4)
+    const resolvedColor = color ?? resolvedConfig.color
+    const overlayRef = useRef(null)
     const shapeRef = useRef({ start: 0, end: 0 })
-    const contentRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+    const contentRef = useRef(null)
     const DELAY = 0.2
 
-    /**
-     * @param {number} endDeg
-     * @param {number} startDeg
-     */
     const applySlice = (endDeg, startDeg) => {
         const el = overlayRef.current
         if (!el) return
@@ -97,7 +96,7 @@ export default function RadialSliceTransition({
                     return () => tl.kill()
                 }
 
-                const tExit = (duration - DELAY) / 2
+                const tExit = (resolvedDuration - DELAY) / 2
 
                 tl.to(contentRef.current, {
                     opacity: 0.7,
@@ -141,7 +140,7 @@ export default function RadialSliceTransition({
                     return () => tl.kill()
                 }
 
-                const tExit = (duration - DELAY) / 2
+                const tExit = (resolvedDuration - DELAY) / 2
                 const tEnter = tExit
 
                 tl.to(contentRef.current, {
@@ -180,7 +179,7 @@ export default function RadialSliceTransition({
                 ref={overlayRef}
                 className="fixed inset-0 z-999 pointer-events-none"
                 style={{
-                    backgroundColor: color,
+                    backgroundColor: resolvedColor,
                     opacity: 0,
                     WebkitMaskImage: 'conic-gradient(from 0deg, transparent 0deg, transparent 360deg)',
                     maskImage: 'conic-gradient(from 0deg, transparent 0deg, transparent 360deg)',

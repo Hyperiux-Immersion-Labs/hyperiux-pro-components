@@ -18,18 +18,23 @@ export default function SVGPixelReveal({
     alt = DEFAULT_ALT,
     className = "h-[50vh] w-[50vw]",
     imageClassName = "",
-    initialPixelSize = 18,
-    finalPixelSize = 1,
-    start = "top 35%",
-    end = "bottom 35%",
+    intensity = 22,
     crossLayers = true,
     priority = false,
 }) {
     const containerRef = useRef(null);
     const filterId = useId().replace(/:/g, "");
+    const initialPixelSize = Math.max(2, intensity);
+    const finalPixelSize = 1;
+    const start = "top 50%";
+    const end = "bottom 35%";
     const [pixelSize, setPixelSize] = useState(initialPixelSize);
     const reducedMotion = usePrefersReducedMotion();
     const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;
+
+    useEffect(() => {
+        setPixelSize(initialPixelSize);
+    }, [initialPixelSize]);
 
     useEffect(() => {
         const container = containerRef.current;

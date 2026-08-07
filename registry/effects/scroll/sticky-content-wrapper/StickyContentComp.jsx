@@ -14,49 +14,18 @@ function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
-/**
- * @typedef {Object} StickyContentLink
- * @property {string} [href]
- * @property {string} [text]
- * @property {string} [label]
- * @property {string} [className]
- * @property {string} [target]
- * @property {string} [rel]
- */
-
-/**
- * @typedef {Object} StickyContentItem
- * @property {string} [heading]
- * @property {string[]} [paragraphs]
- * @property {string|string[]} [paragraph]
- * @property {string[]} [list]
- * @property {string[]} [listItems]
- * @property {StickyContentLink} [link]
- * @property {string} [href]
- * @property {string} [linkText]
- * @property {string} [cta]
- * @property {string} [image]
- * @property {string} [alt]
- * @property {string} [imageAlt]
- * @property {number} [width]
- * @property {number} [height]
- */
-
-/** @param {StickyContentItem} item */
 const getParagraphs = (item) => {
   if (Array.isArray(item.paragraphs)) return item.paragraphs;
   if (Array.isArray(item.paragraph)) return item.paragraph;
   return item.paragraph ? [item.paragraph] : [];
 };
 
-/** @param {StickyContentItem} item */
 const getListItems = (item) => {
   if (Array.isArray(item.list)) return item.list;
   if (Array.isArray(item.listItems)) return item.listItems;
   return [];
 };
 
-/** @param {StickyContentItem} item */
 const getLink = (item) => {
   if (item.link) return item.link;
   if (item.href) {
@@ -68,7 +37,6 @@ const getLink = (item) => {
   return null;
 };
 
-/** @param {StickyContentItem} item */
 const renderStickyContent = (item) => {
   const paragraphs = getParagraphs(item);
   const listItems = getListItems(item);
@@ -93,7 +61,7 @@ const renderStickyContent = (item) => {
       {link?.href && (
         <a
           href={link.href}
-          onClick={(/** @type {import('react').MouseEvent<HTMLAnchorElement>} */ e) => {
+          onClick={(e) => {
     e.preventDefault();
           }}
           className={`group mt-[1vw] inline-flex w-fit items-center gap-2 text-[1.2vw] leading-[1.2] no-underline ${link.className || ""}`}
@@ -123,27 +91,9 @@ const renderStickyContent = (item) => {
   );
 };
 
-/**
- * @typedef {Object} StickyContentCompProps
- * @property {StickyContentItem[]} [items]
- * @property {string} [className]
- * @property {string} [leftClassName]
- * @property {string} [rightClassName]
- * @property {string} [contentClassName]
- * @property {string} [imageClassName]
- * @property {string} [containerHeight]
- * @property {number} [contentEnterYPercent]
- * @property {number} [contentExitYPercent]
- * @property {number} [contentTransitionDuration]
- * @property {number} [contentDelay]
- * @property {number} [stepGap]
- * @property {boolean} [enableImageScaleFlow]
- * @property {number} [initialImageScale]
- * @property {number} [activeImageScale]
- * @property {number} [exitImageScale]
- */
+// Scroll-timeline distance allotted to each section step.
+const STEP_GAP = 2;
 
-/** @param {StickyContentCompProps} props */
 export function StickyContentComp({
   items = [],
   className = "",
@@ -152,21 +102,21 @@ export function StickyContentComp({
   contentClassName = "",
   imageClassName = "",
   containerHeight,
+  bgColor = "#ffffff",
   contentEnterYPercent = 12,
   contentExitYPercent = -12,
   contentTransitionDuration = 0.8,
   contentDelay = 0.28,
-  stepGap = 2,
   enableImageScaleFlow = true,
   initialImageScale = 1.5,
   activeImageScale = 1.2,
   exitImageScale = 1,
 }) {
   // State & refs
-  const sectionRef = useRef(/** @type {HTMLElement|null} */ (null));
-  const stickyRef = useRef(/** @type {HTMLDivElement|null} */ (null));
-  const contentRefsRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
-  const imageRefsRef = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+  const sectionRef = useRef(null);
+  const stickyRef = useRef(null);
+  const contentRefsRef = useRef([]);
+  const imageRefsRef = useRef([]);
   const lenis = useLenis();
 
   // Effects
@@ -209,7 +159,7 @@ export function StickyContentComp({
       });
 
       // Scroll timeline
-      const totalTimelineDuration = Math.max(1, (items.length - 1) * stepGap);
+      const totalTimelineDuration = Math.max(1, (items.length - 1) * STEP_GAP);
       const snapValues =
         items.length > 1
           ? Array.from({ length: items.length }, (_, index) => index / (items.length - 1))
@@ -220,7 +170,7 @@ export function StickyContentComp({
           start: "top top",
           end: "bottom bottom",
           scrub: 1,
-          snap: /** @type {any} */ (
+          snap:
             items.length > 1
               ? {
                   snapTo: snapValues,
@@ -235,8 +185,7 @@ export function StickyContentComp({
                     lenis?.start();
                   },
                 }
-              : false
-          ),
+              : false,
         },
       });
 
@@ -249,7 +198,7 @@ export function StickyContentComp({
         const nextContent = contents[index + 1];
         const currentImage = images[index];
         const nextImage = images[index + 1];
-        const stepStart = index * stepGap;
+        const stepStart = index * STEP_GAP;
         const nextContentStart =
           stepStart + contentTransitionDuration + contentDelay;
 
@@ -281,11 +230,11 @@ export function StickyContentComp({
           .to(
             currentImage,
             reducedMotion
-              ? { autoAlpha: 0, duration: stepGap, ease: "none" }
+              ? { autoAlpha: 0, duration: STEP_GAP, ease: "none" }
               : {
                   clipPath: "inset(0% 0% 100% 0%)",
                   scale: enableImageScaleFlow ? exitImageScale : 1,
-                  duration: stepGap,
+                  duration: STEP_GAP,
                   ease: "none",
                 },
             stepStart,
@@ -294,7 +243,7 @@ export function StickyContentComp({
         if (reducedMotion) {
           timeline.to(
             nextImage,
-            { autoAlpha: 1, duration: stepGap, ease: "none" },
+            { autoAlpha: 1, duration: STEP_GAP, ease: "none" },
             stepStart,
           );
         } else if (enableImageScaleFlow) {
@@ -302,7 +251,7 @@ export function StickyContentComp({
             nextImage,
             {
               scale: activeImageScale,
-              duration: stepGap,
+              duration: STEP_GAP,
               ease: "none",
             },
             stepStart,
@@ -323,7 +272,6 @@ export function StickyContentComp({
     contentExitYPercent,
     contentTransitionDuration,
     contentDelay,
-    stepGap,
     enableImageScaleFlow,
     initialImageScale,
     activeImageScale,
@@ -340,6 +288,7 @@ export function StickyContentComp({
       className={`flex w-screen justify-between relative ${className}`}
       style={{
         height: containerHeight || `${items.length * 100}vh`,
+        backgroundColor: bgColor,
       }}
     >
        <div className="fixed bottom-10 left-[20%] z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center text-black items-center ">
@@ -403,6 +352,7 @@ export function StickyContentComp({
       >
         <div
           className={`relative h-full w-[42%] max-[1025px]:h-[55%] max-[1025px]:w-full ${leftClassName}`}
+          style={{ backgroundColor: bgColor }}
         >
           {items.map((item, index) => (
             <div

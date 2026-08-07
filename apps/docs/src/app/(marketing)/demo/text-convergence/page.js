@@ -1,25 +1,11 @@
-import React from'react'
-import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
-import TextConvergence from '@/components/text-convergence'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import textConvergenceRegistry from "../../../../../../../registry/effects/scroll/text-convergence/registry.json";
 
-
-const page = () => {
- return (
- <>
- <LenisSmoothScroll />
- <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
- <TextConvergence
- text="Build faster. Animate better. Ship smarter. Hyperiux Vault gives you the tools to create high-performance interfaces that look premium and feel effortless."
- bgColor="bg-[#111111]"
- textColor="text-[#ffffff]"
- />
- </>
- )
+export default function Page() {
+  return <DemoContent registry={textConvergenceRegistry} />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("text-convergence");
 }

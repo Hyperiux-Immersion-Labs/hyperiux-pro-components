@@ -2,15 +2,25 @@
 
 import CardDriftComp from './CardDriftComp'
 
-const CardDrift = () => {
+const CardDrift = ({
+  backgroundColor,
+  backgroundTextColor,
+  cardColor,
+  cardTextColor,
+  barColor,
+  driftAmount,
+  smoothness,
+}) => {
   return (
    <CardDriftComp
  data={testimonials}
- bgColor="bg-black"
- bgTextColor="text-white/70"
- cardBg="bg-indigo-600"
- cardTextColor="text-white"
- barBg="bg-neutral-800"
+ backgroundColor={backgroundColor}
+ backgroundTextColor={backgroundTextColor}
+ cardColor={cardColor}
+ cardTextColor={cardTextColor}
+ barColor={barColor}
+ driftAmount={driftAmount}
+ smoothness={smoothness}
  />
   )
 }

@@ -1,32 +1,10 @@
-import InfiniteGridGallery from "@/components/infinite-grid-gallery";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import SplitLine from "@/components/WebsiteComps/SplitLine";
-import React from "react";
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/infinite-grid-gallery/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader  />
-    <div className="relative ">
-
-      <InfiniteGridGallery />
-
-      <div className="absolute bottom-5 z-50 right-5 py-2 px-4 w-[15vw] max-md:w-[30vw] max-sm:w-[50vw] text-center bg-white/10 backdrop-blur-lg rounded-lg max-sm:bottom-20">
-      <SplitLine start="top bottom">
-
-        <p className="text-black leading-[1.2] max-md:text-lg" >
-          Scroll freely, then click any image to zoom in.
-        </p>
-      </SplitLine>
-      </div>
-    </div>
-    </>
-  );
-};
-
-export default page;
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="infinite-grid-gallery" />;
+}
 
 export async function generateMetadata() {
   return getDemoPageMetadata("infinite-grid-gallery");

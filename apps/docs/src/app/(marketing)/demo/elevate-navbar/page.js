@@ -1,17 +1,11 @@
-import ElevateNavbar from '@/components/elevate-navbar'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/navigation/elevate-navbar/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <ElevateNavbar/>
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="elevate-navbar" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("elevate-navbar");
 }

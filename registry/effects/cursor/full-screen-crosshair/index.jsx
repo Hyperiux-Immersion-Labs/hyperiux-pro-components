@@ -19,35 +19,18 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-/**
- * @typedef {Object} FullScreenCrosshairProps
- * @property {string} [color]
- * @property {string} [centerContent]
- * @property {boolean} [hideNativeCursor]
- * @property {number} [lineSize]
- * @property {number} [gap]
- * @property {number} [thickness]
- * @property {number} [centerSize]
- * @property {boolean} [smooth]
- * @property {number} [lerpFactor]
- * @property {string} [blendMode]
- * @property {string} [className]
- */
-
-/** @param {FullScreenCrosshairProps} props */
 const FullScreenCrosshair = ({
   color = "#ffffff",
   centerContent = "•",
   hideNativeCursor = true,
-  lineSize = 100,
   gap = 20,
   thickness = 1,
   centerSize = 24,
   smooth = true,
   lerpFactor = 0.14,
-  blendMode = "normal",
   className = "",
 }) => {
+  const crosshairArmLength = 1500;
   const { smoothMouse } = useMouse({
     smooth,
     lerpFactor,
@@ -57,28 +40,42 @@ const FullScreenCrosshair = ({
   useEffect(() => {
     if (!hideNativeCursor) return undefined;
 
-    const { body } = document;
+    const { body, documentElement } = document;
     const previousCursor = body.style.cursor;
+    const previousRootCursor = documentElement.style.cursor;
+    const style = document.createElement("style");
+    style.setAttribute("data-crosshair-cursor-style", "true");
+    style.textContent = `
+      html[data-crosshair-hide-cursor="true"],
+      html[data-crosshair-hide-cursor="true"] body,
+      html[data-crosshair-hide-cursor="true"] * {
+        cursor: none !important;
+      }
+    `;
 
+    documentElement.dataset.crosshairHideCursor = "true";
+    documentElement.style.cursor = "none";
     body.style.cursor = "none";
+    document.head.appendChild(style);
 
     return () => {
       body.style.cursor = previousCursor;
+      documentElement.style.cursor = previousRootCursor;
+      delete documentElement.dataset.crosshairHideCursor;
+      style.remove();
     };
   }, [hideNativeCursor]);
 
   return (
     <div
-      className={`pointer-events-none fixed inset-0 z-9999 ${className}`}
-      style={/** @type {import('react').CSSProperties} */ ({
+      className={`pointer-events-none fixed inset-0 z-70 ${className}`}
+      style={{
         "--crosshair-color": color,
-        "--crosshair-line-size": `${lineSize}px`,
+        "--crosshair-line-size": `${crosshairArmLength}px`,
         "--crosshair-gap": `${gap}px`,
         "--crosshair-thickness": `${thickness}px`,
         "--crosshair-center-size": `${centerSize}px`,
-        "--crosshair-blend-mode": blendMode,
-        mixBlendMode: blendMode,
-      })}
+      }}
     >
       <div
         className="absolute left-0 top-0 h-0 w-0 will-change-transform"

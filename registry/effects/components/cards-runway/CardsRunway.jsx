@@ -11,31 +11,18 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
-/**
- * @typedef {Object} CardsRunwayCard
- * @property {string|number} id
- * @property {string} [title]
- * @property {string} [text]
- */
-
-/**
- * @typedef {Object} CardsRunwayProps
- * @property {CardsRunwayCard[]} [data]
- * @property {string} [accentColor]
- * @property {string} [cardColor]
- * @property {string} [cardWidth]
- * @property {string} [start]
- */
-
-/** @param {CardsRunwayProps} props */
 export default function CardsRunway({
   data = [],
   accentColor = "#ff5f00",
   cardColor = "#161616",
-  cardWidth = "28vw",
-  start = "10% 90%",
+  speed = 1,
+  gap = 48,
+  perspective = 900,
 }) {
-  const root = useRef(/** @type {HTMLElement | null} */ (null));
+  const root = useRef(null);
+  const safeSpeed = Math.max(0.2, Number(speed) || 1);
+  const safeGap = Math.max(0, Number(gap) || 0);
+  const safePerspective = Math.max(0, Number(perspective) || 0);
 
   useEffect(() => {
     let ctx = gsap.context(() => {
@@ -44,6 +31,10 @@ export default function CardsRunway({
       // horizontal-scroll layout, so the pin/scrub timeline only exists
       // at xl and up.
       if (globalThis.innerWidth >= 1280) {
+        const track = root.current?.querySelector(".cards-runway-container");
+        if (!track) return;
+
+        gsap.set(track, { x: 0 });
         gsap.set(".cards-runway-card", {
           y: prefersReducedMotion() ? "0vw" : "37vw",
           opacity: 1,
@@ -51,7 +42,7 @@ export default function CardsRunway({
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: root.current,
-            start,
+            start: "10% 80%",
             end: "102% bottom",
             scrub: true,
           },
@@ -59,12 +50,12 @@ export default function CardsRunway({
         tl.to(".cards-runway-card", {
           y: "0vw",
           stagger: 0.2,
-          duration: 0.4,
+          duration: 0.4 / safeSpeed,
           ease: "power1.out",
         }).to(".cards-runway-container", {
           translateX: "-38%",
-          duration: 1.2,
-          delay: -0.8,
+          duration: 1.2 / safeSpeed,
+          delay: -0.8 / safeSpeed,
           ease: "power1.inOut",
         });
       } else {
@@ -85,7 +76,7 @@ export default function CardsRunway({
     }, root);
 
     return () => ctx.revert();
-  }, [start]);
+  }, [safeSpeed, safeGap]);
 
   return (
     <section
@@ -93,13 +84,15 @@ export default function CardsRunway({
       className="w-full h-[350vh] text-white bg-black max-[1025px]:overflow-hidden max-[1025px]:h-screen max-md:py-[25%] max-[1025px]:py-[12%] relative z-20"
     >
       {/* Cards Runway */}
-      <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-[1025px]:h-fit max-[1025px]:static pb-5  max-[1025px]:mt-[40vw] max-[1025px]:pb-[4vw] max-[1025px]:overflow-x-scroll mobile-scrollbar max-[1025px]:pr-[7vw] z-15">
-        <div className="w-fit h-full flex gap-[3vw] max-md:gap-[6vw] items-end cards-runway-container">
+      <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-[1025px]:h-fit max-[1025px]:static pb-5  max-[1025px]:mt-[40vw] max-[1025px]:pb-[4vw] max-[1025px]:overflow-x-scroll mobile-scrollbar max-[1025px]:pr-[7vw] z-15 cards-runway-viewport">
+        <div
+          className="w-fit h-full flex items-end cards-runway-container"
+          style={{ gap: `${safeGap}px`, perspective: safePerspective }}
+        >
           {data.map((card) => (
             <div
               key={card.id}
-              style={{ width: cardWidth }}
-              className="h-fit flex flex-col relative cards-runway-card justify-between max-md:w-[70vw]! max-[1025px]:w-[45vw]! opacity-0"
+              className="h-fit w-[28vw] flex flex-col relative cards-runway-card justify-between max-md:w-[70vw]! max-[1025px]:w-[45vw]! opacity-0"
             >
               {/* Always visible top accent bar */}
               <div

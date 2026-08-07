@@ -21,36 +21,32 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion;
 }
 
-/**
- * @typedef {Object} LiquidGlassCursorProps
- * @property {number} [baseSize]
- * @property {number} [textHoverSize]
- * @property {number} [distortionScale]
- * @property {number} [blurAmount]
- * @property {string} [brightness]
- * @property {string} [borderColor]
- * @property {number} [maxButtonWidth]
- * @property {number} [maxButtonHeight]
- */
+function getBrightnessValue(value) {
+ if (typeof value === "number" && Number.isFinite(value)) {
+ return `${value}%`;
+ }
 
-/** @param {LiquidGlassCursorProps} props */
+ return value || "90%";
+}
+
 export default function LiquidGlassCursor({
  baseSize = 40,
  textHoverSize = 120,
  distortionScale = 1.5,
  blurAmount = 0.002,
- brightness ="90%",
- borderColor ="rgba(255,255,255,0.1)",
+ brightness = 90,
+ borderColor = "#ffffff",
  maxButtonWidth = 200,
  maxButtonHeight = 150,
  }) {
  const uid = useId().replace(/:/g, "");
  const frostedFilterId = `frosted-${uid}`;
  const internalDivId = `internaldiv-${uid}`;
- const cursorRef = useRef(/** @type {HTMLDivElement|null} */ (null));
- const innerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
- const textRef = useRef(/** @type {HTMLSpanElement|null} */ (null));
+ const cursorRef = useRef(null);
+ const innerRef = useRef(null);
+ const textRef = useRef(null);
  const prefersReducedMotion = usePrefersReducedMotion();
+ const brightnessValue = getBrightnessValue(brightness);
 
  useEffect(() => {
  // Hide default cursor
@@ -69,18 +65,17 @@ export default function LiquidGlassCursor({
  // Center the cursor so animations grow evenly from the center
  gsap.set(cursorRef.current, { xPercent: -50, yPercent: -50 });
 
- const move = (/** @type {MouseEvent} */ e) => {
+ const move = (e) => {
  xTo(e.clientX);
  yTo(e.clientY);
  };
 
- const handleMouseOver = (/** @type {MouseEvent} */ e) => {
- const target = /** @type {Element} */ (e.target).closest("[data-cursor]");
+ const handleMouseOver = (e) => {
+ const target = e.target.closest("[data-cursor]");
  if (!target) return;
 
  const type = target.getAttribute("data-cursor");
  const bounds = target.getBoundingClientRect();
- const textEl = /** @type {HTMLSpanElement} */ (textRef.current);
 
  if (type ==="button") {
  gsap.to(innerRef.current, {
@@ -93,8 +88,8 @@ export default function LiquidGlassCursor({
  ease:"power3.out",
  overwrite: true
  });
- textEl.innerText ="DISCOVER";
- gsap.to(textEl, {
+ textRef.current.innerText ="DISCOVER";
+ gsap.to(textRef.current, {
  opacity: 1,
  scale: 1,
  duration: 0.3,
@@ -113,8 +108,8 @@ export default function LiquidGlassCursor({
  ease:"power3.out",
  overwrite: true
  });
- textEl.innerText ="CLICK";
- gsap.to(textEl, {
+ textRef.current.innerText ="CLICK";
+ gsap.to(textRef.current, {
  opacity: 1,
  scale: 1,
  duration: 0.3,
@@ -125,8 +120,8 @@ export default function LiquidGlassCursor({
  }
  };
 
- const handleMouseOut = (/** @type {MouseEvent} */ e) => {
- const target = /** @type {Element} */ (e.target).closest("[data-cursor]");
+ const handleMouseOut = (e) => {
+ const target = e.target.closest("[data-cursor]");
  if (!target) return;
 
  // Return to default round droplet shape
@@ -221,7 +216,7 @@ export default function LiquidGlassCursor({
  <div
  style={{
  filter:
- `url(#${frostedFilterId}) blur(1px) drop-shadow(10px -4px 6px rgb(255, 255, 255)) brightness(${brightness})`,
+ `url(#${frostedFilterId}) blur(1px) drop-shadow(10px -4px 6px rgb(255, 255, 255)) brightness(${brightnessValue})`,
  backdropFilter:"blur(1px)",
 
  isolation:"isolate",

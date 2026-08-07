@@ -26,6 +26,44 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.9,
+      "description": "Page flip duration.",
+      "remixer": {
+        "control": "range",
+        "group": "timing",
+        "groupTitle": "Timing",
+        "min": 0.2,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "bgColor",
+      "type": "string",
+      "default": "#ff5f00",
+      "description": "Overlay background color.",
+      "remixer": {
+        "control": "color",
+        "group": "surface",
+        "groupTitle": "Surface"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "timing",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

@@ -1,27 +1,9 @@
-import React from'react'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import CircleTextReveal from '@/components/circle-text-reveal'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-
+import circleTextRevealRegistry from "../../../../../../../registry/effects/text/circle-text-reveal/registry.json";
 
 const page = () => {
- return (
- <>
- <DemoHeader/>
- <div className="relative">
- <CircleTextReveal
- textColor="#111"
- Text="Some ideas only bloom when you move toward them."
- revealText="The hidden layer has been waiting for your cursor."
- circleColorBg="#ff5f00"
- RevealedTextColor="#ffffff"
- />
- <p className="pointer-events-none absolute bottom-8 left-1/2 z-20 max-md:hidden max-w-105 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-black/55 ">
- Hover across the headline and let the circle uncover what stayed quiet.
- </p>
- </div>
- </>
- )
+ return <DemoContent registry={circleTextRevealRegistry} />;
 }
 
 

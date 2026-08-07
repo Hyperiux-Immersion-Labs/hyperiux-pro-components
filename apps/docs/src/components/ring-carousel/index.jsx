@@ -3,7 +3,17 @@
 import { useEffect, useState } from "react";
 import RingCarouselComp from "./RingCarouselComp";
 
-export default function RingCarousel() {
+export default function RingCarousel({
+ items = imageItems,
+ className = "",
+ snap = true,
+ autoPlay = true,
+ pauseOnHover = true,
+ showNavigation,
+ showDots,
+ renderItem,
+ ...rest
+}) {
  const [galleryConfig, setGalleryConfig] = useState({
  itemWidth: 720,
  itemHeight: 450,
@@ -59,10 +69,10 @@ export default function RingCarousel() {
  }, []);
 
  return (
- <section className="flex min-h-[40vh] w-full flex-col items-center justify-start overflow-hidden bg-black px-4 max-md:px-0  pb-8 max-md:pt-10 max-md:pb-8 max-sm:px-0 max-sm:pt-0 max-sm:pb-4">
+ <section className={`flex min-h-[40vh] w-full flex-col items-center justify-start overflow-hidden bg-black px-4 max-md:px-0  pb-8 max-md:pt-10 max-md:pb-8 max-sm:px-0 max-sm:pt-0 max-sm:pb-4 ${className}`}>
  <div className="relative w-full">
  <RingCarouselComp
- items={imageItems}
+ items={items}
  itemWidth={galleryConfig.itemWidth}
  itemHeight={galleryConfig.itemHeight}
  radius={galleryConfig.radius}
@@ -70,10 +80,14 @@ export default function RingCarousel() {
  dragSensitivity={galleryConfig.dragSensitivity}
  momentum={galleryConfig.momentum}
  friction={galleryConfig.friction}
- snap={true}
- autoPlay={true}
+ snap={snap}
+ autoPlay={autoPlay}
  autoPlayInterval={800}
- pauseOnHover={true}
+ pauseOnHover={pauseOnHover}
+ showNavigation={showNavigation}
+ showDots={showDots}
+ renderItem={renderItem}
+ {...rest}
  />
  </div>
  </section>

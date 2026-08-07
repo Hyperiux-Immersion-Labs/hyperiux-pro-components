@@ -11,8 +11,14 @@
   "exportName": "InfiniteCarousel",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added cards, draggable, showNav, and mobileBreakpoint as public props instead of hardcoding them in the wrapper",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -26,6 +32,44 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "draggable",
+      "type": "boolean",
+      "default": true,
+      "description": "Allows dragging the carousel with pointer/touch input.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "gap",
+      "type": "number",
+      "description": "Spacing between carousel items.",
+      "default": 32,
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 1200,
+        "step": 1
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "behavior",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

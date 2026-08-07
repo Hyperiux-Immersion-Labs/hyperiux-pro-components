@@ -23,10 +23,23 @@ const ScrollablePopupContent = ({
     subtitle = "",
     sections = [],
     className = "",
+    size = 72,
+    backgroundColor = "#ffffff",
+    textColor = "#111111",
+    roundedness = 24,
 }) => {
+    const safeSize = Math.min(96, Math.max(40, Number(size) || 72));
+    const safeRoundedness = Math.max(0, Number(roundedness) || 0);
+
     return (
         <div
-            className={`mx-auto w-[min(92vw,960px)] max-h-[82vh] overflow-hidden rounded-[1.5vw] bg-white text-[#111111] shadow-[0_20px_80px_rgba(0,0,0,0.18)] max-[1025px]:max-h-[84vh] max-[1025px]:w-[min(94vw,960px)] max-[1025px]:rounded-[2.4vw] max-md:max-h-[86vh] max-md:w-[94vw] max-md:rounded-[4vw] ${className}`}
+            className={`mx-auto max-h-[82vh] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.18)] max-[1025px]:max-h-[84vh] max-md:max-h-[86vh] ${className}`}
+            style={{
+                width: `min(${safeSize}%, 960px)`,
+                borderRadius: `${safeRoundedness}px`,
+                backgroundColor,
+                color: textColor,
+            }}
         >
             <div className="h-full max-h-[82vh] overflow-y-auto p-[2.4vw] scrollbar-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-black/20 max-[1025px]:max-h-[84vh] max-[1025px]:p-[4vw] max-md:max-h-[86vh] max-md:px-[5vw] max-md:py-[6vw]">
                 <div className="border-b border-black/8 pb-[1.6vw]">

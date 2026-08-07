@@ -3,7 +3,6 @@ import { Point, lerpAngle } from './utils';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Arrow {
-  /** @param {Point} position */
   constructor(position) {
     this.pos = position;
     this.dx = 0;
@@ -12,20 +11,16 @@ class Arrow {
     this.rotationEase = 0.12;
   }
 
-  /**
-   * @param {number} mouseX
-   * @param {number} mouseY
-   */
-  update(mouseX, mouseY) {
+  update(mouseX, mouseY, smoothing) {
     this.dx = mouseX - this.pos.x;
     this.dy = mouseY - this.pos.y;
     const targetAngle = Math.atan2(this.dy, this.dx);
 
-    this.angle = lerpAngle(this.angle, targetAngle, this.rotationEase);
+    this.angle = lerpAngle(this.angle, targetAngle, smoothing);
   }
 
-  /** @param {CanvasRenderingContext2D} ctx */
-  draw(ctx) {
+  draw(ctx, arrowColor, activeColor, mouseX, mouseY, reactionRadius) {
+    const isActive = Math.hypot(mouseX - this.pos.x, mouseY - this.pos.y) < reactionRadius;
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
     ctx.rotate(this.angle);
@@ -37,30 +32,37 @@ class Arrow {
     ctx.moveTo(30, 0);
     ctx.lineTo(10, 20);
     ctx.lineWidth = 2.5;
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = isActive ? activeColor : arrowColor;
     ctx.stroke();
     ctx.restore();
   }
 }
 
-const ArrowsPlay = () => {
-  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+const ArrowsPlay = ({
+  arrowCount = 50,
+  arrowColor = "black",
+  activeColor = "black",
+  reactionRadius = 30,
+  smoothing = 0.12,
+}) => {
+  const canvasRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
-  const arrowsRef = useRef(/** @type {Arrow[]} */ ([]));
-  const divRef = useRef(/** @type {HTMLDivElement|null} */ (null)); // For the center div with text
+  const arrowsRef = useRef([]);
+  const divRef = useRef(null); // For the center div with text
 
-  const initializeArrows = useCallback((/** @type {HTMLCanvasElement} */ canvas) => {
+  const initializeArrows = useCallback((canvas) => {
     const arrows = [];
-    const spacing = 120;
-
+    const count = Math.max(1, Number(arrowCount) || 50);
+    const spacing = 120 * Math.sqrt(50 / count);
+    
     const cols = Math.floor(canvas.width / spacing);
     const rows = Math.floor(canvas.height / spacing);
-
+    
     const xPadding = (canvas.width - (cols * spacing)) / 2;
     const yPadding = (canvas.height - (rows * spacing)) / 2;
-
+  
     // Get div position relative to canvas
-    const divRect = /** @type {HTMLDivElement} */ (divRef.current).getBoundingClientRect();
+    const divRect = divRef.current.getBoundingClientRect();
     const canvasRect = canvas.getBoundingClientRect();
     
     const divLeft = divRect.left - canvasRect.left;
@@ -89,7 +91,7 @@ const ArrowsPlay = () => {
       }
     }
     return arrows;
-  }, []);
+  }, [arrowCount]);
   
 
   const handleResize = useCallback(() => {
@@ -102,12 +104,11 @@ const ArrowsPlay = () => {
     }
   }, [initializeArrows]);
 
-  const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
+  const handleMouseMove = useCallback((e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-
-
+    const rect = canvas.getBoundingClientRect();  
+    
     if (
       e.clientX >= rect.left &&
       e.clientX <= rect.right &&
@@ -124,20 +125,20 @@ const ArrowsPlay = () => {
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
+    const ctx = canvas.getContext('2d');
     const arrows = arrowsRef.current;
     const mouse = mouseRef.current;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     arrows.forEach(arrow => {
-      arrow.update(mouse.x, mouse.y);
-      arrow.draw(ctx);
+      arrow.update(mouse.x, mouse.y, smoothing);
+      arrow.draw(ctx, arrowColor, activeColor, mouse.x, mouse.y, reactionRadius);
     });
-  }, []);
+  }, [activeColor, arrowColor, reactionRadius, smoothing]);
 
   useEffect(() => {
-    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
+    const canvas = canvasRef.current;
     const { width, height } = canvas.getBoundingClientRect();
     canvas.width = width;
     canvas.height = height;
@@ -173,7 +174,7 @@ const ArrowsPlay = () => {
         ref={divRef}
         className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center cursor-pointer h-[25vw] w-[32vw] bg-transparent"
       >
-        <h1 className='text-center text-[15vw] leading-none text-black transition-all duration-500 ease'>
+        <h1 className='text-center text-[15vw] leading-none transition-all duration-500 ease' style={{ color: arrowColor }}>
           Play
         </h1>
       </div>

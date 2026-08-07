@@ -95,30 +95,17 @@ const TVTransitionMaterial = shaderMaterial(
 
 extend({ TVTransitionMaterial });
 
-// tVTransitionMaterial is a custom shader material registered via extend(),
-// so it isn't part of JSX.IntrinsicElements; reference it through an
-// any-typed tag so JSX accepts it without changing what's rendered.
-const TVTransitionMaterialTag = /** @type {any} */ ("tVTransitionMaterial");
-
 
 // =========================
 // 🎯 MAIN COMPONENT
 // =========================
-/**
- * @typedef {Object} RoomModelOwnProps
- * @property {(e: any) => void} onClick
- * @property {boolean} isZoomed
- * @property {import('react').RefObject<HTMLVideoElement|null>} videoRef
- */
+export default function RoomModel({ onClick, isZoomed, mouseMovement = true, videoRef, ...props }) {
 
-/** @param {RoomModelOwnProps & Record<string, any>} props */
-export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
-
- const groupRef = useRef(/** @type {import('three').Group|null} */ (null));
- const tvMatRef = useRef(/** @type {any} */ (null));
+ const groupRef = useRef();
+ const tvMatRef = useRef();
  const { gl } = useThree();
 
- const { nodes } = /** @type {any} */ (useGLTF("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/finall.glb"));
+ const { nodes } = useGLTF("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/finall.glb");
 
 
  // =========================
@@ -178,7 +165,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  // ⚡ SMOOTH PROGRESS
  // =========================
  const progressRef = useRef({ value: 0 });
- const animate = useRef(/** @type {((value: number) => any)|undefined} */ (undefined));
+ const animate = useRef();
 
  useEffect(() => {
  animate.current = gsap.quickTo(progressRef.current,"value", {
@@ -201,8 +188,8 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
 
  // We want to only update rotation/offset from mouse if not zoomed
  const handlePointerMove = useCallback(
- (/** @type {MouseEvent} */ e) => {
- if (isZoomed) return; // 🛑 Ignore pointer move if zoomed!
+ (e) => {
+ if (isZoomed || !mouseMovement) return;
  const rect = gl.domElement.getBoundingClientRect();
 
  const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -214,17 +201,18 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  targetOffset.current.x = x * 0.04;
  targetOffset.current.y = y * 0.02;
  },
- [gl, isZoomed]
+ [gl, isZoomed, mouseMovement]
  );
 
  useEffect(() => {
+ if (!mouseMovement) return;
  gl.domElement.addEventListener("mousemove", handlePointerMove);
  return () => gl.domElement.removeEventListener("mousemove", handlePointerMove);
- }, [handlePointerMove, gl]);
+ }, [handlePointerMove, gl, mouseMovement]);
 
  // Additionally, immediately reset to neutral rotation/offset when zoomed
  useEffect(() => {
- if (isZoomed) {
+ if (isZoomed || !mouseMovement) {
  // Optionally quickly animate to zero for smoothness
  gsap.to(targetRot.current, {
  x: 0,
@@ -241,7 +229,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  ease:"power3.out",
  });
  }
- }, [isZoomed]);
+ }, [isZoomed, mouseMovement]);
 
  // =========================
  // 🎞 FRAME LOOP
@@ -288,7 +276,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
 
 
  const roughnessMapSource = useTexture(
-"https://png.pngtree.com/png-clipart/20241204/original/pngtree-textured-background-of-bathroom-floor-tiles-png-image_17548659.png"
+"/assets/textures/bathroom-floor-roughness.png"
  );
  const roughnessMap = useMemo(() => {
  const texture = roughnessMapSource.clone();
@@ -358,7 +346,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  </mesh>
 
  <mesh geometry={nodes.tv.geometry}>
- <TVTransitionMaterialTag
+ <tVTransitionMaterial
  ref={tvMatRef}
  uTexA={TVtexture}
  uTexB={videoTexture}

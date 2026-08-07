@@ -7,10 +7,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const DIGITS = [...Array(10).keys()]; // [0..9]
 
-/**
- * @typedef {'normal' | 'medium' | 'semibold' | 'bold'} CounterFontWeight
- */
-
 const FONT_WEIGHTS = {
  normal:"font-normal",
  medium:"font-medium",
@@ -18,19 +14,8 @@ const FONT_WEIGHTS = {
  bold:"font-bold",
 };
 
-/**
- * @typedef {{
- *   digit: string,
- *   duration?: number,
- *   color?: string,
- *   trigger: string,
- *   reducedMotion?: boolean,
- * }} DigitScrollerProps
- */
-
-/** @type {import('react').FC<DigitScrollerProps>} */
-const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion = false }) => {
- const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+const DigitScroller = memo(({ digit, index, duration = 2, stagger = 0.1, color, trigger, reducedMotion = false }) => {
+ const containerRef = useRef(null);
 
  useEffect(() => {
  if (reducedMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
@@ -38,6 +23,7 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion
  gsap.to(containerRef.current, {
  y: `-${parseInt(digit, 10) * 10}%`,
  duration,
+ delay: index * stagger,
  ease:"power1.out",
  scrollTrigger: {
  trigger,
@@ -46,7 +32,7 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion
  });
  });
  return () => ctx.revert();
- }, [digit, duration, reducedMotion, trigger]);
+ }, [digit, duration, index, stagger, reducedMotion, trigger]);
 
  if (reducedMotion) {
  return (
@@ -74,42 +60,16 @@ const DigitScroller = memo(({ digit, duration = 2, color, trigger, reducedMotion
 
 DigitScroller.displayName ="DigitScroller";
 
-/**
- * @param {string} value
- * @param {string | undefined} color
- * @param {string} trigger
- * @param {boolean | undefined} reducedMotion
- */
-const renderDigits = (value, color, trigger, reducedMotion) =>
+const renderDigits = (value, color, trigger, duration, stagger, reducedMotion) =>
  value.split("").map((char, i) =>
  /\d/.test(char) ? (
- <DigitScroller key={i} digit={char} color={color} trigger={trigger} reducedMotion={reducedMotion} />
+ <DigitScroller key={i} digit={char} index={i} duration={duration} stagger={stagger} color={color} trigger={trigger} reducedMotion={reducedMotion} />
  ) : (
  <span key={i} style={{ color }}>{char}</span>
  )
  );
 
-/**
- * @typedef {Object} CounterStat
- * @property {string} [prefix]
- * @property {string} value
- * @property {string} [suffix]
- * @property {string} [superSuffix]
- */
-
-/**
- * @typedef {{
- *   stat: CounterStat,
- *   textColor?: string,
- *   textSize?: string,
- *   fontWeight?: CounterFontWeight,
- *   trigger: string,
- *   reducedMotion?: boolean,
- * }} StatItemProps
- */
-
-/** @type {import('react').FC<StatItemProps>} */
-const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reducedMotion }) => {
+const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, duration, stagger, reducedMotion }) => {
  const { prefix, value, suffix, superSuffix } = stat;
 
  return (
@@ -117,10 +77,10 @@ const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reduced
  <div className="flex flex-col items-center justify-start h-fit gap-[1vw] w-fit max-md:flex-row max-md:justify-between max-md:pl-[4vw] max-md:gap-[4vw]">
  <h3
  dir="ltr"
- className={`${FONT_WEIGHTS[/** @type {CounterFontWeight} */ (fontWeight)] ||"font-normal"} leading-[1.2] flex items-center max-[1025px]:text-[7vw] max-md:text-[12vw] ${textSize}`}
+ className={`${FONT_WEIGHTS[fontWeight] ||"font-normal"} leading-[1.2] flex items-center max-[1025px]:text-[7vw] max-md:text-[12vw] ${textSize}`}
  >
  {prefix && <span style={{ color: textColor }}>{prefix}</span>}
- {renderDigits(value, textColor, trigger, reducedMotion)}
+ {renderDigits(value, textColor, trigger, duration, stagger, reducedMotion)}
  {suffix && <span style={{ color: textColor }}>{suffix}</span>}
  {superSuffix && <sup style={{ color: textColor }}>{superSuffix}</sup>}
  </h3>
@@ -132,20 +92,16 @@ const StatItem = memo(({ stat, textColor, textSize, fontWeight, trigger, reduced
 StatItem.displayName ="StatItem";
 
 /**
- * @typedef {Object} NumberCounterOneProps
- * @property {CounterStat[]} [stats]
- * @property {string} [textColor]
- * @property {string} [textSize]
- * @property {CounterFontWeight} [fontWeight]
- * @property {boolean} [reducedMotion]
- */
-
-/** @param {NumberCounterOneProps} props */
+ * @param {Object[]} stats
+ * @param {string} textColor
+ * @param {string} textSize  * @param {string} fontWeight  */
 export default function NumberCounterOne({
  stats = [],
  textColor ="black",
  textSize ="text-[5vw]",
  fontWeight ="normal",
+ duration = 2,
+ stagger = 0.1,
  reducedMotion = false,
 }) {
  const uid = useId().replace(/:/g, "");
@@ -165,6 +121,8 @@ export default function NumberCounterOne({
  textSize={textSize}
  fontWeight={fontWeight}
  trigger={trigger}
+ duration={duration}
+ stagger={stagger}
  reducedMotion={reducedMotion}
  />
  ))}

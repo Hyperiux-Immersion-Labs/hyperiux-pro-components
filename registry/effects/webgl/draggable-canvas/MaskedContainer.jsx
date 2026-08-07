@@ -25,12 +25,19 @@ export default function MaskedContainer({
   className,
   video,
   canvasSize,
+  friction = 0.12,
+  scaleOnDrag = 1.04,
+  canvasBorderColor = "#71717a",
+  rounded = 0,
   onPositionUpdate,
   onHoverChange,
 }) {
   const maskRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
   const [position, setPosition] = useState(initialPosition);
+  const safeFriction = Math.min(10, Math.max(0, Number(friction) || 0));
+  const safeScaleOnDrag = Math.min(1.5, Math.max(0.85, Number(scaleOnDrag) || 1));
+  const safeRounded = Math.min(80, Math.max(0, Number(rounded) || 0));
 
   // Canvas drawing function for individual mask
   const drawMaskedVideo = useCallback(() => {
@@ -83,15 +90,33 @@ export default function MaskedContainer({
   // GSAP Draggable functionality
   useEffect(() => {
     if (maskRef.current) {
+      gsap.set(maskRef.current, { scale: 1, transformOrigin: "center center" });
+
       const draggable = Draggable.create(maskRef.current, {
         type: "x,y",
         inertia: true,
         bounds: "body",
         edgeResistance: 0.3,
         throwProps: {
-          resistance: 500,
+          resistance: Math.max(50, safeFriction * 4000),
           minDuration: 2,
-          maxDuration: 3
+          maxDuration: 3,
+        },
+        onPress: function () {
+          gsap.to(this.target, {
+            scale: safeScaleOnDrag,
+            duration: 0.18,
+            ease: "power2.out",
+            overwrite: true,
+          });
+        },
+        onRelease: function () {
+          gsap.to(this.target, {
+            scale: 1,
+            duration: 0.28,
+            ease: "power2.out",
+            overwrite: true,
+          });
         },
         onDrag: function () {
           setPosition({ x: this.x, y: this.y });
@@ -100,7 +125,7 @@ export default function MaskedContainer({
         onThrowUpdate: function () {
           setPosition({ x: this.x, y: this.y });
           onPositionUpdate(size, { x: this.x, y: this.y });
-        }
+        },
       })[0];
 
       return () => {
@@ -109,12 +134,16 @@ export default function MaskedContainer({
         }
       };
     }
-  }, [size, onPositionUpdate ]);
+  }, [safeFriction, safeScaleOnDrag, size, onPositionUpdate]);
 
   return (
     <div
       ref={maskRef}
-      className={`${className} cursor-grab active:cursor-grabbing z-10 overflow-hidden border border-zinc-500`}
+      className={`${className} cursor-grab active:cursor-grabbing z-10 overflow-hidden border`}
+      style={{
+        borderColor: canvasBorderColor,
+        borderRadius: `${safeRounded}px`,
+      }}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
     >

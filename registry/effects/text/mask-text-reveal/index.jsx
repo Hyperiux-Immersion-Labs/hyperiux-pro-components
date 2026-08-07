@@ -156,7 +156,7 @@ export default function MaskTextReveal({
 
             linesRef.current = [];
         };
-    }, [animateOnScroll, delay, scrub]);
+    }, [animateOnScroll, delay, duration, scrub, stagger]);
 
     return (
         <div

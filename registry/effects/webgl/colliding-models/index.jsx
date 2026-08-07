@@ -39,31 +39,40 @@ const MODEL_SCALE = 0.08
 const COLLIDER_SCALE = 0.5
 const POINTER_RADIUS = 0.55
 
-/** @param {number} [accent] */
-const shuffle = (accent = 0) => [
-  { color: '#444', roughness: 0.1 },
-  { color: '#444', roughness: 0.75 },
-  { color: '#444', roughness: 0.75 },
-  { color: 'white', roughness: 0.1 },
-  { color: 'white', roughness: 0.75 },
-  { color: 'white', roughness: 0.1 },
-  { color: accents[accent], roughness: 0.1, accent: true },
-  { color: accents[accent], roughness: 0.75, accent: true },
-  { color: accents[accent], roughness: 0.1, accent: true },
-]
+const shuffle = (accent = 0, count = 9) => {
+  const styles = [
+    { color: '#444', roughness: 0.1 },
+    { color: '#444', roughness: 0.75 },
+    { color: '#444', roughness: 0.75 },
+    { color: 'white', roughness: 0.1 },
+    { color: 'white', roughness: 0.75 },
+    { color: 'white', roughness: 0.1 },
+    { color: accents[accent], roughness: 0.1, accent: true },
+    { color: accents[accent], roughness: 0.75, accent: true },
+    { color: accents[accent], roughness: 0.1, accent: true },
+  ]
 
-/**
- * @typedef {Object} SceneProps
- * @property {'always'|'demand'|'never'} [frameloop]
- */
+  return Array.from(
+    { length: Math.max(0, Math.round(count)) },
+    (_, i) => styles[i % styles.length]
+  )
+}
 
-/** @param {SceneProps} props */
-function Scene({ frameloop = 'always' }) {
-  const [accent, click] = useReducer((/** @type {number} */ state) => ++state % accents.length, 0)
+function Scene({
+  frameloop = 'always',
+  connectorCount = 8,
+  gravity = 0,
+  modelScale = 1,
+  backgroundColor = '#141518',
+}) {
+  const [accent, click] = useReducer((state) => ++state % accents.length, 0)
   const [showTitle, setShowTitle] = useState(true)
-  const connectors = useMemo(() => shuffle(accent), [accent])
-  const connectorRefs = useRef(/** @type {any[]} */ ([]))
-  const registerConnector = useCallback((/** @type {number} */ index, /** @type {any} */ api) => {
+  const connectors = useMemo(
+    () => shuffle(accent, connectorCount),
+    [accent, connectorCount]
+  )
+  const connectorRefs = useRef([])
+  const registerConnector = useCallback((index, api) => {
     connectorRefs.current[index] = api
     return () => {
       connectorRefs.current[index] = null
@@ -72,7 +81,7 @@ function Scene({ frameloop = 'always' }) {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 1025px)')
-    const updateTitleVisibility = (/** @type {MediaQueryListEvent|MediaQueryList} */ event) => {
+    const updateTitleVisibility = (event) => {
       setShowTitle(event.matches)
     }
 
@@ -119,7 +128,7 @@ function Scene({ frameloop = 'always' }) {
           HYPERIUX
         </Text>
       )}
-      <color attach="background" args={['#141518']} />
+      <color attach="background" args={[backgroundColor]} />
       <ambientLight intensity={0.4} />
       <spotLight
         position={[10, 10, 10]}
@@ -129,13 +138,13 @@ function Scene({ frameloop = 'always' }) {
         castShadow
       />
 
-      <Physics gravity={[0, 0, 0]}>
+      <Physics gravity={[0, -gravity, 0]}>
         <Pointer />
         {connectors.map((props, i) => (
-          <Connector key={i} {...props} connectorRefs={connectorRefs} registerConnector={registerConnector} index={i} />
+          <Connector key={i} {...props} modelScale={modelScale} connectorRefs={connectorRefs} registerConnector={registerConnector} index={i} />
         ))}
         <Connector position={[10, 10, 5]} connectorRefs={connectorRefs} registerConnector={registerConnector} index={connectors.length}>
-          <Model>
+          <Model modelScale={modelScale}>
             <MeshTransmissionMaterial
               clearcoat={1}
               thickness={10}
@@ -148,7 +157,7 @@ function Scene({ frameloop = 'always' }) {
         </Connector>
       </Physics>
 
-      <EffectComposer {...(/** @type {any} */ ({ disableNormalPass: true, multisampling: 8 }))}>
+      <EffectComposer disableNormalPass multisampling={8}>
         <N8AO />
         {/* <Bloom  /> */}
       </EffectComposer>
@@ -193,20 +202,6 @@ function Scene({ frameloop = 'always' }) {
 const REPULSION_RADIUS = 1.5
 const REPULSION_STRENGTH = 0.012
 
-/**
- * @typedef {Object} ConnectorOwnProps
- * @property {[number, number, number]} [position]
- * @property {import('react').ReactNode} [children]
- * @property {THREE.Vector3} [vec]
- * @property {THREE.Vector3} [repulsion]
- * @property {(range: number) => number} [r]
- * @property {boolean} [accent]
- * @property {import('react').RefObject<any[]>} connectorRefs
- * @property {(index: number, api: any) => () => void} registerConnector
- * @property {number} index
- */
-
-/** @param {ConnectorOwnProps & Record<string, any>} props */
 function Connector({
   position,
   children,
@@ -219,8 +214,8 @@ function Connector({
   index,
   ...props
 }) {
-  const api = useRef(/** @type {any} */ (null))
-  const pos = useMemo(() => /** @type {[number, number, number]} */ (position || [r(10), r(10), r(10)]), [position, r])
+  const api = useRef()
+  const pos = useMemo(() => position || [r(10), r(10), r(10)], [position, r])
 
   useEffect(() => {
     return registerConnector(index, api)
@@ -298,14 +293,8 @@ function Connector({
   )
 }
 
-/**
- * @typedef {Object} PointerProps
- * @property {THREE.Vector3} [vec]
- */
-
-/** @param {PointerProps} props */
 function Pointer({ vec = new THREE.Vector3() }) {
-  const ref = useRef(/** @type {any} */ (null))
+  const ref = useRef()
 
   useFrame(({ mouse, viewport }) => {
     const x = (mouse.x * viewport.width) / 2
@@ -335,19 +324,11 @@ function Pointer({ vec = new THREE.Vector3() }) {
   )
 }
 
-/**
- * @typedef {Object} ModelProps
- * @property {import('react').ReactNode} [children]
- * @property {string} [color]
- * @property {number} [roughness]
- */
-
-/** @param {ModelProps} props */
-function Model({ children, color = 'white', roughness = 0 }) {
-  const ref = useRef(/** @type {any} */ (null))
+function Model({ children, color = 'white', roughness = 0, modelScale = 1 }) {
+  const ref = useRef()
   const { nodes } = useGLTF(LOGO_MODEL_URL)
   const { materials: materials2 } = useGLTF(GLASS_MODEL_URL)
-  const geometry = /** @type {any} */ (nodes.FINAL)?.geometry
+  const geometry = nodes.FINAL?.geometry
 
   useFrame((state, delta) => {
     if (ref.current?.material?.color) {
@@ -357,24 +338,24 @@ function Model({ children, color = 'white', roughness = 0 }) {
 
   if (!geometry) return null
 
+  const scale = MODEL_SCALE * modelScale
+
   return (
     <mesh
       ref={ref}
       castShadow
       receiveShadow
-      scale={[MODEL_SCALE, MODEL_SCALE, MODEL_SCALE * 2.3]}
+      scale={[scale, scale, scale * 2.3]}
       geometry={geometry}
     >
       <meshPhysicalMaterial
-        {...(/** @type {any} */ ({
-          metalness: .4,
-          roughness: 0.2,
-          clearcoat: 1,
-          clearcoatRoughness: 0.2,
-          material: materials2.base,
-          reflectivity: 1,
-          color: color,
-        }))}
+        metalness={.4}
+        roughness={0.2}
+        clearcoat={1}
+        clearcoatRoughness={0.2}
+        material={materials2.base}
+        reflectivity={1}
+        color={color}
       />
 
       {children}
@@ -383,9 +364,14 @@ function Model({ children, color = 'white', roughness = 0 }) {
 }
 
 
-export default function CollidingModels() {
-  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null))
-  const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ('always'))
+export default function CollidingModels({
+  connectorCount = 8,
+  gravity = 0,
+  modelScale = 1,
+  backgroundColor = '#141518',
+}) {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
   const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
@@ -401,8 +387,18 @@ export default function CollidingModels() {
 
     <>
       <div className="w-full h-screen flex items-center justify-center px-12 max-md:px-6 max-[1025px]:px-10">
-        <div ref={rootRef} className="relative h-full w-full overflow-hidden rounded-2xl bg-black">
-          <Scene frameloop={frameloop} />
+        <div
+          ref={rootRef}
+          className="relative h-full w-full overflow-hidden rounded-2xl"
+          style={{ backgroundColor }}
+        >
+          <Scene
+            frameloop={frameloop}
+            connectorCount={connectorCount}
+            gravity={gravity}
+            modelScale={modelScale}
+            backgroundColor={backgroundColor}
+          />
           <p className="pointer-events-none max-[1025px]:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-md:bottom-4 max-md:text-xs">
             Move through the field and let the models collide - click to change their spark.
           </p>

@@ -157,8 +157,10 @@ function createTextureFromImage(imageElement) {
 
 export default function ScrollDistortion({
   sections = DEFAULT_SECTIONS,
-  shaderConfig = {},
-  displacementSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg",
+  distortionStrength,
+  rgbShift,
+  distortionScale,
+  transitionDuration,
 }) {
   const containerRef = useRef(null);
   const imageRefs = useRef([]);
@@ -196,7 +198,7 @@ export default function ScrollDistortion({
 
     Promise.all([
       ...sections.map((section) => loadCorsObjectUrl(section.src)),
-      loadCorsObjectUrl(displacementSrc),
+      loadCorsObjectUrl("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg"),
     ])
       .then((urls) => {
         nextObjectUrls = urls;
@@ -217,7 +219,7 @@ export default function ScrollDistortion({
       isCancelled = true;
       nextObjectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [displacementSrc, sections]);
+  }, [sections]);
 
   const areImagesDecoded =
     objectUrls?.length === sections.length + 1 &&
@@ -247,7 +249,12 @@ export default function ScrollDistortion({
 
     const config = {
       ...DEFAULT_SHADER_CONFIG,
-      ...shaderConfig,
+      ...(distortionStrength !== undefined ? { strength: distortionStrength } : {}),
+      ...(rgbShift !== undefined ? { rgbShift } : {}),
+      ...(distortionScale !== undefined ? { scale: distortionScale } : {}),
+      ...(transitionDuration !== undefined
+        ? { transitionDuration }
+        : {}),
       // Reduced motion: zero out the displacement/RGB-shift/scale warp -
       // the shader still runs the same u_progress tween, but with these at
       // 0 the distortion terms drop out and it's left with a plain
@@ -661,7 +668,14 @@ export default function ScrollDistortion({
       renderer.dispose();
       containerElement.replaceChildren();
     };
-  }, [areImagesDecoded, sections, shaderConfig]);
+  }, [
+    areImagesDecoded,
+    sections,
+    distortionStrength,
+    rgbShift,
+    distortionScale,
+    transitionDuration,
+  ]);
 
   return (
     <section className="fixed inset-0 h-screen w-screen overflow-hidden bg-black">

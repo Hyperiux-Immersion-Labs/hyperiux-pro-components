@@ -95,12 +95,25 @@ function lerp(a, b, t) {
   return a * (1 - t) + b * t;
 }
 
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return clamp(number, min, max);
+}
+
 // Proper modulo function that handles negative numbers
 function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-const CurvedPlaneHorizontal = () => {
+const CurvedPlaneHorizontal = ({
+  speed = 1,
+  curveValue = 1,
+  gap = 1,
+  imageSize = 1,
+}) => {
   const containerRef = useRef(null);
   const meshesRef = useRef([]);
   const sceneRef = useRef();
@@ -122,8 +135,21 @@ const CurvedPlaneHorizontal = () => {
     typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
   );
+  const controlsRef = useRef({
+    speed: clampNumber(speed, 0, 3, 1),
+    curveValue: clampNumber(curveValue, 0, 3, 1),
+    gap: clampNumber(gap, 0.5, 2, 1),
+    imageSize: clampNumber(imageSize, 0.5, 2, 1),
+  });
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  useEffect(() => {
+    controlsRef.current.speed = clampNumber(speed, 0, 3, 1);
+    controlsRef.current.curveValue = clampNumber(curveValue, 0, 3, 1);
+    controlsRef.current.gap = clampNumber(gap, 0.5, 2, 1);
+    controlsRef.current.imageSize = clampNumber(imageSize, 0.5, 2, 1);
+  }, [curveValue, gap, imageSize, speed]);
 
   // Load Textures
   useEffect(() => {
@@ -220,12 +246,13 @@ const CurvedPlaneHorizontal = () => {
 
     meshesRef.current = meshes;
 
-    const spacing = FIXED_IMAGE_WIDTH + 60;
-
     const updateMeshes = () => {
       const offset = offsetRef.current;
       const baseIndex = Math.floor(offset);
       const fractional = offset - baseIndex;
+      const currentImageWidth = FIXED_IMAGE_WIDTH * controlsRef.current.imageSize;
+      const currentImageHeight = FIXED_IMAGE_HEIGHT * controlsRef.current.imageSize;
+      const spacing = currentImageWidth + 60 * controlsRef.current.gap;
 
       meshes.forEach((mesh, i) => {
         // Calculate proper image index with buffer offset
@@ -247,6 +274,7 @@ const CurvedPlaneHorizontal = () => {
         const xPos = (centerOffset - fractional) * spacing;
 
         mesh.position.x = xPos;
+        mesh.scale.set(currentImageWidth, currentImageHeight, 1);
 
         // Smooth transition from 1.0 (center) to 0.8 (extreme edges)
         const distFromCenter = Math.min(1.0, Math.abs(xPos) / (viewWidth / 2));
@@ -260,7 +288,9 @@ const CurvedPlaneHorizontal = () => {
 
         // Apply deformation based on drag velocity and scroll intensity
         const deform = deformationRef.current;
-        mesh.material.uniforms.uOffset.value.x = deform * DEFORMATION_INTENSITY;
+        mesh.material.uniforms.uMeshSize.value.set(currentImageWidth, currentImageHeight);
+        mesh.material.uniforms.uOffset.value.x =
+          deform * DEFORMATION_INTENSITY * controlsRef.current.curveValue;
       });
     };
 
@@ -282,7 +312,7 @@ const CurvedPlaneHorizontal = () => {
 
         // Apply scroll velocity with lerp
         if (Math.abs(scrollVelocityRef.current) > 0.0001) {
-          targetOffsetRef.current += scrollVelocityRef.current;
+          targetOffsetRef.current += scrollVelocityRef.current * controlsRef.current.speed;
           scrollVelocityRef.current = lerp(scrollVelocityRef.current, 0, 0.05);
         }
 
@@ -291,7 +321,7 @@ const CurvedPlaneHorizontal = () => {
 
         // Momentum for drag
         if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
-          targetOffsetRef.current += velocityRef.current;
+          targetOffsetRef.current += velocityRef.current * controlsRef.current.speed;
           velocityRef.current *= MOMENTUM_FRICTION;
         }
 
@@ -347,8 +377,10 @@ const CurvedPlaneHorizontal = () => {
       const currentTime = Date.now();
       const dx = currentX - lastX.current;
       const dt = Math.max(currentTime - lastTime.current, 1);
+      const currentImageWidth = FIXED_IMAGE_WIDTH * controlsRef.current.imageSize;
+      const spacing = currentImageWidth + 60 * controlsRef.current.gap;
 
-      const delta = (dx / spacing) * DRAG_SENSITIVITY;
+      const delta = (dx / spacing) * DRAG_SENSITIVITY * controlsRef.current.speed;
       targetOffsetRef.current -= delta;
 
       if (reduceMotionRef.current) {
@@ -396,7 +428,7 @@ const CurvedPlaneHorizontal = () => {
       const rawScrollDelta = e.deltaY;
 
       if (reduceMotionRef.current) {
-        targetOffsetRef.current += rawScrollDelta * 0.0004;
+        targetOffsetRef.current += rawScrollDelta * 0.0004 * controlsRef.current.speed;
         velocityRef.current = 0;
         scrollVelocityRef.current = 0;
         scrollIntensityRef.current = 0;
@@ -413,7 +445,7 @@ const CurvedPlaneHorizontal = () => {
       scrollIntensityRef.current = Math.min(1.0, scrollIntensityRef.current + scrollIntensity);
 
       // Accumulate scroll velocity (reduced speed)
-      const scrollDelta = rawScrollDelta * 0.0004;
+      const scrollDelta = rawScrollDelta * 0.0004 * controlsRef.current.speed;
       scrollVelocityRef.current += scrollDelta;
 
       // Clamp scroll velocity

@@ -13,7 +13,6 @@ function usePrefersReducedMotion() {
 
  useEffect(() => {
  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
- /** @param {MediaQueryListEvent} e */
  const handler = (e) => setPrefersReducedMotion(e.matches);
  mq.addEventListener('change', handler);
  return () => mq.removeEventListener('change', handler);
@@ -22,22 +21,18 @@ function usePrefersReducedMotion() {
  return prefersReducedMotion;
 }
 
-/**
- * @typedef {Object} SpotlightTextProps
- * @property {string} [text]
- * @property {string} [className]
- * @property {string} [size]
- * @property {'left' | 'center' | 'right'} [align]
- */
-
-/** @param {SpotlightTextProps} props */
 export default function SpotlightText({
- text ="Hyperiux Vault is where design meets precision - a thoughtfully crafted component library built for developers who care about performance, aesthetics, and experience. Every interaction is intentional, every animation feels alive, and every component is designed to elevate modern interfaces beyond the ordinary.",
  className ="",
  size ="text-3xl md:text-5xl",
  align ="center",
+ baseTextColor = "#525252",
+ spotlightColor = "#ffffff",
+ lerp = 0.08,
+ spotlightSize = 220,
+ smoothness = 0.12,
 }) {
- const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+ const text ="Hyperiux Vault is where design meets precision - a thoughtfully crafted component library built for developers who care about performance, aesthetics, and experience. Every interaction is intentional, every animation feels alive, and every component is designed to elevate modern interfaces beyond the ordinary.";
+ const containerRef = useRef(null);
 
  const target = useRef({ x: 0, y: 0 });
  const current = useRef({ x: 0, y: 0 });
@@ -48,8 +43,7 @@ export default function SpotlightText({
  const [isMobile, setIsMobile] = useState(false);
  const prefersReducedMotion = usePrefersReducedMotion();
 
- /** @type {(start: number, end: number, factor: number) => number} */
- const lerp = (start, end, factor) => start + (end - start) * factor;
+ const mix = (start, end, factor) => start + (end - start) * factor;
 
  useEffect(() => {
  const checkMobile = () => {
@@ -67,10 +61,10 @@ export default function SpotlightText({
  useEffect(() => {
  if (isMobile) return; //  disable effect on mobile
 
- const el = /** @type {HTMLDivElement} */ (containerRef.current);
- const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
+ const el = containerRef.current;
+ const positionLerpFactor = prefersReducedMotion ? 1 : Math.min(1, Math.max(0.01, Number(lerp) || 0.08));
+ const opacityLerpFactor = prefersReducedMotion ? 1 : Math.min(1, Math.max(0.01, Number(smoothness) || 0.12));
 
- /** @param {MouseEvent} e */
  const updateTarget = (e) => {
  const rect = el.getBoundingClientRect();
 
@@ -81,7 +75,6 @@ export default function SpotlightText({
  target.current.y = y;
  };
 
- /** @param {MouseEvent} e */
  const handleEnter = (e) => {
  updateTarget(e);
  current.current.x = target.current.x;
@@ -90,7 +83,6 @@ export default function SpotlightText({
  targetOpacity.current = 1;
  };
 
- /** @param {MouseEvent} e */
  const handleMove = (e) => {
  updateTarget(e);
  };
@@ -103,9 +95,9 @@ export default function SpotlightText({
  const loop = createSuspendedRaf({
  root: el,
  onFrame: () => {
- current.current.x = lerp(current.current.x, target.current.x, positionLerpFactor);
- current.current.y = lerp(current.current.y, target.current.y, positionLerpFactor);
- currentOpacity.current = lerp(currentOpacity.current, targetOpacity.current, 0.12);
+ current.current.x = mix(current.current.x, target.current.x, positionLerpFactor);
+ current.current.y = mix(current.current.y, target.current.y, positionLerpFactor);
+ currentOpacity.current = mix(currentOpacity.current, targetOpacity.current, opacityLerpFactor);
 
  el.style.setProperty("--x", `${current.current.x}px`);
  el.style.setProperty("--y", `${current.current.y}px`);
@@ -125,7 +117,7 @@ export default function SpotlightText({
  el.removeEventListener("mousemove", handleMove);
  el.removeEventListener("mouseleave", handleLeave);
  };
- }, [isMobile, prefersReducedMotion]);
+ }, [isMobile, prefersReducedMotion, lerp, smoothness]);
 
  const alignment =
  align ==="center"
@@ -142,26 +134,27 @@ export default function SpotlightText({
  style={
  isMobile
  ? {}
- : /** @type {import('react').CSSProperties} */ ({
+ : {
 "--x":"0px",
 "--y":"0px",
 "--opacity": 0,
- })
+ }
  }
  >
  {/* Dim text (mobile becomes fully visible) */}
- <p className="text-neutral-600 max-[1025px]:text-white max-[1025px]:opacity-90 leading-tight whitespace-pre-wrap">
+ <p className="max-[1025px]:opacity-90 leading-tight whitespace-pre-wrap" style={{ color: isMobile ? spotlightColor : baseTextColor }}>
  {text}
  </p>
 
  {/* Spotlight (disabled on mobile) */}
  {!isMobile && (
  <p
- className="pointer-events-none absolute inset-0 text-white leading-tight whitespace-pre-wrap"
+ className="pointer-events-none absolute inset-0 leading-tight whitespace-pre-wrap"
  style={{
+ color: spotlightColor,
  WebkitMaskImage: `
  radial-gradient(
- circle 220px at var(--x) var(--y),
+ circle ${spotlightSize}px at var(--x) var(--y),
  rgba(255,255,255,1) 0%,
  rgba(255,255,255,0.85) 25%,
  rgba(255,255,255,0.5) 50%,
@@ -172,7 +165,7 @@ export default function SpotlightText({
  `,
  maskImage: `
  radial-gradient(
- circle 220px at var(--x) var(--y),
+ circle ${spotlightSize}px at var(--x) var(--y),
  rgba(255,255,255,1) 0%,
  rgba(255,255,255,0.85) 25%,
  rgba(255,255,255,0.5) 50%,

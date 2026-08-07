@@ -28,21 +28,43 @@ const TUNNEL_CONFIG = {
  backgroundColor:'#000000'
 }
 
-/**
- * @typedef {import('react').MutableRefObject<number>} PhaseRef
- */
+function clampNumber(value, min, max, fallback) {
+ const numericValue = Number(value)
+ if (!Number.isFinite(numericValue)) return fallback
+ return Math.min(max, Math.max(min, numericValue))
+}
 
-/**
- * @param {{
- *   index: number,
- *   loaderValue: number,
- *   tunnelPhaseRef: PhaseRef,
- * }} props
- */
-function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
- const groupRef = useRef(/** @type {THREE.Group | null} */ (null))
- const ringContentRef = useRef(/** @type {THREE.Group | null} */ (null))
- const textMaterialRef = useRef(/** @type {THREE.MeshBasicMaterial | null} */ (null))
+function createTunnelConfig({
+ digitCount = TUNNEL_CONFIG.ringCount * TUNNEL_CONFIG.countPerRing,
+ speed = 1,
+ depth = 900,
+ textColor = TUNNEL_CONFIG.textColor,
+ backgroundColor = TUNNEL_CONFIG.backgroundColor,
+} = {}) {
+ const safeDigitCount = Math.round(clampNumber(digitCount, 0, 540, TUNNEL_CONFIG.ringCount * TUNNEL_CONFIG.countPerRing))
+ const ringCount = safeDigitCount > 0 ? TUNNEL_CONFIG.ringCount : 0
+ const countPerRing = ringCount ? Math.max(1, Math.ceil(safeDigitCount / ringCount)) : 0
+ const safeSpeed = clampNumber(speed, 0.1, 5, 1)
+ const depthScale = clampNumber(depth, 120, 2700, 900) / 900
+
+ return {
+ ...TUNNEL_CONFIG,
+ countPerRing,
+ ringEndScale: TUNNEL_CONFIG.ringEndScale * depthScale,
+ ringRotateSpeed: TUNNEL_CONFIG.ringRotateSpeed * safeSpeed,
+ loaderTickInterval: TUNNEL_CONFIG.loaderTickInterval / safeSpeed,
+ loaderStartDelay: TUNNEL_CONFIG.loaderStartDelay / safeSpeed,
+ crossfadeDuration: TUNNEL_CONFIG.crossfadeDuration / safeSpeed,
+ tunnelFadeOutDelay: TUNNEL_CONFIG.tunnelFadeOutDelay / safeSpeed,
+ textColor,
+ backgroundColor,
+ }
+}
+
+function TunnelRing({ index, loaderValue, tunnelPhaseRef, config }) {
+ const groupRef = useRef()
+ const ringContentRef = useRef()
+ const textMaterialRef = useRef(null)
  const direction = index % 2 === 0 ? 1 : -1
  const reduceMotionRef = useRef(
  typeof window !== 'undefined' &&
@@ -52,12 +74,12 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
  const textMaterial = useMemo(
  () =>
  new THREE.MeshBasicMaterial({
- color: new THREE.Color(TUNNEL_CONFIG.textColor),
+ color: new THREE.Color(config.textColor),
  transparent: true,
  opacity: 0,
  depthWrite: false,
  }),
- []
+ [config.textColor]
  )
 
  useEffect(() => {
@@ -71,7 +93,6 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
  useEffect(() => {
  const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
  if (!mq) return undefined
- /** @param {MediaQueryListEvent} event */
  const onChange = (event) => {
  reduceMotionRef.current = event.matches
  }
@@ -80,22 +101,17 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
  return () => mq.removeEventListener?.('change', onChange)
  }, [])
 
- useFrame(
- /**
-  * @param {import('@react-three/fiber').RootState} state
-  * @param {number} delta
-  */
- (state, delta) => {
+ useFrame((state, delta) => {
  if (!groupRef.current || !ringContentRef.current) return
  const material = textMaterialRef.current
  if (!material) return
 
  const time = state.clock.getElapsedTime()
- const speed = 0.25
+ const speed = 0.25 * (config.ringRotateSpeed / TUNNEL_CONFIG.ringRotateSpeed)
 
  // Instead of adding index mapped offset, subtract it to delay spawn.
  // This makes rings wait their turn to start from the center.
- const rawPhase = time * speed - index / TUNNEL_CONFIG.ringCount
+ const rawPhase = time * speed - index / config.ringCount
 
  if (rawPhase < 0) {
  groupRef.current.scale.set(0.001, 0.001, 0.001)
@@ -105,19 +121,19 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
 
  // Scale calculation
  const scale =
- Math.pow(phase, 3) * TUNNEL_CONFIG.ringEndScale +
- TUNNEL_CONFIG.ringStartScale
+ Math.pow(phase, 3) * config.ringEndScale +
+ config.ringStartScale
 
  groupRef.current.scale.set(scale, scale, scale)
 
  // Opacity calculation by phase
  let opacity = 0
- if (phase < TUNNEL_CONFIG.ringFadeInPhase)
- opacity = phase / TUNNEL_CONFIG.ringFadeInPhase
- else if (phase <= TUNNEL_CONFIG.ringFullVisiblePhase)
+ if (phase < config.ringFadeInPhase)
+ opacity = phase / config.ringFadeInPhase
+ else if (phase <= config.ringFullVisiblePhase)
  opacity = 1
- else if (phase <= TUNNEL_CONFIG.ringFadeOutPhase)
- opacity = 1 - (phase - TUNNEL_CONFIG.ringFullVisiblePhase) / (TUNNEL_CONFIG.ringFadeOutPhase - TUNNEL_CONFIG.ringFullVisiblePhase)
+ else if (phase <= config.ringFadeOutPhase)
+ opacity = 1 - (phase - config.ringFullVisiblePhase) / (config.ringFadeOutPhase - config.ringFullVisiblePhase)
  else opacity = 0
 
  // Fade out rings as tunnelPhase progresses
@@ -126,27 +142,27 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
 
  // Reduced-motion: keep counter, skip ring rotation.
  if (!reduceMotionRef.current) {
- ringContentRef.current.rotation.z += delta * TUNNEL_CONFIG.ringRotateSpeed * direction
+ ringContentRef.current.rotation.z += delta * config.ringRotateSpeed * direction
  }
  })
 
  return (
  <group ref={groupRef} position={[0, 0, -index * 0.01]}>
  <group ref={ringContentRef}>
- {Array.from({ length: TUNNEL_CONFIG.countPerRing }).map((_, i) => {
- const angle = (i / TUNNEL_CONFIG.countPerRing) * Math.PI * 2
- const x = Math.cos(angle) * TUNNEL_CONFIG.ringRadius
- const y = Math.sin(angle) * TUNNEL_CONFIG.ringRadius
+ {Array.from({ length: config.countPerRing }).map((_, i) => {
+ const angle = (i / config.countPerRing) * Math.PI * 2
+ const x = Math.cos(angle) * config.ringRadius
+ const y = Math.sin(angle) * config.ringRadius
 
  return (
  <Text
  key={i}
  position={[x, y, 0]}
  rotation={[0, 0, angle - Math.PI / 2]}
- fontSize={TUNNEL_CONFIG.ringFontSize}
+ fontSize={config.ringFontSize}
  anchorX="center"
  anchorY="middle"
- letterSpacing={TUNNEL_CONFIG.ringLetterSpacing}
+ letterSpacing={config.ringLetterSpacing}
  material={textMaterial}
  >
  {loaderValue.toString().padStart(2,'0')}
@@ -158,35 +174,22 @@ function TunnelRing({ index, loaderValue, tunnelPhaseRef }) {
  )
 }
 
-/**
- * @param {{
- *   loaderValue: number,
- *   tunnelPhaseRef: PhaseRef,
- * }} props
- */
-function TunnelScene({ loaderValue, tunnelPhaseRef }) {
+function TunnelScene({ loaderValue, tunnelPhaseRef, config }) {
  return (
  <>
- <color attach="background" args={[TUNNEL_CONFIG.backgroundColor]} />
- {Array.from({ length: TUNNEL_CONFIG.ringCount }).map((_, i) => (
- <TunnelRing key={i} index={i} loaderValue={loaderValue} tunnelPhaseRef={tunnelPhaseRef} />
+ <color attach="background" args={[config.backgroundColor]} />
+ {Array.from({ length: config.ringCount }).map((_, i) => (
+ <TunnelRing key={i} index={i} loaderValue={loaderValue} tunnelPhaseRef={tunnelPhaseRef} config={config} />
  ))}
  </>
  )
 }
 
-/**
- * @param {{
- *   children?: import('react').ReactNode,
- *   active: boolean,
- *   tunnelPhaseRef: PhaseRef,
- * }} props
- */
 function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  const { gl, camera, size, viewport } = useThree()
  const portalScene = useMemo(() => new THREE.Scene(), [])
- const fbo = useFBO(size.width, size.height, /** @type {any} */ ({ samples: 0, depth: false }))
- const materialRef = useRef(/** @type {THREE.ShaderMaterial | null} */ (null))
+ const fbo = useFBO(size.width, size.height, { samples: 0, depth: false })
+ const materialRef = useRef(null)
  const reduceMotionRef = useRef(
  typeof window !== 'undefined' &&
  (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false)
@@ -195,7 +198,6 @@ function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  useEffect(() => {
  const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
  if (!mq) return undefined
- /** @param {MediaQueryListEvent} event */
  const onChange = (event) => {
  reduceMotionRef.current = event.matches
  }
@@ -287,12 +289,7 @@ function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  }
  }, [material])
 
- useFrame(
- /**
-  * @param {import('@react-three/fiber').RootState} state
-  * @param {number} delta
-  */
- (state, delta) => {
+ useFrame((state, delta) => {
  // always render tunnel pass, then crossfade
  gl.setRenderTarget(fbo)
  gl.clear(true, true, true)
@@ -326,29 +323,21 @@ function WholeSceneEffect({ children, active, tunnelPhaseRef }) {
  )
 }
 
-/**
- * @param {{
- *   loaderValue: number,
- *   onComplete?: () => void,
- * }} props
- */
-function NumericTunnelCanvas({ loaderValue, onComplete }) {
+function NumericTunnelCanvas({ loaderValue, onComplete, config }) {
  const [effectActive, setEffectActive] = useState(false)
  // Remove useState for canvasOpacity, use a ref instead
- const canvasRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+ const canvasRef = useRef(null)
  const didScheduleRef = useRef(false)
  const tunnelPhaseRef = useRef(0)
 
  useEffect(() => {
- /** @type {number | undefined} */
  let anim
- /** @type {ReturnType<typeof setTimeout> | undefined} */
  let fadeTimeout
  if (loaderValue >= 100 && !didScheduleRef.current) {
  didScheduleRef.current = true
  setEffectActive(true)
  let t = 0
- const duration = TUNNEL_CONFIG.crossfadeDuration
+ const duration = config.crossfadeDuration
  const step = () => {
  t += 1 / 60
  tunnelPhaseRef.current = Math.min(t / duration, 1)
@@ -364,17 +353,17 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  if (canvasRef.current) {
  gsap.to(canvasRef.current, {
  opacity: 0,
- duration: TUNNEL_CONFIG.canvasFadeDuration / 1000,
+ duration: config.canvasFadeDuration / 1000,
  ease:"power3.inOut",
  })
  }
- }, TUNNEL_CONFIG.tunnelFadeOutDelay)
+ }, config.tunnelFadeOutDelay)
  }
  }
  requestAnimationFrame(step)
  }
  return () => {
- if (anim !== undefined) cancelAnimationFrame(anim)
+ cancelAnimationFrame(anim)
  clearTimeout(fadeTimeout)
  }
  }, [loaderValue, onComplete])
@@ -382,7 +371,8 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  return (
  <div
  ref={canvasRef}
- className="h-full bg-black w-full"
+ className="h-full w-full"
+ style={{ backgroundColor: config.backgroundColor }}
  >
  <Canvas
  dpr={1}
@@ -390,39 +380,33 @@ function NumericTunnelCanvas({ loaderValue, onComplete }) {
  camera={{ zoom: 100, position: [0, 0, 10] }}
  gl={{ powerPreference:'high-performance' }}
  >
- <color attach="background" args={[TUNNEL_CONFIG.backgroundColor]} />
+ <color attach="background" args={[config.backgroundColor]} />
  <WholeSceneEffect active={effectActive} tunnelPhaseRef={tunnelPhaseRef}>
- <TunnelScene loaderValue={loaderValue} tunnelPhaseRef={tunnelPhaseRef} />
+ <TunnelScene loaderValue={loaderValue} tunnelPhaseRef={tunnelPhaseRef} config={config} />
  </WholeSceneEffect>
  </Canvas>
  </div>
  )
 }
 
-/**
- * @param {{
- *   children?: import('react').ReactNode,
- *   onComplete?: () => void,
- * }} props
- */
-export function NumericTunnelLoader({ children, onComplete }) {
+export function NumericTunnelLoader({ children, onComplete, config: configOverrides }) {
  const [loaderValue, setLoaderValue] = useState(0)
  const [isComplete, setIsComplete] = useState(false)
+ const config = useMemo(() => createTunnelConfig(configOverrides), [configOverrides])
 
  useEffect(() => {
- /** @type {ReturnType<typeof setInterval> | undefined} */
  let interval;
  const timeout = setTimeout(() => {
  interval = setInterval(() => {
  setLoaderValue((prev) => (prev >= 100 ? 100 : prev + 1))
- }, TUNNEL_CONFIG.loaderTickInterval)
- }, TUNNEL_CONFIG.loaderStartDelay)
+ }, config.loaderTickInterval)
+ }, config.loaderStartDelay)
 
  return () => {
  clearTimeout(timeout)
  if (interval) clearInterval(interval)
  }
- }, [])
+ }, [config.loaderStartDelay, config.loaderTickInterval])
 
  const handleComplete = () => {
  setIsComplete(true)
@@ -434,7 +418,7 @@ export function NumericTunnelLoader({ children, onComplete }) {
  {children}
  {!isComplete && (
  <div className="absolute inset-0 z-10">
- <NumericTunnelCanvas loaderValue={loaderValue} onComplete={handleComplete} />
+ <NumericTunnelCanvas loaderValue={loaderValue} onComplete={handleComplete} config={config} />
  </div>
  )}
  </div>

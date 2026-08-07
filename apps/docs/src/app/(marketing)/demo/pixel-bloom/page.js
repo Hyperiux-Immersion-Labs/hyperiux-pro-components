@@ -1,36 +1,11 @@
-import React from 'react'
-import PixelBloomWrapper from './PixelBloomWrapper'
-import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import pixelBloomRegistry from "../../../../../../../registry/effects/cursor/pixel-bloom/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-        <LenisSmoothScroll />
-        <DemoHeader />
-        <PixelBloomWrapper />
-          <ScrollBottom textColor='text-[#111111]' />
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center  backdrop-blur-sm max-md:hidden"
-        >
-          <h2 className="text-sm leading-none text-neutral-800">
-            The bloom keeps rippling.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-neutral-700">
-            Pixel Bloom reveals pixelation as your cursor moves across the
-            media. Since the transition is driven by motion, reduced
-            motion can&apos;t be applied here.
-          </p>
-        </div>
-    </>
-  )
+export default function Page() {
+  return <DemoContent registry={pixelBloomRegistry} />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("pixel-bloom");
 }

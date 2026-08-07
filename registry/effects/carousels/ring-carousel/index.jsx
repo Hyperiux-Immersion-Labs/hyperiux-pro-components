@@ -24,7 +24,6 @@ export default function RingCarousel({
  className = "",
  snap = true,
  autoPlay = true,
- autoPlayInterval = 800,
  pauseOnHover = true,
  showNavigation,
  showDots,
@@ -99,7 +98,7 @@ export default function RingCarousel({
  friction={galleryConfig.friction}
  snap={snap}
  autoPlay={autoPlay}
- autoPlayInterval={autoPlayInterval}
+ autoPlayInterval={800}
  pauseOnHover={pauseOnHover}
  showNavigation={showNavigation}
  showDots={showDots}

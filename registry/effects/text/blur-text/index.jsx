@@ -35,15 +35,18 @@ export default function BlurText({
   blur = 10,
   className = "",
   variant = "fade",
-  once = true,
+  once = false,
 }) {
   const ref = useRef(/** @type {HTMLSpanElement | null} */ (null));
   const isInView = useInView(ref, { once, margin: "-100px" });
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
+  );
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
 
     /** @param {MediaQueryListEvent} event */
     const handleChange = (event) => setPrefersReducedMotion(event.matches);
@@ -53,6 +56,15 @@ export default function BlurText({
 
   const { x, y } = variantMap[variant] ?? variantMap.fade;
   const words = typeof children === "string" ? children.split(" ") : [children];
+  const animationKey = [
+    typeof children === "string" ? children : "node",
+    delay,
+    duration,
+    blur,
+    variant,
+    once,
+    prefersReducedMotion,
+  ].join("-");
 
   const hiddenState = prefersReducedMotion
     ? { opacity: 0, filter: "blur(0px)", x: 0, y: REDUCED_MOTION_Y_OFFSET }
@@ -64,7 +76,7 @@ export default function BlurText({
     <span ref={ref} className={className}>
       {words.map((word, index) => (
         <motion.span
-          key={index}
+          key={`${animationKey}-${index}-${typeof word === "string" ? word : "node"}`}
           initial={hiddenState}
           animate={isInView ? shownState : hiddenState}
           transition={{

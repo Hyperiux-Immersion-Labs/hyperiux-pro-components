@@ -11,24 +11,20 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
-/** @returns {boolean} */
 function hasDrawSVGPlugin() {
   return Boolean(gsap.plugins?.drawSVG)
 }
 
-/**
- * @param {SVGPathElement | null} path
- * @returns {number}
- */
 function getPathLength(path) {
   return path?.getTotalLength?.() ?? 0
 }
 
-/**
- * @param {SVGPathElement | null} path
- * @param {string} drawSVGValue
- * @param {number} strokeWidth
- */
+function clampNumber(value, min, max, fallback) {
+  const next = Number(value)
+  if (!Number.isFinite(next)) return fallback
+  return Math.min(max, Math.max(min, next))
+}
+
 function setPathDrawState(path, drawSVGValue, strokeWidth) {
   if (!path) return
 
@@ -48,12 +44,6 @@ function setPathDrawState(path, drawSVGValue, strokeWidth) {
   })
 }
 
-/**
- * @param {SVGPathElement | null} path
- * @param {string} drawSVGValue
- * @param {number} strokeWidth
- * @param {Record<string, any>} [tweenProps]
- */
 function getPathDrawTween(path, drawSVGValue, strokeWidth, tweenProps = {}) {
   if (hasDrawSVGPlugin()) {
     return { drawSVG: drawSVGValue, strokeWidth, ...tweenProps }
@@ -70,39 +60,27 @@ function getPathDrawTween(path, drawSVGValue, strokeWidth, tweenProps = {}) {
   }
 }
 
-/**
- * @typedef {Object} SVGBrushTransitionConfig
- * @property {boolean} [enableBlur]
- * @property {string} [strokeColor]
- * @property {number} [strokeWidth]
- * @property {number} [duration]
- * @property {any} [drawSVGPlugin]
- */
-
-/**
- * @typedef {Object} SVGBrushTransitionProps
- * @property {import('react').ReactNode} [children]
- * @property {SVGBrushTransitionConfig} [config]
- */
-
-/** @param {SVGBrushTransitionProps} props */
 export default function SVGBrushTransition({
   children,
   config = {
-    enableBlur: false,
     strokeColor: '#82A0FF',
     strokeWidth: 2,
     duration: 1.5,
   },
+  strokeWidth,
+  strokeColor,
+  duration,
 }) {
-  const { enableBlur, strokeColor, strokeWidth, duration, drawSVGPlugin } = config
-  const transitionOverlayRef = useRef(/** @type {HTMLDivElement | null} */ (null))
-  const svgPathDesktopRef = useRef(/** @type {SVGPathElement | null} */ (null))
-  const svgPathMobileRef = useRef(/** @type {SVGPathElement | null} */ (null))
-  const contentRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+  const resolvedStrokeWidth = clampNumber(strokeWidth ?? config.strokeWidth, 1, 320, 2)
+  const resolvedStrokeColor = strokeColor ?? config.strokeColor ?? '#82A0FF'
+  const resolvedDuration = clampNumber(duration ?? config.duration, 0.25, 4, 1.5)
+  const drawSVGPlugin = config.drawSVGPlugin
+  const transitionOverlayRef = useRef(null)
+  const svgPathDesktopRef = useRef(null)
+  const svgPathMobileRef = useRef(null)
+  const contentRef = useRef(null)
 
   // Returns whichever path is currently visible (desktop or mobile)
-  /** @returns {SVGPathElement | null} */
   const getActivePath = () => {
     if (typeof window === 'undefined') return null
     return window.innerWidth < 1025 ? svgPathMobileRef.current : svgPathDesktopRef.current
@@ -115,13 +93,13 @@ export default function SVGBrushTransition({
 
     const initPaths = () => {
       ;[svgPathDesktopRef.current, svgPathMobileRef.current].forEach((path) => {
-        setPathDrawState(path, '0%', /** @type {number} */ (strokeWidth))
+        setPathDrawState(path, '0%', resolvedStrokeWidth)
       })
     }
 
     initPaths()
     gsap.config({ force3D: true })
-  }, [drawSVGPlugin, strokeWidth])
+  }, [drawSVGPlugin, resolvedStrokeWidth])
 
   return (
     <TransitionRouter
@@ -137,13 +115,13 @@ export default function SVGBrushTransition({
 
         tl.to(transitionOverlayRef.current, {
           opacity: 1,
-          backdropFilter: enableBlur ? 'blur(10px)' : 'none',
+          backdropFilter: 'none',
           duration: 0.5,
           ease: 'power2.inOut',
         }).to(
           activePath,
           getPathDrawTween(activePath, '100%', 300, {
-            duration: duration,
+            duration: resolvedDuration,
             ease: 'power2.inOut',
           }),
           0
@@ -160,21 +138,21 @@ export default function SVGBrushTransition({
           return () => tl.kill()
         }
 
-        tl.to(activePath, getPathDrawTween(activePath, '100% 100%', /** @type {number} */ (strokeWidth), {
-          duration: duration,
+        tl.to(activePath, getPathDrawTween(activePath, '100% 100%', resolvedStrokeWidth, {
+          duration: resolvedDuration,
           ease: 'power2.inOut',
-        }))
+        }), 0)
           .to(
             transitionOverlayRef.current,
             {
               opacity: 0,
-              backdropFilter: enableBlur ? 'blur(10px)' : 'none',
+              backdropFilter: 'none',
               duration: 0.5,
               ease: 'power2.inOut',
             },
             1
           )
-          .call(() => setPathDrawState(activePath, '0%', /** @type {number} */ (strokeWidth)))
+          .call(() => setPathDrawState(activePath, '0%', resolvedStrokeWidth))
 
         return () => tl.kill()
       }}
@@ -196,8 +174,8 @@ export default function SVGBrushTransition({
           <path
             ref={svgPathDesktopRef}
             d="M13.4746 291.27C13.4746 291.27 100.646 -18.6724 255.617 16.8418C410.588 52.356 61.0296 431.197 233.017 546.326C431.659 679.299 444.494 21.0125 652.73 100.784C860.967 180.556 468.663 430.709 617.216 546.326C765.769 661.944 819.097 48.2722 988.501 120.156C1174.21 198.957 809.424 543.841 988.501 636.726C1189.37 740.915 1301.67 149.213 1301.67 149.213"
-            stroke={strokeColor}
-            strokeWidth={strokeWidth}
+            stroke={resolvedStrokeColor}
+            strokeWidth={resolvedStrokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
           />
@@ -221,8 +199,8 @@ export default function SVGBrushTransition({
           <path
             ref={svgPathMobileRef}
             d="M-10 370C-10 370 30 80 110 130C190 180 20 520 110 640C215 775 220 60 310 160C400 260 195 520 270 640C345 760 375 100 460 180C555 268 370 640 460 750C560 870 610 200 610 200"
-            stroke={strokeColor}
-            strokeWidth={strokeWidth}
+            stroke={resolvedStrokeColor}
+            strokeWidth={resolvedStrokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
           />

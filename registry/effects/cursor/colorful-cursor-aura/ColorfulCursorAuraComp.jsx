@@ -24,11 +24,11 @@ gsap.registerPlugin(ScrollTrigger)
 /** @param {ColorfulCursorAuraCompProps} props */
 export default function ColorfulCursorAuraComp({
  text,
- colors = {
- color1:'#7f7de4',
- color2:'#f79694',
- color3:'#f5dd94',
- },
+ color1 = '#a78bfa',
+ color2 = '#fb7185',
+ color3 = '#fde68a',
+ auraSize = 325,
+ followSpeed = 0.12,
  enableEntryAnimation = true,
  textColor ='#000000',
 }) {
@@ -36,6 +36,8 @@ export default function ColorfulCursorAuraComp({
  const aeroText = useRef(/** @type {HTMLDivElement|null} */ (null))
  const maskedText = useRef(/** @type {HTMLParagraphElement|null} */ (null))
  const [isDesktop, setIsDesktop] = useState(false)
+ const resolvedAuraSize = Math.max(0, Number(auraSize) || 0)
+ const resolvedFollowSpeed = Math.max(0.01, Number(followSpeed) || 0.12)
  const circleTrackers = useRef([
  { x: 0, y: 0 }, // color1
  { x: 0, y: 0 }, // color2
@@ -89,7 +91,7 @@ export default function ColorfulCursorAuraComp({
  gsap.to(trackers, {
  x: localX,
  y: localY,
- duration: 0.5,
+ duration: Math.min(Math.max(0.06 / resolvedFollowSpeed, 0.04), 2),
  ease:'power1.out',
  stagger: -0.1,
  overwrite:'auto',
@@ -102,7 +104,7 @@ export default function ColorfulCursorAuraComp({
  el.removeEventListener('mousemove', onMove)
  gsap.killTweensOf(trackers)
  }
- }, [isDesktop])
+ }, [isDesktop, resolvedFollowSpeed])
 
  useEffect(() => {
  if (!enableEntryAnimation) return
@@ -156,9 +158,9 @@ export default function ColorfulCursorAuraComp({
 '--x-color3':'50%',
 '--y-color3':'50%',
  backgroundImage: `
- radial-gradient(circle 135px at var(--x-color3) var(--y-color3), ${colors.color3} 0 99%, transparent 100%),
- radial-gradient(circle 220px at var(--x-color2) var(--y-color2), ${colors.color2} 0 99%, transparent 100%),
- radial-gradient(circle 325px at var(--x-color1) var(--y-color1), ${colors.color1} 0 99%, transparent 100%)
+ radial-gradient(circle ${resolvedAuraSize * 0.42}px at var(--x-color3) var(--y-color3), ${color3} 0 99%, transparent 100%),
+ radial-gradient(circle ${resolvedAuraSize * 0.68}px at var(--x-color2) var(--y-color2), ${color2} 0 99%, transparent 100%),
+ radial-gradient(circle ${resolvedAuraSize}px at var(--x-color1) var(--y-color1), ${color1} 0 99%, transparent 100%)
  `,
  })}
  >

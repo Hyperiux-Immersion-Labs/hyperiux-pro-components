@@ -1,25 +1,11 @@
-import ScrollShuffledCards from '@/components/scroll-shuffled-cards'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
-import { ReactLenis } from "lenis/react";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/scroll/scroll-shuffled-cards/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-      <ReactLenis root>
-
-        <DemoHeader />
-        <ScrollShuffledCards />
-
-        <ScrollBottom as='p' textColor={'text-[#111111]'} />
-      </ReactLenis>
-    </>
-  )
+export default function Page() {
+  return <DemoContent registry={registry} />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("scroll-shuffled-cards");
 }

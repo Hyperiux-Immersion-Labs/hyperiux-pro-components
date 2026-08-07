@@ -1,14 +1,13 @@
-import React from "react";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import PageFlipTransition from "@/components/page-flip-transition";
+import TransitionRemixerLayout from "@/components/remixer-panel/TransitionRemixerLayout";
+import pageFlipTransitionRegistry from "../../../../../../../registry/effects/transitions/page-flip-transition/registry.json";
 
 export default function layout({ children }) {
   return (
-    <PageFlipTransition
-      config={{ strokeColor: "#DE4013", strokeWidth: 2, duration: 0.3 }}
+    <TransitionRemixerLayout
+      registry={pageFlipTransitionRegistry}
+      slug="page-flip-transition"
     >
-      <DemoHeader />
       {children}
-    </PageFlipTransition>
+    </TransitionRemixerLayout>
   );
 }

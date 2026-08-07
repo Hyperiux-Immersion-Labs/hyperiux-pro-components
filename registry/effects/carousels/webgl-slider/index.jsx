@@ -20,7 +20,11 @@ const images = [
  { src:"https://picsum.photos/seed/wgl10/800/1200", text:"PR.10\n /10" },
 ];
 
-const WebGLSlider = () => {
+const WebGLSlider = ({
+ distortionStrength = 1,
+ transitionDuration = 0.6,
+ enableHoverEffect = true,
+}) => {
  const [isMobile, setIsMobile] = useState(false);
 
  useEffect(() => {
@@ -45,7 +49,12 @@ const WebGLSlider = () => {
  }
 
  return (
- <WebGLSliderComp images={images} />
+ <WebGLSliderComp
+ images={images}
+ distortionStrength={distortionStrength}
+ transitionDuration={transitionDuration}
+ enableHoverEffect={enableHoverEffect}
+ />
  )
 }
 

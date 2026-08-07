@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import React from'react'
 import TextHoverComp from './TextHoverComp';
 
@@ -49,15 +51,22 @@ const data = [
   },
 ];
 
-const TextHover = () => {
+const TextHover = ({
+ bgColor = "#0a0a0a",
+ textColor = "#ffffff",
+ hoverColor = "#ffffff",
+ duration = 0.35,
+}) => {
  return (
  <>
 
  <div className='h-screen w-full'>
  <TextHoverComp
  data={data}
- bgColor="#0a0a0a"
- textColor="#ffffff"
+ bgColor={bgColor}
+ textColor={textColor}
+ hoverColor={hoverColor}
+ duration={duration}
  />
  
  </div>
@@ -66,5 +75,3 @@ const TextHover = () => {
 }
 
 export default TextHover
-
-

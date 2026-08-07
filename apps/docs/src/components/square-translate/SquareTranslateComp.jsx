@@ -23,11 +23,14 @@ export default function SquareTranslateComp({
     items = defaultItems,
     textClassName = 'text-[1vw]',
     textColor = 'text-black',
-    squareClassName = 'w-[.6vw] h-[.6vw] bg-[#FB450F]',
+    squareClassName = 'w-[.6vw] h-[.6vw]',
     containerClassName = 'w-[50vw]',
-    translateValue = 50,
+    translateValue = 55,
     borderColor = 'border-black/10',
     totalTranslateImpact = 3,
+    squareColor = '#FB450F',
+    maxRotation = 360,
+    transitionDuration = 0.4,
 }) {
     const containerRef = useRef(null)
     const squareRef = useRef(null)
@@ -62,8 +65,8 @@ export default function SquareTranslateComp({
         }
         const getRotation = (p) => {
             if (p < 0.1) return 0 // No rotation during scale in
-            if (p > 0.9) return 360 // Full rotation at end
-            return ((p - 0.1) / 0.8) * 360 // Rotate during translate
+            if (p > 0.9) return maxRotation // Full rotation at end
+            return ((p - 0.1) / 0.8) * maxRotation // Rotate during translate
         }
 
         const trigger = ScrollTrigger.create({
@@ -80,7 +83,7 @@ export default function SquareTranslateComp({
                     rotation: getRotation(progress),
                     y: translateProgress * totalTravel,
                     scale: getScale(progress),
-                    duration: 0.4,
+                    duration: transitionDuration,
                     ease: "power2.out",
                     overwrite: true,
                 })
@@ -95,7 +98,7 @@ export default function SquareTranslateComp({
                         ? (i === Math.round(currentIndex) ? translateValue : 0)
                         : translateValue * (1 - Math.min(Math.abs(i - currentIndex) / totalTranslateImpact, 1))
                     gsap.to(target, {
-                        x, duration: 0.4, ease: "power2.out",
+                        x, duration: transitionDuration, ease: "power2.out",
                         overwrite: true,
                     })
                 })
@@ -108,11 +111,12 @@ export default function SquareTranslateComp({
             trigger.kill()
             gsap.set([square, ...itemEls, ...textEls], { clearProps: 'willChange' })
         }
-    }, [items, translateValue, totalTranslateImpact])
+    }, [items, translateValue, totalTranslateImpact, maxRotation, transitionDuration])
 
     return (
         <div ref={containerRef} className={`${containerClassName} relative h-fit`}>
             <div ref={squareRef}
+                style={{ backgroundColor: squareColor }}
                 className={`${squareClassName} scale-0 absolute top-0 left-0 pointer-events-none z-10`} />
             {items.map((item, i) => (
                 <ul key={i}

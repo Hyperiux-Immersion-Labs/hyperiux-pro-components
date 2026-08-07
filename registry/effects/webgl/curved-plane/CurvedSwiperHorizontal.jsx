@@ -91,31 +91,35 @@ const MAX_SCROLL_VELOCITY = 0.5;
 const MAX_DEFORMATION = 0.05;
 const MAX_SCROLL_DEFORMATION = 0.02; // New: Higher max for scroll deformation
 
-/**
- * @param {number} a
- * @param {number} b
- * @param {number} t
- */
 function lerp(a, b, t) {
   return a * (1 - t) + b * t;
 }
 
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return clamp(number, min, max);
+}
+
 // Proper modulo function that handles negative numbers
-/**
- * @param {number} n
- * @param {number} m
- */
 function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-const CurvedPlaneHorizontal = () => {
-  const containerRef = useRef(/** @type {HTMLElement|null} */ (null));
-  const meshesRef = useRef(/** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */ ([]));
-  const sceneRef = useRef(/** @type {THREE.Scene|undefined} */ (undefined));
-  const cameraRef = useRef(/** @type {THREE.PerspectiveCamera|undefined} */ (undefined));
-  const rendererRef = useRef(/** @type {THREE.WebGLRenderer|undefined} */ (undefined));
-  const texturesRef = useRef(/** @type {(THREE.Texture|null)[]} */ ([]));
+const CurvedPlaneHorizontal = ({
+  speed = 1,
+  curveValue = 1,
+  gap = 1,
+  imageSize = 1,
+}) => {
+  const containerRef = useRef(null);
+  const meshesRef = useRef([]);
+  const sceneRef = useRef();
+  const cameraRef = useRef();
+  const rendererRef = useRef();
+  const texturesRef = useRef([]);
 
   const offsetRef = useRef(0);
   const targetOffsetRef = useRef(0);
@@ -131,8 +135,21 @@ const CurvedPlaneHorizontal = () => {
     typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
   );
+  const controlsRef = useRef({
+    speed: clampNumber(speed, 0, 3, 1),
+    curveValue: clampNumber(curveValue, 0, 3, 1),
+    gap: clampNumber(gap, 0.5, 2, 1),
+    imageSize: clampNumber(imageSize, 0.5, 2, 1),
+  });
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  useEffect(() => {
+    controlsRef.current.speed = clampNumber(speed, 0, 3, 1);
+    controlsRef.current.curveValue = clampNumber(curveValue, 0, 3, 1);
+    controlsRef.current.gap = clampNumber(gap, 0.5, 2, 1);
+    controlsRef.current.imageSize = clampNumber(imageSize, 0.5, 2, 1);
+  }, [curveValue, gap, imageSize, speed]);
 
   // Load Textures
   useEffect(() => {
@@ -161,7 +178,7 @@ const CurvedPlaneHorizontal = () => {
     if (!imagesLoaded) return;
 
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
+    const onReduceMotionChange = (event) => {
       reduceMotionRef.current = event.matches;
       if (event.matches) {
         velocityRef.current = 0;
@@ -177,7 +194,7 @@ const CurvedPlaneHorizontal = () => {
       mq.addEventListener?.("change", onReduceMotionChange);
     }
 
-    const container = /** @type {HTMLElement} */ (containerRef.current);
+    const container = containerRef.current;
     const viewHeight = window.innerHeight * 0.8;
     const viewWidth = window.innerWidth;
 
@@ -202,7 +219,6 @@ const CurvedPlaneHorizontal = () => {
     rendererRef.current = renderer;
 
     const geometry = new THREE.PlaneGeometry(1, 1, 50, 50);
-    /** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */
     const meshes = [];
 
     // Create more meshes for better buffering (visible + 4 buffer)
@@ -230,12 +246,13 @@ const CurvedPlaneHorizontal = () => {
 
     meshesRef.current = meshes;
 
-    const spacing = FIXED_IMAGE_WIDTH + 60;
-
     const updateMeshes = () => {
       const offset = offsetRef.current;
       const baseIndex = Math.floor(offset);
       const fractional = offset - baseIndex;
+      const currentImageWidth = FIXED_IMAGE_WIDTH * controlsRef.current.imageSize;
+      const currentImageHeight = FIXED_IMAGE_HEIGHT * controlsRef.current.imageSize;
+      const spacing = currentImageWidth + 60 * controlsRef.current.gap;
 
       meshes.forEach((mesh, i) => {
         // Calculate proper image index with buffer offset
@@ -257,6 +274,7 @@ const CurvedPlaneHorizontal = () => {
         const xPos = (centerOffset - fractional) * spacing;
 
         mesh.position.x = xPos;
+        mesh.scale.set(currentImageWidth, currentImageHeight, 1);
 
         // Smooth transition from 1.0 (center) to 0.8 (extreme edges)
         const distFromCenter = Math.min(1.0, Math.abs(xPos) / (viewWidth / 2));
@@ -270,7 +288,9 @@ const CurvedPlaneHorizontal = () => {
 
         // Apply deformation based on drag velocity and scroll intensity
         const deform = deformationRef.current;
-        mesh.material.uniforms.uOffset.value.x = deform * DEFORMATION_INTENSITY;
+        mesh.material.uniforms.uMeshSize.value.set(currentImageWidth, currentImageHeight);
+        mesh.material.uniforms.uOffset.value.x =
+          deform * DEFORMATION_INTENSITY * controlsRef.current.curveValue;
       });
     };
 
@@ -292,7 +312,7 @@ const CurvedPlaneHorizontal = () => {
 
         // Apply scroll velocity with lerp
         if (Math.abs(scrollVelocityRef.current) > 0.0001) {
-          targetOffsetRef.current += scrollVelocityRef.current;
+          targetOffsetRef.current += scrollVelocityRef.current * controlsRef.current.speed;
           scrollVelocityRef.current = lerp(scrollVelocityRef.current, 0, 0.05);
         }
 
@@ -301,7 +321,7 @@ const CurvedPlaneHorizontal = () => {
 
         // Momentum for drag
         if (!dragging.current && Math.abs(velocityRef.current) > 0.001) {
-          targetOffsetRef.current += velocityRef.current;
+          targetOffsetRef.current += velocityRef.current * controlsRef.current.speed;
           velocityRef.current *= MOMENTUM_FRICTION;
         }
 
@@ -338,9 +358,9 @@ const CurvedPlaneHorizontal = () => {
     };
     window.addEventListener("resize", onResize);
 
-    const getPointerX = (/** @type {MouseEvent|TouchEvent} */ e) => ("touches" in e ? e.touches[0].clientX : e.clientX);
+    const getPointerX = (e) => (e.touches ? e.touches[0].clientX : e.clientX);
 
-    const onPointerDown = (/** @type {MouseEvent|TouchEvent} */ e) => {
+    const onPointerDown = (e) => {
       dragging.current = true;
       lastX.current = getPointerX(e);
       lastTime.current = Date.now();
@@ -350,15 +370,17 @@ const CurvedPlaneHorizontal = () => {
       e.preventDefault();
     };
 
-    const onPointerMove = (/** @type {MouseEvent|TouchEvent} */ e) => {
+    const onPointerMove = (e) => {
       if (!dragging.current) return;
 
       const currentX = getPointerX(e);
       const currentTime = Date.now();
       const dx = currentX - lastX.current;
       const dt = Math.max(currentTime - lastTime.current, 1);
+      const currentImageWidth = FIXED_IMAGE_WIDTH * controlsRef.current.imageSize;
+      const spacing = currentImageWidth + 60 * controlsRef.current.gap;
 
-      const delta = (dx / spacing) * DRAG_SENSITIVITY;
+      const delta = (dx / spacing) * DRAG_SENSITIVITY * controlsRef.current.speed;
       targetOffsetRef.current -= delta;
 
       if (reduceMotionRef.current) {
@@ -400,13 +422,13 @@ const CurvedPlaneHorizontal = () => {
     };
 
     // Enhanced scroll handler with intensity-based deformation
-    const onWheel = (/** @type {WheelEvent} */ e) => {
+    const onWheel = (e) => {
       e.preventDefault();
 
       const rawScrollDelta = e.deltaY;
 
       if (reduceMotionRef.current) {
-        targetOffsetRef.current += rawScrollDelta * 0.0004;
+        targetOffsetRef.current += rawScrollDelta * 0.0004 * controlsRef.current.speed;
         velocityRef.current = 0;
         scrollVelocityRef.current = 0;
         scrollIntensityRef.current = 0;
@@ -423,7 +445,7 @@ const CurvedPlaneHorizontal = () => {
       scrollIntensityRef.current = Math.min(1.0, scrollIntensityRef.current + scrollIntensity);
 
       // Accumulate scroll velocity (reduced speed)
-      const scrollDelta = rawScrollDelta * 0.0004;
+      const scrollDelta = rawScrollDelta * 0.0004 * controlsRef.current.speed;
       scrollVelocityRef.current += scrollDelta;
 
       // Clamp scroll velocity

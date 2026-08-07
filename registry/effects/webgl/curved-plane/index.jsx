@@ -12,7 +12,6 @@ const VARIANTS = {
   vertical: CurvedPlaneVertical,
 };
 
-/** @type {{ label: string, value: 'horizontal'|'vertical' }[]} */
 const VERSIONS = [
   {
     label: "V1",
@@ -24,16 +23,13 @@ const VERSIONS = [
   },
 ];
 
-/**
- * @typedef {Object} CurvedPlaneOwnProps
- * @property {'horizontal'|'vertical'} [variant]
- */
-
-/** @param {CurvedPlaneOwnProps & Record<string, any>} props */
-export default function CurvedPlane({ variant = "horizontal", ...props }) {
-  const [activeVariant, setActiveVariant] = useState(
-    VARIANTS[variant] ? variant : "horizontal"
-  );
+export default function CurvedPlane({
+  speed = 1,
+  curveValue = 1,
+  gap = 1,
+  imageSize = 1,
+}) {
+  const [activeVariant, setActiveVariant] = useState("horizontal");
 
   const ActiveComponent = useMemo(() => {
     return VARIANTS[activeVariant] || CurvedPlaneHorizontal;
@@ -45,18 +41,16 @@ export default function CurvedPlane({ variant = "horizontal", ...props }) {
         activeVariant={activeVariant}
         onVariantChange={setActiveVariant}
       />
-      <ActiveComponent {...props} />
+      <ActiveComponent
+        speed={speed}
+        curveValue={curveValue}
+        gap={gap}
+        imageSize={imageSize}
+      />
     </>
   );
 }
 
-/**
- * @typedef {Object} VersionNavProps
- * @property {string} activeVariant
- * @property {(value: 'horizontal'|'vertical') => void} onVariantChange
- */
-
-/** @param {VersionNavProps} props */
 function VersionNav({ activeVariant, onVariantChange }) {
   return (
     <nav className="fixed bottom-8 h-fit  max-[1025px]:bottom-28 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-black/8 px-1.5 py-1.5 backdrop-blur-md  max-[1025px]:px-3 max-[1025px]:py-2  max-md:px-2 max-md:py-1.5">

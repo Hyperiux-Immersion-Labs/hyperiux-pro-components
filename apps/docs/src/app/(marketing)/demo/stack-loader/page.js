@@ -1,9 +1,9 @@
-import StackLoader from "@/components/stack-loader";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-
+import registry from "../../../../../../../registry/effects/loaders/stack-loader/registry.json";
 
 export default function Page() {
-  return <StackLoader />;
+  return <DemoContent registry={registry} />;
 }
 
 export async function generateMetadata() {

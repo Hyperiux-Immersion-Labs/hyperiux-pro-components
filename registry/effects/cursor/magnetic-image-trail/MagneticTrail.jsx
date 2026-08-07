@@ -54,33 +54,14 @@ const LERP_AMOUNT = 0.18;
 const SCALE_OUT_MIN = 0.68;
 const SCALE_OUT_MAX = 1.48;
 
-/**
- * @param {number} v
- * @param {number} min
- * @param {number} max
- */
 function clamp(v, min, max) {
  return Math.max(min, Math.min(max, v));
 }
 
-/**
- * @param {number} a
- * @param {number} b
- * @param {number} t
- */
 function lerp(a, b, t) {
  return a + (b - a) * t;
 }
 
-/**
- * @param {CanvasRenderingContext2D} ctx
- * @param {HTMLImageElement} img
- * @param {number} x
- * @param {number} y
- * @param {number} w
- * @param {number} h
- * @param {number} [r]
- */
 function drawRoundedImage(ctx, img, x, y, w, h, r = 0) {
  if (!img?.complete || img.naturalWidth <= 0) return;
 
@@ -115,10 +96,23 @@ function drawRoundedImage(ctx, img, x, y, w, h, r = 0) {
  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
 }
 
-export default function ImageTrail() {
- const wrapRef = useRef(/** @type {HTMLElement|null} */ (null));
- const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
- const imagesRef = useRef(/** @type {HTMLImageElement[]} */ ([]));
+export default function ImageTrail({
+ trailLength = SLOTS.length,
+ magnetStrength = 1,
+ scaleIn = 0.06,
+ scaleOut = 1.48,
+ lerp: lerpAmount = LERP_AMOUNT,
+ size = 1
+}) {
+ const wrapRef = useRef(null);
+ const canvasRef = useRef(null);
+ const imagesRef = useRef([]);
+ const resolvedTrailLength = clamp(Math.round(Number(trailLength) || SLOTS.length), 1, SLOTS.length);
+ const resolvedMagnetStrength = Math.max(0, Number(magnetStrength) || 0);
+ const resolvedScaleIn = Math.max(0, Number(scaleIn) || 0);
+ const resolvedScaleOut = Math.max(resolvedScaleIn, Number(scaleOut) || resolvedScaleIn);
+ const resolvedLerp = clamp(Number(lerpAmount) || LERP_AMOUNT, 0.01, 1);
+ const resolvedSize = Math.max(0.1, Number(size) || 1);
 
  const pointer = useRef({ x: 0, y: 0 });
  const lerpedPointer = useRef({ x: 0, y: 0 }); // lerped pointer position
@@ -129,7 +123,8 @@ export default function ImageTrail() {
  const lastTime = useRef(0);
 
  useEffect(() => {
- const imgs = SLOTS.map((_, i) => {
+ const slots = SLOTS.slice(0, resolvedTrailLength);
+ const imgs = slots.map((_, i) => {
  const img = new Image();
  img.crossOrigin ="anonymous";
  img.src = imageUrls[i % imageUrls.length];
@@ -138,9 +133,9 @@ export default function ImageTrail() {
 
  imagesRef.current = imgs;
 
- const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
- const wrap = /** @type {HTMLElement} */ (wrapRef.current);
- const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
+ const canvas = canvasRef.current;
+ const wrap = wrapRef.current;
+ const ctx = canvas.getContext("2d");
 
  function resize() {
  const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -162,7 +157,6 @@ export default function ImageTrail() {
  resize();
  window.addEventListener("resize", resize);
 
- /** @param {number} now */
  function frame(now) {
  const W = wrap.clientWidth;
  const H = wrap.clientHeight;
@@ -171,8 +165,8 @@ export default function ImageTrail() {
  const dt = Math.min(32, now - (lastTime.current || now));
  lastTime.current = now;
 
- lerpedPointer.current.x = lerp(lerpedPointer.current.x, pointer.current.x, LERP_AMOUNT);
- lerpedPointer.current.y = lerp(lerpedPointer.current.y, pointer.current.y, LERP_AMOUNT);
+ lerpedPointer.current.x = lerp(lerpedPointer.current.x, pointer.current.x, resolvedLerp);
+ lerpedPointer.current.y = lerp(lerpedPointer.current.y, pointer.current.y, resolvedLerp);
 
  // Phase increment will be calculated after mouse speed is determined
 
@@ -204,12 +198,12 @@ export default function ImageTrail() {
 
  const speed01 = clamp(vmag / 18, 0, 1);
   // INCREASE GENERATING SPEED BASED ON MOUSE MOVEMENT, CLAMPED TO MAX_SPEED
- const currentSpeed = clamp(SPEED + speed01 * MOUSE_SPEED_BOOST, SPEED, MAX_SPEED);
+ const currentSpeed = clamp(SPEED + speed01 * MOUSE_SPEED_BOOST * resolvedMagnetStrength, SPEED, MAX_SPEED);
  phase.current += dt * currentSpeed;
  const dir = dirRef.current;
 
- const cards = SLOTS.map((slot, i) => {
- const n = SLOTS.length;
+ const cards = slots.map((slot, i) => {
+ const n = slots.length;
 
  // Animation progress per image.
  const t = (phase.current + i / n) % 1;
@@ -249,7 +243,7 @@ export default function ImageTrail() {
  const rawCenterScale = Math.max(0, 1 - Math.abs(pathNorm));
  const easedCenterScale =
  rawCenterScale * rawCenterScale * (3 - 2 * rawCenterScale);
- const centerScale = lerp(0.06, 0.9, easedCenterScale);
+ const centerScale = lerp(resolvedScaleIn, 0.9, easedCenterScale);
 
  // Scale images up in the direction of mouse movement.
  // Images ahead of the mouse direction get larger.
@@ -268,16 +262,16 @@ export default function ImageTrail() {
  const oppositeProjection = -directionalProjection;
  const backwardAmount = (oppositeProjection + 1) * 0.5;
 
- const movementBoost = lerp(1, 1.18, speed01);
- const directionalScale = lerp(SCALE_OUT_MIN, SCALE_OUT_MAX, backwardAmount) * movementBoost;
- const scale = centerScale * directionalScale * 1.14;
+ const movementBoost = lerp(1, 1.18, speed01 * resolvedMagnetStrength);
+ const directionalScale = lerp(SCALE_OUT_MIN, resolvedScaleOut, backwardAmount) * movementBoost;
+ const scale = centerScale * directionalScale * 1.14 * resolvedSize;
 
  // Image translate effect on mouse move direction.
  // Images ahead of the mouse are pushed forward.
- const forwardPush = Math.max(0, directionalProjection) * speed01 * FORWARD_PUSH_AMOUNT;
+ const forwardPush = Math.max(0, directionalProjection) * speed01 * FORWARD_PUSH_AMOUNT * resolvedMagnetStrength;
 
  // Images scaling out (behind) translate a little up
- const upwardPush = Math.max(0, oppositeProjection) * speed01 * UPWARD_PUSH_AMOUNT;
+ const upwardPush = Math.max(0, oppositeProjection) * speed01 * UPWARD_PUSH_AMOUNT * resolvedMagnetStrength;
 
  return {
  i,
@@ -324,9 +318,16 @@ export default function ImageTrail() {
  loop.destroy();
  window.removeEventListener("resize", resize);
  };
- }, []);
+ }, [
+ resolvedTrailLength,
+ resolvedMagnetStrength,
+ resolvedScaleIn,
+ resolvedScaleOut,
+ resolvedLerp,
+ resolvedSize
+ ]);
 
- const updatePointer = useCallback((/** @type {import('react').PointerEvent<HTMLElement>} */ e) => {
+ const updatePointer = useCallback((e) => {
  const rect = wrapRef.current?.getBoundingClientRect();
  if (!rect) return;
  // On mouse move, we set pointer to the actual event location (no lerp here).
@@ -355,4 +356,3 @@ export default function ImageTrail() {
  </section>
  );
 }
-

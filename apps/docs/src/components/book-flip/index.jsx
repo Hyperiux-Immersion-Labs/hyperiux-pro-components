@@ -4,7 +4,10 @@ import { BookFlipp } from "./BookFlip";
 import { usePrefersReducedMotion } from "@/lib/motion";
 
 
-export default function BookFlip() {
+export default function BookFlip({
+  pageSpeed = 0.8,
+  bookScale = 1,
+}) {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
@@ -24,6 +27,8 @@ export default function BookFlip() {
         rotationIntensity: 2,
       }}
       showUI={true}
+      pageSpeed={pageSpeed}
+      bookScale={bookScale}
     />
     <div className="w-fit absolute bottom-8 max-sm:bottom-3 max-sm:w-[80vw] max-sm:leading-[1.2] left-1/2 -translate-x-1/2 text-center">
     Click on the navigation buttons or the pages itself to flip pages of the book

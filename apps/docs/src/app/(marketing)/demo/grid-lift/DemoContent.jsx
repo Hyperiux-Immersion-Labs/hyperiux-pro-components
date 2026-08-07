@@ -1,15 +1,22 @@
+"use client";
 
-import GridLift from '@/components/grid-lift'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from'react'
+import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import GridLift from "@/components/grid-lift";
+import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
-const page = () => {
- return (
- <>
- <DemoHeader logoColor='#FFFFFF' textColor='#ffffff'  />
- <GridLift/>
- </>
-  )
+export default function DemoContent({ registry }) {
+  return (
+    <RegistryRemixerDemo
+      registry={registry}
+      component={GridLift}
+      copyCodeOptions={{ propsVariableName: "gridLiftProps" }}
+    >
+      {({ effect }) => (
+        <>
+          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+          {effect}
+        </>
+      )}
+    </RegistryRemixerDemo>
+  );
 }
-
-export default page

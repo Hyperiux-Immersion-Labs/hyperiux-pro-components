@@ -28,19 +28,27 @@ function usePrefersReducedMotion() {
 	return prefersReducedMotion
 }
 
-/**
- * @typedef {Object} ButterflyPoolProps
- * @property {THREE.Material} matcapMaterial
- * @property {THREE.Object3D} gltfScene
- * @property {THREE.AnimationClip[]} gltfAnimations
- */
-
-/** @param {ButterflyPoolProps} props */
-function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
-	const poolRef = useRef(/** @type {THREE.Object3D[]} */ ([]))
+function ButterflyPool({
+	matcapMaterial,
+	gltfScene,
+	gltfAnimations,
+	butterflyCount,
+	trailDistance,
+	wingColor,
+	butterflySize,
+	followSpeed,
+}) {
+	const poolRef = useRef([])
 	const activeCountRef = useRef(0)
 	const lastSpawnTime = useRef(0)
+	const clockTimeRef = useRef(0)
 	const { size } = useThree()
+	const resolvedCount = Math.max(0, Math.round(Number(butterflyCount) || 0))
+	const resolvedTrailDistance = Math.max(0, Number(trailDistance) || 0)
+	const resolvedSize = Math.max(1, Number(butterflySize) || 1)
+	const resolvedFollowSpeed = Math.max(0.01, Number(followSpeed) || 0.01)
+	const speedMultiplier = resolvedFollowSpeed / 0.18
+	const scale = resolvedSize * (0.0012 / 28)
 
 	// Initialize pool of butterfly instances
 	const { poolGroup, pool } = useMemo(() => {
@@ -52,12 +60,12 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 			const instanceMaterial = matcapMaterial.clone()
 			instanceMaterial.transparent = true
 			instanceMaterial.opacity = 1
-			clone.traverse((/** @type {any} */ child) => {
+			clone.traverse((child) => {
 				if (child.isMesh || child.isSkinnedMesh) {
 					child.material = instanceMaterial
 				}
 			})
-			clone.scale.setScalar(0.0012)
+			clone.scale.setScalar(scale)
 			clone.visible = false
 			clone.userData = {
 				active: false,
@@ -88,8 +96,21 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 		}
 	}, [pool])
 
+	useEffect(() => {
+		const color = new THREE.Color(wingColor || '#ffffff')
+		poolRef.current.forEach((butterfly) => {
+			butterfly.scale.setScalar(scale)
+			const material = butterfly.userData.material
+			if (material) {
+				material.color.copy(color)
+				material.needsUpdate = true
+			}
+		})
+	}, [scale, wingColor])
+
 	useFrame((state, delta) => {
 		const now = state.clock.elapsedTime
+		clockTimeRef.current = now
 		// Update all active butterflies
 		for (let i = 0; i < MAX_BUTTERFLIES; i++) {
 			const butterfly = poolRef.current[i]
@@ -113,13 +134,13 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 				butterfly.visible = false
 				data.active = false
 				data.material.opacity = 1 // Reset for next use
-				activeCountRef.current--
+				activeCountRef.current = Math.max(0, activeCountRef.current - 1)
 				continue
 			}
 			// Update position
-			butterfly.position.x += data.direction.x * delta * 2
-			butterfly.position.y += data.direction.y * delta * 2
-			butterfly.position.z += data.direction.z * delta * 0.5
+			butterfly.position.x += data.direction.x * delta * 2 * speedMultiplier
+			butterfly.position.y += data.direction.y * delta * 2 * speedMultiplier
+			butterfly.position.z += data.direction.z * delta * 0.5 * speedMultiplier
 			butterfly.rotation.x = data.initialRotation.x + Math.sin(now * 3 + butterfly.position.x) * 0.1
 			butterfly.rotation.y = data.initialRotation.y
 			butterfly.rotation.z = data.initialRotation.z
@@ -131,15 +152,17 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 	})
 
 	useEffect(() => {
-		const handleMouseMove = (/** @type {MouseEvent} */ e) => {
+		const handleMouseMove = (e) => {
+			if (resolvedCount <= 0) return
 			const now = Date.now()
 			if (now - lastSpawnTime.current < SPAWN_THROTTLE) return
 			lastSpawnTime.current = now
 
 			const x = (e.clientX / size.width) * 10 - 5
 			const y = -(e.clientY / size.height) * 6 + 3
-			const count = 3 + Math.floor(Math.random() * 3)
-			const createdAt = performance.now() / 1000
+			const count = Math.max(1, Math.ceil(resolvedCount / 4))
+			const spread = resolvedTrailDistance / 12
+			const createdAt = clockTimeRef.current
 
 			// Find inactive butterflies and activate them
 			let spawned = 0
@@ -150,10 +173,11 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 				if (!data.active) {
 					const angle = Math.random() * Math.PI * 2
 					butterfly.position.set(
-						x + (Math.random() - 0.5) * 1.5,
-						y + (Math.random() - 0.5) * 1.5,
+						x + (Math.random() - 0.5) * spread,
+						y + (Math.random() - 0.5) * spread,
 						(Math.random() - 0.5) * 0.5
 					)
+					butterfly.scale.setScalar(scale)
 					data.direction.set(
 						Math.cos(angle) * 0.75,
 						0.3 + Math.random() * 0.5,
@@ -182,12 +206,12 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations }) {
 
 		window.addEventListener('mousemove', handleMouseMove)
 		return () => window.removeEventListener('mousemove', handleMouseMove)
-	}, [size])
+	}, [resolvedCount, resolvedTrailDistance, scale, size])
 
 	return <primitive object={poolGroup} />
 }
 
-function ButterflyTrail() {
+function ButterflyTrail(props) {
 	const matcapTexture = useLoader(THREE.TextureLoader, 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/matcap-white.webp')
 	const { scene: gltfScene, animations: gltfAnimations } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/butterfly3.glb')
 
@@ -199,15 +223,21 @@ function ButterflyTrail() {
 	}, [matcapTexture])
 
 	return (
-		<ButterflyPool matcapMaterial={matcapMaterial} gltfScene={gltfScene} gltfAnimations={gltfAnimations} />
+		<ButterflyPool matcapMaterial={matcapMaterial} gltfScene={gltfScene} gltfAnimations={gltfAnimations} {...props} />
 	)
 }
 
 useGLTF.preload('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/butterfly3.glb')
 
-export default function ButterflyTrailCursor() {
-	const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null))
-	const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ('always'))
+export default function ButterflyTrailCursor({
+	butterflyCount = 14,
+	trailDistance = 18,
+	wingColor = '#ffffff',
+	size = 28,
+	followSpeed = 0.18,
+}) {
+	const rootRef = useRef(null)
+	const [frameloop, setFrameloop] = useState('always')
 	const prefersReducedMotion = usePrefersReducedMotion()
 
 	useEffect(() => {
@@ -237,7 +267,13 @@ export default function ButterflyTrailCursor() {
 				frameloop={frameloop}
 			>
 				<color attach="background" args={['#EAEAE9']} />
-				<ButterflyTrail />
+				<ButterflyTrail
+					butterflyCount={butterflyCount}
+					trailDistance={trailDistance}
+					wingColor={wingColor}
+					butterflySize={size}
+					followSpeed={followSpeed}
+				/>
 			</Canvas>
 
 			{prefersReducedMotion && (

@@ -3,7 +3,7 @@
 import { InfinitePerspectiveSliderComp } from "./InfinitePerspectiveSliderComp";
 
 
-export default function InfinitePerspectiveSlider() {
+export default function InfinitePerspectiveSlider(props) {
     const images = [
         {
             number: '01',
@@ -69,7 +69,7 @@ export default function InfinitePerspectiveSlider() {
     return (
         <>
             <div className=" bg-white flex flex-col justify-center gap-20">
-                <InfinitePerspectiveSliderComp images={images} />
+                <InfinitePerspectiveSliderComp images={images} {...props} />
             </div>
         </>
     );

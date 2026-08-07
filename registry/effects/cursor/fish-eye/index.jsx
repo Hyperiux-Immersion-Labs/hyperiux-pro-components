@@ -9,14 +9,16 @@ import * as THREE from 'three/webgpu'
 import { texture, uv, uniform, sub, length, mul, add, oneMinus } from 'three/tsl'
 import { createVisibilityGate } from './createSuspendedRaf'
 
-/**
- * @param {number} current
- * @param {number} target
- * @param {number} lambda
- * @param {number} delta
- */
+const DEFAULT_IMAGE_SRC =
+  'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg'
+
 const damp = (current, target, lambda, delta) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))
+
+const durationToDamp = (duration) => {
+  const seconds = Math.max(Number(duration) || 0, 0)
+  return seconds === 0 ? 1000 : 1 / seconds
+}
 
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
@@ -32,7 +34,6 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion
 }
 
-/** @param {string} src */
 function loadCorsObjectUrl(src) {
   return fetch(src, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
     .then((res) => {
@@ -42,19 +43,19 @@ function loadCorsObjectUrl(src) {
     .then((blob) => URL.createObjectURL(blob))
 }
 
-/**
- * @typedef {Object} ImageNodeMaterialProps
- * @property {string} src
- * @property {boolean} isMobile
- */
-
-/** @param {ImageNodeMaterialProps} props */
-function ImageNodeMaterial({ src, isMobile }) {
-  const sourceMap = /** @type {THREE.Texture} */ (useTexture(src))
+function ImageNodeMaterial({
+  src,
+  isMobile,
+  bulgeEffect,
+  duration,
+  smoothness,
+  mouseInteractive,
+}) {
+  const sourceMap = useTexture(src)
   const { size, camera } = useThree()
 
   const height =
-    2 * Math.tan((/** @type {THREE.PerspectiveCamera} */ (camera).fov * Math.PI) / 180 / 2) * camera.position.z
+    2 * Math.tan((camera.fov * Math.PI) / 180 / 2) * camera.position.z
 
   const width = height * (size.width / size.height)
 
@@ -62,7 +63,7 @@ function ImageNodeMaterial({ src, isMobile }) {
   const target = useRef(new THREE.Vector2(0.5, 0.5))
   const strength = useRef(0)
   const strengthTarget = useRef(0)
-  const materialRef = useRef(/** @type {any} */ (null))
+  const materialRef = useRef(null)
 
   const map = useMemo(() => {
     const clonedMap = sourceMap.clone()
@@ -112,14 +113,25 @@ function ImageNodeMaterial({ src, isMobile }) {
     const currentMaterial = materialRef.current
     if (!currentMaterial) return
 
+    const canInteract = !isMobile && mouseInteractive
+    const mouseDamp = durationToDamp(smoothness)
+    const strengthDamp = durationToDamp(duration)
+
+    if (!canInteract) {
+      target.current.set(0.5, 0.5)
+      strengthTarget.current = 0
+    } else if (strengthTarget.current > 0) {
+      strengthTarget.current = Math.max(Number(bulgeEffect) || 0, 0)
+    }
+
     if (!isMobile) {
-      mouse.current.x = damp(mouse.current.x, target.current.x, 12, delta)
-      mouse.current.y = damp(mouse.current.y, target.current.y, 12, delta)
+      mouse.current.x = damp(mouse.current.x, target.current.x, mouseDamp, delta)
+      mouse.current.y = damp(mouse.current.y, target.current.y, mouseDamp, delta)
 
       strength.current = damp(
         strength.current,
         strengthTarget.current,
-        8,
+        strengthDamp,
         delta
       )
     }
@@ -132,16 +144,16 @@ function ImageNodeMaterial({ src, isMobile }) {
     <mesh
       material={material}
       onPointerMove={
-        isMobile
+        isMobile || !mouseInteractive
           ? undefined
           : (e) => {
               if (!e.uv) return
               target.current.copy(e.uv)
-              strengthTarget.current = 1
+              strengthTarget.current = Math.max(Number(bulgeEffect) || 0, 0)
             }
       }
       onPointerLeave={
-        isMobile
+        isMobile || !mouseInteractive
           ? undefined
           : () => {
               target.current.set(0.5, 0.5)
@@ -154,20 +166,15 @@ function ImageNodeMaterial({ src, isMobile }) {
   )
 }
 
-const DEFAULT_SRC =
-  'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg'
-const DEFAULT_CLASS_NAME = 'h-[50vh] w-[50vw]'
-
-/**
- * @typedef {Object} FishEyeProps
- * @property {string} src
- */
-
-/** @param {FishEyeProps} props */
-export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_NAME }) {
-  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null))
-  const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ('always'))
-  const [objectUrl, setObjectUrl] = useState(/** @type {string|null} */ (null))
+export default function FishEye({
+  bulgeEffect = 1,
+  duration = 0.125,
+  smoothness = 0.083,
+  mouseInteractive = true,
+}) {
+  const rootRef = useRef(null)
+  const [frameloop, setFrameloop] = useState('always')
+  const [objectUrl, setObjectUrl] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
   const prefersReducedMotion = usePrefersReducedMotion()
 
@@ -182,9 +189,8 @@ export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_N
   useEffect(() => {
     if (isMobile) return undefined
 
-    /** @type {string|null} */
     let url = null
-    loadCorsObjectUrl(src)
+    loadCorsObjectUrl(DEFAULT_IMAGE_SRC)
       .then((u) => {
         url = u
         setObjectUrl(u)
@@ -194,7 +200,7 @@ export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_N
     return () => {
       if (url) URL.revokeObjectURL(url)
     }
-  }, [src, isMobile])
+  }, [isMobile])
 
   useEffect(() => {
     const gate = createVisibilityGate({
@@ -208,7 +214,7 @@ export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_N
   if (isMobile) return null
 
   return (
-    <div ref={rootRef} className={className}>
+    <div ref={rootRef} className="h-full w-full">
       {objectUrl ? (
         <Canvas
           dpr={[1, 2]}
@@ -219,7 +225,7 @@ export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_N
             pointerEvents: isMobile ? 'none' : 'auto',
             touchAction: isMobile ? 'none' : 'auto',
           }}
-          gl={(/** @type {any} */ { canvas }) => {
+          gl={({ canvas }) => {
             const renderer = new THREE.WebGPURenderer({
               canvas,
               antialias: true,
@@ -232,7 +238,14 @@ export default function FishEye({ src = DEFAULT_SRC, className = DEFAULT_CLASS_N
             return renderer
           }}
         >
-          <ImageNodeMaterial src={objectUrl} isMobile={isMobile} />
+          <ImageNodeMaterial
+            src={objectUrl}
+            isMobile={isMobile}
+            bulgeEffect={bulgeEffect}
+            duration={duration}
+            smoothness={smoothness}
+            mouseInteractive={mouseInteractive}
+          />
         </Canvas>
       ) : null}
       {prefersReducedMotion && (

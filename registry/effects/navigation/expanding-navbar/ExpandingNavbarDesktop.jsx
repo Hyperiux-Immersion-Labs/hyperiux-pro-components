@@ -12,40 +12,46 @@ const prefersReducedMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
-/** @param {import('react').RefObject<HTMLElement|null>} colRef */
-function animateColumnIn(colRef) {
+function animateColumnIn(colRef, duration, ease) {
     if (!colRef.current) return;
     const items = Array.from(colRef.current.children).slice(1);
     gsap.killTweensOf(items);
     gsap.fromTo(
         items,
         { opacity: 0, y: -14 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.05, ease: "elastic.out(0.9, 0.6)" }
+        { opacity: 1, y: 0, duration: 0.6 * duration, stagger: 0.05 * duration, ease }
     );
 }
 
-export function ExpandingNavbarDesktop() {
-    const backgroundOverlayRef = useRef(/** @type {HTMLDivElement|null} */ (null));
-    const menuWrapperRef = useRef(/** @type {HTMLDivElement|null} */ (null));
-    const headerRef = useRef(/** @type {HTMLElement|null} */ (null));
-    const menuContentRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+export function ExpandingNavbarDesktop({
+    activeColor = "#ff5f00",
+    duration = 1,
+    ease = "cubic-bezier(0.625, 0.05, 0, 1)",
+    expandedWidth = 98,
+}) {
+    const backgroundOverlayRef = useRef(null);
+    const menuWrapperRef = useRef(null);
+    const headerRef = useRef(null);
+    const menuContentRef = useRef(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(/** @type {number|null} */ (0));
-    const [selectedSubIndex, setSelectedSubIndex] = useState(/** @type {number|null} */ (null));
-    const [selectedNestedIndex, setSelectedNestedIndex] = useState(/** @type {number|null} */ (null));
-    const [activeMainIndex, setActiveMainIndex] = useState(/** @type {number|null} */ (0));
-    const [activeSubIndex, setActiveSubIndex] = useState(/** @type {number|null} */ (null));
-    const [activeNestedIndex, setActiveNestedIndex] = useState(/** @type {number|null} */ (null));
-    const seprationLineRef = useRef(/** @type {HTMLSpanElement|null} */ (null));
-    const menuTimeline = useRef(/** @type {gsap.core.Timeline|null} */ (null));
-    const col2Ref = useRef(/** @type {HTMLDivElement|null} */ (null));
-    const col3Ref = useRef(/** @type {HTMLDivElement|null} */ (null));
-    const mainSquareRef = useRef(/** @type {HTMLDivElement|null} */ (null));
-    const mainItemRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
-    const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
-    const toggleButtonRef = useRef(/** @type {HTMLButtonElement|null} */ (null));
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [selectedSubIndex, setSelectedSubIndex] = useState(null);
+    const [selectedNestedIndex, setSelectedNestedIndex] = useState(null);
+    const [activeMainIndex, setActiveMainIndex] = useState(0);
+    const [activeSubIndex, setActiveSubIndex] = useState(null);
+    const [activeNestedIndex, setActiveNestedIndex] = useState(null);
+    const seprationLineRef = useRef(null);
+    const menuTimeline = useRef(null);
+    const col2Ref = useRef(null);
+    const col3Ref = useRef(null);
+    const mainSquareRef = useRef(null);
+    const mainItemRefs = useRef([]);
+    const containerRef = useRef(null);
+    const toggleButtonRef = useRef(null);
 
-    const menuEasing = "cubic-bezier(0.625, 0.05, 0, 1)";
+    const motionDuration = Math.max(0.05, Number(duration) || 1);
+    const menuEasing = ease;
+    const expandedMenuWidth = `${Math.min(100, Math.max(55, Number(expandedWidth) || 98))}vw`;
 
     useEffect(() => {
         const square = mainSquareRef.current;
@@ -57,8 +63,8 @@ export function ExpandingNavbarDesktop() {
                 gsap.set(square, { scale: 0, opacity: 0 });
                 return;
             }
-            gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
-            gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            gsap.to(square, { scale: 0, opacity: 0, duration: 0.3 * motionDuration, overwrite: "auto", ease: menuEasing });
+            gsap.to(items, { x: 0, duration: 0.4 * motionDuration, ease: menuEasing, overwrite: "auto" });
             return;
         }
 
@@ -67,7 +73,7 @@ export function ExpandingNavbarDesktop() {
             return;
         }
 
-        gsap.to(square, { scale: 1, opacity: 1, duration: 0.3, overwrite: "auto", ease: menuEasing });
+        gsap.to(square, { scale: 1, opacity: 1, duration: 0.3 * motionDuration, overwrite: "auto", ease: menuEasing });
 
         const targetItem = items[activeMainIndex];
         if (!targetItem) return;
@@ -77,7 +83,7 @@ export function ExpandingNavbarDesktop() {
         gsap.to(square, {
             y: targetY,
             rotation: activeMainIndex * 90,
-            duration: 0.4,
+            duration: 0.4 * motionDuration,
             ease: menuEasing,
             overwrite: "auto"
         });
@@ -89,16 +95,16 @@ export function ExpandingNavbarDesktop() {
             const distance = Math.min(Math.abs(index - activeMainIndex) / totalTranslateImpact, 1);
             gsap.to(item, {
                 x: translateValue * (1 - distance),
-                duration: 0.4,
+                duration: 0.4 * motionDuration,
                 ease: menuEasing,
                 overwrite: "auto"
             });
         });
-    }, [activeMainIndex]);
+    }, [activeMainIndex, menuEasing, motionDuration]);
 
     useEffect(() => {
         if (!col2Ref.current) return;
-        const children = /** @type {HTMLElement[]} */ (Array.from(col2Ref.current.children));
+        const children = Array.from(col2Ref.current.children);
         if (children.length < 2) return;
         const square = children[0];
         const items = children.slice(1);
@@ -108,8 +114,8 @@ export function ExpandingNavbarDesktop() {
                 gsap.set(square, { scale: 0, opacity: 0 });
                 return;
             }
-            gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
-            gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            gsap.to(square, { scale: 0, opacity: 0, duration: 0.3 * motionDuration, overwrite: "auto", ease: menuEasing });
+            gsap.to(items, { x: 0, duration: 0.4 * motionDuration, ease: menuEasing, overwrite: "auto" });
             return;
         }
 
@@ -118,7 +124,7 @@ export function ExpandingNavbarDesktop() {
             return;
         }
 
-        gsap.to(square, { scale: 1, opacity: 1, duration: 0.3, overwrite: "auto", ease: menuEasing });
+        gsap.to(square, { scale: 1, opacity: 1, duration: 0.3 * motionDuration, overwrite: "auto", ease: menuEasing });
 
         const targetItem = items[activeSubIndex];
         if (!targetItem) return;
@@ -128,7 +134,7 @@ export function ExpandingNavbarDesktop() {
         gsap.to(square, {
             y: targetY,
             rotation: activeSubIndex * 90,
-            duration: 0.4,
+            duration: 0.4 * motionDuration,
             ease: menuEasing,
             overwrite: "auto"
         });
@@ -140,16 +146,16 @@ export function ExpandingNavbarDesktop() {
             const distance = Math.min(Math.abs(index - activeSubIndex) / totalTranslateImpact, 1);
             gsap.to(item, {
                 x: translateValue * (1 - distance),
-                duration: 0.4,
+                duration: 0.4 * motionDuration,
                 ease: menuEasing,
                 overwrite: "auto"
             });
         });
-    }, [activeSubIndex, activeMainIndex]);
+    }, [activeSubIndex, activeMainIndex, menuEasing, motionDuration]);
 
     useEffect(() => {
         if (!col3Ref.current) return;
-        const children = /** @type {HTMLElement[]} */ (Array.from(col3Ref.current.children));
+        const children = Array.from(col3Ref.current.children);
         if (children.length < 2) return;
         const square = children[0];
         const items = children.slice(1);
@@ -159,8 +165,8 @@ export function ExpandingNavbarDesktop() {
                 gsap.set(square, { scale: 0, opacity: 0 });
                 return;
             }
-            gsap.to(square, { scale: 0, opacity: 0, duration: 0.3, overwrite: "auto", ease: menuEasing });
-            gsap.to(items, { x: 0, duration: 0.4, ease: menuEasing, overwrite: "auto" });
+            gsap.to(square, { scale: 0, opacity: 0, duration: 0.3 * motionDuration, overwrite: "auto", ease: menuEasing });
+            gsap.to(items, { x: 0, duration: 0.4 * motionDuration, ease: menuEasing, overwrite: "auto" });
             return;
         }
 
@@ -169,7 +175,7 @@ export function ExpandingNavbarDesktop() {
             return;
         }
 
-        gsap.to(square, { scale: 1, opacity: 1, duration: 0.3, overwrite: "auto", ease: menuEasing });
+        gsap.to(square, { scale: 1, opacity: 1, duration: 0.3 * motionDuration, overwrite: "auto", ease: menuEasing });
 
         const targetItem = items[activeNestedIndex];
         if (!targetItem) return;
@@ -179,7 +185,7 @@ export function ExpandingNavbarDesktop() {
         gsap.to(square, {
             y: targetY,
             rotation: activeNestedIndex * 90,
-            duration: 0.4,
+            duration: 0.4 * motionDuration,
             ease: menuEasing,
             overwrite: "auto"
         });
@@ -191,27 +197,27 @@ export function ExpandingNavbarDesktop() {
             const distance = Math.min(Math.abs(index - activeNestedIndex) / totalTranslateImpact, 1);
             gsap.to(item, {
                 x: translateValue * (1 - distance),
-                duration: 0.4,
+                duration: 0.4 * motionDuration,
                 ease: menuEasing,
                 overwrite: "auto"
             });
         });
-    }, [activeNestedIndex, activeSubIndex]);
+    }, [activeNestedIndex, activeSubIndex, menuEasing, motionDuration]);
 
     useEffect(() => {
-        if (activeMainIndex !== null) animateColumnIn(col2Ref);
-    }, [activeMainIndex]);
+        if (activeMainIndex !== null) animateColumnIn(col2Ref, motionDuration, menuEasing);
+    }, [activeMainIndex, menuEasing, motionDuration]);
 
     useEffect(() => {
-        if (activeSubIndex !== null) animateColumnIn(col3Ref);
-    }, [activeMainIndex, activeSubIndex]);
+        if (activeSubIndex !== null) animateColumnIn(col3Ref, motionDuration, menuEasing);
+    }, [activeMainIndex, activeSubIndex, menuEasing, motionDuration]);
 
     useEffect(() => {
         CustomEase.create("menuEase", "0.625,0.05,0,1");
         const tl = gsap.timeline({ paused: true });
 
-        const menuDuration = prefersReducedMotion() ? 0.5 : 1;
-        const lineDuration = prefersReducedMotion() ? 0.25 : 0.5;
+        const menuDuration = prefersReducedMotion() ? 0.5 : motionDuration;
+        const lineDuration = prefersReducedMotion() ? 0.25 : 0.5 * motionDuration;
 
         gsap.set(backgroundOverlayRef.current, { opacity: 0 });
         gsap.set(menuWrapperRef.current, { width: "55vw" });
@@ -237,7 +243,7 @@ export function ExpandingNavbarDesktop() {
         tl.to(
             menuWrapperRef.current,
             {
-                width: "98vw",
+                width: expandedMenuWidth,
                 duration: menuDuration,
                 ease: "menuEase",
             },
@@ -270,7 +276,7 @@ export function ExpandingNavbarDesktop() {
         });
 
         menuTimeline.current = tl;
-    }, []);
+    }, [expandedMenuWidth, menuEasing, motionDuration]);
 
     const toggleMenu = () => {
         if (!menuTimeline.current) return;
@@ -325,7 +331,8 @@ export function ExpandingNavbarDesktop() {
                         <div className="w-full h-full flex flex-col relative">
                             <div
                                 ref={mainSquareRef}
-                                className="absolute top-0 left-[-1vw] w-[0.8vw] h-[0.8vw] bg-[#ff5f00] scale-0 opacity-0 pointer-events-none z-10"
+                                className="absolute top-0 left-[-1vw] w-[0.8vw] h-[0.8vw] scale-0 opacity-0 pointer-events-none z-10"
+                                style={{ backgroundColor: activeColor }}
                             />
                             {navigationData.map((item, index) => (
                                 <div
@@ -346,6 +353,7 @@ export function ExpandingNavbarDesktop() {
                                             setActiveSubIndex(null);
                                         }}
                                         isActive={activeMainIndex === index}
+                                        activeColor={activeColor}
                                         className={`text-[3.5vw] text-left transition-colors duration-300 `}
                                     >
                                         {item.name}
@@ -358,7 +366,7 @@ export function ExpandingNavbarDesktop() {
                         <div className="w-full h-full relative">
                             {activeMainIndex !== null && navigationData[activeMainIndex].sublinks && (
                                 <div ref={col2Ref} className="p-[2vw] h-fit rounded-md flex flex-col relative">
-                                    <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] bg-[#ff5f00] scale-0 opacity-0 pointer-events-none z-10" />
+                                    <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] scale-0 opacity-0 pointer-events-none z-10" style={{ backgroundColor: activeColor }} />
                                     {navigationData[activeMainIndex].sublinks.map((subItem, subIndex) => (
                                         <div key={subIndex} className="opacity-0">
                                             <HoverFillLink
@@ -373,6 +381,7 @@ export function ExpandingNavbarDesktop() {
                                                     activeSubIndex === subIndex ||
                                                     (activeSubIndex === null && activeMainIndex === selectedIndex && selectedSubIndex === subIndex)
                                                 }
+                                                activeColor={activeColor}
                                                 className={`text-[2vw] text-left`}
                                             >
                                                 {subItem.name}
@@ -387,10 +396,10 @@ export function ExpandingNavbarDesktop() {
                         <div className="w-full h-full relative">
                             {activeMainIndex !== null &&
                                 activeSubIndex !== null &&
-                                /** @type {import('./data').ExpandingNavSublink[]} */ (navigationData[activeMainIndex].sublinks)[activeSubIndex]?.nestedLinks && (
+                                navigationData[activeMainIndex].sublinks[activeSubIndex]?.nestedLinks && (
                                     <div ref={col3Ref} className="p-[2vw] w-full h-fit rounded-md flex flex-col relative">
-                                        <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] bg-[#ff5f00] scale-0 opacity-0 pointer-events-none z-10" />
-                                        {/** @type {import('./data').ExpandingNavNestedLink[]} */ (/** @type {import('./data').ExpandingNavSublink[]} */ (navigationData[activeMainIndex].sublinks)[activeSubIndex].nestedLinks).map((nestedItem, nestedIndex) => (
+                                        <div className="absolute top-0 left-[1vw] w-[0.6vw] h-[0.6vw] scale-0 opacity-0 pointer-events-none z-10" style={{ backgroundColor: activeColor }} />
+                                        {navigationData[activeMainIndex].sublinks[activeSubIndex].nestedLinks.map((nestedItem, nestedIndex) => (
                                             <div key={nestedIndex} className="opacity-0">
                                                 <HoverFillLink
                                                     href={nestedItem.href}
@@ -405,6 +414,7 @@ export function ExpandingNavbarDesktop() {
                                                         activeSubIndex === selectedSubIndex &&
                                                         selectedNestedIndex === nestedIndex
                                                     }
+                                                    activeColor={activeColor}
                                                     className="text-[2vw] block"
                                                 >
                                                     {nestedItem.name}
@@ -431,10 +441,10 @@ export function ExpandingNavbarDesktop() {
                             <p>Show Reel</p>
                         </div>
                         <div className="flex flex-col pb-[.2vw] gap-[.1vw]">
-                            <HoverFillLink href="#" className="text-[1vw]">
+                            <HoverFillLink href="#" className="text-[1vw]" activeColor={activeColor}>
                                 LABS
                             </HoverFillLink>
-                            <HoverFillLink href="#" className="text-[1vw]">
+                            <HoverFillLink href="#" className="text-[1vw]" activeColor={activeColor}>
                                 VAULT
                             </HoverFillLink>
                         </div>

@@ -34,7 +34,7 @@ const CharStaggerPrimaryButton = ({
     children,
     staggerStep = 0.01,
     lineClassName = "",
-    hoverColor = "",
+    hoverColor = "#ffffff",
     showArrow = false,
     icon: Icon = ArrowRight,
     iconClassName = "",

@@ -4,14 +4,10 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const CELL_SIZE = 50;
-const MAX_TRAIL = 25;
 const IDLE_TIMEOUT = 120;
-const FADE_DURATION = 500;
 const SPAWN_ANIMATION = 180;
 const TURN_CELLS = 2;
 const MOUSE_LERP = 0.09;
-
-const ALPHABET ="HYPERIUX";
 
 const COLORS = [
  { bg:"#1a1a2e", text:"#ffffff" },
@@ -22,54 +18,39 @@ const COLORS = [
  { bg:"#c3dfe0", text:"#1a1a2e" },
 ];
 
-/**
- * @typedef {Object} TrailCellColor
- * @property {string} bg
- * @property {string} text
- */
-
-/**
- * @typedef {Object} TrailCell
- * @property {string} id
- * @property {string} cellKey
- * @property {number} col
- * @property {number} row
- * @property {string} char
- * @property {TrailCellColor} color
- */
-
-/**
- * @typedef {Object} GridCell
- * @property {number} col
- * @property {number} row
- */
-
-/** @typedef {'x'|'y'} TrailAxis */
-
-/**
- * @typedef {Object} CharacterTrailCompProps
- * @property {import('react').ReactNode} [children]
- */
-
-/** @param {CharacterTrailCompProps} props */
-export default function CharacterTrailComp({ children }) {
- const [trail, setTrail] = useState(/** @type {TrailCell[]} */ ([]));
+export default function CharacterTrailComp({
+ children,
+ characters ="HYPERIUX",
+ trailLength = 24,
+ fontSize = 18,
+ textColor,
+ fadeDuration = 0.8,
+}) {
+ const [trail, setTrail] = useState([]);
  const [fading, setFading] = useState(false);
+ const resolvedCharacters = characters?.trim() || "HYPERIUX";
+ const resolvedTrailLength = Math.max(0, Math.round(Number(trailLength) || 0));
+ const resolvedFontSize = Math.max(0, Number(fontSize) || 0);
+ const fadeDurationMs = Math.max(0, Number(fadeDuration) || 0) * 1000;
 
- const lastCell = useRef(/** @type {GridCell|null} */ (null));
- const activeAxis = useRef(/** @type {TrailAxis|null} */ (null));
+ const lastCell = useRef(null);
+ const activeAxis = useRef(null);
  const charIndexRef = useRef(0);
  const colorIndexRef = useRef(0);
- const idleTimer = useRef(/** @type {ReturnType<typeof setTimeout>|undefined} */ (undefined));
- const clearTimer = useRef(/** @type {ReturnType<typeof setTimeout>|undefined} */ (undefined));
+ const idleTimer = useRef(null);
+ const clearTimer = useRef(null);
  const fadingRef = useRef(false);
- const mouseTarget = useRef(/** @type {{x: number, y: number}|null} */ (null));
- const mouseFollower = useRef(/** @type {{x: number, y: number}|null} */ (null));
+ const mouseTarget = useRef(null);
+ const mouseFollower = useRef(null);
 
 
- const getNextTrailCell = useCallback((/** @type {number} */ col, /** @type {number} */ row) => {
- const char = ALPHABET[charIndexRef.current % ALPHABET.length];
- const color = COLORS[colorIndexRef.current % COLORS.length];
+ const getNextTrailCell = useCallback((col, row) => {
+ const char = resolvedCharacters[charIndexRef.current % resolvedCharacters.length];
+ const paletteColor = COLORS[colorIndexRef.current % COLORS.length];
+ const color = {
+ ...paletteColor,
+ text: textColor || paletteColor.text,
+ };
  charIndexRef.current++;
  colorIndexRef.current++;
 
@@ -81,9 +62,9 @@ export default function CharacterTrailComp({ children }) {
  char,
  color,
  };
- }, []);
+ }, [resolvedCharacters, textColor]);
 
- const getLineCells = useCallback((/** @type {GridCell} */ from, /** @type {GridCell} */ to, /** @type {TrailAxis} */ axis, /** @type {number} */ limit = Infinity) => {
+ const getLineCells = useCallback((from, to, axis, limit = Infinity) => {
  const cells = [];
  const delta = axis ==="x" ? to.col - from.col : to.row - from.row;
  const direction = Math.sign(delta);
@@ -98,7 +79,8 @@ export default function CharacterTrailComp({ children }) {
  return cells;
  }, []);
 
- const appendCells = useCallback((/** @type {GridCell[]} */ cells) => {
+ const appendCells = useCallback((cells) => {
+ if (resolvedTrailLength <= 0) return;
  if (!cells.length) return;
 
  const nextCells = cells.map(({ col, row }) => getNextTrailCell(col, row));
@@ -106,16 +88,16 @@ export default function CharacterTrailComp({ children }) {
 
  setTrail((prev) => {
  const withoutDuplicates = prev.filter((cell) => !activatedKeys.has(cell.cellKey));
- return [...withoutDuplicates, ...nextCells].slice(-MAX_TRAIL);
+ return [...withoutDuplicates, ...nextCells].slice(-resolvedTrailLength);
  });
- }, [getNextTrailCell]);
+ }, [getNextTrailCell, resolvedTrailLength]);
 
  useEffect(() => {
  fadingRef.current = fading;
  }, [fading]);
 
  
- const updateTrailPosition = useCallback((/** @type {number} */ mx, /** @type {number} */ my) => {
+ const updateTrailPosition = useCallback((mx, my) => {
  if (fadingRef.current) {
  fadingRef.current = false;
  setFading(false);
@@ -140,7 +122,7 @@ export default function CharacterTrailComp({ children }) {
  colorIndexRef.current = 0;
  lastCell.current = null;
  activeAxis.current = null;
- }, FADE_DURATION);
+ }, fadeDurationMs);
  }, IDLE_TIMEOUT);
 
  const target = {
@@ -163,11 +145,10 @@ export default function CharacterTrailComp({ children }) {
  const dominantAxis = Math.abs(colDelta) >= Math.abs(rowDelta) ?"x" :"y";
  const targetAxis = colDelta === 0 ?"y" : rowDelta === 0 ?"x" : dominantAxis;
  const axis = activeAxis.current ?? targetAxis;
- /** @type {GridCell[]} */
  const cells = [];
  let cursor = current;
 
- const pushCells = (/** @type {GridCell[]} */ lineCells) => {
+ const pushCells = (lineCells) => {
  if (!lineCells.length) return;
  cells.push(...lineCells);
  cursor = lineCells[lineCells.length - 1];
@@ -200,7 +181,7 @@ export default function CharacterTrailComp({ children }) {
 
  lastCell.current = cursor;
  appendCells(cells);
- }, [appendCells, getLineCells]);
+ }, [appendCells, fadeDurationMs, getLineCells]);
 
  const updateMouseFollower = useCallback(() => {
  if (!mouseTarget.current || !mouseFollower.current) return;
@@ -219,7 +200,7 @@ export default function CharacterTrailComp({ children }) {
  updateTrailPosition(mouseFollower.current.x, mouseFollower.current.y);
  }, [updateTrailPosition]);
 
- const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
+ const handleMouseMove = useCallback((e) => {
  mouseTarget.current = { x: e.clientX, y: e.clientY };
 
  if (!mouseFollower.current) {
@@ -252,14 +233,14 @@ export default function CharacterTrailComp({ children }) {
  const total = trail.length;
  // stagger delay - oldest cells (index 0) fade first
  const staggerDelay = fading
- ? index * (FADE_DURATION / Math.max(total, 1))
+ ? index * (fadeDurationMs / Math.max(total, 1))
  : 0;
  const opacity = fading ? 0 : 1;
 
  return (
  <div
  key={dot.id}
- className="fixed pointer-events-none rounded-full flex items-center justify-center select-none text-[13px] font-extrabold z-9999 scale-100"
+ className="fixed pointer-events-none rounded-full flex items-center justify-center select-none font-extrabold z-9999 scale-100"
  style={{
  width: CELL_SIZE,
  height: CELL_SIZE,
@@ -267,12 +248,13 @@ export default function CharacterTrailComp({ children }) {
  top: dot.row * CELL_SIZE,
  backgroundColor: dot.color.bg,
  color: dot.color.text,
+ fontSize: resolvedFontSize,
  opacity,
  animation: fading
  ?"none"
  : `charTrailPop ${SPAWN_ANIMATION}ms cubic-bezier(0.2,0.8,0.2,1)`,
  transition: fading
- ? `opacity ${FADE_DURATION * 0.5}ms cubic-bezier(0.4,0,0.2,1) ${staggerDelay}ms`
+ ? `opacity ${fadeDurationMs * 0.5}ms cubic-bezier(0.4,0,0.2,1) ${staggerDelay}ms`
  :"none",
  willChange:"opacity, transform",
  }}

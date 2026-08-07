@@ -1,6 +1,6 @@
 {
   "name": "video-player",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "type": "registry:component",
   "title": "Custom Video Player",
   "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
@@ -28,10 +28,104 @@
   ],
   "changelog": [
     {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed public videoSrc/poster/src media controls and duplicate muted/showControls entries; merged behavior and controls into a single working controls group.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added videoSrc, poster, autoPlay, startMuted, and showCloseButton as public props with a working remixer panel. The originally suggested prop names (src, muted, showControls) didn't match the real component API, so they were renamed to match what VideoPlayerComp actually accepts.",
+      "breaking": false
+    },
+    {
       "version": "1.1.0",
       "date": "2026-07-23",
       "summary": "Removed the continuous rAF progress loop (~60 setState/sec while playing); the progress bar now rides the native timeupdate events with a linear CSS transition for smoothness, cut during scrubbing for 1:1 pointer tracking.",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "autoPlay",
+      "type": "boolean",
+      "default": true,
+      "description": "Starts playback automatically when allowed.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "startMuted",
+      "type": "boolean",
+      "default": true,
+      "description": "Initial muted state.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "showCloseButton",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the close button on the player.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "rounded",
+      "type": "boolean",
+      "default": false,
+      "description": "Rounds the player frame when not fullscreen.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "preserveAspectRatio",
+      "type": "boolean",
+      "default": true,
+      "description": "Uses object-contain instead of object-cover for the video.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "controls",
+        "groupTitle": "Controls"
+      }
+    },
+    {
+      "name": "hideControlsDelay",
+      "type": "number",
+      "description": "Delay before controls auto-hide, in milliseconds.",
+      "default": 1800,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 500,
+        "max": 5000,
+        "step": 100
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }

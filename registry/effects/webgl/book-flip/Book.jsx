@@ -92,13 +92,6 @@ const pageMaterials = [
  * Helper function to generate page pairs from image array
  * Creates front/back pairs: [0,1], [2,3], [4,5], etc.
  */
-/**
- * @typedef {Object} BookPage
- * @property {string} front
- * @property {string} back
- */
-
-/** @param {string[]} imageArray */
 const generatePages = (imageArray) => {
  if (!imageArray || imageArray.length === 0) {
  return [];
@@ -131,17 +124,9 @@ const generatePages = (imageArray) => {
 /**
  * Preload textures for better performance
  */
-/**
- * @param {string} name
- * @param {string} pathPattern
- */
 const resolveTexturePath = (name, pathPattern) =>
  name.startsWith("http") ? name : `${pathPattern}/${name}.png`;
 
-/**
- * @param {BookPage[]} pages
- * @param {string} pathPattern
- */
 const preloadTextures = (pages, pathPattern) => {
  pages.forEach((page) => {
  useTexture.preload(resolveTexturePath(page.front, pathPattern));
@@ -158,22 +143,10 @@ const preloadTextures = (pages, pathPattern) => {
  * - Inner bones curve more (3D effect), outer bones curve less
  * - During turning, bones follow a sine wave for smooth animation
  */
-/**
- * @typedef {Object} PageOwnProps
- * @property {number} number
- * @property {string} front
- * @property {string} back
- * @property {number} page
- * @property {boolean} opened
- * @property {boolean} bookClosed
- * @property {string} pathPattern
- * @property {BookPage[]} pages
- */
-
-/** @param {PageOwnProps & Record<string, any>} props */
 const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  pathPattern,
  pages,
+ pageSpeed = 0.8,
  ...props }) => {
  const frontPath = resolveTexturePath(front, pathPattern);
  const backPath = resolveTexturePath(back, pathPattern);
@@ -194,10 +167,12 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  return texture;
  }, [backTexture]);
 
- const group = useRef(/** @type {any} */ (null));
+ const group = useRef();
  const turnedAt = useRef(0);
  const lastOpened = useRef(opened);
- const skinnedMeshRef = useRef(/** @type {any} */ (null));
+ const skinnedMeshRef = useRef();
+ const safePageSpeed = Math.min(5, Math.max(0.1, Number(pageSpeed) || 0.8));
+ const normalizedPageSpeed = safePageSpeed / 0.8;
 
  /**
  * Create the skeletal mesh for this page
@@ -290,7 +265,8 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  }
 
  // Calculate animation progress (0 to 1, then sin for smooth curve)
- let turningTime = Math.min(400, new Date().getTime() - turnedAt.current) / 400;
+ const turnDuration = 400 / normalizedPageSpeed;
+ let turningTime = Math.min(turnDuration, new Date() - turnedAt.current) / turnDuration;
  turningTime = Math.sin(turningTime * Math.PI);
 
  // Target rotation: opened = -90°, closed = +90°
@@ -344,7 +320,7 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  target.rotation,
 "y",
  rotationAngle,
- EASING_FACTOR,
+ EASING_FACTOR * normalizedPageSpeed,
  delta
  );
 
@@ -357,7 +333,7 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  target.rotation,
 "x",
  foldRotationAngle * foldIntensity,
- EASING_FACTOR_FOLD,
+ EASING_FACTOR_FOLD * normalizedPageSpeed,
  delta
  );
  }
@@ -404,19 +380,19 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  * 3. Each page renders and receives updated page/opened props
  * 4. Pages animate their bones based on opened state
  */
-/**
- * @typedef {Object} BookOwnProps
- * @property {string[]} [images]
- * @property {string} [pathPattern]
- */
-
-/** @param {BookOwnProps & Record<string, any>} props */
-export const Book = ({  images = [],
+export const Book = ({
+ images = [],
  pathPattern ="/assets/nature",
- ...props }) => {
+ pageSpeed = 0.8,
+ bookScale = 1,
+ ...props
+}) => {
  const { page } = usePage();
  const [delayedPage, setDelayedPage] = useState(page);
- const [bookScale, setBookScale] = useState(1);
+ const [responsiveScale, setResponsiveScale] = useState(1);
+ const safePageSpeed = Math.min(5, Math.max(0.1, Number(pageSpeed) || 0.8));
+ const normalizedPageSpeed = safePageSpeed / 0.8;
+ const safeBookScale = Math.min(3, Math.max(0.2, Number(bookScale) || 1));
 
  // Generate pages from image array
  const pages = useMemo(() => generatePages(images), [images]);
@@ -431,16 +407,16 @@ export const Book = ({  images = [],
  useEffect(() => {
  const updateBookScale = () => {
  if (window.innerWidth <= 640) {
- setBookScale(1.2);
+ setResponsiveScale(1.2);
  return;
  }
 
  if (window.innerWidth <= 1025) {
- setBookScale(0.84);
+ setResponsiveScale(0.84);
  return;
  }
 
- setBookScale(1);
+ setResponsiveScale(1);
  };
 
  updateBookScale();
@@ -457,19 +433,19 @@ export const Book = ({  images = [],
  * This creates the sequential page-by-page animation
  */
  useEffect(() => {
- /** @type {ReturnType<typeof setTimeout>|undefined} */
  let timeout;
  const goToPage = () => {
- setDelayedPage(/** @type {(delayedPage: number) => number} */ ((delayedPage) => {
+ setDelayedPage((delayedPage) => {
  if (page === delayedPage) {
  return delayedPage;
  } else {
  // Faster animation for large jumps, slower for single pages
+ const baseDelay = Math.abs(page - delayedPage) > 2 ? 50 : 150;
  timeout = setTimeout(
  () => {
  goToPage();
  },
- Math.abs(page - delayedPage) > 2 ? 50 : 150
+ baseDelay / normalizedPageSpeed
  );
   if (page > delayedPage) {
  return delayedPage + 1;
@@ -478,16 +454,21 @@ export const Book = ({  images = [],
  return delayedPage - 1;
  }
  }
- }));
+ });
  };
  goToPage();
  return () => {
  clearTimeout(timeout);
  };
- }, [page]);
+ }, [normalizedPageSpeed, page]);
 
  return (
- <group {...props} rotation-y={-Math.PI / 2} rotation-x={-0.7} scale={bookScale}>
+ <group
+ {...props}
+ rotation-y={-Math.PI / 2}
+ rotation-x={-0.7}
+ scale={responsiveScale * safeBookScale}
+ >
  {pages.map((pageData, index) => (
  <Page
  key={index}
@@ -497,6 +478,7 @@ export const Book = ({  images = [],
  bookClosed={delayedPage === 0 || delayedPage === pages.length}
  pathPattern={pathPattern}
  pages={pages}
+ pageSpeed={safePageSpeed}
  {...pageData}
  />
  ))}

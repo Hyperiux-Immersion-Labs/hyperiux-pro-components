@@ -5,20 +5,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
-export default function TextCloning() {
-    const canvasRef = useRef(/** @type {HTMLCanvasElement | null} */ (null));
+export default function TextCloning({
+    cloneCount = 9,
+    offset = 220,
+    textColor = "#f5f5f5",
+    textSize = 1,
+}) {
+    const canvasRef = useRef(null);
     const [text, setText] = useState("Hyperiux");
 
     useEffect(() => {
-        const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
-        const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
 
-        /** @type {number} */
-        let w;
-        /** @type {number} */
-        let h;
-        /** @type {number} */
-        let dpr;
+        let w, h, dpr;
 
         let mouse = { x: 0, y: 0 };
         let target = { x: 0, y: 0 };
@@ -28,9 +28,10 @@ export default function TextCloning() {
             window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
-        const layerCount = prefersReducedMotion ? 3 : 9;
+        const layerCount = prefersReducedMotion ? Math.min(3, cloneCount) : Math.max(1, Number(cloneCount) || 9);
+        const depthOffset = Math.max(0, Number(offset) || 0);
+        const safeTextSize = Math.max(0.4, Number(textSize) || 1);
 
-        /** @type {(a: number, b: number, t: number) => number} */
         const lerp = (a, b, t) => a + (b - a) * t;
 
         const resize = () => {
@@ -49,31 +50,26 @@ export default function TextCloning() {
             mouse.y = target.y = h / 2;
         };
 
-        /**
-         * @param {string} value
-         * @param {number} x
-         * @param {number} y
-         * @param {number} size
-         * @param {number} alpha
-         */
         const drawText = (value, x, y, size, alpha) => {
             ctx.font = `900 ${size}px Arial Black, Impact, sans-serif`;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.lineWidth = 2;
-            ctx.strokeStyle = `rgba(245,245,245,${alpha})`;
+            ctx.strokeStyle = textColor;
+            ctx.globalAlpha = alpha;
             ctx.strokeText(value, x, y);
+            ctx.globalAlpha = 1;
         };
 
         const drawClones = () => {
             const dx = (mouse.x - w / 2) / w;
             const dy = (mouse.y - h / 2) / h;
 
-            const depthX = dx * 220;
-            const depthY = dy * 220;
+            const depthX = dx * depthOffset;
+            const depthY = dy * depthOffset;
 
             const layers = layerCount;
-            const size = Math.min(w / Math.max(text.length * 0.72, 3), h * 0.42);
+            const size = Math.min(w / Math.max(text.length * 0.72, 3), h * 0.42) * safeTextSize;
 
             for (let i = layers; i >= 0; i--) {
                 const p = i / layers;
@@ -115,13 +111,11 @@ export default function TextCloning() {
             },
         });
 
-        /** @param {PointerEvent} e */
         const onMove = (e) => {
             target.x = e.clientX;
             target.y = e.clientY;
         };
 
-        /** @param {TouchEvent} e */
         const onTouch = (e) => {
             const touch = e.touches?.[0];
             if (!touch) return;
@@ -146,7 +140,7 @@ export default function TextCloning() {
             window.removeEventListener("touchstart", onTouch);
             window.removeEventListener("touchmove", onTouch);
         };
-    }, [text]);
+    }, [cloneCount, offset, text, textColor, textSize]);
 
     return (
         <>
@@ -154,9 +148,8 @@ export default function TextCloning() {
                 value={text}
                 onChange={(e) => setText(e.target.value || "")}
                 placeholder="Type text"
-               className="w-fit px-[2vw] py-[1vw] rounded-full border border-white/20 fixed bottom-[5%] z-10 left-1/2 -translate-x-1/2 focus:border-[#ff5f00] focus:outline-[#ff5f00] max-[1025px]:px-[5vw] max-md:py-[3vw] max-[1025px]:py-[2vw] max-[1025px]:text-[3vw]! max-md:text-[4vw]! text-center"
+                className="w-fit px-[2vw] py-[1vw] rounded-full border border-white/20 fixed bottom-[5%] z-10 left-1/2 -translate-x-1/2 focus:border-[#ff5f00] focus:outline-[#ff5f00] max-[1025px]:px-[5vw] max-md:py-[3vw] max-[1025px]:py-[2vw] max-[1025px]:text-[3vw]! max-md:text-[4vw]! text-center"
             />
-
 
             <canvas
                 ref={canvasRef}

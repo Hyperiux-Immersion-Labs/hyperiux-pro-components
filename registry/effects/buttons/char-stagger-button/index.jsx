@@ -6,53 +6,30 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
 
 const DEFAULT_HREF = "#";
-const DEFAULT_BTN_TEXT = "Hover me";
 const DEFAULT_STAGGER_STEP = 0.01;
 const DEFAULT_HOVER_COLOR = "#ff6b00";
 const CHAR_TRANSLATE_Y = "1.3em";
 
-/**
- * @typedef {{
- *   btnText?: string,
- *   href?: string,
- *   className?: string,
- *   textClassName?: string,
- *   linkProps?: Partial<import('react').ComponentPropsWithoutRef<'a'>>,
- *   children?: import('react').ReactNode,
- *   staggerStep?: number,
- *   showLine?: boolean,
- *   lineClassName?: string,
- *   hoverColor?: string,
- *   showArrow?: boolean,
- *   icon?: import('react').ComponentType<{ className?: string }>,
- *   iconVariant?: 'stacked' | 'single',
- *   iconClassName?: string,
- *   onClick?: import('react').MouseEventHandler<HTMLAnchorElement>,
- * } & Omit<import('react').ComponentPropsWithoutRef<'a'>, 'href' | 'onClick'>} CharStaggerButtonProps
- */
-
-/** @param {CharStaggerButtonProps} props */
 export default function CharStaggerButton({
-  btnText = DEFAULT_BTN_TEXT,
+  btnText = "Hover me",
   href = DEFAULT_HREF,
   className = "",
   textClassName = "",
   linkProps = {},
   children,
   staggerStep = DEFAULT_STAGGER_STEP,
-  showLine = false,
+  showLine = true,
   lineClassName = "",
   hoverColor = DEFAULT_HOVER_COLOR,
   showArrow = false,
   icon: Icon = ArrowRight,
-  iconVariant = "stacked",
   iconClassName = "",
   onClick,
   ...props
 }) {
   // Refs
-  const textRef = useRef(/** @type {HTMLSpanElement | null} */ (null));
-  const lineRef = useRef(/** @type {HTMLSpanElement | null} */ (null));
+  const textRef = useRef(null);
+  const lineRef = useRef(null);
   const isTouchRef = useRef(false);
   const hasMountedRef = useRef(false);
 
@@ -64,9 +41,8 @@ export default function CharStaggerButton({
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
-    /** @param {MediaQueryList | MediaQueryListEvent} event */
     const syncReducedMotion = (event) => {
-      const matches = "matches" in event ? event.matches : /** @type {MediaQueryList} */ ((/** @type {MediaQueryListEvent} */ (event)).currentTarget).matches;
+      const matches = "matches" in event ? event.matches : event.currentTarget.matches;
       setPrefersReducedMotion(matches);
     };
 
@@ -123,8 +99,7 @@ export default function CharStaggerButton({
     const textElement = textRef.current;
     if (!textElement) return;
     Array.from(textElement.children).forEach((span) => {
-      const spanEl = /** @type {HTMLElement} */ (span);
-      spanEl.style.transform = isActive && !prefersReducedMotion
+      span.style.transform = isActive && !prefersReducedMotion
         ? `translateY(-${CHAR_TRANSLATE_Y}) rotate(0.001deg)`
         : "translateY(0em) rotate(0.001deg)";
     });
@@ -146,13 +121,9 @@ export default function CharStaggerButton({
     setIsActive((prev) => !prev);
   }, []);
 
-  const onMouseDown = useCallback(
-    /** @param {import('react').MouseEvent<HTMLAnchorElement>} e */
-    (e) => {
-      if (isTouchRef.current) e.preventDefault();
-    },
-    []
-  );
+  const onMouseDown = useCallback((e) => {
+    if (isTouchRef.current) e.preventDefault();
+  }, []);
 
   // Derived
   const sourceText = typeof children === "string" ? children :  btnText;
@@ -200,26 +171,22 @@ export default function CharStaggerButton({
 
       {showArrow && Icon && (
         <div className={`overflow-hidden flex items-center justify-start ${iconClassName}`.trim()}>
-          {iconVariant === "single" ? (
-            <Icon className="h-4 w-4 shrink-0 motion-reduce:transition-none max-md:motion-reduce:transition-none" />
-          ) : (
-            <div
-              className="flex w-max"
-              style={{
-                transform:
-                  isActive && !prefersReducedMotion
-                    ? "translateX(5%)"
-                    : "translateX(-100%)",
-                transition: prefersReducedMotion
-                  ? "none"
-                  : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
-                willChange: "transform",
-              }}
-            >
-              <Icon className="flex-none w-full h-full" />
-              <Icon className="flex-none w-full h-full" />
-            </div>
-          )}
+          <div
+            className="flex w-max"
+            style={{
+              transform:
+                isActive && !prefersReducedMotion
+                  ? "translateX(5%)"
+                  : "translateX(-100%)",
+              transition: prefersReducedMotion
+                ? "none"
+                : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+              willChange: "transform",
+            }}
+          >
+            <Icon className="flex-none h-4 w-4" />
+            <Icon className="flex-none h-4 w-4" />
+          </div>
         </div>
       )}
     </a>

@@ -33,5 +33,40 @@
       "path": "ParallaxFooter.jsx",
       "target": "src/components/effects/parallax-footer/ParallaxFooter.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "containerBgColor",
+      "type": "string",
+      "default": "#ff6b00",
+      "description": "Background color of the intro container above the footer reveal.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "footerBgColor",
+      "type": "string",
+      "default": "#1a1a1a",
+      "description": "Background color of the fixed footer panel.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": false,
+    "defaultOpenGroupId": "style",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    }
+  }
 }

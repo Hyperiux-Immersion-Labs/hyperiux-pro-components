@@ -81,6 +81,8 @@ export function DirectionalMegaMenu({
   className = "",
   navClassName = "",
   navItemClassName = "",
+  navItemStyle,
+  activeNavItemStyle,
   activeClassName = "text-white",
   inactiveClassName = "text-white",
   panelClassName = "",
@@ -591,6 +593,7 @@ export function DirectionalMegaMenu({
                 key={item.label || index}
                 type="button"
                 onMouseEnter={() => onItemEnter(index)}
+                style={isActive ? activeNavItemStyle : navItemStyle}
                 className={`relative flex cursor-pointer items-center gap-1 text-sm font-medium text-white transition-colors duration-300 hover:text-white motion-reduce:text-white motion-reduce:transition-none max-[1025px]:text-lg max-md:text-sm ${navItemClassName} ${isActive ? activeClassName : inactiveClassName
                   }`}
               >

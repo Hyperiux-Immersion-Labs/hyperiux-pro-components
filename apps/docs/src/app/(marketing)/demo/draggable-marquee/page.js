@@ -1,19 +1,10 @@
-import DraggableMarquee from "@/components/draggable-marquee";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/scroll/draggable-marquee/registry.json";
 
-
-
-const page = () => {
-	return (
-		<>
-			<DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
-			<DraggableMarquee/>
-		</>
-	);
-};
-
-export default page;
+export default function Page() {
+  return <DemoContent registry={registry} />;
+}
 
 export async function generateMetadata() {
   return getDemoPageMetadata("draggable-marquee");

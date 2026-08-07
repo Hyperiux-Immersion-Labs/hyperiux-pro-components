@@ -1,9 +1,10 @@
-import OverflowTextRevealWrapper from "./OverflowTextRevealWrapper";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import overflowTextRevealRegistry from "../../../../../../../registry/effects/text/overflow-text-reveal/registry.json";
 
 
 export default function Page() {
-  return <OverflowTextRevealWrapper />;
+  return <DemoContent registry={overflowTextRevealRegistry} />;
 }
 
 export async function generateMetadata() {

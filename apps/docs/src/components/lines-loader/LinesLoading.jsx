@@ -228,7 +228,20 @@ function DemoContent({
   );
 }
 
-export default function LinesLoading({ onComplete } = {}) {
+function clampNumber(value, min, max, fallback) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.min(max, Math.max(min, numeric));
+}
+
+export default function LinesLoading({
+  onComplete,
+  duration = 1,
+  lineHeight = 1,
+  darkLineColor = "#ffffff",
+  lightLineColor = "#000000",
+  fadeOutDuration = 0.5,
+} = {}) {
   const containerRef = useRef(null);
   const darkLineRefs = useRef([]);
   const lightLineRefs = useRef([]);
@@ -250,6 +263,9 @@ export default function LinesLoading({ onComplete } = {}) {
   const [rowHeight, setRowHeight] = useState(ROW_H);
   const [lineCount, setLineCount] = useState(getLineCount);
   const lineCountRef = useRef(lineCount);
+  const safeDuration = clampNumber(duration, 0.25, 3, 1);
+  const safeLineHeight = clampNumber(lineHeight, 1, 12, 1);
+  const safeFadeOutDuration = clampNumber(fadeOutDuration, 0.1, 3, 0.5);
 
   const recomputeLayout = useCallback(() => {
     const el = containerRef.current;
@@ -363,6 +379,7 @@ export default function LinesLoading({ onComplete } = {}) {
         },
       });
       tlRef.current = tl;
+      tl.timeScale(1 / safeDuration);
 
       tl.to(lightLayerRef.current, { opacity: 1, duration: 0.65 });
       tl.to(darkContentRef.current, { opacity: 1, duration: 0.65 }, "<");
@@ -400,6 +417,7 @@ export default function LinesLoading({ onComplete } = {}) {
       },
     });
     tlRef.current = tl;
+    tl.timeScale(1 / safeDuration);
 
     const staggerS = MORPH_STAGGER / 1000;
     const appearS = APPEAR_DUR / 1000;
@@ -468,7 +486,7 @@ export default function LinesLoading({ onComplete } = {}) {
       darkLineEls,
       {
         opacity: 0,
-        duration: (WIPE_DUR / 1000) * 0.6,
+        duration: safeFadeOutDuration,
       },
       "wipe",
     );
@@ -497,7 +515,7 @@ export default function LinesLoading({ onComplete } = {}) {
     );
     tl.to({}, { duration: HOLD_AFTER_MORPH / 1000 });
     tl.to({}, { duration: HOLD_END / 1000 });
-  }, [onComplete, recomputeLayout]);
+  }, [onComplete, recomputeLayout, safeDuration, safeFadeOutDuration]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -534,7 +552,8 @@ export default function LinesLoading({ onComplete } = {}) {
             <div
               key={i}
               ref={(el) => (darkLineRefs.current[i] = el)}
-              className="absolute left-1/2 top-0 h-px w-full origin-center bg-white will-change-transform"
+              className="absolute left-1/2 top-0 w-full origin-center will-change-transform"
+              style={{ height: safeLineHeight, backgroundColor: darkLineColor }}
             />
           ))}
         </div>
@@ -557,7 +576,8 @@ export default function LinesLoading({ onComplete } = {}) {
             <div
               key={i}
               ref={(el) => (lightLineRefs.current[i] = el)}
-              className="absolute left-1/2 top-0 h-px w-full origin-center bg-black will-change-transform"
+              className="absolute left-1/2 top-0 w-full origin-center will-change-transform"
+              style={{ height: safeLineHeight, backgroundColor: lightLineColor }}
             />
           ))}
         </div>

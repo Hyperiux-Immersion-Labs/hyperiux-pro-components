@@ -6,27 +6,12 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * @typedef {Object} ScrollStackCard
- * @property {string|number} id
- * @property {string} [title]
- * @property {string} [description]
- * @property {string} [bgColor]
- * @property {string} [textColor]
- */
-
-/**
- * @typedef {Object} ScrollStackCompProps
- * @property {ScrollStackCard[]} [cards]
- */
-
-/** @param {ScrollStackCompProps} props */
-const ScrollStackComp = ({cards = [] }) => {
+const ScrollStackComp = ({ cards = [], sectionBgColor = "#ffffff", cardRadius = 45 }) => {
  const uid = useId().replace(/:/g, "");
  const sectionId = `state-${uid}`;
- const sectionRef = useRef(/** @type {HTMLElement|null} */ (null));
- const rowRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
- const cardRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+ const sectionRef = useRef(null);
+ const rowRefs = useRef([]);
+ const cardRefs = useRef([]);
 
  useEffect(() => {
  rowRefs.current = rowRefs.current.slice(0, cards.length);
@@ -109,7 +94,8 @@ const ScrollStackComp = ({cards = [] }) => {
  <section
  id={sectionId}
  ref={sectionRef}
- className={`main bg-white py-[7%] max-[1025px]:py-[15%] max-md:py-[15%]`}
+ className={`main py-[7%] max-[1025px]:py-[15%] max-md:py-[15%]`}
+ style={{ backgroundColor: sectionBgColor }}
  >
 
     <h1 className="text-center text-[4vw] max-[1025px]:text-[5vw] max-md:text-[6.5vw] text-black">
@@ -138,6 +124,7 @@ const ScrollStackComp = ({cards = [] }) => {
  description={item.description}
  bgColor={item.bgColor}
  textColor={item.textColor}
+ cardRadius={cardRadius}
  />
  </div>
  </div>
@@ -149,22 +136,12 @@ const ScrollStackComp = ({cards = [] }) => {
 
 export default ScrollStackComp;
 
-/**
- * @typedef {Object} ScrollStackCardProps
- * @property {string} [title]
- * @property {string} [description]
- * @property {string} [bgColor]
- * @property {string} [textColor]
- * @property {(el: HTMLDivElement|null) => void} [cardRef]
- */
-
-/** @param {ScrollStackCardProps} props */
-const Card = ({ title, description, bgColor, textColor, cardRef }) => {
+const Card = ({ title, description, bgColor, textColor, cardRef, cardRadius = 45 }) => {
  return (
  <div
  ref={cardRef}
- className="fadeUp mx-auto flex min-h-[32vw] max-[1025px]:h-[50vh] max-md:min-h-[65vh] w-[80%] max-md:w-full items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-[1025px]:py-[8vw] max-md:py-[15vw] max-md:px-[8vw] max-[1025px]:flex-col max-md:rounded-[9vw] "
- style={{ backgroundColor: bgColor }}
+ className="fadeUp mx-auto flex min-h-[32vw] max-[1025px]:h-[50vh] max-md:min-h-[65vh] w-[80%] max-md:w-full items-center justify-between gap-[4vw] rounded-[var(--card-radius)] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-[1025px]:py-[8vw] max-md:py-[15vw] max-md:px-[8vw] max-[1025px]:flex-col max-md:rounded-[9vw] "
+ style={{ backgroundColor: bgColor, "--card-radius": `${cardRadius}px` }}
  >
  <div className="w-[48%] tablet:w-full max-md:w-full max-[1025px]:w-[80%] max-[1025px]:mx-auto">
  <h2

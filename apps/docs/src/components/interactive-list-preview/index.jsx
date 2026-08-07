@@ -1,8 +1,12 @@
 import React from 'react'
-;
 import InteractiveListPreviewComp from './InteractiveListPreviewComp';
 
-const InteractiveListPreview = () => {
+const InteractiveListPreview = ({
+  imageSize,
+  duration,
+  smoothness,
+  lerp,
+}) => {
   return (
     <>
       <div className='flex items-center flex-col gap-20 max-sm:gap-20 max-sm:py-[18%] max-md:py-[15%] justify-center h-screen max-md:h-full bg-neutral-900'>
@@ -17,7 +21,13 @@ const InteractiveListPreview = () => {
 
         </div>
 
-        <InteractiveListPreviewComp items={projects} />
+        <InteractiveListPreviewComp
+          items={projects}
+          imageSize={imageSize}
+          duration={duration}
+          smoothness={smoothness}
+          lerp={lerp}
+        />
       </div>
     </>
   )

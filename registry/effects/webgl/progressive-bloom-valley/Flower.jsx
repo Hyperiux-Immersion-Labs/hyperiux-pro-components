@@ -4,10 +4,9 @@ import { useFrame } from "@react-three/fiber";
 import { VERTEX, FRAGMENT } from "./shaders";
 import { prefersReducedMotion } from "./prefersReducedMotion";
 
-/** @param {{data: any, sprite: any, config: any}} props */
-export default function Flower({ data, sprite, config }) {
-  const pointsRef = useRef(/** @type {import('three').Points|null} */ (null));
-  const materialRef = useRef(/** @type {import('three').ShaderMaterial|null} */ (null));
+export default function Flower({ data, sprite, config, bloomStrength = 1.2 }) {
+  const pointsRef = useRef();
+  const materialRef = useRef(null);
 
   const targetMouse = useRef(new THREE.Vector2(0.5, 0.5));
   const currentMouse = useRef(new THREE.Vector2(0.5, 0.5));
@@ -30,8 +29,8 @@ export default function Flower({ data, sprite, config }) {
         uAspect: { value: 1.0 },
         uHoverIntensity: { value: 0.0 },
         // Custom Hover Configs sent to shaders
-        uDefaultFlowerBloom: { value: config?.defaultFlowerBloom ?? 1.5 },
-        uHoverGlowMultiplier: { value: config?.hoverGlowMultiplier ?? 6.0 },
+        uDefaultFlowerBloom: { value: (config?.defaultFlowerBloom ?? 1.5) * bloomStrength },
+        uHoverGlowMultiplier: { value: (config?.hoverGlowMultiplier ?? 6.0) * bloomStrength },
         uHoverMagneticStrength: { value: config?.hoverMagneticStrength ?? 0.6 },
         uHoverMagneticDirection: { value: config?.hoverMagneticDirection ?? 1.0 },
         uHoverZPull: { value: config?.hoverZPull ?? 2.5 },
@@ -55,10 +54,20 @@ export default function Flower({ data, sprite, config }) {
   }, [material]);
 
   useEffect(() => {
+    const runtimeMaterial = materialRef.current;
+    if (!runtimeMaterial) return;
+
+    runtimeMaterial.uniforms.uDefaultFlowerBloom.value =
+      (config?.defaultFlowerBloom ?? 1.5) * bloomStrength;
+    runtimeMaterial.uniforms.uHoverGlowMultiplier.value =
+      (config?.hoverGlowMultiplier ?? 6.0) * bloomStrength;
+  }, [bloomStrength, config]);
+
+  useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
 
-    const applyReduced = (/** @type {boolean} */ enabled) => {
+    const applyReduced = (enabled) => {
       reduceMotionRef.current = enabled;
       const runtimeMaterial = materialRef.current;
       if (!runtimeMaterial) return;
@@ -77,14 +86,14 @@ export default function Flower({ data, sprite, config }) {
     };
 
     applyReduced(mq.matches);
-    const onChange = (/** @type {MediaQueryListEvent} */ event) => applyReduced(event.matches);
+    const onChange = (event) => applyReduced(event.matches);
     mq.addEventListener?.("change", onChange);
     return () => mq.removeEventListener?.("change", onChange);
   }, [config]);
 
   // Track raw mouse position in NDC (-1 to 1) and calculate velocity/intensity
   useEffect(() => {
-    const handleMove = (/** @type {PointerEvent} */ e) => {
+    const handleMove = (e) => {
       if (reduceMotionRef.current) return;
 
       targetMouse.current.x = e.clientX / window.innerWidth;
@@ -136,44 +145,34 @@ export default function Flower({ data, sprite, config }) {
     <points ref={pointsRef} frustumCulled={false}>
       <bufferGeometry>
         <bufferAttribute
-          {...(/** @type {any} */ ({
-            attach: "attributes-position",
-            array: data.positions,
-            count: data.count,
-            itemSize: 3,
-          }))}
+          attach="attributes-position"
+          array={data.positions}
+          count={data.count}
+          itemSize={3}
         />
         <bufferAttribute
-          {...(/** @type {any} */ ({
-            attach: "attributes-aColorCoordinate",
-            array: data.colorCoords,
-            count: data.count,
-            itemSize: 2,
-          }))}
+          attach="attributes-aColorCoordinate"
+          array={data.colorCoords}
+          count={data.count}
+          itemSize={2}
         />
         <bufferAttribute
-          {...(/** @type {any} */ ({
-            attach: "attributes-aSpriteScale",
-            array: data.scales,
-            count: data.count,
-            itemSize: 1,
-          }))}
+          attach="attributes-aSpriteScale"
+          array={data.scales}
+          count={data.count}
+          itemSize={1}
         />
         <bufferAttribute
-          {...(/** @type {any} */ ({
-            attach: "attributes-aRandomSeed",
-            array: data.seeds,
-            count: data.count,
-            itemSize: 1,
-          }))}
+          attach="attributes-aRandomSeed"
+          array={data.seeds}
+          count={data.count}
+          itemSize={1}
         />
         <bufferAttribute
-          {...(/** @type {any} */ ({
-            attach: "attributes-aGrowNoise",
-            array: data.growNoise,
-            count: data.count,
-            itemSize: 1,
-          }))}
+          attach="attributes-aGrowNoise"
+          array={data.growNoise}
+          count={data.count}
+          itemSize={1}
         />
       </bufferGeometry>
       <primitive attach="material" object={material} />

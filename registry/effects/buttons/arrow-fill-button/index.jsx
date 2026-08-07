@@ -43,6 +43,8 @@ function ArrowFillButton({
   arrowColor,
   hoverArrowColor,
 
+  showArrow = true,
+
   ...props
 }) {
   const [isReady, setIsReady] = useState(false);
@@ -190,6 +192,7 @@ function ArrowFillButton({
         <span className="relative z-1 pb-px whitespace-nowrap">{btnText}</span>
       </div>
 
+      {showArrow ? (
       <span
         className={`pointer-events-none absolute right-[var(--icon-right)] top-1/2 z-3 inline-flex h-[var(--icon-circle)] w-[var(--icon-circle)] shrink-0 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-(--btn-fill-bg) text-(--btn-arrow) ${
           isReady
@@ -220,6 +223,7 @@ function ArrowFillButton({
             strokeWidth={1.8}
           />
         </span>
+      ) : null}
     </a>
   );
 }

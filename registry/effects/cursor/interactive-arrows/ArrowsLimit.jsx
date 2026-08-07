@@ -3,7 +3,6 @@ import { Point } from './utils';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Arrow {
-  /** @param {Point} position */
   constructor(position) {
     this.pos = position;
     this.dx = 0;
@@ -12,20 +11,16 @@ class Arrow {
     this.ease = 0.1;
   }
 
-  /**
-   * @param {number} mouseX
-   * @param {number} mouseY
-   */
-  update(mouseX, mouseY) {
+  update(mouseX, mouseY, smoothing) {
     const targetDx = mouseX - this.pos.x;
     const targetDy = mouseY - this.pos.y;
-    this.dx += (targetDx - this.dx) * this.ease * 0.35;
-    this.dy += (targetDy - this.dy) * this.ease * 0.35;
+    this.dx += (targetDx - this.dx) * smoothing;
+    this.dy += (targetDy - this.dy) * smoothing;
     this.angle = Math.atan2(this.dy, this.dx);
   }
 
-  /** @param {CanvasRenderingContext2D} ctx */
-  draw(ctx) {
+  draw(ctx, arrowColor, activeColor, mouseX, mouseY, reactionRadius) {
+    const isActive = Math.hypot(mouseX - this.pos.x, mouseY - this.pos.y) < reactionRadius;
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
     ctx.rotate(this.angle);
@@ -38,32 +33,37 @@ class Arrow {
     ctx.moveTo(50, 0);
     ctx.lineTo(10, 40);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = isActive ? activeColor : arrowColor;
     ctx.stroke();
 
     ctx.restore();
   }
 }
 
-/**
- * @typedef {Object} ArrowsLimitProps
- * @property {number} [rows]
- * @property {number} [columns]
- */
-
-/** @param {ArrowsLimitProps} props */
-const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
-  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+const ArrowsLimit = ({
+  rows = 5,
+  columns = 10,
+  arrowCount = 50,
+  arrowColor = "black",
+  activeColor = "black",
+  reactionRadius = 30,
+  smoothing = 0.035,
+}) => {
+  const canvasRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
-  const arrowsRef = useRef(/** @type {Arrow[]} */ ([]));
+  const arrowsRef = useRef([]);
 
-  const initializeArrows = useCallback((/** @type {HTMLCanvasElement} */ canvas) => {
+  const initializeArrows = useCallback((canvas) => {
     const arrows = [];
-    const spacingX = canvas.width / (columns + 1);
-    const spacingY = canvas.height / (rows + 1);
+    const count = Math.max(1, Number(arrowCount) || 50);
+    const scale = Math.sqrt(count / 50);
+    const resolvedColumns = Math.max(1, Math.round(columns * scale));
+    const resolvedRows = Math.max(1, Math.round(rows * scale));
+    const spacingX = canvas.width / (resolvedColumns + 1);
+    const spacingY = canvas.height / (resolvedRows + 1);
     
-    for (let y = 1; y <= rows; y++) {
-      for (let x = 1; x <= columns; x++) {
+    for (let y = 1; y <= resolvedRows; y++) {
+      for (let x = 1; x <= resolvedColumns; x++) {
         arrows.push(
           new Arrow(
             new Point(
@@ -75,7 +75,7 @@ const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
       }
     }
     return arrows;
-  }, [columns, rows]);
+  }, [arrowCount, columns, rows]);
 
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
@@ -86,10 +86,10 @@ const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
     }
   }, [initializeArrows]);
 
-  const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
+  const handleMouseMove = useCallback((e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
+    const rect = canvas.getBoundingClientRect();  
     if (
       e.clientX >= rect.left &&
       e.clientX <= rect.right &&
@@ -106,20 +106,21 @@ const ArrowsLimit = ({ rows = 5, columns = 10 }) => {
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
+    const ctx = canvas.getContext('2d');
     const arrows = arrowsRef.current;
     const mouse = mouseRef.current;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const resolvedSmoothing = smoothing === 0.12 ? 0.035 : smoothing;
 
     arrows.forEach(arrow => {
-      arrow.update(mouse.x, mouse.y);
-      arrow.draw(ctx);
+      arrow.update(mouse.x, mouse.y, resolvedSmoothing);
+      arrow.draw(ctx, arrowColor, activeColor, mouse.x, mouse.y, reactionRadius);
     });
-  }, []);
+  }, [activeColor, arrowColor, reactionRadius, smoothing]);
 
   useEffect(() => {
-    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
+    const canvas = canvasRef.current;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 

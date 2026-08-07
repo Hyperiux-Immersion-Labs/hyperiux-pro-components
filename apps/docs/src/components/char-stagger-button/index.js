@@ -23,7 +23,6 @@ export default function CharStaggerButton({
   hoverColor = DEFAULT_HOVER_COLOR,
   showArrow = false,
   icon: Icon = ArrowRight,
-  iconVariant = "stacked",
   iconClassName = "",
   onClick,
   ...props
@@ -173,26 +172,22 @@ export default function CharStaggerButton({
 
       {showArrow && Icon && (
         <div className={`overflow-hidden flex items-center justify-start ${iconClassName}`.trim()}>
-          {iconVariant === "single" ? (
-            <Icon className="h-4 w-4 shrink-0 motion-reduce:transition-none max-md:motion-reduce:transition-none max-sm:motion-reduce:transition-none" />
-          ) : (
-            <div
-              className="flex w-max"
-              style={{
-                transform:
-                  isActive && !prefersReducedMotion
-                    ? "translateX(5%)"
-                    : "translateX(-100%)",
-                transition: prefersReducedMotion
-                  ? "none"
-                  : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
-                willChange: "transform",
-              }}
-            >
-              <Icon className="flex-none w-full h-full" />
-              <Icon className="flex-none w-full h-full" />
-            </div>
-          )}
+          <div
+            className="flex w-max"
+            style={{
+              transform:
+                isActive && !prefersReducedMotion
+                  ? "translateX(5%)"
+                  : "translateX(-100%)",
+              transition: prefersReducedMotion
+                ? "none"
+                : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+              willChange: "transform",
+            }}
+          >
+            <Icon className="flex-none h-4 w-4" />
+            <Icon className="flex-none h-4 w-4" />
+          </div>
         </div>
       )}
     </Link>

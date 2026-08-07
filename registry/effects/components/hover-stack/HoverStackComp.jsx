@@ -38,6 +38,10 @@ const HoverStackComp = ({
   overlap = 92,
   hoverLift = 28,
   pushDistance = 110,
+  spread = 24,
+  rotation = 7,
+  duration = 0.35,
+  accentColor = "transparent",
   className = "",
 }) => {
   const [activeIndex, setActiveIndex] = useState(/** @type {number|null} */ (null));
@@ -79,8 +83,10 @@ const HoverStackComp = ({
   }, []);
 
   const preparedCards = useMemo(() => {
+    const rotationScale = rotation / 7;
+
     return cards.map((card, index) => {
-      const rotation =
+      const presetRotation =
         PRESET_ROTATIONS[index % PRESET_ROTATIONS.length] +
         (index % 2 === 0 ? 0 : 1);
 
@@ -88,12 +94,12 @@ const HoverStackComp = ({
 
       return {
         ...card,
-        _rotation: rotation,
+        _rotation: presetRotation * rotationScale,
         _baseX: baseX,
         _baseZ: index + 1,
       };
     });
-  }, [cards, overlap]);
+  }, [cards, overlap, rotation]);
 
   /**
    * @param {PreparedCard} card
@@ -123,11 +129,15 @@ const HoverStackComp = ({
       };
     }
 
+    let boxShadow;
+
     if (hasActive) {
       if (index < activeIndex) {
         x -= pushDistance;
+        y -= spread * 0.4;
       } else if (index > activeIndex) {
         x += pushDistance;
+        y += spread * 0.4;
       }
 
       if (isActive) {
@@ -136,14 +146,16 @@ const HoverStackComp = ({
         rotate = 0;
         zIndex = 999;
         scale = 1.035;
+        boxShadow = `0 0 0 3px ${accentColor}`;
       }
     }
 
+    const activeMs = Math.max(0, duration) * 1000;
     const transition = isActive
-      ? "transform 700ms cubic-bezier(0.22, 1.6, 0.32, 1), box-shadow 900ms cubic-bezier(0.22, 1.6, 0.32, 1)"
+      ? `transform ${activeMs}ms cubic-bezier(0.22, 1.6, 0.32, 1), box-shadow ${activeMs * (900 / 700)}ms cubic-bezier(0.22, 1.6, 0.32, 1)`
       : hasActive
-        ? "transform 700ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 700ms cubic-bezier(0.22, 1, 0.36, 1)"
-        : "transform 480ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 380ms cubic-bezier(0.4, 0, 0.2, 1)";
+        ? `transform ${activeMs}ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow ${activeMs}ms cubic-bezier(0.22, 1, 0.36, 1)`
+        : `transform ${activeMs * (480 / 700)}ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow ${activeMs * (380 / 700)}ms cubic-bezier(0.4, 0, 0.2, 1)`;
 
     return {
       "--card-width": `${cardWidth}px`,
@@ -152,6 +164,7 @@ const HoverStackComp = ({
       zIndex,
       transition,
       background: card.bg,
+      boxShadow,
     };
   };
 

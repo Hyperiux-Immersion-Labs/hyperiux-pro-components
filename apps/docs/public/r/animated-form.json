@@ -10,8 +10,20 @@
   "exportName": "AnimatedForm",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "changelog": [
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed fields, submitLabel, successMessage, and validateOnBlur from the public/remixer API. The built-in form fields now always render, while color, border radius, and duration props customize the form controls.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added submitLabel and successMessage as public props with a working remixer panel. fields is now also a real prop (previously hardcoded), but is left undocumented for the live panel since its default value embeds a JSX checkbox label (Terms link) that isn't JSON-editable. The originally suggested accentColor/validateOnBlur props don't exist anywhere in this form's field components, so they were dropped rather than shipping non-functional controls.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-23",
@@ -19,6 +31,102 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "accentColor",
+      "type": "color",
+      "default": "#111111",
+      "description": "Accent color for focus states, checkbox checks, and the submit button.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "backgroundColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Page background color around the form.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "textColor",
+      "type": "color",
+      "default": "#111111",
+      "description": "Text color for the form heading and field labels.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "inputBackgroundColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Background color for inputs, textarea, and select controls.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "fieldBorderColor",
+      "type": "color",
+      "default": "#e5e7eb",
+      "description": "Default border color for form controls.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "inputRoundedness",
+      "type": "number",
+      "default": 28,
+      "description": "Border radius for inputs and the submit button in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 48,
+        "step": 1
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.3,
+      "description": "Transition duration for control focus and button effects in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.05,
+        "max": 2,
+        "step": 0.05
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "style",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

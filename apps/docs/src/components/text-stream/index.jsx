@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import React from 'react'
 import TextStreamComp from './TextStreamComp';
 
@@ -25,8 +27,25 @@ const items = [
   "makes the web feel futuristic",
 ];
 
-const TextStream = () => {
-  return <TextStreamComp items={items} />;
+const TextStream = ({
+  speed = 1,
+  stagger = 0.08,
+  textColor = "#ffffff",
+  backgroundColor = "#000000",
+  autoplay = true,
+  runOnScroll = true,
+}) => {
+  return (
+    <TextStreamComp
+      items={items}
+      speed={speed}
+      stagger={stagger}
+      textColor={textColor}
+      backgroundColor={backgroundColor}
+      autoplay={autoplay}
+      runOnScroll={runOnScroll}
+    />
+  );
 }
 
 export default TextStream

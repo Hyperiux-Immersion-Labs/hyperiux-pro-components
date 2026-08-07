@@ -394,9 +394,13 @@
 
 .tableWrap {
   overflow-x: auto;
-  border-radius: 0.75rem;
+  border-radius: 0.3rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
+  --table-border: rgba(255, 255, 255, 0.14);
+  --table-header-bg: #272727;
+  --table-header-color: #ffffff;
+  --table-cell-color: rgba(255, 255, 255, 0.76);
 }
 
 .content :global(.codeblock-root) {
@@ -418,25 +422,63 @@
 
 .table {
   width: 100%;
-  min-width: 38rem;
+  min-width: min(38rem, 100%);
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .table th {
-  color: rgba(255, 255, 255, 0.82);
-  background: #272727;
-  font-weight: 500;
-  font-size: 1.2rem;
+  color: var(--table-header-color);
+  background: var(--table-header-bg);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.3vw, 1.55rem);
 }
 
 .table th,
 .table td {
-  padding: 0.85rem 1rem;
+  padding: clamp(1rem, 1.8vw, 1.65rem) clamp(1rem, 2vw, 2rem);
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--table-border);
+  border-right: 1px solid var(--table-border);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 
+}
+
+.table td {
+  color: var(--table-cell-color);
+  font-size: clamp(0.98rem, 1.08vw, 1.35rem);
+}
+
+.table th:last-child,
+.table td:last-child {
+  border-right: 0;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tableWrap[data-variant="orange"] {
+  --table-border: rgba(255, 95, 0, 0.32);
+  --table-header-bg: var(--primary);
+  --table-header-color: #0e0e0e;
+  --table-cell-color: rgba(255, 255, 255, 0.82);
+}
+
+.tableWrap[data-variant="muted"] {
+  --table-border: rgba(147, 147, 147, 0.28);
+  --table-header-bg: rgba(255, 255, 255, 0.08);
+  --table-header-color: rgba(255, 255, 255, 0.9);
+  --table-cell-color: rgba(255, 255, 255, 0.68);
+}
+
+.tableWrap[data-variant="outline"] {
+  --table-border: rgba(255, 255, 255, 0.22);
+  --table-header-bg: transparent;
+  --table-header-color: #ffffff;
+  --table-cell-color: rgba(255, 255, 255, 0.76);
 }
 
 .numberList {

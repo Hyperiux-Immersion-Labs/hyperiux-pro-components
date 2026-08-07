@@ -5,7 +5,7 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import PixelBloom from "@/components/pixel-bloom";
 gsap.registerPlugin(ScrollTrigger);
 
-export default function PixelBloomWrapper() {
+export default function PixelBloomWrapper({ pixelBloomProps = {} }) {
     useEffect(() => {
         if (window.matchMedia("(max-width: 1025px)").matches) return;
         const ctx = gsap.context(() => {
@@ -49,28 +49,28 @@ export default function PixelBloomWrapper() {
             <div className="h-[20vh] max-sm:h-[10vh] max-md:h-[8vh] w-full"></div>
             <div className="relative w-full flex flex-col  gap-[10vh]  items-center">
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] rounded-[2vw] max-sm:rounded-lg overflow-clip mr-[25vw] max-md:mx-auto transform-gpu backface-hidden">
-                    <PixelBloom className='w-full h-full' type='video' src='/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4' />
+                    <PixelBloom {...pixelBloomProps} className='w-full h-full' type='video' src='/api/media-proxy?url=https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/showreel.mp4' />
                 </div>
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden ml-[25vw] max-md:mx-auto  rounded-[2vw] transform-gpu backface-hidden">
-                    <PixelBloom className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg' />
+                    <PixelBloom {...pixelBloomProps} className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg' />
                 </div>
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden mr-[25vw] max-md:mx-auto  rounded-[2vw] transform-gpu backface-hidden">
-                    <PixelBloom className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg' />
+                    <PixelBloom {...pixelBloomProps} className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg' />
                 </div>
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden ml-[25vw]  max-md:mx-auto rounded-[2vw] transform-gpu backface-hidden max-md:hidden max-sm:hidden">
-                    <PixelBloom className='w-full h-full' />
+                    <PixelBloom {...pixelBloomProps} className='w-full h-full' />
                 </div>
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden mr-[25vw]  max-md:mx-auto rounded-[2vw] transform-gpu backface-hidden">
-                    <PixelBloom className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg' />
+                    <PixelBloom {...pixelBloomProps} className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg' />
                 </div>
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden ml-[25vw]  max-md:mx-auto rounded-[2vw] transform-gpu backface-hidden">
-                        <PixelBloom className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg' />
+                        <PixelBloom {...pixelBloomProps} className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg' />
                 </div>
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden mr-[25vw]  max-md:mx-auto rounded-[2vw] transform-gpu backface-hidden">
-                    <PixelBloom className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg' />
+                    <PixelBloom {...pixelBloomProps} className='w-full h-full' type='image' src='https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg' />
                 </div>
                 <div className="curved-scroll-box size-[30vw] max-md:size-[70vw] overflow-hidden ml-[25vw]  max-md:mx-auto  rounded-[2vw] transform-gpu backface-hidden ">
-                    <PixelBloom className='w-full h-full' type='video' />
+                    <PixelBloom {...pixelBloomProps} className='w-full h-full' type='video' />
                 </div>
             </div>
             <div className="h-[20vh] max-md:h-[10vh]  w-full"></div>

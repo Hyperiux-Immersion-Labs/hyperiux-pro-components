@@ -6,7 +6,7 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ScrollStackComp = ({ cards = [] }) => {
+const ScrollStackComp = ({ cards = [], sectionBgColor = "#ffffff", cardRadius = 45 }) => {
     const uid = useId().replace(/:/g, "");
     const sectionId = `state-${uid}`;
     const sectionRef = useRef(null);
@@ -98,7 +98,8 @@ const ScrollStackComp = ({ cards = [] }) => {
         <section
             id={sectionId}
             ref={sectionRef}
-            className={`main bg-white py-[7%] max-md:py-[15%] max-sm:py-[15%]`}
+            className={`main py-[7%] max-md:py-[15%] max-sm:py-[15%]`}
+            style={{ backgroundColor: sectionBgColor }}
         >
 
             <h1 className="text-center text-[4vw] max-md:text-[5vw] max-sm:text-[6.5vw] text-black">
@@ -126,6 +127,7 @@ const ScrollStackComp = ({ cards = [] }) => {
                                 description={item.description}
                                 bgColor={item.bgColor}
                                 textColor={item.textColor}
+                                cardRadius={cardRadius}
                             />
                         </div>
                     </div>
@@ -137,12 +139,12 @@ const ScrollStackComp = ({ cards = [] }) => {
 
 export default ScrollStackComp;
 
-const Card = ({ title, description, bgColor, textColor, cardRef }) => {
+const Card = ({ title, description, bgColor, textColor, cardRef, cardRadius = 45 }) => {
     return (
         <div
             ref={cardRef}
-            className="fadeUp mx-auto flex h-[32vw] max-md:h-[38vh] max-sm:h-[50vh] w-[80%] max-sm:w-full items-center justify-between gap-[4vw] rounded-[45px] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-md:py-[8vw] max-sm:py-[15vw] max-sm:px-[8vw] max-sm:min-h-[50vw] max-md:flex-col max-sm:rounded-[9vw] "
-            style={{ backgroundColor: bgColor }}
+            className="fadeUp mx-auto flex h-[32vw] max-md:h-[38vh] max-sm:h-[50vh] w-[80%] max-sm:w-full items-center justify-between gap-[4vw] rounded-[var(--card-radius)] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-md:py-[8vw] max-sm:py-[15vw] max-sm:px-[8vw] max-sm:min-h-[50vw] max-md:flex-col max-sm:rounded-[9vw] "
+            style={{ backgroundColor: bgColor, "--card-radius": `${cardRadius}px` }}
         >
             <div className="w-[48%] tablet:w-full max-sm:w-full max-md:w-[80%] max-md:mx-auto">
                 <h2

@@ -12,14 +12,30 @@ const cardData = {
   strength:0.7,
 }
 
-export default function BorderBeam() {
+export default function BorderBeam({
+  size = cardData.size,
+  colorVariant = cardData.colorVariant,
+  theme = "light",
+  active = true,
+  strength = 1,
+  duration,
+  beamWidth,
+  backgroundColor = "#f4f5f7",
+}) {
   return (
     <BeamBorder
-      size={cardData.size}
-      colorVariant={cardData.colorVariant}
-      theme="light"
+      size={size}
+      colorVariant={colorVariant}
+      theme={theme}
+      active={active}
+      strength={strength}
+      duration={duration}
+      beamWidth={beamWidth}
     >
-      <div className="bg-[#f4f5f7] rounded-md p-[2.2vw] backdrop-blur-sm max-md:p-[4.8vw] max-sm:p-[6vw]">
+      <div
+        className="rounded-md p-[2.2vw] backdrop-blur-sm max-md:p-[4.8vw] max-sm:p-[6vw]"
+        style={{ backgroundColor }}
+      >
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[0.8vw] uppercase tracking-[0.22em] text-black/45 max-md:text-[1.8vw] max-sm:text-[3vw]">

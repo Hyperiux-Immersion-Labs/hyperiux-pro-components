@@ -14,13 +14,13 @@ class Arrow {
     this.targetPos = { ...position };
   }
 
-  update(mouseX, mouseY) {
+  update(mouseX, mouseY, reactionRadius, angleSmoothing, positionSmoothing) {
     this.dx = mouseX - this.pos.x;
     this.dy = mouseY - this.pos.y;
 
     const targetAngle = Math.atan2(this.dy, this.dx) * 0.95;
 
-    this.angle = lerpAngle(this.angle, targetAngle, 0.15);
+    this.angle = lerpAngle(this.angle, targetAngle, angleSmoothing);
 
     // Check if mouse is near this arrow
     const distance = Math.sqrt(
@@ -29,7 +29,7 @@ class Arrow {
     );
 
     const wasHovered = this.isHovered;
-    this.isHovered = distance < 30;
+    this.isHovered = distance < reactionRadius;
 
     // Handle spacing animation
     if (this.isHovered !== wasHovered) {
@@ -40,8 +40,9 @@ class Arrow {
             const dx = otherArrow.pos.x - this.pos.x;
             const dy = otherArrow.pos.y - this.pos.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 70) {
-              const pushForce = (70 - dist) / 70;
+            const pushRadius = reactionRadius * (70 / 30);
+            if (dist < pushRadius) {
+              const pushForce = (pushRadius - dist) / pushRadius;
               otherArrow.targetPos = {
                 x: otherArrow.originalPos.x + (dx / dist) * 20 * pushForce,
                 y: otherArrow.originalPos.y + (dy / dist) * 20 * pushForce
@@ -58,11 +59,11 @@ class Arrow {
     }
 
     // Smooth position transition
-    this.pos.x += (this.targetPos.x - this.pos.x) * 0.1;
-    this.pos.y += (this.targetPos.y - this.pos.y) * 0.1;
+    this.pos.x += (this.targetPos.x - this.pos.x) * positionSmoothing;
+    this.pos.y += (this.targetPos.y - this.pos.y) * positionSmoothing;
   }
 
-  draw(ctx) {
+  draw(ctx, arrowColor, activeColor) {
     ctx.save();
     ctx.translate(this.pos.x, this.pos.y);
     ctx.rotate(this.angle);
@@ -75,20 +76,27 @@ class Arrow {
     ctx.moveTo(20, 0);
     ctx.lineTo(5, 15);
     ctx.lineWidth = this.isHovered ? 3 : 2;
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = this.isHovered ? activeColor : arrowColor;
     ctx.stroke();
     ctx.restore();
   }
 }
 
-const Arrows = () => {
+const Arrows = ({
+  arrowCount = 50,
+  arrowColor = "black",
+  activeColor = "black",
+  reactionRadius = 30,
+  smoothing = 0.15,
+}) => {
   const canvasRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const arrowsRef = useRef([]);
 
   const initializeArrows = useCallback((canvas) => {
     const arrows = [];
-    const spacing = 50;
+    const count = Math.max(1, Number(arrowCount) || 50);
+    const spacing = 50 * Math.sqrt(50 / count);
     const cols = Math.floor(canvas.width / spacing);
     const rows = Math.floor(canvas.height / spacing);
     const xPadding = (canvas.width - (cols * spacing)) / 2;
@@ -99,7 +107,7 @@ const Arrows = () => {
       }
     }
     return arrows;
-  }, []);
+  }, [arrowCount]);
 
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
@@ -130,11 +138,12 @@ const Arrows = () => {
     const arrows = arrowsRef.current;
     const mouse = mouseRef.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const resolvedSmoothing = smoothing === 0.12 ? 0.15 : smoothing;
     arrows.forEach(arrow => {
-      arrow.update(mouse.x, mouse.y);
-      arrow.draw(ctx);
+      arrow.update(mouse.x, mouse.y, reactionRadius, resolvedSmoothing, resolvedSmoothing * (0.1 / 0.15));
+      arrow.draw(ctx, arrowColor, activeColor);
     });
-  }, []);
+  }, [activeColor, arrowColor, reactionRadius, smoothing]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

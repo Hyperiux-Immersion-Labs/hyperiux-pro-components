@@ -1,19 +1,11 @@
-import DraggableCanvas from '@/components/draggable-canvas'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/draggable-canvas/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
-    <DraggableCanvas/>
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="draggable-canvas" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("draggable-canvas");
 }

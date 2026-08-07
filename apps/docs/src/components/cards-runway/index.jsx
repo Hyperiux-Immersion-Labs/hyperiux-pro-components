@@ -1,5 +1,8 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
-import CardsRunway from './CardsRunway'
+"use client";
+
+import CardsRunwayComponent from "./CardsRunway";
 
 const UI_CARDS = [
   {
@@ -29,14 +32,21 @@ const UI_CARDS = [
   },
 ];
 
-export default function Index() {
+export default function CardsRunway({
+  accentColor = "#ff5f00",
+  cardColor = "#161616",
+  speed = 1,
+  gap = 48,
+  perspective = 900,
+}) {
   return (
-    <CardsRunway
+    <CardsRunwayComponent
       data={UI_CARDS}
-      accentColor="#ff5f00"
-      cardColor="#161616"
-      cardWidth="28vw"
-      start="10% 80%"
+      accentColor={accentColor}
+      cardColor={cardColor}
+      speed={speed}
+      gap={gap}
+      perspective={perspective}
     />
   );
 }

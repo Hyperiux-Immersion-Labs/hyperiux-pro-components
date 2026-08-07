@@ -1,7 +1,16 @@
-"use client"
-import React, { useEffect, useRef, useState } from "react";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
-export default function TextCloning() {
+"use client"
+
+import React, { useEffect, useRef, useState } from "react";
+import { createSuspendedRaf } from "./createSuspendedRaf";
+
+export default function TextCloning({
+    cloneCount = 9,
+    offset = 220,
+    textColor = "#f5f5f5",
+    textSize = 1,
+}) {
     const canvasRef = useRef(null);
     const [text, setText] = useState("Hyperiux");
 
@@ -10,7 +19,6 @@ export default function TextCloning() {
         const ctx = canvas.getContext("2d");
 
         let w, h, dpr;
-        let raf;
 
         let mouse = { x: 0, y: 0 };
         let target = { x: 0, y: 0 };
@@ -20,7 +28,9 @@ export default function TextCloning() {
             window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         const positionLerpFactor = prefersReducedMotion ? 1 : 0.08;
-        const layerCount = prefersReducedMotion ? 3 : 9;
+        const layerCount = prefersReducedMotion ? Math.min(3, cloneCount) : Math.max(1, Number(cloneCount) || 9);
+        const depthOffset = Math.max(0, Number(offset) || 0);
+        const safeTextSize = Math.max(0.4, Number(textSize) || 1);
 
         const lerp = (a, b, t) => a + (b - a) * t;
 
@@ -45,19 +55,21 @@ export default function TextCloning() {
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.lineWidth = 2;
-            ctx.strokeStyle = `rgba(245,245,245,${alpha})`;
+            ctx.strokeStyle = textColor;
+            ctx.globalAlpha = alpha;
             ctx.strokeText(value, x, y);
+            ctx.globalAlpha = 1;
         };
 
         const drawClones = () => {
             const dx = (mouse.x - w / 2) / w;
             const dy = (mouse.y - h / 2) / h;
 
-            const depthX = dx * 220;
-            const depthY = dy * 220;
+            const depthX = dx * depthOffset;
+            const depthY = dy * depthOffset;
 
             const layers = layerCount;
-            const size = Math.min(w / Math.max(text.length * 0.72, 3), h * 0.42);
+            const size = Math.min(w / Math.max(text.length * 0.72, 3), h * 0.42) * safeTextSize;
 
             for (let i = layers; i >= 0; i--) {
                 const p = i / layers;
@@ -84,19 +96,20 @@ export default function TextCloning() {
             }
         };
 
-        const render = () => {
-            mouse.x = lerp(mouse.x, target.x, positionLerpFactor);
-            mouse.y = lerp(mouse.y, target.y, positionLerpFactor);
+        const loop = createSuspendedRaf({
+            root: canvas,
+            onFrame: () => {
+                mouse.x = lerp(mouse.x, target.x, positionLerpFactor);
+                mouse.y = lerp(mouse.y, target.y, positionLerpFactor);
 
-            ctx.clearRect(0, 0, w, h);
-            ctx.fillStyle = "#101010";
-            ctx.fillRect(0, 0, w, h);
+                ctx.clearRect(0, 0, w, h);
+                ctx.fillStyle = "#101010";
+                ctx.fillRect(0, 0, w, h);
 
-            drawStars();
-            drawClones();
-
-            raf = requestAnimationFrame(render);
-        };
+                drawStars();
+                drawClones();
+            },
+        });
 
         const onMove = (e) => {
             target.x = e.clientX;
@@ -111,7 +124,7 @@ export default function TextCloning() {
         };
 
         resize();
-        render();
+        loop.start();
 
         window.addEventListener("resize", resize);
         window.addEventListener("pointermove", onMove);
@@ -120,14 +133,14 @@ export default function TextCloning() {
         window.addEventListener("touchmove", onTouch, { passive: true });
 
         return () => {
-            cancelAnimationFrame(raf);
+            loop.destroy();
             window.removeEventListener("resize", resize);
             window.removeEventListener("pointermove", onMove);
             window.removeEventListener("pointerdown", onMove);
             window.removeEventListener("touchstart", onTouch);
             window.removeEventListener("touchmove", onTouch);
         };
-    }, [text]);
+    }, [cloneCount, offset, text, textColor, textSize]);
 
     return (
         <>
@@ -135,9 +148,8 @@ export default function TextCloning() {
                 value={text}
                 onChange={(e) => setText(e.target.value || "")}
                 placeholder="Type text"
-               className="w-fit px-[2vw] py-[1vw] rounded-full border border-white/20 fixed bottom-[5%] z-10 left-1/2 -translate-x-1/2 focus:border-[#ff5f00] focus:outline-[#ff5f00] max-md:px-[5vw] max-sm:py-[3vw] max-md:py-[2vw] max-md:text-[3vw]! max-sm:text-[4vw]! text-center"
+                className="w-fit px-[2vw] py-[1vw] rounded-full border border-white/20 fixed bottom-[5%] z-10 left-1/2 -translate-x-1/2 focus:border-[#ff5f00] focus:outline-[#ff5f00] max-[1025px]:px-[5vw] max-md:py-[3vw] max-[1025px]:py-[2vw] max-[1025px]:text-[3vw]! max-md:text-[4vw]! text-center"
             />
-
 
             <canvas
                 ref={canvasRef}

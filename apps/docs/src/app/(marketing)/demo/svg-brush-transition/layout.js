@@ -1,19 +1,13 @@
-import React from "react";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import SVGBrushTransition from "@/components/svg-brush-transition";
+import TransitionRemixerLayout from "@/components/remixer-panel/TransitionRemixerLayout";
+import svgBrushTransitionRegistry from "../../../../../../../registry/effects/transitions/svg-brush-transition/registry.json";
 
 export default function layout({ children }) {
   return (
-    <SVGBrushTransition
-      config={{
-        enableBlur: false,
-        strokeColor: "#82A0FF",
-        strokeWidth: 2,
-        duration: 1.5,
-      }}
+    <TransitionRemixerLayout
+      registry={svgBrushTransitionRegistry}
+      slug="svg-brush-transition"
     >
-      <DemoHeader />
       {children}
-    </SVGBrushTransition>
+    </TransitionRemixerLayout>
   );
 }

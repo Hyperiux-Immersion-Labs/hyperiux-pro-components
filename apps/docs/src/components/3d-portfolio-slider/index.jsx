@@ -27,6 +27,17 @@ const items = [
   { url: `${P}${B}/v-07.jpg`, description: "PORTFOLIO 21" },
 ];
 
-export default function PortfolioSlider3D() {
-  return <PortfolioSlider items={items} />
+export default function PortfolioSlider3D({
+  zoomFactor = 1,
+  scrollSpeed = 0.01,
+  showCaption = true,
+}) {
+  return (
+    <PortfolioSlider
+      items={items}
+      zoomFactor={zoomFactor}
+      scrollSpeed={scrollSpeed}
+      showCaption={showCaption}
+    />
+  )
 }

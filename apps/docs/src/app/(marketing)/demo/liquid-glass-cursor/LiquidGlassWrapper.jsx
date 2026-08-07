@@ -26,7 +26,7 @@ function useIsMobile() {
   return isMobile
 }
 
-export default function LiquidGlassWrapper() {
+export default function LiquidGlassWrapper({ cursorProps = {} }) {
   const isMobile = useIsMobile()
 
   return (
@@ -34,7 +34,7 @@ export default function LiquidGlassWrapper() {
  
     <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden font-sans selection:bg-black selection:text-white">
       {!isMobile && (
-        <LiquidGlassCursor baseSize={30} textHoverSize={130} borderColor="rgba(0,0,0,0.05)" />
+        <LiquidGlassCursor {...cursorProps} />
       )}
 
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] bg-white rounded-full filter blur-[100px] opacity-60 pointer-events-none"></div>

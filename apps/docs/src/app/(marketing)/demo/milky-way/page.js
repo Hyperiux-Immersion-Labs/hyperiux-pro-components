@@ -1,18 +1,10 @@
-import MilkyWay from "@/components/milky-way"
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/milky-way/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader logoColor='#FFFFFF' textColor="#FFFFFF"/>
-   <MilkyWay />
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="milky-way" />;
 }
-
-export default page
 
 export async function generateMetadata() {
   return getDemoPageMetadata("milky-way");

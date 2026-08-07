@@ -9,6 +9,8 @@ const AnimatedTabsComp = ({
  className ="",
  animationType ="slide", //"fade" |"slide"
  slideDistance = 40,
+ accentColor ="#ff6b00",
+ duration = 0.35,
 }) => {
  const safeDefaultIndex =
  tabs.length > 0
@@ -24,6 +26,7 @@ const AnimatedTabsComp = ({
  (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
  );
  const baseId = useId();
+ const safeDuration = Math.max(0.05, Number(duration) || 0.35);
 
  useEffect(() => {
  const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -45,7 +48,7 @@ const AnimatedTabsComp = ({
  gsap.to(activeLine, {
  x: activeLabel.offsetLeft,
  width: activeLabel.offsetWidth,
- duration: 0.45,
+ duration: safeDuration,
  ease:"power3.out",
  });
  };
@@ -67,7 +70,7 @@ const AnimatedTabsComp = ({
  gsap.to(currentContent, {
  opacity: 0,
  x: -direction * slideDistance,
- duration: 0.28,
+ duration: safeDuration * 0.75,
  ease:"power2.out",
  onComplete: () => {
  gsap.set(currentContent, {
@@ -86,7 +89,7 @@ const AnimatedTabsComp = ({
  gsap.to(nextContent, {
  opacity: 1,
  x: 0,
- duration: 0.38,
+ duration: safeDuration,
  ease:"power3.out",
  });
  },
@@ -94,7 +97,7 @@ const AnimatedTabsComp = ({
  } else {
  gsap.to(currentContent, {
  opacity: 0,
- duration: 0.2,
+ duration: safeDuration * 0.65,
  ease:"power2.out",
  onComplete: () => {
  gsap.set(currentContent, {
@@ -112,7 +115,7 @@ const AnimatedTabsComp = ({
 
  gsap.to(nextContent, {
  opacity: 1,
- duration: 0.35,
+ duration: safeDuration,
  ease:"power2.out",
  });
  },
@@ -182,9 +185,9 @@ const AnimatedTabsComp = ({
  if (!tabs.length) return null;
 
  return (
- <div className={`h-full w-full px-[7vw] py-[7vw] max-md:p-[6vw] max-sm:px-[5vw] max-sm:py-[8vw] ${className}`}>
+ <div className={`h-full w-full px-[7vw] py-[7vw] max-[1025px]:p-[6vw] max-md:px-[5vw] max-md:py-[8vw] ${className}`}>
  <div className="relative border-b  border-b-black/10">
- <div role="tablist" aria-orientation="horizontal" className="flex gap-[2vw] overflow-x-auto max-md:gap-[3vw] max-sm:gap-[4vw]">
+ <div role="tablist" aria-orientation="horizontal" className="flex gap-[2vw] overflow-x-auto max-[1025px]:gap-[3vw] max-md:gap-[4vw]">
  {tabs.map((tab, index) => (
  <button
  key={tab.id || index}
@@ -196,22 +199,19 @@ const AnimatedTabsComp = ({
  tabIndex={activeTab === index ? 0 : -1}
  onClick={() => handleTabClick(index)}
  onKeyDown={(event) => handleTabKeyDown(event, index)}
- className={`relative cursor-pointer whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] transition-colors duration-300 ease-in-out max-md:px-[2.5vw] max-md:py-[1.5vw] max-sm:px-[3vw] max-sm:py-[2.5vw] ${
- activeTab === index
- ?"text-[#ff6b00]"
- :"text-black/50"
- }`}
+ className="relative cursor-pointer whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] transition-colors duration-300 ease-in-out max-[1025px]:px-[2.5vw] max-[1025px]:py-[1.5vw] max-md:px-[3vw] max-md:py-[2.5vw]"
+ style={{ color: activeTab === index ? accentColor : "rgba(0,0,0,0.5)" }}
  type="button"
  >
- <span className="text-[1.2vw] font-medium max-md:text-[2.2vw] max-sm:text-[4vw]">{tab.label}</span>
+ <span className="text-[1.2vw] font-medium max-[1025px]:text-[2.2vw] max-md:text-[4vw]">{tab.label}</span>
  </button>
  ))}
  </div>
 
- <div ref={activeLineRef} className="absolute bottom-0 left-0 h-0.5 bg-[#ff6b00] max-sm:h-[0.4vw]" />
+ <div ref={activeLineRef} className="absolute bottom-0 left-0 h-0.5 max-md:h-[0.4vw]" style={{ backgroundColor: accentColor }} />
  </div>
 
- <div className="relative min-h-[24vw] w-full max-sm:overflow-hidden pt-[2vw] max-md:min-h-[32vw] max-md:pt-[4vw] max-sm:min-h-[48vw] max-sm:pt-[5vw]">
+ <div className="relative min-h-[24vw] w-full max-md:overflow-hidden pt-[2vw] max-[1025px]:min-h-[32vw] max-[1025px]:pt-[4vw] max-md:min-h-[48vw] max-md:pt-[5vw]">
  {tabs.map((tab, index) => (
  <div
  key={tab.id || index}

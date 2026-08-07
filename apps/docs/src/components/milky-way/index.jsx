@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client'
 
 import React, { useRef, useMemo, useEffect, useLayoutEffect, useState } from 'react'
@@ -7,11 +9,47 @@ import * as THREE from 'three'
 import { degToRad } from 'three/src/math/MathUtils'
 import { EffectComposer, Vignette } from '@react-three/postprocessing'
 import { Stars } from 'lucide-react'
-import Link from 'next/link'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import CircularText from './CircularText'
 import { createVisibilityGate } from './createSuspendedRaf'
 
+
+const DEFAULT_PARTICLE_SIZE = 1
+const DEFAULT_CORE_COLOR = '#f5f5ff'
+const DEFAULT_ACCENT_COLOR = '#ffe6ad'
+const DEFAULT_OUTER_COLOR = '#e05c12'
+const DEFAULT_BACKGROUND_COLOR = '#000000'
+const DEFAULT_MOUSE_INFLUENCE = 1
+const DEFAULT_ROTATION_SPEED = 0.2
+
+function clampNumber(value, min, max, fallback) {
+   const number = Number(value)
+   if (!Number.isFinite(number)) return fallback
+   return THREE.MathUtils.clamp(number, min, max)
+}
+
+function resolveMilkyWayProps({
+   particleSize = DEFAULT_PARTICLE_SIZE,
+   coreColor = DEFAULT_CORE_COLOR,
+   accentColor = DEFAULT_ACCENT_COLOR,
+   outerColor = DEFAULT_OUTER_COLOR,
+   backgroundColor = DEFAULT_BACKGROUND_COLOR,
+   mouseInfluence = DEFAULT_MOUSE_INFLUENCE,
+   rotationSpeed = DEFAULT_ROTATION_SPEED,
+}) {
+   return {
+      particleSize: clampNumber(particleSize, 0.2, 3, DEFAULT_PARTICLE_SIZE),
+      coreColor: typeof coreColor === 'string' && coreColor ? coreColor : DEFAULT_CORE_COLOR,
+      accentColor: typeof accentColor === 'string' && accentColor ? accentColor : DEFAULT_ACCENT_COLOR,
+      outerColor: typeof outerColor === 'string' && outerColor ? outerColor : DEFAULT_OUTER_COLOR,
+      backgroundColor:
+         typeof backgroundColor === 'string' && backgroundColor
+            ? backgroundColor
+            : DEFAULT_BACKGROUND_COLOR,
+      mouseInfluence: clampNumber(mouseInfluence, 0, 2, DEFAULT_MOUSE_INFLUENCE),
+      rotationSpeed: clampNumber(rotationSpeed, 0, 2, DEFAULT_ROTATION_SPEED),
+   }
+}
 
 const CFG = {
    texSize: 400,
@@ -118,6 +156,7 @@ const PARTICLE_VERT = /* glsl */`
 precision highp float;
 uniform sampler2D uPosition;
 uniform float uPixelRatio;
+uniform float uParticleSize;
 attribute vec2 aRef;
 attribute float aRadiusFrac;
 attribute float aSeed;
@@ -144,12 +183,13 @@ void main(){
  aSeed
  );
  float sz = mix(normalSz, specialSz, isSpecial);
+ sz *= uParticleSize;
  sz *= (420.0 / max(depth, 0.1)) * uPixelRatio;
  float maxSize = mix(
  (${CFG.baseSize.toFixed(1)} * (2.0 + aSeed * 1.0)),
  (${CFG.sparkleSize.toFixed(1)} * (2.0 + aSeed * 1.0)),
  isSpecial
- );
+ ) * uParticleSize;
  gl_PointSize = clamp(sz, 0.4, maxSize);
  gl_Position = projectionMatrix * mvPos;
 }
@@ -160,6 +200,9 @@ varying float vRadiusFrac;
 varying float vPhase;
 varying float vSeed;
 varying float vColor;
+uniform vec3 uCoreColor;
+uniform vec3 uAccentColor;
+uniform vec3 uOuterColor;
 void main(){
  vec2 uv = gl_PointCoord - 0.5;
  float r = length(uv) * 2.0;
@@ -174,17 +217,17 @@ void main(){
  float twinkle = 0.78 + 0.22 * sin(vPhase * 6.28318 * tRate + vSeed * 17.3);
  intensity *= twinkle;
  float isSpecial = step(${(1.0 - CFG.colorParticleRatio).toFixed(3)}, vColor);
- vec3 nCore = vec3(${CFG.colors.core[0].toFixed(2)}, ${CFG.colors.core[1].toFixed(2)}, ${CFG.colors.core[2].toFixed(2)}) * ${CFG.colorLevels.core.toFixed(2)};
- vec3 nMid = vec3(${CFG.colors.mid[0].toFixed(2)}, ${CFG.colors.mid[1].toFixed(2)}, ${CFG.colors.mid[2].toFixed(2)}) * ${CFG.colorLevels.mid.toFixed(2)};
- vec3 nOuter = vec3(${CFG.colors.outer[0].toFixed(2)}, ${CFG.colors.outer[1].toFixed(2)}, ${CFG.colors.outer[2].toFixed(2)}) * ${CFG.colorLevels.outer.toFixed(2)};
+ vec3 nCore = uCoreColor * ${CFG.colorLevels.core.toFixed(2)};
+ vec3 nMid = mix(uCoreColor, uAccentColor, 0.7) * ${CFG.colorLevels.mid.toFixed(2)};
+ vec3 nOuter = uOuterColor * ${CFG.colorLevels.outer.toFixed(2)};
  vec3 normalCol = mix(nCore, nMid, smoothstep(0.00, 0.42, vRadiusFrac));
  normalCol = mix(normalCol, nOuter, smoothstep(0.42, 1.00, vRadiusFrac));
  float ss = fract((vColor - ${(1.0 - CFG.colorParticleRatio).toFixed(3)}) / ${CFG.colorParticleRatio.toFixed(3)} * 5.0) * 5.0;
- vec3 s0 = vec3(${CFG.colors.sparkleA[0].toFixed(2)}, ${CFG.colors.sparkleA[1].toFixed(2)}, ${CFG.colors.sparkleA[2].toFixed(2)}) * ${CFG.colorLevels.sparkle.toFixed(2)};
- vec3 s1 = vec3(${CFG.colors.sparkleB[0].toFixed(2)}, ${CFG.colors.sparkleB[1].toFixed(2)}, ${CFG.colors.sparkleB[2].toFixed(2)}) * ${CFG.colorLevels.sparkle.toFixed(2)};
- vec3 s2 = vec3(${CFG.colors.sparkleC[0].toFixed(2)}, ${CFG.colors.sparkleC[1].toFixed(2)}, ${CFG.colors.sparkleC[2].toFixed(2)}) * ${CFG.colorLevels.sparkle.toFixed(2)};
- vec3 s3 = vec3(${CFG.colors.sparkleD[0].toFixed(2)}, ${CFG.colors.sparkleD[1].toFixed(2)}, ${CFG.colors.sparkleD[2].toFixed(2)}) * ${CFG.colorLevels.sparkle.toFixed(2)};
- vec3 s4 = vec3(${CFG.colors.sparkleE[0].toFixed(2)}, ${CFG.colors.sparkleE[1].toFixed(2)}, ${CFG.colors.sparkleE[2].toFixed(2)}) * ${CFG.colorLevels.sparkle.toFixed(2)};
+ vec3 s0 = uAccentColor * ${CFG.colorLevels.sparkle.toFixed(2)};
+ vec3 s1 = mix(uAccentColor, uCoreColor, 0.35) * ${CFG.colorLevels.sparkle.toFixed(2)};
+ vec3 s2 = mix(uOuterColor, uCoreColor, 0.2) * ${CFG.colorLevels.sparkle.toFixed(2)};
+ vec3 s3 = uOuterColor * ${CFG.colorLevels.sparkle.toFixed(2)};
+ vec3 s4 = mix(uAccentColor, uOuterColor, 0.5) * ${CFG.colorLevels.sparkle.toFixed(2)};
  vec3 specialCol;
  if(ss < 1.0) specialCol = mix(s0, s1, ss);
  else if(ss < 2.0) specialCol = mix(s1, s2, ss - 1.0);
@@ -325,6 +368,7 @@ precision highp float;
 uniform sampler2D uPosition;
 uniform float uPixelRatio;
 uniform float uTime;
+uniform float uParticleSize;
 attribute vec2 aRef;
 attribute float aRadiusFrac;
 attribute float aSeed;
@@ -340,9 +384,9 @@ void main(){
  vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
  float depth = -mvPos.z;
  float sizeFactor = mix(0.6, 1.0, 1.0 - aRadiusFrac);
- float sz = ${SMOKE_CFG.particleSize.toFixed(1)} * sizeFactor * (0.7 + aSeed * 0.6);
+ float sz = ${SMOKE_CFG.particleSize.toFixed(1)} * uParticleSize * sizeFactor * (0.7 + aSeed * 0.6);
  sz *= (420.0 / max(depth, 0.1)) * uPixelRatio;
- gl_PointSize = clamp(sz, 2.0, ${SMOKE_CFG.particleSize.toFixed(1)} * 3.0);
+ gl_PointSize = clamp(sz, 2.0, ${SMOKE_CFG.particleSize.toFixed(1)} * uParticleSize * 3.0);
  gl_Position = projectionMatrix * mvPos;
 }
 `
@@ -351,6 +395,9 @@ precision highp float;
 varying float vRadiusFrac;
 varying float vPhase;
 varying float vSeed;
+uniform vec3 uCoreColor;
+uniform vec3 uAccentColor;
+uniform vec3 uOuterColor;
 void main(){
  vec2 uv = gl_PointCoord - 0.5;
  uv.x *= 2.1;
@@ -366,11 +413,11 @@ void main(){
  float intensity = clamp(radialFade + coreBright, 0.0, 1.0);
  float flow = 0.88 + 0.12 * sin(vPhase * 6.28318 * 1.0 + vSeed * 8.0);
  intensity *= flow * streak;
- vec3 cCore = vec3(${SMOKE_CFG.colors.core[0].toFixed(2)}, ${SMOKE_CFG.colors.core[1].toFixed(2)}, ${SMOKE_CFG.colors.core[2].toFixed(2)}) * ${SMOKE_CFG.colorLevels.core.toFixed(2)};
- vec3 cCyan = vec3(${SMOKE_CFG.colors.cyan[0].toFixed(2)}, ${SMOKE_CFG.colors.cyan[1].toFixed(2)}, ${SMOKE_CFG.colors.cyan[2].toFixed(2)}) * ${SMOKE_CFG.colorLevels.cyan.toFixed(2)};
- vec3 cMagenta = vec3(${SMOKE_CFG.colors.magenta[0].toFixed(2)}, ${SMOKE_CFG.colors.magenta[1].toFixed(2)}, ${SMOKE_CFG.colors.magenta[2].toFixed(2)}) * ${SMOKE_CFG.colorLevels.magenta.toFixed(2)};
- vec3 cViolet = vec3(${SMOKE_CFG.colors.violet[0].toFixed(2)}, ${SMOKE_CFG.colors.violet[1].toFixed(2)}, ${SMOKE_CFG.colors.violet[2].toFixed(2)}) * ${SMOKE_CFG.colorLevels.violet.toFixed(2)};
- vec3 cOuter = vec3(${SMOKE_CFG.colors.outer[0].toFixed(2)}, ${SMOKE_CFG.colors.outer[1].toFixed(2)}, ${SMOKE_CFG.colors.outer[2].toFixed(2)}) * ${SMOKE_CFG.colorLevels.outer.toFixed(2)};
+ vec3 cCore = uCoreColor * ${SMOKE_CFG.colorLevels.core.toFixed(2)};
+ vec3 cCyan = uAccentColor * ${SMOKE_CFG.colorLevels.cyan.toFixed(2)};
+ vec3 cMagenta = mix(uAccentColor, uOuterColor, 0.35) * ${SMOKE_CFG.colorLevels.magenta.toFixed(2)};
+ vec3 cViolet = mix(uCoreColor, uAccentColor, 0.45) * ${SMOKE_CFG.colorLevels.violet.toFixed(2)};
+ vec3 cOuter = uOuterColor * ${SMOKE_CFG.colorLevels.outer.toFixed(2)};
  float colorNoise = fract(vSeed * 13.371 + vRadiusFrac * 2.71);
  vec3 col = mix(cCore, cCyan, smoothstep(0.00, 0.28, vRadiusFrac));
  col = mix(col, cMagenta, smoothstep(0.18, 0.52, vRadiusFrac + (colorNoise - 0.5) * 0.18));
@@ -650,7 +697,7 @@ function buildSmokeGeo(cfg) {
 }
 
 // SmokeFlow - GPGPU-driven flowing nebula layer
-const SmokeFlow = React.memo(function SmokeFlow() {
+const SmokeFlow = React.memo(function SmokeFlow({ particleSize, coreColor, accentColor, outerColor, rotationSpeed }) {
    const { gl } = useThree()
    const gpuRef = useRef(null)
    const matRef = useRef(null)
@@ -670,6 +717,10 @@ const SmokeFlow = React.memo(function SmokeFlow() {
          uPosition: { value: posTex },
          uPixelRatio: { value: Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2) },
          uTime: { value: 0 },
+         uParticleSize: { value: particleSize },
+         uCoreColor: { value: new THREE.Color(coreColor) },
+         uAccentColor: { value: new THREE.Color(accentColor) },
+         uOuterColor: { value: new THREE.Color(outerColor) },
       },
       vertexShader: SMOKE_VERT,
       fragmentShader: SMOKE_FRAG,
@@ -677,6 +728,13 @@ const SmokeFlow = React.memo(function SmokeFlow() {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
    }), [posTex])
+
+   useEffect(() => {
+      mat.uniforms.uParticleSize.value = particleSize
+      mat.uniforms.uCoreColor.value.set(coreColor)
+      mat.uniforms.uAccentColor.value.set(accentColor)
+      mat.uniforms.uOuterColor.value.set(outerColor)
+   }, [accentColor, coreColor, mat, outerColor, particleSize])
 
    useEffect(() => {
       const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
@@ -712,7 +770,7 @@ const SmokeFlow = React.memo(function SmokeFlow() {
       const gpu = gpuRef.current
       const material = matRef.current
       if (!gpu || !material) return
-      const dt = Math.min(rawDelta, 0.05)
+      const dt = Math.min(rawDelta, 0.05) * Math.max(rotationSpeed, 0)
       const tex = gpu.compute('smokePos', state.clock.elapsedTime, dt, dataRef.current)
       material.uniforms.uPosition.value = tex
       material.uniforms.uTime.value = state.clock.elapsedTime
@@ -721,7 +779,7 @@ const SmokeFlow = React.memo(function SmokeFlow() {
    return (
       <group
          scale={1.65}
-         position={[-1.45, 0.5, 0]}
+         position={[0, 0, 0]}
          rotation={[degToRad(40), degToRad(0), degToRad(-5)]}
       >
          <points geometry={geo} material={mat} />
@@ -731,15 +789,17 @@ const SmokeFlow = React.memo(function SmokeFlow() {
 
 
 const GALAXY_BASE_ROT = [degToRad(110), degToRad(-10), degToRad(0)]
+const GALAXY_POSITION = [-3.45, 2.7, 0]
 /** Max euler offset (rad) from mouse at screen edges - keep small for subtle parallax */
 const MOUSE_TILT = { x: 0.1, y: 0.12, z: 0.03 }
 /** How fast smoothed mouse catches the cursor (frame-rate independent lerp) */
 const MOUSE_LERP_LAMBDA = 1
 
-function GalaxyMouseGroup({ children }) {
+function GalaxyMouseGroup({ children, mouseInfluence, rotationSpeed }) {
    const groupRef = useRef(null)
    const mouseRef = useRef({ x: 0, y: 0 })
    const smoothRef = useRef({ x: 0, y: 0 })
+   const autoRotationRef = useRef(GALAXY_BASE_ROT[2])
    const reduceMotionRef = useRef(
       typeof window !== 'undefined' &&
          window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
@@ -787,7 +847,7 @@ function GalaxyMouseGroup({ children }) {
          g.rotation.set(
             GALAXY_BASE_ROT[0],
             GALAXY_BASE_ROT[1],
-            GALAXY_BASE_ROT[2]
+            autoRotationRef.current
          )
          return
       }
@@ -797,20 +857,23 @@ function GalaxyMouseGroup({ children }) {
       const t = 1 - Math.exp(-MOUSE_LERP_LAMBDA * dt)
       s.x = THREE.MathUtils.lerp(s.x, m.x, t)
       s.y = THREE.MathUtils.lerp(s.y, m.y, t)
-      g.rotation.x = GALAXY_BASE_ROT[0] - s.y * MOUSE_TILT.x
-      g.rotation.y = GALAXY_BASE_ROT[1] - s.x * MOUSE_TILT.y
-      // g.rotation.z = GALAXY_BASE_ROT[2] + s.x * s.y * MOUSE_TILT.z
+      autoRotationRef.current += dt * rotationSpeed * 0.18
+      g.rotation.x = GALAXY_BASE_ROT[0] - s.y * MOUSE_TILT.x * mouseInfluence
+      g.rotation.y = GALAXY_BASE_ROT[1] - s.x * MOUSE_TILT.y * mouseInfluence
+      g.rotation.z = autoRotationRef.current + s.x * s.y * MOUSE_TILT.z * mouseInfluence
    })
 
    return (
-      <group ref={groupRef} position={[-2, 2.2, 0]} rotation={GALAXY_BASE_ROT}>
-         {children}
+      <group position={GALAXY_POSITION}>
+         <group ref={groupRef} rotation={GALAXY_BASE_ROT}>
+            {children}
+         </group>
       </group>
    )
 }
 
 
-const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
+const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColor, accentColor, outerColor, rotationSpeed }) {
    const { gl } = useThree()
    const groupRef = useRef()
    const gpuRef = useRef(null)
@@ -830,6 +893,10 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
       uniforms: {
          uPosition: { value: posTex },
          uPixelRatio: { value: Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2) },
+         uParticleSize: { value: particleSize },
+         uCoreColor: { value: new THREE.Color(coreColor) },
+         uAccentColor: { value: new THREE.Color(accentColor) },
+         uOuterColor: { value: new THREE.Color(outerColor) },
       },
       vertexShader: PARTICLE_VERT,
       fragmentShader: PARTICLE_FRAG,
@@ -837,6 +904,13 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
       depthWrite: false,
       blending: THREE.AdditiveBlending,
    }), [posTex])
+
+   useEffect(() => {
+      mat.uniforms.uParticleSize.value = particleSize
+      mat.uniforms.uCoreColor.value.set(coreColor)
+      mat.uniforms.uAccentColor.value.set(accentColor)
+      mat.uniforms.uOuterColor.value.set(outerColor)
+   }, [accentColor, coreColor, mat, outerColor, particleSize])
 
    useEffect(() => {
       const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
@@ -872,7 +946,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
       const gpu = gpuRef.current
       const material = matRef.current
       if (!gpu || !material) return
-      const dt = Math.min(rawDelta, 0.05)
+      const dt = Math.min(rawDelta, 0.05) * Math.max(rotationSpeed, 0)
       const tex = gpu.compute('pos', state.clock.elapsedTime, dt, dataRef.current)
       material.uniforms.uPosition.value = tex
    })
@@ -881,7 +955,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
       <group
          ref={groupRef}
          scale={1.65}
-         position={[-1.45, 0.5, 0]}
+         position={[0, 0, 0]}
          rotation={[degToRad(40), degToRad(0), degToRad(-5)]}
       >
          <points geometry={geo} material={mat} />
@@ -890,7 +964,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU() {
 })
 
 
-const BackgroundStars = React.memo(function BackgroundStars() {
+const BackgroundStars = React.memo(function BackgroundStars({ color }) {
    const mesh = useMemo(() => {
       const count = 4000
       const pos = new Float32Array(count * 3)
@@ -906,14 +980,22 @@ const BackgroundStars = React.memo(function BackgroundStars() {
       const geo = new THREE.BufferGeometry()
       geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
       const mat = new THREE.PointsMaterial({
-         color: 0xffffff, size: 0.055, sizeAttenuation: true,
+         color, size: 0.055, sizeAttenuation: true,
          transparent: true, opacity: 0.7, depthWrite: false,
       })
       return new THREE.Points(geo, mat)
    }, [])
 
+   useEffect(() => {
+      mesh.material.color.set(color)
+   }, [color, mesh])
+
    return <primitive object={mesh} />
 })
+
+function SceneBackground({ color }) {
+   return <color attach="background" args={[color]} />
+}
 
 const MOBILE_QUERY = '(max-width: 1024px)'
 
@@ -932,7 +1014,28 @@ function SceneReady({ onReady }) {
    return null
 }
 
-export default function MilkyWay() {
+export default function MilkyWay({
+   particleSize = DEFAULT_PARTICLE_SIZE,
+   coreColor = DEFAULT_CORE_COLOR,
+   accentColor = DEFAULT_ACCENT_COLOR,
+   outerColor = DEFAULT_OUTER_COLOR,
+   backgroundColor = DEFAULT_BACKGROUND_COLOR,
+   mouseInfluence = DEFAULT_MOUSE_INFLUENCE,
+   rotationSpeed = DEFAULT_ROTATION_SPEED,
+} = {}) {
+   const resolvedProps = useMemo(
+      () =>
+         resolveMilkyWayProps({
+            particleSize,
+            coreColor,
+            accentColor,
+            outerColor,
+            backgroundColor,
+            mouseInfluence,
+            rotationSpeed,
+         }),
+      [accentColor, backgroundColor, coreColor, mouseInfluence, outerColor, particleSize, rotationSpeed]
+   )
    const rootRef = useRef(null)
    const [frameloop, setFrameloop] = useState('always')
    const [isPageLoaded, setIsPageLoaded] = useState(false)
@@ -995,7 +1098,10 @@ export default function MilkyWay() {
    const showMobileContent = showMobileFallback
 
    return (
-      <section ref={rootRef} style={{ width: '100%', height: '100vh', background: '#000' }}>
+      <section
+         ref={rootRef}
+         style={{ width: '100%', height: '100vh', background: resolvedProps.backgroundColor }}
+      >
 
 
          {showDesktopScene ? (
@@ -1006,13 +1112,34 @@ export default function MilkyWay() {
                camera={{ position: [-1, -1.8, 4], fov: 45, near: 0.01, far: 200 }}
                style={{ opacity: isSceneReady ? 1 : 0 }}
                frameloop={frameloop}
+               onCreated={({ gl }) => {
+                  gl.setClearColor(resolvedProps.backgroundColor, 1)
+               }}
             >
                <SceneReady onReady={() => setIsSceneReady(true)} />
-               <BackgroundStars />
+               <SceneBackground color={resolvedProps.backgroundColor} />
+               <BackgroundStars color={resolvedProps.coreColor} />
                <Center rotation={[degToRad(-10), degToRad(0), degToRad(0)]} position={[-1.2, 0.5, 0]}>
-                  <GalaxyMouseGroup>
-                     <MilkyWayGPGPU />
-                     {isSceneReady && <SmokeFlow />}
+                  <GalaxyMouseGroup
+                     mouseInfluence={resolvedProps.mouseInfluence}
+                     rotationSpeed={resolvedProps.rotationSpeed}
+                  >
+                     <MilkyWayGPGPU
+                        particleSize={resolvedProps.particleSize}
+                        coreColor={resolvedProps.coreColor}
+                        accentColor={resolvedProps.accentColor}
+                        outerColor={resolvedProps.outerColor}
+                        rotationSpeed={resolvedProps.rotationSpeed}
+                     />
+                     {isSceneReady && (
+                        <SmokeFlow
+                           particleSize={resolvedProps.particleSize}
+                           coreColor={resolvedProps.coreColor}
+                           accentColor={resolvedProps.accentColor}
+                           outerColor={resolvedProps.outerColor}
+                           rotationSpeed={resolvedProps.rotationSpeed}
+                        />
+                     )}
                   </GalaxyMouseGroup>
                </Center>
                <EffectComposer>
@@ -1031,15 +1158,15 @@ export default function MilkyWay() {
             <>
             <div className='absolute inset-0 flex items-center justify-center px-6 text-center text-white'>
                <div className='flex flex-col items-center gap-6'>
-                  <p className='rounded-full bg-white/10 px-5 py-3 w-full max-w-[60vw] max-md:max-w-[70vw] max-sm:max-w-full text-2xl max-sm:text-base backdrop-blur-sm'>
+                  <p className='rounded-full bg-white/10 px-5 py-3 w-full max-w-[60vw] max-[1025px]:max-w-[70vw] max-md:max-w-full text-2xl max-md:text-base backdrop-blur-sm'>
                      Open in desktop to experience this effect.
                   </p>
-                  <Link
+                  <a
                      href={"/effects"}
-                     className='rounded-full  bg-primary  px-6 py-3 max-sm:text-sm font-medium text-base text-white'
+                     className='rounded-full  bg-primary  px-6 py-3 max-md:text-sm font-medium text-base text-white'
                   >
                      Explore effects
-                  </Link>
+                  </a>
                </div>
             </div>
             </>
@@ -1047,24 +1174,24 @@ export default function MilkyWay() {
 
          {(showDesktopContent || showMobileContent ) && (
             
-            <div className=" h-screen w-full absolute left-0 top-0 max-md:top-5 z-99 flex items-center justify-center max-md:hidden">
+            <div className="pointer-events-none h-screen w-full absolute left-0 top-0 max-[1025px]:top-5 z-20 flex items-center justify-center max-[1025px]:hidden">
                <div className='h-full w-full relative'>
-                  <div className='absolute top-0 left-[70%] pt-[10vw] px-[2vw] flex items-center max-md:flex-col max-md:gap-5 justify-between h-fit'>
+                  <div className='absolute top-0 left-[70%] pt-[10vw] px-[2vw] flex items-center max-[1025px]:flex-col max-[1025px]:gap-5 justify-between h-fit'>
                         <p className='leading-[1.2] '>
                            Move your cursor around and watch the scene respond.
                         </p>
                   </div>
-                  <div className="absolute bottom-[4vw] max-md:bottom-[12vw] left-[4vw] max-w-[70vw]">
-                     <p className='flex items-center bg-white/20  max-md:text-sm backdrop-blur-sm rounded-full text-xs px-[1vw] py-[.5vw] w-fit gap-2'><Stars size={12} />Data Driven And Creative</p>
-                     <h1 className="text-[7vw] mt-[1vw] max-md:mt-[3vw] font leading-[1.1] text-white drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]">
+                  <div className="absolute bottom-[4vw] max-[1025px]:bottom-[12vw] left-[4vw] max-w-[70vw]">
+                     <p className='flex items-center bg-white/20  max-[1025px]:text-sm backdrop-blur-sm rounded-full text-xs px-[1vw] py-[.5vw] w-fit gap-2'><Stars size={12} />Data Driven And Creative</p>
+                     <h1 className="text-[7vw] mt-[1vw] max-[1025px]:mt-[3vw] font leading-[1.1] text-white drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]">
                         Particles Galaxy
 
                      </h1>
-                     <h2 className='text-[7vw]  -mt-[1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milkyway</h2>
+                     <h1 className='text-[7vw]  -mt-[1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milkyway</h1>
                   </div>
 
                   {!viewport?.isMobile && (
-                     <div className='h-fit cursor-pointer w-fit absolute bottom-[2vw] right-[4vw] p-[1.5vw]'>
+                     <div className='pointer-events-auto h-fit cursor-pointer w-fit absolute bottom-[2vw] right-[4vw] p-[1.5vw]'>
                         <CircularText
                            text="EXPLORE THE GALAXY "
                            spinDuration={20}

@@ -32,9 +32,16 @@ const CAMERA_CONFIG = {
   mobile:  { zoomedZ: 6.0, outZ: 7.9 }
 }
 
-function MovingPointLight({ lightRef }) {
+function clampNumber(value, min, max, fallback) {
+  const next = Number(value)
+  if (!Number.isFinite(next)) return fallback
+  return Math.min(max, Math.max(min, next))
+}
+
+function MovingPointLight({ lightRef, enabled = true, lerp = 0.1 }) {
   const { gl } = useThree()
   const targetRef = useRef({ x: 0, y: 0 })
+  const safeLerp = clampNumber(lerp, 0.01, 1, 0.1)
 
   const handlePointerMove = useCallback((event) => {
     const rect = gl.domElement.getBoundingClientRect()
@@ -43,20 +50,25 @@ function MovingPointLight({ lightRef }) {
   }, [gl])
 
   useEffect(() => {
+    if (!enabled) {
+      targetRef.current.x = 0
+      targetRef.current.y = 0
+      return
+    }
     const dom = gl.domElement
     dom.addEventListener('mousemove', handlePointerMove)
     return () => dom.removeEventListener('mousemove', handlePointerMove)
-  }, [gl, handlePointerMove])
+  }, [gl, handlePointerMove, enabled])
 
   useFrame(() => {
     const light = lightRef.current
     if (!light) return
     const basePos = { x: 0, y: -1.3, z: -2 }
     const spread = { x: 1.8, y: 0.0, z: 0.08 }
-    const tx = basePos.x + targetRef.current.x * spread.x
-    const tz = basePos.z + targetRef.current.y * spread.z
-    light.position.x += (tx - light.position.x) * 0.1
-    light.position.z += (tz - light.position.z) * 0.1
+    const tx = enabled ? basePos.x + targetRef.current.x * spread.x : basePos.x
+    const tz = enabled ? basePos.z + targetRef.current.y * spread.z : basePos.z
+    light.position.x += (tx - light.position.x) * safeLerp
+    light.position.z += (tz - light.position.z) * safeLerp
   })
 
   return (
@@ -71,15 +83,17 @@ function MovingPointLight({ lightRef }) {
   )
 }
 
-function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
+function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType, mouseMovement, intensity, lerp }) {
   const groupRef = useRef()
   const lightRef = useRef()
   const { camera } = useThree()
   const [environmentIntensity, setEnvironmentIntensity] = useState(ENV_INTENSITY_CONFIG.out)
+  const safeIntensity = clampNumber(intensity, 0, 10, 3)
+  const latestIntensityRef = useRef(safeIntensity)
 
   const intensityState = useRef({
     env: ENV_INTENSITY_CONFIG.out,
-    light: ENV_INTENSITY_CONFIG.lightOut
+    light: safeIntensity
   })
 
   const handleModelClick = useCallback((e) => {
@@ -113,12 +127,19 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
 
     gsap.to(intensityState.current, {
       env: isZoomed ? ENV_INTENSITY_CONFIG.zoomed : ENV_INTENSITY_CONFIG.out,
-      light: isZoomed ? ENV_INTENSITY_CONFIG.lightZoomed : ENV_INTENSITY_CONFIG.lightOut,
+      light: isZoomed ? ENV_INTENSITY_CONFIG.lightZoomed : latestIntensityRef.current,
       duration,
       ease,
       onUpdate: () => setEnvironmentIntensity(intensityState.current.env),
     })
   }, [isZoomed, camera, deviceType])
+
+  useEffect(() => {
+    latestIntensityRef.current = safeIntensity
+    if (!isZoomed) {
+      intensityState.current.light = safeIntensity
+    }
+  }, [isZoomed, safeIntensity])
 
   useFrame(() => {
     if (lightRef.current) {
@@ -128,7 +149,7 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
 
   return (
     <>
-      <MovingPointLight lightRef={lightRef} />
+      <MovingPointLight lightRef={lightRef} enabled={mouseMovement} lerp={lerp} />
 
       <Environment
         background={false}
@@ -141,6 +162,7 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
         <RoomModel
           onClick={handleModelClick}
           isZoomed={isZoomed}
+          mouseMovement={mouseMovement}
           videoRef={videoRef}
         />
       </group>
@@ -148,7 +170,12 @@ function SceneContent({ isZoomed, setIsZoomed, videoRef, deviceType }) {
   )
 }
 
-export default function HeroBannerAnimated() {
+export default function HeroBannerAnimated({
+  mouseMovement = true,
+  intensity = 3,
+  lerp = 0.1,
+  accentColor = "#ECE4B4",
+} = {}) {
   const rootRef = useRef(null)
   const [frameloop, setFrameloop] = useState('always')
   const [isZoomed, setIsZoomed] = useState(false)
@@ -198,7 +225,11 @@ export default function HeroBannerAnimated() {
   return (
     <>
 
-      <section ref={rootRef} className="w-full h-screen overflow-hidden bg-black relative">
+      <section
+        ref={rootRef}
+        className="w-full h-screen overflow-hidden bg-black relative"
+        style={{ "--hero-accent-color": accentColor }}
+      >
         <AnimatePresence>
           {!isZoomed && (
             <motion.div
@@ -206,7 +237,7 @@ export default function HeroBannerAnimated() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-              className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[#ECE4B4] w-full h-full max-sm:py-[8vw] max-sm:px-[5vw]'
+              className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[var(--hero-accent-color)] w-full h-full max-sm:py-[8vw] max-sm:px-[5vw]'
             >
               <div className='flex items-start max-sm:hidden pt-[2vw] gap-[2vw] max-sm:pt-[10vw] max-sm:gap-[4vw]'>
                 <motion.h1
@@ -224,7 +255,7 @@ export default function HeroBannerAnimated() {
                   className='uppercase w-[25vw] translate-y-[-6vw] text-[1vw]  flex items-center justify-center text-left max-md:w-[45vw] max-sm:w-[45vw] max-md:text-[2vw] max-sm:text-[2.8vw] max-sm:translate-y-[-8vw]'
                 >
                   Hyperiux immersion labs is an independent design agency in india.
-                  <span className='w-6 h-3 flex mt-[1.5vw] bg-[#ECE4B4] max-sm:hidden items-center justify-center mr-[3vw] max-sm:mt-[3vw]'>
+                  <span className='w-6 h-3 flex mt-[1.5vw] bg-[var(--hero-accent-color)] max-sm:hidden items-center justify-center mr-[3vw] max-sm:mt-[3vw]'>
                     <span className='w-1 h-1 bg-black rounded-full block'></span>
                   </span>
                 </motion.p>
@@ -247,7 +278,7 @@ export default function HeroBannerAnimated() {
   <Link prefetch={false} href="/effects" className='pointer-events-auto'>
     Explore All Effects
   </Link>
-  <Play className='w-4 h-4 max-md:hidden' fill='#ECE4B4' />
+  <Play className='w-4 h-4 max-md:hidden' fill='var(--hero-accent-color)' />
   <Link prefetch={false} href="/effects/wegl-effects/hero-banner-animated" className='pointer-events-auto'>
     Read Article
   </Link>
@@ -262,10 +293,10 @@ export default function HeroBannerAnimated() {
                 className='flex absolute bottom-[6vw] left-[2vw] items-center gap-[2vw] max-sm:bottom-[10vw] max-sm:left-[3vw]'
               >
                 <div className='w-[.3vw] ml-[3vw] space-y-[.2vw] h-[5vw] max-sm:w-[.6vw] max-sm:ml-[4vw] max-sm:h-[9vw] max-sm:space-y-[.5vw]'>
-                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-sm:h-[1.4vw]' />
-                  <div className='w-full h-full bg-[#ECE4B4]' />
-                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-sm:h-[1.4vw]' />
-                  <div className='w-full h-[.7vw] bg-[#ECE4B4]/30 max-sm:h-[1.4vw]' />
+                  <div className='w-full h-[.7vw] max-sm:h-[1.4vw]' style={{ backgroundColor: "color-mix(in srgb, var(--hero-accent-color) 30%, transparent)" }} />
+                  <div className='w-full h-full bg-[var(--hero-accent-color)]' />
+                  <div className='w-full h-[.7vw] max-sm:h-[1.4vw]' style={{ backgroundColor: "color-mix(in srgb, var(--hero-accent-color) 30%, transparent)" }} />
+                  <div className='w-full h-[.7vw] max-sm:h-[1.4vw]' style={{ backgroundColor: "color-mix(in srgb, var(--hero-accent-color) 30%, transparent)" }} />
                 </div>
               </motion.div>
             </motion.div>
@@ -286,6 +317,9 @@ export default function HeroBannerAnimated() {
                   setIsZoomed={setIsZoomed}
                   videoRef={videoRef}
                   deviceType={deviceType}
+                  mouseMovement={mouseMovement}
+                  intensity={intensity}
+                  lerp={lerp}
                 />
               </Center>
 
@@ -305,11 +339,11 @@ export default function HeroBannerAnimated() {
 
         {isMobile && (
           <div className="absolute inset-0 z-20 flex items-center justify-center px-8 text-center pointer-events-none">
-            <div className="flex max-w-sm flex-col items-center gap-3 text-[#ECE4B4]">
+            <div className="flex max-w-sm flex-col items-center gap-3 text-[var(--hero-accent-color)]">
               <p className="text-[8vw] font-light leading-none tracking-tight uppercase">
                 Open on desktop
               </p>            
-              <p className="text-sm leading-relaxed text-[#ECE4B4]/60">
+              <p className="text-sm leading-relaxed opacity-60">
                 For the full room, video, and immersive motion experience, view this scene on a larger screen.
               </p>
             </div>

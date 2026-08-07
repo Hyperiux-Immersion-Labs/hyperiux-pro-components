@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/text-stream",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "description": "Infinite vertical text marquee that accelerates and reverses direction based on scroll velocity, with a hard-edge mask and static prefix label",
   "main": "index.jsx",
   "files": [

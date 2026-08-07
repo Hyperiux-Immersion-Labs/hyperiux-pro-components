@@ -155,8 +155,6 @@ const hueSets = {
       // Spaced ~20% apart with overlapping widths so the top glow stays continuous.
       { color: 'rgb(40, 140, 255)', pos: '12% 1%', size: '130px 65px' },
       { color: 'rgb(255, 50, 100)', pos: '33% 0%', size: '150px 75px' },
-      { color: 'rgb(180, 40, 240)', pos: '55% 0%', size: '160px 72px' },
-      { color: 'rgb(255, 90, 70)', pos: '74% 1%', size: '160px 72px' },
       // Left edge → elongate on Y (tall, narrow ovals)
       { color: 'rgb(50, 200, 80)', pos: '2.1% 68.3%', size: '46px 130px' },
       { color: 'rgb(30, 185, 170)', pos: '2.1% 68.3%', size: '24px 68px' },

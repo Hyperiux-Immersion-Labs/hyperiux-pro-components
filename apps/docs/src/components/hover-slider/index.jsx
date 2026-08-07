@@ -1,15 +1,25 @@
 import React from 'react'
 import HoverSliderComp from './HoverSliderComp';
 
-const HoverSlider = () => {
+const HoverSlider = ({
+  items = defaultItems,
+  transitionDuration = 0.45,
+  imageScale = 0.95,
+  curveFactor = 1,
+}) => {
   return (
-    <HoverSliderComp items={items}/>
+    <HoverSliderComp
+      items={items}
+      transitionDuration={transitionDuration}
+      imageScale={imageScale}
+      curveFactor={curveFactor}
+    />
   )
 }
 
 export default HoverSlider
 
-const items = [
+const defaultItems = [
   {
     id: "HX_104",
     title: "Aurora Grid",

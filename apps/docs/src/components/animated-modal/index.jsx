@@ -1,10 +1,24 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ScrollablePopupContent from "./ScrollablePopupContent";
 import AnimatedModalContent from "./AnimatedModalContent";
-import { usePrefersReducedMotion } from "@/lib/motion";
 
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setPrefersReducedMotion(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return prefersReducedMotion;
+}
 
 const popupSections = [
   {
@@ -49,12 +63,22 @@ const popupSections = [
   },
 ];
 
-export default function AnimatedModal() {
+export default function AnimatedModal({
+  showCloseButton = true,
+  closeOnBackdrop = true,
+  closeOnEsc = true,
+  size = 72,
+  overlayOpacity = 0.82,
+  duration = 0.5,
+  backgroundColor = "#ffffff",
+  textColor = "#111111",
+  roundedness = 24,
+}) {
   const [isContentOpen, setIsContentOpen] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
-    <>
+    <div className="flex min-h-screen w-full items-center justify-center bg-white">
       <button
         type="button"
         onClick={() => {
@@ -64,8 +88,8 @@ export default function AnimatedModal() {
           cursor-pointer rounded-full border-0 bg-[#111111] px-[2vw] py-[1vw]
           text-white transition-all duration-300 hover:scale-[1.03]
           text-[1vw]
-          max-md:px-[4vw] max-md:py-[2vw] max-md:text-[2.2vw]
-          max-sm:px-[6vw] max-sm:py-[3.5vw] max-sm:text-[4vw]
+          max-[1025px]:px-[4vw] max-[1025px]:py-[2vw] max-[1025px]:text-[2.2vw]
+          max-md:px-[6vw] max-md:py-[3.5vw] max-md:text-[4vw]
         "
       >
         Open Modal
@@ -75,11 +99,20 @@ export default function AnimatedModal() {
         className="h-full backdrop-blur-none "
         isOpen={isContentOpen}
         onClose={() => setIsContentOpen(false)}
+        showCloseButton={showCloseButton}
+        closeOnBackdrop={closeOnBackdrop}
+        closeOnEsc={closeOnEsc}
+        overlayOpacity={overlayOpacity}
+        duration={duration}
       >
         <ScrollablePopupContent
           title="A Deeper Look at the Project"
           subtitle="Explore the thinking, design strategy, and long-term value proposition behind the development."
           sections={popupSections}
+          size={size}
+          backgroundColor={backgroundColor}
+          textColor={textColor}
+          roundedness={roundedness}
         />
       </AnimatedModalContent>
 
@@ -98,6 +131,6 @@ export default function AnimatedModal() {
           </p>
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -7,11 +7,6 @@ import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
-/**
- * @typedef {string | { src: string }} MediaSource
- */
-
-/** @param {() => void} callback */
 function subscribeToReducedMotion(callback) {
   if (typeof window === "undefined") return () => {};
   const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
@@ -19,12 +14,10 @@ function subscribeToReducedMotion(callback) {
   return () => mediaQueryList.removeEventListener("change", callback);
 }
 
-/** @returns {boolean} */
 function getReducedMotionSnapshot() {
   return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
 }
 
-/** @returns {boolean} */
 function getServerReducedMotionSnapshot() {
   return false;
 }
@@ -73,11 +66,6 @@ const TRAIL_CFG = {
   firl: 1.0,
 };
 
-/**
- * @param {number} width
- * @param {number} baseCharColumns
- * @returns {number}
- */
 function getResponsiveCharColumns(width, baseCharColumns) {
   if (width <= MOBILE_MAX_WIDTH) {
     return Math.round(baseCharColumns * 0.45);
@@ -242,14 +230,8 @@ void main() {
 `;
 
 /* ── helpers ── */
-/**
- * @param {WebGL2RenderingContext} gl
- * @param {number} type
- * @param {string} src
- * @returns {WebGLShader}
- */
 function mkShader(gl, type, src) {
-  const shader = /** @type {WebGLShader} */ (gl.createShader(type));
+  const shader = gl.createShader(type);
 
   gl.shaderSource(shader, src);
   gl.compileShader(shader);
@@ -265,12 +247,8 @@ function mkShader(gl, type, src) {
   return shader;
 }
 
-/**
- * @param {WebGL2RenderingContext} gl
- * @returns {WebGLProgram}
- */
 function mkProg(gl) {
-  const program = /** @type {WebGLProgram} */ (gl.createProgram());
+  const program = gl.createProgram();
 
   gl.attachShader(program, mkShader(gl, gl.VERTEX_SHADER, VS));
   gl.attachShader(program, mkShader(gl, gl.FRAGMENT_SHADER, FS));
@@ -287,11 +265,6 @@ function mkProg(gl) {
   return program;
 }
 
-/**
- * @param {WebGL2RenderingContext} gl
- * @param {number} unit
- * @returns {WebGLTexture}
- */
 function mkTex(gl, unit) {
   const texture = gl.createTexture();
 
@@ -317,7 +290,6 @@ function createFluid() {
   const p = new Float32Array(FN);
   const div = new Float32Array(FN);
 
-  /** @type {(x: number, y: number) => number} */
   const fi = (x, y) => {
     return (
       Math.max(0, Math.min(FR - 1, y)) * FC +
@@ -325,7 +297,6 @@ function createFluid() {
     );
   };
 
-  /** @type {(b: number, a: Float32Array) => void} */
   const bnd = (b, a) => {
     for (let x = 1; x < FC - 1; x += 1) {
       a[fi(x, 0)] = b === 2 ? -a[fi(x, 1)] : a[fi(x, 1)];
@@ -340,7 +311,6 @@ function createFluid() {
     }
   };
 
-  /** @type {(b: number, d: Float32Array, s: Float32Array, diff: number, dt: number) => void} */
   const diffuse = (b, d, s, diff, dt) => {
     const a = dt * diff * FN;
 
@@ -362,7 +332,6 @@ function createFluid() {
     }
   };
 
-  /** @type {(b: number, d: Float32Array, d0: Float32Array, ux: Float32Array, uy: Float32Array, dt: number) => void} */
   const advect = (b, d, d0, ux, uy, dt) => {
     const dtx = dt * FC * 1.4;
     const dty = dt * FR * 1.4;
@@ -393,7 +362,6 @@ function createFluid() {
     bnd(b, d);
   };
 
-  /** @type {(ux: Float32Array, uy: Float32Array) => void} */
   const project = (ux, uy) => {
     const hx = 1 / FC;
     const hy = 1 / FR;
@@ -465,26 +433,17 @@ function createFluid() {
   };
 }
 
-/**
- * @param {MediaSource} source
- * @returns {string}
- */
 function resolveMediaSource(source) {
   if (typeof source === "string") return source;
   if (source?.src) return source.src;
 
-  return /** @type {string} */ (/** @type {any} */ (source));
+  return source;
 }
 
-/** @param {string} source */
 function isRemoteUrl(source) {
   return /^https?:\/\//i.test(source);
 }
 
-/**
- * @param {MediaSource} source
- * @returns {Promise<{ src: string, revoke: () => void }>}
- */
 async function loadVideoSource(source) {
   const videoSource = resolveMediaSource(source);
 
@@ -517,23 +476,7 @@ async function loadVideoSource(source) {
   };
 }
 
-/**
- * @typedef {Object} DitherCanvasProps
- * @property {MediaSource} [videoSrc]
- * @property {number} [charColumns]
- * @property {boolean} [colorizeFromVideo]
- * @property {number} [videoZoom]
- * @property {number} [charZoom]
- * @property {boolean} [spellBrightChars]
- * @property {number} [colorBoost]
- * @property {boolean} [disableMobileCursor]
- * @property {string} [cursorHint]
- * @property {boolean} [showMobileMessage]
- * @property {string} [className]
- */
-
 /* ── component  */
-/** @param {DitherCanvasProps} props */
 export default function DitherCanvas({
   videoSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/binary-effect-video.mp4",
 
@@ -575,8 +518,37 @@ export default function DitherCanvas({
   showMobileMessage = true,
   className = "",
 }) {
-  const ref = useRef(/** @type {HTMLCanvasElement | null} */ (null));
+  const ref = useRef(null);
+  const configRef = useRef({
+    charColumns,
+    colorizeFromVideo,
+    videoZoom,
+    charZoom,
+    spellBrightChars,
+    colorBoost,
+    disableMobileCursor,
+  });
   const reducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    configRef.current = {
+      charColumns,
+      colorizeFromVideo,
+      videoZoom,
+      charZoom,
+      spellBrightChars,
+      colorBoost,
+      disableMobileCursor,
+    };
+  }, [
+    charColumns,
+    colorizeFromVideo,
+    videoZoom,
+    charZoom,
+    spellBrightChars,
+    colorBoost,
+    disableMobileCursor,
+  ]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -638,7 +610,6 @@ export default function DitherCanvas({
 
     gl.useProgram(program);
 
-    /** @param {string} name */
     const loc = (name) => gl.getUniformLocation(program, name);
 
     const buffer = gl.createBuffer();
@@ -669,7 +640,7 @@ export default function DitherCanvas({
     atlasCanvas.width = CELL * ALL_CHARS.length;
     atlasCanvas.height = CELL;
 
-    const atlasContext = /** @type {CanvasRenderingContext2D} */ (atlasCanvas.getContext("2d"));
+    const atlasContext = atlasCanvas.getContext("2d");
 
     atlasContext.font = `${CELL * 0.92}px monospace`;
     atlasContext.textAlign = "center";
@@ -698,11 +669,11 @@ export default function DitherCanvas({
     gl.uniform1i(loc("uFluid"), 1);
     gl.uniform1i(loc("uAtlas"), 2);
 
-    gl.uniform1f(loc("uVideoZoom"), videoZoom);
-    gl.uniform1f(loc("uCharZoom"), charZoom);
-    gl.uniform1f(loc("uColorBoost"), colorBoost);
-    gl.uniform1i(loc("uColorizeFromVideo"), colorizeFromVideo ? 1 : 0);
-    gl.uniform1i(loc("uSpellBrightChars"), spellBrightChars ? 1 : 0);
+    gl.uniform1f(loc("uVideoZoom"), configRef.current.videoZoom);
+    gl.uniform1f(loc("uCharZoom"), configRef.current.charZoom);
+    gl.uniform1f(loc("uColorBoost"), configRef.current.colorBoost);
+    gl.uniform1i(loc("uColorizeFromVideo"), configRef.current.colorizeFromVideo ? 1 : 0);
+    gl.uniform1i(loc("uSpellBrightChars"), configRef.current.spellBrightChars ? 1 : 0);
 
     const fluid = createFluid();
     const fluidData = new Float32Array(FN * 2);
@@ -714,23 +685,13 @@ export default function DitherCanvas({
       vy: 0,
     };
 
-    /**
-     * @typedef {Object} TrailPoint
-     * @property {number} x
-     * @property {number} y
-     * @property {number} vx
-     * @property {number} vy
-     * @property {number} b
-     */
-    /** @type {TrailPoint[]} */
     const trail = [];
     const now = () => performance.now();
 
     const isMobile = () => window.matchMedia("(max-width: 639px)").matches;
 
-    /** @param {MouseEvent} event */
     const onMove = (event) => {
-      if (disableMobileCursor && isMobile()) return;
+      if (configRef.current.disableMobileCursor && isMobile()) return;
 
       const previousX = mouse.x;
       const previousY = mouse.y;
@@ -786,7 +747,10 @@ export default function DitherCanvas({
       height = canvas.height = window.innerHeight;
 
       gl.viewport(0, 0, width, height);
-      gl.uniform1f(loc("uCharColumns"), getResponsiveCharColumns(width, charColumns));
+      gl.uniform1f(
+        loc("uCharColumns"),
+        getResponsiveCharColumns(width, configRef.current.charColumns),
+      );
     };
 
     resize();
@@ -811,6 +775,7 @@ export default function DitherCanvas({
       root: canvas,
       onFrame: () => {
       if (video.readyState >= 2) {
+        const config = configRef.current;
         const timestamp = now();
 
         const { fb, fss, ffm, fir, firl } = TRAIL_CFG;
@@ -903,6 +868,12 @@ export default function DitherCanvas({
         gl.uniform1i(uTrailN, trail.length);
         gl.uniform2f(uRes, width, height);
         gl.uniform1i(uPhase, phase);
+        gl.uniform1f(loc("uCharColumns"), getResponsiveCharColumns(width, config.charColumns));
+        gl.uniform1f(loc("uVideoZoom"), config.videoZoom);
+        gl.uniform1f(loc("uCharZoom"), config.charZoom);
+        gl.uniform1f(loc("uColorBoost"), config.colorBoost);
+        gl.uniform1i(loc("uColorizeFromVideo"), config.colorizeFromVideo ? 1 : 0);
+        gl.uniform1i(loc("uSpellBrightChars"), config.spellBrightChars ? 1 : 0);
 
         gl.clearColor(0, 0, 0, 1);
         gl.clear(gl.COLOR_BUFFER_BIT);
@@ -933,13 +904,6 @@ export default function DitherCanvas({
     };
   }, [
     videoSrc,
-    charColumns,
-    colorizeFromVideo,
-    videoZoom,
-    charZoom,
-    spellBrightChars,
-    colorBoost,
-    disableMobileCursor,
   ]);
 
   return (
@@ -978,5 +942,3 @@ export default function DitherCanvas({
     </>
   );
 }
-
-

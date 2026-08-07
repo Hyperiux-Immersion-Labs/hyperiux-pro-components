@@ -1,19 +1,9 @@
-
-import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import CharacterTrail from '@/components/character-trail'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-
+import registry from "../../../../../../../registry/effects/cursor/character-trail/registry.json";
 
 export default function Page() {
-
-  return (
-    <>
-<LenisSmoothScroll />
-<DemoHeader/>
-<CharacterTrail/>
-    </>
-  )
+  return <SuggestedEffectRemixerDemo registry={registry} slug="character-trail" />;
 }
 
 export async function generateMetadata() {

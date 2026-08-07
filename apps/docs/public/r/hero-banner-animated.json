@@ -32,6 +32,78 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "mouseMovement",
+      "type": "boolean",
+      "default": true,
+      "description": "Enables the cursor-tracked point light."
+    },
+    {
+      "name": "intensity",
+      "type": "number",
+      "default": 3,
+      "description": "Peak brightness of the cursor-tracked point light when the scene is not zoomed."
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": 0.1,
+      "description": "Smoothing factor for the point light following the cursor; higher values follow faster."
+    },
+    {
+      "name": "accentColor",
+      "type": "string",
+      "default": "#ECE4B4",
+      "description": "Accent color for hero text, markers, links, and icon highlights."
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "mouseMovement",
+        "label": "Mouse Movement",
+        "type": "toggle",
+        "group": "controls",
+        "copyable": true
+      },
+      {
+        "name": "intensity",
+        "label": "Intensity",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "lerp",
+        "label": "Lerp",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01
+      },
+      {
+        "name": "accentColor",
+        "label": "Accent Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
       "path": "index.jsx",
@@ -62,6 +134,12 @@
       "path": "createSuspendedRaf.js",
       "type": "registry:component",
       "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.js"
+    },
+    {
+      "path": "assets/textures/bathroom-floor-roughness.png",
+      "type": "registry:asset",
+      "target": "public/assets/textures/bathroom-floor-roughness.png",
+      "source": "/assets/textures/bathroom-floor-roughness.png"
     }
   ]
 }

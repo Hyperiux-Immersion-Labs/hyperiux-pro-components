@@ -6,8 +6,24 @@ import React, { useEffect, useState } from "react";
 import { ElevateNavbarMobile } from "./ElevateMobileNav";
 import { ElevateNavbarDesktop } from "./ElevateDesktopNav";
 
+const NAV_CONFIG = {
+  backgroundColor: "#d8b4fe",
+  duration: 0.35,
+  navTextDuration: 0.35,
+  ctaDuration: 0.4,
+  dropdownItemOffsetY: -8,
+  dropdownPointerDelay: 0.03,
+  staggerItems: true,
+  activeColor: "#ffffff",
+  inactiveColor: "rgba(255,255,255,0.5)",
+  ease: "power2.out",
+  ctaBackground: "#ffffff",
+  ctaHoverBackground: "#000000",
+};
 
-export default function ElevateNavbar() {
+export default function ElevateNavbar({ navConfig = {}, ...props }) {
+  const config = { ...NAV_CONFIG, ...navConfig, ...props };
+  const durationValue = config.duration ?? config.navTextDuration;
   const [isMobile, setIsMobile] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -33,26 +49,35 @@ export default function ElevateNavbar() {
   }
 
   return (
-    <>
-    <div className="relative h-screen w-full bg-purple-300 font-mono text-[0.75vw]">
-      <div className="absolute left-1/2 top-[30%] max-md:top-[15%] w-full -translate-x-1/2 -translate-y-1/2 text-center  text-[#363737]">
-      <h1 className="text-[8vw] font-black uppercase">
-        Elevate Navbar
-      </h1>
-      <p className="mt-4 text-[1.2vw] max-[1025px]:text-[2vw] max-[1025px]:w-[80%] max-[1025px]:mx-auto max-md:text-[3vw]">
-        Hover over the navbar to see the effect. Resize the window to see the responsive design in action.
-      </p>
-
-      </div>
-      
-
+    <div
+      style={{ backgroundColor: config.backgroundColor }}
+      className="relative h-screen w-full font-mono text-[0.75vw]"
+    >
       {isMobile ? (
-        <ElevateNavbarMobile menuItems={menuItems} cta={cta} />
+        <ElevateNavbarMobile
+          menuItems={menuItems}
+          cta={cta}
+          duration={durationValue}
+          ease={config.ease}
+          activeColor={config.activeColor}
+        />
       ) : (
-        <ElevateNavbarDesktop menuItems={menuItems} cta={cta} />
+        <ElevateNavbarDesktop
+          menuItems={menuItems}
+          cta={cta}
+          navTextDuration={durationValue}
+          ctaDuration={durationValue}
+          dropdownItemOffsetY={config.dropdownItemOffsetY}
+          dropdownPointerDelay={config.dropdownPointerDelay}
+          staggerItems={config.staggerItems}
+          activeColor={config.activeColor}
+          inactiveColor={config.inactiveColor}
+          ease={config.ease}
+          ctaBackground={config.ctaBackground}
+          ctaHoverBackground={config.ctaHoverBackground}
+        />
       )}
     </div>
-    </>
   );
 }
 

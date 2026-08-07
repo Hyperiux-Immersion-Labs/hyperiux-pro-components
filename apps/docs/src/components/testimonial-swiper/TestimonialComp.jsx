@@ -3,11 +3,18 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import NavigationButtons from "./NavigationButtons";
-import Image from "next/image";
 
 gsap.registerPlugin(SplitText);
 
-export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff" }) {
+export default function TestimonialComp({
+    testimonials = [],
+    bgColor = "#ffffff",
+    accentColor = "#ff6b00",
+    autoplay = true,
+    autoplayDelay = 4500,
+    showNavigation = true,
+    imageSize = 1,
+}) {
     const [current, setCurrent] = useState(0);
     const [displayItem, setDisplayItem] = useState(testimonials[0] ?? null);
     const [, setIsAnimating] = useState(false);
@@ -32,6 +39,7 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
 
     const total = testimonials.length;
     const pad = (n) => String(n).padStart(2, "0");
+    const safeImageSize = Math.max(0.6, Number(imageSize) || 1);
 
     useEffect(() => {
         const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -195,6 +203,19 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     }, [total, current, testimonials, fadeOutCurrent]);
 
     useEffect(() => {
+        if (!autoplay || reduceMotionRef.current || total <= 1) return;
+
+        const delay = Math.max(1000, Number(autoplayDelay) || 4500);
+        const interval = window.setInterval(() => {
+            if (!isAnimatingRef.current) {
+                handleNext();
+            }
+        }, delay);
+
+        return () => window.clearInterval(interval);
+    }, [autoplay, autoplayDelay, total, handleNext]);
+
+    useEffect(() => {
         if (!quoteRef.current) return;
         animateIn("next");
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,68 +235,82 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
     if (!testimonials.length || !displayItem) return null;
 
     return (
-        <section className="relative w-full min-h-screen max-sm:min-h-screen bg-white flex flex-col justify-between max-sm:justify-start overflow-hidden text-black py-5 max-md:px-6 max-sm:px-2"
+        <section className="relative w-full min-h-screen max-md:min-h-screen bg-white flex flex-col justify-between max-md:justify-start overflow-hidden text-black pt-22 pb-5 max-[1025px]:pt-28 max-[1025px]:px-6 max-md:pt-24 max-md:px-2"
             style={{ backgroundColor: bgColor }}
         >
             {/* Header */}
-            <div className="flex items-start justify-between px-8 py-5 max-md:px-6 max-md:py-4 max-sm:px-5 max-sm:py-3">
-                <div className="flex max-sm:flex-row justify-between items-center max-sm:items-center w-[30%] max-md:w-full max-sm:w-full max-sm:justify-between">
-                    <div className="flex items-center gap-2 text-[0.8vw] max-md:text-[1.8vw] max-sm:text-[4vw] font-semibold tracking-[0.12em] uppercase">
-                        <span className="text-[9px] max-md:text-[12px] max-sm:text-[15px]">◆</span>
+            <div className="flex items-start justify-between px-8 pr-50 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
+                <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-[1025px]:w-full max-md:w-full max-md:justify-between">
+                    <div className="flex items-center gap-2 text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[4vw] font-semibold tracking-[0.12em] uppercase">
+                        <span className="text-[9px] max-[1025px]:text-[12px] max-md:text-[15px]" style={{ color: accentColor }}>◆</span>
                         <span>Client Stories</span>
                     </div>
-                    <span className="text-[13px] max-md:text-[12px] max-md:hidden max-sm:pl-4 text-neutral-700 tabular-nums">
+                    <span className="text-[13px] max-[1025px]:text-[12px] max-md:pl-4 text-black tabular-nums">
                         {pad(current + 1)}&nbsp;/&nbsp;{pad(total)}
                     </span>
                 </div>
 
-                <NavigationButtons
-                    className="max-sm:hidden"
-                    onPrev={handlePrev}
-                    onNext={handleNext}
-                />
+                {showNavigation && (
+                    <NavigationButtons
+                        className="max-md:hidden"
+                        onPrev={handlePrev}
+                        onNext={handleNext}
+                        accentColor="#000000"
+                    />
+                )}
             </div>
 
             {/* Body */}
-            <div className="flex-1 flex items-start gap-32 px-18 py-5 max-md:flex-col max-md:items-start max-md:gap-10 max-md:px-6 max-md:py-10 max-sm:px-5 max-sm:py-4 max-sm:gap-6 ">
+            <div className="flex-1 flex items-start gap-32 px-18 py-5 max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-10 max-[1025px]:px-6 max-[1025px]:py-10 max-md:px-5 max-md:py-4 max-md:gap-6">
 
-                <div className="shrink-0 max-md:hidden max-sm:hidden">
-                    <div ref={desktopImageRef} className="relative w-40 h-50">
-                        <Image
+                <div className="shrink-0 max-[1025px]:hidden max-md:hidden">
+                    <div
+                        ref={desktopImageRef}
+                        className="relative w-40 h-50"
+                        style={{
+                            width: `${10 * safeImageSize}rem`,
+                            height: `${12.5 * safeImageSize}rem`,
+                        }}
+                    >
+                        <img
                             src={displayItem.image}
                             alt={displayItem.name}
-                            fill
-                            className="object-cover object-top grayscale"
+                            className="object-cover w-full h-full object-top grayscale"
                         />
                     </div>
                 </div>
 
                 {/* Quote area */}
-                <div className="flex-1 flex flex-col relative ">
+                <div className="flex-1 flex flex-col relative">
                     <span
-                        className="absolute -top-1.5 font-serif font-bold leading-none max-md:top-[-3vw] text-[48px] max-md:text-[5vw] max-sm:text-[40px] max-sm:relative max-sm:top-0 max-sm:left-0 max-sm:mb-2"
+                        className="absolute -top-1 font-serif font-bold leading-none max-[1025px]:top-[-2vw] text-[42px] max-[1025px]:text-[4.5vw] max-md:text-[34px] max-md:relative max-md:top-0 max-md:left-0 max-md:mb-1 text-black"
                         style={{ left: 0 }}
                         ref={quoteMarkRef}
                     >
                         &quot;
                     </span>
 
-                    <div className="flex flex-col pl-13 w-[95%] max-md:pl-0 max-md:w-full max-sm:pl-0 max-sm:w-full">
+                    <div className="flex flex-col pl-13 w-[95%] max-[1025px]:pl-0 max-[1025px]:w-full max-md:pl-0 max-md:w-full">
                         <blockquote
                             ref={quoteRef}
-                            className="m-0 mb-10 p-0 text-[4vw] max-sm:min-h-0 max-md:min-h-[30vh] leading-[1.2] max-md:mb-8 max-md:w-full max-md:max-w-full max-md:text-[clamp(2.4rem,5vw,3.6rem)] max-md:leading-[1.08] max-sm:max-w-full max-sm:text-[7vw] max-sm:mb-4"
+                            className="m-0 mb-7 p-0 text-[3.35vw] max-md:min-h-0 max-[1025px]:min-h-[24vh] leading-[1.18] max-[1025px]:mb-6 max-[1025px]:w-full max-[1025px]:max-w-full max-[1025px]:text-[clamp(2rem,4.4vw,3.1rem)] max-[1025px]:leading-[1.16] max-md:max-w-full max-md:text-[6.2vw] max-md:leading-[1.18] max-md:mb-3"
                         >
                             {displayItem.quote}
                         </blockquote>
 
-                        
-                        <div className="hidden max-md:flex items-center gap-4 mt-6 max-md:gap-5 max-sm:mt-3 max-sm:gap-6">
-                            <div ref={mobileImageRef} className="relative max-md:w-30 max-md:h-36 max-sm:w-22 max-sm:h-26 shrink-0">
-                                <Image
+                        <div className="hidden max-[1025px]:flex items-center gap-4 mt-6 max-[1025px]:gap-5 max-md:mt-3 max-md:gap-6">
+                            <div
+                                ref={mobileImageRef}
+                                className="relative max-[1025px]:w-30 max-[1025px]:h-36 max-md:w-22 max-md:h-26 shrink-0"
+                                style={{
+                                    width: `${7.5 * safeImageSize}rem`,
+                                    height: `${9 * safeImageSize}rem`,
+                                }}
+                            >
+                                <img
                                     src={displayItem.image}
                                     alt={displayItem.name}
-                                    fill
-                                    className="object-cover object-top grayscale"
+                                    className="object-cover w-full h-full object-top grayscale"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">
@@ -292,13 +327,13 @@ export default function TestimonialComp({ testimonials = [], bgColor = "#ffffff"
                         </div>
 
                         {/* Desktop: name/title */}
-                        <div className="flex flex-col gap-1 mt-2 max-md:hidden max-sm:hidden">
-                            <p ref={nameRef} className="m-0 text-xl max-md:text-lg font-normal">
+                        <div className="flex flex-col gap-1 mt-2 max-[1025px]:hidden max-md:hidden">
+                            <p ref={nameRef} className="m-0 text-xl max-[1025px]:text-lg font-normal">
                                 {displayItem.name}
                             </p>
                             <p
                                 ref={titleRef}
-                                className="m-0 text-[11px] max-md:text-[10px] font-semibold tracking-[0.12em] uppercase text-[#888]"
+                                className="m-0 text-[11px] max-[1025px]:text-[10px] font-semibold tracking-[0.12em] uppercase text-[#888]"
                             >
                                 {displayItem.title}
                             </p>

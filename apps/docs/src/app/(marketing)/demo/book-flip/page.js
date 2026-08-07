@@ -1,19 +1,11 @@
-import React from 'react'
-import BookFlip from '@/components/book-flip'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/book-flip/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader textColor='#fffff' logoColor='#FFFFFF' />
-      <BookFlip />
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="book-flip" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("book-flip");
 }

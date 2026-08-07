@@ -5,10 +5,20 @@ import { InertiaPlugin } from "gsap/InertiaPlugin";
 
 gsap.registerPlugin(InertiaPlugin);
 
-function InertiaImageComp({ images = [] }) {
+function InertiaImageComp({
+  images = [],
+  strength = 1,
+  rotation = 0,
+  scale = 1,
+  duration = 0.4,
+}) {
   const rootRef = useRef(null);
   const deltaRef = useRef({ x: 0, y: 0, oldX: null, oldY: null });
   const isTouchRef = useRef(false);
+  const resolvedStrength = Math.max(0, Number(strength) || 0);
+  const resolvedRotation = Math.max(0, Number(rotation) || 0);
+  const resolvedScale = Math.max(0, Number(scale) || 0);
+  const resolvedDuration = Math.max(0, Number(duration) || 0);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -73,8 +83,8 @@ function InertiaImageComp({ images = [] }) {
         const { x, y } = deltaRef.current;
 
         const isTouch = isTouchRef.current;
-        const velocityMultiplier = isTouch ? 2 : 30;
-        const rotationRange = isTouch ? 50 : 60;
+        const velocityMultiplier = (isTouch ? 2 : 30) * resolvedStrength;
+        const rotationRange = isTouch ? resolvedRotation * (50 / 60) : resolvedRotation;
 
         const tl = gsap.timeline({
           onComplete: () => tl.kill(),
@@ -82,6 +92,7 @@ function InertiaImageComp({ images = [] }) {
         tl.timeScale(1.2);
 
         tl.to(image, {
+          duration: resolvedDuration,
           inertia: {
             x: { velocity: x * velocityMultiplier, end: 0 },
             y: { velocity: y * velocityMultiplier, end: 0 },
@@ -90,10 +101,11 @@ function InertiaImageComp({ images = [] }) {
 
         tl.fromTo(
           image,
-          { rotate: 0 },
+          { rotate: 0, scale: 1 },
           {
-            duration: 0.4,
+            duration: resolvedDuration,
             rotate: (Math.random() - 0.5) * rotationRange,
+            scale: resolvedScale,
             yoyo: true,
             repeat: 1,
             ease: "power1.inOut",
@@ -113,13 +125,13 @@ function InertiaImageComp({ images = [] }) {
       root.removeEventListener("touchmove", onTouchMove);
       cleanups.forEach((fn) => fn());
     };
-  }, []);
+  }, [resolvedDuration, resolvedRotation, resolvedScale, resolvedStrength]);
 
  return (
  <>
  <section
  ref={rootRef}
- className="relative grid min-h-[50vh] w-full place-items-center "
+ className="relative grid min-h-screen w-full place-items-center "
  >
  <div className="grid grid-cols-4 gap-[1vw] max-md:gap-[3.5vw] max-sm:gap-[5vw] max-md:grid-cols-3 max-sm:grid-cols-2">
  {images.map((src, i) => (

@@ -28,20 +28,6 @@ const WIPE_DUR = 820;
 const HOLD_END = 820;
 const WIPE_OVERLAP = 0.1;
 
-/**
- * @typedef {import('react').MutableRefObject<(HTMLElement | null)[]>} ElementListRef
- */
-
-/**
- * @param {{
- *   theme?: 'dark' | 'light',
- *   showText?: boolean,
- *   navRefs?: ElementListRef,
- *   rowRefs?: ElementListRef,
- *   rowHeight?: number,
- *   lineCount?: number,
- * }} [props]
- */
 function DemoContent({
   theme = "dark",
   showText = true,
@@ -52,17 +38,16 @@ function DemoContent({
 } = {}) {
   const isDark = theme === "dark";
 
-  /** @typedef {{ left?: import('react').ReactNode, center?: import('react').ReactNode, right?: import('react').ReactNode }} NavItem */
   const navItems = useMemo(
-    () => /** @type {NavItem[]} */ ([
-      { left: <span className="font-bold tracking-tighter max-[1025px]:text-2xl max-md:text-2xl">Hyperiux Vault</span> },
+    () => [
+      { left: <span className="font-bold tracking-tighter max-md:text-2xl max-sm:text-2xl">Hyperiux Vault</span> },
       { left: "INDEX (22)" },
       { left: "(CONTACT)" },
       { left: "(SERVICES)" },
       { left: "(SELECTED CLIENTS)" },
       { left: "(PRESS)" },
       { right: "■" },
-    ]),
+    ],
     [],
   );
 
@@ -149,7 +134,7 @@ function DemoContent({
 
   const rowCount = lineCount - 1;
 
-  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-[1025px]:flex max-[1025px]:justify-between";
+  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-md:flex max-md:justify-between";
 
   return (
     <div
@@ -162,7 +147,7 @@ function DemoContent({
         <>
           <div
             className={[
-              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-md:text-[3.5vw]",
+              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-sm:text-[3.5vw]",
               GRID_CLASS,
               isDark ? "text-white/55" : "text-black/55",
             ].join(" ")}
@@ -189,7 +174,7 @@ function DemoContent({
                     : isDark
                       ? "text-white/55"
                       : "text-black/55",
-                  idx > 0 && idx < 6 ? "max-[1025px]:hidden" : "",
+                  idx > 0 && idx < 6 ? "max-md:hidden" : "",
                 ].join(" ")}
               >
                 {item.left || item.center || item.right}
@@ -206,7 +191,7 @@ function DemoContent({
                   rowRefs.current[idx] = el;
                 }}
                 className={[
-                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-md:text-[4vw]",
+                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-sm:text-[4vw]",
                   GRID_CLASS,
                   "will-change-[filter,transform,opacity]",
                   idx < 9
@@ -221,19 +206,19 @@ function DemoContent({
               >
                 <div
                   className={[
-                    "col-span-2 max-[1025px]:w-full max-[1025px]:whitespace-nowrap max-[1025px]:text-[1.5vw] max-md:text-[4vw]",
+                    "col-span-2 max-md:w-full max-md:whitespace-nowrap max-md:text-[1.5vw] max-sm:text-[4vw]",
                     isDark ? "text-white/90" : "text-neutral-900",
                   ].join(" ")}
                 >
                   {cells[0]}
                 </div>
-                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-[1025px]:hidden"].join(" ")}>
+                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-md:hidden"].join(" ")}>
                   {cells[1]}
                 </div>
-                <div className="max-[1025px]:hidden">{cells[2]}</div>
-                <div className="max-[1025px]:hidden">{cells[3]}</div>
-                <div className="justify-self-start max-[1025px]:hidden">{cells[4]}</div>
-                <div className="max-[1025px]:hidden"></div>
+                <div className="max-md:hidden">{cells[2]}</div>
+                <div className="max-md:hidden">{cells[3]}</div>
+                <div className="justify-self-start max-md:hidden">{cells[4]}</div>
+                <div className="max-md:hidden"></div>
               </div>
             ))}
           </div>
@@ -243,29 +228,44 @@ function DemoContent({
   );
 }
 
-/** @param {{ onComplete?: () => void }} [props] */
-export default function LinesLoading({ onComplete } = {}) {
-  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
-  const darkLineRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
-  const lightLineRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
-  const darkNavTextRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
-  const darkRowTextRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
-  const lightNavTextRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
-  const lightRowTextRefs = useRef(/** @type {(HTMLElement | null)[]} */ ([]));
-  const lightLayerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
-  const darkContentRef = useRef(/** @type {HTMLDivElement | null} */ (null));
-  const tlRef = useRef(/** @type {gsap.core.Timeline | null} */ (null));
+function clampNumber(value, min, max, fallback) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.min(max, Math.max(min, numeric));
+}
+
+export default function LinesLoading({
+  onComplete,
+  duration = 1,
+  lineHeight = 1,
+  darkLineColor = "#ffffff",
+  lightLineColor = "#000000",
+  fadeOutDuration = 0.5,
+} = {}) {
+  const containerRef = useRef(null);
+  const darkLineRefs = useRef([]);
+  const lightLineRefs = useRef([]);
+  const darkNavTextRefs = useRef([]);
+  const darkRowTextRefs = useRef([]);
+  const lightNavTextRefs = useRef([]);
+  const lightRowTextRefs = useRef([]);
+  const lightLayerRef = useRef(null);
+  const darkContentRef = useRef(null);
+  const tlRef = useRef(null);
   const layoutRef = useRef({
     height: 0,
-    coneY: /** @type {number[]} */ ([]),
-    flatY: /** @type {number[]} */ ([]),
-    coneScale: /** @type {number[]} */ ([]),
+    coneY: [],
+    flatY: [],
+    coneScale: [],
   });
 
   const [done, setDone] = useState(false);
   const [rowHeight, setRowHeight] = useState(ROW_H);
   const [lineCount, setLineCount] = useState(getLineCount);
   const lineCountRef = useRef(lineCount);
+  const safeDuration = clampNumber(duration, 0.25, 3, 1);
+  const safeLineHeight = clampNumber(lineHeight, 1, 12, 1);
+  const safeFadeOutDuration = clampNumber(fadeOutDuration, 0.1, 3, 0.5);
 
   const recomputeLayout = useCallback(() => {
     const el = containerRef.current;
@@ -379,6 +379,7 @@ export default function LinesLoading({ onComplete } = {}) {
         },
       });
       tlRef.current = tl;
+      tl.timeScale(1 / safeDuration);
 
       tl.to(lightLayerRef.current, { opacity: 1, duration: 0.65 });
       tl.to(darkContentRef.current, { opacity: 1, duration: 0.65 }, "<");
@@ -416,6 +417,7 @@ export default function LinesLoading({ onComplete } = {}) {
       },
     });
     tlRef.current = tl;
+    tl.timeScale(1 / safeDuration);
 
     const staggerS = MORPH_STAGGER / 1000;
     const appearS = APPEAR_DUR / 1000;
@@ -484,7 +486,7 @@ export default function LinesLoading({ onComplete } = {}) {
       darkLineEls,
       {
         opacity: 0,
-        duration: (WIPE_DUR / 1000) * 0.6,
+        duration: safeFadeOutDuration,
       },
       "wipe",
     );
@@ -513,7 +515,7 @@ export default function LinesLoading({ onComplete } = {}) {
     );
     tl.to({}, { duration: HOLD_AFTER_MORPH / 1000 });
     tl.to({}, { duration: HOLD_END / 1000 });
-  }, [onComplete, recomputeLayout]);
+  }, [onComplete, recomputeLayout, safeDuration, safeFadeOutDuration]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -549,8 +551,9 @@ export default function LinesLoading({ onComplete } = {}) {
           {Array.from({ length: lineCount }, (_, i) => (
             <div
               key={i}
-              ref={(el) => { darkLineRefs.current[i] = el; }}
-              className="absolute left-1/2 top-0 h-px w-full origin-center bg-white will-change-transform"
+              ref={(el) => (darkLineRefs.current[i] = el)}
+              className="absolute left-1/2 top-0 w-full origin-center will-change-transform"
+              style={{ height: safeLineHeight, backgroundColor: darkLineColor }}
             />
           ))}
         </div>
@@ -572,8 +575,9 @@ export default function LinesLoading({ onComplete } = {}) {
           {Array.from({ length: lineCount }, (_, i) => (
             <div
               key={i}
-              ref={(el) => { lightLineRefs.current[i] = el; }}
-              className="absolute left-1/2 top-0 h-px w-full origin-center bg-black will-change-transform"
+              ref={(el) => (lightLineRefs.current[i] = el)}
+              className="absolute left-1/2 top-0 w-full origin-center will-change-transform"
+              style={{ height: safeLineHeight, backgroundColor: lightLineColor }}
             />
           ))}
         </div>
@@ -582,7 +586,7 @@ export default function LinesLoading({ onComplete } = {}) {
       {done && (
         <button
           onClick={run}
-          className="absolute bottom-7 max-[1025px]:bottom-5 max-md:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-md:text-sm max-[1025px]:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
+          className="absolute bottom-7 max-md:bottom-5 max-sm:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
         >
           Replay
         </button>

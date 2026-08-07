@@ -7,19 +7,8 @@ import { ScrollTrigger } from'gsap/dist/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 
-/**
- * @typedef {{
- *   digit: string,
- *   duration?: number,
- *   trigger?: string | Element,
- *   textColor?: string,
- *   reducedMotion?: boolean,
- * }} DigitScrollerProps
- */
-
-/** @type {import('react').FC<DigitScrollerProps>} */
-const DigitScroller = memo(({ digit, duration = 1.5, trigger, textColor, reducedMotion = false }) => {
- const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+const DigitScroller = memo(({ digit, index, duration = 1.5, stagger = 0.1, trigger, textColor, reducedMotion = false }) => {
+ const containerRef = useRef(null);
 
  useEffect(() => {
  if (reducedMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
@@ -31,6 +20,7 @@ const DigitScroller = memo(({ digit, duration = 1.5, trigger, textColor, reduced
  gsap.to(containerRef.current, {
  y: `-${digitIndex * 10}%`,
  duration,
+ delay: index * stagger,
  ease:'power2.out',
  scrollTrigger: {
  trigger: trigger || containerRef.current,
@@ -40,7 +30,7 @@ const DigitScroller = memo(({ digit, duration = 1.5, trigger, textColor, reduced
  }, containerRef);
 
  return () => ctx.revert();
- }, [digit, duration, reducedMotion, trigger]);
+ }, [digit, index, duration, stagger, reducedMotion, trigger]);
 
  if (reducedMotion) {
  return (
@@ -71,22 +61,10 @@ DigitScroller.displayName ='DigitScroller';
 
 
 
-/**
- * @typedef {Object} NumberCounterThreeProps
- * @property {string} [value]
- * @property {number} [duration]
- * @property {string | number} [fontWeight]
- * @property {string} [textColor]
- * @property {string} [textSize]
- * @property {string | Element} [trigger]
- * @property {string} [suffix]
- * @property {boolean} [reducedMotion]
- */
-
-/** @param {NumberCounterThreeProps} props */
 const NumberCounterThree = ({
  value ='0',
  duration = 1.5,
+ stagger = 0.1,
  fontWeight = 600,
  textColor ='#FF5100',
  textSize ='text-[5vw] max-[1025px]:text-[7vw] max-md:text-[12vw]',
@@ -94,7 +72,6 @@ const NumberCounterThree = ({
  suffix ='',
  reducedMotion = false,
 }) => {
- /** @param {string} val */
  const renderDigits = (val) => {
  return val.split('').map((char, i) => {
  if (/\d/.test(char)) {
@@ -102,7 +79,9 @@ const NumberCounterThree = ({
  <DigitScroller
  key={i}
  digit={char}
+ index={i}
  duration={duration}
+ stagger={stagger}
  trigger={trigger}
  textColor={textColor}
  reducedMotion={reducedMotion}

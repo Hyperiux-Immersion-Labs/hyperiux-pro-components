@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { VERTEX, FRAGMENT } from "./shaders";
 import { prefersReducedMotion } from "./prefersReducedMotion";
 
-export default function Flower({ data, sprite, config }) {
+export default function Flower({ data, sprite, config, bloomStrength = 1.2 }) {
   const pointsRef = useRef();
   const materialRef = useRef(null);
 
@@ -29,8 +29,8 @@ export default function Flower({ data, sprite, config }) {
         uAspect: { value: 1.0 },
         uHoverIntensity: { value: 0.0 },
         // Custom Hover Configs sent to shaders
-        uDefaultFlowerBloom: { value: config?.defaultFlowerBloom ?? 1.5 },
-        uHoverGlowMultiplier: { value: config?.hoverGlowMultiplier ?? 6.0 },
+        uDefaultFlowerBloom: { value: (config?.defaultFlowerBloom ?? 1.5) * bloomStrength },
+        uHoverGlowMultiplier: { value: (config?.hoverGlowMultiplier ?? 6.0) * bloomStrength },
         uHoverMagneticStrength: { value: config?.hoverMagneticStrength ?? 0.6 },
         uHoverMagneticDirection: { value: config?.hoverMagneticDirection ?? 1.0 },
         uHoverZPull: { value: config?.hoverZPull ?? 2.5 },
@@ -52,6 +52,16 @@ export default function Flower({ data, sprite, config }) {
       }
     };
   }, [material]);
+
+  useEffect(() => {
+    const runtimeMaterial = materialRef.current;
+    if (!runtimeMaterial) return;
+
+    runtimeMaterial.uniforms.uDefaultFlowerBloom.value =
+      (config?.defaultFlowerBloom ?? 1.5) * bloomStrength;
+    runtimeMaterial.uniforms.uHoverGlowMultiplier.value =
+      (config?.hoverGlowMultiplier ?? 6.0) * bloomStrength;
+  }, [bloomStrength, config]);
 
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");

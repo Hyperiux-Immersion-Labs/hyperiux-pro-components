@@ -3,16 +3,21 @@
 import React from 'react';
 import ZoomSliderComp from './ZoomSliderComp';
 
-const ZoomSlider = () => {
+const ZoomSlider = ({
+  scaleOnHover = true,
+  textOnHover = true,
+}) => {
   return (
     <ZoomSliderComp
       title="Zoom Slider"
       subheading="Scroll to explore "
       sliderData={DEFAULT_SLIDER_DATA}
+      scaleOnHover={scaleOnHover}
+      textOnHover={textOnHover}
     />
   );
 };
- 
+
 
 export default ZoomSlider;
 

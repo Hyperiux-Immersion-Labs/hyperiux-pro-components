@@ -40,7 +40,7 @@ export default function DragCursor({ isHoveringDraggable = false }) {
   return (
     <div 
       ref={cursorRef}
-      className="fixed w-4 h-4 pointer-events-none z-9999 -translate-x-1/2 -translate-y-1/2"
+      className="fixed w-4 h-4 pointer-events-none z-30 -translate-x-1/2 -translate-y-1/2"
       style={{ left: 0, top: 0 }}
     >
       <div className="absolute top-4 left-[120%] text-white text-[.5vw] font-head whitespace-nowrap">

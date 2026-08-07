@@ -55,7 +55,7 @@ function horizontalLoop(items, config = {}) {
  const xPercents = [];
  let curIndex = 0;
 
- const pixelsPerSecond = 100;
+ const pixelsPerSecond = 100 * Math.max(config.speed ?? 1, 0.01);
  const snap =
  config.snap === false ? /** @type {(v: number) => number} */ ((v) => v) : gsap.utils.snap(config.snap || 1);
 
@@ -197,6 +197,13 @@ function horizontalLoop(items, config = {}) {
  ((dragSnap +"").split(".")[1] ||"").length
  );
  tl.progress(startProgress);
+ // Re-evaluated per press so hovering in/out between drags is honored -
+ // pauseOnHover stops the post-release momentum coast while the pointer
+ // is still over the carousel, same as reduced motion does permanently.
+ this.vars.inertia =
+ config.pauseOnHover && config.isHoveredRef?.current
+ ? false
+ : !config.reduceMotion;
  },
  onDrag: align,
  onThrowUpdate: align,
@@ -249,6 +256,9 @@ export default function InfiniteCarouselComp({
  children,
  draggable = true,
  showNav = true,
+ speed = 1,
+ pauseOnHover = true,
+ direction ="left",
  prevLabel ="← Prev",
  nextLabel ="Next →",
 
@@ -275,6 +285,7 @@ export default function InfiniteCarouselComp({
  const attemptsRef = useRef(0);
  const mobileCardRefs = useRef(/** @type {(HTMLDivElement | null)[]} */ ([]));
  const isAdjustingScrollRef = useRef(false);
+ const isHoveredRef = useRef(false);
 
  const [isMobile, setIsMobile] = useState(false);
  const [activeIndex, setActiveIndex] = useState(0);
@@ -356,6 +367,10 @@ export default function InfiniteCarouselComp({
  const loop = horizontalLoop(items, {
  draggable,
  reduceMotion,
+ speed,
+ pauseOnHover,
+ isHoveredRef,
+ reversed: direction ==="right",
  wrapperEl: wrapperRef.current,
  onIndexChange: setActiveIndex,
  });
@@ -381,7 +396,7 @@ export default function InfiniteCarouselComp({
  loopRef.current = null;
  attemptsRef.current = 0;
  };
- }, [childArray.length, draggable, isMobile, reduceMotion]);
+ }, [childArray.length, draggable, isMobile, reduceMotion, speed, pauseOnHover, direction]);
 
  useEffect(() => {
  if (!isSwiperMode || !wrapperRef.current || !childArray.length) return;
@@ -544,6 +559,12 @@ export default function InfiniteCarouselComp({
 
  <div
  ref={wrapperRef}
+ onPointerEnter={() => {
+ isHoveredRef.current = true;
+ }}
+ onPointerLeave={() => {
+ isHoveredRef.current = false;
+ }}
  className={`relative flex min-h-25 max-[1025px]:pt-14 w-full flex-nowrap items-stretch overflow-hidden ${
  isWrapMode
  ? "flex-wrap justify-center gap-4 overflow-visible max-[1025px]:gap-3.5 max-md:gap-3"

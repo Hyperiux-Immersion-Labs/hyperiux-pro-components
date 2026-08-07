@@ -5,73 +5,75 @@
 import { useEffect, useId, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import PixelateSvgFilter from "./PixelatedSvgFilter";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * @typedef {Object} PixelateSvgFilterProps
- * @property {string} [id]
- * @property {number} size
- * @property {boolean} [crossLayers]
- */
+function PixelateSvgFilter({ id, size, crossLayers }) {
+  return (
+    <svg aria-hidden="true" style={{ pointerEvents: "none", position: "absolute", height: 0, width: 0, overflow: "hidden" }}>
+      <defs>
+        <filter id={id} x="0" y="0" width="1" height="1">
+          <feConvolveMatrix kernelMatrix="1 1 1 1 1 1 1 1 1" result="AVG" />
+          <feFlood x="1" y="1" width="1" height="1" />
+          <feComposite operator="arithmetic" k1="0" k2="1" k3="0" k4="0" width={size} height={size} />
+          <feTile result="TILE" />
+          <feComposite in="AVG" in2="TILE" operator="in" />
+          <feMorphology operator="dilate" radius={size / 2} result="NORMAL" />
 
-/** @param {PixelateSvgFilterProps} props */
-const DEFAULT_SRC =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg";
-const DEFAULT_ALT = "Image";
+          {crossLayers && (
+            <>
+              <feConvolveMatrix kernelMatrix="1 1 1 1 1 1 1 1 1" result="AVG" />
+              <feFlood x="1" y="1" width="1" height="1" />
+              <feComposite in2="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="0" k4="0" width={size / 2} height={size} />
+              <feTile result="TILE" />
+              <feComposite in="AVG" in2="TILE" operator="in" />
+              <feMorphology operator="dilate" radius={size / 2} result="FALLBACKX" />
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+              <feConvolveMatrix kernelMatrix="1 1 1 1 1 1 1 1 1" result="AVG" />
+              <feFlood x="1" y="1" width="1" height="1" />
+              <feComposite in2="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="0" k4="0" width={size} height={size / 2} />
+              <feTile result="TILE" />
+              <feComposite in="AVG" in2="TILE" operator="in" />
+              <feMorphology operator="dilate" radius={size / 2} result="FALLBACKY" />
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setPrefersReducedMotion(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
+              <feMerge>
+                <feMergeNode in="FALLBACKX" />
+                <feMergeNode in="FALLBACKY" />
+                <feMergeNode in="NORMAL" />
+              </feMerge>
+            </>
+          )}
 
-  return prefersReducedMotion;
+          {!crossLayers && <feMergeNode in="NORMAL" />}
+        </filter>
+      </defs>
+    </svg>
+  );
 }
 
-/**
- * @typedef {Object} SvgPixelRevealProps
- * @property {string} [src]
- * @property {string} [alt]
- * @property {number} [initialPixelSize]
- * @property {number} [finalPixelSize]
- * @property {string} [start]
- * @property {string} [end]
- * @property {boolean} [crossLayers]
- * @property {import('react').CSSProperties} [style]
- */
-
-/** @param {SvgPixelRevealProps} props */
-export default function SVGPixelReveal({
-  src = DEFAULT_SRC,
-  alt = DEFAULT_ALT,
-  className = "h-[50vh] w-[50vw]",
-  imageClassName = "",
-  initialPixelSize = 18,
-  finalPixelSize = 1,
-  start = "top 35%",
-  end = "bottom 35%",
+export default function SvgPixelReveal({
+  src,
+  alt = "Image",
+  intensity = 22,
   crossLayers = true,
-  priority = false,
+  style = {},
 }) {
-  const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+  const containerRef = useRef(null);
   const filterId = useId().replace(/:/g, "");
+  const initialPixelSize = Math.max(2, intensity);
+  const finalPixelSize = 1;
+  const start = "top 50%";
+  const end = "bottom 35%";
   const [pixelSize, setPixelSize] = useState(initialPixelSize);
-  const reducedMotion = usePrefersReducedMotion();
   const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;
 
   useEffect(() => {
-    const container = containerRef.current;
+    setPixelSize(initialPixelSize);
+  }, [initialPixelSize]);
 
-    if (!container) {
-      return undefined;
-    }
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
     const animatedState = { size: initialPixelSize };
 
@@ -80,9 +82,7 @@ export default function SVGPixelReveal({
       duration: 1.0,
       ease: "none",
       paused: true,
-      onUpdate: () => {
-        setPixelSize(animatedState.size);
-      },
+      onUpdate: () => setPixelSize(animatedState.size),
     });
 
     const trigger = ScrollTrigger.create({
@@ -93,49 +93,20 @@ export default function SVGPixelReveal({
       invalidateOnRefresh: true,
     });
 
-    return () => {
-      trigger.kill();
-      tween.kill();
-    };
+    return () => { trigger.kill(); tween.kill(); };
   }, [end, finalPixelSize, initialPixelSize, start]);
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
-      <PixelateSvgFilter
-        id={filterId}
-        size={pixelSize}
-        crossLayers={crossLayers}
-      />
-
+    <div ref={containerRef} style={{ position: "relative", ...style }}>
+      <PixelateSvgFilter id={filterId} size={pixelSize} crossLayers={crossLayers} />
       <div
-        className="relative h-full w-full overflow-hidden"
-        style={{ filter: shouldApplyFilter ? `url(#${filterId})` : undefined }}
+        style={{
+          position: "relative", height: "100%", width: "100%", overflow: "hidden",
+          filter: shouldApplyFilter ? `url(#${filterId})` : undefined,
+        }}
       >
-        <img
-          src={src}
-          alt={alt}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : "auto"}
-          className={`h-full w-full object-cover ${imageClassName}`.trim()}
-        />
+        <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
       </div>
-
-      {reducedMotion && (
-        <div
-          aria-live="polite"
-          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
-        >
-          <h2 className="text-[1.15vw] max-sm:text-[3.5vw] max-md:text-[2vw] leading-none text-[#111111]">
-            This effect can&apos;t be reduced.
-          </h2>
-          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
-            Reduced motion is enabled, but this effect relies on a
-            continuous scroll-driven transition from pixelated to
-            sharp, and can&apos;t be simplified to a fade without
-            losing the effect entirely.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

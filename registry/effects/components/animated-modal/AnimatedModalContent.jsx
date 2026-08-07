@@ -4,22 +4,6 @@
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
-/**
- * @typedef {Object} AnimatedModalContentProps
- * @property {boolean} [isOpen]
- * @property {() => void} [onClose]
- * @property {import('react').ReactNode} [children]
- * @property {string} [className]
- * @property {string} [contentClassName]
- * @property {boolean} [showCloseButton]
- * @property {boolean} [closeOnBackdrop]
- * @property {boolean} [closeOnEsc]
- * @property {string} [closeButtonClassName]
- * @property {string} [ariaLabel]
- * @property {string} [ariaLabelledby]
- */
-
-/** @param {AnimatedModalContentProps} props */
 const AnimatedModalContent = ({
   isOpen = false,
   onClose,
@@ -32,9 +16,13 @@ const AnimatedModalContent = ({
   closeButtonClassName = "",
   ariaLabel = "Dialog",
   ariaLabelledby,
+  overlayOpacity = 0.82,
+  duration = 0.5,
 }) => {
-  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
-  const previousFocusRef = useRef(/** @type {Element | null} */ (null));
+  const containerRef = useRef(null);
+  const previousFocusRef = useRef(null);
+  const safeOverlayOpacity = Math.min(1, Math.max(0, Number(overlayOpacity) || 0));
+  const safeDuration = Math.max(0.05, Number(duration) || 0.5);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -43,19 +31,17 @@ const AnimatedModalContent = ({
 
     previousFocusRef.current = document.activeElement;
 
-    /** @returns {HTMLElement[]} */
     const getFocusable = () => {
       if (!container) return [];
-      return /** @type {HTMLElement[]} */ (Array.from(
+      return Array.from(
         container.querySelectorAll(
           'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
         )
-      )).filter((el) => el.offsetParent !== null || el === document.activeElement);
+      ).filter((el) => el.offsetParent !== null || el === document.activeElement);
     };
 
     container?.focus();
 
-    /** @param {KeyboardEvent} e */
     const handleKeyDown = (e) => {
       if (closeOnEsc && e.key === "Escape") {
         onClose?.();
@@ -93,7 +79,7 @@ const AnimatedModalContent = ({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
       // Return focus to whatever triggered the modal.
-      /** @type {any} */ (previousFocusRef.current)?.focus?.();
+      previousFocusRef.current?.focus?.();
     };
   }, [isOpen, onClose, closeOnEsc]);
 
@@ -109,7 +95,7 @@ const AnimatedModalContent = ({
       {...(!isOpen ? { inert: true, "aria-hidden": "true" } : {})}
       className={`
         fixed inset-0 z-9999
-        duration-500
+        transition-opacity
         ${
           isOpen
             ? "opacity-100 pointer-events-auto"
@@ -117,6 +103,7 @@ const AnimatedModalContent = ({
         }
         ${className}
       `}
+      style={{ transitionDuration: `${safeDuration}s` }}
     >
       <button
         type="button"
@@ -125,9 +112,9 @@ const AnimatedModalContent = ({
         className="
           absolute inset-0
           cursor-pointer border-0
-          bg-black/82
           backdrop-blur-md
         "
+        style={{ backgroundColor: `rgba(0,0,0,${safeOverlayOpacity})` }}
       />
 
       {showCloseButton && (

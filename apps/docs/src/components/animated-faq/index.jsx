@@ -7,6 +7,8 @@ import {
 } from "./AnimatedFaqComp";
 import React from "react";
 
+export { FAQContent, FAQGroup, FAQTitle, FAQWrapper };
+
 /** @typedef {import('react').ReactNode} ReactNode */
 /**
  * @typedef {Object} FAQItem

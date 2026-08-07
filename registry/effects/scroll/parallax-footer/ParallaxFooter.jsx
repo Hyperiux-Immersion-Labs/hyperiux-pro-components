@@ -16,6 +16,7 @@ const FooterParallax = ({
  id ="footer",
  outerClassName ="",
  footerClassName ="",
+ footerStyle,
 }) => {
  const footerRef = useRef(/** @type {HTMLElement|null} */ (null));
  const [height, setHeight] = useState(1);
@@ -63,6 +64,7 @@ const FooterParallax = ({
  <footer
  ref={footerRef}
  className={`w-screen fixed bottom-0 left-0 ${footerClassName}`}
+ style={footerStyle}
  >
  {children}
  </footer>

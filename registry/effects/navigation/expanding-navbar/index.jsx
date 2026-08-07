@@ -5,27 +5,47 @@ import { ExpandingNavbarMobile } from "./ExpandingNavbarMobile";
 import { ArrowUpRight } from "lucide-react";
 
 
-export default function ExpandingNavbar() {
+export default function ExpandingNavbar({
+    backgroundColor = "#ffffff",
+    activeColor = "#ff5f00",
+    duration = 1,
+    ease = "cubic-bezier(0.625, 0.05, 0, 1)",
+    expandedWidth = 98,
+}) {
     return (
-        <div className="h-screen w-full bg-white relative overflow-hidden">
-            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#111111] max-[1025px]:text-[4vw] max-md:text-[5vw] text-[2.5vw] tracking-tight text-center w-full">
-                Watch items spring, orbit and snap into place
-                <br />
-                <span className="text-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[3.5vw] opacity-70">[Click the ☰ to reveal the motion]</span>
+        <div className="h-screen w-full relative overflow-hidden" style={{ backgroundColor }}>
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-[#111111]">
+                <h1 className="max-[1025px]:text-[4vw] max-md:text-[5vw] text-[2.5vw] tracking-tight">
+                    Watch items spring, orbit and snap into place
+                    <br />
+                    <span className="text-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[3.5vw] opacity-70">
+                        [Click the menu to reveal the motion]
+                    </span>
+                </h1>
 
-                <span className="block mt-6">
+                <div className="mt-6 flex items-center gap-3 max-md:flex-col">
                     <a
                         href="/effects"
-                        className="w-fit mx-auto items-center flex gap-2 rounded-full bg-[#ff5f00] text-white px-6 py-3 text-[1vw] max-[1025px]:text-[2vw] max-md:text-[3vw] font-medium hover:opacity-90 transition-opacity"
+                        className="w-fit mx-auto items-center flex gap-2 rounded-full text-white px-6 py-3 text-[1vw] max-[1025px]:text-[2vw] max-md:text-[3vw] font-medium hover:opacity-90 transition-opacity"
+                        style={{ backgroundColor: activeColor }}
                     >
                         Explore all Effects
-                       <ArrowUpRight className="size-4" />
+                        <ArrowUpRight className="size-4" />
                     </a>
-                </span>
-            </p>
-            
-            <ExpandingNavbarDesktop />
-            <ExpandingNavbarMobile />
+
+                    <a
+                        href="/effects/navigation/expanding-navbar"
+                        className="w-fit mx-auto items-center flex gap-2 rounded-full text-white px-6 py-3 text-[1vw] max-[1025px]:text-[2vw] max-md:text-[3vw] font-medium hover:opacity-90 transition-opacity"
+                        style={{ backgroundColor: activeColor }}
+                    >
+                        Read Article
+                        <ArrowUpRight className="size-4" />
+                    </a>
+                </div>
+            </div>
+
+            <ExpandingNavbarDesktop activeColor={activeColor} duration={duration} ease={ease} expandedWidth={expandedWidth} />
+            <ExpandingNavbarMobile activeColor={activeColor} duration={duration} ease={ease} />
         </div>
     );
 }

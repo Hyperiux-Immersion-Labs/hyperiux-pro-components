@@ -1,27 +1,11 @@
-
-import MagneticImageTrail from '@/components/magnetic-image-trail'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/cursor/magnetic-image-trail/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-      <div className='h-screen relative'>
-
-        <DemoHeader />
-
-
-        <h1 className='text-black sr-only text-lg text-center leading-[1.2]'>
-          Glide around to reveal the magic
-        </h1>
-        <MagneticImageTrail />
-      </div >
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="magnetic-image-trail" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("magnetic-image-trail");
 }

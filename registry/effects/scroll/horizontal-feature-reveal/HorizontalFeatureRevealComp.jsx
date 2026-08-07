@@ -6,34 +6,6 @@ import { useEffect, useId } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
-/**
- * @typedef {Object} FeatureRevealTriggerRange
- * @property {string} [start]
- * @property {string} [end]
- */
-
-/**
- * @typedef {Object} FeatureRevealTriggers
- * @property {FeatureRevealTriggerRange} [no]
- * @property {FeatureRevealTriggerRange} [title]
- * @property {FeatureRevealTriggerRange} [content]
- * @property {FeatureRevealTriggerRange} [img]
- */
-
-/**
- * @typedef {Object} FeatureRevealProperty
- * @property {string} [image]
- * @property {string} [imgClass]
- * @property {string|number} [no]
- * @property {string|number} [number]
- * @property {string} [titleClass]
- * @property {string} [title]
- * @property {string} [contentClass]
- * @property {string[]} [paragraphs]
- * @property {FeatureRevealTriggers} [triggers]
- */
-
-/** @type {FeatureRevealProperty[]} */
 const defaultPropertiesData = [];
 
 function prefersReducedMotion() {
@@ -41,13 +13,13 @@ function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
-/**
- * @typedef {Object} HorizontalScrollCompProps
- * @property {FeatureRevealProperty[]} [propertiesData]
- */
-
-/** @param {HorizontalScrollCompProps} props */
-export default function HorizontalScrollComp({ propertiesData = defaultPropertiesData }) {
+export default function HorizontalScrollComp({
+  propertiesData = defaultPropertiesData,
+  bgColor = "#ffffff",
+  imageScale = 1.4,
+  imageParallaxRange = 30,
+  cardGap = 15,
+}) {
   const uid = useId().replace(/:/g, "");
   const sectionId = `industries-${uid}`;
 
@@ -72,45 +44,35 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
         },
       });
 
+      if (reducedMotion) {
+        ScrollTrigger.refresh();
+        return;
+      }
+
       const head = document.querySelector(".industry-head");
       if (head) {
         const headSplit = new SplitText(head, { type: "chars" });
 
-        gsap.from(
-          headSplit.chars,
-          reducedMotion
-            ? {
-                opacity: 0,
-                stagger: 0.1,
-                duration: 1,
-                scrollTrigger: {
-                  trigger: `#${sectionId}`,
-                  start: "top top",
-                  end: "20% top",
-                  scrub: true,
-                },
-              }
-            : {
-                yPercent: () =>
-                  (Math.random() < 0.5 ? 1 : -1) * (200 * Math.random()),
-                xPercent: () => 200 * Math.random(),
-                stagger: 0.1,
-                duration: 1,
-                ease: "back.out",
-                scrollTrigger: {
-                  trigger: `#${sectionId}`,
-                  start: "top top",
-                  end: "20% top",
-                  scrub: true,
-                },
-              },
-        );
+        gsap.from(headSplit.chars, {
+          yPercent: () =>
+            (Math.random() < 0.5 ? 1 : -1) * (200 * Math.random()),
+          xPercent: () => 200 * Math.random(),
+          stagger: 0.1,
+          duration: 1,
+          ease: "back.out",
+          scrollTrigger: {
+            trigger: `#${sectionId}`,
+            start: "top top",
+            end: "20% top",
+            scrub: true,
+          },
+        });
       }
 
       const cards = document.querySelectorAll(".industry-card");
 
       cards.forEach((card, i) => {
-        const cfg = propertiesData[i]?.triggers || /** @type {FeatureRevealTriggers} */ ({});
+        const cfg = propertiesData[i]?.triggers || {};
         const startNo = cfg.no?.start || "top 70%";
         const endNo = cfg.no?.end || "top 40%";
         const startTitle = cfg.title?.start || "top 70%";
@@ -127,34 +89,19 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
             mask: "lines",
           });
 
-          gsap.from(
-            splitNo.chars,
-            reducedMotion
-              ? {
-                  opacity: 0,
-                  stagger: 0.1,
-                  duration: 0.7,
-                  scrollTrigger: {
-                    trigger: `#${sectionId}`,
-                    start: startNo,
-                    end: endNo,
-                    toggleActions: "play none none reverse",
-                  },
-                }
-              : {
-                  y: 150,
-                  rotate: 10,
-                  stagger: 0.1,
-                  duration: 0.7,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                    trigger: `#${sectionId}`,
-                    start: startNo,
-                    end: endNo,
-                    toggleActions: "play none none reverse",
-                  },
-                },
-          );
+          gsap.from(splitNo.chars, {
+            y: 150,
+            rotate: 10,
+            stagger: 0.1,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: `#${sectionId}`,
+              start: startNo,
+              end: endNo,
+              toggleActions: "play none none reverse",
+            },
+          });
         }
 
         // FIXED: query property-title instead of industry-title
@@ -168,34 +115,19 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
           gsap.set(titleEl, { lineHeight: 1.2 });
           gsap.set(titleLines.lines, { lineHeight: 1.2 });
 
-          gsap.from(
-            titleLines.lines,
-            reducedMotion
-              ? {
-                  opacity: 0,
-                  stagger: 0.08,
-                  duration: 0.7,
-                  scrollTrigger: {
-                    trigger: `#${sectionId}`,
-                    start: startTitle,
-                    end: endTitle,
-                    toggleActions: "play none none reverse",
-                  },
-                }
-              : {
-                  yPercent: 100,
-                  stagger: 0.08,
-                  duration: 0.7,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                    trigger: `#${sectionId}`,
-                    start: startTitle,
-                    end: endTitle,
-                    // markers: true,
-                    toggleActions: "play none none reverse",
-                  },
-                },
-          );
+          gsap.from(titleLines.lines, {
+            yPercent: 100,
+            stagger: 0.08,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: `#${sectionId}`,
+              start: startTitle,
+              end: endTitle,
+              // markers: true,
+              toggleActions: "play none none reverse",
+            },
+          });
         }
 
         // FIXED: query property-content instead of industry-content
@@ -206,49 +138,26 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
             mask: "lines",
           });
 
-          gsap.from(
-            contentLines.lines,
-            reducedMotion
-              ? {
-                  opacity: 0,
-                  stagger: 0.08,
-                  delay: 0.3,
-                  duration: 0.7,
-                  scrollTrigger: {
-                    trigger: `#${sectionId}`,
-                    start: startContent,
-                    end: endContent,
-                    toggleActions: "play none none reverse",
-                  },
-                }
-              : {
-                  yPercent: 100,
-                  stagger: 0.08,
-                  delay: 0.3,
-                  duration: 0.7,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                    trigger: `#${sectionId}`,
-                    start: startContent,
-                    end: endContent,
-                    toggleActions: "play none none reverse",
-                  },
-                },
-          );
+          gsap.from(contentLines.lines, {
+            yPercent: 100,
+            stagger: 0.08,
+            delay: 0.3,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: `#${sectionId}`,
+              start: startContent,
+              end: endContent,
+              toggleActions: "play none none reverse",
+            },
+          });
         });
 
         // this one was already okay, but keep it consistent
         const propertyImgs = card.querySelectorAll(`[class*="industry-img-"]`);
         propertyImgs.forEach((propertyImg) => {
-          // Reduced motion: images stay put at translate-x-0, no scroll-tied
-          // horizontal parallax.
-          if (reducedMotion) {
-            gsap.set(propertyImg, { x: 0 });
-            return;
-          }
-
           gsap.to(propertyImg, {
-            translateX: "30%",
+            translateX: `${imageParallaxRange}%`,
             ease: "none",
             scrollTrigger: {
               trigger: `#${sectionId}`,
@@ -265,19 +174,23 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
     });
 
     return () => ctx.revert();
-  }, [propertiesData, sectionId]);
+  }, [propertiesData, sectionId, imageParallaxRange]);
 
 
   return (
     <section
-      className="w-screen h-[600vh] bg-white text-black relative z-10 max-[1025px]:mt-0 max-[1025px]:h-fit max-[1025px]:py-[15%] max-[1025px]:px-[7vw]"
+      className="w-screen h-[600vh] text-black relative z-10 max-[1025px]:mt-0 max-[1025px]:h-fit max-[1025px]:py-[15%] max-[1025px]:px-[7vw]"
+      style={{ backgroundColor: bgColor }}
       id={sectionId}
     >
-      
+
       <div className="w-screen  overflow-hidden h-screen justify-center items-center sticky top-0 max-[1025px]:static max-[1025px]:w-full max-[1025px]:h-fit max-[1025px]:flex max-[1025px]:flex-col max-[1025px]:items-start">
 
-        
-        <div className="flex flex-nowrap w-fit industry-container gap-[15vw] max-[1025px]:flex-col max-[1025px]:gap-[10vw] max-md:gap-[15vw]">
+
+        <div
+          className="flex flex-nowrap w-fit industry-container gap-(--card-gap) max-[1025px]:flex-col max-[1025px]:gap-[10vw] max-md:gap-[15vw]"
+          style={{ "--card-gap": `${cardGap}vw` }}
+        >
           {propertiesData.map((property, index) => (
             <div
               key={index}
@@ -287,7 +200,8 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
                 <img
                   src={property.image}
                   alt={`property-img-${index + 1}`}
-                  className={`w-full h-full scale-[1.4] translate-x-[-30%] opacity-0 industry-img industry-${property.imgClass} max-[1025px]:translate-x-0 max-[1025px]:scale-[1] max-[1025px]:object-cover max-[1025px]:opacity-100`}
+                  className={`w-full h-full scale-(--image-scale) translate-x-(--image-shift-start) opacity-0 industry-img industry-${property.imgClass} max-[1025px]:translate-x-0 max-[1025px]:scale-[1] max-[1025px]:object-cover max-[1025px]:opacity-100`}
+                  style={{ "--image-scale": imageScale, "--image-shift-start": `-${imageParallaxRange}%` }}
                   width={500}
                   height={1080}
                 />
@@ -308,7 +222,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
                   </h3>
 
                   <div className="space-y-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[4.2vw]">
-                    {/** @type {string[]} */ (property.paragraphs).map((para, pIndex) => (
+                    {property.paragraphs.map((para, pIndex) => (
                       <p
                         key={pIndex}
                         className={`opacity-0 industry-content max-[1025px]:opacity-100 ${property.contentClass}`}

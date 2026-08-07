@@ -32,12 +32,81 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "radius",
+      "type": "number",
+      "default": 500,
+      "description": "Radius of both rotating rings.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 100,
+        "max": 900,
+        "step": 10
+      }
+    },
+    {
+      "name": "cardSize",
+      "type": "number",
+      "default": 205,
+      "description": "Size of the right-rail image cards.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 80,
+        "max": 420,
+        "step": 1
+      }
+    },
+    {
+      "name": "textSideScale",
+      "type": "number",
+      "default": 0.68,
+      "description": "Title scale away from the center.",
+      "remixer": {
+        "control": "range",
+        "group": "text",
+        "groupTitle": "Text",
+        "min": 0.1,
+        "max": 1.5,
+        "step": 0.02
+      }
+    },
+    {
+      "name": "textSideOpacity",
+      "type": "number",
+      "default": 0.18,
+      "description": "Title opacity away from the center.",
+      "remixer": {
+        "control": "range",
+        "group": "text",
+        "groupTitle": "Text",
+        "min": 0,
+        "max": 1,
+        "step": 0.02
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "layout",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",
       "type": "registry:component",
       "target": "src/components/effects/circular-split-roll/index.jsx",
-      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\n\"use client\";\n\nimport React, { useEffect, useState } from \"react\";\nimport { ReactLenis } from \"lenis/react\";\nimport { CircularSplitRollComp } from \"./CircularSplitRollComp\";\n\nconst TABLET_BREAKPOINT = 1024;\n\nconst showcaseItems = [\n  {\n    title: \"Vuelta\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg\",\n    alt: \"Vuelta lamp\",\n  },\n  {\n    title: \"JH42\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg\",\n    alt: \"JH42 lamp\",\n  },\n  {\n    title: \"Hay\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg\",\n    alt: \"Hay product\",\n  },\n  {\n    title: \"Teresa\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg\",\n    alt: \"Teresa lamp\",\n  },\n  {\n    title: \"Tahiti\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg\",\n    alt: \"Tahiti lamp\",\n  },\n  {\n    title: \"Akari 1A\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg\",\n    alt: \"Akari 1A lamp\",\n  },\n  {\n    title: \"Nessino\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg\",\n    alt: \"Nessino lamp\",\n  },\n  {\n    title: \"Panthella\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg\",\n    alt: \"Panthella lamp\",\n  },\n  {\n    title: \"Bellhop\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg\",\n    alt: \"Bellhop lamp\",\n  },\n  {\n    title: \"Flowerpot\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg\",\n    alt: \"Flowerpot lamp\",\n  },\n];\n\nfunction useIsDesktop() {\n  const [isDesktop, setIsDesktop] = useState(false);\n  const [hasMounted, setHasMounted] = useState(false);\n\n  useEffect(() => {\n    const updateViewport = () => {\n      setIsDesktop(window.innerWidth > TABLET_BREAKPOINT);\n      setHasMounted(true);\n    };\n\n    updateViewport();\n\n    window.addEventListener(\"resize\", updateViewport);\n\n    return () => {\n      window.removeEventListener(\"resize\", updateViewport);\n    };\n  }, []);\n\n  return hasMounted && isDesktop;\n}\n\nexport default function CircularSplitRoll() {\n  const isDesktop = useIsDesktop();\n\n  return (\n    <ReactLenis\n      root\n      options={{\n        infinite: isDesktop,\n      }}\n    >\n      <main>\n        <CircularSplitRollComp\n          items={showcaseItems}\n          sectionHeight={100}\n          leftRadiusX={500}\n          leftRadiusY={500}\n          rightRadiusX={500}\n          rightRadiusY={500}\n          imageCardWidth={205}\n          imageCardHeight={205}\n          centerScale={1.4}\n          sideScale={0.2}\n          centerOpacity={1}\n          sideOpacity={0}\n        />\n      </main>\n      \n    </ReactLenis>\n  );\n}"
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\n\"use client\";\n\nimport React, { useEffect, useState } from \"react\";\nimport { ReactLenis } from \"lenis/react\";\nimport { CircularSplitRollComp } from \"./CircularSplitRollComp\";\n\nconst TABLET_BREAKPOINT = 1024;\nconst ROLL_CONFIG = {\n  sectionHeight: 100,\n  leftRadiusX: 500,\n  leftRadiusY: 500,\n  rightRadiusX: 500,\n  rightRadiusY: 500,\n  imageCardWidth: 205,\n  imageCardHeight: 205,\n  scrub: 1.2,\n  textCenterScale: 1,\n  textSideScale: 0.68,\n  textSideOpacity: 0.18,\n  imageCenterScale: 1,\n  imageSideScale: 0.58,\n  imageSideOpacity: 0.14,\n};\n\nconst showcaseItems = [\n  {\n    title: \"Vuelta\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg\",\n    alt: \"Vuelta lamp\",\n  },\n  {\n    title: \"JH42\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg\",\n    alt: \"JH42 lamp\",\n  },\n  {\n    title: \"Hay\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg\",\n    alt: \"Hay product\",\n  },\n  {\n    title: \"Teresa\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg\",\n    alt: \"Teresa lamp\",\n  },\n  {\n    title: \"Tahiti\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg\",\n    alt: \"Tahiti lamp\",\n  },\n  {\n    title: \"Akari 1A\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg\",\n    alt: \"Akari 1A lamp\",\n  },\n  {\n    title: \"Nessino\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg\",\n    alt: \"Nessino lamp\",\n  },\n  {\n    title: \"Panthella\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg\",\n    alt: \"Panthella lamp\",\n  },\n  {\n    title: \"Bellhop\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg\",\n    alt: \"Bellhop lamp\",\n  },\n  {\n    title: \"Flowerpot\",\n    image:\n      \"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg\",\n    alt: \"Flowerpot lamp\",\n  },\n];\n\nfunction useIsDesktop() {\n  const [isDesktop, setIsDesktop] = useState(false);\n  const [hasMounted, setHasMounted] = useState(false);\n\n  useEffect(() => {\n    const updateViewport = () => {\n      setIsDesktop(window.innerWidth > TABLET_BREAKPOINT);\n      setHasMounted(true);\n    };\n\n    updateViewport();\n\n    window.addEventListener(\"resize\", updateViewport);\n\n    return () => {\n      window.removeEventListener(\"resize\", updateViewport);\n    };\n  }, []);\n\n  return hasMounted && isDesktop;\n}\n\nexport default function CircularSplitRoll({\n  radius = 500,\n  cardSize = 205,\n  textSideScale = 0.68,\n  textSideOpacity = 0.18,\n}) {\n  const isDesktop = useIsDesktop();\n\n  return (\n    <ReactLenis\n      root\n      options={{\n        infinite: isDesktop,\n      }}\n    >\n      <main>\n        <CircularSplitRollComp\n          items={showcaseItems}\n          sectionHeight={ROLL_CONFIG.sectionHeight}\n          leftRadiusX={radius}\n          leftRadiusY={radius}\n          rightRadiusX={radius}\n          rightRadiusY={radius}\n          imageCardWidth={cardSize}\n          imageCardHeight={cardSize}\n          scrub={ROLL_CONFIG.scrub}\n          textCenterScale={ROLL_CONFIG.textCenterScale}\n          textSideScale={textSideScale}\n          textSideOpacity={textSideOpacity}\n          imageCenterScale={ROLL_CONFIG.imageCenterScale}\n          imageSideScale={ROLL_CONFIG.imageSideScale}\n          imageSideOpacity={ROLL_CONFIG.imageSideOpacity}\n        />\n      </main>\n\n    </ReactLenis>\n  );\n}\n"
     },
     {
       "path": "CircularSplitRollComp.jsx",

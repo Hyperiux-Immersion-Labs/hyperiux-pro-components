@@ -5,16 +5,20 @@ import { InertiaPlugin } from "gsap/InertiaPlugin";
 
 gsap.registerPlugin(InertiaPlugin);
 
-/**
- * @typedef {Object} InertiaImageCompProps
- * @property {string[]} [images]
- */
-
-/** @param {InertiaImageCompProps} props */
-function InertiaImageComp({ images = [] }) {
-  const rootRef = useRef(/** @type {HTMLElement|null} */ (null));
-  const deltaRef = useRef({ x: 0, y: 0, oldX: /** @type {number|null} */ (null), oldY: /** @type {number|null} */ (null) });
+function InertiaImageComp({
+  images = [],
+  strength = 1,
+  rotation = 0,
+  scale = 1,
+  duration = 0.4,
+}) {
+  const rootRef = useRef(null);
+  const deltaRef = useRef({ x: 0, y: 0, oldX: null, oldY: null });
   const isTouchRef = useRef(false);
+  const resolvedStrength = Math.max(0, Number(strength) || 0);
+  const resolvedRotation = Math.max(0, Number(rotation) || 0);
+  const resolvedScale = Math.max(0, Number(scale) || 0);
+  const resolvedDuration = Math.max(0, Number(duration) || 0);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -31,7 +35,7 @@ function InertiaImageComp({ images = [] }) {
     };
     window.addEventListener("touchstart", detectTouch, { passive: true });
 
-    const onMouseMove = (/** @type {MouseEvent} */ e) => {
+    const onMouseMove = (e) => {
       const d = deltaRef.current;
       if (d.oldX === null || d.oldY === null) {
         d.oldX = e.clientX;
@@ -46,7 +50,7 @@ function InertiaImageComp({ images = [] }) {
       d.oldY = e.clientY;
     };
 
-    const onTouchStart = (/** @type {TouchEvent} */ e) => {
+    const onTouchStart = (e) => {
       isTouchRef.current = true;
       const touch = e.touches[0];
       const d = deltaRef.current;
@@ -56,12 +60,12 @@ function InertiaImageComp({ images = [] }) {
       d.y = 0;
     };
 
-    const onTouchMove = (/** @type {TouchEvent} */ e) => {
+    const onTouchMove = (e) => {
       isTouchRef.current = true;
       const touch = e.touches[0];
       const d = deltaRef.current;
-      d.x = touch.clientX - /** @type {number} */ (d.oldX);
-      d.y = touch.clientY - /** @type {number} */ (d.oldY);
+      d.x = touch.clientX - d.oldX;
+      d.y = touch.clientY - d.oldY;
       d.oldX = touch.clientX;
       d.oldY = touch.clientY;
     };
@@ -71,7 +75,6 @@ function InertiaImageComp({ images = [] }) {
     root.addEventListener("touchmove", onTouchMove, { passive: true });
 
     const mediaEls = root.querySelectorAll(".media-item");
-    /** @type {(() => void)[]} */
     const cleanups = [];
 
     mediaEls.forEach((el) => {
@@ -80,8 +83,8 @@ function InertiaImageComp({ images = [] }) {
         const { x, y } = deltaRef.current;
 
         const isTouch = isTouchRef.current;
-        const velocityMultiplier = isTouch ? 2 : 30;
-        const rotationRange = isTouch ? 50 : 60;
+        const velocityMultiplier = (isTouch ? 2 : 30) * resolvedStrength;
+        const rotationRange = isTouch ? resolvedRotation * (50 / 60) : resolvedRotation;
 
         const tl = gsap.timeline({
           onComplete: () => tl.kill(),
@@ -89,6 +92,7 @@ function InertiaImageComp({ images = [] }) {
         tl.timeScale(1.2);
 
         tl.to(image, {
+          duration: resolvedDuration,
           inertia: {
             x: { velocity: x * velocityMultiplier, end: 0 },
             y: { velocity: y * velocityMultiplier, end: 0 },
@@ -97,10 +101,11 @@ function InertiaImageComp({ images = [] }) {
 
         tl.fromTo(
           image,
-          { rotate: 0 },
+          { rotate: 0, scale: 1 },
           {
-            duration: 0.4,
+            duration: resolvedDuration,
             rotate: (Math.random() - 0.5) * rotationRange,
+            scale: resolvedScale,
             yoyo: true,
             repeat: 1,
             ease: "power1.inOut",
@@ -120,13 +125,13 @@ function InertiaImageComp({ images = [] }) {
       root.removeEventListener("touchmove", onTouchMove);
       cleanups.forEach((fn) => fn());
     };
-  }, []);
+  }, [resolvedDuration, resolvedRotation, resolvedScale, resolvedStrength]);
 
  return (
  <>
  <section
  ref={rootRef}
- className="relative grid min-h-[50vh] w-full place-items-center "
+ className="relative grid min-h-screen w-full place-items-center "
  >
  <div className="grid grid-cols-4 gap-[1vw] max-[1025px]:gap-[8vw] max-md:gap-[5vw] max-[1025px]:grid-cols-3 max-md:grid-cols-2">
  {images.map((src, i) => (

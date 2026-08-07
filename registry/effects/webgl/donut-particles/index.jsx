@@ -5,7 +5,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { degToRad } from "three/src/math/MathUtils.js";
+import { degToRad } from "three/src/math/MathUtils";
 import { createVisibilityGate } from "./createSuspendedRaf";
 
 const PARTICLE_SIZES = [0.08, 0.09, 0.1, 0.2,0.4,0.6 ];
@@ -15,29 +15,23 @@ const TORUS_MINOR_RADIUS = 0.9;
 const TORUS_OUTER_RADIUS = 0.48;
 const TORUS_INNER_RADIUS = 0.08;
 
-/** @param {number} seed */
 function random01(seed) {
  const value = Math.sin(seed * 127.1 + seed * seed * 311.7) * 43758.5453123;
  return value - Math.floor(value);
 }
 
-/**
- * @typedef {Object} DonutParticleProps
- * @property {[number, number, number]} [position]
- * @property {number} [scale]
- * @property {[number, number, number]} [rotation]
- * @property {boolean} [interactive]
- */
-
-/** @param {DonutParticleProps} props */
 function DonutParticle({
  position = [0, 0, 0],
  scale = 2.5,
  rotation = [degToRad(-100), degToRad(45), 0],
  interactive = true,
+ particleSize = 1,
+ particleColor = "#9973ff",
+ speed = 1,
+ intensity = 1,
 }) {
- const pointsRef = useRef(/** @type {any} */ (null));
- const simulationRef = useRef(/** @type {any} */ (null));
+ const pointsRef = useRef(null);
+ const simulationRef = useRef(null);
  const { size, camera, gl } = useThree();
 
  const count = 25000;
@@ -65,7 +59,7 @@ function DonutParticle({
  useEffect(() => {
  const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
  if (!mq) return;
- const onChange = (/** @type {MediaQueryListEvent} */ event) => {
+ const onChange = (event) => {
  reduceMotionRef.current = event.matches;
  if (event.matches) {
  mouse3D.current.set(OFFSCREEN, OFFSCREEN, OFFSCREEN);
@@ -89,7 +83,7 @@ function DonutParticle({
  return;
  }
 
- const handleMouseMove = (/** @type {MouseEvent} */ event) => {
+ const handleMouseMove = (event) => {
  if (reduceMotionRef.current) return;
  if (!pointsRef.current) {
  return;
@@ -146,7 +140,6 @@ function DonutParticle({
  const sizes = new Float32Array(count);
  const randoms = new Float32Array(count * 4);
  const velocities = new Float32Array(count * 3);
- /** @type {{ x: number, y: number, z: number, u: number, v: number, noiseX: number, noiseY: number }[]} */
  const base = [];
 
  const palette = [
@@ -199,7 +192,25 @@ function DonutParticle({
  return { positions, colors, sizes, randoms, base, velocities };
  }, []);
 
- const { positions, colors, sizes, randoms } = simulation;
+ const { positions, colors, randoms } = simulation;
+
+ const sizeAttributeRef = useRef(null);
+
+ const sizes = useMemo(() => {
+ const scaled = new Float32Array(simulation.sizes.length);
+ for (let i = 0; i < scaled.length; i += 1) {
+ scaled[i] = simulation.sizes[i] * particleSize;
+ }
+ return scaled;
+ }, [simulation.sizes, particleSize]);
+
+ // Swapping the `array` prop alone doesn't re-upload the buffer to the GPU;
+ // the attribute's version has to be bumped explicitly.
+ useEffect(() => {
+ if (sizeAttributeRef.current) {
+ sizeAttributeRef.current.needsUpdate = true;
+ }
+ }, [sizes]);
 
  useEffect(() => {
  simulationRef.current = {
@@ -305,6 +316,8 @@ function DonutParticle({
  matcapTexture: { value: matcapTexture },
  time: { value: 0 },
  uDpr: { value: dpr },
+ uColor: { value: new THREE.Color(particleColor) },
+ uIntensity: { value: intensity },
  },
  vertexShader: `
  uniform float uDpr;
@@ -332,6 +345,8 @@ function DonutParticle({
  uniform sampler2D pointTexture;
  uniform sampler2D matcapTexture;
  uniform float time;
+ uniform vec3 uColor;
+ uniform float uIntensity;
  varying vec3 vColor;
  varying vec4 vRandom;
  varying float vScale;
@@ -367,7 +382,7 @@ function DonutParticle({
  }
 
  vec4 sprite = vec4(1.0);
- vec3 purple = vec3(0.6, 0.45, 1.0);
+ vec3 purple = uColor;
  float cycleSpeed = mix(0.12, 0.26, vRandom.y);
  float cycleOffset = vRandom.x + vRandom.w * 0.73;
  float cycle = fract(time * cycleSpeed + cycleOffset);
@@ -382,6 +397,7 @@ function DonutParticle({
 
  vec3 sparkle = vec3(0.4 + sin(time * 4.0 + vRandom.y * 20.0));
  color *= 0.5 + sparkle * pow(vRandom.z, 10.0) * 2.35;
+ color *= uIntensity;
 
  float alpha = sprite.a;
  if (alpha < 0.08) {
@@ -396,7 +412,7 @@ function DonutParticle({
  vertexColors: true,
  blending: THREE.NormalBlending,
  });
- }, [dpr, matcapTexture, pointTexture]);
+ }, [dpr, matcapTexture, pointTexture]); // eslint-disable-line react-hooks/exhaustive-deps -- particleColor/intensity are synced per-frame instead, to avoid rebuilding the shader on every remix drag
 
  useEffect(() => {
  return () => {
@@ -423,6 +439,8 @@ function DonutParticle({
  const { base, velocities } = simulation;
 
  pointsRef.current.material.uniforms.uDpr.value = gl.getPixelRatio();
+ pointsRef.current.material.uniforms.uColor.value.set(particleColor);
+ pointsRef.current.material.uniforms.uIntensity.value = intensity;
 
  // Reduced-motion: freeze spin / waves / mouse stretch — hold constrained torus.
  if (reduceMotionRef.current) {
@@ -461,9 +479,10 @@ function DonutParticle({
  return;
  }
 
- pointsRef.current.material.uniforms.time.value = time;
+ const animTime = time * speed;
+ pointsRef.current.material.uniforms.time.value = animTime;
 
- pointsRef.current.rotation.z += 0.00095;
+ pointsRef.current.rotation.z += 0.00095 * speed;
 
  const majorRadius = TORUS_MAJOR_RADIUS;
  const outerMinorRadius = TORUS_OUTER_RADIUS;
@@ -505,8 +524,8 @@ function DonutParticle({
  let y = positionsArray[index + 1];
  let z = positionsArray[index + 2];
 
- const wave = Math.sin(time * 1.5 + particle.u * 2) * 0.15;
- const swirl = Math.cos(time * 1.2 + particle.v * 2) * 0.15;
+ const wave = Math.sin(animTime * 1.5 + particle.u * 2) * 0.15;
+ const swirl = Math.cos(animTime * 1.2 + particle.v * 2) * 0.15;
 
  const tx = particle.x + wave;
  const ty = particle.y + swirl;
@@ -531,13 +550,13 @@ function DonutParticle({
  : 0;
  const flowBoost = 1 + closePower * CLOSE_FLOW_BOOST;
 
- fx += dx * STICK * power * 0.05;
- fy += dy * STICK * power * 0.05;
- fz += dz * STICK * power * 0.05;
+ fx += dx * STICK * power * 0.05 * intensity;
+ fy += dy * STICK * power * 0.05 * intensity;
+ fz += dz * STICK * power * 0.05 * intensity;
 
- fx += localVelocity.x * FLOW * power * flowBoost;
- fy += localVelocity.y * FLOW * power * flowBoost;
- fz += localVelocity.z * FLOW * power * flowBoost;
+ fx += localVelocity.x * FLOW * power * flowBoost * intensity;
+ fy += localVelocity.y * FLOW * power * flowBoost * intensity;
+ fz += localVelocity.z * FLOW * power * flowBoost * intensity;
 
  stretchPower = power + closePower * 0.4;
  velocityLerp = THREE.MathUtils.lerp(0.25, 1.0, power);
@@ -617,36 +636,29 @@ function DonutParticle({
  >
  <bufferGeometry>
  <bufferAttribute
- {...(/** @type {any} */ ({
- attach: "attributes-position",
- array: positions,
- count: count,
- itemSize: 3,
- }))}
+ attach="attributes-position"
+ array={positions}
+ count={count}
+ itemSize={3}
  />
  <bufferAttribute
- {...(/** @type {any} */ ({
- attach: "attributes-color",
- array: colors,
- count: count,
- itemSize: 3,
- }))}
+ attach="attributes-color"
+ array={colors}
+ count={count}
+ itemSize={3}
  />
  <bufferAttribute
- {...(/** @type {any} */ ({
- attach: "attributes-size",
- array: sizes,
- count: count,
- itemSize: 1,
- }))}
+ ref={sizeAttributeRef}
+ attach="attributes-size"
+ array={sizes}
+ count={count}
+ itemSize={1}
  />
  <bufferAttribute
- {...(/** @type {any} */ ({
- attach: "attributes-random",
- array: randoms,
- count: count,
- itemSize: 4,
- }))}
+ attach="attributes-random"
+ array={randoms}
+ count={count}
+ itemSize={4}
  />
  </bufferGeometry>
 
@@ -657,19 +669,23 @@ function DonutParticle({
  );
 }
 
-/**
- * @typedef {Object} DonutParticlesProps
- * @property {string} [className]
- * @property {string} [canvasClassName]
- * @property {[number, number, number]} [donutPosition]
- * @property {number} [donutScale]
- * @property {[number, number, number]} [donutRotation]
- * @property {[number, number, number]} [cameraPosition]
- * @property {number} [cameraFov]
- * @property {number|[number, number]} [dpr]
- */
+// The declarative <Canvas camera={{ fov }}> prop applies the value but only
+// calls updateProjectionMatrix() for aspect/left/right/bottom/top changes,
+// so fov edits are silently ignored without this explicit sync.
+function CameraFovSync({ fov }) {
+ const { camera } = useThree();
 
-/** @param {DonutParticlesProps} props */
+ useEffect(() => {
+ if ("fov" in camera && camera.fov !== fov) {
+ // eslint-disable-next-line react-hooks/immutability -- three.js cameras are inherently mutable imperative objects; this is the standard r3f pattern for syncing fov.
+ camera.fov = fov;
+ camera.updateProjectionMatrix();
+ }
+ }, [camera, fov]);
+
+ return null;
+}
+
 export default function DonutParticles({
  className = "",
  canvasClassName = "",
@@ -679,9 +695,14 @@ export default function DonutParticles({
  cameraPosition = [2.0, 4, 6],
  cameraFov = 50,
  dpr = [1, 2],
+ particleSize = 1,
+ particleColor = "#9973ff",
+ mouseInteraction = true,
+ speed = 1,
+ intensity = 1,
 }) {
- const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
- const [frameloop, setFrameloop] = useState(/** @type {'always'|'never'} */ ("always"));
+ const rootRef = useRef(null);
+ const [frameloop, setFrameloop] = useState("always");
  const [viewportWidth, setViewportWidth] = useState(1280);
 
  useEffect(() => {
@@ -713,20 +734,25 @@ export default function DonutParticles({
  : isTablet
  ? donutScale * 0.52
  : donutScale;
- const responsivePosition = /** @type {[number, number, number]} */ (isMobile
+ const responsivePosition = isMobile
  ? [donutPosition[0] - 0.5, donutPosition[1], donutPosition[2]]
  : isTablet
  ? [donutPosition[0] - 0.35, donutPosition[1], donutPosition[2]]
- : donutPosition);
+ : donutPosition;
 
  return (
  <div ref={rootRef} className={`h-screen w-full bg-black ${className}`}>
  <Canvas aria-hidden="true" className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr} frameloop={frameloop}>
+ <CameraFovSync fov={cameraFov} />
  <DonutParticle
  position={responsivePosition}
  scale={responsiveScale}
  rotation={donutRotation}
- interactive={!isTablet && !isMobile}
+ interactive={mouseInteraction && !isTablet && !isMobile}
+ particleSize={particleSize}
+ particleColor={particleColor}
+ speed={speed}
+ intensity={intensity}
  />
  </Canvas>
  </div>

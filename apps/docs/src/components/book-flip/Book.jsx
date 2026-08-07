@@ -126,6 +126,7 @@ const preloadTextures = (pages, pathPattern) => {
 const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  pathPattern,
  pages,
+ pageSpeed = 0.8,
  ...props }) => {
  const frontPath = `${pathPattern}/${front}.png`;
  const backPath = `${pathPattern}/${back}.png`;
@@ -150,6 +151,8 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  const turnedAt = useRef(0);
  const lastOpened = useRef(opened);
  const skinnedMeshRef = useRef();
+ const safePageSpeed = Math.min(5, Math.max(0.1, Number(pageSpeed) || 0.8));
+ const normalizedPageSpeed = safePageSpeed / 0.8;
 
  /**
  * Create the skeletal mesh for this page
@@ -242,7 +245,8 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  }
 
  // Calculate animation progress (0 to 1, then sin for smooth curve)
- let turningTime = Math.min(400, new Date() - turnedAt.current) / 400;
+ const turnDuration = 400 / normalizedPageSpeed;
+ let turningTime = Math.min(turnDuration, new Date() - turnedAt.current) / turnDuration;
  turningTime = Math.sin(turningTime * Math.PI);
 
  // Target rotation: opened = -90°, closed = +90°
@@ -296,7 +300,7 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  target.rotation,
 "y",
  rotationAngle,
- EASING_FACTOR,
+ EASING_FACTOR * normalizedPageSpeed,
  delta
  );
 
@@ -309,7 +313,7 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  target.rotation,
 "x",
  foldRotationAngle * foldIntensity,
- EASING_FACTOR_FOLD,
+ EASING_FACTOR_FOLD * normalizedPageSpeed,
  delta
  );
  }
@@ -356,12 +360,19 @@ const Page = ({  number,  front,  back,  page,  opened,  bookClosed,
  * 3. Each page renders and receives updated page/opened props
  * 4. Pages animate their bones based on opened state
  */
-export const Book = ({  images = [],
+export const Book = ({
+ images = [],
  pathPattern ="/assets/nature",
- ...props }) => {
+ pageSpeed = 0.8,
+ bookScale = 1,
+ ...props
+}) => {
  const { page } = usePage();
  const [delayedPage, setDelayedPage] = useState(page);
- const [bookScale, setBookScale] = useState(1);
+ const [responsiveScale, setResponsiveScale] = useState(1);
+ const safePageSpeed = Math.min(5, Math.max(0.1, Number(pageSpeed) || 0.8));
+ const normalizedPageSpeed = safePageSpeed / 0.8;
+ const safeBookScale = Math.min(3, Math.max(0.2, Number(bookScale) || 1));
 
  // Generate pages from image array
  const pages = useMemo(() => generatePages(images), [images]);
@@ -376,16 +387,16 @@ export const Book = ({  images = [],
  useEffect(() => {
  const updateBookScale = () => {
  if (window.innerWidth <= 640) {
- setBookScale(1.2);
+ setResponsiveScale(1.2);
  return;
  }
 
  if (window.innerWidth <= 1025) {
- setBookScale(0.84);
+ setResponsiveScale(0.84);
  return;
  }
 
- setBookScale(1);
+ setResponsiveScale(1);
  };
 
  updateBookScale();
@@ -409,11 +420,12 @@ export const Book = ({  images = [],
  return delayedPage;
  } else {
  // Faster animation for large jumps, slower for single pages
+ const baseDelay = Math.abs(page - delayedPage) > 2 ? 50 : 150;
  timeout = setTimeout(
  () => {
  goToPage();
  },
- Math.abs(page - delayedPage) > 2 ? 50 : 150
+ baseDelay / normalizedPageSpeed
  );
   if (page > delayedPage) {
  return delayedPage + 1;
@@ -428,10 +440,15 @@ export const Book = ({  images = [],
  return () => {
  clearTimeout(timeout);
  };
- }, [page]);
+ }, [normalizedPageSpeed, page]);
 
  return (
- <group {...props} rotation-y={-Math.PI / 2} rotation-x={-0.7} scale={bookScale}>
+ <group
+ {...props}
+ rotation-y={-Math.PI / 2}
+ rotation-x={-0.7}
+ scale={responsiveScale * safeBookScale}
+ >
  {pages.map((pageData, index) => (
  <Page
  key={index}
@@ -441,6 +458,7 @@ export const Book = ({  images = [],
  bookClosed={delayedPage === 0 || delayedPage === pages.length}
  pathPattern={pathPattern}
  pages={pages}
+ pageSpeed={safePageSpeed}
  {...pageData}
  />
  ))}

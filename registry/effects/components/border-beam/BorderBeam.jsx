@@ -120,14 +120,13 @@ export const BeamBorder = forwardRef(
     size = 'md',
     colorVariant = 'sunset',
     theme = 'light',
-    staticColors = false,
     duration,
     active = true,
     borderRadius: customBorderRadius,
     brightness: brightnessProp,
     saturation,
-    hueRange = 30,
     strength = 1,
+    beamWidth,
     className,
     style,
     onActivate,
@@ -274,17 +273,18 @@ export const BeamBorder = forwardRef(
   // Falls back to 0 only for the pre-detection frame.
   const finalBorderRadius = customBorderRadius ?? detectedRadius ?? 0;
   const finalDuration = duration ?? (size === 'line' ? 3.1 : isPulse ? 2.3 : 1.96);
+  const finalBorderWidth = beamWidth ?? sizeConfig.borderWidth;
   const finalSaturation = saturation ?? themeConfig.saturation;
   const finalBrightness = brightnessProp ?? themeConfig.brightness ?? 1.3;
-  const finalHueRange = size === 'line' ? Math.min(hueRange, 13) : hueRange;
-  const finalStaticColors = colorVariant === 'mono' ? true : staticColors;
+  const finalHueRange = size === 'line' ? 13 : 30;
+  const finalStaticColors = colorVariant === 'mono';
 
   const cssStyles = useMemo(
     () =>
       generateBeamCSS({
         id,
         borderRadius: finalBorderRadius,
-        borderWidth: sizeConfig.borderWidth,
+        borderWidth: finalBorderWidth,
         duration: finalDuration,
         strokeOpacity: themeConfig.strokeOpacity,
         innerOpacity: themeConfig.innerOpacity,
@@ -302,7 +302,7 @@ export const BeamBorder = forwardRef(
     [
       id,
       finalBorderRadius,
-      sizeConfig.borderWidth,
+      finalBorderWidth,
       finalDuration,
       themeConfig.strokeOpacity,
       themeConfig.innerOpacity,

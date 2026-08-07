@@ -11,30 +11,20 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
-const DEFAULT_TEXT = <p>Slide from right.</p>;
 
-/**
- * @typedef {Object} SlideTextRevealProps
- * @property {import('react').ReactNode} [children]
- * @property {boolean} [animateOnScroll]
- * @property {number} [delay]
- * @property {string} [className]
- * @property {string} [start]
- * @property {string} [end]
- */
-
-/** @param {SlideTextRevealProps} props */
 export default function SlideTextReveal({
-  children = DEFAULT_TEXT,
+  children,
   animateOnScroll = true,
   delay = 0,
+  duration = 0.5,
+  speed = 20,
+  stagger = 0.03,
+  variant = "right",
   className = "",
-  start = "top 80%",
-  end = "bottom 60%",
 }) {
-  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
-  const splitRefs = useRef(/** @type {InstanceType<typeof SplitText>[]} */ ([]));
-  const charsRef = useRef(/** @type {HTMLElement[]} */ ([]));
+  const containerRef = useRef(null);
+  const splitRefs = useRef([]);
+  const charsRef = useRef([]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -50,7 +40,6 @@ export default function SlideTextReveal({
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /** @type {ReturnType<typeof gsap.context> | undefined} */
     let ctx;
 
     const init = async () => {
@@ -65,7 +54,7 @@ export default function SlideTextReveal({
           });
 
           splitRefs.current.push(split);
-          charsRef.current.push(.../** @type {HTMLElement[]} */ (split.chars));
+          charsRef.current.push(...split.chars);
         });
 
         if (prefersReduced) {
@@ -85,9 +74,8 @@ export default function SlideTextReveal({
               ...fadeUpProps,
               scrollTrigger: {
                 trigger: containerRef.current,
-                start,
-                end,
-                scrub: false,
+                start: "top 80%",
+                scrub: true,
               },
             });
           } else {
@@ -101,8 +89,10 @@ export default function SlideTextReveal({
           opacity: 1,
         });
 
+        const xFrom = variant === "left" ? -Math.abs(speed) : Math.abs(speed);
+
         gsap.set(charsRef.current, {
-          x: 20,
+          x: xFrom,
           opacity: 0,
           willChange: "transform",
         });
@@ -110,8 +100,8 @@ export default function SlideTextReveal({
         const animationProps = {
           x: 0,
           opacity: 1,
-          duration: 0.5,
-          stagger: 0.03,
+          duration,
+          stagger,
           ease: "power3.out",
           delay,
         };
@@ -121,10 +111,9 @@ export default function SlideTextReveal({
             ...animationProps,
             scrollTrigger: {
               trigger: containerRef.current,
-              start,
-              end,
+              start: "top 80%",
               scrub: false,
-             
+              // markers: true,
             },
           });
         } else {
@@ -139,7 +128,7 @@ export default function SlideTextReveal({
       if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
     };
-  }, [animateOnScroll, delay, start, end]);
+  }, [animateOnScroll, delay, duration, speed, stagger, variant]);
 
   return (
     <div

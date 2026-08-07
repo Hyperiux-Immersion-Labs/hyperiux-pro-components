@@ -22,7 +22,7 @@ export async function fetchEffect(effectName) {
   if (!response.ok) {
     const message = data?.requiresPro
       ? `
-This is a Pro effect.
+This is a Pro Effect.
 
 Generate a CLI token from your Hyperiux dashboard:
 ${API_BASE_URL}/dashboard

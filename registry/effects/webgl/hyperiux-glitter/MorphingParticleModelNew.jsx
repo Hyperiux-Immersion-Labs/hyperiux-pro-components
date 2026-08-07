@@ -374,6 +374,27 @@ const MorphingParticleModel = ({
     frontFacingSoftness,
   ]);
 
+  useEffect(() => {
+    const uniforms = pointsRef.current?.material?.uniforms;
+    if (!uniforms) return;
+
+    uniforms.uColor.value.set(color);
+    uniforms.uSize.value = size;
+    uniforms.uSpeed.value = speed;
+    uniforms.uOpacity.value = opacity;
+    uniforms.uBrightness.value = brightness;
+    uniforms.uFrontFacingThreshold.value = frontFacingThreshold;
+    uniforms.uFrontFacingSoftness.value = frontFacingSoftness;
+  }, [
+    color,
+    size,
+    speed,
+    opacity,
+    brightness,
+    frontFacingThreshold,
+    frontFacingSoftness,
+  ]);
+
   useFrame((state) => {
     if (!pointsRef.current || !currentPositionsRef.current || !basePositionsRef.current) {
       return;

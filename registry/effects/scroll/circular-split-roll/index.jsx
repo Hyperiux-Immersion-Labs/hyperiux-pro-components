@@ -7,6 +7,22 @@ import { ReactLenis } from "lenis/react";
 import { CircularSplitRollComp } from "./CircularSplitRollComp";
 
 const TABLET_BREAKPOINT = 1024;
+const ROLL_CONFIG = {
+  sectionHeight: 100,
+  leftRadiusX: 500,
+  leftRadiusY: 500,
+  rightRadiusX: 500,
+  rightRadiusY: 500,
+  imageCardWidth: 205,
+  imageCardHeight: 205,
+  scrub: 1.2,
+  textCenterScale: 1,
+  textSideScale: 0.68,
+  textSideOpacity: 0.18,
+  imageCenterScale: 1,
+  imageSideScale: 0.58,
+  imageSideOpacity: 0.14,
+};
 
 const showcaseItems = [
   {
@@ -93,7 +109,12 @@ function useIsDesktop() {
   return hasMounted && isDesktop;
 }
 
-export default function CircularSplitRoll() {
+export default function CircularSplitRoll({
+  radius = 500,
+  cardSize = 205,
+  textSideScale = 0.68,
+  textSideOpacity = 0.18,
+}) {
   const isDesktop = useIsDesktop();
 
   return (
@@ -106,20 +127,23 @@ export default function CircularSplitRoll() {
       <main>
         <CircularSplitRollComp
           items={showcaseItems}
-          sectionHeight={100}
-          leftRadiusX={500}
-          leftRadiusY={500}
-          rightRadiusX={500}
-          rightRadiusY={500}
-          imageCardWidth={205}
-          imageCardHeight={205}
-          centerScale={1.4}
-          sideScale={0.2}
-          centerOpacity={1}
-          sideOpacity={0}
+          sectionHeight={ROLL_CONFIG.sectionHeight}
+          leftRadiusX={radius}
+          leftRadiusY={radius}
+          rightRadiusX={radius}
+          rightRadiusY={radius}
+          imageCardWidth={cardSize}
+          imageCardHeight={cardSize}
+          scrub={ROLL_CONFIG.scrub}
+          textCenterScale={ROLL_CONFIG.textCenterScale}
+          textSideScale={textSideScale}
+          textSideOpacity={textSideOpacity}
+          imageCenterScale={ROLL_CONFIG.imageCenterScale}
+          imageSideScale={ROLL_CONFIG.imageSideScale}
+          imageSideOpacity={ROLL_CONFIG.imageSideOpacity}
         />
       </main>
-      
+
     </ReactLenis>
   );
 }

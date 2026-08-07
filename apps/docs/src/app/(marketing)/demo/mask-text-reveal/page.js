@@ -1,21 +1,10 @@
-
-import MaskTextWrapper from './MaskTextWrapper'
-import { ReactLenis } from "lenis/react";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import maskTextRevealRegistry from "../../../../../../../registry/effects/text/mask-text-reveal/registry.json";
 
 
 const page = () => {
-  return (
-    <>
-      <ReactLenis root>
-        <DemoHeader />
-        <ScrollBottom textColor='text-black' className="bottom-[3%] gap-[0.5vw] z-20" />
-        <MaskTextWrapper />
-      </ReactLenis>
-    </>
-  )
+  return <DemoContent registry={maskTextRevealRegistry} />;
 }
 
 export default page

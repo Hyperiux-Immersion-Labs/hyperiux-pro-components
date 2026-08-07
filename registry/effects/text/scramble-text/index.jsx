@@ -12,34 +12,22 @@ gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
-const DEFAULT_TEXT = 'Signal appears when the noise decides to leave.';
 
-/**
- * @typedef {Object} ScrambleTextProps
- * @property {string} text
- * @property {number} [speed]
- * @property {string} [charType]
- * @property {string} [textSize]
- * @property {string} [textColor]
- * @property {'left' | 'right'} [align]
- * @property {string} [start]
- * @property {string} [className]
- */
-
-/** @param {ScrambleTextProps} props */
 const ScrambleText = ({
-  text = DEFAULT_TEXT,
   speed = 0.6,
-  charType = 'lowercase',
-  textSize = 'text-base',
-  textColor = 'text-white',
+  charType = 'uppercase',
+  textSize = 5,
+  textColor = '#111111',
   align = 'left',
-  start = 'top 40%',
+  start = 'top 85%',
+  duration = 0.7,
+  stagger = 0.04,
   className,
 }) => {
- const elRef = useRef(/** @type {HTMLParagraphElement | null} */ (null));
- const splitRef = useRef(/** @type {InstanceType<typeof SplitText> | null} */ (null));
- const tlRef = useRef(/** @type {gsap.core.Timeline | null} */ (null));
+ const text = "Signal appears when the noise decides to leave.";
+ const elRef = useRef(null);
+ const splitRef = useRef(null);
+ const tlRef = useRef(null);
 
  const alignClass =
  align ==='right'
@@ -48,7 +36,6 @@ const ScrambleText = ({
 
  useEffect(() => {
  let isCancelled = false;
- /** @type {number | null} */
  let fallbackRaf = null;
 
  const setup = async () => {
@@ -72,7 +59,7 @@ const ScrambleText = ({
  splitRef.current = null;
 
  const ctx = gsap.context(() => {
- const el = /** @type {HTMLParagraphElement} */ (elRef.current);
+ const el = elRef.current;
 
  const prefersReduced =
  window.matchMedia &&
@@ -151,23 +138,23 @@ const ScrambleText = ({
  );
 
  tl.to(chars, {
- duration: 0.7,
- scrambleText: /** @type {any} */ ({
- text: (/** @type {number} */ i) => originals[i],
- chars: charType ||'lowercase',
+ duration,
+ scrambleText: {
+ text: (i) => originals[i],
+ chars: charType ||'uppercase',
  speed,
  revealDelay: 0.2,
- }),
+ },
  opacity: 1,
- stagger: 0.04,
+ stagger,
  });
 
  tl.to(
  chars,
  {
  opacity: 1,
- duration: 0.4,
- stagger: 0.02,
+ duration: Math.max(0.1, duration * 0.55),
+ stagger: stagger * 0.5,
  ease:'power1.out',
  },
 '>-0.2'
@@ -177,8 +164,8 @@ const ScrambleText = ({
  chars,
  {
  opacity: 0.85,
- duration: 0.3,
- stagger: 0.02,
+ duration: Math.max(0.1, duration * 0.45),
+ stagger: stagger * 0.5,
  },
 '>-0.2'
  );
@@ -208,30 +195,35 @@ const ScrambleText = ({
  tlRef.current?.kill();
  splitRef.current?.revert();
  };
- }, [text, speed, charType, start]);
+ }, [speed, charType, start, duration, stagger]);
 
  return (
  <div className="relative w-full">
  <p
  aria-hidden="true"
- className={`${textSize} ${textColor} ${alignClass} invisible w-full tracking-tight ${
+ className={`${alignClass} invisible w-full tracking-tight ${
  className ??''
  }`}
  style={{
  wordBreak:'keep-all',
  overflowWrap:'normal',
+ fontSize: `${textSize}vw`,
+ color: textColor,
  }}
  >
  {text}
  </p>
  <p
  ref={elRef}
- className={`${textSize} ${textColor} ${alignClass} absolute inset-0 w-full tracking-tight opacity-0 ${
+ className={`${alignClass} absolute inset-0 w-full tracking-tight opacity-0 ${
  className ??''
  }`}
  style={{
  wordBreak:'keep-all',
  overflowWrap:'normal',
+ fontSize: `${textSize}vw`,
+ color: textColor,
+ minHeight: "1em",
  }}
  >
  {text}

@@ -3,15 +3,29 @@
 import React from 'react'
 import GridTunnelComp from './GridTunnelComp';
 
-const GridTunnel = () => {
+const GridTunnel = ({
+  images = defaultImages,
+  gridSize = 24,
+  speed = 1,
+  depth = 1000,
+  lineColor = "#9ca3af",
+  backgroundColor = "#ffffff",
+}) => {
   return (
-   <GridTunnelComp images={images}/>
+   <GridTunnelComp
+     images={images}
+     gridSize={gridSize}
+     speed={speed}
+     depth={depth}
+     lineColor={lineColor}
+     backgroundColor={backgroundColor}
+   />
   )
 }
 
 export default GridTunnel
 
-const images = [
+const defaultImages = [
   "https://picsum.photos/seed/gtunnel0/800/600",
   "https://picsum.photos/seed/gtunnel1/800/600",
   "https://picsum.photos/seed/gtunnel2/800/600",

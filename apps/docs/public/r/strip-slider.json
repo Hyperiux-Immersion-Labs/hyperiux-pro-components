@@ -25,6 +25,47 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "dispScale",
+      "type": "number",
+      "default": 1,
+      "description": "Multiplier on the ripple/displacement wave strength across all gallery images (collapsed and expanded).",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "cameraSway",
+      "type": "number",
+      "default": 0.03,
+      "description": "How much the camera drifts toward the pointer position.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.15,
+        "step": 0.005
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

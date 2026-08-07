@@ -67,6 +67,7 @@ export default function FullscreenNav({
   headerClassName = "",
   openDuration = 1.2,
   closeDuration = 1.2,
+  ease = "power4.inOut",
   headerOpenColor = "#ffffff",
   onOpen,
   onClose,
@@ -133,7 +134,7 @@ export default function FullscreenNav({
       clipPath: openClipPath,
       duration: openDuration,
       delay: 0.2,
-      ease: "power4.inOut",
+      ease,
     });
   };
 
@@ -194,7 +195,7 @@ export default function FullscreenNav({
         {
           clipPath: closedFinal,
           duration: closeDuration,
-          ease: "power4.inOut",
+          ease,
         },
         "<",
       );

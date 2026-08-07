@@ -57,6 +57,19 @@ const data = [
   },
 ];
 
-export default function StackingCards() {
-  return <StackingCardComp data={data} />;
+export default function StackingCards({
+  imageZoomEnabled = true,
+  tiltEnabled = true,
+  cardCornerRadius = "3vw",
+  stackPerspective = 1200,
+}) {
+  return (
+    <StackingCardComp
+      data={data}
+      imageZoomEnabled={imageZoomEnabled}
+      tiltEnabled={tiltEnabled}
+      cardCornerRadius={cardCornerRadius}
+      stackPerspective={stackPerspective}
+    />
+  );
 }

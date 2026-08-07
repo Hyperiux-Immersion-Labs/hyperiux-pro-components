@@ -99,7 +99,7 @@ extend({ TVTransitionMaterial });
 // =========================
 // 🎯 MAIN COMPONENT
 // =========================
-export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
+export default function RoomModel({ onClick, isZoomed, mouseMovement = true, videoRef, ...props }) {
 
  const groupRef = useRef();
  const tvMatRef = useRef();
@@ -189,7 +189,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  // We want to only update rotation/offset from mouse if not zoomed
  const handlePointerMove = useCallback(
  (e) => {
- if (isZoomed) return; // 🛑 Ignore pointer move if zoomed!
+ if (isZoomed || !mouseMovement) return;
  const rect = gl.domElement.getBoundingClientRect();
 
  const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -201,17 +201,18 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  targetOffset.current.x = x * 0.04;
  targetOffset.current.y = y * 0.02;
  },
- [gl, isZoomed]
+ [gl, isZoomed, mouseMovement]
  );
 
  useEffect(() => {
+ if (!mouseMovement) return;
  gl.domElement.addEventListener("mousemove", handlePointerMove);
  return () => gl.domElement.removeEventListener("mousemove", handlePointerMove);
- }, [handlePointerMove, gl]);
+ }, [handlePointerMove, gl, mouseMovement]);
 
  // Additionally, immediately reset to neutral rotation/offset when zoomed
  useEffect(() => {
- if (isZoomed) {
+ if (isZoomed || !mouseMovement) {
  // Optionally quickly animate to zero for smoothness
  gsap.to(targetRot.current, {
  x: 0,
@@ -228,7 +229,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
  ease:"power3.out",
  });
  }
- }, [isZoomed]);
+ }, [isZoomed, mouseMovement]);
 
  // =========================
  // 🎞 FRAME LOOP
@@ -275,7 +276,7 @@ export default function RoomModel({ onClick, isZoomed, videoRef, ...props }) {
 
 
  const roughnessMapSource = useTexture(
-"https://png.pngtree.com/png-clipart/20241204/original/pngtree-textured-background-of-bathroom-floor-tiles-png-image_17548659.png"
+"/assets/textures/bathroom-floor-roughness.png"
  );
  const roughnessMap = useMemo(() => {
  const texture = roughnessMapSource.clone();

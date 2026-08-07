@@ -11,11 +11,23 @@ import EdgeBlurEffect from "./EdgeBlurEffect";
 import Experience from "./ExperienceComp";
 import { createVisibilityGate } from "./createSuspendedRaf";
 
-export default function ProgressiveBloomValley() {
- const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
- const [frameloop, setFrameloop] = useState(
- /** @type {'always'|'never'|'demand'} */ ("always")
- );
+function clampNumber(value, min, max, fallback) {
+ const number = Number(value);
+ if (!Number.isFinite(number)) return fallback;
+ return Math.min(Math.max(number, min), max);
+}
+
+export default function ProgressiveBloomValley({
+ bloomStrength = 1.2,
+ bloomRadius = 0.4,
+ cameraSpeed = 1,
+ backgroundColor = "#000000",
+}) {
+ const rootRef = useRef(null);
+ const [frameloop, setFrameloop] = useState("always");
+ const resolvedBloomStrength = clampNumber(bloomStrength, 0, 4, 1.2);
+ const resolvedBloomRadius = clampNumber(bloomRadius, 0, 1, 0.4);
+ const resolvedCameraSpeed = clampNumber(cameraSpeed, 0.05, 5, 1);
 
  useEffect(() => {
  const gate = createVisibilityGate({
@@ -27,7 +39,7 @@ export default function ProgressiveBloomValley() {
  }, []);
 
  return (
- <div ref={rootRef} className="h-screen w-full relative">
+ <div ref={rootRef} className="h-screen w-full relative" style={{ backgroundColor }}>
 
  <Canvas
  dpr={[1, 1.5]}
@@ -39,15 +51,21 @@ export default function ProgressiveBloomValley() {
  }}
 
  >
- <color attach="background" args={["#000"]} />
+ <color attach="background" args={[backgroundColor]} />
  <Suspense fallback={null}>
- <Experience />
+ <Experience
+ bloomStrength={resolvedBloomStrength}
+ cameraSpeed={resolvedCameraSpeed}
+ />
  </Suspense>
 
- <EffectComposer {...(/** @type {any} */ ({ disableNormalPass: true }))}>
+ <EffectComposer disableNormalPass>
  {/* Mipmap blur creates an extremely soft, diffused glow without harsh edges */}
  {/* Threshold ensures only the hovered (multiplied) pixels bloom, preserving details elsewhere */}
-  <EdgeBlurEffect blurStrength={1.2} blurStart={0.2} />
+  <EdgeBlurEffect
+ blurStrength={0.8 + resolvedBloomRadius * 1.4}
+ blurStart={0.35 - resolvedBloomRadius * 0.2}
+ />
  <FilmGrainEffect amount={0.05} scale={1} />
  <Vignette
 

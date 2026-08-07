@@ -1,19 +1,9 @@
-import PixelatedImageEffect from "@/components/pixelated-image-effect";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-
+import pixelatedImageEffectRegistry from "../../../../../../../registry/effects/cursor/pixelated-image-effect/registry.json";
 
 export default function Page() {
-  return (
-    <>
-      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
-      
-      <PixelatedImageEffect
-        src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg"
-        alt="Pixelated nature scene"
-      />
-    </>
-  );
+  return <DemoContent registry={pixelatedImageEffectRegistry} />;
 }
 
 export async function generateMetadata() {

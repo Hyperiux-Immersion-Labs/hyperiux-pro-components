@@ -1,9 +1,24 @@
 import { RotationSliderComp } from "./RotationSliderComp";
 
-export default function RotationSlider() {
+export default function RotationSlider({
+ rotationAmount = 1,
+ verticalDrift = 1,
+ scrollSmoothing = 1,
+ perspective = 1200,
+ showCaptions = true,
+ textColor = "#ffffff",
+}) {
  return (
  <>
- <RotationSliderComp images={images} />
+ <RotationSliderComp
+ images={images}
+ rotationAmount={rotationAmount}
+ verticalDrift={verticalDrift}
+ scrollSmoothing={scrollSmoothing}
+ perspective={perspective}
+ showCaptions={showCaptions}
+ textColor={textColor}
+ />
  </>
  );
 }

@@ -1,21 +1,11 @@
-import RibbonDrift from '@/components/ribbon-drift'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
-import React from 'react'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/components/ribbon-drift/registry.json";
 
-
-const page = () => {
-  return (
-  <>
-  <DemoHeader />
-  <RibbonDrift/>
-  <ScrollBottom textColor='text-[#111111]' />
-  </>
-  )
+export default function Page() {
+  return <DemoContent registry={registry} />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("ribbon-drift");
 }

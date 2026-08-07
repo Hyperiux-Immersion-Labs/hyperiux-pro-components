@@ -1,32 +1,8 @@
 import { InfinitePerspectiveSliderComp } from "./InfinitePerspectiveSliderComp";
 
 
-export default function InfinitePerspectiveSlider() {
-    
-    return (
-        <>
-            <div className=" bg-white h-screen  pt-8 max-md:pt-20 max-sm:gap-10 max-md:gap-20 max-md:justify-start flex flex-col justify-start gap-8">
-                <div className="w-full px-[7vw] flex flex-col pt-15 max-md:pt-10 gap-[1vw] text-[#111111] items-center text-center">
-                    <h1 className="text-[5vw] leading-[1.2]  max-md:text-[7vw] max-sm:text-[11vw]">
-                        Infinite Perspective Slider
-                    </h1>
-                    <p className="text-base max-sm:text-sm">
-                        <span className="max-sm:hidden">
-                            Scroll for the perspective effect and hover on the cards for the card detail
-                        </span>
-                        <span className="hidden max-sm:inline">
-                            Drag the slider and click on the images to reveal the info
-                        </span>
-                    </p>
-
-                </div>
-                <InfinitePerspectiveSliderComp images={images} />
-            </div>
-        </>
-    );
-}
-
-const images = [
+export default function InfinitePerspectiveSlider(props) {
+    const images = [
         {
             number: '01',
             src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',
@@ -88,3 +64,12 @@ const images = [
             desc: 'Minimal composition',
         },
     ];
+
+    return (
+        <>
+            <div className="bg-white">
+                <InfinitePerspectiveSliderComp images={images} {...props} />
+            </div>
+        </>
+    );
+}

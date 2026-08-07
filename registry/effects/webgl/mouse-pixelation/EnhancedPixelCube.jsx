@@ -8,7 +8,10 @@ import { createVisibilityGate } from "./createSuspendedRaf";
 
 const INITIAL_POINTER = 0.5;
 const MOVEMENT_THRESHOLD = 0.001;
-const POINTER_LERP = 0.1;
+const DEFAULT_GRID_SIZE = 35;
+const DEFAULT_LERP = 0.1;
+const DEFAULT_CUBE_SIZE = 1;
+const DEFAULT_GRID_EMBOSSING = 1;
 const VELOCITY_BLEND_CURRENT = 0.8;
 const VELOCITY_BLEND_NEXT = 0.2;
 const ACTIVE_HOVER_LERP = 0.06;
@@ -20,7 +23,6 @@ const MOVE_IDLE_MS = 500;
 const COLOR_INTERVAL_MIN_MS = 1200;
 const COLOR_INTERVAL_RANGE_MS = 5000;
 const COLOR_LERP = 0.1;
-const ROTATION_LERP = 0.12;
 const MAX_DIST = 2;
 const TIME_SCALE = 0.003;
 const WAVE_FREQUENCY = 8;
@@ -28,9 +30,7 @@ const WAVE_SPEED = 3;
 const WAVE_STRENGTH = 0.15;
 const VELOCITY_INFLUENCE_SCALE = 100;
 const DEFORMATION_SCALE = 0.3;
-/** @type {[number, number, number, number]} */
 const PLANE_ARGS = [18, 12, 200, 200];
-/** @type {[number, number, number, number, number, number]} */
 const CUBE_ARGS = [1, 1, 1, 20, 20, 20];
 const BLOOM_INTENSITY = 1;
 const BLOOM_THRESHOLD = 1.5;
@@ -62,6 +62,7 @@ const PIXEL_TRAIL_VERT = /* glsl */ `
   uniform float uBasePixels;
   uniform vec2 uMouseVelocity;
   uniform float uTrailStrength;
+  uniform float uGridEmbossing;
 
   float noise2D(vec2 p) {
     vec2 ip = floor(p);
@@ -116,7 +117,7 @@ const PIXEL_TRAIL_VERT = /* glsl */ `
     float hoverRadius = 0.15 + length(uMouseVelocity) * 0.3;
     float hoverEffect = smoothstep(hoverRadius, 0.0, dist) * uHover * uTrailStrength;
     float noiseValue = noise2D(pixelUV * 8.0 + uTime * 0.3);
-    float maxExtrusion = 0.8;
+    float maxExtrusion = 0.8 * uGridEmbossing;
     float extrusion = hoverEffect * (0.6 + noiseValue * 0.4) * maxExtrusion;
     float animationDelay = dist * 2.0;
     float animatedHover = max(0.0, uHover - animationDelay * 0.1);
@@ -140,6 +141,7 @@ const PIXEL_TRAIL_FRAG = /* glsl */ `
   uniform float uBasePixels;
   uniform vec2 uMouseVelocity;
   uniform float uTrailStrength;
+  uniform float uGridEmbossing;
 
   varying vec2 vUv;
   varying vec3 vPosition;
@@ -180,7 +182,7 @@ const PIXEL_TRAIL_FRAG = /* glsl */ `
     float dist = trailDistance(pixelUV, uMouse, uMouseVelocity);
     float hoverRadius = 0.15 + length(uMouseVelocity) * 0.3;
     float hoverEffect = smoothstep(hoverRadius, 0.0, dist) * uHover * uTrailStrength;
-    float depthShading = 1.0 + vPosition.z * 0.3;
+    float depthShading = 1.0 + vPosition.z * 0.3 * uGridEmbossing;
     vec3 topColor = vec3(0.0, 0.0, 0.0);
     vec3 sideColor = vec3(0.01, 0.01, 0.01);
     float topFaceFactor = smoothstep(0.7, 1.0, normalize(vPosition).z);
@@ -246,6 +248,7 @@ class PixelTrailMaterial extends THREE.ShaderMaterial {
         uBasePixels: { value: 35.0 },
         uMouseVelocity: { value: new THREE.Vector2(0, 0) },
         uTrailStrength: { value: 0.0 },
+        uGridEmbossing: { value: DEFAULT_GRID_EMBOSSING },
       },
       vertexShader: PIXEL_TRAIL_VERT,
       fragmentShader: PIXEL_TRAIL_FRAG,
@@ -254,10 +257,6 @@ class PixelTrailMaterial extends THREE.ShaderMaterial {
 }
 
 class CubeDeformMaterial extends THREE.ShaderMaterial {
-  /**
-   * @param {THREE.Color} color
-   * @param {THREE.Color} emissive
-   */
   constructor(color, emissive) {
     super({
       uniforms: {
@@ -273,30 +272,46 @@ class CubeDeformMaterial extends THREE.ShaderMaterial {
 
 extend({ PixelTrailMaterial, CubeDeformMaterial });
 
-// Custom shader materials registered via extend() aren't part of
-// JSX.IntrinsicElements; reference them through any-typed tags so JSX
-// accepts them without changing what's rendered.
-const PixelTrailMaterialTag = /** @type {any} */ ("pixelTrailMaterial");
-const CubeDeformMaterialTag = /** @type {any} */ ("cubeDeformMaterial");
+function clampNumber(value, min, max, fallback) {
+  const numericValue = Number(value);
 
-/**
- * @typedef {Object} PointerVec2Ref
- * @property {import('react').RefObject<{x: number, y: number}>} mousePositionRef
- * @property {import('react').RefObject<{x: number, y: number}>} mouseVelocityRef
- * @property {import('react').RefObject<number>} trailStrengthRef
- */
+  if (!Number.isFinite(numericValue)) {
+    return fallback;
+  }
 
-/** @param {PointerVec2Ref} props */
-function PixelGrid({ mousePositionRef, mouseVelocityRef, trailStrengthRef }) {
-  const materialRef = useRef(/** @type {PixelTrailMaterial|null} */ (null));
+  return Math.min(max, Math.max(min, numericValue));
+}
+
+function PixelGrid({
+  mousePositionRef,
+  mouseVelocityRef,
+  trailStrengthRef,
+  gridSize = DEFAULT_GRID_SIZE,
+  mouseInteraction = true,
+  lerp = DEFAULT_LERP,
+  gridEmbossing = DEFAULT_GRID_EMBOSSING,
+}) {
+  const materialRef = useRef(null);
   const pointerTargetRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const pointerCurrentRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const lastPointerRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const isMovingRef = useRef(false);
   const lastMoveTimeRef = useRef(0);
+  const safeGridSize = clampNumber(gridSize, 8, 90, DEFAULT_GRID_SIZE);
+  const safeLerp = clampNumber(lerp, 0.01, 0.6, DEFAULT_LERP);
+  const safeGridEmbossing = clampNumber(
+    gridEmbossing,
+    0,
+    2,
+    DEFAULT_GRID_EMBOSSING
+  );
 
-  const onPointerMove = (/** @type {import('@react-three/fiber').ThreeEvent<PointerEvent>} */ event) => {
-    const [u, v] = /** @type {[number, number]} */ (/** @type {any} */ (event.uv));
+  const onPointerMove = (event) => {
+    if (!mouseInteraction) {
+      return;
+    }
+
+    const [u, v] = event.uv;
     const currentTime = Date.now();
     const deltaX = Math.abs(u - lastPointerRef.current.x);
     const deltaY = Math.abs(v - lastPointerRef.current.y);
@@ -329,6 +344,14 @@ function PixelGrid({ mousePositionRef, mouseVelocityRef, trailStrengthRef }) {
     const timeSinceLastMove = currentTime - lastMoveTimeRef.current;
 
     material.uniforms.uTime.value = time;
+    material.uniforms.uBasePixels.value = safeGridSize;
+    material.uniforms.uGridEmbossing.value = safeGridEmbossing;
+
+    if (!mouseInteraction) {
+      pointerTargetRef.current.x = INITIAL_POINTER;
+      pointerTargetRef.current.y = INITIAL_POINTER;
+      isMovingRef.current = false;
+    }
 
     if (timeSinceLastMove > MOVE_IDLE_MS) {
       isMovingRef.current = false;
@@ -338,9 +361,9 @@ function PixelGrid({ mousePositionRef, mouseVelocityRef, trailStrengthRef }) {
     const previousY = pointerCurrentRef.current.y;
 
     pointerCurrentRef.current.x +=
-      (pointerTargetRef.current.x - pointerCurrentRef.current.x) * POINTER_LERP;
+      (pointerTargetRef.current.x - pointerCurrentRef.current.x) * safeLerp;
     pointerCurrentRef.current.y +=
-      (pointerTargetRef.current.y - pointerCurrentRef.current.y) * POINTER_LERP;
+      (pointerTargetRef.current.y - pointerCurrentRef.current.y) * safeLerp;
 
     const velocityX = pointerCurrentRef.current.x - previousX;
     const velocityY = pointerCurrentRef.current.y - previousY;
@@ -369,10 +392,12 @@ function PixelGrid({ mousePositionRef, mouseVelocityRef, trailStrengthRef }) {
     const velocityMagnitude = Math.sqrt(
       velocityX * velocityX + velocityY * velocityY
     );
-    const nextTrail = Math.min(
-      1,
-      velocityMagnitude * TRAIL_STRENGTH_SCALE + TRAIL_STRENGTH_BASE
-    );
+    const nextTrail = mouseInteraction
+      ? Math.min(
+          1,
+          velocityMagnitude * TRAIL_STRENGTH_SCALE + TRAIL_STRENGTH_BASE
+        )
+      : 0;
 
     trailStrengthRef.current +=
       (nextTrail - trailStrengthRef.current) * TRAIL_STRENGTH_LERP;
@@ -385,37 +410,32 @@ function PixelGrid({ mousePositionRef, mouseVelocityRef, trailStrengthRef }) {
   return (
     <mesh onPointerMove={onPointerMove}>
       <planeGeometry args={PLANE_ARGS} />
-      <PixelTrailMaterialTag ref={materialRef} />
+      <pixelTrailMaterial ref={materialRef} />
     </mesh>
   );
 }
 
-/**
- * @typedef {Object} DeformingCubeColorOption
- * @property {string} color
- * @property {string} [emissive]
- */
-
-/**
- * @param {PointerVec2Ref & {colorOptions: DeformingCubeColorOption[]}} props
- */
 function DeformingCube({
   mousePositionRef,
   mouseVelocityRef,
   trailStrengthRef,
   colorOptions,
+  mouseInteraction = true,
+  lerp = DEFAULT_LERP,
+  cubeSize = DEFAULT_CUBE_SIZE,
+  gridEmbossing = DEFAULT_GRID_EMBOSSING,
 }) {
-  const cubeRef = useRef(/** @type {THREE.Mesh|null} */ (null));
-  const geometryRef = useRef(/** @type {THREE.BufferGeometry|null} */ (null));
-  const materialRef = useRef(/** @type {CubeDeformMaterial|null} */ (null));
-  const originalPositionsRef = useRef(/** @type {Float32Array|null} */ (null));
+  const cubeRef = useRef(null);
+  const geometryRef = useRef(null);
+  const materialRef = useRef(null);
+  const originalPositionsRef = useRef(null);
   const targetRotationRef = useRef({ x: 0, y: 0 });
   const currentRotationRef = useRef({ x: 0, y: 0 });
   const parsedColorOptions = useMemo(
     () => {
       const palette = colorOptions.length ? colorOptions : DEFAULT_COLOR_OPTIONS;
 
-      return palette.map((/** @type {DeformingCubeColorOption} */ option) => ({
+      return palette.map((option) => ({
         color: new THREE.Color(option.color),
         emissive: new THREE.Color(option.emissive ?? option.color),
       }));
@@ -431,6 +451,14 @@ function DeformingCube({
     interval: 0,
   });
   const { camera } = useThree();
+  const safeLerp = clampNumber(lerp, 0.01, 0.6, DEFAULT_LERP);
+  const safeCubeSize = clampNumber(cubeSize, 0.5, 2.2, DEFAULT_CUBE_SIZE);
+  const safeGridEmbossing = clampNumber(
+    gridEmbossing,
+    0,
+    2,
+    DEFAULT_GRID_EMBOSSING
+  );
 
   useEffect(() => {
     colorStateRef.current.current.copy(parsedColorOptions[0].color);
@@ -456,9 +484,8 @@ function DeformingCube({
     }
 
     geometryRef.current = cubeRef.current.geometry;
-    originalPositionsRef.current = /** @type {Float32Array} */ (
-      cubeRef.current.geometry.attributes.position.array.slice()
-    );
+    originalPositionsRef.current =
+      cubeRef.current.geometry.attributes.position.array.slice();
   }, []);
 
   useFrame(() => {
@@ -506,17 +533,21 @@ function DeformingCube({
     }
 
     // Rotation
-    const mouseX = mousePositionRef.current.x;
-    const mouseY = mousePositionRef.current.y;
+    const mouseX = mouseInteraction
+      ? mousePositionRef.current.x
+      : INITIAL_POINTER;
+    const mouseY = mouseInteraction
+      ? mousePositionRef.current.y
+      : INITIAL_POINTER;
     targetRotationRef.current.x = ((mouseY - 0.5) * Math.PI) / 2;
     targetRotationRef.current.y = ((mouseX - 0.5) * Math.PI) / 1.5;
 
     currentRotationRef.current.x +=
       (targetRotationRef.current.x - currentRotationRef.current.x) *
-      ROTATION_LERP;
+      safeLerp;
     currentRotationRef.current.y +=
       (targetRotationRef.current.y - currentRotationRef.current.y) *
-      ROTATION_LERP;
+      safeLerp;
 
     cubeRef.current.rotation.x = currentRotationRef.current.x;
     cubeRef.current.rotation.y = currentRotationRef.current.y;
@@ -551,8 +582,10 @@ function DeformingCube({
       const velocityInfluence =
         (x * mouseVelocityRef.current.x + y * mouseVelocityRef.current.y) *
         VELOCITY_INFLUENCE_SCALE;
-      const deformation =
-        (ripple + velocityInfluence * deformStrength) * DEFORMATION_SCALE;
+    const deformation =
+        (ripple + velocityInfluence * deformStrength) *
+        DEFORMATION_SCALE *
+        safeGridEmbossing;
 
       positions[index] = x + x * deformation;
       positions[index + 1] = y + y * deformation;
@@ -564,9 +597,14 @@ function DeformingCube({
   });
 
   return (
-    <mesh ref={cubeRef} position={[0, 0, 1]} layers={1}>
+    <mesh
+      ref={cubeRef}
+      position={[0, 0, 1]}
+      scale={[safeCubeSize, safeCubeSize, safeCubeSize]}
+      layers={1}
+    >
       <boxGeometry args={CUBE_ARGS} />
-      <CubeDeformMaterialTag
+      <cubeDeformMaterial
         ref={materialRef}
         args={[new THREE.Color("#ffffff"), new THREE.Color("#ffffff")]}
       />
@@ -574,17 +612,17 @@ function DeformingCube({
   );
 }
 
-/**
- * @param {{notice?: string, colorOptions?: DeformingCubeColorOption[]}} props
- */
 export default function EnhancedPixelCube({
   notice = DEFAULT_NOTICE_TEXT,
   colorOptions = DEFAULT_COLOR_OPTIONS,
+  gridSize = DEFAULT_GRID_SIZE,
+  mouseInteraction = true,
+  lerp = DEFAULT_LERP,
+  cubeSize = DEFAULT_CUBE_SIZE,
+  gridEmbossing = DEFAULT_GRID_EMBOSSING,
 }) {
-  const rootRef = useRef(/** @type {HTMLDivElement|null} */ (null));
-  const [frameloop, setFrameloop] = useState(
-    /** @type {'always'|'never'|'demand'} */ ("always")
-  );
+  const rootRef = useRef(null);
+  const [frameloop, setFrameloop] = useState("always");
   const mousePositionRef = useRef({ x: INITIAL_POINTER, y: INITIAL_POINTER });
   const mouseVelocityRef = useRef({ x: 0, y: 0 });
   const trailStrengthRef = useRef(0);
@@ -620,6 +658,10 @@ export default function EnhancedPixelCube({
           mousePositionRef={mousePositionRef}
           mouseVelocityRef={mouseVelocityRef}
           trailStrengthRef={trailStrengthRef}
+          gridSize={gridSize}
+          mouseInteraction={mouseInteraction}
+          lerp={lerp}
+          gridEmbossing={gridEmbossing}
         />
 
         <EffectComposer>
@@ -637,6 +679,10 @@ export default function EnhancedPixelCube({
           mouseVelocityRef={mouseVelocityRef}
           trailStrengthRef={trailStrengthRef}
           colorOptions={colorOptions}
+          mouseInteraction={mouseInteraction}
+          lerp={lerp}
+          cubeSize={cubeSize}
+          gridEmbossing={gridEmbossing}
         />
       </Canvas>
     </div>

@@ -1,18 +1,10 @@
-
-import SlideTextWrapper from './SlideTextWrapper'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import slideTextRevealRegistry from "../../../../../../../registry/effects/text/slide-text-reveal/registry.json";
 
 
 const page = () => {
-  return (
-   <>
-   <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
-    <SlideTextWrapper />
-    <ScrollBottom />
-   </>
-  )
+  return <DemoContent registry={slideTextRevealRegistry} />;
 }
 
 export default page

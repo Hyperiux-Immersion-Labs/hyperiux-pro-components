@@ -1,7 +1,13 @@
 {
   "name": "number-counter",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-30",
+      "summary": "Removed value, prefix, and suffix from the public/remixer API. Added duration and stagger controls that apply across all three counter variants.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -50,5 +56,57 @@
       "path": "NumberCounterThree.jsx",
       "target": "src/components/effects/number-counter/NumberCounterThree.jsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 1.5,
+      "description": "Digit roll duration in seconds for all three counters.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.2,
+        "max": 4,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "stagger",
+      "type": "number",
+      "default": 0.1,
+      "description": "Delay between digit columns in seconds for all three counters.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.5,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "textColor",
+      "type": "string",
+      "default": "#021A54",
+      "description": "Counter text color for all three counters.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }

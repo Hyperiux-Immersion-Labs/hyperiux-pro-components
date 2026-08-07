@@ -27,7 +27,6 @@ const VARIANTS = {
   "enhanced-pixel-cube": EnhancedPixelCube,
 };
 
-/** @type {{label: string, value: MousePixelationVariant}[]} */
 const VERSIONS = [
   {
     label: "V1",
@@ -44,22 +43,21 @@ const VERSIONS = [
 ];
 
 const DEFAULT_PIXEL_SHIFT_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
+const DEFAULT_GRID_SIZE = 35;
+const DEFAULT_LERP = 0.1;
+const DEFAULT_BACKGROUND_COLOR = "#000000";
+const DEFAULT_CUBE_SIZE = 1;
+const DEFAULT_GRID_EMBOSSING = 1;
 
-/**
- * @typedef {'pixel-circle'|'pixel-shift'|'enhanced-pixel-cube'} MousePixelationVariant
- */
-
-/**
- * @param {{variant?: MousePixelationVariant, imageUrl?: string} & Record<string, any>} props
- */
 export default function MousePixelation({
-  variant = "pixel-shift",
-  imageUrl = DEFAULT_PIXEL_SHIFT_IMAGE,
-  ...props
+  gridSize = DEFAULT_GRID_SIZE,
+  mouseInteraction = true,
+  lerp = DEFAULT_LERP,
+  backgroundColor = DEFAULT_BACKGROUND_COLOR,
+  cubeSize = DEFAULT_CUBE_SIZE,
+  gridEmbossing = DEFAULT_GRID_EMBOSSING,
 }) {
-  const [activeVariant, setActiveVariant] = useState(
-    /** @type {MousePixelationVariant} */ (VARIANTS[variant] ? variant : "pixel-shift")
-  );
+  const [activeVariant, setActiveVariant] = useState("pixel-shift");
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const ActiveComponent = useMemo(() => {
@@ -75,9 +73,14 @@ export default function MousePixelation({
       <CursorMoveCue />
 
       <ActiveComponent
-        imageUrl={imageUrl}
-        img={imageUrl}
-        {...props}
+        imageUrl={DEFAULT_PIXEL_SHIFT_IMAGE}
+        img={DEFAULT_PIXEL_SHIFT_IMAGE}
+        gridSize={gridSize}
+        mouseInteraction={mouseInteraction}
+        lerp={lerp}
+        backgroundColor={backgroundColor}
+        cubeSize={cubeSize}
+        gridEmbossing={gridEmbossing}
       />
 
       {prefersReducedMotion && (
@@ -110,9 +113,6 @@ function CursorMoveCue() {
 
 export { PixelCircle, PixelShift, EnhancedPixelCube };
 
-/**
- * @param {{activeVariant: string, onVariantChange: (value: MousePixelationVariant) => void}} props
- */
 function VersionNav({ activeVariant, onVariantChange }) {
   return (
     <nav className="fixed top-4 max-[1025px]:top-5 max-md:top-18 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-white/10 px-1.5 py-1.5 backdrop-blur-md  max-[1025px]:px-3 max-[1025px]:py-2  max-md:px-2 max-md:py-1.5">

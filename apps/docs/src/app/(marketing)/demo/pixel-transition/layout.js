@@ -1,12 +1,10 @@
-import React from "react";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import PixelTransition  from "@/components/pixel-transition";
+import TransitionRemixerLayout from "@/components/remixer-panel/TransitionRemixerLayout";
+import pixelTransitionRegistry from "../../../../../../../registry/effects/transitions/pixel-transition/registry.json";
 
 export default function layout({ children }) {
   return (
-    <PixelTransition>
-      <DemoHeader />
+    <TransitionRemixerLayout registry={pixelTransitionRegistry} slug="pixel-transition">
       {children}
-    </PixelTransition>
+    </TransitionRemixerLayout>
   );
 }

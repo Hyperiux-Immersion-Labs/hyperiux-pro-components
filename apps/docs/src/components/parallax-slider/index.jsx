@@ -13,21 +13,24 @@ gsap.registerPlugin(ScrollTrigger);
 // clip-path reveal loses its eased curve in favor of a linear one.
 const REDUCED_MOTION_FACTOR = 0.25;
 
-const GAP = 1.6;
 const PAD_X = "5vw";
 
-const DEFAULT_IMAGES = [
+const images = [
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
 ];
 
-function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#0e0e0e" }) {
+function ParallaxSlider({
+  bgColor = "#111111",
+  parallaxAmount = 25,
+  slideGap = 1.6,
+  parallaxScale = 1.25,
+  scrub = 1,
+}) {
   const outerRef = useRef(null);
   const trackRef = useRef(null);
 
@@ -52,7 +55,7 @@ function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#0e0e0e" }) {
       ro.disconnect();
       window.removeEventListener("resize", update);
     };
-  }, [images]);
+  }, [slideGap]);
 
   /** GSAP logic */
   useEffect(() => {
@@ -72,7 +75,7 @@ function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#0e0e0e" }) {
           trigger: outer,
           start: "top top",
           end: () => `+=${track.scrollWidth - window.innerWidth}`,
-          scrub: 1,
+          scrub,
           invalidateOnRefresh: true,
         },
       });
@@ -99,18 +102,18 @@ function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#0e0e0e" }) {
       /** Individual parallax per image - reduced, not removed, for
        * reduced motion. */
       const slides = gsap.utils.toArray(".parallax-img");
-      const parallaxRange = reducedMotion ? 25 * REDUCED_MOTION_FACTOR : 25;
-      const parallaxScale = reducedMotion
-        ? 1 + (1.25 - 1) * REDUCED_MOTION_FACTOR
-        : 1.25;
+      const parallaxRange = reducedMotion ? parallaxAmount * REDUCED_MOTION_FACTOR : parallaxAmount;
+      const parallaxScaleValue = reducedMotion
+        ? 1 + (parallaxScale - 1) * REDUCED_MOTION_FACTOR
+        : parallaxScale;
 
       slides.forEach((el) => {
         gsap.fromTo(
           el,
-          { x: `-${parallaxRange}%`, scale: parallaxScale },
+          { x: `-${parallaxRange}%`, scale: parallaxScaleValue },
           {
             x: `${parallaxRange}%`,
-            scale: parallaxScale,
+            scale: parallaxScaleValue,
             ease: "none",
             scrollTrigger: {
               trigger: el,
@@ -125,7 +128,7 @@ function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#0e0e0e" }) {
     }, outer);
 
     return () => ctx.revert();
-  }, [images]);
+  }, [parallaxAmount, parallaxScale, scrub]);
 
   return (
     <div
@@ -138,7 +141,7 @@ function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#0e0e0e" }) {
           ref={trackRef}
           className="flex items-center will-change-transform"
           style={{
-            gap: `${GAP}vw`,
+            gap: `${slideGap}vw`,
             paddingLeft: PAD_X,
             paddingRight: PAD_X,
           }}

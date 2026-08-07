@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;
 const DEFAULT_HREF = "#";
+const STAGGER_STEP = 0.01;
 
 /**
  * @typedef {{
@@ -25,16 +26,14 @@ const DEFAULT_HREF = "#";
 
 /** @param {DotFillBtnProps} props */
 const DotFillBtn = ({
- btnText ="",
+ btnText ="Try demo",
  href = DEFAULT_HREF,
  className ="",
  textClassName ="",
- staggerStep = 0.01,
  bgColor ="#ff6b00",
  textColor ="#ffffff",
- fillColor ="#ffffff",
  hoverTextColor ="#ff6b00",
- dotColor,
+ dotColor ="#ffffff",
  ...props
 }) => {
  const textRef = useRef(/** @type {HTMLSpanElement | null} */ (null));
@@ -53,7 +52,7 @@ const DotFillBtn = ({
  [...sourceText].forEach((char, index) => {
  const span = document.createElement("span");
  span.textContent = char;
- span.style.transitionDelay = prefersReducedMotion ? "0s" : `${index * staggerStep}s`;
+ span.style.transitionDelay = prefersReducedMotion ? "0s" : `${index * STAGGER_STEP}s`;
 
  if (char ===" ") {
  span.style.whiteSpace ="pre";
@@ -61,7 +60,7 @@ const DotFillBtn = ({
 
  el.appendChild(span);
  });
- }, [btnText, staggerStep, prefersReducedMotion]);
+ }, [btnText, prefersReducedMotion]);
 
 	useEffect(() => {
 		const el = textRef.current;
@@ -79,7 +78,7 @@ const DotFillBtn = ({
 				: "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1), color 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
 			spanEl.style.willChange = "transform";
 		});
-	}, [btnText, staggerStep, prefersReducedMotion]);
+	}, [btnText, prefersReducedMotion]);
 
 	useEffect(() => {
 		const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -196,7 +195,7 @@ const DotFillBtn = ({
 				aria-hidden
 				className={`absolute left-[1.7vw] top-[55%] max-[1025px]:top-[57%] w-[0.5vw] h-[0.5vw] rounded-full z-10 transform -translate-y-1/2 transition-transform duration-500 motion-reduce:transition-none max-[1025px]:left-[3.5vw] max-[1025px]:w-[1.5vw] max-[1025px]:h-[1.5vw] max-[1025px]:motion-reduce:transition-none max-md:left-[6vw] max-md:w-[2.3vw] max-md:h-[2.3vw] max-md:motion-reduce:transition-none`}
 				style={{
-					background: dotColor || fillColor,
+					background: dotColor,
 					transform:
 						hovered
 							? "translateY(-50%) scale(120)"

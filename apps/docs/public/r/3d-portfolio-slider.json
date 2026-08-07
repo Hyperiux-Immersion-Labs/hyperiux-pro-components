@@ -27,6 +27,58 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "zoomFactor",
+      "type": "number",
+      "default": 1,
+      "description": "Multiplier on the shader zoom applied to planes as they swing away from center.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "scrollSpeed",
+      "type": "number",
+      "default": 0.01,
+      "description": "How fast wheel/scroll input moves the carousel.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.002,
+        "max": 0.03,
+        "step": 0.001
+      }
+    },
+    {
+      "name": "showCaption",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the project caption text overlay.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

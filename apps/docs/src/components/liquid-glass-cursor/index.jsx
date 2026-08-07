@@ -6,13 +6,21 @@ import gsap from "gsap";
 import { LIQUID_TEXTURE } from "./LiquidText";
 import { usePrefersReducedMotion } from "@/lib/motion";
 
+function getBrightnessValue(value) {
+ if (typeof value === "number" && Number.isFinite(value)) {
+ return `${value}%`;
+ }
+
+ return value || "90%";
+}
+
 export default function LiquidGlassCursor({
  baseSize = 40,
  textHoverSize = 120,
  distortionScale = 1.5,
  blurAmount = 0.002,
- brightness ="90%",
- borderColor ="rgba(255,255,255,0.1)",
+ brightness = 90,
+ borderColor = "#ffffff",
  maxButtonWidth = 200,
  maxButtonHeight = 150,
  }) {
@@ -23,6 +31,7 @@ export default function LiquidGlassCursor({
  const innerRef = useRef(null);
  const textRef = useRef(null);
  const prefersReducedMotion = usePrefersReducedMotion();
+ const brightnessValue = getBrightnessValue(brightness);
 
  useEffect(() => {
  // Hide default cursor
@@ -192,7 +201,7 @@ export default function LiquidGlassCursor({
  <div
  style={{
  filter:
- `url(#${frostedFilterId}) blur(1px) drop-shadow(10px -4px 6px rgb(255, 255, 255)) brightness(${brightness})`,
+ `url(#${frostedFilterId}) blur(1px) drop-shadow(10px -4px 6px rgb(255, 255, 255)) brightness(${brightnessValue})`,
  backdropFilter:"blur(1px)",
 
  isolation:"isolate",

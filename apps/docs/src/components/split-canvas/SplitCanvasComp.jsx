@@ -37,7 +37,7 @@ const loadSvgAsCanvas = (src, size) => {
  });
 };
 
-export default function SplitCanvasComp({ wrapperRef }) {
+export default function SplitCanvasComp({ wrapperRef, gridSize = 16, numSlices = 32, canvasSize: canvasSizeProp = 599 }) {
  const containerRef = useRef(null);
  const hasInit = useRef(false);
 
@@ -54,19 +54,22 @@ export default function SplitCanvasComp({ wrapperRef }) {
  let loop = null;
 
  const getCanvasSize = () => {
- if (typeof window === 'undefined') return 599;
- if (window.innerWidth < 640) return 320;
- if (window.innerWidth < 768) return 420;
- return 599;
+ if (typeof window === 'undefined') return canvasSizeProp;
+ const ratio = canvasSizeProp / 599;
+ if (window.innerWidth < 640) return Math.round(320 * ratio);
+ if (window.innerWidth < 768) return Math.round(420 * ratio);
+ return canvasSizeProp;
  };
 
  const canvasSize = getCanvasSize();
- const numSlices = 32;
  const reducedMotion = prefersReducedMotion();
  const init = (canvasTextures) => {
  if (!isMounted || !container) return;
 
  textures = canvasTextures;
+
+ container.style.width = `${canvasSize}px`;
+ container.style.height = `${canvasSize}px`;
 
  renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
  renderer.setSize(canvasSize, canvasSize);
@@ -93,7 +96,7 @@ export default function SplitCanvasComp({ wrapperRef }) {
  u_progress: { value: 0 },
  u_numSlices: { value: numSlices },
  u_resolution: { value: new THREE.Vector2(canvasSize, canvasSize) },
- u_gridSize: { value: 16.0 }, // Grid cell size in pixels
+ u_gridSize: { value: gridSize }, // Grid cell size in pixels
  u_reducedMotion: { value: reducedMotion ? 1 : 0 },
  },
  vertexShader: PixelTransitionVertex,
@@ -226,12 +229,12 @@ export default function SplitCanvasComp({ wrapperRef }) {
  container.innerHTML ='';
  }
  };
- }, [wrapperRef]);
+ }, [wrapperRef, gridSize, numSlices, canvasSizeProp]);
 
  return (
  <div
  ref={containerRef}
- className="h-[599px] w-[599px]  max-sm:h-[320px] max-sm:w-[320px] max-sm:-translate-y-20 border-r border-t border-black/20"
+ className="max-sm:-translate-y-20 border-r border-t border-black/20"
  />
  );
 }

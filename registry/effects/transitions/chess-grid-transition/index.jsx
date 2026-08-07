@@ -11,26 +11,33 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
-/**
- * @typedef {Object} ChessGridTransitionProps
- * @property {import('react').ReactNode} [children]
- * @property {boolean} [enableContentShift]
- */
+const DEFAULT_GRID_SIZE = 8
+const DEFAULT_COLOR = '#ff5f00'
 
-/** @param {ChessGridTransitionProps} props */
-export default function ChessGridTransition({ children, enableContentShift = false }) {
-  const wrapperRef = useRef(/** @type {HTMLDivElement | null} */ (null))
-  const gridRef = useRef(/** @type {HTMLDivElement | null} */ (null))
-  const bgRef = useRef(/** @type {HTMLDivElement | null} */ (null))
+function clampNumber(value, min, max, fallback) {
+  const next = Number(value)
+  if (!Number.isFinite(next)) return fallback
+  return Math.min(max, Math.max(min, next))
+}
+
+export default function ChessGridTransition({
+  children,
+  duration = 1,
+  gridSize = DEFAULT_GRID_SIZE,
+  color = DEFAULT_COLOR,
+}) {
+  const wrapperRef = useRef(null)
+  const gridRef = useRef(null)
 
   const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isTablet, setIsTablet] = useState(false)
 
-  const cols = 8
-  const desktopRows = 4
-  const mobileRows = 9
-  const tabletRows = 10
+  const safeDuration = clampNumber(duration, 0.25, 3, 1)
+  const cols = Math.round(clampNumber(gridSize, 4, 16, DEFAULT_GRID_SIZE))
+  const desktopRows = Math.max(2, Math.round(cols * 0.5))
+  const mobileRows = Math.max(4, Math.round(cols * 1.125))
+  const tabletRows = Math.max(4, Math.round(cols * 1.25))
   const overlap = 2
 
   useEffect(() => {
@@ -47,10 +54,6 @@ export default function ChessGridTransition({ children, enableContentShift = fal
 
   const rows = isMobile ? mobileRows : isTablet ? tabletRows : desktopRows
 
-  /**
-   * @param {HTMLCollection} cells
-   * @param {number} rowIndex
-   */
   const getRowCells = (cells, rowIndex) => {
     const rowCells = []
     for (let col = 0; col < cols; col++) {
@@ -59,11 +62,6 @@ export default function ChessGridTransition({ children, enableContentShift = fal
     return rowCells
   }
 
-  /**
-   * @param {gsap.core.Timeline} tl
-   * @param {HTMLCollection} cells
-   * @param {number} [direction]
-   */
   const buildAnimation = (tl, cells, direction = 1) => {
     const rowsArr = Array.from({ length: rows }, (_, i) => i)
 
@@ -81,7 +79,7 @@ export default function ChessGridTransition({ children, enableContentShift = fal
             { xPercent: translateAmount },
             {
               xPercent: 0,
-              duration: 0.8,
+              duration: 0.8 * safeDuration,
               ease: 'power2.out',
             },
             delay
@@ -91,7 +89,7 @@ export default function ChessGridTransition({ children, enableContentShift = fal
             cell,
             {
               xPercent: -(colIndex + 2) * 100,
-              duration: 0.8,
+              duration: 0.8 * safeDuration,
               ease: 'power2.in',
             },
             delay
@@ -102,7 +100,7 @@ export default function ChessGridTransition({ children, enableContentShift = fal
   }
 
   useEffect(() => {
-    const cells = /** @type {HTMLDivElement} */ (gridRef.current).children
+    const cells = gridRef.current.children
 
     Array.from(cells).forEach((cell, i) => {
       const colIndex = i % cols
@@ -110,7 +108,7 @@ export default function ChessGridTransition({ children, enableContentShift = fal
     })
 
     setMounted(true)
-  }, [rows])
+  }, [cols, rows])
 
   const totalCells = cols * rows
 
@@ -125,14 +123,9 @@ export default function ChessGridTransition({ children, enableContentShift = fal
           return () => tl.kill()
         }
 
-        const cells = /** @type {HTMLDivElement} */ (gridRef.current).children
+        const cells = gridRef.current.children
 
-        tl.fromTo(
-          [wrapperRef.current, bgRef.current],
-          { opacity: 1, y: 0 },
-          { opacity: 0, duration: 0.8, y: 0 },
-          0
-        )
+        tl.to(wrapperRef.current, { opacity: 0, duration: 0.8 * safeDuration }, 0)
 
         buildAnimation(tl, cells, 1)
         return () => tl.kill()
@@ -145,12 +138,12 @@ export default function ChessGridTransition({ children, enableContentShift = fal
           return () => tl.kill()
         }
 
-        const cells = /** @type {HTMLDivElement} */ (gridRef.current).children
+        const cells = gridRef.current.children
 
         tl.fromTo(
-          [wrapperRef.current, bgRef.current],
-          { opacity: 0, y: 0 },
-          { opacity: 1, duration: 0.8, delay: 1, y: 0, clearProps: 'all' },
+          wrapperRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.8 * safeDuration, delay: safeDuration, clearProps: 'all' },
           0
         )
 
@@ -171,8 +164,9 @@ export default function ChessGridTransition({ children, enableContentShift = fal
           return (
             <span
               key={i}
-              className='bg-[#ff5f00] absolute shrink-0'
+              className='absolute shrink-0'
               style={{
+                backgroundColor: color,
                 width: `calc((100vw / ${cols}) * ${isMobile ? 1.6 : 1} + ${overlap}px)`,
                 height: `calc(100vh / ${rows} + ${overlap}px)`,
                 left: `calc(${colIndex} * (100vw / ${cols}) * ${isMobile ? 1.6 : 1} - ${overlap / 2}px)`,
@@ -184,7 +178,7 @@ export default function ChessGridTransition({ children, enableContentShift = fal
       </div>
 
       <div className='h-full w-full relative z-2'>
-        <div ref={wrapperRef} className='h-full w-full'>
+        <div ref={wrapperRef} className='h-full w-full will-change-transform'>
           {children}
         </div>
       </div>

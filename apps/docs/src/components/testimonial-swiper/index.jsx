@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import TestimonialComp from "./TestimonialComp";
 
 const data = [
@@ -7,31 +9,31 @@ const data = [
     name: "Aarav Mehta",
     title: "Product Lead, InnovateX",
     image:
-      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+      "https://picsum.photos/seed/1/800/600",
   },
   {
     quote:
-      "Hyperiux didn't just improve our UI , it transformed the way users interact with our product. It pushed us to rethink our entire approach to design, making every screen more intuitive, more fluid, and far more engaging than we thought possible.",
+      "Hyperiux didn't just improve our UI - it transformed the way users interact with our product. It pushed us to rethink our entire approach to design, making every screen more intuitive, more fluid, and far more engaging than we thought possible.",
     name: "Sofia Patel",
     title: "Frontend Developer",
     image:
-      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+      "https://picsum.photos/seed/2/800/600",
   },
   {
     quote:
-      "Everything feels intentional. Every hover, every transition, every detail , it's crafted, not just built.",
+      "Everything feels intentional. Every hover, every transition, every detail - it's crafted, not just built.",
     name: "Rohan Kapoor",
     title: "UX Designer, PixelCraft",
     image:
-      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+      "https://picsum.photos/seed/3/800/600",
   },
   {
     quote:
-      "We didn't just ship faster , we shipped something we're genuinely proud of. The design quality improved, the development flow became smoother, and for the first time, everything felt aligned between vision and execution.",
+      "We didn't just ship faster - we shipped something we're genuinely proud of. The design quality improved, the development flow became smoother, and for the first time, everything felt aligned between vision and execution.",
     name: "Ananya Sharma",
     title: "Founder, Buildspace Studio",
     image:
-      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+      "https://picsum.photos/seed/4/800/600",
   },
   {
     quote:
@@ -39,14 +41,29 @@ const data = [
     name: "Dev Malhotra",
     title: "Full Stack Engineer",
     image:
-      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+      "https://picsum.photos/seed/5/800/600",
   },
 ];
 
-const TestimonialSwiper = () => {
+const TestimonialSwiper = ({
+  bgColor = "#edeae2",
+  accentColor = "#ff6b00",
+  autoplay = true,
+  autoplayDelay = 4500,
+  showNavigation = true,
+  imageSize = 1,
+}) => {
   return (
-    <div className="h-screen bg-white max-sm:h-fit">
-      <TestimonialComp testimonials={data} bgColor="#edeae2" />
+    <div className="h-screen bg-white">
+      <TestimonialComp
+        testimonials={data}
+        bgColor={bgColor}
+        accentColor={accentColor}
+        autoplay={autoplay}
+        autoplayDelay={autoplayDelay}
+        showNavigation={showNavigation}
+        imageSize={imageSize}
+      />
     </div>
   );
 };

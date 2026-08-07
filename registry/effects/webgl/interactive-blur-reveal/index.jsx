@@ -43,11 +43,10 @@ const STOP_VELOCITY_EPSILON = 0.00008;
 const MASK_FADE_ALPHA = 0.015;
 const MASK_IDLE_FADE_ALPHA = 0.085;
 
-const TRAIL_RADIUS = 180;
-const TRAIL_SOFT_RADIUS = 210;
-const TRAIL_LINE_WIDTH = 190;
-
-const ACTIVE_DRAW_WINDOW_MS = 300;
+const DEFAULT_MOUSE_RADIUS = 180;
+const DEFAULT_DURATION = 0.3;
+const DEFAULT_NOISE_TEXTURE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png";
 
 const BLUR_REVEAL_VERT = /* glsl */ `#version 300 es
 in vec2 position;
@@ -151,13 +150,8 @@ void main() {
 }
 `;
 
-/**
- * @param {WebGL2RenderingContext} gl
- * @param {number} type
- * @param {string} source
- */
 function createShader(gl, type, source) {
-  const shader = /** @type {WebGLShader} */ (gl.createShader(type));
+  const shader = gl.createShader(type);
 
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
@@ -173,15 +167,10 @@ function createShader(gl, type, source) {
   return shader;
 }
 
-/**
- * @param {WebGL2RenderingContext} gl
- * @param {string} vertexSource
- * @param {string} fragmentSource
- */
 function createProgram(gl, vertexSource, fragmentSource) {
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
-  const program = /** @type {WebGLProgram} */ (gl.createProgram());
+  const program = gl.createProgram();
 
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
@@ -203,7 +192,6 @@ function createProgram(gl, vertexSource, fragmentSource) {
   return program;
 }
 
-/** @param {any} source */
 function resolveImageSource(source) {
   if (typeof source === "string") return source;
   if (source?.src) return source.src;
@@ -211,7 +199,6 @@ function resolveImageSource(source) {
   return source;
 }
 
-/** @param {any} source */
 function shouldUseCrossOrigin(source) {
   if (typeof source !== "string") return false;
   if (source.startsWith("data:") || source.startsWith("blob:")) return false;
@@ -219,10 +206,6 @@ function shouldUseCrossOrigin(source) {
   return true;
 }
 
-/**
- * @param {any} source
- * @returns {Promise<HTMLImageElement>}
- */
 function loadImage(source) {
   return new Promise((resolve, reject) => {
     if (source instanceof HTMLImageElement) {
@@ -262,14 +245,8 @@ function loadImage(source) {
   });
 }
 
-/**
- * @param {WebGL2RenderingContext} gl
- * @param {HTMLImageElement} image
- * @param {number} unit
- * @param {boolean} [shouldRepeat]
- */
 function createImageTexture(gl, image, unit, shouldRepeat = false) {
-  const texture = /** @type {WebGLTexture} */ (gl.createTexture());
+  const texture = gl.createTexture();
 
   gl.activeTexture(gl.TEXTURE0 + unit);
   gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -294,13 +271,8 @@ function createImageTexture(gl, image, unit, shouldRepeat = false) {
   return texture;
 }
 
-/**
- * @param {WebGL2RenderingContext} gl
- * @param {HTMLCanvasElement} maskCanvas
- * @param {number} unit
- */
 function createMaskTexture(gl, maskCanvas, unit) {
-  const texture = /** @type {WebGLTexture} */ (gl.createTexture());
+  const texture = gl.createTexture();
 
   gl.activeTexture(gl.TEXTURE0 + unit);
   gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -323,11 +295,6 @@ function createMaskTexture(gl, maskCanvas, unit) {
   return texture;
 }
 
-/**
- * @param {number} clientX
- * @param {number} clientY
- * @param {DOMRect} rect
- */
 function isPointInsideRect(clientX, clientY, rect) {
   return (
     clientX >= rect.left &&
@@ -337,11 +304,6 @@ function isPointInsideRect(clientX, clientY, rect) {
   );
 }
 
-/**
- * @param {number} clientX
- * @param {number} clientY
- * @param {DOMRect} rect
- */
 function getNormalizedPointer(clientX, clientY, rect) {
   return {
     x: (clientX - rect.left) / rect.width,
@@ -349,13 +311,6 @@ function getNormalizedPointer(clientX, clientY, rect) {
   };
 }
 
-/**
- * @param {CanvasRenderingContext2D} ctx
- * @param {number} x
- * @param {number} y
- * @param {number} radius
- * @param {number} softRadius
- */
 function drawTrailStamp(ctx, x, y, radius, softRadius) {
   const gradient = ctx.createRadialGradient(
     x,
@@ -377,34 +332,33 @@ function drawTrailStamp(ctx, x, y, radius, softRadius) {
   ctx.fill();
 }
 
-/**
- * @typedef {Object} PointerState
- * @property {boolean} isInside
- * @property {number} targetX
- * @property {number} targetY
- * @property {number} x
- * @property {number} y
- * @property {number} previousX
- * @property {number} previousY
- * @property {number} lastTime
- * @property {number} lastMoveTime
- * @property {boolean} hasDrawn
- */
+function clampNumber(value, min, max, fallback) {
+  const numericValue = Number(value);
 
-/**
- * @typedef {Object} InteractiveBlurRevealProps
- * @property {any} [iChannel0]
- * @property {any} [iChannel1]
- * @property {string} [className]
- * @property {import('react').CSSProperties} [style]
- */
+  if (!Number.isFinite(numericValue)) {
+    return fallback;
+  }
 
-/** @param {InteractiveBlurRevealProps} props */
-function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/800/1000", iChannel1="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png", className, style }) {
-  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+  return Math.min(max, Math.max(min, numericValue));
+}
+
+function InteractiveBlurReveal({
+  iChannel0 = "https://picsum.photos/seed/hover7/800/1000",
+  mouseRadius = DEFAULT_MOUSE_RADIUS,
+  mouseInteraction = true,
+  duration = DEFAULT_DURATION,
+  className,
+  style,
+}) {
+  const canvasRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const configRef = useRef({
+    mouseRadius: DEFAULT_MOUSE_RADIUS,
+    mouseInteraction: true,
+    duration: DEFAULT_DURATION,
+  });
 
-  const pointerRef = useRef(/** @type {PointerState} */ ({
+  const pointerRef = useRef({
     isInside: false,
     targetX: DEFAULT_POINTER_POSITION,
     targetY: DEFAULT_POINTER_POSITION,
@@ -415,41 +369,51 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
     lastTime: 0,
     lastMoveTime: 0,
     hasDrawn: false,
-  }));
+  });
+
+  useEffect(() => {
+    configRef.current = {
+      mouseRadius: clampNumber(mouseRadius, 40, 420, DEFAULT_MOUSE_RADIUS),
+      mouseInteraction,
+      duration: clampNumber(duration, 0.08, 1.5, DEFAULT_DURATION),
+    };
+
+    if (!mouseInteraction) {
+      const pointer = pointerRef.current;
+
+      pointer.isInside = false;
+      pointer.hasDrawn = false;
+    }
+  }, [duration, mouseInteraction, mouseRadius]);
 
   useEffect(() => {
     let isDisposed = false;
-    /** @type {ReturnType<typeof createSuspendedRaf>|null} */
     let loop = null;
-    /** @type {(() => void)|undefined} */
     let cleanupWebgl;
 
     async function init() {
-      if (!canvasRef.current) return undefined;
-      const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
+      const canvas = canvasRef.current;
 
-      const glContext = canvas.getContext("webgl2", {
+      if (!canvas) return undefined;
+
+      const gl = canvas.getContext("webgl2", {
         alpha: false,
         antialias: false,
         preserveDrawingBuffer: false,
       });
 
-      if (!glContext) {
+      if (!gl) {
         console.error("WebGL2 is required for this shader.");
         return undefined;
       }
 
-      const gl = /** @type {WebGL2RenderingContext} */ (glContext);
-
       const maskCanvas = document.createElement("canvas");
-      const maskCtx2d = maskCanvas.getContext("2d", {
+      const maskCtx = maskCanvas.getContext("2d", {
         alpha: true,
         willReadFrequently: false,
       });
 
-      if (!maskCtx2d) return undefined;
-
-      const maskCtx = /** @type {CanvasRenderingContext2D} */ (maskCtx2d);
+      if (!maskCtx) return undefined;
 
       const program = createProgram(gl, BLUR_REVEAL_VERT, BLUR_REVEAL_FRAG);
       const positionBuffer = gl.createBuffer();
@@ -473,7 +437,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
 
       const [baseImage, noiseImage] = await Promise.all([
         loadImage(iChannel0),
-        loadImage(iChannel1),
+        loadImage(DEFAULT_NOISE_TEXTURE),
       ]);
 
       if (isDisposed) {
@@ -528,7 +492,11 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         );
       }
 
-      function updatePointerFromClient(/** @type {number} */ clientX, /** @type {number} */ clientY) {
+      function updatePointerFromClient(clientX, clientY) {
+        if (!configRef.current.mouseInteraction) {
+          return;
+        }
+
         const rect = canvas.getBoundingClientRect();
         const pointer = pointerRef.current;
         const isInside = isPointInsideRect(clientX, clientY, rect);
@@ -544,11 +512,11 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         pointer.lastMoveTime = performance.now();
       }
 
-      function onWindowPointerMove(/** @type {PointerEvent} */ event) {
+      function onWindowPointerMove(event) {
         updatePointerFromClient(event.clientX, event.clientY);
       }
 
-      function onWindowPointerLeave(/** @type {MouseEvent} */ event) {
+      function onWindowPointerLeave(event) {
         if (!event.relatedTarget) {
           const pointer = pointerRef.current;
 
@@ -557,12 +525,23 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         }
       }
 
-      function fadeMask(/** @type {number} */ now, /** @type {PointerState} */ pointer) {
+      function fadeMask(now, pointer) {
+        const durationMs = configRef.current.duration * 1000;
         const idleAge = now - pointer.lastMoveTime;
+        const idleFade = clampNumber(
+          MASK_IDLE_FADE_ALPHA * (DEFAULT_DURATION / configRef.current.duration),
+          0.015,
+          0.22,
+          MASK_IDLE_FADE_ALPHA
+        );
+        const activeFade = clampNumber(
+          MASK_FADE_ALPHA * (DEFAULT_DURATION / configRef.current.duration),
+          0.003,
+          0.08,
+          MASK_FADE_ALPHA
+        );
         const fadeAlpha =
-          idleAge > ACTIVE_DRAW_WINDOW_MS
-            ? MASK_IDLE_FADE_ALPHA
-            : MASK_FADE_ALPHA;
+          idleAge > durationMs ? idleFade : activeFade;
 
         maskCtx.save();
         maskCtx.globalCompositeOperation = "destination-out";
@@ -571,12 +550,17 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         maskCtx.restore();
       }
 
-      function drawTrail(/** @type {PointerState} */ pointer, /** @type {number} */ velocity, /** @type {number} */ now) {
+      function drawTrail(pointer, velocity, now) {
+        const durationMs = configRef.current.duration * 1000;
+        const radius = configRef.current.mouseRadius;
+        const softRadius = radius * 1.17;
+        const lineWidth = radius * 1.05;
         const idleAge = now - pointer.lastMoveTime;
 
         const shouldDraw =
+          configRef.current.mouseInteraction &&
           pointer.isInside &&
-          idleAge <= ACTIVE_DRAW_WINDOW_MS &&
+          idleAge <= durationMs &&
           velocity > STOP_VELOCITY_EPSILON;
 
         if (!shouldDraw) {
@@ -595,7 +579,7 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         maskCtx.lineCap = "round";
         maskCtx.lineJoin = "round";
         maskCtx.strokeStyle = "rgba(255,255,255,0.72)";
-        maskCtx.lineWidth = TRAIL_LINE_WIDTH;
+        maskCtx.lineWidth = lineWidth;
 
         if (pointer.hasDrawn) {
           maskCtx.beginPath();
@@ -608,8 +592,8 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
           maskCtx,
           currentX,
           currentY,
-          TRAIL_RADIUS,
-          TRAIL_SOFT_RADIUS
+          radius,
+          softRadius
         );
 
         maskCtx.restore();
@@ -644,8 +628,10 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
 
         pointer.lastTime = now;
 
-        const smoothing =
-          1.0 - Math.pow(POINTER_LERP_FACTOR, frameDelta / 1000);
+        const smoothing = configRef.current.mouseInteraction
+          ? 1.0 -
+            Math.pow(POINTER_LERP_FACTOR, frameDelta / 1000)
+          : 0;
 
         pointer.previousX = pointer.x;
         pointer.previousY = pointer.y;
@@ -741,9 +727,13 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         loop = null;
       }
     };
-  }, [iChannel0, iChannel1]);
+  }, [iChannel0]);
 
-  function updatePointerFromEvent(/** @type {import('react').PointerEvent} */ event) {
+  function updatePointerFromEvent(event) {
+    if (!mouseInteraction) {
+      return;
+    }
+
     const canvas = canvasRef.current;
 
     if (!canvas) return;
@@ -758,11 +748,11 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
     pointer.lastMoveTime = performance.now();
   }
 
-  function onPointerEnter(/** @type {import('react').PointerEvent} */ event) {
+  function onPointerEnter(event) {
     updatePointerFromEvent(event);
   }
 
-  function onPointerMove(/** @type {import('react').PointerEvent} */ event) {
+  function onPointerMove(event) {
     updatePointerFromEvent(event);
   }
 

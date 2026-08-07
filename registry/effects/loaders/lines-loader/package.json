@@ -5,8 +5,8 @@
   "main": "index.jsx",
   "files": [
     "index.jsx",
-    "LinesLoading.jsx",
     "CenterLinesLoading.jsx",
+    "LinesLoading.jsx",
     "utils.js",
     "registry.json"
   ],

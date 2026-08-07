@@ -1,19 +1,11 @@
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import NumberCounter from '@/components/number-counter';
+import registry from "../../../../../../../registry/effects/text/number-counter/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader/>
-    <NumberCounter/>
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="number-counter" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("number-counter");
 }

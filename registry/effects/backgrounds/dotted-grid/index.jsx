@@ -7,7 +7,6 @@ import { createSuspendedRaf } from "./createSuspendedRaf";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
-/** @param {() => void} callback */
 function subscribeToReducedMotion(callback) {
   if (typeof window === "undefined") return () => {};
   const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
@@ -15,12 +14,10 @@ function subscribeToReducedMotion(callback) {
   return () => mediaQueryList.removeEventListener("change", callback);
 }
 
-/** @returns {boolean} */
 function getReducedMotionSnapshot() {
   return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
 }
 
-/** @returns {boolean} */
 function getServerReducedMotionSnapshot() {
   return false;
 }
@@ -37,12 +34,14 @@ function usePrefersReducedMotion() {
 }
 
 
-const SPACING = 24;
-const BASE_RADIUS = 7.2;
-const MOUSE_RADIUS = 380; // wider head influence
-const TRAIL_LENGTH = 456; // even more history
-const TRAIL_RADIUS = 230; // wider trail reach
-const TRAIL_FADE_MS = 1200;
+const DEFAULT_SPACING = 24;
+const DEFAULT_BASE_RADIUS = 7.2;
+const DEFAULT_MOUSE_RADIUS = 380;
+const DEFAULT_TRAIL_LENGTH = 456;
+const DEFAULT_TRAIL_RADIUS = 230;
+const DEFAULT_TRAIL_FADE_MS = 1200;
+const DOT_HUE = 210;
+const TRAIL_SATURATION = 16;
 
 const RANDOM_TIME = 0.6;
 const COLLECT_TIME = 1.1;
@@ -53,17 +52,13 @@ const TOTAL_CYCLE_TIME = RANDOM_TIME + COLLECT_TIME + SHAPE_HOLD_TIME + GRAY_DIS
 const TOTAL_SHAPES = 5;
 
 
-/** @type {(a: number, b: number, t: number) => number} */
 const lerp     = (a, b, t) => a + (b - a) * t;
-/** @type {(v: number) => number} */
 const clamp01  = (v) => Math.max(0, Math.min(1, v));
-/** @type {(e0: number, e1: number, v: number) => number} */
 const smoothstep = (e0, e1, v) => {
   const t = clamp01((v - e0) / (e1 - e0));
   return t * t * (3 - 2 * t);
 };
 
-/** @type {(x: number, y: number, time: number, width: number, height: number) => number} */
 const getStarStrength = (x, y, time, width, height) => {
   const cx = width / 2;
   const cy = height / 2;
@@ -82,7 +77,6 @@ const getStarStrength = (x, y, time, width, height) => {
   return clamp01(1 - smoothstep(radius - 0.05, radius + 0.05, r));
 };
 
-/** @type {(x: number, y: number, width: number, height: number) => number} */
 const getSquareStrength = (x, y, width, height) => {
   const cx = width / 2;
   const cy = height / 2;
@@ -95,7 +89,6 @@ const getSquareStrength = (x, y, width, height) => {
   return clamp01(1 - smoothstep(0.78, 0.82, d));
 };
 
-/** @type {(x: number, y: number, width: number, height: number) => number} */
 const getCircleRingStrength = (x, y, width, height) => {
   const cx = width / 2;
   const cy = height / 2;
@@ -106,7 +99,6 @@ const getCircleRingStrength = (x, y, width, height) => {
   return clamp01(1 - smoothstep(0.13, 0.17, Math.abs(r - 0.72)));
 };
 
-/** @type {(x: number, y: number, width: number, height: number) => number} */
 const getPlusStrength = (x, y, width, height) => {
   const cx = width / 2;
   const cy = height / 2;
@@ -129,7 +121,6 @@ const getPlusStrength = (x, y, width, height) => {
   return vertical || horizontal ? 1 : clamp01(1 - smoothstep(0, 0.06, d));
 };
 
-/** @type {(x: number, y: number, time: number, width: number, height: number) => number} */
 const getTriangleStrength = (x, y, time, width, height) => {
   const cx = width / 2;
   const cy = height / 2;
@@ -148,7 +139,6 @@ const getTriangleStrength = (x, y, time, width, height) => {
   return clamp01(1 - smoothstep(0.38, 0.48, Math.max(a, b)));
 };
 
-/** @type {(shapeIndex: number, x: number, y: number, time: number, width: number, height: number) => number} */
 const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
   const i = shapeIndex % TOTAL_SHAPES;
   if (i === 0) return getStarStrength(x, y, time, width, height);
@@ -159,12 +149,24 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
 };
 
 
-export default function DottedGrid() {
-  const canvasRef  = useRef(/** @type {HTMLCanvasElement | null} */ (null));
+export default function DottedGrid({
+  spacing = DEFAULT_SPACING,
+  baseRadius = DEFAULT_BASE_RADIUS,
+  mouseRadius = DEFAULT_MOUSE_RADIUS,
+  trailLength = DEFAULT_TRAIL_LENGTH,
+  trailRadius = DEFAULT_TRAIL_RADIUS,
+  trailFadeMs = DEFAULT_TRAIL_FADE_MS,
+  backgroundColor = "#000000",
+  showDesktopHint = true,
+  desktopHint = "Click anywhere to change the pattern.",
+  mobileHint = "Works best on desktop",
+  className = "",
+}) {
+  const canvasRef  = useRef(null);
   const reducedMotion = usePrefersReducedMotion();
   const patternRef = useRef({
     currentShapeIndex: 0,
-    transitionStartTime: /** @type {number | null} */ (null),
+    transitionStartTime: null,
   });
   const mouseRef = useRef({
     x: 0,
@@ -172,36 +174,21 @@ export default function DottedGrid() {
     targetX: 0,
     targetY: 0,
     active: false,
-    trail: /** @type {{ x: number, y: number, t: number }[]} */ ([]),
+    trail: [],
   });
 
   useEffect(() => {
-    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
-    const ctx    = /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d", { alpha: false }));
+    const canvas = canvasRef.current;
+    const ctx    = canvas.getContext("2d", { alpha: false });
 
     let width = 0;
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
-    /**
-     * @typedef {Object} Dot
-     * @property {number} x
-     * @property {number} y
-     * @property {number} phase
-     * @property {number} speed
-     * @property {number} randomOffset
-     * @property {number} currentShapeStrength
-     * @property {number} currentRandomStrength
-     * @property {number} currentMouseStrength
-     * @property {number} currentTrailStrength
-     * @property {number} currentGrayDisperseStrength
-     */
-    /** @type {Dot[]} */
     let dots = [];
     let reduceMotion =
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
     const reduceMotionMq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
-    /** @param {MediaQueryListEvent} event */
     const handleReduceMotionChange = (event) => {
       reduceMotion = event.matches;
       if (reduceMotion) {
@@ -214,8 +201,8 @@ export default function DottedGrid() {
 
     const createDots = () => {
       dots = [];
-      for (let y = SPACING / 2; y < height; y += SPACING) {
-        for (let x = SPACING / 2; x < width; x += SPACING) {
+      for (let y = spacing / 2; y < height; y += spacing) {
+        for (let x = spacing / 2; x < width; x += spacing) {
           dots.push({
             x,
             y,
@@ -244,7 +231,6 @@ export default function DottedGrid() {
     };
 
 
-    /** @param {PointerEvent} e */
     const handlePointerMove = (e) => {
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -254,7 +240,7 @@ export default function DottedGrid() {
       mouseRef.current.active  = true;
       mouseRef.current.trail.push({ x, y, t: performance.now() });
 
-      if (mouseRef.current.trail.length > TRAIL_LENGTH) {
+      if (mouseRef.current.trail.length > trailLength) {
         mouseRef.current.trail.shift();
       }
     };
@@ -269,11 +255,6 @@ export default function DottedGrid() {
     };
 
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {number} time
-     */
     const getShapeData = (x, y, time) => {
       const { currentShapeIndex, transitionStartTime } = patternRef.current;
       
@@ -324,15 +305,6 @@ export default function DottedGrid() {
       };
     };
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {number} radius
-     * @param {number} brightness
-     * @param {number} grayDisperseStrength
-     * @param {number} trailStrength
-     * @param {number} mouseStrength
-     */
     const drawDot = (x, y, radius, brightness, grayDisperseStrength, trailStrength, mouseStrength) => {
       const mouseFade = mouseStrength * mouseStrength * 0.72;
       const trailFade = trailStrength * 0.38;
@@ -347,10 +319,10 @@ export default function DottedGrid() {
       const trailLift = trailStrength * 38 * (1 - trailStrength * 0.55);
 
       const finalLightness = clamp01((lightness - mouseDark + mouseLift + trailLift) / 100) * 100;
-      const saturation     = trailStrength * trailStrength * 16;
+      const saturation     = trailStrength * trailStrength * TRAIL_SATURATION;
 
       ctx.beginPath();
-      ctx.fillStyle = `hsla(210, ${saturation}%, ${finalLightness}%, ${alpha})`;
+      ctx.fillStyle = `hsla(${DOT_HUE}, ${saturation}%, ${finalLightness}%, ${alpha})`;
       ctx.arc(x, y, radius, 0, Math.PI * 2);
       ctx.fill();
     };
@@ -367,7 +339,7 @@ export default function DottedGrid() {
         mouse.x = lerp(mouse.x, mouse.targetX, 0.12);
         mouse.y = lerp(mouse.y, mouse.targetY, 0.12);
 
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = backgroundColor;
         ctx.fillRect(0, 0, width, height);
 
         for (const dot of dots) {
@@ -381,7 +353,7 @@ export default function DottedGrid() {
               height
             );
             const brightness = clamp01(0.16 + shapeStrength * 0.84);
-            const radius = BASE_RADIUS + shapeStrength * 1.25;
+            const radius = baseRadius + shapeStrength * 1.25;
             drawDot(dot.x, dot.y, radius, brightness, 0, 0, 0);
             continue;
           }
@@ -398,8 +370,8 @@ export default function DottedGrid() {
             const dx = dot.x - mouse.x;
             const dy = dot.y - mouse.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < MOUSE_RADIUS) {
-              const norm = dist / MOUSE_RADIUS;
+            if (dist < mouseRadius) {
+              const norm = dist / mouseRadius;
               targetMouseStrength = (1 - norm) * (1 - norm) * (1 - norm);
             }
           }
@@ -409,7 +381,7 @@ export default function DottedGrid() {
           let targetTrailStrength = 0;
           for (let i = 0; i < mouse.trail.length; i++) {
             const pt = mouse.trail[i];
-            const age = (now - pt.t) / TRAIL_FADE_MS;
+            const age = (now - pt.t) / trailFadeMs;
             if (age >= 1) continue;
 
             const ageFade = (1 - age) * (1 - age) * (1 - age);
@@ -420,8 +392,8 @@ export default function DottedGrid() {
             const dy = dot.y - pt.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist < TRAIL_RADIUS) {
-              const proximity = 1 - smoothstep(0, 1, dist / TRAIL_RADIUS);
+            if (dist < trailRadius) {
+              const proximity = 1 - smoothstep(0, 1, dist / trailRadius);
               const softProximity = proximity * proximity * proximity;
               targetTrailStrength = Math.max(targetTrailStrength, softProximity * fade);
             }
@@ -444,8 +416,8 @@ export default function DottedGrid() {
           const mouseShrink = 1 - dot.currentMouseStrength * 0.75;
           const trailShrink = 1 - dot.currentTrailStrength * 0.65;
 
-          const stableRadius = BASE_RADIUS + dot.currentShapeStrength * 1.25;
-          const randomRadius = BASE_RADIUS + randomBlink * 0.35;
+          const stableRadius = baseRadius + dot.currentShapeStrength * 1.25;
+          const randomRadius = baseRadius + randomBlink * 0.35;
           const radius = lerp(stableRadius, randomRadius, dot.currentRandomStrength) * mouseShrink * trailShrink;
 
           drawDot(dot.x, dot.y, radius, brightness, grayDisperseBlink, dot.currentTrailStrength, dot.currentMouseStrength);
@@ -470,18 +442,31 @@ export default function DottedGrid() {
       canvas.removeEventListener("click", handleClick);
       loop.destroy();
     };
-  }, []);
+  }, [
+    baseRadius,
+    backgroundColor,
+    mouseRadius,
+    spacing,
+    trailFadeMs,
+    trailLength,
+    trailRadius,
+  ]);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black">
+    <section className={`relative h-screen w-full overflow-hidden bg-black ${className}`}>
       <canvas
         ref={canvasRef}
         className="block h-full w-full cursor-pointer touch-none bg-black"
       />
       <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/4 via-transparent to-black/40" />
       <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.95)]" />
+      {showDesktopHint ? (
+        <div className="max-[1025px]:hidden fixed bottom-15 left-1/2 -translate-x-1/2 z-50 p-4 rounded-2xl bg-white/10 backdrop-blur-md text-white text-center text-md pointer-events-none">
+          {desktopHint}
+        </div>
+      ) : null}
       <div className="hidden max-[1025px]:flex fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-white text-center text-sm leading-tight pointer-events-none">
-        Works best on desktop  <br />
+        {mobileHint} <br />
         Here, tap & drag to explore
       </div>
 

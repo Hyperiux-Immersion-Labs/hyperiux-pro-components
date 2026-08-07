@@ -57,7 +57,7 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-const InteractiveArrows = () => {
+const InteractiveArrows = (props) => {
   const [active, setActive] = useState(variations[0].id);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -90,7 +90,7 @@ const InteractiveArrows = () => {
           <div
             className={`h-[78vh] w-full max-w-350 overflow-hidden rounded-[28px] border transition-colors duration-300 ${activeVariation.frameClassName}`}
           >
-            <ActiveComponent />
+            <ActiveComponent {...props} />
           </div>
         </div>
       </div>

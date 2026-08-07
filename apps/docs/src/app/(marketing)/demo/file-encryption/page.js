@@ -1,18 +1,9 @@
-import FileEncryption from "@/components/file-encryption";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-
-
+import registry from "../../../../../../../registry/effects/webgl/file-encryption/registry.json";
 
 export default function Page() {
-  return (
-    <>
-    <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
-    <FileEncryption/>
-    
-    </>
-   
-  );
+  return <SuggestedEffectRemixerDemo registry={registry} slug="file-encryption" />;
 }
 
 export async function generateMetadata() {

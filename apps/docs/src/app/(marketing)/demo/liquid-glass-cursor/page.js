@@ -1,19 +1,11 @@
-
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import LiquidGlassWrapper from './LiquidGlassWrapper'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import liquidGlassCursorRegistry from "../../../../../../../registry/effects/cursor/liquid-glass-cursor/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader />
-    <LiquidGlassWrapper />
-    </>
-  )
+export default function Page() {
+  return <DemoContent registry={liquidGlassCursorRegistry} />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("liquid-glass-cursor");
 }

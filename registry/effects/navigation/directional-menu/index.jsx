@@ -27,7 +27,14 @@ const menuItems = [
   },
 ];
 
-export default function DirectionalMenu() {
+export default function DirectionalMenu({
+  activeColor = "#ffffff",
+  inactiveColor = "#ffffff",
+  panelGap = 20,
+  closeDelay = 80,
+  duration = 0.35,
+  ease = "power2.inOut",
+}) {
   return (
     <div className="relative h-screen overflow-hidden bg-black text-white max-md:h-full max-md:overflow-visible max-md:pb-10">
       {/* Navbar */}
@@ -70,50 +77,29 @@ export default function DirectionalMenu() {
           {/* Menu */}
           <DirectionalMegaMenu
             items={menuItems}
-            closeDelay={80}
+            closeDelay={closeDelay}
+            panelGap={panelGap}
+            activeClassName=""
+            inactiveClassName=""
+            navItemStyle={{ color: inactiveColor }}
+            activeNavItemStyle={{ color: activeColor }}
             navClassName="mx-auto w-full  max-w-7xl justify-center px-6 md:px-10 max-[1025px]:translate-x-10 max-md:translate-x-0 "
             contentWrapperClassName="p-8 bg-white border border-white/10 rounded-3xl max-md:h-[92vh] max-[1025px]:h-[75vh]"
             animation={{
-              duration: 0.35,
-              ease: "power2.inOut",
+              duration,
+              ease,
               distance: 100,
-              closeOpacityDuration: 0.3,
-              openOpacityDuration: 0.3,
+              closeOpacityDuration: duration,
+              openOpacityDuration: duration,
               fade: true,
-              heightDuration: 0.35,
-              heightEase: "power2.inOut",
+              heightDuration: duration,
+              heightEase: ease,
             }}
           />
         </div>
         <MobileDirectionalMenu items={menuItems} />
       </header>
 
-      {/* Hero Section */}
-      <section className="relative z-10 pt-25 flex items-center justify-center  px-6">
-        <div className="max-w-5xl mx-auto text-center">
-          {/* Heading */}
-          <h1 className="text-[10vw] sm:text-[11vw] md:text-[7rem] leading-none  tracking-[-0.06em]">
-            Directional Menu
-          </h1>
-
-          <p className="mt-8 max-w-200 mx-auto text-white/70 max-md:text-sm text-2xl leading-[1.2]">
-            Interact with the navigation above to see smooth transitions,
-            motion, and details crafted for a more immersive experience.
-          </p>
-          {/* Buttons */}
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 max-md:mt-20">
-            <button className="px-7 py-3 cursor-pointer rounded-full bg-white text-black font-medium hover:bg-white/90 transition-all duration-300">
-              <a href={"/effects/navigation/directional-menu"}>
-                Get Started
-              </a>
-            </button>
-
-            <button className="px-7 py-3 rounded-full border cursor-pointer border-white/10 bg-white/3 hover:bg-white/6 transition-all duration-300 text-white/80">
-              <a href={"/effects"}>Explore Platform</a>
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

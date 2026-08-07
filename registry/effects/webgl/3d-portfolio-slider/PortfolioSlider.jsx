@@ -8,7 +8,6 @@ import { createSuspendedRaf, createVisibilityGate } from "./createSuspendedRaf";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
-/** @param {() => void} callback */
 function subscribeToReducedMotion(callback) {
   if (typeof window === "undefined") return () => {};
   const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
@@ -34,7 +33,7 @@ function usePrefersReducedMotion() {
   );
 }
 
-function getViewportConfig() {
+function getViewportConfig(zoomFactorMultiplier = 1) {
   const width = window.innerWidth;
   const isMobile = width < 768;
   const isTablet = width <= 1025;
@@ -46,43 +45,30 @@ function getViewportConfig() {
     planeWidthFactor: isMobile ? 0.85 : isTablet ? 0.82 : 0.5,
     baseRadius: isMobile ? 20 : isTablet ? 26 : 35,
     maxRadius: isMobile ? 30 : isTablet ? 42 : 55,
-    zoomFactor: isMobile ? 0.7 : isTablet ? 1.05 : 1.5,
+    zoomFactor: (isMobile ? 0.7 : isTablet ? 1.05 : 1.5) * zoomFactorMultiplier,
   };
 }
 
-/**
- * @typedef {Object} PortfolioSliderItem
- * @property {string} url
- * @property {string} description
- */
-
-/**
- * @typedef {Object} PortfolioSliderProps
- * @property {PortfolioSliderItem[]} items
- */
-
-/** @param {PortfolioSliderProps} props */
-export default function PortfolioSlider({ items }) {
- const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
- const circleRef = useRef(/** @type {HTMLDivElement|null} */ (null));
- const textContainerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
- const activeTextRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+export default function PortfolioSlider({
+ items,
+ zoomFactor = 1,
+ scrollSpeed = 0.01,
+ showCaption = true,
+}) {
+ const containerRef = useRef(null);
+ const circleRef = useRef(null);
+ const textContainerRef = useRef(null);
+ const activeTextRef = useRef(null);
  const prevRawIndexRef = useRef(0);
  const reducedMotion = usePrefersReducedMotion();
 
  useEffect(() => {
- /** @type {THREE.Scene} */
- let scene;
- /** @type {THREE.PerspectiveCamera} */
- let camera;
- /** @type {THREE.WebGLRenderer} */
- let renderer;
- /** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */
+ let scene, camera, renderer;
  let planes = [];
 
- let currentRadius = getViewportConfig().initialRadius;
+ let currentRadius = getViewportConfig(zoomFactor).initialRadius;
 
- const container = /** @type {HTMLDivElement} */ (containerRef.current);
+ const container = containerRef.current;
 
 
  const lenis = new Lenis({
@@ -94,7 +80,7 @@ export default function PortfolioSlider({ items }) {
 
  const width = window.innerWidth;
  const height = window.innerHeight;
- const viewportConfig = getViewportConfig();
+ const viewportConfig = getViewportConfig(zoomFactor);
 
  camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
  camera.position.z = 5;
@@ -118,7 +104,6 @@ export default function PortfolioSlider({ items }) {
 const planeWidth = frustumWidth * viewportConfig.planeWidthFactor;
 const planeHeight = frustumHeight;
 const spacing = planeWidth;
-const speedFactor = 0.01;
 
  items.forEach((item, i) => {
  const texture = loader.load(item.url);
@@ -166,10 +151,8 @@ const speedFactor = 0.01;
  const totalWidth = spacing * items.length;
 
  let offset = 0;
- /** @type {number|null} */
  let prevScroll = null;
  let isSnapping = false;
- /** @type {ReturnType<typeof setTimeout>|null} */
  let snapTimeout = null;
  let snapObj = { offset: 0 };
 
@@ -178,7 +161,7 @@ const speedFactor = 0.01;
  root: null,
  observeTab: false,
  observeOffscreen: false,
- onFrame: (/** @type {number} */ time) => {
+ onFrame: (time) => {
  lenis.raf(time);
 
  // Delta
@@ -200,9 +183,9 @@ const speedFactor = 0.01;
  if (!isSnapping && Math.abs(delta) < 0.5) {
  if (!snapTimeout) {
  snapTimeout = setTimeout(() => {
- const currentScrollOffset = offset * speedFactor;
+ const currentScrollOffset = offset * scrollSpeed;
  const targetScrollOffset = Math.round(currentScrollOffset / spacing) * spacing;
- const targetOffset = targetScrollOffset / speedFactor;
+ const targetOffset = targetScrollOffset / scrollSpeed;
 
  if (Math.abs(offset - targetOffset) > 1) {
  isSnapping = true;
@@ -232,7 +215,7 @@ const speedFactor = 0.01;
  }
  }
 
- const scrollOffset = offset * speedFactor;
+ const scrollOffset = offset * scrollSpeed;
 
 const targetRadius = Math.min(
   viewportConfig.baseRadius + Math.abs(delta) * 0.12,
@@ -307,7 +290,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
 
  const gate = createVisibilityGate({
  root: container,
- onChange: (/** @type {boolean} */ active) => {
+ onChange: (active) => {
  if (active) {
  if (!isSnapping) {
  lenis?.start?.();
@@ -345,13 +328,14 @@ plane.material.uniforms.uZoom.value = targetZoom;
  container.removeChild(renderer.domElement);
  lenis.destroy();
  };
- }, [items]);
+ }, [items, zoomFactor, scrollSpeed]);
 
  const scrollHeight = items.length * 100; // 100vh per image for smooth infinite scrolling
 
  return (
- <div className={`w-full bg-black`} style={{ height: `${scrollHeight}vh` }}>
+ <div className="w-full bg-black" style={{ height: `${scrollHeight}vh` }}>
  <div ref={containerRef} className="sticky top-0 h-screen w-full overflow-hidden">
+ {showCaption && (
  <div
  ref={textContainerRef}
  data-active-text={items[0].description}
@@ -361,6 +345,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
  {items[0].description}
  </div>
  </div>
+ )}
  <div  ref={circleRef}  className="absolute top-1/2 left-1/2 w-0 h-0 pointer-events-none z-10"
  style={{ transform:"translate(-50%, -50%) rotate(0deg)" }}
  >

@@ -10,8 +10,26 @@
   "exportName": "AnimatedTabs",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "changelog": [
+    {
+      "version": "1.2.2",
+      "date": "2026-07-31",
+      "summary": "Changed the defaultActiveIndex remixer control from a slider to a dropdown so tabs are picked by name instead of a raw index.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed the tabs content prop from the public/remixer API and wired accentColor and duration into the active indicator and panel transitions.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added defaultActiveIndex, animationType, and slideDistance as public props with a working remixer panel. The originally suggested props (defaultTab, accentColor, duration, orientation) didn't match this component's real API (tab content is JSX, not JSON-editable, and there's no accentColor/orientation concept), so they were replaced with the props AnimatedTabsComp actually accepts.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -19,6 +37,104 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "defaultActiveIndex",
+      "type": "number",
+      "default": 0,
+      "description": "Index of the initially active tab.",
+      "remixer": {
+        "control": "select",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "options": [
+          {
+            "label": "Overview",
+            "value": 0
+          },
+          {
+            "label": "Services",
+            "value": 1
+          },
+          {
+            "label": "Contact",
+            "value": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "animationType",
+      "type": "string",
+      "default": "slide",
+      "description": "Panel transition style.",
+      "remixer": {
+        "control": "select",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "options": [
+          {
+            "label": "Slide",
+            "value": "slide"
+          },
+          {
+            "label": "Fade",
+            "value": "fade"
+          }
+        ]
+      }
+    },
+    {
+      "name": "slideDistance",
+      "type": "number",
+      "default": 40,
+      "description": "Horizontal travel distance for the slide transition, in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 160,
+        "step": 5
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "default": "#ff6b00",
+      "description": "Color used for the active tab label and indicator.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.35,
+      "description": "Panel and indicator transition duration in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.05,
+        "max": 2,
+        "step": 0.05
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "behavior",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

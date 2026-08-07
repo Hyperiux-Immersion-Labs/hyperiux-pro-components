@@ -1,17 +1,10 @@
-import ScrambleTextWrapper from './ScrambleTextWrapper'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import scrambleTextRegistry from "../../../../../../../registry/effects/text/scramble-text/registry.json";
 
 
 const page = () => {
-  return (
-    <>
-    <DemoHeader />
-    <ScrambleTextWrapper/>
-    <ScrollBottom textColor='text-black' />
-    </>
-  )
+  return <DemoContent registry={scrambleTextRegistry} />;
 }
 
 export default page

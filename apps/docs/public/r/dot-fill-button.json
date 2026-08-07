@@ -23,6 +23,74 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "btnText",
+      "type": "string",
+      "default": "Try demo",
+      "description": "Button label text.",
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
+    },
+    {
+      "name": "bgColor",
+      "type": "color",
+      "default": "#ff6b00",
+      "description": "Resting button background color.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    },
+    {
+      "name": "textColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Resting label color.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    },
+    {
+      "name": "hoverTextColor",
+      "type": "color",
+      "default": "#ff6b00",
+      "description": "Label color while filled.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    },
+    {
+      "name": "dotColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Dot color.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "colors",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
       "path": "index.jsx",

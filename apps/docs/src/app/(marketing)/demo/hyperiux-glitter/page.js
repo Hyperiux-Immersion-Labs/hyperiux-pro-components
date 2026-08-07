@@ -1,19 +1,11 @@
-import HyperiuxGlitter from '@/components/hyperiux-glitter'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/hyperiux-glitter/registry.json";
 
-
-const page = () => {
-  return (
-   <>
-   <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
-   <HyperiuxGlitter/>
-   </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="hyperiux-glitter" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("hyperiux-glitter");
 }

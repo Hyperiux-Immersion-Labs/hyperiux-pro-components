@@ -1,19 +1,11 @@
-import DottedGrid from '@/components/dotted-grid';
-import DemoHeader from '@/components/WebsiteComps/DemoHeader';
-import React from 'react'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import dottedGridRegistry from "../../../../../../../registry/effects/backgrounds/dotted-grid/registry.json";
 
 
-const Page = () => {
-    return (
-        <>
-        <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
-        <DottedGrid />
-        </>
-    )
+export default function Page() {
+  return <DemoContent registry={dottedGridRegistry} />;
 }
-
-export default Page;
 
 export async function generateMetadata() {
   return getDemoPageMetadata("dotted-grid");

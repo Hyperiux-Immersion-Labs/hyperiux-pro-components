@@ -1,19 +1,11 @@
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import AnimatedForm from '@/components/animated-form';
+import registry from "../../../../../../../registry/effects/components/animated-form/registry.json";
 
-
-const page = () => {
-  return (
-    <>
-    <DemoHeader />
-    <AnimatedForm/>
-    </>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="animated-form" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("animated-form");
 }

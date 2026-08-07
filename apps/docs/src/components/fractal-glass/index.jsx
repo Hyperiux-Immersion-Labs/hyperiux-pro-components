@@ -5,6 +5,8 @@ import * as THREE from "three";
 import { createSuspendedRaf } from "./createSuspendedRaf";
 import { usePrefersReducedMotion } from "@/lib/motion";
 
+const DEFAULT_IMAGE_SRC = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg";
+
 const vertexShader = `
  varying vec2 vUv;
  void main() {
@@ -108,9 +110,9 @@ function resolveMediaSource(source) {
   return source;
 }
 
-function loadImageElement(source) {
+function loadImageElement(source, fallbackSource = DEFAULT_IMAGE_SRC) {
   return new Promise((resolve, reject) => {
-    const imageSource = resolveMediaSource(source);
+    const imageSource = resolveMediaSource(source) || fallbackSource;
 
     if (!imageSource) {
       reject(new Error("A valid image URL is required."));
@@ -141,9 +143,14 @@ function loadImageElement(source) {
         image.src = objectUrl;
       })
       .catch((error) => {
+        if (imageSource !== fallbackSource) {
+          loadImageElement(fallbackSource, fallbackSource).then(resolve).catch(reject);
+          return;
+        }
+
         reject(
           new Error(
-            `Unable to load glass strip image: ${imageSource}. Current origin is ${window.location.origin}. Make sure R2 allows this exact origin. ${error?.message || ""}`
+            `Unable to load glass strip image: ${imageSource}. Current origin is ${window.location.origin}. Make sure the URL allows CORS for this site. ${error?.message || ""}`
           )
         );
       });
@@ -151,9 +158,7 @@ function loadImageElement(source) {
 }
 
 export default function FractalGlass({
-  imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg", // ← new prop: path/URL to image file
-  videoSrc = null,
-  mediaType = "image",
+  imageSrc = DEFAULT_IMAGE_SRC,
    stripesFrequency=40,
     glassStrength=2.0,
     glassSmoothness=0.014,
@@ -162,7 +167,10 @@ export default function FractalGlass({
     edgePadding=0.12
 }) {
   const mountRef = useRef(null);
-  const videoRef = useRef(null); // keeps reference to video element for cleanup
+  const uniformsRef = useRef(null);
+  const imageTextureRef = useRef(null);
+  const imageObjectUrlRef = useRef(null);
+  const imageRequestIdRef = useRef(0);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
@@ -194,64 +202,7 @@ export default function FractalGlass({
       uGlassSmoothness: { value: glassSmoothness },
       uEdgePadding: { value: edgePadding },
     };
-
-    let videoEl = null;
-    let videoTexture = null;
-    let imageTexture = null;
-    let imageObjectUrl = null;
-    let isDisposed = false;
-
-    if (mediaType === "video" && videoSrc) {
-      // ── Video path ──────────────────────────────────────────────
-      videoEl = document.createElement("video");
-      videoEl.crossOrigin = "anonymous";
-      videoEl.referrerPolicy = "no-referrer";
-      videoEl.loop = true;
-      videoEl.muted = true;
-      videoEl.playsInline = true;
-      videoEl.autoplay = true;
-      videoEl.src = resolveMediaSource(videoSrc);
-      videoRef.current = videoEl;
-
-      videoEl.addEventListener("loadedmetadata", () => {
-        uniforms.uTextureSize.value.set(videoEl.videoWidth, videoEl.videoHeight);
-      });
-
-      videoEl.play().catch(() => {
-        // Autoplay blocked - still renders first frame when available
-      });
-
-      videoTexture = new THREE.VideoTexture(videoEl);
-      videoTexture.minFilter = THREE.LinearFilter;
-      videoTexture.magFilter = THREE.LinearFilter;
-      videoTexture.wrapS = THREE.ClampToEdgeWrapping;
-      videoTexture.wrapT = THREE.ClampToEdgeWrapping;
-      uniforms.uTexture.value = videoTexture;
-
-    } else {
-      // ── Image path ──────────────────────────────────────────────
-      loadImageElement(imageSrc).then(({ image, objectUrl }) => {
-        if (isDisposed) return;
-
-        imageObjectUrl = objectUrl;
-        imageTexture = new THREE.Texture(image);
-        imageTexture.needsUpdate = true;
-        imageTexture.minFilter = THREE.LinearFilter;
-        imageTexture.magFilter = THREE.LinearFilter;
-        imageTexture.wrapS = THREE.ClampToEdgeWrapping;
-        imageTexture.wrapT = THREE.ClampToEdgeWrapping;
-        uniforms.uTexture.value = imageTexture;
-        uniforms.uTextureSize.value.set(
-          image.naturalWidth || image.width || 1920,
-          image.naturalHeight || image.height || 1080
-        );
-      }).catch((error) => {
-        console.warn(
-          `Unable to load glass strip texture: ${resolveMediaSource(imageSrc)}. Make sure the public URL allows CORS for this site.`,
-          error
-        );
-      });
-    }
+    uniformsRef.current = uniforms;
 
     const geo = new THREE.PlaneGeometry(2, 2);
     const mat = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
@@ -282,34 +233,91 @@ export default function FractalGlass({
         current.x += (target.x - current.x) * 0.04;
         current.y += (target.y - current.y) * 0.04;
         uniforms.uMouse.value.set(current.x, current.y);
-        // For video, mark texture as needing update every frame
-        if (videoTexture) videoTexture.needsUpdate = true;
         renderer.render(scene, camera);
       },
     });
     loop.start();
 
     return () => {
-      isDisposed = true;
       loop.destroy();
       window.removeEventListener("mousemove", onMouse);
       window.removeEventListener("touchmove", onTouch);
       window.removeEventListener("resize", onResize);
-      if (videoEl) {
-        videoEl.pause();
-        videoEl.src = "";
-        videoRef.current = null;
-      }
-      if (videoTexture) videoTexture.dispose();
-      if (imageTexture) imageTexture.dispose();
-      if (imageObjectUrl) URL.revokeObjectURL(imageObjectUrl);
+      imageRequestIdRef.current += 1;
+      imageTextureRef.current?.dispose?.();
+      imageTextureRef.current = null;
+      if (imageObjectUrlRef.current) URL.revokeObjectURL(imageObjectUrlRef.current);
+      imageObjectUrlRef.current = null;
+      uniformsRef.current = null;
       renderer.dispose();
       mat.dispose();
       geo.dispose();
       if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
     };
-  }, [imageSrc, videoSrc, mediaType, stripesFrequency, glassStrength, glassSmoothness,
-    parallaxStrength, distortionMultiplier, edgePadding]);
+  }, []);
+
+  useEffect(() => {
+    const uniforms = uniformsRef.current;
+    if (!uniforms) return;
+
+    uniforms.uParallaxStrength.value = parallaxStrength;
+    uniforms.uDistortionMultiplier.value = distortionMultiplier;
+    uniforms.uGlassStrength.value = glassStrength;
+    uniforms.uStripesFrequency.value = stripesFrequency;
+    uniforms.uGlassSmoothness.value = glassSmoothness;
+    uniforms.uEdgePadding.value = edgePadding;
+  }, [
+    stripesFrequency,
+    glassStrength,
+    glassSmoothness,
+    parallaxStrength,
+    distortionMultiplier,
+    edgePadding,
+  ]);
+
+  useEffect(() => {
+    const uniforms = uniformsRef.current;
+    if (!uniforms) return;
+
+    const requestId = imageRequestIdRef.current + 1;
+    imageRequestIdRef.current = requestId;
+
+    loadImageElement(imageSrc)
+      .then(({ image, objectUrl }) => {
+        if (imageRequestIdRef.current !== requestId || !uniformsRef.current) {
+          URL.revokeObjectURL(objectUrl);
+          return;
+        }
+
+        const nextTexture = new THREE.Texture(image);
+        nextTexture.needsUpdate = true;
+        nextTexture.minFilter = THREE.LinearFilter;
+        nextTexture.magFilter = THREE.LinearFilter;
+        nextTexture.wrapS = THREE.ClampToEdgeWrapping;
+        nextTexture.wrapT = THREE.ClampToEdgeWrapping;
+
+        const previousTexture = imageTextureRef.current;
+        const previousObjectUrl = imageObjectUrlRef.current;
+
+        imageTextureRef.current = nextTexture;
+        imageObjectUrlRef.current = objectUrl;
+        uniforms.uTexture.value = nextTexture;
+        uniforms.uTextureSize.value.set(
+          image.naturalWidth || image.width || 1920,
+          image.naturalHeight || image.height || 1080
+        );
+
+        previousTexture?.dispose?.();
+        if (previousObjectUrl) URL.revokeObjectURL(previousObjectUrl);
+      })
+      .catch((error) => {
+        if (imageRequestIdRef.current !== requestId) return;
+        console.warn(
+          `Unable to load glass strip texture: ${resolveMediaSource(imageSrc) || DEFAULT_IMAGE_SRC}. Keeping the previous texture.`,
+          error
+        );
+      });
+  }, [imageSrc]);
 
   return (
     <div
@@ -367,5 +375,3 @@ export default function FractalGlass({
     </div>
   );
 }
-
-

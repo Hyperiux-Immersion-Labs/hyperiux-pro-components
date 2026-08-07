@@ -65,6 +65,9 @@ const ACCORDION_DURATION = 0.25;
 export function ElevateNavbarMobile({
   menuItems = DEFAULT_MENU_ITEMS,
   cta = DEFAULT_CTA,
+  duration = 0.35,
+  ease = "power3.out",
+  activeColor = "#ffffff",
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdownIndex, setActiveDropdownIndex] = useState(/** @type {number|null} */ (null));
@@ -77,6 +80,7 @@ export function ElevateNavbarMobile({
   const reduceMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+  const motionDuration = Math.max(0.05, Number(duration) || 0.35);
 
   // Trap focus across the toggle + panel while open, restore it on close.
   useFocusTrap({
@@ -108,7 +112,7 @@ export function ElevateNavbarMobile({
 
       gsap.to(backdropElement, {
         autoAlpha: 1,
-        duration: BACKDROP_DURATION,
+        duration: motionDuration * 0.6,
       });
 
       gsap.fromTo(
@@ -120,8 +124,8 @@ export function ElevateNavbarMobile({
         {
           autoAlpha: 1,
           y: 0,
-          duration: PANEL_OPEN_DURATION,
-          ease: "power3.out",
+          duration: motionDuration,
+          ease,
         }
       );
 
@@ -143,7 +147,7 @@ export function ElevateNavbarMobile({
     gsap.to(panelElement, {
       autoAlpha: 0,
       y: PANEL_OFFSET_Y,
-      duration: PANEL_CLOSE_DURATION,
+      duration: motionDuration * 0.7,
       onComplete: () => {
         gsap.set(panelElement, {
           pointerEvents: "none",
@@ -153,9 +157,9 @@ export function ElevateNavbarMobile({
 
     gsap.to(backdropElement, {
       autoAlpha: 0,
-      duration: BACKDROP_DURATION,
+      duration: motionDuration * 0.6,
     });
-  }, [isMenuOpen]);
+  }, [ease, isMenuOpen, motionDuration]);
 
   useEffect(() => {
     sectionsRef.current.forEach((sectionElement, index) => {
@@ -174,11 +178,11 @@ export function ElevateNavbarMobile({
       gsap.to(sectionElement, {
         height: isSectionOpen ? sectionElement.scrollHeight : 0,
         autoAlpha: isSectionOpen ? 1 : 0,
-        duration: ACCORDION_DURATION,
-        ease: "power2.out",
+        duration: motionDuration,
+        ease,
       });
     });
-  }, [activeDropdownIndex]);
+  }, [activeDropdownIndex, ease, motionDuration]);
 
   return (
     <div
@@ -201,6 +205,7 @@ export function ElevateNavbarMobile({
           type="button"
           onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
           className="flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] text-white transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+          style={{ backgroundColor: isMenuOpen ? activeColor : undefined }}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
           {isMenuOpen ? (

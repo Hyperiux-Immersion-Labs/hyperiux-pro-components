@@ -18,11 +18,6 @@ function prefersReducedMotion() {
 }
 
 // Load SVG as image and render to canvas for proper texture
-/**
- * @param {string} src
- * @param {number} size
- * @returns {Promise<HTMLCanvasElement>}
- */
 const loadSvgAsCanvas = (src, size) => {
  return new Promise((resolve, reject) => {
  const img = new Image();
@@ -32,7 +27,7 @@ const loadSvgAsCanvas = (src, size) => {
  const canvas = document.createElement('canvas');
  canvas.width = size;
  canvas.height = size;
- const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
+ const ctx = canvas.getContext('2d');
 
  // Keep transparent background - grid is drawn in shader
  ctx.clearRect(0, 0, size, size);
@@ -48,14 +43,8 @@ const loadSvgAsCanvas = (src, size) => {
  });
 };
 
-/**
- * @typedef {Object} PixelScrollCanvasProps
- * @property {import('react').RefObject<HTMLElement|null>} wrapperRef
- */
-
-/** @param {PixelScrollCanvasProps} props */
-export default function PixelScrollCanvas({ wrapperRef }) {
- const containerRef = useRef(/** @type {HTMLDivElement|null} */ (null));
+export default function PixelScrollCanvas({ wrapperRef, gridSize = 16, numSlices = 32, canvasSize: canvasSizeProp = 599 }) {
+ const containerRef = useRef(null);
  const hasInit = useRef(false);
 
  useEffect(() => {
@@ -65,37 +54,28 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  if (hasInit.current) return;
  hasInit.current = true;
 
- /** @type {any} */
- let renderer;
- /** @type {any} */
- let scene;
- /** @type {any} */
- let camera;
- /** @type {any} */
- let mesh;
- /** @type {any} */
- let material;
- /** @type {THREE.CanvasTexture[]} */
+ let renderer, scene, camera, mesh, material;
  let textures = [];
  let isMounted = true;
- /** @type {ReturnType<typeof createSuspendedRaf>|null} */
  let loop = null;
 
  const getCanvasSize = () => {
- if (typeof window === 'undefined') return 599;
- if (window.innerWidth < 640) return 320;
- if (window.innerWidth < 768) return 420;
- return 599;
+ if (typeof window === 'undefined') return canvasSizeProp;
+ const ratio = canvasSizeProp / 599;
+ if (window.innerWidth < 640) return Math.round(320 * ratio);
+ if (window.innerWidth < 768) return Math.round(420 * ratio);
+ return canvasSizeProp;
  };
 
  const canvasSize = getCanvasSize();
- const numSlices = 32;
  const reducedMotion = prefersReducedMotion();
- /** @param {THREE.CanvasTexture[]} canvasTextures */
  const init = (canvasTextures) => {
  if (!isMounted || !container) return;
 
  textures = canvasTextures;
+
+ container.style.width = `${canvasSize}px`;
+ container.style.height = `${canvasSize}px`;
 
  renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
  renderer.setSize(canvasSize, canvasSize);
@@ -122,7 +102,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  u_progress: { value: 0 },
  u_numSlices: { value: numSlices },
  u_resolution: { value: new THREE.Vector2(canvasSize, canvasSize) },
- u_gridSize: { value: 16.0 }, // Grid cell size in pixels
+ u_gridSize: { value: gridSize }, // Grid cell size in pixels
  u_reducedMotion: { value: reducedMotion ? 1 : 0 },
  },
  vertexShader: PixelTransitionVertex,
@@ -245,7 +225,7 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  loop.destroy();
  loop = null;
  }
-//  ScrollTrigger.getAll().forEach(t => t.kill());
+ ScrollTrigger.getAll().forEach(t => t.kill());
  if (renderer) {
  renderer.dispose();
  renderer.forceContextLoss();
@@ -255,12 +235,12 @@ export default function PixelScrollCanvas({ wrapperRef }) {
  container.innerHTML ='';
  }
  };
- }, [wrapperRef]);
+ }, [wrapperRef, gridSize, numSlices, canvasSizeProp]);
 
  return (
  <div
  ref={containerRef}
- className="h-[599px] w-[599px] max-[1025px]:h-[420px] max-[1025px]:w-[420px] max-md:h-[320px] max-md:w-[320px] max-md:-translate-y-20 border-r border-t border-black/20"
+ className="max-md:-translate-y-20 border-r border-t border-black/20"
  />
  );
 }

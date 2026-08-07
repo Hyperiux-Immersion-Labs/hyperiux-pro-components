@@ -4,10 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useLenis } from "lenis/react";
 import gsap from "gsap";
-
-const prefersReducedMotion = () =>
-  typeof window !== "undefined" &&
-  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+import { prefersReducedMotion } from "@/lib/motion";
 
 const vertexShader = /* glsl */ `
  uniform float uFold;
@@ -76,32 +73,24 @@ const fragmentShader = /* glsl */ `
  }
 `;
 
-/** @type {(v: number, lo: number, hi: number) => number} */
 const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
-/** @type {(n: number, m: number) => number} */
 const mod = (n, m) => ((n % m) + m) % m;
 
-/**
- * @param {string} src
- * @returns {string}
- */
 function getMediaProxyUrl(src) {
   return src;
 }
 
-/**
- * @typedef {Object} WebGLSliderImage
- * @property {string} src
- * @property {string} text
- */
-
-/** @param {{ images?: WebGLSliderImage[] }} props */
-function WebGLSliderComp({ images = [] }) {
-  const containerRef = useRef(/** @type {HTMLDivElement | null} */ (null));
+function WebGLSliderComp({
+  images = [],
+  distortionStrength = 1,
+  transitionDuration = 0.6,
+  enableHoverEffect = true,
+}) {
+  const containerRef = useRef(null);
   const scrollRef = useRef(0);
   const lastScroll = useRef(0);
-  const scrollTimeout = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
-  const lenisResumeTimeout = useRef(/** @type {ReturnType<typeof setTimeout> | null} */ (null));
+  const scrollTimeout = useRef(null);
+  const lenisResumeTimeout = useRef(null);
   const isSnapping = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -118,20 +107,17 @@ function WebGLSliderComp({ images = [] }) {
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
-    /** @param {MediaQueryList | MediaQueryListEvent} event */
     const syncReducedMotion = (event) => {
-      const matches =
-        "matches" in event ? event.matches : event.currentTarget?.matches ?? prefersReducedMotion();
-      setReduceMotion(matches);
+      setReduceMotion("matches" in event ? event.matches : prefersReducedMotion());
     };
 
-    if (mediaQuery) {
-      syncReducedMotion(mediaQuery);
-      mediaQuery.addEventListener("change", syncReducedMotion);
-      return () => mediaQuery.removeEventListener("change", syncReducedMotion);
-    }
+    // Without matchMedia there is no preference to read, and the default
+    // (motion on) already matches what prefersReducedMotion() reports.
+    if (!mediaQuery) return;
 
-    setReduceMotion(prefersReducedMotion());
+    syncReducedMotion(mediaQuery);
+    mediaQuery.addEventListener("change", syncReducedMotion);
+    return () => mediaQuery.removeEventListener("change", syncReducedMotion);
   }, []);
 
   // Optional: if a Lenis instance exists somewhere in the tree, use it to
@@ -190,7 +176,7 @@ function WebGLSliderComp({ images = [] }) {
            
             gsap.to(obj, {
               y: targetScroll,
-              duration: reduceMotion ? 0.15 : 0.6,
+              duration: reduceMotion ? 0.15 : transitionDuration,
               ease: reduceMotion ? "power1.out" : "power2.inOut",
               onUpdate: () => {
                 window.scrollTo(0, obj.y);
@@ -210,7 +196,7 @@ function WebGLSliderComp({ images = [] }) {
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
       if (lenisResumeTimeout.current) clearTimeout(lenisResumeTimeout.current);
     };
-  }, [lenis, reduceMotion]);
+  }, [lenis, reduceMotion, transitionDuration]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -227,7 +213,6 @@ function WebGLSliderComp({ images = [] }) {
 
     const mouse = new THREE.Vector2(-100, -100);
 
-    /** @param {MouseEvent} event */
     const onMouseMove = (event) => {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -235,7 +220,9 @@ function WebGLSliderComp({ images = [] }) {
 
     // Reduced motion: the pointer only drives the hover bend, which is
     // disabled below, so there is nothing to track.
-    if (!reduceMotion) {
+    const hoverEnabled = enableHoverEffect && !reduceMotion;
+
+    if (hoverEnabled) {
       window.addEventListener("mousemove", onMouseMove);
     }
 
@@ -282,9 +269,7 @@ function WebGLSliderComp({ images = [] }) {
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin("anonymous");
 
-    /** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>[]} */
     const meshes = [];
-    /** @type {THREE.Texture[]} */
     const textures = [];
 
     const geo = new THREE.PlaneGeometry(CARD_W, CARD_H, 64, 64);
@@ -318,10 +303,9 @@ function WebGLSliderComp({ images = [] }) {
           texture.needsUpdate = true;
 
           if (texture.image) {
-            const img = /** @type {any} */ (texture.image);
             mat.uniforms.uImageSize.value.set(
-              img.width || img.videoWidth || 1,
-              img.height || img.videoHeight || 1
+              texture.image.width || texture.image.videoWidth || 1,
+              texture.image.height || texture.image.videoHeight || 1
             );
           }
         },
@@ -348,7 +332,6 @@ function WebGLSliderComp({ images = [] }) {
 
     document.body.style.height = `${total * 100 + 100}vh`;
 
-    /** @type {number} */
     let rafId;
 
     const targetUv = new THREE.Vector2();
@@ -472,7 +455,7 @@ function WebGLSliderComp({ images = [] }) {
 
         // Reduced motion: no pointer-following bend — uHover stays at 0, so
         // the card surface is unaffected by the cursor.
-        if (!reduceMotion) {
+        if (hoverEnabled) {
           mesh.material.uniforms.uHoverPos.value.lerp(targetUv, 0.15);
 
           const isMouseOffscreen = mouse.x < -10 || mouse.y < -10;
@@ -480,6 +463,9 @@ function WebGLSliderComp({ images = [] }) {
 
           mesh.material.uniforms.uHover.value +=
             (hoverTarget - mesh.material.uniforms.uHover.value) * 0.1;
+        } else if (mesh.material.uniforms.uHover.value !== 0) {
+          mesh.material.uniforms.uHover.value +=
+            (0.0 - mesh.material.uniforms.uHover.value) * 0.15;
         }
 
         if (!isVisible) {
@@ -494,7 +480,7 @@ function WebGLSliderComp({ images = [] }) {
 
         // Reduced motion: keep `fold` driving text offset/spacing exactly as
         // in normal mode, only mute the GPU curl/bend deformation.
-        mesh.material.uniforms.uFold.value = reduceMotion ? 0.0 : fold;
+        mesh.material.uniforms.uFold.value = reduceMotion ? 0.0 : fold * distortionStrength;
 
         if (textEl) {
           if (textEl.style.display === "none") {
@@ -574,7 +560,7 @@ function WebGLSliderComp({ images = [] }) {
 
       document.body.style.height = "";
     };
-  }, [images, isMobile, reduceMotion]);
+  }, [images, isMobile, reduceMotion, distortionStrength, enableHoverEffect]);
 
   if (isMobile) {
     return (

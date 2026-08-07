@@ -54,7 +54,17 @@ const cards = [
     },
 ];
 
-const HoverStack = () => {
+const HoverStack = ({
+    cardWidth = 280,
+    cardHeight = 360,
+    overlap = 96,
+    pushDistance = 235,
+    hoverLift = 30,
+    spread = 24,
+    rotation = 7,
+    duration = 0.35,
+    accentColor = "transparent",
+}) => {
     return (
         <>
 
@@ -72,11 +82,15 @@ const HoverStack = () => {
 
                 <HoverStackComp
                     cards={cards}
-                    cardWidth={280}
-                    cardHeight={360}
-                    overlap={96}
-                    pushDistance={235}
-                    hoverLift={30}
+                    cardWidth={cardWidth}
+                    cardHeight={cardHeight}
+                    overlap={overlap}
+                    pushDistance={pushDistance}
+                    hoverLift={hoverLift}
+                    spread={spread}
+                    rotation={rotation}
+                    duration={duration}
+                    accentColor={accentColor}
                 />
             </section>
         </>

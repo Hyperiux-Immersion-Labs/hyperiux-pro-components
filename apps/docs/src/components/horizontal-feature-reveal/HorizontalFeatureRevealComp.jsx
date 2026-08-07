@@ -8,7 +8,13 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const defaultPropertiesData = [];
 
-export default function HorizontalScrollComp({ propertiesData = defaultPropertiesData }) {
+export default function HorizontalScrollComp({
+  propertiesData = defaultPropertiesData,
+  bgColor = "#ffffff",
+  imageScale = 1.4,
+  imageParallaxRange = 30,
+  cardGap = 15,
+}) {
   const uid = useId().replace(/:/g, "");
   const sectionId = `industries-${uid}`;
 
@@ -213,7 +219,7 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
           }
 
           gsap.to(propertyImg, {
-            translateX: "30%",
+            translateX: `${imageParallaxRange}%`,
             ease: "none",
             scrollTrigger: {
               trigger: `#${sectionId}`,
@@ -230,19 +236,23 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
     });
 
     return () => ctx.revert();
-  }, [propertiesData, sectionId]);
+  }, [propertiesData, sectionId, imageParallaxRange]);
 
 
   return (
     <section
-      className="w-screen h-[600vh] bg-white text-black relative z-10 max-[1025px]:mt-0 max-[1025px]:h-fit max-[1025px]:py-[15%] max-[1025px]:px-[7vw]"
+      className="w-screen h-[600vh] text-black relative z-10 max-[1025px]:mt-0 max-[1025px]:h-fit max-[1025px]:py-[15%] max-[1025px]:px-[7vw]"
+      style={{ backgroundColor: bgColor }}
       id={sectionId}
     >
 
       <div className="w-screen  overflow-hidden h-screen justify-center items-center sticky top-0 max-[1025px]:static max-[1025px]:w-full max-[1025px]:h-fit max-[1025px]:flex max-[1025px]:flex-col max-[1025px]:items-start">
 
 
-        <div className="flex flex-nowrap w-fit industry-container gap-[15vw] max-[1025px]:flex-col max-[1025px]:gap-[10vw] max-md:gap-[15vw]">
+        <div
+          className="flex flex-nowrap w-fit industry-container gap-(--card-gap) max-[1025px]:flex-col max-[1025px]:gap-[10vw] max-md:gap-[15vw]"
+          style={{ "--card-gap": `${cardGap}vw` }}
+        >
           {propertiesData.map((property, index) => (
             <div
               key={index}
@@ -253,7 +263,8 @@ export default function HorizontalScrollComp({ propertiesData = defaultPropertie
                 <img
                   src={property.image}
                   alt={`property-img-${index + 1}`}
-                  className={`w-full h-full scale-[1.4] translate-x-[-30%] opacity-0 industry-img industry-${property.imgClass} max-[1025px]:translate-x-0 max-[1025px]:scale-[1] max-[1025px]:object-cover max-[1025px]:opacity-100`}
+                  className={`w-full h-full scale-(--image-scale) translate-x-(--image-shift-start) opacity-0 industry-img industry-${property.imgClass} max-[1025px]:translate-x-0 max-[1025px]:scale-[1] max-[1025px]:object-cover max-[1025px]:opacity-100`}
+                  style={{ "--image-scale": imageScale, "--image-shift-start": `-${imageParallaxRange}%` }}
                   width={500}
                   height={1080}
                 />

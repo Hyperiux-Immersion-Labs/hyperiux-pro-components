@@ -87,14 +87,13 @@ export const BeamBorder = forwardRef(function BeamBorder(
     size = 'md',
     colorVariant = 'sunset',
     theme = 'light',
-    staticColors = false,
     duration,
     active = true,
     borderRadius: customBorderRadius,
     brightness: brightnessProp,
     saturation,
-    hueRange = 30,
     strength = 1,
+    beamWidth,
     className,
     style,
     onActivate,
@@ -239,17 +238,18 @@ export const BeamBorder = forwardRef(function BeamBorder(
   // Falls back to 0 only for the pre-detection frame.
   const radius = customBorderRadius ?? autoRadius ?? 0;
   const cycle = duration ?? (size === 'line' ? 3.1 : isBreathe ? 2.3 : 1.96);
+  const finalBorderWidth = beamWidth ?? dims.borderWidth;
   const sat = saturation ?? finish.saturation;
   const bright = brightnessProp ?? finish.brightness ?? 1.3;
-  const hueSpan = size === 'line' ? Math.min(hueRange, 13) : hueRange;
-  const frozen = colorVariant === 'mono' ? true : staticColors;
+  const hueSpan = size === 'line' ? 13 : 30;
+  const frozen = colorVariant === 'mono';
 
   const instanceCSS = useMemo(
     () =>
       buildRimCSS({
         id,
         borderRadius: radius,
-        borderWidth: dims.borderWidth,
+        borderWidth: finalBorderWidth,
         duration: cycle,
         strokeOpacity: finish.strokeOpacity,
         innerOpacity: finish.innerOpacity,
@@ -267,7 +267,7 @@ export const BeamBorder = forwardRef(function BeamBorder(
     [
       id,
       radius,
-      dims.borderWidth,
+      finalBorderWidth,
       cycle,
       finish.strokeOpacity,
       finish.innerOpacity,

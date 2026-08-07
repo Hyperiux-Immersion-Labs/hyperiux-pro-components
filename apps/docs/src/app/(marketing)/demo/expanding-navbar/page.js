@@ -1,14 +1,11 @@
-import ExpandingNavbar from '@/components/expanding-navbar'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/navigation/expanding-navbar/registry.json";
 
-
-const Page = () => {
-  return (
-    <ExpandingNavbar />
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="expanding-navbar" />;
 }
 
-export default Page
 export async function generateMetadata() {
   return getDemoPageMetadata("expanding-navbar");
 }

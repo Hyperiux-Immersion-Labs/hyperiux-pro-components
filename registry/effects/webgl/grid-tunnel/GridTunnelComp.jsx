@@ -25,6 +25,46 @@ const SCROLL_DAMPING = 7; // higher = stops sooner
 const CAMERA_FOLLOW = 10; // higher = follows target more tightly
 const MAX_SCROLL_VELOCITY = 2.0;
 
+const DEFAULT_GRID_SIZE = 24;
+const DEFAULT_DEPTH = 1000;
+const DEFAULT_LINE_COLOR = "#9ca3af";
+const DEFAULT_BACKGROUND_COLOR = "#ffffff";
+
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return THREE.MathUtils.clamp(number, min, max);
+}
+
+function resolveTunnelConfig({
+  gridSize = DEFAULT_GRID_SIZE,
+  speed = 1,
+  depth = DEFAULT_DEPTH,
+  lineColor = DEFAULT_LINE_COLOR,
+  backgroundColor = DEFAULT_BACKGROUND_COLOR,
+}) {
+  const resolvedGridSize = Math.round(
+    clampNumber(gridSize, 6, 48, DEFAULT_GRID_SIZE)
+  );
+  const resolvedDepth = clampNumber(depth, 100, 3000, DEFAULT_DEPTH);
+
+  return {
+    gridX: Math.max(2, Math.round(resolvedGridSize / 3)),
+    gridY: Math.max(2, Math.round(resolvedGridSize / 5)),
+    gridZ: Math.max(8, Math.round(resolvedGridSize * 1.5)),
+    tunnelDepth: TUNNEL_DEPTH,
+    scrollSpeed: SCROLL_SPEED * clampNumber(speed, 0, 5, 1),
+    maxScrollVelocity: MAX_SCROLL_VELOCITY * Math.max(clampNumber(speed, 0, 5, 1), 0.2),
+    lineColor: typeof lineColor === "string" && lineColor ? lineColor : DEFAULT_LINE_COLOR,
+    backgroundColor:
+      typeof backgroundColor === "string" && backgroundColor
+        ? backgroundColor
+        : DEFAULT_BACKGROUND_COLOR,
+    fogFar: THREE.MathUtils.mapLinear(resolvedDepth, 100, 3000, 38, 180),
+    cameraFar: Math.max(1000, resolvedDepth + 120),
+  };
+}
+
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -39,7 +79,6 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-/** @param {number} seed */
 function seededRandom(seed) {
   let value = seed;
 
@@ -49,8 +88,7 @@ function seededRandom(seed) {
   };
 }
 
-/** @param {{points: [number, number, number][]}} props */
-function Line({ points }) {
+function Line({ points, color }) {
   const geometry = useMemo(() => {
     const g = new THREE.BufferGeometry();
     g.setFromPoints(points.map((p) => new THREE.Vector3(...p)));
@@ -66,9 +104,9 @@ function Line({ points }) {
   }, [geometry]);
 
   return (
-    <line {...(/** @type {any} */ ({ geometry }))}>
+    <line geometry={geometry}>
       <lineBasicMaterial
-        color="#e5e5e5"
+        color={color}
         transparent
         opacity={0.9}
         depthWrite={false}
@@ -77,18 +115,18 @@ function Line({ points }) {
   );
 }
 
-function GridChunkContent() {
+function GridChunkContent({ config }) {
   const lines = useMemo(() => {
-    const items = /** @type {{points: [number, number, number][]}[]} */ ([]);
+    const items = [];
 
     const halfW = TUNNEL_WIDTH / 2;
     const halfH = TUNNEL_HEIGHT / 2;
 
-    const cellW = TUNNEL_WIDTH / GRID_X;
-    const cellH = TUNNEL_HEIGHT / GRID_Y;
-    const cellD = TUNNEL_DEPTH / GRID_Z;
+    const cellW = TUNNEL_WIDTH / config.gridX;
+    const cellH = TUNNEL_HEIGHT / config.gridY;
+    const cellD = config.tunnelDepth / config.gridZ;
 
-    for (let zi = 0; zi <= GRID_Z; zi++) {
+    for (let zi = 0; zi <= config.gridZ; zi++) {
       const z = -zi * cellD;
 
       items.push(
@@ -99,7 +137,7 @@ function GridChunkContent() {
       );
     }
 
-    for (let xi = 0; xi <= GRID_X; xi++) {
+    for (let xi = 0; xi <= config.gridX; xi++) {
       const x = -halfW + xi * cellW;
 
       items.push(
@@ -108,7 +146,7 @@ function GridChunkContent() {
       );
     }
 
-    for (let yi = 0; yi <= GRID_Y; yi++) {
+    for (let yi = 0; yi <= config.gridY; yi++) {
       const y = -halfH + yi * cellH;
 
       items.push(
@@ -118,19 +156,18 @@ function GridChunkContent() {
     }
 
     return items;
-  }, []);
+  }, [config]);
 
   return (
     <>
       {lines.map((line, index) => (
-        <Line key={index} points={line.points} />
+        <Line key={index} points={line.points} color={config.lineColor} />
       ))}
     </>
   );
 }
 
-/** @param {{images: string[], slotIndex: number}} props */
-function ImageChunkContent({ images, slotIndex }) {
+function ImageChunkContent({ images, slotIndex, config }) {
   const { viewport, size } = useThree();
   const canvasWidth = size?.width ?? 0;
 
@@ -140,9 +177,9 @@ function ImageChunkContent({ images, slotIndex }) {
     const halfW = TUNNEL_WIDTH / 2;
     const halfH = TUNNEL_HEIGHT / 2;
 
-    const cellW = TUNNEL_WIDTH / GRID_X;
-    const cellH = TUNNEL_HEIGHT / GRID_Y;
-    const cellD = TUNNEL_DEPTH / GRID_Z;
+    const cellW = TUNNEL_WIDTH / config.gridX;
+    const cellH = TUNNEL_HEIGHT / config.gridY;
+    const cellD = config.tunnelDepth / config.gridZ;
 
     const pxToWorld = canvasWidth ? viewport.width / canvasWidth : 0.01;
 
@@ -158,17 +195,14 @@ function ImageChunkContent({ images, slotIndex }) {
 
     return Array.from({ length: IMAGE_COUNT_PER_CHUNK }).map((_, i) => {
       const side = Math.floor(random() * 4);
-      const zi = Math.floor(random() * (GRID_Z - 2));
+      const zi = Math.floor(random() * (config.gridZ - 2));
 
-      /** @type {[number, number, number]} */
       let position = [0, 0, 0];
-      /** @type {[number, number, number]} */
       let rotation = [0, 0, 0];
-      /** @type {[number, number, number]} */
       let scale = [1, 1, 1];
 
       if (side === 0) {
-        const yi = Math.floor(random() * GRID_Y);
+        const yi = Math.floor(random() * config.gridY);
         const y = -halfH + yi * cellH + cellH / 2;
         const z = -zi * cellD - cellD / 2;
 
@@ -183,7 +217,7 @@ function ImageChunkContent({ images, slotIndex }) {
       }
 
       if (side === 1) {
-        const yi = Math.floor(random() * GRID_Y);
+        const yi = Math.floor(random() * config.gridY);
         const y = -halfH + yi * cellH + cellH / 2;
         const z = -zi * cellD - cellD / 2;
 
@@ -198,7 +232,7 @@ function ImageChunkContent({ images, slotIndex }) {
       }
 
       if (side === 2) {
-        const xi = Math.floor(random() * GRID_X);
+        const xi = Math.floor(random() * config.gridX);
         const x = -halfW + xi * cellW + cellW / 2;
         const z = -zi * cellD - cellD / 2;
 
@@ -213,7 +247,7 @@ function ImageChunkContent({ images, slotIndex }) {
       }
 
       if (side === 3) {
-        const xi = Math.floor(random() * GRID_X);
+        const xi = Math.floor(random() * config.gridX);
         const x = -halfW + xi * cellW + cellW / 2;
         const z = -zi * cellD - cellD / 2;
 
@@ -235,21 +269,19 @@ function ImageChunkContent({ images, slotIndex }) {
         scale,
       };
     });
-  }, [canvasWidth, images, slotIndex, viewport.width]);
+  }, [canvasWidth, config, images, slotIndex, viewport.width]);
 
   return (
     <>
       {panels.map((panel) => (
         <Suspense key={panel.id} fallback={null}>
           <Image
-            {...(/** @type {any} */ ({
-              alt: "panel",
-              url: panel.url,
-              position: panel.position,
-              rotation: panel.rotation,
-              scale: panel.scale,
-              toneMapped: false,
-            }))}
+            alt="panel"
+            url={panel.url}
+            position={panel.position}
+            rotation={panel.rotation}
+            scale={panel.scale}
+            toneMapped={false}
           />
         </Suspense>
       ))}
@@ -257,13 +289,12 @@ function ImageChunkContent({ images, slotIndex }) {
   );
 }
 
-/** @param {{images: string[], slotIndex: number}} props */
-function TunnelChunk({ images, slotIndex }) {
-  const group = useRef(/** @type {THREE.Group|null} */ (null));
+function TunnelChunk({ images, slotIndex, config }) {
+  const group = useRef();
   const { camera } = useThree();
 
-  const initialZ = TUNNEL_START_Z - slotIndex * TUNNEL_DEPTH;
-  const totalLoopDepth = TUNNEL_DEPTH * VISIBLE_CHUNKS;
+  const initialZ = TUNNEL_START_Z - slotIndex * config.tunnelDepth;
+  const totalLoopDepth = config.tunnelDepth * VISIBLE_CHUNKS;
 
   useFrame(() => {
     if (!group.current) return;
@@ -284,14 +315,13 @@ function TunnelChunk({ images, slotIndex }) {
 
   return (
     <group ref={group} position={[0, 0, initialZ]}>
-      <GridChunkContent />
-      <ImageChunkContent images={images} slotIndex={slotIndex} />
+      <GridChunkContent config={config} />
+      <ImageChunkContent images={images} slotIndex={slotIndex} config={config} />
     </group>
   );
 }
 
-/** @param {{images: string[]}} props */
-function InfiniteTunnelWorld({ images }) {
+function InfiniteTunnelWorld({ images, config }) {
   const chunks = useMemo(() => {
     return Array.from({ length: VISIBLE_CHUNKS }, (_, i) => i);
   }, []);
@@ -299,22 +329,20 @@ function InfiniteTunnelWorld({ images }) {
   return (
     <>
       {chunks.map((slotIndex) => (
-        <TunnelChunk key={slotIndex} images={images} slotIndex={slotIndex} />
+        <TunnelChunk key={slotIndex} images={images} slotIndex={slotIndex} config={config} />
       ))}
     </>
   );
 }
 
-function InfiniteScrollCamera() {
+function InfiniteScrollCamera({ config }) {
   const { camera } = useThree();
-  const cameraRef = useRef(/** @type {THREE.Camera|null} */ (null));
+  const cameraRef = useRef(null);
   const targetZ = useRef(CAMERA_START_Z);
   const scrollVelocity = useRef(0);
   const reduceMotionRef = useRef(
-    /** @type {boolean} */ (
-      typeof window !== "undefined" &&
-        window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
-    )
+    typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
   );
   const touchState = useRef({
     active: false,
@@ -326,10 +354,18 @@ function InfiniteScrollCamera() {
   }, [camera]);
 
   useEffect(() => {
+    if (config.scrollSpeed > 0) return;
+    scrollVelocity.current = 0;
+    if (cameraRef.current) {
+      targetZ.current = cameraRef.current.position.z;
+    }
+  }, [config.scrollSpeed]);
+
+  useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
 
-    const onChange = (/** @type {MediaQueryListEvent} */ event) => {
+    const onChange = (event) => {
       reduceMotionRef.current = event.matches;
       if (event.matches) {
         scrollVelocity.current = 0;
@@ -342,7 +378,7 @@ function InfiniteScrollCamera() {
   }, []);
 
   useEffect(() => {
-    const applyDelta = (/** @type {number} */ delta) => {
+    const applyDelta = (delta) => {
       if (reduceMotionRef.current) {
         // Reduced-motion: move instantly — no velocity coast.
         scrollVelocity.current = 0;
@@ -351,8 +387,8 @@ function InfiniteScrollCamera() {
         scrollVelocity.current += delta;
         scrollVelocity.current = THREE.MathUtils.clamp(
           scrollVelocity.current,
-          -MAX_SCROLL_VELOCITY,
-          MAX_SCROLL_VELOCITY
+          -config.maxScrollVelocity,
+          config.maxScrollVelocity
         );
       }
 
@@ -362,19 +398,19 @@ function InfiniteScrollCamera() {
       }
     };
 
-    const preventPageScroll = (/** @type {WheelEvent} */ event) => {
+    const preventPageScroll = (event) => {
       event.preventDefault();
-      applyDelta(-event.deltaY * SCROLL_SPEED);
+      applyDelta(-event.deltaY * config.scrollSpeed);
     };
 
-    const onTouchStart = (/** @type {TouchEvent} */ event) => {
+    const onTouchStart = (event) => {
       const touch = event.touches?.[0];
       if (!touch) return;
       touchState.current.active = true;
       touchState.current.lastY = touch.clientY;
     };
 
-    const onTouchMove = (/** @type {TouchEvent} */ event) => {
+    const onTouchMove = (event) => {
       const touch = event.touches?.[0];
       if (!touch || !touchState.current.active) return;
 
@@ -383,7 +419,7 @@ function InfiniteScrollCamera() {
       const deltaY = touch.clientY - touchState.current.lastY;
       touchState.current.lastY = touch.clientY;
 
-      applyDelta(deltaY * SCROLL_SPEED);
+      applyDelta(deltaY * config.scrollSpeed);
     };
 
     const onTouchEnd = () => {
@@ -403,7 +439,7 @@ function InfiniteScrollCamera() {
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("touchcancel", onTouchEnd);
     };
-  }, []);
+  }, [config]);
 
   const lastFrameTimeRef = useRef(
     typeof performance !== "undefined" ? performance.now() : 0
@@ -478,17 +514,16 @@ function InfiniteScrollCamera() {
   return null;
 }
 
-/** @param {{images: string[]}} props */
-function Scene({ images }) {
+function Scene({ images, config }) {
   return (
     <>
-      <color attach="background" args={["#ffffff"]} />
-      <fog attach="fog" args={["#ffffff", 22, 92]} />
+      <color attach="background" args={[config.backgroundColor]} />
+      <fog attach="fog" args={[config.backgroundColor, 22, config.fogFar]} />
 
       <ambientLight intensity={2.4} />
 
-      <InfiniteScrollCamera />
-      <InfiniteTunnelWorld images={images} />
+      <InfiniteScrollCamera config={config} />
+      <InfiniteTunnelWorld images={images} config={config} />
     </>
   );
 }
@@ -504,18 +539,28 @@ function FooterMark() {
   );
 }
 
-/**
- * @typedef {Object} GridTunnelCompProps
- * @property {string[]} [images]
- */
-
-/** @param {GridTunnelCompProps} props */
-export default function GridTunnelComp({ images = [] }) {
-  const rootRef = useRef(/** @type {HTMLElement|null} */ (null));
-  const [frameloop, setFrameloop] = useState(
-    /** @type {'always'|'never'|'demand'} */ ("always")
-  );
+export default function GridTunnelComp({
+  images = [],
+  gridSize = DEFAULT_GRID_SIZE,
+  speed = 1,
+  depth = DEFAULT_DEPTH,
+  lineColor = DEFAULT_LINE_COLOR,
+  backgroundColor = DEFAULT_BACKGROUND_COLOR,
+}) {
+  const rootRef = useRef(null);
+  const [frameloop, setFrameloop] = useState("always");
   const reducedMotion = usePrefersReducedMotion();
+  const config = useMemo(
+    () =>
+      resolveTunnelConfig({
+        gridSize,
+        speed,
+        depth,
+        lineColor,
+        backgroundColor,
+      }),
+    [backgroundColor, depth, gridSize, lineColor, speed]
+  );
   const fallbackImages = [
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
@@ -568,7 +613,7 @@ export default function GridTunnelComp({ images = [] }) {
   ];
   // Validate image URLs on the client before passing to the three.js Image loader.
   // This prevents CORS/network failures from flooding the loader with bad URLs.
-  const [validatedImages, setValidatedImages] = useState(/** @type {string[]} */ ([]));
+  const [validatedImages, setValidatedImages] = useState([]);
   const [validating, setValidating] = useState(true);
 
   useEffect(() => {
@@ -584,10 +629,6 @@ export default function GridTunnelComp({ images = [] }) {
     let mounted = true;
     const list = images && images.length > 0 ? images : fallbackImages;
 
-    /**
-     * @param {string} url
-     * @returns {Promise<{ok: boolean, url: string}>}
-     */
     const validateUrl = (url) =>
       new Promise((res) => {
         try {
@@ -627,9 +668,9 @@ export default function GridTunnelComp({ images = [] }) {
     (async () => {
       try {
         const results = await Promise.allSettled(list.map((u) => validateUrl(u)));
-        const valids = /** @type {PromiseFulfilledResult<{ok: boolean, url: string}>[]} */ (
-          results.filter((r) => r.status === "fulfilled" && r.value && r.value.ok)
-        ).map((r) => r.value.url);
+        const valids = results
+          .filter((r) => r.status === "fulfilled" && r.value && r.value.ok)
+          .map((r) => r.value.url);
 
         if (!mounted) return;
         setValidatedImages(valids);
@@ -646,7 +687,11 @@ export default function GridTunnelComp({ images = [] }) {
   const imageList = !validating && validatedImages && validatedImages.length > 0 ? validatedImages : images.length > 0 ? images : fallbackImages;
 
   return (
-    <section ref={rootRef} className="relative h-screen w-full overflow-hidden bg-white">
+    <section
+      ref={rootRef}
+      className="relative h-screen w-full overflow-hidden"
+      style={{ backgroundColor: config.backgroundColor }}
+    >
       <Canvas
         aria-hidden="true"
         frameloop={frameloop}
@@ -654,7 +699,7 @@ export default function GridTunnelComp({ images = [] }) {
           position: [0, 0, CAMERA_START_Z],
           fov: 72,
           near: 0.1,
-          far: 1000,
+          far: config.cameraFar,
         }}
         gl={{
           antialias: true,
@@ -664,10 +709,10 @@ export default function GridTunnelComp({ images = [] }) {
         dpr={[1, 1.5]}
         onCreated={({ gl }) => {
           // Avoid a black flash on reload before the scene background is applied.
-          gl.setClearColor("#ffffff", 1);
+          gl.setClearColor(config.backgroundColor, 1);
         }}
       >
-        <Scene images={imageList} />
+        <Scene images={imageList} config={config} />
         <Preload all />
       </Canvas>
        <FooterMark />

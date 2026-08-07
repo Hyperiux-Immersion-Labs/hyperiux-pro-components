@@ -20,11 +20,21 @@ const PAIR_FADE_MS = 260;
 const TRANSLATE_UP_MS = 820;
 const HOLD_END_MS = 260;
 
+function clampNumber(value, min, max, fallback) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return fallback;
+    return Math.min(max, Math.max(min, numeric));
+}
+
 export default function CenterLinesLoading(
     {
         lineCount = DEFAULT_LINE_COUNT,
         title = "Build better interfaces",
         subtitle = "Hyperiux Vault",
+        duration = 1,
+        lineHeight = 1,
+        darkLineColor = "#ffffff",
+        fadeOutDuration = 0.5,
         onComplete,
     } = {}
 ) {
@@ -38,6 +48,9 @@ export default function CenterLinesLoading(
     const tlRef = useRef(null);
     const layoutRef = useRef({ y: [], coneScale: [] });
     const [done, setDone] = useState(false);
+    const safeDuration = clampNumber(duration, 0.25, 3, 1);
+    const safeLineHeight = clampNumber(lineHeight, 1, 12, 1);
+    const safeFadeOutDuration = clampNumber(fadeOutDuration, 0.1, 3, 0.5);
 
     const recomputeLayout = useCallback((lineCount) => {
         const el = containerRef.current;
@@ -124,6 +137,7 @@ export default function CenterLinesLoading(
                 },
             });
             tlRef.current = tl;
+            tl.timeScale(1 / safeDuration);
 
             tl.to(lines, {
                 opacity: 1,
@@ -134,7 +148,7 @@ export default function CenterLinesLoading(
                 lines,
                 {
                     opacity: 0,
-                    duration: 0.45,
+                    duration: safeFadeOutDuration,
                     stagger: { each: 0.015, from: "edges" },
                 },
                 "+=0.35"
@@ -177,6 +191,7 @@ export default function CenterLinesLoading(
             },
         });
         tlRef.current = tl;
+        tl.timeScale(1 / safeDuration);
 
         const mid = (count - 1) / 2;
         const orderIdx = Array.from({ length: count }, (_, i) => i).sort((a, b) => {
@@ -216,7 +231,7 @@ export default function CenterLinesLoading(
         // Fade top+bottom lines in synchronous pairs, leaving only the middle line.
         const midIdx = Math.floor((count - 1) / 2);
         const pairCount = midIdx;
-        const pairFadeDur = PAIR_FADE_MS / 1000;
+        const pairFadeDur = safeFadeOutDuration;
         const pairGap = 0.045;
         for (let k = 0; k < pairCount; k++) {
             const a = k;
@@ -242,8 +257,8 @@ export default function CenterLinesLoading(
             { opacity: 0, duration: TRANSLATE_UP_MS / 1000 + 0.25 },
             revealStart + 0.14
         );
-        tl.to(linesWrapRef.current, { opacity: 0, duration: 0.22 }, revealStart + 0.06);
-        tl.to(lines[midIdx], { opacity: 0, duration: 0.22 }, revealStart + 0.06);
+        tl.to(linesWrapRef.current, { opacity: 0, duration: safeFadeOutDuration }, revealStart + 0.06);
+        tl.to(lines[midIdx], { opacity: 0, duration: safeFadeOutDuration }, revealStart + 0.06);
 
         tl.to(
             wordEls,
@@ -267,7 +282,7 @@ export default function CenterLinesLoading(
             revealStart + 0.32
         );
         tl.to({}, { duration: Math.max(0, HOLD_END_MS / 1000) }, revealStart + TRANSLATE_UP_MS / 1000);
-    }, [heroWords.length, lineCount, onComplete, recomputeLayout]);
+    }, [heroWords.length, lineCount, onComplete, recomputeLayout, safeDuration, safeFadeOutDuration]);
 
     useEffect(() => {
         const el = containerRef.current;
@@ -332,8 +347,8 @@ export default function CenterLinesLoading(
                     <div
                         key={i}
                         ref={(el) => (lineRefs.current[i] = el)}
-                        className="absolute left-1/2 top-0 h-px w-full origin-center bg-white/60 will-change-transform"
-                        style={{ height: LINE_H }}
+                        className="absolute left-1/2 top-0 w-full origin-center will-change-transform"
+                        style={{ height: safeLineHeight, backgroundColor: darkLineColor }}
                     />
                 ))}
             </div>

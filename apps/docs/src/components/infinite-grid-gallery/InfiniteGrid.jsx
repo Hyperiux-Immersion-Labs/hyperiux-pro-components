@@ -1,19 +1,37 @@
 import { createSuspendedRaf } from "./createSuspendedRaf";
 
+function clampNumber(value, min, max, fallback) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return fallback;
+    return Math.min(Math.max(number, min), max);
+}
+
 export default class InfiniteGrid {
-    constructor({ el, sources, data, originalSize, onItemClick }) {
+    constructor({
+        el,
+        sources,
+        data,
+        originalSize,
+        onItemClick,
+        columns = 4,
+        gap = 44,
+        speed = 1,
+        imageScale = 1,
+    }) {
         this.$container = el;
         this.sources = sources;
         this.data = data;
         this.originalSize = originalSize;
         this.onItemClick = onItemClick;
         this.enabled = true;
+        this.speed = clampNumber(speed, 0.05, 5, 1);
+        this.imageScale = clampNumber(imageScale, 0.5, 2, 1);
 
         // Fixed grid layout (non-overlapping) like the reference.
         this.layout = {
-            cols: 4,
+            cols: Math.round(clampNumber(columns, 1, 8, 4)),
             rows: 3,
-            gap: 44,
+            gap: clampNumber(gap, 0, 100, 44),
             margin: 40,
             aspect: 3 / 4, // height = width * aspect (4:3 card)
         };
@@ -238,7 +256,7 @@ export default class InfiniteGrid {
     onWheel(e) {
         if (!this.enabled) return;
         e.preventDefault();
-        const factor = 0.9;
+        const factor = 0.9 * this.speed;
         this.scroll.target.x -= e.deltaX * factor;
         this.scroll.target.y -= e.deltaY * factor;
     }
@@ -314,8 +332,8 @@ export default class InfiniteGrid {
             if (!this.dragMoved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
                 this.dragMoved = true;
             }
-            this.scroll.target.x = this.drag.scrollX + dx;
-            this.scroll.target.y = this.drag.scrollY + dy;
+            this.scroll.target.x = this.drag.scrollX + dx * this.speed;
+            this.scroll.target.y = this.drag.scrollY + dy * this.speed;
         }
     }
 
@@ -369,7 +387,7 @@ export default class InfiniteGrid {
             item.el.style.transform = `translate(${fx}px, ${fy}px)`;
 
             // No parallax (keep a tiny scale for coverage).
-            item.img.style.transform = `translate(0px, 0px) scale(1.04)`;
+            item.img.style.transform = `translate(0px, 0px) scale(${1.04 * this.imageScale})`;
         });
 
         this.scroll.last.x = this.scroll.current.x;

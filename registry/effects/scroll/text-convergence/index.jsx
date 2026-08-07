@@ -15,9 +15,9 @@ const INTRO_FADE_DISTANCE = 120;
 const CHARACTER_SPLIT_TYPE = "chars,words";
 const CHARACTER_Y_PERCENT_MIN = -200;
 const CHARACTER_Y_PERCENT_MAX = 200;
-const CHARACTER_ROTATION_MIN = -20;
-const CHARACTER_ROTATION_MAX = 20;
 const CHARACTER_EASE = "elastic.out(1,0.8)";
+
+const TEXT = "Build faster. Animate better. Ship smarter. Hyperiux Vault gives you the tools to create high-performance interfaces that look premium and feel effortless.";
 
 // True when the user has asked the OS to minimise animation. Safe to call
 // during render - returns false on the server.
@@ -56,10 +56,11 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 /** @param {TextConvergenceProps} props */
 export default function TextConvergence({
-  text = "Build faster. Animate better. Ship smarter. Hyperiux Vault gives you the tools to create high-performance interfaces that look premium and feel effortless.",
-  bgColor = "bg-black",
-  textColor = "text-white",
+  bgColor = "#111111",
+  charRotation = 20,
 }) {
+  const text = TEXT;
+
   // State and refs
   const sectionRef = useRef(/** @type {HTMLDivElement|null} */ (null));
   const textRef = useRef(/** @type {HTMLHeadingElement|null} */ (null));
@@ -137,7 +138,7 @@ export default function TextConvergence({
             gsap.utils.random(CHARACTER_Y_PERCENT_MIN, CHARACTER_Y_PERCENT_MAX) *
             charScale,
           rotation:
-            gsap.utils.random(CHARACTER_ROTATION_MIN, CHARACTER_ROTATION_MAX) *
+            gsap.utils.random(-charRotation, charRotation) *
             charScale,
           ease: CHARACTER_EASE,
           scrollTrigger: {
@@ -154,18 +155,19 @@ export default function TextConvergence({
     return () => {
       context.revert();
     };
-  }, [text]);
+  }, [text, charRotation]);
 
   // Return
   return (
     <div
       ref={sectionRef}
-      className={`relative h-(--text-break-height) ${bgColor}`}
+      className="relative h-(--text-break-height)"
+      style={{ backgroundColor: bgColor }}
     >
       <div className="sticky top-0 flex h-screen items-center overflow-clip">
         <h3
           ref={textRef}
-          className={`flex w-max whitespace-nowrap gap-[4vw] pl-[100vw] font-sans! text-4xl font-bold leading-[1.1] tracking-tighter sm:text-6xl lg:text-8xl xl:text-9xl ${textColor}`}
+          className="flex w-max whitespace-nowrap gap-[4vw] pl-[100vw] font-sans! text-4xl font-bold leading-[1.1] tracking-tighter text-white sm:text-6xl lg:text-8xl xl:text-9xl"
         >
           {text}
         </h3>

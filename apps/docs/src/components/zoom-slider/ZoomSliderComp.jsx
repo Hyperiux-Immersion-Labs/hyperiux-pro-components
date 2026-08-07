@@ -30,6 +30,8 @@ export function ZoomSliderComp({
   sliderData,
   title,
   subheading,
+  scaleOnHover = true,
+  textOnHover = true,
 }) {
   const images = sliderData;
 
@@ -304,28 +306,29 @@ export function ZoomSliderComp({
       }
 
       const onEnter = () => {
-        if (reduceMotion) {
-          gsap.killTweensOf([textElement, split.lines]);
-          gsap.set(split.lines, { yPercent: 0 });
-          gsap.to(textElement, {
-            autoAlpha: 1,
-            duration: REDUCED_MOTION_FADE_DURATION,
-            ease: 'power2.out',
-          });
-          return;
+        if (textOnHover) {
+          if (reduceMotion) {
+            gsap.killTweensOf([textElement, split.lines]);
+            gsap.set(split.lines, { yPercent: 0 });
+            gsap.to(textElement, {
+              autoAlpha: 1,
+              duration: REDUCED_MOTION_FADE_DURATION,
+              ease: 'power2.out',
+            });
+          } else {
+            gsap
+              .timeline()
+              .set(textElement, { autoAlpha: 1 })
+              .to(split.lines, {
+                yPercent: 0,
+                duration: 0.55,
+                stagger: 0.05,
+                ease: 'power3.out',
+              });
+          }
         }
 
-        gsap
-          .timeline()
-          .set(textElement, { autoAlpha: 1 })
-          .to(split.lines, {
-            yPercent: 0,
-            duration: 0.55,
-            stagger: 0.05,
-            ease: 'power3.out',
-          });
-
-        if (!imageElement) return;
+        if (!imageElement || !scaleOnHover || reduceMotion) return;
 
         gsap.to(imageElement, {
           scale: 1.05,
@@ -335,26 +338,31 @@ export function ZoomSliderComp({
       };
 
       const onLeave = () => {
-        if (reduceMotion) {
+        if (textOnHover) {
+          if (reduceMotion) {
+            gsap.killTweensOf([textElement, split.lines]);
+            gsap.to(textElement, {
+              autoAlpha: 0,
+              duration: REDUCED_MOTION_FADE_DURATION,
+              ease: 'power2.out',
+              onComplete: () => gsap.set(split.lines, { yPercent: 100 }),
+            });
+          } else {
+            gsap.to(split.lines, {
+              yPercent: 100,
+              duration: 0.28,
+              stagger: 0.03,
+              ease: 'power2.in',
+              onComplete: () => gsap.set(textElement, { autoAlpha: 0 }),
+            });
+          }
+        } else {
           gsap.killTweensOf([textElement, split.lines]);
-          gsap.to(textElement, {
-            autoAlpha: 0,
-            duration: REDUCED_MOTION_FADE_DURATION,
-            ease: 'power2.out',
-            onComplete: () => gsap.set(split.lines, { yPercent: 100 }),
-          });
-          return;
+          gsap.set(textElement, { autoAlpha: 0 });
+          gsap.set(split.lines, { yPercent: 100 });
         }
 
-        gsap.to(split.lines, {
-          yPercent: 100,
-          duration: 0.28,
-          stagger: 0.03,
-          ease: 'power2.in',
-          onComplete: () => gsap.set(textElement, { autoAlpha: 0 }),
-        });
-
-        if (!imageElement) return;
+        if (!imageElement || !scaleOnHover) return;
 
         gsap.to(imageElement, {
           scale: 1,
@@ -374,7 +382,7 @@ export function ZoomSliderComp({
     });
 
     return () => cleanups.forEach((cleanup) => cleanup());
-  }, [images, reduceMotion]);
+  }, [images, reduceMotion, scaleOnHover, textOnHover]);
 
   const activeItem = images[activeIndex];
   const slideAnnouncement = images.length

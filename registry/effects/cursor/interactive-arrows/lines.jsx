@@ -2,22 +2,12 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { createSuspendedRaf } from './createSuspendedRaf';
 
 class Point {
-  /**
-   * @param {number} [x]
-   * @param {number} [y]
-   */
   constructor(x, y) {
     this.x = x || 0;
     this.y = y || 0;
   }
 
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} mouseX
-   * @param {number} mouseY
-   * @param {number} lineLength
-   */
-  draw(ctx, mouseX, mouseY, lineLength) {
+  draw(ctx, mouseX, mouseY, lineLength, arrowColor, activeColor, reactionRadius) {
     const dx = mouseX - this.x;
     const dy = mouseY - this.y;
     const distance = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -29,21 +19,27 @@ class Point {
     ctx.beginPath();
     ctx.moveTo(this.x, this.y);
     ctx.lineTo(lineEndX, lineEndY);
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = distance < reactionRadius ? activeColor : arrowColor;
     ctx.lineWidth = 1.5;
     ctx.stroke();
   }
 }
 
-const Lines = () => {
-  const canvasRef = useRef(/** @type {HTMLCanvasElement|null} */ (null));
+const Lines = ({
+  arrowCount = 50,
+  arrowColor = "black",
+  activeColor = "black",
+  reactionRadius = 30,
+}) => {
+  const canvasRef = useRef(null);
   const mouseRef = useRef({ x: 0, y: 0 });
-  const pointsRef = useRef(/** @type {Point[]} */ ([]));
-  const lineLength = 30;
+  const pointsRef = useRef([]);
+  const lineLength = 30; 
 
-  const initializePoints = useCallback((/** @type {HTMLCanvasElement} */ canvas) => {
+  const initializePoints = useCallback((canvas) => {
     const points = [];
-    const spacing = 60;
+    const count = Math.max(1, Number(arrowCount) || 50);
+    const spacing = 60 * Math.sqrt(50 / count);
     const cols = Math.ceil(canvas.width / spacing);
     const rows = Math.ceil(canvas.height / spacing);
 
@@ -53,7 +49,7 @@ const Lines = () => {
       }
     }
     return points;
-  }, []);
+  }, [arrowCount]);
 
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
@@ -65,7 +61,7 @@ const Lines = () => {
     }
   }, [initializePoints]);
 
-  const handleMouseMove = useCallback((/** @type {MouseEvent} */ e) => {
+  const handleMouseMove = useCallback((e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -78,13 +74,13 @@ const Lines = () => {
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d'));
+    const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pointsRef.current.forEach(point => point.draw(ctx, mouseRef.current.x, mouseRef.current.y, lineLength));
-  }, []);
+    pointsRef.current.forEach(point => point.draw(ctx, mouseRef.current.x, mouseRef.current.y, lineLength, arrowColor, activeColor, reactionRadius));
+  }, [activeColor, arrowColor, reactionRadius]);
 
   useEffect(() => {
-    const canvas = /** @type {HTMLCanvasElement} */ (canvasRef.current);
+    const canvas = canvasRef.current;
     const { width, height } = canvas.getBoundingClientRect();
     canvas.width = width;
     canvas.height = height;

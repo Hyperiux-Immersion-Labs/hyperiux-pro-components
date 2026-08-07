@@ -1,7 +1,19 @@
 {
   "name": "text-hover",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "changelog": [
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Set the default hover color to white and removed expandAmount from the public/remixer API.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-30",
+      "summary": "Removed items from the public/remixer API, centered the hover frame, and wired textColor, hoverColor, expandAmount, and duration into the hover effect.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -43,5 +55,65 @@
       "path": "createSuspendedRaf.js",
       "target": "src/components/effects/text-hover/createSuspendedRaf.js"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "bgColor",
+      "type": "string",
+      "default": "#0a0a0a",
+      "description": "Section background color.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "textColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Inactive text and description color.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "hoverColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Active text and corner-frame color.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.35,
+      "description": "Hover frame animation duration in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.05,
+        "max": 2,
+        "step": 0.05
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "style",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }

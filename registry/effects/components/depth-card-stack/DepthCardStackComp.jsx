@@ -10,61 +10,33 @@ const CARD_H = 450;
 const TABLET_CARD_W = 340;
 const TABLET_CARD_H = 500;
 const AUTO_PLAY_DELAY = 5000;
+const DEFAULT_DURATION = 0.55;
+const DEFAULT_LERP = 0.18;
+const DEFAULT_SMOOTHNESS = 0.4;
 
-/**
- * @typedef {Object} DepthCardStackCard
- * @property {string} name
- * @property {string} num
- * @property {string} joined
- * @property {string} color
- * @property {string} claimedText
- * @property {string} textureImage
- */
+function clampNumber(value, min, max, fallback) {
+ const number = Number(value);
+ if (!Number.isFinite(number)) return fallback;
+ return Math.min(Math.max(number, min), max);
+}
 
-/**
- * @typedef {Object} DepthCardStackCompProps
- * @property {DepthCardStackCard[]} cards
- */
-
-/**
- * @typedef {Object} SlotProps
- * @property {number} x
- * @property {number} y
- * @property {number} rotateX
- * @property {number} rotateZ
- * @property {number} rotateY
- * @property {number} scale
- * @property {number} opacity
- * @property {number} zIndex
- */
-
-/**
- * @param {number|null} slot
- * @returns {SlotProps}
- */
 function getSlotProps(slot) {
  switch (slot) {
  case 0:
  return { x: 0, y: 0, rotateX: 0, rotateZ: 0, rotateY: 0, scale: 1, opacity: 1, zIndex: 20 };
  case 1:
- return { x: 20, y: -20, rotateX: 0, rotateZ: 2, rotateY: 0, scale: 0.9, opacity: 1, zIndex: 10 };
+ return { x: 20, y: -20, rotateX: 0, rotateZ: 0, rotateY: 0, scale: 0.9, opacity: 1, zIndex: 10 };
  case 2:
- return { x: 35, y: -40, rotateX: 0, rotateZ: 4, rotateY: 0, scale: 0.83, opacity: 0.9, zIndex: 8 };
+ return { x: 35, y: -40, rotateX: 0, rotateZ: 0, rotateY: 0, scale: 0.83, opacity: 0.9, zIndex: 8 };
  case -1:
- return { x: -20, y: -20, rotateX: 0, rotateZ: -2, rotateY: 0, scale: 0.9, opacity: 1, zIndex: 10 };
+ return { x: -20, y: -20, rotateX: 0, rotateZ: 0, rotateY: 0, scale: 0.9, opacity: 1, zIndex: 10 };
  case -2:
- return { x: -35, y: -40, rotateX: 0, rotateZ: -4, rotateY: 0, scale: 0.83, opacity: 0.9, zIndex: 8 };
+ return { x: -35, y: -40, rotateX: 0, rotateZ: 0, rotateY: 0, scale: 0.83, opacity: 0.9, zIndex: 8 };
  default:
  return { x: 0, y: -30, rotateX: 0, rotateZ: 0, rotateY: 0, scale: 0.75, opacity: 0, zIndex: 0 };
  }
 }
 
-/**
- * @param {number} cardIdx
- * @param {number} centerIdx
- * @param {number} total
- * @returns {number|null}
- */
 function computeSlot(cardIdx, centerIdx, total) {
  const rel = ((cardIdx - centerIdx) % total + total) % total;
  if (rel === 0) return 0;
@@ -76,15 +48,20 @@ function computeSlot(cardIdx, centerIdx, total) {
 }
 
 
-/** @param {DepthCardStackCompProps} props */
-export default function DepthCardStackComp({ cards }) {
- const cardRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
- const cardFaceRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
- const textureRefs = useRef(/** @type {(HTMLDivElement|null)[]} */ ([]));
+export default function DepthCardStackComp({
+ cards,
+ duration = DEFAULT_DURATION,
+ mouseInteraction = true,
+ lerp = DEFAULT_LERP,
+ smoothness = DEFAULT_SMOOTHNESS,
+}) {
+ const cardRefs = useRef([]);
+ const cardFaceRefs = useRef([]);
+ const textureRefs = useRef([]);
  const centerRef = useRef(0);
  const animating = useRef(false);
  const isHoveredRef = useRef(false);
- const timelineRef = useRef(/** @type {gsap.core.Timeline | null} */ (null));
+ const timelineRef = useRef(null);
  const [autoplayResetKey, setAutoplayResetKey] = useState(0);
  const [claimedText, setClaimedText] = useState(cards[0].claimedText);
  const [isMobile, setIsMobile] = useState(false);
@@ -95,12 +72,15 @@ export default function DepthCardStackComp({ cards }) {
    typeof window !== "undefined" &&
    (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
  );
+ const safeDuration = clampNumber(duration, 0.15, 1.5, DEFAULT_DURATION);
+ const safeLerp = clampNumber(lerp, 0.02, 1, DEFAULT_LERP);
+ const safeSmoothness = clampNumber(smoothness, 0.1, 1.2, DEFAULT_SMOOTHNESS);
+ const pointerDuration = clampNumber(1 - safeLerp, 0.05, 0.8, 0.4);
 
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mq) return;
-    const onChange = (/** @type {MediaQueryListEvent} */ event) => setReduceMotion(event.matches);
-    setReduceMotion(mq.matches);
+    const onChange = (event) => setReduceMotion(event.matches);
     mq.addEventListener?.("change", onChange);
     return () => mq.removeEventListener?.("change", onChange);
   }, []);
@@ -121,7 +101,7 @@ export default function DepthCardStackComp({ cards }) {
  const cardWidth = isTablet ? TABLET_CARD_W : CARD_W;
  const cardHeight = isTablet ? TABLET_CARD_H : CARD_H;
 
- const applyLayout = useCallback((/** @type {boolean} */ animate) => {
+ const applyLayout = useCallback((animate) => {
  const total = cards.length;
  timelineRef.current?.kill();
  timelineRef.current = null;
@@ -132,12 +112,12 @@ export default function DepthCardStackComp({ cards }) {
  const slot = computeSlot(i, centerRef.current, total);
  const props = getSlotProps(slot);
  if (animate && slot !== null) {
- gsap.to(el, { ...props, duration: 0.55, ease:"power2.inOut" });
+ gsap.to(el, { ...props, duration: safeDuration, ease:"power2.inOut" });
  } else {
  gsap.set(el, props);
  }
  });
- }, [cards]);
+ }, [cards, safeDuration]);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -157,9 +137,11 @@ export default function DepthCardStackComp({ cards }) {
  };
  }, [applyLayout]);
 
- const navigate = useCallback((/** @type {number} */ dir) => {
+ const navigate = useCallback((dir) => {
  if (animating.current) return;
  animating.current = true;
+
+ const effectiveDuration = reduceMotion ? 0.15 : safeDuration;
 
  const total = cards.length;
  const oldCenter = centerRef.current;
@@ -223,27 +205,27 @@ export default function DepthCardStackComp({ cards }) {
  scale: 0.88,
  opacity: 1,
  ease:"cubic-bezier(.25, .46, .45, .94)",
- duration: 0.3,
+ duration: effectiveDuration * 0.55,
  }, 0);
  tl.to(cardEl, {
  ...newProps,
  rotateY: 0,
- duration: 0.18,
+ duration: effectiveDuration * 0.35,
  ease:"cubic-bezier(.32, .72, 0, 1)",
- }, 0.22);
+ }, effectiveDuration * 0.4);
  return;
  }
 
  gsap.set(cardEl, { zIndex: newSlot === 0 ? 25 : newProps.zIndex });
  tl.to(cardEl, {
  ...newProps,
- duration: 0.54,
+ duration: effectiveDuration,
  ease:"power2.inOut",
- }, 0.06);
+ }, effectiveDuration * 0.1);
  });
 
  setClaimedText(cards[newCenter].claimedText);
- }, [cards]);
+ }, [cards, cardWidth, safeDuration, reduceMotion]);
 
  useEffect(() => {
  const autoplayId = setInterval(() => {
@@ -256,7 +238,7 @@ export default function DepthCardStackComp({ cards }) {
 
  useEffect(() => {
  // Reduced-motion: no pointer tilt / texture reveal — reset any leftover transforms.
- if (reduceMotion) {
+ if (reduceMotion || !mouseInteraction) {
   isHoveredRef.current = false;
   cardFaceRefs.current.forEach((face) => {
    if (!face) return;
@@ -272,7 +254,6 @@ export default function DepthCardStackComp({ cards }) {
  }
 
  const cards = cardRefs.current;
- /** @type {{ cardEl: HTMLDivElement, handleEnter: (e: MouseEvent) => void, handleMove: (e: MouseEvent) => void, handleLeave: () => void, getRaf: () => number | null }[]} */
  const handlers = [];
 
  cards.forEach((cardEl, i) => {
@@ -282,10 +263,9 @@ export default function DepthCardStackComp({ cards }) {
 
  // Track per-card enter progress so first mousemove eases in gently
  let enterProgress = 0;
- /** @type {number | null} */
  let enterRaf = null;
 
- const handleEnter = (/** @type {MouseEvent} */ e) => {
+ const handleEnter = (e) => {
  if (i !== centerRef.current || animating.current) return;
  isHoveredRef.current = true;
  enterProgress = 0;
@@ -295,9 +275,9 @@ export default function DepthCardStackComp({ cards }) {
 
  // Smoothly ramp enterProgress from 0 → 1 over ~350ms
  const startTime = performance.now();
- const RAMP_DURATION = 350;
+ const RAMP_DURATION = safeSmoothness * 1000;
 
- const ramp = (/** @type {number} */ now) => {
+ const ramp = (now) => {
  enterProgress = Math.min((now - startTime) / RAMP_DURATION, 1);
  if (enterProgress < 1) enterRaf = requestAnimationFrame(ramp);
  else enterRaf = null;
@@ -305,7 +285,7 @@ export default function DepthCardStackComp({ cards }) {
  enterRaf = requestAnimationFrame(ramp);
  };
 
- const handleMove = (/** @type {MouseEvent} */ e) => {
+ const handleMove = (e) => {
  if (i !== centerRef.current || animating.current) return;
 
  const rect = cardEl.getBoundingClientRect();
@@ -325,7 +305,7 @@ export default function DepthCardStackComp({ cards }) {
 "--reveal-x": `${x}px`,
 "--reveal-y": `${y}px`,
  opacity: 0.3 * ease,
- duration: 0.28,
+ duration: pointerDuration,
  ease:"power2.out",
  overwrite:"auto",
  });
@@ -337,7 +317,7 @@ export default function DepthCardStackComp({ cards }) {
  transformPerspective: 800,
  transformOrigin:"center",
  ease:"power2.out",
- duration: 0.4,
+ duration: pointerDuration,
  overwrite:"auto",
  });
  };
@@ -359,13 +339,13 @@ export default function DepthCardStackComp({ cards }) {
  x: 0,
  y: 0,
  ease:"power3.out",
- duration: 0.7,
+ duration: safeSmoothness,
  overwrite:"auto",
  });
  gsap.to(textureEl, {
  opacity: 0,
  ease:"power2.out",
- duration: 0.5,
+ duration: safeSmoothness,
  overwrite:"auto",
  });
  };
@@ -385,7 +365,7 @@ export default function DepthCardStackComp({ cards }) {
  if (raf) cancelAnimationFrame(raf);
  });
  };
- }, [reduceMotion, isStackReady]);
+ }, [reduceMotion, isStackReady, mouseInteraction, pointerDuration, safeSmoothness]);
 
  return (
  <section className="flex flex-col items-center px-6 pt-20 max-[1025px]:pt-40 max-md:pt-20 h-screen pb-5 select-none bg-white">
@@ -393,7 +373,7 @@ export default function DepthCardStackComp({ cards }) {
   Hyperiux-UI Library
 </p>
 
-<h3 className="text-5xl max-[1025px]:text-4xl max-md:text-2xl font-medium text-center mb-0.5 leading-none tracking-tight text-gray-900">
+<h3 className="text-5xl max-[1025px]:text-4xl max-md:text-2xl font-medium text-center mb-0.5 leading-none tracking-tight text-gray-400">
   Build futuristic interfaces.
 </h3>
 

@@ -28,7 +28,10 @@ const FLOWER_CONFIG = {
  hoverZPull: .2 // How far flowers leap towards the camera lens in 3D
 };
 
-export default function Experience() {
+export default function Experience({
+ bloomStrength = 1.2,
+ cameraSpeed = 1,
+}) {
  const gltf = useGLTF("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/camera-path07.glb");
  const sprite = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/pool_summer.png");
  const terrainTex = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/terrain.png");
@@ -71,17 +74,17 @@ export default function Experience() {
  return (
  <>
  <CameraRig curve={curve} cameraProps={cameraProps} scrollConfig={{
- scrollIntensity: 0.1,
- autoSpeed: 0.00015,
+ scrollIntensity: 0.1 * cameraSpeed,
+ autoSpeed: 0.00015 * cameraSpeed,
  damping: 0.97,
  lerpSpeed: 0.03,
  loopPoint: 0.85,
  }} />
  {/* Copy 1: flowers at original position */}
- <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
+ <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} bloomStrength={bloomStrength} />
  {/* Copy 2: same flowers shifted forward - fills the gap at the end */}
  <group position={pathOffset}>
- <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} />
+ <Flower data={flowers} sprite={flowerSprite} config={FLOWER_CONFIG} bloomStrength={bloomStrength} />
  </group>
  </>
  );

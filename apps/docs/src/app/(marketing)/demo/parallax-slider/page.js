@@ -1,33 +1,10 @@
-import React from'react'
-import LenisSmoothScroll from'@/components/SmoothScroll/LenisScroll'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import ScrollBottom from '@/components/WebsiteComps/ScrollBottom';
-import ParallaxSlider from '@/components/parallax-slider';
+import parallaxSliderRegistry from "../../../../../../../registry/effects/scroll/parallax-slider/registry.json";
 
-
-const page = () => {
- return (
- <>
- <DemoHeader logoColor='#FFFFFF' textColor='#ffffff' />
- <LenisSmoothScroll />
- <h1 className="sr-only">Parallax Slider</h1>
- <ParallaxSlider images={[
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg',
- ]} bgColor='#111111' />
- <ScrollBottom className="bottom-[3%]"/>
- </>
- )
+export default function Page() {
+  return <DemoContent registry={parallaxSliderRegistry} />;
 }
-
-export default page
 
 export async function generateMetadata() {
   return getDemoPageMetadata("parallax-slider");

@@ -45,12 +45,17 @@ function StarField() {
 }
 
 
-const FileEncryption = () => {
+const FileEncryption = ({
+  speed = 1,
+  accentColor = "#ff5f00",
+  backgroundColor = "#07060f",
+  cardSize = 1,
+}) => {
   return (
    <>
     <main
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: "#07060f" }}
+      style={{ background: backgroundColor }}
     >
       <StarField />
 
@@ -59,26 +64,31 @@ const FileEncryption = () => {
         className="absolute pointer-events-none"
         style={{
           inset: 0,
-          background:
-            "radial-gradient(ellipse 60% 50% at 50% 60%, rgba(255,95,0,0.2) 0%, transparent 70%)",
+          background: `radial-gradient(ellipse 60% 50% at 50% 60%, ${accentColor}33 0%, transparent 70%)`,
         }}
       />
 
       {/* Header */}
-      <div className="relative z-10 flex flex-col items-center gap-3 max-md:gap-3 max-[1025px]:gap-10 mb-16 text-center px-4">
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-white/30 bg-black/20">
+      <div className="relative z-10 flex flex-col items-center gap-3 max-md:gap-3 max-[1025px]:gap-10 text-center px-4">
+        <div className="flex items-center mt-5 gap-2 px-3 py-1 rounded-full border border-white/30 bg-black/20">
           <span
             className="w-1.5 h-1.5 rounded-full animate-pulse motion-reduce:animate-none"
-            style={{ background: "#ff5f00" }}
+            style={{ background: accentColor }}
           />
           <span className="font-mono text-xs max-md:text-sm max-[1025px]:text-base tracking-widest uppercase text-primary opacity-80">
             256-bit AES Encryption Active
           </span>
         </div>
-        <h1 className="font-mono text-[#ff5f00]! font-black max-[1025px]:text-6xl max-md:text-5xl text-6xl tracking-tight">
+        <h1
+          className="font-mono font-black max-[1025px]:text-6xl max-md:text-5xl text-6xl tracking-tight"
+          style={{ color: accentColor }}
+        >
           CARD VAULT
         </h1>
-        <p className="font-mono text-sm max-md:text-sm max-[1025px]:text-base max-w-sm text-[#ff5f00] opacity-60 leading-[1.2]">
+        <p
+          className="font-mono text-sm max-md:text-sm max-[1025px]:text-base max-w-sm opacity-60 leading-[1.2]"
+          style={{ color: accentColor }}
+        >
           Every card is encrypted in real-time as it passes through the beam.
           Zero plaintext. Zero exposure.
         </p>
@@ -86,7 +96,13 @@ const FileEncryption = () => {
 
       {/* Marquee */}
       <div className="relative w-full z-10">
-        <FileEncryptionComp cards={CARDS} />
+        <FileEncryptionComp
+          cards={CARDS}
+          speed={speed}
+          accentColor={accentColor}
+          backgroundColor={backgroundColor}
+          cardSize={cardSize}
+        />
       </div>
 
       {/* Bottom label */}

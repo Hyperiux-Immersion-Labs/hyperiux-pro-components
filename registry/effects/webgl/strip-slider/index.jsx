@@ -44,12 +44,19 @@ const items = [
  { id:'item-20', url:'https://picsum.photos/seed/strip20/800/600', text:'Image 7',   atlasIndex: 20, colors: ['#333','#aaa'] },
 ];
 
-const StripSlider = () => {
+const StripSlider = ({
+ dispScale = 1,
+ cameraSway = 0.03,
+}) => {
  const prefersReducedMotion = usePrefersReducedMotion();
 
  return (
  <div className="w-full h-screen bg-black">
- <StripSliderComp items={items} />
+ <StripSliderComp
+ items={items}
+ dispScale={dispScale}
+ cameraSway={cameraSway}
+ />
 
  {prefersReducedMotion && (
  <div

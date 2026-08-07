@@ -45,22 +45,41 @@ const RIM_LIGHT_INTENSITY = 0.6
 // Shared temp objects for matrix calculations
 const tempObject = new THREE.Object3D()
 
-// Shared material
-const beanMaterial = new THREE.MeshStandardMaterial({ color:"#392416", roughness: 0.6, metalness: 0.1 })
-
 function seededUnit(index, salt) {
  const value = Math.sin(index * 91.713 + salt * 37.529) * 10000
  return value - Math.floor(value)
 }
 
-function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, isMouseActiveRef }) {
+function CoffeeBeans({
+ count = BEAN_COUNT,
+ beanColor = "#392416",
+ size = 22,
+ rotationSpeed = 1,
+ mouseInteraction = true,
+ scatterIntensity = 1,
+ mousePositionRef,
+ mouseVelocityRef,
+ isMouseActiveRef
+}) {
  const { nodes } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/coffebean.glb')
  const meshRef = useRef()
  const beansRef = useRef([])
+ const resolvedCount = Math.max(0, Math.round(Number(count) || 0))
+ const resolvedSize = Math.max(1, Number(size) || 1)
+ const resolvedRotationSpeed = Math.max(0, Number(rotationSpeed) || 0)
+ const resolvedScatterIntensity = Math.max(0, Number(scatterIntensity) || 0)
+ const material = useMemo(() => new THREE.MeshStandardMaterial({
+ color: beanColor || "#392416",
+ roughness: 0.6,
+ metalness: 0.1
+ }), [beanColor])
+
+ useEffect(() => () => material.dispose(), [material])
+
   // Precompute all bean data once
  const beansData = useMemo(() => {
- return Array.from({ length: count }, (_, i) => ({
- offset: (i / count) * Math.PI * 2,
+ return Array.from({ length: resolvedCount }, (_, i) => ({
+ offset: (i / Math.max(1, resolvedCount)) * Math.PI * 2,
  speed: BASE_SPEED + seededUnit(i, 1) * SPEED_VARIANCE,
  xSpread: (seededUnit(i, 2) - 0.5) * X_SPREAD_RANGE,
  zSpread: (seededUnit(i, 3) - 0.5) * Z_SPREAD_RANGE,
@@ -80,7 +99,7 @@ function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, i
  seededUnit(i, 11) * Math.PI * 2
  )
  }))
- }, [count])
+ }, [resolvedCount])
 
  useEffect(() => {
  beansRef.current = beansData
@@ -92,7 +111,7 @@ function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, i
   useFrame((state, delta) => {
  if (!meshRef.current) return
   const time = state.clock.elapsedTime
- const isActive = isMouseActiveRef.current
+ const isActive = Boolean(mouseInteraction) && isMouseActiveRef.current
  const mouseX = mousePositionRef.current.x * 6
  const mouseY = mousePositionRef.current.y * 4
  const mouseVelX = mouseVelocityRef.current.x
@@ -102,7 +121,10 @@ function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, i
  const viscosity = isActive ? FLUID_VISCOSITY : FLUID_VISCOSITY * 0.7
  const dampingFactor = Math.pow(viscosity, deltaScaled)
  const returnMultiplier = isActive ? 1 : 2.5
-  for (let i = 0; i < count; i++) {
+ const interactionRadius = INTERACTION_RADIUS * (0.75 + resolvedScatterIntensity * 0.25)
+ const interactionRadiusSq = interactionRadius * interactionRadius
+ const mouseForce = FLUID_MOUSE_FORCE * resolvedScatterIntensity
+  for (let i = 0; i < resolvedCount; i++) {
  const bean = beansRef.current[i]
  if (!bean) continue
  const beanTime = time * bean.speed + bean.offset
@@ -123,11 +145,11 @@ function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, i
  const dy = currentY - mouseY
  const dz = currentZ
  const distSq = dx * dx + dy * dy + dz * dz
-  if (distSq < INTERACTION_RADIUS_SQ && distSq > 0.0001) {
+  if (distSq < interactionRadiusSq && distSq > 0.0001) {
  const distance = Math.sqrt(distSq)
- const normalizedDist = distance / INTERACTION_RADIUS
+ const normalizedDist = distance / interactionRadius
  const falloff = 1 - normalizedDist * normalizedDist * (3 - 2 * normalizedDist)
- const force = falloff * FLUID_MOUSE_FORCE / bean.mass
+ const force = falloff * mouseForce / bean.mass
   const invDist = 1 / distance
  const normalizedDx = dx * invDist
  const normalizedDy = dy * invDist
@@ -165,11 +187,11 @@ function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, i
   // Update rotation with velocity influence
  const velocityMagnitude = bean.velocity.length()
  const rotationBoost = 1 + velocityMagnitude * 1.5
-  bean.rotation.x += bean.rotationSpeed[0] * ROTATION_MULTIPLIER * rotationBoost * deltaScaled
- bean.rotation.y += bean.rotationSpeed[1] * ROTATION_MULTIPLIER * rotationBoost * deltaScaled
- bean.rotation.z += bean.rotationSpeed[2] * ROTATION_MULTIPLIER * rotationBoost * deltaScaled
+  bean.rotation.x += bean.rotationSpeed[0] * ROTATION_MULTIPLIER * resolvedRotationSpeed * rotationBoost * deltaScaled
+ bean.rotation.y += bean.rotationSpeed[1] * ROTATION_MULTIPLIER * resolvedRotationSpeed * rotationBoost * deltaScaled
+ bean.rotation.z += bean.rotationSpeed[2] * ROTATION_MULTIPLIER * resolvedRotationSpeed * rotationBoost * deltaScaled
   // Set matrix
- const finalScale = bean.scale * SCALE_MULTIPLIER
+ const finalScale = bean.scale * SCALE_MULTIPLIER * (resolvedSize / 22)
  tempObject.position.set(
  baseX + bean.offsetPosition.x,
  baseY + bean.offsetPosition.y,
@@ -184,8 +206,9 @@ function CoffeeBeans({ count = BEAN_COUNT, mousePositionRef, mouseVelocityRef, i
  })
   return (
  <instancedMesh
+ key={resolvedCount}
  ref={meshRef}
- args={[nodes.COFFEE_COFFEE_MAT_0.geometry, beanMaterial, count]}
+ args={[nodes.COFFEE_COFFEE_MAT_0.geometry, material, resolvedCount]}
  />
  )
 }
@@ -231,7 +254,14 @@ function MouseTracker({ mousePositionRef, mouseVelocityRef, targetPositionRef, t
   return null
 }
 
-export default function CoffeeBeanCursor() {
+export default function CoffeeBeanCursor({
+ beanCount = BEAN_COUNT,
+ beanColor = "#392416",
+ size = 22,
+ rotationSpeed = 1,
+ mouseInteraction = true,
+ scatterIntensity = 1
+}) {
  const rootRef = useRef(null)
  const [frameloop, setFrameloop] = useState('always')
  const prefersReducedMotion = usePrefersReducedMotion()
@@ -287,7 +317,17 @@ export default function CoffeeBeanCursor() {
  isMouseActiveRef={isMouseActiveRef}
  lastMoveTimeRef={lastMoveTimeRef}
  />
- <CoffeeBeans count={BEAN_COUNT} mousePositionRef={mousePositionRef} mouseVelocityRef={mouseVelocityRef} isMouseActiveRef={isMouseActiveRef} />
+ <CoffeeBeans
+ count={beanCount}
+ beanColor={beanColor}
+ size={size}
+ rotationSpeed={rotationSpeed}
+ mouseInteraction={mouseInteraction}
+ scatterIntensity={scatterIntensity}
+ mousePositionRef={mousePositionRef}
+ mouseVelocityRef={mouseVelocityRef}
+ isMouseActiveRef={isMouseActiveRef}
+ />
   {/* Base ambient lighting - always visible */}
  <ambientLight intensity={AMBIENT_LIGHT_INTENSITY} color="#ffeedd" />
   {/* Key light - main illumination from top-right */}

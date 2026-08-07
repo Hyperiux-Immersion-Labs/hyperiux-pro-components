@@ -1,12 +1,12 @@
 "use client";
 
 import {
+  Fragment,
   useRef,
   useState,
   useEffect,
   useCallback,
   Suspense,
-  Fragment,
   forwardRef,
 } from "react";
 import Image from "next/image";
@@ -22,7 +22,7 @@ import {
   FAQGroup,
   FAQTitle,
   FAQWrapper,
-} from "@/components/animated-faq/AnimatedFaqComp";
+} from "@/components/animated-faq";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import Button from "@/components/WebsiteComps/Button";
@@ -571,6 +571,8 @@ export function EffectDetailContent({
                   ref={contentRef}
                   content={safeContent}
                   isLocked={isLocked}
+                  effectProps={effect?.props}
+                  effectRemixerControls={effect?.remixer?.controls}
                   changelog={safeEffect.changelog}
                 />
               </div>
@@ -719,7 +721,7 @@ export function EffectDetailContent({
 }
 
 const EffectDynamicContent = forwardRef(function EffectDynamicContent(
-  { content, isLocked = false, changelog = [] },
+  { content, isLocked = false, effectProps, effectRemixerControls, changelog = [] },
   ref
 ) {
   if (!content) return null;
@@ -732,6 +734,8 @@ const EffectDynamicContent = forwardRef(function EffectDynamicContent(
       <SanityBodyRenderer
         body={content.body}
         isLocked={isLocked}
+        effectProps={effectProps}
+        effectRemixerControls={effectRemixerControls}
         changelog={changelog}
       />
     </div>
@@ -864,10 +868,26 @@ function EffectChangelogSection({ changelog = [] }) {
   );
 }
 
-function SanityBodyRenderer({ body = [], isLocked = false, changelog = [] }) {
+function SanityBodyRenderer({
+  body = [],
+  isLocked = false,
+  effectProps,
+  effectRemixerControls,
+  changelog = [],
+}) {
   if (!body.length) return null;
 
   const groupedBlocks = groupBodyBlocks(body);
+  const remixerControlNames = new Set(
+    (effectRemixerControls || []).map((control) => control?.name).filter(Boolean)
+  );
+  const remixableProps = (effectProps || []).filter(
+    (prop) => prop?.remixer?.control || remixerControlNames.has(prop?.name)
+  );
+  const showPropsTable = remixableProps.length > 0;
+  const hasFaqBlock = groupedBlocks.some(
+    (block) => block._type === "effectFaqAccordion"
+  );
   const firstFaqIndex = groupedBlocks.findIndex(
     (block) => block?._type === "effectFaqAccordion"
   );
@@ -879,16 +899,77 @@ function SanityBodyRenderer({ body = [], isLocked = false, changelog = [] }) {
         <EffectChangelogSection changelog={changelog} />
       )}
 
-      {groupedBlocks.map((block, index) => (
-        <Fragment
-          key={block._key || block._groupKey || `${block._type}-${index}`}
-        >
-          {shouldRenderChangelog && index === firstFaqIndex && (
-            <EffectChangelogSection changelog={changelog} />
-          )}
-          <SanityBodyBlock block={block} isLocked={isLocked} />
-        </Fragment>
-      ))}
+      {groupedBlocks.map((block, index) => {
+        const key = block._key || block._groupKey || `${block._type}-${index}`;
+
+        return (
+          <Fragment key={key}>
+            {shouldRenderChangelog && index === firstFaqIndex && (
+              <EffectChangelogSection changelog={changelog} />
+            )}
+            {showPropsTable && block._type === "effectFaqAccordion" && (
+              <EffectPropsTable props={remixableProps} />
+            )}
+            <SanityBodyBlock block={block} isLocked={isLocked} />
+          </Fragment>
+        );
+      })}
+
+      {showPropsTable && !hasFaqBlock && <EffectPropsTable props={remixableProps} />}
+    </div>
+  );
+}
+
+function formatPropDefault(value) {
+  if (value === undefined) return "—";
+  if (typeof value === "string") return value;
+  if (typeof value === "boolean" || typeof value === "number") return String(value);
+
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+// Rendered directly from the effect's registry.json `props` array, filtered
+// to entries with a remixer control (see SanityBodyRenderer) - not a Sanity
+// content block, so it always reflects what's actually live-editable in the
+// props remixer rather than editorial copy that can drift.
+function EffectPropsTable({ props = [] }) {
+  if (!props.length) return null;
+
+  return (
+    <div className="space-y-3 fadeup">
+      <h3 className="text-xl tracking-tighter text-foreground">Props</h3>
+
+      <div className={styles.tableWrap} data-variant="vault">
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {props.map((prop) => (
+              <tr key={prop.name}>
+                <td>
+                  <code>{prop.name}</code>
+                </td>
+                <td>{prop.type || "—"}</td>
+                <td>
+                  <code>{formatPropDefault(prop.default)}</code>
+                </td>
+                <td>{prop.description || ""}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -1017,6 +1098,18 @@ function SanityBodyBlock({ block, isLocked = false }) {
   }
 
   if (block._type === "effectTableBlock") {
+    const headers = Array.isArray(block.headers) ? block.headers : [];
+    const rows = Array.isArray(block.rows) ? block.rows : [];
+    const columnCount = Math.max(
+      headers.length,
+      rows.reduce(
+        (max, row) => Math.max(max, Array.isArray(row?.cells) ? row.cells.length : 0),
+        0
+      )
+    );
+
+    if (!columnCount) return null;
+
     return (
       <div className="space-y-3 fadeup">
         {block.caption && (
@@ -1025,21 +1118,30 @@ function SanityBodyBlock({ block, isLocked = false }) {
           </h3>
         )}
 
-        <div className={styles.tableWrap}>
+        <div
+          className={styles.tableWrap}
+          data-variant={block.colorVariant || "vault"}
+        >
           <table className={styles.table}>
-            <thead>
-              <tr>
-                {(block.headers || []).map((header, index) => (
-                  <th key={`${header}-${index}`}>{header}</th>
-                ))}
-              </tr>
-            </thead>
+            {headers.length ? (
+              <thead>
+                <tr>
+                  {Array.from({ length: columnCount }).map((_, index) => (
+                    <th key={`${headers[index] || "header"}-${index}`}>
+                      {headers[index] || ""}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            ) : null}
 
             <tbody>
-              {(block.rows || []).map((row, rowIndex) => (
+              {rows.map((row, rowIndex) => (
                 <tr key={row._key || `${rowIndex}`}>
-                  {(row.cells || []).map((cell, cellIndex) => (
-                    <td key={`${rowIndex}-${cellIndex}`}>{cell}</td>
+                  {Array.from({ length: columnCount }).map((_, cellIndex) => (
+                    <td key={`${rowIndex}-${cellIndex}`}>
+                      {row.cells?.[cellIndex] || ""}
+                    </td>
                   ))}
                 </tr>
               ))}
@@ -1142,7 +1244,7 @@ function LockedCodePlaceholder({ filename }) {
 
         <div className="flex flex-col items-center gap-0">
           <h3 className="text-3xl font-bold text-white max-md:text-2xl max-sm:text-xl">
-            This is a Pro effect.
+            This is a Pro Effect.
           </h3>
 
           <p className="max-w-sm text-sm leading-[1.2]! max-md:leading-relaxed text-white/50">

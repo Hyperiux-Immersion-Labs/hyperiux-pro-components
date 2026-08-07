@@ -1,16 +1,9 @@
-import MousePixelation from '@/components/mouse-pixelation'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from 'react'
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-
+import mousePixelationRegistry from "../../../../../../../registry/effects/webgl/mouse-pixelation/registry.json";
 
 const page = () => {
-  return (
-    <>
-    <DemoHeader logoColor='#FFFFFF' textColor='white'/>
-    <MousePixelation variant={"pixel-circle"} imageUrl={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg"}/>
-  </>
-  )
+  return <DemoContent registry={mousePixelationRegistry} />;
 }
 
 export default page

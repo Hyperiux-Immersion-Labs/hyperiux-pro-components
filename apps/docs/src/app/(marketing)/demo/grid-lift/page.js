@@ -1,10 +1,11 @@
-import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import DemoContent from "./DemoContent";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/webgl/grid-lift/registry.json";
+
+export default function Page() {
+  return <DemoContent registry={registry} />;
+}
 
 export async function generateMetadata() {
   return getDemoPageMetadata("grid-lift");
-}
-
-export default function Page() {
-  return <DemoContent />;
 }

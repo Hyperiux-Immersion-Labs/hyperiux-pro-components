@@ -11,11 +11,15 @@ import DragCursor from "./DragCursor";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
-export default function DraggableCanvas() {
-  const videoRef = useRef(/** @type {HTMLVideoElement|null} */ (null));
-  const [videoElement, setVideoElement] = useState(
-    /** @type {HTMLVideoElement|null} */ (null)
-  );
+export default function DraggableCanvas({
+  friction = 0.12,
+  scaleOnDrag = 1.04,
+  backgroundColor = "#000000",
+  canvasBorderColor = "#71717a",
+  rounded = 0,
+}) {
+  const videoRef = useRef(null);
+  const [videoElement, setVideoElement] = useState(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isHoveringDraggable, setIsHoveringDraggable] = useState(false);
@@ -29,7 +33,7 @@ export default function DraggableCanvas() {
     extra3: { x: 0, y: 0 }
   });
 
-  const setVideoRef = useCallback((/** @type {HTMLVideoElement|null} */ node) => {
+  const setVideoRef = useCallback((node) => {
     videoRef.current = node;
     setVideoElement(node);
   }, []);
@@ -38,7 +42,7 @@ export default function DraggableCanvas() {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mediaQuery) return;
 
-    const syncReducedMotion = (/** @type {MediaQueryListEvent|MediaQueryList} */ event) => {
+    const syncReducedMotion = (event) => {
       setPrefersReducedMotion("matches" in event ? event.matches : mediaQuery.matches);
     };
 
@@ -88,25 +92,25 @@ export default function DraggableCanvas() {
   }, [videoElement]);
 
   
-  const handlePositionUpdate = useCallback(
-    (/** @type {any} */ size, /** @type {{x: number, y: number}} */ position) => {
-      setContainerPositions(prev => ({
-        ...prev,
-        [size]: position
-      }));
-    },
-    []
-  );
+  const handlePositionUpdate = useCallback((size, position) => {
+    setContainerPositions(prev => ({
+      ...prev,
+      [size]: position
+    }));
+  }, []);
 
-  const handleHoverChange = useCallback((/** @type {boolean} */ isHovering) => {
+  const handleHoverChange = useCallback((isHovering) => {
     setIsHoveringDraggable(isHovering);
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden  bg-black">
+    <div
+      className="relative w-full h-screen overflow-hidden"
+      style={{ backgroundColor }}
+    >
         <DragCursor isHoveringDraggable={isHoveringDraggable}/>
         <div className="absolute w-full h-full inset-0  z-10"></div>
-        <p className="pointer-events-none absolute bottom-8 right-8  max-w-[31vw] max-[1025px]:max-w-[55vw] max-md:max-w-[85vw] px-6 text-right max-[1025px]:text-center max-[1025px]:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-[1025px]:text-base max-md:text-sm z-99999 max-md:bottom-18">
+        <p className="pointer-events-none absolute bottom-8 right-8 z-40 max-w-[31vw] max-[1025px]:max-w-[55vw] max-md:max-w-[85vw] px-6 text-right max-[1025px]:text-center max-[1025px]:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-[1025px]:text-base max-md:text-sm max-md:bottom-18">
           Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
         </p>
         {prefersReducedMotion && (
@@ -145,6 +149,10 @@ export default function DraggableCanvas() {
           className="w-[60vw] h-[35vw] absolute top-[10vh] left-[10vw]"
           video={videoElement}
           canvasSize={canvasSize}
+          friction={friction}
+          scaleOnDrag={scaleOnDrag}
+          canvasBorderColor={canvasBorderColor}
+          rounded={rounded}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -157,6 +165,10 @@ export default function DraggableCanvas() {
           className="w-[17vw] h-[9vw] max-md:h-[35vw] max-md:top-[30%] absolute top-[8%] left-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
+          friction={friction}
+          scaleOnDrag={scaleOnDrag}
+          canvasBorderColor={canvasBorderColor}
+          rounded={rounded}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -171,6 +183,10 @@ export default function DraggableCanvas() {
           className="w-[35vw] h-[19vw] max-md:h-[50vw] absolute top-[8vh] max-md:top-[25vh] right-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
+          friction={friction}
+          scaleOnDrag={scaleOnDrag}
+          canvasBorderColor={canvasBorderColor}
+          rounded={rounded}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -183,6 +199,10 @@ export default function DraggableCanvas() {
           className="w-[38vw] h-[22vw] absolute top-[50vh] left-[5vw]"
           video={videoElement}
           canvasSize={canvasSize}
+          friction={friction}
+          scaleOnDrag={scaleOnDrag}
+          canvasBorderColor={canvasBorderColor}
+          rounded={rounded}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -195,6 +215,10 @@ export default function DraggableCanvas() {
           className="w-[25vw] h-[14vw] max-md:h-[25vh] absolute bottom-[20%] right-[10vw]"
           video={videoElement}
           canvasSize={canvasSize}
+          friction={friction}
+          scaleOnDrag={scaleOnDrag}
+          canvasBorderColor={canvasBorderColor}
+          rounded={rounded}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -206,6 +230,10 @@ export default function DraggableCanvas() {
           className="w-[22vw] max-md:w-[45vw] max-md:h-[20vh] h-[12vw] absolute bottom-[15vh] max-md:left-[40%] left-1/2 -translate-x-1/2"
           video={videoElement}
           canvasSize={canvasSize}
+          friction={friction}
+          scaleOnDrag={scaleOnDrag}
+          canvasBorderColor={canvasBorderColor}
+          rounded={rounded}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />

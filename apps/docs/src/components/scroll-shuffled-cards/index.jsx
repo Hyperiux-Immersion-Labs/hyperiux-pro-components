@@ -1,24 +1,32 @@
 import ScrollShuffledCardsComp from "./ScrollShuffledCardsComp";
 
-const ScrollShuffledCards = () => {
+const ScrollShuffledCards = ({
+  background = "#FFFBEB",
+  cardsGap = 6,
+  sectionHeight = 400,
+  shuffleIntensity = 1,
+}) => {
+  const scaleRange = ([min, max]) => [min * shuffleIntensity, max * shuffleIntensity];
+
   return (
     <>
       <section className="w-screen h-screen">
         <ScrollShuffledCardsComp
           cards={cardsData}
           heading="Scroll Shuffled Cards"
-          sectionHeight={400}
+          sectionHeight={sectionHeight}
           cardWidth="25vw"
           cardHeight="30vw"
-          cardsGap="6vw"
+          cardsGap={`${cardsGap}vw`}
+          background={background}
           initialContainerXPercent={100}
           finalContainerXPercent={-100}
-          startXRange={[-4, 4]}
-          startYRange={[-4, 4]}
-          startRotateRange={[-6, 6]}
-          endXRange={[-20, 30]}
-          endYRange={[-10, 10]}
-          endRotateRange={[-10, 10]}
+          startXRange={scaleRange([-4, 4])}
+          startYRange={scaleRange([-4, 4])}
+          startRotateRange={scaleRange([-6, 6])}
+          endXRange={scaleRange([-20, 30])}
+          endYRange={scaleRange([-10, 10])}
+          endRotateRange={scaleRange([-10, 10])}
         />
       </section>
     </>

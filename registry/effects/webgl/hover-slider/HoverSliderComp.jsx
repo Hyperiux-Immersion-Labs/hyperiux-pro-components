@@ -87,46 +87,33 @@ void main() {
 }
 `;
 
-/**
- * @param {number} value
- * @param {number} min
- * @param {number} max
- */
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-/**
- * @param {number} start
- * @param {number} end
- * @param {number} amount
- */
 const lerp = (start, end, amount) => start + (end - start) * amount;
 
-/** @param {string} src */
 function getTextureUrl(src) {
   return src;
 }
 
-/**
- * @typedef {Object} HoverSliderItem
- * @property {string} id
- * @property {string} title
- * @property {string} focus
- * @property {string} year
- * @property {string} img
- */
+function clampNumber(value, min, max, fallback) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return clamp(number, min, max);
+}
 
-/**
- * @typedef {Object} HoverSliderGlApi
- * @property {(index: number) => void} setActive
- * @property {(targetIdx: number) => void} show
- * @property {() => void} hide
- * @property {(targetIdx: number) => void} onRowChange
- */
-
-/** @param {{items?: HoverSliderItem[]}} props */
-export default function HoverSliderComp({ items = [] }) {
-  const mountRef = useRef(/** @type {HTMLElement|null} */ (null));
-  const glRef = useRef(/** @type {HoverSliderGlApi|null} */ (null));
+export default function HoverSliderComp({
+  items = [],
+  transitionDuration = 0.45,
+  imageScale = 0.95,
+  curveFactor = 1,
+}) {
+  const mountRef = useRef(null);
+  const glRef = useRef(null);
   const isDesktopRef = useRef(false);
+  const controlsRef = useRef({
+    transitionDuration: clampNumber(transitionDuration, 0.05, 3, 0.45),
+    imageScale: clampNumber(imageScale, 0.5, 2, 0.95),
+    curveFactor: clampNumber(curveFactor, 0, 2.5, 1),
+  });
 
   const stateRef = useRef({
     activeIndex: 0,
@@ -136,9 +123,18 @@ export default function HoverSliderComp({ items = [] }) {
 
   const DESKTOP_BREAKPOINT = 1025;
 
-  const [highlightedIndex, setHighlightedIndex] = useState(
-    /** @type {number|null} */ (null)
-  );
+  const [highlightedIndex, setHighlightedIndex] = useState(null);
+
+  useEffect(() => {
+    controlsRef.current.transitionDuration = clampNumber(
+      transitionDuration,
+      0.05,
+      3,
+      0.45
+    );
+    controlsRef.current.imageScale = clampNumber(imageScale, 0.5, 2, 0.95);
+    controlsRef.current.curveFactor = clampNumber(curveFactor, 0, 2.5, 1);
+  }, [curveFactor, imageScale, transitionDuration]);
 
   useEffect(() => {
     if (!items.length) return;
@@ -206,9 +202,9 @@ export default function HoverSliderComp({ items = [] }) {
 
     const loader = new THREE.TextureLoader();
     loader.crossOrigin = "anonymous";
-    const texCache = /** @type {Record<string, THREE.Texture>} */ ({});
+    const texCache = {};
 
-    const getTexture = (/** @type {string} */ src) => {
+    const getTexture = (src) => {
       if (!src) return null;
 
       const textureUrl = getTextureUrl(src);
@@ -248,7 +244,7 @@ export default function HoverSliderComp({ items = [] }) {
 
     items.forEach((item) => getTexture(item.img));
 
-    const syncImageSize = (/** @type {THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>} */ mesh) => {
+    const syncImageSize = (mesh) => {
       const texture = mesh.material.uniforms.uTexture.value;
 
       if (!texture?.image) return;
@@ -264,7 +260,7 @@ export default function HoverSliderComp({ items = [] }) {
     let CW = getCardW();
     let CH = getCardH();
 
-    const makeMat = (/** @type {THREE.Texture|null} */ tex) =>
+    const makeMat = (tex) =>
       new THREE.ShaderMaterial({
         uniforms: {
           uTexture: {
@@ -328,7 +324,7 @@ export default function HoverSliderComp({ items = [] }) {
 
     const vel = new THREE.Vector2(0, 0);
 
-    const getCurveForTravel = (/** @type {number} */ targetIdx) => {
+    const getCurveForTravel = (targetIdx) => {
       const travel = Math.abs(targetIdx - floatIdx);
       const progress = clamp((travel - 0.35) / 3.5, 0, 1);
       const eased = progress * progress * (3 - 2 * progress);
@@ -341,7 +337,7 @@ export default function HoverSliderComp({ items = [] }) {
     );
     let reduceMotion = reduceMotionMq?.matches ?? false;
 
-    const snapStack = (/** @type {number} */ targetIdx = stateRef.current.activeIndex) => {
+    const snapStack = (targetIdx = stateRef.current.activeIndex) => {
       curveAnim.value = 0;
       curveAnim.zoom = 1.06;
       floatIdx = targetIdx;
@@ -350,7 +346,7 @@ export default function HoverSliderComp({ items = [] }) {
     };
 
     // Reduced-motion: swap images with opacity instead of sliding the stack.
-    const fadeToIndex = (/** @type {number} */ targetIdx) => {
+    const fadeToIndex = (targetIdx) => {
       gsap.killTweensOf(curveAnim);
 
       const reveal = () => {
@@ -358,7 +354,7 @@ export default function HoverSliderComp({ items = [] }) {
         gsap.killTweensOf(anim);
         gsap.to(anim, {
           alpha: 1,
-          duration: 0.28,
+        duration: controlsRef.current.transitionDuration * 0.62,
           ease: "power2.out",
         });
       };
@@ -371,13 +367,13 @@ export default function HoverSliderComp({ items = [] }) {
       gsap.killTweensOf(anim);
       gsap.to(anim, {
         alpha: 0,
-        duration: 0.16,
+        duration: controlsRef.current.transitionDuration * 0.36,
         ease: "power2.in",
         onComplete: reveal,
       });
     };
 
-    const onReduceMotionChange = (/** @type {MediaQueryListEvent} */ event) => {
+    const onReduceMotionChange = (event) => {
       reduceMotion = event.matches;
 
       if (reduceMotion) {
@@ -388,7 +384,7 @@ export default function HoverSliderComp({ items = [] }) {
 
     reduceMotionMq?.addEventListener?.("change", onReduceMotionChange);
 
-    const releaseCurve = (/** @type {number} */ targetIdx = stateRef.current.activeIndex) => {
+    const releaseCurve = (targetIdx = stateRef.current.activeIndex) => {
       if (reduceMotion) {
         fadeToIndex(targetIdx);
         return;
@@ -405,18 +401,18 @@ export default function HoverSliderComp({ items = [] }) {
         .to(curveAnim, {
           value: peakCurve,
           zoom: 1.06,
-          duration: 0.12,
+          duration: controlsRef.current.transitionDuration * 0.27,
           ease: "power2.out",
         })
         .to(curveAnim, {
           value: 0,
           zoom: 1.06,
-          duration: 1.25,
+          duration: controlsRef.current.transitionDuration * 2.78,
           ease: "power2.inOut",
         });
     };
 
-    const show = (/** @type {number} */ targetIdx) => {
+    const show = (targetIdx) => {
       if (reduceMotion) {
         fadeToIndex(targetIdx);
         return;
@@ -426,7 +422,7 @@ export default function HoverSliderComp({ items = [] }) {
 
       gsap.to(anim, {
         alpha: 1,
-        duration: 0.45,
+        duration: controlsRef.current.transitionDuration,
         ease: "power3.out",
       });
 
@@ -440,7 +436,7 @@ export default function HoverSliderComp({ items = [] }) {
         gsap.killTweensOf(anim);
         gsap.to(anim, {
           alpha: 0,
-          duration: 0.22,
+          duration: controlsRef.current.transitionDuration * 0.49,
           ease: "power2.out",
         });
         return;
@@ -451,19 +447,19 @@ export default function HoverSliderComp({ items = [] }) {
 
       gsap.to(anim, {
         alpha: 0,
-        duration: 0.35,
+        duration: controlsRef.current.transitionDuration * 0.78,
         ease: "power2.out",
       });
 
       gsap.to(curveAnim, {
         value: 0,
         zoom: 1.06,
-        duration: 0.55,
+        duration: controlsRef.current.transitionDuration * 1.22,
         ease: "power2.inOut",
       });
     };
 
-    const onRowChange = (/** @type {number} */ targetIdx) => {
+    const onRowChange = (targetIdx) => {
       releaseCurve(targetIdx);
     };
 
@@ -529,14 +525,23 @@ export default function HoverSliderComp({ items = [] }) {
         } else {
           const diff = targetIdx - floatIdx;
           const distToTarget = Math.abs(diff);
-          const t = clamp(0.18 - distToTarget * 0.06, 0.05, 0.18);
+          const durationFactor = clamp(
+            0.45 / controlsRef.current.transitionDuration,
+            0.15,
+            4
+          );
+          const t = clamp(
+            (0.18 - distToTarget * 0.06) * durationFactor,
+            0.015,
+            0.55
+          );
 
           floatIdx += diff * t;
 
           const delta = floatIdx - prevFloat;
 
-          vel.y = lerp(vel.y, delta * 60, 0.16);
-          vel.x = lerp(vel.x, 0, 0.14);
+          vel.y = lerp(vel.y, delta * 60, clamp(0.16 * durationFactor, 0.04, 0.6));
+          vel.x = lerp(vel.x, 0, clamp(0.14 * durationFactor, 0.04, 0.6));
 
           prevFloat = floatIdx;
         }
@@ -563,8 +568,9 @@ export default function HoverSliderComp({ items = [] }) {
 
           const scaleH = Math.max(0.76, 1.0 - dist * 0.06);
 
-          const sw = CW;
-          const sh = CH * scaleH;
+          const imageScaleValue = controlsRef.current.imageScale;
+          const sw = CW * imageScaleValue;
+          const sh = CH * scaleH * imageScaleValue;
 
           const baseOpacity = 0.88;
           const opacity = Math.max(0, baseOpacity - dist * 0.22) * anim.alpha;
@@ -586,7 +592,8 @@ export default function HoverSliderComp({ items = [] }) {
           meshes[i].material.uniforms.uZoom.value =
             curveAnim.zoom - clamp(1.0 - dist, 0, 1) * 0.04;
           meshes[i].material.uniforms.uPlaneSize.value.set(sw, sh);
-          meshes[i].material.uniforms.uCurvature.value = curveAnim.value;
+          meshes[i].material.uniforms.uCurvature.value =
+            curveAnim.value * controlsRef.current.curveFactor;
           meshes[i].material.uniforms.uViewport.value.set(W / 2, H / 2);
         }
 
@@ -597,7 +604,7 @@ export default function HoverSliderComp({ items = [] }) {
     loop.start();
 
     glRef.current = {
-      setActive: (/** @type {number} */ index) => {
+      setActive: (index) => {
         stateRef.current.activeIndex = index;
       },
       show,
@@ -631,7 +638,7 @@ export default function HoverSliderComp({ items = [] }) {
     };
   }, [items]);
 
-  const onEnter = useCallback((/** @type {number} */ index) => {
+  const onEnter = useCallback((index) => {
     if (isDesktopRef.current) {
       const wasHovering = stateRef.current.hovering;
 
@@ -673,7 +680,7 @@ export default function HoverSliderComp({ items = [] }) {
     }
   }, []);
 
-  const onLeave = useCallback((/** @type {import('react').PointerEvent} */ event) => {
+  const onLeave = useCallback((event) => {
     if (event.pointerType === "touch") return;
     if (stateRef.current.hasClicked) return;
 
@@ -684,7 +691,7 @@ export default function HoverSliderComp({ items = [] }) {
     glRef.current?.hide();
   }, []);
 
-  const activateRow = useCallback((/** @type {number} */ index) => {
+  const activateRow = useCallback((index) => {
     if (isDesktopRef.current) return;
 
     const wasHovering = stateRef.current.hovering;

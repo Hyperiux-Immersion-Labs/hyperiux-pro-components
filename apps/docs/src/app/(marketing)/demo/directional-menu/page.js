@@ -1,15 +1,11 @@
-import DirectionalMenu from '@/components/directional-menu'
-import React from 'react'
+import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/navigation/directional-menu/registry.json";
 
-
-const page = () => {
-  return (
-   <DirectionalMenu/>
-  )
+export default function Page() {
+  return <SuggestedEffectRemixerDemo registry={registry} slug="directional-menu" />;
 }
 
-export default page
 export async function generateMetadata() {
   return getDemoPageMetadata("directional-menu");
 }

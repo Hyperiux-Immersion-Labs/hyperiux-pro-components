@@ -25,6 +25,31 @@
   "exportKind": "default",
   "importPath": "@/components/effects/text-convergence",
   "target": "src/components/effects/text-convergence",
+  "props": [
+    {
+      "name": "bgColor",
+      "type": "color",
+      "default": "#111111",
+      "description": "Background color of the section.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
+    },
+    {
+      "name": "charRotation",
+      "type": "number",
+      "default": 20,
+      "description": "Max random rotation (degrees, plus or minus) each character starts from before flying into place.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 90, "step": 1 }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  },
   "files": [
     {
       "path": "index.jsx",
