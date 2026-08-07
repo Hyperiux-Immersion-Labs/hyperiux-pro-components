@@ -1,6 +1,5 @@
 import SpiderParticles from '@/components/spider-particles'
 import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import React from'react'
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
 

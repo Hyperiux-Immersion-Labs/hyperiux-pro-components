@@ -858,7 +858,7 @@ const routeKey = `${pathname}${
           className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showWishlistToast ? "opacity-100" : "pointer-events-none opacity-0"}`}
           onClick={() => setShowWishlistToast(false)}
         >
-          <div
+w          <div
             className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
             onClick={(event) => event.stopPropagation()}
           >

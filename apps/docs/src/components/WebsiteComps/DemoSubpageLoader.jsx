@@ -51,7 +51,12 @@ const EXCLUDED_PATHS = new Set([
   "/demo/ascend-transition",
   "/demo/ascend-transition/page2",
   "/demo/aperture-transition",
-  "/demo/aperture-transition/page2"
+  "/demo/aperture-transition/page2",
+  "/demo/sweep-lift",
+  "/demo/sweep-lift/page2",
+  "/demo/pixel-random",
+  "/demo/pixel-random/page2",
+
 ]);
 
 function formatLabel(pathname) {
