@@ -87,19 +87,19 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/scroll-shuffled-cards/index.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/index.tsx"
     },
     {
-      "path": "card.jsx",
+      "path": "card.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/scroll-shuffled-cards/card.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/card.tsx"
     },
     {
-      "path": "ScrollShuffledCardsComp.jsx",
+      "path": "ScrollShuffledCardsComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.jsx"
+      "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.tsx"
     }
   ]
 }

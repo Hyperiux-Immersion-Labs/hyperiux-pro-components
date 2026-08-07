@@ -6,10 +6,10 @@ import LinkButton from "@/components/WebsiteComps/LinkButton"
 
 export default function DeveloperCard({ group, onCtaClick }) {
     return (
-        <div className="dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] max-md:px-[4vw] max-md:py-[4vw] max-sm:px-[6vw] max-sm:py-[6vw] overflow-hidden rounded-md border border-white/5 w-full backdrop-blur-md">
+        <div className="dev-card relative flex flex-col items-start justify-between px-[2.5vw] py-[1.5vw] max-[1025px]:px-[4vw] max-[1025px]:py-[4vw] max-md:px-[6vw] max-md:py-[6vw] overflow-hidden rounded-md border border-white/5 w-full backdrop-blur-md">
             <div className="card-overlay absolute rounded-md inset-0 z-0 overflow-hidden! opacity-0">
-                <div className="blob absolute size-full left-[-10%] top-[-10%] bg-white rounded-full blur-[3vw] max-sm:blur-[10vw] max-sm:h-[200%] "></div>
-                <div className="blob absolute size-full right-[-10%] bottom-[-10%] bg-white rounded-full blur-[3vw] max-sm:blur-[10vw] max-sm:h-[200%] "></div>
+                <div className="blob absolute size-full left-[-10%] top-[-10%] bg-white rounded-full blur-[3vw] max-md:blur-[10vw] max-md:h-[200%] "></div>
+                <div className="blob absolute size-full right-[-10%] bottom-[-10%] bg-white rounded-full blur-[3vw] max-md:blur-[10vw] max-md:h-[200%] "></div>
                 {/* <div className="blob absolute size-[80%] left-[10%] bottom-[-10%] bg-white rounded-full blur-[3vw] "></div>
                 <div className="blob absolute size-[80%] right-[10%] top-[-10%] bg-white rounded-full blur-[3vw] "></div> */}
 
@@ -18,18 +18,18 @@ export default function DeveloperCard({ group, onCtaClick }) {
                 {/* <div className='solid-fill absolute inset-0 opacity-0 pointer-events-none' style={{ background: 'radial-gradient(120% 100% at 50% 100%, rgba(255, 255, 255, 1) 0%, rgba(230, 230, 230, 1) 100%)' }}></div> */}
             </div>
 
-            <div className="relative z-10 flex flex-col gap-[3vw] max-sm:gap-[4vw] w-full">
-                <p className="text34 font-heading card-title opacity-0 max-sm:font-normal font-medium tracking-tight max-md:text-[6vw] max-sm:text-[4.6vw]! max-sm:wrap-break-word">
+            <div className="relative z-10 flex flex-col gap-[3vw] max-md:gap-[4vw] w-full">
+                <p className="text34 font-heading card-title opacity-0 max-md:font-normal font-medium tracking-tight max-[1025px]:text-[6vw] max-md:text-[4.6vw]! max-md:wrap-break-word">
                     {group.title}
                 </p>
-                <p className="text-[1.3vw] max-sm:text-[4vw] max-md:text-[2.2vw] card-text opacity-0 leading-[1.4]">
+                <p className="text-[1.3vw] max-md:text-[4vw] max-[1025px]:text-[2.2vw] card-text opacity-0 leading-[1.4]">
                     {group.text}
                 </p>
             </div>
             <LinkButton
                 href={group.link || '#'}
                 onClick={onCtaClick}
-                className="card-link z-10 text-sm opacity-0 font-medium max-md:text-lg max-sm:text-base max-sm:font-normal text-black"
+                className="card-link z-10 text-sm opacity-0 font-medium max-[1025px]:text-lg max-md:text-base max-md:font-normal text-black"
             >
                 {group.cta}
             </LinkButton>

@@ -87,9 +87,9 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/char-stagger-primary-button/index.jsx"
+      "target": "src/components/effects/char-stagger-primary-button/index.tsx"
     }
   ]
 }

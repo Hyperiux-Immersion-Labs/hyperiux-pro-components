@@ -27,7 +27,7 @@
   "tier": "free",
   "exportName": "RectangularTextReveal",
   "exportKind": "default",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "props": [
     { "name": "baseColor", "type": "string", "default": "#ea580c", "description": "Base reveal rectangle color.", "remixer": { "control": "color", "group": "colors", "groupTitle": "Colors" } },
     { "name": "overlayColor", "type": "string", "default": "#ffffff", "description": "Overlay reveal rectangle color.", "remixer": { "control": "color", "group": "colors", "groupTitle": "Colors" } },
@@ -40,9 +40,9 @@
   "remixer": { "enabled": true, "defaultOpenGroupId": "colors", "layout": { "buttonClassName": "right-4! top-25!", "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" }, "copyCode": { "includeOnlyPublicProps": true } },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/rectangular-text-reveal/index.jsx"
+      "target": "src/components/effects/rectangular-text-reveal/index.tsx"
     }
   ]
 }

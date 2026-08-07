@@ -26,19 +26,19 @@
   "previewUrl": "/demo/horizontal-feature-reveal",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "HorizontalFeatureReveal",
   "exportKind": "default",
   "importPath": "@/components/effects/horizontal-feature-reveal",
   "target": "src/components/effects/horizontal-feature-reveal",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/horizontal-feature-reveal/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/horizontal-feature-reveal/index.tsx"
     },
     {
-      "path": "HorizontalFeatureRevealComp.jsx",
-      "target": "src/components/effects/horizontal-feature-reveal/HorizontalFeatureRevealComp.jsx"
+      "path": "HorizontalFeatureRevealComp.tsx",
+      "target": "src/components/effects/horizontal-feature-reveal/HorizontalFeatureRevealComp.tsx"
     }
   ],
   "props": [

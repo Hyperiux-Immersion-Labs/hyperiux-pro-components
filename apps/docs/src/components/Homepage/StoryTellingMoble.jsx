@@ -205,20 +205,20 @@ export default function StorytellingMobile() {
         <section
             ref={stmSectionRef}
             id="stm-storytelling-mobile"
-            className="stm-storytelling-section relative hidden max-md:block w-full h-[250vh] z-500 mt-[10vw] mb-[20vw]"
+            className="stm-storytelling-section relative hidden max-[1025px]:block w-full h-[250vh] z-500 mt-[10vw] mb-[20vw]"
         >
             <LineReveal
                 as="h2"
-                className="text110  w-[95vw] max-sm:w-[85vw]  mb-[10vw] mx-auto text-center"
+                className="text110  w-[95vw] max-md:w-[85vw]  mb-[10vw] mx-auto text-center"
             >
                 Explore the Moments your Website is  <span className='gradient-text-animate'>Missing.</span>
             </LineReveal>
-            <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-md:mt-4 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+            <SplitLine as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-[1025px]:mt-4 max-[1025px]:max-w-[82vw] max-[1025px]:text-sm max-md:max-w-full">
                 Hover it. Scroll it. Break it. Then copy it
             </SplitLine>
 
             <div
-                className="sticky top-0 max-sm:top-10 flex items-center justify-center w-full h-screen overflow-hidden"
+                className="sticky top-0 max-md:top-10 flex items-center justify-center w-full h-screen overflow-hidden"
             >
 
                 {/* 1. Scattered Images Layer */}
@@ -245,7 +245,7 @@ export default function StorytellingMobile() {
                 <div className="absolute inset-0 flex flex-col justify-center items-center h-full z-20 pointer-events-none px-6">
                     <h2
                         ref={stmInfoTextRef}
-                        className="text22 max-sm:text-[5.2vw]! w-[85vw] max-sm:w-[85vw] py-40 max-w-125 leading-[1.4]! text-center text-white pointer-events-auto"
+                        className="text22 max-md:text-[5.2vw]! w-[85vw] max-md:w-[85vw] py-40 max-w-125 leading-[1.4]! text-center text-white pointer-events-auto"
                         style={{
                             margin: 0,
                             visibility: "hidden",

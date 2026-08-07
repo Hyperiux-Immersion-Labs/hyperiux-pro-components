@@ -106,19 +106,19 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/depth-card-stack/index.jsx"
+      "target": "src/components/effects/depth-card-stack/index.tsx"
     },
     {
-      "path": "DepthCardStackComp.jsx",
+      "path": "DepthCardStackComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/depth-card-stack/DepthCardStackComp.jsx"
+      "target": "src/components/effects/depth-card-stack/DepthCardStackComp.tsx"
     },
     {
-      "path": "SliderCard.jsx",
+      "path": "SliderCard.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/depth-card-stack/SliderCard.jsx"
+      "target": "src/components/effects/depth-card-stack/SliderCard.tsx"
     }
   ]
 }

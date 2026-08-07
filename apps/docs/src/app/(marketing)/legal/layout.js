@@ -31,7 +31,7 @@ export default function Layout({ children }) {
       <Suspense fallback={<VaultLayoutFallback />}>
           <NavbarMobile/>
         <VaultLayout effectCounts={effectCounts} totalEffects={totalEffects}>
-          <div className=" h-fit bg-[#1111111] text-foreground px-10 max-md:px-[6vw] max-sm:px-[7vw] pb-8">
+          <div className=" h-fit bg-[#1111111] text-foreground px-10 max-[1025px]:px-[6vw] max-md:px-[7vw] pb-8">
             <React.Suspense fallback={<div className="h-12" />}>
               <VaultHeader showSearch totalEffects={totalEffects} effects={registry?.items || []} />
             </React.Suspense>

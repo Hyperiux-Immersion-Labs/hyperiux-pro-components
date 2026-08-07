@@ -1,16 +1,18 @@
 {
   "name": "@hyperiux/grid-lift",
   "version": "1.1.0",
-  "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and remixable controls.",
-  "main": "index.jsx",
+  "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "createSuspendedRaf.js",
+    "index.tsx",
+    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [
     "webgl",
     "hyperiux"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "leva": "*"
+  }
 }

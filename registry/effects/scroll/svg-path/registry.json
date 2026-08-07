@@ -31,23 +31,23 @@
   "registryDependencies": [],
   "previewUrl": "/demo/svg-path",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "SVGPath",
   "exportKind": "default",
   "importPath": "@/components/effects/svg-path",
   "target": "src/components/effects/svg-path",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/svg-path/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/svg-path/index.tsx"
     },
     {
-      "path": "SVGPathComp.jsx",
-      "target": "src/components/effects/svg-path/SVGPathComp.jsx"
+      "path": "SVGPathComp.tsx",
+      "target": "src/components/effects/svg-path/SVGPathComp.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/svg-path/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/svg-path/createSuspendedRaf.ts"
     }
   ],
   "props": [

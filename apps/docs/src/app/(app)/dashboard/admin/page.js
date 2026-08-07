@@ -3,7 +3,10 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ArrowUpRight, ChevronDown } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { Search, ArrowUpRight, ChevronDown, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
+
+const USERS_PER_PAGE = 10;
 
 function formatDate(value) {
   if (!value) return "-";
@@ -28,7 +31,22 @@ function PlanBadge({ plan }) {
   );
 }
 
-function StatusBadge({ status }) {
+// Admins don't necessarily have an active subscription row (they get full
+// access via publicMetadata.role, a separate axis from plan/status), so
+// showing them as "inactive" is wrong rather than merely unstyled - check
+// isAdmin first. For everyone else, "inactive" only ever means "never
+// subscribed" (every user gets a free/inactive row at signup - see the
+// Clerk webhook), not a lapsed subscription, so free plans read as "Free"
+// instead of a status word that implies something broke.
+function StatusBadge({ status, plan, isAdmin }) {
+  if (isAdmin) {
+    return <span className="text-xs font-medium text-[#ff5f00]">Admin</span>;
+  }
+
+  if (plan !== "pro") {
+    return <span className="text-xs text-white/40">Free</span>;
+  }
+
   const color =
     status === "active"
       ? "text-emerald-400"
@@ -36,6 +54,101 @@ function StatusBadge({ status }) {
         ? "text-blue-400"
         : "text-white/40";
   return <span className={`text-xs capitalize ${color}`}>{status || "inactive"}</span>;
+}
+
+function InviteModal({ onClose }) {
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!email) return;
+    setSending(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/admin/waitlist/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Invite failed");
+      setMessage({ type: "success", text: `Invitation sent to ${email}` });
+      setEmail("");
+    } catch (err) {
+      setMessage({ type: "error", text: err.message });
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-900 flex items-center justify-center bg-black/60 px-4 backdrop-blur-md"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+    >
+      <motion.div
+        className="relative w-full max-w-md rounded-lg border border-white/10 bg-[#0a0a0a] p-6"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+      >
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+        >
+          <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+            <span className="h-px w-4 rotate-45 bg-white" />
+            <span className="absolute h-px w-4 -rotate-45 bg-white" />
+          </div>
+        </button>
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold">Invite user</h2>
+        </div>
+        <p className="mb-8 text-sm text-white/80">
+          Send an invitation email to any address — they&apos;ll get a link
+          straight to account setup.
+        </p>
+        <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-3">
+          {/* <Mail className="h-4 w-4 shrink-0 text-white/40" /> */}
+          <input
+            type="email"
+            required
+            placeholder="name@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="min-w-60 flex-1 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+          />
+          <button
+            type="submit"
+            disabled={sending}
+            className="rounded-full px-4 py-2.5 text-xs font-medium bg-[#ff5f00] text-white transition hover:bg-[#ff6b00] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {sending ? "Sending…" : "Send Invitation"}
+          </button>
+        </form>
+        {message && (
+          <p
+            className={`mt-3 text-sm ${
+              message.type === "success" ? "text-emerald-400" : "text-red-400"
+            }`}
+          >
+            {message.text}
+          </p>
+        )}
+      </motion.div>
+    </motion.div>
+  );
 }
 
 export default function AdminPage() {
@@ -46,6 +159,19 @@ export default function AdminPage() {
   const [updatingId, setUpdatingId] = useState(null);
   const [error, setError] = useState(null);
   const [intervalByUser, setIntervalByUser] = useState({});
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    if (!showInviteModal) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [showInviteModal]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -70,6 +196,10 @@ export default function AdminPage() {
     const timer = setTimeout(fetchUsers, 300);
     return () => clearTimeout(timer);
   }, [fetchUsers]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, planFilter]);
 
   async function togglePlan(user) {
     const newPlan = user.plan === "pro" ? "free" : "pro";
@@ -106,7 +236,14 @@ export default function AdminPage() {
   const proCount = users.filter((u) => u.plan === "pro").length;
   const freeCount = users.filter((u) => u.plan === "free").length;
 
+  const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
+  const pagedUsers = users.slice(
+    (currentPage - 1) * USERS_PER_PAGE,
+    currentPage * USERS_PER_PAGE
+  );
+
   return (
+    <>
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
@@ -116,20 +253,13 @@ export default function AdminPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <Link
-            href="/dashboard/admin/waitlist"
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
-          >
-            Waitlist
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </Link>
-          <Link
-            href="/dashboard/admin/waitlist?tab=new"
+          <button
+            onClick={() => setShowInviteModal(true)}
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >
             Invite
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </Link>
+            <UserPlus className="h-3.5 w-3.5" />
+          </button>
           <Link
             href="/dashboard/admin/emails"
             className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
@@ -139,6 +269,8 @@ export default function AdminPage() {
           </Link>
         </div>
       </div>
+
+      
 
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
@@ -205,7 +337,7 @@ export default function AdminPage() {
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
+                pagedUsers.map((user) => (
                   <tr key={user.id} className="transition hover:bg-white/2">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -239,7 +371,7 @@ export default function AdminPage() {
                       <PlanBadge plan={user.plan} />
                     </td>
                     <td className="px-4 py-3">
-                      <StatusBadge status={user.status} />
+                      <StatusBadge status={user.status} plan={user.plan} isAdmin={user.isAdmin} />
                     </td>
                     <td className="px-4 py-3 text-white/60 whitespace-nowrap">
                       {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
@@ -256,17 +388,20 @@ export default function AdminPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
                         {user.plan !== "pro" && (
-                          <select
-                            value={intervalByUser[user.id] || "yearly"}
-                            onChange={(e) =>
-                              setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
-                            }
-                            disabled={updatingId === user.id}
-                            className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 px-3 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
-                          >
-                            <option value="monthly">1 month</option>
-                            <option value="yearly">1 year</option>
-                          </select>
+                          <div className="relative">
+                            <select
+                              value={intervalByUser[user.id] || "yearly"}
+                              onChange={(e) =>
+                                setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
+                              }
+                              disabled={updatingId === user.id}
+                              className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
+                            >
+                              <option value="monthly">1 month</option>
+                              <option value="yearly">1 year</option>
+                            </select>
+                            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
+                          </div>
                         )}
                         <button
                           onClick={() => togglePlan(user)}
@@ -292,6 +427,40 @@ export default function AdminPage() {
           </table>
         </div>
       </div>
+
+      {!loading && users.length > 0 && (
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm text-white/45">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={currentPage === 1}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Previous page"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              disabled={currentPage === totalPages}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Next page"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
+    <AnimatePresence>
+      {showInviteModal && (
+        <InviteModal onClose={() => setShowInviteModal(false)} />
+      )}
+    </AnimatePresence>
+    </>
   );
 }

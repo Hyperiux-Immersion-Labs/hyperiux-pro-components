@@ -19,23 +19,23 @@
   "registryDependencies": [],
   "previewUrl": "/demo/scroll-shuffled-cards",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ScrollShuffledCards",
   "exportKind": "default",
   "importPath": "@/components/effects/scroll-shuffled-cards",
   "target": "src/components/effects/scroll-shuffled-cards",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/scroll-shuffled-cards/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/scroll-shuffled-cards/index.tsx"
     },
     {
-      "path": "ScrollShuffledCardsComp.jsx",
-      "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.jsx"
+      "path": "ScrollShuffledCardsComp.tsx",
+      "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.tsx"
     },
     {
-      "path": "card.jsx",
-      "target": "src/components/effects/scroll-shuffled-cards/card.jsx"
+      "path": "card.tsx",
+      "target": "src/components/effects/scroll-shuffled-cards/card.tsx"
     }
   ],
   "props": [

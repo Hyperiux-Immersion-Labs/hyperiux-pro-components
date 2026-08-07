@@ -193,7 +193,7 @@ export default function Hero() {
   );
 
   return (
-    <section className="pointer-events-none relative z-20 flex h-screen w-full max-md:w-screen max-md:h-fit max-md:py-[35vw]! max-sm:py-[30vw]! items-center self-padd">
+    <section className="pointer-events-none relative z-20 flex h-screen w-full max-[1025px]:w-screen max-[1025px]:h-fit max-[1025px]:py-[35vw]! max-[1025px]:py-[30vw]! items-center self-padd">
       <Image
         src="/landing-page/hero-bg.webp"
         alt="hero-background image"
@@ -202,14 +202,14 @@ export default function Hero() {
         priority
         fetchPriority="high"
         sizes="100vw"
-        className="pointer-events-none -z-10 hidden object-cover max-md:block"
+        className="pointer-events-none -z-10 hidden object-cover max-[1025px]:block"
       />
 
       <div
         ref={containerRef}
-        className="relative z-2 mt-[2vw] space-y-[2vw] max-md:mt-0 max-md:space-y-[10vw] max-sm:space-y-[12vw]"
+        className="relative z-2 mt-[2vw] space-y-[2vw] max-[1025px]:mt-0 max-[1025px]:space-y-[10vw] max-[1025px]:space-y-[12vw]"
       >
-        <div className="flex flex-col h-fit w-full items-start max-md:flex-col max-sm:items-start max-sm:gap-2 max-md:gap-5 max-sm:justify-start">
+        <div className="flex flex-col h-fit w-full items-start max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-2 max-[1025px]:gap-5 max-[1025px]:justify-start">
           <p
             ref={labelRef}
             className="text20 font-medium text-[#cdcdcd]"
@@ -219,7 +219,7 @@ export default function Hero() {
 
           <h1
             ref={headingRef}
-            className="relative text120 mt-[1vw] w-fit capitalize max-sm:font-medium! font-semibold max-md:w-[90%] max-sm:w-[95%] max-md:indent-0!"
+            className="relative text120 mt-[1vw] w-fit capitalize max-[1025px]:font-medium! font-semibold max-[1025px]:w-[90%] max-[1025px]:w-[95%] max-[1025px]:indent-0!"
           >
             The Interaction Layer your
             <br />
@@ -229,17 +229,18 @@ export default function Hero() {
 
         <p
           ref={descRef}
-          className="text24 w-[40vw]  text-[#C9C9C9] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left"
+          className="text24 w-[40vw]  text-[#C9C9C9] max-[1025px]:w-[80%] max-[1025px]:w-full max-[1025px]:text-left max-[1025px]:text-left"
         >
           Source-first scroll systems, cursor effects, text reveals, page transitions, loaders backgrounds, and WebGL scenes for React and Next.js. Start with 30+ Free Core effects today.
         </p>
 
         <div
           ref={buttonWrapRef}
-          className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-[88%] gap-[1vw] max-md:gap-5"
+          className="pointer-events-auto flex max-[1025px]:pt-4 max-[1025px]:flex-col w-fit max-[1025px]:w-[88%] gap-[1vw] max-[1025px]:gap-5"
         >
           <Button
             text="Browse Free Effects"
+            id={"browse-free-effects-hero"}
             href="/effects/free"
             variant="black"
             className="border-white/40 bg-[#0e0e0e]!"
@@ -247,6 +248,7 @@ export default function Hero() {
 
           <Button
             text="Upgrade to Pro"
+            id={"upgrade-to-pro-hero"}
             href="/sign-up"
             variant="orange"
             scrollOffset={-1000}
@@ -255,16 +257,16 @@ export default function Hero() {
 
         <p
           ref={shimmerRef}
-          className="shimmer-text flex items-center max-sm:items-start gap-[0.5vw] max-md:mt-[-3vw] max-sm:mt-[-6vw] max-sm:pl-0 max-md:pl-2 text-[#939393] leading-none max-sm:justify-center max-md:gap-2"
+          className="shimmer-text flex items-center max-[1025px]:items-start gap-[0.5vw] max-[1025px]:mt-[-3vw] max-[1025px]:mt-[-6vw] max-[1025px]:pl-0 max-[1025px]:pl-2 text-[#939393] leading-none max-[1025px]:justify-center max-[1025px]:gap-2"
         >
-          <span className="inline-block size-[0.9vw] shrink-0 text-[#939393] max-md:size-3">
+          <span className="inline-block size-[0.9vw] shrink-0 text-[#939393] max-[1025px]:size-3">
             <UnlockIcon className="h-full w-full" />
           </span>
 
           <ShimmerText
             baseColor="#939393"
             shimmerColor="#ffffff"
-            className="max-sm:text-[3.5vw] capitalize leading-[1.2]"
+            className="max-[1025px]:text-[3.5vw] capitalize leading-[1.2]"
           >
             115 effects · 32 free · 83 Pro · React + Next.js · CLI install ·
             Source-first code

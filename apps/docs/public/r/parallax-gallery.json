@@ -105,14 +105,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/parallax-gallery/index.jsx"
+      "target": "src/components/effects/parallax-gallery/index.tsx"
     },
     {
-      "path": "ParallaxGallery.jsx",
+      "path": "ParallaxGallery.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/parallax-gallery/ParallaxGallery.jsx"
+      "target": "src/components/effects/parallax-gallery/ParallaxGallery.tsx"
     }
   ]
 }

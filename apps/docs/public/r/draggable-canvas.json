@@ -121,24 +121,24 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/draggable-canvas/index.jsx"
+      "target": "src/components/effects/draggable-canvas/index.tsx"
     },
     {
-      "path": "DragCursor.jsx",
+      "path": "DragCursor.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/draggable-canvas/DragCursor.jsx"
+      "target": "src/components/effects/draggable-canvas/DragCursor.tsx"
     },
     {
-      "path": "MaskedContainer.jsx",
+      "path": "MaskedContainer.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/draggable-canvas/MaskedContainer.jsx"
+      "target": "src/components/effects/draggable-canvas/MaskedContainer.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
+      "path": "createSuspendedRaf.ts",
       "type": "registry:component",
-      "target": "src/components/effects/draggable-canvas/createSuspendedRaf.js"
+      "target": "src/components/effects/draggable-canvas/createSuspendedRaf.ts"
     }
   ]
 }

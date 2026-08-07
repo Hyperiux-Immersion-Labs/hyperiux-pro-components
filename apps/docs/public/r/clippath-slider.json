@@ -179,14 +179,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/clippath-slider/index.jsx"
+      "target": "src/components/effects/clippath-slider/index.tsx"
     },
     {
-      "path": "ClippathSliderComp.jsx",
+      "path": "ClippathSliderComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/clippath-slider/ClippathSliderComp.jsx"
+      "target": "src/components/effects/clippath-slider/ClippathSliderComp.tsx"
     }
   ]
 }

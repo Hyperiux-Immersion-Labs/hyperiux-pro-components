@@ -98,9 +98,9 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/char-stagger-button/index.jsx"
+      "target": "src/components/effects/char-stagger-button/index.tsx"
     }
   ]
 }

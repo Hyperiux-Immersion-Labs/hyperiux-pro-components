@@ -94,14 +94,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/stacking-cards/index.jsx"
+      "target": "src/components/effects/stacking-cards/index.tsx"
     },
     {
-      "path": "StackingCardComp.jsx",
+      "path": "StackingCardComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/stacking-cards/StackingCardComp.jsx"
+      "target": "src/components/effects/stacking-cards/StackingCardComp.tsx"
     }
   ]
 }

@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { GlobalSearch } from "./SearchBar";
 import { useEffect, useState } from "react";
 import Button from "@/components/WebsiteComps/Button";
-
+ 
 // Dynamic so ProfileDropDown's Clerk imports never load on marketing routes -
 // it only renders when isSignedIn, which is always false there.
 const ProfileDropdown = dynamic(() => import("./ProfileDropDown"), {
@@ -136,14 +136,14 @@ export function VaultHeader({
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-10 py-5 pr-[3.6vw] max-md:z-600 max-md:hidden max-md:px-6 max-sm:px-4 ${
+        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-10 py-5 pr-[3.6vw] max-[1025px]:z-600 max-[1025px]:hidden max-[1025px]:px-6 max-md:px-4 ${
           isScrolled ? "bg-black/20 shadow-md backdrop-blur-sm" : ""
         }`}
       >
         <div className="flex h-full items-center justify-end gap-3">
           <Link
             href="/effects"
-            className="hidden items-center gap-3 max-md:flex"
+            className="hidden items-center gap-3 max-[1025px]:flex"
             onClick={closeMobileMenu}
           >
             <Image
@@ -162,7 +162,7 @@ export function VaultHeader({
             />
           </Link>
 
-          <div className="hidden items-center gap-2 max-md:ml-auto max-md:flex">
+          <div className="hidden items-center gap-2 max-[1025px]:ml-auto max-[1025px]:flex">
             <button
               type="button"
               onClick={() => {
@@ -178,7 +178,7 @@ export function VaultHeader({
               {isMobileMenuOpen ? (
                 <X className="h-5 w-5" />
               ) : (
-                <Menu className="h-5 w-5 max-md:h-10 max-md:w-10 max-sm:h-7 max-sm:w-7" />
+                <Menu className="h-5 w-5 max-[1025px]:h-10 max-[1025px]:w-10 max-md:h-7 max-md:w-7" />
               )}
             </button>
           </div>
@@ -188,7 +188,7 @@ export function VaultHeader({
               <button
                 type="button"
                 onClick={openSearch}
-                className="group flex h-12 cursor-pointer items-center gap-10 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:text-white max-md:hidden max-md:gap-3"
+                className="group flex py-[0.8vw] cursor-pointer items-center gap-10 rounded-full border border-white/40 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-white max-[1025px]:hidden max-[1025px]:gap-3"
                 aria-label="Search effects"
               >
                 <div className="flex items-center gap-2">
@@ -206,18 +206,20 @@ export function VaultHeader({
                     />
                   </svg>
 
-                  <span className="text-sm max-md:hidden">Search</span>
+                  <span className="text-sm max-[1025px]:hidden">Search</span>
                 </div>
 
-                <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
+                <kbd className="space-x-2 rounded bg-black/70 px-1 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
                   ⌘K
                 </kbd>
               </button>
             )}
 
-           {isLoaded && !hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && <div className="block max-md:hidden">
+           {isLoaded && !hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && <div className="block max-[1025px]:hidden">
               <Button
                 text="Upgrade to Pro"
+              id={"upgrade-to-pro-navbar"}
+
                 href="/pricing"
                 className="border-white/50!"
                 variant="outline2"
@@ -228,16 +230,18 @@ export function VaultHeader({
 
             {isLoaded && (!isSignedIn ? (
               !isEffectCategoryPage && (
-                <div className="block max-md:hidden">
+                <div className="block max-[1025px]:hidden">
                   <Button
                     text="Browse Free Effects"
+              id={"browse-free-effects-navbar"}
+
                     href="/effects/free"
                     variant="orange"
                   />
                 </div>
               )
             ) : (
-              <div className="max-md:hidden">
+              <div className="max-[1025px]:hidden">
                 <ProfileDropdown savedCount={wishlistCount} plan={user?.publicMetadata?.plan || "free"} />
               </div>
             ))}
@@ -251,7 +255,7 @@ export function VaultHeader({
             <motion.button
               type="button"
               aria-label="Close mobile menu overlay"
-              className="fixed inset-0 z-600 bg-black/60 max-md:block"
+              className="fixed inset-0 z-600 bg-black/60 max-[1025px]:block"
               onClick={() => {
                 closeMobileMenu();
                 closeMobileDropdowns();
@@ -263,7 +267,7 @@ export function VaultHeader({
             />
 
             <motion.div
-              className="fixed right-0 top-0 z-600 h-screen max-w-90 overflow-y-auto border-l border-white/10 bg-[#060606] px-4 py-5 text-white shadow-2xl max-md:block max-md:w-180 max-sm:w-[88vw]"
+              className="fixed right-0 top-0 z-600 h-screen max-w-90 overflow-y-auto border-l border-white/10 bg-[#060606] px-4 py-5 text-white shadow-2xl max-[1025px]:block max-[1025px]:w-180 max-md:w-[88vw]"
               initial={{ x: "100%", opacity: 0.9 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "100%", opacity: 0.9 }}
@@ -287,7 +291,7 @@ export function VaultHeader({
                     alt="Hyperiux"
                     width={128}
                     height={37}
-                    className="h-auto w-28 max-md:w-40 max-sm:w-28"
+                    className="h-auto w-28 max-[1025px]:w-40 max-md:w-28"
                   />
                 </Link>
 
@@ -329,7 +333,7 @@ export function VaultHeader({
                   <button
                     type="button"
                     onClick={openSearchFromMobile}
-                    className="group flex h-12 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:text-white max-sm:h-14"
+                    className="group flex py-4 w-full cursor-pointer items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:text-white max-md:h-14"
                   >
                     <div className="flex items-center gap-2">
                       <svg
@@ -345,7 +349,7 @@ export function VaultHeader({
                           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                         />
                       </svg>
-                      <span className="text-sm max-sm:text-lg">Search</span>
+                      <span className="text-sm max-md:text-lg">Search</span>
                     </div>
                     <kbd className="space-x-2 rounded bg-black/40 px-1 py-0.5 text-sm text-current opacity-50">
                       ⌘K
@@ -361,7 +365,7 @@ export function VaultHeader({
                   <Link
                     href="/effects"
                     onClick={closeMobileMenu}
-                    className="flex w-full items-center rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35 max-md:text-lg max-sm:text-xs"
+                    className="flex w-full items-center rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35 max-[1025px]:text-lg max-md:text-xs"
                   >
                     Overview
                   </Link>
@@ -374,7 +378,7 @@ export function VaultHeader({
                       setIsCategoriesOpen((value) => !value);
                       setIsDocumentationOpen(false);
                     }}
-                    className="flex w-full items-center justify-between rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35 max-md:text-lg max-sm:text-xs"
+                    className="flex w-full items-center justify-between rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35 max-[1025px]:text-lg max-md:text-xs"
                     aria-expanded={isCategoriesOpen}
                   >
                     <span>Categories</span>
@@ -394,7 +398,7 @@ export function VaultHeader({
                         transition={{ duration: 0.24, ease: "easeOut" }}
                         className="overflow-hidden"
                       >
-                        <div className="space-y-1 overflow-y-auto pr-1 max-md:max-h-130 max-sm:max-h-72">
+                        <div className="space-y-1 overflow-y-auto pr-1 max-[1025px]:max-h-130 max-md:max-h-72">
                           {effectCategories.map((category) => (
                             <Link
                               key={category.id}
@@ -403,7 +407,7 @@ export function VaultHeader({
                                 closeMobileMenu();
                                 closeMobileDropdowns();
                               }}
-                              className="block rounded-2xl px-4 py-3 text-sm text-white/75 transition hover:bg-white/5 hover:text-white max-md:text-xl max-sm:text-sm"
+                              className="block rounded-2xl px-4 py-3 text-sm text-white/75 transition hover:bg-white/5 hover:text-white max-[1025px]:text-xl max-md:text-sm"
                             >
                               {categoryLabel(category)}
                             </Link>
@@ -421,7 +425,7 @@ export function VaultHeader({
                       setIsDocumentationOpen((value) => !value);
                       setIsCategoriesOpen(false);
                     }}
-                    className="flex w-full items-center justify-between rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35 max-md:text-lg max-sm:text-xs"
+                    className="flex w-full items-center justify-between rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35 max-[1025px]:text-lg max-md:text-xs"
                     aria-expanded={isDocumentationOpen}
                   >
                     <span>Documentation</span>
@@ -450,7 +454,7 @@ export function VaultHeader({
                                 closeMobileMenu();
                                 closeMobileDropdowns();
                               }}
-                              className="block rounded-2xl px-4 py-3 text-sm text-white/75 transition hover:bg-white/5 hover:text-white max-md:text-xl max-sm:text-sm"
+                              className="block rounded-2xl px-4 py-3 text-sm text-white/75 transition hover:bg-white/5 hover:text-white max-[1025px]:text-xl max-md:text-sm"
                             >
                               {link.label}
                             </Link>

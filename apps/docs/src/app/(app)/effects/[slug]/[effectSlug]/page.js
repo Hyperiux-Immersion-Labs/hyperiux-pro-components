@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
 import { getAllPrivateEffects, getEffectMetadata, getEffectSource } from "@/lib/registry";
@@ -11,6 +11,7 @@ import {
 } from "@/lib/sanity";
 import { getUserPlan } from "@/lib/subscription";
 import { getEffectAccessDecision } from "@/lib/effect-access";
+import { getEffectCategoryBySlug } from "@/lib/categories";
 import { EffectDetailContent } from "../effect-detail";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
@@ -225,6 +226,28 @@ export default async function EffectPage({ params }) {
 
   if (!content && !effectMeta) {
     notFound();
+  }
+
+  // getSanityEffectContent only matches when the URL's category segment is
+  // (an alias of) the effect's real category - any other category string
+  // still resolves here via getFallbackContent, which is built from the
+  // registry alone and ignores the URL entirely. Without this check, every
+  // effect silently renders under any category (real, stale, or made up),
+  // which is both a duplicate-content SEO problem and how old/renamed
+  // category links (e.g. spider-particles under the pre-rename
+  // "cursor-effects") kept working indefinitely instead of consolidating to
+  // the current canonical URL.
+  const canonicalCategorySlugRaw =
+    content?.categorySlug || effectMeta?.category || effectMeta?.categories?.[0] || null;
+
+  if (canonicalCategorySlugRaw) {
+    const canonicalSlug =
+      getEffectCategoryBySlug(canonicalCategorySlugRaw)?.slug || canonicalCategorySlugRaw;
+    const requestedSlug = getEffectCategoryBySlug(slug)?.slug || slug;
+
+    if (requestedSlug !== canonicalSlug) {
+      permanentRedirect(`/effects/${canonicalSlug}/${effectSlug}`);
+    }
   }
 
   const { userId } = await auth();

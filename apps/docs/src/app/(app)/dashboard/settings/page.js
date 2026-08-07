@@ -318,7 +318,7 @@ export default function SettingsPage() {
                     type={showCurrentPw ? "text" : "password"}
                     autoComplete="current-password"
                     className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
-                    placeholder="••••••••"
+                    placeholder="Enter your current password"
                   />
                   <button
                     type="button"
@@ -339,7 +339,7 @@ export default function SettingsPage() {
                     type={showNewPw ? "text" : "password"}
                     autoComplete="new-password"
                     className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
-                    placeholder="••••••••"
+                    placeholder="Enter your new password"
                   />
                   <button
                     type="button"
@@ -356,7 +356,7 @@ export default function SettingsPage() {
                 type="button"
                 onClick={handleForgotPassword}
                 disabled={sendingOtp}
-                className="inline-flex items-center gap-2 text-sm text-[#ff5f00] hover:text-[#ff9253] transition duration-300 disabled:opacity-50"
+                className="inline-flex w-fit items-center gap-2 text-sm text-[#ff5f00] hover:text-[#ff9253] transition duration-300 disabled:opacity-50"
               >
                 {sendingOtp && <Loader2 className="h-3 w-3 animate-spin" />}
                 Forgot password?
@@ -404,7 +404,7 @@ export default function SettingsPage() {
                     value={resetNewPassword}
                     onChange={(e) => setResetNewPassword(e.target.value)}
                     className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
-                    placeholder="••••••••"
+                    placeholder="Enter your new password"
                   />
                   <button
                     type="button"

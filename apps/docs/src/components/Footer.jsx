@@ -4,8 +4,8 @@ import React from 'react'
 
 const Footer = () => {
   return (
-     <footer className="relative overflow-hidden rounded-3xl border border-border/60 bg-[#555555]/33 backdrop-blur-md max-sm:px-6 pt-10 pb-5 px-12">
-          <div className="relative z-10 flex flex-col items-center text-center max-sm:gap-2">
+     <footer className="relative overflow-hidden rounded-3xl border border-border/60 bg-[#555555]/33 backdrop-blur-md max-md:px-6 pt-10 pb-5 px-12">
+          <div className="relative z-10 flex flex-col items-center text-center max-md:gap-2">
             <div className="mb-3 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl text-xl font-bold text-black">
                 <Image src="/hyperiux.svg" alt="Hyperiux" width={30} height={30} />
@@ -13,7 +13,7 @@ const Footer = () => {
               <h2 className="text-3xl font-semibold tracking-tight text-white">Hyperiux Vault</h2>
             </div>
 
-            <p className="max-w-[20vw] max-sm:max-w-[80vw] text-lg leading-[1.4]">
+            <p className="max-w-[20vw] max-md:max-w-[80vw] text-lg leading-[1.4]">
               Crafting futuristic UI experiences for modern teams.
             </p>
 
@@ -32,17 +32,17 @@ const Footer = () => {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4 text-sm text-zinc-300 md:gap-8">
               {["Overview", "Components", "Templates", "Pricing", "Documentation", "Blog", "Contact"].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <Link prefetch={false} href="#" className="cursor-pointer text-base max-sm:text-lg transition hover:text-primary">
+                  <Link prefetch={false} href="#" className="cursor-pointer text-base max-md:text-lg transition hover:text-primary">
                     {item}
                   </Link>
-                  {i !== 6 && <span className="text-primary max-sm:text-xl">•</span>}
+                  {i !== 6 && <span className="text-primary max-md:text-xl">•</span>}
                 </div>
               ))}
             </div>
 
-            <div className="mt-5 max-sm:pb-2 flex w-full flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-sm text-zinc-500 md:flex-row max-sm:text-base max-sm:gap-4">
+            <div className="mt-5 max-md:pb-2 flex w-full flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-sm text-zinc-500 md:flex-row max-md:text-base max-md:gap-4">
               <p>© 2026 Hyperiux Vault. All rights reserved.</p>
-              <div className="flex items-center max-sm:text-sm gap-5">
+              <div className="flex items-center max-md:text-sm gap-5">
                 <span className="cursor-pointer transition hover:text-white">Terms of Use</span>
                 <span>|</span>
                 <span className="cursor-pointer transition hover:text-white">Privacy Policy</span>

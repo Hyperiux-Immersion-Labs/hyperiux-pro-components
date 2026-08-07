@@ -23,19 +23,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/grid-lift",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "GridLift",
   "exportKind": "default",
   "importPath": "@/components/effects/grid-lift",
   "target": "src/components/effects/grid-lift",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/grid-lift/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/grid-lift/index.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/grid-lift/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/grid-lift/createSuspendedRaf.ts"
     }
   ],
   "props": [

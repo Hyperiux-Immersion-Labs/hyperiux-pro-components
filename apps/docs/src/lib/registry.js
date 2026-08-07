@@ -140,7 +140,9 @@ function attachPrivateFileContent(effect, effectDir) {
           .readdirSync(effectDir)
           .filter(
             (f) =>
-              (f.endsWith(".jsx") ||
+              (f.endsWith(".tsx") ||
+                f.endsWith(".ts") ||
+                f.endsWith(".jsx") ||
                 f.endsWith(".js") ||
                 f.endsWith(".css")) &&
               f !== "registry.json"
@@ -195,6 +197,15 @@ export function getRegistryIndex() {
   const content = fs.readFileSync(indexPath, "utf-8");
 
   return JSON.parse(content);
+}
+
+// public/r/index.json (what getRegistryIndex() reads) has no `tier` field on
+// its items, so free-tier counts can't be derived from it - only the private
+// registry.json files under registry/effects/** carry `tier`. Used to keep
+// "free accounts get N effects" messaging in sync with the actual catalog
+// instead of a number that drifts every time a free effect ships.
+export function getFreeEffectsCount() {
+  return getAllPrivateEffects().filter((effect) => effect.tier !== "pro").length;
 }
 
 // Metadata only - never reads Pro source file contents off disk. Safe to
@@ -326,8 +337,12 @@ export function getEffectCode(slug) {
   }
 
   const primary =
+    effect.files.find((file) => file.path === `${slug}.tsx`) ||
+    effect.files.find((file) => file.path === `${slug}.ts`) ||
     effect.files.find((file) => file.path === `${slug}.jsx`) ||
     effect.files.find((file) => file.path === `${slug}.js`) ||
+    effect.files.find((file) => file.path.endsWith(".tsx")) ||
+    effect.files.find((file) => file.path.endsWith(".ts")) ||
     effect.files.find((file) => file.path.endsWith(".jsx")) ||
     effect.files.find((file) => file.path.endsWith(".js")) ||
     effect.files[0];

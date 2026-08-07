@@ -32,19 +32,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/stacking-cards",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "StackingCards",
   "exportKind": "default",
   "importPath": "@/components/effects/stacking-cards",
   "target": "src/components/effects/stacking-cards",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/stacking-cards/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/stacking-cards/index.tsx"
     },
     {
-      "path": "StackingCardComp.jsx",
-      "target": "src/components/effects/stacking-cards/StackingCardComp.jsx"
+      "path": "StackingCardComp.tsx",
+      "target": "src/components/effects/stacking-cards/StackingCardComp.tsx"
     }
   ],
   "props": [

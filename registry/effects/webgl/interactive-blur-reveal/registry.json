@@ -15,7 +15,7 @@
   "previewUrl": "/demo/interactive-blur-reveal",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "InteractiveBlurReveal",
   "exportKind": "default",
   "importPath": "@/components/effects/interactive-blur-reveal",
@@ -38,16 +38,16 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/interactive-blur-reveal/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/interactive-blur-reveal/index.tsx"
     },
     {
-      "path": "webgl-context-recovery.js",
-      "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.js"
+      "path": "webgl-context-recovery.ts",
+      "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.ts"
     }
   ]
 }

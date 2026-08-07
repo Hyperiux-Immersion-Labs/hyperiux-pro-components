@@ -3,6 +3,7 @@ import AuthShell from "@/components/auth/AuthShell";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import Navbar from "@/components/WebsiteComps/Navbar";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
+import { getSearchIndexEffects } from "@/lib/search-index";
 
 export const metadata = createPageMetadata({
   title: "Sign In | Hyperiux Vault",
@@ -15,14 +16,16 @@ export const metadata = createPageMetadata({
   },
 });
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const effects = await getSearchIndexEffects();
+
   return (
     <>
-    <Navbar/>
+    <Navbar effects={effects}/>
     <NavbarMobile/>
     
     <AuthShell>
-     <div className="hyperiux-clerk mx-auto w-[40vw] max-md:w-[90vw] max-sm:w-full">
+     <div className="hyperiux-clerk mx-auto w-[40vw] max-[1025px]:w-[90vw] max-md:w-full">
         <SignIn
           path="/sign-in"
           routing="path"

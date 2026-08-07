@@ -13,7 +13,7 @@
   "previewUrl": "/demo/animated-faq",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "AnimatedFaq",
   "exportKind": "default",
   "importPath": "@/components/effects/animated-faq",
@@ -82,12 +82,12 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/animated-faq/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/animated-faq/index.tsx"
     },
     {
-      "path": "AnimatedFaqComp.jsx",
-      "target": "src/components/effects/animated-faq/AnimatedFaqComp.jsx"
+      "path": "AnimatedFaqComp.tsx",
+      "target": "src/components/effects/animated-faq/AnimatedFaqComp.tsx"
     }
   ],
   "changelog": [

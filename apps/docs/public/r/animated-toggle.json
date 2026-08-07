@@ -100,24 +100,24 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-toggle/index.jsx"
+      "target": "src/components/effects/animated-toggle/index.tsx"
     },
     {
-      "path": "ChevronBird.jsx",
+      "path": "ChevronBird.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-toggle/ChevronBird.jsx"
+      "target": "src/components/effects/animated-toggle/ChevronBird.tsx"
     },
     {
-      "path": "Cross.jsx",
+      "path": "Cross.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-toggle/Cross.jsx"
+      "target": "src/components/effects/animated-toggle/Cross.tsx"
     },
     {
-      "path": "Plus.jsx",
+      "path": "Plus.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-toggle/Plus.jsx"
+      "target": "src/components/effects/animated-toggle/Plus.tsx"
     }
   ]
 }

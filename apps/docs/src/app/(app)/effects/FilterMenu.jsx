@@ -176,9 +176,9 @@ export function FilterMenu({
         aria-expanded={open}
         aria-label="Filter effects"
         className={`
-          px-6 py-2.5 text-md relative rounded-full max-sm:px-5 max-sm:py-2
+          px-6 py-2.5 text-md relative rounded-full max-md:px-5 max-md:py-2
           backdrop-blur-[6px] font-sans flex items-center justify-center
-          cursor-pointer transition-colors duration-300 max-sm:text-lg text20
+          cursor-pointer transition-colors duration-300 max-md:text-lg text20
           ${
             activeFilter
               ? "gap-2 bg-white text-[#111111] hover:bg-white"

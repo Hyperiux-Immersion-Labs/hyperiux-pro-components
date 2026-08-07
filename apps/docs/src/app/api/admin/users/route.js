@@ -50,6 +50,14 @@ export async function GET(request) {
 
     let users = (subscriptions || []).map((sub) => {
       const clerkUser = clerkMap[sub.clerk_user_id];
+      const isAdmin = clerkUser?.publicMetadata?.role === "admin";
+
+      // Supabase is the source of truth once a subscriptions row exists (see
+      // getUserPlan()'s comment on why an expired/free row is never overridden
+      // by Clerk metadata for *pro access* purposes) - but admins are a
+      // separate axis entirely: publicMetadata.role is the only place that
+      // lives, so it has to be read from Clerk directly rather than expecting
+      // a matching Supabase row to exist for it.
       return {
         id: sub.clerk_user_id,
         email: clerkUser?.emailAddresses?.[0]?.emailAddress || null,
@@ -58,6 +66,7 @@ export async function GET(request) {
         joinedAt: clerkUser?.createdAt || sub.created_at,
         plan: sub.plan || "free",
         status: sub.status || "inactive",
+        isAdmin,
         billingInterval: sub.billing_interval || null,
         planValidUntil: sub.current_period_end || null,
         razorpayCustomerId: sub.razorpay_customer_id || null,

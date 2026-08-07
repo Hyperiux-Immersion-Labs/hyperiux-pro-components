@@ -5,7 +5,7 @@ import InertiaScrollEffectComp from './InertiaScrollEffectComp'
 const Content = () => (
   <main className="relative min-h-screen bg-[#f4f4f1] text-black overflow-hidden">
 
-    <div className="absolute top-[32%]  left-1/2 hidden max-sm:flex -translate-x-1/2 -translate-y-1/2 w-[75%] text-center">
+    <div className="absolute top-[32%]  left-1/2 hidden max-md:flex -translate-x-1/2 -translate-y-1/2 w-[75%] text-center">
       <p className="rounded-xl bg-black/10 px-5 py-3 text-base leading-[1.2] text-black backdrop-blur-sm">
         This experience is built around scrolling. <br />
         Open on desktop for the full effect
@@ -13,7 +13,7 @@ const Content = () => (
     </div>
 
     {/* nav */}
-    <nav className="absolute top-0 left-0 z-20 flex w-full items-center justify-between px-8 py-6 font-mono text-[12px]  uppercase max-sm:text-[3.5vw]">
+    <nav className="absolute top-0 left-0 z-20 flex w-full items-center justify-between px-8 py-6 font-mono text-[12px]  uppercase max-md:text-[3.5vw]">
       <p>Smooth</p>
       <p>Animation</p>
       <p>Scroll</p>
@@ -23,7 +23,7 @@ const Content = () => (
     {/* content */}
     <section className="flex min-h-screen items-end px-8 pb-8">
       <div>
-        <h1 className="font-mono text-[12vh] max-sm:text-[15vw] leading-none w-[40vw] font-black uppercase">
+        <h1 className="font-mono text-[12vh] max-md:text-[15vw] leading-none w-[40vw] font-black uppercase">
           Smooth
           <br />
           Animation

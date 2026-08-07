@@ -12,7 +12,7 @@
   "registryDependencies": [],
   "previewUrl": "/demo/dither-canvas",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "DitherCanvas",
   "exportKind": "default",
   "importPath": "@/components/effects/dither-canvas",
@@ -139,12 +139,12 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/dither-canvas/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/dither-canvas/index.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/dither-canvas/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/dither-canvas/createSuspendedRaf.ts"
     }
   ]
 }

@@ -25,7 +25,7 @@ function Tick() {
     <svg
       viewBox="0 0 18 18"
       fill="none"
-      className="w-[1.1vw] h-[1.1vw] max-md:w-4 max-md:h-4 shrink-0"
+      className="w-[1.1vw] h-[1.1vw] max-[1025px]:w-4 max-[1025px]:h-4 shrink-0"
       aria-hidden="true"
     >
       <path
@@ -40,14 +40,14 @@ function Tick() {
 }
 
 function Dash() {
-  return <span className="text-white/25 text-[1.1vw] max-md:text-base">-</span>;
+  return <span className="text-white/25 text-[1.1vw] max-[1025px]:text-base">-</span>;
 }
 
 function Cell({ value, highlight = false }) {
   if (value === true) return <span className="text-white"><Tick /></span>;
   if (!value) return <Dash />;
   return (
-    <span className={`text24 max-md:text-[3.5vw] max-sm:text-sm leading-snug ${highlight ? "text-[#ff5f00] font-medium" : "text-white/50"}`}>
+    <span className={`text24 max-[1025px]:text-[3.5vw] max-md:text-sm leading-snug ${highlight ? "text-[#ff5f00] font-medium" : "text-white/50"}`}>
       {value}
     </span>
   );
@@ -55,29 +55,29 @@ function Cell({ value, highlight = false }) {
 
 export default function PricingCompareTable() {
   return (
-    <section className="w-screen overflow-hidden bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-md:px-0 max-md:py-[16vw]">
+    <section className="w-screen overflow-hidden bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-[1025px]:px-0 max-[1025px]:py-[16vw]">
 
       {/* Heading */}
       <LineReveal
         as="h2"
-        className="text110 text-center mb-[6vw] max-md:mb-[12vw] w-[75vw] max-md:w-full mx-auto"
+        className="text110 text-center mb-[6vw] max-[1025px]:mb-[12vw] w-[75vw] max-[1025px]:w-full mx-auto"
       >
         Free vs. Pro, feature by feature.
       </LineReveal>
 
       {/* Table card */}
-      <div className="w-full h-fit max-md:overflow-x-scroll max-md:pb-[7vw] max-md:px-[7vw] fadeup">
-        <div className="mx-auto w-full max-w-[82vw]  rounded-lg border border-white/8 overflow-hidden  max-sm:max-w-[240vw] max-sm:w-[240vw] max-md:max-w-[150vw] max-md:w-[150vw]">
+      <div className="w-full h-fit max-[1025px]:overflow-x-scroll max-[1025px]:pb-[7vw] max-[1025px]:px-[7vw] fadeup">
+        <div className="mx-auto w-full max-w-[82vw]  rounded-lg border border-white/8 overflow-hidden  max-md:max-w-[240vw] max-md:w-[240vw] max-[1025px]:max-w-[150vw] max-[1025px]:w-[150vw]">
 
           {/* Column headers */}
-          <div className="grid grid-cols-[2.2fr_1fr_1fr] max-md:grid-cols-[25%_40%_35%] max-sm:grid-cols-[25%_40%_35%] bg-white/4 px-[2.5vw] py-[1.3vw] max-md:px-6 max-md:py-4 border-b border-white/8">
-            <span className=" text-[1.2vw] max-md:text-[3vw] max-sm:text-[5vw] text-white/50 uppercase">
+          <div className="grid grid-cols-[2.2fr_1fr_1fr] max-[1025px]:grid-cols-[25%_40%_35%] max-md:grid-cols-[25%_40%_35%] bg-white/4 px-[2.5vw] py-[1.3vw] max-[1025px]:px-6 max-[1025px]:py-4 border-b border-white/8">
+            <span className=" text-[1.2vw] max-[1025px]:text-[3vw] max-md:text-[5vw] text-white/50 uppercase">
               Feature
             </span>
-            <span className=" text-[1.2vw] max-md:text-[3vw] max-sm:text-[5vw] text-white/50 uppercase text-center">
+            <span className=" text-[1.2vw] max-[1025px]:text-[3vw] max-md:text-[5vw] text-white/50 uppercase text-center">
               Free
             </span>
-            <span className=" text-[1.2vw] max-md:text-[3vw] max-sm:text-[5vw] text-white/50 uppercase text-center">
+            <span className=" text-[1.2vw] max-[1025px]:text-[3vw] max-md:text-[5vw] text-white/50 uppercase text-center">
               Pro
             </span>
           </div>
@@ -86,10 +86,10 @@ export default function PricingCompareTable() {
           {rows.map((row, i) => (
             <div
               key={row.feature}
-              className={`grid grid-cols-[2.2fr_1fr_1fr] max-md:grid-cols-[25%_40%_35%] max-sm:grid-cols-[25%_40%_35%] items-center px-[2.5vw] py-[1.4vw] max-md:px-6 max-md:py-4 border-t border-white/6 ${i % 2 !== 0 ? "bg-white/2" : ""
+              className={`grid grid-cols-[2.2fr_1fr_1fr] max-[1025px]:grid-cols-[25%_40%_35%] max-md:grid-cols-[25%_40%_35%] items-center px-[2.5vw] py-[1.4vw] max-[1025px]:px-6 max-[1025px]:py-4 border-t border-white/6 ${i % 2 !== 0 ? "bg-white/2" : ""
                 }`}
             >
-              <span className="text24 max-md:text-sm text-white/80 pr-[2vw]">
+              <span className="text24 max-[1025px]:text-sm text-white/80 pr-[2vw]">
                 {row.feature}
               </span>
               <span className="flex items-center justify-center">
@@ -107,7 +107,7 @@ export default function PricingCompareTable() {
       {/* Footer note */}
       <SplitLine
         as="p"
-        className="text24 max-md:text-sm text-center mt-[3vw] max-md:mt-[8vw]"
+        className="text24 max-[1025px]:text-sm text-center mt-[3vw] max-[1025px]:mt-[8vw]"
       >
         All plans include source code you own. No black boxes.
       </SplitLine>

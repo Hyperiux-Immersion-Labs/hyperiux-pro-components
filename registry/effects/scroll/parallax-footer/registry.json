@@ -19,19 +19,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/parallax-footer",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ParallaxFooter",
   "exportKind": "default",
   "importPath": "@/components/effects/parallax-footer",
   "target": "src/components/effects/parallax-footer",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/parallax-footer/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/parallax-footer/index.tsx"
     },
     {
-      "path": "ParallaxFooter.jsx",
-      "target": "src/components/effects/parallax-footer/ParallaxFooter.jsx"
+      "path": "ParallaxFooter.tsx",
+      "target": "src/components/effects/parallax-footer/ParallaxFooter.tsx"
     }
   ],
   "props": [

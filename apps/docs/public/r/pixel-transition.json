@@ -105,9 +105,9 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/pixel-transition/index.jsx"
+      "target": "src/components/effects/pixel-transition/index.tsx"
     }
   ]
 }

@@ -32,41 +32,35 @@
   "registryDependencies": [],
   "previewUrl": "/demo/hero-banner-animated",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "HeroBannerAnimated",
   "exportKind": "default",
   "importPath": "@/components/effects/hero-banner-animated",
   "target": "src/components/effects/hero-banner-animated",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/hero-banner-animated/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/hero-banner-animated/index.tsx"
     },
     {
-      "path": "CustomGrainNoise.jsx",
-      "target": "src/components/effects/hero-banner-animated/CustomGrainNoise.jsx"
+      "path": "CustomGrainNoise.tsx",
+      "target": "src/components/effects/hero-banner-animated/CustomGrainNoise.tsx"
     },
     {
-      "path": "EdgeBlurEffect.jsx",
-      "target": "src/components/effects/hero-banner-animated/EdgeBlurEffect.jsx"
+      "path": "EdgeBlurEffect.tsx",
+      "target": "src/components/effects/hero-banner-animated/EdgeBlurEffect.tsx"
     },
     {
-      "path": "RoomModel.jsx",
-      "target": "src/components/effects/hero-banner-animated/RoomModel.jsx"
+      "path": "RoomModel.tsx",
+      "target": "src/components/effects/hero-banner-animated/RoomModel.tsx"
     },
     {
-      "path": "VideoUI.jsx",
-      "target": "src/components/effects/hero-banner-animated/VideoUI.jsx"
+      "path": "VideoUI.tsx",
+      "target": "src/components/effects/hero-banner-animated/VideoUI.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.js"
-    },
-    {
-      "path": "assets/textures/bathroom-floor-roughness.png",
-      "type": "registry:asset",
-      "target": "public/assets/textures/bathroom-floor-roughness.png",
-      "source": "/assets/textures/bathroom-floor-roughness.png"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.ts"
     }
   ],
   "props": [

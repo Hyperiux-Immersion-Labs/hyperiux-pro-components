@@ -10,15 +10,15 @@
   "previewUrl": "/demo/gooey-counter",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "GooeyCounter",
   "exportKind": "default",
   "importPath": "@/components/effects/gooey-counter",
   "target": "src/components/effects/gooey-counter",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/gooey-counter/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/gooey-counter/index.tsx"
     }
   ],
   "changelog": [
@@ -43,7 +43,7 @@
     {
       "version": "1.1.0",
       "date": "2026-07-21",
-      "summary": "Snap digits and skip scatter morph under reduced motion",
+      "summary": "Snap digi.ts and skip scatter morph under reduced motion",
       "breaking": false
     }
   ],

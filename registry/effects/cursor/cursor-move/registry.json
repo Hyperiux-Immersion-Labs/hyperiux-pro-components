@@ -31,7 +31,7 @@
   "coverImage": "cursor-move",
   "videoUrl": "cursor-move.mp4",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "CursorMove",
   "exportKind": "default",
   "importPath": "@/components/effects/cursor-move",
@@ -108,8 +108,8 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/cursor-move/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/cursor-move/index.tsx"
     }
   ]
 }

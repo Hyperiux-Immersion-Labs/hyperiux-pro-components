@@ -27,7 +27,7 @@
   "tier": "pro",
   "exportName": "PerspectiveTextReveal",
   "exportKind": "default",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "props": [
     {
       "name": "animateOnScroll",
@@ -107,9 +107,9 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/perspective-text-reveal/index.jsx"
+      "target": "src/components/effects/perspective-text-reveal/index.tsx"
     }
   ]
 }

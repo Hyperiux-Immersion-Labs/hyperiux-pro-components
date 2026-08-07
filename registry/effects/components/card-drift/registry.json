@@ -11,19 +11,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/card-drift",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "CardDrift",
   "exportKind": "default",
   "importPath": "@/components/effects/card-drift",
   "target": "src/components/effects/card-drift",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/card-drift/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/card-drift/index.tsx"
     },
     {
-      "path": "CardDriftComp.jsx",
-      "target": "src/components/effects/card-drift/CardDriftComp.jsx"
+      "path": "CardDriftComp.tsx",
+      "target": "src/components/effects/card-drift/CardDriftComp.tsx"
     }
   ],
   "changelog": [

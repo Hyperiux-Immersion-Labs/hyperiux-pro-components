@@ -2,10 +2,10 @@
   "name": "@hyperiux/cards-runway",
   "version": "1.2.2",
   "description": "A horizontal runway of cards that animates as you scroll",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "CardsRunway.jsx",
+    "index.tsx",
+    "CardsRunway.tsx",
     "registry.json"
   ],
   "keywords": [

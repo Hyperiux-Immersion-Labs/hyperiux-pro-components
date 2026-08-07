@@ -12,19 +12,19 @@
   "previewUrl": "/demo/interactive-list-preview",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "InteractiveListPreview",
   "exportKind": "default",
   "importPath": "@/components/effects/interactive-list-preview",
   "target": "src/components/effects/interactive-list-preview",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/interactive-list-preview/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/interactive-list-preview/index.tsx"
     },
     {
-      "path": "InteractiveListPreviewComp.jsx",
-      "target": "src/components/effects/interactive-list-preview/InteractiveListPreviewComp.jsx"
+      "path": "InteractiveListPreviewComp.tsx",
+      "target": "src/components/effects/interactive-list-preview/InteractiveListPreviewComp.tsx"
     }
   ],
   "changelog": [

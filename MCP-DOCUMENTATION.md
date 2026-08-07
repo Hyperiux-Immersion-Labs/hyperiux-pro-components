@@ -168,12 +168,35 @@ codex --version
 
 **Option B — copy the file by hand:**
 
-Add this to `~/.codex/config.toml` (applies to every project) or `.codex/config.toml` in your project folder (applies to just that project — the folder needs to be marked "trusted" the first time Codex opens it):
-```toml
+Unlike Claude Code, `codex mcp add` has no `--scope project` flag — it only ever writes to your global `~/.codex/config.toml`. If you want a **project-shareable** config instead (checked into git so anyone who clones the repo gets it automatically), write `.codex/config.toml` directly:
+
+```bash
+mkdir -p .codex
+cat > .codex/config.toml <<'EOF'
 [mcp_servers.hyperiux]
 command = "npx"
 args = ["-y", "hyperiux-mcp-server"]
+EOF
 ```
+Run this from your project root — the folder needs to be marked "trusted" the first time Codex opens it. ⚠️ This overwrites `.codex/config.toml`, so if it already has other servers configured, open the file and add the `[mcp_servers.hyperiux]` block manually instead of running the command above.
+
+For a **global** config (every project) via the same copy-by-hand approach, append instead of overwrite since `~/.codex/config.toml` is more likely to already have other entries:
+```bash
+mkdir -p ~/.codex
+cat >> ~/.codex/config.toml <<'EOF'
+
+[mcp_servers.hyperiux]
+command = "npx"
+args = ["-y", "hyperiux-mcp-server"]
+EOF
+```
+
+Check either file wrote correctly:
+```bash
+cat .codex/config.toml        # project-scoped
+cat ~/.codex/config.toml      # global
+```
+You should see the `[mcp_servers.hyperiux]` block.
 
 **Then, either way:**
 
@@ -187,11 +210,33 @@ args = ["-y", "hyperiux-mcp-server"]
 
 ### Google Antigravity
 
-Google's agentic IDE (built around Gemini). It supports local stdio MCP servers using the same `command`/`args` shape as every other client here — there's no separate CLI-driven auto-add command documented for it (unlike `claude mcp add`/`codex mcp add`), so this is copy-the-file only for now.
+Google's agentic IDE (built around Gemini). It supports local stdio MCP servers using the same `command`/`args` shape as every other client here — there's no separate CLI-driven auto-add command documented for it (unlike `claude mcp add`/`codex mcp add`).
 
-**1. Open Antigravity Settings → Customizations tab → MCP Config.** This opens the config file directly for editing.
+**Option A — direct command (fastest, and works even when Settings → Customizations → MCP Config doesn't open the file for editing for you — a known quirk for some users):**
 
-**2. Add the `hyperiux` entry** inside the `mcpServers` object:
+For just this project (workspace-level — run from inside the exact project folder you have open in Antigravity):
+```bash
+mkdir -p .agents && node -e 'const fs=require("fs");const file=".agents/mcp_config.json";const config=fs.existsSync(file)?JSON.parse(fs.readFileSync(file,"utf8")):{};config.mcpServers||={};config.mcpServers.hyperiux={command:"npx",args:["-y","hyperiux-mcp-server"]};fs.writeFileSync(file,JSON.stringify(config,null,2)+"\n");'
+```
+
+For every project (global):
+```bash
+mkdir -p ~/.gemini/config && node -e 'const fs=require("fs");const os=require("os");const file=os.homedir()+"/.gemini/config/mcp_config.json";const config=fs.existsSync(file)?JSON.parse(fs.readFileSync(file,"utf8")):{};config.mcpServers||={};config.mcpServers.hyperiux={command:"npx",args:["-y","hyperiux-mcp-server"]};fs.writeFileSync(file,JSON.stringify(config,null,2)+"\n");'
+```
+
+Both commands read the file first if it already exists and merge `hyperiux` into whatever's already in `mcpServers`, so they're safe to run even if you have other MCP servers configured.
+
+Check either one wrote correctly:
+```bash
+cat .agents/mcp_config.json           # project-scoped
+cat ~/.gemini/config/mcp_config.json  # global
+```
+You should see the `hyperiux` entry inside `mcpServers`.
+
+**Option B — through Settings UI, or by hand:**
+
+1. Try **Settings → Customizations tab → MCP Config** — this is supposed to open the config file directly for editing. It doesn't reliably work for everyone; if it opens a blank editor or nothing happens, skip to Option A above instead.
+2. If it does open, add the `hyperiux` entry inside the `mcpServers` object:
 ```json
 {
   "mcpServers": {
@@ -202,14 +247,14 @@ Google's agentic IDE (built around Gemini). It supports local stdio MCP servers 
   }
 }
 ```
+3. Or open the file directly in your own editor — it lives at one of two locations depending on whether you want it everywhere or just one project:
+   - **Global** (every project): `~/.gemini/config/mcp_config.json`
+   - **Workspace-level** (just this project): `.agents/mcp_config.json` in your project folder
 
-If you'd rather find the file yourself instead of going through Settings, it lives at one of two locations depending on whether you want it everywhere or just one project:
-- **Global** (every project): `~/.gemini/config/mcp_config.json`
-- **Workspace-level** (just this project): `.agents/mcp_config.json` in your project folder
+**Then, either way:**
 
-**3. Save the file**, then restart Antigravity if it doesn't pick up the change automatically.
-
-**4. Test it** — see [Try it out](#try-it-out) below. (Antigravity's exact connected/disconnected indicator isn't fully documented publicly as of this writing, so the natural-language test is the most reliable way to confirm it's working.)
+1. Save the file (if you edited it manually), then **fully quit and reopen Antigravity** — it only reads this file at startup, so a window reload usually isn't enough.
+2. Test it — see [Try it out](#try-it-out) below. Antigravity's connected/disconnected indicator in the Customizations tab isn't fully reliable — if a real test question gets a real answer, it's connected regardless of what the panel shows.
 
 ### ChatGPT (web app) — not currently supported
 

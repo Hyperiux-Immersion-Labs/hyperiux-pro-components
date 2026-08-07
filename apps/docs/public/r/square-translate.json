@@ -101,14 +101,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/square-translate/index.jsx"
+      "target": "src/components/effects/square-translate/index.tsx"
     },
     {
-      "path": "SquareTranslateComp.jsx",
+      "path": "SquareTranslateComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/square-translate/SquareTranslateComp.jsx"
+      "target": "src/components/effects/square-translate/SquareTranslateComp.tsx"
     }
   ]
 }

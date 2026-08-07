@@ -1,10 +1,8 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { NextResponse } from "next/server";
-import { getRegistryIndex } from "@/lib/registry";
+import { getRegistryIndex, getFreeEffectsCount } from "@/lib/registry";
 import { getUserPlan } from "@/lib/subscription";
-
-const FREE_EFFECT_ACCESS_LIMIT = 30;
 
 export async function GET() {
   const { userId } = await auth();
@@ -68,10 +66,11 @@ export async function GET() {
   }
 
   const totalEffects = registry.items?.length || 0;
+  const totalFreeEffects = getFreeEffectsCount();
   const totalEffectsAccess =
     plan === "pro"
       ? totalEffects
-      : Math.min(FREE_EFFECT_ACCESS_LIMIT, totalEffects);
+      : Math.min(totalFreeEffects, totalEffects);
 
   return NextResponse.json({
     savedCount: wishlist?.length || 0,
@@ -80,6 +79,7 @@ export async function GET() {
     plan,
     totalEffects,
     totalEffectsAccess,
+    totalFreeEffects,
 
     subscriptionStatus: subscription?.status || "inactive",
     billingInterval: subscription?.billing_interval || null,

@@ -24,7 +24,7 @@ export function DashboardShell({ children }) {
 
   return (
     <div className="min-h-screen text-white">
-      <div className="max-w-[1600px] mx-auto px-[3vw] pt-20 pb-16 max-sm:px-[7vw] max-sm:pt-12">
+      <div className="max-w-[1600px] mx-auto px-[3vw] pt-20 pb-16 max-md:px-[7vw] max-md:pt-12">
 
         <div className="mb-12">
           <div className="flex flex-col justify-center gap-4 mb-4">
@@ -48,7 +48,7 @@ export function DashboardShell({ children }) {
         </div>
 
         <div className="flex items-center justify-between gap-4 mb-12 max-[1025px]:flex-col max-[1025px]:items-start">
-          <div className="flex gap-3 overflow-x-auto max-w-full max-sm:pb-[4vw] max-sm:flex-wrap">
+          <div className="flex gap-3 overflow-x-auto max-w-full max-md:pb-[4vw] max-md:flex-wrap">
             {tabs.map((tab) => {
               const active =
                 tab.href === "/dashboard"
@@ -60,7 +60,7 @@ export function DashboardShell({ children }) {
                   key={tab.href}
                   href={tab.href}
                   className={`
-                    px-7 py-[.8vw] max-sm:py-[2vw] rounded-full
+                    px-7 py-[.8vw] max-md:py-[2vw] rounded-full
                     transition-all duration-300
                     border shrink-0
                     ${active

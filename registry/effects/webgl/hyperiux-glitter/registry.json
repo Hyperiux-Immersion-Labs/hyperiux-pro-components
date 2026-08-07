@@ -16,27 +16,27 @@
   "coverImage": "hyperiux-glitter",
   "videoUrl": "/hyperiux-glitter.mp4",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "HyperiuxGlitter",
   "exportKind": "default",
   "importPath": "@/components/effects/hyperiux-glitter",
   "target": "src/components/effects/hyperiux-glitter",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/hyperiux-glitter/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/hyperiux-glitter/index.tsx"
     },
     {
-      "path": "MorphingParticleModelNew.jsx",
-      "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.jsx"
+      "path": "MorphingParticleModelNew.tsx",
+      "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.tsx"
     },
     {
-      "path": "MouseTrailParticles.jsx",
-      "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.jsx"
+      "path": "MouseTrailParticles.tsx",
+      "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.ts"
     }
   ],
   "changelog": [

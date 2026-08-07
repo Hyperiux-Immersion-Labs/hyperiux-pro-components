@@ -149,14 +149,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/liquid-glass-cursor/index.jsx"
+      "target": "src/components/effects/liquid-glass-cursor/index.tsx"
     },
     {
-      "path": "LiquidText.jsx",
+      "path": "LiquidText.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/liquid-glass-cursor/LiquidText.jsx"
+      "target": "src/components/effects/liquid-glass-cursor/LiquidText.tsx"
     }
   ]
 }

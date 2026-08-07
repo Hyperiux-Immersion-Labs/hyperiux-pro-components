@@ -21,7 +21,7 @@
   "previewUrl": "/demo/infinite-perspective-slider",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "InfinitePerspectiveSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/infinite-perspective-slider",
@@ -125,16 +125,16 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/infinite-perspective-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/infinite-perspective-slider/index.tsx"
     },
     {
-      "path": "InfinitePerspectiveSliderComp.jsx",
-      "target": "src/components/effects/infinite-perspective-slider/InfinitePerspectiveSliderComp.jsx"
+      "path": "InfinitePerspectiveSliderComp.tsx",
+      "target": "src/components/effects/infinite-perspective-slider/InfinitePerspectiveSliderComp.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/infinite-perspective-slider/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/infinite-perspective-slider/createSuspendedRaf.ts"
     }
   ]
 }

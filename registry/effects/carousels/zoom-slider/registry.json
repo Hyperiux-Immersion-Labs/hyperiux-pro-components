@@ -32,7 +32,7 @@
   "previewUrl": "/demo/zoom-slider",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ZoomSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/zoom-slider",
@@ -76,12 +76,12 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/zoom-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/zoom-slider/index.tsx"
     },
     {
-      "path": "ZoomSliderComp.jsx",
-      "target": "src/components/effects/zoom-slider/ZoomSliderComp.jsx"
+      "path": "ZoomSliderComp.tsx",
+      "target": "src/components/effects/zoom-slider/ZoomSliderComp.tsx"
     }
   ]
 }

@@ -20,7 +20,7 @@
   "previewUrl": "/demo/text-convergence",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "TextConvergence",
   "exportKind": "default",
   "importPath": "@/components/effects/text-convergence",
@@ -52,8 +52,8 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/text-convergence/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/text-convergence/index.tsx"
     }
   ]
 }

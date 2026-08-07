@@ -16,7 +16,7 @@
   "previewUrl": "/demo/arrow-fill-button",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ArrowFillButton",
   "exportKind": "default",
   "importPath": "@/components/effects/arrow-fill-button",
@@ -145,8 +145,8 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/arrow-fill-button/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/arrow-fill-button/index.tsx"
     }
   ]
 }

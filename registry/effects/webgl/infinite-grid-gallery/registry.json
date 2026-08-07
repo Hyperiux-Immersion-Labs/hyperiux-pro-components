@@ -11,27 +11,27 @@
   "coverImage": "infinite-grid-gallery",
   "videoUrl": "infinite-grid-gallery.mp4",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "InfiniteGridGallery",
   "exportKind": "default",
   "importPath": "@/components/effects/infinite-grid-gallery",
   "target": "src/components/effects/infinite-grid-gallery",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/infinite-grid-gallery/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/infinite-grid-gallery/index.tsx"
     },
     {
-      "path": "InfiniteGrid.jsx",
-      "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.jsx"
+      "path": "InfiniteGrid.tsx",
+      "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.tsx"
     },
     {
-      "path": "util.js",
-      "target": "src/components/effects/infinite-grid-gallery/util.js"
+      "path": "util.ts",
+      "target": "src/components/effects/infinite-grid-gallery/util.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.ts"
     }
   ],
   "changelog": [

@@ -15,16 +15,16 @@ const Hero = () => {
         aria-hidden="true"
         fill
         sizes="100vw"
-        className="pointer-events-none -z-10 hidden object-cover max-md:block"
+        className="pointer-events-none -z-10 hidden object-cover max-[1025px]:block"
       />
             <div
-                className="space-y-[2vw] max-md:space-y-[8vw] mt-[2vw] max-md:mt-0 relative z-2 w-[75%] max-md:w-full"
+                className="space-y-[2vw] max-[1025px]:space-y-[8vw] mt-[2vw] max-[1025px]:mt-0 relative z-2 w-[75%] max-[1025px]:w-full"
             >
 
-                <div className="h-fit flex max-sm:flex-col max-sm:justify-start items-center w-full">
+                <div className="h-fit flex max-md:flex-col max-md:justify-start items-center w-full">
                     <LineReveal
                         as="h1"
-                        className="text120 max-sm:text-left max-sm:indent-0! relative w-full text-white"
+                        className="text120 max-md:text-left max-md:indent-0! relative w-full text-white"
                     >
                         Start Free Today.<br/> Upgrade to Pro for Complete Access.
                     </LineReveal>
@@ -32,7 +32,7 @@ const Hero = () => {
                 <SplitLine
                     as="p"
                     start="top 120%"
-                    className="text24 max-sm:text-left text-[#C9C9C9] w-[65%] max-sm:w-[95%] max-md:w-[80%]"
+                    className="text24 max-md:text-left text-[#C9C9C9] w-[65%] max-md:w-[95%] max-[1025px]:w-[80%]"
                 >
                     Free Core is open today with 30+ source-first React and Next.js effects. Vault Pro is available now, unlocking 80+ premium effects across scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes.
                 </SplitLine>

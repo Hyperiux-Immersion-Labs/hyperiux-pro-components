@@ -12,23 +12,23 @@
   "registryDependencies": [],
   "previewUrl": "/demo/testimonial-swiper",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "TestimonialSwiper",
   "exportKind": "default",
   "importPath": "@/components/effects/testimonial-swiper",
   "target": "src/components/effects/testimonial-swiper",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/testimonial-swiper/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/testimonial-swiper/index.tsx"
     },
     {
-      "path": "NavigationButtons.jsx",
-      "target": "src/components/effects/testimonial-swiper/NavigationButtons.jsx"
+      "path": "NavigationButtons.tsx",
+      "target": "src/components/effects/testimonial-swiper/NavigationButtons.tsx"
     },
     {
-      "path": "TestimonialComp.jsx",
-      "target": "src/components/effects/testimonial-swiper/TestimonialComp.jsx"
+      "path": "TestimonialComp.tsx",
+      "target": "src/components/effects/testimonial-swiper/TestimonialComp.tsx"
     }
   ],
   "changelog": [
