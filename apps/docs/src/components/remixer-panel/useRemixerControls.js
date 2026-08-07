@@ -23,5 +23,5 @@ export function useRemixerControls({ defaults, groups, props } = {}) {
     setValues(cloneRemixerValues(initialValues));
   }, [initialValues]);
 
-  return { groups: normalizedGroups, values, setValues, updateValue, resetValues };
+  return { groups: normalizedGroups, values, initialValues, setValues, updateValue, resetValues };
 }
