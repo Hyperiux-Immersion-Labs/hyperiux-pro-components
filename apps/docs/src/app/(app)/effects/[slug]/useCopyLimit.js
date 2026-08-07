@@ -7,8 +7,10 @@ const CopyLimitContext = createContext(null);
 
 // Shared across every code/install block on one effect page so hitting the
 // limit on one block immediately locks the rest too, instead of each block
-// tracking its own stale copy of the daily count.
-export function CopyLimitProvider({ children, onRequireSignIn }) {
+// tracking its own stale copy of the daily count. The limit is per distinct
+// effect copied today, not per click - once this effect has consumed a slot
+// (or the user copies from it again), every block on the page stays unlocked.
+export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
   const { isSignedIn, isLoaded } = useUser();
   const [usage, setUsage] = useState(null);
 
@@ -29,6 +31,8 @@ export function CopyLimitProvider({ children, onRequireSignIn }) {
     };
   }, [isLoaded, isSignedIn]);
 
+  const effectAlreadyUnlocked = Boolean(usage?.effectSlugs?.includes(effectSlug));
+
   const requestCopy = useCallback(async () => {
     if (!isLoaded) return false;
 
@@ -38,10 +42,17 @@ export function CopyLimitProvider({ children, onRequireSignIn }) {
     }
 
     if (usage?.isAdmin) return true;
+    // Already used a slot on this effect today - copy freely, no need to
+    // round-trip to the server.
+    if (effectAlreadyUnlocked) return true;
     if (usage && usage.remaining <= 0) return false;
 
     try {
-      const res = await fetch("/api/copy-usage", { method: "POST" });
+      const res = await fetch("/api/copy-usage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ effectSlug }),
+      });
       const data = await res.json();
 
       setUsage(data);
@@ -50,10 +61,15 @@ export function CopyLimitProvider({ children, onRequireSignIn }) {
     } catch {
       return false;
     }
-  }, [isLoaded, isSignedIn, usage, onRequireSignIn]);
+  }, [isLoaded, isSignedIn, usage, effectAlreadyUnlocked, effectSlug, onRequireSignIn]);
 
   const isLocked = Boolean(
-    isLoaded && isSignedIn && usage && !usage.isAdmin && usage.remaining <= 0
+    isLoaded &&
+      isSignedIn &&
+      usage &&
+      !usage.isAdmin &&
+      !effectAlreadyUnlocked &&
+      usage.remaining <= 0
   );
 
   // Selection/clipboard is only blocked once we're sure the visitor is

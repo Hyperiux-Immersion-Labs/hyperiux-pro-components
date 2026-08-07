@@ -411,7 +411,7 @@ export function EffectDetailContent({
     }) || "/assets/img/image01.webp";
 
   return (
-    <CopyLimitProvider onRequireSignIn={() => setShowSignInToCopyModal(true)}>
+    <CopyLimitProvider effectSlug={slug} onRequireSignIn={() => setShowSignInToCopyModal(true)}>
     <VaultLayout
       effectCounts={effectCounts || {}}
       totalEffects={totalEffects || 0}

@@ -42,7 +42,7 @@ function CopyLimitOverlay({ message, ctaHref }) {
     return (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white/10 px-6 py-6 text-center backdrop-blur-md">
             <Lock className="h-8 w-8 text-white/70" strokeWidth={1.5} />
-            <p className="max-w-xs text-sm font-medium text-white">{message}</p>
+            <p className="max-w-2xl text-sm font-medium text-white">{message}</p>
             {ctaHref && (
                 <Link
               id={"upgrade-to-pro-codeblock"}
@@ -66,7 +66,7 @@ export function CodeBlock({
     copyLocked = false,
     selectable = true,
     onBeforeCopy,
-    lockedMessage = "You have crossed your copy limit for the day.",
+    lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
     lockedCtaHref = null,
 }) {
     const displayCode = copyLocked ? LOCKED_CODE_SAMPLE : code || "";
@@ -84,6 +84,16 @@ export function CodeBlock({
     }, [displayCode, language]);
 
     const shouldShowHeader = !hideHeaderWhenNoFilename || Boolean(filename);
+
+    // Copy button clicks aren't the only way code leaves this block - a
+    // manual select + Cmd/Ctrl-C never touches CopyBtn, so the native
+    // `copy` event is the only hook that sees it. Once copyLocked, the DOM
+    // already only contains LOCKED_CODE_SAMPLE, so there's nothing left to
+    // gate here - just record usage for the real-code case.
+    function handleNativeCopy() {
+        if (copyLocked) return;
+        onBeforeCopy?.();
+    }
 
     return (
         <div className={`relative overflow-hidden rounded-md fadeup codeblock-root ${className}`}>
@@ -120,6 +130,7 @@ export function CodeBlock({
                 )}
                 <div className="relative">
                     <pre
+                        onCopy={handleNativeCopy}
                         className={`overflow-x-auto bg-[#272727]  max-md:pt-[7vw] tracking-tight! text-sm!  ${
                             shouldShowHeader ? "max-md:text-xs max-[1025px]:text-sm" : ""
                         } ${!selectable ? "select-none" : ""}`}
@@ -144,18 +155,28 @@ export function InstallCommand({
     copyLocked = false,
     selectable = true,
     onBeforeCopy,
-    lockedMessage = "You have crossed your copy limit for the day.",
+    lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
 }) {
     const command = `npx hyperiux add ${effect}`;
     const displayCommand = copyLocked ? LOCKED_COMMAND_SAMPLE : command;
 
+    function handleNativeCopy() {
+        if (copyLocked) return;
+        onBeforeCopy?.();
+    }
+
     return (
-        <div className="relative flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800 overflow-hidden">
+        <div
+            className={`relative flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800 overflow-hidden ${
+                copyLocked ? "min-h-32.5" : ""
+            }`}
+        >
             {/* No upgrade CTA here by design - only the source-code block gets
                 the "Upgrade to Pro" prompt, not the install command. */}
             {copyLocked && <CopyLimitOverlay message={lockedMessage} ctaHref={null} />}
             <span className="text-green-500">$</span>
             <code
+                onCopy={handleNativeCopy}
                 className={`flex-1 text-sm text-neutral-300 max-md:text-lg! max-md:pt-[7vw] ${!selectable ? "select-none" : ""}`}
             >
                 {displayCommand}
