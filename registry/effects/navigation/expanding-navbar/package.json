@@ -2,14 +2,14 @@
   "name": "@hyperiux/expanding-navbar",
   "version": "1.1.0",
   "description": "Animated multi-column mega menu with GSAP timelines, square cursor indicators, and hover-fill link transitions.",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "ExpandingNavbarDesktop.jsx",
-    "ExpandingNavbarMobile.jsx",
-    "HoverFillLink.jsx",
-    "data.js",
-    "useFocusTrap.js",
+    "index.tsx",
+    "ExpandingNavbarDesktop.tsx",
+    "ExpandingNavbarMobile.tsx",
+    "HoverFillLink.tsx",
+    "data.ts",
+    "useFocusTrap.ts",
     "registry.json"
   ],
   "keywords": [

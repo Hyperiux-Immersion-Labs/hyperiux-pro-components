@@ -29,7 +29,7 @@
   "videoUrl": "chess-grid-transition.mp4",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ChessGridTransition",
   "exportKind": "default",
   "importPath": "@/components/effects/chess-grid-transition",
@@ -42,8 +42,8 @@
   "remixer": { "enabled": true, "defaultOpenGroupId": "motion", "layout": { "buttonClassName": "right-4! top-25!", "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" }, "copyCode": { "includeOnlyPublicProps": true } },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/chess-grid-transition/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/chess-grid-transition/index.tsx"
     }
   ]
 }

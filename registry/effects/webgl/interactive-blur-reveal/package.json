@@ -2,11 +2,11 @@
   "name": "@hyperiux/interactive-blur-reveal",
   "version": "1.2.0",
   "description": "WebGL2 fullscreen shader that keeps the image frosted/blurred by default and reveals a sharp, clear version wherever the cursor trails. Uses a fluid mouse-trail mask with animated film grain and a subtle vignette.",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "webgl-context-recovery.js",
-    "createSuspendedRaf.js",
+    "index.tsx",
+    "webgl-context-recovery.ts",
+    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

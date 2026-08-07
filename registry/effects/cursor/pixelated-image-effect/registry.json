@@ -2,8 +2,18 @@
   "name": "pixelated-image-effect",
   "version": "1.1.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-22", "summary": "reduce-motion applied", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.1.0",
+      "date": "2026-07-22",
+      "summary": "reduce-motion applied",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Pixelated Image Effect",
@@ -14,7 +24,7 @@
   "previewUrl": "/demo/pixelated-image-effect",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "PixelatedImageEffect",
   "exportKind": "default",
   "importPath": "@/components/effects/pixelated-image-effect",
@@ -60,8 +70,8 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/pixelated-image-effect/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/pixelated-image-effect/index.tsx"
     }
   ]
 }

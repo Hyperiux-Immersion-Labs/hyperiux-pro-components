@@ -35,7 +35,7 @@
   "registryDependencies": [],
   "previewUrl": "/demo/animated-toggle",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "AnimatedToggle",
   "exportKind": "default",
   "importPath": "@/components/effects/animated-toggle",
@@ -105,20 +105,20 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/animated-toggle/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/animated-toggle/index.tsx"
     },
     {
-      "path": "ChevronBird.jsx",
-      "target": "src/components/effects/animated-toggle/ChevronBird.jsx"
+      "path": "ChevronBird.tsx",
+      "target": "src/components/effects/animated-toggle/ChevronBird.tsx"
     },
     {
-      "path": "Cross.jsx",
-      "target": "src/components/effects/animated-toggle/Cross.jsx"
+      "path": "Cross.tsx",
+      "target": "src/components/effects/animated-toggle/Cross.tsx"
     },
     {
-      "path": "Plus.jsx",
-      "target": "src/components/effects/animated-toggle/Plus.jsx"
+      "path": "Plus.tsx",
+      "target": "src/components/effects/animated-toggle/Plus.tsx"
     }
   ]
 }

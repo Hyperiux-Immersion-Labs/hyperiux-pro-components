@@ -2,11 +2,11 @@
   "name": "@hyperiux/phantom-image-trail",
   "version": "1.3.0",
   "description": "Cursor-driven image trail that spawns and fades stacked visuals as you move",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "useMouse.js",
-    "createSuspendedRaf.js",
+    "index.tsx",
+    "useMouse.ts",
+    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

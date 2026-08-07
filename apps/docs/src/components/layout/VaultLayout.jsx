@@ -67,7 +67,7 @@ function RouteChangeWatcher({ isSidebarReady, onRouteChange }) {
 function SidebarFallback({ isExpanded }) {
   return (
     <aside
-      className={`sticky bottom-0 left-0 top-0 h-screen border-r border-white/10 bg-[#060606] text-foreground max-md:hidden ${
+      className={`sticky bottom-0 left-0 top-0 h-screen border-r border-white/10 bg-[#060606] text-foreground max-[1025px]:hidden ${
         isExpanded ? "w-[288px]" : "w-22"
       }`}
     >
@@ -347,7 +347,7 @@ export function VaultLayout({
     typeof children === "function" ? children({ isSidebarOpen }) : children;
 
   return (
-    <div className="relative min-h-screen text-foreground">
+    <div className="relative min-h-[200vh] text-foreground">
       <Suspense fallback={null}>
         <RouteChangeWatcher
           isSidebarReady={isSidebarReady}
@@ -355,7 +355,7 @@ export function VaultLayout({
         />
       </Suspense>
 
-      <div className="relative z-300 flex min-h-screen items-start">
+      <div className="relative z-300 flex  min-h-[200vh] items-start">
         <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>
           <Sidebar
             effects={effects}

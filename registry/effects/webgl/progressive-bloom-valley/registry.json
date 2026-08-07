@@ -17,59 +17,59 @@
   "registryDependencies": [],
   "previewUrl": "/demo/progressive-bloom-valley",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ProgressiveBloomValley",
   "exportKind": "default",
   "importPath": "@/components/effects/progressive-bloom-valley",
   "target": "src/components/effects/progressive-bloom-valley",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/progressive-bloom-valley/index.tsx"
     },
     {
-      "path": "CameraRig.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
+      "path": "CameraRig.tsx",
+      "target": "src/components/effects/progressive-bloom-valley/CameraRig.tsx"
     },
     {
-      "path": "CircularText.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
+      "path": "CircularText.tsx",
+      "target": "src/components/effects/progressive-bloom-valley/CircularText.tsx"
     },
     {
-      "path": "EdgeBlurEffect.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
+      "path": "EdgeBlurEffect.tsx",
+      "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.tsx"
     },
     {
-      "path": "ExperienceComp.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
+      "path": "ExperienceComp.tsx",
+      "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.tsx"
     },
     {
-      "path": "FilmGrainEffect.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
+      "path": "FilmGrainEffect.tsx",
+      "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.tsx"
     },
     {
-      "path": "Flower.jsx",
-      "target": "src/components/effects/progressive-bloom-valley/Flower.jsx"
+      "path": "Flower.tsx",
+      "target": "src/components/effects/progressive-bloom-valley/Flower.tsx"
     },
     {
-      "path": "useInput.js",
-      "target": "src/components/effects/progressive-bloom-valley/useInput.js"
+      "path": "useInput.ts",
+      "target": "src/components/effects/progressive-bloom-valley/useInput.ts"
     },
     {
-      "path": "useValleyData.js",
-      "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
+      "path": "useValleyData.ts",
+      "target": "src/components/effects/progressive-bloom-valley/useValleyData.ts"
     },
     {
-      "path": "shaders.js",
-      "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+      "path": "shaders.tsx",
+      "target": "src/components/effects/progressive-bloom-valley/shaders.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.ts"
     },
     {
-      "path": "prefersReducedMotion.js",
-      "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.js"
+      "path": "prefersReducedMotion.ts",
+      "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.ts"
     }
   ],
   "changelog": [

@@ -13,23 +13,23 @@
   "registryDependencies": [],
   "previewUrl": "/demo/grid-tunnel",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "GridTunnel",
   "exportKind": "default",
   "importPath": "@/components/effects/grid-tunnel",
   "target": "src/components/effects/grid-tunnel",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/grid-tunnel/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/grid-tunnel/index.tsx"
     },
     {
-      "path": "GridTunnelComp.jsx",
-      "target": "src/components/effects/grid-tunnel/GridTunnelComp.jsx"
+      "path": "GridTunnelComp.tsx",
+      "target": "src/components/effects/grid-tunnel/GridTunnelComp.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/grid-tunnel/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/grid-tunnel/createSuspendedRaf.ts"
     }
   ],
   "changelog": [

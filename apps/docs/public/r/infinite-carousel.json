@@ -72,14 +72,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/infinite-carousel/index.jsx"
+      "target": "src/components/effects/infinite-carousel/index.tsx"
     },
     {
-      "path": "InfiniteCarouselComp.jsx",
+      "path": "InfiniteCarouselComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.jsx"
+      "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.tsx"
     }
   ]
 }

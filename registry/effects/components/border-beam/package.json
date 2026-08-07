@@ -2,12 +2,12 @@
   "name": "@hyperiux/border-beam",
   "version": "1.2.0",
   "description": "Animated border beam effect for cards and surfaces",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "BorderBeam.jsx",
-    "PulseDriver.js",
-    "styles.js",
+    "index.tsx",
+    "BorderBeam.tsx",
+    "PulseDriver.ts",
+    "styles.ts",
     "registry.json"
   ],
   "keywords": [

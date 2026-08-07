@@ -460,6 +460,11 @@
     "tarball": "registry/dist/hyperiux-chess-grid-transition-1.1.0.tgz"
   },
   {
+    "name": "@hyperiux/depth-shift-transition",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-depth-shift-transition-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/page-flip-transition",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-page-flip-transition-1.1.0.tgz"

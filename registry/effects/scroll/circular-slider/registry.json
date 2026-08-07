@@ -12,19 +12,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/circular-slider",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "CircularSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/circular-slider",
   "target": "src/components/effects/circular-slider",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/circular-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/circular-slider/index.tsx"
     },
     {
-      "path": "CircularSliderComp.jsx",
-      "target": "src/components/effects/circular-slider/CircularSliderComp.jsx"
+      "path": "CircularSliderComp.tsx",
+      "target": "src/components/effects/circular-slider/CircularSliderComp.tsx"
     }
   ],
   "changelog": [

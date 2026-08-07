@@ -20,7 +20,7 @@ export default function NavLinks({
             className="relative ml-[13.5vw]"
             onMouseLeave={onNavLeave}
         >
-            <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] font-medium">
+            <div className="text20 relative flex gap-[0.6vw] rounded-full bg-grey p-[0.6vw] py-[0.4vw] font-medium">
                 {vaultLinks.map(({ label, href, dropdown }, index) => {
                     const highlighted = isHighlighted(index, dropdown)
                     const isExternal = href.startsWith('http')

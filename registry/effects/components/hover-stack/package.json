@@ -2,10 +2,10 @@
   "name": "@hyperiux/hover-stack",
   "version": "1.4.0",
   "description": "Overlapping card stack that fans out around the hovered card",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "HoverStackComp.jsx",
+    "index.tsx",
+    "HoverStackComp.tsx",
     "registry.json"
   ],
   "keywords": [

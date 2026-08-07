@@ -88,19 +88,19 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/hover-slider/index.jsx"
+      "target": "src/components/effects/hover-slider/index.tsx"
     },
     {
-      "path": "HoverSliderComp.jsx",
+      "path": "HoverSliderComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/hover-slider/HoverSliderComp.jsx"
+      "target": "src/components/effects/hover-slider/HoverSliderComp.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
+      "path": "createSuspendedRaf.ts",
       "type": "registry:component",
-      "target": "src/components/effects/hover-slider/createSuspendedRaf.js"
+      "target": "src/components/effects/hover-slider/createSuspendedRaf.ts"
     }
   ]
 }

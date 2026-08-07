@@ -27,7 +27,7 @@
     {
       "version": "1.1.0",
       "date": "2026-07-23",
-      "summary": "Removed the continuous rAF progress loop (~60 setState/sec while playing); the progress bar now rides the native timeupdate events with a linear CSS transition for smoothness, cut during scrubbing for 1:1 pointer tracking.",
+      "summary": "Removed the continuous rAF progress loop (~60 setState/sec while playing); the progress bar now rides the native timeupdate even.ts with a linear CSS transition for smoothness, cut during scrubbing for 1:1 pointer tracking.",
       "breaking": false
     }
   ],
@@ -115,14 +115,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/video-player/index.jsx"
+      "target": "src/components/effects/video-player/index.tsx"
     },
     {
-      "path": "VideoPlayerComp.jsx",
+      "path": "VideoPlayerComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/video-player/VideoPlayerComp.jsx"
+      "target": "src/components/effects/video-player/VideoPlayerComp.tsx"
     }
   ]
 }

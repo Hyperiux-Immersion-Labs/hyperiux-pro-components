@@ -39,7 +39,7 @@ export default async function TechOverviewPage() {
         </Suspense>
 
         {/* Hero Section */}
-        <div className="mx-auto px-8 pt-28 pb-10 max-sm:px-0">
+        <div className="mx-auto px-8 pt-28 pb-10 max-md:px-0">
           <TechHeader />
 
           {/* Cards Grid showing 6 selected technologies */}
@@ -58,8 +58,8 @@ export default async function TechOverviewPage() {
         </div>
 
         {/* Footer */}
-        <footer className="relative overflow-hidden rounded-3xl border border-border/30 bg-zinc-950/40 backdrop-blur-md pt-10 pb-5 mb-8 px-12 max-sm:px-6">
-          <div className="relative z-10 flex flex-col items-center text-center max-sm:gap-2">
+        <footer className="relative overflow-hidden rounded-3xl border border-border/30 bg-zinc-950/40 backdrop-blur-md pt-10 pb-5 mb-8 px-12 max-md:px-6">
+          <div className="relative z-10 flex flex-col items-center text-center max-md:gap-2">
             <h2 className="text-2xl font-semibold tracking-tight text-white mb-2">Hyperiux Immersion Labs</h2>
             <p className="text-sm text-zinc-500">Optimized creative engineering for elite web developers.</p>
             <p suppressHydrationWarning className="text-xs text-zinc-600 mt-6">© {new Date().getFullYear()} Hyperiux UI. All rights reserved.</p>

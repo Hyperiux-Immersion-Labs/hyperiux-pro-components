@@ -17,7 +17,7 @@ const EFFECT_SLUGS_FILE = path.join(ROOT, "apps", "docs", "src", "lib", "effect-
 const COMMANDS = new Set(["new", "sync", "rename", "move", "delete", "diff", "revert", "verify"]);
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VERSION_RE = /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
-const SOURCE_EXTENSIONS = new Set([".js", ".jsx", ".css"]);
+const SOURCE_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".css"]);
 const EXCLUDED_FILE_RE = /(^Demo\.jsx$|\.demo\.jsx$|\.test\.[jt]sx?$|\.spec\.[jt]sx?$|^README\.md$|\.md$)/i;
 const PACKAGE_IMPORT_IGNORE = new Set([
   "react",
@@ -593,12 +593,13 @@ function discoverDistributableFiles(sourceDir) {
 
   if (missingImports.length) fail(`Distributable file discovery found missing local imports:\n- ${missingImports.join("\n- ")}`);
 
+  const INDEX_FILES = new Set(["index.tsx", "index.ts", "index.jsx", "index.js"]);
   const sorted = allFiles.sort((a, b) => {
-    if (a.relativePath === "index.jsx") return -1;
-    if (b.relativePath === "index.jsx") return 1;
+    if (INDEX_FILES.has(a.relativePath) && !INDEX_FILES.has(b.relativePath)) return -1;
+    if (INDEX_FILES.has(b.relativePath) && !INDEX_FILES.has(a.relativePath)) return 1;
     return a.relativePath.localeCompare(b.relativePath);
   });
-  if (!sorted.length) fail(`No distributable .js, .jsx, or .css files found in ${relative(sourceDir)}`);
+  if (!sorted.length) fail(`No distributable .ts, .tsx, .js, .jsx, or .css files found in ${relative(sourceDir)}`);
   return sorted;
 }
 
@@ -634,9 +635,13 @@ function resolveLocalImport(fromDir, specifier) {
   const base = path.resolve(fromDir, specifier);
   const candidates = [
     base,
+    `${base}.ts`,
+    `${base}.tsx`,
     `${base}.js`,
     `${base}.jsx`,
     `${base}.css`,
+    path.join(base, "index.ts"),
+    path.join(base, "index.tsx"),
     path.join(base, "index.js"),
     path.join(base, "index.jsx"),
   ];

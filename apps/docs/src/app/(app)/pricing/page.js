@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import VaultShell from "@/Layouts/VaultShell";
+import { getSearchIndexEffects } from "@/lib/search-index";
 import Hero from "@/components/Pricing/Hero";
 import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
 import Footer from "@/components/Homepage/Footer";
@@ -26,12 +27,13 @@ export const metadata = createPageMetadata({
 export default async function PricingPage() {
   const headersList = await headers();
   const isIndia = headersList.get("x-vercel-ip-country") === "IN";
+  const effects = await getSearchIndexEffects();
 
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
-      <VaultShell>
+      <VaultShell effects={effects}>
         <main id="main-content">
           <Hero />
           <GlowingPlatesDeferred waitForLoader={false} />

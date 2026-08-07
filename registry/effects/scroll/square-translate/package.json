@@ -2,10 +2,10 @@
   "name": "@hyperiux/square-translate",
   "version": "1.1.0",
   "description": "Scroll-driven list where a rotating square marker tracks progress and nudges nearby rows",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "SquareTranslateComp.jsx",
+    "index.tsx",
+    "SquareTranslateComp.tsx",
     "registry.json"
   ],
   "keywords": [

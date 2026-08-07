@@ -29,7 +29,7 @@
   "videoUrl": "svg-brush-transition.mp4",
   "tier": "pro",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "SVGBrushTransition",
   "exportKind": "default",
   "importPath": "@/components/effects/svg-brush-transition",
@@ -42,8 +42,8 @@
   "remixer": { "enabled": true, "defaultOpenGroupId": "brush", "layout": { "buttonClassName": "right-4! top-25!", "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" }, "copyCode": { "includeOnlyPublicProps": true } },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/svg-brush-transition/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/svg-brush-transition/index.tsx"
     }
   ]
 }

@@ -16,7 +16,7 @@ const copyButtonStyles = tv({
   variants: {
     size: {
       sm: { iconWrap: "size-4" },
-      md: { iconWrap: "size-5 max-md:size-6 max-sm:size-4" },
+      md: { iconWrap: "size-5 max-[1025px]:size-6 max-md:size-4" },
     },
     color: {
       primary: { icon: "text-primary" },
@@ -80,6 +80,8 @@ async function copyTextToClipboard(text) {
  *   color?: "primary" | "black" | "white";
  *   className?: string;
  *   "aria-label"?: string;
+ *   disabled?: boolean;
+ *   onBeforeCopy?: () => boolean | Promise<boolean>;
  * }} props
  */
 export default function CopyBtn({
@@ -88,6 +90,8 @@ export default function CopyBtn({
   color = "white",
   className = "",
   "aria-label": ariaLabel = "Copy to clipboard",
+  disabled = false,
+  onBeforeCopy,
 }) {
   const [copied, setCopied] = useState(false);
   const iconRef = useRef(null);
@@ -129,6 +133,13 @@ export default function CopyBtn({
     event.preventDefault();
     event.stopPropagation();
 
+    if (disabled) return;
+
+    if (onBeforeCopy) {
+      const canProceed = await onBeforeCopy();
+      if (!canProceed) return;
+    }
+
     try {
       await copyTextToClipboard(value);
 
@@ -146,7 +157,8 @@ export default function CopyBtn({
     <button
       type="button"
       onClick={handleClick}
-      className={cn(copyButtonSlots.button(), className)}
+      disabled={disabled}
+      className={cn(copyButtonSlots.button(), disabled && "cursor-not-allowed opacity-40", className)}
       aria-label={ariaLabel}
     >
       <div ref={iconRef} className={copyButtonSlots.iconWrap()}>

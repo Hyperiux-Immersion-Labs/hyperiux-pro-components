@@ -21,19 +21,19 @@
   "previewUrl": "/demo/rotation-slider",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "RotationSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/rotation-slider",
   "target": "src/components/effects/rotation-slider",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/rotation-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/rotation-slider/index.tsx"
     },
     {
-      "path": "RotationSliderComp.jsx",
-      "target": "src/components/effects/rotation-slider/RotationSliderComp.jsx"
+      "path": "RotationSliderComp.tsx",
+      "target": "src/components/effects/rotation-slider/RotationSliderComp.tsx"
     }
   ],
   "props": [

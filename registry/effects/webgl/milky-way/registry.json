@@ -18,27 +18,27 @@
   "previewUrl": "/demo/milky-way",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "MilkyWay",
   "exportKind": "default",
   "importPath": "@/components/effects/milky-way",
   "target": "src/components/effects/milky-way",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/milky-way/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/milky-way/index.tsx"
     },
     {
-      "path": "circular-text.jsx",
-      "target": "src/components/effects/milky-way/circular-text.jsx"
+      "path": "circular-text.tsx",
+      "target": "src/components/effects/milky-way/circular-text.tsx"
     },
     {
-      "path": "edge-blur-effect.jsx",
-      "target": "src/components/effects/milky-way/edge-blur-effect.jsx"
+      "path": "edge-blur-effect.tsx",
+      "target": "src/components/effects/milky-way/edge-blur-effect.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/milky-way/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/milky-way/createSuspendedRaf.ts"
     }
   ],
   "changelog": [

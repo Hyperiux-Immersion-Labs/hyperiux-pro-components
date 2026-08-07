@@ -12,27 +12,27 @@
   "registryDependencies": [],
   "previewUrl": "/demo/lines-loader",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "LinesLoader",
   "exportKind": "default",
   "importPath": "@/components/effects/lines-loader",
   "target": "src/components/effects/lines-loader",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/lines-loader/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/lines-loader/index.tsx"
     },
     {
-      "path": "CenterLinesLoading.jsx",
-      "target": "src/components/effects/lines-loader/CenterLinesLoading.jsx"
+      "path": "LinesLoading.tsx",
+      "target": "src/components/effects/lines-loader/LinesLoading.tsx"
     },
     {
-      "path": "LinesLoading.jsx",
-      "target": "src/components/effects/lines-loader/LinesLoading.jsx"
+      "path": "CenterLinesLoading.tsx",
+      "target": "src/components/effects/lines-loader/CenterLinesLoading.tsx"
     },
     {
-      "path": "utils.js",
-      "target": "src/components/effects/lines-loader/utils.js"
+      "path": "utils.ts",
+      "target": "src/components/effects/lines-loader/utils.ts"
     }
   ],
   "props": [

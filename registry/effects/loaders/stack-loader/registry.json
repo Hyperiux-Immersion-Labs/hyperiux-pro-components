@@ -12,7 +12,7 @@
   "previewUrl": "/demo/stack-loader",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "StackLoader",
   "exportKind": "default",
   "importPath": "@/components/effects/stack-loader",
@@ -83,8 +83,8 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/stack-loader/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/stack-loader/index.tsx"
     }
   ],
   "changelog": [

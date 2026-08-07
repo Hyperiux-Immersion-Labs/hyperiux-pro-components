@@ -175,19 +175,19 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-modal/index.jsx"
+      "target": "src/components/effects/animated-modal/index.tsx"
     },
     {
-      "path": "AnimatedModalContent.jsx",
+      "path": "AnimatedModalContent.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-modal/AnimatedModalContent.jsx"
+      "target": "src/components/effects/animated-modal/AnimatedModalContent.tsx"
     },
     {
-      "path": "ScrollablePopupContent.jsx",
+      "path": "ScrollablePopupContent.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-modal/ScrollablePopupContent.jsx"
+      "target": "src/components/effects/animated-modal/ScrollablePopupContent.tsx"
     }
   ]
 }

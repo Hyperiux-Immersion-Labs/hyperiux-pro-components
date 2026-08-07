@@ -25,19 +25,19 @@
   "registryDependencies": [],
   "previewUrl": "/demo/scroll-stack",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ScrollStack",
   "exportKind": "default",
   "importPath": "@/components/effects/scroll-stack",
   "target": "src/components/effects/scroll-stack",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/scroll-stack/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/scroll-stack/index.tsx"
     },
     {
-      "path": "ScrollStackComp.jsx",
-      "target": "src/components/effects/scroll-stack/ScrollStackComp.jsx"
+      "path": "ScrollStackComp.tsx",
+      "target": "src/components/effects/scroll-stack/ScrollStackComp.tsx"
     }
   ],
   "props": [

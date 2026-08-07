@@ -2,11 +2,11 @@
   "name": "@hyperiux/full-screen-crosshair",
   "version": "1.1.1",
   "description": "Fullscreen crosshair cursor overlay with configurable gap, thickness, smoothing, and center content.",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "useMouse.js",
-    "createSuspendedRaf.js",
+    "index.tsx",
+    "useMouse.ts",
+    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

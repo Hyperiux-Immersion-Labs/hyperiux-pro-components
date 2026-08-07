@@ -26,35 +26,35 @@
   "registryDependencies": [],
   "previewUrl": "/demo/expanding-navbar",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ExpandingNavbar",
   "exportKind": "default",
   "importPath": "@/components/effects/expanding-navbar",
   "target": "src/components/effects/expanding-navbar",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/expanding-navbar/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/expanding-navbar/index.tsx"
     },
     {
-      "path": "ExpandingNavbarDesktop.jsx",
-      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.jsx"
+      "path": "ExpandingNavbarDesktop.tsx",
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.tsx"
     },
     {
-      "path": "ExpandingNavbarMobile.jsx",
-      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.jsx"
+      "path": "ExpandingNavbarMobile.tsx",
+      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.tsx"
     },
     {
-      "path": "HoverFillLink.jsx",
-      "target": "src/components/effects/expanding-navbar/HoverFillLink.jsx"
+      "path": "HoverFillLink.tsx",
+      "target": "src/components/effects/expanding-navbar/HoverFillLink.tsx"
     },
     {
-      "path": "data.js",
-      "target": "src/components/effects/expanding-navbar/data.js"
+      "path": "data.ts",
+      "target": "src/components/effects/expanding-navbar/data.ts"
     },
     {
-      "path": "useFocusTrap.js",
-      "target": "src/components/effects/expanding-navbar/useFocusTrap.js"
+      "path": "useFocusTrap.ts",
+      "target": "src/components/effects/expanding-navbar/useFocusTrap.ts"
     }
   ],
   "props": [

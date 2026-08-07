@@ -1,6 +1,32 @@
 import { NextResponse } from "next/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertAdmin } from "@/lib/admin";
+
+// Resend's status column only tells us the invite email was delivered -
+// it says nothing about whether the invitation itself is still pending,
+// was accepted, revoked, or expired. Clerk is the actual source of truth
+// for that, so waitlist_invite rows get annotated with it here instead of
+// just showing "success" forever regardless of what happened afterward.
+async function getInvitationStatusByEmail() {
+  const clerk = await clerkClient();
+  const { data: invitations } = await clerk.invitations.getInvitationList({
+    limit: 500,
+  });
+
+  const statusByEmail = new Map();
+
+  // Clerk returns newest-first, so the first hit per email is the most
+  // recent invitation - what we want when someone's been invited more than once.
+  for (const invitation of invitations || []) {
+    const email = invitation.emailAddress?.toLowerCase();
+    if (email && !statusByEmail.has(email)) {
+      statusByEmail.set(email, invitation.status);
+    }
+  }
+
+  return statusByEmail;
+}
 
 export async function GET(request) {
   if (!(await assertAdmin())) {
@@ -44,7 +70,22 @@ export async function GET(request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    return NextResponse.json({ emails: data || [], total: count || 0 });
+    const hasInviteRows = (data || []).some((row) => row.email_type === "waitlist_invite");
+    const invitationStatusByEmail = hasInviteRows
+      ? await getInvitationStatusByEmail()
+      : new Map();
+
+    const emails = (data || []).map((row) => {
+      if (row.email_type !== "waitlist_invite") return row;
+
+      return {
+        ...row,
+        invitation_status:
+          invitationStatusByEmail.get(row.recipient_email?.toLowerCase()) || null,
+      };
+    });
+
+    return NextResponse.json({ emails, total: count || 0 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

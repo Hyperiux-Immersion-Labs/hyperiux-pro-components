@@ -103,14 +103,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/text-cloning/index.jsx"
+      "target": "src/components/effects/text-cloning/index.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
+      "path": "createSuspendedRaf.ts",
       "type": "registry:component",
-      "target": "src/components/effects/text-cloning/createSuspendedRaf.js"
+      "target": "src/components/effects/text-cloning/createSuspendedRaf.ts"
     }
   ]
 }

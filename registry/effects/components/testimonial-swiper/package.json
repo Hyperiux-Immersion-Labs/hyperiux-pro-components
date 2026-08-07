@@ -2,11 +2,11 @@
   "name": "@hyperiux/testimonial-swiper",
   "version": "1.2.3",
   "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "NavigationButtons.jsx",
-    "TestimonialComp.jsx",
+    "index.tsx",
+    "NavigationButtons.tsx",
+    "TestimonialComp.tsx",
     "registry.json"
   ],
   "keywords": [

@@ -2,10 +2,10 @@
   "name": "@hyperiux/video-player",
   "version": "1.2.1",
   "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "VideoPlayerComp.jsx",
+    "index.tsx",
+    "VideoPlayerComp.tsx",
     "registry.json"
   ],
   "keywords": [

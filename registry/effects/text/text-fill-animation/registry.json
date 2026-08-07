@@ -19,7 +19,7 @@
   "registryDependencies": [],
   "previewUrl": "/demo/text-fill-animation",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "TextFillAnimation",
   "exportKind": "default",
   "importPath": "@/components/effects/text-fill-animation",
@@ -111,8 +111,8 @@
   },
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/text-fill-animation/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/text-fill-animation/index.tsx"
     }
   ],
   "changelog": [

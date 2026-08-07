@@ -45,6 +45,8 @@ const legacyLauncherLayoutTokens = new Set([
   "w-[344px]!",
 ]);
 
+const EmptyComponent = () => null;
+
 function removeLegacyLauncherLayoutClasses(className) {
   if (!className) return "";
 
@@ -54,12 +56,21 @@ function removeLegacyLauncherLayoutClasses(className) {
     .join(" ");
 }
 
+/**
+ * @param {{
+ *   registry: any,
+ *   component?: import("react").ComponentType<any>,
+ *   children?: (args: { values: any, effect: import("react").ReactNode }) => import("react").ReactNode,
+ *   render?: ((values: any) => import("react").ReactNode) | null,
+ *   copyCodeOptions?: any
+ * }} props
+ */
 export default function RegistryRemixerDemo({
   registry,
-  component: Component,
-  children,
-  render,
-  copyCodeOptions,
+  component: Component = EmptyComponent,
+  children = null,
+  render = null,
+  copyCodeOptions = {},
 }) {
   const remixerConfig = registry?.remixer ?? {};
   const layoutConfig = remixerConfig.layout ?? {};

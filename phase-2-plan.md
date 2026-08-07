@@ -58,7 +58,7 @@ Registry workflow and props schema run in parallel with CI gate and linting — 
 |---|---|---|
 | Remixer panel + live prop controls | ~~4–5 days~~ | 🟡 Built, not yet merged — `790541607` → `d0354fb5d` "implemented remixer panel in all effects", still only on `props-remixer` |
 | ~~Props table in Sanity~~ | ~~1–2 days + ongoing~~ | ⏹ Descoped — props/data render directly from the registry on effect detail pages instead of a separate Sanity table |
-| TypeScript, all 115 effects | ~1.5 wk | Infra first (1–2 days), then retype every existing effect, split across 2–3 people |
+| TypeScript, all 115 effects | ~1.5 wk | 🟡 In progress — infra done, pilot (`scroll-stack`, `hover-stack`) converted and verified; see `typescript-migration-plan.md` for the category-by-category rollout |
 | Tests, all 115 effects | ~~1 wk~~ | ✅ Done — [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19) |
 | Admin dashboard expansion | 2–3 days | Login/activity tracking, Vercel Analytics in-app, daily install/copy metric — extends existing email log view |
 | Accessibility badge | 1 day | 94% of effects already handle reduced motion — surfaces it as a trust signal |

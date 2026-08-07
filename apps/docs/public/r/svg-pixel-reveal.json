@@ -65,14 +65,14 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/svg-pixel-reveal/index.jsx"
+      "target": "src/components/effects/svg-pixel-reveal/index.tsx"
     },
     {
-      "path": "PixelatedSvgFilter.jsx",
+      "path": "PixelatedSvgFilter.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.jsx"
+      "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.tsx"
     }
   ]
 }

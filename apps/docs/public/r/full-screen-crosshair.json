@@ -13,7 +13,7 @@
     {
       "version": "1.1.1",
       "date": "2026-07-23",
-      "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.jsx.",
+      "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.tsx.",
       "breaking": false
     },
     {
@@ -147,19 +147,19 @@
   },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/full-screen-crosshair/index.jsx"
+      "target": "src/components/effects/full-screen-crosshair/index.tsx"
     },
     {
-      "path": "useMouse.js",
+      "path": "useMouse.ts",
       "type": "registry:component",
-      "target": "src/components/effects/full-screen-crosshair/useMouse.js"
+      "target": "src/components/effects/full-screen-crosshair/useMouse.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
+      "path": "createSuspendedRaf.ts",
       "type": "registry:component",
-      "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.js"
+      "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.ts"
     }
   ]
 }
