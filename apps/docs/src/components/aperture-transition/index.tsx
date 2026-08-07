@@ -12,41 +12,56 @@ gsap.registerPlugin(ScrollTrigger)
 const SHRINK_SCALE = 0.82
 const COMPACT_SHRINK_SCALE = 0.9
 
+
+const LEAVE_SHRINK_DURATION = 0.6
+const ENTER_CLIP_DURATION = 0.4
+const ENTER_EXPAND_DURATION = 1.0
+
 function isCompactViewport() {
   if (typeof window === 'undefined') return false
   return window.innerWidth < 1025
 }
 
-// vh, not % - wrapperRef's own box height is its content's natural height
-// (which can be several viewports on a long page), not the viewport. A
-// percentage-based inset would clip relative to that full content height,
-// so most of the reveal would happen below the fold (already hidden by the
-// frame's own overflow:hidden) and the visible slice would only start
-// moving in the last few percent of the animation - a fast, late snap
-// instead of a smooth reveal. vh ties the offset to the actual viewport
-// height regardless of how tall the underlying page is.
-function clipInset(top: number) {
-  return `inset(${top}vh 0% 0% 0%)`
+function clipInset(offset: number, direction: 'top' | 'bottom') {
+  return direction === 'top'
+    ? `inset(0% 0% ${offset}vh 0%)`
+    : `inset(${offset}vh 0% 0% 0%)`
 }
-
-const HIDDEN_CLIP = clipInset(100)
 
 interface ApertureTransitionProps {
   children: React.ReactNode
+
+  scale?: number
+
+  duration?: number
+
+  revealDirection?: 'top' | 'bottom'
+
   bgColor?: string
+
+  overlayClassName?: string
+
+  frameClassName?: string
+
+  onLeaveStart?: () => void
+ 
+  onEnterComplete?: () => void
 }
 
-export default function ApertureTransition({ children, bgColor = '#0b0b0c' }: ApertureTransitionProps) {
-  // frameRef sits in normal document flow at rest (no fixed positioning, no
-  // fixed height) so a page taller than one viewport scrolls exactly like it
-  // would without this component. Only while a transition is actually
-  // running does it become a viewport-sized, clipped, scaling frame - and
-  // wrapperRef gets pinned inside it at the scroll offset the page was at
-  // the moment the transition started. Without that freeze, scaling a
-  // container that holds a 5000px-tall page would shrink the *entire*
-  // document toward its own center - which could be thousands of pixels
-  // below whatever the user was actually looking at - instead of shrinking
-  // the part of the page that was on screen.
+export default function ApertureTransition({
+  children,
+  scale = isCompactViewport() ? COMPACT_SHRINK_SCALE : SHRINK_SCALE,
+  duration = LEAVE_SHRINK_DURATION,
+  revealDirection = 'bottom',
+  bgColor = '#0b0b0c',
+  overlayClassName = '',
+  frameClassName = '',
+  onLeaveStart = () => {},
+  onEnterComplete = () => {},
+}: ApertureTransitionProps) {
+  const HIDDEN_CLIP = clipInset(100, revealDirection)
+  const durationScale = duration / LEAVE_SHRINK_DURATION
+
   const frameRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -71,6 +86,8 @@ export default function ApertureTransition({ children, bgColor = '#0b0b0c' }: Ap
     <TransitionRouter
       auto
       leave={(next) => {
+        onLeaveStart()
+
         if (prefersReducedMotion()) {
           const tl = gsap.timeline({ onComplete: next })
           tl.to(wrapperRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0)
@@ -115,8 +132,8 @@ export default function ApertureTransition({ children, bgColor = '#0b0b0c' }: Ap
         })
 
         tl.to(frameRef.current, {
-          scale: isCompactViewport() ? COMPACT_SHRINK_SCALE : SHRINK_SCALE,
-          duration: 0.6,
+          scale,
+          duration: LEAVE_SHRINK_DURATION * durationScale,
           ease: 'power2.inOut',
         })
 
@@ -146,6 +163,7 @@ export default function ApertureTransition({ children, bgColor = '#0b0b0c' }: Ap
             }
 
             ScrollTrigger.refresh()
+            onEnterComplete()
             next()
           },
         })
@@ -157,12 +175,12 @@ export default function ApertureTransition({ children, bgColor = '#0b0b0c' }: Ap
 
         const state = { top: 100 }
         const applyClip = () => {
-          if (wrapperRef.current) wrapperRef.current.style.clipPath = clipInset(state.top)
+          if (wrapperRef.current) wrapperRef.current.style.clipPath = clipInset(state.top, revealDirection)
         }
 
         tl.to(state, {
           top: 0,
-          duration: 0.4,
+          duration: ENTER_CLIP_DURATION * durationScale,
           ease: 'power2.in',
           onUpdate: applyClip,
           onComplete: () => {
@@ -172,18 +190,18 @@ export default function ApertureTransition({ children, bgColor = '#0b0b0c' }: Ap
 
         tl.to(frameRef.current, {
           scale: 1,
-          duration: 1.0,
+          duration: ENTER_EXPAND_DURATION * durationScale,
           ease: 'power3.inOut',
           clearProps: 'transform',
-        }, '-=0.35')
+        }, `-=${0.35 * durationScale}`)
 
         return () => tl.kill()
       }}
     >
       <div className='fixed inset-0 -z-10 pointer-events-none' style={{ backgroundColor: bgColor }} />
 
-      <div ref={frameRef} className='relative w-full' style={{ transformOrigin: '50% 50%' }}>
-        <div ref={overlayRef} className='absolute inset-0 z-10 pointer-events-none' />
+      <div ref={frameRef} className={`relative w-full ${frameClassName}`} style={{ transformOrigin: '50% 50%' }}>
+        <div ref={overlayRef} className={`absolute inset-0 z-10 pointer-events-none ${overlayClassName}`} />
 
         <div ref={wrapperRef} className='relative z-20 w-full'>
           {children}

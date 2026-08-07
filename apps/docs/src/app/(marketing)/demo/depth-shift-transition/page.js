@@ -4,6 +4,7 @@ import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import ArrowFillButton from "@/components/arrow-fill-button";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import FadeUp from "@/components/WebsiteComps/FadeUp";
 
 export default function page() {
   return (
@@ -33,13 +34,13 @@ export default function page() {
         </SplitLine>
 
         {/* Buttons */}
-        <div className="mt-12">
+        <FadeUp className="mt-12" delay={0.2}>
           <ArrowFillButton
             className="cursor-pointer border border-[#ff5f00] text-[#ffffff]"
             btnText={"Click here"}
             href={"/demo/depth-shift-transition/page2"}
             />
-        </div>
+        </FadeUp>
       </div>
     </section>
             </>

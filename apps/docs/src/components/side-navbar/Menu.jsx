@@ -46,44 +46,59 @@ const SocialLink = ({ href, text }) => (
   </li>
 );
 
-export default function Menu({ menuOpen }) {
+export default function Menu({ menuOpen, navLinks = NAV_LINKS, socialLinks = SOCIAL_LINKS, panelWidth = '50%' }) {
   const menuRef = useRef(null);
   const navRef = useRef(null);
   const [serviceOpen, setServiceOpen] = useState(false);
 
   useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const links = document.querySelectorAll(".link-anim");
     const socialLinks = document.querySelectorAll(".social-link");
 
     if (menuOpen) {
-      gsap.timeline()
+      const tl = gsap.timeline()
         .to(navRef.current, {
           left: 0,
           x: 0,
-          duration: 0.5,
+          duration: reduceMotion ? 0.3 : 0.5,
           ease: "power3.out",
+        });
+
+      if (reduceMotion) {
+        tl.from(links, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power1.out",
         })
-        .from(links, {
+          .from(socialLinks, {
+            opacity: 0,
+            duration: 0.3,
+            ease: "power1.out",
+          });
+      } else {
+        tl.from(links, {
           yPercent: 100,
           duration: 1,
           delay: -0.4,
           ease: "power3.out",
           stagger: 0.05
         })
-        .from(socialLinks, {
-          rotationZ: 5,
-          yPercent: 100,
-          duration: 1,
-          delay: -1,
-          stagger: 0.05,
-          ease: "power3.out",
-        })
+          .from(socialLinks, {
+            rotationZ: 5,
+            yPercent: 100,
+            duration: 1,
+            delay: -1,
+            stagger: 0.05,
+            ease: "power3.out",
+          });
+      }
     } else {
       gsap.timeline()
         .to(navRef.current, {
           left: "99px",
           x: '100%',
-          duration: 0.5,
+          duration: reduceMotion ? 0.3 : 0.5,
           ease: "power3.out",
           onComplete: () => {
             setServiceOpen(false);
@@ -94,20 +109,21 @@ export default function Menu({ menuOpen }) {
 
 
   useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const serviceLinks = document.querySelectorAll(".service-links li");
     if (serviceOpen) {
       gsap.to(serviceLinks, {
         opacity: 1,
         x: 0,
-        duration: 0.5,
-        stagger: 0.05,
+        duration: reduceMotion ? 0.2 : 0.5,
+        stagger: reduceMotion ? 0 : 0.05,
       })
     } else {
       gsap.to(serviceLinks, {
         opacity: 0,
-        x: 50,
-        duration: 0.5,
-        stagger: {
+        x: reduceMotion ? 0 : 50,
+        duration: reduceMotion ? 0.2 : 0.5,
+        stagger: reduceMotion ? 0 : {
           each: 0.02, from: "end"
         }
       })
@@ -116,10 +132,14 @@ export default function Menu({ menuOpen }) {
 
   return (
     <div ref={menuRef} className="fixed top-0 z-[199] left-0 right-0 bottom-0 flex items-start justify-end pointer-events-none">
-      <nav ref={navRef} className={`relative w-[50%] pointer-events-auto translate-x-[100%] left-[99px] h-full bg-black/20 backdrop-blur-md max-md:w-full max-[1025px]:w-[70%]`}>
+      <nav
+        ref={navRef}
+        style={{ '--panel-width': panelWidth }}
+        className={`relative w-(--panel-width) pointer-events-auto translate-x-[100%] left-[99px] h-full bg-black/20 backdrop-blur-md max-md:w-full max-[1025px]:w-[70%]`}
+      >
         <div data-lenis-prevent className="w-full h-full px-[5vw] pt-[5.5vw] pb-[3.5vw] relative flex flex-col justify-between items-start max-[1025px]:justify-between max-[1025px]:py-[15vw] max-md:pt-[25vw] max-md:pb-[10vw] overflow-y-auto">
           <ul className="text-[4vw] font-display text-white leading-[1.15] max-md:text-[11.5vw] max-[1025px]:text-[6.5vw]">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <li key={link.text} className={link.liClassName}>
                 <MenuLink className="link-anim" href={link.href} text={link.text} />
               </li>
@@ -137,7 +157,7 @@ export default function Menu({ menuOpen }) {
 
           </div>
           <ul className="flex justify-between items-center text-[1vw] text-white font-medium uppercase w-[90%] max-md:flex-col max-md:items-start max-md:text-[4.5vw] max-md:gap-[1.5vw] max-[1025px]:text-[3vw] max-[1025px]:flex-wrap max-[1025px]:items-start max-[1025px]:gap-[2vw]">
-            {SOCIAL_LINKS.map((link) => (
+            {socialLinks.map((link) => (
               <SocialLink key={link.text} href={link.href} text={link.text} />
             ))}
           </ul>

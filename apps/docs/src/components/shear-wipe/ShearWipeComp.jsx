@@ -1,13 +1,20 @@
 'use client'
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import Image from 'next/image';
 import { gsap } from 'gsap';
+
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+}
 
 const ShearWipeComp = ({
   componentHighlights = [],
   showcaseStats = [],
-  componentsBg = 'bg-[#C7D3C0]',
+  clipPathDuration = 0.9,
+  componentsBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs3.png',
   componentsTextColor = 'text-black',
-  showcaseBg = 'bg-[#8FA28A]',
+  showcaseBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs4.png',
   showcaseTextColor = 'text-white',
 }) => {
   const [activePanel, setActivePanel] = useState('components');
@@ -19,35 +26,56 @@ const ShearWipeComp = ({
   const componentsContentRef = useRef(null);
   const showcaseContentRef = useRef(null);
   const isFirstMobileRender = useRef(true);
+  const isTransitioningRef = useRef(false);
+  const isFirstPanelEffect = useRef(true);
 
   // Animate panel open/close
   useEffect(() => {
+    if (isFirstPanelEffect.current) {
+      isFirstPanelEffect.current = false;
+      return;
+    }
+
     if (overlayRef.current) {
-      if (activePanel === 'showcase') {
-        gsap.to(overlayRef.current, {
-          clipPath: 'polygon(7.75% 0%, 100% 0%, 100% 100%, 11.25% 100%)',
-          duration: 1.2,
-          ease: 'power3.inOut',
-        });
-      } else {
-        gsap.to(overlayRef.current, {
-          clipPath: 'polygon(92.5% 0%, 100% 0%, 100% 100%, 88.5% 100%)',
-          duration: 1.2,
-          ease: 'power3.inOut',
-        });
+      const targetClipPath =
+        activePanel === 'showcase'
+          ? 'polygon(7.75% 0%, 100% 0%, 100% 100%, 11.25% 100%)'
+          : 'polygon(92.5% 0%, 100% 0%, 100% 100%, 88.5% 100%)';
+
+      if (prefersReducedMotion()) {
+        gsap.set(overlayRef.current, { clipPath: targetClipPath, pointerEvents: 'auto' });
+        isTransitioningRef.current = false;
+        return;
       }
+
+      isTransitioningRef.current = true;
+      gsap.set(overlayRef.current, { pointerEvents: 'none' });
+
+      gsap.to(overlayRef.current, {
+        clipPath: targetClipPath,
+        duration: clipPathDuration,
+        ease: 'power3.inOut',
+        overwrite: 'auto',
+        onComplete: () => {
+          isTransitioningRef.current = false;
+          gsap.set(overlayRef.current, { pointerEvents: 'auto' });
+        },
+      });
     }
   }, [activePanel]);
 
   // --- Hover animations ---
+  // Ignored while a swipe is mid-flight so hovering the opposite edge can't
+  // hijack the clip-path tween that's already running.
   const handleHover = (side) => {
-    if (!overlayRef.current) return;
+    if (!overlayRef.current || isTransitioningRef.current || prefersReducedMotion()) return;
 
     if (side === 'showcase' && activePanel === 'components') {
       gsap.to(overlayRef.current, {
         clipPath: 'polygon(90% 0%, 100% 0%, 100% 100%, 86% 100%)',
         duration: 0.6,
         ease: 'power2.out',
+        overwrite: 'auto',
       });
     }
 
@@ -56,24 +84,27 @@ const ShearWipeComp = ({
         clipPath: 'polygon(10.5% 0%, 100% 0%, 100% 100%, 14% 100%)',
         duration: 0.6,
         ease: 'power2.out',
+        overwrite: 'auto',
       });
     }
   };
 
   const handleHoverOut = () => {
-    if (!overlayRef.current) return;
+    if (!overlayRef.current || isTransitioningRef.current || prefersReducedMotion()) return;
 
     if (activePanel === 'showcase') {
       gsap.to(overlayRef.current, {
         clipPath: 'polygon(7.75% 0%, 100% 0%, 100% 100%, 11.25% 100%)',
         duration: 0.6,
         ease: 'power2.inOut',
+        overwrite: 'auto',
       });
     } else {
       gsap.to(overlayRef.current, {
         clipPath: 'polygon(92.5% 0%, 100% 0%, 100% 100%, 88.5% 100%)',
         duration: 0.6,
         ease: 'power2.inOut',
+        overwrite: 'auto',
       });
     }
   };
@@ -109,14 +140,22 @@ const ShearWipeComp = ({
     }
 
     const activeTabEl = activePanel === 'components' ? componentsTabRef.current : showcaseTabRef.current;
+    const reducedMotion = prefersReducedMotion();
 
     if (activeTabEl && activeLineRef.current) {
-      gsap.to(activeLineRef.current, {
-        x: activeTabEl.offsetLeft,
-        width: activeTabEl.offsetWidth,
-        duration: 0.45,
-        ease: 'power3.out',
-      });
+      if (reducedMotion) {
+        gsap.set(activeLineRef.current, {
+          x: activeTabEl.offsetLeft,
+          width: activeTabEl.offsetWidth,
+        });
+      } else {
+        gsap.to(activeLineRef.current, {
+          x: activeTabEl.offsetLeft,
+          width: activeTabEl.offsetWidth,
+          duration: 0.45,
+          ease: 'power3.out',
+        });
+      }
     }
 
     const showEl = activePanel === 'components' ? componentsContentRef.current : showcaseContentRef.current;
@@ -125,6 +164,12 @@ const ShearWipeComp = ({
     if (!showEl || !hideEl) return;
 
     gsap.killTweensOf([showEl, hideEl]);
+
+    if (reducedMotion) {
+      gsap.set(hideEl, { display: 'none', opacity: 0 });
+      gsap.set(showEl, { display: 'block', opacity: 1 });
+      return;
+    }
 
     gsap.to(hideEl, {
       opacity: 0,
@@ -144,33 +189,33 @@ const ShearWipeComp = ({
   }, [activePanel]);
 
   return (
-    <div className={`relative w-full min-h-screen ${componentsBg} overflow-hidden`}>
- 
+    <div className="relative w-full min-h-screen overflow-hidden">
+      {/* Page Background */}
+      <div className="absolute inset-0">
+        <Image src={componentsBgImage} alt="" fill className="object-cover" />
+        <div className="absolute inset-0 bg-white/50" />
+      </div>
+
       <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
         {/* Base Panel - Components */}
         <div className="flex h-full items-center">
-          {/* Left Content */}
-          <div className="w-[40%] flex items-start justify-start p-[6vw]">
-            <div className={`max-w-[45vw] space-y-[3vw] ${componentsTextColor}`}>
-              <h2 className="text-[2.5vw] font-display leading-[1.2]">Design that feels alive</h2>
+          <div className="w-full flex items-center justify-center p-[6vw]">
+            <div className={`w-[45vw] space-y-[3vw] ${componentsTextColor}`}>
+              <h2 className="text-[2.5vw] font-display leading-[1.2] whitespace-nowrap">Design that feels alive</h2>
               <p className="text-[1.1vw] leading-relaxed">
-                Every component in Hyperiux Vault is built to react, transition, and guide attention naturally — making interfaces feel intentional instead of static. Bold ideas, flawless execution, unforgettable impact.
+                Every component reacts and transitions naturally , turning interfaces from static to alive.
               </p>
-            </div>
-          </div>
-
-          {/* Right Content */}
-          <div className="w-[60%] flex items-center justify-center p-[5vw]">
-            <div className={`w-full pt-[5vw] space-y-[2vw] ${componentsTextColor}`}>
-              {componentHighlights.map((item, i) => (
-                <div key={i} className="flex items-start gap-[1.5vw] border-b border-gray-400/40 pb-[1.5vw]">
-                  <span className="text-[0.9vw] pt-[0.2vw]">{item.label}</span>
-                  <div>
-                    <h3 className="text-[1.2vw] font-display leading-tight">{item.title}</h3>
-                    <p className="text-[0.95vw] leading-relaxed mt-[0.4vw]">{item.desc}</p>
+              <div className={`w-full pt-[2vw] space-y-[2vw] ${componentsTextColor}`}>
+                {componentHighlights.map((item, i) => (
+                  <div key={i} className="flex items-start gap-[1.5vw] border-b border-gray-400/40 pb-[1.5vw]">
+                    <span className="text-[0.9vw] pt-[0.2vw]">{item.label}</span>
+                    <div>
+                      <h3 className="text-[1.2vw] font-display leading-tight">{item.title}</h3>
+                      <p className="text-[0.95vw] leading-relaxed mt-[0.4vw]">{item.desc}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
@@ -190,31 +235,35 @@ const ShearWipeComp = ({
         {/* Overlay Panel - Showcase */}
         <div
           ref={overlayRef}
-          className={`absolute inset-0 ${showcaseBg} pointer-events-auto px-[10vw]`}
+          className="absolute inset-0 pointer-events-auto px-[10vw]"
           style={{
             clipPath: 'polygon(92.5% 0%, 100% 0%, 100% 100%, 88.5% 100%)',
           }}
         >
-          <div className="flex h-screen relative">
-            {/* Left Content */}
-            <div className="w-[40%] flex items-center justify-center pl-[6vw]">
-              <div className={showcaseTextColor}>
-                <h2 className="text-[2.5vw] font-display mb-[3vw] leading-[1.2]">Motion with meaning</h2>
-                <p className="text-[1.1vw] leading-relaxed">
-                  Animations should explain, not distract. Interactions are designed to create clarity, rhythm, and confidence across every screen — trusted by teams shipping real products, not just prototypes.
-                </p>
-              </div>
-            </div>
+          <div className="absolute inset-0">
+            <Image src={showcaseBgImage} alt="" fill className="object-cover" />
+            <div className="absolute inset-0 bg-black/40" />
+          </div>
 
-            {/* Right Content */}
-            <div className="flex-1 flex items-center justify-center p-[6vw]">
-              <div className={`w-full max-w-[30vw] grid grid-cols-2 gap-x-[3vw] gap-y-[3vw] ${showcaseTextColor}`}>
-                {showcaseStats.map((stat, i) => (
-                  <div key={i}>
-                    <div className="text-[2.4vw] font-display leading-none">{stat.value}</div>
-                    <div className="text-[0.8vw] uppercase tracking-wider mt-[0.6vw]">{stat.label}</div>
-                  </div>
-                ))}
+          <div className="flex h-screen items-center relative">
+            <div className="w-full flex items-center justify-center p-[6vw]">
+              <div className={`w-[45vw] space-y-[3vw] ${showcaseTextColor}`}>
+                <h2 className="text-[2.5vw] font-display leading-[1.2]">Motion with meaning</h2>
+                <p className="text-[1.1vw] leading-relaxed">
+                  Animations explain, creating clarity and confidence across every screen.
+                </p>
+
+                <div className="pt-[2vw] space-y-[2vw]">
+                  {showcaseStats.map((item, i) => (
+                    <div key={i} className="flex items-start gap-[1.5vw] border-b border-white/20 pb-[1.5vw]">
+                      <span className="text-[0.9vw] pt-[0.2vw] opacity-60">{item.label}</span>
+                      <div>
+                        <h3 className="text-[1.2vw] font-display leading-tight">{item.title}</h3>
+                        <p className="text-[0.95vw] leading-relaxed mt-[0.4vw] opacity-80">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -231,9 +280,16 @@ const ShearWipeComp = ({
             Components
           </div>
         </div>
+
+        {/* Creative clue hint */}
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:hidden">
+          <div className="px-4 py-2 rounded-full bg-black/10 backdrop-blur-md  text-neutral-800 text-sm font-medium tracking-wide">
+            Click either heading : Components or Showcase , to switch panels
+          </div>
+        </div>
       </div>
 
-     
+
       <div className="hidden max-[1025px]:block px-[6vw] max-md:px-[6vw] pt-[16vw] pb-[10vw] max-md:pt-[26vw] max-md:pb-[14vw]">
         <div role="tablist" aria-orientation="horizontal" className="relative flex gap-[6vw] max-md:gap-[7vw] border-b border-black/15">
           <button
@@ -271,16 +327,16 @@ const ShearWipeComp = ({
               Design that feels alive
             </h2>
             <p className={`text-[2.1vw] max-md:text-[4vw] leading-relaxed ${componentsTextColor} opacity-70 mb-[6vw] max-md:mb-[9vw]`}>
-              Every component in Hyperiux Vault is built to react, transition, and guide attention naturally — making interfaces feel intentional instead of static. Bold ideas, flawless execution, unforgettable impact.
+              Every component reacts and transitions naturally , turning interfaces from static to alive.
             </p>
 
             <div className="space-y-[3.5vw] max-md:space-y-[6vw]">
               {componentHighlights.map((item, i) => (
                 <div key={i} className="flex items-start gap-[2.5vw] max-md:gap-[3.5vw] border-b border-black/15 pb-[3.5vw] max-md:pb-[5vw]">
                   <span className={`text-[1.8vw] max-md:text-[3.2vw] ${componentsTextColor} opacity-45 pt-[0.2vw]`}>{item.label}</span>
-                  <div>
-                    <h3 className={`text-[2.4vw] max-md:text-[4.4vw] font-display leading-tight ${componentsTextColor}`}>{item.title}</h3>
-                    <p className={`text-[1.8vw] max-md:text-[3.4vw] leading-relaxed ${componentsTextColor} opacity-60 mt-[1vw] max-md:mt-[1.8vw]`}>{item.desc}</p>
+                  <div className="flex items-baseline gap-[1.5vw] max-md:gap-[2vw]">
+                    <h3 className={`text-[2.4vw] max-md:text-[4.4vw] font-display leading-tight whitespace-nowrap ${componentsTextColor}`}>{item.title}</h3>
+                    <p className={`text-[1.8vw] max-md:text-[3.4vw] leading-relaxed ${componentsTextColor} opacity-60`}>{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -293,14 +349,17 @@ const ShearWipeComp = ({
               Motion with meaning
             </h2>
             <p className={`text-[2.1vw] max-md:text-[4vw] leading-relaxed ${componentsTextColor} opacity-70 mb-[7vw] max-md:mb-[10vw]`}>
-              Animations should explain, not distract. Interactions are designed to create clarity, rhythm, and confidence across every screen — trusted by teams shipping real products, not just prototypes.
+              Animations explain, creating clarity and confidence across every screen.
             </p>
 
-            <div className="grid grid-cols-2 gap-x-[6vw] gap-y-[6vw] max-md:gap-x-[8vw] max-md:gap-y-[8vw]">
-              {showcaseStats.map((stat, i) => (
-                <div key={i}>
-                  <div className={`text-[4.6vw] max-md:text-[8vw] font-display leading-none ${componentsTextColor}`}>{stat.value}</div>
-                  <div className={`text-[1.6vw] max-md:text-[3vw] uppercase tracking-wider ${componentsTextColor} opacity-60 mt-[1.5vw] max-md:mt-[2.5vw]`}>{stat.label}</div>
+            <div className="space-y-[3.5vw] max-md:space-y-[6vw]">
+              {showcaseStats.map((item, i) => (
+                <div key={i} className="flex items-start gap-[2.5vw] max-md:gap-[3.5vw] border-b border-black/15 pb-[3.5vw] max-md:pb-[5vw]">
+                  <span className={`text-[1.8vw] max-md:text-[3.2vw] ${componentsTextColor} opacity-45 pt-[0.2vw]`}>{item.label}</span>
+                  <div className="flex items-baseline gap-[1.5vw] max-md:gap-[2vw]">
+                    <h3 className={`text-[2.4vw] max-md:text-[4.4vw] font-display leading-tight whitespace-nowrap ${componentsTextColor}`}>{item.title}</h3>
+                    <p className={`text-[1.8vw] max-md:text-[3.4vw] leading-relaxed ${componentsTextColor} opacity-60`}>{item.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>

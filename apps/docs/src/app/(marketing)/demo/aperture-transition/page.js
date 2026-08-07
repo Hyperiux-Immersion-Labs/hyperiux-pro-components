@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import ArrowFillButton from "@/components/arrow-fill-button";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import FadeUp from "@/components/WebsiteComps/FadeUp";
 
 export default function page() {
   return (
@@ -32,13 +33,13 @@ export default function page() {
         </SplitLine>
 
         {/* Buttons */}
-        <div className="mt-12">
+        <FadeUp className="mt-12" delay={1}>
           <ArrowFillButton
             className="cursor-pointer border border-[#ff5f00] text-[#ffffff]"
             btnText={"Click here"}
             href={"/demo/aperture-transition/page2"}
             />
-        </div>
+        </FadeUp>
       </div>
     </section>
 

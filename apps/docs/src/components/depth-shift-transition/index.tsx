@@ -10,18 +10,36 @@ import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
+gsap.ticker.lagSmoothing(0)
+
 
 function isCompactViewport() {
   if (typeof window === 'undefined') return false
   return window.innerWidth < 1025
 }
 
+const EXIT_DURATION = 0.65
+const ENTER_DURATION = 0.4
+const ENTER_DELAY = 0.35
+
 interface DepthShiftTransitionProps {
   children: React.ReactNode
   bgColor?: string
+  duration?: number
+  exitOffsetX?: number
+  exitOffsetY?: number
+  exitRotate?: number
 }
 
-export default function DepthShiftTransition({ children, bgColor = '#0b0b0c' }: DepthShiftTransitionProps) {
+export default function DepthShiftTransition({
+  children,
+  bgColor = '#0b0b0c',
+  duration = EXIT_DURATION,
+  exitOffsetX = isCompactViewport() ? 8 : 20,
+  exitOffsetY = isCompactViewport() ? 12 : 30,
+  exitRotate = 3,
+}: DepthShiftTransitionProps) {
+  const durationScale = duration / EXIT_DURATION
   const wrapperRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const cloneRef = useRef<HTMLElement | null>(null)
@@ -65,11 +83,11 @@ export default function DepthShiftTransition({ children, bgColor = '#0b0b0c' }: 
 
      
         gsap.to(clone, {
-          xPercent: isCompactViewport() ? 8 : 20,
-          yPercent: isCompactViewport() ? 12 : 30,
-          rotate: 3,
+          xPercent: exitOffsetX,
+          yPercent: exitOffsetY,
+          rotate: exitRotate,
           scale: 0.7,
-          duration: 0.65,
+          duration: EXIT_DURATION * durationScale,
           ease: 'power2.in',
         })
 
@@ -97,8 +115,8 @@ export default function DepthShiftTransition({ children, bgColor = '#0b0b0c' }: 
           yPercent: 0,
           rotate: 0,
           scale: 1,
-          duration: 0.4,
-          delay: 0.35,
+          duration: ENTER_DURATION * durationScale,
+          delay: ENTER_DELAY * durationScale,
           ease: 'power2.out',
           clearProps: 'all',
         })

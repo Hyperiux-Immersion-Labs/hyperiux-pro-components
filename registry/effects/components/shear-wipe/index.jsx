@@ -3,17 +3,13 @@
 import ShearWipeComp from './ShearWipeComp';
 
 const componentHighlights = [
-  { label: '01', title: 'Motion-first components', desc: 'Every element reacts, transitions, and guides attention with intent.' },
-  { label: '02', title: 'Built with GSAP', desc: 'Battle-tested easing and timelines power every interaction.' },
-  { label: '03', title: 'Copy-paste ready', desc: 'Drop straight into any React project, no rebuilding required.' },
-  { label: '04', title: 'Production-tested', desc: 'Patterns refined across real client launches, not just demos.' },
+  { label: '01', title: 'Motion-first components', desc: 'Reacts with intent.' },
+  { label: '02', title: 'Built with GSAP', desc: 'Battle-tested easing.' },
 ];
 
 const showcaseStats = [
-  { value: '150+', label: 'Animated components' },
-  { value: '500+', label: 'Developers shipping with Vault' },
-  { value: '50k+', label: 'Downloads across the registry' },
-  { value: '4.9/5', label: 'Average developer rating' },
+  { label: '01', title: 'Cinematic reveals', desc: 'Scroll-driven scenes that unfold with intent.' },
+  { label: '02', title: 'Built for impact', desc: 'Motion that turns browsing into an experience.' },
 ];
 
 const ShearWipe = () => {
@@ -21,9 +17,9 @@ const ShearWipe = () => {
     <ShearWipeComp
       componentHighlights={componentHighlights}
       showcaseStats={showcaseStats}
-      componentsBg="bg-[#C7D3C0]"
+      componentsBgImage="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs3.png"
       componentsTextColor="text-black"
-      showcaseBg="bg-[#8FA28A]"
+      showcaseBgImage="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs4.png"
       showcaseTextColor="text-white"
     />
   );

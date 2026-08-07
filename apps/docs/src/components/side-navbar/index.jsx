@@ -5,11 +5,7 @@ import { useState } from "react";
 import Menu from "./Menu";
 import Image from "next/image";
 
-// Hamburger-to-X morph: each line's stroke-dasharray/dashoffset pair is the
-// resolved value of what used to be CSS custom properties (--length,
-// --total-length, --offset) per line and per open/closed state. Lines 1 and
-// 3 share a path total-length (the diagonal chevron shape); line 2 is the
-// straight middle bar with its own.
+
 const HAMBURGER_LINES = [
   {
     d: "M0 70l28-28c2-2 2-2 7-2h64",
@@ -28,7 +24,7 @@ const HAMBURGER_LINES = [
   },
 ];
 
-const SideNavbar = () => {
+const SideNavbar = ({ navLinks, socialLinks, panelWidth }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -134,7 +130,7 @@ const SideNavbar = () => {
 
        </div>
       </div>
-      <Menu menuOpen={menuOpen} />
+      <Menu menuOpen={menuOpen} navLinks={navLinks} socialLinks={socialLinks} panelWidth={panelWidth} />
     </>
   );
 };

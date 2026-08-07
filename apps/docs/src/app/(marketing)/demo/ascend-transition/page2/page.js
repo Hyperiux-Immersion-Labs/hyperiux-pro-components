@@ -1,6 +1,7 @@
 import ArrowFillButton from "@/components/arrow-fill-button";
 
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import FadeUp from "@/components/WebsiteComps/FadeUp";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import Image from "next/image";
 import React from "react";
@@ -33,13 +34,13 @@ export default function page() {
         </SplitLine>
 
 
-        <div className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center">
+        <FadeUp className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center" delay={1}>
           <ArrowFillButton
             className="border-[#ff5f00] max-sm:w-56!  border text-[#ffffff] cursor-pointer"
             btnText={"Click here"}
             href={"/demo/ascend-transition"}
           />
-        </div>
+        </FadeUp>
       </div>
     </section>
   );
