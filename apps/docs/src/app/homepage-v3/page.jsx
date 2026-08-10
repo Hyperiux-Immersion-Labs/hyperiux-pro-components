@@ -17,10 +17,12 @@ import UseCases from '@/homepage-v3/sections/UseCases'
 import React from 'react'
 import PricingV3 from '@/homepage-v3/sections/PricingV3'
 import NavbarV3 from '@/homepage-v3/components/NavbarV3'
+import LoaderV3 from '@/homepage-v3/components/LoaderV3'
 
 export default function page() {
   return (
     <>
+      <LoaderV3 />
       <NavbarV3 />
       <LenisSmoothScroll />
       <div className="relative">

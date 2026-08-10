@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { prefersReducedMotion } from '@/lib/motion'
+import LineReveal from '@/components/Animations/LineReveal'
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger)
@@ -99,9 +100,9 @@ export default function NotAnotherUIKit() {
   return (
     <section id="uikit-section" className="w-full h-[250vh] pt-[15vw] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
         <div>
-            <h2  className="t96 w-[90vw] font-neue-haas mx-auto text-center">
+            <LineReveal as="h2" className="t96 w-[90vw] font-neue-haas mx-auto text-center">
                Not <span className='gradient-text-animate'>Another UI Kit.</span>  Not a Side Project.
-            </h2>
+            </LineReveal>
         </div>
 
       {/* Use Case Cards */}

@@ -294,10 +294,10 @@ export default function PricingV3() {
             </div>
 
             {/* FOOTNOTE */}
-            <p className="text32  mx-auto mt-[5vw] w-[52vw] text-center leading-[1.35] max-md:mt-[10vw] max-md:w-[75vw] max-md:text-[3.2vw] max-sm:mt-[14vw] max-sm:w-full max-sm:text-[5vw]">
+            <SplitLine as="p" className="text32  mx-auto mt-[5vw] w-[52vw] text-center leading-[1.35] max-md:mt-[10vw] max-md:w-[75vw] max-md:text-[3.2vw] max-sm:mt-[14vw] max-sm:w-full max-sm:text-[5vw]">
                 Cancel anytime. The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
-            </p>
+            </SplitLine>
         </section>
     );
 }
