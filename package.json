@@ -1,6 +1,7 @@
 {
   "name": "hyperiux-pro-components",
   "private": true,
+  "license": "MPL-2.0",
   "scripts": {
     "dev": "npm --prefix apps/docs run dev",
     "build": "npm --prefix apps/docs run build",

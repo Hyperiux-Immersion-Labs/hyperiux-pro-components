@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LayoutGroup, motion, useReducedMotion } from "motion/react";
+import { FILTER_OPTIONS } from "@/lib/effect-sort";
 
-export const FILTER_OPTIONS = ["featured", "free", "pro"];
+export { FILTER_OPTIONS };
 
 export function FilterMenu({
   activeFilter,
-  categoryFilter,
   getLabel,
   onSelect,
 }) {
@@ -109,7 +109,7 @@ export function FilterMenu({
     >
       <LayoutGroup id="filter-menu-pill">
         {FILTER_OPTIONS.map((cat) => {
-          const isSelected = categoryFilter === cat;
+          const isSelected = activeFilter === cat;
           // Hover takes precedence; fall back to the active filter so the
           // pill still rests somewhere when nothing is hovered.
           const highlighted = hoveredCat

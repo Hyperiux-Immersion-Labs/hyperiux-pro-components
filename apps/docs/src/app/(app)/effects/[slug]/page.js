@@ -14,6 +14,7 @@ import {
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import { sortEffects } from "@/lib/effect-sort";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 
 function VaultFallback() {
@@ -66,7 +67,7 @@ export default async function EffectsCategoryPage({ params }) {
   const sanityEntries = await getAllSanityEffectEntries();
   const effects = buildEffectsFromSanity(sanityEntries);
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
-  const sortedEffects = [...effects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
+  const sortedEffects = sortEffects(effects);
 
   const effectCounts = {};
   for (const [categoryId, catEffects] of Object.entries(categoriesMap)) {

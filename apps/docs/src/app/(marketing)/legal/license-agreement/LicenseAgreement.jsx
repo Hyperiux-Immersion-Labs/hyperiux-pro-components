@@ -114,18 +114,18 @@ export default function LicenseAgreement() {
       </DocsList>
 
       <Para>
-        MIT-licensed files. Some Free Core files may be separately marked as released under
-        the MIT License, with a corresponding notice or header in the file itself. Where a
-        file carries an MIT License notice, the terms of the MIT License govern that
-        specific file, including your right to use, copy, modify, merge, publish,
-        distribute, sublicense, and sell copies of that file, provided the required
-        copyright and license notice is preserved.
+        MPL 2.0 licensed files. Some Free Core files may be separately marked as released
+        under the Mozilla Public License 2.0, with a corresponding notice or header in the
+        file itself. Where a file carries an MPL 2.0 notice, the terms of the MPL 2.0
+        License govern that specific file, including your right to use, copy, modify, and
+        distribute that file, provided the required copyright and license notice is
+        preserved and covered source-file changes remain available under MPL 2.0.
       </Para>
 
       <Para>
         Where no such notice is present, the Free Core terms in this Section 2 apply
-        instead. Hyperiux is responsible for marking MIT-licensed files clearly; if you are
-        unsure whether a specific file is MIT-licensed, treat it as standard Free Core
+        instead. Hyperiux is responsible for marking MPL 2.0 licensed files clearly; if you are
+        unsure whether a specific file is MPL 2.0 licensed, treat it as standard Free Core
         unless a notice states otherwise, or confirm with us at <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>.
       </Para>
 
@@ -306,12 +306,12 @@ export default function LicenseAgreement() {
         <DocsListItem>Redistribute Vault Pro Source Files to any third party;</DocsListItem>
         <DocsListItem>Sublicense Vault Pro Assets to a third party;</DocsListItem>
         <DocsListItem>
-          Resell Vault Pro Effects, or any Free Core Effect not marked MIT, as standalone raw
+          Resell Vault Pro Effects, or any Free Core Effect not marked MPL 2.0, as standalone raw
           assets;
         </DocsListItem>
         <DocsListItem>
           Upload Vault Pro Source Files to public code repositories. Free Core Source Files
-          marked under this Agreement&apos;s standard terms, and any MIT-licensed files, are
+          marked under this Agreement&apos;s standard terms, and any MPL 2.0 licensed files, are
           not subject to this specific restriction - see Section 2;
         </DocsListItem>
         <DocsListItem>
@@ -380,7 +380,7 @@ export default function LicenseAgreement() {
           },
           {
             scenario: "Using a Vault Pro effect in an open-source project's public repo",
-            allowed: "No, unless the specific file is separately MIT-licensed",
+            allowed: "No, unless the specific file is separately MPL 2.0 licensed",
           },
         ]}
       />
