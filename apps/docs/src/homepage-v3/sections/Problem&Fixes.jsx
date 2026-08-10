@@ -110,8 +110,9 @@ export default function ProblemFixes() {
           scrollTrigger: {
             trigger: cardsRef.current,
             start: 'top 70%',
-            end: 'bottom 60%',
-            scrub: 1.5,
+            end: 'bottom 50%',
+            scrub: true,
+            markers:false,
           },
         })
 
@@ -120,7 +121,7 @@ export default function ProblemFixes() {
           {
             drawSVG: '0% 100%',
             duration: 0.4,
-            ease: 'power2.out',
+            ease: 'linear',
             ...revealCard(0),
           },
           0,
@@ -128,7 +129,7 @@ export default function ProblemFixes() {
         tl.to(checkIcons[0], { autoAlpha: 1, duration: 0.05 }, 0)
         tl.to(
           xIcons[0].querySelectorAll('path, polyline, line'),
-          { drawSVG: '0% 100%', duration: 0.4, ease: 'power2.out' },
+          { drawSVG: '0% 100%', duration: 0.4, ease: 'linear' },
           0,
         )
         tl.to(xIcons[0], { autoAlpha: 1, duration: 0.05 }, 0)
@@ -149,20 +150,20 @@ export default function ProblemFixes() {
             {
               opacity: 1,
               duration: 0.6,
-              ease: 'power2.out',
+              ease: 'linear',
               ...revealCard(i),
             },
             t + 0.1,
           )
           tl.to(
             checkIcons[i].querySelectorAll('path, polyline, line'),
-            { drawSVG: '0% 100%', duration: 0.5, ease: 'power2.out' },
+            { drawSVG: '0% 100%', duration: 0.5, ease: 'linear' },
             t + 0.7,
           )
           tl.to(checkIcons[i], { autoAlpha: 1, duration: 0.05 }, t + 0.7)
           tl.to(
             xIcons[i].querySelectorAll('path, polyline, line'),
-            { drawSVG: '0% 100%', duration: 0.5, ease: 'power2.out' },
+            { drawSVG: '0% 100%', duration: 0.5, ease: 'linear' },
             t + 0.7,
           )
           tl.to(xIcons[i], { autoAlpha: 1, duration: 0.05 }, t + 0.7)

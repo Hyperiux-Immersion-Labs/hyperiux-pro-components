@@ -66,74 +66,110 @@ export default function Preview() {
         return;
       }
 
-      // First row starts active, the rest hand over on scrub.
+      // Row 0 starts active. Rows 1–3 start hidden and slide in on scroll.
       gsap.set(marks.slice(1).flat(), { autoAlpha: 0 });
-      gsap.set(textWrappers[0], { x: "1.5vw" });
-      gsap.set(textWrappers.slice(1), { x: 0 });
+      gsap.set(textWrappers[0], { x: "3vw" }); // row 0 is already indented
+      gsap.set(textWrappers.slice(1), { x: 0 }); // rows 1–3 start flush
+
+      // ── x translate — neighbour falloff (same formula as SquareTranslate) ──
+      // Instead of hard-coded fromTo tweens, we compute x continuously from
+      // scroll progress so it is always smooth, even on scrub-back.
+      //
+      //   currentIndex  = progress * (total rows - 1)   → float 0 … 3
+      //   distance      = |rowIndex - currentIndex|
+      //   factor        = 1 - clamp(distance / FALLOFF, 0, 1)
+      //   x             = INDENT_PX * factor
+      //
+      // Active row (distance = 0) → factor = 1 → full indent (3vw).
+      // One row away (distance = 1, FALLOFF = 1.5) → factor ≈ 0.33 → 1vw nudge.
+      // Two rows away → factor = 0 → flush.
+      const INDENT_VW = 3;       // vw — how far the active row translates
+      const FALLOFF    = 1.5;    // rows — how quickly the nudge fades to neighbours
+
+      const updateX = (progress) => {
+        const INDENT_PX = INDENT_VW * 0.01 * window.innerWidth;
+        const currentIndex = progress * (STEPS.length - 1); // 0 … 3 (float)
+
+        textWrappers.forEach((wrapper, i) => {
+          const distance = Math.abs(i - currentIndex);
+          const factor   = 1 - Math.min(distance / FALLOFF, 1);
+          gsap.to(wrapper, {
+            x: INDENT_PX * factor,
+            duration: 0.4,
+            ease: "power2.out",
+            overwrite: true,
+          });
+        });
+      };
 
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: gridRef.current,
-          start: "top 75%",
-          end: "bottom 25%",
+          start: "top 65%",
+          end: "bottom 35%",
           scrub: true,
           invalidateOnRefresh: true,
+          onUpdate: ({ progress }) => updateX(progress),
         },
       });
 
-      STEPS.forEach((_, i) => {
-        if (i === 0) return;
+      // ── Step 0 → 1  (timeline position 0 … 1) ────────────────────────────
+      // Icon slides from row 0 to row 1.
+      tl.to(icon, { yPercent: 100, duration: 1 }, 0);
+      // Outgoing row 0 marks fade out, incoming row 1 marks fade in.
+      tl.to(marks[0], { autoAlpha: 0, duration: 0.3 }, 0.35);
+      tl.to(marks[1], { autoAlpha: 1, duration: 0.3 }, 0.5);
+      // ASCII icon morphs from step 0 → 1 over the full travel window.
+      tl.to(
+        { p: 0 },
+        {
+          p: 1,
+          duration: 1,
+          onUpdate() {
+            const p = this.targets()[0].p;
+            asciiRef.current?.setStep(p < 0.5 ? 0 : 1);
+            asciiRef.current?.setMorph(Math.sin(p * Math.PI));
+          },
+        },
+        0,
+      );
 
-        // Each step gets one hold beat and one travel beat.
-        const at = (i - 1) * 2;
+      // ── Step 1 → 2  (timeline position 1 … 2) ────────────────────────────
+      tl.to(icon, { yPercent: 200, duration: 1 }, 1);
+      tl.to(marks[1], { autoAlpha: 0, duration: 0.3 }, 1.35);
+      tl.to(marks[2], { autoAlpha: 1, duration: 0.3 }, 1.5);
+      tl.to(
+        { p: 0 },
+        {
+          p: 1,
+          duration: 1,
+          onUpdate() {
+            const p = this.targets()[0].p;
+            asciiRef.current?.setStep(p < 0.5 ? 1 : 2);
+            asciiRef.current?.setMorph(Math.sin(p * Math.PI));
+          },
+        },
+        1,
+      );
 
-        tl.to(
-          marks[i - 1],
-          { autoAlpha: 0, duration: 0.4, ease: "none" },
-          at + 0.6,
-        )
-          .to(
-            textWrappers[i - 1],
-            { x: 0, duration: 0.4, ease: "none" },
-            at + 0.6,
-          )
-          .to(
-            icon,
-            { yPercent: i * 100, duration: 1, ease: "none" },
-            at + 0.6,
-          )
-          .to(
-            marks[i],
-            { autoAlpha: 1, duration: 0.4, ease: "none" },
-            at + 1.2,
-          )
-          .to(
-            textWrappers[i],
-            { x: "1.5vw", duration: 0.4, ease: "none" },
-            at + 1.2,
-          )
-          // One proxy drives the whole swap: the icon dissolves into ASCII,
-          // changes to this step's SVG at the peak, and resolves back out of
-          // the noise. Deriving both values from a single tween keeps a
-          // backwards scrub exactly symmetrical.
-          .to(
-            { p: 0 },
-            {
-              p: 1,
-              duration: 1,
-              onUpdate() {
-                const p = this.targets()[0].p;
-                asciiRef.current?.setStep(p < 0.5 ? i - 1 : i);
-                asciiRef.current?.setMorph(Math.sin(p * Math.PI));
-              },
-            },
-            at + 0.6,
-          );
-      });
-
-      // Keeps the last row active for a beat before the section scrolls away.
-      tl.to({}, { duration: 0.6 });
+      // ── Step 2 → 3  (timeline position 2 … 3) ────────────────────────────
+      tl.to(icon, { yPercent: 300, duration: 1 }, 2);
+      tl.to(marks[2], { autoAlpha: 0, duration: 0.3 }, 2.35);
+      tl.to(marks[3], { autoAlpha: 1, duration: 0.3 }, 2.5);
+      tl.to(
+        { p: 0 },
+        {
+          p: 1,
+          duration: 1,
+          onUpdate() {
+            const p = this.targets()[0].p;
+            asciiRef.current?.setStep(p < 0.5 ? 2 : 3);
+            asciiRef.current?.setMorph(Math.sin(p * Math.PI));
+          },
+        },
+        2,
+      );
     },
     { scope: gridRef },
   );

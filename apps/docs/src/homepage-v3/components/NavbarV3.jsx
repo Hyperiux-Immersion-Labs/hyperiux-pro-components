@@ -51,7 +51,7 @@ export default function NavbarV3() {
         </HoverLinkV3>
         <HoverLinkV3 href="/pricing" text="Pricing" />
         <HoverLinkV3 href="https://github.com/hyperiux" target_blank text="Github">
-          <GithubIcon2 className="size-[1.6vw]" />
+          {/* <GithubIcon2 className="size-[1.6vw]" /> */}
         </HoverLinkV3>
       </div>
 

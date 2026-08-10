@@ -1,7 +1,7 @@
 "use client";
-import React, { Suspense, useEffect, useRef } from "react";
-import gsap from "gsap";
+import React, { Suspense } from "react";
 import ButtonV3 from "../components/ButtonV3";
+import Piano from "../components/Piano";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import { useWorkWithHyperiuxModal } from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
 import LineReveal from "@/components/Animations/LineReveal";
@@ -30,40 +30,8 @@ function CTAButtonV3s() {
 }
 
 export default function CTAV3() {
-  const ctaRef = useRef(null);
-
-  useEffect(() => {
-    let mm = gsap.matchMedia();
-
-    mm.add(
-      {
-        isDesktop: "(min-width: 768px)",
-        reduceMotion: "(prefers-reduced-motion: reduce)",
-      },
-      (context) => {
-        const { isDesktop, reduceMotion } = context.conditions;
-        if (isDesktop) {
-          gsap.to(".cta-line", {
-            opacity: 0,
-            duration: 1.2,
-            ease: "sine.inOut",
-            stagger: {
-              each: 0.04,
-              repeat: reduceMotion ? 0 : -1,
-              yoyo: !reduceMotion,
-            },
-          });
-        }
-      },
-      ctaRef,
-    );
-
-    return () => mm.revert();
-  }, []);
-
   return (
     <section
-      ref={ctaRef}
       id="CTA"
       className="h-fit gap-[4vw] max-md:h-fit max-md:py-[10vw] max-sm:py-[15vw]! max-sm:mb-[30vw] max-md:mb-[10vw] overflow-x-hidden flex items-start justify-between max-sm:gap-[24vw] max-md:gap-[8vw] flex-col text-foreground self-padd relative z-500 w-full py-[7vw]!"
     >
@@ -97,11 +65,11 @@ export default function CTAV3() {
         </Suspense>
       </div>
 
-      <div className="h-[15vw] max-md:hidden z-0 w-[50vw] absolute bottom-0 right-0 pointer-events-none flex justify-between items-end">
-        {Array.from({ length: 75 }).map((_, i) => (
-          <div key={i} className="cta-line w-[1.5px] h-full bg-foreground" />
-        ))}
-      </div>
+      <Piano
+        count={75}
+        song="here-for-you"
+        className="h-[15vw] max-md:hidden z-0 w-[50vw] absolute bottom-0 right-0 pointer-events-none flex justify-between items-end"
+      />
     </section>
   );
 }

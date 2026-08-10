@@ -65,17 +65,11 @@ const RADIUS_LIFE = 1.0;
 /** Hero's 4×4 ordered dither, nudging the ramp index by up to half a step. */
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 
-/** charBrightness 0.85 → the hero's near-white glyph, which its fluid tint
- *  blends toward fluidColor as flow builds. */
-const BASE_RGB = [217, 217, 217];
-const FLUID_RGB = [255, 95, 0];
-/** Quantised steps of that blend, baked into the atlas as rows. */
-const SHADES = 6;
-
-const smoothstep = (edge0, edge1, x) => {
-  const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
-  return t * t * (3 - 2 * t);
-};
+/** Flat white, so the trail reads at full contrast against the card's media
+ *  once mix-blend-difference inverts whatever is underneath it. The hero's
+ *  flow-driven tint toward fluidColor is deliberately not carried over — a
+ *  single colour is what keeps the stroke legible over arbitrary artwork. */
+const GLYPH_RGB = [255, 255, 255];
 
 /**
  * Measures each glyph's ink coverage and returns the set sorted lightest-first,
@@ -116,7 +110,7 @@ function orderCharsByDensity(chars, cell, padding) {
  * whatever the fluid lifts above them. Everything downstream of that — glyph
  * choice, dither, tint — is the hero's, which is what makes the two match.
  */
-function DitherTrailCanvas({ className = "" }) {
+function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -150,28 +144,18 @@ function DitherTrailCanvas({ className = "" }) {
     function buildAtlas() {
       atlasCell = Math.max(6, Math.round(cellSize * CHAR_ZOOM));
       atlasCanvas.width = atlasCell * charCount;
-      atlasCanvas.height = atlasCell * SHADES;
+      atlasCanvas.height = atlasCell;
       if (!atlasCtx) return;
 
       atlasCtx.clearRect(0, 0, atlasCanvas.width, atlasCanvas.height);
       atlasCtx.font = `${Math.round(atlasCell * 0.75)}px monospace`;
       atlasCtx.textAlign = "center";
       atlasCtx.textBaseline = "middle";
+      atlasCtx.fillStyle = `rgb(${GLYPH_RGB[0]}, ${GLYPH_RGB[1]}, ${GLYPH_RGB[2]})`;
 
-      for (let shade = 0; shade < SHADES; shade += 1) {
-        const t = shade / (SHADES - 1);
-        const rgb = BASE_RGB.map((base, i) =>
-          Math.round(base + (FLUID_RGB[i] - base) * t),
-        );
-        atlasCtx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-        ramp.forEach((char, index) => {
-          atlasCtx.fillText(
-            char,
-            atlasCell * (index + 0.5),
-            atlasCell * (shade + 0.5),
-          );
-        });
-      }
+      ramp.forEach((char, index) => {
+        atlasCtx.fillText(char, atlasCell * (index + 0.5), atlasCell * 0.5);
+      });
     }
 
     function resize() {
@@ -323,7 +307,7 @@ function DitherTrailCanvas({ className = "" }) {
           const fluidIndex = fy * fluid.cols + fx;
 
           // The hero's `hm`: how strongly the fluid is moving through this
-          // cell. It picks the glyph and drives the tint, exactly as there.
+          // cell. Here it only picks the glyph — the colour no longer varies.
           const flow = Math.hypot(fluid.vx[fluidIndex], fluid.vy[fluidIndex]);
           const hm = Math.min(1, flow * 1.1);
           if (hm > peak) peak = hm;
@@ -338,15 +322,10 @@ function DitherTrailCanvas({ className = "" }) {
           // Blank ramp slots are what thins the stroke out at its edges.
           if (charIndex < firstInked) continue;
 
-          const shade = Math.min(
-            SHADES - 1,
-            Math.round(smoothstep(0.01, 0.35, hm) * (SHADES - 1)),
-          );
-
           ctx.drawImage(
             atlasCanvas,
             charIndex * atlasCell,
-            shade * atlasCell,
+            0,
             atlasCell,
             atlasCell,
             col * cellSize - offset,
@@ -388,7 +367,7 @@ function DitherTrailCanvas({ className = "" }) {
   return (
     <canvas
       ref={canvasRef}
-      className={`pointer-events-none absolute inset-0 z-20 h-full w-full ${className}`}
+      className={`pointer-events-none absolute inset-0 z-20 h-full w-full ${blend}`}
     />
   );
 }
@@ -406,6 +385,7 @@ export default function EffectBox({
   mediaClassName = "",
   priority = false,
   enableDitherTrail = true,
+  ditherBlend = "mix-blend-difference",
 }) {
   const mark =
     "pointer-events-none absolute size-[0.3vw] border-grey transition-all duration-300 group-hover:border-primary max-md:size-2 max-sm:size-1.5";
@@ -418,7 +398,7 @@ export default function EffectBox({
       className={`group block w-full text-white ${className}`}
     >
       <div
-        className={`relative w-full overflow-hidden bg-[#0e0e0e] ${aspect} ${mediaClassName}`}
+        className={`relative isolate w-full overflow-hidden bg-[#0e0e0e] ${aspect} ${mediaClassName}`}
       >
         {media ? (
           video ? (
@@ -446,7 +426,7 @@ export default function EffectBox({
           <span className="absolute inset-0 bg-[linear-gradient(135deg,#1a1a1a,#0e0e0e)]" />
         )}
 
-        {enableDitherTrail ? <DitherTrailCanvas /> : null}
+        {enableDitherTrail ? <DitherTrailCanvas blend={ditherBlend} /> : null}
 
         {tag ? (
           <span className="absolute left-[0.7vw] top-[0.7vw] z-30 bg-grey px-[0.55vw] py-[0.45vw] font-geist-mono text-[0.72vw] leading-none tracking-wide text-white backdrop-blur-sm max-md:left-2 max-md:top-2 max-md:px-2 max-md:py-1 max-md:text-[1.5vw] max-sm:text-[2.6vw]">

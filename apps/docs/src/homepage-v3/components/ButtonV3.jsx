@@ -6,32 +6,65 @@ import { useLenis } from "lenis/react";
 
 const SCRAMBLE_GLYPHS = "$#&*@!_-./|<>0123456789";
 const PRE_HOLD_MS = 60;
-const REVEAL_DURATION_MS = 300;
-const FLASH_MS = 90;
+const REVEAL_DURATION_MS = 620;
 const GLYPH_SWAP_MS = 50;
+// Per-character timings, measured in reveal steps (1 step = one character).
+const FADE_STEPS = 0.9;
+const HOLD_STEPS = 2.2;
+const FLASH_STEPS = 0.7;
 
 function ScrambleLabel({ text, active }) {
   const charsRef = useRef([]);
+  const lineRef = useRef(null);
 
   useEffect(() => {
     const chars = charsRef.current.slice(0, text.length).filter(Boolean);
-    if (!chars.length) return;
+    const line = lineRef.current;
+    if (!chars.length || !line) return;
 
     const settle = () => {
       chars.forEach((node, index) => {
         node.textContent = text[index];
         node.style.color = "";
+        node.style.opacity = "";
       });
+      line.style.transform = "";
     };
 
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (!active || prefersReducedMotion) {
-      settle();
-      return;
-    }
+    settle();
+
+    if (!active || prefersReducedMotion) return;
+
+    // Measured on the settled text, so the centring stays smooth even while the
+    // trailing characters are swapping between glyphs of different widths.
+    const origin = chars[0].offsetLeft;
+    const edges = chars.map(
+      (node) => node.offsetLeft + node.offsetWidth - origin
+    );
+    const fullWidth = edges[edges.length - 1];
+    const span = chars.length + HOLD_STEPS + FLASH_STEPS;
+
+    const widthAt = (position) => {
+      if (position <= 0) return 0;
+      if (position >= chars.length) return fullWidth;
+
+      const index = Math.floor(position);
+      const from = index === 0 ? 0 : edges[index - 1];
+
+      return from + (edges[index] - from) * (position - index);
+    };
+
+    const center = (position) =>
+      `translate3d(${(fullWidth - widthAt(position)) / 2}px, 0, 0)`;
+
+    chars.forEach((node) => {
+      node.style.opacity = "0";
+    });
+    line.style.transform = center(0);
 
     const start = performance.now();
     let previous = start;
@@ -43,15 +76,27 @@ function ScrambleLabel({ text, active }) {
 
       previous = now;
 
-      let running = false;
+      const progress = Math.min(
+        Math.max((elapsed - PRE_HOLD_MS) / REVEAL_DURATION_MS, 0),
+        1
+      );
+      const position = (1 - (1 - progress) ** 2) * span;
+
+      line.style.transform = center(position);
 
       chars.forEach((node, index) => {
-        const revealAt =
-          PRE_HOLD_MS + ((index + 1) / chars.length) * REVEAL_DURATION_MS;
+        const local = position - index;
         const final = text[index];
 
-        if (elapsed < revealAt) {
-          running = true;
+        if (local <= 0) {
+          node.style.opacity = "0";
+
+          return;
+        }
+
+        node.style.opacity = `${Math.min(local / FADE_STEPS, 1)}`;
+
+        if (local < HOLD_STEPS) {
           node.style.color = "var(--btn-pre)";
 
           if (final !== " " && Math.random() < swapChance) {
@@ -65,16 +110,15 @@ function ScrambleLabel({ text, active }) {
         }
 
         node.textContent = final;
-
-        if (elapsed - revealAt < FLASH_MS) {
-          running = true;
-          node.style.color = "var(--btn-flash)";
-        } else {
-          node.style.color = "";
-        }
+        node.style.color =
+          local < HOLD_STEPS + FLASH_STEPS ? "var(--btn-flash)" : "";
       });
 
-      if (running) frame = requestAnimationFrame(tick);
+      if (progress < 1) {
+        frame = requestAnimationFrame(tick);
+      } else {
+        settle();
+      }
     };
 
     frame = requestAnimationFrame(tick);
@@ -87,7 +131,11 @@ function ScrambleLabel({ text, active }) {
       <span aria-hidden="true" className="invisible whitespace-pre">
         {text}
       </span>
-      <span aria-hidden="true" className="absolute inset-0 whitespace-pre">
+      <span
+        ref={lineRef}
+        aria-hidden="true"
+        className="absolute inset-0 whitespace-pre will-change-transform"
+      >
         {Array.from(text).map((character, index) => (
           <span
             key={index}

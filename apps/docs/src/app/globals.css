@@ -631,7 +631,7 @@ h4 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: gradient-text-move 5s ease-in-out infinite alternate;
+  animation: gradient-text-move 10s ease-in-out infinite alternate;
 }
 
 @media (prefers-reduced-motion: reduce) {

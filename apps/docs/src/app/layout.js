@@ -83,10 +83,10 @@ export default function RootLayout({ children }) {
             executes it during parse - before first paint. next/script is a
             client component and triggers React's "scripts inside components
             are never executed" warning for inline beforeInteractive code. */}
-        <script
+        {/* <script
           id="loader-first-visit-block"
           dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }}
-        />
+        /> */}
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
       <body className="min-h-dvh bg-background text-foreground font-sans">
