@@ -91,14 +91,6 @@ export default function FooterV3() {
   const [webglMounted, setWebglMounted] = useState(false);
   const { isMobile } = useIsMobile();
 
-  // Footer is a next/dynamic + Suspense boundary streamed in after the
-  // initial shell, so Hero's page-wide useFadeUp() (no containerRef, scans
-  // the whole document) can run before this .fadeup content even exists in
-  // the DOM - it silently never gets a fade-in, and if it races the other
-  // way, mutating a node an unrelated component's hydration hasn't reached
-  // yet trips a hydration-mismatch warning. Scoping the call here means it
-  // only runs once Footer itself has actually mounted, which is timing-safe
-  // either way.
   useFadeUp(footerRef);
 
   useEffect(() => {
@@ -200,7 +192,7 @@ export default function FooterV3() {
             <ShimmerText
               baseColor="#d2d2d2"
               shimmerColor="#ffffff"
-              className="max-sm:text-sm max-sm:leading-[1.2] tracking-tight"
+              className="max-sm:text-sm font-mono max-sm:leading-[1.2] tracking-tight"
             >
               30+ effects free, forever. No credit card.
             </ShimmerText>

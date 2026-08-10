@@ -52,6 +52,9 @@ export default function Preview() {
       const marks = rows.map((row) =>
         gsap.utils.toArray(row.querySelectorAll(".preview-mark")),
       );
+      const textWrappers = rows.map((row) =>
+        row.querySelector(".preview-text-wrapper"),
+      );
       const icon = iconRef.current;
 
       if (!icon || rows.length !== STEPS.length) return;
@@ -59,11 +62,14 @@ export default function Preview() {
       if (prefersReducedMotion()) {
         gsap.set(marks.flat(), { autoAlpha: 1 });
         gsap.set(icon, { yPercent: 0 });
+        gsap.set(textWrappers, { x: 0 });
         return;
       }
 
       // First row starts active, the rest hand over on scrub.
       gsap.set(marks.slice(1).flat(), { autoAlpha: 0 });
+      gsap.set(textWrappers[0], { x: "1.5vw" });
+      gsap.set(textWrappers.slice(1), { x: 0 });
 
       const tl = gsap.timeline({
         defaults: { ease: "none" },
@@ -84,17 +90,27 @@ export default function Preview() {
 
         tl.to(
           marks[i - 1],
-          { autoAlpha: 0, duration: 0.4, ease: "power1.out" },
+          { autoAlpha: 0, duration: 0.4, ease: "none" },
           at + 0.6,
         )
           .to(
+            textWrappers[i - 1],
+            { x: 0, duration: 0.4, ease: "none" },
+            at + 0.6,
+          )
+          .to(
             icon,
-            { yPercent: i * 100, duration: 1, ease: "power2.inOut" },
+            { yPercent: i * 100, duration: 1, ease: "none" },
             at + 0.6,
           )
           .to(
             marks[i],
-            { autoAlpha: 1, duration: 0.4, ease: "power1.out" },
+            { autoAlpha: 1, duration: 0.4, ease: "none" },
+            at + 1.2,
+          )
+          .to(
+            textWrappers[i],
+            { x: "1.5vw", duration: 0.4, ease: "none" },
             at + 1.2,
           )
           // One proxy drives the whole swap: the icon dissolves into ASCII,
@@ -147,8 +163,9 @@ export default function Preview() {
         {STEPS.map((step, i) => (
           <div
             key={step.id}
-            className={`preview-row relative z-10 flex flex-1 ${i === STEPS.length - 1 ? "" : "border-b border-grey"
-              }`}
+            className={`preview-row relative z-10 flex flex-1 ${
+              i === STEPS.length - 1 ? "" : "border-b border-grey"
+            }`}
           >
             <div className="w-[15vw] h-full border-r border-grey" />
             <div className="w-[15vw] h-full border-r border-grey" />
@@ -161,8 +178,10 @@ export default function Preview() {
               <span
                 className={`${mark} -bottom-px -right-px border-b border-r`}
               />
-              <p className="text34">{step.title}</p>
-              <p className="t22 w-[80%]">{step.text}</p>
+              <div className="preview-text-wrapper flex flex-col gap-[1vw] will-change-transform">
+                <p className="text34">{step.title}</p>
+                <p className="t22 w-[80%]">{step.text}</p>
+              </div>
             </div>
             <div className="w-[15vw] h-full" />
           </div>

@@ -1,7 +1,11 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { prefersReducedMotion } from "@/lib/motion";
+import { DEFAULT_CHAR_SET, resolveCharSet } from "./char-sets";
+import { createFluid } from "./ascii-fluid";
 
 const ArrowUpRight = ({ className = "" }) => (
   <svg
@@ -28,6 +32,367 @@ const ArrowUpRight = ({ className = "" }) => (
   </svg>
 );
 
+/*
+ * Constants lifted from the hero (CubeBackgroundAscii) so the trail behaves the
+ * same here: same glyph ramp, same point lifetime and spacing, same fluid
+ * forces, same dither and tint. Only the fluid grid differs, and only because
+ * it is sized in pixels rather than in cells — see FLUID_CELL.
+ */
+const TRAIL_LIFE = 320;
+const TRAIL_STEP = 10;
+const TRAIL_MAX = 72;
+
+/** Hero glyph density: 180 columns across the viewport. Matching the *pixel*
+ *  size, not the column count, keeps glyphs the same size inside a card. */
+const CHAR_COLUMNS = 180;
+const CHAR_ZOOM = 1.25;
+const DITHER = 0.6;
+
+/** The hero's 80×60 grid works out to roughly this many pixels a cell on a
+ *  desktop viewport, and a fluid cell's pixel size is what sets the width of
+ *  the stroke — so the card matches cell size and derives its own counts. */
+const FLUID_CELL = 18;
+const FLUID_MIN = 8;
+const FLUID_MAX = 64;
+
+/* Hero fluid tuning (CUBE_ASCII_DEFAULTS). */
+const FORCE_BASE = 0.08;
+const SPEED_SAT = 18;
+const FORCE_MULTIPLIER = 0.15;
+const INNER_RADIUS = 0.2;
+const RADIUS_LIFE = 1.0;
+
+/** Hero's 4×4 ordered dither, nudging the ramp index by up to half a step. */
+const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+
+/** charBrightness 0.85 → the hero's near-white glyph, which its fluid tint
+ *  blends toward fluidColor as flow builds. */
+const BASE_RGB = [217, 217, 217];
+const FLUID_RGB = [255, 95, 0];
+/** Quantised steps of that blend, baked into the atlas as rows. */
+const SHADES = 6;
+
+const smoothstep = (edge0, edge1, x) => {
+  const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
+  return t * t * (3 - 2 * t);
+};
+
+/**
+ * Measures each glyph's ink coverage and returns the set sorted lightest-first,
+ * so brightness → index mapping produces a smooth tonal ramp. Without this the
+ * ramp picks glyphs in whatever order they were written down and the trail
+ * reads as noise instead of shading.
+ */
+function orderCharsByDensity(chars, cell, padding) {
+  const probe = document.createElement("canvas");
+  probe.width = cell;
+  probe.height = cell;
+  const ctx = probe.getContext("2d", { willReadFrequently: true });
+  ctx.font = `${cell - padding * 2}px monospace`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "#fff";
+
+  return chars
+    .map((char) => {
+      ctx.clearRect(0, 0, cell, cell);
+      ctx.fillText(char, cell / 2, cell / 2);
+      const { data } = ctx.getImageData(0, 0, cell, cell);
+      let ink = 0;
+      for (let i = 3; i < data.length; i += 4) ink += data[i];
+      return { char, ink };
+    })
+    .sort((a, b) => a.ink - b.ink)
+    .map((entry) => entry.char);
+}
+
+/**
+ * The hero's ASCII trail, over the card's media instead of the cube clip.
+ *
+ * The hero draws a full ASCII field and lets the fluid invert its tone, so the
+ * trail is a disturbance in glyphs that are already there. There is no field to
+ * disturb here, so the same ramp runs against a black source: cells with no
+ * flow land on the ramp's blank slots and draw nothing, and the stroke is
+ * whatever the fluid lifts above them. Everything downstream of that — glyph
+ * choice, dither, tint — is the hero's, which is what makes the two match.
+ */
+function DitherTrailCanvas({ className = "" }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Ramp order is measured once, off a probe big enough to compare inks; the
+    // atlas below is redrawn at whatever the current cell size is.
+    const ramp = orderCharsByDensity(resolveCharSet(DEFAULT_CHAR_SET), 64, 8);
+    const charCount = ramp.length;
+    const firstInked = ramp.findIndex((char) => char.trim() !== "");
+
+    const atlasCanvas = document.createElement("canvas");
+    const atlasCtx = atlasCanvas.getContext("2d");
+
+    let atlasCell = 0;
+    let cellSize = 0;
+    let width = 0;
+    let height = 0;
+    let fluid = null;
+
+    /** Drawn 1:1 into the grid, so glyph strokes stay crisp at these sizes
+     *  rather than being smoothed away by a downscale. */
+    function buildAtlas() {
+      atlasCell = Math.max(6, Math.round(cellSize * CHAR_ZOOM));
+      atlasCanvas.width = atlasCell * charCount;
+      atlasCanvas.height = atlasCell * SHADES;
+      if (!atlasCtx) return;
+
+      atlasCtx.clearRect(0, 0, atlasCanvas.width, atlasCanvas.height);
+      atlasCtx.font = `${Math.round(atlasCell * 0.75)}px monospace`;
+      atlasCtx.textAlign = "center";
+      atlasCtx.textBaseline = "middle";
+
+      for (let shade = 0; shade < SHADES; shade += 1) {
+        const t = shade / (SHADES - 1);
+        const rgb = BASE_RGB.map((base, i) =>
+          Math.round(base + (FLUID_RGB[i] - base) * t),
+        );
+        atlasCtx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        ramp.forEach((char, index) => {
+          atlasCtx.fillText(
+            char,
+            atlasCell * (index + 0.5),
+            atlasCell * (shade + 0.5),
+          );
+        });
+      }
+    }
+
+    function resize() {
+      const rect = parent.getBoundingClientRect();
+      width = canvas.width = Math.max(1, Math.floor(rect.width));
+      height = canvas.height = Math.max(1, Math.floor(rect.height));
+
+      const nextCell = Math.max(6, window.innerWidth / CHAR_COLUMNS);
+      if (nextCell !== cellSize) {
+        cellSize = nextCell;
+        buildAtlas();
+      }
+
+      const cols = Math.min(
+        FLUID_MAX,
+        Math.max(FLUID_MIN, Math.round(width / FLUID_CELL)),
+      );
+      const rows = Math.min(
+        FLUID_MAX,
+        Math.max(FLUID_MIN, Math.round(height / FLUID_CELL)),
+      );
+      if (!fluid || fluid.cols !== cols || fluid.rows !== rows) {
+        fluid = createFluid(cols, rows);
+      }
+    }
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(parent);
+
+    const trail = [];
+    const mouse = { x: -9999, y: -9999, vx: 0, vy: 0 };
+    let animationFrameId = null;
+    let running = false;
+
+    // Same guard as the hero: the trail is a cursor effect, so a touch drag
+    // should not drag a stroke around behind the finger.
+    const isMobile = () => window.matchMedia("(max-width: 639px)").matches;
+
+    function handlePointerMove(event) {
+      if (isMobile()) return;
+
+      const rect = parent.getBoundingClientRect();
+      const localX = event.clientX - rect.left;
+      const localY = event.clientY - rect.top;
+
+      const previousX = mouse.x;
+      const previousY = mouse.y;
+      mouse.vx = localX - previousX;
+      mouse.vy = localY - previousY;
+      mouse.x = localX;
+      mouse.y = localY;
+
+      const birth = performance.now();
+
+      if (previousX < 0 || previousY < 0) {
+        trail.unshift({ x: mouse.x, y: mouse.y, vx: 0, vy: 0, b: birth });
+        start();
+        return;
+      }
+
+      const distance = Math.hypot(mouse.vx, mouse.vy);
+      if (distance < 0.5) return;
+
+      // Points are spaced along the segment so a fast flick lays a continuous
+      // stroke instead of a dotted line.
+      const steps = Math.max(1, Math.ceil(distance / TRAIL_STEP));
+
+      for (let step = 1; step <= steps; step += 1) {
+        const t = step / steps;
+        trail.unshift({
+          x: previousX + mouse.vx * t,
+          y: previousY + mouse.vy * t,
+          vx: mouse.vx / steps,
+          vy: mouse.vy / steps,
+          b: birth,
+        });
+        if (trail.length > TRAIL_MAX) trail.length = TRAIL_MAX;
+      }
+
+      start();
+    }
+
+    function handlePointerLeave() {
+      // Only the cursor's position is forgotten — the fluid keeps running so
+      // the stroke settles instead of vanishing at the card's edge.
+      mouse.x = -9999;
+      mouse.y = -9999;
+    }
+
+    parent.addEventListener("pointermove", handlePointerMove);
+    parent.addEventListener("pointerleave", handlePointerLeave);
+
+    function render() {
+      animationFrameId = null;
+      if (!fluid) return;
+
+      const timestamp = performance.now();
+
+      for (let i = trail.length - 1; i >= 0; i -= 1) {
+        const point = trail[i];
+        const age = timestamp - point.b;
+
+        if (age >= TRAIL_LIFE) {
+          trail.splice(i, 1);
+          continue;
+        }
+
+        const life = 1 - age / TRAIL_LIFE;
+        const radius = INNER_RADIUS + life * RADIUS_LIFE;
+        const gridRadius = Math.ceil(radius);
+        const speed = Math.hypot(point.vx, point.vy);
+        const force = (FORCE_BASE + Math.min(speed, SPEED_SAT) / SPEED_SAT) * life;
+        const cx = ((point.x / width) * fluid.cols) | 0;
+        const cy = ((point.y / height) * fluid.rows) | 0;
+
+        for (let dy = -gridRadius; dy <= gridRadius; dy += 1) {
+          for (let dx = -gridRadius; dx <= gridRadius; dx += 1) {
+            const dist = Math.hypot(dx, dy);
+            if (dist > radius) continue;
+            const f = (1 - dist / radius) ** 2;
+            const fluidIndex = fluid.fi(cx + dx, cy + dy);
+            fluid.vx[fluidIndex] += point.vx * f * force * FORCE_MULTIPLIER;
+            fluid.vy[fluidIndex] += point.vy * f * force * FORCE_MULTIPLIER;
+          }
+        }
+      }
+
+      fluid.step();
+
+      ctx.clearRect(0, 0, width, height);
+
+      const cols = Math.ceil(width / cellSize);
+      const rows = Math.ceil(height / cellSize);
+      const offset = (atlasCell - cellSize) / 2;
+      let peak = 0;
+
+      for (let row = 0; row < rows; row += 1) {
+        const fy = Math.min(
+          fluid.rows - 1,
+          ((row / rows) * fluid.rows) | 0,
+        );
+
+        for (let col = 0; col < cols; col += 1) {
+          const fx = Math.min(
+            fluid.cols - 1,
+            ((col / cols) * fluid.cols) | 0,
+          );
+          const fluidIndex = fy * fluid.cols + fx;
+
+          // The hero's `hm`: how strongly the fluid is moving through this
+          // cell. It picks the glyph and drives the tint, exactly as there.
+          const flow = Math.hypot(fluid.vx[fluidIndex], fluid.vy[fluidIndex]);
+          const hm = Math.min(1, flow * 1.1);
+          if (hm > peak) peak = hm;
+          if (hm <= 0) continue;
+
+          const threshold = BAYER[(row & 3) * 4 + (col & 3)] / 16;
+          const dithered = hm + (threshold - 0.5) * (DITHER / charCount);
+          const charIndex = Math.min(
+            charCount - 1,
+            Math.max(0, (Math.min(dithered, 0.9999) * charCount) | 0),
+          );
+          // Blank ramp slots are what thins the stroke out at its edges.
+          if (charIndex < firstInked) continue;
+
+          const shade = Math.min(
+            SHADES - 1,
+            Math.round(smoothstep(0.01, 0.35, hm) * (SHADES - 1)),
+          );
+
+          ctx.drawImage(
+            atlasCanvas,
+            charIndex * atlasCell,
+            shade * atlasCell,
+            atlasCell,
+            atlasCell,
+            col * cellSize - offset,
+            row * cellSize - offset,
+            atlasCell,
+            atlasCell,
+          );
+        }
+      }
+
+      // The fluid damps out a beat after the last point expires, and a cell
+      // needs roughly a fifth of the ramp before it inks at all — so once the
+      // peak drops this far there is nothing left to draw and the loop parks,
+      // keeping idle cards off the frame budget.
+      if (trail.length === 0 && peak < 0.05) {
+        running = false;
+        ctx.clearRect(0, 0, width, height);
+        return;
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    }
+
+    function start() {
+      if (running) return;
+      running = true;
+      animationFrameId = requestAnimationFrame(render);
+    }
+
+    return () => {
+      if (animationFrameId != null) cancelAnimationFrame(animationFrameId);
+      running = false;
+      ro.disconnect();
+      parent.removeEventListener("pointermove", handlePointerMove);
+      parent.removeEventListener("pointerleave", handlePointerLeave);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className={`pointer-events-none absolute inset-0 z-20 h-full w-full ${className}`}
+    />
+  );
+}
+
 export default function EffectBox({
   title,
   tag,
@@ -40,9 +405,10 @@ export default function EffectBox({
   className = "",
   mediaClassName = "",
   priority = false,
+  enableDitherTrail = true,
 }) {
   const mark =
-    "pointer-events-none absolute size-[0.3vw] border-grey  transition-all duration-300 group-hover:border-primary  max-md:size-2 max-sm:size-1.5";
+    "pointer-events-none absolute size-[0.3vw] border-grey transition-all duration-300 group-hover:border-primary max-md:size-2 max-sm:size-1.5";
 
   return (
     <Link
@@ -73,15 +439,17 @@ export default function EffectBox({
               fill
               sizes="(max-width: 768px) 92vw, (max-width: 1025px) 44vw, 26vw"
               priority={priority}
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              className="object-cover transition-all duration-500 group-hover:brightness-70  group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
           )
         ) : (
           <span className="absolute inset-0 bg-[linear-gradient(135deg,#1a1a1a,#0e0e0e)]" />
         )}
 
+        {enableDitherTrail ? <DitherTrailCanvas /> : null}
+
         {tag ? (
-          <span className="absolute left-[0.7vw] top-[0.7vw] bg-grey px-[0.55vw] py-[0.45vw] font-geist-mono text-[0.72vw] leading-none tracking-wide text-white backdrop-blur-sm max-md:left-2 max-md:top-2 max-md:px-2 max-md:py-1 max-md:text-[1.5vw] max-sm:text-[2.6vw]">
+          <span className="absolute left-[0.7vw] top-[0.7vw] z-30 bg-grey px-[0.55vw] py-[0.45vw] font-geist-mono text-[0.72vw] leading-none tracking-wide text-white backdrop-blur-sm max-md:left-2 max-md:top-2 max-md:px-2 max-md:py-1 max-md:text-[1.5vw] max-sm:text-[2.6vw]">
             {tag}
           </span>
         ) : null}

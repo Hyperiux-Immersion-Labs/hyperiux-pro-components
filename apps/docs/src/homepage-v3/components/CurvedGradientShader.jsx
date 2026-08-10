@@ -33,12 +33,44 @@ uniform float uProgress;
 uniform float uDeform;
 /** 1.0 = fade edges into BG, 0.0 = no edge fade. */
 uniform float uEdgeFade;
+uniform float uPixelSize;
+uniform float uColorNum;
+uniform float uDither;
 
 const vec3 BG      = vec3(0.0196);                // #050505 – page background
 const vec3 PRIMARY = vec3(1.0, 0.373, 0.0);       // #ff5f00 – primary brand color
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+float bayer2(vec2 a) {
+  vec2 b = floor(a);
+  return fract(dot(b, vec2(0.5, 0.25)));
+}
+
+float bayer4(vec2 a) {
+  return bayer2(a * 0.5) * 0.25 + bayer2(a);
+}
+
+float bayer8(vec2 a) {
+  return bayer4(a * 0.5) * 0.25 + bayer2(a);
+}
+
+vec3 applyDither(vec2 fragCoord, vec3 color, float pixelSize, float colorNum) {
+  if (pixelSize <= 0.0) return color;
+  vec2 scaledCoord = floor(fragCoord / pixelSize);
+  float threshold = bayer8(scaledCoord) - 0.5;
+  if (colorNum > 1.0) {
+    float stepSize = 1.0 / (colorNum - 1.0);
+    color += threshold * stepSize * 0.85;
+    color = clamp(color - 0.05, 0.0, 1.0);
+    color = floor(color * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
+  } else {
+    color += threshold * 0.1;
+    color = clamp(color, 0.0, 1.0);
+  }
+  return color;
 }
 
 void main() {
@@ -84,8 +116,12 @@ void main() {
 
   vec3 col = BG + PRIMARY * intensity * brightness * fadeMul;
 
-  // Dither to prevent 8-bit banding on the soft gradient.
-  col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) / 255.0;
+  if (uDither > 0.5) {
+    col = applyDither(gl_FragCoord.xy, col, uPixelSize, uColorNum);
+  } else {
+    // Dither to prevent 8-bit banding on the soft gradient.
+    col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) / 255.0;
+  }
 
   gl_FragColor = vec4(col, 1.0);
 }
@@ -106,7 +142,13 @@ const MAX_PIXEL_RATIO = 1.5;
  * scrolls past. Renders nothing but the page background if WebGL is
  * unavailable, so the section degrades to flat black.
  */
-export default function CurvedGradientShader({ className = "", edgeFade = true }) {
+export default function CurvedGradientShader({
+  className = "",
+  edgeFade = true,
+  dither = true,
+  pixelSize = 3.0,
+  colorNum = 8.0,
+}) {
   const wrapRef = useRef(null);
   const canvasRef = useRef(null);
   const stateRef = useRef({
@@ -188,6 +230,9 @@ export default function CurvedGradientShader({ className = "", edgeFade = true }
         progress: gl.getUniformLocation(program, "uProgress"),
         deform: gl.getUniformLocation(program, "uDeform"),
         edgeFade: gl.getUniformLocation(program, "uEdgeFade"),
+        pixelSize: gl.getUniformLocation(program, "uPixelSize"),
+        colorNum: gl.getUniformLocation(program, "uColorNum"),
+        dither: gl.getUniformLocation(program, "uDither"),
       };
 
       resize();
@@ -217,6 +262,9 @@ export default function CurvedGradientShader({ className = "", edgeFade = true }
       gl.uniform1f(uniforms.progress, state.progress);
       gl.uniform1f(uniforms.deform, state.deform);
       gl.uniform1f(uniforms.edgeFade, edgeFade ? 1.0 : 0.0);
+      gl.uniform1f(uniforms.pixelSize, pixelSize);
+      gl.uniform1f(uniforms.colorNum, colorNum);
+      gl.uniform1f(uniforms.dither, dither ? 1.0 : 0.0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
 

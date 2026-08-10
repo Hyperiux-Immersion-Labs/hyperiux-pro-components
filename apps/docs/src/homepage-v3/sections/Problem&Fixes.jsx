@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
+import ScrambleTextV3 from '../components/ScrambleTextV3'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin)
@@ -50,6 +51,8 @@ const cards = [
 export default function ProblemFixes() {
   const sectionRef = useRef(null)
   const cardsRef = useRef(null)
+  const [activeIndex, setActiveIndex] = useState(-1)
+  const [armed, setArmed] = useState(false)
 
   useEffect(() => {
     const section = sectionRef.current
@@ -58,6 +61,8 @@ export default function ProblemFixes() {
     let ctx
 
     const mount = () => {
+      setArmed(true)
+
       ctx = gsap.context(() => {
         const cardEls = gsap.utils.toArray('.tension-card')
         const checkIcons = gsap.utils.toArray('.tension-check')
@@ -79,18 +84,26 @@ export default function ProblemFixes() {
           })
         })
 
+        // A zero-length dash still paints a dot with `stroke-linecap: round`,
+        // so the icons stay hidden until their stroke actually has length.
         checkIcons.forEach((icon) => {
           gsap.set(icon.querySelectorAll('path, polyline, line'), {
             drawSVG: '100% 100%',
           })
-          gsap.set(icon, { opacity: 1 })
+          gsap.set(icon, { autoAlpha: 0 })
         })
 
         xIcons.forEach((icon) => {
           gsap.set(icon.querySelectorAll('path, polyline, line'), {
             drawSVG: '0% 0%',
           })
-          gsap.set(icon, { opacity: 1 })
+          gsap.set(icon, { autoAlpha: 0 })
+        })
+
+        const revealCard = (index) => ({
+          onStart: () => setActiveIndex((current) => Math.max(current, index)),
+          onReverseComplete: () =>
+            setActiveIndex((current) => Math.min(current, index - 1)),
         })
 
         const tl = gsap.timeline({
@@ -104,14 +117,21 @@ export default function ProblemFixes() {
 
         tl.to(
           checkIcons[0].querySelectorAll('path, polyline, line'),
-          { drawSVG: '0% 100%', duration: 0.4, ease: 'power2.out' },
+          {
+            drawSVG: '0% 100%',
+            duration: 0.4,
+            ease: 'power2.out',
+            ...revealCard(0),
+          },
           0,
         )
+        tl.to(checkIcons[0], { autoAlpha: 1, duration: 0.05 }, 0)
         tl.to(
           xIcons[0].querySelectorAll('path, polyline, line'),
           { drawSVG: '0% 100%', duration: 0.4, ease: 'power2.out' },
           0,
         )
+        tl.to(xIcons[0], { autoAlpha: 1, duration: 0.05 }, 0)
 
         for (let i = 1; i < total; i++) {
           const t = i * 0.8
@@ -126,7 +146,12 @@ export default function ProblemFixes() {
 
           tl.to(
             cardEls[i],
-            { opacity: 1, duration: 0.6, ease: 'power2.out' },
+            {
+              opacity: 1,
+              duration: 0.6,
+              ease: 'power2.out',
+              ...revealCard(i),
+            },
             t + 0.1,
           )
           tl.to(
@@ -134,11 +159,13 @@ export default function ProblemFixes() {
             { drawSVG: '0% 100%', duration: 0.5, ease: 'power2.out' },
             t + 0.7,
           )
+          tl.to(checkIcons[i], { autoAlpha: 1, duration: 0.05 }, t + 0.7)
           tl.to(
             xIcons[i].querySelectorAll('path, polyline, line'),
             { drawSVG: '0% 100%', duration: 0.5, ease: 'power2.out' },
             t + 0.7,
           )
+          tl.to(xIcons[i], { autoAlpha: 1, duration: 0.05 }, t + 0.7)
         }
       }, sectionRef)
     }
@@ -186,7 +213,7 @@ export default function ProblemFixes() {
             <p>Solves</p>
           </div>
 
-          {cards.map((item) => (
+          {cards.map((item, index) => (
             <div
               key={item.title}
               className="tension-card bg-grey/30 flex items-center justify-between p-[.7vw] pr-[1.5vw] max-md:p-3 max-sm:p-2 max-sm:pr-4"
@@ -210,8 +237,12 @@ export default function ProblemFixes() {
                     {item.title}
                   </p>
                 </div>
-                <p className="text-light-grey font-mono text18 min-w-0 flex-1 px-[2vw] text-left max-sm:w-full max-sm:flex-none max-sm:px-0 max-sm:text-[3.5vw]! max-sm:leading-[1.2]">
-                  {item.description}
+                <p className="text-light-grey font-mono text18 min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-full max-sm:flex-none max-sm:px-0 max-sm:text-[3.5vw]! max-sm:leading-[1.2]">
+                  <ScrambleTextV3
+                    text={item.description}
+                    active={index <= activeIndex}
+                    armed={armed}
+                  />
                 </p>
               </div>
               <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-md:w-[30%] max-sm:w-[40%] max-sm:gap-2.5 max-sm:pl-3">

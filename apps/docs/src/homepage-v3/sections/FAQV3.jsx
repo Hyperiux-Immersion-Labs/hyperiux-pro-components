@@ -13,6 +13,7 @@ import { useGSAP } from "@gsap/react";
 import { ChevronRight } from "lucide-react";
 import { prefersReducedMotion } from "@/lib/motion";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
+import LineReveal from "@/components/Animations/LineReveal";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -265,9 +266,13 @@ export default function FAQV3() {
       id="faq"
       className="h-fit w-full self-padd py-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]"
     >
-      <h2 className="t96 text-center font-neue-haas mb-[4vw] max-md:mb-[8vw] max-md:text-[5.5vw] max-sm:mb-[12vw] max-sm:text-[7.5vw]">
+      <LineReveal
+        as="h2"
+        className="t96 text-center font-neue-haas mb-[4vw] max-md:mb-[8vw] max-md:text-[5.5vw] max-sm:mb-[12vw] max-sm:text-[7.5vw]"
+      >
         Questions <span className="gradient-text-animate">Answered.</span>
-      </h2>
+      </LineReveal>
+ 
 
       <div className="w-[90%] mx-auto border border-grey">
         {visibleItems.map((item, index) => (

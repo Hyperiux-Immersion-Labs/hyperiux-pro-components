@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import ButtonV3 from "../components/ButtonV3";
+import LineReveal from "@/components/Animations/LineReveal";
+import SplitLine from "@/components/WebsiteComps/SplitLine";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -171,14 +173,14 @@ export default function PricingV3() {
         >
             {/* HEADING */}
             <div className="text-center w-full">
-                <h2 className="t96 w-full font-neue-haas ">
+                <LineReveal as="h2" className="t96 w-full font-neue-haas ">
                     Start Free. Upgrade When You&rsquo;re{" "}
                     <span className="gradient-text-animate">Ready.</span>
-                </h2>
+                </LineReveal>
 
-                <p className="text24 w-full  mx-auto mt-[1.5vw] text-background max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-full max-sm:text-[4vw]">
+                <SplitLine delay={.25} as="p" className="text24 w-full  mx-auto mt-[1.5vw] text-background max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-full max-sm:text-[4vw]">
                     The free core stays free, forever. Pro unlocks everything and every new drop.
-                </p>
+                </SplitLine>
             </div>
 
             {/* TOGGLE */}

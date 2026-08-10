@@ -61,10 +61,13 @@ export default function NavbarV3() {
             src={"/homepage-v3/svgs/glass.svg"}
             alt="search"
             width={100}
-            className=" opacity-50 size-[1.2vw]"
+            className=" size-[1.2vw]"
             height={100}
           />
-          <p className="text-[.9vw] opacity-50 font-geist-mono">CMD + K</p>
+          <span className="size-[1.8vw] relative font-geist-mono">
+            <Image src={'/homepage-v3/svgs/ctrlk.svg'} alt='Search' width={16} height={16} className='h-full w-full object-contain' />
+          </span>
+
         </div>
         <ButtonV3 text="Start Free" />
       </div>

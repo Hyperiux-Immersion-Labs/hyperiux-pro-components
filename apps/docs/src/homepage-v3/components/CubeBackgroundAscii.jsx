@@ -342,7 +342,8 @@ void main() {
 
   // Optional fluid letter tint (off when uFluidColorEnabled == 0)
   if (uFluidColorEnabled == 1) {
-    col = mix(col, uFluidColor, hm);
+    float fluidMix = smoothstep(0.01, 0.35, hm);
+    col = mix(col, uFluidColor, fluidMix);
   }
 
   // Film grain — color only, never character selection

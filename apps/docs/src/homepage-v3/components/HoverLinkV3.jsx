@@ -6,8 +6,12 @@ import { useEffect, useRef, useState } from "react";
 const SCRAMBLE_GLYPHS = "$#&*@!_-./|<>0123456789";
 const PRE_HOLD_MS = 40;
 const REVEAL_DURATION_MS = 400;
+const SCRAMBLE_TAIL = 6;
 const FLASH_MS = 90;
 const GLYPH_SWAP_MS = 50;
+
+const randomGlyph = () =>
+  SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
 
 function ScrambleText({ text, run }) {
   const charsRef = useRef([]);
@@ -21,6 +25,7 @@ function ScrambleText({ text, run }) {
       chars.forEach((node, index) => {
         node.textContent = text[index];
         node.style.color = "";
+        node.style.opacity = "";
       });
     };
 
@@ -32,6 +37,22 @@ function ScrambleText({ text, run }) {
       settle();
       return;
     }
+
+    // The tail is what makes the label read as written rather than decoded in
+    // place, so it has to stay short relative to the label — on "Docs" a fixed
+    // six characters would cover the whole word and scramble it all at once.
+    const tail = Math.max(
+      1,
+      Math.min(SCRAMBLE_TAIL, Math.ceil(chars.length / 2))
+    );
+    const tailMs = (tail / chars.length) * REVEAL_DURATION_MS;
+    const phases = new Array(chars.length).fill(0);
+
+    chars.forEach((node, index) => {
+      node.textContent = text[index];
+      node.style.color = "";
+      node.style.opacity = "0";
+    });
 
     const start = performance.now();
     let previous = start;
@@ -50,21 +71,35 @@ function ScrambleText({ text, run }) {
           PRE_HOLD_MS + ((index + 1) / chars.length) * REVEAL_DURATION_MS;
         const final = text[index];
 
+        // Not written yet — stays blank so the label builds up left to right.
+        if (elapsed < revealAt - tailMs) {
+          running = true;
+          return;
+        }
+
         if (elapsed < revealAt) {
           running = true;
-          node.style.color = "var(--link-pre)";
+
+          if (phases[index] === 0) {
+            phases[index] = 1;
+            node.style.opacity = "1";
+            node.style.color = "var(--link-pre)";
+            if (final !== " ") node.textContent = randomGlyph();
+            return;
+          }
 
           if (final !== " " && Math.random() < swapChance) {
-            node.textContent =
-              SCRAMBLE_GLYPHS[
-                Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)
-              ];
+            node.textContent = randomGlyph();
           }
 
           return;
         }
 
-        node.textContent = final;
+        if (phases[index] !== 2) {
+          phases[index] = 2;
+          node.style.opacity = "1";
+          node.textContent = final;
+        }
 
         if (elapsed - revealAt < FLASH_MS) {
           running = true;
@@ -149,7 +184,7 @@ export default function HoverLinkV3({
       target={target_blank ? "_blank" : undefined}
       rel={target_blank ? "noopener noreferrer" : undefined}
       aria-label={ariaLabel}
-      className={`group flex items-center gap-[0.8vw] text-nowrap transition-colors duration-300 motion-reduce:transition-none [--link-flash:var(--primary)] [--link-pre:#6f6f6f] ${className}`}
+      className={`group flex items-center gap-[0.8vw] text-nowrap transition-colors duration-300 motion-reduce:transition-none [--link-flash:var(--primary)] [--link-pre:var(--primary)] ${className}`}
     >
       <ScrambleText text={text} run={run} />
       {children}
