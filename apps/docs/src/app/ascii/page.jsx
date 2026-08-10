@@ -1,6 +1,6 @@
 "use client";
 
-import CubeBackgroundAscii from "@/homepage-v3/components/CubeAscii";
+import CubeBackgroundAscii from "@/homepage-v3/components/CubeBackgroundAscii";
 import Button from "@/components/WebsiteComps/Button";
 
 export default function Page() {
