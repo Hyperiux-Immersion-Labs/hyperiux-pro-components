@@ -43,6 +43,7 @@ export function VaultHeader({
 }) {
   const [openTrigger, setOpenTrigger] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [usage, setUsage] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
@@ -76,6 +77,26 @@ export function VaultHeader({
     }
 
     loadWishlistCount();
+  }, [isSignedIn]);
+
+  useEffect(() => {
+    if (!isSignedIn) return;
+
+    async function loadUsage() {
+      try {
+        const res = await fetch("/api/copy-usage");
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        setUsage(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadUsage();
   }, [isSignedIn]);
 
   useEffect(() => {
@@ -242,7 +263,7 @@ export function VaultHeader({
               )
             ) : (
               <div className="max-[1025px]:hidden">
-                <ProfileDropdown savedCount={wishlistCount} plan={user?.publicMetadata?.plan || "free"} />
+                <ProfileDropdown savedCount={wishlistCount} usage={usage} plan={user?.publicMetadata?.plan || "free"} />
               </div>
             ))}
           </div>

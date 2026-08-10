@@ -755,6 +755,21 @@ export function getEffectCategory(id) {
   return categoriesById.get(id) || null;
 }
 
+// Single source of truth for how a category/filter id reads as a chip label -
+// used by the vault listing's category chips + featured/free/pro dropdown,
+// and by the Saved Effects / Usage dashboard tabs so the same id never
+// renders under two different names. Deliberately a plain capitalize rather
+// than each category's full `.name` (e.g. "text" -> "Text", not "Text
+// Animations") to keep filter chips compact.
+export function getQuickCategoryLabel(id) {
+  if (id === "free") return "Free";
+  if (id === "pro") return "Pro";
+  if (id === "featured") return "Featured";
+  if (id === "webgl") return "WebGL";
+
+  return id.charAt(0).toUpperCase() + id.slice(1);
+}
+
 export function getEffectCategoryBySlug(slug) {
   const normalizedSlug = slug?.toString().toLowerCase();
 

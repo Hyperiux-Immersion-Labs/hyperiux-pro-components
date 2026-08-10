@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 
 const CopyLimitContext = createContext(null);
 
@@ -13,6 +14,34 @@ const CopyLimitContext = createContext(null);
 export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
   const { isSignedIn, isLoaded } = useUser();
   const [usage, setUsage] = useState(null);
+  const { toast, showToast, dismissToast } = useToastQueue();
+
+  // Surfaces the "X of Y copies left today" nudge after every copy attempt
+  // that actually touches the daily limit - skipped for admins (unlimited)
+  // since there's nothing worth reporting.
+  const notifyUsage = useCallback(
+    (data) => {
+      if (!data || data.isAdmin || typeof data.limit !== "number") return;
+
+      const limit = data.limit;
+      const remaining = Math.max(0, data.remaining ?? 0);
+      const count = data.count ?? Math.max(0, limit - remaining);
+
+      showToast({
+        title:
+          remaining > 0
+            ? `${remaining} of ${limit} daily copies left`
+            : "Daily copy limit reached",
+        description:
+          remaining > 0
+            ? `You've copied ${count}/${limit} effects today.`
+            : "Come back tomorrow, or upgrade to Pro for a higher limit.",
+        ctaHref: remaining === 0 && data.plan !== "pro" ? "/pricing" : null,
+        ctaLabel: "Upgrade to Pro",
+      });
+    },
+    [showToast]
+  );
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn) return;
@@ -44,8 +73,14 @@ export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
     if (usage?.isAdmin) return true;
     // Already used a slot on this effect today - copy freely, no need to
     // round-trip to the server.
-    if (effectAlreadyUnlocked) return true;
-    if (usage && usage.remaining <= 0) return false;
+    if (effectAlreadyUnlocked) {
+      notifyUsage(usage);
+      return true;
+    }
+    if (usage && usage.remaining <= 0) {
+      notifyUsage(usage);
+      return false;
+    }
 
     try {
       const res = await fetch("/api/copy-usage", {
@@ -56,12 +91,21 @@ export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
       const data = await res.json();
 
       setUsage(data);
+      notifyUsage(data);
 
       return Boolean(data.allowed);
     } catch {
       return false;
     }
-  }, [isLoaded, isSignedIn, usage, effectAlreadyUnlocked, effectSlug, onRequireSignIn]);
+  }, [
+    isLoaded,
+    isSignedIn,
+    usage,
+    effectAlreadyUnlocked,
+    effectSlug,
+    onRequireSignIn,
+    notifyUsage,
+  ]);
 
   const isLocked = Boolean(
     isLoaded &&
@@ -90,6 +134,7 @@ export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
   return (
     <CopyLimitContext.Provider value={value}>
       {children}
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
     </CopyLimitContext.Provider>
   );
 }

@@ -9,10 +9,17 @@ import Button from "../WebsiteComps/Button";
 const BASE_TABS = [
   { label: "Overview", href: "/dashboard" },
   { label: "Saved Effects", href: "/dashboard/saved" },
+  { label: "Usage", href: "/dashboard/usage" },
+  { label: "Invoicing", href: "/dashboard/invoicing" },
   { label: "Settings", href: "/dashboard/settings" },
 ];
 
 const ADMIN_TAB = { label: "Admin", href: "/dashboard/admin" };
+
+// Usage and Invoicing are customer-account concepts (daily copy limits,
+// personal billing) - an admin has neither, so surfacing them would just
+// show empty/irrelevant state instead of being hidden outright.
+const ADMIN_HIDDEN_TABS = new Set(["/dashboard/usage", "/dashboard/invoicing"]);
 
 export function DashboardShell({ children }) {
   const pathname = usePathname();
@@ -20,7 +27,10 @@ export function DashboardShell({ children }) {
   const { user } = useUser();
 
   const isAdmin = user?.publicMetadata?.role === "admin";
-  const tabs = isAdmin ? [...BASE_TABS, ADMIN_TAB] : BASE_TABS;
+  const visibleBaseTabs = isAdmin
+    ? BASE_TABS.filter((tab) => !ADMIN_HIDDEN_TABS.has(tab.href))
+    : BASE_TABS;
+  const tabs = isAdmin ? [...visibleBaseTabs, ADMIN_TAB] : visibleBaseTabs;
 
   return (
     <div className="min-h-screen text-white">

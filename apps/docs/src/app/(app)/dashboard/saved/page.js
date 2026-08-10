@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { EffectCard } from "@/components/ui/EffectCardNew";
-import { effectCategories, getEffectCategory } from "@/lib/categories";
+import { effectCategories, getQuickCategoryLabel } from "@/lib/categories";
+import { getFeaturedEffects } from "@/lib/featured-effects";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
+import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/effects/FilterMenu";
 
 function getEffectCategories(effect) {
   return effect.categories?.length
@@ -14,7 +16,7 @@ function getEffectCategories(effect) {
 export default function SavedPage() {
   const [savedEffects, setSavedEffects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   async function loadSavedEffects() {
     try {
@@ -73,35 +75,61 @@ export default function SavedPage() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const categoryFilters = useMemo(() => {
-    const savedCategories = new Set();
+  const featuredEffects = useMemo(
+    () => getFeaturedEffects(savedEffects),
+    [savedEffects]
+  );
+
+  // Same shape as vault-content's quickCategories/categoryChips split -
+  // featured/free/pro live in the FilterMenu dropdown, everything else
+  // becomes a chip, ordered to match the site's category order first.
+  const categoryChips = useMemo(() => {
+    const presentCategories = new Set();
 
     savedEffects.forEach((effect) => {
       getEffectCategories(effect).forEach((category) => {
-        if (category) savedCategories.add(category);
+        if (category) presentCategories.add(category);
       });
     });
 
-    const knownCategories = effectCategories.filter(
-      (category) => category.id === "all" || savedCategories.has(category.id)
-    );
-    const customCategories = [...savedCategories]
-      .filter((category) => !getEffectCategory(category))
-      .map((category) => ({
-        id: category,
-        name: category,
-      }));
+    const knownCategories = effectCategories
+      .filter(
+        (category) =>
+          category.id !== "featured" && presentCategories.has(category.id)
+      )
+      .map((category) => category.id);
 
-    return [...knownCategories, ...customCategories];
+    const extraCategories = [...presentCategories].filter(
+      (id) => !knownCategories.includes(id)
+    );
+
+    return [...knownCategories, ...extraCategories];
   }, [savedEffects]);
 
+  const activeFilter = FILTER_OPTIONS.includes(categoryFilter)
+    ? categoryFilter
+    : null;
+
   const filteredEffects = useMemo(() => {
-    if (activeCategory === "all") return savedEffects;
+    if (categoryFilter === "all") return savedEffects;
+
+    if (categoryFilter === "featured") {
+      const featuredNames = new Set(featuredEffects.map((effect) => effect.name));
+      return savedEffects.filter((effect) => featuredNames.has(effect.name));
+    }
+
+    if (categoryFilter === "free") {
+      return savedEffects.filter((effect) => effect.tier !== "pro");
+    }
+
+    if (categoryFilter === "pro") {
+      return savedEffects.filter((effect) => effect.tier === "pro");
+    }
 
     return savedEffects.filter((effect) =>
-      getEffectCategories(effect).includes(activeCategory)
+      getEffectCategories(effect).includes(categoryFilter)
     );
-  }, [activeCategory, savedEffects]);
+  }, [categoryFilter, savedEffects, featuredEffects]);
 
   if (loading) {
     return (
@@ -127,15 +155,35 @@ export default function SavedPage() {
       </div>
 
       {savedEffects.length > 0 && (
-        <div className="flex flex-wrap gap-3">
-          {categoryFilters.map((category) => {
-            const active = activeCategory === category.id;
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setCategoryFilter("all")}
+            className={`
+              px-7 py-[.8vw] max-md:py-[2vw] rounded-full border transition
+              ${categoryFilter === "all"
+                ? "bg-white text-black border-white"
+                : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
+            `}
+          >
+            All
+          </button>
+
+          <FilterMenu
+            activeFilter={activeFilter}
+            categoryFilter={categoryFilter}
+            getLabel={getQuickCategoryLabel}
+            onSelect={setCategoryFilter}
+          />
+
+          {categoryChips.map((cat) => {
+            const active = categoryFilter === cat;
 
             return (
               <button
-                key={category.id}
+                key={cat}
                 type="button"
-                onClick={() => setActiveCategory(category.id)}
+                onClick={() => setCategoryFilter(cat)}
                 className={`
                   px-7 py-[.8vw] max-md:py-[2vw] rounded-full border transition
                   ${active
@@ -143,7 +191,7 @@ export default function SavedPage() {
                     : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
                 `}
               >
-                {category.name}
+                {getQuickCategoryLabel(cat)}
               </button>
             );
           })}

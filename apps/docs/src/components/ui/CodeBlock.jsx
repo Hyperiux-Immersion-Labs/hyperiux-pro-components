@@ -17,6 +17,7 @@ import glsl from "highlight.js/lib/languages/glsl";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import CopyBtn from "@/components/ui/CopyBtn";
+import { Tooltip } from "@/components/ui/Tooltip";
 
 hljs.registerLanguage("javascript", javascript); // aliases: js, jsx
 hljs.registerLanguage("typescript", typescript); // aliases: ts, tsx
@@ -109,24 +110,29 @@ export function CodeBlock({
                 {shouldShowHeader ? (
                     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
                         <span className="text-lg text-white max-md:text-sm">{filename || ""}</span>
-                        <CopyBtn
-                            value={displayCode}
-                            color="white"
-                            className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
-                            aria-label="Copy code to clipboard"
-                            disabled={copyLocked}
-                            onBeforeCopy={onBeforeCopy}
-                        />
+                        <Tooltip label="Copy code" position="bottom">
+                            <CopyBtn
+                                value={displayCode}
+                                color="white"
+                                className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
+                                aria-label="Copy code to clipboard"
+                                disabled={copyLocked}
+                                onBeforeCopy={onBeforeCopy}
+                            />
+                        </Tooltip>
                     </div>
                 ) : (
-                    <CopyBtn
-                        value={displayCode}
-                        color="white"
-                        className="absolute top-5 right-5 z-10 max-md:top-3.5 max-md:right-6"
-                        aria-label="Copy code to clipboard"
-                        disabled={copyLocked}
-                        onBeforeCopy={onBeforeCopy}
-                    />
+                    <span className="absolute top-5 right-5 z-10 max-md:top-3.5 max-md:right-6">
+                        <Tooltip label="Copy code" position="bottom">
+                            <CopyBtn
+                                value={displayCode}
+                                color="white"
+                                aria-label="Copy code to clipboard"
+                                disabled={copyLocked}
+                                onBeforeCopy={onBeforeCopy}
+                            />
+                        </Tooltip>
+                    </span>
                 )}
                 <div className="relative">
                     <pre
@@ -181,15 +187,17 @@ export function InstallCommand({
             >
                 {displayCommand}
             </code>
-            <CopyBtn
-                value={displayCommand}
-                color="white"
-                size="sm"
-                className="rounded bg-white/10 p-2 hover:bg-white/20"
-                aria-label="Copy install command"
-                disabled={copyLocked}
-                onBeforeCopy={onBeforeCopy}
-            />
+            <Tooltip label="Copy command" position="bottom">
+                <CopyBtn
+                    value={displayCommand}
+                    color="white"
+                    size="sm"
+                    className="rounded bg-white/10 p-2 hover:bg-white/20"
+                    aria-label="Copy install command"
+                    disabled={copyLocked}
+                    onBeforeCopy={onBeforeCopy}
+                />
+            </Tooltip>
         </div>
     );
 }

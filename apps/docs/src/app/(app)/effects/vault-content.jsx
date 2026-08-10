@@ -12,6 +12,7 @@ import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeade
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import {
   effectsOverviewContent,
@@ -21,6 +22,7 @@ import {
   getEffectCategory,
   getEffectCategoryBySlug,
   getEffectCategoryHref,
+  getQuickCategoryLabel,
 } from "@/lib/categories";
 
 import HeadAnim from "@/components/Animations/HeadAnim";
@@ -205,6 +207,7 @@ const routeKey = `${pathname}${
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlist, setWishlist] = useState([]);
   const [gridColumns, setGridColumns] = useState(3);
+  const { toast: wishlistToast, showToast: showWishlistSavedToast, dismissToast: dismissWishlistToast } = useToastQueue();
 
   const featuredEffects = useMemo(
     () => getFeaturedEffects(safeEffects),
@@ -366,14 +369,6 @@ const routeKey = `${pathname}${
     ? categoryFilter
     : null;
 
-  const getQuickCategoryLabel = useCallback((cat) => {
-    if (cat === "free") return "Free";
-    if (cat === "pro") return "Pro";
-    if (cat === "featured") return "Featured";
-    if (cat === "webgl") return "WebGL";
-    return cat.charAt(0).toUpperCase() + cat.slice(1);
-  }, []);
-
   useEffect(() => {
     if (!isSignedIn) return;
 
@@ -423,6 +418,10 @@ const routeKey = `${pathname}${
 
       if (data.saved) {
         setWishlist((prev) => (prev.includes(slug) ? prev : [...prev, slug]));
+        showWishlistSavedToast({
+          title: `${effect.title || effect.name} saved`,
+          description: "You'll find it in your dashboard's Saved Effects.",
+        });
       } else {
         setWishlist((prev) => prev.filter((x) => x !== slug));
       }
@@ -816,6 +815,8 @@ const routeKey = `${pathname}${
       )}
 
     </VaultLayout>
+
+    <ToastViewport toast={wishlistToast} onDismiss={dismissWishlistToast} />
 
     {mounted && createPortal(
       <>

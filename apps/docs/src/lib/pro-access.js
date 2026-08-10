@@ -209,6 +209,36 @@ export async function sendInvoiceEmail({ clerkUserId, subscription, payment }) {
   }
 }
 
+// Fires from the same subscription.charged gate as sendInvoiceEmail (see
+// api/razorpay/webhooks/route.js) - one row per real charge, including the
+// first one, so the Invoicing tab has full billing history even though the
+// first-payment email itself is the welcome email rather than a receipt.
+// onConflict + ignoreDuplicates makes this safe against Razorpay's webhook
+// retries creating a duplicate row for the same payment.
+export async function recordInvoice({ clerkUserId, subscription, payment }) {
+  if (!clerkUserId || !payment?.id) return;
+
+  const { error } = await supabase.from("invoices").upsert(
+    {
+      clerk_user_id: clerkUserId,
+      razorpay_payment_id: payment.id,
+      razorpay_subscription_id: subscription?.id || null,
+      amount: payment.amount,
+      currency: payment.currency || "INR",
+      status: "paid",
+      billing_interval: getBillingInterval(subscription?.plan_id),
+      plan_label: getPlanLabel(subscription?.plan_id),
+      invoice_url: subscription?.short_url || null,
+      is_test: false,
+    },
+    { onConflict: "razorpay_payment_id", ignoreDuplicates: true }
+  );
+
+  if (error) {
+    console.error("RECORD_INVOICE_ERROR:", error);
+  }
+}
+
 export async function countPaidUsers() {
   const { count, error } = await supabase
     .from("subscriptions")

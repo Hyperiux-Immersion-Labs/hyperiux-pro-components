@@ -5,6 +5,48 @@ import Image from "next/image";
 import { Camera, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 
+const MAX_AVATAR_DIMENSION = 512;
+
+// Clerk's profile image upload rejects anything over its size cap - PNG
+// screenshots regularly blow past that at full resolution even though a
+// same-size JPEG wouldn't, which is why PNG uploads specifically looked
+// broken. Downscaling to a sane avatar size before upload fixes it without
+// needing the user to manually compress the file first.
+async function resizeImageForUpload(file, maxDimension = MAX_AVATAR_DIMENSION) {
+  if (typeof createImageBitmap !== "function") return file;
+
+  let bitmap;
+
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    return file;
+  }
+
+  const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+
+  if (scale >= 1) {
+    bitmap.close?.();
+    return file;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close?.();
+
+  const blob = await new Promise((resolve) =>
+    canvas.toBlob(resolve, file.type || "image/png", 0.92)
+  );
+
+  if (!blob) return file;
+
+  return new File([blob], file.name, { type: blob.type });
+}
+
 export default function SettingsPage() {
   const { user, isLoaded } = useUser();
   const fileInputRef = useRef(null);
@@ -159,17 +201,29 @@ export default function SettingsPage() {
     const file = event.target.files?.[0];
     if (!user || !file) return;
 
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file.");
+      event.target.value = "";
+      return;
+    }
+
     setSavingImage(true);
     setMessage("");
     setError("");
 
     try {
-      await user.setProfileImage({ file });
+      const uploadFile = await resizeImageForUpload(file);
+
+      await user.setProfileImage({ file: uploadFile });
       await user.reload();
       setMessage("Profile picture updated.");
     } catch (err) {
       console.error(err);
-      setError("Unable to update your profile picture.");
+      setError(
+        err?.errors?.[0]?.longMessage ||
+          err?.errors?.[0]?.message ||
+          "Unable to update your profile picture."
+      );
     } finally {
       setSavingImage(false);
       event.target.value = "";
