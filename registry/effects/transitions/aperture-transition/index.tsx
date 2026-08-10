@@ -2,14 +2,10 @@
 
 'use client'
 
-// @refresh reset
-// This component holds imperative GSAP state (pre-positioned transforms and
-// a hand-rolled clip-path) across navigations. Fast Refresh's default
-// state-preserving remount can leave that state stale after an edit here -
-// e.g. the page stuck mid-shrink or clipped away - so force a full remount
-// on every edit instead of trying to preserve it.
+
 import { TransitionRouter } from 'next-transition-router'
 import { usePathname } from 'next/navigation'
+import type { ReactNode } from 'react'
 import React, { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -21,20 +17,14 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
 }
 
-// Matches this project's `md` breakpoint (--breakpoint-md: 1025px in
-// globals.css). The same shrink reads as a much bigger margin on a
-// phone/tablet's smaller viewport than on desktop, so compact screens get a
-// closer-to-1 scale to keep the margin proportionally similar.
+
 const SHRINK_SCALE = 0.82
 const COMPACT_SHRINK_SCALE = 0.9
 
 const SHRINK_DURATION = 0.5
-// Beat held at the shrunk, fully-clipped state before the reveal starts -
-// gives the zoom-out its own moment to read instead of immediately chaining
-// into the next motion.
+
 const HOLD_DURATION = 0.1
-// The incoming page's clip-path reveal and the scale-up back to full size
-// run together across this span, not one after the other.
+
 const REVEAL_DURATION = 0.6
 
 function isCompactViewport() {
@@ -56,13 +46,18 @@ function isCompactViewport() {
 // moving in the last few percent of the animation - reading as a fast,
 // late snap instead of a smooth reveal. vh ties the offset to the actual
 // viewport height regardless of how tall the underlying page is.
-function clipInset(top) {
+function clipInset(top: number) {
   return `inset(${top}vh 0% 0% 0%)`
 }
 
 const HIDDEN_CLIP = clipInset(100)
 
-export default function ApertureTransition({ children, bgColor = '#0b0b0c' }) {
+interface ApertureTransitionProps {
+  children: ReactNode
+  bgColor?: string
+}
+
+export default function ApertureTransition({ children, bgColor = '#0b0b0c' }: ApertureTransitionProps) {
   // frameRef sits in normal document flow at rest (no fixed positioning, no
   // fixed height) so a page taller than one viewport scrolls exactly like it
   // would without this component. Only while a transition is actually
@@ -73,10 +68,10 @@ export default function ApertureTransition({ children, bgColor = '#0b0b0c' }) {
   // document toward its own center - which could be thousands of pixels
   // below whatever the user was actually looking at - instead of shrinking
   // the part of the page that was on screen.
-  const frameRef = useRef(null)
-  const wrapperRef = useRef(null)
-  const overlayRef = useRef(null)
-  const cloneRef = useRef(null)
+  const frameRef = useRef<HTMLDivElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const cloneRef = useRef<HTMLDivElement | null>(null)
   const pathname = usePathname()
   const isFirstRenderRef = useRef(true)
 
@@ -114,6 +109,11 @@ export default function ApertureTransition({ children, bgColor = '#0b0b0c' }) {
         // however far it was scrolled, so what's visually on screen right
         // now stays exactly where it is once the frame stops being part of
         // the scrollable document.
+        if (!frameRef.current || !wrapperRef.current || !overlayRef.current) {
+          next()
+          return
+        }
+
         const scrollY = window.scrollY || document.documentElement.scrollTop || 0
         document.body.style.overflow = 'hidden'
 
@@ -142,7 +142,7 @@ export default function ApertureTransition({ children, bgColor = '#0b0b0c' }) {
             // its own needed. Without it, the area the clip-path hasn't
             // revealed yet would show bare background instead of the old
             // page still sitting there.
-            const clone = wrapperRef.current.cloneNode(true)
+            const clone = wrapperRef.current.cloneNode(true) as HTMLDivElement
             clone.style.pointerEvents = 'none'
             overlayRef.current.appendChild(clone)
             cloneRef.current = clone

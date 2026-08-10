@@ -9,6 +9,24 @@ function prefersReducedMotion() {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
 }
 
+export interface ShearWipeStat {
+  label: string;
+  title: string;
+  desc: string;
+}
+
+type ActivePanel = 'components' | 'showcase';
+
+interface ShearWipeCompProps {
+  componentHighlights?: ShearWipeStat[];
+  showcaseStats?: ShearWipeStat[];
+  clipPathDuration?: number;
+  componentsBgImage?: string;
+  componentsTextColor?: string;
+  showcaseBgImage?: string;
+  showcaseTextColor?: string;
+}
+
 const ShearWipeComp = ({
   componentHighlights = [],
   showcaseStats = [],
@@ -17,15 +35,15 @@ const ShearWipeComp = ({
   componentsTextColor = 'text-black',
   showcaseBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs4.png',
   showcaseTextColor = 'text-white',
-}) => {
-  const [activePanel, setActivePanel] = useState('components');
-  const overlayRef = useRef(null);
+}: ShearWipeCompProps) => {
+  const [activePanel, setActivePanel] = useState<ActivePanel>('components');
+  const overlayRef = useRef<HTMLDivElement>(null);
 
-  const componentsTabRef = useRef(null);
-  const showcaseTabRef = useRef(null);
-  const activeLineRef = useRef(null);
-  const componentsContentRef = useRef(null);
-  const showcaseContentRef = useRef(null);
+  const componentsTabRef = useRef<HTMLButtonElement>(null);
+  const showcaseTabRef = useRef<HTMLButtonElement>(null);
+  const activeLineRef = useRef<HTMLSpanElement>(null);
+  const componentsContentRef = useRef<HTMLDivElement>(null);
+  const showcaseContentRef = useRef<HTMLDivElement>(null);
   const isFirstMobileRender = useRef(true);
   const isTransitioningRef = useRef(false);
   const isFirstPanelEffect = useRef(true);
@@ -68,7 +86,7 @@ const ShearWipeComp = ({
   // --- Hover animations ---
   // Ignored while a swipe is mid-flight so hovering the opposite edge can't
   // hijack the clip-path tween that's already running.
-  const handleHover = (side) => {
+  const handleHover = (side: ActivePanel) => {
     if (!overlayRef.current || isTransitioningRef.current || prefersReducedMotion()) return;
 
     if (side === 'showcase' && activePanel === 'components') {
@@ -194,7 +212,6 @@ const ShearWipeComp = ({
       {/* Page Background */}
       <div className="absolute inset-0">
         <img src={componentsBgImage} alt="" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-white/50" />
       </div>
 
       <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
@@ -224,7 +241,7 @@ const ShearWipeComp = ({
           <div
             className="absolute right-[-10%] top-1/2 -translate-y-1/2 cursor-pointer z-50"
             onMouseEnter={() => handleHover('showcase')}
-            onMouseLeave={() => handleHoverOut('showcase')}
+            onMouseLeave={() => handleHoverOut()}
             onClick={() => setActivePanel('showcase')}
           >
             <div className="text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap text-white">
@@ -243,7 +260,6 @@ const ShearWipeComp = ({
         >
           <div className="absolute inset-0">
             <img src={showcaseBgImage} alt="" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/40" />
           </div>
 
           <div className="flex h-screen items-center relative">
@@ -274,7 +290,7 @@ const ShearWipeComp = ({
         <div
           className="absolute left-[-15%] top-1/2 -translate-y-1/2 cursor-pointer z-50"
           onMouseEnter={() => handleHover('components')}
-          onMouseLeave={() => handleHoverOut('components')}
+            onMouseLeave={() => handleHoverOut()}
           onClick={() => setActivePanel('components')}
         >
           <div className="text-[7vw] font-medium leading-none tracking-tight origin-center -rotate-90 whitespace-nowrap text-white">
@@ -299,8 +315,8 @@ const ShearWipeComp = ({
             type="button"
             aria-selected={activePanel === 'components'}
             onClick={() => setActivePanel('components')}
-            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${
-              activePanel === 'components' ? 'text-black' : 'text-black/35'
+            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${componentsTextColor} ${
+              activePanel === 'components' ? '' : 'opacity-35'
             }`}
           >
             Components
@@ -311,14 +327,14 @@ const ShearWipeComp = ({
             type="button"
             aria-selected={activePanel === 'showcase'}
             onClick={() => setActivePanel('showcase')}
-            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${
-              activePanel === 'showcase' ? 'text-black' : 'text-black/35'
+            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${componentsTextColor} ${
+              activePanel === 'showcase' ? '' : 'opacity-35'
             }`}
           >
             Showcase
           </button>
 
-          <span ref={activeLineRef} className="absolute bottom-0 left-0 h-[0.2vw] max-md:h-[0.6vw] bg-black" />
+          <span ref={activeLineRef} className={`absolute bottom-0 left-0 h-[0.2vw] max-md:h-[0.6vw] ${componentsTextColor.replace('text-', 'bg-')}`} />
         </div>
 
         <div className="relative mt-[8vw] max-md:mt-[10vw]">

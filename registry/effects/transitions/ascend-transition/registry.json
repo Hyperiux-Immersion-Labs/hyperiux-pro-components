@@ -23,15 +23,15 @@
   "videoUrl": "ascend-transition.mp4",
   "tier": "pro",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "AscendTransition",
   "exportKind": "default",
   "importPath": "@/components/effects/ascend-transition",
   "target": "src/components/effects/ascend-transition",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/ascend-transition/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/ascend-transition/index.tsx"
     }
   ]
 }

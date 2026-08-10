@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import Menu from "./Menu";
+import Menu, { NavLinkItem, SocialLinkItem } from "./Menu";
 import Image from "next/image";
 
 
@@ -24,7 +24,13 @@ const HAMBURGER_LINES = [
   },
 ];
 
-const SideNavbar = ({ navLinks, socialLinks, panelWidth }) => {
+interface SideNavbarProps {
+  navLinks?: NavLinkItem[];
+  socialLinks?: SocialLinkItem[];
+  panelWidth?: string;
+}
+
+const SideNavbar = ({ navLinks, socialLinks, panelWidth }: SideNavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 

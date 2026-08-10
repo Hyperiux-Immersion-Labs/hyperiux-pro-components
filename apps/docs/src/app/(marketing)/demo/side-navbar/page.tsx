@@ -6,7 +6,7 @@ const page = () => {
     <>
     <div className='w-screen h-screen bg-white'>
     <SideNavbar/>
-    
+
     </div>
     </>
   )

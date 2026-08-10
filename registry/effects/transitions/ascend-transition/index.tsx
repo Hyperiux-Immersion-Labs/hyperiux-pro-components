@@ -3,6 +3,7 @@
 'use client'
 
 import { TransitionRouter } from 'next-transition-router'
+import type { ReactNode } from 'react'
 import React, { useRef } from 'react'
 import gsap from 'gsap'
 
@@ -24,14 +25,19 @@ function isCompactViewport() {
   return window.innerWidth < 1025
 }
 
-function clipInset(top) {
+function clipInset(top: number) {
   return `inset(${top}% 0% 0% 0%)`
 }
 
 const HIDDEN_CLIP = clipInset(100)
 
-export default function AscendTransition({ children, bgColor = '#0b0b0c' }) {
-  const panelRef = useRef(null)
+interface AscendTransitionProps {
+  children: ReactNode
+  bgColor?: string
+}
+
+export default function AscendTransition({ children, bgColor = '#0b0b0c' }: AscendTransitionProps) {
+  const panelRef = useRef<HTMLDivElement>(null)
 
   return (
     <TransitionRouter

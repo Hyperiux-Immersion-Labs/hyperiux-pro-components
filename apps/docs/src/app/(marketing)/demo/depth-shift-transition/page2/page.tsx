@@ -23,14 +23,14 @@ export default function page() {
           <h1 className="text-[7vw] max-md:text-[9vw]">Hyperiux Vault</h1>
         </SplitLine>
 
-      
+
 
         <SplitLine>
           <p className="text-balance text-[1.4vw] w-[80%]  mx-auto leading-[1.3] max-[1025px]:w-full max-[1025px]:mx-auto max-md:text-[4.5vw] max-[1025px]:text-[3vw]">
             You&apos;ve just seen the depth shift transition, now if you want to see again click on the &quot;click&nbsp;here&quot; button.
           </p>
         </SplitLine>
-   
+
 
         <FadeUp className="mt-12 flex gap-4 max-md:flex-col max-[1025px]:items-center justify-center" delay={0.2}>
           <ArrowFillButton

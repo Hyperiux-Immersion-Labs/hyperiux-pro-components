@@ -8,7 +8,24 @@ import gsap from "gsap";
 const LINK_LINE_CLASSES =
   "relative w-fit after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:block after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-500 after:ease-out hover:after:origin-left hover:after:scale-x-100";
 
-const MenuLink = ({ href, text, className = "" }) => {
+export interface NavLinkItem {
+  href: string;
+  text: string;
+  liClassName?: string;
+}
+
+export interface SocialLinkItem {
+  href: string;
+  text: string;
+}
+
+interface MenuLinkProps {
+  href: string;
+  text: string;
+  className?: string;
+}
+
+const MenuLink = ({ href, text, className = "" }: MenuLinkProps) => {
   return (
     <Link aria-hidden href={href} className={`block w-fit leading-[1.2] font-medium ${className}`} prefetch={false}>
       <span className={`${LINK_LINE_CLASSES} block`}>{text}</span>
@@ -16,7 +33,7 @@ const MenuLink = ({ href, text, className = "" }) => {
   )
 }
 
-const NAV_LINKS = [
+const NAV_LINKS: NavLinkItem[] = [
   { href: "/", text: "Home", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/effects", text: "Effects", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/pricing", text: "Pricing", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
@@ -24,14 +41,14 @@ const NAV_LINKS = [
 
 ];
 
-const SOCIAL_LINKS = [
+const SOCIAL_LINKS: SocialLinkItem[] = [
   { href: "https://x.com/_hyperiux_", text: "Twitter / X" },
   { href: "https://www.linkedin.com/company/hyperiux/", text: "LinkedIn" },
   { href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components", text: "GitHub" },
   { href: "https://www.instagram.com/_hyperiux_/", text: "Instagram" },
 ];
 
-const SocialLink = ({ href, text }) => (
+const SocialLink = ({ href, text }: SocialLinkItem) => (
   <li className="overflow-hidden">
     <Link
       className="social-link flex items-center gap-[3px] max-md:gap-[2.5vw] group" target="_blank" href={href}>
@@ -46,9 +63,16 @@ const SocialLink = ({ href, text }) => (
   </li>
 );
 
-export default function Menu({ menuOpen, navLinks = NAV_LINKS, socialLinks = SOCIAL_LINKS, panelWidth = '50%' }) {
-  const menuRef = useRef(null);
-  const navRef = useRef(null);
+interface MenuProps {
+  menuOpen: boolean;
+  navLinks?: NavLinkItem[];
+  socialLinks?: SocialLinkItem[];
+  panelWidth?: string;
+}
+
+export default function Menu({ menuOpen, navLinks = NAV_LINKS, socialLinks = SOCIAL_LINKS, panelWidth = '50%' }: MenuProps) {
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   const [serviceOpen, setServiceOpen] = useState(false);
 
   useEffect(() => {
@@ -134,7 +158,7 @@ export default function Menu({ menuOpen, navLinks = NAV_LINKS, socialLinks = SOC
     <div ref={menuRef} className="fixed top-0 z-[199] left-0 right-0 bottom-0 flex items-start justify-end pointer-events-none">
       <nav
         ref={navRef}
-        style={{ '--panel-width': panelWidth }}
+        style={{ '--panel-width': panelWidth } as React.CSSProperties}
         className={`relative w-(--panel-width) pointer-events-auto translate-x-[100%] left-[99px] h-full bg-black/20 backdrop-blur-md max-md:w-full max-[1025px]:w-[70%]`}
       >
         <div data-lenis-prevent className="w-full h-full px-[5vw] pt-[5.5vw] pb-[3.5vw] relative flex flex-col justify-between items-start max-[1025px]:justify-between max-[1025px]:py-[15vw] max-md:pt-[25vw] max-md:pb-[10vw] overflow-y-auto">

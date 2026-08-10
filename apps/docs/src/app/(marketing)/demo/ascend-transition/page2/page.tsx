@@ -16,7 +16,7 @@ export default function page() {
               priority
               className="object-cover brightness-75"
             />
-      
+
 
       <div className="relative z-10 space-y-8 max-w-5xl mx-auto text-center text-white">
         {/* Heading */}

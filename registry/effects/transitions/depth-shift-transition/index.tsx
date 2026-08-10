@@ -10,6 +10,7 @@
 // a full remount on every edit instead of trying to preserve it.
 import { TransitionRouter } from 'next-transition-router'
 import { usePathname } from 'next/navigation'
+import type { ReactNode } from 'react'
 import React, { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -29,10 +30,15 @@ function isCompactViewport() {
   return window.innerWidth < 1025
 }
 
-export default function DepthShiftTransition({ children, bgColor = '#0b0b0c' }) {
-  const wrapperRef = useRef(null)
-  const overlayRef = useRef(null)
-  const cloneRef = useRef(null)
+interface DepthShiftTransitionProps {
+  children: ReactNode
+  bgColor?: string
+}
+
+export default function DepthShiftTransition({ children, bgColor = '#0b0b0c' }: DepthShiftTransitionProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const cloneRef = useRef<HTMLDivElement | null>(null)
   const pathname = usePathname()
   const isFirstRenderRef = useRef(true)
 
@@ -73,7 +79,12 @@ export default function DepthShiftTransition({ children, bgColor = '#0b0b0c' }) 
         // starts entering immediately - that's what keeps both halves of
         // the transition visible and moving at once instead of leave
         // fully finishing before enter is allowed to start.
-        const clone = wrapperRef.current.cloneNode(true)
+        if (!wrapperRef.current || !overlayRef.current) {
+          next()
+          return
+        }
+
+        const clone = wrapperRef.current.cloneNode(true) as HTMLDivElement
         clone.style.position = 'fixed'
         clone.style.inset = '0'
         clone.style.margin = '0'

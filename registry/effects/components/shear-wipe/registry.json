@@ -26,19 +26,19 @@
   "previewUrl": "/demo/shear-wipe",
   "tier": "pro",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ShearWipe",
   "exportKind": "default",
   "importPath": "@/components/effects/shear-wipe",
   "target": "src/components/effects/shear-wipe",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/shear-wipe/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/shear-wipe/index.tsx"
     },
     {
-      "path": "ShearWipeComp.jsx",
-      "target": "src/components/effects/shear-wipe/ShearWipeComp.jsx"
+      "path": "ShearWipeComp.tsx",
+      "target": "src/components/effects/shear-wipe/ShearWipeComp.tsx"
     }
   ]
 }
