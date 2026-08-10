@@ -4,6 +4,7 @@ import CTAV3 from '@/homepage-v3/sections/CTAV3'
 import CurvedGradient from '@/homepage-v3/sections/CurvedGradient'
 import ExplainVault from '@/homepage-v3/sections/ExplainVault'
 import ExploreTheEffects from '@/homepage-v3/sections/ExploreTheEffects'
+import FAQV3 from '@/homepage-v3/sections/FAQV3'
 import FooterV3 from '@/homepage-v3/sections/FooterV3'
 import Hero from '@/homepage-v3/sections/Hero'
 import NotAnotherUIKit from '@/homepage-v3/sections/NotAnotherUIKit'
@@ -14,10 +15,13 @@ import Quote from '@/homepage-v3/sections/Quote'
 import Techstack from '@/homepage-v3/sections/Techstack'
 import UseCases from '@/homepage-v3/sections/UseCases'
 import React from 'react'
+import PricingV3 from '@/homepage-v3/sections/PricingV3'
+import NavbarV3 from '@/homepage-v3/components/NavbarV3'
 
 export default function page() {
   return (
     <>
+      <NavbarV3 />
       <LenisSmoothScroll />
       <div className="relative">
         <div className="sticky top-0 z-0 h-dvh overflow-hidden">
@@ -35,6 +39,8 @@ export default function page() {
           <NotAnotherUIKit />
           <SmallMotion />
           <UseCases />
+          <PricingV3 />
+          <FAQV3 />
           <CTAV3 />
           <FooterV3 />
         </div>

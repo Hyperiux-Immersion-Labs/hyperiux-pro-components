@@ -32,21 +32,23 @@ const USE_CASES = [
     cta: "See Agency Licensing",
     link: "#",
   },
-//   {
-//     id: 4,
-//     title: "CTOs & CPOs",
-//     text: "Get the creative benefit of premium motion without committing to an opaque dependency. Source-first code, clear stack choices, and a workflow your developers can own.",
-//     cta: "Read the Docs",
-//     link: "/docs",
-//   },
-//   {
-//     id: 5,
-//     title: "Marketing Teams",
-//     text: "Upgrade the moments that affect perception: hero sections, campaign pages, product storytelling, proof sections, and final CTAs.",
-//     cta: "Explore Use Cases",
-//     link: "#",
-//   },
+  //   {
+  //     id: 4,
+  //     title: "CTOs & CPOs",
+  //     text: "Get the creative benefit of premium motion without committing to an opaque dependency. Source-first code, clear stack choices, and a workflow your developers can own.",
+  //     cta: "Read the Docs",
+  //     link: "/docs",
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "Marketing Teams",
+  //     text: "Upgrade the moments that affect perception: hero sections, campaign pages, product storytelling, proof sections, and final CTAs.",
+  //     cta: "Explore Use Cases",
+  //     link: "#",
+  //   },
 ];
+
+const USE_CASES_X_PERCENT = [120, 140, 160];
 
 const mark =
   "pointer-events-none absolute size-[0.3vw] border-primary max-md:size-2 max-sm:size-1.5";
@@ -89,32 +91,29 @@ export default function UseCases() {
   useGSAP(
     () => {
       const boxes = gsap.utils.toArray(".use-case-box");
-      gsap.set(boxes, { xPercent: 120 });
 
       if (prefersReducedMotion()) {
         gsap.set(boxes, { xPercent: 0 });
         return;
       }
 
-      // ONE trigger for the whole section, boxes slide in staggered
-      gsap.fromTo(
-        boxes,
-        { xPercent: 120 },
-        {
-          xPercent: 0,
-          ease: "none",
-          duration: 1,
-          stagger: 0.3,
-          scrollTrigger: {
-            trigger: container.current,
-            start: "20% bottom",
-            end: "95% bottom",
-            scrub: 1,
-            markers: false,
-           
+      boxes.forEach((box, i) => {
+        gsap.fromTo(
+          box,
+          { xPercent: USE_CASES_X_PERCENT[i] },
+          {
+            xPercent: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: box,
+              start: "top 100%",
+              end: "top 15%",
+              scrub: true,
+              markers: false,
+            },
           },
-        },
-      );
+        );
+      });
     },
     { scope: container },
   );

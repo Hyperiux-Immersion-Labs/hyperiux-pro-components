@@ -163,7 +163,7 @@ export default function ProblemFixes() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-200 w-full overflow-hidden px-[3vw] py-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
+      className="relative z-100 w-full overflow-hidden px-[3vw] pb-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
     >
       <div className="mx-auto flex w-full flex-col items-center">
         <div className="w-full text-center">

@@ -182,10 +182,10 @@ export default function FooterV3() {
 
         <div className="flex max-sm:flex-col mt-[3vw]  max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] gap-[2vw] fadeup">
           <ButtonV3
-            variant="outline2"
+            variant="outline"
             text="Browse the Effects"
             href="/effects"
-            className="max-sm:w-[88%] border-white/40"
+            className="max-sm:w-[88%]"
           />
           <ButtonV3
             text="Upgrade to Pro"

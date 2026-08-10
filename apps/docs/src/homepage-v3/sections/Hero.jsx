@@ -25,8 +25,7 @@ export default function Hero() {
                         <ButtonV3
                             text="Browse Effects"
                             href="/effects/free"
-                            variant="black"
-                            className="border-white/40 bg-[#0e0e0e]!"
+                            variant="outline"
                         />
                         <ButtonV3
                             text="Upgrade to Pro"

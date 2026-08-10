@@ -1,37 +1,109 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
-import { BtnArrow } from "@/components/WebsiteComps/Icons";
-import { tv } from "tailwind-variants";
 
-const buttonTv = tv({
-  base: "group flex overflow-hidden items-center gap-[1vw] max-md:gap-5 max-sm:gap-8 px-[1.5vw] py-[.8vw]  max-md:px-6 max-md:py-4 text-nowrap max-sm:px-8 max-sm:py-4 relative text-[1.15vw] tracking-wide max-sm:text-[4vw] max-md:text-[2.2vw]  transition-all duration-500 motion-reduce:transition-none",
-  variants: {
-    variant: {
-      orange: "bg-[linear-gradient(to_right,#f16b0d,#e61216)] text-white ",
-      black: "bg-black text-white border border-background",
-      white: "bg-white text-black border border-foreground",
-      outline: "bg-transparent text-background border border-background",
-      outline2: "bg-transparent text-foreground border border-white",
-    },
-  },
-  defaultVariants: {
-    variant: "orange",
-  },
-  slots: {
-    circle: [
-      "duration-500 transition-all inline-block motion-reduce:transition-none motion-reduce:scale-100",
-      "size-[.5vw] max-md:size-2 max-sm:size-2",
-    ],
-    text: [
-      "relative z-10 duration-500 transition-all group-hover:-translate-x-[1.5vw] max-md:group-hover:-translate-x-1.5 max-sm:group-hover:-translate-x-1.5 motion-reduce:translate-x-0 motion-reduce:transition-none",
-    ],
-    arrow: [
-      "size-[1.6vw] max-md:size-4 max-sm:size-4 absolute mt-[-0.1vw] right-[0.7vw] max-md:right-4 max-sm:right-4 opacity-0 group-hover:opacity-100 duration-500 transition-all inline-block motion-reduce:translate-x-[2vw] motion-reduce:opacity-0 motion-reduce:transition-none",
-    ],
-  },
-});
+const SCRAMBLE_GLYPHS = "$#&*@!_-./|<>0123456789";
+const PRE_HOLD_MS = 60;
+const REVEAL_DURATION_MS = 300;
+const FLASH_MS = 90;
+const GLYPH_SWAP_MS = 50;
+
+function ScrambleLabel({ text, active }) {
+  const charsRef = useRef([]);
+
+  useEffect(() => {
+    const chars = charsRef.current.slice(0, text.length).filter(Boolean);
+    if (!chars.length) return;
+
+    const settle = () => {
+      chars.forEach((node, index) => {
+        node.textContent = text[index];
+        node.style.color = "";
+      });
+    };
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (!active || prefersReducedMotion) {
+      settle();
+      return;
+    }
+
+    const start = performance.now();
+    let previous = start;
+    let frame = 0;
+
+    const tick = (now) => {
+      const elapsed = now - start;
+      const swapChance = (now - previous) / GLYPH_SWAP_MS;
+
+      previous = now;
+
+      let running = false;
+
+      chars.forEach((node, index) => {
+        const revealAt =
+          PRE_HOLD_MS + ((index + 1) / chars.length) * REVEAL_DURATION_MS;
+        const final = text[index];
+
+        if (elapsed < revealAt) {
+          running = true;
+          node.style.color = "var(--btn-pre)";
+
+          if (final !== " " && Math.random() < swapChance) {
+            node.textContent =
+              SCRAMBLE_GLYPHS[
+                Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)
+              ];
+          }
+
+          return;
+        }
+
+        node.textContent = final;
+
+        if (elapsed - revealAt < FLASH_MS) {
+          running = true;
+          node.style.color = "var(--btn-flash)";
+        } else {
+          node.style.color = "";
+        }
+      });
+
+      if (running) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(frame);
+  }, [active, text]);
+
+  return (
+    <span className="relative block">
+      <span aria-hidden="true" className="invisible whitespace-pre">
+        {text}
+      </span>
+      <span aria-hidden="true" className="absolute inset-0 whitespace-pre">
+        {Array.from(text).map((character, index) => (
+          <span
+            key={index}
+            ref={(node) => {
+              charsRef.current[index] = node;
+            }}
+            className="inline-block transition-colors duration-200 ease-out motion-reduce:transition-none"
+          >
+            {character}
+          </span>
+        ))}
+      </span>
+      <span className="sr-only">{text}</span>
+    </span>
+  );
+}
 
 export default function ButtonV3({
   text = "Install CLI",
@@ -42,25 +114,15 @@ export default function ButtonV3({
   preventDefault = false,
   disabled = false,
   onClick,
-  scaleClass = "group-hover:scale-[70]",
-  hoverTextClassName,
   innerClassName = "",
-  circleClassName = "",
-  arrowClassName = "",
   children,
   ariaLabel,
   scrollOffset = 0,
 }) {
   const lenis = useLenis();
-  const styles = buttonTv({ variant, className });
+  const [hovered, setHovered] = useState(false);
 
-  const circleColorClass = variant === "outline" ? "bg-background" : (variant === "white" ? "bg-black" : "bg-white");
-
-  const hoverTextClass =
-    hoverTextClassName ||
-    (variant === "white" || variant === "outline"
-      ? "group-hover:text-white motion-reduce:text-inherit"
-      : "group-hover:text-black motion-reduce:text-inherit");
+  const label = children ?? text;
 
   const handleClick = (event) => {
     if (preventDefault || disabled) {
@@ -119,26 +181,34 @@ export default function ButtonV3({
       prefetch={false}
       href={href}
       onClick={handleClick}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
       target={target_blank ? "_blank" : undefined}
       rel={target_blank ? "noopener noreferrer" : undefined}
       aria-label={ariaLabel}
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : undefined}
-      className={`${className} ${styles.base()} ${
-        disabled ? "pointer-events-none opacity-60" : ""
-      }`}
+      className={`group relative flex font-neue-haas shrink-0 items-center overflow-hidden text-nowrap px-(--btn-pad) py-[.8vw] text-[1.15vw] tracking-wide transition-colors duration-500 max-md:py-4 max-md:text-[2.2vw] max-sm:py-4 max-sm:text-[4vw] motion-reduce:transition-none [--btn-pad:1.2vw] [--btn-gap:.5vw] [--btn-square:.7vw] [--btn-arrow:1vw] max-md:[--btn-pad:20px] max-md:[--btn-gap:12px] max-md:[--btn-square:8px] max-md:[--btn-arrow:16px] max-sm:[--btn-pad:24px] max-sm:[--btn-gap:14px] max-sm:[--btn-square:8px] max-sm:[--btn-arrow:18px] [--btn-slot:calc(var(--btn-square)+var(--btn-gap))] [--btn-room:max(0px,var(--btn-arrow)+var(--btn-gap)-var(--btn-slot))] [--btn-inset:calc((var(--btn-pad)*1.8+var(--btn-slot)+var(--btn-room)-var(--btn-arrow)-var(--btn-gap))*.5)] [--btn-shift:calc(var(--btn-pad)+var(--btn-slot)-var(--btn-inset))] ${variant === "outline" ? "border border-current/60 bg-background text-white [--btn-flash:var(--primary)] [--btn-pre:#6f6f6f]" : "bg-primary text-black [--btn-flash:#ffffff] [--btn-pre:#ffffff]"} ${disabled ? "pointer-events-none opacity-60" : ""} ${className}`}
     >
       <span
-        className={`${styles.circle()} ${circleColorClass} ${scaleClass} motion-reduce:scale-100 ${circleClassName}`}
-      />
-
-      <p className={`${styles.text()} ${hoverTextClass} ${innerClassName}`}>
-        {children ?? text}
-      </p>
-
-      <span className={`${styles.arrow()} ${hoverTextClass} ${arrowClassName} group-hover:translate-x-0 translate-x-[2vw] motion-reduce:translate-x-[2vw]`}>
-        <BtnArrow />
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 left-(--btn-pad) flex items-center"
+      >
+        <span className="block size-(--btn-square) bg-current transition-transform duration-500 motion-safe:group-hover:-rotate-90 motion-safe:group-hover:translate-x-[calc((100%+var(--btn-pad))*-1.2)]" />
       </span>
+      <span
+        className={`relative z-10 pl-(--btn-slot) pr-(--btn-room) transition-transform duration-500 motion-safe:group-hover:-translate-x-(--btn-shift) ${innerClassName}`}
+      >
+        {typeof label === "string" ? (
+          <ScrambleLabel text={label} active={hovered} />
+        ) : (
+          label
+        )}
+      </span>
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 right-(--btn-inset) -translate-y-1/2 size-(--btn-arrow) bg-current [mask-image:url(/homepage-v3/svgs/pixelated-arrow.svg)] mask-center mask-no-repeat mask-contain translate-x-[calc(var(--btn-inset)+100%)] opacity-0 transition-all duration-500 group-hover:opacity-100 motion-safe:group-hover:translate-x-0 motion-reduce:translate-x-0 motion-reduce:transition-none"
+      />
     </Link>
   );
 }

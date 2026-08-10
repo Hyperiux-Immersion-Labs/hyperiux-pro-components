@@ -1,14 +1,14 @@
 import LinkButton from '@/components/WebsiteComps/LinkButton'
-import TextFillAnimationCustom from '@/components/WebsiteComps/TextFillAnimationCustom'
 import React from 'react'
 import InstallationProcess from '../components/InstallationProcess'
+import TextFillAnimationV3 from '../components/TextFillAnimationV3'
 
 const SOLUTION_TEXT = 'Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client launches. Preview the moment you need, install it with one command, then tune it in your own repo. It’s not a black box. It’s not another UI kit. It’s real, inspectable code you own.'
 
 export default function ExplainVault() {
     return (
         <section id='explain-vault' className='w-full h-fit'>
-            <TextFillAnimationCustom
+            <TextFillAnimationV3
                 as="p"
                 text={SOLUTION_TEXT}
                 textColor="#ffffff"
@@ -21,6 +21,7 @@ export default function ExplainVault() {
                 mobileTextWidth="95%"
                 tabletTextSize="5vw"
                 tabletTextWidth="88%"
+                containerClassName="py-[15vw] font-neue-haas max-md:py-24"
             />
             <div className='w-full h-fit px-[3vw]' id="code-block">
                 <InstallationProcess />
