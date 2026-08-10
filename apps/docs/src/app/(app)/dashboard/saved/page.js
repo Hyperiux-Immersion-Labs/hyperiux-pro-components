@@ -2,16 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { EffectCard } from "@/components/ui/EffectCardNew";
-import { effectCategories, getQuickCategoryLabel } from "@/lib/categories";
+import {
+  effectCategories,
+  getQuickCategoryLabel,
+  resolveEffectCategoryId,
+} from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/effects/FilterMenu";
-
-function getEffectCategories(effect) {
-  return effect.categories?.length
-    ? effect.categories
-    : [effect.category || "components"];
-}
 
 export default function SavedPage() {
   const [savedEffects, setSavedEffects] = useState([]);
@@ -80,16 +78,15 @@ export default function SavedPage() {
     [savedEffects]
   );
 
-  // Same shape as vault-content's quickCategories/categoryChips split -
-  // featured/free/pro live in the FilterMenu dropdown, everything else
-  // becomes a chip, ordered to match the site's category order first.
-  const categoryChips = useMemo(() => {
+  // Everything - featured/free/pro plus every category actually present -
+  // collapsed into one dropdown, ordered to match the site's category
+  // order first. Unlike the vault listing, there's no separate chips row.
+  const dropdownOptions = useMemo(() => {
     const presentCategories = new Set();
 
     savedEffects.forEach((effect) => {
-      getEffectCategories(effect).forEach((category) => {
-        if (category) presentCategories.add(category);
-      });
+      const id = resolveEffectCategoryId(effect);
+      if (id) presentCategories.add(id);
     });
 
     const knownCategories = effectCategories
@@ -103,12 +100,10 @@ export default function SavedPage() {
       (id) => !knownCategories.includes(id)
     );
 
-    return [...knownCategories, ...extraCategories];
+    return ["all", ...FILTER_OPTIONS, ...knownCategories, ...extraCategories];
   }, [savedEffects]);
 
-  const activeFilter = FILTER_OPTIONS.includes(categoryFilter)
-    ? categoryFilter
-    : null;
+  const activeFilter = categoryFilter === "all" ? null : categoryFilter;
 
   const filteredEffects = useMemo(() => {
     if (categoryFilter === "all") return savedEffects;
@@ -126,8 +121,8 @@ export default function SavedPage() {
       return savedEffects.filter((effect) => effect.tier === "pro");
     }
 
-    return savedEffects.filter((effect) =>
-      getEffectCategories(effect).includes(categoryFilter)
+    return savedEffects.filter(
+      (effect) => resolveEffectCategoryId(effect) === categoryFilter
     );
   }, [categoryFilter, savedEffects, featuredEffects]);
 
@@ -156,45 +151,15 @@ export default function SavedPage() {
 
       {savedEffects.length > 0 && (
         <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setCategoryFilter("all")}
-            className={`
-              px-7 py-[.8vw] max-md:py-[2vw] rounded-full border transition
-              ${categoryFilter === "all"
-                ? "bg-white text-black border-white"
-                : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
-            `}
-          >
-            All
-          </button>
-
           <FilterMenu
             activeFilter={activeFilter}
             categoryFilter={categoryFilter}
             getLabel={getQuickCategoryLabel}
             onSelect={setCategoryFilter}
+            options={dropdownOptions}
+            variant="label"
+            panelClassName="max-h-[20vw] max-md:max-h-[50vh] overflow-y-auto"
           />
-
-          {categoryChips.map((cat) => {
-            const active = categoryFilter === cat;
-
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setCategoryFilter(cat)}
-                className={`
-                  px-7 py-[.8vw] max-md:py-[2vw] rounded-full border transition
-                  ${active
-                    ? "bg-white text-black border-white"
-                    : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
-                `}
-              >
-                {getQuickCategoryLabel(cat)}
-              </button>
-            );
-          })}
         </div>
       )}
 

@@ -79,6 +79,7 @@ export async function GET() {
       title: metadata.title || row.effect_slug,
       category: metadata.category,
       categories: metadata.categories,
+      categorySlug: metadata.categorySlug,
       // Fall back to the same <slug>.png / <slug>.mp4 convention
       // mergeRegistryWithSanity uses when Sanity has no explicit asset.
       coverImage: metadata.coverImage || row.effect_slug,

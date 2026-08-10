@@ -5,9 +5,40 @@ import { ClerkProvider } from "@clerk/nextjs";
 // scripts. Every route that needs auth context (dashboard, effects, sign-in,
 // sign-up, pricing's plan-aware UI, cli-auth) lives under this group.
 // Route groups don't change URLs.
+// Clerk only reads `localization` off <ClerkProvider> - passing it directly
+// to <SignIn>/<SignUp> is silently ignored (it's not in either component's
+// prop list, so React forwards it but Clerk never looks at it). Keyed by
+// signIn.*/signUp.* so each page's overrides stay scoped to that flow.
+const clerkLocalization = {
+  formButtonPrimary: "Continue to Vault",
+  signIn: {
+    start: {
+      title: "Back to the Vault.",
+      subtitle:
+        "Sign in to access your effects, Pro downloads, and CLI authentication.",
+      actionText: "New here?",
+      actionLink: "Create an account →",
+    },
+  },
+  signUp: {
+    start: {
+      title: "Open the Vault.",
+      subtitle:
+        "Create an account and start with the Free Core. Install what you need. Own what you ship.",
+      actionText: "Already have an account?",
+      actionLink: "Sign in →",
+    },
+  },
+  formFieldLabel__emailAddress: "Email",
+  formFieldInputPlaceholder__emailAddress: "you@example.com",
+  formFieldLabel__password: "Password",
+  formFieldInputPlaceholder__password: "Create a password",
+};
+
 export default function AppLayout({ children }) {
   return (
     <ClerkProvider
+      localization={clerkLocalization}
       appearance={{
         cssLayerName: "clerk",
         theme: "simple",

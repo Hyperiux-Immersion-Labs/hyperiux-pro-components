@@ -23,6 +23,7 @@ import {
   getEffectCategoryBySlug,
   getEffectCategoryHref,
   getQuickCategoryLabel,
+  resolveEffectCategoryId,
 } from "@/lib/categories";
 
 import HeadAnim from "@/components/Animations/HeadAnim";
@@ -38,14 +39,6 @@ import { FilterMenu, FILTER_OPTIONS } from "./FilterMenu";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
-}
-
-// Resolve category ID from Sanity categorySlug first, fall back to registry fields
-function resolveEffectCategoryId(effect) {
-  if (effect.categorySlug) {
-    return getEffectCategoryBySlug(effect.categorySlug)?.id || effect.category;
-  }
-  return effect.categories?.[0] || effect.category;
 }
 
 function RouteAnimationSync({ syncKey }) {

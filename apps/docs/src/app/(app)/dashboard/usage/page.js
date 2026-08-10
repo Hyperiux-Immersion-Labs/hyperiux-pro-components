@@ -5,16 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { EffectCard } from "@/components/ui/EffectCardNew";
-import { effectCategories, getQuickCategoryLabel } from "@/lib/categories";
+import {
+  effectCategories,
+  getQuickCategoryLabel,
+  resolveEffectCategoryId,
+} from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/effects/FilterMenu";
-
-function getEffectCategories(effect) {
-  return effect.categories?.length
-    ? effect.categories
-    : [effect.category || "components"];
-}
 
 const DATE_FILTERS = [
   { id: "all", label: "All" },
@@ -165,16 +163,15 @@ export default function UsagePage() {
     [copiedEffects]
   );
 
-  // Same shape as vault-content's quickCategories/categoryChips split -
-  // featured/free/pro live in the FilterMenu dropdown, everything else
-  // becomes a chip, ordered to match the site's category order first.
-  const categoryChips = useMemo(() => {
+  // Everything - featured/free/pro plus every category actually present -
+  // collapsed into one dropdown, ordered to match the site's category
+  // order first. Unlike the vault listing, there's no separate chips row.
+  const categoryDropdownOptions = useMemo(() => {
     const presentCategories = new Set();
 
     copiedEffects.forEach((effect) => {
-      getEffectCategories(effect).forEach((category) => {
-        if (category) presentCategories.add(category);
-      });
+      const id = resolveEffectCategoryId(effect);
+      if (id) presentCategories.add(id);
     });
 
     const knownCategories = effectCategories
@@ -188,12 +185,10 @@ export default function UsagePage() {
       (id) => !knownCategories.includes(id)
     );
 
-    return [...knownCategories, ...extraCategories];
+    return ["all", ...FILTER_OPTIONS, ...knownCategories, ...extraCategories];
   }, [copiedEffects]);
 
-  const activeCategoryFilter = FILTER_OPTIONS.includes(categoryFilter)
-    ? categoryFilter
-    : null;
+  const activeCategoryFilter = categoryFilter === "all" ? null : categoryFilter;
 
   const filteredEffects = useMemo(() => {
     return copiedEffects.filter((effect) => {
@@ -208,7 +203,7 @@ export default function UsagePage() {
       if (categoryFilter === "free") return effect.tier !== "pro";
       if (categoryFilter === "pro") return effect.tier === "pro";
 
-      return getEffectCategories(effect).includes(categoryFilter);
+      return resolveEffectCategoryId(effect) === categoryFilter;
     });
   }, [copiedEffects, dateFilter, categoryFilter, featuredEffects]);
 
@@ -310,45 +305,15 @@ export default function UsagePage() {
 
         {copiedEffects.length > 0 && (
           <div className="mb-6 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setCategoryFilter("all")}
-              className={`
-                px-7 py-[.8vw] max-md:py-[2vw] rounded-full border transition
-                ${categoryFilter === "all"
-                  ? "bg-white text-black border-white"
-                  : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
-              `}
-            >
-              All
-            </button>
-
             <FilterMenu
               activeFilter={activeCategoryFilter}
               categoryFilter={categoryFilter}
               getLabel={getQuickCategoryLabel}
               onSelect={setCategoryFilter}
+              options={categoryDropdownOptions}
+              variant="label"
+              panelClassName="max-h-[20vw] max-md:max-h-[50vh] overflow-y-auto"
             />
-
-            {categoryChips.map((cat) => {
-              const active = categoryFilter === cat;
-
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setCategoryFilter(cat)}
-                  className={`
-                    px-7 py-[.8vw] max-md:py-[2vw] rounded-full border transition
-                    ${active
-                      ? "bg-white text-black border-white"
-                      : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
-                  `}
-                >
-                  {getQuickCategoryLabel(cat)}
-                </button>
-              );
-            })}
           </div>
         )}
 

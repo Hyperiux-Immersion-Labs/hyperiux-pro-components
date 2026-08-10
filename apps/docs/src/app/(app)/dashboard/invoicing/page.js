@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { Loader2 } from "lucide-react";
+import { Download, Loader2 } from "lucide-react";
 
 function formatDate(value) {
   if (!value) return "Unknown";
@@ -37,6 +37,94 @@ function getBillingLabel(value) {
   };
 
   return labels[value] || "Not available";
+}
+
+// A4 in points (jsPDF's "pt" unit) - used for right-aligning against the
+// page's right margin.
+const PAGE_WIDTH = 595.28;
+
+async function downloadInvoiceReceipt(invoice) {
+  // Dynamic import: jsPDF only runs client-side and isn't needed until
+  // someone actually clicks Download, so keep it out of the page's initial
+  // bundle.
+  const { jsPDF } = await import("jspdf");
+
+  const amount = formatAmount(invoice.amount, invoice.currency);
+  const date = formatDate(invoice.created_at);
+  const planLabel = invoice.plan_label || "Vault Pro";
+  const billingInterval = getBillingLabel(invoice.billing_interval);
+  const paymentId = invoice.razorpay_payment_id || "-";
+  const status = invoice.status || "paid";
+
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const marginX = 48;
+  const rightX = PAGE_WIDTH - marginX;
+  let y = 64;
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(20);
+  doc.setTextColor(20, 20, 20);
+  doc.text("Hyperiux Vault", marginX, y);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.setTextColor(120, 120, 120);
+  doc.text("Payment Receipt", marginX, y + 18);
+
+  doc.setFontSize(10);
+  doc.text(`Date: ${date}`, rightX, y, { align: "right" });
+
+  y += 40;
+  doc.setDrawColor(220, 220, 220);
+  doc.line(marginX, y, rightX, y);
+  y += 28;
+
+  if (invoice.is_test) {
+    doc.setFillColor(255, 95, 0);
+    doc.roundedRect(marginX, y - 14, 168, 20, 10, 10, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(9);
+    doc.text("TEST INVOICE - NOT REAL", marginX + 84, y, { align: "center" });
+    y += 32;
+  }
+
+  const rows = [
+    ["Plan", planLabel],
+    ["Billing interval", billingInterval],
+    ["Payment ID", paymentId],
+    ["Status", status.charAt(0).toUpperCase() + status.slice(1)],
+  ];
+
+  doc.setFontSize(11);
+  rows.forEach(([label, value]) => {
+    doc.setTextColor(120, 120, 120);
+    doc.text(label, marginX, y);
+    doc.setTextColor(20, 20, 20);
+    doc.text(String(value), rightX, y, { align: "right" });
+    y += 10;
+    doc.setDrawColor(235, 235, 235);
+    doc.line(marginX, y, rightX, y);
+    y += 20;
+  });
+
+  y += 10;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.setTextColor(20, 20, 20);
+  doc.text("Total", marginX, y);
+  doc.text(amount, rightX, y, { align: "right" });
+
+  y += 50;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(150, 150, 150);
+  doc.text(
+    "This receipt was generated from your Hyperiux Vault account.",
+    marginX,
+    y
+  );
+
+  doc.save(`hyperiux-invoice-${paymentId !== "-" ? paymentId : invoice.id}.pdf`);
 }
 
 function StatCard({ label, value, detail }) {
@@ -73,6 +161,7 @@ export default function InvoicingPage() {
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [testError, setTestError] = useState("");
 
@@ -87,8 +176,14 @@ export default function InvoicingPage() {
       const json = await res.json();
 
       setData(json);
+      setLoadError(false);
     } catch (error) {
       console.error(error);
+      // Falls through to Clerk's client-side plan metadata below rather
+      // than blocking the whole page - lets "Generate test invoice" stay
+      // usable even when the list itself failed to load (e.g. the
+      // invoices table not existing yet).
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
@@ -126,9 +221,13 @@ export default function InvoicingPage() {
         return;
       }
 
-      setData((prev) =>
-        prev ? { ...prev, invoices: [result.invoice, ...prev.invoices] } : prev
-      );
+      setData((prev) => {
+        const base = prev || { plan: "pro", subscription: null, invoices: [] };
+        return { ...base, invoices: [result.invoice, ...base.invoices] };
+      });
+      // A successful write proves the invoices table exists now, even if
+      // the initial list load failed before it did.
+      setLoadError(false);
     } catch (err) {
       console.error(err);
       setTestError("Something went wrong. Please try again.");
@@ -137,7 +236,7 @@ export default function InvoicingPage() {
     }
   }
 
-  if (!isLoaded || isAdmin || loading || !data) {
+  if (!isLoaded || isAdmin || loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <p className="text-zinc-400">Loading invoicing...</p>
@@ -145,7 +244,12 @@ export default function InvoicingPage() {
     );
   }
 
-  const { plan, subscription, invoices } = data;
+  // Falls back to Clerk's client-side plan metadata (same field VaultHeader
+  // already reads) when the API call failed, so the page - and crucially
+  // the test-invoice button - still renders instead of hanging on a spinner.
+  const plan = data?.plan || user?.publicMetadata?.plan || "free";
+  const subscription = data?.subscription || null;
+  const invoices = data?.invoices || [];
   const isPro = plan === "pro";
   const hasRealSubscription = Boolean(subscription?.razorpay_subscription_id);
 
@@ -158,6 +262,13 @@ export default function InvoicingPage() {
           Your plan validity, billing details, and previous invoices.
         </p>
       </div>
+
+      {loadError && (
+        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-6 py-4 text-amber-300">
+          Couldn&apos;t load your billing history right now. You can still
+          generate a test invoice below.
+        </div>
+      )}
 
       <div className="grid md:grid-cols-3 gap-5">
         <StatCard
@@ -252,7 +363,7 @@ export default function InvoicingPage() {
                   <th className="px-6 py-4 font-medium">Plan</th>
                   <th className="px-6 py-4 font-medium">Amount</th>
                   <th className="px-6 py-4 font-medium">Status</th>
-                  <th className="px-6 py-4 font-medium">Invoice</th>
+                  <th className="px-6 py-4 font-medium">Receipt</th>
                 </tr>
               </thead>
 
@@ -279,18 +390,27 @@ export default function InvoicingPage() {
                     </td>
 
                     <td className="px-6 py-4">
-                      {invoice.invoice_url ? (
-                        <a
-                          href={invoice.invoice_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#ff5f00] hover:text-[#ff7a29]"
+                      <div className="flex items-center gap-4">
+                        {invoice.invoice_url && (
+                          <a
+                            href={invoice.invoice_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#ff5f00] hover:text-[#ff7a29]"
+                          >
+                            View
+                          </a>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() => downloadInvoiceReceipt(invoice)}
+                          className="inline-flex items-center gap-1.5 text-white/70 transition hover:text-white cursor-pointer"
                         >
-                          View
-                        </a>
-                      ) : (
-                        <span className="text-white/30">-</span>
-                      )}
+                          <Download className="h-3.5 w-3.5" />
+                          Download
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
