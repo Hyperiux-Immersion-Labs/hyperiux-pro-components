@@ -18,7 +18,7 @@ export const metadata = getEffectCategoryMetadata("all");
 const pageContent = getEffectCategoryContent("all");
 
 function VaultFallback() {
-  return <div className="h-screen w-screen bg-black"></div>;
+  return <div className="min-h-[300vh] w-screen bg-black"></div>;
 }
 
 export default async function EffectsPage() {

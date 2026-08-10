@@ -18,7 +18,7 @@ import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 
 function VaultFallback() {
   return (
-    <div className="h-screen w-screen bg-black">
+    <div className="min-h-[300vh] w-screen bg-black">
     </div>
   );
 }
