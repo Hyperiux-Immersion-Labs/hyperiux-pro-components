@@ -815,8 +815,8 @@
 
 .launcherPanelInner {
   height: 100%;
-  min-height: 320px;
-  padding-block: 0;
+  min-height: 0;
+  padding-block: 0 0.5rem;
 }
 
 @keyframes panelDrift {
