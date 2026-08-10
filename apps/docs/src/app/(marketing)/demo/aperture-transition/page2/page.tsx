@@ -1,10 +1,8 @@
 import ArrowFillButton from "@/components/arrow-fill-button";
-
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import FadeUp from "@/components/WebsiteComps/FadeUp";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import Image from "next/image";
-import React from "react";
 
 export default function page() {
   return (

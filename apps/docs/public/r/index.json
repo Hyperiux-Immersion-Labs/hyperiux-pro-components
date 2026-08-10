@@ -1459,6 +1459,21 @@
       "version": "1.1.0"
     },
     {
+      "name": "side-navbar",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "SideNavbar",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
       "name": "lines-loader",
       "type": "registry:component",
       "category": "loaders",
