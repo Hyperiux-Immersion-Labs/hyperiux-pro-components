@@ -12,9 +12,9 @@ const ShearWipeComp = ({
   componentHighlights = [],
   showcaseStats = [],
   clipPathDuration = 0.9,
-  componentsBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs3.png',
+  componentsBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract4.png',
   componentsTextColor = 'text-black',
-  showcaseBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs4.png',
+  showcaseBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract3.png',
   showcaseTextColor = 'text-white',
 }) => {
   const [activePanel, setActivePanel] = useState('components');
@@ -282,11 +282,11 @@ const ShearWipeComp = ({
         </div>
 
         {/* Creative clue hint */}
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:hidden">
+        {/* <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:hidden">
           <div className="px-4 py-2 rounded-full bg-black/10 backdrop-blur-md  text-neutral-800 text-sm font-medium tracking-wide">
             Click either heading : Components or Showcase , to switch panels
           </div>
-        </div>
+        </div> */}
       </div>
 
 

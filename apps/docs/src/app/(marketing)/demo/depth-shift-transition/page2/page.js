@@ -4,13 +4,13 @@ import SplitLine from "@/components/WebsiteComps/SplitLine";
 import FadeUp from "@/components/WebsiteComps/FadeUp";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import Image from "next/image";
-import React from "react";
+
 
 export default function page() {
   return (
     <section className="relative flex h-screen items-center justify-center max-md:px-[7vw] text-center">
       <Image
-             src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs4.png"
+             src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract1.png"
              alt="Abstract background"
              fill
              priority
