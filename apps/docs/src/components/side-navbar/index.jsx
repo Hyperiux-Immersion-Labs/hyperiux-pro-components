@@ -119,8 +119,8 @@ const SideNavbar = ({ navLinks, socialLinks, panelWidth }) => {
         </div>
       </header>
       <div className="w-screen h-screen fixed inset-0">
-        <Image src={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/side-navbar-bg.jpg"} alt="sidenavbar image" className={`w-full h-full absolute  duration-300 ${menuOpen ? "brightness-90" : ""}`} width={1920} height={1080} />
-       <div className={`w-full h-full flex flex-col justify-center items-center gap-[1.5vw] text-white relative z-1 duration-300 max-[1025px]:px-[10vw] ${menuOpen ? "brightness-90" : ""}`}>
+        <Image src={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/side-navbar-bg.jpg"} alt="sidenavbar image" className="w-full h-full absolute duration-300" width={1920} height={1080} />
+       <div className="w-full h-full flex flex-col justify-center items-center gap-[1.5vw] text-white relative z-1 duration-300 max-[1025px]:px-[10vw]">
         <h1 className=" text-[5vw] max-md:text-[12vw] max-[1025px]:text-[7vw]">
           Side Navbar
         </h1>

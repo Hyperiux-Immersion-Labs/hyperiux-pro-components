@@ -6,7 +6,7 @@ import { getDemoPageMetadata } from '@/lib/demo-metadata'
 const page = () => {
   return (
    <>
-    <DemoHeader />
+    <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
     <ShearWipe />
    </>
   )

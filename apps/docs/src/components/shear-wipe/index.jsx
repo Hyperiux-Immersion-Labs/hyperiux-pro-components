@@ -1,4 +1,4 @@
-import ShearWipeComp from './ShearWipeComp';
+import ShearWipeComp from "./ShearWipeComp";
 
 const componentHighlights = [
   { label: '01', title: 'Motion-first components', desc: 'Reacts with intent.' },
@@ -16,7 +16,7 @@ const ShearWipe = () => {
       componentHighlights={componentHighlights}
       showcaseStats={showcaseStats}
       componentsBgImage="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract4.png"
-      componentsTextColor="text-black"
+      componentsTextColor="text-white"
       showcaseBgImage="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract3.png"
       showcaseTextColor="text-white"
     />
