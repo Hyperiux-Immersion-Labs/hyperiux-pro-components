@@ -1,20 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
-const POSITION_CLASSES = {
-  // "top" clips inside containers with overflow-hidden/auto when the
-  // trigger sits near the container's top edge (e.g. a code block's sticky
-  // header) - use "bottom" there instead.
-  top: "-top-9 left-1/2 -translate-x-1/2",
-  bottom: "-bottom-9 left-1/2 -translate-x-1/2",
-  right: "left-full top-1/2 ml-3 -translate-y-1/2",
-};
+// Gap between the trigger and the tooltip, replacing the old CSS offsets
+// (-top-9 etc.) now that position is computed from the trigger's real
+// bounding rect instead of an absolute-positioned CSS sibling.
+const GAP = 10;
 
-// Named group (group/tooltip) so hover state doesn't clash with the card's
-// own `group` used for the hover-reveal of the whole icon row. Desktop-only:
-// the icon row is already always-visible on touch breakpoints, where hover
-// has no real meaning.
+function computeCoords(rect, position) {
+  if (position === "right") {
+    return {
+      top: rect.top + rect.height / 2,
+      left: rect.right + GAP,
+      transform: "translateY(-50%)",
+    };
+  }
+
+  if (position === "bottom") {
+    return {
+      top: rect.bottom + GAP,
+      left: rect.left + rect.width / 2,
+      transform: "translateX(-50%)",
+    };
+  }
+
+  return {
+    top: rect.top - GAP,
+    left: rect.left + rect.width / 2,
+    transform: "translate(-50%, -100%)",
+  };
+}
+
+// Portaled to <body> with a position computed from the trigger's bounding
+// rect, rather than a CSS-absolute sibling of the trigger - a CSS-absolute
+// tooltip gets silently clipped by any ancestor with overflow-hidden, which
+// is common here (code blocks, the install-command box, a collapsed
+// sidebar), so it needs to escape the DOM tree entirely to reliably show up
+// regardless of what contains the trigger. Desktop-only: the touch
+// breakpoints this matters on don't have hover in the first place.
 export function Tooltip({
   label,
   children,
@@ -22,32 +46,74 @@ export function Tooltip({
   position = "top",
   hideOnClick = false,
 }) {
-  const [suppressTooltip, setSuppressTooltip] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [coords, setCoords] = useState(null);
+  const [mounted, setMounted] = useState(false);
+  const triggerRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  function show() {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    setCoords(computeCoords(rect, position));
+    setVisible(true);
+  }
+
+  function hide() {
+    setVisible(false);
+  }
+
+  useEffect(() => {
+    if (!visible) return undefined;
+
+    // The portaled tooltip isn't a DOM descendant of the trigger anymore,
+    // so it won't move if the page scrolls/resizes underneath it - dismiss
+    // instead of tracking position continuously for a hover-only UI.
+    window.addEventListener("scroll", hide, true);
+    window.addEventListener("resize", hide);
+
+    return () => {
+      window.removeEventListener("scroll", hide, true);
+      window.removeEventListener("resize", hide);
+    };
+  }, [visible]);
 
   return (
     <span
-      className={`group/tooltip relative inline-flex ${className}`}
+      ref={triggerRef}
+      className={`relative inline-flex ${className}`}
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onFocus={show}
+      onBlur={hide}
       onClickCapture={() => {
-        if (hideOnClick) setSuppressTooltip(true);
-      }}
-      onMouseLeave={() => {
-        if (hideOnClick) setSuppressTooltip(false);
+        if (hideOnClick) hide();
       }}
     >
       {children}
 
-      <span
-        role="tooltip"
-        className={`pointer-events-none absolute z-10 whitespace-nowrap rounded-full bg-[#0e0e0e] border border-white/10 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-200 max-md:hidden max-[1025px]:hidden ${
-          suppressTooltip
-            ? ""
-            : "group-hover/tooltip:opacity-100 group-focus-within/tooltip:opacity-100"
-        } ${
-          POSITION_CLASSES[position] || POSITION_CLASSES.top
-        }`}
-      >
-        {label}
-      </span>
+      {mounted &&
+        visible &&
+        coords &&
+        createPortal(
+          <span
+            role="tooltip"
+            style={{
+              position: "fixed",
+              top: coords.top,
+              left: coords.left,
+              transform: coords.transform,
+            }}
+            className="pointer-events-none z-9999 whitespace-nowrap rounded-full border border-white/10 bg-[#0e0e0e] px-3 py-1.5 text-xs font-medium text-white shadow-lg max-md:hidden max-[1025px]:hidden"
+          >
+            {label}
+          </span>,
+          document.body
+        )}
     </span>
   );
 }

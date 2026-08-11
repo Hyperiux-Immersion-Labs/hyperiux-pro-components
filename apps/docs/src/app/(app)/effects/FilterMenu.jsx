@@ -3,28 +3,35 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LayoutGroup, motion, useReducedMotion } from "motion/react";
+import { ChevronDown } from "lucide-react";
 import { FILTER_OPTIONS } from "@/lib/effect-sort";
 
 export { FILTER_OPTIONS };
 
 export function FilterMenu({
   activeFilter,
+  // Only needed by the "label" variant, where the button must always show
+  // the true current selection (including "all") - activeFilter alone can't
+  // do that since callers null it out to render the icon-only unselected
+  // state. Unused by the vault listing's own <FilterMenu> calls, which never
+  // pass this and stay on the default "icon" variant.
+  categoryFilter,
   getLabel,
   onSelect,
-  // Defaults to the vault listing's featured/free/pro-only dropdown; the
+  // Defaults to the vault listing's featured/free/pro/sort dropdown; the
   // Saved Effects / Usage dashboard tabs pass a longer list ("all" + these
   // + every category present) so one dropdown covers all filtering instead
   // of a separate chips row.
   options = FILTER_OPTIONS,
   // "icon" (default): vault listing's funnel icon, label only shown once a
-  // featured/free/pro filter is active. "label": always shows the current
+  // filter/sort option is active. "label": always shows the current
   // selection as text + a chevron - used where the dropdown is the only
   // filter control (Saved Effects / Usage) instead of a decoration next to
   // a visible chips row.
   variant = "icon",
   // Extra classes merged onto the dropdown panel - e.g. a fixed height +
   // overflow-y-auto once the option list can outgrow the vault listing's
-  // 3-item case this component was originally built for.
+  // handful-of-items case this component was originally built for.
   panelClassName = "",
 }) {
   const [open, setOpen] = useState(false);
@@ -135,8 +142,11 @@ export function FilterMenu({
       onMouseLeave={() => setHoveredCat(null)}
     >
       <LayoutGroup id="filter-menu-pill">
-        {FILTER_OPTIONS.map((cat) => {
-          const isSelected = activeFilter === cat;
+        {options.map((cat) => {
+          // categoryFilter (when passed, "label" variant) always reflects
+          // the true current selection, including "all" - activeFilter
+          // alone is null in that state so nothing would ever highlight.
+          const isSelected = (categoryFilter ?? activeFilter) === cat;
           // Hover takes precedence; fall back to the active filter so the
           // pill still rests somewhere when nothing is hovered.
           const highlighted = hoveredCat
