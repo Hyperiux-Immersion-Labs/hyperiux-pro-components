@@ -69,7 +69,25 @@ function ControlField({
       <div className={styles.field}>
         <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>{control.label}</span>
-          <span className={styles.fieldValue}>{colorValue}</span>
+          <input
+            key={colorValue}
+            type="text"
+            defaultValue={colorValue}
+            onChange={(event) => {
+              const nextValue = event.target.value.trim();
+              if (/^#?[0-9a-f]{6}$/i.test(nextValue)) {
+                onChange(nextValue.startsWith("#") ? nextValue : `#${nextValue}`);
+              }
+            }}
+            onBlur={(event) => {
+              const nextValue = normalizeColorInputValue(event.target.value);
+              event.currentTarget.value = nextValue;
+              onChange(nextValue);
+            }}
+            className={`${styles.fieldValue} ${styles.colorText}`}
+            aria-label={`${control.label} hex value`}
+            spellCheck={false}
+          />
         </div>
         {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
         <div className={styles.colorRow}>

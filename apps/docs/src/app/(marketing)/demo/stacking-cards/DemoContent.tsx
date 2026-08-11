@@ -1,8 +1,8 @@
 "use client";
 
-import StackingCards from "@/components/stacking-cards";
-import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import StackingCards from "@/components/stacking-cards";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -13,7 +13,7 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+          <DemoHeader logoColor="#111111" />
           {effect}
         </>
       )}

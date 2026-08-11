@@ -539,6 +539,7 @@
   letter-spacing: 0.16em;
   text-align: right;
   text-transform: uppercase;
+  outline: none;
 }
 
 .actionIcon {
@@ -720,6 +721,12 @@
   inset: 0;
   z-index: 80;
   display: block;
+}
+
+@media (max-width: 1024px) {
+  .launcherLayer {
+    display: none;
+  }
 }
 
 .launcherGroup {
