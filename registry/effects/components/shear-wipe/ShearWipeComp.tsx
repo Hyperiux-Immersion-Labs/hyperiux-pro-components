@@ -211,7 +211,11 @@ const ShearWipeComp = ({
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Page Background */}
       <div className="absolute inset-0">
+<<<<<<<< HEAD:registry/effects/components/shear-wipe/ShearWipeComp.tsx
         <img src={componentsBgImage} alt="" className="w-full h-full object-cover" />
+========
+        <Image src={componentsBgImage} alt="" fill className="object-cover" />
+>>>>>>>> master:apps/docs/src/components/shear-wipe/ShearWipeComp.tsx
       </div>
 
       <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
@@ -259,7 +263,11 @@ const ShearWipeComp = ({
           }}
         >
           <div className="absolute inset-0">
+<<<<<<<< HEAD:registry/effects/components/shear-wipe/ShearWipeComp.tsx
             <img src={showcaseBgImage} alt="" className="w-full h-full object-cover" />
+========
+            <Image src={showcaseBgImage} alt="" fill className="object-cover" />
+>>>>>>>> master:apps/docs/src/components/shear-wipe/ShearWipeComp.tsx
           </div>
 
           <div className="flex h-screen items-center relative">
@@ -290,7 +298,11 @@ const ShearWipeComp = ({
         <div
           className="absolute left-[-15%] top-1/2 -translate-y-1/2 cursor-pointer z-50"
           onMouseEnter={() => handleHover('components')}
+<<<<<<<< HEAD:registry/effects/components/shear-wipe/ShearWipeComp.tsx
             onMouseLeave={() => handleHoverOut()}
+========
+          onMouseLeave={() => handleHoverOut()}
+>>>>>>>> master:apps/docs/src/components/shear-wipe/ShearWipeComp.tsx
           onClick={() => setActivePanel('components')}
         >
           <div className="text-[7vw] font-medium leading-none tracking-tight origin-center -rotate-90 whitespace-nowrap text-white">
@@ -351,9 +363,9 @@ const ShearWipeComp = ({
               {componentHighlights.map((item, i) => (
                 <div key={i} className="flex items-start gap-[2.5vw] max-md:gap-[3.5vw] border-b border-black/15 pb-[3.5vw] max-md:pb-[5vw]">
                   <span className={`text-[1.8vw] max-md:text-[3.2vw] ${componentsTextColor} opacity-45 pt-[0.2vw]`}>{item.label}</span>
-                  <div className="flex items-baseline gap-[1.5vw] max-md:gap-[2vw]">
-                    <h3 className={`text-[2.4vw] max-md:text-[4.4vw] font-display leading-tight whitespace-nowrap ${componentsTextColor}`}>{item.title}</h3>
-                    <p className={`text-[1.8vw] max-md:text-[3.4vw] leading-relaxed ${componentsTextColor} opacity-60`}>{item.desc}</p>
+                  <div className="flex flex-col items-baseline gap-[1.5vw] max-md:gap-[2vw]">
+                    <h3 className={`text-[2.4vw] max-md:text-[5vw] font-display leading-tight whitespace-nowrap ${componentsTextColor}`}>{item.title}</h3>
+                    <p className={`text-[2.2vw] max-md:text-[4vw] leading-relaxed ${componentsTextColor} opacity-60`}>{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -373,9 +385,9 @@ const ShearWipeComp = ({
               {showcaseStats.map((item, i) => (
                 <div key={i} className="flex items-start gap-[2.5vw] max-md:gap-[3.5vw] border-b border-black/15 pb-[3.5vw] max-md:pb-[5vw]">
                   <span className={`text-[1.8vw] max-md:text-[3.2vw] ${componentsTextColor} opacity-45 pt-[0.2vw]`}>{item.label}</span>
-                  <div className="flex items-baseline gap-[1.5vw] max-md:gap-[2vw]">
-                    <h3 className={`text-[2.4vw] max-md:text-[4.4vw] font-display leading-tight whitespace-nowrap ${componentsTextColor}`}>{item.title}</h3>
-                    <p className={`text-[1.8vw] max-md:text-[3.4vw] leading-relaxed ${componentsTextColor} opacity-60`}>{item.desc}</p>
+                  <div className="flex flex-col items-baseline gap-[1.5vw] max-md:gap-[2vw]">
+                    <h3 className={`text-[2.4vw] max-md:text-[5vw] font-display leading-tight whitespace-nowrap ${componentsTextColor}`}>{item.title}</h3>
+                    <p className={`text-[2.2vw] max-md:text-[4vw] leading-[1.2] ${componentsTextColor} opacity-60`}>{item.desc}</p>
                   </div>
                 </div>
               ))}
