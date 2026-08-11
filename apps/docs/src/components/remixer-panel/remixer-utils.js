@@ -68,6 +68,14 @@ export function getCopyableRemixerValues(values = {}, groups = []) {
   return Object.fromEntries(Object.entries(values).filter(([id]) => allowedIds.has(id)));
 }
 
+export function getChangedCopyableRemixerValues(values = {}, initialValues = {}, groups = []) {
+  return Object.fromEntries(
+    Object.entries(getCopyableRemixerValues(values, groups)).filter(
+      ([id, value]) => !areRemixerValuesEqual(value, initialValues[id]),
+    ),
+  );
+}
+
 export function normalizeRemixerControl(control = {}) {
   const type = control.control ?? control.type ?? "range";
   return {
@@ -94,4 +102,9 @@ function toControlLabel(value) {
     .replace(/\s+/g, " ")
     .trim()
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function areRemixerValuesEqual(value, otherValue) {
+  if (Object.is(value, otherValue)) return true;
+  return JSON.stringify(value) === JSON.stringify(otherValue);
 }

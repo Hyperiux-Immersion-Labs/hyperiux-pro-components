@@ -99,12 +99,39 @@ export default function RemixerLauncher({
           animate={{
             height: isExpanded ? "auto" : 0,
             opacity: isExpanded ? 1 : 0,
+            y: isExpanded ? 0 : -18,
           }}
-          transition={remixerPanelTransition}
+          transition={{
+            height: {
+              ...remixerPanelTransition,
+              duration: isExpanded ? 0.48 : 0.24,
+              delay: isExpanded ? 0 : 0.12,
+            },
+            opacity: {
+              duration: isExpanded ? 0.18 : 0.14,
+              ease: "easeOut",
+            },
+            y: {
+              ...remixerPanelTransition,
+              duration: isExpanded ? 0.48 : 0.2,
+              delay: isExpanded ? 0 : 0.08,
+            },
+          }}
           style={{ transformOrigin: "top" }}
-          className={`${styles.launcherPanel} ${isExpanded ? styles.launcherPanelOpen : ""} ${panelClassName}`}
+          className={`${styles.launcherPanel} ${styles.hideScrollbar} ${isExpanded ? styles.launcherPanelOpen : ""} ${panelClassName}`}
         >
-          <div className={`${styles.launcherPanelInner} ${panelInnerClassName}`}>
+          <motion.div
+            initial={false}
+            animate={{
+              y: isExpanded ? 0 : -28,
+            }}
+            transition={{
+              ...remixerPanelTransition,
+              duration: isExpanded ? 0.48 : 0.2,
+              delay: isExpanded ? 0.03 : 0,
+            }}
+            className={`${styles.launcherPanelInner} ${panelInnerClassName}`}
+          >
             <RemixerPanel
               isExpanded={isExpanded}
               groups={groups}
@@ -114,7 +141,7 @@ export default function RemixerLauncher({
               onReset={onReset}
               defaultOpenGroupId={defaultOpenGroupId}
             />
-          </div>
+          </motion.div>
         </motion.div>
       </motion.div>
     </div>

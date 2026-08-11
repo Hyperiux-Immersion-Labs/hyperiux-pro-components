@@ -80,6 +80,7 @@ export default function RegistryRemixerDemo({
   const {
     groups,
     values,
+    initialValues,
     updateValue,
     resetValues,
   } = useRemixerControls({ groups: remixerGroups, props: registry?.props ?? [] });
@@ -97,10 +98,11 @@ export default function RegistryRemixerDemo({
           onChange={updateValue}
           onCopyCode={() =>
             buildCode
-              ? buildCode({ registry, values, groups })
+              ? buildCode({ registry, values, initialValues, groups })
               : buildRemixerDemoCode({
                   registry,
                   values,
+                  initialValues,
                   groups,
                   ...copyCodeOptions,
                 })

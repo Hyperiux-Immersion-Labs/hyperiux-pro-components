@@ -35,19 +35,12 @@ function ControlField({ control, value, onChange }) {
   const displayValue = formatValue(value, control);
 
   if (control.type === "checkbox" || control.type === "toggle") {
-    const isToggle = control.type === "toggle";
     return (
       <button type="button" onClick={() => onChange(!value)} className={`${styles.field} ${styles.toggleRow}`}>
         <span className={styles.fieldLabel}>{control.label}</span>
-        {isToggle ? (
-          <span className={`${styles.toggle} ${value ? styles.toggleOn : ""}`}>
-            <span className={styles.toggleKnob} />
-          </span>
-        ) : (
-          <span className={`${styles.checkboxOuter} ${value ? styles.checkboxSelected : ""}`}>
-            <span className={styles.checkboxInner} />
-          </span>
-        )}
+        <span className={`${styles.checkboxOuter} ${value ? styles.checkboxSelected : ""}`}>
+          <span className={styles.checkboxInner} />
+        </span>
       </button>
     );
   }
@@ -63,13 +56,45 @@ function ControlField({ control, value, onChange }) {
         {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
         <div className={styles.colorRow}>
           <input type="color" value={colorValue} onChange={(event) => onChange(event.target.value)} className={styles.colorInput} />
-          <span className={styles.colorText}>{colorValue}</span>
         </div>
       </div>
     );
   }
 
-  if (control.type === "select" || control.type === "radio") {
+  if (control.type === "radio") {
+    return (
+      <div className={styles.field}>
+        <div className={styles.fieldRow}>
+          <span className={styles.fieldLabel}>{control.label}</span>
+          <span className={styles.fieldValue}>{displayValue}</span>
+        </div>
+        {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
+        <div className={styles.checkboxGroup}>
+          {control.options?.map((option) => {
+            const optionValue = option.value ?? option;
+            const optionLabel = option.label ?? option;
+            const isSelected = value === optionValue;
+
+            return (
+              <button
+                key={optionValue}
+                type="button"
+                onClick={() => onChange(optionValue)}
+                className={`${styles.checkboxOption} ${isSelected ? styles.checkboxOptionSelected : ""}`}
+              >
+                <span className={`${styles.checkboxOuter} ${isSelected ? styles.checkboxSelected : ""}`}>
+                  <span className={styles.checkboxInner} />
+                </span>
+                <span className={styles.checkboxText}>{optionLabel}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  if (control.type === "select") {
     return (
       <label className={styles.field}>
         <div className={styles.fieldRow}>
@@ -165,7 +190,7 @@ export default function RemixerPanel({ isExpanded, groups, values, onChange, onC
 
   return (
     <aside className={`${styles.panel} ${isExpanded ? styles.panelOpen : ""}`}>
-      <div className={styles.body} data-lenis-prevent>
+      <div className={`${styles.body} ${styles.hideScrollbar}`} data-lenis-prevent>
         {availableGroups.map((group) => {
           if (group.collapsible === false) {
             return (
