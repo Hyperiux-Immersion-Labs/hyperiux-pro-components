@@ -1,7 +1,7 @@
 "use client";
 
 import "highlight.js/styles/night-owl.css";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 // lib/core + explicit registrations instead of the full "highlight.js" build,
 // which bundles all 150+ grammars (~300KB of Mathematica/ISBL/GML/... nobody
 // renders). Every language= value used across the site maps to one of these.
@@ -70,6 +70,7 @@ export function CodeBlock({
     lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
     lockedCtaHref = null,
 }) {
+    const [copied, setCopied] = useState(false);
     const displayCode = copyLocked ? LOCKED_CODE_SAMPLE : code || "";
 
     const highlighted = useMemo(() => {
@@ -110,7 +111,7 @@ export function CodeBlock({
                 {shouldShowHeader ? (
                     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
                         <span className="text-lg text-white max-md:text-sm">{filename || ""}</span>
-                        <Tooltip label="Copy code" position="bottom">
+                        <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
                             <CopyBtn
                                 value={displayCode}
                                 color="white"
@@ -118,18 +119,20 @@ export function CodeBlock({
                                 aria-label="Copy code to clipboard"
                                 disabled={copyLocked}
                                 onBeforeCopy={onBeforeCopy}
+                                onCopiedChange={setCopied}
                             />
                         </Tooltip>
                     </div>
                 ) : (
                     <span className="absolute top-5 right-5 z-10 max-md:top-3.5 max-md:right-6">
-                        <Tooltip label="Copy code" position="bottom">
+                        <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
                             <CopyBtn
                                 value={displayCode}
                                 color="white"
                                 aria-label="Copy code to clipboard"
                                 disabled={copyLocked}
                                 onBeforeCopy={onBeforeCopy}
+                                onCopiedChange={setCopied}
                             />
                         </Tooltip>
                     </span>
@@ -163,6 +166,7 @@ export function InstallCommand({
     onBeforeCopy,
     lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
 }) {
+    const [copied, setCopied] = useState(false);
     const command = `npx hyperiux add ${effect}`;
     const displayCommand = copyLocked ? LOCKED_COMMAND_SAMPLE : command;
 
@@ -187,7 +191,7 @@ export function InstallCommand({
             >
                 {displayCommand}
             </code>
-            <Tooltip label="Copy command" position="bottom">
+            <Tooltip label={copied ? "Copied!" : "Copy command"} position="bottom">
                 <CopyBtn
                     value={displayCommand}
                     color="white"
@@ -196,6 +200,7 @@ export function InstallCommand({
                     aria-label="Copy install command"
                     disabled={copyLocked}
                     onBeforeCopy={onBeforeCopy}
+                    onCopiedChange={setCopied}
                 />
             </Tooltip>
         </div>

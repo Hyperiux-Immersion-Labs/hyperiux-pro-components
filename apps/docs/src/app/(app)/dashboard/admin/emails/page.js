@@ -261,7 +261,7 @@ export default function AdminEmailsPage() {
                 className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
-                Users
+                User Management
               </Link>
             </div>
             <h1 className="text-2xl font-semibold">Email Log</h1>
