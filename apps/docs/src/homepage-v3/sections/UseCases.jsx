@@ -52,7 +52,7 @@ const USE_CASES = [
 const USE_CASES_X_PERCENT = [120, 140, 160, 180, 200];
 
 const mark =
-  "pointer-events-none absolute size-[0.3vw] border-primary max-md:size-2 max-sm:size-1.5";
+  "pointer-events-none absolute size-[0.3vw] border-primary max-md:prim max-md:size-2 max-sm:size-1";
 
 function UseCaseBox({ item }) {
   return (
@@ -71,7 +71,7 @@ function UseCaseBox({ item }) {
 
       {/* BODY */}
       <div className="flex flex-col justify-between gap-[4vw] px-[2vw] py-[2.5vw] max-md:gap-[7vw] max-md:px-[4vw] max-md:py-[5vw] max-sm:gap-[10vw] max-sm:px-[6vw] max-sm:py-[7vw]">
-        <p className="t22 font-neue-haas w-[80%] leading-[1.35] max-md:text-[2.2vw] max-sm:text-[4vw]">
+        <p className="t22 font-neue-haas w-[80%] max-md:w-full leading-[1.35] max-md:text-[2.2vw] max-sm:text-[4vw]">
           {item.text}
         </p>
 
@@ -122,7 +122,7 @@ export default function UseCases() {
   return (
     <div
       ref={container}
-      className="h-fit w-full mt-[-15vw] flex justify-between self-padd items-start overflow-x-clip text-white max-md:mt-0 max-md:flex-col max-md:gap-[8vw]"
+      className="h-fit w-full mt-[-15vw] max-md:pb-[30vw]! flex justify-between self-padd items-start overflow-x-clip text-white max-md:mt-0 max-md:flex-col max-md:gap-[8vw]"
     >
       <MaskTextReveal stagger={0.08} scrub={false} duration={2} className="w-[40vw] sticky top-[20vh] max-md:static max-md:w-full">
         <h2 className="t64 font-neue-haas max-md:text-[5.5vw] max-sm:text-[7.5vw]">

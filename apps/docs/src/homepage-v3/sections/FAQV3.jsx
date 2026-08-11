@@ -267,7 +267,7 @@ export default function FAQV3() {
       className="h-fit w-full self-padd relative py-[10vw] mt-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]"
     >
       <div
-        className="absolute top-[-13vw] left-0 w-full h-[14vw] z-100 pointer-events-none"
+        className="absolute top-[-13vw] max-md:top-[-65vw] max-md:h-[65vw] left-0 w-full h-[14vw] z-100 pointer-events-none"
         style={{
           background: "linear-gradient(to bottom, white 0%, #FF6600 35%, #000 100%)",
         }}
@@ -275,13 +275,13 @@ export default function FAQV3() {
 
       <LineReveal
         as="h2"
-        className="t96 text-center font-neue-haas mb-[4vw] relative z-110 max-md:mb-[8vw] max-md:text-[5.5vw] max-sm:mb-[12vw] max-sm:text-[7.5vw]"
+        className="t96 text-center font-neue-haas mb-[4vw] max-md:mt-[60vw]  relative z-110 max-md:mb-[8vw]   max-sm:mb-[12vw] max-md:w-full"
       >
-        Questions <span className="gradient-text-animate">Answered.</span>
+        Questions, <span className="gradient-text-animate">Answered.</span>
       </LineReveal>
  
 
-      <div className="w-[90%] mx-auto border border-grey">
+      <div className="w-[90%] max-md:w-full mx-auto border border-grey">
         {visibleItems.map((item, index) => (
           <FAQRow
             key={item.id}
@@ -296,7 +296,7 @@ export default function FAQV3() {
       </div>
 
       {!isExpanded && FAQ_ITEMS.length > INITIAL_COUNT && (
-        <div className="flex w-full items-center justify-center mt-[3vw] max-md:mt-[7vw] max-sm:mt-[10vw]">
+        <div className="flex w-full items-center  justify-center mt-[3vw] max-md:mt-[7vw] max-sm:mt-[10vw]">
           <LinkButton
             href="#"
             onClick={() => setIsExpanded(true)}

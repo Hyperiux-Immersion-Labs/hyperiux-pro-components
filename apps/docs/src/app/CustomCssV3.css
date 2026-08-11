@@ -1,12 +1,12 @@
-.t20{
-    font-size: .95rem;
-    line-height: 1.3;
-    letter-spacing: 2%;
+.t20 {
+  font-size: 0.95rem;
+  line-height: 1.3;
+  letter-spacing: 2%;
 }
-.t22{
-    font-size: 1.2vw;
-    line-height: 1.3;
-    letter-spacing: 2%;
+.t22 {
+  font-size: 1.2vw;
+  line-height: 1.3;
+  letter-spacing: 2%;
 }
 .t96 {
   font-size: 5.25vw;
@@ -28,7 +28,16 @@
    query engages, and the min stops it shrinking further on small phones. */
 @media (max-width: 1025px) {
   .t96 {
-    font-size: clamp(2.375rem, 2.27rem + 1.73vw, 3.375rem);
+    font-size: 8.5vw;
+  }
+
+  .t56 {
+    font-size: 5vw;
+    line-height: 1.15;
+  }
+  .t64 {
+    font-size: 5.8vw;
+    letter-spacing: 1%;
   }
 
   .t22 {
@@ -36,4 +45,3 @@
     line-height: 1.45;
   }
 }
-

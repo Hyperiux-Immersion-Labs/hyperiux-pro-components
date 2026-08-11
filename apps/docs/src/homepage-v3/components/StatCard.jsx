@@ -13,7 +13,7 @@ export default function StatCard({
       (child, index) => (
         <div
           key={index}
-          className="relative inline-flex border border-grey items-center justify-center size-[7vw] aspect-square"
+          className="relative inline-flex border border-grey items-center justify-center max-md:size-[16vw] size-[7vw] aspect-square"
         >
           <span className={`${mark} -top-px -left-px border-t border-l`} />
           <span className={`${mark} -top-px -right-px border-t border-r`} />
@@ -41,7 +41,7 @@ export default function StatCard({
     >
       <div className={contentClassName}>{content}</div>
       {labelParts?.length ? (
-        <p className="flex items-center gap-[1vw] t22 leading-none font-heading text-white max-md:gap-1.5 max-md:text-[2.4vw] max-sm:gap-1 max-sm:text-[4vw]">
+        <p className="flex items-center gap-[1vw] t22 leading-none font-heading text-white max-md:gap-1.5 max-md:text-[2.4vw] max-sm:gap-2 max-sm:text-[4vw]">
           {labelParts.map((part, index) => (
             <span key={`${part}-${index}`} className="contents">
               {index > 0 ? (

@@ -27,7 +27,7 @@ export default function NavbarV3() {
   return (
     <nav
       ref={navRef}
-      className={`py-[2vw] flex items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-transform duration-500 ease-out ${reveal ? "translate-y-0" : "translate-y-[-120%]"}`}
+      className={`py-[2vw] flex max-md:hidden items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-transform duration-500 ease-out ${reveal ? "translate-y-0" : "translate-y-[-120%]"}`}
       style={{ willChange: "transform" }}
     >
       <div className="w-[10vw]  h-auto ">

@@ -84,10 +84,9 @@ export default function CurvedGradient() {
         <h2
           ref={headingRef}
           id="curved-gradient-heading"
-          className="t64 relative z-10 mx-auto max-w-[51.5vw] text-center text-[3.25vw] text-white max-md:max-w-[75vw] max-md:text-[5vw] max-sm:max-w-[95vw] max-sm:text-[7vw]"
+          className="t64 relative z-10 mx-auto max-w-[51.5vw] text-center text-[3.25vw] text-white max-md:max-w-[90%] max-md:text-[5vw]"
         >
-          Most websites are not broken. They are forgettable. Your site does not
-          need more decoration, it needs motion that earns its place.
+          Most websites are not broken. They are forgettable. They use the same sections, the same rhythm, the same static patterns, and the same safe animations everyone else is using.
         </h2>
       </section>
     </div>

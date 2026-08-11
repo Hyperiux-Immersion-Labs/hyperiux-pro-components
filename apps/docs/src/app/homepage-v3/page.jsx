@@ -42,7 +42,7 @@ export default function page() {
           <NotAnotherUIKit />
           <SmallMotion />
           <UseCases />
-          <DitherTransition className="h-[75vw] bg-background max-md:h-[60vw] max-sm:h-[90vw]" />
+          <DitherTransition className="h-[75vw] max-md:h-[150vw]! bg-background " />
           <PricingV3 />
           <FAQV3 />
           <CTAV3 />

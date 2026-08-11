@@ -33,9 +33,9 @@ export default function CTAV3() {
   return (
     <section
       id="CTA"
-      className="h-fit gap-[4vw] max-md:h-fit max-md:py-[10vw] max-sm:py-[15vw]! max-sm:mb-[30vw] max-md:mb-[10vw] overflow-x-hidden flex items-start justify-between max-sm:gap-[24vw] max-md:gap-[8vw] flex-col text-foreground self-padd relative z-500 w-full py-[7vw]!"
+      className="h-fit gap-[4vw] max-md:h-fit max-md:py-[10vw] max-sm:py-[15vw]! max-md:mb-[10vw] overflow-x-hidden flex items-start justify-between max-sm:gap-[10vw] max-md:gap-[8vw] flex-col text-foreground self-padd relative z-500 w-full py-[7vw]!"
     >
-      <LineReveal as="h2" className="t96 font-neue-haas relative z-2 w-[90%]">
+      <LineReveal as="h2" className="t96 font-neue-haas max-md:w-full relative z-2 w-[90%]">
         Need More Than a Component? We Build the Whole Interaction.
       </LineReveal>
       <div className="space-y-[3.5vw] max-md:space-y-[10vw] relative z-2">
@@ -43,26 +43,23 @@ export default function CTAV3() {
           Vault is a public slice of how Hyperiux approaches interaction design.
           Need something custom? We'll design and build it from scratch.
         </SplitLine>
-        <Suspense
-          fallback={
-            <div className="w-fit flex max-md:gap-[2vw] max-sm:gap-[7vw] items-center max-sm:flex-col max-md:items-start max-md:w-[75%] max-md:mx-auto max-sm:w-[88%] gap-[1.5vw]">
-              <ButtonV3
-                variant="outline"
-                className="max-md:w-full"
-                text="See Our Work"
-                href="/hyperiux-creds-2026"
-              />
-              <ButtonV3
-                variant="orange"
-                className="max-md:w-full"
-                text="Work with Hyperiux"
-                href="#"
-              />
-            </div>
-          }
-        >
-          <CTAButtonV3s />
-        </Suspense>
+
+        <div className="w-fit flex max-md:gap-[2vw] max-sm:gap-[5vw] items-center max-sm:flex-col max-md:items-start max-md:mx-auto max-md:w-full max-sm:w-full gap-[1.5vw]">
+          <ButtonV3
+            variant="outline"
+            className="max-md:w-full"
+            text="See Our Work"
+            href="/hyperiux-creds-2026"
+          />
+          <ButtonV3
+            variant="orange"
+            className="max-md:w-full"
+            text="Work with Hyperiux"
+            href="#"
+          />
+        </div>
+
+        {/* <CTAButtonV3s /> */}
       </div>
 
       <Piano

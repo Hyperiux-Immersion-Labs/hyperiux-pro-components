@@ -176,23 +176,23 @@ export default function Preview() {
 
   return (
     <section id="preview" className="w-full">
-      <h2 className="t96 font-neue-haas text-center">
+      <h2 className="t96 max-md:w-[70%] max-md:mx-auto max-md:text-[8vw]! font-neue-haas text-center">
         Preview. Install. Tune. Ship.
       </h2>
 
       <div
         ref={gridRef}
-        className="h-screen relative mt-[4vw] border-t border-b border-grey w-full flex flex-col"
+        className="h-screen relative mt-[4vw] max-md:mt-[12vw] border-t border-b border-grey w-full flex flex-col"
       >
         {/* Travelling icon: one image translated down the second column */}
         <div
           ref={iconRef}
-          className="pointer-events-none absolute left-[15vw] top-0 z-0 h-1/4 w-[15vw] p-[2.5vw] will-change-transform"
+          className="pointer-events-none absolute max-md:w-[30vw] max-md:left-[5vw]  left-[15vw] top-0 z-0 h-1/4 w-[15vw] p-[2.5vw] will-change-transform"
         >
           <AsciiMorphIcon
             ref={asciiRef}
             sources={STEPS.map((step) => step.icon)}
-            className="h-full w-full"
+            className="h-full max-md:h-1/2 w-full"
           />
         </div>
 
@@ -203,8 +203,8 @@ export default function Preview() {
               i === STEPS.length - 1 ? "" : "border-b border-grey"
             }`}
           >
-            <div className="w-[15vw] h-full border-r border-grey" />
-            <div className="w-[15vw] h-full border-r border-grey" />
+            <div className="w-[15vw] max-md:w-[5vw] h-full border-r border-grey" />
+            <div className="w-[15vw] max-md:w-[30vw] h-full border-r border-grey" />
             <div className="flex-1 flex relative flex-col justify-center px-[4vw] gap-[1vw] border-r border-grey">
               <span className={`${mark} -top-px -left-px border-t border-l`} />
               <span className={`${mark} -top-px -right-px border-t border-r`} />
@@ -214,12 +214,12 @@ export default function Preview() {
               <span
                 className={`${mark} -bottom-px -right-px border-b border-r`}
               />
-              <div className="preview-text-wrapper flex flex-col gap-[1vw] will-change-transform">
+              <div className="preview-text-wrapper flex flex-col max-md:gap-[3vw] gap-[1vw] will-change-transform">
                 <p className="text34">{step.title}</p>
-                <p className="t22 w-[80%]">{step.text}</p>
+                <p className="t22 w-[80%] max-md:w-[95%]">{step.text}</p>
               </div>
             </div>
-            <div className="w-[15vw] h-full" />
+            <div className="w-[15vw] max-md:w-[5vw] h-full" />
           </div>
         ))}
       </div>

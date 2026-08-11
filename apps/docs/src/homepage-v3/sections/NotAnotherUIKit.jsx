@@ -100,7 +100,7 @@ export default function NotAnotherUIKit() {
   return (
     <section id="uikit-section" className="w-full h-[250vh] pt-[15vw] text-white max-md:overflow-hidden max-md:h-fit max-sm:py-[25%] max-md:py-[12%] relative z-20">
         <div>
-            <LineReveal as="h2" className="t96 w-[90vw] font-neue-haas mx-auto text-center">
+            <LineReveal as="h2" className="t96 w-[90vw] font-neue-haas max-md:text-center max-md:w-full mx-auto text-center">
                Not <span className='gradient-text-animate'>Another UI Kit.</span>  Not a Side Project.
             </LineReveal>
         </div>

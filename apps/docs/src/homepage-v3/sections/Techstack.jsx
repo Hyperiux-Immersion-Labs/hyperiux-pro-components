@@ -42,11 +42,11 @@ export default function Techstack() {
         }, "<")
     }, [])
     return (
-        <section className="relative z-10 w-full  px-[3.5vw] py-[12vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-[7vw] max-sm:py-20" id="techstack">
+        <section className="relative z-10 w-full  px-[3.5vw] py-[12vw] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-[7vw] max-md:pt-[50vw]! max-sm:py-20" id="techstack">
             <div className="relative flex max-md:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-md:gap-14 max-sm:gap-8">
                 <div className="sticky h-fit top-[12vh] max-md:static">
                     <MaskTextReveal stagger={0.08} scrub={false} duration={2} >
-                        <h2 ref={paragraphText} className="w-[40vw] t56 font-normal text-white max-md:max-w-[95vw] max-md:w-[95vw]  max-sm:max-w-full  ">
+                        <h2 ref={paragraphText} className="w-[40vw] t56 font-normal text-white max-md:max-w-[95vw] max-md:w-[85vw]  max-sm:max-w-full  ">
                             Give your product the perception lift of a custom interaction
                             system without commissioning one from scratch.
                         </h2>

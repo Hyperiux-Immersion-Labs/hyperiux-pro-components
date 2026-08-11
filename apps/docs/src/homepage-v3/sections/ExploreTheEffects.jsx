@@ -16,14 +16,14 @@ const COLUMNS = [
             tag: "Scroll Effects",
             action: "Scroll Effects",
             href: "/components",
-            media: "/img/1.png",
+            media: "/homepage-v3/imgs/1.png",
         },
         {
             title: "Blur Text",
             tag: "Text Animation",
             action: "Scroll Effects",
             href: "/components",
-            media: "/img/2.png",
+            media: "/homepage-v3/imgs/2.png",
         },
     ],
     [
@@ -32,14 +32,14 @@ const COLUMNS = [
             tag: "WebGL",
             action: "Scroll Effects",
             href: "/components",
-            media: "/img/3.png",
+            media: "/homepage-v3/imgs/3.png",
         },
         {
             title: "Page Flip Transition",
             tag: "Page Transition",
             action: "Scroll Effects",
             href: "/components",
-            media: "/img/4.png",
+            media: "/homepage-v3/imgs/4.png",
         },
     ],
     [
@@ -48,14 +48,14 @@ const COLUMNS = [
             tag: "Scroll Effects",
             action: "Scroll Effects",
             href: "/components",
-            media: "/img/5.png",
+            media: "/homepage-v3/imgs/5.png",
         },
         {
             title: "Scroll Stack",
             tag: "Scroll Effects",
             action: "Scroll Effects",
             href: "/components",
-            media: "/img/6.png",
+            media: "/homepage-v3/imgs/6.png",
         },
     ],
 ];
@@ -110,7 +110,7 @@ export default function ExploreTheEffects() {
             id="explore-the-effects"
             className="w-full  my-[20vw] px-[3.5vw] max-md:my-24 max-md:px-[6vw] max-sm:px-[7vw]"
         >
-            <div className="space-y-[2vw] mb-[15vw] max-md:space-y-5 max-sm:space-y-4">
+            <div className="space-y-[2vw] max-md:space-y-[8vw] mb-[15vw] ">
                 <h2 className="t96 font-neue-haas w-[60vw] mx-auto text-center max-md:w-full">
                     Explore the Moments Your Website is{" "}
                     <span className="gradient-text-animate">Missing.</span>
@@ -125,7 +125,7 @@ export default function ExploreTheEffects() {
                 {COLUMNS.map((column, columnIndex) => (
                     <div
                         key={columnIndex}
-                        className={`explore-effects-column flex flex-1 flex-col gap-[3vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-8 ${COLUMN_OFFSET[columnIndex]}`}
+                        className={`explore-effects-column flex flex-1 flex-col gap-[3vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10 ${COLUMN_OFFSET[columnIndex]}`}
                     >
                         {column.map((effect, effectIndex) => (
                             <EffectBox

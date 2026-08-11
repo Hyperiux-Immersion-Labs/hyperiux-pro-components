@@ -112,7 +112,7 @@ export default function ProblemFixes() {
             start: 'top 70%',
             end: 'bottom 50%',
             scrub: true,
-            markers:false,
+            markers: false,
           },
         })
 
@@ -201,7 +201,6 @@ export default function ProblemFixes() {
           </h2>
           <p className="text24 mx-auto mt-[2vw] max-w-[65vw] leading-[1.55] text-white max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
             Anyone can add a fade. The hard part is everything around it: timing, restraint, layout awareness, responsive behavior, reduced-motion support, dependency clarity, and performance discipline.Get it wrong and your "wow moment" janks on mobile, tanks your Lighthouse score, or quietly breaks for the people who turned motion off.
-            That difference has a name. It's the interaction layer.
           </p>
         </div>
 
@@ -217,7 +216,7 @@ export default function ProblemFixes() {
           {cards.map((item, index) => (
             <div
               key={item.title}
-              className="tension-card bg-grey/30 flex items-center justify-between p-[.7vw] pr-[1.5vw] max-md:p-3 max-sm:p-2 max-sm:pr-4"
+              className="tension-card bg-grey/30 flex items-center justify-between p-[.7vw] pr-[1.5vw] max-md:p-3 max-sm:p-2 max-sm:pr-2"
             >
               <div className="flex min-w-0 flex-1 items-center max-md:flex-col max-md:items-start max-md:gap-3 max-sm:gap-2.5">
                 <div className="flex w-[25vw] shrink-0 items-center gap-[1vw] max-md:gap-4 max-sm:w-auto max-sm:gap-2.5">
@@ -238,7 +237,7 @@ export default function ProblemFixes() {
                     {item.title}
                   </p>
                 </div>
-                <p className="text-light-grey font-mono text18 min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-full max-sm:flex-none max-sm:px-0 max-sm:text-[3.5vw]! max-sm:leading-[1.2]">
+                <p className="text-light-grey font-mono text18 max-md:text-[3vw]! max-md:pr-0! min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-full max-sm:flex-none max-sm:px-0 ">
                   <ScrambleTextV3
                     text={item.description}
                     active={index <= activeIndex}
@@ -246,7 +245,7 @@ export default function ProblemFixes() {
                   />
                 </p>
               </div>
-              <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-md:w-[30%] max-sm:w-[40%] max-sm:gap-2.5 max-sm:pl-3">
+              <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-md:w-[30%] max-sm:w-fit max-sm:gap-0! max-md:max-w-[35%]">
                 <div className="flex size-[3vw] shrink-0 items-center justify-center max-md:size-9 max-sm:size-12">
                   <svg
                     className="tension-x h-[60%] w-[60%] opacity-0"

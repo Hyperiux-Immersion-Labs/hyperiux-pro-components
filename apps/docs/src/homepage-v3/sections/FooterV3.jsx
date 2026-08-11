@@ -177,11 +177,11 @@ export default function FooterV3() {
             variant="outline"
             text="Browse the Effects"
             href="/effects"
-            className="max-sm:w-[88%]"
+            className="max-sm:w-full"
           />
           <ButtonV3
             text="Upgrade to Pro"
-            className="max-sm:w-[88%]"
+            className="max-sm:w-full"
             href="/sign-up"
             variant="orange"
           />
