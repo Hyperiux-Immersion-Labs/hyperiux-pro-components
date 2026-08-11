@@ -551,7 +551,7 @@ const navigateLegal = (event, href) => {
 
         <nav
           data-lenis-prevent
-          className={`w-full flex-1 min-h-0 pb-4 pr-1 sidebar-link-content ${
+          className={`flex w-full flex-1 min-h-0 flex-col pb-4 pr-1 sidebar-link-content ${
             isExpanded ? "overflow-y-auto overflow-x-hidden" : "overflow-visible"
           }`}
           onMouseLeave={() => setHoveredSidebarKey("")}
