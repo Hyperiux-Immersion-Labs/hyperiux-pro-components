@@ -131,7 +131,7 @@ export default function TechDetailShowcase({ slug, tech, filteredEffects }) {
             <div className="flex justify-between border-b border-border/10 pb-2"><span className="text-muted">Target Ecosystem</span><span className="text-white font-medium">{tech.name}</span></div>
             <div className="flex justify-between border-b border-border/10 pb-2"><span className="text-muted">Render Track</span><span className="text-white font-medium">{slug === "threejs" || slug === "webgl" ? "GPU Accelerated" : "CPU DOM Thread"}</span></div>
             <div className="flex justify-between border-b border-border/10 pb-2"><span className="text-muted">Esm / Dynamic</span><span className="text-white font-medium">Fully Supported</span></div>
-            <div className="flex justify-between pb-2"><span className="text-muted">License Type</span><span className="text-white font-medium">MIT Open-Source</span></div>
+            <div className="flex justify-between pb-2"><span className="text-muted">License Type</span><span className="text-white font-medium">MPL 2.0 Open-Source</span></div>
           </div>
           <div className="pt-4 border-t border-border/10"><div className="flex flex-wrap gap-2"><span className="px-2 py-1 text-xs border border-border/20 rounded-full text-zinc-400">Reactive</span><span className="px-2 py-1 text-xs border border-border/20 rounded-full text-zinc-400">Zero Shift</span><span className="px-2 py-1 text-xs border border-border/20 rounded-full text-zinc-400">Optimized</span></div></div>
         </div>

@@ -248,6 +248,8 @@ export function EffectDetailContent({
 
   const videoPreviewUrl = resolveEffectVideoUrl({
     videoUrl: content?.videoUrl || safeEffect.videoUrl || `${slug}.mp4`,
+    categorySlug: content?.categorySlug || categorySlug || safeEffect.categorySlug,
+    effectSlug: slug,
   });
 
   const updateRelatedScrollState = useCallback(() => {
