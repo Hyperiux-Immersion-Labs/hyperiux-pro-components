@@ -5,7 +5,7 @@ import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ZoomSlider from "@/components/zoom-slider";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
-export default function DemoContent({ registry }) {
+export default function DemoContent({ registry }: { registry: any }) {
   return (
     <RegistryRemixerDemo
       registry={registry}

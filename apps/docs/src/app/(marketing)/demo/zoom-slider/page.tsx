@@ -1,9 +1,9 @@
-import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import registry from "../../../../../../../registry/effects/carousels/zoom-slider/registry.json";
 
 export default function Page() {
-  return <SuggestedEffectRemixerDemo registry={registry} slug="zoom-slider" />;
+  return <DemoContent registry={registry} />;
 }
 
 export async function generateMetadata() {

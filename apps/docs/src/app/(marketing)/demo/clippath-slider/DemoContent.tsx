@@ -1,19 +1,19 @@
 "use client";
 
+import ClipPathSlider from "@/components/clip-path-slider";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import AnimatedForm from "@/components/animated-form";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
-export default function DemoContent({ registry }) {
+export default function DemoContent({ registry }: { registry: any }) {
   return (
     <RegistryRemixerDemo
       registry={registry}
-      component={AnimatedForm}
-      copyCodeOptions={{ propsVariableName: "animatedFormProps" }}
+      component={ClipPathSlider}
+      copyCodeOptions={{ propsVariableName: "clipPathSliderProps" }}
     >
       {({ effect }) => (
         <>
-          <DemoHeader />
+          <DemoHeader logoColor="#FFFFFF" textColor="white" />
           {effect}
         </>
       )}

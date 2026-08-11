@@ -1,9 +1,9 @@
-import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import registry from "../../../../../../../registry/effects/cursor/colorful-cursor-aura/registry.json";
 
 export default function Page() {
-  return <SuggestedEffectRemixerDemo registry={registry} slug="colorful-cursor-aura" />;
+  return <DemoContent registry={registry} />;
 }
 
 export async function generateMetadata() {

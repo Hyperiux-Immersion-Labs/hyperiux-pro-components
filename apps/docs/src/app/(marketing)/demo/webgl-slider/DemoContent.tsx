@@ -6,7 +6,7 @@ import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
-export default function DemoContent({ registry }) {
+export default function DemoContent({ registry }: { registry: any }) {
   return (
     <RegistryRemixerDemo
       registry={registry}

@@ -1,9 +1,9 @@
-import SuggestedEffectRemixerDemo from "@/components/remixer-panel/SuggestedEffectRemixerDemo";
+import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import registry from "../../../../../../../registry/effects/navigation/elevate-navbar/registry.json";
 
 export default function Page() {
-  return <SuggestedEffectRemixerDemo registry={registry} slug="elevate-navbar" />;
+  return <DemoContent registry={registry} />;
 }
 
 export async function generateMetadata() {

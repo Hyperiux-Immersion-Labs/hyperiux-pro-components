@@ -1,19 +1,19 @@
 "use client";
 
-import GooeyCounter from "@/components/gooey-counter";
+import InteractiveListPreview from "@/components/interactive-list-preview";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
-export default function DemoContent({ registry }) {
+export default function DemoContent({ registry }: { registry: any }) {
   return (
     <RegistryRemixerDemo
       registry={registry}
-      component={GooeyCounter}
-      copyCodeOptions={{ propsVariableName: "gooeyCounterProps" }}
+      component={InteractiveListPreview}
+      copyCodeOptions={{ propsVariableName: "interactiveListPreviewProps" }}
     >
       {({ effect }) => (
         <>
-          <DemoHeader />
+          <DemoHeader textColor='#ffffff' logoColor='#FFFFFF' />
           {effect}
         </>
       )}

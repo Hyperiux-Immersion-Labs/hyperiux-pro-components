@@ -1,14 +1,14 @@
 "use client";
 
-import ElevateNavbar from "@/components/elevate-navbar";
+import ExpandingNavbar from "@/components/expanding-navbar";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
-export default function DemoContent({ registry }) {
+export default function DemoContent({ registry }: { registry: any }) {
   return (
     <RegistryRemixerDemo
       registry={registry}
-      component={ElevateNavbar}
-      copyCodeOptions={{ propsVariableName: "elevateNavbarProps" }}
+      component={ExpandingNavbar}
+      copyCodeOptions={{ propsVariableName: "expandingNavbarProps" }}
     >
       {({ effect }) => <div className="relative min-h-screen">{effect}</div>}
     </RegistryRemixerDemo>
