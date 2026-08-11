@@ -15,7 +15,7 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <ReactLenis root>
-          <DemoHeader logoColor="#ffffff" />
+          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
           <ScrollBottom
             textColor="text-black"
             className="bottom-[3%] z-20 gap-[0.5vw]"

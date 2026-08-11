@@ -36,7 +36,7 @@ const OverflowTextRevealWrapper = ({ effectProps = {} }: OverflowTextRevealWrapp
         />
         <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent" />
 
-        <div className="relative z-10 px-2  max-w-6xl mx-auto w-full">
+        <div className="relative z-10 px-2 space-y-5  max-w-6xl mx-auto w-full">
           <SplitLine>
 
           <button
@@ -49,11 +49,7 @@ const OverflowTextRevealWrapper = ({ effectProps = {} }: OverflowTextRevealWrapp
           </SplitLine>
 
 
-          <SplitLine>
-            <p className="text-xs tracking-[0.35rem] text-white/40 uppercase py-2 max-md:text-sm">
-              direction - bottom (default)
-            </p>
-          </SplitLine>
+        
           <OverflowTextReveal key={`heading-${revealKey}`} {...replayProps}>
             <h1 className="text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase max-sm:text-5xl">
               Characters<br />Rise From<br />Below

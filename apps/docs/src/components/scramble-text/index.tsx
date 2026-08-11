@@ -16,7 +16,7 @@ const REDUCED_MOTION_Y_OFFSET = 24;
 const ScrambleText = ({
   speed = 0.6,
   charType = 'uppercase',
-  textSize = 5,
+  textSize,
   textColor = '#111111',
   align = 'left',
   start = 'top 85%',
@@ -28,6 +28,8 @@ const ScrambleText = ({
  const elRef = useRef<any>(null);
  const splitRef = useRef<any>(null);
  const tlRef = useRef<any>(null);
+ const resolvedFontSize =
+ typeof textSize === 'number' ? `${textSize}vw` : undefined;
 
  const alignClass =
  align ==='right'
@@ -207,7 +209,7 @@ const ScrambleText = ({
  style={{
  wordBreak:'keep-all',
  overflowWrap:'normal',
- fontSize: `${textSize}vw`,
+ fontSize: resolvedFontSize,
  color: textColor,
  }}
  >
@@ -221,7 +223,7 @@ const ScrambleText = ({
  style={{
  wordBreak:'keep-all',
  overflowWrap:'normal',
- fontSize: `${textSize}vw`,
+ fontSize: resolvedFontSize,
  color: textColor,
  minHeight: "1em",
  }}

@@ -14,7 +14,7 @@ const ScrambleTextWrapper = ({ effectProps = {} }) => {
   return (
     <>
       <LenisSmoothScroll />
-      <main className="overflow-hidden bg-[#f6f2ea] text-[#121212]">
+      <main className="overflow-hidden min-h-screen bg-[#f6f2ea] text-[#121212]">
         <section className=" px-8 py-8 pt-22 max-[1025px]:pt-25 max-md:pt-20 max-md:px-4 max-md:py-4">
           <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 max-[1025px]:gap-6 border border-black/10 bg-[#fbf8f1] p-8 lg:grid-cols-[1.05fr_0.95fr] max-[1025px]:min-h-fit max-md:p-4">
             <div>
@@ -23,11 +23,10 @@ const ScrambleTextWrapper = ({ effectProps = {} }) => {
               </h1>
               <ScrambleText
                 text="Signal appears when the noise decides to leave."
-                textSize="text-[6vw] max-md:text-[8vw] max-[1025px]:text-[5vw]"
-                textColor="text-[#121212]"
+                textColor="#121212"
                 align="left"
                 {...effectProps}
-                className="font-black uppercase mb-8 leading-[0.88] max-[1025px]:leading-[1.2] max-md:leading-[0.92]"
+                className="mb-8 text-[6vw] font-black leading-[0.88] uppercase max-[1025px]:text-[5vw] max-[1025px]:leading-[1.2] max-md:text-[12vw] max-md:leading-[0.92]"
               />
               <SplitLine>
 

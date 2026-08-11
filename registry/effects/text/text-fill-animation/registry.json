@@ -74,28 +74,6 @@
         "group": "colors",
         "groupTitle": "Colors"
       }
-    },
-    {
-      "name": "textSize",
-      "type": "string",
-      "default": "3vw",
-      "description": "Desktop text size.",
-      "remixer": {
-        "control": "text",
-        "group": "layout",
-        "groupTitle": "Layout"
-      }
-    },
-    {
-      "name": "textWidth",
-      "type": "string",
-      "default": "60%",
-      "description": "Desktop text width.",
-      "remixer": {
-        "control": "text",
-        "group": "layout",
-        "groupTitle": "Layout"
-      }
     }
   ],
   "remixer": {

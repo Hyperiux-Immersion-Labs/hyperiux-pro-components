@@ -14,10 +14,10 @@ const MaskTextWrapper = ({ effectProps = {} }: { effectProps?: Record<string, an
 
       <main className="overflow-hidden bg-[#f8f2df] text-[#111111]">
 
-        <section className="relative h-screen bg-[#111111] px-8 py-24 text-white max-sm:px-4 max-sm:py-16">
+        <section className="relative h-screen bg-[#111111]  px-8 text-white max-sm:px-4 max-sm:py-16">
           <div className="mx-auto grid min-h-[calc(100vh-12rem)] max-w-7xl items-center gap-10 grid-cols-[1fr_0.85fr] max-md:grid-cols-1 max-md:gap-2 max-sm:gap-10 max-sm:min-h-auto">
             <div>
-              <div className="mb-8 flex flex-wrap gap-3">
+              <div className="mb-8 mt-4 flex flex-wrap gap-3">
                 {["poster copy", "hero headlines", "launch pages", "story sections"].map((item) => (
                   <span
                     key={item}
