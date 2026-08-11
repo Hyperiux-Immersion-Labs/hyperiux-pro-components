@@ -8,9 +8,13 @@ import { ClerkProvider } from "@clerk/nextjs";
 // Clerk only reads `localization` off <ClerkProvider> - passing it directly
 // to <SignIn>/<SignUp> is silently ignored (it's not in either component's
 // prop list, so React forwards it but Clerk never looks at it). Keyed by
-// signIn.*/signUp.* so each page's overrides stay scoped to that flow.
+// signIn.*/signUp.* so the title/subtitle/action copy stays scoped to each
+// flow. formButtonPrimary and the password placeholder are deliberately NOT
+// set here - both are single global keys shared by every Clerk form in the
+// app, so a value that's right for one page's button/field would be wrong
+// on the other's (see ClerkButtonLabel, used per-page for formButtonPrimary
+// instead).
 const clerkLocalization = {
-  formButtonPrimary: "Continue to Vault",
   signIn: {
     start: {
       title: "Back to the Vault.",
@@ -32,7 +36,6 @@ const clerkLocalization = {
   formFieldLabel__emailAddress: "Email",
   formFieldInputPlaceholder__emailAddress: "you@example.com",
   formFieldLabel__password: "Password",
-  formFieldInputPlaceholder__password: "Create a password",
 };
 
 export default function AppLayout({ children }) {
