@@ -76,17 +76,6 @@
       }
     },
     {
-      "name": "accentColor",
-      "type": "color",
-      "default": "#ff6b00",
-      "description": "Accent color for the count, quote mark, and navigation controls.",
-      "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
-      }
-    },
-    {
       "name": "autoplay",
       "type": "boolean",
       "default": true,

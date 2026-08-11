@@ -7,6 +7,36 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
+function formatCodeValue(value: unknown) {
+  if (typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (value == null) return "undefined";
+  return JSON.stringify(value, null, 2);
+}
+
+function buildParallaxImageCode({ values }: { values: Record<string, unknown> }) {
+  return `import ParallaxImageAnimation from "@/components/effects/parallax-image-animation";
+
+const parallaxImageProps = {
+  translateY: ${formatCodeValue(values.translateY)},
+  scrub: ${formatCodeValue(values.scrub)},
+  enableScale: ${formatCodeValue(values.enableScale)},
+  scaleFrom: ${formatCodeValue(values.scaleFrom)},
+  scaleTo: ${formatCodeValue(values.scaleTo)},
+};
+
+export default function Example() {
+  return (
+    <ParallaxImageAnimation
+      {...parallaxImageProps}
+      src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg"
+      wrapperClassName="w-[27vw] h-[37vw] max-md:h-[65vh] max-md:w-full max-sm:h-[120vw]"
+      imageClassName="scale-[1.4] -translate-y-[30%]"
+    />
+  );
+}`;
+}
+
 function ParallaxImage({ values, src, wrapperClassName, imageClassName, enableScale }: any) {
   return (
     <ParallaxImageAnimation
@@ -73,7 +103,7 @@ export default function DemoContent({ registry }: { registry: any }) {
           </div>
         </section>
       )}
-      copyCodeOptions={{ propsVariableName: "parallaxImageProps" }}
+      copyCodeOptions={{ buildCode: buildParallaxImageCode }}
     >
       {({ effect }) => (
         <ReactLenis root>

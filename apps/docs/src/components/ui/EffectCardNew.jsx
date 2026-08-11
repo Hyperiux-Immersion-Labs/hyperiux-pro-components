@@ -187,12 +187,12 @@ export function EffectCard({
             ))}
           </div>
           <div className="flex shrink-0 items-center gap-3 max-sm:gap-2">
-            {installCount > 0 && (
+            {/* {installCount > 0 && (
               <span className="flex items-center gap-1.5 rounded-full border border-white/18 bg-transparent px-3 py-1 text-18 font-medium text-white/55 max-sm:px-2.5 max-sm:text-[3vw]!">
                 {installCountLabel}
                 <Download className="h-4 w-4 text-white/45 max-sm:h-3 max-sm:w-3" aria-hidden="true" />
               </span>
-            )}
+            )} */}
             {effect.tier === "pro" && (
               <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
                 Pro

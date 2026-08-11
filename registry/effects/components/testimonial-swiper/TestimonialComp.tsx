@@ -18,7 +18,6 @@ gsap.registerPlugin(SplitText);
  * @typedef {Object} TestimonialCompProps
  * @property {Testimonial[]} [testimonials]
  * @property {string} [bgColor]
- * @property {string} [accentColor]
  * @property {boolean} [autoplay]
  * @property {number} [autoplayDelay]
  * @property {boolean} [showNavigation]
@@ -29,7 +28,6 @@ gsap.registerPlugin(SplitText);
 export default function TestimonialComp({
     testimonials = [],
     bgColor = "#ffffff",
-    accentColor = "#ff6b00",
     autoplay = true,
     autoplayDelay = 4500,
     showNavigation = true,
@@ -263,7 +261,7 @@ export default function TestimonialComp({
             <div className="flex items-start justify-between px-8 pr-50 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
                 <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-[1025px]:w-full max-md:w-full max-md:justify-between">
                     <div className="flex items-center gap-2 text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[4vw] font-semibold tracking-[0.12em] uppercase">
-                        <span className="text-[9px] max-[1025px]:text-[12px] max-md:text-[15px]" style={{ color: accentColor }}>◆</span>
+                        <span className="text-[9px] max-[1025px]:text-[12px] max-md:text-[15px] text-black">◆</span>
                         <span>Client Stories</span>
                     </div>
                     <span className="text-[13px] max-[1025px]:text-[12px] max-md:pl-4 text-black tabular-nums">
@@ -276,7 +274,6 @@ export default function TestimonialComp({
                         className="max-md:hidden"
                         onPrev={handlePrev}
                         onNext={handleNext}
-                        accentColor="#000000"
                     />
                 )}
             </div>

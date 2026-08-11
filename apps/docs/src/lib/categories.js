@@ -372,7 +372,7 @@ export const effectCategories = [
     faqs: [
       {
         question: "Which scroll effect should I choose for a product story?",
-        answer: "Use Sticky Content Wrapper when one core claim should stay fixed while proof changes beside it. Use Scroll Stack when each feature needs to become a chapter. Use Stacking Cards when the sequence should accumulate visual weight. Use Horizon Scroll, 3D Portfolio Slider, or Infinite Perspective Slider only when the mobile fallback can become a clean vertical stack or swipe sequence.",
+        answer: "Use Sticky Content Wrapper when one core claim should stay fixed while proof changes beside it. Use Scroll Stack when each feature needs to become a chapter. Use Stacking Cards when the sequence should accumulate visual weight. Use Horizontal Feature Reveal, Parallax Slider, or Infinite Perspective Slider only when the mobile fallback can become a clean vertical stack or swipe sequence.",
       },
       {
         question: "Where do React scroll animations create the most value?",

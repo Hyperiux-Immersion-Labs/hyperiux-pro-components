@@ -47,7 +47,6 @@ const data = [
 
 const TestimonialSwiper = ({
   bgColor = "#edeae2",
-  accentColor = "#ff6b00",
   autoplay = true,
   autoplayDelay = 4500,
   showNavigation = true,
@@ -58,7 +57,6 @@ const TestimonialSwiper = ({
       <TestimonialComp
         testimonials={data}
         bgColor={bgColor}
-        accentColor={accentColor}
         autoplay={autoplay}
         autoplayDelay={autoplayDelay}
         showNavigation={showNavigation}

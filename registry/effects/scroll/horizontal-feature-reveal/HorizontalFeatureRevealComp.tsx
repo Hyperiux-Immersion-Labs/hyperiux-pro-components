@@ -40,7 +40,6 @@ function prefersReducedMotion() {
 interface HorizontalScrollCompProps {
   propertiesData?: FeatureRevealProperty[];
   bgColor?: string;
-  imageScale?: number;
   imageParallaxRange?: number;
   cardGap?: number;
 }
@@ -48,7 +47,6 @@ interface HorizontalScrollCompProps {
 export default function HorizontalScrollComp({
   propertiesData = defaultPropertiesData,
   bgColor = "#ffffff",
-  imageScale = 1.4,
   imageParallaxRange = 30,
   cardGap = 15,
 }: HorizontalScrollCompProps) {
@@ -232,8 +230,8 @@ export default function HorizontalScrollComp({
                 <img
                   src={property.image}
                   alt={`property-img-${index + 1}`}
-                  className={`w-full h-full scale-(--image-scale) translate-x-(--image-shift-start) opacity-0 industry-img industry-${property.imgClass} max-[1025px]:translate-x-0 max-[1025px]:scale-[1] max-[1025px]:object-cover max-[1025px]:opacity-100`}
-                  style={{ "--image-scale": imageScale, "--image-shift-start": `-${imageParallaxRange}%` } as CSSProperties & Record<`--${string}`, string | number>}
+                  className={`w-full h-full translate-x-(--image-shift-start) opacity-0 industry-img industry-${property.imgClass} max-[1025px]:translate-x-0 max-[1025px]:object-cover max-[1025px]:opacity-100`}
+                  style={{ "--image-shift-start": `-${imageParallaxRange}%` } as CSSProperties & Record<`--${string}`, string | number>}
                   width={500}
                   height={1080}
                 />

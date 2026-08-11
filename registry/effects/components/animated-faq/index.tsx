@@ -7,6 +7,8 @@ import {
 } from "./AnimatedFaqComp";
 import React, { type ReactNode } from "react";
 
+export { FAQContent, FAQGroup, FAQTitle, FAQWrapper };
+
 interface FAQItem {
   id: string;
   title: ReactNode;

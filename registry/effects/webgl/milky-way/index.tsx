@@ -1234,7 +1234,7 @@ export default function MilkyWay({
                         Particles Galaxy
 
                      </h1>
-                     <h1 className='text-[7vw]  -mt-[1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milkyway</h1>
+                     <h1 className='text-[7vw]  -mt-[1vw] drop-shadow-[0_0_32px_rgba(100,96,255,0.17)]'>Milky Way</h1>
                   </div>
 
                   {!viewport?.isMobile && (

@@ -5,7 +5,6 @@ export default function NavigationButtons({
     onNext,
     isAnimating,
     className = "",
-    accentColor = "#111111",
 }: any) {
     return (
         <nav className={`flex gap-1.5 ${className}`}>
@@ -15,7 +14,7 @@ export default function NavigationButtons({
                 onClick={onPrev}
                 disabled={isAnimating}
                 className="w-11 h-11 relative flex items-center group justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30 overflow-hidden"
-                style={{ borderColor: `${accentColor}66`, color: accentColor }}
+                style={{ borderColor: "#00000066", color: "#000000" }}
             >
                 <ArrowLeft
                     size={16}
@@ -29,7 +28,7 @@ export default function NavigationButtons({
                 onClick={onNext}
                 disabled={isAnimating}
                 className="w-11 h-11 flex overflow-hidden relative group items-center justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30"
-                style={{ borderColor: `${accentColor}66`, color: accentColor }}
+                style={{ borderColor: "#00000066", color: "#000000" }}
             >
                 <ArrowRight
                     size={16}

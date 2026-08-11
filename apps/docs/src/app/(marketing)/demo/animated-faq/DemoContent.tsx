@@ -72,9 +72,40 @@ import {
   FAQWrapper,
 } from "@/components/effects/animated-faq";
 
+const faqItems = [
+  {
+    id: "faq-1",
+    title: "What makes this FAQ package more reusable?",
+    content:
+      "You are no longer locked into a plain data object. You can pass rich JSX, custom markup, inline links, badges, icons, or even other components inside the title and content.",
+    defaultOpen: true,
+  },
+  {
+    id: "faq-2",
+    title: "Can I put custom content inside the answer?",
+    content:
+      "Yes. This content area accepts full React nodes, not just text. You can render paragraphs, lists, buttons, and inline links.",
+    defaultOpen: false,
+  },
+  {
+    id: "faq-3",
+    title: "Does it use the ChevronBird trigger?",
+    content:
+      "Yes. The open and close state is visually driven by ChevronBird, so your motion language stays consistent across the whole system.",
+    defaultOpen: false,
+  },
+];
+
+const defaultOpenItems = faqItems
+  .filter((item) => item.defaultOpen)
+  .map((item) => item.id);
+
 export default function AnimatedFaqDemo() {
   return (
-    <FAQGroup allowMultiple={${values.allowMultiple}} defaultOpenItems={["faq-1"]}>
+    <FAQGroup
+      allowMultiple={${values.allowMultiple}}
+      defaultOpenItems={defaultOpenItems}
+    >
       {faqItems.map((item) => (
         <FAQWrapper
           key={item.id}
@@ -95,7 +126,7 @@ export default function AnimatedFaqDemo() {
           </FAQTitle>
 
           <FAQContent className="pt-4 text-neutral-400">
-            {item.content}
+            <p>{item.content}</p>
           </FAQContent>
         </FAQWrapper>
       ))}

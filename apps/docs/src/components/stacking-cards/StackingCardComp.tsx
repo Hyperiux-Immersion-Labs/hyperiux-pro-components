@@ -213,7 +213,6 @@ const SliderCard = ({
         <div
             className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center pt-4 ${backgroundColor}
  max-md:min-h-[100svh] max-[1025px]:flex-col max-[1025px]:justify-start max-md:py-8`}
-            style={{ borderRadius: cardCornerRadius }}
         >
 
             <div

@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import StackingCardComp from './StackingCardComp';
 
 const data = [
