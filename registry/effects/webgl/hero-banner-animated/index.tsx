@@ -14,8 +14,20 @@ import { Play } from'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import EdgeBlurEffect from './EdgeBlurEffect'
 import { createVisibilityGate } from './createSuspendedRaf'
-import Link from 'next/link'
-import { usePrefersReducedMotion } from '@/lib/motion'
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setPrefersReducedMotion(mediaQuery.matches)
+    update()
+    mediaQuery.addEventListener('change', update)
+    return () => mediaQuery.removeEventListener('change', update)
+  }, [])
+
+  return prefersReducedMotion
+}
 
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
@@ -253,7 +265,7 @@ export default function HeroBannerAnimated({
 
       <section
         ref={rootRef}
-        className="w-full h-screen overflow-hidden bg-black relative"
+        className="w-full h-screen bg-black relative"
         style={{ "--hero-accent-color": accentColor } as React.CSSProperties}
       >
         <AnimatePresence>
@@ -301,13 +313,13 @@ export default function HeroBannerAnimated({
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
   className='absolute flex items-center justify-center gap-5 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-[1025px]:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
 >
-  <Link prefetch={false} href="/effects" className='pointer-events-auto'>
+  <a href="/effects" className='pointer-events-auto'>
     Explore All Effects
-  </Link>
+  </a>
   <Play className='w-4 h-4 max-md:hidden' fill='var(--hero-accent-color)' />
-  <Link prefetch={false} href="/effects/wegl-effects/hero-banner-animated" className='pointer-events-auto'>
+  <a href="/effects/wegl-effects/hero-banner-animated" className='pointer-events-auto'>
     Read Article
-  </Link>
+  </a>
 
 
 </motion.p>

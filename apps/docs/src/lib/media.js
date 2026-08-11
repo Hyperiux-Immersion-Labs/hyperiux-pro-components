@@ -29,10 +29,29 @@ export function resolveMediaUrl(
 }
 
 export function resolveEffectVideoUrl(effect) {
-  return resolveMediaUrl(
-    effect?.videoUrl || effect?.videoURL || effect?.video_url,
-    { defaultExtension: "mp4" }
-  );
+  const rawVideoUrl = effect?.videoUrl || effect?.videoURL || effect?.video_url;
+  if (!rawVideoUrl) return null;
+
+  const src = String(rawVideoUrl).trim();
+  if (!src) return null;
+  if (/^(https?:)?\/\//.test(src)) return src;
+
+  const category =
+    effect?.categorySlug ||
+    effect?.category ||
+    (Array.isArray(effect?.categories) ? effect.categories.find(Boolean) : null);
+  const effectName =
+    effect?.effectSlug ||
+    effect?.slug ||
+    effect?.name ||
+    src.replace(/^\/+/, "").replace(/\/+$/, "").split("/").pop()?.replace(/\.mp4$/i, "");
+
+  if (!category || !effectName) {
+    return resolveMediaUrl(rawVideoUrl, { defaultExtension: "mp4" });
+  }
+
+  const baseUrl = (process.env.NEXT_PUBLIC_DEV_URL || "").replace(/\/+$/, "");
+  return `${baseUrl}/VaultVideos/${String(category).replace(/^\/+|\/+$/g, "")}/${String(effectName).replace(/^\/+|\/+$/g, "")}.mp4`;
 }
 
 export function resolveDirectR2MediaUrl(

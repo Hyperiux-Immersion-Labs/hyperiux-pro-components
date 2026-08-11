@@ -60,20 +60,6 @@
       }
     },
     {
-      "name": "parallaxScale",
-      "type": "number",
-      "default": 1.25,
-      "description": "Scale applied to each image during its parallax pass.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 1,
-        "max": 2,
-        "step": 0.05
-      }
-    },
-    {
       "name": "scrub",
       "type": "number",
       "default": 1,

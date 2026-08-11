@@ -33,9 +33,9 @@
     },
     {
       "name": "scrub",
-      "type": "boolean",
+      "type": "boolean | number",
       "default": true,
-      "description": "Links animation progress to scroll.",
+      "description": "Links animation progress to scroll. Accepts true or a numeric scrub delay.",
       "remixer": {
         "control": "checkbox",
         "group": "motion",

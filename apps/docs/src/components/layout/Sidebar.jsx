@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { Overview, Documentation, Category, Legal, Github, Pricing, Npm } from "../WebsiteComps/Icons";
 import Link from "next/link";
 
@@ -55,12 +56,19 @@ function NavIconLink({
   reduceMotion,
   pillId,
 }) {
-  return (
+  const handleClick = (event) => {
+    onClick?.(event);
+
+    if (external) {
+      event.currentTarget.blur();
+    }
+  };
+
+  const link = (
     <Link
       href={href}
       scroll={false}
-      title={label}
-      onClick={onClick}
+      onClick={handleClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       target={external ? "_blank" : undefined}
@@ -95,6 +103,14 @@ function NavIconLink({
       </span>
     </Link>
   );
+
+  if (isExpanded) return link;
+
+  return (
+    <Tooltip label={label} position="right" className="w-fit" hideOnClick={external}>
+      {link}
+    </Tooltip>
+  );
 }
 
 function SectionButton({
@@ -110,16 +126,15 @@ function SectionButton({
   reduceMotion,
   pillId,
 }) {
-  return (
+  const button = (
     <button
       type="button"
-      title={label}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`relative flex h-10 cursor-pointer items-center gap-3 rounded-md px-4 py-[1.5vw] text-left text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
+      className={`relative flex h-10 cursor-pointer items-center rounded-md px-4 py-[1.5vw] text-left text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
         isExpanded ? "w-[18.5vw]" : "w-[3.8vw]"
-      }`}
+      } ${isExpanded ? "gap-3" : "gap-1.5"}`}
     >
       {shouldHighlight && (
         <motion.span
@@ -139,21 +154,33 @@ function SectionButton({
       <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
 
       <span
-        className={`min-w-0 flex-1 truncate ${
-          isExpanded ? "delay-100 opacity-100 duration-200" : "opacity-0"
+        className={`truncate ${
+          isExpanded
+            ? "min-w-0 flex-1 delay-100 opacity-100 duration-200"
+            : "w-0 opacity-0"
         }`}
       >
         {label}
       </span>
 
-      <motion.span
-        animate={{ rotate: isOpen ? 90 : 0, x: isOpen ? 2 : 0 }}
-        transition={{ duration: 0.22, ease: "easeOut" }}
-        className="shrink-0"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </motion.span>
+      {isExpanded && (
+        <motion.span
+          animate={{ rotate: isOpen ? 90 : 0, x: isOpen ? 2 : 0 }}
+          transition={{ duration: 0.22, ease: "easeOut" }}
+          className="shrink-0"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </motion.span>
+      )}
     </button>
+  );
+
+  if (isExpanded) return button;
+
+  return (
+    <Tooltip label={label} position="right" className="w-fit">
+      {button}
+    </Tooltip>
   );
 }
 
@@ -494,7 +521,11 @@ const navigateLegal = (event, href) => {
         </div>
       </button>
 
-      <div className="flex h-full flex-col items-start overflow-hidden border-r border-b border-white/10 py-3 pl-3 pr-1 transition-all duration-300">
+      <div
+        className={`flex h-full flex-col items-start border-r border-b border-white/10 py-3 pl-3 pr-1 transition-all duration-300 ${
+          isExpanded ? "overflow-hidden" : "overflow-visible"
+        }`}
+      >
         <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
           <Link prefetch={false} href="/" className="flex min-w-0 items-center gap-3">
             <Image
@@ -521,12 +552,14 @@ const navigateLegal = (event, href) => {
 
         <nav
           data-lenis-prevent
-          className="w-full flex-1 min-h-0  overflow-y-auto overflow-x-hidden pb-4 pr-1 sidebar-link-content"
+          className={`flex w-full flex-1 min-h-0 flex-col pb-4 pr-1 sidebar-link-content ${
+            isExpanded ? "overflow-y-auto overflow-x-hidden" : "overflow-visible"
+          }`}
           onMouseLeave={() => setHoveredSidebarKey("")}
         >
           <LayoutGroup id="sidebar-pill">
             <NavIconLink
-              label="Overview"
+              label="All Effects"
               href="/effects"
               icon={Overview}
               isExpanded={isExpanded}
@@ -764,6 +797,18 @@ const navigateLegal = (event, href) => {
               external
               onMouseEnter={() => setHoveredSidebarKey("npm")}
               shouldHighlight={highlightedSidebarKey === "npm"}
+              reduceMotion={reduceMotion}
+              pillId={MAIN_SIDEBAR_PILL_ID}
+            />
+
+            <NavIconLink
+              label="MCP"
+              href="/docs/mcp"
+              icon={Documentation}
+              isExpanded={isExpanded}
+              isActive={pathname === "/docs/mcp"}
+              onMouseEnter={() => setHoveredSidebarKey("mcp")}
+              shouldHighlight={highlightedSidebarKey === "mcp"}
               reduceMotion={reduceMotion}
               pillId={MAIN_SIDEBAR_PILL_ID}
             />

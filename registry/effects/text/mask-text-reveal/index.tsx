@@ -3,7 +3,7 @@
 "use client";
 
 import gsap from "gsap";
-import { SplitText } from "gsap/SplitText";
+import { SplitText } from "gsap/dist/SplitText";
 import { useEffect, useRef, type ReactNode } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 

@@ -32,7 +32,25 @@ export default async function SignInPage() {
           signUpUrl="/sign-up"
           fallbackRedirectUrl="/effects"
           forceRedirectUrl="/effects"
+          localization={{
+            formButtonPrimary: "Continue to Vault",
+            formFieldLabel__emailAddress: "Email",
+            formFieldInputPlaceholder__emailAddress: "you@example.com",
+            signIn: {
+              start: {
+                title: "Back to the Vault.",
+                subtitle:
+                  "Sign in to access your effects, Pro downloads, and CLI authentication.",
+                actionText: "New here?",
+                actionLink: "Create an account →",
+              },
+            },
+          }}
         />
+
+        {/* <p className="mt-6 text-center text-xs text-white/40">
+          Your code stays in your repo. As it should.
+        </p> */}
       </div>
     </AuthShell>
     </>

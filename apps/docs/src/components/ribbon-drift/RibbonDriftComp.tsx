@@ -2,8 +2,8 @@
 
 import gsap from "gsap";
 import React, { useEffect, useId, useRef } from "react";
-import ScrollTrigger from "gsap/ScrollTrigger";
-import SplitText from "gsap/SplitText";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import SplitText from "gsap/dist/SplitText";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const IMAGE_POOL = [

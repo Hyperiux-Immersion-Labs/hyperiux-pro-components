@@ -40,7 +40,7 @@
     {
       "name": "overlayColor",
       "type": "string",
-      "default": "#ffffff",
+      "default": "#111111",
       "description": "Overlay reveal rectangle color.",
       "remixer": {
         "control": "color",

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { markUserProFromSubscription, markUserFree, sendInvoiceEmail } from "@/lib/pro-access";
+import { markUserProFromSubscription, markUserFree, sendInvoiceEmail, recordInvoice } from "@/lib/pro-access";
 import { releaseFoundingSlot } from "@/lib/founding-slots";
 
 // Razorpay's server calls this — authenticated via X-Razorpay-Signature
@@ -68,8 +68,10 @@ export async function POST(req) {
 
       // Only "charged" corresponds 1:1 with an actual payment - "activated"
       // and "charged" can both fire for the first cycle, so gating the email
-      // on "charged" alone avoids sending two receipts for one charge.
+      // (and the invoice record) on "charged" alone avoids double-counting
+      // one charge.
       if (event.event === "subscription.charged" && payment) {
+        await recordInvoice({ clerkUserId, subscription, payment });
         await sendInvoiceEmail({ clerkUserId, subscription, payment });
       }
     } else if (event.event in FREE_EVENTS) {

@@ -12,6 +12,7 @@ import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeade
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import {
   effectsOverviewContent,
@@ -21,10 +22,18 @@ import {
   getEffectCategory,
   getEffectCategoryBySlug,
   getEffectCategoryHref,
+  getQuickCategoryLabel,
+  resolveEffectCategoryId,
 } from "@/lib/categories";
 
 import HeadAnim from "@/components/Animations/HeadAnim";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import {
+  EFFECT_CATEGORY_FILTER_OPTIONS,
+  EFFECT_SORT_OPTIONS,
+  FILTER_OPTIONS,
+  sortEffects,
+} from "@/lib/effect-sort";
 import Button from "@/components/WebsiteComps/Button";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 import { useFadeUp, useFadeIn } from "@/components/Animations/gsapAnimations";
@@ -32,18 +41,10 @@ import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { useUser } from "@clerk/nextjs";
 import FAQs from "@/components/Homepage/FAQs";
-import { FilterMenu, FILTER_OPTIONS } from "./FilterMenu";
+import { FilterMenu } from "./FilterMenu";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
-}
-
-// Resolve category ID from Sanity categorySlug first, fall back to registry fields
-function resolveEffectCategoryId(effect) {
-  if (effect.categorySlug) {
-    return getEffectCategoryBySlug(effect.categorySlug)?.id || effect.category;
-  }
-  return effect.categories?.[0] || effect.category;
 }
 
 function RouteAnimationSync({ syncKey }) {
@@ -205,6 +206,8 @@ const routeKey = `${pathname}${
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlist, setWishlist] = useState([]);
   const [gridColumns, setGridColumns] = useState(3);
+  const { toast: wishlistToast, showToast: showWishlistSavedToast, dismissToast: dismissWishlistToast } = useToastQueue();
+  const [dropdownFilter, setDropdownFilter] = useState(null);
 
   const featuredEffects = useMemo(
     () => getFeaturedEffects(safeEffects),
@@ -233,6 +236,27 @@ const routeKey = `${pathname}${
   }, [initialCategory, pathname, searchParamString]);
 
   const categoryFilter = categoryFromUrl;
+  const urlSortFilter = useMemo(() => {
+    const requestedSort = new URLSearchParams(searchParamString).get("sort");
+
+    return EFFECT_SORT_OPTIONS.includes(requestedSort) ? requestedSort : null;
+  }, [searchParamString]);
+
+  const activeDropdownFilter =
+    dropdownFilter?.categoryFilter === categoryFilter ? dropdownFilter.value : null;
+
+  const dropdownCategoryFilter = EFFECT_CATEGORY_FILTER_OPTIONS.includes(activeDropdownFilter)
+    ? activeDropdownFilter
+    : null;
+
+  const dropdownSortFilter = EFFECT_SORT_OPTIONS.includes(activeDropdownFilter)
+    ? activeDropdownFilter
+    : null;
+
+  const effectiveCategoryFilter = dropdownCategoryFilter || categoryFilter;
+  const effectiveSortFilter = dropdownCategoryFilter
+    ? null
+    : dropdownSortFilter || (!activeDropdownFilter ? urlSortFilter : null);
 
   const refreshAfterCategoryChange = useCallback(() => {
     requestAnimationFrame(() => {
@@ -251,6 +275,7 @@ const routeKey = `${pathname}${
     params.delete("category");
     params.delete("waitlist");
     params.delete("custom-animation-form");
+    params.delete("sort");
 
     const nextQuery = params.toString();
     const categoryHref = getEffectCategoryHref(resolvedCategory);
@@ -333,6 +358,22 @@ const routeKey = `${pathname}${
     [getCategoryUrl, navigateWithRouteFade]
   );
 
+  const handleFilterSelect = useCallback(
+    (nextFilter) => {
+      setDropdownFilter({ categoryFilter, value: nextFilter });
+      setSearchQuery("");
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh(true);
+        });
+      });
+
+      return true;
+    },
+    [categoryFilter]
+  );
+
   const showAllEffects = useCallback(() => {
     return navigateWithRouteFade("/effects");
   }, [navigateWithRouteFade]);
@@ -362,14 +403,21 @@ const routeKey = `${pathname}${
     [quickCategories]
   );
 
-  const activeFilter = FILTER_OPTIONS.includes(categoryFilter)
-    ? categoryFilter
-    : null;
+  const activeFilter =
+    activeDropdownFilter === "none"
+      ? null
+      : activeDropdownFilter || urlSortFilter || (FILTER_OPTIONS.includes(categoryFilter)
+        ? categoryFilter
+        : null);
 
   const getQuickCategoryLabel = useCallback((cat) => {
+    if (cat === "none") return "None";
     if (cat === "free") return "Free";
     if (cat === "pro") return "Pro";
     if (cat === "featured") return "Featured";
+    if (cat === "az") return "A-Z";
+    if (cat === "za") return "Z-A";
+    if (cat === "recent") return "Recently Added";
     if (cat === "webgl") return "WebGL";
     return cat.charAt(0).toUpperCase() + cat.slice(1);
   }, []);
@@ -423,6 +471,10 @@ const routeKey = `${pathname}${
 
       if (data.saved) {
         setWishlist((prev) => (prev.includes(slug) ? prev : [...prev, slug]));
+        showWishlistSavedToast({
+          title: `${effect.title || effect.name} saved`,
+          description: "You'll find it in your dashboard's Saved Effects.",
+        });
       } else {
         setWishlist((prev) => prev.filter((x) => x !== slug));
       }
@@ -436,15 +488,15 @@ const routeKey = `${pathname}${
   const filteredEffects = useMemo(() => {
     if (isEffectsLoading) return [];
 
-    return safeEffects.filter((effect) => {
-      if (categoryFilter === "free") {
+    const nextEffects = safeEffects.filter((effect) => {
+      if (effectiveCategoryFilter === "free") {
         if (effect.tier === "pro") return false;
-      } else if (categoryFilter === "pro") {
+      } else if (effectiveCategoryFilter === "pro") {
         if (effect.tier !== "pro") return false;
-      } else if (categoryFilter === "featured") {
+      } else if (effectiveCategoryFilter === "featured") {
         if (!featuredEffectNames.has(effect.name)) return false;
-      } else if (categoryFilter !== "all") {
-        if (resolveEffectCategoryId(effect) !== categoryFilter) return false;
+      } else if (effectiveCategoryFilter !== "all") {
+        if (resolveEffectCategoryId(effect) !== effectiveCategoryFilter) return false;
       }
 
       if (searchQuery) {
@@ -461,9 +513,14 @@ const routeKey = `${pathname}${
 
       return true;
     });
+
+    const sortedEffects = sortEffects(nextEffects, effectiveSortFilter);
+
+    return effectiveSortFilter === "recent" ? sortedEffects.slice(0, 5) : sortedEffects;
   }, [
     safeEffects,
-    categoryFilter,
+    effectiveCategoryFilter,
+    effectiveSortFilter,
     searchQuery,
     featuredEffectNames,
     isEffectsLoading,
@@ -472,26 +529,26 @@ const routeKey = `${pathname}${
   const totalEffects = useMemo(() => {
     if (isEffectsLoading) return 0;
 
-    if (categoryFilter === "all") {
+    if (effectiveCategoryFilter === "all") {
       return safeEffects.length;
     }
 
-    if (categoryFilter === "free") {
+    if (effectiveCategoryFilter === "free") {
       return safeEffects.filter((effect) => effect.tier !== "pro").length;
     }
 
-    if (categoryFilter === "pro") {
+    if (effectiveCategoryFilter === "pro") {
       return safeEffects.filter((effect) => effect.tier === "pro").length;
     }
 
-    if (categoryFilter === "featured") {
+    if (effectiveCategoryFilter === "featured") {
       return featuredEffects.length;
     }
 
     return safeEffects.filter(
-      (effect) => resolveEffectCategoryId(effect) === categoryFilter
+      (effect) => resolveEffectCategoryId(effect) === effectiveCategoryFilter
     ).length;
-  }, [safeEffects, categoryFilter, featuredEffects, isEffectsLoading]);
+  }, [safeEffects, effectiveCategoryFilter, featuredEffects, isEffectsLoading]);
 
   const activeCategory = getEffectCategory(categoryFilter);
 
@@ -615,12 +672,11 @@ const routeKey = `${pathname}${
                   ].join(" ")}
                   
                 >
-                  {/* Filter dropdown: featured / free / pro */}
+                  {/* Filter dropdown: featured / free / pro / sorting */}
                   <FilterMenu
                     activeFilter={activeFilter}
-                    categoryFilter={categoryFilter}
                     getLabel={getQuickCategoryLabel}
-                    onSelect={handleCategoryLinkClick}
+                    onSelect={handleFilterSelect}
                   />
 
                   {/* Divider between filters and categories */}
@@ -817,6 +873,8 @@ const routeKey = `${pathname}${
 
     </VaultLayout>
 
+    <ToastViewport toast={wishlistToast} onDismiss={dismissWishlistToast} />
+
     {mounted && createPortal(
       <>
         {/* Pro upgrade success modal */}
@@ -858,7 +916,7 @@ const routeKey = `${pathname}${
           className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showWishlistToast ? "opacity-100" : "pointer-events-none opacity-0"}`}
           onClick={() => setShowWishlistToast(false)}
         >
-          <div
+w          <div
             className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
             onClick={(event) => event.stopPropagation()}
           >

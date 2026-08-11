@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
 import { ArrowUpRight, Download, Eye, Heart } from "lucide-react";
+import { Tooltip } from "@/components/ui/Tooltip";
 
 function formatLabel(value = "") {
   return value
@@ -247,44 +248,50 @@ export function EffectCard({
         </div>
 
         <div className="pointer-events-auto relative z-30 flex shrink-0 items-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:gap-1.5">
-          <button
-            type="button"
-            data-no-card-link
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggleWishlist?.(effect);
-            }}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
-            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          >
-            <Heart
-              className={`h-4 w-4 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-5 max-md:w-5 ${
-                isWishlisted ? "fill-white" : ""
-              }`}
-            />
-          </button>
+          <Tooltip label="Save">
+            <button
+              type="button"
+              data-no-card-link
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleWishlist?.(effect);
+              }}
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
+              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            >
+              <Heart
+                className={`h-4 w-4 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-5 max-md:w-5 ${
+                  isWishlisted ? "fill-white" : ""
+                }`}
+              />
+            </button>
+          </Tooltip>
 
-          <button
-            type="button"
-            data-no-card-link
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              window.open(previewHref, "_blank", "noopener,noreferrer");
-            }}
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
-            aria-label="Preview"
-          >
-            <Eye className="h-4 w-4 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-5 max-md:w-5" />
-          </button>
+          <Tooltip label="Demo">
+            <button
+              type="button"
+              data-no-card-link
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(previewHref, "_blank", "noopener,noreferrer");
+              }}
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
+              aria-label="Preview"
+            >
+              <Eye className="h-4 w-4 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-5 max-md:w-5" />
+            </button>
+          </Tooltip>
 
-          <span
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
-            aria-hidden="true"
-          >
-            <ArrowUpRight className="h-5 w-5 max-md:h-4 max-md:w-4" />
-          </span>
+          <Tooltip label="View Detail">
+            <span
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
+              aria-hidden="true"
+            >
+              <ArrowUpRight className="h-5 w-5 max-md:h-4 max-md:w-4" />
+            </span>
+          </Tooltip>
         </div>
       </div>
     </Link>

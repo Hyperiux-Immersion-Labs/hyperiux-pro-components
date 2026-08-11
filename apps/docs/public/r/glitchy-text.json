@@ -33,34 +33,6 @@
   ],
   "props": [
     {
-      "name": "initialDelay",
-      "type": "number",
-      "default": 2.5,
-      "description": "Initial animation delay in seconds.",
-      "remixer": {
-        "control": "range",
-        "group": "timing",
-        "groupTitle": "Timing",
-        "min": 0,
-        "max": 5,
-        "step": 0.1
-      }
-    },
-    {
-      "name": "replayDelay",
-      "type": "number",
-      "default": 0.2,
-      "description": "Replay animation delay in seconds.",
-      "remixer": {
-        "control": "range",
-        "group": "timing",
-        "groupTitle": "Timing",
-        "min": 0,
-        "max": 2,
-        "step": 0.05
-      }
-    },
-    {
       "name": "baseTextColor",
       "type": "string",
       "default": "#ffffff",

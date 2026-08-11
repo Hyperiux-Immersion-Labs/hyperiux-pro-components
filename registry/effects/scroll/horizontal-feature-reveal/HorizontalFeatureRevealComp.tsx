@@ -1,7 +1,7 @@
 "use client";
 import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { SplitText } from "gsap/dist/SplitText";
 import { useEffect, useId, type CSSProperties } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);

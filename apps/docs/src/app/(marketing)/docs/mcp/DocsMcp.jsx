@@ -1023,7 +1023,7 @@ export default function DocsMcp() {
 
       <Heading2 id="license">License</Heading2>
 
-      <Para>MIT.</Para>
+      <Para>MPL 2.0.</Para>
     </DocsContent>
   );
 }

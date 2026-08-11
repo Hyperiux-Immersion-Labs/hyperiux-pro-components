@@ -9,10 +9,23 @@ import Button from "../WebsiteComps/Button";
 const BASE_TABS = [
   { label: "Overview", href: "/dashboard" },
   { label: "Saved Effects", href: "/dashboard/saved" },
+  { label: "Usage", href: "/dashboard/usage" },
+  { label: "Invoicing", href: "/dashboard/invoicing" },
   { label: "Settings", href: "/dashboard/settings" },
 ];
 
-const ADMIN_TAB = { label: "Admin", href: "/dashboard/admin" };
+// Both admin-only, both gated by dashboard/admin/layout.js's requireAdmin()
+// check regardless of this tab list - hiding them here is a nav nicety, not
+// the actual access control.
+const ADMIN_TABS = [
+  { label: "User Management", href: "/dashboard/admin" },
+  { label: "Activity", href: "/dashboard/admin/activity" },
+];
+
+// Usage and Invoicing are customer-account concepts (daily copy limits,
+// personal billing) - an admin has neither, so surfacing them would just
+// show empty/irrelevant state instead of being hidden outright.
+const ADMIN_HIDDEN_TABS = new Set(["/dashboard/usage", "/dashboard/invoicing"]);
 
 export function DashboardShell({ children }) {
   const pathname = usePathname();
@@ -20,7 +33,19 @@ export function DashboardShell({ children }) {
   const { user } = useUser();
 
   const isAdmin = user?.publicMetadata?.role === "admin";
-  const tabs = isAdmin ? [...BASE_TABS, ADMIN_TAB] : BASE_TABS;
+  const visibleBaseTabs = isAdmin
+    ? BASE_TABS.filter((tab) => !ADMIN_HIDDEN_TABS.has(tab.href))
+    : BASE_TABS;
+  const tabs = isAdmin ? [...visibleBaseTabs, ...ADMIN_TABS] : visibleBaseTabs;
+
+  // Longest-matching href wins, so a nested route (e.g. /dashboard/admin/activity)
+  // lights up only its own tab instead of also lighting up an ancestor tab
+  // whose href is a strict prefix of it (e.g. /dashboard/admin, User Management).
+  const activeTabHref = tabs
+    .filter((tab) =>
+      tab.href === "/dashboard" ? pathname === tab.href : pathname.startsWith(tab.href)
+    )
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
 
   return (
     <div className="min-h-screen text-white">
@@ -50,10 +75,7 @@ export function DashboardShell({ children }) {
         <div className="flex items-center justify-between gap-4 mb-12 max-[1025px]:flex-col max-[1025px]:items-start">
           <div className="flex gap-3 overflow-x-auto max-w-full max-md:pb-[4vw] max-md:flex-wrap">
             {tabs.map((tab) => {
-              const active =
-                tab.href === "/dashboard"
-                  ? pathname === tab.href
-                  : pathname.startsWith(tab.href);
+              const active = tab.href === activeTabHref;
 
               return (
                 <Link

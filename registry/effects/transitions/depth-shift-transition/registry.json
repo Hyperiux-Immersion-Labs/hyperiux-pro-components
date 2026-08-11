@@ -21,7 +21,7 @@
   "previewUrl": "/demo/depth-shift-transition",
   "coverImage": "depth-shift-transition",
   "videoUrl": "depth-shift-transition.mp4",
-  "tier": "free",
+  "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "DepthShiftTransition",

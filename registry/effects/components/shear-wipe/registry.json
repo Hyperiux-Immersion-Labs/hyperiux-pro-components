@@ -1,0 +1,44 @@
+{
+  "name": "shear-wipe",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-08-06",
+      "summary": "Added a tab-based layout with animated content transitions for tablet and mobile, replacing the hover edge panels which don't translate well to touch",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-08-06",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "type": "registry:component",
+  "title": "Shear Wipe",
+  "description": "Two full-screen content panels separated by a slanted GSAP clip-path edge that shears open on hover or click, revealing the second panel.",
+  "category": "components",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/demo/shear-wipe",
+  "tier": "pro",
+  "subfolder": true,
+  "main": "index.tsx",
+  "exportName": "ShearWipe",
+  "exportKind": "default",
+  "importPath": "@/components/effects/shear-wipe",
+  "target": "src/components/effects/shear-wipe",
+  "files": [
+    {
+      "path": "index.tsx",
+      "target": "src/components/effects/shear-wipe/index.tsx"
+    },
+    {
+      "path": "ShearWipeComp.tsx",
+      "target": "src/components/effects/shear-wipe/ShearWipeComp.tsx"
+    }
+  ]
+}

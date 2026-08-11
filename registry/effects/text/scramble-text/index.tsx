@@ -4,9 +4,9 @@
 
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import SplitText from 'gsap/SplitText';
-import ScrambleTextPlugin from 'gsap/ScrambleTextPlugin';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import SplitText from 'gsap/dist/SplitText';
+import ScrambleTextPlugin from 'gsap/dist/ScrambleTextPlugin';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 
 gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 

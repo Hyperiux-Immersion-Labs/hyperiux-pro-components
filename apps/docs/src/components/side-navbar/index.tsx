@@ -2,14 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import Menu from "./Menu";
+import Menu, { NavLinkItem, SocialLinkItem } from "./Menu";
 import Image from "next/image";
 
-// Hamburger-to-X morph: each line's stroke-dasharray/dashoffset pair is the
-// resolved value of what used to be CSS custom properties (--length,
-// --total-length, --offset) per line and per open/closed state. Lines 1 and
-// 3 share a path total-length (the diagonal chevron shape); line 2 is the
-// straight middle bar with its own.
+
 const HAMBURGER_LINES = [
   {
     d: "M0 70l28-28c2-2 2-2 7-2h64",
@@ -28,7 +24,13 @@ const HAMBURGER_LINES = [
   },
 ];
 
-const SideNavbar = () => {
+interface SideNavbarProps {
+  navLinks?: NavLinkItem[];
+  socialLinks?: SocialLinkItem[];
+  panelWidth?: string;
+}
+
+const SideNavbar = ({ navLinks, socialLinks, panelWidth }: SideNavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -123,8 +125,8 @@ const SideNavbar = () => {
         </div>
       </header>
       <div className="w-screen h-screen fixed inset-0">
-        <Image src={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/side-navbar-bg.jpg"} alt="sidenavbar image" className={`w-full h-full absolute  duration-300 ${menuOpen ? "brightness-90" : ""}`} width={1920} height={1080} />
-       <div className={`w-full h-full flex flex-col justify-center items-center gap-[1.5vw] text-white relative z-1 duration-300 max-[1025px]:px-[10vw] ${menuOpen ? "brightness-90" : ""}`}>
+        <Image src={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/side-navbar-bg.jpg"} alt="sidenavbar image" className="w-full h-full absolute duration-300" width={1920} height={1080} />
+       <div className="w-full h-full flex flex-col justify-center items-center gap-[1.5vw] text-white relative z-1 duration-300 max-[1025px]:px-[10vw]">
         <h1 className=" text-[5vw] max-md:text-[12vw] max-[1025px]:text-[7vw]">
           Side Navbar
         </h1>
@@ -134,7 +136,7 @@ const SideNavbar = () => {
 
        </div>
       </div>
-      <Menu menuOpen={menuOpen} />
+      <Menu menuOpen={menuOpen} navLinks={navLinks} socialLinks={socialLinks} panelWidth={panelWidth} />
     </>
   );
 };

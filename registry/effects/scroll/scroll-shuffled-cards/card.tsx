@@ -17,6 +17,23 @@ interface CardProps {
   style?: CSSProperties;
 }
 
+/**
+ * @typedef {Object} CardProps
+ * @property {import('react').ReactNode} [children]
+ * @property {import('react').ReactNode} [title]
+ * @property {import('react').ReactNode} [subtitle]
+ * @property {import('react').ReactNode} [content]
+ * @property {import('react').ReactNode} [footer]
+ * @property {string} [padding]
+ * @property {string} [borderColor]
+ * @property {string} [bg]
+ * @property {string} [radius]
+ * @property {boolean} [shadow]
+ * @property {string} [className]
+ * @property {import('react').CSSProperties} [style]
+ */
+
+/** @param {CardProps} props */
 const Card = ({
   children,
   title,

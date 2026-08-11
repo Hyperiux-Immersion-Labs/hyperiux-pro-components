@@ -76,35 +76,6 @@
         "group": "style",
         "groupTitle": "Style"
       }
-    },
-    {
-      "name": "ease",
-      "type": "string",
-      "default": "cubic-bezier(0.625, 0.05, 0, 1)",
-      "description": "Easing used for the menu expansion.",
-      "remixer": {
-        "control": "select",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "options": [
-          {
-            "value": "cubic-bezier(0.625, 0.05, 0, 1)",
-            "label": "Custom Curve"
-          },
-          {
-            "value": "power2.out",
-            "label": "Power 2 Out"
-          },
-          {
-            "value": "power3.out",
-            "label": "Power 3 Out"
-          },
-          {
-            "value": "expo.out",
-            "label": "Expo Out"
-          }
-        ]
-      }
     }
   ],
   "remixer": {

@@ -263,6 +263,8 @@ export function EffectDetailContent({
 
   const videoPreviewUrl = resolveEffectVideoUrl({
     videoUrl: content?.videoUrl || safeEffect.videoUrl || `${slug}.mp4`,
+    categorySlug: content?.categorySlug || categorySlug || safeEffect.categorySlug,
+    effectSlug: slug,
   });
 
   const updateRelatedScrollState = useCallback(() => {
@@ -434,7 +436,7 @@ export function EffectDetailContent({
     }) || "/assets/img/image01.webp";
 
   return (
-    <CopyLimitProvider onRequireSignIn={() => setShowSignInToCopyModal(true)}>
+    <CopyLimitProvider effectSlug={slug} onRequireSignIn={() => setShowSignInToCopyModal(true)}>
     <VaultLayout
       effectCounts={effectCounts || {}}
       totalEffects={totalEffects || 0}

@@ -1,0 +1,37 @@
+{
+  "name": "aperture-transition",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-06",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "type": "registry:component",
+  "title": "Aperture Transition",
+  "description": "The whole screen scales down toward its center, then the incoming page reveals bottom-to-top via clip-path on the held-down page before growing back to fill the screen",
+  "category": "transitions",
+  "dependencies": [
+    "gsap",
+    "next-transition-router"
+  ],
+  "registryDependencies": [],
+  "previewUrl": "/demo/aperture-transition",
+  "coverImage": "aperture-transition",
+  "videoUrl": "aperture-transition.mp4",
+  "tier": "pro",
+  "subfolder": true,
+  "main": "index.tsx",
+  "exportName": "ApertureTransition",
+  "exportKind": "default",
+  "importPath": "@/components/effects/aperture-transition",
+  "target": "src/components/effects/aperture-transition",
+  "files": [
+    {
+      "path": "index.tsx",
+      "target": "src/components/effects/aperture-transition/index.tsx"
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import {
 import { VaultContent } from "../vault-content";
 import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
+import { sortEffects } from "@/lib/effect-sort";
 import {
   getAllSanityEffectEntries,
   buildEffectsFromSanity,
@@ -19,7 +20,7 @@ import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-s
 
 function VaultFallback() {
   return (
-    <div className="h-screen w-screen bg-black">
+    <div className="min-h-[300vh] w-screen bg-black">
     </div>
   );
 }
@@ -67,7 +68,7 @@ export default async function EffectsCategoryPage({ params }) {
   const sanityEntries = await getAllSanityEffectEntries();
   const effects = buildEffectsFromSanity(sanityEntries);
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
-  const sortedEffects = [...effects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
+  const sortedEffects = sortEffects(effects);
   const installCounts = await getEffectInstallCounts(sortedEffects);
   const effectsWithInstallCounts = attachInstallCounts(sortedEffects, installCounts);
 

@@ -724,7 +724,7 @@ export default function HoverSliderComp({ items = [], transitionDuration = 0.45,
       style={{ cursor: "crosshair" }}
     >
       <div className="relative z-20 w-full overflow-x-auto pb-8 max-md:px-2 md:max-w-205 md:overflow-x-visible md:pb-0">
-        <div className="absolute right-[-50%] top-[1vw] z-30 w-[20vw] rounded-[1vw] bg-black/6 px-3 py-2 text-[0.9rem] text-[#1e1c18] shadow-md backdrop-blur-sm max-md:hidden">
+        <div className="absolute right-[-40vw] top-[1vw] z-30 w-[20vw] rounded-[1vw] bg-black/6 px-3 py-2 text-[0.9rem] text-[#1e1c18] shadow-md backdrop-blur-sm max-md:hidden">
           Tip: hover the list rows - watch the images move and reveal.
         </div>
 

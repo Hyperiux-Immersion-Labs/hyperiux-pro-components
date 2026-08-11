@@ -612,6 +612,38 @@
       "version": "1.1.0"
     },
     {
+      "name": "aperture-transition",
+      "type": "registry:component",
+      "category": "transitions",
+      "categories": [
+        "transitions"
+      ],
+      "dependencies": [
+        "gsap",
+        "next-transition-router"
+      ],
+      "registryDependencies": [],
+      "exportName": "ApertureTransition",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ascend-transition",
+      "type": "registry:component",
+      "category": "transitions",
+      "categories": [
+        "transitions"
+      ],
+      "dependencies": [
+        "gsap",
+        "next-transition-router"
+      ],
+      "registryDependencies": [],
+      "exportName": "AscendTransition",
+      "exportKind": "default",
+      "version": "1.0.0"
+    },
+    {
       "name": "block-transition",
       "type": "registry:component",
       "category": "transitions",
@@ -1317,6 +1349,21 @@
       "version": "1.6.0"
     },
     {
+      "name": "shear-wipe",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "ShearWipe",
+      "exportKind": "default",
+      "version": "1.1.0"
+    },
+    {
       "name": "testimonial-swiper",
       "type": "registry:component",
       "category": "components",
@@ -1409,6 +1456,21 @@
       "exportName": "ImmersiveFullscreenNav",
       "exportKind": "default",
       "version": "1.1.0"
+    },
+    {
+      "name": "side-navbar",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "SideNavbar",
+      "exportKind": "default",
+      "version": "1.0.0"
     },
     {
       "name": "lines-loader",

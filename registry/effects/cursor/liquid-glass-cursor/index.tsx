@@ -87,6 +87,7 @@ export default function LiquidGlassCursor({
 
  const type = target.getAttribute("data-cursor");
  const bounds = target.getBoundingClientRect();
+ const textEl = /** @type {HTMLSpanElement} */ (textRef.current);
 
  if (type ==="button") {
  gsap.to(innerRef.current, {

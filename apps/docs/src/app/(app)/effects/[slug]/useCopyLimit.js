@@ -2,15 +2,46 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 
 const CopyLimitContext = createContext(null);
 
 // Shared across every code/install block on one effect page so hitting the
 // limit on one block immediately locks the rest too, instead of each block
-// tracking its own stale copy of the daily count.
-export function CopyLimitProvider({ children, onRequireSignIn }) {
+// tracking its own stale copy of the daily count. The limit is per distinct
+// effect copied today, not per click - once this effect has consumed a slot
+// (or the user copies from it again), every block on the page stays unlocked.
+export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
   const { isSignedIn, isLoaded } = useUser();
   const [usage, setUsage] = useState(null);
+  const { toast, showToast, dismissToast } = useToastQueue();
+
+  // Surfaces the "X of Y copies left today" nudge after every copy attempt
+  // that actually touches the daily limit - skipped for admins (unlimited)
+  // since there's nothing worth reporting.
+  const notifyUsage = useCallback(
+    (data) => {
+      if (!data || data.isAdmin || typeof data.limit !== "number") return;
+
+      const limit = data.limit;
+      const remaining = Math.max(0, data.remaining ?? 0);
+      const count = data.count ?? Math.max(0, limit - remaining);
+
+      showToast({
+        title:
+          remaining > 0
+            ? `${remaining} of ${limit} daily copies left`
+            : "Daily copy limit reached",
+        description:
+          remaining > 0
+            ? `You've copied ${count}/${limit} effects today.`
+            : "Come back tomorrow, or upgrade to Pro for a higher limit.",
+        ctaHref: remaining === 0 && data.plan !== "pro" ? "/pricing" : null,
+        ctaLabel: "Upgrade to Pro",
+      });
+    },
+    [showToast]
+  );
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn) return;
@@ -29,6 +60,8 @@ export function CopyLimitProvider({ children, onRequireSignIn }) {
     };
   }, [isLoaded, isSignedIn]);
 
+  const effectAlreadyUnlocked = Boolean(usage?.effectSlugs?.includes(effectSlug));
+
   const requestCopy = useCallback(async () => {
     if (!isLoaded) return false;
 
@@ -38,22 +71,49 @@ export function CopyLimitProvider({ children, onRequireSignIn }) {
     }
 
     if (usage?.isAdmin) return true;
-    if (usage && usage.remaining <= 0) return false;
+    // Already used a slot on this effect today - copy freely, no need to
+    // round-trip to the server.
+    if (effectAlreadyUnlocked) {
+      notifyUsage(usage);
+      return true;
+    }
+    if (usage && usage.remaining <= 0) {
+      notifyUsage(usage);
+      return false;
+    }
 
     try {
-      const res = await fetch("/api/copy-usage", { method: "POST" });
+      const res = await fetch("/api/copy-usage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ effectSlug }),
+      });
       const data = await res.json();
 
       setUsage(data);
+      notifyUsage(data);
 
       return Boolean(data.allowed);
     } catch {
       return false;
     }
-  }, [isLoaded, isSignedIn, usage, onRequireSignIn]);
+  }, [
+    isLoaded,
+    isSignedIn,
+    usage,
+    effectAlreadyUnlocked,
+    effectSlug,
+    onRequireSignIn,
+    notifyUsage,
+  ]);
 
   const isLocked = Boolean(
-    isLoaded && isSignedIn && usage && !usage.isAdmin && usage.remaining <= 0
+    isLoaded &&
+      isSignedIn &&
+      usage &&
+      !usage.isAdmin &&
+      !effectAlreadyUnlocked &&
+      usage.remaining <= 0
   );
 
   // Selection/clipboard is only blocked once we're sure the visitor is
@@ -74,6 +134,7 @@ export function CopyLimitProvider({ children, onRequireSignIn }) {
   return (
     <CopyLimitContext.Provider value={value}>
       {children}
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
     </CopyLimitContext.Provider>
   );
 }
