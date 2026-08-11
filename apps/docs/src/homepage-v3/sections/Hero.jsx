@@ -141,15 +141,15 @@ export default function Hero() {
             ref={rootRef}
             className="relative h-dvh w-screen overflow-hidden bg-background"
         >
-            <div ref={layerRef} className="absolute inset-0 origin-center will-change-transform">
+            <div ref={layerRef} className="absolute inset-0 origin-center max-md:w-full will-change-transform">
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
                     <CubeBackgroundAscii debug />
                 </div>
-                <div className="pointer-events-none absolute inset-0 z-10 flex items-end pb-[12vw] p-[3vw] max-md:items-end max-md:p-6 max-sm:p-5">
+                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[12vw] p-[3vw] max-md:items-end max-md:p-6 max-sm:p-5">
                     {/* <div className="w-full bg-gradient-to-r pointer-events-none from-black/50 to-transparent h-full absolute inset-0" /> */}
-                    <div className="space-y-[2.5vw] relative z-10 max-md:space-y-[10vw] max-sm:space-y-[12vw]">
+                    <div className="space-y-[2.5vw] relative z-10 w-full max-md:space-y-8 max-sm:space-y-11">
                         <div className="flex flex-col h-fit font-neue-haas w-full items-start max-sm:gap-2 max-md:gap-5">
-                            <h1 ref={headingRef} className="relative t96 mt-[1vw] w-[60vw]">
+                            <h1 ref={headingRef} className="relative t96 mt-[1vw] w-[60vw] max-md:mt-0 max-md:w-[85%] max-sm:w-full">
                                 The Interaction Layer your Website is <span className="gradient-text-animate">Missing</span>
                             </h1>
                         </div>
@@ -160,18 +160,20 @@ export default function Hero() {
 
                         <div
                             ref={actionsRef}
-                            className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-[88%] gap-[1vw] max-md:gap-5"
+                            className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-md:w-full max-md:gap-5"
                         >
                             <ButtonV3
                                 text="Browse Effects"
                                 href="/effects/free"
                                 variant="outline"
+                                className="max-sm:w-full max-sm:justify-center"
                             />
                             <ButtonV3
                                 text="Upgrade to Pro"
                                 href="/sign-up"
                                 variant="orange"
                                 scrollOffset={-1000}
+                                className="max-sm:w-full max-sm:justify-center"
                             />
                         </div>
                     </div>

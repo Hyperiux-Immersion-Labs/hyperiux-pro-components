@@ -22,3 +22,18 @@
   line-height: 1.15;
 }
 
+/* Below the desktop breakpoint the raw vw scale collapses — 5.25vw is 20px on a
+   390px phone — so the display sizes move to a clamped ramp instead. Each ramp
+   is solved to land on its own desktop value at 1025px, so nothing jumps as the
+   query engages, and the min stops it shrinking further on small phones. */
+@media (max-width: 1025px) {
+  .t96 {
+    font-size: clamp(2.375rem, 2.27rem + 1.73vw, 3.375rem);
+  }
+
+  .t22 {
+    font-size: clamp(0.875rem, 0.8rem + 0.32vw, 1rem);
+    line-height: 1.45;
+  }
+}
+

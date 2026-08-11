@@ -74,7 +74,13 @@ export default function CurvedGradient() {
         id="curved-gradient"
         className="sticky top-0 h-screen w-full flex items-center justify-center"
       >
-        <CurvedGradientShader edgeFade={false} dither={true} pixelSize={5.0} colorNum={8.0} />
+        <CurvedGradientShader
+          overscan={1.5}
+          edgeFade={false}
+          dither={true}
+          pixelSize={5.0}
+          colorNum={8.0}
+        />
         <h2
           ref={headingRef}
           id="curved-gradient-heading"
@@ -83,8 +89,6 @@ export default function CurvedGradient() {
           Most websites are not broken. They are forgettable. Your site does not
           need more decoration, it needs motion that earns its place.
         </h2>
-
-
       </section>
     </div>
   );

@@ -33,6 +33,8 @@ uniform float uProgress;
 uniform float uDeform;
 /** 1.0 = fade edges into BG, 0.0 = no edge fade. */
 uniform float uEdgeFade;
+/** Canvas height / visible height. 1.0 = canvas is exactly the viewport. */
+uniform float uOverscan;
 uniform float uPixelSize;
 uniform float uColorNum;
 uniform float uDither;
@@ -75,8 +77,15 @@ vec3 applyDither(vec2 fragCoord, vec3 color, float pixelSize, float colorNum) {
 
 void main() {
   vec2 uv = gl_FragCoord.xy / uResolution;
-  float aspect = uResolution.x / uResolution.y;
+
+  // The canvas can be taller than the window it sits in, so the band's tails
+  // run off-screen instead of stopping at the canvas edge. Everything below is
+  // framed to that visible window: arc, travel and width stay identical at any
+  // overscan, and only uv still refers to the canvas itself.
+  float visibleHeight = uResolution.y / uOverscan;
+  float aspect = uResolution.x / visibleHeight;
   float x = (uv.x - 0.5) * aspect;
+  float y = (uv.y - 0.5) * uOverscan + 0.5;
 
   // ── Travel: the band sweeps from below to above the viewport ──
   float travel = mix(-0.55, 1.55, uProgress);
@@ -101,7 +110,7 @@ void main() {
   width *= 1.0 + abs(uDeform) * 0.7;
 
   // ── Single wide Gaussian – naturally fades to zero at edges ──
-  float d    = (uv.y - centre) / width;
+  float d    = (y - centre) / width;
   float glow = exp(-d * d * 0.8);   // very wide, soft falloff
   float core = exp(-d * d * 3.5);   // brighter centre region
 
@@ -111,7 +120,10 @@ void main() {
   brightness = clamp(brightness, 0.0, 1.0);
 
   // ── Edge fade: dissolve into BG near top & bottom so no hard clip ──
-  float eFade = smoothstep(0.0, 0.15, uv.y) * smoothstep(1.0, 0.85, uv.y);
+  // With overscan the fade is sized to the hidden strip, so it finishes exactly
+  // at the window edge and is never seen.
+  float fadeBand = max(0.5 * (1.0 - 1.0 / uOverscan), 0.15);
+  float eFade = smoothstep(0.0, fadeBand, uv.y) * smoothstep(1.0, 1.0 - fadeBand, uv.y);
   float fadeMul = mix(1.0, eFade, uEdgeFade);
 
   vec3 col = BG + PRIMARY * intensity * brightness * fadeMul;
@@ -122,6 +134,10 @@ void main() {
     // Dither to prevent 8-bit banding on the soft gradient.
     col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) / 255.0;
   }
+
+  // Posterising quantises BG down to pure black, which reads as a hard seam
+  // against the #050505 page. Put the floor back on the page background.
+  col = max(col, BG);
 
   gl_FragColor = vec4(col, 1.0);
 }
@@ -148,6 +164,7 @@ export default function CurvedGradientShader({
   dither = true,
   pixelSize = 3.0,
   colorNum = 8.0,
+  overscan = 1,
 }) {
   const wrapRef = useRef(null);
   const canvasRef = useRef(null);
@@ -230,6 +247,7 @@ export default function CurvedGradientShader({
         progress: gl.getUniformLocation(program, "uProgress"),
         deform: gl.getUniformLocation(program, "uDeform"),
         edgeFade: gl.getUniformLocation(program, "uEdgeFade"),
+        overscan: gl.getUniformLocation(program, "uOverscan"),
         pixelSize: gl.getUniformLocation(program, "uPixelSize"),
         colorNum: gl.getUniformLocation(program, "uColorNum"),
         dither: gl.getUniformLocation(program, "uDither"),
@@ -262,6 +280,7 @@ export default function CurvedGradientShader({
       gl.uniform1f(uniforms.progress, state.progress);
       gl.uniform1f(uniforms.deform, state.deform);
       gl.uniform1f(uniforms.edgeFade, edgeFade ? 1.0 : 0.0);
+      gl.uniform1f(uniforms.overscan, overscan);
       gl.uniform1f(uniforms.pixelSize, pixelSize);
       gl.uniform1f(uniforms.colorNum, colorNum);
       gl.uniform1f(uniforms.dither, dither ? 1.0 : 0.0);
@@ -375,11 +394,26 @@ export default function CurvedGradientShader({
     { scope: wrapRef },
   );
 
+  // Half of the extra height sticks out past each end of the host box. Masking
+  // those strips away keeps the opaque canvas off the neighbouring sections
+  // while the section is entering or leaving the viewport.
+  const margin = (50 * (overscan - 1)) / overscan;
+  const overscanStyle =
+    overscan === 1
+      ? undefined
+      : {
+          top: `${-50 * (overscan - 1)}%`,
+          height: `${100 * overscan}%`,
+          maskImage: `linear-gradient(to bottom, transparent 0%, #000 ${margin}%, #000 ${100 - margin}%, transparent 100%)`,
+          WebkitMaskImage: `linear-gradient(to bottom, transparent 0%, #000 ${margin}%, #000 ${100 - margin}%, transparent 100%)`,
+        };
+
   return (
     <div
       ref={wrapRef}
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 bg-background ${className}`}
+      style={overscanStyle}
+      className={`pointer-events-none absolute inset-x-0 ${overscan === 1 ? "inset-y-0" : ""} bg-background ${className}`}
     >
       <canvas ref={canvasRef} className="block h-full w-full" />
     </div>

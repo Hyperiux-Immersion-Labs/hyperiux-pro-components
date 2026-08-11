@@ -264,11 +264,18 @@ export default function FAQV3() {
     <section
       ref={container}
       id="faq"
-      className="h-fit w-full self-padd py-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]"
+      className="h-fit w-full self-padd relative py-[10vw] mt-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]"
     >
+      <div
+        className="absolute top-[-13vw] left-0 w-full h-[14vw] z-100 pointer-events-none"
+        style={{
+          background: "linear-gradient(to bottom, white 0%, #FF6600 35%, #000 100%)",
+        }}
+      />
+
       <LineReveal
         as="h2"
-        className="t96 text-center font-neue-haas mb-[4vw] max-md:mb-[8vw] max-md:text-[5.5vw] max-sm:mb-[12vw] max-sm:text-[7.5vw]"
+        className="t96 text-center font-neue-haas mb-[4vw] relative z-110 max-md:mb-[8vw] max-md:text-[5.5vw] max-sm:mb-[12vw] max-sm:text-[7.5vw]"
       >
         Questions <span className="gradient-text-animate">Answered.</span>
       </LineReveal>

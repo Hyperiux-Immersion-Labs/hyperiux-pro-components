@@ -18,6 +18,7 @@ import React from 'react'
 import PricingV3 from '@/homepage-v3/sections/PricingV3'
 import NavbarV3 from '@/homepage-v3/components/NavbarV3'
 import LoaderV3 from '@/homepage-v3/components/LoaderV3'
+import DitherTransition from '@/homepage-v3/components/DitherTransition'
 
 export default function page() {
   return (
@@ -29,7 +30,7 @@ export default function page() {
         <div className="sticky top-0 z-0 h-dvh overflow-hidden">
           <Hero />
         </div>
-        <div className="relative border-t bg-background border-grey z-10">
+        <div className="relative z-10 bg-linear-to-b from-transparent from-0% via-background via-1%  to-background to-100%">    
           <Techstack />
           <Quote />
           <CurvedGradient />
@@ -41,6 +42,7 @@ export default function page() {
           <NotAnotherUIKit />
           <SmallMotion />
           <UseCases />
+          <DitherTransition className="h-[75vw] bg-background max-md:h-[60vw] max-sm:h-[90vw]" />
           <PricingV3 />
           <FAQV3 />
           <CTAV3 />

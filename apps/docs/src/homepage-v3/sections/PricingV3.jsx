@@ -169,7 +169,7 @@ export default function PricingV3() {
         <section
             ref={container}
             id="pricing"
-            className="relative z-10 w-full bg-foreground py-[10vw]! text-background max-md:py-[14vw] max-sm:py-[20vw]"
+            className="relative z-10 w-full bg-foreground  mt-[-20vw] pt-0! pb-[10vw]! text-background max-md:py-[14vw] max-sm:py-[20vw]"
         >
             {/* HEADING */}
             <div className="text-center w-full">

@@ -104,11 +104,11 @@ export default function UseCases() {
           { xPercent: USE_CASES_X_PERCENT[i] },
           {
             xPercent: 0,
-            ease: "none",
+            ease: "power1.out",
             scrollTrigger: {
               trigger: box,
               start: "top 100%",
-              end: "top 15%",
+              end: "top 35%",
               scrub: true,
               markers: false,
             },
@@ -122,7 +122,7 @@ export default function UseCases() {
   return (
     <div
       ref={container}
-      className="h-fit w-full mt-[-15vw] flex justify-between self-padd items-start my-[10vw] overflow-x-clip text-white max-md:mt-0 max-md:flex-col max-md:gap-[8vw]"
+      className="h-fit w-full mt-[-15vw] flex justify-between self-padd items-start overflow-x-clip text-white max-md:mt-0 max-md:flex-col max-md:gap-[8vw]"
     >
       <MaskTextReveal stagger={0.08} scrub={false} duration={2} className="w-[40vw] sticky top-[20vh] max-md:static max-md:w-full">
         <h2 className="t64 font-neue-haas max-md:text-[5.5vw] max-sm:text-[7.5vw]">
