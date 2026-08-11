@@ -207,7 +207,9 @@ export function ElevateNavbarMobile({
           ref={toggleButtonRef}
           type="button"
           onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
-          className="flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] text-white transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+          className={`flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none ${
+            isMenuOpen ? "text-black" : "text-white"
+          }`}
           style={{ backgroundColor: isMenuOpen ? activeColor : undefined }}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >

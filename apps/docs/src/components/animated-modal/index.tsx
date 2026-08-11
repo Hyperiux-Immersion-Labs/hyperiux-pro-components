@@ -78,7 +78,7 @@ export default function AnimatedModal({
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-white">
+    <div className="flex min-h-fit pt-10 w-full items-center justify-center bg-white">
       <button
         type="button"
         onClick={() => {

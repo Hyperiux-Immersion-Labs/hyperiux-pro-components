@@ -8,15 +8,15 @@ interface ExpandingNavbarProps {
     backgroundColor?: string;
     activeColor?: string;
     duration?: number;
-    ease?: string;
     expandedWidth?: number;
 }
+
+const MENU_EASE = "cubic-bezier(0.625, 0.05, 0, 1)";
 
 export default function ExpandingNavbar({
     backgroundColor = "#ffffff",
     activeColor = "#ff5f00",
     duration = 1,
-    ease = "cubic-bezier(0.625, 0.05, 0, 1)",
     expandedWidth = 98,
 }: ExpandingNavbarProps) {
     return (
@@ -51,8 +51,8 @@ export default function ExpandingNavbar({
                 </div>
             </div>
 
-            <ExpandingNavbarDesktop activeColor={activeColor} duration={duration} ease={ease} expandedWidth={expandedWidth} />
-            <ExpandingNavbarMobile activeColor={activeColor} duration={duration} ease={ease} />
+            <ExpandingNavbarDesktop activeColor={activeColor} duration={duration} ease={MENU_EASE} expandedWidth={expandedWidth} />
+            <ExpandingNavbarMobile activeColor={activeColor} duration={duration} ease={MENU_EASE} />
         </div>
     );
 }

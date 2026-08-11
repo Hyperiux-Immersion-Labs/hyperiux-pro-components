@@ -120,6 +120,9 @@ export default function RemixerLauncher({
           }}
           style={{ transformOrigin: "top" }}
           className={`${styles.launcherPanel} ${styles.hideScrollbar} ${isExpanded ? styles.launcherPanelOpen : ""} ${panelClassName}`}
+          data-lenis-prevent
+          data-lenis-prevent-wheel
+          data-lenis-prevent-touch
         >
           <motion.div
             initial={false}

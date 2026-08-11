@@ -246,7 +246,7 @@ export default function SplitLine({
     );
 
     return () => mm.revert();
-  }, [children, start, once, duration, ease, origin, delay, stagger]);
+  }, [Boolean(children), start, once, duration, ease, origin, delay, stagger]);
 
   if (children) {
     return (

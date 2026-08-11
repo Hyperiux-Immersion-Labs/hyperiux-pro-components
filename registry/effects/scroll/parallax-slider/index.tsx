@@ -20,6 +20,7 @@ function prefersReducedMotion() {
 // parallax (x shift + scale) is reduced, not removed, and the one-time
 // clip-path reveal loses its eased curve in favor of a linear one.
 const REDUCED_MOTION_FACTOR = 0.25;
+const PARALLAX_SCALE = 1.25;
 
 const PAD_X = "5vw";
 
@@ -28,7 +29,6 @@ interface ParallaxSliderProps {
     bgColor?: string;
     parallaxAmount?: number;
     slideGap?: number;
-    parallaxScale?: number;
     scrub?: number | boolean;
 }
 
@@ -46,7 +46,6 @@ function ParallaxSlider({
     bgColor = "#111111",
     parallaxAmount = 25,
     slideGap = 1.6,
-    parallaxScale = 1.25,
     scrub = 1,
 }: ParallaxSliderProps) {
     const outerRef = useRef<HTMLDivElement | null>(null);
@@ -122,8 +121,8 @@ function ParallaxSlider({
             const slides = gsap.utils.toArray(".parallax-img") as HTMLElement[];
             const parallaxRange = reducedMotion ? parallaxAmount * REDUCED_MOTION_FACTOR : parallaxAmount;
             const parallaxScaleValue = reducedMotion
-                ? 1 + (parallaxScale - 1) * REDUCED_MOTION_FACTOR
-                : parallaxScale;
+                ? 1 + (PARALLAX_SCALE - 1) * REDUCED_MOTION_FACTOR
+                : PARALLAX_SCALE;
 
             slides.forEach((el) => {
                 gsap.fromTo(
@@ -146,7 +145,7 @@ function ParallaxSlider({
         }, outer);
 
         return () => ctx.revert();
-    }, [parallaxAmount, parallaxScale, scrub]);
+    }, [parallaxAmount, scrub]);
 
     return (
         <div

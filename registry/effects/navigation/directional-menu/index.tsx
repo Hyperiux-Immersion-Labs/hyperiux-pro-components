@@ -27,13 +27,14 @@ const menuItems = [
   },
 ];
 
+const MENU_EASE = "power2.inOut";
+
 export default function DirectionalMenu({
   activeColor = "#ffffff",
   inactiveColor = "#ffffff",
   panelGap = 20,
   closeDelay = 80,
   duration = 0.35,
-  ease = "power2.inOut",
 }) {
   return (
     <div className="relative h-screen overflow-hidden bg-black text-white max-md:h-full max-md:overflow-visible max-md:pb-10">
@@ -87,13 +88,13 @@ export default function DirectionalMenu({
             contentWrapperClassName="p-8 bg-white border border-white/10 rounded-3xl max-md:h-[92vh] max-[1025px]:h-[75vh]"
             animation={{
               duration,
-              ease,
+              ease: MENU_EASE,
               distance: 100,
               closeOpacityDuration: duration,
               openOpacityDuration: duration,
               fade: true,
               heightDuration: duration,
-              heightEase: ease,
+              heightEase: MENU_EASE,
             }}
           />
         </div>
