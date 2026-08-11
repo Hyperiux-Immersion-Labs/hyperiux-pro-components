@@ -1,9 +1,19 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { cloneRemixerValues, getDefaultsFromProps, getGroupsFromProps, normalizeRemixerGroups } from "./remixer-utils";
+import {
+  cloneRemixerValues,
+  getDefaultsFromProps,
+  getGroupsFromProps,
+  normalizeRemixerGroups,
+} from "./remixer-utils";
+import type { UseRemixerControlsArgs, UseRemixerControlsResult } from "./types";
 
-export function useRemixerControls({ defaults, groups, props } = {}) {
+export function useRemixerControls({
+  defaults,
+  groups,
+  props,
+}: UseRemixerControlsArgs = {}): UseRemixerControlsResult {
   const groupsFromProps = useMemo(() => getGroupsFromProps(props ?? []), [props]);
   const normalizedGroups = useMemo(
     () => normalizeRemixerGroups(groups ?? groupsFromProps),
@@ -15,7 +25,7 @@ export function useRemixerControls({ defaults, groups, props } = {}) {
   );
   const [values, setValues] = useState(initialValues);
 
-  const updateValue = useCallback((id, value) => {
+  const updateValue = useCallback((id: string, value: unknown) => {
     setValues((current) => ({ ...current, [id]: value }));
   }, []);
 

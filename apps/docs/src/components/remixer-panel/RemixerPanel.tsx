@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 import { Check, ChevronDown, Copy, RotateCcw } from "lucide-react";
 import styles from "./remixer-panel.module.css";
+import type { RemixerControl, RemixerOption, RemixerPanelProps } from "./types";
 
-async function copyTextToClipboard(text) {
+async function copyTextToClipboard(text: string) {
   if (navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(text);
     return;
@@ -17,21 +18,38 @@ async function copyTextToClipboard(text) {
   textArea.remove();
 }
 
-function formatValue(value, control) {
+function formatValue(value: unknown, control: RemixerControl) {
   if (control.format) return control.format(value);
   if (typeof value === "boolean") return value ? "on" : "off";
-  if (typeof value === "object") return control.type;
-  return value ?? "";
+  if (typeof value === "object" && value !== null) return control.type;
+  if (typeof value === "string" || typeof value === "number") return value;
+  return "";
 }
 
-function normalizeColorInputValue(value) {
+function normalizeColorInputValue(value: unknown) {
   if (typeof value === "number") return `#${value.toString(16).padStart(6, "0").slice(-6)}`;
   if (typeof value === "string" && /^0x[0-9a-f]{6}$/i.test(value)) return `#${value.slice(2)}`;
   if (typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value)) return value;
   return "#ffffff";
 }
 
-function ControlField({ control, value, onChange }) {
+function getOptionValue(option: RemixerOption) {
+  return typeof option === "object" ? (option.value ?? option.label ?? "") : option;
+}
+
+function getOptionLabel(option: RemixerOption) {
+  return typeof option === "object" ? (option.label ?? option.value ?? "") : option;
+}
+
+function ControlField({
+  control,
+  value,
+  onChange,
+}: {
+  control: RemixerControl;
+  value: unknown;
+  onChange: (value: unknown) => void;
+}) {
   const displayValue = formatValue(value, control);
 
   if (control.type === "checkbox" || control.type === "toggle") {
@@ -71,13 +89,13 @@ function ControlField({ control, value, onChange }) {
         {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
         <div className={styles.checkboxGroup}>
           {control.options?.map((option) => {
-            const optionValue = option.value ?? option;
-            const optionLabel = option.label ?? option;
+            const optionValue = getOptionValue(option);
+            const optionLabel = getOptionLabel(option);
             const isSelected = value === optionValue;
 
             return (
               <button
-                key={optionValue}
+                key={String(optionValue)}
                 type="button"
                 onClick={() => onChange(optionValue)}
                 className={`${styles.checkboxOption} ${isSelected ? styles.checkboxOptionSelected : ""}`}
@@ -102,12 +120,15 @@ function ControlField({ control, value, onChange }) {
           <span className={styles.fieldValue}>{displayValue}</span>
         </div>
         {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
-        <select value={value} onChange={(event) => onChange(event.target.value)} className={styles.select}>
-          {control.options?.map((option) => (
-            <option key={option.value ?? option} value={option.value ?? option}>
-              {option.label ?? option}
-            </option>
-          ))}
+        <select value={typeof value === "string" || typeof value === "number" ? value : ""} onChange={(event) => onChange(event.target.value)} className={styles.select}>
+          {control.options?.map((option) => {
+            const optionValue = getOptionValue(option);
+            return (
+              <option key={String(optionValue)} value={String(optionValue)}>
+                {getOptionLabel(option)}
+              </option>
+            );
+          })}
         </select>
       </label>
     );
@@ -121,7 +142,7 @@ function ControlField({ control, value, onChange }) {
           <span className={styles.fieldValue}>{displayValue}</span>
         </div>
         {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
-        <input type="text" value={value ?? ""} onChange={(event) => onChange(event.target.value)} className={styles.textInput} />
+        <input type="text" value={typeof value === "string" ? value : ""} onChange={(event) => onChange(event.target.value)} className={styles.textInput} />
       </label>
     );
   }
@@ -140,7 +161,7 @@ function ControlField({ control, value, onChange }) {
           onChange={(event) => {
             if (control.type === "textarea") return onChange(event.target.value);
             try {
-              onChange(JSON.parse(event.target.value));
+              onChange(JSON.parse(event.target.value) as unknown);
             } catch {
               onChange(event.target.value);
             }
@@ -159,7 +180,7 @@ function ControlField({ control, value, onChange }) {
           <span className={styles.fieldValue}>{displayValue}</span>
         </div>
         {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
-        <input type="number" min={control.min} max={control.max} step={control.step ?? 1} value={value ?? ""} onChange={(event) => onChange(Number(event.target.value))} className={styles.textInput} />
+        <input type="number" min={control.min} max={control.max} step={control.step ?? 1} value={typeof value === "number" ? value : ""} onChange={(event) => onChange(Number(event.target.value))} className={styles.textInput} />
       </label>
     );
   }
@@ -171,14 +192,24 @@ function ControlField({ control, value, onChange }) {
         <span className={styles.fieldValue}>{displayValue}</span>
       </div>
       {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
-      <input type="range" min={control.min} max={control.max} step={control.step ?? 1} value={value ?? 0} onChange={(event) => onChange(Number(event.target.value))} className={styles.range} />
+      <input type="range" min={control.min} max={control.max} step={control.step ?? 1} value={typeof value === "number" ? value : 0} onChange={(event) => onChange(Number(event.target.value))} className={styles.range} />
     </label>
   );
 }
 
-export default function RemixerPanel({ isExpanded, groups, values, onChange, onCopyCode, onReset, defaultOpenGroupId }) {
+export default function RemixerPanel({
+  isExpanded,
+  groups,
+  values,
+  onChange,
+  onCopyCode,
+  onReset,
+  defaultOpenGroupId,
+}: RemixerPanelProps) {
   const availableGroups = useMemo(() => groups.filter((group) => group.controls?.length), [groups]);
-  const [openGroupId, setOpenGroupId] = useState(defaultOpenGroupId ?? availableGroups[0]?.id ?? null);
+  const [openGroupId, setOpenGroupId] = useState<string | null>(
+    defaultOpenGroupId ?? availableGroups[0]?.id ?? null,
+  );
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -202,8 +233,8 @@ export default function RemixerPanel({ isExpanded, groups, values, onChange, onC
                 ) : null}
                 <div className={styles.groupBodyStatic}>
                   <div className={styles.groupBodyInner}>
-                    {group.controls.map((control) => (
-                      <ControlField key={control.id} control={control} value={values[control.id]} onChange={(nextValue) => onChange(control.id, nextValue)} />
+                    {group.controls?.map((control) => (
+                      <ControlField key={control.id} control={control} value={values[control.id ?? ""]} onChange={(nextValue) => onChange(control.id ?? "", nextValue)} />
                     ))}
                   </div>
                 </div>
@@ -214,14 +245,14 @@ export default function RemixerPanel({ isExpanded, groups, values, onChange, onC
           const isOpen = openGroupId === group.id;
           return (
             <section key={group.id} className={`${styles.group} ${isOpen ? styles.groupOpen : ""}`}>
-              <button type="button" onClick={() => setOpenGroupId(isOpen ? null : group.id)} className={styles.groupTrigger}>
+              <button type="button" onClick={() => setOpenGroupId(isOpen ? null : group.id ?? null)} className={styles.groupTrigger}>
                 <span className={styles.groupTitle}>{group.title}</span>
                 <ChevronDown className={styles.groupChevron} />
               </button>
               <div className={styles.groupBody}>
                 <div className={styles.groupBodyInner}>
-                  {group.controls.map((control) => (
-                    <ControlField key={control.id} control={control} value={values[control.id]} onChange={(nextValue) => onChange(control.id, nextValue)} />
+                  {group.controls?.map((control) => (
+                    <ControlField key={control.id} control={control} value={values[control.id ?? ""]} onChange={(nextValue) => onChange(control.id ?? "", nextValue)} />
                   ))}
                 </div>
               </div>

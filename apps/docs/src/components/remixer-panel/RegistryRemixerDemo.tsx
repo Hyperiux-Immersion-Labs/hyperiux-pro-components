@@ -3,8 +3,9 @@
 import { buildRemixerDemoCode } from "./build-remixer-code";
 import RemixerLauncher from "./RemixerLauncher";
 import { useRemixerControls } from "./useRemixerControls";
+import type { RegistryRemixerDemoProps, RemixerControl, RemixerGroup } from "./types";
 
-function toGroupTitle(value) {
+function toGroupTitle(value: string) {
   return value
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
     .replace(/[-_]/g, " ")
@@ -13,10 +14,10 @@ function toGroupTitle(value) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function getGroupsFromRemixerControls(controls = []) {
+function getGroupsFromRemixerControls(controls: RemixerControl[] = []) {
   if (!controls.length) return undefined;
 
-  const groupMap = new Map();
+  const groupMap = new Map<string, RemixerGroup>();
 
   for (const control of controls) {
     const groupId = control.group ?? "controls";
@@ -27,7 +28,7 @@ function getGroupsFromRemixerControls(controls = []) {
         controls: [],
       });
     }
-    groupMap.get(groupId).controls.push({
+    groupMap.get(groupId)?.controls?.push({
       ...control,
       id: control.id ?? control.name,
     });
@@ -45,9 +46,7 @@ const legacyLauncherLayoutTokens = new Set([
   "w-[344px]!",
 ]);
 
-const EmptyComponent = () => null;
-
-function removeLegacyLauncherLayoutClasses(className) {
+function removeLegacyLauncherLayoutClasses(className?: string) {
   if (!className) return "";
 
   return className
@@ -56,22 +55,13 @@ function removeLegacyLauncherLayoutClasses(className) {
     .join(" ");
 }
 
-/**
- * @param {{
- *   registry: any,
- *   component?: import("react").ComponentType<any>,
- *   children?: (args: { values: any, effect: import("react").ReactNode }) => import("react").ReactNode,
- *   render?: ((values: any) => import("react").ReactNode) | null,
- *   copyCodeOptions?: any
- * }} props
- */
 export default function RegistryRemixerDemo({
   registry,
-  component: Component = EmptyComponent,
-  children = null,
-  render = null,
-  copyCodeOptions = {},
-}) {
+  component: Component,
+  children,
+  render,
+  copyCodeOptions,
+}: RegistryRemixerDemoProps) {
   const remixerConfig = registry?.remixer ?? {};
   const layoutConfig = remixerConfig.layout ?? {};
   const panelConfig = remixerConfig.panel ?? {};
@@ -85,7 +75,7 @@ export default function RegistryRemixerDemo({
     resetValues,
   } = useRemixerControls({ groups: remixerGroups, props: registry?.props ?? [] });
 
-  const effect = render ? render(values) : <Component {...values} />;
+  const effect = render ? render(values) : Component ? <Component {...values} /> : null;
   const buildCode = copyCodeOptions?.buildCode;
 
   return (
@@ -110,12 +100,12 @@ export default function RegistryRemixerDemo({
           onReset={resetValues}
           defaultOpenGroupId={remixerConfig.defaultOpenGroupId}
           buttonClassName={removeLegacyLauncherLayoutClasses(
-            layoutConfig.buttonClassName ?? layoutConfig.controlsButtonClassName
+            layoutConfig.buttonClassName ?? layoutConfig.controlsButtonClassName,
           )}
           panelClassName={removeLegacyLauncherLayoutClasses(
-            layoutConfig.panelClassName ?? panelConfig.className
+            layoutConfig.panelClassName ?? panelConfig.className,
           )}
-          containerClassName={layoutConfig.containerClassName}
+          containerClassName={layoutConfig.containerClassName as string | undefined}
         />
       ) : null}
     </>

@@ -1,19 +1,21 @@
 "use client";
 
-export function cloneRemixerValues(values = {}) {
+import type { RegistryProp, RemixerControl, RemixerGroup, RemixerValues } from "./types";
+
+export function cloneRemixerValues(values: RemixerValues = {}): RemixerValues {
   if (typeof structuredClone === "function") return structuredClone(values);
-  return JSON.parse(JSON.stringify(values));
+  return JSON.parse(JSON.stringify(values)) as RemixerValues;
 }
 
-export function getDefaultsFromProps(props = []) {
-  return props.reduce((defaults, prop) => {
+export function getDefaultsFromProps(props: RegistryProp[] = []): RemixerValues {
+  return props.reduce<RemixerValues>((defaults, prop) => {
     if (!prop || prop.docsOnly) return defaults;
     if ("demoDefault" in prop) {
       defaults[prop.name] = prop.demoDefault;
       return defaults;
     }
     if ("default" in (prop.remixer ?? {})) {
-      defaults[prop.name] = prop.remixer.default;
+      defaults[prop.name] = prop.remixer?.default;
       return defaults;
     }
     if ("default" in prop) defaults[prop.name] = prop.default;
@@ -21,8 +23,8 @@ export function getDefaultsFromProps(props = []) {
   }, {});
 }
 
-export function getGroupsFromProps(props = []) {
-  const groupMap = new Map();
+export function getGroupsFromProps(props: RegistryProp[] = []): RemixerGroup[] {
+  const groupMap = new Map<string, RemixerGroup>();
 
   for (const prop of props) {
     if (!prop?.remixer) continue;
@@ -35,7 +37,7 @@ export function getGroupsFromProps(props = []) {
         controls: [],
       });
     }
-    groupMap.get(groupId).controls.push(
+    groupMap.get(groupId)?.controls?.push(
       normalizeRemixerControl({
         id: prop.name,
         name: prop.name,
@@ -57,18 +59,25 @@ export function getGroupsFromProps(props = []) {
   return [...groupMap.values()];
 }
 
-export function getCopyableRemixerValues(values = {}, groups = []) {
-  const allowedIds = new Set();
+export function getCopyableRemixerValues(
+  values: RemixerValues = {},
+  groups: RemixerGroup[] = [],
+): RemixerValues {
+  const allowedIds = new Set<string>();
   for (const group of groups) {
     for (const control of group.controls ?? []) {
-      if (!control || control.docsOnly || control.copyable === false) continue;
+      if (!control || control.docsOnly || control.copyable === false || !control.id) continue;
       allowedIds.add(control.id);
     }
   }
   return Object.fromEntries(Object.entries(values).filter(([id]) => allowedIds.has(id)));
 }
 
-export function getChangedCopyableRemixerValues(values = {}, initialValues = {}, groups = []) {
+export function getChangedCopyableRemixerValues(
+  values: RemixerValues = {},
+  initialValues: RemixerValues = {},
+  groups: RemixerGroup[] = [],
+): RemixerValues {
   return Object.fromEntries(
     Object.entries(getCopyableRemixerValues(values, groups)).filter(
       ([id, value]) => !areRemixerValuesEqual(value, initialValues[id]),
@@ -76,7 +85,7 @@ export function getChangedCopyableRemixerValues(values = {}, initialValues = {},
   );
 }
 
-export function normalizeRemixerControl(control = {}) {
+export function normalizeRemixerControl(control: RemixerControl = {}): RemixerControl {
   const type = control.control ?? control.type ?? "range";
   return {
     ...control,
@@ -86,7 +95,7 @@ export function normalizeRemixerControl(control = {}) {
   };
 }
 
-export function normalizeRemixerGroups(groups = []) {
+export function normalizeRemixerGroups(groups: RemixerGroup[] = []): RemixerGroup[] {
   return groups.map((group, index) => ({
     ...group,
     id: group.id ?? `group-${index}`,
@@ -95,7 +104,7 @@ export function normalizeRemixerGroups(groups = []) {
   }));
 }
 
-function toControlLabel(value) {
+function toControlLabel(value: string) {
   return value
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
     .replace(/[-_]/g, " ")
@@ -104,7 +113,7 @@ function toControlLabel(value) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function areRemixerValuesEqual(value, otherValue) {
+function areRemixerValuesEqual(value: unknown, otherValue: unknown) {
   if (Object.is(value, otherValue)) return true;
   return JSON.stringify(value) === JSON.stringify(otherValue);
 }

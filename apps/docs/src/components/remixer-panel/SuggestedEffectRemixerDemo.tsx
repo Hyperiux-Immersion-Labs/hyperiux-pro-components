@@ -1,5 +1,7 @@
 "use client";
 
+import type { CSSProperties } from "react";
+import type { ComponentType } from "react";
 import ThreeDPortfolioSlider from "@/components/3d-portfolio-slider";
 import AnimatedForm from "@/components/animated-form";
 import AnimatedModal from "@/components/animated-modal";
@@ -11,12 +13,12 @@ import ButterflyTrailCursor from "@/components/butterfly-trail-cursor";
 import CardDrift from "@/components/card-drift";
 import CardsRunway from "@/components/cards-runway";
 import CharacterTrail from "@/components/character-trail";
-import CoffeeBeanCursor from "@/components/coffee-bean-cursor";
-import CollidingModels from "@/components/colliding-models";
-import ColorfulCursorAura from "@/components/colorful-cursor-aura";
 import CircularSlider from "@/components/circular-slider";
 import CircularSplitRoll from "@/components/circular-split-roll";
 import ClipPathSlider from "@/components/clip-path-slider";
+import CoffeeBeanCursor from "@/components/coffee-bean-cursor";
+import CollidingModels from "@/components/colliding-models";
+import ColorfulCursorAura from "@/components/colorful-cursor-aura";
 import DepthCardStack from "@/components/depth-card-stack";
 import DirectionalMenu from "@/components/directional-menu";
 import DraggableCanvas from "@/components/draggable-canvas";
@@ -32,10 +34,10 @@ import HeroBannerAnimated from "@/components/hero-banner-animated";
 import HorizontalFeatureReveal from "@/components/horizontal-feature-reveal";
 import HoverSlider from "@/components/hover-slider";
 import HyperiuxGlitter from "@/components/hyperiux-glitter";
-import InertiaImg from "@/components/inertia-img";
 import InfiniteCarousel from "@/components/InfiniteCarousel";
 import InfiniteGridGallery from "@/components/infinite-grid-gallery";
 import InfinitePerspectiveSlider from "@/components/infinite-perspective-slider";
+import InertiaImg from "@/components/inertia-img";
 import InteractiveArrows from "@/components/interactive-arrows";
 import InteractiveListPreview from "@/components/interactive-list-preview";
 import LinesLoader from "@/components/lines-loader";
@@ -64,8 +66,9 @@ import WebglSlider from "@/components/webgl-slider";
 import ZoomSlider from "@/components/zoom-slider";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "./RegistryRemixerDemo";
+import type { RegistryLike, RemixerValues, SuggestedPreviewProps } from "./types";
 
-const components = {
+const components: Record<string, ComponentType<Record<string, unknown>>> = {
   "3d-portfolio-slider": ThreeDPortfolioSlider,
   "animated-form": AnimatedForm,
   "animated-modal": AnimatedModal,
@@ -130,7 +133,13 @@ const components = {
   "zoom-slider": ZoomSlider,
 };
 
-export default function SuggestedEffectRemixerDemo({ registry, slug }) {
+export default function SuggestedEffectRemixerDemo({
+  registry,
+  slug,
+}: {
+  registry?: RegistryLike;
+  slug: string;
+}) {
   const Component = components[slug];
   const hideDemoHeader = registry?.category === "navigation" || slug === "lines-loader";
 
@@ -149,7 +158,7 @@ export default function SuggestedEffectRemixerDemo({ registry, slug }) {
         );
       }}
       copyCodeOptions={{
-        propsVariableName: `${slug.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())}Props`,
+        propsVariableName: `${slug.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase())}Props`,
       }}
     >
       {({ effect }) => (
@@ -162,7 +171,7 @@ export default function SuggestedEffectRemixerDemo({ registry, slug }) {
   );
 }
 
-function getSuggestedPreviewProps(values, slug) {
+function getSuggestedPreviewProps(values: RemixerValues, slug: string): SuggestedPreviewProps {
   const duration = firstNumber(values, [
     "duration",
     "transitionDuration",
@@ -217,19 +226,20 @@ function getSuggestedPreviewProps(values, slug) {
       ].filter(Boolean).join(" ") || undefined,
       transformOrigin: "center",
       transitionDuration: `${Math.max(0, duration ?? 0.35)}s`,
-    },
+    } as CSSProperties & Record<"--remixer-accent-color" | "--remixer-gap", string | undefined>,
   };
 }
 
-function firstNumber(values, names) {
+function firstNumber(values: RemixerValues, names: Array<string | null>) {
   for (const name of names) {
+    if (!name) continue;
     const value = Number(values[name]);
     if (Number.isFinite(value)) return value;
   }
   return null;
 }
 
-function firstString(values, names) {
+function firstString(values: RemixerValues, names: string[]) {
   for (const name of names) {
     const value = values[name];
     if (typeof value === "string" && value.trim()) return value;

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import BlockTransition from "@/components/block-transition";
 import ChessGridTransition from "@/components/chess-grid-transition/ChessGridTransition";
 import PageFlipTransition from "@/components/page-flip-transition";
@@ -8,8 +9,9 @@ import RadialSliceTransition from "@/components/radial-slice-transition";
 import SVGBrushTransition from "@/components/svg-brush-transition";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "./RegistryRemixerDemo";
+import type { RegistryLike, RemixerComponent } from "./types";
 
-const transitionComponents = {
+const transitionComponents: Record<string, RemixerComponent> = {
   "block-transition": BlockTransition,
   "chess-grid-transition": ChessGridTransition,
   "page-flip-transition": PageFlipTransition,
@@ -18,7 +20,15 @@ const transitionComponents = {
   "svg-brush-transition": SVGBrushTransition,
 };
 
-export default function TransitionRemixerLayout({ children, registry, slug }) {
+export default function TransitionRemixerLayout({
+  children,
+  registry,
+  slug,
+}: {
+  children: ReactNode;
+  registry?: RegistryLike;
+  slug: string;
+}) {
   const Transition = transitionComponents[slug];
 
   if (!Transition) return children;
@@ -34,7 +44,7 @@ export default function TransitionRemixerLayout({ children, registry, slug }) {
       )}
       copyCodeOptions={{
         includeDemoHeader: false,
-        propsVariableName: `${registry.name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())}Props`,
+        propsVariableName: `${(registry?.name ?? "").replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase())}Props`,
       }}
     />
   );

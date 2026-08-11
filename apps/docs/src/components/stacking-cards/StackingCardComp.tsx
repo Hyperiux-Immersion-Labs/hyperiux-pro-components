@@ -59,7 +59,7 @@ export default function StackingCardComp({ data = [], imageZoomEnabled = true, t
 
             const firstImage = cards[0]?.querySelector(".card-image");
 
-            if (firstImage && !reduceMotion) {
+            if (firstImage && imageZoomEnabled && !reduceMotion) {
                 gsap.fromTo(
                     firstImage,
                     { scale: 1.5 },
@@ -123,7 +123,7 @@ export default function StackingCardComp({ data = [], imageZoomEnabled = true, t
 
                 const currentImage = cards[i].querySelector(".card-image");
 
-                if (currentImage) {
+                if (currentImage && imageZoomEnabled) {
                     tl.to(
                         currentImage,
                         {
@@ -142,9 +142,9 @@ export default function StackingCardComp({ data = [], imageZoomEnabled = true, t
                     cards[i - 1],
                     {
                         scale: 0.8,
-                        rotation: rotateDir,
-                        rotateX: 20,
-                        borderRadius: "3vw",
+                        rotation: tiltEnabled ? rotateDir : 0,
+                        rotateX: tiltEnabled ? 20 : 0,
+                        borderRadius: cardCornerRadius,
                         ease: "linear",
                         duration: 0.5,
                     },
@@ -164,7 +164,7 @@ export default function StackingCardComp({ data = [], imageZoomEnabled = true, t
         }, containerRef);
 
         return () => ctx.revert();
-    }, [data]);
+    }, [cardCornerRadius, data, imageZoomEnabled, stackPerspective, tiltEnabled]);
 
     return (
         <section
@@ -179,7 +179,7 @@ export default function StackingCardComp({ data = [], imageZoomEnabled = true, t
             <div
                 ref={containerRef}
                 className="sticky top-0 h-screen max-md:h-svh w-screen overflow-hidden bg-black"
-                style={{ perspective: "1200px" }}
+                style={{ perspective: `${stackPerspective}px` }}
             >
                 {data.map((item, i) => (
                     <div
@@ -189,7 +189,10 @@ export default function StackingCardComp({ data = [], imageZoomEnabled = true, t
                         }}
                         className="absolute inset-0 overflow-hidden opacity-0"
                     >
-                        <SliderCard {...item} />
+                        <SliderCard
+                            {...item}
+                            cardCornerRadius={cardCornerRadius}
+                        />
                     </div>
                 ))}
             </div>
@@ -204,11 +207,13 @@ const SliderCard = ({
     description,
     image,
     backgroundColor,
-}: StackingCardItem) => {
+    cardCornerRadius = "3vw",
+}: StackingCardItem & { cardCornerRadius?: string }) => {
     return (
         <div
             className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center pt-4 ${backgroundColor}
  max-md:min-h-[100svh] max-[1025px]:flex-col max-[1025px]:justify-start max-md:py-8`}
+            style={{ borderRadius: cardCornerRadius }}
         >
 
             <div
@@ -225,9 +230,17 @@ const SliderCard = ({
                 </div>
 
                 <div className="mb-6 hidden h-[42svh] w-full max-[1025px]:block">
-                    <div className="h-full max-md:w-full overflow-hidden max-[1025px]:w-[80%] max-[1025px]:mx-auto max-md:rounded-[6vw] max-[1025px]:rounded-[3vw]">
+                    <div
+                        className="h-full max-md:w-full overflow-hidden max-[1025px]:w-[80%] max-[1025px]:mx-auto"
+                        style={{ borderRadius: cardCornerRadius }}
+                    >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={image} alt={title} className="h-full w-full object-cover" />
+                        <img
+                            src={image}
+                            alt={title}
+                            className="h-full w-full object-cover"
+                            style={{ borderRadius: cardCornerRadius }}
+                        />
                     </div>
                 </div>
 
@@ -266,9 +279,17 @@ const SliderCard = ({
                 className="my-auto h-[75%] w-[40%] p-[4vw]
  max-[1025px]:hidden"
             >
-                <div className="h-full w-full overflow-hidden rounded-[2vw]">
+                <div
+                    className="h-full w-full overflow-hidden"
+                    style={{ borderRadius: cardCornerRadius }}
+                >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={image} alt={title} className="card-image h-full w-full rounded-[2vw] object-cover" />
+                    <img
+                        src={image}
+                        alt={title}
+                        className="card-image h-full w-full object-cover"
+                        style={{ borderRadius: cardCornerRadius }}
+                    />
                 </div>
             </div>
         </div>

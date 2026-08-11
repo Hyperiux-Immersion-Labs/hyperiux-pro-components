@@ -5,10 +5,11 @@ import { motion, useDragControls, useSpring } from "motion/react";
 import { GripVertical, PanelTop } from "lucide-react";
 import RemixerPanel from "./RemixerPanel";
 import styles from "./remixer-panel.module.css";
+import type { RemixerLauncherProps } from "./types";
 
 export const remixerPanelTransition = {
   duration: 0.45,
-  ease: [0.62, 0.05, 0.01, 0.99],
+  ease: [0.62, 0.05, 0.01, 0.99] as const,
 };
 
 const VIEWPORT_MARGIN = 16;
@@ -26,7 +27,7 @@ export default function RemixerLauncher({
   panelClassName = "",
   panelInnerClassName = "",
   containerClassName = "",
-}) {
+}: RemixerLauncherProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [dragConstraints, setDragConstraints] = useState({
     top: 0,
@@ -34,7 +35,7 @@ export default function RemixerLauncher({
     bottom: 0,
     left: 0,
   });
-  const groupRef = useRef(null);
+  const groupRef = useRef<HTMLDivElement | null>(null);
   const dragControls = useDragControls();
   const dragX = useSpring(0, { stiffness: 520, damping: 42, mass: 0.55 });
   const dragY = useSpring(0, { stiffness: 520, damping: 42, mass: 0.55 });
@@ -77,7 +78,7 @@ export default function RemixerLauncher({
           <button
             type="button"
             className={styles.dragHandle}
-            onPointerDown={(event) => dragControls.start(event)}
+            onPointerDown={(event) => dragControls.start(event.nativeEvent)}
             aria-label="Move controls panel"
           >
             <GripVertical className={styles.dragHandleIcon} />
