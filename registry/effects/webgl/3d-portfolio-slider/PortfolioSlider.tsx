@@ -72,7 +72,12 @@ export default function PortfolioSlider({
  const textContainerRef = useRef<HTMLDivElement | null>(null);
  const activeTextRef = useRef<HTMLDivElement | null>(null);
  const prevRawIndexRef = useRef(0);
+ const controlsRef = useRef({ zoomFactor, scrollSpeed });
  const reducedMotion = usePrefersReducedMotion();
+
+ useEffect(() => {
+ controlsRef.current = { zoomFactor, scrollSpeed };
+ }, [zoomFactor, scrollSpeed]);
 
  useEffect(() => {
  let scene: THREE.Scene;
@@ -197,9 +202,10 @@ const spacing = planeWidth;
  if (!isSnapping && Math.abs(delta) < 0.5) {
  if (!snapTimeout) {
  snapTimeout = setTimeout(() => {
- const currentScrollOffset = offset * scrollSpeed;
+ const liveScrollSpeed = controlsRef.current.scrollSpeed;
+ const currentScrollOffset = offset * liveScrollSpeed;
  const targetScrollOffset = Math.round(currentScrollOffset / spacing) * spacing;
- const targetOffset = targetScrollOffset / scrollSpeed;
+ const targetOffset = targetScrollOffset / liveScrollSpeed;
 
  if (Math.abs(offset - targetOffset) > 1) {
  isSnapping = true;
@@ -229,11 +235,12 @@ const spacing = planeWidth;
  }
  }
 
- const scrollOffset = offset * scrollSpeed;
+ const liveViewportConfig = getViewportConfig(controlsRef.current.zoomFactor);
+ const scrollOffset = offset * controlsRef.current.scrollSpeed;
 
 const targetRadius = Math.min(
-  viewportConfig.baseRadius + Math.abs(delta) * 0.12,
-  viewportConfig.maxRadius
+  liveViewportConfig.baseRadius + Math.abs(delta) * 0.12,
+  liveViewportConfig.maxRadius
 );
  currentRadius += (targetRadius - currentRadius) * 0.1;
 
@@ -293,7 +300,7 @@ const targetRadius = Math.min(
 
 const arc = Math.cos(norm * Math.PI * 0.5);
 
-const targetZoom = 1 + (1 - arc) * viewportConfig.zoomFactor;
+const targetZoom = 1 + (1 - arc) * liveViewportConfig.zoomFactor;
 
 plane.material.uniforms.uZoom.value = targetZoom;
  });
@@ -342,7 +349,7 @@ plane.material.uniforms.uZoom.value = targetZoom;
  container.removeChild(renderer.domElement);
  lenis.destroy();
  };
- }, [items, zoomFactor, scrollSpeed]);
+ }, [items]);
 
  const scrollHeight = items.length * 100; // 100vh per image for smooth infinite scrolling
 

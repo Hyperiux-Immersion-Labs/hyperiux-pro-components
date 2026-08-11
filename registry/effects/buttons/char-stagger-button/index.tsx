@@ -195,12 +195,12 @@ export default function CharStaggerButton({
       </div>
 
       {showArrow && Icon && (
-        <div className={`overflow-hidden flex items-center justify-start ${iconClassName}`.trim()}>
+        <div className={`flex size-[1.18em] items-center justify-start overflow-hidden ${iconClassName}`.trim()}>
           {iconVariant === "single" ? (
-            <Icon className="h-4 w-4 shrink-0 motion-reduce:transition-none max-md:motion-reduce:transition-none" />
+            <Icon className="size-[1.18em] shrink-0 motion-reduce:transition-none max-md:motion-reduce:transition-none" />
           ) : (
             <div
-              className="flex w-max"
+              className="flex h-full w-max"
               style={{
                 transform:
                   isActive && !prefersReducedMotion
@@ -212,8 +212,8 @@ export default function CharStaggerButton({
                 willChange: "transform",
               }}
             >
-              <Icon className="flex-none w-full h-full" />
-              <Icon className="flex-none w-full h-full" />
+              <Icon className="h-full w-full flex-none" />
+              <Icon className="h-full w-full flex-none" />
             </div>
           )}
         </div>

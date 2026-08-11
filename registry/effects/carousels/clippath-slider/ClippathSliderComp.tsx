@@ -461,6 +461,12 @@ export default function ClippathSliderComp({ slides = [], clueText, showClue = t
     const handleMove = (e: MouseEvent) => {
       const x = e.clientX;
       const y = e.clientY;
+      const target = e.target instanceof Element ? e.target : null;
+      const isOverControls = Boolean(
+        target?.closest(
+          'button, input, textarea, select, a, label, [role="button"], [contenteditable="true"], [class*="remixer-panel"]'
+        )
+      );
 
       mouse.current.x = x;
       mouse.current.y = y;
@@ -473,7 +479,7 @@ export default function ClippathSliderComp({ slides = [], clueText, showClue = t
         y >= window.innerHeight;
 
       // Out of bounds
-      if (isOut) {
+      if (isOut || isOverControls) {
         if (isInside.current) {
           isInside.current = false;
 

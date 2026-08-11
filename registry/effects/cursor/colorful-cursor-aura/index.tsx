@@ -43,7 +43,7 @@ const ColorfulCursorAura = ({
       {/* Mobile only notice */}
       <div className="hidden max-[1025px]:block absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
         <p className="text-zinc-700 max-[1025px]:text-[3vw] max-md:text-[4vw] leading-[1.2] font-medium">
-           Open on desktop to experience the effect
+           Open on desktop to experience the mouse effect
         </p>
       </div>
 

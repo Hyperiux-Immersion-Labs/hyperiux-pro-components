@@ -52,12 +52,14 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }: L
 
   const handleVariantChange = useCallback(
     (newVariant: LinesLoaderVariant) => {
+    if (newVariant === activeVariant) return;
+
     setActiveVariant(newVariant);
     setIsCompleted(false);
     if (onVariantChangeRef.current) {
       onVariantChangeRef.current(newVariant);
     }
-  }, []);
+  }, [activeVariant]);
 
   const handleComplete = useCallback(() => {
     setIsCompleted(true);
@@ -135,8 +137,10 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }: VersionNavP
             <button
               key={variant.value}
               type="button"
+              disabled={isActive}
+              aria-current={isActive ? "true" : undefined}
               onClick={() => onVariantChange(variant.value)}
-              className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-md:text-lg max-sm:text-sm ${btnClass}`}
+              className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 disabled:cursor-default disabled:pointer-events-none max-md:text-lg max-sm:text-sm ${btnClass}`}
             >
               {variant.label}
             </button>

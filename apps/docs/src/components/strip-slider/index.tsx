@@ -35,6 +35,8 @@ const items = [
 const StripSlider = ({
  dispScale = 1,
  cameraSway = 0.03,
+ hideCentralStrip = false,
+ imageSize = 1,
 }) => {
  const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -45,6 +47,8 @@ const StripSlider = ({
  items={items}
  dispScale={dispScale}
  cameraSway={cameraSway}
+ hideCentralStrip={hideCentralStrip}
+ imageSize={imageSize}
  />
 
  {prefersReducedMotion && (

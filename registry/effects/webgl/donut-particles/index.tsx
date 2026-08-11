@@ -219,6 +219,7 @@ function DonutParticle({
  // the attribute's version has to be bumped explicitly.
  useEffect(() => {
  if (sizeAttributeRef.current) {
+ sizeAttributeRef.current.array = sizes;
  sizeAttributeRef.current.needsUpdate = true;
  }
  }, [sizes]);
@@ -664,6 +665,7 @@ function DonutParticle({
  />
  <bufferAttribute
  {...({
+ ref: sizeAttributeRef,
  attach: "attributes-size",
  array: sizes,
  count: count,

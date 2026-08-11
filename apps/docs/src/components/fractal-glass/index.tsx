@@ -196,6 +196,7 @@ export default function FractalGlass({
 }: FractalGlassProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null); // keeps reference to video element for cleanup
+  const uniformsRef = useRef<any>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
@@ -227,6 +228,7 @@ export default function FractalGlass({
       uGlassSmoothness: { value: glassSmoothness },
       uEdgePadding: { value: edgePadding },
     };
+    uniformsRef.current = uniforms;
     let videoEl: HTMLVideoElement | null = null;
     let videoTexture: THREE.VideoTexture | null = null;
     let imageTexture: THREE.Texture | null = null;
@@ -322,6 +324,7 @@ export default function FractalGlass({
 
     return () => {
       isDisposed = true;
+      uniformsRef.current = null;
       loop.destroy();
       window.removeEventListener("mousemove", onMouse);
       window.removeEventListener("touchmove", onTouch);
@@ -339,7 +342,19 @@ export default function FractalGlass({
       geo.dispose();
       if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
     };
-  }, [imageSrc, videoSrc, mediaType, stripesFrequency, glassStrength, glassSmoothness, parallaxStrength, distortionMultiplier, edgePadding]);
+  }, [imageSrc, videoSrc, mediaType]);
+
+  useEffect(() => {
+    const uniforms = uniformsRef.current;
+    if (!uniforms) return;
+
+    uniforms.uParallaxStrength.value = parallaxStrength;
+    uniforms.uDistortionMultiplier.value = distortionMultiplier;
+    uniforms.uGlassStrength.value = glassStrength;
+    uniforms.uStripesFrequency.value = stripesFrequency;
+    uniforms.uGlassSmoothness.value = glassSmoothness;
+    uniforms.uEdgePadding.value = edgePadding;
+  }, [stripesFrequency, glassStrength, glassSmoothness, parallaxStrength, distortionMultiplier, edgePadding]);
 
   return (
     <div

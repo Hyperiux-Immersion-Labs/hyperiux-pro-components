@@ -39,6 +39,8 @@ interface ZoomSliderCompProps {
   subheading?: string;
   scaleOnHover?: boolean;
   textOnHover?: boolean;
+  size?: number;
+  easeScrollPercentage?: number;
 }
 
 export function ZoomSliderComp({
@@ -47,6 +49,8 @@ export function ZoomSliderComp({
   subheading,
   scaleOnHover = true,
   textOnHover = true,
+  size = 1,
+  easeScrollPercentage = 100,
 }: ZoomSliderCompProps) {
   const images = sliderData;
 
@@ -63,12 +67,14 @@ export function ZoomSliderComp({
   const isTablet =
     viewportWidth >= MOBILE_BREAKPOINT && viewportWidth < TABLET_BREAKPOINT;
 
-  const cardWidthMin = isMobile ? 75 : 190;
-  const cardWidthMax = isMobile ? 260 : isTablet ? 500 : 680;
+  const resolvedSize = Math.max(0.5, Number(size) || 1);
+  const resolvedEaseScrollPercentage = Math.max(20, Number(easeScrollPercentage) || 100);
+  const cardWidthMin = (isMobile ? 75 : 190) * resolvedSize;
+  const cardWidthMax = (isMobile ? 260 : isTablet ? 500 : 680) * resolvedSize;
   const cardHeightMax = isMobile
-    ? Math.round(viewportHeight * 0.6)
-    : Math.round(viewportHeight * 0.82);
-  const cardHeightMin = isMobile ? 80 : 50;
+    ? Math.round(viewportHeight * 0.6 * resolvedSize)
+    : Math.round(viewportHeight * 0.82 * resolvedSize);
+  const cardHeightMin = (isMobile ? 80 : 50) * resolvedSize;
   const cardStep = cardWidthMax;
 
   const stateRef = useRef({
@@ -126,7 +132,7 @@ export function ZoomSliderComp({
       const viewportWidthValue = window.innerWidth;
       const viewportHeightValue = window.innerHeight;
       const bottom = viewportHeightValue - SLIDER_BOTTOM_OFFSET;
-      const easingDistance = 2 * viewportWidthValue;
+      const easingDistance = 2 * viewportWidthValue * (resolvedEaseScrollPercentage / 100);
 
       const mapVtoX = (value: number) => {
         if (value <= 0) return 0;
@@ -162,7 +168,7 @@ export function ZoomSliderComp({
         imageWrap.style.height = `${cardHeight}px`;
       }
     },
-    [cardHeightMax, cardHeightMin, cardStep, cardWidthMax, images.length]
+    [cardHeightMax, cardHeightMin, cardStep, cardWidthMax, images.length, resolvedEaseScrollPercentage]
   );
 
   useEffect(() => {

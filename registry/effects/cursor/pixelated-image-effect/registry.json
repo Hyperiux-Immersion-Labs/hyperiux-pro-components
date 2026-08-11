@@ -34,8 +34,7 @@
       "name": "src",
       "type": "string",
       "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
-      "description": "Image source URL.",
-      "remixer": { "control": "text", "group": "media", "groupTitle": "Media" }
+      "description": "Image source URL."
     },
     {
       "name": "pixelSize",
@@ -61,7 +60,7 @@
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "media",
+    "defaultOpenGroupId": "controls",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

@@ -98,6 +98,7 @@ export default function MaskedContainer({
         type: "x,y",
         inertia: true,
         bounds: "body",
+        zIndexBoost: false,
         edgeResistance: 0.3,
         throwProps: {
           resistance: Math.max(50, safeFriction * 4000),
@@ -145,6 +146,7 @@ export default function MaskedContainer({
       style={{
         borderColor: canvasBorderColor,
         borderRadius: `${safeRounded}px`,
+        zIndex: 20,
       }}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}

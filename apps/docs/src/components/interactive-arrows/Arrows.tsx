@@ -23,7 +23,7 @@ class Arrow {
     this.targetPos = { ...position };
   }
 
-  update(mouseX: number, mouseY: number, reactionRadius: number, angleSmoothing: number, positionSmoothing: number) {
+  update(mouseX: number, mouseY: number, reactionRadius: number, angleSmoothing: number, positionSmoothing: number, allowSpacing: boolean) {
     this.dx = mouseX - this.pos.x;
     this.dy = mouseY - this.pos.y;
 
@@ -41,7 +41,7 @@ class Arrow {
     this.isHovered = distance < reactionRadius;
 
     // Handle spacing animation
-    if (this.isHovered !== wasHovered) {
+    if (this.isHovered !== wasHovered && allowSpacing) {
       if (this.isHovered) {
         // Push surrounding arrows away
         this.arrowsRef.current.forEach(otherArrow => {
@@ -107,6 +107,21 @@ const Arrows = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const arrowsRef = useRef<Arrow[]>([]);
+  const controlsRef = useRef({ arrowColor, activeColor, reactionRadius, smoothing });
+  const lastReactionRadiusRef = useRef(reactionRadius);
+  const suppressSpacingFramesRef = useRef(0);
+
+  useEffect(() => {
+    if (lastReactionRadiusRef.current !== reactionRadius) {
+      lastReactionRadiusRef.current = reactionRadius;
+      suppressSpacingFramesRef.current = 8;
+      arrowsRef.current.forEach((arrow) => {
+        arrow.targetPos = { ...arrow.originalPos };
+      });
+    }
+
+    controlsRef.current = { arrowColor, activeColor, reactionRadius, smoothing };
+  }, [activeColor, arrowColor, reactionRadius, smoothing]);
 
   const initializeArrows = useCallback((canvas: HTMLCanvasElement) => {
     const arrows: Arrow[] = [];
@@ -152,13 +167,18 @@ const Arrows = ({
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const arrows = arrowsRef.current;
     const mouse = mouseRef.current;
+    const controls = controlsRef.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const resolvedSmoothing = smoothing === 0.12 ? 0.15 : smoothing;
+    const resolvedSmoothing = controls.smoothing === 0.12 ? 0.15 : controls.smoothing;
+    const allowSpacing = suppressSpacingFramesRef.current <= 0;
     arrows.forEach(arrow => {
-      arrow.update(mouse.x, mouse.y, reactionRadius, resolvedSmoothing, resolvedSmoothing * (0.1 / 0.15));
-      arrow.draw(ctx, arrowColor, activeColor);
+      arrow.update(mouse.x, mouse.y, controls.reactionRadius, resolvedSmoothing, resolvedSmoothing * (0.1 / 0.15), allowSpacing);
+      arrow.draw(ctx, controls.arrowColor, controls.activeColor);
     });
-  }, [activeColor, arrowColor, reactionRadius, smoothing]);
+    if (suppressSpacingFramesRef.current > 0) {
+      suppressSpacingFramesRef.current -= 1;
+    }
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;

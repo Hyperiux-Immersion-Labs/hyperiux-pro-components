@@ -24,6 +24,12 @@ const ColorfulCursorAura = ({
         enableEntryAnimation={true}
       />
 
+      <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 text-center max-[1025px]:block">
+        <p className="text-[3vw] font-medium leading-[1.2] text-zinc-700 max-md:text-[4vw]">
+          Open on desktop to experience the mouse effect
+        </p>
+      </div>
+
       {prefersReducedMotion && (
         <div
           aria-live="polite"

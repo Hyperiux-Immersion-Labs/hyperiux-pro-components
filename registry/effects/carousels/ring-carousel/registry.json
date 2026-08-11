@@ -78,6 +78,62 @@
         "group": "controls",
         "groupTitle": "Controls"
       }
+    },
+    {
+      "name": "cardSize",
+      "type": "number",
+      "default": 1,
+      "description": "Multiplier applied to carousel card width and height.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0.5,
+        "max": 1.6,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "cardWidth",
+      "type": "number",
+      "default": 720,
+      "description": "Carousel card width in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 320,
+        "max": 1100,
+        "step": 1
+      }
+    },
+    {
+      "name": "cardHeight",
+      "type": "number",
+      "default": 450,
+      "description": "Carousel card height in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 220,
+        "max": 760,
+        "step": 1
+      }
+    },
+    {
+      "name": "roundedness",
+      "type": "number",
+      "default": 20,
+      "description": "Carousel card corner radius in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 80,
+        "step": 1
+      }
     }
   ],
   "remixer": {

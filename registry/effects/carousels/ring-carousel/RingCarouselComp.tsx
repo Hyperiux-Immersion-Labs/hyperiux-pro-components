@@ -20,6 +20,7 @@ interface RingCarouselCompProps {
  itemWidth?: number;
  itemHeight?: number;
  radius?: number;
+ roundedness?: number;
  gap?: number;
  dragSensitivity?: number;
  momentum?: number;
@@ -39,6 +40,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  itemWidth = 700,
  itemHeight = 300,
  radius = 500,
+ roundedness = 20,
  gap = 0,
  dragSensitivity = 0.35,
  momentum = 1,
@@ -70,6 +72,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  const totalItems = items.length;
  const resolvedItemWidth = isMobile ? itemWidth * 0.88 : itemWidth;
  const resolvedItemHeight = isMobile ? itemHeight * 0.88 : itemHeight;
+ const resolvedRoundedness = Math.max(0, Number(roundedness) || 0);
  // Reduced motion still tracks the drag 1:1 - it's user-initiated, not
  // imposed motion. Only momentum/inertia after release (handled in
  // runMomentum below) and animated snaps are what actually get reduced.
@@ -451,6 +454,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  className={` absolute overflow-hidden rounded-[20px] transform-3d will-change-transform ${
  activeIndex === i ?"is-active" :""
  }`}
+ style={{ borderRadius: `${resolvedRoundedness}px` }}
  ref={(el) => { itemRefs.current[i] = el; }}
  >
  {renderItem ? (

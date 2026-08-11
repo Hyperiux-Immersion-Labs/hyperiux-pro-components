@@ -11,6 +11,10 @@ interface RingCarouselProps {
  pauseOnHover?: boolean;
  showNavigation?: boolean;
  showDots?: boolean;
+ cardSize?: number;
+ cardWidth?: number;
+ cardHeight?: number;
+ roundedness?: number;
  renderItem?: (item: RingCarouselItem, index: number) => React.ReactNode;
  [key: string]: unknown;
 }
@@ -23,6 +27,10 @@ export default function RingCarousel({
  pauseOnHover = true,
  showNavigation,
  showDots,
+ cardSize = 1,
+ cardWidth,
+ cardHeight,
+ roundedness = 20,
  renderItem,
  ...rest
 }: RingCarouselProps) {
@@ -80,14 +88,22 @@ export default function RingCarousel({
  return () => window.removeEventListener("resize", updateGalleryConfig);
  }, []);
 
+ const resolvedCardSize = Math.max(0.5, Number(cardSize) || 1);
+ const resolvedCardWidth = (cardWidth ?? galleryConfig.itemWidth) * resolvedCardSize;
+ const resolvedCardHeight = (cardHeight ?? galleryConfig.itemHeight) * resolvedCardSize;
+ const resolvedRoundedness = Math.max(0, Number(roundedness) || 0);
+ const carouselLayoutKey = `${resolvedCardWidth}-${resolvedCardHeight}-${resolvedRoundedness}-${galleryConfig.radius}`;
+
  return (
  <section className={`flex min-h-[40vh] w-full flex-col items-center justify-start overflow-hidden bg-black px-4 max-md:px-0  pb-8 max-md:pt-10 max-md:pb-8 max-sm:px-0 max-sm:pt-0 max-sm:pb-4 ${className}`}>
  <div className="relative w-full">
  <RingCarouselComp
+ key={carouselLayoutKey}
  items={items}
- itemWidth={galleryConfig.itemWidth}
- itemHeight={galleryConfig.itemHeight}
+ itemWidth={resolvedCardWidth}
+ itemHeight={resolvedCardHeight}
  radius={galleryConfig.radius}
+ roundedness={resolvedRoundedness}
  gap={0}
  dragSensitivity={galleryConfig.dragSensitivity}
  momentum={galleryConfig.momentum}

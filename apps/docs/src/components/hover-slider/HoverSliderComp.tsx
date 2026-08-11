@@ -125,6 +125,12 @@ export default function HoverSliderComp({ items = [], transitionDuration = 0.45,
     curveFactor: clampNumber(curveFactor, 0, 2.5, 1),
   });
 
+  useEffect(() => {
+    controlsRef.current.transitionDuration = clampNumber(transitionDuration, 0.05, 3, 0.45);
+    controlsRef.current.imageScale = clampNumber(imageScale, 0.5, 2, 0.95);
+    controlsRef.current.curveFactor = clampNumber(curveFactor, 0, 2.5, 1);
+  }, [curveFactor, imageScale, transitionDuration]);
+
   const stateRef = useRef({
     activeIndex: 0,
     hovering: false,

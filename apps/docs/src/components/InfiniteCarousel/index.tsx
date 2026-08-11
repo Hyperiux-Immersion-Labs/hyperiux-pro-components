@@ -11,14 +11,24 @@ interface CarouselCardProps {
     description: string;
     themeClass: string;
     points: string[];
+    cardSize?: number;
+    cardWidth?: number;
+    cardHeight?: number;
 }
 
-function CarouselCard({ title, subtitle, description, themeClass, points }: CarouselCardProps) {
+function CarouselCard({ title, subtitle, description, themeClass, points, cardSize = 1, cardWidth = 512, cardHeight = 52 }: CarouselCardProps) {
+    const resolvedCardSize = Math.max(0.5, Number(cardSize) || 1);
+    const resolvedCardWidth = Math.max(260, Number(cardWidth) || 512) * resolvedCardSize;
+    const resolvedCardHeight = Math.max(28, Number(cardHeight) || 52) * resolvedCardSize;
+
     return (
-        <div className="h-full w-lg px-3 max-[1025px]:w-md max-[1025px]:min-w-md max-[1025px]:max-w-[calc(100vw-5.5rem)] max-[1025px]:px-3 max-md:w-[calc(100vw-1.5rem)] max-md:min-w-[calc(100vw-1.5rem)] max-md:max-w-[calc(100vw-1.5rem)] max-md:px-2">
+        <div
+            className="h-full w-lg px-3 max-[1025px]:w-md max-[1025px]:min-w-md max-[1025px]:max-w-[calc(100vw-5.5rem)] max-[1025px]:px-3 max-md:w-[calc(100vw-1.5rem)] max-md:min-w-[calc(100vw-1.5rem)] max-md:max-w-[calc(100vw-1.5rem)] max-md:px-2"
+            style={{ width: `${resolvedCardWidth}px`, minWidth: `${resolvedCardWidth}px` }}
+        >
             <div
                 className={`flex h-full min-h-[52vh] w-full flex-col gap-[1.2vw] border max-[1025px]:min-h-[58vh] max-[1025px]:gap-[2vw] max-md:min-h-[50vh] max-md:w-full max-md:gap-[4vw] p-[2vw] max-[1025px]:p-[3vw] max-md:px-6 max-md:py-10 overflow-hidden rounded-4xl max-md:rounded-2xl ${themeClass}`}
-                style={{ borderRadius: "1.2vw", borderColor: "rgba(0,0,0,0.2)" }}
+                style={{ minHeight: `${resolvedCardHeight}vh`, borderRadius: "1.2vw", borderColor: "rgba(0,0,0,0.2)" }}
             >
                 <div className="flex h-full flex-col gap-5">
                     <span className="inline-flex w-fit items-center rounded-full border border-current px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase max-md:text-[0.68rem]">{subtitle}</span>
@@ -41,6 +51,9 @@ function CarouselCard({ title, subtitle, description, themeClass, points }: Caro
 export default function InfiniteCarousel({
     draggable = true,
     gap = 32,
+    cardSize = 1,
+    cardWidth = 512,
+    cardHeight = 52,
 }) {
     const cards = cardsData;
     const showNav = true;
@@ -48,18 +61,25 @@ export default function InfiniteCarousel({
     const speed = 1;
     const pauseOnHover = true;
     const direction = "left";
+    const resolvedGap = Number(gap) || 32;
+    const resolvedCardSize = Math.max(0.5, Number(cardSize) || 1);
+    const resolvedCardWidth = Math.max(260, Number(cardWidth) || 512);
+    const resolvedCardHeight = Math.max(28, Number(cardHeight) || 52);
+    const carouselLayoutKey = `${resolvedGap}-${resolvedCardSize}-${resolvedCardWidth}-${resolvedCardHeight}`;
+
     return (
         <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-[1025px]:pt-6 max-[1025px]:pb-12 max-md:min-h-0 max-md:h-auto max-md:pb-0">
 
 
             <div className="w-full">
                 <InfiniteCarouselComp
+                    key={carouselLayoutKey}
                     controlsClassName="pl-8 max-[1025px]:px-3 max-md:px-2"
                     wrapperStyle={{
                         width: "100%",
                         minHeight: "auto",
                         alignItems: "stretch",
-                        gap: `${gap}px`,
+                        gap: `${resolvedGap}px`,
                     }}
                     pageClassName="gap-8 max-[1025px]:gap-6 max-md:gap-4"
                     prevLabel={<ArrowLeft />}
@@ -80,7 +100,7 @@ export default function InfiniteCarousel({
                     direction={direction}
                 >
                     {cards.map((card) => (
-                        <CarouselCard key={card.id} {...card} />
+                        <CarouselCard key={card.id} {...card} cardSize={resolvedCardSize} cardWidth={resolvedCardWidth} cardHeight={resolvedCardHeight} />
                     ))}
                 </InfiniteCarouselComp>
             </div>

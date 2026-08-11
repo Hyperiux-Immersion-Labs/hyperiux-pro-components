@@ -4,11 +4,15 @@ import ZoomSliderComp, { type ZoomSliderItem } from './ZoomSliderComp';
 interface ZoomSliderProps {
   scaleOnHover?: boolean;
   textOnHover?: boolean;
+  size?: number;
+  easeScrollPercentage?: number;
 }
 
 const ZoomSlider = ({
   scaleOnHover = true,
   textOnHover = true,
+  size = 1,
+  easeScrollPercentage = 100,
 }: ZoomSliderProps) => {
   return (
     <ZoomSliderComp
@@ -17,6 +21,8 @@ const ZoomSlider = ({
       sliderData={DEFAULT_SLIDER_DATA}
       scaleOnHover={scaleOnHover}
       textOnHover={textOnHover}
+      size={size}
+      easeScrollPercentage={easeScrollPercentage}
     />
   );
 };

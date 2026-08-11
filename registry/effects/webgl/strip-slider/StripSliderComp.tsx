@@ -408,14 +408,23 @@ interface StripSliderCompProps {
   items?: StripSliderItem[];
   dispScale?: number;
   cameraSway?: number;
+  hideCentralStrip?: boolean;
+  imageSize?: number;
 }
 
 export default function StripSliderComp({
   items = [],
   dispScale = 1,
   cameraSway = 0.03,
+  hideCentralStrip = false,
+  imageSize = 1,
 }: StripSliderCompProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const controlsRef = useRef({ dispScale, cameraSway, hideCentralStrip, imageSize });
+
+  useEffect(() => {
+    controlsRef.current = { dispScale, cameraSway, hideCentralStrip, imageSize };
+  }, [dispScale, cameraSway, hideCentralStrip, imageSize]);
 
   useEffect(() => {
     if (!canvasRef.current || !items.length) return;
@@ -437,7 +446,7 @@ export default function StripSliderComp({
 
     const uTime = { value: 0 };
     const uPortrait = { value: false };
-    const uGlobalScale = { value: 10.5 };
+    const uGlobalScale = { value: 10.5 * controlsRef.current.imageSize };
 
     const dummyVec3 = new THREE.Vector3();
     const dummyMat4 = new THREE.Matrix4();
@@ -532,7 +541,7 @@ export default function StripSliderComp({
       ...item,
       i,
       imageWidth: 1 / (item.imageCount || 1),
-      dispScale: (item.dispScale || 1) * dispScale,
+      dispScale: item.dispScale || 1,
       expanded: i === 0,
       width: i === 0 ? 1 : GALLERY_ITEM_W,
     }));
@@ -592,7 +601,7 @@ galleryContainer.add(mesh);
         uTex: { value: null },
         uNormalsTex: { value: null },
         uPortrait,
-        uDispVertScale: { value: 4.0 * dispScale },
+        uDispVertScale: { value: 4.0 * controlsRef.current.dispScale },
       },
     });
 
@@ -636,7 +645,7 @@ galleryContainer.add(mesh);
         uImageWidth: { value: 1 },
         uStartTime: { value: 0 },
         uDispScale: { value: 1 },
-        uDispVertScale: { value: 4.0 * dispScale },
+        uDispVertScale: { value: 4.0 * controlsRef.current.dispScale },
         uImageAspect: { value: 1.0 },
       },
     });
@@ -873,6 +882,15 @@ galleryContainer.add(mesh);
 
       tLast = t;
       uTime.value = t + randomSeed;
+      const liveDispScale = controlsRef.current.dispScale;
+      const liveImageSize = Math.max(0.3, controlsRef.current.imageSize);
+
+      uGlobalScale.value = 10.5 * liveImageSize;
+      galleryContainer.scale.set(uGlobalScale.value, uGlobalScale.value, 1);
+      galleryContainer.position.x = (GALLERY_WIDTH / -2) * uGlobalScale.value;
+      sharedMat.uniforms.uDispVertScale.value = 4.0 * liveDispScale;
+      highResMat.uniforms.uDispVertScale.value = 4.0 * liveDispScale;
+      overlayMesh.visible = !controlsRef.current.hideCentralStrip;
 
       let inMotion = false;
       let x = 0;
@@ -913,6 +931,8 @@ galleryContainer.add(mesh);
         }
       });
 
+      highResMat.uniforms.uDispScale.value = activeItem.dispScale * liveDispScale;
+
       if ((galleryHighRes as any).sourceInstance !== activeItem.i) {
         inMotion = true;
 
@@ -923,7 +943,6 @@ galleryContainer.add(mesh);
           highResMat.uniforms.uImageWidth.value = activeItem.imageWidth;
           highResMat.uniforms.uTex.value = activeItem.highResTex;
           highResMat.uniforms.uNormalsTex.value = activeItem.normalsTex;
-          highResMat.uniforms.uDispScale.value = activeItem.dispScale;
 
           if (activeItem.imageAspect !== undefined) {
             highResMat.uniforms.uImageAspect.value = activeItem.imageAspect;
@@ -979,21 +998,22 @@ galleryContainer.add(mesh);
    function onMouseMove(event: MouseEvent) {
   const rect = canvas.getBoundingClientRect();
 
-  const cx = event.clientX - rect.left;
-  const cy = event.clientY - rect.top;
-  const w = rect.width;
-  const h = rect.height;
+      const cx = event.clientX - rect.left;
+      const cy = event.clientY - rect.top;
+      const w = rect.width;
+      const h = rect.height;
+      const liveCameraSway = controlsRef.current.cameraSway;
 
-  if (portrait) {
-    cameraTarget.set(
-      (h / 2 - cy) * -cameraSway,
-      (w / 2 - cx) * -cameraSway,
+      if (portrait) {
+        cameraTarget.set(
+      (h / 2 - cy) * -liveCameraSway,
+      (w / 2 - cx) * -liveCameraSway,
       CAMERA_Z
     );
   } else {
     cameraTarget.set(
-      (w / 2 - cx) * -cameraSway,
-      (h / 2 - cy) * cameraSway,
+      (w / 2 - cx) * -liveCameraSway,
+      (h / 2 - cy) * liveCameraSway,
       CAMERA_Z
     );
   }
@@ -1133,7 +1153,7 @@ galleryContainer.add(mesh);
 
       renderer.dispose();
     };
-  }, [items, dispScale, cameraSway]);
+  }, [items]);
 
   return (
     <canvas

@@ -21,7 +21,6 @@ export interface ArrowFillButtonOwnProps {
   arrowColor?: string;
   hoverArrowColor?: string;
   animationDuration?: number;
-  showArrow?: boolean;
   fillOnHover?: boolean;
 }
 
@@ -40,7 +39,6 @@ function ArrowFillButton({
   arrowColor,
   hoverArrowColor,
   animationDuration = ANIMATION_DURATION_MS / 1000,
-  showArrow = true,
   fillOnHover = true,
   ...props
 }: ArrowFillButtonProps) {
@@ -185,7 +183,6 @@ function ArrowFillButton({
         <span className="relative z-1 pb-px whitespace-nowrap">{btnText}</span>
       </div>
 
-      {showArrow ? (
       <span
         className={`pointer-events-none absolute right-[var(--icon-right)] top-1/2 z-3 inline-flex h-[var(--icon-circle)] w-[var(--icon-circle)] shrink-0 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-(--btn-fill-bg) text-(--btn-arrow) ${
           isReady
@@ -216,7 +213,6 @@ function ArrowFillButton({
             strokeWidth={1.8}
           />
         </span>
-      ) : null}
     </Link>
   );
 }

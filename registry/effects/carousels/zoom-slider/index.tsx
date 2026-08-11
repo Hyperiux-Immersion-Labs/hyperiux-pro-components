@@ -6,6 +6,8 @@ import ZoomSliderComp, { type ZoomSliderItem } from './ZoomSliderComp';
 const ZoomSlider = ({
   scaleOnHover = true,
   textOnHover = true,
+  size = 1,
+  easeScrollPercentage = 100,
 }) => {
   return (
     <ZoomSliderComp
@@ -14,6 +16,8 @@ const ZoomSlider = ({
       sliderData={DEFAULT_SLIDER_DATA}
       scaleOnHover={scaleOnHover}
       textOnHover={textOnHover}
+      size={size}
+      easeScrollPercentage={easeScrollPercentage}
     />
   );
 };

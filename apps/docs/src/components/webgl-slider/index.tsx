@@ -23,6 +23,8 @@ const WebGLSlider = ({
     distortionStrength = 1,
     transitionDuration = 0.6,
     enableHoverEffect = true,
+    imageWidth = 3.2,
+    imageHeight = 3,
 }) => {
     const [isMobile, setIsMobile] = useState(false);
 
@@ -53,6 +55,8 @@ const WebGLSlider = ({
             distortionStrength={distortionStrength}
             transitionDuration={transitionDuration}
             enableHoverEffect={enableHoverEffect}
+            imageWidth={imageWidth}
+            imageHeight={imageHeight}
         />
         //  </ReactLenis>
     )

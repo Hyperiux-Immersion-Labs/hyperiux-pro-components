@@ -65,6 +65,17 @@ const FullScreenCrosshair = ({
       html[data-crosshair-hide-cursor="true"] * {
         cursor: none !important;
       }
+
+      html[data-crosshair-hide-cursor="true"] button,
+      html[data-crosshair-hide-cursor="true"] input,
+      html[data-crosshair-hide-cursor="true"] textarea,
+      html[data-crosshair-hide-cursor="true"] select,
+      html[data-crosshair-hide-cursor="true"] a,
+      html[data-crosshair-hide-cursor="true"] label,
+      html[data-crosshair-hide-cursor="true"] [role="button"],
+      html[data-crosshair-hide-cursor="true"] [contenteditable="true"] {
+        cursor: auto !important;
+      }
     `;
 
     documentElement.dataset.crosshairHideCursor = "true";

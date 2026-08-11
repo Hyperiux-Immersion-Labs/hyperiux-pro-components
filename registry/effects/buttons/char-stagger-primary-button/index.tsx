@@ -150,8 +150,8 @@ const CharStaggerPrimaryButton = ({
 
 
             {showArrow && Icon && (
-                <div className={`flex items-center justify-start overflow-hidden ${iconClassName}`}>
-                    <div className={`flex w-max -translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] will-change-transform motion-reduce:transition-none motion-safe:group-hover:translate-x-[5%] motion-safe:group-focus-visible:translate-x-[5%] ${iconHoverClass} ${iconClassName}`}>
+                <div className={`flex size-[1em] items-center justify-start overflow-hidden ${iconClassName}`}>
+                    <div className={`flex h-full w-max -translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] will-change-transform motion-reduce:transition-none motion-safe:group-hover:translate-x-[5%] motion-safe:group-focus-visible:translate-x-[5%] ${iconHoverClass}`}>
                         <Icon className="h-full w-full flex-none" />
                         <Icon className="h-full w-full flex-none" />
                     </div>

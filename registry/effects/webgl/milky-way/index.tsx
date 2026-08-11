@@ -20,7 +20,8 @@ const DEFAULT_CORE_COLOR = '#f5f5ff'
 const DEFAULT_ACCENT_COLOR = '#ffe6ad'
 const DEFAULT_OUTER_COLOR = '#e05c12'
 const DEFAULT_BACKGROUND_COLOR = '#000000'
-const DEFAULT_MOUSE_INFLUENCE = 1
+const DEFAULT_MOUSE_INFLUENCE = true
+const DEFAULT_ROTATION = 1
 const DEFAULT_ROTATION_SPEED = 0.2
 
 function clampNumber(value: unknown, min: number, max: number, fallback: number) {
@@ -36,6 +37,7 @@ function resolveMilkyWayProps({
    outerColor = DEFAULT_OUTER_COLOR,
    backgroundColor = DEFAULT_BACKGROUND_COLOR,
    mouseInfluence = DEFAULT_MOUSE_INFLUENCE,
+   rotation = typeof mouseInfluence === 'number' ? mouseInfluence : DEFAULT_ROTATION,
    rotationSpeed = DEFAULT_ROTATION_SPEED,
 }: MilkyWayProps) {
    return {
@@ -47,7 +49,8 @@ function resolveMilkyWayProps({
          typeof backgroundColor === 'string' && backgroundColor
             ? backgroundColor
             : DEFAULT_BACKGROUND_COLOR,
-      mouseInfluence: clampNumber(mouseInfluence, 0, 2, DEFAULT_MOUSE_INFLUENCE),
+      mouseInfluence: typeof mouseInfluence === 'boolean' ? mouseInfluence : mouseInfluence !== 0,
+      rotation: clampNumber(rotation, 0, 2, DEFAULT_ROTATION),
       rotationSpeed: clampNumber(rotationSpeed, 0, 2, DEFAULT_ROTATION_SPEED),
    }
 }
@@ -823,7 +826,7 @@ const MOUSE_TILT = { x: 0.1, y: 0.12, z: 0.03 }
 /** How fast smoothed mouse catches the cursor (frame-rate independent lerp) */
 const MOUSE_LERP_LAMBDA = 1
 
-function GalaxyMouseGroup({ children, mouseInfluence, rotationSpeed }: { children: ReactNode; mouseInfluence: number; rotationSpeed: number }) {
+function GalaxyMouseGroup({ children, mouseInfluence, rotation, rotationSpeed }: { children: ReactNode; mouseInfluence: boolean; rotation: number; rotationSpeed: number }) {
    const groupRef = useRef<THREE.Group | null>(null)
    const mouseRef = useRef({ x: 0, y: 0 })
    const smoothRef = useRef({ x: 0, y: 0 })
@@ -886,9 +889,10 @@ function GalaxyMouseGroup({ children, mouseInfluence, rotationSpeed }: { childre
       s.x = THREE.MathUtils.lerp(s.x, m.x, t)
       s.y = THREE.MathUtils.lerp(s.y, m.y, t)
       autoRotationRef.current += dt * rotationSpeed * 0.18
-      g.rotation.x = GALAXY_BASE_ROT[0] - s.y * MOUSE_TILT.x * mouseInfluence
-      g.rotation.y = GALAXY_BASE_ROT[1] - s.x * MOUSE_TILT.y * mouseInfluence
-      g.rotation.z = autoRotationRef.current + s.x * s.y * MOUSE_TILT.z * mouseInfluence
+      const mouseRotation = mouseInfluence ? rotation : 0
+      g.rotation.x = GALAXY_BASE_ROT[0] - s.y * MOUSE_TILT.x * mouseRotation
+      g.rotation.y = GALAXY_BASE_ROT[1] - s.x * MOUSE_TILT.y * mouseRotation
+      g.rotation.z = autoRotationRef.current + s.x * s.y * MOUSE_TILT.z * mouseRotation
    })
 
    return (
@@ -1049,7 +1053,8 @@ interface MilkyWayProps {
    accentColor?: string
    outerColor?: string
    backgroundColor?: string
-   mouseInfluence?: number
+   mouseInfluence?: boolean | number
+   rotation?: number
    rotationSpeed?: number
 }
 
@@ -1060,6 +1065,7 @@ export default function MilkyWay({
    outerColor = DEFAULT_OUTER_COLOR,
    backgroundColor = DEFAULT_BACKGROUND_COLOR,
    mouseInfluence = DEFAULT_MOUSE_INFLUENCE,
+   rotation = typeof mouseInfluence === 'number' ? mouseInfluence : DEFAULT_ROTATION,
    rotationSpeed = DEFAULT_ROTATION_SPEED,
 }: MilkyWayProps = {}) {
    const resolvedProps = useMemo(
@@ -1071,9 +1077,10 @@ export default function MilkyWay({
             outerColor,
             backgroundColor,
             mouseInfluence,
+            rotation,
             rotationSpeed,
          }),
-      [accentColor, backgroundColor, coreColor, mouseInfluence, outerColor, particleSize, rotationSpeed]
+      [accentColor, backgroundColor, coreColor, mouseInfluence, outerColor, particleSize, rotation, rotationSpeed]
    )
    const rootRef = useRef<HTMLElement | null>(null)
    const [frameloop, setFrameloop] = useState<'always' | 'never' | 'demand'>('always')
@@ -1161,6 +1168,7 @@ export default function MilkyWay({
                <Center rotation={[degToRad(-10), degToRad(0), degToRad(0)]} position={[-1.2, 0.5, 0]}>
                   <GalaxyMouseGroup
                      mouseInfluence={resolvedProps.mouseInfluence}
+                     rotation={resolvedProps.rotation}
                      rotationSpeed={resolvedProps.rotationSpeed}
                   >
                      <MilkyWayGPGPU

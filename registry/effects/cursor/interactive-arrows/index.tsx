@@ -59,11 +59,34 @@ function usePrefersReducedMotion() {
 
 const InteractiveArrows = (props: Record<string, unknown>) => {
   const [active, setActive] = useState(variations[0].id);
+  const [isMobile, setIsMobile] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia("(max-width: 767px)");
+    const updateMobile = () => setIsMobile(mobileQuery.matches);
+
+    updateMobile();
+    mobileQuery.addEventListener("change", updateMobile);
+    return () => mobileQuery.removeEventListener("change", updateMobile);
+  }, []);
 
   const activeVariation =
     variations.find((variation) => variation.id === active) ?? variations[0];
   const ActiveComponent = activeVariation.component;
+
+  if (isMobile) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-white px-6 text-center text-black">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">Open on desktop</h2>
+          <p className="mt-3 text-sm leading-6 text-black/60">
+            Interactive Arrows needs a desktop pointer for the full hover response.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full overflow-hidden bg-white text-black">

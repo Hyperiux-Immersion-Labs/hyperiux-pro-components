@@ -20,9 +20,11 @@ const images: WebGLSliderImage[] = [
 ];
 
 const WebGLSlider = ({
- distortionStrength = 1,
- transitionDuration = 0.6,
- enableHoverEffect = true,
+    distortionStrength = 1,
+    transitionDuration = 0.6,
+    enableHoverEffect = true,
+    imageWidth = 3.2,
+    imageHeight = 3,
 }) => {
  const [isMobile, setIsMobile] = useState(false);
 
@@ -50,10 +52,12 @@ const WebGLSlider = ({
  return (
  <WebGLSliderComp
  images={images}
- distortionStrength={distortionStrength}
- transitionDuration={transitionDuration}
- enableHoverEffect={enableHoverEffect}
- />
+            distortionStrength={distortionStrength}
+            transitionDuration={transitionDuration}
+            enableHoverEffect={enableHoverEffect}
+            imageWidth={imageWidth}
+            imageHeight={imageHeight}
+        />
  )
 }
 

@@ -119,17 +119,6 @@
         "group": "hover",
         "groupTitle": "Hover"
       }
-    },
-    {
-      "name": "showArrow",
-      "type": "boolean",
-      "default": true,
-      "description": "Shows or hides the animated arrow icon.",
-      "remixer": {
-        "control": "checkbox",
-        "group": "content",
-        "groupTitle": "Content"
-      }
     }
   ],
   "remixer": {

@@ -163,14 +163,14 @@ function ButterflyPool({
 	})
 
 	useEffect(() => {
-		const handleMouseMove = (e: MouseEvent) => {
+		const spawnButterflies = (clientX: number, clientY: number, force = false) => {
 			if (resolvedCount <= 0) return
 			const now = Date.now()
-			if (now - lastSpawnTime.current < SPAWN_THROTTLE) return
+			if (!force && now - lastSpawnTime.current < SPAWN_THROTTLE) return
 			lastSpawnTime.current = now
 
-			const x = (e.clientX / size.width) * 10 - 5
-			const y = -(e.clientY / size.height) * 6 + 3
+			const x = (clientX / size.width) * 10 - 5
+			const y = -(clientY / size.height) * 6 + 3
 			const count = Math.max(1, Math.ceil(resolvedCount / 4))
 			const spread = resolvedTrailDistance / 12
 			const createdAt = clockTimeRef.current
@@ -215,8 +215,20 @@ function ButterflyPool({
 			}
 		}
 
-		window.addEventListener('mousemove', handleMouseMove)
-		return () => window.removeEventListener('mousemove', handleMouseMove)
+		const handlePointerMove = (e: PointerEvent) => {
+			spawnButterflies(e.clientX, e.clientY)
+		}
+
+		const handlePointerDown = (e: PointerEvent) => {
+			spawnButterflies(e.clientX, e.clientY, true)
+		}
+
+		window.addEventListener('pointermove', handlePointerMove)
+		window.addEventListener('pointerdown', handlePointerDown)
+		return () => {
+			window.removeEventListener('pointermove', handlePointerMove)
+			window.removeEventListener('pointerdown', handlePointerDown)
+		}
 	}, [resolvedCount, resolvedTrailDistance, scale, size])
 
 	return <primitive object={poolGroup} />
@@ -272,6 +284,18 @@ export default function ButterflyTrailCursor({
 			className="w-full h-screen relative bg-[#EAEAE9]"
 			style={{ backgroundColor: '#EAEAE9' }}
 		>
+			<div className="pointer-events-none absolute left-1/2 top-1/2 z-10 w-[min(90vw,760px)] -translate-x-1/2 -translate-y-1/2 text-center text-[#111111]">
+				<h1 className="text-5xl font-semibold leading-none tracking-tight max-[1025px]:text-4xl max-md:text-3xl">
+					Butterfly Trail Cursor
+				</h1>
+				<p className="mt-4 text-sm font-medium uppercase tracking-[0.22em] text-black/55 max-md:hidden">
+					Move cursor to spawn the butterflies
+				</p>
+				<p className="mt-4 hidden text-sm font-medium uppercase tracking-[0.18em] text-black/55 max-md:block">
+					Click to see butterflies spawn
+				</p>
+			</div>
+
 			<Canvas
 				style={{ backgroundColor: '#EAEAE9' }}
 				camera={{ position: [0, 0, 5], fov: 75 }}

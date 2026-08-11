@@ -311,6 +311,7 @@ const CurvedPlaneVertical = ({
         const yPos = (baseY - yOffset) * direction;
 
         mesh.position.set(xPos as number, yPos, 0);
+        mesh.scale.set(currentImageWidth, currentImageHeight, 1);
 
         // Always full opacity - no fading
         mesh.material.uniforms.uAlpha.value = 1.0;

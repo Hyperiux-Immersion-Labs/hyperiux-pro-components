@@ -16,6 +16,8 @@ const AnimatedToggle = ({
   const [chevronActive, setChevronActive] = useState(false);
   const [crossActive, setCrossActive] = useState(false);
   const [plusActive, setPlusActive] = useState(false);
+  const [crossHovered, setCrossHovered] = useState(false);
+  const [plusHovered, setPlusHovered] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -61,17 +63,21 @@ const AnimatedToggle = ({
       </button>
       <button
         onClick={() => setCrossActive((prev) => !prev)}
+        onMouseEnter={() => setCrossHovered(true)}
+        onMouseLeave={() => setCrossHovered(false)}
         className="group cursor-pointer size-(--toggle-size) max-md:size-[calc(var(--toggle-size)*0.75)] rounded-lg flex items-center justify-center transition-[background-color,transform] motion-reduce:transition-none motion-safe:active:scale-90"
         style={{ ...boxStyle, backgroundColor: crossActive ? activeColor : inactiveColor }}
       >
-        <Cross size={iconSize} isActive={crossActive} prefersReducedMotion={prefersReducedMotion} duration={duration} />
+        <Cross size={iconSize} isActive={crossActive} isHovered={crossHovered} prefersReducedMotion={prefersReducedMotion} duration={duration} />
       </button>
       <button
         onClick={() => setPlusActive((prev) => !prev)}
+        onMouseEnter={() => setPlusHovered(true)}
+        onMouseLeave={() => setPlusHovered(false)}
         className="group cursor-pointer size-(--toggle-size) max-md:size-[calc(var(--toggle-size)*0.75)] rounded-lg flex items-center justify-center transition-[background-color,transform] motion-reduce:transition-none motion-safe:active:scale-90"
         style={{ ...boxStyle, backgroundColor: plusActive ? activeColor : inactiveColor }}
       >
-        <Plus size={iconSize} isActive={plusActive} prefersReducedMotion={prefersReducedMotion} duration={duration} />
+        <Plus size={iconSize} isActive={plusActive} isHovered={plusHovered} prefersReducedMotion={prefersReducedMotion} duration={duration} />
       </button>
     </div>
   )

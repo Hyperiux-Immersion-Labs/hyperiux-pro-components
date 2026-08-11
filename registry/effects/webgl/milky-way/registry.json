@@ -86,10 +86,17 @@
       "suggested": true
     },
     {
-      "name": "mouseInfluence",
+      "name": "rotation",
       "type": "number",
       "default": 1,
       "description": "How strongly the galaxy tilts with mouse movement.",
+      "suggested": true
+    },
+    {
+      "name": "mouseInfluence",
+      "type": "boolean",
+      "default": true,
+      "description": "Enable cursor-driven galaxy tilt.",
       "suggested": true
     },
     {
@@ -150,14 +157,21 @@
         "copyable": true
       },
       {
-        "name": "mouseInfluence",
-        "label": "Mouse Influence",
+        "name": "rotation",
+        "label": "Rotation",
         "type": "range",
         "group": "motion",
         "copyable": true,
         "min": 0,
         "max": 2,
         "step": 0.05
+      },
+      {
+        "name": "mouseInfluence",
+        "label": "Mouse Influence",
+        "type": "checkbox",
+        "group": "motion",
+        "copyable": true
       },
       {
         "name": "rotationSpeed",

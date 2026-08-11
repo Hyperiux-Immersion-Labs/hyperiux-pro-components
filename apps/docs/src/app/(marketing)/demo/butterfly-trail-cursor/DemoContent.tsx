@@ -13,7 +13,7 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+          <DemoHeader logoColor="#1a1a1a" textColor="#1a1a1a" />
           {effect}
         </>
       )}

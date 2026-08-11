@@ -93,6 +93,8 @@ interface WebGLSliderCompProps {
   distortionStrength?: number;
   transitionDuration?: number;
   enableHoverEffect?: boolean;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 function WebGLSliderComp({
@@ -100,6 +102,8 @@ function WebGLSliderComp({
   distortionStrength = 1,
   transitionDuration = 0.6,
   enableHoverEffect = true,
+  imageWidth = 3.2,
+  imageHeight = 3,
 }: WebGLSliderCompProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef(0);
@@ -257,8 +261,8 @@ function WebGLSliderComp({
     const isTablet = width >= 768 && width < 1025;
     const isCompact = width < 1025;
 
-    const CARD_W = mobileViewport ? 1.55 : isTablet ? 2.25 : 3.2;
-    const CARD_H = mobileViewport ? 1.45 : isTablet ? 2.1 : 3.0;
+    const CARD_W = mobileViewport ? 1.55 : isTablet ? 2.25 : Math.max(1, Number(imageWidth) || 3.2);
+    const CARD_H = mobileViewport ? 1.45 : isTablet ? 2.1 : Math.max(1, Number(imageHeight) || 3.0);
     const BASE_GAP = mobileViewport ? 4.7 : isTablet ? 5.1 : 4.5;
     const GAP = reduceMotion ? BASE_GAP * 1.25 : BASE_GAP;
 
@@ -573,7 +577,7 @@ function WebGLSliderComp({
 
       document.body.style.height = "";
     };
-  }, [images, isMobile, reduceMotion, distortionStrength, enableHoverEffect]);
+  }, [images, isMobile, reduceMotion, distortionStrength, enableHoverEffect, imageWidth, imageHeight]);
 
   if (isMobile) {
     return (
