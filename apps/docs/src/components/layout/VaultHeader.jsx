@@ -26,6 +26,20 @@ const DOCS_TOP_LINKS = [
   { href: "/docs/license", label: "License" },
 ];
 
+const MOBILE_SECONDARY_LINKS = [
+  {
+    href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components",
+    label: "Github",
+    external: true,
+  },
+  {
+    href: "https://www.npmjs.com/package/hyperiux",
+    label: "NPM",
+    external: true,
+  },
+  { href: "/docs/mcp", label: "MCP Doc" },
+];
+
 function categoryLabel(category) {
   return category.name.replace("Website ", "").replace("Page ", "");
 }
@@ -388,7 +402,7 @@ export function VaultHeader({
                     onClick={closeMobileMenu}
                     className="flex w-full items-center rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35 max-[1025px]:text-lg max-md:text-xs"
                   >
-                    Overview
+                    All Effects
                   </Link>
                 </div>
 
@@ -484,6 +498,24 @@ export function VaultHeader({
                       </motion.div>
                     )}
                   </AnimatePresence>
+                </div>
+
+                <div className="space-y-1">
+                  {MOBILE_SECONDARY_LINKS.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMobileDropdowns();
+                      }}
+                      className="flex w-full items-center rounded-2xl px-1 py-2 text-left text-xs uppercase tracking-[0.2em] text-white/35 transition hover:text-white/70 max-[1025px]:text-lg max-md:text-xs"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </div>
               </nav>
             </motion.div>

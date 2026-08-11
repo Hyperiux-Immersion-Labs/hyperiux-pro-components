@@ -3,13 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LayoutGroup, motion, useReducedMotion } from "motion/react";
-import { ChevronDown } from "lucide-react";
+import { FILTER_OPTIONS } from "@/lib/effect-sort";
 
-export const FILTER_OPTIONS = ["featured", "free", "pro"];
+export { FILTER_OPTIONS };
 
 export function FilterMenu({
   activeFilter,
-  categoryFilter,
   getLabel,
   onSelect,
   // Defaults to the vault listing's featured/free/pro-only dropdown; the
@@ -136,8 +135,8 @@ export function FilterMenu({
       onMouseLeave={() => setHoveredCat(null)}
     >
       <LayoutGroup id="filter-menu-pill">
-        {options.map((cat) => {
-          const isSelected = categoryFilter === cat;
+        {FILTER_OPTIONS.map((cat) => {
+          const isSelected = activeFilter === cat;
           // Hover takes precedence; fall back to the active filter so the
           // pill still rests somewhere when nothing is hovered.
           const highlighted = hoveredCat

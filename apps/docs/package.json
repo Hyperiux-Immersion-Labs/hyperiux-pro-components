@@ -2,6 +2,7 @@
   "name": "@hyperiux/docs",
   "version": "0.1.0",
   "private": true,
+  "license": "MPL-2.0",
   "type": "module",
   "overrides": {
     "brace-expansion@<1.1.18": "1.1.18",

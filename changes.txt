@@ -59,7 +59,7 @@ CHANGES LOG - HYPERIUX CLI & PACKAGING (PRODUCTION READY)
 ===================================================================
 
 [CREATED] LICENSE
-  - Added root level MIT license copy.
+  - Added root level MPL 2.0 license copy.
 
 [CREATED] CHANGELOG.md
   - Added root level release logs documenting initial 0.1.0 and fixed 0.1.1 versions.

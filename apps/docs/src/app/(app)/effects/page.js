@@ -8,6 +8,7 @@ import {
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import { sortEffects } from "@/lib/effect-sort";
 import {
   getEffectCategoryContent,
   getEffectCategoryMetadata,
@@ -25,9 +26,7 @@ export default async function EffectsPage() {
   const sanityEntries = await getAllSanityEffectEntries();
   const effects = buildEffectsFromSanity(sanityEntries);
   const categories = getEffectsByCategoryFromSanity(sanityEntries);
-  const sortedEffects = [...effects].sort(
-    (a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0),
-  );
+  const sortedEffects = sortEffects(effects);
 
   const effectCounts = {};
   for (const [category, catEffects] of Object.entries(categories)) {

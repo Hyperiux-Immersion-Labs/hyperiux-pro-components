@@ -159,26 +159,26 @@ export default function DocsLicense() {
         implementation details. That is the point. Drop in the interaction. Keep the taste.
       </Para>
 
-      <Heading2 id="mit-licensed-files">MIT- Licensed Files</Heading2>
+      <Heading2 id="mpl-licensed-files">MPL 2.0 Licensed Files</Heading2>
 
       <Para>
-        Some Free Core files may be released under the MIT License. If a file is marked as
-        MIT, the MIT License terms apply to that file.
+        Some Free Core files may be released under the Mozilla Public License 2.0. If a file
+        is marked as MPL 2.0, the MPL 2.0 terms apply to that file.
       </Para>
 
       <Para>
-        That usually means you can use, copy, modify, merge, publish, distribute,
-        sublicense, and sell copies of the software, as long as the required copyright and
-        license notice is preserved.
+        That usually means you can use, copy, modify, and distribute the software, as long as
+        the required copyright and license notice is preserved and covered source-file
+        changes remain available under MPL 2.0.
       </Para>
 
       <Para>In plain English:</Para>
 
       <DocsList>
-        <DocsListItem>You can use MIT files in personal work.</DocsListItem>
-        <DocsListItem>You can use MIT files in commercial work.</DocsListItem>
-        <DocsListItem>You can use MIT files in client projects.</DocsListItem>
-        <DocsListItem>You can modify MIT files.</DocsListItem>
+        <DocsListItem>You can use MPL 2.0 files in personal work.</DocsListItem>
+        <DocsListItem>You can use MPL 2.0 files in commercial work.</DocsListItem>
+        <DocsListItem>You can use MPL 2.0 files in client projects.</DocsListItem>
+        <DocsListItem>You can modify MPL 2.0 files.</DocsListItem>
         <DocsListItem>
           You must preserve required license notices where the license requires it.
         </DocsListItem>
@@ -187,7 +187,7 @@ export default function DocsLicense() {
       <Para>
         If Hyperiux wants to restrict redistribution, template resale, competing libraries,
         or marketplace packaging for certain free assets, those assets should not be
-        published under standard MIT terms.
+        published under standard MPL 2.0 terms.
       </Para>
 
       <Para>
