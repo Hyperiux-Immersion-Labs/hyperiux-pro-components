@@ -7,7 +7,6 @@ import {
   FAQWrapper,
 } from "@/components/animated-faq";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
 const faqItems = [
   {
@@ -55,146 +54,51 @@ const defaultOpenItems = faqItems
   .filter((item) => item.defaultOpen)
   .map((item) => item.id);
 
-function buildAnimatedFaqCode({ values }: { values: any }) {
-  return `/**
- * Animated FAQ remixer changes:
- * - allowMultiple: ${values.allowMultiple}
- * - duration: ${values.duration}
- * - showIcon: ${values.showIcon}
- * - iconPosition: ${values.iconPosition}
- * - iconMode: ${values.iconMode}
- */
-
-import {
-  FAQContent,
-  FAQGroup,
-  FAQTitle,
-  FAQWrapper,
-} from "@/components/effects/animated-faq";
-
-const faqItems = [
-  {
-    id: "faq-1",
-    title: "What makes this FAQ package more reusable?",
-    content:
-      "You are no longer locked into a plain data object. You can pass rich JSX, custom markup, inline links, badges, icons, or even other components inside the title and content.",
-    defaultOpen: true,
-  },
-  {
-    id: "faq-2",
-    title: "Can I put custom content inside the answer?",
-    content:
-      "Yes. This content area accepts full React nodes, not just text. You can render paragraphs, lists, buttons, and inline links.",
-    defaultOpen: false,
-  },
-  {
-    id: "faq-3",
-    title: "Does it use the ChevronBird trigger?",
-    content:
-      "Yes. The open and close state is visually driven by ChevronBird, so your motion language stays consistent across the whole system.",
-    defaultOpen: false,
-  },
-];
-
-const defaultOpenItems = faqItems
-  .filter((item) => item.defaultOpen)
-  .map((item) => item.id);
-
-export default function AnimatedFaqDemo() {
+export default function DemoContent() {
   return (
-    <FAQGroup
-      allowMultiple={${values.allowMultiple}}
-      defaultOpenItems={defaultOpenItems}
-    >
-      {faqItems.map((item) => (
-        <FAQWrapper
-          key={item.id}
-          itemId={item.id}
-          className="rounded-md border border-white/20 px-6 py-5"
-          titleClassName="text-[1.1rem] font-medium text-white"
-          iconSize={16}
-          iconStrokeWidth={2}
-          duration={${values.duration}}
-        >
-          <FAQTitle
-            className="pb-0"
-            showIcon={${values.showIcon}}
-            iconPosition="${values.iconPosition}"
-            iconMode="${values.iconMode}"
-          >
-            {item.title}
-          </FAQTitle>
+    <>
+      <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
 
-          <FAQContent className="pt-4 text-neutral-400">
-            <p>{item.content}</p>
-          </FAQContent>
-        </FAQWrapper>
-      ))}
-    </FAQGroup>
-  );
-}`;
-}
+      <section className="bg-black h-screen px-8 py-20 text-white">
+        <div className="max-w-5xl mx-auto text-center text-white mb-12">
+          <h1 className="text-[5.5vw] max-sm:text-[11vw] max-md:text-[8vw]">
+            Animated Faq
+          </h1>
 
-function renderFaq(values: any) {
-  return (
-    <FAQGroup
-      allowMultiple={values.allowMultiple}
-      defaultOpenItems={defaultOpenItems}
-    >
-      {faqItems.map((item) => (
-        <FAQWrapper
-          key={item.id}
-          itemId={item.id}
-          className="rounded-md border border-white/20 px-6 py-5"
-          titleClassName="text-[1.1rem] font-medium text-white"
-          iconSize={16}
-          iconStrokeWidth={2}
-          duration={values.duration}
-        >
-          <FAQTitle
-            className="pb-0"
-            showIcon={values.showIcon}
-            iconPosition={values.iconPosition}
-            iconMode={values.iconMode}
-          >
-            {item.title}
-          </FAQTitle>
+          <p className="mt-8 text-[1.2vw] max-sm:text-[4.5vw] max-md:mt-4 max-md:text-[3vw]">
+            Click on the FAQ triggers
+          </p>
+        </div>
 
-          <FAQContent className="pt-4 text-neutral-400">
-            {item.content}
-          </FAQContent>
-        </FAQWrapper>
-      ))}
-    </FAQGroup>
-  );
-}
+        <div className="mx-auto max-w-4xl space-y-4">
+          <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
+            {faqItems.map((item) => (
+              <FAQWrapper
+                key={item.id}
+                itemId={item.id}
+                className="rounded-md border border-white/20 px-6 py-5"
+                titleClassName="text-[1.1rem] font-medium text-white"
+                iconSize={16}
+                iconStrokeWidth={2}
+                duration={0.5}
+              >
+                <FAQTitle
+                  className="pb-0"
+                  showIcon={true}
+                  iconPosition="right"
+                  iconMode="rotate"
+                >
+                  {item.title}
+                </FAQTitle>
 
-export default function DemoContent({ registry }: { registry: any }) {
-  return (
-    <RegistryRemixerDemo
-      registry={registry}
-      render={renderFaq}
-      copyCodeOptions={{ buildCode: buildAnimatedFaqCode }}
-    >
-      {({ effect }) => (
-        <>
-          <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
-
-          <section className="bg-black h-screen px-8 py-20 text-white">
-            <div className="max-w-5xl mx-auto text-center text-white mb-12">
-              <h1 className="text-[5.5vw] max-sm:text-[11vw] max-md:text-[8vw]">
-                Animated Faq
-              </h1>
-
-              <p className="mt-8 text-[1.2vw] max-sm:text-[4.5vw] max-md:mt-4 max-md:text-[3vw]">
-                Click on the FAQ triggers
-              </p>
-            </div>
-
-            <div className="mx-auto max-w-4xl space-y-4">{effect}</div>
-          </section>
-        </>
-      )}
-    </RegistryRemixerDemo>
+                <FAQContent className="pt-4 text-neutral-400">
+                  {item.content}
+                </FAQContent>
+              </FAQWrapper>
+            ))}
+          </FAQGroup>
+        </div>
+      </section>
+    </>
   );
 }

@@ -169,7 +169,6 @@ npx hyperiux add text-convergence
 
 # Text
 npx hyperiux add number-counter
-npx hyperiux add overflow-stagger-text
 npx hyperiux add rectangular-text-reveal
 
 # Transitions
@@ -200,7 +199,7 @@ npx hyperiux add milky-way
 
 **Scroll** — `circular-split-roll` · `horizontal-feature-reveal` · `infinite-perspective-slider` · `rotation-slider` · `split-canvas` · `sticky-content-wrapper` · `text-convergence`
 
-**Text** — `number-counter` · `overflow-stagger-text` · `rectangular-text-reveal`
+**Text** — `number-counter` · `rectangular-text-reveal`
 
 **Transitions** — `block-transition` · `chess-grid-transition`
 

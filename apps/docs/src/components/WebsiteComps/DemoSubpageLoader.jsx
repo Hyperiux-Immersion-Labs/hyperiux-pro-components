@@ -33,7 +33,6 @@ const EXCLUDED_PATHS = new Set([
   // "/demo/glitchy-text",
   "/demo/mask-text-reveal",
   "/demo/number-counter",
-  "/demo/overflow-stagger-text",
   "/demo/overflow-text-reveal",
   "/demo/perspective-text-reveal",
   "/demo/rectangular-text-reveal",
