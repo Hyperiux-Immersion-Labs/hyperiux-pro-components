@@ -1,5 +1,17 @@
 # Remixer Panel System Plan
 
+> **Audit status (2026-08-12):** the `registry.json` `props`/`remixer` shape this doc
+> prescribes is confirmed live and matching across sampled effects — trust the
+> architectural contract. Two things have drifted: (1) the implementation file layout
+> is not what's described below — real files live under
+> `apps/docs/src/components/remixer-panel/` as TypeScript (`RemixerPanel.tsx`,
+> `RemixerLauncher.tsx`, `useRemixerControls.ts`, `build-remixer-code.ts`,
+> `remixer-utils.ts`, `types.ts`), not the `hooks/usePropsRemixer.js` /
+> `components/ui/RemixerLauncher.jsx` paths named here; (2) the worked `spider-particles`
+> example below (`showWeb` as docs-only, excluded from copied code) is now wrong —
+> `showWeb` is a full public prop with `remixer.control: "checkbox"` in the current
+> registry.
+
 ## Intro: Implementation Steps
 
 This document is a planning guide for making the Remixer Panel a reusable effect-level system, not a `DemoContent.jsx`-specific pattern. `spider-particles` is only the first reference example because it already has a working panel and exposes a useful docs-vs-registry prop mismatch.
@@ -33,7 +45,7 @@ The desired behavior:
 
 ## Effect Prop Inventory
 
-Use [REMIXER_EFFECT_PROPS.md](./REMIXER_EFFECT_PROPS.md) as the current free/pro effect prop inventory. It lists each registry effect separately, with detected public props, defaults, likely value type, suggested Remixer control, and a short planning description.
+Use [remixer-effect-props.md](./remixer-effect-props.md) as the current free/pro effect prop inventory. It lists each registry effect separately, with detected public props, defaults, likely value type, suggested Remixer control, and a short planning description.
 
 That inventory is intentionally broad. It should be used to decide which controls each effect can expose now, which props need richer metadata, and which fixed effects need public props before they can support the shared Remixer Panel.
 

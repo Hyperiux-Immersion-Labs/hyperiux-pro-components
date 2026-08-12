@@ -2,12 +2,12 @@
 
 [![npm version](https://img.shields.io/npm/v/hyperiux.svg?style=flat-square&color=ff5f00)](https://www.npmjs.com/package/hyperiux)
 [![npm downloads](https://img.shields.io/npm/dm/hyperiux.svg?style=flat-square&color=777777)](https://www.npmjs.com/package/hyperiux)
-![CI](https://github.com/Hyperiux-Immersion-Labs/hyperiux-components/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/actions/workflows/ci.yml/badge.svg)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL--2.0-orange.svg?style=flat-square)](LICENSE)
 
 **A collection of high-quality animation effects and interactive components for Next.js — designed by [Hyperiux](https://hyperiux.com).**
 
-32 free effects are open source and install instantly. 83 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project — you own what you install.
+32 free effects are open source and install instantly. 89 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project — you own what you install.
 
 ---
 
@@ -106,9 +106,16 @@ export default function Page() {
 | `npx hyperiux init` | Initialize config in your project |
 | `npx hyperiux add <effect>` | Add an effect to your project |
 | `npx hyperiux list` | List all available effects |
+| `npx hyperiux outdated` | Check installed effects for available updates |
+| `npx hyperiux versions` | List every installed effect and its version |
+| `npx hyperiux diff [effect]` | Show what changed upstream for an installed effect (all installed effects if omitted) |
 | `npx hyperiux login` | Connect your Pro account |
 | `npx hyperiux logout` | Remove saved credentials |
 | `npx hyperiux whoami` | Show current login status |
+
+> **Note:** `outdated`/`versions`/`diff` read from a local lockfile that `add` does not
+> currently write to — until that's fixed, they'll report no effects installed even in
+> a project with effects already added. Tracked in [`md/versioning.md`](md/versioning.md).
 
 ### Options for `add`
 
@@ -209,7 +216,7 @@ npx hyperiux add milky-way
 
 ## Pro Effects
 
-83 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
+89 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
 
 ### Getting started with Pro
 
@@ -255,7 +262,7 @@ Or add `HYPERIUX_TOKEN` to your CI secrets and the CLI will pick it up automatic
 
 ### Browse Pro effects
 
-All 83 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 89 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
 
 ---
 
@@ -324,12 +331,21 @@ Most effects depend on **GSAP**. The CLI installs it automatically. Note that GS
 
 ## Architecture
 
-This is a pnpm monorepo with Turborepo:
+This repo (`hyperiux-pro-components`) is the source of truth for the whole Vault —
+both free and pro effects — and is a plain npm project, not a pnpm/Turborepo
+monorepo:
 
-- **`packages/cli`** — `npx hyperiux` CLI tool, published to npm as `hyperiux`
-- **`registry/effects`** — Free effect source, organized by category
+- **`apps/docs`** — the Next.js App Router site at [vault.hyperiux.com](https://vault.hyperiux.com): effect docs, live previews, the remixer panel, Clerk auth, Razorpay billing, the admin dashboard, and the CLI-facing API routes (`/api/cli/*`) that authenticate and serve pro source.
+- **`registry/effects`** — private registry source for **every** effect, free and pro, organized by category. `apps/docs/scripts/build-registry.js` reads it and generates `apps/docs/public/r/*.json`, the public metadata the CLI/MCP server actually fetch. Free effects embed full source in that public JSON; pro effects don't — pro source is served only through the authenticated `/api/cli/effects/[slug]` route.
+- **`hyperiux-vault`** — the Sanity Studio project backing the docs site's content.
+- **`scripts`** — `component-workflow.mjs` (scaffold/rename/move/delete/verify an effect) and `sanity-code-sync.mjs` (keep Sanity's rendered code blocks in sync with the registry). See [`md/component-workflow-tooling.md`](md/component-workflow-tooling.md).
 
-Pro effect source lives in a private repository and is served via a protected API. The registry index (`public/r/index.json`) lists all effects with metadata — pro file contents are not publicly accessible.
+The CLI itself (`npx hyperiux`, published to npm as `hyperiux`) and the MCP server
+(`hyperiux-mcp-server`) live in the separate, public
+[`hyperiux-components`](https://github.com/Hyperiux-Immersion-Labs/hyperiux-components)
+repo — they're API clients of this repo's `apps/docs`, not part of it. Free effects
+are additionally mirrored into that public repo so they're installable and browsable
+without authentication.
 
 ---
 
@@ -338,13 +354,18 @@ Pro effect source lives in a private repository and is served via a protected AP
 Found a bug or want to contribute a free effect? Pull requests are welcome.
 
 ```bash
-git clone https://github.com/Hyperiux-Immersion-Labs/hyperiux-components
-cd hyperiux-components
-pnpm install
-pnpm dev
+git clone https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components
+cd hyperiux-pro-components
+npm install
+npm run dev
 ```
 
-To add a new free effect: create a folder under `registry/effects/<category>/<effect-name>/`, add `index.jsx` with a named export, add `registry.json`, then run `pnpm build:registry`.
+To add a new effect (free or pro), follow
+[`md/developer-new-component.md`](md/developer-new-component.md) — it's a more
+complete, currently-accurate walkthrough than a single command. In short: build it
+under `apps/docs/src/components/`, copy it into `registry/effects/<category>/<slug>/`
+with a `registry.json`, run `npm run build:registry`, and — for free effects only —
+mirror the same source into the public `hyperiux-components` repo.
 
 ---
 
