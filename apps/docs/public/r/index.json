@@ -692,22 +692,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "sweep-lift-transition",
-      "type": "registry:component",
-      "category": "transitions",
-      "categories": [
-        "transitions"
-      ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
-      "registryDependencies": [],
-      "exportName": "SweepLiftTransition",
-      "exportKind": "default",
-      "version": "1.0.0"
-    },
-    {
       "name": "page-flip-transition",
       "type": "registry:component",
       "category": "transitions",
@@ -770,6 +754,22 @@
       "exportName": "SVGBrushTransition",
       "exportKind": "default",
       "version": "1.1.0"
+    },
+    {
+      "name": "sweep-lift-transition",
+      "type": "registry:component",
+      "category": "transitions",
+      "categories": [
+        "transitions"
+      ],
+      "dependencies": [
+        "gsap",
+        "next-transition-router"
+      ],
+      "registryDependencies": [],
+      "exportName": "SweepLiftTransition",
+      "exportKind": "default",
+      "version": "1.0.0"
     },
     {
       "name": "blur-text",

@@ -32,6 +32,7 @@
       "default": true,
       "description": "Runs the reveal when scrolled into view.",
       "remixer": {
+        "enabled": false,
         "control": "checkbox",
         "group": "behavior",
         "groupTitle": "Behavior"
@@ -57,6 +58,7 @@
       "default": false,
       "description": "Links the animation to scroll progress.",
       "remixer": {
+        "enabled": false,
         "control": "checkbox",
         "group": "behavior",
         "groupTitle": "Behavior"

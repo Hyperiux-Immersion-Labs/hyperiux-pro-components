@@ -304,6 +304,106 @@
     "registryPath": "registry/effects/buttons/animated-toggle/registry.json"
   },
   {
+    "name": "aperture-transition",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-06",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Aperture Transition",
+    "description": "The whole screen scales down toward its center, then the incoming page reveals bottom-to-top via clip-path on the held-down page before growing back to fill the screen",
+    "category": "transitions",
+    "dependencies": [
+      "gsap",
+      "next-transition-router"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/aperture-transition",
+    "coverImage": "aperture-transition",
+    "videoUrl": "aperture-transition.mp4",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ApertureTransition",
+    "exportKind": "default",
+    "importPath": "@/components/effects/aperture-transition",
+    "target": "src/components/effects/aperture-transition",
+    "props": [
+      {
+        "name": "scale",
+        "type": "number",
+        "default": 0.82,
+        "description": "Amount the whole screen shrinks toward its center during the leave phase.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 0.98,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.6,
+        "description": "Duration of the leave shrink and reveal/expand phases.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "revealDirection",
+        "type": "string",
+        "default": "bottom",
+        "description": "Edge the incoming page's aperture reveal expands from.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "top",
+              "label": "Top"
+            }
+          ]
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/aperture-transition/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/transitions/aperture-transition/registry.json"
+  },
+  {
     "name": "arrow-fill-button",
     "version": "1.1.0",
     "changelog": [
@@ -343,6 +443,82 @@
       }
     ],
     "registryPath": "registry/effects/buttons/arrow-fill-button/registry.json"
+  },
+  {
+    "name": "ascend-transition",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-05",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Ascend Transition",
+    "description": "A scaled-down panel rises from the bottom with clip-path revealing its height, then scales up to fill the screen before the next page fades in",
+    "category": "transitions",
+    "dependencies": [
+      "gsap",
+      "next-transition-router"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/ascend-transition",
+    "coverImage": "ascend-transition",
+    "videoUrl": "ascend-transition.mp4",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "AscendTransition",
+    "exportKind": "default",
+    "importPath": "@/components/effects/ascend-transition",
+    "target": "src/components/effects/ascend-transition",
+    "props": [
+      {
+        "name": "bgColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Background color of the covering panel that rises and reveals the new page.",
+        "remixer": {
+          "control": "color",
+          "group": "surface",
+          "groupTitle": "Surface"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.9,
+        "description": "Base duration of the rise/reveal phase; related scale-up and fade timings scale with it.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/ascend-transition/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/transitions/ascend-transition/registry.json"
   },
   {
     "name": "block-transition",
@@ -4703,6 +4879,260 @@
     "registryPath": "registry/effects/scroll/scroll-stack/registry.json"
   },
   {
+    "name": "shear-wipe",
+    "version": "1.1.0",
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-08-06",
+        "summary": "Added a tab-based layout with animated content transitions for tablet and mobile, replacing the hover edge panels which don't translate well to touch",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-08-06",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Shear Wipe",
+    "description": "Two full-screen content panels separated by a slanted GSAP clip-path edge that shears open on hover or click, revealing the second panel.",
+    "category": "components",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/shear-wipe",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ShearWipe",
+    "exportKind": "default",
+    "importPath": "@/components/effects/shear-wipe",
+    "target": "src/components/effects/shear-wipe",
+    "props": [
+      {
+        "name": "componentsTextColor",
+        "type": "string",
+        "default": "text-[#0D47A1]",
+        "description": "Tailwind text color class for the Components panel copy.",
+        "remixer": {
+          "control": "select",
+          "group": "components",
+          "groupTitle": "Components Panel",
+          "options": [
+            {
+              "value": "text-[#0D47A1]",
+              "label": "Royal Blue"
+            },
+            {
+              "value": "text-white",
+              "label": "White"
+            },
+            {
+              "value": "text-black",
+              "label": "Black"
+            },
+            {
+              "value": "text-[#EA580C]",
+              "label": "Orange"
+            },
+            {
+              "value": "text-[#166534]",
+              "label": "Forest"
+            },
+            {
+              "value": "text-[#7C3AED]",
+              "label": "Violet"
+            }
+          ]
+        }
+      },
+      {
+        "name": "showcaseTextColor",
+        "type": "string",
+        "default": "text-white",
+        "description": "Tailwind text color class for the Showcase panel copy.",
+        "remixer": {
+          "control": "select",
+          "group": "showcase",
+          "groupTitle": "Showcase Panel",
+          "options": [
+            {
+              "value": "text-white",
+              "label": "White"
+            },
+            {
+              "value": "text-[#0D47A1]",
+              "label": "Royal Blue"
+            },
+            {
+              "value": "text-black",
+              "label": "Black"
+            },
+            {
+              "value": "text-[#EA580C]",
+              "label": "Orange"
+            },
+            {
+              "value": "text-[#166534]",
+              "label": "Forest"
+            },
+            {
+              "value": "text-[#7C3AED]",
+              "label": "Violet"
+            }
+          ]
+        }
+      },
+      {
+        "name": "clipPathDuration",
+        "type": "number",
+        "default": 0.9,
+        "description": "Duration of the shear clip-path wipe between panels.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/shear-wipe/index.tsx"
+      },
+      {
+        "path": "ShearWipeComp.tsx",
+        "target": "src/components/effects/shear-wipe/ShearWipeComp.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/components/shear-wipe/registry.json"
+  },
+  {
+    "name": "side-navbar",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-10",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Side Navbar",
+    "description": "Side-sliding navigation panel with animated hamburger morph, staggered menu reveals, and a cinematic full-screen backdrop",
+    "category": "navigation",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "packageName": "@hyperiux/side-navbar",
+    "sourcePath": "apps/docs/src/components/side-navbar",
+    "previewUrl": "/demo/side-navbar",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "SideNavbar",
+    "exportKind": "default",
+    "importPath": "@/components/effects/side-navbar",
+    "target": "src/components/effects/side-navbar",
+    "props": [
+      {
+        "name": "panelWidth",
+        "type": "string",
+        "default": "50%",
+        "description": "Width of the sliding menu panel.",
+        "remixer": {
+          "control": "text",
+          "group": "layout",
+          "groupTitle": "Layout"
+        }
+      },
+      {
+        "name": "openDuration",
+        "type": "number",
+        "default": 0.5,
+        "description": "Duration of the sidebar opening and closing slide.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "linksStagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Stagger between the main navigation links as they animate in.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.3,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "socialsStagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Stagger between the social links as they animate in.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.3,
+          "step": 0.01
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "containerClassName": "z-[300]",
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/side-navbar/index.tsx"
+      },
+      {
+        "path": "Menu.tsx",
+        "target": "src/components/effects/side-navbar/Menu.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/navigation/side-navbar/registry.json"
+  },
+  {
     "name": "slide-text-reveal",
     "title": "Slide Text Reveal",
     "description": "Characters slide in from the right with staggered fade animation on scroll",
@@ -5230,6 +5660,80 @@
         "breaking": false
       }
     ]
+  },
+  {
+    "name": "sweep-lift-transition",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-12",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Sweep Lift Transition",
+    "description": "The outgoing page lifts and fades into the background while the incoming page sweeps up from the bottom via a clip-path reveal.",
+    "category": "transitions",
+    "dependencies": [
+      "gsap",
+      "next-transition-router"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/sweep-lift-transition",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "SweepLiftTransition",
+    "exportKind": "default",
+    "importPath": "@/components/effects/sweep-lift-transition",
+    "target": "src/components/effects/sweep-lift-transition",
+    "props": [
+      {
+        "name": "bgColor",
+        "type": "string",
+        "default": "#111111",
+        "description": "Background color behind the transitioning pages.",
+        "remixer": {
+          "control": "color",
+          "group": "surface",
+          "groupTitle": "Surface"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 1.3,
+        "description": "Duration used by both the outgoing lift and incoming sweep reveal.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 2.5,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/sweep-lift-transition/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/transitions/sweep-lift-transition/registry.json"
   },
   {
     "name": "testimonial-swiper",

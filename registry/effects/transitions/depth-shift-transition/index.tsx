@@ -4,8 +4,7 @@
 
 
 import { TransitionRouter } from 'next-transition-router'
-import { usePathname } from 'next/navigation'
-import React, { useLayoutEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { prefersReducedMotion } from '@/lib/motion'
@@ -45,29 +44,24 @@ export default function DepthShiftTransition({
   const wrapperRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const cloneRef = useRef<HTMLElement | null>(null)
-  const pathname = usePathname()
-  const isFirstRenderRef = useRef(true)
+  const isNavigatingRef = useRef(false)
 
-
-  useLayoutEffect(() => {
-    if (isFirstRenderRef.current) {
-      isFirstRenderRef.current = false
-      return
-    }
-    if (prefersReducedMotion()) return
-
+  const setEnterStartState = () => {
+    if (!wrapperRef.current || prefersReducedMotion()) return
     gsap.set(wrapperRef.current, {
       xPercent: isCompactViewport() ? -30 : -80,
       yPercent: 100,
       rotate: -3,
       scale: 0.85,
     })
-  }, [pathname])
+  }
 
   return (
     <TransitionRouter
       auto
       leave={(next) => {
+        isNavigatingRef.current = true
+
         if (prefersReducedMotion()) {
           const tl = gsap.timeline({ onComplete: next })
           tl.to(wrapperRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0)
@@ -97,8 +91,13 @@ export default function DepthShiftTransition({
         next()
       }}
       enter={(next) => {
+        if (isNavigatingRef.current) {
+          setEnterStartState()
+        }
+
         const tl = gsap.timeline({
           onComplete: () => {
+            isNavigatingRef.current = false
             cloneRef.current?.remove()
             cloneRef.current = null
      

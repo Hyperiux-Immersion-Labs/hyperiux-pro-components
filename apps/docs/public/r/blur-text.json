@@ -125,6 +125,7 @@
       "default": false,
       "description": "Runs the reveal only once per viewport entry when enabled.",
       "remixer": {
+        "enabled": false,
         "control": "checkbox",
         "group": "behavior",
         "groupTitle": "Behavior"
