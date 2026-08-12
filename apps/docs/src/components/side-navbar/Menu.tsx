@@ -35,6 +35,7 @@ const MenuLink = ({ href, text, className = "" }: MenuLinkProps) => {
 
 const NAV_LINKS: NavLinkItem[] = [
   { href: "/", text: "Home", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
+  { href: "#", text: "Read Article", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/effects", text: "Effects", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/pricing", text: "Pricing", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },
   { href: "/docs", text: "Docs", liClassName: "overflow-hidden max-[1025px]:mb-[2vw] mb-[1vw]" },

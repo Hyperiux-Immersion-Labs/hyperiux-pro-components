@@ -5,16 +5,17 @@ import FadeUp from "@/components/WebsiteComps/FadeUp";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import Image from "next/image";
 import React from "react";
+import CharStaggerPrimaryButton from "@/components/char-stagger-primary-button";
 
 export default function page() {
   return (
     <section className="relative flex h-screen items-center justify-center max-sm:px-[7vw] text-center">
        <Image
-              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs02.avif"
+              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-19.jpg"
               alt="Abstract background"
               fill
               priority
-              className="object-cover brightness-50"
+              className="object-cover brightness-90"
             />
 
 
@@ -35,11 +36,18 @@ export default function page() {
 
 
         <FadeUp className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center" delay={1}>
-          <ArrowFillButton
+          {/* <ArrowFillButton
             className="border-[#ff5f00] max-sm:w-56!  border text-[#ffffff] cursor-pointer"
             btnText={"Click here"}
             href={"/demo/ascend-transition"}
-          />
+          /> */}
+          <CharStaggerPrimaryButton
+                       bgClassName="bg-[#111111] rounded-md block"
+              textClassName="font-medium text-[1.3vw]"
+              btnClassName="h-[3.5vw]"
+              text={"Click here"}
+                        href={"/demo/ascend-transition"}
+                      />
         </FadeUp>
       </div>
     </section>

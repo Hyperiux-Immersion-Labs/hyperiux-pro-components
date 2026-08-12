@@ -15,9 +15,9 @@ const ShearWipe = () => {
     <ShearWipeComp
       componentHighlights={componentHighlights}
       showcaseStats={showcaseStats}
-      componentsBgImage="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract01.png"
+      componentsBgImage="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-21.jpg"
       componentsTextColor="text-white"
-      showcaseBgImage="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract02.png"
+      showcaseBgImage="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-23.jpg"
       showcaseTextColor="text-white"
     />
   );
