@@ -267,10 +267,10 @@ export function VaultHeader({
               !isEffectCategoryPage && (
                 <div className="block max-[1025px]:hidden">
                   <Button
-                    text="Browse Free Effects"
-              id={"browse-free-effects-navbar"}
+                    text="Sign In"
+              id={"sign-in-navbar"}
 
-                    href="/effects/free"
+                    href="/sign-in"
                     variant="orange"
                   />
                 </div>

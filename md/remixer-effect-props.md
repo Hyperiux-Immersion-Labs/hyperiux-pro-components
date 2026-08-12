@@ -1,5 +1,14 @@
 # Remixer Effect Prop Inventory
 
+> **Audit status (2026-08-12) — STALE, needs regeneration.** Registry now has 121
+> effects; this doc covers 115 — 6 recent pro effects are missing entirely
+> (`aperture-transition`, `ascend-transition`, `depth-shift-transition`, `shear-wipe`,
+> `side-navbar`, `sweep-lift`). Of the 115 it does cover, 14 have real undocumented new
+> props (e.g. `infinite-carousel` missing `cardSize/cardWidth/cardHeight`, `dither-canvas`
+> missing 6 props) and 19 "Suggested props" entries were since implemented but never
+> relabeled from "suggested" to "shipped." Regenerate from source before trusting specific
+> prop lists below; the overall document shape/methodology is still sound.
+
 Generated from `registry/effects/**/registry.json` and each effect's public registry entry component. This inventory is for planning Remixer Panel schemas across both free and pro effects.
 
 Notes:

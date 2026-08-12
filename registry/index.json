@@ -3653,45 +3653,6 @@
     "registryPath": "registry/effects/loaders/numeric-tunnel/registry.json"
   },
   {
-    "name": "overflow-stagger-text",
-    "title": "Overflow Stagger Text",
-    "description": "Characters stagger up from overflow with slight rotation for a dynamic reveal effect",
-    "category": "text",
-    "type": "registry:component",
-    "tier": "free",
-    "version": "1.1.0",
-    "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-21",
-        "summary": "Added reduced-motion support for accessible lower-motion stagger reveal.",
-        "breaking": false
-      },
-      {
-        "version": "1.0.0",
-        "date": "2026-02-10",
-        "summary": "Initial release",
-        "breaking": false
-      }
-    ],
-    "dependencies": [
-      "gsap"
-    ],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/text/overflow-stagger-text/registry.json",
-    "previewUrl": "/demo/overflow-stagger-text",
-    "main": "index.tsx",
-    "exportName": "OverflowStaggerText",
-    "exportKind": "default",
-    "files": [
-      {
-        "path": "index.tsx",
-        "type": "registry:component",
-        "target": "src/components/effects/overflow-stagger-text/index.tsx"
-      }
-    ]
-  },
-  {
     "name": "overflow-text-reveal",
     "title": "Overflow Text Reveal",
     "description": "Text lines slide up from hidden overflow with smooth stagger animation on scroll",
@@ -5554,14 +5515,6 @@
       {
         "path": "VideoPlayerComp.tsx",
         "target": "src/components/effects/video-player/VideoPlayerComp.tsx"
-      }
-    ],
-    "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-23",
-        "summary": "Removed the continuous rAF progress loop (~60 setState/sec while playing); the progress bar now rides the native timeupdate even.ts with a linear CSS transition for smoothness, cut during scrubbing for 1:1 pointer tracking.",
-        "breaking": false
       }
     ],
     "changelog": [

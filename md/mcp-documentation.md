@@ -1,5 +1,13 @@
 # Hyperiux MCP Server
 
+> **Audit status (2026-08-12):** substantially accurate, and more accurate than the
+> CLI repo's own `MCP-GUIDE.md`/`MCP-OVERVIEW.md` (which still wrongly claim the
+> package isn't published — `hyperiux-mcp-server@0.1.0` is live on npm and `npx -y
+> hyperiux-mcp-server` works today). One real defect: the **auth-precedence order is
+> reversed**. The doc says the saved `hyperiux login` session is checked first, then
+> `HYPERIUX_TOKEN`; the actual code (`src/auth.ts:10-17`) checks `HYPERIUX_TOKEN`
+> first and only falls back to the saved session if it's unset.
+
 **Give your AI coding assistant live, accurate knowledge of the entire Hyperiux Vault effect catalog.**
 
 `hyperiux-mcp-server` is an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for [Hyperiux Vault](https://vault.hyperiux.com). It lets AI coding assistants — Claude Code, Claude Desktop, Cursor, Codex CLI, Google Antigravity, and any other MCP-compatible client that supports local servers — browse, search, and inspect the full catalog of React/Next.js interaction effects, and get correct installation instructions for the ones you actually want to use.

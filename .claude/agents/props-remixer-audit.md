@@ -1,6 +1,6 @@
 ---
 name: props-remixer-audit
-description: Audits an effect's Remixer Panel (dynamic props / live controls) for correctness against its registry metadata, mirror component, and the REMIXER_PANEL.md/REMIXER_EFFECT_PROPS.md docs. Use for auditing effects under registry/effects and their /demo pages.
+description: Audits an effect's Remixer Panel (dynamic props / live controls) for correctness against its registry metadata, mirror component, and the md/remixer-panel.md and md/remixer-effect-props.md docs. Use for auditing effects under registry/effects and their /demo pages.
 tools: Read, Grep, Glob
 model: sonnet
 ---
@@ -23,7 +23,7 @@ how the system actually works (not just what the planning docs say) lives in
   `accentColor`/`activeColor`/`glitterColor`/`lineColor`/`starColor`/`squareColor`/`ribbonColor`/`beanColor`/`wingColor`/`hoverColor`,
   `gap`/`panelGap`. Any suggested prop whose name isn't in one of these lists will
   never visibly change anything in the demo, even if it's declared in
-  `REMIXER_EFFECT_PROPS.md`.
+  `md/remixer-effect-props.md`.
 - `TransitionRemixerLayout.jsx` — used by the 6 page-transition effects
   (block-transition, chess-grid-transition, page-flip-transition, pixel-transition,
   radial-slice-transition, svg-brush-transition) via `layout.js`, not `DemoContent.jsx`.
@@ -39,7 +39,7 @@ how the system actually works (not just what the planning docs say) lives in
 - `RemixerPanel.jsx` — implemented control types: `checkbox`, `toggle`, `color`,
   `select`, `radio`, `text`/`string`, `textarea`/`json`/`json/list`, `number`. ANY
   OTHER `remixer.control` value (e.g. `vector2`, `gradient`, `asset-list`, `angle`,
-  anything from REMIXER_PANEL.md's "Planned Additional Types" table) silently falls
+  anything from md/remixer-panel.md's "Planned Additional Types" table) silently falls
   through to a bare range-slider input with no `min`/`max` set — this is a real bug
   in that effect's panel, not a cosmetic issue.
 
@@ -92,7 +92,7 @@ For every effect subdirectory inside your assigned category:
      (see above) — if none of an effect's suggested prop names match any list, none
      of its controls will visibly do anything in the demo; flag as BROKEN_CONTROL
      (dead panel, even though nothing is "wrong" in a type-error sense).
-   - Compare against this effect's table in `REMIXER_EFFECT_PROPS.md` (grep the file
+   - Compare against this effect's table in `md/remixer-effect-props.md` (grep the file
      for the effect's registry name or title). If the prop names/defaults/types
      listed there no longer match current `registry.json`/component reality (props
      added, removed, renamed, or a "- Suggested props" effect has since gained real
@@ -151,4 +151,4 @@ read files outside `registry/effects/{your-category}/`,
 `apps/docs/src/app/(marketing)/demo/`, `apps/docs/src/components/{effect}/`,
 `apps/docs/src/components/remixer-panel/` (read-only reference, already summarized
 above — re-read only if you need exact behavior not covered here), and
-`REMIXER_EFFECT_PROPS.md`.
+`md/remixer-effect-props.md`.

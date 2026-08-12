@@ -847,21 +847,6 @@
       "version": "1.2.0"
     },
     {
-      "name": "overflow-stagger-text",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "OverflowStaggerText",
-      "exportKind": "default",
-      "version": "1.1.0"
-    },
-    {
       "name": "overflow-text-reveal",
       "type": "registry:component",
       "category": "text",

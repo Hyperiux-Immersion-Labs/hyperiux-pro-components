@@ -1,5 +1,16 @@
 # Hyperiux Vault — Phase 2 Plan
 
+> **Audit status (2026-08-12):** the status table below is stale in three places (fixed
+> inline): "Props schema design" and "Remixer panel + live prop controls" are marked
+> 🟡 built-not-merged but are fully merged and live (registry.json `props`/`remixer`
+> fields and `RemixerPanel.tsx` both confirmed on this branch); "TypeScript, all 115
+> effects" is marked in-progress but the migration is complete (121/121 effects
+> converted, 0 remaining `.js`/`.jsx` — see [`typescript-migration-plan.md`](./typescript-migration-plan.md)).
+> "Admin dashboard expansion" has no status marker at all, implying not-started — a
+> `dashboard/{admin,saved,settings,usage,invoicing}` scaffold already exists; whether
+> every described sub-feature (login/activity tracking, in-app Vercel Analytics, daily
+> install/copy metric) is wired up wasn't independently re-verified here.
+
 *Internal planning · Rev. 8 (compressed for team-wide Claude Code)*
 
 **8 / 19** items done · **2** built, not yet merged · **1** descoped · **4** waves · **~4–5** weeks estimated · **8** deferred to Phase 3

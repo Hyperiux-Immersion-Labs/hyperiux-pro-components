@@ -1,5 +1,14 @@
 # TypeScript Migration Plan — Registry Effects
 
+> **Audit status (2026-08-12): migration is COMPLETE.** `registry/effects/**` is 100%
+> TypeScript (237 `.tsx` + 65 `.ts`, 0 remaining `.jsx`/`.js`), across all 121 effects —
+> the per-category "pending" rows in the Execution Order table below no longer reflect
+> reality, they all shipped. The "Final cleanup" section at the bottom is **not** done
+> yet: `apps/docs/src/CODING_STANDARDS.md` (a separate file from root
+> `CODING_STANDARDS.md`) and [`component-workflow-tooling.md`](./component-workflow-tooling.md)
+> (formerly `component-automation-plan.md`) still describe/hardcode the pre-migration
+> `.jsx` state and haven't been updated post-migration.
+
 Execution plan for `phase-2-plan.md`'s Wave 2 item "TypeScript, all 115 effects." Scope is
 strictly the registry effects — nothing else in the repo (no `Payments`, `Dashboard`, `auth`,
 `Homepage`, etc.).
