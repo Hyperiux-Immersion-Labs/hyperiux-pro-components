@@ -1,8 +1,8 @@
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import DemoContent from "./DemoContent";
+import PageContent from "./PageContent";
 
 export default function Page() {
-  return <DemoContent />;
+  return <PageContent />;
 }
 
 export async function generateMetadata() {

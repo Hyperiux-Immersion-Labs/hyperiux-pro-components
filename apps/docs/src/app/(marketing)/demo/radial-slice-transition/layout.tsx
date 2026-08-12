@@ -1,13 +1,10 @@
-import TransitionRemixerLayout from "@/components/remixer-panel/TransitionRemixerLayout";
+import DemoContent from "./DemoContent";
 import radialSliceTransitionRegistry from "../../../../../../../registry/effects/transitions/radial-slice-transition/registry.json";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <TransitionRemixerLayout
-      registry={radialSliceTransitionRegistry}
-      slug="radial-slice-transition"
-    >
+    <DemoContent registry={radialSliceTransitionRegistry}>
       {children}
-    </TransitionRemixerLayout>
+    </DemoContent>
   );
 }
