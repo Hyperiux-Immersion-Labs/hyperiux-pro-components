@@ -30,10 +30,8 @@ const ShearWipeComp = ({
   componentHighlights = [],
   showcaseStats = [],
   clipPathDuration = 0.9,
-  componentsBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract4.png',
-  componentsTextColor = 'text-black',
-  showcaseBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract3.png',
-  showcaseTextColor = 'text-white',
+  componentsTextColor = 'text-[#0D47A1]',
+  showcaseTextColor = 'text-[#E3F2FD]',
 }: ShearWipeCompProps) => {
   const [activePanel, setActivePanel] = useState<ActivePanel>('components');
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -209,30 +207,18 @@ const ShearWipeComp = ({
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Page Background */}
-      <div className="absolute inset-0">
-        <Image src={componentsBgImage} alt="" fill className="object-cover brightness-75" />
+      <div className="absolute inset-0 bg-[#E3F2FD]">
       </div>
 
       <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
         {/* Base Panel - Components */}
         <div className="flex h-full items-center">
           <div className="w-full flex items-center justify-center p-[6vw]">
-            <div className={`w-[45vw] space-y-[3vw] ${componentsTextColor}`}>
-              <h2 className="text-[2.5vw] font-display leading-[1.2] whitespace-nowrap">Design that feels alive</h2>
-              <p className="text-[1.1vw] leading-relaxed">
+            <div className={`w-[45vw] space-y-[1vw] ${componentsTextColor}`}>
+              <h2 className="text-[3vw] font-bold font-display leading-[1.2] whitespace-nowrap">Design that feels alive</h2>
+              <p className="text-[1.5vw]">
                 Every component reacts and transitions naturally , turning interfaces from static to alive.
               </p>
-              <div className={`w-full pt-[2vw] space-y-[2vw] ${componentsTextColor}`}>
-                {componentHighlights.map((item, i) => (
-                  <div key={i} className="flex items-start gap-[1.5vw] border-b border-gray-400/40 pb-[1.5vw]">
-                    <span className="text-[0.9vw] pt-[0.2vw]">{item.label}</span>
-                    <div>
-                      <h3 className="text-[1.2vw] font-display leading-tight">{item.title}</h3>
-                      <p className="text-[0.95vw] leading-relaxed mt-[0.4vw]">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
 
@@ -243,7 +229,7 @@ const ShearWipeComp = ({
             onMouseLeave={() => handleHoverOut()}
             onClick={() => setActivePanel('showcase')}
           >
-            <div className="text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap text-white">
+            <div className="text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap text-[#E3F2FD]">
               Showcase
             </div>
           </div>
@@ -257,29 +243,16 @@ const ShearWipeComp = ({
             clipPath: 'polygon(92.5% 0%, 100% 0%, 100% 100%, 88.5% 100%)',
           }}
         >
-          <div className="absolute inset-0">
-            <Image src={showcaseBgImage} alt="" fill className="object-cover brightness-75" />
+          <div className="absolute inset-0 bg-[#0D47A1]">
           </div>
 
           <div className="flex h-screen items-center relative">
             <div className="w-full flex items-center justify-center p-[6vw]">
-              <div className={`w-[45vw] space-y-[3vw] ${showcaseTextColor}`}>
-                <h2 className="text-[2.5vw] font-display leading-[1.2]">Motion with meaning</h2>
-                <p className="text-[1.1vw] leading-relaxed">
+              <div className={`w-[45vw] space-y-[1vw] ${showcaseTextColor}`}>
+                <h2 className="text-[3vw] font-bold font-display leading-[1.2] whitespace-nowrap">Motion with meaning</h2>
+                <p className="text-[1.5vw]">
                   Animations explain, creating clarity and confidence across every screen.
                 </p>
-
-                <div className="pt-[2vw] space-y-[2vw]">
-                  {showcaseStats.map((item, i) => (
-                    <div key={i} className="flex items-start gap-[1.5vw] border-b border-white/20 pb-[1.5vw]">
-                      <span className="text-[0.9vw] pt-[0.2vw] opacity-60">{item.label}</span>
-                      <div>
-                        <h3 className="text-[1.2vw] font-display leading-tight">{item.title}</h3>
-                        <p className="text-[0.95vw] leading-relaxed mt-[0.4vw] opacity-80">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
@@ -292,17 +265,10 @@ const ShearWipeComp = ({
           onMouseLeave={() => handleHoverOut()}
           onClick={() => setActivePanel('components')}
         >
-          <div className="text-[7vw] font-medium leading-none tracking-tight origin-center -rotate-90 whitespace-nowrap text-white">
+          <div className="text-[7vw] font-medium leading-none tracking-tight origin-center -rotate-90 whitespace-nowrap text-[#0D47A1]">
             Components
           </div>
         </div>
-
-        {/* Creative clue hint */}
-        {/* <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:hidden">
-          <div className="px-4 py-2 rounded-full bg-black/10 backdrop-blur-md  text-neutral-800 text-sm font-medium tracking-wide">
-            Click either heading : Components or Showcase , to switch panels
-          </div>
-        </div> */}
       </div>
 
 
@@ -314,9 +280,8 @@ const ShearWipeComp = ({
             type="button"
             aria-selected={activePanel === 'components'}
             onClick={() => setActivePanel('components')}
-            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${componentsTextColor} ${
-              activePanel === 'components' ? '' : 'opacity-35'
-            }`}
+            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${componentsTextColor} ${activePanel === 'components' ? '' : 'opacity-35'
+              }`}
           >
             Components
           </button>
@@ -326,9 +291,8 @@ const ShearWipeComp = ({
             type="button"
             aria-selected={activePanel === 'showcase'}
             onClick={() => setActivePanel('showcase')}
-            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${componentsTextColor} ${
-              activePanel === 'showcase' ? '' : 'opacity-35'
-            }`}
+            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${componentsTextColor} ${activePanel === 'showcase' ? '' : 'opacity-35'
+              }`}
           >
             Showcase
           </button>
@@ -339,46 +303,22 @@ const ShearWipeComp = ({
         <div className="relative mt-[8vw] max-md:mt-[10vw]">
           {/* Components tab content */}
           <div ref={componentsContentRef}>
-            <h2 className={`text-[4.2vw] max-md:text-[7.5vw] font-display leading-[1.15] ${componentsTextColor} mb-[3vw] max-md:mb-[5vw]`}>
+            <h2 className={`text-[6vw] max-md:text-[7.5vw] font-display leading-[1.15] ${componentsTextColor} mb-[3vw] max-md:mb-[5vw]`}>
               Design that feels alive
             </h2>
             <p className={`text-[2.1vw] max-md:text-[4vw] leading-relaxed ${componentsTextColor} opacity-70 mb-[6vw] max-md:mb-[9vw]`}>
               Every component reacts and transitions naturally , turning interfaces from static to alive.
             </p>
-
-            <div className="space-y-[3.5vw] max-md:space-y-[6vw]">
-              {componentHighlights.map((item, i) => (
-                <div key={i} className="flex items-start gap-[2.5vw] max-md:gap-[3.5vw] border-b border-black/15 pb-[3.5vw] max-md:pb-[5vw]">
-                  <span className={`text-[1.8vw] max-md:text-[3.2vw] ${componentsTextColor} opacity-45 pt-[0.2vw]`}>{item.label}</span>
-                  <div className="flex flex-col items-baseline gap-[1.5vw] max-md:gap-[2vw]">
-                    <h3 className={`text-[2.4vw] max-md:text-[5vw] font-display leading-tight whitespace-nowrap ${componentsTextColor}`}>{item.title}</h3>
-                    <p className={`text-[2.2vw] max-md:text-[4vw] leading-relaxed ${componentsTextColor} opacity-60`}>{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Showcase tab content */}
           <div ref={showcaseContentRef} className="absolute inset-0">
-            <h2 className={`text-[4.2vw] max-md:text-[7.5vw] font-display leading-[1.15] ${componentsTextColor} mb-[3vw] max-md:mb-[5vw]`}>
+            <h2 className={`text-[6vw] max-md:text-[7.5vw] font-display leading-[1.15] ${componentsTextColor} mb-[3vw] max-md:mb-[5vw]`}>
               Motion with meaning
             </h2>
-            <p className={`text-[2.1vw] max-md:text-[4vw] leading-relaxed ${componentsTextColor} opacity-70 mb-[7vw] max-md:mb-[10vw]`}>
+            <p className={`text-[6vw] max-md:text-[10vw] leading-relaxed ${componentsTextColor} opacity-70 mb-[7vw] max-md:mb-[10vw]`}>
               Animations explain, creating clarity and confidence across every screen.
             </p>
-
-            <div className="space-y-[3.5vw] max-md:space-y-[6vw]">
-              {showcaseStats.map((item, i) => (
-                <div key={i} className="flex items-start gap-[2.5vw] max-md:gap-[3.5vw] border-b border-black/15 pb-[3.5vw] max-md:pb-[5vw]">
-                  <span className={`text-[1.8vw] max-md:text-[3.2vw] ${componentsTextColor} opacity-45 pt-[0.2vw]`}>{item.label}</span>
-                  <div className="flex flex-col items-baseline gap-[1.5vw] max-md:gap-[2vw]">
-                    <h3 className={`text-[2.4vw] max-md:text-[5vw] font-display leading-tight whitespace-nowrap ${componentsTextColor}`}>{item.title}</h3>
-                    <p className={`text-[2.2vw] max-md:text-[4vw] leading-[1.2] ${componentsTextColor} opacity-60`}>{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
