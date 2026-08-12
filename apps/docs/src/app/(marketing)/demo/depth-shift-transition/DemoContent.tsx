@@ -18,7 +18,7 @@ export default function DemoContent({
       registry={registry}
       render={(values) => (
         <DepthShiftTransition {...values}>
-          <DemoHeader logoColor="#ffffff"/>
+          <DemoHeader logoColor="#ffffff" textColor="#ffffff"/>
           {children}
         </DepthShiftTransition>
       )}
