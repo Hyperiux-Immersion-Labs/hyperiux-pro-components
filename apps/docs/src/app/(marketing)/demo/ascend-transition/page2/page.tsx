@@ -10,11 +10,11 @@ export default function page() {
   return (
     <section className="relative flex h-screen items-center justify-center max-sm:px-[7vw] text-center">
        <Image
-              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract2.png"
+              src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs02.avif"
               alt="Abstract background"
               fill
               priority
-              className="object-cover brightness-75"
+              className="object-cover brightness-50"
             />
 
 

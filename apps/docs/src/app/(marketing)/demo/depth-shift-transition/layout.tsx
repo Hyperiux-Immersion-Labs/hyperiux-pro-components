@@ -1,12 +1,13 @@
-import DepthShiftTransition from "@/components/depth-shift-transition";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import React from "react";
+import TransitionRemixerLayout from "@/components/remixer-panel/TransitionRemixerLayout";
+import depthShiftTransitionRegistry from "../../../../../../../registry/effects/transitions/depth-shift-transition/registry.json";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <DepthShiftTransition>
-      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
+    <TransitionRemixerLayout
+      registry={depthShiftTransitionRegistry}
+      slug="depth-shift-transition"
+    >
       {children}
-    </DepthShiftTransition>
+    </TransitionRemixerLayout>
   );
 }

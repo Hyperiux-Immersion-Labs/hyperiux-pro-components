@@ -9,11 +9,11 @@ export default function page() {
   return (
     <section className="relative flex h-screen items-center justify-center max-md:px-[7vw] text-center">
       <Image
-        src="/assets/abs/abs4.png"
+        src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs02.avif"
         alt="Abstract background"
         fill
         priority
-        className="object-cover brightness-75"
+        className="object-cover brightness-50"
       />
 
       <div className="relative z-10 space-y-8   mx-auto text-center text-white">
@@ -35,7 +35,7 @@ export default function page() {
           <ArrowFillButton
             className="border-[#ff5f00] max-md:w-56! border text-[#ffffff] cursor-pointer"
             btnText={"Click here"}
-            href={"/demo/sweep-lift"}
+            href={"/demo/depth-shift-transition"}
           />
         </div>
       </div>

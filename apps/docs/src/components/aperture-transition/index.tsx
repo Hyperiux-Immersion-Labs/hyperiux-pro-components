@@ -14,8 +14,8 @@ const COMPACT_SHRINK_SCALE = 0.9
 
 
 const LEAVE_SHRINK_DURATION = 0.6
-const ENTER_CLIP_DURATION = 0.4
-const ENTER_EXPAND_DURATION = 1.0
+const ENTER_CLIP_DURATION = 0.6
+const ENTER_EXPAND_DURATION = 0.6
 
 function isCompactViewport() {
   if (typeof window === 'undefined') return false
@@ -180,8 +180,9 @@ export default function ApertureTransition({
 
         tl.to(state, {
           top: 0,
-          duration: ENTER_CLIP_DURATION * durationScale,
-          ease: 'power2.in',
+          duration: ENTER_CLIP_DURATION * durationScale ,
+          ease: 'power4.inOut',
+          delay:-0.2,
           onUpdate: applyClip,
           onComplete: () => {
             if (wrapperRef.current) wrapperRef.current.style.clipPath = ''
@@ -193,7 +194,7 @@ export default function ApertureTransition({
           duration: ENTER_EXPAND_DURATION * durationScale,
           ease: 'power3.inOut',
           clearProps: 'transform',
-        }, `-=${0.35 * durationScale}`)
+         }, `-=${0.2 * durationScale}`)
 
         return () => tl.kill()
       }}

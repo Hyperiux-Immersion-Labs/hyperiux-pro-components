@@ -210,7 +210,7 @@ const ShearWipeComp = ({
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Page Background */}
       <div className="absolute inset-0">
-        <Image src={componentsBgImage} alt="" fill className="object-cover" />
+        <Image src={componentsBgImage} alt="" fill className="object-cover brightness-50" />
       </div>
 
       <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
@@ -258,7 +258,7 @@ const ShearWipeComp = ({
           }}
         >
           <div className="absolute inset-0">
-            <Image src={showcaseBgImage} alt="" fill className="object-cover" />
+            <Image src={showcaseBgImage} alt="" fill className="object-cover brightness-50" />
           </div>
 
           <div className="flex h-screen items-center relative">

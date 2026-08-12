@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import BlockTransition from "@/components/block-transition";
 import ChessGridTransition from "@/components/chess-grid-transition/ChessGridTransition";
+import DepthShiftTransition from "@/components/depth-shift-transition";
 import PageFlipTransition from "@/components/page-flip-transition";
 import PixelTransition from "@/components/pixel-transition";
 import RadialSliceTransition from "@/components/radial-slice-transition";
@@ -14,6 +15,7 @@ import type { RegistryLike, RemixerComponent } from "./types";
 const transitionComponents: Record<string, RemixerComponent> = {
   "block-transition": BlockTransition,
   "chess-grid-transition": ChessGridTransition,
+  "depth-shift-transition": DepthShiftTransition,
   "page-flip-transition": PageFlipTransition,
   "pixel-transition": PixelTransition,
   "radial-slice-transition": RadialSliceTransition,
