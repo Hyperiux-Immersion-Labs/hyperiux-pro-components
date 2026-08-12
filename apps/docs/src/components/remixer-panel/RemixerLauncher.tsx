@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useDragControls, useSpring } from "motion/react";
-import { GripVertical, PanelTop } from "lucide-react";
+import { ChevronDown, GripVertical } from "lucide-react";
 import RemixerPanel from "./RemixerPanel";
 import styles from "./remixer-panel.module.css";
 import type { RemixerLauncherProps } from "./types";
@@ -29,6 +29,7 @@ export default function RemixerLauncher({
   containerClassName = "",
 }: RemixerLauncherProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  // const [isHidden, setIsHidden] = useState(false);
   const [dragConstraints, setDragConstraints] = useState({
     top: 0,
     right: 0,
@@ -61,6 +62,8 @@ export default function RemixerLauncher({
     return () => window.removeEventListener("resize", updateDragConstraints);
   }, []);
 
+  // if (isHidden) return null;
+
   return (
     <div className={`${styles.launcherLayer} ${containerClassName}`}>
       <motion.div
@@ -90,9 +93,21 @@ export default function RemixerLauncher({
             className={`${styles.launcherButton} ${buttonClassName}`}
             aria-expanded={isExpanded}
           >
-            <PanelTop className={`${styles.launcherIcon} ${isExpanded ? styles.launcherIconOpen : ""}`} />
             <span className={styles.launcherButtonText}>{buttonLabel}</span>
+            <ChevronDown
+              className={`${styles.launcherChevron} ${isExpanded ? styles.launcherChevronOpen : ""}`}
+              aria-hidden="true"
+            />
           </button>
+
+          {/* <button
+              type="button"
+              onClick={() => setIsHidden(true)}
+              className={styles.launcherDismissButton}
+              aria-label="Hide remixer controls"
+            >
+              <X className={styles.launcherDismissIcon} />
+            </button> */}
         </div>
 
         <motion.div

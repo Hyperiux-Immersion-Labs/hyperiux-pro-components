@@ -288,7 +288,7 @@ export default function RoomModel({ onClick, isZoomed, mouseMovement = true, vid
 
 
  const roughnessMapSource = useTexture(
-"/assets/textures/bathroom-floor-roughness.png"
+"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/bathroom-floor-roughness.png"
  );
  const roughnessMap = useMemo(() => {
  const texture = roughnessMapSource.clone();

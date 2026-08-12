@@ -420,10 +420,10 @@ export default function CollidingModels({
   return (
 
     <>
-      <div className="w-full h-screen flex items-center justify-center px-12 max-md:px-6 max-[1025px]:px-10">
+      <div className="w-full h-screen flex items-center justify-center">
         <div
           ref={rootRef}
-          className="relative h-full w-full overflow-hidden rounded-2xl"
+          className="relative h-full w-full overflow-hidden"
           style={{ backgroundColor }}
         >
           <Scene

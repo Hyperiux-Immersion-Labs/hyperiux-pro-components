@@ -41,6 +41,13 @@ function getOptionLabel(option: RemixerOption) {
   return typeof option === "object" ? (option.label ?? option.value ?? "") : option;
 }
 
+function clampNumber(value: number, control: RemixerControl) {
+  let nextValue = value;
+  if (typeof control.min === "number") nextValue = Math.max(control.min, nextValue);
+  if (typeof control.max === "number") nextValue = Math.min(control.max, nextValue);
+  return nextValue;
+}
+
 function ControlField({
   control,
   value,
@@ -203,14 +210,40 @@ function ControlField({
     );
   }
 
+  const numberValue = typeof value === "number" ? value : 0;
+
   return (
     <label className={styles.field}>
       <div className={styles.fieldRow}>
         <span className={styles.fieldLabel}>{control.label}</span>
-        <span className={styles.fieldValue}>{displayValue}</span>
+        <input
+          type="number"
+          min={control.min}
+          max={control.max}
+          step={control.step ?? 1}
+          value={numberValue}
+          onChange={(event) => {
+            const nextValue = Number(event.target.value);
+            if (!Number.isNaN(nextValue)) onChange(nextValue);
+          }}
+          onBlur={(event) => {
+            const nextValue = Number(event.target.value);
+            if (!Number.isNaN(nextValue)) onChange(clampNumber(nextValue, control));
+          }}
+          className={styles.rangeValueInput}
+          aria-label={`${control.label} value`}
+        />
       </div>
       {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
-      <input type="range" min={control.min} max={control.max} step={control.step ?? 1} value={typeof value === "number" ? value : 0} onChange={(event) => onChange(Number(event.target.value))} className={styles.range} />
+      <input
+        type="range"
+        min={control.min}
+        max={control.max}
+        step={control.step ?? 1}
+        value={numberValue}
+        onChange={(event) => onChange(Number(event.target.value))}
+        className={styles.range}
+      />
     </label>
   );
 }

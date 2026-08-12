@@ -156,7 +156,7 @@
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0;
+  padding: 0.85rem 0 0;
   transition: opacity 180ms ease, transform 220ms ease;
   max-height: none;
   opacity: 0;
@@ -423,6 +423,38 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--foreground);
+}
+
+.rangeValueInput {
+  width: 5.25rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0;
+  text-align: right;
+  outline: none;
+}
+
+.rangeValueInput:focus-visible {
+  box-shadow: none;
+}
+
+.rangeValueInput::-webkit-outer-spin-button,
+.rangeValueInput::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.rangeValueInput[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
 
 .fieldDescription {
@@ -777,23 +809,63 @@
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.6rem;
   width: auto;
-  min-height: 0;
+  min-height: 2.3rem;
   flex: 1 1 auto;
   border-color: rgba(255, 255, 255, 0.5);
   background: #0e0e0e;
-  padding: 0.42rem 0.95rem;
+  padding: 0 0.95rem;
   font-size: 0.88rem;
   letter-spacing: 0;
 }
 
-.launcherIcon {
-  transition: transform 300ms ease;
+.launcherDismissButton {
+  pointer-events: auto;
+  position: absolute;
+  right: -0.55rem;
+  top: -0.55rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: #0e0e0e;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
 
-.launcherIconOpen {
+.launcherDismissButton:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: #171717;
+}
+
+.launcherDismissButton:active {
+  transform: translateY(1px);
+}
+
+.launcherDismissIcon {
+  width: 0.82rem;
+  height: 0.82rem;
+}
+
+.launcherChevron {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+  color: var(--foreground);
+  opacity: 0.72;
+  transition: transform 300ms ease, opacity 180ms ease;
+}
+
+.launcherChevronOpen {
   transform: rotate(180deg);
+  opacity: 1;
 }
 
 .launcherButtonText {

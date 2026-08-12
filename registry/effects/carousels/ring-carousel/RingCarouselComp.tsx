@@ -427,7 +427,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
 
  return (
  <div
- className={` relative h-[70vh] w-full select-none overflow-hidden bg-black ${className}`}
+ className={` relative h-screen w-full select-none overflow-hidden bg-black ${className}`}
  ref={containerRef}
  onMouseEnter={() => {
  isHoveredRef.current = true;
