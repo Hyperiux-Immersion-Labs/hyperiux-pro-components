@@ -63,7 +63,8 @@ const ShearWipeComp = ({
   const overlayRef = useRef<HTMLDivElement>(null);
   const componentsTextColorClass = resolveTextColorClass(componentsTextColor);
   const showcaseTextColorClass = resolveTextColorClass(showcaseTextColor, 'text-white');
-  const desktopShowcaseTextColorClass = 'text-white';
+  const desktopShowcaseTextColorClass =
+    showcaseTextColorClass === 'text-[#0D47A1]' ? 'text-white' : showcaseTextColorClass;
   const componentsUnderlineClass = resolveBgColorClass(componentsTextColor);
 
   const componentsTabRef = useRef<HTMLButtonElement>(null);
@@ -259,7 +260,7 @@ const ShearWipeComp = ({
             onMouseLeave={() => handleHoverOut()}
             onClick={() => setActivePanel('showcase')}
           >
-            <div className="text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap text-white">
+            <div className={`text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap ${desktopShowcaseTextColorClass}`}>
               Showcase
             </div>
           </div>

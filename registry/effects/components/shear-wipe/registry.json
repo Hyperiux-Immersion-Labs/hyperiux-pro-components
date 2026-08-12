@@ -72,7 +72,7 @@
     {
       "name": "showcaseTextColor",
       "type": "string",
-      "default": "text-[#0D47A1]",
+      "default": "text-white",
       "description": "Tailwind text color class for the Showcase panel copy.",
       "remixer": {
         "control": "select",
@@ -82,10 +82,6 @@
           {
             "value": "text-white",
             "label": "White"
-          },
-          {
-            "value": "text-[#0D47A1]",
-            "label": "Royal Blue"
           },
           {
             "value": "text-black",
