@@ -64,6 +64,7 @@ interface ElevateNavbarMobileProps {
   duration?: number;
   ease?: string;
   activeColor?: string;
+  inactiveColor?: string;
 }
 
 export function ElevateNavbarMobile({
@@ -72,6 +73,7 @@ export function ElevateNavbarMobile({
   duration = 0.35,
   ease = "power3.out",
   activeColor = "#ffffff",
+  inactiveColor = "rgba(255,255,255,0.85)",
 }: ElevateNavbarMobileProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdownIndex, setActiveDropdownIndex] = useState<number | null>(null);
@@ -241,6 +243,7 @@ export function ElevateNavbarMobile({
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-[1025px]:text-[2.5vw] max-md:text-[3vw] uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+                  style={{ color: inactiveColor }}
                 >
                   {item.name}
                 </Link>
@@ -257,6 +260,7 @@ export function ElevateNavbarMobile({
                     )
                   }
                   className="flex w-full items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-[1025px]:text-[2.5vw]! max-md:text-[3vw]! uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+                  style={{ color: inactiveColor }}
                 >
                   {item.name}
 
@@ -284,6 +288,7 @@ export function ElevateNavbarMobile({
                         href={dropdownItem.href}
                         onClick={() => setIsMenuOpen(false)}
                         className="flex items-center gap-[3vw] rounded-[2vw] bg-white/5 p-[2vw] max-md:text-[2.8vw] max-[1025px]:text-[2vw]  uppercase text-white/80 transition hover:bg-white/10 motion-reduce:bg-white/5 motion-reduce:transition-none"
+                        style={{ color: inactiveColor }}
                       >
                         <div className="relative h-[10vw] w-[10vw] overflow-hidden rounded-[2vw] bg-white/25">
                           <Image

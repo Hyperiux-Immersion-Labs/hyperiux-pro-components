@@ -66,6 +66,7 @@ export default function ElevateNavbar({ navConfig = {}, ...props }: ElevateNavba
           duration={durationValue}
           ease={config.ease}
           activeColor={config.activeColor}
+          inactiveColor={config.inactiveColor}
         />
       ) : (
         <ElevateNavbarDesktop

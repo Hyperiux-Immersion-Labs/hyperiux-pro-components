@@ -656,6 +656,7 @@ export function ElevateNavbarDesktop({
                 }}
                 href={item.href}
                 className="relative flex items-center gap-[0.32vw] py-[0.65vw] text-[0.98vw] uppercase leading-none"
+                style={{ color: inactiveColor }}
                 onMouseEnter={() => onNavItemEnter(index)}
                 onMouseLeave={() => onNavItemLeave(index)}
               >
