@@ -11,7 +11,7 @@ export default function DemoContent({ registry }: { registry: RegistryLike }) {
       registry={registry}
       render={(values) => (
         <>
-          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+          <DemoHeader  />
           <ShearWipe {...values} />
         </>
       )}

@@ -35,15 +35,19 @@
     {
       "name": "componentsTextColor",
       "type": "string",
-      "default": "text-white",
+      "default": "text-[#0D47A1]",
       "description": "Tailwind text color class for the Components panel copy.",
       "remixer": {
         "control": "select",
         "group": "components",
         "groupTitle": "Components Panel",
         "options": [
+          { "value": "text-[#0D47A1]", "label": "Royal Blue" },
           { "value": "text-white", "label": "White" },
-          { "value": "text-black", "label": "Black" }
+          { "value": "text-black", "label": "Black" },
+          { "value": "text-[#EA580C]", "label": "Orange" },
+          { "value": "text-[#166534]", "label": "Forest" },
+          { "value": "text-[#7C3AED]", "label": "Violet" }
         ]
       }
     },
@@ -58,7 +62,11 @@
         "groupTitle": "Showcase Panel",
         "options": [
           { "value": "text-white", "label": "White" },
-          { "value": "text-black", "label": "Black" }
+          { "value": "text-[#0D47A1]", "label": "Royal Blue" },
+          { "value": "text-black", "label": "Black" },
+          { "value": "text-[#EA580C]", "label": "Orange" },
+          { "value": "text-[#166534]", "label": "Forest" },
+          { "value": "text-[#7C3AED]", "label": "Violet" }
         ]
       }
     },

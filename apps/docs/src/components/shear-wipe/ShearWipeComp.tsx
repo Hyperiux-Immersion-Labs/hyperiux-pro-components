@@ -316,7 +316,7 @@ const ShearWipeComp = ({
             <h2 className={`text-[6vw] max-md:text-[7.5vw] font-display leading-[1.15] ${componentsTextColor} mb-[3vw] max-md:mb-[5vw]`}>
               Motion with meaning
             </h2>
-            <p className={`text-[6vw] max-md:text-[10vw] leading-relaxed ${componentsTextColor} opacity-70 mb-[7vw] max-md:mb-[10vw]`}>
+            <p className={`text-[6vw] max-md:text-[4vw] leading-relaxed ${componentsTextColor} opacity-70 mb-[7vw] max-md:mb-[10vw]`}>
               Animations explain, creating clarity and confidence across every screen.
             </p>
           </div>
