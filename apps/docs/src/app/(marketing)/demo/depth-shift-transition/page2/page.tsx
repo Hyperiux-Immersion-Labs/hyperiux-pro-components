@@ -28,7 +28,7 @@ export default function page() {
           </p>
         </SplitLine>
 
-        <FadeUp className="mt-12" delay={0.2}>
+        <FadeUp className="mt-12" delay={1}>
           <div className="mt-12 flex gap-4 max-md:flex-col max-[1025px]:items-center justify-center">
             <CharStaggerPrimaryButton
               bgClassName="bg-[#111111] rounded-md block"

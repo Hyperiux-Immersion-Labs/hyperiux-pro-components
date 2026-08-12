@@ -29,7 +29,7 @@ export default function page() {
         </SplitLine>
 
         <FadeUp
-          className="mt-12 flex gap-4 max-md:flex-col max-[1025px]:items-center justify-center"
+          className="mt-12 flex gap-4 max-md:flex-col max-[1025px]:items-center justify-center "
           delay={1}
         >
           <CharStaggerPrimaryButton

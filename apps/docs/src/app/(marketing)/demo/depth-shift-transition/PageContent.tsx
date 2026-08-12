@@ -25,7 +25,7 @@ export default function PageContent() {
           </p>
         </SplitLine>
 
-        <FadeUp className="mt-12" delay={0.2}>
+        <FadeUp className="mt-12" delay={1}>
           <CharStaggerPrimaryButton
             bgClassName="bg-[#111111] rounded-md block"
             textClassName="font-medium text-[1.3vw] max-[1025px]:text-[2.5vw] max-sm:text-[4vw]"

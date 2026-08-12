@@ -17,10 +17,17 @@ export default function DemoContent({
     <RegistryRemixerDemo
       registry={registry}
       render={(values) => (
-        <ApertureTransition {...values}>
+        <>
+          {/* Stays outside the transition wrapper on purpose - see the same
+              note in depth-shift-transition/DemoContent.tsx. ApertureTransition
+              applies transform/position:fixed directly to its content wrapper
+              and clones that subtree on leave, so a position:fixed header
+              nested inside gets dragged around and duplicated mid-transition. */}
           <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
-          {children}
-        </ApertureTransition>
+          <ApertureTransition {...values}>
+            {children}
+          </ApertureTransition>
+        </>
       )}
       copyCodeOptions={{
         includeDemoHeader: false,
