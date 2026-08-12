@@ -87,6 +87,22 @@ export default function CubeAsciiControls({ base, onChange }) {
             {
                 fluidEnabled: { value: base.fluidEnabled },
                 fluidColor: { value: base.fluidColor },
+                /** Coverage — how easily flow paints orange onto glyphs. */
+                fluidTint: {
+                    value: base.fluidTint ?? 1.2,
+                    min: 0,
+                    max: 3,
+                    step: 0.05,
+                    label: "tint (coverage)",
+                },
+                /** Heat — how neon/hot that orange reads. */
+                fluidBoost: {
+                    value: base.fluidBoost ?? 1.35,
+                    min: 0.5,
+                    max: 3,
+                    step: 0.05,
+                    label: "boost (heat)",
+                },
                 fluidForceBase: { value: base.fluidForceBase, min: 0, max: 1, step: 0.01 },
                 fluidSpeedSat: { value: base.fluidSpeedSat, min: 1, max: 60, step: 0.5 },
                 fluidForceMultiplier: {
@@ -99,7 +115,7 @@ export default function CubeAsciiControls({ base, onChange }) {
                     value: base.fluidRadiusLife, min: 0, max: 5, step: 0.05,
                 },
             },
-            { collapsed: true },
+            { collapsed: false },
         ),
 
         Grain: folder(
@@ -121,5 +137,18 @@ export default function CubeAsciiControls({ base, onChange }) {
         onChange({ ...base, ...values });
     }, [base, values, onChange]);
 
-    return <Leva collapsed titleBar={{ title: "Cube ASCII" }} />;
+    // Leva defaults to a fixed top-right portal, so parent `left/right` classes
+    // alone do nothing. `fill` keeps the panel inside this positioned shell.
+    return (
+        <div className="pointer-events-none fixed bottom-4 right-4 z-9999">
+            <div className="pointer-events-auto rounded-md w-[20vw] max-w-[calc(100vw-2rem)]">
+                <Leva
+                    fill
+                    flat
+                    collapsed
+                    titleBar={{ title: "Cube ASCII", drag: true }}
+                />
+            </div>
+        </div>
+    );
 }

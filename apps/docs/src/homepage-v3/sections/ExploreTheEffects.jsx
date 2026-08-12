@@ -4,6 +4,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import EffectBox from "@/homepage-v3/components/EffectBox";
+import LineReveal from "@/components/Animations/LineReveal";
+import SplitLine from "@/components/WebsiteComps/SplitLine";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -111,15 +113,15 @@ export default function ExploreTheEffects() {
             className="w-full  my-[20vw] px-[3.5vw] max-md:my-24 max-md:px-[6vw] max-sm:px-[7vw]"
         >
             <div className="space-y-[2vw] max-md:space-y-[8vw] mb-[15vw] ">
-                <h2 className="t96 font-neue-haas w-[60vw] mx-auto text-center max-md:w-full">
+                <LineReveal as='h2' className="t96 font-neue-haas w-[60vw] mx-auto text-center max-md:w-full">
                     Explore the Moments Your Website is{" "}
                     <span className="gradient-text-animate">Missing.</span>
-                </h2>
-                <p className="t22 w-[52vw] mx-auto text-center max-md:w-full max-md:text-[2.4vw] max-sm:text-[4vw]">
+                </LineReveal>
+                <SplitLine as='p' delay={.25} className="t22 w-[52vw] mx-auto text-center max-md:w-full max-md:text-[2.4vw] max-sm:text-[4vw]">
                     Vault is easiest to understand when you feel it. Preview a few
                     high-impact effects below, then open the full catalogue when you are
                     ready.
-                </p>
+                </SplitLine>
             </div>
             <div className="mt-[8vw] flex items-start gap-[1.6vw] max-md:mt-16 max-md:flex-wrap  max-sm:flex-col max-sm:gap-8">
                 {COLUMNS.map((column, columnIndex) => (

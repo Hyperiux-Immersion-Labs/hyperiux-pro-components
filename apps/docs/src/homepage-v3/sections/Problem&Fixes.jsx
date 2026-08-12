@@ -5,6 +5,8 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 import ScrambleTextV3 from '../components/ScrambleTextV3'
+import LineReveal from '@/components/Animations/LineReveal'
+import SplitLine from '@/components/WebsiteComps/SplitLine'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin)
@@ -195,13 +197,13 @@ export default function ProblemFixes() {
     >
       <div className="mx-auto relative z-200 flex w-full flex-col items-center">
         <div className="w-full text-center">
-          <h2 className="t96 w-full">
+          <LineReveal as='h2' className="t96 w-full">
             Good Motion is{' '}
             <span className="gradient-text-animate">Harder</span> Than It Looks
-          </h2>
-          <p className="text24 mx-auto mt-[2vw] max-w-[65vw] leading-[1.55] text-white max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
+          </LineReveal>
+          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[2vw] max-w-[65vw] leading-[1.55] text-white max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
             Anyone can add a fade. The hard part is everything around it: timing, restraint, layout awareness, responsive behavior, reduced-motion support, dependency clarity, and performance discipline.Get it wrong and your "wow moment" janks on mobile, tanks your Lighthouse score, or quietly breaks for the people who turned motion off.
-          </p>
+          </SplitLine>
         </div>
 
         <div

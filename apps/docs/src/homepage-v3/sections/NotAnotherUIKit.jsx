@@ -60,7 +60,7 @@ export default function NotAnotherUIKit() {
             y: "0vw",
             stagger: 0.2,
             duration: 0.4,
-            ease: "power1.out",
+            ease: "none",
           }).to(".use-case-container", {
             translateX: "-38%",
             duration: 1.2,

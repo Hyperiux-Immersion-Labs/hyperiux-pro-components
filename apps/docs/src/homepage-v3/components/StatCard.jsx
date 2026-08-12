@@ -6,14 +6,14 @@ export default function StatCard({
   contentClassName = "",
 }) {
   const mark =
-    "pointer-events-none absolute size-[0.3vw] border-white/20 max-md:size-2 max-sm:size-1.5";
+    "pointer-events-none absolute size-[0.3vw] border-white/20 transition-colors duration-500 group-hover:border-primary  max-md:size-2 max-sm:size-1.5";
 
   const content = framed
     ? (Array.isArray(children) ? children : [children]).filter(Boolean).map(
       (child, index) => (
         <div
           key={index}
-          className="relative inline-flex border border-grey items-center justify-center max-md:size-[16vw] size-[7vw] aspect-square"
+          className="group cursor-pointer relative inline-flex border border-grey items-center justify-center max-md:size-[16vw] size-[7vw] aspect-square"
         >
           <span className={`${mark} -top-px -left-px border-t border-l`} />
           <span className={`${mark} -top-px -right-px border-t border-r`} />

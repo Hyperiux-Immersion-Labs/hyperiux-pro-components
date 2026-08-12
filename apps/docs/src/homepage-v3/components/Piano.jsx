@@ -29,14 +29,13 @@ const TROUGH_OPACITY = 0.06;
 const WAVE_PERIOD = 1.2;
 const WAVE_STAGGER = 0.04;
 const WAVE_MIN = 0;
-const WAVE_YIELD = 0.16;
-const WAVE_RESUME = 0.32;
 const FALLOFF = 8;
 const POSITION_SMOOTHING = 0.07;
 const SMOOTHING = 0.05;
 const SPEED_REFERENCE = 190;
 const SPEED_WIDEN = 1.1;
 const NOTE_MIN_GAP_MS = 55;
+const NOTE_HYSTERESIS = 0.65;
 const MAX_VOICES = 9;
 const RESUME_RETRY_MS = 1000;
 const GLYPHS = ["♪", "♫", "♩", "♬"];
@@ -212,6 +211,7 @@ export default function Piano({
         el.className =
           "absolute bottom-0 left-0 text-foreground text-[2vw] leading-none select-none";
         el.style.opacity = "0";
+        el.style.willChange = "transform, opacity";
         layer.appendChild(el);
         glyphs.push(el);
         glyphTimelines.push(null);
@@ -220,67 +220,145 @@ export default function Piano({
 
     const dip = new Float32Array(lines.length);
     const dipTarget = new Float32Array(lines.length);
+    let pointerX = 0;
+    let pointerY = 0;
     let pointerPos = 0;
     let troughPos = 0;
     let speed = 0;
-    let waveMix = 1;
     let active = false;
     let noteIndex = -1;
+    let noteExact = -1;
     let running = false;
+    let pendingNote = -1;
+    let pendingGlyphPos = 0;
+    let pendingMidi = 0;
+    let audioFlushQueued = false;
 
     const easeStep = (deltaMs, tau) =>
       1 - Math.exp(-Math.min(deltaMs, 50) / 1000 / tau);
+
+    const flushAudio = () => {
+      audioFlushQueued = false;
+      if (pendingNote < 0) return;
+      const midi = pendingMidi;
+      const pos = pendingGlyphPos;
+      pendingNote = -1;
+      if (synth.play(midi)) releaseGlyph(pos, midi);
+    };
+
+    const queueAudio = () => {
+      if (audioFlushQueued) return;
+      audioFlushQueued = true;
+      // After paint — never on the same turn as opacity writes.
+      requestAnimationFrame(() => {
+        setTimeout(flushAudio, 0);
+      });
+    };
 
     const tick = (time, deltaMs) => {
       readRect();
 
       const dt = Math.min(deltaMs, 50) / 1000;
+      const inside =
+        rect.width > 0 &&
+        rect.height > 0 &&
+        pointerX >= rect.left &&
+        pointerX <= rect.left + rect.width &&
+        pointerY >= rect.top &&
+        pointerY <= rect.top + rect.height;
+
+      if (inside) {
+        const ratio = (pointerX - rect.left) / rect.width;
+        const nextPos = Math.min(
+          lines.length - 1,
+          Math.max(0, ratio * lines.length - 0.5),
+        );
+
+        if (!active) {
+          active = true;
+          pointerPos = nextPos;
+          troughPos = nextPos;
+          speed = 0;
+          // Seed the current note silently so enter doesn't cold-fire audio.
+          const exact = (nextPos / lines.length) * melody.length;
+          noteIndex = Math.min(
+            melody.length - 1,
+            Math.max(0, Math.floor(exact)),
+          );
+          noteExact = exact;
+        } else {
+          pointerPos = nextPos;
+        }
+      } else if (active) {
+        active = false;
+        speed = 0;
+        noteIndex = -1;
+        noteExact = -1;
+      }
 
       if (active) {
         const previous = troughPos;
         troughPos +=
           (pointerPos - troughPos) * easeStep(deltaMs, POSITION_SMOOTHING);
         const instant = dt > 0 ? Math.abs(troughPos - previous) / dt : 0;
-        speed += (instant - speed) * easeStep(deltaMs, 0.09);
+        speed +=
+          (Math.min(instant, SPEED_REFERENCE * 1.5) - speed) *
+          easeStep(deltaMs, 0.09);
       }
 
       const falloff =
         FALLOFF *
         (1 + Math.min(speed / SPEED_REFERENCE, 1) * (active ? SPEED_WIDEN : 0));
 
+      // Visual trough tracks the pointer directly — lag only for audio/speed.
+      const visualPos = active ? pointerPos : troughPos;
+
       for (let i = 0; i < lines.length; i += 1) {
         if (!active) {
           dipTarget[i] = 0;
           continue;
         }
-        const distance = (i - troughPos) / falloff;
+        const distance = (i - visualPos) / falloff;
         dipTarget[i] = Math.exp(-distance * distance);
       }
 
       const step = easeStep(deltaMs, SMOOTHING);
-      waveMix +=
-        ((active ? 0 : 1) - waveMix) *
-        easeStep(deltaMs, active ? WAVE_YIELD : WAVE_RESUME);
 
+      // Punch the trough through the live idle wave. Never kill/snap the wave
+      // on enter — that global opacity jump was the first-move jerk.
       for (let i = 0; i < lines.length; i += 1) {
         dip[i] += (dipTarget[i] - dip[i]) * step;
-        const wave =
-          REST_OPACITY + (waveAt(i, time) - REST_OPACITY) * waveMix;
-        lines[i].style.opacity = (wave + (TROUGH_OPACITY - wave) * dip[i])
-          .toFixed(3);
+        const wave = waveAt(i, time);
+        lines[i].style.opacity = (
+          wave +
+          (TROUGH_OPACITY - wave) * dip[i]
+        ).toFixed(3);
       }
 
       if (active) playNoteAt(troughPos);
     };
 
     function playNoteAt(position) {
+      const exact = (position / lines.length) * melody.length;
       const note = Math.min(
         melody.length - 1,
-        Math.max(0, Math.floor((position / lines.length) * melody.length)),
+        Math.max(0, Math.floor(exact)),
       );
-      if (note === noteIndex) return;
+
+      if (noteIndex >= 0 && Math.abs(exact - noteExact) < NOTE_HYSTERESIS) {
+        return;
+      }
+      if (note === noteIndex) {
+        noteExact = exact;
+        return;
+      }
+
       noteIndex = note;
-      if (synth.play(melody[note])) releaseGlyph(position, melody[note]);
+      noteExact = exact;
+      pendingNote = note;
+      pendingGlyphPos = position;
+      pendingMidi = melody[note];
+      queueAudio();
     }
 
     function releaseGlyph(position, midi) {
@@ -345,43 +423,45 @@ export default function Piano({
       active = false;
       speed = 0;
       noteIndex = -1;
+      noteExact = -1;
     }
 
+    // Pointer handlers only store coordinates — no layout reads.
     const onMove = (event) => {
-      if (!running) readRect();
-      if (!rect.width || !rect.height) return;
-
-      const inside =
-        event.clientX >= rect.left &&
-        event.clientX <= rect.left + rect.width &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.top + rect.height;
-
-      if (!inside) {
-        release();
-        return;
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (reduceMotion) {
+        readRect();
+        const inside =
+          rect.width > 0 &&
+          pointerX >= rect.left &&
+          pointerX <= rect.left + rect.width &&
+          pointerY >= rect.top &&
+          pointerY <= rect.top + rect.height;
+        if (!inside) {
+          release();
+          return;
+        }
+        const ratio = (pointerX - rect.left) / rect.width;
+        playNoteAt(
+          Math.min(
+            lines.length - 1,
+            Math.max(0, ratio * lines.length - 0.5),
+          ),
+        );
       }
-
-      const ratio = (event.clientX - rect.left) / rect.width;
-      pointerPos = Math.min(
-        lines.length - 1,
-        Math.max(0, ratio * lines.length - 0.5),
-      );
-
-      if (!active) {
-        active = true;
-        troughPos = pointerPos;
-        speed = 0;
-      }
-
-      if (reduceMotion) playNoteAt(pointerPos);
     };
 
     const unlock = () => synth.ensure();
 
     const io = new IntersectionObserver((entries) => {
-      if (entries[entries.length - 1].isIntersecting) start();
-      else stop();
+      if (entries[entries.length - 1].isIntersecting) {
+        start();
+        // Warm the graph while visible so the first note isn't a cold start.
+        synth.ensure();
+      } else {
+        stop();
+      }
     });
     io.observe(wrap);
     start();
@@ -425,7 +505,7 @@ export default function Piano({
       ))}
       <div
         ref={glyphLayerRef}
-        className="absolute inset-0  pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
       />
     </div>
   );

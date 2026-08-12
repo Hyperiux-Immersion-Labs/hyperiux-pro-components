@@ -12,6 +12,7 @@ export default function NavbarV3() {
   const [reveal, setReveal] = useState(true);
   const lastScroll = useRef(0);
 
+
   useLenis(({ scroll, velocity }) => {
     if (scroll < 100) {
       setReveal(true);

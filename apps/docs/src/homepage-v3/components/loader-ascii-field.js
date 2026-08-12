@@ -1,64 +1,65 @@
 import { CHAR_SETS } from "./char-sets";
 
 /**
- * The loader's ASCII field.
+ * Full-screen dithered-text loader field.
  *
- * Same glyph vocabulary as the hero's ASCII cube (the letters of the wordmark),
- * so the loader reads as the same system rather than a generic spinner. Two
- * layers share one grid:
+ * The wordmark SVG (/hyperiux-wordmark.svg) is loaded and rasterised into a
+ * coverage buffer. Each letter's x-range is known from the SVG geometry, so
+ * every cell knows which character it belongs to. During exit, each character
+ * dissolves independently — the `exits` array (one float per letter, 0→1)
+ * drives the per-character reverse-dither.
  *
- *   static  — churning random glyphs, thinned out by a hash as progress rises.
- *   reveal  — the logo, turned on cell by cell through an 8x8 ordered (Bayer)
- *             dither of its own coverage mask, so it materialises as a
- *             dithered image instead of wiping in.
+ * Two layers share one grid:
+ *   static  — churning random glyphs, thinned by a hash as progress rises.
+ *   reveal  — the wordmark shape, dithered in by the Bayer threshold.
  *
  * Deliberately 2D canvas, not WebGL: the hero's ASCII effect is compiling its
- * shaders and decoding its video while this is on screen, and a second GL
- * context competing for that is exactly what the loader is meant to hide.
+ * shaders and decoding its video while this is on screen.
  */
 
-const GLYPHS = CHAR_SETS.hyperiux.filter((character) => character !== " ");
+const CHAR_COUNT = 8; // H-Y-P-E-R-I-U-X
+const GLYPHS = CHAR_SETS.hyperiux.filter((c) => c !== " ");
+
+// ── Colours ──────────────────────────────────────────────────────────────────
+const STATIC_COLOR = "#1a1a1a";
+const REVEAL_COLOR = "#ff5f00";
+const FLASH_COLOR = "#ffffff";
+const COUNTER_COLOR = "#333333";
+
+// ── Timing / density ────────────────────────────────────────────────────────
+const CHURN_MS = 80;
+const FRAME_MS = 1000 / 30;
+const STATIC_DENSITY = 0.18;
+const FLASH_BAND = 0.07;
+const SWEEP = 0.35;
+
+// ── SVG wordmark source ─────────────────────────────────────────────────────
+const WORDMARK_SRC = "/hyperiux-wordmark.svg";
+const SVG_WIDTH = 351;
+const SVG_HEIGHT = 43;
+const SVG_RATIO = SVG_HEIGHT / SVG_WIDTH;
+
+// ── Layout ──────────────────────────────────────────────────────────────────
+const MOBILE_BREAKPOINT = 768;
+const WORD_WIDTH_FACTOR = 0.82;
+const WORD_MAX_WIDTH = 1600;
 
 /**
- * The wordmark is 8:1, so below ~768px it can only be a few cells tall — far
- * too coarse to resolve. The monogram is near-square and stays legible in the
- * same number of columns, so narrow viewports switch to it.
+ * Per-character x-ranges within the 351-wide SVG viewBox.
+ * Derived from the path coordinates in hyperiux-wordmark.svg.
  */
-const MARKS = {
-  wordmark: {
-    src: "/hyperiux-wordmark.svg",
-    ratio: 43 / 351,
-    widthFactor: 0.78,
-    maxWidth: 1500,
-  },
-  monogram: {
-    src: "/hyperiux.svg",
-    ratio: 65 / 58,
-    widthFactor: 0.34,
-    maxWidth: 260,
-  },
-};
+const CHAR_RANGES = [
+  { start: 0, end: 42.14 },       // H
+  { start: 48.76, end: 90.9 },    // Y
+  { start: 97.52, end: 139.66 },  // P
+  { start: 146.28, end: 188.42 }, // E
+  { start: 195.04, end: 237.18 }, // R
+  { start: 244.41, end: 251.03 }, // I
+  { start: 258.25, end: 300.39 }, // U
+  { start: 306.86, end: 350.06 }, // X
+];
 
-const MONOGRAM_BREAKPOINT = 768;
-
-const STATIC_COLOR = "#242424";
-const REVEAL_COLOR = "#ff5f00";
-/** Cells that crossed the dither threshold this pass, before they settle. */
-const FLASH_COLOR = "#ffffff";
-
-const CHURN_MS = 90;
-const FRAME_MS = 1000 / 30;
-const STATIC_DENSITY = 0.22;
-const FLASH_BAND = 0.06;
-/** How far the reveal lags across the mark, so it writes left to right. */
-const SWEEP = 0.4;
-/** Static is faded out of this bottom strip so the readout sits on clean space. */
-const READOUT_CLEARANCE = 130;
-const READOUT_FADE = 70;
-
-// Standard 8x8 ordered-dither matrix, same family as the Bayer helpers in
-// CurvedGradientShader — the threshold pattern is what gives the reveal its
-// halftone grain.
+// 8×8 Bayer ordered-dither matrix
 const BAYER_8 = [
   0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26, 12, 44, 4, 36,
   14, 46, 6, 38, 60, 28, 52, 20, 62, 30, 54, 22, 3, 35, 11, 43, 1, 33, 9, 41,
@@ -72,218 +73,271 @@ const KIND_REVEAL = 2;
 const KIND_FLASH = 3;
 
 function hash(x, y, t) {
-  const value = Math.sin(x * 127.1 + y * 311.7 + t * 74.7) * 43758.5453;
-  return value - Math.floor(value);
+  const v = Math.sin(x * 127.1 + y * 311.7 + t * 74.7) * 43758.5453;
+  return v - Math.floor(v);
 }
 
 function monoFamily() {
   const variable = getComputedStyle(document.documentElement)
     .getPropertyValue("--font-geist-mono")
     .trim();
-
   return variable
     ? `${variable}, ui-monospace, monospace`
     : "ui-monospace, monospace";
 }
 
-/** White mark at pixel size, from the SVG when it loaded and text if not. */
-function drawMarkSource(width, height, image) {
-  const source = document.createElement("canvas");
-
-  source.width = Math.max(1, Math.round(width));
-  source.height = Math.max(1, Math.round(height));
-
-  const ctx = source.getContext("2d");
-
-  if (image) {
-    ctx.drawImage(image, 0, 0, source.width, source.height);
-    return source;
+/**
+ * Given an SVG-space x coordinate, return which character index (0–7) it
+ * belongs to, or -1 if it falls in a gap between letters.
+ */
+function charIndexFromSvgX(svgX) {
+  for (let i = 0; i < CHAR_RANGES.length; i++) {
+    if (svgX >= CHAR_RANGES[i].start && svgX <= CHAR_RANGES[i].end) return i;
   }
-
-  ctx.fillStyle = "#ffffff";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.font = `700 ${source.height * 0.9}px ui-monospace, monospace`;
-  ctx.fillText("H", source.width / 2, source.height / 2);
-
-  return source;
+  return -1;
 }
 
 /**
- * @param canvas the element to paint into
- * @param state  mutated from outside (by GSAP): `progress` and `exit`, both 0..1
+ * Rasterise the wordmark into a coverage buffer at grid resolution, and tag
+ * each cell with its character index.
+ */
+function buildCoverage(cols, rows, cellW, cellH, viewW, viewH, image) {
+  const total = cols * rows;
+  const coverage = new Float32Array(total);
+  const charIdx = new Int8Array(total).fill(-1);
+
+  if (!cols || !rows) return { coverage, charIdx };
+
+  // Compute the wordmark's pixel-space position (centered in the viewport)
+  const targetW = Math.min(viewW * WORD_WIDTH_FACTOR, WORD_MAX_WIDTH);
+  const targetH = targetW * SVG_RATIO;
+  const offsetX = (viewW - targetW) / 2;
+  const offsetY = (viewH - targetH) / 2;
+
+  // Draw the SVG into a temporary canvas at grid resolution
+  const source = document.createElement("canvas");
+  const srcW = Math.max(1, Math.round(targetW));
+  const srcH = Math.max(1, Math.round(targetH));
+  source.width = srcW;
+  source.height = srcH;
+
+  const sctx = source.getContext("2d", { willReadFrequently: true });
+
+  if (image) {
+    sctx.drawImage(image, 0, 0, srcW, srcH);
+  } else {
+    // Fallback: draw "HYPERIUX" as text if the SVG hasn't loaded yet
+    sctx.fillStyle = "#ffffff";
+    sctx.textAlign = "center";
+    sctx.textBaseline = "middle";
+    sctx.font = `700 ${srcH * 0.9}px ui-monospace, monospace`;
+    sctx.fillText("HYPERIUX", srcW / 2, srcH / 2);
+  }
+
+  const { data } = sctx.getImageData(0, 0, srcW, srcH);
+
+  // Sample into the grid
+  const colStart = Math.max(0, Math.floor(offsetX / cellW));
+  const colEnd = Math.min(cols - 1, Math.ceil((offsetX + targetW) / cellW));
+  const rowStart = Math.max(0, Math.floor(offsetY / cellH));
+  const rowEnd = Math.min(rows - 1, Math.ceil((offsetY + targetH) / cellH));
+
+  for (let row = rowStart; row <= rowEnd; row++) {
+    // Map grid cell centre to source pixel coordinates
+    const srcPxY = ((row * cellH + cellH / 2 - offsetY) / targetH) * srcH;
+    const sy = Math.floor(srcPxY);
+    if (sy < 0 || sy >= srcH) continue;
+
+    for (let col = colStart; col <= colEnd; col++) {
+      const srcPxX = ((col * cellW + cellW / 2 - offsetX) / targetW) * srcW;
+      const sx = Math.floor(srcPxX);
+      if (sx < 0 || sx >= srcW) continue;
+
+      const alpha = data[(sy * srcW + sx) * 4 + 3] / 255;
+      if (alpha > 0.01) {
+        const idx = row * cols + col;
+        coverage[idx] = alpha;
+
+        // Map the source pixel x back to SVG viewBox space to find the char
+        const svgX = (srcPxX / srcW) * SVG_WIDTH;
+        charIdx[idx] = charIndexFromSvgX(svgX);
+      }
+    }
+  }
+
+  return { coverage, charIdx };
+}
+
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @param {object} state — mutated from outside:
+ *   `progress` 0→1, `exits` Float32Array(8), `globalExit` 0→1
  */
 export function createAsciiLoaderField(canvas, state) {
   const ctx = canvas.getContext("2d", { alpha: true });
 
   let cols = 0;
   let rows = 0;
-  let cellWidth = 0;
-  let cellHeight = 0;
+  let cellW = 0;
+  let cellH = 0;
   let fontSize = 0;
+  let fontFamily = "";
 
   let coverage = null;
+  let charIndex = null;
   let kinds = null;
   let glyphs = null;
 
-  const images = {};
+  let svgImage = null;
   let frame = 0;
   let lastPaint = 0;
 
-  const buildCoverage = () => {
-    const total = cols * rows;
+  const rebuild = () => {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (!cols || !rows || !w || !h) return;
 
-    coverage = new Float32Array(total);
-    kinds = new Uint8Array(total);
-    glyphs = new Uint8Array(total);
-
-    if (!cols || !rows) return;
-
-    const width = canvas.clientWidth;
-    const mark =
-      width < MONOGRAM_BREAKPOINT ? MARKS.monogram : MARKS.wordmark;
-
-    const targetWidth = Math.min(width * mark.widthFactor, mark.maxWidth);
-    const targetHeight = targetWidth * mark.ratio;
-
-    const source = drawMarkSource(targetWidth, targetHeight, images[mark.src]);
-
-    // Downscale into grid space: one pixel per cell, so the SVG's antialiasing
-    // becomes the per-cell coverage the dither thresholds against.
-    const grid = document.createElement("canvas");
-
-    grid.width = cols;
-    grid.height = rows;
-
-    const gridCtx = grid.getContext("2d", { willReadFrequently: true });
-    const widthInCells = targetWidth / cellWidth;
-    const heightInCells = targetHeight / cellHeight;
-
-    gridCtx.drawImage(
-      source,
-      (cols - widthInCells) / 2,
-      (rows - heightInCells) / 2,
-      widthInCells,
-      heightInCells
-    );
-
-    const { data } = gridCtx.getImageData(0, 0, cols, rows);
-
-    for (let i = 0; i < total; i++) {
-      coverage[i] = data[i * 4 + 3] / 255;
-    }
+    const result = buildCoverage(cols, rows, cellW, cellH, w, h, svgImage);
+    coverage = result.coverage;
+    charIndex = result.charIdx;
+    kinds = new Uint8Array(cols * rows);
+    glyphs = new Uint8Array(cols * rows);
   };
 
   const measure = () => {
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-
-    if (!width || !height) return;
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (!w || !h) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.ceil(w * dpr);
+    canvas.height = Math.ceil(h * dpr);
 
-    canvas.width = Math.ceil(width * dpr);
-    canvas.height = Math.ceil(height * dpr);
+    fontSize = w < MOBILE_BREAKPOINT ? 9 : w < 1280 ? 11 : 12;
+    cellW = fontSize * 0.62;
+    cellH = fontSize * 1.06;
+    cols = Math.ceil(w / cellW);
+    rows = Math.ceil(h / cellH);
 
-    // Small cells on purpose: the mark needs ~10 rows of vertical resolution
-    // before the dithered edge reads as a letterform rather than a blob.
-    fontSize = width < MONOGRAM_BREAKPOINT ? 10 : width < 1280 ? 11 : 12;
-    cellWidth = fontSize * 0.62;
-    cellHeight = fontSize * 1.06;
+    fontFamily = monoFamily();
 
-    cols = Math.ceil(width / cellWidth);
-    rows = Math.ceil(height / cellHeight);
-
-    // Resizing the backing store clears context state, so styling comes after.
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.font = `${fontSize}px ${monoFamily()}`;
+    ctx.font = `${fontSize}px ${fontFamily}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    buildCoverage();
+    rebuild();
   };
 
   const paintPass = (kind, color) => {
     ctx.fillStyle = color;
-
     for (let row = 0; row < rows; row++) {
-      const y = row * cellHeight + cellHeight / 2;
-
+      const y = row * cellH + cellH / 2;
       for (let col = 0; col < cols; col++) {
-        const index = row * cols + col;
-
-        if (kinds[index] !== kind) continue;
-
-        ctx.fillText(GLYPHS[glyphs[index]], col * cellWidth + cellWidth / 2, y);
+        const idx = row * cols + col;
+        if (kinds[idx] !== kind) continue;
+        ctx.fillText(GLYPHS[glyphs[idx]], col * cellW + cellW / 2, y);
       }
     }
   };
 
+  const paintCounter = (w, h) => {
+    const pct = String(Math.round(state.progress * 100)).padStart(3, "0");
+    const counterSize = w < MOBILE_BREAKPOINT ? 12 : 14;
+    ctx.save();
+    ctx.font = `${counterSize}px ${fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+    ctx.fillStyle = COUNTER_COLOR;
+    ctx.fillText(pct, w / 2, h - 30);
+    ctx.restore();
+    // Reset main font
+    ctx.font = `${fontSize}px ${fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+  };
+
   const paint = (now) => {
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (!coverage || !kinds) return;
 
-    ctx.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, w, h);
 
-    // Overshoots 1 so the last, faintest coverage cells still land; `exit`
-    // drags it back down hard, dissolving the mark the way it arrived.
-    const reveal = state.progress * (1 + SWEEP) * 1.12 - state.exit * 1.8;
-    const density = STATIC_DENSITY * (1 - state.progress) * (1 - state.exit);
+    const reveal = state.progress * (1 + SWEEP) * 1.12;
     const bucket = Math.floor(now / CHURN_MS);
-    const clearFrom = height - READOUT_CLEARANCE;
+    // Static density pulses slightly with progress for a "signal lock" feel
+    const progressPulse = 1 + 0.15 * Math.sin(state.progress * Math.PI * 3);
+    const baseDensity =
+      STATIC_DENSITY * (1 - state.progress * 0.7) * progressPulse;
 
     for (let row = 0; row < rows; row++) {
-      const y = row * cellHeight;
-      const rowFade =
-        y < clearFrom
-          ? 1
-          : Math.max(0, 1 - (y - clearFrom) / READOUT_FADE);
-
       for (let col = 0; col < cols; col++) {
-        const index = row * cols + col;
+        const idx = row * cols + col;
+        const ci = charIndex[idx];
         const threshold = BAYER_8[(row % 8) * 8 + (col % 8)] / 64;
-        // The column lag is what turns an even fade-up into something being
-        // written across the screen.
-        const ink = coverage[index] * (reveal - (col / cols) * SWEEP * 1.12);
 
-        if (ink > threshold) {
-          kinds[index] =
-            state.exit === 0 && ink - threshold < FLASH_BAND
-              ? KIND_FLASH
-              : KIND_REVEAL;
-          // Woven, stable letters inside the mark — no churn once it's lit.
-          glyphs[index] = (col + row) % GLYPHS.length;
-          continue;
+        if (ci >= 0 && coverage[idx] > 0.01) {
+          // This cell belongs to a character in the wordmark
+          const charExit = state.exits[ci] || 0;
+          // Per-character ink: sweep travels left→right across the mark
+          const ink =
+            coverage[idx] * (reveal - (col / cols) * SWEEP * 1.12) -
+            charExit * 1.6;
+
+          if (ink > threshold) {
+            kinds[idx] =
+              charExit === 0 && ink - threshold < FLASH_BAND
+                ? KIND_FLASH
+                : KIND_REVEAL;
+            // Stable woven glyphs inside the letter
+            glyphs[idx] = (col + row) % GLYPHS.length;
+            continue;
+          }
+
+          // Dissolving into noise — scattered static where the letter used to be
+          if (charExit > 0.1 && charExit < 0.95) {
+            const dissolveNoise = hash(col, row, bucket) * charExit * 0.4;
+            if (dissolveNoise > threshold * 0.8) {
+              kinds[idx] = KIND_STATIC;
+              glyphs[idx] = Math.floor(
+                hash(col + 17, row + 5, bucket) * GLYPHS.length
+              );
+              continue;
+            }
+          }
         }
 
-        // Static thins out where the mark is about to land, so it resolves
-        // into clean space instead of fighting the noise.
-        const local = density * rowFade * (1 - coverage[index] * 0.9);
+        // Background static noise — thin out near revealed characters
+        const nearChar = ci >= 0 ? coverage[idx] * 0.85 : 0;
+        const localDensity =
+          baseDensity * (1 - nearChar) * (1 - (state.globalExit || 0));
 
-        if (local > 0.001 && hash(col, row, bucket) < local) {
-          kinds[index] = KIND_STATIC;
-          glyphs[index] = Math.floor(
+        if (localDensity > 0.001 && hash(col, row, bucket) < localDensity) {
+          kinds[idx] = KIND_STATIC;
+          glyphs[idx] = Math.floor(
             hash(col + 17, row + 5, bucket) * GLYPHS.length
           );
           continue;
         }
 
-        kinds[index] = KIND_EMPTY;
+        kinds[idx] = KIND_EMPTY;
       }
     }
 
     paintPass(KIND_STATIC, STATIC_COLOR);
     paintPass(KIND_REVEAL, REVEAL_COLOR);
     paintPass(KIND_FLASH, FLASH_COLOR);
+
+    // Subtle progress counter at the bottom
+    if (state.progress < 1 || (state.globalExit || 0) < 0.5) {
+      paintCounter(w, h);
+    }
   };
 
-  // 30fps: the glyph churn reads as digital rather than smooth, and it halves
-  // the fill cost while the page is still loading behind this.
   const tick = (now) => {
     frame = requestAnimationFrame(tick);
-
     if (now - lastPaint < FRAME_MS) return;
-
     lastPaint = now;
     paint(now);
   };
@@ -293,27 +347,22 @@ export function createAsciiLoaderField(canvas, state) {
     paint(performance.now());
   };
 
+  // ── Bootstrap ──────────────────────────────────────────────────────────────
   measure();
   frame = requestAnimationFrame(tick);
   window.addEventListener("resize", onResize);
 
-  const loaded = Object.values(MARKS).map(({ src }) => {
-    const image = new Image();
-
-    image.onload = () => {
-      images[src] = image;
-      buildCoverage();
-    };
-    image.src = src;
-
-    return image;
-  });
+  // Load the wordmark SVG — rebuild coverage once it arrives.
+  const image = new Image();
+  image.onload = () => {
+    svgImage = image;
+    rebuild();
+  };
+  image.src = WORDMARK_SRC;
 
   return () => {
     cancelAnimationFrame(frame);
     window.removeEventListener("resize", onResize);
-    loaded.forEach((image) => {
-      image.onload = null;
-    });
+    image.onload = null;
   };
 }

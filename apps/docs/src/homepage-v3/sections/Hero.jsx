@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/SplitText";
@@ -10,9 +10,10 @@ import CubeBackgroundAscii from "../components/CubeBackgroundAscii";
 import ButtonV3 from "../components/ButtonV3";
 import { useLoaderV3Complete } from "../components/loader-v3-state";
 import { prefersReducedMotion } from "@/lib/motion";
+import { useFadeIn, useFadeUp } from "@/components/Animations/gsapAnimations";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, SplitText);
+    gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
 export default function Hero() {
@@ -50,10 +51,22 @@ export default function Hero() {
             if (!loaderComplete || prefersReducedMotion()) return;
 
             const heading = SplitText.create(headingRef.current, {
-                type: "lines",
-                mask: "lines",
+                type: "words",
+                mask: "words",
             });
             const copy = SplitText.create(copyRef.current, { type: "lines" });
+
+            // SplitText moves glyphs into word nodes; keep gradient clip on those nodes.
+            headingRef.current
+                ?.querySelectorAll(".gradient-text-animate")
+                .forEach((el) => {
+                    const nested = heading.words.filter((word) => el.contains(word));
+                    if (!nested.length) return;
+                    nested.forEach((word) =>
+                        word.classList.add("gradient-text-animate"),
+                    );
+                    el.classList.remove("gradient-text-animate");
+                });
 
             const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
@@ -66,27 +79,26 @@ export default function Hero() {
                     {
                         autoAlpha: 1,
                         duration: 1.8,
-                        delay:1,
+                        delay: 1,
                         ease: "power2.out",
                     },
                     0
                 )
                 .fromTo(
-                    heading.lines,
+                    heading.words,
                     { yPercent: 110 },
-                    { yPercent: 0, delay:.5, duration: 1.1, stagger: 0.09 },
+                    { yPercent: 0, delay: .5, duration: 1.1, stagger: 0.08 },
                     0.15
                 )
                 .fromTo(
                     copy.lines,
                     { yPercent: 40, autoAlpha: 0 },
-                    { yPercent: 0,delay:.5, autoAlpha: 1, duration: 0.8, stagger: 0.07 },
-                    0.5
+                    { yPercent: 0, delay: -.35, autoAlpha: 1, duration: 0.8, stagger: 0.07 },
+
                 )
                 .to(
                     actionsRef.current,
-                    { autoAlpha: 1,delay:.5, duration: 0.7, ease: "power2.out" },
-                    0.75
+                    { autoAlpha: 1, delay: -.35, duration: 0.7, ease: "power2.out" },
                 );
 
             return () => {
@@ -135,6 +147,9 @@ export default function Hero() {
         },
         { scope: rootRef }
     );
+
+    useFadeUp()
+
 
     return (
         <main

@@ -21,16 +21,33 @@ export const CUBE_ASCII_DEFAULTS = {
   videoScale: 0.8,
   videoOffsetX: 0.25,
   videoOffsetY: 0,
+  /**
+   * Off, the clip is stretched to fill the canvas — fine while the canvas is
+   * roughly as wide as the 16:9 source. On, it is fitted to cover instead, so
+   * the subject keeps its proportions whatever the canvas shape and the overflow
+   * is cropped; videoScale then reads as a zoom on top of that fit.
+   */
+  fitAspect: false,
   charColumns: 180,
+  /**
+   * Column count derived from a target cell size in CSS pixels instead, so the
+   * glyphs stay the same size as the canvas changes width. Overrides
+   * charColumns when set; null leaves the fixed count in charge.
+   */
+  charCellPx: null,
   charZoom: 1.25,
   /** Gap between characters (0 = no gap, 1 = max gap). */
   charGap: 0,
   fluidEnabled: true,
-  fluidColor: "#ff5f00",
-  fluidForceBase: 0.08,
+  fluidColor: "#ff6a00",
+  /** How hard flow replaces glyph gray with fluidColor (0 = off, 1 = default). */
+  fluidTint: 1.2,
+  /** Brightness multiplier on fluidColor so trails stay hot orange. */
+  fluidBoost: 1.35,
+  fluidForceBase: 0.1,
   fluidSpeedSat: 18,
-  fluidForceMultiplier: 0.15,
-  fluidInnerRadius: 0.8,
+  fluidForceMultiplier: 0.2,
+  fluidInnerRadius: 0.85,
   fluidRadiusLife: 1.0,
   brightness: 0,
   contrast: 0,
@@ -68,9 +85,49 @@ export const CUBE_ASCII_DEFAULTS = {
   grainOnEmpty: 1.0,
 };
 
-function hexToRgb(hex) {
-  if (typeof hex !== "string") return null;
-  const raw = hex.trim().replace("#", "");
+/** Viewport the phone framing below takes over at — Tailwind's `md` edge. */
+const MOBILE_QUERY = "(max-width: 767px)";
+
+/**
+ * Phone framing. A portrait canvas is nowhere near the 16:9 clip's shape, so the
+ * default stretch-to-fill drags the cube into vertical streaks, and the desktop
+ * offset — which parks it right of the copy, where there is room — pushes most
+ * of what is left off the edge. Fitting to cover keeps it square; pulling back
+ * off that fit and lifting it puts the cube over the top of the screen and the
+ * copy on clean background below, which is the desktop split turned upright.
+ * The grid is sized in pixels rather than columns to match: 180 columns across a
+ * phone is a ~2px cell, which reads as noise rather than as glyphs.
+ */
+export const CUBE_ASCII_MOBILE = {
+  fitAspect: true,
+  videoScale: 0.6,
+  videoOffsetX: 0,
+  videoOffsetY: -0.1,
+  charCellPx: 6,
+};
+
+function hexToRgb(color) {
+  if (color == null) return null;
+
+  // Leva color pickers can return `{ r, g, b }` in 0–1 or 0–255.
+  if (typeof color === "object") {
+    const r = color.r ?? color.red;
+    const g = color.g ?? color.green;
+    const b = color.b ?? color.blue;
+    if (r == null || g == null || b == null) return null;
+    const scale = r > 1 || g > 1 || b > 1 ? 1 / 255 : 1;
+    return [r * scale, g * scale, b * scale];
+  }
+
+  if (typeof color !== "string") return null;
+  const raw = color.trim().replace("#", "");
+  if (/^[0-9a-fA-F]{3}$/.test(raw)) {
+    return [
+      parseInt(raw[0] + raw[0], 16) / 255,
+      parseInt(raw[1] + raw[1], 16) / 255,
+      parseInt(raw[2] + raw[2], 16) / 255,
+    ];
+  }
   if (!/^[0-9a-fA-F]{6}$/.test(raw)) return null;
   return [
     parseInt(raw.slice(0, 2), 16) / 255,
@@ -150,6 +207,8 @@ uniform float uCharZoom;
 uniform float uCharGap;
 uniform float uVideoScale;
 uniform vec2 uVideoOffset;
+uniform int uFitAspect;
+uniform float uVideoAspect;
 
 uniform float uBrightness;
 uniform float uContrast;
@@ -175,6 +234,8 @@ uniform int uTrailN;
 uniform int uFluidEnabled;
 uniform int uFluidColorEnabled;
 uniform vec3 uFluidColor;
+uniform float uFluidTint;
+uniform float uFluidBoost;
 uniform vec4 uTP[${TM}];
 uniform float uTL[${TM}];
 
@@ -197,12 +258,24 @@ float hash(vec2 p) {
  * subject can be re-framed independently of the character grid. Clamping leans
  * on the texture's flat borders to fill whatever the clip no longer covers.
  */
+vec2 rawFrameUv(vec2 uv) {
+  vec2 scale = vec2(max(uVideoScale, 0.01));
+
+  // Cover fit. Both axes are driven off whichever one would otherwise leave a
+  // gap, so the clip still fills the canvas but keeps its proportions and the
+  // overflow is cropped instead of squashed into frame. videoScale then reads as
+  // a zoom on top of that fit; below 1 it pulls back off the edges.
+  if (uFitAspect == 1) {
+    float canvasAspect = uRes.x / max(uRes.y, 1.0);
+    float ratio = uVideoAspect / max(canvasAspect, 0.001);
+    scale *= vec2(max(ratio, 1.0), max(1.0 / ratio, 1.0));
+  }
+
+  return (uv - 0.5 - uVideoOffset) / scale + 0.5;
+}
+
 vec2 frameUv(vec2 uv) {
-  return clamp(
-    (uv - 0.5 - uVideoOffset) / max(uVideoScale, 0.01) + 0.5,
-    0.0,
-    1.0
-  );
+  return clamp(rawFrameUv(uv), 0.0, 1.0);
 }
 
 vec3 applyAdjustments(vec3 c) {
@@ -265,6 +338,18 @@ void main() {
   );
 
   vec2 bp = vec2((gx + 0.5) * cw, (gy + 0.5) * cw);
+
+  // The clip's own edge pixels fill whatever the framing no longer covers, which
+  // reads as empty only where those edges are flat. Aspect fit overshoots top and
+  // bottom, where they are not — that would streak the frame's first and last row
+  // down the canvas — so cells off the source are dropped to background instead.
+  if (uFitAspect == 1) {
+    vec2 fuv = rawFrameUv(bp / uRes);
+    if (fuv.x < 0.0 || fuv.x > 1.0 || fuv.y < 0.0 || fuv.y > 1.0) {
+      O = bg;
+      return;
+    }
+  }
 
   ivec2 fc = ivec2(gx / uCharColumns * FC, gy / rows * FR);
   fc = clamp(fc, ivec2(0), ivec2(int(FC) - 1, int(FR) - 1));
@@ -340,10 +425,28 @@ void main() {
   float shade = mix(1.0, lum, clamp(uColorFromVideo, 0.0, 1.0));
   vec3 col = vec3(uCharBrightness * shade) * uColorIntensity;
 
-  // Optional fluid letter tint (off when uFluidColorEnabled == 0)
+  // Optional fluid letter tint (off when uFluidColorEnabled == 0).
+  //
+  // uFluidTint  — how easily flow paints orange (coverage / sensitivity)
+  // uFluidBoost — how hot that orange reads (1 = hex as-is, >1 neon lift)
   if (uFluidColorEnabled == 1) {
-    float fluidMix = smoothstep(0.01, 0.35, hm);
-    col = mix(col, uFluidColor, fluidMix);
+    float t = clamp(uFluidTint, 0.0, 3.0);
+    float b = clamp(uFluidBoost, 0.0, 3.0);
+
+    // Higher tint → weak flow still colours glyphs; lower → only strong trails.
+    float mixEnd = mix(0.42, 0.07, clamp(t / 2.0, 0.0, 1.0));
+    float fluidMix = smoothstep(0.001, max(mixEnd, 0.02), hm);
+    fluidMix = clamp(fluidMix * (0.25 + t * 0.75), 0.0, 1.0);
+
+    // Boost slides toward a hotter orange and adds a bit of emissive lift so
+    // values above 1 keep doing something even when R is already maxed.
+    vec3 hot = vec3(1.0, 0.42, 0.0);
+    vec3 fluidCol = mix(uFluidColor, hot, clamp((b - 1.0) * 0.65, 0.0, 1.0));
+    fluidCol *= mix(0.75, 1.2, clamp(b / 2.0, 0.0, 1.0));
+    fluidCol = clamp(fluidCol, 0.0, 1.0);
+
+    col = mix(col, fluidCol, fluidMix);
+    col += fluidCol * fluidMix * max(b - 1.0, 0.0) * 0.45;
   }
 
   // Film grain — color only, never character selection
@@ -606,7 +709,12 @@ function createSuspendedRaf({ onFrame, root = null }) {
 /**
  * The canvas itself. Takes a fully-resolved config and reads it through a ref
  * every frame, so a control change never tears down the GL context.
+ *
+ * Bump SHADER_REV when fragment uniforms/source change so Fast Refresh remounts
+ * the GL program (otherwise new uniform locations stay null until a hard reload).
  */
+const SHADER_REV = 3;
+
 function CubeAsciiCanvas({ config, src, className }) {
   const ref = useRef(null);
   const configRef = useRef(config);
@@ -736,10 +844,14 @@ function CubeAsciiCanvas({ config, src, className }) {
     const uCharGap = loc("uCharGap");
     const uVideoScale = loc("uVideoScale");
     const uVideoOffset = loc("uVideoOffset");
+    const uFitAspect = loc("uFitAspect");
+    const uVideoAspect = loc("uVideoAspect");
     const uCharColumnsLoc = loc("uCharColumns");
     const uFluidEnabled = loc("uFluidEnabled");
     const uFluidColorEnabled = loc("uFluidColorEnabled");
     const uFluidColor = loc("uFluidColor");
+    const uFluidTint = loc("uFluidTint");
+    const uFluidBoost = loc("uFluidBoost");
 
     const fluid = createFluid();
     const fluidData = new Float32Array(FN * 2);
@@ -922,7 +1034,12 @@ function CubeAsciiCanvas({ config, src, className }) {
         gl.uniform2f(uRes, width, height);
         gl.uniform1f(uTime, (timestamp - start) / 1000);
 
-        gl.uniform1f(uCharColumnsLoc, cfg.charColumns ?? 120);
+        gl.uniform1f(
+          uCharColumnsLoc,
+          cfg.charCellPx
+            ? Math.max(8, Math.round(width / cfg.charCellPx))
+            : cfg.charColumns ?? 120,
+        );
         gl.uniform1f(uCharZoom, cfg.charZoom ?? 0.85);
         gl.uniform1f(uCharGap, cfg.charGap ?? 0);
         gl.uniform1f(uVideoScale, cfg.videoScale ?? 1);
@@ -930,6 +1047,13 @@ function CubeAsciiCanvas({ config, src, className }) {
           uVideoOffset,
           cfg.videoOffsetX ?? 0,
           cfg.videoOffsetY ?? 0,
+        );
+        gl.uniform1i(uFitAspect, cfg.fitAspect ? 1 : 0);
+        // Read off the decoded frame rather than assumed — readyState >= 2 above
+        // means the dimensions are known by now.
+        gl.uniform1f(
+          uVideoAspect,
+          video.videoHeight > 0 ? video.videoWidth / video.videoHeight : 16 / 9,
         );
         gl.uniform1f(uBrightness, cfg.brightness ?? 0);
         gl.uniform1f(uContrast, cfg.contrast ?? 0);
@@ -952,6 +1076,8 @@ function CubeAsciiCanvas({ config, src, className }) {
         if (fluidRgb) {
           gl.uniform3f(uFluidColor, fluidRgb[0], fluidRgb[1], fluidRgb[2]);
         }
+        gl.uniform1f(uFluidTint, cfg.fluidTint ?? 1.2);
+        gl.uniform1f(uFluidBoost, cfg.fluidBoost ?? 1.35);
 
         gl.uniform1f(uGrainIntensity, cfg.grainIntensity ?? 37);
         gl.uniform1f(uGrainSize, cfg.grainSize ?? 2);
@@ -980,7 +1106,7 @@ function CubeAsciiCanvas({ config, src, className }) {
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
     };
-  }, [src, charSetName]);
+  }, [src, charSetName, SHADER_REV]);
 
   return <canvas ref={ref} className={className} />;
 }
@@ -994,6 +1120,26 @@ function CubeAsciiCanvas({ config, src, className }) {
 const CubeAsciiControls = dynamic(() => import("./with-leva"), { ssr: false });
 
 /**
+ * Starts false so the server render and the first client render agree; the
+ * effect corrects it before paint, and a config swap costs nothing — the loop
+ * reads it per frame and never rebuilds the GL context.
+ */
+function useMatchMedia(query) {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const sync = () => setMatches(mql.matches);
+
+    sync();
+    mql.addEventListener("change", sync);
+    return () => mql.removeEventListener("change", sync);
+  }, [query]);
+
+  return matches;
+}
+
+/**
  * Fluid-reactive ASCII rendering of a looping video, for use as a background.
  *
  * Pass `debug` to mount a leva panel bound to this effect's config. The panel
@@ -1005,6 +1151,8 @@ export default function CubeBackgroundAscii({
   src = VIDEO_SRC,
   className = "absolute inset-0 block h-full w-full bg-black",
 }) {
+  const isMobile = useMatchMedia(MOBILE_QUERY);
+
   const base = useMemo(
     () => ({ ...CUBE_ASCII_DEFAULTS, ...config }),
     [config],
@@ -1013,7 +1161,15 @@ export default function CubeBackgroundAscii({
   // Whatever the panel last reported. Null until leva has mounted, and unused
   // entirely when debug is off, so the plain path renders straight from props.
   const [tweaked, setTweaked] = useState(null);
-  const active = debug && tweaked ? tweaked : base;
+  const tuned = debug && tweaked ? tweaked : base;
+
+  // Phone framing is applied last, over the panel too: leva seeds its sliders
+  // from the base once on mount and would otherwise report the desktop framing
+  // back on every viewport.
+  const active = useMemo(
+    () => (isMobile ? { ...tuned, ...CUBE_ASCII_MOBILE } : tuned),
+    [tuned, isMobile],
+  );
 
   return (
     <>

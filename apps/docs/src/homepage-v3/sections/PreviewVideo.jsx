@@ -1,18 +1,70 @@
-import LazyVideo from '@/components/WebsiteComps/LazyVideo'
-import React from 'react'
+"use client";
 
-const VIDEO_SRC = 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/tutorial.mp4'
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import LazyVideo from "@/components/WebsiteComps/LazyVideo";
+import { prefersReducedMotion } from "@/lib/motion";
+
+const VIDEO_SRC =
+  "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/tutorial.mp4";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 export default function PreviewVideo() {
-    return (
-        <section className='h-screen mt-[20vw] max-md:h-fit max-md:px-[4vw] relative w-full'>
-            <LazyVideo
-                src={VIDEO_SRC}
-                autoPlay
-                muted
-                loop
-                className="w-full h-full border-foreground/15 border   object-cover"
-            />
-        </section>
-    )
+  const sectionRef = useRef(null);
+  const videoWrapRef = useRef(null);
+
+  useGSAP(
+    () => {
+      const wrap = videoWrapRef.current;
+      if (!wrap) return;
+
+      if (prefersReducedMotion()) {
+        gsap.set(wrap, { scale: 1, y: 0 });
+        return;
+      }
+
+      gsap.fromTo(
+        wrap,
+        { scale: 0.6, y: "10vw" },
+        {
+          scale: 1,
+          y: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 90%",
+            end: "top 10%",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        },
+      );
+    },
+    { scope: sectionRef },
+  );
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative mt-[20vw] h-screen w-full max-md:h-fit max-md:px-[4vw]"
+    >
+      <div
+        ref={videoWrapRef}
+        className="h-full w-full origin-center will-change-transform"
+      >
+        <LazyVideo
+          src={VIDEO_SRC}
+          autoPlay
+          muted
+          loop
+          className="h-full w-full max-md:border border-foreground/15 object-cover"
+        />
+      </div>
+    </section>
+  );
 }

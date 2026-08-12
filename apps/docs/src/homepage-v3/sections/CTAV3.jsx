@@ -39,7 +39,7 @@ export default function CTAV3() {
         Need More Than a Component? We Build the Whole Interaction.
       </LineReveal>
       <div className="space-y-[3.5vw] max-md:space-y-[10vw] relative z-2">
-        <SplitLine as="p" className="text24 max-md:w-full w-[40vw]">
+        <SplitLine as="p" delay={.25} className="text24 max-md:w-full w-[40vw]">
           Vault is a public slice of how Hyperiux approaches interaction design.
           Need something custom? We'll design and build it from scratch.
         </SplitLine>

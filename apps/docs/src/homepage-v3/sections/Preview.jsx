@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "@/lib/motion";
 import AsciiMorphIcon from "@/homepage-v3/components/AsciiMorphIcon";
+import LineReveal from "@/components/Animations/LineReveal";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -176,9 +177,9 @@ export default function Preview() {
 
   return (
     <section id="preview" className="w-full">
-      <h2 className="t96 max-md:w-[70%] max-md:mx-auto max-md:text-[8vw]! font-neue-haas text-center">
+      <LineReveal as='h2' className="t96 max-md:w-[70%] max-md:mx-auto max-md:text-[8vw]! font-neue-haas text-center">
         Preview. Install. Tune. Ship.
-      </h2>
+      </LineReveal>
 
       <div
         ref={gridRef}

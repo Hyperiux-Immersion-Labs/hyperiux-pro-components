@@ -173,12 +173,12 @@ export default function PricingV3() {
         >
             {/* HEADING */}
             <div className="text-center w-full">
-                <LineReveal as="h2" className="t96 w-full font-neue-haas ">
+                <LineReveal  as="h2" className="t96 w-full max-md:w-[95%] max-md:mx-auto font-neue-haas ">
                     Start Free. Upgrade When You&rsquo;re{" "}
                     <span className="gradient-text-animate">Ready.</span>
                 </LineReveal>
 
-                <SplitLine delay={.25} as="p" className="text24 w-full  mx-auto mt-[1.5vw] text-background max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-full max-sm:text-[4vw]">
+                <SplitLine delay={.25} as="p" className="text24 w-full  mx-auto mt-[1.5vw] text-background max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-[80vw] max-sm:text-[4vw]">
                     The free core stays free, forever. Pro unlocks everything and every new drop.
                 </SplitLine>
             </div>

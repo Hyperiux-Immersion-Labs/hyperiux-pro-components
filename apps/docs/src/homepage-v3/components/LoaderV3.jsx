@@ -9,25 +9,36 @@ import { prefersReducedMotion } from "@/lib/motion";
 import { createAsciiLoaderField } from "./loader-ascii-field";
 import { markLoaderV3Complete } from "./loader-v3-state";
 
+const CHAR_COUNT = 8; // H-Y-P-E-R-I-U-X
+
 // The counter runs to 92 on its own, then only closes the last 8 once the page
 // has actually finished loading — so the number tracks something real instead
 // of sitting at 100 while assets are still coming in.
-const SETTLE_DURATION = 1.4;
+const SETTLE_DURATION = 1.6;
 const CLOSE_DURATION = 0.45;
 // Never hold the page longer than this, however slow the load is.
 const MAX_WAIT_MS = 3000;
+
+/**
+ * Stagger order for the character dissolve: centre characters go last so the
+ * word appears to collapse inward. Index order: 0=H 1=Y 2=P 3=E 4=R 5=I 6=U 7=X
+ * Dissolve from the edges toward the middle.
+ */
+const DISSOLVE_ORDER = [0, 7, 1, 6, 2, 5, 3, 4];
 
 export default function LoaderV3() {
   const [done, setDone] = useState(false);
 
   const rootRef = useRef(null);
   const canvasRef = useRef(null);
-  const contentRef = useRef(null);
-  const counterRef = useRef(null);
-  const barRef = useRef(null);
 
   // Mutated by GSAP, read by the field's own render loop.
-  const fieldRef = useRef({ progress: 0, exit: 0 });
+  // `exits` is an array of 8 floats — one per character of HYPERIUX.
+  const fieldRef = useRef({
+    progress: 0,
+    exits: new Float32Array(CHAR_COUNT),
+    globalExit: 0,
+  });
 
   const lenis = useLenis();
 
@@ -53,35 +64,14 @@ export default function LoaderV3() {
       const field = fieldRef.current;
       const destroyField = createAsciiLoaderField(canvasRef.current, field);
 
-      const paint = () => {
-        if (!counterRef.current) return;
-        counterRef.current.textContent = String(
-          Math.round(field.progress * 100)
-        ).padStart(3, "0");
-      };
-
+      // ── Phase 1: Build — progress runs 0 → 0.92 while the page loads ──
       const settle = gsap
         .timeline()
-        .from(contentRef.current, {
-          autoAlpha: 0,
-          duration: 0.5,
-          ease: "power2.out",
-        })
-        .to(
-          field,
-          {
-            progress: 0.92,
-            duration: SETTLE_DURATION,
-            ease: "power1.out",
-            onUpdate: paint,
-          },
-          0
-        )
-        .to(
-          barRef.current,
-          { scaleX: 0.92, duration: SETTLE_DURATION, ease: "power1.out" },
-          0
-        );
+        .to(field, {
+          progress: 0.92,
+          duration: SETTLE_DURATION,
+          ease: "power1.out",
+        });
 
       const pageReady = new Promise((resolve) => {
         if (document.readyState === "complete") {
@@ -98,54 +88,67 @@ export default function LoaderV3() {
         }),
       ]);
 
+      // ── Phase 2: Close — finish the counter, then dissolve each letter ──
       Promise.all([settle, capped]).then(() => {
         if (cancelled) return;
 
-        gsap
-          .timeline({
-            onComplete: () => {
-              release();
-              setDone(true);
-            },
-          })
-          .to(
-            field,
+        const tl = gsap.timeline({
+          onComplete: () => {
+            release();
+            setDone(true);
+          },
+        });
+
+        // Finish the progress counter → 100
+        tl.to(field, {
+          progress: 1,
+          duration: CLOSE_DURATION,
+          ease: "power2.inOut",
+        });
+
+        // Brief beat before letters start dissolving
+        const dissolveStart = CLOSE_DURATION + 0.15;
+
+        // Stagger each character's exit — edges first, centre last
+        const perCharDuration = 0.5;
+        const staggerGap = 0.07;
+
+        DISSOLVE_ORDER.forEach((charIdx, orderIdx) => {
+          tl.to(
+            field.exits,
             {
-              progress: 1,
-              duration: CLOSE_DURATION,
-              ease: "power2.inOut",
-              onUpdate: paint,
+              [charIdx]: 1,
+              duration: perCharDuration,
+              ease: "power2.in",
             },
-            0
-          )
-          .to(
-            barRef.current,
-            { scaleX: 1, duration: CLOSE_DURATION, ease: "power2.inOut" },
-            0
-          )
-          // The mark dissolves back through the same dither it arrived by.
-          .to(
-            field,
-            { exit: 1, duration: 0.55, ease: "power2.in" },
-            CLOSE_DURATION + 0.1
-          )
-          .to(
-            contentRef.current,
-            { autoAlpha: 0, duration: 0.4, ease: "power2.in" },
-            CLOSE_DURATION + 0.2
-          )
-          // Hands off to the hero as the panel starts moving, so the hero
-          // animates in behind the wipe instead of after it.
-          .to(
-            rootRef.current,
-            {
-              yPercent: -100,
-              duration: 0.9,
-              ease: "power4.inOut",
-              onStart: markLoaderV3Complete,
-            },
-            CLOSE_DURATION + 0.4
+            dissolveStart + orderIdx * staggerGap
           );
+        });
+
+        // Fade out any remaining static noise
+        const globalExitStart =
+          dissolveStart + (DISSOLVE_ORDER.length - 1) * staggerGap;
+        tl.to(
+          field,
+          {
+            globalExit: 1,
+            duration: 0.5,
+            ease: "power2.in",
+          },
+          globalExitStart
+        );
+
+        // Slide the panel away and hand off to the hero
+        tl.to(
+          rootRef.current,
+          {
+            yPercent: -100,
+            duration: 0.9,
+            ease: "power4.inOut",
+            onStart: markLoaderV3Complete,
+          },
+          globalExitStart + 0.25
+        );
       });
 
       return () => {
@@ -166,7 +169,10 @@ export default function LoaderV3() {
       aria-hidden="true"
       className="fixed inset-0 z-1000 overflow-hidden bg-background will-change-transform"
     >
-      <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 block h-full w-full"
+      />
     </div>
   );
 }

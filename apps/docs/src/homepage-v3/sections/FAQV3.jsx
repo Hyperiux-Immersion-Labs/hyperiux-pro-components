@@ -275,7 +275,7 @@ export default function FAQV3() {
 
       <LineReveal
         as="h2"
-        className="t96 text-center font-neue-haas mb-[4vw] max-md:mt-[60vw]  relative z-110 max-md:mb-[8vw]   max-sm:mb-[12vw] max-md:w-full"
+        className="t96 text-center font-neue-haas mb-[4vw] max-md:mt-[60vw]  relative z-110 max-md:mb-[8vw] pt-[5vw]  max-sm:mb-[12vw] max-md:w-full"
       >
         Questions, <span className="gradient-text-animate">Answered.</span>
       </LineReveal>
