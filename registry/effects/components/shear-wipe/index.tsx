@@ -12,7 +12,7 @@ interface ShearWipeProps {
 const ShearWipe = ({
   clipPathDuration,
   componentsTextColor = 'text-[#0D47A1]',
-  showcaseTextColor = 'text-[#0D47A1]',
+  showcaseTextColor = 'text-white',
 }: ShearWipeProps) => {
   return (
     <ShearWipeComp

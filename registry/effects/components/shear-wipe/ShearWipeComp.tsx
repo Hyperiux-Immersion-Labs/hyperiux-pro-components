@@ -65,6 +65,7 @@ const ShearWipeComp = ({
   const overlayRef = useRef<HTMLDivElement>(null);
   const componentsTextColorClass = resolveTextColorClass(componentsTextColor);
   const showcaseTextColorClass = resolveTextColorClass(showcaseTextColor, 'text-white');
+  const desktopShowcaseTextColorClass = 'text-white';
   const componentsUnderlineClass = resolveBgColorClass(componentsTextColor);
 
   const componentsTabRef = useRef<HTMLButtonElement>(null);
@@ -260,7 +261,7 @@ const ShearWipeComp = ({
             onMouseLeave={() => handleHoverOut()}
             onClick={() => setActivePanel('showcase')}
           >
-            <div className="text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap text-[#E3F2FD]">
+            <div className="text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap text-white">
               Showcase
             </div>
           </div>
@@ -279,7 +280,7 @@ const ShearWipeComp = ({
 
           <div className="flex h-screen items-center relative">
             <div className="w-full flex items-center justify-center p-[6vw]">
-              <div className={`w-[45vw] space-y-[1vw] ${showcaseTextColorClass}`}>
+              <div className={`w-[45vw] space-y-[1vw] ${desktopShowcaseTextColorClass}`}>
                 <h2 className="text-[3vw] font-bold font-display leading-[1.2] whitespace-nowrap">Motion with meaning</h2>
                 <p className="text-[1.5vw]">
                   Animations explain, creating clarity and confidence across every screen.
