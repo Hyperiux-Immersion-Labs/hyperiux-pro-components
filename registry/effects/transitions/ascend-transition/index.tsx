@@ -3,14 +3,9 @@
 'use client'
 
 import { TransitionRouter } from 'next-transition-router'
-import type { ReactNode } from 'react'
 import React, { useRef } from 'react'
 import gsap from 'gsap'
-
-function prefersReducedMotion() {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
-}
+import { prefersReducedMotion } from '@/lib/motion'
 
 const START_SCALE = 0.8
 // Matches this project's `md` breakpoint (--breakpoint-md: 1025px in
@@ -18,6 +13,9 @@ const START_SCALE = 0.8
 // phone/tablet's smaller viewport than on desktop, so compact screens get a
 // closer-to-1 scale to keep the margin proportionally similar.
 const COMPACT_START_SCALE = 0.9
+const REVEAL_DURATION = 0.9
+const SCALE_UP_DURATION = 0.5
+const FADE_OUT_DURATION = 0.35
 const HOLD_DELAY = 0.12
 
 function isCompactViewport() {
@@ -32,12 +30,18 @@ function clipInset(top: number) {
 const HIDDEN_CLIP = clipInset(100)
 
 interface AscendTransitionProps {
-  children: ReactNode
+  children: React.ReactNode
   bgColor?: string
+  duration?: number
 }
 
-export default function AscendTransition({ children, bgColor = '#0b0b0c' }: AscendTransitionProps) {
+export default function AscendTransition({
+  children,
+  bgColor = '#ffffff',
+  duration = REVEAL_DURATION,
+}: AscendTransitionProps) {
   const panelRef = useRef<HTMLDivElement>(null)
+  const durationScale = duration / REVEAL_DURATION
 
   return (
     <TransitionRouter
@@ -62,16 +66,9 @@ export default function AscendTransition({ children, bgColor = '#0b0b0c' }: Asce
         tl.set(panelRef.current, { opacity: 1, scale: startScale })
         tl.set(state, { top: 100, onUpdate: applyClip })
 
-        // power3.inOut front-loads most of its motion - top is already past
-        // the halfway *value* well before halfway through the tween's
-        // duration - so a fixed time offset for the scale tween drifts out
-        // of sync with "starts around h-50" whenever the reveal's
-        // duration/ease changes. Watching the actual value and inserting the
-        // scale tween at the live playhead position the moment it crosses
-        // keeps the two locked together regardless.
         tl.to(state, {
           top: 0,
-          duration: 0.9,
+          duration,
           ease: 'power3.inOut',
           onUpdate: () => {
             applyClip()
@@ -79,13 +76,9 @@ export default function AscendTransition({ children, bgColor = '#0b0b0c' }: Asce
             if (!scaleQueued && state.top <= 80) {
               scaleQueued = true
 
-              // Fit: the panel scales up to fill the screen, starting right
-              // as the reveal crosses its threshold - not after it finishes -
-              // so the motion stays continuous instead of a dead stop
-              // between "reveal" and "grow to fit."
               tl.to(panelRef.current, {
                 scale: 1,
-                duration: 0.5,
+                duration: SCALE_UP_DURATION * durationScale,
                 ease: 'power2.inOut',
               }, tl.time())
             }
@@ -96,12 +89,6 @@ export default function AscendTransition({ children, bgColor = '#0b0b0c' }: Asce
       }}
       enter={(next) => {
         const tl = gsap.timeline({
-          // Explicit opacity: 0, not clearProps: 'all' - clearProps wipes the
-          // *entire* inline style attribute, not just what GSAP touched. That
-          // would also strip the backgroundColor React set via the style prop
-          // once (and never rewrites again, since from React's diff the value
-          // never changes) - leaving the panel transparent on every
-          // transition after the first.
           onComplete: () => {
             gsap.set(panelRef.current, { opacity: 0 })
             next()
@@ -112,14 +99,10 @@ export default function AscendTransition({ children, bgColor = '#0b0b0c' }: Asce
           tl.to(panelRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0)
           return () => tl.kill()
         }
-
-        // The incoming page is already sitting still underneath, fully
-        // covered by the panel - a short hold keeps the full-screen cover
-        // legible for a beat before it fades away to reveal it.
         tl.to(panelRef.current, {
           opacity: 0,
-          duration: 0.35,
-          delay: HOLD_DELAY,
+          duration: FADE_OUT_DURATION * durationScale,
+          delay: HOLD_DELAY * durationScale,
           ease: 'power1.out',
         })
 

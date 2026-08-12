@@ -3,13 +3,15 @@ import ArrowFillButton from "@/components/arrow-fill-button";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 import Image from "next/image";
+import FadeUp from "@/components/WebsiteComps/FadeUp";
+import CharStaggerPrimaryButton from "@/components/char-stagger-primary-button";
 import React from "react";
 
 export default function page() {
   return (
     <section className="relative flex h-screen items-center justify-center max-md:px-[7vw] text-center">
       <Image
-        src="/assets/abs/abs4.png"
+        src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-17.jpg"
         alt="Abstract background"
         fill
         priority
@@ -31,13 +33,16 @@ export default function page() {
         </SplitLine>
 
 
-        <div className="mt-12 flex gap-4 max-md:flex-col max-[1025px]:items-center justify-center">
-          <ArrowFillButton
-            className="border-[#ff5f00] max-md:w-56! border text-[#ffffff] cursor-pointer"
-            btnText={"Click here"}
-            href={"/demo/sweep-lift"}
-          />
-        </div>
+        <FadeUp className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center" delay={1}>
+                 
+                 <CharStaggerPrimaryButton
+                              bgClassName="bg-[#111111] rounded-md block"
+                     textClassName="font-medium text-[1.3vw] max-[1025px]:text-[2.5vw] max-sm:text-[4vw]"
+                     btnClassName="h-[3.5vw]"
+                     text={"Click here"}
+                               href={"/demo/sweep-lift"}
+                             />
+               </FadeUp>
       </div>
     </section>
   );

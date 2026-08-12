@@ -1,0 +1,30 @@
+{
+  "name": "sweep-lift",
+  "type": "registry:component",
+  "title": "Sweep Lift",
+  "description": "The outgoing page lifts and fades into the background while the incoming page sweeps up from the bottom via a clip-path reveal.",
+  "dependencies": [
+    "gsap",
+    "next-transition-router"
+  ],
+  "registryDependencies": [],
+  "exportName": "SweepLift",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-12",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/sweep-lift/index.tsx"
+    }
+  ]
+}

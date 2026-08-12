@@ -28,9 +28,19 @@ interface SideNavbarProps {
   navLinks?: NavLinkItem[];
   socialLinks?: SocialLinkItem[];
   panelWidth?: string;
+  openDuration?: number;
+  linksStagger?: number;
+  socialsStagger?: number;
 }
 
-const SideNavbar = ({ navLinks, socialLinks, panelWidth }: SideNavbarProps) => {
+const SideNavbar = ({
+  navLinks,
+  socialLinks,
+  panelWidth,
+  openDuration = 0.5,
+  linksStagger = 0.05,
+  socialsStagger = 0.05,
+}: SideNavbarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -124,8 +134,8 @@ const SideNavbar = ({ navLinks, socialLinks, panelWidth }: SideNavbarProps) => {
           </div>
         </div>
       </header>
-      <div className={`w-screen h-screen fixed inset-0 ${menuOpen ? "brightness-75 pointer-events-auto" : " "} transition-all duration-300 ease-out z-[199]`}>
-        <Image src={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-27.jpg"} alt="sidenavbar image" className="w-full h-full absolute duration-300 brightness-90" width={1920} height={1080} />
+      <div className={`w-screen h-screen fixed inset-0 ${menuOpen ? "brightness-75 pointer-events-auto" : " "} transition-all duration-300 ease-out z-50`}>
+        <Image src={"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-27.jpg"} alt="sidenavbar image" className="w-full h-full absolute duration-300 brightness-90 object-cover" width={1920} height={1080} />
        <div className="w-full h-full flex flex-col justify-center items-center gap-[1.5vw] text-white relative z-1 duration-300 max-[1025px]:px-[10vw]">
         <h1 className=" text-[5vw] max-md:text-[12vw] max-[1025px]:text-[7vw]">
           Side Navbar
@@ -136,7 +146,15 @@ const SideNavbar = ({ navLinks, socialLinks, panelWidth }: SideNavbarProps) => {
 
        </div>
       </div>
-      <Menu menuOpen={menuOpen} navLinks={navLinks} socialLinks={socialLinks} panelWidth={panelWidth} />
+      <Menu
+        menuOpen={menuOpen}
+        navLinks={navLinks}
+        socialLinks={socialLinks}
+        panelWidth={panelWidth}
+        openDuration={openDuration}
+        linksStagger={linksStagger}
+        socialsStagger={socialsStagger}
+      />
     </>
   );
 };

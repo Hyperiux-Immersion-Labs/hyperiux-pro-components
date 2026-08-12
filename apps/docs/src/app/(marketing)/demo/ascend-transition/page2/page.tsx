@@ -36,14 +36,10 @@ export default function page() {
 
 
         <FadeUp className="mt-12 flex gap-4 max-sm:flex-col max-md:items-center justify-center" delay={1}>
-          {/* <ArrowFillButton
-            className="border-[#ff5f00] max-sm:w-56!  border text-[#ffffff] cursor-pointer"
-            btnText={"Click here"}
-            href={"/demo/ascend-transition"}
-          /> */}
+          
           <CharStaggerPrimaryButton
                        bgClassName="bg-[#111111] rounded-md block"
-              textClassName="font-medium text-[1.3vw]"
+              textClassName="font-medium text-[1.3vw] max-[1025px]:text-[2.5vw] max-sm:text-[4vw]"
               btnClassName="h-[3.5vw]"
               text={"Click here"}
                         href={"/demo/ascend-transition"}
@@ -54,5 +50,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("ascend-transition");
+  return getDemoPageMetadata("ascend-transition", { title: "Ascend Transition" });
 }

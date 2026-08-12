@@ -1,19 +1,11 @@
-import React from 'react'
-import ShearWipe from '@/components/shear-wipe'
-import DemoHeader from '@/components/WebsiteComps/DemoHeader'
-import { getDemoPageMetadata } from '@/lib/demo-metadata'
+import DemoContent from "./DemoContent";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/components/shear-wipe/registry.json";
 
-const page = () => {
-  return (
-   <>
-    <DemoHeader logoColor='#ffffff' textColor='#ffffff' />
-    <ShearWipe />
-   </>
-  )
+export default function Page() {
+  return <DemoContent registry={registry} />;
 }
 
-export default page
-
 export async function generateMetadata() {
-  return getDemoPageMetadata('shear-wipe')
+  return getDemoPageMetadata("shear-wipe", { title: "Shear Wipe" });
 }

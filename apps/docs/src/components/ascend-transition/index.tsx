@@ -11,6 +11,9 @@ const START_SCALE = 0.8
 // phone/tablet's smaller viewport than on desktop, so compact screens get a
 // closer-to-1 scale to keep the margin proportionally similar.
 const COMPACT_START_SCALE = 0.9
+const REVEAL_DURATION = 0.9
+const SCALE_UP_DURATION = 0.5
+const FADE_OUT_DURATION = 0.35
 const HOLD_DELAY = 0.12
 
 function isCompactViewport() {
@@ -27,10 +30,16 @@ const HIDDEN_CLIP = clipInset(100)
 interface AscendTransitionProps {
   children: React.ReactNode
   bgColor?: string
+  duration?: number
 }
 
-export default function AscendTransition({ children, bgColor = '#ffffff' }: AscendTransitionProps) {
+export default function AscendTransition({
+  children,
+  bgColor = '#ffffff',
+  duration = REVEAL_DURATION,
+}: AscendTransitionProps) {
   const panelRef = useRef<HTMLDivElement>(null)
+  const durationScale = duration / REVEAL_DURATION
 
   return (
     <TransitionRouter
@@ -57,7 +66,7 @@ export default function AscendTransition({ children, bgColor = '#ffffff' }: Asce
 
         tl.to(state, {
           top: 0,
-          duration: 0.9,
+          duration,
           ease: 'power3.inOut',
           onUpdate: () => {
             applyClip()
@@ -67,7 +76,7 @@ export default function AscendTransition({ children, bgColor = '#ffffff' }: Asce
 
               tl.to(panelRef.current, {
                 scale: 1,
-                duration: 0.5,
+                duration: SCALE_UP_DURATION * durationScale,
                 ease: 'power2.inOut',
               }, tl.time())
             }
@@ -90,8 +99,8 @@ export default function AscendTransition({ children, bgColor = '#ffffff' }: Asce
         }
         tl.to(panelRef.current, {
           opacity: 0,
-          duration: 0.35,
-          delay: HOLD_DELAY,
+          duration: FADE_OUT_DURATION * durationScale,
+          delay: HOLD_DELAY * durationScale,
           ease: 'power1.out',
         })
 

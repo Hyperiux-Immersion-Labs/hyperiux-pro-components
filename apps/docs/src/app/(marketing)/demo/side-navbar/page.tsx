@@ -1,20 +1,11 @@
-import SideNavbar from '@/components/side-navbar'
-import { getDemoPageMetadata } from '@/lib/demo-metadata'
-import React from 'react'
+import DemoContent from "./DemoContent";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/navigation/side-navbar/registry.json";
 
-const page = () => {
-  return (
-    <>
-    <div className='w-screen h-screen bg-white'>
-    <SideNavbar/>
-
-    </div>
-    </>
-  )
+export default function Page() {
+  return <DemoContent registry={registry} />;
 }
 
-export default page
-
 export async function generateMetadata() {
-  return getDemoPageMetadata("side-navbar");
+  return getDemoPageMetadata("side-navbar", { title: "Side Navbar" });
 }

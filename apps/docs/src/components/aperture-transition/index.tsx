@@ -199,9 +199,7 @@ export default function ApertureTransition({
         return () => tl.kill()
       }}
     >
-      <div className='fixed inset-0 -z-10 pointer-events-none' style={{ backgroundColor: bgColor }} />
-
-      <div ref={frameRef} className={`relative w-full ${frameClassName}`} style={{ transformOrigin: '50% 50%' }}>
+      <div ref={frameRef} className={`relative w-full ${frameClassName}`} style={{ transformOrigin: '50% 50%', backgroundColor: bgColor }}>
         <div ref={overlayRef} className={`absolute inset-0 z-10 pointer-events-none ${overlayClassName}`} />
 
         <div ref={wrapperRef} className='relative z-20 w-full'>

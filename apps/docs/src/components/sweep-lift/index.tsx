@@ -16,9 +16,14 @@ const VISIBLE_CLIP = 'polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%)'
 interface SweepLiftProps {
   children: React.ReactNode
   bgColor?: string
+  duration?: number
 }
 
-export default function SweepLift({ children, bgColor = '#111111' }: SweepLiftProps) {
+export default function SweepLift({
+  children,
+  bgColor = '#111111',
+  duration = DURATION,
+}: SweepLiftProps) {
   const frameRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -66,7 +71,7 @@ export default function SweepLift({ children, bgColor = '#111111' }: SweepLiftPr
           y: 50,
           scale: 0.9,
           borderRadius: 20,
-          duration: DURATION,
+          duration,
           ease: EASE,
         })
 
@@ -95,7 +100,7 @@ export default function SweepLift({ children, bgColor = '#111111' }: SweepLiftPr
           { clipPath: HIDDEN_CLIP },
           {
             clipPath: VISIBLE_CLIP,
-            duration: DURATION,
+            duration,
             ease: EASE,
           }
         )

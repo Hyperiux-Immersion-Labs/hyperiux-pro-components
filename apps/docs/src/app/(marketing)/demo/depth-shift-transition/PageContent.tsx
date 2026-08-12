@@ -28,7 +28,7 @@ export default function PageContent() {
         <FadeUp className="mt-12" delay={0.2}>
           <CharStaggerPrimaryButton
             bgClassName="bg-[#111111] rounded-md block"
-            textClassName="font-medium text-[1.3vw]"
+            textClassName="font-medium text-[1.3vw] max-[1025px]:text-[2.5vw] max-sm:text-[4vw]"
             btnClassName="h-[3.5vw]"
             text={"Click here"}
             href="/demo/depth-shift-transition/page2"

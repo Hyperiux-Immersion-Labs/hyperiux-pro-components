@@ -1,7 +1,9 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
+
 'use client'
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 
 function prefersReducedMotion() {
@@ -31,9 +33,9 @@ const ShearWipeComp = ({
   componentHighlights = [],
   showcaseStats = [],
   clipPathDuration = 0.9,
-  componentsBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs3.png',
+  componentsBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract4.png',
   componentsTextColor = 'text-black',
-  showcaseBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abs4.png',
+  showcaseBgImage = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/abstract3.png',
   showcaseTextColor = 'text-white',
 }: ShearWipeCompProps) => {
   const [activePanel, setActivePanel] = useState<ActivePanel>('components');
@@ -211,7 +213,7 @@ const ShearWipeComp = ({
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Page Background */}
       <div className="absolute inset-0">
-        <img src={componentsBgImage} alt="" className="w-full h-full object-cover" />
+        <Image src={componentsBgImage} alt="" fill className="object-cover brightness-75" />
       </div>
 
       <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
@@ -259,7 +261,7 @@ const ShearWipeComp = ({
           }}
         >
           <div className="absolute inset-0">
-            <img src={showcaseBgImage} alt="" className="w-full h-full object-cover" />
+            <Image src={showcaseBgImage} alt="" fill className="object-cover brightness-75" />
           </div>
 
           <div className="flex h-screen items-center relative">
@@ -290,7 +292,7 @@ const ShearWipeComp = ({
         <div
           className="absolute left-[-15%] top-1/2 -translate-y-1/2 cursor-pointer z-50"
           onMouseEnter={() => handleHover('components')}
-            onMouseLeave={() => handleHoverOut()}
+          onMouseLeave={() => handleHoverOut()}
           onClick={() => setActivePanel('components')}
         >
           <div className="text-[7vw] font-medium leading-none tracking-tight origin-center -rotate-90 whitespace-nowrap text-white">
@@ -299,11 +301,11 @@ const ShearWipeComp = ({
         </div>
 
         {/* Creative clue hint */}
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:hidden">
+        {/* <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:hidden">
           <div className="px-4 py-2 rounded-full bg-black/10 backdrop-blur-md  text-neutral-800 text-sm font-medium tracking-wide">
             Click either heading : Components or Showcase , to switch panels
           </div>
-        </div>
+        </div> */}
       </div>
 
 

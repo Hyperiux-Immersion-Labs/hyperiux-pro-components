@@ -1,12 +1,10 @@
-import ApertureTransition from "@/components/aperture-transition";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import React from "react";
+import DemoContent from "./DemoContent";
+import apertureTransitionRegistry from "../../../../../../../registry/effects/transitions/aperture-transition/registry.json";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <ApertureTransition>
-      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
+    <DemoContent registry={apertureTransitionRegistry}>
       {children}
-    </ApertureTransition>
+    </DemoContent>
   );
 }

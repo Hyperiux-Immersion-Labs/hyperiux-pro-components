@@ -15,7 +15,7 @@ export default function page() {
           alt="Abstract background"
           fill
           priority
-          className="object-cover brightness-90"
+          className="object-cover brightness-75"
         />
 
         <div className="relative z-10 max-w-5xl mx-auto text-center text-white">
@@ -40,7 +40,7 @@ export default function page() {
             /> */}
             <CharStaggerPrimaryButton
               bgClassName="bg-[#111111] rounded-md block"
-              textClassName="font-medium text-[1.3vw]"
+              textClassName="font-medium text-[1.3vw] max-[1025px]:text-[2.5vw] max-sm:text-[4vw]"
               btnClassName="h-[3.5vw]"
               text={"Click here"}
               href={"/demo/ascend-transition/page2"}
@@ -53,5 +53,5 @@ export default function page() {
 }
 
 export async function generateMetadata() {
-  return getDemoPageMetadata("ascend-transition");
+  return getDemoPageMetadata("ascend-transition", { title: "Ascend Transition" });
 }

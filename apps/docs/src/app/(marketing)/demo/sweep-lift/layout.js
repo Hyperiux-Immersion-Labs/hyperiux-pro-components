@@ -1,12 +1,11 @@
-import SweepLift from "@/components/sweep-lift";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoContent from "./DemoContent";
+import sweepLiftRegistry from "../../../../../../../registry/effects/transitions/sweep-lift/registry.json";
 import React from "react";
 
 export default function layout({ children }) {
   return (
-    <SweepLift>
-      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
+    <DemoContent registry={sweepLiftRegistry}>
       {children}
-    </SweepLift>
+    </DemoContent>
   );
 }

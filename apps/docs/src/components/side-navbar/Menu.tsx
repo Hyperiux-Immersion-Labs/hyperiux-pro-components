@@ -69,9 +69,20 @@ interface MenuProps {
   navLinks?: NavLinkItem[];
   socialLinks?: SocialLinkItem[];
   panelWidth?: string;
+  openDuration?: number;
+  linksStagger?: number;
+  socialsStagger?: number;
 }
 
-export default function Menu({ menuOpen, navLinks = NAV_LINKS, socialLinks = SOCIAL_LINKS, panelWidth = '50%' }: MenuProps) {
+export default function Menu({
+  menuOpen,
+  navLinks = NAV_LINKS,
+  socialLinks = SOCIAL_LINKS,
+  panelWidth = '50%',
+  openDuration = 0.5,
+  linksStagger = 0.05,
+  socialsStagger = 0.05,
+}: MenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const [serviceOpen, setServiceOpen] = useState(false);
@@ -86,7 +97,7 @@ export default function Menu({ menuOpen, navLinks = NAV_LINKS, socialLinks = SOC
         .to(navRef.current, {
           left: 0,
           x: 0,
-          duration: reduceMotion ? 0.3 : 0.5,
+          duration: reduceMotion ? 0.3 : openDuration,
           ease: "power3.out",
         });
 
@@ -107,14 +118,14 @@ export default function Menu({ menuOpen, navLinks = NAV_LINKS, socialLinks = SOC
           duration: 1,
           delay: -0.4,
           ease: "power3.out",
-          stagger: 0.05
+          stagger: linksStagger
         })
           .from(socialLinks, {
             rotationZ: 5,
             yPercent: 100,
             duration: 1,
             delay: -1,
-            stagger: 0.05,
+            stagger: socialsStagger,
             ease: "power3.out",
           });
       }
@@ -123,7 +134,7 @@ export default function Menu({ menuOpen, navLinks = NAV_LINKS, socialLinks = SOC
         .to(navRef.current, {
           left: "99px",
           x: '100%',
-          duration: reduceMotion ? 0.3 : 0.5,
+          duration: reduceMotion ? 0.3 : openDuration,
           ease: "power3.out",
           onComplete: () => {
             setServiceOpen(false);

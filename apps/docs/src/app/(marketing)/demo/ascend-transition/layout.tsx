@@ -1,12 +1,10 @@
-import AscendTransition from "@/components/ascend-transition";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import React from "react";
+import DemoContent from "./DemoContent";
+import ascendTransitionRegistry from "../../../../../../../registry/effects/transitions/ascend-transition/registry.json";
 
 export default function layout({ children }: { children: React.ReactNode }) {
   return (
-    <AscendTransition>
-      <DemoHeader logoColor='#FFFFFF' textColor="#ffffff" />
+    <DemoContent registry={ascendTransitionRegistry}>
       {children}
-    </AscendTransition>
+    </DemoContent>
   );
 }
