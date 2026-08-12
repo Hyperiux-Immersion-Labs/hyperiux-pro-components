@@ -9,7 +9,7 @@ const showcaseStats: ShearWipeStat[] = [
   { label: '01', title: 'Cinematic reveals', desc: 'Scroll-driven scenes that unfold with intent.' },
   { label: '02', title: 'Built for impact', desc: 'Motion that turns browsing into an experience.' },
 ];
-
+ 
 const ShearWipe = () => {
   return (
     <ShearWipeComp
