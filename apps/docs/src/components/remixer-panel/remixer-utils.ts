@@ -28,6 +28,7 @@ export function getGroupsFromProps(props: RegistryProp[] = []): RemixerGroup[] {
 
   for (const prop of props) {
     if (!prop?.remixer) continue;
+    if (!isRemixerEnabled(prop.remixer)) continue;
     const groupId = prop.remixer.group ?? "controls";
     if (!groupMap.has(groupId)) {
       groupMap.set(groupId, {
@@ -100,8 +101,14 @@ export function normalizeRemixerGroups(groups: RemixerGroup[] = []): RemixerGrou
     ...group,
     id: group.id ?? `group-${index}`,
     title: group.title,
-    controls: (group.controls ?? []).map(normalizeRemixerControl),
+    controls: (group.controls ?? [])
+      .filter(isRemixerEnabled)
+      .map(normalizeRemixerControl),
   }));
+}
+
+function isRemixerEnabled(config: { enabled?: boolean; disabled?: boolean } = {}) {
+  return config.enabled !== false && config.disabled !== true;
 }
 
 function toControlLabel(value: string) {

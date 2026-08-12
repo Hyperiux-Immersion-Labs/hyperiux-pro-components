@@ -2,7 +2,6 @@
 
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import { ReactLenis } from "lenis/react";
 import OverflowStaggerWrapper from "./OverflowStaggerWrapper";
 

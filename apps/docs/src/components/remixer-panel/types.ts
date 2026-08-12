@@ -20,6 +20,8 @@ export interface RemixerControl {
   title?: string;
   type?: string;
   control?: string;
+  enabled?: boolean;
+  disabled?: boolean;
   default?: RemixerValue;
   description?: string;
   min?: number;
@@ -49,6 +51,8 @@ export interface RegistryPropRemixer {
   groupTitle?: string;
   groupCollapsible?: boolean;
   control?: string;
+  enabled?: boolean;
+  disabled?: boolean;
   default?: RemixerValue;
   min?: number;
   max?: number;
