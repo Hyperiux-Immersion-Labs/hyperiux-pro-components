@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import SweepLift from "@/components/sweep-lift";
+import SweepLiftTransition from "@/components/sweep-lift-transition";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import type { RegistryLike } from "@/components/remixer-panel/types";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
@@ -17,14 +17,14 @@ export default function DemoContent({
     <RegistryRemixerDemo
       registry={registry}
       render={(values) => (
-        <SweepLift {...values}>
+        <SweepLiftTransition {...values}>
           <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
           {children}
-        </SweepLift>
+        </SweepLiftTransition>
       )}
       copyCodeOptions={{
         includeDemoHeader: false,
-        propsVariableName: "sweepLiftProps",
+        propsVariableName: "sweepLiftTransitionProps",
       }}
     />
   );

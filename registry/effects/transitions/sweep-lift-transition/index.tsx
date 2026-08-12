@@ -13,17 +13,17 @@ const EASE = 'power4.inOut'
 const HIDDEN_CLIP = 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)'
 const VISIBLE_CLIP = 'polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%)'
 
-interface SweepLiftProps {
+interface SweepLiftTransitionProps {
   children: React.ReactNode
   bgColor?: string
   duration?: number
 }
 
-export default function SweepLift({
+export default function SweepLiftTransition({
   children,
   bgColor = '#111111',
   duration = DURATION,
-}: SweepLiftProps) {
+}: SweepLiftTransitionProps) {
   const frameRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)

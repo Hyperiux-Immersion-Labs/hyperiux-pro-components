@@ -1,5 +1,5 @@
 {
-  "name": "sweep-lift",
+  "name": "sweep-lift-transition",
   "version": "1.0.0",
   "changelog": [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "type": "registry:component",
-  "title": "Sweep Lift",
+  "title": "Sweep Lift Transition",
   "description": "The outgoing page lifts and fades into the background while the incoming page sweeps up from the bottom via a clip-path reveal.",
   "category": "transitions",
   "dependencies": [
@@ -18,14 +18,14 @@
     "next-transition-router"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/sweep-lift",
+  "previewUrl": "/demo/sweep-lift-transition",
   "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
-  "exportName": "SweepLift",
+  "exportName": "SweepLiftTransition",
   "exportKind": "default",
-  "importPath": "@/components/effects/sweep-lift",
-  "target": "src/components/effects/sweep-lift",
+  "importPath": "@/components/effects/sweep-lift-transition",
+  "target": "src/components/effects/sweep-lift-transition",
   "props": [
     {
       "name": "bgColor",
@@ -54,7 +54,7 @@
   "files": [
     {
       "path": "index.tsx",
-      "target": "src/components/effects/sweep-lift/index.tsx"
+      "target": "src/components/effects/sweep-lift-transition/index.tsx"
     }
   ]
 }

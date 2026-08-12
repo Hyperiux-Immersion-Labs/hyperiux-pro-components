@@ -692,7 +692,7 @@
       "version": "1.0.0"
     },
     {
-      "name": "sweep-lift",
+      "name": "sweep-lift-transition",
       "type": "registry:component",
       "category": "transitions",
       "categories": [
@@ -703,7 +703,7 @@
         "next-transition-router"
       ],
       "registryDependencies": [],
-      "exportName": "SweepLift",
+      "exportName": "SweepLiftTransition",
       "exportKind": "default",
       "version": "1.0.0"
     },

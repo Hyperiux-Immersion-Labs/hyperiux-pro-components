@@ -52,8 +52,8 @@ const EXCLUDED_PATHS = new Set([
   "/demo/ascend-transition/page2",
   "/demo/aperture-transition",
   "/demo/aperture-transition/page2",
-  "/demo/sweep-lift",
-  "/demo/sweep-lift/page2",
+  "/demo/sweep-lift-transition",
+  "/demo/sweep-lift-transition/page2",
   "/demo/pixel-random",
   "/demo/pixel-random/page2",
 
