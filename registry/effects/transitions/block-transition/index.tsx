@@ -5,7 +5,10 @@
 import { TransitionRouter } from "next-transition-router";
 import React, { useLayoutEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
-import { prefersReducedMotion } from "@/lib/motion";
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
 
 const ROWS = 5;

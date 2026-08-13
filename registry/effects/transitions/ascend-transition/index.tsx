@@ -5,7 +5,10 @@
 import { TransitionRouter } from 'next-transition-router'
 import React, { useRef } from 'react'
 import gsap from 'gsap'
-import { prefersReducedMotion } from '@/lib/motion'
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+}
 
 const START_SCALE = 0.8
 // Matches this project's `md` breakpoint (--breakpoint-md: 1025px in

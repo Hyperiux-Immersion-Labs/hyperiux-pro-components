@@ -7,7 +7,10 @@ import { TransitionRouter } from 'next-transition-router'
 import React, { useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { prefersReducedMotion } from '@/lib/motion'
+function prefersReducedMotion() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+}
 
 gsap.registerPlugin(ScrollTrigger)
 
