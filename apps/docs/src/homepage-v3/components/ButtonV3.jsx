@@ -154,6 +154,7 @@ function ScrambleLabel({ text, active }) {
 }
 
 export default function ButtonV3({
+  id = "",
   text = "Install CLI",
   href = "#",
   variant = "orange",
@@ -228,6 +229,7 @@ export default function ButtonV3({
     <Link
       prefetch={false}
       href={href}
+      id={id}
       onClick={handleClick}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}

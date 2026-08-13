@@ -264,7 +264,7 @@ export default function FAQV3({faqItems, translateTop = true}) {
     <section
       ref={container}
       id="faq"
-      className={`h-fit w-full self-padd ${translateTop ? "translate-y-[-30vw]" : ""} relative pt-[10vw] mt-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]`}
+      className={`h-fit w-full self-padd ${translateTop ? "translate-y-[-30vw] max-md:translate-y-[-80vw]!" : ""} relative pt-[10vw] mt-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]`}
     >
     
 

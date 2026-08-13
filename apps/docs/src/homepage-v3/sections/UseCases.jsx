@@ -88,7 +88,7 @@ export default function UseCases({ useCases }) {
       ref={container}
       className="h-fit w-full mt-[-15vw] max-md:pb-[30vw]! flex justify-between self-padd items-start overflow-x-clip text-white max-md:mt-0 max-md:flex-col max-md:gap-[8vw]"
     >
-      <MaskTextReveal stagger={0.08} scrub={false} duration={2} className="w-[40vw] sticky top-[20vh] max-md:static max-md:w-full">
+      <MaskTextReveal stagger={0.08} scrub={false} duration={2} className="w-[40vw] sticky top-[20vh] max-md:static max-md:w-full max-md:mb-[10vw]!">
         <h2 className="t64 font-neue-haas max-md:text-[5.5vw] max-sm:text-[7.5vw]">
           For Developers, Founders, Agencies, and Teams That Need the Site to
           Feel as Premium as the Product.
