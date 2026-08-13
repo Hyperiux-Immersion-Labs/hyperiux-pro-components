@@ -378,8 +378,10 @@ async function buildRegistry() {
       console.log(`  Created ${registryJson.name}.json`);
 
       // category/categories kept for getEffectsByCategory() which drives per-category counts.
-      // All other display fields (title, description, tier, coverImage, videoUrl, addedAt,
-      // previewUrl) are now sourced from Sanity and merged at runtime.
+      // All other display fields (title, description, coverImage, videoUrl, addedAt,
+      // previewUrl) are now sourced from Sanity and merged at runtime. `tier` stays -
+      // the CLI's `list`/install-gating reads it straight off this index and has no
+      // access to Sanity.
       index.items.push({
         name: registryJson.name,
         type: registryJson.type || "registry:component",
@@ -390,6 +392,7 @@ async function buildRegistry() {
         exportName,
         exportKind,
         version: registryJson.version || "1.0.0",
+        tier,
       });
     }
   }
