@@ -25,62 +25,62 @@ const useIsomorphicLayoutEffect =
 const INITIAL_COUNT = 6;
 const OPEN_DURATION = 0.6;
 
-const FAQ_ITEMS = [
-  {
-    id: "faq-v3-1",
-    question: "Is Hyperiux Vault a UI kit?",
-    answer:
-      "No. Vault is the interaction layer around your UI kit. Use it beside your design system, shadcn, Tailwind, Radix, or custom components.",
-  },
-  {
-    id: "faq-v3-2",
-    question: "What do I get for free?",
-    answer:
-      "30+ free effects, installable with the CLI and usable in real projects. No account gymnastics, no trial timer, no watermark.",
-  },
-  {
-    id: "faq-v3-3",
-    question: "What does Pro unlock?",
-    answer:
-      "The full library: advanced scroll systems, WebGL scenes, page transitions, complete packs, and every new drop while your plan is active.",
-  },
-  {
-    id: "faq-v3-4",
-    question: "How much does Pro cost?",
-    answer:
-      "$20/month billed monthly, or $179/year billed annually. Annual works out to $14.92/month and saves $61 over monthly billing.",
-  },
-  {
-    id: "faq-v3-5",
-    question: "Can I use Vault commercially?",
-    answer:
-      "Yes. Free and Pro terms are separated clearly in the license. Free effects are commercial-friendly where marked, and Pro is built for production work by developers, teams, founders, and agencies.",
-  },
-  {
-    id: "faq-v3-6",
-    question: "Do I own the code?",
-    answer:
-      "Yes. Vault is source-first. Effects land in your project as real, inspectable files you can read, customize, and maintain locally.",
-  },
-  {
-    id: "faq-v3-7",
-    question: "Does Vault work with Next.js?",
-    answer:
-      "Yes. Vault is built for modern React and Next.js. Some browser-heavy effects need client-side boundaries, and the docs explain exactly how to handle them.",
-  },
-  {
-    id: "faq-v3-8",
-    question: "Will these effects hurt performance?",
-    answer:
-      "Motion has to earn its place. Effects are written with modern performance practices, but the final number depends on your page, your assets, and how much you stack. Test on real devices.",
-  },
-  {
-    id: "faq-v3-9",
-    question: "Do you support reduced motion?",
-    answer:
-      "Effects respect motion-sensitive users with reduced-motion fallbacks, and critical content never depends on an animation running.",
-  },
-];
+// const faqItems = [
+//   {
+//     id: "faq-v3-1",
+//     question: "Is Hyperiux Vault a UI kit?",
+//     answer:
+//       "No. Vault is the interaction layer around your UI kit. Use it beside your design system, shadcn, Tailwind, Radix, or custom components.",
+//   },
+//   {
+//     id: "faq-v3-2",
+//     question: "What do I get for free?",
+//     answer:
+//       "30+ free effects, installable with the CLI and usable in real projects. No account gymnastics, no trial timer, no watermark.",
+//   },
+//   {
+//     id: "faq-v3-3",
+//     question: "What does Pro unlock?",
+//     answer:
+//       "The full library: advanced scroll systems, WebGL scenes, page transitions, complete packs, and every new drop while your plan is active.",
+//   },
+//   {
+//     id: "faq-v3-4",
+//     question: "How much does Pro cost?",
+//     answer:
+//       "$20/month billed monthly, or $179/year billed annually. Annual works out to $14.92/month and saves $61 over monthly billing.",
+//   },
+//   {
+//     id: "faq-v3-5",
+//     question: "Can I use Vault commercially?",
+//     answer:
+//       "Yes. Free and Pro terms are separated clearly in the license. Free effects are commercial-friendly where marked, and Pro is built for production work by developers, teams, founders, and agencies.",
+//   },
+//   {
+//     id: "faq-v3-6",
+//     question: "Do I own the code?",
+//     answer:
+//       "Yes. Vault is source-first. Effects land in your project as real, inspectable files you can read, customize, and maintain locally.",
+//   },
+//   {
+//     id: "faq-v3-7",
+//     question: "Does Vault work with Next.js?",
+//     answer:
+//       "Yes. Vault is built for modern React and Next.js. Some browser-heavy effects need client-side boundaries, and the docs explain exactly how to handle them.",
+//   },
+//   {
+//     id: "faq-v3-8",
+//     question: "Will these effects hurt performance?",
+//     answer:
+//       "Motion has to earn its place. Effects are written with modern performance practices, but the final number depends on your page, your assets, and how much you stack. Test on real devices.",
+//   },
+//   {
+//     id: "faq-v3-9",
+//     question: "Do you support reduced motion?",
+//     answer:
+//       "Effects respect motion-sensitive users with reduced-motion fallbacks, and critical content never depends on an animation running.",
+//   },
+// ];
 
 function FAQRow({ item, isOpen, onToggle, index }) {
   const outerRef = useRef(null);
@@ -201,12 +201,12 @@ function FAQRow({ item, isOpen, onToggle, index }) {
   );
 }
 
-export default function FAQV3() {
+export default function FAQV3({faqItems, translateTop = true}) {
   const container = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [openId, setOpenId] = useState(FAQ_ITEMS[0].id);
+  const [openId, setOpenId] = useState(faqItems[0].id);
 
-  const visibleItems = isExpanded ? FAQ_ITEMS : FAQ_ITEMS.slice(0, INITIAL_COUNT);
+  const visibleItems = isExpanded ? faqItems : faqItems.slice(0, INITIAL_COUNT);
 
   // Rows rise into place once, as the list scrolls in.
   useGSAP(
@@ -264,18 +264,13 @@ export default function FAQV3() {
     <section
       ref={container}
       id="faq"
-      className="h-fit w-full self-padd relative py-[10vw] mt-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]"
+      className={`h-fit w-full self-padd ${translateTop ? "translate-y-[-30vw]" : ""} relative pt-[10vw] mt-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]`}
     >
-      <div
-        className="absolute top-[-13vw] max-md:top-[-65vw] max-md:h-[65vw] left-0 w-full h-[14vw] z-100 pointer-events-none"
-        style={{
-          background: "linear-gradient(to bottom, white 0%, #FF6600 35%, #000 100%)",
-        }}
-      />
+    
 
       <LineReveal
         as="h2"
-        className="t96 text-center font-neue-haas mb-[4vw] max-md:mt-[60vw]  relative z-110 max-md:mb-[8vw] pt-[5vw]  max-sm:mb-[12vw] max-md:w-full"
+        className="t96 text-center font-neue-haas mb-[6vw] max-md:mt-[60vw]  relative z-110 max-md:mb-[8vw]  max-sm:mb-[12vw] max-md:w-full"
       >
         Questions, <span className="gradient-text-animate">Answered.</span>
       </LineReveal>
@@ -295,7 +290,7 @@ export default function FAQV3() {
         ))}
       </div>
 
-      {!isExpanded && FAQ_ITEMS.length > INITIAL_COUNT && (
+      {!isExpanded && faqItems.length > INITIAL_COUNT && (
         <div className="flex w-full items-center  justify-center mt-[3vw] max-md:mt-[7vw] max-sm:mt-[10vw]">
           <LinkButton
             href="#"

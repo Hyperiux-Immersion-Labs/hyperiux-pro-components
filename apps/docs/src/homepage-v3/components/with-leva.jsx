@@ -58,6 +58,13 @@ export default function CubeAsciiControls({ base, onChange }) {
                 levelsHigh: { value: base.levelsHigh, min: 0, max: 1, step: 0.005 },
                 /** Below 1 pushes more cells onto the blank slots — this sets sparseness. */
                 brightnessMap: { value: base.brightnessMap, min: 0.1, max: 3, step: 0.01 },
+                /**
+                 * Output levels — the slice of the curved tone the glyph ramp spans.
+                 * Narrow this onto the range the clip actually lands in or the ramp is
+                 * only indexed over its bottom slots and one letter carries the frame.
+                 */
+                rampLow: { value: base.rampLow ?? 0, min: 0, max: 1, step: 0.005 },
+                rampHigh: { value: base.rampHigh ?? 1, min: 0, max: 1, step: 0.005 },
                 invert: { value: base.invert },
             },
             { collapsed: false },

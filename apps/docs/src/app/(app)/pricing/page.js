@@ -11,6 +11,33 @@ import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import FAQs from "@/components/Homepage/FAQs";
 import Pricing from "@/components/Pricing/Pricing";
 import { createPageMetadata } from "@/lib/seo-metadata";
+import FAQV3 from "@/homepage-v3/sections/FAQV3";
+import UseCases from "@/homepage-v3/sections/UseCases";
+import PricingV3 from "@/homepage-v3/sections/PricingV3";
+import DitherTransition from "@/homepage-v3/components/DitherTransition";
+import FooterV3 from "@/homepage-v3/sections/FooterV3";
+import CubeBackgroundAscii from "@/homepage-v3/components/CubeBackgroundAscii";
+const USE_CASES = [
+  {
+    id: 1,
+    title: "Commercial use",
+    text: "Free effects are commercial-friendly where marked in the license. Pro is built for production use on client sites, SaaS products, and internal tools alike.",
+    link: "/effects",
+  },
+  {
+    id: 2,
+    title: "Ownership",
+    text: "Every effect you install is source-first - the files land in your repository. You inspect, adapt, and maintain them like the rest of your front end, with no runtime dependency on Hyperiux.",
+    link: "/effects/free",
+  },
+  {
+    id: 3,
+    title: "Team & agency use",
+    text: "Pro is licensed per seat by default. Agencies and teams working across multiple client projects should use agency licensing rather than sharing one login.",
+    link: "#",
+  },
+
+];
 
 export const metadata = createPageMetadata({
   title: "Hyperiux Vault Pricing | Pro React Effects Library",
@@ -36,16 +63,25 @@ export default async function PricingPage() {
       <VaultShell effects={effects}>
         <main id="main-content">
           <Hero />
-          <GlowingPlatesDeferred waitForLoader={false} />
-          <div className=" relative z-20">
-            <Pricing padding="pt-[10vw]! pb-[10vw]!" content={false} isIndia={isIndia} />
+          <CubeBackgroundAscii />
+          <DitherTransition className="h-[46vw] max-md:h-[150vw]! bg-background " />
+          <PricingV3 />
+          <DitherTransition
+            dotColor="#050505"
+            accentColor="#eaeaea"
+            className="h-[50vw] -mt-[5vw] max-md:h-[150vw]! bg-foreground"
+          />
+          <div className="mt-[-25vw]">
+            <PricingCompareTable />
           </div>
-          <PricingCompareTable />
-          <PricingLicense />
-          <FAQs faqItems={faqItems} fixWidth={true} />
+          <UseCases useCases={USE_CASES} />
+          <div className="max-md:mt-[-55vw]! ">
+
+            <FAQV3 faqItems={faqItems} translateTop={false} />
+          </div>
           {/* <CTA2 /> */}
         </main>
-        <Footer />
+        <FooterV3 />
       </VaultShell>
     </>
   );
@@ -134,6 +170,6 @@ const faqItems = [
     answer:
       "We review student, nonprofit, and open-source discount requests case by case - email hello@hyperiux.com with a short description of your use case.",
   },
-  
+
 
 ];

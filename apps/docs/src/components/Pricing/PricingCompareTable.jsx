@@ -62,7 +62,7 @@ export default function PricingCompareTable() {
         as="h2"
         className="text110 text-center mb-[6vw] max-[1025px]:mb-[12vw] w-[75vw] max-[1025px]:w-full mx-auto"
       >
-        Free vs. Pro, feature by feature.
+        <span className="gradient-text-animate">Free vs. Pro,</span> feature by feature.
       </LineReveal>
 
       {/* Table card */}

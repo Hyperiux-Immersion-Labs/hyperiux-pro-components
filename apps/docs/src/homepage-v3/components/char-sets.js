@@ -14,7 +14,7 @@
  * must stay a leaf that index.jsx can dynamically import without a cycle.
  */
 export const CHAR_SETS = {
-  hyperiux: [" ", " ", "H", "Y", "P", "E", "R", "I", "U", "X"],
+  hyperiux: [" ", " ","@", "H", "P", "E", "R", "I", "U", "X"],
   binary: [" ", "0", "1","0", "1"],
   numbers: [" ", " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
   symbols: [" ", " ", "#", "$", "&", "*", "@", "!"],

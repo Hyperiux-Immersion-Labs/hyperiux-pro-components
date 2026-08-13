@@ -67,6 +67,15 @@ export const CUBE_ASCII_DEFAULTS = {
    * 1.0 ≈ 3% (every cell filled).
    */
   brightnessMap: 0.4,
+  /**
+   * Output levels — the slice of the post-curve tone the glyph ramp is spread
+   * across. brightnessMap and the invert leave cube.mp4 sitting in roughly
+   * 0.11..0.55, so without this window the ramp is only ever indexed over its
+   * bottom third and one letter carries the frame. Widening it back to 0..1
+   * restores the raw mapping for footage that already fills the range.
+   */
+  rampLow: 0.1125,
+  rampHigh: 0.55,
   colorIntensity: 1.0,
   /** Flat glyph brightness. Tone is carried by glyph choice, not by color. */
   charBrightness: 0.85,
@@ -218,6 +227,8 @@ uniform float uBrightnessMap;
 uniform float uColorIntensity;
 uniform float uLevelsLow;
 uniform float uLevelsHigh;
+uniform float uRampLow;
+uniform float uRampHigh;
 uniform float uCharBrightness;
 uniform float uColorFromVideo;
 uniform float uGlyphGain;
@@ -391,9 +402,27 @@ void main() {
 
   lum *= invS * invS;
 
-  // Fluid flow inverts local tone, so trails shift the ramp instead of popping glyphs in
+  // Output levels — the slice of the adjusted tone the glyph ramp spans.
+  //
+  // Input levels stretch the *source* across 0..1, but brightnessMap then curves
+  // that range and the invert flips the curved result back down, so what finally
+  // reaches the ramp occupies a band near the bottom (roughly 0.1..0.55 for
+  // cube.mp4) rather than all of 0..1. Indexing the ramp with that directly
+  // spends the whole glyph set on its first two or three slots — half the inked
+  // cells land on one glyph and the heavy end of the set never draws at all.
+  // Re-normalising here separates *which* slot a cell gets from *how many* cells
+  // are blank, so brightnessMap keeps owning sparseness on its own.
+  float toned = clamp(
+    (lum - uRampLow) / max(uRampHigh - uRampLow, 0.001),
+    0.0,
+    1.0
+  );
+
+  // Fluid flow inverts local tone, so trails shift the ramp instead of popping
+  // glyphs in. Mirroring in this normalised space rather than in the raw tone
+  // keeps the trails spread over the ramp too.
   float hm = min(1.0, length(flow) * 1.1);
-  float gray = mix(lum, 1.0 - lum, hm);
+  float gray = mix(toned, 1.0 - toned, hm);
 
   // Ordered-dither nudge (±half a ramp step) breaks banding between levels
   float thr = float(BAYER[(int(gy) & 3) * 4 + (int(gx) & 3)]) / 255.0;
@@ -713,7 +742,7 @@ function createSuspendedRaf({ onFrame, root = null }) {
  * Bump SHADER_REV when fragment uniforms/source change so Fast Refresh remounts
  * the GL program (otherwise new uniform locations stay null until a hard reload).
  */
-const SHADER_REV = 3;
+const SHADER_REV = 4;
 
 function CubeAsciiCanvas({ config, src, className }) {
   const ref = useRef(null);
@@ -830,6 +859,8 @@ function CubeAsciiCanvas({ config, src, className }) {
     const uColorIntensity = loc("uColorIntensity");
     const uLevelsLow = loc("uLevelsLow");
     const uLevelsHigh = loc("uLevelsHigh");
+    const uRampLow = loc("uRampLow");
+    const uRampHigh = loc("uRampHigh");
     const uCharBrightness = loc("uCharBrightness");
     const uColorFromVideo = loc("uColorFromVideo");
     const uGlyphGain = loc("uGlyphGain");
@@ -1063,6 +1094,8 @@ function CubeAsciiCanvas({ config, src, className }) {
         gl.uniform1f(uColorIntensity, cfg.colorIntensity ?? 1.0);
         gl.uniform1f(uLevelsLow, cfg.levelsLow ?? 0.7);
         gl.uniform1f(uLevelsHigh, cfg.levelsHigh ?? 0.92);
+        gl.uniform1f(uRampLow, cfg.rampLow ?? 0.1125);
+        gl.uniform1f(uRampHigh, cfg.rampHigh ?? 0.55);
         gl.uniform1f(uCharBrightness, cfg.charBrightness ?? 0.85);
         gl.uniform1f(uColorFromVideo, cfg.colorFromVideo ?? 0.25);
         gl.uniform1f(uGlyphGain, cfg.glyphGain ?? 1.5);

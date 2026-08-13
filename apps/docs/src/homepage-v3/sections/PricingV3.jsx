@@ -169,7 +169,7 @@ export default function PricingV3() {
         <section
             ref={container}
             id="pricing"
-            className="relative z-10 w-full bg-foreground  mt-[-20vw] pt-0! pb-[10vw]! text-background max-md:py-[14vw] max-sm:py-[20vw]"
+            className="relative z-10 w-full bg-foreground max-md:mt-[-40vw]!  mt-[-20vw] pt-0!  text-background max-md:py-[14vw] max-sm:py-[20vw]"
         >
             {/* HEADING */}
             <div className="text-center w-full">
@@ -244,7 +244,7 @@ export default function PricingV3() {
 
                         <div className="mt-[1.5vw] flex items-end gap-[1vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
                             <p
-                                className="t96 font-neue-haas  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]"
+                                className="t96 font-neue-haas items-center  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]"
                                 aria-label={`$${plan.price} ${plan.label.toLowerCase()}`}
                             >
                                 <span aria-hidden="true">$</span>
