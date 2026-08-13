@@ -33,7 +33,7 @@ export default function CTAV3() {
   return (
     <section
       id="CTA"
-      className="h-fit gap-[4vw] max-md:h-fit max-md:mt-[-60vw]! mt-[-30vw] max-md:py-[10vw] max-sm:py-[15vw]! max-md:mb-[10vw] overflow-x-hidden flex items-start justify-between max-sm:gap-[10vw] max-md:gap-[8vw] flex-col text-foreground self-padd relative z-500 w-full py-[7vw]!"
+      className="h-fit gap-[4vw] max-md:h-fit max-md:mt-[-60vw]! mt-[-35vw] max-md:py-[10vw] max-sm:py-[15vw]! max-md:mb-[10vw] overflow-x-hidden flex items-start justify-between max-sm:gap-[10vw] max-md:gap-[8vw] flex-col text-foreground self-padd relative z-500 w-full py-[7vw]!"
     >
       <LineReveal as="h2" className="t96 font-neue-haas max-md:w-full relative z-2 w-[90%]">
         Need More Than a Component? We Build the Whole Interaction.

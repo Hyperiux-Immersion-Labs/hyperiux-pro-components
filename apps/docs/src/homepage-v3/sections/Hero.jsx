@@ -16,6 +16,22 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
+const NAV_LEAD = 0.25;
+// Order of the intro is: the ASCII field arrives, then the navbar drops in,
+// then the copy. Each beat below is a start time inside that sequence.
+//
+// The loader announces itself complete as its own field starts bursting
+// outward, not after — so the cube resolves in underneath while those glyphs
+// are still crossing the screen, and the two ASCII fields read as one handing
+// over. Holding this until after the loader has gone breaks that join.
+const AT_CANVAS = 0;
+const INTRO_DURATION = 1.7;
+// Copy waits out the field and the navbar (NavbarV3's own INTRO_DELAY_MS),
+// so the three arrive in sequence rather than on top of each other.
+const AT_HEADING = 1.7;
+const AT_COPY = 2.3;
+const AT_ACTIONS = 2.75;
+
 export default function Hero() {
     const rootRef = useRef(null);
     const layerRef = useRef(null);
@@ -27,19 +43,24 @@ export default function Hero() {
 
     const loaderComplete = useLoaderV3Complete();
 
+    // Drives the ASCII field's own entry reveal, mutated by GSAP and read by
+    // the shader every frame. Starts at 0 — nothing drawn — which is what holds
+    // the field back instead of a fade on the canvas element: fading the
+    // element would bring the whole grid up as one sheet, and the point here is
+    // that cells arrive individually.
+    const introRef = useRef(0);
+
     // Hidden from the first client frame — the loader panel is already covering
     // the page at this point, so nothing flashes before the intro plays.
     useGSAP(
         () => {
-            if (prefersReducedMotion()) return;
+            if (prefersReducedMotion()) {
+                introRef.current = 1;
+                return;
+            }
 
             gsap.set(
-                [
-                    canvasRef.current,
-                    headingRef.current,
-                    copyRef.current,
-                    actionsRef.current,
-                ],
+                [headingRef.current, copyRef.current, actionsRef.current],
                 { autoAlpha: 0 }
             );
         },
@@ -68,37 +89,47 @@ export default function Hero() {
                     el.classList.remove("gradient-text-animate");
                 });
 
-            const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+            // Every start value is parked up front, so the timeline below is
+            // nothing but .to() — the resting state of the hero is one block
+            // you can read, instead of being spread across five `from` objects.
+            // The containers can come up straight away: the heading's words are
+            // masked and pushed out of frame, and the copy's lines are still
+            // transparent, so there is nothing to see yet.
+            gsap.set([headingRef.current, copyRef.current], { autoAlpha: 1 });
+            gsap.set(heading.words, { yPercent: 110 });
+            gsap.set(copy.lines, { yPercent: 40, autoAlpha: 0 });
+            // Fixed px rather than a percentage on the buttons: the stack goes
+            // column on mobile, where a percentage would throw them off screen.
+            gsap.set(actionsRef.current, { y: 28, autoAlpha: 0 });
 
-            tl.set([headingRef.current, copyRef.current], { autoAlpha: 1 })
-                // ASCII field settles in from a slight push-in, so the glyph
-                // grid resolves rather than just appearing.
-                .fromTo(
-                    canvasRef.current,
-                    { autoAlpha: 0 },
-                    {
-                        autoAlpha: 1,
-                        duration: 1.8,
-                        delay: 1,
-                        ease: "power2.out",
-                    },
-                    0
-                )
-                .fromTo(
+            const tl = gsap.timeline({
+                delay: NAV_LEAD,
+                defaults: { ease: "power2.out" },
+            });
+
+            // ASCII field settles in behind the copy, so the glyph grid
+            // resolves rather than just appearing. The front crosses the canvas
+            // at an even rate, so the ease only has to soften the ends of the
+            // move — anything stronger makes the sweep visibly surge.
+            tl.to(
+                introRef,
+                { current: 1, duration: INTRO_DURATION, ease: "power1.inOut" },
+                AT_CANVAS
+            )
+                .to(
                     heading.words,
-                    { yPercent: 110 },
-                    { yPercent: 0, delay: .5, duration: 1.1, stagger: 0.08 },
-                    0.15
+                    { yPercent: 0, duration: 1.1, stagger: 0.08 },
+                    AT_HEADING
                 )
-                .fromTo(
+                .to(
                     copy.lines,
-                    { yPercent: 40, autoAlpha: 0 },
-                    { yPercent: 0, delay: -.35, autoAlpha: 1, duration: 0.8, stagger: 0.07 },
-
+                    { yPercent: 0, autoAlpha: 1, duration: 0.8, stagger: 0.07 },
+                    AT_COPY
                 )
                 .to(
                     actionsRef.current,
-                    { autoAlpha: 1, delay: -.35, duration: 0.7, ease: "power2.out" },
+                    { y: 0, autoAlpha: 1, duration: 0.7 },
+                    AT_ACTIONS
                 );
 
             return () => {
@@ -158,7 +189,7 @@ export default function Hero() {
         >
             <div ref={layerRef} className="absolute  inset-0 origin-center max-md:w-full will-change-transform">
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
-                    <CubeBackgroundAscii debug />
+                    <CubeBackgroundAscii debug intro={introRef} />
                 </div>
                 <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[12vw] p-[3vw] max-md:items-end max-md:p-6 max-sm:p-5">
                     {/* <div className="w-full bg-gradient-to-r pointer-events-none from-black/50 to-transparent h-full absolute inset-0" /> */}

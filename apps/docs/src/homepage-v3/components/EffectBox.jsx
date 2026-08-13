@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { prefersReducedMotion } from "@/lib/motion";
-import { DEFAULT_CHAR_SET, resolveCharSet } from "./char-sets";
+import { resolveCharSet } from "./char-sets";
 import { createFluid } from "./ascii-fluid";
 
 const ArrowUpRight = ({ className = "" }) => (
@@ -34,10 +34,15 @@ const ArrowUpRight = ({ className = "" }) => (
 
 /*
  * Constants lifted from the hero (CubeBackgroundAscii) so the trail behaves the
- * same here: same glyph ramp, same point lifetime and spacing, same fluid
- * forces, same dither and tint. Only the fluid grid differs, and only because
- * it is sized in pixels rather than in cells — see FLUID_CELL.
+ * same here: same point lifetime and spacing, same fluid forces, same dither
+ * and tint. The glyph ramp is the card's own (see TRAIL_CHAR_SET), and the
+ * fluid grid differs only because it is sized in pixels rather than in cells —
+ * see FLUID_CELL.
  */
+/** Key into CHAR_SETS. The hero spells HYPERIUX; the cards draw their trail in
+ *  symbols instead, so a card's stroke never reads as stray brand lettering. */
+const TRAIL_CHAR_SET = "symbols";
+
 const TRAIL_LIFE = 320;
 const TRAIL_STEP = 10;
 const TRAIL_MAX = 72;
@@ -126,7 +131,7 @@ function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
 
     // Ramp order is measured once, off a probe big enough to compare inks; the
     // atlas below is redrawn at whatever the current cell size is.
-    const ramp = orderCharsByDensity(resolveCharSet(DEFAULT_CHAR_SET), 64, 8);
+    const ramp = orderCharsByDensity(resolveCharSet(TRAIL_CHAR_SET), 64, 8);
     const charCount = ramp.length;
     const firstInked = ramp.findIndex((char) => char.trim() !== "");
 

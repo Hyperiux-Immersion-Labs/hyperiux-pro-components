@@ -9,8 +9,6 @@ import { prefersReducedMotion } from "@/lib/motion";
 import { createAsciiLoaderField } from "./loader-ascii-field";
 import { markLoaderV3Complete } from "./loader-v3-state";
 
-const CHAR_COUNT = 8; // H-Y-P-E-R-I-U-X
-
 // The counter runs to 92 on its own, then only closes the last 8 once the page
 // has actually finished loading — so the number tracks something real instead
 // of sitting at 100 while assets are still coming in.
@@ -19,26 +17,30 @@ const CLOSE_DURATION = 0.45;
 // Never hold the page longer than this, however slow the load is.
 const MAX_WAIT_MS = 3000;
 
-/**
- * Stagger order for the character dissolve: centre characters go last so the
- * word appears to collapse inward. Index order: 0=H 1=Y 2=P 3=E 4=R 5=I 6=U 7=X
- * Dissolve from the edges toward the middle.
- */
-const DISSOLVE_ORDER = [0, 7, 1, 6, 2, 5, 3, 4];
+// Exit: one scalar drives the whole burst. The field hands each cell its own
+// start time and direction out of this, so the mark breaks apart rather than
+// unwinding letter by letter.
+//
+// Eased with "none" — the field's geometry is linear in this scalar, so a
+// linear scalar is what gives every glyph constant outward velocity. Any ease
+// here would make the burst surge or coast and read as a dissolve again.
+const BURST_DURATION = 1.8;
+// The black backing clears over the first part of the burst, uncovering the
+// hero underneath while the glyphs are still crossing it. That overlap is the
+// join between the two ASCII fields — hold the backdrop to the end instead and
+// the loader reads as a panel that fades, not as a field that hands over.
+const BACKDROP_LEAD = 0.1;
+const BACKDROP_DURATION = 0.75;
 
 export default function LoaderV3() {
   const [done, setDone] = useState(false);
 
   const rootRef = useRef(null);
+  const backdropRef = useRef(null);
   const canvasRef = useRef(null);
 
   // Mutated by GSAP, read by the field's own render loop.
-  // `exits` is an array of 8 floats — one per character of HYPERIUX.
-  const fieldRef = useRef({
-    progress: 0,
-    exits: new Float32Array(CHAR_COUNT),
-    globalExit: 0,
-  });
+  const fieldRef = useRef({ progress: 0, exit: 0 });
 
   const lenis = useLenis();
 
@@ -88,7 +90,7 @@ export default function LoaderV3() {
         }),
       ]);
 
-      // ── Phase 2: Close — finish the counter, then dissolve each letter ──
+      // ── Phase 2: Close — finish the counter, burst the field, uncover hero ──
       Promise.all([settle, capped]).then(() => {
         if (cancelled) return;
 
@@ -106,48 +108,36 @@ export default function LoaderV3() {
           ease: "power2.inOut",
         });
 
-        // Brief beat before letters start dissolving
-        const dissolveStart = CLOSE_DURATION + 0.15;
+        // Brief beat, then the field bursts outward from the centre
+        const burstStart = CLOSE_DURATION + 0.15;
 
-        // Stagger each character's exit — edges first, centre last
-        const perCharDuration = 0.5;
-        const staggerGap = 0.07;
-
-        DISSOLVE_ORDER.forEach((charIdx, orderIdx) => {
-          tl.to(
-            field.exits,
-            {
-              [charIdx]: 1,
-              duration: perCharDuration,
-              ease: "power2.in",
-            },
-            dissolveStart + orderIdx * staggerGap
-          );
-        });
-
-        // Fade out any remaining static noise
-        const globalExitStart =
-          dissolveStart + (DISSOLVE_ORDER.length - 1) * staggerGap;
         tl.to(
           field,
           {
-            globalExit: 1,
-            duration: 0.5,
-            ease: "power2.in",
+            exit: 1,
+            duration: BURST_DURATION,
+            ease: "none",
+            onStart: () => {
+              // Stop swallowing clicks the moment the panel starts clearing.
+              gsap.set(rootRef.current, { pointerEvents: "none" });
+              // Hand off at the *start* of the burst, not the end: the hero's
+              // own ASCII field needs to be coming up underneath while these
+              // glyphs are still crossing the screen, or the two read as two
+              // effects in sequence instead of one continuous field.
+              markLoaderV3Complete();
+            },
           },
-          globalExitStart
+          burstStart
         );
 
-        // Slide the panel away and hand off to the hero
         tl.to(
-          rootRef.current,
+          backdropRef.current,
           {
-            yPercent: -100,
-            duration: 0.9,
-            ease: "power4.inOut",
-            onStart: markLoaderV3Complete,
+            opacity: 0,
+            duration: BACKDROP_DURATION,
+            ease: "power2.inOut",
           },
-          globalExitStart + 0.25
+          burstStart + BACKDROP_LEAD
         );
       });
 
@@ -167,8 +157,15 @@ export default function LoaderV3() {
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="fixed inset-0 z-1000 overflow-hidden bg-background will-change-transform"
+      className="fixed inset-0 z-1000 overflow-hidden"
     >
+      {/* Separate layer from the canvas so it can clear on its own — the
+          glyphs have to stay at full strength while they burst across the
+          hero, which a fade on the whole panel would take out with it. */}
+      <div
+        ref={backdropRef}
+        className="absolute inset-0 bg-background will-change-[opacity]"
+      />
       <canvas
         ref={canvasRef}
         className="absolute inset-0 block h-full w-full"

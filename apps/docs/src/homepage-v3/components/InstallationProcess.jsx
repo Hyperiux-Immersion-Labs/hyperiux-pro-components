@@ -9,6 +9,18 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Same glyph set and timings as ScrambleTextV3, so the terminal writes with the
+// look the rest of the homepage uses.
+const SCRAMBLE_GLYPHS = "$#&*@!_-./|<>0123456789";
+const SCRAMBLE_TAIL = 8;
+const GLYPH_SWAP_MS = 40;
+const FLASH_MS = 90;
+const SCRAMBLE_PRE = "rgba(255,255,255,0.28)";
+const SCRAMBLE_FLASH = "#ffffff";
+
+const randomGlyph = () =>
+  SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
+
 
 function TerminalTick({ tickRef }) {
   return (
@@ -183,22 +195,102 @@ export default function InstallationProcess() {
         });
       };
 
-      const typeText = (timeline, element, text, duration = null, position) => {
-        if (!element) return;
-        const chars = text.length;
-        const state = { count: 0 };
-        const finalDuration = duration ?? Math.max(0.2, chars * 0.012);
+      const escHtml = (s) =>
+        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-        timeline.set(element, { textContent: "", opacity: 1 }, position);
+      // Writes `tokens` (text + optional colour) into `element` with a write
+      // head: characters just ahead of the head churn through glyphs in the dim
+      // pre-colour, lock to their real character as the head passes, flash, then
+      // settle into their own colour. Rendered as one innerHTML pass per frame so
+      // the timeline stays the single source of progress.
+      const scrambleWrite = (timeline, element, tokens, duration, position) => {
+        if (!element) return;
+
+        let full = "";
+        const ranges = tokens.map((token) => {
+          const start = full.length;
+          full += token.text;
+          return { color: token.color, start, end: full.length };
+        });
+
+        if (!full) {
+          timeline.set(element, { innerHTML: "", opacity: 1 }, position);
+          return;
+        }
+
+        const colorAt = (index) =>
+          ranges.find((range) => index >= range.start && index < range.end)?.color;
+
+        const paint = (index, color) => {
+          const char = escHtml(full[index]);
+          return color ? `<span style="color:${color}">${char}</span>` : char;
+        };
+
+        const total = full.length;
+        const state = { count: 0 };
+        // How many locked characters are still inside the flash window, derived
+        // from the head's speed so the flash lasts ~FLASH_MS on every line.
+        const flashChars = Math.max(
+          1,
+          Math.round(FLASH_MS / ((duration * 1000) / total))
+        );
+        const glyphs = new Array(total).fill("");
+        let lastSwap = 0;
+
+        timeline.set(element, { innerHTML: "", opacity: 1 }, position);
         timeline.to(
           state,
           {
-            count: chars,
-            duration: finalDuration,
+            count: total,
+            duration,
             ease: "none",
             snap: { count: 1 },
-            onUpdate: () => { element.textContent = text.slice(0, state.count); },
+            onUpdate: () => {
+              const now = performance.now();
+              const swap = now - lastSwap >= GLYPH_SWAP_MS;
+              if (swap) lastSwap = now;
+
+              const head = Math.round(state.count);
+              const tail = Math.min(total, head + SCRAMBLE_TAIL);
+              let html = "";
+
+              for (let i = 0; i < tail; i++) {
+                if (i < head) {
+                  html += paint(
+                    i,
+                    i >= head - flashChars ? SCRAMBLE_FLASH : colorAt(i)
+                  );
+                  continue;
+                }
+
+                // Spaces stay blank so words keep their shape under the head.
+                if (full[i] === " ") {
+                  html += " ";
+                  continue;
+                }
+
+                if (swap || !glyphs[i]) glyphs[i] = randomGlyph();
+                html += `<span style="color:${SCRAMBLE_PRE}">${escHtml(glyphs[i])}</span>`;
+              }
+
+              element.innerHTML = html;
+            },
+            onComplete: () => {
+              let html = "";
+              for (let i = 0; i < total; i++) html += paint(i, colorAt(i));
+              element.innerHTML = html;
+            },
           },
+          position
+        );
+      };
+
+      const typeText = (timeline, element, text, duration = null, position) => {
+        scrambleWrite(
+          timeline,
+          element,
+          [{ text }],
+          duration ?? Math.max(0.2, text.length * 0.012),
           position
         );
       };
@@ -230,44 +322,13 @@ export default function InstallationProcess() {
         timeline.to(rowEl, { backgroundColor: "rgba(255,255,255,0)", duration: 0.3, ease: "power2.out" }, ">-0.02");
       };
 
-      const escHtml = (s) =>
-        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
       const typeColoredLine = (timeline, lineEl, tokens, position) => {
-        if (!lineEl) return;
-        const fullText = tokens.map((t) => t.text).join("");
-        if (!fullText) {
-          timeline.set(lineEl, { innerHTML: "", opacity: 1 }, position);
-          return;
-        }
-        let cumulative = 0;
-        const ranges = tokens.map((t) => {
-          const start = cumulative;
-          cumulative += t.text.length;
-          return { color: t.color, text: t.text, start };
-        });
-        const state = { count: 0 };
-        const duration = Math.max(0.25, fullText.length * 0.014);
-
-        timeline.set(lineEl, { innerHTML: "", opacity: 1 }, position);
-        timeline.to(
-          state,
-          {
-            count: fullText.length,
-            duration,
-            ease: "none",
-            snap: { count: 1 },
-            onUpdate: () => {
-              const n = Math.round(state.count);
-              let html = "";
-              for (const tok of ranges) {
-                if (tok.start >= n) break;
-                const slice = escHtml(tok.text.slice(0, n - tok.start));
-                html += `<span style="color:${tok.color}">${slice}</span>`;
-              }
-              lineEl.innerHTML = html;
-            },
-          },
+        const length = tokens.reduce((sum, token) => sum + token.text.length, 0);
+        scrambleWrite(
+          timeline,
+          lineEl,
+          tokens,
+          Math.max(0.25, length * 0.014),
           position
         );
       };

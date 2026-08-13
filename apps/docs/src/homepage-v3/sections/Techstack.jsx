@@ -29,7 +29,7 @@ export default function Techstack() {
             }
         })
         tl.to(".strip-1", {
-            yPercent: 10,
+            yPercent: 15,
             ease: "none"
         })
         tl.to(".strip-2", {
@@ -53,7 +53,7 @@ export default function Techstack() {
                     </MaskTextReveal>
                 </div>
                 <div className="flex items-start max-md:justify-center max-sm:items-start gap-0">
-                    <div className="flex flex-col max-sm:flex- w-[19vw] max-md:w-[40%] max-sm:w-[50%] strip-1">
+                    <div className="flex flex-col bg-background z-2 relative max-sm:flex- w-[19vw] max-md:w-[40%] max-sm:w-[50%] strip-1 translate-y-[5%]">
                         <StatCard
                             label="Effects"
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"
@@ -84,7 +84,7 @@ export default function Techstack() {
                             <ThreeMark className={"size-[5vw] max-md:size-[8vw] max-sm:size-[11vw]"} />
                         </StatCard>
                     </div>
-                    <div className="translate-y-[20%] max-md:w-[40%] flex flex-col max-md:mt-8  w-[19vw] strip-2 max-sm:w-[50%]">
+                    <div className="translate-y-[20%] max-md:w-[40%] flex flex-col max-md:mt-8  w-[19vw] strip-2  z-4 relative bg-background translate-x-[-.3%] max-sm:w-[50%]">
                         <StatCard
                             label="Free"
                             className="min-h-[24vw] max-md:min-h-[42vw] max-sm:min-h-[56vw]"

@@ -1,19 +1,44 @@
 "use client";
 import { HyperiuxLogo } from "@/utils/Icons";
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import ButtonV3 from "./ButtonV3";
 import HoverLinkV3 from "./HoverLinkV3";
 import { PlusIcon } from "lucide-react";
 import { useLenis } from "lenis/react";
 import { GlobalSearch } from "@/components/layout/SearchBar";
+import { useLoaderV3Complete } from "./loader-v3-state";
 
-export default function NavbarV3({ effects = [] }) {
+// The loader announces itself as its field *starts* bursting apart, so the bar
+// has to wait that out — otherwise it slides in behind a panel that is still
+// opaque. It also sits behind the hero's ASCII field arriving, which is the
+// beat before this one: field, then bar, then hero copy. Kept a little ahead of
+// Hero's own AT_HEADING so the 500ms slide has landed before the copy moves.
+const INTRO_DELAY_MS = 1200;
+
+/**
+ * @param {boolean} introOnLoader — hold the bar off-screen until the loader has
+ *   cleared, then drop it in ahead of the hero copy. Only the v3 homepage mounts
+ *   a loader; everywhere else the bar is in place from the first paint.
+ */
+export default function NavbarV3({ effects = [], introOnLoader = false }) {
   const navRef = useRef(null);
   const [reveal, setReveal] = useState(true);
+  const [introReady, setIntroReady] = useState(!introOnLoader);
   const [openTrigger, setOpenTrigger] = useState(0);
   const openSearch = useCallback(() => {
     setOpenTrigger((value) => value + 1);
   }, []);
+
+  // Ignored unless this page opted in, so the bar never waits on a loader that
+  // isn't there.
+  const loaderComplete = useLoaderV3Complete();
+
+  useEffect(() => {
+    if (introReady || !loaderComplete) return;
+
+    const timer = window.setTimeout(() => setIntroReady(true), INTRO_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [introReady, loaderComplete]);
 
   useLenis(({ scroll, velocity }) => {
     if (scroll < 100) {
@@ -31,7 +56,7 @@ export default function NavbarV3({ effects = [] }) {
     <>
       <nav
         ref={navRef}
-        className={`py-[2vw] flex max-md:hidden items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-transform duration-500 ease-out ${reveal ? "translate-y-0" : "translate-y-[-120%]"}`}
+        className={`py-[2vw] flex max-md:hidden items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-transform duration-500 ease-out motion-reduce:transition-none ${reveal && introReady ? "translate-y-0" : "translate-y-[-120%]"}`}
         style={{ willChange: "transform" }}
       >
         <div className="w-[10vw]  h-auto ">

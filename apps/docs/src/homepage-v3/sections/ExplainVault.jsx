@@ -9,7 +9,7 @@ const SOLUTION_TEXT = 'Scroll systems, cursor effects, text reveals, page transi
 export default function ExplainVault() {
     useFadeUp()
     return (
-        <section id='explain-vault' className='w-full h-fit'>
+        <section id='explain-vault' className='w-full mt-[-8vw] h-fit'>
 
             {/* <TextFillAnimationV3
                 as="p"
@@ -35,7 +35,7 @@ export default function ExplainVault() {
                 dimColor="#272727"
                 pixelSize={3}
                 direction='up'
-                stagger={20}
+                stagger={40}
                 bandFraction={0.65}
                 settleBlend={0.45}
                 className="text-[8vw] leading-[1.18] sm:text-[5vw] md:text-[3.25vw]"
@@ -48,7 +48,7 @@ export default function ExplainVault() {
                 <div className='flex w-full justify-center max-md:justify-center mt-[2vw] max-md:mt-0'>
                     <div className="text18 fadeup max-md:text-center text-light-grey font-geist-mono ">
                         <span className="inline-block">That&apos;s the whole workflow. The files land in your project. You change anything you want.&nbsp;</span>
-                        <LinkButton className='max-md:mt-[2vw]' href={"#Workflow"} shimmer tilted={false} showArrow text={"See How it Works"} />
+                        <LinkButton underline={false} className='max-md:mt-[2vw]' href={"#Workflow"} shimmer tilted={false} showArrow text={"See How it Works"} />
                     </div>
                 </div>
             </div>

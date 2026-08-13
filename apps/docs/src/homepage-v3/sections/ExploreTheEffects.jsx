@@ -62,13 +62,7 @@ const COLUMNS = [
     ],
 ];
 
-const COLUMN_OFFSET = [
-    "",
-    "mt-[7vw] max-md:mt-[5vw] max-sm:mt-0",
-    "mt-[5vw] max-md:mt-0",
-];
-
-const PARALLAX_SPEED = [0.2, -0.03, 0.15];
+const PARALLAX_SPEED = [0.05, -0.2, 0.05];
 
 export default function ExploreTheEffects() {
     const container = useRef(null);
@@ -81,13 +75,16 @@ export default function ExploreTheEffects() {
                 const columns = gsap.utils.toArray(".explore-effects-column");
 
                 columns.forEach((column, index) => {
-                    const distance = window.innerWidth * PARALLAX_SPEED[index];
+                    const speed = PARALLAX_SPEED[index] ?? 0;
+                    if (!speed) return;
+
+                    const distance = () => window.innerWidth * speed;
 
                     gsap.fromTo(
                         column,
-                        { y: () => -distance / 2 },
+                        { y: () => -distance() / 2 },
                         {
-                            y: () => distance / 2,
+                            y: () => distance() / 2,
                             ease: "none",
                             scrollTrigger: {
                                 trigger: container.current,
@@ -127,7 +124,7 @@ export default function ExploreTheEffects() {
                 {COLUMNS.map((column, columnIndex) => (
                     <div
                         key={columnIndex}
-                        className={`explore-effects-column flex flex-1 flex-col gap-[3vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10 ${COLUMN_OFFSET[columnIndex]}`}
+                        className="explore-effects-column flex flex-1 flex-col gap-[3vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10"
                     >
                         {column.map((effect, effectIndex) => (
                             <EffectBox

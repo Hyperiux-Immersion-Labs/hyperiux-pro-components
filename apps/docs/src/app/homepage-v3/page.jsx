@@ -213,7 +213,7 @@ export default async function page() {
     <>
       <FAQJSONLD faqs={faqItems} />
       <LoaderV3 />
-      <NavbarV3 effects={effects} />
+      <NavbarV3 effects={effects} introOnLoader />
       <LenisSmoothScroll />
       <div className="relative">
         <div className="sticky top-0 z-0 h-dvh overflow-hidden">
@@ -236,7 +236,7 @@ export default async function page() {
           <DitherTransition
             dotColor="#050505"
             accentColor="#eaeaea"
-            className="h-[75vw] max-md:h-[150vw]! bg-foreground"
+            className="h-[75vw] max-md:h-[150vw]! mt-[-10vw] bg-foreground"
           />
           <FAQV3 faqItems={faqItems} />
           <CTAV3 />

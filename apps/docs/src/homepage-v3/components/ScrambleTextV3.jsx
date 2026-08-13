@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, memo, useEffect, useRef } from "react";
 
 const SCRAMBLE_GLYPHS = "$#&*@!_-./|<>0123456789";
 const PRE_HOLD_MS = 60;
@@ -8,6 +8,8 @@ const REVEAL_DURATION_MS = 700;
 const SCRAMBLE_TAIL = 10;
 const FLASH_MS = 90;
 const GLYPH_SWAP_MS = 40;
+const COLOR_MS = 200;
+const FADE_OUT_MS = 450;
 
 const randomGlyph = () =>
   SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
@@ -18,46 +20,60 @@ const randomGlyph = () =>
 // to its final letter. Characters render inline inside per-word boxes (instead
 // of ButtonV3's absolute overlay) so the text can still wrap between words —
 // widths hold steady because this renders in a monospace face.
-export default function ScrambleTextV3({
-  text,
-  active,
-  armed = false,
-  className = "",
-}) {
+function ScrambleTextV3({ text, active, armed = false, className = "" }) {
   const charsRef = useRef([]);
+  const wasActiveRef = useRef(false);
 
   useEffect(() => {
     const letters = Array.from(text).filter((character) => character !== " ");
     const chars = charsRef.current.slice(0, letters.length).filter(Boolean);
     if (!chars.length) return;
 
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    // Opacity is driven per character, so its transition lives inline rather
+    // than in a class: the write head needs each glyph to land on its own
+    // frame, while a line that goes inactive fades out over `FADE_OUT_MS`.
+    const transition = (opacityMs) =>
+      prefersReducedMotion
+        ? "none"
+        : `color ${COLOR_MS}ms ease-out, opacity ${opacityMs}ms ease-out`;
+
     const settle = () => {
       chars.forEach((node, index) => {
         node.textContent = letters[index];
+        node.style.transition = transition(0);
         node.style.color = "";
         node.style.opacity = "";
       });
     };
 
-    const clear = () => {
+    const clear = (opacityMs = 0) => {
       chars.forEach((node, index) => {
         node.textContent = letters[index];
+        node.style.transition = transition(opacityMs);
         node.style.color = "";
         node.style.opacity = "0";
       });
     };
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
     if (!active) {
       // Blank only once the section's timeline is live, so the copy stays
       // readable if the scroll animation never mounts.
-      if (armed) clear();
-      else settle();
+      if (!armed) settle();
+      // A line that was already revealed is being scrolled back past, so it
+      // fades out instead of snapping to blank in a single frame. Arming the
+      // section for the first time still blanks instantly.
+      else clear(wasActiveRef.current ? FADE_OUT_MS : 0);
+
+      wasActiveRef.current = false;
+
       return;
     }
+
+    wasActiveRef.current = true;
 
     if (prefersReducedMotion) {
       settle();
@@ -151,7 +167,7 @@ export default function ScrambleTextV3({
                     ref={(node) => {
                       charsRef.current[index] = node;
                     }}
-                    className="inline-block transition-colors duration-200 ease-out motion-reduce:transition-none"
+                    className="inline-block"
                   >
                     {character}
                   </span>
@@ -165,3 +181,7 @@ export default function ScrambleTextV3({
     </span>
   );
 }
+
+// A scrubbed timeline flips one row's `active` at a time; without this the
+// state change reconciles every character span in every row mid-scroll.
+export default memo(ScrambleTextV3);

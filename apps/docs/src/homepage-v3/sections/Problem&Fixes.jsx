@@ -12,6 +12,10 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin)
 }
 
+// Timeline seconds between two cards sliding up. Also the duration of each
+// card's y tween, so consecutive steps meet without overlapping.
+const STEP = 0.8
+
 const cards = [
   {
     title: 'Timing',
@@ -137,12 +141,16 @@ export default function ProblemFixes() {
         tl.to(xIcons[0], { autoAlpha: 1, duration: 0.05 }, 0)
 
         for (let i = 1; i < total; i++) {
-          const t = i * 0.8
+          const t = i * STEP
 
           for (let j = i; j < total; j++) {
+            // Each card gets one y tween per step, so the tweens must abut
+            // rather than overlap: a timeline renders children in reverse order
+            // when scrubbed backwards, which would hand the overlap to the
+            // previous tween and snap the card by a fraction of a row.
             tl.to(
               cardEls[j],
-              { y: -(j - i) * rowHeight, duration: 1, ease: 'power1.out' },
+              { y: -(j - i) * rowHeight, duration: STEP, ease: 'power1.out' },
               t,
             )
           }
@@ -193,7 +201,7 @@ export default function ProblemFixes() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-200 w-full overflow-hidden px-[3vw] pb-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
+      className="relative z-200 mt-[-4vw] w-full overflow-hidden px-[3vw] pb-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
     >
       <div className="mx-auto relative z-200 flex w-full flex-col items-center">
         <div className="w-full text-center">

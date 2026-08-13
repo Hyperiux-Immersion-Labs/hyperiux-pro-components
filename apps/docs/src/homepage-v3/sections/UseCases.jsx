@@ -13,7 +13,7 @@ if (typeof window !== "undefined") {
 
 
 
-const USE_CASES_X_PERCENT = [120, 140, 160, 180, 200];
+const USE_CASES_X_PERCENT = [110, 110, 110, 110, 110];
 
 const mark =
   "pointer-events-none absolute size-[0.3vw] border-primary max-md:prim max-md:size-2 max-sm:size-1";
@@ -71,7 +71,7 @@ export default function UseCases({ useCases }) {
             ease: "power1.out",
             scrollTrigger: {
               trigger: box,
-              start: "top 100%",
+              start: "top 115%",
               end: "top 35%",
               scrub: true,
               markers: false,

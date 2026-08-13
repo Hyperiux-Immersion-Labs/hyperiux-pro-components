@@ -189,9 +189,9 @@ export default function PricingV3() {
             </div>
 
             {/* CARDS */}
-            <div className="mt-[1.5vw] w-[85%] mx-auto flex items-stretch max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]">
+            <div className="mt-[1.5vw] w-[85%] fadeup mx-auto flex items-stretch max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]">
                 {/* FREE */}
-                <div className="pricing-v3-card flex w-1/2 flex-col justify-between border border-background/15 px-[3vw] py-[3vw] max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
+                <div className="pricing-v3-card  flex w-1/2 flex-col justify-between border border-background/15 px-[3vw] py-[3vw] max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
                     <div>
                         <p className="t64  max-md:text-[5vw] font-neue-haas max-sm:text-[7vw]">Free</p>
 
