@@ -48,19 +48,19 @@ export default function ForDevelopers() {
             <section
             id='for-developers'
                 ref={accordionRef}
-                className="h-[300vh] mt-[-20vh] max-md:mt-0 w-full relative"
+                className="h-[300vh] mt-[-20vh] max-[1025px]:mt-0 w-full relative"
             >
-                <div className="h-screen w-full  self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-md:flex-col">
+                <div className="h-screen w-full  self-padd py-[2vw]! text-foreground sticky top-0 flex justify-between items-start max-[1025px]:flex-col">
                     <MaskTextReveal stagger={0.08} scrub={false} duration={2}>
                         <h2
                             ref={headingRef}
-                            className="w-[33vw] font-medium text64 h-fit max-md:pt-22 max-sm:pt-[5vw] max-md:w-full tracking-tight max-sm:leading-tight! leading-[1.1]"
+                            className="w-[33vw] font-medium text64 h-fit max-[1025px]:pt-22 max-md:pt-[5vw] max-[1025px]:w-full tracking-tight max-md:leading-tight! leading-[1.1]"
                         >
                             For Developers, Founders, Agencies, and Teams That
                             Need the Site to Feel as Premium as the Product.
                         </h2>
                     </MaskTextReveal>
-                    <div className="relative w-[55vw] flex flex-col gap-[1vw] max-md:w-full max-md:gap-[2vw] max-md:mt-[4vw] max-sm:gap-[5vw] max-sm:mt-[5vw]">
+                    <div className="relative w-[55vw] flex flex-col gap-[1vw] max-[1025px]:w-full max-[1025px]:gap-[2vw] max-[1025px]:mt-[4vw] max-md:gap-[5vw] max-md:mt-[5vw]">
                         {groups.map((group, idx) => (
                             <DeveloperCard
                                 key={idx}
@@ -72,12 +72,12 @@ export default function ForDevelopers() {
                 </div>
                 <section
                     ref={stripContainerRef}
-                    className="h-[200vh] max-sm:mt-[120vh] max-md:mt-[50vh] flex items-center justify-between w-full  bg-transparent pointer-events-none relative z-3"
+                    className="h-[200vh] max-md:mt-[120vh] max-[1025px]:mt-[50vh] flex items-center justify-between w-full  bg-transparent pointer-events-none relative z-3"
                 >
                     {[...Array(5)].map((_, i) => (
                         <div
                             key={i}
-                            className={`w-1/5 strip h-full max-sm:w-1/4 ${i === 4 ? 'max-sm:hidden ' : ''}`}
+                            className={`w-1/5 strip h-full max-md:w-1/4 ${i === 4 ? 'max-md:hidden ' : ''}`}
                             style={{ background: STRIP_GRADIENT }}
                         ></div>
                     ))}

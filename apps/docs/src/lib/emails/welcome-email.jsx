@@ -136,7 +136,7 @@ export function WelcomeEmail() {
                           background={`${baseUrl}/emails/button-gradient.png`}
                           style={{
                             borderRadius: "9999px",
-                            backgroundImage: "linear-gradient(135deg, #F0690C, #E61915)",
+                            backgroundImage: "linear-gradient(135deg, #FF8400, #FF4100)",
                             backgroundSize: "cover",
                           }}
                         >

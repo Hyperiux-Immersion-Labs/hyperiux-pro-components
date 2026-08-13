@@ -26,19 +26,65 @@
   "registryDependencies": [],
   "previewUrl": "/demo/helix-slider",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "HelixSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/helix-slider",
   "target": "src/components/effects/helix-slider",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/helix-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/helix-slider/index.tsx"
     },
     {
-      "path": "HelixSliderComp.jsx",
-      "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
+      "path": "HelixSliderComp.tsx",
+      "target": "src/components/effects/helix-slider/HelixSliderComp.tsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "snakeAmplitude",
+      "type": "number",
+      "default": 340,
+      "description": "Width of the S-curve the helix swings across horizontally.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 0, "max": 700, "step": 5 }
+    },
+    {
+      "name": "depthAmplitude",
+      "type": "number",
+      "default": 200,
+      "description": "Front-to-back depth of the helix.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 0, "max": 500, "step": 5 }
+    },
+    {
+      "name": "perspective",
+      "type": "number",
+      "default": 1900,
+      "description": "3D perspective depth on the scene.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 400, "max": 3000, "step": 50 }
+    },
+    {
+      "name": "scaleMin",
+      "type": "number",
+      "default": 0.72,
+      "description": "How small distant cards shrink to.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 0.2, "max": 1, "step": 0.02 }
+    },
+    {
+      "name": "maxYRotation",
+      "type": "number",
+      "default": 0,
+      "description": "Max card tilt (degrees) around the vertical axis as it moves along the helix — 0 disables the tilt entirely.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "groupCollapsible": false, "min": 0, "max": 90, "step": 1 }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  }
 }

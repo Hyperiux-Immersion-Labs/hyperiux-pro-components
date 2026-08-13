@@ -2,7 +2,14 @@ import fs from "fs";
 import path from "path";
 import { getEffectSlugAliases } from "./effect-slugs";
 
-const PUBLIC_REGISTRY_PATH = path.join(process.cwd(), "public/r");
+const PUBLIC_REGISTRY_CANDIDATES = [
+  path.join(process.cwd(), "public/r"),
+  path.join(process.cwd(), "apps/docs/public/r"),
+];
+
+const PUBLIC_REGISTRY_PATH =
+  PUBLIC_REGISTRY_CANDIDATES.find((candidate) => fs.existsSync(candidate)) ??
+  PUBLIC_REGISTRY_CANDIDATES[0];
 
 const PRIVATE_REGISTRY_CANDIDATES = [
   path.join(process.cwd(), "registry/effects"),           // Vercel: cwd = repo root
@@ -140,7 +147,9 @@ function attachPrivateFileContent(effect, effectDir) {
           .readdirSync(effectDir)
           .filter(
             (f) =>
-              (f.endsWith(".jsx") ||
+              (f.endsWith(".tsx") ||
+                f.endsWith(".ts") ||
+                f.endsWith(".jsx") ||
                 f.endsWith(".js") ||
                 f.endsWith(".css")) &&
               f !== "registry.json"
@@ -335,8 +344,12 @@ export function getEffectCode(slug) {
   }
 
   const primary =
+    effect.files.find((file) => file.path === `${slug}.tsx`) ||
+    effect.files.find((file) => file.path === `${slug}.ts`) ||
     effect.files.find((file) => file.path === `${slug}.jsx`) ||
     effect.files.find((file) => file.path === `${slug}.js`) ||
+    effect.files.find((file) => file.path.endsWith(".tsx")) ||
+    effect.files.find((file) => file.path.endsWith(".ts")) ||
     effect.files.find((file) => file.path.endsWith(".jsx")) ||
     effect.files.find((file) => file.path.endsWith(".js")) ||
     effect.files[0];

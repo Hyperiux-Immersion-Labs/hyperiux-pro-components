@@ -2,9 +2,9 @@
   "name": "@hyperiux/parallax-image-animation",
   "version": "1.1.0",
   "description": "Image with smooth parallax scrolling effect using GSAP ScrollTrigger",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
+    "index.tsx",
     "registry.json"
   ],
   "keywords": [

@@ -2,9 +2,9 @@
   "name": "@hyperiux/dot-fill-button",
   "version": "1.1.0",
   "description": "Button with expanding dot that fills the background on hover with character stagger",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
+    "index.tsx",
     "registry.json"
   ],
   "keywords": [

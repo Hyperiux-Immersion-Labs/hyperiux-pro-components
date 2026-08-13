@@ -7,10 +7,19 @@ import { useUser, useClerk } from "@clerk/nextjs";
 
 export default function ProfileDropdown({
   savedCount = 0,
+  usage = null,
   plan = "free",
 }) {
   const { user } = useUser();
   const { signOut } = useClerk();
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+
+  const usageLabel = !usage
+    ? "…"
+    : usage.isAdmin
+      ? "Unlimited"
+      : `${usage.count ?? 0}/${usage.limit ?? 0}`;
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -92,7 +101,18 @@ export default function ProfileDropdown({
               </span>
             </Link>
 
-           
+            {!isAdmin && (
+              <Link
+                href="/dashboard/usage"
+                className="flex items-center justify-between px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+              >
+                <span>Usage</span>
+
+                <span className="text-white/50">
+                  {usageLabel}
+                </span>
+              </Link>
+            )}
 
             <Link
               href="/dashboard/settings"

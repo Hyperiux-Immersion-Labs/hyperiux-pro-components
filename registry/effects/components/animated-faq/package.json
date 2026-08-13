@@ -1,10 +1,11 @@
 {
   "name": "@hyperiux/animated-faq",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
+    "index.tsx",
+    "AnimatedFaqComp.tsx",
     "registry.json"
   ],
   "keywords": [

@@ -26,16 +26,104 @@
       "breaking": false
     }
   ],
-  "files": [
+  "props": [
     {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "src/components/effects/helix-slider/index.jsx"
+      "name": "snakeAmplitude",
+      "type": "number",
+      "default": 340,
+      "description": "Width of the S-curve the helix swings across horizontally.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "groupCollapsible": false,
+        "min": 0,
+        "max": 700,
+        "step": 5
+      }
     },
     {
-      "path": "HelixSliderComp.jsx",
+      "name": "depthAmplitude",
+      "type": "number",
+      "default": 200,
+      "description": "Front-to-back depth of the helix.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "groupCollapsible": false,
+        "min": 0,
+        "max": 500,
+        "step": 5
+      }
+    },
+    {
+      "name": "perspective",
+      "type": "number",
+      "default": 1900,
+      "description": "3D perspective depth on the scene.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "groupCollapsible": false,
+        "min": 400,
+        "max": 3000,
+        "step": 50
+      }
+    },
+    {
+      "name": "scaleMin",
+      "type": "number",
+      "default": 0.72,
+      "description": "How small distant cards shrink to.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "groupCollapsible": false,
+        "min": 0.2,
+        "max": 1,
+        "step": 0.02
+      }
+    },
+    {
+      "name": "maxYRotation",
+      "type": "number",
+      "default": 0,
+      "description": "Max card tilt (degrees) around the vertical axis as it moves along the helix — 0 disables the tilt entirely.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "groupCollapsible": false,
+        "min": 0,
+        "max": 90,
+        "step": 1
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/helix-slider/HelixSliderComp.jsx"
+      "target": "src/components/effects/helix-slider/index.tsx"
+    },
+    {
+      "path": "HelixSliderComp.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/helix-slider/HelixSliderComp.tsx"
     }
   ]
 }

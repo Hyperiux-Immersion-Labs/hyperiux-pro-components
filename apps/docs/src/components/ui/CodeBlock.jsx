@@ -1,7 +1,7 @@
 "use client";
 
 import "highlight.js/styles/night-owl.css";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 // lib/core + explicit registrations instead of the full "highlight.js" build,
 // which bundles all 150+ grammars (~300KB of Mathematica/ISBL/GML/... nobody
 // renders). Every language= value used across the site maps to one of these.
@@ -17,6 +17,7 @@ import glsl from "highlight.js/lib/languages/glsl";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import CopyBtn from "@/components/ui/CopyBtn";
+import { Tooltip } from "@/components/ui/Tooltip";
 
 hljs.registerLanguage("javascript", javascript); // aliases: js, jsx
 hljs.registerLanguage("typescript", typescript); // aliases: ts, tsx
@@ -42,9 +43,11 @@ function CopyLimitOverlay({ message, ctaHref }) {
     return (
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white/10 px-6 py-6 text-center backdrop-blur-md">
             <Lock className="h-8 w-8 text-white/70" strokeWidth={1.5} />
-            <p className="max-w-xs text-sm font-medium text-white">{message}</p>
+            <p className="max-w-2xl text-sm font-medium text-white">{message}</p>
             {ctaHref && (
                 <Link
+              id={"upgrade-to-pro-codeblock"}
+
                     href={ctaHref}
                     className="rounded-full bg-[#ff5f00] px-4 py-2 text-xs font-medium text-white! transition hover:bg-[#e05500]"
                 >
@@ -64,9 +67,10 @@ export function CodeBlock({
     copyLocked = false,
     selectable = true,
     onBeforeCopy,
-    lockedMessage = "You have crossed your copy limit for the day.",
+    lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
     lockedCtaHref = null,
 }) {
+    const [copied, setCopied] = useState(false);
     const displayCode = copyLocked ? LOCKED_CODE_SAMPLE : code || "";
 
     const highlighted = useMemo(() => {
@@ -83,48 +87,66 @@ export function CodeBlock({
 
     const shouldShowHeader = !hideHeaderWhenNoFilename || Boolean(filename);
 
+    // Copy button clicks aren't the only way code leaves this block - a
+    // manual select + Cmd/Ctrl-C never touches CopyBtn, so the native
+    // `copy` event is the only hook that sees it. Once copyLocked, the DOM
+    // already only contains LOCKED_CODE_SAMPLE, so there's nothing left to
+    // gate here - just record usage for the real-code case.
+    function handleNativeCopy() {
+        if (copyLocked) return;
+        onBeforeCopy?.();
+    }
+
     return (
         <div className={`relative overflow-hidden rounded-md fadeup codeblock-root ${className}`}>
             {copyLocked && <CopyLimitOverlay message={lockedMessage} ctaHref={lockedCtaHref} />}
             <div
                 className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
                     shouldShowHeader
-                        ? "max-sm:max-h-[50vh] max-md:max-h-[50vh] max-sm:min-h-[12vh]"
-                        : "max-sm:h-[8vh] max-sm:pt-[3vh] max-md:h-[5.5vh]"
+                        ? "max-md:max-h-[50vh] max-[1025px]:max-h-[50vh] max-md:min-h-[12vh]"
+                        : "max-md:h-[8vh] max-md:pt-[3vh] max-[1025px]:h-[5.5vh]"
                 }`}
                 style={{ scrollbarGutter: "stable" }}
             >
                 {shouldShowHeader ? (
                     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
-                        <span className="text-lg text-white max-sm:text-sm">{filename || ""}</span>
-                        <CopyBtn
-                            value={displayCode}
-                            color="white"
-                            className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
-                            aria-label="Copy code to clipboard"
-                            disabled={copyLocked}
-                            onBeforeCopy={onBeforeCopy}
-                        />
+                        <span className="text-lg text-white max-md:text-sm">{filename || ""}</span>
+                        <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
+                            <CopyBtn
+                                value={displayCode}
+                                color="white"
+                                className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
+                                aria-label="Copy code to clipboard"
+                                disabled={copyLocked}
+                                onBeforeCopy={onBeforeCopy}
+                                onCopiedChange={setCopied}
+                            />
+                        </Tooltip>
                     </div>
                 ) : (
-                    <CopyBtn
-                        value={displayCode}
-                        color="white"
-                        className="absolute top-5 right-5 z-10 max-sm:top-3.5 max-sm:right-6"
-                        aria-label="Copy code to clipboard"
-                        disabled={copyLocked}
-                        onBeforeCopy={onBeforeCopy}
-                    />
+                    <span className="absolute top-5 right-5 z-10 max-md:top-3.5 max-md:right-6">
+                        <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
+                            <CopyBtn
+                                value={displayCode}
+                                color="white"
+                                aria-label="Copy code to clipboard"
+                                disabled={copyLocked}
+                                onBeforeCopy={onBeforeCopy}
+                                onCopiedChange={setCopied}
+                            />
+                        </Tooltip>
+                    </span>
                 )}
                 <div className="relative">
                     <pre
-                        className={`overflow-x-auto bg-[#272727]  max-sm:pt-[7vw] tracking-tight! text-sm!  ${
-                            shouldShowHeader ? "max-sm:text-xs max-md:text-sm" : ""
+                        onCopy={handleNativeCopy}
+                        className={`overflow-x-auto bg-[#272727]  max-md:pt-[7vw] tracking-tight! text-sm!  ${
+                            shouldShowHeader ? "max-md:text-xs max-[1025px]:text-sm" : ""
                         } ${!selectable ? "select-none" : ""}`}
                     >
                         {highlighted ? (
                             <code
-                                className={`hljs bg-[#272727]! max-sm:text-xs max-md:text-sm language-${language}`}
+                                className={`hljs bg-[#272727]! max-md:text-xs max-[1025px]:text-sm language-${language}`}
                                 dangerouslySetInnerHTML={{ __html: highlighted }}
                             />
                         ) : (
@@ -142,31 +164,45 @@ export function InstallCommand({
     copyLocked = false,
     selectable = true,
     onBeforeCopy,
-    lockedMessage = "You have crossed your copy limit for the day.",
+    lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
 }) {
+    const [copied, setCopied] = useState(false);
     const command = `npx hyperiux add ${effect}`;
     const displayCommand = copyLocked ? LOCKED_COMMAND_SAMPLE : command;
 
+    function handleNativeCopy() {
+        if (copyLocked) return;
+        onBeforeCopy?.();
+    }
+
     return (
-        <div className="relative flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800 overflow-hidden">
+        <div
+            className={`relative flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800 overflow-hidden ${
+                copyLocked ? "min-h-32.5" : ""
+            }`}
+        >
             {/* No upgrade CTA here by design - only the source-code block gets
                 the "Upgrade to Pro" prompt, not the install command. */}
             {copyLocked && <CopyLimitOverlay message={lockedMessage} ctaHref={null} />}
             <span className="text-green-500">$</span>
             <code
-                className={`flex-1 text-sm text-neutral-300 max-sm:text-lg! max-sm:pt-[7vw] ${!selectable ? "select-none" : ""}`}
+                onCopy={handleNativeCopy}
+                className={`flex-1 text-sm text-neutral-300 max-md:text-lg! max-md:pt-[7vw] ${!selectable ? "select-none" : ""}`}
             >
                 {displayCommand}
             </code>
-            <CopyBtn
-                value={displayCommand}
-                color="white"
-                size="sm"
-                className="rounded bg-white/10 p-2 hover:bg-white/20"
-                aria-label="Copy install command"
-                disabled={copyLocked}
-                onBeforeCopy={onBeforeCopy}
-            />
+            <Tooltip label={copied ? "Copied!" : "Copy command"} position="bottom">
+                <CopyBtn
+                    value={displayCommand}
+                    color="white"
+                    size="sm"
+                    className="rounded bg-white/10 p-2 hover:bg-white/20"
+                    aria-label="Copy install command"
+                    disabled={copyLocked}
+                    onBeforeCopy={onBeforeCopy}
+                    onCopiedChange={setCopied}
+                />
+            </Tooltip>
         </div>
     );
 }

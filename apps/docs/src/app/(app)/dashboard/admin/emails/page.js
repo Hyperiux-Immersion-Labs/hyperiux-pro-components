@@ -8,16 +8,17 @@ import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 const EMAIL_TYPES = [
   "all",
   "welcome",
-  "waitlist_invite",
-  "pro_onboarding",
-  "subscription_invoice",
-  "subscription_renewal",
-  "subscription_cancelled",
-  "payment_failed",
-  "custom_animation_request",
-  "verification_code",
   "reset_password_code",
   "password_changed",
+  "password_reset_otp",
+  "pro_unlocked",
+  "waitlist_invite",
+  "subscription_invoice",
+  "custom_animation_request",
+  "custom_animation_request_confirmation",
+  "work_with_hyperiux",
+  "work_with_hyperiux_confirmation",
+  "verification_code",
   "password_removed",
   "primary_email_address_changed",
   "account_locked",
@@ -79,16 +80,17 @@ function InvitationStatusBadge({ invitationStatus }) {
 function TypeLabel({ type }) {
   const labels = {
     welcome: "Welcome",
-    waitlist_invite: "Waitlist Invite",
-    pro_onboarding: "Pro Onboarding",
-    subscription_invoice: "Invoice",
-    subscription_renewal: "Renewal",
-    subscription_cancelled: "Cancelled",
-    payment_failed: "Payment Failed",
-    custom_animation_request: "Animation Request",
-    verification_code: "Verification Code",
     reset_password_code: "Reset Password Code",
     password_changed: "Password Changed",
+    password_reset_otp: "Password Reset OTP",
+    pro_unlocked: "Pro Unlocked",
+    waitlist_invite: "Waitlist Invite",
+    subscription_invoice: "Invoice",
+    custom_animation_request: "Animation Request",
+    custom_animation_request_confirmation: "Animation Request Confirmation",
+    work_with_hyperiux: "Work Enquiry",
+    work_with_hyperiux_confirmation: "Work Enquiry Confirmation",
+    verification_code: "Verification Code",
     password_removed: "Password Removed",
     primary_email_address_changed: "Primary Email Changed",
     account_locked: "Account Locked",
@@ -147,7 +149,7 @@ function EmailPreviewModal({ emailId, onClose }) {
           type="button"
           aria-label="Close"
           onClick={onClose}
-          className="max-md:hidden group absolute right-5 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+          className="max-[1025px]:hidden group absolute right-5 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
         >
           <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
             <span className="h-px w-4 rotate-45 bg-white" />
@@ -156,7 +158,7 @@ function EmailPreviewModal({ emailId, onClose }) {
         </button>
 
         {/* Header */}
-        <div className="flex items-start h-[5vw] max-sm:h-[20vw] justify-between gap-4 px-6 py-4 pr-16 border-b border-white/10">
+        <div className="flex items-start h-[5vw] max-md:h-[20vw] justify-between gap-4 px-6 py-4 pr-16 border-b border-white/10">
           <div className="min-w-0">
             {loading ? (
               <div className="h-4 w-48 rounded bg-white/10 animate-pulse" />
@@ -259,7 +261,7 @@ export default function AdminEmailsPage() {
                 className="flex items-center gap-1.5 text-sm text-white/50 hover:text-white transition"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
-                Users
+                User Management
               </Link>
             </div>
             <h1 className="text-2xl font-semibold">Email Log</h1>

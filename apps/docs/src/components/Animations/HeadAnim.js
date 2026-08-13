@@ -2,7 +2,7 @@
 
 import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
-import { SplitText } from "gsap/SplitText";
+import { SplitText } from "gsap/dist/SplitText";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { shouldSkipSidebarDocsAnimation } from "@/lib/sidebar-navigation";
 import { prefersReducedMotion } from "@/lib/motion";

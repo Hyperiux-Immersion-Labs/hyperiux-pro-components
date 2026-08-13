@@ -25,26 +25,120 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "friction",
+      "type": "number",
+      "default": 0.12,
+      "description": "Inertia friction after drag release.",
+      "suggested": true
+    },
+    {
+      "name": "scaleOnDrag",
+      "type": "number",
+      "default": 1.04,
+      "description": "Scale applied while dragging.",
+      "suggested": true
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#000000",
+      "description": "Canvas background color.",
+      "suggested": true
+    },
+    {
+      "name": "canvasBorderColor",
+      "type": "string",
+      "default": "#71717a",
+      "description": "Border color for each draggable canvas window.",
+      "suggested": true
+    },
+    {
+      "name": "rounded",
+      "type": "number",
+      "default": 0,
+      "description": "Corner radius for each draggable canvas window.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "friction",
+        "label": "Friction",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 10,
+        "step": 0.1
+      },
+      {
+        "name": "scaleOnDrag",
+        "label": "Scale On Drag",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0.85,
+        "max": 1.5,
+        "step": 0.01
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "canvasBorderColor",
+        "label": "Canvas Border Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "rounded",
+        "label": "Rounded",
+        "type": "range",
+        "group": "style",
+        "copyable": true,
+        "min": 0,
+        "max": 80,
+        "step": 1
+      }
+    ]
+  },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/draggable-canvas/index.jsx"
+      "target": "src/components/effects/draggable-canvas/index.tsx"
     },
     {
-      "path": "DragCursor.jsx",
+      "path": "DragCursor.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/draggable-canvas/DragCursor.jsx"
+      "target": "src/components/effects/draggable-canvas/DragCursor.tsx"
     },
     {
-      "path": "MaskedContainer.jsx",
+      "path": "MaskedContainer.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/draggable-canvas/MaskedContainer.jsx"
+      "target": "src/components/effects/draggable-canvas/MaskedContainer.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
+      "path": "createSuspendedRaf.ts",
       "type": "registry:component",
-      "target": "src/components/effects/draggable-canvas/createSuspendedRaf.js"
+      "target": "src/components/effects/draggable-canvas/createSuspendedRaf.ts"
     }
   ]
 }

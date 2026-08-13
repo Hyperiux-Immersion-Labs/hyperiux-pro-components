@@ -238,7 +238,7 @@ async function buildRegistry() {
       // Find component files (JS/JSX and CSS)
       const discoveredFiles = fs
         .readdirSync(effectPath)
-        .filter((f) => f.endsWith(".jsx") || f.endsWith(".js") || f.endsWith(".css"))
+        .filter((f) => f.endsWith(".tsx") || f.endsWith(".ts") || f.endsWith(".jsx") || f.endsWith(".js") || f.endsWith(".css"))
         .filter((f) => f !== "registry.json");
       const registryFileEntries = Array.isArray(registryJson.files)
         ? registryJson.files.filter((file) => file.type !== "registry:asset")
@@ -276,11 +276,11 @@ async function buildRegistry() {
         const score = (entry) => {
           if (registryJson.main && entry.path === registryJson.main) return -100;
           if (registryJson.entry && entry.path === registryJson.entry) return -100;
-          if (entry.path === `${entryBase}.jsx` || entry.path === `${entryBase}.js`) return -90;
-          if (entry.path === `${effect}.jsx` || entry.path === `${effect}.js`) return -80;
+          if (entry.path === `${entryBase}.tsx` || entry.path === `${entryBase}.ts` || entry.path === `${entryBase}.jsx` || entry.path === `${entryBase}.js`) return -90;
+          if (entry.path === `${effect}.tsx` || entry.path === `${effect}.ts` || entry.path === `${effect}.jsx` || entry.path === `${effect}.js`) return -80;
           if (entry.path.endsWith(".css")) return 100;
 
-          const baseName = entry.path.replace(/\.(jsx|js|css)$/, "");
+          const baseName = entry.path.replace(/\.(tsx|ts|jsx|js|css)$/, "");
           const nameParts = new Set(entryBase.split("-").filter(Boolean));
           const overlap = baseName
             .split("-")
@@ -365,6 +365,10 @@ async function buildRegistry() {
         tier,
         version: registryJson.version || "1.0.0",
         changelog: registryJson.changelog || [],
+        ...(Array.isArray(registryJson.props) && registryJson.props.length
+          ? { props: registryJson.props }
+          : {}),
+        ...(registryJson.remixer ? { remixer: registryJson.remixer } : {}),
         files: publicFiles,
       };
 
@@ -374,8 +378,10 @@ async function buildRegistry() {
       console.log(`  Created ${registryJson.name}.json`);
 
       // category/categories kept for getEffectsByCategory() which drives per-category counts.
-      // All other display fields (title, description, tier, coverImage, videoUrl, addedAt,
-      // previewUrl) are now sourced from Sanity and merged at runtime.
+      // All other display fields (title, description, coverImage, videoUrl, addedAt,
+      // previewUrl) are now sourced from Sanity and merged at runtime. `tier` stays -
+      // the CLI's `list`/install-gating reads it straight off this index and has no
+      // access to Sanity.
       index.items.push({
         name: registryJson.name,
         type: registryJson.type || "registry:component",
@@ -386,6 +392,7 @@ async function buildRegistry() {
         exportName,
         exportKind,
         version: registryJson.version || "1.0.0",
+        tier,
       });
     }
   }

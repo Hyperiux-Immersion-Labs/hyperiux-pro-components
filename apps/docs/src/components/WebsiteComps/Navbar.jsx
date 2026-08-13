@@ -91,7 +91,7 @@ export default function Navbar({ effects = [] }) {
                     opacity: 0,
                     transform: 'translateY(-18px)',
                 }}
-                className="fixed top-(--announcement-offset) transition-[top] duration-300 ease-out left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] max-md:hidden"
+                className="fixed top-(--announcement-offset) transition-[top] duration-300 ease-out left-0 z-999 flex w-full items-center justify-between overflow-visible px-[3.5vw] py-[2vw] max-[1025px]:hidden"
             >
             <Link prefetch={false} href="/" aria-label="Hyperiux Vault home">
                 <HyperiuxLogo className="h-auto w-[13vw] text-primary" />
@@ -111,7 +111,7 @@ export default function Navbar({ effects = [] }) {
                 <button
                     type="button"
                     onClick={openSearch}
-                    className="group flex py-[.8vw] cursor-pointer items-center gap-10 rounded-full  bg-grey! px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-white max-md:hidden max-md:gap-3"
+                    className="group flex py-[.8vw] cursor-pointer items-center gap-10 rounded-full  bg-grey! px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-white max-[1025px]:hidden max-[1025px]:gap-3"
                     aria-label="Search effects"
                 >
                     <div className="flex items-center gap-2">
@@ -128,7 +128,7 @@ export default function Navbar({ effects = [] }) {
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                             />
                         </svg>
-                        <span className="text-sm text-white/70 max-md:hidden">Search</span>
+                        <span className="text-sm text-white/70 max-[1025px]:hidden">Search</span>
                     </div>
 
                     <kbd className="space-x-2 rounded bg-black/80 px-1 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
@@ -137,6 +137,7 @@ export default function Navbar({ effects = [] }) {
                 </button>
 
                     <Button
+                    id={"upgrade-to-pro-navbar"}
                     text="Upgrade to Pro"
                     href="/sign-up"
                     className="border-white/40! bg-[#0E0E0E]!"

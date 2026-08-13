@@ -372,7 +372,7 @@ export const effectCategories = [
     faqs: [
       {
         question: "Which scroll effect should I choose for a product story?",
-        answer: "Use Sticky Content Wrapper when one core claim should stay fixed while proof changes beside it. Use Scroll Stack when each feature needs to become a chapter. Use Stacking Cards when the sequence should accumulate visual weight. Use Horizon Scroll, 3D Portfolio Slider, or Infinite Perspective Slider only when the mobile fallback can become a clean vertical stack or swipe sequence.",
+        answer: "Use Sticky Content Wrapper when one core claim should stay fixed while proof changes beside it. Use Scroll Stack when each feature needs to become a chapter. Use Stacking Cards when the sequence should accumulate visual weight. Use Horizontal Feature Reveal, Parallax Slider, or Infinite Perspective Slider only when the mobile fallback can become a clean vertical stack or swipe sequence.",
       },
       {
         question: "Where do React scroll animations create the most value?",
@@ -753,6 +753,36 @@ const categoriesBySlug = new Map([
 
 export function getEffectCategory(id) {
   return categoriesById.get(id) || null;
+}
+
+// Effects sourced from Sanity carry `categorySlug`, which is Sanity's own
+// slug field and does NOT always match the canonical short `id` used
+// everywhere else (e.g. Sanity's categorySlug is "text-animations" while
+// the site-wide id is "text") - resolve through categorySlug first so
+// callers always get back the canonical id instead of a raw Sanity slug
+// (which would otherwise render as an ugly label like "Scroll-effects").
+export function resolveEffectCategoryId(effect) {
+  if (effect?.categorySlug) {
+    return getEffectCategoryBySlug(effect.categorySlug)?.id || effect.category;
+  }
+
+  return effect?.categories?.[0] || effect?.category;
+}
+
+// Single source of truth for how a category/filter id reads as a chip label -
+// used by the vault listing's category chips + featured/free/pro dropdown,
+// and by the Saved Effects / Usage dashboard tabs so the same id never
+// renders under two different names. Deliberately a plain capitalize rather
+// than each category's full `.name` (e.g. "text" -> "Text", not "Text
+// Animations") to keep filter chips compact.
+export function getQuickCategoryLabel(id) {
+  if (id === "all") return "All";
+  if (id === "free") return "Free";
+  if (id === "pro") return "Pro";
+  if (id === "featured") return "Featured";
+  if (id === "webgl") return "WebGL";
+
+  return id.charAt(0).toUpperCase() + id.slice(1);
 }
 
 export function getEffectCategoryBySlug(slug) {

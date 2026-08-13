@@ -87,7 +87,7 @@ export function VaultToast({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 16, scale: 0.97 }}
           transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-          className={`fixed bottom-6 right-6 z-200 w-80 overflow-hidden rounded-2xl border bg-[#111] shadow-[0_24px_60px_rgba(0,0,0,0.5)] max-sm:bottom-4 max-sm:left-4 max-sm:right-4 max-sm:w-auto ${borderColor}`}
+          className={`fixed bottom-6 right-6 z-200 w-80 overflow-hidden rounded-2xl border bg-[#111] shadow-[0_24px_60px_rgba(0,0,0,0.5)] max-md:bottom-4 max-md:left-4 max-md:right-4 max-md:w-auto ${borderColor}`}
         >
           {/* Progress bar */}
           {duration > 0 && (

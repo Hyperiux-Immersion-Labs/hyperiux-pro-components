@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import Link from "next/link";
 import { createPageMetadata } from "@/lib/seo-metadata";
@@ -15,7 +16,13 @@ export const metadata = createPageMetadata({
 });
 
 async function getExtraFolderNames() {
-  const extrasDir = path.join(process.cwd(), "src/app/(marketing)/extras");
+  const extrasCandidates = [
+    path.join(process.cwd(), "src/app/(marketing)/extras"),
+    path.join(process.cwd(), "apps/docs/src/app/(marketing)/extras"),
+  ];
+  const extrasDir =
+    extrasCandidates.find((candidate) => existsSync(candidate)) ??
+    extrasCandidates[0];
   const entries = await fs.readdir(extrasDir, { withFileTypes: true });
 
   return entries

@@ -25,16 +25,54 @@
       "breaking": false
     }
   ],
-  "files": [
+  "props": [
     {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "src/components/effects/scroll-stack/index.jsx"
+      "name": "sectionBgColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Background color of the section.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
     },
     {
-      "path": "ScrollStackComp.jsx",
+      "name": "cardRadius",
+      "type": "number",
+      "default": 45,
+      "description": "Corner rounding on each card, in px (desktop only — tablet/mobile keep their own responsive radius).",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 100,
+        "step": 1
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "style",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/scroll-stack/ScrollStackComp.jsx"
+      "target": "src/components/effects/scroll-stack/index.tsx"
+    },
+    {
+      "path": "ScrollStackComp.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/scroll-stack/ScrollStackComp.tsx"
     }
   ]
 }

@@ -10,8 +10,26 @@
   "exportName": "AnimatedModal",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.1",
+  "version": "1.2.2",
   "changelog": [
+    {
+      "version": "1.2.2",
+      "date": "2026-07-30",
+      "summary": "Centered the open-modal trigger button in the demo viewport.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.1",
+      "date": "2026-07-30",
+      "summary": "Removed triggerLabel, title, subtitle, sections, and heading-style content props from the public/remixer API. Added working percent-based size, overlay opacity, duration, roundedness, and color controls for the modal effect.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added triggerLabel, title, subtitle, sections, showCloseButton, closeOnBackdrop, and closeOnEsc as public props with a working remixer panel. The originally suggested size/overlayOpacity/duration props don't exist in AnimatedModalContent (the modal has one fixed size and fade timing), so they were replaced with the props the component actually accepts.",
+      "breaking": false
+    },
     {
       "version": "1.1.1",
       "date": "2026-07-23",
@@ -31,21 +49,145 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "showCloseButton",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the close (X) button.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "closeOnBackdrop",
+      "type": "boolean",
+      "default": true,
+      "description": "Closes the modal when the backdrop is clicked.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "closeOnEsc",
+      "type": "boolean",
+      "default": true,
+      "description": "Closes the modal when Escape is pressed.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "default": 72,
+      "description": "Modal content width as a percentage of the viewport, capped at 960px.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 40,
+        "max": 96,
+        "step": 1
+      }
+    },
+    {
+      "name": "overlayOpacity",
+      "type": "number",
+      "default": 0.82,
+      "description": "Opacity of the page overlay.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 1,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 0.5,
+      "description": "Open and close fade duration in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.05,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "backgroundColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Modal content background color.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "textColor",
+      "type": "color",
+      "default": "#111111",
+      "description": "Modal content text color.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "roundedness",
+      "type": "number",
+      "default": 24,
+      "description": "Modal content border radius in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 48,
+        "step": 1
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "style",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-modal/index.jsx"
+      "target": "src/components/effects/animated-modal/index.tsx"
     },
     {
-      "path": "AnimatedModalContent.jsx",
+      "path": "AnimatedModalContent.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-modal/AnimatedModalContent.jsx"
+      "target": "src/components/effects/animated-modal/AnimatedModalContent.tsx"
     },
     {
-      "path": "ScrollablePopupContent.jsx",
+      "path": "ScrollablePopupContent.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/animated-modal/ScrollablePopupContent.jsx"
+      "target": "src/components/effects/animated-modal/ScrollablePopupContent.tsx"
     }
   ]
 }

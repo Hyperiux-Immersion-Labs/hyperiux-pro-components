@@ -21,19 +21,72 @@
   "previewUrl": "/demo/rotation-slider",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "RotationSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/rotation-slider",
   "target": "src/components/effects/rotation-slider",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/rotation-slider/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/rotation-slider/index.tsx"
     },
     {
-      "path": "RotationSliderComp.jsx",
-      "target": "src/components/effects/rotation-slider/RotationSliderComp.jsx"
+      "path": "RotationSliderComp.tsx",
+      "target": "src/components/effects/rotation-slider/RotationSliderComp.tsx"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "rotationAmount",
+      "type": "number",
+      "default": 1,
+      "description": "Multiplier on the built-in per-breakpoint rotateY entrance/exit strength as cards scroll by.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 2, "step": 0.05 }
+    },
+    {
+      "name": "verticalDrift",
+      "type": "number",
+      "default": 1,
+      "description": "Multiplier on the built-in per-breakpoint vertical offset each card travels while scrolling past.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 2, "step": 0.05 }
+    },
+    {
+      "name": "scrollSmoothing",
+      "type": "number",
+      "default": 1,
+      "description": "GSAP ScrollTrigger scrub value on the main horizontal track — higher lags/smooths more, lower tracks scroll 1:1.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 3, "step": 0.05 }
+    },
+    {
+      "name": "perspective",
+      "type": "number",
+      "default": 1200,
+      "description": "3D perspective distance, in pixels, applied to the sticky track — lower values look deeper/more distorted.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 400, "max": 3000, "step": 50 }
+    },
+    {
+      "name": "showCaptions",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the text caption overlay on each card.",
+      "remixer": { "control": "checkbox", "group": "style", "groupTitle": "Style" }
+    },
+    {
+      "name": "textColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Color of the card caption text.",
+      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  }
 }

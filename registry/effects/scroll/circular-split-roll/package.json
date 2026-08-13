@@ -2,10 +2,10 @@
   "name": "@hyperiux/circular-split-roll",
   "version": "1.1.0",
   "description": "Split circular slider with orbiting titles on one side and image cards on the other",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
-    "CircularSplitRollComp.jsx",
+    "index.tsx",
+    "CircularSplitRollComp.tsx",
     "registry.json"
   ],
   "keywords": [

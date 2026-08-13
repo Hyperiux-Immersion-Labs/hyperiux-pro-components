@@ -190,8 +190,8 @@ export default function GradientFill() {
 
                 {/* CSS Radial Glow, using the 'fill' style & class from CTA2.jsx */}
                 <div
-                    className="radial-glow-fill size-[75vw]  absolute bottom-0 left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0 bg-[#ff5f00] blur-[200px] max-sm:size-[150vw] max-sm:left-1/2 max-sm:blur-[100px] max-sm:bottom-[40%]"
-                    
+                    className="radial-glow-fill size-[75vw]  absolute bottom-0 left-1/2 rounded-full -translate-x-1/2 pointer-events-none z-0 bg-[#ff5f00] blur-[200px] max-md:size-[150vw] max-md:left-1/2 max-md:blur-[100px] max-md:bottom-[40%]"
+
                 ></div>
 
                 {[
@@ -202,7 +202,7 @@ export default function GradientFill() {
                     <p
                         key={i}
                         ref={addTextRef}
-                        className="text64 leading-[1.2] font-heading absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-99 w-[72vw] max-sm:w-[85vw] mx-auto text-center pointer-events-none text-white"
+                        className="text64 leading-[1.2] font-heading absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-99 w-[72vw] max-md:w-[85vw] mx-auto text-center pointer-events-none text-white"
                     >
                         {text}
                     </p>

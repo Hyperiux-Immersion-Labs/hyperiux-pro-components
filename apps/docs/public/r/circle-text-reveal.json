@@ -10,8 +10,14 @@
   "exportName": "CircleTextReveal",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
+    {
+      "version": "1.2.0",
+      "date": "2026-07-30",
+      "summary": "Removed visible and revealed text content from the public/remixer API and added working lerp, smoothness, and circleSize controls.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
@@ -25,16 +31,104 @@
       "breaking": false
     }
   ],
-  "files": [
+  "props": [
     {
-      "path": "index.jsx",
-      "type": "registry:component",
-      "target": "src/components/effects/circle-text-reveal/index.jsx"
+      "name": "textColor",
+      "type": "string",
+      "default": "#111111",
+      "description": "Base text color.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
     },
     {
-      "path": "createSuspendedRaf.js",
+      "name": "circleColorBg",
+      "type": "string",
+      "default": "#E76F2E",
+      "description": "Reveal circle background color.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    },
+    {
+      "name": "RevealedTextColor",
+      "type": "string",
+      "default": "#fefefe",
+      "description": "Text color inside the revealed layer.",
+      "remixer": {
+        "control": "color",
+        "group": "colors",
+        "groupTitle": "Colors"
+      }
+    },
+    {
+      "name": "lerp",
+      "type": "number",
+      "default": 0.15,
+      "description": "Pointer-follow smoothing amount; higher values track faster.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "smoothness",
+      "type": "number",
+      "default": 0.5,
+      "description": "Mask-size transition duration in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "circleSize",
+      "type": "number",
+      "default": 500,
+      "description": "Expanded reveal circle size in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 120,
+        "max": 900,
+        "step": 10
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/circle-text-reveal/createSuspendedRaf.js"
+      "target": "src/components/effects/circle-text-reveal/index.tsx"
+    },
+    {
+      "path": "createSuspendedRaf.ts",
+      "type": "registry:component",
+      "target": "src/components/effects/circle-text-reveal/createSuspendedRaf.ts"
     }
   ]
 }

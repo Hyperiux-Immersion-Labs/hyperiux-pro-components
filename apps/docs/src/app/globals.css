@@ -86,9 +86,9 @@ body {
   --radius-2xl: 40px;
   --radius-pill: 56px;
   --radius-full: 100000px;
-
+/*
   --breakpoint-md: 1025px;
-  --breakpoint-sm: 768px;
+  --breakpoint-sm: 768px; */
 }
 
 html,
@@ -250,9 +250,9 @@ h4 {
   padding: 4.5vw 6vw;
   border-radius: clamp(20px, 1vw, 28px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  background: transparent !important;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45) !important;
-  backdrop-filter: blur(28px) !important;
+  /* background: transparent !important; */
+  /* box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45) !important; */
+  /* backdrop-filter: blur(28px) !important; */
   overflow: hidden !important;
 }
 
@@ -533,6 +533,9 @@ h4 {
 }
 .cl-internal-d4j0pk > :first-of-type {
   padding: 0 !important;
+}
+.cl-internal-c3th6r{
+  margin-bottom: 2vw;
 }
 
 /* -------------------------------------------------------------------------- */

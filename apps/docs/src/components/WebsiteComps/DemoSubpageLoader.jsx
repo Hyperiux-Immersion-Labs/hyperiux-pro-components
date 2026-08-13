@@ -27,7 +27,35 @@ const EXCLUDED_PATHS = new Set([
   "/demo/svg-brush-transition",
   "/demo/svg-brush-transition/page2",
   "/demo/lines-loader",
-  "/demo/number-counter"
+  // Text animation demos - excluded as a category.
+  "/demo/blur-text",
+  // "/demo/circle-text-reveal",
+  // "/demo/glitchy-text",
+  "/demo/mask-text-reveal",
+  "/demo/number-counter",
+  "/demo/overflow-text-reveal",
+  "/demo/perspective-text-reveal",
+  "/demo/rectangular-text-reveal",
+  "/demo/scramble-text",
+  "/demo/slide-text-reveal",
+  "/demo/spotlight-text",
+  "/demo/text-cloning",
+  // "/demo/text-fill-animation",
+  "/demo/text-hover",
+  "/demo/text-stream",
+  "/demo/depth-shift-transition/page2",
+  "/demo/depth-shift-transition",
+  "/demo/clippath-transition",
+  "/demo/clippath-transition/page2",
+  "/demo/ascend-transition",
+  "/demo/ascend-transition/page2",
+  "/demo/aperture-transition",
+  "/demo/aperture-transition/page2",
+  "/demo/sweep-lift-transition",
+  "/demo/sweep-lift-transition/page2",
+  "/demo/pixel-random",
+  "/demo/pixel-random/page2",
+
 ]);
 
 function formatLabel(pathname) {
@@ -221,7 +249,7 @@ function DemoSubpageOverlay({ pathname }) {
       <ShimmerText
         as="p"
         baseColor="#939393" shimmerColor="#ffffff"
-        className="text-[1.4vw] font-medium tracking-tight max-md:text-[4.5vw] text-[#939393]"
+        className="text-[1.4vw] font-medium tracking-tight max-[1025px]:text-[4.5vw] text-[#939393]"
       >
         Loading {formatLabel(pathname)}
       </ShimmerText>

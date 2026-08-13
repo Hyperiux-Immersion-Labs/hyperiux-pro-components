@@ -116,15 +116,15 @@ export default function StackingPlane({ images, bgColor ="black" }) {
  >
  <div
  ref={stickyRef}
- className="sticky top-0 w-full h-screen flex items-center justify-center overflow-hidden max-sm:items-start max-sm:pt-32"
+ className="sticky top-0 w-full h-screen flex items-center justify-center overflow-hidden max-md:items-start max-md:pt-32"
  >
  <div
- className="w-[min(35vw,660px)] max-sm:w-[min(75vw,300px)]"
+ className="w-[min(35vw,660px)] max-md:w-[min(75vw,300px)]"
  style={{ perspective:"900px", perspectiveOrigin:"50% 50%" }}
  >
  <div
  ref={sceneRef}
- className="relative w-full aspect-video max-sm:aspect-[unset] max-sm:h-[min(80vw,350px)]"
+ className="relative w-full aspect-video max-md:aspect-[unset] max-md:h-[min(80vw,350px)]"
  >
  {IMAGES.map((src, i) => (
  <div

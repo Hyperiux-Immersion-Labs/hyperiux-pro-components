@@ -25,23 +25,62 @@
   "registryDependencies": [],
   "previewUrl": "/demo/draggable-marquee",
   "tier": "pro",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "DraggableMarquee",
   "exportKind": "default",
   "importPath": "@/components/effects/draggable-marquee",
   "target": "src/components/effects/draggable-marquee",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/draggable-marquee/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/draggable-marquee/index.tsx"
     },
     {
-      "path": "DraggableMarqueeComp.jsx",
-      "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.jsx"
+      "path": "DraggableMarqueeComp.tsx",
+      "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.tsx"
     },
     {
-      "path": "createSuspendedRaf.js",
-      "target": "src/components/effects/draggable-marquee/createSuspendedRaf.js"
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/draggable-marquee/createSuspendedRaf.ts"
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "speed",
+      "type": "number",
+      "default": 7.2,
+      "description": "Autoplay movement speed (px per tick).",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 20, "step": 0.1 }
+    },
+    {
+      "name": "pauseOnHover",
+      "type": "boolean",
+      "default": false,
+      "description": "Pauses autoplay while hovered.",
+      "remixer": { "control": "checkbox", "group": "motion", "groupTitle": "Motion" }
+    },
+    {
+      "name": "throwMultiplier",
+      "type": "number",
+      "default": 2.8,
+      "description": "Drag-release momentum strength.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 8, "step": 0.1 }
+    },
+    {
+      "name": "throwFriction",
+      "type": "number",
+      "default": 0.975,
+      "description": "Momentum decay rate per frame after a drag release — closer to 1 coasts longer.",
+      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0.8, "max": 0.999, "step": 0.001 }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": { "includeOnlyPublicProps": true }
+  }
 }

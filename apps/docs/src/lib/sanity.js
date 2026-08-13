@@ -58,6 +58,13 @@ export function mergeRegistryWithSanity(effects = [], entries = []) {
       tier: sanity.tier || effect.tier || 'pro',
       tags: sanity.tags?.length ? sanity.tags : (effect.tags || []),
       addedAt: sanity.addedAt ? new Date(sanity.addedAt).getTime() : effect.addedAt,
+      lastUpdated: sanity.lastUpdated
+        ? new Date(sanity.lastUpdated).getTime()
+        : sanity.updatedAt
+          ? new Date(sanity.updatedAt).getTime()
+          : sanity._updatedAt
+            ? new Date(sanity._updatedAt).getTime()
+            : effect.lastUpdated ?? effect.updatedAt,
       // Derive coverImage/videoUrl from effectSlug if not explicitly set in Sanity
       coverImage: sanity.coverImage || effectSlug,
       videoUrl: sanity.videoUrl || `${effectSlug}.mp4`,
@@ -83,6 +90,13 @@ export function buildEffectsFromSanity(entries = []) {
       tier: entry.tier || 'pro',
       tags: entry.tags || [],
       addedAt: entry.addedAt ? new Date(entry.addedAt).getTime() : null,
+      lastUpdated: entry.lastUpdated
+        ? new Date(entry.lastUpdated).getTime()
+        : entry.updatedAt
+          ? new Date(entry.updatedAt).getTime()
+          : entry._updatedAt
+            ? new Date(entry._updatedAt).getTime()
+            : null,
       coverImage: entry.coverImage || entry.effectSlug,
       videoUrl: entry.videoUrl || `${entry.effectSlug}.mp4`,
       previewUrl: entry.previewUrl || null,
@@ -115,7 +129,13 @@ export async function getSanityEffectContent(categorySlug, effectSlug) {
     const effectSlugs = getEffectSlugAliases(effectSlug)
 
     const content = await client.fetch(
-      `*[_type == "effectContent" && categorySlug in $categorySlugs && effectSlug in $effectSlugs][0]`,
+      `*[_type == "effectContent" && categorySlug in $categorySlugs && effectSlug in $effectSlugs][0]{
+        ...,
+        addedAt,
+        updatedAt,
+        lastUpdated,
+        _updatedAt
+      }`,
       {categorySlugs, effectSlugs}
     )
 
@@ -148,6 +168,9 @@ export async function getAllSanityEffectEntries() {
         tier,
         tags,
         addedAt,
+        lastUpdated,
+        updatedAt,
+        _updatedAt,
         coverImage,
         videoUrl,
         previewUrl
@@ -171,6 +194,9 @@ export async function getAllSanityEffectEntries() {
 //   effectSlug: string,
 //   title: string,
 //   summary: string,
+//   addedAt?: string,
+//   lastUpdated?: string,
+//   updatedAt?: string,
 //   seo: {
 //     title: string,
 //     description: string,

@@ -16,7 +16,7 @@ const copyButtonStyles = tv({
   variants: {
     size: {
       sm: { iconWrap: "size-4" },
-      md: { iconWrap: "size-5 max-md:size-6 max-sm:size-4" },
+      md: { iconWrap: "size-5 max-[1025px]:size-6 max-md:size-4" },
     },
     color: {
       primary: { icon: "text-primary" },
@@ -82,6 +82,7 @@ async function copyTextToClipboard(text) {
  *   "aria-label"?: string;
  *   disabled?: boolean;
  *   onBeforeCopy?: () => boolean | Promise<boolean>;
+ *   onCopiedChange?: (copied: boolean) => void;
  * }} props
  */
 export default function CopyBtn({
@@ -92,12 +93,20 @@ export default function CopyBtn({
   "aria-label": ariaLabel = "Copy to clipboard",
   disabled = false,
   onBeforeCopy,
+  onCopiedChange,
 }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopiedState] = useState(false);
   const iconRef = useRef(null);
   const resetTimeoutRef = useRef(null);
   const animationTimelineRef = useRef(null);
   const copyButtonSlots = copyButtonStyles({ size, color });
+
+  // Wraps setCopied so callers (e.g. a Tooltip label switching to "Copied!")
+  // can react to the same state without duplicating the icon-swap timing.
+  function setCopied(next) {
+    setCopiedState(next);
+    onCopiedChange?.(next);
+  }
 
   function clearCopyAnimation() {
     if (resetTimeoutRef.current !== null) {

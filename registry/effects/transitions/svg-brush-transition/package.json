@@ -2,9 +2,9 @@
   "name": "@hyperiux/svg-brush-transition",
   "version": "1.1.0",
   "description": "Brush-stroke navigation transition that draws a large SVG path across the viewport",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "index.jsx",
+    "index.tsx",
     "registry.json"
   ],
   "keywords": [

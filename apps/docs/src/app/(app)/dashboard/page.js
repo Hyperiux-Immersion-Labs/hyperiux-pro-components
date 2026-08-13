@@ -148,7 +148,7 @@ export default function DashboardPage() {
       </div>
 
       <div className=" rounded-md p-6 bg-[#272727]">
-        <div className="flex items-start justify-between gap-6 max-md:flex-col max-md:items-start">
+        <div className="flex items-start justify-between gap-6 max-[1025px]:flex-col max-[1025px]:items-start">
           <div>
             
             <h2 className="text-2xl font-semibold">Vault access</h2>
@@ -199,7 +199,7 @@ export default function DashboardPage() {
 
           {data.plan === "pro" && (
             <div className="flex flex-col items-end gap-2">
-              <div className="flex gap-3 max-sm:flex-col">
+              <div className="flex gap-3 max-md:flex-col">
                 {data.manageSubscriptionUrl && (
                   <a
                     href={data.manageSubscriptionUrl}

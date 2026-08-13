@@ -25,16 +25,138 @@
       "breaking": false
     }
   ],
-  "files": [
+  "props": [
     {
-      "path": "index.js",
-      "type": "registry:component",
-      "target": "src/components/effects/liquid-glass-cursor/index.js"
+      "name": "baseSize",
+      "type": "number",
+      "default": 30,
+      "description": "Default cursor size in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "size",
+        "groupTitle": "Size",
+        "min": 16,
+        "max": 90,
+        "step": 1
+      }
     },
     {
-      "path": "LiquidText.jsx",
+      "name": "textHoverSize",
+      "type": "number",
+      "default": 130,
+      "description": "Cursor size when hovering text targets.",
+      "remixer": {
+        "control": "range",
+        "group": "size",
+        "groupTitle": "Size",
+        "min": 60,
+        "max": 220,
+        "step": 1
+      }
+    },
+    {
+      "name": "distortionScale",
+      "type": "number",
+      "default": 1.5,
+      "description": "SVG displacement strength for the glass distortion.",
+      "remixer": {
+        "control": "range",
+        "group": "filter",
+        "groupTitle": "Filter",
+        "min": 0,
+        "max": 5,
+        "step": 0.1
+      }
+    },
+    {
+      "name": "blurAmount",
+      "type": "number",
+      "default": 0.002,
+      "description": "Blur amount applied inside the SVG filter.",
+      "remixer": {
+        "control": "range",
+        "group": "filter",
+        "groupTitle": "Filter",
+        "min": 0,
+        "max": 0.02,
+        "step": 0.001
+      }
+    },
+    {
+      "name": "brightness",
+      "type": "number",
+      "default": 90,
+      "description": "CSS brightness filter percentage.",
+      "remixer": {
+        "control": "range",
+        "group": "filter",
+        "groupTitle": "Filter",
+        "min": 0,
+        "max": 200,
+        "step": 1
+      }
+    },
+    {
+      "name": "borderColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Cursor border and inner shadow color.",
+      "remixer": {
+        "control": "color",
+        "group": "surface",
+        "groupTitle": "Surface"
+      }
+    },
+    {
+      "name": "maxButtonWidth",
+      "type": "number",
+      "default": 200,
+      "description": "Maximum cursor width when hovering button targets.",
+      "remixer": {
+        "control": "range",
+        "group": "button",
+        "groupTitle": "Button Hover",
+        "min": 80,
+        "max": 420,
+        "step": 1
+      }
+    },
+    {
+      "name": "maxButtonHeight",
+      "type": "number",
+      "default": 150,
+      "description": "Maximum cursor height when hovering button targets.",
+      "remixer": {
+        "control": "range",
+        "group": "button",
+        "groupTitle": "Button Hover",
+        "min": 40,
+        "max": 240,
+        "step": 1
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "size",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/liquid-glass-cursor/LiquidText.jsx"
+      "target": "src/components/effects/liquid-glass-cursor/index.tsx"
+    },
+    {
+      "path": "LiquidText.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/liquid-glass-cursor/LiquidText.tsx"
     }
   ]
 }

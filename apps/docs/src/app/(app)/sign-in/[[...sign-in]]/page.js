@@ -25,14 +25,32 @@ export default async function SignInPage() {
     <NavbarMobile/>
     
     <AuthShell>
-     <div className="hyperiux-clerk mx-auto w-[40vw] max-md:w-[90vw] max-sm:w-full">
+     <div className="hyperiux-clerk mx-auto w-[40vw] max-[1025px]:w-[90vw] max-md:w-full">
         <SignIn
           path="/sign-in"
           routing="path"
           signUpUrl="/sign-up"
           fallbackRedirectUrl="/effects"
           forceRedirectUrl="/effects"
+          localization={{
+            formButtonPrimary: "Continue to Vault",
+            formFieldLabel__emailAddress: "Email",
+            formFieldInputPlaceholder__emailAddress: "you@example.com",
+            signIn: {
+              start: {
+                title: "Back to the Vault.",
+                subtitle:
+                  "Sign in to access your effects, Pro downloads, and CLI authentication.",
+                actionText: "New here?",
+                actionLink: "Create an account →",
+              },
+            },
+          }}
         />
+
+        {/* <p className="mt-6 text-center text-xs text-white/40">
+          Your code stays in your repo. As it should.
+        </p> */}
       </div>
     </AuthShell>
     </>

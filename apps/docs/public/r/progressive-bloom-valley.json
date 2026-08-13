@@ -31,66 +31,146 @@
       "breaking": false
     }
   ],
+  "props": [
+    {
+      "name": "bloomStrength",
+      "type": "number",
+      "default": 1.2,
+      "description": "Flower shader glow intensity.",
+      "suggested": true
+    },
+    {
+      "name": "bloomRadius",
+      "type": "number",
+      "default": 0.4,
+      "description": "Edge bloom softness radius.",
+      "suggested": true
+    },
+    {
+      "name": "cameraSpeed",
+      "type": "number",
+      "default": 1,
+      "description": "Camera movement speed through the scene.",
+      "suggested": true
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#000000",
+      "description": "Scene background color.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "controls",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "bloomStrength",
+        "label": "Bloom Strength",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 4,
+        "step": 0.05
+      },
+      {
+        "name": "bloomRadius",
+        "label": "Bloom Radius",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 0,
+        "max": 1,
+        "step": 0.01
+      },
+      {
+        "name": "cameraSpeed",
+        "label": "Camera Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0.05,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  },
   "files": [
     {
-      "path": "index.jsx",
+      "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/index.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/index.tsx"
     },
     {
-      "path": "CameraRig.jsx",
+      "path": "CameraRig.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/CameraRig.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/CameraRig.tsx"
     },
     {
-      "path": "CircularText.jsx",
+      "path": "CircularText.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/CircularText.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/CircularText.tsx"
     },
     {
-      "path": "EdgeBlurEffect.jsx",
+      "path": "EdgeBlurEffect.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.tsx"
     },
     {
-      "path": "ExperienceComp.jsx",
+      "path": "ExperienceComp.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.tsx"
     },
     {
-      "path": "FilmGrainEffect.jsx",
+      "path": "FilmGrainEffect.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.tsx"
     },
     {
-      "path": "Flower.jsx",
+      "path": "Flower.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/Flower.jsx"
+      "target": "src/components/effects/progressive-bloom-valley/Flower.tsx"
     },
     {
-      "path": "prefersReducedMotion.js",
+      "path": "prefersReducedMotion.ts",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.js"
+      "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.ts"
     },
     {
-      "path": "useInput.js",
+      "path": "useInput.ts",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/useInput.js"
+      "target": "src/components/effects/progressive-bloom-valley/useInput.ts"
     },
     {
-      "path": "useValleyData.js",
+      "path": "useValleyData.ts",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/useValleyData.js"
+      "target": "src/components/effects/progressive-bloom-valley/useValleyData.ts"
     },
     {
-      "path": "createSuspendedRaf.js",
+      "path": "createSuspendedRaf.ts",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.js"
+      "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.ts"
     },
     {
-      "path": "shaders.js",
+      "path": "shaders.tsx",
       "type": "registry:component",
-      "target": "src/components/effects/progressive-bloom-valley/shaders.js"
+      "target": "src/components/effects/progressive-bloom-valley/shaders.ts"
     }
   ]
 }

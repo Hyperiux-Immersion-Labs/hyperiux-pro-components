@@ -1,9 +1,25 @@
 {
   "name": "zoom-slider",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "changelog": [
-    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: drag/scroll lerp collapses to direct tracking with no momentum glide, hover text uses a fade instead of a line-slide, and the hover image-scale is skipped", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added title, subheading, and sliderData as public props instead of hardcoding them in the wrapper",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-07-21",
+      "summary": "Added prefers-reduced-motion support: drag/scroll lerp collapses to direct tracking with no momentum glide, hover text uses a fade instead of a line-slide, and the hover image-scale is skipped",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Zoom Slider",
@@ -16,19 +32,84 @@
   "previewUrl": "/demo/zoom-slider",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ZoomSlider",
   "exportKind": "default",
   "importPath": "@/components/effects/zoom-slider",
   "target": "src/components/effects/zoom-slider",
-  "files": [
+  "props": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/zoom-slider/index.jsx"
+      "name": "scaleOnHover",
+      "type": "boolean",
+      "description": "Enables the image scale-up effect on hover.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "hover",
+        "groupTitle": "Hover",
+        "groupCollapsible": false
+      }
     },
     {
-      "path": "ZoomSliderComp.jsx",
-      "target": "src/components/effects/zoom-slider/ZoomSliderComp.jsx"
+      "name": "textOnHover",
+      "type": "boolean",
+      "description": "Enables the hover text reveal above each slide.",
+      "default": true,
+      "remixer": {
+        "control": "checkbox",
+        "group": "hover",
+        "groupTitle": "Hover",
+        "groupCollapsible": false
+      }
+    },
+    {
+      "name": "size",
+      "type": "number",
+      "description": "Multiplier applied to zoom slider card width and height.",
+      "default": 1,
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0.5,
+        "max": 1.6,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "easeScrollPercentage",
+      "type": "number",
+      "description": "Percentage of viewport distance used by the horizontal easing curve.",
+      "default": 100,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 20,
+        "max": 180,
+        "step": 1
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "hover",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "target": "src/components/effects/zoom-slider/index.tsx"
+    },
+    {
+      "path": "ZoomSliderComp.tsx",
+      "target": "src/components/effects/zoom-slider/ZoomSliderComp.tsx"
     }
   ]
 }

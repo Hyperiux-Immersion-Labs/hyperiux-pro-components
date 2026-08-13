@@ -1,5 +1,12 @@
 import React from 'react'
 
+/**
+ * @param {{
+ *   textColor?: string,
+ *   className?: string,
+ *   as?: string,
+ * }} props
+ */
 const ScrollBottom = ({ textColor,
   className = 'bottom-[5%] gap-[1vw]',
   as = 'p'
@@ -10,7 +17,7 @@ const ScrollBottom = ({ textColor,
       <svg
         width="20"
         height="28"
-        className="size-[1.5vw] max-md:size-[3vw] max-sm:size-[4vw]"
+        className="size-[1.5vw] max-[1025px]:size-[3vw] max-md:size-[4vw]"
         viewBox="0 0 20 28"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

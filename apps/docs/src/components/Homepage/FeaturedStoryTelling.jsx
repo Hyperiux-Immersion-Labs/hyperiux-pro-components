@@ -561,13 +561,13 @@ export default function FeaturedStoryTelling() {
         <section
             ref={sectionRef}
             id="spiral-images"
-            className="relative w-full h-[600vh] max-md:hidden  z-50"
+            className="relative w-full h-[600vh] max-[1025px]:hidden  z-50"
             
         >
             <LineReveal as="h2" className="text110 w-[80vw] mx-auto text-center">
                 Explore the Moments your Website is  <span className='gradient-text-animate'>Missing.</span>
             </LineReveal>
-            <SplitLineNoMask as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-md:mt-5 max-md:max-w-[82vw] max-md:text-sm max-sm:max-w-full">
+            <SplitLineNoMask as="p" className="mx-auto mt-[2vw] max-w-[65vw] text-center text24 leading-[1.55] text-white max-[1025px]:mt-5 max-[1025px]:max-w-[82vw] max-[1025px]:text-sm max-md:max-w-full">
                 Hover it. Scroll it. Break it. Then copy it!
             </SplitLineNoMask>
             <div

@@ -132,6 +132,21 @@ const tableBlock = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'colorVariant',
+      title: 'Color Variant',
+      type: 'string',
+      initialValue: 'vault',
+      options: {
+        list: [
+          {title: 'Vault Dark', value: 'vault'},
+          {title: 'Vault Orange', value: 'orange'},
+          {title: 'Muted', value: 'muted'},
+          {title: 'Outline', value: 'outline'},
+        ],
+        layout: 'radio',
+      },
+    }),
+    defineField({
       name: 'headers',
       title: 'Headers',
       type: 'array',
@@ -146,6 +161,25 @@ const tableBlock = defineType({
       validation: (rule) => rule.required().min(1),
     }),
   ],
+  preview: {
+    select: {
+      title: 'caption',
+      headers: 'headers',
+      rows: 'rows',
+      colorVariant: 'colorVariant',
+    },
+    prepare({title, headers, rows, colorVariant}) {
+      const columnCount = headers?.length || 0
+      const rowCount = rows?.length || 0
+
+      return {
+        title: title || 'Table',
+        subtitle: `${columnCount} column${columnCount === 1 ? '' : 's'} / ${rowCount} row${
+          rowCount === 1 ? '' : 's'
+        }${colorVariant ? ` / ${colorVariant}` : ''}`,
+      }
+    },
+  },
 })
 
 const calloutBlock = defineType({
@@ -432,6 +466,12 @@ export const effectContent = defineType({
       title: 'Added At',
       type: 'datetime',
       description: 'Controls sort order on the listing (newest first)',
+    }),
+    defineField({
+      name: 'updatedAt',
+      title: 'Updated At',
+      type: 'datetime',
+      description: 'Shown on the effect detail page when Added At is also set',
     }),
     defineField({
       name: 'coverImage',

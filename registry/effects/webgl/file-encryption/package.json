@@ -2,12 +2,12 @@
   "name": "@hyperiux/file-encryption",
   "version": "1.1.0",
   "description": "Auto-scrolling draggable card marquee with a WebGL laser beam that splits each card between its plain and ASCII/encrypted face, plus Canvas 2D particle scatter.",
-  "main": "index.jsx",
+  "main": "index.tsx",
   "files": [
-    "FileEncryptionComp.jsx",
-    "createSuspendedRaf.js",
-    "index.jsx",
-    "webgl-context-recovery.js",
+    "index.tsx",
+    "FileEncryptionComp.tsx",
+    "webgl-context-recovery.ts",
+    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

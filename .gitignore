@@ -29,3 +29,4 @@ coverage
 .turbo
 CLAUDE.md
 apps/docs/public/r.tmp
+.vercel

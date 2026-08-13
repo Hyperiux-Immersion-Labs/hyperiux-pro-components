@@ -8,6 +8,7 @@ import {
 import { VaultContent } from "../vault-content";
 import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
+import { sortEffects } from "@/lib/effect-sort";
 import {
   getAllSanityEffectEntries,
   buildEffectsFromSanity,
@@ -15,10 +16,11 @@ import {
 } from "@/lib/sanity";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
+import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-stats";
 
 function VaultFallback() {
   return (
-    <div className="h-screen w-screen bg-black">
+    <div className="min-h-[300vh] w-screen bg-black">
     </div>
   );
 }
@@ -66,7 +68,9 @@ export default async function EffectsCategoryPage({ params }) {
   const sanityEntries = await getAllSanityEffectEntries();
   const effects = buildEffectsFromSanity(sanityEntries);
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
-  const sortedEffects = [...effects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
+  const sortedEffects = sortEffects(effects);
+  const installCounts = await getEffectInstallCounts(sortedEffects);
+  const effectsWithInstallCounts = attachInstallCounts(sortedEffects, installCounts);
 
   const effectCounts = {};
   for (const [categoryId, catEffects] of Object.entries(categoriesMap)) {
@@ -92,7 +96,7 @@ export default async function EffectsCategoryPage({ params }) {
       {pageContent.faqs?.length > 0 && <FAQJSONLD faqs={pageContent.faqs} />}
       <Suspense fallback={<VaultFallback />}>
         <VaultContent
-          effects={sortedEffects}
+          effects={effectsWithInstallCounts}
           effectCounts={effectCounts}
           initialCategory={isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category.id}
           userPlan={userPlan}

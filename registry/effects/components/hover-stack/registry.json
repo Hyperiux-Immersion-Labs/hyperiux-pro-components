@@ -1,6 +1,6 @@
 {
   "name": "hover-stack",
-  "version": "1.1.0",
+  "version": "1.4.0",
   "type": "registry:component",
   "title": "Hover Stack",
   "description": "Overlapping card stack that fans out around the hovered card",
@@ -10,27 +10,181 @@
   "previewUrl": "/demo/hover-stack",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "HoverStack",
   "exportKind": "default",
   "importPath": "@/components/effects/hover-stack",
   "target": "src/components/effects/hover-stack",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/hover-stack/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/hover-stack/index.tsx"
     },
     {
-      "path": "HoverStackComp.jsx",
-      "target": "src/components/effects/hover-stack/HoverStackComp.jsx"
+      "path": "HoverStackComp.tsx",
+      "target": "src/components/effects/hover-stack/HoverStackComp.tsx"
     }
   ],
   "changelog": [
+    {
+      "version": "1.4.0",
+      "date": "2026-07-30",
+      "summary": "Removed cards and items — card content is now always the built-in quote set. Reset accentColor's default to transparent (matching the original no-outline look); picking a color shows an outline ring around the active card.",
+      "breaking": true
+    },
+    {
+      "version": "1.3.0",
+      "date": "2026-07-30",
+      "summary": "Fixed the demo page rendering nothing (it wasn't wired to the effect's DemoContent). Wired up items, spread, rotation, duration, and accentColor for real: items overrides the card data, spread fans neighboring cards vertically, rotation scales the resting card tilt, duration scales the hover transition timing, and accentColor tints the active card's badge and outline.",
+      "breaking": false
+    },
+    {
+      "version": "1.2.0",
+      "date": "2026-07-28",
+      "summary": "Added cards, cardWidth, cardHeight, overlap, pushDistance, and hoverLift as public props with a working remixer panel. The originally suggested props (items, spread, rotation, duration, accentColor) didn't match this component's real API, so they were replaced with the props HoverStackComp actually accepts.",
+      "breaking": false
+    },
     {
       "version": "1.1.0",
       "date": "2026-07-21",
       "summary": "Disable hover lift/push transforms under reduced motion; keep z-index focus",
       "breaking": false
     }
-  ]
+  ],
+  "props": [
+    {
+      "name": "cardWidth",
+      "type": "number",
+      "default": 280,
+      "description": "Width of each card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 160,
+        "max": 420,
+        "step": 4
+      }
+    },
+    {
+      "name": "cardHeight",
+      "type": "number",
+      "default": 360,
+      "description": "Height of each card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 200,
+        "max": 520,
+        "step": 4
+      }
+    },
+    {
+      "name": "overlap",
+      "type": "number",
+      "default": 96,
+      "description": "Horizontal overlap between resting cards in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 0,
+        "max": 200,
+        "step": 2
+      }
+    },
+    {
+      "name": "pushDistance",
+      "type": "number",
+      "default": 235,
+      "description": "Distance neighboring cards are pushed aside on hover.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 100,
+        "max": 400,
+        "step": 5
+      }
+    },
+    {
+      "name": "hoverLift",
+      "type": "number",
+      "default": 30,
+      "description": "Vertical lift applied to the hovered card in pixels.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 0,
+        "max": 100,
+        "step": 2
+      }
+    },
+    {
+      "name": "spread",
+      "type": "number",
+      "description": "Distance cards spread while hovered.",
+      "default": 24,
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 72,
+        "step": 1
+      }
+    },
+    {
+      "name": "rotation",
+      "type": "number",
+      "description": "Rotation amount applied to stacked items.",
+      "default": 7,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": -180,
+        "max": 180,
+        "step": 1
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "description": "Hover animation duration.",
+      "default": 0.35,
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "description": "Outline color shown around the active card. Transparent by default.",
+      "default": "transparent",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "layout",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  }
 }
