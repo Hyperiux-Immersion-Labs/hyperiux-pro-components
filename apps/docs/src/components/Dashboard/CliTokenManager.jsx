@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function CliTokenManager({ plan }) {
   const [token, setToken] = useState("");
@@ -9,8 +10,14 @@ export default function CliTokenManager({ plan }) {
 
   const isPro = plan === "pro";
 
+  // Any signed-in account can generate a token now, not just Pro (see
+  // api/cli/token/route.js) - a token's job is proving identity to the
+  // CLI/MCP so usage counts against this account's real daily quota
+  // (lib/install-limit.js) instead of the anonymous device/IP bucket. Pro
+  // effect access is decided separately, per-request, by effect-access.js -
+  // unaffected by who can hold a token.
   async function generateToken() {
-    if (!isPro || isLoading) return;
+    if (isLoading) return;
 
     setIsLoading(true);
     setMessage("");
@@ -37,13 +44,13 @@ export default function CliTokenManager({ plan }) {
   }
 
   async function revokeToken() {
-    if (!isPro || isLoading) return;
+    if (isLoading) return;
 
     setIsLoading(true);
     setMessage("");
 
     try {
-      const response = await fetch("/api/cli/token/revoke", {
+      const response = await fetch("/api/cli/revoke", {
         method: "POST",
       });
 
@@ -71,23 +78,35 @@ export default function CliTokenManager({ plan }) {
           </h2>
 
           <p className="mt-6 max-w-2xl">
-            Generate a private token to install Pro effects through the
-            Hyperiux CLI. Keep it secret. Anyone with this token can access Pro
-            downloads from your account.
+            Generate a private token to identify yourself to the Hyperiux CLI
+            and MCP — logging in like this is now required to have your daily
+            install limit tracked correctly, instead of falling back to a
+            stricter anonymous limit. Keep it secret: anyone with this token
+            can install under your account, including Pro downloads if you
+            have a subscription.
           </p>
 
-          {!isPro && (
-            <p className="mt-4 text-sm text-[#ff5f00]">
-              CLI tokens are available only for Pro users.
-            </p>
-          )}
+          <p className="mt-4 text-sm text-white/50">
+            {isPro
+              ? "As a Pro subscriber, this token also unlocks Pro effect source and a 10/day install limit."
+              : (
+                <>
+                  On the Free plan this raises your daily install limit from 1
+                  (anonymous) to 3.{" "}
+                  <Link href="/pricing" className="text-[#ff5f00] hover:underline">
+                    Upgrade to Pro
+                  </Link>{" "}
+                  for 10/day and Pro effect downloads.
+                </>
+              )}
+          </p>
         </div>
 
         <div className="flex shrink-0 gap-3">
           <button
             type="button"
             onClick={revokeToken}
-            disabled={!isPro || isLoading}
+            disabled={isLoading}
             className="rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 duration-300"
           >
             Revoke
@@ -95,13 +114,11 @@ export default function CliTokenManager({ plan }) {
           <button
             type="button"
             onClick={generateToken}
-            disabled={!isPro || isLoading}
+            disabled={isLoading}
             className="rounded-full bg-white px-7 py-3 text-sm font-semibold text-black transition hover:bg-[#ff5f00] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 duration-300"
           >
             {isLoading ? "Working..." : "Generate Token"}
           </button>
-
-          
         </div>
       </div>
 

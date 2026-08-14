@@ -4,8 +4,27 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { Camera, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
+import { useAdminRole } from "@/lib/useAdminRole";
 
 const MAX_AVATAR_DIMENSION = 512;
+
+function RoleBadge({ role }) {
+  if (role === "super_admin") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-purple-500/15 px-3 py-1 text-xs font-medium text-purple-300">
+        Super Admin
+      </span>
+    );
+  }
+  if (role === "admin") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
+        Admin
+      </span>
+    );
+  }
+  return null;
+}
 
 // Clerk's profile image upload rejects anything over its size cap - PNG
 // screenshots regularly blow past that at full resolution even though a
@@ -49,6 +68,7 @@ async function resizeImageForUpload(file, maxDimension = MAX_AVATAR_DIMENSION) {
 
 export default function SettingsPage() {
   const { user, isLoaded } = useUser();
+  const { role } = useAdminRole();
   const fileInputRef = useRef(null);
 
   const [savingProfile, setSavingProfile] = useState(false);
@@ -288,6 +308,12 @@ export default function SettingsPage() {
         <p className="mt-2 break-all">
           {user.primaryEmailAddress?.emailAddress}
         </p>
+
+        {role && (
+          <div className="mt-3">
+            <RoleBadge role={role} />
+          </div>
+        )}
       </div>
 
       <div className="rounded-md p-8 bg-[#272727] ">

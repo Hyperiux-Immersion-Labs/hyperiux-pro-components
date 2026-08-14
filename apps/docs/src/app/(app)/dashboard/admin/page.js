@@ -3,10 +3,75 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "motion/react";
 import { Search, ArrowUpRight, ChevronDown, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
+import { useAdminRole } from "@/lib/useAdminRole";
 
 const USERS_PER_PAGE = 10;
+
+function formatCurrency(amountInSubunits, currency = "INR") {
+  if (typeof amountInSubunits !== "number") return "-";
+  try {
+    return new Intl.NumberFormat("en", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    }).format(amountInSubunits / 100);
+  } catch {
+    return `${(amountInSubunits / 100).toFixed(2)} ${currency}`;
+  }
+}
+
+function RevenueOverview() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/admin/revenue/overview")
+      .then((res) => (res.ok ? res.json() : null))
+      .then(setData)
+      .catch(() => setData(null));
+  }, []);
+
+  const stats = [
+    { label: "Total Revenue", value: data ? formatCurrency(data.totalRevenue, data.currency) : "…" },
+    { label: "This Month", value: data ? formatCurrency(data.revenueThisMonth, data.currency) : "…" },
+    { label: "Last 30 Days", value: data ? formatCurrency(data.revenueLast30Days, data.currency) : "…" },
+    {
+      label: "Active Pro",
+      value: data ? `${data.activeProCount} (${data.monthlySubscribers}mo / ${data.yearlySubscribers}yr)` : "…",
+    },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      {stats.map((stat) => (
+        <div key={stat.label} className="rounded-lg border border-white/10 bg-white/3 px-4 py-3">
+          <p className="text-xs uppercase tracking-wider text-white/45">{stat.label}</p>
+          <p className="mt-1 text-lg font-semibold text-white">{stat.value}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RoleBadge({ role }) {
+  if (role === "super_admin") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-purple-500/15 px-3 py-1 text-xs font-medium text-purple-300">
+        Super Admin
+      </span>
+    );
+  }
+  if (role === "admin") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
+        Admin
+      </span>
+    );
+  }
+  return <span className="text-xs text-white/25">-</span>;
+}
 
 function formatDate(value) {
   if (!value) return "-";
@@ -29,31 +94,6 @@ function PlanBadge({ plan }) {
       {plan === "pro" ? "Pro" : "Free"}
     </span>
   );
-}
-
-// Admins don't necessarily have an active subscription row (they get full
-// access via publicMetadata.role, a separate axis from plan/status), so
-// showing them as "inactive" is wrong rather than merely unstyled - check
-// isAdmin first. For everyone else, "inactive" only ever means "never
-// subscribed" (every user gets a free/inactive row at signup - see the
-// Clerk webhook), not a lapsed subscription, so free plans read as "Free"
-// instead of a status word that implies something broke.
-function StatusBadge({ status, plan, isAdmin }) {
-  if (isAdmin) {
-    return <span className="text-xs font-medium text-[#ff5f00]">Admin</span>;
-  }
-
-  if (plan !== "pro") {
-    return <span className="text-xs text-white/40">Free</span>;
-  }
-
-  const color =
-    status === "active"
-      ? "text-emerald-400"
-      : status === "trialing"
-        ? "text-blue-400"
-        : "text-white/40";
-  return <span className={`text-xs capitalize ${color}`}>{status || "inactive"}</span>;
 }
 
 function InviteModal({ onClose }) {
@@ -152,6 +192,8 @@ function InviteModal({ onClose }) {
 }
 
 export default function AdminPage() {
+  const { user: viewer } = useUser();
+  const { isSuperAdmin } = useAdminRole();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -233,6 +275,26 @@ export default function AdminPage() {
     }
   }
 
+  async function updateRole(user, role) {
+    setUpdatingId(user.id);
+    try {
+      const res = await fetch("/api/admin/users/update-role", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clerkUserId: user.id, role }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Update failed");
+      setUsers((prev) =>
+        prev.map((u) => (u.id === user.id ? { ...u, role, isAdmin: role !== null } : u))
+      );
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
   const proCount = users.filter((u) => u.plan === "pro").length;
   const freeCount = users.filter((u) => u.plan === "free").length;
 
@@ -269,6 +331,8 @@ export default function AdminPage() {
           </Link>
         </div>
       </div>
+
+      {isSuperAdmin && <RevenueOverview />}
 
       {/* Filters */}
       <div className="flex gap-3 flex-wrap">
@@ -311,17 +375,21 @@ export default function AdminPage() {
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">User</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Razorpay</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Role</th>
+                {isSuperAdmin && (
+                  <>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Razorpay</th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-white/6">
               {loading ? (
                 Array.from({ length: 6 }).map((_, i) => (
                   <tr key={i}>
-                    {Array.from({ length: 7 }).map((__, j) => (
+                    {Array.from({ length: isSuperAdmin ? 7 : 4 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
                         <div className="h-4 rounded bg-white/8 animate-pulse" style={{ width: j === 0 ? "140px" : "80px" }} />
                       </td>
@@ -330,7 +398,7 @@ export default function AdminPage() {
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-white/40">
+                  <td colSpan={isSuperAdmin ? 7 : 4} className="px-4 py-10 text-center text-white/40">
                     No users found.
                   </td>
                 </tr>
@@ -369,55 +437,80 @@ export default function AdminPage() {
                       <PlanBadge plan={user.plan} />
                     </td>
                     <td className="px-4 py-3">
-                      <StatusBadge status={user.status} plan={user.plan} isAdmin={user.isAdmin} />
-                    </td>
-                    <td className="px-4 py-3 text-white/60 whitespace-nowrap">
-                      {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
-                    </td>
-                    <td className="px-4 py-3">
-                      {user.razorpayCustomerId ? (
-                        <span className="font-mono text-xs text-white/40" title={user.razorpayCustomerId}>
-                          {user.razorpayCustomerId.slice(0, 12)}…
-                        </span>
+                      {isSuperAdmin && user.id !== viewer?.id ? (
+                        <div className="relative inline-block">
+                          <select
+                            value={user.role || ""}
+                            onChange={(e) => updateRole(user, e.target.value || null)}
+                            disabled={updatingId === user.id}
+                            className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
+                          >
+                            <option value="">No access</option>
+                            <option value="admin">Admin</option>
+                            <option value="super_admin">Super Admin</option>
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
+                        </div>
                       ) : (
-                        <span className="text-xs text-white/25">-</span>
+                        <div className="flex items-center gap-2">
+                          <RoleBadge role={user.role} />
+                          {isSuperAdmin && user.id === viewer?.id && (
+                            <span className="text-xs text-white/30">(you)</span>
+                          )}
+                        </div>
                       )}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        {user.plan !== "pro" && (
-                          <div className="relative">
-                            <select
-                              value={intervalByUser[user.id] || "yearly"}
-                              onChange={(e) =>
-                                setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
-                              }
+                    {isSuperAdmin && (
+                      <>
+                        <td className="px-4 py-3 text-white/60 whitespace-nowrap">
+                          {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
+                        </td>
+                        <td className="px-4 py-3">
+                          {user.razorpayCustomerId ? (
+                            <span className="font-mono text-xs text-white/40" title={user.razorpayCustomerId}>
+                              {user.razorpayCustomerId.slice(0, 12)}…
+                            </span>
+                          ) : (
+                            <span className="text-xs text-white/25">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-end gap-2">
+                            {user.plan !== "pro" && (
+                              <div className="relative">
+                                <select
+                                  value={intervalByUser[user.id] || "yearly"}
+                                  onChange={(e) =>
+                                    setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
+                                  }
+                                  disabled={updatingId === user.id}
+                                  className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
+                                >
+                                  <option value="monthly">1 month</option>
+                                  <option value="yearly">1 year</option>
+                                </select>
+                                <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
+                              </div>
+                            )}
+                            <button
+                              onClick={() => togglePlan(user)}
                               disabled={updatingId === user.id}
-                              className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
+                              className={`rounded-full px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
+                                user.plan === "pro"
+                                  ? "bg-white/10 text-white/70 hover:bg-white/15"
+                                  : "bg-[#ff5f00]/15 text-[#ff5f00] hover:bg-[#ff5f00]/25"
+                              }`}
                             >
-                              <option value="monthly">1 month</option>
-                              <option value="yearly">1 year</option>
-                            </select>
-                            <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
+                              {updatingId === user.id
+                                ? "Updating…"
+                                : user.plan === "pro"
+                                  ? "Downgrade"
+                                  : "Upgrade to Pro"}
+                            </button>
                           </div>
-                        )}
-                        <button
-                          onClick={() => togglePlan(user)}
-                          disabled={updatingId === user.id}
-                          className={`rounded-full px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
-                            user.plan === "pro"
-                              ? "bg-white/10 text-white/70 hover:bg-white/15"
-                              : "bg-[#ff5f00]/15 text-[#ff5f00] hover:bg-[#ff5f00]/25"
-                          }`}
-                        >
-                          {updatingId === user.id
-                            ? "Updating…"
-                            : user.plan === "pro"
-                              ? "Downgrade"
-                              : "Upgrade to Pro"}
-                        </button>
-                      </div>
-                    </td>
+                        </td>
+                      </>
+                    )}
                   </tr>
                 ))
               )}

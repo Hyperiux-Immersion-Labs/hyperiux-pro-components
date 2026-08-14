@@ -49,11 +49,14 @@ export async function GET() {
         .select("clerk_user_id", { count: "exact", head: true })
         .eq("plan", "pro"),
       supabase.from("subscriptions").select("created_at").gte("created_at", thirtyDaysAgoISO),
+      // install_unlocks supersedes copy_usage_effects (Installation-SyncUp.md
+      // Stage 1.5) - it's the shared ledger across web/CLI/MCP now, not just
+      // web copies, so "copies" here is really "installs" going forward.
       supabase
-        .from("copy_usage_effects")
+        .from("install_unlocks")
         .select("usage_date")
         .gte("usage_date", thirtyDaysAgoDate),
-      supabase.from("copy_usage_effects").select("effect_slug"),
+      supabase.from("install_unlocks").select("effect_slug"),
       supabase.from("wishlisted_effects").select("effect_slug"),
       // is_test excluded - those are admin-generated sample bills, not real revenue.
       supabase
@@ -63,7 +66,7 @@ export async function GET() {
         .eq("is_test", false)
         .gte("created_at", thirtyDaysAgoISO),
       supabase
-        .from("copy_usage_effects")
+        .from("install_unlocks")
         .select("clerk_user_id", { count: "exact", head: true })
         .eq("usage_date", utcDateString(0)),
       getAllSanityEffectEntries(),

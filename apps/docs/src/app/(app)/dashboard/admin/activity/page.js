@@ -3,14 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowUpRight, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
 import { LineTrendChart } from "@/components/admin/charts/LineTrendChart";
 import { BarRankChart } from "@/components/admin/charts/BarRankChart";
 import { DonutChart } from "@/components/admin/charts/DonutChart";
 import { buildUserActivitySlug } from "@/lib/user-slug";
+import { InstallActivityTab } from "./InstallActivityTab";
 
 const USERS_PER_PAGE = 10;
+
+const TABS = [
+  { id: "overview", label: "Overview" },
+  { id: "installs", label: "Installs & Copies" },
+];
 
 function formatDate(value) {
   if (!value) return "-";
@@ -73,6 +79,7 @@ function PlanBadge({ plan }) {
 }
 
 export default function AdminActivityPage() {
+  const [activeTab, setActiveTab] = useState("overview");
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -150,14 +157,35 @@ export default function AdminActivityPage() {
   return (
     <div className="space-y-6">
       <div>
-        
-
-        <h1 className="text-2xl font-semibold">User Activity</h1>
+        <h1 className="text-2xl font-semibold">Activity</h1>
         <p className="mt-1 text-sm text-white/50">
-          Site-wide usage trends and per-user drill-down.
+          {activeTab === "overview"
+            ? "Site-wide usage trends and per-user drill-down."
+            : "Every effect delivery across web, CLI, and MCP — one shared ledger."}
         </p>
       </div>
 
+      <div className="flex gap-2 border-b border-white/10">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={`px-4 py-2.5 text-sm font-medium transition border-b-2 -mb-px ${
+              activeTab === tab.id
+                ? "border-[#ff5f00] text-white"
+                : "border-transparent text-white/50 hover:text-white/80"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === "installs" && <InstallActivityTab />}
+
+      {activeTab === "overview" && (
+      <>
       {error && (
         <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           {error}
@@ -379,6 +407,8 @@ export default function AdminActivityPage() {
           </div>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }

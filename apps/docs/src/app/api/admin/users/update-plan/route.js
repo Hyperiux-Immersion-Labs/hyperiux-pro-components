@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertAdmin } from "@/lib/admin";
+import { assertSuperAdmin } from "@/lib/admin";
 import { sendEmail } from "@/lib/resend";
 import {
   renderProUnlockedEmail,
@@ -34,7 +34,7 @@ const PLAN_LABELS = {
 };
 
 export async function POST(request) {
-  if (!(await assertAdmin())) {
+  if (!(await assertSuperAdmin())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

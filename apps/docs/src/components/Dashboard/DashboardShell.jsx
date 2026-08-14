@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
 import Button from "../WebsiteComps/Button";
+import { useAdminRole } from "@/lib/useAdminRole";
 
 const BASE_TABS = [
   { label: "Overview", href: "/dashboard" },
@@ -14,13 +14,18 @@ const BASE_TABS = [
   { label: "Settings", href: "/dashboard/settings" },
 ];
 
-// Both admin-only, both gated by dashboard/admin/layout.js's requireAdmin()
-// check regardless of this tab list - hiding them here is a nav nicety, not
-// the actual access control.
+// Admin-only, gated by dashboard/admin/layout.js's requireAdmin() check
+// regardless of this tab list - hiding them here is a nav nicety, not the
+// actual access control.
 const ADMIN_TABS = [
   { label: "User Management", href: "/dashboard/admin" },
   { label: "Activity", href: "/dashboard/admin/activity" },
 ];
+
+// Payment detail across every user is a step up from what a regular admin
+// can already see - restricted to super admins both here and (the real
+// gate) in api/admin/invoices/route.js's assertSuperAdmin() check.
+const SUPER_ADMIN_TABS = [{ label: "Invoicing", href: "/dashboard/admin/invoicing" }];
 
 // Usage and Invoicing are customer-account concepts (daily copy limits,
 // personal billing) - an admin has neither, so surfacing them would just
@@ -30,13 +35,14 @@ const ADMIN_HIDDEN_TABS = new Set(["/dashboard/usage", "/dashboard/invoicing"]);
 export function DashboardShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useUser();
+  const { isAdmin, isSuperAdmin } = useAdminRole();
 
-  const isAdmin = user?.publicMetadata?.role === "admin";
   const visibleBaseTabs = isAdmin
     ? BASE_TABS.filter((tab) => !ADMIN_HIDDEN_TABS.has(tab.href))
     : BASE_TABS;
-  const tabs = isAdmin ? [...visibleBaseTabs, ...ADMIN_TABS] : visibleBaseTabs;
+  const tabs = isAdmin
+    ? [...visibleBaseTabs, ...ADMIN_TABS, ...(isSuperAdmin ? SUPER_ADMIN_TABS : [])]
+    : visibleBaseTabs;
 
   // Longest-matching href wins, so a nested route (e.g. /dashboard/admin/activity)
   // lights up only its own tab instead of also lighting up an ancestor tab

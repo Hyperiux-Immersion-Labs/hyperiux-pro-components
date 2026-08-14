@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export function CliAuthClient({ isPro }) {
+export function CliAuthClient({ plan }) {
+  const isPro = plan === "pro";
   const [token, setToken] = useState(null);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,42 +32,28 @@ export function CliAuthClient({ isPro }) {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  if (!isPro) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center px-6">
-        <div className="max-w-md w-full text-center space-y-6">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
-            <svg className="w-7 h-7 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </div>
-          <div>
-            <h1 className="text-2xl font-semibold text-white mb-2">Pro Required</h1>
-            <p className="text-white/60 text-sm leading-relaxed">
-              CLI tokens are available to Hyperiux Pro subscribers. Subscribe to unlock all 115 effects via CLI.
-            </p>
-          </div>
-          <Link
-            href="/pricing"
-            className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-white text-black font-semibold text-sm hover:bg-white/90 transition-colors"
-          >
-            Upgrade to Pro
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-6">
       <div className="max-w-lg w-full space-y-8">
         <div className="text-center space-y-2">
-          <p className="text-xs font-semibold tracking-widest uppercase text-white/40">Hyperiux Pro</p>
+          <p className="text-xs font-semibold tracking-widest uppercase text-white/40">
+            {isPro ? "Hyperiux Pro" : "Hyperiux"}
+          </p>
           <h1 className="text-3xl font-semibold text-white">CLI Token</h1>
           <p className="text-white/60 text-sm leading-relaxed">
             Generate a token, then paste it when prompted by{" "}
             <code className="text-white/80 bg-white/10 px-1.5 py-0.5 rounded text-xs">npx hyperiux login</code>.
           </p>
+          {!isPro && (
+            <p className="text-white/40 text-xs leading-relaxed">
+              Logging in raises your daily CLI/MCP limit from 1 to 3 effects, shared with
+              your website usage. Pro effects and a 10/day limit need{" "}
+              <Link href="/pricing" className="text-white/70 underline hover:text-white">
+                a Pro subscription
+              </Link>
+              .
+            </p>
+          )}
         </div>
 
         {!token ? (
@@ -139,7 +126,9 @@ export function CliAuthClient({ isPro }) {
         )}
 
         <p className="text-center text-white/30 text-xs">
-          Each token is tied to your Pro subscription. It stops working if you cancel.
+          {isPro
+            ? "Each token is tied to your Pro subscription. It stops working if you cancel."
+            : "Each token is tied to your account. Upgrading to Pro later raises its limit automatically."}
         </p>
       </div>
     </div>
