@@ -91,7 +91,7 @@ function hash(x, y, seed) {
  * drive it without re-rendering React on every scroll tick.
  */
 const AsciiMorphIcon = forwardRef(function AsciiMorphIcon(
-  { sources, className = "" },
+  { sources, className = "", fit = "cover" },
   ref,
 ) {
   const canvasRef = useRef(null);
@@ -102,7 +102,12 @@ const AsciiMorphIcon = forwardRef(function AsciiMorphIcon(
     grids: [],
     fields: [],
     failed: [],
+    count: sources.length,
     step: 0,
+    // Which source the ASCII renders, when that is not simply `step`. Null
+    // follows `step`; set it to hold the dissolve on one shape while a
+    // different crisp source is still on screen underneath.
+    grid: null,
     morph: 0,
     cols: 0,
     rows: 0,
@@ -120,13 +125,15 @@ const AsciiMorphIcon = forwardRef(function AsciiMorphIcon(
 
     const state = stateRef.current;
     const list = srcKey.split("|");
+    state.count = list.length;
     state.grids = list.map(() => null);
     state.fields = list.map(() => null);
     state.failed = list.map(() => false);
 
     let disposed = false;
 
-    /** Samples one source into a cols×rows ramp grid, framed like object-cover. */
+    /** Samples one source into a cols×rows ramp grid, framed like the CSS `fit`
+     *  the stacked images use, so the ASCII lands exactly on the art. */
     const buildGrid = (image, index) => {
       const { cols, rows } = state;
       if (!cols || !rows || !image.complete || !image.naturalWidth) return;
@@ -136,7 +143,8 @@ const AsciiMorphIcon = forwardRef(function AsciiMorphIcon(
       probe.height = rows;
       const probeCtx = probe.getContext("2d", { willReadFrequently: true });
 
-      const scale = Math.max(cols / image.naturalWidth, rows / image.naturalHeight);
+      const frame = fit === "contain" ? Math.min : Math.max;
+      const scale = frame(cols / image.naturalWidth, rows / image.naturalHeight);
       const dw = image.naturalWidth * scale;
       const dh = image.naturalHeight * scale;
       probeCtx.drawImage(image, (cols - dw) / 2, (rows - dh) / 2, dw, dh);
@@ -175,7 +183,7 @@ const AsciiMorphIcon = forwardRef(function AsciiMorphIcon(
       image.onload = () => {
         if (disposed) return;
         buildGrid(image, index);
-        if (index === state.step) state.draw?.();
+        if (index === (state.grid ?? state.step)) state.draw?.();
       };
       image.onerror = () => {
         if (!disposed) state.failed[index] = true;
@@ -189,7 +197,7 @@ const AsciiMorphIcon = forwardRef(function AsciiMorphIcon(
     const draw = () => {
       const { ctx, grids, fields, cols, rows, cell, morph, color, cssWidth, cssHeight } =
         state;
-      const active = resolveStep(state, state.step);
+      const active = resolveStep(state, state.grid ?? state.step);
       const grid = grids[active];
       const field = fields[active];
       if (!ctx || !grid || !field) return;
@@ -269,32 +277,47 @@ const AsciiMorphIcon = forwardRef(function AsciiMorphIcon(
         image.onload = null;
       });
     };
-  }, [srcKey]);
+  }, [srcKey, fit]);
 
   useImperativeHandle(ref, () => {
-    /** Keeps the stacked images in sync with the active step and morph. */
+    /** Keeps the stacked images in sync with the active step and morph. The
+     *  crisp image on screen follows `step`; the dissolve on top of it follows
+     *  `grid`, which is usually the same source but need not be. */
     const paint = () => {
       const state = stateRef.current;
       const canvas = canvasRef.current;
-      const active = resolveStep(state, state.step);
-      const usable = state.grids[active] ? state.morph : 0;
+      const shown = resolveStep(state, state.step);
+      const drawn = resolveStep(state, state.grid ?? state.step);
+      const usable = state.grids[drawn] ? state.morph : 0;
 
       if (canvas) canvas.style.opacity = `${usable}`;
       imagesRef.current.forEach((image, index) => {
         if (image) {
-          image.style.opacity = index === active ? `${1 - usable}` : "0";
+          image.style.opacity = index === shown ? `${1 - usable}` : "0";
         }
       });
 
       if (usable > 0) state.draw?.();
     };
 
+    /** Clamped against the source count rather than the grids, which are still
+     *  empty while a parent's layout effect is wiring the scroll up. */
+    const clamp = (index) =>
+      Math.min(Math.max(index, 0), stateRef.current.count - 1);
+
     return {
       setStep(index) {
         const state = stateRef.current;
-        const next = Math.min(Math.max(index, 0), state.grids.length - 1);
+        const next = clamp(index);
         if (next === state.step) return;
         state.step = next;
+        paint();
+      },
+      setGrid(index) {
+        const state = stateRef.current;
+        const next = index === null ? null : clamp(index);
+        if (next === state.grid) return;
+        state.grid = next;
         paint();
       },
       setMorph(value) {
@@ -320,7 +343,9 @@ const AsciiMorphIcon = forwardRef(function AsciiMorphIcon(
           aria-hidden="true"
           width={1000}
           height={1000}
-          className="absolute inset-0 h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full ${
+            fit === "contain" ? "object-contain" : "object-cover"
+          }`}
           style={{ opacity: index === 0 ? 1 : 0 }}
         />
       ))}

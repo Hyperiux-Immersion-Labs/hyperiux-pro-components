@@ -13,7 +13,9 @@ const GLYPH_SWAP_MS = 50;
 const randomGlyph = () =>
   SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
 
-function ScrambleText({ text, run }) {
+// Exported so other sections can play the navbar's exact write-on. `run` is an
+// object rather than a boolean on purpose — see the effect's dependency note.
+export function ScrambleText({ text, run }) {
   const charsRef = useRef([]);
   const active = run.active;
 
@@ -149,6 +151,7 @@ export default function HoverLinkV3({
   target_blank = false,
   onClick,
   ariaLabel,
+  leading,
   children,
 }) {
   const [run, setRun] = useState({ active: false, id: 0 });
@@ -186,6 +189,7 @@ export default function HoverLinkV3({
       aria-label={ariaLabel}
       className={`group flex items-center gap-[0.8vw] text-nowrap transition-colors duration-300 motion-reduce:transition-none [--link-flash:var(--primary)] [--link-pre:var(--primary)] ${className}`}
     >
+      {leading}
       <ScrambleText text={text} run={run} />
       {children}
     </Link>

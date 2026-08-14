@@ -107,24 +107,24 @@ export default function ExploreTheEffects() {
         <section
             ref={container}
             id="explore-the-effects"
-            className="w-full  my-[20vw] px-[3.5vw] max-md:my-24 max-md:px-[6vw] max-sm:px-[7vw]"
+            className="w-full  mb-[18vw] mt-[20vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-md:my-24 max-md:px-[6vw] max-sm:px-[7vw]"
         >
-            <div className="space-y-[2vw] max-md:space-y-[8vw] mb-[15vw] ">
-                <LineReveal as='h2' className="t96 font-neue-haas w-[60vw] mx-auto text-center max-md:w-full">
+            <div className="space-y-[2vw] max-[1025px]:space-y-[4vw] max-[1025px]:mb-[12vw] max-md:space-y-[8vw] mb-[15vw] ">
+                <LineReveal as='h2' className="t96 font-neue-haas w-[60vw] mx-auto text-center max-[1025px]:w-full max-md:w-full">
                     Explore the Moments Your Website is{" "}
                     <span className="gradient-text-animate">Missing.</span>
                 </LineReveal>
-                <SplitLine as='p' delay={.25} className="t22 w-[52vw] mx-auto text-center max-md:w-full max-md:text-[2.4vw] max-sm:text-[4vw]">
+                <SplitLine as='p' delay={.25} className="t22 w-[52vw] mx-auto text-center max-[1025px]:w-[85%] max-md:w-full max-md:text-[2.4vw] max-sm:text-[4vw]">
                     Vault is easiest to understand when you feel it. Preview a few
                     high-impact effects below, then open the full catalogue when you are
                     ready.
                 </SplitLine>
             </div>
-            <div className="mt-[8vw] flex items-start gap-[1.6vw] max-md:mt-16 max-md:flex-wrap  max-sm:flex-col max-sm:gap-8">
+            <div className="mt-[8vw] flex items-start gap-[1.6vw] max-[1025px]:mt-[10vw] max-[1025px]:gap-[2.5vw] max-md:mt-16 max-md:flex-wrap  max-sm:flex-col max-sm:gap-8">
                 {COLUMNS.map((column, columnIndex) => (
                     <div
                         key={columnIndex}
-                        className="explore-effects-column flex flex-1 flex-col gap-[3vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10"
+                        className="explore-effects-column flex flex-1 flex-col gap-[3vw] max-[1025px]:gap-[4vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10"
                     >
                         {column.map((effect, effectIndex) => (
                             <EffectBox

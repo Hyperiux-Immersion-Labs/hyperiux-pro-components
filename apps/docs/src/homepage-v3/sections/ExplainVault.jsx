@@ -1,13 +1,56 @@
 'use client'
+import { useEffect, useRef, useState } from 'react'
 import LinkButton from '@/components/WebsiteComps/LinkButton'
 import InstallationProcess from '../components/InstallationProcess'
 import TextFillPixelV3 from '../components/TextFillPixelV3'
+import ScrambleTextV3 from '../components/ScrambleTextV3'
 import { useFadeUp } from '@/components/Animations/gsapAnimations'
 
 const SOLUTION_TEXT = 'Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client launches. Preview the moment the interaction layer of a website, the moments people notice when they scroll, hover,  move, navigate, read, and explore.'
 
+const WORKFLOW_TEXT =
+    'That’s the whole workflow. The files land in your project. You change anything you want.'
+
 export default function ExplainVault() {
     useFadeUp()
+
+    const workflowRef = useRef(null)
+    const [armed, setArmed] = useState(false)
+    const [active, setActive] = useState(false)
+
+    useEffect(() => {
+        const line = workflowRef.current
+        if (!line) return
+
+        // Arming blanks the line, so it only happens once the reveal is close
+        // enough to follow immediately — the copy stays readable otherwise.
+        const armObserver = new IntersectionObserver(
+            (entries) => {
+                if (!entries[0]?.isIntersecting) return
+                armObserver.disconnect()
+                setArmed(true)
+            },
+            { rootMargin: '500px 0px' },
+        )
+
+        const revealObserver = new IntersectionObserver(
+            (entries) => {
+                if (!entries[0]?.isIntersecting) return
+                revealObserver.disconnect()
+                setActive(true)
+            },
+            { rootMargin: '0px 0px -15% 0px' },
+        )
+
+        armObserver.observe(line)
+        revealObserver.observe(line)
+
+        return () => {
+            armObserver.disconnect()
+            revealObserver.disconnect()
+        }
+    }, [])
+
     return (
         <section id='explain-vault' className='w-full mt-[-8vw] h-fit'>
 
@@ -38,17 +81,25 @@ export default function ExplainVault() {
                 stagger={40}
                 bandFraction={0.65}
                 settleBlend={0.45}
-                className="text-[8vw] leading-[1.18] sm:text-[5vw] md:text-[3.25vw]"
+                className="text-[8vw] leading-[1.18] sm:text-[5vw] md:text-[4.5vw] lg:text-[3.25vw]"
                 wrapperClassName="w-[90%] sm:w-[88%] md:w-[90%]"
                 containerClassName="py-[15vw] font-neue-haas max-md:py-24"
             />
-            <div className='w-full  h-fit px-[3vw]' id="code-block">
+            <div className='w-full  h-fit px-[3vw] max-[1025px]:px-[5vw]' id="code-block">
                 <InstallationProcess />
 
                 <div className='flex w-full justify-center max-md:justify-center mt-[2vw] max-md:mt-0'>
-                    <div className="text18 fadeup max-md:text-center text-light-grey font-geist-mono ">
-                        <span className="inline-block">That&apos;s the whole workflow. The files land in your project. You change anything you want.&nbsp;</span>
-                        <LinkButton underline={false} className='max-md:mt-[2vw]' href={"#Workflow"} shimmer tilted={false} showArrow text={"See How it Works"} />
+                    {/* No `fadeup` on this container: the scramble is this
+                        line's entrance, and a fade would run underneath it. */}
+                    <div
+                        ref={workflowRef}
+                        className="text18 max-md:text-center text-light-grey font-geist-mono [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] "
+                    >
+                        <ScrambleTextV3 text={WORKFLOW_TEXT} active={active} armed={armed} />
+                        &nbsp;
+                        <span className="fadeup inline-block">
+                            <LinkButton underline={false} className='max-md:mt-[2vw]' href={"#Workflow"} shimmer shimmerColor="var(--primary)" tilted={false} showArrow text={"See How it Works"} />
+                        </span>
                     </div>
                 </div>
             </div>

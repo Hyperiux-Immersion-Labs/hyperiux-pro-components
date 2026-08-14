@@ -16,13 +16,13 @@ if (typeof window !== "undefined") {
 const USE_CASES_X_PERCENT = [110, 110, 110, 110, 110];
 
 const mark =
-  "pointer-events-none absolute size-[0.3vw] border-primary max-md:prim max-md:size-2 max-sm:size-1";
+  "pointer-events-none absolute size-[0.3vw] border-primary max-[1025px]:size-1.5 max-md:size-2 max-sm:size-1";
 
 function UseCaseBox({ item }) {
   return (
     <article className="use-case-box relative w-full -mt-px border border-grey ">
       {/* TITLE */}
-      <div className="relative border-b border-grey px-[2vw] py-[2.5vw] max-md:px-[4vw] max-md:py-[5vw] max-sm:px-[6vw] max-sm:py-[7vw]">
+      <div className="relative border-b border-grey px-[2vw] py-[2.5vw] max-[1025px]:px-[3vw] max-[1025px]:py-[3.5vw] max-md:px-[4vw] max-md:py-[5vw] max-sm:px-[6vw] max-sm:py-[7vw]">
         <span className={`${mark} -top-px -left-px border-t border-l`} />
         <span className={`${mark} -top-px -right-px border-t border-r`} />
         <span className={`${mark} -bottom-px -left-px border-b border-l`} />
@@ -34,8 +34,8 @@ function UseCaseBox({ item }) {
       </div>
 
       {/* BODY */}
-      <div className="flex flex-col justify-between gap-[4vw] px-[2vw] py-[2.5vw] max-md:gap-[7vw] max-md:px-[4vw] max-md:py-[5vw] max-sm:gap-[10vw] max-sm:px-[6vw] max-sm:py-[7vw]">
-        <p className="t22 font-neue-haas w-[80%] max-md:w-full leading-[1.35] max-md:text-[2.2vw] max-sm:text-[4vw]">
+      <div className="flex flex-col justify-between gap-[4vw] px-[2vw] py-[2.5vw] max-[1025px]:gap-[5vw] max-[1025px]:px-[3vw] max-[1025px]:py-[3.5vw] max-md:gap-[7vw] max-md:px-[4vw] max-md:py-[5vw] max-sm:gap-[10vw] max-sm:px-[6vw] max-sm:py-[7vw]">
+        <p className="t22 font-neue-haas w-[80%] max-[1025px]:w-full max-md:w-full leading-[1.35] max-md:text-[2.2vw] max-sm:text-[4vw]">
           {item.text}
         </p>
 
@@ -86,16 +86,16 @@ export default function UseCases({ useCases }) {
   return (
     <div
       ref={container}
-      className="h-fit w-full mt-[-15vw] max-md:pb-[30vw]! flex justify-between self-padd items-start overflow-x-clip text-white max-md:mt-0 max-md:flex-col max-md:gap-[8vw]"
+      className="h-fit w-full mt-[-15vw] max-[1025px]:mt-0 max-[1025px]:flex-col max-[1025px]:gap-[6vw] max-[1025px]:pb-[20vw]! max-md:pb-[30vw]! flex justify-between self-padd items-start overflow-x-clip text-white max-md:mt-0 max-md:flex-col max-md:gap-[8vw]"
     >
-      <MaskTextReveal stagger={0.08} scrub={false} duration={2} className="w-[40vw] sticky top-[20vh] max-md:static max-md:w-full max-md:mb-[10vw]!">
+      <MaskTextReveal stagger={0.08} scrub={false} duration={2} className="w-[40vw] sticky top-[20vh] max-[1025px]:static max-[1025px]:w-full max-[1025px]:mb-[6vw]! max-md:static max-md:w-full max-md:mb-[10vw]!">
         <h2 className="t64 font-neue-haas max-md:text-[5.5vw] max-sm:text-[7.5vw]">
           For Developers, Founders, Agencies, and Teams That Need the Site to
           Feel as Premium as the Product.
         </h2>
       </MaskTextReveal>
 
-      <div className="h-full w-[43vw] flex flex-col max-md:w-full max-md:gap-[8vw] max-sm:gap-[10vw]">
+      <div className="h-full w-[43vw] flex flex-col max-[1025px]:w-full max-[1025px]:gap-[6vw] max-md:w-full max-md:gap-[8vw] max-sm:gap-[10vw]">
         {/* BOXES */}
         {useCases.map((item) => (
           <UseCaseBox key={item.id} item={item} />

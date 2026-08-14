@@ -90,7 +90,7 @@ export default function LinkButton({
     if (!els.length) return;
     if (paused) {
       shimmerTl.current?.pause();
-      gsap.set(els, { color: "#ffffff", WebkitTextFillColor: "#ffffff" });
+      gsap.set(els, { color: shimmerColor, WebkitTextFillColor: shimmerColor });
     } else {
       gsap.set(els, { color: "transparent", WebkitTextFillColor: "transparent" });
       shimmerTl.current?.resume();

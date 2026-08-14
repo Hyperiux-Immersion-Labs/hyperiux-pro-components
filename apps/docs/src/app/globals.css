@@ -643,6 +643,63 @@ h4 {
   }
 }
 
+/* Pro badge squares: hard on/off white flicker that settles back to orange. */
+@keyframes pixel-glitch-flash {
+  0%,
+  18%,
+  34%,
+  56%,
+  78%,
+  100% {
+    opacity: 0;
+  }
+  9%,
+  26%,
+  45%,
+  67% {
+    opacity: 1;
+  }
+}
+
+/* The square itself only exists on hover — it stutters in, then holds. */
+@keyframes pixel-glitch-in {
+  0%,
+  22%,
+  44% {
+    opacity: 0;
+  }
+  11%,
+  33%,
+  55%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.pixel-glitch-cell,
+.pixel-glitch-square {
+  opacity: 0;
+}
+
+.pricing-v3-card:hover .pixel-glitch-square {
+  animation: pixel-glitch-in 0.45s steps(1, end) both;
+}
+
+.pricing-v3-card:hover .pixel-glitch-cell {
+  animation: pixel-glitch-flash 0.62s steps(1, end) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-v3-card:hover .pixel-glitch-cell {
+    animation: none;
+  }
+
+  .pricing-v3-card:hover .pixel-glitch-square {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 /* Prevent hero flash before the loader canvas is ready on first visit.
    The inline script in layout.js adds this class synchronously. Loader.jsx removes it
    in useLayoutEffect (before first paint) once the canvas is in the DOM. */

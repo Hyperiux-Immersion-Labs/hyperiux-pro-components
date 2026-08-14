@@ -43,11 +43,17 @@ function Dash() {
   return <span className="text-white/25 text-[1.1vw] max-[1025px]:text-base">-</span>;
 }
 
-function Cell({ value, highlight = false }) {
-  if (value === true) return <span className="text-white"><Tick /></span>;
+function Cell({ value, isPro = false, highlight = false }) {
+  if (value === true) {
+    return (
+      <span className={isPro ? "text-primary" : "text-white/50"}>
+        <Tick />
+      </span>
+    );
+  }
   if (!value) return <Dash />;
   return (
-    <span className={`text24 max-[1025px]:text-[3.5vw] max-md:text-sm leading-snug ${highlight ? "text-[#ff5f00] font-medium" : "text-white/50"}`}>
+    <span className={`text24 max-[1025px]:text-[3.5vw] max-md:text-sm leading-snug ${highlight ? "text-primary font-medium" : "text-white/50"}`}>
       {value}
     </span>
   );
@@ -66,7 +72,7 @@ export default function PricingCompareTable() {
       </LineReveal>
 
       {/* Table card */}
-      <div className="w-full h-fit max-[1025px]:overflow-x-scroll max-[1025px]:pb-[7vw] max-[1025px]:px-[7vw] fadeup">
+      <div className="w-full font-neue-haas! h-fit max-[1025px]:overflow-x-scroll max-[1025px]:pb-[7vw] max-[1025px]:px-[7vw] fadeup">
         <div className="mx-auto w-full max-w-[82vw] border border-white/8 overflow-hidden  max-md:max-w-[240vw] max-md:w-[240vw] max-[1025px]:max-w-[150vw] max-[1025px]:w-[150vw]">
 
           {/* Column headers */}
@@ -96,7 +102,7 @@ export default function PricingCompareTable() {
                 <Cell value={row.free} />
               </span>
               <span className="flex items-center justify-center text-center">
-                <Cell value={row.pro} highlight={row.proHighlight} />
+                <Cell value={row.pro} isPro highlight={row.proHighlight} />
               </span>
             </div>
           ))}

@@ -22,6 +22,15 @@ const fragmentShader = `
   uniform vec2 uResolution;
   uniform float uTime;
   uniform vec2 uMousePos;
+  uniform vec2 uMouseVel;
+  uniform float uMouseSpeed;
+  uniform float uRadius;
+  uniform float uStrength;
+  uniform float uAmbient;
+  uniform float uVelBoost;
+  uniform float uSmear;
+  uniform float uSwirl;
+  uniform float uPunch;
   uniform sampler2D uSourceImage;
   uniform vec2 uImageRes;
 
@@ -79,12 +88,37 @@ const fragmentShader = `
 
     vec2 mPos = uMousePos;
 
-    float dist = ease(
-      max(0.0, 1.0 - length(st * aspectVec - mPos * aspectVec) * 0.5)
-    );
+    /*
+      Localised falloff around the cursor. The old formula (1.0 - d * 0.5)
+      only reached zero two units away, so every pixel got roughly the same
+      push and the field read as ambient noise instead of as a reaction to
+      the pointer. smoothstep over uRadius gives a real hot spot, and the
+      contrast against the calm surroundings is what makes it feel alive.
+    */
+    vec2 rel = (st - mPos) * aspectVec;
+    float dist = ease(smoothstep(uRadius, 0.0, length(rel)));
+
+    /*
+      Twist the space around the cursor before the flow field runs, so the
+      pixels orbit the pointer rather than only sliding past it.
+    */
+    float swirlAng = uSwirl * dist;
+    float sc = cos(swirlAng);
+    float ss = sin(swirlAng);
+    st = mPos + (mat2(sc, -ss, ss, sc) * rel) / aspectVec;
+
+    // Smear along the direction the pointer is travelling - the drag trail.
+    st += uMouseVel * uSmear * dist;
 
     float sprd = (0.1580 + 0.01) / ((aspectRatio + 1.0) / 2.0);
-    float amt = (1.0000 * 3.0) * 0.015 * dist;
+
+    /*
+      uAmbient keeps the whole image breathing when the pointer is nowhere
+      near; the cursor term rides on top of it and scales with how fast the
+      pointer is moving, so flicking across the footer whips the field.
+    */
+    float amt =
+      (uAmbient + uStrength * dist * (1.0 + uMouseSpeed * uVelBoost)) * 0.015;
 
     vec2 invPos = vec2(0.5);
     float freq = 5.0 * sprd;
@@ -103,7 +137,10 @@ const fragmentShader = `
       st += vec2(cos(ang), sin(ang)) * amt;
     }
 
-    return mix(uv, clamp(st, 0.0, 1.0), 0.5100);
+    // Lean harder on the distorted sample near the cursor.
+    float blend = clamp(0.5100 + dist * uPunch, 0.0, 1.0);
+
+    return mix(uv, clamp(st, 0.0, 1.0), blend);
   }
 
   void main() {
@@ -146,16 +183,35 @@ const fragmentShader = `
 function FlowFieldPlane({
   texturePath = "/assets/textures/orange-1.webp",
   imageResolution = [500, 500],
-  mouseLerp = 0.05,
+  // Higher = the hot spot keeps up with the cursor instead of trailing it.
+  mouseLerp = 0.11,
   timeSpeed = 0.0002,
+  // Radius of the cursor's influence, in aspect-corrected UV units.
+  mouseRadius = 0.85,
+  // Peak flow amplitude added at the cursor.
+  interactionStrength = 2.0,
+  // Flow amplitude that stays on everywhere, pointer or not.
+  ambientStrength = 1.2,
+  // How much extra amplitude a fast pointer adds on top.
+  velocityBoost = 0.9,
+  // Length of the drag trail left behind a moving pointer.
+  smearStrength = 0.045,
+  // Rotation (radians) applied to the space around the cursor.
+  swirlStrength = 0.4,
+  // Extra weight given to the distorted sample near the cursor.
+  punch = 0.18,
+  // Scales raw pointer lag into the 0..1 speed the shader reads.
+  velocityScale = 8,
 }) {
   const materialRef = useRef(null);
 
   const texture = useTexture(texturePath);
-  const { size } = useThree();
+  const { size, gl } = useThree();
 
   const mouseRef = useRef(new THREE.Vector2(0.5, 0.5));
   const targetMouseRef = useRef(new THREE.Vector2(0.5, 0.5));
+  const velocityRef = useRef(new THREE.Vector2(0, 0));
+  const velocityScratch = useRef(new THREE.Vector2(0, 0));
   const elapsedRef = useRef(0);
 
   const uniforms = useMemo(
@@ -168,6 +224,33 @@ function FlowFieldPlane({
       },
       uMousePos: {
         value: new THREE.Vector2(0.5, 0.5),
+      },
+      uMouseVel: {
+        value: new THREE.Vector2(0, 0),
+      },
+      uMouseSpeed: {
+        value: 0,
+      },
+      uRadius: {
+        value: 0.85,
+      },
+      uStrength: {
+        value: 2.0,
+      },
+      uAmbient: {
+        value: 1.2,
+      },
+      uVelBoost: {
+        value: 0.9,
+      },
+      uSmear: {
+        value: 0.045,
+      },
+      uSwirl: {
+        value: 0.4,
+      },
+      uPunch: {
+        value: 0.18,
       },
       uSourceImage: {
         value: texture,
@@ -235,9 +318,23 @@ function FlowFieldPlane({
   }, [texture, imageResolution]);
 
   useEffect(() => {
+    const canvas = gl.domElement;
+
     const handlePointerMove = (event) => {
-      targetMouseRef.current.x = event.clientX / window.innerWidth;
-      targetMouseRef.current.y = 1 - event.clientY / window.innerHeight;
+      /*
+        Map into the canvas' own box, not the viewport. This section is only
+        65vw tall and sits well down the page, so normalising by
+        window.innerWidth/innerHeight put the hot spot nowhere near the
+        cursor - the main reason the interaction read as weak. Listening on
+        window (rather than the canvas) is deliberate: the field starts
+        reacting as the pointer approaches from outside, and coordinates
+        outside 0..1 simply fall off through the shader's smoothstep.
+      */
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      targetMouseRef.current.x = (event.clientX - rect.left) / rect.width;
+      targetMouseRef.current.y = 1 - (event.clientY - rect.top) / rect.height;
     };
 
     window.addEventListener("pointermove", handlePointerMove, {
@@ -247,13 +344,29 @@ function FlowFieldPlane({
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
     };
-  }, []);
+  }, [gl]);
 
   useFrame((_, delta) => {
     const material = materialRef.current;
     if (!material) return;
 
-    mouseRef.current.lerp(targetMouseRef.current, mouseLerp);
+    const target = targetMouseRef.current;
+    const mouse = mouseRef.current;
+
+    /*
+      How far the cursor has run ahead of the smoothed position is a free
+      proxy for pointer velocity - no per-event bookkeeping or timestamps
+      needed, and it decays on its own once the pointer stops.
+    */
+    const velocity = velocityScratch.current
+      .set(target.x - mouse.x, target.y - mouse.y)
+      .multiplyScalar(velocityScale);
+
+    if (velocity.lengthSq() > 1) velocity.normalize();
+
+    velocityRef.current.lerp(velocity, 0.12);
+
+    mouse.lerp(target, mouseLerp);
 
     /*
       Accumulate from a clamped delta rather than reading performance.now().
@@ -264,7 +377,17 @@ function FlowFieldPlane({
     elapsedRef.current += Math.min(delta, 0.1) * 1000 * timeSpeed;
 
     material.uniforms.uTime.value = elapsedRef.current;
-    material.uniforms.uMousePos.value.copy(mouseRef.current);
+    material.uniforms.uMousePos.value.copy(mouse);
+    material.uniforms.uMouseVel.value.copy(velocityRef.current);
+    material.uniforms.uMouseSpeed.value = velocityRef.current.length();
+
+    material.uniforms.uRadius.value = mouseRadius;
+    material.uniforms.uStrength.value = interactionStrength;
+    material.uniforms.uAmbient.value = ambientStrength;
+    material.uniforms.uVelBoost.value = velocityBoost;
+    material.uniforms.uSmear.value = smearStrength;
+    material.uniforms.uSwirl.value = swirlStrength;
+    material.uniforms.uPunch.value = punch;
   });
 
   return (

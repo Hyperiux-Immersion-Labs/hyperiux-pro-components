@@ -10,6 +10,7 @@ import CubeBackgroundAscii from "../components/CubeBackgroundAscii";
 import ButtonV3 from "../components/ButtonV3";
 import { useLoaderV3Complete } from "../components/loader-v3-state";
 import { prefersReducedMotion } from "@/lib/motion";
+import { unlockScrollV3, useScrollLockLenis } from "../components/scroll-lock-v3";
 import { useFadeIn, useFadeUp } from "@/components/Animations/gsapAnimations";
 
 if (typeof window !== "undefined") {
@@ -40,8 +41,9 @@ export default function Hero() {
     const headingRef = useRef(null);
     const copyRef = useRef(null);
     const actionsRef = useRef(null);
-
     const loaderComplete = useLoaderV3Complete();
+
+    useScrollLockLenis();
 
     // Drives the ASCII field's own entry reveal, mutated by GSAP and read by
     // the shader every frame. Starts at 0 — nothing drawn — which is what holds
@@ -69,6 +71,9 @@ export default function Hero() {
 
     useGSAP(
         () => {
+            // Deliberately not gated on a Lenis instance: this timeline is what
+            // releases the scroll lock, so it must run even on a page where
+            // Lenis never mounts (reduced motion turns it off entirely).
             if (!loaderComplete || prefersReducedMotion()) return;
 
             const heading = SplitText.create(headingRef.current, {
@@ -128,13 +133,24 @@ export default function Hero() {
                 )
                 .to(
                     actionsRef.current,
-                    { y: 0, autoAlpha: 1, duration: 0.7 },
+                    {
+                        y: 0,
+                        autoAlpha: 1,
+                        duration: 0.7,
+                        // The last beat of the intro — scroll is handed back
+                        // here, not when the loader leaves, so the copy is not
+                        // still arriving while the hero recedes underneath it.
+                        onComplete: unlockScrollV3,
+                    },
                     AT_ACTIONS
                 );
 
             return () => {
                 heading.revert();
                 copy.revert();
+                // Torn down mid-intro: nothing else is going to reach the
+                // onComplete above, so give the page back now.
+                unlockScrollV3();
             };
         },
         { dependencies: [loaderComplete], scope: rootRef }
@@ -189,24 +205,24 @@ export default function Hero() {
         >
             <div ref={layerRef} className="absolute  inset-0 origin-center max-md:w-full will-change-transform">
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
-                    <CubeBackgroundAscii debug intro={introRef} />
+                    <CubeBackgroundAscii intro={introRef} />
                 </div>
-                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[12vw] p-[3vw] max-md:items-end max-md:p-6 max-sm:p-5">
+                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[12vw] p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
                     {/* <div className="w-full bg-gradient-to-r pointer-events-none from-black/50 to-transparent h-full absolute inset-0" /> */}
-                    <div className="space-y-[2.5vw] relative z-10 w-full max-md:space-y-8 max-sm:space-y-11">
+                    <div className="space-y-[2.5vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-8 max-sm:space-y-11">
                         <div className="flex flex-col h-fit font-neue-haas w-full items-start max-sm:gap-2 max-md:gap-5">
-                            <h1 ref={headingRef} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[60vw] max-md:mt-0 max-md:w-[85%] max-sm:w-full">
+                            <h1 ref={headingRef} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[60vw] max-[1025px]:mt-0 max-[1025px]:w-[85%] max-md:mt-0 max-md:w-[85%] max-sm:w-full">
                                 The Interaction Layer your Website is <span className="gradient-text-animate">Missing.</span>
                             </h1>
                         </div>
 
-                        <p ref={copyRef} className="t22 text-secondary w-[40vw] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left">
+                        <p ref={copyRef} className="t22 text-secondary w-[40vw] max-[1025px]:w-[75%] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left">
                             100+ copy-paste effects for React & Next.js. Scroll, cursor, text, and WebGL interactions, preview and install with the CLI.
                         </p>
 
                         <div
                             ref={actionsRef}
-                            className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-md:pb-[5vw] max-md:w-full max-md:gap-5"
+                            className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-[1025px]:gap-[2.5vw] max-md:pb-[5vw] max-md:w-full max-md:gap-5"
                         >
                             <ButtonV3
                                 text="Browse Effects"

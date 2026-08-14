@@ -1,10 +1,11 @@
 "use client";
 
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import ButtonV3 from "../components/ButtonV3";
+import { ScrambleText } from "../components/HoverLinkV3";
 import LineReveal from "@/components/Animations/LineReveal";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 
@@ -94,12 +95,12 @@ function CheckSquare({ className = "", onDark = false }) {
 
 function FeatureList({ features, className = "", onDark = false }) {
     return (
-        <ul className={`flex flex-col gap-[1.2vw] max-md:gap-[3vw] max-sm:gap-[4.5vw] ${className}`}>
+        <ul className={`flex flex-col gap-[1.2vw] max-[1025px]:gap-[2.5vw] max-md:gap-[3vw] max-sm:gap-[4.5vw] ${className}`}>
             {features.map((feature) => (
-                <li key={feature} className="flex items-start gap-[1vw] max-md:gap-[2.5vw] max-sm:gap-[3.5vw]">
+                <li key={feature} className="flex items-start gap-[1vw] max-[1025px]:gap-[2vw] max-md:gap-[2.5vw] max-sm:gap-[3.5vw]">
                     <CheckSquare
                         onDark={onDark}
-                        className="mt-[0.25vw] size-[1.1vw] max-md:mt-[0.6vw] max-md:size-[2.4vw] max-sm:mt-[0.8vw] max-sm:size-[4vw]"
+                        className="mt-[0.25vw] size-[1.1vw] max-[1025px]:mt-[0.6vw] max-[1025px]:size-[2.2vw] max-md:mt-[0.6vw] max-md:size-[2.4vw] max-sm:mt-[0.8vw] max-sm:size-[4vw]"
                     />
                     <span className="text22 leading-[1.35] max-md:text-[2.2vw] max-sm:text-[4vw]">
                         {feature}
@@ -110,10 +111,41 @@ function FeatureList({ features, className = "", onDark = false }) {
     );
 }
 
+/**
+ * Four-square mark from the design. Hidden until its card is hovered, then the
+ * squares stutter in with a white/dark flicker — `flashClassName` picks the
+ * flash tone that reads against the card it sits on.
+ */
+function PixelSquares({ flashClassName }) {
+    return (
+        <span
+            aria-hidden="true"
+            className="absolute top-[1.5vw] right-[1.5vw] grid grid-cols-2 gap-[0.15vw] max-[1025px]:top-[3vw] max-[1025px]:right-[3vw] max-[1025px]:gap-[0.3vw] max-md:top-[4vw] max-md:right-[4vw] max-md:gap-[0.4vw] max-sm:gap-[0.6vw]"
+        >
+            {Array.from({ length: 4 }).map((_, i) => (
+                <span
+                    key={i}
+                    style={{ animationDelay: `${i * 70}ms` }}
+                    className="pixel-glitch-square relative size-[0.5vw] bg-primary max-[1025px]:size-[1vw] max-md:size-[1.2vw] max-sm:size-[1.8vw]"
+                >
+                    <span
+                        style={{ animationDelay: `${i * 70}ms` }}
+                        className={`pixel-glitch-cell absolute inset-0 ${flashClassName}`}
+                    />
+                </span>
+            ))}
+        </span>
+    );
+}
+
 function BillingToggle({ isYearly, onChange }) {
     return (
-        <div className="flex items-center gap-[1vw] text22 max-md:gap-[2.5vw] max-md:text-[2.2vw] max-sm:gap-[3.5vw] max-sm:text-[4vw]">
-            <button type="button" onClick={() => onChange(false)} className="cursor-pointer">
+        <div className="flex items-center gap-[1vw] text22 max-[1025px]:gap-[2vw] max-md:gap-[2.5vw] max-md:text-[2.2vw] max-sm:gap-[3.5vw] max-sm:text-[4vw]">
+            <button
+                type="button"
+                onClick={() => onChange(false)}
+                className={`cursor-pointer transition-colors ${!isYearly ? "text-primary" : ""}`}
+            >
                 Monthly
             </button>
 
@@ -123,7 +155,7 @@ function BillingToggle({ isYearly, onChange }) {
                 aria-checked={isYearly}
                 aria-label="Toggle billing cycle"
                 onClick={() => onChange(!isYearly)}
-                className="relative flex h-[1.5vw] w-[3vw] cursor-pointer items-center border border-background/20 bg-background/5 p-[0.2vw] max-md:h-[3.4vw] max-md:w-[6.8vw] max-md:p-[0.5vw] max-sm:h-[5.5vw] max-sm:w-[11vw] max-sm:p-[0.8vw]"
+                className="relative flex h-[1.5vw] w-[3vw] cursor-pointer items-center border border-background/20 bg-background/5 p-[0.2vw] max-[1025px]:h-[3vw] max-[1025px]:w-[6vw] max-[1025px]:p-[0.4vw] max-md:h-[3.4vw] max-md:w-[6.8vw] max-md:p-[0.5vw] max-sm:h-[5.5vw] max-sm:w-[11vw] max-sm:p-[0.8vw]"
             >
                 <span
                     className={`h-full w-1/2 bg-primary transition-transform duration-300 ${isYearly ? "translate-x-full" : "translate-x-0"
@@ -131,7 +163,11 @@ function BillingToggle({ isYearly, onChange }) {
                 />
             </button>
 
-            <button type="button" onClick={() => onChange(true)} className="cursor-pointer">
+            <button
+                type="button"
+                onClick={() => onChange(true)}
+                className={`cursor-pointer transition-colors ${isYearly ? "text-primary" : ""}`}
+            >
                 Yearly
             </button>
         </div>
@@ -141,8 +177,15 @@ function BillingToggle({ isYearly, onChange }) {
 export default function PricingV3() {
     const container = useRef(null);
     const [isYearly, setIsYearly] = useState(true);
+    // The yearly perk only scrambles in once the cards are on screen, so the
+    // write-on isn't spent while the section is still below the fold.
+    const [armed, setArmed] = useState(false);
 
     const plan = isYearly ? PLANS.yearly : PLANS.monthly;
+
+    // A fresh object identity restarts the write-on, so the perk replays every
+    // time the toggle lands back on yearly.
+    const perkRun = useMemo(() => ({ active: isYearly && armed }), [isYearly, armed]);
 
     // Both cards rise into place once, as the section scrolls in.
     useGSAP(
@@ -158,7 +201,12 @@ export default function PricingV3() {
                     duration: 0.8,
                     stagger: 0.12,
                     ease: "power3.out",
-                    scrollTrigger: { trigger: container.current, start: "top 75%", once: true },
+                    scrollTrigger: {
+                        trigger: container.current,
+                        start: "top 75%",
+                        once: true,
+                        onEnter: () => setArmed(true),
+                    },
                 },
             );
         },
@@ -178,24 +226,26 @@ export default function PricingV3() {
                     <span className="gradient-text-animate">Ready.</span>
                 </LineReveal>
 
-                <SplitLine delay={.25} as="p" className="text24 w-full  mx-auto mt-[1.5vw] text-background max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-[80vw] max-sm:text-[4vw]">
+                <SplitLine delay={.25} as="p" className="text24 w-full  mx-auto mt-[1.5vw] text-background max-[1025px]:mt-[3vw] max-[1025px]:w-[80vw] max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-[80vw] max-sm:text-[4vw]">
                     The free core stays free, forever. Pro unlocks everything and every new drop.
                 </SplitLine>
             </div>
 
             {/* TOGGLE */}
-            <div className="mt-[4vw] px-[8%] flex justify-end max-md:mt-[8vw] max-sm:mt-[12vw] max-sm:justify-center">
+            <div className="mt-[4vw] px-[8%] flex justify-end max-[1025px]:mt-[6vw] max-[1025px]:px-[5%] max-md:mt-[8vw] max-sm:mt-[12vw] max-sm:justify-center">
                 <BillingToggle isYearly={isYearly} onChange={setIsYearly} />
             </div>
 
             {/* CARDS */}
-            <div className="mt-[1.5vw] w-[85%] fadeup mx-auto flex items-stretch max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]">
+            <div className="mt-[1.5vw] w-[85%] fadeup mx-auto flex items-stretch max-[1025px]:mt-[4vw] max-[1025px]:w-[90%] max-[1025px]:flex-col-reverse max-[1025px]:gap-[5vw] max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]">
                 {/* FREE */}
-                <div className="pricing-v3-card  flex w-1/2 flex-col justify-between border border-background/15 px-[3vw] py-[3vw] max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
+                <div className="pricing-v3-card relative flex w-1/2 flex-col justify-between border border-background/15 px-[3vw] py-[3vw] max-[1025px]:w-full max-[1025px]:px-[4vw] max-[1025px]:py-[4.5vw] max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
+                    <PixelSquares flashClassName="bg-background" />
+
                     <div>
                         <p className="t64  max-md:text-[5vw] font-neue-haas max-sm:text-[7vw]">Free</p>
 
-                        <div className="mt-[1.5vw] flex items-end gap-[1vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
+                        <div className="mt-[1.5vw] flex items-end gap-[1vw] max-[1025px]:mt-[3vw] max-[1025px]:gap-[2vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
                             <p className="t96 font-neue-haas  leading-none max-md:text-[7vw] max-sm:text-[11vw]">
                                 $0
                             </p>
@@ -204,17 +254,17 @@ export default function PricingV3() {
                             </p>
                         </div>
 
-                        <p className="text22  mt-[1.5vw] text-background/70 max-md:mt-[3vw] max-md:text-[2.2vw] max-sm:mt-[5vw] max-sm:text-[4vw]">
+                        <p className="text22  mt-[1.5vw] text-background/70 max-[1025px]:mt-[3vw] max-md:mt-[3vw] max-md:text-[2.2vw] max-sm:mt-[5vw] max-sm:text-[4vw]">
                             For trying real effects in real projects.
                         </p>
 
                         <FeatureList
                             features={FREE_FEATURES}
-                            className="mt-[2.5vw] max-md:mt-[5vw] max-sm:mt-[8vw]"
+                            className="mt-[2.5vw] max-[1025px]:mt-[4vw] max-md:mt-[5vw] max-sm:mt-[8vw]"
                         />
                     </div>
 
-                    <div className="mt-[3vw] pb-[2.5vw] w-fit max-md:mt-[6vw] max-sm:mt-[10vw] max-sm:w-full">
+                    <div className="mt-[3vw] pb-[2.5vw] w-fit max-[1025px]:mt-[5vw] max-md:mt-[6vw] max-sm:mt-[10vw] max-sm:w-full">
                         <ButtonV3
                             variant="outline"
                             href="/effects/free"
@@ -225,24 +275,13 @@ export default function PricingV3() {
                 </div>
 
                 {/* PRO */}
-                <div className="pricing-v3-card relative flex w-1/2 flex-col justify-between bg-background px-[3vw] py-[3vw] text-foreground max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
-                    {/* Four-square mark, the Pro badge from the design */}
-                    <span
-                        aria-hidden="true"
-                        className="absolute top-[1.5vw] right-[1.5vw] grid grid-cols-2 gap-[0.15vw] max-md:top-[4vw] max-md:right-[4vw] max-md:gap-[0.4vw] max-sm:gap-[0.6vw]"
-                    >
-                        {Array.from({ length: 4 }).map((_, i) => (
-                            <span
-                                key={i}
-                                className="size-[0.5vw] bg-primary max-md:size-[1.2vw] max-sm:size-[1.8vw]"
-                            />
-                        ))}
-                    </span>
+                <div className="pricing-v3-card relative flex w-1/2 flex-col justify-between bg-background px-[3vw] py-[3vw] text-foreground max-[1025px]:w-full max-[1025px]:px-[4vw] max-[1025px]:py-[4.5vw] max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
+                    <PixelSquares flashClassName="bg-white" />
 
                     <div>
                         <p className="t64 font-neue-haas  max-md:text-[5vw] max-sm:text-[7vw]">Pro</p>
 
-                        <div className="mt-[1.5vw] flex items-end gap-[1vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
+                        <div className="mt-[1.5vw] flex items-end gap-[1vw] max-[1025px]:mt-[3vw] max-[1025px]:gap-[2vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
                             <p
                                 className="t96 font-neue-haas items-center  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]"
                                 aria-label={`$${plan.price} ${plan.label.toLowerCase()}`}
@@ -258,25 +297,26 @@ export default function PricingV3() {
                             </p>
 
                             <p
-                                className={`text22 mb-[0.4vw] text-primary transition-opacity duration-300 max-md:text-[2.2vw] max-sm:text-[4vw] ${isYearly ? "opacity-100 delay-300" : "opacity-0"
+                                aria-hidden={!isYearly}
+                                className={`text22 mb-[0.4vw] text-primary transition-opacity max-md:text-[2.2vw] max-sm:text-[4vw] [--link-flash:var(--primary)] [--link-pre:var(--primary)] ${isYearly ? "opacity-100 duration-0" : "opacity-0 duration-300"
                                     }`}
                             >
-                                3 months free
+                                <ScrambleText text="3 months free" run={perkRun} />
                             </p>
                         </div>
 
-                        <p className="text22  mt-[1.5vw] max-md:mt-[3vw] max-md:text-[2.2vw] max-sm:mt-[5vw] max-sm:text-[4vw]">
+                        <p className="text22  mt-[1.5vw] max-[1025px]:mt-[3vw] max-md:mt-[3vw] max-md:text-[2.2vw] max-sm:mt-[5vw] max-sm:text-[4vw]">
                             For developers, founders, and agencies shipping premium work.
                         </p>
 
                         <FeatureList
                             features={PRO_FEATURES}
                             onDark
-                            className="mt-[2.5vw] max-md:mt-[5vw] max-sm:mt-[8vw]"
+                            className="mt-[2.5vw] max-[1025px]:mt-[4vw] max-md:mt-[5vw] max-sm:mt-[8vw]"
                         />
                     </div>
 
-                    <div className="mt-[3vw] max-md:mt-[6vw] max-sm:mt-[10vw]">
+                    <div className="mt-[3vw] max-[1025px]:mt-[5vw] max-md:mt-[6vw] max-sm:mt-[10vw]">
                         <div className="w-fit max-sm:w-full">
                             <ButtonV3
                                 variant="orange"
@@ -286,7 +326,7 @@ export default function PricingV3() {
                             />
                         </div>
 
-                        <p className="font-geist-mono mt-[1.2vw] text-[0.9vw] text-light-grey max-md:mt-[3vw] max-md:text-[1.8vw] max-sm:mt-[5vw] max-sm:text-[3.2vw]">
+                        <p className="font-geist-mono mt-[1.2vw] text-[0.9vw] text-light-grey max-[1025px]:mt-[2.5vw] max-[1025px]:text-[1.7vw] max-md:mt-[3vw] max-md:text-[1.8vw] max-sm:mt-[5vw] max-sm:text-[3.2vw]">
                             Instant access · npx hyperiux login · Cancel anytime
                         </p>
                     </div>
@@ -294,7 +334,7 @@ export default function PricingV3() {
             </div>
 
             {/* FOOTNOTE */}
-            <SplitLine as="p" className="text32  mx-auto mt-[5vw] w-[52vw] text-center leading-[1.35] max-md:mt-[10vw] max-md:w-[75vw]  max-sm:mt-[14vw] max-sm:w-[90%] ">
+            <SplitLine as="p" className="text32  mx-auto mt-[5vw] w-[52vw] text-center leading-[1.35] max-[1025px]:mt-[8vw] max-[1025px]:w-[85%] max-md:mt-[10vw] max-md:w-[75vw]  max-sm:mt-[14vw] max-sm:w-[90%] ">
                 Cancel anytime. The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
             </SplitLine>

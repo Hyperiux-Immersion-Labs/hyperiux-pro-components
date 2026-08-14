@@ -10,11 +10,21 @@ import { CHAR_SETS } from "./char-sets";
  *   static  — churning random glyphs, thinned out as progress rises.
  *   reveal  — the wordmark shape, dithered in by the Bayer threshold.
  *
- * Exit is per-cell, not per-letter: the field bursts outward from the centre of
- * the screen, every cell shrinking as it travels its own ray, so the mark
- * breaks into particles that clear the viewport rather than the word
- * collapsing letter by letter. It hands off to the hero's own ASCII field,
- * which is fading up underneath while this is still in flight.
+ * There are two ways out, chosen by `mode`:
+ *
+ *   dock  — the whole field collapses onto the navbar's logo. One similarity
+ *           transform carries every cell, so the mark keeps its shape all the
+ *           way down and lands exactly on the rect the real svg will occupy,
+ *           which is what lets the two cross-fade as a single mark hardening.
+ *           The background static fades out ahead of it, so only the wordmark
+ *           is still travelling by the time it arrives.
+ *   burst — exit is per-cell, not per-letter: the field bursts outward from the
+ *           centre of the screen, every cell shrinking as it travels its own
+ *           ray, so the mark breaks into particles that clear the viewport
+ *           rather than the word collapsing letter by letter.
+ *
+ * Either way it hands off to the hero's own ASCII field, which is fading up
+ * underneath while this is still in flight.
  *
  * Every cell is drawn with a real alpha, so nothing pops on or off — cells are
  * batched by (colour, alpha step) through a counting sort, which keeps the
@@ -96,6 +106,40 @@ const EXIT_SPREAD = 0.35;
 const EXIT_RADIAL_BIAS = 0.55;
 // Background static clears a touch ahead of the wordmark.
 const EXIT_STATIC_LEAD = 0.25;
+
+// ── Dock ────────────────────────────────────────────────────────────────────
+// The other exit: the field is mapped onto the navbar's logo rect and the whole
+// map is walked in, so the mark scales down and travels to the corner as one
+// piece. Deliberately rigid — a per-cell stagger here would smear the wordmark
+// on the way over and it has to arrive still reading as itself, sitting on the
+// svg that replaces it.
+//
+// Easing lives on the scalar this reads (see LoaderV3), so nothing here has to
+// know how the travel is paced.
+//
+// How hard a cell churns glyphs while it travels. The shape is fixed by the
+// transform, so the churn is the only thing saying these are still characters.
+const DOCK_CHURN = 1.4;
+//
+// A glyph's ink is a fraction of its cell, so shrinking the field costs ink as
+// the *square* of the scale: transform the mark down to logo size untouched and
+// it arrives as a dim grey stipple, nothing like the solid svg it is supposed to
+// merge with. Two things put that back, both easing in over the travel:
+//
+// Glyphs stay larger than the cell they sit in, so neighbours overlap into
+// continuous strokes rather than a dot screen.
+const DOCK_GLYPH_SWELL = 1.6;
+// And the dither threshold is eased away, so the cells the Bayer matrix was
+// holding back fill in and the mark hardens toward a solid shape — which is
+// also what makes the swap to the real svg read as the same mark sharpening
+// rather than one thing being replaced by another.
+const DOCK_HARDEN = 1;
+//
+// The background static has its own scalar (`state.clear`) and goes first,
+// before the mark moves at all. Clearing it during the travel instead leaves
+// grey noise sliding across the screen behind the wordmark, which reads as the
+// whole page shrinking rather than the mark leaving the field behind — the
+// screen empties, and then one thing crosses it.
 
 // Glyph scale is quantised to this many steps, so a whole size's worth of
 // cells is drawn under one `ctx.font`. At rest every cell is at full size and
@@ -208,6 +252,16 @@ function monoFamily() {
 }
 
 /**
+ * The wordmark's resting box in viewport pixels — centred, and the frame the
+ * dock transform maps out of.
+ */
+function wordmarkBox(viewW, viewH) {
+  const w = Math.min(viewW * WORD_WIDTH_FACTOR, WORD_MAX_WIDTH);
+  const h = w * SVG_RATIO;
+  return { x: (viewW - w) / 2, y: (viewH - h) / 2, w, h };
+}
+
+/**
  * Rasterise the wordmark into a coverage buffer at grid resolution.
  */
 function buildCoverage(cols, rows, cellW, cellH, viewW, viewH, image) {
@@ -215,11 +269,11 @@ function buildCoverage(cols, rows, cellW, cellH, viewW, viewH, image) {
 
   if (!cols || !rows) return coverage;
 
-  // Compute the wordmark's pixel-space position (centered in the viewport)
-  const targetW = Math.min(viewW * WORD_WIDTH_FACTOR, WORD_MAX_WIDTH);
-  const targetH = targetW * SVG_RATIO;
-  const offsetX = (viewW - targetW) / 2;
-  const offsetY = (viewH - targetH) / 2;
+  const box = wordmarkBox(viewW, viewH);
+  const targetW = box.w;
+  const targetH = box.h;
+  const offsetX = box.x;
+  const offsetY = box.y;
 
   // Draw the SVG into a temporary canvas at grid resolution
   const source = document.createElement("canvas");
@@ -271,8 +325,14 @@ function buildCoverage(cols, rows, cellW, cellH, viewW, viewH, image) {
 /**
  * @param {HTMLCanvasElement} canvas
  * @param {object} state — mutated from outside: `progress` 0→1, `exit` 0→1
+ * @param {object} [options]
+ * @param {"dock"|"burst"} [options.mode] How the field leaves. `dock` needs a
+ *   target and falls back to `burst` when there is nothing to dock onto.
+ * @param {() => {x:number,y:number,w:number,h:number}|null} [options.dockTarget]
+ *   Rect the mark lands on, re-read whenever the grid is measured.
  */
-export function createAsciiLoaderField(canvas, state) {
+export function createAsciiLoaderField(canvas, state, options = {}) {
+  const { mode = "burst", dockTarget = null } = options;
   const ctx = canvas.getContext("2d", { alpha: true });
 
   let cols = 0;
@@ -283,6 +343,13 @@ export function createAsciiLoaderField(canvas, state) {
   let fontFamily = "";
 
   let coverage = null;
+
+  // Dock geometry, resolved with the grid. `dock` stays null when the mode is
+  // burst or the navbar's logo can't be found, and that null is what every
+  // dock branch below tests — the field simply bursts instead.
+  let box = null;
+  let dock = null;
+  let dockScale = 1;
 
   // Per-cell constants — stable for the lifetime of a grid size, which is what
   // keeps the field from re-rolling itself (and flickering) every frame.
@@ -394,11 +461,21 @@ export function createAsciiLoaderField(canvas, state) {
 
     fontFamily = monoFamily();
 
-    // Step 0 is the smallest a burst cell ever gets, the last step is resting
-    // size — see `scaleStepOf`, which is the inverse of this.
+    box = wordmarkBox(w, h);
+    dock = mode === "dock" && dockTarget ? dockTarget() : null;
+    // Both rects are the same artwork, so this one number is the whole dock:
+    // the ratio of the two boxes scales the glyphs and carries the cells.
+    dockScale = dock ? dock.w / box.w : 1;
+
+    // Step 0 is the smallest a cell ever gets — the far end of the burst, or
+    // logo size when docking — and the last step is resting size. See
+    // `scaleStepOf`, which is the inverse of this.
+    const minScale = dock
+      ? Math.min(dockScale * DOCK_GLYPH_SWELL, 1)
+      : EXIT_SCALE_MIN;
     scaleFonts = Array.from({ length: SCALE_STEPS }, (_, step) => {
       const t = step / (SCALE_STEPS - 1);
-      const scale = EXIT_SCALE_MIN + (1 - EXIT_SCALE_MIN) * t;
+      const scale = minScale + (1 - minScale) * t;
       return `${(fontSize * scale).toFixed(2)}px ${fontFamily}`;
     });
 
@@ -437,12 +514,32 @@ export function createAsciiLoaderField(canvas, state) {
     const seconds = now / 1000;
     const progress = clamp01(state.progress || 0);
     const exit = clamp01(state.exit || 0);
+    // Docking only: the background static's own fade, run to completion before
+    // `exit` starts moving the mark.
+    const clear = clamp01(state.clear || 0);
     const exitSpan = 1 - EXIT_SPREAD;
     const reveal = progress * (1 + SWEEP) * 1.12;
     const density = STATIC_DENSITY * (1 - progress * 0.62);
     // Burst distances are stored in half-diagonals; this is what turns them
     // back into pixels for the viewport we're actually painting.
     const span = Math.hypot(w, h) / 2;
+
+    // Docking is one similarity transform of the whole field, walked in by
+    // `exit`: every cell reads the same two numbers, so the mark holds its
+    // shape exactly and every cell shares a font bucket on the way down.
+    //
+    //   x = lerp(x, dock.x + (x - box.x) * dockScale, exit)
+    //
+    // expanded into scale-and-offset form so a cell costs one multiply-add.
+    const docking = dock !== null;
+    // How far the mark has hardened out of the dither. Squared: the ink only
+    // starts falling away once the thing is genuinely small, so filling in any
+    // earlier just fattens the wordmark while it is still full size.
+    const harden = docking ? exit * exit * DOCK_HARDEN : 0;
+    const dockZoom = docking ? 1 + (dockScale - 1) * exit : 1;
+    const dockX = docking ? exit * (dock.x - box.x * dockScale) : 0;
+    const dockY = docking ? exit * (dock.y - box.y * dockScale) : 0;
+    const dockStep = docking ? scaleStepOf(exit) : SCALE_STEPS - 1;
 
     let count = 0;
 
@@ -459,16 +556,23 @@ export function createAsciiLoaderField(canvas, state) {
         // alpha) is a straight ramp, so a cell leaves at constant velocity from
         // the instant its window opens, the way a thrown particle does. Easing
         // here is what would turn this back into a dissolve.
+        //
+        // Docking has no per-cell window for the mark — the whole thing travels
+        // together — so `wordExit` there is just the scalar, and only drives the
+        // churn. The static keeps its stagger either way, so it thins out
+        // raggedly rather than dimming as one sheet; docking just runs it off
+        // `clear`, which is finished before the mark starts moving.
         const cellDelay = delay[idx];
+        const staticClock = docking ? clear : exit * (1 + EXIT_STATIC_LEAD);
         const wordExit = exit === 0
           ? 0
-          : clamp01((exit - cellDelay * EXIT_SPREAD) / exitSpan);
-        const staticExit = exit === 0
-          ? 0
-          : clamp01(
-              (exit * (1 + EXIT_STATIC_LEAD) - cellDelay * EXIT_SPREAD) /
-                exitSpan
-            );
+          : docking
+            ? exit
+            : clamp01((exit - cellDelay * EXIT_SPREAD) / exitSpan);
+        const staticExit =
+          staticClock === 0
+            ? 0
+            : clamp01((staticClock - cellDelay * EXIT_SPREAD) / exitSpan);
 
         let kind = -1;
         let alpha = 0;
@@ -476,7 +580,7 @@ export function createAsciiLoaderField(canvas, state) {
 
         if (cover > 0.01) {
           // Wordmark cell — dithered in by the Bayer threshold, swept L→R
-          const threshold = BAYER_8[(row % 8) * 8 + (col % 8)] / 64;
+          const threshold = (BAYER_8[(row % 8) * 8 + (col % 8)] / 64) * (1 - harden);
           const edge =
             cover * (reveal - (col / cols) * SWEEP * 1.12) - threshold;
 
@@ -488,22 +592,37 @@ export function createAsciiLoaderField(canvas, state) {
             glyph = (col + row) % GLYPHS.length;
 
             if (wordExit > 0) {
-              alpha *= 1 - wordExit;
-              // Cool off the mark's orange as the cell travels, so what crosses
-              // the hero is grey particles rather than a second accent colour.
-              kind =
-                KIND_REVEAL +
-                Math.min(
-                  BURST_STEPS - 1,
-                  Math.round(wordExit * (BURST_STEPS - 1))
-                );
-              // Past a beat the letter stops holding its shape and the cell
-              // churns free — this is the "scatter" half of the dissolve.
-              if (wordExit > 0.1) {
+              if (docking) {
+                // The mark is landing on the navbar's logo, which is this same
+                // orange — so it neither cools nor thins on the way. It arrives
+                // at full strength and the svg takes over from there.
                 glyph =
-                  (hash(col + 17, row + 5, churnBucket(now, cell, wordExit)) *
+                  (hash(
+                    col + 17,
+                    row + 5,
+                    churnBucket(now, cell, wordExit * DOCK_CHURN)
+                  ) *
                     GLYPHS.length) |
                   0;
+              } else {
+                alpha *= 1 - wordExit;
+                // Cool off the mark's orange as the cell travels, so what
+                // crosses the hero is grey particles rather than a second
+                // accent colour.
+                kind =
+                  KIND_REVEAL +
+                  Math.min(
+                    BURST_STEPS - 1,
+                    Math.round(wordExit * (BURST_STEPS - 1))
+                  );
+                // Past a beat the letter stops holding its shape and the cell
+                // churns free — this is the "scatter" half of the dissolve.
+                if (wordExit > 0.1) {
+                  glyph =
+                    (hash(col + 17, row + 5, churnBucket(now, cell, wordExit)) *
+                      GLYPHS.length) |
+                    0;
+                }
               }
             }
           }
@@ -547,16 +666,25 @@ export function createAsciiLoaderField(canvas, state) {
         let y = cellY;
 
         const spread = kind === KIND_STATIC ? staticExit : wordExit;
-        if (spread > 0) {
+        let scaleStep = SCALE_STEPS - 1;
+
+        if (docking) {
+          // Same transform for every cell, static included: the field collapses
+          // as one, and the static dims out of it rather than peeling away.
+          x = x * dockZoom + dockX;
+          y = y * dockZoom + dockY;
+          scaleStep = dockStep;
+        } else if (spread > 0) {
           // Straight line, constant velocity, along the direction this cell was
           // handed at rebuild.
           const travel = reach[idx] * spread * span;
           x += dirX[idx] * travel;
           y += dirY[idx] * travel;
+          scaleStep = scaleStepOf(spread);
         }
 
         listKey[count] =
-          scaleStepOf(spread) * FILL_BUCKETS +
+          scaleStep * FILL_BUCKETS +
           kind * ALPHA_STEPS +
           Math.min(ALPHA_STEPS - 1, step);
         listGlyph[count] = glyph;
@@ -595,8 +723,10 @@ export function createAsciiLoaderField(canvas, state) {
       ctx.fillText(GLYPHS[listGlyph[item]], listX[item], listY[item]);
     }
 
-    // Subtle progress counter at the bottom — first thing to go on exit.
-    const counterAlpha = 1 - clamp01(exit / 0.3);
+    // Subtle progress counter at the bottom — first thing to go on exit, and it
+    // leaves with the static when docking: it belongs to the loading screen, so
+    // it can't still be sitting there once the screen has emptied.
+    const counterAlpha = 1 - clamp01(Math.max(exit / 0.3, clear));
     if (counterAlpha > 0) paintCounter(w, h, counterAlpha);
   };
 

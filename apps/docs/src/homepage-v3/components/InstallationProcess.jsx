@@ -27,7 +27,7 @@ function TerminalTick({ tickRef }) {
     <svg
       ref={tickRef}
       viewBox="0 0 18 18"
-      className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#5AC382] opacity-0 max-md:h-4 max-md:w-4"
+      className="h-[1.05vw] w-[1.05vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#5AC382] opacity-0 max-md:h-4 max-md:w-4"
       fill="none"
       aria-hidden="true"
     >
@@ -47,12 +47,12 @@ function Panel({ title, children, className = "" }) {
     <div
       className={`overflow-hidden   bg-grey/30! shadow-[0_20px_80px_rgba(0,0,0,0.35)]  ${className}`}
     >
-      <div className="flex h-[3vw] items-center max-sm:gap-[4vw] gap-[1vw] bg-[#272727] px-[1.4vw] max-md:h-12 max-md:px-5">
+      <div className="flex h-[3vw] items-center max-sm:gap-[4vw] gap-[1vw] bg-[#272727] px-[1.4vw] max-[1025px]:h-[5.5vw] max-[1025px]:px-[2.4vw] max-md:h-12 max-md:px-5">
         <p className="font-mono text18 text-secondary max-md:text-sm">
           {title}
         </p>
       </div>
-      <div className="p-[1.6vw] max-md:p-5">{children}</div>
+      <div className="p-[1.6vw] max-[1025px]:p-[2.6vw] max-md:p-5">{children}</div>
     </div>
   );
 }
@@ -65,14 +65,14 @@ function TreeFolder({ label, depth = 0 }) {
     >
       <svg
         viewBox="0 0 24 24"
-        className="h-[1.1vw] w-[1.1vw] shrink-0 text-[#3b82f6] max-md:h-4 max-md:w-4"
+        className="h-[1.1vw] w-[1.1vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#3b82f6] max-md:h-4 max-md:w-4"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.7"
       >
         <path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H10l2 2h7.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z" />
       </svg>
-      <span className="font-mono text-[1.05vw] max-md:text-[15px]">{label}</span>
+      <span className="font-mono text-[1.05vw] max-[1025px]:text-[1.8vw] max-md:text-[15px]">{label}</span>
     </div>
   );
 }
@@ -81,13 +81,13 @@ function TreeFile({ label, depth = 0, className = "", right = null, rowRef }) {
   return (
     <div
       ref={rowRef}
-      className={`flex items-center justify-between rounded-[0.3vw] px-[0.55vw] py-[0.35vw] opacity-0 max-md:rounded-md max-md:px-2 max-md:py-1.5 ${className}`}
+      className={`flex items-center justify-between rounded-[0.3vw] px-[0.55vw] py-[0.35vw] opacity-0 max-[1025px]:px-[1vw] max-[1025px]:py-[0.6vw] max-md:rounded-md max-md:px-2 max-md:py-1.5 ${className}`}
       style={{ paddingLeft: `calc(${depth * 1.35}vw + 0.55vw)` }}
     >
       <div className="flex min-w-0 items-center gap-3">
         <svg
           viewBox="0 0 24 24"
-          className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4"
+          className="h-[1.05vw] w-[1.05vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4"
           fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
@@ -95,7 +95,7 @@ function TreeFile({ label, depth = 0, className = "", right = null, rowRef }) {
           <path d="M7 3.75h6l4 4v12.5H7A1.25 1.25 0 0 1 5.75 19V5A1.25 1.25 0 0 1 7 3.75z" />
           <path d="M13 3.75V8h4.25" />
         </svg>
-        <span className="truncate font-mono text-[1.05vw] text-[#ff7a1a] max-md:text-[15px]">
+        <span className="truncate font-mono text-[1.05vw] max-[1025px]:text-[1.8vw] text-[#ff7a1a] max-md:text-[15px]">
           {label}
         </span>
       </div>
@@ -468,11 +468,11 @@ export default function InstallationProcess() {
       className="relative w-full overflow-hidden text-white max-md:px-0 max-md:py-20 max-sm:py-0 max-sm:pb-8"
     >
       <div className="mx-auto w-full max-w-450">
-        <div className="grid grid-cols-[0.92fr_1.08fr] gap-[1.4vw] max-md:grid-cols-1 max-md:gap-5">
+        <div className="grid grid-cols-[0.92fr_1.08fr] gap-[1.4vw] max-[1025px]:grid-cols-1 max-[1025px]:gap-[3vw] max-md:grid-cols-1 max-md:gap-5">
           {/* LEFT COLUMN - terminal + code */}
-          <div className="flex flex-col gap-[1.4vw] max-md:contents">
-            <Panel title="amazing_project" className="fadeup min-h-[25vw] max-sm:min-h-[40vh] max-md:min-h-[30vh] ">
-              <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-md:space-y-2 max-md:text-[14px]">
+          <div className="flex flex-col gap-[1.4vw] max-[1025px]:contents max-md:contents">
+            <Panel title="amazing_project" className="fadeup min-h-[25vw] max-[1025px]:min-h-[42vw] max-sm:min-h-[40vh] max-md:min-h-[30vh] ">
+              <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-[1025px]:space-y-[1.4vw] max-[1025px]:text-[1.8vw] max-md:space-y-2 max-md:text-[14px]">
                 <div className="flex items-center gap-2">
                   <span ref={setTerminalRef("dollar1")} className="text-[#ff9f43]">$</span>
                   <span ref={setTerminalRef("init")} className="text-white/90" />
@@ -514,8 +514,8 @@ export default function InstallationProcess() {
               </div>
             </Panel>
 
-            <Panel title="app/page.jsx" className="fadeup min-h-[20vw] max-md:min-h-[20vh] max-sm:min-h-[25vh] max-md:order-last">
-              <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-md:space-y-1 max-md:text-[13px]">
+            <Panel title="app/page.jsx" className="fadeup min-h-[20vw] max-[1025px]:min-h-[28vw] max-[1025px]:order-last max-md:min-h-[20vh] max-sm:min-h-[25vh] max-md:order-last">
+              <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-[1025px]:space-y-[1vw] max-[1025px]:text-[1.7vw] max-md:space-y-1 max-md:text-[13px]">
                 <div ref={setCodeRef("line1")} />
                 <div ref={setCodeRef("line2")} />
                 <div ref={setCodeRef("line3")} />
@@ -526,20 +526,20 @@ export default function InstallationProcess() {
           </div>
 
           {/* RIGHT COLUMN - file tree */}
-          <div className="flex flex-col gap-[1.15vw]">
-            <Panel title="amazing_project / Components" className="fadeup h-full max-md:min-h-[25vh] max-sm:min-h-[25vh]">
-              <div className="space-y-[0.9vw] max-md:space-y-3">
+          <div className="flex flex-col gap-[1.15vw] max-[1025px]:gap-[3vw]">
+            <Panel title="amazing_project / Components" className="fadeup h-full max-[1025px]:min-h-[45vw] max-md:min-h-[25vh] max-sm:min-h-[25vh]">
+              <div className="space-y-[0.9vw] max-[1025px]:space-y-[1.6vw] max-md:space-y-3">
 
                 {/* app/ */}
                 <TreeFolder label="app" depth={0} />
                 <div>
-                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.2vw] max-md:ml-1.5 max-md:pl-3">
+                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.2vw] max-[1025px]:ml-[0.7vw] max-[1025px]:pl-[2vw] max-md:ml-1.5 max-md:pl-3">
                     <div className="flex items-center gap-3 text-white/80">
-                      <svg viewBox="0 0 24 24" className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4" fill="none" stroke="currentColor" strokeWidth="1.7">
+                      <svg viewBox="0 0 24 24" className="h-[1.05vw] w-[1.05vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4" fill="none" stroke="currentColor" strokeWidth="1.7">
                         <path d="M7 3.75h6l4 4v12.5H7A1.25 1.25 0 0 1 5.75 19V5A1.25 1.25 0 0 1 7 3.75z" />
                         <path d="M13 3.75V8h4.25" />
                       </svg>
-                      <span className="font-mono text-[1.05vw] text-white/76 max-md:text-[15px]">page.jsx</span>
+                      <span className="font-mono text-[1.05vw] max-[1025px]:text-[1.8vw] text-white/76 max-md:text-[15px]">page.jsx</span>
                     </div>
                   </div>
                 </div>
@@ -547,20 +547,20 @@ export default function InstallationProcess() {
                 {/* components/ */}
                 <TreeFolder label="components" depth={0} />
                 <div>
-                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
+                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-[1025px]:ml-[0.7vw] max-[1025px]:pl-[2vw] max-md:ml-1.5 max-md:pl-4">
 
                     {/* effects/ - hidden until animation */}
                     <div ref={setFileRef("effectsFolder")}>
                       <TreeFolder label="effects" depth={0} />
                     </div>
-                    <div className=" pt-[0.45vw]  max-md:pt-1.5">
-                      <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
+                    <div className=" pt-[0.45vw] max-[1025px]:pt-[0.9vw]  max-md:pt-1.5">
+                      <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-[1025px]:ml-[0.7vw] max-[1025px]:pl-[2vw] max-md:ml-1.5 max-md:pl-4">
 
                         {/* split-canvas/ - hidden until animation */}
                         <div ref={setFileRef("splitCanvasFolder")}>
                           <TreeFolder label="split-canvas" depth={0} />
                         </div>
-                        <div className="space-y-[0.35vw]  pt-[0.45vw] max-md:space-y-1.5 max-md:pl-3 max-md:pt-1.5">
+                        <div className="space-y-[0.35vw]  pt-[0.45vw] max-[1025px]:space-y-[0.7vw] max-[1025px]:pt-[0.9vw] max-md:space-y-1.5 max-md:pl-3 max-md:pt-1.5">
 
                           <TreeFile
                             label="index.jsx"
@@ -568,7 +568,7 @@ export default function InstallationProcess() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge1")}
-                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
@@ -582,7 +582,7 @@ export default function InstallationProcess() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge2")}
-                                className="rounded-full  px-3 py-1 max-sm:text-nowrap font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 max-sm:text-nowrap font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
@@ -596,7 +596,7 @@ export default function InstallationProcess() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge3")}
-                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
@@ -610,8 +610,8 @@ export default function InstallationProcess() {
                   </div>
                 </div>
 
-                <div className="pt-[1vw] max-md:pt-3">
-                  <p className="font-mono text-[1.02vw] text-white/42 max-md:text-sm">ui</p>
+                <div className="pt-[1vw] max-[1025px]:pt-[2vw] max-md:pt-3">
+                  <p className="font-mono text-[1.02vw] max-[1025px]:text-[1.8vw] text-white/42 max-md:text-sm">ui</p>
                 </div>
               </div>
             </Panel>
