@@ -10,40 +10,18 @@ export { FILTER_OPTIONS };
 
 export function FilterMenu({
   activeFilter,
-  // Only needed by the "label" variant, where the button must always show
-  // the true current selection (including "all") - activeFilter alone can't
-  // do that since callers null it out to render the icon-only unselected
-  // state. Unused by the vault listing's own <FilterMenu> calls, which never
-  // pass this and stay on the default "icon" variant.
+
   categoryFilter,
   getLabel,
   onSelect,
-  // Called when the cross next to the active filter's label is clicked
-  // (icon variant only). Lets the caller clear the filter without a "none"
-  // row in the dropdown list.
   onClear,
-  // Defaults to the vault listing's featured/free/pro/sort dropdown; the
-  // Saved Effects / Usage dashboard tabs pass a longer list ("all" + these
-  // + every category present) so one dropdown covers all filtering instead
-  // of a separate chips row.
   options = FILTER_OPTIONS,
-  // "icon" (default): vault listing's funnel icon, label only shown once a
-  // filter/sort option is active. "label": always shows the current
-  // selection as text + a chevron - used where the dropdown is the only
-  // filter control (Saved Effects / Usage) instead of a decoration next to
-  // a visible chips row.
   variant = "icon",
-  // Extra classes merged onto the dropdown panel - e.g. a fixed height +
-  // overflow-y-auto once the option list can outgrow the vault listing's
-  // handful-of-items case this component was originally built for.
   panelClassName = "",
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [hoveredCat, setHoveredCat] = useState(null);
-  // On mobile/tablet the category row is a horizontal scroll container, which
-  // clips an absolutely-positioned dropdown. When set, the menu is portaled to
-  // <body> with these fixed viewport coords so it renders on top instead.
   const [menuPos, setMenuPos] = useState(null);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -75,24 +53,9 @@ export function FilterMenu({
 
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
-
-    // Only the mobile/tablet panel is portaled with fixed coords, so only it
-    // needs to close on scroll/resize rather than float detached from its
-    // button - the desktop panel is a normal absolutely-positioned child of
-    // its button and tracks it automatically. Attaching this unconditionally
-    // used to close the menu the instant it opened whenever opening it
-    // triggered any incidental scroll (e.g. the mobile/tablet category row's
-    // horizontal auto-scroll bringing the button into view), which read as
-    // the dropdown "flickering" shut right after the click that opened it.
     let handleReposition = null;
 
     if (menuPos) {
-      // Registered with capture=true to catch page scroll wherever it
-      // originates - but that also catches the panel's own internal scroll
-      // (an option list long enough to need panelClassName's overflow-y-auto),
-      // since capture-phase listeners on `window` see descendant scroll events
-      // regardless of bubbling. Skip those so scrolling the list doesn't
-      // instantly close it.
       handleReposition = (event) => {
         if (panelRef.current?.contains(event.target)) return;
         setOpen(false);
@@ -120,7 +83,7 @@ export function FilterMenu({
       if (
         next &&
         typeof window !== "undefined" &&
-        window.innerWidth < 768
+        window.innerWidth <= 1025
       ) {
         const rect = buttonRef.current?.getBoundingClientRect();
 
@@ -161,17 +124,10 @@ export function FilterMenu({
     >
       <LayoutGroup id="filter-menu-pill">
         {options.map((cat, index) => {
-          // categoryFilter (when passed, "label" variant) always reflects
-          // the true current selection, including "all" - activeFilter
-          // alone is null in that state so nothing would ever highlight.
           const isSelected = (categoryFilter ?? activeFilter) === cat;
-          // Hover takes precedence; fall back to the active filter so the
-          // pill still rests somewhere when nothing is hovered.
           const highlighted = hoveredCat
             ? hoveredCat === cat
             : isSelected;
-          // Separate the category filters (featured/free/pro) from the
-          // sort options (a-z/z-a/recent) with a rule at the boundary.
           const showDivider =
             EFFECT_SORT_OPTIONS.includes(cat) &&
             !EFFECT_SORT_OPTIONS.includes(options[index - 1]);
@@ -196,8 +152,6 @@ export function FilterMenu({
               >
                 {highlighted && (
                   <motion.span
-                    // Shared layoutId lets the pill slide between items
-                    // instead of cross-fading in place.
                     layoutId={
                       reduceMotion ? undefined : "filter-menu-pill"
                     }
@@ -264,20 +218,19 @@ export function FilterMenu({
           </>
         ) : (
           <>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="shrink-0"
-            >
-              <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
-            </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clipPath="url(#clip0_491_803)">
+<rect width="16" height="2" rx="1" fill="currentColor"/>
+<rect x="3" y="5" width="10" height="2" rx="1" fill="currentColor"/>
+<rect x="5.5" y="10" width="5" height="2" rx="1" fill="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip0_491_803">
+<rect width="16" height="12" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
             {activeFilter ? (
               <>
                 <span className="leading-none">{getLabel(activeFilter)}</span>

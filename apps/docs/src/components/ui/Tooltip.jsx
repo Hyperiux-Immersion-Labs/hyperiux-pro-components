@@ -110,7 +110,7 @@ export function Tooltip({
               left: coords.left,
               transform: coords.transform,
             }}
-            className="pointer-events-none z-9999 whitespace-nowrap rounded-sm border border-white/10 bg-[#0e0e0e] px-3 py-1.5 text-xs font-medium text-white shadow-lg max-md:hidden max-[1025px]:hidden"
+            className="pointer-events-none z-9999  max-w-[20vw] max-h-30  text-center  bg-[#2B2B2B] px-3 py-1.5 text-xs font-medium text-white shadow-lg max-md:hidden max-[1025px]:hidden"
           >
             {label}
           </span>,

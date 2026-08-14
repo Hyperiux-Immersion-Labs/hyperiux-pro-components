@@ -98,7 +98,7 @@ export function CodeBlock({
     }
 
     return (
-        <div className={`relative overflow-hidden rounded-md fadeup codeblock-root ${className}`}>
+        <div className={`relative overflow-hidden  fadeup codeblock-root ${className}`}>
             {copyLocked && <CopyLimitOverlay message={lockedMessage} ctaHref={lockedCtaHref} />}
             <div
                 className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
