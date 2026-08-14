@@ -55,19 +55,19 @@ function Cell({ value, highlight = false }) {
 
 export default function PricingCompareTable() {
   return (
-    <section className="w-screen overflow-hidden bg-[#0e0e0e] text-white px-[5vw] py-[8vw] max-[1025px]:px-0 max-[1025px]:py-[16vw]">
+    <section className="w-screen pb-[30vw] max-md:pb-[40vw]! overflow-hidden text-white px-[5vw] py-[8vw] max-[1025px]:px-0 max-[1025px]:py-[16vw]">
 
       {/* Heading */}
       <LineReveal
         as="h2"
-        className="text110 text-center mb-[6vw] max-[1025px]:mb-[12vw] w-[75vw] max-[1025px]:w-full mx-auto"
+        className="text110 text-center mb-[6vw] max-md:w-[80%] max-[1025px]:mb-[12vw] w-[75vw] max-[1025px]:w-full mx-auto"
       >
-        Free vs. Pro, feature by feature.
+        <span className="gradient-text-animate">Free vs. Pro,</span> feature by feature.
       </LineReveal>
 
       {/* Table card */}
       <div className="w-full h-fit max-[1025px]:overflow-x-scroll max-[1025px]:pb-[7vw] max-[1025px]:px-[7vw] fadeup">
-        <div className="mx-auto w-full max-w-[82vw]  rounded-lg border border-white/8 overflow-hidden  max-md:max-w-[240vw] max-md:w-[240vw] max-[1025px]:max-w-[150vw] max-[1025px]:w-[150vw]">
+        <div className="mx-auto w-full max-w-[82vw] border border-white/8 overflow-hidden  max-md:max-w-[240vw] max-md:w-[240vw] max-[1025px]:max-w-[150vw] max-[1025px]:w-[150vw]">
 
           {/* Column headers */}
           <div className="grid grid-cols-[2.2fr_1fr_1fr] max-[1025px]:grid-cols-[25%_40%_35%] max-md:grid-cols-[25%_40%_35%] bg-white/4 px-[2.5vw] py-[1.3vw] max-[1025px]:px-6 max-[1025px]:py-4 border-b border-white/8">

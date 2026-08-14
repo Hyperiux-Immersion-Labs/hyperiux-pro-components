@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/glowing-text",
+  "version": "1.0.0",
+  "description": "Reference-inspired terminal text with staggered glow reveal, subtle flicker, and an animated scan sweep.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "text",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

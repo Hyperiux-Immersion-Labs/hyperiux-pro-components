@@ -57,7 +57,7 @@ export default function DocsTable({
   return (
     <div
   className={cx(
-    "w-full overflow-x-auto rounded-md border border-(--docs-table-border) bg-transparent fadeup",
+    "w-full overflow-x-auto border border-(--docs-table-border) bg-transparent fadeup",
     variantClassName,
     className
   )}

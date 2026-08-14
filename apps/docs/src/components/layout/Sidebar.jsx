@@ -8,7 +8,16 @@ import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { Tooltip } from "@/components/ui/Tooltip";
-import { Overview, Documentation, Category, Legal, Github, Pricing, Npm } from "../WebsiteComps/Icons";
+import {
+  Overview,
+  Documentation,
+  Category,
+  Legal,
+  Github,
+  Pricing,
+  Npm,
+  Mcp,
+} from "../WebsiteComps/Icons";
 import Link from "next/link";
 
 const DEFAULT_DOCS_TOP_LINKS = [
@@ -73,14 +82,14 @@ function NavIconLink({
       onMouseLeave={onMouseLeave}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className={`relative flex h-10 items-center gap-3 rounded-md px-4 py-[1.5vw] text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
+      className={`relative flex h-10 items-center gap-3 px-4 py-[1.5vw] text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
         isExpanded ? "w-[18.5vw]" : "w-[3.8vw]"
       }`}
     >
       {shouldHighlight && (
         <motion.span
           layoutId={reduceMotion ? undefined : pillId}
-          className="pointer-events-none absolute inset-0 -z-10 rounded-md bg-[#272727]"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[#1C1C1C]"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -139,7 +148,7 @@ function SectionButton({
       {shouldHighlight && (
         <motion.span
           layoutId={reduceMotion ? undefined : pillId}
-          className="pointer-events-none absolute inset-0 -z-10 rounded-md bg-[#272727]"
+          className="pointer-events-none absolute inset-0 -z-10  bg-[#1C1C1C]"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -512,12 +521,12 @@ const navigateLegal = (event, href) => {
         type="button"
         aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         onClick={toggle}
-        className={`absolute top-6 z-50 hidden size-8 cursor-pointer items-center justify-center rounded-sm text-white transition-[left,background-color,transform] duration-300 ease-out hover:bg-white/15 sm:flex ${
+        className={`absolute top-6  z-50 bg-[#1C1C1C] hidden size-10 cursor-pointer items-center justify-center  text-white transition-[left,background-color,transform] duration-300 ease-out hover:bg-white/15 sm:flex ${
           isExpanded ? "left-[20.8vw]" : "left-[6.2vw]"
         }`}
       >
         <div className={isExpanded ? "" : "-scale-x-100"}>
-          <PanelLeft className="h-5 w-5" />
+          <PanelLeft className="h-4 w-4" />
         </div>
       </button>
 
@@ -528,14 +537,15 @@ const navigateLegal = (event, href) => {
       >
         <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
           <Link prefetch={false} href="/" className="flex min-w-0 items-center gap-3">
-            <Image
+
+           <Image
               src="/hyperiux.svg"
               alt="Hyperiux"
               width={28}
               height={28}
-              className="h-7 w-7 shrink-0"
+              className="h-7 w-7 shrink-0 text-primary"
             />
-
+            
             <Image
               src="/hyperiux-wordmark.svg"
               alt="Hyperiux"
@@ -543,7 +553,7 @@ const navigateLegal = (event, href) => {
               height={37}
               className={`h-auto w-32 ${
                 isExpanded
-                  ? "delay-100 opacity-100 duration-200"
+                  ? "delay-100 opacity-100 duration-200 text-primary"
                   : "opacity-0"
               }`}
             />
@@ -611,7 +621,7 @@ const navigateLegal = (event, href) => {
                         scroll={false}
                         onClick={(event) => navigateCategory(event, category.id)}
                         onMouseEnter={() => setHoveredSidebarKey("categories")}
-                        className={`relative flex w-full items-center justify-between gap-3 rounded-full py-1 text-left text-sm transition-colors cursor-pointer ${
+                        className={`relative flex w-full items-center justify-between gap-3  py-1 text-left text-sm transition-colors cursor-pointer ${
                           id === 0 ? "mt-[0.7vw]" : ""
                         } ${
                           id === effectCategories.length - 1 ? "mb-[0.7vw]" : ""
@@ -632,7 +642,7 @@ const navigateLegal = (event, href) => {
                         </span>
 
                         {count > 0 && (
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#272727] text-center text-[0.65vw] text-white/75">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center bg-[#1C1C1C] text-center text-[0.65vw] text-white">
                             {count}
                           </span>
                         )}
@@ -804,7 +814,7 @@ const navigateLegal = (event, href) => {
             <NavIconLink
               label="MCP"
               href="/docs/mcp"
-              icon={Documentation}
+              icon={Mcp}
               isExpanded={isExpanded}
               isActive={pathname === "/docs/mcp"}
               onMouseEnter={() => setHoveredSidebarKey("mcp")}

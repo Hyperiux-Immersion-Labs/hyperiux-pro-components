@@ -9,8 +9,7 @@ export const effectsOverviewContent = {
     description: "Explore 115 editable interaction effects for React and Next.js, including scroll, cursor, WebGL, buttons and transitions. Preview live and install fast.",
   },
   description: [
-    "Hyperiux Vault is a growing library of 115 interaction effects for React and Next.js - scroll systems, cursor trails, WebGL scenes, animated buttons, and page transitions, all shipped as editable source code you copy straight into your own repo. Browse by category below, preview any effect live, and install with the CLI or a single copy-paste.",
-    "Use this page when you are looking for the right interaction before you know its category. Scan the catalog, compare patterns, and choose the effect that makes the page clearer, sharper, or harder to forget.",
+    "115 production-ready interaction effects for React & Next.js. Browse scroll systems, cursor effects, WebGL scenes, buttons, and transitions. Preview live, then copy or install with the CLI.",
   ],
   cta: {
     heading: "Request a Custom Animation",

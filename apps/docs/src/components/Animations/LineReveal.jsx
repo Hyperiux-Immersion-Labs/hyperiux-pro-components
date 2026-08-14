@@ -44,7 +44,7 @@ export default function LineReveal({
   start = "top 85%",
   delay = 0,
   duration = 0.85,
-  stagger = 0.15,
+  stagger = 0.08,
   animationKey = "",
   ...rest
 }) {
@@ -82,15 +82,15 @@ export default function LineReveal({
       }
 
       splitRef.current = SplitText.create(container, {
-        type: "lines",
-        mask: "lines",
-        linesClass: "line++",
+        type: "words",
+        mask: "words",
+        wordsClass: "word++",
         aria: "none",
       });
 
-      const lines = splitRef.current.lines;
+      const words = splitRef.current.words;
 
-      if (!lines.length) {
+      if (!words.length) {
         gsap.set(container, {
           autoAlpha: 1,
         });
@@ -98,9 +98,19 @@ export default function LineReveal({
         return;
       }
 
+      // SplitText wraps nested markup; `background-clip: text` on a parent
+      // `.gradient-text-animate` span no longer paints child word glyphs.
+      // Move the class onto the split word nodes that actually hold the text.
+      container.querySelectorAll(".gradient-text-animate").forEach((el) => {
+        const nested = words.filter((word) => el.contains(word));
+        if (!nested.length) return;
+        nested.forEach((word) => word.classList.add("gradient-text-animate"));
+        el.classList.remove("gradient-text-animate");
+      });
+
       const yFrom = direction === "next" ? 110 : -110;
 
-      gsap.set(lines, {
+      gsap.set(words, {
         yPercent: yFrom,
         willChange: "transform",
       });
@@ -109,7 +119,7 @@ export default function LineReveal({
         autoAlpha: 1,
       });
 
-      tweenRef.current = gsap.to(lines, {
+      tweenRef.current = gsap.to(words, {
         yPercent: 0,
         duration,
         ease: "power2.out",
@@ -120,7 +130,7 @@ export default function LineReveal({
         },
         paused: animateOnScroll,
         onComplete: () => {
-          gsap.set(lines, {
+          gsap.set(words, {
             clearProps: "willChange",
           });
 
@@ -141,7 +151,7 @@ export default function LineReveal({
         start,
         once: true,
         invalidateOnRefresh: true,
-        // markers:true,
+        markers:false,
         onEnter: () => {
           tweenRef.current?.play(0);
         },

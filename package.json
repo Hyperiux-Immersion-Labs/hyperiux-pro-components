@@ -22,10 +22,14 @@
     "sanity:code:test": "npm --prefix apps/docs run test -- src/lib/sanity-code-sync.test.js"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@next/bundle-analyzer": "^16.2.10",
     "disposable-email-domains": "^1.0.62",
+    "jspdf": "^4.2.1",
+    "leva": "^0.10.1",
     "next-recaptcha-v3": "^1.5.3",
     "razorpay": "^2.9.8",
+    "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2"
   }

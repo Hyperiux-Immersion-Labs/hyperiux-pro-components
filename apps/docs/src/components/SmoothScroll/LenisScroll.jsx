@@ -10,7 +10,7 @@ const LenisSmoothScroll = ({
   lerp = 0.075,
   smoothWheel = true,
   wheelMultiplier = 0.8,
-  touchMultiplier = 1.5,
+  touchMultiplier = .8,
 }) => {
   const lenisRef = useRef(null);
 
@@ -41,6 +41,7 @@ const LenisSmoothScroll = ({
         duration: duration,
         lerp: lerp,
         smoothWheel: smoothWheel,
+        syncTouch:true,
         wheelMultiplier: wheelMultiplier,
         touchMultiplier: touchMultiplier,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

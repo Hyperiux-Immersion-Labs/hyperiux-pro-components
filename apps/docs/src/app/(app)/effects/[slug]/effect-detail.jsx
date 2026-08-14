@@ -27,7 +27,6 @@ import {
 } from "@/components/animated-faq";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
-import Button from "@/components/WebsiteComps/Button";
 import CircularButton from "@/components/WebsiteComps/CirclularButton";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
@@ -36,6 +35,7 @@ import styles from "./effect-content.module.css";
 import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { CopyLimitProvider, useCopyLimit } from "./useCopyLimit";
+import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 function formatEffectDate(value) {
   if (!value) return null;
@@ -72,89 +72,89 @@ function EffectDetailMainSkeleton() {
         <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
           <div className="w-full space-y-5">
             <div className="mb-6 flex w-fit max-w-full flex-wrap items-center gap-2 max-[1025px]:mx-auto max-[1025px]:justify-center">
-              <SkeletonBlock className="h-4 w-12 rounded-full bg-[#272727]" />
+              <SkeletonBlock className="h-4 w-12  bg-[#272727]" />
               <span className="text-white/25">/</span>
-              <SkeletonBlock className="h-4 w-16 rounded-full bg-[#272727]" />
+              <SkeletonBlock className="h-4 w-16  bg-[#272727]" />
               <span className="text-white/25">/</span>
-              <SkeletonBlock className="h-4 w-24 rounded-full bg-[#272727]" />
+              <SkeletonBlock className="h-4 w-24  bg-[#272727]" />
               <span className="text-white/25">/</span>
-              <SkeletonBlock className="h-4 w-40 rounded-full bg-[#272727]" />
+              <SkeletonBlock className="h-4 w-40  bg-[#272727]" />
             </div>
 
-            <SkeletonBlock className="h-[5.2vw] w-[62%] rounded-md bg-[#272727] max-[1025px]:mx-auto max-[1025px]:h-14 max-[1025px]:w-[82%] max-md:h-12" />
+            <SkeletonBlock className="h-[5.2vw] w-[62%]  bg-[#272727] max-[1025px]:mx-auto max-[1025px]:h-14 max-[1025px]:w-[82%] max-md:h-12" />
 
             <div className="space-y-3 max-[1025px]:mx-auto max-[1025px]:w-[90%]">
-              <SkeletonBlock className="h-5 w-[72%] rounded-full bg-[#272727] max-[1025px]:mx-auto" />
-              <SkeletonBlock className="h-5 w-[54%] rounded-full bg-[#272727] max-[1025px]:mx-auto" />
+              <SkeletonBlock className="h-5 w-[72%]  bg-[#272727] max-[1025px]:mx-auto" />
+              <SkeletonBlock className="h-5 w-[54%]  bg-[#272727] max-[1025px]:mx-auto" />
             </div>
 
             <div className="mt-12 flex w-full items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
-                <SkeletonBlock className="h-10 w-20 rounded-full bg-[#272727]" />
-                <SkeletonBlock className="h-10 w-24 rounded-full bg-[#272727]" />
-                <SkeletonBlock className="h-10 w-18 rounded-full bg-[#272727]" />
+                <SkeletonBlock className="h-10 w-20  bg-[#272727]" />
+                <SkeletonBlock className="h-10 w-24  bg-[#272727]" />
+                <SkeletonBlock className="h-10 w-18  bg-[#272727]" />
               </div>
 
               <div className="ml-auto shrink-0 max-md:hidden">
-                <SkeletonBlock className="h-12 w-36 rounded-full bg-[#ff5f00]/45" />
+                <SkeletonBlock className="h-12 w-36  bg-[#ff5f00]/45" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="max-md:px-[7vw] max-[1025px]:px-[6vw] h-[46vw] rounded-sm w-full">
-          <SkeletonBlock className="h-full w-full rounded-sm bg-[#272727]" />
+        <div className="max-md:px-[7vw] max-[1025px]:px-[6vw] h-[46vw]  w-full">
+          <SkeletonBlock className="h-full w-full bg-[#272727]" />
         </div>
 
         <div className="max-md:flex max-md:px-[7vw] max-[1025px]:px-[6vw] w-full max-md:pt-4 justify-center shrink-0 hidden">
-          <SkeletonBlock className="h-12 w-36 rounded-full bg-[#ff5f00]/45" />
+          <SkeletonBlock className="h-12 w-36  bg-[#ff5f00]/45" />
         </div>
 
         <div className="relative max-md:px-[7vw] max-[1025px]:px-[6vw] pt-[1.5vw]">
           <div className="space-y-8 w-[70%] max-[1025px]:w-full">
-            <SkeletonBlock className="h-10 w-[58%] rounded-md bg-[#272727]" />
+            <SkeletonBlock className="h-10 w-[58%]  bg-[#272727]" />
 
             <div className="space-y-3">
-              <SkeletonBlock className="h-5 w-full rounded-full bg-[#272727]" />
-              <SkeletonBlock className="h-5 w-[92%] rounded-full bg-[#272727]" />
-              <SkeletonBlock className="h-5 w-[76%] rounded-full bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-full  bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-[92%]  bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-[76%]  bg-[#272727]" />
             </div>
 
-            <SkeletonBlock className="h-9 w-[46%] rounded-md bg-[#272727]" />
+            <SkeletonBlock className="h-9 w-[46%]  bg-[#272727]" />
 
             <div className="space-y-3">
-              <SkeletonBlock className="h-5 w-full rounded-full bg-[#272727]" />
-              <SkeletonBlock className="h-5 w-[88%] rounded-full bg-[#272727]" />
-              <SkeletonBlock className="h-5 w-[64%] rounded-full bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-full  bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-[88%]  bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-[64%]  bg-[#272727]" />
             </div>
 
             <div className="space-y-3">
-              <SkeletonBlock className="h-5 w-[82%] rounded-full bg-[#272727]" />
-              <SkeletonBlock className="h-5 w-[70%] rounded-full bg-[#272727]" />
-              <SkeletonBlock className="h-5 w-[74%] rounded-full bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-[82%]  bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-[70%]  bg-[#272727]" />
+              <SkeletonBlock className="h-5 w-[74%]  bg-[#272727]" />
             </div>
 
-            <SkeletonBlock className="h-[18vw] w-full rounded-xl bg-[#171717] max-[1025px]:h-64" />
+            <SkeletonBlock className="h-[18vw] w-full  bg-[#171717] max-[1025px]:h-64" />
           </div>
         </div>
 
         <div className="w-[70%] max-[1025px]:w-full max-md:px-[7vw] max-[1025px]:px-[6vw] max-md:mt-[10vw]">
-          <div className="w-full rounded-md bg-[#272727] my-[5vw] mx-auto px-10 max-[1025px]:px-6 max-md:px-[7vw] py-15">
-            <SkeletonBlock className="h-10 w-[52%] rounded-md bg-[#333333] max-md:h-8 max-md:w-[84%]" />
+          <div className="w-full  bg-[#272727] my-[5vw] mx-auto px-10 max-[1025px]:px-6 max-md:px-[7vw] py-15">
+            <SkeletonBlock className="h-10 w-[52%]  bg-[#333333] max-md:h-8 max-md:w-[84%]" />
 
             <div className="mt-5 space-y-3">
-              <SkeletonBlock className="h-5 w-[78%] rounded-full bg-[#333333]" />
-              <SkeletonBlock className="h-5 w-[58%] rounded-full bg-[#333333]" />
+              <SkeletonBlock className="h-5 w-[78%]  bg-[#333333]" />
+              <SkeletonBlock className="h-5 w-[58%]  bg-[#333333]" />
             </div>
 
-            <SkeletonBlock className="mt-7 h-12 w-36 rounded-full bg-white/40" />
+            <SkeletonBlock className="mt-7 h-12 w-36  bg-white/40" />
           </div>
         </div>
 
         <section className="my-20 relative max-md:pt-[5vh] space-y-10 max-[1025px]:space-y-16">
           <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
-            <SkeletonBlock className="h-12 w-[30%] rounded-md bg-[#272727] max-[1025px]:w-[60%] max-md:w-[80%]" />
-            <SkeletonBlock className="h-12 w-44 rounded-full bg-[#ff5f00]/45 max-[1025px]:hidden" />
+            <SkeletonBlock className="h-12 w-[30%]  bg-[#272727] max-[1025px]:w-[60%] max-md:w-[80%]" />
+            <SkeletonBlock className="h-12 w-44  bg-[#ff5f00]/45 max-[1025px]:hidden" />
           </div>
 
           <div className="flex gap-6 overflow-hidden">
@@ -163,15 +163,15 @@ function EffectDetailMainSkeleton() {
                 key={`related-effect-skeleton-${index}`}
                 className="min-w-[31vw] max-[1025px]:min-w-[44vw] max-[1025px]:min-w-[55vw] max-md:min-w-full"
               >
-                <div className="relative aspect-[1.02/1] w-full overflow-hidden rounded-md bg-[#272727] p-[2vw] max-[1025px]:p-5 max-md:p-5">
+                <div className="relative aspect-[1.02/1] w-full overflow-hidden  bg-[#272727] p-[2vw] max-[1025px]:p-5 max-md:p-5">
                   <div className="flex h-full w-full items-center justify-center">
-                    <SkeletonBlock className="aspect-[1.78/1] w-[88%] rounded-sm bg-[#111111]" />
+                    <SkeletonBlock className="aspect-[1.78/1] w-[88%]  bg-[#111111]" />
                   </div>
                 </div>
 
                 <div className="mt-5 px-3">
-                  <SkeletonBlock className="mb-2 h-5 w-[58%] rounded-sm bg-[#2f2f2f]" />
-                  <SkeletonBlock className="h-4 w-[34%] rounded-sm bg-[#242424]" />
+                  <SkeletonBlock className="mb-2 h-5 w-[58%] bg-[#2f2f2f]" />
+                  <SkeletonBlock className="h-4 w-[34%] bg-[#242424]" />
                 </div>
               </div>
             ))}
@@ -484,11 +484,11 @@ export function EffectDetailContent({
 
                   <div className="mt-10 flex w-full items-center justify-between gap-3 fadeup max-md:mt-8">
                     {(dependencies.length > 0 || (content?.tier ?? safeEffect.tier) === "pro") && (
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-3">
                         {dependencies.map((dep) => (
                           <span
                             key={dep}
-                            className="rounded-full bg-[#272727] px-4 py-2 text20 capitalize text-foreground max-md:text-muted max-md:px-6"
+                            className=" bg-[#272727] px-2 py-1 text20 capitalize text-foreground max-md:text-muted max-md:px-6"
                           >
                             {dep}
                           </span>
@@ -497,7 +497,7 @@ export function EffectDetailContent({
                     )}
 
                     <div className="ml-auto shrink-0 max-md:hidden">
-                      <Button
+                      <ButtonV3
                         text="Live Preview"
                         href={previewHref}
                         target_blank={true}
@@ -510,8 +510,8 @@ export function EffectDetailContent({
                 </div>
               </div>
 
-              <div className="fadeup max-md:px-[7vw] max-[1025px]:px-[6vw] h-auto rounded-sm w-full">
-                <div className="relative h-auto w-full aspect-16/8.5 overflow-hidden rounded-sm bg-black isolate">
+              <div className="fadeup max-md:px-[7vw] max-[1025px]:px-[6vw] h-auto  w-full">
+                <div className="relative h-auto w-full aspect-16/8.5 overflow-hidden  bg-black isolate">
                   <Image
                     src={coverImage}
                     alt={safeEffect.title || slug}
@@ -545,12 +545,12 @@ export function EffectDetailContent({
 
                   {!showVideo && (
                     <>
-                      <div aria-hidden="true" className="absolute inset-0 rounded-[inherit] bg-black/40" />
+                      <div aria-hidden="true" className="absolute  inset-0 rounded-[inherit] bg-black/40" />
                       <div className="absolute bottom-4 right-4 z-10">
                         <div
                           aria-label="Loading preview"
                           role="status"
-                          className="h-8 w-8 animate-spin rounded-full border-2 border-white/25 border-t-white"
+                          className="h-8 w-8  animate-spin rounded-full  border-2 border-white/25 border-t-white"
                         />
                       </div>
                     </>
@@ -561,13 +561,14 @@ export function EffectDetailContent({
               </div>
 
               <div className="max-md:flex max-md:px-[7vw] max-[1025px]:px-[6vw] w-full max-md:pt-4 shrink-0 hidden">
-                <Button
-                  text="Live Preview"
-                  href={previewHref}
-                  target="_blank"
-                  variant="orange"
-                  className="shrink-0"
-                />
+                <ButtonV3
+                        text="Live Preview"
+                        href={previewHref}
+                        target_blank={true}
+                        target="_blank"
+                        variant="orange"
+                        className="shrink-0"
+                      />
               </div>
 
               <div className="relative max-md:px-[7vw] max-[1025px]:px-[6vw] pt-0">
@@ -609,7 +610,7 @@ export function EffectDetailContent({
                     </HeadAnim>
 
                     <div className="fadeup flex max-[1025px]:hidden flex-col justify-center items-end gap-5 max-[1025px]:w-full max-[1025px]:items-stretch">
-                      <Button
+                      <ButtonV3
                         text="Explore all effects"
                         href="/effects"
                         variant="orange"
@@ -652,7 +653,7 @@ export function EffectDetailContent({
                     )}
                   </div>
 
-                  <div className="rounded-xl fadeup">
+                  <div className=" fadeup">
                     <div
                       ref={relatedSliderRef}
                       onPointerDown={handleRelatedPointerDown}
@@ -715,7 +716,7 @@ export function EffectDetailContent({
                   </div>
 
                   <div className="fadeup max-[1025px]:mx-auto max-[1025px]:flex hidden flex-col justify-center items-end gap-5 max-[1025px]:w-fit max-[1025px]:items-stretch">
-                    <Button
+                    <ButtonV3
                       text="Explore all effects"
                       href="/effects"
                       variant="orange"
@@ -736,14 +737,14 @@ export function EffectDetailContent({
         onClick={() => setShowSignInToCopyModal(false)}
       >
         <div
-          className={`flex w-[35vw] max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showSignInToCopyModal ? "scale-100" : "scale-95"}`}
+          className={`flex w-[35vw] max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showSignInToCopyModal ? "scale-100" : "scale-95"}`}
           onClick={(event) => event.stopPropagation()}
         >
           <button
             type="button"
             aria-label="Close"
             onClick={() => setShowSignInToCopyModal(false)}
-            className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+            className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
           >
             <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
               <span className="h-px w-4 rotate-45 bg-white" />
@@ -760,7 +761,7 @@ export function EffectDetailContent({
           </p>
           <Link
             href={`/sign-in?redirect_url=${encodeURIComponent(pathname)}`}
-            className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors"
+            className="inline-flex w-fit items-center gap-1.5  bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors"
             onClick={() => setShowSignInToCopyModal(false)}
           >
             Sign In
@@ -803,7 +804,7 @@ function EffectCtaSection({ cta, sectionRef }) {
   return (
     <section
       ref={sectionRef}
-      className="fadeup w-full bg-[#272727] rounded-md my-[5vw] mx-auto"
+      className="fadeup w-full bg-[#272727]  my-[5vw] mx-auto"
     >
       <div className="mx-auto w-full flex flex-col items-start max-w-6xl px-10 max-[1025px]:px-6 max-md:px-[6vw] py-15">
         {cta.heading && (
@@ -822,14 +823,14 @@ function EffectCtaSection({ cta, sectionRef }) {
           <CustomAnimationFormTrigger>
             {cta.buttonText && (
 
-              <Button
+              <ButtonV3
                 preventDefault={false}
                 text={cta.buttonText}
                 href={buttonLink}
                 scaleClass="group-hover:scale-[100]!"
                 target="_blank"
                 variant="white"
-                className="shrink-0 w-fit max-md:px-5! max-md:py-3! max-md:gap-4! max-md:text-lg!"
+                className="shrink-0 w-fit max-md:px-5! bg-white max-md:py-3! max-md:gap-4! max-md:text-lg!"
               />
             )}
           </CustomAnimationFormTrigger>
@@ -1125,7 +1126,7 @@ function SanityBodyBlock({ block, isLocked = false }) {
           allowMultiple={false}
           defaultOpenItems={faqItems[0]?._key ? [faqItems[0]._key] : []}
         >
-          <div className={styles.faqAccordionItems}>
+          <div className="border border-grey">
             {faqItems.map((item, index) => {
               const itemId = item._key || `faq-${index}`;
 
@@ -1133,24 +1134,28 @@ function SanityBodyBlock({ block, isLocked = false }) {
                 <FAQWrapper
                   key={itemId}
                   itemId={itemId}
-                  className={styles.faqAccordionItem}
-                  titleClassName={styles.faqAccordionQuestion}
-                  iconClassName={styles.faqAccordionIcon}
+                  className={`group border-grey px-[2.5vw] py-[2vw] max-md:px-[4vw] max-md:py-[4vw] max-sm:px-[6vw] max-sm:py-[6vw] ${
+                    index > 0 ? "border-t" : ""
+                  }`}
+                  iconClassName="mt-[0.55vw] max-md:mt-[1vw] max-sm:mt-[1.5vw] text-light-grey transition-colors duration-500 ease-out group-hover:text-white"
                   iconSize={18}
-                  iconStrokeWidth={1.8}
+                  iconStrokeWidth={1.5}
+                  duration={0.6}
                 >
                   <FAQTitle
-                    className="pb-0 justify-start gap-3"
+                    className="pb-0 items-start! justify-start! gap-[1.5vw]! max-md:gap-[3vw]! max-sm:gap-[4vw]!"
                     iconPosition="left"
                     iconMode="rotate-left-down"
                   >
-                    <h3 className={styles.faqAccordionQuestionHeading}>
+                    <h3 className="text-[1.8vw]! font-neue-haas leading-tight! my-0! max-md:text-[3.4vw]! max-sm:text-[5.2vw]!">
                       {item.question}
                     </h3>
                   </FAQTitle>
 
-                  <FAQContent className={`${styles.faqAccordionAnswer} pl-10`}>
-                    {item.answer}
+                  <FAQContent className="pt-[1.2vw] pl-[3.2vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]">
+                    <p className="text-[1.15vw]! font-neue-haas text-light-grey! leading-[1.45]! max-md:text-[2.2vw]! max-sm:text-[4vw]!">
+                      {item.answer}
+                    </p>
                   </FAQContent>
                 </FAQWrapper>
               );
@@ -1275,7 +1280,7 @@ function LockedCodePlaceholder({ filename }) {
     "You can preview it now. Upgrade to Pro for instant install access.";
 
   return (
-    <section className="fadeup relative min-h-[40vh] max-md:min-h-[40vh] max-[1025px]:min-h-[30vh] overflow-hidden  border rounded-md border-white/30">
+    <section className="fadeup relative min-h-[40vh] max-md:min-h-[40vh] max-[1025px]:min-h-[30vh] overflow-hidden  border  border-white/30">
       <div
         aria-hidden="true"
         className="absolute inset-0 "
@@ -1303,7 +1308,7 @@ function LockedCodePlaceholder({ filename }) {
         </div>
       </div>
 
-      <div className="relative z-10 min-h-[40vh] max-md:min-h-[40vh] max-[1025px]:min-h-[30vh] flex rounded-md  flex-col items-center justify-center gap-2  bg-white/5 px-8 py-6 text-center  max-md:px-6">
+      <div className="relative z-10 min-h-[40vh] max-md:min-h-[40vh] max-[1025px]:min-h-[30vh] flex   flex-col items-center justify-center gap-2  bg-white/5 px-8 py-6 text-center  max-md:px-6">
         <LockKeyhole className="h-16 w-16 text-white" strokeWidth={1.2} />
 
         <div className="flex flex-col items-center gap-0">
@@ -1317,13 +1322,11 @@ function LockedCodePlaceholder({ filename }) {
         </div>
 
         <div className="flex flex-wrap items-center pt-3 max-[1025px]:pt-6 justify-center gap-3">
-          <Button
+          <ButtonV3
             text="Upgrade to Pro"
-
-            href="/pricing"
             variant="orange"
-            className="shrink-0"
-            hoverTextClassName="group-hover:text-black!"
+            href="/pricing"
+            className="shrink-0 text-black!"
           />
         </div>
 

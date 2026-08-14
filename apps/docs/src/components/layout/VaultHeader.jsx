@@ -17,6 +17,7 @@ import Image from "next/image";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
+import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 const DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
@@ -171,9 +172,8 @@ export function VaultHeader({
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-10 py-5 pr-[3.6vw] max-[1025px]:z-600 max-[1025px]:hidden max-[1025px]:px-6 max-md:px-4 ${
-          isScrolled ? "bg-black/20 shadow-md backdrop-blur-sm" : ""
-        }`}
+        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-10 py-5 pr-[3.6vw] max-[1025px]:z-600 max-[1025px]:hidden max-[1025px]:px-6 max-md:px-4 ${isScrolled ? "bg-black/20 shadow-md backdrop-blur-sm" : ""
+          }`}
       >
         <div className="flex h-full items-center justify-end gap-3">
           <Link
@@ -223,7 +223,7 @@ export function VaultHeader({
               <button
                 type="button"
                 onClick={openSearch}
-                className="group flex py-[0.8vw] cursor-pointer items-center gap-10 rounded-full border border-white/40 bg-white/5 px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-white max-[1025px]:hidden max-[1025px]:gap-3"
+                className="group flex  py-[.8vw] cursor-pointer items-center gap-4 bg-[#161616] px-3 text-xs text-white backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
                 aria-label="Search effects"
               >
                 <div className="flex items-center gap-2">
@@ -240,38 +240,37 @@ export function VaultHeader({
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
                   </svg>
-
-                  <span className="text-sm max-[1025px]:hidden">Search</span>
+                  {/* <span className="text-sm text-white/70 max-md:hidden">Search</span> */}
                 </div>
-
-                <kbd className="space-x-2 rounded bg-black/70 px-1 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
+                <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
                   ⌘K
                 </kbd>
               </button>
             )}
 
-           {isLoaded && !hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && <div className="block max-[1025px]:hidden">
-              <Button
+
+            {isLoaded && !hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && <div className="block max-[1025px]:hidden">
+              <ButtonV3
                 text="Upgrade to Pro"
-              id={"upgrade-to-pro-navbar"}
+                id={"upgrade-to-pro-navbar"}
 
                 href="/pricing"
                 className="border-white/50!"
-                variant="outline2"
+                variant="outline"
               />
             </div>
 
-           }
+            }
 
             {isLoaded && (!isSignedIn ? (
               !isEffectCategoryPage && (
                 <div className="block max-[1025px]:hidden">
-                  <Button
+                  <ButtonV3
                     text="Sign In"
-              id={"sign-in-navbar"}
+                    id={"sign-in-navbar"}
 
                     href="/sign-in"
-                    variant="orange"
+                    variant="outline2"
                   />
                 </div>
               )
@@ -418,9 +417,8 @@ export function VaultHeader({
                   >
                     <span>Categories</span>
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform ${
-                        isCategoriesOpen ? "rotate-180" : ""
-                      }`}
+                      className={`h-4 w-4 transition-transform ${isCategoriesOpen ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
 
@@ -465,9 +463,8 @@ export function VaultHeader({
                   >
                     <span>Documentation</span>
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform ${
-                        isDocumentationOpen ? "rotate-180" : ""
-                      }`}
+                      className={`h-4 w-4 transition-transform ${isDocumentationOpen ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
 

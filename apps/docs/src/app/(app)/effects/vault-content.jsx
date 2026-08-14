@@ -40,8 +40,10 @@ import { useFadeUp, useFadeIn } from "@/components/Animations/gsapAnimations";
 import Copy from "@/components/Animations/Copy";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { useUser } from "@clerk/nextjs";
-import FAQs from "@/components/Homepage/FAQs";
+import FAQV3 from "@/homepage-v3/sections/FAQV3";
 import { FilterMenu } from "./FilterMenu";
+import TrendingRightNow from "@/homepage-v3/sections/TrendingRightNow";
+import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -65,6 +67,33 @@ function RouteAnimationSync({ syncKey }) {
       refreshCallRef.current?.kill();
     };
   }, [syncKey]);
+
+  return null;
+}
+
+// Effects listing defaults to the 3-column grid with the sidebar closed,
+// regardless of the sidebar's persisted open/closed state from other pages.
+function EffectsGridDefaults({ toggleSidebar }) {
+  useEffect(() => {
+    toggleSidebar(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return null;
+}
+
+// 3 columns is too cramped once the sidebar takes up space, so opening it
+// from anywhere - the sidebar's own toggle, not just the grid density
+// buttons below - drops the grid to 2 columns. Only reacts to isSidebarOpen
+// itself (not gridColumns) so it doesn't fight the density buttons, which
+// already set both values together in the same click.
+function SidebarGridSync({ isSidebarOpen, gridColumns, setGridColumns }) {
+  useEffect(() => {
+    if (isSidebarOpen && gridColumns === 3) {
+      setGridColumns(2);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSidebarOpen]);
 
   return null;
 }
@@ -403,6 +432,14 @@ const routeKey = `${pathname}${
     [quickCategories]
   );
 
+  // "none" stays a valid clear sentinel (see activeFilter below) but isn't
+  // shown as a pickable row - clearing happens via the cross next to the
+  // active filter's label instead.
+  const dropdownFilterOptions = useMemo(
+    () => FILTER_OPTIONS.filter((option) => option !== "none"),
+    []
+  );
+
   const activeFilter =
     activeDropdownFilter === "none"
       ? null
@@ -514,9 +551,7 @@ const routeKey = `${pathname}${
       return true;
     });
 
-    const sortedEffects = sortEffects(nextEffects, effectiveSortFilter);
-
-    return effectiveSortFilter === "recent" ? sortedEffects.slice(0, 5) : sortedEffects;
+    return sortEffects(nextEffects, effectiveSortFilter);
   }, [
     safeEffects,
     effectiveCategoryFilter,
@@ -591,8 +626,14 @@ const routeKey = `${pathname}${
       onOverviewNavigate={showAllEffects}
       onCategoryNavigate={handleCategoryLinkClick}
     >
-      {({ isSidebarOpen }) => (
+      {({ isSidebarOpen, toggleSidebar }) => (
         <>
+        <EffectsGridDefaults toggleSidebar={toggleSidebar} />
+        <SidebarGridSync
+          isSidebarOpen={isSidebarOpen}
+          gridColumns={gridColumns}
+          setGridColumns={setGridColumns}
+        />
         {/* Outside RouteFade: its transform would turn the header's
             position:fixed into transform-relative and scroll it away. */}
         <VaultHeader
@@ -615,20 +656,20 @@ const routeKey = `${pathname}${
           <div>
             <div
               key={`category-intro-${categoryFilter}`}
-              className="mx-auto px-8 pt-28 pb-12 text-center space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
+              className=" px-8 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
             >
-              <Breadcrumb className="fadeup mx-auto" />
+              <Breadcrumb className="fadeup" />
 
               <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
                 <h1
-                  className="mb-4 mx-auto w-[80%] font-display text110 font-normal text-foreground max-md:w-[90%] max-md:text-4xl"
+                  className="mb-4 w-[80%] leading-normal t96 font-display font-normal text-foreground max-md:w-[90%] max-md:text-4xl"
                   style={{ lineHeight: "1.1" }}
                 >
                   {activeCategoryName}
                 </h1>
               </HeadAnim>
 
-              <div className="category-fadeup mx-auto flex max-w-[65vw] flex-col text-lg text-muted max-[1025px]:max-w-full max-md:text-base">
+              <div className="category-fadeup  flex max-w-[55vw] flex-col text-lg text-muted max-[1025px]:max-w-full max-md:text-base">
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
                     key={`${categoryFilter}-description-${index}`}
@@ -643,10 +684,14 @@ const routeKey = `${pathname}${
               </div>
             </div>
           </div>
+           
+           <div className="category-fadeup fadeup">
+          <TrendingRightNow effects={featuredEffects} />
+          </div>
 
           <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
             <div
-              className="relative max-[1025px]:w-full flex items-end gap-4 fadein"
+              className="relative max-[1025px]:w-full flex items-start gap-4 fadein"
               data-fadein-delay="1"
             >
               <div className="relative min-w-0 flex-1">
@@ -677,6 +722,8 @@ const routeKey = `${pathname}${
                     activeFilter={activeFilter}
                     getLabel={getQuickCategoryLabel}
                     onSelect={handleFilterSelect}
+                    onClear={() => handleFilterSelect("none")}
+                    options={dropdownFilterOptions}
                   />
 
                   {/* Divider between filters and categories */}
@@ -699,12 +746,12 @@ const routeKey = `${pathname}${
                           handleCategoryLinkClick(cat);
                         }}
                         className={`
-                          px-6 py-2.5 text-md text-center relative rounded-full max-md:px-5 max-md:py-2
-                          backdrop-blur-[6px] font-sans group flex items-center cursor-pointer
+                          px-6 py-2.5 text-md text-center relative max-md:px-5 max-md:py-2
+                          backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
                           transition-colors duration-300 max-md:text-lg text20
                           ${isSelected
-                            ? "bg-white text-[#111111] hover:text-[#111111] hover:bg-white"
-                            : "bg-[#272727] text-foreground hover:text-[#111111] hover:bg-white"
+                            ? "bg-white text-[#161616] hover:text-[#161616] hover:bg-white"
+                            : "bg-[#161616] text-[#FFFFFF] hover:text-[#161616] hover:bg-white"
                           }
                         `}
                       >
@@ -714,16 +761,18 @@ const routeKey = `${pathname}${
                   })}
                 </div>
               </div>
-
+                <div className="flex items-center gap-4 max-sm:hidden">
+                <p>Layout</p>
               {/* Grid density viewer: 2 or 3 cards per row */}
-              <div className="relative shrink-0 max-[1025px]:hidden flex items-end gap-1 rounded-sm bg-[#272727] p-1">
+              <div className="relative shrink-0 max-[1025px]:hidden flex items-end gap-1  bg-[#161616] p-1">
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute top-1 left-1 h-8 w-10 rounded-sm bg-white transition-transform duration-300 ease-out"
+                  className="pointer-events-none absolute top-1 left-1 h-8 w-10  bg-[#FF5F00] transition-transform duration-300 ease-out"
                   style={{
                     transform: `translateX(${gridColumns === 3 ? "calc(2.5rem + 0.25rem)" : "0"})`,
                   }}
                 />
+                
                 {[2, 3].map((cols) => {
                   const isActive = gridColumns === cols;
 
@@ -731,16 +780,16 @@ const routeKey = `${pathname}${
                     <button
                       key={cols}
                       type="button"
-                      onClick={() => setGridColumns(cols)}
+                      onClick={() => {
+                        setGridColumns(cols);
+                        toggleSidebar(cols === 2);
+                      }}
                       aria-label={`Show ${cols} cards per row`}
                       aria-pressed={isActive}
                       className={`
                         relative z-10 flex h-8 w-10 items-center justify-center rounded-sm text20 font-medium
-                        transition-colors duration-300 cursor-pointer
-                        ${isActive
-                          ? "text-[#111111]"
-                          : "text-foreground hover:text-white"
-                        }
+                        transition-colors duration-300 cursor-pointer text-foreground
+                        
                       `}
                     >
                       {cols}
@@ -748,10 +797,11 @@ const routeKey = `${pathname}${
                   );
                 })}
               </div>
+              </div>
             </div>
           </div>
 
-          <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-md:px-[7vw]">
+          <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-md:px-0">
             <div
               className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
                   ? "mb-8 min-h-10 opacity-100"
@@ -823,7 +873,7 @@ const routeKey = `${pathname}${
               <div className="relative text-foreground w-full mx-auto max-[1025px]:w-full">
                 {activeCategoryFaqItems.length > 0 && (
                   <div key={`category-faq-${categoryFilter}`}>
-                    <FAQs faqItems={activeCategoryFaqItems} />
+                    <FAQV3 faqItems={activeCategoryFaqItems} translateTop={false} />
                   </div>
                 )}
 
@@ -832,7 +882,7 @@ const routeKey = `${pathname}${
                     activeCategoryContent?.cta.buttonText) && (
                     <section
                       key={`category-cta-${categoryFilter}`}
-                      className="category-fadeup fadeup w-full bg-[#272727] rounded-md text-center mb-[7vw] mx-auto"
+                      className="category-fadeup fadeup w-full bg-[#272727]  max-sm:w-[90%] text-center mb-[7vw] mx-auto"
                     >
                       <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-[1025px]:px-6 max-md:px-[7vw] py-15">
                         {activeCategoryContent.cta.heading && (
@@ -850,12 +900,12 @@ const routeKey = `${pathname}${
                         {activeCategoryContent.cta.buttonText && (
                           <CustomAnimationFormTrigger>
                           <div className="mt-6 w-fit">
-                            <Button
+                            <ButtonV3
                              preventDefault={false}
                               text={activeCategoryContent.cta.buttonText}
                               href={activeCategoryContent.cta.buttonLink || "#"}
                               variant="white"
-                              className="shrink-0 w-fit mx-auto"
+                              className="shrink-0 w-fit mx-auto bg-white"
                               scaleClass="group-hover:scale-[100]"
                             />
                           </div>
@@ -1015,21 +1065,13 @@ function EffectsGridInner({
     return () => cancelAnimationFrame(raf);
   }, [visibleEffects.length, animationKey]);
 
-  // Only the desktop (lg+) column count is user-controlled; the md/sm grids
-  // stay fixed. `layout` FLIP-animates the resize/reflow when the count
-  // changes so it reads as a smooth transition instead of a snap.
-  //
-  // The FLIP transform lives on the OUTER motion.div, while the entrance
-  // animation (which also drives `transform`, with animation-fill-mode `both`)
-  // stays on the inner `.effect-card-shell`. Keeping them on separate elements
-  // stops the finished entrance animation from clobbering Framer's transform.
   const baseColsClass = columns === 2 ? "grid-cols-2" : "grid-cols-3";
 
   return (
     <>
       <div
         ref={gridRef}
-        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-2 max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
+        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-2 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
       >
         {visibleEffects.map((effect, i) => (
           <motion.div

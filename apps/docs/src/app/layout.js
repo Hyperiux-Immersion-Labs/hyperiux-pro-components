@@ -1,5 +1,6 @@
 import "@/lib/progress-event-polyfill";
 import localFont from "next/font/local";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -18,20 +19,34 @@ import { createRootMetadata } from "@/lib/seo-metadata";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
 
-const layGrotesk = localFont({
+const neueHaasUnica = localFont({
   src: [
     {
-      path: "../fonts/laygrotesk-trial-regular.woff2",
+      path: "../fonts/NeueHaasUnicaPro-Regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../fonts/laygrotesk-trial-medium.woff2",
+      path: "../fonts/NeueHaasUnicaPro-MediumIt.woff2",
       weight: "500",
-      style: "normal",
+      style: "italic",
     },
   ],
-  variable: "--font-laygrotesk",
+  variable: "--font-neue-haas",
+  display: "swap",
+  preload: false,
+});
+
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+  preload: false,
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
   display: "swap",
   preload: false,
 });
@@ -56,7 +71,10 @@ const CLEAR_STALE_CLERK_COOKIES = `(function(){
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${layGrotesk.variable} antialiased`}>
+    <html
+      lang="en"
+      className={`${neueHaasUnica.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+    >
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />

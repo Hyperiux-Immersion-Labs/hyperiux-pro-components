@@ -310,24 +310,7 @@ export default function Workflow() {
 
                     /* ── Video reveal ── */
                     if (!reduceMotion) {
-                        gsap.fromTo(
-                            videoRef.current,
-                            {
-                                clipPath: 'inset(20% 20% 20% 20%)',
-                                backgroundColor: '#0A1B4B',
-                            },
-                            {
-                                clipPath: 'inset(0% 0% 0% 0%)',
-                                ease: 'none',
-                                scrollTrigger: {
-                                    trigger: videoSectionRef.current,
-                                    start: 'top 80%',
-                                    end: '50% 50%',
-                                    scrub: true,
-                                    invalidateOnRefresh: true,
-                                },
-                            }
-                        )
+                      
                     } else {
                         gsap.set(videoRef.current, {
                             clipPath: 'inset(0% 0% 0% 0%)',
