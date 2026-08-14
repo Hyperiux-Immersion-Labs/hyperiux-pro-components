@@ -684,8 +684,10 @@ const routeKey = `${pathname}${
               </div>
             </div>
           </div>
-
+           
+           <div className="category-fadeup fadeup">
           <TrendingRightNow effects={featuredEffects} />
+          </div>
 
           <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
             <div

@@ -82,7 +82,7 @@ function NavIconLink({
       onMouseLeave={onMouseLeave}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className={`relative flex h-10 items-center gap-3 rounded-md px-4 py-[1.5vw] text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
+      className={`relative flex h-10 items-center gap-3 px-4 py-[1.5vw] text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
         isExpanded ? "w-[18.5vw]" : "w-[3.8vw]"
       }`}
     >
@@ -621,7 +621,7 @@ const navigateLegal = (event, href) => {
                         scroll={false}
                         onClick={(event) => navigateCategory(event, category.id)}
                         onMouseEnter={() => setHoveredSidebarKey("categories")}
-                        className={`relative flex w-full items-center justify-between gap-3 rounded-full py-1 text-left text-sm transition-colors cursor-pointer ${
+                        className={`relative flex w-full items-center justify-between gap-3  py-1 text-left text-sm transition-colors cursor-pointer ${
                           id === 0 ? "mt-[0.7vw]" : ""
                         } ${
                           id === effectCategories.length - 1 ? "mb-[0.7vw]" : ""
@@ -642,7 +642,7 @@ const navigateLegal = (event, href) => {
                         </span>
 
                         {count > 0 && (
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#272727] text-center text-[0.65vw] text-white/75">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center bg-[#1C1C1C] text-center text-[0.65vw] text-white">
                             {count}
                           </span>
                         )}
