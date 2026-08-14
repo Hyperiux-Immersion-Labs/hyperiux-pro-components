@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/typing-text",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Vault-themed typewriter text with sequential, cascade, and looping line variants.",
   "main": "index.tsx",
   "files": [

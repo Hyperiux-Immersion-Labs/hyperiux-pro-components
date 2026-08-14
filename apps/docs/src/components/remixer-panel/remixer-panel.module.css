@@ -751,8 +751,14 @@
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 80;
   display: block;
+}
+
+@media (max-width: 1024px) {
+  .launcherLayer {
+    display: none;
+  }
 }
 
 .launcherGroup {
@@ -903,26 +909,6 @@
 .launcherPanelInner > .panel > .body {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-}
-
-@media (max-width: 1024px) {
-  .launcherLayer {
-    display: block;
-  }
-
-  .launcherGroup {
-    right: 0.75rem;
-    top: 5.25rem;
-    width: min(340px, calc(100vw - 1.5rem));
-  }
-
-  .launcherPanel {
-    max-height: min(72vh, 620px);
-  }
-
-  .launcherPanelInner > .panel {
-    max-height: min(72vh, 620px);
-  }
 }
 
 @keyframes panelDrift {

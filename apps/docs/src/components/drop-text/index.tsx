@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { gsap } from "gsap";
 
 type StaggerFrom = "left" | "right" | "center" | "random";
@@ -39,7 +39,6 @@ type DropTextProps = {
   stagger?: number;
   ease?: DropTextEase;
   animateOnScroll?: boolean;
-  replayOnHover?: boolean;
   className?: string;
 };
 
@@ -96,17 +95,32 @@ export default function DropText({
   stagger = 0.05,
   ease = "power2.out",
   animateOnScroll = false,
-  replayOnHover = false,
   className = "",
 }: DropTextProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLHeadingElement>(null);
   const segments = useMemo(() => splitText(text, splitBy), [text, splitBy]);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return;
+
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const onReduceMotionChange = (event: MediaQueryListEvent) => {
+      setPrefersReducedMotion(event.matches);
+    };
+
+    mediaQuery.addEventListener?.("change", onReduceMotionChange);
+
+    return () => {
+      mediaQuery.removeEventListener?.("change", onReduceMotionChange);
+    };
+  }, []);
 
   const playAnimation = useCallback(() => {
     if (!containerRef.current) return;
-
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const pieces = containerRef.current.querySelectorAll<HTMLElement>("[data-drop-piece]");
 
     gsap.killTweensOf(pieces);
@@ -143,7 +157,7 @@ export default function DropText({
       },
       ease,
     });
-  }, [blur, delay, duration, ease, rotate, scaleFrom, stagger, staggerFrom, startOpacity, variant, xOffset, yOffset]);
+  }, [blur, delay, duration, ease, prefersReducedMotion, rotate, scaleFrom, stagger, staggerFrom, startOpacity, variant, xOffset, yOffset]);
 
   useEffect(() => {
     if (!animateOnScroll) {
@@ -188,7 +202,6 @@ export default function DropText({
       <h2
         ref={containerRef}
         className="m-0 block w-full select-none whitespace-pre-wrap"
-        onPointerEnter={replayOnHover ? playAnimation : undefined}
         style={{
           color: fontColor,
           fontSize: `${fontSize}vw`,

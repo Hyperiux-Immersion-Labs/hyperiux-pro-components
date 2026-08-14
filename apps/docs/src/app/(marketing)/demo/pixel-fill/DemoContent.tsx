@@ -15,7 +15,7 @@ export default function DemoContent({ registry }: { registry: any }) {
       {({ effect }) => (
         <>
           <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
-          <section className="min-h-[110vh] bg-[#101113]" aria-hidden="true" />
+          <section className=" bg-[#101113]" aria-hidden="true" />
           {effect}
           <ScrollBottom as="h2" textColor="text-white" />
         </>

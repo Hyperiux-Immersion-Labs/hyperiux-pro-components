@@ -1,7 +1,25 @@
 {
   "name": "stroke-text",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-08-14",
+      "summary": "Released the effect as free.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.2",
+      "date": "2026-08-14",
+      "summary": "Restored the default fontWeight prop value to 700.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.1",
+      "date": "2026-08-14",
+      "summary": "Switched to a flat background color and made reduced-motion fill apply instantly.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-08-14",
@@ -16,7 +34,7 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/demo/stroke-text",
-  "tier": "pro",
+  "tier": "free",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "StrokeText",
@@ -134,7 +152,7 @@
     {
       "name": "fontWeight",
       "type": "number",
-      "default": 300,
+      "default": 700,
       "description": "Font weight.",
       "remixer": {
         "control": "range",

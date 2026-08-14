@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/chromatic-text",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Three-layer scroll-reactive chromatic text with white, red, and blue depth layers.",
   "main": "index.tsx",
   "files": [
