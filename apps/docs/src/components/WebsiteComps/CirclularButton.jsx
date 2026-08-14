@@ -53,9 +53,9 @@ export default function CircularButton({
                 ref={spanRef}
                 className="absolute aspect-square rounded-full pointer-events-none"
                 style={{
-                    width: "250%",
+                    width: "350%",
                     transform: "translate(-50%, -50%) scale(0)",
-                    transition: "transform 0.5s ease",
+                    transition: "transform 0.3s ease",
                     backgroundColor: bgColor ?? (menuSocial ? "#ffffff" : "#ff5f00"),
                 }}
             />
