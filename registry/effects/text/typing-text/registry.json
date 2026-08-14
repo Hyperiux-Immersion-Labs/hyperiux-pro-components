@@ -1,7 +1,19 @@
 {
   "name": "typing-text",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "changelog": [
+    {
+      "version": "1.1.1",
+      "date": "2026-08-14",
+      "summary": "Removed the decorative gradient overlay so the effect uses a flat background color only.",
+      "breaking": false
+    },
+    {
+      "version": "1.1.0",
+      "date": "2026-08-14",
+      "summary": "Added a reduced-motion-safe final state and released the effect as free.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-08-14",
@@ -16,7 +28,7 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/demo/typing-text",
-  "tier": "pro",
+  "tier": "free",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "TypingText",

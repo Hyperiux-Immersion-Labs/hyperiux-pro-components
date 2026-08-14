@@ -1141,8 +1141,14 @@
   },
   {
     "name": "chromatic-text",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-08-14",
+        "summary": "Added a reduced-motion-safe final state, synced the shipped source to the docs version, and released the effect as free.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-14",
@@ -1159,7 +1165,7 @@
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/chromatic-text",
-    "tier": "pro",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "ChromaticText",
@@ -2170,8 +2176,20 @@
   },
   {
     "name": "drop-text",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "changelog": [
+      {
+        "version": "2.0.0",
+        "date": "2026-08-14",
+        "summary": "Removed the replayOnHover prop from the public API and hid animateOnScroll from the public remixer while keeping the runtime prop.",
+        "breaking": true
+      },
+      {
+        "version": "1.1.0",
+        "date": "2026-08-14",
+        "summary": "Added a reduced-motion-safe final state and released the effect as free.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-14",
@@ -2188,7 +2206,7 @@
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/drop-text",
-    "tier": "pro",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "DropText",
@@ -2429,17 +2447,6 @@
         "type": "boolean",
         "default": false,
         "description": "Runs the animation when the component enters the viewport.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "behavior",
-          "groupTitle": "Behavior"
-        }
-      },
-      {
-        "name": "replayOnHover",
-        "type": "boolean",
-        "default": false,
-        "description": "Replays the drop animation when the text is hovered.",
         "remixer": {
           "control": "checkbox",
           "group": "behavior",
@@ -2886,7 +2893,7 @@
   {
     "name": "glitchy-text",
     "title": "Glitchy Text",
-    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
+    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers \u2014 two white and two yellow \u2014 out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
@@ -3141,7 +3148,7 @@
   {
     "name": "gooey-counter",
     "title": "Gooey Counter",
-    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
+    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0\u201310 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
     "category": "components",
     "type": "registry:component",
     "tier": "free",
@@ -4954,8 +4961,14 @@
   },
   {
     "name": "pixel-fill",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-08-14",
+        "summary": "Added a reduced-motion-safe final state, synced the shipped source to the docs version, and released the effect as free.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-14",
@@ -4972,7 +4985,7 @@
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/pixel-fill",
-    "tier": "pro",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "PixelFill",
@@ -6508,8 +6521,26 @@
   },
   {
     "name": "stroke-text",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-08-14",
+        "summary": "Released the effect as free.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.2",
+        "date": "2026-08-14",
+        "summary": "Restored the default fontWeight prop value to 700.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.1",
+        "date": "2026-08-14",
+        "summary": "Switched to a flat background color and made reduced-motion fill apply instantly.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-14",
@@ -6524,7 +6555,7 @@
     "dependencies": [],
     "registryDependencies": [],
     "previewUrl": "/demo/stroke-text",
-    "tier": "pro",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "StrokeText",
@@ -6642,7 +6673,7 @@
       {
         "name": "fontWeight",
         "type": "number",
-        "default": 300,
+        "default": 700,
         "description": "Font weight.",
         "remixer": {
           "control": "range",
@@ -7190,8 +7221,20 @@
   },
   {
     "name": "typing-text",
-    "version": "1.0.0",
+    "version": "1.1.1",
     "changelog": [
+      {
+        "version": "1.1.1",
+        "date": "2026-08-14",
+        "summary": "Removed the decorative gradient overlay so the effect uses a flat background color only.",
+        "breaking": false
+      },
+      {
+        "version": "1.1.0",
+        "date": "2026-08-14",
+        "summary": "Added a reduced-motion-safe final state and released the effect as free.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-14",
@@ -7206,7 +7249,7 @@
     "dependencies": [],
     "registryDependencies": [],
     "previewUrl": "/demo/typing-text",
-    "tier": "pro",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "TypingText",

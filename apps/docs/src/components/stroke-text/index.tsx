@@ -123,19 +123,37 @@ export default function StrokeText({
   strokeColor = "#ffffff",
   backgroundColor = "#17191b",
   fontSize = 8,
-  fontWeight = 300,
+  fontWeight = 700,
   strokeWidth = 0.01,
   duration = 0.5,
   characterStagger = 0.045,
   className = "",
 }: StrokeTextProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const variantStyle = variantStyles[variant] ?? variantStyles.top;
   const characters = useMemo(() => Array.from(text), [text]);
 
   useEffect(() => {
     setIsHovered(false);
   }, [variant]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return;
+
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const onReduceMotionChange = (event: MediaQueryListEvent) => {
+      setPrefersReducedMotion(event.matches);
+    };
+
+    mediaQuery.addEventListener?.("change", onReduceMotionChange);
+
+    return () => {
+      mediaQuery.removeEventListener?.("change", onReduceMotionChange);
+    };
+  }, []);
 
   const textStyle = useMemo(
     () =>
@@ -154,18 +172,18 @@ export default function StrokeText({
         backgroundSize: isHovered ? variantStyle.hoverSize : variantStyle.restSize,
         fontSize: `${fontSize}vw`,
         fontWeight,
-        transitionProperty: "background-size, background-position",
-        transitionDuration: `${duration}s`,
+        transitionProperty: prefersReducedMotion ? "none" : "background-size, background-position",
+        transitionDuration: prefersReducedMotion ? "0s" : `${duration}s`,
         transitionTimingFunction: "cubic-bezier(0.67, 0.01, 0.15, 0.98)",
       }) as CSSProperties,
-    [duration, fillColor, fontSize, fontWeight, isHovered, strokeColor, strokeWidth, variantStyle],
+    [duration, fillColor, fontSize, fontWeight, isHovered, prefersReducedMotion, strokeColor, strokeWidth, variantStyle],
   );
 
   return (
     <section
       className={`flex min-h-screen w-full items-center justify-center overflow-hidden px-5 py-16 ${className}`}
       style={{
-        background: `radial-gradient(ellipse farthest-corner at center bottom, ${backgroundColor}, #414345)`,
+        backgroundColor,
       }}
     >
       <span
@@ -184,9 +202,11 @@ export default function StrokeText({
                 className="inline-block"
                 style={{
                   ...textStyle,
-                  transitionDelay: `${
-                    (isHovered ? index : characters.length - index - 1) * characterStagger
-                  }s`,
+                  transitionDelay: prefersReducedMotion
+                    ? "0s"
+                    : `${
+                        (isHovered ? index : characters.length - index - 1) * characterStagger
+                      }s`,
                 }}
               >
                 {character === " " ? "\u00a0" : character}

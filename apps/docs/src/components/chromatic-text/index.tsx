@@ -23,7 +23,7 @@ const ChromaticText = ({
   redColor = "#ff0000",
   blueColor = "#0047ff",
   fontSize = 10,
-  fontWeight = 800,
+  fontWeight = 500,
   backgroundColor = "#111111",
   className = "",
 }: ChromaticTextProps) => {
@@ -130,10 +130,10 @@ const ChromaticText = ({
   return (
     <section
       ref={rootRef}
-      className={`relative flex h-[150vh] w-full items-start justify-center ${className}`}
+      className={`relative flex h-[150vh] w-full items-center justify-center ${className}`}
       style={{ backgroundColor }}
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-4">
+      <div className="sticky top-0 flex h-screen w-full items-end justify-center overflow-hidden px-4">
         <p
           ref={textOneRef}
           className={`${layerClassName} z-20`}

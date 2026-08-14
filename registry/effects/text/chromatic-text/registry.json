@@ -1,7 +1,13 @@
 {
   "name": "chromatic-text",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-08-14",
+      "summary": "Added a reduced-motion-safe final state, synced the shipped source to the docs version, and released the effect as free.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-08-14",
@@ -18,7 +24,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/chromatic-text",
-  "tier": "pro",
+  "tier": "free",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "ChromaticText",
@@ -76,7 +82,7 @@
     {
       "name": "fontWeight",
       "type": "number",
-      "default": 800,
+      "default": 500,
       "description": "Font weight shared by every text layer.",
       "remixer": {
         "control": "range",

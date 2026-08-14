@@ -851,8 +851,8 @@
       "registryDependencies": [],
       "exportName": "ChromaticText",
       "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
+      "version": "1.1.0",
+      "tier": "free"
     },
     {
       "name": "circle-text-reveal",
@@ -883,8 +883,8 @@
       "registryDependencies": [],
       "exportName": "DropText",
       "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
+      "version": "2.0.0",
+      "tier": "free"
     },
     {
       "name": "glitchy-text",
@@ -993,8 +993,8 @@
       "registryDependencies": [],
       "exportName": "PixelFill",
       "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
+      "version": "1.1.0",
+      "tier": "free"
     },
     {
       "name": "rectangular-text-reveal",
@@ -1069,8 +1069,8 @@
       "registryDependencies": [],
       "exportName": "StrokeText",
       "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
+      "version": "1.1.0",
+      "tier": "free"
     },
     {
       "name": "text-cloning",
@@ -1145,8 +1145,8 @@
       "registryDependencies": [],
       "exportName": "TypingText",
       "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
+      "version": "1.1.1",
+      "tier": "free"
     },
     {
       "name": "animated-toggle",

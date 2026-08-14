@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -115,14 +115,14 @@ export default function PixelFill({
   lineHeight = 1.18,
   textAlign = "center",
   maxWidth = 92,
-  sectionHeight = 180,
+  sectionHeight = 250,
   pixelSize = 3,
   stagger = 12,
   bandFraction = 0.65,
   settleBlend = 0.45,
   direction = "up",
-  start = "top 85%",
-  end = "bottom 85%",
+  start = "top top",
+  end = "bottom bottom",
   id = "pixel-fill",
   className = "",
 }: PixelFillProps) {
@@ -130,6 +130,24 @@ export default function PixelFill({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLParagraphElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return;
+
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const onReduceMotionChange = (event: MediaQueryListEvent) => {
+      setPrefersReducedMotion(event.matches);
+    };
+
+    mediaQuery.addEventListener?.("change", onReduceMotionChange);
+
+    return () => {
+      mediaQuery.removeEventListener?.("change", onReduceMotionChange);
+    };
+  }, []);
 
   useEffect(() => {
     let frame: number | null = null;
@@ -418,8 +436,6 @@ export default function PixelFill({
       frame = requestAnimationFrame(draw);
     };
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
     const init = () => {
       if (disposed) return;
 
@@ -477,6 +493,7 @@ export default function PixelFill({
     end,
     lineHeight,
     pixelSize,
+    prefersReducedMotion,
     primaryColor,
     settleBlend,
     stagger,
@@ -489,38 +506,40 @@ export default function PixelFill({
     <section
       id={id}
       ref={sectionRef}
-      className={`relative flex w-full items-center overflow-hidden px-5 py-24 ${className}`}
+      className={`relative w-full ${className}`}
       style={{
         backgroundColor,
-        minHeight: `${sectionHeight}vh`,
+        height: `${sectionHeight}vh`,
       }}
     >
-      <div
-        ref={wrapperRef}
-        className="relative z-10 mx-auto"
-        style={{
-          maxWidth: `${maxWidth}vw`,
-          width: "100%",
-        }}
-      >
-        <p
-          ref={textRef}
-          className="m-0 text-transparent"
+      <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden px-5">
+        <div
+          ref={wrapperRef}
+          className="relative z-10 mx-auto"
           style={{
-            fontSize: `clamp(2.5rem, ${fontSize}vw, 8rem)`,
-            fontWeight,
-            lineHeight,
-            textAlign,
+            maxWidth: `${maxWidth}vw`,
+            width: "100%",
           }}
         >
-          {text}
-        </p>
+          <p
+            ref={textRef}
+            className="m-0 text-transparent"
+            style={{
+              fontSize: `clamp(2.5rem, ${fontSize}vw, 8rem)`,
+              fontWeight,
+              lineHeight,
+              textAlign,
+            }}
+          >
+            {text}
+          </p>
 
-        <canvas
-          ref={canvasRef}
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full"
-        />
+          <canvas
+            ref={canvasRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 h-full w-full"
+          />
+        </div>
       </div>
     </section>
   );

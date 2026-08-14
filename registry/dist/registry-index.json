@@ -386,8 +386,8 @@
   },
   {
     "name": "@hyperiux/chromatic-text",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-chromatic-text-1.0.0.tgz"
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-chromatic-text-1.1.0.tgz"
   },
   {
     "name": "@hyperiux/circle-text-reveal",
@@ -396,8 +396,8 @@
   },
   {
     "name": "@hyperiux/drop-text",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-drop-text-1.0.0.tgz"
+    "version": "2.0.0",
+    "tarball": "registry/dist/hyperiux-drop-text-2.0.0.tgz"
   },
   {
     "name": "@hyperiux/glitchy-text",
@@ -431,8 +431,8 @@
   },
   {
     "name": "@hyperiux/pixel-fill",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-pixel-fill-1.0.0.tgz"
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-pixel-fill-1.1.0.tgz"
   },
   {
     "name": "@hyperiux/rectangular-text-reveal",
@@ -456,8 +456,8 @@
   },
   {
     "name": "@hyperiux/stroke-text",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-stroke-text-1.0.0.tgz"
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-stroke-text-1.1.0.tgz"
   },
   {
     "name": "@hyperiux/text-cloning",
@@ -481,8 +481,8 @@
   },
   {
     "name": "@hyperiux/typing-text",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-typing-text-1.0.0.tgz"
+    "version": "1.1.1",
+    "tarball": "registry/dist/hyperiux-typing-text-1.1.1.tgz"
   },
   {
     "name": "@hyperiux/aperture-transition",

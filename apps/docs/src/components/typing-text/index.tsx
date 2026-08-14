@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 type TypingVariant = "sequential" | "cascade" | "loop";
 type CursorStyle = "bar" | "block" | "underline";
@@ -107,6 +107,7 @@ export default function TypingText({
   showCursor = true,
   className = "",
 }: TypingTextProps) {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const preparedLines = useMemo(
     () => lines.map((line) => ({ text: line, chars: Math.max(Array.from(line).length, 1) })),
     [lines]
@@ -123,6 +124,23 @@ export default function TypingText({
     perspective,
     typingDirection,
   ].join("-");
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return;
+
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const onReduceMotionChange = (event: MediaQueryListEvent) => {
+      setPrefersReducedMotion(event.matches);
+    };
+
+    mediaQuery.addEventListener?.("change", onReduceMotionChange);
+
+    return () => {
+      mediaQuery.removeEventListener?.("change", onReduceMotionChange);
+    };
+  }, []);
 
   let elapsed = 0;
 
@@ -170,10 +188,17 @@ export default function TypingText({
             direction: typingDirection === "right-to-left" ? "rtl" : "ltr",
             textAlign: typingDirection === "right-to-left" ? "right" : "left",
             transformOrigin: typingDirection === "right-to-left" ? "right center" : "left center",
-            animation:
-              variant === "loop"
+            width: prefersReducedMotion ? "auto" : undefined,
+            maxWidth: prefersReducedMotion ? "100%" : undefined,
+            opacity: prefersReducedMotion ? 1 : undefined,
+            animation: prefersReducedMotion
+              ? "none"
+              : variant === "loop"
                 ? "typing-text-loop var(--typing-loop-duration) steps(var(--typing-steps), end) var(--typing-delay) infinite both, typing-text-cursor 820ms steps(1, end) infinite"
                 : "typing-text-write var(--typing-duration) steps(var(--typing-steps), end) var(--typing-delay) both, typing-text-cursor 820ms steps(1, end) infinite",
+            borderRightColor: prefersReducedMotion ? "transparent" : undefined,
+            borderLeftColor: prefersReducedMotion ? "transparent" : undefined,
+            borderBottomColor: prefersReducedMotion ? "transparent" : undefined,
           };
 
           return (
@@ -192,16 +217,6 @@ export default function TypingText({
       <style>{`
         .typing-text-root {
           isolation: isolate;
-        }
-
-        .typing-text-root::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background:
-            radial-gradient(circle at 22% 24%, rgba(245, 158, 11, 0.1), transparent 28%),
-            linear-gradient(135deg, rgba(255,255,255,0.04), transparent 42%);
         }
 
         .typing-text-line {
