@@ -173,7 +173,7 @@ export const UnlockIcon = ({ className }) => {
 export const Mcp = ({ className }) => {
     return (
         <>
-            <svg className={`${className}`} width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className={`${className}`} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M18.2203 8.11406H1.64062C1.15078 8.11406 0.75 7.71328 0.75 7.22344V1.64062C0.75 1.15078 1.15078 0.75 1.64062 0.75H18.2227C18.7125 0.75 19.1133 1.15078 19.1133 1.64062V7.22344C19.1109 7.71328 18.7102 8.11406 18.2203 8.11406Z" stroke="white" strokeWidth="1.5" strokeMiterlimit="10"/>
 <path d="M4.74063 5.10234C5.11083 5.10234 5.41094 4.80223 5.41094 4.43203C5.41094 4.06183 5.11083 3.76172 4.74063 3.76172C4.37042 3.76172 4.07031 4.06183 4.07031 4.43203C4.07031 4.80223 4.37042 5.10234 4.74063 5.10234Z" stroke="white" strokeWidth="1.5" strokeMiterlimit="10"/>
 <path d="M7.77734 4.43188H11.3164" stroke="white" strokeWidth="1.5" strokeMiterlimit="10"/>

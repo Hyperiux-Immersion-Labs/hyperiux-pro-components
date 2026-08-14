@@ -49,7 +49,7 @@ function CopyLimitOverlay({ message, ctaHref }) {
               id={"upgrade-to-pro-codeblock"}
 
                     href={ctaHref}
-                    className="rounded-full bg-[#ff5f00] px-4 py-2 text-xs font-medium text-white! transition hover:bg-[#e05500]"
+                    className="bg-[#ff5f00] px-4 py-2 text-xs font-medium text-white! transition hover:bg-[#e05500]"
                 >
                     Upgrade to Pro
                 </Link>
@@ -115,7 +115,7 @@ export function CodeBlock({
                             <CopyBtn
                                 value={displayCode}
                                 color="white"
-                                className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
+                                className=" px-3 py-1.5 transition-colors hover:text-white/80"
                                 aria-label="Copy code to clipboard"
                                 disabled={copyLocked}
                                 onBeforeCopy={onBeforeCopy}
@@ -177,7 +177,7 @@ export function InstallCommand({
 
     return (
         <div
-            className={`relative flex items-center gap-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800 overflow-hidden ${
+            className={`relative flex items-center gap-2 p-3  bg-neutral-900 border border-neutral-800 overflow-hidden ${
                 copyLocked ? "min-h-32.5" : ""
             }`}
         >
@@ -196,7 +196,7 @@ export function InstallCommand({
                     value={displayCommand}
                     color="white"
                     size="sm"
-                    className="rounded bg-white/10 p-2 hover:bg-white/20"
+                    className=" bg-white/10 p-2 hover:bg-white/20"
                     aria-label="Copy install command"
                     disabled={copyLocked}
                     onBeforeCopy={onBeforeCopy}
