@@ -65,6 +65,7 @@ export function EffectCard({
   const [active, setActive] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [hasAppeared, setHasAppeared] = useState(false);
+  const [registryDependencies, setRegistryDependencies] = useState(null);
 
   const router = useRouter();
   const cardRef = useRef(null);
@@ -92,6 +93,28 @@ export function EffectCard({
     observer.observe(card);
     return () => observer.disconnect();
   }, []);
+
+  // Package dependencies (gsap, three, etc.) live in each effect's registry
+  // manifest, not the effect object itself - fetch it once the card is on
+  // screen rather than for every card in the grid up front.
+  useEffect(() => {
+    if (!hasAppeared || !effect?.name) return;
+
+    let cancelled = false;
+
+    fetch(`/r/${effect.name}.json`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled) setRegistryDependencies(data?.dependencies || []);
+      })
+      .catch(() => {
+        if (!cancelled) setRegistryDependencies([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hasAppeared, effect?.name]);
 
   const videoPreviewUrl = useMemo(() => resolveEffectVideoUrl(effect), [effect]);
   const coverImage = useMemo(() => resolveEffectCoverImage(effect), [effect]);
@@ -146,11 +169,15 @@ export function EffectCard({
     return formatLabel(categories[0] || "components");
   }, [effect.categories, effect.category]);
 
-  const dependencyPills = useMemo(
+  const allDependencyLabels = useMemo(
     () =>
-      (effect.dependencies || []).slice(0, 2).map(formatLabel).filter(Boolean),
-    [effect.dependencies]
+      (registryDependencies || effect.dependencies || [])
+        .map(formatLabel)
+        .filter(Boolean),
+    [registryDependencies, effect.dependencies]
   );
+  const dependencyPills = allDependencyLabels.slice(0, 2);
+  const extraDependencyCount = Math.max(allDependencyLabels.length - 2, 0);
   const installCount = Number.isFinite(Number(effect.installCount))
     ? Number(effect.installCount)
     : 0;
@@ -172,38 +199,9 @@ export function EffectCard({
     >
 
 
-      {/* Preview - square card with 16:9 media centered via absolute + translate */}
-      <div className="pointer-events-none relative aspect-square overflow-hidden rounded-sm bg-[#272727]">
-
-        {/* Pills & tier badge */}
-        <div className="absolute inset-x-3 top-3 z-20 flex items-start justify-between gap-3 max-[1025px]:inset-x-5 max-[1025px]:top-7 max-md:inset-x-3 max-md:top-3 max-md:gap-2">
-          <div className="flex min-w-0 flex-wrap items-center gap-2 max-md:gap-1.5">
-            {dependencyPills.map((pill) => (
-              <span
-                key={pill}
-                className="rounded-full bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-md:px-3 max-md:py-1 max-md:text-[3.5vw]!"
-              >
-                {pill}
-              </span>
-            ))}
-          </div>
-          <div className="flex shrink-0 items-center gap-3 max-sm:gap-2">
-            {/* {installCount > 0 && (
-              <span className="flex items-center gap-1.5 rounded-full border border-white/18 bg-transparent px-3 py-1 text-18 font-medium text-white/55 max-sm:px-2.5 max-sm:text-[3vw]!">
-                {installCountLabel}
-                <Download className="h-4 w-4 text-white/45 max-sm:h-3 max-sm:w-3" aria-hidden="true" />
-              </span>
-            )} */}
-            {effect.tier === "pro" && (
-              <span className="rounded-full bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
-                Pro
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Media: inset horizontally, centered vertically, 16:9 aspect ratio */}
-        <div className="absolute inset-x-7 top-1/2 aspect-video -translate-y-1/2 overflow-hidden rounded-sm max-md:inset-x-4">
+      {/* Preview - shorter 3:2 card with 16:9 media centered via absolute + translate */}
+      <div className="pointer-events-none relative aspect-3/2 overflow-hidden rounded-sm bg-[#161616]">
+        <div className="absolute inset-x-7 top-1/2 aspect-video -translate-y-1/2 overflow-hidden max-md:inset-x-4">
           <Image
             src={coverImage}
             alt={effect.title || effect.name}
@@ -234,8 +232,43 @@ export function EffectCard({
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Pills & tier badge - gray band below the media, on top of the card's own background */}
+      <div className="pointer-events-none relative flex items-start justify-between gap-3 rounded-sm bg-[#1E1E1E] px-3 py-3 max-md:gap-2 max-md:px-2 max-md:py-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-2 max-md:gap-1.5">
+          {dependencyPills.map((pill) => (
+            <span
+              key={pill}
+              className="rounded-sm bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 max-md:px-3 max-md:py-1 max-md:text-[3.5vw]!"
+            >
+              {pill}
+            </span>
+          ))}
+          {extraDependencyCount > 0 && (
+            <Tooltip
+              label={allDependencyLabels.join(", ")}
+              className="pointer-events-auto"
+            >
+              <span className="rounded-sm bg-[#0E0E0E] px-5 py-1.5 text18 font-medium text-white/70 cursor-default max-md:px-3 max-md:py-1 max-md:text-[3.5vw]!">
+                +{extraDependencyCount}
+              </span>
+            </Tooltip>
+          )}
+        </div>
+        {effect.tier === "pro" && (
+          <span className="shrink-0 rounded-sm bg-primary px-4 py-1.5 text18 font-medium text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
+            Pro
+          </span>
+        )}
+      </div>
+
+      {/* Footer - corner brackets mark its bounds, filling in from grey to
+          primary on hover the same way EffectBox's do on the homepage. */}
       <div className="pointer-events-none relative flex items-start justify-between gap-4 px-3 pt-5 pb-1 max-[1025px]:pt-8 max-md:gap-3 max-md:px-2 max-md:pt-7">
+        <span className="pointer-events-none absolute -top-px -left-px h-2.5 w-2.5 border-t border-l border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
+        <span className="pointer-events-none absolute -top-px -right-px h-2.5 w-2.5 border-t border-r border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
+        <span className="pointer-events-none absolute -bottom-px -left-px h-2.5 w-2.5 border-b border-l border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
+        <span className="pointer-events-none absolute -bottom-px -right-px h-2.5 w-2.5 border-b border-r border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
+
         <div className="flex min-w-0 flex-col gap-0.5">
           <h3 className="truncate font-sans text22 font-medium leading-none text-white max-md:text-base">
             <span>
@@ -248,6 +281,13 @@ export function EffectCard({
         </div>
 
         <div className="pointer-events-auto relative z-30 flex shrink-0 items-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:gap-1.5">
+          {installCount > 0 && (
+            <span className="flex items-center gap-1.5 text-18 font-medium text-white/55 max-sm:text-[3vw]!">
+              {installCountLabel}
+              <Download className="h-4 w-4 text-white/45 max-sm:h-3 max-sm:w-3" aria-hidden="true" />
+            </span>
+          )}
+
           <Tooltip label="Save">
             <button
               type="button"
@@ -257,11 +297,11 @@ export function EffectCard({
                 e.stopPropagation();
                 toggleWishlist?.(effect);
               }}
-              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-sm bg-[#242424] text-white transition-colors hover:bg-white/10 max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9"
               aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
             >
               <Heart
-                className={`h-4 w-4 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-5 max-md:w-5 ${
+                className={`h-4 w-4 max-[1025px]:h-5 max-[1025px]:w-5 max-md:h-4 max-md:w-4 ${
                   isWishlisted ? "fill-white" : ""
                 }`}
               />
@@ -277,19 +317,19 @@ export function EffectCard({
                 e.stopPropagation();
                 window.open(previewHref, "_blank", "noopener,noreferrer");
               }}
-              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white transition-colors hover:bg-white/10 max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-sm bg-[#242424] text-white transition-colors hover:bg-white/10 max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9"
               aria-label="Preview"
             >
-              <Eye className="h-4 w-4 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-5 max-md:w-5" />
+              <Eye className="h-4 w-4 max-[1025px]:h-5 max-[1025px]:w-5 max-md:h-4 max-md:w-4" />
             </button>
           </Tooltip>
 
           <Tooltip label="View Detail">
             <span
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white max-[1025px]:h-12 max-[1025px]:w-12 max-md:h-10 max-md:w-10"
+              className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary text-white max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9"
               aria-hidden="true"
             >
-              <ArrowUpRight className="h-5 w-5 max-md:h-4 max-md:w-4" />
+              <ArrowUpRight className="h-4 w-4 max-md:h-3.5 max-md:w-3.5" />
             </span>
           </Tooltip>
         </div>
@@ -297,3 +337,4 @@ export function EffectCard({
     </Link>
   );
 }
+

@@ -21,6 +21,9 @@ import LoaderV3 from '@/homepage-v3/components/LoaderV3'
 import DitherTransition from '@/homepage-v3/components/DitherTransition'
 import { getSearchIndexEffects } from '@/lib/search-index'
 import { FAQJSONLD } from '@/lib/json-ld'
+import { getAllSanityEffectEntries, buildEffectsFromSanity } from '@/lib/sanity'
+import { getFeaturedEffects } from '@/lib/featured-effects'
+import TrendingRightNow from '@/homepage-v3/sections/TrendingRightNow'
 
 const faqItems = [
   {
@@ -209,6 +212,9 @@ const USE_CASES = [
 export default async function page() {
   const effects = await getSearchIndexEffects()
 
+  const sanityEntries = await getAllSanityEffectEntries()
+  const trendingEffects = getFeaturedEffects(buildEffectsFromSanity(sanityEntries))
+
   return (
     <>
       <FAQJSONLD faqs={faqItems} />
@@ -225,6 +231,7 @@ export default async function page() {
           <CurvedGradient />
           <ProblemFixes />
           <ExplainVault />
+          <TrendingRightNow effects={trendingEffects} />
           <ExploreTheEffects />
           <Preview />
           <PreviewVideo />

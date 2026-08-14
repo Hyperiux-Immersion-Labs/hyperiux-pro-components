@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LayoutGroup, motion, useReducedMotion } from "motion/react";
-import { ChevronDown } from "lucide-react";
-import { FILTER_OPTIONS } from "@/lib/effect-sort";
+import { ChevronDown, X } from "lucide-react";
+import { EFFECT_SORT_OPTIONS, FILTER_OPTIONS } from "@/lib/effect-sort";
 
 export { FILTER_OPTIONS };
 
@@ -18,6 +18,10 @@ export function FilterMenu({
   categoryFilter,
   getLabel,
   onSelect,
+  // Called when the cross next to the active filter's label is clicked
+  // (icon variant only). Lets the caller clear the filter without a "none"
+  // row in the dropdown list.
+  onClear,
   // Defaults to the vault listing's featured/free/pro/sort dropdown; the
   // Saved Effects / Usage dashboard tabs pass a longer list ("all" + these
   // + every category present) so one dropdown covers all filtering instead
@@ -69,31 +73,45 @@ export function FilterMenu({
       if (event.key === "Escape") setOpen(false);
     };
 
-    // The mobile/tablet panel is portaled with fixed coords, so close it on
-    // scroll/resize rather than let it float detached from its button.
-    // Registered with capture=true to catch page scroll wherever it
-    // originates - but that also catches the panel's own internal scroll
-    // (an option list long enough to need panelClassName's overflow-y-auto),
-    // since capture-phase listeners on `window` see descendant scroll events
-    // regardless of bubbling. Skip those so scrolling the list doesn't
-    // instantly close it.
-    const handleReposition = (event) => {
-      if (panelRef.current?.contains(event.target)) return;
-      setOpen(false);
-    };
-
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("scroll", handleReposition, true);
-    window.addEventListener("resize", handleReposition);
+
+    // Only the mobile/tablet panel is portaled with fixed coords, so only it
+    // needs to close on scroll/resize rather than float detached from its
+    // button - the desktop panel is a normal absolutely-positioned child of
+    // its button and tracks it automatically. Attaching this unconditionally
+    // used to close the menu the instant it opened whenever opening it
+    // triggered any incidental scroll (e.g. the mobile/tablet category row's
+    // horizontal auto-scroll bringing the button into view), which read as
+    // the dropdown "flickering" shut right after the click that opened it.
+    let handleReposition = null;
+
+    if (menuPos) {
+      // Registered with capture=true to catch page scroll wherever it
+      // originates - but that also catches the panel's own internal scroll
+      // (an option list long enough to need panelClassName's overflow-y-auto),
+      // since capture-phase listeners on `window` see descendant scroll events
+      // regardless of bubbling. Skip those so scrolling the list doesn't
+      // instantly close it.
+      handleReposition = (event) => {
+        if (panelRef.current?.contains(event.target)) return;
+        setOpen(false);
+      };
+
+      window.addEventListener("scroll", handleReposition, true);
+      window.addEventListener("resize", handleReposition);
+    }
 
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("scroll", handleReposition, true);
-      window.removeEventListener("resize", handleReposition);
+
+      if (handleReposition) {
+        window.removeEventListener("scroll", handleReposition, true);
+        window.removeEventListener("resize", handleReposition);
+      }
     };
-  }, [open]);
+  }, [open, menuPos]);
 
   const handleToggle = () => {
     setOpen((isOpen) => {
@@ -133,8 +151,8 @@ export function FilterMenu({
           : undefined
       }
       className={[
-        "space-y-1.5 min-w-44 rounded-md border border-white/10 bg-[#1a1a1a] p-1.5",
-        menuPos ? "fixed z-[9999]" : "absolute left-0 top-full mt-2 z-30",
+        "space-y-1.5 min-w-44 border border-white/10 bg-[#1a1a1a] p-1.5",
+        menuPos ? "fixed z-9999" : "absolute left-0 top-full mt-2 z-30",
         panelClassName,
       ]
         .filter(Boolean)
@@ -142,7 +160,7 @@ export function FilterMenu({
       onMouseLeave={() => setHoveredCat(null)}
     >
       <LayoutGroup id="filter-menu-pill">
-        {options.map((cat) => {
+        {options.map((cat, index) => {
           // categoryFilter (when passed, "label" variant) always reflects
           // the true current selection, including "all" - activeFilter
           // alone is null in that state so nothing would ever highlight.
@@ -152,51 +170,63 @@ export function FilterMenu({
           const highlighted = hoveredCat
             ? hoveredCat === cat
             : isSelected;
+          // Separate the category filters (featured/free/pro) from the
+          // sort options (a-z/z-a/recent) with a rule at the boundary.
+          const showDivider =
+            EFFECT_SORT_OPTIONS.includes(cat) &&
+            !EFFECT_SORT_OPTIONS.includes(options[index - 1]);
 
           return (
-            <button
-              key={cat}
-              type="button"
-              role="menuitem"
-              onMouseEnter={() => setHoveredCat(cat)}
-              onClick={() => {
-                onSelect(cat);
-                setOpen(false);
-              }}
-              className="relative isolate flex w-full items-center rounded-full px-4 py-2.5 text-left text20 cursor-pointer"
-            >
-              {highlighted && (
-                <motion.span
-                  // Shared layoutId lets the pill slide between items
-                  // instead of cross-fading in place.
-                  layoutId={
-                    reduceMotion ? undefined : "filter-menu-pill"
-                  }
-                  className="absolute inset-0 z-0 rounded-md bg-white"
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: 1 }}
-                  transition={
-                    reduceMotion
-                      ? { duration: 0.2, ease: "easeOut" }
-                      : {
-                          type: "spring",
-                          stiffness: 500,
-                          damping: 40,
-                          opacity: { duration: 0.15 },
-                        }
-                  }
+            <div key={cat}>
+              {showDivider && (
+                <span
+                  aria-hidden="true"
+                  className="my-1.5 block h-px w-full bg-white/10"
                 />
               )}
-              <span
-                className={`relative z-10 leading-none transition-colors duration-200 ${
-                  highlighted
-                    ? "text-[#111111]"
-                    : "text-foreground"
-                }`}
+              <button
+                type="button"
+                role="menuitem"
+                onMouseEnter={() => setHoveredCat(cat)}
+                onClick={() => {
+                  onSelect(cat);
+                  setOpen(false);
+                }}
+                className="relative isolate flex w-full items-center  px-4 py-2.5 text-left text20 cursor-pointer"
               >
-                {getLabel(cat)}
-              </span>
-            </button>
+                {highlighted && (
+                  <motion.span
+                    // Shared layoutId lets the pill slide between items
+                    // instead of cross-fading in place.
+                    layoutId={
+                      reduceMotion ? undefined : "filter-menu-pill"
+                    }
+                    className="absolute inset-0 z-0  bg-white"
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 1 }}
+                    transition={
+                      reduceMotion
+                        ? { duration: 0.2, ease: "easeOut" }
+                        : {
+                            type: "spring",
+                            stiffness: 500,
+                            damping: 40,
+                            opacity: { duration: 0.15 },
+                          }
+                    }
+                  />
+                )}
+                <span
+                  className={`relative z-10 leading-none transition-colors duration-200 ${
+                    highlighted
+                      ? "text-[#111111]"
+                      : "text-foreground"
+                  }`}
+                >
+                  {getLabel(cat)}
+                </span>
+              </button>
+            </div>
           );
         })}
       </LayoutGroup>
@@ -213,13 +243,13 @@ export function FilterMenu({
         aria-expanded={open}
         aria-label="Filter effects"
         className={`
-          px-6 py-2.5 text-md relative rounded-full max-md:px-5 max-md:py-2
+          px-6 py-2.5 text-md relative max-md:px-5 max-md:py-2
           backdrop-blur-[6px] font-sans flex items-center gap-2 justify-center
           cursor-pointer transition-colors duration-300 max-md:text-lg text20
           ${
             activeFilter
-              ? "bg-white text-[#111111] hover:bg-white"
-              : "bg-[#272727] text-foreground hover:text-[#111111] hover:bg-white"
+              ? "bg-white text-[#161616] hover:bg-white"
+              : "bg-[#161616] text-[#ffffff] hover:text-[#161616] hover:bg-white"
           }
         `}
       >
@@ -249,7 +279,29 @@ export function FilterMenu({
               <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" />
             </svg>
             {activeFilter ? (
-              <span className="leading-none">{getLabel(activeFilter)}</span>
+              <>
+                <span className="leading-none">{getLabel(activeFilter)}</span>
+                {onClear && (
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Clear filter"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onClear();
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key !== "Enter" && event.key !== " ") return;
+                      event.preventDefault();
+                      event.stopPropagation();
+                      onClear();
+                    }}
+                    className="flex shrink-0 items-center justify-center  p-0.5 hover:bg-black/10"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </span>
+                )}
+              </>
             ) : null}
           </>
         )}
