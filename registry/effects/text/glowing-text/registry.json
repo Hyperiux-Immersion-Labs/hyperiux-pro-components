@@ -1,7 +1,13 @@
 {
   "name": "glowing-text",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-08-17",
+      "summary": "Rebuilt the reveal as a character-by-character opacity fade (the currently-arriving character glows bold and bright, then settles to regular weight and dim glow) to match the reference clip. Removed flickerSpeed, scanSpeed, and showScanLine; added activeWeight and lineGap.",
+      "breaking": true
+    },
     {
       "version": "1.0.0",
       "date": "2026-08-14",
@@ -11,12 +17,12 @@
   ],
   "type": "registry:component",
   "title": "Glowing Text",
-  "description": "Reference-inspired terminal text with staggered glow reveal, subtle flicker, and an animated scan sweep.",
+  "description": "Terminal-style typewriter text where the active line types in bold glow and settles to a dim, regular weight once complete.",
   "category": "text",
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/demo/glowing-text",
-  "tier": "pro",
+  "tier": "free",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "GlowingText",
@@ -75,7 +81,21 @@
       "name": "fontWeight",
       "type": "number",
       "default": 400,
-      "description": "Font weight.",
+      "description": "Settled font weight, applied once a line finishes typing.",
+      "remixer": {
+        "control": "range",
+        "group": "type",
+        "groupTitle": "Type",
+        "min": 100,
+        "max": 900,
+        "step": 100
+      }
+    },
+    {
+      "name": "activeWeight",
+      "type": "number",
+      "default": 700,
+      "description": "Font weight while a line is actively typing.",
       "remixer": {
         "control": "range",
         "group": "type",
@@ -128,70 +148,45 @@
       }
     },
     {
-      "name": "revealDuration",
+      "name": "characterStagger",
       "type": "number",
-      "default": 1.6,
-      "description": "Character reveal duration.",
+      "default": 0.045,
+      "description": "Delay between each character starting its reveal.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
-        "min": 0.4,
-        "max": 4,
-        "step": 0.1
+        "min": 0.01,
+        "max": 0.12,
+        "step": 0.005
       }
     },
     {
-      "name": "characterStagger",
+      "name": "revealDuration",
       "type": "number",
-      "default": 0.025,
-      "description": "Delay between character reveals.",
+      "default": 0.5,
+      "description": "How long each character takes to fade in and settle.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.15,
+        "max": 1.2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "lineGap",
+      "type": "number",
+      "default": 0.15,
+      "description": "Extra pause after a line's last word before the next line starts.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0,
-        "max": 0.08,
-        "step": 0.005
-      }
-    },
-    {
-      "name": "flickerSpeed",
-      "type": "number",
-      "default": 3.2,
-      "description": "Flicker loop duration.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 1,
-        "max": 8,
-        "step": 0.1
-      }
-    },
-    {
-      "name": "scanSpeed",
-      "type": "number",
-      "default": 4.5,
-      "description": "Scan sweep duration.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 1,
-        "max": 10,
-        "step": 0.1
-      }
-    },
-    {
-      "name": "showScanLine",
-      "type": "boolean",
-      "default": true,
-      "description": "Shows the animated scan sweep.",
-      "remixer": {
-        "control": "checkbox",
-        "group": "motion",
-        "groupTitle": "Motion"
+        "max": 1,
+        "step": 0.05
       }
     }
   ],

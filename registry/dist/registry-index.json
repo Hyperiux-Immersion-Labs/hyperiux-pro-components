@@ -406,8 +406,8 @@
   },
   {
     "name": "@hyperiux/glowing-text",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-glowing-text-1.0.0.tgz"
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-glowing-text-1.1.0.tgz"
   },
   {
     "name": "@hyperiux/mask-text-reveal",
