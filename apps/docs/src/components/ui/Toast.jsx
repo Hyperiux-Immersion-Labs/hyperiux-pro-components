@@ -54,7 +54,7 @@ export function ToastViewport({ toast, onDismiss }) {
         <div
           key={toast.id}
           role="status"
-          className="pointer-events-auto flex items-start gap-3 rounded-md border border-white/15 bg-[#0e0e0e]/95 px-5 py-4 shadow-2xl backdrop-blur-md"
+          className="pointer-events-auto flex items-start gap-3  border border-white/15 bg-[#0e0e0e]/95 px-5 py-4 shadow-2xl backdrop-blur-md"
         >
           <div className="min-w-0 flex-1">
             {toast.title && (

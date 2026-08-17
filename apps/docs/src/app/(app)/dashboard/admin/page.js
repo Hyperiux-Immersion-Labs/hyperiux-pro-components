@@ -5,8 +5,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "motion/react";
-import { Search, ArrowUpRight, ChevronDown, UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Search,
+  ArrowUpRight,
+  ChevronDown,
+  UserPlus,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Upload,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { useAdminRole } from "@/lib/useAdminRole";
+import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 const USERS_PER_PAGE = 10;
 
@@ -96,32 +108,176 @@ function PlanBadge({ plan }) {
   );
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Loosely matches email-shaped tokens anywhere inside a CSV cell/line.
+const EMAIL_TOKEN_RE = /[^\s,;<>"']+@[^\s,;<>"']+\.[^\s,;<>"']+/g;
+
+function parseEmailsFromText(text) {
+  const matches = text.match(EMAIL_TOKEN_RE) || [];
+  return matches
+    .map((m) => m.trim().replace(/[.,;]+$/, "").toLowerCase())
+    .filter((m) => EMAIL_RE.test(m));
+}
+
 function InviteModal({ onClose }) {
-  const [email, setEmail] = useState("");
+  const [emails, setEmails] = useState([]);
+  const [inputValue, setInputValue] = useState("");
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState(null);
+  const [results, setResults] = useState(null);
+  const [csvNote, setCsvNote] = useState(null);
+  const [quota, setQuota] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/admin/waitlist/invite")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => json && setQuota(json))
+      .catch(() => {});
+  }, []);
+
+  const atDailyLimit = quota && quota.remaining <= 0;
+
+  function addEmails(text) {
+    const found = parseEmailsFromText(text);
+    if (found.length === 0) return;
+    setEmails((prev) => {
+      const merged = [...new Set([...prev, ...found])];
+      if (quota && merged.length > quota.remaining) {
+        setCsvNote({
+          type: "error",
+          text: `Only ${quota.remaining} invite${quota.remaining === 1 ? "" : "s"} left today (${quota.limit}/day limit) - trimmed the rest.`,
+        });
+        return merged.slice(0, quota.remaining);
+      }
+      return merged;
+    });
+  }
+
+  function commitInput() {
+    if (!inputValue.trim()) return;
+    addEmails(inputValue);
+    setInputValue("");
+  }
+
+  function removeEmail(target) {
+    setEmails((prev) => prev.filter((e) => e !== target));
+  }
+
+  function handleInputKeyDown(e) {
+    if (e.key === "Enter" || e.key === "," || e.key === "Tab") {
+      if (inputValue.trim()) {
+        e.preventDefault();
+        commitInput();
+      } else if (e.key === "Enter" && emails.length > 0) {
+        // Empty box + Enter = send, mirroring the old native submit-button behavior.
+        e.preventDefault();
+        handleSubmit(e);
+      }
+    } else if (e.key === "Backspace" && !inputValue && emails.length > 0) {
+      setEmails((prev) => prev.slice(0, -1));
+    }
+  }
+
+  function handleInputPaste(e) {
+    const pasted = e.clipboardData?.getData("text") || "";
+    if (/[\s,;]/.test(pasted)) {
+      e.preventDefault();
+      addEmails(pasted);
+      setInputValue("");
+    }
+  }
+
+  function handleCsvFile(e) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = String(reader.result || "");
+      const found = parseEmailsFromText(text);
+      if (found.length === 0) {
+        setCsvNote({ type: "error", text: "No valid email addresses found in that file." });
+        return;
+      }
+      setEmails((prev) => {
+        let merged = [...new Set([...prev, ...found])];
+        const addedCount = merged.length - prev.length;
+
+        if (quota && merged.length > quota.remaining) {
+          merged = merged.slice(0, quota.remaining);
+          const kept = merged.length - prev.length;
+          setCsvNote({
+            type: kept > 0 ? "success" : "error",
+            text: `Only ${quota.remaining} invite${quota.remaining === 1 ? "" : "s"} left today (${quota.limit}/day limit) - added ${kept} from the CSV, skipped the rest.`,
+          });
+        } else {
+          setCsvNote({
+            type: "success",
+            text: `Added ${addedCount} email${addedCount === 1 ? "" : "s"} from CSV.`,
+          });
+        }
+        return merged;
+      });
+    };
+    reader.onerror = () => {
+      setCsvNote({ type: "error", text: "Could not read that file." });
+    };
+    reader.readAsText(file);
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!email) return;
+    commitInput();
+
+    const toSend = inputValue.trim() ? [...new Set([...emails, ...parseEmailsFromText(inputValue)])] : emails;
+    if (toSend.length === 0) return;
+
     setSending(true);
     setMessage(null);
+    setResults(null);
     try {
       const res = await fetch("/api/admin/waitlist/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ emails: toSend }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Invite failed");
-      setMessage({ type: "success", text: `Invitation sent to ${email}` });
-      setEmail("");
+
+      setResults(json.results || []);
+      const failedEmails = (json.results || []).filter((r) => !r.success).map((r) => r.email);
+      setEmails(failedEmails);
+      setInputValue("");
+      setQuota((prev) =>
+        prev
+          ? {
+              ...prev,
+              sentToday: prev.sentToday + json.sentCount,
+              remaining: Math.max(0, prev.remaining - json.sentCount),
+            }
+          : prev
+      );
+
+      if (json.failedCount === 0) {
+        setMessage({
+          type: "success",
+          text: `Invitation${json.sentCount === 1 ? "" : "s"} sent to ${json.sentCount} address${json.sentCount === 1 ? "" : "es"}.`,
+        });
+      } else {
+        setMessage({
+          type: "error",
+          text: `${json.sentCount} sent, ${json.failedCount} failed. Fix and retry the ones below.`,
+        });
+      }
     } catch (err) {
       setMessage({ type: "error", text: err.message });
     } finally {
       setSending(false);
     }
   }
+
+  const pendingCount = emails.length + (inputValue.trim() && EMAIL_RE.test(inputValue.trim()) ? 1 : 0);
 
   return (
     <motion.div
@@ -133,7 +289,7 @@ function InviteModal({ onClose }) {
       transition={{ duration: 0.22, ease: "easeOut" }}
     >
       <motion.div
-        className="relative w-full max-w-md rounded-lg border border-white/10 bg-[#0a0a0a] p-6"
+        className="relative w-full max-w-lg  border border-white/10 bg-[#0a0a0a] p-6"
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -144,7 +300,7 @@ function InviteModal({ onClose }) {
           type="button"
           aria-label="Close"
           onClick={onClose}
-          className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+          className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
         >
           <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
             <span className="h-px w-4 rotate-45 bg-white" />
@@ -152,31 +308,95 @@ function InviteModal({ onClose }) {
           </div>
         </button>
 
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold">Invite user</h2>
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold">Invite users</h2>
         </div>
-        <p className="mb-8 text-sm text-white/80">
-          Send an invitation email to any address — they&apos;ll get a link
-          straight to account setup.
+        <p className="mb-2 text-sm text-white/80">
+          Add one or more addresses — type and press Enter, paste a list, or
+          upload a CSV. Everyone in the list gets an invite link when you send.
         </p>
-        <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-3">
-          {/* <Mail className="h-4 w-4 shrink-0 text-white/40" /> */}
-          <input
-            type="email"
-            required
-            placeholder="name@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="min-w-60 flex-1 rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
-          />
-          <button
-            type="submit"
-            disabled={sending}
-            className="rounded-full px-4 py-2.5 text-xs font-medium bg-[#ff5f00] text-white transition hover:bg-[#ff6b00] disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {sending ? "Sending…" : "Send Invitation"}
-          </button>
+        <p className="mb-5 text-xs text-white/45">
+          {quota
+            ? `${quota.remaining} of ${quota.limit} invites left today`
+            : "Limit: 50 invites per day"}
+        </p>
+
+        {atDailyLimit && (
+          <p className="mb-4 rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+            Daily invite limit reached ({quota.limit}/day). Try again tomorrow.
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className=" border border-white/10 bg-white/5 p-2 focus-within:border-white/25">
+            {emails.length > 0 && (
+              <div className="mb-2 flex flex-wrap gap-1.5 px-1 pt-1">
+                {emails.map((e) => (
+                  <span
+                    key={e}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white/10 py-1 pl-3 pr-1.5 text-xs text-white/80"
+                  >
+                    {e}
+                    <button
+                      type="button"
+                      onClick={() => removeEmail(e)}
+                      aria-label={`Remove ${e}`}
+                      className="flex h-4 w-4 items-center justify-center rounded-full text-white/50 transition hover:bg-white/15 hover:text-white"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+            <input
+              type="text"
+              disabled={atDailyLimit}
+              placeholder={atDailyLimit ? "Daily limit reached" : emails.length === 0 ? "name@example.com" : "Add another…"}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleInputKeyDown}
+              onPaste={handleInputPaste}
+              onBlur={commitInput}
+              className="w-full bg-transparent px-2 py-1.5 text-sm text-white placeholder:text-white/35 outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <label className={`inline-flex items-center gap-2  border border-white/15 px-3 py-[.8vw] text-[1.1vw] font-medium text-white/70 transition ${atDailyLimit ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-white/30 hover:text-white"}`}>
+              <Upload className="h-5 w-5" />
+              Upload CSV
+              <input
+                type="file"
+                accept=".csv,text/csv,text/plain"
+                onChange={handleCsvFile}
+                disabled={atDailyLimit}
+                className="hidden"
+              />
+            </label>
+
+            <ButtonV3
+              href="#"
+              preventDefault
+              disabled={sending || pendingCount === 0 || atDailyLimit}
+              onClick={handleSubmit}
+              variant="orange"
+              text={
+                sending
+                  ? "Sending…"
+                  : pendingCount > 0
+                    ? `Send ${pendingCount} Invitation${pendingCount === 1 ? "" : "s"}`
+                    : "Send Invitations"
+              }
+            />
+          </div>
         </form>
+
+        {csvNote && (
+          <p className={`mt-3 text-xs ${csvNote.type === "success" ? "text-emerald-400" : "text-red-400"}`}>
+            {csvNote.text}
+          </p>
+        )}
         {message && (
           <p
             className={`mt-3 text-sm ${
@@ -185,6 +405,23 @@ function InviteModal({ onClose }) {
           >
             {message.text}
           </p>
+        )}
+        {results && results.length > 0 && (
+          <ul className="mt-3 max-h-40 space-y-1 overflow-y-auto rounded-lg border border-white/10 bg-white/3 p-2">
+            {results.map((r) => (
+              <li key={r.email} className="flex items-center gap-2 px-1.5 py-1 text-xs">
+                {r.success ? (
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                ) : (
+                  <XCircle className="h-3.5 w-3.5 shrink-0 text-red-400" />
+                )}
+                <span className="truncate text-white/70">{r.email}</span>
+                {!r.success && r.error && (
+                  <span className="truncate text-white/35">— {r.error}</span>
+                )}
+              </li>
+            ))}
+          </ul>
         )}
       </motion.div>
     </motion.div>

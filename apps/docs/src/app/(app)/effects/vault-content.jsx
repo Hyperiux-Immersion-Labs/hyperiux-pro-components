@@ -122,26 +122,26 @@ function EffectsGridSkeleton({ count = 6 }) {
           key={`effect-card-skeleton-${index}`}
           className="effect-card-shell group relative"
         >
-          <div className="relative aspect-[1.02/1] w-full overflow-hidden rounded-md bg-[#272727] p-[2vw] max-[1025px]:p-5 max-md:p-5">
+          <div className="relative aspect-[1.02/1] w-full overflow-hidden  bg-[#272727] p-[2vw] max-[1025px]:p-5 max-md:p-5">
             {index % 3 === 2 && (
-              <SkeletonBlock className="absolute right-4 top-4 h-10 w-14 rounded-full bg-[#3a3a3a]" />
+              <SkeletonBlock className="absolute right-4 top-4 h-10 w-14  bg-[#3a3a3a]" />
             )}
 
             <div className="flex h-full w-full items-center justify-center">
-              <SkeletonBlock className="aspect-[1.78/1] w-[88%] rounded-sm bg-[#111111]" />
+              <SkeletonBlock className="aspect-[1.78/1] w-[88%]  bg-[#111111]" />
             </div>
           </div>
 
           <div className="relative mt-5 flex items-start justify-between gap-4 px-3 max-md:px-1">
             <div className="min-w-0 flex-1">
-              <SkeletonBlock className="mb-2 h-5 w-[58%] rounded-sm bg-[#2f2f2f]" />
-              <SkeletonBlock className="h-4 w-[34%] rounded-sm bg-[#242424]" />
+              <SkeletonBlock className="mb-2 h-5 w-[58%]  bg-[#2f2f2f]" />
+              <SkeletonBlock className="h-4 w-[34%]  bg-[#242424]" />
             </div>
 
             <div className="hidden items-center gap-3 xl:flex">
-              <SkeletonBlock className="h-10 w-10 rounded-full bg-[#161616]" />
-              <SkeletonBlock className="h-10 w-10 rounded-full bg-[#161616]" />
-              <SkeletonBlock className="h-10 w-10 rounded-full bg-[#ff5f00]/50" />
+              <SkeletonBlock className="h-10 w-10  bg-[#161616]" />
+              <SkeletonBlock className="h-10 w-10  bg-[#161616]" />
+              <SkeletonBlock className="h-10 w-10  bg-[#ff5f00]/50" />
             </div>
           </div>
         </div>
@@ -732,7 +732,7 @@ const routeKey = `${pathname}${
               <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
                 <h1
                   className="mb-4 w-[80%] leading-normal t96 font-display font-normal text-foreground max-md:w-[90%] max-md:text-4xl"
-                  style={{ lineHeight: "1.1" }}
+                  style={{ lineHeight: "1.3" }}
                 >
                   {activeCategoryName}
                 </h1>
@@ -775,13 +775,13 @@ const routeKey = `${pathname}${
 
                 <div
                   className={[
-                    "category-fadeup flex items-center gap-2.5",
+                    "category-fadeup flex items-center gap-2.5 font-geist-mono",
                     "flex-wrap",
                     "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto max-[1025px]:px-6",
                     "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
                     "[&::-webkit-scrollbar]:h-1",
-                    "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:rounded-full",
-                    "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:rounded-full",
+                    "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:",
+                    "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:",
                     "max-[1025px]:pb-3",
                   ].join(" ")}
                   
@@ -796,10 +796,10 @@ const routeKey = `${pathname}${
                   />
 
                   {/* Divider between filters and categories */}
-                  <span
+                  {/* <span
                     aria-hidden="true"
                     className="mx-1 h-7 w-px shrink-0 self-center bg-white/15 max-md:h-6"
-                  />
+                  /> */}
 
                   {categoryChips.map((cat) => {
                     const isSelected = categoryFilter === cat;
@@ -816,12 +816,12 @@ const routeKey = `${pathname}${
                           handleCategoryLinkClick(cat);
                         }}
                         className={`
-                          px-6 py-2.5 text-md text-center relative max-md:px-5 max-md:py-2
+                          px-6 py-2.5 text-[1vw] text-center relative max-md:px-5 max-md:py-2
                           backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
-                          transition-colors duration-300 max-md:text-lg text20
+                          transition-colors duration-300 
                           ${isSelected
-                            ? "bg-white text-[#161616] hover:text-[#161616] hover:bg-white"
-                            : "bg-[#161616] text-[#FFFFFF] hover:text-[#161616] hover:bg-white"
+                            ? "bg-[#ff5f00] text-[#161616] hover:text-[#161616] hover:bg-[#ff5f00]"
+                            : "bg-[#161616] text-[#FFFFFF] hover:text-[#161616] hover:bg-[#ff5f00]"
                           }
                         `}
                       >
@@ -856,9 +856,9 @@ const routeKey = `${pathname}${
                       }}
                       aria-label={`Show ${cols} cards per row`}
                       aria-pressed={isActive}
-                      className={`
-                        relative z-10 flex h-8 w-10 items-center justify-center rounded-sm text20 font-medium
-                        transition-colors duration-300 cursor-pointer text-foreground
+                      className={` ${isActive ? " text-[#161616]" : "text-foreground"}
+                        relative z-10 flex h-8 w-10 items-center justify-center  text20 font-medium
+                        transition-colors duration-300 cursor-pointer 
                         
                       `}
                     >
@@ -1003,14 +1003,14 @@ const routeKey = `${pathname}${
           onClick={() => setUpgradeToastDismissed(true)}
         >
           <div
-            className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${justUpgraded && !upgradeToastDismissed ? "scale-100" : "scale-95"}`}
+            className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${justUpgraded && !upgradeToastDismissed ? "scale-100" : "scale-95"}`}
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               aria-label="Close"
               onClick={() => setUpgradeToastDismissed(true)}
-              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -1019,13 +1019,13 @@ const routeKey = `${pathname}${
             </button>
 
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-xl font-medium text-white">Welcome to Pro</h2>
+              <h2 className="text-2xl font-medium text-white">Welcome to Pro</h2>
             </div>
-            <p className="text-sm text-white/60 text-center">
+            <p className="text-sm text-white/60 text-center w-[80%] max-[1025px]:w-full">
               Your upgrade is confirmed and the full vault is unlocked. Explore
               every Pro effect and start shipping right away.
             </p>
-            <Link href="/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
+            <Link href="/effects" className="inline-flex w-fit items-center gap-1.5  bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
               Explore effects
             </Link>
           </div>
@@ -1036,15 +1036,15 @@ const routeKey = `${pathname}${
           className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showWishlistToast ? "opacity-100" : "pointer-events-none opacity-0"}`}
           onClick={() => setShowWishlistToast(false)}
         >
-w          <div
-            className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center rounded-md border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
+      <div
+            className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-8 items-center  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               aria-label="Close"
               onClick={() => setShowWishlistToast(false)}
-              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -1053,15 +1053,15 @@ w          <div
             </button>
 
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-xl font-medium text-white">Sign in required</h2>
+              <h2 className="text-2xl font-medium text-white">Sign in required</h2>
             </div>
-            <p className="text-sm text-white/60 text-center">
+            <p className="text-sm text-white/60 text-center w-[80%] max-[1025px]:w-full">
               Create a free account or sign in to save effects to your
               wishlist and pick up right where you left off.
             </p>
-            <Link href="/sign-in?redirect_url=/effects" className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors" onClick={() => setShowWishlistToast(false)}>
-              Sign In
-            </Link>
+                      <ButtonV3 text="Sign In" href="/sign-in?redirect_url=/effects" />
+            
+            
           </div>
         </div>
       </>,
@@ -1141,7 +1141,7 @@ function EffectsGridInner({
     <>
       <div
         ref={gridRef}
-        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-2 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
+        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
       >
         {visibleEffects.map((effect, i) => (
           <motion.div

@@ -172,7 +172,7 @@ function FAQRow({ item, isOpen, onToggle, index }) {
           }`}
         />
 
-        <h3 className="text32 font-neue-haas flex-1 leading-tight max-md:text-[3.4vw] max-sm:text-[5.2vw]">
+        <h3 className="text-[1.55vw] font-neue-haas flex-1 leading-tight max-md:text-[3.4vw] max-sm:text-[5.2vw]">
           {item.question}
         </h3>
       </div>
@@ -190,9 +190,9 @@ function FAQRow({ item, isOpen, onToggle, index }) {
         <div
           ref={innerRef}
           style={{ opacity: initiallyOpen ? 1 : 0 }}
-          className="pt-[1.2vw] pl-[3.2vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]"
+          className="pt-[1.2vw] pl-[2.8vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]"
         >
-          <p className="text22 font-neue-haas w-[70%] text-light-grey leading-[1.45] max-md:w-[90%] max-md:text-[2.2vw] max-sm:w-full max-sm:text-[4vw]">
+          <p className="text22 font-neue-haas w-[85%] text-white leading-[1.45] max-md:w-[90%] max-md:text-[2.2vw] max-sm:w-full max-sm:text-[4vw]">
             {item.answer}
           </p>
         </div>

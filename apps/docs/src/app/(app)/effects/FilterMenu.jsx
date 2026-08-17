@@ -114,7 +114,7 @@ export function FilterMenu({
           : undefined
       }
       className={[
-        "space-y-1.5 min-w-44 border border-white/10 bg-[#1a1a1a] p-1.5",
+        "space-y-1.5 min-w-44 border border-white/10 bg-[#1a1a1a]  p-1.5",
         menuPos ? "fixed z-9999" : "absolute left-0 top-full mt-2 z-30",
         panelClassName,
       ]
@@ -155,7 +155,7 @@ export function FilterMenu({
                     layoutId={
                       reduceMotion ? undefined : "filter-menu-pill"
                     }
-                    className="absolute inset-0 z-0  bg-white"
+                    className="absolute inset-0 z-0  bg-[#ff5f00]"
                     initial={{ opacity: 1 }}
                     animate={{ opacity: 1 }}
                     transition={
@@ -202,8 +202,8 @@ export function FilterMenu({
           cursor-pointer transition-colors duration-300 max-md:text-lg text20
           ${
             activeFilter
-              ? "bg-white text-[#161616] hover:bg-white"
-              : "bg-[#161616] text-[#ffffff] hover:text-[#161616] hover:bg-white"
+              ? "bg-white text-[#161616] hover:bg-[#ff5f00]"
+              : "bg-[#161616] text-[#ffffff] hover:text-[#161616] hover:bg-[#ff5f00]"
           }
         `}
       >

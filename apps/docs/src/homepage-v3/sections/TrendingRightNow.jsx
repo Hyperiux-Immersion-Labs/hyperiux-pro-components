@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getEffectHref } from "@/lib/categories";
 import { resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
 import CircularButton from "@/components/WebsiteComps/CirclularButton";
+import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 
 const CARD_SIZES = "(max-width: 768px) 80vw, (max-width: 1025px) 40vw, 22vw";
 const COVER_WIDTH = 640;
@@ -67,7 +68,8 @@ function TrendingEffectCard({ effect, priority = false }) {
           quality={65}
           priority={priority}
           loading={priority ? undefined : "lazy"}
-          className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
+          draggable={false}
+          className="object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.04]"
         />
       </div>
     </Link>
@@ -82,6 +84,10 @@ export default function TrendingRightNow({ effects = [] }) {
   const setWidthRef = useRef(0);
   const currentScrollRef = useRef(0);
   const targetScrollRef = useRef(0);
+  // Separate from isDraggingRef (which only pauses autoplay) - this tracks
+  // the actual pointer-drag gesture: where it started, whether it's crossed
+  // the move threshold yet, and what scroll position to drag from.
+  const dragStateRef = useRef({ isPointerDown: false, isDragging: false, startX: 0, startY: 0, startScroll: 0 });
 
   // Tripled so the middle copy can be scrolled seamlessly in either
   // direction before a wrap-reset is needed.
@@ -172,6 +178,79 @@ export default function TrendingRightNow({ effects = [] }) {
     targetScrollRef.current += direction * cardStep;
   };
 
+  // Drag updates both current and target scroll refs (not track.scrollLeft
+  // directly) - the autoplay tick loop overwrites track.scrollLeft from
+  // currentScrollRef every frame regardless, so setting the DOM property
+  // directly here would just get stomped on the next frame.
+  const handlePointerDown = (event) => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    // Not calling setPointerCapture here: capturing on every pointerdown
+    // (including a plain click with no movement) makes Chromium retarget
+    // the resulting click event to the capturing element (this track div)
+    // instead of whatever was actually under the cursor (a card's <a>),
+    // silently breaking card navigation entirely. Only captured once an
+    // actual drag is confirmed, in handlePointerMove below.
+    dragStateRef.current = {
+      isPointerDown: true,
+      isDragging: false,
+      startX: event.clientX,
+      startY: event.clientY,
+      startScroll: currentScrollRef.current,
+    };
+  };
+
+  const handlePointerMove = (event) => {
+    const track = trackRef.current;
+    const dragState = dragStateRef.current;
+    if (!track || !dragState.isPointerDown) return;
+
+    const deltaX = event.clientX - dragState.startX;
+    const deltaY = event.clientY - dragState.startY;
+    const isHorizontalDrag = Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY);
+
+    if (!isHorizontalDrag && !dragState.isDragging) return;
+
+    if (!dragState.isDragging) {
+      dragState.isDragging = true;
+      isDraggingRef.current = true;
+      track.setPointerCapture?.(event.pointerId);
+    }
+
+    event.preventDefault();
+
+    const next = dragState.startScroll - deltaX;
+    currentScrollRef.current = next;
+    targetScrollRef.current = next;
+  };
+
+  const handlePointerEnd = (event) => {
+    const track = trackRef.current;
+    track?.releasePointerCapture?.(event.pointerId);
+
+    isDraggingRef.current = false;
+    manualPauseUntilRef.current = Date.now() + 900;
+
+    const dragState = dragStateRef.current;
+    dragState.isPointerDown = false;
+    // Deferred so the click event this pointerup produces (if any) still
+    // sees isDragging true and gets suppressed by handleTrackClickCapture.
+    window.setTimeout(() => {
+      dragState.isDragging = false;
+    }, 0);
+  };
+
+  // Capture-phase so it runs before the card <Link>'s own click handling -
+  // stopPropagation here keeps a drag-release from also being read as a
+  // click-through to the effect page.
+  const handleTrackClickCapture = (event) => {
+    if (dragStateRef.current.isDragging) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
+
   if (!effects.length) return null;
 
   return (
@@ -189,9 +268,10 @@ export default function TrendingRightNow({ effects = [] }) {
             className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all"
             bgColor="#ff5f00"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 group-hover:text-black transition-colors duration-300">
-              <path d="M7.25326 15.7533L7.96159 15.7533L7.96159 15.0449L8.66992 15.0449L8.66992 14.3366L7.96159 14.3366L7.96159 13.6283L7.25326 13.6283L7.25325 12.9199L6.54492 12.9199L6.54492 12.2116L5.83659 12.2116L5.83659 11.5033L5.12826 11.5033L5.12826 10.7949L4.41992 10.7949L4.41992 10.0866L3.71159 10.0866L3.71159 9.37825L3.00326 9.37825L3.00326 8.66992L15.7533 8.66992L15.7533 7.25325L3.00326 7.25325L3.00326 6.54492L3.71159 6.54492L3.71159 5.83659L4.41992 5.83659L4.41992 5.12825L5.12826 5.12825L5.12826 4.41992L5.83659 4.41992L5.83659 3.71159L6.54492 3.71159L6.54492 3.00325L7.25325 3.00325L7.25325 2.29492L7.96159 2.29492L7.96159 1.58659L8.66992 1.58659L8.66992 0.878255L7.96159 0.878255L7.96159 0.169922L7.25325 0.169922L7.25325 0.878255L6.54492 0.878255L6.54492 1.58659L5.83659 1.58659L5.83659 2.29492L5.12825 2.29492L5.12826 3.00325L4.41992 3.00325L4.41992 3.71159L3.71159 3.71159L3.71159 4.41992L3.00326 4.41992L3.00326 5.12825L2.29492 5.12825L2.29492 5.83659L1.58659 5.83659L1.58659 6.54492L0.878255 6.54492L0.878255 7.25325L0.169922 7.25325L0.169922 8.66992L0.878256 8.66992L0.878256 9.37825L1.58659 9.37825L1.58659 10.0866L2.29492 10.0866L2.29492 10.7949L3.00326 10.7949L3.00326 11.5033L3.71159 11.5033L3.71159 12.2116L4.41992 12.2116L4.41992 12.9199L5.12826 12.9199L5.12826 13.6283L5.83659 13.6283L5.83659 14.3366L6.54492 14.3366L6.54492 15.0449L7.25326 15.0449L7.25326 15.7533Z" fill="white" stroke="white" strokeWidth="0.34" className="fill-current stroke-current" />
-            </svg>
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out " />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out " />
+
+
 
           </CircularButton>
 
@@ -199,33 +279,35 @@ export default function TrendingRightNow({ effects = [] }) {
             type="button"
             onClick={() => step(1)}
             aria-label="Next"
-            className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all"
+            className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all relative"
             bgColor="#ff5f00"
           >
-             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 group-hover:text-black transition-colors duration-300 rotate-180">
-              <path d="M7.25326 15.7533L7.96159 15.7533L7.96159 15.0449L8.66992 15.0449L8.66992 14.3366L7.96159 14.3366L7.96159 13.6283L7.25326 13.6283L7.25325 12.9199L6.54492 12.9199L6.54492 12.2116L5.83659 12.2116L5.83659 11.5033L5.12826 11.5033L5.12826 10.7949L4.41992 10.7949L4.41992 10.0866L3.71159 10.0866L3.71159 9.37825L3.00326 9.37825L3.00326 8.66992L15.7533 8.66992L15.7533 7.25325L3.00326 7.25325L3.00326 6.54492L3.71159 6.54492L3.71159 5.83659L4.41992 5.83659L4.41992 5.12825L5.12826 5.12825L5.12826 4.41992L5.83659 4.41992L5.83659 3.71159L6.54492 3.71159L6.54492 3.00325L7.25325 3.00325L7.25325 2.29492L7.96159 2.29492L7.96159 1.58659L8.66992 1.58659L8.66992 0.878255L7.96159 0.878255L7.96159 0.169922L7.25325 0.169922L7.25325 0.878255L6.54492 0.878255L6.54492 1.58659L5.83659 1.58659L5.83659 2.29492L5.12825 2.29492L5.12826 3.00325L4.41992 3.00325L4.41992 3.71159L3.71159 3.71159L3.71159 4.41992L3.00326 4.41992L3.00326 5.12825L2.29492 5.12825L2.29492 5.83659L1.58659 5.83659L1.58659 6.54492L0.878255 6.54492L0.878255 7.25325L0.169922 7.25325L0.169922 8.66992L0.878256 8.66992L0.878256 9.37825L1.58659 9.37825L1.58659 10.0866L2.29492 10.0866L2.29492 10.7949L3.00326 10.7949L3.00326 11.5033L3.71159 11.5033L3.71159 12.2116L4.41992 12.2116L4.41992 12.9199L5.12826 12.9199L5.12826 13.6283L5.83659 13.6283L5.83659 14.3366L6.54492 14.3366L6.54492 15.0449L7.25326 15.0449L7.25326 15.7533Z" fill="white" stroke="white" strokeWidth="0.34" className="fill-current stroke-current" />
-            </svg>
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out " />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out " />
+
 
           </CircularButton>
         </div>
       </div>
 
-      <div className="w-full bg-[#1E1E1E] py-12 mt-8">
+      <div className="w-full bg-[#1E1E1E] py-12 mt-8 relative overflow-hidden">
         <div
           ref={trackRef}
           onPointerEnter={() => {
             isHoveredRef.current = true;
           }}
           onPointerLeave={() => {
+            // Not ending an active drag here: setPointerCapture (in
+            // handlePointerDown) keeps move/up events targeting this
+            // element even once the cursor visually leaves its bounds, so
+            // the drag should keep tracking rather than cut off at the edge.
             isHoveredRef.current = false;
           }}
-          onPointerDown={() => {
-            isDraggingRef.current = true;
-          }}
-          onPointerUp={() => {
-            isDraggingRef.current = false;
-          }}
-          className="flex w-full items-stretch gap-6 overflow-x-auto scrollbar-none [-webkit-overflow-scrolling:touch] max-md:gap-4"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerEnd}
+          onClickCapture={handleTrackClickCapture}
+          className="flex w-full items-stretch gap-6 overflow-x-auto scrollbar-none [-webkit-overflow-scrolling:touch] max-md:gap-4 cursor-grab active:cursor-grabbing touch-pan-y"
         >
           {loopEffects.map((effect, index) => (
             <div
@@ -236,6 +318,8 @@ export default function TrendingRightNow({ effects = [] }) {
             </div>
           ))}
         </div>
+        <div className="absolute top-0 left-0 w-[10vw] h-full pointer-events-none bg-gradient-to-r from-[#1E1E1E] to-transparent z-20 " />
+        <div className="absolute top-0 right-0 w-[10vw] h-full pointer-events-none bg-gradient-to-l from-[#1E1E1E] to-transparent z-20" />
       </div>
     </section>
   );

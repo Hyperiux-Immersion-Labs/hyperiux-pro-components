@@ -8,6 +8,7 @@ import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
 import { ArrowUpRight, Download, Eye, Heart } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { ArrowIcon } from "../WebsiteComps/Icons";
 
 function formatLabel(value = "") {
   return value
@@ -197,9 +198,8 @@ export function EffectCard({
     >
 
 
-      {/* Preview - shorter 3:2 card with 16:9 media centered via absolute + translate */}
-      <div className="pointer-events-none relative aspect-3/2    overflow-hidden  bg-[#161616]">
-        <div className="absolute inset-x-7 top-[42%] w-[90%] h-[70%] -translate-y-1/2 overflow-hidden max-md:inset-x-4">
+      <div className="pointer-events-none  relative aspect-3/2  px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden  bg-[#161616]">
+        <div className=" w-full relative h-[80%] overflow-hidden ">
           <Image
             src={coverImage}
             alt={effect.title || effect.name}
@@ -229,7 +229,7 @@ export function EffectCard({
           )}
         </div>
 
-        <div className="pointer-events-none absolute bottom-[11%] max-sm:bottom-[3%] max-sm:px-[4.5vw] left-0 flex w-full items-start justify-between gap-3 max-sm:gap-5 px-[5%] max-md:gap-2 max-md:px-2 max-md:py-2">
+        <div className="pointer-events-none h-[20%]  flex w-full items-center justify-between gap-3 font-geist-mono ">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 max-md:gap-1.5">
             {dependencyPills.map((pill) => (
               <span
@@ -323,12 +323,13 @@ export function EffectCard({
           </Tooltip>
 
           <Tooltip label="View Detail">
-            <span
-              className="flex h-8 w-8 items-center justify-center bg-primary text-white max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9"
+            <div
+              className="flex h-8 w-8 relative items-center justify-center bg-primary text-white max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9 group/arrow overflow-hidden arrow-container"
               aria-hidden="true"
             >
-              <ArrowUpRight className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5" />
-            </span>
+              <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 group-hover/arrow:-translate-y-[180%] group-hover/arrow:translate-x-[180%] duration-300 ease-in-out"/>
+              <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 absolute -translate-x-[180%] translate-y-[180%] group-hover/arrow:translate-x-0 group-hover/arrow:translate-y-0 duration-300 ease-in-out"/>
+            </div>
           </Tooltip>
         </div>
       </div>

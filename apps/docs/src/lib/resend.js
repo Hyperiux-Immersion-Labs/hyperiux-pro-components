@@ -80,5 +80,5 @@ export async function sendEmail({ to, subject, html, text, react, emailType = "t
       if (logError) console.error("SENT_EMAIL_LOG_ERROR:", logError.message);
     });
 
-  return { success: status === "success" };
+  return { success: status === "success", error: errorMessage };
 }

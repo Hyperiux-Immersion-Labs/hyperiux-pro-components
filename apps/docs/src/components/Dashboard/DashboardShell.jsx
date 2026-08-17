@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Button from "../WebsiteComps/Button";
 import { useAdminRole } from "@/lib/useAdminRole";
+import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 const BASE_TABS = [
   { label: "Overview", href: "/dashboard" },
@@ -88,12 +89,12 @@ export function DashboardShell({ children }) {
                   key={tab.href}
                   href={tab.href}
                   className={`
-                    px-7 py-[.8vw] max-md:py-[2vw] rounded-full
+                    px-7 py-[.8vw] max-md:py-[2vw]
                     transition-all duration-300
                     border shrink-0
                     ${active
-                      ? "bg-white text-black border-white"
-                      : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
+                      ? "bg-[#ff5f00] text-black border-[#ff5f00]"
+                      : "bg-[#272727] text-white border-white/0 hover:bg-[#ff5f00] hover:text-black"}
                   `}
                 >
                   {tab.label}
@@ -102,7 +103,7 @@ export function DashboardShell({ children }) {
             })}
           </div>
 
-          <Button
+          <ButtonV3
             href="/effects"
             text={"Browse Effects"}
          />
