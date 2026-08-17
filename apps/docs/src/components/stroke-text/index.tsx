@@ -131,6 +131,7 @@ export default function StrokeText({
 }: StrokeTextProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isCoarsePointer, setIsCoarsePointer] = useState(false);
   const variantStyle = variantStyles[variant] ?? variantStyles.top;
   const characters = useMemo(() => Array.from(text), [text]);
 
@@ -152,6 +153,23 @@ export default function StrokeText({
 
     return () => {
       mediaQuery.removeEventListener?.("change", onReduceMotionChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(pointer: coarse)");
+    if (!mediaQuery) return;
+
+    setIsCoarsePointer(mediaQuery.matches);
+
+    const onPointerTypeChange = (event: MediaQueryListEvent) => {
+      setIsCoarsePointer(event.matches);
+    };
+
+    mediaQuery.addEventListener?.("change", onPointerTypeChange);
+
+    return () => {
+      mediaQuery.removeEventListener?.("change", onPointerTypeChange);
     };
   }, []);
 
@@ -189,9 +207,18 @@ export default function StrokeText({
       <span
         className="inline-block cursor-pointer select-none text-center leading-none tracking-[0.02em]"
         aria-label={text}
-        onPointerEnter={() => setIsHovered(true)}
-        onPointerMove={() => setIsHovered(true)}
-        onPointerLeave={() => setIsHovered(false)}
+        onPointerEnter={() => {
+          if (!isCoarsePointer) setIsHovered(true);
+        }}
+        onPointerMove={() => {
+          if (!isCoarsePointer) setIsHovered(true);
+        }}
+        onPointerLeave={() => {
+          if (!isCoarsePointer) setIsHovered(false);
+        }}
+        onClick={() => {
+          if (isCoarsePointer) setIsHovered((previous) => !previous);
+        }}
       >
         {characterFill ? (
           <span key={variant} className="flex whitespace-nowrap leading-none uppercase">
