@@ -232,7 +232,7 @@ export default function PricingV3() {
             </div>
 
             {/* TOGGLE */}
-            <div className="mt-[6vw] px-[8%] flex justify-end max-[1025px]:mt-[6vw] max-[1025px]:px-[5%] max-md:mt-[8vw] max-sm:mt-[12vw] max-sm:justify-center">
+            <div className="mt-[6vw] px-[13%] flex justify-end max-[1025px]:mt-[6vw] max-[1025px]:px-[5%] max-md:mt-[8vw] max-sm:mt-[12vw] max-sm:justify-center">
                 <BillingToggle isYearly={isYearly} onChange={setIsYearly} />
             </div>
 

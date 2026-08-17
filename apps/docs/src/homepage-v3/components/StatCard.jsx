@@ -13,7 +13,7 @@ export default function StatCard({
       (child, index) => (
         <div
           key={index}
-          className="group cursor-pointer relative inline-flex border border-grey items-center justify-center max-[1025px]:size-[12vw] max-md:size-[16vw] size-[7vw] aspect-square"
+          className="group  relative inline-flex border border-grey items-center justify-center max-[1025px]:size-[12vw] max-md:size-[16vw] size-[7vw] aspect-square"
         >
           <span className={`${mark} -top-px -left-px border-t border-l`} />
           <span className={`${mark} -top-px -right-px border-t border-r`} />
