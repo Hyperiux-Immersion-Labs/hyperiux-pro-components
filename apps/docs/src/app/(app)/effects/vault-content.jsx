@@ -176,6 +176,8 @@ const animationSearchParamString = useMemo(() => {
   params.delete("waitlist");
   params.delete("custom-animation-form");
   params.delete("upgraded");
+  params.delete("filter");
+  params.delete("sort");
 
   return params.toString();
 }, [searchParamString]);
@@ -271,8 +273,15 @@ const routeKey = `${pathname}${
     return EFFECT_SORT_OPTIONS.includes(requestedSort) ? requestedSort : null;
   }, [searchParamString]);
 
-  const activeDropdownFilter =
-    dropdownFilter?.categoryFilter === categoryFilter ? dropdownFilter.value : null;
+  const urlCollectionFilter = useMemo(() => {
+    const requestedFilter = new URLSearchParams(searchParamString).get("filter");
+
+    return EFFECT_CATEGORY_FILTER_OPTIONS.includes(requestedFilter)
+      ? requestedFilter
+      : null;
+  }, [searchParamString]);
+
+  const activeDropdownFilter = dropdownFilter ?? urlCollectionFilter;
 
   const dropdownCategoryFilter = EFFECT_CATEGORY_FILTER_OPTIONS.includes(activeDropdownFilter)
     ? activeDropdownFilter
@@ -282,7 +291,13 @@ const routeKey = `${pathname}${
     ? activeDropdownFilter
     : null;
 
-  const effectiveCategoryFilter = dropdownCategoryFilter || categoryFilter;
+  const routeCollectionFilter = EFFECT_CATEGORY_FILTER_OPTIONS.includes(categoryFilter)
+    ? categoryFilter
+    : null;
+  const effectiveCollectionFilter = dropdownCategoryFilter || routeCollectionFilter;
+  const effectiveCategoryFilter = EFFECT_CATEGORY_FILTER_OPTIONS.includes(categoryFilter)
+    ? "all"
+    : categoryFilter;
   const effectiveSortFilter = dropdownCategoryFilter
     ? null
     : dropdownSortFilter || (!activeDropdownFilter ? urlSortFilter : null);
@@ -298,6 +313,11 @@ const routeKey = `${pathname}${
  const getCategoryUrl = useCallback(
   (nextCategory) => {
     const resolvedCategory = nextCategory || "all";
+    const collectionFilter = EFFECT_CATEGORY_FILTER_OPTIONS.includes(activeDropdownFilter)
+      ? activeDropdownFilter
+      : EFFECT_CATEGORY_FILTER_OPTIONS.includes(categoryFilter)
+        ? categoryFilter
+        : null;
 
     const params = new URLSearchParams(searchParamString);
 
@@ -306,12 +326,21 @@ const routeKey = `${pathname}${
     params.delete("custom-animation-form");
     params.delete("sort");
 
+    if (
+      collectionFilter &&
+      !EFFECT_CATEGORY_FILTER_OPTIONS.includes(resolvedCategory)
+    ) {
+      params.set("filter", collectionFilter);
+    } else {
+      params.delete("filter");
+    }
+
     const nextQuery = params.toString();
     const categoryHref = getEffectCategoryHref(resolvedCategory);
 
     return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
   },
-  [searchParamString]
+  [activeDropdownFilter, categoryFilter, searchParamString]
 );
 
   const navigateWithRouteFade = useCallback(
@@ -380,17 +409,43 @@ const routeKey = `${pathname}${
 
   const handleCategoryLinkClick = useCallback(
     (nextCategory) => {
-      const href = getCategoryUrl(nextCategory || "all");
+      const resolvedCategory = nextCategory === categoryFilter ? "all" : nextCategory || "all";
+      const href = getCategoryUrl(resolvedCategory);
 
       return navigateWithRouteFade(href);
     },
-    [getCategoryUrl, navigateWithRouteFade]
+    [categoryFilter, getCategoryUrl, navigateWithRouteFade]
   );
 
   const handleFilterSelect = useCallback(
     (nextFilter) => {
-      setDropdownFilter({ categoryFilter, value: nextFilter });
+      setDropdownFilter(nextFilter);
       setSearchQuery("");
+
+      const params = new URLSearchParams(searchParamString);
+
+      params.delete("waitlist");
+      params.delete("custom-animation-form");
+
+      if (nextFilter === "none") {
+        params.delete("filter");
+        params.delete("sort");
+      } else if (EFFECT_CATEGORY_FILTER_OPTIONS.includes(nextFilter)) {
+        params.set("filter", nextFilter);
+        params.delete("sort");
+      } else if (EFFECT_SORT_OPTIONS.includes(nextFilter)) {
+        params.set("sort", nextFilter);
+        params.delete("filter");
+      }
+
+      const nextQuery = params.toString();
+      if (typeof window !== "undefined") {
+        window.history.replaceState(
+          window.history.state,
+          "",
+          `${pathname}${nextQuery ? `?${nextQuery}` : ""}`
+        );
+      }
 
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -400,7 +455,7 @@ const routeKey = `${pathname}${
 
       return true;
     },
-    [categoryFilter]
+    [pathname, searchParamString]
   );
 
   const showAllEffects = useCallback(() => {
@@ -526,13 +581,15 @@ const routeKey = `${pathname}${
     if (isEffectsLoading) return [];
 
     const nextEffects = safeEffects.filter((effect) => {
-      if (effectiveCategoryFilter === "free") {
+      if (effectiveCollectionFilter === "free") {
         if (effect.tier === "pro") return false;
-      } else if (effectiveCategoryFilter === "pro") {
+      } else if (effectiveCollectionFilter === "pro") {
         if (effect.tier !== "pro") return false;
-      } else if (effectiveCategoryFilter === "featured") {
+      } else if (effectiveCollectionFilter === "featured") {
         if (!featuredEffectNames.has(effect.name)) return false;
-      } else if (effectiveCategoryFilter !== "all") {
+      }
+
+      if (effectiveCategoryFilter !== "all") {
         if (resolveEffectCategoryId(effect) !== effectiveCategoryFilter) return false;
       }
 
@@ -554,6 +611,7 @@ const routeKey = `${pathname}${
     return sortEffects(nextEffects, effectiveSortFilter);
   }, [
     safeEffects,
+    effectiveCollectionFilter,
     effectiveCategoryFilter,
     effectiveSortFilter,
     searchQuery,
@@ -564,26 +622,37 @@ const routeKey = `${pathname}${
   const totalEffects = useMemo(() => {
     if (isEffectsLoading) return 0;
 
-    if (effectiveCategoryFilter === "all") {
-      return safeEffects.length;
-    }
-
-    if (effectiveCategoryFilter === "free") {
-      return safeEffects.filter((effect) => effect.tier !== "pro").length;
-    }
-
-    if (effectiveCategoryFilter === "pro") {
-      return safeEffects.filter((effect) => effect.tier === "pro").length;
-    }
-
-    if (effectiveCategoryFilter === "featured") {
-      return featuredEffects.length;
-    }
-
     return safeEffects.filter(
-      (effect) => resolveEffectCategoryId(effect) === effectiveCategoryFilter
+      (effect) => {
+        if (effectiveCollectionFilter === "free" && effect.tier === "pro") {
+          return false;
+        }
+
+        if (effectiveCollectionFilter === "pro" && effect.tier !== "pro") {
+          return false;
+        }
+
+        if (
+          effectiveCollectionFilter === "featured" &&
+          !featuredEffectNames.has(effect.name)
+        ) {
+          return false;
+        }
+
+        if (effectiveCategoryFilter !== "all") {
+          return resolveEffectCategoryId(effect) === effectiveCategoryFilter;
+        }
+
+        return true;
+      }
     ).length;
-  }, [safeEffects, effectiveCategoryFilter, featuredEffects, isEffectsLoading]);
+  }, [
+    safeEffects,
+    effectiveCollectionFilter,
+    effectiveCategoryFilter,
+    featuredEffectNames,
+    isEffectsLoading,
+  ]);
 
   const activeCategory = getEffectCategory(categoryFilter);
 
@@ -735,11 +804,12 @@ const routeKey = `${pathname}${
                   {categoryChips.map((cat) => {
                     const isSelected = categoryFilter === cat;
                     const label = getQuickCategoryLabel(cat);
+                    const href = getCategoryUrl(isSelected ? "all" : cat);
 
                     return (
                       <Link
                         key={cat}
-                        href={getCategoryUrl(cat)}
+                        href={href}
                         scroll={false}
                         onClick={(event) => {
                           event.preventDefault();

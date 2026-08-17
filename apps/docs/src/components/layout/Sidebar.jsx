@@ -605,6 +605,9 @@ const navigateLegal = (event, href) => {
                   className="ml-7 max-h-[42vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
                 >
                   {effectCategories.map((category,id) => {
+                    // Featured is available through filters, but hidden from the sidebar category list.
+                    if (category.id === "featured") return null;
+
                     const count =
                       effectCounts[category.id] ??
                       computedCategoryCounts[category.id] ??
