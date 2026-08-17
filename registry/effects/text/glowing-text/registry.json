@@ -78,34 +78,6 @@
       }
     },
     {
-      "name": "fontWeight",
-      "type": "number",
-      "default": 400,
-      "description": "Settled font weight, applied once a line finishes typing.",
-      "remixer": {
-        "control": "range",
-        "group": "type",
-        "groupTitle": "Type",
-        "min": 100,
-        "max": 900,
-        "step": 100
-      }
-    },
-    {
-      "name": "activeWeight",
-      "type": "number",
-      "default": 700,
-      "description": "Font weight while a line is actively typing.",
-      "remixer": {
-        "control": "range",
-        "group": "type",
-        "groupTitle": "Type",
-        "min": 100,
-        "max": 900,
-        "step": 100
-      }
-    },
-    {
       "name": "letterSpacing",
       "type": "number",
       "default": 0.08,

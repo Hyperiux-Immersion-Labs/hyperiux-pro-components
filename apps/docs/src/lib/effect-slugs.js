@@ -28,6 +28,7 @@ const effectSlugAliasGroups = [
   { slug: "parallax-image-animation", aliases: ["parallax-image"] },
   { slug: "video-player", aliases: ["custom-video-player"] },
   { slug: "focus-text", aliases: ["scale-text"] },
+  { slug: "depth-flip-text", aliases: ["pers-text"] },
 ];
 
 const effectSlugAliasMap = new Map(

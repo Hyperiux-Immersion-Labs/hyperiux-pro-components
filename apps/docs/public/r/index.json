@@ -871,6 +871,23 @@
       "tier": "pro"
     },
     {
+      "name": "depth-flip-text",
+      "type": "registry:component",
+      "category": "text",
+      "categories": [
+        "text"
+      ],
+      "dependencies": [
+        "gsap",
+        "@gsap/react"
+      ],
+      "registryDependencies": [],
+      "exportName": "DepthFlipText",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
       "name": "drop-text",
       "type": "registry:component",
       "category": "text",

@@ -112,7 +112,6 @@ export default function FocusText({
   }, [cycle, activeRevealDurationMs]);
 
   const handleReplay = () => {
-    if (isPlaying) return;
     setCycle((value) => value + 1);
   };
 
@@ -177,8 +176,7 @@ export default function FocusText({
         <button
           type="button"
           onClick={handleReplay}
-          disabled={isPlaying}
-          className="absolute inset-x-0 bottom-8 mx-auto inline-flex w-fit items-center justify-center rounded-full border border-white/20 bg-white/8 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.28em] text-white transition hover:border-white/40 hover:bg-white/14 disabled:cursor-not-allowed disabled:opacity-40"
+          className="absolute inset-x-0 bottom-8 mx-auto inline-flex w-fit items-center justify-center rounded-full border border-white/20 bg-white/8 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.28em] text-white transition hover:border-white/40 hover:bg-white/14"
         >
           Replay animation
         </button>

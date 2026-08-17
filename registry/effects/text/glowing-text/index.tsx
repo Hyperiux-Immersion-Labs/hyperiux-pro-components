@@ -9,8 +9,6 @@ type GlowingTextProps = {
   glowColor?: string;
   backgroundColor?: string;
   fontSize?: number;
-  fontWeight?: CSSProperties["fontWeight"];
-  activeWeight?: CSSProperties["fontWeight"];
   letterSpacing?: number;
   lineHeight?: number;
   glowIntensity?: number;
@@ -30,6 +28,7 @@ type Token = { text: string; isSpace: boolean; start: number };
 const DEFAULT_EYEBROW = "VAULT TRANSMISSION";
 const DEFAULT_TEXT =
   "Connection established with Hyperiux Vault,\nDecrypting premium component signatures,\nMotion presets verified and ready to ship,\nWelcome in. Build something that glows.";
+const SETTLED_WEIGHT = 300;
 
 function withAlpha(color: string, alpha: number) {
   if (/^#[0-9a-f]{6}$/i.test(color)) {
@@ -60,8 +59,6 @@ export default function GlowingText({
   glowColor = "#ffffff",
   backgroundColor = "#0b0d0e",
   fontSize = 2.2,
-  fontWeight = 400,
-  activeWeight = 700,
   letterSpacing = 0.08,
   lineHeight = 1.55,
   glowIntensity = 0.7,
@@ -125,8 +122,7 @@ export default function GlowingText({
           "--glow-text": textColor,
           "--glow-soft": glowSoft,
           "--glow-hard": glowHard,
-          "--glow-active-weight": activeWeight,
-          "--glow-settled-weight": fontWeight,
+          "--glow-settled-weight": SETTLED_WEIGHT,
           backgroundColor,
         } as CSSProperties
       }
@@ -180,7 +176,7 @@ export default function GlowingText({
           display: inline-block;
           color: var(--glow-text);
           opacity: 0;
-          font-weight: var(--glow-active-weight);
+          font-weight: var(--glow-settled-weight);
           text-shadow: none;
           animation: glowing-char-reveal var(--char-duration) ease-out var(--char-delay) forwards;
         }
@@ -188,13 +184,13 @@ export default function GlowingText({
         @keyframes glowing-char-reveal {
           0% {
             opacity: 0;
-            font-weight: var(--glow-active-weight);
+            font-weight: var(--glow-settled-weight);
             text-shadow: none;
           }
 
           55% {
             opacity: 1;
-            font-weight: var(--glow-active-weight);
+            font-weight: var(--glow-settled-weight);
             text-shadow:
               0 0 7px var(--glow-hard),
               0 0 18px var(--glow-hard),
