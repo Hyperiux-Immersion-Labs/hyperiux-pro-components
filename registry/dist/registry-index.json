@@ -430,9 +430,9 @@
     "tarball": "registry/dist/hyperiux-perspective-text-reveal-1.1.0.tgz"
   },
   {
-    "name": "@hyperiux/pixel-fill",
+    "name": "@hyperiux/pixel-text-fill",
     "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-pixel-fill-1.1.0.tgz"
+    "tarball": "registry/dist/hyperiux-pixel-text-fill-1.1.0.tgz"
   },
   {
     "name": "@hyperiux/rectangular-text-reveal",

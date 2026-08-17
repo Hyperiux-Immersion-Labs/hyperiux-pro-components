@@ -997,7 +997,7 @@
       "tier": "pro"
     },
     {
-      "name": "pixel-fill",
+      "name": "pixel-text-fill",
       "type": "registry:component",
       "category": "text",
       "categories": [
@@ -1007,7 +1007,7 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "PixelFill",
+      "exportName": "PixelTextFill",
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "free"
