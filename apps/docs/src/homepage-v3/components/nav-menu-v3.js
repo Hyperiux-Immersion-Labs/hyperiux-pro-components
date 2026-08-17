@@ -42,7 +42,7 @@ export const NAV_MENUS_V3 = {
     columns: [
       {
         title: "Get started",
-        items: pick("Introduction", "Installation", "CLI"),
+        items: pick("Introduction", "Installation", "CLI","MCP"),
       },
       {
         title: "Reference",

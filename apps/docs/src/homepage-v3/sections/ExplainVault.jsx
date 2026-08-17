@@ -6,7 +6,7 @@ import TextFillPixelV3 from '../components/TextFillPixelV3'
 import ScrambleTextV3 from '../components/ScrambleTextV3'
 import { useFadeUp } from '@/components/Animations/gsapAnimations'
 
-const SOLUTION_TEXT = 'Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client launches. Preview the moment the interaction layer of a website, the moments people notice when they scroll, hover,  move, navigate, read, and explore.'
+const SOLUTION_TEXT = "Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client launches. Preview the moment you need, install it with one command, then tune it in your own repo. It’s not a black box. It’s not another UI kit. It’s real, inspectable code you own."
 
 const WORKFLOW_TEXT =
     'That’s the whole workflow. The files land in your project. You change anything you want.'
@@ -81,8 +81,8 @@ export default function ExplainVault() {
                 stagger={40}
                 bandFraction={0.65}
                 settleBlend={0.45}
-                className="text-[8vw] leading-[1.18] sm:text-[5vw] md:text-[4.5vw] lg:text-[3.25vw]"
-                wrapperClassName="w-[90%] sm:w-[88%] md:w-[90%]"
+                className="t64"
+                wrapperClassName="w-[88%]"
                 containerClassName="py-[15vw] font-neue-haas max-md:py-24"
             />
             <div className='w-full  h-fit px-[3vw] max-[1025px]:px-[5vw]' id="code-block">

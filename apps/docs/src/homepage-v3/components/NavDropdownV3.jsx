@@ -248,7 +248,7 @@ export default function NavDropdownV3({ panel, onNavigate }) {
 
             <p
               data-nav-v3-head
-              className="border-b border-white/10 bg-white/2 px-[1.5vw] py-[0.85vw] text18 flex items-center gap-[0.5vw] text-light-grey capitalize"
+              className="border-b border-white/10 bg-white/2 px-[1.5vw] py-[0.85vw] text18 flex items-center gap-[1vw] text-light-grey capitalize"
             >
 
               <span className="size-[.6vw] font-neue-haas bg-primary inline-block" />

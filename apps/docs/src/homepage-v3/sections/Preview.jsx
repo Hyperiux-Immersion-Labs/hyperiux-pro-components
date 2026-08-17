@@ -185,7 +185,7 @@ export default function Preview() {
 
       <div
         ref={gridRef}
-        className="h-screen relative mt-[4vw] max-[1025px]:mt-[8vw] max-md:mt-[12vw] border-t border-b border-grey w-full flex flex-col"
+        className="h-screen relative mt-[7vw] max-[1025px]:mt-[8vw] max-md:mt-[12vw] border-t border-b border-grey w-full flex flex-col"
       >
         {STEPS.map((step, i) => (
           <div
@@ -197,7 +197,7 @@ export default function Preview() {
             <div className="w-[15vw] max-[1025px]:w-[6vw] max-md:w-[5vw] h-full border-r border-grey" />
             {/* This row's number, morphing in place into this row's icon. */}
             <div className="relative w-[15vw] max-[1025px]:w-[20vw] max-md:w-[30vw] h-full border-r border-grey">
-              <div className="preview-icon pointer-events-none absolute inset-0 p-[2.5vw] max-[1025px]:p-[3vw]">
+              <div className="preview-icon pointer-events-none absolute inset-0 p-[1.5vw] max-[1025px]:p-[3vw]">
                 <AsciiMorphIcon
                   ref={(node) => {
                     asciiRefs.current[i] = node;

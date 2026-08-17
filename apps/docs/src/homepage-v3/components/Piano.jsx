@@ -500,7 +500,7 @@ export default function Piano({
           ref={(el) => {
             lineRefs.current[i] = el;
           }}
-          className="cta-line w-[1.5px] h-full bg-foreground"
+          className="cta-line w-[1.5px] h-full bg-foreground/60"
         />
       ))}
       <div

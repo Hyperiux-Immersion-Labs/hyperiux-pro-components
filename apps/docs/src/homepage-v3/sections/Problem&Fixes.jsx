@@ -209,8 +209,9 @@ export default function ProblemFixes() {
             Good Motion is{' '}
             <span className="gradient-text-animate">Harder</span> Than It Looks
           </LineReveal>
-          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[2vw] max-w-[65vw] leading-[1.55] text-white max-[1025px]:mt-[4vw] max-[1025px]:max-w-[85vw] max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
+          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[3.5vw] max-w-[65vw] leading-[1.55] text-white max-[1025px]:mt-[4vw] max-[1025px]:max-w-[85vw] max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
             Anyone can add a fade. The hard part is everything around it: timing, restraint, layout awareness, responsive behavior, reduced-motion support, dependency clarity, and performance discipline.Get it wrong and your "wow moment" janks on mobile, tanks your Lighthouse score, or quietly breaks for the people who turned motion off.
+            That difference has a name. It's the interaction layer.
           </SplitLine>
         </div>
 

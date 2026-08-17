@@ -46,7 +46,7 @@ export default function Techstack() {
             <div className="relative flex max-[1025px]:flex-col max-[1025px]:pr-0 max-[1025px]:gap-[8vw] max-md:flex-col justify-between w-full h-fit pr-[4vw] max-sm:pr-0 max-md:gap-14 max-sm:gap-8">
                 <div className="sticky h-fit top-[12vh] max-[1025px]:static max-md:static">
                     <MaskTextReveal stagger={0.08} scrub={false} duration={2} >
-                        <h2 ref={paragraphText} className="w-[40vw] t56 font-normal text-white max-[1025px]:w-full max-md:max-w-[95vw] max-md:w-[85vw]  max-sm:max-w-full  ">
+                        <h2 ref={paragraphText} className="w-[40vw] t64 font-normal text-white max-[1025px]:w-full max-md:max-w-[95vw] max-md:w-[85vw]  max-sm:max-w-full  ">
                             Give your product the perception lift of a custom interaction
                             system without commissioning one from scratch.
                         </h2>

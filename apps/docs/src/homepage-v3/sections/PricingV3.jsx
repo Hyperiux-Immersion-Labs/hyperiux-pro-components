@@ -140,7 +140,7 @@ function PixelSquares({ flashClassName }) {
 
 function BillingToggle({ isYearly, onChange }) {
     return (
-        <div className="flex items-center gap-[1vw] text22 max-[1025px]:gap-[2vw] max-md:gap-[2.5vw] max-md:text-[2.2vw] max-sm:gap-[3.5vw] max-sm:text-[4vw]">
+        <div className="flex items-center gap-[1vw] text22 max-[1025px]:gap-[2vw] max-md:gap-[2.5vw] max-md:text-[2.2vw] font-mono! max-sm:gap-[3.5vw] max-sm:text-[4vw]">
             <button
                 type="button"
                 onClick={() => onChange(false)}
@@ -155,7 +155,7 @@ function BillingToggle({ isYearly, onChange }) {
                 aria-checked={isYearly}
                 aria-label="Toggle billing cycle"
                 onClick={() => onChange(!isYearly)}
-                className="relative flex h-[1.5vw] w-[3vw] cursor-pointer items-center border border-background/20 bg-background/5 p-[0.2vw] max-[1025px]:h-[3vw] max-[1025px]:w-[6vw] max-[1025px]:p-[0.4vw] max-md:h-[3.4vw] max-md:w-[6.8vw] max-md:p-[0.5vw] max-sm:h-[5.5vw] max-sm:w-[11vw] max-sm:p-[0.8vw]"
+                className="relative flex h-full w-[4vw] cursor-pointer items-center bg-light-grey/30  max-[1025px]:h-[3vw] max-[1025px]:w-[6vw] max-[1025px]:p-[0.4vw] max-md:h-[3.4vw] max-md:w-[6.8vw] max-md:p-[0.5vw] max-sm:h-[5.5vw] max-sm:w-[11vw] max-sm:p-[0.8vw]"
             >
                 <span
                     className={`h-full w-1/2 bg-primary transition-transform duration-300 ${isYearly ? "translate-x-full" : "translate-x-0"
@@ -226,18 +226,18 @@ export default function PricingV3() {
                     <span className="gradient-text-animate">Ready.</span>
                 </LineReveal>
 
-                <SplitLine delay={.25} as="p" className="text24 w-full  mx-auto mt-[1.5vw] text-background max-[1025px]:mt-[3vw] max-[1025px]:w-[80vw] max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-[80vw] max-sm:text-[4vw]">
+                <SplitLine delay={.25} as="p" className="text24 w-full  mx-auto mt-[2vw] text-background max-[1025px]:mt-[3vw] max-[1025px]:w-[80vw] max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-[80vw] max-sm:text-[4vw]">
                     The free core stays free, forever. Pro unlocks everything and every new drop.
                 </SplitLine>
             </div>
 
             {/* TOGGLE */}
-            <div className="mt-[4vw] px-[8%] flex justify-end max-[1025px]:mt-[6vw] max-[1025px]:px-[5%] max-md:mt-[8vw] max-sm:mt-[12vw] max-sm:justify-center">
+            <div className="mt-[6vw] px-[8%] flex justify-end max-[1025px]:mt-[6vw] max-[1025px]:px-[5%] max-md:mt-[8vw] max-sm:mt-[12vw] max-sm:justify-center">
                 <BillingToggle isYearly={isYearly} onChange={setIsYearly} />
             </div>
 
             {/* CARDS */}
-            <div className="mt-[1.5vw] w-[85%] fadeup mx-auto flex items-stretch max-[1025px]:mt-[4vw] max-[1025px]:w-[90%] max-[1025px]:flex-col-reverse max-[1025px]:gap-[5vw] max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]">
+            <div className="mt-[1.5vw] w-[75%] fadeup mx-auto flex items-stretch max-[1025px]:mt-[4vw] max-[1025px]:w-[90%] max-[1025px]:flex-col-reverse max-[1025px]:gap-[5vw] max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]">
                 {/* FREE */}
                 <div className="pricing-v3-card relative flex w-1/2 flex-col justify-between border border-background/15 px-[3vw] py-[3vw] max-[1025px]:w-full max-[1025px]:px-[4vw] max-[1025px]:py-[4.5vw] max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
                     <PixelSquares flashClassName="bg-background" />

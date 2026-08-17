@@ -18,17 +18,8 @@ if (typeof window !== "undefined") {
 }
 
 const NAV_LEAD = 0.25;
-// Order of the intro is: the ASCII field arrives, then the navbar drops in,
-// then the copy. Each beat below is a start time inside that sequence.
-//
-// The loader announces itself complete as its own field starts bursting
-// outward, not after — so the cube resolves in underneath while those glyphs
-// are still crossing the screen, and the two ASCII fields read as one handing
-// over. Holding this until after the loader has gone breaks that join.
 const AT_CANVAS = 0;
 const INTRO_DURATION = 1.7;
-// Copy waits out the field and the navbar (NavbarV3's own INTRO_DELAY_MS),
-// so the three arrive in sequence rather than on top of each other.
 const AT_HEADING = 1.7;
 const AT_COPY = 2.3;
 const AT_ACTIONS = 2.75;
@@ -45,22 +36,14 @@ export default function Hero() {
 
     useScrollLockLenis();
 
-    // Drives the ASCII field's own entry reveal, mutated by GSAP and read by
-    // the shader every frame. Starts at 0 — nothing drawn — which is what holds
-    // the field back instead of a fade on the canvas element: fading the
-    // element would bring the whole grid up as one sheet, and the point here is
-    // that cells arrive individually.
     const introRef = useRef(0);
 
-    // Hidden from the first client frame — the loader panel is already covering
-    // the page at this point, so nothing flashes before the intro plays.
     useGSAP(
         () => {
             if (prefersReducedMotion()) {
                 introRef.current = 1;
                 return;
             }
-
             gsap.set(
                 [headingRef.current, copyRef.current, actionsRef.current],
                 { autoAlpha: 0 }
@@ -71,9 +54,6 @@ export default function Hero() {
 
     useGSAP(
         () => {
-            // Deliberately not gated on a Lenis instance: this timeline is what
-            // releases the scroll lock, so it must run even on a page where
-            // Lenis never mounts (reduced motion turns it off entirely).
             if (!loaderComplete || prefersReducedMotion()) return;
 
             const heading = SplitText.create(headingRef.current, {
@@ -82,7 +62,6 @@ export default function Hero() {
             });
             const copy = SplitText.create(copyRef.current, { type: "lines" });
 
-            // SplitText moves glyphs into word nodes; keep gradient clip on those nodes.
             headingRef.current
                 ?.querySelectorAll(".gradient-text-animate")
                 .forEach((el) => {
@@ -94,17 +73,9 @@ export default function Hero() {
                     el.classList.remove("gradient-text-animate");
                 });
 
-            // Every start value is parked up front, so the timeline below is
-            // nothing but .to() — the resting state of the hero is one block
-            // you can read, instead of being spread across five `from` objects.
-            // The containers can come up straight away: the heading's words are
-            // masked and pushed out of frame, and the copy's lines are still
-            // transparent, so there is nothing to see yet.
             gsap.set([headingRef.current, copyRef.current], { autoAlpha: 1 });
             gsap.set(heading.words, { yPercent: 110 });
             gsap.set(copy.lines, { yPercent: 40, autoAlpha: 0 });
-            // Fixed px rather than a percentage on the buttons: the stack goes
-            // column on mobile, where a percentage would throw them off screen.
             gsap.set(actionsRef.current, { y: 28, autoAlpha: 0 });
 
             const tl = gsap.timeline({
@@ -112,10 +83,6 @@ export default function Hero() {
                 defaults: { ease: "power2.out" },
             });
 
-            // ASCII field settles in behind the copy, so the glyph grid
-            // resolves rather than just appearing. The front crosses the canvas
-            // at an even rate, so the ease only has to soften the ends of the
-            // move — anything stronger makes the sweep visibly surge.
             tl.to(
                 introRef,
                 { current: 1, duration: INTRO_DURATION, ease: "power1.inOut" },
@@ -137,9 +104,6 @@ export default function Hero() {
                         y: 0,
                         autoAlpha: 1,
                         duration: 0.7,
-                        // The last beat of the intro — scroll is handed back
-                        // here, not when the loader leaves, so the copy is not
-                        // still arriving while the hero recedes underneath it.
                         onComplete: unlockScrollV3,
                     },
                     AT_ACTIONS
@@ -148,21 +112,15 @@ export default function Hero() {
             return () => {
                 heading.revert();
                 copy.revert();
-                // Torn down mid-intro: nothing else is going to reach the
-                // onComplete above, so give the page back now.
                 unlockScrollV3();
             };
         },
         { dependencies: [loaderComplete], scope: rootRef }
     );
 
-    // The hero is held in place by a sticky wrapper while the next layer
-    // (Techstack) slides up over it, so the recede is scrubbed straight off
-    // scroll position and lands just as that layer finishes covering it.
     useGSAP(
         () => {
             if (prefersReducedMotion()) return;
-
             const mm = gsap.matchMedia();
 
             const recede = (blur) => {
@@ -185,8 +143,6 @@ export default function Hero() {
                     .fromTo(overlayRef.current, { opacity: 0 }, { opacity: 0.65 }, 0);
             };
 
-            // Blurring the full-screen ASCII canvas is the costly part, so
-            // phones get a lighter radius for the same read.
             mm.add("(min-width: 768px)", () => recede(14));
             mm.add("(max-width: 767px)", () => recede(6));
 
@@ -197,7 +153,6 @@ export default function Hero() {
 
     useFadeUp()
 
-
     return (
         <main
             ref={rootRef}
@@ -207,11 +162,10 @@ export default function Hero() {
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
                     <CubeBackgroundAscii intro={introRef} />
                 </div>
-                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[12vw] p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
-                    {/* <div className="w-full bg-gradient-to-r pointer-events-none from-black/50 to-transparent h-full absolute inset-0" /> */}
-                    <div className="space-y-[2.5vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-8 max-sm:space-y-11">
+                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[11vw] p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
+                    <div className="space-y-[3vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-8 max-sm:space-y-11">
                         <div className="flex flex-col h-fit font-neue-haas w-full items-start max-sm:gap-2 max-md:gap-5">
-                            <h1 ref={headingRef} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[60vw] max-[1025px]:mt-0 max-[1025px]:w-[85%] max-md:mt-0 max-md:w-[85%] max-sm:w-full">
+                            <h1 ref={headingRef} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[55vw] max-[1025px]:mt-0 max-[1025px]:w-[85%] max-md:mt-0 max-md:w-[85%] max-sm:w-full">
                                 The Interaction Layer your Website is <span className="gradient-text-animate">Missing.</span>
                             </h1>
                         </div>
@@ -241,8 +195,6 @@ export default function Hero() {
                     </div>
                 </div>
             </div>
-            {/* Darkens the hero as the next layer takes over, so the two
-                sections never compete for attention mid-scroll. */}
             <div
                 ref={overlayRef}
                 className="pointer-events-none absolute inset-0 z-20 bg-background opacity-0"

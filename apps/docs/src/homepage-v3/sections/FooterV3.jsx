@@ -20,6 +20,7 @@ const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
   { label: "Pricing", href: "/pricing" },
   { label: "NPM", href: "https://www.npmjs.com/package/hyperiux" },
+  { label: "MCP", href: "/docs/mcp" },
 ];
 
 const categoryColumns = [
@@ -74,7 +75,7 @@ function FooterBlockLink({ href, children }) {
       prefetch={false}
       target={isExternal ? "_blank" : "_self"}
       rel={isExternal ? "noopener noreferrer" : undefined}
-      className="group block overflow-hidden bg-transparent transition-colors duration-300 ease-in-out hover:duration-0 hover:bg-[#ff5f00] motion-reduce:transition-none"
+      className="group block overflow-hidden bg-transparent transition-colors duration-300 ease-in-out hover:duration-0 hover:bg-primary motion-reduce:transition-none"
     >
       <span className="block py-[0.15vw] max-[1025px]:py-1 max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 group-hover:duration-0 motion-reduce:group-hover:translate-x-0 motion-reduce:transition-none">
         {children}
@@ -206,16 +207,16 @@ export default function FooterV3() {
       {/* ── Footer links grid ── */}
       <div className="relative z-3 mt-[10vw] max-[1025px]:mt-[14vw] max-sm:mt-[25vw] ">
         {/* Platform label */}
-        <div className="flex items-center gap-[0.5vw] max-[1025px]:gap-2 max-[1025px]:pb-[2vw] max-md:gap-2 pb-[1vw] max-md:pb-[3vw]">
+        <div className="flex items-center gap-[1vw] max-[1025px]:gap-2 max-[1025px]:pb-[2vw] max-md:gap-2 pb-[1vw] max-md:pb-[3vw]">
           <span className="size-[0.45vw] max-[1025px]:size-2 max-md:size-2 bg-[#ff5f00]" />
-          <span className="text18 text-[#B3B3B3] font-heading">Platform</span>
+          <span className="text24 text-[#B3B3B3] font-heading">Platform</span>
         </div>
 
         {/* Top 4-column grid: Vault | Categories | Documents | Legal */}
         <div className="grid grid-cols-[1fr_2.5fr_1fr_1fr]  gap-[2vw] max-[1025px]:grid-cols-2 max-[1025px]:gap-[4vw] max-md:grid-cols-2 max-sm:grid-cols-1 ">
           {/* Vault */}
           <div className="flex flex-col gap-[1.5vw] py-[1.2vw] max-[1025px]:gap-[2.5vw] max-[1025px]:py-[2.5vw] max-sm:py-[6vw] border-t  border-foreground/50 max-md:-0 max-md:pb-[5vw] max-md:gap-[3vw] max-sm:pb-[6vw]">
-            <h3 className="text22 font-medium text-[#979797]">Vault</h3>
+            <h3 className="text24 font-medium text-[#979797]">Vault</h3>
             <ul className="flex flex-col max-[1025px]:gap-1 max-md:gap-1">
               {vaultFooterLinks.map(({ label, href }) => (
                 <li key={label}>
@@ -227,7 +228,7 @@ export default function FooterV3() {
 
           {/* Categories */}
           <div className="flex flex-col gap-[1.5vw] py-[1.2vw] max-[1025px]:gap-[2.5vw] max-[1025px]:py-[2.5vw] max-sm:py-[6vw]  border-t  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-t max-sm:border-foreground/50">
-            <h3 className="text22 font-medium text-[#979797]">Categories</h3>
+            <h3 className="text24 font-medium text-[#979797]">Categories</h3>
             <div className="grid grid-cols-2 gap-x-[1vw] max-[1025px]:gap-x-[2vw] max-sm:grid-cols-2 max-sm:gap-x-4">
               {categoryColumns.map((col, ci) => (
                 <ul key={ci} className="flex flex-col max-[1025px]:gap-1 max-md:gap-1">
@@ -243,7 +244,7 @@ export default function FooterV3() {
 
           {/* Documents */}
           <div className="flex flex-col gap-[1.5vw] py-[1.2vw] max-[1025px]:gap-[2.5vw] max-[1025px]:py-[2.5vw] max-sm:py-[6vw]  border-t  border-foreground/50 max-md:-0 max-md:border-t max-md:border-foreground/50 max-md:pt-[5vw] max-md:gap-[3vw] max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw]">
-            <h3 className="text22 font-medium text-[#979797]">Documents</h3>
+            <h3 className="text24 font-medium text-[#979797]">Documents</h3>
             <ul className="flex flex-col max-[1025px]:gap-1 max-md:gap-1">
               {docsLinks.map(({ label, href }) => (
                 <li key={label}>
@@ -255,7 +256,7 @@ export default function FooterV3() {
 
           {/* Legal */}
           <div className="flex flex-col gap-[1.5vw] py-[1.2vw] max-[1025px]:gap-[2.5vw] max-[1025px]:py-[2.5vw] max-sm:py-[6vw]  border-t  border-foreground/50  max-md:border-foreground/50 max-md:border-t max-md:pt-[5vw] max-md:gap-[3vw] -0 max-sm:pl-0 max-sm:border-t max-sm:border-foreground/50 max-sm:pt-[6vw]">
-            <h3 className="text22 font-medium text-[#979797]">Legal</h3>
+            <h3 className="text24 font-medium text-[#979797]">Legal</h3>
             <ul className="flex flex-col max-[1025px]:gap-1 max-md:gap-1">
               {legalLinks.map(({ label, href }) => (
                 <li key={label}>
@@ -270,9 +271,9 @@ export default function FooterV3() {
         <div className="grid grid-cols-[1fr_1fr_1.4fr_2.15fr]  gap-[2vw] py-[3vw] max-[1025px]:grid-cols-2 max-[1025px]:gap-[4vw] max-[1025px]:py-[5vw] max-md:grid-cols-2 max-sm:flex max-sm:flex-col max-md:py-[6vw] max-sm:py-[8vw]">
           {/* Socials */}
           <div className="flex flex-col gap-[1.1vw] max-[1025px]:gap-[2.5vw]  border-foreground/50 max-md:-0 max-md:pb-[5vw] max-md:gap-[3vw] max-sm:pb-[6vw]">
-            <div className="flex items-center gap-[0.5vw] max-[1025px]:gap-2 max-md:gap-2">
+            <div className="flex items-center gap-[1vw] max-[1025px]:gap-2 max-md:gap-2">
               <span className="size-[0.45vw] max-[1025px]:size-2 max-md:size-2  bg-[#ff5f00]" />
-              <span className="text18 text-[#B3B3B3] font-heading">
+              <span className="text24 text-[#B3B3B3] font-heading">
                 Socials
               </span>
             </div>
@@ -289,9 +290,9 @@ export default function FooterV3() {
 
           {/* Contact Us */}
           <div className="flex flex-col gap-[1.1vw] max-[1025px]:gap-[2.5vw]  border-foreground/50 max-md:-0  max-md:pb-[5vw] max-md:gap-[3vw] -0 max-sm:px-0 max-sm:pt-[6vw] max-sm:pb-[6vw] max-sm:border-foreground/50">
-            <div className="flex items-center gap-[0.5vw] max-[1025px]:gap-2 max-md:gap-2">
+            <div className="flex items-center gap-[1vw] max-[1025px]:gap-2 max-md:gap-2">
               <span className="size-[0.45vw] max-[1025px]:size-2 max-md:size-2  bg-[#ff5f00] " />
-              <span className="text18 text-[#B3B3B3] font-heading">
+              <span className="text24 text-[#B3B3B3] font-heading">
                 Contact Us
               </span>
             </div>
@@ -315,9 +316,9 @@ export default function FooterV3() {
 
           {/* Newsletter */}
           <div className="flex flex-col gap-[1.15vw]  border-foreground/50  max-[1025px]:col-span-2 max-[1025px]:pt-[4vw] max-[1025px]:pb-[12vw] max-[1025px]:pl-0 max-[1025px]:gap-[2.5vw] max-md:border-foreground/50 max-md:pt-[5vw] max-md:col-span-2 max-md:pl-0 max-md:gap-[3vw] max-sm:py-[6vw] max-sm:pb-[20vw]">
-            <div className="flex items-center gap-[0.5vw] max-[1025px]:gap-2 max-md:gap-2">
+            <div className="flex items-center gap-[1vw] max-[1025px]:gap-2 max-md:gap-2">
               <span className="size-[0.45vw] max-[1025px]:size-2 max-md:size-2  bg-[#ff5f00]" />
-              <span className="text18 text-[#B3B3B3] font-heading">
+              <span className="text24 text-[#B3B3B3] font-heading">
                 New effects, in your inbox.
               </span>
             </div>
@@ -348,6 +349,10 @@ export default function FooterV3() {
                     placeholder=""
                     aria-label="Email address"
                     disabled={status === "loading"}
+                    style={{
+                      "--input-autofill-bg": "#111210",
+                      "--input-autofill-text": "#ffffff",
+                    }}
                     className="min-w-0 flex-1 rounded-none border border-grey bg-transparent! px-[1.2vw] py-[0.6vw] max-[1025px]:px-[2vw] max-[1025px]:py-[1.2vw] max-md:px-4 max-md:py-3 text18 outline-none placeholder:text-light-grey/70 focus:border-white/30 disabled:opacity-50 text-white"
                   />
                   <LinkButton

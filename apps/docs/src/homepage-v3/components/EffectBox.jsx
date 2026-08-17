@@ -400,7 +400,7 @@ export default function EffectBox({
       prefetch={false}
       href={href}
       aria-label={`${title}${tag ? ` — ${tag}` : ""}`}
-      className={`group block w-full text-white ${className}`}
+      className={`group block w-full cursor-pointer text-white ${className}`}
     >
       <div
         className={`relative isolate w-full overflow-hidden bg-[#0e0e0e] ${aspect} ${mediaClassName}`}
@@ -452,8 +452,11 @@ export default function EffectBox({
 
         <span className="flex items-center gap-[0.35vw] text18 leading-none text-light-grey transition-colors duration-500 max-[1025px]:gap-[0.8vw] max-[1025px]:text-[1.5vw] max-md:text-foreground! group-hover:text-white motion-reduce:transition-none max-md:gap-1 max-md:text-[1.7vw] max-sm:text-[3vw]">
           {action}
-          <span className="inline-block max-[1025px]:size-[2.5vw] max-md:size-[5vw] size-[1.8vw]">
-            <ArrowUpRight />
+          {/* Two arrows on a diagonal rail: the resting one leaves through the
+              top-right as its replacement arrives from the bottom-left. */}
+          <span className="relative inline-block overflow-hidden max-[1025px]:size-[2.5vw] max-md:size-[5vw] size-[1.8vw]">
+            <ArrowUpRight className="transition-transform duration-500 ease-out motion-safe:group-hover:translate-x-full motion-safe:group-hover:-translate-y-full motion-reduce:transition-none" />
+            <ArrowUpRight className="absolute inset-0 -translate-x-full translate-y-full transition-transform duration-500 ease-out motion-safe:group-hover:translate-x-0 motion-safe:group-hover:translate-y-0 motion-reduce:transition-none" />
           </span>
         </span>
       </div>

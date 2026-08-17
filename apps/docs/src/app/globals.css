@@ -510,7 +510,19 @@ h4 {
   box-shadow: none !important;
   transition: all 0.3s ease-in-out;
 }
-/* Autofill */
+/* Autofill
+   Chrome paints its own autofill fill — override with an inset box-shadow.
+   Defaults match light inputs; dark surfaces set --input-autofill-bg / text. */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--input-autofill-text, #1f2937) !important;
+  caret-color: var(--input-autofill-text, #1f2937) !important;
+  box-shadow: 0 0 0 1000px var(--input-autofill-bg, #ffffff) inset !important;
+  transition: background-color 9999s ease-in-out 0s !important;
+}
 
 .hyperiux-clerk input:-webkit-autofill,
 .hyperiux-clerk input:-webkit-autofill:hover,
