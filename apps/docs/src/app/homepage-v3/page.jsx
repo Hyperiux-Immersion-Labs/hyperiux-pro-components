@@ -250,7 +250,7 @@ export default async function page() {
             markers={false}
             accentColor="#eaeaea"
             className="h-[75vw] max-md:h-[150vw]! mt-[-10vw] bg-foreground"
-          />
+          /> 
           <FAQV3 faqItems={faqItems} />
           <CTAV3 />
           <FooterV3 />
