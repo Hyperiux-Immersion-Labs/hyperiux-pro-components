@@ -36,47 +36,6 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
-function StatusBadge({ status }) {
-  return (
-    <span
-      className={`inline-flex items-center  px-2.5 py-0.5 text-xs font-medium ${
-        status === "success"
-          ? "bg-emerald-500/15 text-emerald-400"
-          : "bg-red-500/15 text-red-400"
-      }`}
-    >
-      {status}
-    </span>
-  );
-}
-
-// Resend's status column only reflects whether the invite email was
-// delivered, not what happened to the invitation afterward - this shows
-// Clerk's actual live invitation status instead (synced server-side in the
-// API route), for invitations rows specifically.
-function InvitationStatusBadge({ invitationStatus }) {
-  if (!invitationStatus) {
-    return <span className="text-xs text-white/35">Unknown</span>;
-  }
-
-  const styles = {
-    accepted: "bg-emerald-500/15 text-emerald-400",
-    pending: "bg-blue-500/15 text-blue-400",
-    revoked: "bg-red-500/15 text-red-400",
-    expired: "bg-white/8 text-white/50",
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center  px-2.5 py-0.5 text-xs font-medium capitalize ${
-        styles[invitationStatus] || "bg-white/8 text-white/50"
-      }`}
-    >
-      {invitationStatus}
-    </span>
-  );
-}
-
 // Whether the recipient clicked the email's CTA - only meaningful for rows
 // whose template routes its CTA through /api/e/[id] (currently invitations).
 function ClickedBadge({ clicked }) {
@@ -328,7 +287,6 @@ export default function AdminEmailsPage() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Subject</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Type</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Sent At</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Status</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">CTA</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Preview</th>
                 </tr>
@@ -337,7 +295,7 @@ export default function AdminEmailsPage() {
                 {loading ? (
                   Array.from({ length: 8 }).map((_, i) => (
                     <tr key={i}>
-                      {Array.from({ length: 7 }).map((__, j) => (
+                      {Array.from({ length: 6 }).map((__, j) => (
                         <td key={j} className="px-4 py-3">
                           <div className="h-4  bg-white/8 animate-pulse" style={{ width: j === 1 ? "200px" : "100px" }} />
                         </td>
@@ -346,7 +304,7 @@ export default function AdminEmailsPage() {
                   ))
                 ) : emails.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-white/40">
+                    <td colSpan={6} className="px-4 py-10 text-center text-white/40">
                       No emails found.
                     </td>
                   </tr>
@@ -367,13 +325,6 @@ export default function AdminEmailsPage() {
                       </td>
                       <td className="px-4 py-3 text-white/50 whitespace-nowrap text-xs">
                         {formatDate(email.sent_at)}
-                      </td>
-                      <td className="px-4 py-3">
-                        {email.email_type === "invitations" ? (
-                          <InvitationStatusBadge invitationStatus={email.invitation_status} />
-                        ) : (
-                          <StatusBadge status={email.status} />
-                        )}
                       </td>
                       <td className="px-4 py-3">
                         {email.email_type === "invitations" ? (
