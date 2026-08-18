@@ -904,6 +904,23 @@
       "tier": "free"
     },
     {
+      "name": "flickering-text",
+      "type": "registry:component",
+      "category": "text",
+      "categories": [
+        "text"
+      ],
+      "dependencies": [
+        "gsap",
+        "@gsap/react"
+      ],
+      "registryDependencies": [],
+      "exportName": "FlickeringText",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
       "name": "focus-text",
       "type": "registry:component",
       "category": "text",
@@ -1043,6 +1060,23 @@
       "exportName": "RectangularTextReveal",
       "exportKind": "default",
       "version": "1.1.0",
+      "tier": "free"
+    },
+    {
+      "name": "rolling-text",
+      "type": "registry:component",
+      "category": "text",
+      "categories": [
+        "text"
+      ],
+      "dependencies": [
+        "gsap",
+        "@gsap/react"
+      ],
+      "registryDependencies": [],
+      "exportName": "RollingText",
+      "exportKind": "default",
+      "version": "1.0.0",
       "tier": "free"
     },
     {
@@ -1194,8 +1228,8 @@
       "registryDependencies": [],
       "exportName": "VariableTextProximity",
       "exportKind": "default",
-      "version": "1.0.3",
-      "tier": "pro"
+      "version": "1.0.5",
+      "tier": "free"
     },
     {
       "name": "animated-toggle",

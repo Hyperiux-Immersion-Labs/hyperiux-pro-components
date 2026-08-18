@@ -110,7 +110,7 @@
     {
       "name": "yOffset",
       "type": "number",
-      "default": -115,
+      "default": -30,
       "description": "Starting vertical offset in pixels. Negative values rise from above, positive values drop from below.",
       "remixer": {
         "control": "range",
@@ -194,7 +194,7 @@
     {
       "name": "duration",
       "type": "number",
-      "default": 0.5,
+      "default": 0.4,
       "description": "Animation duration in seconds.",
       "remixer": {
         "control": "range",
@@ -208,7 +208,7 @@
     {
       "name": "stagger",
       "type": "number",
-      "default": 0.05,
+      "default": 0.02,
       "description": "Delay between each animated text unit.",
       "remixer": {
         "control": "range",
