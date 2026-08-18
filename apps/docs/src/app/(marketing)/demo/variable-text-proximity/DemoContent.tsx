@@ -1,6 +1,6 @@
 "use client";
 
-import { VariableTextProximityDemo } from "@/components/variable-text-proximity";
+import VariableTextProximity from "@/components/variable-text-proximity";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 
@@ -8,7 +8,7 @@ export default function DemoContent({ registry }: { registry: any }) {
   return (
     <RegistryRemixerDemo
       registry={registry}
-      render={(values) => <VariableTextProximityDemo {...values} />}
+      render={(values) => <VariableTextProximity {...values} />}
       copyCodeOptions={{ propsVariableName: "variableTextProximityProps" }}
     >
       {({ effect }) => (
