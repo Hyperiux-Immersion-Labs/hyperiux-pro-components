@@ -1,8 +1,6 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useMemo, type CSSProperties } from "react";
 
 type GlowingTextProps = {
   eyebrow?: string;
@@ -12,20 +10,26 @@ type GlowingTextProps = {
   backgroundColor?: string;
   fontSize?: number;
   fontWeight?: CSSProperties["fontWeight"];
+  activeWeight?: CSSProperties["fontWeight"];
   letterSpacing?: number;
   lineHeight?: number;
   glowIntensity?: number;
-  revealDuration?: number;
   characterStagger?: number;
-  flickerSpeed?: number;
-  scanSpeed?: number;
-  showScanLine?: boolean;
+  revealDuration?: number;
+  lineGap?: number;
   className?: string;
 };
 
-const DEFAULT_EYEBROW = "INCOMING TRANSMISSION";
+type CharStyle = CSSProperties & {
+  "--char-delay": string;
+  "--char-duration": string;
+};
+
+type Token = { text: string; isSpace: boolean; start: number };
+
+const DEFAULT_EYEBROW = "VAULT TRANSMISSION";
 const DEFAULT_TEXT =
-  "This is a story, all about how,\nMy life got twisted upside down.\nSo I'd like to tell a story, just sit right there,\nAbout a signal glowing through the midnight air.";
+  "Connection established with Hyperiux Vault,\nDecrypting premium component signatures,\nMotion presets verified and ready to ship,\nWelcome in. Build something that glows.";
 
 function withAlpha(color: string, alpha: number) {
   if (/^#[0-9a-f]{6}$/i.test(color)) {
@@ -38,8 +42,15 @@ function withAlpha(color: string, alpha: number) {
   return color;
 }
 
-function splitLines(value: string) {
-  return value.split("\n").map((line) => Array.from(line));
+function tokenizeWithOffsets(value: string): Token[] {
+  const matches = value.match(/\s+|\S+/g) ?? [];
+  let offset = 0;
+
+  return matches.map((text) => {
+    const start = offset;
+    offset += Array.from(text).length;
+    return { text, isSpace: /^\s/.test(text), start };
+  });
 }
 
 export default function GlowingText({
@@ -50,32 +61,61 @@ export default function GlowingText({
   backgroundColor = "#0b0d0e",
   fontSize = 2.2,
   fontWeight = 400,
+  activeWeight = 700,
   letterSpacing = 0.08,
   lineHeight = 1.55,
   glowIntensity = 0.7,
-  revealDuration = 1.6,
-  characterStagger = 0.025,
-  flickerSpeed = 3.2,
-  scanSpeed = 4.5,
-  showScanLine = true,
+  characterStagger = 0.045,
+  revealDuration = 0.5,
+  lineGap = 0.15,
   className = "",
 }: GlowingTextProps) {
-  const [isReducedMotion, setIsReducedMotion] = useState(false);
-  const lines = useMemo(() => splitLines(text), [text]);
-  const eyebrowChars = useMemo(() => Array.from(eyebrow), [eyebrow]);
   const glowSoft = withAlpha(glowColor, Math.min(0.48, glowIntensity * 0.48));
   const glowHard = withAlpha(glowColor, Math.min(0.9, glowIntensity * 0.9));
-  const scanColor = withAlpha(glowColor, 0.18);
+  const stagger = Math.max(characterStagger, 0.01);
+  const duration = Math.max(revealDuration, 0.1);
 
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setIsReducedMotion(media.matches);
+  const eyebrowTokens = useMemo(() => tokenizeWithOffsets(eyebrow), [eyebrow]);
+  const lineTokens = useMemo(() => text.split("\n").map(tokenizeWithOffsets), [text]);
 
-    update();
-    media.addEventListener("change", update);
+  const lineCharDelays = useMemo(() => {
+    let elapsed = 0;
 
-    return () => media.removeEventListener("change", update);
-  }, []);
+    return lineTokens.map((tokens) => {
+      const charCount = tokens.reduce((total, token) => total + Array.from(token.text).length, 0);
+      const delays = Array.from({ length: charCount }, (_, index) => elapsed + index * stagger);
+      const lineDuration = charCount > 0 ? (charCount - 1) * stagger + duration : 0;
+      elapsed += lineDuration + Math.max(lineGap, 0);
+      return delays;
+    });
+  }, [lineTokens, stagger, duration, lineGap]);
+
+  const renderTokens = (tokens: Token[], keyPrefix: string, delayFor: (charIndex: number) => number) =>
+    tokens.map((token, tokenIndex) => {
+      if (token.isSpace) {
+        return <span key={`${keyPrefix}-space-${tokenIndex}`}>{token.text}</span>;
+      }
+
+      return (
+        <span key={`${keyPrefix}-word-${tokenIndex}`} className="glowing-text-word">
+          {Array.from(token.text).map((character, charIndex) => (
+            <span
+              key={`${keyPrefix}-char-${tokenIndex}-${charIndex}`}
+              aria-hidden="true"
+              className="glowing-text-char"
+              style={
+                {
+                  "--char-delay": `${delayFor(token.start + charIndex)}s`,
+                  "--char-duration": `${duration}s`,
+                } as CharStyle
+              }
+            >
+              {character}
+            </span>
+          ))}
+        </span>
+      );
+    });
 
   return (
     <section
@@ -83,15 +123,11 @@ export default function GlowingText({
       style={
         {
           "--glow-text": textColor,
-          "--glow-color": glowColor,
           "--glow-soft": glowSoft,
           "--glow-hard": glowHard,
-          "--glow-scan": scanColor,
-          "--glow-reveal-duration": `${revealDuration}s`,
-          "--glow-flicker-speed": `${flickerSpeed}s`,
-          "--glow-scan-speed": `${scanSpeed}s`,
-          background:
-            `linear-gradient(135deg, ${backgroundColor} 0%, #050607 58%, #141617 100%)`,
+          "--glow-active-weight": activeWeight,
+          "--glow-settled-weight": fontWeight,
+          backgroundColor,
         } as CSSProperties
       }
     >
@@ -106,169 +142,93 @@ export default function GlowingText({
           aria-label={eyebrow}
           style={{
             fontSize: `clamp(0.9rem, ${fontSize * 0.52}vw, 2.1rem)`,
-            fontWeight,
             letterSpacing: `${letterSpacing + 0.28}em`,
           }}
         >
-          {eyebrowChars.map((character, index) => (
-            <span
-              key={`${character}-${index}`}
-              aria-hidden="true"
-              className="glowing-text-char"
-              style={
-                {
-                  "--glow-delay": isReducedMotion ? "0s" : `${index * characterStagger}s`,
-                } as CSSProperties
-              }
-            >
-              {character === " " ? "\u00a0" : character}
-            </span>
-          ))}
+          {renderTokens(eyebrowTokens, "eyebrow", (charIndex) => charIndex * stagger)}
         </div>
 
         <div className="mb-9 h-px w-24 bg-[var(--glow-text)] opacity-60 shadow-[0_0_18px_var(--glow-soft)]" />
 
-        <p
-          className="glowing-text-copy m-0 whitespace-pre-wrap font-mono"
+        <div
+          className="glowing-text-copy font-mono"
           style={{
             fontSize: `clamp(1.25rem, ${fontSize}vw, 4.75rem)`,
-            fontWeight,
             letterSpacing: `${letterSpacing}em`,
             lineHeight,
           }}
         >
-          {lines.map((line, lineIndex) => {
-            const previousChars = lines.slice(0, lineIndex).reduce((total, current) => total + current.length, 0);
-
-            return (
-              <span key={`line-${lineIndex}`} className="block">
-                {line.map((character, characterIndex) => (
-                  <span
-                    key={`${lineIndex}-${character}-${characterIndex}`}
-                    className="glowing-text-char"
-                    style={
-                      {
-                        "--glow-delay": isReducedMotion
-                          ? "0s"
-                          : `${(previousChars + characterIndex + eyebrowChars.length) * characterStagger}s`,
-                      } as CSSProperties
-                    }
-                  >
-                    {character === " " ? "\u00a0" : character}
-                  </span>
-                ))}
-              </span>
-            );
-          })}
-        </p>
+          {lineTokens.map((tokens, lineIndex) => (
+            <div key={`line-${lineIndex}`} className="glowing-text-line">
+              {renderTokens(tokens, `line-${lineIndex}`, (charIndex) => lineCharDelays[lineIndex][charIndex])}
+            </div>
+          ))}
+        </div>
       </div>
-
-      {showScanLine && !isReducedMotion ? <span className="glowing-text-scan" aria-hidden="true" /> : null}
 
       <style>{`
         .glowing-text-root {
           color: var(--glow-text);
         }
 
+        .glowing-text-word {
+          display: inline-block;
+          white-space: nowrap;
+        }
+
         .glowing-text-char {
           display: inline-block;
-          opacity: 0;
-          filter: blur(6px);
           color: var(--glow-text);
-          text-shadow:
-            0 0 7px var(--glow-soft),
-            0 0 18px var(--glow-soft),
-            0 0 34px var(--glow-hard);
-          animation:
-            glowing-text-reveal var(--glow-reveal-duration) cubic-bezier(0.2, 0.8, 0.2, 1) var(--glow-delay) both,
-            glowing-text-flicker var(--glow-flicker-speed) steps(1, end) calc(var(--glow-delay) + var(--glow-reveal-duration)) infinite;
-          will-change: opacity, filter, text-shadow;
+          opacity: 0;
+          font-weight: var(--glow-active-weight);
+          text-shadow: none;
+          animation: glowing-char-reveal var(--char-duration) ease-out var(--char-delay) forwards;
         }
 
-        .glowing-text-eyebrow .glowing-text-char {
-          text-shadow:
-            0 0 5px var(--glow-soft),
-            0 0 14px var(--glow-soft);
-        }
-
-        .glowing-text-scan {
-          position: absolute;
-          inset: 0 auto 0 -20%;
-          width: 14%;
-          pointer-events: none;
-          background: linear-gradient(90deg, transparent, var(--glow-scan), transparent);
-          transform: skewX(-18deg);
-          animation: glowing-text-scan var(--glow-scan-speed) linear infinite;
-          mix-blend-mode: screen;
-        }
-
-        @keyframes glowing-text-reveal {
+        @keyframes glowing-char-reveal {
           0% {
             opacity: 0;
-            filter: blur(9px);
-            transform: translateY(0.18em);
+            font-weight: var(--glow-active-weight);
+            text-shadow: none;
           }
 
-          45% {
+          55% {
             opacity: 1;
-            filter: blur(1px);
+            font-weight: var(--glow-active-weight);
             text-shadow:
-              0 0 12px var(--glow-hard),
-              0 0 30px var(--glow-hard),
-              0 0 56px var(--glow-soft);
+              0 0 7px var(--glow-hard),
+              0 0 18px var(--glow-hard),
+              0 0 34px var(--glow-hard);
+          }
+
+          80% {
+            font-weight: var(--glow-settled-weight);
           }
 
           100% {
             opacity: 0.82;
-            filter: blur(0);
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes glowing-text-flicker {
-          0%, 12%, 100% {
-            opacity: 0.82;
-          }
-
-          13% {
-            opacity: 0.5;
-          }
-
-          14%, 52% {
-            opacity: 0.9;
-          }
-
-          53% {
-            opacity: 0.62;
-          }
-
-          54% {
-            opacity: 0.84;
-          }
-        }
-
-        @keyframes glowing-text-scan {
-          0% {
-            transform: translateX(0) skewX(-18deg);
-            opacity: 0;
-          }
-
-          12%, 72% {
-            opacity: 1;
-          }
-
-          100% {
-            transform: translateX(920%) skewX(-18deg);
-            opacity: 0;
+            font-weight: var(--glow-settled-weight);
+            text-shadow:
+              0 0 5px var(--glow-soft),
+              0 0 14px var(--glow-soft);
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
           .glowing-text-char {
-            opacity: 0.86;
-            filter: none;
-            transform: none;
-            animation: none;
+            font-weight: var(--glow-settled-weight);
+            text-shadow: none;
+            animation: glowing-char-fade-in 0.4s ease-out forwards;
+          }
+        }
+
+        @keyframes glowing-char-fade-in {
+          from {
+            opacity: 0;
+          }
+
+          to {
+            opacity: 0.82;
           }
         }
       `}</style>

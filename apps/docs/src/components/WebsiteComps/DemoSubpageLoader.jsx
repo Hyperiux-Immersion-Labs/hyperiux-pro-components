@@ -55,6 +55,7 @@ const EXCLUDED_PATHS = new Set([
   "/demo/sweep-lift-transition/page2",
   "/demo/pixel-random",
   "/demo/pixel-random/page2",
+  "/demo/drop-text"
 
 ]);
 

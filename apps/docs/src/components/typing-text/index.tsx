@@ -195,7 +195,7 @@ export default function TypingText({
               ? "none"
               : variant === "loop"
                 ? "typing-text-loop var(--typing-loop-duration) steps(var(--typing-steps), end) var(--typing-delay) infinite both, typing-text-cursor 820ms steps(1, end) infinite"
-                : "typing-text-write var(--typing-duration) steps(var(--typing-steps), end) var(--typing-delay) both, typing-text-cursor 820ms steps(1, end) infinite",
+                : "typing-text-write var(--typing-duration) steps(var(--typing-steps), end) var(--typing-delay) both, typing-text-cursor-finish var(--typing-duration) linear var(--typing-delay) both",
             borderRightColor: prefersReducedMotion ? "transparent" : undefined,
             borderLeftColor: prefersReducedMotion ? "transparent" : undefined,
             borderBottomColor: prefersReducedMotion ? "transparent" : undefined,
@@ -285,6 +285,22 @@ export default function TypingText({
           }
 
           46%,
+          100% {
+            border-right-color: transparent;
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+          }
+        }
+
+        @keyframes typing-text-cursor-finish {
+          0%,
+          99.8% {
+            border-right-color: var(--typing-cursor-color);
+            border-left-color: var(--typing-cursor-color);
+            border-bottom-color: var(--typing-cursor-color);
+          }
+
+          99.9%,
           100% {
             border-right-color: transparent;
             border-left-color: transparent;

@@ -11,7 +11,7 @@ if (typeof window !== "undefined") {
 type FillDirection = "up" | "right";
 type TextAlign = "left" | "center" | "right";
 
-type PixelFillProps = {
+type PixelTextFillProps = {
   text?: string;
   textColor?: string;
   primaryColor?: string;
@@ -26,6 +26,7 @@ type PixelFillProps = {
   pixelSize?: number;
   stagger?: number;
   bandFraction?: number;
+  effectWidth?: number;
   settleBlend?: number;
   direction?: FillDirection;
   start?: string;
@@ -42,7 +43,7 @@ type Segment = {
   height: number;
 };
 
-type PixelFillLayout = {
+type PixelTextFillLayout = {
   width: number;
   height: number;
   dpr: number;
@@ -104,28 +105,29 @@ function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number
   return lines;
 }
 
-export default function PixelFill({
+export default function PixelTextFill({
   text = DEFAULT_TEXT,
   textColor = "#ffffff",
-  primaryColor = "#79da01",
+  primaryColor = "#ff5f00",
   dimColor = "#272727",
   backgroundColor = "#101113",
   fontSize = 4,
   fontWeight = 500,
   lineHeight = 1.18,
   textAlign = "center",
-  maxWidth = 92,
+  maxWidth = 180,
   sectionHeight = 250,
   pixelSize = 3,
   stagger = 12,
-  bandFraction = 0.65,
+  bandFraction = 1.15,
+  effectWidth = 1.8,
   settleBlend = 0.45,
   direction = "up",
   start = "top top",
   end = "bottom bottom",
-  id = "pixel-fill",
+  id = "pixel-text-fill",
   className = "",
-}: PixelFillProps) {
+}: PixelTextFillProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLParagraphElement>(null);
@@ -154,7 +156,8 @@ export default function PixelFill({
     let disposed = false;
     let scrollTrigger: ScrollTrigger | null = null;
     let progress = 0;
-    let layout: PixelFillLayout | null = null;
+    let targetProgress = 0;
+    let layout: PixelTextFillLayout | null = null;
 
     const canvas = canvasRef.current;
     const wrapper = wrapperRef.current;
@@ -309,7 +312,7 @@ export default function PixelFill({
       if (!total) return;
 
       const head = progress * (total + stagger);
-      const soft = Math.max(0.35, bandFraction);
+      const soft = Math.max(0.35, bandFraction) * Math.max(0.25, effectWidth);
       const settle = clamp01(settleBlend);
       const horizontal = direction === "right";
       const dissolve = new Path2D();
@@ -436,6 +439,38 @@ export default function PixelFill({
       frame = requestAnimationFrame(draw);
     };
 
+    const renderProgress = (nextProgress: number) => {
+      targetProgress = clamp01(nextProgress);
+      schedule();
+    };
+
+    const tickProgress = () => {
+      if (disposed) return;
+
+      progress += (targetProgress - progress) * 0.18;
+
+      if (Math.abs(targetProgress - progress) < 0.001) {
+        progress = targetProgress;
+      }
+
+      draw();
+
+      if (progress !== targetProgress) {
+        frame = requestAnimationFrame(tickProgress);
+      }
+    };
+
+    const scheduleSmooth = () => {
+      if (disposed) return;
+      if (frame !== null) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(tickProgress);
+    };
+
+    const renderSmoothProgress = (nextProgress: number) => {
+      targetProgress = clamp01(nextProgress);
+      scheduleSmooth();
+    };
+
     const init = () => {
       if (disposed) return;
 
@@ -443,6 +478,7 @@ export default function PixelFill({
 
       if (prefersReducedMotion) {
         progress = 1;
+        targetProgress = 1;
         draw();
         return;
       }
@@ -451,15 +487,18 @@ export default function PixelFill({
         trigger: sectionRef.current,
         start,
         end,
+        fastScrollEnd: true,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          progress = self.progress;
-          schedule();
+          renderSmoothProgress(self.progress);
         },
         onRefresh: (self) => {
-          progress = self.progress;
-          schedule();
+          renderProgress(self.progress);
         },
+        onEnter: (self) => renderSmoothProgress(self.progress),
+        onEnterBack: (self) => renderSmoothProgress(self.progress),
+        onLeave: () => renderSmoothProgress(1),
+        onLeaveBack: () => renderSmoothProgress(0),
       });
 
       schedule();
@@ -491,6 +530,7 @@ export default function PixelFill({
     dimColor,
     direction,
     end,
+    effectWidth,
     lineHeight,
     pixelSize,
     prefersReducedMotion,
@@ -512,20 +552,20 @@ export default function PixelFill({
         height: `${sectionHeight}vh`,
       }}
     >
-      <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden px-5">
+      <div className="sticky top-0 flex h-screen w-full items-center overflow-hidden px-0">
         <div
           ref={wrapperRef}
           className="relative z-10 mx-auto"
           style={{
-            maxWidth: `${maxWidth}vw`,
-            width: "100%",
+            width: `${maxWidth}vw`,
+            maxWidth: "none",
           }}
         >
           <p
             ref={textRef}
             className="m-0 text-transparent"
             style={{
-              fontSize: `clamp(2.5rem, ${fontSize}vw, 8rem)`,
+              fontSize: `clamp(2.5rem, ${fontSize}vw, 16rem)`,
               fontWeight,
               lineHeight,
               textAlign,

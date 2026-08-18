@@ -3,6 +3,7 @@
 import ChromaticText from "@/components/chromatic-text";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import { ReactLenis } from "lenis/react";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -12,10 +13,12 @@ export default function DemoContent({ registry }: { registry: any }) {
       copyCodeOptions={{ propsVariableName: "chromaticTextProps" }}
     >
       {({ effect }) => (
-        <main className="relative min-h-screen overflow-hidden bg-[#111111] text-white">
-          <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
-          {effect}
-        </main>
+        <ReactLenis root>
+          <main className="relative min-h-screen overflow-hidden bg-[#111111] text-white">
+            <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
+            {effect}
+          </main>
+        </ReactLenis>
       )}
     </RegistryRemixerDemo>
   );

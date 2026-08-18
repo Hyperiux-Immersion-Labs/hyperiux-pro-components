@@ -1,7 +1,7 @@
 {
   "name": "@hyperiux/glowing-text",
-  "version": "1.0.0",
-  "description": "Reference-inspired terminal text with staggered glow reveal, subtle flicker, and an animated scan sweep.",
+  "version": "1.1.0",
+  "description": "Terminal-style typewriter text where the active line types in bold glow and settles to a dim, regular weight once complete.",
   "main": "index.tsx",
   "files": [
     "index.tsx",

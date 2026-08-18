@@ -2792,6 +2792,182 @@
     ]
   },
   {
+    "name": "focus-text",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-17",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Focus Text",
+    "description": "Character-by-character text reveal that scales and sharpens into focus with replayable motion.",
+    "category": "text",
+    "dependencies": [
+      "motion"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/focus-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "FocusText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/focus-text",
+    "target": "src/components/effects/focus-text",
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#000000",
+        "description": "Background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 4.5,
+        "description": "Text size in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 2,
+          "max": 8,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "characterStagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Delay between each character reveal.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.01,
+          "max": 0.12,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "revealDuration",
+        "type": "number",
+        "default": 3.2,
+        "description": "Duration of each character reveal.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "startScale",
+        "type": "number",
+        "default": 0.4,
+        "description": "Starting scale before characters settle.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "blurAmount",
+        "type": "number",
+        "default": 18,
+        "description": "Initial blur amount in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 30,
+          "step": 1
+        }
+      },
+      {
+        "name": "holdDuration",
+        "type": "number",
+        "default": 1.2,
+        "description": "Pause duration after the full reveal completes.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "default": false,
+        "description": "Automatically replay the animation on a loop.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "showReplayButton",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the built-in replay button inside the component.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/focus-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/focus-text/registry.json"
+  },
+  {
     "name": "fractal-glass",
     "title": "Fractal Glass",
     "description": "WebGL glass-strip refraction effect with fractal distortion, edge blending, and pointer-reactive parallax.",
@@ -2842,7 +3018,7 @@
     "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
     "category": "cursor",
     "type": "registry:component",
-    "tier": "pro",
+    "tier": "free",
     "version": "1.1.1",
     "changelog": [
       {
@@ -2893,7 +3069,7 @@
   {
     "name": "glitchy-text",
     "title": "Glitchy Text",
-    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers \u2014 two white and two yellow \u2014 out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
+    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
@@ -2931,8 +3107,14 @@
   },
   {
     "name": "glowing-text",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-08-17",
+        "summary": "Rebuilt the reveal as a character-by-character opacity fade (the currently-arriving character glows bold and bright, then settles to regular weight and dim glow) to match the reference clip. Removed flickerSpeed, scanSpeed, and showScanLine; added activeWeight and lineGap.",
+        "breaking": true
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-14",
@@ -2942,7 +3124,7 @@
     ],
     "type": "registry:component",
     "title": "Glowing Text",
-    "description": "Reference-inspired terminal text with staggered glow reveal, subtle flicker, and an animated scan sweep.",
+    "description": "Terminal-style typewriter text where the active line types in bold glow and settles to a dim, regular weight once complete.",
     "category": "text",
     "dependencies": [],
     "registryDependencies": [],
@@ -3006,7 +3188,21 @@
         "name": "fontWeight",
         "type": "number",
         "default": 400,
-        "description": "Font weight.",
+        "description": "Settled font weight, applied once a line finishes typing.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "activeWeight",
+        "type": "number",
+        "default": 700,
+        "description": "Font weight while a line is actively typing.",
         "remixer": {
           "control": "range",
           "group": "type",
@@ -3059,70 +3255,45 @@
         }
       },
       {
-        "name": "revealDuration",
+        "name": "characterStagger",
         "type": "number",
-        "default": 1.6,
-        "description": "Character reveal duration.",
+        "default": 0.045,
+        "description": "Delay between each character starting its reveal.",
         "remixer": {
           "control": "range",
           "group": "motion",
           "groupTitle": "Motion",
-          "min": 0.4,
-          "max": 4,
-          "step": 0.1
+          "min": 0.01,
+          "max": 0.12,
+          "step": 0.005
         }
       },
       {
-        "name": "characterStagger",
+        "name": "revealDuration",
         "type": "number",
-        "default": 0.025,
-        "description": "Delay between character reveals.",
+        "default": 0.5,
+        "description": "How long each character takes to fade in and settle.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.15,
+          "max": 1.2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "lineGap",
+        "type": "number",
+        "default": 0.15,
+        "description": "Extra pause after a line's last word before the next line starts.",
         "remixer": {
           "control": "range",
           "group": "motion",
           "groupTitle": "Motion",
           "min": 0,
-          "max": 0.08,
-          "step": 0.005
-        }
-      },
-      {
-        "name": "flickerSpeed",
-        "type": "number",
-        "default": 3.2,
-        "description": "Flicker loop duration.",
-        "remixer": {
-          "control": "range",
-          "group": "motion",
-          "groupTitle": "Motion",
-          "min": 1,
-          "max": 8,
-          "step": 0.1
-        }
-      },
-      {
-        "name": "scanSpeed",
-        "type": "number",
-        "default": 4.5,
-        "description": "Scan sweep duration.",
-        "remixer": {
-          "control": "range",
-          "group": "motion",
-          "groupTitle": "Motion",
-          "min": 1,
-          "max": 10,
-          "step": 0.1
-        }
-      },
-      {
-        "name": "showScanLine",
-        "type": "boolean",
-        "default": true,
-        "description": "Shows the animated scan sweep.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "motion",
-          "groupTitle": "Motion"
+          "max": 1,
+          "step": 0.05
         }
       }
     ],
@@ -3148,7 +3319,7 @@
   {
     "name": "gooey-counter",
     "title": "Gooey Counter",
-    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0\u201310 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
+    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
     "category": "components",
     "type": "registry:component",
     "tier": "free",
@@ -4960,7 +5131,7 @@
     ]
   },
   {
-    "name": "pixel-fill",
+    "name": "pixel-text-fill",
     "version": "1.1.0",
     "changelog": [
       {
@@ -4977,21 +5148,21 @@
       }
     ],
     "type": "registry:component",
-    "title": "Pixel Fill",
-    "description": "Scroll-scrubbed text fill with a pixelated ordered-dither color edge.",
+    "title": "Pixel Text Fill",
+    "description": "Scroll-scrubbed pixel text fill with an ordered-dither color edge.",
     "category": "text",
     "dependencies": [
       "gsap"
     ],
     "registryDependencies": [],
-    "previewUrl": "/demo/pixel-fill",
+    "previewUrl": "/demo/pixel-text-fill",
     "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
-    "exportName": "PixelFill",
+    "exportName": "PixelTextFill",
     "exportKind": "default",
-    "importPath": "@/components/effects/pixel-fill",
-    "target": "src/components/effects/pixel-fill",
+    "importPath": "@/components/effects/pixel-text-fill",
+    "target": "src/components/effects/pixel-text-fill",
     "props": [
       {
         "name": "direction",
@@ -5045,14 +5216,28 @@
       {
         "name": "bandFraction",
         "type": "number",
-        "default": 0.65,
+        "default": 1.15,
         "description": "Soft pixel band width as a fraction of each glyph.",
         "remixer": {
           "control": "range",
           "group": "motion",
           "groupTitle": "Motion",
           "min": 0.35,
-          "max": 1.5,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "effectWidth",
+        "type": "number",
+        "default": 1.8,
+        "description": "Pixelated fill band width multiplier.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 4,
           "step": 0.05
         }
       },
@@ -5084,7 +5269,7 @@
       {
         "name": "primaryColor",
         "type": "string",
-        "default": "#79da01",
+        "default": "#ff5f00",
         "description": "Pixel dither edge color.",
         "remixer": {
           "control": "color",
@@ -5184,14 +5369,14 @@
       {
         "name": "maxWidth",
         "type": "number",
-        "default": 92,
+        "default": 180,
         "description": "Text wrapper max width in vw units.",
         "remixer": {
           "control": "range",
           "group": "type",
           "groupTitle": "Type",
-          "min": 45,
-          "max": 100,
+          "min": 80,
+          "max": 220,
           "step": 1
         }
       }
@@ -5210,10 +5395,10 @@
     "files": [
       {
         "path": "index.tsx",
-        "target": "src/components/effects/pixel-fill/index.tsx"
+        "target": "src/components/effects/pixel-text-fill/index.tsx"
       }
     ],
-    "registryPath": "registry/effects/text/pixel-fill/registry.json"
+    "registryPath": "registry/effects/text/pixel-text-fill/registry.json"
   },
   {
     "name": "pixel-transition",

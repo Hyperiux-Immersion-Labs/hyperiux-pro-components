@@ -3,12 +3,15 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DEFAULT_ROOT = path.resolve(path.join(__dirname, ".."));
 const COMMANDS = new Set(["diff", "sync"]);
 const CODE_EXTENSIONS = new Set([".js", ".jsx", ".ts", ".tsx", ".css", ".json"]);
+const requireFromScript = createRequire(import.meta.url);
+let cachedTs = null;
 
 export function parseCli(argv) {
   const command = argv[0];
@@ -65,8 +68,8 @@ export async function run(argv = process.argv.slice(2)) {
   }
 
   const nextBody = buildNextBody(plan, options);
-  await patchSanityBody(plan.document._id, nextBody, options);
-  console.log(`\nSynced ${plan.changed.length + plan.created.length} code block(s) to Sanity.`);
+  await patchSanityBody(plan.document._id, nextBody, options, plan.document);
+  console.log(`\nSynced ${plan.changed.length + plan.created.length} code block(s) to Sanity (draft: ${plan.document._id}).`);
   return plan;
 }
 
@@ -126,19 +129,38 @@ export function buildPlanFromDocument({ slug, registry, registryFiles, document,
     }
 
     registryMatches.set(match.file.path, true);
-    const nextLanguage = block.language || inferLanguage(match.file.path);
-    const item = {
-      block,
-      file: match.file,
-      nextCode: match.file.content,
-      nextLanguage,
-    };
+    const item = { block, file: match.file, nextCode: match.file.content };
 
-    if ((block.code || "") === match.file.content && (block.language || nextLanguage) === nextLanguage) {
+    const codeMatches = (block.code || "") === match.file.content;
+    const tsxMatches = match.file.tsxCode === undefined || (block.tsxCode || "") === match.file.tsxCode;
+
+    if (codeMatches && tsxMatches) {
       unchanged.push(item);
     } else {
       changed.push(item);
     }
+  }
+
+  // A block's filename doesn't always match the registry file's own name
+  // (e.g. a "main" component file registered as index.tsx can be authored
+  // in Sanity under the component's display name, like "ArrowFillButton").
+  // If exactly one non-usage block is still unmatched and exactly one
+  // registry file is still unclaimed, assume they're the same file under a
+  // different name. "page"/"layout" are excluded - those are usage/demo code
+  // conventions (page-transitions uses "layout" instead of "page"), which
+  // this script intentionally leaves untouched, not stray component files.
+  const unclaimedFiles = registryFiles.filter((file) => !registryMatches.has(file.path));
+  const USAGE_CODE_FILENAMES = new Set(["page", "layout"]);
+  const stalePairingCandidates = stale.filter((block) => !USAGE_CODE_FILENAMES.has(block.filename));
+  if (stalePairingCandidates.length === 1 && unclaimedFiles.length === 1) {
+    const block = stalePairingCandidates[0];
+    const file = unclaimedFiles[0];
+    stale.splice(stale.indexOf(block), 1);
+    registryMatches.set(file.path, true);
+    const item = { block, file, nextCode: file.content };
+    const codeMatches = (block.code || "") === file.content;
+    const tsxMatches = file.tsxCode === undefined || (block.tsxCode || "") === file.tsxCode;
+    (codeMatches && tsxMatches ? unchanged : changed).push(item);
   }
 
   const missing = registryFiles.filter((file) => !registryMatches.has(file.path));
@@ -166,12 +188,13 @@ export function buildNextBody(plan, options = {}) {
   const changedByIndex = new Map(plan.changed.map((item) => [item.block.index, item]));
 
   for (const [index, item] of changedByIndex) {
-    body[index] = {
+    const nextBlock = {
       ...body[index],
       code: item.nextCode,
-      language: options.syncLanguage ? item.nextLanguage : body[index].language || item.nextLanguage,
-      filename: body[index].filename || item.file.path,
+      filename: body[index].filename || item.file.filenameNoExt,
     };
+    if (item.file.tsxCode !== undefined) nextBlock.tsxCode = item.file.tsxCode;
+    body[index] = nextBlock;
   }
 
   if (options.createMissing) {
@@ -200,6 +223,17 @@ export function matchRegistryFile(filename, registryFiles) {
   if (basenameMatches.length > 1) {
     return {
       error: `ambiguous basename match [${basenameMatches.map((file) => file.path).join(", ")}]`,
+    };
+  }
+
+  // Sanity code blocks store extension-less filenames (e.g. "index" for
+  // index.tsx) - fall back to matching the registry file's basename with its
+  // extension stripped.
+  const noExtMatches = registryFiles.filter((file) => file.filenameNoExt === normalized);
+  if (noExtMatches.length === 1) return { file: noExtMatches[0] };
+  if (noExtMatches.length > 1) {
+    return {
+      error: `ambiguous filename match [${noExtMatches.map((file) => file.path).join(", ")}]`,
     };
   }
 
@@ -235,37 +269,107 @@ function readRegistryCodeFiles(registry) {
     .map((file) => {
       const sourcePath = path.join(registry.dir, file.path);
       if (!fs.existsSync(sourcePath)) fail(`Registry file missing: ${relative(sourcePath)}`);
-      return {
-        path: slash(file.path),
-        filename: path.basename(file.path),
-        language: inferLanguage(file.path),
-        content: fs.readFileSync(sourcePath, "utf8"),
-      };
+      return makeCodeFileEntry(file.path, fs.readFileSync(sourcePath, "utf8"));
     });
 
   if (!codeFiles.length) fail(`No code files found in registry.json for "${registry.name}".`);
   return codeFiles;
 }
 
+// This only syncs component source from the registry. Usage/demo code
+// (the /demo page.tsx) is authored and maintained directly in Sanity and is
+// intentionally left untouched here.
+
+// .tsx/.ts source is kept as-is for the tsxCode field; the `code` (JSX)
+// field gets the same source with TS types/interfaces stripped via the
+// TypeScript compiler (jsx: "preserve" keeps JSX syntax untouched, only
+// type-level constructs are erased). Other extensions (css/json) pass
+// through unchanged with no tsxCode.
+function makeCodeFileEntry(relativePath, rawContent) {
+  const ext = path.extname(relativePath);
+  const isTsLike = ext === ".tsx" || ext === ".ts";
+
+  return {
+    path: slash(relativePath),
+    filename: path.basename(relativePath),
+    filenameNoExt: path.basename(relativePath, ext),
+    content: isTsLike ? stripTypesToJsx(rawContent) : rawContent,
+    tsxCode: isTsLike ? rawContent : undefined,
+  };
+}
+
+function stripTypesToJsx(source) {
+  const ts = loadTypeScript();
+  const result = ts.transpileModule(source, {
+    compilerOptions: {
+      jsx: ts.JsxEmit.Preserve,
+      target: ts.ScriptTarget.ESNext,
+      module: ts.ModuleKind.ESNext,
+      removeComments: false,
+    },
+  });
+  return result.outputText.replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
+}
+
+function loadTypeScript() {
+  if (cachedTs) return cachedTs;
+  const tsEntry = path.join(getRoot(), "apps/docs/node_modules/typescript");
+  cachedTs = requireFromScript(tsEntry);
+  return cachedTs;
+}
+
+// Syncs are draft-only: they never touch the published document directly.
+// The working document is drafts.<publishedId> - cloned from the published
+// doc the first time, or its own existing content if a draft already
+// exists (so in-progress edits in Studio aren't clobbered). Nothing goes
+// live until someone publishes it manually in Studio.
 async function fetchSanityDocument(registry, options) {
   if (options.fixture) return readJson(path.resolve(getRoot(), options.fixture));
 
   const client = getSanityConfig();
-  const query = `*[_type == "effectContent" && effectSlug == $slug && categorySlug == $category]{_id, _rev, categorySlug, effectSlug, body}`;
-  const params = {
-    query,
-    "$slug": JSON.stringify(registry.name),
-    "$category": JSON.stringify(registry.category),
-  };
+  // Registry folder/name and Sanity's effectSlug are usually identical, but
+  // can drift (e.g. registry "char-stagger-button" vs Sanity
+  // "character-stagger-button") - --sanity-slug overrides the lookup value
+  // without renaming anything on disk.
+  const sanitySlug = options.sanitySlug || registry.name;
+  const sanityCategory = options.sanityCategory || registry.category;
+  const published = await queryFirstSanityDocument(client, {
+    query: `*[_type == "effectContent" && effectSlug == $slug && categorySlug == $category && !(_id in path("drafts.**"))]{...}`,
+    params: { "$slug": JSON.stringify(sanitySlug), "$category": JSON.stringify(sanityCategory) },
+    context: `${sanityCategory}/${sanitySlug}`,
+  });
+
+  if (published) {
+    const draftId = `drafts.${published._id}`;
+    const draft = await queryFirstSanityDocument(client, {
+      query: `*[_id == $id]{...}`,
+      params: { "$id": JSON.stringify(draftId) },
+      context: draftId,
+    });
+
+    return { ...(draft || published), _id: draftId };
+  }
+
+  // No published document exists - the component may still have a
+  // draft-only effectContent doc (created in Studio but never published).
+  const draftOnly = await queryFirstSanityDocument(client, {
+    query: `*[_type == "effectContent" && effectSlug == $slug && categorySlug == $category && _id in path("drafts.**")]{...}`,
+    params: { "$slug": JSON.stringify(sanitySlug), "$category": JSON.stringify(sanityCategory) },
+    context: `${sanityCategory}/${sanitySlug} (draft-only)`,
+  });
+
+  return draftOnly || null;
+}
+
+async function queryFirstSanityDocument(client, { query, params, context }) {
   const url = new URL(`${client.baseUrl}/data/query/${client.dataset}`);
+  url.searchParams.set("query", query);
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
   }
 
   const response = await fetchSanity(url, {
-    headers: {
-      Authorization: `Bearer ${client.token}`,
-    },
+    headers: { Authorization: `Bearer ${client.token}` },
   }, "query Sanity document");
 
   if (!response.ok) {
@@ -276,12 +380,12 @@ async function fetchSanityDocument(registry, options) {
   const data = await response.json();
   const results = data.result || [];
   if (results.length > 1) {
-    fail(`Sanity query returned ${results.length} documents for ${registry.category}/${registry.name}. Resolve duplicates before syncing.`);
+    fail(`Sanity query returned ${results.length} documents for ${context}. Resolve duplicates before syncing.`);
   }
   return results[0] || null;
 }
 
-async function patchSanityBody(documentId, body, options) {
+async function patchSanityBody(documentId, body, options, baseDoc) {
   if (options.fixture) {
     const fixturePath = path.resolve(getRoot(), options.fixture);
     const fixture = readJson(fixturePath);
@@ -291,6 +395,9 @@ async function patchSanityBody(documentId, body, options) {
 
   const client = getSanityConfig();
   const url = `${client.baseUrl}/data/mutate/${client.dataset}`;
+  const draftDoc = { ...baseDoc, _id: documentId, body };
+  delete draftDoc._rev;
+
   const response = await fetchSanity(url, {
     method: "POST",
     headers: {
@@ -298,14 +405,7 @@ async function patchSanityBody(documentId, body, options) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      mutations: [
-        {
-          patch: {
-            id: documentId,
-            set: { body },
-          },
-        },
-      ],
+      mutations: [{ createOrReplace: draftDoc }],
     }),
   }, "patch Sanity document");
 
@@ -373,13 +473,14 @@ function printList(label, values) {
 }
 
 function makeCodeBlock(file) {
-  return {
+  const block = {
     _type: "effectCodeBlock",
     _key: makeKey(`code-${file.path}`),
-    filename: file.path,
-    language: file.language,
+    filename: file.filenameNoExt,
     code: file.content,
   };
+  if (file.tsxCode !== undefined) block.tsxCode = file.tsxCode;
+  return block;
 }
 
 function findCodeBlockInsertIndex(body) {
@@ -388,14 +489,6 @@ function findCodeBlockInsertIndex(body) {
     if (block?._type === "effectCodeBlock") index = blockIndex;
   });
   return index === -1 ? body.length : index + 1;
-}
-
-function inferLanguage(filePath) {
-  const ext = path.extname(filePath);
-  if (ext === ".css") return "css";
-  if (ext === ".json") return "json";
-  if (ext === ".ts" || ext === ".tsx") return "tsx";
-  return "jsx";
 }
 
 function makeKey(value) {

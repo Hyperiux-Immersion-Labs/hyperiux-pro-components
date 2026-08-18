@@ -37,7 +37,55 @@ export const effectsOverviewContent = {
     {
       question: "What changes when reduced motion is enabled?",
       answer: "Animated previews should pause or become static. Autoplay, looping motion, cursor trails, WebGL movement, and continuous background effects should not run automatically. The catalog should remain fully browsable without motion."
-    }
+    },
+    {
+      question: "Are free effects really free for commercial use?",
+      answer: "Yes. Free effects are commercial-friendly where marked in the license, so you can ship them on client sites and products without paying."
+    },
+    {
+      question: "What's the difference between Free and Pro?",
+      answer: "Free includes 30+ effects covering text, buttons, and basic scroll interactions. Pro unlocks the full 115 effect library, including cursor effects, WebGL scenes, and advanced page transitions."
+    },
+    {
+      question: "Do I need an account to use free effects?",
+      answer: "Yes. To use or copy even free effects, you need to sign in with an account.Free effects don’t require a Pro plan, but signing in is required so the site can generate your access token, track copy/install usage, and keep your saved effects and account activity synced."
+    },
+    {
+      question: "How do I upgrade from free to Pro effects?",
+      answer: "You can subscribe to our Pro plans on the Pricing page. Once subscribed, you will receive a CLI token to install Pro effects directly from our registry."
+    },
+    {
+        question: "What makes a component worth featuring?",
+        answer: "A featured component should have a clear reason to stand out: strong craft, practical use, launch-page value, brand impact, technical quality, or a pattern the Hyperiux team believes users should notice first.",
+      },
+      {
+        question: "Is Featured only for the most visually dramatic effects?",
+        answer: "No. Some featured components may be quiet but commercially useful. A Dotted Grid, Animated FAQ, Directional Menu, or premium CTA button can deserve attention as much as a WebGL hero or page transition.",
+      },
+      {
+        question: "How should users treat the Featured page?",
+        answer: "Use it as a curated starting point, not a final answer. Featured helps users find strong candidates quickly, but the right component still depends on the page goal, audience, device mix, and performance budget."
+      },
+      {
+        question: "When should a user leave Featured and browse a category instead?",
+        answer: "If the user needs a specific behavior, such as a loader, cursor, form, carousel, or text reveal, they should open that category and compare more options. Featured is selective by design."
+      },
+      {
+        question: "How should Featured previews stay fast?",
+        answer: "The page should not run multiple heavy effects at once. WebGL, canvas, video, and continuous animation previews should use static thumbnails, lazy loading, offscreen pause, or click-to-preview behavior."
+      },
+      {
+        question: "What accessibility standard should Featured components meet?",
+        answer: "A component should not be featured only because it looks good. It should have a credible path for readable HTML, keyboard access where relevant, visible focus states, mobile behavior, and reduced-motion fallback."
+      },
+      {
+        question: "How should Featured work for mobile users?",
+        answer: "The page should prioritize clarity over spectacle. Cursor effects can be shown as static previews, WebGL effects can use poster images, and motion-heavy cards should not make browsing slower or harder."
+      },
+      {
+        question: "Can Featured change over time?",
+        answer: "Yes. Featured can change as the Vault grows, as new components launch, or as the Hyperiux team decides certain effects are more useful, more polished, or more relevant for current product and brand use cases."
+      }
   ],
 };
 

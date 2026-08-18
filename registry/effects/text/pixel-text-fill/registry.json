@@ -1,5 +1,5 @@
 {
-  "name": "pixel-fill",
+  "name": "pixel-text-fill",
   "version": "1.1.0",
   "changelog": [
     {
@@ -16,21 +16,21 @@
     }
   ],
   "type": "registry:component",
-  "title": "Pixel Fill",
-  "description": "Scroll-scrubbed text fill with a pixelated ordered-dither color edge.",
+  "title": "Pixel Text Fill",
+  "description": "Scroll-scrubbed pixel text fill with an ordered-dither color edge.",
   "category": "text",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/pixel-fill",
+  "previewUrl": "/demo/pixel-text-fill",
   "tier": "free",
   "subfolder": true,
   "main": "index.tsx",
-  "exportName": "PixelFill",
+  "exportName": "PixelTextFill",
   "exportKind": "default",
-  "importPath": "@/components/effects/pixel-fill",
-  "target": "src/components/effects/pixel-fill",
+  "importPath": "@/components/effects/pixel-text-fill",
+  "target": "src/components/effects/pixel-text-fill",
   "props": [
     {
       "name": "direction",
@@ -84,14 +84,28 @@
     {
       "name": "bandFraction",
       "type": "number",
-      "default": 0.65,
+      "default": 1.15,
       "description": "Soft pixel band width as a fraction of each glyph.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0.35,
-        "max": 1.5,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "effectWidth",
+      "type": "number",
+      "default": 1.8,
+      "description": "Pixelated fill band width multiplier.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.5,
+        "max": 4,
         "step": 0.05
       }
     },
@@ -123,7 +137,7 @@
     {
       "name": "primaryColor",
       "type": "string",
-      "default": "#79da01",
+      "default": "#ff5f00",
       "description": "Pixel dither edge color.",
       "remixer": {
         "control": "color",
@@ -223,14 +237,14 @@
     {
       "name": "maxWidth",
       "type": "number",
-      "default": 92,
+      "default": 180,
       "description": "Text wrapper max width in vw units.",
       "remixer": {
         "control": "range",
         "group": "type",
         "groupTitle": "Type",
-        "min": 45,
-        "max": 100,
+        "min": 80,
+        "max": 220,
         "step": 1
       }
     }
@@ -249,7 +263,7 @@
   "files": [
     {
       "path": "index.tsx",
-      "target": "src/components/effects/pixel-fill/index.tsx"
+      "target": "src/components/effects/pixel-text-fill/index.tsx"
     }
   ]
 }

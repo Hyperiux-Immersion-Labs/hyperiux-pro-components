@@ -1,5 +1,3 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
@@ -103,6 +101,18 @@ export default function DropText({
   const containerRef = useRef<HTMLHeadingElement>(null);
   const segments = useMemo(() => splitText(text, splitBy), [text, splitBy]);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const initialPieceStyle: CSSProperties = prefersReducedMotion
+    ? {}
+    : {
+        opacity: startOpacity,
+        filter: `blur(${blur}px)`,
+        transform: [
+          `translate3d(${xOffset}px, ${yOffset}px, ${variant === "perspective" ? -420 : 0}px)`,
+          `rotate(${rotate}deg)`,
+          `rotateX(${variant === "perspective" ? 68 : 0}deg)`,
+          `scale(${scaleFrom})`,
+        ].join(" "),
+      };
 
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -126,7 +136,6 @@ export default function DropText({
     const pieces = containerRef.current.querySelectorAll<HTMLElement>("[data-drop-piece]");
 
     gsap.killTweensOf(pieces);
-    gsap.set(pieces, { clearProps: "transform,opacity,filter" });
 
     if (prefersReducedMotion) {
       gsap.set(pieces, {
@@ -142,29 +151,57 @@ export default function DropText({
       return;
     }
 
-    gsap.from(pieces, {
-      x: xOffset,
-      y: yOffset,
-      z: variant === "perspective" ? -420 : 0,
-      rotate,
-      rotateX: variant === "perspective" ? 68 : 0,
-      scale: scaleFrom,
-      opacity: startOpacity,
-      filter: `blur(${blur}px)`,
-      duration,
-      delay,
-      stagger: {
-        each: stagger,
-        from: mapStaggerFrom(staggerFrom),
+    gsap.fromTo(
+      pieces,
+      {
+        x: xOffset,
+        y: yOffset,
+        z: variant === "perspective" ? -420 : 0,
+        rotate,
+        rotateX: variant === "perspective" ? 68 : 0,
+        scale: scaleFrom,
+        opacity: startOpacity,
+        filter: `blur(${blur}px)`,
       },
-      ease,
-    });
+      {
+        x: 0,
+        y: 0,
+        z: 0,
+        rotate: 0,
+        rotateX: 0,
+        scale: 1,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration,
+        delay,
+        stagger: {
+          each: stagger,
+          from: mapStaggerFrom(staggerFrom),
+        },
+        ease,
+      },
+    );
   }, [blur, delay, duration, ease, prefersReducedMotion, rotate, scaleFrom, stagger, staggerFrom, startOpacity, variant, xOffset, yOffset]);
 
   useEffect(() => {
+    let frame = 0;
+    let cancelled = false;
+    const playAfterPaint = () => {
+      const fontsReady = "fonts" in document ? document.fonts.ready : Promise.resolve();
+
+      fontsReady.finally(() => {
+        if (cancelled) return;
+        frame = requestAnimationFrame(() => {
+          if (!cancelled) playAnimation();
+        });
+      });
+    };
+
     if (!animateOnScroll) {
-      playAnimation();
+      playAfterPaint();
       return () => {
+        cancelled = true;
+        cancelAnimationFrame(frame);
         if (!containerRef.current) return;
         const pieces = containerRef.current.querySelectorAll<HTMLElement>("[data-drop-piece]");
         gsap.killTweensOf(pieces);
@@ -176,7 +213,7 @@ export default function DropText({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
-          playAnimation();
+          playAfterPaint();
         }
       },
       { threshold: 0.45 },
@@ -185,6 +222,8 @@ export default function DropText({
     observer.observe(sectionRef.current);
 
     return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
       observer.disconnect();
       if (!containerRef.current) return;
       const pieces = containerRef.current.querySelectorAll<HTMLElement>("[data-drop-piece]");
@@ -220,6 +259,7 @@ export default function DropText({
             data-drop-piece
             className={splitBy === "lines" ? "block" : "inline-block"}
             style={{
+              ...initialPieceStyle,
               backfaceVisibility: variant === "perspective" ? "hidden" : undefined,
               transformStyle: variant === "perspective" ? "preserve-3d" : undefined,
             }}

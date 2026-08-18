@@ -887,6 +887,22 @@
       "tier": "free"
     },
     {
+      "name": "focus-text",
+      "type": "registry:component",
+      "category": "text",
+      "categories": [
+        "text"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [],
+      "exportName": "FocusText",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
       "name": "glitchy-text",
       "type": "registry:component",
       "category": "text",
@@ -913,8 +929,8 @@
       "registryDependencies": [],
       "exportName": "GlowingText",
       "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
+      "version": "1.1.0",
+      "tier": "free"
     },
     {
       "name": "mask-text-reveal",
@@ -981,7 +997,7 @@
       "tier": "pro"
     },
     {
-      "name": "pixel-fill",
+      "name": "pixel-text-fill",
       "type": "registry:component",
       "category": "text",
       "categories": [
@@ -991,7 +1007,7 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "PixelFill",
+      "exportName": "PixelTextFill",
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "free"
