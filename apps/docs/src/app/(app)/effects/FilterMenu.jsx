@@ -202,8 +202,8 @@ export function FilterMenu({
           cursor-pointer transition-colors duration-300 max-md:text-lg text20
           ${
             activeFilter
-              ? "bg-white text-[#161616] hover:bg-[#ff5f00]"
-              : "bg-[#161616] text-[#ffffff] hover:text-[#161616] hover:bg-[#ff5f00]"
+              ? "bg-white text-black hover:bg-[#ff5f00]"
+              : "bg-[#161616] text-[#ffffff] hover:text-black hover:bg-[#ff5f00]"
           }
         `}
       >

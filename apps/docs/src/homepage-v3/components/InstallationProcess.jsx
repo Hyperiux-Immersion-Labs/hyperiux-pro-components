@@ -9,13 +9,25 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Same glyph set and timings as ScrambleTextV3, so the terminal writes with the
+// look the rest of the homepage uses.
+const SCRAMBLE_GLYPHS = "$#&*@!_-./|<>0123456789";
+const SCRAMBLE_TAIL = 8;
+const GLYPH_SWAP_MS = 40;
+const FLASH_MS = 90;
+const SCRAMBLE_PRE = "rgba(255,255,255,0.28)";
+const SCRAMBLE_FLASH = "#ffffff";
+
+const randomGlyph = () =>
+  SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
+
 
 function TerminalTick({ tickRef }) {
   return (
     <svg
       ref={tickRef}
       viewBox="0 0 18 18"
-      className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#5AC382] opacity-0 max-md:h-4 max-md:w-4"
+      className="h-[1.05vw] w-[1.05vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#5AC382] opacity-0 max-md:h-4 max-md:w-4"
       fill="none"
       aria-hidden="true"
     >
@@ -35,12 +47,12 @@ function Panel({ title, children, className = "" }) {
     <div
       className={`overflow-hidden   bg-grey/30! shadow-[0_20px_80px_rgba(0,0,0,0.35)]  ${className}`}
     >
-      <div className="flex h-[3vw] items-center max-sm:gap-[4vw] gap-[1vw] bg-[#272727] px-[1.4vw] max-md:h-12 max-md:px-5">
+      <div className="flex h-[3vw] items-center max-sm:gap-[4vw] gap-[1vw] bg-[#272727] px-[1.4vw] max-[1025px]:h-[5.5vw] max-[1025px]:px-[2.4vw] max-md:h-12 max-md:px-5">
         <p className="font-mono text18 text-secondary max-md:text-sm">
           {title}
         </p>
       </div>
-      <div className="p-[1.6vw] max-md:p-5">{children}</div>
+      <div className="p-[1.6vw] max-[1025px]:p-[2.6vw] max-md:p-5">{children}</div>
     </div>
   );
 }
@@ -53,14 +65,14 @@ function TreeFolder({ label, depth = 0 }) {
     >
       <svg
         viewBox="0 0 24 24"
-        className="h-[1.1vw] w-[1.1vw] shrink-0 text-[#3b82f6] max-md:h-4 max-md:w-4"
+        className="h-[1.1vw] w-[1.1vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#3b82f6] max-md:h-4 max-md:w-4"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.7"
       >
         <path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H10l2 2h7.5A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z" />
       </svg>
-      <span className="font-mono text-[1.05vw] max-md:text-[15px]">{label}</span>
+      <span className="font-mono text-[1.05vw] max-[1025px]:text-[1.8vw] max-md:text-[15px]">{label}</span>
     </div>
   );
 }
@@ -69,13 +81,13 @@ function TreeFile({ label, depth = 0, className = "", right = null, rowRef }) {
   return (
     <div
       ref={rowRef}
-      className={`flex items-center justify-between rounded-[0.3vw] px-[0.55vw] py-[0.35vw] opacity-0 max-md:rounded-md max-md:px-2 max-md:py-1.5 ${className}`}
+      className={`flex items-center justify-between rounded-[0.3vw] px-[0.55vw] py-[0.35vw] opacity-0 max-[1025px]:px-[1vw] max-[1025px]:py-[0.6vw] max-md:rounded-md max-md:px-2 max-md:py-1.5 ${className}`}
       style={{ paddingLeft: `calc(${depth * 1.35}vw + 0.55vw)` }}
     >
       <div className="flex min-w-0 items-center gap-3">
         <svg
           viewBox="0 0 24 24"
-          className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4"
+          className="h-[1.05vw] w-[1.05vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4"
           fill="none"
           stroke="currentColor"
           strokeWidth="1.7"
@@ -83,7 +95,7 @@ function TreeFile({ label, depth = 0, className = "", right = null, rowRef }) {
           <path d="M7 3.75h6l4 4v12.5H7A1.25 1.25 0 0 1 5.75 19V5A1.25 1.25 0 0 1 7 3.75z" />
           <path d="M13 3.75V8h4.25" />
         </svg>
-        <span className="truncate font-mono text-[1.05vw] text-[#ff7a1a] max-md:text-[15px]">
+        <span className="truncate font-mono text-[1.05vw] max-[1025px]:text-[1.8vw] text-[#ff7a1a] max-md:text-[15px]">
           {label}
         </span>
       </div>
@@ -183,22 +195,102 @@ export default function InstallationProcess() {
         });
       };
 
-      const typeText = (timeline, element, text, duration = null, position) => {
-        if (!element) return;
-        const chars = text.length;
-        const state = { count: 0 };
-        const finalDuration = duration ?? Math.max(0.2, chars * 0.012);
+      const escHtml = (s) =>
+        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-        timeline.set(element, { textContent: "", opacity: 1 }, position);
+      // Writes `tokens` (text + optional colour) into `element` with a write
+      // head: characters just ahead of the head churn through glyphs in the dim
+      // pre-colour, lock to their real character as the head passes, flash, then
+      // settle into their own colour. Rendered as one innerHTML pass per frame so
+      // the timeline stays the single source of progress.
+      const scrambleWrite = (timeline, element, tokens, duration, position) => {
+        if (!element) return;
+
+        let full = "";
+        const ranges = tokens.map((token) => {
+          const start = full.length;
+          full += token.text;
+          return { color: token.color, start, end: full.length };
+        });
+
+        if (!full) {
+          timeline.set(element, { innerHTML: "", opacity: 1 }, position);
+          return;
+        }
+
+        const colorAt = (index) =>
+          ranges.find((range) => index >= range.start && index < range.end)?.color;
+
+        const paint = (index, color) => {
+          const char = escHtml(full[index]);
+          return color ? `<span style="color:${color}">${char}</span>` : char;
+        };
+
+        const total = full.length;
+        const state = { count: 0 };
+        // How many locked characters are still inside the flash window, derived
+        // from the head's speed so the flash lasts ~FLASH_MS on every line.
+        const flashChars = Math.max(
+          1,
+          Math.round(FLASH_MS / ((duration * 1000) / total))
+        );
+        const glyphs = new Array(total).fill("");
+        let lastSwap = 0;
+
+        timeline.set(element, { innerHTML: "", opacity: 1 }, position);
         timeline.to(
           state,
           {
-            count: chars,
-            duration: finalDuration,
+            count: total,
+            duration,
             ease: "none",
             snap: { count: 1 },
-            onUpdate: () => { element.textContent = text.slice(0, state.count); },
+            onUpdate: () => {
+              const now = performance.now();
+              const swap = now - lastSwap >= GLYPH_SWAP_MS;
+              if (swap) lastSwap = now;
+
+              const head = Math.round(state.count);
+              const tail = Math.min(total, head + SCRAMBLE_TAIL);
+              let html = "";
+
+              for (let i = 0; i < tail; i++) {
+                if (i < head) {
+                  html += paint(
+                    i,
+                    i >= head - flashChars ? SCRAMBLE_FLASH : colorAt(i)
+                  );
+                  continue;
+                }
+
+                // Spaces stay blank so words keep their shape under the head.
+                if (full[i] === " ") {
+                  html += " ";
+                  continue;
+                }
+
+                if (swap || !glyphs[i]) glyphs[i] = randomGlyph();
+                html += `<span style="color:${SCRAMBLE_PRE}">${escHtml(glyphs[i])}</span>`;
+              }
+
+              element.innerHTML = html;
+            },
+            onComplete: () => {
+              let html = "";
+              for (let i = 0; i < total; i++) html += paint(i, colorAt(i));
+              element.innerHTML = html;
+            },
           },
+          position
+        );
+      };
+
+      const typeText = (timeline, element, text, duration = null, position) => {
+        scrambleWrite(
+          timeline,
+          element,
+          [{ text }],
+          duration ?? Math.max(0.2, text.length * 0.012),
           position
         );
       };
@@ -230,44 +322,13 @@ export default function InstallationProcess() {
         timeline.to(rowEl, { backgroundColor: "rgba(255,255,255,0)", duration: 0.3, ease: "power2.out" }, ">-0.02");
       };
 
-      const escHtml = (s) =>
-        s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
       const typeColoredLine = (timeline, lineEl, tokens, position) => {
-        if (!lineEl) return;
-        const fullText = tokens.map((t) => t.text).join("");
-        if (!fullText) {
-          timeline.set(lineEl, { innerHTML: "", opacity: 1 }, position);
-          return;
-        }
-        let cumulative = 0;
-        const ranges = tokens.map((t) => {
-          const start = cumulative;
-          cumulative += t.text.length;
-          return { color: t.color, text: t.text, start };
-        });
-        const state = { count: 0 };
-        const duration = Math.max(0.25, fullText.length * 0.014);
-
-        timeline.set(lineEl, { innerHTML: "", opacity: 1 }, position);
-        timeline.to(
-          state,
-          {
-            count: fullText.length,
-            duration,
-            ease: "none",
-            snap: { count: 1 },
-            onUpdate: () => {
-              const n = Math.round(state.count);
-              let html = "";
-              for (const tok of ranges) {
-                if (tok.start >= n) break;
-                const slice = escHtml(tok.text.slice(0, n - tok.start));
-                html += `<span style="color:${tok.color}">${slice}</span>`;
-              }
-              lineEl.innerHTML = html;
-            },
-          },
+        const length = tokens.reduce((sum, token) => sum + token.text.length, 0);
+        scrambleWrite(
+          timeline,
+          lineEl,
+          tokens,
+          Math.max(0.25, length * 0.014),
           position
         );
       };
@@ -407,11 +468,11 @@ export default function InstallationProcess() {
       className="relative w-full overflow-hidden text-white max-md:px-0 max-md:py-20 max-sm:py-0 max-sm:pb-8"
     >
       <div className="mx-auto w-full max-w-450">
-        <div className="grid grid-cols-[0.92fr_1.08fr] gap-[1.4vw] max-md:grid-cols-1 max-md:gap-5">
+        <div className="grid grid-cols-[0.92fr_1.08fr] gap-[1.4vw] max-[1025px]:grid-cols-1 max-[1025px]:gap-[3vw] max-md:grid-cols-1 max-md:gap-5">
           {/* LEFT COLUMN - terminal + code */}
-          <div className="flex flex-col gap-[1.4vw] max-md:contents">
-            <Panel title="amazing_project" className="fadeup min-h-[25vw] max-sm:min-h-[40vh] max-md:min-h-[30vh] ">
-              <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-md:space-y-2 max-md:text-[14px]">
+          <div className="flex flex-col gap-[1.4vw] max-[1025px]:contents max-md:contents">
+            <Panel title="amazing_project" className="fadeup min-h-[25vw] max-[1025px]:min-h-[42vw] max-sm:min-h-[40vh] max-md:min-h-[30vh] ">
+              <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-[1025px]:space-y-[1.4vw] max-[1025px]:text-[1.8vw] max-md:space-y-2 max-md:text-[14px]">
                 <div className="flex items-center gap-2">
                   <span ref={setTerminalRef("dollar1")} className="text-[#ff9f43]">$</span>
                   <span ref={setTerminalRef("init")} className="text-white/90" />
@@ -453,8 +514,8 @@ export default function InstallationProcess() {
               </div>
             </Panel>
 
-            <Panel title="app/page.jsx" className="fadeup min-h-[20vw] max-md:min-h-[20vh] max-sm:min-h-[25vh] max-md:order-last">
-              <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-md:space-y-1 max-md:text-[13px]">
+            <Panel title="app/page.jsx" className="fadeup min-h-[20vw] max-[1025px]:min-h-[28vw] max-[1025px]:order-last max-md:min-h-[20vh] max-sm:min-h-[25vh] max-md:order-last">
+              <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-[1025px]:space-y-[1vw] max-[1025px]:text-[1.7vw] max-md:space-y-1 max-md:text-[13px]">
                 <div ref={setCodeRef("line1")} />
                 <div ref={setCodeRef("line2")} />
                 <div ref={setCodeRef("line3")} />
@@ -465,20 +526,20 @@ export default function InstallationProcess() {
           </div>
 
           {/* RIGHT COLUMN - file tree */}
-          <div className="flex flex-col gap-[1.15vw]">
-            <Panel title="amazing_project / Components" className="fadeup h-full max-md:min-h-[25vh] max-sm:min-h-[25vh]">
-              <div className="space-y-[0.9vw] max-md:space-y-3">
+          <div className="flex flex-col gap-[1.15vw] max-[1025px]:gap-[3vw]">
+            <Panel title="amazing_project / Components" className="fadeup h-full max-[1025px]:min-h-[45vw] max-md:min-h-[25vh] max-sm:min-h-[25vh]">
+              <div className="space-y-[0.9vw] max-[1025px]:space-y-[1.6vw] max-md:space-y-3">
 
                 {/* app/ */}
                 <TreeFolder label="app" depth={0} />
                 <div>
-                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.2vw] max-md:ml-1.5 max-md:pl-3">
+                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.2vw] max-[1025px]:ml-[0.7vw] max-[1025px]:pl-[2vw] max-md:ml-1.5 max-md:pl-3">
                     <div className="flex items-center gap-3 text-white/80">
-                      <svg viewBox="0 0 24 24" className="h-[1.05vw] w-[1.05vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4" fill="none" stroke="currentColor" strokeWidth="1.7">
+                      <svg viewBox="0 0 24 24" className="h-[1.05vw] w-[1.05vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#c084fc] max-md:h-4 max-md:w-4" fill="none" stroke="currentColor" strokeWidth="1.7">
                         <path d="M7 3.75h6l4 4v12.5H7A1.25 1.25 0 0 1 5.75 19V5A1.25 1.25 0 0 1 7 3.75z" />
                         <path d="M13 3.75V8h4.25" />
                       </svg>
-                      <span className="font-mono text-[1.05vw] text-white/76 max-md:text-[15px]">page.jsx</span>
+                      <span className="font-mono text-[1.05vw] max-[1025px]:text-[1.8vw] text-white/76 max-md:text-[15px]">page.jsx</span>
                     </div>
                   </div>
                 </div>
@@ -486,20 +547,20 @@ export default function InstallationProcess() {
                 {/* components/ */}
                 <TreeFolder label="components" depth={0} />
                 <div>
-                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
+                  <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-[1025px]:ml-[0.7vw] max-[1025px]:pl-[2vw] max-md:ml-1.5 max-md:pl-4">
 
                     {/* effects/ - hidden until animation */}
                     <div ref={setFileRef("effectsFolder")}>
                       <TreeFolder label="effects" depth={0} />
                     </div>
-                    <div className=" pt-[0.45vw]  max-md:pt-1.5">
-                      <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-md:ml-1.5 max-md:pl-4">
+                    <div className=" pt-[0.45vw] max-[1025px]:pt-[0.9vw]  max-md:pt-1.5">
+                      <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-[1025px]:ml-[0.7vw] max-[1025px]:pl-[2vw] max-md:ml-1.5 max-md:pl-4">
 
                         {/* split-canvas/ - hidden until animation */}
                         <div ref={setFileRef("splitCanvasFolder")}>
                           <TreeFolder label="split-canvas" depth={0} />
                         </div>
-                        <div className="space-y-[0.35vw]  pt-[0.45vw] max-md:space-y-1.5 max-md:pl-3 max-md:pt-1.5">
+                        <div className="space-y-[0.35vw]  pt-[0.45vw] max-[1025px]:space-y-[0.7vw] max-[1025px]:pt-[0.9vw] max-md:space-y-1.5 max-md:pl-3 max-md:pt-1.5">
 
                           <TreeFile
                             label="index.jsx"
@@ -507,7 +568,7 @@ export default function InstallationProcess() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge1")}
-                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
@@ -521,7 +582,7 @@ export default function InstallationProcess() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge2")}
-                                className="rounded-full  px-3 py-1 max-sm:text-nowrap font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 max-sm:text-nowrap font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
@@ -535,7 +596,7 @@ export default function InstallationProcess() {
                             right={
                               <span
                                 ref={setFileRef("addedBadge3")}
-                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] text-[#5AC382] opacity-0 max-md:text-xs"
+                                className="rounded-full  px-3 py-1 font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
                               </span>
@@ -549,8 +610,8 @@ export default function InstallationProcess() {
                   </div>
                 </div>
 
-                <div className="pt-[1vw] max-md:pt-3">
-                  <p className="font-mono text-[1.02vw] text-white/42 max-md:text-sm">ui</p>
+                <div className="pt-[1vw] max-[1025px]:pt-[2vw] max-md:pt-3">
+                  <p className="font-mono text-[1.02vw] max-[1025px]:text-[1.8vw] text-white/42 max-md:text-sm">ui</p>
                 </div>
               </div>
             </Panel>

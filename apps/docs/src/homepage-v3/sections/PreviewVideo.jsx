@@ -51,11 +51,12 @@ export default function PreviewVideo() {
   return (
     <section
       ref={sectionRef}
-      className="relative mt-[20vw] h-screen w-full max-md:h-fit max-md:px-[4vw]"
+      id="Workflow"
+      className="relative p-[2vw]  flex items-center justify-center mt-[20vw] h-screen w-full max-[1025px]:h-fit max-[1025px]:px-[4vw] max-[1025px]:mt-[24vw] max-md:h-fit max-md:px-[4vw]"
     >
       <div
         ref={videoWrapRef}
-        className="h-full w-full origin-center will-change-transform"
+        className="h-full w-full  border border-grey origin-center will-change-transform"
       >
         <LazyVideo
           src={VIDEO_SRC}

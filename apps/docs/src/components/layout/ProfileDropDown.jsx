@@ -60,18 +60,18 @@ export default function ProfileDropdown({
           alt={user.fullName || "User"}
           width={40}
           height={40}
-          className="w-10 h-10 rounded-full border border-white/10 object-cover"
+          className="size-[3.4vw] border border-white/10 object-cover"
         />
 
         {plan === "pro" && (
-          <span className="px-2 py-1 text-[0.7vw] rounded-full bg-white text-black font-medium absolute -top-2 -right-5">
+          <span className="px-2 py-1 text-[0.5vw] bg-white text-black font-medium absolute -top-1 -right-3">
             PRO
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-14 w-72 rounded-md bg-[#272727] backdrop-blur-xl overflow-hidden z-50">
+        <div className="absolute right-0 top-14 w-72  bg-[#272727] backdrop-blur-xl overflow-hidden z-50">
           <div className="p-5 border-b border-white/10">
             <p className="text-white font-medium">
               {user.fullName}
@@ -85,14 +85,14 @@ export default function ProfileDropdown({
           <div className="p-2">
             <Link
               href="/dashboard"
-              className="block px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+              className="block px-4 py-3  hover:bg-[#0e0e0e] transition"
             >
               Dashboard
             </Link>
 
             <Link
               href="/dashboard/saved"
-              className="flex items-center justify-between px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+              className="flex items-center justify-between px-4 py-3  hover:bg-[#0e0e0e] transition"
             >
               <span>Saved Effects</span>
 
@@ -104,7 +104,7 @@ export default function ProfileDropdown({
             {!isAdmin && (
               <Link
                 href="/dashboard/usage"
-                className="flex items-center justify-between px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+                className="flex items-center justify-between px-4 py-3  hover:bg-[#0e0e0e] transition"
               >
                 <span>Usage</span>
 
@@ -116,7 +116,7 @@ export default function ProfileDropdown({
 
             <Link
               href="/dashboard/settings"
-              className="block px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+              className="block px-4 py-3  hover:bg-[#0e0e0e] transition"
             >
               Settings
             </Link>
@@ -129,7 +129,7 @@ export default function ProfileDropdown({
               onClick={() => signOut(() => {
                 window.location.href = "/effects";
               })}
-              className="w-full text-left px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition text-red-400"
+              className="w-full text-left px-4 py-3  hover:bg-[#0e0e0e] transition text-red-400"
             >
               Sign Out
             </button>

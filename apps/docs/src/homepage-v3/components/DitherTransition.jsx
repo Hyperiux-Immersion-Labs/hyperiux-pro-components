@@ -110,6 +110,8 @@ function packHex(hex, over) {
  * @param {number}  gamma          >1 thins the dots out faster, <1 keeps them denser.
  * @param {boolean} flip           Dissolve upward instead of downward.
  * @param {boolean} scrub          Build on scroll. False renders the finished state.
+ * @param {string}  mobileStartTriggers `start` used below 768px.
+ * @param {string}  mobileEndTriggers   `end` used below 768px.
  */
 export default function DitherTransition({
   className = "",
@@ -129,8 +131,11 @@ export default function DitherTransition({
   gamma = 1,
   flip = true,
   scrub = true,
+  markers = false,
   start = "top bottom",
   end = "bottom top",
+  mobileStartTriggers = "top bottom",
+  mobileEndTriggers = "bottom top",
 }) {
   const wrapperRef = useRef(null);
   const canvasRef = useRef(null);
@@ -390,23 +395,45 @@ export default function DitherTransition({
       // No `scrub` here: it only has meaning when a tween is linked to the
       // trigger. The band redraws straight off `self.progress`, and the page's
       // smooth scroll is what keeps that from stepping.
-      const trigger = ScrollTrigger.create({
-        trigger: wrapperRef.current,
+      const create = (from, to) =>
+        ScrollTrigger.create({
+          trigger: wrapperRef.current,
+          start: from,
+          end: to,
+          markers,
+          onUpdate: (self) => {
+            progressRef.current = self.progress;
+            draw();
+          },
+          onRefresh: (self) => {
+            progressRef.current = self.progress;
+            draw();
+          },
+        });
+
+      // The band is usually much taller on phones (`max-md:h-[150vw]`), so the
+      // same trigger points can leave the build finishing well off-screen and
+      // the two widths get their own points. matchMedia rebuilds the trigger
+      // on a breakpoint cross.
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 768px)", () => create(start, end));
+      mm.add("(max-width: 767px)", () =>
+        create(mobileStartTriggers, mobileEndTriggers),
+      );
+
+      return () => mm.revert();
+    },
+    {
+      scope: wrapperRef,
+      dependencies: [
+        scrub,
         start,
         end,
-        onUpdate: (self) => {
-          progressRef.current = self.progress;
-          draw();
-        },
-        onRefresh: (self) => {
-          progressRef.current = self.progress;
-          draw();
-        },
-      });
-
-      return () => trigger.kill();
+        mobileStartTriggers,
+        mobileEndTriggers,
+        draw,
+      ],
     },
-    { scope: wrapperRef, dependencies: [scrub, start, end, draw] },
   );
 
   return (

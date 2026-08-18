@@ -1,19 +1,59 @@
 "use client";
 import { HyperiuxLogo } from "@/utils/Icons";
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import ButtonV3 from "./ButtonV3";
 import HoverLinkV3 from "./HoverLinkV3";
 import { PlusIcon } from "lucide-react";
 import { useLenis } from "lenis/react";
 import { GlobalSearch } from "@/components/layout/SearchBar";
+import { useLoaderV3Complete, useLoaderV3Handoff } from "./loader-v3-state";
+import NavDropdownV3 from "./NavDropdownV3";
+import NavbarMobileV3 from "./NavbarMobileV3";
+import Link from "next/link";
 
-export default function NavbarV3({ effects = [] }) {
+// Fallback only. The loader normally lands its mark on the logo and says so,
+// and the bar comes in on that beat — this is what covers an exit that never
+// gets there (the burst, or the loader bailing out early).
+const INTRO_DELAY_MS = 2400;
+
+export default function NavbarV3({ effects = [], introOnLoader = false }) {
   const navRef = useRef(null);
   const [reveal, setReveal] = useState(true);
+  const [introTimedOut, setIntroTimedOut] = useState(!introOnLoader);
   const [openTrigger, setOpenTrigger] = useState(0);
+  const [openPanel, setOpenPanel] = useState(null);
   const openSearch = useCallback(() => {
     setOpenTrigger((value) => value + 1);
   }, []);
+  const closePanel = useCallback(() => setOpenPanel(null), []);
+  const togglePanel = useCallback((event, key) => {
+    event.preventDefault();
+    setOpenPanel((current) => (current === key ? null : key));
+  }, []);
+  const loaderComplete = useLoaderV3Complete();
+  const loaderHandoff = useLoaderV3Handoff();
+  // The handoff is the real cue: the loader's mark has come to rest on the logo
+  // and the bar fades up around it, in place. It must not slide in on this —
+  // the logo is already where it belongs and moving it would undo the merge.
+  const introReady = introTimedOut || loaderHandoff;
+
+  useEffect(() => {
+    if (introTimedOut || !loaderComplete) return;
+
+    const timer = window.setTimeout(() => setIntroTimedOut(true), INTRO_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [introTimedOut, loaderComplete]);
+
+  useEffect(() => {
+    if (!openPanel) return;
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setOpenPanel(null);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [openPanel]);
 
   useLenis(({ scroll, velocity }) => {
     if (scroll < 100) {
@@ -22,6 +62,7 @@ export default function NavbarV3({ effects = [] }) {
     }
     if (velocity > 0.1) {
       setReveal(false);
+      setOpenPanel(null);
     } else if (velocity < -0.2) {
       setReveal(true);
     }
@@ -31,40 +72,98 @@ export default function NavbarV3({ effects = [] }) {
     <>
       <nav
         ref={navRef}
-        className={`py-[2vw] flex max-md:hidden items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-transform duration-500 ease-out ${reveal ? "translate-y-0" : "translate-y-[-120%]"}`}
+        // The intro is a fade in place — the loader's mark lands on the logo
+        // where it already sits, so the bar can only appear around it. Sliding
+        // is reserved for the scroll reveal, once the bar is its own again.
+        // `translate` is listed alongside `transform`: the translate-y utilities
+        // set the `translate` property, so leaving it out snaps the slide and
+        // only the opacity reads.
+        className={`py-[2vw] flex max-lg:hidden items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none ${
+          !introReady
+            ? "translate-y-0 opacity-0 pointer-events-none"
+            : reveal
+              ? "translate-y-0 opacity-100"
+              : "translate-y-[-120%] opacity-100"
+        }`}
         style={{ willChange: "transform" }}
+        onMouseLeave={closePanel}
       >
-        <div className="w-[10vw]  h-auto ">
+        {/* `data-nav-logo` is what the loader measures to find where to dock. */}
+        <Link href="/" data-nav-logo className="w-[10vw]  h-auto ">
           <HyperiuxLogo className="text-primary size-full " />
-        </div>
+        </Link>
 
-        <div className="flex bg-[#121212] t20 px-[1.5vw] py-[1.4vw] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 items-center gap-[2.5vw]">
-          <HoverLinkV3 href="/" text="Categories" className="group">
-            <div className="size-[1.65vw] flex items-center justify-center bg-grey p-1 text-primary">
-              <div className="group-hover:rotate-180 transition-all duration-300">
-                <PlusIcon className="size-full" />
+        {/* Everything that isn't the logo trails it, so the mark reads as
+            having been there first and the bar as assembling around it. */}
+        <div
+          className={`flex bg-[#121212] t20 px-[1.5vw] py-[1vw] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 items-center gap-[2.5vw] transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${introReady ? "opacity-100" : "opacity-0"}`}
+        >
+          <div
+            className="flex"
+            onPointerEnter={() => setOpenPanel("categories")}
+            onFocusCapture={() => setOpenPanel("categories")}
+          >
+            <HoverLinkV3
+              href="/effects/featured"
+              text="Categories"
+              className="group"
+              onClick={(event) => togglePanel(event, "categories")}
+            >
+              <div className="size-[1.65vw] flex items-center justify-center bg-grey p-1 text-primary">
+                <div
+                  className={`group-hover:rotate-180 transition-all duration-300 ${openPanel === "categories" ? "rotate-180" : ""}`}
+                >
+                  <PlusIcon className="size-full" />
+                </div>
               </div>
-            </div>
-          </HoverLinkV3>
-          <HoverLinkV3 href="/" text="Docs" className="group">
-            <div className="size-[1.65vw] flex items-center justify-center bg-grey p-1 text-primary">
-              <div className="group-hover:rotate-180 size-full transition-all duration-300">
-                <PlusIcon className="size-full" />
+            </HoverLinkV3>
+          </div>
+          <div
+            className="flex"
+            onPointerEnter={() => setOpenPanel("docs")}
+            onFocusCapture={() => setOpenPanel("docs")}
+          >
+            <HoverLinkV3
+              href="/docs"
+              text="Docs"
+              className="group"
+              onClick={(event) => togglePanel(event, "docs")}
+            >
+              <div className="size-[1.65vw] flex items-center justify-center bg-grey p-1 text-primary">
+                <div
+                  className={`group-hover:rotate-180 size-full transition-all duration-300 ${openPanel === "docs" ? "rotate-180" : ""}`}
+                >
+                  <PlusIcon className="size-full" />
+                </div>
               </div>
-            </div>
-          </HoverLinkV3>
-          <HoverLinkV3 href="/pricing" text="Pricing" />
-          <HoverLinkV3
-            href="https://github.com/hyperiux"
-            target_blank
-            text="Github"
-          />
+            </HoverLinkV3>
+          </div>
+          <div
+            className="flex"
+            onPointerEnter={closePanel}
+            onFocusCapture={closePanel}
+          >
+            <HoverLinkV3 href="/pricing" text="Pricing" />
+          </div>
+          <div
+            className="flex"
+            onPointerEnter={closePanel}
+            onFocusCapture={closePanel}
+          >
+            <HoverLinkV3
+              href="https://github.com/hyperiux"
+              target_blank
+              text="Github"
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div
+          className={`flex items-center gap-2 transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${introReady ? "opacity-100" : "opacity-0"}`}
+        >
           <button
             type="button"
             onClick={openSearch}
-            className="group flex py-[.8vw] cursor-pointer items-center gap-4  bg-background! px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
+            className="group flex py-[.8vw] cursor-pointer items-center gap-4  bg-[#121212]! px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
             aria-label="Search effects"
           >
             <div className="flex items-center gap-2">
@@ -81,16 +180,23 @@ export default function NavbarV3({ effects = [] }) {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-              <span className="text-sm text-white/70 max-md:hidden">Search</span>
             </div>
 
-            <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
-              ⌘K
+            <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current opacity-50 max-md:hidden">
+              ⌘ K
             </kbd>
           </button>
           <ButtonV3 text="Login" />
         </div>
+
+        <NavDropdownV3 panel={openPanel} onNavigate={closePanel} />
       </nav>
+
+      <NavbarMobileV3
+        visible={reveal}
+        intro={introReady}
+        onSearch={openSearch}
+      />
 
       <GlobalSearch effects={effects} externalOpen={openTrigger} />
     </>

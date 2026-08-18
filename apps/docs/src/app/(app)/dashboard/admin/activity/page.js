@@ -39,7 +39,7 @@ function formatCurrency(amount) {
 
 function ChartPanel({ title, children }) {
   return (
-    <div className="rounded-md bg-[#272727] p-6">
+    <div className=" bg-[#272727] p-6">
       <p className="mb-4 text-white">{title}</p>
       {children}
     </div>
@@ -48,18 +48,18 @@ function ChartPanel({ title, children }) {
 
 function StatCardSkeleton() {
   return (
-    <div className="flex h-full flex-col justify-between rounded-md p-6 bg-[#272727]">
-      <div className="mb-3 h-4 w-20 animate-pulse rounded bg-white/10" />
-      <div className="h-7 w-16 animate-pulse rounded bg-white/15" />
+    <div className="flex h-full flex-col justify-between  p-6 bg-[#272727]">
+      <div className="mb-3 h-4 w-20 animate-pulse  bg-white/10" />
+      <div className="h-7 w-16 animate-pulse  bg-white/15" />
     </div>
   );
 }
 
 function ChartPanelSkeleton({ height = 260 }) {
   return (
-    <div className="rounded-md bg-[#272727] p-6">
-      <div className="mb-4 h-4 w-32 animate-pulse rounded bg-white/10" />
-      <div className="animate-pulse rounded bg-white/5" style={{ height }} />
+    <div className=" bg-[#272727] p-6">
+      <div className="mb-4 h-4 w-32 animate-pulse  bg-white/10" />
+      <div className="animate-pulse  bg-white/5" style={{ height }} />
     </div>
   );
 }
@@ -67,7 +67,7 @@ function ChartPanelSkeleton({ height = 260 }) {
 function PlanBadge({ plan }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+      className={`inline-flex items-center  px-3 py-1 text-xs font-medium ${
         plan === "pro"
           ? "bg-[#ff5f00]/15 text-[#ff5f00]"
           : "bg-white/8 text-white/60"
@@ -187,7 +187,7 @@ export default function AdminActivityPage() {
       {activeTab === "overview" && (
       <>
       {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <div className=" border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           {error}
         </div>
       )}
@@ -283,12 +283,12 @@ export default function AdminActivityPage() {
               placeholder="Search by name or email…"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              className="w-full rounded-full border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+              className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
             />
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-white/10">
+        <div className="overflow-hidden  border border-white/10">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -315,7 +315,7 @@ export default function AdminActivityPage() {
                       {Array.from({ length: 4 }).map((__, j) => (
                         <td key={j} className="px-4 py-3">
                           <div
-                            className="h-4 animate-pulse rounded bg-white/8"
+                            className="h-4 animate-pulse  bg-white/8"
                             style={{ width: j === 0 ? "140px" : "80px" }}
                           />
                         </td>
@@ -339,10 +339,10 @@ export default function AdminActivityPage() {
                               alt={user.name || ""}
                               width={32}
                               height={32}
-                              className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10"
+                              className="h-8 w-8  object-cover ring-1 ring-white/10"
                             />
                           ) : (
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-medium">
+                            <div className="flex h-8 w-8 items-center justify-center  bg-white/10 text-xs font-medium">
                               {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
                             </div>
                           )}
@@ -365,7 +365,7 @@ export default function AdminActivityPage() {
                       <td className="px-4 py-3 text-right">
                         <Link
                           href={`/dashboard/admin/activity/${buildUserActivitySlug(user)}`}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
+                          className="inline-flex items-center gap-1.5  border border-white/15 px-3 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
                         >
                           View
                           <ArrowUpRight className="h-3 w-3" />
@@ -389,7 +389,7 @@ export default function AdminActivityPage() {
                 type="button"
                 onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
                 disabled={currentPage === 1}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex h-8 w-8 items-center justify-center  border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                 aria-label="Previous page"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -398,7 +398,7 @@ export default function AdminActivityPage() {
                 type="button"
                 onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
                 disabled={currentPage === totalPages}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex h-8 w-8 items-center justify-center  border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
                 aria-label="Next page"
               >
                 <ChevronRight className="h-4 w-4" />

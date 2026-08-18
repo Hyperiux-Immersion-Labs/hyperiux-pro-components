@@ -37,17 +37,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
   return (
     <div className="w-full">
-      <style>{`
- input:-webkit-autofill,
- input:-webkit-autofill:hover,
- input:-webkit-autofill:focus,
- input:-webkit-autofill:active {
-   -webkit-text-fill-color: #1f2937;
-   caret-color: #1f2937;
-   box-shadow: 0 0 0 1000px #ffffff inset !important;
-   transition: background-color 9999s ease-in-out 0s;
- }
- `}</style>
       <div className="group relative w-full">
         {label && (
           <label

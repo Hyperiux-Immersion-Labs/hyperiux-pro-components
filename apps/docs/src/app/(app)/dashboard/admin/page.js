@@ -58,7 +58,7 @@ function RevenueOverview() {
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
       {stats.map((stat) => (
-        <div key={stat.label} className="rounded-lg border border-white/10 bg-white/3 px-4 py-3">
+        <div key={stat.label} className=" border border-white/10 bg-white/3 px-4 py-3">
           <p className="text-xs uppercase tracking-wider text-white/45">{stat.label}</p>
           <p className="mt-1 text-lg font-semibold text-white">{stat.value}</p>
         </div>
@@ -70,14 +70,14 @@ function RevenueOverview() {
 function RoleBadge({ role }) {
   if (role === "super_admin") {
     return (
-      <span className="inline-flex items-center rounded-full bg-purple-500/15 px-3 py-1 text-xs font-medium text-purple-300">
+      <span className="inline-flex items-center  bg-purple-500/15 px-3 py-1 text-xs font-medium text-purple-300">
         Super Admin
       </span>
     );
   }
   if (role === "admin") {
     return (
-      <span className="inline-flex items-center rounded-full bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
+      <span className="inline-flex items-center  bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
         Admin
       </span>
     );
@@ -97,7 +97,7 @@ function formatDate(value) {
 function PlanBadge({ plan }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+      className={`inline-flex items-center  px-3 py-1 text-xs font-medium ${
         plan === "pro"
           ? "bg-[#ff5f00]/15 text-[#ff5f00]"
           : "bg-white/8 text-white/60"
@@ -322,7 +322,7 @@ function InviteModal({ onClose }) {
         </p>
 
         {atDailyLimit && (
-          <p className="mb-4 rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+          <p className="mb-4  border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
             Daily invite limit reached ({quota.limit}/day). Try again tomorrow.
           </p>
         )}
@@ -334,14 +334,14 @@ function InviteModal({ onClose }) {
                 {emails.map((e) => (
                   <span
                     key={e}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white/10 py-1 pl-3 pr-1.5 text-xs text-white/80"
+                    className="inline-flex items-center gap-1.5  bg-white/10 py-1 pl-3 pr-1.5 text-xs text-white/80"
                   >
                     {e}
                     <button
                       type="button"
                       onClick={() => removeEmail(e)}
                       aria-label={`Remove ${e}`}
-                      className="flex h-4 w-4 items-center justify-center rounded-full text-white/50 transition hover:bg-white/15 hover:text-white"
+                      className="flex h-4 w-4 items-center justify-center  text-white/50 transition hover:bg-white/15 hover:text-white"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -407,7 +407,7 @@ function InviteModal({ onClose }) {
           </p>
         )}
         {results && results.length > 0 && (
-          <ul className="mt-3 max-h-40 space-y-1 overflow-y-auto rounded-lg border border-white/10 bg-white/3 p-2">
+          <ul className="mt-3 max-h-40 space-y-1 overflow-y-auto  border border-white/10 bg-white/3 p-2">
             {results.map((r) => (
               <li key={r.email} className="flex items-center gap-2 px-1.5 py-1 text-xs">
                 {r.success ? (
@@ -554,14 +554,14 @@ export default function AdminPage() {
         <div className="flex gap-3">
           <button
             onClick={() => setShowInviteModal(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+            className="inline-flex items-center gap-2  border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >
             Invite
             <UserPlus className="h-3.5 w-3.5" />
           </button>
           <Link
             href="/dashboard/admin/emails"
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+            className="inline-flex items-center gap-2  border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >
             Email Log
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -580,14 +580,14 @@ export default function AdminPage() {
             placeholder="Search by name or email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-full border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+            className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
           />
         </div>
         <div className="relative">
           <select
             value={planFilter}
             onChange={(e) => setPlanFilter(e.target.value)}
-            className="appearance-none rounded-full border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
+            className="appearance-none  border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
           >
             <option value="all">All plans</option>
             <option value="pro">Pro</option>
@@ -598,13 +598,13 @@ export default function AdminPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <div className=" border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           {error}
         </div>
       )}
 
       {/* Table */}
-      <div className="rounded-lg border border-white/10 overflow-hidden">
+      <div className=" border border-white/10 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -628,7 +628,7 @@ export default function AdminPage() {
                   <tr key={i}>
                     {Array.from({ length: isSuperAdmin ? 7 : 4 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
-                        <div className="h-4 rounded bg-white/8 animate-pulse" style={{ width: j === 0 ? "140px" : "80px" }} />
+                        <div className="h-4 bg-white/8 animate-pulse" style={{ width: j === 0 ? "140px" : "80px" }} />
                       </td>
                     ))}
                   </tr>
@@ -650,10 +650,10 @@ export default function AdminPage() {
                             alt={user.name || ""}
                             width={32}
                             height={32}
-                            className="h-8 w-8 rounded-full object-cover ring-1 ring-white/10"
+                            className="h-8 w-8  object-cover ring-1 ring-white/10"
                           />
                         ) : (
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-medium">
+                          <div className="flex h-8 w-8 items-center justify-center  bg-white/10 text-xs font-medium">
                             {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
                           </div>
                         )}
@@ -680,7 +680,7 @@ export default function AdminPage() {
                             value={user.role || ""}
                             onChange={(e) => updateRole(user, e.target.value || null)}
                             disabled={updatingId === user.id}
-                            className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
+                            className="appearance-none  border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
                           >
                             <option value="">No access</option>
                             <option value="admin">Admin</option>
@@ -721,7 +721,7 @@ export default function AdminPage() {
                                     setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
                                   }
                                   disabled={updatingId === user.id}
-                                  className="appearance-none rounded-full border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
+                                  className="appearance-none  border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
                                 >
                                   <option value="monthly">1 month</option>
                                   <option value="yearly">1 year</option>
@@ -732,7 +732,7 @@ export default function AdminPage() {
                             <button
                               onClick={() => togglePlan(user)}
                               disabled={updatingId === user.id}
-                              className={`rounded-full px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
+                              className={` px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
                                 user.plan === "pro"
                                   ? "bg-white/10 text-white/70 hover:bg-white/15"
                                   : "bg-[#ff5f00]/15 text-[#ff5f00] hover:bg-[#ff5f00]/25"
@@ -766,7 +766,7 @@ export default function AdminPage() {
               type="button"
               onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
               disabled={currentPage === 1}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex h-8 w-8 items-center justify-center  border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Previous page"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -775,7 +775,7 @@ export default function AdminPage() {
               type="button"
               onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
               disabled={currentPage === totalPages}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex h-8 w-8 items-center justify-center  border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Next page"
             >
               <ChevronRight className="h-4 w-4" />

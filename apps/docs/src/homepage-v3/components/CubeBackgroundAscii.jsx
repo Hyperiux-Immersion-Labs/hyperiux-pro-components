@@ -41,9 +41,9 @@ export const CUBE_ASCII_DEFAULTS = {
   fluidEnabled: true,
   fluidColor: "#ff6a00",
   /** How hard flow replaces glyph gray with fluidColor (0 = off, 1 = default). */
-  fluidTint: 1.2,
+  fluidTint: 3.0,
   /** Brightness multiplier on fluidColor so trails stay hot orange. */
-  fluidBoost: 1.35,
+  fluidBoost: 1.0,
   fluidForceBase: 0.1,
   fluidSpeedSat: 18,
   fluidForceMultiplier: 0.2,
@@ -235,6 +235,9 @@ uniform float uGlyphGain;
 uniform float uDither;
 uniform int uInvert;
 
+/** Entry reveal, 0 (nothing drawn) → 1 (full field). See INTRO_FEATHER. */
+uniform float uIntro;
+
 uniform int uGrain;
 uniform float uGrainIntensity;
 uniform float uGrainSize;
@@ -259,6 +262,24 @@ const int BAYER[16] = int[16](${BAYER.map((v) =>
 ).join(",")});
 const int CHAR_N = ${charCount};
 const int SAMPLES = ${SAMPLES};
+
+/**
+ * Entry. The field arrives on a front sweeping right → left, so the cube — which
+ * the default framing parks right of the copy — resolves first and the empty
+ * margin last.
+ *
+ * Width of that front as a fraction of the sweep. Cells inside the band are
+ * mid-arrival; outside it they are fully on or fully off.
+ */
+const float INTRO_FEATHER = 0.45;
+/**
+ * How much of a cell's arrival within the band is decided by its Bayer value.
+ * This is what makes cells scatter in as the same ordered-dither texture the
+ * ramp already uses, rather than sweeping in on a clean ring.
+ */
+const float INTRO_DITHER = 0.55;
+/** Glyph size at the moment a cell starts arriving; it grows to full from there. */
+const float INTRO_SCALE = 0.5;
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
@@ -362,6 +383,28 @@ void main() {
     }
   }
 
+  // Per-cell arrival — see INTRO_FEATHER. The axis runs 0 at the right edge to
+  // 1 at the left, so the front crosses right → left; the Bayer offset
+  // breaks that edge up, scattering cells in around it instead of switching
+  // them on column by column.
+  float cellIntro = 1.0;
+  if (uIntro < 1.0) {
+    float axis = 1.0 - bp.x / uRes.x;
+    float front = uIntro * (1.0 + INTRO_FEATHER) - axis;
+
+    float introThr = float(BAYER[(int(gy) & 3) * 4 + (int(gx) & 3)]) / 255.0;
+    cellIntro = clamp(
+      (front / INTRO_FEATHER - introThr * INTRO_DITHER) / (1.0 - INTRO_DITHER),
+      0.0,
+      1.0
+    );
+
+    if (cellIntro <= 0.0) {
+      O = bg;
+      return;
+    }
+  }
+
   ivec2 fc = ivec2(gx / uCharColumns * FC, gy / rows * FR);
   fc = clamp(fc, ivec2(0), ivec2(int(FC) - 1, int(FR) - 1));
 
@@ -431,7 +474,11 @@ void main() {
   // Brightness → ramp index. Low slots may be blank; see CHAR_SETS.
   int ci = int(clamp(dithered, 0.0, 0.9999) * float(CHAR_N));
 
-  float zoom = max(uCharZoom, 0.01) * (1.0 - clamp(uCharGap, 0.0, 0.95));
+  // Glyphs grow into their cell as they arrive — the mirror of the loader's
+  // glyphs shrinking as they leave, and what makes each one read as arriving
+  // rather than just brightening.
+  float zoom = max(uCharZoom, 0.01) * (1.0 - clamp(uCharGap, 0.0, 0.95))
+    * mix(INTRO_SCALE, 1.0, cellIntro);
   vec2 zcp = (cp - 0.5) / max(zoom, 0.01) + 0.5;
   if (zcp.x < 0.0 || zcp.x > 1.0 || zcp.y < 0.0 || zcp.y > 1.0) {
     O = bg;
@@ -482,7 +529,7 @@ void main() {
   col += grain;
 
   col = clamp(col, 0.0, 1.0);
-  O = vec4(col * ca, 1.0);
+  O = vec4(col * ca * cellIntro, 1.0);
 }
 `;
 
@@ -742,11 +789,17 @@ function createSuspendedRaf({ onFrame, root = null }) {
  * Bump SHADER_REV when fragment uniforms/source change so Fast Refresh remounts
  * the GL program (otherwise new uniform locations stay null until a hard reload).
  */
-const SHADER_REV = 4;
+const SHADER_REV = 5;
 
-function CubeAsciiCanvas({ config, src, className }) {
+function CubeAsciiCanvas({ config, intro, src, className }) {
   const ref = useRef(null);
   const configRef = useRef(config);
+
+  // Held behind a ref of its own so the render loop can read whatever `intro`
+  // currently is without the prop being a GL-setup dependency — it is mutated
+  // from outside (by GSAP) many times a second, and rebuilding the context for
+  // that would be absurd. Absent, the field just draws fully.
+  const introRef = useRef(intro);
 
   // The one config value the render loop cannot pick up from the ref: it sizes
   // the shader's ramp and the atlas, so changing it re-runs the GL setup below.
@@ -758,6 +811,10 @@ function CubeAsciiCanvas({ config, src, className }) {
   useEffect(() => {
     configRef.current = config;
   }, [config]);
+
+  useEffect(() => {
+    introRef.current = intro;
+  }, [intro]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -866,6 +923,7 @@ function CubeAsciiCanvas({ config, src, className }) {
     const uGlyphGain = loc("uGlyphGain");
     const uDither = loc("uDither");
     const uInvert = loc("uInvert");
+    const uIntro = loc("uIntro");
     const uGrain = loc("uGrain");
     const uGrainIntensity = loc("uGrainIntensity");
     const uGrainSize = loc("uGrainSize");
@@ -1101,6 +1159,7 @@ function CubeAsciiCanvas({ config, src, className }) {
         gl.uniform1f(uGlyphGain, cfg.glyphGain ?? 1.5);
         gl.uniform1f(uDither, cfg.dither ?? 0.6);
         gl.uniform1i(uInvert, cfg.invert ? 1 : 0);
+        gl.uniform1f(uIntro, introRef.current?.current ?? 1);
         gl.uniform1i(uGrain, cfg.grain ? 1 : 0);
         gl.uniform1i(uFluidEnabled, cfg.fluidEnabled !== false ? 1 : 0);
 
@@ -1177,10 +1236,15 @@ function useMatchMedia(query) {
  *
  * Pass `debug` to mount a leva panel bound to this effect's config. The panel
  * drives only these controls — anything else on the page is untouched.
+ *
+ * @param {{ current: number }} [intro] — a mutable holder (a React ref works)
+ *   read every frame, 0 (nothing drawn) → 1 (full field). Animate it to play
+ *   the entry reveal; leave it off and the field simply draws.
  */
 export default function CubeBackgroundAscii({
   config,
   debug = false,
+  intro,
   src = VIDEO_SRC,
   className = "absolute inset-0 block h-full w-full bg-black",
 }) {
@@ -1207,7 +1271,12 @@ export default function CubeBackgroundAscii({
   return (
     <>
       {debug ? <CubeAsciiControls base={base} onChange={setTweaked} /> : null}
-      <CubeAsciiCanvas config={active} src={src} className={className} />
+      <CubeAsciiCanvas
+        config={active}
+        intro={intro}
+        src={src}
+        className={className}
+      />
     </>
   );
 }

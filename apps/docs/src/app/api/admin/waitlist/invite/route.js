@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/resend";
@@ -26,7 +27,7 @@ async function getInvitesSentToday() {
   const { count, error } = await supabase
     .from("sent_emails")
     .select("id", { count: "exact", head: true })
-    .eq("email_type", "waitlist_invite")
+    .eq("email_type", "invitations")
     .eq("status", "success")
     .gte("sent_at", startOfTodayUTC().toISOString());
 
@@ -54,13 +55,14 @@ export async function GET() {
 async function inviteOne(clerk, email) {
   try {
     // notify:false stops Clerk sending its own invite email - we send our
-    // own branded one below. The email's CTA links straight to /effects
-    // (not the invitation's ticket URL), so this invitation only exists to
-    // register the email as invited in Clerk for admin tracking/status.
+    // own branded one below, with the CTA routed through our own
+    // click-tracking redirect (/api/e/[id]) which then forwards to this
+    // invitation's ticket URL, so accepting still only asks for a password
+    // (email is pre-verified via the ticket) rather than the full sign-up flow.
     //
     // redirectUrl sends the accept link straight to /signup/continue (with
-    // __clerk_ticket appended) instead of the default sign-up page, in case
-    // the invitation URL is ever used directly again.
+    // __clerk_ticket appended), which has fallbackRedirectUrl="/effects" so
+    // that's where everyone lands once they finish setting a password.
     const invitation = await clerk.invitations.createInvitation({
       emailAddress: email,
       notify: false,
@@ -72,12 +74,17 @@ async function inviteOne(clerk, email) {
       throw new Error("Clerk did not return an invitation URL");
     }
 
+    // Generated up front so the CTA's click-tracking link can reference this
+    // row's id before the sent_emails row itself is written by sendEmail().
+    const trackingId = randomUUID();
+
     const emailResult = await sendEmail({
+      id: trackingId,
       to: email,
       subject: waitlistInviteSubject,
-      react: renderWaitlistInviteEmail(),
-      text: waitlistInviteText(),
-      emailType: "waitlist_invite",
+      react: renderWaitlistInviteEmail({ trackingId, signUpUrl: invitation.url }),
+      text: waitlistInviteText({ trackingId, signUpUrl: invitation.url }),
+      emailType: "invitations",
     });
 
     if (!emailResult.success) {

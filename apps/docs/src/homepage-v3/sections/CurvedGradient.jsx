@@ -33,12 +33,11 @@ export default function CurvedGradient() {
           yPercent: 0,
           opacity: 1,
           duration: 1,
-          ease: "power2.out",
           stagger: 0.25,
           scrollTrigger: {
             trigger: wrapperRef.current,
-            start: "18% 50%",
-            end: "38% 50%",
+            start: "12% 50%",
+            end: "40% 50%",
             scrub: true,
           },
         },
@@ -52,13 +51,12 @@ export default function CurvedGradient() {
           yPercent: -50,
           opacity: 0,
           duration: 1,
-          ease: "power1.in",
           stagger: 0.25,
           immediateRender: false,
           scrollTrigger: {
             trigger: wrapperRef.current,
-            start: "38% 50%",
-            end: "58% 50%",
+            start: "40% 50%",
+            end: "68% 50%",
             scrub: true,
           },
         },
@@ -84,7 +82,7 @@ export default function CurvedGradient() {
         <h2
           ref={headingRef}
           id="curved-gradient-heading"
-          className="t64 relative z-10 mx-auto max-w-[51.5vw] text-center text-[3.25vw] text-white max-md:max-w-[90%] max-md:text-[5vw]"
+          className="t64 relative z-10 mx-auto max-w-[65.5vw] text-center text-[3.25vw] text-white max-[1025px]:max-w-[85%] max-[1025px]:text-[4.2vw] max-md:max-w-[90%] max-md:text-[5vw]"
         >
           Most websites are not broken. They are forgettable. They use the same sections, the same rhythm, the same static patterns, and the same safe animations everyone else is using.
         </h2>

@@ -63,7 +63,7 @@ export function DashboardShell({ children }) {
             <button
               type="button"
               onClick={() => router.back()}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/40 text-white/70 transition hover:bg-[#ff5f00] hover:border-[#ff5f00] hover:text-white cursor-pointer"
+              className="inline-flex h-12 w-12 items-center justify-center border border-white/40 text-white/70 transition hover:bg-[#ff5f00] hover:border-[#ff5f00] hover:text-black cursor-pointer"
               aria-label="Go back"
             >
               <ArrowLeft className="h-5 w-5" />

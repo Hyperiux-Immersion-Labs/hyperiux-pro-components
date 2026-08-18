@@ -12,6 +12,10 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin)
 }
 
+// Timeline seconds between two cards sliding up. Also the duration of each
+// card's y tween, so consecutive steps meet without overlapping.
+const STEP = 0.8
+
 const cards = [
   {
     title: 'Timing',
@@ -137,12 +141,16 @@ export default function ProblemFixes() {
         tl.to(xIcons[0], { autoAlpha: 1, duration: 0.05 }, 0)
 
         for (let i = 1; i < total; i++) {
-          const t = i * 0.8
+          const t = i * STEP
 
           for (let j = i; j < total; j++) {
+            // Each card gets one y tween per step, so the tweens must abut
+            // rather than overlap: a timeline renders children in reverse order
+            // when scrubbed backwards, which would hand the overlap to the
+            // previous tween and snap the card by a fraction of a row.
             tl.to(
               cardEls[j],
-              { y: -(j - i) * rowHeight, duration: 1, ease: 'power1.out' },
+              { y: -(j - i) * rowHeight, duration: STEP, ease: 'power1.out' },
               t,
             )
           }
@@ -193,7 +201,7 @@ export default function ProblemFixes() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-200 w-full overflow-hidden px-[3vw] pb-[10%] text-white max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
+      className="relative z-200 mt-[-4vw] w-full overflow-hidden px-[3vw] pb-[10%] text-white max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
     >
       <div className="mx-auto relative z-200 flex w-full flex-col items-center">
         <div className="w-full text-center">
@@ -201,14 +209,15 @@ export default function ProblemFixes() {
             Good Motion is{' '}
             <span className="gradient-text-animate">Harder</span> Than It Looks
           </LineReveal>
-          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[2vw] max-w-[65vw] leading-[1.55] text-white max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
+          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[3.5vw] max-w-[65vw] leading-[1.55] text-white max-[1025px]:mt-[4vw] max-[1025px]:max-w-[85vw] max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
             Anyone can add a fade. The hard part is everything around it: timing, restraint, layout awareness, responsive behavior, reduced-motion support, dependency clarity, and performance discipline.Get it wrong and your "wow moment" janks on mobile, tanks your Lighthouse score, or quietly breaks for the people who turned motion off.
+            That difference has a name. It's the interaction layer.
           </SplitLine>
         </div>
 
         <div
           ref={cardsRef}
-          className="mt-[8vw] h-fit w-[85vw] space-y-[1vw] max-md:mt-20 max-md:w-full max-md:space-y-5 max-sm:mt-20 max-sm:space-y-5"
+          className="mt-[8vw] h-fit w-[85vw] space-y-[1vw] max-[1025px]:mt-[10vw] max-[1025px]:w-full max-[1025px]:space-y-[2vw] max-md:mt-20 max-md:w-full max-md:space-y-5 max-sm:mt-20 max-sm:space-y-5"
         >
           <div className="text24 flex w-full items-center justify-between px-[.5vw] max-sm:text-sm">
             <p>Fixes</p>
@@ -218,11 +227,11 @@ export default function ProblemFixes() {
           {cards.map((item, index) => (
             <div
               key={item.title}
-              className="tension-card bg-grey/30 flex items-center justify-between p-[.7vw] pr-[1.5vw] max-md:p-3 max-sm:p-2 max-sm:pr-2"
+              className="tension-card bg-grey/30 flex items-center justify-between p-[.7vw] pr-[1.5vw] max-[1025px]:p-[2vw] max-md:p-3 max-sm:p-2 max-sm:pr-2"
             >
-              <div className="flex min-w-0 flex-1 items-center max-md:flex-col max-md:items-start max-md:gap-3 max-sm:gap-2.5">
-                <div className="flex w-[25vw] shrink-0 items-center gap-[1vw] max-md:gap-4 max-sm:w-auto max-sm:gap-2.5">
-                  <div className="flex size-[3vw] shrink-0 items-center justify-center bg-background p-1.5 max-md:size-8 max-sm:size-9">
+              <div className="flex min-w-0 flex-1 items-center max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[2vw] max-md:flex-col max-md:items-start max-md:gap-3 max-sm:gap-2.5">
+                <div className="flex w-[25vw] shrink-0 items-center gap-[1vw] max-[1025px]:w-auto max-[1025px]:gap-[2vw] max-md:gap-4 max-sm:w-auto max-sm:gap-2.5">
+                  <div className="flex size-[3vw] shrink-0 items-center justify-center bg-background p-1.5 max-[1025px]:size-[5vw] max-md:size-8 max-sm:size-9">
                     <svg
                       className="tension-check h-full w-full opacity-0"
                       viewBox="0 0 24 24"
@@ -239,7 +248,7 @@ export default function ProblemFixes() {
                     {item.title}
                   </p>
                 </div>
-                <p className="text-light-grey font-mono text18 max-md:text-[3vw]! max-md:pr-0! min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-full max-sm:flex-none max-sm:px-0 ">
+                <p className="text-light-grey font-mono text18 max-[1025px]:w-full max-[1025px]:flex-none max-[1025px]:px-0 max-md:text-[3vw]! max-md:pr-0! min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-full max-sm:flex-none max-sm:px-0 ">
                   <ScrambleTextV3
                     text={item.description}
                     active={index <= activeIndex}
@@ -247,8 +256,8 @@ export default function ProblemFixes() {
                   />
                 </p>
               </div>
-              <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-md:w-[30%] max-sm:w-fit max-sm:gap-0! max-md:max-w-[35%]">
-                <div className="flex size-[3vw] shrink-0 items-center justify-center max-md:size-9 max-sm:size-12">
+              <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-[1025px]:w-auto max-[1025px]:max-w-full max-[1025px]:gap-[2vw] max-md:w-[30%] max-sm:w-fit max-sm:gap-0! max-md:max-w-[35%]">
+                <div className="flex size-[3vw] shrink-0 items-center justify-center max-[1025px]:size-[5vw] max-md:size-9 max-sm:size-12">
                   <svg
                     className="tension-x h-[60%] w-[60%] opacity-0"
                     viewBox="0 0 24 24"

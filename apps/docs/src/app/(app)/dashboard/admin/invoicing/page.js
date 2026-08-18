@@ -61,10 +61,10 @@ function UserCell({ invoice }) {
           alt={invoice.userName || ""}
           width={28}
           height={28}
-          className="h-7 w-7 rounded-full object-cover ring-1 ring-white/10"
+          className="h-7 w-7  object-cover ring-1 ring-white/10"
         />
       ) : (
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-xs font-medium">
+        <div className="flex h-7 w-7 items-center justify-center  bg-white/10 text-xs font-medium">
           {(invoice.userName?.[0] || invoice.userEmail?.[0] || "?").toUpperCase()}
         </div>
       )}
@@ -162,7 +162,7 @@ export default function AdminInvoicingPage() {
           <select
             value={testFilter}
             onChange={(e) => setTestFilter(e.target.value)}
-            className="appearance-none rounded-full border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
+            className="appearance-none  border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
           >
             {TEST_FILTERS.map((f) => (
               <option key={f.id} value={f.id}>{f.label}</option>
@@ -173,12 +173,12 @@ export default function AdminInvoicingPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <div className=" border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           {error}
         </div>
       )}
 
-      <div className="rounded-lg border border-white/10 overflow-hidden">
+      <div className=" border border-white/10 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -198,7 +198,7 @@ export default function AdminInvoicingPage() {
                   <tr key={i}>
                     {Array.from({ length: 7 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
-                        <div className="h-4 rounded bg-white/8 animate-pulse" style={{ width: j === 0 ? "140px" : "70px" }} />
+                        <div className="h-4  bg-white/8 animate-pulse" style={{ width: j === 0 ? "140px" : "70px" }} />
                       </td>
                     ))}
                   </tr>
@@ -218,7 +218,7 @@ export default function AdminInvoicingPage() {
                     <td className="px-4 py-3 text-white/80">
                       {invoice.planLabel || "Vault Pro"}
                       {invoice.isTest && (
-                        <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/50">
+                        <span className="ml-2  bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/50">
                           Test
                         </span>
                       )}
@@ -265,7 +265,7 @@ export default function AdminInvoicingPage() {
               type="button"
               onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
               disabled={currentPage === 1}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex h-8 w-8 items-center justify-center  border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Previous page"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -274,7 +274,7 @@ export default function AdminInvoicingPage() {
               type="button"
               onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
               disabled={currentPage === totalPages}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex h-8 w-8 items-center justify-center  border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Next page"
             >
               <ChevronRight className="h-4 w-4" />

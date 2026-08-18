@@ -510,7 +510,19 @@ h4 {
   box-shadow: none !important;
   transition: all 0.3s ease-in-out;
 }
-/* Autofill */
+/* Autofill
+   Chrome paints its own autofill fill — override with an inset box-shadow.
+   Defaults match light inputs; dark surfaces set --input-autofill-bg / text. */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--input-autofill-text, #1f2937) !important;
+  caret-color: var(--input-autofill-text, #1f2937) !important;
+  box-shadow: 0 0 0 1000px var(--input-autofill-bg, #ffffff) inset !important;
+  transition: background-color 9999s ease-in-out 0s !important;
+}
 
 .hyperiux-clerk input:-webkit-autofill,
 .hyperiux-clerk input:-webkit-autofill:hover,
@@ -640,6 +652,63 @@ h4 {
 @media (prefers-reduced-motion: reduce) {
   .gradient-text-animate {
     animation: none;
+  }
+}
+
+/* Pro badge squares: hard on/off white flicker that settles back to orange. */
+@keyframes pixel-glitch-flash {
+  0%,
+  18%,
+  34%,
+  56%,
+  78%,
+  100% {
+    opacity: 0;
+  }
+  9%,
+  26%,
+  45%,
+  67% {
+    opacity: 1;
+  }
+}
+
+/* The square itself only exists on hover — it stutters in, then holds. */
+@keyframes pixel-glitch-in {
+  0%,
+  22%,
+  44% {
+    opacity: 0;
+  }
+  11%,
+  33%,
+  55%,
+  100% {
+    opacity: 1;
+  }
+}
+
+.pixel-glitch-cell,
+.pixel-glitch-square {
+  opacity: 0;
+}
+
+.pricing-v3-card:hover .pixel-glitch-square {
+  animation: pixel-glitch-in 0.45s steps(1, end) both;
+}
+
+.pricing-v3-card:hover .pixel-glitch-cell {
+  animation: pixel-glitch-flash 0.62s steps(1, end) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pricing-v3-card:hover .pixel-glitch-cell {
+    animation: none;
+  }
+
+  .pricing-v3-card:hover .pixel-glitch-square {
+    animation: none;
+    opacity: 1;
   }
 }
 

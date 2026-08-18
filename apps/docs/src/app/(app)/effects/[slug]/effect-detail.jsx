@@ -630,7 +630,7 @@ export function EffectDetailContent({
                             aria-label="Show previous related effects"
                             className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollPrev
                               ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00] hover:text-[#161616]"
+                              : "hover:border-[#ff5f00] hover:text-black"
                               }`}
                             bgColor="#ff5f00"
                           >
@@ -646,7 +646,7 @@ export function EffectDetailContent({
                             aria-label="Show next related effects"
                             className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollNext
                               ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00] hover:text-[#161616]"
+                              : "hover:border-[#ff5f00] hover:text-black"
                               }`}
                             bgColor="#ff5f00"
                           >
@@ -695,7 +695,7 @@ export function EffectDetailContent({
                             aria-label="Show previous related effects"
                             className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollPrev
                               ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00] hover:text-[#161616]"
+                              : "hover:border-[#ff5f00] hover:text-black"
                               }`}
                             bgColor="#ff5f00"
                           >
@@ -711,7 +711,7 @@ export function EffectDetailContent({
                             aria-label="Show next related effects"
                             className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollNext
                               ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00] hover:text-[#161616]"
+                              : "hover:border-[#ff5f00] hover:text-black"
                               }`}
                             bgColor="#ff5f00"
                           >

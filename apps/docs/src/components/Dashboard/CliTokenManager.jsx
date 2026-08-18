@@ -70,7 +70,7 @@ export default function CliTokenManager({ plan }) {
   }
 
   return (
-    <div className="rounded-md bg-[#272727] p-6 backdrop-blur-lg">
+    <div className=" bg-[#272727] p-6 backdrop-blur-lg">
       <div className="flex items-start justify-between gap-6 max-[1025px]:flex-col">
         <div>
           <h2 className="text-2xl font-semibold text-white">
@@ -107,7 +107,7 @@ export default function CliTokenManager({ plan }) {
             type="button"
             onClick={revokeToken}
             disabled={isLoading}
-            className="rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 duration-300"
+            className=" border border-white/20 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-40 duration-300"
           >
             Revoke
           </button>
@@ -115,7 +115,7 @@ export default function CliTokenManager({ plan }) {
             type="button"
             onClick={generateToken}
             disabled={isLoading}
-            className="rounded-full bg-white px-7 py-3 text-sm font-semibold text-black transition hover:bg-[#ff5f00] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 duration-300"
+            className=" bg-white px-7 py-3 text-sm font-semibold text-black transition hover:bg-[#ff5f00]  disabled:cursor-not-allowed disabled:opacity-40 duration-300"
           >
             {isLoading ? "Working..." : "Generate Token"}
           </button>
@@ -123,7 +123,7 @@ export default function CliTokenManager({ plan }) {
       </div>
 
       {token && (
-        <div className="mt-6 rounded-md bg-[#0E0E0E] p-4">
+        <div className="mt-6  bg-[#0E0E0E] p-4">
           <p className="mb-2 text-sm text-white/50">
             Copy this token now. It will not be shown again.
           </p>
@@ -140,7 +140,7 @@ export default function CliTokenManager({ plan }) {
         </p>
       )}
 
-      <div className="mt-6 rounded-md bg-[#0E0E0E] p-4">
+      <div className="mt-6  bg-[#0E0E0E] p-4">
         <p className="mb-4 text-sm text-white/50">
           Use it like this:
         </p>

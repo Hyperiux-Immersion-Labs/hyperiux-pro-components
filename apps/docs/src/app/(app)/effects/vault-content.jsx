@@ -820,8 +820,8 @@ const routeKey = `${pathname}${
                           backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
                           transition-colors duration-300 
                           ${isSelected
-                            ? "bg-[#ff5f00] text-[#161616] hover:text-[#161616] hover:bg-[#ff5f00]"
-                            : "bg-[#161616] text-[#FFFFFF] hover:text-[#161616] hover:bg-[#ff5f00]"
+                            ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"
+                            : "bg-[#161616] text-[#FFFFFF] hover:text-black hover:bg-[#ff5f00]"
                           }
                         `}
                       >
@@ -856,7 +856,7 @@ const routeKey = `${pathname}${
                       }}
                       aria-label={`Show ${cols} cards per row`}
                       aria-pressed={isActive}
-                      className={` ${isActive ? " text-[#161616]" : "text-foreground"}
+                      className={` ${isActive ? " text-black" : "text-foreground"}
                         relative z-10 flex h-8 w-10 items-center justify-center  text20 font-medium
                         transition-colors duration-300 cursor-pointer 
                         

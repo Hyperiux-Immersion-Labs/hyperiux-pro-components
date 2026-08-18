@@ -10,11 +10,19 @@ import CubeBackgroundAscii from "../components/CubeBackgroundAscii";
 import ButtonV3 from "../components/ButtonV3";
 import { useLoaderV3Complete } from "../components/loader-v3-state";
 import { prefersReducedMotion } from "@/lib/motion";
+import { unlockScrollV3, useScrollLockLenis } from "../components/scroll-lock-v3";
 import { useFadeIn, useFadeUp } from "@/components/Animations/gsapAnimations";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, SplitText);
 }
+
+const NAV_LEAD = 0.25;
+const AT_CANVAS = 0;
+const INTRO_DURATION = 1.7;
+const AT_HEADING = 1.7;
+const AT_COPY = 2.3;
+const AT_ACTIONS = 2.75;
 
 export default function Hero() {
     const rootRef = useRef(null);
@@ -24,22 +32,20 @@ export default function Hero() {
     const headingRef = useRef(null);
     const copyRef = useRef(null);
     const actionsRef = useRef(null);
-
     const loaderComplete = useLoaderV3Complete();
 
-    // Hidden from the first client frame — the loader panel is already covering
-    // the page at this point, so nothing flashes before the intro plays.
+    useScrollLockLenis();
+
+    const introRef = useRef(0);
+
     useGSAP(
         () => {
-            if (prefersReducedMotion()) return;
-
+            if (prefersReducedMotion()) {
+                introRef.current = 1;
+                return;
+            }
             gsap.set(
-                [
-                    canvasRef.current,
-                    headingRef.current,
-                    copyRef.current,
-                    actionsRef.current,
-                ],
+                [headingRef.current, copyRef.current, actionsRef.current],
                 { autoAlpha: 0 }
             );
         },
@@ -56,7 +62,6 @@ export default function Hero() {
             });
             const copy = SplitText.create(copyRef.current, { type: "lines" });
 
-            // SplitText moves glyphs into word nodes; keep gradient clip on those nodes.
             headingRef.current
                 ?.querySelectorAll(".gradient-text-animate")
                 .forEach((el) => {
@@ -68,54 +73,54 @@ export default function Hero() {
                     el.classList.remove("gradient-text-animate");
                 });
 
-            const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+            gsap.set([headingRef.current, copyRef.current], { autoAlpha: 1 });
+            gsap.set(heading.words, { yPercent: 110 });
+            gsap.set(copy.lines, { yPercent: 40, autoAlpha: 0 });
+            gsap.set(actionsRef.current, { y: 28, autoAlpha: 0 });
 
-            tl.set([headingRef.current, copyRef.current], { autoAlpha: 1 })
-                // ASCII field settles in from a slight push-in, so the glyph
-                // grid resolves rather than just appearing.
-                .fromTo(
-                    canvasRef.current,
-                    { autoAlpha: 0 },
-                    {
-                        autoAlpha: 1,
-                        duration: 1.8,
-                        delay: 1,
-                        ease: "power2.out",
-                    },
-                    0
-                )
-                .fromTo(
+            const tl = gsap.timeline({
+                delay: NAV_LEAD,
+                defaults: { ease: "power2.out" },
+            });
+
+            tl.to(
+                introRef,
+                { current: 1, duration: INTRO_DURATION, ease: "power1.inOut" },
+                AT_CANVAS
+            )
+                .to(
                     heading.words,
-                    { yPercent: 110 },
-                    { yPercent: 0, delay: .5, duration: 1.1, stagger: 0.08 },
-                    0.15
+                    { yPercent: 0, duration: 1.1, stagger: 0.08 },
+                    AT_HEADING
                 )
-                .fromTo(
+                .to(
                     copy.lines,
-                    { yPercent: 40, autoAlpha: 0 },
-                    { yPercent: 0, delay: -.35, autoAlpha: 1, duration: 0.8, stagger: 0.07 },
-
+                    { yPercent: 0, autoAlpha: 1, duration: 0.8, stagger: 0.07 },
+                    AT_COPY
                 )
                 .to(
                     actionsRef.current,
-                    { autoAlpha: 1, delay: -.35, duration: 0.7, ease: "power2.out" },
+                    {
+                        y: 0,
+                        autoAlpha: 1,
+                        duration: 0.7,
+                        onComplete: unlockScrollV3,
+                    },
+                    AT_ACTIONS
                 );
 
             return () => {
                 heading.revert();
                 copy.revert();
+                unlockScrollV3();
             };
         },
         { dependencies: [loaderComplete], scope: rootRef }
     );
 
-    // The hero is held in place by a sticky wrapper while the next layer
-    // (Techstack) slides up over it, so the recede is scrubbed straight off
-    // scroll position and lands just as that layer finishes covering it.
     useGSAP(
         () => {
             if (prefersReducedMotion()) return;
-
             const mm = gsap.matchMedia();
 
             const recede = (blur) => {
@@ -138,8 +143,6 @@ export default function Hero() {
                     .fromTo(overlayRef.current, { opacity: 0 }, { opacity: 0.65 }, 0);
             };
 
-            // Blurring the full-screen ASCII canvas is the costly part, so
-            // phones get a lighter radius for the same read.
             mm.add("(min-width: 768px)", () => recede(14));
             mm.add("(max-width: 767px)", () => recede(6));
 
@@ -150,7 +153,6 @@ export default function Hero() {
 
     useFadeUp()
 
-
     return (
         <main
             ref={rootRef}
@@ -158,24 +160,23 @@ export default function Hero() {
         >
             <div ref={layerRef} className="absolute  inset-0 origin-center max-md:w-full will-change-transform">
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
-                    <CubeBackgroundAscii debug />
+                    <CubeBackgroundAscii intro={introRef} />
                 </div>
-                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[12vw] p-[3vw] max-md:items-end max-md:p-6 max-sm:p-5">
-                    {/* <div className="w-full bg-gradient-to-r pointer-events-none from-black/50 to-transparent h-full absolute inset-0" /> */}
-                    <div className="space-y-[2.5vw] relative z-10 w-full max-md:space-y-8 max-sm:space-y-11">
+                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[11vw] p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
+                    <div className="space-y-[3vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-8 max-sm:space-y-11">
                         <div className="flex flex-col h-fit font-neue-haas w-full items-start max-sm:gap-2 max-md:gap-5">
-                            <h1 ref={headingRef} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[60vw] max-md:mt-0 max-md:w-[85%] max-sm:w-full">
+                            <h1 ref={headingRef} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[55vw] max-[1025px]:mt-0 max-[1025px]:w-[85%] max-md:mt-0 max-md:w-[85%] max-sm:w-full">
                                 The Interaction Layer your Website is <span className="gradient-text-animate">Missing.</span>
                             </h1>
                         </div>
 
-                        <p ref={copyRef} className="t22 text-secondary w-[40vw] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left">
+                        <p ref={copyRef} className="t22 text-secondary w-[40vw] max-[1025px]:w-[75%] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left">
                             100+ copy-paste effects for React & Next.js. Scroll, cursor, text, and WebGL interactions, preview and install with the CLI.
                         </p>
 
                         <div
                             ref={actionsRef}
-                            className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-md:pb-[5vw] max-md:w-full max-md:gap-5"
+                            className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-[1025px]:gap-[2.5vw] max-md:pb-[5vw] max-md:w-full max-md:gap-5"
                         >
                             <ButtonV3
                                 text="Browse Effects"
@@ -194,8 +195,6 @@ export default function Hero() {
                     </div>
                 </div>
             </div>
-            {/* Darkens the hero as the next layer takes over, so the two
-                sections never compete for attention mid-scroll. */}
             <div
                 ref={overlayRef}
                 className="pointer-events-none absolute inset-0 z-20 bg-background opacity-0"

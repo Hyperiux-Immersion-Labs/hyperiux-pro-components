@@ -3,13 +3,12 @@
 import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useLenis } from "lenis/react";
 
 import { prefersReducedMotion } from "@/lib/motion";
 import { createAsciiLoaderField } from "./loader-ascii-field";
-import { markLoaderV3Complete } from "./loader-v3-state";
-
-const CHAR_COUNT = 8; // H-Y-P-E-R-I-U-X
+import { measureNavLogoTarget } from "./loader-dock-target";
+import { markLoaderV3Complete, markLoaderV3Handoff } from "./loader-v3-state";
+import { lockScrollV3, useScrollLockLenis } from "./scroll-lock-v3";
 
 // The counter runs to 92 on its own, then only closes the last 8 once the page
 // has actually finished loading — so the number tracks something real instead
@@ -19,50 +18,84 @@ const CLOSE_DURATION = 0.45;
 // Never hold the page longer than this, however slow the load is.
 const MAX_WAIT_MS = 3000;
 
-/**
- * Stagger order for the character dissolve: centre characters go last so the
- * word appears to collapse inward. Index order: 0=H 1=Y 2=P 3=E 4=R 5=I 6=U 7=X
- * Dissolve from the edges toward the middle.
- */
-const DISSOLVE_ORDER = [0, 7, 1, 6, 2, 5, 3, 4];
+// Exit: one scalar drives the whole thing, whichever way the field leaves.
+//
+// Dock — the mark scales down and travels to the navbar's logo, then hands over
+// to the real svg. The field's transform is rigid and linear in this scalar, so
+// the ease *is* the motion: it pulls off the centre of the screen and settles
+// onto the logo rather than arriving at speed.
+const DOCK_DURATION = 1.25;
+// The background static dissolves first, on its own scalar, so the mark leaves
+// an empty screen instead of dragging the noise along with it.
+const CLEAR_DURATION = 0.7;
+// How far the mark starts moving before the static has completely gone. Small —
+// enough to tie the two beats together without the noise still travelling.
+const CLEAR_OVERLAP = 0.15;
+// The svg comes up underneath the landed mark and is given the bar's own 500ms
+// intro to reach full strength before the glyphs start to go. Cross-fading the
+// two instead dips in the middle — half-strength glyphs over a half-strength
+// logo is less ink than either, and the mark visibly dulls at the very moment
+// it is supposed to resolve. They are the same shape in the same place, so
+// overlapping them at full strength costs nothing.
+const HANDOFF_HOLD = 0.45;
+const HANDOFF_FADE = 0.35;
 
-export default function LoaderV3() {
+// Burst — the field hands each cell its own start time and direction out of the
+// scalar, so the mark breaks apart rather than unwinding letter by letter.
+//
+// Eased with "none" — the field's geometry is linear in this scalar, so a
+// linear scalar is what gives every glyph constant outward velocity. Any ease
+// here would make the burst surge or coast and read as a dissolve again.
+const BURST_DURATION = 1.8;
+// The black backing clears over the first part of the burst, uncovering the
+// hero underneath while the glyphs are still crossing it. That overlap is the
+// join between the two ASCII fields — hold the backdrop to the end instead and
+// the loader reads as a panel that fades, not as a field that hands over.
+const BACKDROP_LEAD = 0.1;
+const BACKDROP_DURATION = 0.75;
+
+/**
+ * @param {"dock"|"burst"} exitMode — how the mark leaves. `dock` collapses it
+ *   onto the navbar's logo and hands over to the real svg; `burst` blows it out
+ *   across the hero. Docking falls back to bursting on a page with no navbar
+ *   logo to land on.
+ */
+export default function LoaderV3({ exitMode = "dock" }) {
   const [done, setDone] = useState(false);
 
   const rootRef = useRef(null);
+  const backdropRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Mutated by GSAP, read by the field's own render loop.
-  // `exits` is an array of 8 floats — one per character of HYPERIUX.
-  const fieldRef = useRef({
-    progress: 0,
-    exits: new Float32Array(CHAR_COUNT),
-    globalExit: 0,
-  });
+  // Mutated by GSAP, read by the field's own render loop. `clear` fades the
+  // background static out; `exit` is what then carries the mark away.
+  const fieldRef = useRef({ progress: 0, exit: 0, clear: 0 });
 
-  const lenis = useLenis();
+  useScrollLockLenis();
 
   useGSAP(
     () => {
       let cancelled = false;
       let waitTimeout = 0;
 
-      const release = () => {
-        document.documentElement.style.overflow = "";
-        lenis?.start?.();
-      };
-
       if (prefersReducedMotion()) {
         markLoaderV3Complete();
+        markLoaderV3Handoff();
         setDone(true);
         return;
       }
 
-      document.documentElement.style.overflow = "hidden";
-      lenis?.stop?.();
+      // Held from here until the hero's intro has landed — this component is
+      // gone well before that, so the release lives in Hero, not in this
+      // timeline's `onComplete` or in the cleanup below.
+      lockScrollV3();
+
 
       const field = fieldRef.current;
-      const destroyField = createAsciiLoaderField(canvasRef.current, field);
+      const destroyField = createAsciiLoaderField(canvasRef.current, field, {
+        mode: exitMode,
+        dockTarget: measureNavLogoTarget,
+      });
 
       // ── Phase 1: Build — progress runs 0 → 0.92 while the page loads ──
       const settle = gsap
@@ -88,13 +121,12 @@ export default function LoaderV3() {
         }),
       ]);
 
-      // ── Phase 2: Close — finish the counter, then dissolve each letter ──
+      // ── Phase 2: Close — finish the counter, hand the mark over, uncover hero
       Promise.all([settle, capped]).then(() => {
         if (cancelled) return;
 
         const tl = gsap.timeline({
           onComplete: () => {
-            release();
             setDone(true);
           },
         });
@@ -106,56 +138,84 @@ export default function LoaderV3() {
           ease: "power2.inOut",
         });
 
-        // Brief beat before letters start dissolving
-        const dissolveStart = CLOSE_DURATION + 0.15;
+        // Brief beat, then the field leaves — collapsing onto the navbar's logo,
+        // or bursting outward from the centre.
+        const docking = exitMode === "dock";
+        const clearStart = CLOSE_DURATION + 0.15;
+        const exitDuration = docking ? DOCK_DURATION : BURST_DURATION;
+        // Docking empties the screen first: the static dissolves, and only then
+        // does the mark move. Bursting takes the static with it, so there is
+        // nothing to wait for.
+        const exitStart = docking
+          ? clearStart + CLEAR_DURATION - CLEAR_OVERLAP
+          : clearStart;
 
-        // Stagger each character's exit — edges first, centre last
-        const perCharDuration = 0.5;
-        const staggerGap = 0.07;
-
-        DISSOLVE_ORDER.forEach((charIdx, orderIdx) => {
+        if (docking) {
           tl.to(
-            field.exits,
+            field,
             {
-              [charIdx]: 1,
-              duration: perCharDuration,
-              ease: "power2.in",
+              clear: 1,
+              duration: CLEAR_DURATION,
+              ease: "power2.inOut",
+              onStart: () => {
+                // Stop swallowing clicks the moment the panel starts clearing.
+                gsap.set(rootRef.current, { pointerEvents: "none" });
+              },
             },
-            dissolveStart + orderIdx * staggerGap
+            clearStart
           );
-        });
+        }
 
-        // Fade out any remaining static noise
-        const globalExitStart =
-          dissolveStart + (DISSOLVE_ORDER.length - 1) * staggerGap;
         tl.to(
           field,
           {
-            globalExit: 1,
-            duration: 0.5,
-            ease: "power2.in",
+            exit: 1,
+            duration: exitDuration,
+            ease: docking ? "power2.inOut" : "none",
+            onStart: () => {
+              gsap.set(rootRef.current, { pointerEvents: "none" });
+              // Hand off at the *start* of the exit, not the end: the hero's
+              // own ASCII field needs to be coming up underneath while these
+              // glyphs are still crossing the screen, or the two read as two
+              // effects in sequence instead of one continuous field.
+              markLoaderV3Complete();
+            },
           },
-          globalExitStart
+          exitStart
         );
 
-        // Slide the panel away and hand off to the hero
+        // Held back to the mark's own beat when docking: the black has to stay
+        // put while the static dissolves, or the hero surfaces under a screen
+        // full of noise instead of behind the one mark crossing it.
         tl.to(
-          rootRef.current,
+          backdropRef.current,
           {
-            yPercent: -100,
-            duration: 0.9,
-            ease: "power4.inOut",
-            onStart: markLoaderV3Complete,
+            opacity: 0,
+            duration: BACKDROP_DURATION,
+            ease: "power2.inOut",
           },
-          globalExitStart + 0.25
+          exitStart + BACKDROP_LEAD
         );
+
+        if (docking) {
+          // Landing. The bar is what carries the mark from here: it is told to
+          // come in on this beat, and the glyphs only leave once it has — the
+          // same mark hardening, not one shape replacing another.
+          const landing = exitStart + exitDuration;
+
+          tl.call(markLoaderV3Handoff, undefined, landing);
+          tl.to(
+            canvasRef.current,
+            { opacity: 0, duration: HANDOFF_FADE, ease: "power2.out" },
+            landing + HANDOFF_HOLD
+          );
+        }
       });
 
       return () => {
         cancelled = true;
         window.clearTimeout(waitTimeout);
         destroyField();
-        release();
       };
     },
     { scope: rootRef }
@@ -167,8 +227,22 @@ export default function LoaderV3() {
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="fixed inset-0 z-1000 overflow-hidden bg-background will-change-transform"
+      className="fixed inset-0 z-1000 overflow-hidden"
     >
+      {/* The lock above can only start once this has hydrated, and the markup
+          is scrollable from the moment it paints — which on a cold load is
+          long enough to wheel most of the way down the page before any of the
+          JS lock exists. Shipping the lock as markup closes that window: it is
+          in effect from the first byte, and by the time this element goes the
+          inline lock has long since taken over. */}
+      <style>{"html{overflow:hidden}"}</style>
+      {/* Separate layer from the canvas so it can clear on its own — the
+          glyphs have to stay at full strength while they burst across the
+          hero, which a fade on the whole panel would take out with it. */}
+      <div
+        ref={backdropRef}
+        className="absolute inset-0 bg-background will-change-[opacity]"
+      />
       <canvas
         ref={canvasRef}
         className="absolute inset-0 block h-full w-full"
