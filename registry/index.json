@@ -1141,8 +1141,26 @@
   },
   {
     "name": "chromatic-text",
-    "version": "1.1.0",
+    "version": "1.1.3",
     "changelog": [
+      {
+        "version": "1.1.3",
+        "date": "2026-08-18",
+        "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
+        "breaking": false
+      },
+      {
+        "version": "1.1.2",
+        "date": "2026-08-18",
+        "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
+        "breaking": false
+      },
+      {
+        "version": "1.1.1",
+        "date": "2026-08-18",
+        "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
+        "breaking": false
+      },
       {
         "version": "1.1.0",
         "date": "2026-08-14",
@@ -1223,7 +1241,7 @@
       {
         "name": "fontWeight",
         "type": "number",
-        "default": 800,
+        "default": 500,
         "description": "Font weight shared by every text layer.",
         "remixer": {
           "control": "range",
