@@ -227,10 +227,10 @@ export default async function page() {
           <Quote />
           <CurvedGradient />
           <ProblemFixes />
-          <ExplainVault />
           <ExploreTheEffects />
           <Preview />
           <PreviewVideo />
+          <ExplainVault />
           <NotAnotherUIKit />
           <SmallMotion />
           <UseCases useCases={USE_CASES} />
@@ -251,7 +251,7 @@ export default async function page() {
             markers={false}
             accentColor="#eaeaea"
             className="h-[75vw] max-md:h-[150vw]! mt-[-10vw] bg-foreground"
-          /> 
+          />
           <FAQV3 faqItems={faqItems} />
           <CTAV3 />
           <FooterV3 />

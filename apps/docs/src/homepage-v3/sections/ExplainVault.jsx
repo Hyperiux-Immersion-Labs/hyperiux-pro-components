@@ -52,7 +52,7 @@ export default function ExplainVault() {
     }, [])
 
     return (
-        <section id='explain-vault' className='w-full mt-[-8vw] h-fit'>
+        <section id='explain-vault' className='w-full h-fit'>
 
             {/* <TextFillAnimationV3
                 as="p"
