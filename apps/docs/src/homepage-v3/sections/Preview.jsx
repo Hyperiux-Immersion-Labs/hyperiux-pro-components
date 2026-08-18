@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "@/lib/motion";
-import AsciiMorphIcon from "@/homepage-v3/components/AsciiMorphIcon";
+import AsciiMorph from "@/homepage-v3/components/AsciiMorph";
 import LineReveal from "@/components/Animations/LineReveal";
 
 if (typeof window !== "undefined") {
@@ -69,66 +69,51 @@ export default function Preview() {
       if (prefersReducedMotion()) {
         gsap.set(marks.flat(), { autoAlpha: 1 });
         gsap.set(textWrappers, { x: 0 });
-        // No dissolve to scrub: land straight on the resolved icons.
-        asciis.forEach((ascii) => ascii?.setStep(1));
+        // No morph to scrub: land straight on the resolved icons.
+        asciis.forEach((ascii) => ascii?.setProgress(1));
         return;
       }
 
-      // ── Numbers → icons: scrubbed dissolve, one per row, nothing travels ──
-      // Every row simply *is* its step number — no reveal, no entrance, it is
-      // crisp in its cell from the moment the section renders. The number is
-      // never itself dissolved: the ASCII the canvas draws is always the icon's
-      // shape (setGrid(1)), so what builds over the numeral is the icon
-      // arriving, and it settles into the crisp icon on the way out.
-      //
-      //   t     = progress mapped into this row's window        → 0 … 1
-      //   morph = 1 - |2t - 1|   triangle: nothing → scrambled icon → nothing
-      //   step  = the crisp art underneath — number below the peak, icon above.
-      //           It swaps while the cell is fully scrambled, so the number is
-      //           replaced under cover rather than cutting on screen.
-      //
-      // Both are pure functions of scroll progress, so scrubbing back replays
-      // the dissolve in reverse instead of snapping. The four windows are
-      // staggered and don't overlap, so the numbers turn over one at a time and
-      // the last lands before the section ends.
+      // ── Numbers → icons: scrubbed glyph morph, one per row ───────────────
+      // Every row opens as its step number and its glyphs travel into the icon
+      // as that row comes through. Each glyph is a real token moving from its
+      // spot in the numeral to its spot in the icon — an actual morph, not a
+      // dissolve. progress → t is a pure function of scroll, so scrubbing back
+      // replays the journey in reverse instead of snapping. The four windows are
+      // staggered and don't overlap, so the rows turn over one at a time and the
+      // last lands before the section ends.
       const MORPH_START = 0.05; // progress at which row 0 begins its morph
       const MORPH_STAGGER = 0.22; // progress between one row's start and the next
-      const MORPH_SPAN = 0.18; // progress a single number → icon morph takes
-
-      // The dissolve is the icon's silhouette all the way through, for every row.
-      asciis.forEach((ascii) => ascii?.setGrid(1));
+      const MORPH_SPAN = 0.22; // progress a single number → icon morph takes
 
       const updateIcons = (progress) => {
         asciis.forEach((ascii, i) => {
           if (!ascii) return;
           const start = MORPH_START + i * MORPH_STAGGER;
           const t = gsap.utils.clamp(0, 1, (progress - start) / MORPH_SPAN);
-          ascii.setStep(t < 0.5 ? 0 : 1);
-          ascii.setMorph(1 - Math.abs(t * 2 - 1));
+          ascii.setProgress(t);
         });
       };
 
       updateIcons(0);
 
-      // Row 0 starts active. Rows 1–3 start hidden and slide in on scroll.
+      // Row 0 starts active. Rows 1–3 start with marks hidden.
       gsap.set(marks.slice(1).flat(), { autoAlpha: 0 });
-      gsap.set(textWrappers[0], { x: "3vw" }); // row 0 is already indented
-      gsap.set(textWrappers.slice(1), { x: 0 }); // rows 1–3 start flush
 
-      // ── x translate — neighbour falloff (same formula as SquareTranslate) ──
-      // Instead of hard-coded fromTo tweens, we compute x continuously from
-      // scroll progress so it is always smooth, even on scrub-back.
+      // ── x translate — inverted neighbour falloff ─────────────────────────
+      // Active row stays flush (closest). Distance pushes neighbours out, so
+      // the farther a row is from the current step the farther it sits.
       //
       //   currentIndex  = progress * (total rows - 1)   → float 0 … 3
       //   distance      = |rowIndex - currentIndex|
-      //   factor        = 1 - clamp(distance / FALLOFF, 0, 1)
+      //   factor        = clamp(distance / FALLOFF, 0, 1)
       //   x             = INDENT_PX * factor
       //
-      // Active row (distance = 0) → factor = 1 → full indent (3vw).
-      // One row away (distance = 1, FALLOFF = 1.5) → factor ≈ 0.33 → 1vw nudge.
-      // Two rows away → factor = 0 → flush.
-      const INDENT_VW = 3;       // vw — how far the active row translates
-      const FALLOFF    = 1.5;    // rows — how quickly the nudge fades to neighbours
+      // Active row (distance = 0) → factor = 0 → flush.
+      // One row away (distance = 1, FALLOFF = 1.5) → factor ≈ 0.67 → ~2vw.
+      // Two rows away → factor = 1 → full indent (3vw).
+      const INDENT_VW = 3;       // vw — how far inactive rows translate
+      const FALLOFF    = 1.5;    // rows — how quickly the nudge grows with distance
 
       const updateX = (progress) => {
         const INDENT_PX = INDENT_VW * 0.01 * window.innerWidth;
@@ -136,7 +121,7 @@ export default function Preview() {
 
         textWrappers.forEach((wrapper, i) => {
           const distance = Math.abs(i - currentIndex);
-          const factor   = 1 - Math.min(distance / FALLOFF, 1);
+          const factor   = Math.min(distance / FALLOFF, 1);
           gsap.to(wrapper, {
             x: INDENT_PX * factor,
             duration: 0.4,
@@ -146,13 +131,16 @@ export default function Preview() {
         });
       };
 
+      updateX(0);
+
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: gridRef.current,
-          start: "top 65%",
-          end: "bottom 35%",
+          start: "top 50%",
+          end: "bottom 50%",
           scrub: true,
+          markers: false,
           invalidateOnRefresh: true,
           onUpdate: ({ progress }) => {
             updateX(progress);
@@ -197,14 +185,17 @@ export default function Preview() {
             <div className="w-[15vw] max-[1025px]:w-[6vw] max-md:w-[5vw] h-full border-r border-grey" />
             {/* This row's number, morphing in place into this row's icon. */}
             <div className="relative w-[15vw] max-[1025px]:w-[20vw] max-md:w-[30vw] h-full border-r border-grey">
-              <div className="preview-icon pointer-events-none absolute inset-0 p-[1.5vw] max-[1025px]:p-[3vw]">
-                <AsciiMorphIcon
+              <div className="preview-icon pointer-events-none absolute inset-0 p-[1vw] max-[1025px]:p-[3vw]">
+                <AsciiMorph
                   ref={(node) => {
                     asciiRefs.current[i] = node;
                   }}
                   sources={[step.number, step.icon]}
                   fit="contain"
-                  className="h-full max-md:h-1/2 w-full"
+                  cols={100}
+                  numberFill={1}   // how heavy the number is (1 = grid density, 2 = 2× denser)
+                  iconFill={1}     // how heavy the icon is (3 = 3× denser than cols)
+                  className="h-full max-[1025px]:my-auto w-full"
                 />
               </div>
             </div>
