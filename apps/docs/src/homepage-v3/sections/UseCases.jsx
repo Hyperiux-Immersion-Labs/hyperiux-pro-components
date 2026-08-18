@@ -13,7 +13,7 @@ if (typeof window !== "undefined") {
 
 
 
-const USE_CASES_X_PERCENT = [110, 110, 110, 110, 110];
+const USE_CASES_X_PERCENT = [110, 70, 70, 70, 70];
 
 const mark =
   "pointer-events-none absolute size-[0.3vw] border-primary max-[1025px]:size-1.5 max-md:size-2 max-sm:size-1";

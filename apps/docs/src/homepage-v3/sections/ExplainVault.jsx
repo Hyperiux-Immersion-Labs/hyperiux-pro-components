@@ -98,7 +98,7 @@ export default function ExplainVault() {
                         <ScrambleTextV3 text={WORKFLOW_TEXT} active={active} armed={armed} />
                         &nbsp;
                         <span className="fadeup inline-block">
-                            <LinkButton underline={false} className='max-md:mt-[2vw]' href={"#Workflow"} shimmer shimmerColor="var(--primary)" tilted={false} showArrow text={"See How it Works"} />
+                            <LinkButton underline={true} className='max-md:mt-[2vw]' href={"#Workflow"} shimmer shimmerColor="var(--primary)" tilted={false} showArrow text={"See How it Works"} />
                         </span>
                     </div>
                 </div>

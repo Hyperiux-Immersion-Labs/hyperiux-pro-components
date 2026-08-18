@@ -226,12 +226,12 @@ export default async function page() {
           <Techstack />
           <Quote />
           <CurvedGradient />
-          <ProblemFixes />
           <ExploreTheEffects />
           <Preview />
-          <PreviewVideo />
           <ExplainVault />
+          <PreviewVideo />
           <NotAnotherUIKit />
+          <ProblemFixes />
           <SmallMotion />
           <UseCases useCases={USE_CASES} />
           <DitherTransition
