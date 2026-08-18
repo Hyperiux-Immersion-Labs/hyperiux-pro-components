@@ -5,7 +5,7 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 type TypingVariant = "sequential" | "cascade" | "loop";
-type CursorStyle = "bar" | "block" | "underline";
+type CursorStyle = "bar" | "square" | "triangle" | "underscore" | "dot";
 type TextAlign = "left" | "center" | "right";
 type TypingDirection = "left-to-right" | "right-to-left";
 
@@ -42,7 +42,9 @@ type TypingLineStyle = CSSProperties & {
   "--typing-duration": string;
   "--typing-delay": string;
   "--typing-loop-duration": string;
+  "--typing-cursor-animation": string;
   "--typing-cursor-color": string;
+  "--typing-cursor-width": string;
   "--typing-blur": string;
   "--typing-rotate": string;
   "--typing-scale": number;
@@ -59,28 +61,6 @@ function getAlignmentClass(textAlign: TextAlign) {
   if (textAlign === "center") return "items-center text-center";
   if (textAlign === "right") return "items-end text-right";
   return "items-start text-left";
-}
-
-function getCursorStyles(
-  cursorStyle: CursorStyle,
-  cursorWidth: number,
-  cursorColor: string,
-  showCursor: boolean,
-  typingDirection: TypingDirection
-): CSSProperties {
-  if (!showCursor) return {};
-
-  if (cursorStyle === "underline") {
-    return {
-      borderBottom: `${cursorWidth}px solid ${cursorColor}`,
-      paddingBottom: "0.08em",
-    };
-  }
-
-  return {
-    [typingDirection === "right-to-left" ? "borderLeft" : "borderRight"]:
-      `${cursorStyle === "block" ? "0.58em" : `${cursorWidth}px`} solid ${cursorColor}`,
-  };
 }
 
 export default function TypingText({
@@ -172,13 +152,18 @@ export default function TypingText({
           }
 
           const lineStyle: TypingLineStyle = {
-            ...getCursorStyles(cursorStyle, cursorWidth, cursorColor, showCursor, typingDirection),
             "--typing-target-width": `${line.chars}ch`,
             "--typing-steps": line.chars,
             "--typing-duration": `${typingDuration}s`,
             "--typing-delay": `${delay}s`,
             "--typing-loop-duration": `${loopDuration}s`,
+            "--typing-cursor-animation": prefersReducedMotion
+              ? "none"
+              : variant === "loop"
+                ? "typing-text-cursor 820ms steps(1, end) var(--typing-delay) infinite both"
+                : "typing-text-cursor-finish var(--typing-duration) linear var(--typing-delay) both",
             "--typing-cursor-color": cursorColor,
+            "--typing-cursor-width": `${cursorWidth}px`,
             "--typing-blur": `${blur}px`,
             "--typing-rotate": `${rotate}deg`,
             "--typing-scale": scale,
@@ -196,21 +181,22 @@ export default function TypingText({
             animation: prefersReducedMotion
               ? "none"
               : variant === "loop"
-                ? "typing-text-loop var(--typing-loop-duration) steps(var(--typing-steps), end) var(--typing-delay) infinite both, typing-text-cursor 820ms steps(1, end) infinite"
-                : "typing-text-write var(--typing-duration) steps(var(--typing-steps), end) var(--typing-delay) both, typing-text-cursor-finish var(--typing-duration) linear var(--typing-delay) both",
-            borderRightColor: prefersReducedMotion ? "transparent" : undefined,
-            borderLeftColor: prefersReducedMotion ? "transparent" : undefined,
-            borderBottomColor: prefersReducedMotion ? "transparent" : undefined,
+                ? "typing-text-loop var(--typing-loop-duration) steps(var(--typing-steps), end) var(--typing-delay) infinite both"
+                : "typing-text-write var(--typing-duration) steps(var(--typing-steps), end) var(--typing-delay) both",
           };
 
           return (
             <span
               key={`${animationKey}-${line.text}-${index}`}
               aria-hidden="true"
-              className="typing-text-line mb-2 block max-w-full overflow-hidden whitespace-nowrap font-mono will-change-[width,opacity]"
+              data-cursor-style={showCursor ? cursorStyle : undefined}
+              data-typing-direction={typingDirection}
+              className="typing-text-line mb-2 block max-w-full whitespace-nowrap font-mono will-change-[width,opacity]"
               style={lineStyle}
             >
-              {line.text}
+              <span className="typing-text-content block max-w-full overflow-hidden">
+                {line.text}
+              </span>
             </span>
           );
         })}
@@ -222,8 +208,68 @@ export default function TypingText({
         }
 
         .typing-text-line {
+          position: relative;
           width: 0;
           opacity: 0;
+          transition:
+            color 240ms ease,
+            background-color 240ms ease;
+        }
+
+        .typing-text-line[data-cursor-style]::after {
+          content: "";
+          position: absolute;
+          inset-block-start: 50%;
+          inset-inline-start: calc(100% + 0.16em);
+          width: var(--typing-cursor-width);
+          height: 1em;
+          background: var(--typing-cursor-color);
+          opacity: 0;
+          translate: 0 -50%;
+          transform-origin: center;
+          animation: var(--typing-cursor-animation);
+          transition:
+            background-color 240ms ease,
+            border-color 240ms ease,
+            border-radius 240ms ease,
+            clip-path 240ms ease,
+            height 240ms ease,
+            opacity 180ms ease,
+            transform 240ms ease,
+            width 240ms ease;
+        }
+
+        .typing-text-line[data-typing-direction="right-to-left"]::after {
+          inset-inline: auto calc(100% + 0.16em);
+        }
+
+        .typing-text-line[data-cursor-style="square"]::after {
+          width: 0.58em;
+          height: 0.58em;
+        }
+
+        .typing-text-line[data-cursor-style="triangle"]::after {
+          width: 0.64em;
+          height: 0.64em;
+          clip-path: polygon(0 0, 100% 50%, 0 100%);
+        }
+
+        .typing-text-line[data-typing-direction="right-to-left"][data-cursor-style="triangle"]::after {
+          transform: scaleX(-1);
+        }
+
+        .typing-text-line[data-cursor-style="dot"]::after {
+          width: 0.38em;
+          height: 0.38em;
+          border-radius: 999px;
+        }
+
+        .typing-text-line[data-cursor-style="underscore"]::after {
+          inset-block-start: auto;
+          inset-block-end: 0.16em;
+          width: 0.72em;
+          height: var(--typing-cursor-width);
+          translate: 0 0;
         }
 
         @keyframes typing-text-write {
@@ -281,32 +327,24 @@ export default function TypingText({
         @keyframes typing-text-cursor {
           0%,
           45% {
-            border-right-color: var(--typing-cursor-color);
-            border-left-color: var(--typing-cursor-color);
-            border-bottom-color: var(--typing-cursor-color);
+            opacity: 1;
           }
 
           46%,
           100% {
-            border-right-color: transparent;
-            border-left-color: transparent;
-            border-bottom-color: transparent;
+            opacity: 0;
           }
         }
 
         @keyframes typing-text-cursor-finish {
           0%,
           99.8% {
-            border-right-color: var(--typing-cursor-color);
-            border-left-color: var(--typing-cursor-color);
-            border-bottom-color: var(--typing-cursor-color);
+            opacity: 1;
           }
 
           99.9%,
           100% {
-            border-right-color: transparent;
-            border-left-color: transparent;
-            border-bottom-color: transparent;
+            opacity: 0;
           }
         }
 
@@ -316,7 +354,10 @@ export default function TypingText({
             max-width: 100%;
             opacity: 1 !important;
             animation: none !important;
-            border-color: transparent !important;
+          }
+
+          .typing-text-line::after {
+            opacity: 0 !important;
           }
         }
       `}</style>
