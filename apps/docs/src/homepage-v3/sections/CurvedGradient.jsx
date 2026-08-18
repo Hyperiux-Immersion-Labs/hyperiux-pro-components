@@ -102,17 +102,14 @@ export default function CurvedGradient() {
           markers={false}
         />
         <h2 ref={firstRef} id="curved-gradient-heading" className={headingClass}>
-          Most websites are not broken. They are forgettable. They use the same
-          sections, the same rhythm, the same static patterns, and the same safe
-          animations everyone else is using.
+          What makes an interface memorable is what happens when someone touches it; How a section enters, how a cursor reacts, how a page changes, and how a moment resolves.
         </h2>
         <h2
           ref={secondRef}
           id="curved-gradient-heading-2"
           className={headingClass}
         >
-          Your site does not need more decoration. It needs motion that earns
-          its place
+          Most component libraries and page builders stop at the static interface. Interaction is  the layer they never touch.
         </h2>
       </section>
     </div>

@@ -170,8 +170,8 @@ export default function Hero() {
                             </h1>
                         </div>
 
-                        <p ref={copyRef} className="t22 text-secondary w-[40vw] max-[1025px]:w-[75%] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left">
-                            100+ copy-paste effects for React & Next.js. Scroll, cursor, text, and WebGL interactions, preview and install with the CLI.
+                        <p ref={copyRef} className="t22 text-secondary w-[42vw] max-[1025px]:w-[75%] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left">
+                          Source-first scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes for React and Next.js. Installed as real files in your project, not a dependency you rent.
                         </p>
 
                         <div
@@ -179,14 +179,14 @@ export default function Hero() {
                             className="pointer-events-auto flex max-sm:pt-4 max-sm:flex-col w-fit max-sm:w-full gap-[1vw] max-[1025px]:gap-[2.5vw] max-md:pb-[5vw] max-md:w-full max-md:gap-5"
                         >
                             <ButtonV3
-                                text="Browse Effects"
-                                href="/effects/free"
+                                text="Read Docs"
+                                href="/docs"
                                 variant="outline"
                                 className="max-sm:w-full max-sm:justify-center"
                             />
                             <ButtonV3
-                                text="Upgrade to Pro"
-                                href="/sign-up"
+                                text="Browser All Effects"
+                                      href="/effects"
                                 variant="orange"
                                 scrollOffset={-1000}
                                 className="max-sm:w-full max-sm:justify-center"
