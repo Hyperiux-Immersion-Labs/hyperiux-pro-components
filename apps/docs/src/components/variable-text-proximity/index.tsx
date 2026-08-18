@@ -12,7 +12,6 @@ import {
 } from 'react';
 import { motion } from 'motion/react';
 import { Roboto_Flex } from 'next/font/google';
-import Image from 'next/image';
 
 // Loaded via next/font so the variable font is self-hosted and inlined at
 // build time - a runtime <link> to Google Fonts would flash the fallback
@@ -308,7 +307,7 @@ export function VariableTextProximityDemo({
   baseOpticalSize = 9,
   hoverOpticalSize = 40,
   backgroundColor = '#080808',
-  textColor = '#000000',
+  textColor = '#ffffff',
   fontSize = 55,
   lineHeight = 1.18,
   minWidth = 920,
@@ -333,14 +332,6 @@ export function VariableTextProximityDemo({
       className={`hv-variable-root relative flex min-h-screen w-full items-center justify-center overflow-hidden px-6 ${className}`}
       style={demoStyle}
     >
-      <Image
-        src="/h-30.png"
-        alt=""
-        fill
-        priority
-        aria-hidden="true"
-        className="hv-variable-bg-image"
-      />
       <div ref={stageRef} className="hv-variable-stage relative z-10 mx-auto text-center">
         <VariableTextProximity
           label={VARIABLE_HOVER_COPY}
@@ -354,14 +345,12 @@ export function VariableTextProximityDemo({
       </div>
       <style>{`
         .hv-variable-root {
-          background: var(--hv-variable-bg);
+          background-color: var(--hv-variable-bg);
+          background-image: url('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-30.png');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
           color: var(--hv-variable-color);
-        }
-
-        .hv-variable-bg-image {
-          object-fit: cover;
-          z-index: 0;
-          pointer-events: none;
         }
 
         .hv-variable-stage {

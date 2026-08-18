@@ -150,13 +150,14 @@
       "remixer": {
         "control": "color",
         "group": "colors",
+        "enabled":false,
         "groupTitle": "Colors"
       }
     },
     {
       "name": "textColor",
       "type": "string",
-      "default": "#000000",
+      "default": "#ffffff",
       "description": "Text color.",
       "remixer": {
         "control": "color",
