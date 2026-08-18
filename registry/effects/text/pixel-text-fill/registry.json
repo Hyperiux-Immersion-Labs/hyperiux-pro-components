@@ -70,7 +70,7 @@
     {
       "name": "stagger",
       "type": "number",
-      "default": 12,
+      "default": 32,
       "description": "Character stagger window for the fill head.",
       "remixer": {
         "control": "range",
@@ -98,7 +98,7 @@
     {
       "name": "effectWidth",
       "type": "number",
-      "default": 1.8,
+      "default": 1.4,
       "description": "Pixelated fill band width multiplier.",
       "remixer": {
         "control": "range",
@@ -170,7 +170,7 @@
     {
       "name": "fontSize",
       "type": "number",
-      "default": 4,
+      "default": 3.2,
       "description": "Font size in vw units.",
       "remixer": {
         "control": "range",
@@ -188,6 +188,7 @@
       "description": "Font weight.",
       "remixer": {
         "control": "range",
+        "enabled": false,
         "group": "type",
         "groupTitle": "Type",
         "min": 100,
@@ -237,14 +238,14 @@
     {
       "name": "maxWidth",
       "type": "number",
-      "default": 180,
-      "description": "Text wrapper max width in vw units.",
+      "default": 80,
+      "description": "Text wrapper width as a percentage of the section.",
       "remixer": {
         "control": "range",
         "group": "type",
         "groupTitle": "Type",
-        "min": 80,
-        "max": 220,
+        "min": 40,
+        "max": 100,
         "step": 1
       }
     }

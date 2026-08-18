@@ -62,7 +62,9 @@ const EXCLUDED_PATHS = new Set([
   "/demo/focus-text",
   "/demo/pixel-text-fill",
   "/demo/typing-text",
-
+  "/demo/flickering-text",
+  "/demo/rolling-text",
+  
 ]);
 
 function formatLabel(pathname) {

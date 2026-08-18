@@ -108,7 +108,7 @@ const variableTextProximityDemoRegistry = {
     {
       name: "textColor",
       type: "string",
-      default: "#ffffff",
+      default: "#000000",
       description: "Text color.",
       remixer: {
         control: "color",

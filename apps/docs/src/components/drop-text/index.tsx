@@ -43,7 +43,7 @@ type DropTextProps = {
 
 const DEFAULT_TEXT = "Motion Makes Spaces Move";
 const DEFAULT_BACKGROUND_IMAGE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-17.jpg";
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 
 function mapStaggerFrom(staggerFrom: StaggerFrom) {
   if (staggerFrom === "left") return "start";
@@ -79,7 +79,7 @@ export default function DropText({
   splitBy = "characters",
   staggerFrom = "random",
   xOffset = 0,
-  yOffset = -115,
+  yOffset = -35,
   rotate = 0,
   blur = 0,
   scaleFrom = 1,
@@ -90,9 +90,9 @@ export default function DropText({
   lineHeight = 1,
   letterSpacing = 0,
   backgroundColor = "#101113",
-  duration = 0.5,
+  duration = 0.4,
   delay = 0,
-  stagger = 0.05,
+  stagger = 0.02,
   ease = "power2.out",
   animateOnScroll = false,
   className = "",

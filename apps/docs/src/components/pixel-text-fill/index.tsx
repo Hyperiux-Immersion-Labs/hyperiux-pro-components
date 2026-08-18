@@ -55,8 +55,7 @@ type PixelTextFillLayout = {
   mask: HTMLCanvasElement;
 };
 
-const DEFAULT_TEXT =
-  "Design systems should feel effortless, not like you're fighting your own components every time you build. Every motion detail should guide the eye, carry the story, and make complex interfaces feel calm, deliberate, and alive.";
+const DEFAULT_TEXT = "Build with calm motion.\nKeep the rhythm crisp and clear.\nMake each screen feel alive.\nLet every detail guide focus.";
 
 const BAYER = [
   0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26, 12, 44, 4, 36,
@@ -86,22 +85,32 @@ function smoothstep01(value: number) {
 }
 
 function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
-  const words = String(text).split(/\s+/).filter(Boolean);
   const lines: string[] = [];
-  let line = "";
+  const paragraphs = String(text).split("\n");
 
-  for (const word of words) {
-    const candidate = line ? `${line} ${word}` : word;
+  for (const paragraph of paragraphs) {
+    const words = paragraph.split(/\s+/).filter(Boolean);
+    let line = "";
 
-    if (line && ctx.measureText(candidate).width > maxWidth) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = candidate;
+    if (!words.length) {
+      lines.push("");
+      continue;
     }
+
+    for (const word of words) {
+      const candidate = line ? `${line} ${word}` : word;
+
+      if (line && ctx.measureText(candidate).width > maxWidth) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = candidate;
+      }
+    }
+
+    if (line) lines.push(line);
   }
 
-  if (line) lines.push(line);
   return lines;
 }
 
@@ -111,16 +120,16 @@ export default function PixelTextFill({
   primaryColor = "#ff5f00",
   dimColor = "#272727",
   backgroundColor = "#101113",
-  fontSize = 4,
+  fontSize = 3.2,
   fontWeight = 500,
   lineHeight = 1.18,
   textAlign = "center",
-  maxWidth = 180,
+  maxWidth = 80,
   sectionHeight = 250,
   pixelSize = 3,
-  stagger = 12,
+  stagger = 32,
   bandFraction = 1.15,
-  effectWidth = 1.8,
+  effectWidth = 1.4,
   settleBlend = 0.45,
   direction = "up",
   start = "top top",
@@ -557,8 +566,9 @@ export default function PixelTextFill({
           ref={wrapperRef}
           className="relative z-10 mx-auto"
           style={{
-            width: `${maxWidth}vw`,
+            width: `${maxWidth}%`,
             maxWidth: "none",
+            margin: "0 auto",
           }}
         >
           <p
@@ -569,6 +579,7 @@ export default function PixelTextFill({
               fontWeight,
               lineHeight,
               textAlign,
+              whiteSpace: "pre-line",
             }}
           >
             {text}
