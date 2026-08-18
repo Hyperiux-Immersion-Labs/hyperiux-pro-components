@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/depth-flip-text",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Vault-themed perspective text flip with staggered character motion and optional crossfade.",
   "main": "index.tsx",
   "files": [
@@ -12,7 +12,7 @@
     "hyperiux"
   ],
   "dependencies": {
-    "@gsap/react": "^2.1.2",
-    "gsap": "^3.15.0"
+    "gsap": "^3.15.0",
+    "@gsap/react": "^2.1.2"
   }
 }

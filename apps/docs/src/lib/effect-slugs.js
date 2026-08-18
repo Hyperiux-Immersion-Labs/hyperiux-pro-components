@@ -1,5 +1,9 @@
 const effectSlugAliasGroups = [
   {
+    slug: "variable-text-proximity",
+    aliases: ["variable-hover"],
+  },
+  {
     slug: "sample-component",
     aliases: ["a-sample-component"],
   },

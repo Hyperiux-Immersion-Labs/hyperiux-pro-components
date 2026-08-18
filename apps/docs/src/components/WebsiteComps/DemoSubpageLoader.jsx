@@ -44,6 +44,7 @@ const EXCLUDED_PATHS = new Set([
   "/demo/text-hover",
   "/demo/text-stream",
   "/demo/depth-shift-transition/page2",
+  "/demo/variable-text-proximity",
   "/demo/depth-shift-transition",
   "/demo/clippath-transition",
   "/demo/clippath-transition/page2",
