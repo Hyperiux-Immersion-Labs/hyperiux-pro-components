@@ -170,6 +170,10 @@ export default function CurvedGradientShader({
   pixelSize = 3.0,
   colorNum = 8.0,
   overscan = 1,
+  scrollTrigger: scrollTriggerRef,
+  scrollStart = "top bottom",
+  scrollEnd = "bottom top",
+  markers = false,
 }) {
   const wrapRef = useRef(null);
   const canvasRef = useRef(null);
@@ -380,10 +384,13 @@ export default function CurvedGradientShader({
     () => {
       if (prefersReducedMotion()) return;
 
+      const triggerEl = scrollTriggerRef?.current || wrapRef.current;
+
       ScrollTrigger.create({
-        trigger: wrapRef.current,
-        start: "top bottom",
-        end: "bottom top",
+        trigger: triggerEl,
+        start: scrollStart,
+        end: scrollEnd,
+        markers: markers,
         onUpdate: (self) => {
           const state = stateRef.current;
 

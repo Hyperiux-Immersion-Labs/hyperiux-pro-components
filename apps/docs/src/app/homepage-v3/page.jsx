@@ -22,9 +22,7 @@ import DitherTransition from "@/homepage-v3/components/DitherTransition";
 import ScrollTopOnLoad from "@/homepage-v3/components/ScrollTopOnLoad";
 import { getSearchIndexEffects } from "@/lib/search-index";
 import { FAQJSONLD } from "@/lib/json-ld";
-import { buildEffectsFromSanity, getAllSanityEffectEntries } from "@/lib/sanity";
-import { getFeaturedEffects } from "@/lib/featured-effects";
-import TrendingRightNow from "@/homepage-v3/sections/TrendingRightNow";
+import MorphingDiether from "./MorphingDiether";
 
 const faqItems = [
   {
@@ -213,9 +211,6 @@ const USE_CASES = [
 export default async function page() {
   const effects = await getSearchIndexEffects();
 
-  const sanityEntries = await getAllSanityEffectEntries()
-  const trendingEffects = getFeaturedEffects(buildEffectsFromSanity(sanityEntries))
-
   return (
     <>
       <FAQJSONLD faqs={faqItems} />
@@ -233,7 +228,6 @@ export default async function page() {
           <CurvedGradient />
           <ProblemFixes />
           <ExplainVault />
-          <TrendingRightNow effects={trendingEffects} />
           <ExploreTheEffects />
           <Preview />
           <PreviewVideo />
@@ -242,9 +236,9 @@ export default async function page() {
           <UseCases useCases={USE_CASES} />
           <DitherTransition
             markers={false}
-            mobileStartTriggers="top bottom"
+            mobileStartTriggers="-10% bottom"
             mobileEndTriggers="bottom -50%"
-            className="h-[75vw] max-md:h-[150vw]! bg-background "
+            className="h-[60vw] max-md:m max-md:h-[150vw]! bg-background "
           />
           <PricingV3 />
           <DitherTransition
@@ -263,6 +257,7 @@ export default async function page() {
           <FooterV3 />
         </div>
       </div>
+
     </>
   );
 }
