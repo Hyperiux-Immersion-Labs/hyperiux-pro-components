@@ -11,7 +11,7 @@ export default function VaultShell({ children, effects = [] }) {
             {/* <NavbarV3 effects={effects} /> */}
             <Navbar/>
             <NavbarMobile/>
-            <LenisSmoothScroll />
+            <LenisSmoothScroll /> 
             {children}
         </>
     )
