@@ -303,11 +303,11 @@ export default function FooterV3() {
                   hello@hyperiux.com
                 </FooterBlockLink>
               </li>
-              <li>
+              {/* <li>
                 <FooterBlockLink href="tel:+918178026136">
                   +91 81780 26136
                 </FooterBlockLink>
-              </li>
+              </li> */}
             </ul>
           </div>
 

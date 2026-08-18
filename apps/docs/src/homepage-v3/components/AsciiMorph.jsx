@@ -1,0 +1,301 @@
+"use client";
+
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+
+// Two ends of the morph. Each is sampled into the *same* grid, so a glyph in one
+// shape has a real coordinate to travel to in the other — this is what makes it
+// an actual redistribution of glyphs rather than a crossfade.
+const COLOR = "#ff5f00";
+const SPREAD = 0.35; // 0 = every glyph moves together, →1 = long trailing stagger
+
+// Dilation rounds for each end. Each round adds one ring of cells around the
+// shape, making it heavier without changing glyph size or causing overlap.
+// 1 = original silhouette, 2 = +1 ring, 3 = +2 rings, etc.
+const NUMBER_FILL = 1;
+const ICON_FILL = 3;
+
+// A cell counts as "inked" once its averaged coverage crosses this. Below it the
+// cell is empty (no glyph), which is what carves the hollow pupil of the eye.
+const ON_THRESHOLD = 0.2;
+
+const smoothstep = (t) => t * t * (3 - 2 * t);
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp01 = (v) => Math.min(Math.max(v, 0), 1);
+
+/**
+ * Samples one source image into a cols×rows grid of glyphs.
+ *
+ * Returns the inked cells only, each as { x, y, ch }. The glyph is not random:
+ * an inked cell touching an empty neighbour (or the border) is an edge, drawn as
+ * "0"; everything sealed inside the shape is "1". That gives the eye a "0" rim
+ * over a "1" fill, and the thin "1" numeral reads as mostly "0".
+ */
+function sampleShape(image, cols, rows, fit, fill = 1) {
+  const probe = document.createElement("canvas");
+  probe.width = cols;
+  probe.height = rows;
+  const ctx = probe.getContext("2d", { willReadFrequently: true });
+
+  const frame = fit === "cover" ? Math.max : Math.min;
+  const scale = frame(cols / image.naturalWidth, rows / image.naturalHeight);
+  const dw = image.naturalWidth * scale;
+  const dh = image.naturalHeight * scale;
+  ctx.drawImage(image, (cols - dw) / 2, (rows - dh) / 2, dw, dh);
+
+  let pixels;
+  try {
+    pixels = ctx.getImageData(0, 0, cols, rows).data;
+  } catch {
+    return [];
+  }
+
+  let on = new Uint8Array(cols * rows);
+  for (let i = 0; i < on.length; i += 1) {
+    const p = i * 4;
+    const lum =
+      (pixels[p] * 0.3 + pixels[p + 1] * 0.59 + pixels[p + 2] * 0.11) / 255;
+    const coverage = lum * (pixels[p + 3] / 255);
+    on[i] = coverage >= ON_THRESHOLD ? 1 : 0;
+  }
+
+  // Dilate: each round adds one ring of cells around the shape, making it
+  // heavier without touching glyph size. fill=1 → no dilation, 2 → +1 ring.
+  const rounds = Math.max(0, Math.round(fill) - 1);
+  for (let r = 0; r < rounds; r += 1) {
+    const next = new Uint8Array(on);
+    for (let y = 0; y < rows; y += 1) {
+      for (let x = 0; x < cols; x += 1) {
+        const i = y * cols + x;
+        if (on[i]) continue;
+        if (
+          (x > 0 && on[i - 1]) ||
+          (x < cols - 1 && on[i + 1]) ||
+          (y > 0 && on[i - cols]) ||
+          (y < rows - 1 && on[i + cols])
+        ) {
+          next[i] = 1;
+        }
+      }
+    }
+    on = next;
+  }
+
+  const cells = [];
+  for (let y = 0; y < rows; y += 1) {
+    for (let x = 0; x < cols; x += 1) {
+      const i = y * cols + x;
+      if (!on[i]) continue;
+
+      const edge =
+        x === 0 ||
+        y === 0 ||
+        x === cols - 1 ||
+        y === rows - 1 ||
+        !on[i - 1] ||
+        !on[i + 1] ||
+        !on[i - cols] ||
+        !on[i + cols];
+
+      cells.push({ x, y, ch: edge ? "0" : "1" });
+    }
+  }
+
+  return cells;
+}
+
+/**
+ * Pairs two cell lists into travelling tokens.
+ *
+ * Both lists are sorted top-to-bottom, left-to-right, then walked in lockstep
+ * against the longer of the two. The shorter shape's cells get reused as shared
+ * start/end points, so at rest every glyph of that shape is covered and the
+ * extra glyphs of the richer shape fan out from their nearest sibling.
+ */
+function buildTokens(fromCells, toCells) {
+  const byRow = (a, b) => a.y - b.y || a.x - b.x;
+  const a = [...fromCells].sort(byRow);
+  const b = [...toCells].sort(byRow);
+  if (!a.length || !b.length) return [];
+
+  const n = Math.max(a.length, b.length);
+  const tokens = new Array(n);
+
+  for (let i = 0; i < n; i += 1) {
+    const from = a[Math.floor((i * a.length) / n)];
+    const to = b[Math.floor((i * b.length) / n)];
+    tokens[i] = {
+      ax: from.x,
+      ay: from.y,
+      ach: from.ch,
+      bx: to.x,
+      by: to.y,
+      bch: to.ch,
+      delay: n > 1 ? (i / (n - 1)) * SPREAD : 0,
+    };
+  }
+
+  return tokens;
+}
+
+/**
+ * Draws two shapes and morphs between them by travelling each glyph from its
+ * position in `sources[0]` to its position in `sources[1]`. No scramble: a
+ * glyph only ever shows its start char or its end char.
+ *
+ * Exposes an imperative `setProgress(0…1)` so a scrubbed GSAP timeline (or a
+ * click tween) can drive it without re-rendering React on every tick. 0 rests on
+ * the first source, 1 on the second.
+ */
+const AsciiMorph = forwardRef(function AsciiMorph(
+  {
+    sources,
+    className = "",
+    fit = "contain",
+    cols = 50,
+    numberFill = NUMBER_FILL,
+    iconFill = ICON_FILL,
+  },
+  ref,
+) {
+  const canvasRef = useRef(null);
+  const boxRef = useRef(null);
+  const tokensRef = useRef([]);
+  const progressRef = useRef(0);
+  const drawRef = useRef(() => {});
+
+  const srcKey = sources.join("|");
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const box = boxRef.current;
+    if (!canvas || !box) return;
+
+    const list = srcKey.split("|");
+    let disposed = false;
+    let gridCols = cols;
+    let gridRows = cols;
+    let cell = 0;
+    let cssW = 0;
+    let cssH = 0;
+    let ctx = null;
+    let color = COLOR;
+
+    const images = list.map(() => null);
+    const rawCells = list.map(() => null);
+    const densityFor = (index) => (index === 0 ? numberFill : iconFill);
+
+    const draw = (p) => {
+      if (!ctx || !cell) return;
+      ctx.clearRect(0, 0, cssW, cssH);
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 1;
+
+      const tokens = tokensRef.current;
+      for (let i = 0; i < tokens.length; i += 1) {
+        const tok = tokens[i];
+        const local = smoothstep(clamp01((p - tok.delay) / (1 - SPREAD)));
+        const x = lerp(tok.ax, tok.bx, local);
+        const y = lerp(tok.ay, tok.by, local);
+        const ch = local < 0.5 ? tok.ach : tok.bch;
+        ctx.fillText(ch, Math.round((x + 0.5) * cell), Math.round((y + 0.5) * cell));
+      }
+    };
+    drawRef.current = draw;
+
+    const rebuild = () => {
+      if (!rawCells[0] || !rawCells[1]) return;
+      tokensRef.current = buildTokens(rawCells[0], rawCells[1]);
+      draw(progressRef.current);
+    };
+
+    const measure = () => {
+      const { width, height } = box.getBoundingClientRect();
+      if (!width || !height) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Integer CSS box so the bitmap is never stretched by a fractional layout.
+      cssW = Math.max(1, Math.floor(width));
+      cssH = Math.max(1, Math.floor(height));
+      cell = cssW / cols;
+      gridCols = cols;
+      gridRows = Math.max(1, Math.round(cssH / cell));
+
+      canvas.style.width = `${cssW}px`;
+      canvas.style.height = `${cssH}px`;
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+
+      ctx = canvas.getContext("2d", { alpha: true });
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+      // Integer px font — fractional sizes anti-alias into mush.
+      ctx.font = `${Math.max(1, Math.round(cell))}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = COLOR;
+      color = window.getComputedStyle(canvas).color || COLOR;
+
+      images.forEach((img, index) => {
+        if (img?.complete && img.naturalWidth)
+          rawCells[index] = sampleShape(
+            img,
+            gridCols,
+            gridRows,
+            fit,
+            densityFor(index),
+          );
+      });
+      rebuild();
+    };
+
+    list.forEach((src, index) => {
+      const img = new window.Image();
+      img.onload = () => {
+        if (disposed) return;
+        images[index] = img;
+        if (cell) {
+          rawCells[index] = sampleShape(
+            img,
+            gridCols,
+            gridRows,
+            fit,
+            densityFor(index),
+          );
+          rebuild();
+        }
+      };
+      img.src = src;
+      images[index] = img;
+    });
+
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(box);
+
+    return () => {
+      disposed = true;
+      observer.disconnect();
+    };
+  }, [srcKey, fit, cols, numberFill, iconFill]);
+
+  useImperativeHandle(ref, () => ({
+    setProgress(value) {
+      const p = clamp01(value);
+      progressRef.current = p;
+      drawRef.current(p);
+    },
+  }), []);
+
+  return (
+    <div ref={boxRef} className={`relative ${className}`}>
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 text-primary"
+      />
+    </div>
+  );
+});
+
+export default AsciiMorph;
