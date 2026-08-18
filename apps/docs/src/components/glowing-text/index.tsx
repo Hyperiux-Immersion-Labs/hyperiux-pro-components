@@ -29,6 +29,8 @@ const DEFAULT_EYEBROW = "VAULT TRANSMISSION";
 const DEFAULT_TEXT =
   "Connection established with Hyperiux Vault,\nDecrypting premium component signatures,\nMotion presets verified and ready to ship,\nWelcome in. Build something that glows.";
 const SETTLED_WEIGHT = 300;
+const DEFAULT_BACKGROUND_IMAGE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 
 function withAlpha(color: string, alpha: number) {
   if (/^#[0-9a-f]{6}$/i.test(color)) {
@@ -126,6 +128,10 @@ export default function GlowingText({
           "--glow-hard": glowHard,
           "--glow-settled-weight": SETTLED_WEIGHT,
           backgroundColor,
+          backgroundImage: `linear-gradient(rgba(11, 13, 14, 0.52), rgba(11, 13, 14, 0.52)), url(${DEFAULT_BACKGROUND_IMAGE})`,
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
         } as CSSProperties
       }
     >

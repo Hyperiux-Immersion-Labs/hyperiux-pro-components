@@ -280,7 +280,7 @@
     {
       "name": "fontSize",
       "type": "number",
-      "default": 9,
+      "default": 6,
       "description": "Font size in vw units.",
       "remixer": {
         "control": "range",
@@ -300,20 +300,6 @@
         "control": "color",
         "group": "type",
         "groupTitle": "Type"
-      }
-    },
-    {
-      "name": "fontWeight",
-      "type": "number",
-      "default": 600,
-      "description": "Font weight.",
-      "remixer": {
-        "control": "range",
-        "group": "type",
-        "groupTitle": "Type",
-        "min": 100,
-        "max": 900,
-        "step": 100
       }
     },
     {

@@ -57,6 +57,10 @@ const EXCLUDED_PATHS = new Set([
   "/demo/pixel-random/page2",
   "/demo/depth-flip-text",
   "/demo/drop-text",
+  "/demo/glowing-text",
+  "/demo/focus-text",
+  "/demo/pixel-text-fill",
+  "/demo/typing-text",
 
 ]);
 

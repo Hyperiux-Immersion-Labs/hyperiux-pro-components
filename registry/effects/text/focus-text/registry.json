@@ -14,7 +14,7 @@
   "description": "Character-by-character text reveal that scales and sharpens into focus with replayable motion.",
   "category": "text",
   "dependencies": [
-    "motion"
+    "gsap"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/focus-text",
@@ -139,6 +139,42 @@
       "description": "Automatically replay the animation on a loop.",
       "remixer": {
         "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "scrub",
+      "type": "boolean",
+      "default": false,
+      "description": "Links the reveal to scroll progress instead of playing on mount. Disables looping and the replay button.",
+      "remixer": {
+        "enabled": false,
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "scrollStart",
+      "type": "string",
+      "default": "top 80%",
+      "description": "ScrollTrigger start value used when scrub is enabled.",
+      "remixer": {
+        "enabled": false,
+        "control": "text",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "scrollEnd",
+      "type": "string",
+      "default": "bottom 20%",
+      "description": "ScrollTrigger end value used when scrub is enabled.",
+      "remixer": {
+        "enabled": false,
+        "control": "text",
         "group": "behavior",
         "groupTitle": "Behavior"
       }

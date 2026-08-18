@@ -911,7 +911,7 @@
         "text"
       ],
       "dependencies": [
-        "motion"
+        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "FocusText",

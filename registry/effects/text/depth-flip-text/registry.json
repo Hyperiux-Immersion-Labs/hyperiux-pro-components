@@ -30,7 +30,11 @@
     {
       "name": "phrases",
       "type": "string[]",
-      "default": ["Hyperiux Vault", "Premium UI Drops", "Built to Ship"],
+      "default": [
+        "Hyperiux Vault ships faster",
+        "Premium UI for modern teams",
+        "Built to launch beautifully"
+      ],
       "description": "Phrases that cycle through the perspective flip.",
       "copyable": true,
       "remixer": {
@@ -122,6 +126,42 @@
       "description": "Fades outgoing and incoming characters during the flip.",
       "remixer": {
         "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "scrub",
+      "type": "boolean",
+      "default": false,
+      "description": "Links the first flip transition to scroll progress instead of autoplay.",
+      "remixer": {
+        "enabled": false,
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "scrollStart",
+      "type": "string",
+      "default": "top 80%",
+      "description": "ScrollTrigger start value used when scrub is enabled.",
+      "remixer": {
+        "enabled": false,
+        "control": "text",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "scrollEnd",
+      "type": "string",
+      "default": "bottom 20%",
+      "description": "ScrollTrigger end value used when scrub is enabled.",
+      "remixer": {
+        "enabled": false,
+        "control": "text",
         "group": "motion",
         "groupTitle": "Motion"
       }

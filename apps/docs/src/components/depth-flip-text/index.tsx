@@ -4,9 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Ref } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 
-gsap.registerPlugin(useGSAP, SplitText);
+gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 
 interface DepthFlipTextProps {
   phrases?: string[];
@@ -18,16 +19,23 @@ interface DepthFlipTextProps {
   transitionDuration?: number;
   charStagger?: number;
   useOpacityTransition?: boolean;
+  scrub?: boolean;
+  scrollStart?: string;
+  scrollEnd?: string;
 }
 
-const DEFAULT_PHRASES = ["Hyperiux Vault", "Premium UI Drops", "Built to Ship"];
+const DEFAULT_PHRASES = [
+  "Hyperiux Vault ships faster",
+  "Premium UI for modern teams",
+  "Built to launch beautifully",
+];
+const BACKGROUND_IMAGE_URL =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-27.jpg";
 
 const LINE_HEIGHT = 0.9;
-// Per-character perspective. Each glyph gets its own vanishing point so every
-// letter flips identically — a shared ancestor perspective would shear the
-// letters at the ends of a wide line.
+
 const CHAR_PERSPECTIVE = 1200;
-// Closest GSAP equivalent of the original cubic-bezier(0.76, 0, 0.24, 1).
+
 const FLIP_EASE = "power4.inOut";
 
 const DepthFlipText = ({
@@ -40,6 +48,9 @@ const DepthFlipText = ({
   transitionDuration = 1.4,
   charStagger = 0.02,
   useOpacityTransition = false,
+  scrub = false,
+  scrollStart = "top 80%",
+  scrollEnd = "bottom 20%",
 }: DepthFlipTextProps) => {
   const normalizedPhrases = useMemo(
     () => phrases.map((phrase) => phrase.trim()).filter(Boolean),
@@ -68,10 +79,11 @@ const DepthFlipText = ({
     };
   }, []);
 
-  const isLast = activeIndex >= normalizedPhrases.length - 1;
-  const hasNext = normalizedPhrases.length > 1 && (!isLast || loop);
-  const nextIndex = isLast ? 0 : activeIndex + 1;
-  const currentPhrase = normalizedPhrases[activeIndex] ?? "";
+  const displayIndex = scrub ? 0 : activeIndex;
+  const isLast = displayIndex >= normalizedPhrases.length - 1;
+  const hasNext = normalizedPhrases.length > 1 && (!isLast || (!scrub && loop));
+  const nextIndex = isLast ? 0 : displayIndex + 1;
+  const currentPhrase = normalizedPhrases[displayIndex] ?? "";
   const nextPhrase = hasNext ? (normalizedPhrases[nextIndex] ?? "") : "";
 
   useGSAP(
@@ -107,7 +119,18 @@ const DepthFlipText = ({
         if (!hasNext) return cleanup;
 
         gsap
-          .timeline({ delay: holdDuration, onComplete: () => setActiveIndex(nextIndex) })
+          .timeline({
+            delay: scrub ? 0 : holdDuration,
+            onComplete: scrub ? undefined : () => setActiveIndex(nextIndex),
+            scrollTrigger: scrub
+              ? {
+                  trigger: containerRef.current,
+                  start: scrollStart,
+                  end: scrollEnd,
+                  scrub: true,
+                }
+              : undefined,
+          })
           .to(
             currentEl,
             {
@@ -157,7 +180,18 @@ const DepthFlipText = ({
       const advance = () => setActiveIndex(nextIndex);
 
       gsap
-        .timeline({ delay: holdDuration, onComplete: advance })
+        .timeline({
+          delay: scrub ? 0 : holdDuration,
+          onComplete: scrub ? undefined : advance,
+          scrollTrigger: scrub
+            ? {
+                trigger: containerRef.current,
+                start: scrollStart,
+                end: scrollEnd,
+                scrub: true,
+              }
+            : undefined,
+        })
         .to(
           currentSplit.chars,
           {
@@ -195,6 +229,9 @@ const DepthFlipText = ({
         fontsReady,
         currentPhrase,
         nextPhrase,
+        scrub,
+        scrollStart,
+        scrollEnd,
         holdDuration,
         transitionDuration,
         charStagger,
@@ -209,8 +246,17 @@ const DepthFlipText = ({
       style={{ backgroundColor }}
     >
       <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${BACKGROUND_IMAGE_URL})` }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-black/35"
+      />
+      <div
         ref={containerRef}
-        className="relative w-full max-w-[1400px]"
+        className="relative z-10 w-full max-w-[1400px]"
         style={{ opacity: fontsReady ? 1 : 0 }}
       >
         <Phrase
@@ -241,7 +287,7 @@ interface PhraseProps {
 const Phrase = ({ ref, text, tone, secondary = false }: PhraseProps) => (
   <p
     ref={ref}
-    className={`m-0 w-full whitespace-nowrap text-center  text-[6vw] max-md:text-[10vw] max-[1025px]:text-[8vw] font-semibold tracking-[-0.08em]  ${secondary ? "absolute inset-0 opacity-0" : "relative"}`}
+    className={`m-0 w-full whitespace-nowrap text-center  text-[6vw] max-md:text-[10vw] max-[1025px]:text-[8vw] font-medium text-white! tracking-[-0.08em]  ${secondary ? "absolute inset-0 opacity-0" : "relative"}`}
     style={{ color: tone, lineHeight: LINE_HEIGHT }}
   >
     {text}

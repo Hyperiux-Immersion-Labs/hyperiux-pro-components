@@ -132,7 +132,7 @@ const ChromaticText = ({
   return (
     <section
       ref={rootRef}
-      className={`relative flex h-[150vh] w-full items-center justify-center ${className}`}
+      className={`relative flex h-[150vh] w-full items-center justify-center px-7 ${className}`}
       style={{ backgroundColor }}
     >
       <div className="sticky top-0 flex h-screen w-full items-end justify-center overflow-hidden px-4">

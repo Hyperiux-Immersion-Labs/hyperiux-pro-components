@@ -17,13 +17,13 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <main className="relative min-h-screen overflow-hidden bg-[#f6f5f2] text-[#050505]">
-          <DemoHeader logoColor="#050505" textColor="#050505" />
+          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
           {effect}
           <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex justify-center px-6">
             <button
               type="button"
               onClick={() => setReplayKey((value) => value + 1)}
-              className="pointer-events-auto inline-flex items-center justify-center rounded-full border border-black/15 bg-black/[0.06] px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-black/30 hover:bg-black/[0.1]"
+              className="pointer-events-auto inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.28em] text-white transition hover:border-white/30 hover:bg-white/10"
             >
               Replay animation
             </button>
