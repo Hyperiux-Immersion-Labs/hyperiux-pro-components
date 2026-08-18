@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { LayoutGroup, motion, useReducedMotion } from "motion/react";
 import { ChevronDown, X } from "lucide-react";
 import { EFFECT_SORT_OPTIONS, FILTER_OPTIONS } from "@/lib/effect-sort";
 
@@ -21,12 +20,11 @@ export function FilterMenu({
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [hoveredCat, setHoveredCat] = useState(null);
   const [menuPos, setMenuPos] = useState(null);
+  const [hoveredCat, setHoveredCat] = useState(null);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
   const panelRef = useRef(null);
-  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
@@ -108,9 +106,9 @@ export function FilterMenu({
       style={
         menuPos
           ? {
-              top: menuPos.top,
-              left: menuPos.left,
-            }
+            top: menuPos.top,
+            left: menuPos.left,
+          }
           : undefined
       }
       className={[
@@ -122,68 +120,46 @@ export function FilterMenu({
         .join(" ")}
       onMouseLeave={() => setHoveredCat(null)}
     >
-      <LayoutGroup id="filter-menu-pill">
-        {options.map((cat, index) => {
-          const isSelected = (categoryFilter ?? activeFilter) === cat;
-          const highlighted = hoveredCat
-            ? hoveredCat === cat
-            : isSelected;
-          const showDivider =
-            EFFECT_SORT_OPTIONS.includes(cat) &&
-            !EFFECT_SORT_OPTIONS.includes(options[index - 1]);
+      {options.map((cat, index) => {
+        const isSelected = (categoryFilter ?? activeFilter) === cat;
+        const highlighted = hoveredCat ? hoveredCat === cat : isSelected;
+        const showDivider =
+          EFFECT_SORT_OPTIONS.includes(cat) &&
+          !EFFECT_SORT_OPTIONS.includes(options[index - 1]);
 
-          return (
-            <div key={cat}>
-              {showDivider && (
-                <span
-                  aria-hidden="true"
-                  className="my-1.5 block h-px w-full bg-white/10"
-                />
-              )}
-              <button
-                type="button"
-                role="menuitem"
-                onMouseEnter={() => setHoveredCat(cat)}
-                onClick={() => {
-                  onSelect(cat);
-                  setOpen(false);
-                }}
-                className="relative isolate flex w-full items-center  px-4 py-2.5 text-left text20 cursor-pointer"
-              >
-                {highlighted && (
-                  <motion.span
-                    layoutId={
-                      reduceMotion ? undefined : "filter-menu-pill"
-                    }
-                    className="absolute inset-0 z-0  bg-[#ff5f00]"
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 1 }}
-                    transition={
-                      reduceMotion
-                        ? { duration: 0.2, ease: "easeOut" }
-                        : {
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 40,
-                            opacity: { duration: 0.15 },
-                          }
-                    }
-                  />
-                )}
-                <span
-                  className={`relative z-10 leading-none transition-colors duration-200 ${
-                    highlighted
-                      ? "text-[#111111]"
-                      : "text-foreground"
+        return (
+          <div key={cat}>
+            {showDivider && (
+              <span
+                aria-hidden="true"
+                className="my-1.5 block h-px w-full bg-white/10"
+              />
+            )}
+            <button
+              type="button"
+              role="menuitem"
+              onMouseEnter={() => setHoveredCat(cat)}
+              onClick={() => {
+                onSelect(cat);
+                setOpen(false);
+              }}
+              className="group relative isolate flex w-full items-center  px-4 py-2.5 text-left text20 cursor-pointer"
+            >
+              <span
+                aria-hidden="true"
+                className={`absolute inset-0 z-0 origin-top bg-[#ff5f00] transition-transform duration-300 ease-out motion-reduce:transition-none ${highlighted ? "scale-y-100" : "scale-y-0"
                   }`}
-                >
-                  {getLabel(cat)}
-                </span>
-              </button>
-            </div>
-          );
-        })}
-      </LayoutGroup>
+              />
+              <span
+                className={`relative z-10 leading-none transition-colors duration-200 ${highlighted ? "text-[#111111]" : "text-foreground"
+                  }`}
+              >
+                {getLabel(cat)}
+              </span>
+            </button>
+          </div>
+        );
+      })}
     </div>
   ) : null;
 
@@ -200,10 +176,9 @@ export function FilterMenu({
           px-6 py-2.5 text-md relative max-md:px-5 max-md:py-2
           backdrop-blur-[6px] font-sans flex items-center gap-2 justify-center
           cursor-pointer transition-colors duration-300 max-md:text-lg text20
-          ${
-            activeFilter
-              ? "bg-white text-black hover:bg-[#ff5f00]"
-              : "bg-[#161616] text-[#ffffff] hover:text-black hover:bg-[#ff5f00]"
+          ${activeFilter
+            ? "bg-[#ff5f00] text-black hover:bg-[#ff5f00]"
+            : "bg-[#161616] text-[#ffffff] hover:text-black hover:bg-[#ff5f00]"
           }
         `}
       >
@@ -211,25 +186,24 @@ export function FilterMenu({
           <>
             <span className="leading-none">{getLabel(categoryFilter)}</span>
             <ChevronDown
-              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-                open ? "rotate-180" : ""
-              }`}
+              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""
+                }`}
             />
           </>
         ) : (
           <>
-          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clipPath="url(#clip0_491_803)">
-<rect width="16" height="2" rx="1" fill="currentColor"/>
-<rect x="3" y="5" width="10" height="2" rx="1" fill="currentColor"/>
-<rect x="5.5" y="10" width="5" height="2" rx="1" fill="currentColor"/>
-</g>
-<defs>
-<clipPath id="clip0_491_803">
-<rect width="16" height="12" fill="white"/>
-</clipPath>
-</defs>
-</svg>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clipPath="url(#clip0_491_803)">
+                <rect width="16" height="2" rx="1" fill="currentColor" />
+                <rect x="3" y="5" width="10" height="2" rx="1" fill="currentColor" />
+                <rect x="5.5" y="10" width="5" height="2" rx="1" fill="currentColor" />
+              </g>
+              <defs>
+                <clipPath id="clip0_491_803">
+                  <rect width="16" height="12" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
 
             {activeFilter ? (
               <>

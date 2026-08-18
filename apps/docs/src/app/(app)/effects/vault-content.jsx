@@ -569,6 +569,10 @@ const routeKey = `${pathname}${
         });
       } else {
         setWishlist((prev) => prev.filter((x) => x !== slug));
+        showWishlistSavedToast({
+          title: `${effect.title || effect.name} removed`,
+          description: "It's no longer in your dashboard's Saved Effects.",
+        });
       }
 
       emitWishlistChanged(data.saved);
@@ -742,7 +746,7 @@ const routeKey = `${pathname}${
                 {activeCategoryDescriptions.map((description, index) => (
                   <Copy
                     key={`${categoryFilter}-description-${index}`}
-                    delay={0.3}
+                    delay={0.6}
                     animationKey={`${routeKey}-${index}`}
                   >
                     <p className="mt-3">
@@ -754,14 +758,14 @@ const routeKey = `${pathname}${
             </div>
           </div>
            
-           <div className="category-fadeup fadeup">
+           <div className="category-fadeup fadeup" data-fadeup-delay="0.5">
           <TrendingRightNow effects={featuredEffects} />
           </div>
 
           <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
             <div
               className="relative max-[1025px]:w-full flex items-start gap-4 fadein"
-              data-fadein-delay="1"
+              data-fadein-delay="0.4"
             >
               <div className="relative min-w-0 flex-1">
               <div

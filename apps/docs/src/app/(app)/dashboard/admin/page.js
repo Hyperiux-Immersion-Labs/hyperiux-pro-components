@@ -8,7 +8,6 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   Search,
   ArrowUpRight,
-  ChevronDown,
   UserPlus,
   ChevronLeft,
   ChevronRight,
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import { useAdminRole } from "@/lib/useAdminRole";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 
 const USERS_PER_PAGE = 10;
 
@@ -111,6 +111,11 @@ function PlanBadge({ plan }) {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Loosely matches email-shaped tokens anywhere inside a CSV cell/line.
 const EMAIL_TOKEN_RE = /[^\s,;<>"']+@[^\s,;<>"']+\.[^\s,;<>"']+/g;
+// Matches the server's hard per-request cap (MAX_EMAILS_PER_REQUEST in the
+// invite route) - a single click on "Send Invitations" fires this many
+// sequential requests instead of one big one, so nothing ever gets sent in
+// bulk even with a full CSV queued up.
+const BATCH_SIZE = 10;
 
 function parseEmailsFromText(text) {
   const matches = text.match(EMAIL_TOKEN_RE) || [];
@@ -233,48 +238,72 @@ function InviteModal({ onClose }) {
     const toSend = inputValue.trim() ? [...new Set([...emails, ...parseEmailsFromText(inputValue)])] : emails;
     if (toSend.length === 0) return;
 
+    const batches = [];
+    for (let i = 0; i < toSend.length; i += BATCH_SIZE) {
+      batches.push(toSend.slice(i, i + BATCH_SIZE));
+    }
+
     setSending(true);
     setMessage(null);
-    setResults(null);
-    try {
-      const res = await fetch("/api/admin/waitlist/invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emails: toSend }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Invite failed");
+    setResults([]);
+    setInputValue("");
 
-      setResults(json.results || []);
-      const failedEmails = (json.results || []).filter((r) => !r.success).map((r) => r.email);
-      setEmails(failedEmails);
-      setInputValue("");
-      setQuota((prev) =>
-        prev
-          ? {
-              ...prev,
-              sentToday: prev.sentToday + json.sentCount,
-              remaining: Math.max(0, prev.remaining - json.sentCount),
-            }
-          : prev
-      );
+    let allResults = [];
 
-      if (json.failedCount === 0) {
-        setMessage({
-          type: "success",
-          text: `Invitation${json.sentCount === 1 ? "" : "s"} sent to ${json.sentCount} address${json.sentCount === 1 ? "" : "es"}.`,
+    for (let i = 0; i < batches.length; i++) {
+      const batch = batches[i];
+      try {
+        const res = await fetch("/api/admin/waitlist/invite", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ emails: batch }),
         });
-      } else {
-        setMessage({
-          type: "error",
-          text: `${json.sentCount} sent, ${json.failedCount} failed. Fix and retry the ones below.`,
-        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Invite failed");
+
+        allResults = [...allResults, ...(json.results || [])];
+        setResults(allResults);
+        setQuota((prev) =>
+          prev
+            ? {
+                ...prev,
+                sentToday: prev.sentToday + json.sentCount,
+                remaining: Math.max(0, prev.remaining - json.sentCount),
+              }
+            : prev
+        );
+      } catch (err) {
+        // A whole-batch failure (network/auth/etc, not a per-email one) - stop
+        // there rather than firing further batches, but still account for
+        // every email that never got attempted so none silently vanish.
+        const unattempted = batches.slice(i).flat();
+        allResults = [
+          ...allResults,
+          ...unattempted.map((email) => ({ email, success: false, error: err.message })),
+        ];
+        setResults(allResults);
+        break;
       }
-    } catch (err) {
-      setMessage({ type: "error", text: err.message });
-    } finally {
-      setSending(false);
     }
+
+    const sentCount = allResults.filter((r) => r.success).length;
+    const failedCount = allResults.length - sentCount;
+    const failedEmails = allResults.filter((r) => !r.success).map((r) => r.email);
+    setEmails(failedEmails);
+
+    if (failedCount === 0) {
+      setMessage({
+        type: "success",
+        text: `Invitation${sentCount === 1 ? "" : "s"} sent to ${sentCount} address${sentCount === 1 ? "" : "es"}.`,
+      });
+    } else {
+      setMessage({
+        type: "error",
+        text: `${sentCount} sent, ${failedCount} failed. Fix and retry the ones below.`,
+      });
+    }
+
+    setSending(false);
   }
 
   const pendingCount = emails.length + (inputValue.trim() && EMAIL_RE.test(inputValue.trim()) ? 1 : 0);
@@ -318,7 +347,7 @@ function InviteModal({ onClose }) {
         <p className="mb-5 text-xs text-white/45">
           {quota
             ? `${quota.remaining} of ${quota.limit} invites left today`
-            : "Limit: 50 invites per day"}
+            : "Limit: 100 invites per day"}
         </p>
 
         {atDailyLimit && (
@@ -328,7 +357,7 @@ function InviteModal({ onClose }) {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className=" border border-white/10 bg-white/5 p-2 focus-within:border-white/25">
+          <div className="max-h-[30vw] overflow-y-auto border border-white/10 bg-white/5 p-2 focus-within:border-white/25">
             {emails.length > 0 && (
               <div className="mb-2 flex flex-wrap gap-1.5 px-1 pt-1">
                 {emails.map((e) => (
@@ -583,18 +612,15 @@ export default function AdminPage() {
             className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
           />
         </div>
-        <div className="relative">
-          <select
-            value={planFilter}
-            onChange={(e) => setPlanFilter(e.target.value)}
-            className="appearance-none  border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
-          >
-            <option value="all">All plans</option>
-            <option value="pro">Pro</option>
-            <option value="free">Free</option>
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-        </div>
+        <CustomSelect
+          value={planFilter}
+          onChange={setPlanFilter}
+          options={[
+            { value: "all", label: "All plans" },
+            { value: "pro", label: "Pro" },
+            { value: "free", label: "Free" },
+          ]}
+        />
       </div>
 
       {error && (
@@ -675,19 +701,17 @@ export default function AdminPage() {
                     </td>
                     <td className="px-4 py-3">
                       {isSuperAdmin && user.id !== viewer?.id ? (
-                        <div className="relative inline-block">
-                          <select
-                            value={user.role || ""}
-                            onChange={(e) => updateRole(user, e.target.value || null)}
-                            disabled={updatingId === user.id}
-                            className="appearance-none  border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
-                          >
-                            <option value="">No access</option>
-                            <option value="admin">Admin</option>
-                            <option value="super_admin">Super Admin</option>
-                          </select>
-                          <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
-                        </div>
+                        <CustomSelect
+                          size="compact"
+                          value={user.role || ""}
+                          onChange={(newValue) => updateRole(user, newValue || null)}
+                          disabled={updatingId === user.id}
+                          options={[
+                            { value: "", label: "No access" },
+                            { value: "admin", label: "Admin" },
+                            { value: "super_admin", label: "Super Admin" },
+                          ]}
+                        />
                       ) : (
                         <div className="flex items-center gap-2">
                           <RoleBadge role={user.role} />
@@ -714,20 +738,19 @@ export default function AdminPage() {
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-end gap-2">
                             {user.plan !== "pro" && (
-                              <div className="relative">
-                                <select
-                                  value={intervalByUser[user.id] || "yearly"}
-                                  onChange={(e) =>
-                                    setIntervalByUser((prev) => ({ ...prev, [user.id]: e.target.value }))
-                                  }
-                                  disabled={updatingId === user.id}
-                                  className="appearance-none  border border-white/10 bg-white/5 py-1.5 pl-3 pr-7 text-xs text-white/70 outline-none focus:border-white/25 disabled:opacity-50"
-                                >
-                                  <option value="monthly">1 month</option>
-                                  <option value="yearly">1 year</option>
-                                </select>
-                                <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/40" />
-                              </div>
+                              <CustomSelect
+                                size="compact"
+                                align="right"
+                                value={intervalByUser[user.id] || "yearly"}
+                                onChange={(newValue) =>
+                                  setIntervalByUser((prev) => ({ ...prev, [user.id]: newValue }))
+                                }
+                                disabled={updatingId === user.id}
+                                options={[
+                                  { value: "monthly", label: "1 month" },
+                                  { value: "yearly", label: "1 year" },
+                                ]}
+                              />
                             )}
                             <button
                               onClick={() => togglePlan(user)}

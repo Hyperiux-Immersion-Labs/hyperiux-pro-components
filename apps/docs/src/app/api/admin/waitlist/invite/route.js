@@ -11,9 +11,13 @@ import {
 import { assertAdmin } from "@/lib/admin";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MAX_EMAILS_PER_REQUEST = 200;
+// Hard per-request cap - the admin UI queues up to DAILY_INVITE_LIMIT emails
+// client-side, then sends them as sequential batches of this size so a
+// single click never fires one giant bulk request. Enforced here too, not
+// just client-side, so nothing can bypass it via a direct API call.
+const MAX_EMAILS_PER_REQUEST = 10;
 const CONCURRENCY = 5;
-const DAILY_INVITE_LIMIT = 50;
+const DAILY_INVITE_LIMIT = 100;
 
 function startOfTodayUTC() {
   const now = new Date();

@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import { StatCard } from "@/components/admin/StatCard";
 import { LineTrendChart } from "@/components/admin/charts/LineTrendChart";
 import { BarRankChart } from "@/components/admin/charts/BarRankChart";
@@ -343,18 +344,14 @@ function EventLog() {
             className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
           />
         </div>
-        <div className="relative">
-          <select
-            value={sourceFilter}
-            onChange={(e) => setSourceFilter(e.target.value)}
-            className="appearance-none  border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
-          >
-            {SOURCES.map((s) => (
-              <option key={s} value={s}>{s === "all" ? "All sources" : s.toUpperCase()}</option>
-            ))}
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-        </div>
+        <CustomSelect
+          value={sourceFilter}
+          onChange={setSourceFilter}
+          options={SOURCES.map((s) => ({
+            value: s,
+            label: s === "all" ? "All sources" : s.toUpperCase(),
+          }))}
+        />
       </div>
 
       {error && (

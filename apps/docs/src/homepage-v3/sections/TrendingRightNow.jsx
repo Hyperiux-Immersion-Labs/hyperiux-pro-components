@@ -265,11 +265,11 @@ export default function TrendingRightNow({ effects = [] }) {
             type="button"
             onClick={() => step(-1)}
             aria-label="Previous"
-            className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all"
+            className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all "
             bgColor="#ff5f00"
           >
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out " />
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out " />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out  group-hover:text-black" />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out group-hover:text-black " />
 
 
 
@@ -282,8 +282,8 @@ export default function TrendingRightNow({ effects = [] }) {
             className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all relative"
             bgColor="#ff5f00"
           >
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out " />
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out " />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out group-hover:text-black" />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out group-hover:text-black " />
 
 
           </CircularButton>
@@ -318,8 +318,8 @@ export default function TrendingRightNow({ effects = [] }) {
             </div>
           ))}
         </div>
-        <div className="absolute top-0 left-0 w-[10vw] h-full pointer-events-none bg-gradient-to-r from-[#1E1E1E] to-transparent z-20 " />
-        <div className="absolute top-0 right-0 w-[10vw] h-full pointer-events-none bg-gradient-to-l from-[#1E1E1E] to-transparent z-20" />
+        <div className="absolute top-0 left-0 w-[10vw] h-full pointer-events-none bg-gradient-to-r from-[#050505] to-transparent z-20 " />
+        <div className="absolute top-0 right-0 w-[10vw] h-full pointer-events-none bg-gradient-to-l from-[#050505] to-transparent z-20" />
       </div>
     </section>
   );
