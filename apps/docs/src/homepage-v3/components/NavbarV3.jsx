@@ -186,7 +186,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
               ⌘ K
             </kbd>
           </button>
-          <ButtonV3 text="Login" />
+          <ButtonV3 href="/sign-in" text="Login" />
         </div>
 
         <NavDropdownV3 panel={openPanel} onNavigate={closePanel} />
