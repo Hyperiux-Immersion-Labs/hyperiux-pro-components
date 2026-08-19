@@ -345,7 +345,7 @@ export function VaultLayout({
 
   const renderedChildren =
     typeof children === "function"
-      ? children({ isSidebarOpen, toggleSidebar })
+      ? children({ isSidebarOpen, toggleSidebar, isSidebarReady })
       : children;
 
   return (

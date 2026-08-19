@@ -71,13 +71,24 @@ function RouteAnimationSync({ syncKey }) {
   return null;
 }
 
-// Effects listing defaults to the 3-column grid with the sidebar closed,
-// regardless of the sidebar's persisted open/closed state from other pages.
-function EffectsGridDefaults({ toggleSidebar }) {
+// Effects listing opens the sidebar by default when the grid is on 2
+// columns, overriding any closed state persisted from other pages. Waits
+// for isSidebarReady because VaultLayout restores the persisted value a
+// couple of animation frames after mount, which would otherwise clobber
+// this override if it ran first. Only fires once so a manual close
+// afterwards is respected.
+function EffectsGridDefaults({ gridColumns, isSidebarReady, toggleSidebar }) {
+  const hasRunRef = useRef(false);
+
   useEffect(() => {
-    toggleSidebar(false);
+    if (hasRunRef.current || !isSidebarReady) return;
+    hasRunRef.current = true;
+
+    if (gridColumns === 2) {
+      toggleSidebar(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isSidebarReady]);
 
   return null;
 }
@@ -236,7 +247,7 @@ const routeKey = `${pathname}${
 
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlist, setWishlist] = useState([]);
-  const [gridColumns, setGridColumns] = useState(3);
+  const [gridColumns, setGridColumns] = useState(2);
   const { toast: wishlistToast, showToast: showWishlistSavedToast, dismissToast: dismissWishlistToast } = useToastQueue();
   const [dropdownFilter, setDropdownFilter] = useState(null);
 
@@ -699,9 +710,13 @@ const routeKey = `${pathname}${
       onOverviewNavigate={showAllEffects}
       onCategoryNavigate={handleCategoryLinkClick}
     >
-      {({ isSidebarOpen, toggleSidebar }) => (
+      {({ isSidebarOpen, toggleSidebar, isSidebarReady }) => (
         <>
-        <EffectsGridDefaults toggleSidebar={toggleSidebar} />
+        <EffectsGridDefaults
+          gridColumns={gridColumns}
+          isSidebarReady={isSidebarReady}
+          toggleSidebar={toggleSidebar}
+        />
         <SidebarGridSync
           isSidebarOpen={isSidebarOpen}
           gridColumns={gridColumns}
@@ -856,7 +871,12 @@ const routeKey = `${pathname}${
                       type="button"
                       onClick={() => {
                         setGridColumns(cols);
-                        toggleSidebar(cols === 2);
+                        // Switching to 3 columns closes the sidebar; switching
+                        // back to 2 leaves the sidebar as-is (it does not
+                        // reopen on its own).
+                        if (cols === 3) {
+                          toggleSidebar(false);
+                        }
                       }}
                       aria-label={`Show ${cols} cards per row`}
                       aria-pressed={isActive}

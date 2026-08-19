@@ -11,7 +11,7 @@ import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 export default function DemoHeader({
   logoColor = "#1a1a1a",
-  text = "Browse effects",
+  text = "Browse Effects",
   textColor = "#1a1a1a",
   href = "/effects",
   showText = true,
