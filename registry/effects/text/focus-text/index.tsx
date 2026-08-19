@@ -1,7 +1,15 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CustomEase } from "gsap/CustomEase";
+
+gsap.registerPlugin(ScrollTrigger, CustomEase);
+
+const FOCUS_EASE = CustomEase.create("focusTextEase", "0.16,1,0.3,1");
 
 interface FocusTextProps {
   text?: string;
@@ -13,6 +21,9 @@ interface FocusTextProps {
   blurAmount?: number;
   holdDuration?: number;
   loop?: boolean;
+  scrub?: boolean;
+  scrollStart?: string;
+  scrollEnd?: string;
   backgroundColor?: string;
   textColor?: string;
   showReplayButton?: boolean;
@@ -22,6 +33,8 @@ const DEFAULT_TEXT =
   "Built for seamless interactions.\nDesigned with thoughtful motion.\nMade to feel unforgettable.";
 const DEFAULT_CHARACTER_STAGGER = 0.05;
 const REDUCED_MOTION_DURATION = 0.3;
+const DEFAULT_BACKGROUND_IMAGE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-23.jpg";
 
 export default function FocusText({
   text = DEFAULT_TEXT,
@@ -33,12 +46,15 @@ export default function FocusText({
   blurAmount = 18,
   holdDuration = 1.2,
   loop = false,
+  scrub = false,
+  scrollStart = "top 80%",
+  scrollEnd = "bottom 20%",
   backgroundColor = "#000000",
   textColor = "#ffffff",
   showReplayButton = true,
 }: FocusTextProps) {
-  const prefersReducedMotion = useReducedMotion();
-  const [cycle, setCycle] = useState(0);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
 
   const lines = useMemo(
@@ -61,20 +77,6 @@ export default function FocusText({
     [lines],
   );
 
-  const characterDelays = useMemo(() => {
-    let currentIndex = 0;
-
-    return lines.map((words) =>
-      words.map((word) =>
-        word.map(() => {
-          const delay = currentIndex * characterStagger;
-          currentIndex += 1;
-          return delay;
-        }),
-      ),
-    );
-  }, [lines, characterStagger]);
-
   const totalRevealDuration = useMemo(
     () => revealDuration + DEFAULT_CHARACTER_STAGGER * Math.max(totalCharacterCount - 1, 0),
     [revealDuration, totalCharacterCount],
@@ -89,77 +91,134 @@ export default function FocusText({
     [characterStagger, totalCharacterCount, totalRevealDuration],
   );
 
-  const revealDurationMs = totalRevealDuration * 1000;
-  const activeRevealDurationMs = prefersReducedMotion
-    ? REDUCED_MOTION_DURATION * 1000
-    : revealDurationMs;
-  const cycleDuration = activeRevealDurationMs / 1000 + holdDuration;
-
   useEffect(() => {
-    if (!loop || prefersReducedMotion) return;
+    const section = sectionRef.current;
+    if (!section) return;
 
-    const timeout = setTimeout(() => {
-      setCycle((value) => value + 1);
-    }, cycleDuration * 1000);
+    const prefersReducedMotion =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    return () => clearTimeout(timeout);
-  }, [cycle, cycleDuration, loop, prefersReducedMotion]);
+    const ctx = gsap.context(() => {
+      const characters = Array.from(
+        section.querySelectorAll<HTMLElement>("[data-focus-char]"),
+      );
+      if (!characters.length) return;
 
-  useEffect(() => {
-    setIsPlaying(true);
-    const timeout = setTimeout(() => setIsPlaying(false), activeRevealDurationMs);
-    return () => clearTimeout(timeout);
-  }, [cycle, activeRevealDurationMs]);
+      // The heading renders at opacity 0 to avoid a flash of unstyled
+      // characters before GSAP applies the from-state.
+      gsap.set(section.querySelector("[data-focus-heading]"), { opacity: 1 });
+
+      if (prefersReducedMotion) {
+        // No scale, no blur, no per-character stagger, no loop and never
+        // tied to scroll position - just a short fade to the final state.
+        tweenRef.current = gsap.fromTo(
+          characters,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: REDUCED_MOTION_DURATION,
+            ease: "none",
+            onStart: () => setIsPlaying(true),
+            onComplete: () => setIsPlaying(false),
+          },
+        );
+
+        return;
+      }
+
+      tweenRef.current = gsap.fromTo(
+        characters,
+        {
+          opacity: 0,
+          scale: startScale,
+          filter: `blur(${blurAmount}px)`,
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: effectiveRevealDuration,
+          stagger: characterStagger,
+          ease: FOCUS_EASE,
+          // Scrubbing hands playback to the scroll position, so looping and
+          // the hold between cycles no longer apply.
+          repeat: !scrub && loop ? -1 : 0,
+          repeatDelay: holdDuration,
+          onStart: () => setIsPlaying(true),
+          onRepeat: () => setIsPlaying(true),
+          onComplete: () => setIsPlaying(false),
+          scrollTrigger: scrub
+            ? {
+                trigger: section,
+                start: scrollStart,
+                end: scrollEnd,
+                scrub: true,
+              }
+            : undefined,
+        },
+      );
+    }, section);
+
+    return () => {
+      ctx.revert();
+      tweenRef.current = null;
+    };
+  }, [
+    lines,
+    characterStagger,
+    effectiveRevealDuration,
+    startScale,
+    blurAmount,
+    holdDuration,
+    loop,
+    scrub,
+    scrollStart,
+    scrollEnd,
+  ]);
 
   const handleReplay = () => {
-    if (isPlaying) return;
-    setCycle((value) => value + 1);
+    tweenRef.current?.restart(false, false);
   };
 
   return (
     <section
+      ref={sectionRef}
       className={`relative flex min-h-screen w-full items-center overflow-hidden px-6 ${className}`}
-      style={{ backgroundColor }}
+      style={{
+        backgroundColor,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.48)), url(${DEFAULT_BACKGROUND_IMAGE})`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+      }}
     >
       <h1
-        className="m-0 w-full font-sans font-black uppercase leading-none tracking-tight"
+        data-focus-heading
+        className="m-0 w-full font-sans font-black uppercase leading-none tracking-tight opacity-0"
         style={{
           fontSize: `clamp(2rem, ${fontSize}vw, 8rem)`,
           color: textColor,
         }}
       >
         {lines.map((words, lineIndex) => (
-          <span key={`${cycle}-line-${lineIndex}`} className="block">
+          <span key={`line-${lineIndex}`} className="block">
             {words.map((word, wordIndex) => (
-              <span key={`${cycle}-line-${lineIndex}-word-${wordIndex}`}>
+              <span key={`line-${lineIndex}-word-${wordIndex}`}>
                 <span className="inline-block whitespace-nowrap">
                   {word.map((character, charIndex) => (
-                    <motion.span
-                      key={`${cycle}-${lineIndex}-${wordIndex}-${charIndex}`}
+                    <span
+                      key={`${lineIndex}-${wordIndex}-${charIndex}`}
+                      data-focus-char
                       className="inline-block"
                       style={{
                         willChange: "transform, filter, opacity",
                         transformOrigin: "50% 50%",
                         backfaceVisibility: "hidden",
                       }}
-                      initial={{
-                        opacity: 0,
-                        scale: prefersReducedMotion ? 1 : startScale,
-                        filter: prefersReducedMotion ? "blur(0px)" : `blur(${blurAmount}px)`,
-                      }}
-                      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                      transition={{
-                        duration: prefersReducedMotion
-                          ? REDUCED_MOTION_DURATION
-                          : effectiveRevealDuration,
-                        delay: prefersReducedMotion
-                          ? 0
-                          : characterDelays[lineIndex][wordIndex][charIndex],
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
                     >
                       {character}
-                    </motion.span>
+                    </span>
                   ))}
                 </span>
                 {wordIndex < words.length - 1 ? (
@@ -173,12 +232,11 @@ export default function FocusText({
         ))}
       </h1>
 
-      {showReplayButton && (
+      {showReplayButton && !scrub && (
         <button
           type="button"
           onClick={handleReplay}
-          disabled={isPlaying}
-          className="absolute inset-x-0 bottom-8 mx-auto inline-flex w-fit items-center justify-center rounded-full border border-white/20 bg-white/8 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.28em] text-white transition hover:border-white/40 hover:bg-white/14 disabled:cursor-not-allowed disabled:opacity-40"
+          className="absolute inset-x-0 bottom-8 mx-auto inline-flex w-fit items-center justify-center rounded-full border border-white/20 bg-white/8 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.28em] text-white transition hover:border-white/40 hover:bg-white/14"
         >
           Replay animation
         </button>

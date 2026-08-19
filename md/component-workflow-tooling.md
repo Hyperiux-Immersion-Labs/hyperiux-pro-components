@@ -20,6 +20,13 @@ were Wave 1 Foundation items and both scripts are built.
 >    --sync-sanity-code` integration flag.** Both are consistent with the plan's own
 >    "Minimum Viable Version" scoping — they were always optional/deferred, just still
 >    genuinely unbuilt.
+> 3. **`component-workflow.mjs` still treats `registry.json` mostly as generated
+>    output, not as the home for curated remixer metadata.** In practice, teams now
+>    hand-author `props`, `remixer`, and related install-facing metadata directly in
+>    `registry/effects/{category}/{slug}/registry.json` first, then expect workflow
+>    commands to preserve and carry that data through public JSON, tarballs, and free
+>    mirror sync. The current script rebuilds core metadata from docs source and does
+>    not yet have a "preserve existing `registry.json.props` when present" rule.
 >
 > Everything else — command boundaries, safety gating (`--yes`/`--dry-run`), the
 > matching/patch-shape logic, required env vars — checks out against the live scripts.
@@ -406,6 +413,47 @@ Generate `registry.json`:
 }
 ```
 
+Preserve curated metadata already authored in
+`registry/effects/{category}/{slug}/registry.json` when it exists. In particular,
+the workflow should treat these fields as registry-authored data rather than
+regenerating or dropping them:
+
+- `props`
+- `remixer`
+- `registryDependencies`
+- any future install-facing metadata that is not derivable from source files
+
+That means the workflow should support this real authoring pattern:
+
+1. The developer builds the effect in `apps/docs/src/components/{slug}/`.
+2. The developer hand-edits
+   `registry/effects/{category}/{slug}/registry.json` to add curated `props`
+   entries, default values, remixer controls, disabled controls, copy-code
+   behavior, and other registry-only metadata.
+3. The workflow command uses that existing registry file as the source of truth
+   for those fields and only regenerates the fields that are actually derived
+   from source/distribution state, such as:
+   - `version`
+   - `changelog`
+   - `dependencies`
+   - `main`
+   - `exportName`
+   - `exportKind`
+   - `files`
+   - `previewUrl`
+   - `importPath`
+   - `target`
+
+For a brand-new effect, if a registry folder already exists because the team has
+already started hand-authoring `registry.json`, the safe behavior should be:
+
+- `component:new --overwrite` may recreate generated artifacts, but it should
+  merge/preserve curated `props` and `remixer` metadata from the existing
+  `registry.json` unless the user explicitly requests a full reset.
+- `component:sync` should be the preferred path once
+  `registry/effects/{category}/{slug}/registry.json` exists, even if other
+  generated artifacts are still missing.
+
 Generate `package.json` in the same folder. Use the package version from
 `registry.json` unless the team decides to keep package tarball versions
 separate:
@@ -501,7 +549,7 @@ Start with the full rebuild because it already exists and is easier to trust.
 1. Find the component in `registry/index.json` or by walking
    `registry/effects/**/{slug}/registry.json`.
 2. Read its current `category`, `tier`, `version`, `dependencies`, `files`,
-   `main`, `exportName`, and `exportKind`.
+   `main`, `exportName`, `exportKind`, `props`, and `remixer`.
 3. Copy the latest distributable files from
    `apps/docs/src/components/{slug}/` to the existing registry folder.
 4. Bump `registry.json.version` from `--bump`, or set it from `--version`.
@@ -528,6 +576,20 @@ This is the command that removes the common manual update work. After the
 developer changes the component source in `apps/docs/src/components/{slug}/`,
 `component:sync` should update the registry, changelog, public JSON, tarball,
 and free mirror.
+
+Crucially, `component:sync` should not wipe out curated registry metadata just
+because it is not derivable from docs source. If
+`registry/effects/{category}/{slug}/registry.json` already contains
+hand-authored `props` definitions or remixer configuration, the sync should
+preserve those values exactly unless the user explicitly asks to regenerate
+them. This keeps effect-specific prop metadata authoritative in the registry
+folder and ensures it syncs everywhere else correctly:
+
+- `registry/index.json`
+- `apps/docs/public/r/{slug}.json`
+- `apps/docs/public/r/index.json`
+- `registry/dist/*.tgz`
+- free-tier mirror files in `../hyperiux-components`
 
 `component:sync` should also update file lists. If the source code starts
 importing a new local helper file, the command should include it in

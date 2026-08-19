@@ -1,5 +1,3 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -22,8 +20,8 @@ const DEFAULT_TEXT = "Scroll to See Chromatic Effect";
 
 const ChromaticText = ({
   textColor = "#ffffff",
-  redColor = "#ff0000",
-  blueColor = "#0047ff",
+  redColor = "#FFB200",
+  blueColor = "#EB5B00",
   fontSize = 10,
   fontWeight = 500,
   backgroundColor = "#111111",
@@ -85,11 +83,11 @@ const ChromaticText = ({
         end: "bottom 10%",
         onUpdate: (self) => {
           const direction = self.direction === 1 ? -1 : 1;
-          const velocity = Math.min(Math.abs(self.getVelocity()) / 100, 28);
+          const velocity = Math.min(Math.abs(self.getVelocity()) / 100, 44);
           const isDesktop = window.innerWidth > 1024;
-          const whiteDepth = isDesktop ? 0.45 : 0.3;
-          const redDepth = isDesktop ? 1.2 : 0.85;
-          const blueDepth = isDesktop ? 2.3 : 1.45;
+          const whiteDepth = isDesktop ? 0.7 : 0.45;
+          const redDepth = isDesktop ? 1.9 : 1.3;
+          const blueDepth = isDesktop ? 3.6 : 2.2;
 
           resetCall?.kill();
 
@@ -132,7 +130,7 @@ const ChromaticText = ({
   return (
     <section
       ref={rootRef}
-      className={`relative flex h-[150vh] w-full items-center justify-center ${className}`}
+      className={`relative flex h-[150vh] w-full items-center justify-center px-7 ${className}`}
       style={{ backgroundColor }}
     >
       <div className="sticky top-0 flex h-screen w-full items-end justify-center overflow-hidden px-4">

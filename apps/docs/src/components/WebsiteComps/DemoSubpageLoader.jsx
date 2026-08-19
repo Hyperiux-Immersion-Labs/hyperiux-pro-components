@@ -44,6 +44,7 @@ const EXCLUDED_PATHS = new Set([
   "/demo/text-hover",
   "/demo/text-stream",
   "/demo/depth-shift-transition/page2",
+  "/demo/variable-text-proximity",
   "/demo/depth-shift-transition",
   "/demo/clippath-transition",
   "/demo/clippath-transition/page2",
@@ -55,8 +56,15 @@ const EXCLUDED_PATHS = new Set([
   "/demo/sweep-lift-transition/page2",
   "/demo/pixel-random",
   "/demo/pixel-random/page2",
-  "/demo/drop-text"
-
+  "/demo/depth-flip-text",
+  "/demo/drop-text",
+  "/demo/glowing-text",
+  "/demo/focus-text",
+  "/demo/pixel-text-fill",
+  "/demo/typing-text",
+  "/demo/flickering-text",
+  "/demo/rolling-text",
+  
 ]);
 
 function formatLabel(pathname) {

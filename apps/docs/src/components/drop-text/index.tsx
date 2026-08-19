@@ -29,7 +29,6 @@ type DropTextProps = {
   startOpacity?: number;
   fontSize?: number;
   fontColor?: string;
-  fontWeight?: CSSProperties["fontWeight"];
   textAlign?: TextAlign;
   lineHeight?: number;
   letterSpacing?: number;
@@ -42,7 +41,9 @@ type DropTextProps = {
   className?: string;
 };
 
-const DEFAULT_TEXT = "Drop Text";
+const DEFAULT_TEXT = "Motion Makes Spaces Move";
+const DEFAULT_BACKGROUND_IMAGE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 
 function mapStaggerFrom(staggerFrom: StaggerFrom) {
   if (staggerFrom === "left") return "start";
@@ -78,21 +79,20 @@ export default function DropText({
   splitBy = "characters",
   staggerFrom = "random",
   xOffset = 0,
-  yOffset = -115,
+  yOffset = -35,
   rotate = 0,
   blur = 0,
   scaleFrom = 1,
   startOpacity = 0,
-  fontSize = 9,
+  fontSize = 6,
   fontColor = "#ffffff",
-  fontWeight = 600,
   textAlign = "center",
   lineHeight = 1,
   letterSpacing = 0,
   backgroundColor = "#101113",
-  duration = 0.5,
+  duration = 0.4,
   delay = 0,
-  stagger = 0.05,
+  stagger = 0.02,
   ease = "power2.out",
   animateOnScroll = false,
   className = "",
@@ -237,6 +237,10 @@ export default function DropText({
       className={`flex min-h-screen w-full items-center justify-center overflow-hidden px-5 py-16 ${className}`}
       style={{
         backgroundColor,
+        backgroundImage: `linear-gradient(rgba(16, 17, 19, 0.45), rgba(16, 17, 19, 0.45)), url(${DEFAULT_BACKGROUND_IMAGE})`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
         perspective: variant === "perspective" ? "900px" : undefined,
       }}
     >
@@ -246,7 +250,7 @@ export default function DropText({
         style={{
           color: fontColor,
           fontSize: `${fontSize}vw`,
-          fontWeight,
+          fontWeight: 400,
           letterSpacing: `${letterSpacing}em`,
           lineHeight,
           textAlign,

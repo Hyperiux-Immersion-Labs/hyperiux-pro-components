@@ -230,7 +230,7 @@ export default function FishEye({
   if (isMobile) return null
 
   return (
-    <div ref={rootRef} className="h-full w-full">
+    <div ref={rootRef} className="h-full w-fit">
       {objectUrl ? (
         <Canvas
           dpr={[1, 2]}

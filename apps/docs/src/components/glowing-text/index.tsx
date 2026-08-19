@@ -9,8 +9,6 @@ type GlowingTextProps = {
   glowColor?: string;
   backgroundColor?: string;
   fontSize?: number;
-  fontWeight?: CSSProperties["fontWeight"];
-  activeWeight?: CSSProperties["fontWeight"];
   letterSpacing?: number;
   lineHeight?: number;
   glowIntensity?: number;
@@ -30,6 +28,9 @@ type Token = { text: string; isSpace: boolean; start: number };
 const DEFAULT_EYEBROW = "VAULT TRANSMISSION";
 const DEFAULT_TEXT =
   "Connection established with Hyperiux Vault,\nDecrypting premium component signatures,\nMotion presets verified and ready to ship,\nWelcome in. Build something that glows.";
+const SETTLED_WEIGHT = 300;
+const DEFAULT_BACKGROUND_IMAGE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 
 function withAlpha(color: string, alpha: number) {
   if (/^#[0-9a-f]{6}$/i.test(color)) {
@@ -60,8 +61,6 @@ export default function GlowingText({
   glowColor = "#ffffff",
   backgroundColor = "#0b0d0e",
   fontSize = 2.2,
-  fontWeight = 400,
-  activeWeight = 700,
   letterSpacing = 0.08,
   lineHeight = 1.55,
   glowIntensity = 0.7,
@@ -72,6 +71,7 @@ export default function GlowingText({
 }: GlowingTextProps) {
   const glowSoft = withAlpha(glowColor, Math.min(0.48, glowIntensity * 0.48));
   const glowHard = withAlpha(glowColor, Math.min(0.9, glowIntensity * 0.9));
+  const dimEnd = withAlpha(textColor, 0.4);
   const stagger = Math.max(characterStagger, 0.01);
   const duration = Math.max(revealDuration, 0.1);
 
@@ -123,11 +123,15 @@ export default function GlowingText({
       style={
         {
           "--glow-text": textColor,
+          "--glow-text-dim-end": dimEnd,
           "--glow-soft": glowSoft,
           "--glow-hard": glowHard,
-          "--glow-active-weight": activeWeight,
-          "--glow-settled-weight": fontWeight,
+          "--glow-settled-weight": SETTLED_WEIGHT,
           backgroundColor,
+          backgroundImage: `linear-gradient(rgba(11, 13, 14, 0.52), rgba(11, 13, 14, 0.52)), url(${DEFAULT_BACKGROUND_IMAGE})`,
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
         } as CSSProperties
       }
     >
@@ -180,21 +184,23 @@ export default function GlowingText({
           display: inline-block;
           color: var(--glow-text);
           opacity: 0;
-          font-weight: var(--glow-active-weight);
+          font-weight: var(--glow-settled-weight);
           text-shadow: none;
           animation: glowing-char-reveal var(--char-duration) ease-out var(--char-delay) forwards;
         }
 
         @keyframes glowing-char-reveal {
           0% {
+            color: var(--glow-text);
             opacity: 0;
-            font-weight: var(--glow-active-weight);
+            font-weight: var(--glow-settled-weight);
             text-shadow: none;
           }
 
           55% {
+            color: var(--glow-text);
             opacity: 1;
-            font-weight: var(--glow-active-weight);
+            font-weight: var(--glow-settled-weight);
             text-shadow:
               0 0 7px var(--glow-hard),
               0 0 18px var(--glow-hard),
@@ -206,16 +212,16 @@ export default function GlowingText({
           }
 
           100% {
-            opacity: 0.82;
+            color: var(--glow-text-dim-end);
+            opacity: 0.72;
             font-weight: var(--glow-settled-weight);
-            text-shadow:
-              0 0 5px var(--glow-soft),
-              0 0 14px var(--glow-soft);
+            text-shadow: none;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
           .glowing-text-char {
+            color: var(--glow-text-dim-end);
             font-weight: var(--glow-settled-weight);
             text-shadow: none;
             animation: glowing-char-fade-in 0.4s ease-out forwards;
@@ -228,7 +234,7 @@ export default function GlowingText({
           }
 
           to {
-            opacity: 0.82;
+            opacity: 0.72;
           }
         }
       `}</style>
