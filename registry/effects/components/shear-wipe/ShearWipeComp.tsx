@@ -1,5 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
+
 'use client'
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import Image from 'next/image';
@@ -65,8 +66,11 @@ const ShearWipeComp = ({
   const overlayRef = useRef<HTMLDivElement>(null);
   const componentsTextColorClass = resolveTextColorClass(componentsTextColor);
   const showcaseTextColorClass = resolveTextColorClass(showcaseTextColor, 'text-white');
-  const desktopShowcaseTextColorClass = 'text-white';
   const componentsUnderlineClass = resolveBgColorClass(componentsTextColor);
+  const showcaseUnderlineClass = resolveBgColorClass(showcaseTextColor, 'text-white');
+
+  const mobileTabTextColorClass = activePanel === 'components' ? componentsTextColorClass : showcaseTextColorClass;
+  const mobileUnderlineClass = activePanel === 'components' ? componentsUnderlineClass : showcaseUnderlineClass;
 
   const componentsTabRef = useRef<HTMLButtonElement>(null);
   const showcaseTabRef = useRef<HTMLButtonElement>(null);
@@ -242,6 +246,12 @@ const ShearWipeComp = ({
       <div className="absolute inset-0 bg-[#E3F2FD]">
       </div>
 
+      {/* Mobile Background - follows the active tab independently of the desktop clip-wipe overlay */}
+      <div
+        className={`hidden max-[1025px]:block absolute inset-0 transition-colors duration-300 ease-in-out ${activePanel === 'showcase' ? 'bg-[#0D47A1]' : 'bg-[#E3F2FD]'
+          }`}
+      />
+
       <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
         {/* Base Panel - Components */}
         <div className="flex h-full items-center">
@@ -280,7 +290,7 @@ const ShearWipeComp = ({
 
           <div className="flex h-screen items-center relative">
             <div className="w-full flex items-center justify-center p-[6vw]">
-              <div className={`w-[45vw] space-y-[1vw] ${desktopShowcaseTextColorClass}`}>
+              <div className={`w-[45vw] space-y-[1vw] ${showcaseTextColorClass}`}>
                 <h2 className="text-[3vw] font-bold font-display leading-[1.2] whitespace-nowrap">Motion with meaning</h2>
                 <p className="text-[1.5vw]">
                   Animations explain, creating clarity and confidence across every screen.
@@ -312,7 +322,7 @@ const ShearWipeComp = ({
             type="button"
             aria-selected={activePanel === 'components'}
             onClick={() => setActivePanel('components')}
-            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${componentsTextColorClass} ${activePanel === 'components' ? '' : 'opacity-35'
+            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${mobileTabTextColorClass} ${activePanel === 'components' ? '' : 'opacity-35'
               }`}
           >
             Components
@@ -323,13 +333,13 @@ const ShearWipeComp = ({
             type="button"
             aria-selected={activePanel === 'showcase'}
             onClick={() => setActivePanel('showcase')}
-            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${showcaseTextColorClass} ${activePanel === 'showcase' ? '' : 'opacity-35'
+            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${mobileTabTextColorClass} ${activePanel === 'showcase' ? '' : 'opacity-35'
               }`}
           >
             Showcase
           </button>
 
-          <span ref={activeLineRef} className={`absolute bottom-0 left-0 h-[0.2vw] max-md:h-[0.6vw] ${componentsUnderlineClass}`} />
+          <span ref={activeLineRef} className={`absolute bottom-0 left-0 h-[0.2vw] max-md:h-[0.6vw] transition-colors duration-300 ease-in-out ${mobileUnderlineClass}`} />
         </div>
 
         <div className="relative mt-[8vw] max-md:mt-[10vw]">
@@ -348,7 +358,7 @@ const ShearWipeComp = ({
             <h2 className={`text-[6vw] max-md:text-[7.5vw] font-display leading-[1.15] ${showcaseTextColorClass} mb-[3vw] max-md:mb-[5vw]`}>
               Motion with meaning
             </h2>
-            <p className={`text-[6vw] max-md:text-[4vw] leading-relaxed ${showcaseTextColorClass} opacity-70 mb-[7vw] max-md:mb-[10vw]`}>
+            <p className={` max-md:text-[4vw] leading-relaxed ${showcaseTextColorClass} opacity-70 mb-[7vw] max-md:mb-[10vw]`}>
               Animations explain, creating clarity and confidence across every screen.
             </p>
           </div>

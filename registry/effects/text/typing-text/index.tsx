@@ -42,6 +42,8 @@ type TypingLineStyle = CSSProperties & {
   "--typing-duration": string;
   "--typing-delay": string;
   "--typing-loop-duration": string;
+  "--typing-step": string;
+  "--typing-char-animation": string;
   "--typing-cursor-animation": string;
   "--typing-cursor-color": string;
   "--typing-cursor-width": string;
@@ -157,6 +159,12 @@ export default function TypingText({
             "--typing-duration": `${typingDuration}s`,
             "--typing-delay": `${delay}s`,
             "--typing-loop-duration": `${loopDuration}s`,
+            "--typing-step": `${typingDuration / line.chars}s`,
+            "--typing-char-animation": prefersReducedMotion
+              ? "none"
+              : variant === "loop"
+                ? "typing-text-char-loop var(--typing-loop-duration) linear infinite forwards"
+                : "typing-text-char-in 1ms linear forwards",
             "--typing-cursor-animation": prefersReducedMotion
               ? "none"
               : variant === "loop"
@@ -190,11 +198,20 @@ export default function TypingText({
               aria-hidden="true"
               data-cursor-style={showCursor ? cursorStyle : undefined}
               data-typing-direction={typingDirection}
+              data-typing-variant={variant}
               className="typing-text-line mb-2 block max-w-full whitespace-nowrap font-mono will-change-[width,opacity]"
               style={lineStyle}
             >
               <span className="typing-text-content block max-w-full overflow-hidden">
-                {line.text}
+                {Array.from(line.text).map((character, characterIndex) => (
+                  <span
+                    key={`${characterIndex}-${character}`}
+                    className="typing-text-char"
+                    style={{ "--char-index": characterIndex } as CSSProperties}
+                  >
+                    {character}
+                  </span>
+                ))}
               </span>
             </span>
           );
@@ -215,18 +232,16 @@ export default function TypingText({
             background-color 240ms ease;
         }
 
-        .typing-text-line[data-cursor-style]::after {
-          content: "";
+        .typing-text-line[data-cursor-style]::after,
+        .typing-text-line[data-cursor-style] .typing-text-char::before {
           position: absolute;
           inset-block-start: 50%;
-          inset-inline-start: calc(100% + 0.16em);
           width: var(--typing-cursor-width);
           height: 1em;
           background: var(--typing-cursor-color);
           opacity: 0;
           translate: 0 -50%;
           transform-origin: center;
-          animation: var(--typing-cursor-animation);
           transition:
             background-color 240ms ease,
             border-color 240ms ease,
@@ -238,32 +253,43 @@ export default function TypingText({
             width 240ms ease;
         }
 
+        .typing-text-line[data-cursor-style]::after {
+          content: "";
+          inset-inline-start: calc(100% + 0.16em);
+          animation: var(--typing-cursor-animation);
+        }
+
         .typing-text-line[data-typing-direction="right-to-left"]::after {
           inset-inline: auto calc(100% + 0.16em);
         }
 
-        .typing-text-line[data-cursor-style="square"]::after {
+        .typing-text-line[data-cursor-style="square"]::after,
+        .typing-text-line[data-cursor-style="square"] .typing-text-char::before {
           width: 0.58em;
           height: 0.58em;
         }
 
-        .typing-text-line[data-cursor-style="triangle"]::after {
+        .typing-text-line[data-cursor-style="triangle"]::after,
+        .typing-text-line[data-cursor-style="triangle"] .typing-text-char::before {
           width: 0.64em;
           height: 0.64em;
           clip-path: polygon(0 0, 100% 50%, 0 100%);
         }
 
-        .typing-text-line[data-typing-direction="right-to-left"][data-cursor-style="triangle"]::after {
+        .typing-text-line[data-typing-direction="right-to-left"][data-cursor-style="triangle"]::after,
+        .typing-text-line[data-typing-direction="right-to-left"][data-cursor-style="triangle"] .typing-text-char::before {
           transform: scaleX(-1);
         }
 
-        .typing-text-line[data-cursor-style="dot"]::after {
+        .typing-text-line[data-cursor-style="dot"]::after,
+        .typing-text-line[data-cursor-style="dot"] .typing-text-char::before {
           width: 0.38em;
           height: 0.38em;
           border-radius: 999px;
         }
 
-        .typing-text-line[data-cursor-style="underscore"]::after {
+        .typing-text-line[data-cursor-style="underscore"]::after,
+        .typing-text-line[data-cursor-style="underscore"] .typing-text-char::before {
           inset-block-start: auto;
           inset-block-end: 0.16em;
           width: 0.72em;
@@ -367,6 +393,119 @@ export default function TypingText({
 
           .typing-text-line::after {
             opacity: 0 !important;
+          }
+        }
+
+        @keyframes typing-text-char-in {
+          from {
+            opacity: 0;
+          }
+
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes typing-text-caret {
+          0%,
+          99.9% {
+            opacity: 1;
+          }
+
+          100% {
+            opacity: 0;
+          }
+        }
+
+        @keyframes typing-text-char-loop {
+          0%,
+          62% {
+            opacity: 1;
+          }
+
+          62.01%,
+          100% {
+            opacity: 0;
+          }
+        }
+
+        @keyframes typing-text-settle {
+          0% {
+            opacity: 1;
+            filter: blur(var(--typing-blur));
+            transform: rotateX(var(--typing-rotate)) scale(var(--typing-scale));
+          }
+
+          100% {
+            opacity: 1;
+            filter: blur(0);
+            transform: rotateX(0deg) scale(1);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .typing-text-line {
+            width: auto !important;
+            max-width: 100%;
+            white-space: normal !important;
+            overflow-wrap: break-word;
+            opacity: 1;
+            animation: typing-text-settle var(--typing-duration) linear var(--typing-delay) both !important;
+          }
+
+          .typing-text-content {
+            display: inline !important;
+            overflow: visible !important;
+          }
+
+          .typing-text-char {
+            position: relative;
+            opacity: 0;
+            animation: var(--typing-char-animation);
+            animation-delay: calc(var(--typing-delay) + var(--char-index) * var(--typing-step));
+          }
+
+          .typing-text-line[data-cursor-style] .typing-text-char::before {
+            content: "";
+            inset-inline-start: auto;
+            inset-inline-end: calc(100% + 0.16em);
+            animation: typing-text-caret var(--typing-step) linear forwards;
+            animation-delay: calc(var(--typing-delay) + (var(--char-index) - 1) * var(--typing-step));
+          }
+
+          .typing-text-line[data-cursor-style] .typing-text-char:first-child::before {
+            animation-duration: var(--typing-delay);
+            animation-delay: 0s;
+          }
+
+          .typing-text-line:not([data-typing-variant="loop"])[data-cursor-style]::after {
+            content: none;
+          }
+
+          .typing-text-line[data-typing-variant="loop"][data-cursor-style]::after {
+            position: static;
+            display: inline-block;
+            translate: none;
+            margin-inline-start: 0.16em;
+            vertical-align: -0.1em;
+            animation-delay: calc(var(--typing-delay) + var(--typing-duration));
+            animation-fill-mode: forwards;
+          }
+        }
+
+        @media (max-width: 640px) and (prefers-reduced-motion: reduce) {
+          .typing-text-line {
+            opacity: 1 !important;
+            animation: none !important;
+          }
+
+          .typing-text-char {
+            opacity: 1;
+            animation: none;
+          }
+
+          .typing-text-char::before {
+            content: none;
           }
         }
       `}</style>

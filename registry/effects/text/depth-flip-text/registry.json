@@ -59,7 +59,7 @@
     {
       "name": "textColor",
       "type": "string",
-      "default": "#050505",
+      "default": "#ffffff",
       "description": "Text color for both the current and incoming phrase.",
       "remixer": {
         "control": "color",

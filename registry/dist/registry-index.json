@@ -405,6 +405,11 @@
     "tarball": "registry/dist/hyperiux-drop-text-2.0.0.tgz"
   },
   {
+    "name": "@hyperiux/flickering-text",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-flickering-text-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/focus-text",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-focus-text-1.0.0.tgz"
@@ -448,6 +453,11 @@
     "name": "@hyperiux/rectangular-text-reveal",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-rectangular-text-reveal-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/rolling-text",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-rolling-text-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/scramble-text",
@@ -496,8 +506,8 @@
   },
   {
     "name": "@hyperiux/variable-text-proximity",
-    "version": "1.0.3",
-    "tarball": "registry/dist/hyperiux-variable-text-proximity-1.0.3.tgz"
+    "version": "1.0.5",
+    "tarball": "registry/dist/hyperiux-variable-text-proximity-1.0.5.tgz"
   },
   {
     "name": "@hyperiux/aperture-transition",

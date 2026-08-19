@@ -51,7 +51,7 @@
   "target": "src/components/effects/chromatic-text",
   "props": [
     {
-      "name": "textColor",
+      "name": "baseTextColor",
       "type": "string",
       "default": "#ffffff",
       "description": "Color of the front/base text layer.",
@@ -62,7 +62,7 @@
       }
     },
     {
-      "name": "redColor",
+      "name": "firstTextColor",
       "type": "string",
       "default": "#FFB200",
       "description": "Color of the red chromatic depth layer.",
@@ -73,7 +73,7 @@
       }
     },
     {
-      "name": "blueColor",
+      "name": "secondTextColor",
       "type": "string",
       "default": "#EB5B00",
       "description": "Color of the blue chromatic depth layer.",

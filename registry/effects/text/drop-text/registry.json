@@ -363,6 +363,7 @@
       "remixer": {
         "control": "color",
         "group": "colors",
+        "enabled":false,
         "groupTitle": "Colors"
       }
     }

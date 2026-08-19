@@ -59,6 +59,7 @@
       "description": "Background color.",
       "remixer": {
         "control": "color",
+        "enabled":false,
         "group": "colors",
         "groupTitle": "Colors"
       }
