@@ -42,25 +42,58 @@ function smoothstep01(t) {
   return x * x * (3 - 2 * x);
 }
 
-function wrapLines(ctx, text, maxWidth) {
-  const words = String(text).split(/\s+/).filter(Boolean);
-  const lines = [];
-  let line = '';
+/**
+ * The single text node the paragraph renders, or null if the element holds
+ * anything more complex. Measurement only makes sense against one flat run.
+ */
+function singleTextNode(element) {
+  const node = element.firstChild;
 
-  for (const word of words) {
-    const candidate = line ? `${line} ${word}` : word;
-
-    if (line && ctx.measureText(candidate).width > maxWidth) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = candidate;
-    }
+  if (!node || node.nodeType !== Node.TEXT_NODE || node.nextSibling) {
+    return null;
   }
 
-  if (line) lines.push(line);
+  return node;
+}
 
-  return lines;
+/**
+ * Reads the paragraph's real glyph positions back out of the browser.
+ *
+ * A Range over one code point reports exactly where that glyph landed, so the
+ * wrap, alignment, kerning and letter-spacing are whatever the paragraph
+ * actually did. Nothing here re-wraps the text, which is what keeps the
+ * painted copy aligned with the selectable text sitting underneath it.
+ *
+ * Boxes come back in reading order, rebased onto the wrapper's top-left
+ * corner. Whitespace is skipped: every glyph is painted at its own origin, so
+ * spaces carry nothing the canvas needs.
+ */
+function measureGlyphs(node, text, originX, originY) {
+  const range = document.createRange();
+  const glyphs = [];
+
+  for (let i = 0; i < text.length; i++) {
+    if (!text[i].trim()) continue;
+
+    range.setStart(node, i);
+    range.setEnd(node, i + 1);
+
+    const rect = range.getBoundingClientRect();
+
+    if (rect.width <= 0 || rect.height <= 0) continue;
+
+    glyphs.push({
+      character: text[i],
+      x: rect.left - originX,
+      top: rect.top - originY,
+      width: rect.width,
+      height: rect.height,
+    });
+  }
+
+  range.detach?.();
+
+  return glyphs;
 }
 
 /**
@@ -133,13 +166,8 @@ export default function TextFillPixelV3({
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const styles = window.getComputedStyle(textElement);
       const fontSize = parseFloat(styles.fontSize) || 16;
-      const parsedLineHeight = parseFloat(styles.lineHeight);
-      const lineHeight = Number.isFinite(parsedLineHeight)
-        ? parsedLineHeight
-        : fontSize * 1.18;
       const font = `${styles.fontStyle} ${styles.fontWeight} ${fontSize}px ${styles.fontFamily}`;
       const letterSpacing = styles.letterSpacing;
-      const align = styles.textAlign;
       const hasLetterSpacing = letterSpacing && letterSpacing !== 'normal';
 
       canvas.width = Math.ceil(width * dpr);
@@ -156,57 +184,60 @@ export default function TextFillPixelV3({
         ctx.letterSpacing = letterSpacing;
       }
 
-      const lines = wrapLines(ctx, text, width);
+      const textNode = singleTextNode(textElement);
+
+      if (!textNode) {
+        layout = null;
+        return;
+      }
+
       const metrics = ctx.measureText('Hg');
       const ascent = metrics.fontBoundingBoxAscent || fontSize * 0.8;
       const descent = metrics.fontBoundingBoxDescent || fontSize * 0.2;
-      const firstBaseline = (lineHeight - (ascent + descent)) / 2 + ascent;
 
-      const lineGeometry = lines.map((line, index) => {
-        const lineWidth = ctx.measureText(line).width;
-        const x =
-          align === 'right'
-            ? width - lineWidth
-            : align === 'left' || align === 'start'
-              ? 0
-              : (width - lineWidth) / 2;
+      // Everything below comes from the live paragraph, rebased onto the
+      // wrapper box the canvas is stretched over. No second wrap pass exists,
+      // so the pixels cannot drift away from the selectable text.
+      const measured = measureGlyphs(textNode, text, rect.left, rect.top);
 
-        return { line, x, baseline: firstBaseline + index * lineHeight };
-      });
+      if (!measured.length) {
+        layout = null;
+        return;
+      }
 
-      // Per-character boxes, measured once. Advances come from cumulative
-      // prefix widths rather than per-glyph widths so kerning between the pair
-      // is accounted for and the boxes stay flush with what fillText draws.
+      // A Range rect spans the whole line box; the glyphs sit centered inside
+      // it, so the baseline is the box center plus half the ink height.
+      const baselineIn = (top, boxHeight) =>
+        top + boxHeight / 2 + (ascent - descent) / 2;
+
+      // Draw list and animation boxes share one pass over the measured glyphs.
+      //
+      // Each glyph is stamped at its own measured origin rather than letting
+      // fillText advance through a whole line: canvas shaping and DOM shaping
+      // can disagree by a fraction of a pixel per character, which compounds
+      // into visible drift by the end of a long line. Per-glyph placement pins
+      // the painted copy to the DOM positions exactly.
+      const glyphs = [];
       const chars = [];
 
-      for (const { line, x, baseline } of lineGeometry) {
-        let previous = 0;
+      for (const box of measured) {
+        const baseline = baselineIn(box.top, box.height);
 
-        for (let i = 0; i < line.length; i++) {
-          const next = ctx.measureText(line.slice(0, i + 1)).width;
-          const character = line[i];
+        glyphs.push({ character: box.character, x: box.x, baseline });
 
-          if (character.trim()) {
-            const glyph = ctx.measureText(character);
-            // Tight ink extents, not the font box: a lowercase letter should
-            // finish filling at its own x-height instead of stalling through
-            // the empty space an ascender would have occupied.
-            const top =
-              baseline - (glyph.actualBoundingBoxAscent || ascent * 0.72) - 1;
-            const bottom =
-              baseline + (glyph.actualBoundingBoxDescent || 0) + 1;
+        // Tighten to the font's ink band. The Range rect covers the full
+        // line-height, which would otherwise make the fill crawl through the
+        // empty leading above and below the letter.
+        const top = baseline - ascent - 1;
+        const bottom = baseline + descent + 1;
 
-            chars.push({
-              x: x + previous,
-              width: next - previous,
-              top,
-              bottom,
-              height: bottom - top,
-            });
-          }
-
-          previous = next;
-        }
+        chars.push({
+          x: box.x,
+          width: box.width,
+          top,
+          bottom,
+          height: bottom - top,
+        });
       }
 
       const paint = (target, color) => {
@@ -222,8 +253,8 @@ export default function TextFillPixelV3({
           tctx.letterSpacing = letterSpacing;
         }
 
-        for (const { line, x, baseline } of lineGeometry) {
-          tctx.fillText(line, x, baseline);
+        for (const { character, x, baseline } of glyphs) {
+          tctx.fillText(character, x, baseline);
         }
       };
 

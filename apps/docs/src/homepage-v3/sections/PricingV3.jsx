@@ -62,7 +62,7 @@ const PriceDigit = memo(function PriceDigit({ digit, visible = true }) {
     return (
         <span
             aria-hidden="true"
-            className="relative inline-block h-[1em] w-[0.64em] overflow-hidden leading-none transition-[width,opacity] duration-300"
+            className="relative inline-block h-[1em] w-[0.56em] overflow-hidden leading-none transition-[width,opacity] duration-300"
             style={{ width: visible ? undefined : 0, opacity: visible ? 1 : 0 }}
         >
             <span ref={reelRef} className="flex  flex-col will-change-transform">
