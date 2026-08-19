@@ -65,22 +65,75 @@ function useLoaderFlag(event, isSet, fallbackMs) {
   const [seen, setSeen] = useState(false);
 
   useEffect(() => {
+    let raf1 = 0;
+    let raf2 = 0;
     const onFire = () => setSeen(true);
 
     window.addEventListener(event, onFire);
-    // Already done before this mounted (or no loader on the page) — flip on the
-    // next tick rather than synchronously inside the effect.
+
     const already = isSet();
+
+    // Already done before this mounted — the loader was skipped, so this is a
+    // cold hydration and the consumer's intro is about to start on the same
+    // frames React is still committing the rest of the page on. Firing on a
+    // `setTimeout(0)` puts the animation's first frames right on top of that
+    // work and it visibly stutters. Two rAFs instead: the first is the frame
+    // hydration is already committing into, the second is the first frame the
+    // main thread is actually free, which is where the intro should begin.
+    if (already) {
+      raf1 = window.requestAnimationFrame(() => {
+        raf2 = window.requestAnimationFrame(onFire);
+      });
+    }
+
+    // The loader is running normally — no rush, just fall open if it never
+    // reports back.
     const fallback =
-      already || Number.isFinite(fallbackMs)
-        ? window.setTimeout(onFire, already ? 0 : fallbackMs)
+      !already && Number.isFinite(fallbackMs)
+        ? window.setTimeout(onFire, fallbackMs)
         : 0;
 
     return () => {
       window.removeEventListener(event, onFire);
       window.clearTimeout(fallback);
+      window.cancelAnimationFrame(raf1);
+      window.cancelAnimationFrame(raf2);
     };
   }, [event, isSet, fallbackMs]);
 
   return seen;
+}
+
+// ── Once per session ────────────────────────────────────────────────────────
+// The loader is an entrance, not a page transition: it earns its 3s the first
+// time a visitor arrives and is only in the way on every navigation back to the
+// homepage after that. `sessionStorage` is the right scope for that — it is
+// per-tab and clears when the tab closes, so a fresh visit still gets the full
+// intro while a return trip inside the same session goes straight to the hero.
+const LOADER_V3_PLAYED_KEY = "hyperiux-v3:loader-played";
+
+/**
+ * True if the loader has already run in this tab's session. Storage access is
+ * guarded: Safari private mode and hardened privacy settings throw on read, and
+ * the loader playing again is a far better failure than the page throwing.
+ */
+export function hasLoaderV3Played() {
+  if (typeof window === "undefined") return false;
+
+  try {
+    return window.sessionStorage.getItem(LOADER_V3_PLAYED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/** Records that the loader has run, so it stays skipped for the rest of the session. */
+export function markLoaderV3Played() {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.sessionStorage.setItem(LOADER_V3_PLAYED_KEY, "1");
+  } catch {
+    // Storage unavailable — the loader simply plays again next time.
+  }
 }

@@ -89,7 +89,12 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
         onMouseLeave={closePanel}
       >
         {/* `data-nav-logo` is what the loader measures to find where to dock. */}
-        <Link href="/" data-nav-logo className="w-[10vw]  h-auto ">
+        <Link
+          href="/"
+          data-nav-logo
+          aria-label="Hyperiux Vault home"
+          className="w-[10vw]  h-auto "
+        >
           <HyperiuxLogo className="text-primary size-full " />
         </Link>
 
