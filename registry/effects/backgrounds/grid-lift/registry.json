@@ -18,7 +18,7 @@
   "type": "registry:component",
   "title": "Grid Lift",
   "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and remixable controls.",
-  "category": "webgl",
+  "category": "backgrounds",
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/demo/grid-lift",

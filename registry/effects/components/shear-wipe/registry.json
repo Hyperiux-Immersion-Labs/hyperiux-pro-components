@@ -3,12 +3,6 @@
   "version": "1.1.0",
   "changelog": [
     {
-      "version": "1.1.0",
-      "date": "2026-08-06",
-      "summary": "Added a tab-based layout with animated content transitions for tablet and mobile, replacing the hover edge panels which don't translate well to touch",
-      "breaking": false
-    },
-    {
       "version": "1.0.0",
       "date": "2026-08-06",
       "summary": "Initial release",

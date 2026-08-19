@@ -917,7 +917,7 @@
     "name": "cards-runway",
     "title": "Cards Runway",
     "description": "A horizontal runway of cards that animates as you scroll",
-    "category": "components",
+    "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.1.1",
@@ -945,7 +945,7 @@
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/cards-runway/registry.json",
+    "registryPath": "registry/effects/scroll/cards-runway/registry.json",
     "importPath": "@/components/effects/cards-runway",
     "target": "src/components/effects/cards-runway",
     "previewUrl": "/demo/cards-runway",
@@ -1143,30 +1143,6 @@
     "name": "chromatic-text",
     "version": "1.1.3",
     "changelog": [
-      {
-        "version": "1.1.3",
-        "date": "2026-08-18",
-        "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
-        "breaking": false
-      },
-      {
-        "version": "1.1.2",
-        "date": "2026-08-18",
-        "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
-        "breaking": false
-      },
-      {
-        "version": "1.1.1",
-        "date": "2026-08-18",
-        "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
-        "breaking": false
-      },
-      {
-        "version": "1.1.0",
-        "date": "2026-08-14",
-        "summary": "Added a reduced-motion-safe final state, synced the shipped source to the docs version, and released the effect as free.",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-08-14",
@@ -1703,7 +1679,7 @@
     "type": "registry:component",
     "title": "Depth Card Stack",
     "description": "3D stacked card carousel with perspective depth, gyroscopic tilt on hover, texture reveal effect, physics throw animation, and autoplay",
-    "category": "components",
+    "category": "carousels",
     "dependencies": [
       "gsap",
       "lucide-react"
@@ -1822,7 +1798,7 @@
         "includeOnlyPublicProps": true
       }
     },
-    "registryPath": "registry/effects/components/depth-card-stack/registry.json"
+    "registryPath": "registry/effects/carousels/depth-card-stack/registry.json"
   },
   {
     "name": "depth-flip-text",
@@ -2300,7 +2276,7 @@
     "name": "draggable-marquee",
     "title": "Draggable Marquee",
     "description": "Infinite horizontal marquee with drag interaction and momentum physics",
-    "category": "scroll",
+    "category": "components",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.1.1",
@@ -2322,7 +2298,7 @@
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/scroll/draggable-marquee/registry.json",
+    "registryPath": "registry/effects/components/draggable-marquee/registry.json",
     "importPath": "@/components/effects/draggable-marquee",
     "target": "src/components/effects/draggable-marquee",
     "previewUrl": "/demo/draggable-marquee",
@@ -2348,18 +2324,6 @@
     "name": "drop-text",
     "version": "2.0.0",
     "changelog": [
-      {
-        "version": "2.0.0",
-        "date": "2026-08-14",
-        "summary": "Removed the replayOnHover prop from the public API and hid animateOnScroll from the public remixer while keeping the runtime prop.",
-        "breaking": true
-      },
-      {
-        "version": "1.1.0",
-        "date": "2026-08-14",
-        "summary": "Added a reduced-motion-safe final state and released the effect as free.",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-08-14",
@@ -3498,12 +3462,6 @@
     "version": "1.1.0",
     "changelog": [
       {
-        "version": "1.1.0",
-        "date": "2026-08-17",
-        "summary": "Rebuilt the reveal as a character-by-character opacity fade (the currently-arriving character glows bold and bright, then settles to regular weight and dim glow) to match the reference clip. Removed flickerSpeed, scanSpeed, and showScanLine; added activeWeight and lineGap.",
-        "breaking": true
-      },
-      {
         "version": "1.0.0",
         "date": "2026-08-14",
         "summary": "Initial release",
@@ -3753,7 +3711,7 @@
     "name": "grid-lift",
     "title": "Grid Lift",
     "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
-    "category": "webgl",
+    "category": "backgrounds",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.1.0",
@@ -3761,7 +3719,7 @@
       "leva"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/webgl/grid-lift/registry.json",
+    "registryPath": "registry/effects/backgrounds/grid-lift/registry.json",
     "importPath": "@/components/effects/grid-lift",
     "target": "src/components/effects/grid-lift",
     "previewUrl": "/demo/grid-lift",
@@ -4318,7 +4276,7 @@
     "name": "infinite-grid-gallery",
     "title": "Infinite Grid Gallery",
     "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
-    "category": "webgl",
+    "category": "components",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.1.0",
@@ -4332,7 +4290,7 @@
     ],
     "dependencies": [],
     "registryDependencies": [],
-    "registryPath": "registry/effects/webgl/infinite-grid-gallery/registry.json",
+    "registryPath": "registry/effects/components/infinite-grid-gallery/registry.json",
     "importPath": "@/components/effects/infinite-grid-gallery",
     "target": "src/components/effects/infinite-grid-gallery",
     "previewUrl": "/demo/infinite-grid-gallery",
@@ -4407,7 +4365,7 @@
   {
     "name": "interactive-arrows",
     "title": "Interactive Arrows",
-    "description": "Canvas 2D collection of six cursor-reactive arrow and line effects: a hover-push arrow grid, an opacity-fade variant, a smooth-easing sparse grid, a particle-lines dot field, a persistent lines field, and a playful full-screen grid with center cutout. Scroll-driven background color transitions via GSAP ScrollTrigger.",
+    "description": "Canvas 2D collection of six cursor-reactive arrow and line effects: a hover-push arrow grid, an opacity-fade variant, a smooth-easing sparse grid, a particle-lines dot field, a persistent lines field, and a playful full-screen grid with center cutout.",
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
@@ -5523,12 +5481,6 @@
     "version": "1.1.0",
     "changelog": [
       {
-        "version": "1.1.0",
-        "date": "2026-08-14",
-        "summary": "Added a reduced-motion-safe final state, synced the shipped source to the docs version, and released the effect as free.",
-        "breaking": false
-      },
-      {
         "version": "1.0.0",
         "date": "2026-08-14",
         "summary": "Initial release",
@@ -6043,7 +5995,7 @@
     "name": "ribbon-drift",
     "title": "Ribbon Drift",
     "description": "Scroll-driven ribbon gallery where image strips drift horizontally at alternating speeds, revealing project names with GSAP SplitText on scroll.",
-    "category": "components",
+    "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.3.0",
@@ -6078,7 +6030,7 @@
       "lenis"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/ribbon-drift/registry.json",
+    "registryPath": "registry/effects/scroll/ribbon-drift/registry.json",
     "importPath": "@/components/effects/ribbon-drift",
     "target": "src/components/effects/ribbon-drift",
     "previewUrl": "/demo/ribbon-drift",
@@ -6583,12 +6535,6 @@
     "name": "shear-wipe",
     "version": "1.1.0",
     "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-08-06",
-        "summary": "Added a tab-based layout with animated content transitions for tablet and mobile, replacing the hover edge panels which don't translate well to touch",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-08-06",
@@ -7925,30 +7871,6 @@
     "version": "1.1.3",
     "changelog": [
       {
-        "version": "1.1.3",
-        "date": "2026-08-18",
-        "summary": "Moved cursor color into the cursor controls, removed duplicate cursor style aliases, and positioned shape cursors ahead of typed text.",
-        "breaking": false
-      },
-      {
-        "version": "1.1.2",
-        "date": "2026-08-18",
-        "summary": "Added square, triangle, underscore, and dot cursor styles with smooth cursor color and shape transitions.",
-        "breaking": false
-      },
-      {
-        "version": "1.1.1",
-        "date": "2026-08-14",
-        "summary": "Removed the decorative gradient overlay so the effect uses a flat background color only.",
-        "breaking": false
-      },
-      {
-        "version": "1.1.0",
-        "date": "2026-08-14",
-        "summary": "Added a reduced-motion-safe final state and released the effect as free.",
-        "breaking": false
-      },
-      {
         "version": "1.0.0",
         "date": "2026-08-14",
         "summary": "Initial release",
@@ -8338,36 +8260,6 @@
     "name": "variable-text-proximity",
     "version": "1.0.5",
     "changelog": [
-      {
-        "version": "1.0.5",
-        "date": "2026-08-18",
-        "summary": "Moved remixer props/controls into registry.json instead of defining them inline in the demo page.",
-        "breaking": false
-      },
-      {
-        "version": "1.0.4",
-        "date": "2026-08-18",
-        "summary": "Released as a free-tier component.",
-        "breaking": false
-      },
-      {
-        "version": "1.0.3",
-        "date": "2026-08-18",
-        "summary": "Load Roboto Flex via next/font instead of a runtime Google Fonts link, and wait for the font to be ready before locking letter widths, to remove the flash of fallback font and layout jump on load.",
-        "breaking": false
-      },
-      {
-        "version": "1.0.2",
-        "date": "2026-08-18",
-        "summary": "Renamed component to variable-text-proximity.",
-        "breaking": false
-      },
-      {
-        "version": "1.0.1",
-        "date": "2026-08-18",
-        "summary": "Changed default base weight to 300.",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-08-18",

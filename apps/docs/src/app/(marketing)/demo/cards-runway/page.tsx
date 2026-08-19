@@ -1,6 +1,6 @@
 import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import registry from "../../../../../../../registry/effects/components/cards-runway/registry.json";
+import registry from "../../../../../../../registry/effects/scroll/cards-runway/registry.json";
 
 export default function Page() {
   return <DemoContent registry={registry} />;

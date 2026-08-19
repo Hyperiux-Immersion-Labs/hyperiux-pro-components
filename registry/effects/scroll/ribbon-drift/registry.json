@@ -4,7 +4,7 @@
   "type": "registry:component",
   "title": "Ribbon Drift",
   "description": "Scroll-driven ribbon gallery where image strips drift horizontally at alternating speeds, revealing project names with GSAP SplitText on scroll.",
-  "category": "components",
+  "category": "scroll",
   "dependencies": [
     "gsap",
     "lenis"

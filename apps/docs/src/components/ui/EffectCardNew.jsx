@@ -170,10 +170,13 @@ export function EffectCard({
 
   const allDependencyLabels = useMemo(
     () =>
-      (registryDependencies || effect.dependencies || [])
+      (Array.isArray(effect.tags) && effect.tags.length > 0
+        ? effect.tags
+        : registryDependencies || effect.dependencies || []
+      )
         .map(formatLabel)
         .filter(Boolean),
-    [registryDependencies, effect.dependencies]
+    [effect.tags, registryDependencies, effect.dependencies]
   );
   const dependencyPills = allDependencyLabels.slice(0, 2);
   const extraDependencyCount = Math.max(allDependencyLabels.length - 2, 0);
@@ -205,7 +208,7 @@ export function EffectCard({
             alt={effect.title || effect.name}
             fill
             sizes={sizes}
-            quality={60}
+            quality={75}
             priority={priority}
             loading={priority ? undefined : "lazy"}
             className={`object-cover transition-[opacity,transform] duration-500 ${
@@ -241,7 +244,7 @@ export function EffectCard({
             ))}
             {extraDependencyCount > 0 && (
               <Tooltip
-                label={allDependencyLabels.join(", ")}
+                label={allDependencyLabels.slice(2).join(", ")}
                 className="pointer-events-auto max-w-[10vw]"
               >
                 <span className="cursor-default bg-[#2B2B2B] px-[0.8vw] py-[0.1vw] text18 font-medium text-white/70 max-md:px-3 max-md:py-1 max-md:text-[3.5vw]!">

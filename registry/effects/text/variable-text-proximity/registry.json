@@ -3,36 +3,6 @@
   "version": "1.0.5",
   "changelog": [
     {
-      "version": "1.0.5",
-      "date": "2026-08-18",
-      "summary": "Moved remixer props/controls into registry.json instead of defining them inline in the demo page.",
-      "breaking": false
-    },
-    {
-      "version": "1.0.4",
-      "date": "2026-08-18",
-      "summary": "Released as a free-tier component.",
-      "breaking": false
-    },
-    {
-      "version": "1.0.3",
-      "date": "2026-08-18",
-      "summary": "Load Roboto Flex via next/font instead of a runtime Google Fonts link, and wait for the font to be ready before locking letter widths, to remove the flash of fallback font and layout jump on load.",
-      "breaking": false
-    },
-    {
-      "version": "1.0.2",
-      "date": "2026-08-18",
-      "summary": "Renamed component to variable-text-proximity.",
-      "breaking": false
-    },
-    {
-      "version": "1.0.1",
-      "date": "2026-08-18",
-      "summary": "Changed default base weight to 300.",
-      "breaking": false
-    },
-    {
       "version": "1.0.0",
       "date": "2026-08-18",
       "summary": "Initial release",

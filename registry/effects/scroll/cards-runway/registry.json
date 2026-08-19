@@ -42,7 +42,7 @@
   "type": "registry:component",
   "title": "Cards Runway",
   "description": "A horizontal runway of cards that animates as you scroll",
-  "category": "components",
+  "category": "scroll",
   "dependencies": [
     "gsap"
   ],

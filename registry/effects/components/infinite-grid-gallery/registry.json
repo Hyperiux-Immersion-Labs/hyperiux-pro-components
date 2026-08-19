@@ -4,7 +4,7 @@
   "type": "registry:component",
   "title": "Infinite Grid Gallery",
   "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
-  "category": "webgl",
+  "category": "components",
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/demo/infinite-grid-gallery",
