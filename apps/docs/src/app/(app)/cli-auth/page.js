@@ -24,7 +24,6 @@ export default async function CliAuthPage() {
   }
 
   const plan = await getUserPlan(userId);
-  const isPro = plan === "pro";
 
-  return <CliAuthClient isPro={isPro} />;
+  return <CliAuthClient plan={plan} />;
 }

@@ -30,7 +30,7 @@ export default async function SignUpContinuePage() {
             path="/signup/continue"
             routing="path"
             signInUrl="/sign-in"
-            fallbackRedirectUrl="/pricing"
+            fallbackRedirectUrl="/effects"
           />
         </div>
       </AuthShell>

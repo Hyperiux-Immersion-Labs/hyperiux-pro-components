@@ -1,12 +1,20 @@
-import { clerkClient } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertAdmin } from "@/lib/admin";
+import { getRole, isSuperAdminUser } from "@/lib/admin";
 
 export async function GET(request) {
-  if (!(await assertAdmin())) {
+  const { userId } = await auth();
+  if (!userId) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+
+  const clerk = await clerkClient();
+  const viewer = await clerk.users.getUser(userId);
+  if (getRole(viewer) === null) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  const viewerIsSuperAdmin = isSuperAdminUser(viewer);
 
   try {
     const { searchParams } = new URL(request.url);
@@ -33,9 +41,9 @@ export async function GET(request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Fetch matching Clerk users in batch
+    // Fetch matching Clerk users in batch (reuses the `clerk` client from
+    // the viewer-role check above).
     const clerkUserIds = (subscriptions || []).map((s) => s.clerk_user_id).filter(Boolean);
-    const clerk = await clerkClient();
 
     let clerkUsers = [];
     if (clerkUserIds.length > 0) {
@@ -50,23 +58,34 @@ export async function GET(request) {
 
     let users = (subscriptions || []).map((sub) => {
       const clerkUser = clerkMap[sub.clerk_user_id];
-      const isAdmin = clerkUser?.publicMetadata?.role === "admin";
 
       // Supabase is the source of truth once a subscriptions row exists (see
       // getUserPlan()'s comment on why an expired/free row is never overridden
-      // by Clerk metadata for *pro access* purposes) - but admins are a
+      // by Clerk metadata for *pro access* purposes) - but admin role is a
       // separate axis entirely: publicMetadata.role is the only place that
       // lives, so it has to be read from Clerk directly rather than expecting
       // a matching Supabase row to exist for it.
-      return {
+      const role = getRole(clerkUser);
+
+      const base = {
         id: sub.clerk_user_id,
         email: clerkUser?.emailAddresses?.[0]?.emailAddress || null,
         name: clerkUser?.fullName || clerkUser?.firstName || null,
         imageUrl: clerkUser?.imageUrl || null,
         joinedAt: clerkUser?.createdAt || sub.created_at,
         plan: sub.plan || "free",
+        role,
+        isAdmin: role !== null,
+      };
+
+      // Billing/payment detail is super-admin only - a regular admin gets
+      // user identity + plan tier but no subscription status, renewal date,
+      // or Razorpay IDs, enforced here rather than only hidden in the UI.
+      if (!viewerIsSuperAdmin) return base;
+
+      return {
+        ...base,
         status: sub.status || "inactive",
-        isAdmin,
         billingInterval: sub.billing_interval || null,
         planValidUntil: sub.current_period_end || null,
         razorpayCustomerId: sub.razorpay_customer_id || null,

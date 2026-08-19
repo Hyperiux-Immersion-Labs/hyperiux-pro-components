@@ -12,63 +12,79 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
+const headingClass =
+  "t64 pointer-events-none absolute left-1/2 top-1/2 z-10 w-full max-w-[65.5vw] -translate-x-1/2 -translate-y-1/2 text-center text-[3.25vw] text-white max-[1025px]:max-w-[85%] max-[1025px]:text-[4.2vw] max-md:max-w-[90%] max-md:text-[5vw]";
+
 export default function CurvedGradient() {
   const wrapperRef = useRef(null);
   const sectionRef = useRef(null);
-  const headingRef = useRef(null);
+  const firstRef = useRef(null);
+  const secondRef = useRef(null);
 
   useGSAP(
     () => {
-      const split = SplitText.create(headingRef.current, {
+      const first = firstRef.current;
+      const second = secondRef.current;
+      if (!first || !second) return;
+
+      const split1 = SplitText.create(first, {
         type: "lines",
         linesClass: "split-line",
-        // mask: "lines",
+      });
+      const split2 = SplitText.create(second, {
+        type: "lines",
+        linesClass: "split-line",
       });
 
-      // Phase 1: lines reveal in from below
-      gsap.fromTo(
-        split.lines,
-        { yPercent: 50, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power2.out",
-          stagger: 0.25,
-          scrollTrigger: {
-            trigger: wrapperRef.current,
-            start: "18% 50%",
-            end: "38% 50%",
-            scrub: true,
-          },
-        },
-      );
+      gsap.set(split1.lines, { yPercent: 50, opacity: 0 });
+      gsap.set(split2.lines, { yPercent: 50, opacity: 0 });
 
-      // Phase 2: lines drift upward and fade out, line by line
-      gsap.fromTo(
-        split.lines,
-        { yPercent: 0, opacity: 1 },
-        {
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: wrapperRef.current,
+          start: "0% 50%",
+          end: "80% 50%",
+          scrub: true,
+        },
+      });
+
+      // First heading in, then out — then the second takes the same beat.
+      tl.to(split1.lines, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.25,
+      })
+        .to(split1.lines, {
           yPercent: -50,
           opacity: 0,
           duration: 1,
-          ease: "power1.in",
           stagger: 0.25,
-          immediateRender: false,
-          scrollTrigger: {
-            trigger: wrapperRef.current,
-            start: "38% 50%",
-            end: "58% 50%",
-            scrub: true,
-          },
-        },
-      );
+        })
+        .to(split2.lines, {
+          yPercent: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.25,
+        })
+        .to(split2.lines, {
+          yPercent: -50,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.25,
+        });
+
+      return () => {
+        split1.revert();
+        split2.revert();
+      };
     },
     { scope: wrapperRef },
   );
 
   return (
-    <div ref={wrapperRef} className="relative z-200 h-[150vh]">
+    <div ref={wrapperRef} className="relative z-200 h-[240vh]">
       <section
         ref={sectionRef}
         id="curved-gradient"
@@ -80,16 +96,25 @@ export default function CurvedGradient() {
           dither={true}
           pixelSize={5.0}
           colorNum={8.0}
+          scrollTrigger={wrapperRef}
+          scrollStart="top bottom"
+          scrollEnd="170% top"
+          markers={false}
         />
+        <h2 ref={firstRef} id="curved-gradient-heading" className={headingClass}>
+          Most websites are not broken. They are forgettable. They use the same
+          sections, the same rhythm, the same static patterns, and the same safe
+          animations everyone else is using.
+        </h2>
         <h2
-          ref={headingRef}
-          id="curved-gradient-heading"
-          className="t64 relative z-10 mx-auto max-w-[51.5vw] text-center text-[3.25vw] text-white max-md:max-w-[90%] max-md:text-[5vw]"
+          ref={secondRef}
+          id="curved-gradient-heading-2"
+          className={headingClass}
         >
-          Most websites are not broken. They are forgettable. They use the same sections, the same rhythm, the same static patterns, and the same safe animations everyone else is using.
+          Your site does not need more decoration. It needs motion that earns
+          its place
         </h2>
       </section>
     </div>
   );
 }
-

@@ -43,7 +43,7 @@ export default function LineReveal({
   animateOnScroll = true,
   start = "top 85%",
   delay = 0,
-  duration = 0.85,
+  duration = 0.8,
   stagger = 0.08,
   animationKey = "",
   ...rest

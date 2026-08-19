@@ -64,7 +64,7 @@ export default async function PricingPage() {
         <main id="main-content">
           <Hero />
           <CubeBackgroundAscii />
-          <DitherTransition className="h-[46vw] max-md:h-[150vw]! bg-background " />
+          <DitherTransition  mobileEndTriggers={'bottom -50%'} className="h-[46vw] max-md:h-[150vw]! bg-background " />
           <PricingV3 />
           <DitherTransition
             dotColor="#050505"

@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 
 const EMAIL_TYPES = [
   "all",
@@ -12,7 +13,7 @@ const EMAIL_TYPES = [
   "password_changed",
   "password_reset_otp",
   "pro_unlocked",
-  "waitlist_invite",
+  "invitations",
   "subscription_invoice",
   "custom_animation_request",
   "custom_animation_request_confirmation",
@@ -36,43 +37,16 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
-function StatusBadge({ status }) {
+// Whether the recipient clicked the email's CTA - only meaningful for rows
+// whose template routes its CTA through /api/e/[id] (currently invitations).
+function ClickedBadge({ clicked }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-        status === "success"
-          ? "bg-emerald-500/15 text-emerald-400"
-          : "bg-red-500/15 text-red-400"
+      className={`inline-flex items-center  px-2.5 py-0.5 text-xs font-medium ${
+        clicked ? "bg-emerald-500/15 text-emerald-400" : "bg-white/8 text-white/40"
       }`}
     >
-      {status}
-    </span>
-  );
-}
-
-// Resend's status column only reflects whether the invite email was
-// delivered, not what happened to the invitation afterward - this shows
-// Clerk's actual live invitation status instead (synced server-side in the
-// API route), for waitlist_invite rows specifically.
-function InvitationStatusBadge({ invitationStatus }) {
-  if (!invitationStatus) {
-    return <span className="text-xs text-white/35">Unknown</span>;
-  }
-
-  const styles = {
-    accepted: "bg-emerald-500/15 text-emerald-400",
-    pending: "bg-blue-500/15 text-blue-400",
-    revoked: "bg-red-500/15 text-red-400",
-    expired: "bg-white/8 text-white/50",
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${
-        styles[invitationStatus] || "bg-white/8 text-white/50"
-      }`}
-    >
-      {invitationStatus}
+      {clicked ? "Clicked" : "Not clicked"}
     </span>
   );
 }
@@ -84,7 +58,7 @@ function TypeLabel({ type }) {
     password_changed: "Password Changed",
     password_reset_otp: "Password Reset OTP",
     pro_unlocked: "Pro Unlocked",
-    waitlist_invite: "Waitlist Invite",
+    invitations: "Invitations",
     subscription_invoice: "Invoice",
     custom_animation_request: "Animation Request",
     custom_animation_request_confirmation: "Animation Request Confirmation",
@@ -138,7 +112,7 @@ function EmailPreviewModal({ emailId, onClose }) {
       transition={{ duration: 0.22, ease: "easeOut" }}
     >
       <motion.div
-        className="relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-md border border-white/15 bg-[#0a0a0a] overflow-hidden"
+        className="relative w-full max-w-3xl max-h-[90vh] flex flex-col  border border-white/15 bg-[#0a0a0a] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -149,7 +123,7 @@ function EmailPreviewModal({ emailId, onClose }) {
           type="button"
           aria-label="Close"
           onClick={onClose}
-          className="max-[1025px]:hidden group absolute right-5 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+          className="max-[1025px]:hidden group absolute right-5 top-4 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
         >
           <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
             <span className="h-px w-4 rotate-45 bg-white" />
@@ -161,7 +135,7 @@ function EmailPreviewModal({ emailId, onClose }) {
         <div className="flex items-start h-[5vw] max-md:h-[20vw] justify-between gap-4 px-6 py-4 pr-16 border-b border-white/10">
           <div className="min-w-0">
             {loading ? (
-              <div className="h-4 w-48 rounded bg-white/10 animate-pulse" />
+              <div className="h-4 w-48  bg-white/10 animate-pulse" />
             ) : (
               <>
                 <p className="text-sm font-medium text-white truncate">{email?.subject}</p>
@@ -273,39 +247,33 @@ export default function AdminEmailsPage() {
 
         {/* Filters */}
         <div className="flex gap-3 flex-wrap">
-          <div className="relative">
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="appearance-none rounded-full border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
-            >
-              {EMAIL_TYPES.map((t) => (
-                <option key={t} value={t}>{t === "all" ? "All types" : t}</option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-          </div>
-          <div className="relative">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="appearance-none rounded-full border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
-            >
-              <option value="all">All statuses</option>
-              <option value="success">Success</option>
-              <option value="failed">Failed</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-          </div>
+          <CustomSelect
+            value={typeFilter}
+            onChange={setTypeFilter}
+            options={EMAIL_TYPES.map((t) => ({
+              value: t,
+              label: t === "all" ? "All types" : t,
+            }))}
+            panelClassName="max-h-[20vw] overflow-y-auto"
+          />
+          <CustomSelect
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: "all", label: "All statuses" },
+              { value: "success", label: "Success" },
+              { value: "failed", label: "Failed" },
+            ]}
+          />
         </div>
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+          <div className=" border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
             {error}
           </div>
         )}
 
-        <div className="rounded-lg border border-white/10 overflow-hidden">
+        <div className=" border border-white/10 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -314,7 +282,7 @@ export default function AdminEmailsPage() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Subject</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Type</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Sent At</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">CTA</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Preview</th>
                 </tr>
               </thead>
@@ -324,7 +292,7 @@ export default function AdminEmailsPage() {
                     <tr key={i}>
                       {Array.from({ length: 6 }).map((__, j) => (
                         <td key={j} className="px-4 py-3">
-                          <div className="h-4 rounded bg-white/8 animate-pulse" style={{ width: j === 1 ? "200px" : "100px" }} />
+                          <div className="h-4  bg-white/8 animate-pulse" style={{ width: j === 1 ? "200px" : "100px" }} />
                         </td>
                       ))}
                     </tr>
@@ -354,16 +322,16 @@ export default function AdminEmailsPage() {
                         {formatDate(email.sent_at)}
                       </td>
                       <td className="px-4 py-3">
-                        {email.email_type === "waitlist_invite" ? (
-                          <InvitationStatusBadge invitationStatus={email.invitation_status} />
+                        {email.email_type === "invitations" ? (
+                          <ClickedBadge clicked={email.cta_clicked} />
                         ) : (
-                          <StatusBadge status={email.status} />
+                          <span className="text-xs text-white/25">-</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button
                           onClick={() => setPreviewId(email.id)}
-                          className="rounded-full px-3 py-1.5 text-xs font-medium bg-white/8 text-white/60 hover:bg-white/15 hover:text-white transition"
+                          className=" px-3 py-1.5 text-xs font-medium bg-white/8 text-white/60 hover:bg-white/15 hover:text-white transition"
                         >
                           View
                         </button>
@@ -386,7 +354,7 @@ export default function AdminEmailsPage() {
                 type="button"
                 onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
                 disabled={currentPage === 1}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex h-8 w-8 items-center justify-center  border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Previous page"
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -395,7 +363,7 @@ export default function AdminEmailsPage() {
                 type="button"
                 onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
                 disabled={currentPage === totalPages}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex h-8 w-8 items-center justify-center  border border-white/10 bg-white/5 text-white/70 transition hover:border-white/25 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Next page"
               >
                 <ChevronRight className="h-4 w-4" />

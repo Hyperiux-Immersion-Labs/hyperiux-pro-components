@@ -16,9 +16,22 @@ import {
   Text,
 } from "@react-email/components";
 
-// NOTE: baseUrl and every asset path below (logo, hero image, social icons)
-// are placeholders - swap them once the final design assets are ready.
+// NOTE: baseUrl and every asset path below (logo, social icons) are
+// placeholders - swap them once the final design assets are ready. Always
+// production, regardless of environment: email clients fetch these images
+// over the public internet, and a local dev server won't be serving them.
 const baseUrl = "https://vault.hyperiux.com";
+
+// Where the app itself is running - used only for the CTA link, so it
+// follows NEXT_PUBLIC_APP_URL (e.g. a local/staging subdomain while
+// testing) instead of always pointing at production like baseUrl does.
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || baseUrl;
+
+// Actually-animated sample gif (public domain, Wikimedia Commons) so you can
+// confirm gifs render/animate correctly in email clients before swapping in
+// the real "Vault effects in motion" clip (upload it to ${baseUrl}/emails/
+// and update the src below).
+const showcaseGifUrl = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/gif/mailer-gif.gif";
 
 const socialLinks = [
   { label: "X", href: "https://x.com/_hyperiux_", icon: "/emails/x-icon-email-temp.png" },
@@ -29,29 +42,38 @@ const socialLinks = [
 
 const fontFamily = "Aeonik, system-ui";
 
-export const waitlistInviteSubject = "You're first: Vault Pro is live! 🚀";
+// The CTA routes through /api/e/[trackingId] (a click-tracking redirect that
+// marks the sent_emails row as clicked) which then forwards the recipient on
+// to the invitation's sign-up ticket URL (accepting only asks for a
+// password, since the email is pre-verified) - or to /effects with UTM
+// params as a fallback if no ticket URL is available.
+const exploreVaultUtm = "utm_source=email&utm_medium=invite&utm_campaign=invitations";
 
-export function waitlistInviteText({ inviteUrl }) {
+function exploreVaultUrl(trackingId, signUpUrl) {
+  if (!trackingId) return signUpUrl || `${appUrl}/effects?${exploreVaultUtm}`;
+  const to = signUpUrl ? `?to=${encodeURIComponent(signUpUrl)}` : "";
+  return `${appUrl}/api/e/${trackingId}${to}`;
+}
+
+export const waitlistInviteSubject = "You're invited to Hyperiux Vault";
+
+export function waitlistInviteText({ trackingId, signUpUrl } = {}) {
   return `
-The door's open. Vault Pro is live.
+Hey, building every interaction from scratch is one way to make a site feel specific - not always the sensible one.
 
-Everyone else will find out later today. You already knew, because you trusted us before everyone else.
+That's why we built Hyperiux Vault: a source-first library of interaction effects and frontend systems for React and Next.js.
 
-As a thank you, we're opening founding access to the first 100 people on our waitlist: $149/year, locked in for as long as your annual subscription remains active and uninterrupted. After those 100 memberships are claimed, Vault Pro will be $179/year or $20/month.
+You can preview an effect, inspect how it works, then copy the source or add it with the CLI. From there, change the timing, behaviour and implementation until it fits the project rather than looking like something you pulled off the shelf.
 
-Unlock the complete Pro collection with source code that lands directly in your project. Edit it, restyle it, and make every interaction yours without starting from zero or working around a black box.
+Vault also surfaces dependencies and the production details worth checking, including mobile behaviour, reduced motion and performance.
 
-Claim Founding Price - $149/year: ${inviteUrl}
-
-Once these 100 spots are gone, this price won't come back.
-
-Cancel anytime. Code you have already installed stays in your repo.
+Explore Vault: ${exploreVaultUrl(trackingId, signUpUrl)}
 
 Hyperiux Vault
 `;
 }
 
-export function WaitlistInviteEmail({ inviteUrl }) {
+export function WaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
   return (
     <Tailwind>
       <Html>
@@ -72,7 +94,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
             }
           `}</style>
         </Head>
-        <Preview>Your Founding Access invite is ready. Just the first 100 get this.</Preview>
+        <Preview>Your account is ready to be set up on Hyperiux Vault.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
           <Container
             className="mx-auto w-full max-w-150 px-4"
@@ -103,42 +125,60 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                   style={{ fontFamily, fontWeight: 400 }}
                   className="m-0 text-[32px] leading-[1.15] text-[#0a0a0a]"
                 >
-                  The Door&apos;s Open. Vault Pro is Live.
+                  Your account is ready to be set up on Hyperiux Vault.
                 </Heading>
 
                 <Text
                   className="m-0 mt-5 text-[18px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                  Everyone else will find out later today. You already
-                  knew, because you trusted us before everyone else.
+                  Hey, building every interaction from scratch is one way
+                  to make a site feel specific - not always the sensible
+                  one.
                 </Text>
 
                 <Text
                   className="m-0 mt-4 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                  As a thank you, we&apos;re opening founding access to
-                  the first 100 people on our waitlist: $149/year, locked
-                  in for as long as your annual subscription remains
-                  active and uninterrupted. After those 100 memberships
-                  are claimed, Vault Pro will be $179/year or $20/month.
+                  That&apos;s why we built Hyperiux Vault: a source-first
+                  library of interaction effects and frontend systems for
+                  React and Next.js.
                 </Text>
 
                 <Text
                   className="m-0 mt-4 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                  Unlock the complete Pro collection with source code
-                  that lands directly in your project. Edit it, restyle
-                  it, and make every interaction yours without starting
-                  from zero or working around a black box.
+                  You can preview an effect, inspect how it works, then
+                  copy the source or add it with the CLI. From there,
+                  change the timing, behaviour and implementation until it
+                  fits the project rather than looking like something you
+                  pulled off the shelf.
                 </Text>
+
+                <Section className="mt-8">
+                  <Text
+                    className="m-0 mb-3 text-[18px] font-semibold leading-5 text-[#1D1D1D]"
+                    style={{ fontFamily }}
+                  >
+                    A few Vault effects, in motion.
+                  </Text>
+                  <Img
+                    src={showcaseGifUrl}
+                    alt="A few Hyperiux Vault effects in motion"
+                    width={560}
+                    className="block h-auto w-full rounded-[9px]"
+                  />
+                </Section>
+
                 <Text
-                  className="m-0 mt-4 text-[15px] font-semibold leading-6 text-[#1D1D1D]"
+                  className="m-0 mt-6 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                   Claim Founding Price $149/year
+                  Vault also surfaces dependencies and the production
+                  details worth checking, including mobile behaviour,
+                  reduced motion and performance.
                 </Text>
 
                 <Section className="mt-8 text-center">
@@ -161,7 +201,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                           }}
                         >
                           <a
-                            href={inviteUrl}
+                            href={exploreVaultUrl(trackingId, signUpUrl)}
                             className="vault-btn"
                             style={{
                               display: "inline-block",
@@ -173,29 +213,13 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                               textDecoration: "none",
                             }}
                           >
-                            Accept Invite
+                            Explore Vault
                           </a>
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </Section>
-
-                <Text
-                  className="m-0 mt-8 text-[13px] leading-[1.3] text-[#8a8a8a]"
-                  style={{ fontFamily }}
-                >
-                  Once these 100 spots are gone, this price won&apos;t
-                  come back.
-                </Text>
-
-                <Text
-                  className="m-0 mt-4 text-[13px] leading-[1.3] text-[#8a8a8a] italic"
-                  style={{ fontFamily }}
-                >
-                  Cancel anytime. Code you have already installed stays
-                  in your repo.
-                </Text>
 
                 <Hr className="mx-0 mt-10 mb-8 border-[#e4e4e7]" />
 
@@ -245,6 +269,6 @@ export function WaitlistInviteEmail({ inviteUrl }) {
 
 export default WaitlistInviteEmail;
 
-export function renderWaitlistInviteEmail({ inviteUrl }) {
-  return <WaitlistInviteEmail inviteUrl={inviteUrl} />;
+export function renderWaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
+  return <WaitlistInviteEmail trackingId={trackingId} signUpUrl={signUpUrl} />;
 }

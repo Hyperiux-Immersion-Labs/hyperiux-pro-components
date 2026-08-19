@@ -33,12 +33,14 @@ export default function LinkButton({
   shimmerColor = "#ffffff",
   onClick,
   id,
+  underline = true,
   ...props
 }) {
   const underlineRef = useRef(null);
   const isAnimating = useRef(false);
   const labelRef = useRef(null);
   const labelShadowRef = useRef(null);
+  const shimmerTl = useRef(null);
 
   const isExternal = href?.startsWith("http");
   const resolvedTarget = target ?? (isExternal ? "_blank" : "_self");
@@ -56,9 +58,11 @@ export default function LinkButton({
 
     gsap.set(els, {
       color: "transparent",
-      backgroundImage: `linear-gradient(90deg, ${shimmerBaseColor} 0%, ${shimmerBaseColor} 42%, ${shimmerColor} 50%, ${shimmerBaseColor} 58%, ${shimmerBaseColor} 100%)`,
+      backgroundColor: shimmerBaseColor,
+      backgroundImage: `linear-gradient(115deg, ${shimmerBaseColor} 0%, ${shimmerBaseColor} 28%, ${shimmerColor} 50%, ${shimmerBaseColor} 72%, ${shimmerBaseColor} 100%)`,
       backgroundSize: "130% 100%",
-      backgroundPosition: "250% 0%",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "380% 0%",
       backgroundClip: "text",
       WebkitBackgroundClip: "text",
       WebkitTextFillColor: "transparent",
@@ -66,27 +70,47 @@ export default function LinkButton({
     });
 
     const tl = gsap.timeline({ repeat: -1 });
-    tl.to(els, { backgroundPosition: "-150% 0%", duration: 2, ease: "none" })
-      .to({}, { duration: 2 });
+    tl.to(els, { backgroundPosition: "-280% 0%", duration: 4, ease: "none" })
+      .to({}, { duration: 1 });
+    shimmerTl.current = tl;
 
     return () => {
+      shimmerTl.current = null;
       tl.kill();
       gsap.set(els, {
         clearProps:
-          "color,backgroundImage,backgroundSize,backgroundPosition,backgroundClip,WebkitBackgroundClip,WebkitTextFillColor,willChange",
+          "color,backgroundColor,backgroundImage,backgroundSize,backgroundRepeat,backgroundPosition,backgroundClip,WebkitBackgroundClip,WebkitTextFillColor,willChange",
       });
     };
   }, [shimmer, shimmerBaseColor, shimmerColor]);
 
+  const setShimmerPaused = (paused) => {
+    if (!shimmer) return;
+    const els = [labelRef.current, labelShadowRef.current].filter(Boolean);
+    if (!els.length) return;
+    if (paused) {
+      shimmerTl.current?.pause();
+      gsap.set(els, { color: shimmerColor, WebkitTextFillColor: shimmerColor });
+    } else {
+      gsap.set(els, { color: "transparent", WebkitTextFillColor: "transparent" });
+      shimmerTl.current?.resume();
+    }
+  };
+
   const handleEnter = () => {
-    if (isAnimating.current) return;
-    isAnimating.current = true;
+    setShimmerPaused(true);
+
     const el = underlineRef.current;
-    if (!el) return;
+    if (!el || isAnimating.current) return;
+    isAnimating.current = true;
     gsap
       .timeline({ onComplete: () => { isAnimating.current = false; } })
       .to(el, { scaleX: 0, transformOrigin: "right center", duration: 0.3, ease: "power2.in" })
       .to(el, { scaleX: 1, transformOrigin: "left center", duration: 0.3, ease: "power2.out" });
+  };
+
+  const handleLeave = () => {
+    setShimmerPaused(false);
   };
 
   const handleClick = (e) => {
@@ -109,6 +133,7 @@ export default function LinkButton({
       rel={isExternal ? "noopener noreferrer" : undefined}
       className={`relative text-white group w-fit inline-block pb-1 ${className}`}
       onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
       onClick={handleClick}
     >
       <div className="flex items-center gap-[0.5vw] max-[1025px]:gap-2 w-fit cursor-pointer">
@@ -131,7 +156,7 @@ export default function LinkButton({
           <div className="size-2.5 overflow-hidden mt-0.5">
             <div className="size-2.5 relative transition-transform duration-300 group-hover:translate-y-0 translate-y-[-120%] shrink-0">
               <ArrowSVG className="w-full h-full" />
-              <ArrowSVG className="size-2.5 absolute bottom-[-120%]" />
+              <ArrowSVG className="size-2.5 opacity-60 absolute bottom-[-120%]" />
             </div>
           </div>
         )}
@@ -145,11 +170,14 @@ export default function LinkButton({
           </div>
         )}
       </div>
-
-      <div
-        ref={underlineRef}
-        className="w-full absolute left-0 bottom-0 h-px bg-current"
-      />
+      {
+        underline && (
+          <div
+            ref={underlineRef}
+            className="w-full absolute left-0 bottom-0 h-px bg-current"
+          />
+        )
+      }
     </Link>
   );
 }

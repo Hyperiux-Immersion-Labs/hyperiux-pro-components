@@ -34,9 +34,8 @@ const POSITION_SMOOTHING = 0.07;
 const SMOOTHING = 0.05;
 const SPEED_REFERENCE = 190;
 const SPEED_WIDEN = 1.1;
-const NOTE_MIN_GAP_MS = 55;
-const NOTE_HYSTERESIS = 0.65;
-const MAX_VOICES = 9;
+const NOTE_MIN_GAP_MS = 20;
+const MAX_VOICES = 16;
 const RESUME_RETRY_MS = 1000;
 const GLYPHS = ["♪", "♫", "♩", "♬"];
 const GLYPH_POOL = 14;
@@ -227,7 +226,6 @@ export default function Piano({
     let speed = 0;
     let active = false;
     let noteIndex = -1;
-    let noteExact = -1;
     let running = false;
     let pendingNote = -1;
     let pendingGlyphPos = 0;
@@ -279,13 +277,8 @@ export default function Piano({
           pointerPos = nextPos;
           troughPos = nextPos;
           speed = 0;
-          // Seed the current note silently so enter doesn't cold-fire audio.
-          const exact = (nextPos / lines.length) * melody.length;
-          noteIndex = Math.min(
-            melody.length - 1,
-            Math.max(0, Math.floor(exact)),
-          );
-          noteExact = exact;
+          // Seed the current slot silently so enter doesn't cold-fire audio.
+          noteIndex = noteAt(nextPos);
         } else {
           pointerPos = nextPos;
         }
@@ -293,7 +286,6 @@ export default function Piano({
         active = false;
         speed = 0;
         noteIndex = -1;
-        noteExact = -1;
       }
 
       if (active) {
@@ -335,26 +327,25 @@ export default function Piano({
         ).toFixed(3);
       }
 
-      if (active) playNoteAt(troughPos);
+      if (active) playNoteAt(visualPos);
     };
 
-    function playNoteAt(position) {
-      const exact = (position / lines.length) * melody.length;
-      const note = Math.min(
+    // Equal-width bins across the keyboard — one melody note per slice,
+    // so a constant-speed sweep fires on a regular grid instead of drifting.
+    function noteAt(position) {
+      const span = Math.max(1, lines.length);
+      const t = (position + 0.5) / span;
+      return Math.min(
         melody.length - 1,
-        Math.max(0, Math.floor(exact)),
+        Math.max(0, Math.floor(t * melody.length)),
       );
+    }
 
-      if (noteIndex >= 0 && Math.abs(exact - noteExact) < NOTE_HYSTERESIS) {
-        return;
-      }
-      if (note === noteIndex) {
-        noteExact = exact;
-        return;
-      }
+    function playNoteAt(position) {
+      const note = noteAt(position);
+      if (note === noteIndex) return;
 
       noteIndex = note;
-      noteExact = exact;
       pendingNote = note;
       pendingGlyphPos = position;
       pendingMidi = melody[note];
@@ -423,7 +414,6 @@ export default function Piano({
       active = false;
       speed = 0;
       noteIndex = -1;
-      noteExact = -1;
     }
 
     // Pointer handlers only store coordinates — no layout reads.
@@ -500,7 +490,7 @@ export default function Piano({
           ref={(el) => {
             lineRefs.current[i] = el;
           }}
-          className="cta-line w-[1.5px] h-full bg-foreground"
+          className="cta-line w-[1.5px] h-full bg-foreground/60"
         />
       ))}
       <div

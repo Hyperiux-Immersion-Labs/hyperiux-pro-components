@@ -151,9 +151,8 @@ function FAQRow({ item, isOpen, onToggle, index }) {
 
   return (
     <div
-      className={`faq-v3-row group cursor-pointer border-grey px-[2.5vw] py-[2vw] max-md:px-[4vw] max-md:py-[4vw] max-sm:px-[6vw] max-sm:py-[6vw] ${
-        index > 0 ? "border-t" : ""
-      } ${index >= INITIAL_COUNT ? "faq-v3-row-extra" : ""}`}
+      className={`faq-v3-row group cursor-pointer border-grey px-[2.5vw] py-[2vw] max-[1025px]:px-[3.5vw] max-[1025px]:py-[3vw] max-md:px-[4vw] max-md:py-[4vw] max-sm:px-[6vw] max-sm:py-[6vw] ${index > 0 ? "border-t" : ""
+        } ${index >= INITIAL_COUNT ? "faq-v3-row-extra" : ""}`}
       role="button"
       tabIndex={0}
       aria-expanded={isOpen}
@@ -162,17 +161,16 @@ function FAQRow({ item, isOpen, onToggle, index }) {
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex w-full items-start gap-[1.5vw] max-md:gap-[3vw] max-sm:gap-[4vw]">
+      <div className="flex w-full items-start gap-[1.5vw] max-[1025px]:gap-[2.5vw] max-md:gap-[3vw] max-sm:gap-[4vw]">
         <ChevronRight
           size={18}
           strokeWidth={1.5}
           aria-hidden="true"
-          className={`mt-[0.55vw] shrink-0 transition-[rotate,color] duration-500 ease-out group-hover:text-white motion-reduce:transition-none max-md:mt-[1vw] max-sm:mt-[1.5vw] ${
-            isOpen ? "rotate-90 text-white" : "rotate-0 text-light-grey"
-          }`}
+          className={`mt-[0.55vw] shrink-0 transition-[rotate,color] duration-500 ease-out group-hover:text-white motion-reduce:transition-none max-[1025px]:mt-[1vw] max-md:mt-[1vw] max-sm:mt-[1.5vw] ${isOpen ? "rotate-90 text-white" : "rotate-0 text-light-grey"
+            }`}
         />
 
-        <h3 className="text32 font-neue-haas flex-1 leading-tight max-md:text-[3.4vw] max-sm:text-[5.2vw]">
+        <h3 className="text-[1.55vw] font-neue-haas flex-1 leading-tight max-md:text-[3.4vw] max-sm:text-[5.2vw]">
           {item.question}
         </h3>
       </div>
@@ -190,9 +188,9 @@ function FAQRow({ item, isOpen, onToggle, index }) {
         <div
           ref={innerRef}
           style={{ opacity: initiallyOpen ? 1 : 0 }}
-          className="pt-[1.2vw] pl-[3.2vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]"
+          className="pt-[1.2vw] pl-[2.8vw] max-[1025px]:pt-[2vw] max-[1025px]:pl-[5vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]"
         >
-          <p className="text22 font-neue-haas w-[70%] text-light-grey leading-[1.45] max-md:w-[90%] max-md:text-[2.2vw] max-sm:w-full max-sm:text-[4vw]">
+          <p className="text22 font-neue-haas w-[85%] text-white leading-[1.45] max-[1025px]:w-full max-md:w-[90%] max-md:text-[2.2vw] max-sm:w-full max-sm:text-[4vw]">
             {item.answer}
           </p>
         </div>
@@ -201,7 +199,7 @@ function FAQRow({ item, isOpen, onToggle, index }) {
   );
 }
 
-export default function FAQV3({faqItems, translateTop = true}) {
+export default function FAQV3({ faqItems, translateTop = true }) {
   const container = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [openId, setOpenId] = useState(faqItems[0].id);
@@ -264,19 +262,19 @@ export default function FAQV3({faqItems, translateTop = true}) {
     <section
       ref={container}
       id="faq"
-      className={`h-fit w-full self-padd ${translateTop ? "translate-y-[-30vw] max-md:translate-y-[-80vw]!" : ""} relative pt-[10vw] mt-[10vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]`}
+      className={`h-fit w-full self-padd ${translateTop ? "translate-y-[-35vw] max-md:translate-y-[-80vw]!" : ""} relative pt-[10vw] mt-[20vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]`}
     >
-    
+
 
       <LineReveal
         as="h2"
-        className="t96 text-center font-neue-haas mb-[6vw] max-md:mt-[60vw]  relative z-110 max-md:mb-[8vw]  max-sm:mb-[12vw] max-md:w-full"
+        className="t96 text-center font-neue-haas mb-[7vw] max-md:mt-[60vw]  relative z-110 max-md:mb-[8vw]  max-sm:mb-[12vw] max-md:w-full"
       >
         Questions, <span className="gradient-text-animate">Answered.</span>
       </LineReveal>
- 
 
-      <div className="w-[90%] max-md:w-full mx-auto border border-grey">
+
+      <div className="w-[90%] max-[1025px]:w-full max-md:w-full mx-auto border border-grey">
         {visibleItems.map((item, index) => (
           <FAQRow
             key={item.id}
@@ -291,12 +289,13 @@ export default function FAQV3({faqItems, translateTop = true}) {
       </div>
 
       {!isExpanded && faqItems.length > INITIAL_COUNT && (
-        <div className="flex w-full items-center  justify-center mt-[3vw] max-md:mt-[7vw] max-sm:mt-[10vw]">
+        <div className="flex w-full items-center  justify-center mt-[3vw] max-[1025px]:mt-[5vw] max-md:mt-[7vw] max-sm:mt-[10vw]">
           <LinkButton
             href="#"
             onClick={() => setIsExpanded(true)}
-            shimmer
+            shimmer shimmerColor="var(--primary)"
             tilted={false}
+            underline={false}
             showArrow
             text="View More"
             className="max-sm:text34"

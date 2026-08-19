@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { prefersReducedMotion } from "@/lib/motion";
-import { DEFAULT_CHAR_SET, resolveCharSet } from "./char-sets";
+import { resolveCharSet } from "./char-sets";
 import { createFluid } from "./ascii-fluid";
 
 const ArrowUpRight = ({ className = "" }) => (
@@ -34,10 +34,15 @@ const ArrowUpRight = ({ className = "" }) => (
 
 /*
  * Constants lifted from the hero (CubeBackgroundAscii) so the trail behaves the
- * same here: same glyph ramp, same point lifetime and spacing, same fluid
- * forces, same dither and tint. Only the fluid grid differs, and only because
- * it is sized in pixels rather than in cells — see FLUID_CELL.
+ * same here: same point lifetime and spacing, same fluid forces, same dither
+ * and tint. The glyph ramp is the card's own (see TRAIL_CHAR_SET), and the
+ * fluid grid differs only because it is sized in pixels rather than in cells —
+ * see FLUID_CELL.
  */
+/** Key into CHAR_SETS. The hero spells HYPERIUX; the cards draw their trail in
+ *  symbols instead, so a card's stroke never reads as stray brand lettering. */
+const TRAIL_CHAR_SET = "symbols";
+
 const TRAIL_LIFE = 320;
 const TRAIL_STEP = 10;
 const TRAIL_MAX = 72;
@@ -126,7 +131,7 @@ function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
 
     // Ramp order is measured once, off a probe big enough to compare inks; the
     // atlas below is redrawn at whatever the current cell size is.
-    const ramp = orderCharsByDensity(resolveCharSet(DEFAULT_CHAR_SET), 64, 8);
+    const ramp = orderCharsByDensity(resolveCharSet(TRAIL_CHAR_SET), 64, 8);
     const charCount = ramp.length;
     const firstInked = ramp.findIndex((char) => char.trim() !== "");
 
@@ -388,14 +393,14 @@ export default function EffectBox({
   ditherBlend = "mix-blend-difference",
 }) {
   const mark =
-    "pointer-events-none absolute size-[0.3vw] border-grey transition-all duration-300 group-hover:border-primary max-md: max-md:size-2 max-sm:size-1.5";
+    "pointer-events-none absolute size-[0.3vw] border-grey transition-all duration-300 group-hover:border-primary max-[1025px]:size-1.5 max-md:size-2 max-sm:size-1.5";
 
   return (
     <Link
       prefetch={false}
       href={href}
       aria-label={`${title}${tag ? ` — ${tag}` : ""}`}
-      className={`group block w-full text-white ${className}`}
+      className={`group block w-full cursor-pointer text-white ${className}`}
     >
       <div
         className={`relative isolate w-full overflow-hidden bg-[#0e0e0e] ${aspect} ${mediaClassName}`}
@@ -429,13 +434,13 @@ export default function EffectBox({
         {enableDitherTrail ? <DitherTrailCanvas blend={ditherBlend} /> : null}
 
         {tag ? (
-          <span className="absolute left-[0.7vw] top-[0.7vw] z-30 bg-[#404040] px-[0.55vw] py-[0.45vw] font-geist-mono text-[0.72vw] leading-none tracking-wide text-white backdrop-blur-sm max-md:left-2 max-md:top-2 max-md:px-3 max-md:py-1.5 max-md:text-[1.5vw] max-sm:text-[2.6vw]">
+          <span className="absolute left-[0.7vw] top-[0.7vw] z-30 bg-[#404040] px-[0.55vw] py-[0.45vw] font-geist-mono text-[0.72vw] leading-none tracking-wide text-white backdrop-blur-sm max-[1025px]:left-[1.2vw] max-[1025px]:top-[1.2vw] max-[1025px]:px-[1vw] max-[1025px]:py-[0.8vw] max-[1025px]:text-[1.3vw] max-md:left-2 max-md:top-2 max-md:px-3 max-md:py-1.5 max-md:text-[1.5vw] max-sm:text-[2.6vw]">
             {tag}
           </span>
         ) : null}
       </div>
 
-      <div className="relative flex items-end justify-between gap-[1vw] max-md:px-[3vw] max-md:py-[2vw] py-[1vw] px-[1vw] max-md:mt-[3vw] mt-[1vw]">
+      <div className="relative flex items-end justify-between gap-[1vw] max-[1025px]:gap-[2vw] max-[1025px]:px-[1.5vw] max-[1025px]:py-[1.5vw] max-[1025px]:mt-[2vw] max-md:px-[3vw] max-md:py-[2vw] py-[1vw] px-[1vw] max-md:mt-[3vw] mt-[1vw]">
         <span className={`${mark} -top-px -left-px border-t border-l`} />
         <span className={`${mark} -top-px -right-px border-t border-r`} />
         <span className={`${mark} -bottom-px -left-px border-b border-l`} />
@@ -445,10 +450,13 @@ export default function EffectBox({
           {title}
         </p>
 
-        <span className="flex items-center gap-[0.35vw] text18 leading-none text-light-grey transition-colors duration-500 max-md:text-foreground! group-hover:text-white motion-reduce:transition-none max-md:gap-1 max-md:text-[1.7vw] max-sm:text-[3vw]">
+        <span className="flex items-center gap-[0.35vw] text18 leading-none text-light-grey transition-colors duration-500 max-[1025px]:gap-[0.8vw] max-[1025px]:text-[1.5vw] max-md:text-foreground! group-hover:text-white motion-reduce:transition-none max-md:gap-1 max-md:text-[1.7vw] max-sm:text-[3vw]">
           {action}
-          <span className="inline-block max-md:size-[5vw] size-[1.8vw]">
-            <ArrowUpRight />
+          {/* Two arrows on a diagonal rail: the resting one leaves through the
+              top-right as its replacement arrives from the bottom-left. */}
+          <span className="relative inline-block overflow-hidden max-[1025px]:size-[2.5vw] max-md:size-[5vw] size-[1.8vw]">
+            <ArrowUpRight className="transition-transform duration-500 ease-out motion-safe:group-hover:translate-x-full motion-safe:group-hover:-translate-y-full motion-reduce:transition-none" />
+            <ArrowUpRight className="absolute inset-0 -translate-x-full translate-y-full transition-transform duration-500 ease-out motion-safe:group-hover:translate-x-0 motion-safe:group-hover:translate-y-0 motion-reduce:transition-none" />
           </span>
         </span>
       </div>

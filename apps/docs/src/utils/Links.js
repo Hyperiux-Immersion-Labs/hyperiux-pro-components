@@ -39,6 +39,7 @@ export const navDocsItems = [
     { label: 'Introduction', href: '/docs', icon: '/svgs/menu/Introduction.svg' },
     { label: 'Installation', href: '/docs/installation', icon: '/svgs/menu/Installation.svg' },
     { label: 'CLI', href: '/docs/cli', icon: '/svgs/menu/CLI.svg' },
+    { label: 'MCP', href: '/docs/mcp', icon: '/svgs/menu/mcp.svg' },
     { label: 'Dependencies', href: '/docs/dependencies', icon: '/svgs/menu/Dependencies.svg' },
     { label: 'License', href: '/docs/license', icon: '/svgs/menu/license.svg' },
 ]

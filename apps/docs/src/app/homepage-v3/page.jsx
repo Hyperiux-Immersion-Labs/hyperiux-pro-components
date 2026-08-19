@@ -1,29 +1,28 @@
-import SmallMotion from '@/components/Homepage/SmallMotion'
-import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
-import CTAV3 from '@/homepage-v3/sections/CTAV3'
-import CurvedGradient from '@/homepage-v3/sections/CurvedGradient'
-import ExplainVault from '@/homepage-v3/sections/ExplainVault'
-import ExploreTheEffects from '@/homepage-v3/sections/ExploreTheEffects'
-import FAQV3 from '@/homepage-v3/sections/FAQV3'
-import FooterV3 from '@/homepage-v3/sections/FooterV3'
-import Hero from '@/homepage-v3/sections/Hero'
-import NotAnotherUIKit from '@/homepage-v3/sections/NotAnotherUIKit'
-import Preview from '@/homepage-v3/sections/Preview'
-import PreviewVideo from '@/homepage-v3/sections/PreviewVideo'
-import ProblemFixes from '@/homepage-v3/sections/Problem&Fixes'
-import Quote from '@/homepage-v3/sections/Quote'
-import Techstack from '@/homepage-v3/sections/Techstack'
-import UseCases from '@/homepage-v3/sections/UseCases'
-import React from 'react'
-import PricingV3 from '@/homepage-v3/sections/PricingV3'
-import NavbarV3 from '@/homepage-v3/components/NavbarV3'
-import LoaderV3 from '@/homepage-v3/components/LoaderV3'
-import DitherTransition from '@/homepage-v3/components/DitherTransition'
-import { getSearchIndexEffects } from '@/lib/search-index'
-import { FAQJSONLD } from '@/lib/json-ld'
-import { getAllSanityEffectEntries, buildEffectsFromSanity } from '@/lib/sanity'
-import { getFeaturedEffects } from '@/lib/featured-effects'
-import TrendingRightNow from '@/homepage-v3/sections/TrendingRightNow'
+import SmallMotion from "@/components/Homepage/SmallMotion";
+import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
+import CTAV3 from "@/homepage-v3/sections/CTAV3";
+import CurvedGradient from "@/homepage-v3/sections/CurvedGradient";
+import ExplainVault from "@/homepage-v3/sections/ExplainVault";
+import ExploreTheEffects from "@/homepage-v3/sections/ExploreTheEffects";
+import FAQV3 from "@/homepage-v3/sections/FAQV3";
+import FooterV3 from "@/homepage-v3/sections/FooterV3";
+import Hero from "@/homepage-v3/sections/Hero";
+import NotAnotherUIKit from "@/homepage-v3/sections/NotAnotherUIKit";
+import Preview from "@/homepage-v3/sections/Preview";
+import PreviewVideo from "@/homepage-v3/sections/PreviewVideo";
+import ProblemFixes from "@/homepage-v3/sections/Problem&Fixes";
+import Quote from "@/homepage-v3/sections/Quote";
+import Techstack from "@/homepage-v3/sections/Techstack";
+import UseCases from "@/homepage-v3/sections/UseCases";
+import React from "react";
+import PricingV3 from "@/homepage-v3/sections/PricingV3";
+import NavbarV3 from "@/homepage-v3/components/NavbarV3";
+import LoaderV3 from "@/homepage-v3/components/LoaderV3";
+import DitherTransition from "@/homepage-v3/components/DitherTransition";
+import ScrollTopOnLoad from "@/homepage-v3/components/ScrollTopOnLoad";
+import { getSearchIndexEffects } from "@/lib/search-index";
+import { FAQJSONLD } from "@/lib/json-ld";
+import MorphingDiether from "./MorphingDiether";
 
 const faqItems = [
   {
@@ -210,17 +209,15 @@ const USE_CASES = [
 ];
 
 export default async function page() {
-  const effects = await getSearchIndexEffects()
-
-  const sanityEntries = await getAllSanityEffectEntries()
-  const trendingEffects = getFeaturedEffects(buildEffectsFromSanity(sanityEntries))
+  const effects = await getSearchIndexEffects();
 
   return (
     <>
       <FAQJSONLD faqs={faqItems} />
       <LoaderV3 />
-      <NavbarV3 effects={effects} />
+      <NavbarV3 effects={effects} introOnLoader />
       <LenisSmoothScroll />
+      <ScrollTopOnLoad />
       <div className="relative">
         <div className="sticky top-0 z-0 h-dvh overflow-hidden">
           <Hero />
@@ -231,25 +228,36 @@ export default async function page() {
           <CurvedGradient />
           <ProblemFixes />
           <ExplainVault />
-          <TrendingRightNow effects={trendingEffects} />
           <ExploreTheEffects />
           <Preview />
           <PreviewVideo />
           <NotAnotherUIKit />
           <SmallMotion />
           <UseCases useCases={USE_CASES} />
-          <DitherTransition className="h-[75vw] max-md:h-[150vw]! bg-background " />
+          <DitherTransition
+            markers={false}
+            mobileStartTriggers="-10% bottom"
+            mobileEndTriggers="bottom -50%"
+            className="h-[60vw] max-md:m max-md:h-[150vw]! bg-background "
+          />
           <PricingV3 />
           <DitherTransition
             dotColor="#050505"
+            accentShift={0.8}
+            start="top bottom"
+            end="150% top"
+            mobileStartTriggers="top bottom"
+            mobileEndTriggers="bottom -50%"
+            markers={false}
             accentColor="#eaeaea"
-            className="h-[75vw] max-md:h-[150vw]! bg-foreground"
-          />
+            className="h-[75vw] max-md:h-[150vw]! mt-[-10vw] bg-foreground"
+          /> 
           <FAQV3 faqItems={faqItems} />
           <CTAV3 />
           <FooterV3 />
         </div>
       </div>
+
     </>
-  )
+  );
 }

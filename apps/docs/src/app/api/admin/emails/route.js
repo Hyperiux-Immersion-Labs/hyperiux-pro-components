@@ -6,7 +6,7 @@ import { assertAdmin } from "@/lib/admin";
 // Resend's status column only tells us the invite email was delivered -
 // it says nothing about whether the invitation itself is still pending,
 // was accepted, revoked, or expired. Clerk is the actual source of truth
-// for that, so waitlist_invite rows get annotated with it here instead of
+// for that, so invitations rows get annotated with it here instead of
 // just showing "success" forever regardless of what happened afterward.
 async function getInvitationStatusByEmail() {
   const clerk = await clerkClient();
@@ -59,7 +59,7 @@ export async function GET(request) {
 
     let query = supabase
       .from("sent_emails")
-      .select("id, recipient_email, subject, email_type, status, error_message, sent_at", { count: "exact" })
+      .select("id, recipient_email, subject, email_type, status, error_message, sent_at, cta_clicked, cta_clicked_at", { count: "exact" })
       .order("sent_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -70,13 +70,13 @@ export async function GET(request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    const hasInviteRows = (data || []).some((row) => row.email_type === "waitlist_invite");
+    const hasInviteRows = (data || []).some((row) => row.email_type === "invitations");
     const invitationStatusByEmail = hasInviteRows
       ? await getInvitationStatusByEmail()
       : new Map();
 
     const emails = (data || []).map((row) => {
-      if (row.email_type !== "waitlist_invite") return row;
+      if (row.email_type !== "invitations") return row;
 
       return {
         ...row,

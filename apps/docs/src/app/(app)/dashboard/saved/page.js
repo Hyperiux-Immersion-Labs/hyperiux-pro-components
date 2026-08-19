@@ -9,12 +9,14 @@ import {
 } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/effects/FilterMenu";
 
 export default function SavedPage() {
   const [savedEffects, setSavedEffects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const { toast: wishlistToast, showToast: showWishlistToast, dismissToast: dismissWishlistToast } = useToastQueue();
 
   async function loadSavedEffects() {
     try {
@@ -55,8 +57,16 @@ export default function SavedPage() {
         setSavedEffects((prev) =>
           prev.filter((item) => item.name !== effect.name)
         );
+        showWishlistToast({
+          title: `${effect.title || effect.name} removed`,
+          description: "It's no longer in your dashboard's Saved Effects.",
+        });
       } else {
         loadSavedEffects();
+        showWishlistToast({
+          title: `${effect.title || effect.name} saved`,
+          description: "You'll find it in your dashboard's Saved Effects.",
+        });
       }
 
       emitWishlistChanged(data.saved);
@@ -138,6 +148,8 @@ export default function SavedPage() {
 
   return (
     <div className="space-y-8">
+      <ToastViewport toast={wishlistToast} onDismiss={dismissWishlistToast} />
+
       {/* Header */}
       <div>
         <h1 className="text-4xl font-display text-white">

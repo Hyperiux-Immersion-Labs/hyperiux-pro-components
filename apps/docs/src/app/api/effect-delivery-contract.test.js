@@ -28,12 +28,22 @@ vi.mock("@/lib/effect-access", () => ({
   getEffectAccessDecision: vi.fn(() => Promise.resolve(decisionResult)),
 }));
 
+// Stage 1 (Installation-SyncUp.md) shadow-mode logging call - both routes
+// call this after a granted access decision. Mocked here the same way
+// getEffectAccessDecision is: this file verifies routing/response-shaping
+// parity, not install-limit's own decision logic (covered by
+// install-limit.test.js).
+let installDecisionResult;
+vi.mock("@/lib/install-limit", () => ({
+  getInstallLimitDecision: vi.fn(() => Promise.resolve(installDecisionResult)),
+}));
+
 const { GET: cliGet } = await import("./cli/effects/[effectSlug]/route.js");
 const { GET: webGet } = await import("./effects/[slug]/route.js");
 
-function makeRequest() {
+function makeRequest(extraHeaders = {}) {
   return new Request("http://localhost/x", {
-    headers: { authorization: "Bearer hpx_sometoken" },
+    headers: { authorization: "Bearer hpx_sometoken", ...extraHeaders },
   });
 }
 
@@ -50,6 +60,7 @@ const MATRIX = [
 describe("Pro effect delivery routes - identical decision contract", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    installDecisionResult = { allowed: true };
   });
 
   for (const { label, decision, status } of MATRIX) {
@@ -103,5 +114,75 @@ describe("Pro effect delivery routes - identical decision contract", () => {
     const calls = getEffectAccessDecision.mock.calls;
     expect(calls[0][0].effectTier).toBe("pro");
     expect(calls[1][0].effectTier).toBe("pro");
+  });
+
+  it("both routes log to install-limit only when access was granted, with the same effectSlug/effectTier", async () => {
+    const { getInstallLimitDecision } = await import("@/lib/install-limit");
+
+    decisionResult = { allowed: false, reason: "no-subscription" };
+    await cliGet(makeRequest(), { params: Promise.resolve({ effectSlug: "test-effect" }) });
+    await webGet(makeRequest(), { params: Promise.resolve({ slug: "test-effect" }) });
+    expect(getInstallLimitDecision).not.toHaveBeenCalled();
+
+    decisionResult = { allowed: true, reason: "active-pro" };
+    await cliGet(makeRequest(), { params: Promise.resolve({ effectSlug: "test-effect" }) });
+    await webGet(makeRequest(), { params: Promise.resolve({ slug: "test-effect" }) });
+
+    const calls = getInstallLimitDecision.mock.calls;
+    expect(calls).toHaveLength(2);
+    expect(calls[0][0]).toMatchObject({ effectSlug: "test-effect", effectTier: "pro", source: "cli" });
+    expect(calls[1][0]).toMatchObject({ effectSlug: "test-effect", effectTier: "pro", source: "cli" });
+  });
+
+  it("both routes attribute source: 'mcp' identically when the mcp-version header is present (Stage 1.7)", async () => {
+    decisionResult = { allowed: true, reason: "active-pro" };
+    const { getInstallLimitDecision } = await import("@/lib/install-limit");
+
+    const mcpRequest = () => makeRequest({ "x-hyperiux-mcp-version": "0.1.0" });
+
+    await cliGet(mcpRequest(), { params: Promise.resolve({ effectSlug: "test-effect" }) });
+    await webGet(mcpRequest(), { params: Promise.resolve({ slug: "test-effect" }) });
+
+    const calls = getInstallLimitDecision.mock.calls;
+    expect(calls[0][0]).toMatchObject({ source: "mcp", mcpVersion: "0.1.0" });
+    expect(calls[1][0]).toMatchObject({ source: "mcp", mcpVersion: "0.1.0" });
+  });
+
+  it("both routes 429 identically when install-limit denies (Stage 3 enforcement)", async () => {
+    decisionResult = { allowed: true, reason: "active-pro" };
+    installDecisionResult = {
+      allowed: false,
+      reason: "limit-reached",
+      limit: 3,
+      remaining: 0,
+    };
+
+    const cliRes = await cliGet(makeRequest(), { params: Promise.resolve({ effectSlug: "test-effect" }) });
+    const webRes = await webGet(makeRequest(), { params: Promise.resolve({ slug: "test-effect" }) });
+
+    expect(cliRes.status).toBe(429);
+    expect(webRes.status).toBe(429);
+    expect(cliRes.headers.get("Retry-After")).toEqual(expect.any(String));
+    expect(webRes.headers.get("Retry-After")).toEqual(expect.any(String));
+
+    const cliBody = await cliRes.json();
+    const webBody = await webRes.json();
+
+    expect(cliBody).toMatchObject({ rateLimited: true, reason: "limit-reached", limit: 3, remaining: 0 });
+    expect(webBody).toMatchObject({ rateLimited: true, reason: "limit-reached", limit: 3, remaining: 0 });
+    // The content payload must NOT leak through on a denial.
+    expect(cliBody.files).toBeUndefined();
+    expect(webBody.files).toBeUndefined();
+  });
+
+  it("shadow mode (allowed: true from install-limit) never triggers the 429 branch", async () => {
+    decisionResult = { allowed: true, reason: "active-pro" };
+    installDecisionResult = { allowed: true, reason: "denied-but-shadow" };
+
+    const cliRes = await cliGet(makeRequest(), { params: Promise.resolve({ effectSlug: "test-effect" }) });
+    const webRes = await webGet(makeRequest(), { params: Promise.resolve({ slug: "test-effect" }) });
+
+    expect(cliRes.status).toBe(200);
+    expect(webRes.status).toBe(200);
   });
 });

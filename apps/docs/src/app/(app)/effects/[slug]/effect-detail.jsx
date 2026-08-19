@@ -36,6 +36,7 @@ import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { CopyLimitProvider, useCopyLimit } from "./useCopyLimit";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
+import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 
 function formatEffectDate(value) {
   if (!value) return null;
@@ -296,9 +297,9 @@ export function EffectDetailContent({
   const addedAtLabel = formatEffectDate(safeContent?.addedAt ?? safeEffect.addedAt);
   const lastUpdatedLabel = formatEffectDate(
     safeContent?.lastUpdated ??
-      safeContent?.updatedAt ??
-      safeEffect.lastUpdated ??
-      safeEffect.updatedAt
+    safeContent?.updatedAt ??
+    safeEffect.lastUpdated ??
+    safeEffect.updatedAt
   );
   const shouldShowEffectDates = Boolean(addedAtLabel && lastUpdatedLabel);
 
@@ -437,179 +438,291 @@ export function EffectDetailContent({
 
   return (
     <CopyLimitProvider effectSlug={slug} onRequireSignIn={() => setShowSignInToCopyModal(true)}>
-    <VaultLayout
-      effectCounts={effectCounts || {}}
-      totalEffects={totalEffects || 0}
-      bgImageSrc=""
-      activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
-      searchEffects={searchEffects}
-    >
-      <div className="min-h-screen text-foreground">
-        <Suspense fallback={<div className="h-12" />}>
-          <VaultHeader effectName={pageTitle || safeEffect.title}
-            showSearch={true}
-            effects={searchEffects} />
-        </Suspense>
+      <VaultLayout
+        effectCounts={effectCounts || {}}
+        totalEffects={totalEffects || 0}
+        bgImageSrc=""
+        activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
+        searchEffects={searchEffects}
+      >
+        <div className="min-h-screen text-foreground">
+          <Suspense fallback={<div className="h-12" />}>
+            <VaultHeader effectName={pageTitle || safeEffect.title}
+              showSearch={true}
+              effects={searchEffects} />
+          </Suspense>
 
-        {isMainDataLoading ? (
-          <EffectDetailMainSkeleton />
-        ) : (
-          <main className="mx-auto w-full relative px-10 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
-            <section className="space-y-7">
-              <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
-                <div className="w-full space-y-5">
-                  <Breadcrumb />
+          {isMainDataLoading ? (
+            <EffectDetailMainSkeleton />
+          ) : (
+            <main className="mx-auto w-full relative px-10 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
+              <section className="space-y-7">
+                <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
+                  <div className="w-full space-y-5">
+                    <Breadcrumb />
 
-                  {pageTitle && (
-                    <HeadAnim>
-                      <h1 className="w-full max-md:text-[6vw] max-md:font-bold max-[1025px]:w-[90%] max-md:w-[80%] max-[1025px]:mx-auto max-[1025px]:text-center font-semibold leading-[1.05] max-md:leading-[1.3] text-foreground text80">
-                        {pageTitle}
-                      </h1>
-                    </HeadAnim>
-                  )}
+                    {pageTitle && (
+                      <HeadAnim>
+                        <h1 className="w-full max-md:text-[6vw] max-md:font-bold max-[1025px]:w-[90%] max-md:w-[80%] max-[1025px]:mx-auto max-[1025px]:text-center font-semibold leading-[1.05] max-md:leading-[1.3] text-foreground text80">
+                          {pageTitle}
+                        </h1>
+                      </HeadAnim>
+                    )}
 
-                  {pageSummary && (
-                    <Copy delay={0.5}>
-                      <p className="mt-4 w-full max-[1025px]:text-center max-[1025px]:w-[90%] max-[1025px]:mx-auto text-foreground opacity-90 text22 leading-relaxed max-[1025px]:leading-[1.3]">
-                        {pageSummary}
-                      </p>
-                    </Copy>
-                  )}
-                  {shouldShowEffectDates && (
-                  <div className="mt-5 flex items-start gap-x-5 gap-y-1 text18 text-white/80 max-sm:text-[3vw]! ">
-                    <div className="fadeup "><span className="font-laygrotesk">Published On: </span>   {addedAtLabel} </div>
-                    <div className="fadeup "> <span className="font-laygrotesk ">Last Updated:</span>  {lastUpdatedLabel} </div>
-                  </div>
-                )}
-
-                  <div className="mt-10 flex w-full items-center justify-between gap-3 fadeup max-md:mt-8">
-                    {(dependencies.length > 0 || (content?.tier ?? safeEffect.tier) === "pro") && (
-                      <div className="flex flex-wrap items-center gap-3">
-                        {dependencies.map((dep) => (
-                          <span
-                            key={dep}
-                            className=" bg-[#272727] px-2 py-1 text20 capitalize text-foreground max-md:text-muted max-md:px-6"
-                          >
-                            {dep}
-                          </span>
-                        ))}
+                    {pageSummary && (
+                      <Copy delay={0.5}>
+                        <p className="mt-4 w-full max-[1025px]:text-center max-[1025px]:w-[90%] max-[1025px]:mx-auto text-foreground opacity-90 text22 leading-relaxed max-[1025px]:leading-[1.3]">
+                          {pageSummary}
+                        </p>
+                      </Copy>
+                    )}
+                    {shouldShowEffectDates && (
+                      <div className="mt-5 flex items-start gap-x-5 gap-y-1 text18 text-white/80 max-sm:text-[3vw]! ">
+                        <div className="fadeup "><span className="font-laygrotesk">Published On: </span>   {addedAtLabel} </div>
+                        <div className="fadeup "> <span className="font-laygrotesk ">Last Updated:</span>  {lastUpdatedLabel} </div>
                       </div>
                     )}
 
-                    <div className="ml-auto shrink-0 max-md:hidden">
-                      <ButtonV3
-                        text="Live Preview"
-                        href={previewHref}
-                        target_blank={true}
-                        target="_blank"
-                        variant="orange"
-                        className="shrink-0"
-                      />
+                    <div className="mt-10 flex w-full items-center justify-between gap-3 fadeup max-md:mt-8">
+                      {(dependencies.length > 0 || (content?.tier ?? safeEffect.tier) === "pro") && (
+                        <div className="flex flex-wrap items-center gap-3">
+                          {dependencies.map((dep) => (
+                            <span
+                              key={dep}
+                              className=" bg-[#272727] px-2 py-1 text20 capitalize text-foreground max-md:text-muted max-md:px-6"
+                            >
+                              {dep}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="ml-auto shrink-0 max-md:hidden">
+                        <ButtonV3
+                          text="Live Preview"
+                          href={previewHref}
+                          target_blank={true}
+                          target="_blank"
+                          variant="orange"
+                          className="shrink-0"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="fadeup max-md:px-[7vw] max-[1025px]:px-[6vw] h-auto  w-full">
-                <div className="relative h-auto w-full aspect-16/8.5 overflow-hidden  bg-black isolate">
-                  <Image
-                    src={coverImage}
-                    alt={safeEffect.title || slug}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 980px"
-                    priority
-                    className={`rounded-[inherit] object-cover transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
-                      }`}
-                  />
-
-                  {videoPreviewUrl && !videoError && (
-                    <video
-                      key={videoPreviewUrl}
-                      ref={videoRef}
-                      src={videoPreviewUrl}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
-                      onLoadedMetadata={handleVideoReady}
-                      onLoadedData={handleVideoReady}
-                      onCanPlay={handleVideoReady}
-                      onPlaying={handleVideoReady}
-                      onError={() => setVideoError(true)}
-                      className={`absolute inset-0 h-full w-full rounded-[inherit] object-cover transition-opacity duration-500 ${showVideo ? "opacity-100" : "opacity-0"
+                <div className="fadeup max-md:px-[7vw] max-[1025px]:px-[6vw] h-auto  w-full">
+                  <div className="relative h-auto w-full aspect-16/8.5 overflow-hidden  bg-black isolate">
+                    <Image
+                      src={coverImage}
+                      alt={safeEffect.title || slug}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 980px"
+                      priority
+                      className={`rounded-[inherit] object-cover transition-all duration-500 ${showVideo ? "opacity-0" : "opacity-100"
                         }`}
                     />
-                  )}
+
+                    {videoPreviewUrl && !videoError && (
+                      <video
+                        key={videoPreviewUrl}
+                        ref={videoRef}
+                        src={videoPreviewUrl}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="auto"
+                        onLoadedMetadata={handleVideoReady}
+                        onLoadedData={handleVideoReady}
+                        onCanPlay={handleVideoReady}
+                        onPlaying={handleVideoReady}
+                        onError={() => setVideoError(true)}
+                        className={`absolute inset-0 h-full w-full rounded-[inherit] object-cover transition-opacity duration-500 ${showVideo ? "opacity-100" : "opacity-0"
+                          }`}
+                      />
+                    )}
 
 
-                  {!showVideo && (
-                    <>
-                      <div aria-hidden="true" className="absolute  inset-0 rounded-[inherit] bg-black/40" />
-                      <div className="absolute bottom-4 right-4 z-10">
-                        <div
-                          aria-label="Loading preview"
-                          role="status"
-                          className="h-8 w-8  animate-spin rounded-full  border-2 border-white/25 border-t-white"
-                        />
-                      </div>
-                    </>
-                  )}
+                    {!showVideo && (
+                      <>
+                        <div aria-hidden="true" className="absolute  inset-0 rounded-[inherit] bg-black/40" />
+                        <div className="absolute bottom-4 right-4 z-10">
+                          <div
+                            aria-label="Loading preview"
+                            role="status"
+                            className="h-8 w-8  animate-spin rounded-full  border-2 border-white/25 border-t-white"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+
                 </div>
 
-                
-              </div>
-
-              <div className="max-md:flex max-md:px-[7vw] max-[1025px]:px-[6vw] w-full max-md:pt-4 shrink-0 hidden">
-                <ButtonV3
-                        text="Live Preview"
-                        href={previewHref}
-                        target_blank={true}
-                        target="_blank"
-                        variant="orange"
-                        className="shrink-0"
-                      />
-              </div>
-
-              <div className="relative max-md:px-[7vw] max-[1025px]:px-[6vw] pt-0">
-                <div className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
-                  <TableOfContents
-                    containerRef={contentRef}
-                    stopRef={hasCtaSection ? ctaSectionRef : relatedEffectsRef}
-                    watchKey={slug}
+                <div className="max-md:flex max-md:px-[7vw] max-[1025px]:px-[6vw] w-full max-md:pt-4 shrink-0 hidden">
+                  <ButtonV3
+                    text="Live Preview"
+                    href={previewHref}
+                    target_blank={true}
+                    target="_blank"
+                    variant="orange"
+                    className="shrink-0"
                   />
                 </div>
 
-                <EffectDynamicContent
-                  ref={contentRef}
-                  content={safeContent}
-                  isLocked={isLocked}
-                  effectProps={effect?.props}
-                  effectRemixerControls={effect?.remixer?.controls}
-                  changelog={safeEffect.changelog}
-                />
-              </div>
+                <div className="relative max-md:px-[7vw] max-[1025px]:px-[6vw] pt-0">
+                  <div className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
+                    <TableOfContents
+                      containerRef={contentRef}
+                      stopRef={hasCtaSection ? ctaSectionRef : relatedEffectsRef}
+                      watchKey={slug}
+                    />
+                  </div>
 
-              <div className="w-[70%] max-[1025px]:w-full max-md:px-[7vw] max-[1025px]:px-[6vw] max-md:mt-[10vw]">
-                <EffectCtaSection
-                  cta={safeContent?.ctaBanner}
-                  sectionRef={ctaSectionRef}
-                />
-              </div>
+                  <EffectDynamicContent
+                    ref={contentRef}
+                    content={safeContent}
+                    isLocked={isLocked}
+                    effectProps={effect?.props}
+                    effectRemixerControls={effect?.remixer?.controls}
+                    changelog={safeEffect.changelog}
+                  />
+                </div>
 
-              {safeRelatedEffects?.length > 0 && (
-                <section
-                  ref={relatedEffectsRef}
-                  className="my-20 relative max-md:pt-[5vh] space-y-10 max-[1025px]:space-y-16"
-                >
-                  <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
-                    <HeadAnim>
-                      <h2 className="text-center text-[3.32vw] max-[1025px]:text-[5vw] max-md:text-[2rem] font-medium text-foreground">
-                        Related Effects
-                      </h2>
-                    </HeadAnim>
+                <div className="w-[70%] max-[1025px]:w-full max-md:px-[7vw] max-[1025px]:px-[6vw] max-md:mt-[10vw]">
+                  <EffectCtaSection
+                    cta={safeContent?.ctaBanner}
+                    sectionRef={ctaSectionRef}
+                  />
+                </div>
 
-                    <div className="fadeup flex max-[1025px]:hidden flex-col justify-center items-end gap-5 max-[1025px]:w-full max-[1025px]:items-stretch">
+                {safeRelatedEffects?.length > 0 && (
+                  <section
+                    ref={relatedEffectsRef}
+                    className="my-20 relative max-md:pt-[5vh] space-y-10 max-[1025px]:space-y-16"
+                  >
+                    <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
+                      <HeadAnim>
+                        <h2 className="text-center text-[3.32vw] max-[1025px]:text-[5vw] max-md:text-[2rem] font-medium text-foreground">
+                          Related Effects
+                        </h2>
+                      </HeadAnim>
+
+                      <div className="fadeup flex max-[1025px]:hidden flex-col justify-center items-end gap-5 max-[1025px]:w-full max-[1025px]:items-stretch">
+                        <ButtonV3
+                          text="Explore all effects"
+                          href="/effects"
+                          variant="orange"
+                          className="shrink-0"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="max-[1025px]:hidden">
+                      {showRelatedSliderControls && (
+                        <div className="flex items-center justify-end gap-2 max-[1025px]:justify-center">
+                          <CircularButton
+                            type="button"
+                            onClick={() => scrollRelatedEffects("previous")}
+                            disabled={!canScrollPrev}
+                            aria-label="Show previous related effects"
+                            className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollPrev
+                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                              : "hover:border-[#ff5f00] hover:text-black"
+                              }`}
+                            bgColor="#ff5f00"
+                          >
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135  ${!canScrollPrev?"":"group-hover:translate-x-[-180%] duration-300 ease-in-out"}`} />
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%]  ${!canScrollPrev?"":" group-hover:translate-x-0 duration-300 ease-in-out"} `} />
+
+                          </CircularButton>
+
+                          <CircularButton
+                            type="button"
+                            onClick={() => scrollRelatedEffects("next")}
+                            disabled={!canScrollNext}
+                            aria-label="Show next related effects"
+                            className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollNext
+                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                              : "hover:border-[#ff5f00] hover:text-black"
+                              }`}
+                            bgColor="#ff5f00"
+                          >
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45  ${!canScrollNext ? "" : "group-hover:translate-x-[240%] duration-300 ease-in-out"}`} />
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-240%]  ${!canScrollNext?"":" group-hover:translate-x-0 duration-300 ease-in-out"} `} />
+                          </CircularButton>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className=" fadeup">
+                      <div
+                        ref={relatedSliderRef}
+                        onPointerDown={handleRelatedPointerDown}
+                        onPointerMove={handleRelatedPointerMove}
+                        onPointerUp={handleRelatedPointerEnd}
+                        onPointerLeave={handleRelatedPointerEnd}
+                        onPointerCancel={handleRelatedPointerEnd}
+                        onDragStart={(event) => event.preventDefault()}
+                        className="flex cursor-grab snap-x snap-mandatory select-none gap-6 overflow-x-auto max-md:gap-6 max-[1025px]:gap-2 scroll-smooth pb-4 active:cursor-grabbing"
+                      >
+                        {safeRelatedEffects.map((relatedEffect) => (
+                          <div
+                            key={relatedEffect.name}
+                            onClick={(event) =>
+                              handleRelatedCardClick(event, relatedEffect)
+                            }
+                            className="min-w-[31vw] cursor-pointer max-md:px-[7vw] max-[1025px]:px-[6vw] snap-start max-[1025px]:min-w-[44vw] max-[1025px]:min-w-[55vw]! max-md:min-w-full!"
+                          >
+                            <EffectCard
+                              effect={relatedEffect}
+                              sizes="(max-width: 639px) 100vw, (max-width: 767px) 55vw, (max-width: 1023px) 44vw, 31vw"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="hidden max-[1025px]:block">
+                      {showRelatedSliderControls && (
+                        <div className="flex items-center justify-end gap-2 max-[1025px]:justify-center">
+                          <CircularButton
+                            type="button"
+                            onClick={() => scrollRelatedEffects("previous")}
+                            disabled={!canScrollPrev}
+                            aria-label="Show previous related effects"
+                            className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollPrev
+                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                              : "hover:border-[#ff5f00] hover:text-black"
+                              }`}
+                            bgColor="#ff5f00"
+                          >
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135  ${!canScrollPrev?"":"group-hover:translate-x-[-240%] duration-300 ease-in-out"}`}/>
+                            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[240%] group-hover:translate-x-0 duration-300 ease-in-out " />
+
+                          </CircularButton>
+
+                          <CircularButton
+                            type="button"
+                            onClick={() => scrollRelatedEffects("next")}
+                            disabled={!canScrollNext}
+                            aria-label="Show next related effects"
+                            className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollNext
+                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
+                              : "hover:border-[#ff5f00] hover:text-black"
+                              }`}
+                            bgColor="#ff5f00"
+                          >
+                            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[240%] duration-300 ease-in-out " />
+                            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-240%] group-hover:translate-x-0 duration-300 ease-in-out " />
+                          </CircularButton>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="fadeup max-[1025px]:mx-auto max-[1025px]:flex hidden flex-col justify-center items-end gap-5 max-[1025px]:w-fit max-[1025px]:items-stretch">
                       <ButtonV3
                         text="Explore all effects"
                         href="/effects"
@@ -617,159 +730,53 @@ export function EffectDetailContent({
                         className="shrink-0"
                       />
                     </div>
-                  </div>
-
-                  <div className="max-[1025px]:hidden">
-                    {showRelatedSliderControls && (
-                      <div className="flex items-center justify-end gap-2 max-[1025px]:justify-center">
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("previous")}
-                          disabled={!canScrollPrev}
-                          aria-label="Show previous related effects"
-                          className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
-                            ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                            : "hover:border-[#ff5f00]"
-                            }`}
-                          bgColor="#ff5f00"
-                        >
-                          <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
-                        </CircularButton>
-
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("next")}
-                          disabled={!canScrollNext}
-                          aria-label="Show next related effects"
-                          className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
-                            ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                            : "hover:border-[#ff5f00]"
-                            }`}
-                          bgColor="#ff5f00"
-                        >
-                          <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
-                        </CircularButton>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className=" fadeup">
-                    <div
-                      ref={relatedSliderRef}
-                      onPointerDown={handleRelatedPointerDown}
-                      onPointerMove={handleRelatedPointerMove}
-                      onPointerUp={handleRelatedPointerEnd}
-                      onPointerLeave={handleRelatedPointerEnd}
-                      onPointerCancel={handleRelatedPointerEnd}
-                      onDragStart={(event) => event.preventDefault()}
-                      className="flex cursor-grab snap-x snap-mandatory select-none gap-6 overflow-x-auto max-md:gap-6 max-[1025px]:gap-2 scroll-smooth pb-4 active:cursor-grabbing"
-                    >
-                      {safeRelatedEffects.map((relatedEffect) => (
-                        <div
-                          key={relatedEffect.name}
-                          onClick={(event) =>
-                            handleRelatedCardClick(event, relatedEffect)
-                          }
-                          className="min-w-[31vw] cursor-pointer max-md:px-[7vw] max-[1025px]:px-[6vw] snap-start max-[1025px]:min-w-[44vw] max-[1025px]:min-w-[55vw]! max-md:min-w-full!"
-                        >
-                          <EffectCard
-                            effect={relatedEffect}
-                            sizes="(max-width: 639px) 100vw, (max-width: 767px) 55vw, (max-width: 1023px) 44vw, 31vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="hidden max-[1025px]:block">
-                    {showRelatedSliderControls && (
-                      <div className="flex items-center justify-end gap-2 max-[1025px]:justify-center">
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("previous")}
-                          disabled={!canScrollPrev}
-                          aria-label="Show previous related effects"
-                          className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all ${!canScrollPrev
-                            ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                            : "hover:border-[#ff5f00]"
-                            }`}
-                          bgColor="#ff5f00"
-                        >
-                          <ChevronLeft className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
-                        </CircularButton>
-
-                        <CircularButton
-                          type="button"
-                          onClick={() => scrollRelatedEffects("next")}
-                          disabled={!canScrollNext}
-                          aria-label="Show next related effects"
-                          className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all ${!canScrollNext
-                            ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                            : "hover:border-[#ff5f00]"
-                            }`}
-                          bgColor="#ff5f00"
-                        >
-                          <ChevronRight className="h-5 w-5 transition-colors duration-500 group-hover:text-white" />
-                        </CircularButton>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="fadeup max-[1025px]:mx-auto max-[1025px]:flex hidden flex-col justify-center items-end gap-5 max-[1025px]:w-fit max-[1025px]:items-stretch">
-                    <ButtonV3
-                      text="Explore all effects"
-                      href="/effects"
-                      variant="orange"
-                      className="shrink-0"
-                    />
-                  </div>
-                </section>
-              )}
-            </section>
-          </main>
-        )}
-      </div>
-    </VaultLayout>
-
-    {mounted && createPortal(
-      <div
-        className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showSignInToCopyModal ? "opacity-100" : "pointer-events-none opacity-0"}`}
-        onClick={() => setShowSignInToCopyModal(false)}
-      >
-        <div
-          className={`flex w-[35vw] max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showSignInToCopyModal ? "scale-100" : "scale-95"}`}
-          onClick={(event) => event.stopPropagation()}
-        >
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={() => setShowSignInToCopyModal(false)}
-            className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
-          >
-            <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
-              <span className="h-px w-4 rotate-45 bg-white" />
-              <span className="absolute h-px w-4 -rotate-45 bg-white" />
-            </div>
-          </button>
-
-          <div className="flex items-start justify-between gap-3">
-            <h2 className="text-xl font-medium text-white">Sign in to copy code</h2>
-          </div>
-          <p className="text-sm text-white/60 text-center">
-            Create a free account or sign in to copy code and install
-            commands from the vault.
-          </p>
-          <Link
-            href={`/sign-in?redirect_url=${encodeURIComponent(pathname)}`}
-            className="inline-flex w-fit items-center gap-1.5  bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors"
-            onClick={() => setShowSignInToCopyModal(false)}
-          >
-            Sign In
-          </Link>
+                  </section>
+                )}
+              </section>
+            </main>
+          )}
         </div>
-      </div>,
-      document.body
-    )}
+      </VaultLayout>
+
+      {mounted && createPortal(
+        <div
+          className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showSignInToCopyModal ? "opacity-100" : "pointer-events-none opacity-0"}`}
+          onClick={() => setShowSignInToCopyModal(false)}
+        >
+          <div
+            className={`flex w-[35vw] max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showSignInToCopyModal ? "scale-100" : "scale-95"}`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setShowSignInToCopyModal(false)}
+              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+            >
+              <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+                <span className="h-px w-4 rotate-45 bg-white" />
+                <span className="absolute h-px w-4 -rotate-45 bg-white" />
+              </div>
+            </button>
+
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="text-xl font-medium text-white">Sign in to copy code</h2>
+            </div>
+            <p className="text-sm text-white/60 text-center">
+              Create a free account or sign in to copy code and install
+              commands from the vault.
+            </p>
+            <Link
+              href={`/sign-in?redirect_url=${encodeURIComponent(pathname)}`}
+              className="inline-flex w-fit items-center gap-1.5  bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors"
+              onClick={() => setShowSignInToCopyModal(false)}
+            >
+              Sign In
+            </Link>
+          </div>
+        </div>,
+        document.body
+      )}
     </CopyLimitProvider>
   );
 }
@@ -1134,9 +1141,8 @@ function SanityBodyBlock({ block, isLocked = false }) {
                 <FAQWrapper
                   key={itemId}
                   itemId={itemId}
-                  className={`group border-grey px-[2.5vw] py-[2vw] max-md:px-[4vw] max-md:py-[4vw] max-sm:px-[6vw] max-sm:py-[6vw] ${
-                    index > 0 ? "border-t" : ""
-                  }`}
+                  className={`group border-grey px-[2.5vw] py-[2vw] max-md:px-[4vw] max-md:py-[4vw] max-sm:px-[6vw] max-sm:py-[6vw] ${index > 0 ? "border-t" : ""
+                    }`}
                   iconClassName="mt-[0.55vw] max-md:mt-[1vw] max-sm:mt-[1.5vw] text-light-grey transition-colors duration-500 ease-out group-hover:text-white"
                   iconSize={18}
                   iconStrokeWidth={1.5}
@@ -1147,13 +1153,13 @@ function SanityBodyBlock({ block, isLocked = false }) {
                     iconPosition="left"
                     iconMode="rotate-left-down"
                   >
-                    <h3 className="text-[1.8vw]! font-neue-haas leading-tight! my-0! max-md:text-[3.4vw]! max-sm:text-[5.2vw]!">
+                    <h3 className="text-[1.55vw]! font-neue-haas leading-tight! my-0! max-md:text-[3.4vw]! max-sm:text-[5.2vw]!">
                       {item.question}
                     </h3>
                   </FAQTitle>
 
-                  <FAQContent className="pt-[1.2vw] pl-[3.2vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]">
-                    <p className="text-[1.15vw]! font-neue-haas text-light-grey! leading-[1.45]! max-md:text-[2.2vw]! max-sm:text-[4vw]!">
+                  <FAQContent className="pt-[1.2vw] pl-[2.8vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]">
+                    <p className="text-[1.15vw]! font-neue-haas text-white! leading-[1.45]! max-md:text-[2.2vw]! max-sm:text-[4vw]!">
                       {item.answer}
                     </p>
                   </FAQContent>

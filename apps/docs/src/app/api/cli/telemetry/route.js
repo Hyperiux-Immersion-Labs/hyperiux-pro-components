@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { getCliTokenFromRequest, resolveClerkUserIdFromCliToken } from "@/lib/cli-auth";
 
 const ALLOWED_EVENTS = new Set(["init", "add"]);
 const MAX_PROPERTIES_JSON_LENGTH = 4096;
@@ -54,9 +55,17 @@ export async function POST(request) {
       ? timestamp
       : null;
 
+  // Best-effort attribution only - a missing/invalid/free-tier token still
+  // records the event anonymously rather than rejecting it. This is what
+  // lets a Pro user's CLI installs actually show up as theirs instead of
+  // last_clerk_user_id always being null (see Installation-SyncUp.md §7.2).
+  const cliToken = getCliTokenFromRequest(request);
+  const clerkUserId = cliToken ? await resolveClerkUserIdFromCliToken(cliToken) : null;
+
   const { error } = await supabase.from("cli_telemetry_events").insert({
     event,
     anonymous_id: anonymousId,
+    clerk_user_id: clerkUserId,
     cli_version: isShortString(cliVersion) ? cliVersion : null,
     platform: isShortString(platform) ? platform : null,
     node_version: isShortString(nodeVersion) ? nodeVersion : null,
@@ -78,6 +87,7 @@ export async function POST(request) {
       .upsert(
         {
           anonymous_id: anonymousId,
+          clerk_user_id: clerkUserId,
           effect: propertiesJson.effect,
           framework: isShortString(propertiesJson.framework)
             ? propertiesJson.framework

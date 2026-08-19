@@ -1,6 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { getUserPlan } from "@/lib/subscription";
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 
@@ -14,7 +13,15 @@ function hashCliToken(token) {
 }
 
 // POST /api/cli/token
-// Generates a new CLI token for the authenticated Pro user.
+// Generates a new CLI token for any signed-in user, not just Pro. A token
+// only proves *identity* to the CLI/MCP - it does not by itself grant Pro
+// effect source. That's decided separately and freshly on every request by
+// effect-access.js's evaluateSubscriptionRow(), which re-checks the real
+// plan/status regardless of whether a valid token was presented. Free users
+// need a token too so their CLI/MCP installs count against their real
+// signed-in daily quota (lib/install-limit.js) instead of silently falling
+// back to the anonymous device/IP bucket, which is a *different, separate*
+// allowance - see Installation-SyncUp.md's identity-resolution notes.
 // The plaintext token is returned once and never stored.
 export async function POST() {
   const { userId } = await auth();
@@ -23,18 +30,6 @@ export async function POST() {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
-    );
-  }
-
-  const plan = await getUserPlan(userId);
-
-  if (plan !== "pro") {
-    return NextResponse.json(
-      {
-        error:
-          "A Hyperiux Pro subscription is required to generate a CLI token.",
-      },
-      { status: 403 }
     );
   }
 

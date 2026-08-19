@@ -18,7 +18,7 @@
     "lint": "eslint",
     "build:registry": "node scripts/build-registry.js",
     "test": "vitest run",
-    "test:concurrency": "vitest run src/lib/founding-slots.concurrency.test.js"
+    "test:concurrency": "vitest run src/lib/founding-slots.concurrency.test.js src/lib/install-limit.concurrency.test.js"
   },
   "dependencies": {
     "@14islands/r3f-scroll-rig": "^8.15.0",
@@ -69,11 +69,11 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.10",
     "@tailwindcss/postcss": "^4.3.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^26.1.2",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.3.2",
     "critters": "^0.0.23",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",

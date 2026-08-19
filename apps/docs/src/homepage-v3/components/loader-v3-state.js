@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 export const LOADER_V3_COMPLETE_EVENT = "hyperiux-v3:loader-complete";
+export const LOADER_V3_HANDOFF_EVENT = "hyperiux-v3:loader-handoff";
 
 /**
  * Announces the loader is out of the way. The flag is set alongside the event
@@ -16,10 +17,29 @@ export function markLoaderV3Complete() {
   window.dispatchEvent(new CustomEvent(LOADER_V3_COMPLETE_EVENT));
 }
 
+/**
+ * The loader's mark has landed on the navbar's logo. Separate from "complete",
+ * which fires when the exit *starts* so the hero can come up underneath: this
+ * one is the moment the bar has to be there to take the mark over.
+ */
+export function markLoaderV3Handoff() {
+  if (typeof window === "undefined") return;
+
+  window.__HYPERIUX_V3_LOADER_HANDOFF__ = true;
+  window.dispatchEvent(new CustomEvent(LOADER_V3_HANDOFF_EVENT));
+}
+
 export function isLoaderV3Complete() {
   return (
     typeof window !== "undefined" &&
     window.__HYPERIUX_V3_LOADER_COMPLETE__ === true
+  );
+}
+
+export function isLoaderV3Handoff() {
+  return (
+    typeof window !== "undefined" &&
+    window.__HYPERIUX_V3_LOADER_HANDOFF__ === true
   );
 }
 
@@ -29,24 +49,38 @@ export function isLoaderV3Complete() {
  * (or where it failed before dispatching).
  */
 export function useLoaderV3Complete(fallbackMs = 6000) {
-  const [complete, setComplete] = useState(false);
+  return useLoaderFlag(LOADER_V3_COMPLETE_EVENT, isLoaderV3Complete, fallbackMs);
+}
+
+/**
+ * True once the mark has landed. No fallback of its own — a page where the
+ * handoff never happens (the burst exit, or no loader at all) has to fall back
+ * on `useLoaderV3Complete`, which knows when it is safe to give up waiting.
+ */
+export function useLoaderV3Handoff() {
+  return useLoaderFlag(LOADER_V3_HANDOFF_EVENT, isLoaderV3Handoff, Infinity);
+}
+
+function useLoaderFlag(event, isSet, fallbackMs) {
+  const [seen, setSeen] = useState(false);
 
   useEffect(() => {
-    const onComplete = () => setComplete(true);
+    const onFire = () => setSeen(true);
 
-    window.addEventListener(LOADER_V3_COMPLETE_EVENT, onComplete);
+    window.addEventListener(event, onFire);
     // Already done before this mounted (or no loader on the page) — flip on the
     // next tick rather than synchronously inside the effect.
-    const fallback = window.setTimeout(
-      onComplete,
-      isLoaderV3Complete() ? 0 : fallbackMs
-    );
+    const already = isSet();
+    const fallback =
+      already || Number.isFinite(fallbackMs)
+        ? window.setTimeout(onFire, already ? 0 : fallbackMs)
+        : 0;
 
     return () => {
-      window.removeEventListener(LOADER_V3_COMPLETE_EVENT, onComplete);
+      window.removeEventListener(event, onFire);
       window.clearTimeout(fallback);
     };
-  }, [fallbackMs]);
+  }, [event, isSet, fallbackMs]);
 
-  return complete;
+  return seen;
 }

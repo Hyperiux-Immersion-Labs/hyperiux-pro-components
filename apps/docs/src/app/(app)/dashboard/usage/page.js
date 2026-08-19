@@ -22,6 +22,13 @@ const DATE_FILTERS = [
   { id: "month", label: "Last Month" },
 ];
 
+const SOURCE_FILTER_OPTIONS = ["all", "web", "cli", "mcp"];
+const SOURCE_LABELS = { all: "All Sources", web: "Web", cli: "CLI", mcp: "MCP" };
+
+function getSourceLabel(id) {
+  return SOURCE_LABELS[id] || id;
+}
+
 // copy_usage_effects.usage_date is written as a UTC YYYY-MM-DD string (see
 // todayUTC() in the API route) - matching that format here keeps the filter
 // in step with the daily-limit reset instead of drifting on the viewer's
@@ -68,6 +75,7 @@ export default function UsagePage() {
   const [wishlist, setWishlist] = useState([]);
   const [dateFilter, setDateFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [sourceFilter, setSourceFilter] = useState("all");
 
   async function loadUsage() {
     try {
@@ -193,6 +201,7 @@ export default function UsagePage() {
   const filteredEffects = useMemo(() => {
     return copiedEffects.filter((effect) => {
       if (!matchesDateFilter(effect.lastCopiedAt, dateFilter)) return false;
+      if (sourceFilter !== "all" && effect.source !== sourceFilter) return false;
 
       if (categoryFilter === "all") return true;
 
@@ -205,7 +214,7 @@ export default function UsagePage() {
 
       return resolveEffectCategoryId(effect) === categoryFilter;
     });
-  }, [copiedEffects, dateFilter, categoryFilter, featuredEffects]);
+  }, [copiedEffects, dateFilter, categoryFilter, sourceFilter, featuredEffects]);
 
   if (!isLoaded || isAdmin || loading || !data) {
     return (
@@ -313,6 +322,15 @@ export default function UsagePage() {
               options={categoryDropdownOptions}
               variant="label"
               panelClassName="max-h-[20vw] max-md:max-h-[50vh] overflow-y-auto"
+            />
+
+            <FilterMenu
+              activeFilter={sourceFilter === "all" ? null : sourceFilter}
+              categoryFilter={sourceFilter}
+              getLabel={getSourceLabel}
+              onSelect={setSourceFilter}
+              options={SOURCE_FILTER_OPTIONS}
+              variant="label"
             />
           </div>
         )}

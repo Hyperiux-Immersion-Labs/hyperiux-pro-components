@@ -4,8 +4,27 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { Camera, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
+import { useAdminRole } from "@/lib/useAdminRole";
 
 const MAX_AVATAR_DIMENSION = 512;
+
+function RoleBadge({ role }) {
+  if (role === "super_admin") {
+    return (
+      <span className="inline-flex items-center  bg-purple-500/15 px-3 py-1 text-xs font-medium text-purple-300">
+        Super Admin
+      </span>
+    );
+  }
+  if (role === "admin") {
+    return (
+      <span className="inline-flex items-center  bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
+        Admin
+      </span>
+    );
+  }
+  return null;
+}
 
 // Clerk's profile image upload rejects anything over its size cap - PNG
 // screenshots regularly blow past that at full resolution even though a
@@ -49,6 +68,7 @@ async function resizeImageForUpload(file, maxDimension = MAX_AVATAR_DIMENSION) {
 
 export default function SettingsPage() {
   const { user, isLoaded } = useUser();
+  const { role } = useAdminRole();
   const fileInputRef = useRef(null);
 
   const [savingProfile, setSavingProfile] = useState(false);
@@ -240,7 +260,7 @@ export default function SettingsPage() {
 
   if (!user) {
     return (
-      <div className="border border-white/10 rounded-2xl p-8">
+      <div className="border border-white/10  p-8">
         Sign in to manage your settings.
       </div>
     );
@@ -248,21 +268,21 @@ export default function SettingsPage() {
 
   return (
     <div className="grid lg:grid-cols-[360px_1fr] gap-6">
-      <div className="rounded-md p-8 bg-[#272727]  h-fit ">
+      <div className=" p-8 bg-[#272727]  h-fit ">
         <div className="relative w-32 h-32">
           <Image
             src={user.imageUrl}
             alt={user.fullName || "Profile picture"}
             fill
             sizes="128px"
-            className="rounded-full object-cover border border-white/10"
+            className=" object-cover border border-white/10"
           />
 
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={savingImage}
-            className="absolute bottom-1 right-1 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white disabled:opacity-60 cursor-pointer"
+            className="absolute bottom-1 right-1 inline-flex h-10 w-10 items-center justify-center  bg-white text-black transition duration-300 hover:bg-[#ff5f00]  disabled:opacity-60 cursor-pointer"
             aria-label="Update profile picture"
           >
             {savingImage ? (
@@ -288,9 +308,15 @@ export default function SettingsPage() {
         <p className="mt-2 break-all">
           {user.primaryEmailAddress?.emailAddress}
         </p>
+
+        {role && (
+          <div className="mt-3">
+            <RoleBadge role={role} />
+          </div>
+        )}
       </div>
 
-      <div className="rounded-md p-8 bg-[#272727] ">
+      <div className=" p-8 bg-[#272727] ">
         <div className="mb-8">
           <h2 className="text-3xl">
             Settings
@@ -315,7 +341,7 @@ export default function SettingsPage() {
               <input
                 name="firstName"
                 defaultValue={user.firstName || ""}
-                className="mt-2 w-full rounded-xl border border-white/10  px-4 py-3 text-white outline-none transition focus:border-white/40"
+                className="mt-2 w-full  border border-white/10  px-4 py-3 text-white outline-none transition focus:border-white/40"
               />
             </label>
 
@@ -327,7 +353,7 @@ export default function SettingsPage() {
               <input
                 name="lastName"
                 defaultValue={user.lastName || ""}
-                className="mt-2 w-full rounded-xl border border-white/10  px-4 py-3 text-white outline-none transition focus:border-white/40"
+                className="mt-2 w-full  border border-white/10  px-4 py-3 text-white outline-none transition focus:border-white/40"
               />
             </label>
           </div>
@@ -337,7 +363,7 @@ export default function SettingsPage() {
               Email
             </p>
 
-            <p className="mt-2 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-white/70">
+            <p className="mt-2  border border-white/10 bg-white/[0.02] px-4 py-3 text-white/70">
               {user.primaryEmailAddress?.emailAddress}
             </p>
           </div>
@@ -351,7 +377,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={savingProfile}
-            className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-black transition hover:bg-[#ff5f00] hover:text-white duration-300 disabled:opacity-60 cursor-pointer"
+            className="inline-flex items-center gap-2  bg-white px-6 py-3 text-black transition hover:bg-[#ff5f00]  duration-300 disabled:opacity-60 cursor-pointer"
           >
             {savingProfile && <Loader2 className="h-4 w-4 animate-spin" />}
             Save changes
@@ -371,7 +397,7 @@ export default function SettingsPage() {
                     name="currentPassword"
                     type={showCurrentPw ? "text" : "password"}
                     autoComplete="current-password"
-                    className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
+                    className="w-full  border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
                     placeholder="Enter your current password"
                   />
                   <button
@@ -392,7 +418,7 @@ export default function SettingsPage() {
                     name="newPassword"
                     type={showNewPw ? "text" : "password"}
                     autoComplete="new-password"
-                    className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
+                    className="w-full  border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
                     placeholder="Enter your new password"
                   />
                   <button
@@ -425,7 +451,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={savingPw}
-                className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-6 py-3 text-black transition hover:bg-[#ff5f00] hover:text-white duration-300 disabled:opacity-60 cursor-pointer"
+                className="inline-flex w-fit items-center gap-2  bg-white px-6 py-3 text-black transition hover:bg-[#ff5f00] duration-300 disabled:opacity-60 cursor-pointer"
               >
                 {savingPw && <Loader2 className="h-4 w-4 animate-spin" />}
                 Update password
@@ -444,7 +470,7 @@ export default function SettingsPage() {
                   inputMode="numeric"
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value)}
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-white outline-none transition focus:border-white/40"
+                  className="mt-2 w-full  border border-white/10 bg-transparent px-4 py-3 text-white outline-none transition focus:border-white/40"
                   placeholder="Enter OTP"
                 />
               </label>
@@ -457,7 +483,7 @@ export default function SettingsPage() {
                     autoComplete="new-password"
                     value={resetNewPassword}
                     onChange={(e) => setResetNewPassword(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
+                    className="w-full  border border-white/10 bg-transparent px-4 py-3 pr-12 text-white outline-none transition focus:border-white/40"
                     placeholder="Enter your new password"
                   />
                   <button
@@ -481,7 +507,7 @@ export default function SettingsPage() {
                 <button
                   type="submit"
                   disabled={resettingPw}
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-black transition hover:bg-[#ff5f00] hover:text-white duration-300 disabled:opacity-60 cursor-pointer"
+                  className="inline-flex items-center gap-2  bg-white px-6 py-3 text-black transition hover:bg-[#ff5f00] duration-300 disabled:opacity-60 cursor-pointer"
                 >
                   {resettingPw && <Loader2 className="h-4 w-4 animate-spin" />}
                   Reset password

@@ -223,7 +223,7 @@ export function VaultHeader({
               <button
                 type="button"
                 onClick={openSearch}
-                className="group flex  py-[.8vw] cursor-pointer items-center gap-4 bg-[#161616] px-3 text-xs text-white backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
+                className="group flex  py-[0.9vw] cursor-pointer items-center gap-4 bg-[#161616] px-3 text-xs text-white backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
                 aria-label="Search effects"
               >
                 <div className="flex items-center gap-2">

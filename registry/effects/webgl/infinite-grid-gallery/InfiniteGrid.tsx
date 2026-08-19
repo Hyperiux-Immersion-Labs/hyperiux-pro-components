@@ -280,9 +280,9 @@ export default class InfiniteGrid {
         const setW = cols * outerW;
         const setH = rows * outerH;
 
-        // Center the grid vertically if there's extra space.
-        const topOffset = Math.max(margin, (this.winH - setH) / 2);
-        const leftOffset = Math.max(margin, (this.winW - setW) / 2);
+        
+        const topOffset = margin;
+        const leftOffset = margin;
 
         this.tileSize = { w: setW, h: setH, tileW, tileH, gap, halfGap, leftOffset, topOffset };
 
