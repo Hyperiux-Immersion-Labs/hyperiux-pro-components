@@ -23,6 +23,7 @@ import ScrollTopOnLoad from "@/homepage-v3/components/ScrollTopOnLoad";
 import { getSearchIndexEffects } from "@/lib/search-index";
 import { FAQJSONLD } from "@/lib/json-ld";
 import MorphingDiether from "./MorphingDiether";
+import { headers } from "next/headers";
 
 const faqItems = [
   {
@@ -209,6 +210,8 @@ const USE_CASES = [
 ];
 
 export default async function page() {
+  const headersList = await headers();
+  const isIndia = headersList.get("x-vercel-ip-country") === "IN";
   const effects = await getSearchIndexEffects();
 
   return (
@@ -240,7 +243,7 @@ export default async function page() {
             mobileEndTriggers="bottom -50%"
             className="h-[60vw] max-md:m max-md:h-[150vw]! bg-background "
           />
-          <PricingV3 />
+          <PricingV3 isIndia={isIndia} />
           <DitherTransition
             dotColor="#050505"
             accentShift={0.8}
