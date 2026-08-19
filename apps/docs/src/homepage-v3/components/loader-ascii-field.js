@@ -1,4 +1,4 @@
-import { CHAR_SETS } from "./char-sets";
+import { CHAR_SETS, resolveCharSet } from "./char-sets";
 
 /**
  * Full-screen dithered-text loader field.
@@ -34,7 +34,7 @@ import { CHAR_SETS } from "./char-sets";
  * shaders and decoding its video while this is on screen.
  */
 
-const GLYPHS = CHAR_SETS.hyperiux.filter((c) => c !== " ");
+const WORDMARK_GLYPHS = CHAR_SETS.hyperiux.filter((c) => c !== " ");
 
 // ── Colours ──────────────────────────────────────────────────────────────────
 const STATIC_COLOR = "#1a1a1a";
@@ -332,7 +332,10 @@ function buildCoverage(cols, rows, cellW, cellH, viewW, viewH, image) {
  *   Rect the mark lands on, re-read whenever the grid is measured.
  */
 export function createAsciiLoaderField(canvas, state, options = {}) {
-  const { mode = "burst", dockTarget = null } = options;
+  const { mode = "burst", dockTarget = null, staticCharSet = "symbols" } =
+    options;
+  const staticGlyphs = resolveCharSet(staticCharSet).filter((c) => c !== " ");
+  const noiseGlyphs = staticGlyphs.length ? staticGlyphs : WORDMARK_GLYPHS;
   const ctx = canvas.getContext("2d", { alpha: true });
 
   let cols = 0;
@@ -589,7 +592,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
               exit === 0 && edge < FLASH_BAND ? KIND_FLASH : KIND_REVEAL;
             alpha = Math.min(1, edge / INK_FEATHER);
             // Stable woven glyphs inside the letter
-            glyph = (col + row) % GLYPHS.length;
+            glyph = (col + row) % WORDMARK_GLYPHS.length;
 
             if (wordExit > 0) {
               if (docking) {
@@ -602,7 +605,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
                     row + 5,
                     churnBucket(now, cell, wordExit * DOCK_CHURN)
                   ) *
-                    GLYPHS.length) |
+                    WORDMARK_GLYPHS.length) |
                   0;
               } else {
                 alpha *= 1 - wordExit;
@@ -620,7 +623,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
                 if (wordExit > 0.1) {
                   glyph =
                     (hash(col + 17, row + 5, churnBucket(now, cell, wordExit)) *
-                      GLYPHS.length) |
+                      WORDMARK_GLYPHS.length) |
                     0;
                 }
               }
@@ -651,7 +654,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
               alpha = Math.min(1, lit) * (1 - staticExit);
               glyph =
                 (hash(col + 17, row + 5, churnBucket(now, cell, staticExit)) *
-                  GLYPHS.length) |
+                  noiseGlyphs.length) |
                 0;
             }
           }
@@ -720,7 +723,9 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
         ctx.fillStyle = FILL_STYLES[key % FILL_BUCKETS];
         current = key;
       }
-      ctx.fillText(GLYPHS[listGlyph[item]], listX[item], listY[item]);
+      const kind = ((key % FILL_BUCKETS) / ALPHA_STEPS) | 0;
+      const glyphs = kind === KIND_STATIC ? noiseGlyphs : WORDMARK_GLYPHS;
+      ctx.fillText(glyphs[listGlyph[item]], listX[item], listY[item]);
     }
 
     // Subtle progress counter at the bottom — first thing to go on exit, and it

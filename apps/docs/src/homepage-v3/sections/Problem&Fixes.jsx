@@ -165,7 +165,7 @@ export default function ProblemFixes() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-200 mt-[12vw] w-full overflow-hidden px-[3vw] pb-[10%] text-white max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
+      className="relative z-200 mt-[12vw] max-md:mt-[-8vw] w-full overflow-hidden px-[3vw] pb-[10%] text-white max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
     >
       <div className="mx-auto relative z-200 flex w-full flex-col items-center">
         <div className="w-full text-center">
@@ -213,7 +213,7 @@ export default function ProblemFixes() {
                     />
                   </div>
                 </div>
-                <p className="text-light-grey font-mono text18 max-[1025px]:w-full max-[1025px]:flex-none max-[1025px]:px-0 max-md:text-[3vw]! max-md:pr-0! min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-full max-sm:flex-none max-sm:px-0">
+                <p className="text-light-grey font-mono text18 max-[1025px]:w-full max-[1025px]:flex-none max-[1025px]:px-0 max-md:text-[3vw]! max-md:pr-0! min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-[90%] max-sm:flex-none max-sm:px-0">
                   <ScrambleTextV3
                     text={item.description}
                     active={index <= activeIndex}

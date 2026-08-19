@@ -6,7 +6,7 @@ import { useLenis } from "lenis/react";
 
 const SCRAMBLE_GLYPHS = "$#&*@!_-./|<>0123456789";
 const PRE_HOLD_MS = 60;
-const REVEAL_DURATION_MS = 620;
+const REVEAL_DURATION_MS = 350;
 const GLYPH_SWAP_MS = 50;
 // Per-character timings, measured in reveal steps (1 step = one character).
 const FADE_STEPS = 0.9;

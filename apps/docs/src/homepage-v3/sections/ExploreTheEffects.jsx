@@ -107,9 +107,9 @@ export default function ExploreTheEffects() {
         <section
             ref={container}
             id="explore-the-effects"
-            className="w-full  mb-[13vw] mt-[5vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-md:my-24 max-md:px-[6vw] max-sm:px-[7vw]"
+            className="w-full  mb-[13vw] mt-[-8vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-md:mt-[-10vw]  max-md:px-[6vw] max-sm:px-[7vw]"
         >
-            <div className="space-y-[4vw] max-[1025px]:space-y-[4vw] max-[1025px]:mb-[12vw] max-md:space-y-[8vw] mb-[15vw] ">
+            <div className="space-y-[4vw] relative z-200 max-[1025px]:space-y-[4vw] max-[1025px]:mb-[12vw] max-md:space-y-[8vw] mb-[15vw] ">
                 <LineReveal as='h2' className="t96 font-neue-haas w-[55vw] mx-auto text-center max-[1025px]:w-full max-md:w-full">
                     Explore the Moments Your Website is{" "}
                     <span className="gradient-text-animate">Missing.</span>

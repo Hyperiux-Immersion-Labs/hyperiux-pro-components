@@ -4,6 +4,7 @@ import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import dynamic from "next/dynamic";
 import ButtonV3 from "../components/ButtonV3";
 import { ScrambleText } from "../components/HoverLinkV3";
 import LineReveal from "@/components/Animations/LineReveal";
@@ -13,20 +14,22 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-const PLANS = {
-    monthly: { price: "20", label: "Monthly" },
-    yearly: { price: "179", label: "Yearly" },
+const PRICING = {
+    USD: { symbol: "$", monthly: 20, yearly: 179 },
+    INR: { symbol: "₹", monthly: 1999, yearly: 17990 },
 };
 
+const ProCta = dynamic(() => import("./PricingV3Cta"), { ssr: false });
+
 const FREE_FEATURES = [
-    "30+ production-ready effects",
+    "41+ production-ready effects",
     "Copy-paste + CLI install",
     "Commercial-friendly usage",
     "Code you own",
 ];
 
 const PRO_FEATURES = [
-    "All 115 effects",
+    "All 130+ effects",
     "New effects added regularly",
     "Priority access to upcoming packs",
     "Hyperiux CLI install + auth",
@@ -72,6 +75,26 @@ const PriceDigit = memo(function PriceDigit({ digit, visible = true }) {
         </span>
     );
 });
+
+function PriceDigits({ monthlyAmount, yearlyAmount, isYearly }) {
+    const monthlyDigits = String(monthlyAmount).split("");
+    const yearlyDigits = String(yearlyAmount).split("");
+    const leadCount = yearlyDigits.length - monthlyDigits.length;
+
+    return (
+        <>
+            {yearlyDigits.slice(0, leadCount).map((d, i) => (
+                <PriceDigit key={`lead-${i}`} digit={d} visible={isYearly} />
+            ))}
+            {monthlyDigits.map((d, i) => (
+                <PriceDigit
+                    key={`trail-${i}`}
+                    digit={isYearly ? yearlyDigits[leadCount + i] : d}
+                />
+            ))}
+        </>
+    );
+}
 
 function CheckSquare({ className = "", onDark = false }) {
     return (
@@ -174,14 +197,17 @@ function BillingToggle({ isYearly, onChange }) {
     );
 }
 
-export default function PricingV3() {
+export default function PricingV3({ isIndia = false, auth = false }) {
     const container = useRef(null);
     const [isYearly, setIsYearly] = useState(true);
     // The yearly perk only scrambles in once the cards are on screen, so the
     // write-on isn't spent while the section is still below the fold.
     const [armed, setArmed] = useState(false);
 
-    const plan = isYearly ? PLANS.yearly : PLANS.monthly;
+    const currency = isIndia ? "INR" : "USD";
+    const { symbol, monthly: monthlyAmount, yearly: yearlyAmount } = PRICING[currency];
+    const planLabel = isYearly ? "Yearly" : "Monthly";
+    const planPrice = isYearly ? yearlyAmount : monthlyAmount;
 
     // A fresh object identity restarts the write-on, so the perk replays every
     // time the toggle lands back on yearly.
@@ -226,8 +252,9 @@ export default function PricingV3() {
                     <span className="gradient-text-animate">Ready.</span>
                 </LineReveal>
 
-                <SplitLine delay={.25} as="p" className="text24 w-full  mx-auto mt-[2vw] text-background max-[1025px]:mt-[3vw] max-[1025px]:w-[80vw] max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-[80vw] max-sm:text-[4vw]">
-                    The free core stays free, forever. Pro unlocks everything and every new drop.
+                <SplitLine delay={.25} as="p" className="text24 w-[50%]  mx-auto mt-[2vw] text-background max-[1025px]:mt-[3vw] max-[1025px]:w-[80vw] max-md:mt-[4vw] max-md:w-[70vw] max-md:text-[2.2vw] max-sm:mt-[6vw] max-sm:w-[80vw] max-sm:text-[4vw]">
+                The Free Core lets you judge Vault where it matters: inside your own stack. Pro gives frequent users the full library, advanced effects, and ongoing releases.
+
                 </SplitLine>
             </div>
 
@@ -247,7 +274,7 @@ export default function PricingV3() {
 
                         <div className="mt-[1.5vw] flex items-end gap-[1vw] max-[1025px]:mt-[3vw] max-[1025px]:gap-[2vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
                             <p className="t96 font-neue-haas  leading-none max-md:text-[7vw] max-sm:text-[11vw]">
-                                $0
+                                {symbol}0
                             </p>
                             <p className="text22 mb-[0.4vw] max-md:text-[2.2vw] max-sm:text-[4vw]">
                                 Forever
@@ -284,16 +311,18 @@ export default function PricingV3() {
                         <div className="mt-[1.5vw] flex items-end gap-[1vw] max-[1025px]:mt-[3vw] max-[1025px]:gap-[2vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
                             <p
                                 className="t96 font-neue-haas items-center  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]"
-                                aria-label={`$${plan.price} ${plan.label.toLowerCase()}`}
+                                aria-label={`${symbol}${planPrice} ${planLabel.toLowerCase()}`}
                             >
-                                <span aria-hidden="true">$</span>
-                                <PriceDigit digit="1" visible={isYearly} />
-                                <PriceDigit digit={isYearly ? "7" : "2"} />
-                                <PriceDigit digit={isYearly ? "9" : "0"} />
+                                <span aria-hidden="true">{symbol}</span>
+                                <PriceDigits
+                                    monthlyAmount={monthlyAmount}
+                                    yearlyAmount={yearlyAmount}
+                                    isYearly={isYearly}
+                                />
                             </p>
 
                             <p className="text22 mb-[0.4vw] max-md:text-[2.2vw] max-sm:text-[4vw]">
-                                {plan.label}
+                                {planLabel}
                             </p>
 
                             <p
@@ -318,12 +347,16 @@ export default function PricingV3() {
 
                     <div className="mt-[3vw] max-[1025px]:mt-[5vw] max-md:mt-[6vw] max-sm:mt-[10vw]">
                         <div className="w-fit max-sm:w-full">
-                            <ButtonV3
-                                variant="orange"
-                                href="/sign-up"
-                                text="Upgrade to Pro"
-                                className="max-sm:w-full max-sm:justify-center"
-                            />
+                            {auth ? (
+                                <ProCta isYearly={isYearly} currency={currency} />
+                            ) : (
+                                <ButtonV3
+                                    variant="orange"
+                                    href="/sign-up"
+                                    text="Upgrade to Pro"
+                                    className="max-sm:w-full max-sm:justify-center"
+                                />
+                            )}
                         </div>
 
                         <p className="font-geist-mono mt-[1.2vw] text-[0.9vw] text-light-grey max-[1025px]:mt-[2.5vw] max-[1025px]:text-[1.7vw] max-md:mt-[3vw] max-md:text-[1.8vw] max-sm:mt-[5vw] max-sm:text-[3.2vw]">

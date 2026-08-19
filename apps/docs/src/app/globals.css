@@ -213,7 +213,7 @@ h4 {
 }
 
 *::-webkit-scrollbar {
-  width: 1px;
+  width: 8px;
   height: 5px;
 }
 
