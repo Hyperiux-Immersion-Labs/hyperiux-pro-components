@@ -25,6 +25,7 @@ export default function LinkButton({
   text,
   children,
   tilted = true,
+  
   target,
   className = "",
   showArrow = false,
@@ -33,7 +34,7 @@ export default function LinkButton({
   shimmerColor = "#ffffff",
   onClick,
   id,
-  underline = true,
+  underline = 'w-full',
   ...props
 }) {
   const underlineRef = useRef(null);

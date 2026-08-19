@@ -21,38 +21,38 @@ const STEP = 0.8
 const cards = [
   {
     title: 'Timing',
-    description: 'Precise sequencing that feels intentional, not random.',
-    label: 'Drops frames',
+    description: 'Precise timing and sequencing tuned against actual hardware.',
+    label: 'Dropped Frames',
   },
   {
     title: 'Restraint',
     description: 'Motion that supports content, not distracts from it.',
-    label: 'Motion noise',
+    label: 'Motion Noise',
   },
   {
     title: 'Reduced-motion',
     description: 'Respects user preferences and accessibility out of the box.',
-    label: 'Inaccessible',
+    label: 'Device Motion Off',
   },
   {
     title: 'Performance budget',
-    description: 'No jank, no layout jumps, no CLS spikes.',
-    label: 'Jank + Drain',
+    description: 'No unexplained CLS, no jank, no dropped frames as standard.',
+    label: 'Jank & Layout Shift',
   },
   {
     title: 'Dependency clarity',
-    description: 'Lightweight by default. Smooth under pressure.',
-    label: 'Hidden bundle cost',
+    description: "Dependency honest. Every effect pulls in only what's needed.",
+    label: 'Hidden Bundle Size',
   },
   {
     title: 'Mobile fallbacks',
-    description: 'No mystery bundles or hidden landmines',
-    label: 'CLS Spikes',
+    description: 'Responsive behaviour built for touch and smaller screens.',
+    label: 'Touch Devices ',
   },
   {
     title: 'Cleanup on unmount',
-    description: 'No leaks, no ghosts, no lingering listeners',
-    label: 'Leaks + Ghosts',
+    description: 'No leaks, no ghosts, no lingering listeners.',
+    label: 'Memory leaks',
   },
 ]
 
@@ -165,7 +165,7 @@ export default function ProblemFixes() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-200 mt-[-4vw] w-full overflow-hidden px-[3vw] pb-[10%] text-white max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
+      className="relative z-200 mt-[12vw] w-full overflow-hidden px-[3vw] pb-[10%] text-white max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
     >
       <div className="mx-auto relative z-200 flex w-full flex-col items-center">
         <div className="w-full text-center">
@@ -173,9 +173,8 @@ export default function ProblemFixes() {
             Good Motion is{' '}
             <span className="gradient-text-animate">Harder</span> Than It Looks
           </LineReveal>
-          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[3.5vw] max-w-[65vw] leading-[1.55] text-white max-[1025px]:mt-[4vw] max-[1025px]:max-w-[85vw] max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
-            Anyone can add a fade. The hard part is everything around it: timing, restraint, layout awareness, responsive behavior, reduced-motion support, dependency clarity, and performance discipline.Get it wrong and your "wow moment" janks on mobile, tanks your Lighthouse score, or quietly breaks for the people who turned motion off.
-            That difference has a name. It's the interaction layer.
+          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[3.5vw] max-w-[60vw] leading-[1.55] text-white max-[1025px]:mt-[4vw] max-[1025px]:max-w-[85vw] max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
+          Anyone can add a fade. What's hard is everything around it. Get timing, restraint, or performance wrong, and the moment meant to impress becomes the reason the site feels worse. Most teams see that risk and drop their ambitions to play it safe. And your interface ends up looking like everyone else's.  Vault is engineered around that discipline by default, not as an afterthought.
           </SplitLine>
         </div>
 
@@ -184,8 +183,8 @@ export default function ProblemFixes() {
           className="mt-[8vw] h-fit w-[85vw] space-y-[1vw] max-[1025px]:mt-[10vw] max-[1025px]:w-full max-[1025px]:space-y-[2vw] max-md:mt-20 max-md:w-full max-md:space-y-5 max-sm:mt-20 max-sm:space-y-5"
         >
           <div className="text24 flex w-full items-center justify-between px-[.5vw] max-sm:text-sm">
-            <p>Fixes</p>
-            <p>Solves</p>
+            <p>The Risks</p>
+            <p>What Vault Fixes</p>
           </div>
 
           {cards.map((item, index) => (
@@ -194,22 +193,25 @@ export default function ProblemFixes() {
               className="tension-card bg-grey/30 flex items-center justify-between p-[.7vw] pr-[1.5vw] max-[1025px]:p-[2vw] max-md:p-3 max-sm:p-2 max-sm:pr-2"
             >
               <div className="flex min-w-0 flex-1 items-center max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[2vw] max-md:flex-col max-md:items-start max-md:gap-3 max-sm:gap-2.5">
-                <div className="flex w-[25vw] shrink-0 items-center gap-[1vw] max-[1025px]:w-auto max-[1025px]:gap-[2vw] max-md:gap-4 max-sm:w-auto max-sm:gap-2.5">
-                  <div className="flex size-[3vw] shrink-0 items-center justify-center bg-background p-1.5 max-[1025px]:size-[5vw] max-md:size-8 max-sm:size-9">
-                    <DrawCheckV3
-                      active={index <= activeIndex}
-                      armed={armed}
-                      className="h-full w-full"
-                    />
-                  </div>
+
+                <div className="flex w-[25vw] pl-[1vw] shrink-0 items-center gap-[1vw] max-[1025px]:w-auto max-[1025px]:gap-[2vw] max-md:gap-4 max-sm:w-auto max-sm:gap-2.5">
+
                   <FadeTextV3
                     as="p"
-                    className="text34 whitespace-nowrap capitalize"
+                    lang="en"
+                    className="text24 capitalize max-sm:min-w-0 max-sm:flex-1 max-sm:text-base! max-sm:leading-tight max-sm:wrap-break-word max-sm:hyphens-auto"
                     active={index <= activeIndex}
                     armed={armed}
                   >
-                    {item.title}
+                    {item.label}
                   </FadeTextV3>
+                  <div className="flex size-[3vw] shrink-0 items-center justify-center bg-background p-1 max-[1025px]:size-[5vw] max-md:size-8 max-sm:size-9">
+                    <DrawCrossV3
+                      active={index <= activeIndex}
+                      armed={armed}
+                      className="h-[60%] w-[60%]"
+                    />
+                  </div>
                 </div>
                 <p className="text-light-grey font-mono text18 max-[1025px]:w-full max-[1025px]:flex-none max-[1025px]:px-0 max-md:text-[3vw]! max-md:pr-0! min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-full max-sm:flex-none max-sm:px-0">
                   <ScrambleTextV3
@@ -219,23 +221,24 @@ export default function ProblemFixes() {
                   />
                 </p>
               </div>
-              <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-[1025px]:w-auto max-[1025px]:max-w-full max-[1025px]:gap-[2vw] max-md:w-[30%] max-sm:w-fit max-sm:gap-0! max-md:max-w-[35%]">
-                <div className="flex size-[3vw] shrink-0 items-center justify-center max-[1025px]:size-[5vw] max-md:size-9 max-sm:size-12">
-                  <DrawCrossV3
-                    active={index <= activeIndex}
-                    armed={armed}
-                    className="h-[60%] w-[60%]"
-                  />
-                </div>
+
+              <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-[1025px]:w-auto max-[1025px]:max-w-full justify-end max-[1025px]:gap-[2vw] max-md:w-[30%] max-sm:w-fit max-sm:gap-0! max-md:max-w-[35%]">
+
                 <FadeTextV3
                   as="p"
-                  lang="en"
-                  className="text24 capitalize max-sm:min-w-0 max-sm:flex-1 max-sm:text-base! max-sm:leading-tight max-sm:wrap-break-word max-sm:hyphens-auto"
+                  className="text24 whitespace-nowrap capitalize"
                   active={index <= activeIndex}
                   armed={armed}
                 >
-                  {item.label}
+                  {item.title}
                 </FadeTextV3>
+                <div className="flex size-[3vw] shrink-0 items-center justify-center bg-background p-2.5 max-[1025px]:size-[5vw] max-md:size-8 max-sm:size-9">
+                  <DrawCheckV3
+                    active={index <= activeIndex}
+                    armed={armed}
+                    className="h-full w-full"
+                  />
+                </div>
               </div>
             </div>
           ))}

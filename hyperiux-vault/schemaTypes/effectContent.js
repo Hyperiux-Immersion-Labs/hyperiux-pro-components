@@ -75,16 +75,18 @@ const codeBlock = defineType({
   fields: [
     defineField({
       name: 'code',
-      title: 'Code',
+      title: 'Code (JavaScript)',
+      description: 'JSX/JS version of this snippet.',
       type: 'text',
       rows: 16,
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'language',
-      title: 'Language',
-      type: 'string',
-      initialValue: 'jsx',
+      name: 'tsxCode',
+      title: 'Code (TypeScript)',
+      description: 'TSX/TS version of this snippet.',
+      type: 'text',
+      rows: 16,
     }),
     defineField({
       name: 'filename',
@@ -95,12 +97,11 @@ const codeBlock = defineType({
   preview: {
     select: {
       title: 'filename',
-      subtitle: 'language',
     },
-    prepare({title, subtitle}) {
+    prepare({title}) {
       return {
         title: title || 'Code block',
-        subtitle: subtitle || 'code',
+        subtitle: 'code',
       }
     },
   },

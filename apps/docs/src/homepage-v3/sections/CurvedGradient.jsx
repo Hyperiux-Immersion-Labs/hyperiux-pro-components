@@ -13,7 +13,7 @@ if (typeof window !== "undefined") {
 }
 
 const headingClass =
-  "t64 pointer-events-none absolute left-1/2 top-1/2 z-10 w-full max-w-[65.5vw] -translate-x-1/2 -translate-y-1/2 text-center text-[3.25vw] text-white max-[1025px]:max-w-[85%] max-[1025px]:text-[4.2vw] max-md:max-w-[90%] max-md:text-[5vw]";
+  "t64 pointer-events-none  absolute left-1/2 top-1/2 z-10 w-full max-w-[65.5vw] -translate-x-1/2 -translate-y-1/2 text-center text-[3.25vw] text-white max-[1025px]:max-w-[85%] max-[1025px]:text-[4.2vw] max-md:max-w-[90%] max-md:text-[5vw]";
 
 export default function CurvedGradient() {
   const wrapperRef = useRef(null);
@@ -102,17 +102,14 @@ export default function CurvedGradient() {
           markers={false}
         />
         <h2 ref={firstRef} id="curved-gradient-heading" className={headingClass}>
-          Most websites are not broken. They are forgettable. They use the same
-          sections, the same rhythm, the same static patterns, and the same safe
-          animations everyone else is using.
+          What makes an interface memorable is what happens when someone touches it; How a section enters, how a cursor reacts, how a page changes, and how a moment resolves.
         </h2>
         <h2
           ref={secondRef}
           id="curved-gradient-heading-2"
           className={headingClass}
         >
-          Your site does not need more decoration. It needs motion that earns
-          its place
+          Most component libraries and page builders stop at the static interface. Interaction is  the layer they never touch.
         </h2>
       </section>
     </div>

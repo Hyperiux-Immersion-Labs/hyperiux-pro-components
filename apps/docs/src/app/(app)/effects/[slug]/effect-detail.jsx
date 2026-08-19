@@ -16,7 +16,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
-import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CodeBlock, CodeBlockLanguageProvider } from "@/components/ui/CodeBlock";
 import { TableOfContents } from "@/components/ui/TableOfContents";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import {
@@ -955,6 +955,7 @@ function SanityBodyRenderer({
   const shouldRenderChangelog = changelog?.length > 0;
 
   return (
+    <CodeBlockLanguageProvider>
     <div className="space-y-6">
       {shouldRenderChangelog && firstFaqIndex === -1 && (
         <EffectChangelogSection changelog={changelog} />
@@ -978,6 +979,7 @@ function SanityBodyRenderer({
 
       {showPropsTable && !hasFaqBlock && <EffectPropsTable props={remixableProps} />}
     </div>
+    </CodeBlockLanguageProvider>
   );
 }
 
@@ -1101,6 +1103,7 @@ function SanityBodyBlock({ block, isLocked = false }) {
       <div className="fadeup">
         <CodeBlock
           code={normalizeCodeString(block.code || "")}
+          tsxCode={block.tsxCode ? normalizeCodeString(block.tsxCode) : undefined}
           language={block.language || "jsx"}
           filename={block.filename}
           hideHeaderWhenNoFilename
