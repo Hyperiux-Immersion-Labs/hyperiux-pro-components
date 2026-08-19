@@ -53,11 +53,9 @@ export const waitlistInviteSubject = "You're invited to Hyperiux Vault";
 
 export function waitlistInviteText({ signUpUrl } = {}) {
   return `
-Hey, building every interaction from scratch is one way to make a site feel specific - not always the sensible one.
+You've been invited to Hyperiux Vault, a source-first library of interaction effects and frontend systems for React and Next.js.
 
-Vault also surfaces dependencies and the production details worth checking, including mobile behaviour, reduced motion and performance.
-
-Explore Vault: ${exploreVaultUrl(signUpUrl)}
+Accept invite: ${exploreVaultUrl(signUpUrl)}
 
 Hyperiux Vault
 `;
@@ -86,7 +84,15 @@ export function WaitlistInviteEmail({ signUpUrl } = {}) {
         </Head>
         <Preview>Your account is ready to be set up on Hyperiux Vault.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
-          <Container className="mx-auto w-full max-w-150 px-4">
+          <Container
+            className="mx-auto w-full max-w-150 px-4"
+            style={{
+              backgroundImage: `url(${baseUrl}/emails/email-temp-bg.png)`,
+              backgroundSize: "cover",
+              backgroundPosition: "top center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
             <Section className="px-1 pt-8 pb-6">
               <Img src={`${baseUrl}/emails/hyperiux-email-logo.png`} alt="Hyperiux" width={140} height={17} />
             </Section>
@@ -111,21 +117,12 @@ export function WaitlistInviteEmail({ signUpUrl } = {}) {
                 </Heading>
 
                 <Text
-                  className="m-0 mt-5 text-[18px] leading-6 text-[#1D1D1D]"
+                  className="m-0 mt-5 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                  Hey, building every interaction from scratch is one way
-                  to make a site feel specific - not always the sensible
-                  one.
-                </Text>
-
-                <Text
-                  className="m-0 mt-6 text-[15px] leading-6 text-[#1D1D1D]"
-                  style={{ fontFamily }}
-                >
-                  Vault also surfaces dependencies and the production
-                  details worth checking, including mobile behaviour,
-                  reduced motion and performance.
+                  You&apos;ve been invited to Hyperiux Vault, a
+                  source-first library of interaction effects and
+                  frontend systems for React and Next.js.
                 </Text>
 
                 <Section className="mt-8 text-center">
@@ -160,7 +157,7 @@ export function WaitlistInviteEmail({ signUpUrl } = {}) {
                               textDecoration: "none",
                             }}
                           >
-                            Accept Invite
+                            Accept invite
                           </a>
                         </td>
                       </tr>
