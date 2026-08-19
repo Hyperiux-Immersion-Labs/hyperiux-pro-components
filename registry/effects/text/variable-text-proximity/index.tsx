@@ -101,7 +101,7 @@ type VariableTextProximityDemoStyle = CSSProperties & {
 const VARIABLE_HOVER_COPY =
   'Every letter keeps its own distance from the cursor. Drift across the paragraph and the nearest glyphs gain weight first, then the surrounding words settle back into place.';
 
-const VariableTextProximity = forwardRef<HTMLSpanElement, VariableTextProximityProps>((props, ref) => {
+const VariableProximityLetters = forwardRef<HTMLSpanElement, VariableTextProximityProps>((props, ref) => {
   const {
     label,
     fromFontVariationSettings,
@@ -296,10 +296,7 @@ const VariableTextProximity = forwardRef<HTMLSpanElement, VariableTextProximityP
     </span>
   );
 });
-
-VariableTextProximity.displayName = 'VariableTextProximity';
-
-export function VariableTextProximityDemo({
+export default function VariableTextProximity({
   radius = 100,
   falloff = 'linear',
   baseWeight = 300,
@@ -333,7 +330,7 @@ export function VariableTextProximityDemo({
       style={demoStyle}
     >
       <div ref={stageRef} className="hv-variable-stage relative z-10 mx-auto text-center">
-        <VariableTextProximity
+        <VariableProximityLetters
           label={VARIABLE_HOVER_COPY}
           fromFontVariationSettings={fromFontVariationSettings}
           toFontVariationSettings={toFontVariationSettings}
@@ -389,5 +386,3 @@ export function VariableTextProximityDemo({
     </section>
   );
 }
-
-export default VariableTextProximity;

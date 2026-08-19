@@ -175,7 +175,6 @@ export default function TypingText({
             transformOrigin: typingDirection === "right-to-left" ? "right center" : "left center",
             width: prefersReducedMotion ? "auto" : undefined,
             maxWidth: prefersReducedMotion ? "100%" : undefined,
-            opacity: prefersReducedMotion ? 1 : undefined,
             animation: prefersReducedMotion
               ? "none"
               : variant === "loop"
@@ -346,12 +345,22 @@ export default function TypingText({
           }
         }
 
+        @keyframes typing-text-fade-in {
+          from {
+            opacity: 0;
+          }
+
+          to {
+            opacity: 1;
+          }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .typing-text-line {
             width: auto !important;
             max-width: 100%;
-            opacity: 1 !important;
-            animation: none !important;
+            opacity: 0;
+            animation: typing-text-fade-in 0.4s ease-out forwards !important;
           }
 
           .typing-text-line::after {

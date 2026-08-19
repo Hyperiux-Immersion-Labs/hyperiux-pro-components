@@ -94,8 +94,8 @@ const DepthFlipText = ({
       const nextEl = nextRef.current;
       if (!fontsReady || !currentEl || !nextEl) return;
 
-      const currentSplit = SplitText.create(currentEl, { type: "chars" });
-      const nextSplit = SplitText.create(nextEl, { type: "chars" });
+      const currentSplit = SplitText.create(currentEl, { type: "words, chars" });
+      const nextSplit = SplitText.create(nextEl, { type: "words, chars" });
       const cleanup = () => {
         currentSplit.revert();
         nextSplit.revert();
@@ -258,7 +258,7 @@ const DepthFlipText = ({
       />
       <div
         ref={containerRef}
-        className="relative z-10 w-full max-w-[1400px]"
+        className="relative z-10 w-full max-w-[1400px] max-md:min-h-[18vw]"
         style={{ opacity: fontsReady ? 1 : 0 }}
       >
         <Phrase
@@ -289,7 +289,7 @@ interface PhraseProps {
 const Phrase = ({ ref, text, tone, secondary = false }: PhraseProps) => (
   <p
     ref={ref}
-    className={`m-0 w-full whitespace-nowrap text-center  text-[6vw] max-md:text-[10vw] max-[1025px]:text-[8vw] font-medium text-white! tracking-[-0.08em]  ${secondary ? "absolute inset-0 opacity-0" : "relative"}`}
+    className={`m-0 w-full whitespace-nowrap max-md:whitespace-normal text-center  text-[6vw] max-md:text-[10vw] max-[1025px]:text-[8vw] font-medium text-white! tracking-[-0.08em]  ${secondary ? "absolute inset-0 opacity-0" : "relative"}`}
     style={{ color: tone, lineHeight: LINE_HEIGHT }}
   >
     {text}
