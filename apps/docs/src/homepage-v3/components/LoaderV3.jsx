@@ -10,6 +10,10 @@ import { measureNavLogoTarget } from "./loader-dock-target";
 import { markLoaderV3Complete, markLoaderV3Handoff } from "./loader-v3-state";
 import { lockScrollV3, useScrollLockLenis } from "./scroll-lock-v3";
 
+// Background static glyphs. The wordmark still weaves HYPERIUX letters;
+// this set is only the noise behind it. One of: "symbols" | "numbers" | "binary" | "hyperiux"
+const STATIC_CHAR_SET = "symbols";
+
 // The counter runs to 92 on its own, then only closes the last 8 once the page
 // has actually finished loading — so the number tracks something real instead
 // of sitting at 100 while assets are still coming in.
@@ -95,6 +99,7 @@ export default function LoaderV3({ exitMode = "dock" }) {
       const destroyField = createAsciiLoaderField(canvasRef.current, field, {
         mode: exitMode,
         dockTarget: measureNavLogoTarget,
+        staticCharSet: STATIC_CHAR_SET,
       });
 
       // ── Phase 1: Build — progress runs 0 → 0.92 while the page loads ──

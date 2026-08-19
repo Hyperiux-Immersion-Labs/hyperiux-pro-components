@@ -65,7 +65,7 @@ export default async function PricingPage() {
           <Hero />
           <CubeBackgroundAscii />
           <DitherTransition  mobileEndTriggers={'bottom -50%'} className="h-[46vw] max-md:h-[150vw]! bg-background " />
-          <PricingV3 />
+          <PricingV3 isIndia={isIndia} auth />
           <DitherTransition
             dotColor="#050505"
             accentColor="#eaeaea"

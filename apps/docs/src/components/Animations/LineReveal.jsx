@@ -46,6 +46,7 @@ export default function LineReveal({
   duration = 0.8,
   stagger = 0.08,
   animationKey = "",
+  markers = false,
   ...rest
 }) {
   const containerRef = useRef(null);
@@ -151,7 +152,7 @@ export default function LineReveal({
         start,
         once: true,
         invalidateOnRefresh: true,
-        markers:false,
+        markers:markers,
         onEnter: () => {
           tweenRef.current?.play(0);
         },
