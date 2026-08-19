@@ -78,16 +78,25 @@ async function inviteOne(clerk, email) {
       throw new Error("Clerk did not return an invitation URL");
     }
 
-    // Generated up front so the CTA's click-tracking link can reference this
-    // row's id before the sent_emails row itself is written by sendEmail().
+    // Generated client-side purely as the sent_emails row's id (passed to
+    // sendEmail below) - no longer embedded in the CTA link. The email's
+    // link now points straight at signUpUrl with a plain UTM tag instead of
+    // routing through /api/e/[id], since that redirect-with-opaque-token
+    // pattern is exactly what commercial ESP click-trackers look like, and
+    // was a real signal for Gmail's Promotions classifier.
     const trackingId = randomUUID();
 
     const emailResult = await sendEmail({
       id: trackingId,
       to: email,
+      // Own sender identity for invites specifically - reads less "bulk" to
+      // Gmail's classifier than sharing the site-wide hello@ address that
+      // every other transactional email (welcome, password reset, invoices)
+      // also sends from.
+      from: "Hyperiux Vault <invites@vault.hyperiux.com>",
       subject: waitlistInviteSubject,
-      react: renderWaitlistInviteEmail({ trackingId, signUpUrl: invitation.url }),
-      text: waitlistInviteText({ trackingId, signUpUrl: invitation.url }),
+      react: renderWaitlistInviteEmail({ signUpUrl: invitation.url }),
+      text: waitlistInviteText({ signUpUrl: invitation.url }),
       emailType: "invitations",
     });
 
