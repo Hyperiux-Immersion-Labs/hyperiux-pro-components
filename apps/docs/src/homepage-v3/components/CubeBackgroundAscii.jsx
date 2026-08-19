@@ -1,9 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { DEFAULT_CHAR_SET, resolveCharSet } from "./char-sets";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
 export const VIDEO_SRC = "/cube.mp4";
 
@@ -792,6 +793,7 @@ function createSuspendedRaf({ onFrame, root = null }) {
 const SHADER_REV = 5;
 
 function CubeAsciiCanvas({ config, intro, src, className }) {
+  const [skipGPU, setSkipGPU] = useState(true);
   const ref = useRef(null);
   const configRef = useRef(config);
 
@@ -800,6 +802,10 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
   // from outside (by GSAP) many times a second, and rebuilding the context for
   // that would be absurd. Absent, the field just draws fully.
   const introRef = useRef(intro);
+
+  useLayoutEffect(() => {
+    setSkipGPU(shouldSkipRealtimeGPU());
+  }, []);
 
   // The one config value the render loop cannot pick up from the ref: it sizes
   // the shader's ramp and the atlas, so changing it re-runs the GL setup below.
@@ -817,6 +823,8 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
   }, [intro]);
 
   useEffect(() => {
+    if (skipGPU) return undefined;
+
     const canvas = ref.current;
     if (!canvas) return undefined;
 
@@ -1198,7 +1206,11 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
     };
-  }, [src, charSetName, SHADER_REV]);
+  }, [src, charSetName, SHADER_REV, skipGPU]);
+
+  if (skipGPU) {
+    return <div className={className} aria-hidden />;
+  }
 
   return <canvas ref={ref} className={className} />;
 }
