@@ -1,4 +1,4 @@
-import { CHAR_SETS } from "./char-sets";
+import { resolveCharSet } from "./char-sets";
 
 /**
  * Full-screen dithered-text loader field.
@@ -34,7 +34,7 @@ import { CHAR_SETS } from "./char-sets";
  * shaders and decoding its video while this is on screen.
  */
 
-const GLYPHS = CHAR_SETS.hyperiux.filter((c) => c !== " ");
+const WORDMARK_GLYPHS = Array.from("HYPERIUX");
 
 // ── Colours ──────────────────────────────────────────────────────────────────
 const STATIC_COLOR = "#1a1a1a";
@@ -117,9 +117,19 @@ const EXIT_STATIC_LEAD = 0.25;
 // Easing lives on the scalar this reads (see LoaderV3), so nothing here has to
 // know how the travel is paced.
 //
-// How hard a cell churns glyphs while it travels. The shape is fixed by the
-// transform, so the churn is the only thing saying these are still characters.
-const DOCK_CHURN = 1.4;
+// The mark does not churn on its way to the navbar. Every cell keeps the woven
+// glyph it settled on, so the only thing changing during the travel is the
+// transform itself — the wordmark moves and scales as one fixed piece of
+// artwork. Churning here (at any strength, over any window) reads as the mark
+// scrambling or sparkling while it docks, which is precisely what it must not
+// do at the moment it merges with the solid svg underneath it.
+//
+// Extra ink feather while the dither hardens. As `harden` pulls the Bayer
+// threshold away, held-back cells cross into view mid-travel; through the
+// narrow resting feather that crossing is a pop, and a screen full of pops is
+// the flicker. This widens the ramp in step with the hardening so each cell
+// fades in over many frames instead.
+const DOCK_INK_FEATHER = 0.42;
 //
 // A glyph's ink is a fraction of its cell, so shrinking the field costs ink as
 // the *square* of the scale: transform the mark down to logo size untouched and
@@ -332,7 +342,20 @@ function buildCoverage(cols, rows, cellW, cellH, viewW, viewH, image) {
  *   Rect the mark lands on, re-read whenever the grid is measured.
  */
 export function createAsciiLoaderField(canvas, state, options = {}) {
-  const { mode = "burst", dockTarget = null } = options;
+  const {
+    mode = "burst",
+    dockTarget = null,
+    staticCharSet = "symbols",
+    staticChars = "",
+    wordmarkChars = "HYPERIUX",
+  } = options;
+  const markGlyphs = Array.from(wordmarkChars).filter((c) => c !== " ");
+  const wordGlyphs = markGlyphs.length ? markGlyphs : WORDMARK_GLYPHS;
+  const staticGlyphs = (staticChars
+    ? Array.from(staticChars)
+    : resolveCharSet(staticCharSet)
+  ).filter((c) => c !== " ");
+  const noiseGlyphs = staticGlyphs.length ? staticGlyphs : wordGlyphs;
   const ctx = canvas.getContext("2d", { alpha: true });
 
   let cols = 0;
@@ -375,6 +398,9 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
   let svgImage = null;
   let frame = 0;
   let lastPaint = 0;
+  // Drives the background static's glyph swaps. Tracks `now` until the mark
+  // starts docking, then holds — see the static branch in `paint`.
+  let staticChurnClock = 0;
 
   const rebuild = () => {
     const w = canvas.clientWidth;
@@ -539,7 +565,24 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
     const dockZoom = docking ? 1 + (dockScale - 1) * exit : 1;
     const dockX = docking ? exit * (dock.x - box.x * dockScale) : 0;
     const dockY = docking ? exit * (dock.y - box.y * dockScale) : 0;
-    const dockStep = docking ? scaleStepOf(exit) : SCALE_STEPS - 1;
+    // The glyphs shrink with the field itself rather than through the burst's
+    // step ladder. `scaleStepOf` quantises to SCALE_STEPS buckets, which over a
+    // full-screen-to-logo shrink is eight visible size jumps — fine for a burst
+    // where cells are scattering anyway, plainly a stair-step when the mark is
+    // one rigid shape being scaled. Docking gets its own font, set once for the
+    // whole frame: every cell shares the same size, so it costs one `ctx.font`
+    // either way and the shrink is continuous.
+    const dockFontScale = docking
+      ? Math.max(dockZoom * DOCK_GLYPH_SWELL, dockZoom)
+      : 1;
+    const dockFont = docking
+      ? `${(fontSize * Math.min(dockFontScale, 1)).toFixed(2)}px ${fontFamily}`
+      : null;
+    const dockStep = SCALE_STEPS - 1;
+    // Frozen the instant the mark starts travelling (see the static branch).
+    // Held on the last pre-exit value rather than snapped to zero, so cells
+    // keep whatever glyph they were showing instead of all re-rolling at once.
+    if (!docking || exit === 0) staticChurnClock = now;
 
     let count = 0;
 
@@ -587,23 +630,29 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
           if (edge > 0) {
             kind =
               exit === 0 && edge < FLASH_BAND ? KIND_FLASH : KIND_REVEAL;
-            alpha = Math.min(1, edge / INK_FEATHER);
+            // `harden` sweeps the dither threshold away as the mark docks, so
+            // cells the Bayer matrix was holding back cross into view during
+            // the travel. Through the narrow resting feather that crossing is
+            // a snap from nothing to solid — a cell popping on, which is the
+            // flicker that reads as the mark sparkling on its way to the
+            // navbar. Widening the feather as it hardens turns each of those
+            // into a fade instead, so the mark fills in smoothly.
+            alpha = Math.min(1, edge / (INK_FEATHER + harden * DOCK_INK_FEATHER));
             // Stable woven glyphs inside the letter
-            glyph = (col + row) % GLYPHS.length;
+            glyph = (col + row) % wordGlyphs.length;
 
             if (wordExit > 0) {
               if (docking) {
                 // The mark is landing on the navbar's logo, which is this same
                 // orange — so it neither cools nor thins on the way. It arrives
                 // at full strength and the svg takes over from there.
-                glyph =
-                  (hash(
-                    col + 17,
-                    row + 5,
-                    churnBucket(now, cell, wordExit * DOCK_CHURN)
-                  ) *
-                    GLYPHS.length) |
-                  0;
+                //
+                // Nothing else happens to a docking cell. The glyph it is
+                // holding is the glyph it keeps: no churn, no re-roll. The mark
+                // is a fixed piece of artwork being scaled and moved, so the
+                // only thing changing on screen is the transform — which is
+                // what makes it read as the wordmark travelling to the navbar
+                // rather than a field of characters that happens to shrink.
               } else {
                 alpha *= 1 - wordExit;
                 // Cool off the mark's orange as the cell travels, so what
@@ -620,7 +669,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
                 if (wordExit > 0.1) {
                   glyph =
                     (hash(col + 17, row + 5, churnBucket(now, cell, wordExit)) *
-                      GLYPHS.length) |
+                      wordGlyphs.length) |
                     0;
                 }
               }
@@ -649,9 +698,19 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
               // cannot travel. Fading the alpha instead lets the static burst
               // outward with the mark.
               alpha = Math.min(1, lit) * (1 - staticExit);
+              // The static is carried by the same dock transform as the mark
+              // and is not quite gone when the travel begins, so anything still
+              // churning here flickers *while the whole field is moving* — read
+              // as the wordmark sparkling, even though it is the noise behind
+              // it. `staticChurnClock` stops advancing once the mark is on the
+              // move, so the last of the static fades out frozen instead.
               glyph =
-                (hash(col + 17, row + 5, churnBucket(now, cell, staticExit)) *
-                  GLYPHS.length) |
+                (hash(
+                  col + 17,
+                  row + 5,
+                  churnBucket(staticChurnClock, cell, staticExit)
+                ) *
+                  noiseGlyphs.length) |
                 0;
             }
           }
@@ -714,13 +773,17 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
       if (key !== current) {
         const scaleStep = (key / FILL_BUCKETS) | 0;
         if (scaleStep !== currentScale) {
-          ctx.font = scaleFonts[scaleStep];
+          // Docking sizes every cell off one continuous scale rather than the
+          // step ladder, so the shrink has no visible quantisation in it.
+          ctx.font = dockFont ?? scaleFonts[scaleStep];
           currentScale = scaleStep;
         }
         ctx.fillStyle = FILL_STYLES[key % FILL_BUCKETS];
         current = key;
       }
-      ctx.fillText(GLYPHS[listGlyph[item]], listX[item], listY[item]);
+      const kind = ((key % FILL_BUCKETS) / ALPHA_STEPS) | 0;
+      const glyphs = kind === KIND_STATIC ? noiseGlyphs : wordGlyphs;
+      ctx.fillText(glyphs[listGlyph[item]], listX[item], listY[item]);
     }
 
     // Subtle progress counter at the bottom — first thing to go on exit, and it
@@ -732,7 +795,14 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
 
   const tick = (now) => {
     frame = requestAnimationFrame(tick);
-    if (now - lastPaint < FRAME_MS) return;
+    // The throttle exists to keep high-refresh displays from repainting the
+    // whole grid at 120fps+, not to pace a 60Hz one. Comparing against a flat
+    // FRAME_MS does both: rAF on a 60Hz screen delivers frames a hair under
+    // 16.67ms apart as often as not, and every one of those was being dropped
+    // outright — a stutter in the middle of the travel, exactly where the mark
+    // is moving fastest. The margin lets a nominally-on-time frame through, so
+    // 60Hz paints every frame and faster panels still halve.
+    if (now - lastPaint < FRAME_MS - 2) return;
     lastPaint = now;
     paint(now);
   };

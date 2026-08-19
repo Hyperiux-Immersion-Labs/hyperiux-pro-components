@@ -44,7 +44,7 @@ export default function CurvedGradient() {
         scrollTrigger: {
           trigger: wrapperRef.current,
           start: "0% 50%",
-          end: "80% 50%",
+          end: "65% 50%",
           scrub: true,
         },
       });
@@ -88,7 +88,7 @@ export default function CurvedGradient() {
       <section
         ref={sectionRef}
         id="curved-gradient"
-        className="sticky top-0 h-screen w-full flex items-center justify-center"
+        className="sticky top-0 h-screen w-full mt-[-8vw] flex items-center justify-center"
       >
         <CurvedGradientShader
           overscan={1.5}
@@ -98,7 +98,8 @@ export default function CurvedGradient() {
           colorNum={8.0}
           scrollTrigger={wrapperRef}
           scrollStart="top bottom"
-          scrollEnd="170% top"
+          scrollEnd="130% top"
+          curveStrength={0.6}
           markers={false}
         />
         <h2 ref={firstRef} id="curved-gradient-heading" className={headingClass}>

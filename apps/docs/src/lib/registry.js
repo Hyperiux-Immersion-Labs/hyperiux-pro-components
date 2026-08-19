@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { cache } from "react";
 import { getEffectSlugAliases } from "./effect-slugs";
 
 const PUBLIC_REGISTRY_CANDIDATES = [
@@ -72,7 +73,12 @@ export function getAllPrivateEffects() {
   return effects;
 }
 
-function findPrivateRegistryPath(slug) {
+// Effect detail pages call this indirectly 2-3x per request (once from
+// generateMetadata, again from the page component, again from
+// getEffectSource) - each call does a synchronous fs.readdirSync/statSync
+// scan across every category directory to find one slug. cache() dedupes
+// identical calls within a single request so that scan only happens once.
+const findPrivateRegistryPath = cache(function findPrivateRegistryPath(slug) {
   const privateRoot = getExistingPrivateRegistryRoot();
 
   if (!privateRoot) {
@@ -135,7 +141,7 @@ function findPrivateRegistryPath(slug) {
   });
 
   return null;
-}
+});
 
 function attachPrivateFileContent(effect, effectDir) {
   // If files list is empty (source registry.json has no files key),

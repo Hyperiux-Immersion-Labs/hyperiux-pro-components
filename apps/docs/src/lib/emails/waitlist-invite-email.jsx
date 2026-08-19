@@ -27,12 +27,6 @@ const baseUrl = "https://vault.hyperiux.com";
 // testing) instead of always pointing at production like baseUrl does.
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || baseUrl;
 
-// Actually-animated sample gif (public domain, Wikimedia Commons) so you can
-// confirm gifs render/animate correctly in email clients before swapping in
-// the real "Vault effects in motion" clip (upload it to ${baseUrl}/emails/
-// and update the src below).
-const showcaseGifUrl = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/gif/mailer-gif.gif";
-
 const socialLinks = [
   { label: "X", href: "https://x.com/_hyperiux_", icon: "/emails/x-icon-email-temp.png" },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/hyperiux/", icon: "/emails/linkedin-icon-email-temp.png" },
@@ -42,38 +36,34 @@ const socialLinks = [
 
 const fontFamily = "Aeonik, system-ui";
 
-// The CTA routes through /api/e/[trackingId] (a click-tracking redirect that
-// marks the sent_emails row as clicked) which then forwards the recipient on
-// to the invitation's sign-up ticket URL (accepting only asks for a
-// password, since the email is pre-verified) - or to /effects with UTM
-// params as a fallback if no ticket URL is available.
-const exploreVaultUtm = "utm_source=email&utm_medium=invite&utm_campaign=invitations";
+// A plain link straight to the destination, tagged with one UTM param - no
+// redirect wrapper, no opaque tracking-id path segment. That kind of
+// indirection (/api/e/<uuid>?to=...) is exactly what commercial ESP
+// click-trackers look like, which is a real signal Gmail's Promotions
+// classifier weighs, so the CTA now points directly at the real URL.
+const exploreVaultUtm = "utm_source=email_invite";
 
-function exploreVaultUrl(trackingId, signUpUrl) {
-  if (!trackingId) return signUpUrl || `${appUrl}/effects?${exploreVaultUtm}`;
-  const to = signUpUrl ? `?to=${encodeURIComponent(signUpUrl)}` : "";
-  return `${appUrl}/api/e/${trackingId}${to}`;
+function exploreVaultUrl(signUpUrl) {
+  const destination = signUpUrl || `${appUrl}/effects`;
+  const separator = destination.includes("?") ? "&" : "?";
+  return `${destination}${separator}${exploreVaultUtm}`;
 }
 
 export const waitlistInviteSubject = "You're invited to Hyperiux Vault";
 
-export function waitlistInviteText({ trackingId, signUpUrl } = {}) {
+export function waitlistInviteText({ signUpUrl } = {}) {
   return `
 Hey, building every interaction from scratch is one way to make a site feel specific - not always the sensible one.
 
-That's why we built Hyperiux Vault: a source-first library of interaction effects and frontend systems for React and Next.js.
-
-You can preview an effect, inspect how it works, then copy the source or add it with the CLI. From there, change the timing, behaviour and implementation until it fits the project rather than looking like something you pulled off the shelf.
-
 Vault also surfaces dependencies and the production details worth checking, including mobile behaviour, reduced motion and performance.
 
-Explore Vault: ${exploreVaultUrl(trackingId, signUpUrl)}
+Explore Vault: ${exploreVaultUrl(signUpUrl)}
 
 Hyperiux Vault
 `;
 }
 
-export function WaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
+export function WaitlistInviteEmail({ signUpUrl } = {}) {
   return (
     <Tailwind>
       <Html>
@@ -96,15 +86,7 @@ export function WaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
         </Head>
         <Preview>Your account is ready to be set up on Hyperiux Vault.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
-          <Container
-            className="mx-auto w-full max-w-150 px-4"
-            style={{
-              backgroundImage: `url(${baseUrl}/emails/email-temp-bg.png)`,
-              backgroundSize: "cover",
-              backgroundPosition: "top center",
-              backgroundRepeat: "no-repeat",
-            }}
-          >
+          <Container className="mx-auto w-full max-w-150 px-4">
             <Section className="px-1 pt-8 pb-6">
               <Img src={`${baseUrl}/emails/hyperiux-email-logo.png`} alt="Hyperiux" width={140} height={17} />
             </Section>
@@ -138,41 +120,6 @@ export function WaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
                 </Text>
 
                 <Text
-                  className="m-0 mt-4 text-[15px] leading-6 text-[#1D1D1D]"
-                  style={{ fontFamily }}
-                >
-                  That&apos;s why we built Hyperiux Vault: a source-first
-                  library of interaction effects and frontend systems for
-                  React and Next.js.
-                </Text>
-
-                <Text
-                  className="m-0 mt-4 text-[15px] leading-6 text-[#1D1D1D]"
-                  style={{ fontFamily }}
-                >
-                  You can preview an effect, inspect how it works, then
-                  copy the source or add it with the CLI. From there,
-                  change the timing, behaviour and implementation until it
-                  fits the project rather than looking like something you
-                  pulled off the shelf.
-                </Text>
-
-                <Section className="mt-8">
-                  <Text
-                    className="m-0 mb-3 text-[18px] font-semibold leading-5 text-[#1D1D1D]"
-                    style={{ fontFamily }}
-                  >
-                    A few Vault effects, in motion.
-                  </Text>
-                  <Img
-                    src={showcaseGifUrl}
-                    alt="A few Hyperiux Vault effects in motion"
-                    width={560}
-                    className="block h-auto w-full rounded-[9px]"
-                  />
-                </Section>
-
-                <Text
                   className="m-0 mt-6 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
@@ -201,7 +148,7 @@ export function WaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
                           }}
                         >
                           <a
-                            href={exploreVaultUrl(trackingId, signUpUrl)}
+                            href={exploreVaultUrl(signUpUrl)}
                             className="vault-btn"
                             style={{
                               display: "inline-block",
@@ -213,7 +160,7 @@ export function WaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
                               textDecoration: "none",
                             }}
                           >
-                            Explore Vault
+                            Accept Invite
                           </a>
                         </td>
                       </tr>
@@ -269,6 +216,6 @@ export function WaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
 
 export default WaitlistInviteEmail;
 
-export function renderWaitlistInviteEmail({ trackingId, signUpUrl } = {}) {
-  return <WaitlistInviteEmail trackingId={trackingId} signUpUrl={signUpUrl} />;
+export function renderWaitlistInviteEmail({ signUpUrl } = {}) {
+  return <WaitlistInviteEmail signUpUrl={signUpUrl} />;
 }

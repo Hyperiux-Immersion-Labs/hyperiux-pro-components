@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 const SCRAMBLE_GLYPHS = "$#&*@!_-./|<>0123456789";
 const PRE_HOLD_MS = 40;
-const REVEAL_DURATION_MS = 400;
+const REVEAL_DURATION_MS = 350;
 const SCRAMBLE_TAIL = 6;
 const FLASH_MS = 90;
 const GLYPH_SWAP_MS = 50;

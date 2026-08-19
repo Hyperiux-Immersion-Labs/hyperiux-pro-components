@@ -281,7 +281,7 @@ export function EffectDetailContent({
 
 
   const showVideo = videoPreviewUrl && !videoError && videoReady;
-  const showRelatedSliderControls = safeRelatedEffects.length > 3;
+  const showRelatedSliderControls = safeRelatedEffects.length > 2;
 
   const pageTitle = safeContent
     ? safeContent.title?.trim()
@@ -463,7 +463,7 @@ export function EffectDetailContent({
 
                     {pageTitle && (
                       <HeadAnim>
-                        <h1 className="w-full max-md:text-[6vw] max-md:font-bold max-[1025px]:w-[90%] max-md:w-[80%] max-[1025px]:mx-auto max-[1025px]:text-center font-semibold leading-[1.05] max-md:leading-[1.3] text-foreground text80">
+                        <h1 className="w-full max-md:text-[6vw] max-md:font-bold max-[1025px]:w-[90%] max-md:w-[80%] max-[1025px]:mx-auto max-[1025px]:text-center font-semibold leading-[1.3]! text-foreground text80">
                           {pageTitle}
                         </h1>
                       </HeadAnim>
