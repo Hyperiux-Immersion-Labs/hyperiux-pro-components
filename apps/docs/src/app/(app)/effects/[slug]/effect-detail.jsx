@@ -281,7 +281,7 @@ export function EffectDetailContent({
 
 
   const showVideo = videoPreviewUrl && !videoError && videoReady;
-  const showRelatedSliderControls = safeRelatedEffects.length > 3;
+  const showRelatedSliderControls = safeRelatedEffects.length > 2;
 
   const pageTitle = safeContent
     ? safeContent.title?.trim()

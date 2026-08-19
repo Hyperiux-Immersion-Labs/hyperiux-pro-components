@@ -21,6 +21,16 @@ export async function getUserPlan(userId) {
     return "free";
   }
 
+  // Was previously only consulted after a Supabase error - every single
+  // call re-queried Supabase even for a user who'd been checked seconds
+  // ago on the previous page. Checking it first turns this into a real
+  // cache (one Supabase round trip per user per TTL window) instead of a
+  // fallback that only ever helped after something had already gone wrong.
+  const freshCached = planCache.get(userId);
+  if (freshCached && freshCached.expiresAt > Date.now()) {
+    return freshCached.plan;
+  }
+
   const { data, error } = await supabase
     .from("subscriptions")
     .select("plan,status,current_period_end")
