@@ -1,6 +1,6 @@
 {
   "name": "video-player",
-  "version": "1.2.1",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Custom Video Player",
   "description": "Minimal cinematic video player with timed controls, scrubbing, and mute state",
@@ -28,21 +28,15 @@
   ],
   "changelog": [
     {
-      "version": "1.2.1",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed public videoSrc/poster/src media controls and duplicate muted/showControls entries; merged behavior and controls into a single working controls group.",
+      "summary": "Reworked the props API to match the real component (videoSrc, poster, autoPlay, controls) and replaced the continuous rAF progress loop with native timeupdate events.",
       "breaking": false
     },
     {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added videoSrc, poster, autoPlay, startMuted, and showCloseButton as public props with a working remixer panel. The originally suggested prop names (src, muted, showControls) didn't match the real component API, so they were renamed to match what VideoPlayerComp actually accepts.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
+      "version": "1.0.0",
       "date": "2026-07-23",
-      "summary": "Removed the continuous rAF progress loop (~60 setState/sec while playing); the progress bar now rides the native timeupdate even.ts with a linear CSS transition for smoothness, cut during scrubbing for 1:1 pointer tracking.",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

@@ -12,18 +12,18 @@
   "exportName": "PortfolioSlider3D",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.0.2",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Unmount cleanup now disposes each plane's geometry, shader material, and texture (renderer.dispose() alone leaked them), fixing a GPU memory leak on remount.",
+      "summary": "Added a reduced-motion notice and fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
       "breaking": false
     },
     {
-      "version": "1.0.1",
-      "date": "2026-07-22",
-      "summary": "Added a reduced-motion notice: this continuous scroll-driven 3D carousel is the navigation itself and can't be reduced without losing the ability to browse, so it now surfaces that instead of silently ignoring the preference.",
+      "version": "1.0.0",
+      "date": "2026-07-21",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

@@ -11,30 +11,18 @@
   "exportName": "DepthCardStack",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.2",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.2",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed the rotation prop and matched the headline color to the supporting line.",
+      "summary": "Added reduced-motion support, reworked the props API to match the real per-slot layout system (rotation, duration, mouseInteraction, bgVisible, lerp, smoothness), and fixed styling.",
       "breaking": false
     },
     {
-      "version": "1.2.1",
-      "date": "2026-07-30",
-      "summary": "Removed content, activeIndex, and depth controls; added working rotation, duration, mouseInteraction, bgVisible, lerp, and smoothness props.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added cards as a public prop with a working remixer panel. The originally suggested activeIndex/depth/rotation/duration props don't exist here - card positions come from a fixed hand-tuned per-slot table (getSlotProps), not a linear depth/rotation formula - so they were dropped rather than shipping non-functional controls.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
+      "version": "1.0.0",
       "date": "2026-07-21",
-      "summary": "Disable pointer tilt and texture reveal under reduced motion",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

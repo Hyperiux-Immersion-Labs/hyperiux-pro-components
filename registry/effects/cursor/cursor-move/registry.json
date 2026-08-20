@@ -1,17 +1,11 @@
 {
   "name": "cursor-move",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Mousemove handling is now rAF-throttled: bursts of events coalesce into one rect read and one state update per frame instead of re-rendering per raw event.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support and rAF-throttled mousemove handling to cut redundant re-renders.",
       "breaking": false
     },
     {
@@ -43,14 +37,22 @@
       "default": "hello!",
       "demoDefault": "Hello!",
       "description": "Text affected by cursor movement.",
-      "remixer": { "control": "text", "group": "content", "groupTitle": "Content" }
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
     },
     {
       "name": "showCrosshair",
       "type": "boolean",
       "default": true,
       "description": "Shows the cursor-following crosshair.",
-      "remixer": { "control": "checkbox", "group": "crosshair", "groupTitle": "Crosshair" }
+      "remixer": {
+        "control": "checkbox",
+        "group": "crosshair",
+        "groupTitle": "Crosshair"
+      }
     },
     {
       "name": "crosshairVariant",
@@ -62,9 +64,18 @@
         "group": "crosshair",
         "groupTitle": "Crosshair",
         "options": [
-          { "label": "Solid", "value": "solid" },
-          { "label": "Dotted", "value": "dotted" },
-          { "label": "Dashed", "value": "dashed" }
+          {
+            "label": "Solid",
+            "value": "solid"
+          },
+          {
+            "label": "Dotted",
+            "value": "dotted"
+          },
+          {
+            "label": "Dashed",
+            "value": "dashed"
+          }
         ]
       }
     },
@@ -73,7 +84,11 @@
       "type": "boolean",
       "default": true,
       "description": "Shows the small cursor dot.",
-      "remixer": { "control": "checkbox", "group": "crosshair", "groupTitle": "Crosshair" }
+      "remixer": {
+        "control": "checkbox",
+        "group": "crosshair",
+        "groupTitle": "Crosshair"
+      }
     },
     {
       "name": "lerp",
@@ -94,7 +109,11 @@
       "type": "boolean",
       "default": true,
       "description": "Shows the live x/y coordinate readout.",
-      "remixer": { "control": "checkbox", "group": "content", "groupTitle": "Content" }
+      "remixer": {
+        "control": "checkbox",
+        "group": "content",
+        "groupTitle": "Content"
+      }
     }
   ],
   "remixer": {
@@ -104,7 +123,9 @@
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "copyCode": { "includeOnlyPublicProps": true }
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   },
   "files": [
     {

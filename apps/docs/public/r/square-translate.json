@@ -10,12 +10,18 @@
   "exportName": "SquareTranslate",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.0",
+      "version": "1.0.1",
       "date": "2026-07-21",
       "summary": "Added prefers-reduced-motion support: only the item currently aligned with the cube shifts (other items stay at their initial position instead of rippling), and the shift moves only the row's text, not its border",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

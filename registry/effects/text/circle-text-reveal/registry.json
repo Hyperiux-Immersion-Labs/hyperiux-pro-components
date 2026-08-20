@@ -1,17 +1,11 @@
 {
   "name": "circle-text-reveal",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed visible and revealed text content from the public/remixer API and added working lerp, smoothness, and circleSize controls.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added reduced-motion support for accessible lower-motion pointer reveal.",
+      "summary": "Added reduced-motion support and reworked the props API to working lerp/smoothness/circleSize controls.",
       "breaking": false
     },
     {

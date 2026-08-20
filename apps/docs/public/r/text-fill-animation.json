@@ -17,6 +17,12 @@
       "date": "2026-07-30",
       "summary": "Removed text from the remixer controls while keeping the built-in heading content and visual controls.",
       "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-29",
+      "summary": "Initial release",
+      "breaking": false
     }
   ],
   "props": [

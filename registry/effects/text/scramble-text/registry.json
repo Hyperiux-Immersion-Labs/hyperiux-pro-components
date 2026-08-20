@@ -1,23 +1,11 @@
 {
   "name": "scramble-text",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-31",
-      "summary": "Removed the lowercase option from charType — scrambling now defaults to uppercase, with mixed-case and numbers still available.",
-      "breaking": true
-    },
-    {
-      "version": "1.1.1",
-      "date": "2026-07-30",
-      "summary": "Changed the default text color to black and adjusted the scroll trigger start so the built-in heading is visible and animates in the remixer.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-30",
-      "summary": "Removed text from the remixer API and added working vw text size, text color, duration, and stagger controls.",
+      "summary": "Reworked the props API (text size, color, duration, stagger, charType) and fixed default text color and scroll-trigger start so the built-in heading is visible.",
       "breaking": false
     },
     {

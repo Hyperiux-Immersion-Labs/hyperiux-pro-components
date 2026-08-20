@@ -1,35 +1,11 @@
 {
   "name": "cards-runway",
-  "version": "1.2.2",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.2",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed cardWidth, pauseOnHover, and start from the public API. The runway now uses a constant card width and fixed ScrollTrigger start/end while keeping speed, gap, and perspective controls.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.1",
-      "date": "2026-07-30",
-      "summary": "Removed data/cards content props, wired speed, gap, perspective, and pauseOnHover, and changed desktop travel to measure the rendered card width so wide cards scroll fully.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added data, accentColor, cardColor, and cardWidth as public props with a working remixer panel. The originally suggested props (cards, speed, gap, perspective, pauseOnHover) didn't match this component's real API, so they were replaced with the props CardsRunway actually accepts.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.1",
-      "date": "2026-07-23",
-      "summary": "Desktop pin/scrub threshold raised from >1024px to >=1280px to match the max-[1025px] CSS breakpoint; previously the 1025-1279px range ran the desktop timeline against the collapsed mobile layout.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "Added prefers-reduced-motion support: cards render in place instead of animating up from a y offset",
+      "summary": "Reworked the public API to match the real component (data, accentColor, cardColor, speed, gap, perspective), added reduced-motion support, and fixed desktop scroll-trigger/card-width sizing bugs.",
       "breaking": false
     },
     {

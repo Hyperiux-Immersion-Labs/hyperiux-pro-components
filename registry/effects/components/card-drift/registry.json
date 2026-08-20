@@ -1,6 +1,6 @@
 {
   "name": "card-drift",
-  "version": "1.2.2",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Card Drift",
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
@@ -28,27 +28,15 @@
   ],
   "changelog": [
     {
-      "version": "1.2.2",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Stopped rebuilding the random card layout when remixer values change; rotation now updates individual cards only.",
+      "summary": "Added a reduced-motion notice, reworked the props API to real theme/physics controls (bgColor, cardBg, driftAmount, rotationAmount, smoothness, lerp), and stopped rebuilding the layout on every remixer change.",
       "breaking": false
     },
     {
-      "version": "1.2.1",
-      "date": "2026-07-30",
-      "summary": "Removed data/cards and shadowOpacity from the public prop surface, replaced Tailwind color class props with color-picker props, and added working driftAmount, rotationAmount, smoothness, and lerp controls.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added data, bgColor, bgTextColor, cardBg, cardTextColor, and barBg as public props with a working remixer panel. The originally suggested props (driftAmount, rotationAmount, duration, shadowOpacity) described ambient hover drift, but this component is a drag-and-throw physics grid with fixed jitter/rotation constants, so they were replaced with the content/theme props CardDriftComp actually accepts.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
+      "version": "1.0.0",
       "date": "2026-07-24",
-      "summary": "Added a prefers-reduced-motion notice explaining that dragging stays fully interactive since it is a direct, user-initiated action.",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

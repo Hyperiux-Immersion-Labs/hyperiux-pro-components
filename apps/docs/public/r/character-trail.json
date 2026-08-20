@@ -8,18 +8,12 @@
   "exportName": "CharacterTrail",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.1",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Replaced Next.ts-only style-jsx tag with a plain global style tag so the component works in any React setup without the styled-jsx compiler.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support and replaced a Next.js-only style tag with a plain global style tag for framework portability.",
       "breaking": false
     },
     {

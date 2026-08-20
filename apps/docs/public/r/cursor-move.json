@@ -8,18 +8,12 @@
   "exportName": "CursorMove",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Mousemove handling is now rAF-throttled: bursts of events coalesce into one rect read and one state update per frame instead of re-rendering per raw event.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support and rAF-throttled mousemove handling to cut redundant re-renders.",
       "breaking": false
     },
     {

@@ -1,17 +1,11 @@
 {
   "name": "number-counter",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed value, prefix, and suffix from the public/remixer API. Added duration and stagger controls that apply across all three counter variants.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added reduced-motion support with static counter rendering and disabled rolling controls.",
+      "summary": "Added reduced-motion support and reworked the props API to working duration/stagger controls across all counter variants.",
       "breaking": false
     },
     {

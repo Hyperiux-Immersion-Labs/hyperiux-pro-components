@@ -10,24 +10,12 @@
   "exportName": "PhantomImageTrail",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.3.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.3.0",
+      "version": "1.0.1",
       "date": "2026-07-24",
-      "summary": "Reduced-motion notice restyled: solid white background and solid black text instead of a translucent blurred panel, for consistent legibility.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-23",
-      "summary": "useMouse no longer calls setState every animation frame; movement values moved to refs, eliminating 60-120 wasted re-renders/sec. Returned scalar fields are now non-reactive snapshots - use the refs for live values.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support, restyled the reduced-motion notice, and removed per-frame setState calls from the mouse tracker to cut wasted re-renders.",
       "breaking": false
     },
     {

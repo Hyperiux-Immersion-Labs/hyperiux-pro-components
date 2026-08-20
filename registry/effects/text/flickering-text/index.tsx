@@ -31,8 +31,6 @@ const GLOW_LAYERS = [
 const DEFAULT_LINES = ["FLICKERING", "TEXT"];
 const DEFAULT_RANDOM_SEED = 0;
 const DEFAULT_GLOW_THRESHOLD = 0.6;
-const DEFAULT_BACKGROUND_IMAGE =
-   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-28.png";
 
 
 interface FlickeringTextProps {
@@ -108,7 +106,6 @@ const FlickeringText = ({
   glowRadius = 1,
 }: FlickeringTextProps) => {
   const bloomColor = glowColor ?? textColor;
-  const hasBackgroundImage = Boolean(DEFAULT_BACKGROUND_IMAGE);
   const containerRef = useRef<HTMLDivElement>(null);
   const charRefs = useRef<HTMLSpanElement[]>([]);
   const lineRefs = useRef<(HTMLParagraphElement | null)[]>([]);
@@ -212,13 +209,12 @@ const FlickeringText = ({
   return (
     <section
       className={`relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 sm:px-6 ${className}`}
-      style={{ backgroundColor: hasBackgroundImage ? undefined : backgroundColor }}
+      style={{ backgroundColor: backgroundColor }}
     >
       <div
         aria-hidden="true"
         className="absolute inset-0"
         style={{
-          backgroundImage: `url(${DEFAULT_BACKGROUND_IMAGE})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
@@ -226,7 +222,7 @@ const FlickeringText = ({
       />
       <div
         ref={containerRef}
-        className="relative w-full -translate-y-32 max-w-[1400px]"
+        className="relative w-full  max-w-[1400px]"
         aria-label={DEFAULT_LINES.join(" ")}
       >
         {lines.map((line, lineIndex) => (

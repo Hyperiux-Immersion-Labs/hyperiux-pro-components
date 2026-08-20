@@ -1,6 +1,6 @@
 {
   "name": "interactive-list-preview",
-  "version": "1.2.1",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Interactive List Preview",
   "description": "Hover-driven table list that reveals clipped images with a sliding highlight bar and mix-blend-mode difference inversion effect",
@@ -29,27 +29,15 @@
   ],
   "changelog": [
     {
-      "version": "1.2.1",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed the public items/previewPlacement controls and replaced the stale control set with working imageSize, duration, smoothness, and lerp props.",
+      "summary": "Added reduced-motion support, renamed the component file to match production conventions, and reworked the props API to working imageSize/duration/smoothness/lerp controls.",
       "breaking": false
     },
     {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added items as a public prop with a working remixer panel. The originally suggested previewPlacement/activeIndex/accentColor/duration props don't exist - the preview image position, colors, and timings are fixed in InteractiveListPreviewComp - so they were dropped rather than shipping non-functional controls.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.1",
-      "date": "2026-07-23",
-      "summary": "Renamed helper ListHover.jsx to InteractiveListPreviewComp.jsx (default export) to match the production naming convention and eliminate registry/docs mirror drift.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
+      "version": "1.0.0",
       "date": "2026-07-21",
-      "summary": "Under reduced motion, single-image opacity fade and no cursor parallax",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

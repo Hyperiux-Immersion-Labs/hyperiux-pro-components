@@ -1,23 +1,11 @@
 {
   "name": "animated-toggle",
-  "version": "1.3.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.3.0",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed defaultChecked — all three toggles now always start unchecked.",
-      "breaking": true
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added defaultChecked, size, activeColor, inactiveColor, and duration props so the toggles can be restyled without editing source",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added prefers-reduced-motion support: toggle icon transitions respect the user's reduced-motion preference",
+      "summary": "Added reduced-motion support and exposed working styling props (size, colors, duration), removing the non-functional defaultChecked prop.",
       "breaking": false
     },
     {

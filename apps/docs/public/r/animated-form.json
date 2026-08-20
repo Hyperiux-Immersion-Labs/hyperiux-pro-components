@@ -10,24 +10,18 @@
   "exportName": "AnimatedForm",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.1",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed fields, submitLabel, successMessage, and validateOnBlur from the public/remixer API. The built-in form fields now always render, while color, border radius, and duration props customize the form controls.",
+      "summary": "Fixed phone validation for international numbers and reworked the props API to real color/border-radius/duration controls.",
       "breaking": false
     },
     {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added submitLabel and successMessage as public props with a working remixer panel. fields is now also a real prop (previously hardcoded), but is left undocumented for the live panel since its default value embeds a JSX checkbox label (Terms link) that isn't JSON-editable. The originally suggested accentColor/validateOnBlur props don't exist anywhere in this form's field components, so they were dropped rather than shipping non-functional controls.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
+      "version": "1.0.0",
       "date": "2026-07-23",
-      "summary": "Phone validation now uses per-country national-number length ranges (with trunk-zero tolerance) instead of a flat 10-digit rule that rejected all valid numbers from Ireland, Australia, France, the UAE and Singapore.",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

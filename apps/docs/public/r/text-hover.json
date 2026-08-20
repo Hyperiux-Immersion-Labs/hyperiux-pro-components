@@ -10,24 +10,12 @@
   "exportName": "TextHover",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.1",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Set the default hover color to white and removed expandAmount from the public/remixer API.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-30",
-      "summary": "Removed items from the public/remixer API, centered the hover frame, and wired textColor, hoverColor, expandAmount, and duration into the hover effect.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added reduced-motion support for accessible lower-motion hover interactions.",
+      "summary": "Added reduced-motion support and reworked the props API (textColor, hoverColor, duration), fixing the default hover color and centering the hover frame.",
       "breaking": false
     },
     {

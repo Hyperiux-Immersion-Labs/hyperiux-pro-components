@@ -1,6 +1,6 @@
 {
   "name": "testimonial-swiper",
-  "version": "1.2.3",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Testimonial Swiper",
   "description": "Editorial testimonial slider with split-text quote transitions and directional controls",
@@ -33,33 +33,15 @@
   ],
   "changelog": [
     {
-      "version": "1.2.3",
+      "version": "1.0.1",
       "date": "2026-07-31",
-      "summary": "Testimonial count, quote mark, and navigation buttons now default to black instead of following accentColor, which made them orange by default.",
+      "summary": "Reworked the props API (testimonials, bgColor, accentColor, autoplay, navigation, imageSize), added reduced-motion support, and fixed default color and demo layout issues.",
       "breaking": false
     },
     {
-      "version": "1.2.2",
-      "date": "2026-07-30",
-      "summary": "Added top padding so the testimonial count and navigation sit below the demo header, and added an imageSize prop for testimonial images.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.1",
-      "date": "2026-07-30",
-      "summary": "Removed the testimonials content prop from the public/remixer API and wired bgColor, accentColor, autoplay, autoplayDelay, and showNavigation into the testimonial slider.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added testimonials and bgColor as public props with a working remixer panel. The originally suggested props (autoplay, autoplayDelay, accentColor, showNavigation) didn't match this component's real API, so they were replaced with the props TestimonialComp actually accepts.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
+      "version": "1.0.0",
       "date": "2026-07-21",
-      "summary": "Under reduced motion, use opacity fade instead of SplitText slides",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

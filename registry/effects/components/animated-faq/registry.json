@@ -1,6 +1,6 @@
 {
   "name": "animated-faq",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Animated FAQ",
   "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
@@ -24,21 +24,36 @@
       "type": "boolean",
       "default": false,
       "description": "Lets more than one FAQ answer stay open at once.",
-      "remixer": { "control": "checkbox", "group": "behavior", "groupTitle": "Behavior" }
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
     },
     {
       "name": "duration",
       "type": "number",
       "default": 0.5,
       "description": "Open and close animation duration.",
-      "remixer": { "control": "range", "group": "behavior", "groupTitle": "Behavior", "min": 0.1, "max": 1.5, "step": 0.05 }
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 0.1,
+        "max": 1.5,
+        "step": 0.05
+      }
     },
     {
       "name": "showIcon",
       "type": "boolean",
       "default": true,
       "description": "Shows or hides the FAQ trigger icon.",
-      "remixer": { "control": "checkbox", "group": "icon", "groupTitle": "Icon" }
+      "remixer": {
+        "control": "checkbox",
+        "group": "icon",
+        "groupTitle": "Icon"
+      }
     },
     {
       "name": "iconPosition",
@@ -50,8 +65,14 @@
         "group": "icon",
         "groupTitle": "Icon",
         "options": [
-          { "value": "right", "label": "Right" },
-          { "value": "left", "label": "Left" }
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          }
         ]
       }
     },
@@ -65,8 +86,14 @@
         "group": "icon",
         "groupTitle": "Icon",
         "options": [
-          { "value": "rotate", "label": "Rotate Down" },
-          { "value": "rotate-left-down", "label": "Rotate Right" }
+          {
+            "value": "rotate",
+            "label": "Rotate Down"
+          },
+          {
+            "value": "rotate-left-down",
+            "label": "Rotate Right"
+          }
         ]
       }
     }
@@ -78,7 +105,9 @@
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "copyCode": { "includeOnlyPublicProps": true }
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   },
   "files": [
     {
@@ -92,15 +121,15 @@
   ],
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-28",
-      "summary": "Documented existing prefers-reduced-motion support : the accordion open/close tween duration is set to 0 under reduced motion instead of animating.",
+      "summary": "Synced the registry copy with production (iconMode prop, array-based controlled-mode detection, height-based open/close animation) and documented its existing reduced-motion behavior.",
       "breaking": false
     },
     {
-      "version": "1.1.0",
-      "date": "2026-07-23",
-      "summary": "Registry copy synced with the production component the demo renders: adds the iconMode prop (rotate / rotate-left-down with ChevronRight), simpler array-based controlled-mode detection, and the height-based open/close animation engine.",
+      "version": "1.0.0",
+      "date": "2026-07-22",
+      "summary": "Initial release",
       "breaking": false
     }
   ]
