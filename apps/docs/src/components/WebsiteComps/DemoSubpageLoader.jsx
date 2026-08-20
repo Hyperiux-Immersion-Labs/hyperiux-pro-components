@@ -66,6 +66,7 @@ const EXCLUDED_PATHS = new Set([
   "/demo/rolling-text",
   "/demo/smooth-slider",
   "/demo/dot-transition",
+  "/demo/mix-slider",
   
 ]);
 
