@@ -42,6 +42,7 @@ const legacyLauncherLayoutTokens = new Set([
   "top-25!",
   "right-0!",
   "top-[132px]!",
+  "h-[calc(100%-102px)]!",
   "h-[calc(100%-132px)]!",
   "w-[344px]!",
 ]);

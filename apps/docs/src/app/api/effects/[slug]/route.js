@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { getEffectMetadata, buildEffectDeliveryPayload } from "@/lib/registry";
 import { getCliTokenFromRequest } from "@/lib/cli-auth";
 import { getEffectAccessDecision } from "@/lib/effect-access";
+import { getInstallLimitDecision } from "@/lib/install-limit";
+import { getRequestIp } from "@/lib/request-ip";
+import { secondsUntilNextUtcMidnight } from "@/lib/utc-day";
 
 // Legacy web-facing twin of /api/cli/effects/[effectSlug] - same
 // CLI-token-based auth, same content source. Previously fetched Pro source
@@ -54,5 +57,48 @@ export async function GET(req, { params }) {
 
   const payload = buildEffectDeliveryPayload(slug);
 
-  return NextResponse.json({ ...payload, tier: effectTier });
+  // Stage 1 (Installation-SyncUp.md): same shadow-mode logging as the CLI
+  // twin route - never affects what's returned below. Also shared by the MCP
+  // server, same mcp-version-header disambiguation as the CLI twin route.
+  const mcpVersion = req.headers.get("x-hyperiux-mcp-version") || undefined;
+
+  const installDecision = await getInstallLimitDecision({
+    effectSlug: slug,
+    effectTier,
+    source: mcpVersion ? "mcp" : "cli",
+    cliToken,
+    deviceId: req.headers.get("x-hyperiux-device-id") || undefined,
+    ip: getRequestIp(req),
+    isDependency: new URL(req.url).searchParams.get("dependency") === "1",
+    cliVersion: req.headers.get("x-hyperiux-cli-version") || undefined,
+    mcpVersion,
+    userAgent: req.headers.get("user-agent") || undefined,
+  });
+
+  // Stage 3: only takes effect once INSTALL_LIMIT_ENFORCE=true - see the
+  // identical note in the CLI twin route.
+  if (!installDecision.allowed) {
+    const retryAfter = secondsUntilNextUtcMidnight();
+
+    return NextResponse.json(
+      {
+        error: `Daily install limit reached (${installDecision.limit}/day). Try again in ${Math.ceil(retryAfter / 3600)}h, or upgrade to Pro for a higher limit.`,
+        reason: installDecision.reason,
+        rateLimited: true,
+        limit: installDecision.limit,
+        remaining: installDecision.remaining,
+        retryAfter,
+      },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } }
+    );
+  }
+
+  // See the identical note in the CLI twin route: surfaced on success too,
+  // not just denials, so callers can show "N of M left today".
+  return NextResponse.json({
+    ...payload,
+    tier: effectTier,
+    installLimit: installDecision.limit,
+    installRemaining: installDecision.remaining,
+  });
 }

@@ -180,7 +180,7 @@ function getSafeEffectHref(effect) {
 
 function SearchResultIcon({ src, alt = "" }) {
   return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-md border border-neutral-800/60 bg-neutral-900 text-neutral-800 transition-colors group-hover:border-neutral-600">
+    <div className="flex h-10 w-10 items-center justify-center  border border-neutral-800/60 bg-neutral-900 text-neutral-800 transition-colors group-hover:border-neutral-600">
       <Image
         src={src || FALLBACK_CATEGORY_ICON}
         alt={alt}
@@ -222,7 +222,7 @@ export function SearchBar({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-neutral-200 bg-neutral-100 py-3.5 pl-12 pr-4 text-neutral-900 transition-all placeholder:text-neutral-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-neutral-900"
+        className="w-full  border border-neutral-200 bg-neutral-100 py-3.5 pl-12 pr-4 text-neutral-900 transition-all placeholder:text-neutral-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-neutral-900"
       />
 
       {totalCount > 0 && (
@@ -449,7 +449,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
         onClick={closeSearch}
       />
 
-      <div className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden rounded-lg border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-xl max-[1025px]:h-140 max-md:h-113">
+      <div className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden  border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-xl max-[1025px]:h-140 max-md:h-113">
         <div className="flex items-center gap-3 border-b border-neutral-800/50 bg-black/20 px-4 py-4">
           <svg
             className="h-5 w-5 text-neutral-500"
@@ -474,7 +474,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
             className="flex-1 bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none sm:text-lg"
           />
 
-          <kbd className="hidden h-8 items-center justify-center rounded border border-neutral-800 bg-neutral-900 px-2 text-xs font-medium text-neutral-400 sm:inline-flex">
+          <kbd className="hidden h-8 items-center justify-center  border border-neutral-800 bg-neutral-900 px-2 text-xs font-medium text-neutral-400 sm:inline-flex">
             ESC
           </kbd>
 
@@ -482,7 +482,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
             type="button"
             aria-label="Close search"
             onClick={closeSearch}
-            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded border border-neutral-800 bg-neutral-900 text-neutral-400 transition-colors hover:border-neutral-700 hover:text-white"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center  border border-neutral-800 bg-neutral-900 text-neutral-400 transition-colors hover:border-neutral-700 hover:text-white"
           >
             <X className="h-4 w-4" />
           </button>
@@ -526,7 +526,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
                     <button
                       key={item.href}
                       onClick={() => handleSelect({ ...item, type: "docs" })}
-                      className="group relative flex w-full cursor-pointer items-center gap-4 rounded-md px-3 py-3 text-left transition-colors duration-200 hover:bg-neutral-800/50"
+                      className="group relative flex w-full cursor-pointer items-center gap-4 px-3 py-3 text-left transition-colors duration-200 hover:bg-neutral-800/50"
                     >
                       <SearchResultIcon src={item.icon} alt={item.title} />
 
@@ -564,7 +564,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
                     <button
                       key={effect.name || getSafeEffectHref(effect)}
                       onClick={() => handleEffectSelect(effect)}
-                      className="group relative flex w-full cursor-pointer items-center gap-4 rounded-md px-3 py-3 text-left transition-colors duration-200 hover:bg-neutral-800/50"
+                      className="group relative flex w-full cursor-pointer items-center gap-4  px-3 py-3 text-left transition-colors duration-200 hover:bg-neutral-800/50"
                     >
                       <SearchResultIcon
                         src={categoryIcon}

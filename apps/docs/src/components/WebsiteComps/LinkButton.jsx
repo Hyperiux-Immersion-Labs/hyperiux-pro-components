@@ -25,6 +25,7 @@ export default function LinkButton({
   text,
   children,
   tilted = true,
+  
   target,
   className = "",
   showArrow = false,
@@ -33,7 +34,7 @@ export default function LinkButton({
   shimmerColor = "#ffffff",
   onClick,
   id,
-  underline = true,
+  underline = 'w-full',
   ...props
 }) {
   const underlineRef = useRef(null);
@@ -90,7 +91,7 @@ export default function LinkButton({
     if (!els.length) return;
     if (paused) {
       shimmerTl.current?.pause();
-      gsap.set(els, { color: shimmerColor, WebkitTextFillColor: shimmerColor });
+      gsap.set(els, { color: "currentColor", WebkitTextFillColor: "currentColor" });
     } else {
       gsap.set(els, { color: "transparent", WebkitTextFillColor: "transparent" });
       shimmerTl.current?.resume();
@@ -137,19 +138,27 @@ export default function LinkButton({
       onClick={handleClick}
     >
       <div className="flex items-center gap-[0.5vw] max-[1025px]:gap-2 w-fit cursor-pointer">
-        <span className="relative overflow-hidden inline-flex h-[1.4em]">
-          <span
-            ref={labelRef}
-            className="inline-block transition-transform duration-300 group-hover:-translate-y-full"
-          >
-            {label}
+        <span className="relative">
+          <span className="relative overflow-hidden inline-flex h-[1.4em]">
+            <span
+              ref={labelRef}
+              className="inline-block transition-transform duration-300 group-hover:-translate-y-full"
+            >
+              {label}
+            </span>
+            <span
+              ref={labelShadowRef}
+              className="inline-block absolute left-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0"
+            >
+              {label}
+            </span>
           </span>
-          <span
-            ref={labelShadowRef}
-            className="inline-block absolute left-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0"
-          >
-            {label}
-          </span>
+          {underline ? (
+            <div
+              ref={underlineRef}
+              className="absolute left-0 top-full mt-1 h-px w-full bg-current"
+            />
+          ) : null}
         </span>
 
         {showArrow && (
@@ -170,14 +179,6 @@ export default function LinkButton({
           </div>
         )}
       </div>
-      {
-        underline && (
-          <div
-            ref={underlineRef}
-            className="w-full absolute left-0 bottom-0 h-px bg-current"
-          />
-        )
-      }
     </Link>
   );
 }

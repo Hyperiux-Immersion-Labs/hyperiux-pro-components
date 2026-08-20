@@ -60,18 +60,18 @@ export default function ProfileDropdown({
           alt={user.fullName || "User"}
           width={40}
           height={40}
-          className="w-10 h-10 rounded-full border border-white/10 object-cover"
+          className="size-[3.4vw] border border-white/10 object-cover"
         />
 
         {plan === "pro" && (
-          <span className="px-2 py-1 text-[0.7vw] rounded-full bg-white text-black font-medium absolute -top-2 -right-5">
+          <span className="px-2 py-1 text-[0.5vw] bg-white text-black font-medium absolute -top-1 -right-3">
             PRO
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-14 w-72 rounded-md bg-[#272727] backdrop-blur-xl overflow-hidden z-50">
+        <div className="absolute right-0 top-14 w-72  bg-[#272727] backdrop-blur-xl overflow-hidden z-50">
           <div className="p-5 border-b border-white/10">
             <p className="text-white font-medium">
               {user.fullName}
@@ -85,15 +85,23 @@ export default function ProfileDropdown({
           <div className="p-2">
             <Link
               href="/dashboard"
-              className="block px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+              className="group relative isolate block px-4 py-3 transition"
             >
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#0e0e0e] transition-transform duration-300 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
+              />
               Dashboard
             </Link>
 
             <Link
               href="/dashboard/saved"
-              className="flex items-center justify-between px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+              className="group relative isolate flex items-center justify-between px-4 py-3 transition"
             >
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#0e0e0e] transition-transform duration-300 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
+              />
               <span>Saved Effects</span>
 
               <span className="text-white/50">
@@ -104,8 +112,12 @@ export default function ProfileDropdown({
             {!isAdmin && (
               <Link
                 href="/dashboard/usage"
-                className="flex items-center justify-between px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+                className="group relative isolate flex items-center justify-between px-4 py-3 transition"
               >
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#0e0e0e] transition-transform duration-300 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
+                />
                 <span>Usage</span>
 
                 <span className="text-white/50">
@@ -116,12 +128,14 @@ export default function ProfileDropdown({
 
             <Link
               href="/dashboard/settings"
-              className="block px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition"
+              className="group relative isolate block px-4 py-3 transition"
             >
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#0e0e0e] transition-transform duration-300 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
+              />
               Settings
             </Link>
-
-            
 
             <div className="my-2 border-t border-white/10 w-[110%] translate-x-[-5%]" />
 
@@ -129,8 +143,12 @@ export default function ProfileDropdown({
               onClick={() => signOut(() => {
                 window.location.href = "/effects";
               })}
-              className="w-full text-left px-4 py-3 rounded-md hover:bg-[#0e0e0e] transition text-red-400"
+              className="group relative isolate w-full text-left px-4 py-3 transition text-red-400"
             >
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#0e0e0e] transition-transform duration-300 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
+              />
               Sign Out
             </button>
           </div>

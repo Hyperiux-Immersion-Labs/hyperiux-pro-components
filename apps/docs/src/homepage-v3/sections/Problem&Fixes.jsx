@@ -32,16 +32,16 @@ const cards = [
   {
     title: 'Reduced-motion',
     description: 'Respects user preferences and accessibility out of the box.',
-    label: 'Inaccessible',
+    label: 'Device Motion Off',
   },
   {
     title: 'Performance budget',
     description: 'No unexplained CLS, no jank, no dropped frames as standard.',
-    label: 'Jank, Drain & Layout Shift',
+    label: 'Jank & Layout Shift',
   },
   {
     title: 'Dependency clarity',
-    description: 'Dependency clarity. Every effect pulls in only what it actually needs.',
+    description: "Dependency honest. Every effect pulls in only what's needed.",
     label: 'Hidden Bundle Size',
   },
   {
@@ -165,7 +165,7 @@ export default function ProblemFixes() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-200 mt-[-4vw] w-full overflow-hidden px-[3vw] pb-[10%] text-white max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
+      className="relative z-200 mt-[12vw] max-md:mt-[-8vw] w-full overflow-hidden px-[3vw] pb-[10%] text-white max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-24 max-sm:px-5 max-sm:py-20"
     >
       <div className="mx-auto relative z-200 flex w-full flex-col items-center">
         <div className="w-full text-center">
@@ -173,8 +173,8 @@ export default function ProblemFixes() {
             Good Motion is{' '}
             <span className="gradient-text-animate">Harder</span> Than It Looks
           </LineReveal>
-          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[3.5vw] max-w-[65vw] leading-[1.55] text-white max-[1025px]:mt-[4vw] max-[1025px]:max-w-[85vw] max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
-          Anyone can add a fade. What's hard is everything around it. Get timing, restraint, or performance wrong, and the moment meant to impress becomes the reason the site feels worse. Most teams see that risk and drop their ambitions to play it safe. And your interface ends up looking like everyone else's. Vault is engineered around that discipline by default, not as an afterthought.
+          <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[3.5vw] max-w-[60vw] leading-[1.55] text-white max-[1025px]:mt-[4vw] max-[1025px]:max-w-[85vw] max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
+          Anyone can add a fade. What's hard is everything around it. Get timing, restraint, or performance wrong, and the moment meant to impress becomes the reason the site feels worse. Most teams see that risk and drop their ambitions to play it safe. And your interface ends up looking like everyone else's.  Vault is engineered around that discipline by default, not as an afterthought.
           </SplitLine>
         </div>
 
@@ -213,7 +213,7 @@ export default function ProblemFixes() {
                     />
                   </div>
                 </div>
-                <p className="text-light-grey font-mono text18 max-[1025px]:w-full max-[1025px]:flex-none max-[1025px]:px-0 max-md:text-[3vw]! max-md:pr-0! min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-full max-sm:flex-none max-sm:px-0">
+                <p className="text-light-grey font-mono text18 max-[1025px]:w-full max-[1025px]:flex-none max-[1025px]:px-0 max-md:text-[3vw]! max-md:pr-0! min-w-0 flex-1 px-[2vw] text-left [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-sm:w-[75%] max-sm:flex-none max-sm:px-0">
                   <ScrambleTextV3
                     text={item.description}
                     active={index <= activeIndex}
@@ -222,11 +222,11 @@ export default function ProblemFixes() {
                 </p>
               </div>
 
-              <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-[1025px]:w-auto max-[1025px]:max-w-full justify-end max-[1025px]:gap-[2vw] max-md:w-[30%] max-sm:w-fit max-sm:gap-0! max-md:max-w-[35%]">
+              <div className="flex w-[13vw] shrink-0 items-center gap-[1vw] max-[1025px]:w-auto max-[1025px]:max-w-[40%] justify-end max-[1025px]:gap-[2vw] max-md:w-[38%] max-md:max-w-[40%] max-sm:w-[42%] max-sm:max-w-[48%] max-sm:gap-2">
 
                 <FadeTextV3
                   as="p"
-                  className="text24 whitespace-nowrap capitalize"
+                  className="text24 whitespace-nowrap capitalize max-[1025px]:whitespace-normal max-[1025px]:max-w-[10ch] max-[1025px]:text-right max-[1025px]:leading-[1.15] max-sm:text-base!"
                   active={index <= activeIndex}
                   armed={armed}
                 >

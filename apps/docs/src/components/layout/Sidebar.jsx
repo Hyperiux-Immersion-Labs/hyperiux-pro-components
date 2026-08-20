@@ -1,14 +1,23 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { Tooltip } from "@/components/ui/Tooltip";
-import { Overview, Documentation, Category, Legal, Github, Pricing, Npm } from "../WebsiteComps/Icons";
+import {
+  Overview,
+  Documentation,
+  Category,
+  Legal,
+  Github,
+  Pricing,
+  Npm,
+  Mcp,
+} from "../WebsiteComps/Icons";
 import Link from "next/link";
 
 const DEFAULT_DOCS_TOP_LINKS = [
@@ -26,8 +35,6 @@ const DEFAULT_LEGAL_LINKS = [
   { href: "/legal/refund-policy", label: "Refund Policy" },
   { href: "/legal/terms-of-service", label: "Terms of Service" },
 ];
-
-const MAIN_SIDEBAR_PILL_ID = "sidebar-pill-main";
 
 function categoryLabel(category) {
   return category.name.replace("Website ", "").replace("Page ", "");
@@ -51,10 +58,6 @@ function NavIconLink({
   onClick,
   external,
   onMouseEnter,
-  onMouseLeave,
-  shouldHighlight,
-  reduceMotion,
-  pillId,
 }) {
   const handleClick = (event) => {
     onClick?.(event);
@@ -70,27 +73,18 @@ function NavIconLink({
       scroll={false}
       onClick={handleClick}
       onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className={`relative flex h-10 items-center gap-3 rounded-md px-4 py-[1.5vw] text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
+      className={`group relative flex h-10 items-center gap-3 px-4 py-[1.5vw] text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
         isExpanded ? "w-[18.5vw]" : "w-[3.8vw]"
       }`}
     >
-      {shouldHighlight && (
-        <motion.span
-          layoutId={reduceMotion ? undefined : pillId}
-          className="pointer-events-none absolute inset-0 -z-10 rounded-md bg-[#272727]"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={
-            reduceMotion
-              ? { duration: 0.2, ease: "easeOut" }
-              : { stiffness: 0, damping: 20 }
-          }
-        />
-      )}
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-0 -z-10 origin-top bg-[#1C1C1C] transition-transform duration-300 ease-out motion-reduce:transition-none ${
+          isActive ? "scale-y-100" : "scale-y-0 group-hover:scale-y-100"
+        }`}
+      />
 
       <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
 
@@ -121,35 +115,22 @@ function SectionButton({
   isActive,
   onClick,
   onMouseEnter,
-  onMouseLeave,
-  shouldHighlight,
-  reduceMotion,
-  pillId,
 }) {
   const button = (
     <button
       type="button"
       onClick={onClick}
       onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      className={`relative flex h-10 cursor-pointer items-center rounded-md px-4 py-[1.5vw] text-left text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
+      className={`group relative flex h-10 cursor-pointer items-center rounded-md px-4 py-[1.5vw] text-left text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
         isExpanded ? "w-[18.5vw]" : "w-[3.8vw]"
       } ${isExpanded ? "gap-3" : "gap-1.5"}`}
     >
-      {shouldHighlight && (
-        <motion.span
-          layoutId={reduceMotion ? undefined : pillId}
-          className="pointer-events-none absolute inset-0 -z-10 rounded-md bg-[#272727]"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={
-            reduceMotion
-              ? { duration: 0.2, ease: "easeOut" }
-              : { stiffness: 0, damping: 20 }
-          }
-        />
-      )}
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-0 -z-10 origin-top bg-[#1C1C1C] transition-transform duration-300 ease-out motion-reduce:transition-none ${
+          isActive ? "scale-y-100" : "scale-y-0 group-hover:scale-y-100"
+        }`}
+      />
 
       <Icon className="h-5 w-5 shrink-0" strokeWidth={1.7} />
 
@@ -200,7 +181,6 @@ export function Sidebar({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const reduceMotion = useReducedMotion();
 
   const resolvedTopLinks = topLinks?.length ? topLinks : DEFAULT_DOCS_TOP_LINKS;
   const resolvedLegalLinks = legalLinks?.length
@@ -282,25 +262,6 @@ export function Sidebar({
         ? "categories"
         : "";
 
-  const activeSidebarKey = useMemo(() => {
-    if (isOverviewActive) return "overview";
-    if (isCategoriesActive) return "categories";
-    if (isDocumentationActive) return "docs";
-    if (isLegalActive) return "legal";
-    if (pathname === "/pricing") return "pricing";
-    if (pathname === "/") return "overview";
-
-    return routeOpenSection || "";
-  }, [
-    isCategoriesActive,
-    isDocumentationActive,
-    isLegalActive,
-    isOverviewActive,
-    pathname,
-    routeOpenSection,
-  ]);
-
-  const highlightedSidebarKey = hoveredSidebarKey || activeSidebarKey;
 
   useEffect(() => {
     const onHash = () => setActiveHash(window.location.hash || "");
@@ -512,12 +473,12 @@ const navigateLegal = (event, href) => {
         type="button"
         aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         onClick={toggle}
-        className={`absolute top-6 z-50 hidden size-8 cursor-pointer items-center justify-center rounded-sm text-white transition-[left,background-color,transform] duration-300 ease-out hover:bg-white/15 sm:flex ${
+        className={`absolute top-6  z-50 bg-[#1C1C1C] hidden size-10 cursor-pointer items-center justify-center  text-white transition-[left,background-color,transform] duration-300 ease-out hover:bg-white/15 sm:flex ${
           isExpanded ? "left-[20.8vw]" : "left-[6.2vw]"
         }`}
       >
         <div className={isExpanded ? "" : "-scale-x-100"}>
-          <PanelLeft className="h-5 w-5" />
+          <PanelLeft className="h-4 w-4" />
         </div>
       </button>
 
@@ -528,14 +489,15 @@ const navigateLegal = (event, href) => {
       >
         <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
           <Link prefetch={false} href="/" className="flex min-w-0 items-center gap-3">
-            <Image
+
+           <Image
               src="/hyperiux.svg"
               alt="Hyperiux"
               width={28}
               height={28}
-              className="h-7 w-7 shrink-0"
+              className="h-7 w-7 shrink-0 text-primary"
             />
-
+            
             <Image
               src="/hyperiux-wordmark.svg"
               alt="Hyperiux"
@@ -543,7 +505,7 @@ const navigateLegal = (event, href) => {
               height={37}
               className={`h-auto w-32 ${
                 isExpanded
-                  ? "delay-100 opacity-100 duration-200"
+                  ? "delay-100 opacity-100 duration-200 text-primary"
                   : "opacity-0"
               }`}
             />
@@ -557,262 +519,241 @@ const navigateLegal = (event, href) => {
           }`}
           onMouseLeave={() => setHoveredSidebarKey("")}
         >
-          <LayoutGroup id="sidebar-pill">
-            <NavIconLink
-              label="All Effects"
-              href="/effects"
-              icon={Overview}
-              isExpanded={isExpanded}
-              isActive={isOverviewActive}
-              onClick={navigateOverview}
-              onMouseEnter={() => setHoveredSidebarKey("overview")}
-              shouldHighlight={highlightedSidebarKey === "overview"}
-              reduceMotion={reduceMotion}
-              pillId={MAIN_SIDEBAR_PILL_ID}
-            />
+          <NavIconLink
+            label="All Effects"
+            href="/effects"
+            icon={Overview}
+            isExpanded={isExpanded}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "overview" : isOverviewActive}
+            onClick={navigateOverview}
+            onMouseEnter={() => setHoveredSidebarKey("overview")}
+          />
 
-            <SectionButton
-              label="Categories"
-              icon={Category}
-              isExpanded={isExpanded}
-              isOpen={openSection === "categories"}
-              isActive={isCategoriesActive}
-              onClick={() => toggleSection("categories")}
-              onMouseEnter={() => setHoveredSidebarKey("categories")}
-              shouldHighlight={highlightedSidebarKey === "categories"}
-              reduceMotion={reduceMotion}
-              pillId={MAIN_SIDEBAR_PILL_ID}
-            />
+          <SectionButton
+            label="Categories"
+            icon={Category}
+            isExpanded={isExpanded}
+            isOpen={openSection === "categories"}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "categories" : isCategoriesActive}
+            onClick={() => toggleSection("categories")}
+            onMouseEnter={() => setHoveredSidebarKey("categories")}
+          />
 
-            <AnimatePresence initial={false}>
-              {isExpanded && openSection === "categories" && (
-                <motion.div
-                  key="categories"
-                  initial={{ height: 0, opacity: 0, y: -6 }}
-                  animate={{ height: "auto", opacity: 1, y: 0 }}
-                  exit={{ height: 0, opacity: 0, y: -6 }}
-                  transition={{ duration: 0.24, ease: "easeOut" }}
-                  className="ml-7 max-h-[42vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
-                >
-                  {effectCategories.map((category,id) => {
-                    const count =
-                      effectCounts[category.id] ??
-                      computedCategoryCounts[category.id] ??
-                      (category.id === "featured" ? featuredCount : 0);
+          <AnimatePresence initial={false}>
+            {isExpanded && openSection === "categories" && (
+              <motion.div
+                key="categories"
+                initial={{ height: 0, opacity: 0, y: -6 }}
+                animate={{ height: "auto", opacity: 1, y: 0 }}
+                exit={{ height: 0, opacity: 0, y: -6 }}
+                transition={{ duration: 0.24, ease: "easeOut" }}
+                className="ml-7 max-h-[42vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
+              >
+                {effectCategories.map((category,id) => {
+                  // Featured is available through filters, but hidden from the sidebar category list.
+                  if (category.id === "featured") return null;
 
-                    const isActive = currentCategory === category.id;
-                    const itemKey = `categories:${category.id}`;
-                    const href = getEffectCategoryHref(category.id);
+                  const count =
+                    effectCounts[category.id] ??
+                    computedCategoryCounts[category.id] ??
+                    (category.id === "featured" ? featuredCount : 0);
 
-                    return (
-                      <Link
-                        key={category.id}
-                        href={href}
-                        scroll={false}
-                        onClick={(event) => navigateCategory(event, category.id)}
-                        onMouseEnter={() => setHoveredSidebarKey("categories")}
-                        className={`relative flex w-full items-center justify-between gap-3 rounded-full py-1 text-left text-sm transition-colors cursor-pointer ${
-                          id === 0 ? "mt-[0.7vw]" : ""
-                        } ${
-                          id === effectCategories.length - 1 ? "mb-[0.7vw]" : ""
-                        } ${
-                          isActive
-                            ? "text-white"
-                            : "text-white/42 hover:text-white/75"
-                        }`}
-                      >
-                        {isActive && (
-                          <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
-                        )}
+                  const isActive = currentCategory === category.id;
+                  const itemKey = `categories:${category.id}`;
+                  const href = getEffectCategoryHref(category.id);
 
-                        <span className="flex min-w-0 items-center truncate">
-                          <span className="truncate">
-                            {categoryLabel(category)}
-                          </span>
+                  return (
+                    <Link
+                      key={category.id}
+                      href={href}
+                      scroll={false}
+                      onClick={(event) => navigateCategory(event, category.id)}
+                      onMouseEnter={() => setHoveredSidebarKey("categories")}
+                      className={`relative flex w-full items-center justify-between gap-3  py-1 text-left text-sm transition-colors cursor-pointer ${
+                        id === 0 ? "mt-[0.7vw]" : ""
+                      } ${
+                        id === effectCategories.length - 1 ? "mb-[0.7vw]" : ""
+                      } ${
+                        isActive
+                          ? "text-white"
+                          : "text-white/42 hover:text-white/75"
+                      }`}
+                    >
+                      {isActive && (
+                        <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
+                      )}
+
+                      <span className="flex min-w-0 items-center truncate">
+                        <span className="truncate">
+                          {categoryLabel(category)}
                         </span>
+                      </span>
 
-                        {count > 0 && (
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#272727] text-center text-[0.65vw] text-white/75">
-                            {count}
-                          </span>
-                        )}
-                      </Link>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                      {count > 0 && (
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center bg-[#1C1C1C] text-center text-[0.65vw] text-white">
+                          {count}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-            <SectionButton
-              label="Documentation"
-              icon={Documentation}
-              isExpanded={isExpanded}
-              isOpen={openSection === "docs"}
-              isActive={isDocumentationActive}
-              onClick={() => toggleSection("docs")}
-              onMouseEnter={() => setHoveredSidebarKey("docs")}
-              shouldHighlight={highlightedSidebarKey === "docs"}
-              reduceMotion={reduceMotion}
-              pillId={MAIN_SIDEBAR_PILL_ID}
-            />
+          <SectionButton
+            label="Documentation"
+            icon={Documentation}
+            isExpanded={isExpanded}
+            isOpen={openSection === "docs"}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "docs" : isDocumentationActive}
+            onClick={() => toggleSection("docs")}
+            onMouseEnter={() => setHoveredSidebarKey("docs")}
+          />
 
-            <AnimatePresence initial={false}>
-              {isExpanded && openSection === "docs" && (
-                <motion.div
-                  key="docs"
-                  initial={{ height: 0, opacity: 0, y: -6 }}
-                  animate={{ height: "auto", opacity: 1, y: 0 }}
-                  exit={{ height: 0, opacity: 0, y: -6 }}
-                  transition={{ duration: 0.24, ease: "easeOut" }}
-                  className="ml-7 space-y-1 overflow-hidden border-l border-white/12 pl-7"
-                >
-                  {resolvedTopLinks.map((link, index) => {
-                    const [basePath, hash] = link.href.split("#");
+          <AnimatePresence initial={false}>
+            {isExpanded && openSection === "docs" && (
+              <motion.div
+                key="docs"
+                initial={{ height: 0, opacity: 0, y: -6 }}
+                animate={{ height: "auto", opacity: 1, y: 0 }}
+                exit={{ height: 0, opacity: 0, y: -6 }}
+                transition={{ duration: 0.24, ease: "easeOut" }}
+                className="ml-7 space-y-1 overflow-hidden border-l border-white/12 pl-7"
+              >
+                {resolvedTopLinks.map((link, index) => {
+                  const [basePath, hash] = link.href.split("#");
 
-                    const isActive =
-                      pathname === basePath &&
-                      (!hash || activeHash === `#${hash}`);
-                    const itemKey = `docs:${link.href}`;
+                  const isActive =
+                    pathname === basePath &&
+                    (!hash || activeHash === `#${hash}`);
+                  const itemKey = `docs:${link.href}`;
 
-                    return (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        scroll={false}
-                        onClick={(event) =>
-                          navigateDocumentation(event, link.href)
-                        }
-                        onMouseEnter={() => setHoveredSidebarKey("docs")}
-                        className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
-                          index === 0 ? "mt-[0.7vw]" : ""
-                        } ${
-                          index === resolvedTopLinks.length - 1 ? "mb-[0.7vw]" : ""
-                        } ${
-                          isActive
-                            ? "text-white"
-                            : "text-white/42 hover:text-white/75"
-                        }`}
-                      >
-                        {isActive && (
-                          <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
-                        )}
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      scroll={false}
+                      onClick={(event) =>
+                        navigateDocumentation(event, link.href)
+                      }
+                      onMouseEnter={() => setHoveredSidebarKey("docs")}
+                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
+                        index === 0 ? "mt-[0.7vw]" : ""
+                      } ${
+                        index === resolvedTopLinks.length - 1 ? "mb-[0.7vw]" : ""
+                      } ${
+                        isActive
+                          ? "text-white"
+                          : "text-white/42 hover:text-white/75"
+                      }`}
+                    >
+                      {isActive && (
+                        <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
+                      )}
 
-                        {link.label}
-                      </Link>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-            <SectionButton
-              label="Legal"
-              icon={Legal}
-              isExpanded={isExpanded}
-              isOpen={openSection === "legal"}
-              isActive={isLegalActive}
-              onClick={() => toggleSection("legal")}
-              onMouseEnter={() => setHoveredSidebarKey("legal")}
-              shouldHighlight={highlightedSidebarKey === "legal"}
-              reduceMotion={reduceMotion}
-              pillId={MAIN_SIDEBAR_PILL_ID}
-            />
+          <SectionButton
+            label="Legal"
+            icon={Legal}
+            isExpanded={isExpanded}
+            isOpen={openSection === "legal"}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "legal" : isLegalActive}
+            onClick={() => toggleSection("legal")}
+            onMouseEnter={() => setHoveredSidebarKey("legal")}
+          />
 
-            <AnimatePresence initial={false}>
-              {isExpanded && openSection === "legal" && (
-                <motion.div
-                  key="legal"
-                  initial={{ height: 0, opacity: 0, y: -6 }}
-                  animate={{ height: "auto", opacity: 1, y: 0 }}
-                  exit={{ height: 0, opacity: 0, y: -6 }}
-                  transition={{ duration: 0.24, ease: "easeOut" }}
-                  className="ml-7 space-y-1 overflow-hidden border-l border-white/12 pl-7"
-                >
-                  {resolvedLegalLinks.map((link, index) => {
-                    const [basePath, hash] = link.href.split("#");
+          <AnimatePresence initial={false}>
+            {isExpanded && openSection === "legal" && (
+              <motion.div
+                key="legal"
+                initial={{ height: 0, opacity: 0, y: -6 }}
+                animate={{ height: "auto", opacity: 1, y: 0 }}
+                exit={{ height: 0, opacity: 0, y: -6 }}
+                transition={{ duration: 0.24, ease: "easeOut" }}
+                className="ml-7 space-y-1 overflow-hidden border-l border-white/12 pl-7"
+              >
+                {resolvedLegalLinks.map((link, index) => {
+                  const [basePath, hash] = link.href.split("#");
 
-                    const isActive =
-                      pathname === basePath &&
-                      (!hash || activeHash === `#${hash}`);
-                    const itemKey = `legal:${link.href}`;
+                  const isActive =
+                    pathname === basePath &&
+                    (!hash || activeHash === `#${hash}`);
+                  const itemKey = `legal:${link.href}`;
 
-                    return (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        scroll={false}
-                        onClick={(event) => navigateLegal(event, link.href)}
-                        onMouseEnter={() => setHoveredSidebarKey("legal")}
-                        className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
-                          index === 0 ? "mt-[0.7vw]" : ""
-                        } ${
-                          index === resolvedLegalLinks.length - 1 ? "mb-[0.7vw]" : ""
-                        } ${
-                          isActive
-                            ? "text-white"
-                            : "text-white/42 hover:text-white/75"
-                        }`}
-                      >
-                        {isActive && (
-                          <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
-                        )}
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      scroll={false}
+                      onClick={(event) => navigateLegal(event, link.href)}
+                      onMouseEnter={() => setHoveredSidebarKey("legal")}
+                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
+                        index === 0 ? "mt-[0.7vw]" : ""
+                      } ${
+                        index === resolvedLegalLinks.length - 1 ? "mb-[0.7vw]" : ""
+                      } ${
+                        isActive
+                          ? "text-white"
+                          : "text-white/42 hover:text-white/75"
+                      }`}
+                    >
+                      {isActive && (
+                        <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
+                      )}
 
-                        {link.label}
-                      </Link>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-            <NavIconLink
-              label="Pricing"
-              href="/pricing"
-              icon={Pricing}
-              isExpanded={isExpanded}
-              isActive={pathname === "/pricing"}
-              onMouseEnter={() => setHoveredSidebarKey("pricing")}
-              shouldHighlight={highlightedSidebarKey === "pricing"}
-              reduceMotion={reduceMotion}
-              pillId={MAIN_SIDEBAR_PILL_ID}
-            />
+          <NavIconLink
+            label="Pricing"
+            href="/pricing"
+            icon={Pricing}
+            isExpanded={isExpanded}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "pricing" : pathname === "/pricing"}
+            onMouseEnter={() => setHoveredSidebarKey("pricing")}
+          />
 
-            <NavIconLink
-              label="Github"
-              href="https://github.com/Hyperiux-Immersion-Labs/hyperiux-components"
-              icon={Github}
-              isExpanded={isExpanded}
-              external
-              onMouseEnter={() => setHoveredSidebarKey("github")}
-              shouldHighlight={highlightedSidebarKey === "github"}
-              reduceMotion={reduceMotion}
-              pillId={MAIN_SIDEBAR_PILL_ID}
-            />
+          <NavIconLink
+            label="Github"
+            href="https://github.com/Hyperiux-Immersion-Labs/hyperiux-components"
+            icon={Github}
+            isExpanded={isExpanded}
+            external
+            isActive={hoveredSidebarKey === "github"}
+            onMouseEnter={() => setHoveredSidebarKey("github")}
+          />
 
-            <NavIconLink
-              label="NPM"
-              href="https://www.npmjs.com/package/hyperiux"
-              icon={Npm}
-              isExpanded={isExpanded}
-              external
-              onMouseEnter={() => setHoveredSidebarKey("npm")}
-              shouldHighlight={highlightedSidebarKey === "npm"}
-              reduceMotion={reduceMotion}
-              pillId={MAIN_SIDEBAR_PILL_ID}
-            />
+          <NavIconLink
+            label="NPM"
+            href="https://www.npmjs.com/package/hyperiux"
+            icon={Npm}
+            isExpanded={isExpanded}
+            external
+            isActive={hoveredSidebarKey === "npm"}
+            onMouseEnter={() => setHoveredSidebarKey("npm")}
+          />
 
-            <NavIconLink
-              label="MCP"
-              href="/docs/mcp"
-              icon={Documentation}
-              isExpanded={isExpanded}
-              isActive={pathname === "/docs/mcp"}
-              onMouseEnter={() => setHoveredSidebarKey("mcp")}
-              shouldHighlight={highlightedSidebarKey === "mcp"}
-              reduceMotion={reduceMotion}
-              pillId={MAIN_SIDEBAR_PILL_ID}
-            />
-          </LayoutGroup>
+          <NavIconLink
+            label="MCP"
+            href="/docs/mcp"
+            icon={Mcp}
+            isExpanded={isExpanded}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "mcp" : pathname === "/docs/mcp"}
+            onMouseEnter={() => setHoveredSidebarKey("mcp")}
+          />
         </nav>
       </div>
     </aside>

@@ -13,7 +13,7 @@ if (typeof window !== "undefined") {
 
 
 
-const USE_CASES_X_PERCENT = [110, 110, 110, 110, 110];
+const USE_CASES_X_PERCENT = [110, 70, 70, 70, 70];
 
 const mark =
   "pointer-events-none absolute size-[0.3vw] border-primary max-[1025px]:size-1.5 max-md:size-2 max-sm:size-1";
@@ -88,10 +88,9 @@ export default function UseCases({ useCases }) {
       ref={container}
       className="h-fit w-full mt-[-15vw] max-[1025px]:mt-0 max-[1025px]:flex-col max-[1025px]:gap-[6vw] max-[1025px]:pb-[20vw]! max-md:pb-[30vw]! flex justify-between self-padd items-start overflow-x-clip text-white max-md:mt-0 max-md:flex-col max-md:gap-[8vw]"
     >
-      <MaskTextReveal stagger={0.08} scrub={false} duration={2} className="w-[35vw] sticky top-[20vh] max-[1025px]:static max-[1025px]:w-full max-[1025px]:mb-[6vw]! max-md:static max-md:w-full max-md:mb-[10vw]!">
+      <MaskTextReveal stagger={0.08} scrub={false} duration={2} className="w-[40vw] sticky top-[20vh] max-[1025px]:static max-[1025px]:w-full max-[1025px]:mb-[6vw]! max-md:static max-md:w-full max-md:mb-[10vw]!">
         <h2 className="t64 font-neue-haas">
-          For Developers, Founders, Agencies, and Teams That Need the Site to
-          Feel as Premium as the Product.
+          Built for teams where frontend is part of the brand & your interface needs to feel as premium as the product.
         </h2>
       </MaskTextReveal>
 

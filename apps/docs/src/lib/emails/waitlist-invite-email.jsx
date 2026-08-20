@@ -16,9 +16,16 @@ import {
   Text,
 } from "@react-email/components";
 
-// NOTE: baseUrl and every asset path below (logo, hero image, social icons)
-// are placeholders - swap them once the final design assets are ready.
+// NOTE: baseUrl and every asset path below (logo, social icons) are
+// placeholders - swap them once the final design assets are ready. Always
+// production, regardless of environment: email clients fetch these images
+// over the public internet, and a local dev server won't be serving them.
 const baseUrl = "https://vault.hyperiux.com";
+
+// Where the app itself is running - used only for the CTA link, so it
+// follows NEXT_PUBLIC_APP_URL (e.g. a local/staging subdomain while
+// testing) instead of always pointing at production like baseUrl does.
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || baseUrl;
 
 const socialLinks = [
   { label: "X", href: "https://x.com/_hyperiux_", icon: "/emails/x-icon-email-temp.png" },
@@ -29,29 +36,34 @@ const socialLinks = [
 
 const fontFamily = "Aeonik, system-ui";
 
-export const waitlistInviteSubject = "You're first: Vault Pro is live! 🚀";
+// A plain link straight to the destination, tagged with one UTM param - no
+// redirect wrapper, no opaque tracking-id path segment. That kind of
+// indirection (/api/e/<uuid>?to=...) is exactly what commercial ESP
+// click-trackers look like, which is a real signal Gmail's Promotions
+// classifier weighs, so the CTA now points directly at the real URL.
+const exploreVaultUtm = "utm_source=email_invite";
 
-export function waitlistInviteText({ inviteUrl }) {
+function exploreVaultUrl(signUpUrl) {
+  const destination = signUpUrl || `${appUrl}/effects`;
+  const separator = destination.includes("?") ? "&" : "?";
+  return `${destination}${separator}${exploreVaultUtm}`;
+}
+
+export const waitlistInviteSubject = "You're invited to Hyperiux Vault";
+
+export function waitlistInviteText({ signUpUrl } = {}) {
   return `
-The door's open. Vault Pro is live.
+Hey, building every interaction from scratch is one way to make a site feel specific - not always the sensible one.
 
-Everyone else will find out later today. You already knew, because you trusted us before everyone else.
+Vault also surfaces dependencies and the production details worth checking, including mobile behaviour, reduced motion and performance.
 
-As a thank you, we're opening founding access to the first 100 people on our waitlist: $149/year, locked in for as long as your annual subscription remains active and uninterrupted. After those 100 memberships are claimed, Vault Pro will be $179/year or $20/month.
-
-Unlock the complete Pro collection with source code that lands directly in your project. Edit it, restyle it, and make every interaction yours without starting from zero or working around a black box.
-
-Claim Founding Price - $149/year: ${inviteUrl}
-
-Once these 100 spots are gone, this price won't come back.
-
-Cancel anytime. Code you have already installed stays in your repo.
+Explore Vault: ${exploreVaultUrl(signUpUrl)}
 
 Hyperiux Vault
 `;
 }
 
-export function WaitlistInviteEmail({ inviteUrl }) {
+export function WaitlistInviteEmail({ signUpUrl } = {}) {
   return (
     <Tailwind>
       <Html>
@@ -72,17 +84,9 @@ export function WaitlistInviteEmail({ inviteUrl }) {
             }
           `}</style>
         </Head>
-        <Preview>Your Founding Access invite is ready. Just the first 100 get this.</Preview>
+        <Preview>Your account is ready to be set up on Hyperiux Vault.</Preview>
         <Body className="m-0" style={{ fontFamily }}>
-          <Container
-            className="mx-auto w-full max-w-150 px-4"
-            style={{
-              backgroundImage: `url(${baseUrl}/emails/email-temp-bg.png)`,
-              backgroundSize: "cover",
-              backgroundPosition: "top center",
-              backgroundRepeat: "no-repeat",
-            }}
-          >
+          <Container className="mx-auto w-full max-w-150 px-4">
             <Section className="px-1 pt-8 pb-6">
               <Img src={`${baseUrl}/emails/hyperiux-email-logo.png`} alt="Hyperiux" width={140} height={17} />
             </Section>
@@ -103,42 +107,25 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                   style={{ fontFamily, fontWeight: 400 }}
                   className="m-0 text-[32px] leading-[1.15] text-[#0a0a0a]"
                 >
-                  The Door&apos;s Open. Vault Pro is Live.
+                  Your account is ready to be set up on Hyperiux Vault.
                 </Heading>
 
                 <Text
                   className="m-0 mt-5 text-[18px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                  Everyone else will find out later today. You already
-                  knew, because you trusted us before everyone else.
+                  Hey, building every interaction from scratch is one way
+                  to make a site feel specific - not always the sensible
+                  one.
                 </Text>
 
                 <Text
-                  className="m-0 mt-4 text-[15px] leading-6 text-[#1D1D1D]"
+                  className="m-0 mt-6 text-[15px] leading-6 text-[#1D1D1D]"
                   style={{ fontFamily }}
                 >
-                  As a thank you, we&apos;re opening founding access to
-                  the first 100 people on our waitlist: $149/year, locked
-                  in for as long as your annual subscription remains
-                  active and uninterrupted. After those 100 memberships
-                  are claimed, Vault Pro will be $179/year or $20/month.
-                </Text>
-
-                <Text
-                  className="m-0 mt-4 text-[15px] leading-6 text-[#1D1D1D]"
-                  style={{ fontFamily }}
-                >
-                  Unlock the complete Pro collection with source code
-                  that lands directly in your project. Edit it, restyle
-                  it, and make every interaction yours without starting
-                  from zero or working around a black box.
-                </Text>
-                <Text
-                  className="m-0 mt-4 text-[15px] font-semibold leading-6 text-[#1D1D1D]"
-                  style={{ fontFamily }}
-                >
-                   Claim Founding Price $149/year
+                  Vault also surfaces dependencies and the production
+                  details worth checking, including mobile behaviour,
+                  reduced motion and performance.
                 </Text>
 
                 <Section className="mt-8 text-center">
@@ -161,7 +148,7 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                           }}
                         >
                           <a
-                            href={inviteUrl}
+                            href={exploreVaultUrl(signUpUrl)}
                             className="vault-btn"
                             style={{
                               display: "inline-block",
@@ -180,22 +167,6 @@ export function WaitlistInviteEmail({ inviteUrl }) {
                     </tbody>
                   </table>
                 </Section>
-
-                <Text
-                  className="m-0 mt-8 text-[13px] leading-[1.3] text-[#8a8a8a]"
-                  style={{ fontFamily }}
-                >
-                  Once these 100 spots are gone, this price won&apos;t
-                  come back.
-                </Text>
-
-                <Text
-                  className="m-0 mt-4 text-[13px] leading-[1.3] text-[#8a8a8a] italic"
-                  style={{ fontFamily }}
-                >
-                  Cancel anytime. Code you have already installed stays
-                  in your repo.
-                </Text>
 
                 <Hr className="mx-0 mt-10 mb-8 border-[#e4e4e7]" />
 
@@ -245,6 +216,6 @@ export function WaitlistInviteEmail({ inviteUrl }) {
 
 export default WaitlistInviteEmail;
 
-export function renderWaitlistInviteEmail({ inviteUrl }) {
-  return <WaitlistInviteEmail inviteUrl={inviteUrl} />;
+export function renderWaitlistInviteEmail({ signUpUrl } = {}) {
+  return <WaitlistInviteEmail signUpUrl={signUpUrl} />;
 }

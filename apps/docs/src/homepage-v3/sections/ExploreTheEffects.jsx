@@ -14,50 +14,50 @@ if (typeof window !== "undefined") {
 const COLUMNS = [
     [
         {
-            title: "Scroll Stack",
-            tag: "Scroll Effects",
-            action: "Scroll Effects",
-            href: "/components",
-            media: "/homepage-v3/imgs/1.png",
+            title: "Cursor Effects",
+            tag: "Cursor Effects",
+            action: "Cursor Effects",
+            href: "/effects/cursor-effects",
+            media: "/homepage-v3/imgs/cursor.webp",
         },
         {
-            title: "Blur Text",
-            tag: "Text Animation",
-            action: "Scroll Effects",
-            href: "/components",
-            media: "/homepage-v3/imgs/2.png",
-        },
-    ],
-    [
-        {
-            title: "WebGL Slider",
+            title: "WebGL",
             tag: "WebGL",
-            action: "Scroll Effects",
-            href: "/components",
-            media: "/homepage-v3/imgs/3.png",
-        },
-        {
-            title: "Page Flip Transition",
-            tag: "Page Transition",
-            action: "Scroll Effects",
-            href: "/components",
-            media: "/homepage-v3/imgs/4.png",
+            action: "WebGL",
+            href: "/effects/webgl",
+            media: "/homepage-v3/imgs/webgl.webp",
         },
     ],
     [
         {
-            title: "Scroll Stack",
-            tag: "Scroll Effects",
-            action: "Scroll Effects",
-            href: "/components",
-            media: "/homepage-v3/imgs/5.png",
+            title: "Text Animation",
+            tag: "Text Animation",
+            action: "Text Animation",
+            href: "/effects/text-animation",
+            media: "/homepage-v3/imgs/text-animations.webp",
         },
         {
-            title: "Scroll Stack",
+            title: "Page Transitions",
+            tag: "Page Transition",
+            action: "Page Transitions",
+            href: "/effects/page-transitions",
+            media: "/homepage-v3/imgs/page-transition.webp",
+        },
+    ],
+    [
+        {
+            title: "Scroll Effects",
             tag: "Scroll Effects",
             action: "Scroll Effects",
-            href: "/components",
-            media: "/homepage-v3/imgs/6.png",
+            href: "/effect/scroll-effects",
+            media: "/homepage-v3/imgs/scroll-effects.webp",
+        },
+        {
+            title: "Navigations",
+            tag: "Navigations",
+            action: "Navigations",
+            href: "/effects/navigation-effects",
+            media: "/homepage-v3/imgs/navigation.webp",
         },
     ],
 ];
@@ -107,9 +107,9 @@ export default function ExploreTheEffects() {
         <section
             ref={container}
             id="explore-the-effects"
-            className="w-full  mb-[18vw] mt-[20vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-md:my-24 max-md:px-[6vw] max-sm:px-[7vw]"
+            className="w-full  mb-[13vw] mt-[-8vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-md:mt-[-10vw]  max-md:px-[6vw] max-sm:px-[7vw]"
         >
-            <div className="space-y-[4vw] max-[1025px]:space-y-[4vw] max-[1025px]:mb-[12vw] max-md:space-y-[8vw] mb-[15vw] ">
+            <div className="space-y-[4vw] relative z-200 max-[1025px]:space-y-[4vw] max-[1025px]:mb-[12vw] max-md:space-y-[8vw] mb-[15vw] ">
                 <LineReveal as='h2' className="t96 font-neue-haas w-[55vw] mx-auto text-center max-[1025px]:w-full max-md:w-full">
                     Explore the Moments Your Website is{" "}
                     <span className="gradient-text-animate">Missing.</span>

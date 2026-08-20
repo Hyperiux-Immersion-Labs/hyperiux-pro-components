@@ -1,14 +1,25 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
+import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { prefersReducedMotion } from "@/lib/motion";
 import { createAsciiLoaderField } from "./loader-ascii-field";
 import { measureNavLogoTarget } from "./loader-dock-target";
-import { markLoaderV3Complete, markLoaderV3Handoff } from "./loader-v3-state";
-import { lockScrollV3, useScrollLockLenis } from "./scroll-lock-v3";
+import {
+  hasLoaderV3Played,
+  markLoaderV3Complete,
+  markLoaderV3Handoff,
+  markLoaderV3Played,
+} from "./loader-v3-state";
+import { lockScrollV3, unlockScrollV3, useScrollLockLenis } from "./scroll-lock-v3";
+
+// Background static glyphs. The wordmark weaves HYPERIUX letters;
+// this string is only the noise behind it.
+const STATIC_CHARS = "!@#$%^*€π§Ωδ∞µΦ≈";
+const WORDMARK_CHARS = "HYPERIUX@#10";
 
 // The counter runs to 92 on its own, then only closes the last 8 once the page
 // has actually finished loading — so the number tracks something real instead
@@ -24,7 +35,7 @@ const MAX_WAIT_MS = 3000;
 // to the real svg. The field's transform is rigid and linear in this scalar, so
 // the ease *is* the motion: it pulls off the centre of the screen and settles
 // onto the logo rather than arriving at speed.
-const DOCK_DURATION = 1.25;
+const DOCK_DURATION = 1.45;
 // The background static dissolves first, on its own scalar, so the mark leaves
 // an empty screen instead of dragging the noise along with it.
 const CLEAR_DURATION = 0.7;
@@ -54,6 +65,26 @@ const BURST_DURATION = 1.8;
 const BACKDROP_LEAD = 0.1;
 const BACKDROP_DURATION = 0.75;
 
+// Same signals as Loader2: Lighthouse/PSI, software WebGL (PSI desktop), and
+// reduced motion — plus the session gate, since a loader that has already
+// played this session has nothing left to introduce. Do not start the ASCII
+// field or hold the page for any of them.
+function shouldSkipLoader() {
+  if (typeof window === "undefined") return false;
+  return (
+    hasLoaderV3Played() ||
+    prefersReducedMotion() ||
+    isLighthouseOrHeadless() ||
+    isSoftwareRenderer()
+  );
+}
+
+function skipLoaderNow() {
+  markLoaderV3Complete();
+  markLoaderV3Handoff();
+  unlockScrollV3();
+}
+
 /**
  * @param {"dock"|"burst"} exitMode — how the mark leaves. `dock` collapses it
  *   onto the navbar's logo and hands over to the real svg; `burst` blows it out
@@ -62,6 +93,7 @@ const BACKDROP_DURATION = 0.75;
  */
 export default function LoaderV3({ exitMode = "dock" }) {
   const [done, setDone] = useState(false);
+  const [run, setRun] = useState(false);
 
   const rootRef = useRef(null);
   const backdropRef = useRef(null);
@@ -73,17 +105,25 @@ export default function LoaderV3({ exitMode = "dock" }) {
 
   useScrollLockLenis();
 
+  useLayoutEffect(() => {
+    if (shouldSkipLoader()) {
+      skipLoaderNow();
+      setDone(true);
+      return;
+    }
+    // Written before the timeline starts, not after it finishes: a visitor who
+    // navigates away mid-loader has already seen the intro, and re-running it
+    // on the way back is exactly what the gate is here to prevent.
+    markLoaderV3Played();
+    setRun(true);
+  }, []);
+
   useGSAP(
     () => {
+      if (!run) return;
+
       let cancelled = false;
       let waitTimeout = 0;
-
-      if (prefersReducedMotion()) {
-        markLoaderV3Complete();
-        markLoaderV3Handoff();
-        setDone(true);
-        return;
-      }
 
       // Held from here until the hero's intro has landed — this component is
       // gone well before that, so the release lives in Hero, not in this
@@ -91,10 +131,19 @@ export default function LoaderV3({ exitMode = "dock" }) {
       lockScrollV3();
 
 
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        skipLoaderNow();
+        setDone(true);
+        return;
+      }
+
       const field = fieldRef.current;
-      const destroyField = createAsciiLoaderField(canvasRef.current, field, {
+      const destroyField = createAsciiLoaderField(canvas, field, {
         mode: exitMode,
         dockTarget: measureNavLogoTarget,
+        staticChars: STATIC_CHARS,
+        wordmarkChars: WORDMARK_CHARS,
       });
 
       // ── Phase 1: Build — progress runs 0 → 0.92 while the page loads ──
@@ -171,7 +220,14 @@ export default function LoaderV3({ exitMode = "dock" }) {
           {
             exit: 1,
             duration: exitDuration,
-            ease: docking ? "power2.inOut" : "none",
+            // Docking reads this scalar rigidly — the ease *is* the motion, so
+            // it has to be gentle at both ends and never fast in the middle.
+            // `power2.inOut` spends most of its travel near peak speed and
+            // brakes late, which is what made the mark look like it arrives at
+            // the navbar and stops rather than settling onto it. A long-tailed
+            // out-ease pulls away just as softly but bleeds the last of the
+            // distance off slowly, so the landing has no perceptible edge.
+            ease: docking ? "power3.inOut" : "none",
             onStart: () => {
               gsap.set(rootRef.current, { pointerEvents: "none" });
               // Hand off at the *start* of the exit, not the end: the hero's
@@ -218,10 +274,10 @@ export default function LoaderV3({ exitMode = "dock" }) {
         destroyField();
       };
     },
-    { scope: rootRef }
+    { scope: rootRef, dependencies: [run] }
   );
 
-  if (done) return null;
+  if (done || !run) return null;
 
   return (
     <div

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { useLenis } from "lenis/react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 function ensureHeadingId(el, index) {
   if (!el.id) {
@@ -30,7 +29,6 @@ export function TableOfContents({
   const [isFooterNearby, setIsFooterNearby] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
 
-  const reduceMotion = useReducedMotion();
   const lenis = useLenis();
   const activeLockRef = useRef({
     id: "",
@@ -264,7 +262,7 @@ export function TableOfContents({
         className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
       />
 
-      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 rounded-md bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
+      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2  bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
         <ul
           className=" pb-4 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2 toc"
           onMouseLeave={() => setHoveredId(null)}
@@ -281,27 +279,15 @@ export function TableOfContents({
                 <Link
                   href={`#${item.id}`}
                   onMouseEnter={() => setHoveredId(item.id)}
-                  className="relative block rounded-md"
+                  className="group relative isolate block"
                   onClick={(event) => onTocClick(event, item.id)}
                 >
-                  <AnimatePresence>
-                    {highlighted && (
-                      <motion.span
-                        // Shared layoutId lets the pill slide between items
-                        // instead of cross-fading in place.
-                        layoutId={reduceMotion ? undefined : "toc-pill"}
-                        className="absolute inset-0 -z-10 rounded-md bg-[#ff5f00]"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={
-                          reduceMotion
-                            ? { duration: 0.2, ease: "easeOut" }
-                            : { stiffness: 0, damping: 20 }
-                        }
-                      />
-                    )}
-                  </AnimatePresence>
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-0 -z-10 origin-top bg-[#ff5f00] transition-transform duration-300 ease-out motion-reduce:transition-none ${
+                      highlighted ? "scale-y-100" : "scale-y-0"
+                    }`}
+                  />
                   <span className="relative z-10 block px-3 py-2 text20 font-medium leading-tight text-white">
                     {item.text}
                   </span>

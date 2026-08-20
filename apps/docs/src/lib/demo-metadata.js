@@ -1,11 +1,29 @@
 import { getAllSanityEffectEntries } from "@/lib/sanity";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { resolveOgImageUrl } from "@/lib/media";
+import { getPublicEffectBySlug } from "@/lib/registry";
+
+function titleizeSlug(value = "") {
+  return value
+    .toString()
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (letter) => letter.toUpperCase())
+    .replace(/\b3d\b/i, "3D")
+    .replace(/\bsvg\b/gi, "SVG")
+    .replace(/\bwebgl\b/gi, "WebGL");
+}
 
 export async function getDemoPageMetadata(effectSlug, options = {}) {
   const entries = await getAllSanityEffectEntries();
   const entry = entries.find((e) => e.effectSlug === effectSlug);
-  const displayTitle = options.title || entry?.title || effectSlug;
+  const registryEntry = getPublicEffectBySlug(effectSlug);
+  const displayTitle =
+    options.title ||
+    entry?.title ||
+    registryEntry?.title ||
+    titleizeSlug(effectSlug);
   const detailPath = entry?.categorySlug
     ? `/effects/${entry.categorySlug}/${effectSlug}`
     : `/demo/${effectSlug}`;

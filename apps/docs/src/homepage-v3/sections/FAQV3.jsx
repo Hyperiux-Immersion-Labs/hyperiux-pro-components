@@ -170,7 +170,7 @@ function FAQRow({ item, isOpen, onToggle, index }) {
             }`}
         />
 
-        <h3 className="text32 font-neue-haas flex-1 leading-tight max-md:text-[3.4vw] max-sm:text-[5.2vw]">
+        <h3 className="text-[1.55vw] font-neue-haas flex-1 leading-tight max-md:text-[3.4vw] max-sm:text-[5.2vw]">
           {item.question}
         </h3>
       </div>
@@ -188,9 +188,9 @@ function FAQRow({ item, isOpen, onToggle, index }) {
         <div
           ref={innerRef}
           style={{ opacity: initiallyOpen ? 1 : 0 }}
-          className="pt-[1.2vw] pl-[3.2vw] max-[1025px]:pt-[2vw] max-[1025px]:pl-[5vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]"
+          className="pt-[1.2vw] pl-[2.8vw] max-[1025px]:pt-[2vw] max-[1025px]:pl-[5vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]"
         >
-          <p className="text22 font-neue-haas w-[70%] text-light-grey leading-[1.45] max-[1025px]:w-full max-md:w-[90%] max-md:text-[2.2vw] max-sm:w-full max-sm:text-[4vw]">
+          <p className="text22 font-neue-haas w-[85%] text-white leading-[1.45] max-[1025px]:w-full max-md:w-[90%] max-md:text-[2.2vw] max-sm:w-full max-sm:text-[4vw]">
             {item.answer}
           </p>
         </div>
@@ -262,7 +262,7 @@ export default function FAQV3({ faqItems, translateTop = true }) {
     <section
       ref={container}
       id="faq"
-      className={`h-fit w-full self-padd ${translateTop ? "translate-y-[-35vw] max-md:translate-y-[-80vw]!" : ""} relative pt-[10vw] mt-[20vw]  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]`}
+      className={`h-fit w-full self-padd ${translateTop ? "translate-y-[-35vw] max-md:translate-y-[-80vw]!" : ""} relative pt-[10vw] mt-[15vw] max-md:mt-0!  my-[5vw]  text-white max-md:py-[15vw] max-sm:py-[22vw]`}
     >
 
 
@@ -295,7 +295,7 @@ export default function FAQV3({ faqItems, translateTop = true }) {
             onClick={() => setIsExpanded(true)}
             shimmer shimmerColor="var(--primary)"
             tilted={false}
-            underline={false}
+          underline={true}
             showArrow
             text="View More"
             className="max-sm:text34"

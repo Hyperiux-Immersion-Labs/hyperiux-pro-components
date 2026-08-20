@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
 import Button from "../WebsiteComps/Button";
+import { useAdminRole } from "@/lib/useAdminRole";
+import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 const BASE_TABS = [
   { label: "Overview", href: "/dashboard" },
@@ -14,13 +15,18 @@ const BASE_TABS = [
   { label: "Settings", href: "/dashboard/settings" },
 ];
 
-// Both admin-only, both gated by dashboard/admin/layout.js's requireAdmin()
-// check regardless of this tab list - hiding them here is a nav nicety, not
-// the actual access control.
+// Admin-only, gated by dashboard/admin/layout.js's requireAdmin() check
+// regardless of this tab list - hiding them here is a nav nicety, not the
+// actual access control.
 const ADMIN_TABS = [
   { label: "User Management", href: "/dashboard/admin" },
   { label: "Activity", href: "/dashboard/admin/activity" },
 ];
+
+// Payment detail across every user is a step up from what a regular admin
+// can already see - restricted to super admins both here and (the real
+// gate) in api/admin/invoices/route.js's assertSuperAdmin() check.
+const SUPER_ADMIN_TABS = [{ label: "Invoicing", href: "/dashboard/admin/invoicing" }];
 
 // Usage and Invoicing are customer-account concepts (daily copy limits,
 // personal billing) - an admin has neither, so surfacing them would just
@@ -30,13 +36,14 @@ const ADMIN_HIDDEN_TABS = new Set(["/dashboard/usage", "/dashboard/invoicing"]);
 export function DashboardShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useUser();
+  const { isAdmin, isSuperAdmin } = useAdminRole();
 
-  const isAdmin = user?.publicMetadata?.role === "admin";
   const visibleBaseTabs = isAdmin
     ? BASE_TABS.filter((tab) => !ADMIN_HIDDEN_TABS.has(tab.href))
     : BASE_TABS;
-  const tabs = isAdmin ? [...visibleBaseTabs, ...ADMIN_TABS] : visibleBaseTabs;
+  const tabs = isAdmin
+    ? [...visibleBaseTabs, ...ADMIN_TABS, ...(isSuperAdmin ? SUPER_ADMIN_TABS : [])]
+    : visibleBaseTabs;
 
   // Longest-matching href wins, so a nested route (e.g. /dashboard/admin/activity)
   // lights up only its own tab instead of also lighting up an ancestor tab
@@ -56,7 +63,7 @@ export function DashboardShell({ children }) {
             <button
               type="button"
               onClick={() => router.back()}
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/40 text-white/70 transition hover:bg-[#ff5f00] hover:border-[#ff5f00] hover:text-white cursor-pointer"
+              className="inline-flex h-12 w-12 items-center justify-center border border-white/40 text-white/70 transition hover:bg-[#ff5f00] hover:border-[#ff5f00] hover:text-black cursor-pointer"
               aria-label="Go back"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -82,12 +89,12 @@ export function DashboardShell({ children }) {
                   key={tab.href}
                   href={tab.href}
                   className={`
-                    px-7 py-[.8vw] max-md:py-[2vw] rounded-full
+                    px-7 py-[.8vw] max-md:py-[2vw]
                     transition-all duration-300
                     border shrink-0
                     ${active
-                      ? "bg-white text-black border-white"
-                      : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
+                      ? "bg-[#ff5f00] text-black border-[#ff5f00]"
+                      : "bg-[#272727] text-white border-white/0 hover:bg-[#ff5f00] hover:text-black"}
                   `}
                 >
                   {tab.label}
@@ -96,7 +103,7 @@ export function DashboardShell({ children }) {
             })}
           </div>
 
-          <Button
+          <ButtonV3
             href="/effects"
             text={"Browse Effects"}
          />

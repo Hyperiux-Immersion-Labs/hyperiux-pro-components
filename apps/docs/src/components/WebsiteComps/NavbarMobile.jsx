@@ -16,9 +16,10 @@ import gsap from "gsap";
 
 
 import { HyperiuxLogo } from "@/utils/Icons";
-import Button from "./Button";
+
 import { navCategoryColumns, navDocsItems, vaultLinks } from "@/utils/Links";
 import { HamburgerIcon } from "./Icons";
+import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -658,15 +659,15 @@ export default function NavbarMobile() {
                 ClerkProvider, so the mobile nav always shows the anonymous
                 state. */}
             <div className="flex w-fit max-md:w-[88%] max-md:mx-auto justify-center" onClick={handleNavigate}>
-              <Button
+              <ButtonV3
                 text="Get Pro"
                 href="/sign-up"
                 className="border-white/50! w-full"
-                variant="outline2"
+                variant="outline"
               />
             </div>
             <div className="flex w-fit  max-md:w-[88%] max-md:mx-auto justify-center" onClick={handleNavigate}>
-              <Button text="Install CLI" href="/docs/installation" className="w-fit max-md:w-full" />
+              <ButtonV3 text="Install CLI" href="/docs/installation" className="w-fit max-md:w-full" />
             </div>
           </div>
         </div>

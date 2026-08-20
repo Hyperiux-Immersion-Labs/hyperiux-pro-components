@@ -20,6 +20,31 @@ export function getCliTokenFromRequest(request) {
   return null;
 }
 
+// Lenient counterpart to verifyCliToken(): resolves whichever clerk_user_id
+// a token belongs to for *attribution* purposes (telemetry, install-limit
+// identity), without gating on plan/active-status the way content-access
+// decisions do. A free or expired-pro user's token should still correctly
+// attribute their installs to them - only a missing/malformed/revoked token
+// resolves to no identity at all.
+export async function resolveClerkUserIdFromCliToken(token) {
+  if (!token || !token.startsWith("hpx_")) return null;
+
+  const tokenHash = hashCliToken(token);
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .select("clerk_user_id, cli_token_revoked_at")
+    .eq("cli_token_hash", tokenHash)
+    .maybeSingle();
+
+  if (error) {
+    console.error("RESOLVE_CLERK_USER_ID_FROM_CLI_TOKEN_ERROR:", error);
+    return null;
+  }
+  if (!data || data.cli_token_revoked_at) return null;
+
+  return data.clerk_user_id;
+}
+
 export async function verifyCliToken(token) {
   if (!token) {
     return {

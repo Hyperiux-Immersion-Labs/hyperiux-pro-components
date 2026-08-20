@@ -71,13 +71,15 @@ export function Tooltip({
     if (!visible) return undefined;
 
     // The portaled tooltip isn't a DOM descendant of the trigger anymore,
-    // so it won't move if the page scrolls/resizes underneath it - dismiss
-    // instead of tracking position continuously for a hover-only UI.
-    window.addEventListener("scroll", hide, true);
+    // so it won't track a window resize underneath it - dismiss rather than
+    // recompute position continuously for a hover-only UI. Scroll used to
+    // dismiss it too, but pages that programmatically adjust scroll while
+    // hovering (ScrollTrigger.refresh, layout-shifting grid animations,
+    // etc.) fired that on effectively every hover, hiding the tooltip the
+    // instant it appeared and reading as a flicker.
     window.addEventListener("resize", hide);
 
     return () => {
-      window.removeEventListener("scroll", hide, true);
       window.removeEventListener("resize", hide);
     };
   }, [visible]);
@@ -108,7 +110,7 @@ export function Tooltip({
               left: coords.left,
               transform: coords.transform,
             }}
-            className="pointer-events-none z-9999 whitespace-nowrap rounded-full border border-white/10 bg-[#0e0e0e] px-3 py-1.5 text-xs font-medium text-white shadow-lg max-md:hidden max-[1025px]:hidden"
+            className="pointer-events-none z-9999  max-w-[20vw] max-h-30  text-center  bg-[#2B2B2B] px-3 py-1.5 text-xs font-medium text-white shadow-lg max-md:hidden max-[1025px]:hidden"
           >
             {label}
           </span>,

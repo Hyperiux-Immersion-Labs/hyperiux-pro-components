@@ -105,8 +105,10 @@ export async function GET(request, { params }) {
         .eq("clerk_user_id", userId)
         .order("created_at", { ascending: false }),
 
+      // install_unlocks supersedes copy_usage_effects (Installation-SyncUp.md
+      // Stage 1.5) - covers CLI/MCP installs too now, not just web copies.
       supabase
-        .from("copy_usage_effects")
+        .from("install_unlocks")
         .select("effect_slug, usage_date")
         .eq("clerk_user_id", userId)
         .order("usage_date", { ascending: false }),

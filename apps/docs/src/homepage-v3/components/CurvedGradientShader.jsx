@@ -38,6 +38,8 @@ uniform float uOverscan;
 uniform float uPixelSize;
 uniform float uColorNum;
 uniform float uDither;
+/** 1.0 = current bend. Lower = flatter band. 0 = no curve. */
+uniform float uCurve;
 
 const vec3 BG      = vec3(0.0196);                // #050505 – page background
 const vec3 PRIMARY = vec3(1.0, 0.373, 0.0);       // #ff5f00 – primary brand color
@@ -97,7 +99,7 @@ void main() {
   // the band already sitting above centre.
   float fromMid = uProgress - 0.5;
   float baseCurvature = -fromMid * mix(2.5, 1.7, step(0.0, fromMid));
-  float curvature = baseCurvature + uDeform * 0.55;
+  float curvature = (baseCurvature + uDeform * 0.55) * uCurve;
 
   // ── Circular-arc shape for semicircle / rainbow contour ──
   float radius = 1.4 + abs(uDeform) * 0.3;
@@ -174,6 +176,7 @@ export default function CurvedGradientShader({
   scrollStart = "top bottom",
   scrollEnd = "bottom top",
   markers = false,
+  curveStrength = 1,
 }) {
   const wrapRef = useRef(null);
   const canvasRef = useRef(null);
@@ -260,6 +263,7 @@ export default function CurvedGradientShader({
         pixelSize: gl.getUniformLocation(program, "uPixelSize"),
         colorNum: gl.getUniformLocation(program, "uColorNum"),
         dither: gl.getUniformLocation(program, "uDither"),
+        curve: gl.getUniformLocation(program, "uCurve"),
       };
 
       resize();
@@ -293,6 +297,7 @@ export default function CurvedGradientShader({
       gl.uniform1f(uniforms.pixelSize, pixelSize);
       gl.uniform1f(uniforms.colorNum, colorNum);
       gl.uniform1f(uniforms.dither, dither ? 1.0 : 0.0);
+      gl.uniform1f(uniforms.curve, curveStrength);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
 

@@ -6,24 +6,15 @@ import { ClerkProvider } from "@clerk/nextjs";
 // sign-up, pricing's plan-aware UI, cli-auth) lives under this group.
 // Route groups don't change URLs.
 // Clerk only reads `localization` off <ClerkProvider> - passing it directly
-// to <SignIn>/<SignUp> is silently ignored (it's not in either component's
-// prop list, so React forwards it but Clerk never looks at it). Keyed by
-// signIn.*/signUp.* so the title/subtitle/action copy stays scoped to each
-// flow. formButtonPrimary and the password placeholder are deliberately NOT
-// set here - both are single global keys shared by every Clerk form in the
-// app, so a value that's right for one page's button/field would be wrong
-// on the other's (see ClerkButtonLabel, used per-page for formButtonPrimary
-// instead).
+// to <SignUp> is silently ignored (it's not in the component's prop list, so
+// React forwards it but Clerk never looks at it). No `signIn.*` key here
+// anymore - /sign-in is a fully custom Clerk Elements flow (SignInFlow.jsx)
+// that renders its own literal copy per step and never reads this object at
+// all, unlike the still-prebuilt <SignUp>. formButtonPrimary and the
+// password placeholder are deliberately NOT set here - both are single
+// global keys shared by every Clerk form in the app, so a value that's
+// right for one page's button/field would be wrong on the other's.
 const clerkLocalization = {
-  signIn: {
-    start: {
-      title: "Back to the Vault.",
-      subtitle:
-        "Sign in to access your effects, Pro downloads, and CLI authentication.",
-      actionText: "New here?",
-      actionLink: "Create an account →",
-    },
-  },
   signUp: {
     start: {
       title: "Open the Vault.",
@@ -42,6 +33,13 @@ export default function AppLayout({ children }) {
   return (
     <ClerkProvider
       localization={clerkLocalization}
+      // The custom Elements-based sign-in flow (SignInFlow.jsx) has no
+      // per-component equivalent of the old <SignIn fallbackRedirectUrl/
+      // forceRedirectUrl> props - Clerk reads these two off ClerkProvider
+      // instead once a session completes via Elements. signUp's own
+      // redirect keeps working unchanged via its own component-level props.
+      signInFallbackRedirectUrl="/effects"
+      signInForceRedirectUrl="/effects"
       appearance={{
         cssLayerName: "clerk",
         theme: "simple",

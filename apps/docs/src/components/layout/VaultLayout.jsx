@@ -344,7 +344,9 @@ export function VaultLayout({
   };
 
   const renderedChildren =
-    typeof children === "function" ? children({ isSidebarOpen }) : children;
+    typeof children === "function"
+      ? children({ isSidebarOpen, toggleSidebar, isSidebarReady })
+      : children;
 
   return (
     <div className="relative min-h-[200vh] text-foreground">

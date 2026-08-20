@@ -18,6 +18,7 @@ export const CHAR_SETS = {
   binary: [" ", "0", "1","0", "1"],
   numbers: [" ", " ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
   symbols: [" ", " ", "#", "$", "&", "*", "@", "!"],
+  currency: ["$"," ", " "," ", " "," ", " "," ", " "],
 };
 
 export const CHAR_SET_NAMES = Object.keys(CHAR_SETS);

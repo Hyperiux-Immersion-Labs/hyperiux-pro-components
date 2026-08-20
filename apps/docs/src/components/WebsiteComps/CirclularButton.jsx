@@ -1,8 +1,7 @@
 'use client'
 import React, { useRef } from 'react';
 import Link from 'next/link';
-// If SOCIAL_ICONS is from somewhere else, be sure to import that too, e.g.:
-// import { SOCIAL_ICONS } from './path/to/icons';
+
 
 export default function CircularButton({
     href = "/",
@@ -10,7 +9,7 @@ export default function CircularButton({
     variant,
     children,
     className = "",
-    iconClassName = "",
+    iconClassName = "group-hover:text-black",
     fill = "",
     menuSocial = false,
     bgColor,
@@ -44,7 +43,8 @@ export default function CircularButton({
         }
     };
 
-    const sharedClassName = `rounded-full overflow-hidden socials cursor-pointer relative border border-white w-fit h-fit group duration-500 ease-in-out flex items-center justify-center ${menuSocial ? "menusocials" : "hover:border-[#ff5f00]"
+    const sharedClassName = `
+     overflow-hidden socials cursor-pointer relative border border-white w-fit h-fit group duration-500 ease-in-out flex items-center justify-center ${menuSocial ? "menusocials" : "hover:border-[#ff5f00]"
         } ${className}`;
 
     const innerContent = (
@@ -53,13 +53,13 @@ export default function CircularButton({
                 ref={spanRef}
                 className="absolute aspect-square rounded-full pointer-events-none"
                 style={{
-                    width: "250%",
+                    width: "350%",
                     transform: "translate(-50%, -50%) scale(0)",
-                    transition: "transform 0.5s ease",
+                    transition: "transform 0.3s ease",
                     backgroundColor: bgColor ?? (menuSocial ? "#ffffff" : "#ff5f00"),
                 }}
             />
-            <span className="relative z-2 flex items-center justify-center">
+            <span className="relative z-2 flex items-center justify-center ">
                 {Icon ? <Icon className={iconClassName} fill={fill} /> : children}
             </span>
         </>

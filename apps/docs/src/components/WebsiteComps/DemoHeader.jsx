@@ -7,10 +7,11 @@ import { useEffect, useRef, useState } from "react";
 import LinkButton from "../link-button";
 import Button from "./Button";
 import { getEffectRouteSlug } from "@/lib/effect-slugs";
+import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 export default function DemoHeader({
   logoColor = "#1a1a1a",
-  text = "Browse effects",
+  text = "Browse Effects",
   textColor = "#1a1a1a",
   href = "/effects",
   showText = true,
@@ -143,13 +144,13 @@ export default function DemoHeader({
           <div className="min-w-0 text-right flex items-center justify-center gap-3">
             {showText ? (
               <>
-                <Button
+                <ButtonV3
                                 text="Read Article"
                                 href={readArticleHref}
                                 className="border-white/50! bg-[#0e0e0e]! max-[1025px]:hidden"
-                                variant="outline2"
+                                variant="outline"
                               />
-                <Button
+                <ButtonV3
                   text={text}
                   href={href}
                   variant="orange"
@@ -161,7 +162,7 @@ export default function DemoHeader({
                   mobileText={text}
                   textColor={textColor}
                   clickedColor={textColor}
-                  className="hidden origin-right whitespace-nowrap text-xl scale-[0.7] transition-transform duration-200 max-[1025px]:block max-md:block"
+                  className="hidden origin-right whitespace-nowrap text-xl scale-[0.7] transition-transform duration-200 max-[1025px]:block max-[1025px]:text-[4vw] max-md:block"
                   iconClassName="h-5 w-5 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-6 max-md:w-6"
                 />
               </>

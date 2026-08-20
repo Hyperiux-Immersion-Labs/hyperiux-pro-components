@@ -91,7 +91,6 @@ describe("sanity code sync", () => {
     expect(nextBody[1]).toMatchObject({
       _type: "effectCodeBlock",
       filename: "index.jsx",
-      language: "jsx",
       code: "new index",
       custom: "preserved",
     });
@@ -116,8 +115,7 @@ describe("sanity code sync", () => {
     expect(nextBody).toHaveLength(3);
     expect(nextBody[2]).toMatchObject({
       _type: "effectCodeBlock",
-      filename: "Helper.jsx",
-      language: "jsx",
+      filename: "Helper",
       code: "helper",
     });
   });
@@ -198,17 +196,17 @@ function makeCodeBlock(filename, code, extra = {}) {
     _type: "effectCodeBlock",
     _key: `code-${filename || "missing"}`,
     filename,
-    language: "jsx",
     code,
     ...extra,
   };
 }
 
 function makeRegistryFile(filePath, content) {
+  const ext = path.extname(filePath);
   return {
     path: filePath,
     filename: path.basename(filePath),
-    language: filePath.endsWith(".css") ? "css" : "jsx",
+    filenameNoExt: path.basename(filePath, ext),
     content,
   };
 }

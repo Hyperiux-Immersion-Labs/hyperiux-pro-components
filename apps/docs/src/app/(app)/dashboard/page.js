@@ -27,7 +27,7 @@ function getBillingLabel(value) {
 
 function StatCard({ label, value, detail, href }) {
   const content = (
-    <div className="h-full flex flex-col justify-between rounded-md p-6 bg-[#272727] backdrop-blur-lg transition duration-300 hover:border-[#ff5f00]">
+    <div className="h-full flex flex-col justify-between  p-6 bg-[#272727] backdrop-blur-lg transition duration-300 hover:border-[#ff5f00]">
       <p className="text-white mb-3">{label}</p>
 
       <p className="text-2xl font-medium font-neue-haas leading-none">{value}</p>
@@ -107,7 +107,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {justUpgraded && (
-        <div className="border border-green-500/30 rounded-lg px-6 py-4 bg-green-500/10 text-green-400">
+        <div className="border border-green-500/30  px-6 py-4 bg-green-500/10 text-green-400">
           🎉 Welcome to Pro! Your account has been upgraded.
         </div>
       )}
@@ -147,7 +147,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className=" rounded-md p-6 bg-[#272727]">
+      <div className="  p-6 bg-[#272727]">
         <div className="flex items-start justify-between gap-6 max-[1025px]:flex-col max-[1025px]:items-start">
           <div>
             
@@ -189,7 +189,7 @@ export default function DashboardPage() {
             <>
               <Link
                 href="/pricing"
-                className="inline-flex px-5 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
+                className="inline-flex px-5 py-3  bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-black"
               >
                Upgrade to Pro
               </Link>
@@ -205,14 +205,14 @@ export default function DashboardPage() {
                     href={data.manageSubscriptionUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex px-7 py-3 rounded-full border border-white/20 text-white transition duration-300 hover:bg-white hover:text-black"
+                    className="inline-flex px-7 py-3  border border-white/20 text-white transition duration-300 hover:bg-white"
                   >
                     Manage Subscription
                   </a>
                 )}
                 <Link
                   href="/effects/pro"
-                  className="inline-flex px-7 py-3 rounded-full bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
+                  className="inline-flex px-7 py-3  bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-white"
                 >
                   Explore Pro Effects
                 </Link>

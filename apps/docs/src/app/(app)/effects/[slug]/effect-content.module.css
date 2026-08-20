@@ -59,7 +59,7 @@
 
 .content h3 {
   color: rgb(255 255 255);
-  font-size: 1.5vw;
+  font-size: 1.55vw;
   line-height: 1.15;
   letter-spacing: -0.03em;
   font-weight: 400;
@@ -164,49 +164,28 @@
 
 .faqAccordionTitle {
   margin-top: 0;
+  
 }
 
 .faqAccordionItem h3 {
   margin-top: 0.5rem;
 }
 
-.faqAccordionItems {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5vw;
-}
-
 .faqAccordionItem {
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255);
   border-radius: 0.3rem;
   padding: 0.8rem 1.1rem;
 }
 
 .faqAccordionQuestion {
   color: rgb(255 255 255);
-  font-size: clamp(0.98rem, 1.05vw, 1.1rem);
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-.faqAccordionQuestionHeading {
-  margin: 0;
-  color: rgb(255 255 255);
-  font-size: 1.05vw;
+  font-size: 1.55vw;
   font-weight: 500;
   line-height: 1.35;
 }
 
 .faqAccordionIcon {
   margin-top: 0rem;
-}
-
-.faqAccordionAnswer {
-  width: 90%;
-  max-width: 90%;
-  margin-top: 0.8vw;
-  font-size: 1.15vw;
-  line-height: 1.7;
 }
 
 .changelogTitle {
@@ -394,7 +373,6 @@
 
 .tableWrap {
   overflow-x: auto;
-  border-radius: 0.3rem;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: transparent;
   --table-border: rgba(255, 255, 255, 0.14);
@@ -408,7 +386,6 @@
 }
 
 .contentCodeBlockNoFilename {
-  border-radius: 0.3rem;
   background: #272727;
   
 }
@@ -656,24 +633,6 @@
 
 
 
-  .faqAccordionAnswer {
-    width: 100%;
-    max-width: 100%;
-    font-size: 3.8vw;
-    line-height: 1.4;
-  }
-
-  .faqAccordion h3 {
-    font-size: 5vw;
-    line-height: 1.3;
-  }
-
-  .faqAccordionItems {
-  display: flex;
-  flex-direction: column;
-  gap: 5vw;
-}
-
   .changelogTimelineItem {
     grid-template-columns: 1rem minmax(0, 1fr);
     gap: 0.65rem;
@@ -747,8 +706,5 @@
   .callout:not(.calloutInfo):not(.calloutWarning):not(.calloutSuccess) ul li {
     flex-basis: 100%;
     max-width: 100%;
-  }
-  .tableWrap {
-    border-radius: 0.3rem;
   }
 }

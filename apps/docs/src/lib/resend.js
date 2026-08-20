@@ -22,8 +22,10 @@ const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL || "Hyperiux Vault <hello@hyp
  * @param {string} [options.emailType] - Logical category e.g. "welcome", "pro_onboarding"
  * @param {string} [options.from] - Override sender address
  * @param {string} [options.replyTo] - Reply-to address
+ * @param {string} [options.id] - Pre-generated sent_emails row id, so callers can
+ *   embed it in the email content (e.g. a click-tracking link) before the row exists
  */
-export async function sendEmail({ to, subject, html, text, react, emailType = "transactional", from, replyTo }) {
+export async function sendEmail({ to, subject, html, text, react, emailType = "transactional", from, replyTo, id }) {
   let status = "success";
   let errorMessage = null;
   let loggedHtml = html || null;
@@ -68,6 +70,7 @@ export async function sendEmail({ to, subject, html, text, react, emailType = "t
   supabase
     .from("sent_emails")
     .insert({
+      ...(id ? { id } : {}),
       recipient_email: to,
       subject,
       html_content: loggedHtml,
@@ -80,5 +83,5 @@ export async function sendEmail({ to, subject, html, text, react, emailType = "t
       if (logError) console.error("SENT_EMAIL_LOG_ERROR:", logError.message);
     });
 
-  return { success: status === "success" };
+  return { success: status === "success", error: errorMessage };
 }

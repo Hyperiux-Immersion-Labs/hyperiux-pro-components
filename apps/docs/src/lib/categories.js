@@ -9,8 +9,7 @@ export const effectsOverviewContent = {
     description: "Explore 115 editable interaction effects for React and Next.js, including scroll, cursor, WebGL, buttons and transitions. Preview live and install fast.",
   },
   description: [
-    "Hyperiux Vault is a growing library of 115 interaction effects for React and Next.js - scroll systems, cursor trails, WebGL scenes, animated buttons, and page transitions, all shipped as editable source code you copy straight into your own repo. Browse by category below, preview any effect live, and install with the CLI or a single copy-paste.",
-    "Use this page when you are looking for the right interaction before you know its category. Scan the catalog, compare patterns, and choose the effect that makes the page clearer, sharper, or harder to forget.",
+    "115 production-ready interaction effects for React & Next.js. Browse scroll systems, cursor effects, WebGL scenes, buttons, and transitions. Preview live, then copy or install with the CLI.",
   ],
   cta: {
     heading: "Request a Custom Animation",
@@ -38,7 +37,55 @@ export const effectsOverviewContent = {
     {
       question: "What changes when reduced motion is enabled?",
       answer: "Animated previews should pause or become static. Autoplay, looping motion, cursor trails, WebGL movement, and continuous background effects should not run automatically. The catalog should remain fully browsable without motion."
-    }
+    },
+    {
+      question: "Are free effects really free for commercial use?",
+      answer: "Yes. Free effects are commercial-friendly where marked in the license, so you can ship them on client sites and products without paying."
+    },
+    {
+      question: "What's the difference between Free and Pro?",
+      answer: "Free includes 30+ effects covering text, buttons, and basic scroll interactions. Pro unlocks the full 115 effect library, including cursor effects, WebGL scenes, and advanced page transitions."
+    },
+    {
+      question: "Do I need an account to use free effects?",
+      answer: "Yes. To use or copy even free effects, you need to sign in with an account.Free effects don’t require a Pro plan, but signing in is required so the site can generate your access token, track copy/install usage, and keep your saved effects and account activity synced."
+    },
+    {
+      question: "How do I upgrade from free to Pro effects?",
+      answer: "You can subscribe to our Pro plans on the Pricing page. Once subscribed, you will receive a CLI token to install Pro effects directly from our registry."
+    },
+    {
+        question: "What makes a component worth featuring?",
+        answer: "A featured component should have a clear reason to stand out: strong craft, practical use, launch-page value, brand impact, technical quality, or a pattern the Hyperiux team believes users should notice first.",
+      },
+      {
+        question: "Is Featured only for the most visually dramatic effects?",
+        answer: "No. Some featured components may be quiet but commercially useful. A Dotted Grid, Animated FAQ, Directional Menu, or premium CTA button can deserve attention as much as a WebGL hero or page transition.",
+      },
+      {
+        question: "How should users treat the Featured page?",
+        answer: "Use it as a curated starting point, not a final answer. Featured helps users find strong candidates quickly, but the right component still depends on the page goal, audience, device mix, and performance budget."
+      },
+      {
+        question: "When should a user leave Featured and browse a category instead?",
+        answer: "If the user needs a specific behavior, such as a loader, cursor, form, carousel, or text reveal, they should open that category and compare more options. Featured is selective by design."
+      },
+      {
+        question: "How should Featured previews stay fast?",
+        answer: "The page should not run multiple heavy effects at once. WebGL, canvas, video, and continuous animation previews should use static thumbnails, lazy loading, offscreen pause, or click-to-preview behavior."
+      },
+      {
+        question: "What accessibility standard should Featured components meet?",
+        answer: "A component should not be featured only because it looks good. It should have a credible path for readable HTML, keyboard access where relevant, visible focus states, mobile behavior, and reduced-motion fallback."
+      },
+      {
+        question: "How should Featured work for mobile users?",
+        answer: "The page should prioritize clarity over spectacle. Cursor effects can be shown as static previews, WebGL effects can use poster images, and motion-heavy cards should not make browsing slower or harder."
+      },
+      {
+        question: "Can Featured change over time?",
+        answer: "Yes. Featured can change as the Vault grows, as new components launch, or as the Hyperiux team decides certain effects are more useful, more polished, or more relevant for current product and brand use cases."
+      }
   ],
 };
 
@@ -100,8 +147,7 @@ export const effectCategories = [
       description: "Browse curated featured Hyperiux Vault components selected for strong craft, practical use, and brand impact.",
     },
     description: [
-      "Featured is the curated category inside Hyperiux Vault. Instead of showing every component, this page highlights effects the Hyperiux team believes deserve extra attention.",
-      "These components may be selected because they solve a common page problem, create a memorable interaction, demonstrate strong craft, or work especially well for SaaS, AI, agency, portfolio, product, developer-tool, and brand-led websites. Use this page as a sharper starting point when the full catalog feels too broad."
+      "Browse a handpicked selection of effects and components from across Vault, curated to help you discover interesting interactions, useful ideas and strong starting points for your next build.",
     ],
     cta: {
       heading: "Request a Custom Animation",
@@ -154,7 +200,7 @@ export const effectCategories = [
       title: "Text Animations for React & Next.js | Hyperiux Vault",
       description: "React text animations for real HTML text: scramble, mask, overflow, blur, fill, spotlight, and reveal effects for headlines, launch copy, and short statements.",
     },
-    description: ["Text animation should help important words arrive with intent. Hyperiux Vault text effects are for hero headlines, section intros, product claims, launch statements, and short labels where timing adds emphasis. The final text must remain real DOM text, not a canvas-only magic trick. Under reduced motion, the readable final state should appear immediately because legibility is the product."],
+    description: ["Bring headlines and key messages to life with reveals, scrambles, fills and motion effects that add emphasis, create visual interest and make important words stand out at the right moment."],
     cta: {
       heading: "Request a Custom Text Animation",
       description: "Need a custom effect? Tell us what to create.",
@@ -206,8 +252,7 @@ export const effectCategories = [
       description: "React animated backgrounds for SaaS and AI heroes: dotted grids, particle fields, and dithered canvas textures, with guidance on contrast, density, and cost.",
     },
     description: [
-       "Animated backgrounds should support the message and then stop auditioning for the lead role. Hyperiux Vault backgrounds create engineered atmosphere without defaulting to slow video: dotted grids, particle fields, and dithered canvas textures that sit behind readable HTML content. Dotted Grid is the safest default for SaaS and AI pages because it can remain lightweight; particle and canvas effects need density caps and offscreen pauses.",
-      "Backgrounds carry the most visual weight of any effect on the page, so treat them as a supporting layer: keep contrast high enough for text to stay readable, cap particle density on mobile, and always ship a static fallback for reduced-motion users."],
+       "Add depth, movement and atmosphere behind your content with animated grids, particles, textures and patterns that make sections feel more immersive without taking attention away from the message."],
     cta: {
       heading: "Request a Custom Background Animation",
       description: "Need a custom effect? Tell us what to create.",
@@ -258,7 +303,7 @@ export const effectCategories = [
       title: "Animated Buttons for React & Next.js | Hyperiux Vault",
       description: "Accessible animated buttons for React and Next.js: CTA microinteractions, staggered labels, arrow fills, and scramble links that preserve semantics and focus.",
     },
-    description: "Buttons do not need drama. They need feedback. Hyperiux Vault button effects make actions feel responsive without slowing the click: letters stagger, arrows fill, dots expand, labels scramble, and toggles verify state. The semantics stay honest: use buttons for actions, anchors for navigation, visible focus for keyboard users, and reduced-motion states that still look intentional.",
+    description: "Make calls to action feel more responsive and engaging with button effects that add satisfying hover, click and motion feedback while keeping the action clear, familiar and easy to use.",
     cta: {
       heading: "Request a Custom Button Animation",
       description: "Need a custom effect? Tell us what to create.",
@@ -306,7 +351,7 @@ export const effectCategories = [
       description: "React carousel effects for visual showcases: clip-path reveals and zoom sliders with visible controls, swipe, and keyboard support.",
     },
     description: [
-      "Most carousels hide important content and then act surprised when nobody reads it. Hyperiux Vault carousel effects are for equal-weight visual browsing: project images, product showcases, campaign visuals, and editorial sequences where a directed slide experience makes sense. They must keep controls visible, support keyboard and swipe, pause autoplay on interaction, and avoid burying critical information."
+      "Present images, projects and content collections through engaging carousel interactions that make browsing feel more dynamic while helping users move naturally through showcases, portfolios, campaigns and visual stories."
     ],
     cta: {
       heading: "Request a Custom Carousel Animation",
@@ -362,7 +407,7 @@ export const effectCategories = [
       title: "Scroll Animations for React & Next.js | Hyperiux Vault",
       description: "React scroll animations for product stories, feature tours, and portfolio chapters. Compare behavior, mobile fallbacks, and GSAP/Lenis needs before production.",
     },
-    description: ["Scroll is the most common interaction on a page, so it deserves discipline. Hyperiux Vault scroll effects are for sections that need sequence, depth, pacing, or reveal logic: feature stories, product tours, case studies, process pages, portfolio chapters, and long-form brand pages where the visitor should feel a deliberate progression. The strongest scroll effects preserve the real document order first, then add movement on top. They do not hijack the wheel, trap the visitor, or turn a simple landing page into an obstacle course."],
+    description: ["Turn scrolling into part of the experience with reveals, transformations and sequenced motion that guide attention, build visual rhythm and help content unfold naturally as users move through the page."],
     cta: {
       heading: "Request a Custom Scroll Animation",
       description: "Need a custom effect? Tell us what to create.",
@@ -417,7 +462,7 @@ export const effectCategories = [
       title: "Creative Components for React & Next.js | Hyperiux Vault",
       description: "Creative React components for conversion pages: animated FAQ, forms, tabs, modals, video, and testimonial components, built with ARIA-first, crawlable markup.",
     },
-    description: "This is the conversion category. These components answer objections, collect leads, organize product depth, reveal proof, and help users act. Animated FAQ, Form, Tabs, and Modal are production-sensitive because they touch revenue and accessibility at the same time. The motion should clarify state or reveal supporting content; it should never delay validation, focus movement, submission, or a purchase decision.",
+    description: "Add thoughtful interaction to cards, tabs, FAQs, forms, modals and other interface elements with effects that make everyday components feel more engaging, responsive and enjoyable to explore.",
     cta: {
       heading: "Request a Custom Creative Component",
       description: "Need a custom effect? Tell us what to create.",
@@ -464,7 +509,7 @@ export const effectCategories = [
       title: "Navigation Effects for React & Next.js | Hyperiux Vault",
       description: "React navigation effects for menus and navbars: directional menus, immersive overlays, elevated headers, and expanding navbars.",
     },
-    description: "Navigation is the riskiest place to be clever because every visitor needs it. Hyperiux Vault navigation effects add spatial presence without stealing reliability: panels enter from pointer direction, full-screen menus create deliberate pauses, navbars elevate as the page moves, and compact headers expand when needed. The menu must work before animation is added.",
+    description: "Make menus, navbars and navigation patterns feel more polished and responsive with interactions that add character while helping users stay oriented and move confidently between important parts of the experience.",
     cta: {
       heading: "Request a Custom Navigation",
       description: "Need a custom effect? Tell us what to create.",
@@ -511,7 +556,7 @@ export const effectCategories = [
       title: "Cursor Effects for React & Next.js | Hyperiux Vault",
       description: "Custom cursor effects for React and Next.js: glass lenses, image trails, pixel blooms, and aura cursors, each with touch-device and reduced-motion fallbacks.",
     },
-    description: "Cursor effects belong on pages where the pointer can become part of the brand without interfering with meaning. They can make a homepage feel tactile in the first movement: a glass lens bends the surface, an image trail reveals work, pixels bloom behind the pointer, or a rope follows with delayed weight. They should disappear on touch devices and stay away from utility screens where precision matters more than atmosphere.",
+    description: "Add an expressive layer to pointer movement with trails, distortions, followers and responsive interactions that make browsing feel more tactile, playful and connected to what users are exploring on screen.",
     cta: {
       heading: "Request a Custom Cursor Effect",
       description: "Need a custom effect? Tell us what to create.",
@@ -558,7 +603,7 @@ export const effectCategories = [
       title: "Page Transitions for React & Next.js | Hyperiux Vault",
       description: "Next.js page transitions for branded route changes: pixel wipes, block reveals, SVG draws, and flips, with App Router, focus, and reduced-motion guidance.",
     },
-    description: ["A route change is a free cut between scenes. Hyperiux Vault page transitions use that cut as a short branded moment: pixels dissolve, blocks sweep, SVG lines draw, pages flip, or grids close and open. The transition should never become a toll booth. It must follow real route state, finish quickly, restore focus predictably, and collapse to an instant or subtle fade for reduced-motion users."],
+    description: ["Create smoother movement between pages and views with transitions that maintain visual continuity, reinforce the experience and make navigation feel more intentional instead of like an abrupt change of screen."],
     cta: {
       heading: "Request a Custom Page Transition",
       description: "Need a custom effect? Tell us what to create.",
@@ -610,8 +655,7 @@ export const effectCategories = [
       title: "Loaders & Preloaders for React & Next.js | Hyperiux Vault",
       description: "React loaders and preloaders for real wait states: numeric progress, line, and stack loaders tied to actual latency, with aria-busy and skeleton guidance.",
     },
-    description: ["A loader is an apology for a wait. Hyperiux Vault loaders are for moments where something genuinely takes time: route transition, asset loading, upload progress, WebGL warm-up, or a data request. They should be honest, brief, and connected to real state. If the page is already fast, do not add a fake preloader. You solved the loading problem; do not reintroduce it wearing a nicer coat.",
-      "A loader is only as good as the state it's covering. Match the animation style to the wait (a quick line for sub-second fetches, a numeric or stack loader for anything users might actually notice), and always pair it with aria-busy so assistive tech knows the page isn't finished."
+    description: ["Make necessary waiting moments feel clearer and more considered with loading animations that communicate activity, maintain visual continuity and reassure users that the experience is still actively responding."
     ],
     cta: {
       heading: "Request a Custom Loader",
@@ -660,7 +704,7 @@ export const effectCategories = [
       title: "WebGL and 3D Effects for React & Next.js | Hyperiux Vault",
       description: "WebGL and 3D React effects for shader-led heroes: bloom, glass, tunnels, and interactive canvas scenes, with device-tier GPU budgets and poster fallbacks.",
     },
-    description: "This is the proof-of-craft category, and it carries the highest production cost. Hyperiux Vault WebGL and 3D effects bring real GPU work to the page: glass shaders, bloom scenes, grid tunnels, curved planes, pixelation, and draggable canvases. Use them for premium heroes, AI/product launches, creative portfolios, and immersive brand work where the visual payoff justifies the cost.",
+    description: "Create richer, more immersive moments with interactive 3D, shaders, particles and WebGL effects that add depth and visual impact where standard interface animation is not enough.",
     cta: {
       heading: "Request a Custom WebGL Effect",
       description: "Need a custom effect? Tell us what to create.",

@@ -917,7 +917,7 @@
     "name": "cards-runway",
     "title": "Cards Runway",
     "description": "A horizontal runway of cards that animates as you scroll",
-    "category": "components",
+    "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.1.1",
@@ -945,7 +945,7 @@
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/cards-runway/registry.json",
+    "registryPath": "registry/effects/scroll/cards-runway/registry.json",
     "importPath": "@/components/effects/cards-runway",
     "target": "src/components/effects/cards-runway",
     "previewUrl": "/demo/cards-runway",
@@ -1138,6 +1138,126 @@
       }
     ],
     "registryPath": "registry/effects/transitions/chess-grid-transition/registry.json"
+  },
+  {
+    "name": "chromatic-text",
+    "version": "1.1.3",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Chromatic Text",
+    "description": "Three-layer scroll-reactive chromatic text with white, red, and blue depth layers.",
+    "category": "text",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/chromatic-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ChromaticText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/chromatic-text",
+    "target": "src/components/effects/chromatic-text",
+    "props": [
+      {
+        "name": "baseTextColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Color of the front/base text layer.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "firstTextColor",
+        "type": "string",
+        "default": "#FFB200",
+        "description": "Color of the red chromatic depth layer.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "secondTextColor",
+        "type": "string",
+        "default": "#EB5B00",
+        "description": "Color of the blue chromatic depth layer.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 10,
+        "description": "Font size in vw units shared by every text layer.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 4,
+          "max": 18,
+          "step": 0.25
+        }
+      },
+      {
+        "name": "fontWeight",
+        "type": "number",
+        "default": 500,
+        "description": "Font weight shared by every text layer.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#111111",
+        "description": "Background color for the scroll section.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "colors",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/chromatic-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/chromatic-text/registry.json"
   },
   {
     "name": "circle-text-reveal",
@@ -1559,7 +1679,7 @@
     "type": "registry:component",
     "title": "Depth Card Stack",
     "description": "3D stacked card carousel with perspective depth, gyroscopic tilt on hover, texture reveal effect, physics throw animation, and autoplay",
-    "category": "components",
+    "category": "carousels",
     "dependencies": [
       "gsap",
       "lucide-react"
@@ -1678,7 +1798,159 @@
         "includeOnlyPublicProps": true
       }
     },
-    "registryPath": "registry/effects/components/depth-card-stack/registry.json"
+    "registryPath": "registry/effects/carousels/depth-card-stack/registry.json"
+  },
+  {
+    "name": "depth-flip-text",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-17",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Pers Text",
+    "description": "Vault-themed perspective text flip with staggered character motion and optional crossfade.",
+    "category": "text",
+    "dependencies": [
+      "@gsap/react",
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/depth-flip-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "DepthFlipText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/depth-flip-text",
+    "target": "src/components/effects/depth-flip-text",
+    "props": [
+      {
+        "name": "phrases",
+        "type": "string[]",
+        "default": [
+          "Hyperiux Vault",
+          "Premium UI Drops",
+          "Built to Ship"
+        ],
+        "description": "Phrases that cycle through the perspective flip.",
+        "copyable": true,
+        "remixer": {
+          "control": "json/list",
+          "enabled": false,
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#f6f5f2",
+        "description": "Background color behind the effect.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#050505",
+        "description": "Text color for both the current and incoming phrase.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "default": false,
+        "description": "Restarts the phrase sequence after the last entry.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "holdDuration",
+        "type": "number",
+        "default": 0.4,
+        "description": "Delay before each phrase begins its flip transition.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "transitionDuration",
+        "type": "number",
+        "default": 1.4,
+        "description": "Duration of the flip animation.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "charStagger",
+        "type": "number",
+        "default": 0.02,
+        "description": "Delay between each character beginning its motion.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.12,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "useOpacityTransition",
+        "type": "boolean",
+        "default": false,
+        "description": "Fades outgoing and incoming characters during the flip.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/depth-flip-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/depth-flip-text/registry.json"
   },
   {
     "name": "depth-shift-transition",
@@ -2004,7 +2276,7 @@
     "name": "draggable-marquee",
     "title": "Draggable Marquee",
     "description": "Infinite horizontal marquee with drag interaction and momentum physics",
-    "category": "scroll",
+    "category": "components",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.1.1",
@@ -2026,7 +2298,7 @@
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/scroll/draggable-marquee/registry.json",
+    "registryPath": "registry/effects/components/draggable-marquee/registry.json",
     "importPath": "@/components/effects/draggable-marquee",
     "target": "src/components/effects/draggable-marquee",
     "previewUrl": "/demo/draggable-marquee",
@@ -2047,6 +2319,396 @@
         "target": "src/components/effects/draggable-marquee/createSuspendedRaf.ts"
       }
     ]
+  },
+  {
+    "name": "drop-text",
+    "version": "2.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Drop Text",
+    "description": "Text that drops into place with configurable stagger origins and character, word, or line splitting.",
+    "category": "text",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/drop-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "DropText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/drop-text",
+    "target": "src/components/effects/drop-text",
+    "props": [
+      {
+        "name": "variant",
+        "type": "string",
+        "default": "drop",
+        "description": "Animation style used for the text entrance.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "drop",
+              "label": "Drop"
+            },
+            {
+              "value": "perspective",
+              "label": "Perspective"
+            }
+          ]
+        }
+      },
+      {
+        "name": "splitBy",
+        "type": "string",
+        "default": "characters",
+        "description": "Text unit used for the drop animation.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "characters",
+              "label": "Characters"
+            },
+            {
+              "value": "words",
+              "label": "Words"
+            },
+            {
+              "value": "lines",
+              "label": "Lines"
+            }
+          ]
+        }
+      },
+      {
+        "name": "staggerFrom",
+        "type": "string",
+        "default": "random",
+        "description": "Origin used for the staggered drop sequence.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "random",
+              "label": "Random"
+            }
+          ]
+        }
+      },
+      {
+        "name": "yOffset",
+        "type": "number",
+        "default": -115,
+        "description": "Starting vertical offset in pixels. Negative values rise from above, positive values drop from below.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": -240,
+          "max": 240,
+          "step": 1
+        }
+      },
+      {
+        "name": "xOffset",
+        "type": "number",
+        "default": 0,
+        "description": "Starting horizontal offset in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": -240,
+          "max": 240,
+          "step": 1
+        }
+      },
+      {
+        "name": "rotate",
+        "type": "number",
+        "default": 0,
+        "description": "Starting rotation in degrees.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": -90,
+          "max": 90,
+          "step": 1
+        }
+      },
+      {
+        "name": "blur",
+        "type": "number",
+        "default": 0,
+        "description": "Starting blur in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 24,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "scaleFrom",
+        "type": "number",
+        "default": 1,
+        "description": "Starting scale before the text settles into place.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "startOpacity",
+        "type": "number",
+        "default": 0,
+        "description": "Starting opacity before the text animates in.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.5,
+        "description": "Animation duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Delay between each animated text unit.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power2.out",
+        "description": "GSAP easing used by the drop animation.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "linear",
+              "label": "Linear"
+            },
+            {
+              "value": "power2.out",
+              "label": "Ease Out"
+            },
+            {
+              "value": "power2.in",
+              "label": "Ease In"
+            },
+            {
+              "value": "power2.inOut",
+              "label": "Ease In Out"
+            },
+            {
+              "value": "back.out(1.7)",
+              "label": "Back"
+            },
+            {
+              "value": "circ.out",
+              "label": "Circular"
+            },
+            {
+              "value": "expo.out",
+              "label": "Expo"
+            }
+          ]
+        }
+      },
+      {
+        "name": "animateOnScroll",
+        "type": "boolean",
+        "default": false,
+        "description": "Runs the animation when the component enters the viewport.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 9,
+        "description": "Font size in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 4,
+          "max": 18,
+          "step": 0.25
+        }
+      },
+      {
+        "name": "fontColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Text color.",
+        "remixer": {
+          "control": "color",
+          "group": "type",
+          "groupTitle": "Type"
+        }
+      },
+      {
+        "name": "fontWeight",
+        "type": "number",
+        "default": 600,
+        "description": "Font weight.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "textAlign",
+        "type": "string",
+        "default": "center",
+        "description": "Text alignment.",
+        "remixer": {
+          "control": "select",
+          "group": "type",
+          "groupTitle": "Type",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        }
+      },
+      {
+        "name": "lineHeight",
+        "type": "number",
+        "default": 1,
+        "description": "Text line height.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 0.75,
+          "max": 1.5,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "letterSpacing",
+        "type": "number",
+        "default": 0,
+        "description": "Letter spacing in em units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": -0.1,
+          "max": 0.4,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#101113",
+        "description": "Background color behind the text.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/drop-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/drop-text/registry.json"
   },
   {
     "name": "elevate-navbar",
@@ -2264,6 +2926,400 @@
     ]
   },
   {
+    "name": "flickering-text",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-18",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Flickering Text",
+    "description": "Deterministic per-character text flicker with adjustable correlation and optional glow bloom.",
+    "category": "text",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/flickering-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "FlickeringText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/flickering-text",
+    "target": "src/components/effects/flickering-text",
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#111844",
+        "description": "Background color behind the text.",
+        "remixer": {
+          "control": "color",
+          "enabled": false,
+          "group": "colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "glowColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Glow color when bloom is enabled.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "wigglesPerSecond",
+        "type": "number",
+        "default": 2,
+        "description": "Noise samples per second that drive the flicker.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 8,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "correlation",
+        "type": "number",
+        "default": 0.5,
+        "description": "How much each character follows the shared flicker lane.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "minOpacity",
+        "type": "number",
+        "default": 0,
+        "description": "Lowest opacity characters can dip to.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "minAmount",
+        "type": "number",
+        "default": -1,
+        "description": "Lower bound of the flicker selector.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": -1,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "maxAmount",
+        "type": "number",
+        "default": 1,
+        "description": "Upper bound of the flicker selector.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": -1,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "glowIntensity",
+        "type": "number",
+        "default": 1,
+        "description": "Glow strength when bloom is enabled.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "glowRadius",
+        "type": "number",
+        "default": 1,
+        "description": "Glow spread multiplier.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.25,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number | string",
+        "default": "12vw",
+        "description": "Font size for the text.",
+        "remixer": {
+          "control": "text",
+          "enabled": false,
+          "group": "type",
+          "groupTitle": "Type"
+        }
+      },
+      {
+        "name": "fontWeight",
+        "type": "number | string",
+        "default": 600,
+        "description": "Font weight for the text.",
+        "remixer": {
+          "control": "range",
+          "enabled": false,
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "glow",
+        "type": "boolean",
+        "default": true,
+        "description": "Turns the extra glow effect on or off.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/flickering-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/flickering-text/registry.json"
+  },
+  {
+    "name": "focus-text",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-17",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Focus Text",
+    "description": "Character-by-character text reveal that scales and sharpens into focus with replayable motion.",
+    "category": "text",
+    "dependencies": [
+      "motion"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/focus-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "FocusText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/focus-text",
+    "target": "src/components/effects/focus-text",
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#000000",
+        "description": "Background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 4.5,
+        "description": "Text size in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 2,
+          "max": 8,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "characterStagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Delay between each character reveal.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.01,
+          "max": 0.12,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "revealDuration",
+        "type": "number",
+        "default": 3.2,
+        "description": "Duration of each character reveal.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "startScale",
+        "type": "number",
+        "default": 0.4,
+        "description": "Starting scale before characters settle.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "blurAmount",
+        "type": "number",
+        "default": 18,
+        "description": "Initial blur amount in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 30,
+          "step": 1
+        }
+      },
+      {
+        "name": "holdDuration",
+        "type": "number",
+        "default": 1.2,
+        "description": "Pause duration after the full reveal completes.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "default": false,
+        "description": "Automatically replay the animation on a loop.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "showReplayButton",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the built-in replay button inside the component.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/focus-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/focus-text/registry.json"
+  },
+  {
     "name": "fractal-glass",
     "title": "Fractal Glass",
     "description": "WebGL glass-strip refraction effect with fractal distortion, edge blending, and pointer-reactive parallax.",
@@ -2314,7 +3370,7 @@
     "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
     "category": "cursor",
     "type": "registry:component",
-    "tier": "pro",
+    "tier": "free",
     "version": "1.1.1",
     "changelog": [
       {
@@ -2402,6 +3458,211 @@
     ]
   },
   {
+    "name": "glowing-text",
+    "version": "1.1.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Glowing Text",
+    "description": "Terminal-style typewriter text where the active line types in bold glow and settles to a dim, regular weight once complete.",
+    "category": "text",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/glowing-text",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "GlowingText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/glowing-text",
+    "target": "src/components/effects/glowing-text",
+    "props": [
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#d8d8d8",
+        "description": "Base text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "glowColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Glow and scan color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#0b0d0e",
+        "description": "Background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 2.2,
+        "description": "Body text size in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 1.2,
+          "max": 5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "fontWeight",
+        "type": "number",
+        "default": 400,
+        "description": "Settled font weight, applied once a line finishes typing.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "activeWeight",
+        "type": "number",
+        "default": 700,
+        "description": "Font weight while a line is actively typing.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "letterSpacing",
+        "type": "number",
+        "default": 0.08,
+        "description": "Letter spacing in em units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 0,
+          "max": 0.28,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "lineHeight",
+        "type": "number",
+        "default": 1.55,
+        "description": "Body line height.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 1,
+          "max": 2.2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "glowIntensity",
+        "type": "number",
+        "default": 0.7,
+        "description": "Glow strength.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "characterStagger",
+        "type": "number",
+        "default": 0.045,
+        "description": "Delay between each character starting its reveal.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.01,
+          "max": 0.12,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "revealDuration",
+        "type": "number",
+        "default": 0.5,
+        "description": "How long each character takes to fade in and settle.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.15,
+          "max": 1.2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "lineGap",
+        "type": "number",
+        "default": 0.15,
+        "description": "Extra pause after a line's last word before the next line starts.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/glowing-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/glowing-text/registry.json"
+  },
+  {
     "name": "gooey-counter",
     "title": "Gooey Counter",
     "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
@@ -2450,7 +3711,7 @@
     "name": "grid-lift",
     "title": "Grid Lift",
     "description": "Interactive lifted grid mask with SVG/text modes, pointer-driven depth, and live Leva controls.",
-    "category": "webgl",
+    "category": "backgrounds",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.1.0",
@@ -2458,7 +3719,7 @@
       "leva"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/webgl/grid-lift/registry.json",
+    "registryPath": "registry/effects/backgrounds/grid-lift/registry.json",
     "importPath": "@/components/effects/grid-lift",
     "target": "src/components/effects/grid-lift",
     "previewUrl": "/demo/grid-lift",
@@ -3015,7 +4276,7 @@
     "name": "infinite-grid-gallery",
     "title": "Infinite Grid Gallery",
     "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
-    "category": "webgl",
+    "category": "components",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.1.0",
@@ -3029,7 +4290,7 @@
     ],
     "dependencies": [],
     "registryDependencies": [],
-    "registryPath": "registry/effects/webgl/infinite-grid-gallery/registry.json",
+    "registryPath": "registry/effects/components/infinite-grid-gallery/registry.json",
     "importPath": "@/components/effects/infinite-grid-gallery",
     "target": "src/components/effects/infinite-grid-gallery",
     "previewUrl": "/demo/infinite-grid-gallery",
@@ -3104,7 +4365,7 @@
   {
     "name": "interactive-arrows",
     "title": "Interactive Arrows",
-    "description": "Canvas 2D collection of six cursor-reactive arrow and line effects: a hover-push arrow grid, an opacity-fade variant, a smooth-easing sparse grid, a particle-lines dot field, a persistent lines field, and a playful full-screen grid with center cutout. Scroll-driven background color transitions via GSAP ScrollTrigger.",
+    "description": "Canvas 2D collection of six cursor-reactive arrow and line effects: a hover-push arrow grid, an opacity-fade variant, a smooth-easing sparse grid, a particle-lines dot field, a persistent lines field, and a playful full-screen grid with center cutout.",
     "category": "cursor",
     "type": "registry:component",
     "tier": "pro",
@@ -4216,6 +5477,270 @@
     ]
   },
   {
+    "name": "pixel-text-fill",
+    "version": "1.1.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Pixel Text Fill",
+    "description": "Scroll-scrubbed pixel text fill with an ordered-dither color edge.",
+    "category": "text",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/pixel-text-fill",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "PixelTextFill",
+    "exportKind": "default",
+    "importPath": "@/components/effects/pixel-text-fill",
+    "target": "src/components/effects/pixel-text-fill",
+    "props": [
+      {
+        "name": "direction",
+        "type": "string",
+        "default": "up",
+        "description": "Fill direction.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "up",
+              "label": "Up"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        }
+      },
+      {
+        "name": "pixelSize",
+        "type": "number",
+        "default": 3,
+        "description": "Pixel cell size used by the dither edge.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 1,
+          "max": 12,
+          "step": 1
+        }
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 12,
+        "description": "Character stagger window for the fill head.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 2,
+          "max": 32,
+          "step": 1
+        }
+      },
+      {
+        "name": "bandFraction",
+        "type": "number",
+        "default": 1.15,
+        "description": "Soft pixel band width as a fraction of each glyph.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.35,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "effectWidth",
+        "type": "number",
+        "default": 1.8,
+        "description": "Pixelated fill band width multiplier.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 4,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "settleBlend",
+        "type": "number",
+        "default": 0.45,
+        "description": "How early the final text color blends in behind the pixel edge.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Final text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "primaryColor",
+        "type": "string",
+        "default": "#ff5f00",
+        "description": "Pixel dither edge color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "dimColor",
+        "type": "string",
+        "default": "#272727",
+        "description": "Initial dim text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#101113",
+        "description": "Section background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 4,
+        "description": "Font size in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 3,
+          "max": 12,
+          "step": 0.25
+        }
+      },
+      {
+        "name": "fontWeight",
+        "type": "number",
+        "default": 500,
+        "description": "Font weight.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "lineHeight",
+        "type": "number",
+        "default": 1.18,
+        "description": "Text line height.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 0.9,
+          "max": 1.6,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "textAlign",
+        "type": "string",
+        "default": "center",
+        "description": "Text alignment.",
+        "remixer": {
+          "control": "select",
+          "group": "type",
+          "groupTitle": "Type",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        }
+      },
+      {
+        "name": "maxWidth",
+        "type": "number",
+        "default": 180,
+        "description": "Text wrapper max width in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 80,
+          "max": 220,
+          "step": 1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/pixel-text-fill/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/pixel-text-fill/registry.json"
+  },
+  {
     "name": "pixel-transition",
     "version": "1.1.0",
     "changelog": [
@@ -4470,7 +5995,7 @@
     "name": "ribbon-drift",
     "title": "Ribbon Drift",
     "description": "Scroll-driven ribbon gallery where image strips drift horizontally at alternating speeds, revealing project names with GSAP SplitText on scroll.",
-    "category": "components",
+    "category": "scroll",
     "type": "registry:component",
     "tier": "pro",
     "version": "1.3.0",
@@ -4505,7 +6030,7 @@
       "lenis"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/ribbon-drift/registry.json",
+    "registryPath": "registry/effects/scroll/ribbon-drift/registry.json",
     "importPath": "@/components/effects/ribbon-drift",
     "target": "src/components/effects/ribbon-drift",
     "previewUrl": "/demo/ribbon-drift",
@@ -4574,6 +6099,134 @@
       }
     ],
     "registryPath": "registry/effects/carousels/ring-carousel/registry.json"
+  },
+  {
+    "name": "rolling-text",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-18",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Rolling Text",
+    "description": "Slot-machine style text reveal where each character spins up a vertical reel of itself before landing.",
+    "category": "text",
+    "dependencies": [
+      "gsap",
+      "@gsap/react"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/rolling-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "RollingText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/rolling-text",
+    "target": "src/components/effects/rolling-text",
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "default": "HYPERIUX",
+        "description": "The word rendered by the reel.",
+        "remixer": {
+          "control": "text",
+          "enabled": false,
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Letter color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "minCycles",
+        "type": "number",
+        "default": 3,
+        "description": "Minimum whole letter-heights a character travels before landing.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 1,
+          "max": 8,
+          "step": 1
+        }
+      },
+      {
+        "name": "cycleVariance",
+        "type": "number",
+        "default": 3,
+        "description": "Extra random cycles added on top of minCycles.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 8,
+          "step": 1
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 2.4,
+        "description": "Base spin duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "durationVariance",
+        "type": "number",
+        "default": 1.2,
+        "description": "Extra random duration added per character, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/rolling-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/rolling-text/registry.json"
   },
   {
     "name": "rope-cursor",
@@ -4882,12 +6535,6 @@
     "name": "shear-wipe",
     "version": "1.1.0",
     "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-08-06",
-        "summary": "Added a tab-based layout with animated content transitions for tablet and mobile, replacing the hover edge panels which don't translate well to touch",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-08-06",
@@ -5520,6 +7167,233 @@
     ]
   },
   {
+    "name": "stroke-text",
+    "version": "1.1.0",
+    "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-08-14",
+        "summary": "Released the effect as free.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.2",
+        "date": "2026-08-14",
+        "summary": "Restored the default fontWeight prop value to 700.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.1",
+        "date": "2026-08-14",
+        "summary": "Switched to a flat background color and made reduced-motion fill apply instantly.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-08-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Stroke Text",
+    "description": "Outlined text that fills on hover from configurable directions, with optional character-by-character stagger.",
+    "category": "text",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/stroke-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "StrokeText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/stroke-text",
+    "target": "src/components/effects/stroke-text",
+    "props": [
+      {
+        "name": "variant",
+        "type": "string",
+        "default": "top",
+        "description": "Direction or shape used for the fill reveal.",
+        "remixer": {
+          "control": "select",
+          "group": "style",
+          "groupTitle": "Style",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "topLeft",
+              "label": "Top Left"
+            },
+            {
+              "value": "topRight",
+              "label": "Top Right"
+            },
+            {
+              "value": "bottomLeft",
+              "label": "Bottom Left"
+            },
+            {
+              "value": "bottomRight",
+              "label": "Bottom Right"
+            },
+            {
+              "value": "radial",
+              "label": "Radial"
+            }
+          ]
+        }
+      },
+      {
+        "name": "characterFill",
+        "type": "boolean",
+        "default": false,
+        "description": "Reveals the fill character by character on hover.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "fillColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Color that fills the text on hover.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "strokeColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Outline stroke color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#17191b",
+        "description": "Primary background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 8,
+        "description": "Font size in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 4,
+          "max": 18,
+          "step": 0.25
+        }
+      },
+      {
+        "name": "fontWeight",
+        "type": "number",
+        "default": 700,
+        "description": "Font weight.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "default": 0.01,
+        "description": "Stroke width in em units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 0.01,
+          "max": 0.12,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.5,
+        "description": "Hover fill transition duration.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "characterStagger",
+        "type": "number",
+        "default": 0.045,
+        "description": "Delay between each character fill step.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.005
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "style",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/stroke-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/stroke-text/registry.json"
+  },
+  {
     "name": "svg-brush-transition",
     "version": "1.1.0",
     "changelog": [
@@ -5991,6 +7865,628 @@
         "target": "src/components/effects/text-stream/TextStreamComp.tsx"
       }
     ]
+  },
+  {
+    "name": "typing-text",
+    "version": "1.1.3",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Typing Text",
+    "description": "Vault-themed typewriter text with sequential, cascade, looping, and shape-shifting cursor variants.",
+    "category": "text",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/typing-text",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "TypingText",
+    "exportKind": "default",
+    "importPath": "@/components/effects/typing-text",
+    "target": "src/components/effects/typing-text",
+    "props": [
+      {
+        "name": "variant",
+        "type": "string",
+        "default": "sequential",
+        "description": "Typing sequence variant.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "sequential",
+              "label": "Sequential"
+            },
+            {
+              "value": "cascade",
+              "label": "Cascade"
+            },
+            {
+              "value": "loop",
+              "label": "Loop"
+            }
+          ]
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#d8d8d8",
+        "description": "Typed text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "cursorColor",
+        "type": "string",
+        "default": "#f59e0b",
+        "description": "Cursor color.",
+        "remixer": {
+          "control": "color",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#121212",
+        "description": "Background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 2.4,
+        "description": "Text size in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 1,
+          "max": 5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "fontWeight",
+        "type": "number",
+        "default": 500,
+        "description": "Font weight.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 100,
+          "max": 900,
+          "step": 100
+        }
+      },
+      {
+        "name": "lineHeight",
+        "type": "number",
+        "default": 1.55,
+        "description": "Line height.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 1,
+          "max": 2.2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "letterSpacing",
+        "type": "number",
+        "default": 0,
+        "description": "Letter spacing in em units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 0,
+          "max": 0.18,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "textAlign",
+        "type": "string",
+        "default": "left",
+        "description": "Text alignment.",
+        "remixer": {
+          "control": "select",
+          "group": "type",
+          "groupTitle": "Type",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        }
+      },
+      {
+        "name": "maxWidth",
+        "type": "number",
+        "default": 80,
+        "description": "Maximum text block width in vw units.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 42,
+          "max": 96,
+          "step": 1
+        }
+      },
+      {
+        "name": "charactersPerSecond",
+        "type": "number",
+        "default": 18,
+        "description": "Typing speed.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 6,
+          "max": 42,
+          "step": 1
+        }
+      },
+      {
+        "name": "animationDuration",
+        "type": "number",
+        "default": 1,
+        "description": "Multiplier applied to each line typing duration.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "lineDelay",
+        "type": "number",
+        "default": 0.5,
+        "description": "Delay between line starts.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "holdDuration",
+        "type": "number",
+        "default": 1.4,
+        "description": "Hold time before loop reset.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 4,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "typingDirection",
+        "type": "string",
+        "default": "left-to-right",
+        "description": "Direction the text types from.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "left-to-right",
+              "label": "Left To Right"
+            },
+            {
+              "value": "right-to-left",
+              "label": "Right To Left"
+            }
+          ]
+        }
+      },
+      {
+        "name": "blur",
+        "type": "number",
+        "default": 0,
+        "description": "Starting blur in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "appearance",
+          "groupTitle": "Appearance",
+          "min": 0,
+          "max": 20,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "rotate",
+        "type": "number",
+        "default": 0,
+        "description": "Starting X rotation in degrees.",
+        "remixer": {
+          "control": "range",
+          "group": "appearance",
+          "groupTitle": "Appearance",
+          "min": -90,
+          "max": 90,
+          "step": 1
+        }
+      },
+      {
+        "name": "scale",
+        "type": "number",
+        "default": 1,
+        "description": "Starting scale before the line settles.",
+        "remixer": {
+          "control": "range",
+          "group": "appearance",
+          "groupTitle": "Appearance",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "perspective",
+        "type": "number",
+        "default": 800,
+        "description": "Perspective depth for rotated typing.",
+        "remixer": {
+          "control": "range",
+          "group": "appearance",
+          "groupTitle": "Appearance",
+          "min": 120,
+          "max": 2000,
+          "step": 20
+        }
+      },
+      {
+        "name": "cursorStyle",
+        "type": "string",
+        "default": "bar",
+        "description": "Cursor visual style.",
+        "remixer": {
+          "control": "select",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "options": [
+            {
+              "value": "bar",
+              "label": "Bar"
+            },
+            {
+              "value": "square",
+              "label": "Square"
+            },
+            {
+              "value": "triangle",
+              "label": "Triangle"
+            },
+            {
+              "value": "underscore",
+              "label": "Underscore"
+            },
+            {
+              "value": "dot",
+              "label": "Dot"
+            }
+          ]
+        }
+      },
+      {
+        "name": "cursorWidth",
+        "type": "number",
+        "default": 3,
+        "description": "Cursor thickness in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 1,
+          "max": 10,
+          "step": 1
+        }
+      },
+      {
+        "name": "showCursor",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the animated cursor.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/typing-text/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/typing-text/registry.json"
+  },
+  {
+    "name": "variable-text-proximity",
+    "version": "1.0.5",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-18",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Variable Hover",
+    "description": "Cursor-driven variable-font text where nearby letters gain weight and optical size",
+    "category": "text",
+    "dependencies": [
+      "motion"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/variable-text-proximity",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "VariableTextProximity",
+    "exportKind": "default",
+    "importPath": "@/components/effects/variable-text-proximity",
+    "target": "src/components/effects/variable-text-proximity",
+    "props": [
+      {
+        "name": "radius",
+        "type": "number",
+        "default": 100,
+        "description": "Pointer influence radius.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 24,
+          "max": 240,
+          "step": 1
+        }
+      },
+      {
+        "name": "falloff",
+        "type": "string",
+        "default": "linear",
+        "description": "How quickly the font variation fades with distance.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "linear",
+              "label": "Linear"
+            },
+            {
+              "value": "exponential",
+              "label": "Exponential"
+            },
+            {
+              "value": "gaussian",
+              "label": "Gaussian"
+            }
+          ]
+        }
+      },
+      {
+        "name": "baseWeight",
+        "type": "number",
+        "default": 300,
+        "description": "Font weight away from the pointer.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 100,
+          "max": 900,
+          "step": 10
+        }
+      },
+      {
+        "name": "hoverWeight",
+        "type": "number",
+        "default": 800,
+        "description": "Font weight nearest the pointer.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 100,
+          "max": 1000,
+          "step": 10
+        }
+      },
+      {
+        "name": "baseOpticalSize",
+        "type": "number",
+        "default": 9,
+        "description": "Optical size away from the pointer.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 8,
+          "max": 80,
+          "step": 1
+        }
+      },
+      {
+        "name": "hoverOpticalSize",
+        "type": "number",
+        "default": 40,
+        "description": "Optical size nearest the pointer.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 8,
+          "max": 144,
+          "step": 1
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#080808",
+        "description": "Demo background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#000000",
+        "description": "Text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "fontSize",
+        "type": "number",
+        "default": 55,
+        "description": "Paragraph font size in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 24,
+          "max": 88,
+          "step": 1
+        }
+      },
+      {
+        "name": "lineHeight",
+        "type": "number",
+        "default": 1.18,
+        "description": "Paragraph line height.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 0.9,
+          "max": 1.7,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "maxWidth",
+        "type": "number",
+        "default": 1040,
+        "description": "Maximum paragraph width in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 520,
+          "max": 1320,
+          "step": 10
+        }
+      },
+      {
+        "name": "minWidth",
+        "type": "number",
+        "default": 920,
+        "description": "Minimum paragraph width in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "type",
+          "groupTitle": "Type",
+          "min": 420,
+          "max": 1320,
+          "step": 10
+        }
+      },
+      {
+        "name": "italic",
+        "type": "boolean",
+        "default": false,
+        "description": "Slant nearby letters toward italic on pointer proximity.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "type",
+          "groupTitle": "Type"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/variable-text-proximity/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/variable-text-proximity/registry.json"
   },
   {
     "name": "video-player",
