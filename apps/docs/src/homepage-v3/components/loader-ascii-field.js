@@ -165,6 +165,13 @@ const SVG_RATIO = SVG_HEIGHT / SVG_WIDTH;
 // ── Layout ──────────────────────────────────────────────────────────────────
 const MOBILE_BREAKPOINT = 768;
 const WORD_WIDTH_FACTOR = 0.82;
+// The mark is 8:1, so its height — and with it the number of rows of glyphs the
+// letterforms get to be drawn out of — is set entirely by how wide the box is.
+// A phone has so little width to give that the wordmark lands on a handful of
+// rows, which is below what it takes to resolve a counter or a crossbar: the
+// letters stop being letters and the mark reads as a band of noise. Give it
+// more of the viewport there. Still inset enough to read as a centred mark.
+const WORD_WIDTH_FACTOR_MOBILE = 0.92;
 const WORD_MAX_WIDTH = 1600;
 
 // 8×8 Bayer ordered-dither matrix
@@ -266,7 +273,9 @@ function monoFamily() {
  * dock transform maps out of.
  */
 function wordmarkBox(viewW, viewH) {
-  const w = Math.min(viewW * WORD_WIDTH_FACTOR, WORD_MAX_WIDTH);
+  const factor =
+    viewW < MOBILE_BREAKPOINT ? WORD_WIDTH_FACTOR_MOBILE : WORD_WIDTH_FACTOR;
+  const w = Math.min(viewW * factor, WORD_MAX_WIDTH);
   const h = w * SVG_RATIO;
   return { x: (viewW - w) / 2, y: (viewH - h) / 2, w, h };
 }
@@ -479,7 +488,12 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
     canvas.width = Math.ceil(w * dpr);
     canvas.height = Math.ceil(h * dpr);
 
-    fontSize = w < MOBILE_BREAKPOINT ? 9 : w < 1280 ? 11 : 12;
+    // Mobile is the constrained case: the cell has to be small enough that the
+    // wordmark's own height is worth a usable number of rows. At 9px the mark
+    // resolved onto four of them and read as static; this roughly doubles that.
+    // The whole grid is derived from this one number, so the static, the
+    // counter and the dock transform all follow it down together.
+    fontSize = w < MOBILE_BREAKPOINT ? 6 : w < 1280 ? 11 : 12;
     cellW = fontSize * 0.62;
     cellH = fontSize * 1.06;
     cols = Math.ceil(w / cellW);

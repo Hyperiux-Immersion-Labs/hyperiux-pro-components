@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "@/lib/motion";
 import AsciiMorph from "@/homepage-v3/components/AsciiMorph";
 import LineReveal from "@/components/Animations/LineReveal";
+import useIsMobile from "@/hooks/useIsMobile";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -49,6 +50,13 @@ const mark =
 export default function Preview() {
   const gridRef = useRef(null);
   const asciiRefs = useRef([]);
+  // Phones and tablets show the resolved icon as a plain <img> instead of the
+  // scrubbed glyph morph, so there is no canvas to build or drive there.
+  // `isMounted` gates the swap: the hook can only read the width on the
+  // client, and rendering the desktop branch until it has would mount an
+  // AsciiMorph on mobile for a tick just to tear it down.
+  const { isMounted, isMobile } = useIsMobile();
+  const morphs = isMounted && !isMobile;
 
   useGSAP(
     () => {
@@ -59,15 +67,17 @@ export default function Preview() {
       const textWrappers = rows.map((row) =>
         row.querySelector(".preview-text-wrapper"),
       );
-      // One glyph per row, each parked in its own row's second column.
-      const asciis = asciiRefs.current;
+      // One glyph per row, each parked in its own row's second column — empty
+      // on compact layouts, where the rows render the icon directly instead.
+      const asciis = morphs ? asciiRefs.current : [];
 
       if (rows.length !== STEPS.length) return;
 
       if (prefersReducedMotion()) {
         gsap.set(marks.flat(), { autoAlpha: 1 });
         gsap.set(textWrappers, { x: 0 });
-        // No morph to scrub: land straight on the resolved icons.
+        // No morph to scrub: land straight on the resolved icons. On compact
+        // layouts there is no AsciiMorph mounted at all, so this is a no-op.
         asciis.forEach((ascii) => ascii?.setProgress(1));
         return;
       }
@@ -160,7 +170,10 @@ export default function Preview() {
       tl.to(marks[2], { autoAlpha: 0, duration: 0.3 }, 2.35);
       tl.to(marks[3], { autoAlpha: 1, duration: 0.3 }, 2.5);
     },
-    { scope: gridRef },
+    // `morphs` flips from false to its real value one microtask after mount,
+    // which is also when the AsciiMorph canvases appear or don't. Re-running
+    // then is what binds the scrub to refs that actually exist.
+    { scope: gridRef, dependencies: [morphs] },
   );
 
   return (
@@ -184,17 +197,26 @@ export default function Preview() {
             {/* This row's number, morphing in place into this row's icon. */}
             <div className="relative w-[15vw] max-[1025px]:w-[20vw] max-md:w-[30vw] h-full border-r border-grey">
               <div className="preview-icon pointer-events-none absolute inset-0 p-[1vw] max-[1025px]:p-[3vw]">
-                <AsciiMorph
-                  ref={(node) => {
-                    asciiRefs.current[i] = node;
-                  }}
-                  sources={[step.number, step.icon]}
-                  fit="contain"
-                  cols={100}
-                  numberFill={1}   // how heavy the number is (1 = grid density, 2 = 2× denser)
-                  iconFill={1}     // how heavy the icon is (3 = 3× denser than cols)
-                  className="h-full max-[1025px]:my-auto w-full"
-                />
+                {morphs ? (
+                  <AsciiMorph
+                    ref={(node) => {
+                      asciiRefs.current[i] = node;
+                    }}
+                    sources={[step.number, step.icon]}
+                    fit="contain"
+                    cols={100}
+                    numberFill={1}   // how heavy the number is (1 = grid density, 2 = 2× denser)
+                    iconFill={1}     // how heavy the icon is (3 = 3× denser than cols)
+                    className="h-full max-[1025px]:my-auto w-full"
+                  />
+                ) : (
+                  <img
+                    src={step.icon}
+                    alt=""
+                    aria-hidden
+                    className="h-full max-[1025px]:my-auto w-full object-contain"
+                  />
+                )}
               </div>
             </div>
             <div className="flex-1 flex relative flex-col justify-center px-[4vw] gap-[1vw] max-[1025px]:gap-[1.5vw] border-r border-grey">
