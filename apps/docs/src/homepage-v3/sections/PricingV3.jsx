@@ -22,7 +22,7 @@ const PRICING = {
 const ProCta = dynamic(() => import("./PricingV3Cta"), { ssr: false });
 
 const FREE_FEATURES = [
-    "41+ production-ready effects",
+    "40+ production-ready effects",
     "Copy-paste + CLI install",
     "Commercial-friendly usage",
     "Code you own",

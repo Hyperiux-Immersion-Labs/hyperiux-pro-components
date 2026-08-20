@@ -91,7 +91,7 @@ export default function Techstack() {
                             contentClassName="flex h-full items-start"
                         >
                             <span className="text140 font-normal font-heading leading-none text-primary max-[1025px]:text-[10vw] max-md:text-[12vw] max-sm:text-[16vw]!">
-                                41
+                                40
                             </span>
                         </StatCard>
 
