@@ -86,7 +86,6 @@ export default async function PricingPage() {
     </>
   );
 }
-
 const faqItems = [
   {
     id: "faq1",
@@ -173,3 +172,4 @@ const faqItems = [
 
 
 ];
+
