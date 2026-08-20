@@ -18,7 +18,7 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     '@id': `${homepage}#organization`,
     name: "Hyperiux",
-    description: "Start with 30+ free source-first effects. Join Pro for 80+ Pro effects.",
+    description: "Start with 40+ free source-first effects. Join Pro for 130+ Pro effects.",
     url: homepage,
     telephone: "+91 8178 026 136",
     email: "hello@hyperiux.com",
@@ -32,10 +32,10 @@ export function OrganizationJsonLd() {
     },
     logo: `${homepage}/favicon.ico`,
     sameAs: [
-      "https://www.facebook.com",
-      "https://www.linkedin.com/in",
-      "https://www.instagram.com",
-      "https://x.com"
+      "https://www.facebook.com/p/Hyperiux-Immersion-Labs-61591884027517/",
+      "https://www.linkedin.com/company/hyperiux/",
+      "https://www.instagram.com/_hyperiux_/",
+      "https://x.com/_hyperiux_",
     ]
   };
 
@@ -72,16 +72,16 @@ export function SoftwareApplicationJsonLd() {
     "@id": `${homepage}/#software-application`,
     name: "Hyperiux Vault",
     description:
-      "Start with 30+ free source-first effects. Join Pro for 80+ Pro effects.",
+      "Start with 40+ free source-first effects. Join Pro for 130+ Pro effects.",
     url: homepage,
     applicationCategory: "DeveloperApplication",
     applicationSubCategory: "UI component library",
     isAccessibleForFree: true,
     operatingSystem: "Web-based (React and Next.js)",
     browserRequirements: "Requires JavaScript and a modern web browser",
-    softwareVersion: "0.1.0",
+    softwareVersion: "1.1.1",
     featureList: [
-      "115 premium interactive effects",
+      "130+ premium interactive effects",
       "Copy-paste React and Next.js components",
       "Hyperiux CLI installation support",
       "Scroll, WebGL, loader, navigation, button, text, slider, and transition effects",
@@ -162,10 +162,10 @@ export function LocalBusiness() {
       "addressRegion": "India"
     },
     "sameAs": [
-      "https://www.facebook.com",
-      "https://www.linkedin.com/in",
-      "https://www.instagram.com",
-      "https://x.com"
+      "https://www.facebook.com/p/Hyperiux-Immersion-Labs-61591884027517/",
+      "https://www.linkedin.com/company/hyperiux/",
+      "https://www.instagram.com/_hyperiux_/",
+      "https://x.com/_hyperiux_",
     ],
     priceRange: "$20-$50",
     "openingHoursSpecification": [
@@ -209,8 +209,8 @@ export function WebpageJsonLd({ metadata = {} }) {
     url: fullUrl,
     name,
     description,
-    datePublished: date_published || "06/22/2026",
-    dateModified: date_modified || "07/07/2026",
+    datePublished: date_published || "2026-06-21T00:00:00",
+    dateModified: date_modified || "2026-08-19T00:00:00",
     publisher: {
       "@type": "Organization",
       name: "Hyperiux",

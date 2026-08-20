@@ -22,10 +22,32 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
   const [introTimedOut, setIntroTimedOut] = useState(!introOnLoader);
   const [openTrigger, setOpenTrigger] = useState(0);
   const [openPanel, setOpenPanel] = useState(null);
+  // Touch (and pen) on a desktop-width bar still fires hover then click in one
+  // tap: pointerenter opens, the click toggle closes, then a compatibility
+  // mouseleave closes again. Hover is mouse-only; a tap toggles and stays.
+  const pointerTypeRef = useRef("mouse");
   const openSearch = useCallback(() => {
     setOpenTrigger((value) => value + 1);
   }, []);
   const closePanel = useCallback(() => setOpenPanel(null), []);
+  const markPointer = useCallback((event) => {
+    pointerTypeRef.current = event.pointerType || "mouse";
+  }, []);
+  const openOnHover = useCallback((key) => (event) => {
+    if (event.pointerType && event.pointerType !== "mouse") return;
+    pointerTypeRef.current = "mouse";
+    setOpenPanel(key);
+  }, []);
+  const closeOnHover = useCallback(() => {
+    if (pointerTypeRef.current !== "mouse") return;
+    setOpenPanel(null);
+  }, []);
+  const openOnFocus = useCallback((key) => (event) => {
+    // A tap focuses the link; opening here races the click and shuts the panel.
+    if (!event.target.matches(":focus-visible")) return;
+    pointerTypeRef.current = "mouse";
+    setOpenPanel(key);
+  }, []);
   const togglePanel = useCallback((event, key) => {
     event.preventDefault();
     setOpenPanel((current) => (current === key ? null : key));
@@ -51,8 +73,17 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
       if (event.key === "Escape") setOpenPanel(null);
     };
 
+    const onPointerDownOutside = (event) => {
+      if (navRef.current?.contains(event.target)) return;
+      setOpenPanel(null);
+    };
+
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    window.addEventListener("pointerdown", onPointerDownOutside);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("pointerdown", onPointerDownOutside);
+    };
   }, [openPanel]);
 
   useLenis(({ scroll, velocity }) => {
@@ -86,7 +117,8 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
               : "translate-y-[-120%] opacity-100"
         }`}
         style={{ willChange: "transform" }}
-        onMouseLeave={closePanel}
+        onPointerDownCapture={markPointer}
+        onMouseLeave={closeOnHover}
       >
         {/* `data-nav-logo` is what the loader measures to find where to dock. */}
         <Link
@@ -105,8 +137,8 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
         >
           <div
             className="flex"
-            onPointerEnter={() => setOpenPanel("categories")}
-            onFocusCapture={() => setOpenPanel("categories")}
+            onPointerEnter={openOnHover("categories")}
+            onFocusCapture={openOnFocus("categories")}
           >
             <HoverLinkV3
               href="/effects/featured"
@@ -125,8 +157,8 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
           </div>
           <div
             className="flex"
-            onPointerEnter={() => setOpenPanel("docs")}
-            onFocusCapture={() => setOpenPanel("docs")}
+            onPointerEnter={openOnHover("docs")}
+            onFocusCapture={openOnFocus("docs")}
           >
             <HoverLinkV3
               href="/docs"
@@ -145,15 +177,15 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
           </div>
           <div
             className="flex"
-            onPointerEnter={closePanel}
-            onFocusCapture={closePanel}
+            onPointerEnter={closeOnHover}
+            onFocusCapture={closeOnHover}
           >
             <HoverLinkV3 href="/pricing" text="Pricing" />
           </div>
           <div
             className="flex"
-            onPointerEnter={closePanel}
-            onFocusCapture={closePanel}
+            onPointerEnter={closeOnHover}
+            onFocusCapture={closeOnHover}
           >
             <HoverLinkV3
               href="https://github.com/hyperiux"
@@ -191,7 +223,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
               ⌘ K
             </kbd>
           </button>
-          <ButtonV3 href="/sign-in" text="Login" />
+          <ButtonV3 href="/sign-in" text="Sign In" />
         </div>
 
         <NavDropdownV3 panel={openPanel} onNavigate={closePanel} />

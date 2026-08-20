@@ -21,7 +21,7 @@ if (typeof window !== "undefined") {
 const NAV_LEAD = 0.25;
 const AT_CANVAS = 0;
 const INTRO_DURATION = 1.7;
-const AT_HEADING = 1.7;
+const AT_HEADING = 1;
 const AT_COPY = 2.3;
 const AT_ACTIONS = 2.75;
 

@@ -407,7 +407,7 @@ export default function NavbarMobileV3({
 
           <div data-mobile-row className="mt-[8vw] flex md:mt-[4.6vw]">
             <ButtonV3
-              text="Login"
+              text="Sign In"
               // The button's own ramp jumps to desktop sizing above `md`; inside
               // the tablet sheet it needs to stay touch-sized.
               className="w-full md:py-[1.5vw] md:text-[2vw] md:[--btn-pad:2.4vw] md:[--btn-gap:1vw] md:[--btn-square:1.4vw] md:[--btn-arrow:2vw]"

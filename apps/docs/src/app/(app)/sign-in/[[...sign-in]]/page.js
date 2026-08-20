@@ -1,3 +1,5 @@
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import SignInFlow from "@/components/auth/SignInFlow";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
@@ -15,7 +17,13 @@ export const metadata = createPageMetadata({
   },
 });
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const { userId } = await auth();
+
+  if (userId) {
+    redirect("/effects");
+  }
+
   return (
     <>
       <NavbarV3 />
