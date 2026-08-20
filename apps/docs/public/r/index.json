@@ -1,6 +1,22 @@
 {
   "items": [
     {
+      "name": "cards-runway",
+      "type": "registry:component",
+      "category": "scroll",
+      "categories": [
+        "scroll"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "CardsRunway",
+      "exportKind": "default",
+      "version": "1.2.2",
+      "tier": "pro"
+    },
+    {
       "name": "circular-slider",
       "type": "registry:component",
       "category": "scroll",
@@ -33,22 +49,6 @@
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "free"
-    },
-    {
-      "name": "draggable-marquee",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "DraggableMarquee",
-      "exportKind": "default",
-      "version": "1.1.1",
-      "tier": "pro"
     },
     {
       "name": "grid-scale",
@@ -178,6 +178,23 @@
       "exportName": "ParallaxSlider",
       "exportKind": "default",
       "version": "1.1.0",
+      "tier": "pro"
+    },
+    {
+      "name": "ribbon-drift",
+      "type": "registry:component",
+      "category": "scroll",
+      "categories": [
+        "scroll"
+      ],
+      "dependencies": [
+        "gsap",
+        "lenis"
+      ],
+      "registryDependencies": [],
+      "exportName": "RibbonDrift",
+      "exportKind": "default",
+      "version": "1.6.0",
       "tier": "pro"
     },
     {
@@ -635,6 +652,20 @@
       "exportKind": "named",
       "version": "1.1.1",
       "tier": "free"
+    },
+    {
+      "name": "grid-lift",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "GridLift",
+      "exportKind": "default",
+      "version": "1.1.0",
+      "tier": "pro"
     },
     {
       "name": "spider-particles",
@@ -1126,20 +1157,6 @@
       "tier": "pro"
     },
     {
-      "name": "stroke-text",
-      "type": "registry:component",
-      "category": "text",
-      "categories": [
-        "text"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "StrokeText",
-      "exportKind": "default",
-      "version": "1.1.0",
-      "tier": "free"
-    },
-    {
       "name": "text-cloning",
       "type": "registry:component",
       "category": "text",
@@ -1356,6 +1373,40 @@
       "tier": "pro"
     },
     {
+      "name": "depth-card-stack",
+      "type": "registry:component",
+      "category": "carousels",
+      "categories": [
+        "carousels"
+      ],
+      "dependencies": [
+        "gsap",
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "DepthCardStack",
+      "exportKind": "default",
+      "version": "1.2.2",
+      "tier": "pro"
+    },
+    {
+      "name": "dimensional-switch-slider",
+      "type": "registry:component",
+      "category": "carousels",
+      "categories": [
+        "carousels"
+      ],
+      "dependencies": [
+        "gsap",
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "DimensionalSwitchSlider",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
       "name": "infinite-carousel",
       "type": "registry:component",
       "category": "carousels",
@@ -1519,7 +1570,7 @@
       "tier": "pro"
     },
     {
-      "name": "cards-runway",
+      "name": "draggable-marquee",
       "type": "registry:component",
       "category": "components",
       "categories": [
@@ -1529,26 +1580,9 @@
         "gsap"
       ],
       "registryDependencies": [],
-      "exportName": "CardsRunway",
+      "exportName": "DraggableMarquee",
       "exportKind": "default",
-      "version": "1.2.2",
-      "tier": "pro"
-    },
-    {
-      "name": "depth-card-stack",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap",
-        "lucide-react"
-      ],
-      "registryDependencies": [],
-      "exportName": "DepthCardStack",
-      "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.1.1",
       "tier": "pro"
     },
     {
@@ -1580,6 +1614,20 @@
       "tier": "free"
     },
     {
+      "name": "infinite-grid-gallery",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "InfiniteGridGallery",
+      "exportKind": "default",
+      "version": "1.1.0",
+      "tier": "pro"
+    },
+    {
       "name": "interactive-list-preview",
       "type": "registry:component",
       "category": "components",
@@ -1594,23 +1642,6 @@
       "exportKind": "default",
       "version": "1.2.1",
       "tier": "free"
-    },
-    {
-      "name": "ribbon-drift",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap",
-        "lenis"
-      ],
-      "registryDependencies": [],
-      "exportName": "RibbonDrift",
-      "exportKind": "default",
-      "version": "1.6.0",
-      "tier": "pro"
     },
     {
       "name": "shear-wipe",
@@ -1937,20 +1968,6 @@
       "tier": "free"
     },
     {
-      "name": "grid-lift",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "GridLift",
-      "exportKind": "default",
-      "version": "1.1.0",
-      "tier": "pro"
-    },
-    {
       "name": "grid-tunnel",
       "type": "registry:component",
       "category": "webgl",
@@ -2023,20 +2040,6 @@
       ],
       "registryDependencies": [],
       "exportName": "HyperiuxGlitter",
-      "exportKind": "default",
-      "version": "1.1.0",
-      "tier": "pro"
-    },
-    {
-      "name": "infinite-grid-gallery",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "InfiniteGridGallery",
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "pro"

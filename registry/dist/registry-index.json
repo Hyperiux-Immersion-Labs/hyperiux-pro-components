@@ -10,6 +10,11 @@
     "tarball": "registry/dist/hyperiux-dotted-grid-1.1.1.tgz"
   },
   {
+    "name": "@hyperiux/grid-lift",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-grid-lift-1.1.0.tgz"
+  },
+  {
     "name": "@hyperiux/spider-particles",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-spider-particles-1.1.0.tgz"
@@ -53,6 +58,16 @@
     "name": "@hyperiux/clippath-slider",
     "version": "1.2.0",
     "tarball": "registry/dist/hyperiux-clippath-slider-1.2.0.tgz"
+  },
+  {
+    "name": "@hyperiux/depth-card-stack",
+    "version": "1.2.2",
+    "tarball": "registry/dist/hyperiux-depth-card-stack-1.2.2.tgz"
+  },
+  {
+    "name": "@hyperiux/dimensional-switch-slider",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-dimensional-switch-slider-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/infinite-carousel",
@@ -105,14 +120,9 @@
     "tarball": "registry/dist/hyperiux-card-drift-1.2.2.tgz"
   },
   {
-    "name": "@hyperiux/cards-runway",
-    "version": "1.2.2",
-    "tarball": "registry/dist/hyperiux-cards-runway-1.2.2.tgz"
-  },
-  {
-    "name": "@hyperiux/depth-card-stack",
-    "version": "1.2.2",
-    "tarball": "registry/dist/hyperiux-depth-card-stack-1.2.2.tgz"
+    "name": "@hyperiux/draggable-marquee",
+    "version": "1.1.1",
+    "tarball": "registry/dist/hyperiux-draggable-marquee-1.1.1.tgz"
   },
   {
     "name": "@hyperiux/gooey-counter",
@@ -125,14 +135,14 @@
     "tarball": "registry/dist/hyperiux-hover-stack-1.4.0.tgz"
   },
   {
+    "name": "@hyperiux/infinite-grid-gallery",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-infinite-grid-gallery-1.1.0.tgz"
+  },
+  {
     "name": "@hyperiux/interactive-list-preview",
     "version": "1.2.1",
     "tarball": "registry/dist/hyperiux-interactive-list-preview-1.2.1.tgz"
-  },
-  {
-    "name": "@hyperiux/ribbon-drift",
-    "version": "1.6.0",
-    "tarball": "registry/dist/hyperiux-ribbon-drift-1.6.0.tgz"
   },
   {
     "name": "@hyperiux/shear-wipe",
@@ -270,6 +280,11 @@
     "tarball": "registry/dist/hyperiux-side-navbar-1.0.0.tgz"
   },
   {
+    "name": "@hyperiux/cards-runway",
+    "version": "1.2.2",
+    "tarball": "registry/dist/hyperiux-cards-runway-1.2.2.tgz"
+  },
+  {
     "name": "@hyperiux/circular-slider",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-circular-slider-1.1.0.tgz"
@@ -278,11 +293,6 @@
     "name": "@hyperiux/circular-split-roll",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-circular-split-roll-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/draggable-marquee",
-    "version": "1.1.1",
-    "tarball": "registry/dist/hyperiux-draggable-marquee-1.1.1.tgz"
   },
   {
     "name": "@hyperiux/grid-scale",
@@ -323,6 +333,11 @@
     "name": "@hyperiux/parallax-slider",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-parallax-slider-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/ribbon-drift",
+    "version": "1.6.0",
+    "tarball": "registry/dist/hyperiux-ribbon-drift-1.6.0.tgz"
   },
   {
     "name": "@hyperiux/rotation-slider",
@@ -475,11 +490,6 @@
     "tarball": "registry/dist/hyperiux-spotlight-text-1.1.0.tgz"
   },
   {
-    "name": "@hyperiux/stroke-text",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-stroke-text-1.1.0.tgz"
-  },
-  {
     "name": "@hyperiux/text-cloning",
     "version": "1.2.1",
     "tarball": "registry/dist/hyperiux-text-cloning-1.2.1.tgz"
@@ -600,11 +610,6 @@
     "tarball": "registry/dist/hyperiux-fractal-glass-1.1.0.tgz"
   },
   {
-    "name": "@hyperiux/grid-lift",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-grid-lift-1.1.0.tgz"
-  },
-  {
     "name": "@hyperiux/grid-tunnel",
     "version": "1.2.0",
     "tarball": "registry/dist/hyperiux-grid-tunnel-1.2.0.tgz"
@@ -623,11 +628,6 @@
     "name": "@hyperiux/hyperiux-glitter",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-hyperiux-glitter-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/infinite-grid-gallery",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-infinite-grid-gallery-1.1.0.tgz"
   },
   {
     "name": "@hyperiux/interactive-blur-reveal",
