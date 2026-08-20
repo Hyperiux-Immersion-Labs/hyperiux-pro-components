@@ -26,6 +26,8 @@ export interface SmoothSliderCompProps {
   arcOffset?: number;
   /** Higher = the fan catches up to the pointer faster. 4–9 feels natural. */
   smoothing?: number;
+  /** How far the fan travels per pixel dragged. 1 = 1:1 at the centre card, higher = more travel per drag. */
+  dragSensitivity?: number;
   /** Flick distance multiplier after release. */
   momentum?: number;
   /** Snap to the nearest card once the flick settles. */
@@ -44,6 +46,10 @@ export interface SmoothSliderCompProps {
 const DRAG_SMOOTHING = 14;
 const VELOCITY_WINDOW = 90;
 const MAX_FLICK = 9;
+/** How much slower a card follows per unit distance from the active one. 0 = no lag, 1 = edge cards barely move. */
+const STAGGER_LAG_STRENGTH = 0.85;
+/** Floor on a card's follow rate, as a fraction of the base rate, so far cards never stall. */
+const MIN_FOLLOW_FRACTION = 0.6;
 
 export default function SmoothSliderComp({
   items = [],
@@ -55,13 +61,14 @@ export default function SmoothSliderComp({
   overlap = -0.04,
   arcOffset = 0.5,
   smoothing = 5.5,
+  dragSensitivity = 1.2,
   momentum = 1,
   snap = false,
   wheelControl = "horizontal",
-  autoRotateSpeed = 0.12,
+  autoRotateSpeed = 0,
   pauseOnHover = true,
-  backgroundColor = "#d3d3d3",
-  wheelColor = "#999999",
+  backgroundColor = "#000000",
+  wheelColor = "#000000",
   className = "",
 }: SmoothSliderCompProps) {
   const stageRef = useRef<HTMLDivElement | null>(null);
@@ -88,6 +95,9 @@ export default function SmoothSliderComp({
   // Wheel position in radians. `current` chases `target` every frame.
   const currentRef = useRef(0);
   const targetRef = useRef(0);
+  // Each card's own eased position — chases `current`, not `target`, so
+  // motion ripples outward from the active card instead of moving as one.
+  const slotOffsetsRef = useRef<number[]>([]);
   const draggingRef = useRef(false);
   const pointerIdRef = useRef<number | null>(null);
   const lastXRef = useRef(0);
@@ -160,41 +170,62 @@ export default function SmoothSliderComp({
   useEffect(() => {
     if (!total) return;
 
-    const draw = () => {
+    const draw = (dt: number) => {
       const { radius, cardWidth, cardHeight, step, centerX, centerY, maxAngle } = layoutRef.current;
       const span = slotCount * step;
       const half = span / 2;
-      const offset = currentRef.current;
       const reveal = revealRef.current;
+      const rate = draggingRef.current ? DRAG_SMOOTHING : reduceMotion ? DRAG_SMOOTHING : smoothing;
+
+      const slotOffsets = slotOffsetsRef.current;
+      if (slotOffsets.length !== slotCount) {
+        slotOffsets.length = slotCount;
+        slotOffsets.fill(currentRef.current);
+      }
 
       for (let i = 0; i < slotCount; i += 1) {
         const card = cardRefs.current[i];
         if (!card) continue;
 
-        // Wrap into [-half, half) so the strip of cards is endless.
-        let angle = (i * step - offset) % span;
-        if (angle < -half) angle += span;
-        else if (angle >= half) angle -= span;
+        // Rank this card's distance from the active one using its own last
+        // position — continuous enough to pick a follow rate from.
+        let rankAngle = (i * step - slotOffsets[i]) % span;
+        if (rankAngle < -half) rankAngle += span;
+        else if (rankAngle >= half) rankAngle -= span;
+        const distanceFactor = gsap.utils.clamp(0, 1, Math.abs(rankAngle) / maxAngle);
 
-        if (Math.abs(angle) > maxAngle) {
+        // The touched/active card tracks the drag almost immediately; cards
+        // further out follow it with more lag, so motion ripples outward
+        // instead of the whole fan moving as one rigid piece.
+        const followRate = Math.max(rate * (1 - distanceFactor * STAGGER_LAG_STRENGTH), rate * MIN_FOLLOW_FRACTION);
+        const followLerp = 1 - Math.exp(-followRate * dt);
+        slotOffsets[i] += (currentRef.current - slotOffsets[i]) * followLerp;
+
+        // Wrap into [-half, half) so the strip of cards is endless.
+        let baseAngle = (i * step - slotOffsets[i]) % span;
+        if (baseAngle < -half) baseAngle += span;
+        else if (baseAngle >= half) baseAngle -= span;
+
+        if (Math.abs(baseAngle) > maxAngle) {
           if (card.style.visibility !== "hidden") card.style.visibility = "hidden";
           continue;
         }
         if (card.style.visibility === "hidden") card.style.visibility = "visible";
 
-        const x = centerX + radius * Math.sin(angle) - cardWidth / 2;
-        const y = centerY - radius * Math.cos(angle) - cardHeight / 2;
+        const x = centerX + radius * Math.sin(baseAngle) - cardWidth / 2;
+        const y = centerY - radius * Math.cos(baseAngle) - cardHeight / 2;
 
-        card.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${angle}rad)`;
+        card.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${baseAngle}rad)`;
         card.style.width = `${cardWidth}px`;
         card.style.height = `${cardHeight}px`;
-        // Centre card on top, stacking down towards both edges — a hand of cards.
-        card.style.zIndex = `${1000 - Math.round(Math.abs(angle) * 1000)}`;
+        // Right always stacks over left, no exception for the active card —
+        // a plain fanned hand of cards, ordered purely by position.
+        card.style.zIndex = `${Math.round((baseAngle + half) * 1000)}`;
 
         const inner = innerRefs.current[i];
         if (inner && reveal < 1) {
           // Staggered entrance, outwards from the middle of the fan.
-          const delay = Math.min(1, Math.abs(angle) / maxAngle) * 0.45;
+          const delay = Math.min(1, Math.abs(baseAngle) / maxAngle) * 0.45;
           const p = gsap.utils.clamp(0, 1, (reveal - delay) / (1 - delay || 1));
           const eased = 1 - Math.pow(1 - p, 3);
           inner.style.opacity = `${eased}`;
@@ -234,11 +265,11 @@ export default function SmoothSliderComp({
         targetRef.current += autoRotateSpeed * dt;
       }
 
-      draw();
+      draw(dt);
     };
 
     // Land on the first card and paint one frame before the ticker starts.
-    draw();
+    draw(1);
     gsap.ticker.add(tick);
 
     return () => gsap.ticker.remove(tick);
@@ -272,8 +303,8 @@ export default function SmoothSliderComp({
       if (!draggingRef.current || e.pointerId !== pointerIdRef.current) return;
       const dx = e.clientX - lastXRef.current;
       lastXRef.current = e.clientX;
-      // 1:1 with the pointer: pixels along the rim -> radians.
-      targetRef.current -= dx / layoutRef.current.radius;
+      // Pixels along the rim -> radians, scaled by dragSensitivity.
+      targetRef.current -= (dx * dragSensitivity) / layoutRef.current.radius;
       pushSample();
     };
 
@@ -315,7 +346,7 @@ export default function SmoothSliderComp({
 
       const delta = horizontal ? e.deltaX : e.deltaY;
       e.preventDefault();
-      targetRef.current += delta / layoutRef.current.radius;
+      targetRef.current += (delta * dragSensitivity) / layoutRef.current.radius;
 
       if (snap) {
         // Wheel input arrives in bursts; settle on a card once it stops.
@@ -364,7 +395,7 @@ export default function SmoothSliderComp({
       stage.removeEventListener("keydown", onKeyDown);
       window.clearTimeout(wheelSettleRef.current);
     };
-  }, [momentum, reduceMotion, smoothing, snap, total, wheelControl]);
+  }, [dragSensitivity, momentum, reduceMotion, smoothing, snap, total, wheelControl]);
 
   if (!total) return null;
 
@@ -372,7 +403,7 @@ export default function SmoothSliderComp({
 
   return (
     <section
-      className={`relative h-[100dvh] w-full overflow-hidden select-none ${className}`}
+      className={`relative bg-black h-[100dvh] w-full overflow-hidden select-none ${className}`}
       style={{ backgroundColor }}
     >
       <div
@@ -390,7 +421,7 @@ export default function SmoothSliderComp({
           className="pointer-events-none absolute -translate-x-1/2 rounded-full"
           style={{
             backgroundColor: wheelColor,
-            boxShadow: "0 -1px 0 rgba(255,255,255,0.35), 0 -30px 60px rgba(0,0,0,0.06)",
+            boxShadow: "none",
           }}
         />
 

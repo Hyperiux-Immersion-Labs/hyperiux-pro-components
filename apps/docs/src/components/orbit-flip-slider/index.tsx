@@ -1,13 +1,13 @@
-import MixSliderComp from './MixSliderComp';
+import OrbitFlipSliderComp from './OrbitFlipSliderComp';
 
-interface MixSliderItem {
+interface OrbitFlipSliderItem {
   id?: string | number;
   image: string;
   alt?: string;
 }
 
-interface MixSliderProps {
-  items?: MixSliderItem[];
+interface OrbitFlipSliderProps {
+  items?: OrbitFlipSliderItem[];
 
   backgroundColor?: string;
   imageWidth?: number;
@@ -45,13 +45,13 @@ interface MixSliderProps {
   galleryScale?: number;
 }
 
-const defaultItems: MixSliderItem[] = Array.from({ length: 16 }, (_, i) => ({
+const defaultItems: OrbitFlipSliderItem[] = Array.from({ length: 16 }, (_, i) => ({
   id: i,
-  image: `https://picsum.photos/seed/mix-slider-${i}/400/500`,
+  image: `https://picsum.photos/seed/orbit-flip-slider-${i}/400/500`,
   alt: `Selected work ${i + 1}`,
 }));
 
-const MixSlider = ({
+const OrbitFlipSlider = ({
   items = defaultItems,
 
   backgroundColor = "#e9e9ea",
@@ -88,9 +88,9 @@ const MixSlider = ({
   galleryRadiusX = 1,
   galleryRadiusY = 1,
   galleryScale = 1,
-}: MixSliderProps) => {
+}: OrbitFlipSliderProps) => {
   return (
-    <MixSliderComp
+    <OrbitFlipSliderComp
       items={items}
 
       backgroundColor={backgroundColor}
@@ -131,4 +131,4 @@ const MixSlider = ({
   );
 };
 
-export default MixSlider;
+export default OrbitFlipSlider;

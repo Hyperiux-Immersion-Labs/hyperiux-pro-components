@@ -1,5 +1,5 @@
 {
-  "name": "mix-slider",
+  "name": "orbit-flip-slider",
   "version": "1.0.0",
   "changelog": [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "type": "registry:component",
-  "title": "Mix Slider",
+  "title": "Orbit Flip Slider",
   "description": "GSAP Flip-driven gallery that morphs one ring of images between four camera views — a flat circle, a zoomed-in upper arc, a tilted 3D ring, and a coverflow band — with a bouncy 3D hover tilt on every card.",
   "category": "carousels",
   "dependencies": [
@@ -18,15 +18,15 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/mix-slider",
-  "coverImage": "mix-slider",
+  "previewUrl": "/demo/orbit-flip-slider",
+  "coverImage": "orbit-flip-slider",
   "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
-  "exportName": "MixSlider",
+  "exportName": "OrbitFlipSlider",
   "exportKind": "default",
-  "importPath": "@/components/effects/mix-slider",
-  "target": "src/components/effects/mix-slider",
+  "importPath": "@/components/effects/orbit-flip-slider",
+  "target": "src/components/effects/orbit-flip-slider",
   "props": [
     {
       "name": "backgroundColor",
@@ -521,15 +521,15 @@
   "files": [
     {
       "path": "index.tsx",
-      "target": "src/components/effects/mix-slider/index.tsx"
+      "target": "src/components/effects/orbit-flip-slider/index.tsx"
     },
     {
-      "path": "MixSliderComp.tsx",
-      "target": "src/components/effects/mix-slider/MixSliderComp.tsx"
+      "path": "OrbitFlipSliderComp.tsx",
+      "target": "src/components/effects/orbit-flip-slider/OrbitFlipSliderComp.tsx"
     },
     {
       "path": "usePrefersReducedMotion.ts",
-      "target": "src/components/effects/mix-slider/usePrefersReducedMotion.ts"
+      "target": "src/components/effects/orbit-flip-slider/usePrefersReducedMotion.ts"
     }
   ]
 }
