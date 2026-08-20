@@ -142,7 +142,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
           >
             <HoverLinkV3
               href="/effects/featured"
-              text="Categories"
+              text="Effects"
               className="group"
               onClick={(event) => togglePanel(event, "categories")}
             >
