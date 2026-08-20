@@ -36,15 +36,15 @@ export default function CurvedGradient() {
         linesClass: "split-line",
       });
 
-      gsap.set(split1.lines, { yPercent: 50, opacity: 0 });
-      gsap.set(split2.lines, { yPercent: 50, opacity: 0 });
+      gsap.set(split1.lines, { yPercent: 100, opacity: 0 });
+      gsap.set(split2.lines, { yPercent: 100, opacity: 0 });
 
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: wrapperRef.current,
-          start: "0% 50%",
-          end: "65% 50%",
+          start: "10% 50%",
+          end: "55% 50%",
           scrub: true,
         },
       });
@@ -53,27 +53,23 @@ export default function CurvedGradient() {
       tl.to(split1.lines, {
         yPercent: 0,
         opacity: 1,
-        duration: 1,
-        stagger: 0.25,
+        stagger: 0.1,
       })
-        .to(split1.lines, {
-          yPercent: -50,
+      .to(split1.lines, {
+          yPercent: -100,
           opacity: 0,
-          duration: 1,
-          stagger: 0.25,
-        })
+          stagger: 0.1,
+        },"<.5")
         .to(split2.lines, {
           yPercent: 0,
           opacity: 1,
-          duration: 1,
-          stagger: 0.25,
+          stagger: 0.1,
         })
         .to(split2.lines, {
-          yPercent: -50,
+          yPercent: -100,
           opacity: 0,
-          duration: 1,
-          stagger: 0.25,
-        });
+          stagger: 0.1,
+        },"<.5");
 
       return () => {
         split1.revert();

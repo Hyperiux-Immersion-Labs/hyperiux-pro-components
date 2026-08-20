@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import { shouldSkipRealtimeGPU } from '@/lib/audit';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -460,7 +461,7 @@ export default function TextFillPixelV3({
 
       build();
 
-      if (prefersReducedMotion) {
+      if (prefersReducedMotion || shouldSkipRealtimeGPU()) {
         progress = 1;
         draw();
         return;

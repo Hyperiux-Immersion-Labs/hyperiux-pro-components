@@ -13,8 +13,13 @@ import Image from "next/image";
 import LineReveal from "@/components/Animations/LineReveal";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
-import FlowFieldHero from "@/components/Homepage/FlowFieldPlane";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 import ButtonV3 from "../components/ButtonV3";
+
+const FlowFieldHero = dynamic(
+  () => import("@/components/Homepage/FlowFieldPlane"),
+  { ssr: false },
+);
 
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
@@ -95,7 +100,7 @@ export default function FooterV3() {
   useFadeUp(footerRef);
 
   useEffect(() => {
-    if (isMobile) return;
+    if (isMobile || shouldSkipRealtimeGPU()) return;
     const id =
       "requestIdleCallback" in window
         ? window.requestIdleCallback(() => setWebglMounted(true), {

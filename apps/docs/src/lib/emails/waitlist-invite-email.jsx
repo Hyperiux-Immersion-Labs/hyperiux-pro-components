@@ -36,12 +36,13 @@ const socialLinks = [
 
 const fontFamily = "Aeonik, system-ui";
 
-// A plain link straight to the destination, tagged with one UTM param - no
+// A plain link straight to the destination, tagged with UTM params - no
 // redirect wrapper, no opaque tracking-id path segment. That kind of
 // indirection (/api/e/<uuid>?to=...) is exactly what commercial ESP
 // click-trackers look like, which is a real signal Gmail's Promotions
 // classifier weighs, so the CTA now points directly at the real URL.
-const exploreVaultUtm = "utm_source=email_invite";
+const exploreVaultUtm =
+  "utm_source=newsletter&utm_medium=email&utm_campaign=email_invite&utm_id=1";
 
 function exploreVaultUrl(signUpUrl) {
   const destination = signUpUrl || `${appUrl}/effects`;

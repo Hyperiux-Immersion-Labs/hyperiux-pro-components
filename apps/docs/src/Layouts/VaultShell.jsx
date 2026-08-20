@@ -9,9 +9,9 @@ import NavbarV3 from '@/homepage-v3/components/NavbarV3'
 export default function VaultShell({ children, effects = [] }) {
     return (
         <>
-            <NavbarV3 effects={effects} />
-            {/* <Navbar/>
-            <NavbarMobile/> */}
+            {/* <NavbarV3 effects={effects} /> */}
+            <Navbar/>
+            <NavbarMobile/>
             <LenisSmoothScroll /> 
             {children}
         </>

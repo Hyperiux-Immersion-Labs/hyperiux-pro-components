@@ -40,24 +40,34 @@ const PRO_FEATURES = [
 const DIGITS = [...Array(10).keys()];
 
 /** A single price digit on a vertical reel, so the number rolls on plan change. */
-const PriceDigit = memo(function PriceDigit({ digit, visible = true }) {
+const PriceDigit = memo(function PriceDigit({ digit, visible = true, plan }) {
     const reelRef = useRef(null);
     const hasMounted = useRef(false);
+    const lap = useRef(0);
 
     useEffect(() => {
         if (!reelRef.current) return;
 
-        const y = `-${Number(digit) * 10}%`;
+        // The reel holds two laps of 0-9, so a slot whose digit is the same in
+        // both plans (the middle 9s of 1999 -> 17990) still has somewhere to
+        // travel: it rolls a full turn into the other lap.
+        const rest = -Number(digit) * 5;
 
         // First paint rests on the right digit instead of animating up to it.
         if (!hasMounted.current) {
             hasMounted.current = true;
-            gsap.set(reelRef.current, { y });
+            gsap.set(reelRef.current, { yPercent: rest });
             return;
         }
 
-        gsap.to(reelRef.current, { y, duration: 0.55, ease: "power3.out" });
-    }, [digit]);
+        lap.current = lap.current === 0 ? 1 : 0;
+
+        gsap.to(reelRef.current, {
+            yPercent: rest - lap.current * 50,
+            duration: 0.55,
+            ease: "power3.out",
+        });
+    }, [digit, plan]);
 
     return (
         <span
@@ -66,8 +76,8 @@ const PriceDigit = memo(function PriceDigit({ digit, visible = true }) {
             style={{ width: visible ? undefined : 0, opacity: visible ? 1 : 0 }}
         >
             <span ref={reelRef} className="flex  flex-col will-change-transform">
-                {DIGITS.map((d) => (
-                    <span key={d} className="flex h-[1em] items-center justify-center">
+                {DIGITS.concat(DIGITS).map((d, i) => (
+                    <span key={i} className="flex h-[1em] items-center justify-center">
                         {d}
                     </span>
                 ))}
@@ -84,12 +94,18 @@ function PriceDigits({ monthlyAmount, yearlyAmount, isYearly }) {
     return (
         <>
             {yearlyDigits.slice(0, leadCount).map((d, i) => (
-                <PriceDigit key={`lead-${i}`} digit={d} visible={isYearly} />
+                <PriceDigit
+                    key={`lead-${i}`}
+                    digit={d}
+                    visible={isYearly}
+                    plan={isYearly ? "yearly" : "monthly"}
+                />
             ))}
             {monthlyDigits.map((d, i) => (
                 <PriceDigit
                     key={`trail-${i}`}
                     digit={isYearly ? yearlyDigits[leadCount + i] : d}
+                    plan={isYearly ? "yearly" : "monthly"}
                 />
             ))}
         </>
