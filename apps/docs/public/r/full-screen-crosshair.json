@@ -8,18 +8,12 @@
   "exportName": "FullScreenCrosshair",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.1",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.tsx.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support and corrected the export-kind metadata.",
       "breaking": false
     },
     {
@@ -45,7 +39,7 @@
     {
       "name": "centerContent",
       "type": "string",
-      "default": "•",
+      "default": "\u2022",
       "description": "Text or symbol shown at the cursor center.",
       "remixer": {
         "control": "text",

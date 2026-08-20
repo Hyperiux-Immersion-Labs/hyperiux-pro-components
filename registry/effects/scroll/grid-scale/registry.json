@@ -1,17 +1,17 @@
 {
   "name": "grid-scale",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.1",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Fixed malformed ScrollTrigger start value ('% top' -> 'top top') on the floating-words timeline; it previously parsed to NaN and anchored the animation to absolute page top instead of the section",
+      "summary": "Added reduced-motion support and fixed a malformed ScrollTrigger start value that anchored the floating-words timeline to page top instead of the section.",
       "breaking": false
     },
     {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added prefers-reduced-motion support: box/grid-line/clip-path tweens lose their eased curve and floating words fade in place instead of converging to center",
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ],
@@ -42,21 +42,36 @@
       "type": "color",
       "default": "#242424",
       "description": "Background color of the section.",
-      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
     },
     {
       "name": "panelColor",
       "type": "color",
       "default": "#ffffff",
       "description": "Background color of the expanding center panel.",
-      "remixer": { "control": "color", "group": "style", "groupTitle": "Style" }
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
     },
     {
       "name": "convergeStagger",
       "type": "number",
       "default": 0.7,
       "description": "Total stagger spread (seconds) as the floating keyword pills converge to center.",
-      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 3, "step": 0.05 }
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
     }
   ],
   "remixer": {
@@ -66,6 +81,8 @@
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "copyCode": { "includeOnlyPublicProps": true }
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   }
 }

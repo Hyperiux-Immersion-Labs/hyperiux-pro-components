@@ -8,18 +8,18 @@
   "exportName": "BorderBeam",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-31",
-      "summary": "Added dynamic/remixer props: size, colorVariant, theme, active, strength, duration, beamWidth, and backgroundColor. Only props with simple, direct, reliable mappings are exposed — staticColors and hueRange stay internal (fixed at their prior defaults), and beamColor/paused were dropped as redundant/unreliable.",
+      "summary": "Slowed the beam animation under reduced motion and added dynamic remixer props (size, colorVariant, theme, active, strength, duration, beamWidth, backgroundColor).",
       "breaking": false
     },
     {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Slow border-beam animations ~3x under prefers-reduced-motion",
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

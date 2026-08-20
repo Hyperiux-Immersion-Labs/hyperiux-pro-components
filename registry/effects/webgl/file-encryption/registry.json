@@ -1,6 +1,6 @@
 {
   "name": "file-encryption",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "File Encryption",
   "description": "Auto-scrolling draggable card marquee with a WebGL laser beam that splits each card between its plain and ASCII/encrypted face, plus Canvas 2D particle scatter.",
@@ -36,9 +36,15 @@
   ],
   "changelog": [
     {
-      "version": "1.1.0",
+      "version": "1.0.1",
       "date": "2026-07-21",
       "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

@@ -1,6 +1,6 @@
 {
   "name": "infinite-grid-gallery",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Infinite Grid Gallery",
   "description": "Infinite scrollable grid gallery with expandable overlay, thumbnails rail, and smooth open/close transitions.",
@@ -36,9 +36,15 @@
   ],
   "changelog": [
     {
-      "version": "1.1.0",
+      "version": "1.0.1",
       "date": "2026-07-21",
       "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

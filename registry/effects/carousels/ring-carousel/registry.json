@@ -1,10 +1,19 @@
 {
   "name": "ring-carousel",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "changelog": [
-    { "version": "1.1.1", "date": "2026-07-22", "summary": "Fixed reduced motion throttling live drag response to 35% strength, making the carousel feel unresponsive while grabbing - drag now tracks 1:1 as before, only momentum/inertia and animated snaps stay reduced", "breaking": false },
-    { "version": "1.1.0", "date": "2026-07-21", "summary": "Added prefers-reduced-motion support: rotation/drag animations are replaced with a reduced-motion-safe fade and drag sensitivity/momentum are scaled down", "breaking": false },
-    { "version": "1.0.0", "date": "2026-06-04", "summary": "Initial release", "breaking": false }
+    {
+      "version": "1.0.1",
+      "date": "2026-07-22",
+      "summary": "Added reduced-motion support and fixed drag response being throttled along with momentum/inertia.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-06-04",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Ring Carousel",

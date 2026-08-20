@@ -1,17 +1,17 @@
 {
   "name": "3d-portfolio-slider",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.0.2",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Unmount cleanup now disposes each plane's geometry, shader material, and texture (renderer.dispose() alone leaked them), fixing a GPU memory leak on remount.",
+      "summary": "Added a reduced-motion notice and fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
       "breaking": false
     },
     {
-      "version": "1.0.1",
-      "date": "2026-07-22",
-      "summary": "Added a reduced-motion notice: this continuous scroll-driven 3D carousel is the navigation itself and can't be reduced without losing the ability to browse, so it now surfaces that instead of silently ignoring the preference.",
+      "version": "1.0.0",
+      "date": "2026-07-21",
+      "summary": "Initial release",
       "breaking": false
     }
   ],
@@ -56,21 +56,39 @@
       "type": "number",
       "default": 1,
       "description": "Multiplier on the shader zoom applied to planes as they swing away from center.",
-      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 3, "step": 0.05 }
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
     },
     {
       "name": "scrollSpeed",
       "type": "number",
       "default": 0.01,
       "description": "How fast wheel/scroll input moves the carousel.",
-      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0.002, "max": 0.03, "step": 0.001 }
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.002,
+        "max": 0.03,
+        "step": 0.001
+      }
     },
     {
       "name": "showCaption",
       "type": "boolean",
       "default": true,
       "description": "Shows the project caption text overlay.",
-      "remixer": { "control": "checkbox", "group": "style", "groupTitle": "Style" }
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style"
+      }
     }
   ],
   "remixer": {
@@ -80,6 +98,8 @@
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "copyCode": { "includeOnlyPublicProps": true }
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   }
 }

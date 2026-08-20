@@ -1,6 +1,6 @@
 {
   "name": "curved-plane",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Curved Plane",
   "description": "Three.ts WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
@@ -49,8 +49,12 @@
   "remixer": {
     "enabled": true,
     "defaultOpenGroupId": "controls",
-    "layout": { "controlsButtonClassName": "right-4! top-25!" },
-    "panel": { "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!" },
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
     "controls": [
       {
         "name": "speed",
@@ -114,9 +118,15 @@
   ],
   "changelog": [
     {
-      "version": "1.1.0",
+      "version": "1.0.1",
       "date": "2026-07-21",
       "summary": "Add prefers-reduced-motion support",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ]

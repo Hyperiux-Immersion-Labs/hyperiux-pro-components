@@ -10,18 +10,12 @@
   "exportName": "MaskTextReveal",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.1",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Changing duration or stagger now rebuilds the SplitText mask reveal so remixer timing changes replay the effect.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added reduced-motion support for accessible lower-motion mask reveal.",
+      "summary": "Added reduced-motion support and fixed the mask reveal not replaying when duration/stagger change in the remixer.",
       "breaking": false
     },
     {

@@ -8,18 +8,12 @@
   "exportName": "PixelBloom",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added gridImageUrls prop to self-host bloom tile images; component now falls back to showing the media directly if tile images fail to load instead of rendering invisibly; removed debug console.log calls from the canvas tracker.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support, added a gridImageUrls prop with a safe fallback, and removed debug logging.",
       "breaking": false
     },
     {

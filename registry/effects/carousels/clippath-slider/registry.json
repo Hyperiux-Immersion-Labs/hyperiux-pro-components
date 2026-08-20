@@ -1,17 +1,11 @@
 {
   "name": "clippath-slider",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-28",
-      "summary": "Added slides, clueText, cursorBg, and cursorLineColor as public props instead of hardcoding them in the wrapper",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added prefers-reduced-motion support: slide transitions use a reduced-motion-safe fade instead of the full clip-path animation",
+      "summary": "Added reduced-motion support and exposed slides, clueText, and cursor styling as public props.",
       "breaking": false
     },
     {
