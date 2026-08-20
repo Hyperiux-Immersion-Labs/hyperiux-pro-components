@@ -1,15 +1,11 @@
-import DimensionalSwitchSlider from '@/components/dimensional-switch-slider'
-import React from 'react'
+import DemoContent from "./DemoContent";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/carousels/dimensional-switch-slider/registry.json";
 
-const page = () => {
-  return (
-    <>
-    <div className="w-screen h-screen flex justify-center items-center bg-[#111111] text-foreground">
-    <DimensionalSwitchSlider direction="horizontal"/>
-    </div>
-    
-    </>
-  )
+export default function Page() {
+  return <DemoContent registry={registry} />;
 }
 
-export default page
+export async function generateMetadata() {
+  return getDemoPageMetadata("dimensional-switch-slider");
+}
