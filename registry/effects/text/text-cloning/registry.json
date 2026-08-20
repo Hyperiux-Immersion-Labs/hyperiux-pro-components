@@ -1,23 +1,11 @@
 {
   "name": "text-cloning",
-  "version": "1.2.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.1",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Restored the bottom text input for live demo editing while keeping text out of the remixer, and removed accentColor from the public API.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-30",
-      "summary": "Removed the live text field from the effect and wired cloneCount, offset, textColor, accentColor, and textSize into the canvas renderer.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added reduced-motion support for accessible lower-motion cloning movement.",
+      "summary": "Added reduced-motion support and reworked the props API (cloneCount, offset, colors, textSize) while keeping live text editing on the demo page.",
       "breaking": false
     },
     {

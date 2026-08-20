@@ -8,18 +8,12 @@
   "exportName": "InteractiveBlurReveal",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-31",
-      "summary": "Removed iChannel0 (image texture) from the public/remixer API so it's no longer remixable in the panel; the prop is still accepted by the component with its original default. Changed the Mouse Interaction control from a toggle to a checkbox.",
-      "breaking": true
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "Added reduced-motion notice",
+      "summary": "Added a reduced-motion notice and reworked the remixer panel (removed the image-texture control, changed mouse interaction to a checkbox).",
       "breaking": false
     },
     {
@@ -96,7 +90,7 @@
       "path": "webgl-context-recovery.ts",
       "type": "registry:component",
       "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.ts",
-      "content": "\"use client\";\n\n/**\n * Shared WebGL context-loss recovery helper.\n *\n * A WebGL context can be dropped by the browser at any time — commonly on\n * mobile under GPU memory pressure, or after a laptop sleeps and resumes. When\n * that happens the canvas fires `webglcontextlost`; unless the handler calls\n * `event.preventDefault()`, the browser will NEVER fire `webglcontextrestored`,\n * leaving the effect permanently blank until a full page reload.\n *\n * This helper wires both events on a canvas:\n *   - on `webglcontextlost`   -> preventDefault() (required), then `onLost`,\n *                                where the caller stops its render loop and\n *                                drops the now-invalid GPU handles.\n *   - on `webglcontextrestored` -> `onRestored`, where the caller rebuilds its\n *                                GPU resources (programs, buffers, textures)\n *                                and resumes rendering.\n *\n * Returns a detach function — call it from your effect cleanup.\n *\n * NOTE: `THREE.WebGLRenderer` already performs this internally (it calls\n * preventDefault on loss and re-initializes the GL context on restore), so\n * Three.js / react-three-fiber effects do not need this helper. It exists for\n * effects that drive a raw WebGL context directly via\n * `canvas.getContext(\"webgl\" | \"webgl2\")`, which get no automatic recovery.\n *\n * @returns detach function\n */\ninterface WebGLContextRecoveryHandlers {\n  onLost?: (event: Event) => void\n  onRestored?: (event: Event) => void\n}\n\nexport function attachWebGLContextRecovery(canvas: HTMLCanvasElement | null | undefined, handlers: WebGLContextRecoveryHandlers = {}) {\n  if (!canvas) return () => {};\n\n  const { onLost, onRestored } = handlers;\n\n  const handleLost = (event: Event) => {\n    // Required so the browser will later fire `webglcontextrestored`.\n    event.preventDefault();\n    if (onLost) onLost(event);\n  };\n\n  const handleRestored = (event: Event) => {\n    if (onRestored) onRestored(event);\n  };\n\n  canvas.addEventListener(\"webglcontextlost\", handleLost, false);\n  canvas.addEventListener(\"webglcontextrestored\", handleRestored, false);\n\n  return () => {\n    canvas.removeEventListener(\"webglcontextlost\", handleLost, false);\n    canvas.removeEventListener(\"webglcontextrestored\", handleRestored, false);\n  };\n}\n"
+      "content": "\"use client\";\n\n/**\n * Shared WebGL context-loss recovery helper.\n *\n * A WebGL context can be dropped by the browser at any time \u2014 commonly on\n * mobile under GPU memory pressure, or after a laptop sleeps and resumes. When\n * that happens the canvas fires `webglcontextlost`; unless the handler calls\n * `event.preventDefault()`, the browser will NEVER fire `webglcontextrestored`,\n * leaving the effect permanently blank until a full page reload.\n *\n * This helper wires both events on a canvas:\n *   - on `webglcontextlost`   -> preventDefault() (required), then `onLost`,\n *                                where the caller stops its render loop and\n *                                drops the now-invalid GPU handles.\n *   - on `webglcontextrestored` -> `onRestored`, where the caller rebuilds its\n *                                GPU resources (programs, buffers, textures)\n *                                and resumes rendering.\n *\n * Returns a detach function \u2014 call it from your effect cleanup.\n *\n * NOTE: `THREE.WebGLRenderer` already performs this internally (it calls\n * preventDefault on loss and re-initializes the GL context on restore), so\n * Three.js / react-three-fiber effects do not need this helper. It exists for\n * effects that drive a raw WebGL context directly via\n * `canvas.getContext(\"webgl\" | \"webgl2\")`, which get no automatic recovery.\n *\n * @returns detach function\n */\ninterface WebGLContextRecoveryHandlers {\n  onLost?: (event: Event) => void\n  onRestored?: (event: Event) => void\n}\n\nexport function attachWebGLContextRecovery(canvas: HTMLCanvasElement | null | undefined, handlers: WebGLContextRecoveryHandlers = {}) {\n  if (!canvas) return () => {};\n\n  const { onLost, onRestored } = handlers;\n\n  const handleLost = (event: Event) => {\n    // Required so the browser will later fire `webglcontextrestored`.\n    event.preventDefault();\n    if (onLost) onLost(event);\n  };\n\n  const handleRestored = (event: Event) => {\n    if (onRestored) onRestored(event);\n  };\n\n  canvas.addEventListener(\"webglcontextlost\", handleLost, false);\n  canvas.addEventListener(\"webglcontextrestored\", handleRestored, false);\n\n  return () => {\n    canvas.removeEventListener(\"webglcontextlost\", handleLost, false);\n    canvas.removeEventListener(\"webglcontextrestored\", handleRestored, false);\n  };\n}\n"
     },
     {
       "path": "createSuspendedRaf.ts",

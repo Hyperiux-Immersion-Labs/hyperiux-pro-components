@@ -1,6 +1,6 @@
 {
   "name": "animated-tabs",
-  "version": "1.2.2",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Tabs",
   "description": "Animated tabs with a moving active indicator and panel transitions",
@@ -28,27 +28,15 @@
   ],
   "changelog": [
     {
-      "version": "1.2.2",
+      "version": "1.0.1",
       "date": "2026-07-31",
-      "summary": "Changed the defaultActiveIndex remixer control from a slider to a dropdown so tabs are picked by name instead of a raw index.",
+      "summary": "Added reduced-motion support, reworked the props API (defaultActiveIndex, animationType, slideDistance, accentColor, duration), and changed the tab-index control to a name-based dropdown.",
       "breaking": false
     },
     {
-      "version": "1.2.1",
-      "date": "2026-07-30",
-      "summary": "Removed the tabs content prop from the public/remixer API and wired accentColor and duration into the active indicator and panel transitions.",
-      "breaking": false
-    },
-    {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added defaultActiveIndex, animationType, and slideDistance as public props with a working remixer panel. The originally suggested props (defaultTab, accentColor, duration, orientation) didn't match this component's real API (tab content is JSX, not JSON-editable, and there's no accentColor/orientation concept), so they were replaced with the props AnimatedTabsComp actually accepts.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
+      "version": "1.0.0",
       "date": "2026-07-21",
-      "summary": "Under reduced motion, use opacity fade instead of horizontal slide",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

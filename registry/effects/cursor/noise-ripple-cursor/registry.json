@@ -1,17 +1,11 @@
 {
   "name": "noise-ripple-cursor",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Removed debug console.log calls that fired on every pointer enter/leave and target register/unregister.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support and removed debug logging on pointer events.",
       "breaking": false
     },
     {

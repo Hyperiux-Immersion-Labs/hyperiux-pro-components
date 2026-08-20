@@ -15,18 +15,12 @@
   "exportName": "CollidingModels",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Wired connectorCount, gravity, modelScale, and backgroundColor into the live scene, and removed the non-functional modelUrl prop.",
-      "breaking": true
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "Added reduced-motion notice",
+      "summary": "Added a reduced-motion notice and wired connectorCount, gravity, modelScale, and backgroundColor into the live scene.",
       "breaking": false
     },
     {

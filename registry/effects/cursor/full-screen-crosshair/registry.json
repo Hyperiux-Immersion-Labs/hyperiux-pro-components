@@ -1,17 +1,11 @@
 {
   "name": "full-screen-crosshair",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.1",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Corrected exportKind metadata from \"named\" to \"default\" to match the actual export default in index.tsx.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support and corrected the export-kind metadata.",
       "breaking": false
     },
     {
@@ -43,28 +37,47 @@
       "default": "#ffffff",
       "demoDefault": "#F0F3FF",
       "description": "Crosshair line and center color.",
-      "remixer": { "control": "color", "group": "appearance", "groupTitle": "Appearance" }
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
     },
     {
       "name": "centerContent",
       "type": "string",
-      "default": "•",
+      "default": "\u2022",
       "description": "Text or symbol shown at the cursor center.",
-      "remixer": { "control": "text", "group": "content", "groupTitle": "Content" }
+      "remixer": {
+        "control": "text",
+        "group": "content",
+        "groupTitle": "Content"
+      }
     },
     {
       "name": "hideNativeCursor",
       "type": "boolean",
       "default": true,
       "description": "Hides the system cursor while the crosshair is active.",
-      "remixer": { "control": "checkbox", "group": "interaction", "groupTitle": "Interaction" }
+      "remixer": {
+        "control": "checkbox",
+        "group": "interaction",
+        "groupTitle": "Interaction"
+      }
     },
     {
       "name": "gap",
       "type": "number",
       "default": 20,
       "description": "Gap around the center symbol.",
-      "remixer": { "control": "range", "group": "geometry", "groupTitle": "Geometry", "min": 0, "max": 80, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "geometry",
+        "groupTitle": "Geometry",
+        "min": 0,
+        "max": 80,
+        "step": 1
+      }
     },
     {
       "name": "thickness",
@@ -72,21 +85,39 @@
       "default": 1,
       "demoDefault": 0.5,
       "description": "Line thickness in pixels.",
-      "remixer": { "control": "range", "group": "geometry", "groupTitle": "Geometry", "min": 0.25, "max": 8, "step": 0.25 }
+      "remixer": {
+        "control": "range",
+        "group": "geometry",
+        "groupTitle": "Geometry",
+        "min": 0.25,
+        "max": 8,
+        "step": 0.25
+      }
     },
     {
       "name": "centerSize",
       "type": "number",
       "default": 24,
       "description": "Center symbol size in pixels.",
-      "remixer": { "control": "range", "group": "geometry", "groupTitle": "Geometry", "min": 8, "max": 80, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "geometry",
+        "groupTitle": "Geometry",
+        "min": 8,
+        "max": 80,
+        "step": 1
+      }
     },
     {
       "name": "smooth",
       "type": "boolean",
       "default": true,
       "description": "Enables smoothed cursor tracking.",
-      "remixer": { "control": "checkbox", "group": "interaction", "groupTitle": "Interaction" }
+      "remixer": {
+        "control": "checkbox",
+        "group": "interaction",
+        "groupTitle": "Interaction"
+      }
     },
     {
       "name": "lerpFactor",
@@ -94,7 +125,14 @@
       "default": 0.14,
       "demoDefault": 0.1,
       "description": "Controls cursor smoothing speed.",
-      "remixer": { "control": "range", "group": "interaction", "groupTitle": "Interaction", "min": 0.02, "max": 0.5, "step": 0.01 }
+      "remixer": {
+        "control": "range",
+        "group": "interaction",
+        "groupTitle": "Interaction",
+        "min": 0.02,
+        "max": 0.5,
+        "step": 0.01
+      }
     }
   ],
   "remixer": {
@@ -104,7 +142,9 @@
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "copyCode": { "includeOnlyPublicProps": true }
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   },
   "files": [
     {

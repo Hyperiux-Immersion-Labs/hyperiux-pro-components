@@ -9,8 +9,6 @@ gsap.registerPlugin(useGSAP);
 
 const LINE_HEIGHT = 0.8;
 
-const BACKGROUND_IMAGE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-29.png";
 const FONT_FAMILY = "Helvetica Neue, Arial Narrow, system-ui, sans-serif";
 
 interface RollingTextProps {
@@ -107,7 +105,6 @@ const RollingText = ({
     <div
       ref={containerRef}
       className="relative grid place-items-center min-h-dvh bg-[#2a0e5f] bg-cover bg-center"
-      style={{ backgroundImage: `url(${BACKGROUND_IMAGE})` }}
     >
       <div className="absolute inset-0 bg-black/40" aria-hidden />
       {/*

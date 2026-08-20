@@ -1,6 +1,6 @@
 {
   "name": "grid-tunnel",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Grid Tunnel",
   "description": "Infinite 3D image tunnel built with React Three Fiber, procedural wireframe chunks, and inertial wheel-driven camera motion.",
@@ -34,15 +34,15 @@
   ],
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-24",
-      "summary": "Added a prefers-reduced-motion notice, and hardened camera-frame timing so a long tab-hidden pause no longer displaces the camera (and by extension the recycled tunnel chunks) on resume.",
+      "summary": "Added reduced-motion support and hardened camera-frame timing so a long tab-hidden pause no longer displaces the camera on resume.",
       "breaking": false
     },
     {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Add prefers-reduced-motion support",
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

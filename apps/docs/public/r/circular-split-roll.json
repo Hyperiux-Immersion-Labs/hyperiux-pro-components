@@ -11,18 +11,12 @@
   "exportName": "CircularSplitRoll",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.0",
-      "date": "2026-07-24",
-      "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven rotation cannot be reduced to a static fade.",
-      "breaking": false
-    },
-    {
       "version": "1.0.1",
-      "date": "2026-07-17",
-      "summary": "Responsiveness fixes",
+      "date": "2026-07-24",
+      "summary": "Fixed responsiveness issues and added a reduced-motion notice explaining the continuous scroll-driven rotation.",
       "breaking": false
     },
     {

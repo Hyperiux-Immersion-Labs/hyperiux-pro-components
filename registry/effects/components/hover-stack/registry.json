@@ -1,6 +1,6 @@
 {
   "name": "hover-stack",
-  "version": "1.4.0",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Hover Stack",
   "description": "Overlapping card stack that fans out around the hovered card",
@@ -27,27 +27,15 @@
   ],
   "changelog": [
     {
-      "version": "1.4.0",
+      "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Removed cards and items — card content is now always the built-in quote set. Reset accentColor's default to transparent (matching the original no-outline look); picking a color shows an outline ring around the active card.",
-      "breaking": true
-    },
-    {
-      "version": "1.3.0",
-      "date": "2026-07-30",
-      "summary": "Fixed the demo page rendering nothing (it wasn't wired to the effect's DemoContent). Wired up items, spread, rotation, duration, and accentColor for real: items overrides the card data, spread fans neighboring cards vertically, rotation scales the resting card tilt, duration scales the hover transition timing, and accentColor tints the active card's badge and outline.",
+      "summary": "Added reduced-motion support, fixed the demo not rendering, and reworked the props API (items, spread, rotation, duration, accentColor) to match the real component.",
       "breaking": false
     },
     {
-      "version": "1.2.0",
-      "date": "2026-07-28",
-      "summary": "Added cards, cardWidth, cardHeight, overlap, pushDistance, and hoverLift as public props with a working remixer panel. The originally suggested props (items, spread, rotation, duration, accentColor) didn't match this component's real API, so they were replaced with the props HoverStackComp actually accepts.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
+      "version": "1.0.0",
       "date": "2026-07-21",
-      "summary": "Disable hover lift/push transforms under reduced motion; keep z-index focus",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

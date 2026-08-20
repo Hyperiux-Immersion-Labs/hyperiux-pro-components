@@ -10,18 +10,18 @@
   "exportName": "DraggableMarquee",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.1",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Offscreen pause now detaches only the marquee's own ticker callback instead of sleeping the global gsap.ticker, which froze every other GSAP animation on the page",
+      "summary": "Added reduced-motion support and fixed offscreen pause freezing every other GSAP animation on the page instead of just the marquee's own ticker.",
       "breaking": false
     },
     {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added prefers-reduced-motion support: auto-scroll and post-release throw momentum are disabled, drag remains fully interactive",
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ],
@@ -69,7 +69,7 @@
       "name": "throwFriction",
       "type": "number",
       "default": 0.975,
-      "description": "Momentum decay rate per frame after a drag release — closer to 1 coasts longer.",
+      "description": "Momentum decay rate per frame after a drag release \u2014 closer to 1 coasts longer.",
       "remixer": {
         "control": "range",
         "group": "motion",

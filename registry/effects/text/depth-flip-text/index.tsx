@@ -31,8 +31,6 @@ const DEFAULT_PHRASES = [
   "Premium UI for modern teams",
   "Built to launch beautifully",
 ];
-const BACKGROUND_IMAGE_URL =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-27.jpg";
 
 const LINE_HEIGHT = 0.9;
 
@@ -247,11 +245,6 @@ const DepthFlipText = ({
       className={`relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 sm:px-6 ${className}`}
       style={{ backgroundColor }}
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${BACKGROUND_IMAGE_URL})` }}
-      />
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-black/35"

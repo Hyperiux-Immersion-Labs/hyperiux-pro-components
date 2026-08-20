@@ -1,17 +1,11 @@
 {
   "name": "pixel-bloom",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added gridImageUrls prop to self-host bloom tile images; component now falls back to showing the media directly if tile images fail to load instead of rendering invisibly; removed debug console.log calls from the canvas tracker.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "summary": "Added reduced-motion support, added a gridImageUrls prop with a safe fallback, and removed debug logging.",
       "breaking": false
     },
     {
@@ -42,28 +36,56 @@
       "type": "number",
       "default": 35,
       "description": "Pixel grid cell size.",
-      "remixer": { "control": "range", "group": "bloom", "groupTitle": "Bloom", "min": 12, "max": 80, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "bloom",
+        "groupTitle": "Bloom",
+        "min": 12,
+        "max": 80,
+        "step": 1
+      }
     },
     {
       "name": "effectRadius",
       "type": "number",
       "default": 40,
       "description": "Radius of the cursor bloom.",
-      "remixer": { "control": "range", "group": "bloom", "groupTitle": "Bloom", "min": 8, "max": 160, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "bloom",
+        "groupTitle": "Bloom",
+        "min": 8,
+        "max": 160,
+        "step": 1
+      }
     },
     {
       "name": "maxTrailLength",
       "type": "number",
       "default": 8,
       "description": "Maximum number of active trail points.",
-      "remixer": { "control": "range", "group": "bloom", "groupTitle": "Bloom", "min": 1, "max": 32, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "bloom",
+        "groupTitle": "Bloom",
+        "min": 1,
+        "max": 32,
+        "step": 1
+      }
     },
     {
       "name": "cellLifetime",
       "type": "number",
       "default": 100,
       "description": "How long each pixel cell remains active.",
-      "remixer": { "control": "range", "group": "bloom", "groupTitle": "Bloom", "min": 20, "max": 800, "step": 10 }
+      "remixer": {
+        "control": "range",
+        "group": "bloom",
+        "groupTitle": "Bloom",
+        "min": 20,
+        "max": 800,
+        "step": 10
+      }
     }
   ],
   "remixer": {
@@ -73,7 +95,9 @@
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "copyCode": { "includeOnlyPublicProps": true }
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   },
   "files": [
     {

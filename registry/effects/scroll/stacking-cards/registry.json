@@ -1,23 +1,17 @@
 {
   "name": "stacking-cards",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "changelog": [
-    {
-      "version": "1.0.2",
-      "date": "2026-07-22",
-      "summary": "Fixed the outgoing card staying at full opacity behind the incoming one in reduced motion (only its tilt/scale/rotateX/image-zoom were skipped, not its opacity fade), which let it visibly bleed through above the current card. The opacity crossfade isn't spatial motion, so it now still runs in reduced motion.",
-      "breaking": false
-    },
     {
       "version": "1.0.1",
       "date": "2026-07-22",
-      "summary": "Fixed the last card not reaching full screen on mobile - the sticky pin container and scroll-space height used 100vh (largest possible mobile viewport) while the card content itself already used 100svh, so the container could render taller than what's actually visible when the browser's address bar is showing. Both now use svh consistently.",
+      "summary": "Fixed the last card not reaching full-screen on mobile and the outgoing card's opacity bleeding through under reduced motion.",
       "breaking": false
     },
     {
       "version": "1.0.0",
       "date": "2026-07-21",
-      "summary": "Initial release with prefers-reduced-motion support for reduced scroll and card motion.",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

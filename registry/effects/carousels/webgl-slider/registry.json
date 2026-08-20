@@ -1,17 +1,11 @@
 {
   "name": "webgl-slider",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-28",
-      "summary": "Added images as a public prop instead of hardcoding it in the wrapper",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Added prefers-reduced-motion support: scroll-snap animations are skipped/shortened when the user has reduced motion enabled",
+      "summary": "Added reduced-motion support and exposed images as a public prop.",
       "breaking": false
     },
     {

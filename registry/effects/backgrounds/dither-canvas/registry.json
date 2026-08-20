@@ -2,7 +2,18 @@
   "name": "dither-canvas",
   "version": "1.0.1",
   "changelog": [
-    { "version": "1.0.1", "date": "2026-07-22", "summary": "Added a reduced-motion notice: this effect is a continuous cursor-driven fluid distortion and can't be reduced without losing it entirely, so it now surfaces that instead of silently ignoring the preference.", "breaking": false }
+    {
+      "version": "1.0.1",
+      "date": "2026-07-22",
+      "summary": "Added a reduced-motion notice: this effect is a continuous cursor-driven fluid distortion and can't be reduced without losing it entirely, so it now surfaces that instead of silently ignoring the preference.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-21",
+      "summary": "Initial release",
+      "breaking": false
+    }
   ],
   "type": "registry:component",
   "title": "Dither Canvas",

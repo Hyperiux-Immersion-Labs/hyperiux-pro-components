@@ -11,18 +11,18 @@
   "exportName": "AnimatedFaq",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.2.0",
+      "version": "1.0.1",
       "date": "2026-07-28",
-      "summary": "Documented existing prefers-reduced-motion support : the accordion open/close tween duration is set to 0 under reduced motion instead of animating.",
+      "summary": "Synced the registry copy with production (iconMode prop, array-based controlled-mode detection, height-based open/close animation) and documented its existing reduced-motion behavior.",
       "breaking": false
     },
     {
-      "version": "1.1.0",
-      "date": "2026-07-23",
-      "summary": "Registry copy synced with the production component the demo renders: adds the iconMode prop (rotate / rotate-left-down with ChevronRight), simpler array-based controlled-mode detection, and the height-based open/close animation engine.",
+      "version": "1.0.0",
+      "date": "2026-07-22",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

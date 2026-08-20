@@ -16,18 +16,18 @@
   "exportName": "ProgressiveBloomValley",
   "exportKind": "default",
   "tier": "pro",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "changelog": [
     {
-      "version": "1.1.1",
+      "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Removed five stale kebab-case duplicate files (camera-rig, film-grain-effect, edge-blur-effect, use-input, use-valley-data) that had diverged from the camelCase originals and were being shipped to installers.",
+      "summary": "Added reduced-motion support and removed stale duplicate files that had diverged from the originals and were being shipped to installers.",
       "breaking": false
     },
     {
-      "version": "1.1.0",
-      "date": "2026-07-21",
-      "summary": "Add prefers-reduced-motion support",
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
       "breaking": false
     }
   ],
