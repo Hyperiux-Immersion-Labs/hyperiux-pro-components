@@ -234,7 +234,7 @@ export default function NavbarMobileV3({
       <div
         // Translucent rather than solid: the hero's ASCII field keeps moving
         // under the bar, and the blur is what keeps the logo readable over it.
-        className={`fixed top-0 left-0 z-1000 flex w-full items-center justify-between border-b border-white/8 bg-background/60 px-[6vw] py-[5vw] backdrop-blur-xl transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none md:px-[3.5vw] md:py-[2.5vw] lg:hidden ${
+        className={`fixed top-0 left-0 z-1000 hidden max-[1025px]:flex w-full items-center justify-between border-b border-white/8 bg-background/60 px-[6vw] py-[5vw] backdrop-blur-xl transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none md:px-[3.5vw] md:py-[2.5vw]  ${
           !intro
             ? "pointer-events-none translate-y-0 opacity-0"
             : visible || open
@@ -280,7 +280,7 @@ export default function NavbarMobileV3({
 
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-990 bg-background lg:hidden"
+        className="fixed inset-0 z-990 hidden bg-background max-[1025px]:block"
         style={{ visibility: "hidden", opacity: 0 }}
       >
         <div

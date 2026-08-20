@@ -111,13 +111,13 @@ const nextConfig = {
         permanent: false,
       },
       {
-        source: "/effects/components/infinite-grid-gallery",
-        destination: "/effects/webgl-effects/infinite-grid-gallery",
+        source: "/effects/webgl-effects/infinite-grid-gallery",
+        destination: "/effects/components/infinite-grid-gallery",
         permanent: false,
       },
       {
-        source: "/effects/components/infinite-grid-gallery/preview",
-        destination: "/effects/webgl-effects/infinite-grid-gallery/preview",
+        source: "/effects/webgl-effects/infinite-grid-gallery/preview",
+        destination: "/effects/components/infinite-grid-gallery/preview",
         permanent: false,
       },
       {

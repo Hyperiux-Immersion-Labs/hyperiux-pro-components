@@ -67,13 +67,11 @@ export default function ApertureTransition({
   const overlayRef = useRef<HTMLDivElement>(null)
   const cloneRef = useRef<HTMLElement | null>(null)
   const pathname = usePathname()
-  const isFirstRenderRef = useRef(true)
+  const prevPathnameRef = useRef(pathname)
 
   useLayoutEffect(() => {
-    if (isFirstRenderRef.current) {
-      isFirstRenderRef.current = false
-      return
-    }
+    if (prevPathnameRef.current === pathname) return
+    prevPathnameRef.current = pathname
     if (prefersReducedMotion()) return
 
     if (wrapperRef.current) {

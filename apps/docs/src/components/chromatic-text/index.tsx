@@ -7,9 +7,9 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 type ChromaticTextProps = {
-  textColor?: string;
-  redColor?: string;
-  blueColor?: string;
+  baseTextColor?: string;
+  firstTextColor?: string;
+  secondTextColor?: string;
   fontSize?: number;
   fontWeight?: CSSProperties["fontWeight"];
   backgroundColor?: string;
@@ -19,9 +19,9 @@ type ChromaticTextProps = {
 const DEFAULT_TEXT = "Scroll to See Chromatic Effect";
 
 const ChromaticText = ({
-  textColor = "#ffffff",
-  redColor = "#FFB200",
-  blueColor = "#EB5B00",
+  baseTextColor = "#ffffff",
+  firstTextColor = "#FFB200",
+  secondTextColor = "#EB5B00",
   fontSize = 10,
   fontWeight = 500,
   backgroundColor = "#111111",
@@ -137,7 +137,7 @@ const ChromaticText = ({
         <p
           ref={textOneRef}
           className={`${layerClassName} z-20`}
-          style={{ ...textStyle, color: textColor }}
+          style={{ ...textStyle, color: baseTextColor }}
         >
           {DEFAULT_TEXT}
         </p>
@@ -148,7 +148,7 @@ const ChromaticText = ({
               ref={textTwoRef}
               aria-hidden="true"
               className={`pointer-events-none ${layerClassName} z-10 motion-reduce:hidden`}
-              style={{ ...textStyle, color: redColor }}
+              style={{ ...textStyle, color: firstTextColor }}
             >
               {DEFAULT_TEXT}
             </p>
@@ -157,7 +157,7 @@ const ChromaticText = ({
               ref={textThreeRef}
               aria-hidden="true"
               className={`pointer-events-none ${layerClassName} z-0 motion-reduce:hidden`}
-              style={{ ...textStyle, color: blueColor }}
+              style={{ ...textStyle, color: secondTextColor }}
             >
               {DEFAULT_TEXT}
             </p>

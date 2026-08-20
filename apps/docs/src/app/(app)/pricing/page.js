@@ -63,13 +63,32 @@ export default async function PricingPage() {
       <VaultShell effects={effects}>
         <main id="main-content">
           <Hero />
-          <CubeBackgroundAscii />
+          <CubeBackgroundAscii
+            debug={false}            src="/homepage-v3/pricing/11.mp4"
+            config={{
+              charSet: "currency",
+              charColumns: 134,
+              charZoom: 1.08,
+              charGap: 0,
+              dither: 0.56,
+              glyphGain: 3,
+              videoScale: 1,
+              videoOffsetX: 0.21,
+              videoOffsetY: 0,
+              levelsLow: 0.15,
+              levelsHigh: 1,
+              brightnessMap: 1.69,
+              rampLow: 0.15,
+              rampHigh: 0,
+              invert: false,
+            }}
+          />
           <DitherTransition  mobileEndTriggers={'bottom -50%'} className="h-[46vw] max-md:h-[150vw]! bg-background " />
           <PricingV3 isIndia={isIndia} auth />
           <DitherTransition
             dotColor="#050505"
             accentColor="#eaeaea"
-            className="h-[50vw] -mt-[5vw] max-md:h-[150vw]! bg-foreground"
+            className="h-[50vw] mt-[-5vw] max-md:h-[150vw]! bg-foreground"
           />
           <div className="mt-[-25vw]">
             <PricingCompareTable />

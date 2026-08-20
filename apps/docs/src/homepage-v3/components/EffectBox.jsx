@@ -424,7 +424,7 @@ export default function EffectBox({
               fill
               sizes="(max-width: 768px) 92vw, (max-width: 1025px) 44vw, 26vw"
               priority={priority}
-              className="object-cover transition-all duration-500 group-hover:brightness-70  group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              className="object-cover transition-all duration-500 group-hover:brightness-90  group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
           )
         ) : (

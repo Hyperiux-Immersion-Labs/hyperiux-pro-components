@@ -3,30 +3,6 @@
   "version": "1.1.3",
   "changelog": [
     {
-      "version": "1.1.3",
-      "date": "2026-08-18",
-      "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.2",
-      "date": "2026-08-18",
-      "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.1",
-      "date": "2026-08-18",
-      "summary": "Changed default color layers to white/amber/orange and increased scroll movement intensity.",
-      "breaking": false
-    },
-    {
-      "version": "1.1.0",
-      "date": "2026-08-14",
-      "summary": "Added a reduced-motion-safe final state, synced the shipped source to the docs version, and released the effect as free.",
-      "breaking": false
-    },
-    {
       "version": "1.0.0",
       "date": "2026-08-14",
       "summary": "Initial release",
@@ -51,7 +27,7 @@
   "target": "src/components/effects/chromatic-text",
   "props": [
     {
-      "name": "textColor",
+      "name": "baseTextColor",
       "type": "string",
       "default": "#ffffff",
       "description": "Color of the front/base text layer.",
@@ -62,7 +38,7 @@
       }
     },
     {
-      "name": "redColor",
+      "name": "firstTextColor",
       "type": "string",
       "default": "#FFB200",
       "description": "Color of the red chromatic depth layer.",
@@ -73,7 +49,7 @@
       }
     },
     {
-      "name": "blueColor",
+      "name": "secondTextColor",
       "type": "string",
       "default": "#EB5B00",
       "description": "Color of the blue chromatic depth layer.",

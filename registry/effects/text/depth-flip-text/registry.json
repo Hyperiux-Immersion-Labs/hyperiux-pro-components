@@ -51,6 +51,7 @@
       "description": "Background color behind the effect.",
       "remixer": {
         "control": "color",
+        "enabled":false,
         "group": "colors",
         "groupTitle": "Colors"
       }
@@ -58,7 +59,7 @@
     {
       "name": "textColor",
       "type": "string",
-      "default": "#050505",
+      "default": "#ffffff",
       "description": "Text color for both the current and incoming phrase.",
       "remixer": {
         "control": "color",
