@@ -297,6 +297,8 @@ const VariableProximityLetters = forwardRef<HTMLSpanElement, VariableTextProximi
   );
 });
 
+VariableProximityLetters.displayName = "VariableProximityLetters";
+
 export default function VariableTextProximity({
   radius = 100,
   falloff = 'linear',
