@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { prefersReducedMotion } from "@/lib/motion";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 import { resolveCharSet } from "./char-sets";
 import { createFluid } from "./ascii-fluid";
 
@@ -119,7 +120,7 @@ function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (prefersReducedMotion() || shouldSkipRealtimeGPU()) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;

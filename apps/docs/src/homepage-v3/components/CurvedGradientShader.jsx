@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "@/lib/motion";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -192,6 +193,7 @@ export default function CurvedGradientShader({
     const canvas = canvasRef.current;
 
     if (!wrap || !canvas) return;
+    if (shouldSkipRealtimeGPU()) return;
 
     const reduced = prefersReducedMotion();
     const startedAt = performance.now();
@@ -387,7 +389,7 @@ export default function CurvedGradientShader({
 
   useGSAP(
     () => {
-      if (prefersReducedMotion()) return;
+      if (prefersReducedMotion() || shouldSkipRealtimeGPU()) return;
 
       const triggerEl = scrollTriggerRef?.current || wrapRef.current;
 

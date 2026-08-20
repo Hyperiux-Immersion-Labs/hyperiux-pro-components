@@ -2,27 +2,26 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
-const SONGS = {
-  "here-for-you": [
-    66, 69, 74, 78,
-    64, 69, 73, 76,
-    66, 71, 74, 78,
-    67, 71, 74, 79,
-    78, 76, 74, 69,
-    76, 73, 69, 64,
-    78, 74, 71, 66,
-    79, 74, 71, 67,
-  ],
-  "fur-elise": [
-    76, 75, 76, 75, 76, 71, 74, 72, 69,
-    60, 64, 69, 71,
-    64, 68, 71, 72,
-    64, 76, 75, 76, 75, 76, 71, 74, 72, 69,
-    60, 64, 69, 71,
-    64, 72, 71, 69,
-  ],
+// A real keyboard: every line is a fixed key with its own pitch, so the same
+// line always sounds the same note. White keys only — a sweep reads as a clean
+// glissando instead of a chromatic smear.
+const WHITE_STEPS = [0, 2, 4, 5, 7, 9, 11];
+const LINES_PER_KEY = 3;
+
+// Where the keyboard starts. `song` now only picks the root, not a melody.
+const KEYBOARDS = {
+  "here-for-you": 48, // C3
+  "fur-elise": 48, // C3
 };
+const DEFAULT_ROOT = 48;
+
+// n-th white key above the root.
+const whiteKey = (root, n) =>
+  root +
+  Math.floor(n / WHITE_STEPS.length) * 12 +
+  WHITE_STEPS[n % WHITE_STEPS.length];
 
 const REST_OPACITY = 1;
 const TROUGH_OPACITY = 0.06;
@@ -182,8 +181,12 @@ export default function Piano({
     const wrap = wrapRef.current;
     const lines = lineRefs.current.filter(Boolean);
     if (!wrap || !lines.length) return;
+    if (shouldSkipRealtimeGPU()) return;
 
-    const melody = SONGS[song] || SONGS["here-for-you"];
+    const root = KEYBOARDS[song] ?? DEFAULT_ROOT;
+    // Each key spans a fixed number of lines, so every key is the same width
+    // and line -> pitch never drifts.
+    const keyCount = Math.max(1, Math.ceil(lines.length / LINES_PER_KEY));
     const synth = new PianoSynth();
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -330,14 +333,12 @@ export default function Piano({
       if (active) playNoteAt(visualPos);
     };
 
-    // Equal-width bins across the keyboard — one melody note per slice,
-    // so a constant-speed sweep fires on a regular grid instead of drifting.
+    // Which key the pointer is over. Fixed-width bins: the same line always
+    // lands on the same key, so the keyboard behaves like real keys.
     function noteAt(position) {
-      const span = Math.max(1, lines.length);
-      const t = (position + 0.5) / span;
       return Math.min(
-        melody.length - 1,
-        Math.max(0, Math.floor(t * melody.length)),
+        keyCount - 1,
+        Math.max(0, Math.floor((position + 0.5) / LINES_PER_KEY)),
       );
     }
 
@@ -347,8 +348,12 @@ export default function Piano({
 
       noteIndex = note;
       pendingNote = note;
-      pendingGlyphPos = position;
-      pendingMidi = melody[note];
+      // Anchor the glyph to the key that sounded, not the raw pointer.
+      pendingGlyphPos = Math.min(
+        lines.length - 1,
+        note * LINES_PER_KEY + (LINES_PER_KEY - 1) / 2,
+      );
+      pendingMidi = whiteKey(root, note);
       queueAudio();
     }
 
@@ -434,10 +439,7 @@ export default function Piano({
         }
         const ratio = (pointerX - rect.left) / rect.width;
         playNoteAt(
-          Math.min(
-            lines.length - 1,
-            Math.max(0, ratio * lines.length - 0.5),
-          ),
+          Math.min(lines.length - 1, Math.max(0, ratio * lines.length - 0.5)),
         );
       }
     };
