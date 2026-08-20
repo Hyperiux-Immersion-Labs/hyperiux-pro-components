@@ -1,11 +1,11 @@
 {
-  "name": "@hyperiux/smooth-slider",
+  "name": "@hyperiux/arc-flow-carousel",
   "version": "1.0.0",
   "description": "Draggable image carousel where cards ride a wheel arc, with flick momentum, idle drift, and reduced-motion support.",
   "main": "index.tsx",
   "files": [
     "index.tsx",
-    "SmoothSliderComp.tsx",
+    "ArcFlowCarouselComp.tsx",
     "registry.json"
   ],
   "keywords": [

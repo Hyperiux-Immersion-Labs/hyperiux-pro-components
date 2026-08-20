@@ -1,16 +1,38 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { gsap } from "gsap";
-import { usePrefersReducedMotion } from "@/lib/motion";
+
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function getReducedMotionSnapshot() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
+}
+
+function subscribeToReducedMotion(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
+  mediaQueryList.addEventListener("change", callback);
+  return () => mediaQueryList.removeEventListener("change", callback);
+}
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(subscribeToReducedMotion, getReducedMotionSnapshot, () => false);
+}
 
 export interface SmoothSliderItem {
   src: string;
   alt?: string;
   label?: string;
+  title?: string;
+  description?: string;
 }
 
-export interface SmoothSliderCompProps {
+export interface ArcFlowCarouselCompProps {
   items?: SmoothSliderItem[];
   /** Circle radius as a multiple of the container width. Bigger = flatter arc. */
   radiusRatio?: number;
@@ -38,20 +60,16 @@ export interface SmoothSliderCompProps {
   autoRotateSpeed?: number;
   /** Pause the idle drift while a pointer hovers the carousel. */
   pauseOnHover?: boolean;
-  backgroundColor?: string;
-  wheelColor?: string;
+  /** Shared hex color used for both the page background and the wheel surface. */
+  surfaceColor?: string;
   className?: string;
 }
 
 const DRAG_SMOOTHING = 14;
 const VELOCITY_WINDOW = 90;
 const MAX_FLICK = 9;
-/** How much slower a card follows per unit distance from the active one. 0 = no lag, 1 = edge cards barely move. */
-const STAGGER_LAG_STRENGTH = 0.85;
-/** Floor on a card's follow rate, as a fraction of the base rate, so far cards never stall. */
-const MIN_FOLLOW_FRACTION = 0.6;
 
-export default function SmoothSliderComp({
+export default function ArcFlowCarouselComp({
   items = [],
   radiusRatio = 0.85,
   cardRatio = 0.21,
@@ -67,10 +85,9 @@ export default function SmoothSliderComp({
   wheelControl = "horizontal",
   autoRotateSpeed = 0,
   pauseOnHover = true,
-  backgroundColor = "#000000",
-  wheelColor = "#000000",
+  surfaceColor = "#000000",
   className = "",
-}: SmoothSliderCompProps) {
+}: ArcFlowCarouselCompProps) {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const discRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -95,9 +112,6 @@ export default function SmoothSliderComp({
   // Wheel position in radians. `current` chases `target` every frame.
   const currentRef = useRef(0);
   const targetRef = useRef(0);
-  // Each card's own eased position — chases `current`, not `target`, so
-  // motion ripples outward from the active card instead of moving as one.
-  const slotOffsetsRef = useRef<number[]>([]);
   const draggingRef = useRef(false);
   const pointerIdRef = useRef<number | null>(null);
   const lastXRef = useRef(0);
@@ -170,62 +184,41 @@ export default function SmoothSliderComp({
   useEffect(() => {
     if (!total) return;
 
-    const draw = (dt: number) => {
+    const draw = () => {
       const { radius, cardWidth, cardHeight, step, centerX, centerY, maxAngle } = layoutRef.current;
       const span = slotCount * step;
       const half = span / 2;
+      const offset = currentRef.current;
       const reveal = revealRef.current;
-      const rate = draggingRef.current ? DRAG_SMOOTHING : reduceMotion ? DRAG_SMOOTHING : smoothing;
-
-      const slotOffsets = slotOffsetsRef.current;
-      if (slotOffsets.length !== slotCount) {
-        slotOffsets.length = slotCount;
-        slotOffsets.fill(currentRef.current);
-      }
 
       for (let i = 0; i < slotCount; i += 1) {
         const card = cardRefs.current[i];
         if (!card) continue;
 
-        // Rank this card's distance from the active one using its own last
-        // position — continuous enough to pick a follow rate from.
-        let rankAngle = (i * step - slotOffsets[i]) % span;
-        if (rankAngle < -half) rankAngle += span;
-        else if (rankAngle >= half) rankAngle -= span;
-        const distanceFactor = gsap.utils.clamp(0, 1, Math.abs(rankAngle) / maxAngle);
-
-        // The touched/active card tracks the drag almost immediately; cards
-        // further out follow it with more lag, so motion ripples outward
-        // instead of the whole fan moving as one rigid piece.
-        const followRate = Math.max(rate * (1 - distanceFactor * STAGGER_LAG_STRENGTH), rate * MIN_FOLLOW_FRACTION);
-        const followLerp = 1 - Math.exp(-followRate * dt);
-        slotOffsets[i] += (currentRef.current - slotOffsets[i]) * followLerp;
-
         // Wrap into [-half, half) so the strip of cards is endless.
-        let baseAngle = (i * step - slotOffsets[i]) % span;
-        if (baseAngle < -half) baseAngle += span;
-        else if (baseAngle >= half) baseAngle -= span;
+        let angle = (i * step - offset) % span;
+        if (angle < -half) angle += span;
+        else if (angle >= half) angle -= span;
 
-        if (Math.abs(baseAngle) > maxAngle) {
+        if (Math.abs(angle) > maxAngle) {
           if (card.style.visibility !== "hidden") card.style.visibility = "hidden";
           continue;
         }
         if (card.style.visibility === "hidden") card.style.visibility = "visible";
 
-        const x = centerX + radius * Math.sin(baseAngle) - cardWidth / 2;
-        const y = centerY - radius * Math.cos(baseAngle) - cardHeight / 2;
+        const x = centerX + radius * Math.sin(angle) - cardWidth / 2;
+        const y = centerY - radius * Math.cos(angle) - cardHeight / 2;
 
-        card.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${baseAngle}rad)`;
+        card.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${angle}rad)`;
         card.style.width = `${cardWidth}px`;
         card.style.height = `${cardHeight}px`;
-        // Right always stacks over left, no exception for the active card —
-        // a plain fanned hand of cards, ordered purely by position.
-        card.style.zIndex = `${Math.round((baseAngle + half) * 1000)}`;
+        // Centre card on top, stacking down towards both edges — a hand of cards.
+        card.style.zIndex = `${1000 - Math.round(Math.abs(angle) * 1000)}`;
 
         const inner = innerRefs.current[i];
         if (inner && reveal < 1) {
           // Staggered entrance, outwards from the middle of the fan.
-          const delay = Math.min(1, Math.abs(baseAngle) / maxAngle) * 0.45;
+          const delay = Math.min(1, Math.abs(angle) / maxAngle) * 0.45;
           const p = gsap.utils.clamp(0, 1, (reveal - delay) / (1 - delay || 1));
           const eased = 1 - Math.pow(1 - p, 3);
           inner.style.opacity = `${eased}`;
@@ -265,11 +258,11 @@ export default function SmoothSliderComp({
         targetRef.current += autoRotateSpeed * dt;
       }
 
-      draw(dt);
+      draw();
     };
 
     // Land on the first card and paint one frame before the ticker starts.
-    draw(1);
+    draw();
     gsap.ticker.add(tick);
 
     return () => gsap.ticker.remove(tick);
@@ -303,7 +296,7 @@ export default function SmoothSliderComp({
       if (!draggingRef.current || e.pointerId !== pointerIdRef.current) return;
       const dx = e.clientX - lastXRef.current;
       lastXRef.current = e.clientX;
-      // Pixels along the rim -> radians, scaled by dragSensitivity.
+      // 1:1 with the pointer: pixels along the rim -> radians.
       targetRef.current -= (dx * dragSensitivity) / layoutRef.current.radius;
       pushSample();
     };
@@ -403,8 +396,8 @@ export default function SmoothSliderComp({
 
   return (
     <section
-      className={`relative bg-black h-[100dvh] w-full overflow-hidden select-none ${className}`}
-      style={{ backgroundColor }}
+      className={`relative h-[100dvh] w-full overflow-hidden select-none ${className}`}
+      style={{ backgroundColor: surfaceColor }}
     >
       <div
         ref={stageRef}
@@ -420,8 +413,8 @@ export default function SmoothSliderComp({
           aria-hidden
           className="pointer-events-none absolute -translate-x-1/2 rounded-full"
           style={{
-            backgroundColor: wheelColor,
-            boxShadow: "none",
+            backgroundColor: surfaceColor,
+            boxShadow: "0 -1px 0 rgba(255,255,255,0.35), 0 -30px 60px rgba(0,0,0,0.06)",
           }}
         />
 
@@ -431,7 +424,7 @@ export default function SmoothSliderComp({
             ref={(el) => {
               cardRefs.current[i] = el;
             }}
-            className="absolute top-0 left-0 will-change-transform"
+            className="group absolute top-0 left-0 will-change-transform"
             style={{ visibility: "hidden" }}
           >
             <div
@@ -451,6 +444,41 @@ export default function SmoothSliderComp({
                 draggable={false}
                 className="pointer-events-none block h-full w-full object-cover select-none"
               />
+              {(item.title || item.description) ? (
+                <div
+                  className={`pointer-events-none absolute inset-0 transition-opacity duration-300 ease-out ${
+                    reduceMotion ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  }`}
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.16) 45%, rgba(0,0,0,0.62) 100%)",
+                  }}
+                />
+              ) : null}
+              {(item.title || item.description) ? (
+                <div
+                  className={`pointer-events-none absolute inset-x-0 bottom-0 p-4 text-white transition-all duration-300 ease-out ${
+                    reduceMotion
+                      ? "translate-y-0 opacity-100"
+                      : "translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
+                  }`}
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.08) 35%, rgba(0,0,0,0.26) 100%)",
+                  }}
+                >
+                  {item.title ? (
+                    <p className="text-[0.72rem] font-medium uppercase tracking-[0.2em] text-white/95">
+                      {item.title}
+                    </p>
+                  ) : null}
+                  {item.description ? (
+                    <p className="mt-2 max-w-[22ch] text-[0.74rem] leading-[1.45] text-white/75">
+                      {item.description}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
               {item.label ? (
                 <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[0.7rem] tracking-[0.18em] text-white/90 uppercase">
                   {item.label}
