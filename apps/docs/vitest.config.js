@@ -62,6 +62,10 @@ export default defineConfig({
         __dirname,
         "./test/stubs/next-transition-router.js"
       ),
+      // next/font's build-time font loading (downloading/subsetting/hashing
+      // real font files) has no meaning to a Node-based test runner - see
+      // the stub for what it actually returns.
+      "next/font/google": path.resolve(__dirname, "./test/stubs/next-font-google.js"),
     },
   },
 });

@@ -54,6 +54,7 @@ describe("sanity code sync", () => {
       makeCodeBlock("index.jsx", "old index"),
       makeCodeBlock("Helper.jsx", "same helper"),
       makeCodeBlock("old.jsx", "old file"),
+      makeCodeBlock("another-old.jsx", "another old file"),
       { _type: "effectCodeBlock", _key: "nofile", code: "no filename" },
     ]);
 
@@ -64,10 +65,17 @@ describe("sanity code sync", () => {
       document,
     });
 
+    // Two stale blocks + one missing file, on purpose: the "single unclaimed
+    // pairing" heuristic in buildPlanFromDocument (see its own comment) only
+    // fires for an exact 1-stale/1-missing count, since that's the only case
+    // where "this is a rename" is a safe guess. Keeping stale at 2 here
+    // means this test genuinely exercises "missing" and "stale" as
+    // independent outcomes instead of accidentally tripping that heuristic
+    // and folding them into "changed".
     expect(plan.changed.map((item) => item.file.path)).toEqual(["index.jsx"]);
     expect(plan.unchanged.map((item) => item.file.path)).toEqual(["Helper.jsx"]);
     expect(plan.missing.map((file) => file.path)).toEqual(["styles.css"]);
-    expect(plan.stale.map((block) => block.filename)).toEqual(["old.jsx"]);
+    expect(plan.stale.map((block) => block.filename)).toEqual(["old.jsx", "another-old.jsx"]);
     expect(plan.skipped).toHaveLength(1);
   });
 
