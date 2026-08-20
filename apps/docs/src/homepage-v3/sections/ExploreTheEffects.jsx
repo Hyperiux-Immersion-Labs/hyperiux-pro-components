@@ -130,7 +130,7 @@ export default function ExploreTheEffects() {
         <section
             ref={container}
             id="explore-the-effects"
-            className="w-full  mb-[13vw] mt-[-24vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-md:mt-[-45vw]!  max-md:px-[6vw] max-sm:px-[7vw]"
+            className="w-full  mb-[13vw] mt-[-24vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-[1025px]:mt-[-85vw]!  max-md:px-[6vw] max-sm:px-[7vw]"
         >
             <div className="space-y-[4vw] relative z-200 max-[1025px]:space-y-[4vw] max-[1025px]:mb-[12vw] max-md:space-y-[8vw] mb-[15vw] ">
                 <LineReveal as='h2' className="t96 font-neue-haas w-[55vw] mx-auto text-center max-[1025px]:w-full max-md:w-full">

@@ -12,8 +12,6 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-// Each row opens as its step number and morphs into its icon on scroll, so the
-// two sources are the two ends of that row's own dissolve.
 const STEPS = [
   {
     id: "preview",

@@ -186,12 +186,18 @@ export default function CurvedGradientShader({
     deform: 0,
     targetDeform: 0,
   });
-  // ScrollTrigger lives in a second effect; it kicks the loop and snaps
-  // progress so a client-side return to the page does not sit on progress 0
-  // with the band parked off-screen.
+  // ScrollTrigger lives in a `useGSAP` (a layout effect), so it is created —
+  // and fires its first onRefresh — before the plain effect below has built
+  // the context. The stub therefore records that progress instead of dropping
+  // it, and the build applies it as soon as it can draw; otherwise a load with
+  // the section already on screen keeps targetProgress at 0 and parks the band
+  // off-screen until something else happens to scroll.
+  const pendingProgressRef = useRef(null);
   const controlsRef = useRef({
     start() {},
-    snapProgress() {},
+    snapProgress(progress) {
+      pendingProgressRef.current = progress;
+    },
   });
 
   useEffect(() => {
@@ -438,6 +444,15 @@ export default function CurvedGradientShader({
 
     if (!build()) return;
 
+    // Adopt the progress ScrollTrigger already reported to the stub, so the
+    // first painted frame is the band where the scroll position puts it.
+    if (pendingProgressRef.current !== null) {
+      const state = stateRef.current;
+      state.targetProgress = pendingProgressRef.current;
+      state.progress = pendingProgressRef.current;
+      pendingProgressRef.current = null;
+    }
+
     paint();
     visible = isOnScreen();
     if (visible) start();
@@ -475,7 +490,12 @@ export default function CurvedGradientShader({
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      controlsRef.current = { start() {}, snapProgress() {} };
+      controlsRef.current = {
+        start() {},
+        snapProgress(progress) {
+          pendingProgressRef.current = progress;
+        },
+      };
       stop();
       resizeObserver.disconnect();
       intersectionObserver.disconnect();

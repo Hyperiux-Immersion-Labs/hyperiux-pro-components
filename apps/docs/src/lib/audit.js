@@ -31,8 +31,15 @@ export function isLighthouseOrHeadless() {
 // with no GPU passthrough, which falls back to a software WebGL rasterizer -
 // a much harder signal to fake than the checks above, since a real visitor's
 // desktop GPU essentially never reports one of these.
+// The GPU cannot change within a page load, so the probe runs at most once.
+// Every mounted effect calls this, and a fresh context per call is exactly
+// what pushes real canvases past the browser's limit.
+let softwareRendererResult = null;
+
 export function isSoftwareRenderer() {
   if (typeof document === "undefined") return false;
+
+  if (softwareRendererResult !== null) return softwareRendererResult;
 
   try {
     const probe = document.createElement("canvas");
@@ -43,12 +50,20 @@ export function isSoftwareRenderer() {
       ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
       : gl?.getParameter(gl.RENDERER);
 
-    return (
-      typeof renderer === "string" && SOFTWARE_RENDERER_PATTERN.test(renderer)
-    );
+    // Hand the context back immediately. Browsers cap live WebGL contexts
+    // (~16 in Chrome) and evict the oldest to make room, so a probe per
+    // component would otherwise push real, still-rendering canvases out and
+    // blank them at random.
+    gl?.getExtension("WEBGL_lose_context")?.loseContext();
+
+    softwareRendererResult =
+      typeof renderer === "string" && SOFTWARE_RENDERER_PATTERN.test(renderer);
+
+    return softwareRendererResult;
   } catch {
     // Can't probe WebGL - a real <Canvas> would fail the same way, so this
     // isn't a case worth treating differently from "skip".
+    softwareRendererResult = true;
     return true;
   }
 }

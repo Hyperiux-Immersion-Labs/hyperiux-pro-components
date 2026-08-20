@@ -16,7 +16,26 @@ const ICON_FILL = 3;
 
 // A cell counts as "inked" once its averaged coverage crosses this. Below it the
 // cell is empty (no glyph), which is what carves the hollow pupil of the eye.
-const ON_THRESHOLD = 0.2;
+//
+// The sources are orange (#ff5f00, luminance ~0.52) sitting on a near-black
+// plate, not shapes on transparency — so a cell's coverage is that orange
+// averaged against the background it shares the cell with. Even a cell dead
+// centre on a stroke only reaches ~0.3–0.43, so a 0.2 cut sat just under the
+// signal and dropped every partially-covered cell: thin strokes came out as
+// broken dashes rather than solid runs. 0.08 keeps the stroke interiors while
+// staying well clear of the ~0.02 background plate.
+const ON_THRESHOLD = 0.08;
+
+// Smallest cell we will draw a glyph into. The font size is a rounded integer of
+// the cell, so a sub-2px cell renders every "0"/"1" as partial-coverage
+// antialiasing instead of solid pixels. On narrow viewports the requested `cols`
+// is capped so the cell stays at or above this.
+//
+// Kept low deliberately: coarsening the grid also thins the shapes, because a
+// stroke only a couple of source pixels wide occupies fewer cells. 2.0 is the
+// point where the rounded font size reaches 2px — enough for a solid glyph —
+// without giving up more resolution than that costs.
+const MIN_CELL_PX = 2;
 
 const smoothstep = (t) => t * t * (3 - 2 * t);
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -216,8 +235,11 @@ const AsciiMorph = forwardRef(function AsciiMorph(
       // Integer CSS box so the bitmap is never stretched by a fractional layout.
       cssW = Math.max(1, Math.floor(width));
       cssH = Math.max(1, Math.floor(height));
-      cell = cssW / cols;
-      gridCols = cols;
+      // `cols` is the ceiling, not a promise: a box too narrow to give each
+      // column MIN_CELL_PX gets fewer, larger cells instead of a fine grid of
+      // sub-pixel smears. Wide boxes are unaffected and keep the requested grid.
+      gridCols = Math.max(1, Math.min(cols, Math.floor(cssW / MIN_CELL_PX)));
+      cell = cssW / gridCols;
       gridRows = Math.max(1, Math.round(cssH / cell));
 
       canvas.style.width = `${cssW}px`;

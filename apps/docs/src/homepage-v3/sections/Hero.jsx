@@ -245,7 +245,7 @@ export default function Hero() {
     return (
         <main
             ref={rootRef}
-            className="relative h-dvh w-screen overflow-hidden bg-background"
+            className="relative h-dvh max-[1025px]:h-fit! max-[1025px]:min-h-screen w-screen overflow-hidden bg-background"
         >
             <div ref={layerRef} className="absolute  inset-0 origin-center max-md:w-full will-change-transform">
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
