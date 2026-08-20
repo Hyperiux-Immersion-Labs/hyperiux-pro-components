@@ -22,7 +22,6 @@ import DitherTransition from "@/homepage-v3/components/DitherTransition";
 import ScrollTopOnLoad from "@/homepage-v3/components/ScrollTopOnLoad";
 import { getSearchIndexEffects } from "@/lib/search-index";
 import { FAQJSONLD } from "@/lib/json-ld";
-import MorphingDiether from "./MorphingDiether";
 import { headers } from "next/headers";
 
 const faqItems = [

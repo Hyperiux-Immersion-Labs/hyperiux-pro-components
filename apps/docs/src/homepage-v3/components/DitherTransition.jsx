@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -369,6 +370,8 @@ export default function DitherTransition({
   }, [cellSize, gamma, draw]);
 
   useEffect(() => {
+    if (shouldSkipRealtimeGPU()) return;
+
     resize();
 
     const wrapper = wrapperRef.current;
@@ -381,6 +384,8 @@ export default function DitherTransition({
 
   useGSAP(
     () => {
+      if (shouldSkipRealtimeGPU()) return;
+
       const reduced =
         typeof window !== "undefined" &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;

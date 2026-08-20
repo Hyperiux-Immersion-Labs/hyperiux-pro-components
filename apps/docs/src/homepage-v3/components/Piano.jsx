@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
 // A real keyboard: every line is a fixed key with its own pitch, so the same
 // line always sounds the same note. White keys only — a sweep reads as a clean
@@ -180,6 +181,7 @@ export default function Piano({
     const wrap = wrapRef.current;
     const lines = lineRefs.current.filter(Boolean);
     if (!wrap || !lines.length) return;
+    if (shouldSkipRealtimeGPU()) return;
 
     const root = KEYBOARDS[song] ?? DEFAULT_ROOT;
     // Each key spans a fixed number of lines, so every key is the same width
