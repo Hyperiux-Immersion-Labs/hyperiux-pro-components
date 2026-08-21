@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { DEFAULT_CHAR_SET, resolveCharSet } from "./char-sets";
 import { shouldSkipRealtimeGPU } from "@/lib/audit";
+import { prefersReducedMotion } from "@/lib/motion";
 
 export const VIDEO_SRC = "/cube.mp4";
 
@@ -50,6 +51,49 @@ export const CUBE_ASCII_DEFAULTS = {
   fluidForceMultiplier: 0.2,
   fluidInnerRadius: 0.85,
   fluidRadiusLife: 1.0,
+  /**
+   * Click wave. The hover trail is the fluid above; this is the other half of
+   * the interaction — a ring of scrambled glyphs that expands from the click
+   * and dies out, leaving the field exactly as it found it.
+   */
+  waveEnabled: true,
+  /**
+   * How far the ring travels, as a fraction of the canvas diagonal.
+   *
+   * Past 1.0 because the click decides where the ring starts and a click near
+   * a corner has the whole diagonal to cross before the far corner is covered
+   * — at 0.6 such a ring died most of a screen short, finishing while a chunk
+   * of the field had never been touched. Sized for the worst case so the wave
+   * always runs off every edge, wherever it was born.
+   */
+  waveReach: 1.25,
+  /**
+   * Thickness of the lit band at birth, in canvas pixels. Wide — the ring is a
+   * broad wall of churning glyphs rather than a thin outline, and a narrow
+   * band reads as a ripple rather than a blast. The band grows as the ring
+   * travels, so this is its width at the moment of the click.
+   */
+  waveWidth: 210,
+  /** Share of crest cells that churn through random glyphs (0 = none, 1 = all). */
+  waveScramble: 1.0,
+  /**
+   * Seconds from click to the ring finishing. Lower is a faster, snappier
+   * blast; higher lets it drift out. Paired with waveReach — that sets how far
+   * the ring goes, this sets how long it takes to get there, so raising one
+   * without the other changes the speed it travels at.
+   */
+  waveDuration: 2,
+  /**
+   * How much brighter a glyph gets at the centre of the band (0 = no lift, the
+   * ring shows only as scrambled characters; 1.35 = default).
+   */
+  waveGlow: 0,
+  /**
+   * Tint on the click ring. White + tint 0 leaves the current look (the band
+   * only brightens); raise tint and pick a colour to paint the crest.
+   */
+  waveColor: "#ff6a00",
+  waveTint: 3,
   brightness: 0,
   contrast: 0,
   saturation: -100,
@@ -191,6 +235,23 @@ const TL = 320;
 const TS = 10;
 const TM = 72;
 
+/**
+ * How many click waves can be in flight at once. Clicking again before a ring
+ * has finished starts a second one alongside it rather than restarting the
+ * first, so an impatient visitor gets overlapping rings instead of a stutter.
+ * Past this the oldest ring is recycled — by then it is the faintest on screen.
+ */
+const WAVE_N = 4;
+/**
+ * Seconds a ring stays alive. Past this its slot frees up.
+ *
+ * Paired with waveReach below: the ring reaches the furthest corner of a
+ * typical viewport at roughly the same moment the void starts filling back in
+ * (~1.4s of this 1.8s). Stretching one without the other is what leaves the
+ * screen sitting blank with the ring already gone — dead air, not an effect.
+ */
+const WAVE_LIFE = 1.8;
+
 /* ── shaders ── */
 const VS = `#version 300 es
 in vec2 a_pos;
@@ -253,6 +314,24 @@ uniform float uFluidTint;
 uniform float uFluidBoost;
 uniform vec4 uTP[${TM}];
 uniform float uTL[${TM}];
+
+/**
+ * Click waves. Each entry is one ring in flight: xy is the click point in
+ * canvas pixels, z is its age in seconds, w is 0 for a free slot. Rings are
+ * fixed-size so the whole set uploads as two arrays with no branching per
+ * frame; WAVE_N of them can overlap before the oldest is recycled.
+ */
+uniform vec3 uWP[${WAVE_N}];
+uniform float uWA[${WAVE_N}];
+uniform int uWaveN;
+uniform float uWaveSpeed;
+uniform float uWaveWidth;
+uniform float uWaveScramble;
+uniform float uWaveLife;
+uniform float uWaveGlow;
+uniform int uWaveColorEnabled;
+uniform vec3 uWaveColor;
+uniform float uWaveTint;
 
 out vec4 O;
 
@@ -468,12 +547,69 @@ void main() {
   float hm = min(1.0, length(flow) * 1.1);
   float gray = mix(toned, 1.0 - toned, hm);
 
+  // ── Click wave ──
+  //
+  // Each ring is a band centred on a radius that grows with its age. "ring" is
+  // how deep this cell sits inside that band — 0 outside it, 1 on the crest —
+  // and it is the wave's only output: the band lights cells up and scrambles
+  // them, and everything outside it is left exactly as the video drew it. The
+  // ring is symmetric about the crest, so its inner and outer edges fall off
+  // identically and the field is untouched on both sides of it.
+  float ring = 0.0;
+
+  for (int i = 0; i < uWaveN; i++) {
+    float age = uWP[i].z;
+    if (uWA[i] <= 0.0) continue;
+
+    // Ring radius in pixels. Only slightly eased — a strong ease-out spends
+    // most of the ring's life almost stationary at the far edge, which is what
+    // made the first pass feel like it was over before it started. Close to
+    // linear keeps it travelling at a readable speed the whole way.
+    float t = clamp(age / max(uWaveLife, 0.05), 0.0, 1.0);
+    float radius = uWaveSpeed * (1.0 - pow(1.0 - t, 1.25));
+
+    // The crest holds full strength almost the whole way out and lets go only
+    // at the very end, so the ring stays solid across the screen rather than
+    // washing out halfway through its travel.
+    float fade = 1.0 - smoothstep(0.85, 1.0, t);
+    float dist = length(bp - uWP[i].xy);
+
+    // Band around the crest. Widening with age keeps the ring's *screen* width
+    // roughly constant as it stretches around an ever-longer circumference.
+    float w = uWaveWidth * (1.0 + t * 1.5);
+    ring = max(ring, (1.0 - smoothstep(0.0, w, abs(dist - radius))) * fade);
+  }
+
+  // The crest lifts cells up the ramp, but only partway and only for the ones
+  // that were already going to be inked. Pushing the whole band to the top of
+  // the ramp fills it into a solid slab — the ring has to stay a scatter of
+  // individual bright glyphs on background, which is what reads as text
+  // churning rather than as a white shape passing over.
+  gray = mix(gray, min(1.0, gray * 1.35 + 0.28), ring);
+
   // Ordered-dither nudge (±half a ramp step) breaks banding between levels
   float thr = float(BAYER[(int(gy) & 3) * 4 + (int(gx) & 3)]) / 255.0;
   float dithered = gray + (thr - 0.5) * uDither / float(CHAR_N);
 
   // Brightness → ramp index. Low slots may be blank; see CHAR_SETS.
   int ci = int(clamp(dithered, 0.0, 0.9999) * float(CHAR_N));
+
+  // On the crest, swap the tone-derived glyph for a random one off the ramp.
+  // This is what makes a passing ring read as *data*, not as the same picture
+  // brightened: the cells stop spelling out the video and churn. Re-rolled on
+  // a coarse time step so a cell flickers through a few glyphs while the band
+  // covers it, rather than holding one character all the way past.
+  //
+  // Cells fall into the scramble by lottery rather than all at once, so the
+  // band's inner and outer edges fray into the untouched field instead of
+  // ending on a clean circle.
+  float scrambleOdds = ring * clamp(uWaveScramble, 0.0, 1.0);
+  if (hash(vec2(gx, gy) * 1.37) < scrambleOdds) {
+    float roll = hash(vec2(gx, gy) + floor(uTime * 18.0) * 37.7);
+    // Bias the roll high so scrambled cells land on inked slots — the blank
+    // ones at the bottom of the ramp would punch holes in the crest.
+    ci = int(clamp(mix(0.35, 1.0, roll), 0.0, 0.9999) * float(CHAR_N));
+  }
 
   // Glyphs grow into their cell as they arrive — the mirror of the loader's
   // glyphs shrinking as they leave, and what makes each one read as arriving
@@ -501,6 +637,22 @@ void main() {
   // double-attenuating them into invisibility — so keep color near-flat.
   float shade = mix(1.0, lum, clamp(uColorFromVideo, 0.0, 1.0));
   vec3 col = vec3(uCharBrightness * shade) * uColorIntensity;
+
+  // The wave only ever touches colour, never which glyph a cell was given.
+  //
+  // This is the whole contract: the field is decided by the video and nothing
+  // the wave does can remove it. It only ever brightens, and only inside the
+  // band — so the clip is never dimmed, cut, or hidden anywhere on the canvas.
+  col *= 1.0 + ring * uWaveGlow;
+
+  // Optional wave tint (off when uWaveColorEnabled == 0 or tint is 0).
+  // The ring still only ever brightens by default; colour is a leva overlay
+  // on the crest, same coverage idea as the fluid trail.
+  if (uWaveColorEnabled == 1) {
+    float t = clamp(uWaveTint, 0.0, 3.0);
+    float waveMix = ring * clamp(t / 2.0, 0.0, 1.0);
+    col = mix(col, uWaveColor, waveMix);
+  }
 
   // Optional fluid letter tint (off when uFluidColorEnabled == 0).
   //
@@ -790,7 +942,7 @@ function createSuspendedRaf({ onFrame, root = null }) {
  * Bump SHADER_REV when fragment uniforms/source change so Fast Refresh remounts
  * the GL program (otherwise new uniform locations stay null until a hard reload).
  */
-const SHADER_REV = 5;
+const SHADER_REV = 8;
 
 function CubeAsciiCanvas({ config, intro, src, className }) {
   const [skipGPU, setSkipGPU] = useState(true);
@@ -1000,6 +1152,59 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
 
     window.addEventListener("mousemove", onMove);
 
+    // Rings in flight. Fixed-length so the uniform arrays never resize; a slot
+    // with `born` null is free.
+    const waves = Array.from({ length: WAVE_N }, () => ({
+      x: 0,
+      y: 0,
+      born: null,
+    }));
+
+    const onClick = (event) => {
+      if (isMobile()) return;
+      if (configRef.current.waveEnabled === false) return;
+      // A ring sweeping the whole viewport is a large, unprompted motion —
+      // exactly what the preference is asking us not to do. Read live rather
+      // than captured at mount so toggling it in the OS takes effect without
+      // a remount; the ambient field keeps drawing either way.
+      if (prefersReducedMotion()) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const localX = event.clientX - rect.left;
+      const localY = event.clientY - rect.top;
+
+      // Clicks landing on the copy and buttons stacked over the canvas still
+      // belong to the page, but the ring is background dressing and reads fine
+      // under them — what it must not do is fire for a click somewhere else on
+      // the page entirely, hence the bounds test.
+      if (
+        localX < 0 ||
+        localY < 0 ||
+        localX > rect.width ||
+        localY > rect.height
+      ) {
+        return;
+      }
+
+      const birth = now();
+      // Free slot if there is one, otherwise the oldest ring — by then it is
+      // the faintest thing on screen, so recycling it is invisible.
+      let slot = waves.findIndex((wave) => wave.born === null);
+      if (slot === -1) {
+        slot = waves.reduce(
+          (oldest, wave, i) =>
+            wave.born < waves[oldest].born ? i : oldest,
+          0,
+        );
+      }
+
+      waves[slot].x = localX;
+      waves[slot].y = localY;
+      waves[slot].born = birth;
+    };
+
+    window.addEventListener("pointerdown", onClick);
+
     let width = 0;
     let height = 0;
 
@@ -1029,8 +1234,22 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
     const uTrailN = loc("uTrailN");
     const uTime = loc("uTime");
 
+    const uWP = loc("uWP");
+    const uWA = loc("uWA");
+    const uWaveN = loc("uWaveN");
+    const uWaveSpeed = loc("uWaveSpeed");
+    const uWaveWidth = loc("uWaveWidth");
+    const uWaveScramble = loc("uWaveScramble");
+    const uWaveLife = loc("uWaveLife");
+    const uWaveGlow = loc("uWaveGlow");
+    const uWaveColorEnabled = loc("uWaveColorEnabled");
+    const uWaveColor = loc("uWaveColor");
+    const uWaveTint = loc("uWaveTint");
+
     const tpBuf = new Float32Array(TM * 4);
     const tlBuf = new Float32Array(TM);
+    const wpBuf = new Float32Array(WAVE_N * 3);
+    const waBuf = new Float32Array(WAVE_N);
     const start = performance.now();
 
     const loop = createSuspendedRaf({
@@ -1125,6 +1344,56 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
 
         const cfg = configRef.current;
 
+        // Age each ring and retire the ones past their life. The shader reads
+        // age in seconds and derives radius from it, so nothing here has to
+        // track position — a ring is just a point and a clock.
+        //
+        // The same duration is sent to the shader below, so a ring's slot is
+        // freed on exactly the frame its radius finishes growing. Reading it
+        // once here keeps the two in step: were they to disagree, rings would
+        // either wink out mid-travel or linger invisibly holding a slot.
+        const waveLife = Math.max(0.05, cfg.waveDuration ?? WAVE_LIFE);
+
+        wpBuf.fill(0);
+        waBuf.fill(0);
+
+        for (let i = 0; i < WAVE_N; i += 1) {
+          const wave = waves[i];
+          if (wave.born === null) continue;
+
+          const age = (timestamp - wave.born) / 1000;
+          if (age >= waveLife) {
+            wave.born = null;
+            continue;
+          }
+
+          wpBuf[i * 3] = wave.x;
+          wpBuf[i * 3 + 1] = wave.y;
+          wpBuf[i * 3 + 2] = age;
+          waBuf[i] = 1;
+        }
+
+        gl.uniform3fv(uWP, wpBuf);
+        gl.uniform1fv(uWA, waBuf);
+        gl.uniform1i(uWaveN, cfg.waveEnabled === false ? 0 : WAVE_N);
+        // Reach is a fraction of the diagonal so a ring clears the canvas in
+        // the same time whatever its shape or size.
+        gl.uniform1f(
+          uWaveSpeed,
+          Math.hypot(width, height) * (cfg.waveReach ?? 1.25),
+        );
+        gl.uniform1f(uWaveWidth, cfg.waveWidth ?? 210);
+        gl.uniform1f(uWaveScramble, cfg.waveScramble ?? 1.0);
+        gl.uniform1f(uWaveLife, waveLife);
+        gl.uniform1f(uWaveGlow, cfg.waveGlow ?? 1.35);
+
+        const waveRgb = hexToRgb(cfg.waveColor);
+        gl.uniform1i(uWaveColorEnabled, waveRgb ? 1 : 0);
+        if (waveRgb) {
+          gl.uniform3f(uWaveColor, waveRgb[0], waveRgb[1], waveRgb[2]);
+        }
+        gl.uniform1f(uWaveTint, cfg.waveTint ?? 0);
+
         gl.uniform4fv(uTP, tpBuf);
         gl.uniform1fv(uTLoc, tlBuf);
         gl.uniform1i(uTrailN, trail.length);
@@ -1195,6 +1464,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
     return () => {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("pointerdown", onClick);
       if (resizeObserver) resizeObserver.disconnect();
       loop.destroy();
       video.pause();
