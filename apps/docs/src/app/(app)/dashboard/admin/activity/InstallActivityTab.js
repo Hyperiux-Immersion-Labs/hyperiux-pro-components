@@ -290,6 +290,16 @@ function EventLog() {
   const [effectSearch, setEffectSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevEffectSearch, setPrevEffectSearch] = useState(effectSearch);
+  const [prevSourceFilter, setPrevSourceFilter] = useState(sourceFilter);
+
+  // Reset to page 1 whenever a filter changes - derived purely from values
+  // already available during render, so adjust it here instead of in an effect.
+  if (prevEffectSearch !== effectSearch || prevSourceFilter !== sourceFilter) {
+    setPrevEffectSearch(effectSearch);
+    setPrevSourceFilter(sourceFilter);
+    setCurrentPage(1);
+  }
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
@@ -317,10 +327,6 @@ function EventLog() {
     const timer = setTimeout(fetchEvents, 300);
     return () => clearTimeout(timer);
   }, [fetchEvents]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [effectSearch, sourceFilter]);
 
   const totalPages = Math.max(1, Math.ceil(total / EVENTS_PER_PAGE));
 

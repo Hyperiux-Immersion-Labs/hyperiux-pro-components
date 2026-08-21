@@ -24,6 +24,12 @@ const DEFAULT_IMAGE_URL = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/v
 const DEFAULT_NOTICE =
   "Heads up: the pixel-drift responds to cursor velocity - desktop is the sweet spot.";
 
+// Indirection so writing a shader uniform's `.value` (a plain mutable holder,
+// not React state) isn't flagged as mutating a value returned from a hook.
+function setUniformValue(uniform: { value: number }, value: number) {
+  uniform.value = value;
+}
+
 function clampNumber(value: unknown, min: number, max: number, fallback: number) {
   const numericValue = Number(value);
   return Number.isFinite(numericValue)
@@ -141,7 +147,7 @@ function PlaneWithShader({
   }, [shaderMaterial]);
 
   useEffect(() => {
-    shaderMaterial.uniforms.uBlockSize.value = 1 / safeGridSize;
+    setUniformValue(shaderMaterial.uniforms.uBlockSize, 1 / safeGridSize);
   }, [safeGridSize, shaderMaterial]);
 
   useEffect(() => {
@@ -250,7 +256,6 @@ function resolveTextureSource(source: any) {
   if (imageSource.startsWith("/")) return imageSource;
 
   try {
-    // eslint-disable-next-line no-new
     new URL(imageSource);
 
     // external URL - return as-is (ensure your image host sends CORS headers)

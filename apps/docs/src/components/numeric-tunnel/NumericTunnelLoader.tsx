@@ -420,7 +420,7 @@ function NumericTunnelCanvas({ loaderValue, onComplete, config }: NumericTunnelC
  cancelAnimationFrame(anim)
  clearTimeout(fadeTimeout)
  }
- }, [loaderValue, onComplete])
+ }, [loaderValue, onComplete, config.crossfadeDuration, config.canvasFadeDuration, config.tunnelFadeOutDelay])
 
  return (
  <div

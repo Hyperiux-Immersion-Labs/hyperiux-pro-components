@@ -34,11 +34,15 @@ export default function DemoHeader({
     lastScrollRef.current = currentScroll;
   });
 
+  // No demo slug means there's nothing to resolve - readArticleHref should
+  // just track href, derived purely from values already available during
+  // render.
+  if (!demoSlug && readArticleHref !== href) {
+    setReadArticleHref(href);
+  }
+
   useEffect(() => {
-    if (!demoSlug) {
-      setReadArticleHref(href);
-      return;
-    }
+    if (!demoSlug) return;
 
     let isActive = true;
 

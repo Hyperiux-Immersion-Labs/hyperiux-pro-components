@@ -22,10 +22,10 @@ const randomGlyph = () =>
   SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
 
 
-function TerminalTick({ tickRef }) {
+function TerminalTick({ dataKey }) {
   return (
     <svg
-      ref={tickRef}
+      data-tick-key={dataKey}
       viewBox="0 0 18 18"
       className="h-[1.05vw] w-[1.05vw] max-[1025px]:h-[2vw] max-[1025px]:w-[2vw] shrink-0 text-[#5AC382] opacity-0 max-md:h-4 max-md:w-4"
       fill="none"
@@ -77,10 +77,10 @@ function TreeFolder({ label, depth = 0 }) {
   );
 }
 
-function TreeFile({ label, depth = 0, className = "", right = null, rowRef }) {
+function TreeFile({ label, depth = 0, className = "", right = null, dataKey }) {
   return (
     <div
-      ref={rowRef}
+      data-file-key={dataKey}
       className={`flex items-center justify-between rounded-[0.3vw] px-[0.55vw] py-[0.35vw] opacity-0 max-[1025px]:px-[1vw] max-[1025px]:py-[0.6vw] max-md:rounded-md max-md:px-2 max-md:py-1.5 ${className}`}
       style={{ paddingLeft: `calc(${depth * 1.35}vw + 0.55vw)` }}
     >
@@ -116,14 +116,36 @@ export default function InstallationProcess() {
 
   useFadeUp(sectionRef);
 
-  const setTerminalRef = (key) => (el) => { terminalRefs.current[key] = el; };
-  const setCodeRef    = (key) => (el) => { codeRefs.current[key]    = el; };
-  const setFileRef    = (key) => (el) => { fileRefs.current[key]    = el; };
-  const setTickRef    = (key) => (el) => { tickRefs.current[key]    = el; };
-
   useLayoutEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
+
+    // Elements carry data-*-key attributes instead of callback refs, and are
+    // looked up here (inside the effect, after commit) into the same
+    // key -> element maps the animation code below already expects.
+    const terminalEls = {};
+    section.querySelectorAll("[data-terminal-key]").forEach((el) => {
+      terminalEls[el.dataset.terminalKey] = el;
+    });
+    terminalRefs.current = terminalEls;
+
+    const codeEls = {};
+    section.querySelectorAll("[data-code-key]").forEach((el) => {
+      codeEls[el.dataset.codeKey] = el;
+    });
+    codeRefs.current = codeEls;
+
+    const fileEls = {};
+    section.querySelectorAll("[data-file-key]").forEach((el) => {
+      fileEls[el.dataset.fileKey] = el;
+    });
+    fileRefs.current = fileEls;
+
+    const tickEls = {};
+    section.querySelectorAll("[data-tick-key]").forEach((el) => {
+      tickEls[el.dataset.tickKey] = el;
+    });
+    tickRefs.current = tickEls;
 
     const ctx = gsap.context(() => {
       const allFileRows = [
@@ -474,40 +496,40 @@ export default function InstallationProcess() {
             <Panel title="amazing_project" className="fadeup min-h-[25vw] max-[1025px]:min-h-[42vw] max-sm:min-h-[40vh] max-md:min-h-[30vh] ">
               <div className="space-y-[0.8vw] font-mono text-[1.02vw] leading-[1.9] max-[1025px]:space-y-[1.4vw] max-[1025px]:text-[1.8vw] max-md:space-y-2 max-md:text-[14px]">
                 <div className="flex items-center gap-2">
-                  <span ref={setTerminalRef("dollar1")} className="text-[#ff9f43]">$</span>
-                  <span ref={setTerminalRef("init")} className="text-white/90" />
+                  <span data-terminal-key="dollar1" className="text-[#ff9f43]">$</span>
+                  <span data-terminal-key="init" className="text-white/90" />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <TerminalTick tickRef={setTickRef("created")} />
-                  <span ref={setTerminalRef("created")} className="text-[#5AC382]" />
+                  <TerminalTick dataKey="created" />
+                  <span data-terminal-key="created" className="text-[#5AC382]" />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span ref={setTerminalRef("dollar2")} className="text-[#ff9f43]">$</span>
-                  <span ref={setTerminalRef("add")} className="text-white/90" />
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-white/0">•</span>
-                  <span ref={setTerminalRef("resolving")} className="text-white/45" />
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <TerminalTick tickRef={setTickRef("added")} />
-                  <span ref={setTerminalRef("added")} className="text-[#5AC382]" />
+                  <span data-terminal-key="dollar2" className="text-[#ff9f43]">$</span>
+                  <span data-terminal-key="add" className="text-white/90" />
                 </div>
 
                 <div className="flex items-center gap-2">
                   <span className="text-white/0">•</span>
-                  <span ref={setTerminalRef("reduced")} className="text-white/45" />
+                  <span data-terminal-key="resolving" className="text-white/45" />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <TerminalTick tickRef={setTickRef("done")} />
-                  <span ref={setTerminalRef("done")} className="text-[#5AC382]" />
+                  <TerminalTick dataKey="added" />
+                  <span data-terminal-key="added" className="text-[#5AC382]" />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-white/0">•</span>
+                  <span data-terminal-key="reduced" className="text-white/45" />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <TerminalTick dataKey="done" />
+                  <span data-terminal-key="done" className="text-[#5AC382]" />
                   <span
-                    ref={setTerminalRef("doneCursor")}
+                    data-terminal-key="doneCursor"
                     className="inline-block h-[1.15em] w-[0.45em] bg-[#ff7a1a] opacity-0"
                   />
                 </div>
@@ -516,11 +538,11 @@ export default function InstallationProcess() {
 
             <Panel title="app/page.jsx" className="fadeup min-h-[20vw] max-[1025px]:min-h-[28vw] max-[1025px]:order-last max-md:min-h-[20vh] max-sm:min-h-[25vh] max-md:order-last">
               <div className="space-y-[0.55vw] font-mono text-[1vw] leading-[1.95] text-white/78 max-[1025px]:space-y-[1vw] max-[1025px]:text-[1.7vw] max-md:space-y-1 max-md:text-[13px]">
-                <div ref={setCodeRef("line1")} />
-                <div ref={setCodeRef("line2")} />
-                <div ref={setCodeRef("line3")} />
-                <div ref={setCodeRef("line4")} />
-                <div ref={setCodeRef("line5")} />
+                <div data-code-key="line1" />
+                <div data-code-key="line2" />
+                <div data-code-key="line3" />
+                <div data-code-key="line4" />
+                <div data-code-key="line5" />
               </div>
             </Panel>
           </div>
@@ -550,24 +572,24 @@ export default function InstallationProcess() {
                   <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-[1025px]:ml-[0.7vw] max-[1025px]:pl-[2vw] max-md:ml-1.5 max-md:pl-4">
 
                     {/* effects/ - hidden until animation */}
-                    <div ref={setFileRef("effectsFolder")}>
+                    <div data-file-key="effectsFolder">
                       <TreeFolder label="effects" depth={0} />
                     </div>
                     <div className=" pt-[0.45vw] max-[1025px]:pt-[0.9vw]  max-md:pt-1.5">
                       <div className="relative ml-[0.38vw] border-l border-white/10 pl-[1.1vw] max-[1025px]:ml-[0.7vw] max-[1025px]:pl-[2vw] max-md:ml-1.5 max-md:pl-4">
 
                         {/* split-canvas/ - hidden until animation */}
-                        <div ref={setFileRef("splitCanvasFolder")}>
+                        <div data-file-key="splitCanvasFolder">
                           <TreeFolder label="split-canvas" depth={0} />
                         </div>
                         <div className="space-y-[0.35vw]  pt-[0.45vw] max-[1025px]:space-y-[0.7vw] max-[1025px]:pt-[0.9vw] max-md:space-y-1.5 max-md:pl-3 max-md:pt-1.5">
 
                           <TreeFile
                             label="index.jsx"
-                            rowRef={setFileRef("indexRow")}
+                            dataKey="indexRow"
                             right={
                               <span
-                                ref={setFileRef("addedBadge1")}
+                                data-file-key="addedBadge1"
                                 className="rounded-full  px-3 py-1 font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
@@ -578,10 +600,10 @@ export default function InstallationProcess() {
 
                           <TreeFile
                             label="SplitCanvasComp.jsx"
-                            rowRef={setFileRef("splitCanvasCompRow")}
+                            dataKey="splitCanvasCompRow"
                             right={
                               <span
-                                ref={setFileRef("addedBadge2")}
+                                data-file-key="addedBadge2"
                                 className="rounded-full  px-3 py-1 max-sm:text-nowrap font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added
@@ -592,10 +614,10 @@ export default function InstallationProcess() {
 
                           <TreeFile
                             label="content.js"
-                            rowRef={setFileRef("contentRow")}
+                            dataKey="contentRow"
                             right={
                               <span
-                                ref={setFileRef("addedBadge3")}
+                                data-file-key="addedBadge3"
                                 className="rounded-full  px-3 py-1 font-mono text-[0.95vw] max-[1025px]:text-[1.6vw] text-[#5AC382] opacity-0 max-md:text-xs"
                               >
                                 + Added

@@ -1,6 +1,7 @@
 "use client";
 
 import gsap from "gsap";
+import Image from "next/image";
 import React, { useEffect, useId, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/dist/SplitText";
@@ -372,12 +373,12 @@ const RibbonDriftComp = ({
 									key={`left-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
 								>
-									<img
+									<Image
+										fill
+										sizes="20vw"
 										src={item.src}
 										alt={item.title}
-										width={400}
-										height={600}
-										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
+										className="project-image opacity-0 object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
 									/>
 
 									{showNames && (
@@ -408,12 +409,12 @@ const RibbonDriftComp = ({
 									className={`project-card w-[90%] h-[34vw] portfolio-card overflow-hidden drop-shadow-md relative ${index === 0 ? "card-1" : ""
 										} ${index === 1 ? "card-2" : ""}`}
 								>
-									<img
+									<Image
+										fill
+										sizes="25vw"
 										src={item.src}
 										alt={item.title}
-										width={500}
-										height={700}
-										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
+										className="project-image opacity-0 object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
 									/>
 
 									{showNames && (
@@ -443,12 +444,12 @@ const RibbonDriftComp = ({
 									key={`right-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
 								>
-									<img
+									<Image
+										fill
+										sizes="20vw"
 										src={item.src}
 										alt={item.title}
-										width={400}
-										height={600}
-										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
+										className="project-image opacity-0 object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
 									/>
 
 									{showNames && (
@@ -505,10 +506,12 @@ const RibbonDriftComp = ({
 								className="overflow-hidden rounded-sm max-md:mx-auto  w-full max-md:w-[80%]"
 							>
 								<div className="relative max-[1025px]:aspect-4/5 max-md:aspect-auto max-md:h-[35vh]  ">
-									<img
+									<Image
+										fill
+										sizes="(max-width: 768px) 80vw, 45vw"
 										src={item.src}
 										alt={item.title}
-										className="object-cover absolute inset-0 w-full h-full"
+										className="object-cover"
 									/>
 								</div>
 								<div className="px-4 py-4 max-md:px-2 max-md:py-5">

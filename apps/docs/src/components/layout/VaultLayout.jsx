@@ -343,9 +343,12 @@ export function VaultLayout({
     return true;
   };
 
+  // Render-prop API: `children` decides when to call `toggleSidebar`
+  // (typically from an event handler it wires up), not synchronously here.
   const renderedChildren =
     typeof children === "function"
-      ? children({ isSidebarOpen, toggleSidebar, isSidebarReady })
+      ? // eslint-disable-next-line react-hooks/refs
+        children({ isSidebarOpen, toggleSidebar, isSidebarReady })
       : children;
 
   return (

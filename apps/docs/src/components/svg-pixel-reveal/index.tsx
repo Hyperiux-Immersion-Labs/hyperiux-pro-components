@@ -43,12 +43,18 @@ export default function SVGPixelReveal({
     const start = "top 50%";
     const end = "bottom 35%";
     const [pixelSize, setPixelSize] = useState(initialPixelSize);
+    const [prevInitialPixelSize, setPrevInitialPixelSize] = useState(initialPixelSize);
     const reducedMotion = usePrefersReducedMotion();
     const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;
 
-    useEffect(() => {
+    // Reset the displayed pixelSize whenever the initialPixelSize prop
+    // changes, without clobbering the value the GSAP tween below drives via
+    // onUpdate. Pure derived state (no browser API), so it's adjusted
+    // directly during render instead of via an effect.
+    if (initialPixelSize !== prevInitialPixelSize) {
+        setPrevInitialPixelSize(initialPixelSize);
         setPixelSize(initialPixelSize);
-    }, [initialPixelSize]);
+    }
 
     useEffect(() => {
         const container = containerRef.current;

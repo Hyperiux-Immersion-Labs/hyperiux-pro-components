@@ -41,9 +41,14 @@ export function CustomSelect({
   const rootRef = useRef(null);
   const styles = SIZE_STYLES[size] || SIZE_STYLES.default;
 
+  // Clear the hovered option whenever the panel closes - derived purely
+  // from `open`, which is already available during render.
+  if (!open && hovered !== null) {
+    setHovered(null);
+  }
+
   useEffect(() => {
     if (!open) {
-      setHovered(null);
       return;
     }
 

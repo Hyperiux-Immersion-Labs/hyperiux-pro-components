@@ -111,7 +111,7 @@ const ShearWipeComp = ({
         },
       });
     }
-  }, [activePanel]);
+  }, [activePanel, clipPathDuration]);
 
   // --- Hover animations ---
   // Ignored while a swipe is mid-flight so hovering the opposite edge can't

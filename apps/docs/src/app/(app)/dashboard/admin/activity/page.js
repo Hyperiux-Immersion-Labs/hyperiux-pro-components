@@ -88,6 +88,15 @@ export default function AdminActivityPage() {
   const [usersLoading, setUsersLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevSearch, setPrevSearch] = useState(search);
+
+  // Reset to page 1 whenever the search term changes - derived purely from a
+  // value already available during render, so adjust it here instead of in
+  // an effect.
+  if (prevSearch !== search) {
+    setPrevSearch(search);
+    setCurrentPage(1);
+  }
 
   useEffect(() => {
     let active = true;
@@ -141,10 +150,6 @@ export default function AdminActivityPage() {
       active = false;
       clearTimeout(timer);
     };
-  }, [search]);
-
-  useEffect(() => {
-    setCurrentPage(1);
   }, [search]);
 
   const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));

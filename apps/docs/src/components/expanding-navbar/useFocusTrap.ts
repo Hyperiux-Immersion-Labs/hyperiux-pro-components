@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, type RefObject } from "react";
 
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -59,7 +59,9 @@ export function useFocusTrap({
   onEscape,
 }: UseFocusTrapParams) {
   const onEscapeRef = useRef(onEscape);
-  onEscapeRef.current = onEscape;
+  useLayoutEffect(() => {
+    onEscapeRef.current = onEscape;
+  });
 
   useEffect(() => {
     if (!active) {

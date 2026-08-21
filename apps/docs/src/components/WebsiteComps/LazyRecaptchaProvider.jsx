@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ReCaptchaProvider } from "next-recaptcha-v3";
 
@@ -18,9 +18,11 @@ function LazyRecaptchaProviderInner({ children }) {
   const [armed, setArmed] = useState(false);
   const enabled = armed || needsRecaptcha;
 
-  useEffect(() => {
-    if (needsRecaptcha) setArmed(true);
-  }, [needsRecaptcha]);
+  // Stick once armed - derived purely from needsRecaptcha, which is already
+  // available during render, guarded so it only fires once.
+  if (needsRecaptcha && !armed) {
+    setArmed(true);
+  }
 
   if (!enabled) return children;
 

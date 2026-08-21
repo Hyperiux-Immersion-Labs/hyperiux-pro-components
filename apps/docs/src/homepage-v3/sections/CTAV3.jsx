@@ -41,7 +41,7 @@ export default function CTAV3() {
       <div className="space-y-[3vw] max-[1025px]:space-y-[5vw] max-md:space-y-[10vw] relative z-2">
         <SplitLine as="p" delay={.25} className="text24 max-[1025px]:w-[75%] max-md:w-full w-[40vw]">
           Vault is a public slice of how Hyperiux approaches interaction design.
-          Need something custom? We'll design and build it from scratch.
+          Need something custom? We&apos;ll design and build it from scratch.
         </SplitLine>
 
         <div className="w-fit flex max-[1025px]:gap-[3vw] max-md:gap-[2vw] max-sm:gap-[5vw] items-center max-sm:flex-col max-md:items-start max-md:mx-auto max-md:w-full max-sm:w-full gap-[1.5vw]">

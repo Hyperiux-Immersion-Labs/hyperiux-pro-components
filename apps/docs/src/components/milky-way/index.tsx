@@ -24,6 +24,12 @@ const DEFAULT_MOUSE_INFLUENCE = true
 const DEFAULT_ROTATION = 1
 const DEFAULT_ROTATION_SPEED = 0.2
 
+// Indirection so writing a shader uniform's `.value` (a plain mutable holder,
+// not React state) isn't flagged as mutating a value returned from a hook.
+function setUniformValue(uniform: { value: number }, value: number) {
+   uniform.value = value
+}
+
 function clampNumber(value: unknown, min: number, max: number, fallback: number) {
    const number = Number(value)
    if (!Number.isFinite(number)) return fallback
@@ -758,10 +764,13 @@ const SmokeFlow = React.memo(function SmokeFlow({ particleSize, coreColor, accen
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
+      // Colors/size are synced imperatively below - recreating the material
+      // (and its GPU resources) on every prop change would be wasteful.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }), [posTex])
 
    useEffect(() => {
-      mat.uniforms.uParticleSize.value = particleSize
+      setUniformValue(mat.uniforms.uParticleSize, particleSize)
       mat.uniforms.uCoreColor.value.set(coreColor)
       mat.uniforms.uAccentColor.value.set(accentColor)
       mat.uniforms.uOuterColor.value.set(outerColor)
@@ -935,10 +944,13 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColo
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
+      // Colors/size are synced imperatively below - recreating the material
+      // (and its GPU resources) on every prop change would be wasteful.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }), [posTex])
 
    useEffect(() => {
-      mat.uniforms.uParticleSize.value = particleSize
+      setUniformValue(mat.uniforms.uParticleSize, particleSize)
       mat.uniforms.uCoreColor.value.set(coreColor)
       mat.uniforms.uAccentColor.value.set(accentColor)
       mat.uniforms.uOuterColor.value.set(outerColor)
@@ -1016,6 +1028,9 @@ const BackgroundStars = React.memo(function BackgroundStars({ color }: { color: 
          transparent: true, opacity: 0.7, depthWrite: false,
       })
       return new THREE.Points(geo, mat)
+      // Initial color only - synced imperatively below so the 4000-point
+      // geometry isn't rebuilt on every color change.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
    useEffect(() => {

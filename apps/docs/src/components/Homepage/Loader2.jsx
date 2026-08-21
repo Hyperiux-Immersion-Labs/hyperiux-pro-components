@@ -94,7 +94,9 @@ const Loader2 = () => {
   const [shouldRun, setShouldRun] = useState(false);
   const lenis = useLenis();
   const lenisRef = useRef(lenis);
-  lenisRef.current = lenis;
+  useLayoutEffect(() => {
+    lenisRef.current = lenis;
+  });
 
   const lockScroll = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -178,6 +180,8 @@ const Loader2 = () => {
     document.documentElement.classList.remove("loader-first-visit");
 
     if (hasLoaderRun() || shouldSkipLoader()) {
+      // sessionStorage/DOM-derived - can only be known post-mount.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(false);
       setShouldRun(false);
       setLoaderRuntimeState({ running: false, complete: true });

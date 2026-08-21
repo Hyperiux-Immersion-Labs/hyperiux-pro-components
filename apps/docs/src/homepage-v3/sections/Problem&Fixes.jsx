@@ -174,7 +174,7 @@ export default function ProblemFixes() {
             <span className="gradient-text-animate">Harder</span> Than It Looks
           </LineReveal>
           <SplitLine delay={.25} as='p' className="text24 mx-auto mt-[3.5vw] max-w-[60vw] leading-[1.55] text-white max-[1025px]:mt-[4vw] max-[1025px]:max-w-[85vw] max-md:mt-[5vw] max-md:max-w-[85vw] max-md:text-sm max-sm:mt-[10vw] max-sm:max-w-full max-sm:leading-[1.3]">
-          Anyone can add a fade. What's hard is everything around it. Get timing, restraint, or performance wrong, and the moment meant to impress becomes the reason the site feels worse. Most teams see that risk and drop their ambitions to play it safe. And your interface ends up looking like everyone else's.  Vault is engineered around that discipline by default, not as an afterthought.
+          Anyone can add a fade. What&apos;s hard is everything around it. Get timing, restraint, or performance wrong, and the moment meant to impress becomes the reason the site feels worse. Most teams see that risk and drop their ambitions to play it safe. And your interface ends up looking like everyone else&apos;s.  Vault is engineered around that discipline by default, not as an afterthought.
           </SplitLine>
         </div>
 

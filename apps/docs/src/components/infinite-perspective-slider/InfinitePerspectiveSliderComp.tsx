@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { createSuspendedRaf } from "./createSuspendedRaf";
@@ -387,7 +388,17 @@ export function InfinitePerspectiveSliderComp({
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [cardStep, images, positionCards, markScrolling, scrollSpeed, scrollLerp, maxRotation]);
+  }, [
+    cardStep,
+    images,
+    positionCards,
+    markScrolling,
+    scrollSpeed,
+    scrollLerp,
+    maxRotation,
+    isMobileViewport,
+    isTabletViewport,
+  ]);
 
   useEffect(() => {
     if (!images.length) return;
@@ -630,12 +641,16 @@ export function InfinitePerspectiveSliderComp({
                   }}
                   className="relative h-[50vh] w-full overflow-hidden bg-white max-[1025px]:h-[45vh] max-md:h-[40vh]"
                 >
-                  <img
-                    src={src}
-                    alt={`slide-${index}`}
-                    className="absolute inset-0 h-full w-full object-cover"
-                    draggable={false}
-                  />
+                  {src ? (
+                    <Image
+                      fill
+                      sizes="(max-width: 640px) 240px, (max-width: 1025px) 380px, 320px"
+                      src={src}
+                      alt={`slide-${index}`}
+                      className="object-cover"
+                      draggable={false}
+                    />
+                  ) : null}
                 </div>
 
                 <div className="mt-2 space-y-1">

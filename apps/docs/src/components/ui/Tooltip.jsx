@@ -51,7 +51,10 @@ export function Tooltip({
   const [mounted, setMounted] = useState(false);
   const triggerRef = useRef(null);
 
+  // SSR-safe mounted flag - `mounted` gates a createPortal() call further
+  // down, which needs document.body and so can only run after mount.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

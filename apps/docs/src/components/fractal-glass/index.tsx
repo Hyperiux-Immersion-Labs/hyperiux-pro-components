@@ -342,6 +342,11 @@ export default function FractalGlass({
       geo.dispose();
       if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
     };
+    // parallaxStrength/distortionMultiplier/glassStrength/stripesFrequency/
+    // glassSmoothness/edgePadding are only read here for the initial uniform
+    // values; the effect below syncs them imperatively on every change, so
+    // rebuilding the whole WebGL scene when they change is unnecessary.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageSrc, videoSrc, mediaType]);
 
   useEffect(() => {

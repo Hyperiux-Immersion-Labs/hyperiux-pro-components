@@ -204,7 +204,12 @@ export function EffectDetailContent({
   const [mounted, setMounted] = useState(false);
   const [showSignInToCopyModal, setShowSignInToCopyModal] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  // SSR-safe mounted flag - `mounted` gates a createPortal() call further
+  // down, which needs document.body and so can only run after mount.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   const [videoReady, setVideoReady] = useState(false);
   const [videoError, setVideoError] = useState(false);

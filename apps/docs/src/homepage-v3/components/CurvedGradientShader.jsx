@@ -385,6 +385,13 @@ export default function CurvedGradientShader({
         gl.getExtension("WEBGL_lose_context")?.loseContext();
       }
     };
+    // edgeFade/overscan/pixelSize/colorNum/dither/curveStrength are only
+    // read here to feed the draw() closure; they're treated as static
+    // config for the lifetime of this WebGL context (the only call site
+    // passes them as fixed literals). Depending on them would tear down
+    // and rebuild the whole context - shader compile, buffers, observers,
+    // RAF loop - on every prop identity change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useGSAP(

@@ -269,6 +269,13 @@ const VariableProximityLetters = forwardRef<HTMLSpanElement, VariableTextProximi
       className={`${robotoFlex.className} ${className}`}
       {...restProps}
     >
+      {/*
+        The proximity rAF loop mutates each letter's DOM style directly
+        (bypassing React) on every frame; interpolatedSettingsRef is only
+        read here to seed/restore that value across incidental re-renders
+        (e.g. a `label` change), not for per-frame updates.
+      */}
+      {/* eslint-disable-next-line react-hooks/refs */}
       {words.map((word, wordIndex) => (
         <span key={wordIndex} className="hv-variable-word">
           {word.split('').map(letter => {
@@ -296,6 +303,8 @@ const VariableProximityLetters = forwardRef<HTMLSpanElement, VariableTextProximi
     </span>
   );
 });
+
+VariableProximityLetters.displayName = "VariableProximityLetters";
 
 export default function VariableTextProximity({
   radius = 100,

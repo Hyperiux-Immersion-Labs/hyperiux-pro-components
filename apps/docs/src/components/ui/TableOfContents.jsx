@@ -159,9 +159,14 @@ export function TableOfContents({
     };
   }, [containerRef, stopRef, watchKey]);
 
+  // Reset the footer-proximity flag when the feature is off - derived
+  // purely from `hideNearFooter`, which is already available during render.
+  if (!hideNearFooter && isFooterNearby) {
+    setIsFooterNearby(false);
+  }
+
   useEffect(() => {
     if (!hideNearFooter) {
-      setIsFooterNearby(false);
       return;
     }
 

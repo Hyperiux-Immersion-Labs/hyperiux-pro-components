@@ -179,7 +179,12 @@ export function VaultContent({
   const [upgradeToastDismissed, setUpgradeToastDismissed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  // SSR-safe mounted flag - `mounted` gates a createPortal() call further
+  // down, which needs document.body and so can only run after mount.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
 const animationSearchParamString = useMemo(() => {
   const params = new URLSearchParams(searchParamString);
