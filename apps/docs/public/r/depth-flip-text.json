@@ -46,6 +46,7 @@
       "remixer": {
         "control": "color",
         "enabled": false,
+        "enabled": false,
         "group": "colors",
         "groupTitle": "Colors"
       }
@@ -53,6 +54,7 @@
     {
       "name": "textColor",
       "type": "string",
+      "default": "#ffffff",
       "default": "#ffffff",
       "description": "Text color for both the current and incoming phrase.",
       "remixer": {
