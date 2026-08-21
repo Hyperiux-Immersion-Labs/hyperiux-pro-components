@@ -327,7 +327,7 @@ const EllipseCarousel = ({
 
   return (
     <section
-      className={`relative h-[100dvh] w-full overflow-hidden select-none ${className}`}
+      className={`relative h-dvh w-full overflow-hidden select-none ${className}`}
       style={{ backgroundColor }}
     >
       <div
