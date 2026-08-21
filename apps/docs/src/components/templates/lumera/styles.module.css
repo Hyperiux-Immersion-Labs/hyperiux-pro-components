@@ -1,0 +1,943 @@
+/* Font Family */
+@import "./fonts.css";
+/* :root and body base rules live in ./globals.css - CSS Modules' pure-selector
+   check rejects rules with no local class/id, even wrapped in :global(). */
+
+/* Custom ScrollBar */
+div.custom-scroll::-webkit-scrollbar {
+  height: 1.5vw;
+  border-radius: 10px;
+}
+div.custom-scroll::-webkit-scrollbar-track {
+  background-color: #eeeeee;
+  margin: 5vw;
+  border-radius: 10px;
+}
+div.custom-scroll::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #000;
+}
+
+
+.text-body {
+  font-family: var(--font-body);
+}
+.text-head {
+  font-family: var(--font-heading);
+}
+.container-lg {
+  padding-left: 5%;
+  padding-right: 5%;
+}
+.title-2 {
+  /* font-family: "Head"; */
+  font-family: var(--font-heading);
+  font-size: 3.8vw;
+  line-height: 1.2;
+}
+/* [data-title-anim]/[data-para-anim] font-kerning is already set globally in ./globals.css */
+.para-anim,
+.lineWord {
+  font-kerning: none;
+}
+[data-title-anim] .line,
+[data-para-anim] .line,
+.para-anim .line,
+.lineWord .line {
+  overflow: hidden;
+}
+.hero-para-anim .line {
+  overflow: hidden;
+}
+
+/* button css */
+[dir="rtl"] .btn .btn-circle {
+  clip-path: inset(0.8vw calc(100% - 3.7vw) 0.8vw 0.9vw round 4vw);
+}
+[dir="rtl"] .btn .btn-icon {
+  rotate: 180deg;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1.8vw;
+  height: 4.2vw;
+  position: relative;
+  width: fit-content;
+  min-width: 18vw;
+  border-radius: 1000px;
+  background: rgba(255, 255, 255, 0.743);
+  color: black;
+  font-size: 1.2vw;
+  font-weight: 500;
+  text-rendering: geometricPrecision;
+}
+.btn .btn-circle {
+  clip-path: inset(0.8vw 0.9vw 0.8vw calc(100% - 3.7vw) round 4vw);
+  position: absolute;
+  inset: -1px;
+  border-radius: 1000px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.85vw;
+  z-index: 2;
+  background-color: black;
+  color: white;
+  transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+.btn .btn-circle.demo {
+  padding: 0 1.75vw;
+}
+.btn .btn-circle-text {
+  padding: 0 1px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.btn .btn-icon {
+  width: 0.8vw;
+  height: 0.8vw;
+  overflow: hidden;
+}
+.btn .btn-icon .btn-path {
+  transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  transform-origin: center center;
+}
+.btn .btn-icon .btn-path:first-child {
+  transform: translateX(-120%) scale(0);
+}
+.btn:hover .btn-icon .btn-path:first-child {
+  transform: translateX(0) scale(1);
+}
+.btn:hover .btn-icon .btn-path:last-child {
+  transform: translateX(120%) scale(0);
+}
+.btn:hover .btn-circle {
+  clip-path: inset(0 round 4vw);
+  background-color: black;
+  color: white;
+}
+
+/* black button */
+[dir="rtl"] .black-btn .btn-circle {
+  clip-path: inset(0.75vw calc(100% - 3.6vw) 0.75vw 1vw round 4vw);
+}
+[dir="rtl"] .black-btn .btn-icon {
+  rotate: 180deg;
+}
+.black-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1.8vw;
+  height: 4.2vw;
+  position: relative;
+  width: fit-content;
+  min-width: 14vw;
+  border-radius: 1000px;
+  background: black;
+  color: white;
+  font-size: 1.1vw;
+  font-weight: 500;
+  text-rendering: geometricPrecision;
+  border: 1px solid #1c1b1a;
+}
+.black-btn .btn-circle {
+  clip-path: inset(0.75vw 1vw 0.75vw calc(100% - 3.6vw) round 4vw);
+  position: absolute;
+  inset: 0px;
+  border-radius: 1000px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.85vw;
+  z-index: 2;
+  background-color: white;
+  color: #1c1b1a;
+  transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+.black-btn .btn-circle.demo {
+  padding: 0 1.75vw;
+}
+.black-btn .btn-circle-text {
+  padding: 0 0px 0 0;
+  padding-left: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.black-btn .btn-icon {
+  width: 0.8vw;
+  height: 0.8vw;
+  overflow: hidden;
+}
+.black-btn .btn-icon .btn-path {
+  transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  transform-origin: center center;
+}
+.black-btn .btn-icon .btn-path:first-child {
+  transform: translateX(-120%) scale(0);
+}
+.black-btn:hover .btn-icon .btn-path:first-child {
+  transform: translateX(0) scale(1);
+}
+
+.black-btn:hover .btn-icon .btn-path:last-child {
+  transform: translateX(120%) scale(0);
+}
+.black-btn:hover .btn-circle {
+  clip-path: inset(0 round 4vw);
+  background-color: white;
+  color: #1c1b1a;
+}
+
+/* work button css */
+.work-btn .btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1vw;
+  height: 3vw;
+  position: relative;
+  width: fit-content;
+  min-width: 10vw;
+  border-radius: 1000px;
+  background: rgba(255, 255, 255, 0.743);
+  color: black;
+  font-size: 1vw;
+  font-weight: 500;
+  text-rendering: geometricPrecision;
+}
+[dir="rtl"] .work-btn .btn .btn-circle {
+  clip-path: inset(14% calc(100% - 27%) 15% 5% round 10vw);
+}
+.work-btn .btn .btn-circle {
+  clip-path: inset(0.4vw 0.5vw 0.4vw calc(100% - 2.7vw) round 4vw);
+  position: absolute;
+  inset: -1px;
+  border-radius: 1000px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.18vw;
+  z-index: 2;
+  background-color: black;
+  color: white;
+  transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+/* service button */
+
+.service-btn {
+  display: inline-flex;
+  align-items: center;
+  padding-right: 1.8vw;
+  padding-left: 1vw;
+  height: 4.2vw;
+  position: relative;
+  width: fit-content;
+  max-width: 20vw;
+  min-width: 17.5vw;
+  border-radius: 1000px;
+  background: white;
+  color: #1c1b1a;
+  font-size: 1.1vw;
+  font-weight: 500;
+  text-rendering: geometricPrecision;
+  border: 1px solid #1c1b1a;
+}
+[dir="rtl"] .service-btn .btn-circle {
+  clip-path: inset(0.75vw calc(100% - 3.6vw) 0.75vw 1vw round 4vw);
+  padding-left: 1.9vw;
+}
+.service-btn .btn-circle {
+  clip-path: inset(0.75vw 1vw 0.75vw calc(100% - 3.6vw) round 4vw);
+  position: absolute;
+  inset: 0px;
+  border-radius: 1000px;
+  display: flex;
+  align-items: center;
+  padding-left: 1.4vw;
+  padding-right: 1.3vw;
+  z-index: 2;
+  background-color: #1c1b1a;
+  color: white;
+  transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+.service-btn .btn-circle.demo {
+  padding: 0 1.75vw;
+}
+.service-btn .btn-circle-text {
+  padding: 0 0px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.service-btn .btn-icon {
+  width: 0.8vw;
+  height: 0.8vw;
+  overflow: hidden;
+}
+.service-btn .btn-icon .btn-path {
+  transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  transform-origin: center center;
+}
+.service-btn .btn-icon .btn-path:first-child {
+  transform: translateX(-120%) scale(0);
+}
+.service-btn:hover .btn-icon .btn-path:first-child {
+  transform: translateX(0) scale(1);
+}
+
+.service-btn:hover .btn-icon .btn-path:last-child {
+  transform: translateX(120%) scale(0);
+}
+.service-btn:hover .btn-circle {
+  clip-path: inset(0 round 4vw);
+}
+.service-btn:hover {
+  border-color: white;
+  transition: all 0.3s;
+  transition-delay: 0.25s;
+}
+.glassmorphism {
+  backdrop-filter: blur(10px);
+}
+
+/* swiper css - base .swiper/.swiper-slide/.swiper-scrollbar-drag rules live in
+   ./globals.css since they have no local class and CSS Modules' pure check
+   rejects them even wrapped in :global() */
+
+/* about swiper */
+.swiper-container {
+  position: relative;
+  width: 90vw;
+  height: 100%;
+}
+.swiper-container :global(.swiper) {
+  height: 100%;
+}
+
+.swiper-container > .swiper-slide__content {
+  position: absolute;
+  top: 30%;
+}
+
+.swiper-container :global(.swiper-slide) {
+  /* width: 5vw; */
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  background: transparent;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms linear;
+  z-index: 1;
+  position: relative;
+}
+.swiper-container :global(.swiper-slide) .slider-circle {
+  transform: scale(1) !important;
+  transition: all ease-in-out 300ms;
+  opacity: 70%;
+}
+.swiper-container :global(.swiper-slide) .slider-circle-content {
+  opacity: 0;
+  transform: translateY(50%);
+  transition: all ease-in-out 300ms;
+}
+.swiper-container :global(.swiper-slide):global(.swiper-slide-active) .slider-circle-content {
+  opacity: 100%;
+  transform: translateY(0);
+  transition: all ease-in-out 300ms;
+}
+
+.swiper-container :global(.swiper-slide):global(.swiper-slide-active) .slider-circle {
+  /* transform: scale(2) !important; */
+  width: 20vw;
+  height: 20vw;
+  padding: 6vw;
+  transition: all ease-in-out 300ms;
+  /* background: #fc0; */
+  z-index: 3;
+  position: relative;
+  opacity: 100%;
+}
+
+.swiper-container .swiper-slide__content {
+  height: 300px;
+}
+.swiper-container :global(.swiper-slide) img {
+  object-fit: contain;
+}
+
+/* ClipPath Hover Section */
+.circle-clip {
+  clip-path: circle(100% at 0 100%);
+} /* sample slider */
+
+/* highlights swiper */
+.highlights-swiper {
+  height: 27vw;
+  padding-bottom: 2vw !important;
+  overflow: visible !important;
+}
+
+@media screen and (max-width: 540px) {
+  .title-2 {
+    /* font-family: "Head"; */
+    font-family: var(--font-heading);
+    font-size: 8.8vw;
+    line-height: 1.2;
+  }
+  /* primary button */
+  .btn {
+    height: 15vw;
+    padding: 0 4.5vw;
+    min-width: 50vw;
+    font-size: 4.2vw;
+    font-weight: 400;
+  }
+
+  .btn[data-secondary] .btn-circle {
+    padding: 0 4.5vw;
+    clip-path: inset(14% 5% 15% calc(100% - 27%) round 10vw);
+  }
+  .btn[data-secondary]:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+  .btn .btn-circle.demo {
+    padding: 0 4.5vw;
+    clip-path: inset(18% 6% 18% calc(100% - 26%) round 10vw);
+  }
+  [dir="rtl"] .btn .btn-circle {
+    clip-path: inset(18% calc(100% - 26%) 18% 6% round 10vw);
+    padding: 0 6.5vw;
+  }
+  .btn .btn-circle {
+    padding: 0 4.5vw;
+    clip-path: inset(18% 6% 18% calc(100% - 26%) round 10vw);
+  }
+  .btn .btn-icon {
+    width: 3.5vw;
+    height: 3.5vw;
+  }
+  .btn .btn-circle-text {
+    padding: 0 3.5% 0 0;
+  }
+  .btn:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+
+  /* service button */
+  .service-btn {
+    height: 15vw;
+    padding: 0 4.5vw;
+    min-width: 65vw;
+    font-size: 4.2vw;
+    font-weight: 400;
+  }
+
+  .service-btn[data-secondary] .btn-circle {
+    padding: 0 4.5vw;
+    clip-path: inset(14% 5% 15% calc(100% - 27%) round 10vw);
+  }
+  .service-btn[data-secondary]:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+  .service-btn .btn-circle.demo {
+    padding: 0 4.5vw;
+    clip-path: inset(18% 6% 18% calc(100% - 26%) round 10vw);
+  }
+  [dir="rtl"] .service-btn .btn-circle {
+    padding: 0 5.5vw;
+    clip-path: inset(10% calc(100% - 21%) 10% 3% round 10vw);
+  }
+  .service-btn .btn-circle {
+    padding: 0 3.5vw;
+    clip-path: inset(10% 3% 10% calc(100% - 21%) round 10vw);
+  }
+  .service-btn .btn-icon {
+    width: 3.5vw;
+    height: 3.5vw;
+  }
+  .service-btn .btn-circle-text {
+    padding: 0 3.5% 0 0;
+  }
+  .service-btn:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+  /* black button */
+
+  .black-btn {
+    height: 15vw;
+    padding: 0 4.5vw;
+    min-width: 50vw;
+    font-size: 4.2vw;
+    font-weight: 400;
+  }
+
+  .black-btn[data-secondary] .btn-circle {
+    padding: 0 4.5vw;
+    clip-path: inset(14% 5% 15% calc(100% - 27%) round 10vw);
+  }
+  .black-btn[data-secondary]:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+  .black-btn .btn-circle.demo {
+    padding: 0 4.5vw;
+    clip-path: inset(18% 6% 18% calc(100% - 26%) round 10vw);
+  }
+  [dir="rtl"] .black-btn .btn-circle {
+    padding: 0 6vw;
+    clip-path: inset(18% calc(100% - 25%) 18% 6% round 10vw);
+  }
+  .black-btn .btn-circle {
+    padding: 0 4.5vw;
+    clip-path: inset(18% 6% 18% calc(100% - 25%) round 10vw);
+  }
+  .black-btn .btn-icon {
+    width: 3.5vw;
+    height: 3.5vw;
+  }
+  .black-btn .btn-circle-text {
+    padding: 0 3.5% 0 0;
+  }
+  .black-btn:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+
+  /* work button */
+  .work-btn .btn {
+    height: 10vw;
+    padding: 0 4.5vw;
+    min-width: 35vw;
+    font-size: 3.2vw;
+    font-weight: 400;
+  }
+
+  .work-btn[data-secondary] .btn-circle {
+    padding: 0 4.5vw;
+    clip-path: inset(14% 5% 15% calc(100% - 27%) round 10vw);
+  }
+  .work-btn[data-secondary]:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+  .work-btn .btn-circle.demo {
+    padding: 0 4.5vw;
+    clip-path: inset(18% 6% 18% calc(100% - 26%) round 10vw);
+  }
+  .work-btn .btn .btn-circle {
+    padding: 0 2.8vw;
+    clip-path: inset(18% 6% 18% calc(100% - 24%) round 10vw);
+  }
+  .work-btn .btn-icon {
+    width: 3vw;
+    height: 3vw;
+  }
+  .work-btn .btn-circle-text {
+    padding: 0 3.5% 0 0;
+  }
+  [dir="rtl"] .work-btn .btn .btn-circle {
+    padding: 0 3.8vw;
+    clip-path: inset(18% calc(100% - 24%) 18% 6% round 10vw);
+  }
+  .work-btn:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+  /* .swiper/.swiper-scrollbar overrides for this breakpoint live in ./globals.css */
+
+  /* about swiper  */
+  .swiper-container :global(.swiper-slide):global(.swiper-slide-active) .slider-circle {
+    /* transform: scale(2) !important; */
+    width: 65vw;
+    height: 65vw;
+    padding: 20vw;
+    transition: all ease-in-out 300ms;
+    /* background: #fc0; */
+    z-index: 3;
+    position: relative;
+    opacity: 100%;
+  }
+}
+
+@media screen and (min-width: 541px) and (max-width: 1023px) {
+  /* .swiper-scrollbar override for this breakpoint lives in ./globals.css */
+
+  .title-2 {
+    /* font-family: "Head"; */
+    font-family: var(--font-heading);
+    font-size: 6.8vw;
+    line-height: 1.2;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 2.8vw;
+    height: 7.5vw;
+    position: relative;
+    width: fit-content;
+    min-width: 30vw;
+    border-radius: 1000px;
+    background: rgba(255, 255, 255, 0.743);
+    color: black;
+    font-size: 2.5vw;
+    font-weight: 500;
+    text-rendering: geometricPrecision;
+  }
+  [dir="rtl"] .btn .btn-circle {
+    clip-path: inset(0.8vw calc(100% - 7vw) 0.8vw 0.9vw round 4vw);
+  }
+  .btn .btn-circle {
+    clip-path: inset(0.8vw 0.9vw 0.8vw calc(100% - 7vw) round 4vw);
+    position: absolute;
+    inset: -1px;
+    border-radius: 1000px;
+    display: flex;
+    align-items: center;
+    padding: 0 2.55vw;
+    z-index: 2;
+    background-color: black;
+    color: white;
+    transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  }
+  .btn .btn-circle.demo {
+    padding: 0 1.75vw;
+  }
+  .btn .btn-circle-text {
+    padding: 0 1px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  .btn .btn-icon {
+    width: 2.5vw;
+    height: 2.5vw;
+    overflow: hidden;
+  }
+  .btn .btn-icon .btn-path {
+    transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transform-origin: center center;
+  }
+  .btn .btn-icon .btn-path:first-child {
+    transform: translateX(-120%) scale(0);
+  }
+  .btn:hover .btn-icon .btn-path:first-child {
+    transform: translateX(0) scale(1);
+  }
+  .btn:hover .btn-icon .btn-path:last-child {
+    transform: translateX(120%) scale(0);
+  }
+  .btn:hover .btn-circle {
+    clip-path: inset(0 round 4vw);
+    background-color: black;
+    color: white;
+  }
+
+  /* black button */
+  .black-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 2.8vw;
+    height: 7.5vw;
+    position: relative;
+    width: fit-content;
+    min-width: 30vw;
+    border-radius: 1000px;
+    background: black;
+    color: white;
+    font-size: 2.5vw;
+    font-weight: 500;
+    text-rendering: geometricPrecision;
+    border: 1px solid #1c1b1a;
+  }
+  [dir="rtl"] .black-btn .btn-circle {
+    clip-path: inset(0.75vw calc(100% - 7vw) 0.75vw 1vw round 4vw);
+  }
+  .black-btn .btn-circle {
+    clip-path: inset(0.75vw 1vw 0.75vw calc(100% - 7vw) round 4vw);
+    position: absolute;
+    inset: 0px;
+    border-radius: 1000px;
+    display: flex;
+    align-items: center;
+    padding: 0 2.55vw;
+    z-index: 2;
+    background-color: white;
+    color: #1c1b1a;
+    transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  }
+  /* .black-btn .btn-circle.demo{
+    padding: 0 2.55vw;
+  } */
+  .black-btn .btn-circle-text {
+    padding: 0 0px 0 0;
+    padding-left: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  .black-btn .btn-icon {
+    width: 2.5vw;
+    height: 2.5vw;
+    overflow: hidden;
+  }
+  .black-btn .btn-icon .btn-path {
+    transition: transform 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transform-origin: center center;
+  }
+  .black-btn .btn-icon .btn-path:first-child {
+    transform: translateX(-120%) scale(0);
+  }
+  .black-btn:hover .btn-icon .btn-path:first-child {
+    transform: translateX(0) scale(1);
+  }
+
+  .black-btn:hover .btn-icon .btn-path:last-child {
+    transform: translateX(120%) scale(0);
+  }
+  .black-btn:hover .btn-circle {
+    clip-path: inset(0 round 4vw);
+    background-color: white;
+    color: #1c1b1a;
+  }
+  /* work button */
+
+  /* service button */
+  .service-btn {
+    height: 7vw;
+    padding: 0 2.5vw;
+    width: fit-content;
+    min-width: 33.5vw;
+    font-size: 2.2vw;
+    font-weight: 400;
+  }
+  [dir="rtl"] .service-btn[data-secondary] .btn-circle {
+    clip-path: inset(14% calc(100% - 27%) 15% 5% round 10vw);
+  }
+  .service-btn[data-secondary] .btn-circle {
+    padding: 0 4.5vw;
+    clip-path: inset(14% 5% 15% calc(100% - 27%) round 10vw);
+  }
+  .service-btn[data-secondary]:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+  .service-btn .btn-circle.demo {
+    padding: 0 4.5vw;
+    clip-path: inset(18% 6% 18% calc(100% - 26%) round 10vw);
+  }
+  [dir="rtl"] .service-btn .btn-circle {
+    clip-path: inset(12% calc(100% - 18%) 3% 12% round 10vw);
+  }
+  .service-btn .btn-circle {
+    padding: 0 1vw;
+    clip-path: inset(12% 3% 12% calc(100% - 18%) round 10vw);
+  }
+  .service-btn .btn-icon {
+    width: 2vw;
+    height: 2vw;
+  }
+  .service-btn .btn-circle-text {
+    padding: 0 3.5% 0 0;
+  }
+  .service-btn .btn-circle-text {
+    padding-left: 2vw;
+  }
+  .service-btn:hover .btn-circle {
+    clip-path: inset(0 round 10vw);
+  }
+  /* work button */
+  .work-btn .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 1vw;
+    height: 5vw;
+    position: relative;
+    width: fit-content;
+    min-width: 16vw;
+    border-radius: 1000px;
+    background: rgba(255, 255, 255, 0.743);
+    color: black;
+    font-size: 2vw;
+    font-weight: 500;
+    text-rendering: geometricPrecision;
+  }
+  [dir="rtl"] .work-btn .btn .btn-circle {
+    clip-path: inset(0.6vw calc(100% - 4.7vw) 0.6vw 0.5vw round 4vw);
+  }
+  .work-btn .btn .btn-circle {
+    clip-path: inset(0.6vw 0.5vw 0.6vw calc(100% - 4.7vw) round 4vw);
+    position: absolute;
+    inset: -1px;
+    border-radius: 1000px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.8vw;
+    z-index: 2;
+    background-color: black;
+    color: white;
+    transition: all 0.45s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  }
+  .work-btn .btn .btn-icon {
+    width: 1.5vw;
+    height: 1.5vw;
+    overflow: hidden;
+  }
+
+  /* .swiper override for this breakpoint lives in ./globals.css */
+  /* Custom ScrollBar */
+  div.custom-scroll::-webkit-scrollbar {
+    height: 0.8vw;
+    border-radius: 10px;
+  }
+
+  .swiper-container :global(.swiper-slide):global(.swiper-slide-active) .slider-circle {
+    /* transform: scale(2) !important; */
+    width: 30vw;
+    height: 30vw;
+    padding: 7vw;
+    transition: all ease-in-out 300ms;
+    /* background: #fc0; */
+    z-index: 3;
+    position: relative;
+    opacity: 100%;
+  }
+}
+
+/* loader animation */
+body.loading {
+  pointer-events: none;
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+.stripe {
+    width: 20%;
+    display: flex;
+    border-radius: 24px;
+    overflow: hidden;
+    align-items: flex-start;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    padding: 1vw;
+    text-decoration: none;
+    transition: all 0.35s ease-in-out;
+    position: relative;
+}
+
+.stripe img {
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transition: all 0.35s ease-in-out;
+    scale: 1.1;
+}
+
+.stripe:hover, .stripe:focus {
+    width: 50%;
+}
+.stripe:hover img{
+    scale: 1;
+}
+@media screen and (max-width:540px) {
+    .stripe {
+        width: 100%;
+        display: flex;
+        border-radius: 24px;
+        overflow: hidden;
+        align-items: flex-start;
+        /* clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); */
+        padding: 1vw;
+        text-decoration: none;
+        transition: all 0.35s ease-in-out;
+        position: relative;
+    }
+    
+    .stripe img {
+        position: absolute;
+        overflow: hidden;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        object-position: center center;
+        transition: all 0.35s ease-in-out;
+        scale: 1.1;
+    }
+    
+    .stripe:hover, .stripe:focus {
+        width: 100%;
+    }
+    .stripe:hover img{
+        scale: 1;
+    }
+    
+}
+@media screen and (min-width: 541px) and (max-width: 1023px) {
+    .stripe {
+        width: 100%;
+        display: flex;
+        border-radius: 24px;
+        overflow: hidden;
+        align-items: flex-start;
+        /* clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); */
+        padding: 1vw;
+        text-decoration: none;
+        transition: all 0.35s ease-in-out;
+        position: relative;
+    }
+    
+    .stripe img {
+        position: absolute;
+        overflow: hidden;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        object-position: center center;
+        transition: all 0.35s ease-in-out;
+        scale: 1.1;
+    }
+    
+    .stripe:hover, .stripe:focus {
+        width: 100%;
+    }
+    .stripe:hover img{
+        scale: 1;
+    }
+    
+}
+
+.slides {
+	display: grid;
+	grid-template-rows: 100%;
+	grid-template-columns: 100%;
+	place-items: center;
+}
+
+.slide {
+	width: 100%;
+	height: 100%;
+	grid-area: 1 / 1 / -1 / -1;
+	opacity: 0;
+    pointer-events: none;
+	overflow: hidden;
+	position: relative;
+	display: grid;
+	place-items: center;
+	will-change: transform, opacity;
+}
+
+.slide--current {
+	pointer-events: auto;
+	opacity: 1;
+    z-index: 2;
+}
+
