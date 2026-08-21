@@ -5,6 +5,7 @@ import { VaultHeader } from "@/components/layout/VaultHeader";
 import Footer from "@/components/Homepage/Footer";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
 import DocsBody from "../docs/DocsBody";
+import FooterV3 from "@/homepage-v3/sections/FooterV3";
 
 function VaultLayoutFallback() {
   return (
@@ -39,7 +40,7 @@ export default function Layout({ children }) {
            
           </div>
         </VaultLayout>
-         <Footer />
+         <FooterV3 />
       </Suspense>
     </>
   );
