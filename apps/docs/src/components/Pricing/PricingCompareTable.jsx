@@ -5,7 +5,7 @@ import SplitLine from "../WebsiteComps/SplitLine";
 import LineReveal from "../Animations/LineReveal";
 
 const rows = [
-  { feature: "Effects included", free: "30+ effects", pro: "Full library, all categories", proHighlight: true },
+  { feature: "Effects included", free: "40+ effects", pro: "Full library, all categories", proHighlight: true },
   { feature: "New effects", free: null, pro: "Added monthly", proHighlight: true },
   { feature: "Scroll & text effects", free: true, pro: true },
   { feature: "Cursor effects", free: false, pro: true },
