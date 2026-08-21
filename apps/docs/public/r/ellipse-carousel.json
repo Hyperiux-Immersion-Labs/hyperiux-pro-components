@@ -215,12 +215,12 @@
     {
       "path": "index.tsx",
       "type": "registry:component",
-      "target": "src/components/ellipse-carousel/index.tsx"
+      "target": "src/components/effects/ellipse-carousel/index.tsx"
     },
     {
-      "path": "EllipseCarouselComp.tsx",
+      "path": "EllipseCarousel.tsx",
       "type": "registry:component",
-      "target": "src/components/ellipse-carousel/EllipseCarouselComp.tsx"
+      "target": "src/components/effects/ellipse-carousel/EllipseCarousel.tsx"
     }
   ]
 }

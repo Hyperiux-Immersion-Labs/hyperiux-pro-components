@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/scroll-distortion",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "description": "Scroll-synced WebGL image transition with displacement distortion and fullscreen typography",
   "main": "index.tsx",
   "files": [

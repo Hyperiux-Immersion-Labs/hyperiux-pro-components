@@ -5,7 +5,7 @@
   "main": "index.tsx",
   "files": [
     "index.tsx",
-    "EllipseCarouselComp.tsx",
+    "EllipseCarousel.tsx",
     "registry.json"
   ],
   "keywords": [

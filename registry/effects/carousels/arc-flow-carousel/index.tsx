@@ -1,7 +1,3 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-
-"use client";
-
 import ArcFlowCarouselComp, {
   type ArcFlowCarouselCompProps,
   type SmoothSliderItem,
@@ -58,7 +54,7 @@ const defaultItems: SmoothSliderItem[] = [
   },
 ];
 
-export type { SmoothSliderItem, ArcFlowCarouselCompProps };
+export type { SmoothSliderItem };
 
 export default function ArcFlowCarousel({ items = defaultItems, ...rest }: ArcFlowCarouselCompProps) {
   return <ArcFlowCarouselComp items={items} {...rest} />;

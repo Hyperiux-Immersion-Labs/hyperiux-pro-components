@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/card-drift",
-  "version": "1.2.2",
+  "version": "1.0.1",
   "description": "Draggable card grid with physics-based throw, velocity tracking, auto-layout, and GSAP Draggable",
   "main": "index.tsx",
   "files": [

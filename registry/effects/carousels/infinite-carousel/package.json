@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/infinite-carousel",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",
   "main": "index.tsx",
   "files": [

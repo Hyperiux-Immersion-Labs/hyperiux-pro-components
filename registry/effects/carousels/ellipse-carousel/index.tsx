@@ -1,11 +1,4 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-
-"use client";
-
-import EllipseCarouselComp, {
-  type EllipseCarouselItem,
-  type EllipseCarouselProps,
-} from "./EllipseCarouselComp";
+import EllipseCarouselComp, { type EllipseCarouselProps, type EllipseCarouselItem } from "./EllipseCarousel";
 
 const defaultItems: EllipseCarouselItem[] = [
   { bgColor: "#f5f5f2", textColor: "#111111", title: "↑" },
@@ -29,7 +22,7 @@ const defaultItems: EllipseCarouselItem[] = [
     src: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=600&h=900&fit=crop",
     alt: "Night sky",
   },
-  { bgColor: "#dd4b39", textColor: "#ffffff", title: "OH" },
+  { bgColor: "#dd4b39", textColor: "#ffffff", title: "ÖH" },
   {
     src: "https://images.unsplash.com/photo-1506863530036-1efeddceb993?w=600&h=900&fit=crop",
     alt: "Profile portrait",
@@ -39,12 +32,12 @@ const defaultItems: EllipseCarouselItem[] = [
 
 export type { EllipseCarouselItem, EllipseCarouselProps };
 
-export default function EllipseCarousel({
+const EllipseCarousel = ({
   items = defaultItems,
   centerLabel = "HYPERIUX",
   showCenterLabel = true,
   ...rest
-}: EllipseCarouselProps) {
+}: EllipseCarouselProps) => {
   return (
     <EllipseCarouselComp
       items={items}
@@ -53,4 +46,6 @@ export default function EllipseCarousel({
       {...rest}
     />
   );
-}
+};
+
+export default EllipseCarousel;

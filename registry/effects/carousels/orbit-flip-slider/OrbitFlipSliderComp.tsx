@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { Flip } from "gsap/dist/Flip";
-import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(Flip);
 
@@ -89,7 +89,7 @@ const degToRad = (deg: number) => (deg * Math.PI) / 180;
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_FLAT_RADIUS_X_SCALE = 0.55;
 const MOBILE_TILT_RADIUS_X_SCALE = 0.6;
-const MOBILE_TILT_RADIUS_Y_SCALE = 0.7;
+const MOBILE_TILT_RADIUS_Y_SCALE = 0.8;
 const MOBILE_RING_SCALE = 0.6;
 const MOBILE_GALLERY_SCALE = 0.6;
 
@@ -595,24 +595,7 @@ const OrbitFlipSliderComp = ({
       className="relative flex h-screen w-full flex-col overflow-hidden"
       style={{ backgroundColor }}
     >
-      <div className="flex items-center justify-end gap-4 px-6 py-5">
-        <div className="flex flex-wrap items-center gap-2">
-          {MODES.map((m) => (
-            <button
-              key={m.key}
-              type="button"
-              onClick={() => handleModeChange(m.key)}
-              className={`rounded-full border px-5 py-2 text-sm transition-colors duration-300 ${
-                activeMode === m.key
-                  ? "border-black bg-black text-white"
-                  : "border-black/15 bg-white/70 text-black/70 hover:bg-black/10"
-              }`}
-            >
-              {m.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    
 
       <div
         ref={trackRef}
@@ -644,6 +627,24 @@ const OrbitFlipSliderComp = ({
             </div>
           </div>
         ))}
+      </div>
+        <div className="absolute top-20 left-6">
+        <div className="flex flex-wrap items-center gap-2">
+          {MODES.map((m) => (
+            <button
+              key={m.key}
+              type="button"
+              onClick={() => handleModeChange(m.key)}
+              className={`rounded-full border px-5 py-2 text-sm transition-colors duration-300 ${
+                activeMode === m.key
+                  ? "border-black bg-black text-white"
+                  : "border-black/15 bg-white/70 text-black/70 hover:bg-black/10"
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/infinite-perspective-slider",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "description": "Looping perspective gallery with wheel and drag input plus split-text hover reveals",
   "main": "index.tsx",
   "files": [

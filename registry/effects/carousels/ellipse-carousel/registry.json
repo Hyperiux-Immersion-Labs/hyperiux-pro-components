@@ -22,8 +22,8 @@
   "main": "index.tsx",
   "exportName": "EllipseCarousel",
   "exportKind": "default",
-  "importPath": "@/components/ellipse-carousel",
-  "target": "src/components/ellipse-carousel",
+  "importPath": "@/components/effects/ellipse-carousel",
+  "target": "src/components/effects/ellipse-carousel",
   "props": [
     {
       "name": "backgroundColor",
@@ -219,11 +219,11 @@
   "files": [
     {
       "path": "index.tsx",
-      "target": "src/components/ellipse-carousel/index.tsx"
+      "target": "src/components/effects/ellipse-carousel/index.tsx"
     },
     {
-      "path": "EllipseCarouselComp.tsx",
-      "target": "src/components/ellipse-carousel/EllipseCarouselComp.tsx"
+      "path": "EllipseCarousel.tsx",
+      "target": "src/components/effects/ellipse-carousel/EllipseCarousel.tsx"
     }
   ]
 }

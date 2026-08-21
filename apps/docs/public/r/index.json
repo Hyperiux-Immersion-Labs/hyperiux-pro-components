@@ -2,7 +2,6 @@
   "items": [
     {
       "name": "cards-runway",
-      "name": "cards-runway",
       "type": "registry:component",
       "category": "scroll",
       "categories": [
@@ -10,17 +9,14 @@
       ],
       "dependencies": [
         "gsap"
-        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "CardsRunway",
-      "exportName": "CardsRunway",
       "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
-      "name": "circular-slider",
       "name": "circular-slider",
       "type": "registry:component",
       "category": "scroll",
@@ -30,17 +26,14 @@
       "dependencies": [
         "gsap",
         "lucide-react"
-        "lucide-react"
       ],
       "registryDependencies": [],
       "exportName": "CircularSlider",
-      "exportName": "CircularSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
-      "name": "circular-split-roll",
       "name": "circular-split-roll",
       "type": "registry:component",
       "category": "scroll",
@@ -50,14 +43,11 @@
       "dependencies": [
         "gsap",
         "lenis"
-        "gsap",
-        "lenis"
       ],
       "registryDependencies": [],
       "exportName": "CircularSplitRoll",
-      "exportName": "CircularSplitRoll",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -187,7 +177,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -204,7 +194,7 @@
       "registryDependencies": [],
       "exportName": "RibbonDrift",
       "exportKind": "default",
-      "version": "1.6.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -678,7 +668,7 @@
       "tier": "free"
     },
     {
-      "name": "grid-lift",
+      "name": "dotted-trail",
       "type": "registry:component",
       "category": "backgrounds",
       "categories": [
@@ -686,9 +676,9 @@
       ],
       "dependencies": [],
       "registryDependencies": [],
-      "exportName": "GridLift",
+      "exportName": "DottedTrail",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.0",
       "tier": "pro"
     },
     {
@@ -1423,7 +1413,7 @@
       "registryDependencies": [],
       "exportName": "ClipPathSlider",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1440,7 +1430,7 @@
       "registryDependencies": [],
       "exportName": "DepthCardStack",
       "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1459,6 +1449,22 @@
       "exportKind": "default",
       "version": "1.0.0",
       "tier": "free"
+    },
+    {
+      "name": "ellipse-carousel",
+      "type": "registry:component",
+      "category": "carousels",
+      "categories": [
+        "carousels"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "EllipseCarousel",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
     },
     {
       "name": "infinite-carousel",
@@ -1485,8 +1491,7 @@
         "carousels"
       ],
       "dependencies": [
-        "gsap",
-        "lucide-react"
+        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "OrbitFlipSlider",
@@ -1642,7 +1647,6 @@
     },
     {
       "name": "draggable-marquee",
-      "name": "draggable-marquee",
       "type": "registry:component",
       "category": "components",
       "categories": [
@@ -1653,9 +1657,8 @@
       ],
       "registryDependencies": [],
       "exportName": "DraggableMarquee",
-      "exportName": "DraggableMarquee",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1688,23 +1691,36 @@
     },
     {
       "name": "infinite-grid-gallery",
-      "name": "infinite-grid-gallery",
       "type": "registry:component",
       "category": "components",
       "categories": [
         "components"
       ],
       "dependencies": [],
-      "dependencies": [],
       "registryDependencies": [],
       "exportName": "InfiniteGridGallery",
-      "exportName": "InfiniteGridGallery",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
-      "name": "interactive-list-preview",
+      "name": "information-drawer",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap",
+        "lenis"
+      ],
+      "registryDependencies": [],
+      "exportName": "InformationDrawer",
+      "exportKind": "default",
+      "version": "1.0.1",
+      "tier": "pro"
+    },
+    {
       "name": "interactive-list-preview",
       "type": "registry:component",
       "category": "components",
@@ -1713,13 +1729,11 @@
       ],
       "dependencies": [
         "gsap"
-        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "InteractiveListPreview",
-      "exportName": "InteractiveListPreview",
       "exportKind": "default",
-      "version": "1.2.1",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1754,6 +1768,25 @@
       "exportKind": "default",
       "version": "1.0.1",
       "tier": "pro"
+    },
+    {
+      "name": "timeline",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@gsap/react",
+        "gsap",
+        "lenis",
+        "next"
+      ],
+      "registryDependencies": [],
+      "exportName": "Timeline",
+      "exportKind": "default",
+      "version": "1.0.1",
+      "tier": "free"
     },
     {
       "name": "video-player",
@@ -2120,7 +2153,7 @@
       "registryDependencies": [],
       "exportName": "HyperiuxGlitter",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {

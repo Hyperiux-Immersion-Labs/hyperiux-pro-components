@@ -311,8 +311,14 @@
   },
   {
     "name": "aperture-transition",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-08-21",
+        "summary": "Added reduced-motion support so the drawer and overlay settle instantly when users prefer reduced motion.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-06",
@@ -408,6 +414,230 @@
       }
     ],
     "registryPath": "registry/effects/transitions/aperture-transition/registry.json"
+  },
+  {
+    "name": "arc-flow-carousel",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-20",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Arc Flow Carousel",
+    "description": "Draggable image carousel where cards ride a wheel arc, with flick momentum, idle drift, and reduced-motion support.",
+    "category": "carousels",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/arc-flow-carousel",
+    "tier": "pro",
+    "main": "index.tsx",
+    "exportName": "ArcFlowCarousel",
+    "exportKind": "default",
+    "importPath": "@/components/effects/arc-flow-carousel",
+    "target": "src/components/effects/arc-flow-carousel",
+    "props": [
+      {
+        "name": "smoothing",
+        "type": "number",
+        "default": 5.5,
+        "description": "How fast the fan catches up to the pointer. Higher feels snappier.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 1,
+          "max": 12,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "momentum",
+        "type": "number",
+        "default": 1,
+        "description": "Flick distance multiplier after release.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "dragSensitivity",
+        "type": "number",
+        "default": 1.2,
+        "description": "How far the fan travels per pixel dragged or scrolled.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "autoRotateSpeed",
+        "type": "number",
+        "default": 0,
+        "description": "Constant idle drift in rad/s. Positive drifts new cards in from the left.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": -1,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "pauseOnHover",
+        "type": "boolean",
+        "default": true,
+        "description": "Pauses the idle drift while a pointer hovers the carousel.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "snap",
+        "type": "boolean",
+        "default": false,
+        "description": "Snaps to the nearest card once a flick or wheel input settles.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "radiusRatio",
+        "type": "number",
+        "default": 0.85,
+        "description": "Circle radius as a multiple of the container width. Bigger is a flatter arc.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0.4,
+          "max": 1.6,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "cardRatio",
+        "type": "number",
+        "default": 0.21,
+        "description": "Card width as a fraction of the container width, clamped by min/max card width.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0.1,
+          "max": 0.4,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "maxCardWidth",
+        "type": "number",
+        "default": 320,
+        "description": "Upper bound on card width, in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 200,
+          "max": 560,
+          "step": 1
+        }
+      },
+      {
+        "name": "cardAspect",
+        "type": "number",
+        "default": 0.62,
+        "description": "Card width divided by height.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0.3,
+          "max": 1.2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "overlap",
+        "type": "number",
+        "default": -0.04,
+        "description": "0 = cards touch edge to edge, 0.3 = overlap by 30%, negative = a gap between them.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": -0.5,
+          "max": 0.85,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "arcOffset",
+        "type": "number",
+        "default": 0.5,
+        "description": "Vertical position of the leading card's centre, as a fraction of height.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "surfaceColor",
+        "type": "string",
+        "default": "#000000",
+        "description": "Shared hex color for the carousel background and wheel surface.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/arc-flow-carousel/index.tsx"
+      },
+      {
+        "path": "ArcFlowCarouselComp.tsx",
+        "target": "src/components/effects/arc-flow-carousel/ArcFlowCarouselComp.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/carousels/arc-flow-carousel/registry.json"
   },
   {
     "name": "arrow-fill-button",
@@ -2305,6 +2535,190 @@
     "registryPath": "registry/effects/buttons/dot-fill-button/registry.json"
   },
   {
+    "name": "dot-transition",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-20",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Dot Transition",
+    "description": "Canvas 2D dot grid that grows into a silhouette mask, holds, then shrinks away before cycling to the next image. Click advances the cycle early; respects prefers-reduced-motion.",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/dot-transition",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "DotTransition",
+    "exportKind": "default",
+    "importPath": "@/components/effects/dot-transition",
+    "target": "src/components/effects/dot-transition",
+    "props": [
+      {
+        "name": "spacing",
+        "type": "number",
+        "default": 26,
+        "description": "Distance between grid cells, in px.",
+        "remixer": {
+          "control": "range",
+          "group": "grid",
+          "groupTitle": "Grid",
+          "min": 10,
+          "max": 60,
+          "step": 1
+        }
+      },
+      {
+        "name": "dotSize",
+        "type": "number",
+        "default": 2.4,
+        "description": "Resting dot size, in px.",
+        "remixer": {
+          "control": "range",
+          "group": "grid",
+          "groupTitle": "Grid",
+          "min": 1,
+          "max": 8,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "maxDotSize",
+        "type": "number",
+        "default": 10,
+        "description": "Fully \"on\" dot size, in px.",
+        "remixer": {
+          "control": "range",
+          "group": "grid",
+          "groupTitle": "Grid",
+          "min": 4,
+          "max": 24,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "growDuration",
+        "type": "number",
+        "default": 1.8,
+        "description": "Seconds for a shape to grow in from the resting grid.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0.2,
+          "max": 4,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "holdDuration",
+        "type": "number",
+        "default": 0.05,
+        "description": "Seconds a fully formed shape holds before shrinking away.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "shrinkDuration",
+        "type": "number",
+        "default": 1.8,
+        "description": "Seconds for a shape to shrink back down to the resting grid.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0.2,
+          "max": 4,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "gapDuration",
+        "type": "number",
+        "default": 0.2,
+        "description": "Seconds of plain resting grid between shrink and the next grow.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "revealAnchor",
+        "type": "number",
+        "default": 0.5,
+        "description": "Where shapes grow from / collapse into, as a fraction of height (0 = top, 1 = bottom).",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "dotColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Hex color used for the dots.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#000000",
+        "description": "Background color behind the dot grid.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "grid",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/dot-transition/index.tsx"
+      },
+      {
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/dot-transition/createSuspendedRaf.ts"
+      }
+    ],
+    "registryPath": "registry/effects/backgrounds/dot-transition/registry.json"
+  },
+  {
     "name": "dotted-grid",
     "version": "1.0.1",
     "changelog": [
@@ -2346,6 +2760,184 @@
       }
     ],
     "registryPath": "registry/effects/backgrounds/dotted-grid/registry.json"
+  },
+  {
+    "name": "dotted-trail",
+    "version": "1.0.0",
+    "type": "registry:component",
+    "title": "Dotted Trail",
+    "description": "Interactive dotted grid with a soft two-color cursor trail and editable intro copy",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/dotted-trail",
+    "tier": "pro",
+    "main": "index.tsx",
+    "exportName": "DottedTrail",
+    "exportKind": "default",
+    "importPath": "@/components/effects/dotted-trail",
+    "target": "src/components/effects/dotted-trail",
+    "props": [
+      {
+        "name": "heading",
+        "type": "string",
+        "default": "Trace the invisible",
+        "description": "Large heading displayed over the dotted canvas.",
+        "remixer": {
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "clue",
+        "type": "string",
+        "default": "Move your cursor through the field.",
+        "description": "Short instruction shown below the heading.",
+        "remixer": {
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "trailColorA",
+        "type": "color",
+        "default": "#ff4fd8",
+        "description": "Start color for the cursor trail.",
+        "remixer": {
+          "control": "color",
+          "group": "trail",
+          "groupTitle": "Trail"
+        }
+      },
+      {
+        "name": "trailColorB",
+        "type": "color",
+        "default": "#8b5cf6",
+        "description": "End color for the cursor trail.",
+        "remixer": {
+          "control": "color",
+          "group": "trail",
+          "groupTitle": "Trail"
+        }
+      },
+      {
+        "name": "trailWidth",
+        "type": "number",
+        "default": 140,
+        "description": "Maximum blurred trail stroke width.",
+        "remixer": {
+          "control": "range",
+          "group": "trail",
+          "groupTitle": "Trail",
+          "min": 40,
+          "max": 240,
+          "step": 5
+        }
+      },
+      {
+        "name": "trailBlur",
+        "type": "number",
+        "default": 70,
+        "description": "Blur radius applied to the cursor trail.",
+        "remixer": {
+          "control": "range",
+          "group": "trail",
+          "groupTitle": "Trail",
+          "min": 0,
+          "max": 140,
+          "step": 5
+        }
+      },
+      {
+        "name": "dotColor",
+        "type": "color",
+        "default": "#64646e",
+        "description": "Idle dot color.",
+        "remixer": {
+          "control": "color",
+          "group": "grid",
+          "groupTitle": "Grid"
+        }
+      },
+      {
+        "name": "activeDotColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Dot color inside the active cursor radius.",
+        "remixer": {
+          "control": "color",
+          "group": "grid",
+          "groupTitle": "Grid"
+        }
+      },
+      {
+        "name": "dotSpacing",
+        "type": "number",
+        "default": 40,
+        "description": "Distance between dots in the grid.",
+        "remixer": {
+          "control": "range",
+          "group": "grid",
+          "groupTitle": "Grid",
+          "min": 24,
+          "max": 80,
+          "step": 2
+        }
+      },
+      {
+        "name": "interactionRadius",
+        "type": "number",
+        "default": 200,
+        "description": "Cursor radius that activates nearby dots.",
+        "remixer": {
+          "control": "range",
+          "group": "grid",
+          "groupTitle": "Grid",
+          "min": 80,
+          "max": 360,
+          "step": 10
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Canvas background color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "trail",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/dotted-trail/index.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-21",
+        "summary": "Initial registry release with editable heading, clue, pink/purple trail colors, and remixer controls.",
+        "breaking": false
+      }
+    ],
+    "registryPath": "registry/effects/backgrounds/dotted-trail/registry.json"
   },
   {
     "name": "draggable-canvas",
@@ -2892,6 +3484,236 @@
       }
     ],
     "registryPath": "registry/effects/navigation/elevate-navbar/registry.json"
+  },
+  {
+    "name": "ellipse-carousel",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-21",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Ellipse Carousel",
+    "description": "Elliptical card carousel with autoplay, drag interaction, mobile-specific ellipse tuning, and an optional center label.",
+    "category": "carousels",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/ellipse-carousel",
+    "tier": "pro",
+    "main": "index.tsx",
+    "exportName": "EllipseCarousel",
+    "exportKind": "default",
+    "importPath": "@/components/effects/ellipse-carousel",
+    "target": "src/components/effects/ellipse-carousel",
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#eeeeee",
+        "description": "Background fill behind the carousel stage.",
+        "remixer": {
+          "control": "color",
+          "group": "appearance",
+          "groupTitle": "Appearance"
+        }
+      },
+      {
+        "name": "centerLabel",
+        "type": "string",
+        "default": "HYPERIUX",
+        "description": "Text shown at the center of the ellipse when enabled.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "appearance",
+          "groupTitle": "Appearance"
+        }
+      },
+      {
+        "name": "showCenterLabel",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows or hides the center label.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "appearance",
+          "groupTitle": "Appearance"
+        }
+      },
+      {
+        "name": "cardWidth",
+        "type": "number",
+        "default": 130,
+        "description": "Card width at the largest active position, in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 80,
+          "max": 260,
+          "step": 1
+        }
+      },
+      {
+        "name": "cardHeight",
+        "type": "number",
+        "default": 180,
+        "description": "Card height at the largest active position, in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 110,
+          "max": 340,
+          "step": 1
+        }
+      },
+      {
+        "name": "minScale",
+        "type": "number",
+        "default": 0.2,
+        "description": "Minimum scale applied to the farthest cards on the ellipse.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0.05,
+          "max": 0.8,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "radiusXRatio",
+        "type": "number",
+        "default": 0.25,
+        "description": "Horizontal ellipse radius as a fraction of the stage width.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0.1,
+          "max": 0.5,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "radiusYRatio",
+        "type": "number",
+        "default": 0.36,
+        "description": "Vertical ellipse radius as a fraction of the stage height.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0.1,
+          "max": 0.5,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "autoPlay",
+        "type": "boolean",
+        "default": true,
+        "description": "Automatically advances the carousel by one card at a time.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "holdDuration",
+        "type": "number",
+        "default": 0.4,
+        "description": "Seconds to hold on the active card before advancing.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "stepDuration",
+        "type": "number",
+        "default": 0.4,
+        "description": "Seconds for the snap transition between cards.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 0.1,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "pauseOnHover",
+        "type": "boolean",
+        "default": true,
+        "description": "Pauses autoplay while hovering a card.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "default": true,
+        "description": "Allows users to drag the ellipse by hand.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "dragSensitivity",
+        "type": "number",
+        "default": 1,
+        "description": "Multiplier on the carousel's angular drag response.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 0.2,
+          "max": 3,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "appearance",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/ellipse-carousel/index.tsx"
+      },
+      {
+        "path": "EllipseCarousel.tsx",
+        "target": "src/components/effects/ellipse-carousel/EllipseCarousel.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/carousels/ellipse-carousel/registry.json"
   },
   {
     "name": "expanding-navbar",
@@ -3542,7 +4364,7 @@
   {
     "name": "glitchy-text",
     "title": "Glitchy Text",
-    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers \u2014 two white and two yellow \u2014 out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
+    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
@@ -3786,7 +4608,7 @@
   {
     "name": "gooey-counter",
     "title": "Gooey Counter",
-    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0\u201310 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
+    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
     "category": "components",
     "type": "registry:component",
     "tier": "free",
@@ -4504,6 +5326,163 @@
       {
         "path": "createSuspendedRaf.ts",
         "target": "src/components/effects/infinite-perspective-slider/createSuspendedRaf.ts"
+      }
+    ]
+  },
+  {
+    "name": "information-drawer",
+    "title": "Information Drawer",
+    "description": "Team profile grid with an animated information drawer and editable panel styling",
+    "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "version": "1.0.1",
+    "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-08-21",
+        "summary": "Added reduced-motion support so the drawer and overlay settle instantly when users prefer reduced motion.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-08-21",
+        "summary": "Initial registry release with working drawer motion, panel color, text color, width, and overlay controls.",
+        "breaking": false
+      }
+    ],
+    "dependencies": [
+      "gsap",
+      "lenis"
+    ],
+    "registryDependencies": [],
+    "registryPath": "registry/effects/components/information-drawer/registry.json",
+    "importPath": "@/components/effects/information-drawer",
+    "target": "src/components/effects/information-drawer",
+    "previewUrl": "/demo/information-drawer",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "InformationDrawer",
+    "exportKind": "default",
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.6,
+        "description": "Open and close animation duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0.1,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power2.inOut",
+        "description": "GSAP easing used by the drawer panel and overlay.",
+        "remixer": {
+          "control": "select",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "options": [
+            "power1.out",
+            "power2.out",
+            "power2.in",
+            "power2.inOut",
+            "power3.inOut",
+            "expo.out",
+            "linear"
+          ]
+        }
+      },
+      {
+        "name": "delay",
+        "type": "number",
+        "default": 0,
+        "description": "Delay before the drawer animation starts, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Background color of the drawer panel.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#111111",
+        "description": "Text and icon color inside the drawer panel.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "sidebarWidth",
+        "type": "number | string",
+        "default": 70,
+        "description": "Desktop drawer width. Numbers are treated as viewport-width percentages.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 40,
+          "max": 90,
+          "step": 1
+        }
+      },
+      {
+        "name": "overlayOpacity",
+        "type": "number",
+        "default": 0.2,
+        "description": "Backdrop opacity while the drawer is open.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 0.8,
+          "step": 0.01
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "style",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/information-drawer/index.tsx"
+      },
+      {
+        "path": "InformationDrawerComp.tsx",
+        "target": "src/components/effects/information-drawer/InformationDrawerComp.tsx"
       }
     ]
   },
@@ -5233,6 +6212,549 @@
       }
     ],
     "registryPath": "registry/effects/loaders/numeric-tunnel/registry.json"
+  },
+  {
+    "name": "orbit-flip-slider",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-20",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Orbit Flip Slider",
+    "description": "GSAP Flip-driven gallery that morphs one ring of images between four camera views — a flat circle, a zoomed-in upper arc, a tilted 3D ring, and a coverflow band — with a bouncy 3D hover tilt on every card.",
+    "category": "carousels",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/orbit-flip-slider",
+    "coverImage": "orbit-flip-slider",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "OrbitFlipSlider",
+    "exportKind": "default",
+    "importPath": "@/components/effects/orbit-flip-slider",
+    "target": "src/components/effects/orbit-flip-slider",
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#e9e9ea",
+        "description": "Background color behind the ring.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "imageWidth",
+        "type": "number",
+        "default": 90,
+        "description": "Width of each image card in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "general",
+          "groupTitle": "General",
+          "min": 80,
+          "max": 320,
+          "step": 4
+        }
+      },
+      {
+        "name": "imageHeight",
+        "type": "number",
+        "default": 140,
+        "description": "Height of each image card in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "general",
+          "groupTitle": "General",
+          "min": 120,
+          "max": 420,
+          "step": 4
+        }
+      },
+      {
+        "name": "imageGap",
+        "type": "number",
+        "default": 0,
+        "description": "Extra spacing between image cards in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "general",
+          "groupTitle": "General",
+          "min": 0,
+          "max": 120,
+          "step": 2
+        }
+      },
+      {
+        "name": "rounded",
+        "type": "string",
+        "default": "rounded-none",
+        "description": "Tailwind border-radius class applied to each image card.",
+        "remixer": {
+          "control": "select",
+          "group": "general",
+          "groupTitle": "General",
+          "options": [
+            "rounded-none",
+            "rounded-sm",
+            "rounded-md",
+            "rounded-lg",
+            "rounded-xl",
+            "rounded-2xl",
+            "rounded-3xl",
+            "rounded-full"
+          ]
+        }
+      },
+      {
+        "name": "enableHoverMovement",
+        "type": "boolean",
+        "default": true,
+        "description": "Enables the hover lift and perspective tilt on image cards.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "general",
+          "groupTitle": "General"
+        }
+      },
+      {
+        "name": "hoverMoveY",
+        "type": "number",
+        "default": -8,
+        "description": "Vertical movement applied to the image card on hover, in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "general",
+          "groupTitle": "General",
+          "min": -80,
+          "max": 80,
+          "step": 1
+        }
+      },
+      {
+        "name": "perspectiveRotateValue",
+        "type": "number",
+        "default": 75,
+        "description": "How far each card rotates on hover, in degrees.",
+        "remixer": {
+          "control": "range",
+          "group": "general",
+          "groupTitle": "General",
+          "min": 0,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "perspectiveRotateDirection",
+        "type": "string",
+        "default": "right",
+        "description": "Direction each card rotates on hover.",
+        "remixer": {
+          "control": "select",
+          "group": "general",
+          "groupTitle": "General",
+          "options": [
+            "left",
+            "right"
+          ]
+        }
+      },
+      {
+        "name": "rotate",
+        "type": "boolean",
+        "default": true,
+        "description": "Continuously and slowly rotates the ring of cards.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "general",
+          "groupTitle": "General"
+        }
+      },
+      {
+        "name": "rotateSpeed",
+        "type": "number",
+        "default": 4,
+        "description": "Speed of the automatic rotation, in degrees per second.",
+        "remixer": {
+          "control": "range",
+          "group": "general",
+          "groupTitle": "General",
+          "min": 0.5,
+          "max": 30,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "stopRotationOnHover",
+        "type": "boolean",
+        "default": true,
+        "description": "Pauses the automatic rotation while the pointer is hovering the slider.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "general",
+          "groupTitle": "General"
+        }
+      },
+      {
+        "name": "flatRadiusX",
+        "type": "number",
+        "default": 1.6,
+        "description": "Horizontal stretch of the flat circle, as a multiplier of its base radius.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "flat",
+          "groupTitle": "Flat",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flatRadiusY",
+        "type": "number",
+        "default": 1.2,
+        "description": "Vertical stretch of the flat circle, as a multiplier of its base radius.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "flat",
+          "groupTitle": "Flat",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flatScale",
+        "type": "number",
+        "default": 1,
+        "description": "Uniform zoom on the flat circle as a whole — position spread and card size together.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "flat",
+          "groupTitle": "Flat",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "ringRotateX",
+        "type": "number",
+        "default": 31,
+        "description": "Rotates the ring's plane on the x axis, in degrees. Swings the near/far cards vertically apart.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "ring",
+          "groupTitle": "Ring",
+          "min": -90,
+          "max": 90,
+          "step": 1
+        }
+      },
+      {
+        "name": "ringRotateY",
+        "type": "number",
+        "default": 56,
+        "description": "Rotates the ring on the y axis, in degrees. Spins which card faces the camera.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "ring",
+          "groupTitle": "Ring",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "ringRotateZ",
+        "type": "number",
+        "default": -25,
+        "description": "Rotates the whole projected ring on the z axis, in degrees. Spins the composition in place, like a wheel face.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "ring",
+          "groupTitle": "Ring",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "ringRadiusX",
+        "type": "number",
+        "default": 1.5,
+        "description": "Horizontal stretch of the ring, as a multiplier of its base radius.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "ring",
+          "groupTitle": "Ring",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "ringRadiusY",
+        "type": "number",
+        "default": 1.2,
+        "description": "Vertical stretch of the ring, as a multiplier of its base radius.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "ring",
+          "groupTitle": "Ring",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "ringScale",
+        "type": "number",
+        "default": 1,
+        "description": "Uniform zoom on the ring as a whole — position spread and card size together, like moving the camera closer or further on the z axis.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "ring",
+          "groupTitle": "Ring",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "tiltRotateX",
+        "type": "number",
+        "default": 70,
+        "description": "Rotates the tilt view's ring on the x axis, in degrees.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "tilt",
+          "groupTitle": "Tilt",
+          "min": -90,
+          "max": 90,
+          "step": 1
+        }
+      },
+      {
+        "name": "tiltRotateY",
+        "type": "number",
+        "default": 0,
+        "description": "Rotates the tilt view's ring on the y axis, in degrees. Shifts which part of the upper arc is centered.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "tilt",
+          "groupTitle": "Tilt",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "tiltRotateZ",
+        "type": "number",
+        "default": 0,
+        "description": "Rotates the whole projected tilt composition on the z axis, in degrees.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "tilt",
+          "groupTitle": "Tilt",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "tiltRadiusX",
+        "type": "number",
+        "default": 1.9,
+        "description": "Horizontal stretch of the tilt view, as a multiplier of its base radius.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "tilt",
+          "groupTitle": "Tilt",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "tiltRadiusY",
+        "type": "number",
+        "default": 1.5,
+        "description": "Vertical stretch of the tilt view, as a multiplier of its base radius.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "tilt",
+          "groupTitle": "Tilt",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "tiltScale",
+        "type": "number",
+        "default": 1.2,
+        "description": "Uniform zoom on the tilt view as a whole.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "tilt",
+          "groupTitle": "Tilt",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "tiltMoveY",
+        "type": "number",
+        "default": 300,
+        "description": "Pans the tilt view up or down, in pixels, without affecting its rotation, stretch or zoom.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "tilt",
+          "groupTitle": "Tilt",
+          "min": -400,
+          "max": 400,
+          "step": 5
+        }
+      },
+      {
+        "name": "galleryRotateX",
+        "type": "number",
+        "default": 0,
+        "description": "Rotates the gallery coverflow's ring on the x axis, in degrees.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "gallery",
+          "groupTitle": "Gallery",
+          "min": -90,
+          "max": 90,
+          "step": 1
+        }
+      },
+      {
+        "name": "galleryRotateY",
+        "type": "number",
+        "default": 0,
+        "description": "Rotates the gallery coverflow on the y axis, in degrees. Spins which card faces the camera.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "gallery",
+          "groupTitle": "Gallery",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "galleryRotateZ",
+        "type": "number",
+        "default": 0,
+        "description": "Rotates the whole projected gallery composition on the z axis, in degrees.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "gallery",
+          "groupTitle": "Gallery",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "galleryRadiusX",
+        "type": "number",
+        "default": 1.3,
+        "description": "Horizontal stretch of the gallery coverflow, as a multiplier of its base radius.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "gallery",
+          "groupTitle": "Gallery",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "galleryRadiusY",
+        "type": "number",
+        "default": 1.5,
+        "description": "Vertical stretch of the gallery coverflow, as a multiplier of its base radius.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "gallery",
+          "groupTitle": "Gallery",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "galleryScale",
+        "type": "number",
+        "default": 1.2,
+        "description": "Uniform zoom on the gallery coverflow as a whole.",
+        "remixer": {
+          "enabled": false,
+          "control": "range",
+          "group": "gallery",
+          "groupTitle": "Gallery",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "general",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/orbit-flip-slider/index.tsx"
+      },
+      {
+        "path": "OrbitFlipSliderComp.tsx",
+        "target": "src/components/effects/orbit-flip-slider/OrbitFlipSliderComp.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/carousels/orbit-flip-slider/registry.json"
   },
   {
     "name": "overflow-text-reveal",
@@ -8022,6 +9544,124 @@
         "target": "src/components/effects/text-stream/TextStreamComp.tsx"
       }
     ]
+  },
+  {
+    "name": "timeline",
+    "version": "1.0.1",
+    "type": "registry:component",
+    "title": "Timeline",
+    "description": "Horizontal scroll timeline with Lenis smoothing, GSAP milestone reveals, and reduced-motion support.",
+    "category": "components",
+    "dependencies": [
+      "@gsap/react",
+      "gsap",
+      "lenis",
+      "next"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/timeline",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "Timeline",
+    "exportKind": "default",
+    "importPath": "@/components/effects/timeline",
+    "target": "src/components/effects/timeline",
+    "props": [
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Text color used for the timeline title, dates, and milestone descriptions.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "mutedTextColor",
+        "type": "color",
+        "default": "#3f3f46",
+        "description": "Secondary text color for descriptions and the period label.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "activeColor",
+        "type": "color",
+        "default": "#ff5f00",
+        "description": "Accent color shared by the active timeline line, dots, and milestone stems.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Background color of the timeline section.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 1.2,
+        "description": "Reveal animation and Lenis smoothing duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "scroll",
+          "groupTitle": "Scroll",
+          "min": 0.4,
+          "max": 3,
+          "step": 0.1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "style",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/timeline/index.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-08-21",
+        "summary": "Added timeline remixer controls for colors, duration, and reduced-motion behavior.",
+        "breaking": false
+      },
+      {
+        "version": "1.0.0",
+        "date": "2026-08-21",
+        "summary": "Initial timeline registry release with configurable colors, Lenis scroll tuning, and reduced-motion support.",
+        "breaking": false
+      }
+    ],
+    "categories": [
+      "components"
+    ],
+    "registryPath": "registry/effects/components/timeline/registry.json"
   },
   {
     "name": "typing-text",

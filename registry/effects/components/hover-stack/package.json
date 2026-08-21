@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/hover-stack",
-  "version": "1.4.0",
+  "version": "1.0.1",
   "description": "Overlapping card stack that fans out around the hovered card",
   "main": "index.tsx",
   "files": [

@@ -1,28 +1,8 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useSyncExternalStore } from "react";
 import { gsap } from "gsap";
-
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-
-function getReducedMotionSnapshot() {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
-}
-
-function subscribeToReducedMotion(callback: () => void) {
-  if (typeof window === "undefined") return () => {};
-  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
-  mediaQueryList.addEventListener("change", callback);
-  return () => mediaQueryList.removeEventListener("change", callback);
-}
-
-function usePrefersReducedMotion() {
-  return useSyncExternalStore(subscribeToReducedMotion, getReducedMotionSnapshot, () => false);
-}
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 export interface SmoothSliderItem {
   src: string;
@@ -68,6 +48,10 @@ export interface ArcFlowCarouselCompProps {
 const DRAG_SMOOTHING = 14;
 const VELOCITY_WINDOW = 90;
 const MAX_FLICK = 9;
+/** How much slower a card follows per unit distance from the active one. 0 = no lag, 1 = edge cards barely move. */
+const STAGGER_LAG_STRENGTH = 0.85;
+/** Floor on a card's follow rate, as a fraction of the base rate, so far cards never stall. */
+const MIN_FOLLOW_FRACTION = 0.6;
 
 export default function ArcFlowCarouselComp({
   items = [],
@@ -112,6 +96,9 @@ export default function ArcFlowCarouselComp({
   // Wheel position in radians. `current` chases `target` every frame.
   const currentRef = useRef(0);
   const targetRef = useRef(0);
+  // Each card's own eased position — chases `current`, not `target`, so
+  // motion ripples outward from the active card instead of moving as one.
+  const slotOffsetsRef = useRef<number[]>([]);
   const draggingRef = useRef(false);
   const pointerIdRef = useRef<number | null>(null);
   const lastXRef = useRef(0);
@@ -184,41 +171,70 @@ export default function ArcFlowCarouselComp({
   useEffect(() => {
     if (!total) return;
 
-    const draw = () => {
+    const draw = (dt: number) => {
       const { radius, cardWidth, cardHeight, step, centerX, centerY, maxAngle } = layoutRef.current;
       const span = slotCount * step;
       const half = span / 2;
-      const offset = currentRef.current;
       const reveal = revealRef.current;
+      const rate = draggingRef.current ? DRAG_SMOOTHING : reduceMotion ? DRAG_SMOOTHING : smoothing;
+      const useUnifiedOffset = reduceMotion;
+
+      const slotOffsets = slotOffsetsRef.current;
+      if (slotOffsets.length !== slotCount) {
+        slotOffsets.length = slotCount;
+        slotOffsets.fill(currentRef.current);
+      }
 
       for (let i = 0; i < slotCount; i += 1) {
         const card = cardRefs.current[i];
         if (!card) continue;
 
-        // Wrap into [-half, half) so the strip of cards is endless.
-        let angle = (i * step - offset) % span;
-        if (angle < -half) angle += span;
-        else if (angle >= half) angle -= span;
+        if (useUnifiedOffset) {
+          slotOffsets[i] = currentRef.current;
+        } else {
+          // Rank this card's distance from the active one using its own last
+          // position — continuous enough to pick a follow rate from.
+          let rankAngle = (i * step - slotOffsets[i]) % span;
+          if (rankAngle < -half) rankAngle += span;
+          else if (rankAngle >= half) rankAngle -= span;
+          const distanceFactor = gsap.utils.clamp(0, 1, Math.abs(rankAngle) / maxAngle);
 
-        if (Math.abs(angle) > maxAngle) {
+          // The touched/active card tracks the drag almost immediately; cards
+          // further out follow it with more lag, so motion ripples outward
+          // instead of the whole fan moving as one rigid piece.
+          const followRate = Math.max(
+            rate * (1 - distanceFactor * STAGGER_LAG_STRENGTH),
+            rate * MIN_FOLLOW_FRACTION,
+          );
+          const followLerp = 1 - Math.exp(-followRate * dt);
+          slotOffsets[i] += (currentRef.current - slotOffsets[i]) * followLerp;
+        }
+
+        // Wrap into [-half, half) so the strip of cards is endless.
+        let baseAngle = (i * step - slotOffsets[i]) % span;
+        if (baseAngle < -half) baseAngle += span;
+        else if (baseAngle >= half) baseAngle -= span;
+
+        if (Math.abs(baseAngle) > maxAngle) {
           if (card.style.visibility !== "hidden") card.style.visibility = "hidden";
           continue;
         }
         if (card.style.visibility === "hidden") card.style.visibility = "visible";
 
-        const x = centerX + radius * Math.sin(angle) - cardWidth / 2;
-        const y = centerY - radius * Math.cos(angle) - cardHeight / 2;
+        const x = centerX + radius * Math.sin(baseAngle) - cardWidth / 2;
+        const y = centerY - radius * Math.cos(baseAngle) - cardHeight / 2;
 
-        card.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${angle}rad)`;
+        card.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${baseAngle}rad)`;
         card.style.width = `${cardWidth}px`;
         card.style.height = `${cardHeight}px`;
-        // Centre card on top, stacking down towards both edges — a hand of cards.
-        card.style.zIndex = `${1000 - Math.round(Math.abs(angle) * 1000)}`;
+        // Right always stacks over left, no exception for the active card —
+        // a plain fanned hand of cards, ordered purely by position.
+        card.style.zIndex = `${Math.round((baseAngle + half) * 1000)}`;
 
         const inner = innerRefs.current[i];
         if (inner && reveal < 1) {
           // Staggered entrance, outwards from the middle of the fan.
-          const delay = Math.min(1, Math.abs(angle) / maxAngle) * 0.45;
+          const delay = Math.min(1, Math.abs(baseAngle) / maxAngle) * 0.45;
           const p = gsap.utils.clamp(0, 1, (reveal - delay) / (1 - delay || 1));
           const eased = 1 - Math.pow(1 - p, 3);
           inner.style.opacity = `${eased}`;
@@ -258,11 +274,11 @@ export default function ArcFlowCarouselComp({
         targetRef.current += autoRotateSpeed * dt;
       }
 
-      draw();
+      draw(dt);
     };
 
     // Land on the first card and paint one frame before the ticker starts.
-    draw();
+    draw(1);
     gsap.ticker.add(tick);
 
     return () => gsap.ticker.remove(tick);
@@ -296,7 +312,7 @@ export default function ArcFlowCarouselComp({
       if (!draggingRef.current || e.pointerId !== pointerIdRef.current) return;
       const dx = e.clientX - lastXRef.current;
       lastXRef.current = e.clientX;
-      // 1:1 with the pointer: pixels along the rim -> radians.
+      // Pixels along the rim -> radians, scaled by dragSensitivity.
       targetRef.current -= (dx * dragSensitivity) / layoutRef.current.radius;
       pushSample();
     };
@@ -396,7 +412,7 @@ export default function ArcFlowCarouselComp({
 
   return (
     <section
-      className={`relative h-[100dvh] w-full overflow-hidden select-none ${className}`}
+      className={`relative bg-black h-dvh w-full overflow-hidden select-none ${className}`}
       style={{ backgroundColor: surfaceColor }}
     >
       <div
@@ -414,7 +430,7 @@ export default function ArcFlowCarouselComp({
           className="pointer-events-none absolute -translate-x-1/2 rounded-full"
           style={{
             backgroundColor: surfaceColor,
-            boxShadow: "0 -1px 0 rgba(255,255,255,0.35), 0 -30px 60px rgba(0,0,0,0.06)",
+            boxShadow: "none",
           }}
         />
 
@@ -468,12 +484,12 @@ export default function ArcFlowCarouselComp({
                   }}
                 >
                   {item.title ? (
-                    <p className="text-[0.72rem] font-medium uppercase tracking-[0.2em] text-white/95">
+                    <p className="text-[1.4vw] font-medium uppercase  text-white/95">
                       {item.title}
                     </p>
                   ) : null}
                   {item.description ? (
-                    <p className="mt-2 max-w-[22ch] text-[0.74rem] leading-[1.45] text-white/75">
+                    <p className="mt-2 max-w-[22ch] text-[1.1vw] leading-[1.1] text-white/75">
                       {item.description}
                     </p>
                   ) : null}
