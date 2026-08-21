@@ -1,5 +1,5 @@
 {
-  "name": "smooth-slider",
+  "name": "arc-flow-carousel",
   "version": "1.0.0",
   "changelog": [
     {
@@ -10,20 +10,20 @@
     }
   ],
   "type": "registry:component",
-  "title": "Smooth Slider",
+  "title": "Arc Flow Carousel",
   "description": "Draggable image carousel where cards ride a wheel arc, with flick momentum, idle drift, and reduced-motion support.",
   "category": "carousels",
   "dependencies": [
     "gsap"
   ],
   "registryDependencies": [],
-  "previewUrl": "/demo/smooth-slider",
+  "previewUrl": "/demo/arc-flow-carousel",
   "tier": "pro",
   "main": "index.tsx",
-  "exportName": "SmoothSlider",
+  "exportName": "ArcFlowCarousel",
   "exportKind": "default",
-  "importPath": "@/components/effects/smooth-slider",
-  "target": "src/components/effects/smooth-slider",
+  "importPath": "@/components/effects/arc-flow-carousel",
+  "target": "src/components/effects/arc-flow-carousel",
   "props": [
     {
       "name": "smoothing",
@@ -54,9 +54,23 @@
       }
     },
     {
+      "name": "dragSensitivity",
+      "type": "number",
+      "default": 1.2,
+      "description": "How far the fan travels per pixel dragged or scrolled.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.2,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
       "name": "autoRotateSpeed",
       "type": "number",
-      "default": 0.12,
+      "default": 0,
       "description": "Constant idle drift in rad/s. Positive drifts new cards in from the left.",
       "remixer": {
         "control": "range",
@@ -90,22 +104,6 @@
       }
     },
     {
-      "name": "wheelControl",
-      "type": "string",
-      "default": "horizontal",
-      "description": "How wheel and trackpad input is consumed.",
-      "remixer": {
-        "control": "select",
-        "group": "behavior",
-        "groupTitle": "Behavior",
-        "options": [
-          { "value": "horizontal", "label": "Horizontal" },
-          { "value": "both", "label": "Both" },
-          { "value": "off", "label": "Off" }
-        ]
-      }
-    },
-    {
       "name": "radiusRatio",
       "type": "number",
       "default": 0.85,
@@ -131,20 +129,6 @@
         "min": 0.1,
         "max": 0.4,
         "step": 0.01
-      }
-    },
-    {
-      "name": "minCardWidth",
-      "type": "number",
-      "default": 150,
-      "description": "Lower bound on card width, in pixels.",
-      "remixer": {
-        "control": "range",
-        "group": "layout",
-        "groupTitle": "Layout",
-        "min": 80,
-        "max": 300,
-        "step": 1
       }
     },
     {
@@ -204,21 +188,10 @@
       }
     },
     {
-      "name": "backgroundColor",
+      "name": "surfaceColor",
       "type": "string",
-      "default": "#d3d3d3",
-      "description": "Background color behind the carousel.",
-      "remixer": {
-        "control": "color",
-        "group": "colors",
-        "groupTitle": "Colors"
-      }
-    },
-    {
-      "name": "wheelColor",
-      "type": "string",
-      "default": "#999999",
-      "description": "Color of the wheel the cards ride on.",
+      "default": "#000000",
+      "description": "Shared hex color for the carousel background and wheel surface.",
       "remixer": {
         "control": "color",
         "group": "colors",
@@ -240,11 +213,11 @@
   "files": [
     {
       "path": "index.tsx",
-      "target": "src/components/effects/smooth-slider/index.tsx"
+      "target": "src/components/effects/arc-flow-carousel/index.tsx"
     },
     {
-      "path": "SmoothSliderComp.tsx",
-      "target": "src/components/effects/smooth-slider/SmoothSliderComp.tsx"
+      "path": "ArcFlowCarouselComp.tsx",
+      "target": "src/components/effects/arc-flow-carousel/ArcFlowCarouselComp.tsx"
     }
   ]
 }

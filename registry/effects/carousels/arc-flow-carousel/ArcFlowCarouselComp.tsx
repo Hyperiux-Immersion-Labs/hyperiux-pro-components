@@ -1,16 +1,38 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { gsap } from "gsap";
-import { usePrefersReducedMotion } from "@/lib/motion";
+
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function getReducedMotionSnapshot() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
+}
+
+function subscribeToReducedMotion(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
+  mediaQueryList.addEventListener("change", callback);
+  return () => mediaQueryList.removeEventListener("change", callback);
+}
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(subscribeToReducedMotion, getReducedMotionSnapshot, () => false);
+}
 
 export interface SmoothSliderItem {
   src: string;
   alt?: string;
   label?: string;
+  title?: string;
+  description?: string;
 }
 
-export interface SmoothSliderCompProps {
+export interface ArcFlowCarouselCompProps {
   items?: SmoothSliderItem[];
   /** Circle radius as a multiple of the container width. Bigger = flatter arc. */
   radiusRatio?: number;
@@ -26,6 +48,8 @@ export interface SmoothSliderCompProps {
   arcOffset?: number;
   /** Higher = the fan catches up to the pointer faster. 4–9 feels natural. */
   smoothing?: number;
+  /** How far the fan travels per pixel dragged. 1 = 1:1 at the centre card, higher = more travel per drag. */
+  dragSensitivity?: number;
   /** Flick distance multiplier after release. */
   momentum?: number;
   /** Snap to the nearest card once the flick settles. */
@@ -36,8 +60,8 @@ export interface SmoothSliderCompProps {
   autoRotateSpeed?: number;
   /** Pause the idle drift while a pointer hovers the carousel. */
   pauseOnHover?: boolean;
-  backgroundColor?: string;
-  wheelColor?: string;
+  /** Shared hex color used for both the page background and the wheel surface. */
+  surfaceColor?: string;
   className?: string;
 }
 
@@ -45,7 +69,7 @@ const DRAG_SMOOTHING = 14;
 const VELOCITY_WINDOW = 90;
 const MAX_FLICK = 9;
 
-export default function SmoothSliderComp({
+export default function ArcFlowCarouselComp({
   items = [],
   radiusRatio = 0.85,
   cardRatio = 0.21,
@@ -55,15 +79,15 @@ export default function SmoothSliderComp({
   overlap = -0.04,
   arcOffset = 0.5,
   smoothing = 5.5,
+  dragSensitivity = 1.2,
   momentum = 1,
   snap = false,
   wheelControl = "horizontal",
-  autoRotateSpeed = 0.12,
+  autoRotateSpeed = 0,
   pauseOnHover = true,
-  backgroundColor = "#d3d3d3",
-  wheelColor = "#999999",
+  surfaceColor = "#000000",
   className = "",
-}: SmoothSliderCompProps) {
+}: ArcFlowCarouselCompProps) {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const discRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -273,7 +297,7 @@ export default function SmoothSliderComp({
       const dx = e.clientX - lastXRef.current;
       lastXRef.current = e.clientX;
       // 1:1 with the pointer: pixels along the rim -> radians.
-      targetRef.current -= dx / layoutRef.current.radius;
+      targetRef.current -= (dx * dragSensitivity) / layoutRef.current.radius;
       pushSample();
     };
 
@@ -315,7 +339,7 @@ export default function SmoothSliderComp({
 
       const delta = horizontal ? e.deltaX : e.deltaY;
       e.preventDefault();
-      targetRef.current += delta / layoutRef.current.radius;
+      targetRef.current += (delta * dragSensitivity) / layoutRef.current.radius;
 
       if (snap) {
         // Wheel input arrives in bursts; settle on a card once it stops.
@@ -364,7 +388,7 @@ export default function SmoothSliderComp({
       stage.removeEventListener("keydown", onKeyDown);
       window.clearTimeout(wheelSettleRef.current);
     };
-  }, [momentum, reduceMotion, smoothing, snap, total, wheelControl]);
+  }, [dragSensitivity, momentum, reduceMotion, smoothing, snap, total, wheelControl]);
 
   if (!total) return null;
 
@@ -373,7 +397,7 @@ export default function SmoothSliderComp({
   return (
     <section
       className={`relative h-[100dvh] w-full overflow-hidden select-none ${className}`}
-      style={{ backgroundColor }}
+      style={{ backgroundColor: surfaceColor }}
     >
       <div
         ref={stageRef}
@@ -389,7 +413,7 @@ export default function SmoothSliderComp({
           aria-hidden
           className="pointer-events-none absolute -translate-x-1/2 rounded-full"
           style={{
-            backgroundColor: wheelColor,
+            backgroundColor: surfaceColor,
             boxShadow: "0 -1px 0 rgba(255,255,255,0.35), 0 -30px 60px rgba(0,0,0,0.06)",
           }}
         />
@@ -400,7 +424,7 @@ export default function SmoothSliderComp({
             ref={(el) => {
               cardRefs.current[i] = el;
             }}
-            className="absolute top-0 left-0 will-change-transform"
+            className="group absolute top-0 left-0 will-change-transform"
             style={{ visibility: "hidden" }}
           >
             <div
@@ -420,6 +444,41 @@ export default function SmoothSliderComp({
                 draggable={false}
                 className="pointer-events-none block h-full w-full object-cover select-none"
               />
+              {(item.title || item.description) ? (
+                <div
+                  className={`pointer-events-none absolute inset-0 transition-opacity duration-300 ease-out ${
+                    reduceMotion ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  }`}
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.16) 45%, rgba(0,0,0,0.62) 100%)",
+                  }}
+                />
+              ) : null}
+              {(item.title || item.description) ? (
+                <div
+                  className={`pointer-events-none absolute inset-x-0 bottom-0 p-4 text-white transition-all duration-300 ease-out ${
+                    reduceMotion
+                      ? "translate-y-0 opacity-100"
+                      : "translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
+                  }`}
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.08) 35%, rgba(0,0,0,0.26) 100%)",
+                  }}
+                >
+                  {item.title ? (
+                    <p className="text-[0.72rem] font-medium uppercase tracking-[0.2em] text-white/95">
+                      {item.title}
+                    </p>
+                  ) : null}
+                  {item.description ? (
+                    <p className="mt-2 max-w-[22ch] text-[0.74rem] leading-[1.45] text-white/75">
+                      {item.description}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
               {item.label ? (
                 <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[0.7rem] tracking-[0.18em] text-white/90 uppercase">
                   {item.label}

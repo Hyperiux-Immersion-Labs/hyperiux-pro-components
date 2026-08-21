@@ -1,11 +1,11 @@
 {
-  "name": "@hyperiux/mix-slider",
+  "name": "@hyperiux/orbit-flip-slider",
   "version": "1.0.0",
   "description": "GSAP Flip-driven gallery that morphs one ring of images between four camera views, with a bouncy 3D hover tilt on every card.",
   "main": "index.tsx",
   "files": [
     "index.tsx",
-    "MixSliderComp.tsx",
+    "OrbitFlipSliderComp.tsx",
     "registry.json"
   ],
   "keywords": [

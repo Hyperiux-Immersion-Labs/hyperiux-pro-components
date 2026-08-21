@@ -1,11 +1,11 @@
 import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import registry from "../../../../../../../registry/effects/carousels/mix-slider/registry.json";
+import registry from "../../../../../../../registry/effects/carousels/orbit-flip-slider/registry.json";
 
 export default function Page() {
   return <DemoContent registry={registry} />;
 }
 
 export async function generateMetadata() {
-  return getDemoPageMetadata("mix-slider");
+  return getDemoPageMetadata("orbit-flip-slider");
 }

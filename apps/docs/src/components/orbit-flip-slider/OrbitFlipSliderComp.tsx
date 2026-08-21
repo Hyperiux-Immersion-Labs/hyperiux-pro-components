@@ -3,20 +3,20 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { Flip } from "gsap/dist/Flip";
-import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
+import { usePrefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(Flip);
 
-type MixSliderMode = "flat" | "tilt" | "ring" | "gallery";
+type OrbitFlipSliderMode = "flat" | "tilt" | "ring" | "gallery";
 
-interface MixSliderItem {
+interface OrbitFlipSliderItem {
   id?: string | number;
   image: string;
   alt?: string;
 }
 
-interface MixSliderCompProps {
-  items?: MixSliderItem[];
+interface OrbitFlipSliderCompProps {
+  items?: OrbitFlipSliderItem[];
   backgroundColor?: string;
   imageWidth?: number;
   imageHeight?: number;
@@ -75,7 +75,7 @@ interface AxisTransform {
   moveY: number;
 }
 
-const MODES: { key: MixSliderMode; label: string }[] = [
+const MODES: { key: OrbitFlipSliderMode; label: string }[] = [
   { key: "flat", label: "Flat" },
   { key: "tilt", label: "Tilt" },
   { key: "ring", label: "Ring" },
@@ -89,7 +89,7 @@ const degToRad = (deg: number) => (deg * Math.PI) / 180;
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_FLAT_RADIUS_X_SCALE = 0.55;
 const MOBILE_TILT_RADIUS_X_SCALE = 0.6;
-const MOBILE_TILT_RADIUS_Y_SCALE = 0.7;
+const MOBILE_TILT_RADIUS_Y_SCALE = 0.8;
 const MOBILE_RING_SCALE = 0.6;
 const MOBILE_GALLERY_SCALE = 0.6;
 
@@ -233,7 +233,7 @@ interface ModeTransforms {
 }
 
 const buildLayout = (
-  mode: MixSliderMode,
+  mode: OrbitFlipSliderMode,
   count: number,
   containerW: number,
   containerH: number,
@@ -291,7 +291,7 @@ const buildLayout = (
   return transformed.map((box) => ({ ...box, y: box.y + t.moveY }));
 };
 
-const MixSliderComp = ({
+const OrbitFlipSliderComp = ({
   items = [],
   backgroundColor = "#e9e9ea",
   imageWidth = 140,
@@ -327,15 +327,15 @@ const MixSliderComp = ({
   galleryRadiusX = 1,
   galleryRadiusY = 1,
   galleryScale = 1,
-}: MixSliderCompProps) => {
+}: OrbitFlipSliderCompProps) => {
   const FLIP_DURATION_SECONDS = 0.9;
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const modeRef = useRef<MixSliderMode>("flat");
+  const modeRef = useRef<OrbitFlipSliderMode>("flat");
   const isFlipAnimatingRef = useRef(false);
   const flipResumeTimeoutRef = useRef<number | null>(null);
   const rotationOffsetRef = useRef(0);
   const hoveredCardCountRef = useRef(0);
-  const [activeMode, setActiveMode] = useState<MixSliderMode>("flat");
+  const [activeMode, setActiveMode] = useState<OrbitFlipSliderMode>("flat");
   const reducedMotion = usePrefersReducedMotion();
 
   const sizes = items.map(() => ({ w: imageWidth, h: imageHeight }));
@@ -375,11 +375,11 @@ const MixSliderComp = ({
   };
 
   const applyLayout = useCallback(
-    (mode: MixSliderMode, animate: boolean) => {
+    (mode: OrbitFlipSliderMode, animate: boolean) => {
       const track = trackRef.current;
       if (!track) return;
 
-      const cards = gsap.utils.toArray<HTMLElement>(".mix-slider-card", track);
+      const cards = gsap.utils.toArray<HTMLElement>(".orbit-flip-slider-card", track);
       if (!cards.length) return;
 
       const { width, height } = track.getBoundingClientRect();
@@ -514,7 +514,7 @@ const MixSliderComp = ({
     galleryScale,
   ]);
 
-  const handleModeChange = (mode: MixSliderMode) => {
+  const handleModeChange = (mode: OrbitFlipSliderMode) => {
     if (mode === modeRef.current) return;
     modeRef.current = mode;
     setActiveMode(mode);
@@ -551,7 +551,7 @@ const MixSliderComp = ({
       hoveredCardCountRef.current += 1;
       if (reducedMotion || !enableHoverMovement || window.innerWidth < MOBILE_BREAKPOINT) return;
       const card = e.currentTarget;
-      const inner = card.querySelector<HTMLElement>(".mix-slider-card-inner");
+      const inner = card.querySelector<HTMLElement>(".orbit-flip-slider-card-inner");
       if (!inner) return;
       const rotateY =
         perspectiveRotateDirection === "left"
@@ -575,7 +575,7 @@ const MixSliderComp = ({
       hoveredCardCountRef.current = Math.max(0, hoveredCardCountRef.current - 1);
       if (reducedMotion || !enableHoverMovement || window.innerWidth < MOBILE_BREAKPOINT) return;
       const card = e.currentTarget;
-      const inner = card.querySelector<HTMLElement>(".mix-slider-card-inner");
+      const inner = card.querySelector<HTMLElement>(".orbit-flip-slider-card-inner");
       if (!inner) return;
 
       gsap.killTweensOf(inner);
@@ -595,24 +595,7 @@ const MixSliderComp = ({
       className="relative flex h-screen w-full flex-col overflow-hidden"
       style={{ backgroundColor }}
     >
-      <div className="flex items-center justify-end gap-4 px-6 py-5">
-        <div className="flex flex-wrap items-center gap-2">
-          {MODES.map((m) => (
-            <button
-              key={m.key}
-              type="button"
-              onClick={() => handleModeChange(m.key)}
-              className={`rounded-full border px-5 py-2 text-sm transition-colors duration-300 ${
-                activeMode === m.key
-                  ? "border-black bg-black text-white"
-                  : "border-black/15 bg-white/70 text-black/70 hover:bg-black/10"
-              }`}
-            >
-              {m.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    
 
       <div
         ref={trackRef}
@@ -621,13 +604,13 @@ const MixSliderComp = ({
         {items.map((item, i) => (
           <div
             key={item.id ?? i}
-            className="mix-slider-card absolute left-0 top-0"
+            className="orbit-flip-slider-card absolute left-0 top-0"
             onMouseEnter={handleCardEnter}
             onMouseLeave={handleCardLeave}
             style={{ perspective: "500px" }}
           >
             <div
-              className={`mix-slider-card-inner relative h-full w-full overflow-hidden bg-white ${rounded}`}
+              className={`orbit-flip-slider-card-inner relative h-full w-full overflow-hidden bg-white ${rounded}`}
               style={{
                 boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
                 transformStyle: "preserve-3d",
@@ -645,8 +628,26 @@ const MixSliderComp = ({
           </div>
         ))}
       </div>
+        <div className="absolute top-20 left-6">
+        <div className="flex flex-wrap items-center gap-2">
+          {MODES.map((m) => (
+            <button
+              key={m.key}
+              type="button"
+              onClick={() => handleModeChange(m.key)}
+              className={`rounded-full border px-5 py-2 text-sm transition-colors duration-300 ${
+                activeMode === m.key
+                  ? "border-black bg-black text-white"
+                  : "border-black/15 bg-white/70 text-black/70 hover:bg-black/10"
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default MixSliderComp;
+export default OrbitFlipSliderComp;

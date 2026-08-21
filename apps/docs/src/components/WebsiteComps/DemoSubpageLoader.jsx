@@ -64,9 +64,8 @@ const EXCLUDED_PATHS = new Set([
   "/demo/typing-text",
   "/demo/flickering-text",
   "/demo/rolling-text",
-  "/demo/smooth-slider",
   "/demo/dot-transition",
-  "/demo/mix-slider",
+
   
 ]);
 
@@ -254,7 +253,7 @@ function DemoSubpageOverlay({ pathname }) {
   return (
     <div
       aria-hidden="true"
-      className={`fixed inset-0 z-[99999] flex items-center justify-center bg-[#0e0e0e] transition-opacity duration-500 ease-out ${
+      className={`fixed inset-0 z-99999 flex items-center justify-center bg-[#0e0e0e] transition-opacity duration-500 ease-out ${
         fadingOut ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
