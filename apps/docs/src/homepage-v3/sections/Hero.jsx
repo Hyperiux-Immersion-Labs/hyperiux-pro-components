@@ -216,7 +216,7 @@ export default function Hero() {
             if (!playIntro) return;
             const mm = gsap.matchMedia();
 
-            const recede = (blur) => {
+            const recede = () => {
                 gsap
                     .timeline({
                         defaults: { ease: "none" },
@@ -229,11 +229,44 @@ export default function Hero() {
                     })
                     .fromTo(
                         layerRef.current,
-                        { scale: 1, rotate: 0, filter: "blur(0px)" },
-                        { scale: 0.7, rotate: '5deg', filter: `blur(${blur}px)` },
+                        { scale: 1, rotate: 0,  },
+                        { scale: 0.7, rotate: '5deg' },
                         0
                     )
                     .fromTo(overlayRef.current, { opacity: 0 }, { opacity: 0.65 }, 0);
+            };
+
+            mm.add("(min-width: 768px)", () => recede(14));
+            mm.add("(max-width: 767px)", () => recede(6));
+
+            return () => mm.revert();
+        },
+        { scope: rootRef, dependencies: [playIntro] }
+    );
+    useGSAP(
+        () => {
+            if (!playIntro) return;
+            const mm = gsap.matchMedia();
+
+            const recede = (blur) => {
+                gsap
+                    .timeline({
+                        defaults: { ease: "none" },
+                        scrollTrigger: {
+                            // Scale starts immediately; blur waits a beat so the
+                            // hero recedes first and only then goes soft.
+                            start: () => window.innerHeight * 0.28,
+                            end: () => window.innerHeight * 0.9,
+                            scrub: true,
+                            invalidateOnRefresh: true,
+                        },
+                    })
+                    .fromTo(
+                        layerRef.current,
+                        { filter: "blur(0px)" },
+                        { filter: `blur(${blur}px)` },
+                        0
+                    );
             };
 
             mm.add("(min-width: 768px)", () => recede(14));
@@ -253,7 +286,7 @@ export default function Hero() {
         >
             <div ref={layerRef} className="absolute  inset-0 origin-center max-md:w-full will-change-transform">
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
-                    {skipGPU ? ASCII_FALLBACK : <CubeBackgroundAscii  intro={introRef} />}
+                    {skipGPU ? ASCII_FALLBACK : <CubeBackgroundAscii debug  intro={introRef} />}
                 </div>
                 <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[11vw] p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
                     <div className="space-y-[3vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-4 ">

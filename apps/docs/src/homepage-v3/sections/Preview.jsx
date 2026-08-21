@@ -205,8 +205,9 @@ export default function Preview() {
                     sources={[step.number, step.icon]}
                     fit="contain"
                     cols={100}
-                    numberFill={1}   // how heavy the number is (1 = grid density, 2 = 2× denser)
-                    iconFill={1}     // how heavy the icon is (3 = 3× denser than cols)
+                    numberFill={1}
+                    numberBrightness={i === 0 ? 40 : 100}
+                    iconFill={1} 
                     className="h-full max-[1025px]:my-auto w-full"
                   />
                 ) : (
