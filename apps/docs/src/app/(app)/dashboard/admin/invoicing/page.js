@@ -87,6 +87,15 @@ export default function AdminInvoicingPage() {
   const [error, setError] = useState(null);
   const [testFilter, setTestFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevTestFilter, setPrevTestFilter] = useState(testFilter);
+
+  // Reset to page 1 whenever the filter changes - derived purely from a
+  // value already available during render, so adjust it here instead of in
+  // an effect.
+  if (prevTestFilter !== testFilter) {
+    setPrevTestFilter(testFilter);
+    setCurrentPage(1);
+  }
 
   useEffect(() => {
     // Billing detail across every user is a step up from what a regular
@@ -121,12 +130,11 @@ export default function AdminInvoicingPage() {
 
   useEffect(() => {
     if (!isSuperAdmin) return;
+    // Fetches from a network API in response to filter/page changes - this
+    // is a genuine external-system sync, not derivable during render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchInvoices();
   }, [isSuperAdmin, fetchInvoices]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [testFilter]);
 
   if (roleLoading || !isSuperAdmin) {
     return (

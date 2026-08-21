@@ -108,6 +108,10 @@ export default function LoaderV3({ exitMode = "dock" }) {
   useLayoutEffect(() => {
     if (shouldSkipLoader()) {
       skipLoaderNow();
+      // shouldSkipLoader() reads sessionStorage/matchMedia/UA signals that
+      // only exist client-side - can't be a lazy useState initializer
+      // without risking a hydration mismatch.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDone(true);
       return;
     }

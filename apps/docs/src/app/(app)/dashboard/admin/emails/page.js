@@ -183,6 +183,16 @@ export default function AdminEmailsPage() {
   const [previewId, setPreviewId] = useState(null);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevTypeFilter, setPrevTypeFilter] = useState(typeFilter);
+  const [prevStatusFilter, setPrevStatusFilter] = useState(statusFilter);
+
+  // Reset to page 1 whenever a filter changes - derived purely from values
+  // already available during render, so adjust it here instead of in an effect.
+  if (prevTypeFilter !== typeFilter || prevStatusFilter !== statusFilter) {
+    setPrevTypeFilter(typeFilter);
+    setPrevStatusFilter(statusFilter);
+    setCurrentPage(1);
+  }
 
   const fetchEmails = useCallback(async () => {
     setLoading(true);
@@ -207,12 +217,11 @@ export default function AdminEmailsPage() {
   }, [typeFilter, statusFilter, currentPage]);
 
   useEffect(() => {
+    // Fetches from a network API in response to filter/page changes - this
+    // is a genuine external-system sync, not derivable during render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchEmails();
   }, [fetchEmails]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [typeFilter, statusFilter]);
 
   const totalPages = Math.max(1, Math.ceil(total / EMAILS_PER_PAGE));
   const successCount = emails.filter((e) => e.status === "success").length;

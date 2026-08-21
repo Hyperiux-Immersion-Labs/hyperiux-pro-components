@@ -83,6 +83,10 @@ function ButterflyPool({
 			pool.push(clone)
 		}
 		return { poolGroup: group, pool }
+		// `scale` only sets the pool's initial size - later scale changes are
+		// re-applied imperatively by the effects below, so depending on it
+		// here would rebuild the whole clone/material/mixer pool needlessly.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gltfScene, gltfAnimations, matcapMaterial])
 
 	useEffect(() => {

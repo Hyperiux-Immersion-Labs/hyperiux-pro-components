@@ -804,6 +804,10 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
   const introRef = useRef(intro);
 
   useLayoutEffect(() => {
+    // GPU capability detection reads WebGL context / renderer info that only
+    // exists client-side - can't be a lazy useState initializer without
+    // risking a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSkipGPU(shouldSkipRealtimeGPU());
   }, []);
 
@@ -1206,7 +1210,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
     };
-  }, [src, charSetName, SHADER_REV, skipGPU]);
+  }, [src, charSetName, skipGPU]);
 
   if (skipGPU) {
     return <div className={className} aria-hidden />;

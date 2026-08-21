@@ -349,6 +349,11 @@ plane.material.uniforms.uZoom.value = targetZoom;
  container.removeChild(renderer.domElement);
  lenis.destroy();
  };
+ // zoomFactor is only read here to size the initial scene (currentRadius,
+ // viewportConfig); live zoom changes are already synced imperatively via
+ // controlsRef.current.zoomFactor inside the RAF loop. Depending on it here
+ // would tear down and rebuild the whole WebGL scene on every zoom change.
+ // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [items]);
 
  const scrollHeight = items.length * 100; // 100vh per image for smooth infinite scrolling
@@ -380,6 +385,10 @@ plane.material.uniforms.uZoom.value = targetZoom;
 transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${angle}deg - var(--rotation, 0deg)))`
 }}
  >
+ {/* item.url is served through /api/media-proxy?url=... (a local route with a
+ query string) - next/image blocks that without images.localPatterns config,
+ so this stays a plain <img>. */}
+ {/* eslint-disable-next-line @next/next/no-img-element */}
  <img src={item.url} alt={item.description} className="absolute inset-0 w-full h-full object-cover" />
  </div>
  );

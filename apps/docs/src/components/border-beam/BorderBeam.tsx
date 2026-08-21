@@ -53,6 +53,10 @@ function usePrefersReducedMotion(): boolean {
     if (!mq) return;
 
     const onChange = (event: MediaQueryListEvent) => setReduceMotion(event.matches);
+    // matchMedia isn't available during SSR, so the real value can only be
+    // read after mount - this can't be a lazy useState initializer without
+    // risking a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReduceMotion(mq.matches);
     mq.addEventListener?.('change', onChange);
     return () => mq.removeEventListener?.('change', onChange);
@@ -167,13 +171,13 @@ export const BeamBorder = forwardRef<HTMLDivElement, BeamBorderProps>(function B
     return () => observer.disconnect();
   }, [customBorderRadius, children]);
 
-  useEffect(() => {
-    if (active && !isOn && !isClosing) {
-      setIsOn(true);
-    } else if (!active && isOn && !isClosing) {
-      setIsClosing(true);
-    }
-  }, [active, isOn, isClosing]);
+  // Sync isOn/isClosing to the active prop. Pure derived state (no browser
+  // API), so it's adjusted directly during render instead of via an effect.
+  if (active && !isOn && !isClosing) {
+    setIsOn(true);
+  } else if (!active && isOn && !isClosing) {
+    setIsClosing(true);
+  }
 
   // Pause the (paint-heavy) animations while the element is scrolled offscreen.
   // This stops per-frame painting entirely for hidden instances without changing
@@ -194,12 +198,18 @@ export const BeamBorder = forwardRef<HTMLDivElement, BeamBorderProps>(function B
     return () => observer.disconnect();
   }, []);
 
+  // Reset glowScale when leaving pulse-outside. Pure derived state (no
+  // browser API), so it's adjusted directly during render instead of via an
+  // effect.
+  if (size !== 'pulse-outside' && (glowScale.x !== 1 || glowScale.y !== 1)) {
+    setGlowScale({ x: 1, y: 1 });
+  }
+
   // Pulse Outside glow geometry is authored in fixed pixels for a reference
   // element (~350x140). Measure the actual wrapped element and scale the glow
   // per-axis so the halo grows/shrinks to fit any component it's applied to.
   useEffect(() => {
     if (size !== 'pulse-outside') {
-      setGlowScale({ x: 1, y: 1 });
       return;
     }
 

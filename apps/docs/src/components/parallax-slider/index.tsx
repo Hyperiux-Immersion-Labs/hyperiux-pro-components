@@ -3,6 +3,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -178,7 +179,14 @@ function ParallaxSlider({
                                     clipPath: "inset(0 100% 0 0)",
                                 }}
                             >
-                                <img src={src} alt={`Slide ${i + 1}`} className="absolute inset-0 object-cover parallax-img w-full h-full " draggable={false} />
+                                <Image
+                                    fill
+                                    sizes={isWide ? "(max-width: 768px) 80vw, 65vw" : "(max-width: 768px) 45vw, 33vw"}
+                                    src={src}
+                                    alt={`Slide ${i + 1}`}
+                                    className="object-cover parallax-img"
+                                    draggable={false}
+                                />
 
                                 <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
                             </div>

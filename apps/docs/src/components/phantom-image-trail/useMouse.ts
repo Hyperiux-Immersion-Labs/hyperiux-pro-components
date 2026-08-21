@@ -64,9 +64,12 @@ export const useMouse = ({
  };
  }, [lerpFactor, smooth]);
 
+ // Snapshot values are read from refs by design here - they're intentionally
+ // non-reactive (the frame loop above never triggers a re-render), so callers
+ // relying on them should read the live refs below instead of expecting these
+ // to update on their own.
+ /* eslint-disable react-hooks/refs */
  return {
- // Snapshot values - read once per render, NOT reactive. Use the refs
- // below inside rAF/GSAP loops for live per-frame values.
  x: mouse.current.x,
  y: mouse.current.y,
  smoothX: smoothMouse.current.x,
@@ -80,4 +83,5 @@ export const useMouse = ({
  smoothMouse,
  movement,
  };
+ /* eslint-enable react-hooks/refs */
 };

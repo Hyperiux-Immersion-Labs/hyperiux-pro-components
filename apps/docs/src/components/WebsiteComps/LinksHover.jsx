@@ -33,7 +33,13 @@ export default function LinkHover({
   const layersRef = useRef({ chars: null, shadows: null, line: null });
   const [isMounted, setIsMounted] = useState(false);
 
+  // SSR-safe mounted flag - pre-mount renders a plain Link (children as
+  // plain text) and only switches to the GSAP-animated per-character markup
+  // once mounted, so the ref the GSAP setup effect below targets actually
+  // exists in the DOM. Can't be a lazy useState initializer without risking
+  // a hydration mismatch.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
   }, []);
 

@@ -75,6 +75,10 @@ class FilmGrainEffectImpl extends Effect {
  }
  }
 
+ setReduceMotion(enabled: boolean) {
+ this._reduceMotion = enabled;
+ }
+
  update(renderer: WebGLRenderer, _inputBuffer: WebGLRenderTarget, deltaTime?: number) {
  if (this._reduceMotion) {
  // Keep grain static — still sync resolution for aspect-correct dots.
@@ -113,12 +117,12 @@ export default function FilmGrainEffect({ amount = 0.12, scale = 900, opacity = 
  useEffect(() => {
  const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
  if (!mq) {
- effect._reduceMotion = prefersReducedMotion();
+ effect.setReduceMotion(prefersReducedMotion());
  return;
  }
 
  const apply = (enabled: boolean) => {
- effect._reduceMotion = enabled;
+ effect.setReduceMotion(enabled);
  };
  apply(mq.matches);
  const onChange = (event: MediaQueryListEvent) => apply(event.matches);

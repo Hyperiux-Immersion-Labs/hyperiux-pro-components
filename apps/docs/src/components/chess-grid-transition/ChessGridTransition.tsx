@@ -108,6 +108,10 @@ export default function ChessGridTransition({
       gsap.set(cell, { xPercent: -(colIndex + 2) * 100 })
     })
 
+    // gsap.set() above needs the actual grid cell DOM nodes to exist, so the
+    // "ready to reveal" flag can only be set after that runs post-mount -
+    // not derivable during render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [cols, rows])
 

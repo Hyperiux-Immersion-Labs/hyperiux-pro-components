@@ -469,6 +469,16 @@ export default function AdminPage() {
   const [intervalByUser, setIntervalByUser] = useState({});
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevSearch, setPrevSearch] = useState(search);
+  const [prevPlanFilter, setPrevPlanFilter] = useState(planFilter);
+
+  // Reset to page 1 whenever a filter changes - derived purely from values
+  // already available during render, so adjust it here instead of in an effect.
+  if (prevSearch !== search || prevPlanFilter !== planFilter) {
+    setPrevSearch(search);
+    setPrevPlanFilter(planFilter);
+    setCurrentPage(1);
+  }
 
   useEffect(() => {
     if (!showInviteModal) return;
@@ -504,10 +514,6 @@ export default function AdminPage() {
     const timer = setTimeout(fetchUsers, 300);
     return () => clearTimeout(timer);
   }, [fetchUsers]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, planFilter]);
 
   async function togglePlan(user) {
     const newPlan = user.plan === "pro" ? "free" : "pro";

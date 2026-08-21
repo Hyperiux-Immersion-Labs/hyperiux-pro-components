@@ -35,7 +35,10 @@ export function useToastQueue(autoDismissMs = DEFAULT_AUTO_DISMISS_MS) {
 export function ToastViewport({ toast, onDismiss }) {
   const [mounted, setMounted] = useState(false);
 
+  // SSR-safe mounted flag - `mounted` gates a createPortal() call further
+  // down, which needs document.body and so can only run after mount.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

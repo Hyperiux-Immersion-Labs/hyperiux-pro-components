@@ -14,21 +14,6 @@ if (typeof window !== "undefined") {
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : () => {};
 
-function mergeRefs(...refs) {
-  return (node) => {
-    refs.forEach((ref) => {
-      if (!ref) return;
-
-      if (typeof ref === "function") {
-        ref(node);
-        return;
-      }
-
-      ref.current = node;
-    });
-  };
-}
-
 function waitForFontsAndLayout() {
   return new Promise(async (resolve) => {
     if (typeof document !== "undefined" && document.fonts?.ready) {
@@ -232,7 +217,12 @@ export default function HeadAnim({
 
   if (child && React.isValidElement(child)) {
     return React.cloneElement(child, {
-      ref: mergeRefs(child.ref, containerRef),
+      ref: (node) => {
+        const childRef = child.ref;
+        if (typeof childRef === "function") childRef(node);
+        else if (childRef) childRef.current = node;
+        containerRef.current = node;
+      },
       style: {
         ...child.props.style,
         opacity: 0,

@@ -94,6 +94,10 @@ export default function Hero() {
             unlockScrollV3();
             return;
         }
+        // GPU capability detection reads WebGL context / renderer info that
+        // only exists client-side - can't be a lazy useState initializer
+        // without risking a hydration mismatch.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSkipGPU(shouldSkipRealtimeGPU());
         setPlayIntro(true);
     }, []);

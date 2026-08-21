@@ -63,12 +63,13 @@ export default function SplitLine({
 }) {
   const wrapperRef = useRef(null);
   const lineRef = useRef(null);
+  const hasChildren = Boolean(children);
 
   useLayoutEffect(() => {
     const wrapper = wrapperRef.current;
     const decorativeLine = lineRef.current;
 
-    const target = children ? wrapper : decorativeLine;
+    const target = hasChildren ? wrapper : decorativeLine;
 
     if (!target) return;
 
@@ -89,7 +90,7 @@ export default function SplitLine({
         let raf2 = null;
         let hasCreatedAnimation = false;
 
-        if (children) {
+        if (hasChildren) {
           if (reduceMotion) {
             gsap.set(wrapper, { autoAlpha: 0 });
           } else {
@@ -150,16 +151,16 @@ export default function SplitLine({
                 if (reduceMotion) {
                   gsap.fromTo(
                     target,
-                    children ? { autoAlpha: 0 } : { opacity: 0 },
+                    hasChildren ? { autoAlpha: 0 } : { opacity: 0 },
                     {
-                      ...(children ? { autoAlpha: 1 } : { opacity: 1 }),
+                      ...(hasChildren ? { autoAlpha: 1 } : { opacity: 1 }),
                       delay,
                       duration: REDUCED_MOTION_DURATION,
                       ease: REDUCED_MOTION_EASE,
                       scrollTrigger,
                     }
                   );
-                } else if (children && split?.lines?.length) {
+                } else if (hasChildren && split?.lines?.length) {
                   gsap.fromTo(
                     split.lines,
                     {
@@ -176,7 +177,7 @@ export default function SplitLine({
                       scrollTrigger,
                     }
                   );
-                } else if (!children) {
+                } else if (!hasChildren) {
                   gsap.fromTo(
                     decorativeLine,
                     {
@@ -246,7 +247,7 @@ export default function SplitLine({
     );
 
     return () => mm.revert();
-  }, [Boolean(children), start, once, duration, ease, origin, delay, stagger]);
+  }, [hasChildren, start, once, duration, ease, origin, delay, stagger]);
 
   if (children) {
     return (

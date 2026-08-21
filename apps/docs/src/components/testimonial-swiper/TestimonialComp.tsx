@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import NavigationButtons from "./NavigationButtons";
@@ -290,10 +291,12 @@ export default function TestimonialComp({
                             height: `${12.5 * safeImageSize}rem`,
                         }}
                     >
-                        <img
+                        <Image
+                            fill
+                            sizes="200px"
                             src={displayItem.image}
                             alt={displayItem.name}
-                            className="object-cover w-full h-full object-top grayscale"
+                            className="object-cover object-top grayscale"
                         />
                     </div>
                 </div>
@@ -325,10 +328,12 @@ export default function TestimonialComp({
                                     height: `${9 * safeImageSize}rem`,
                                 }}
                             >
-                                <img
+                                <Image
+                                    fill
+                                    sizes="150px"
                                     src={displayItem.image}
                                     alt={displayItem.name}
-                                    className="object-cover w-full h-full object-top grayscale"
+                                    className="object-cover object-top grayscale"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">

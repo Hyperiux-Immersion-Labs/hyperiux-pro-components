@@ -26,13 +26,21 @@ export function FilterMenu({
   const buttonRef = useRef(null);
   const panelRef = useRef(null);
 
+  // SSR-safe mounted flag - the panel is portaled via createPortal, which
+  // needs document.body and so can only run after mount.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
+  // Clear the hovered category whenever the menu closes - derived purely
+  // from `open`, which is already available during render.
+  if (!open && hoveredCat !== null) {
+    setHoveredCat(null);
+  }
+
   useEffect(() => {
     if (!open) {
-      setHoveredCat(null);
       return;
     }
 

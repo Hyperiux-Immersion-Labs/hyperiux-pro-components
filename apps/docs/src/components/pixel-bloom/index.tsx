@@ -71,6 +71,9 @@ export default function PixelBloom({
     const totalImages = gridImageUrls.length;
 
     if (!totalImages) {
+      // Shares this effect with the async tile-image loading below (same
+      // failure flag, same cleanup contract) - not a render-derivable value.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setGridLoadFailed(true);
       return undefined;
     }
@@ -390,6 +393,8 @@ export default function PixelBloom({
       }
     }
 
+    const cellImageMap = cellImageMapRef.current;
+
     return () => {
       window.removeEventListener("resize", resizeCanvas);
 
@@ -402,7 +407,7 @@ export default function PixelBloom({
 
       loop.destroy();
 
-      cellImageMapRef.current.clear();
+      cellImageMap.clear();
       trailRef.current = [];
     };
   }, [cellLifetime, effectRadius, gridImages, gridSize, src, type]);

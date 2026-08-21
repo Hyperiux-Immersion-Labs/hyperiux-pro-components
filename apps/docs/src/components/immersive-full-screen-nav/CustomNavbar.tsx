@@ -3,7 +3,7 @@
 import gsap from "gsap";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 const SOCIAL_ICONS: Record<string, ReactNode> = {
   instagram: (
@@ -128,14 +128,14 @@ export default function CustomNavbar({
     ]);
   };
 
-  const resetAnimatedElements = () => {
+  const resetAnimatedElements = useCallback(() => {
     gsap.set(linksRef.current, { y: linkOffsetY, opacity: 0 });
     gsap.set(imagesRef.current, { scale: IMAGE_INITIAL_SCALE, opacity: 0 });
     gsap.set(socialsRef.current, { y: socialOffsetY, opacity: 0 });
     gsap.set(agencyRef.current, { y: HEADER_Y_OFFSET, opacity: 0 });
     gsap.set(taglineRef.current, { y: HEADER_Y_OFFSET, opacity: 0 });
     gsap.set(locationRef.current, { y: LOCATION_Y_OFFSET, opacity: 0 });
-  };
+  }, [linkOffsetY, socialOffsetY]);
 
   const setLinkRef = (index: number) => (element: HTMLDivElement | null) => {
     linksRef.current[index] = element;
@@ -251,6 +251,7 @@ export default function CustomNavbar({
     socialOffsetY,
     socialDuration,
     socialStagger,
+    resetAnimatedElements,
   ]);
 
   return (
