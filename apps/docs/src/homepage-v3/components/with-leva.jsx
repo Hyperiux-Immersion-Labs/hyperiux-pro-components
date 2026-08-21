@@ -125,6 +125,65 @@ export default function CubeAsciiControls({ base, onChange }) {
             { collapsed: false },
         ),
 
+        /**
+         * The click wave — the ring that expands from a pointerdown. Separate
+         * from Fluid above: that is the hover trail, this is the click.
+         */
+        "Click Wave": folder(
+            {
+                waveEnabled: { value: base.waveEnabled ?? true },
+                waveColor: { value: base.waveColor ?? "#f55300" },
+                waveTint: {
+                    value: base.waveTint ?? 0,
+                    min: 0,
+                    max: 5,
+                    step: 0.05,
+                    label: "tint (coverage)",
+                },
+                /** Seconds from click to the ring finishing. */
+                waveDuration: {
+                    value: base.waveDuration ?? 1.8,
+                    min: 0.3,
+                    max: 6,
+                    step: 0.05,
+                    label: "duration (s)",
+                },
+                /** Travel distance as a fraction of the canvas diagonal. */
+                waveReach: {
+                    value: base.waveReach ?? 1.25,
+                    min: 0.2,
+                    max: 3,
+                    step: 0.05,
+                    label: "reach",
+                },
+                /** Thickness of the lit band at the moment of the click. */
+                waveWidth: {
+                    value: base.waveWidth ?? 210,
+                    min: 10,
+                    max: 600,
+                    step: 5,
+                    label: "band width (px)",
+                },
+                /** Share of band cells churning through random glyphs. */
+                waveScramble: {
+                    value: base.waveScramble ?? 1.0,
+                    min: 0,
+                    max: 1,
+                    step: 0.01,
+                    label: "scramble",
+                },
+                /** Extra brightness at the centre of the band. */
+                waveGlow: {
+                    value: base.waveGlow ?? 0,
+                    min: 0,
+                    max: 4,
+                    step: 0.05,
+                    label: "glow",
+                },
+            },
+            { collapsed: false },
+        ),
+
         Grain: folder(
             {
                 grain: { value: base.grain },

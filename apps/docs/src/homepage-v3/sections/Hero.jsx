@@ -249,7 +249,7 @@ export default function Hero() {
         >
             <div ref={layerRef} className="absolute  inset-0 origin-center max-md:w-full will-change-transform">
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
-                    {skipGPU ? ASCII_FALLBACK : <CubeBackgroundAscii intro={introRef} />}
+                    {skipGPU ? ASCII_FALLBACK : <CubeBackgroundAscii  intro={introRef} />}
                 </div>
                 <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[11vw] p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
                     <div className="space-y-[3vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-4 ">
