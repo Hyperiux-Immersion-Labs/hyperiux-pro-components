@@ -1,0 +1,200 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+"use client";
+
+import { useEffect, useRef, type ReactNode } from "react";
+import gsap from "gsap";
+import { SplitText } from "gsap/SplitText";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(SplitText, ScrollTrigger);
+
+type OverflowTextRevealDirection = 'top' | 'bottom' | 'left' | 'right';
+type OverflowTextRevealSplitBy = 'chars' | 'lines';
+
+// "bottom" is the original default behavior (yPercent: 100, rotate: 8)
+const DIRECTION_INITIAL: Record<OverflowTextRevealDirection, { yPercent: number, xPercent: number, rotate: number }> = {
+  top: { yPercent: -100, xPercent: 0, rotate: -8 },
+  bottom: { yPercent: 100, xPercent: 0, rotate: 8 },
+  left: { yPercent: 0, xPercent: -100, rotate: -8 },
+  right: { yPercent: 0, xPercent: 100, rotate: 8 },
+};
+
+const REDUCED_MOTION_FADE_DURATION = 0.8;
+const REDUCED_MOTION_Y_OFFSET = 24;
+const DEFAULT_TEXT = <p>Characters rise from below.</p>;
+
+interface OverflowTextRevealProps {
+  children?: ReactNode;
+  animateOnScroll?: boolean;
+  delay?: number;
+  className?: string;
+  scrub?: boolean;
+  direction?: OverflowTextRevealDirection;
+  /** "chars" (default) reveals one character at a time - the original
+   *  behavior. "lines" reveals one whole line at a time instead, using
+   *  the same direction/scroll/reduced-motion machinery. */
+  splitBy?: OverflowTextRevealSplitBy;
+  /** Delay between each char/line's start. Defaults to 0.03 for "chars"
+   *  and 0.1 for "lines" if left unset - pass this to override either. */
+  stagger?: number;
+  /** How long each individual char/line's own reveal tween takes. */
+  duration?: number;
+}
+
+export default function OverflowTextReveal({
+  children = DEFAULT_TEXT,
+  animateOnScroll = true,
+  delay = 0,
+  className = "",
+  scrub = false,
+  direction = "bottom",
+  splitBy = "chars",
+  stagger,
+  duration = 0.5,
+}: OverflowTextRevealProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const splitRefs = useRef<any[]>([]);
+  // Holds whichever unit is being animated - chars or lines, depending on
+  // splitBy. Named generically (not charsRef) since it's shared by both modes.
+  const targetsRef = useRef<any[]>([]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    splitRefs.current = [];
+    targetsRef.current = [];
+
+    const elements = containerRef.current.hasAttribute("data-copy-wrapper")
+      ? Array.from(containerRef.current.children)
+      : [containerRef.current];
+
+    const prefersReduced =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let ctx: ReturnType<typeof gsap.context> | undefined;
+
+    const init = async () => {
+      await document.fonts.ready;
+
+      ctx = gsap.context(() => {
+        elements.forEach((element) => {
+          if (splitBy === "lines") {
+            const split = SplitText.create(element, {
+              type: "lines",
+              mask: "lines",
+              linesClass: "line++",
+              reduceWhiteSpace: false,
+            });
+
+            splitRefs.current.push(split);
+            targetsRef.current.push(...(split.lines as HTMLElement[]));
+            return;
+          }
+
+          const split = SplitText.create(element, {
+            type: "lines,chars",
+            mask: "chars",
+            charsClass: "char++",
+            reduceWhiteSpace: false,
+          });
+
+          // Compensates for char-level masks clipping descenders/italics -
+          // a chars-only concern, so this doesn't run for line splits.
+          split.masks?.forEach((mask) => {
+            const maskEl = mask as HTMLElement;
+            maskEl.style.paddingInline = "0.04em";
+            maskEl.style.marginInline = "-0.04em";
+            maskEl.style.boxSizing = "content-box";
+          });
+
+          splitRefs.current.push(split);
+          targetsRef.current.push(...(split.chars as HTMLElement[]));
+        });
+
+        if (prefersReduced) {
+          gsap.set(targetsRef.current, { yPercent: 0, xPercent: 0, rotate: 0, opacity: 1 });
+          gsap.set(containerRef.current, { opacity: 0, y: REDUCED_MOTION_Y_OFFSET });
+
+          const fadeUpProps = {
+            opacity: 1,
+            y: 0,
+            duration: REDUCED_MOTION_FADE_DURATION,
+            ease: "power2.out",
+            delay,
+          };
+
+          if (animateOnScroll) {
+            gsap.to(containerRef.current, {
+              ...fadeUpProps,
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: "top 80%",
+                once: true,
+              },
+            });
+          } else {
+            gsap.to(containerRef.current, fadeUpProps);
+          }
+
+          return;
+        }
+
+        const initialProps = DIRECTION_INITIAL[direction] ?? DIRECTION_INITIAL.bottom;
+
+        // Reveal the container immediately - opacity-0 was only to prevent FOUC
+        // GSAP will handle per-char opacity from here
+        gsap.set(containerRef.current, { opacity: 1 });
+
+        const fromProps = {
+          ...initialProps,
+          opacity: 0,
+          willChange: "transform",
+        };
+
+        const toProps = {
+          yPercent: 0,
+          xPercent: 0,
+          rotate: 0,
+          opacity: 1,
+          duration,
+          // Lines are fewer and visually larger than chars, so a wider
+          // stagger reads better than the tight per-character timing -
+          // that's only the fallback though, an explicit stagger prop
+          // always wins.
+          stagger: stagger ?? (splitBy === "lines" ? 0.1 : 0.03),
+          ease: "power3.out",
+          delay,
+        };
+
+        if (animateOnScroll) {
+          gsap.fromTo(targetsRef.current, fromProps, {
+            ...toProps,
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 80%",
+              end: "bottom 68%",
+              scrub,
+            },
+          });
+        } else {
+          gsap.fromTo(targetsRef.current, fromProps, toProps);
+        }
+      }, containerRef);
+    };
+
+    init();
+
+    return () => {
+      if (ctx) ctx.revert();
+      splitRefs.current.forEach((split) => split?.revert());
+    };
+  }, [animateOnScroll, delay, scrub, direction, splitBy, stagger, duration]);
+
+  return (
+    <div ref={containerRef} data-copy-wrapper="true" className={`opacity-0 ${className}`}>
+      {children}
+    </div>
+  );
+}
