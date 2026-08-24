@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/hyperiux-glitter",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
   "main": "index.tsx",
   "files": [

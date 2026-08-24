@@ -173,6 +173,7 @@ const AsciiMorph = forwardRef(function AsciiMorph(
     cols = 50,
     numberFill = NUMBER_FILL,
     iconFill = ICON_FILL,
+    numberBrightness = 100,
   },
   ref,
 ) {
@@ -202,6 +203,7 @@ const AsciiMorph = forwardRef(function AsciiMorph(
     const images = list.map(() => null);
     const rawCells = list.map(() => null);
     const densityFor = (index) => (index === 0 ? numberFill : iconFill);
+    const numberAlpha = Math.max(0, Math.min(1, numberBrightness / 100));
 
     const draw = (p) => {
       if (!ctx || !cell) return;
@@ -216,6 +218,7 @@ const AsciiMorph = forwardRef(function AsciiMorph(
         const x = lerp(tok.ax, tok.bx, local);
         const y = lerp(tok.ay, tok.by, local);
         const ch = local < 0.5 ? tok.ach : tok.bch;
+        ctx.globalAlpha = lerp(numberAlpha, 1, local);
         ctx.fillText(ch, Math.round((x + 0.5) * cell), Math.round((y + 0.5) * cell));
       }
     };
@@ -299,7 +302,7 @@ const AsciiMorph = forwardRef(function AsciiMorph(
       disposed = true;
       observer.disconnect();
     };
-  }, [srcKey, fit, cols, numberFill, iconFill]);
+  }, [srcKey, fit, cols, numberFill, iconFill, numberBrightness]);
 
   useImperativeHandle(ref, () => ({
     setProgress(value) {

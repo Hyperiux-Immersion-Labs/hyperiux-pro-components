@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/parallax-gallery",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "description": "Pinned frame gallery with snapping slides and mirrored thumbnail rails",
   "main": "index.tsx",
   "files": [

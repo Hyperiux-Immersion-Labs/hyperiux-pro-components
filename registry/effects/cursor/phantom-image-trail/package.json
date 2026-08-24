@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/phantom-image-trail",
-  "version": "1.3.0",
+  "version": "1.0.1",
   "description": "Cursor-driven image trail that spawns and fades stacked visuals as you move",
   "main": "index.tsx",
   "files": [

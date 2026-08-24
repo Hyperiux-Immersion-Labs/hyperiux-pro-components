@@ -751,7 +751,7 @@
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 5000;
   display: block;
 }
 
@@ -766,7 +766,7 @@
   position: absolute;
   right: 1rem;
   top: 10vh;
-  z-index: 50;
+  z-index: 5001;
   width: min(340px, calc(100vw - 2rem));
   touch-action: none;
 }
@@ -888,7 +888,7 @@
   background: #111111;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
   backdrop-filter: none;
-  z-index: 1;
+  z-index: 5002;
 }
 
 .launcherPanelOpen {

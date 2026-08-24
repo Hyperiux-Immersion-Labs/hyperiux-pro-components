@@ -49,8 +49,8 @@ export const CUBE_ASCII_DEFAULTS = {
   fluidForceBase: 0.1,
   fluidSpeedSat: 18,
   fluidForceMultiplier: 0.2,
-  fluidInnerRadius: 0.85,
-  fluidRadiusLife: 1.0,
+  fluidInnerRadius: 0.15,
+  fluidRadiusLife: .30,
   /**
    * Click wave. The hover trail is the fluid above; this is the other half of
    * the interaction — a ring of scrambled glyphs that expands from the click
@@ -243,6 +243,17 @@ const TM = 72;
  */
 const WAVE_N = 4;
 /**
+ * Gap between the two rings a single click starts. Long enough that they
+ * read as a double pulse rather than one thicker band; short enough that the
+ * second still feels like part of the same tap.
+ */
+const WAVE_ECHO_DELAY = 300;
+/**
+ * The echo covers the same reach as the first ring but takes 10% longer,
+ * so the second pulse trails instead of stacking as a thicker band.
+ */
+const WAVE_ECHO_LIFE = 1.2;
+/**
  * Seconds a ring stays alive. Past this its slot frees up.
  *
  * Paired with waveReach below: the ring reaches the furthest corner of a
@@ -317,9 +328,9 @@ uniform float uTL[${TM}];
 
 /**
  * Click waves. Each entry is one ring in flight: xy is the click point in
- * canvas pixels, z is its age in seconds, w is 0 for a free slot. Rings are
- * fixed-size so the whole set uploads as two arrays with no branching per
- * frame; WAVE_N of them can overlap before the oldest is recycled.
+ * canvas pixels, z is its age in seconds. uWA is that ring's lifetime in
+ * seconds (0 for a free slot), so the echo can run slower than the first
+ * pulse without a second uniform.
  */
 uniform vec3 uWP[${WAVE_N}];
 uniform float uWA[${WAVE_N}];
@@ -559,13 +570,14 @@ void main() {
 
   for (int i = 0; i < uWaveN; i++) {
     float age = uWP[i].z;
-    if (uWA[i] <= 0.0) continue;
+    float life = uWA[i];
+    if (life <= 0.0) continue;
 
     // Ring radius in pixels. Only slightly eased — a strong ease-out spends
     // most of the ring's life almost stationary at the far edge, which is what
     // made the first pass feel like it was over before it started. Close to
     // linear keeps it travelling at a readable speed the whole way.
-    float t = clamp(age / max(uWaveLife, 0.05), 0.0, 1.0);
+    float t = clamp(age / max(life, 0.05), 0.0, 1.0);
     float radius = uWaveSpeed * (1.0 - pow(1.0 - t, 1.25));
 
     // The crest holds full strength almost the whole way out and lets go only
@@ -942,7 +954,7 @@ function createSuspendedRaf({ onFrame, root = null }) {
  * Bump SHADER_REV when fragment uniforms/source change so Fast Refresh remounts
  * the GL program (otherwise new uniform locations stay null until a hard reload).
  */
-const SHADER_REV = 8;
+const SHADER_REV = 9;
 
 function CubeAsciiCanvas({ config, intro, src, className }) {
   const [skipGPU, setSkipGPU] = useState(true);
@@ -1162,7 +1174,28 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
       x: 0,
       y: 0,
       born: null,
+      lifeScale: 1,
     }));
+
+    const spawnWave = (localX, localY, lifeScale = 1) => {
+      // Free slot if there is one, otherwise the oldest ring — by then it is
+      // the faintest thing on screen, so recycling it is invisible.
+      let slot = waves.findIndex((wave) => wave.born === null);
+      if (slot === -1) {
+        slot = waves.reduce(
+          (oldest, wave, i) =>
+            wave.born < waves[oldest].born ? i : oldest,
+          0,
+        );
+      }
+
+      waves[slot].x = localX;
+      waves[slot].y = localY;
+      waves[slot].born = now();
+      waves[slot].lifeScale = lifeScale;
+    };
+
+    const echoTimers = [];
 
     const onClick = (event) => {
       if (isMobile()) return;
@@ -1190,21 +1223,13 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
         return;
       }
 
-      const birth = now();
-      // Free slot if there is one, otherwise the oldest ring — by then it is
-      // the faintest thing on screen, so recycling it is invisible.
-      let slot = waves.findIndex((wave) => wave.born === null);
-      if (slot === -1) {
-        slot = waves.reduce(
-          (oldest, wave, i) =>
-            wave.born < waves[oldest].born ? i : oldest,
-          0,
-        );
-      }
-
-      waves[slot].x = localX;
-      waves[slot].y = localY;
-      waves[slot].born = birth;
+      spawnWave(localX, localY);
+      const echo = window.setTimeout(() => {
+        const i = echoTimers.indexOf(echo);
+        if (i !== -1) echoTimers.splice(i, 1);
+        spawnWave(localX, localY, WAVE_ECHO_LIFE);
+      }, WAVE_ECHO_DELAY);
+      echoTimers.push(echo);
     };
 
     window.addEventListener("pointerdown", onClick);
@@ -1365,8 +1390,9 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
           const wave = waves[i];
           if (wave.born === null) continue;
 
+          const life = waveLife * (wave.lifeScale ?? 1);
           const age = (timestamp - wave.born) / 1000;
-          if (age >= waveLife) {
+          if (age >= life) {
             wave.born = null;
             continue;
           }
@@ -1374,7 +1400,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
           wpBuf[i * 3] = wave.x;
           wpBuf[i * 3 + 1] = wave.y;
           wpBuf[i * 3 + 2] = age;
-          waBuf[i] = 1;
+          waBuf[i] = life;
         }
 
         gl.uniform3fv(uWP, wpBuf);
@@ -1469,6 +1495,8 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("pointerdown", onClick);
+      echoTimers.forEach((id) => window.clearTimeout(id));
+      echoTimers.length = 0;
       if (resizeObserver) resizeObserver.disconnect();
       loop.destroy();
       video.pause();

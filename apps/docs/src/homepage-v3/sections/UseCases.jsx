@@ -11,8 +11,6 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-
-
 const USE_CASES_X_PERCENT = [110, 70, 70, 70, 70];
 
 const mark =
