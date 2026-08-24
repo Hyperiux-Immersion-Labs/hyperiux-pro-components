@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/circle-text-reveal",
-  "version": "1.2.0",
+  "version": "1.0.1",
   "description": "Cursor-following circle mask that reveals hidden text underneath on hover",
   "main": "index.tsx",
   "files": [

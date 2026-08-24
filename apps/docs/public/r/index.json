@@ -13,7 +13,7 @@
       "registryDependencies": [],
       "exportName": "CardsRunway",
       "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -30,7 +30,7 @@
       "registryDependencies": [],
       "exportName": "CircularSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -47,7 +47,7 @@
       "registryDependencies": [],
       "exportName": "CircularSplitRoll",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -63,7 +63,7 @@
       "registryDependencies": [],
       "exportName": "GridScale",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -112,7 +112,7 @@
       "registryDependencies": [],
       "exportName": "InfinitePerspectiveSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -145,7 +145,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxGallery",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -161,7 +161,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxImageAnimation",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -177,7 +177,7 @@
       "registryDependencies": [],
       "exportName": "ParallaxSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -194,7 +194,7 @@
       "registryDependencies": [],
       "exportName": "RibbonDrift",
       "exportKind": "default",
-      "version": "1.6.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -211,7 +211,7 @@
       "registryDependencies": [],
       "exportName": "RotationSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -228,7 +228,7 @@
       "registryDependencies": [],
       "exportName": "ScrollDistortion",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -244,7 +244,7 @@
       "registryDependencies": [],
       "exportName": "ScrollShuffledCards",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -278,7 +278,7 @@
       "registryDependencies": [],
       "exportName": "SplitCanvas",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -294,7 +294,7 @@
       "registryDependencies": [],
       "exportName": "SquareTranslate",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -311,7 +311,7 @@
       "registryDependencies": [],
       "exportName": "StackingCards",
       "exportKind": "default",
-      "version": "1.0.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -328,7 +328,7 @@
       "registryDependencies": [],
       "exportName": "StickyContentWrapper",
       "exportKind": "default",
-      "version": "1.3.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -344,7 +344,7 @@
       "registryDependencies": [],
       "exportName": "SVGPath",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -376,7 +376,7 @@
       "registryDependencies": [],
       "exportName": "TextConvergence",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -408,7 +408,7 @@
       "registryDependencies": [],
       "exportName": "CharacterTrail",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -456,7 +456,7 @@
       "registryDependencies": [],
       "exportName": "CursorMove",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -474,7 +474,7 @@
       "registryDependencies": [],
       "exportName": "FishEye",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -488,7 +488,7 @@
       "registryDependencies": [],
       "exportName": "FullScreenCrosshair",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -564,7 +564,7 @@
       "registryDependencies": [],
       "exportName": "NoiseRippleCursor",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -580,7 +580,7 @@
       "registryDependencies": [],
       "exportName": "PhantomImageTrail",
       "exportKind": "default",
-      "version": "1.3.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -594,7 +594,7 @@
       "registryDependencies": [],
       "exportName": "PixelBloom",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -622,7 +622,7 @@
       "registryDependencies": [],
       "exportName": "RopeCursor",
       "exportKind": "default",
-      "version": "1.3.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -640,6 +640,20 @@
       "tier": "pro"
     },
     {
+      "name": "dot-transition",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "DotTransition",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "dotted-grid",
       "type": "registry:component",
       "category": "backgrounds",
@@ -650,8 +664,22 @@
       "registryDependencies": [],
       "exportName": "DottedGrid",
       "exportKind": "named",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "free"
+    },
+    {
+      "name": "dotted-trail",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "DottedTrail",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
     },
     {
       "name": "grid-lift",
@@ -680,7 +708,7 @@
       "registryDependencies": [],
       "exportName": "SpiderParticles",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -866,7 +894,7 @@
       "registryDependencies": [],
       "exportName": "BlurText",
       "exportKind": "default",
-      "version": "1.1.3",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -898,7 +926,7 @@
       "registryDependencies": [],
       "exportName": "CircleTextReveal",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -980,7 +1008,7 @@
       "registryDependencies": [],
       "exportName": "GlitchyText",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1010,7 +1038,7 @@
       "registryDependencies": [],
       "exportName": "MaskTextReveal",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1026,7 +1054,7 @@
       "registryDependencies": [],
       "exportName": "NumberCounter",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1123,7 +1151,7 @@
       "registryDependencies": [],
       "exportName": "ScrambleText",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1167,7 +1195,7 @@
       "registryDependencies": [],
       "exportName": "TextCloning",
       "exportKind": "default",
-      "version": "1.2.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1199,7 +1227,7 @@
       "registryDependencies": [],
       "exportName": "TextHover",
       "exportKind": "default",
-      "version": "1.2.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1215,7 +1243,7 @@
       "registryDependencies": [],
       "exportName": "TextStream",
       "exportKind": "default",
-      "version": "1.3.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1259,7 +1287,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedToggle",
       "exportKind": "default",
-      "version": "1.3.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1357,6 +1385,22 @@
       "tier": "free"
     },
     {
+      "name": "arc-flow-carousel",
+      "type": "registry:component",
+      "category": "carousels",
+      "categories": [
+        "carousels"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "ArcFlowCarousel",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "clippath-slider",
       "type": "registry:component",
       "category": "carousels",
@@ -1369,7 +1413,7 @@
       "registryDependencies": [],
       "exportName": "ClipPathSlider",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1386,7 +1430,7 @@
       "registryDependencies": [],
       "exportName": "DepthCardStack",
       "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1407,6 +1451,22 @@
       "tier": "free"
     },
     {
+      "name": "ellipse-carousel",
+      "type": "registry:component",
+      "category": "carousels",
+      "categories": [
+        "carousels"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "EllipseCarousel",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "infinite-carousel",
       "type": "registry:component",
       "category": "carousels",
@@ -1420,7 +1480,23 @@
       "registryDependencies": [],
       "exportName": "InfiniteCarousel",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
+      "tier": "pro"
+    },
+    {
+      "name": "orbit-flip-slider",
+      "type": "registry:component",
+      "category": "carousels",
+      "categories": [
+        "carousels"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "OrbitFlipSlider",
+      "exportKind": "default",
+      "version": "1.0.0",
       "tier": "pro"
     },
     {
@@ -1437,7 +1513,7 @@
       "registryDependencies": [],
       "exportName": "RingCarousel",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1455,7 +1531,7 @@
       "registryDependencies": [],
       "exportName": "WebGLSlider",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1471,7 +1547,7 @@
       "registryDependencies": [],
       "exportName": "ZoomSlider",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1488,7 +1564,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedFaq",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1504,7 +1580,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedForm",
       "exportKind": "default",
-      "version": "1.2.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1520,7 +1596,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedModal",
       "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1536,7 +1612,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedTabs",
       "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1550,7 +1626,7 @@
       "registryDependencies": [],
       "exportName": "BorderBeam",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1566,7 +1642,7 @@
       "registryDependencies": [],
       "exportName": "CardDrift",
       "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1582,7 +1658,7 @@
       "registryDependencies": [],
       "exportName": "DraggableMarquee",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1596,7 +1672,7 @@
       "registryDependencies": [],
       "exportName": "GooeyCounter",
       "exportKind": "default",
-      "version": "1.2.2",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1610,7 +1686,7 @@
       "registryDependencies": [],
       "exportName": "HoverStack",
       "exportKind": "default",
-      "version": "1.4.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1624,7 +1700,24 @@
       "registryDependencies": [],
       "exportName": "InfiniteGridGallery",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
+      "tier": "pro"
+    },
+    {
+      "name": "information-drawer",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap",
+        "lenis"
+      ],
+      "registryDependencies": [],
+      "exportName": "InformationDrawer",
+      "exportKind": "default",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1640,7 +1733,7 @@
       "registryDependencies": [],
       "exportName": "InteractiveListPreview",
       "exportKind": "default",
-      "version": "1.2.1",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1673,8 +1766,27 @@
       "registryDependencies": [],
       "exportName": "TestimonialSwiper",
       "exportKind": "default",
-      "version": "1.2.3",
+      "version": "1.0.1",
       "tier": "pro"
+    },
+    {
+      "name": "timeline",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@gsap/react",
+        "gsap",
+        "lenis",
+        "next"
+      ],
+      "registryDependencies": [],
+      "exportName": "Timeline",
+      "exportKind": "default",
+      "version": "1.0.1",
+      "tier": "free"
     },
     {
       "name": "video-player",
@@ -1689,7 +1801,7 @@
       "registryDependencies": [],
       "exportName": "VideoPlayer",
       "exportKind": "default",
-      "version": "1.2.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1789,7 +1901,7 @@
       "registryDependencies": [],
       "exportName": "LinesLoader",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1808,7 +1920,7 @@
       "registryDependencies": [],
       "exportName": "NumericTunnel",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1824,7 +1936,7 @@
       "registryDependencies": [],
       "exportName": "StackLoader",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1843,7 +1955,7 @@
       "registryDependencies": [],
       "exportName": "PortfolioSlider3D",
       "exportKind": "default",
-      "version": "1.0.2",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1883,7 +1995,7 @@
       "registryDependencies": [],
       "exportName": "CollidingModels",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1899,7 +2011,7 @@
       "registryDependencies": [],
       "exportName": "CurvedPlane",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1916,7 +2028,7 @@
       "registryDependencies": [],
       "exportName": "DonutParticles",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1948,7 +2060,7 @@
       "registryDependencies": [],
       "exportName": "FileEncryption",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -1964,7 +2076,7 @@
       "registryDependencies": [],
       "exportName": "FractalGlass",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1982,7 +2094,7 @@
       "registryDependencies": [],
       "exportName": "GridTunnel",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -2022,7 +2134,7 @@
       "registryDependencies": [],
       "exportName": "HoverSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -2041,7 +2153,7 @@
       "registryDependencies": [],
       "exportName": "HyperiuxGlitter",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -2055,7 +2167,7 @@
       "registryDependencies": [],
       "exportName": "InteractiveBlurReveal",
       "exportKind": "default",
-      "version": "1.2.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -2077,7 +2189,7 @@
       "registryDependencies": [],
       "exportName": "MilkyWay",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -2118,7 +2230,7 @@
       "registryDependencies": [],
       "exportName": "ProgressiveBloomValley",
       "exportKind": "default",
-      "version": "1.1.1",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {

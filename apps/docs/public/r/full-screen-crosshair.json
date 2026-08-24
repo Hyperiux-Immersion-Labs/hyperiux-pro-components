@@ -39,7 +39,7 @@
     {
       "name": "centerContent",
       "type": "string",
-      "default": "\u2022",
+      "default": "•",
       "description": "Text or symbol shown at the cursor center.",
       "remixer": {
         "control": "text",
