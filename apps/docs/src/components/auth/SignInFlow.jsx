@@ -76,8 +76,22 @@ export default function SignInFlow() {
 
       if (result.status === "complete") {
         await completeSignIn(result);
+      } else if (result.status === "needs_second_factor") {
+        // This flow never implemented a second-factor step (no code path
+        // collects a TOTP/SMS/backup code) - if the account has MFA
+        // enrolled, or the Clerk instance requires it, sign-in can never
+        // complete here no matter how correct the password is.
+        setError(
+          "This account requires two-factor authentication, which isn't supported by this sign-in form yet. Please contact support."
+        );
       } else {
-        setError("Additional verification is required for this account. Please contact support.");
+        // Anything else (needs_new_password, needs_identifier, etc.) -
+        // logged with the real status so it's actually diagnosable instead
+        // of a generic dead end.
+        console.error("Clerk signIn.create() did not complete:", result);
+        setError(
+          `Additional verification is required for this account (${result.status}). Please contact support.`
+        );
       }
     } catch (err) {
       setError(errorMessage(err, "Unable to sign in. Check your email and password."));
