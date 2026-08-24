@@ -132,7 +132,7 @@ const ShowCase = () => {
         </div>
 
         <div className="w-full h-full mt-[48vw] flex justify-end tablet:mt-[7vw]">
-          <p data-para-anim className="w-[50%] text-white/15 tablet:w-full ">
+          <p data-para-anim className="w-[40%] mr-[5vw] text-[1.2vw] text-black tablet:w-full ">
             Perfectly located in one of Dubai&apos;s most prestigious districts, Lumera Heights offers unmatched access to culture, business, and lifestyle destinations.
           </p>
         </div>
