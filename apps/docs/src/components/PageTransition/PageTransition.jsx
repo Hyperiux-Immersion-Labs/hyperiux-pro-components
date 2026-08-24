@@ -127,7 +127,7 @@ export default function PageTransition() {
     }
   }, [])
 
-  // Draw 2D Bayer Dither Wave Frame (Cover from top -> Exit in opposite direction from bottom to top)
+  // Draw 2D Bayer Dither Wave Frame (Cover sweeps DOWN from top -> Exit sweeps DOWN all the way off the bottom)
   const draw = useCallback(() => {
     const canvas = canvasRef.current
     const { cols, rows, image, pixels } = gridRef.current
@@ -136,7 +136,7 @@ export default function PageTransition() {
     const ctx = canvas.getContext('2d')
     const { cover, exit } = progressRef.current
 
-    if (cover <= 0) {
+    if (cover <= 0 || exit >= 1) {
       ctx.clearRect(0, 0, cols, rows)
       return
     }
@@ -146,23 +146,29 @@ export default function PageTransition() {
 
     pixels.fill(0)
 
+    const span = 0.35
+    const amp = 0.04
+    const range = 1 + span + 2 * amp
+
+    const leadPos = cover * range - amp
+    const trailPos = exit * range - amp
+
     for (let y = 0; y < rows; y++) {
-      const band = y * invRows
+      const v = y * invRows
       const rowBase = (y & 7) * 8
       const offset = y * cols
 
       for (let x = 0; x < cols; x++) {
-        // Wave curve for dynamic bowed dither edge
-        const wave = Math.sin(x * 0.08) * 0.12 + Math.cos(x * 0.04) * 0.08
-        const depth = band + wave * 0.15
+        // Minimal subtle organic curvature
+        const wave = Math.sin(x * 0.03) * 0.015 + Math.cos(x * 0.015) * 0.01
 
-        // Cover: Enters from top to bottom
-        const coverRaw = Math.max(0, Math.min(1, (cover - depth) / 0.35 + 0.5))
+        // Cover leading edge sweeps DOWN
+        const coverAlpha = Math.max(0, Math.min(1, (leadPos - v + wave) / span))
 
-        // Exit: Opposite direction (clears from bottom to top)
-        const exitRaw = Math.max(0, Math.min(1, (1.25 - exit - (1 - band) + wave * 0.15) / 0.35 + 0.5))
+        // Exit trailing edge sweeps DOWN (uncovering from top to bottom all the way off the bottom)
+        const exitAlpha = Math.max(0, Math.min(1, 1 - (trailPos - v + wave) / span))
 
-        const raw = Math.min(coverRaw, exitRaw)
+        const raw = Math.min(coverAlpha, exitAlpha)
         if (raw <= 0) continue
 
         const threshold = (BAYER[rowBase + (x & 7)] + 0.5) / 64
@@ -254,7 +260,7 @@ export default function PageTransition() {
 
     // Sweep dither wave DOWN from top to cover full viewport (slower duration)
     tl.to(progressRef.current, {
-      cover: 1.25,
+      cover: 1,
       duration: 0.65,
       ease: 'power2.inOut',
       onUpdate: draw
@@ -279,7 +285,7 @@ export default function PageTransition() {
     })
   }
 
-  // 2. Reveal new page: dither wave sweeps UP from bottom to top (opposite direction)
+  // 2. Reveal new page: dither wave sweeps DOWN all the way off the bottom
   useEffect(() => {
     if (isFirstRenderRef.current) {
       isFirstRenderRef.current = false
@@ -308,7 +314,7 @@ export default function PageTransition() {
     }
 
     if (progressRef.current.cover < 1) {
-      progressRef.current.cover = 1.25
+      progressRef.current.cover = 1
       progressRef.current.exit = 0
       draw()
       gsap.set(containerRef.current, { display: 'block', pointerEvents: 'all' })
@@ -336,11 +342,11 @@ export default function PageTransition() {
       })
     }
 
-    // Sweep dither wave UP towards top (opposite direction) to reveal newly rendered page (slower duration)
+    // Sweep dither wave DOWN all the way off the bottom to reveal newly rendered page
     tl.to(
       progressRef.current,
       {
-        exit: 1.25,
+        exit: 1,
         duration: 0.72,
         ease: 'power2.inOut',
         onUpdate: draw
