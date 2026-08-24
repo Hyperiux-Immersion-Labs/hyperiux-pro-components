@@ -15,6 +15,10 @@
   font-family: var(--font-body);
 }
 
+@theme {
+  --text-20: 1.1vw;
+}
+
 body {
   width: 100vw;
   height: 100%;

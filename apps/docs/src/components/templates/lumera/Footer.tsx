@@ -41,14 +41,12 @@ const Footer = () => {
             </div>
 
             {/* Second Div */}
-            <div className="absolute left-1/2 top-1/2 flex w-[10vw] h-auto -translate-x-1/2 -translate-y-1/2 items-center justify-center fadeup mobile:static mobile:w-[40vw] mobile:mb-[10vw] mobile:translate-x-0 mobile:translate-y-0 tablet:w-[20vw]">
+            <div className="absolute left-1/2 top-1/2 flex w-[20vw] h-auto -translate-x-1/2 -translate-y-1/2 items-center justify-center fadeup mobile:static mobile:w-[55vw] mobile:mb-[10vw] mobile:translate-x-0 mobile:translate-y-0 tablet:w-[30vw]">
               <Link href={"/"}>
                 <Image
-                  width={200}
-                  height={50}
                   src={lumeraLogo}
                   alt="Lumera"
-                  className="h-full w-full object-contain"
+                  className="h-auto w-full object-contain"
                 />
               </Link>
             </div>
