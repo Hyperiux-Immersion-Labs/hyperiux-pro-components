@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getEffectHref } from "@/lib/categories";
 import { resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
-import CircularButton from "@/components/WebsiteComps/CirclularButton";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 
 const CARD_SIZES = "(max-width: 768px) 80vw, (max-width: 1025px) 40vw, 22vw";
@@ -271,32 +270,25 @@ export default function TrendingRightNow({ effects = [] }) {
         </h2>
 
         <div className="flex shrink-0 items-center gap-2">
-          <CircularButton
+          <button
             type="button"
             onClick={() => step(-1)}
             aria-label="Previous"
-            className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all "
-            bgColor="#ff5f00"
+            className="group relative flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
           >
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out  group-hover:text-black" />
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out group-hover:text-black " />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out" />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out" />
+          </button>
 
-
-
-          </CircularButton>
-
-          <CircularButton
+          <button
             type="button"
             onClick={() => step(1)}
             aria-label="Next"
-            className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all relative"
-            bgColor="#ff5f00"
+            className="group relative flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
           >
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out group-hover:text-black" />
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out group-hover:text-black " />
-
-
-          </CircularButton>
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out" />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out" />
+          </button>
         </div>
       </div>
 

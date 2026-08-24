@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 type CSSVars = CSSProperties & Record<string, string | number | undefined>;
 

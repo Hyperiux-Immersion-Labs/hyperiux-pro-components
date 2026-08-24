@@ -26,12 +26,11 @@ import {
 } from "@/components/animated-faq";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
-import CircularButton from "@/components/WebsiteComps/CirclularButton";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
-import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { CopyLimitProvider, useCopyLimit } from "./useCopyLimit";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
@@ -620,36 +619,28 @@ export function EffectDetailContent({
                     <div className="max-[1025px]:hidden">
                       {showRelatedSliderControls && (
                         <div className="flex items-center justify-end gap-2 max-[1025px]:justify-center">
-                          <CircularButton
+                          <button
                             type="button"
                             onClick={() => scrollRelatedEffects("previous")}
                             disabled={!canScrollPrev}
                             aria-label="Show previous related effects"
-                            className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollPrev
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00] hover:text-black"
-                              }`}
-                            bgColor="#ff5f00"
+                            className={`group relative flex h-8 w-8 items-center justify-center overflow-hidden   bg-[#161616] text-white  transition-colors duration-300 ${!canScrollPrev ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-[#ff5f00] hover:text-black"}`}
                           >
                             <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135  ${!canScrollPrev?"":"group-hover:translate-x-[-180%] duration-300 ease-in-out"}`} />
                             <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%]  ${!canScrollPrev?"":" group-hover:translate-x-0 duration-300 ease-in-out"} `} />
 
-                          </CircularButton>
+                          </button>
 
-                          <CircularButton
+                          <button
                             type="button"
                             onClick={() => scrollRelatedEffects("next")}
                             disabled={!canScrollNext}
                             aria-label="Show next related effects"
-                            className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollNext
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00] hover:text-black"
-                              }`}
-                            bgColor="#ff5f00"
+                            className={`group relative flex h-8 w-8 items-center justify-center overflow-hidden  bg-[#161616] text-white transition-colors duration-300 ${!canScrollNext ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-[#ff5f00] hover:text-black"}`}
                           >
-                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45  ${!canScrollNext ? "" : "group-hover:translate-x-[240%] duration-300 ease-in-out"}`} />
-                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-240%]  ${!canScrollNext?"":" group-hover:translate-x-0 duration-300 ease-in-out"} `} />
-                          </CircularButton>
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45  ${!canScrollNext ? "" : "group-hover:translate-x-[180%] duration-300 ease-in-out"}`} />
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%]  ${!canScrollNext?"":" group-hover:translate-x-0 duration-300 ease-in-out"} `} />
+                          </button>
                         </div>
                       )}
                     </div>
@@ -685,36 +676,28 @@ export function EffectDetailContent({
                     <div className="hidden max-[1025px]:block">
                       {showRelatedSliderControls && (
                         <div className="flex items-center justify-end gap-2 max-[1025px]:justify-center">
-                          <CircularButton
+                          <button
                             type="button"
                             onClick={() => scrollRelatedEffects("previous")}
                             disabled={!canScrollPrev}
                             aria-label="Show previous related effects"
-                            className={`h-11 w-11 p-4 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollPrev
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00] hover:text-black"
-                              }`}
-                            bgColor="#ff5f00"
+                            className={`group relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#161616] text-white transition-colors duration-300 ${!canScrollPrev ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-[#ff5f00]"}`}
                           >
-                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135  ${!canScrollPrev?"":"group-hover:translate-x-[-240%] duration-300 ease-in-out"}`}/>
-                            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[240%] group-hover:translate-x-0 duration-300 ease-in-out " />
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135  ${!canScrollPrev?"":"group-hover:translate-x-[-180%] duration-300 ease-in-out"}`}/>
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%]  ${!canScrollPrev?"":"group-hover:translate-x-0 duration-300 ease-in-out"}`} />
 
-                          </CircularButton>
+                          </button>
 
-                          <CircularButton
+                          <button
                             type="button"
                             onClick={() => scrollRelatedEffects("next")}
                             disabled={!canScrollNext}
                             aria-label="Show next related effects"
-                            className={`h-11 p-4 w-11 border-white/12 bg-[#272727] text-white transition-all  ${!canScrollNext
-                              ? "cursor-not-allowed opacity-50 hover:border-white/10"
-                              : "hover:border-[#ff5f00] hover:text-black"
-                              }`}
-                            bgColor="#ff5f00"
+                            className={`group relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#161616] text-white transition-colors duration-300 ${!canScrollNext ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-[#ff5f00]"}`}
                           >
-                            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[240%] duration-300 ease-in-out " />
-                            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-240%] group-hover:translate-x-0 duration-300 ease-in-out " />
-                          </CircularButton>
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45  ${!canScrollNext?"":"group-hover:translate-x-[180%] duration-300 ease-in-out"}`} />
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%]  ${!canScrollNext?"":"group-hover:translate-x-0 duration-300 ease-in-out"}`} />
+                          </button>
                         </div>
                       )}
                     </div>
