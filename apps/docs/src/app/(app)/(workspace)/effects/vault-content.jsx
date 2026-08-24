@@ -132,6 +132,8 @@ function EffectsGridSkeleton() {
 
 export function VaultContent({
   effects: incomingEffects,
+  initialEffects: incomingInitialEffects = [],
+  featuredEffects: incomingFeaturedEffects = [],
   effectCounts: incomingEffectCounts,
   initialCategory = "all",
   userPlan = "free",
@@ -226,8 +228,11 @@ export function VaultContent({
   const [dropdownFilter, setDropdownFilter] = useState(null);
 
   const featuredEffects = useMemo(
-    () => getFeaturedEffects(safeEffects),
-    [safeEffects]
+    () =>
+      incomingFeaturedEffects?.length > 0
+        ? incomingFeaturedEffects
+        : getFeaturedEffects(safeEffects),
+    [incomingFeaturedEffects, safeEffects]
   );
 
   const featuredEffectNames = useMemo(
@@ -917,6 +922,7 @@ export function VaultContent({
           ) : (
             <EffectsGrid
               filteredEffects={filteredEffects}
+              initialEffects={incomingInitialEffects}
               wishlist={wishlist}
               toggleWishlist={toggleWishlist}
               isProUser={isProUser}
@@ -1062,6 +1068,7 @@ const CARD_ENTRANCE_BASE_DELAY = 1;
 // Inner component - keyed by filteredEffectsKey so state resets automatically on filter change
 function EffectsGridInner({
   filteredEffects,
+  initialEffects = [],
   wishlist,
   toggleWishlist,
   isProUser,
@@ -1069,9 +1076,61 @@ function EffectsGridInner({
   columns = 3,
 }) {
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const [loadedCards, setLoadedCards] = useState(() => {
+    const initialMap = {};
+    if (Array.isArray(initialEffects)) {
+      for (const effect of initialEffects) {
+        if (effect?.name) initialMap[effect.name] = effect;
+      }
+    }
+    return initialMap;
+  });
+  const [isLoadingBatch, setIsLoadingBatch] = useState(false);
 
   const gridRef = useRef(null);
   const sentinelRef = useRef(null);
+  const isFetchingRef = useRef(false);
+
+  const visibleEffects = filteredEffects.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredEffects.length;
+
+  // Fetch full card data for any effects currently in visible range that aren't loaded yet
+  useEffect(() => {
+    const neededSlugs = visibleEffects
+      .map((e) => e.name)
+      .filter((slug) => slug && !loadedCards[slug]);
+
+    if (neededSlugs.length === 0 || isFetchingRef.current) return;
+
+    let cancelled = false;
+    isFetchingRef.current = true;
+    setIsLoadingBatch(true);
+
+    fetch(`/api/effects/list?slugs=${encodeURIComponent(neededSlugs.join(","))}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.effects) return;
+        setLoadedCards((prev) => {
+          const next = { ...prev };
+          for (const card of data.effects) {
+            if (card?.name) next[card.name] = card;
+          }
+          return next;
+        });
+      })
+      .catch((err) => console.error("Error loading effects batch:", err))
+      .finally(() => {
+        if (!cancelled) {
+          isFetchingRef.current = false;
+          setIsLoadingBatch(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      isFetchingRef.current = false;
+    };
+  }, [visibleEffects, loadedCards]);
 
   // Load next batch when the sentinel enters the viewport
   useEffect(() => {
@@ -1090,9 +1149,6 @@ function EffectsGridInner({
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, [filteredEffects.length]);
-
-  const visibleEffects = filteredEffects.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredEffects.length;
 
   // Animate only newly-mounted cards (those without .card-entered yet)
   useEffect(() => {
@@ -1126,31 +1182,41 @@ function EffectsGridInner({
         ref={gridRef}
         className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
       >
-        {visibleEffects.map((effect, i) => (
-          <motion.div
-            key={effect.name}
-            layout
-            transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
-          >
-            <div className="effect-card-shell">
-              <EffectCard
-                effect={effect}
-                priority={i < 4}
-                isWishlisted={wishlist.includes(effect.name)}
-                toggleWishlist={toggleWishlist}
-                isProUser={isProUser}
-              />
-            </div>
-          </motion.div>
-        ))}
+        {visibleEffects.map((effect, i) => {
+          const fullEffect = loadedCards[effect.name] || effect;
+          return (
+            <motion.div
+              key={effect.name}
+              layout
+              transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
+            >
+              <div className="effect-card-shell">
+                <EffectCard
+                  effect={fullEffect}
+                  priority={i < 4}
+                  isWishlisted={wishlist.includes(effect.name)}
+                  toggleWishlist={toggleWishlist}
+                  isProUser={isProUser}
+                />
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
-      {/* Sentinel - 400px ahead of viewport triggers the next batch before user reaches bottom */}
+      {/* Sentinel - triggers the next 18 batch before user reaches bottom */}
       {hasMore && <div ref={sentinelRef} className="h-1" aria-hidden="true" />}
+
+      {/* Loading state indicator during batch fetch */}
+      {isLoadingBatch && (
+        <div className="flex justify-center py-10">
+          <PixelSquaresLoader />
+        </div>
+      )}
 
       {/* Manual fallback - covers slow IntersectionObserver support or scroll
           that never reaches the sentinel (short viewports, trackpads, etc). */}
-      {hasMore && (
+      {hasMore && !isLoadingBatch && (
         <div className="flex justify-center pt-10">
           <LinkButton
             text="Load More"
@@ -1168,6 +1234,7 @@ function EffectsGridInner({
 
 function EffectsGrid({
   filteredEffects,
+  initialEffects,
   wishlist,
   toggleWishlist,
   isProUser = false,
@@ -1183,6 +1250,7 @@ function EffectsGrid({
     <EffectsGridInner
       key={filteredEffectsKey}
       filteredEffects={filteredEffects}
+      initialEffects={initialEffects}
       wishlist={wishlist}
       toggleWishlist={toggleWishlist}
       isProUser={isProUser}
