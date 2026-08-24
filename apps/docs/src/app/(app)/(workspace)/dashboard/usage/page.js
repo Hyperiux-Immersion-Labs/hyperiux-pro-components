@@ -12,7 +12,7 @@ import {
 } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
-import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/effects/FilterMenu";
+import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/(workspace)/effects/FilterMenu";
 
 const DATE_FILTERS = [
   { id: "all", label: "All" },

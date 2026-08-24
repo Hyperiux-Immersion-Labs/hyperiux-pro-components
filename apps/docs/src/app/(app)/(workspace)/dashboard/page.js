@@ -150,7 +150,7 @@ export default function DashboardPage() {
       <div className="  p-6 bg-[#272727]">
         <div className="flex items-start justify-between gap-6 max-[1025px]:flex-col max-[1025px]:items-start">
           <div>
-            
+
             <h2 className="text-2xl font-semibold">Vault access</h2>
 
             {data.plan === "pro" ? (
@@ -185,13 +185,13 @@ export default function DashboardPage() {
               </p>
             )}
           </div>
-           {data.plan === "free" && (
+          {data.plan === "free" && (
             <>
               <Link
                 href="/pricing"
                 className="inline-flex px-5 py-3  bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-black"
               >
-               Upgrade to Pro
+                Upgrade to Pro
               </Link>
 
             </>
@@ -220,7 +220,7 @@ export default function DashboardPage() {
             </div>
           )}
 
-         
+
         </div>
       </div>
       <CliTokenManager plan={data.plan} />

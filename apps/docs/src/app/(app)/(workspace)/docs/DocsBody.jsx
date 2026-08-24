@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RouteFade } from "@/components/layout/RouteFade";
+import { useVaultLayout } from "@/components/layout/VaultLayout";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import { TableOfContents } from "@/components/ui/TableOfContents";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -40,39 +41,17 @@ export default function DocsBody({ children }) {
 
   const pathname = usePathname();
   const router = useRouter();
+  const { startNavigation } = useVaultLayout();
 
   const navigateWithDocsFade = useCallback(
     (href) => {
       if (!href || href === pathname) return true;
 
-      const routeContent = routeContentRef.current;
-
-      routeTweenRef.current?.kill();
-
-      if (!routeContent) {
-        router.push(href, { scroll: false });
-        return true;
-      }
-
-      routeTweenRef.current = gsap.to(routeContent, {
-        autoAlpha: 0,
-        y: 0,
-        duration: 0.32,
-        ease: "power2.inOut",
-        onComplete: () => {
-          router.push(href, { scroll: false });
-
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              ScrollTrigger.refresh(true);
-            });
-          });
-        },
-      });
-
+      startNavigation(href);
+      router.push(href, { scroll: false });
       return true;
     },
-    [pathname, router]
+    [pathname, router, startNavigation]
   );
 
   useEffect(() => {

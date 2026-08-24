@@ -13,7 +13,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import { useRouter, usePathname } from "next/navigation";
-import { VaultLayout } from "@/components/layout/VaultLayout";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import { CodeBlock, CodeBlockLanguageProvider } from "@/components/ui/CodeBlock";
@@ -443,14 +442,7 @@ export function EffectDetailContent({
 
   return (
     <CopyLimitProvider effectSlug={slug} onRequireSignIn={() => setShowSignInToCopyModal(true)}>
-      <VaultLayout
-        effectCounts={effectCounts || {}}
-        totalEffects={totalEffects || 0}
-        bgImageSrc=""
-        activeCategory={categorySlug || safeEffect.categories?.[0] || safeEffect.category}
-        searchEffects={searchEffects}
-      >
-        <div className="min-h-screen text-foreground">
+      <div className="min-h-screen text-foreground">
           <Suspense fallback={<div className="h-12" />}>
             <VaultHeader effectName={pageTitle || safeEffect.title}
               showSearch={true}
@@ -741,7 +733,6 @@ export function EffectDetailContent({
             </main>
           )}
         </div>
-      </VaultLayout>
 
       {mounted && createPortal(
         <div

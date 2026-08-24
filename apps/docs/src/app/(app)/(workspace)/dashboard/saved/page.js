@@ -10,7 +10,7 @@ import {
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
-import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/effects/FilterMenu";
+import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/(workspace)/effects/FilterMenu";
 
 export default function SavedPage() {
   const [savedEffects, setSavedEffects] = useState([]);
