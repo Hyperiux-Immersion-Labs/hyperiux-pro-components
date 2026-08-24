@@ -1,8 +1,23 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { gsap } from "gsap";
-import { usePrefersReducedMotion } from "@/lib/motion";
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+
+      const mediaQueryList = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mediaQueryList.addEventListener("change", callback);
+
+      return () => mediaQueryList.removeEventListener("change", callback);
+    },
+    () => (typeof window === "undefined" ? false : window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false),
+    () => false
+  );
+}
 
 export interface SmoothSliderItem {
   src: string;

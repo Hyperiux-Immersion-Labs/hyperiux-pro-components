@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// Self-contained end-to-end component workflow.
-// See md/new-component-workflow.md for the design/process this implements.
-// Deliberately does not import scripts/component-workflow.mjs or
-// scripts/sanity-code-sync.mjs — everything needed lives in this file.
+// Implements md/new-component-workflow.md: registry sync (Phase 1), codegen
+// (Phase 2 — global-remixer swap + registry re-sync + local JSX handoff),
+// update (Phase 1 + 2 combined for an already-shipped effect), and revert
+// (Phase 3 rollback). Self-contained — does not shell out to
+// component-workflow.mjs or sanity-code-sync.mjs.
 
-import { execFileSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
@@ -16,25 +17,33 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(process.env.HYPERIUX_WORKFLOW_ROOT || path.join(__dirname, ".."));
 const DOCS_COMPONENTS_DIR = path.join(ROOT, "apps", "docs", "src", "components");
+const DOCS_DEMO_DIR = path.join(ROOT, "apps", "docs", "src", "app", "(marketing)", "demo");
 const REGISTRY_EFFECTS_DIR = path.join(ROOT, "registry", "effects");
 const ROOT_INDEX_FILE = path.join(ROOT, "registry", "index.json");
+const DIST_DIR = path.join(ROOT, "registry", "dist");
+const DIST_INDEX_FILE = path.join(DIST_DIR, "registry-index.json");
 const DOCS_PUBLIC_REGISTRY_DIR = path.join(ROOT, "apps", "docs", "public", "r");
+const CODEGEN_DIR = path.join(ROOT, "codegen");
 const requireFromScript = createRequire(import.meta.url);
 
-const COMMANDS = new Set(["preflight", "registry", "metadata", "sanity", "revert", "ship"]);
+const COMMANDS = new Set(["registry", "codegen", "update", "revert", "ship"]);
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VERSION_RE = /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
 const SOURCE_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".css"]);
-const CODE_EXTENSIONS = new Set([".js", ".jsx", ".ts", ".tsx", ".css", ".json"]);
+const HEADER_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".css"]);
 const EXCLUDED_FILE_RE = /(^Demo\.jsx$|\.demo\.jsx$|\.test\.[jt]sx?$|\.spec\.[jt]sx?$|^README\.md$|\.md$)/i;
 const PACKAGE_IMPORT_IGNORE = new Set([
   "react", "react-dom", "next", "node:fs", "node:path", "node:process", "node:url",
 ]);
-// Confirmed against actual usage across registry/effects/**/registry.json
-// (337 range, 140 color, 78 checkbox, 32 select, 17 text) — not guessed.
-const REMIXER_CONTROL_TYPES = new Set(["range", "color", "checkbox", "select", "text"]);
-const NUMERIC_REMIXER_CONTROLS = new Set(["range"]);
-const VALID_ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const VAULT_HEADER_TEXT = "Built using Hyperiux Vault: https://vault.hyperiux.com";
+
+// apps/docs/src/lib/motion.js is app-internal (not shipped in the registry
+// package), so any effect that imports from it in the docs/demo source needs
+// a self-contained, matchMedia-based equivalent inlined into the registry/
+// codegen copy instead — same behavior, no dependency on this app's @/lib.
+const REDUCED_MOTION_LIB_IMPORT_RE = /import\s*\{\s*([^}]*?)\s*\}\s*from\s*["']@\/lib\/motion["'];?\n?/;
+const REDUCED_MOTION_EXPORTS = new Set(["usePrefersReducedMotion", "prefersReducedMotion"]);
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 let cachedTs = null;
 
@@ -49,10 +58,9 @@ async function main() {
     fail(`Unknown command "${command}". Use one of: ${[...COMMANDS].join(", ")}`);
   }
 
-  if (command === "preflight") return void (await runPreflight(options, { standalone: true }));
-  if (command === "registry") return void (await runRegistry(options, { standalone: true }));
-  if (command === "metadata") return void (await runMetadata(options, { standalone: true }));
-  if (command === "sanity") return void (await runSanity(options, { standalone: true }));
+  if (command === "registry") return void printResult("registry", options.slug, await runRegistry(options));
+  if (command === "codegen") return void printResult("codegen", options.slug, await runCodegen(options));
+  if (command === "update") return void printResult("update", options.slug, await runUpdate(options));
   if (command === "revert") return void runRevert(options);
   if (command === "ship") return void (await runShip(options));
 }
@@ -62,226 +70,48 @@ async function runShip(options) {
   validateSlug(slug);
   console.log(`component:ship — ${slug}\n`);
 
-  const report = [];
+  const registryResult = await runRegistry(options);
+  printPhase("Phase 1 registry", registryResult);
+  if (!registryResult.ok) return finishShip(slug, 1);
 
-  const preflight = await runPreflight(options, { standalone: false });
-  report.push(["Phase 0 preflight", preflight]);
-  if (!preflight.ok) return finishShip(slug, report, 1);
-
-  const registryPhase = await runRegistry(options, { standalone: false });
-  report.push(["Phase 1 registry", registryPhase]);
-  if (!registryPhase.ok) return finishShip(slug, report, 1);
-
-  const metadata = await runMetadata(options, { standalone: false });
-  report.push(["Phase 2 metadata", metadata]);
-  if (!metadata.ok) {
-    await maybeOfferRevert(slug, options, registryPhase);
-    return finishShip(slug, report, 1);
+  const codegenResult = await runCodegen(options);
+  printPhase("Phase 2 codegen", codegenResult);
+  if (!codegenResult.ok) {
+    await maybeOfferRevert(slug, options, registryResult);
+    return finishShip(slug, 1);
   }
 
-  const sanity = await runSanity(options, { standalone: false });
-  report.push(["Phase 3 sanity", sanity]);
-  if (!sanity.ok) {
-    await maybeOfferRevert(slug, options, registryPhase);
-    return finishShip(slug, report, 1);
-  }
-
-  report.push(["Phase 4 rollback", { ok: true, summary: "not needed (no failures)" }]);
-  finishShip(slug, report, 0);
+  finishShip(slug, 0);
 }
 
-function finishShip(slug, report, exitCode) {
-  console.log(`\ncomponent:ship summary — ${slug}\n`);
-  for (const [label, result] of report) {
-    const mark = result.ok ? "✔" : "✖";
-    console.log(`${label.padEnd(20)} ${mark} ${result.summary}`);
-    for (const detail of result.details || []) console.log(`  ${detail}`);
-  }
+function printPhase(label, result) {
+  const mark = result.ok ? "✔" : "✖";
+  console.log(`${label.padEnd(20)} ${mark} ${result.summary}`);
+  for (const detail of result.details || []) console.log(`  ${detail}`);
+}
+
+function finishShip(slug, exitCode) {
+  console.log(`\ncomponent:ship ${exitCode === 0 ? "succeeded" : "failed"} for ${slug}`);
   if (exitCode !== 0) process.exitCode = exitCode;
 }
 
-async function maybeOfferRevert(slug, options, registryPhase) {
-  if (!registryPhase.wrote) return;
-  const answer = await promptYesNo(
+async function maybeOfferRevert(slug, options, registryResult) {
+  if (!registryResult.wrote) return;
+  const answer = await promptYesNoQuestion(
     `\nA later phase failed after the registry was already updated for "${slug}". Revert the registry changes from this run? [y/N] `
   );
   if (!answer) {
-    console.log("Not reverting. Fix the issue and re-run `component-ship.mjs registry` / `metadata` / `sanity` as needed.");
+    console.log("Not reverting. Fix the issue and re-run `codegen` once ready.");
     return;
   }
   runRevert({ slug, yes: true });
 }
 
 // ---------------------------------------------------------------------------
-// Phase 0 — Preflight checklist (+ auto-scaffold props/remixer)
+// Phase 1 — Registry sync
 // ---------------------------------------------------------------------------
 
-async function runPreflight(options, { standalone }) {
-  const slug = requireOption(options, "slug");
-  validateSlug(slug);
-  const details = [];
-  const errors = [];
-
-  const docsDir = docsComponentDir(slug);
-  const docsExists = fs.existsSync(docsDir);
-  details.push(docsExists ? `✔ docs source at ${relative(docsDir)}` : `✖ missing docs source: ${relative(docsDir)}`);
-  if (!docsExists) errors.push("docs component folder missing");
-
-  let mainFile = null;
-  if (docsExists) {
-    mainFile = ["index.tsx", "index.jsx", "index.ts", "index.js"]
-      .map((name) => path.join(docsDir, name))
-      .find((candidate) => fs.existsSync(candidate));
-    if (mainFile) {
-      details.push(`✔ main file ${relative(mainFile)}`);
-      const content = fs.readFileSync(mainFile, "utf8");
-      if (!/export\s+default\s+(function|class|[A-Za-z_$])/.test(content)) {
-        details.push("✖ no default export found in main file");
-        errors.push("main file missing default export");
-      }
-      if (!/className/.test(content)) {
-        details.push("⚠ main file does not reference a `className` prop");
-      }
-      const badImports = [...content.matchAll(/from\s+["'](@\/[^"']+)["']/g)];
-      if (badImports.length) {
-        details.push(`✖ uses @/ imports between own files: ${badImports.map((m) => m[1]).join(", ")}`);
-        errors.push("@/ imports found between own files");
-      }
-    } else {
-      details.push("✖ no index.tsx/jsx/ts/js main file found");
-      errors.push("main file missing");
-    }
-  }
-
-  const previewPage = path.join(ROOT, "apps", "docs", "src", "app", "(marketing)", "demo", slug, "page.js");
-  details.push(fs.existsSync(previewPage) ? `✔ preview page at ${relative(previewPage)}` : `⚠ preview page missing: ${relative(previewPage)} (may be added after registry step)`);
-
-  const existing = findComponent(slug);
-  if (existing) {
-    const registry = existing.registry;
-    const requiredFields = ["name", "version", "type", "title", "description", "category", "tier", "dependencies", "previewUrl", "main", "exportName", "exportKind", "importPath", "target", "files"];
-    const missingFields = requiredFields.filter((field) => registry[field] === undefined);
-    if (missingFields.length) {
-      details.push(`✖ registry.json missing fields: ${missingFields.join(", ")}`);
-      errors.push("registry.json missing required fields");
-    } else {
-      details.push("✔ registry.json has all required fields");
-    }
-
-    const scaffolded = maybeScaffoldPropsAndRemixer(existing, mainFile, options, details);
-
-    if (!Array.isArray(registry.props) || registry.props.length === 0) {
-      if (!scaffolded && !options.noPropsOk) {
-        details.push("✖ props array missing/empty (pass --no-props-ok if this component truly has none)");
-        errors.push("props array missing");
-      } else if (options.noPropsOk) {
-        details.push("✔ props array empty, acknowledged via --no-props-ok");
-      }
-    }
-
-    if (!Array.isArray(registry.changelog) || registry.changelog.length === 0) {
-      details.push("✖ changelog array missing/empty");
-      errors.push("changelog missing");
-    } else {
-      details.push(`✔ changelog has ${registry.changelog.length} entr${registry.changelog.length === 1 ? "y" : "ies"}`);
-    }
-
-    if (registry.tier === "free") {
-      const mirrorRoot = resolveFreeRepoPath(options);
-      if (!fs.existsSync(mirrorRoot)) {
-        details.push(`✖ HARD FAIL: free-tier mirror repo not found at ${mirrorRoot}`);
-        errors.push("free-tier mirror repo unreachable");
-      } else {
-        details.push(`✔ free-tier mirror repo found at ${relative(mirrorRoot)}`);
-      }
-    }
-  } else {
-    details.push("ℹ no existing registry.json yet — this will be a new component (registry metadata checks skipped until after `registry` phase)");
-  }
-
-  const ok = errors.length === 0;
-  const result = { ok, summary: ok ? "all checks passed" : `${errors.length} issue(s) found`, details, errors };
-  if (standalone) printStandaloneResult("preflight", slug, result);
-  return result;
-}
-
-function maybeScaffoldPropsAndRemixer(existing, mainFile, options, details) {
-  const registry = existing.registry;
-  const needsProps = !Array.isArray(registry.props) || registry.props.length === 0;
-  if (!needsProps || !mainFile || options.noPropsOk) return false;
-
-  const content = fs.readFileSync(mainFile, "utf8");
-  const detected = detectPropsFromSource(content);
-  if (!detected.length) return false;
-
-  registry.props = detected;
-  registry._draft = true;
-  const registryFile = path.join(existing.dir, "registry.json");
-  writeJson(registryFile, registry);
-  details.push(`⚠ auto-scaffolded ${detected.length} prop(s) into registry.json as "_draft": true — review before shipping`);
-  return true;
-}
-
-function detectPropsFromSource(content) {
-  // Matches: destructured function params, e.g. function X({ foo = 1, bar }: Props)
-  // or export default function X({ foo, bar = "x" })
-  const paramsMatch = content.match(/function\s+[A-Za-z_$][\w$]*\s*\(\s*\{([^}]*)\}/);
-  if (!paramsMatch) return [];
-
-  const raw = paramsMatch[1];
-  const entries = raw.split(",").map((part) => part.trim()).filter(Boolean);
-  const props = [];
-
-  for (const entry of entries) {
-    const [nameWithDefault] = entry.split(":");
-    const [rawName, rawDefault] = nameWithDefault.split("=").map((piece) => piece.trim());
-    const name = rawName.replace(/\.\.\./, "").trim();
-    if (!name || name === "className" || name === "children") continue;
-
-    const defaultValue = rawDefault !== undefined ? coerceDefaultValue(rawDefault) : undefined;
-    const type = inferTypeFromDefault(defaultValue);
-    props.push({
-      name,
-      type,
-      default: defaultValue,
-      description: "",
-      remixer: { control: controlForType(type), group: "General" },
-    });
-  }
-
-  return props;
-}
-
-function coerceDefaultValue(raw) {
-  const trimmed = raw.trim().replace(/[;,]$/, "");
-  if (trimmed === "true") return true;
-  if (trimmed === "false") return false;
-  if (/^-?\d+(\.\d+)?$/.test(trimmed)) return Number(trimmed);
-  const stringMatch = trimmed.match(/^["'`](.*)["'`]$/);
-  if (stringMatch) return stringMatch[1];
-  return trimmed;
-}
-
-function inferTypeFromDefault(value) {
-  if (typeof value === "boolean") return "boolean";
-  if (typeof value === "number") return "number";
-  if (typeof value === "string") return "string";
-  return "any";
-}
-
-function controlForType(type) {
-  // Matches actual registry.json usage: checkbox/range/text/color/select
-  // (checked directly against registry/effects/**/registry.json).
-  if (type === "boolean") return "checkbox";
-  if (type === "number") return "range";
-  return "text";
-}
-
-// ---------------------------------------------------------------------------
-// Phase 1 — Registry sync (create / update, mirrors public/r, root index, tarball)
-// ---------------------------------------------------------------------------
-
-async function runRegistry(options, { standalone }) {
+async function runRegistry(options) {
   const slug = requireOption(options, "slug");
   validateSlug(slug);
   const details = [];
@@ -289,8 +119,12 @@ async function runRegistry(options, { standalone }) {
 
   try {
     const existing = findComponent(slug);
+    let registryDir;
+    let category;
+    let registryJson;
+
     if (!existing) {
-      const category = requireOption(options, "category");
+      category = requireOption(options, "category");
       const tier = requireOption(options, "tier");
       const title = requireOption(options, "title");
       const description = requireOption(options, "description");
@@ -299,7 +133,7 @@ async function runRegistry(options, { standalone }) {
 
       const docsDir = docsComponentDir(slug);
       requirePath(docsDir, `Docs component folder not found: ${relative(docsDir)}`);
-      const registryDir = registryComponentDir(category, slug);
+      registryDir = registryComponentDir(category, slug);
       if (fs.existsSync(registryDir) && !options.overwrite) {
         fail(`Registry folder already exists: ${relative(registryDir)}. Pass --overwrite to replace it.`);
       }
@@ -309,8 +143,9 @@ async function runRegistry(options, { standalone }) {
       const dependencies = parseList(options.dependencies) ?? detectDependencies(files, docsDir);
       const mainFile = options.main || detectMainFileName(files);
       const exportInfo = detectExportInfo(path.join(docsDir, mainFile), options.exportName);
+      const props = detectPropsFromLocalRemixer(docsDir) ?? [];
 
-      const registryJson = makeRegistryJson({
+      registryJson = makeRegistryJson({
         slug, version, title, description, category, tier, dependencies,
         date: options.date || today(),
         summary: options.summary || "Initial release",
@@ -318,8 +153,8 @@ async function runRegistry(options, { standalone }) {
         exportName: options.exportName || exportInfo.exportName,
         exportKind: options.exportKind || exportInfo.exportKind,
         files: makeFileEntries(files, slug),
+        props,
       });
-      const packageJson = makePackageJson(registryJson, options.packageVersion || version);
 
       if (options.dryRun) {
         details.push(`dry-run: would create ${relative(registryDir)}`);
@@ -329,14 +164,17 @@ async function runRegistry(options, { standalone }) {
       ensureFreeMirrorReady(tier, options);
       fs.rmSync(registryDir, { recursive: true, force: true });
       fs.mkdirSync(registryDir, { recursive: true });
-      copyDistributableFiles(files, registryDir);
+      copyDistributableFilesWithHeader(files, registryDir);
       writeJson(path.join(registryDir, "registry.json"), registryJson);
-      writeJson(path.join(registryDir, "package.json"), packageJson);
+      writeJson(path.join(registryDir, "package.json"), makePackageJson(registryJson, options.packageVersion || version));
       updateRootIndex(registryJson, category);
       syncFreeMirror(tier, registryDir, options);
       wrote = true;
       details.push(`created ${relative(registryDir)} @ v${version}`);
+      if (props.length) details.push(`props (${props.length}) drafted from LocalRemixerDemo usage in the demo page`);
     } else {
+      category = existing.category;
+      registryDir = existing.dir;
       const docsDir = docsComponentDir(slug);
       requirePath(docsDir, `Docs component folder not found: ${relative(docsDir)}.`);
 
@@ -349,7 +187,7 @@ async function runRegistry(options, { standalone }) {
       const mainFileName = existing.registry.main || detectMainFileName(files);
       const exportInfo = detectExportInfo(path.join(docsDir, mainFileName), existing.registry.exportName);
 
-      const registryJson = {
+      registryJson = {
         ...existing.registry,
         version: nextVersion,
         dependencies,
@@ -369,8 +207,6 @@ async function runRegistry(options, { standalone }) {
             })
           : existing.registry.changelog,
       };
-      delete registryJson._draft;
-      const packageJson = makePackageJson(registryJson, options.packageVersion || nextVersion, readJsonIfExists(path.join(existing.dir, "package.json")));
 
       if (options.dryRun) {
         details.push(`dry-run: would sync ${relative(existing.dir)} -> v${nextVersion}`);
@@ -378,29 +214,28 @@ async function runRegistry(options, { standalone }) {
       }
 
       ensureFreeMirrorReady(registryJson.tier, options);
-      copyDistributableFiles(files, existing.dir);
+      copyDistributableFilesWithHeader(files, existing.dir);
       writeJson(path.join(existing.dir, "registry.json"), registryJson);
-      writeJson(path.join(existing.dir, "package.json"), packageJson);
+      writeJson(path.join(existing.dir, "package.json"), makePackageJson(registryJson, options.packageVersion || nextVersion, readJsonIfExists(path.join(existing.dir, "package.json"))));
       updateRootIndex(registryJson, existing.category);
       syncFreeMirror(registryJson.tier, existing.dir, options);
       wrote = true;
       details.push(`synced ${relative(existing.dir)}: v${existing.registry.version} -> v${nextVersion}`);
     }
 
-    if (!options.skipBuild) {
-      details.push("running build:registry (apps/docs + root)...");
-      execFileSync("npm", ["--prefix", "apps/docs", "run", "build:registry"], { cwd: ROOT, stdio: "inherit" });
-      execFileSync("npm", ["run", "build:registry"], { cwd: ROOT, stdio: "inherit" });
-      details.push("build:registry complete — public/r/{slug}.json and public/r/index.json regenerated");
+    if (!options.skipPublicRebuild) {
+      const publicResult = buildPublicEffect(registryJson, registryDir, category);
+      details.push(`public/r/${slug}.json rebuilt (${publicResult.action}); public/r/index.json entry ${publicResult.indexAction}`);
     }
 
-    const result = { ok: true, summary: wrote ? "registry synced" : "no changes needed", details, wrote };
-    if (standalone) printStandaloneResult("registry", slug, result);
-    return result;
+    if (!options.skipTarball) {
+      const tarballResult = buildTarballForEffect(registryDir);
+      if (tarballResult) details.push(`dist tarball rebuilt: ${relative(tarballResult.tarball)}`);
+    }
+
+    return { ok: true, summary: wrote ? "registry synced" : "no changes needed", details, wrote };
   } catch (error) {
-    const result = { ok: false, summary: error.message, details, wrote };
-    if (standalone) printStandaloneResult("registry", slug, result);
-    return result;
+    return { ok: false, summary: error.message, details, wrote };
   }
 }
 
@@ -410,197 +245,227 @@ function detectMainFileName(files) {
   return found || files[0]?.relativePath;
 }
 
-// ---------------------------------------------------------------------------
-// Phase 2 — Metadata verification (props / remixer / changelog / free payload)
-// ---------------------------------------------------------------------------
+function detectPropsFromLocalRemixer(docsDir) {
+  const demoDir = path.join(DOCS_DEMO_DIR, path.basename(docsDir));
+  if (!fs.existsSync(demoDir)) return null;
+  const demoFile = findLocalRemixerUsageFile(demoDir);
+  if (!demoFile) return null;
 
-async function runMetadata(options, { standalone }) {
-  const slug = requireOption(options, "slug");
-  validateSlug(slug);
-  const details = [];
-  const errors = [];
+  const content = fs.readFileSync(demoFile, "utf8");
+  const propsMatch = content.match(/<LocalRemixerDemo\b[\s\S]*?\bprops\s*=\s*\{(\[[\s\S]*?\])\}/);
+  if (!propsMatch) return null;
 
-  const existing = findComponent(slug);
-  if (!existing) {
-    const result = { ok: false, summary: `no registry entry found for "${slug}"`, details, errors: ["no registry entry"] };
-    if (standalone) printStandaloneResult("metadata", slug, result);
-    return result;
+  try {
+    // eslint-disable-next-line no-new-func -- trusted, developer-authored demo source, not user input
+    const props = new Function(`"use strict"; return (${propsMatch[1]});`)();
+    return Array.isArray(props) ? props : null;
+  } catch {
+    return null;
   }
-  const registry = existing.registry;
+}
 
-  // Props table
-  const props = Array.isArray(registry.props) ? registry.props : [];
-  if (!props.length && !options.noPropsOk) {
-    details.push("✖ props array missing/empty");
-    errors.push("props missing");
-  } else {
-    let propIssues = 0;
-    for (const prop of props) {
-      const missing = ["name", "type"].filter((field) => prop[field] === undefined);
-      if (prop.default === undefined && prop.required !== true) missing.push("default (or required: true)");
-      if (prop.description === undefined || prop.description === "") missing.push("description");
-      if (missing.length) {
-        propIssues += 1;
-        details.push(`⚠ prop "${prop.name || "?"}" missing: ${missing.join(", ")}`);
-      }
-    }
-    details.push(propIssues ? `✖ ${propIssues}/${props.length} prop(s) incomplete` : `✔ props (${props.length}) all have name/type/default-or-required/description`);
-    if (propIssues) errors.push("incomplete props");
-    if (registry._draft) {
-      details.push("⚠ registry.json still marked \"_draft\": true — auto-scaffolded props/remixer need human review");
-      errors.push("draft props unreviewed");
-    }
-  }
-
-  // Remixer
-  const remixerControls = props.filter((prop) => prop.remixer && prop.remixer.control);
-  let remixerIssues = 0;
-  for (const prop of remixerControls) {
-    if (!REMIXER_CONTROL_TYPES.has(prop.remixer.control)) {
-      remixerIssues += 1;
-      details.push(`✖ prop "${prop.name}" has unknown remixer.control "${prop.remixer.control}"`);
-    }
-    if (NUMERIC_REMIXER_CONTROLS.has(prop.remixer.control)) {
-      const numericMissing = ["min", "max", "step"].filter((field) => prop.remixer[field] === undefined);
-      if (numericMissing.length) {
-        remixerIssues += 1;
-        details.push(`✖ prop "${prop.name}" (${prop.remixer.control}) missing: ${numericMissing.join(", ")}`);
-      }
-    }
-  }
-  if (registry.remixer && registry.remixer.enabled !== false && remixerControls.length === 0) {
-    remixerIssues += 1;
-    details.push("✖ remixer.enabled is true but no props have a remixer control — panel would render empty");
-  }
-  details.push(remixerIssues ? `✖ remixer: ${remixerIssues} issue(s)` : `✔ remixer (${remixerControls.length} control(s)) verified`);
-  if (remixerIssues) errors.push("remixer issues");
-
-  // Changelog
-  const changelog = Array.isArray(registry.changelog) ? registry.changelog : [];
-  if (!changelog.length) {
-    details.push("✖ changelog empty");
-    errors.push("changelog empty");
-  } else {
-    const top = changelog[0];
-    const versions = changelog.map((entry) => entry.version);
-    const duplicates = versions.filter((v, i) => versions.indexOf(v) !== i);
-    const badDates = changelog.filter((entry) => !VALID_ISO_DATE_RE.test(entry.date || "") || new Date(entry.date) > new Date());
-    if (top.version !== registry.version) {
-      details.push(`✖ changelog top version "${top.version}" !== registry.json version "${registry.version}"`);
-      errors.push("changelog/version mismatch");
-    }
-    if (duplicates.length) {
-      details.push(`✖ duplicate changelog versions: ${[...new Set(duplicates)].join(", ")}`);
-      errors.push("duplicate changelog versions");
-    }
-    if (badDates.length) {
-      details.push(`✖ invalid/future changelog dates: ${badDates.map((e) => e.date).join(", ")}`);
-      errors.push("invalid changelog dates");
-    }
-    if (!errors.some((e) => e.includes("changelog"))) details.push(`✔ changelog (${changelog.length} entries) verified`);
-  }
-
-  // Free-tier public payload
-  if (registry.tier === "free") {
-    const publicFile = path.join(DOCS_PUBLIC_REGISTRY_DIR, `${slug}.json`);
-    const publicJson = readJsonIfExists(publicFile);
-    if (!publicJson) {
-      details.push(`✖ missing ${relative(publicFile)} — run \`registry\` phase first`);
-      errors.push("public JSON missing");
-    } else {
-      const missingContent = (publicJson.files || []).filter((file) => !("content" in file) || !file.content);
-      if (missingContent.length) {
-        details.push(`✖ free-tier public JSON missing file content for: ${missingContent.map((f) => f.path).join(", ")}`);
-        errors.push("free tier missing embedded content");
-      } else {
-        details.push(`✔ free-tier public JSON embeds content for all ${publicJson.files?.length || 0} file(s)`);
-      }
-    }
-  } else if (registry.tier === "pro") {
-    const publicFile = path.join(DOCS_PUBLIC_REGISTRY_DIR, `${slug}.json`);
-    const publicJson = readJsonIfExists(publicFile);
-    if (publicJson?.files?.some((file) => "content" in file)) {
-      details.push("✖ pro-tier public JSON still contains file content (should be stripped)");
-      errors.push("pro tier leaking content");
-    } else {
-      details.push("✔ pro-tier public JSON has no embedded file content, as expected");
-    }
-  }
-
-  const ok = errors.length === 0;
-  const result = { ok, summary: ok ? "props/remixer/changelog verified" : `${errors.length} issue(s) found`, details, errors };
-  if (standalone) printStandaloneResult("metadata", slug, result);
-  return result;
+function findLocalRemixerUsageFile(demoDir) {
+  const candidates = walkFiles(demoDir).filter((file) => [".tsx", ".jsx"].includes(path.extname(file)));
+  return candidates.find((file) => fs.readFileSync(file, "utf8").includes("LocalRemixerDemo")) || null;
 }
 
 // ---------------------------------------------------------------------------
-// Phase 3 — Sanity content sync
+// Phase 2 — Codegen (global-remixer swap + registry re-sync + JSX handoff)
 // ---------------------------------------------------------------------------
 
-async function runSanity(options, { standalone }) {
+async function runCodegen(options) {
   const slug = requireOption(options, "slug");
   validateSlug(slug);
   const details = [];
 
   try {
     const existing = findComponent(slug);
-    if (!existing) fail(`No registry entry found for "${slug}".`);
+    if (!existing) fail(`No registry entry found for "${slug}". Run \`registry\` first.`);
 
-    const registryFiles = readRegistryCodeFiles(existing);
-    const document = await fetchSanityDocument(existing.registry, options);
-    if (!document) {
-      const result = { ok: false, summary: `no Sanity effectContent document found for ${existing.category}/${slug}`, details };
-      if (standalone) printStandaloneResult("sanity", slug, result);
-      return result;
+    // 1. Swap the demo page's LocalRemixerDemo usage to the global RegistryRemixerDemo.
+    const swapResult = swapDemoToGlobalRemixer(slug, existing.category);
+    details.push(swapResult.message);
+
+    // 2. Registry-side re-sync, only if source actually differs from what's copied.
+    const resync = runRegistryResyncIfChanged(existing);
+    details.push(resync.message);
+    const current = resync.changed ? findComponent(slug) : existing;
+
+    if (resync.changed && !options.skipPublicRebuild) {
+      const publicResult = buildPublicEffect(current.registry, current.dir, current.category);
+      details.push(`public/r/${slug}.json rebuilt (${publicResult.action}); public/r/index.json entry ${publicResult.indexAction}`);
+    }
+    if (resync.changed && !options.skipTarball) {
+      const tarballResult = buildTarballForEffect(current.dir);
+      if (tarballResult) details.push(`dist tarball rebuilt: ${relative(tarballResult.tarball)}`);
     }
 
-    const plan = buildSanityPlan({ registryFiles, document, createMissing: Boolean(options.createMissing) });
-    details.push(`sanity document: ${document._id}`);
-    details.push(`changed blocks: ${plan.changed.length}`);
-    details.push(`unchanged blocks: ${plan.unchanged.length}`);
-    details.push(`missing (no sanity block yet): ${plan.missing.length}`);
-    details.push(`stale (no matching registry file): ${plan.stale.length}`);
-    if (plan.errors.length) details.push(`errors: ${plan.errors.join("; ")}`);
+    // 3. Local JSX handoff folder, diffed against what's already there.
+    const codegenResult = writeCodegenOutput(slug, current);
+    details.push(...codegenResult.details);
 
-    if (plan.errors.length) {
-      const result = { ok: false, summary: "plan has errors — see details", details };
-      if (standalone) printStandaloneResult("sanity", slug, result);
-      return result;
-    }
-
-    if (options.dryRun || !options.yes) {
-      const result = { ok: true, summary: "dry run — pass --yes to apply", details };
-      if (standalone) printStandaloneResult("sanity", slug, result);
-      return result;
-    }
-
-    if (!plan.changed.length && !plan.creatable.length) {
-      const result = { ok: true, summary: "no Sanity changes needed", details };
-      if (standalone) printStandaloneResult("sanity", slug, result);
-      return result;
-    }
-
-    const token = await resolveSanityToken(options);
-    const nextBody = buildNextSanityBody(document, plan, options);
-    await patchSanityBody(document._id, nextBody, token, options, document);
-    details.push(`synced ${plan.changed.length + plan.created.length} code block(s) to draft ${document._id}`);
-    details.push("NOT published — publish manually in Sanity Studio when ready");
-
-    const result = { ok: true, summary: "sanity draft updated", details };
-    if (standalone) printStandaloneResult("sanity", slug, result);
-    return result;
+    return { ok: true, summary: "codegen complete", details };
   } catch (error) {
-    const result = { ok: false, summary: error.message, details };
-    if (standalone) printStandaloneResult("sanity", slug, result);
-    return result;
+    return { ok: false, summary: error.message, details };
   }
+}
+
+function swapDemoToGlobalRemixer(slug, category) {
+  const demoDir = path.join(DOCS_DEMO_DIR, slug);
+  if (!fs.existsSync(demoDir)) return { message: `no demo folder at ${relative(demoDir)} — skipping demo swap` };
+
+  const demoFile = findLocalRemixerUsageFile(demoDir);
+  if (!demoFile) return { message: "demo already uses the global Remixer Panel (no LocalRemixerDemo usage found) — skipping" };
+
+  let content = fs.readFileSync(demoFile, "utf8");
+  const before = content;
+
+  content = content.replace(
+    /import\s+(?:\{\s*LocalRemixerDemo\s*\}|LocalRemixerDemo)\s+from\s+["']@\/components\/local-remixer(?:\/LocalRemixerDemo)?["'];?\n?/,
+    'import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";\n'
+  );
+  content = content.replace(/<LocalRemixerDemo\b([\s\S]*?)>/, (_match, attrs) => {
+    const cleanedAttrs = attrs
+      .replace(/\bname\s*=\s*(?:"[^"]*"|'[^']*'|\{[^}]*\})/g, "")
+      .replace(/\bprops\s*=\s*\{\[[\s\S]*?\]\}/, "")
+      .replace(/\bremixer\s*=\s*\{[\s\S]*?\}\}/, "")
+      .trim();
+    return `<RegistryRemixerDemo registry={registry}${cleanedAttrs ? ` ${cleanedAttrs}` : ""}>`;
+  });
+  content = content.replace(/<\/LocalRemixerDemo>/g, "</RegistryRemixerDemo>");
+
+  // Give the default-exported component a `registry` param if its
+  // parameter list doesn't already destructure one, so `registry={registry}`
+  // above has something to read from (mirrors the `({ registry }: any)`
+  // pattern real demos use). Matched narrowly against the function's own
+  // parameter list, not the whole file, so `registry={registry}` in the JSX
+  // below doesn't get mistaken for an existing destructure.
+  content = content.replace(
+    /(export\s+default\s+function\s+[A-Za-z_$][\w$]*\s*\()\s*\)/,
+    (match, prefix) => (/\bregistry\b/.test(match) ? match : `${prefix}{ registry }: any)`)
+  );
+
+  if (content === before) {
+    return { message: `found LocalRemixerDemo in ${relative(demoFile)} but the swap regex made no changes — review this file manually` };
+  }
+
+  fs.writeFileSync(demoFile, content);
+  const pageResult = ensurePageImportsRegistry(demoDir, slug, category);
+  return {
+    message: `swapped LocalRemixerDemo -> RegistryRemixerDemo in ${relative(demoFile)} (best-effort — review the JSX attributes)${pageResult ? `; ${pageResult}` : ""}`,
+  };
+}
+
+function ensurePageImportsRegistry(demoDir, slug, category) {
+  const pageFile = ["page.tsx", "page.jsx", "page.js"].map((name) => path.join(demoDir, name)).find((file) => fs.existsSync(file));
+  if (!pageFile) return "no page.tsx found to wire up the registry import — add it manually";
+
+  let content = fs.readFileSync(pageFile, "utf8");
+  const varName = `${toCamelCase(slug.replace(/-([a-z])/g, "-$1"))}Registry`;
+  if (content.includes("registry.json")) return null;
+
+  const registryJsonPath = path.join(REGISTRY_EFFECTS_DIR, category, slug, "registry.json");
+  const importPath = slash(path.relative(demoDir, registryJsonPath));
+  const importSpecifier = importPath.startsWith(".") ? importPath : `./${importPath}`;
+  const importLine = `import ${varName} from "${importSpecifier}";\n`;
+
+  const lines = content.split("\n");
+  let lastImportIndex = -1;
+  lines.forEach((line, index) => { if (line.startsWith("import ")) lastImportIndex = index; });
+  lines.splice(lastImportIndex + 1, 0, importLine.trimEnd());
+  content = lines.join("\n");
+  content = content.replace(/<DemoContent\s*\/>/, `<DemoContent registry={${varName}} />`);
+  content = content.replace(/<DemoContent(\s+)(?!registry=)/, `<DemoContent registry={${varName}} `);
+
+  fs.writeFileSync(pageFile, content);
+  return `added registry.json import to ${relative(pageFile)} — verify <DemoContent> receives it`;
+}
+
+function runRegistryResyncIfChanged(existing) {
+  const docsDir = docsComponentDir(existing.registry.name);
+  if (!fs.existsSync(docsDir)) return { changed: false, message: "no docs source folder — skipping registry re-sync" };
+
+  const files = discoverDistributableFiles(docsDir);
+  const changedFiles = files.filter((file) => {
+    const destFile = path.join(existing.dir, file.relativePath);
+    if (!fs.existsSync(destFile)) return true;
+    const sourceContent = withPortableReducedMotion(fs.readFileSync(file.absolutePath, "utf8"), file.extension);
+    return sourceContent !== stripVaultHeader(fs.readFileSync(destFile, "utf8"));
+  });
+
+  const dependencies = detectDependencies(files, docsDir);
+  const mainFileName = existing.registry.main || detectMainFileName(files);
+  const exportInfo = detectExportInfo(path.join(docsDir, mainFileName), existing.registry.exportName);
+  const nextFiles = makeFileEntries(files, existing.registry.name);
+
+  const metadataChanged =
+    JSON.stringify(dependencies) !== JSON.stringify(existing.registry.dependencies || []) ||
+    JSON.stringify(nextFiles) !== JSON.stringify(existing.registry.files || []) ||
+    exportInfo.exportName !== existing.registry.exportName ||
+    exportInfo.exportKind !== existing.registry.exportKind;
+
+  if (!changedFiles.length && !metadataChanged) {
+    return { changed: false, message: "registry-side files already match source — no re-sync needed" };
+  }
+
+  copyDistributableFilesWithHeader(changedFiles.length ? changedFiles : files, existing.dir);
+
+  const registryJson = {
+    ...existing.registry,
+    dependencies,
+    exportName: existing.registry.exportName || exportInfo.exportName,
+    exportKind: existing.registry.exportKind || exportInfo.exportKind,
+    files: nextFiles,
+  };
+  writeJson(path.join(existing.dir, "registry.json"), registryJson);
+  writeJson(
+    path.join(existing.dir, "package.json"),
+    makePackageJson(registryJson, registryJson.version, readJsonIfExists(path.join(existing.dir, "package.json")))
+  );
+  updateRootIndex(registryJson, existing.category);
+
+  return {
+    changed: true,
+    message: `registry-side re-sync: ${changedFiles.length || files.length} file(s) recopied, metadata refreshed (no version bump)`,
+  };
+}
+
+function writeCodegenOutput(slug, component) {
+  const outDir = path.join(CODEGEN_DIR, slug);
+  fs.mkdirSync(outDir, { recursive: true });
+  const details = [];
+  let written = 0;
+
+  const codeFiles = readRegistryCodeFiles(component);
+  for (const file of codeFiles) {
+    const outputs = [{ filename: file.filename, content: file.content }];
+    // For .tsx/.ts sources, the original is written alongside the
+    // type-stripped .jsx/.js version — not instead of it.
+    if (file.tsxCode !== undefined) {
+      outputs.push({ filename: file.originalFilename, content: file.tsxCode });
+    }
+    for (const output of outputs) {
+      const destPath = path.join(outDir, output.filename);
+      if (fs.existsSync(destPath) && fs.readFileSync(destPath, "utf8") === output.content) continue;
+      fs.writeFileSync(destPath, output.content);
+      written += 1;
+    }
+  }
+
+  details.push(
+    written
+      ? `wrote ${written} changed file(s) into ${relative(outDir)} for manual Sanity paste`
+      : `${relative(outDir)} already up to date — nothing changed`
+  );
+  details.push(`once Sanity is updated, delete ${relative(outDir)} yourself`);
+  return { details };
 }
 
 function readRegistryCodeFiles(existing) {
   const files = Array.isArray(existing.registry.files) ? existing.registry.files : [];
   const codeFiles = files
     .filter((file) => file.type !== "registry:asset")
-    .filter((file) => CODE_EXTENSIONS.has(path.extname(file.path || "")))
+    .filter((file) => SOURCE_EXTENSIONS.has(path.extname(file.path || "")))
     .map((file) => {
       const sourcePath = path.join(existing.dir, file.path);
       if (!fs.existsSync(sourcePath)) fail(`Registry file missing: ${relative(sourcePath)}`);
@@ -613,12 +478,14 @@ function readRegistryCodeFiles(existing) {
 function makeCodeFileEntry(relativePath, rawContent) {
   const ext = path.extname(relativePath);
   const isTsLike = ext === ".tsx" || ext === ".ts";
+  const strippedExt = ext === ".tsx" ? ".jsx" : ".js";
+  const originalFilename = path.basename(relativePath);
   return {
     path: slash(relativePath),
-    filename: path.basename(relativePath),
-    filenameNoExt: path.basename(relativePath, ext),
-    // .tsx/.ts source is kept as-is for tsxCode; `code` gets the same
-    // source with TS types stripped (jsx: "preserve" keeps JSX syntax).
+    // Stripped filename for isTsLike sources (e.g. index.tsx -> index.jsx);
+    // original name unchanged for everything else (.css/.json pass through).
+    filename: isTsLike ? path.basename(relativePath, ext) + strippedExt : originalFilename,
+    originalFilename,
     content: isTsLike ? stripTypesToJsx(rawContent) : rawContent,
     tsxCode: isTsLike ? rawContent : undefined,
   };
@@ -639,206 +506,129 @@ function stripTypesToJsx(source) {
 
 function loadTypeScript() {
   if (cachedTs) return cachedTs;
-  const tsEntry = path.join(ROOT, "apps/docs/node_modules/typescript");
-  cachedTs = requireFromScript(tsEntry);
+  cachedTs = requireFromScript(path.join(ROOT, "apps/docs/node_modules/typescript"));
   return cachedTs;
 }
 
-function buildSanityPlan({ registryFiles, document, createMissing }) {
-  const body = Array.isArray(document.body) ? document.body : [];
-  const blocks = body
-    .map((block, index) => ({ ...block, index }))
-    .filter((block) => block?._type === "effectCodeBlock");
-  const matchableBlocks = blocks.filter((block) => block.filename);
-  const registryMatches = new Map();
-  const changed = [];
-  const unchanged = [];
-  const stale = [];
-  const errors = [];
+// ---------------------------------------------------------------------------
+// `update` — registry + codegen combined for an already-shipped component
+// ---------------------------------------------------------------------------
 
-  for (const block of matchableBlocks) {
-    const match = matchRegistryFile(block.filename, registryFiles);
-    if (match.error) {
-      errors.push(`body[${block.index}] filename "${block.filename}": ${match.error}`);
-      continue;
-    }
-    if (!match.file) {
-      stale.push(block);
-      continue;
-    }
-    registryMatches.set(match.file.path, true);
-    const codeMatches = (block.code || "") === match.file.content;
-    const tsxMatches = match.file.tsxCode === undefined || (block.tsxCode || "") === match.file.tsxCode;
-    const item = { block, file: match.file, nextCode: match.file.content };
-    (codeMatches && tsxMatches ? unchanged : changed).push(item);
-  }
+async function runUpdate(options) {
+  const slug = requireOption(options, "slug");
+  validateSlug(slug);
+  const existing = findComponent(slug);
+  if (!existing) fail(`No registry entry found for "${slug}". Use \`registry\` for a brand-new component.`);
 
-  const unclaimedFiles = registryFiles.filter((file) => !registryMatches.has(file.path));
-  const USAGE_CODE_FILENAMES = new Set(["page", "layout"]);
-  const stalePairingCandidates = stale.filter((block) => !USAGE_CODE_FILENAMES.has(block.filename));
-  if (stalePairingCandidates.length === 1 && unclaimedFiles.length === 1) {
-    const block = stalePairingCandidates[0];
-    const file = unclaimedFiles[0];
-    stale.splice(stale.indexOf(block), 1);
-    registryMatches.set(file.path, true);
-    const codeMatches = (block.code || "") === file.content;
-    const tsxMatches = file.tsxCode === undefined || (block.tsxCode || "") === file.tsxCode;
-    (codeMatches && tsxMatches ? unchanged : changed).push({ block, file, nextCode: file.content });
-  }
+  const registryResult = await runRegistry(options);
+  if (!registryResult.ok) return registryResult;
 
-  const missing = registryFiles.filter((file) => !registryMatches.has(file.path));
-  const creatable = createMissing ? missing : [];
-
-  return { registryFiles, document, blocks, changed, unchanged, missing, creatable, created: [], stale, errors };
-}
-
-function matchRegistryFile(filename, registryFiles) {
-  const normalized = slash(filename).trim();
-  const exact = registryFiles.find((file) => file.path === normalized);
-  if (exact) return { file: exact };
-
-  const basenameMatches = registryFiles.filter((file) => path.basename(file.path) === normalized);
-  if (basenameMatches.length === 1) return { file: basenameMatches[0] };
-  if (basenameMatches.length > 1) return { error: `ambiguous basename match [${basenameMatches.map((f) => f.path).join(", ")}]` };
-
-  const noExtMatches = registryFiles.filter((file) => file.filenameNoExt === normalized);
-  if (noExtMatches.length === 1) return { file: noExtMatches[0] };
-  if (noExtMatches.length > 1) return { error: `ambiguous filename match [${noExtMatches.map((f) => f.path).join(", ")}]` };
-
-  return { file: null };
-}
-
-function buildNextSanityBody(document, plan, options) {
-  const body = Array.isArray(document.body) ? structuredClone(document.body) : [];
-  const changedByIndex = new Map(plan.changed.map((item) => [item.block.index, item]));
-
-  for (const [index, item] of changedByIndex) {
-    const nextBlock = { ...body[index], code: item.nextCode, filename: body[index].filename || item.file.filenameNoExt };
-    if (item.file.tsxCode !== undefined) nextBlock.tsxCode = item.file.tsxCode;
-    body[index] = nextBlock;
-  }
-
-  if (options.createMissing) {
-    let insertAt = -1;
-    body.forEach((block, index) => { if (block?._type === "effectCodeBlock") insertAt = index; });
-    if (insertAt === -1) insertAt = body.length - 1;
-    const createdBlocks = plan.creatable.map((file) => ({
-      _type: "effectCodeBlock",
-      _key: makeKey(`code-${file.path}`),
-      filename: file.filenameNoExt,
-      code: file.content,
-      ...(file.tsxCode !== undefined ? { tsxCode: file.tsxCode } : {}),
-    }));
-    body.splice(insertAt + 1, 0, ...createdBlocks);
-    plan.created = createdBlocks;
-  }
-
-  return body;
-}
-
-async function fetchSanityDocument(registry, options) {
-  if (options.fixture) return readJson(path.resolve(ROOT, options.fixture));
-
-  const client = getSanityConfig(options.tokenOverride);
-  const sanitySlug = options.sanitySlug || registry.name;
-  const sanityCategory = options.sanityCategory || registry.category;
-  const published = await queryFirstSanityDocument(client, {
-    query: `*[_type == "effectContent" && effectSlug == $slug && categorySlug == $category && !(_id in path("drafts.**"))]{...}`,
-    params: { "$slug": JSON.stringify(sanitySlug), "$category": JSON.stringify(sanityCategory) },
-    context: `${sanityCategory}/${sanitySlug}`,
-  });
-
-  if (published) {
-    const draftId = `drafts.${published._id}`;
-    const draft = await queryFirstSanityDocument(client, {
-      query: `*[_id == $id]{...}`,
-      params: { "$id": JSON.stringify(draftId) },
-      context: draftId,
-    });
-    return { ...(draft || published), _id: draftId };
-  }
-
-  const draftOnly = await queryFirstSanityDocument(client, {
-    query: `*[_type == "effectContent" && effectSlug == $slug && categorySlug == $category && _id in path("drafts.**")]{...}`,
-    params: { "$slug": JSON.stringify(sanitySlug), "$category": JSON.stringify(sanityCategory) },
-    context: `${sanityCategory}/${sanitySlug} (draft-only)`,
-  });
-  return draftOnly || null;
-}
-
-async function queryFirstSanityDocument(client, { query, params, context }) {
-  const url = new URL(`${client.baseUrl}/data/query/${client.dataset}`);
-  url.searchParams.set("query", query);
-  for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value);
-
-  const response = await fetchSanity(url, { headers: { Authorization: `Bearer ${client.token}` } }, "query Sanity document");
-  if (!response.ok) {
-    const body = await response.text();
-    fail(`Sanity query failed (${response.status}): ${body.slice(0, 500)}`);
-  }
-  const data = await response.json();
-  const results = data.result || [];
-  if (results.length > 1) fail(`Sanity query returned ${results.length} documents for ${context}. Resolve duplicates before syncing.`);
-  return results[0] || null;
-}
-
-async function patchSanityBody(documentId, body, token, options, baseDoc) {
-  if (options.fixture) {
-    const fixturePath = path.resolve(ROOT, options.fixture);
-    const fixture = readJson(fixturePath);
-    writeJson(fixturePath, { ...fixture, body });
-    return;
-  }
-
-  const client = getSanityConfig(token);
-  const url = `${client.baseUrl}/data/mutate/${client.dataset}`;
-  const draftDoc = { ...baseDoc, _id: documentId, body };
-  delete draftDoc._rev;
-
-  const response = await fetchSanity(url, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${client.token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ mutations: [{ createOrReplace: draftDoc }] }),
-  }, "patch Sanity document");
-
-  if (!response.ok) {
-    const responseBody = await response.text();
-    fail(`Sanity mutation failed (${response.status}): ${responseBody.slice(0, 500)}`);
-  }
-}
-
-async function resolveSanityToken(options) {
-  if (options.token) return options.token;
-  if (process.env.NEXT_PUBLIC_SANITY_VIEWER_TOKEN) return process.env.NEXT_PUBLIC_SANITY_VIEWER_TOKEN;
-  return promptHidden("Sanity Viewer Token (write-enabled) — not stored, used for this run only: ");
-}
-
-function getSanityConfig(tokenOverride) {
-  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
-  const token = tokenOverride || process.env.NEXT_PUBLIC_SANITY_VIEWER_TOKEN;
-  const apiVersion = process.env.SANITY_API_VERSION || "2024-01-01";
-  const baseUrl = process.env.HYPERIUX_SANITY_API_BASE || (projectId ? `https://${projectId}.api.sanity.io/v${apiVersion}` : "");
-
-  if (!projectId && !process.env.HYPERIUX_SANITY_API_BASE) fail("NEXT_PUBLIC_SANITY_PROJECT_ID is required.");
-  if (!dataset) fail("NEXT_PUBLIC_SANITY_DATASET is required.");
-  if (!token) fail("Sanity token is required (NEXT_PUBLIC_SANITY_VIEWER_TOKEN or interactive prompt).");
-
-  return { projectId, dataset, token, baseUrl };
-}
-
-async function fetchSanity(url, options, action) {
-  try {
-    return await fetch(url, options);
-  } catch (error) {
-    const cause = error.cause;
-    const details = [error.message, cause?.code, cause?.message, cause?.hostname ? `host=${cause.hostname}` : null].filter(Boolean).join(" | ");
-    fail(`Could not ${action}: ${details}`);
-  }
+  const codegenResult = await runCodegen(options);
+  return {
+    ok: codegenResult.ok,
+    summary: codegenResult.ok ? "update complete" : codegenResult.summary,
+    details: [...registryResult.details, ...codegenResult.details],
+  };
 }
 
 // ---------------------------------------------------------------------------
-// Phase 4 — Revert
+// Effect-scoped public/r rebuild (mirrors apps/docs/scripts/build-registry.js
+// for exactly one effect, instead of a full rebuild of every effect)
+// ---------------------------------------------------------------------------
+
+function buildPublicEffect(registryJson, effectDir, category) {
+  const files = Array.isArray(registryJson.files) ? registryJson.files.filter((f) => f.type !== "registry:asset") : [];
+  const fileContents = files.map((file) => ({
+    path: file.path,
+    type: file.path.endsWith(".css") ? "registry:style" : "registry:component",
+    target: file.target,
+    content: fs.readFileSync(path.join(effectDir, file.path), "utf8"),
+  }));
+
+  const isPro = registryJson.tier === "pro" || registryJson.tier === "paid";
+  const publicFiles = isPro ? fileContents.map(({ content: _c, ...rest }) => rest) : fileContents;
+
+  const registryItem = {
+    name: registryJson.name,
+    type: registryJson.type || "registry:component",
+    title: registryJson.title,
+    description: registryJson.description,
+    dependencies: registryJson.dependencies || [],
+    registryDependencies: registryJson.registryDependencies || [],
+    exportName: registryJson.exportName,
+    exportKind: registryJson.exportKind,
+    tier: registryJson.tier,
+    version: registryJson.version || "1.0.0",
+    changelog: registryJson.changelog || [],
+    ...(Array.isArray(registryJson.props) && registryJson.props.length ? { props: registryJson.props } : {}),
+    ...(registryJson.remixer ? { remixer: registryJson.remixer } : {}),
+    files: publicFiles,
+  };
+
+  fs.mkdirSync(DOCS_PUBLIC_REGISTRY_DIR, { recursive: true });
+  const outputFile = path.join(DOCS_PUBLIC_REGISTRY_DIR, `${registryJson.name}.json`);
+  const action = fs.existsSync(outputFile) ? "updated" : "created";
+  writeJson(outputFile, registryItem);
+
+  const indexFile = path.join(DOCS_PUBLIC_REGISTRY_DIR, "index.json");
+  const index = readJsonIfExists(indexFile) || { items: [] };
+  const indexItem = {
+    name: registryJson.name,
+    type: registryJson.type || "registry:component",
+    category: registryJson.category || category,
+    categories: registryJson.categories || [registryJson.category || category],
+    dependencies: registryJson.dependencies || [],
+    registryDependencies: registryJson.registryDependencies || [],
+    exportName: registryJson.exportName,
+    exportKind: registryJson.exportKind,
+    version: registryJson.version || "1.0.0",
+    tier: registryJson.tier,
+  };
+  const existingIndex = index.items.findIndex((item) => item.name === registryJson.name);
+  const indexAction = existingIndex === -1 ? "added" : "refreshed";
+  if (existingIndex === -1) index.items.push(indexItem);
+  else index.items[existingIndex] = indexItem;
+  writeJson(indexFile, index);
+
+  return { action, indexAction };
+}
+
+// ---------------------------------------------------------------------------
+// Effect-scoped dist tarball rebuild (mirrors scripts/build-registry.js for
+// exactly one effect, instead of wiping and rebuilding every tarball)
+// ---------------------------------------------------------------------------
+
+function buildTarballForEffect(effectDir) {
+  const registryFile = path.join(effectDir, "registry.json");
+  if (!fs.existsSync(registryFile)) return null;
+  const meta = readJson(registryFile);
+  const pkgFile = path.join(effectDir, "package.json");
+  const pkg = readJsonIfExists(pkgFile);
+  if (!pkg) return null;
+
+  fs.mkdirSync(DIST_DIR, { recursive: true });
+  let tarball;
+  try {
+    const out = execSync("npm pack --silent", { cwd: effectDir, stdio: ["ignore", "pipe", "inherit"] });
+    const tarballName = String(out || "").trim().split("\n").pop() || `${pkg.name.replace("/", "-")}-${pkg.version}.tgz`;
+    const src = path.join(effectDir, tarballName);
+    tarball = path.join(DIST_DIR, tarballName);
+    fs.renameSync(src, tarball);
+  } catch (error) {
+    console.error(`tarball pack failed for ${relative(effectDir)}: ${error.message}`);
+    return null;
+  }
+
+  const index = readJsonIfExists(DIST_INDEX_FILE) || [];
+  const nextIndex = index.filter((entry) => entry.name !== pkg.name);
+  nextIndex.push({ name: pkg.name, version: pkg.version, tarball: relative(tarball) });
+  writeJson(DIST_INDEX_FILE, nextIndex);
+
+  return { tarball };
+}
+
+// ---------------------------------------------------------------------------
+// Phase 3 — Revert
 // ---------------------------------------------------------------------------
 
 function runRevert(options) {
@@ -854,7 +644,7 @@ function runRevert(options) {
     path.join(DOCS_PUBLIC_REGISTRY_DIR, `${slug}.json`),
     path.join(DOCS_PUBLIC_REGISTRY_DIR, "index.json"),
     ...distFiles,
-    path.join(ROOT, "registry", "dist", "registry-index.json"),
+    DIST_INDEX_FILE,
   ].filter((file) => fs.existsSync(file));
 
   const trackedPaths = paths.filter((file) => isGitTracked(file));
@@ -877,11 +667,10 @@ function runRevert(options) {
 }
 
 function listDistFilesForSlug(slug) {
-  const distDir = path.join(ROOT, "registry", "dist");
-  if (!fs.existsSync(distDir)) return [];
-  return fs.readdirSync(distDir)
+  if (!fs.existsSync(DIST_DIR)) return [];
+  return fs.readdirSync(DIST_DIR)
     .filter((file) => file.startsWith(`hyperiux-${slug}-`) && file.endsWith(".tgz"))
-    .map((file) => path.join(distDir, file));
+    .map((file) => path.join(DIST_DIR, file));
 }
 
 function isGitTracked(file) {
@@ -891,6 +680,121 @@ function isGitTracked(file) {
   } catch {
     return false;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Vault header helpers
+// ---------------------------------------------------------------------------
+
+function vaultHeaderFor(ext) {
+  return ext === ".css" ? `/* ${VAULT_HEADER_TEXT} */` : `// ${VAULT_HEADER_TEXT}`;
+}
+
+function hasVaultHeader(content) {
+  return content.split("\n", 1)[0].includes(VAULT_HEADER_TEXT);
+}
+
+function withVaultHeader(content, ext) {
+  if (!HEADER_EXTENSIONS.has(ext) || hasVaultHeader(content)) return content;
+  return `${vaultHeaderFor(ext)}\n${content}`;
+}
+
+function stripVaultHeader(content) {
+  const lines = content.split("\n");
+  if (lines[0]?.includes(VAULT_HEADER_TEXT)) return lines.slice(1).join("\n");
+  return content;
+}
+
+function copyDistributableFilesWithHeader(files, destDir) {
+  for (const file of files) {
+    const dest = path.join(destDir, file.relativePath);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    const raw = fs.readFileSync(file.absolutePath, "utf8");
+    const portable = withPortableReducedMotion(raw, file.extension);
+    fs.writeFileSync(dest, withVaultHeader(portable, file.extension));
+  }
+}
+
+// ---------------------------------------------------------------------------
+// @/lib/motion portability: registry/codegen output gets a self-contained
+// matchMedia hook; docs/demo source keeps importing the real @/lib/motion.
+// ---------------------------------------------------------------------------
+
+function withPortableReducedMotion(content, ext) {
+  if (!HEADER_EXTENSIONS.has(ext) || ext === ".css") return content;
+
+  const match = content.match(REDUCED_MOTION_LIB_IMPORT_RE);
+  if (!match) return content;
+
+  const specifiers = match[1].split(",").map((s) => s.trim()).filter(Boolean);
+  if (!specifiers.length || !specifiers.every((s) => REDUCED_MOTION_EXPORTS.has(s))) {
+    // Mixed with something we don't know how to inline — leave it alone
+    // rather than guess at a partial transform.
+    return content;
+  }
+
+  let next = content.replace(REDUCED_MOTION_LIB_IMPORT_RE, "");
+  next = ensureNamedImport(next, "react", "useSyncExternalStore");
+
+  const inlineDefs = specifiers
+    .filter((name) => !new RegExp(`\\bfunction\\s+${name}\\b`).test(next))
+    .map((name) => reducedMotionInlineSource(name))
+    .join("\n\n");
+
+  if (!inlineDefs) return next;
+
+  // Insert right after the last import statement, so the inlined helper
+  // reads like a normal module-level declaration rather than being buried
+  // mid-file.
+  const lines = next.split("\n");
+  let lastImportIndex = -1;
+  lines.forEach((line, index) => { if (/^\s*import\s/.test(line)) lastImportIndex = index; });
+  lines.splice(lastImportIndex + 1, 0, "", inlineDefs);
+  return lines.join("\n");
+}
+
+function reducedMotionInlineSource(name) {
+  if (name === "prefersReducedMotion") {
+    return [
+      "function prefersReducedMotion() {",
+      '  if (typeof window === "undefined") return false;',
+      "",
+      `  return window.matchMedia?.("${REDUCED_MOTION_QUERY}")?.matches ?? false;`,
+      "}",
+    ].join("\n");
+  }
+  return [
+    "function usePrefersReducedMotion() {",
+    "  return useSyncExternalStore(",
+    "    (callback) => {",
+    '      if (typeof window === "undefined") return () => {};',
+    "",
+    `      const mediaQueryList = window.matchMedia("${REDUCED_MOTION_QUERY}");`,
+    '      mediaQueryList.addEventListener("change", callback);',
+    "",
+    '      return () => mediaQueryList.removeEventListener("change", callback);',
+    "    },",
+    `    () => (typeof window === "undefined" ? false : window.matchMedia?.("${REDUCED_MOTION_QUERY}")?.matches ?? false),`,
+    "    () => false",
+    "  );",
+    "}",
+  ].join("\n");
+}
+
+function ensureNamedImport(content, moduleSpecifier, importName) {
+  const existingRe = new RegExp(`import\\s*\\{([^}]*)\\}\\s*from\\s*["']${moduleSpecifier}["'];?`);
+  const existing = content.match(existingRe);
+  if (existing) {
+    const names = existing[1].split(",").map((s) => s.trim()).filter(Boolean);
+    if (names.includes(importName)) return content;
+    return content.replace(existingRe, `import { ${[...names, importName].join(", ")} } from "${moduleSpecifier}";`);
+  }
+  // No existing import from this module — add a new one, right before the
+  // first existing import so it stays with the rest of the import block.
+  const firstImportMatch = content.match(/^\s*import\s/m);
+  if (!firstImportMatch) return `import { ${importName} } from "${moduleSpecifier}";\n${content}`;
+  const index = content.indexOf(firstImportMatch[0]);
+  return `${content.slice(0, index)}import { ${importName} } from "${moduleSpecifier}";\n${content.slice(index)}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -971,7 +875,8 @@ function detectExportInfo(mainFile, explicitName) {
   fail(`Unable to detect export from ${relative(mainFile)}. Pass --export-name and --export-kind.`);
 }
 
-function makeRegistryJson({ slug, version, title, description, category, tier, dependencies, date, summary, main, exportName, exportKind, files }) {
+function makeRegistryJson({ slug, version, title, description, category, tier, dependencies, date, summary, main, exportName, exportKind, files, props }) {
+  const remixerControls = (props || []).filter((prop) => prop.remixer?.control);
   return {
     name: slug,
     version,
@@ -991,8 +896,8 @@ function makeRegistryJson({ slug, version, title, description, category, tier, d
     importPath: `@/components/effects/${slug}`,
     target: `src/components/effects/${slug}`,
     files,
-    props: [],
-    remixer: { enabled: false, layout: "panel", copyCode: { includeOnlyPublicProps: true } },
+    props: props || [],
+    remixer: { enabled: remixerControls.length > 0, layout: "panel", copyCode: { includeOnlyPublicProps: true } },
   };
 }
 
@@ -1052,14 +957,6 @@ function updateRootIndex(registryJson, category) {
 
 function readRootIndex() {
   return readJsonIfExists(ROOT_INDEX_FILE) || [];
-}
-
-function copyDistributableFiles(files, destDir) {
-  for (const file of files) {
-    const dest = path.join(destDir, file.relativePath);
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.copyFileSync(file.absolutePath, dest);
-  }
 }
 
 function resolveFreeRepoPath(options) {
@@ -1141,14 +1038,14 @@ function coerceValue(value) {
   return value;
 }
 
-function printStandaloneResult(phase, slug, result) {
-  console.log(`component:ship ${phase} — ${slug}\n`);
+function printResult(command, slug, result) {
+  console.log(`component:ship ${command} — ${slug}\n`);
   for (const detail of result.details || []) console.log(detail);
   console.log(`\n${result.ok ? "PASSED" : "FAILED"}: ${result.summary}`);
   if (!result.ok) process.exitCode = 1;
 }
 
-function promptYesNo(question) {
+function promptYesNoQuestion(question) {
   return new Promise((resolve) => {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     rl.question(question, (answer) => {
@@ -1156,39 +1053,6 @@ function promptYesNo(question) {
       resolve(/^y(es)?$/i.test(answer.trim()));
     });
   });
-}
-
-function promptHidden(question) {
-  return new Promise((resolve) => {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-    const stdin = process.stdin;
-    process.stdout.write(question);
-    let value = "";
-    const onData = (char) => {
-      char = char.toString();
-      if (char === "\n" || char === "\r" || char === "") {
-        stdin.removeListener("data", onData);
-        stdin.setRawMode?.(false);
-        process.stdout.write("\n");
-        rl.close();
-        resolve(value.trim());
-        return;
-      }
-      if (char === "") process.exit(1);
-      if (char === "") {
-        value = value.slice(0, -1);
-        return;
-      }
-      value += char;
-    };
-    stdin.setRawMode?.(true);
-    stdin.resume();
-    stdin.on("data", onData);
-  });
-}
-
-function makeKey(value) {
-  return value.replace(/[^a-zA-Z0-9_-]/g, "-").replace(/-+/g, "-").slice(0, 48);
 }
 
 function readJson(file) {

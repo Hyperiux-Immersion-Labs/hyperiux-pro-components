@@ -18,7 +18,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/arc-flow-carousel",
-  "tier": "pro",
+  "tier": "free",
   "main": "index.tsx",
   "exportName": "ArcFlowCarousel",
   "exportKind": "default",

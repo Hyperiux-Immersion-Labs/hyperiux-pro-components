@@ -1,8 +1,8 @@
 "use client";
 
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import DimensionalSwitchSlider from "@/components/dimensional-switch-slider";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import DimensionalSwitchSlider from "@/components/dimensional-switch-slider";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (

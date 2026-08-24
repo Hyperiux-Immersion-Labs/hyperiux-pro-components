@@ -110,49 +110,6 @@ function packHex(hex: string, over?: number) {
   return ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0;
 }
 
-/**
- * Dithered section transition.
- *
- * Paints a Bayer-dithered gradient that starts fully solid at one edge and
- * dissolves into scattered pixels at the other, so a dark section can hand off
- * to a light one (or the reverse) without a soft CSS gradient. The dissolve
- * front is driven by scroll, so the band builds up as it enters the viewport.
- *
- * The canvas is rendered at one pixel per dither cell and upscaled with
- * `image-rendering: pixelated`, so a redraw stays cheap on every scrub tick.
- *
- * The dissolve edge is bowed rather than flat: each column dissolves at a
- * slightly different rate, so the density contours read as broad curves. The
- * accent colour rides one of those contours, which is what puts the orange on
- * the curve edges instead of in a flat horizontal stripe.
- *
- * @param {string}  dotColor       Hex colour of the dots (the section being left).
- * @param {string}  accentColor    Hex colour tracing the dissolve curve.
- * @param {number}  accentAt       Coverage level the accent peaks at (0-1).
- * @param {number}  accentWidth    How far either side of `accentAt` it reaches.
- * @param {number}  accentStrength Overall accent density, 0 disables it.
- * @param {number}  accentShift    Slides the accent along the band toward the
- *                                 dissolving edge, as a share of the band's
- *                                 height. Negative pushes it back toward solid.
- * @param {number}  tailFade       Coverage below which dots start dimming into
- *                                 the background, so the dissolving end greys
- *                                 out. 0 keeps every dot at full strength.
- * @param {number}  curveAmount    How hard the dissolve edge bows. 0 is flat.
- * @param {number}  holdAmount     How much the solid run varies per column, so
- *                                 the solid-to-texture boundary waves too.
- * @param {number}  waveDrift      Radians of phase the crests travel over the
- *                                 scroll, so the edge shape changes as it moves.
- * @param {number}  waveBreath     How much the crest height swells mid-scroll.
- * @param {number}  buildEnd       Share of the scroll spent building, 0-1. The
- *                                 remainder drives the edge off the far side
- *                                 until the band is solid colour.
- * @param {number}  cellSize       Dot size in CSS pixels.
- * @param {number}  gamma          >1 thins the dots out faster, <1 keeps them denser.
- * @param {boolean} flip           Dissolve upward instead of downward.
- * @param {boolean} scrub          Build on scroll. False renders the finished state.
- * @param {string}  mobileStartTriggers `start` used below 768px.
- * @param {string}  mobileEndTriggers   `end` used below 768px.
- */
 export default function DitherTransition({
   className = "",
   dotColor = "#fff",

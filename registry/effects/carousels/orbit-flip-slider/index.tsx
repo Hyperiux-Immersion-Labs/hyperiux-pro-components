@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 import OrbitFlipSliderComp from './OrbitFlipSliderComp';
 
 interface OrbitFlipSliderItem {

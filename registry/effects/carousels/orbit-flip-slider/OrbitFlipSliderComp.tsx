@@ -1,9 +1,25 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client'
+import { useSyncExternalStore } from "react";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { Flip } from "gsap/dist/Flip";
-import { usePrefersReducedMotion } from "@/lib/motion";
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+
+      const mediaQueryList = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mediaQueryList.addEventListener("change", callback);
+
+      return () => mediaQueryList.removeEventListener("change", callback);
+    },
+    () => (typeof window === "undefined" ? false : window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false),
+    () => false
+  );
+}
 
 gsap.registerPlugin(Flip);
 

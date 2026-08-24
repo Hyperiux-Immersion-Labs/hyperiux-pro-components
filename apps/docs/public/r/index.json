@@ -651,7 +651,7 @@
       "exportName": "DotTransition",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "pro"
+      "tier": "free"
     },
     {
       "name": "dotted-grid",
@@ -1398,7 +1398,7 @@
       "exportName": "ArcFlowCarousel",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "pro"
+      "tier": "free"
     },
     {
       "name": "clippath-slider",
@@ -1464,7 +1464,7 @@
       "exportName": "EllipseCarousel",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "pro"
+      "tier": "free"
     },
     {
       "name": "infinite-carousel",
@@ -1497,7 +1497,7 @@
       "exportName": "OrbitFlipSlider",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "pro"
+      "tier": "free"
     },
     {
       "name": "ring-carousel",

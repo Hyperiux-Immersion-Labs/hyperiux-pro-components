@@ -19,7 +19,7 @@
   "registryDependencies": [],
   "previewUrl": "/demo/orbit-flip-slider",
   "coverImage": "orbit-flip-slider",
-  "tier": "pro",
+  "tier": "free",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "OrbitFlipSlider",

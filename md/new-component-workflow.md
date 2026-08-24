@@ -1,317 +1,248 @@
 # End-to-End Component Workflow
 
-> **Status:** Implemented. This doc and `scripts/component-ship.mjs` are
-> the complete, self-contained pair for this workflow — the script does not
-> import or shell out to any other script in this repo. Everything it needs
-> (registry sync, `public/r` build, props/changelog/remixer verification,
-> Sanity content sync) is implemented directly inside `component-ship.mjs`.
->
-> The three files this replaces conceptually — [`developer-new-component.md`](./developer-new-component.md),
-> `scripts/component-workflow.mjs`, and `scripts/sanity-code-sync.mjs` — are
-> left on disk for now and still work standalone, but they are no longer
-> the source of truth for this pipeline and may be deleted later without
-> affecting `component-ship.mjs`.
-
----
-
-## Why this is needed (the gap today)
-
-| Piece | Currently automated by | Currently verified by |
-|---|---|---|
-| Source files, `registry.json` core fields, `package.json`, root index, tarball | `component-workflow.mjs new/sync` | `component-workflow.mjs verify` |
-| `props` table (with `remixer` sub-block per prop) | **nobody** — hand-typed in `registry.json` | **nobody** |
-| `changelog` array | `component-workflow.mjs sync --bump` (writes it) | **nobody** checks it's non-empty/consistent |
-| Effect-level `remixer` object (`enabled`, `layout`, `copyCode`) | **nobody** — hand-typed | **nobody** |
-| Sanity `effectContent` code blocks (`code` / `tsxCode`) | `sanity-code-sync.mjs sync` | `sanity-code-sync.mjs diff` (read-only) |
-
-So `verify` today can say "everything passed" for a component that has no
-props table, no changelog entry matching its version, and a Sanity doc that
-still has last month's source. The orchestrator closes that gap.
-
----
-
-## Corrections vs. current code (found while verifying this doc)
-
-Two places where `developer-new-component.md` (or an earlier draft of this
-doc) doesn't match what the code actually does — `component-ship.mjs`
-should follow the code, and `developer-new-component.md` should be
-corrected separately:
-
-1. **Main file extension is `.tsx`, not `.jsx`.** Every real component's
-   `registry.json` (`registry/effects/**/registry.json`, all 260 of them)
-   has `"main": "index.tsx"` — zero use `"index.jsx"`. `developer-new-component.md`
-   still documents `index.jsx` as the convention; that's stale.
-2. **Free-tier `public/r/{slug}.json` already embeds full source today** —
-   this isn't something `component-ship.mjs` needs to add, it's existing
-   behavior in `apps/docs/scripts/build-registry.js` (content kept for
-   non-pro tiers, stripped for pro/paid). Called out explicitly here so
-   Phase 2 verifies it rather than assuming it "just works."
+> **Status:** Finalized (doc only). This is the target pipeline;
+> `scripts/component-ship.mjs` has not been updated to match yet — that's
+> the next pass, once this doc is confirmed correct. Sanity is no longer
+> synced automatically by any command in this pipeline — it's always a
+> manual copy/paste + publish step in Sanity Studio, fed by files this
+> pipeline generates for that purpose.
 
 ---
 
 ## Pipeline overview
 
 ```
-Phase 0  Preflight checklist   (does the component even have what it needs? auto-scaffold if not)
-   |
-Phase 1  Registry sync          (rebuilt in the new script: discover files, write registry.json/package.json,
-   |                             copy into registry/effects/, update root index, free-mirror, build:registry)
-Phase 2  Metadata verification  props / changelog / remixer sanity checks
-   |
-Phase 3  Sanity content sync    (rebuilt in the new script: diff -> sync, Sanity Viewer Token, draft-only)
-   |
-Phase 4  Rollback-on-failure    (auto-revert if a later phase fails after an earlier one already wrote)
-   |
-Done     final verify + summary report
+Phase 0  Developer scaffold      component + demo page, wired to a shared LOCAL remixer component
+   |                              (a scratch copy of the global Remixer Panel, used to try out
+   |                              values/props before anything is final)
+Phase 1  Registry sync            registry.json/package.json (props table, remixer sub-blocks,
+   |                              changelog) written from what was settled on in Phase 0; files
+   |                              copied into registry/effects/{category}/{slug}/; ONLY this
+   |                              effect's public/r/{slug}.json is (re)built and public/r/index.json
+   |                              is updated to add/refresh this effect's entry — no other effect's
+   |                              public files are touched
+Phase 2  Codegen                  for ONE named effect only, in one step since both halves touch
+   |                              the registry anyway: (a) rewrites the demo page's local-remixer
+   |                              usage to the shared global Remixer Panel, carrying over the
+   |                              finalized props/values; (b) re-syncs the registry-side files
+   |                              (index.tsx, registry.json, package.json, and every other
+   |                              distributable file) in registry/effects/{category}/{slug}/ so
+   |                              they reflect the just-rewired demo/component; (c) writes the
+   |                              type-stripped JSX version of each of those registry files into a
+   |                              LOCAL (non-registry) folder, one subfolder per effect, for the
+   |                              developer to paste into Sanity Studio by hand — then delete
+Phase 3  Rollback-on-failure      auto-revert if a later phase fails after Phase 1 already wrote
 ```
 
-Each phase can also be run standalone (`--only preflight`, `--only registry`,
-`--only metadata`, `--only sanity`) for iterating on one piece without
-re-running everything. Every phase is designed to be **idempotent** — safe
-to re-run after fixing one issue without redoing already-correct work.
+`update` re-runs Phases 1–2 together for one already-shipped effect whose
+demo/component changed again later (see below) — the developer doesn't
+walk through each phase by hand a second time.
 
 ---
 
-## Phase 0 — Preflight checklist
+## Phase 0 — Developer scaffold (manual)
 
-Reuses/extends the checklist already in `developer-new-component.md`, but
-turns it into something the script checks programmatically instead of a
-human reading a markdown list. New items are marked **NEW**.
+- [ ] Component folder created at `apps/docs/src/components/{slug}/`,
+  lowercase-hyphen name, `index.tsx` with a default export, accepts
+  `className`, no hardcoded colors, no `@/` imports between own files.
+- [ ] Preview page created at `apps/docs/src/app/(marketing)/demo/{slug}/page.tsx`.
+- [ ] The preview page wires the component up to
+  **`LocalRemixerDemo`** (`apps/docs/src/components/local-remixer/`) — a
+  single shared component, reused across every effect's demo, that wraps
+  the same production `RegistryRemixerDemo`/`RemixerPanel` machinery every
+  shipped demo uses, but takes a draft `{ name, props, remixer }` object
+  literal written directly in the demo file instead of an imported
+  `registry.json` (which doesn't exist yet for a brand-new component).
+  Same controls, same UI, same behavior as the real thing — just fed from
+  local draft state instead of a shipped registry entry.
+- [ ] The developer iterates using the local remixer until the
+  props/defaults/ranges are settled. Those settled values are what Phase 1
+  turns into `registry.json`'s `props` array, and what Phase 2 later wires
+  the *global* Remixer Panel to.
 
-**Source**
-- [ ] Component folder in `apps/docs/src/components/{slug}/` exists, lowercase-hyphen name
-- [ ] `index.tsx` has a default export, accepts `className`, no hardcoded colors
-- [ ] No `@/` imports between own files
-- [ ] Preview page exists at `apps/docs/src/app/(marketing)/demo/{slug}/page.js`
-
-> **Correction vs. `developer-new-component.md`:** that doc says
-> `index.jsx` as the main file. In practice every real component in the
-> registry uses `.tsx` — a check of `registry/effects/**/registry.json`
-> shows all 260 `main` fields are `"index.tsx"`, zero are `"index.jsx"`.
-> `.jsx` only shows up for a handful of demo-only files. `component-ship.mjs`
-> should treat `.tsx` as the expected main-file extension (still accepting
-> `.jsx` for the rare exception), and `developer-new-component.md` should
-> be corrected separately — it's currently stale against actual practice.
-
-**Registry metadata**
-- [ ] `registry.json` has all required fields (name/version/type/title/description/category/tier/dependencies/previewUrl/main/exportName/exportKind/importPath/target/files)
-- [ ] **NEW** `props` array is present and non-empty (unless the component genuinely takes no props — allow `--no-props-ok` to acknowledge that explicitly rather than silently passing)
-- [ ] **NEW** every prop intended to be user-tunable has a `remixer` sub-object (`control`, `group`, and `min`/`max`/`step` where numeric) — see `md/remixer-effect-props.md`
-- [ ] **NEW** effect-level `remixer` object present (`enabled`, `layout`, `copyCode.includeOnlyPublicProps`) if `remixer.enabled !== false`
-- [ ] **NEW** `changelog` array has at least one entry, and its first entry's `version` matches `registry.json`'s top-level `version`
-- [ ] `package.json` exists with `@hyperiux/{slug}` name
-
-**Free tier only**
-- [ ] **HARD FAIL, not a warning** — if `tier: "free"` and the
-  `../hyperiux-components` mirror repo path isn't reachable, Phase 0 stops
-  the whole pipeline right here. `developer-new-component.md` already
-  documents this as a hard requirement ("it won't be installable without
-  auth" if skipped), so the script should never let it slide through as a
-  warning that's easy to miss.
-
-Output of this phase: a pass/fail report per checklist item, run *before*
-touching any files — so a developer gets one clear list of what's missing
-instead of the pipeline failing halfway through phase 1 or 2.
-
-**Auto-scaffolding for the NEW items.** Rather than just failing when
-`props`/`remixer` are missing, Phase 0 makes one attempt to draft them from
-source before asking a human to fill anything in:
-- Parse the main file's destructured props / TS prop types (reusing the
-  same regex approach `component-workflow.mjs`'s `detectExportInfo` already
-  uses for exports) into a draft `props` array with `name`/`type`/`default`
-  pre-filled from source.
-- Guess a `remixer.control` per prop from its type — `boolean` → `checkbox`,
-  `number` → `range`, `string` → `text` (matches the actual control
-  vocabulary used across the registry: `range`/`color`/`checkbox`/`select`/`text`
-  — confirmed by grepping `registry/effects/**/registry.json`, not guessed).
-- Write the draft straight into `registry.json` under a `"_draft": true`
-  marker — no confirmation prompt for this write itself — so a human only
-  has to *adjust* grouping/min/max/description rather than write the whole
-  table from a blank page. The `_draft` marker stays until a human either
-  edits the entry (Phase 2 can treat any human edit as implicit review) or
-  explicitly clears it, and Phase 2's report calls out any props still
-  marked `_draft` so they don't silently ship unreviewed.
-- This scaffold is a best-effort starting point, not a substitute for
-  Phase 2's validation — Phase 2 still runs against whatever ends up in
-  `registry.json`, scaffolded or hand-written.
+No automated check today — this is groundwork before Phase 1 runs.
 
 ---
 
-## Phase 1 — Registry sync
-
-Called as part of the same `component-ship.mjs` process (not a shell-out to
-`component-workflow.mjs`), reimplementing the same logic so it lives in one
-script with one set of shared helpers:
+## Phase 1 — Registry sync (effect-scoped public/r rebuild)
 
 ```bash
-node scripts/component-ship.mjs --slug {slug} --category {c} --tier {t} --title "..." --description "..."
+node scripts/component-ship.mjs registry --slug {slug} --category {c} --tier {t} --title "..." --description "..."
 # new component vs existing is auto-detected from whether a registry.json already exists for the slug
 ```
 
-Behavior carried over from `component-workflow.mjs new`/`sync`: discover
-distributable files → detect deps/exports → write `registry.json`/
-`package.json` → copy into `registry/effects/` → update root
-`registry/index.json` → free-mirror sync if tier is free → `build:registry`
-(regenerates `public/r/{slug}.json` + `public/r/index.json`) → in-process
-verify.
+What it does:
+- Discovers the component's distributable files, detects dependencies and
+  the export name/kind.
+- Writes `registry.json` — including the `props` array with a `remixer`
+  sub-block per prop (drafted from what was settled on with the Phase 0
+  local remixer) and a `changelog` entry for this version.
+- Writes `package.json`.
+- Copies the distributable files into `registry/effects/{category}/{slug}/`,
+  with `// Built using Hyperiux Vault: https://vault.hyperiux.com` inserted
+  as the first line of every distributable code file (`.ts`/`.tsx`/`.js`/
+  `.jsx`/`.css`) — added if the source file doesn't already start with it,
+  left as-is if it does (so re-running `registry`/`update` doesn't stack
+  duplicate headers).
+- Updates the single entry for this slug in root `registry/index.json`
+  (adds it if new, replaces it if existing — other entries untouched).
+- Free-mirror sync into `../hyperiux-components` if `tier: "free"`.
+- **Rebuilds `public/r` scoped to this effect only:** regenerates
+  `public/r/{slug}.json` for this effect, and updates just this effect's
+  entry inside `public/r/index.json` (add if new, refresh if existing).
+  It does **not** re-run a full `build:registry` pass over every effect —
+  only this slug's public JSON and this slug's entry in the shared index
+  file are touched.
+- Free tier: full source stays embedded in `public/r/{slug}.json`,
+  matching existing `build-registry.js` behavior (content stripped only
+  for `pro`/`paid` tiers).
 
-**Free tier: full source embedded in `public/r/{slug}.json`.** This is
-already how `apps/docs/scripts/build-registry.js` behaves today (confirmed
-in code, not just docs): when `tier` is `"pro"`/`"paid"` the build script
-strips each file's `content` field from the public JSON so only metadata is
-public (code is served through the authenticated API instead); for any
-other tier (i.e. `"free"`) it keeps `content` in place, so the full source
-ships in `public/r/{slug}.json`. `component-ship.mjs` doesn't need to
-special-case this — it's a property of `build:registry`, which Phase 1
-already calls — but Phase 2's report should confirm it explicitly for free
-components (e.g. `public/r/{slug}.json` files[].content present: ✔) since a
-missing `content` field on a free component would silently break installs
-for anyone not authenticated.
-
-The pipeline does **not** proceed to Phase 2 if this step fails or reports
-drift, and if a later phase fails, Phase 4 can revert what this phase wrote
-(see below) rather than leaving the repo half-updated.
-
----
-
-## Phase 2 — Metadata verification (props / changelog / remixer)
-
-This is the genuinely new piece — nothing today looks inside `props`,
-`changelog`, or `remixer`. Built directly into `component-ship.mjs` as its
-own internal verification step (not bolted onto the old `verify` command):
-
-- **Props table**
-  - `props[].name` matches an actual prop the component destructures/accepts (cross-check against source, same regex-based approach `detectExportInfo` already uses for exports)
-  - Every prop has `type`, `default` (or explicit `"required": true`), `description`
-  - Flag props in source with no `registry.json` entry (silent undocumented prop) and `registry.json` entries with no matching source prop (stale)
-- **Remixer**
-  - Every prop with a `remixer` block has a valid `control` type (cross-check against the control types documented in `md/remixer-panel.md`)
-  - Numeric controls (`slider`, etc.) have `min`/`max`/`step`
-  - If effect-level `remixer.enabled` is true, at least one prop must be remixable — otherwise the panel renders empty
-  - `copyCode.includeOnlyPublicProps` referenced props actually exist
-- **Changelog**
-  - Top entry's `version` === `registry.json.version` (would have caught the "edited code without bumping version" failure mode `developer-new-component.md` already warns about)
-  - No duplicate versions
-  - `date` is a valid ISO date, not in the future
-- **Free-tier public payload**
-  - If `tier === "free"`, every entry in `public/r/{slug}.json`'s `files`
-    array has a non-empty `content` field (matches `build-registry.js`'s
-    actual behavior — content is only stripped for `pro`/`paid`)
-
-This phase is pure validation — it never edits files. If it can't safely
-auto-fix something, it reports and stops; a human fixes `registry.json` and
-re-runs.
+Stops the pipeline on failure; Phase 3 can revert what this phase wrote if
+a later phase fails.
 
 ---
 
-## Phase 3 — Sanity content sync
-
-Runs after registry + metadata are confirmed good, since Sanity should only
-ever receive code that's already correct in the registry. Reimplemented
-in `component-ship.mjs` (same logic as `sanity-code-sync.mjs`, not a call
-into that file), so the whole pipeline is one script with one shared set of
-helpers.
-
-1. **Token — Sanity Viewer Token.** The project already has a token named
-   the **Sanity Viewer Token** that has been granted write access, so that's
-   what this phase authenticates with (despite the "viewer" name). Resolution
-   order:
-   - If the `NEXT_PUBLIC_SANITY_VIEWER_TOKEN` env var is set, use it
-     directly — enables non-interactive/CI runs.
-   - Otherwise prompt interactively, masked like a password field. Never
-     echo or log it, and never persist it to disk — used only for this run.
-2. Run a `diff`-equivalent first and print the plan (changed/missing/stale
-   blocks) for visibility before writing anything.
-3. Push the update using the token resolved above. This carries over the
-   TS→JSX split from `sanity-code-sync.mjs`'s `makeCodeFileEntry` /
-   `stripTypesToJsx`: `.tsx`/`.ts` registry files get written to the
-   Sanity block's `tsxCode` field as-is, and a type-stripped, JSX-only
-   version goes into the `code` field via the TypeScript compiler
-   (`transpileModule` with `jsx: "preserve"`). `.css`/`.json` files pass
-   through unchanged with no `tsxCode`.
-4. Sync stays **draft-only** (same guarantee as today) — nothing goes live
-   until a human publishes in Sanity Studio. The final report says this
-   explicitly so nobody assumes "synced" means "live."
-
----
-
-## Phase 4 — Rollback on partial failure
-
-If Phase 3 (or Phase 2) fails after Phase 1 has already written new
-registry/version data, the script doesn't leave the repo half-shipped:
-- Detects which tracked paths Phase 1 touched for this slug (registry
-  folder, root index, `public/r/{slug}.json`, `public/r/index.json`, dist
-  tarball).
-- Prompts once: "Phase 3 failed. Revert the registry changes from this run
-  for `{slug}`? [y/N]" — a `git restore` on just those tracked paths (the
-  same mechanism `component-workflow.mjs revert` uses today) if confirmed.
-- Never auto-reverts silently — this is the one place a failure could
-  discard work, so it always asks first, matching the "confirm before
-  destructive git operations" rule.
-
----
-
-## Final report
-
-One consolidated summary at the end, e.g.:
-
-```
-component:ship — glitch-text (text/pro)
-
-Phase 0 preflight   ✔ all checks passed (props/remixer auto-scaffolded, review before commit)
-Phase 1 registry    ✔ synced (v1.2.0 -> v1.3.0), tarball rebuilt
-Phase 2 metadata    ✔ props (4), remixer (3 controls), changelog verified
-Phase 3 sanity      ✔ drafts.abc123 updated (2 blocks changed, 0 created)
-                      NOT published — publish manually in Studio when ready
-Phase 4 rollback    – not needed (no failures)
-```
-
-Non-zero exit code if any phase fails, with the failing phase's detail
-already printed above (no need to re-run to see why).
-
----
-
-## Single entry point
-
-One npm script drives the whole pipeline:
+## Phase 2 — Codegen (global-remixer swap + registry re-sync + local JSX handoff, one effect only)
 
 ```bash
-npm run component:ship -- --slug {slug} [--only preflight|registry|metadata|sanity] [--ci]
+node scripts/component-ship.mjs codegen --slug {slug}
 ```
 
-wired to `scripts/component-ship.mjs` — a **new file**, written from
-scratch, that pulls in whatever logic is needed from
-`developer-new-component.md` (as the checklist definition),
-`component-workflow.mjs`, and `sanity-code-sync.mjs`, rather than shelling
-out to the old scripts. The old three files are left untouched and still
-work standalone for anyone who wants a single phase without the full
-pipeline; `component-ship.mjs` is the new recommended path end-to-end.
+**Always scoped to exactly the one `--slug` passed in.** Never reads,
+writes, or deletes anything belonging to any other effect.
+
+Merged into one step because (b) and (a) both end up touching the
+registry for the same effect — no reason to split them into two phases
+that would each re-sync the same files:
+
+1. **Swap to the global remixer.** Rewrites the demo page created in
+   Phase 0: removes the local-remixer wiring, replaces it with the shared,
+   production **global Remixer Panel** component (the same one every other
+   effect's demo page uses), carrying over the finalized props/values/
+   ranges the developer settled on with the local remixer — now also
+   present in `registry.json`'s `props` from Phase 1 — so the global
+   Remixer Panel reads the same values from `registry.json` instead of
+   local demo-page state. The demo page that ships never contains the
+   local remixer.
+2. **Registry-side re-sync — only if something actually differs.** Before
+   writing anything, diffs the current source in
+   `apps/docs/src/components/{slug}/` against what's already copied into
+   `registry/effects/{category}/{slug}/`. If nothing differs (ignoring the
+   Vault header line), this step is a no-op — `registry.json`,
+   `package.json`, and the copied files are left untouched, no version
+   bump, no changelog entry. If one or more files differ, only those files
+   are recopied (same Vault-header insertion rule as Phase 1), and
+   `registry.json`/`package.json` are only rewritten if the diff actually
+   changes something that affects them (e.g. a new/changed prop, a new
+   dependency, a different export) — not unconditionally regenerated every
+   `codegen` run.
+3. **Local JSX handoff folder (not inside `registry/`).** Writes a
+   type-stripped JSX version of each of that effect's registry code files
+   into a dedicated local folder outside the registry tree, e.g.
+   `codegen/{slug}/` at the repo root — one subfolder per effect, so every
+   effect's handoff files live in predictable, separate places instead of
+   scattered through `registry/effects/**`. `.tsx`/`.ts` files get a
+   `jsx: "preserve"`-transpiled, type-stripped JSX version written
+   alongside; `.css`/`.json` pass through unchanged. The
+   `// Built using Hyperiux Vault: https://vault.hyperiux.com` header
+   carries over from the registry source into these generated JSX files
+   too, so what the developer pastes into Sanity already has it.
+   - **Only files that actually changed are (re)written.** Each candidate
+     file's freshly generated output is diffed against whatever's already
+     in `codegen/{slug}/` for that path; a file whose source hasn't
+     changed since the last `codegen`/`update` run is left untouched.
+   - The developer opens `codegen/{slug}/`, copies the code into the
+     matching `effectCodeBlock`s in Sanity Studio by hand, and publishes
+     there when ready.
+   - Once Sanity is updated, **the developer deletes `codegen/{slug}/`**
+     themselves — because it's a dedicated per-effect folder (not mixed in
+     with anything else), there's nothing else to check for before
+     deleting it; no separate command is needed to find leftover output.
+
+---
+
+## `update` — re-sync an already-shipped component
+
+```bash
+node scripts/component-ship.mjs update --slug {slug} --summary "..." [--bump patch|minor|major | --version x.y.z]
+```
+
+For a component that's already been shipped once, whose demo/component
+code changed again later: `update` re-runs Phase 1 (registry sync,
+effect-scoped `public/r` rebuild) and Phase 2 (global-remixer swap +
+registry re-sync + codegen) together for that one effect, in one call.
+
+- Scoped to the single `--slug` passed in — must not read, write, or
+  delete anything belonging to any other component's registry entry,
+  `public/r` files, or codegen output.
+- Only touches what actually changed: the registry-sync half only rewrites
+  `registry.json`/`package.json` fields that differ (new/changed props, a
+  new changelog entry when the version bumped, updated file list) rather
+  than blindly rewriting the whole file; the codegen half only regenerates
+  the specific file(s) under `codegen/{slug}/` whose source changed since
+  the last run.
+
+---
+
+## Phase 3 — Rollback on partial failure
+
+If a later phase fails after Phase 1 has already written new
+registry/version data, the script doesn't leave the repo half-shipped:
+
+- Detects which tracked paths Phase 1 touched for this slug (registry
+  folder, the relevant `public/r/{slug}.json`, this slug's entry in
+  `public/r/index.json`, this slug's entry in root `registry/index.json`,
+  dist tarball).
+- Prompts once: "A later phase failed after the registry was already
+  updated for `{slug}`. Revert the registry changes from this run? [y/N]"
+  — a `git restore` on just those tracked paths if confirmed.
+- Never auto-reverts silently — always asks first.
 
 ---
 
 ## Command reference
 
 All commands are `node scripts/component-ship.mjs <command> --slug {slug} [flags]`.
-Every command works standalone against an existing component — you do not
-need to have run `ship` first (resolved from the earlier open question:
-yes, every phase is independently runnable).
 
 | Command | What it does |
 |---|---|
-| `preflight` | Runs Phase 0 only: checklist + auto-scaffold missing `props`/`remixer` as `_draft`. |
-| `registry` | Runs Phase 1 only: create (`new`) or update (`sync`) the registry entry, rebuild `public/r`. |
-| `metadata` | Runs Phase 2 only: read-only verification of props/remixer/changelog/free-payload. |
-| `sanity` | Runs Phase 3 only: diff + push to Sanity (prompts for token unless `NEXT_PUBLIC_SANITY_VIEWER_TOKEN` is set). |
-| `revert` | Runs Phase 4 standalone: `git restore` the tracked distribution paths for a slug. |
-| `ship` | Runs Phases 0 → 1 → 2 → 3 in order, stopping at the first failure, offering `revert` (Phase 4) on failure after Phase 1 has written. |
+| `registry` | Phase 1: create (`new`) or update (`sync`) the registry entry — props table, remixer sub-blocks, changelog; rebuilds only this effect's `public/r/{slug}.json` and this effect's entry in `public/r/index.json`. |
+| `codegen` | Phase 2: **requires `--slug`**, scoped to exactly that effect. Rewrites the demo to the global Remixer Panel, re-syncs that effect's registry-side files **only if they differ from source** (no-op otherwise), then writes only the changed type-stripped JSX file(s) into `codegen/{slug}/` for manual copy into Sanity. Never touches any other slug. |
+| `update` | Re-runs `registry` + `codegen` together for one already-shipped `--slug` whose demo/component changed again. Diff-scoped like `codegen`. |
+| `revert` | Standalone Phase 3: `git restore` the tracked distribution paths for a slug. |
+| `ship` | Runs Phase 1 (`registry`) then Phase 2 (`codegen`) for a slug end to end, stopping on failure, offering `revert` on failure. |
 
 Common flags: `--slug` (required by every command), `--category`, `--tier`,
-`--title`, `--description` (required by `registry` for a brand-new
+`--title`, `--description` (required by `registry`/`ship` for a brand-new
 component), `--bump patch|minor|major` or `--version x.y.z` (for `registry`
-on an existing component), `--summary` (changelog entry text), `--dry-run`
-(print the plan, write nothing), `--yes` (apply without an extra confirm
-prompt, still required for `sanity` and `revert` specifically since those
-are the two commands that touch state outside the local filesystem/git),
-`--no-props-ok` (acknowledge a component intentionally has no props),
-`--create-missing` (let `sanity` append blocks for registry files with no
-matching Sanity block yet).
+/`update` on an existing component), `--summary` (changelog entry text),
+`--dry-run` (print the plan, write nothing), `--yes` (apply without an
+extra confirm prompt, required for `revert`), `--no-props-ok` (acknowledge
+a component intentionally has no props).
+
+---
+
+## Notes for the `component-ship.mjs` implementation pass
+
+- The effect-scoped `public/r` rebuild in Phase 1/`update` replaces the
+  current behavior of shelling out to the full `build:registry` script for
+  both `apps/docs` and root — it needs its own targeted logic that writes
+  one `public/r/{slug}.json` and patches one entry into `public/r/index.json`
+  without regenerating every other effect's file.
+- Phase 2's automated demo rewrite needs a defined contract for what the
+  Phase 0 local remixer's "settled values" look like (e.g. a props/defaults
+  object literal in the demo file) so the script can extract them
+  mechanically rather than guessing from arbitrary JSX.
+- The shared local remixer component now exists at
+  `apps/docs/src/components/local-remixer/LocalRemixerDemo.tsx` (barrel at
+  `local-remixer/index.ts`) — a normal source component the developer
+  imports into a demo page, not something `component-ship.mjs` generates.
+  It wraps `RegistryRemixerDemo` from `remixer-panel/`, so Phase 2's
+  automated swap just needs to replace the `LocalRemixerDemo` import/JSX
+  with `RegistryRemixerDemo` reading from the real `registry.json`,
+  carrying over the same `props`/`render`/`children`/`component` values.
+- `codegen`'s local output folder (`codegen/{slug}/` at repo root, one
+  subfolder per effect) is intentionally outside `registry/` and outside
+  version control cleanup logic — since it's already partitioned per
+  effect, there's no `list`-style command; the developer just looks in the
+  one subfolder for the effect they're working on and deletes it once done.
