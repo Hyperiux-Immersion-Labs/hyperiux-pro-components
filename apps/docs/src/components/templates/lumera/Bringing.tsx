@@ -1,14 +1,15 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect, useState, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 import BlackButton from "./BlackButton";
+import bringingPoster from "./assets/video-poster-2.webp";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const dubaiExperienceVideo = new URL("./assets/dubai-experience.mp4", import.meta.url).toString();
 
 const Bringing = () => {
   const BringingRef = useRef<HTMLElement>(null);
@@ -23,7 +24,7 @@ const Bringing = () => {
           if (entry.isIntersecting) {
             const video = videoRef.current;
             if (video && !videoLoaded) {
-              video.src = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/VaultVideos/carousels/arc-flow-carousel.mp4";
+              video.src = dubaiExperienceVideo;
               video.load();
               video.play();
               setVideoLoaded(true);
@@ -128,7 +129,7 @@ const Bringing = () => {
                 <div className="w-[20vw] h-[10vw] absolute z-100 top-0 rounded-lg overflow-hidden video max-[1025px]:w-[90vw] max-md:h-[70vw] max-[1025px]:h-[50vw]">
                   <video
                     ref={videoRef}
-                    poster="/assets/video-poster-2.webp"
+                    poster={bringingPoster.src}
                     muted
                     loop
                     playsInline
@@ -144,7 +145,7 @@ const Bringing = () => {
             </div>
           </div>
           <div className="w-[60%] max-[1025px]:py-[8vw]  mt-0 max-md:mt-[85vw] max-[1025px]:w-full max-[1025px]:mt-[55vw] flex flex-col items-center gap-[2.5vw]">
-            <p className={`font-body text-[1.2vw] max-[1025px]:text-[3.5vw] text-center text-4`}>
+            <p className={`font-body text-[1.25vw] max-[1025px]:text-[3.5vw] text-center text-4`}>
               We look beyond the listing to understand what makes a property worth considering — from its location and layout to its condition, positioning and long-term relevance. The result is a more focused property journey, built around better information and fewer distractions.
             </p>
             <div className="text-4 max-md:pt-4">

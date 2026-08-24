@@ -1,11 +1,9 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import { useRef } from "react";
 import gsap from "gsap";
-import Image, { StaticImageData } from "next/image";
+import Image, { type StaticImageData } from "next/image";
 
-import squareIcon from "./assets/icons/square.svg";
 import masterLivingRoomIcon from "./assets/icons/master-living-room.svg";
 import privateStudyIcon from "./assets/icons/private-study.svg";
 import waterPavilionIcon from "./assets/icons/water-pavilion.svg";
@@ -15,12 +13,22 @@ import beachLoungeIcon from "./assets/icons/beach-lounge.svg";
 import poolAndBeachIcon from "./assets/icons/pool-and-beach.svg";
 import privateBeachIcon from "./assets/icons/private-beach.svg";
 import entranceLobby from "./assets/icons/entrance-lobby.svg";
-import featureStaircase from "./assets/icons/feature-staircase.svg"
+import featureStaircase from "./assets/icons/feature-staircase.svg";
+import entranceLobbyImage from "./assets/entrans-lobby.png";
+import featureStaircaseImage from "./assets/feature-staircase.png";
+import fireplaceImage from "./assets/fireplace.png";
+import masterLivingRoomImage from "./assets/master-living-room.png";
+import poolBeachImage from "./assets/pool-beach.png";
+import privateBeachImage from "./assets/private-beach.png";
+import spaImage from "./assets/spa.png";
+import studyBarImage from "./assets/study-bar.png";
+import sunkenSunbedImage from "./assets/sunken-senbed.png";
+import waterPavilionImage from "./assets/water-pavilion.png";
 
 interface GalleryFeature {
   name: string;
   icon: StaticImageData;
-  image: string;
+  image: StaticImageData;
   color: string;
 }
 
@@ -28,31 +36,31 @@ const leftFeatures: GalleryFeature[] = [
   {
     name: "Entrance Lobby",
     icon: entranceLobby,
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop",
+    image: entranceLobbyImage,
     color: "#E5DCCF",
   },
   {
     name: "Feature Staircase",
     icon: featureStaircase,
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1600&auto=format&fit=crop",
+    image: featureStaircaseImage,
     color: "#E0D4C6",
   },
   {
     name: "Private Master Living Room",
     icon: masterLivingRoomIcon,
-    image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1600&auto=format&fit=crop",
+    image: masterLivingRoomImage,
     color: "#DED2C2",
   },
   {
     name: "Private Study / Cigar Bar",
     icon: privateStudyIcon,
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1600&auto=format&fit=crop",
+    image: studyBarImage,
     color: "#E4D9CB",
   },
   {
     name: "Water Pavilion",
     icon: waterPavilionIcon,
-    image: "https://images.unsplash.com/photo-1600607687644-c7f34b5063c8?q=80&w=1600&auto=format&fit=crop",
+    image: waterPavilionImage,
     color: "#DDD1C0",
   },
 ];
@@ -61,31 +69,31 @@ const rightFeatures: GalleryFeature[] = [
   {
     name: "Spa",
     icon: spaIcon,
-    image: "https://images.unsplash.com/photo-1600334129128-685c5582fd35?q=80&w=1600&auto=format&fit=crop",
+    image: spaImage,
     color: "#E2D7C8",
   },
   {
     name: "Sunken Sun Bed Deck",
     icon: sunkenSunIcon,
-    image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1600&auto=format&fit=crop",
+    image: sunkenSunbedImage,
     color: "#E6DCCE",
   },
   {
     name: "Beach Lounge & Fireplace",
     icon: beachLoungeIcon,
-    image: "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?q=80&w=1600&auto=format&fit=crop",
+    image: fireplaceImage,
     color: "#DFD3C3",
   },
   {
     name: "Pool & Beach Shower",
     icon: poolAndBeachIcon,
-    image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1600&auto=format&fit=crop",
+    image: poolBeachImage,
     color: "#E3D8CA",
   },
   {
     name: "Private Beach",
     icon: privateBeachIcon,
-    image: "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?q=80&w=1600&auto=format&fit=crop",
+    image: privateBeachImage,
     color: "#E7DDD0",
   },
 ];
@@ -111,7 +119,7 @@ const Gallery = () => {
     }
 
     const newImg = document.createElement("img");
-    newImg.src = imgSrc;
+    newImg.src = imgSrc.src;
     newImg.style.position = "absolute";
     newImg.style.left = "-100%";
     newImg.style.width = "100%";
