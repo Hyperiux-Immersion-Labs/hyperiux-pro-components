@@ -2,6 +2,24 @@
 // Defines the props, defaults, and demo content for each effect
 
 export const effectConfigs = {
+"timeline": {
+ props: [
+ { name:"textColor", type:"color", description:"Text color used for timeline headings, dates, and descriptions." },
+ { name:"activeColor", type:"color", description:"Color for the active timeline line, dots, and milestone stems." },
+ { name:"backgroundColor", type:"color", description:"Background color of the timeline section." },
+ { name:"scrollDuration", type:"range", min: 0.4, max: 3, step: 0.1, description:"Lenis smoothing duration in seconds." },
+ { name:"scrollIntensity", type:"range", min: 0.2, max: 3, step: 0.1, description:"Lenis wheel and touch multiplier." },
+ ],
+ defaults: {
+ textColor:"#000000",
+ activeColor:"#ff5f00",
+ backgroundColor:"#ffffff",
+ scrollDuration: 1.2,
+ scrollIntensity: 1,
+ },
+ note:"Horizontal timeline component with Lenis smooth scrolling and reduced-motion fallback.",
+ },
+
 "inertia-img": {
  props: [],
  defaults: {},

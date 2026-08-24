@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/progressive-bloom-valley",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "description": "WebGL particle valley flythrough with scroll-driven camera path, proximity bloom, magnetic flower interaction, film grain, and edge blur post-processing",
   "main": "index.tsx",
   "files": [

@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/spider-particles",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "description": "Canvas particle network background with connecting lines and mouse-driven repulsion.",
   "main": "index.tsx",
   "files": [

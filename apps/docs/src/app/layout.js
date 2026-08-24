@@ -99,10 +99,10 @@ export default function RootLayout({ children }) {
             title="Google Tag Manager"
           />
         </noscript>
-        <script
+        {/* <script
           id="clear-stale-clerk-cookies"
           dangerouslySetInnerHTML={{ __html: CLEAR_STALE_CLERK_COOKIES }}
-        />
+        /> */}
         {/* ClerkProvider deliberately absent here - it lives in
             (app)/layout.js so marketing routes ship zero Clerk scripts. */}
         <OrganizationJsonLd />

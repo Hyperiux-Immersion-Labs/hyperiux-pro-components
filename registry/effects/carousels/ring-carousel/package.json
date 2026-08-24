@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/ring-carousel",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "description": "3D ring gallery carousel with drag momentum, snap-to-slide, autoplay, and optional navigation + dots.",
   "main": "index.tsx",
   "files": [

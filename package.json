@@ -29,6 +29,7 @@
     "leva": "^0.10.1",
     "next-recaptcha-v3": "^1.5.3",
     "razorpay": "^2.9.8",
+    "react-dom": "^19.2.8",
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2"

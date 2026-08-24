@@ -1,0 +1,147 @@
+/* Lumera template fonts. Scoped to this folder only - imported from
+   ./styles.module.css, which only the lumera components import, so these
+   @font-face rules never load on any other page in the app. */
+
+/* PP Neue Montreal - heading font (var(--font-heading)) */
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("./assets/fonts/ppneuemontreal-woff2/ppneuemontreal-thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("./assets/fonts/ppneuemontreal-woff2/ppneuemontreal-book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("./assets/fonts/ppneuemontreal-woff2/ppneuemontreal-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("./assets/fonts/ppneuemontreal-woff2/ppneuemontreal-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("./assets/fonts/ppneuemontreal-woff2/ppneuemontreal-semibolditalic.woff2") format("woff2");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PP Neue Montreal";
+  src: url("./assets/fonts/ppneuemontreal-woff2/ppneuemontreal-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Aeonik Pro - body font (var(--font-body)) */
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-ThinItalic.woff2") format("woff2");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Air.woff2") format("woff2");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-AirItalic.woff2") format("woff2");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-LightItalic.woff2") format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-RegularItalic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-MediumItalic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-BoldItalic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-BlackItalic.woff2") format("woff2");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}

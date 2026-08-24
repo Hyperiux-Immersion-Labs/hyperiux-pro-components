@@ -55,7 +55,7 @@
       "name": "sectionHeight",
       "type": "number",
       "default": 400,
-      "description": "Total scroll-track height (vh) \u2014 controls how much scrolling the shuffle takes.",
+      "description": "Total scroll-track height (vh) — controls how much scrolling the shuffle takes.",
       "remixer": {
         "control": "range",
         "group": "motion",
