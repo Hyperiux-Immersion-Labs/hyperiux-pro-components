@@ -1,19 +1,13 @@
 "use client";
 
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Scrollbar, FreeMode } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/scrollbar";
 import BlackButton from "./BlackButton";
-import styles from "./styles.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,6 +21,55 @@ const interiorImages = [
 ];
 
 export default function Project() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const dragState = useRef<{ pointerId: number; startX: number; startScrollLeft: number } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [thumb, setThumb] = useState({ widthPct: 100, leftPct: 0 });
+
+  const updateThumb = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const widthPct = Math.min(100, (el.clientWidth / el.scrollWidth) * 100);
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const scrollRatio = maxScroll > 0 ? el.scrollLeft / maxScroll : 0;
+    setThumb({ widthPct, leftPct: scrollRatio * (100 - widthPct) });
+  };
+
+  useEffect(() => {
+    updateThumb();
+    window.addEventListener("resize", updateThumb);
+    return () => window.removeEventListener("resize", updateThumb);
+  }, []);
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    dragState.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScrollLeft: el.scrollLeft,
+    };
+    setIsDragging(true);
+    el.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const el = scrollRef.current;
+    const drag = dragState.current;
+    if (!el || !drag || drag.pointerId !== event.pointerId) return;
+    el.scrollLeft = drag.startScrollLeft - (event.clientX - drag.startX);
+    updateThumb();
+  };
+
+  const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    const el = scrollRef.current;
+    const drag = dragState.current;
+    if (!el || !drag || drag.pointerId !== event.pointerId) return;
+    el.releasePointerCapture(event.pointerId);
+    dragState.current = null;
+    setIsDragging(false);
+  };
+
   useEffect(() => {
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
@@ -49,53 +92,78 @@ export default function Project() {
       });
       return () => ctx.revert();
     }
-  });
+  }, []);
 
   return (
-    <>
-      <section id="project" className="pt-[10%] pb-[20%] mobile:pt-[20%] mobile:pb-[10%] tablet:py-[10%] w-screen overflow-hidden">
-        <div className={styles["container-lg"]}>
-          <h2 data-para-anim className={styles["title-2"]}>
-            Recent Projects
-          </h2>
-          <div className="w-full h-[1px] bg-black/30 my-[4vw] lineDraw mobile:my-[8vw] tablet:my-[5vw]"></div>
-          <div className="w-full flex justify-end mb-[5vw]">
-            <div className="w-[75%] flex justify-between px-[2vw] tablet:w-full tablet:flex-col tablet:gap-[7vw]">
-              <div className="fadeup tablet:order-1">
-                <BlackButton btnText="View All Projects" link={"#"} />
-              </div>
-              <p data-para-anim className="w-[60%] tablet:w-full">
-                A curated selection of interiors that pair restraint with warmth.
-              </p>
-            </div>
+    <section
+      id="project"
+      className="w-screen overflow-hidden  pt-[8%] pb-[12%] text-[#1c1b1a] mobile:pt-[20%] mobile:pb-[16%] tablet:py-[10%]"
+    >
+      <div className="px-[5%]">
+        <h2
+          data-para-anim
+          className="font-medium font-heading text-[4vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
+        >
+          A World of Refinement
+        </h2>
+        <div className="my-[3.5vw] h-[1px] w-full bg-black/15 lineDraw mobile:my-[8vw] tablet:my-[5vw]" />
+
+        <div className="mb-[4.5vw] grid grid-cols-[minmax(0,1fr)_minmax(18rem,34vw)] items-start gap-[4vw] pl-[23%] pr-[2%] tablet:grid-cols-1 tablet:gap-[7vw] tablet:px-0 mobile:mb-[10vw]">
+          <div className="fadeup tablet:order-1">
+            <BlackButton btnText="Enquire Now" link="#" className="bg-[#1c1b1a]" borderColor="#1c1b1a" />
           </div>
-        </div>
-        <div className="w-[70%] ml-auto rtl:mr-auto rtl:ml-0 h-full swipe fadeup tablet:w-[100vw] mobile:mt-[15vw] tablet:mt-[5vw]">
-          <Swiper
-            slidesPerView={1.5}
-            spaceBetween={20}
-            freeMode={true}
-            grabCursor={true}
-            scrollbar={{ draggable: true }}
-            modules={[Scrollbar, FreeMode]}
-            className="mySwiper w-full tablet:!px-[5vw] mobile:!px-[5vw]"
+          <p
+            data-para-anim
+            className="max-w-[38vw] text-[1.3vw] leading-[1.75] tracking-[-0.02em] text-black/85 tablet:max-w-full tablet:text-[2.5vw] mobile:text-[4.6vw]"
           >
+            Immerse yourself in the stylish allure of Lumera Heights, where every
+            corner exudes sophistication. This is not just a residence, it&apos;s a
+            mark of distinction that embodies the luxurious lifestyle you&apos;ve
+            always craved.
+          </p>
+        </div>
+      </div>
+
+      <div className="pl-[25.5%] tablet:pl-[5%]">
+        <div
+          ref={scrollRef}
+          className={`fadeup no-scrollbar w-full touch-pan-x overflow-x-scroll overflow-y-hidden overscroll-x-contain pr-[5%] select-none ${
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
+          onScroll={updateThumb}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onPointerLeave={endDrag}
+          onDragStart={(event) => event.preventDefault()}
+        >
+          <div className="flex w-max gap-[1.2vw] pb-[1vw] mobile:gap-[3vw]">
             {interiorImages.map((src, index) => (
-              <SwiperSlide
+              <div
                 key={index}
-                className="w-[40vw] h-[30vw] rounded-[2vw] overflow-hidden relative tablet:h-[70vw]"
+                className="relative h-[29vw] w-[43vw] shrink-0 overflow-hidden rounded-[1.8vw] tablet:h-[50vw] tablet:w-[72vw] mobile:h-[62vw] mobile:w-[84vw]"
               >
                 <Image
                   src={src}
                   alt={`interior-img-${index + 1}`}
                   fill
-                  className="object-cover hover:scale-110 transition-all ease-in-out duration-500"
+                  draggable={false}
+                  sizes="(max-width: 768px) 84vw, (max-width: 1024px) 72vw, 43vw"
+                  className="object-cover transition-transform duration-500 ease-in-out hover:scale-105"
                 />
-              </SwiperSlide>
+              </div>
             ))}
-          </Swiper>
+          </div>
         </div>
-      </section>
-    </>
+
+        <div className="relative mt-[3.6vw] h-[0.4vw] w-[74vw] overflow-hidden rounded-full bg-[#e5e5e5] mobile:mt-[7vw] mobile:w-[90vw]">
+          <div
+            className="absolute inset-y-0 rounded-l-full bg-black"
+            style={{ width: `${thumb.widthPct}%`, left: `${thumb.leftPct}%` }}
+          />
+        </div>
+      </div>
+    </section>
   );
 }

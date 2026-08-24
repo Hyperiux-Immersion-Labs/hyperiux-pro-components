@@ -1,5 +1,5 @@
 /* Lumera template fonts. Scoped to this folder only - imported from
-   ./styles.module.css, which only the lumera components import, so these
+   ./globals.css, which only the lumera template page imports, so these
    @font-face rules never load on any other page in the app. */
 
 /* PP Neue Montreal - heading font (var(--font-heading)) */

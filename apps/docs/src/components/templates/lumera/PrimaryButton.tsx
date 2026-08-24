@@ -1,29 +1,223 @@
-import Link from "next/link";
-import styles from "./styles.module.css";
+"use client";
 
-interface PrimaryButtonProps {
-  link: string;
-  btnText: string;
+import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type CSSProperties, type PointerEvent } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+
+const DEFAULT_HREF = "#";
+const COMPACT_LAYOUT_BREAKPOINT = 1025;
+const ANIMATION_DURATION_MS = 450;
+
+export interface ArrowFillButtonOwnProps {
+  btnText?: string;
+  href?: string;
+  link?: string;
   className?: string;
+  bgColor?: string;
+  textColor?: string;
+  fillBgColor?: string;
+  fillTextColor?: string;
+  hoverFillBgColor?: string;
+  hoverFillTextColor?: string;
+  arrowColor?: string;
+  hoverArrowColor?: string;
+  animationDuration?: number;
+  fillOnHover?: boolean;
 }
 
-const PrimaryButton = ({ link, btnText, className = "" }: PrimaryButtonProps) => {
+export type ArrowFillButtonProps = ArrowFillButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, keyof ArrowFillButtonOwnProps>;
+
+function ArrowFillButton({
+  btnText = "Hover Me",
+  href = DEFAULT_HREF,
+  link,
+  className = "",
+  bgColor = "#ffffff",
+  textColor = "#1c1b1a",
+  fillBgColor = "#1c1b1a",
+  fillTextColor = "#ffffff",
+  hoverFillBgColor = "#1c1b1a",
+  hoverFillTextColor = "#ffffff",
+  arrowColor,
+  hoverArrowColor,
+  animationDuration = ANIMATION_DURATION_MS / 1000,
+  fillOnHover = true,
+  ...props
+}: ArrowFillButtonProps) {
+  const resolvedHref = link ?? href;
+  const [isReady, setIsReady] = useState(false);
+  const [isCompactLayout, setIsCompactLayout] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  const releaseTimeoutRef = useRef<number | null>(null);
+
+  const usesUtilityBackground =
+    className.includes("bg-") ||
+    className.includes("from-") ||
+    className.includes("via-") ||
+    className.includes("to-");
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setIsReady(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      `(max-width: ${COMPACT_LAYOUT_BREAKPOINT - 1}px)`
+    );
+
+    const syncCompactLayout = (event: MediaQueryList | MediaQueryListEvent) => {
+      const matches = "matches" in event ? event.matches : ((event as any).currentTarget as MediaQueryList).matches;
+      setIsCompactLayout(matches);
+
+      if (!matches) {
+        setIsPressed(false);
+      }
+    };
+
+    syncCompactLayout(mediaQuery);
+    mediaQuery.addEventListener("change", syncCompactLayout);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncCompactLayout);
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (releaseTimeoutRef.current) {
+        window.clearTimeout(releaseTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const clearPressedState = () => {
+    if (releaseTimeoutRef.current) {
+      window.clearTimeout(releaseTimeoutRef.current);
+    }
+
+    releaseTimeoutRef.current = window.setTimeout(() => {
+      setIsPressed(false);
+      releaseTimeoutRef.current = null;
+    }, animationDuration * 1000);
+  };
+
+  const handlePointerDown = (event: PointerEvent<HTMLAnchorElement>) => {
+    props.onPointerDown?.(event);
+
+    if (!isCompactLayout || event.pointerType === "mouse") {
+      return;
+    }
+
+    if (releaseTimeoutRef.current) {
+      window.clearTimeout(releaseTimeoutRef.current);
+      releaseTimeoutRef.current = null;
+    }
+
+    setIsPressed(true);
+  };
+
+  const handlePointerUp = (event: PointerEvent<HTMLAnchorElement>) => {
+    props.onPointerUp?.(event);
+
+    if (!isCompactLayout || event.pointerType === "mouse") {
+      return;
+    }
+
+    clearPressedState();
+  };
+
+  const handlePointerCancel = (event: PointerEvent<HTMLAnchorElement>) => {
+    props.onPointerCancel?.(event);
+
+    if (!isCompactLayout || event.pointerType === "mouse") {
+      return;
+    }
+
+    clearPressedState();
+  };
+
   return (
-    <Link href={link} className={`${styles.btn} ${className}`}>
-      <span data-primary className="btn-text">
-        {btnText}
-      </span>
-      <div aria-hidden="true" className={styles["btn-circle"]}>
-        <div className={styles["btn-circle-text"]}>
-          {btnText}
-          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles["btn-icon"]}>
-            <path data-v-f4363f2a fillRule="evenodd" clipRule="evenodd" d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z" className={`${styles["btn-path"]} fill-current`} />
-            <path data-v-f4363f2a fillRule="evenodd" clipRule="evenodd" d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z" className={`${styles["btn-path"]} fill-current`} />
-          </svg>
-        </div>
+    <Link
+      href={resolvedHref}
+      {...props}
+      data-pressed={isPressed ? "true" : "false"}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+      className={`group relative inline-flex h-[var(--button-height)] w-fit min-w-fit max-w-none cursor-pointer items-center justify-center overflow-hidden rounded-full px-[1.5vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] whitespace-nowrap font-medium text-[1.1vw] leading-none [text-rendering:geometricPrecision] [--button-height:3.2vw] [--icon-circle:2.3vw] [--icon-right:0.55vw] [--circle-inset-y:calc((100%-var(--icon-circle))/2)] max-[1025px]:h-[var(--button-height)] max-[1025px]:px-[5vw] max-[1025px]:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:[--button-height:11vw] max-[1025px]:[--icon-circle:8vw] max-[1025px]:[--icon-right:1.5vw] max-md:h-[var(--button-height)] max-md:px-[7vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] max-md:text-[4.2vw] max-md:[--button-height:15vw] max-md:[--icon-circle:11vw] max-md:[--icon-right:2vw] ${
+        usesUtilityBackground ? "" : "bg-(--btn-bg)"
+      } text-(--btn-text) ${className}`}
+      style={{
+        "--btn-bg": bgColor,
+        "--btn-text": textColor,
+        "--btn-fill-bg": fillBgColor,
+        "--btn-fill-text": fillTextColor,
+        "--btn-fill-bg-hover": hoverFillBgColor,
+        "--btn-fill-text-hover": hoverFillTextColor,
+        "--btn-arrow": arrowColor || fillTextColor,
+        "--btn-arrow-hover": hoverArrowColor || hoverFillTextColor,
+        "--btn-duration": `${animationDuration}s`,
+        visibility: isReady ? "visible" : "hidden",
+      } as CSSProperties & Record<string, string | number>}
+    >
+      <span className="relative z-1 pb-px">{btnText}</span>
+
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute z-2 rounded-full bg-(--btn-fill-bg) inset-[var(--circle-inset-y)_var(--icon-right)_var(--circle-inset-y)_calc(100%-var(--icon-right)-var(--icon-circle))] ${
+          isReady
+            ? "transition-all duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:bg-(--btn-fill-bg-hover) group-hover:inset-0 group-data-[pressed=true]:bg-(--btn-fill-bg-hover) group-data-[pressed=true]:inset-0"
+            : ""
+        }`}
+      />
+
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none  absolute inset-0 z-2 flex items-center px-[1.5vw] pr-[calc(var(--icon-circle)+var(--icon-right)+2vw)] text-(--btn-fill-text) [clip-path:inset(var(--circle-inset-y)_var(--icon-right)_var(--circle-inset-y)_calc(100%-var(--icon-right)-var(--icon-circle)))] max-[1025px]:px-[5vw] max-[1025px]:pr-[calc(var(--icon-circle)+var(--icon-right)+4vw)] max-md:px-[7vw] max-md:pr-[calc(var(--icon-circle)+var(--icon-right)+5vw)] ${
+          isReady
+            ? "transition-all duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:text-(--btn-fill-text-hover) group-hover:[clip-path:inset(0_0_0_0)] group-data-[pressed=true]:text-(--btn-fill-text-hover) group-data-[pressed=true]:[clip-path:inset(0_0_0_0)]"
+            : ""
+        }`}
+      >
+        <span className="relative z-1 pb-px whitespace-nowrap">{btnText}</span>
       </div>
+
+      <span
+        className={`pointer-events-none  absolute right-[var(--icon-right)] top-1/2 z-3 inline-flex h-[var(--icon-circle)] w-[var(--icon-circle)] shrink-0 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-(--btn-fill-bg) text-(--btn-arrow) ${
+          isReady
+            ? "transition-colors duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:bg-(--btn-fill-bg-hover) group-hover:text-(--btn-arrow-hover) group-data-[pressed=true]:bg-(--btn-fill-bg-hover) group-data-[pressed=true]:text-(--btn-arrow-hover)"
+            : ""
+        }`}
+        style={{
+          WebkitMaskImage: "-webkit-radial-gradient(white, black)",
+          maskImage: "radial-gradient(white, black)",
+        }}
+        aria-hidden="true"
+      >
+          <ArrowRight
+            className={`absolute left-1/2 top-1/2 size-[1.5vw] max-[1025px]:size-[4vw] max-md:size-[5vw] translate-x-[-170%] -translate-y-1/2 origin-center scale-0 text-current ${
+              isReady
+                ? "transition-transform duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:-translate-x-1/2 group-hover:-translate-y-1/2 group-hover:scale-100 group-data-[pressed=true]:-translate-x-1/2 group-data-[pressed=true]:-translate-y-1/2 group-data-[pressed=true]:scale-100"
+                : ""
+            }`}
+            strokeWidth={1.8}
+          />
+
+          <ArrowRight
+            className={`absolute left-1/2 top-1/2 size-[1.5vw] max-[1025px]:size-[4vw] max-md:size-[5vw] -translate-x-1/2 -translate-y-1/2 origin-center text-current ${
+              isReady
+                ? "transition-transform duration-450 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] motion-reduce:transition-none group-hover:translate-x-[70%] group-hover:-translate-y-1/2 group-hover:scale-0 group-data-[pressed=true]:translate-x-[70%] group-data-[pressed=true]:-translate-y-1/2 group-data-[pressed=true]:scale-0"
+                : ""
+            }`}
+            strokeWidth={1.8}
+          />
+        </span>
     </Link>
   );
-};
+}
 
-export default PrimaryButton;
+export default ArrowFillButton;

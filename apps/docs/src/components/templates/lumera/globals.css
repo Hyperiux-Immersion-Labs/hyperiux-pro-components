@@ -1,10 +1,18 @@
-/* Truly page-wide rules for the Lumera template that CSS Modules' "pure"
-   selector check won't allow inside styles.module.css (no local class/id
-   token) — kept as a plain global stylesheet instead. */
+/* Truly page-wide rules for the Lumera template. */
+
+@import "./fonts.css";
 
 :root {
   --font-heading: "PP Neue Montreal", Arial, Helvetica, sans-serif;
   --font-body: "Aeonik Pro", Arial, Helvetica, sans-serif;
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
 }
 
 body {
@@ -18,87 +26,57 @@ body {
   scroll-behavior: smooth;
 }
 
+/* Sections without their own background (Services, Recent Projects) show the
+   body through, and GSAP drives that colour between light and dark as you
+   scroll. The docs shell defaults body to the dark `--background`, so before
+   the first trigger fires those sections rendered dark. `html body` outranks
+   the shell rule regardless of stylesheet order; GSAP's inline style still
+   wins from here on. */
+html body {
+  background-color: #ffffff;
+}
+
 [data-para-anim],
 [data-title-anim] {
   font-kerning: none;
 }
 
-p {
+/* p {
   font-size: 1.2vw;
   line-height: 1.6;
   letter-spacing: 0.05vw;
-}
-
+} */
+/* 
 @media screen and (max-width: 540px) {
   p {
     font-size: 4.2vw;
     line-height: 1.6;
     letter-spacing: 0.05vw;
   }
-}
-
+} */
+/* 
 @media screen and (min-width: 541px) and (max-width: 1023px) {
   p {
     font-size: 2.5vw;
     line-height: 1.6;
     letter-spacing: 0.05vw;
   }
+} */
+
+/* Hides the native horizontal scrollbar on swipeable rows (e.g. Project's
+   image strip), which instead render their own custom progress bar. */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 /* Swiper assigns these classes itself at runtime (swiper/react), so they
    can't be scoped by CSS Modules - they live here as plain global rules. */
-.swiper {
-  height: 33vw;
-  padding-bottom: 2vw !important;
-  overflow: visible !important;
-}
 
-.swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: #fff;
 
-  /* Center slide text vertically */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.swiper-slide img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.swiper-scrollbar-drag {
-  background-color: #3d3c3c !important;
-  border-radius: 30px;
-  height: 100%;
-}
-
-@media screen and (max-width: 540px) {
-  .swiper {
-    width: 100vw;
-    height: 80vw;
-    padding-bottom: 5vw !important;
-  }
-  .swiper-scrollbar {
-    height: 1.5vw !important;
-    width: 88% !important;
-    margin-left: 5%;
-  }
-}
-
-@media screen and (min-width: 541px) and (max-width: 1023px) {
-  .swiper-scrollbar {
-    height: 0.8vw !important;
-    width: 90% !important;
-    margin-left: 3%;
-  }
-  .swiper {
-    width: 100vw;
-    height: 60vw;
-    padding-bottom: 5vw !important;
-  }
-}
