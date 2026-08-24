@@ -254,7 +254,7 @@ function WorkWithHyperiuxModalInner() {
               type="button"
               aria-label="Close"
               onClick={close}
-              className="group md:hidden absolute -top-12 right-0 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/70 transition-all duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white max-md:right-[-5%]"
+              className="group md:hidden absolute -top-12 right-0 flex h-9 w-9 items-center justify-center rounded-none border border-white/20 bg-white/10 text-white/70 transition-all duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white max-md:right-[-5%]"
             >
               <div className="relative flex h-4 w-4 items-center justify-center transition-transform duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -263,7 +263,7 @@ function WorkWithHyperiuxModalInner() {
             </button>
 
             <div
-              className="relative w-full overflow-x-hidden overflow-y-auto rounded-[1.5vw] border border-white/20 bg-black/4 p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl h-[80vh] max-[1025px]:h-[75vh] max-[1025px]:rounded-[4vw] max-[1025px]:p-[6vw] max-md:rounded-[5vw]"
+              className="relative w-full overflow-x-hidden overflow-y-auto rounded-none border border-white/20 bg-black/4 p-[3.5vw] text-white shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-xl h-[80vh] max-[1025px]:h-[75vh] max-[1025px]:p-[6vw]"
               onWheelCapture={(e) => e.stopPropagation()}
               onTouchStart={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
@@ -273,7 +273,7 @@ function WorkWithHyperiuxModalInner() {
               type="button"
               aria-label="Close"
               onClick={close}
-              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-none border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -296,7 +296,7 @@ function WorkWithHyperiuxModalInner() {
               </p>
 
               {isSuccess ? (
-                <div className="mt-[4vw] rounded-[1vw] border border-emerald-400/20 bg-emerald-400/10 p-[2vw] max-[1025px]:mt-8 max-[1025px]:rounded-3xl max-[1025px]:p-6">
+                <div className="mt-[4vw] rounded-none border border-emerald-400/20 bg-emerald-400/10 p-[2vw] max-[1025px]:mt-8 max-[1025px]:p-6">
                   <p className="text-[1.4vw] font-medium text-emerald-100 max-[1025px]:text-xl">
                     Your enquiry has been sent successfully.
                   </p>
@@ -317,7 +317,7 @@ function WorkWithHyperiuxModalInner() {
                         id="wwh-name"
                         name="name"
                         label={false}
-                        className="border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
+                        className="rounded-none! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
                         value={values.name}
                         onChange={updateField("name")}
                         autoComplete="name"
@@ -333,7 +333,7 @@ function WorkWithHyperiuxModalInner() {
                         name="email"
                         type="email"
                         label={false}
-                        className="border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
+                        className="rounded-none! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
                         value={values.email}
                         onChange={updateField("email")}
                         autoComplete="email"
@@ -355,15 +355,15 @@ function WorkWithHyperiuxModalInner() {
                         countries={COUNTRIES}
                         showCountryName
                         error={errors.number}
-                        className="border-white/20 bg-white/10 text-white focus-within:border-[#ff5f00]!"
+                        className="rounded-none! border-white/20 bg-white/10 text-white focus-within:border-[#ff5f00]!"
                         countryButtonClassName="text-white/80 hover:text-white"
                         flagClassName="text-base"
                         dialCodeClassName="text-white"
                         chevronClassName="text-white/60"
                         dividerClassName="bg-white/15"
                         inputClassName="text-white placeholder:text-white/35"
-                        dropdownClassName="min-w-64 border-white/10! bg-[#111111]! rounded-md text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
-                        optionClassName="text-white/70 hover:bg-white/10 hover:text-white"
+                        dropdownClassName="rounded-none! min-w-64 border-white/10! bg-[#111111]! text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+                        optionClassName="rounded-none! text-white/70 hover:bg-white/10 hover:text-white"
                         activeOptionClassName="text-[#ff5f00]"
                         optionDialClassName="text-white/40"
                         errorClassName="text-red-300"
@@ -377,7 +377,7 @@ function WorkWithHyperiuxModalInner() {
                       id="wwh-message"
                       name="message"
                       label={false}
-                      className="h-[17.3vw]! rounded-xl! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]! max-[1025px]:h-36!"
+                      className="h-[17.3vw]! rounded-none! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]! max-[1025px]:h-36!"
                       rows={3}
                       value={values.message}
                       onChange={updateField("message")}
@@ -387,7 +387,7 @@ function WorkWithHyperiuxModalInner() {
                   </div>
 
                   {serverError && (
-                    <div className="col-span-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-3 text-sm leading-6 text-red-200 max-[1025px]:col-span-1">
+                    <div className="col-span-2 rounded-none border border-red-500/20 bg-red-500/10 px-5 py-3 text-sm leading-6 text-red-200 max-[1025px]:col-span-1">
                       {serverError}
                     </div>
                   )}
@@ -416,7 +416,8 @@ function WorkWithHyperiuxModalInner() {
                       onClick={handleSubmit}
                       variant="orange"
                       scaleClass="group-hover:scale-[50]"
-                      className="min-w-0"
+                      className="min-w-0 rounded-none!"
+                      circleClassName="rounded-none!"
                     />
                   </div>
                 </form>

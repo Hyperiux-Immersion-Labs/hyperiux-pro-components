@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { Camera, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Camera, Eye, EyeOff, Loader2, Trash2, User } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { useAdminRole } from "@/lib/useAdminRole";
 
@@ -11,14 +11,14 @@ const MAX_AVATAR_DIMENSION = 512;
 function RoleBadge({ role }) {
   if (role === "super_admin") {
     return (
-      <span className="inline-flex items-center  bg-purple-500/15 px-3 py-1 text-xs font-medium text-purple-300">
+      <span className="inline-flex items-center bg-white/10 border border-white/15 px-3 py-1 text-xs font-medium text-white/90">
         Super Admin
       </span>
     );
   }
   if (role === "admin") {
     return (
-      <span className="inline-flex items-center  bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
+      <span className="inline-flex items-center bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
         Admin
       </span>
     );
@@ -73,6 +73,7 @@ export default function SettingsPage() {
 
   const [savingProfile, setSavingProfile] = useState(false);
   const [savingImage, setSavingImage] = useState(false);
+  const [deletingImage, setDeletingImage] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -241,12 +242,34 @@ export default function SettingsPage() {
       console.error(err);
       setError(
         err?.errors?.[0]?.longMessage ||
-          err?.errors?.[0]?.message ||
-          "Unable to update your profile picture."
+        err?.errors?.[0]?.message ||
+        "Unable to update your profile picture."
       );
     } finally {
       setSavingImage(false);
       event.target.value = "";
+    }
+  }
+
+  async function handleImageDelete() {
+    if (!user) return;
+    setDeletingImage(true);
+    setMessage("");
+    setError("");
+
+    try {
+      await user.setProfileImage({ file: null });
+      await user.reload();
+      setMessage("Profile picture removed.");
+    } catch (err) {
+      console.error(err);
+      setError(
+        err?.errors?.[0]?.longMessage ||
+        err?.errors?.[0]?.message ||
+        "Unable to remove your profile picture."
+      );
+    } finally {
+      setDeletingImage(false);
     }
   }
 
@@ -269,28 +292,54 @@ export default function SettingsPage() {
   return (
     <div className="grid lg:grid-cols-[360px_1fr] gap-6">
       <div className=" p-8 bg-[#272727]  h-fit ">
-        <div className="relative w-32 h-32">
-          <Image
-            src={user.imageUrl}
-            alt={user.fullName || "Profile picture"}
-            fill
-            sizes="128px"
-            className=" object-cover border border-white/10"
-          />
-
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={savingImage}
-            className="absolute bottom-1 right-1 inline-flex h-10 w-10 items-center justify-center  bg-white text-black transition duration-300 hover:bg-[#ff5f00]  disabled:opacity-60 cursor-pointer"
-            aria-label="Update profile picture"
-          >
-            {savingImage ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+        <div className="flex items-end gap-4">
+          <div className="relative w-28 h-28 shrink-0">
+            {user.hasImage ? (
+              <Image
+                src={user.imageUrl}
+                alt={user.fullName || "Profile picture"}
+                fill
+                sizes="112px"
+                className="object-cover border border-white/10"
+              />
             ) : (
-              <Camera className="h-4 w-4" />
+              <div className="w-full h-full flex items-center justify-center bg-[#161616] border border-white/10 text-white/60">
+                <User className="w-10 h-10 text-white/40" />
+              </div>
             )}
-          </button>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={savingImage || deletingImage}
+              className="inline-flex mb-[.15vw] items-center gap-2 bg-white text-black px-4 py-2 text-xs font-medium transition duration-300 hover:bg-[#ff5f00] disabled:opacity-60 cursor-pointer"
+            >
+              {savingImage ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Camera className="h-3.5 w-3.5" />
+              )}
+              Upload Photo
+            </button>
+
+            {user.hasImage && (
+              <button
+                type="button"
+                onClick={handleImageDelete}
+                disabled={deletingImage || savingImage}
+                className="inline-flex items-center gap-2 border border-white/15 bg-transparent px-4 py-2 text-xs text-white/70 transition duration-300 hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-400 disabled:opacity-60 cursor-pointer"
+              >
+                {deletingImage ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Trash2 className="h-3.5 w-3.5" />
+                )}
+                Remove
+              </button>
+            )}
+          </div>
         </div>
 
         <input
