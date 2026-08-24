@@ -34,17 +34,17 @@ export default function CustomVerifyCheckbox({ action, checked, onChange }) {
       onClick={handleToggle}
       disabled={isVerifying}
       aria-pressed={checked}
-      className="inline-flex items-center gap-3 rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white/80 transition-colors hover:border-[#ff5f00]/60 disabled:cursor-wait"
+      className="inline-flex items-center gap-3 rounded-none border border-white/20 bg-white/5 px-4 py-3 text-sm text-white/80 transition-colors hover:border-[#ff5f00]/60 disabled:cursor-wait"
     >
       <span
-        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors ${
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-none border transition-colors ${
           checked
             ? "border-[#ff5f00] bg-[#ff5f00]"
             : "border-white/30 bg-transparent"
         }`}
       >
         {isVerifying ? (
-          <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+          <span className="h-3 w-3 animate-spin rounded-none border-2 border-white/40 border-t-white" />
         ) : checked ? (
           <svg
             viewBox="0 0 24 24"

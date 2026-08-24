@@ -70,14 +70,14 @@ function RevenueOverview() {
 function RoleBadge({ role }) {
   if (role === "super_admin") {
     return (
-      <span className="inline-flex items-center  bg-purple-500/15 px-3 py-1 text-xs font-medium text-purple-300">
+      <span className="inline-flex items-center bg-white/10 border border-white/15 px-3 py-1 text-xs font-medium text-white/90">
         Super Admin
       </span>
     );
   }
   if (role === "admin") {
     return (
-      <span className="inline-flex items-center  bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
+      <span className="inline-flex items-center bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
         Admin
       </span>
     );

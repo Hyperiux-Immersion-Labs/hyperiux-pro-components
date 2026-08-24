@@ -172,7 +172,7 @@ export function VaultHeader({
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-10 py-5 pr-[3.6vw] max-[1025px]:z-600 max-[1025px]:hidden max-[1025px]:px-6 max-md:px-4 ${isScrolled ? "bg-black/20 shadow-md backdrop-blur-sm" : ""
+        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-[2vw] py-5  max-[1025px]:z-600 max-[1025px]:hidden max-[1025px]:px-6 max-md:px-4 ${isScrolled ? "bg-black/20 shadow-md backdrop-blur-sm" : ""
           }`}
       >
         <div className="flex h-full items-center justify-end gap-3">

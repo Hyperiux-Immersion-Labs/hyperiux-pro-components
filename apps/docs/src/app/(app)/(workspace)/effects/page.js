@@ -4,6 +4,7 @@ import { getUserPlan } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs/server";
 import {
   getAllSanityEffectEntries,
+  buildRegistryIndex,
   buildEffectsFromSanity,
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
@@ -25,17 +26,24 @@ function VaultFallback() {
 
 export default async function EffectsPage() {
   const sanityEntries = await getAllSanityEffectEntries();
-  const effects = buildEffectsFromSanity(sanityEntries);
+  const registryIndex = buildRegistryIndex(sanityEntries);
+  const allEffects = buildEffectsFromSanity(sanityEntries);
   const categories = getEffectsByCategoryFromSanity(sanityEntries);
-  const sortedEffects = sortEffects(effects);
-  const installCounts = await getEffectInstallCounts(sortedEffects);
-  const effectsWithInstallCounts = attachInstallCounts(sortedEffects, installCounts);
+  const sortedEffects = sortEffects(allEffects);
+  const featuredEffects = getFeaturedEffects(allEffects);
+
+  // Initial 18 cards for immediate first paint
+  const initialSlice = sortedEffects.slice(0, 18);
+  const initialInstallEffects = [...new Set([...initialSlice, ...featuredEffects])];
+  const installCounts = await getEffectInstallCounts(initialInstallEffects);
+  const initialEffectsWithCounts = attachInstallCounts(initialSlice, installCounts);
+  const featuredEffectsWithCounts = attachInstallCounts(featuredEffects, installCounts);
 
   const effectCounts = {};
   for (const [category, catEffects] of Object.entries(categories)) {
     effectCounts[category] = catEffects.length;
   }
-  effectCounts.featured = getFeaturedEffects(sortedEffects).length;
+  effectCounts.featured = featuredEffects.length;
   const { userId } = await auth();
   const userPlan = await getUserPlan(userId);
   return (
@@ -45,7 +53,9 @@ export default async function EffectsPage() {
       {pageContent.faqs?.length > 0 && <FAQJSONLD faqs={pageContent.faqs} />}
       <Suspense fallback={<VaultFallback />}>
         <VaultContent
-          effects={effectsWithInstallCounts}
+          effects={registryIndex}
+          initialEffects={initialEffectsWithCounts}
+          featuredEffects={featuredEffectsWithCounts}
           effectCounts={effectCounts}
           userPlan={userPlan}
         />

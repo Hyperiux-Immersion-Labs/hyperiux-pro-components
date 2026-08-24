@@ -18,6 +18,7 @@ import {
 import { createRootMetadata } from "@/lib/seo-metadata";
 import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
+import PageTransition from "@/components/PageTransition/PageTransition";
 
 const neueHaasUnica = localFont({
   src: [
@@ -110,6 +111,7 @@ export default function RootLayout({ children }) {
         <ImageObjectJsonLd />
         <WebsiteJsonLd />
         <SoftwareApplicationJsonLd />
+        <PageTransition />
         {children}
         {/* Provider mounts only when a modal opens — never wrap page
             children or the homepage remounts when reCAPTCHA arms. */}

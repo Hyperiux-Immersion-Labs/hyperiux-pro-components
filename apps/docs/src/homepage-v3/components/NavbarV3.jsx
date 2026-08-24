@@ -109,13 +109,12 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
         // `translate` is listed alongside `transform`: the translate-y utilities
         // set the `translate` property, so leaving it out snaps the slide and
         // only the opacity reads.
-        className={`py-[2vw] flex max-[1025px]:hidden items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none ${
-          !introReady
+        className={`py-[2vw] flex max-[1025px]:hidden items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none ${!introReady
             ? "translate-y-0 opacity-0 pointer-events-none"
             : reveal
               ? "translate-y-0 opacity-100"
               : "translate-y-[-120%] opacity-100"
-        }`}
+          }`}
         style={{ willChange: "transform" }}
         onPointerDownCapture={markPointer}
         onMouseLeave={closeOnHover}
@@ -141,7 +140,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
             onFocusCapture={openOnFocus("categories")}
           >
             <HoverLinkV3
-              href="/effects/featured"
+              href="#"
               text="Effects"
               className="group"
               onClick={(event) => togglePanel(event, "categories")}
@@ -161,7 +160,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
             onFocusCapture={openOnFocus("docs")}
           >
             <HoverLinkV3
-              href="/docs"
+              href="#"
               text="Docs"
               className="group"
               onClick={(event) => togglePanel(event, "docs")}

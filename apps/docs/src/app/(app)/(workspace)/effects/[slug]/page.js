@@ -11,6 +11,7 @@ import { auth } from "@clerk/nextjs/server";
 import { sortEffects } from "@/lib/effect-sort";
 import {
   getAllSanityEffectEntries,
+  buildRegistryIndex,
   buildEffectsFromSanity,
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
@@ -66,17 +67,32 @@ export default async function EffectsCategoryPage({ params }) {
   const userPlan = await getUserPlan(userId);
 
   const sanityEntries = await getAllSanityEffectEntries();
-  const effects = buildEffectsFromSanity(sanityEntries);
+  const registryIndex = buildRegistryIndex(sanityEntries);
+  const allEffects = buildEffectsFromSanity(sanityEntries);
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
-  const sortedEffects = sortEffects(effects);
-  const installCounts = await getEffectInstallCounts(sortedEffects);
-  const effectsWithInstallCounts = attachInstallCounts(sortedEffects, installCounts);
+  const sortedEffects = sortEffects(allEffects);
+  const featuredEffects = getFeaturedEffects(allEffects);
+
+  // Initial category filter matching
+  const categoryId = isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category?.id;
+  const categoryEffects = sortedEffects.filter((effect) => {
+    if (categoryId === "free") return effect.tier !== "pro";
+    if (categoryId === "pro") return effect.tier === "pro";
+    if (categoryId === "featured") return featuredEffects.some((f) => f.name === effect.name);
+    return effect.categorySlug === slug || effect.categories?.includes(slug);
+  });
+
+  const initialSlice = categoryEffects.slice(0, 18);
+  const initialInstallEffects = [...new Set([...initialSlice, ...featuredEffects])];
+  const installCounts = await getEffectInstallCounts(initialInstallEffects);
+  const initialEffectsWithCounts = attachInstallCounts(initialSlice, installCounts);
+  const featuredEffectsWithCounts = attachInstallCounts(featuredEffects, installCounts);
 
   const effectCounts = {};
-  for (const [categoryId, catEffects] of Object.entries(categoriesMap)) {
-    effectCounts[categoryId] = catEffects.length;
+  for (const [catId, catEffects] of Object.entries(categoriesMap)) {
+    effectCounts[catId] = catEffects.length;
   }
-  effectCounts.featured = getFeaturedEffects(sortedEffects).length;
+  effectCounts.featured = featuredEffects.length;
 
   if (!isFreeListing && !isFeaturedListing && !isProListing && (!category || !categoriesMap[category.id])) {
     notFound();
@@ -96,9 +112,11 @@ export default async function EffectsCategoryPage({ params }) {
       {pageContent.faqs?.length > 0 && <FAQJSONLD faqs={pageContent.faqs} />}
       <Suspense fallback={<VaultFallback />}>
         <VaultContent
-          effects={effectsWithInstallCounts}
+          effects={registryIndex}
+          initialEffects={initialEffectsWithCounts}
+          featuredEffects={featuredEffectsWithCounts}
           effectCounts={effectCounts}
-          initialCategory={isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category.id}
+          initialCategory={categoryId}
           userPlan={userPlan}
         />
       </Suspense>

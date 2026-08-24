@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -31,18 +31,23 @@ function formatLabel(value = "") {
 }
 
 function resolveCoverImage(effect) {
-  const resolved =
-    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
-      defaultDirectory: "vault-listing-images",
-      defaultExtension: "png",
-    }) || "/assets/img/image01.webp";
+  const raw = effect?.coverImage || effect?.imageSrc;
+  if (!raw || raw === "/assets/img/image01.webp" || raw === "image01") return null;
 
+  const resolved = resolveMediaUrl(raw, {
+    defaultDirectory: "vault-listing-images",
+    defaultExtension: "png",
+  });
+
+  if (!resolved || resolved === "/assets/img/image01.webp") return null;
   if (resolved.startsWith("/")) return resolved;
 
   return resizeR2ImageUrl(resolved, { width: COVER_WIDTH, height: COVER_HEIGHT });
 }
 
 function TrendingEffectCard({ effect, priority = false }) {
+  const [imageError, setImageError] = useState(false);
+  const coverImage = useMemo(() => resolveCoverImage(effect), [effect]);
   const categoryLabel = formatLabel(
     (effect.categories?.length ? effect.categories[0] : effect.category) ||
     "components",
@@ -59,18 +64,23 @@ function TrendingEffectCard({ effect, priority = false }) {
         {categoryLabel}
       </span>
 
-      <div className="absolute inset-x-3 top-[22%] h-[62%] bottom-3 overflow-hidden bg-[#efe9da] md:inset-x-5 md:top-[20%] md:bottom-5">
-        <Image
-          src={resolveCoverImage(effect)}
-          alt={effect.title || effect.name}
-          fill
-          sizes={CARD_SIZES}
-          quality={65}
-          priority={priority}
-          loading={priority ? undefined : "lazy"}
-          draggable={false}
-          className="object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.04]"
-        />
+      <div className="absolute inset-x-3 top-[22%] h-[62%] bottom-3 overflow-hidden bg-[#202020] md:inset-x-5 md:top-[20%] md:bottom-5">
+        {coverImage && !imageError ? (
+          <Image
+            src={coverImage}
+            alt={effect.title || effect.name}
+            fill
+            sizes={CARD_SIZES}
+            quality={65}
+            priority={priority}
+            loading={priority ? undefined : "lazy"}
+            draggable={false}
+            onError={() => setImageError(true)}
+            className="object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.04]"
+          />
+        ) : (
+          <div className="h-full w-full bg-[#202020]" />
+        )}
       </div>
     </Link>
   );

@@ -21,8 +21,6 @@ const isProtectedRoute = createRouteMatcher([
 // below) on every visit to the pages that actually need to be fast.
 const isMarketingRoute = createRouteMatcher([
   "/",
-  "/docs(.*)",
-  "/legal(.*)",
   "/demo(.*)",
 ]);
 

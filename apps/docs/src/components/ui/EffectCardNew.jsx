@@ -41,12 +41,15 @@ const LISTING_COVER_WIDTH = 560;
 const LISTING_COVER_HEIGHT = 315;
 
 function resolveEffectCoverImage(effect) {
-  const resolved =
-    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
-      defaultDirectory: "vault-listing-images",
-      defaultExtension: "png",
-    }) || "/assets/img/image01.webp";
+  const raw = effect?.coverImage || effect?.imageSrc;
+  if (!raw || raw === "/assets/img/image01.webp" || raw === "image01") return null;
 
+  const resolved = resolveMediaUrl(raw, {
+    defaultDirectory: "vault-listing-images",
+    defaultExtension: "png",
+  });
+
+  if (!resolved || resolved === "/assets/img/image01.webp") return null;
   if (resolved.startsWith("/")) return resolved;
 
   return resizeR2ImageUrl(resolved, {
@@ -67,6 +70,7 @@ export function EffectCard({
   const [videoReady, setVideoReady] = useState(false);
   const [hasAppeared, setHasAppeared] = useState(false);
   const [registryDependencies, setRegistryDependencies] = useState(null);
+  const [imageError, setImageError] = useState(false);
 
   const router = useRouter();
   const cardRef = useRef(null);
@@ -202,19 +206,24 @@ export function EffectCard({
 
 
       <div className="pointer-events-none  relative aspect-3/2  px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden  bg-[#161616]">
-        <div className=" w-full relative h-[80%] overflow-hidden ">
-          <Image
-            src={coverImage}
-            alt={effect.title || effect.name}
-            fill
-            sizes={sizes}
-            quality={75}
-            priority={priority}
-            loading={priority ? undefined : "lazy"}
-            className={`object-cover transition-[opacity,transform] duration-500 ${
-              showVideo ? "opacity-0" : "opacity-100"
-            }`}
-          />
+        <div className=" w-full relative h-[80%] overflow-hidden bg-[#202020]">
+          {coverImage && !imageError ? (
+            <Image
+              src={coverImage}
+              alt={effect.title || effect.name}
+              fill
+              sizes={sizes}
+              quality={75}
+              priority={priority}
+              loading={priority ? undefined : "lazy"}
+              onError={() => setImageError(true)}
+              className={`object-cover transition-[opacity,transform] duration-500 ${
+                showVideo ? "opacity-0" : "opacity-100"
+              }`}
+            />
+          ) : (
+            <div className="h-full w-full bg-[#202020]" />
+          )}
           {hasAppeared && videoPreviewUrl && (
             <video
               ref={videoRef}

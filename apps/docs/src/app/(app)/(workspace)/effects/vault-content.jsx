@@ -7,7 +7,8 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { VaultLayout } from "@/components/layout/VaultLayout";
+import { useVaultLayout } from "@/components/layout/VaultLayout";
+import { PixelSquaresLoader } from "@/components/ui/PixelSquaresLoader";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
@@ -125,49 +126,20 @@ function SkeletonBlock({ className = "" }) {
 
 
 
-function EffectsGridSkeleton({ count = 6 }) {
-  return (
-    <div className="grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 grid-cols-3 max-[1025px]:grid-cols-[20%_40%_40%] max-md:grid-cols-[20%_40%_40%] max-[1025px]:gap-10 max-md:gap-16">
-      {Array.from({ length: count }).map((_, index) => (
-        <div
-          key={`effect-card-skeleton-${index}`}
-          className="effect-card-shell group relative"
-        >
-          <div className="relative aspect-[1.02/1] w-full overflow-hidden  bg-[#272727] p-[2vw] max-[1025px]:p-5 max-md:p-5">
-            {index % 3 === 2 && (
-              <SkeletonBlock className="absolute right-4 top-4 h-10 w-14  bg-[#3a3a3a]" />
-            )}
-
-            <div className="flex h-full w-full items-center justify-center">
-              <SkeletonBlock className="aspect-[1.78/1] w-[88%]  bg-[#111111]" />
-            </div>
-          </div>
-
-          <div className="relative mt-5 flex items-start justify-between gap-4 px-3 max-md:px-1">
-            <div className="min-w-0 flex-1">
-              <SkeletonBlock className="mb-2 h-5 w-[58%]  bg-[#2f2f2f]" />
-              <SkeletonBlock className="h-4 w-[34%]  bg-[#242424]" />
-            </div>
-
-            <div className="hidden items-center gap-3 xl:flex">
-              <SkeletonBlock className="h-10 w-10  bg-[#161616]" />
-              <SkeletonBlock className="h-10 w-10  bg-[#161616]" />
-              <SkeletonBlock className="h-10 w-10  bg-[#ff5f00]/50" />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+function EffectsGridSkeleton() {
+  return <PixelSquaresLoader label="Loading effects" />;
 }
 
 export function VaultContent({
   effects: incomingEffects,
+  initialEffects: incomingInitialEffects = [],
+  featuredEffects: incomingFeaturedEffects = [],
   effectCounts: incomingEffectCounts,
   initialCategory = "all",
   userPlan = "free",
   isLoading = false,
 }) {
+  const { isSidebarOpen, isSidebarReady, toggleSidebar } = useVaultLayout();
   const { isSignedIn } = useUser();
   const router = useRouter();
   const pathname = usePathname();
@@ -186,21 +158,20 @@ export function VaultContent({
     setMounted(true);
   }, []);
 
-const animationSearchParamString = useMemo(() => {
-  const params = new URLSearchParams(searchParamString);
+  const animationSearchParamString = useMemo(() => {
+    const params = new URLSearchParams(searchParamString);
 
-  params.delete("waitlist");
-  params.delete("custom-animation-form");
-  params.delete("upgraded");
-  params.delete("filter");
-  params.delete("sort");
+    params.delete("waitlist");
+    params.delete("custom-animation-form");
+    params.delete("upgraded");
+    params.delete("filter");
+    params.delete("sort");
 
-  return params.toString();
-}, [searchParamString]);
+    return params.toString();
+  }, [searchParamString]);
 
-const routeKey = `${pathname}${
-  animationSearchParamString ? `?${animationSearchParamString}` : ""
-}`;
+  const routeKey = `${pathname}${animationSearchParamString ? `?${animationSearchParamString}` : ""
+    }`;
 
   const safeEffects = useMemo(
     () => (Array.isArray(incomingEffects) ? incomingEffects : []),
@@ -209,8 +180,8 @@ const routeKey = `${pathname}${
   const safeEffectCounts = useMemo(
     () =>
       incomingEffectCounts &&
-      typeof incomingEffectCounts === "object" &&
-      !Array.isArray(incomingEffectCounts)
+        typeof incomingEffectCounts === "object" &&
+        !Array.isArray(incomingEffectCounts)
         ? incomingEffectCounts
         : {},
     [incomingEffectCounts]
@@ -257,8 +228,11 @@ const routeKey = `${pathname}${
   const [dropdownFilter, setDropdownFilter] = useState(null);
 
   const featuredEffects = useMemo(
-    () => getFeaturedEffects(safeEffects),
-    [safeEffects]
+    () =>
+      incomingFeaturedEffects?.length > 0
+        ? incomingFeaturedEffects
+        : getFeaturedEffects(safeEffects),
+    [incomingFeaturedEffects, safeEffects]
   );
 
   const featuredEffectNames = useMemo(
@@ -326,38 +300,38 @@ const routeKey = `${pathname}${
     });
   }, []);
 
- const getCategoryUrl = useCallback(
-  (nextCategory) => {
-    const resolvedCategory = nextCategory || "all";
-    const collectionFilter = EFFECT_CATEGORY_FILTER_OPTIONS.includes(activeDropdownFilter)
-      ? activeDropdownFilter
-      : EFFECT_CATEGORY_FILTER_OPTIONS.includes(categoryFilter)
-        ? categoryFilter
-        : null;
+  const getCategoryUrl = useCallback(
+    (nextCategory) => {
+      const resolvedCategory = nextCategory || "all";
+      const collectionFilter = EFFECT_CATEGORY_FILTER_OPTIONS.includes(activeDropdownFilter)
+        ? activeDropdownFilter
+        : EFFECT_CATEGORY_FILTER_OPTIONS.includes(categoryFilter)
+          ? categoryFilter
+          : null;
 
-    const params = new URLSearchParams(searchParamString);
+      const params = new URLSearchParams(searchParamString);
 
-    params.delete("category");
-    params.delete("waitlist");
-    params.delete("custom-animation-form");
-    params.delete("sort");
+      params.delete("category");
+      params.delete("waitlist");
+      params.delete("custom-animation-form");
+      params.delete("sort");
 
-    if (
-      collectionFilter &&
-      !EFFECT_CATEGORY_FILTER_OPTIONS.includes(resolvedCategory)
-    ) {
-      params.set("filter", collectionFilter);
-    } else {
-      params.delete("filter");
-    }
+      if (
+        collectionFilter &&
+        !EFFECT_CATEGORY_FILTER_OPTIONS.includes(resolvedCategory)
+      ) {
+        params.set("filter", collectionFilter);
+      } else {
+        params.delete("filter");
+      }
 
-    const nextQuery = params.toString();
-    const categoryHref = getEffectCategoryHref(resolvedCategory);
+      const nextQuery = params.toString();
+      const categoryHref = getEffectCategoryHref(resolvedCategory);
 
-    return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
-  },
-  [activeDropdownFilter, categoryFilter, searchParamString]
-);
+      return nextQuery ? `${categoryHref}?${nextQuery}` : categoryHref;
+    },
+    [activeDropdownFilter, categoryFilter, searchParamString]
+  );
 
   const navigateWithRouteFade = useCallback(
     (href) => {
@@ -708,86 +682,75 @@ const routeKey = `${pathname}${
 
   return (
     <>
-    <VaultLayout
-      effectCounts={safeEffectCounts}
-      effects={safeEffects}
-      activeCategory={categoryFilter}
-      onOverviewNavigate={showAllEffects}
-      onCategoryNavigate={handleCategoryLinkClick}
-    >
-      {({ isSidebarOpen, toggleSidebar, isSidebarReady }) => (
-        <>
-        <EffectsGridDefaults
-          gridColumns={gridColumns}
-          isSidebarReady={isSidebarReady}
-          toggleSidebar={toggleSidebar}
-        />
-        <SidebarGridSync
-          isSidebarOpen={isSidebarOpen}
-          gridColumns={gridColumns}
-          setGridColumns={setGridColumns}
-        />
-        {/* Outside RouteFade: its transform would turn the header's
-            position:fixed into transform-relative and scroll it away. */}
-        <VaultHeader
-          showSearch
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          totalEffects={totalEffects}
-          effects={safeEffects}
-        />
+      <EffectsGridDefaults
+        gridColumns={gridColumns}
+        isSidebarReady={isSidebarReady}
+        toggleSidebar={toggleSidebar}
+      />
+      <SidebarGridSync
+        isSidebarOpen={isSidebarOpen}
+        gridColumns={gridColumns}
+        setGridColumns={setGridColumns}
+      />
+      <VaultHeader
+        showSearch
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        totalEffects={totalEffects}
+        effects={safeEffects}
+      />
 
-        <RouteFade
-          key={routeKey}
-          motionKey={routeKey}
-          ref={categoryPageRef}
-          className="relative min-h-screen text-foreground effects-comp border-b border-white/10"
-        >
+      <RouteFade
+        key={routeKey}
+        motionKey={routeKey}
+        ref={categoryPageRef}
+        className="relative min-h-screen text-foreground effects-comp border-b border-white/10"
+      >
 
-          <RouteAnimationSync syncKey={routeKey} />
+        <RouteAnimationSync syncKey={routeKey} />
 
-          <div>
-            <div
-              key={`category-intro-${categoryFilter}`}
-              className=" px-8 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
-            >
-              <Breadcrumb className="fadeup" />
+        <div>
+          <div
+            key={`category-intro-${categoryFilter}`}
+            className=" px-8 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
+          >
+            <Breadcrumb className="fadeup" />
 
-              <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
-                <h1
-                  className="mb-4 w-[80%] leading-normal t96 font-display font-normal text-foreground max-md:w-[90%] max-md:text-4xl"
-                  style={{ lineHeight: "1.3" }}
+            <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
+              <h1
+                className="mb-4 w-[80%] leading-normal t96 font-display font-normal text-foreground max-md:w-[90%] max-md:text-4xl"
+                style={{ lineHeight: "1.3" }}
+              >
+                {activeCategoryName}
+              </h1>
+            </HeadAnim>
+
+            <div className="category-fadeup  flex max-w-[55vw] flex-col text-lg text-muted max-[1025px]:max-w-full max-md:text-base">
+              {activeCategoryDescriptions.map((description, index) => (
+                <Copy
+                  key={`${categoryFilter}-description-${index}`}
+                  delay={0.6}
+                  animationKey={`${routeKey}-${index}`}
                 >
-                  {activeCategoryName}
-                </h1>
-              </HeadAnim>
-
-              <div className="category-fadeup  flex max-w-[55vw] flex-col text-lg text-muted max-[1025px]:max-w-full max-md:text-base">
-                {activeCategoryDescriptions.map((description, index) => (
-                  <Copy
-                    key={`${categoryFilter}-description-${index}`}
-                    delay={0.6}
-                    animationKey={`${routeKey}-${index}`}
-                  >
-                    <p className="mt-3">
-                      {description}
-                    </p>
-                  </Copy>
-                ))}
-              </div>
+                  <p className="mt-3">
+                    {description}
+                  </p>
+                </Copy>
+              ))}
             </div>
           </div>
-           
-           <div className="category-fadeup fadeup" data-fadeup-delay="0.5">
-          <TrendingRightNow effects={featuredEffects} />
-          </div>
+        </div>
 
-          <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
-            <div
-              className="relative max-[1025px]:w-full flex items-start gap-4 fadein"
-              data-fadein-delay="0.4"
-            >
-              <div className="relative min-w-0 flex-1">
+        <div className="category-fadeup fadeup" data-fadeup-delay="0.5">
+          <TrendingRightNow effects={featuredEffects} />
+        </div>
+
+        <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
+          <div
+            className="relative max-[1025px]:w-full flex items-start gap-4 fadein"
+            data-fadein-delay="0.4"
+          >
+            <div className="relative min-w-0 flex-1">
               <div
                 className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 hidden w-12 max-[1025px]:block"
                 style={{
@@ -797,66 +760,66 @@ const routeKey = `${pathname}${
               />
 
 
-                <div
-                  className={[
-                    "category-fadeup flex items-center gap-2.5 font-geist-mono",
-                    "flex-wrap",
-                    "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto max-[1025px]:px-6",
-                    "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
-                    "[&::-webkit-scrollbar]:h-1",
-                    "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:",
-                    "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:",
-                    "max-[1025px]:pb-3",
-                  ].join(" ")}
-                  
-                >
-                  {/* Filter dropdown: featured / free / pro / sorting */}
-                  <FilterMenu
-                    activeFilter={activeFilter}
-                    getLabel={getQuickCategoryLabel}
-                    onSelect={handleFilterSelect}
-                    onClear={() => handleFilterSelect("none")}
-                    options={dropdownFilterOptions}
-                  />
+              <div
+                className={[
+                  "category-fadeup flex items-center gap-2.5 font-geist-mono",
+                  "flex-wrap",
+                  "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto max-[1025px]:px-6",
+                  "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
+                  "[&::-webkit-scrollbar]:h-1",
+                  "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:",
+                  "[&::-webkit-scrollbar-thumb]:bg-[#CC4C04] [&::-webkit-scrollbar-thumb]:",
+                  "max-[1025px]:pb-3",
+                ].join(" ")}
 
-                  {/* Divider between filters and categories */}
-                  {/* <span
+              >
+                {/* Filter dropdown: featured / free / pro / sorting */}
+                <FilterMenu
+                  activeFilter={activeFilter}
+                  getLabel={getQuickCategoryLabel}
+                  onSelect={handleFilterSelect}
+                  onClear={() => handleFilterSelect("none")}
+                  options={dropdownFilterOptions}
+                />
+
+                {/* Divider between filters and categories */}
+                {/* <span
                     aria-hidden="true"
                     className="mx-1 h-7 w-px shrink-0 self-center bg-white/15 max-md:h-6"
                   /> */}
 
-                  {categoryChips.map((cat) => {
-                    const isSelected = categoryFilter === cat;
-                    const label = getQuickCategoryLabel(cat);
-                    const href = getCategoryUrl(isSelected ? "all" : cat);
+                {categoryChips.map((cat) => {
+                  const isSelected = categoryFilter === cat;
+                  const label = getQuickCategoryLabel(cat);
+                  const href = getCategoryUrl(isSelected ? "all" : cat);
 
-                    return (
-                      <Link
-                        key={cat}
-                        href={href}  
-                        scroll={false}
-                        onClick={(event) => {
-                          event.preventDefault();
-                          handleCategoryLinkClick(cat);
-                        }}
-                        className={`
+                  return (
+                    <Link
+                      key={cat}
+                      href={href}
+                      scroll={false}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleCategoryLinkClick(cat);
+                      }}
+                      className={`
                           px-6 py-2.5 text-[1vw] text-center relative max-md:px-5 max-md:py-2
                           backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
                           transition-colors duration-300 
                           ${isSelected
-                            ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"
-                            : "bg-[#161616] text-[#FFFFFF] hover:text-black hover:bg-[#ff5f00]"
-                          }
+                          ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"
+                          : "bg-[#161616] text-[#FFFFFF] hover:text-black hover:bg-[#ff5f00]"
+                        }
                         `}
-                      >
-                        <span className="leading-none">{label}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
+                    >
+                      <span className="leading-none">{label}</span>
+                    </Link>
+                  );
+                })}
               </div>
-                <div className="flex items-center gap-4 max-sm:hidden">
-                <p>Layout</p>
+            </div>
+            <div className="flex items-center gap-4 max-sm:hidden">
+              <p>Layout</p>
               {/* Grid density viewer: 2 or 3 cards per row */}
               <div className="relative shrink-0 max-[1025px]:hidden flex items-end gap-1  bg-[#161616] p-1">
                 <span
@@ -866,7 +829,7 @@ const routeKey = `${pathname}${
                     transform: `translateX(${gridColumns === 3 ? "calc(2.5rem + 0.25rem)" : "0"})`,
                   }}
                 />
-                
+
                 {[2, 3].map((cols) => {
                   const isActive = gridColumns === cols;
 
@@ -896,111 +859,112 @@ const routeKey = `${pathname}${
                   );
                 })}
               </div>
-              </div>
             </div>
           </div>
+        </div>
 
-          <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-md:px-0">
-            <div
-              className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
-                  ? "mb-8 min-h-10 opacity-100"
-                  : "mb-0 min-h-0 opacity-0 pointer-events-none"
-                }`}
-            >
-              {searchQuery && (
-                <span
-                  className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm font-medium max-md:px-3 max-md:py-1.5 max-md:text-xs"
-                  style={{ borderRadius: "56px" }}
+        <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-md:px-0">
+          <div
+            className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
+              ? "mb-8 min-h-10 opacity-100"
+              : "mb-0 min-h-0 opacity-0 pointer-events-none"
+              }`}
+          >
+            {searchQuery && (
+              <span
+                className="flex items-center gap-2 px-4 py-1.5 bg-[#555555]/33 backdrop-blur-md border border-border/50 text-foreground text-sm font-medium max-md:px-3 max-md:py-1.5 max-md:text-xs"
+                style={{ borderRadius: "56px" }}
+              >
+                <span>&quot;{searchQuery}&quot;</span>
+
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="hover:text-white transition-colors"
                 >
-                  <span>&quot;{searchQuery}&quot;</span>
-
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    className="hover:text-white transition-colors"
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <svg
-                      className="w-3.5 h-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </span>
-              )}
-            </div>
-
-            {isEffectsLoading ? (
-              <EffectsGridSkeleton count={9} />
-            ) : filteredEffects.length === 0 ? (
-              <div className="py-20 text-center max-md:px-4 max-md:py-14">
-                <div className="mb-6 text-6xl max-md:mb-4 max-md:text-4xl">
-                  🔍
-                </div>
-
-                <h3
-                  className="mb-3 font-display text-3xl font-normal text-foreground max-md:text-2xl"
-                  style={{ lineHeight: "1.1" }}
-                >
-                  No effects found
-                </h3>
-
-                <p className="font-sans text-base text-muted max-md:text-sm">
-                  Try adjusting your search or filter criteria
-                </p>
-              </div>
-            ) : (
-              <EffectsGrid
-                filteredEffects={filteredEffects}
-                wishlist={wishlist}
-                toggleWishlist={toggleWishlist}
-                isProUser={isProUser}
-                isSidebarOpen={isSidebarOpen}
-                animationKey={routeKey}
-                columns={gridColumns}
-              />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </span>
             )}
+          </div>
 
-            {!isEffectsLoading && (
-              <div className="relative text-foreground w-full mx-auto max-[1025px]:w-full">
-                {activeCategoryFaqItems.length > 0 && (
-                  <div key={`category-faq-${categoryFilter}`}>
-                    <FAQV3 faqItems={activeCategoryFaqItems} translateTop={false} />
-                  </div>
-                )}
+          {isEffectsLoading ? (
+            <EffectsGridSkeleton count={9} />
+          ) : filteredEffects.length === 0 ? (
+            <div className="py-20 text-center max-md:px-4 max-md:py-14">
+              <div className="mb-6 text-6xl max-md:mb-4 max-md:text-4xl">
+                🔍
+              </div>
 
-                {activeCategoryContent?.cta &&
-                  (activeCategoryContent?.cta.heading ||
-                    activeCategoryContent?.cta.buttonText) && (
-                    <section
-                      key={`category-cta-${categoryFilter}`}
-                      className="category-fadeup fadeup w-full bg-[#272727]  max-sm:w-[90%] text-center mb-[7vw] mx-auto"
-                    >
-                      <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-[1025px]:px-6 max-md:px-[7vw] py-15">
-                        {activeCategoryContent.cta.heading && (
-                          <h2 className="text-[4vw] font-medium text-foreground max-md:text-[7vw]">
-                            {activeCategoryContent.cta.heading}
-                          </h2>
-                        )}
+              <h3
+                className="mb-3 font-display text-3xl font-normal text-foreground max-md:text-2xl"
+                style={{ lineHeight: "1.1" }}
+              >
+                No effects found
+              </h3>
 
-                        {activeCategoryContent.cta.description && (
-                          <p className="mt-4 mx-auto max-w-3xl text20 text-muted">
-                            {activeCategoryContent.cta.description}
-                          </p>
-                        )}
+              <p className="font-sans text-base text-muted max-md:text-sm">
+                Try adjusting your search or filter criteria
+              </p>
+            </div>
+          ) : (
+            <EffectsGrid
+              filteredEffects={filteredEffects}
+              initialEffects={incomingInitialEffects}
+              wishlist={wishlist}
+              toggleWishlist={toggleWishlist}
+              isProUser={isProUser}
+              isSidebarOpen={isSidebarOpen}
+              animationKey={routeKey}
+              columns={gridColumns}
+            />
+          )}
 
-                        {activeCategoryContent.cta.buttonText && (
-                          <CustomAnimationFormTrigger>
+          {!isEffectsLoading && (
+            <div className="relative text-foreground w-full mx-auto max-[1025px]:w-full">
+              {activeCategoryFaqItems.length > 0 && (
+                <div key={`category-faq-${categoryFilter}`}>
+                  <FAQV3 faqItems={activeCategoryFaqItems} translateTop={false} />
+                </div>
+              )}
+
+              {activeCategoryContent?.cta &&
+                (activeCategoryContent?.cta.heading ||
+                  activeCategoryContent?.cta.buttonText) && (
+                  <section
+                    key={`category-cta-${categoryFilter}`}
+                    className="category-fadeup fadeup w-full bg-[#272727]  max-sm:w-[90%] text-center mb-[7vw] mx-auto"
+                  >
+                    <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-[1025px]:px-6 max-md:px-[7vw] py-15">
+                      {activeCategoryContent.cta.heading && (
+                        <h2 className="text-[4vw] font-medium text-foreground max-md:text-[7vw]">
+                          {activeCategoryContent.cta.heading}
+                        </h2>
+                      )}
+
+                      {activeCategoryContent.cta.description && (
+                        <p className="mt-4 mx-auto max-w-3xl text20 text-muted">
+                          {activeCategoryContent.cta.description}
+                        </p>
+                      )}
+
+                      {activeCategoryContent.cta.buttonText && (
+                        <CustomAnimationFormTrigger>
                           <div className="mt-6 w-fit">
                             <ButtonV3
-                             preventDefault={false}
+                              preventDefault={false}
                               text={activeCategoryContent.cta.buttonText}
                               href={activeCategoryContent.cta.buttonLink || "#"}
                               variant="white"
@@ -1008,94 +972,90 @@ const routeKey = `${pathname}${
                               scaleClass="group-hover:scale-[100]"
                             />
                           </div>
-                          </CustomAnimationFormTrigger>
-                        )}
-                      </div>
-                    </section>
-                  )}
-              </div>
-            )}
-          </div>
-        </RouteFade>
-        </>
-      )}
+                        </CustomAnimationFormTrigger>
+                      )}
+                    </div>
+                  </section>
+                )}
+            </div>
+          )}
+        </div>
+      </RouteFade>
 
-    </VaultLayout>
+      <ToastViewport toast={wishlistToast} onDismiss={dismissWishlistToast} />
 
-    <ToastViewport toast={wishlistToast} onDismiss={dismissWishlistToast} />
-
-    {mounted && createPortal(
-      <>
-        {/* Pro upgrade success modal */}
-        <div
-          className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${justUpgraded && !upgradeToastDismissed ? "opacity-100" : "pointer-events-none opacity-0"}`}
-          onClick={() => setUpgradeToastDismissed(true)}
-        >
+      {mounted && createPortal(
+        <>
+          {/* Pro upgrade success modal */}
           <div
-            className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${justUpgraded && !upgradeToastDismissed ? "scale-100" : "scale-95"}`}
-            onClick={(event) => event.stopPropagation()}
+            className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${justUpgraded && !upgradeToastDismissed ? "opacity-100" : "pointer-events-none opacity-0"}`}
+            onClick={() => setUpgradeToastDismissed(true)}
           >
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setUpgradeToastDismissed(true)}
-              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+            <div
+              className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${justUpgraded && !upgradeToastDismissed ? "scale-100" : "scale-95"}`}
+              onClick={(event) => event.stopPropagation()}
             >
-              <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
-                <span className="h-px w-4 rotate-45 bg-white" />
-                <span className="absolute h-px w-4 -rotate-45 bg-white" />
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setUpgradeToastDismissed(true)}
+                className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+              >
+                <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+                  <span className="h-px w-4 rotate-45 bg-white" />
+                  <span className="absolute h-px w-4 -rotate-45 bg-white" />
+                </div>
+              </button>
+
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="text-2xl font-medium text-white">Welcome to Pro</h2>
               </div>
-            </button>
-
-            <div className="flex items-start justify-between gap-3">
-              <h2 className="text-2xl font-medium text-white">Welcome to Pro</h2>
+              <p className="text-sm text-white/60 text-center w-[80%] max-[1025px]:w-full">
+                Your upgrade is confirmed and the full vault is unlocked. Explore
+                every Pro effect and start shipping right away.
+              </p>
+              <Link href="/effects" className="inline-flex w-fit items-center gap-1.5  bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
+                Explore effects
+              </Link>
             </div>
-            <p className="text-sm text-white/60 text-center w-[80%] max-[1025px]:w-full">
-              Your upgrade is confirmed and the full vault is unlocked. Explore
-              every Pro effect and start shipping right away.
-            </p>
-            <Link href="/effects" className="inline-flex w-fit items-center gap-1.5  bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors">
-              Explore effects
-            </Link>
           </div>
-        </div>
 
-        {/* Wishlist sign-in modal */}
-        <div
-          className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showWishlistToast ? "opacity-100" : "pointer-events-none opacity-0"}`}
-          onClick={() => setShowWishlistToast(false)}
-        >
-      <div
-            className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-8 items-center  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
-            onClick={(event) => event.stopPropagation()}
+          {/* Wishlist sign-in modal */}
+          <div
+            className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showWishlistToast ? "opacity-100" : "pointer-events-none opacity-0"}`}
+            onClick={() => setShowWishlistToast(false)}
           >
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setShowWishlistToast(false)}
-              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+            <div
+              className={`flex w-[35vw]  max-md:w-full max-[1025px]:w-[70%] flex-col gap-8 items-center  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showWishlistToast ? "scale-100" : "scale-95"}`}
+              onClick={(event) => event.stopPropagation()}
             >
-              <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
-                <span className="h-px w-4 rotate-45 bg-white" />
-                <span className="absolute h-px w-4 -rotate-45 bg-white" />
-              </div>
-            </button>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => setShowWishlistToast(false)}
+                className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+              >
+                <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+                  <span className="h-px w-4 rotate-45 bg-white" />
+                  <span className="absolute h-px w-4 -rotate-45 bg-white" />
+                </div>
+              </button>
 
-            <div className="flex items-start justify-between gap-3">
-              <h2 className="text-2xl font-medium text-white">Sign in required</h2>
+              <div className="flex items-start justify-between gap-3">
+                <h2 className="text-2xl font-medium text-white">Sign in required</h2>
+              </div>
+              <p className="text-sm text-white/60 text-center w-[80%] max-[1025px]:w-full">
+                Create a free account or sign in to save effects to your
+                wishlist and pick up right where you left off.
+              </p>
+              <ButtonV3 text="Sign In" href="/sign-in?redirect_url=/effects" />
+
+
             </div>
-            <p className="text-sm text-white/60 text-center w-[80%] max-[1025px]:w-full">
-              Create a free account or sign in to save effects to your
-              wishlist and pick up right where you left off.
-            </p>
-                      <ButtonV3 text="Sign In" href="/sign-in?redirect_url=/effects" />
-            
-            
           </div>
-        </div>
-      </>,
-      document.body
-    )}
+        </>,
+        document.body
+      )}
     </>
   );
 }
@@ -1108,6 +1068,7 @@ const CARD_ENTRANCE_BASE_DELAY = 1;
 // Inner component - keyed by filteredEffectsKey so state resets automatically on filter change
 function EffectsGridInner({
   filteredEffects,
+  initialEffects = [],
   wishlist,
   toggleWishlist,
   isProUser,
@@ -1115,9 +1076,61 @@ function EffectsGridInner({
   columns = 3,
 }) {
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const [loadedCards, setLoadedCards] = useState(() => {
+    const initialMap = {};
+    if (Array.isArray(initialEffects)) {
+      for (const effect of initialEffects) {
+        if (effect?.name) initialMap[effect.name] = effect;
+      }
+    }
+    return initialMap;
+  });
+  const [isLoadingBatch, setIsLoadingBatch] = useState(false);
 
   const gridRef = useRef(null);
   const sentinelRef = useRef(null);
+  const isFetchingRef = useRef(false);
+
+  const visibleEffects = filteredEffects.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredEffects.length;
+
+  // Fetch full card data for any effects currently in visible range that aren't loaded yet
+  useEffect(() => {
+    const neededSlugs = visibleEffects
+      .map((e) => e.name)
+      .filter((slug) => slug && !loadedCards[slug]);
+
+    if (neededSlugs.length === 0 || isFetchingRef.current) return;
+
+    let cancelled = false;
+    isFetchingRef.current = true;
+    setIsLoadingBatch(true);
+
+    fetch(`/api/effects/list?slugs=${encodeURIComponent(neededSlugs.join(","))}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || !data?.effects) return;
+        setLoadedCards((prev) => {
+          const next = { ...prev };
+          for (const card of data.effects) {
+            if (card?.name) next[card.name] = card;
+          }
+          return next;
+        });
+      })
+      .catch((err) => console.error("Error loading effects batch:", err))
+      .finally(() => {
+        if (!cancelled) {
+          isFetchingRef.current = false;
+          setIsLoadingBatch(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      isFetchingRef.current = false;
+    };
+  }, [visibleEffects, loadedCards]);
 
   // Load next batch when the sentinel enters the viewport
   useEffect(() => {
@@ -1136,9 +1149,6 @@ function EffectsGridInner({
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, [filteredEffects.length]);
-
-  const visibleEffects = filteredEffects.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredEffects.length;
 
   // Animate only newly-mounted cards (those without .card-entered yet)
   useEffect(() => {
@@ -1172,31 +1182,41 @@ function EffectsGridInner({
         ref={gridRef}
         className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
       >
-        {visibleEffects.map((effect, i) => (
-          <motion.div
-            key={effect.name}
-            layout
-            transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
-          >
-            <div className="effect-card-shell">
-              <EffectCard
-                effect={effect}
-                priority={i < 4}
-                isWishlisted={wishlist.includes(effect.name)}
-                toggleWishlist={toggleWishlist}
-                isProUser={isProUser}
-              />
-            </div>
-          </motion.div>
-        ))}
+        {visibleEffects.map((effect, i) => {
+          const fullEffect = loadedCards[effect.name] || effect;
+          return (
+            <motion.div
+              key={effect.name}
+              layout
+              transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
+            >
+              <div className="effect-card-shell">
+                <EffectCard
+                  effect={fullEffect}
+                  priority={i < 4}
+                  isWishlisted={wishlist.includes(effect.name)}
+                  toggleWishlist={toggleWishlist}
+                  isProUser={isProUser}
+                />
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
-      {/* Sentinel - 400px ahead of viewport triggers the next batch before user reaches bottom */}
+      {/* Sentinel - triggers the next 18 batch before user reaches bottom */}
       {hasMore && <div ref={sentinelRef} className="h-1" aria-hidden="true" />}
+
+      {/* Loading state indicator during batch fetch */}
+      {isLoadingBatch && (
+        <div className="flex justify-center py-10">
+          <PixelSquaresLoader />
+        </div>
+      )}
 
       {/* Manual fallback - covers slow IntersectionObserver support or scroll
           that never reaches the sentinel (short viewports, trackpads, etc). */}
-      {hasMore && (
+      {hasMore && !isLoadingBatch && (
         <div className="flex justify-center pt-10">
           <LinkButton
             text="Load More"
@@ -1214,6 +1234,7 @@ function EffectsGridInner({
 
 function EffectsGrid({
   filteredEffects,
+  initialEffects,
   wishlist,
   toggleWishlist,
   isProUser = false,
@@ -1229,6 +1250,7 @@ function EffectsGrid({
     <EffectsGridInner
       key={filteredEffectsKey}
       filteredEffects={filteredEffects}
+      initialEffects={initialEffects}
       wishlist={wishlist}
       toggleWishlist={toggleWishlist}
       isProUser={isProUser}
