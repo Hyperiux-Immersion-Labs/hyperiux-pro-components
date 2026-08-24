@@ -6,9 +6,31 @@ import { useGSAP } from "@gsap/react";
 import EffectBox from "@/homepage-v3/components/EffectBox";
 import LineReveal from "@/components/Animations/LineReveal";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
+import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
+
+function effectMedia(slug, categorySlug) {
+    const image =
+        resolveMediaUrl(slug, {
+            defaultDirectory: "vault-listing-images",
+            defaultExtension: "png",
+        }) || `/homepage-v3/imgs/${slug}.webp`;
+    const poster = image.startsWith("/")
+        ? image
+        : resizeR2ImageUrl(image, { width: 800, height: 533 });
+
+    return {
+        video: true,
+        media: resolveEffectVideoUrl({
+            videoUrl: `${slug}.mp4`,
+            categorySlug,
+            effectSlug: slug,
+        }),
+        poster,
+    };
 }
 
 const COLUMNS = [
@@ -18,14 +40,15 @@ const COLUMNS = [
             tag: "Cursor Effects",
             action: "Cursor Effects",
             href: "/effects/cursor-effects",
-            media: "/homepage-v3/imgs/cursor.webp",
+            ...effectMedia("character-trail", "cursor-effects"),
         },
         {
             title: "WebGL",
             tag: "WebGL",
             action: "WebGL",
-            href: "/effects/webgl",
-            media: "/homepage-v3/imgs/webgl.webp",
+            href: "/effects/webgl-effects",
+            ...effectMedia("webgl-slider", "carousels"),
+          
         },
     ],
     [
@@ -33,15 +56,15 @@ const COLUMNS = [
             title: "Text Animation",
             tag: "Text Animation",
             action: "Text Animation",
-            href: "/effects/text-animation",
-            media: "/homepage-v3/imgs/text-animations.webp",
+            href: "/effects/text-animations",
+            ...effectMedia("rolling-text", "text-animations"),
         },
         {
             title: "Page Transitions",
             tag: "Page Transition",
             action: "Page Transitions",
             href: "/effects/page-transitions",
-            media: "/homepage-v3/imgs/page-transition.webp",
+            ...effectMedia("depth-shift-transition", "page-transitions"),
         },
     ],
     [
@@ -49,15 +72,15 @@ const COLUMNS = [
             title: "Scroll Effects",
             tag: "Scroll Effects",
             action: "Scroll Effects",
-            href: "/effect/scroll-effects",
-            media: "/homepage-v3/imgs/scroll-effects.webp",
+            href: "/effects/scroll-effects",
+            ...effectMedia("grid-tunnel", "webgl-effects"),
         },
         {
             title: "Navigations",
             tag: "Navigations",
             action: "Navigations",
-            href: "/effects/navigation-effects",
-            media: "/homepage-v3/imgs/navigation.webp",
+            href: "/effects/navigation",
+            ...effectMedia("side-navbar", "navigation"),
         },
     ],
 ];
@@ -107,7 +130,7 @@ export default function ExploreTheEffects() {
         <section
             ref={container}
             id="explore-the-effects"
-            className="w-full  mb-[13vw] mt-[-17vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-md:mt-[-45vw]!  max-md:px-[6vw] max-sm:px-[7vw]"
+            className="w-full  mb-[13vw] mt-[-24vw] px-[3.5vw] max-[1025px]:my-[18vw] max-[1025px]:px-[5vw] max-[1025px]:mt-[-85vw]!  max-md:px-[6vw] max-sm:px-[7vw]"
         >
             <div className="space-y-[4vw] relative z-200 max-[1025px]:space-y-[4vw] max-[1025px]:mb-[12vw] max-md:space-y-[8vw] mb-[15vw] ">
                 <LineReveal as='h2' className="t96 font-neue-haas w-[55vw] mx-auto text-center max-[1025px]:w-full max-md:w-full">
@@ -134,6 +157,8 @@ export default function ExploreTheEffects() {
                                 action={effect.action}
                                 href={effect.href}
                                 media={effect.media}
+                                poster={effect.poster}
+                                video={effect.video}
                             />
                         ))}
                     </div>

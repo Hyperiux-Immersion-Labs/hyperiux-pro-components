@@ -180,24 +180,35 @@ export default function CurvedGradientShader({
   curveStrength = 1,
 }) {
   const wrapRef = useRef(null);
-  const canvasRef = useRef(null);
   const stateRef = useRef({
     progress: 0,
     targetProgress: 0,
     deform: 0,
     targetDeform: 0,
   });
+  // ScrollTrigger lives in a `useGSAP` (a layout effect), so it is created —
+  // and fires its first onRefresh — before the plain effect below has built
+  // the context. The stub therefore records that progress instead of dropping
+  // it, and the build applies it as soon as it can draw; otherwise a load with
+  // the section already on screen keeps targetProgress at 0 and parks the band
+  // off-screen until something else happens to scroll.
+  const pendingProgressRef = useRef(null);
+  const controlsRef = useRef({
+    start() {},
+    snapProgress(progress) {
+      pendingProgressRef.current = progress;
+    },
+  });
 
   useEffect(() => {
     const wrap = wrapRef.current;
-    const canvas = canvasRef.current;
-
-    if (!wrap || !canvas) return;
+    if (!wrap) return;
     if (shouldSkipRealtimeGPU()) return;
 
     const reduced = prefersReducedMotion();
     const startedAt = performance.now();
 
+    let canvas = null;
     let gl = null;
     let program = null;
     let buffer = null;
@@ -219,17 +230,67 @@ export default function CurvedGradientShader({
       return shader;
     }
 
-    function build() {
-      gl =
-        canvas.getContext("webgl2", CONTEXT_OPTIONS) ||
-        canvas.getContext("webgl", CONTEXT_OPTIONS);
+    function tryGetContext(el) {
+      // Shaders are GLSL ES 1.0 (`attribute`, `gl_FragColor`). Prefer WebGL1
+      // so a WebGL2 context does not compile them as ES 3.00 and fail silently.
+      const next =
+        el.getContext("webgl", CONTEXT_OPTIONS) ||
+        el.getContext("experimental-webgl", CONTEXT_OPTIONS) ||
+        el.getContext("webgl2", CONTEXT_OPTIONS);
+      if (next && !next.isContextLost()) return next;
+      return null;
+    }
 
-      if (!gl) return false;
+    function disposeContext() {
+      if (!gl) return;
+      if (!gl.isContextLost()) {
+        if (buffer) gl.deleteBuffer(buffer);
+        if (program) gl.deleteProgram(program);
+        gl.getExtension("WEBGL_lose_context")?.loseContext();
+      }
+      gl = null;
+      program = null;
+      buffer = null;
+      uniforms = null;
+    }
+
+    function disposeCanvas() {
+      if (!canvas) return;
+      canvas.removeEventListener("webglcontextlost", handleContextLost);
+      canvas.removeEventListener("webglcontextrestored", handleContextRestored);
+      canvas.remove();
+      canvas = null;
+    }
+
+    function build() {
+      stop();
+      disposeContext();
+      disposeCanvas();
+
+      // React must not own this node. A cached / remounted <canvas> keeps a
+      // dead context, and Chrome then paints the unused opaque buffer white.
+      const next = document.createElement("canvas");
+      next.className = "block h-full w-full";
+      wrap.appendChild(next);
+      canvas = next;
+
+      gl = tryGetContext(canvas);
+      if (!gl) {
+        disposeCanvas();
+        return false;
+      }
+
+      canvas.addEventListener("webglcontextlost", handleContextLost);
+      canvas.addEventListener("webglcontextrestored", handleContextRestored);
 
       const vertex = compile(gl.VERTEX_SHADER, VERTEX_SHADER);
       const fragment = compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
 
-      if (!vertex || !fragment) return false;
+      if (!vertex || !fragment) {
+        disposeContext();
+        disposeCanvas();
+        return false;
+      }
 
       program = gl.createProgram();
       gl.attachShader(program, vertex);
@@ -238,11 +299,14 @@ export default function CurvedGradientShader({
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
 
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return false;
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        disposeContext();
+        disposeCanvas();
+        return false;
+      }
 
       gl.useProgram(program);
 
-      // Single oversized triangle covering the clip volume.
       buffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
       gl.bufferData(
@@ -273,7 +337,7 @@ export default function CurvedGradientShader({
     }
 
     function resize() {
-      if (!gl) return;
+      if (!gl || gl.isContextLost() || !uniforms || !canvas) return;
 
       const ratio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
       const width = Math.max(1, Math.round(wrap.clientWidth * ratio));
@@ -289,6 +353,8 @@ export default function CurvedGradientShader({
     }
 
     function draw(elapsed) {
+      if (!gl || gl.isContextLost() || !uniforms) return;
+
       const state = stateRef.current;
 
       gl.uniform1f(uniforms.time, elapsed);
@@ -317,6 +383,7 @@ export default function CurvedGradientShader({
 
     function start() {
       if (frame || reduced) return;
+      if (!gl || gl.isContextLost() || !uniforms) return;
       frame = requestAnimationFrame(loop);
     }
 
@@ -327,7 +394,6 @@ export default function CurvedGradientShader({
     }
 
     function drawStillFrame() {
-      // Reduced motion: one static arc, no scroll link and no time evolution.
       const state = stateRef.current;
 
       state.progress = 0.5;
@@ -335,10 +401,25 @@ export default function CurvedGradientShader({
       draw(0);
     }
 
-    if (!build()) return;
+    function paint() {
+      if (reduced) drawStillFrame();
+      else draw((performance.now() - startedAt) / 1000);
+    }
 
-    if (reduced) {
-      drawStillFrame();
+    function isOnScreen() {
+      const rect = wrap.getBoundingClientRect();
+      return rect.bottom > 0 && rect.top < window.innerHeight;
+    }
+
+    function restore() {
+      if (gl?.isContextLost() || !gl) {
+        if (!build()) return;
+      }
+      resize();
+      paint();
+      visible = isOnScreen();
+      if (visible) start();
+      ScrollTrigger.refresh();
     }
 
     function handleContextLost(event) {
@@ -347,44 +428,89 @@ export default function CurvedGradientShader({
     }
 
     function handleContextRestored() {
-      if (!build()) return;
-      if (reduced) drawStillFrame();
-      else if (visible) start();
+      restore();
     }
 
-    canvas.addEventListener("webglcontextlost", handleContextLost);
-    canvas.addEventListener("webglcontextrestored", handleContextRestored);
+    controlsRef.current = {
+      start,
+      snapProgress(progress) {
+        const state = stateRef.current;
+        state.targetProgress = progress;
+        state.progress = progress;
+        paint();
+        start();
+      },
+    };
+
+    if (!build()) return;
+
+    // Adopt the progress ScrollTrigger already reported to the stub, so the
+    // first painted frame is the band where the scroll position puts it.
+    if (pendingProgressRef.current !== null) {
+      const state = stateRef.current;
+      state.targetProgress = pendingProgressRef.current;
+      state.progress = pendingProgressRef.current;
+      pendingProgressRef.current = null;
+    }
+
+    paint();
+    visible = isOnScreen();
+    if (visible) start();
 
     const resizeObserver = new ResizeObserver(() => {
       resize();
-      if (reduced) drawStillFrame();
+      paint();
     });
     resizeObserver.observe(wrap);
 
-    // Only burn frames while the section is actually on screen.
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
         visible = entry.isIntersecting;
-        if (visible) start();
-        else stop();
+        if (visible) {
+          if (gl?.isContextLost() || !gl) restore();
+          else {
+            paint();
+            start();
+          }
+        } else {
+          stop();
+        }
       },
       { rootMargin: "10% 0px" },
     );
     intersectionObserver.observe(wrap);
 
+    const onPageShow = () => restore();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") restore();
+      else stop();
+    };
+
+    window.addEventListener("pageshow", onPageShow);
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
+      controlsRef.current = {
+        start() {},
+        snapProgress(progress) {
+          pendingProgressRef.current = progress;
+        },
+      };
       stop();
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
-      canvas.removeEventListener("webglcontextlost", handleContextLost);
-      canvas.removeEventListener("webglcontextrestored", handleContextRestored);
-
-      if (gl) {
-        gl.deleteBuffer(buffer);
-        gl.deleteProgram(program);
-        gl.getExtension("WEBGL_lose_context")?.loseContext();
-      }
+      window.removeEventListener("pageshow", onPageShow);
+      document.removeEventListener("visibilitychange", onVisibility);
+      disposeContext();
+      disposeCanvas();
     };
+    // edgeFade/overscan/pixelSize/colorNum/dither/curveStrength are only
+    // read here to feed the draw() closure; they're treated as static
+    // config for the lifetime of this WebGL context (the only call site
+    // passes them as fixed literals). Depending on them would tear down
+    // and rebuild the whole context - shader compile, buffers, observers,
+    // RAF loop - on every prop identity change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useGSAP(
@@ -398,6 +524,9 @@ export default function CurvedGradientShader({
         start: scrollStart,
         end: scrollEnd,
         markers: markers,
+        onRefresh: (self) => {
+          controlsRef.current.snapProgress(self.progress);
+        },
         onUpdate: (self) => {
           const state = stateRef.current;
 
@@ -407,24 +536,22 @@ export default function CurvedGradientShader({
             1.5,
             self.getVelocity() / 2000,
           );
+          controlsRef.current.start();
         },
       });
     },
     { scope: wrapRef },
   );
 
-  // Half of the extra height sticks out past each end of the host box. Masking
-  // those strips away keeps the opaque canvas off the neighbouring sections
-  // while the section is entering or leaving the viewport.
-  const margin = (50 * (overscan - 1)) / overscan;
+  // Extra height is clipped by the sticky section (`overflow-hidden`) rather
+  // than a CSS mask on this node — masking a WebGL canvas parent blanks it
+  // after client navigations when the compositor re-layers the page.
   const overscanStyle =
     overscan === 1
       ? undefined
       : {
           top: `${-50 * (overscan - 1)}%`,
           height: `${100 * overscan}%`,
-          maskImage: `linear-gradient(to bottom, transparent 0%, #000 ${margin}%, #000 ${100 - margin}%, transparent 100%)`,
-          WebkitMaskImage: `linear-gradient(to bottom, transparent 0%, #000 ${margin}%, #000 ${100 - margin}%, transparent 100%)`,
         };
 
   return (
@@ -432,9 +559,7 @@ export default function CurvedGradientShader({
       ref={wrapRef}
       aria-hidden="true"
       style={overscanStyle}
-      className={`pointer-events-none absolute inset-x-0 ${overscan === 1 ? "inset-y-0" : ""} bg-background ${className}`}
-    >
-      <canvas ref={canvasRef} className="block h-full w-full" />
-    </div>
+      className={`pointer-events-none absolute inset-x-0 z-0 ${overscan === 1 ? "inset-y-0" : ""} bg-background ${className}`}
+    />
   );
 }

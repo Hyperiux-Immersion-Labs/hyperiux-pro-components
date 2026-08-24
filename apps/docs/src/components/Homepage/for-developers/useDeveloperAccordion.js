@@ -357,5 +357,5 @@ export function useDeveloperAccordion(containerRef, accordionRef, headingRef) {
             observer.disconnect()
             mm?.revert()
         }
-    }, [])
+    }, [accordionRef, containerRef, headingRef])
 }

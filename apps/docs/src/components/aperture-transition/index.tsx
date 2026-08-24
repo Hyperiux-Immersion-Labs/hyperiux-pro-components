@@ -78,7 +78,7 @@ export default function ApertureTransition({
       wrapperRef.current.style.transform = 'translateY(0px)'
       wrapperRef.current.style.clipPath = HIDDEN_CLIP
     }
-  }, [pathname])
+  }, [pathname, HIDDEN_CLIP])
 
   return (
     <TransitionRouter

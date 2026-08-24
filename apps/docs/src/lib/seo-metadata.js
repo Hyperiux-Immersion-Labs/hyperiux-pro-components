@@ -2,7 +2,7 @@ import { homepage } from "./util";
 
 const DEFAULT_TITLE = "Hyperiux Vault - React & Next.js Interaction Effects.";
 const DEFAULT_DESCRIPTION =
-  "Start with 30+ free source-first effects. Join Pro for 80+ Pro effects.";
+  "Start with 40+ free source-first effects. Join Pro for 130+ Pro effects.";
 const DEFAULT_IMAGE = "/seo/homepage.png";
 
 export function getCanonicalUrl(path = "/") {

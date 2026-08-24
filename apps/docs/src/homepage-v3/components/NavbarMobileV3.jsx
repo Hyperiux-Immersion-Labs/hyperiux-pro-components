@@ -21,8 +21,8 @@ const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 // Same shape the desktop bar exposes, in the order the sheet stacks them: the
 // two menus expand in place, the plain links sit under them.
 const SECTIONS = [
-  { key: "categories", label: "Categories", href: "/effects/featured" },
-  { key: "docs", label: "Docs", href: "/docs" },
+  { key: "categories", label: "Effects", href: "#" },
+  { key: "docs", label: "Docs", href: "#" },
 ];
 
 const LINKS = [
@@ -234,13 +234,12 @@ export default function NavbarMobileV3({
       <div
         // Translucent rather than solid: the hero's ASCII field keeps moving
         // under the bar, and the blur is what keeps the logo readable over it.
-        className={`fixed top-0 left-0 z-1000 hidden max-[1025px]:flex w-full items-center justify-between border-b border-white/8 bg-background/60 px-[6vw] py-[5vw] backdrop-blur-xl transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none md:px-[3.5vw] md:py-[2.5vw]  ${
-          !intro
+        className={`fixed top-0 left-0 z-1000 hidden max-[1025px]:flex w-full items-center justify-between border-b border-white/8 bg-background/60 px-[6vw] py-[5vw] backdrop-blur-xl transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none md:px-[3.5vw] md:py-[2.5vw]  ${!intro
             ? "pointer-events-none translate-y-0 opacity-0"
             : visible || open
               ? "translate-y-0 opacity-100"
               : "translate-y-[-120%] opacity-100"
-        }`}
+          }`}
         style={{ willChange: "transform" }}
       >
         <Link
@@ -265,15 +264,13 @@ export default function NavbarMobileV3({
         >
           <span
             aria-hidden="true"
-            className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${
-              open ? "rotate-45" : "-translate-y-[1.2vw] md:translate-y-[-0.6vw]"
-            }`}
+            className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "rotate-45" : "-translate-y-[1.2vw] md:translate-y-[-0.6vw]"
+              }`}
           />
           <span
             aria-hidden="true"
-            className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${
-              open ? "-rotate-45" : "translate-y-[1.2vw] md:translate-y-[0.6vw]"
-            }`}
+            className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "-rotate-45" : "translate-y-[1.2vw] md:translate-y-[0.6vw]"
+              }`}
           />
         </button>
       </div>
@@ -293,6 +290,7 @@ export default function NavbarMobileV3({
             onClick={handleSearch}
             className="flex w-full my-[5vw] items-center justify-between border border-white/10 bg-[#121212] px-[4vw] py-[3.5vw] text-left text-white/70 md:my-[3vw] md:px-[2.3vw] md:py-[2vw]"
           >
+            <span className="text-[4vw] md:text-[2.2vw]">Search</span>
             <span className="flex items-center gap-[3vw] md:gap-[1.8vw]">
               <svg
                 className="size-[4.5vw] shrink-0 md:size-[2.6vw]"
@@ -309,7 +307,6 @@ export default function NavbarMobileV3({
                 />
               </svg>
             </span>
-              <span className="text-[4vw] md:text-[2.2vw]">Search</span>
           </button>
 
           <div className="mt-[2vw] md:mt-[1.2vw]">
@@ -323,15 +320,6 @@ export default function NavbarMobileV3({
                   className="border-t border-white/10"
                 >
                   <div className="flex items-center justify-between">
-                    <Link
-                      prefetch={false}
-                      href={href}
-                      onClick={close}
-                      className="py-[4.5vw] text-[5.5vw] text-white/90 md:py-[2.6vw] md:text-[3.2vw]"
-                    >
-                      {label}
-                    </Link>
-
                     <button
                       type="button"
                       onClick={() =>
@@ -339,18 +327,20 @@ export default function NavbarMobileV3({
                       }
                       aria-label={`${expanded ? "Collapse" : "Expand"} ${label}`}
                       aria-expanded={expanded}
-                      className="relative flex size-[8vw] shrink-0 items-center justify-center bg-grey text-primary md:size-[4.6vw]"
+                      className="flex w-full items-center justify-between py-[4.5vw] text-left text-[5.5vw] text-white/90 md:py-[2.6vw] md:text-[3.2vw]"
                     >
-                      <span
-                        aria-hidden="true"
-                        className="absolute h-px w-[3.5vw] bg-current md:w-[2vw]"
-                      />
-                      <span
-                        aria-hidden="true"
-                        className={`absolute h-px w-[3.5vw] bg-current md:w-[2vw] transition-transform duration-300 ease-out motion-reduce:transition-none ${
-                          expanded ? "rotate-180" : "rotate-90"
-                        }`}
-                      />
+                      <span>{label}</span>
+                      <div className="relative flex size-[8vw] shrink-0 items-center justify-center bg-grey text-primary md:size-[4.6vw]">
+                        <span
+                          aria-hidden="true"
+                          className="absolute h-px w-[3.5vw] bg-current md:w-[2vw]"
+                        />
+                        <span
+                          aria-hidden="true"
+                          className={`absolute h-px w-[3.5vw] bg-current md:w-[2vw] transition-transform duration-300 ease-out motion-reduce:transition-none ${expanded ? "rotate-180" : "rotate-90"
+                            }`}
+                        />
+                      </div>
                     </button>
                   </div>
 
@@ -407,7 +397,7 @@ export default function NavbarMobileV3({
 
           <div data-mobile-row className="mt-[8vw] flex md:mt-[4.6vw]">
             <ButtonV3
-              text="Login"
+              text="Sign In"
               // The button's own ramp jumps to desktop sizing above `md`; inside
               // the tablet sheet it needs to stay touch-sized.
               className="w-full md:py-[1.5vw] md:text-[2vw] md:[--btn-pad:2.4vw] md:[--btn-gap:1vw] md:[--btn-square:1.4vw] md:[--btn-arrow:2vw]"

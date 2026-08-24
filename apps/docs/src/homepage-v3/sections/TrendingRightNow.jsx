@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getEffectHref } from "@/lib/categories";
 import { resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
-import CircularButton from "@/components/WebsiteComps/CirclularButton";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 
 const CARD_SIZES = "(max-width: 768px) 80vw, (max-width: 1025px) 40vw, 22vw";
@@ -31,18 +30,23 @@ function formatLabel(value = "") {
 }
 
 function resolveCoverImage(effect) {
-  const resolved =
-    resolveMediaUrl(effect.coverImage || effect.imageSrc, {
-      defaultDirectory: "vault-listing-images",
-      defaultExtension: "png",
-    }) || "/assets/img/image01.webp";
+  const raw = effect?.coverImage || effect?.imageSrc;
+  if (!raw || raw === "/assets/img/image01.webp" || raw === "image01") return null;
 
+  const resolved = resolveMediaUrl(raw, {
+    defaultDirectory: "vault-listing-images",
+    defaultExtension: "png",
+  });
+
+  if (!resolved || resolved === "/assets/img/image01.webp") return null;
   if (resolved.startsWith("/")) return resolved;
 
   return resizeR2ImageUrl(resolved, { width: COVER_WIDTH, height: COVER_HEIGHT });
 }
 
 function TrendingEffectCard({ effect, priority = false }) {
+  const [imageError, setImageError] = useState(false);
+  const coverImage = useMemo(() => resolveCoverImage(effect), [effect]);
   const categoryLabel = formatLabel(
     (effect.categories?.length ? effect.categories[0] : effect.category) ||
     "components",
@@ -59,18 +63,23 @@ function TrendingEffectCard({ effect, priority = false }) {
         {categoryLabel}
       </span>
 
-      <div className="absolute inset-x-3 top-[22%] h-[62%] bottom-3 overflow-hidden bg-[#efe9da] md:inset-x-5 md:top-[20%] md:bottom-5">
-        <Image
-          src={resolveCoverImage(effect)}
-          alt={effect.title || effect.name}
-          fill
-          sizes={CARD_SIZES}
-          quality={65}
-          priority={priority}
-          loading={priority ? undefined : "lazy"}
-          draggable={false}
-          className="object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.04]"
-        />
+      <div className="absolute inset-x-3 top-[22%] h-[62%] bottom-3 overflow-hidden bg-[#202020] md:inset-x-5 md:top-[20%] md:bottom-5">
+        {coverImage && !imageError ? (
+          <Image
+            src={coverImage}
+            alt={effect.title || effect.name}
+            fill
+            sizes={CARD_SIZES}
+            quality={65}
+            priority={priority}
+            loading={priority ? undefined : "lazy"}
+            draggable={false}
+            onError={() => setImageError(true)}
+            className="object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.04]"
+          />
+        ) : (
+          <div className="h-full w-full bg-[#202020]" />
+        )}
       </div>
     </Link>
   );
@@ -261,32 +270,25 @@ export default function TrendingRightNow({ effects = [] }) {
         </h2>
 
         <div className="flex shrink-0 items-center gap-2">
-          <CircularButton
+          <button
             type="button"
             onClick={() => step(-1)}
             aria-label="Previous"
-            className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all "
-            bgColor="#ff5f00"
+            className="group relative flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
           >
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out  group-hover:text-black" />
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out group-hover:text-black " />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out" />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out" />
+          </button>
 
-
-
-          </CircularButton>
-
-          <CircularButton
+          <button
             type="button"
             onClick={() => step(1)}
             aria-label="Next"
-            className="h-8 w-8 p-2.5 border-none  bg-[#161616] text-white transition-all relative"
-            bgColor="#ff5f00"
+            className="group relative flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
           >
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out group-hover:text-black" />
-            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out group-hover:text-black " />
-
-
-          </CircularButton>
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out" />
+            <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out" />
+          </button>
         </div>
       </div>
 

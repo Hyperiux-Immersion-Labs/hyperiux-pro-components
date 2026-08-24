@@ -1,0 +1,175 @@
+@font-face {
+  font-family: "Elenavoss Helvetica Neue";
+  src: url("./assets/fonts/HelveticaNeueLight.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Elenavoss Helvetica Neue";
+  src: url("./assets/fonts/HelveticaNeueRoman.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Elenavoss Helvetica Neue";
+  src: url("./assets/fonts/HelveticaNeueMedium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Elenavoss Helvetica Neue";
+  src: url("./assets/fonts/HelveticaNeueBold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.elenavoss-body {
+  /* Referenced by .under-multi's transition below - was previously
+     undefined, which makes `var(--default-ease)` invalid and therefore
+     invalidates the ENTIRE `transition: all 1s var(--default-ease)`
+     shorthand at computed-value time, collapsing transition-duration back
+     to its 0s initial value - so the underline hover state changed
+     instantly instead of easing in over 1s. */
+  --default-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.elenavoss-body,
+.elenavoss-body * {
+  /* background-color: #080808; */
+  font-family: "Elenavoss Helvetica Neue", sans-serif;
+}
+
+.elenavoss-body {
+  font-weight: 400;
+}
+
+.elenavoss-body .font-light {
+  font-weight: 300 !important;
+}
+
+.elenavoss-body .font-normal {
+  font-weight: 400 !important;
+}
+
+.elenavoss-body .font-medium {
+  font-weight: 500 !important;
+}
+
+.elenavoss-body .font-bold {
+  font-weight: 700 !important;
+}
+
+/* Diagonal wipe reveal for the hero portrait: the mask's opaque region
+   starts as a sliver at the bottom-right corner and grows toward the
+   top-left along a 45deg line as --reveal increases, with a soft
+   (not hard-edged) transition band so it reads as a wipe, not a hard cut. */
+.hero-mask-reveal {
+  -webkit-mask-image: linear-gradient(to top left, black var(--reveal, 0%), transparent calc(var(--reveal, 0%) + 25%));
+  mask-image: linear-gradient(to top left, black var(--reveal, 0%), transparent calc(var(--reveal, 0%) + 25%));
+}
+
+.marquee-1 {
+  animation: marquee-scroll-y 10s linear infinite;
+  will-change: transform;
+  /* transform: translateY(-55%); */
+}
+
+@keyframes marquee-scroll-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-51.1%);
+  }
+}
+.marquee-2 {
+  animation: marquee-scroll-y-2 18s linear infinite;
+  will-change: transform;
+  /* transform: translateY(-55%); */
+}
+
+@keyframes marquee-scroll-y-2 {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-51.1%);
+  }
+}
+
+
+.connect-circle-1,
+.connect-circle-2,
+.connect-circle-3 {
+  transform-origin: center;
+  animation: connectripple 3s linear infinite;
+}
+@keyframes connectripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+
+.under-multi {
+  text-decoration: none;
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0, 0)), linear-gradient(#ffffff, #ffffff);
+  background-size: 100% 0px, 0% 1px;
+  background-position: 100% 100%, 0 100%;
+  background-repeat: no-repeat, no-repeat;
+  transition: all 1s var(--default-ease);
+}
+
+.under-multi-parent:hover .under-multi {
+  background-size: 100% 0px, 100% 1px;
+}
+
+@media (max-width: 1025px) {
+  @keyframes marquee-scroll-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50.27%);
+  }
+}
+@keyframes marquee-scroll-y-2 {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50.27%);
+  }
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-1,
+  .marquee-2,
+  .connect-circle-1,
+  .connect-circle-2,
+  .connect-circle-3 {
+    animation: none;
+  }
+}
+
+/* Get in Touch modal form (GetInTouchModal.tsx): every field's label is
+   now its native placeholder (see Input.tsx/Textarea.tsx), which needs
+   its own contrast on the modal's dark background - not covered by
+   ContactForm's injected <style> block. */
+.get-in-touch-form input::placeholder,
+.get-in-touch-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}

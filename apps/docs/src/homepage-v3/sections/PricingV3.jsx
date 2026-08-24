@@ -16,13 +16,13 @@ if (typeof window !== "undefined") {
 
 const PRICING = {
     USD: { symbol: "$", monthly: 20, yearly: 179 },
-    INR: { symbol: "₹", monthly: 1999, yearly: 17990 },
+    INR: { symbol: "₹", monthly: 999, yearly: 8990 },
 };
 
 const ProCta = dynamic(() => import("./PricingV3Cta"), { ssr: false });
 
 const FREE_FEATURES = [
-    "41+ production-ready effects",
+    "40+ production-ready effects",
     "Copy-paste + CLI install",
     "Commercial-friendly usage",
     "Code you own",
@@ -377,6 +377,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
 
                         <p className="font-geist-mono mt-[1.2vw] text-[0.9vw] text-light-grey max-[1025px]:mt-[2.5vw] max-[1025px]:text-[1.7vw] max-md:mt-[3vw] max-md:text-[1.8vw] max-sm:mt-[5vw] max-sm:text-[3.2vw]">
                             Instant access · npx hyperiux login · Cancel anytime
+                            {isIndia ? " · 18% GST added at checkout" : ""}
                         </p>
                     </div>
                 </div>

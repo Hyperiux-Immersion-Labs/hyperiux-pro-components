@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
+import { useVaultLayout } from "./VaultLayout";
 import { Tooltip } from "@/components/ui/Tooltip";
 import {
   Overview,
@@ -218,6 +219,7 @@ export function Sidebar({
   const [fetchedEffects, setFetchedEffects] = useState([]);
   const [openSection, setOpenSection] = useState(initialOpenSection);
   const [hoveredSidebarKey, setHoveredSidebarKey] = useState("");
+  const { startNavigation } = useVaultLayout();
 
   const previousRouteSectionRef = useRef(initialOpenSection);
   const categoryNavigationInProgressRef = useRef(false);
@@ -377,6 +379,7 @@ export function Sidebar({
 
     categoryNavigationInProgressRef.current = false;
     setOpenSection("");
+    startNavigation("/effects");
 
     const wasHandled = onOverviewNavigate?.();
 
@@ -390,50 +393,54 @@ export function Sidebar({
 
     categoryNavigationInProgressRef.current = true;
     setOpenSection("categories");
+    const targetHref = getEffectCategoryHref(categoryId);
+    startNavigation(targetHref);
 
     const wasHandled = onCategoryNavigate?.(categoryId);
 
     if (wasHandled === true) return;
 
-    router.push(getEffectCategoryHref(categoryId), { scroll: false });
+    router.push(targetHref, { scroll: false });
   };
 
   const navigateDocumentation = (event, href) => {
-  event?.preventDefault();
+    event?.preventDefault();
 
-  categoryNavigationInProgressRef.current = false;
-  setOpenSection("docs");
+    categoryNavigationInProgressRef.current = false;
+    setOpenSection("docs");
+    startNavigation(href);
 
-  if (typeof window !== "undefined") {
-    const docsRouteEvent = new CustomEvent("hyperiux:docs-route-request", {
-      cancelable: true,
-      detail: { href },
-    });
+    if (typeof window !== "undefined") {
+      const docsRouteEvent = new CustomEvent("hyperiux:docs-route-request", {
+        cancelable: true,
+        detail: { href },
+      });
 
-    const wasHandledByDocsBody = !window.dispatchEvent(docsRouteEvent);
+      const wasHandledByDocsBody = !window.dispatchEvent(docsRouteEvent);
 
-    if (wasHandledByDocsBody) return;
-  }
+      if (wasHandledByDocsBody) return;
+    }
 
-  const wasHandled = onDocumentationNavigate?.(href);
+    const wasHandled = onDocumentationNavigate?.(href);
 
-  if (wasHandled === true) return;
+    if (wasHandled === true) return;
 
-  router.push(href, { scroll: false });
-};
+    router.push(href, { scroll: false });
+  };
 
-const navigateLegal = (event, href) => {
-  event?.preventDefault();
+  const navigateLegal = (event, href) => {
+    event?.preventDefault();
 
-  categoryNavigationInProgressRef.current = false;
-  setOpenSection("legal");
+    categoryNavigationInProgressRef.current = false;
+    setOpenSection("legal");
+    startNavigation(href);
 
-  const wasHandled = onDocumentationNavigate?.(href);
+    const wasHandled = onDocumentationNavigate?.(href);
 
-  if (wasHandled === true) return;
+    if (wasHandled === true) return;
 
-  router.push(href, { scroll: false });
-};
+    router.push(href, { scroll: false });
+  };
 
   const toggle = () => {
     const nextValue = !isExpanded;

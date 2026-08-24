@@ -245,7 +245,7 @@ export default function ScrollDistortion({
       isCancelled = true;
       nextObjectUrls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [sections]);
+  }, [sections, displacementSrc]);
 
   const areImagesDecoded =
     objectUrls?.length === sections.length + 1 &&

@@ -354,7 +354,11 @@ export default function Loader() {
 
   useLayoutEffect(() => {
     document.documentElement.classList.remove("loader-first-visit");
+    // hasLoaderRun()/shouldSkipLoader() read sessionStorage and the URL, so
+    // the real value can only be known post-mount - this can't be a lazy
+    // useState initializer without risking a hydration mismatch.
     if (!hasLoaderRun() && !shouldSkipLoader()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(true);
       setShouldRun(true);
     }

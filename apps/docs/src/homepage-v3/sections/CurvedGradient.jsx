@@ -84,7 +84,7 @@ export default function CurvedGradient() {
       <section
         ref={sectionRef}
         id="curved-gradient"
-        className="sticky top-0 h-screen w-full mt-[-8vw] flex items-center justify-center"
+        className="sticky top-0 isolate h-screen w-full mt-[-8vw] flex items-center justify-center overflow-hidden"
       >
         <CurvedGradientShader
           overscan={1.5}

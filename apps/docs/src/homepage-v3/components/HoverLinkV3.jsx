@@ -119,7 +119,7 @@ export function ScrambleText({ text, run }) {
     return () => cancelAnimationFrame(frame);
     // `run` identity changes on every hover start, so each hover replays the
     // scramble even if the previous pointerleave was never delivered.
-  }, [run, text]);
+  }, [run, text, active]);
 
   return (
     <span className="relative block">

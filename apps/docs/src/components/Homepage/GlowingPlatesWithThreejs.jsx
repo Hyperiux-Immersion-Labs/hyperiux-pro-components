@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useLayoutEffect, useEffect, useState } from "react";
+import { useRef, useLayoutEffect, useEffect, useState, useCallback } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
@@ -865,7 +865,7 @@ export default function GlowingPlates({
     return () => observer.disconnect();
   }, []);
 
-  const playFadeIfReady = () => {
+  const playFadeIfReady = useCallback(() => {
     const el = canvasWrapperRef.current;
 
     if (!el) return;
@@ -894,9 +894,9 @@ export default function GlowingPlates({
         ease: "power2.out",
       }
     );
-  };
+  }, [staticFrame]);
 
-  const markLoaderReady = () => {
+  const markLoaderReady = useCallback(() => {
     if (loaderReadyRef.current) return;
 
     loaderReadyRef.current = true;
@@ -916,7 +916,7 @@ export default function GlowingPlates({
         playFadeIfReady();
       });
     });
-  };
+  }, [playFadeIfReady]);
 
   useLayoutEffect(() => {
     const el = canvasWrapperRef.current;
@@ -1028,14 +1028,16 @@ export default function GlowingPlates({
         delayRef.current = null;
       }
     };
-  }, [waitForLoader]);
+  }, [waitForLoader, markLoaderReady, playFadeIfReady]);
 
   useEffect(() => {
+    const wrapper = canvasWrapperRef.current;
+
     return () => {
       fadeTweenRef.current?.kill();
 
-      if (canvasWrapperRef.current) {
-        gsap.killTweensOf(canvasWrapperRef.current);
+      if (wrapper) {
+        gsap.killTweensOf(wrapper);
       }
     };
   }, []);

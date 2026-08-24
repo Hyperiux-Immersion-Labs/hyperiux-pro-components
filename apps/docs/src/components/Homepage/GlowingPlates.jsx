@@ -12,6 +12,7 @@ import {
   useLayoutEffect,
   useEffect,
   useState,
+  useCallback,
   Suspense,
 } from "react";
 import { Canvas, useFrame, useThree, invalidate } from "@react-three/fiber";
@@ -661,7 +662,7 @@ export default function GlowingPlates({
     return () => window.clearInterval(id);
   }, [skip3D, warmupDone, inView]);
 
-  const playFadeIfReady = () => {
+  const playFadeIfReady = useCallback(() => {
     const el = canvasWrapperRef.current;
 
     if (!el) return;
@@ -685,9 +686,9 @@ export default function GlowingPlates({
         ease: "power2.out",
       }
     );
-  };
+  }, []);
 
-  const markLoaderReady = () => {
+  const markLoaderReady = useCallback(() => {
     if (loaderReadyRef.current) return;
 
     loaderReadyRef.current = true;
@@ -707,7 +708,7 @@ export default function GlowingPlates({
         playFadeIfReady();
       });
     });
-  };
+  }, [playFadeIfReady]);
 
   useLayoutEffect(() => {
     const el = canvasWrapperRef.current;
@@ -775,14 +776,16 @@ export default function GlowingPlates({
         delayRef.current = null;
       }
     };
-  }, [waitForLoader]);
+  }, [waitForLoader, markLoaderReady, playFadeIfReady]);
 
   useEffect(() => {
+    const wrapper = canvasWrapperRef.current;
+
     return () => {
       fadeTweenRef.current?.kill();
 
-      if (canvasWrapperRef.current) {
-        gsap.killTweensOf(canvasWrapperRef.current);
+      if (wrapper) {
+        gsap.killTweensOf(wrapper);
       }
     };
   }, []);

@@ -19,7 +19,7 @@ type GlowingTextProps = {
   lineGap?: number;
   className?: string;
 };
-w
+
 type CharStyle = CSSProperties & {
   "--char-delay": string;
   "--char-duration": string;

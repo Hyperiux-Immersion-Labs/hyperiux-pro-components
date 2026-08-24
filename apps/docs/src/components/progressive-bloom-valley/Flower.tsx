@@ -48,6 +48,11 @@ export default function Flower({ data, sprite, config, bloomStrength = 1.2 }: Fl
       depthTest: false,
       depthWrite: false,
     });
+    // bloomStrength is only read here for the material's initial uniform
+    // values; the effect below (uDefaultFlowerBloom/uHoverGlowMultiplier)
+    // already syncs it imperatively on every change, so depending on it here
+    // would rebuild the whole ShaderMaterial unnecessarily.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sprite, config, mouseUniform]);
 
   useEffect(() => {

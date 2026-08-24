@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 type CSSVars = CSSProperties & Record<string, string | number | undefined>;
 
@@ -84,6 +84,10 @@ const HoverStackComp = ({
       if (event.matches) setActiveIndex(null);
     };
 
+    // matchMedia isn't available during SSR, so the real value can only be
+    // read after mount - this can't be a lazy useState initializer without
+    // risking a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReduceMotion(mq.matches);
     mq.addEventListener?.("change", onChange);
     return () => mq.removeEventListener?.("change", onChange);

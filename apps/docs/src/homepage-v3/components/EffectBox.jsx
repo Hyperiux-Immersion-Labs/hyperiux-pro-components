@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -378,6 +378,9 @@ function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
   );
 }
 
+const MEDIA_SIZES =
+  "(max-width: 768px) 92vw, (max-width: 1025px) 44vw, 26vw";
+
 export default function EffectBox({
   title,
   tag,
@@ -393,6 +396,52 @@ export default function EffectBox({
   enableDitherTrail = true,
   ditherBlend = "mix-blend-difference",
 }) {
+  const videoRef = useRef(null);
+  const hoveredRef = useRef(false);
+  const unloadTimerRef = useRef(0);
+  const [hovered, setHovered] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const videoSrc = video ? media : null;
+  const coverSrc = video ? poster : media;
+  const showVideo = Boolean(videoSrc && hovered && videoReady);
+
+  useEffect(() => {
+    const node = videoRef.current;
+    if (!node || !videoSrc || !hovered) return;
+
+    if (node.getAttribute("src") !== videoSrc) {
+      node.src = videoSrc;
+      node.load();
+    }
+    node.play().catch(() => {});
+  }, [hovered, videoSrc]);
+
+  useEffect(
+    () => () => window.clearTimeout(unloadTimerRef.current),
+    [],
+  );
+
+  const playOnHover = () => {
+    if (!videoSrc) return;
+    hoveredRef.current = true;
+    window.clearTimeout(unloadTimerRef.current);
+    setHovered(true);
+  };
+
+  const stopOnLeave = () => {
+    hoveredRef.current = false;
+    setHovered(false);
+    // Freeze the last frame for the fade; ripping `src` out here is what
+    // flashed a blank canvas under the poster.
+    videoRef.current?.pause();
+    unloadTimerRef.current = window.setTimeout(() => {
+      const node = videoRef.current;
+      if (!node || hoveredRef.current) return;
+      node.removeAttribute("src");
+      node.load();
+    }, 700);
+  };
+
   const mark =
     "pointer-events-none absolute size-[0.3vw] border-grey transition-all duration-300 group-hover:border-primary max-[1025px]:size-1.5 max-md:size-2 max-sm:size-1.5";
 
@@ -402,35 +451,44 @@ export default function EffectBox({
       href={href}
       aria-label={`${title}${tag ? ` — ${tag}` : ""}`}
       className={`group block w-full cursor-pointer text-white ${className}`}
+      onMouseEnter={playOnHover}
+      onMouseLeave={stopOnLeave}
     >
       <div
         className={`relative isolate w-full overflow-hidden bg-[#0e0e0e] ${aspect} ${mediaClassName}`}
       >
-        {media ? (
-          video ? (
+        <div className="absolute inset-0 origin-center will-change-transform transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]">
+          {coverSrc ? (
+            <Image
+              src={coverSrc}
+              alt={title}
+              fill
+              sizes={MEDIA_SIZES}
+              priority={priority}
+              className={`object-cover transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                showVideo ? "opacity-0" : "opacity-100"
+              }`}
+            />
+          ) : (
+            <span className="absolute inset-0 bg-[linear-gradient(135deg,#1a1a1a,#0e0e0e)]" />
+          )}
+
+          {videoSrc ? (
             <video
-              src={media}
-              poster={poster}
-              autoPlay
+              ref={videoRef}
               muted
               loop
               playsInline
-              preload="metadata"
-              className="size-full object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              preload="none"
+              onLoadedData={() => setVideoReady(true)}
+              onEmptied={() => setVideoReady(false)}
+              onError={() => setVideoReady(false)}
+              className={`pointer-events-none absolute inset-0 size-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                showVideo ? "opacity-100" : "opacity-0"
+              }`}
             />
-          ) : (
-            <Image
-              src={media}
-              alt={title}
-              fill
-              sizes="(max-width: 768px) 92vw, (max-width: 1025px) 44vw, 26vw"
-              priority={priority}
-              className="object-cover transition-all duration-500 group-hover:brightness-90  group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-            />
-          )
-        ) : (
-          <span className="absolute inset-0 bg-[linear-gradient(135deg,#1a1a1a,#0e0e0e)]" />
-        )}
+          ) : null}
+        </div>
 
         {enableDitherTrail ? <DitherTrailCanvas blend={ditherBlend} /> : null}
 

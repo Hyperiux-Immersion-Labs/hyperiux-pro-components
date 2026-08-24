@@ -1,12 +1,25 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
 import { getEffectCategoryHref } from "@/lib/categories";
+import { PixelSquaresLoader } from "@/components/ui/PixelSquaresLoader";
+
+const VaultLayoutContext = createContext({
+  isSidebarOpen: true,
+  isSidebarReady: false,
+  isNavigating: false,
+  toggleSidebar: () => {},
+  startNavigation: () => {},
+});
+
+export function useVaultLayout() {
+  return useContext(VaultLayoutContext);
+}
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -97,6 +110,20 @@ export function VaultLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarReady, setIsSidebarReady] = useState(false);
   const [allowSidebarTransition, setAllowSidebarTransition] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    setIsNavigating(false);
+  }, [pathname]);
+
+  const startNavigation = useCallback(
+    (targetHref) => {
+      if (targetHref && targetHref !== "#" && targetHref !== pathname) {
+        setIsNavigating(true);
+      }
+    },
+    [pathname]
+  );
 
   const lenis = useLenis();
   const refreshTimeoutsRef = useRef([]);
@@ -343,40 +370,64 @@ export function VaultLayout({
     return true;
   };
 
+  // Render-prop API: `children` decides when to call `toggleSidebar`
+  // (typically from an event handler it wires up), not synchronously here.
   const renderedChildren =
     typeof children === "function"
-      ? children({ isSidebarOpen, toggleSidebar, isSidebarReady })
+      ? // eslint-disable-next-line react-hooks/refs
+        children({ isSidebarOpen, toggleSidebar, isSidebarReady })
       : children;
 
-  return (
-    <div className="relative min-h-[200vh] text-foreground">
-      <Suspense fallback={null}>
-        <RouteChangeWatcher
-          isSidebarReady={isSidebarReady}
-          onRouteChange={handleRouteChange}
-        />
-      </Suspense>
+  const contextValue = useMemo(
+    () => ({
+      isSidebarOpen,
+      isSidebarReady,
+      isNavigating,
+      toggleSidebar,
+      startNavigation,
+    }),
+    [isSidebarOpen, isSidebarReady, isNavigating, toggleSidebar, startNavigation]
+  );
 
-      <div className="relative z-300 flex  min-h-[200vh] items-start">
-        <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>
-          <Sidebar
-            effects={effects}
-            effectCounts={effectCounts}
-            totalEffects={totalEffects}
-            isExpanded={isSidebarOpen}
-            onToggle={toggleSidebar}
-            onClose={closeSidebar}
-            activeCategory={activeCategory}
-            topLinks={DOCS_TOP_LINKS}
-            onOverviewNavigate={handleOverviewNavigate}
-            onCategoryNavigate={handleCategoryNavigate}
-            onDocumentationNavigate={handleDocumentationNavigate}
-            disableInitialTransition={!allowSidebarTransition}
+  return (
+    <VaultLayoutContext.Provider value={contextValue}>
+      <div className="relative min-h-[200vh] text-foreground">
+        <Suspense fallback={null}>
+          <RouteChangeWatcher
+            isSidebarReady={isSidebarReady}
+            onRouteChange={handleRouteChange}
           />
         </Suspense>
 
-        <main className="relative min-w-0 flex-1">{renderedChildren}</main>
+        <div className="relative z-300 flex  min-h-[200vh] items-start">
+          <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>
+            <Sidebar
+              effects={effects}
+              effectCounts={effectCounts}
+              totalEffects={totalEffects}
+              isExpanded={isSidebarOpen}
+              onToggle={toggleSidebar}
+              onClose={closeSidebar}
+              activeCategory={activeCategory}
+              topLinks={DOCS_TOP_LINKS}
+              onOverviewNavigate={handleOverviewNavigate}
+              onCategoryNavigate={handleCategoryNavigate}
+              onDocumentationNavigate={handleDocumentationNavigate}
+              disableInitialTransition={!allowSidebarTransition}
+            />
+          </Suspense>
+
+          <main className="relative min-w-0 flex-1">
+            {isNavigating ? (
+              <div className="absolute inset-x-0 top-0 flex h-screen items-center justify-center">
+                <PixelSquaresLoader />
+              </div>
+            ) : (
+              renderedChildren
+            )}
+          </main>
+        </div>
       </div>
-    </div>
+    </VaultLayoutContext.Provider>
   );
 }

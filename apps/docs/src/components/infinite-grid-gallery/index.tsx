@@ -3,6 +3,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from "react";
+import Image from "next/image";
 import InfiniteGrid from "./InfiniteGrid";
 
 const OVERLAY_ASPECT_RATIO = 16 / 9;
@@ -554,29 +555,35 @@ export default function InfiniteGridGallery({
               >
                 {slide ? (
                   <>
-                    <img
-                      className={`absolute inset-0 block h-full w-full object-cover backface-hidden ${slide.dir > 0
+                    <Image
+                      fill
+                      sizes="90vw"
+                      className={`object-cover backface-hidden ${slide.dir > 0
                         ? "infinite-grid-gallery-slide-left-from"
                         : "infinite-grid-gallery-slide-right-from"
                         }`}
                       src={sources[slide.from].src}
-                      alt={sources[slide.from].caption}
+                      alt={sources[slide.from].caption ?? ""}
                     />
 
-                    <img
-                      className={`absolute inset-0 block h-full w-full object-cover backface-hidden ${slide.dir > 0
+                    <Image
+                      fill
+                      sizes="90vw"
+                      className={`object-cover backface-hidden ${slide.dir > 0
                         ? "infinite-grid-gallery-slide-left-to"
                         : "infinite-grid-gallery-slide-right-to"
                         }`}
                       src={sources[slide.to].src}
-                      alt={sources[slide.to].caption}
+                      alt={sources[slide.to].caption ?? ""}
                     />
                   </>
                 ) : (
-                  <img
-                    className="block h-full w-full object-cover absolute inset-0"
+                  <Image
+                    fill
+                    sizes="90vw"
+                    className="object-cover"
                     src={display.src}
-                    alt={display.caption}
+                    alt={display.caption ?? ""}
                   />
                 )}
               </div>
@@ -659,10 +666,12 @@ export default function InfiniteGridGallery({
                           }}
                           aria-label={`Open ${item.caption}`}
                         >
-                          <img
-                            className={`block h-full w-full object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ? "brightness-105" : "brightness-[0.8]"}`}
+                          <Image
+                            fill
+                            sizes="90px"
+                            className={`object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ? "brightness-105" : "brightness-[0.8]"}`}
                             src={item.src}
-                            alt={item.caption}
+                            alt={item.caption ?? ""}
                           />
                         </button>
                       );

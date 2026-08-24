@@ -2,6 +2,7 @@
 
 "use client";
 
+import Link from "next/link";
 import { DirectionalMegaMenu } from "./DirectionalMegaMenu";
 import { Menu1 } from "./Menu1";
 import { Menu2 } from "./Menu2";
@@ -43,7 +44,7 @@ export default function DirectionalMenu({
         <div className="max-w-7xl mx-auto max-[1025px]:hidden h-19 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <a href="/" className="flex items-center gap-3 cursor-pointer">
+            <Link href="/" className="flex items-center gap-3 cursor-pointer">
               <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
                 <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>
@@ -72,7 +73,7 @@ export default function DirectionalMenu({
                   <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
                 </svg>
               </div>
-            </a>
+            </Link>
           </div>
 
           {/* Menu */}

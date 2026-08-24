@@ -5,10 +5,11 @@ import { supabase } from "@/lib/supabase";
 import { getUserPlan } from "@/lib/subscription";
 import { isAdminUser } from "@/lib/admin";
 
-// Mirrors the real INR pricing shown on /pricing (src/components/Pricing/Pricing.jsx)
-// so a generated test invoice reads as a believable bill, not an obviously
-// fake number.
-const TEST_PRICE_INR = { monthly: 1999, yearly: 17990 };
+// Mirrors the real GST-inclusive INR pricing shown on /pricing
+// (src/homepage-v3/sections/PricingV3.jsx: ₹999/₹8990 + 18% GST) so a
+// generated test invoice reads as a believable bill, not an obviously fake
+// number.
+const TEST_PRICE_INR = { monthly: 1179, yearly: 10608 };
 
 // Testing-only endpoint: lets a Pro account (including one comped by an
 // admin with no real Razorpay subscription behind it) generate one fake

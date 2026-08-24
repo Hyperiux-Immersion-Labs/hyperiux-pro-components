@@ -200,7 +200,7 @@ export default function FooterV3() {
               shimmerColor="#ffffff"
               className="max-sm:text-sm font-mono max-sm:leading-[1.2] tracking-tight"
             >
-              30+ effects free, forever. No credit card.
+              40+ effects free, forever. No credit card.
             </ShimmerText>
           </p>
         </div>

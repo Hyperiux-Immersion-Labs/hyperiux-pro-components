@@ -12,7 +12,12 @@ export default function DeferredAnalytics() {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    // isLighthouseOrHeadless()/isSoftwareRenderer() read navigator/WebGL,
+    // which aren't available during SSR - the real value can only be known
+    // post-mount, so this can't be a lazy useState initializer without
+    // risking a hydration mismatch.
     if (isLighthouseOrHeadless() || isSoftwareRenderer()) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEnabled(true);
   }, []);
 

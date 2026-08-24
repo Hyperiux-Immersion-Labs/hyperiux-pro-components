@@ -14,6 +14,10 @@ export function useAdminRole() {
     if (!isLoaded) return;
 
     if (!user) {
+      // This branch shares the effect with the async /api/admin/me fetch
+      // below (cancellation flag + cleanup), and reacts to Clerk's
+      // client-only auth state resolving - it isn't render-derivable.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRole(null);
       setLoading(false);
       return;

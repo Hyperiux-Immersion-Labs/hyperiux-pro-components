@@ -106,8 +106,8 @@ export function DashboardShell({ children }) {
           <ButtonV3
             href="/effects"
             text={"Browse Effects"}
-         />
-            
+          />
+
         </div>
 
         {children}

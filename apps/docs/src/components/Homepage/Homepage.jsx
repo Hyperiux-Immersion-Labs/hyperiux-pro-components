@@ -1,96 +1,113 @@
-"use client";
+import SmallMotion from "@/components/Homepage/SmallMotion";
+import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
+import CTAV3 from "@/homepage-v3/sections/CTAV3";
+import CurvedGradient from "@/homepage-v3/sections/CurvedGradient";
+import ExplainVault from "@/homepage-v3/sections/ExplainVault";
+import ExploreTheEffects from "@/homepage-v3/sections/ExploreTheEffects";
+import FAQV3 from "@/homepage-v3/sections/FAQV3";
+import FooterV3 from "@/homepage-v3/sections/FooterV3";
+import Hero from "@/homepage-v3/sections/Hero";
+import NotAnotherUIKit from "@/homepage-v3/sections/NotAnotherUIKit";
+import Preview from "@/homepage-v3/sections/Preview";
+import PreviewVideo from "@/homepage-v3/sections/PreviewVideo";
+import ProblemFixes from "@/homepage-v3/sections/Problem&Fixes";
+import Quote from "@/homepage-v3/sections/Quote";
+import Techstack from "@/homepage-v3/sections/Techstack";
+import UseCases from "@/homepage-v3/sections/UseCases";
+import PricingV3 from "@/homepage-v3/sections/PricingV3";
+import NavbarV3 from "@/homepage-v3/components/NavbarV3";
+import LoaderV3 from "@/homepage-v3/components/LoaderV3";
+import DitherTransition from "@/homepage-v3/components/DitherTransition";
+import ScrollTopOnLoad from "@/homepage-v3/components/ScrollTopOnLoad";
+import { headers } from "next/headers";
 
-import dynamic from "next/dynamic";
-import useIsMobile from "@/hooks/useIsMobile";
-import VaultShell from "@/Layouts/VaultShell";
-import TrustStrip from "./TrustStrip";
-import Problem from "./Problem";
-import Tension from "./Tension";
-import Solution from "./Solution";
-import Hero from "./Hero";
-import Workflow from "./WorkFlow";
-import FAQs from "./FAQs";
-import UIKit from "./UIKit";
-import SmallMotion from "./SmallMotion";
-import ForDevelopers from "./ForDevelopers";
-// import StripTransition from "./StripTransition";
-import Pricing from "./Pricing";
-import GradientFill from "./GradientFill";
-import CTA from "./CTA";
-// import CTA2 from "./CTA2";
+const USE_CASES = [
+  {
+    id: 1,
+    title: "Creative Front-End Developers",
+    text: "Stop rebuilding the same scroll reveal, text animation, cursor trail, and transition from scratch. Start from production-ready source and shape it to your project.",
+    cta: "Browse Effects",
+    link: "/effects",
+  },
+  {
+    id: 2,
+    title: "Startup Founders & Product Teams",
+    text: "Make your launch page feel more premium without hiring a full motion team. Use Vault to speed up build cycles, and raise perceived product quality.",
+    cta: "Start with Free Effects",
+    link: "/effects/free",
+  },
+  {
+    id: 3,
+    title: "Agencies & Freelancers",
+    text: "Move faster on client websites while keeping the work custom. Use Vault as a starting point for high-end interaction systems, then adapt the code for each brand.",
+    cta: "See Agency Licensing",
+    link: "#",
+  },
+  {
+    id: 4,
+    title: "CTOs & CPOs",
+    text: "Get the creative benefit of premium motion without committing to an opaque dependency. Source-first code, clear stack choices, and a workflow your developers can own.",
+    cta: "Read the Docs",
+    link: "/docs",
+  },
+  {
+    id: 5,
+    title: "Marketing Teams",
+    text: "Upgrade the moments that affect perception: hero sections, campaign pages, product storytelling, proof sections, and final CTAs.",
+    cta: "Explore Use Cases",
+    link: "#",
+  },
+];
 
-// Heaviest and conditional components
-const GlowingPlatesDeferred = dynamic(() => import("./GlowingPlatesDeferred"), { ssr: false });
-const FeaturedStoryTelling = dynamic(() => import("./FeaturedStoryTelling"), {
-  // Keep layout height while the chunk loads — otherwise every ScrollTrigger
-  // below this section (Workflow, ForDevelopers, …) is created at the wrong
-  // offset and seeks to the end of its timeline until a late refresh.
-  loading: () => (
-    <div className="relative w-full h-[600vh] max-[1025px]:hidden" aria-hidden />
-  ),
-});
-const StorytellingMobile = dynamic(() => import("./StoryTellingMoble"), {
-  loading: () => (
-    <div
-      className="relative hidden max-[1025px]:block w-full h-[250vh] mt-[10vw] mb-[20vw]"
-      aria-hidden
-    />
-  ),
-});
-const VaultGridNewMobile = dynamic(() => import("./VaultGridMobile"));
-import Loader from "./Loader2";
+export default async function Homepage({ faqItems, effects = [] }) {
+  const headersList = await headers();
+  const isIndia = headersList.get("x-vercel-ip-country") === "IN";
 
-const Footer = dynamic(() => import("./Footer"), {
-  loading: () => null,
-});
-
-function StorytellingSpacer() {
   return (
     <>
-      <div className="relative w-full h-[600vh] max-[1025px]:hidden" aria-hidden />
-      <div
-        className="relative hidden max-[1025px]:block w-full h-[250vh] mt-[10vw] mb-[20vw]"
-        aria-hidden
-      />
-    </>
-  );
-}
-
-export default function Homepage({ faqItems, effects = [] }) {
-  const { isMounted, isMobile } = useIsMobile();
-
-  return (
-    <>
-      <VaultShell effects={effects}>
-        <Loader />
-        <main id="main-content">
+      <LoaderV3 />
+      <NavbarV3 effects={effects} introOnLoader />
+      <LenisSmoothScroll />
+      <ScrollTopOnLoad />
+      <div className="relative">
+        <div className="sticky top-0 z-0 h-dvh overflow-hidden">
           <Hero />
-          <GlowingPlatesDeferred />
-          <TrustStrip />
-          <Problem />
-          <GradientFill />
-          <Tension />
-          <Solution />
-          {!isMounted ? (
-            <StorytellingSpacer />
-          ) : isMobile ? (
-            <>
-              <StorytellingMobile />
-              <VaultGridNewMobile />
-            </>
-          ) : (
-            <FeaturedStoryTelling />
-          )}
-          <Workflow />
-          <UIKit />
+        </div>
+        <div className="relative z-10 bg-linear-to-b from-transparent from-0% via-background via-1%  to-background to-100%">
+          <Techstack />
+          <Quote />
+          <CurvedGradient />
+          <ExploreTheEffects />
+          <Preview />
+          <ExplainVault />
+          <PreviewVideo />
+          <NotAnotherUIKit />
+          <ProblemFixes />
           <SmallMotion />
-          <ForDevelopers />
-          <Pricing padding={isMobile ? "pt-[130vw]! max-md:mt-[-20vw]" : ""} />
-          <FAQs faqItems={faqItems} isHomePage fixWidth={true} />
-          <CTA />
-        </main>
-        <Footer />
-      </VaultShell>
+          <UseCases useCases={USE_CASES} />
+          <DitherTransition
+            markers={false}
+            mobileStartTriggers="-10% bottom"
+            mobileEndTriggers="bottom -50%"
+            className="h-[60vw] max-md:m max-md:h-[150vw]! bg-background "
+          />
+          <PricingV3 isIndia={isIndia} />
+          <DitherTransition
+            dotColor="#050505"
+            accentShift={0.8}
+            start="top bottom"
+            end="150% top"
+            mobileStartTriggers="top bottom"
+            mobileEndTriggers="bottom -50%"
+            markers={false}
+            accentColor="#eaeaea"
+            className="h-[75vw] max-md:h-[150vw]! mt-[-10vw] bg-foreground"
+          />
+          <FAQV3 faqItems={faqItems} />
+          <CTAV3 />
+          <FooterV3 />
+        </div>
+      </div>
     </>
   );
 }

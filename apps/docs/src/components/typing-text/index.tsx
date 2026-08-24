@@ -111,6 +111,10 @@ export default function TypingText({
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mediaQuery) return;
 
+    // matchMedia isn't available during SSR, so the real value can only be
+    // read after mount - this can't be a lazy useState initializer without
+    // risking a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrefersReducedMotion(mediaQuery.matches);
 
     const onReduceMotionChange = (event: MediaQueryListEvent) => {
@@ -124,7 +128,26 @@ export default function TypingText({
     };
   }, []);
 
-  let elapsed = 0;
+  // Precomputed outside the JSX map via a pure reduce - no captured
+  // variable is mutated across render iterations.
+  const sequentialDelays = useMemo(
+    () =>
+      preparedLines.reduce<{ delays: number[]; elapsed: number }>(
+        (state, line) => {
+          const typingDuration = Math.max(
+            0.35,
+            (line.chars / Math.max(charactersPerSecond, 1)) * Math.max(animationDuration, 0.1)
+          );
+
+          return {
+            delays: [...state.delays, state.elapsed],
+            elapsed: state.elapsed + typingDuration + Math.max(lineDelay, 0),
+          };
+        },
+        { delays: [], elapsed: 0 }
+      ).delays,
+    [preparedLines, charactersPerSecond, animationDuration, lineDelay]
+  );
 
   return (
     <section
@@ -143,13 +166,9 @@ export default function TypingText({
           );
           const delay =
             variant === "sequential"
-              ? elapsed
+              ? sequentialDelays[index]
               : index * Math.max(lineDelay, 0);
           const loopDuration = Math.max(typingDuration * 2 + holdDuration, 2.4);
-
-          if (variant === "sequential") {
-            elapsed += typingDuration + Math.max(lineDelay, 0);
-          }
 
           const lineStyle: TypingLineStyle = {
             "--typing-target-width": `${line.chars}ch`,

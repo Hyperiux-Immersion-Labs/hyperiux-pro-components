@@ -9,16 +9,10 @@ vi.mock("@/lib/razorpay", () => ({
   razorpay: { subscriptions: { create: (...args) => createMock(...args) } },
 }));
 
-const claimMock = vi.fn();
-const releaseMock = vi.fn();
-vi.mock("@/lib/founding-slots", () => ({
-  claimFoundingSlot: (...args) => claimMock(...args),
-  releaseFoundingSlot: (...args) => releaseMock(...args),
-}));
-
 process.env.RAZORPAY_PRO_YEARLY_PLAN_ID = "plan_yearly_usd";
-process.env.RAZORPAY_PRO_FOUNDING_YEARLY_PLAN_ID = "plan_founding_usd";
 process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID = "plan_monthly_usd";
+process.env.RAZORPAY_PRO_YEARLY_INR_PLAN_ID = "plan_yearly_inr";
+process.env.RAZORPAY_PRO_MONTHLY_INR_PLAN_ID = "plan_monthly_inr";
 process.env.RAZORPAY_KEY_ID = "rzp_test_key";
 
 const { auth } = await import("@clerk/nextjs/server");
@@ -31,9 +25,10 @@ function makeRequest(body) {
   });
 }
 
-const RESERVED = { id: "res-1", status: "reserved" };
-const CONFIRMED = { id: "res-1", status: "confirmed", razorpay_subscription_id: "sub_old" };
-
+// Founding Annual (first-100-users discounted yearly plan) is disabled -
+// every "yearly" request now goes straight to the standard plan_id, no
+// reservation system involved. See route.js's comment for why the founding
+// env vars/plan mapping are still read elsewhere (pro-access.js, webhooks).
 describe("POST /api/razorpay/create-subscription", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -42,81 +37,46 @@ describe("POST /api/razorpay/create-subscription", () => {
 
   it("401s when signed out", async () => {
     auth.mockResolvedValue({ userId: null });
-    const res = await POST(makeRequest({ plan: "yearly", idempotencyKey: "k1" }));
+    const res = await POST(makeRequest({ plan: "yearly" }));
     expect(res.status).toBe(401);
   });
 
-  it("400s a yearly request with no idempotencyKey", async () => {
-    const res = await POST(makeRequest({ plan: "yearly" }));
+  it("400s an invalid plan", async () => {
+    const res = await POST(makeRequest({ plan: "lifetime" }));
     expect(res.status).toBe(400);
-    expect(claimMock).not.toHaveBeenCalled();
   });
 
-  it("monthly requests never touch the founding-slot claim system", async () => {
+  it("monthly USD request creates a subscription at the standard monthly plan_id", async () => {
     createMock.mockResolvedValue({ id: "sub_1" });
     const res = await POST(makeRequest({ plan: "monthly" }));
-    expect(res.status).toBe(200);
-    expect(claimMock).not.toHaveBeenCalled();
-    const body = await res.json();
-    expect(body.founding).toBe(false);
-  });
-
-  it("a successful claim uses the founding plan_id and marks founding: true", async () => {
-    claimMock.mockResolvedValue(RESERVED);
-    createMock.mockResolvedValue({ id: "sub_new" });
-
-    const res = await POST(makeRequest({ plan: "yearly", idempotencyKey: "k1" }));
     const body = await res.json();
 
     expect(res.status).toBe(200);
     expect(createMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        plan_id: "plan_founding_usd",
-        notes: expect.objectContaining({ founding_reservation_id: "res-1" }),
-      })
-    );
-    expect(body.founding).toBe(true);
-  });
-
-  it("a full pool (null claim) falls back to regular yearly pricing, still 200", async () => {
-    claimMock.mockResolvedValue(null);
-    createMock.mockResolvedValue({ id: "sub_new" });
-
-    const res = await POST(makeRequest({ plan: "yearly", idempotencyKey: "k1" }));
-    const body = await res.json();
-
-    expect(res.status).toBe(200);
-    expect(createMock).toHaveBeenCalledWith(
-      expect.objectContaining({ plan_id: "plan_yearly_usd" })
+      expect.objectContaining({ plan_id: "plan_monthly_usd" })
     );
     expect(body.founding).toBe(false);
   });
 
-  it("an idempotent replay of an already-confirmed reservation returns the original subscription without calling Razorpay again", async () => {
-    claimMock.mockResolvedValue(CONFIRMED);
-
-    const res = await POST(makeRequest({ plan: "yearly", idempotencyKey: "k1" }));
+  it("yearly INR request creates a subscription at the standard yearly INR plan_id, no idempotencyKey required", async () => {
+    createMock.mockResolvedValue({ id: "sub_2" });
+    const res = await POST(makeRequest({ plan: "yearly", currency: "INR" }));
     const body = await res.json();
 
     expect(res.status).toBe(200);
-    expect(createMock).not.toHaveBeenCalled();
-    expect(body.subscriptionId).toBe("sub_old");
-    expect(body.founding).toBe(true);
+    expect(createMock).toHaveBeenCalledWith(
+      expect.objectContaining({ plan_id: "plan_yearly_inr" })
+    );
+    expect(body.founding).toBe(false);
   });
 
-  it("releases the slot and returns 502 with a specific reason when Razorpay create fails", async () => {
-    claimMock.mockResolvedValue(RESERVED);
+  it("returns 502 with a specific reason when Razorpay create fails", async () => {
     createMock.mockRejectedValue(new Error("razorpay down"));
-    releaseMock.mockResolvedValue({ id: "res-1", status: "released" });
 
-    const res = await POST(makeRequest({ plan: "yearly", idempotencyKey: "k1" }));
+    const res = await POST(makeRequest({ plan: "yearly" }));
     const body = await res.json();
 
     expect(res.status).toBe(502);
     expect(body.reason).toBe("razorpay_error");
-    expect(releaseMock).toHaveBeenCalledWith({
-      reservationId: "res-1",
-      reason: "razorpay_create_failed",
-    });
   });
 });

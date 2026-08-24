@@ -11,7 +11,11 @@ function useAssetsReady() {
     const { active } = useProgress();
     const [timerDone, setTimerDone] = useState(false);
     const [assetsDone, setAssetsDone] = useState(false);
-    const hasBeenActive = useRef(false);
+    const [hasBeenActive, setHasBeenActive] = useState(false);
+
+    if (active && !hasBeenActive) {
+        setHasBeenActive(true);
+    }
 
     useEffect(() => {
         const timer = setTimeout(() => setTimerDone(true), 2000);
@@ -19,14 +23,15 @@ function useAssetsReady() {
     }, []);
 
     useEffect(() => {
-        if (active) {
-            hasBeenActive.current = true;
-        } else if (hasBeenActive.current) {
+        // Marks assets done once loading (external useProgress `active` flag)
+        // has transitioned from busy to idle at least once.
+        if (!active && hasBeenActive) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setAssetsDone(true);
         }
-    }, [active]);
+    }, [active, hasBeenActive]);
 
-    return timerDone && (assetsDone || !hasBeenActive.current);
+    return timerDone && (assetsDone || !hasBeenActive);
 }
 
 interface BookFlippOwnProps {

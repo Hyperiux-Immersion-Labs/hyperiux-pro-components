@@ -41,7 +41,7 @@ const USE_CASES = [
 
 export const metadata = createPageMetadata({
   title: "Hyperiux Vault Pricing | Pro React Effects Library",
-  description: "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 115 effect library, WebGL scenes, and cursor effects from $20/month.",
+  description: "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 130+ effect library, WebGL scenes, and cursor effects from $20/month.",
   path: "/pricing",
   image:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
@@ -118,7 +118,7 @@ const faqItems = [
     question:
       "Will pricing change after launch?",
     answer:
-      "The first 100 Founding Annual users get Pro at $149/year. Standard Pro is $20/month or $179/year.",
+      "Pro is $20/month or $179/year, with Indian pricing shown in INR (GST included at checkout) for visitors browsing from India.",
   },
   {
     id: "faq4",

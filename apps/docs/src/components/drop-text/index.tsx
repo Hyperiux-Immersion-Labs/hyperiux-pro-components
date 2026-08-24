@@ -118,6 +118,10 @@ export default function DropText({
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mediaQuery) return;
 
+    // matchMedia isn't available during SSR, so the real value can only be
+    // read after mount - this can't be a lazy useState initializer without
+    // risking a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrefersReducedMotion(mediaQuery.matches);
 
     const onReduceMotionChange = (event: MediaQueryListEvent) => {
@@ -186,6 +190,7 @@ export default function DropText({
   useEffect(() => {
     let frame = 0;
     let cancelled = false;
+    const container = containerRef.current;
     const playAfterPaint = () => {
       const fontsReady = "fonts" in document ? document.fonts.ready : Promise.resolve();
 
@@ -202,8 +207,8 @@ export default function DropText({
       return () => {
         cancelled = true;
         cancelAnimationFrame(frame);
-        if (!containerRef.current) return;
-        const pieces = containerRef.current.querySelectorAll<HTMLElement>("[data-drop-piece]");
+        if (!container) return;
+        const pieces = container.querySelectorAll<HTMLElement>("[data-drop-piece]");
         gsap.killTweensOf(pieces);
       };
     }
@@ -225,8 +230,8 @@ export default function DropText({
       cancelled = true;
       cancelAnimationFrame(frame);
       observer.disconnect();
-      if (!containerRef.current) return;
-      const pieces = containerRef.current.querySelectorAll<HTMLElement>("[data-drop-piece]");
+      if (!container) return;
+      const pieces = container.querySelectorAll<HTMLElement>("[data-drop-piece]");
       gsap.killTweensOf(pieces);
     };
   }, [animateOnScroll, playAnimation, segments]);

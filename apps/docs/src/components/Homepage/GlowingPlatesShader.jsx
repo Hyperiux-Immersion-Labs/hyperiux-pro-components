@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useLayoutEffect, useEffect, useState } from "react";
+import { useRef, useLayoutEffect, useEffect, useState, useCallback } from "react";
 import * as THREE from "three";
 import useIsMobile from "@/hooks/useIsMobile";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -744,7 +744,7 @@ export default function GlowingPlatesShader({
     return () => observer.disconnect();
   }, []);
 
-  const playFadeIfReady = () => {
+  const playFadeIfReady = useCallback(() => {
     const el = canvasWrapperRef.current;
 
     if (!el) return;
@@ -766,9 +766,9 @@ export default function GlowingPlatesShader({
       { opacity: 0 },
       { opacity: 1, duration: 1.2, delay: 0.15, ease: "power2.out" }
     );
-  };
+  }, [staticFrame]);
 
-  const markLoaderReady = () => {
+  const markLoaderReady = useCallback(() => {
     if (loaderReadyRef.current) return;
 
     loaderReadyRef.current = true;
@@ -788,7 +788,7 @@ export default function GlowingPlatesShader({
         playFadeIfReady();
       });
     });
-  };
+  }, [playFadeIfReady]);
 
   useLayoutEffect(() => {
     const el = canvasWrapperRef.current;
@@ -892,14 +892,16 @@ export default function GlowingPlatesShader({
         delayRef.current = null;
       }
     };
-  }, [waitForLoader]);
+  }, [waitForLoader, markLoaderReady, playFadeIfReady]);
 
   useEffect(() => {
+    const wrapper = canvasWrapperRef.current;
+
     return () => {
       fadeTweenRef.current?.kill();
 
-      if (canvasWrapperRef.current) {
-        gsap.killTweensOf(canvasWrapperRef.current);
+      if (wrapper) {
+        gsap.killTweensOf(wrapper);
       }
     };
   }, []);

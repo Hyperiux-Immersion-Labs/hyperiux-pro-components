@@ -141,7 +141,7 @@ export default function Menu({
           }
         });
     }
-  }, [menuOpen]);
+  }, [menuOpen, openDuration, linksStagger, socialsStagger]);
 
 
   useEffect(() => {
