@@ -3,6 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import firePlace from "./assets/fire-place.png";
+import lapPool from "./assets/lap-pool.png";
+import relaxationLounge from "./assets/relaxation-lounge.png";
+import spaAndWellness from "./assets/spa-and-wellness.png";
+import wineCellar from "./assets/wine-cellar.png";
 
 interface ServiceButtonProps {
   link: string;
@@ -22,32 +27,35 @@ const ServiceButton = ({ link, btnText, className }: ServiceButtonProps) => {
 };
 
 const serviceButtons = [
-  { text: "Architecture" },
-  { text: "Interior Design" },
-  { text: "Landscape" },
-  { text: "Consulting" },
+  { text: "Download Brochure" },
+  { text: "Download Floor Plan" },
+  { text: "Download Payment Plan" },
+  { text: "Download Architectural Drawings" },
+  { text: "View Amenities" },
+  { text: "Schedule a Visit" },
+  { text: "Contact Sales Team" },
 ];
 
 const services = [
   {
-    title: "Residential",
-    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1400&auto=format&fit=crop",
+    title: "RELAXATION LOUNGE",
+    img: relaxationLounge,
   },
   {
-    title: "Commercial",
-    img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1400&auto=format&fit=crop",
+    title: "65 Foot Lap Pool",
+    img: lapPool,
   },
   {
-    title: "Hospitality",
-    img: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1400&auto=format&fit=crop",
+    title: "Spa and Wellness",
+    img: spaAndWellness,
   },
   {
-    title: "Renovation",
-    img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1400&auto=format&fit=crop",
+    title: "Fire Place",
+    img: firePlace,
   },
   {
-    title: "Wellness",
-    img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1400&auto=format&fit=crop",
+    title: "Wine Cellar",
+    img: wineCellar,
   },
 ];
 
@@ -92,9 +100,9 @@ export default function Service() {
             )}
           </div>
 
-          <div className="flex gap-[0.5vw] fadeup flex-wrap tablet:hidden mobile:hidden">
+          <div className="fadeup flex flex-nowrap gap-[2vw] overflow-x-auto pb-[1vw] tablet:hidden mobile:hidden [&::-webkit-scrollbar]:h-[0.45vw] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#ca8216] [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#eeeeee]">
             {serviceButtons.map((item, index) => (
-              <ServiceButton key={index} link="#" btnText={item.text} />
+              <ServiceButton key={index} link="#" btnText={item.text} className="shrink-0" />
             ))}
           </div>
 
@@ -115,8 +123,8 @@ export default function Service() {
                     quality={90}
                     className="object-cover object-center transition-all duration-350 ease-in-out scale-110 group-hover:scale-100 group-focus:scale-100"
                   />
-                  <div className="stripe-label backdrop-blur-sm px-[2vw] py-[1vw] bg-white/10 rounded-lg overflow-hidden w-fit duration-500 ease-in-out transition-all tablet:py-[2vw] tablet:px-[3vw]">
-                    <p className="text-[1.25vw] font-head text-white uppercase whitespace-nowrap mobile:text-[4vw] tablet:text-[3vw]">
+                  <div className="stripe-label max-w-[15vw] backdrop-blur-sm px-[2vw] py-[1vw] bg-white/10 rounded-lg overflow-hidden w-fit duration-500 ease-in-out transition-all group-hover:max-w-[42vw] group-focus:max-w-[42vw] tablet:max-w-[90%] tablet:py-[2vw] tablet:px-[3vw]">
+                    <p className="truncate text-[1.25vw] font-head text-white uppercase whitespace-nowrap mobile:text-[4vw] tablet:text-[3vw]" title={service.title}>
                       {service.title}
                     </p>
                   </div>

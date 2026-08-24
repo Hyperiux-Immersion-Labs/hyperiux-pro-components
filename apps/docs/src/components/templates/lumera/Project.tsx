@@ -8,16 +8,18 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 import BlackButton from "./BlackButton";
+import refinement1 from "./assets/refinement-1.png";
+import refinement2 from "./assets/refinement-2.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const interiorImages = [
-  "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1600&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=1600&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1616137466211-f939a420be84?q=80&w=1600&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1618219944342-824e40a13285?q=80&w=1600&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1600&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop",
+  refinement1,
+  refinement2,
+  refinement1,
+  refinement2,
+  refinement1,
+  refinement2,
 ];
 
 export default function Project() {
@@ -102,7 +104,7 @@ export default function Project() {
       <div className="px-[5%]">
         <h2
           data-para-anim
-          className="font-medium font-heading text-[4vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
+          className="font-medium font-heading text-[3.9vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
         >
           A World of Refinement
         </h2>
@@ -114,7 +116,7 @@ export default function Project() {
           </div>
           <p
             data-para-anim
-            className="max-w-[38vw] text-[1.3vw] leading-[1.75] tracking-[-0.02em] text-black/85 tablet:max-w-full tablet:text-[2.5vw] mobile:text-[4.6vw]"
+            className="max-w-[38vw] text-[1.25vw] leading-[1.75] tracking-[-0.02em] text-black/85 tablet:max-w-full tablet:text-[2.5vw] mobile:text-[4.6vw]"
           >
             Immerse yourself in the stylish allure of Lumera Heights, where every
             corner exudes sophistication. This is not just a residence, it&apos;s a
@@ -124,10 +126,10 @@ export default function Project() {
         </div>
       </div>
 
-      <div className="pl-[25.5%] tablet:pl-[5%]">
+      <div className="">
         <div
           ref={scrollRef}
-          className={`fadeup no-scrollbar w-full touch-pan-x overflow-x-scroll overflow-y-hidden overscroll-x-contain pr-[5%] select-none ${
+          className={`fadeup no-scrollbar w-full pl-[25.5%] tablet:pl-[5%]  touch-pan-x overflow-x-scroll overflow-y-hidden overscroll-x-contain pr-[5%] select-none ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           onScroll={updateThumb}
@@ -157,7 +159,7 @@ export default function Project() {
           </div>
         </div>
 
-        <div className="relative mt-[3.6vw] h-[0.4vw] w-[74vw] overflow-hidden rounded-full bg-[#e5e5e5] mobile:mt-[7vw] mobile:w-[90vw]">
+        <div className="relative mt-[3.6vw] h-[0.4vw] ml-[25.5%] tablet:pl-[5%] w-[74vw] overflow-hidden rounded-full bg-[#e5e5e5] mobile:mt-[7vw] mobile:w-[90vw]">
           <div
             className="absolute inset-y-0 rounded-l-full bg-black"
             style={{ width: `${thumb.widthPct}%`, left: `${thumb.leftPct}%` }}

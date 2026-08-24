@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import Image from "next/image";
+import type { StaticImageData } from "next/image";
 import { useEffect, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -24,7 +25,7 @@ function reduceScale(value: number, factor: number) {
 }
 
 interface ParallaxImageAnimationProps {
-  src: string;
+  src: string | StaticImageData;
   alt?: string;
   wrapperClassName?: string;
   imageClassName?: string;

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLenis } from "lenis/react";
 import PrimaryButton from "./PrimaryButton";
 import Image from "next/image";
-import lumeraLogo from "./assets/icons/lumera-logo.svg";
+import lumeraLogo from "./assets/icons/lumera-logo.png";
 
 const navLinks = [
   { label: "About", target: "#about" },
@@ -30,21 +30,20 @@ const Header: React.FC = () => {
   };
 
   return (
-    <div className="hero-fadeup flex items-center justify-between">
+    <div className=" flex items-center justify-between">
       <Link href="/" className="flex items-center gap-[0.6vw]  tablet:gap-[2vw]">
       <div className="h-fit w-40">
-
         <Image src={lumeraLogo} alt="Lumera" className="h-full w-full object-contain" />
       </div>
       </Link>
 
-      <nav className="flex items-center gap-[2.2vw] max-[1025px]:hidden">
+      <nav className="flex items-center gap-[3vw] max-[1025px]:hidden">
         {navLinks.map((link) => (
           <a
             key={link.label}
             href={link.target}
             onClick={(event) => handleNavScroll(event, link.target)}
-            className={`font-body text-white/90 text-[0.95vw] tracking-wide transition-colors hover:text-white`}
+            className={`font-body text-white/90 cursor-pointer text-[1.2vw] tracking-wide transition-colors hover:text-white`}
           >
             {link.label}
           </a>

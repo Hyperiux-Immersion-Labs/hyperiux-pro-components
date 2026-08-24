@@ -75,19 +75,19 @@ const Hero: React.FC = () => {
     <>
       <section id="hero" className="relative overflow-hidden">
         <div className="relative isolate flex min-h-[200vh] w-screen flex-col gap-[5vw] px-[5%] py-[3%] tablet:min-h-[240vw] tablet:gap-[8vw] tablet:py-[7%]">
-          <div ref={heroImageWrapperRef} className="absolute inset-[-10%] z-[-1]">
+          <div ref={heroImageWrapperRef} className="absolute inset-0 z-[-1]">
             <Image
               quality={90}
               src={heroBackground}
               alt="Hero Image"
               fill
-              className="h-full w-full object-cover object-top"
+              className="h-full w-full object-cover"
             />
           </div>
 
           <div className="relative z-10 flex h-screen flex-col justify-end gap-[8vw] tablet:gap-[12vw]">
             <div className="flex flex-col gap-[3vw] tablet:gap-[6vw] mb-30">
-              <h1 className="font-heading font-medium! flex flex-col gap-[1vw] text-[8.8vw] leading-[0.94]   uppercase text-white/95 tablet:gap-[4vw] tablet:text-[14vw]">
+              <h1 className="font-heading font-medium! flex flex-col gap-[1vw] text-[9.9vw] leading-[0.94]   uppercase text-white/95 tablet:gap-[4vw] tablet:text-[14vw]">
                 <span data-para-anim>Exceptional</span>
                 <div className="flex items-end gap-[1.8vw] tablet:flex-col tablet:items-start tablet:gap-[4vw]">
                   <span data-para-anim>Living In Dubai</span>
@@ -95,7 +95,7 @@ const Hero: React.FC = () => {
                     aria-label="Scroll to about section"
                     href="#about"
                     onClick={(event) => handleNavScroll(event, "#about")}
-                    className="fadeup flex h-[8.4vw] w-[8.4vw] items-center justify-center self-end rounded-full border border-white text-white transition-colors hover:bg-white/10 tablet:h-[18vw] tablet:w-[18vw] tablet:self-start"
+                    className="fadeup flex h-[6.5vw] w-[6.5vw] items-center justify-center self-center rounded-full border-4 border-white text-white transition-colors hover:bg-white/10 tablet:h-[18vw] tablet:w-[18vw] tablet:self-start"
                   >
                     <svg
                       viewBox="0 0 10 10"
@@ -118,8 +118,8 @@ const Hero: React.FC = () => {
 
           <div className="relative z-10 flex min-h-screen pb-20 flex-col justify-between gap-[8vw] tablet:min-h-[110vw] tablet:gap-[10vw]">
             <div className="flex flex-col gap-[4vw] tablet:gap-[8vw]">
-              <div className="w-[34vw] text-white tablet:w-full">
-                <p className="max-w-[40vw] text-[1.4vw] leading-[1.65] text-white/92 ">
+              <div className="w-[38vw] text-white tablet:w-full">
+                <p className="text-[1.45vw] leading-[1.65] text-white/92 ">
                   A curated collection of remarkable residences across Dubai&apos;s most sought-after addresses, selected for their design, location and way of life.
                 </p>
               </div>
@@ -128,7 +128,7 @@ const Hero: React.FC = () => {
                 <PrimaryButton
                   link="#"
                   btnText="Explore Our Collection"
-                  className="shadow-2xl drop-shadow-2xl"
+                  className="shadow-2xl drop-shadow-2xl font-normal!"
                 />
                 <BlackButton
                   link="#"
@@ -143,18 +143,13 @@ const Hero: React.FC = () => {
                 { value: "4.2M+", suffix: "/AED", label: "Starting Price" },
                 { value: "80+", label: "Stories" },
                 { value: "1,000 FT+", label: "Sky Elevation" },
-                { prefix: "Q4", value: "2027", label: "Handover" },
+                { value: "Q4 2027", label: "Handover" },
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="fadeup rounded-[1.2vw] bg-white/16 px-[1.5vw] py-[2vw] text-center backdrop-blur-[0.5vw] tablet:rounded-[4vw] flex flex-col justify-between min-h-[18vh]"
+                  className="fadeup rounded-[1.2vw] bg-black/10 px-[1.5vw] py-[2vw] text-center backdrop-blur-[0.5vw] tablet:rounded-[4vw] flex flex-col justify-between min-h-[18vh] border border-[#F9F9F91A]"
                 >
-                  <p className="inline-flex items-end justify-center gap-[0.25vw] text-[2.5vw] font-medium leading-none text-white tablet:gap-[1vw] tablet:text-[6vw]">
-                    {stat.prefix && (
-                      <span className="text-[1.6vw] font-medium leading-none tablet:text-[4vw]">
-                        {stat.prefix}
-                      </span>
-                    )}
+                  <p className="inline-flex items-end justify-center gap-[0.25vw] text-[2.9vw] font-medium leading-none text-white tablet:gap-[1vw] tablet:text-[6vw]">
                     {stat.value}
                     {stat.suffix && (
                       <span className="mb-[0.15vw] text-[0.75vw] font-normal leading-none tablet:mb-[0.4vw] tablet:text-[2.5vw]">
@@ -162,7 +157,7 @@ const Hero: React.FC = () => {
                       </span>
                     )}
                   </p>
-                  <p className="text-[0.95vw] text-white/80 tablet:text-[3vw]">
+                  <p className="text-[1.1vw] text-white/80 tablet:text-[3vw]">
                     {stat.label}
                   </p>
                 </div>

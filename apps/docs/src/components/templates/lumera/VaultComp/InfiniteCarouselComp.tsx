@@ -318,7 +318,7 @@ export default function InfiniteCarouselComp({
               if (Math.abs(offset) > 0.1) goTo(progressRef.current.value + offset);
             }}
             aria-hidden={item.copy > 0}
-            className="absolute left-1/2 top-1/2 overflow-hidden rounded-[50%] border border-[#CA8216] will-change-transform"
+            className="absolute left-1/2 top-1/2 overflow-hidden rounded-full border-[1.5px] border-[#CA8216] will-change-transform"
           >
             <Image
               src={item.slide.src}

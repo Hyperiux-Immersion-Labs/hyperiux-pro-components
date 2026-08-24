@@ -118,7 +118,7 @@ export default function TextFillAnimationSection({
         <div className="split__wrapper relative z-10 mx-auto w-full max-w-[85%]">
           <h2
             ref={textRef}
-            className=" text-center text-[3.9vw]  leading-[1.3]  text-[#1c1b1a] opacity-0 max-[1025px]:text-[5vw] max-[1025px]:leading-[1.08] "
+            className=" text-center text-[3.9vw]  leading-[1.3] font-medium text-[#1c1b1a] opacity-0 max-[1025px]:text-[5vw] max-[1025px]:leading-[1.08] "
           >
             {text}
           </h2>

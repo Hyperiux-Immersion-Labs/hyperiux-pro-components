@@ -56,17 +56,17 @@ const About = () => {
 
   return (
     <section className="overflow-hidden bg-[#E0D4C6]" id="about">
-      <div className={` py-[5%] mobile:py-[20%] mobile:pb-[40%] tablet:py-[15%]`}>
+      <div className={` py-[5%] pt-[10%] mobile:py-[20%] mobile:pb-[40%] tablet:py-[15%]`}>
         <div className="w-full px-[5%] flex justify-between tablet:flex-col tablet:gap-[8vw]">
           <h2
             data-para-anim
-            className={`w-[40%]  font-heading text-[3.5vw] font-medium leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] text-[#1c1b1a] mt-[-1vw] tablet:w-[90%] tablet:text-[8vw]`}
+            className={`w-[45%]  font-heading text-[3.9vw] font-medium leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] text-[#1c1b1a] mt-[-1vw] tablet:w-[90%] tablet:text-[8vw]`}
           >
             Real Estate,
             <br />
             Considered Differently
           </h2>
-          <div className="w-[35%] space-y-[1.5vw] text-[#1c1b1a]/80 text-[1.1vw] tablet:w-full">
+          <div className="w-[35%] space-y-[1.5vw] text-[#1c1b1a]/80 text-[1.25vw] tablet:w-full">
             <p data-para-anim>We believe finding the right home begins with understanding how you want to live.</p>
             <p data-para-anim>
               From waterfront residences to private villas and landmark penthouses, we bring together exceptional
@@ -84,10 +84,10 @@ const About = () => {
           />
 
           <div data-para-anim className="mx-auto mt-[1vw] max-w-[24vw] text-center tablet:max-w-[70vw]">
-            <p className={`font-heading text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] text-[1.6vw] text-[#1c1b1a] tablet:text-[5vw]`}>
+            <p className={`font-heading text-[2.3vw] leading-[1.2] font-medium max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] text-[#1c1b1a] tablet:text-[5vw]`}>
               {activeSlide.title}
             </p>
-            <p className="mt-[0.5vw] text-[0.95vw] text-[#1c1b1a]/70 tablet:text-[3.5vw]">
+            <p className="mt-[0.5vw] w-[90%] text-center mx-auto text-[1.01vw] text-[#1C1B1A] tablet:text-[3.5vw]">
               {activeSlide.description}
             </p>
           </div>

@@ -20,27 +20,22 @@ import CTA from "@/components/templates/lumera/CTA";
 
 
 
-
 export default function Page() {
   return (
     <div className="relative">
       <LenisSmoothScroll />
       <div className="fixed inset-x-0 top-0 z-50 px-[5%] py-[3%] tablet:px-[5%] tablet:py-[7%]">
-        {/* <Header /> */}
+        <Header />
       </div>
-      {/* <Hero />
+      <Hero />
       <About />
       <TextFillAnimationSection />
       <HorizontalFeatureRevealSection />
       <Service />
       <Works />
-       
-      <Project /> */}
-      {/* <ShowCase /> */}
-      <Gallery />
-     
-    
-  
+      <Project />
+      <ShowCase />
+     <Gallery/>
       <Bringing />
       <ProjectHover />
       <Faq />

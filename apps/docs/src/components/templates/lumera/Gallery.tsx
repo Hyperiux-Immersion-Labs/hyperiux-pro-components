@@ -144,7 +144,7 @@ const Gallery = () => {
                   />
                 </div>
               </div>
-              <h4 className="font-head uppercase text-[1.1vw] tracking-wide max-md:text-[3.8vw] max-[1025px]:text-[2.2vw]">
+              <h4 className="font-head uppercase text-[1.25vw] tracking-wide max-md:text-[3.8vw] max-[1025px]:text-[2.2vw]">
                 {feature.name}
               </h4>
             </div>
@@ -160,11 +160,11 @@ const Gallery = () => {
       <div className="px-[5%] max-md:px-[6%]">
         <h2
           data-title-anim
-          className={`font-heading font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
+          className={`font-heading font-medium text-[3.9vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
         >
           Core Features
         </h2>
-        <p data-para-anim className="w-[40%] max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.2vw] max-[1025px]:w-full">
+        <p data-para-anim className="w-[40%] max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.25vw] tracking-wide max-[1025px]:w-full">
           The interiors of Lumera Heights reflect a refined balance of modern luxury and functional elegance.
         </p>
         <div className="w-full mt-[6vw]  mb-[2vw] relative flex items-start justify-between gap-[3vw] max-[1025px]:flex-col max-md:gap-[4vw]">

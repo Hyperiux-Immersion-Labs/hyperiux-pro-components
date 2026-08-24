@@ -250,7 +250,7 @@ export default function HorizontalFeatureRevealSection() {
   return (
     <section
       id={sectionId}
-      className="relative h-[520vh] bg-[#f5f1eb] text-[#1c1b1a] max-[1025px]:h-auto"
+      className="relative h-[520vh] bg-[#F3F3F3] text-[#1c1b1a] max-[1025px]:h-auto"
     >
       <div className="sticky top-0 h-screen overflow-hidden max-[1025px]:static max-[1025px]:h-auto">
         <div
@@ -260,7 +260,7 @@ export default function HorizontalFeatureRevealSection() {
           {RESIDENCE_DATA.map((item) => (
             <article
               key={item.number}
-              className="lumera-residence-card flex h-screen w-[92vw] flex-none overflow-hidden rounded-none bg-[#f5f1eb] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col"
+              className="lumera-residence-card flex h-screen w-[98vw] flex-none overflow-hidden rounded-none bg-[#F3F3F3] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col"
             >
               <div className="h-full w-[42%] overflow-hidden max-[1025px]:w-full max-[1025px]:rounded-[4vw]">
                 <Image
@@ -278,17 +278,17 @@ export default function HorizontalFeatureRevealSection() {
                 />
               </div>
 
-              <div className="flex w-[58%] flex-col justify-between px-[3.5vw] py-[3.5vw] max-[1025px]:w-full max-[1025px]:px-0 max-[1025px]:pt-[7vw]">
+              <div className="flex  flex-col justify-between px-[3.5vw] py-[3.5vw] max-[1025px]:w-full max-[1025px]:px-0 max-[1025px]:pt-[7vw]">
                 <div>
-                  <p className="lumera-residence-number font-heading text-[4vw] font-medium leading-none  opacity-0 max-[1025px]:text-[18vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-number font-heading text-[5.8vw] font-medium leading-none  opacity-0 max-[1025px]:text-[18vw] max-[1025px]:opacity-100">
                     {item.number}
                   </p>
 
-                  <h3 className="lumera-residence-title mt-[2vw] max-w-[90%] font-heading text-[3.5vw] font-medium  leading-[1.04] tracking-[-0.05em] opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-[1025px]:text-[11vw] max-[1025px]:opacity-100">
+                  <h3 className="lumera-residence-title mt-[2vw]  font-heading text-[3.9vw] font-medium  leading-[1.04] tracking-[-0.05em] opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-[1025px]:text-[11vw] max-[1025px]:opacity-100">
                     {item.title}
                   </h3>
 
-                  <p className="lumera-residence-copy mt-[3vw] max-w-[80%] text-[1.2vw] leading-[1.4] text-[#1c1b1a]/85 opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[4.4vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-copy mt-[3vw] max-w-[70%] text-[1.25vw] leading-[1.4] text-[#1c1b1a]/85 opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[4.4vw] max-[1025px]:opacity-100">
                     {item.description}
                   </p>
 
@@ -297,7 +297,7 @@ export default function HorizontalFeatureRevealSection() {
                       <div
                         key={`${item.number}-${stat.label}`}
                         className={`lumera-residence-stat relative py-[0.95vw] opacity-0 max-[1025px]:py-[4vw] max-[1025px]:opacity-100 ${
-                          index === 0 ? "pr-[3vw]" : "pl-[3vw] pr-[3vw]"
+                          index === 0 ? "pr-[2vw]" : "pl-[2vw] pr-[2vw]"
                         } ${
                           index === item.stats.length - 1 ? "pr-0" : ""
                         } max-[1025px]:px-0`}
@@ -308,10 +308,10 @@ export default function HorizontalFeatureRevealSection() {
                             className="absolute left-0 top-1/2 h-[6vw] w-px -translate-y-1/2 bg-[#DADADA] max-[1025px]:hidden"
                           />
                         ) : null}
-                        <p className="font-heading text-[1.4vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[7vw]">
+                        <p className="text-[1.45vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[7vw]">
                           {stat.value}
                         </p>
-                        <p className="mt-[0.8vw] text-[1vw] text-[#1c1b1a]/75 max-[1025px]:mt-[1.8vw] max-[1025px]:text-[3.7vw]">
+                        <p className="mt-[0.8vw] text-[1.25vw] text-[#1c1b1a]/75 max-[1025px]:mt-[1.8vw] max-[1025px]:text-[3.7vw]">
                           {stat.label}
                         </p>
                       </div>
@@ -332,7 +332,7 @@ export default function HorizontalFeatureRevealSection() {
                           width={1000}
                           height={1000}
                           quality={95}
-                          className="h-[6vw] w-[6vw] object-cover max-[1025px]:h-[20vw] max-[1025px]:w-[20vw]"
+                          className="h-[6.2vw] w-[6.2vw] object-cover max-[1025px]:h-[20vw] max-[1025px]:w-[20vw]"
                         />
                       </div>
                     ))}

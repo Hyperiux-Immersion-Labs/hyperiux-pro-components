@@ -4,9 +4,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import showcasePoster from "./assets/video-poster.webp";
 gsap.registerPlugin(ScrollTrigger);
 
 const nearbyLandmarks = ["Burj Khalifa", "Dubai Mall", "Downtown Dubai", "Palm Jumeirah"];
+const dubaiLivingVideo = new URL("./assets/dubai-living.mp4", import.meta.url).toString();
 
 const ShowCase = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -32,7 +34,7 @@ const ShowCase = () => {
           if (entry.isIntersecting) {
             const video = videoRef.current;
             if (video && !videoLoaded) {
-              video.src = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/VaultVideos/carousels/arc-flow-carousel.mp4";
+              video.src = dubaiLivingVideo;
               video.load();
               video.play();
               setVideoLoaded(true);
@@ -94,7 +96,7 @@ const ShowCase = () => {
         <div className="flex w-full gap-[10vw] tablet:flex-col">
           <h2
             data-para-anim
-            className={`w-[50%] text-black font-heading text-[3.8vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] tablet:w-full`}
+            className={`w-[50%] text-black font-heading font-medium text-[3.9vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] tablet:w-full`}
           >
             At the Heart of
             <br />
@@ -103,7 +105,7 @@ const ShowCase = () => {
           <div className="w-[25vw] h-[25vw] overflow-hidden rounded-[1000px] video-block absolute right-[10%] rtl:left-[10%] rtl:right-auto tablet:w-[90vw] tablet:h-[50vw] tablet:static tablet:rounded-[4vw]">
             <video
               ref={videoRef}
-              poster="/assets/video-poster.webp"
+              poster={showcasePoster.src}
               muted
               loop
               playsInline
@@ -132,7 +134,7 @@ const ShowCase = () => {
         </div>
 
         <div className="w-full h-full mt-[48vw] flex justify-end tablet:mt-[7vw]">
-          <p data-para-anim className="w-[40%] mr-[5vw] text-[1.2vw] text-black tablet:w-full ">
+          <p data-para-anim className="w-[40%] mr-[5vw] text-[1.2vw] text-black tablet:w-full tracking-wide">
             Perfectly located in one of Dubai&apos;s most prestigious districts, Lumera Heights offers unmatched access to culture, business, and lifestyle destinations.
           </p>
         </div>
