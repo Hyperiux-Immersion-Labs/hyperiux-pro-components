@@ -118,7 +118,7 @@ const faqItems = [
     question:
       "Will pricing change after launch?",
     answer:
-      "The first 100 Founding Annual users get Pro at $149/year. Standard Pro is $20/month or $179/year.",
+      "Pro is $20/month or $179/year, with Indian pricing shown in INR (GST included at checkout) for visitors browsing from India.",
   },
   {
     id: "faq4",
