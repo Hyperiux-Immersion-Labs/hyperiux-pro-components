@@ -96,7 +96,7 @@ const Portfolio = () => {
             } else {
                 tl.to(cardRefs.current[i + 1], { yPercent: 0, ease: 'power2.inOut', duration: 1 }, i)
             }
-            tl.to(cardRefs.current[i], { filter: 'brightness(0.75)', ease: 'power2.inOut', duration: 1 }, i)
+            tl.to(cardRefs.current[i], { filter: 'brightness(0.3)', ease: 'power2.inOut', duration: 1 }, i)
             tl.set(dotRefs.current[i + 1], { backgroundColor: '#ffffff', borderColor: '#ffffff' }, i + 1)
         }
 
