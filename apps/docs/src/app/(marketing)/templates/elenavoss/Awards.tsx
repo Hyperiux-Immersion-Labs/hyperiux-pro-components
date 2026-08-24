@@ -58,6 +58,17 @@ const Awards = () => {
   // rather than recency, which is what caused the old "wrong image on
   // top" glitch. A monotonic counter makes that class of bug impossible.
   const zIndexCounterRef = useRef(AWARD_ITEMS.length);
+  const prefersReducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    prefersReducedMotionRef.current = mq.matches;
+    const onChange = (e: MediaQueryListEvent) => {
+      prefersReducedMotionRef.current = e.matches;
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     gsap.set(containerRef.current, { y: 0 });
@@ -114,22 +125,26 @@ const Awards = () => {
     // (including a previous reveal still in flight) just keeps
     // playing out underneath this one.
     gsap.killTweensOf(incoming);
-    gsap.set(incoming, { scale: 0 });
-    gsap.to(incoming, {
-      scale: 1,
-      duration: IMAGE_REVEAL_DURATION,
-      ease: IMAGE_REVEAL_EASE,
-    });
+    if (prefersReducedMotionRef.current) {
+      gsap.set(incoming, { scale: 1 });
+    } else {
+      gsap.set(incoming, { scale: 0 });
+      gsap.to(incoming, {
+        scale: 1,
+        duration: IMAGE_REVEAL_DURATION,
+        ease: IMAGE_REVEAL_EASE,
+      });
+    }
   };
 
   return (
     <section
-      className="relative w-screen bg-[#080808] text-white py-[7vw]"
+      className="relative w-screen bg-[#070707] text-white py-[7vw]"
       id="awards"
     >
       <div className="w-screen flex items-center px-[4vw] gap-[4vw] overflow-hidden">
         <div className="w-full">
-          <OverflowTextReveal>
+          <OverflowTextReveal stagger={0.015}>
             <h2 className="text-[5.5vw] leading-[1.2]  mb-[4vw] max-[1025px]:text-[7vw] max-md:text-[9vw]">
               Awards and Industry
               <br />

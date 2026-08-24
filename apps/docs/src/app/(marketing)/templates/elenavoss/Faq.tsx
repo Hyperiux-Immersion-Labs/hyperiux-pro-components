@@ -1,7 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { FAQWrapper, FAQTitle, FAQContent } from "./effects/animated-faq";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type FaqItem = { question: string; answer: string };
 
@@ -37,10 +41,37 @@ const FAQ_ITEMS: FaqItem[] = [
 
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(0);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const rows = rowRefs.current.filter(Boolean) as HTMLDivElement[];
+    const tweens = rows.map((row) =>
+      gsap.fromTo(
+        row,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: row,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      )
+    );
+
+    return () => {
+      tweens.forEach((tween) => tween.scrollTrigger?.kill());
+      tweens.forEach((tween) => tween.kill());
+    };
+  }, []);
 
   return (
-    <section className="w-screen py-[6vw] px-[10vw] relative bg-[#080808] text-white max-[1025px]:px-[6vw] max-md:px-5">
-      <OverflowTextReveal>
+    <section className="w-screen py-[6vw] px-[10vw] relative bg-[#070707] text-white max-[1025px]:px-[6vw] max-md:px-5">
+      <OverflowTextReveal stagger={0.015}>
         <h2 className="text-[5.5vw] text-center mb-[6vw] max-[1025px]:text-[7vw] max-md:text-[9vw]">
           Frequently Asked Questions
         </h2>
@@ -50,8 +81,14 @@ const Faq = () => {
         {FAQ_ITEMS.map((item, i) => {
           const isOpen = openIndex === i;
           return (
-            <FAQWrapper
+            <div
               key={item.question}
+              ref={(el) => {
+                rowRefs.current[i] = el;
+              }}
+              className="opacity-0"
+            >
+            <FAQWrapper
               controlledOpen={isOpen}
               onToggle={() => setOpenIndex((prev) => (prev === i ? -1 : i))}
               className="border-b border-white/10 py-8 group max-md:py-5"
@@ -92,6 +129,7 @@ const Faq = () => {
                 </p>
               </FAQContent>
             </FAQWrapper>
+            </div>
           );
         })}
       </div>

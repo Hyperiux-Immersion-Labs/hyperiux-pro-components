@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
@@ -13,7 +13,7 @@ import Client6 from "./assets/clients-6.png";
 import ElenaVoss from "./assets/connect-center-img.png";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
 
-const Connects = () => {
+const Clients = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
   const circle1 = useRef<HTMLDivElement | null>(null);
@@ -75,11 +75,11 @@ const Connects = () => {
   return (
     <section
       ref={sectionRef}
-      className="h-full w-screen py-30 px-15 relative z-0 overflow-hidden bg-[#080808]"
+      className="h-full w-screen py-30 px-15 relative z-0 overflow-hidden bg-[#070707]"
     >
       <div className="w-full h-full flex flex-col items-center justify-center relative z-[2]">
-        <div className="text-center w-[40%] space-y-5 mt-10 max-[1025px]:w-[70%] max-md:w-[92%]">
-          <OverflowTextReveal>
+        <div className="text-center w-[70%] space-y-5 mt-10 max-[1025px]:w-[70%] max-md:w-[92%]">
+          <OverflowTextReveal stagger={0.015}>
             <h3 className="text-[5.5vw] leading-[1.2] max-[1025px]:text-[7vw] max-md:text-[9vw]">
               Hear From the Clients!
             </h3>
@@ -92,14 +92,14 @@ const Connects = () => {
           </OverflowTextReveal>
 
         </div>
-        <div className="w-full flex items-center justify-center gap-20 py-20 max-[1025px]:flex-wrap max-[1025px]:gap-10 max-[1025px]:py-14 max-md:gap-6 max-md:py-10">
+        <div className="w-full flex items-center justify-center gap-20 py-40  max-[1025px]:py-20 max-[1025px]:flex-col max-[1025px]:gap-16 ">
           <div>
             <Image
               src={Client1}
               height={49}
               width={171}
-              alt="azure-logo"
-              className="w-[12vw]"
+              alt="google-logo"
+              className="w-[12vw] max-md:w-[25vw] max-[1025px]:w-[18vw]"
             />
           </div>
           <div>
@@ -107,8 +107,8 @@ const Connects = () => {
               src={Client2}
               height={51}
               width={131}
-              alt="intel-logo"
-              className="w-[6vw]"
+              alt="adobe-logo"
+              className="w-[6vw] max-md:w-[12vw] max-[1025px]:w-[8vw]"
             />
           </div>
           <div>
@@ -116,25 +116,25 @@ const Connects = () => {
               src={Client3}
               height={136}
               width={136}
-              alt="IBM-logo"
-              className="w-[12vw]"
+              alt="JP-logo"
+              className="w-[12vw] max-md:w-[25vw] max-[1025px]:w-[18vw]"
             />
           </div>
-          <div className="relative flex items-center justify-center w-[20vw] h-[20vw] ">
+          <div className="relative flex items-center justify-center w-[20vw] h-[20vw] max-md:size-[60vw] max-[1025px]:size-[40vw] ">
             <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#242424] h-[15vw] w-[15vw] z-[-1] origin-center"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#242424] h-[15vw] w-[15vw] z-[-1] origin-center max-md:size-[40vw]  max-[1025px]:size-[30vw] " 
               ref={circle1}
             />
             <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#161616] h-[20vw] w-[20vw] z-[-2] origin-center"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#161616] h-[20vw] w-[20vw] z-[-2] origin-center max-md:size-[60vw]  max-[1025px]:size-[40vw]" 
               ref={circle2}
             />
             <Image
               src={ElenaVoss}
               height={65}
               width={150}
-              alt="unify-logo"
-              className="w-[10vw]"
+              alt="elenavoss-logo"
+              className="w-[10vw] max-md:w-[28vw]  max-[1025px]:w-[18vw]"
             />
           </div>
 
@@ -143,8 +143,8 @@ const Connects = () => {
               src={Client4}
               height={68}
               width={183}
-              alt="amazon-logo"
-              className="w-[12vw]"
+              alt="pinterest-logo"
+              className="w-[12vw] max-md:w-[25vw] max-[1025px]:w-[20vw]"
             />
           </div>
           <div>
@@ -152,8 +152,8 @@ const Connects = () => {
               src={Client5}
               height={58}
               width={335}
-              alt="google-logo"
-              className="w-[8vw]"
+              alt="IBM-logo"
+              className="w-[8vw] max-md:w-[15vw] max-[1025px]:w-[12vw]"
             />
           </div>
           <div>
@@ -161,8 +161,8 @@ const Connects = () => {
               src={Client6}
               height={58}
               width={335}
-              alt="google-logo"
-              className="w-[10vw]"
+              alt="intel-logo"
+              className="w-[10vw] max-md:w-[20vw] max-[1025px]:w-[14vw]"
             />
           </div>
         </div>
@@ -273,4 +273,4 @@ const Connects = () => {
   );
 };
 
-export default Connects;
+export default Clients;

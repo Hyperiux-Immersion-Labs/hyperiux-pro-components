@@ -14,10 +14,10 @@ type OverflowTextRevealSplitBy = 'chars' | 'lines';
 
 // "bottom" is the original default behavior (yPercent: 100, rotate: 8)
 const DIRECTION_INITIAL: Record<OverflowTextRevealDirection, { yPercent: number, xPercent: number, rotate: number }> = {
-  top: { yPercent: -100, xPercent: 0, rotate: -8 },
-  bottom: { yPercent: 100, xPercent: 0, rotate: 8 },
-  left: { yPercent: 0, xPercent: -100, rotate: -8 },
-  right: { yPercent: 0, xPercent: 100, rotate: 8 },
+  top: { yPercent: -100, xPercent: 0, rotate: 0 },
+  bottom: { yPercent: 100, xPercent: 0, rotate: 0 },
+  left: { yPercent: 0, xPercent: -100, rotate: 0 },
+  right: { yPercent: 0, xPercent: 100, rotate: 0 },
 };
 
 const REDUCED_MOTION_FADE_DURATION = 0.8;
@@ -40,6 +40,18 @@ interface OverflowTextRevealProps {
   stagger?: number;
   /** How long each individual char/line's own reveal tween takes. */
   duration?: number;
+  /** Fires once every char/line has finished revealing. */
+  onComplete?: () => void;
+  /** Fires onComplete this many seconds BEFORE the reveal visually
+   *  finishes, instead of exactly at completion - lets a chained
+   *  animation start while the tail end of this one is still playing.
+   *  Computed from this reveal's own duration/stagger/delay math, not
+   *  from the tween's native onComplete. Defaults to 0 (fires exactly
+   *  at completion, same as before this prop existed). Ignored if
+   *  animateOnScroll's ScrollTrigger hasn't fired yet at that point -
+   *  timing is measured from mount, so a trigger that fires later than
+   *  mount (rare for above-the-fold text) would shift it later too. */
+  completeOverlap?: number;
 }
 
 export default function OverflowTextReveal({
@@ -52,6 +64,8 @@ export default function OverflowTextReveal({
   splitBy = "chars",
   stagger,
   duration = 0.5,
+  onComplete,
+  completeOverlap = 0,
 }: OverflowTextRevealProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const splitRefs = useRef<any[]>([]);
@@ -125,6 +139,11 @@ export default function OverflowTextReveal({
             delay,
           };
 
+          if (onComplete) {
+            const totalDuration = delay + REDUCED_MOTION_FADE_DURATION;
+            gsap.delayedCall(Math.max(totalDuration - completeOverlap, 0), onComplete);
+          }
+
           if (animateOnScroll) {
             gsap.to(containerRef.current, {
               ...fadeUpProps,
@@ -149,9 +168,15 @@ export default function OverflowTextReveal({
 
         const fromProps = {
           ...initialProps,
-          opacity: 0,
+          // opacity: 0,
           willChange: "transform",
         };
+
+        // Lines are fewer and visually larger than chars, so a wider
+        // stagger reads better than the tight per-character timing -
+        // that's only the fallback though, an explicit stagger prop
+        // always wins.
+        const resolvedStagger = stagger ?? (splitBy === "lines" ? 0.1 : 0.03);
 
         const toProps = {
           yPercent: 0,
@@ -159,14 +184,18 @@ export default function OverflowTextReveal({
           rotate: 0,
           opacity: 1,
           duration,
-          // Lines are fewer and visually larger than chars, so a wider
-          // stagger reads better than the tight per-character timing -
-          // that's only the fallback though, an explicit stagger prop
-          // always wins.
-          stagger: stagger ?? (splitBy === "lines" ? 0.1 : 0.03),
+          stagger: resolvedStagger,
           ease: "power3.out",
           delay,
         };
+
+        if (onComplete) {
+          // GSAP's stagger total = (targetCount - 1) * stagger + duration,
+          // plus this tween's own delay.
+          const totalDuration =
+            delay + resolvedStagger * Math.max(targetsRef.current.length - 1, 0) + duration;
+          gsap.delayedCall(Math.max(totalDuration - completeOverlap, 0), onComplete);
+        }
 
         if (animateOnScroll) {
           gsap.fromTo(targetsRef.current, fromProps, {
@@ -190,7 +219,7 @@ export default function OverflowTextReveal({
       if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
     };
-  }, [animateOnScroll, delay, scrub, direction, splitBy, stagger, duration]);
+  }, [animateOnScroll, delay, scrub, direction, splitBy, stagger, duration, onComplete, completeOverlap]);
 
   return (
     <div ref={containerRef} data-copy-wrapper="true" className={`opacity-0 ${className}`}>

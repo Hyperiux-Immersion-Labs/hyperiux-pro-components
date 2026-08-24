@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import  { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
@@ -50,11 +50,26 @@ const Services = () => {
   const rowRef = useRef<HTMLDivElement | null>(null);
   const gradientRefs = useRef<(HTMLDivElement | null)[]>([]);
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const prefersReducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    prefersReducedMotionRef.current = mq.matches;
+    setPrefersReducedMotion(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => {
+      prefersReducedMotionRef.current = e.matches;
+      setPrefersReducedMotion(e.matches);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     gsap.set(gradientRefs.current, { opacity: 0 });
+   if (prefersReducedMotionRef.current) return;
    if(globalThis.innerWidth>1025){
-       const tween = gsap.fromTo(
+       gsap.fromTo(
          rowRef.current,
          { xPercent: 70 },
          {
@@ -70,8 +85,25 @@ const Services = () => {
          },
        );
    }
+   else if(globalThis.innerWidth<1025 && globalThis.innerWidth>541){
+    gsap.fromTo(
+         rowRef.current,
+         { xPercent: 50 },
+         {
+           xPercent: -55,
+           ease: "none",
+           scrollTrigger: {
+             trigger: "#services",
+             start: "top 20%",
+             end: "bottom bottom",
+             scrub: true,
+             // markers: true,
+           },
+         },
+       );
+   }
    else{
-      const tween = gsap.fromTo(
+       gsap.fromTo(
          rowRef.current,
          { xPercent: 50 },
          {
@@ -107,20 +139,20 @@ const Services = () => {
 
   return (
     <section
-      className="relative w-screen h-[200vh] bg-[#080808] text-white"
+      className={`relative w-screen bg-[#070707] text-white ${prefersReducedMotion ? "" : "h-[200vh]"}`}
       id="services"
     >
       <div className="relative pt-[6vw] px-[4vw] w-[60%] max-[1025px]:w-[85%] max-md:w-full  max-[1025px]:px-[7vw] max-[1025px]:pt-[15vw]">
-        <OverflowTextReveal>
+        <OverflowTextReveal stagger={0.015}>
           <h2 className="text-[5.5vw] leading-[1.2] max-[1025px]:text-[7vw] max-md:text-[9vw]">
             Design That Speaks
             <br />
             to Your Audience
           </h2>
         </OverflowTextReveal>
-        <div className="w-[75%] max-md:w-full">
+        <div className="w-[75%] max-[1025px]:w-full">
           <OverflowTextReveal splitBy="lines">
-            <p className="text-[1.25vw] leading-[1.6] text-white/80 mt-[1.5vw] max-[1025px]:text-[2.2vw] max-md:text-[3.8vw] max-md:mt-[7vw]">
+            <p className="text-[1.25vw] ">
               My practice is focused on solving real-world digital challenges
               with thoughtful design thinking. Whether you need to refine brand
               identity, streamline user experience, or create memorable
@@ -130,11 +162,21 @@ const Services = () => {
           </OverflowTextReveal>
         </div>
       </div>
-      <div className="w-screen h-screen sticky top-0 overflow-hidden flex flex-col">
-        <div className="relative flex-1 flex items-center">
+      <div
+        className={
+          prefersReducedMotion
+            ? "w-screen pb-[6vw]"
+            : "w-screen h-screen sticky top-0 overflow-hidden flex flex-col max-md:mt-[-30vw]"
+        }
+      >
+        <div className={prefersReducedMotion ? "" : "relative flex-1 flex items-center"}>
           <div
             ref={rowRef}
-            className="flex gap-[1.6vw] px-[4vw] will-change-transform"
+            className={
+              prefersReducedMotion
+                ? "grid grid-cols-3 gap-[1.6vw] px-[4vw] pt-[5vw] max-[1025px]:grid-cols-2 max-md:grid-cols-1"
+                : "flex gap-[1.6vw] px-[4vw] will-change-transform"
+            }
           >
             {SERVICES.map((service, index) => (
               <Link
@@ -142,7 +184,11 @@ const Services = () => {
                 key={service.title}
                 onMouseEnter={() => handleEnter(index)}
                 onMouseLeave={() => handleLeave(index)}
-                className="relative w-[27vw] h-[30vw] shrink-0 rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden group max-[1025px]:w-[42vw] max-[1025px]:h-[46vw] max-[1025px]:p-[3vw] max-md:w-[75vw] max-md:h-[85vw] max-md:p-[5vw]"
+                className={
+                  prefersReducedMotion
+                    ? "relative rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden group min-h-[22vw] max-[1025px]:min-h-[32vw] max-[1025px]:p-[3vw] max-md:min-h-0 max-md:p-[5vw]"
+                    : "relative w-[27vw] h-[30vw] shrink-0 rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden group max-[1025px]:w-[42vw] max-[1025px]:h-[46vw] max-[1025px]:p-[3vw] max-md:w-[75vw] max-md:h-[85vw] max-md:p-[5vw]"
+                }
               >
                 <div
                   ref={(el) => {

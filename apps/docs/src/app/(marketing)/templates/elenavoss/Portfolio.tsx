@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/dist/ScrollTrigger'
@@ -43,6 +43,20 @@ const Portfolio = () => {
     const lineFillRef = useRef<HTMLDivElement | null>(null)
     const cardRefs = useRef<(HTMLDivElement | null)[]>([])
     const curveRef = useRef<HTMLDivElement | null>(null)
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+    const prefersReducedMotionRef = useRef(false)
+
+    useEffect(() => {
+        const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+        prefersReducedMotionRef.current = mq.matches
+        setPrefersReducedMotion(mq.matches)
+        const onChange = (e: MediaQueryListEvent) => {
+            prefersReducedMotionRef.current = e.matches
+            setPrefersReducedMotion(e.matches)
+        }
+        mq.addEventListener('change', onChange)
+        return () => mq.removeEventListener('change', onChange)
+    }, [])
 
     useEffect(() => {
         const tl = gsap.timeline({
@@ -58,86 +72,105 @@ const Portfolio = () => {
         gsap.set(lineFillRef.current, { scaleY: 0 })
         gsap.set(dotRefs.current[0], { backgroundColor: '#ffffff', borderColor: '#ffffff' })
         dotRefs.current.slice(1).forEach((dot) => {
-            gsap.set(dot, { backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.5)' })
+            gsap.set(dot, { backgroundColor: '#F06A0E', borderColor: 'rgba(255,255,255,0.5)' })
         })
         gsap.set(cardRefs.current, { filter: 'brightness(1)' })
-        cardRefs.current.slice(1).forEach((card) => {
-            gsap.set(card, { yPercent: 100 })
-        })
-
-        gsap.to(".circle-clip",{
-            yPercent:-20,
-            scrollTrigger:{
-                trigger: '#portfolio',
-                start: 'top bottom',
-                end: '20% bottom',
-                scrub: true,
-                // markers:true,
-            }
-        })
+        if (prefersReducedMotionRef.current) {
+            cardRefs.current.slice(1).forEach((card) => {
+                gsap.set(card, { opacity: 0 })
+            })
+        } else {
+            cardRefs.current.slice(1).forEach((card) => {
+                gsap.set(card, { yPercent: 100 })
+            })
+        }
 
         const steps = PORTFOLIO_ITEMS.length - 1
         tl.to(lineFillRef.current, { scaleY: 1, ease: 'none', duration: steps }, 0)
 
         for (let i = 0; i < steps; i += 1) {
-            tl.to(cardRefs.current[i + 1], { yPercent: 0, ease: 'power2.inOut', duration: 1 }, i)
+            if (prefersReducedMotionRef.current) {
+                // Slide reads as vestibular-triggering motion under reduced
+                // motion - the image just appears in place instead.
+                tl.to(cardRefs.current[i + 1], { opacity: 1, ease: 'none', duration: 1 }, i)
+            } else {
+                tl.to(cardRefs.current[i + 1], { yPercent: 0, ease: 'power2.inOut', duration: 1 }, i)
+            }
             tl.to(cardRefs.current[i], { filter: 'brightness(0.75)', ease: 'power2.inOut', duration: 1 }, i)
             tl.set(dotRefs.current[i + 1], { backgroundColor: '#ffffff', borderColor: '#ffffff' }, i + 1)
         }
 
-        // Curve reacts to real scroll speed, independent of the timeline
-        // above - its own ScrollTrigger instance spanning the whole
-        // document (not scoped to #portfolio's own range), purely so its
-        // onUpdate gives a live velocity reading on every scroll tick.
-        // getVelocity() is an instance method (scrollTrigger.getVelocity()),
-        // not a static one on the ScrollTrigger class, hence needing this
-        // dedicated instance rather than a plain window scroll listener.
-        const curveState = { rx: CURVE_IDLE_RX }
-        const applyCurve = () => {
-            gsap.set(curveRef.current, { clipPath: `ellipse(${curveState.rx}% 100% at 50% 100%)` })
-        }
-        applyCurve()
-
+        let velocitySt: ScrollTrigger | null = null
         let idleTimer: ReturnType<typeof setTimeout> | null = null
-        const velocitySt = ScrollTrigger.create({
-            trigger: document.body,
-            start: 0,
-            end: 'max',
-            onUpdate: (self) => {
-                const velocity = Math.abs(self.getVelocity())
-                const intensity = gsap.utils.clamp(0, 1, velocity / CURVE_VELOCITY_CAP)
-                const target = gsap.utils.interpolate(CURVE_IDLE_RX, CURVE_ACTIVE_RX, intensity)
 
-                gsap.to(curveState, {
-                    rx: target,
-                    duration: 0.35,
-                    ease: 'power2.out',
-                    overwrite: true,
-                    onUpdate: applyCurve,
-                })
+        if (!prefersReducedMotionRef.current) {
+            gsap.to(".circle-clip",{
+                yPercent:-20,
+                scrollTrigger:{
+                    trigger: '#portfolio',
+                    start: 'top bottom',
+                    end: '20% bottom',
+                    scrub: true,
+                    // markers:true,
+                }
+            })
 
-                if (idleTimer) clearTimeout(idleTimer)
-                idleTimer = setTimeout(() => {
+            // Curve reacts to real scroll speed, independent of the timeline
+            // above - its own ScrollTrigger instance spanning the whole
+            // document (not scoped to #portfolio's own range), purely so its
+            // onUpdate gives a live velocity reading on every scroll tick.
+            // getVelocity() is an instance method (scrollTrigger.getVelocity()),
+            // not a static one on the ScrollTrigger class, hence needing this
+            // dedicated instance rather than a plain window scroll listener.
+            const curveState = { rx: CURVE_IDLE_RX }
+            const applyCurve = () => {
+                gsap.set(curveRef.current, { clipPath: `ellipse(${curveState.rx}% 100% at 50% 100%)` })
+            }
+            applyCurve()
+
+            velocitySt = ScrollTrigger.create({
+                trigger: document.body,
+                start: 0,
+                end: 'max',
+                onUpdate: (self) => {
+                    const velocity = Math.abs(self.getVelocity())
+                    const intensity = gsap.utils.clamp(0, 1, velocity / CURVE_VELOCITY_CAP)
+                    const target = gsap.utils.interpolate(CURVE_IDLE_RX, CURVE_ACTIVE_RX, intensity)
+
                     gsap.to(curveState, {
-                        rx: CURVE_IDLE_RX,
-                        duration: 1.2,
-                        ease: 'elastic.out(1, 0.55)',
+                        rx: target,
+                        duration: 0.35,
+                        ease: 'power2.out',
                         overwrite: true,
                         onUpdate: applyCurve,
                     })
-                }, 120)
-            },
-        })
+
+                    if (idleTimer) clearTimeout(idleTimer)
+                    idleTimer = setTimeout(() => {
+                        gsap.to(curveState, {
+                            rx: CURVE_IDLE_RX,
+                            duration: 1.2,
+                            ease: 'elastic.out(1, 0.55)',
+                            overwrite: true,
+                            onUpdate: applyCurve,
+                        })
+                    }, 120)
+                },
+            })
+        }
+        // Reduced motion: curveRef is left with no clip-path applied at
+        // all, so it renders as its natural straight-edged rectangle -
+        // static, no dome, no scroll-velocity reaction.
 
         return () => {
-            velocitySt.kill()
+            velocitySt?.kill()
             if (idleTimer) clearTimeout(idleTimer)
         }
     }, [])
 
     return (
         <section
-            className="relative w-screen h-[300vh] pt-[15vw] text-white max-[1025px]:pt-[30vw] "
+            className={`relative w-screen h-[300vh] text-white ${prefersReducedMotion ? 'pt-[8vw]' : 'pt-[15vw] max-[1025px]:pt-[30vw]'}`}
             id="portfolio"
         >
             <div
@@ -145,13 +178,13 @@ const Portfolio = () => {
                 className='w-full h-[50vh]  absolute top-0 left-0 z-2 bg-linear-to-r from-[#F16B0D] to-[#E61416] circle-clip will-change-[clip-path]'
             />
 
-            <div className="w-screen h-screen sticky top-0 z-3 flex flex-col items-center justify-center px-[4vw] gap-[5vw] overflow-hidden bg-linear-to-r from-[#F16B0D] to-[#E61416] max-md:gap-[8vw]">
-                <OverflowTextReveal>
+            <div className="w-screen h-screen sticky top-0 z-3 flex flex-col items-center justify-center px-[4vw] gap-[5vw] overflow-hidden bg-linear-to-r from-[#F16B0D] to-[#E61416] max-md:gap-[15vw] max-[1025px]:gap-12">
+                <OverflowTextReveal stagger={0.015}>
                 <h2 className="text-[5.5vw] text-center max-[1025px]:text-[6.5vw] max-md:text-[9vw]">Award Winning Work</h2>
                 </OverflowTextReveal>
 
-                <div className="w-full flex items-center gap-[4vw] max-md:flex-col max-md:gap-[8vw]">
-                    <div className="w-[32%] relative max-md:w-full">
+                <div className="w-full flex items-center gap-[4vw] max-[1025px]:flex-col max-md:gap-[15vw] max-[1025px]:items-start max-[1025px]:gap-12">
+                    <div className="w-[32%] relative max-md:w-full max-[1025px]:w-[50%]">
                         {/* top stays 3.5vw (= ROW_HEIGHT_VW / 2) at every breakpoint - it
                             only depends on the first row's own height, which never
                             changes. Height does need to vary per breakpoint though: it has
@@ -166,11 +199,11 @@ const Portfolio = () => {
                             them - update these by hand if ROW_HEIGHT_VW, item count, or the
                             row gaps below ever change. */}
                         <div
-                            className="absolute left-[4px] bg-white/20 top-[3.5vw] h-[21vw] max-[1025px]:h-[33vw] max-md:h-[51vw] w-px max-[1025px]:top-0"
+                            className="absolute left-1 bg-white/20 top-[2.5vw] max-[1025px]:top-[1.5vw] h-[21vw] max-[1025px]:h-[33vw] max-md:h-[51vw] w-px "
                         />
                         <div
                             ref={lineFillRef}
-                            className="absolute left-[4px] bg-white origin-top top-[3.5vw] h-[21vw] max-[1025px]:h-[33vw] max-md:h-[51vw] w-px max-[1025px]:top-0"
+                            className="absolute left-1 bg-white origin-top top-[2.5vw] max-[1025px]:top-[1.5vw] h-[21vw] max-[1025px]:h-[33vw] max-md:h-[51vw] w-px "
                         />
 
                         <div className="flex flex-col max-[1025px]:gap-[4vw] max-md:gap-[10vw]">
@@ -182,23 +215,23 @@ const Portfolio = () => {
                                 >
                                     <span
                                         ref={(el) => { dotRefs.current[i] = el }}
-                                        className="w-[10px] h-[10px] rounded-full border shrink-0 max-[1025px]:mt-[-7vw]"
+                                        className="w-[10px] h-[10px] mt-[-1.5vw] bg-[#F06A0E] rounded-full border shrink-0 max-md:mt-[-7vw] max-[1025px]:mt-[-4vw]"
                                     />
                                     <div>
-                                        <h3 className="text-[1.5vw] font-normal max-[1025px]:text-[2.6vw] max-md:text-[5.5vw]">{item.name}</h3>
-                                        <p className="text-[0.85vw] opacity-70 max-[1025px]:text-[1.8vw] max-md:text-[4.2vw]">{item.tags.join('  •  ')}</p>
+                                        <h3 className="text-[1.5vw] font-normal max-[1025px]:text-[3.5vw] max-md:text-[5.5vw]">{item.name}</h3>
+                                        <p className="text-[1vw] max-[1025px]:text-[2.5vw] max-md:text-[4.2vw]">{item.tags.join('  •  ')}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <div className="w-[65%] h-[34vw] relative rounded-lg overflow-hidden max-md:w-full max-md:h-[75vw]">
+                    <div className="w-[65%] h-[34vw] relative rounded-xl overflow-hidden max-[1025px]:w-full max-[1025px]:h-[50vw] max-md:h-[75vw]  ">
                         {PORTFOLIO_ITEMS.map((item, i) => (
                             <div
                                 key={item.name}
                                 ref={(el) => { cardRefs.current[i] = el }}
-                                className="absolute inset-0 bg-[#F4EFE9] flex items-center justify-center rounded-[1.5vw]"
+                                className="absolute inset-0 bg-[#F4EFE9] flex items-center justify-center  rounded-xl overflow-hidden"
                                 style={{ zIndex: i + 1 }}
                             >
                                 <Image src={item.imgSrc} alt="portfolio-img" width={800} height={400} className="w-full h-full object-cover"/>

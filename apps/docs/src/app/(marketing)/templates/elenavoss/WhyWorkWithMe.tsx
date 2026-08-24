@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import  { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Rocket, Sparkles, Zap } from "lucide-react";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
@@ -65,11 +65,11 @@ const WhyWorkWithMe = () => {
 
   return (
     <section
-      className="relative w-screen bg-[#080808] text-white pt-[35vw] pb-[10vw] max-[1025px]:pt-[50vw] max-[]"
+      className="relative w-screen bg-[#070707] text-white pt-[35vw] pb-[10vw] max-[1025px]:pt-[50vw] "
       id="work-with-me"
     >
       <div className="text-center mb-[5vw] max-md:mb-[10vw]">
-        <OverflowTextReveal>
+        <OverflowTextReveal stagger={0.015}>
           <h2 className="text-[5.5vw] max-[1025px]:text-[7vw] max-md:text-[9vw]">
             Why Work With Me?
           </h2>
@@ -90,7 +90,7 @@ const WhyWorkWithMe = () => {
               key={reason.title}
               onMouseEnter={() => handleEnter(index)}
               onMouseLeave={() => handleLeave(index)}
-              className={`relative px-[3vw] pt-[2vw] pb-[3vw] h-[25vw] flex flex-col justify-between work-card max-[1025px]:h-auto max-[1025px]:py-[6vw] max-[1025px]:px-[7vw] `}
+              className={`relative px-[4vw] pt-[2vw] pb-[3vw] h-[25vw] flex flex-col justify-between work-card max-[1025px]:h-auto max-[1025px]:py-[6vw] max-[1025px]:px-[7vw] `}
             >
               <div>
                 <Icon

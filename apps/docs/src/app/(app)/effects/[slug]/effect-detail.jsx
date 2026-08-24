@@ -31,7 +31,7 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import styles from "./effect-content.module.css";
-import { ChevronLeft, ChevronRight, LockKeyhole } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { CopyLimitProvider, useCopyLimit } from "./useCopyLimit";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";

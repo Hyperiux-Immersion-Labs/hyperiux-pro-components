@@ -22,7 +22,7 @@ const testimonials: Testimonial[] = [
   {
     quote:
       "Working with Elena completely transformed our brand's digital presence. Our conversions jumped by 87%. Her thoughtful design approach and seamless communication made the collaboration effortless. Elena doesn't just design websites, she gives your entire brand a confident new voice.",
-    name: "Jessica Chen",
+    name: "Maria Jones",
     role: "Head of Marketing, Adobe",
     image: Testimonial1,
   },
@@ -91,27 +91,52 @@ const Testimonials = () => {
     return () => mq.removeEventListener?.("change", onChange);
   }, []);
 
-  // Stack every image on top of each other. Only the active one is
-  // revealed (clip-path inset at 0%); the rest sit clipped away entirely
-  // from the bottom (inset 100%) until it's their turn.
+  // Stack every image on top of each other. Under full motion, only the
+  // active one is revealed via clip-path (rest clipped away from the
+  // bottom until it's their turn). Under reduced motion, clip-path is
+  // skipped entirely - every image sits fully unclipped and visibility
+  // is driven by opacity alone, so transitions read as a plain crossfade.
   useEffect(() => {
     imageRefs.current.forEach((el, i) => {
       if (!el) return;
-      gsap.set(el, {
-        clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
-        filter: "brightness(1)",
-        zIndex: i === 0 ? 1 : 0,
-      });
+      if (reduceMotionRef.current) {
+        gsap.set(el, {
+          clipPath: "inset(0% 0% 0% 0%)",
+          opacity: i === 0 ? 1 : 0,
+          filter: "brightness(1)",
+          zIndex: i === 0 ? 1 : 0,
+        });
+      } else {
+        gsap.set(el, {
+          clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
+          filter: "brightness(1)",
+          zIndex: i === 0 ? 1 : 0,
+        });
+      }
     });
   }, []);
 
-  // The outgoing image stays put and just dims - it isn't clipped away.
-  // The incoming image is raised above everything else and wipes in over
-  // it via a clip-path reveal from the bottom.
+  // Reduced motion: a plain opacity crossfade, no clip-path wipe at all.
+  // Full motion: the outgoing image stays put and just dims (not clipped
+  // away); the incoming image is raised above everything else and wipes
+  // in over it via a clip-path reveal from the bottom.
   const animateImage = useCallback((nextIndex: number, prevIndex: number) => {
     const nextEl = imageRefs.current[nextIndex];
     const prevEl = imageRefs.current[prevIndex];
-    const duration = reduceMotionRef.current ? 0.35 : 1.1;
+
+    if (reduceMotionRef.current) {
+      const duration = 0.35;
+      if (prevEl) {
+        gsap.to(prevEl, { opacity: 0, duration, ease: "power2.out" });
+      }
+      if (!nextEl) return;
+      zIndexRef.current += 1;
+      gsap.set(nextEl, { opacity: 0, zIndex: zIndexRef.current });
+      gsap.to(nextEl, { opacity: 1, duration, ease: "power2.out" });
+      return;
+    }
+
+    const duration = 1.1;
 
     if (prevEl) {
       gsap.to(prevEl, {
@@ -257,8 +282,8 @@ const Testimonials = () => {
   const handleNext = useCallback(() => goTo("next"), [goTo]);
 
   return (
-    <section className="w-screen py-30 px-15 relative z-0 bg-[#080808] max-[1025px]:px-10 max-[1025px]:py-20 max-md:px-5 max-md:py-16">
-      <div className="w-full rounded-[2vw] h-[40vw] bg-[#111111] border border-white/8 p-[3vw] max-md:p-8 flex items-center gap-[3vw] max-[1025px]:flex-col max-[1025px]:h-auto max-[1025px]:gap-6 max-[1025px]:p-8 max-md:flex-col max-md:gap-8">
+    <section className="w-screen py-30 px-15 relative z-0 bg-[#070707] max-[1025px]:px-10 max-[1025px]:py-20 max-md:px-5 max-md:py-16">
+      <div className="w-full rounded-xl h-[40vw] bg-[#111111] border border-white/8 p-[3vw] max-md:p-8 flex items-center gap-[3vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:h-[90vw] max-[1025px]:gap-6 max-[1025px]:p-8 max-md:flex-col max-md:gap-8 max-md:h-[180vw]">
         {/* Stacked, clip-path revealed portraits */}
         <div className="relative w-[18vw] h-[24vw]  shrink-0 rounded-lg overflow-hidden bg-[#1c1c1c] max-[1025px]:w-[36vw] max-[1025px]:h-[40vw] max-md:w-full max-md:h-[70vw]">
           {testimonials.map((item, i) => (

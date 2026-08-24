@@ -16,7 +16,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function ClientsBlur() {
+export default function SectionBreak() {
   const container = useRef<HTMLElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
 
@@ -82,7 +82,7 @@ export default function ClientsBlur() {
               opacity: 1,
               filter: "blur(0px) invert(0)",
               duration: 4,
-              delay: index * -0.2,
+              delay: -2,
             })
             .to(
               item,
@@ -104,11 +104,11 @@ export default function ClientsBlur() {
     <section
       ref={container}
       id="clientblur"
-      className="relative w-screen h-[300vh] max-md:h-[500vh] text-center z-2  bg-[#080808]"
+      className="relative w-screen h-[300vh] text-center z-2  bg-[#070707]"
     >
       <div className="sticky w-full top-0 h-screen flex items-center justify-center">
         <div className="w-[60%] max-[1025px]:w-[80%] max-md:w-[90%]">
-          <OverflowTextReveal>
+          <OverflowTextReveal stagger={0.015}>
             <h3 className="text-[5.5vw]  text-white leading-[1.2] max-[1025px]:text-[7vw] max-md:text-[8vw]">
               Trusted by Founders and Creatives, Built for Ambitious Brands.
             </h3>
@@ -138,4 +138,4 @@ export default function ClientsBlur() {
   );
 }
 
-const logos = [Awards1, Awards2, Awards3, Awards4, Awards5, Awards6];
+const logos = [Awards1, Awards2, Awards3, Awards4, Awards5, Awards6,Awards1, Awards2, Awards3, Awards4, Awards5, Awards6];

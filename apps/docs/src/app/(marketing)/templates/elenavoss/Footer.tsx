@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 gsap.registerPlugin(ScrollTrigger);
 import Footerbg from "./assets/footer-bg.svg";
 import ElenaVossLogo from "./assets/elena-voss.svg";
@@ -13,6 +12,7 @@ import InstagramIcon from "./assets/instagram.svg";
 import LinkedInIcon from "./assets/linkedIn.svg";
 import TwitterIcon from "./assets/twitter.svg";
 import DotFillBtn from "./effects/dot-fill-button/DotFillButton";
+import { useGetInTouchModal } from "./GetInTouchModal";
 
 const SocialLinks = [
   { label: "Facebook", href: "#", icon: FacebookIcon },
@@ -24,20 +24,44 @@ const SocialLinks = [
 const Footer = () => {
   const footerRef = useRef(null);
   const footerGlassRef = useRef(null);
-  // useEffect(()=>{
-  //     gsap.from(footerGlassRef.current,{
-  //         // scale:1.1,
-  //         opacity:0,
-  //         yPercent:40,
-  //         ease:"power3.out",
-  //         scrollTrigger:{
-  //             trigger: footerRef.current,
-  //             start: "top 60%",
-  //             end:"bottom 60%",
-  //             scrub: 0.25,
-  //         }
-  //     })
-  // })
+  const { openModal } = useGetInTouchModal();
+  useEffect(()=>{
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(footerGlassRef.current, { opacity: 1, yPercent: 0 })
+      return
+    }
+    if(globalThis.innerWidth>1025){
+
+      gsap.from(footerGlassRef.current,{
+          // scale:1.1,
+          opacity:0,
+          yPercent:30,
+          ease:"power3.out",
+          scrollTrigger:{
+              trigger: footerRef.current,
+              start: "top 40%",
+              end:"bottom bottom",
+              scrub: true,
+              // markers:true
+          }
+      })
+    }
+    else{
+      gsap.from(footerGlassRef.current,{
+          // scale:1.1,
+          opacity:0,
+          yPercent:15,
+          ease:"power3.out",
+          scrollTrigger:{
+              trigger: footerRef.current,
+              start: "top 40%",
+              end:"bottom 90%",
+              scrub: true,
+              // markers:true
+          }
+      })
+    }
+  })
 
   return (
     <>
@@ -56,12 +80,12 @@ const Footer = () => {
         />
         <div className="relative z-[1]">
           <div
-            className="rounded-4xl bg-black/5 border border-white/30 backdrop-blur-2xl px-12 py-12 flex justify-between max-[1025px]:flex-col-reverse max-[1025px]:gap-10 max-[1025px]:px-8 max-[1025px]:py-10 max-md:px-6 max-md:py-8 max-md:gap-8"
+            className="rounded-4xl bg-black/5 border border-white/30 backdrop-blur-2xl px-12 py-12 flex flex-col gap-20 justify-between max-[1025px]:flex-col max-[1025px]:gap-10 max-[1025px]:px-8 max-[1025px]:py-10 max-md:px-6 max-md:py-8 max-md:gap-8"
             ref={footerGlassRef}
           >
             {/* Logo and Contact Info */}
 
-            <div className="flex flex-col justify-between items-start gap-24 footer-content max-[1025px]:gap-10 max-md:gap-8">
+            <div className="flex  justify-between items-start gap-24 footer-content max-[1025px]:gap-10 max-md:gap-16 max-[1025px]:flex-col-reverse">
               <Image
                 src={ElenaVossLogo}
                 width={338}
@@ -70,8 +94,32 @@ const Footer = () => {
                 loading="lazy"
                 className="w-[22vw] max-[1025px]:w-[34vw] max-md:w-[46vw]"
               />
-              <div className=" text-foreground">
-                <h6 className="uppercase mb-5 text-[1.25vw] max-[1025px]:text-[2.4vw] max-md:text-[4vw]">Reach Out</h6>
+
+              <div className="flex flex-col gap-[2vw] items-end max-[1025px]:items-start max-md:items-start max-md:gap-[7vw]">
+                <p className="text-[3.4vw] text-end w-[75%] leading-[1.15] max-[1025px]:text-[5vw] max-[1025px]:w-full max-[1025px]:text-start max-md:text-[7.5vw] max-md:w-full max-md:text-start">
+                  Ready to Bring Your Vision to Life?
+                </p>
+                <DotFillBtn
+                  btnText="Get in Touch"
+                  href={"#"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openModal();
+                  }}
+                  textClassName="font-normal text-[1.15vw] max-[1025px]:text-[3vw] max-md:text-[4.2vw]"
+                  bgColor="#ffffff"
+                  dotColor="#070707"
+                  hoverTextColor="#ffffff"
+                  textColor="#111111"
+                />
+              </div>
+            </div>
+
+            <div className="flex w-full items-end justify-between gap-36 h-auto  footer-content max-[1025px]:w-full max-[1025px]:items-start max-[1025px]:gap-10 max-md:items-start max-md:gap-10 max-[1025px]:flex-col ">
+              <div className=" w-fit text-foreground">
+                <h6 className="uppercase mb-5 text-[1.25vw] max-[1025px]:text-[2.4vw] max-md:text-[4vw]">
+                  Reach Out
+                </h6>
                 <ul className="space-y-2 text-[1.25vw] max-[1025px]:text-[2.4vw] max-md:text-[4vw]">
                   <li className="under-multi-parent">
                     <a
@@ -92,17 +140,6 @@ const Footer = () => {
                   </li>
                 </ul>
               </div>
-            </div>
-
-            <div className="flex flex-col items-end justify-between gap-36 h-auto w-1/2 ml-auto  footer-content max-[1025px]:w-full max-[1025px]:items-start max-[1025px]:gap-10 max-md:items-start max-md:gap-16 ">
-            
-            <div className="flex flex-col gap-[2vw] items-end max-[1025px]:items-start max-md:items-start max-md:gap-[7vw]">
-              <p className="text-[3.4vw] text-end w-[75%] leading-[1.15] max-[1025px]:text-[5vw] max-[1025px]:w-full max-[1025px]:text-start max-md:text-[7.5vw] max-md:w-full max-md:text-start">
-                Ready to Bring Your Vision to Life?
-              </p>
-              <DotFillBtn btnText="Get in Touch" href={"#"} textClassName="font-normal text-[1.15vw] max-[1025px]:text-[3vw] max-md:text-[4.2vw]" bgColor="#ffffff" dotColor="#ff5f00" hoverTextColor="#ffffff" textColor="#111111"/>
-
-            </div>
 
               <div className="flex flex-col justify-between h-fit">
                 {/* Social Media Links */}
