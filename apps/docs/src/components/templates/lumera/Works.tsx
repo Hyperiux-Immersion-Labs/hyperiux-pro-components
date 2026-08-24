@@ -38,7 +38,7 @@ const WorkCardMeta = () => (
     <Image
       src={squareIcon}
       className="h-[1.2vw] w-[1.2vw] object-contain max-[1025px]:h-[2.2vw] max-[1025px]:w-[2.2vw] max-md:h-[4.5vw] max-md:w-[4.5vw]"
-      alt=""
+      alt="square-icon"
       aria-hidden="true"
     />
     <p className="tracking-tight">300 x 400</p>
