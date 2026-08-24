@@ -43,7 +43,7 @@ interface SingleAccordionProps extends FaqItem {
 const SingleAccordion = ({ title, content, isOpen, onToggle }: SingleAccordionProps) => {
   return (
     <div
-      className={`group relative overflow-hidden rounded-md border mb-[1.1vw] transition-colors duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] mobile:rounded-[4.5vw] mobile:mb-[4vw] tablet:rounded-[2.5vw] tablet:mb-[2vw] ${
+      className={`group relative overflow-hidden rounded-md border mb-[1.1vw] transition-colors duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] max-md:rounded-[4.5vw] max-md:mb-[4vw] max-[1025px]:rounded-[2.5vw] max-[1025px]:mb-[2vw] ${
         isOpen ? "border-[#E0D4C6]" : "border-[#111111]"
       }`}
     >
@@ -55,10 +55,10 @@ const SingleAccordion = ({ title, content, isOpen, onToggle }: SingleAccordionPr
       <button
         type="button"
         onClick={onToggle}
-        className="relative z-[2] flex w-full items-center justify-between gap-[2vw] py-[1.6vw] pl-[2.2vw] pr-[1.6vw] text-left mobile:py-[5vw] mobile:pl-[6vw] mobile:pr-[5vw] tablet:py-[3vw] tablet:pl-[4vw] tablet:pr-[3vw] accordion"
+        className="relative z-2 flex w-full items-center justify-between gap-[2vw] py-[1.6vw] pl-[2.2vw] pr-[1.6vw] text-left max-md:py-[5vw] max-md:pl-[6vw] max-md:pr-[5vw] max-[1025px]:py-[3vw] max-[1025px]:pl-[4vw] max-[1025px]:pr-[3vw] accordion"
       >
-        <span className="text-[1.4vw] font-medium mobile:text-[5vw] tablet:text-[3.5vw]">{title}</span>
-        <span className="relative flex h-[2.6vw] w-[2.6vw] shrink-0 items-center justify-center rounded-full border border-black mobile:h-[9vw] mobile:w-[9vw] tablet:h-[6vw] tablet:w-[6vw]">
+        <span className="text-[1.5vw] max-md:w-[80%] font-medium max-md:text-[5vw] max-[1025px]:text-[3.5vw]">{title}</span>
+        <span className="relative flex h-[2.6vw] w-[2.6vw] shrink-0 items-center justify-center rounded-full border border-black max-md:h-[9vw] max-md:w-[9vw] max-[1025px]:h-[6vw] max-[1025px]:w-[6vw]">
           <span className="absolute top-1/2 left-1/2 h-[1.5px] w-[40%] -translate-x-1/2 -translate-y-1/2 bg-black" />
           <span
             className={`absolute top-1/2 left-1/2 h-[1.5px] w-[40%] -translate-x-1/2 -translate-y-1/2 bg-black transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] ${
@@ -73,7 +73,7 @@ const SingleAccordion = ({ title, content, isOpen, onToggle }: SingleAccordionPr
         }`}
       >
         <div className="overflow-hidden">
-          <div className="w-[70%] space-y-[1.5vw] pl-[2.2vw] pb-[1.8vw] text-[1.1vw] leading-normal font-normal text-black mobile:w-full mobile:space-y-[4vw] mobile:pl-[6vw] mobile:pb-[6vw] mobile:text-[4vw] tablet:w-[90%] tablet:pl-[4vw] tablet:pb-[3vw] tablet:text-[2.7vw]">
+          <div className="w-[65%] space-y-[1.5vw] pl-[2.2vw] pb-[1.8vw] text-[1.15vw] leading-normal font-normal text-black max-md:w-[80%] max-md:space-y-[4vw] max-md:pl-[6vw] max-md:pb-[6vw] max-md:text-[4vw] max-[1025px]:w-[90%] max-[1025px]:pl-[4vw] max-[1025px]:pb-[3vw] max-[1025px]:text-[2.7vw]">
             <p data-para-anim className="">
               {content}
             </p>
@@ -89,9 +89,9 @@ const Faq = () => {
 
   return (
     <>
-      <section className="py-[7%] mobile:pt-[20%]" id="faq">
-        <div className={`w-full ml-auto mobile:w-full tablet:w-full px-[5%] !px-[10vw] tablet:!px-[5vw] `}>
-          <h2 data-para-anim className={`font-heading font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[5vw]`}>
+      <section className="py-[7%] max-md:pt-[20%]" id="faq">
+        <div className={`w-full ml-auto max-md:w-full max-[1025px]:w-full px-[5%]  max-md:px-[6%]`}>
+          <h2 data-para-anim className={`font-heading max-md:mb-[10vw] font-medium text-[3.5vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[5vw]`}>
             FAQs
           </h2>
           <div className="w-full fadeup">

@@ -10,29 +10,31 @@ const roiStats = [
 const Roi = () => {
   return (
     <>
-      <section className="pt-[3%] pb-[10%] mobile:pb-[20%]" id="roi">
-        <div className={`px-[5%] flex flex-col gap-[4vw] mobile:gap-[7vw]`}>
-          <div className="flex justify-between mobile:flex-col mobile:gap-[7vw]">
-            <h2 data-para-anim className={`font-heading  font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] w-[35%] mobile:w-full`}>
+      <section className="py-[5%]  max-md:pb-[20%]" id="roi">
+        <div className={`px-[5%] max-md:px-[6%] flex flex-col gap-[6vw] max-md:gap-[7vw]`}>
+          <div className="flex justify-between max-[1025px]:flex-col max-md:gap-[7vw] max-[1025px]:gap-[5vw]">
+            <h2 data-para-anim className={`font-heading  font-medium text-[3.5vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] w-[35%] max-[1025px]:w-full`}>
               Invest in Dubai&apos;s Next Landmark
             </h2>
-            <p data-para-anim className="w-[40%] mobile:w-full text-[1.3vw]">
+            <p data-para-anim className="w-[40%] max-[1025px]:w-[80%] max-[1025px]:text-[2vw] max-md:w-full max-md:text-[3.5vw] text-[1.3vw]">
               Own a residence where architectural distinction, prime location, and elevated living come together. Lumera Heights offers a compelling opportunity for those seeking long-term value in the heart of Dubai.
             </p>
           </div>
-          <div className="flex flex-wrap gap-[4vw] fadeup mobile:gap-[4vw] tablet:gap-[2.5vw]">
+          <div className="flex flex-wrap gap-[4vw] fadeup max-md:gap-[5vw] max-[1025px]:gap-[2.5vw]">
             {roiStats.map((stat) => (
               <div
                 key={stat.label}
-                className="flex flex-col mx-auto items-center justify-center gap-[0.4vw] rounded-full border border-[#ca8216] px-[4vw] py-[2.2vw] text-center mobile:px-[7vw] mobile:py-[5vw] mobile:gap-[1.5vw] tablet:px-[4vw] tablet:py-[3vw]"
+                className="flex flex-col max-[1025px]:w-[45%] mx-auto items-center justify-center gap-[0.4vw] rounded-full max-[1025px]:rounded-lg max-[1025px]:px-2 border border-[#ca8216] px-[4vw] py-[2.2vw] text-center max-md:px-[7vw] max-md:py-[5vw] max-md:gap-[2vw]  max-[1025px]:py-[3vw]"
               >
-                <p className="font-heading font-medium text-[2.8vw] leading-none text-[#1c1b1a] mobile:text-[6vw] tablet:text-[3.5vw]">
-                  {stat.value}
+                <p className="flex items-end justify-center gap-[0.15em] font-heading font-medium text-[2.5vw] leading-none text-[#1c1b1a] max-md:text-[5vw] max-[1025px]:text-[3.2vw]">
+                  <span>{stat.value}</span>
                   {stat.suffix && (
-                    <span className="text-[1vw] align-bottom text-[#1c1b1a]/70 mobile:text-[3vw] tablet:text-[1.8vw]">{stat.suffix}</span>
+                    <span className="mb-[0.5vw] text-[0.9vw] leading-none text-[#1c1b1a] max-md:text-[3vw] max-[1025px]:text-[1.8vw]">
+                      {stat.suffix}
+                    </span>
                   )}
                 </p>
-                <p className="text-[1.1vw] text-[#1c1b1a]/70 mobile:text-[3.2vw] tablet:text-[1.8vw]">{stat.label}</p>
+                <p className="text-[1.1vw] text-[#1c1b1a] max-md:text-[3.2vw] max-[1025px]:text-[1.8vw]">{stat.label}</p>
               </div>
             ))}
           </div>

@@ -35,17 +35,17 @@ export default function Page() {
       <Service />
       <Works />
        
-      <Project />
-      <ShowCase />
+      <Project /> */}
+      {/* <ShowCase /> */}
       <Gallery />
-      */}
+     
     
   
-      {/* <Bringing />
+      <Bringing />
       <ProjectHover />
       <Faq />
       <Highlights />
-      <Roi /> */}
+      <Roi />
       <CTA />
       
       <Footer />

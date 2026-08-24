@@ -15,10 +15,6 @@
   font-family: var(--font-body);
 }
 
-@theme {
-  --text-20: 1.1vw;
-}
-
 body {
   width: 100vw;
   height: 100%;
@@ -30,12 +26,6 @@ body {
   scroll-behavior: smooth;
 }
 
-/* Sections without their own background (Services, Recent Projects) show the
-   body through, and GSAP drives that colour between light and dark as you
-   scroll. The docs shell defaults body to the dark `--background`, so before
-   the first trigger fires those sections rendered dark. `html body` outranks
-   the shell rule regardless of stylesheet order; GSAP's inline style still
-   wins from here on. */
 html body {
   background-color: #ffffff;
 }
@@ -45,30 +35,7 @@ html body {
   font-kerning: none;
 }
 
-/* p {
-  font-size: 1.2vw;
-  line-height: 1.6;
-  letter-spacing: 0.05vw;
-} */
-/* 
-@media screen and (max-width: 540px) {
-  p {
-    font-size: 4.2vw;
-    line-height: 1.6;
-    letter-spacing: 0.05vw;
-  }
-} */
-/* 
-@media screen and (min-width: 541px) and (max-width: 1023px) {
-  p {
-    font-size: 2.5vw;
-    line-height: 1.6;
-    letter-spacing: 0.05vw;
-  }
-} */
 
-/* Hides the native horizontal scrollbar on swipeable rows (e.g. Project's
-   image strip), which instead render their own custom progress bar. */
 .no-scrollbar {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */

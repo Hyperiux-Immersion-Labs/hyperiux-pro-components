@@ -125,15 +125,15 @@ const Gallery = () => {
 
   const renderColumn = (columnFeatures: GalleryFeature[]) => {
     return (
-      <div className="flex flex-col gap-[3vw] w-full tablet:gap-[4vw]">
+      <div className="flex flex-col gap-[3vw] w-full max-[1025px]:gap-[4vw]">
         {columnFeatures.map((feature, index) => (
           <div
             key={index}
             className="cursor-pointer"
             onMouseEnter={() => handleImageHover(feature)}
           >
-            <div className="fadeup flex gap-[2vw]  items-center pb-[1vw] mobile:gap-[4vw] tablet:pb-[1.5vw]">
-              <div className="h-[2.6vw] w-[2.6vw] shrink-0 mobile:w-[9vw] mobile:h-[9vw] tablet:w-[3.5vw] tablet:h-[3.5vw]">
+            <div className="fadeup flex gap-[2vw]  items-center pb-[1vw] max-md:gap-[4vw] max-[1025px]:pb-[1.5vw]">
+              <div className="h-[2.6vw] w-[2.6vw] shrink-0 max-md:w-[9vw] max-md:h-[9vw] max-[1025px]:w-[3.5vw] max-[1025px]:h-[3.5vw]">
                 <div className="w-full h-full relative">
                   <Image
                     quality={100}
@@ -144,11 +144,11 @@ const Gallery = () => {
                   />
                 </div>
               </div>
-              <h4 className="font-head uppercase text-[1.1vw] tracking-wide mobile:text-[3.8vw] tablet:text-[2.2vw]">
+              <h4 className="font-head uppercase text-[1.1vw] tracking-wide max-md:text-[3.8vw] max-[1025px]:text-[2.2vw]">
                 {feature.name}
               </h4>
             </div>
-            <div className="bg-black/20 w-full h-[1px] lineDraw"></div>
+            <div className="bg-black/20 w-full h-px lineDraw"></div>
           </div>
         ))}
       </div>
@@ -156,21 +156,21 @@ const Gallery = () => {
   };
 
   return (
-    <section className="py-[8%] bg-[#E0D4C6] relative z-10 mobile:py-[20%] tablet:py-[10%]" ref={bodyRef}>
-      <div className="px-[5%]">
+    <section className="py-[5%] bg-[#E0D4C6] relative z-10 max-md:py-[10%] max-[1025px]:py-[7%]" ref={bodyRef}>
+      <div className="px-[5%] max-md:px-[6%]">
         <h2
           data-title-anim
           className={`font-heading font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
         >
           Core Features
         </h2>
-        <p data-para-anim className="w-[40%] text-[1.2vw] tablet:w-full">
+        <p data-para-anim className="w-[40%] max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.2vw] max-[1025px]:w-full">
           The interiors of Lumera Heights reflect a refined balance of modern luxury and functional elegance.
         </p>
-        <div className="w-full mt-[6vw] mb-[2vw] relative flex items-start justify-between gap-[3vw] tablet:flex-col mobile:gap-[8vw]">
-          <div className="w-[27%] my-auto tablet:w-full tablet:order-1">{renderColumn(leftFeatures)}</div>
+        <div className="w-full mt-[6vw]  mb-[2vw] relative flex items-start justify-between gap-[3vw] max-[1025px]:flex-col max-md:gap-[4vw]">
+          <div className="w-[27%] my-auto max-[1025px]:w-full max-[1025px]:order-1">{renderColumn(leftFeatures)}</div>
 
-          <div className="w-[33%] h-[45vw] shrink-0 z-10 overflow-hidden relative fadeup tablet:static tablet:w-full mobile:w-full mobile:h-[120vw] tablet:h-[70vw] tablet:order-0">
+          <div className="w-[33%] h-[45vw] shrink-0 z-10 overflow-hidden relative fadeup max-[1025px]:static max-[1025px]:w-full max-md:w-full max-md:h-[120vw] max-[1025px]:h-[70vw] max-[1025px]:order-0">
             <div className="w-full h-full relative overflow-hidden" ref={previewContainerRef}>
               <Image
                 src={leftFeatures[0].image}
@@ -182,7 +182,7 @@ const Gallery = () => {
             </div>
           </div>
 
-          <div className="w-[27%] my-auto tablet:w-full tablet:order-2">{renderColumn(rightFeatures)}</div>
+          <div className="w-[27%] my-auto max-[1025px]:w-full max-[1025px]:order-2">{renderColumn(rightFeatures)}</div>
         </div>
       </div>
     </section>
