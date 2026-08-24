@@ -140,24 +140,24 @@ const Works = () => {
 
   return (
     <>
-      <section id="works" className="w-full h-full overflow-hidden mobile:bg-[#1C1B1A] tablet:bg-[#1C1B1A] tablet:py-[10%]">
-        <div className="relative mx-auto h-full w-full max-w-[90%] py-[5%]">
+      <section id="works" className="w-full h-full overflow-hidden max-md:bg-[#1C1B1A] max-[1025px]:bg-[#1C1B1A] max-[1025px]:py-[10%]">
+        <div className="relative mx-auto h-full w-full max-md:w-[85%] max-w-[90%] py-[5%]">
           <div className="w-full flex justify-center relative z-2">
             <h2
               data-para-anim
-              className="w-[80%] text-center font-heading text-[3.9vw] capitalize leading-tight text-white mobile:w-full mobile:text-[7vw] tablet:w-[80%] tablet:text-[5.5vw]"
+              className="w-[80%] text-center font-heading text-[3.9vw] capitalize leading-tight text-white max-md:w-full max-md:text-[7vw] max-[1025px]:w-[80%] max-[1025px]:text-[5.5vw]"
             >
-              Lumera Heights is defined by bold architectural expression - where structure, form, and light come together to create a timeless vertical icon.
+              Lumera Heights is defined by bold architectural expression , where structure, form, and light come together to create a timeless vertical icon.
             </h2>
           </div>
-          <div className="w-full h-full flex-col mt-[10vw] relative z-2 mobile:mt-[20vw]">
-            <div className="flex w-full h-full justify-between mobile:flex-col mobile:gap-[10vw]">
+          <div className="w-full h-full flex-col mt-[10vw] relative z-2 max-md:mt-[20vw]">
+            <div className="flex w-full h-full justify-between max-md:flex-col max-md:gap-[10vw]">
               <div
-                className="w-[37vw] h-full flex flex-col gap-[2vw] mobile:w-full mobile:gap-[7vw] tablet:w-[70vw]"
+                className="w-[37vw] h-full flex flex-col gap-[2vw] max-md:w-full max-md:gap-[7vw] max-[1025px]:w-[70vw]"
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "0.1"}
               >
-                <div className="w-[40vw] h-[27vw] relative rounded-[2vw] overflow-hidden p-[2vw] group mobile:w-[90vw] mobile:h-[70vw] mobile:p-[4vw] fadeup tablet:w-[65vw] tablet:h-[40vw]">
+                <div className="w-[40vw] h-[27vw] relative rounded-[2vw] overflow-hidden p-[2vw] group max-md:w-[85vw] max-md:h-[70vw] max-md:p-[4vw] fadeup max-[1025px]:w-[65vw] max-[1025px]:h-[40vw]">
                   <ParallaxImageAnimation
                     src={workImages.work5}
                     alt="work-img-5"
@@ -165,7 +165,7 @@ const Works = () => {
                     wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                     imageClassName="scale-[1.5] -translate-y-[15%]"
                   />
-                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-300 mobile:text-[3.5vw] mobile:h-[10vw] mobile:px-[3vw] mobile:py-[3vw] mobile:group-hover:h-[30vw] tablet:text-[2.5vw] tablet:h-[7vw] tablet:px-[2vw] tablet:py-[2vw] tablet:group-hover:h-[20vw]`}>
+                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                     Living Room
                     <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
                       <WorkCardMeta />
@@ -173,17 +173,17 @@ const Works = () => {
                     </div>
                   </div>
                 </div>
-                <p data-para-anim className=" text-white text-[1.25vw] tracking-wide">
+                <p data-para-anim className=" text-white max-md:text-[3.5vw] text-[1.25vw] tracking-wide">
                   Every residence is thoughtfully crafted around light, proportion, and timeless materials. From expansive living spaces to serene private retreats, each detail creates an atmosphere of effortless sophistication above it.
                 </p>
               </div>
 
               <div
-                className="w-[25vw] h-fit relative mr-[8%] mt-[30%] z-[4] mobile:mt-auto mobile:mr-auto tablet:mt-[80%] tablet:w-[35vw] "
+                className="w-[25vw] h-fit relative mr-[8%] mt-[30%] z-[4] max-md:mt-auto max-md:mr-auto max-[1025px]:mt-[80%] max-[1025px]:w-[35vw] "
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "-0.1"}
               >
-                <div className="w-[27vw] h-[35vw] rounded-[1.5vw] overflow-hidden absolute p-[1.5vw] top-0 left-0 group mobile:w-[90vw] mobile:h-[80vw] mobile:p-[4vw] fadeup tablet:w-[40vw] tablet:h-[50vw] tablet:ml-[-140%] mobile:ml-0">
+                <div className="w-[27vw] h-[35vw] rounded-[1.5vw] overflow-hidden absolute p-[1.5vw] top-0 left-0 group max-md:w-[90vw] max-md:h-[80vw] max-md:p-[4vw] fadeup max-[1025px]:w-[40vw] max-[1025px]:h-[50vw] max-[1025px]:ml-[-140%] max-md:ml-0">
                   <ParallaxImageAnimation
                     src={workImages.work1}
                     alt="work-img-1"
@@ -191,7 +191,7 @@ const Works = () => {
                     wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                     imageClassName="scale-[1.5] -translate-y-[15%]"
                   />
-                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-300 mobile:text-[3.5vw] mobile:h-[10vw] mobile:px-[3vw] mobile:py-[3vw] mobile:group-hover:h-[30vw] tablet:text-[2.5vw] tablet:h-[7vw] tablet:px-[2vw] tablet:py-[2vw] tablet:group-hover:h-[20vw]`}>
+                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
                     Kitchen
                     <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
                       <WorkCardMeta />
@@ -202,11 +202,11 @@ const Works = () => {
               </div>
             </div>
             <div
-              className="w-fit h-full mt-[15vw] relative mobile:mt-[90vw] tablet:mt-[70%]"
+              className="w-fit h-full  mt-[15vw] relative max-md:mt-[90vw] max-[1025px]:mt-[70%]"
               data-scroll
               data-scroll-speed={isMobile ? undefined : "-0.1"}
             >
-              <div className="w-[47vw] h-[35vw] relative rounded-[2vw] overflow-hidden ml-[3%] p-[2vw] group mobile:w-[90vw] mobile:h-[80vw] mobile:ml-0 mobile:p-[4vw] fadeup tablet:w-[65vw] tablet:h-[45vw]">
+              <div className="w-[47vw] h-[35vw] relative rounded-[2vw] overflow-hidden ml-[3%] p-[2vw] group max-md:w-[90vw] max-md:h-[80vw] max-md:ml-0 max-md:p-[4vw] fadeup max-[1025px]:w-[65vw] max-[1025px]:h-[45vw]">
                 <ParallaxImageAnimation
                   src={workImages.work2}
                   alt="work-img-2"
@@ -214,7 +214,7 @@ const Works = () => {
                   wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                   imageClassName="scale-[1.5] -translate-y-[15%]"
                 />
-                <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 mobile:text-[3.5vw] mobile:h-[10vw] mobile:px-[3vw] mobile:py-[3vw] mobile:group-hover:h-[30vw] tablet:text-[2.5vw] tablet:h-[7vw] tablet:px-[2vw] tablet:py-[2vw] tablet:group-hover:h-[20vw]`}>
+                <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
                   Bedroom
                   <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
                     <WorkCardMeta />
@@ -222,18 +222,18 @@ const Works = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-[47vw] h-full flex ml-[3%] mt-[5vw] tablet:w-[80vw] mobile:w-full mobile:ml-0">
-                <p data-para-anim className="w-[75%] text-white text-left text-[1.25vw] mobile:w-full tracking-wide">
+              <div className="w-[47vw] h-full flex ml-[3%] mt-[5vw] max-[1025px]:w-[80vw] max-md:w-full max-md:ml-0">
+                <p data-para-anim className="w-[75%] text-white text-left text-[1.25vw] max-md:w-full tracking-wide max-md:text-[3.5vw]">
                  From bespoke finishes to panoramic city views, every space is designed to elevate the everyday. Warm materials, considered proportions, and refined craftsmanship come together to create residences that feel as exceptional as the city beyond them.
                 </p>
               </div>
             </div>
             <div
-              className="w-full h-full flex justify-between mt-[7vw] mobile:mt-auto mobile:flex-col tablet:mt-[10vw]"
+              className="w-full h-full flex justify-between mt-[7vw] max-md:mt-auto max-md:flex-col max-[1025px]:mt-[10vw]"
               data-scroll
               data-scroll-speed={isMobile ? undefined : "0.1"}
             >
-              <div className="w-[40vw] h-[27vw] relative rounded-[2vw] overflow-hidden mt-[10vw] p-[2vw] group tablet:w-[47vw] tablet:h-[35vw] tablet:mt-[25vw] mobile:w-[90vw] mobile:h-[70vw] mobile:mt-[10vw] mobile:p-[4vw] fadeup ">
+              <div className="w-[40vw] h-[27vw] relative rounded-[2vw] overflow-hidden mt-[10vw] p-[2vw] group max-[1025px]:w-[47vw] max-[1025px]:h-[35vw] max-[1025px]:mt-[25vw] max-md:w-[90vw] max-md:h-[70vw] max-md:mt-[10vw] max-md:p-[4vw] fadeup ">
                 <ParallaxImageAnimation
                   src={workImages.work4}
                   alt="work-img-4"
@@ -241,7 +241,7 @@ const Works = () => {
                   wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                   imageClassName="scale-[1.5] -translate-y-[15%]"
                 />
-                <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 mobile:text-[3.5vw] mobile:h-[10vw] mobile:px-[3vw] mobile:py-[3vw] mobile:group-hover:h-[30vw] tablet:text-[2.5vw] tablet:h-[7vw] tablet:px-[2vw] tablet:py-[2vw] tablet:group-hover:h-[20vw]`}>
+                <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
                 Bedroom
                   <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
                     <WorkCardMeta />
@@ -250,11 +250,11 @@ const Works = () => {
                 </div>
               </div>
               <div
-                className="w-[30vw] h-full flex flex-col gap-[5vw] mobile:mt-[10vw] mobile:w-full tablet:w-[40vw]"
+                className="w-[30vw] h-full flex flex-col gap-[5vw] max-md:mt-[10vw] max-md:w-full max-[1025px]:w-[40vw]"
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "-0.1"}
               >
-                <div className="w-[25vw] h-[35vw] overflow-hidden rounded-[2vw] relative p-[2vw] group mobile:w-[90vw] mobile:h-[70vw] mobile:p-[4vw] fadeup tablet:w-[40vw] tablet:h-[45vw]">
+                <div className="w-[25vw] h-[35vw] overflow-hidden rounded-[2vw] relative p-[2vw] group max-md:w-[90vw] max-md:h-[70vw] max-md:p-[4vw] fadeup max-[1025px]:w-[40vw] max-[1025px]:h-[45vw]">
                   <ParallaxImageAnimation
                     src={workImages.work3}
                     alt="work-img-3"
@@ -262,7 +262,7 @@ const Works = () => {
                     wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                     imageClassName="scale-[1.5] -translate-y-[15%]"
                   />
-                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 mobile:text-[3.5vw] mobile:h-[7vw] mobile:px-[3vw] mobile:group-hover:h-[30vw] tablet:text-[2.5vw] tablet:h-[7vw] tablet:px-[2vw] tablet:py-[2vw] tablet:group-hover:h-[20vw]`}>
+                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
                     Bathroom
                     <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
                       <WorkCardMeta />
@@ -270,7 +270,7 @@ const Works = () => {
                     </div>
                   </div>
                 </div>
-                <p data-para-anim className="text-white text-[1.25vw] tracking-wide">
+                <p data-para-anim className="text-white text-[1.25vw] tracking-wide max-md:text-[3.5vw]">
                  Thoughtful interiors, refined materials, and breathtaking views come together in spaces designed for modern living at its highest level.
                 </p>
               </div>
@@ -280,8 +280,8 @@ const Works = () => {
             className="w-full h-full absolute top-[10%] left-0 right-0 work-bg-icon"
             id="work-bg-icon"
           >
-            <div className="w-full h-[50vw] relative flex items-center justify-center mobile:h-[90vw]">
-              <h2 className="w-[60vw] text-center text-[#2A2A2A] text-[10vw] leading-[1.2] mobile:w-[90vw]">
+            <div className="w-full h-[50vw] relative flex items-center justify-center max-md:h-[90vw]">
+              <h2 className="w-[60vw] text-center text-[#2A2A2A] text-[10vw] leading-[1.2] max-md:w-[90vw]">
                 LUMERA HEIGHTS
               </h2>
             </div>

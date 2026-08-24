@@ -88,21 +88,21 @@ const ShowCase = () => {
   return (
     <section
       id="showcase"
-      className="py-[10%]  relative z-[5] tablet:pb-[15%]"
+      className="py-[10%]  relative z-[5] max-[1025px]:pb-[15%]"
       data-scroll
       data-scroll-speed={isMobile ? undefined : "-0.3"}
     >
       <div className={`px-[5%] h-full relative`}>
-        <div className="flex w-full gap-[10vw] tablet:flex-col">
+        <div className="flex w-full gap-[10vw] max-[1025px]:flex-col">
           <h2
             data-para-anim
-            className={`w-[50%] text-black font-heading font-medium text-[3.9vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] tablet:w-full`}
+            className={`w-[50%] text-black font-heading font-medium text-[3.9vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
           >
             At the Heart of
             <br />
             Dubai Living
           </h2>
-          <div className="w-[25vw] h-[25vw] overflow-hidden rounded-[1000px] video-block absolute right-[10%] rtl:left-[10%] rtl:right-auto tablet:w-[90vw] tablet:h-[50vw] tablet:static tablet:rounded-[4vw]">
+          <div className="w-[25vw] h-[25vw] overflow-hidden rounded-[1000px] video-block absolute right-[10%] rtl:left-[10%] rtl:right-auto max-[1025px]:w-[90vw] max-[1025px]:h-[50vw] max-[1025px]:static max-[1025px]:rounded-[4vw]">
             <video
               ref={videoRef}
               poster={showcasePoster.src}
@@ -112,18 +112,18 @@ const ShowCase = () => {
               className="w-full h-full object-cover object-center"
             ></video>
             <div
-              className={`inner-detail absolute bottom-[8%] left-1/2 translate-x-[-50%] z-[6] flex items-center gap-[2vw] rounded-full bg-white/25 backdrop-blur-[10px] px-[2.2vw] py-[1.2vw] opacity-0 tablet:static tablet:mt-[4vw] tablet:w-fit tablet:flex-wrap tablet:gap-[3vw] tablet:px-[5vw] tablet:py-[4vw] tablet:opacity-100 mobile:opacity-100`}
+              className={`inner-detail absolute bottom-[8%] left-1/2 translate-x-[-50%] z-[6] flex items-center gap-[2vw] rounded-full bg-white/25 backdrop-blur-[10px] px-[2.2vw] py-[1.2vw] opacity-0 max-[1025px]:static max-[1025px]:mt-[4vw] max-[1025px]:w-fit max-[1025px]:flex-wrap max-[1025px]:gap-[3vw] max-[1025px]:px-[5vw] max-[1025px]:py-[4vw] max-[1025px]:opacity-100 max-md:opacity-100`}
             >
-              <p data-para-anim className="text-[1.1vw] leading-[1.25] text-white tablet:text-[3vw]">
+              <p data-para-anim className="text-[1.1vw] leading-[1.25] text-white max-[1025px]:text-[3vw]">
                 Nearby
                 <br />
                 Landmarks:
               </p>
-              <div className="flex items-center  gap-[2vw] tablet:flex-wrap tablet:gap-[3vw]">
+              <div className="flex items-center  gap-[2vw] max-[1025px]:flex-wrap max-[1025px]:gap-[3vw]">
                 {nearbyLandmarks.map((landmark, index) => (
                   <React.Fragment key={landmark}>
-                    {index !== 0 && <span className="h-[1.4vw] w-px shrink-0 bg-white/40 tablet:hidden" />}
-                    <p data-para-anim className="whitespace-nowrap text-[1.1vw] text-white tablet:text-[3vw]">
+                    {index !== 0 && <span className="h-[1.4vw] w-px shrink-0 bg-white/40 max-[1025px]:hidden" />}
+                    <p data-para-anim className="whitespace-nowrap text-[1.1vw] text-white max-[1025px]:text-[3vw]">
                       {landmark}
                     </p>
                   </React.Fragment>
@@ -133,8 +133,8 @@ const ShowCase = () => {
           </div>
         </div>
 
-        <div className="w-full h-full mt-[48vw] flex justify-end tablet:mt-[7vw]">
-          <p data-para-anim className="w-[40%] mr-[5vw] text-[1.2vw] text-black tablet:w-full tracking-wide">
+        <div className="w-full h-full mt-[48vw] flex justify-end max-[1025px]:mt-[7vw]">
+          <p data-para-anim className="w-[40%] max-md:text-[3.5vw] mr-[5vw] text-[1.2vw] text-black max-[1025px]:w-full tracking-wide">
             Perfectly located in one of Dubai&apos;s most prestigious districts, Lumera Heights offers unmatched access to culture, business, and lifestyle destinations.
           </p>
         </div>

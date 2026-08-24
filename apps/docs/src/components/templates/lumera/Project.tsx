@@ -99,7 +99,7 @@ export default function Project() {
   return (
     <section
       id="project"
-      className="w-screen overflow-hidden  pt-[8%] pb-[12%] text-[#1c1b1a] mobile:pt-[20%] mobile:pb-[16%] tablet:py-[10%]"
+      className="w-screen overflow-hidden  pt-[8%] pb-[12%] text-[#1c1b1a] max-md:pt-[20%] max-md:pb-[16%] max-[1025px]:py-[10%]"
     >
       <div className="px-[5%]">
         <h2
@@ -108,15 +108,15 @@ export default function Project() {
         >
           A World of Refinement
         </h2>
-        <div className="my-[3.5vw] h-[1px] w-full bg-black/15 lineDraw mobile:my-[8vw] tablet:my-[5vw]" />
+        <div className="my-[3.5vw] h-[1px] w-full bg-black/15 lineDraw max-md:my-[8vw] max-[1025px]:my-[5vw]" />
 
-        <div className="mb-[4.5vw] grid grid-cols-[minmax(0,1fr)_minmax(18rem,34vw)] items-start gap-[4vw] pl-[23%] pr-[2%] tablet:grid-cols-1 tablet:gap-[7vw] tablet:px-0 mobile:mb-[10vw]">
-          <div className="fadeup tablet:order-1">
+        <div className="mb-[4.5vw] grid grid-cols-[minmax(0,1fr)_minmax(18rem,34vw)] items-start gap-[4vw] pl-[23%] pr-[2%] max-[1025px]:grid-cols-1 max-[1025px]:gap-[7vw] max-[1025px]:px-0 max-md:mb-[10vw]">
+          <div className="fadeup max-[1025px]:order-1">
             <BlackButton btnText="Enquire Now" link="#" className="bg-[#1c1b1a]" borderColor="#1c1b1a" />
           </div>
           <p
             data-para-anim
-            className="max-w-[38vw] text-[1.25vw] leading-[1.75] tracking-[-0.02em] text-black/85 tablet:max-w-full tablet:text-[2.5vw] mobile:text-[4.6vw]"
+            className="max-w-[38vw] text-[1.25vw] leading-[1.75] tracking-[-0.02em] text-black/85 max-[1025px]:max-w-full max-[1025px]:text-[2.5vw] max-md:text-[4.6vw]"
           >
             Immerse yourself in the stylish allure of Lumera Heights, where every
             corner exudes sophistication. This is not just a residence, it&apos;s a
@@ -129,7 +129,7 @@ export default function Project() {
       <div className="">
         <div
           ref={scrollRef}
-          className={`fadeup no-scrollbar w-full pl-[25.5%] tablet:pl-[5%]  touch-pan-x overflow-x-scroll overflow-y-hidden overscroll-x-contain pr-[5%] select-none ${
+          className={`fadeup no-scrollbar w-full pl-[25.5%] max-[1025px]:pl-[5%]  touch-pan-x overflow-x-scroll overflow-y-hidden overscroll-x-contain pr-[5%] select-none ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           onScroll={updateThumb}
@@ -140,11 +140,11 @@ export default function Project() {
           onPointerLeave={endDrag}
           onDragStart={(event) => event.preventDefault()}
         >
-          <div className="flex w-max gap-[1.2vw] pb-[1vw] mobile:gap-[3vw]">
+          <div className="flex w-max gap-[1.2vw] pb-[1vw] max-md:gap-[3vw]">
             {interiorImages.map((src, index) => (
               <div
                 key={index}
-                className="relative h-[29vw] w-[43vw] shrink-0 overflow-hidden rounded-[1.8vw] tablet:h-[50vw] tablet:w-[72vw] mobile:h-[62vw] mobile:w-[84vw]"
+                className="relative h-[29vw] w-[43vw] shrink-0 overflow-hidden rounded-[1.8vw] max-[1025px]:h-[50vw] max-[1025px]:w-[72vw] max-md:h-[62vw] max-md:w-[84vw]"
               >
                 <Image
                   src={src}
@@ -159,7 +159,7 @@ export default function Project() {
           </div>
         </div>
 
-        <div className="relative mt-[3.6vw] h-[0.4vw] ml-[25.5%] tablet:pl-[5%] w-[74vw] overflow-hidden rounded-full bg-[#e5e5e5] mobile:mt-[7vw] mobile:w-[90vw]">
+        <div className="relative mt-[3.6vw] max-md:h-[1.2vw] h-[0.4vw] ml-[25.5%] max-[1025px]:pl-[3%] max-md:pl-0 max-md:ml-10 w-[74vw] overflow-hidden rounded-full bg-[#e5e5e5] max-md:mt-[7vw] max-md:w-[80vw]">
           <div
             className="absolute inset-y-0 rounded-l-full bg-black"
             style={{ width: `${thumb.widthPct}%`, left: `${thumb.leftPct}%` }}
