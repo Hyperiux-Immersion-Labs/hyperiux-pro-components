@@ -28,7 +28,7 @@ export default function Page() {
       <div className="fixed inset-x-0 top-0 z-50 px-[5%] py-[3%] tablet:px-[5%] tablet:py-[7%]">
         {/* <Header /> */}
       </div>
-      <Hero />
+      {/* <Hero />
       <About />
       <TextFillAnimationSection />
       <HorizontalFeatureRevealSection />
@@ -38,14 +38,14 @@ export default function Page() {
       <Project />
       <ShowCase />
       <Gallery />
-     
+      */}
     
   
-      <Bringing />
+      {/* <Bringing />
       <ProjectHover />
       <Faq />
       <Highlights />
-      <Roi />
+      <Roi /> */}
       <CTA />
       
       <Footer />

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronUp } from "lucide-react";
 
-import lumeraLogo from "./assets/icons/lumera-logo.svg";
+import lumeraLogo from "./assets/icons/lumera-logo-black.png";
 import facebookIcon from "./assets/icons/socials/facebook.svg";
 import xIcon from "./assets/icons/socials/x.svg";
 import instagramIcon from "./assets/icons/socials/instagram.svg";
@@ -68,12 +68,12 @@ const Footer = () => {
             </Link>
           </div>
 
-          <div className="flex items-center  flex-col justify-center">
+          <div className="flex items-center gap-3  flex-col justify-center">
             <Link href="tel:+12125550186" className={`text-[3.4vw] font-medium font-heading leading-none mobile:text-[5.5vw] tablet:text-[5vw]`}>
               <span data-para-anim className="">+1 (212) 555-0186</span>
             </Link>
             <Link href="mailto:hello@lumeraheights.com">
-              <p data-para-anim className={`text-[3.4vw] font-heading font-medium mobile:text-[5.5vw] tablet:text-[5vw]`}>
+              <p data-para-anim className={`text-[3.2vw] font-heading font-medium mobile:text-[5.5vw] tablet:text-[5vw]`}>
                 hello@lumeraheights.com
               </p>
             </Link>
