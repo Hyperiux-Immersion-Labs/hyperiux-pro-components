@@ -73,11 +73,11 @@ const ParallaxFooter = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-3 text-[#1C1B1A]">
-          <Link href="tel:+12125550186" className="font-heading text-[3.4vw] font-medium leading-none max-md:text-[5.5vw] max-[1025px]:text-[5vw]">
+          <Link href="tel:+12125550186" className="font-neue-montreal text-[3.4vw] font-medium leading-none max-md:text-[5.5vw] max-[1025px]:text-[5vw]">
             <span data-para-anim>+1 (212) 555-0186</span>
           </Link>
           <Link href="mailto:hello@lumeraheights.com">
-            <p data-para-anim className="font-heading text-[3.2vw] font-medium max-md:text-[5.5vw] max-[1025px]:text-[5vw]">
+            <p data-para-anim className="font-neue-montreal text-[3.2vw] font-medium max-md:text-[5.5vw] max-[1025px]:text-[5vw]">
               hello@lumeraheights.com
             </p>
           </Link>

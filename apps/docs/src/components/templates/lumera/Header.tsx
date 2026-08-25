@@ -71,7 +71,7 @@ const Header: React.FC = () => {
     <header
       className={`fixed inset-x-0 top-0 z-50 px-[5%] py-[2%] transform transition-all ease-in-out duration-500 tablet:px-[5%] tablet:py-[7%] ${
         !revealed ? "-translate-y-full" : hidden ? "-translate-y-full max-[1025px]:translate-y-0" : "translate-y-0"
-      } ${isScrolled ? "bg-black/10 backdrop-blur-md shadow-md" : ""} `}
+      } ${isScrolled ? "bg-black/20 backdrop-blur-md shadow-md" : ""} `}
     >
       <div className="flex items-center justify-between">
         <Link href="/" className="relative z-60 flex items-center gap-[0.6vw] tablet:gap-[2vw]">
@@ -89,7 +89,7 @@ const Header: React.FC = () => {
               onClick={(event) => handleNavScroll(event, link.target)}
               hoverColor="#ffffff"
               className="text-white/90"
-              textClassName="font-body text-[1.15vw] tracking-wide"
+              textClassName="font-aeonik-pro text-[1.15vw] tracking-wide"
             />
           ))}
         </nav>
@@ -135,7 +135,7 @@ const Header: React.FC = () => {
                 onClick={(event) => handleNavScroll(event, link.target)}
                 hoverColor="rgba(255,255,255,0.7)"
                 className="text-white"
-                textClassName="font-heading text-[9vw] font-medium leading-none max-md:text-[12vw]"
+                textClassName="font-neue-montreal text-[9vw] font-medium leading-none max-md:text-[12vw]"
               />
             ))}
           </div>
@@ -146,7 +146,7 @@ const Header: React.FC = () => {
             onClick={(event) => handleNavScroll(event, "#footer")}
             hoverColor="#1c1b1a"
             className="h-[11vw] w-full justify-center rounded-full border border-[#ca8216] bg-white px-[6vw] text-[#1c1b1a] max-md:h-[15vw]"
-            textClassName="font-body text-[3vw] font-medium max-md:text-[4.2vw]"
+            textClassName="font-aeonik-pro text-[3vw] font-medium max-md:text-[4.2vw]"
           />
         </nav>
       </div>

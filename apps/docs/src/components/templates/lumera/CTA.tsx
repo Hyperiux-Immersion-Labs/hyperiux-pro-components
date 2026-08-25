@@ -3,18 +3,18 @@ import Image from "next/image";
 
 import BlackButton from "./BlackButton";
 import PrimaryButton from "./PrimaryButton";
-import image1 from "./assets/cta/image1.png";
-import image2 from "./assets/cta/image2.png";
-import image3 from "./assets/cta/image3.png";
-import image4 from "./assets/cta/image4.png";
+import cta1 from "./assets/cta-1.png";
+import cta2 from "./assets/cta-2.png";
+import cta3 from "./assets/cta-3.png";
+import cta4 from "./assets/cta-4.png";
 import MaskTextReveal from "./VaultComp/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
 const ctaImages = [
-  { src: image1, alt: "Lumera Heights living room interior" },
-  { src: image2, alt: "Lumera Heights kitchen interior" },
-  { src: image3, alt: "Lumera Heights bedroom interior" },
-  { src: image4, alt: "Lumera Heights building exterior" },
+  { src: cta1, alt: "Lumera Heights living room interior" },
+  { src: cta2, alt: "Lumera Heights kitchen interior" },
+  { src: cta3, alt: "Lumera Heights bedroom interior" },
+  { src: cta4, alt: "Lumera Heights building exterior" },
 ];
 
 const CTA = () => {
@@ -26,7 +26,7 @@ const CTA = () => {
 
           <h2
             data-para-anim
-            className=" font-medium font-heading text-[3.8vw] leading-[1.15] text-[#1C1B1A] max-[1025px]:text-[5vw] max-md:text-[6.8vw] "
+            className=" font-medium font-neue-montreal text-[#1C1B1A] text-[3.8vw] leading-[1.15] max-[1025px]:text-[5vw] max-md:text-[6.8vw] "
             >
             Some Properties Need to be Experienced in Person
           </h2>

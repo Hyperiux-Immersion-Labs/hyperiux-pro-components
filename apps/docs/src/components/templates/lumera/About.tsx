@@ -12,6 +12,8 @@ import portfolio2 from "./assets/portfolio-2.png";
 import portfolio3 from "./assets/portfolio-3.png";
 import portfolio4 from "./assets/portfolio-4.png";
 import portfolio5 from "./assets/portfolio-5.png";
+import portfolio6 from "./assets/portfolio-6.png";
+import portfolio7 from "./assets/portfolio-7.png";
 import MaskTextReveal from "@/components/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
@@ -48,6 +50,16 @@ const aboutSlides: AboutSlide[] = [
     title: "Poolside Living",
     description: "Resort-style pools framed by warm stone and ambient lighting.",
   },
+  {
+    src: portfolio6,
+    title: "Private Beach",
+    description: "A calm waterfront escape with shaded lounges, lush greenery and uninterrupted horizon views.",
+  },
+  {
+    src: portfolio7,
+    title: "Water Pavilion",
+    description: "An elevated pool pavilion designed for sunlit afternoons, quiet gatherings and open-air relaxation.",
+  },
 ];
 
 // Module scope keeps the array identity stable across renders, so the carousel
@@ -69,10 +81,10 @@ const About = () => {
 
           <h2
             data-para-anim
-            className={`w-full max-md:w-[90%]  font-heading text-[3.8vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw] max-[1025px]:w-[90%] max-[1025px]:text-[8vw]`}
+            className={`w-full max-md:w-[90%]  font-neue-montreal text-[3.8vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw] max-[1025px]:w-[90%] max-[1025px]:text-[8vw]`}
             >
             Real Estate,
-    < br />
+            <br />
             Considered Differently
           </h2>
             </MaskTextReveal>
@@ -113,7 +125,7 @@ const About = () => {
                 exit={reducedMotion ? undefined : { opacity: 0 }}
                 transition={{ duration: reducedMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
-                <p className={`font-heading text-[2.3vw] leading-[1.2] font-medium max-md:text-[5vw] text-[#1c1b1a] max-[1025px]:text-[5vw]`}>
+                <p className={`font-neue-montreal text-[2.3vw] leading-[1.2] font-medium max-md:text-[5vw] text-[#1c1b1a] max-[1025px]:text-[5vw]`}>
                   {activeSlide.title}
                 </p>
                 <p className="mt-[1vw] w-[90%] text-center mx-auto text-[1.01vw] text-[#1C1B1A] max-[1025px]:text-[2.5vw] max-md:text-[3vw]">

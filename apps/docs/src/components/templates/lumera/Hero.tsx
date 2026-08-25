@@ -135,10 +135,11 @@ const Hero: React.FC = () => {
         <div className="relative isolate flex min-h-[200vh] w-screen flex-col gap-[5vw] px-[5%] py-[3%] max-[1025px]:min-h-[240vw] max-[1025px]:gap-[8vw] max-[1025px]:py-[7%]">
           <div ref={heroImageWrapperRef} className="absolute inset-0 z-[-1]">
             <Image
-              quality={90}
+              quality={100}
               src={heroBackground}
               alt="Hero Image"
               fill
+              sizes="100vw"
               className="h-full w-full object-cover"
             />
           </div>
@@ -146,7 +147,7 @@ const Hero: React.FC = () => {
           <div className="relative z-10 flex h-screen flex-col justify-end gap-[8vw] max-[1025px]:gap-[12vw]">
             <div className="flex flex-col gap-[3vw] max-[1025px]:gap-[6vw] mb-30">
               <MaskTextReveal>
-                <h1 className="font-heading font-medium! flex flex-col gap-[1vw] text-[10vw] leading-[0.94]   uppercase text-[#EEEEEE] max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[14vw]">
+                <h1 className="font-neue-montreal font-medium! flex flex-col gap-[1vw] text-[10vw] leading-[0.94]   uppercase text-[#EEEEEE] max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[14vw]">
                   <span>Exceptional</span>
                   <div className="flex items-end gap-[1.8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[4vw]">
                     <span>Living In Dubai</span>

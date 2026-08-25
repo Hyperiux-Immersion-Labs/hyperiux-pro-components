@@ -131,12 +131,12 @@ const Bringing = () => {
           <div className="flex flex-col items-center justify-center w-full h-full gap-[5vw]">
             <div className="flex flex-col gap-8 items-center justify-center">
               <div ref={headingLineOneRef}>
-                <p className={`text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]`}>
+                <p className={`text-[9vw] font-medium text-[#353430] leading-[1.1] font-neue-montreal uppercase max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]`}>
                   Better Way To
                 </p>
               </div>
               <div ref={headingLineTwoRef} className="w-full h-full flex justify-center gap-[3vw]">
-                <p className={`text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]`}>
+                <p className={`text-[9vw] font-medium text-[#353430] leading-[1.1] font-neue-montreal uppercase max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]`}>
                   Experience
                 </p>
                 <div className="h-full w-[20vw] relative rounded-lg max-[1025px]:absolute max-md:top-[30%] max-[1025px]:w-[90vw] max-[1025px]:top-[35%]">
@@ -156,7 +156,7 @@ const Bringing = () => {
                 </div>
               </div>
               <div ref={headingLineThreeRef} className="relative z-[-1] max-[1025px]:z-1">
-                <p className={`text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]`}>
+                <p className={`text-[9vw] font-medium text-[#353430] leading-[1.1] font-neue-montreal uppercase max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]`}>
                   Dubai Property
                 </p>
               </div>
@@ -169,7 +169,7 @@ const Bringing = () => {
       <MaskTextReveal>
         <p
           ref={bodyCopyRef}
-          className={`font-body text-[1.25vw] max-[1025px]:text-[3.5vw] text-center`}
+          className={`font-aeonik-pro text-[1.25vw] max-[1025px]:text-[3.5vw] text-center`}
         >
           We look beyond the listing to understand what makes a property worth considering — from its location and layout to its condition, positioning and long-term relevance. The result is a more focused property journey, built around better information and fewer distractions.
         </p>

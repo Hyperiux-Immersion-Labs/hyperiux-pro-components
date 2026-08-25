@@ -17,14 +17,14 @@ const Roi = () => {
           <div className="flex justify-between max-[1025px]:flex-col max-md:gap-[7vw] max-[1025px]:gap-[5vw]">
             <MaskTextReveal className="w-[35%] max-[1025px]:w-full">
 
-            <h2 data-para-anim className={`font-heading font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] `}>
+            <h2 data-para-anim className={`font-neue-montreal text-[#1C1B1A] font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] `}>
               Invest in Dubai&apos;s Next Landmark
             </h2>
             </MaskTextReveal>
 
             <MaskTextReveal className="w-[40%] max-[1025px]:w-[80%]">
 
-            <p data-para-anim className=" max-[1025px]:text-[2vw] max-md:w-full max-md:text-[3.5vw] text-[1.3vw]">
+            <p data-para-anim className=" max-[1025px]:text-[2vw] text-[#1C1B1A] max-md:w-full max-md:text-[3.5vw] text-[1.3vw]">
               Own a residence where architectural distinction, prime location, and elevated living come together. Lumera Heights offers a compelling opportunity for those seeking long-term value in the heart of Dubai.
             </p>
             </MaskTextReveal>
@@ -38,7 +38,7 @@ const Roi = () => {
                 key={stat.label}
                 className="flex flex-col max-[1025px]:w-[45%] mx-auto items-center justify-center gap-[0.4vw] rounded-full max-[1025px]:rounded-lg max-[1025px]:px-2 border border-[#ca8216] px-[5vw] py-[2.2vw] text-center max-md:px-[7vw] max-md:py-[5vw] max-md:gap-[2vw]  max-[1025px]:py-[3vw]"
               >
-                <p className="flex items-end justify-center gap-[0.15em] font-heading font-medium text-[2.5vw] leading-none text-[#1c1b1a] max-md:text-[5vw] max-[1025px]:text-[3.2vw]">
+                <p className="flex items-end justify-center gap-[0.15em] font-neue-montreal font-medium text-[2.5vw] leading-none text-[#1c1b1a] max-md:text-[5vw] max-[1025px]:text-[3.2vw]">
                   <span>{stat.value}</span>
                   {stat.suffix && (
                     <span className="mb-[0.5vw] text-[0.9vw] leading-none text-[#1c1b1a] max-md:text-[3vw] max-[1025px]:text-[1.8vw]">

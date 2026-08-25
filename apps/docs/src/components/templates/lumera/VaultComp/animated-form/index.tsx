@@ -112,7 +112,7 @@ export default function AnimatedForm({
   return (
     <div data-lenis-prevent className="w-full" style={{ backgroundColor }}>
       <div className="mb-[1.4vw] flex flex-col gap-[0.8vw] max-[1025px]:mb-[4vw]">
-        <h2 className="font-heading text-[3vw] font-medium leading-none text-[#1c1b1a] max-[1025px]:text-[7vw] max-md:text-[9vw]">
+        <h2 className="font-neue-montreal text-[3vw] font-medium leading-none text-[#1c1b1a] max-[1025px]:text-[7vw] max-md:text-[9vw]">
           Speak With an Advisor
         </h2>
       </div>

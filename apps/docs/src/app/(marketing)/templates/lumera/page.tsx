@@ -1,5 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-import "@/components/templates/lumera/globals.css";
+import "@/components/templates/lumera/lumera-styles.css";
+import type { Metadata } from "next";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import ScrollTopOnLoad from "@/components/templates/lumera/ScrollTopOnLoad";
 import ogImage from "@/components/templates/lumera/assets/og.png";
@@ -20,7 +21,7 @@ import Roi from "@/components/templates/lumera/Roi";
 import ParallaxFooter from "@/components/templates/lumera/VaultComp/parallax-footer";
 import CTA from "@/components/templates/lumera/CTA";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Lumera Heights - Luxury Dubai Real Estate Template",
   description:
     "A single-page luxury real estate template for Dubai property launches, featuring residences, amenities, gallery, nearby highlights, and enquiry flows.",

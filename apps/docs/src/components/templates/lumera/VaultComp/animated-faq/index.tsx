@@ -84,7 +84,7 @@ export default function AnimatedFaq() {
       <div className="w-full ml-auto max-md:w-full max-[1025px]:w-full px-[5%] max-md:px-[6%]">
         <MaskTextReveal>
 
-        <h2 data-para-anim className="font-heading text-[#1C1B1A] max-md:mb-[10vw] font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[5vw]">
+        <h2 data-para-anim className="font-neue-montreal text-[#1C1B1A] max-md:mb-[10vw] font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[5vw]">
           FAQs
         </h2>
         </MaskTextReveal>

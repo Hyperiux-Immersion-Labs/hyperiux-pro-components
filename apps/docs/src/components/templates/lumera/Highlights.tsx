@@ -5,22 +5,20 @@
 import Image from "next/image";
 
 import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselComp";
-import highlightImage1 from "./assets/highlights/image1.png";
-import highlightImage2 from "./assets/highlights/image2.png";
+import highlight1 from "./assets/highlight-1.png";
+import highlight2 from "./assets/highlight-2.png";
+import highlight3 from "./assets/highlight-3.png";
+import highlight4 from "./assets/highlight-4.png";
 import MaskTextReveal from "./VaultComp/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
-const highlightImages = [highlightImage1, highlightImage2];
+const highlightImages = [highlight1,highlight2,highlight3,highlight4];
 
 const highlightPlaces = [
   { distance: "5km", location: "Palm Jumeirah" },
   { distance: "10km", location: "Dubai Marina" },
   { distance: "2km", location: "Business Bay" },
-  { distance: "6km", location: "Downtown Dubai" },
-  { distance: "8km", location: "Burj Al Arab" },
-  { distance: "12km", location: "Jumeirah Beach Residence" },
-  { distance: "7km", location: "DIFC" },
-  { distance: "14km", location: "Dubai Creek Harbour" },
+  { distance: "1.5km", location: "Burj Khalifa" },
 ].map((place, index) => ({
   ...place,
   img: highlightImages[index % highlightImages.length],
@@ -35,7 +33,7 @@ const Highlights = () => {
 
           <h2
             data-para-anim
-            className="font-heading font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw]"
+            className="font-neue-montreal font-medium text-[#1C1B1A] text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw]"
             >
             Nearby Highlights
           </h2>
@@ -78,7 +76,7 @@ const Highlights = () => {
                   <p className="text-[1.3vw] text-white/80 max-md:text-[3.2vw]">
                     <span className="font-medium text-white">{place.distance}</span> away from
                   </p>
-                  <p className="font-heading font-medium uppercase text-white text-[2vw] leading-[1.1] max-md:text-[6vw]">
+                  <p className="font-neue-montreal font-medium uppercase text-white text-[2vw] leading-[1.1] max-md:text-[6vw]">
                     {place.location}
                   </p>
                 </div>

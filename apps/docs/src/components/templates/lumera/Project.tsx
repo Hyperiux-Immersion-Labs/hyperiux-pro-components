@@ -1,28 +1,30 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 "use client";
-import { useEffect } from "react";
 import Image from "next/image";
-
-import gsap from "gsap";
-import ScrollTrigger from "gsap/dist/ScrollTrigger";
-
+import { useEffect} from "react";
 import BlackButton from "./BlackButton";
 import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselComp";
 import refinement1 from "./assets/refinement-1.png";
 import refinement2 from "./assets/refinement-2.png";
+import refinement3 from "./assets/refinement-3.png";
+import refinement4 from "./assets/refinement-4.png";
+import refinement5 from "./assets/refinement-5.png";
+import refinement6 from "./assets/refinement-6.png";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import MaskTextReveal from "@/components/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
-
 gsap.registerPlugin(ScrollTrigger);
+
 
 const interiorImages = [
   refinement1,
   refinement2,
-  refinement1,
-  refinement2,
-  refinement1,
-  refinement2,
+  refinement3,
+  refinement4,
+  refinement5,
+  refinement6,
 ];
 
 export default function Project() {
@@ -60,7 +62,7 @@ export default function Project() {
 
         <h2
           data-para-anim
-          className="font-medium text-[#1C1B1A] font-heading text-[3.8vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
+          className="font-medium text-[#1C1B1A] font-neue-montreal text-[3.8vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
           >
           A World of Refinement
         </h2>
