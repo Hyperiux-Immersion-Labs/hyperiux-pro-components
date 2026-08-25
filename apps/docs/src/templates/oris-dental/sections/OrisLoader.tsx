@@ -58,7 +58,7 @@ export default function OrisLoader({ onComplete }: { onComplete?: () => void }) 
                 <div className="relative w-[32vw] max-w-[360px] min-w-[220px] aspect-[1872/334]">
                     {/* Background faint watermark outline */}
                     <Image
-                        src="/templates/oris-detal/OtisDentalwordmark.svg"
+                        src="/templates/oris-detal/OrisDental.svg"
                         alt="OrisDental"
                         fill
                         className="object-contain opacity-20 pointer-events-none"
@@ -71,7 +71,7 @@ export default function OrisLoader({ onComplete }: { onComplete?: () => void }) 
                         style={{ clipPath: `inset(0 ${Math.max(0, 100 - displayProgress)}% 0 0)` }}
                     >
                         <Image
-                            src="/templates/oris-detal/OtisDentalwordmark.svg"
+                            src="/templates/oris-detal/OrisDental.svg"
                             alt="OrisDental"
                             fill
                             className="object-contain "

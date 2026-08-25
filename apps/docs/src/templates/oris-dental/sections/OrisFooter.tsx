@@ -121,7 +121,7 @@ export default function OrisFooter() {
                 {/* Huge Baseline Wordmark */}
                 <div className="relative z-10 w-full flex justify-center items-end select-none pointer-events-none mt-auto">
                     <Image
-                        src="/templates/oris-detal/OtisDentalwordmark.svg"
+                        src="/templates/oris-detal/OrisDental.svg"
                         alt="OtisDental"
                         width={1872}
                         height={334}

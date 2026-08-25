@@ -11,6 +11,7 @@ import OrisForm from "@/templates/oris-dental/sections/OrisForm";
 import OrisFooter from "@/templates/oris-dental/sections/OrisFooter";
 import OrisLoader from "@/templates/oris-dental/sections/OrisLoader";
 import ScrollTopOnLoad from "@/homepage-v3/components/ScrollTopOnLoad";
+import WhyOris from "@/templates/oris-dental/sections/WhyOris";
 
 export default function page() {
     return (
@@ -22,6 +23,7 @@ export default function page() {
             <div className="z-10 text-oris-secondary relative bg-white">
                 <AboutOris />
                 <DentalTreatments />
+                <WhyOris />
                 <ParallaxSectionBreakOris />
                 <OrisReviews />
                 <PassionMeetPurpose />

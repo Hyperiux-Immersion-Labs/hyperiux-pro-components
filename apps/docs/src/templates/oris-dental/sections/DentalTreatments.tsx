@@ -3,6 +3,7 @@
 import React, { useEffect, useId, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import SplitTextLines from "../components/SplitTextLines";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -154,12 +155,12 @@ export default function DentalTreatments({
         >
             {/* Header Section */}
             <div className="oris-paddx mb-[5vw]">
-                <h2 className="oris-text64">
+                <SplitTextLines as="h2" className="oris-text64">
                     Dental Care Treatments
-                </h2>
-                <p className="oris-text22 mt-[0.8vw]">
+                </SplitTextLines>
+                <SplitTextLines as="p" className="oris-text22 mt-[0.8vw]" delay={0.15}>
                     Personalized care designed for every stage of dental health.
-                </p>
+                </SplitTextLines>
             </div>
 
             {/* Scroll Stack Container */}
