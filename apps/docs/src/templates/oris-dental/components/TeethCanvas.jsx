@@ -1,7 +1,7 @@
 'use client'
 
 import React, { Suspense, useMemo, useRef, useEffect } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, Center, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import gsap from 'gsap'
@@ -159,9 +159,28 @@ function ModelEntranceGroup({ children }) {
     return <group ref={groupRef}>{children}</group>
 }
 
+function ResponsiveModelGroup({ children }) {
+    const { size } = useThree()
+    const isMobile = size.width <= 640
+    const isTablet = size.width <= 1025
+
+    const scale = isMobile ? 2.0 : isTablet ? 2.5 : 3.5
+    const posY = isMobile ? -0.35 : isTablet ? -0.5 : -0.7
+
+    return (
+        <group
+            rotation={[degToRad(20), degToRad(0), degToRad(0)]}
+            scale={scale}
+            position={[0, posY, 0]}
+        >
+            {children}
+        </group>
+    )
+}
+
 export default function TeethCanvas() {
     return (
-        <div className='absolute h-full w-full'>
+        <div className='absolute h-full z-100 w-full'>
             <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ antialias: true }}>
                 <ambientLight intensity={1.35} color="#f4f8ff" />
                 <directionalLight position={[10, 10, 10]} intensity={2.6} color="#ff0000" />
@@ -171,7 +190,7 @@ export default function TeethCanvas() {
                     {/* "studio" is a neutral HDRI -- "city" was pushing warm amber into the enamel. */}
                     <Environment preset="studio" environmentIntensity={0.9} />
                     <MouseTilt intensity={8}>
-                        <group rotation={[degToRad(20), degToRad(-0), degToRad(0)]} scale={3.5} position={[0, -.7, 0]}>
+                        <ResponsiveModelGroup>
                             <ScrollAnimatedGroup>
                                 <ModelEntranceGroup>
                                     <Center>
@@ -181,7 +200,7 @@ export default function TeethCanvas() {
                                     </Center>
                                 </ModelEntranceGroup>
                             </ScrollAnimatedGroup>
-                        </group>
+                        </ResponsiveModelGroup>
                     </MouseTilt>
                 </Suspense>
             </Canvas>

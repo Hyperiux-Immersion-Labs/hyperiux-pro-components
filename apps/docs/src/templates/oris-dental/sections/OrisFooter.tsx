@@ -1,10 +1,16 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import DotsCanvas from '../components/DotsCanvas'
 import SplitTextLines from '../components/SplitTextLines'
+
+if (typeof window !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger)
+}
 
 type FooterColumn = {
     title: string
@@ -54,7 +60,7 @@ const RIGHT_COLUMNS: FooterColumn[] = [
 
 function FooterLinkColumn({ column }: { column: FooterColumn }) {
     return (
-        <div className="flex flex-col gap-3">
+        <div className="footer-col flex flex-col gap-3">
             <p className="text-[#C0C0C0] oris-text22 font-normal whitespace-nowrap">
                 {column.title}
             </p>
@@ -75,12 +81,88 @@ function FooterLinkColumn({ column }: { column: FooterColumn }) {
 }
 
 export default function OrisFooter() {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const footerRef = useRef<HTMLElement>(null)
+    const contentRef = useRef<HTMLDivElement>(null)
+    const wordmarkRef = useRef<HTMLDivElement>(null)
+    const navRef = useRef<HTMLElement>(null)
+
+    useEffect(() => {
+        const container = containerRef.current
+        if (!container) return
+
+        const ctx = gsap.context(() => {
+            // Parallax glide for top header & tagline
+            if (contentRef.current) {
+                gsap.fromTo(
+                    contentRef.current,
+                    { y: -60, opacity: 0.8 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: container,
+                            start: 'top bottom',
+                            end: 'bottom bottom',
+                            scrub: 1,
+                        },
+                    }
+                )
+            }
+
+            // Staggered upward parallax for the link columns
+            if (navRef.current) {
+                const cols = navRef.current.querySelectorAll('.footer-col')
+                gsap.fromTo(
+                    cols,
+                    { y: 40, opacity: 0.65 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        stagger: 0.04,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: container,
+                            start: 'top bottom',
+                            end: 'bottom bottom',
+                            scrub: 1,
+                        },
+                    }
+                )
+            }
+
+            // Rise and scale animation for bottom wordmark
+            if (wordmarkRef.current) {
+                gsap.fromTo(
+                    wordmarkRef.current,
+                    { yPercent: 40, scale: 0.85 },
+                    {
+                        yPercent: 0,
+                        scale: 1.02,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: container,
+                            start: 'top bottom',
+                            end: 'bottom bottom',
+                            scrub: 1,
+                        },
+                    }
+                )
+            }
+        }, containerRef)
+
+        return () => ctx.revert()
+    }, [])
+
     return (
         <div
+            ref={containerRef}
             className="relative h-screen w-full max-md:h-auto max-md:min-h-screen"
             style={{ clipPath: 'inset(0 0 0 0)' }}
         >
             <footer
+                ref={footerRef}
                 id="oris-footer"
                 className="fixed bottom-0 left-0 w-full h-screen bg-linear-to-b from-[#3365e2] via-[#234fc7] to-[#0f2b82] text-white overflow-hidden oris-paddx pt-[4vw] flex flex-col justify-between max-md:relative max-md:h-auto max-md:min-h-screen"
             >
@@ -94,8 +176,7 @@ export default function OrisFooter() {
                 />
 
                 {/* Top Branding & Main Tagline */}
-                <div className="relative z-10 flex flex-col items-start max-w-2xl">
-
+                <div ref={contentRef} className="relative z-10 flex flex-col items-start max-w-2xl">
                     <SplitTextLines as="h2" className="oris-text64 font-bold! leading-[1.1] text-white max-w-[35vw] max-md:max-w-full">
                         OrisDental Brighten your smile with expert care.
                     </SplitTextLines>
@@ -103,6 +184,7 @@ export default function OrisFooter() {
 
                 {/* Links Navigation: left pair anchored left, right pair anchored right */}
                 <nav
+                    ref={navRef}
                     aria-label="Footer"
                     className="relative z-10 flex w-full items-start justify-between mt-[4vw] mb-[3vw] max-md:flex-col max-md:gap-10 max-md:mt-12 max-md:mb-10"
                 >
@@ -119,7 +201,7 @@ export default function OrisFooter() {
                 </nav>
 
                 {/* Huge Baseline Wordmark */}
-                <div className="relative z-10 w-full flex justify-center items-end select-none pointer-events-none mt-auto">
+                <div ref={wordmarkRef} className="relative z-10 w-full flex justify-center items-end select-none pointer-events-none mt-auto">
                     <Image
                         src="/templates/oris-detal/OrisDental.svg"
                         alt="OtisDental"
