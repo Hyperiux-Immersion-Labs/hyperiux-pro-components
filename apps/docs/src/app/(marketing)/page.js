@@ -3,6 +3,7 @@ import React from "react";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { getSearchIndexEffects } from "@/lib/search-index";
+import AffitorTracking from "@/components/WebsiteComps/AffitorTracking";
 
 const faqItems = [
   {
@@ -104,6 +105,7 @@ export default async function page() {
     <>
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
+      <AffitorTracking />
       <Homepage faqItems={faqItems} effects={effects} />
     </>
   );
