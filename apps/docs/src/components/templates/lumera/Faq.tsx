@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./styles.module.css";
 
 interface FaqItem {
   title: string;
@@ -10,24 +9,29 @@ interface FaqItem {
 
 const faqData: FaqItem[] = [
   {
-    title: "What does the design process look like?",
+    title: "Where is Lumera Heights located?",
     content:
-      "We begin with a discovery phase to understand your site and goals, then move through concept design, detailed drawings, and construction support.",
+      "Lumera Heights is located in Business Bay, Dubai, offering convenient access to Downtown Dubai, Dubai Mall, Burj Khalifa and the city's major business and lifestyle destinations.",
   },
   {
-    title: "How long does a typical project take?",
+    title: "What types of residences are available?",
     content:
-      "Timelines vary by scope, but most residential projects run between six months and two years from concept to completion.",
+      "Lumera Heights offers a curated range of studio, one, two and three-bedroom residences, alongside an exclusive penthouse collection designed for elevated living.",
   },
   {
-    title: "Do you work outside your local area?",
+    title: "What amenities are available to residents?",
     content:
-      "Yes, we regularly take on projects further afield and coordinate closely with local contractors and consultants.",
+      "Residents enjoy access to a rooftop infinity pool, private wellness spa, fully equipped fitness studio, co-working lounge, concierge services and landscaped podium gardens.",
   },
   {
-    title: "Can you work with an existing structure?",
+    title: "What is the starting price?",
     content:
-      "Absolutely — renovations and additions are a core part of our practice, and we enjoy working within existing constraints.",
+      "Prices at Lumera Heights start from AED 4.2M+, with a range of layouts available to suit different lifestyles and budgets.",
+  },
+  {
+    title: "Is there a payment plan available?",
+    content:
+      "Yes, flexible payment plans are available, including staged instalments through construction ahead of handover in Q4 2027.",
   },
 ];
 
@@ -38,27 +42,44 @@ interface SingleAccordionProps extends FaqItem {
 
 const SingleAccordion = ({ title, content, isOpen, onToggle }: SingleAccordionProps) => {
   return (
-    <div className="group relative">
-      <div className="w-full bg-black lineDraw h-[1px]  mobile:block tablet:block"></div>
+    <div
+      className={`group relative overflow-hidden rounded-md border mb-[1.1vw] transition-colors duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] max-md:rounded-[4.5vw] max-md:mb-[4vw] max-[1025px]:rounded-[2.5vw] max-[1025px]:mb-[2vw] ${
+        isOpen ? "border-[#E0D4C6]" : "border-[#111111]"
+      }`}
+    >
       <div
-        className={`absolute bg-[#E0D4C6] w-full h-full origin-top transition-all duration-500 ease-out ${
+        className={`absolute inset-0 bg-[#E0D4C6] origin-top transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] ${
           isOpen ? "scale-y-[1]" : "scale-y-0"
         }`}
       ></div>
       <button
         type="button"
         onClick={onToggle}
-        className="text-[1.5vw] font-semibold mobile:w-[70%] mobile:text-[5vw] pl-[2vw] mobile:text-left mobile:flex tablet:text-[3.5vw] relative z-[2] w-full text-left tablet:text-left ease-in py-[2%] mobile:py-[5%] accordion"
+        className="relative z-2 flex w-full items-center justify-between gap-[2vw] py-[1.6vw] pl-[2.2vw] pr-[1.6vw] text-left max-md:py-[5vw] max-md:pl-[6vw] max-md:pr-[5vw] max-[1025px]:py-[3vw] max-[1025px]:pl-[4vw] max-[1025px]:pr-[3vw] accordion"
       >
-        {title}
+        <span className="text-[1.5vw] max-md:w-[80%] font-medium max-md:text-[5vw] max-[1025px]:text-[3.5vw]">{title}</span>
+        <span className="relative flex h-[2.6vw] w-[2.6vw] shrink-0 items-center justify-center rounded-full border border-black max-md:h-[9vw] max-md:w-[9vw] max-[1025px]:h-[6vw] max-[1025px]:w-[6vw]">
+          <span className="absolute top-1/2 left-1/2 h-[1.5px] w-[40%] -translate-x-1/2 -translate-y-1/2 bg-black" />
+          <span
+            className={`absolute top-1/2 left-1/2 h-[1.5px] w-[40%] -translate-x-1/2 -translate-y-1/2 bg-black transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] ${
+              isOpen ? "rotate-0" : "rotate-90"
+            }`}
+          />
+        </span>
       </button>
-      {isOpen && (
-        <div className="text-[1.2vw] pl-[2vw] text-black font-light leading-[1.3] space-y-[1.5vw] w-[70%] mb-[20px] mobile:w-full mobile:text-[4vw] mobile:space-y-[4vw] relative z-[2] tablet:text-[2.7vw] tablet:w-[90%]">
-          <p data-para-anim className="">
-            {content}
-          </p>
+      <div
+        className={`relative z-2 grid transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] ${
+          isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="w-[65%] space-y-[1.5vw] pl-[2.2vw] pb-[1.8vw] text-[1.15vw] leading-normal font-normal text-black max-md:w-[80%] max-md:space-y-[4vw] max-md:pl-[6vw] max-md:pb-[6vw] max-md:text-[4vw] max-[1025px]:w-[90%] max-[1025px]:pl-[4vw] max-[1025px]:pb-[3vw] max-[1025px]:text-[2.7vw]">
+            <p data-para-anim className="">
+              {content}
+            </p>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -68,10 +89,10 @@ const Faq = () => {
 
   return (
     <>
-      <section className="py-[7%] mobile:pt-[20%]" id="faq">
-        <div className={`w-full ml-auto mobile:w-full tablet:w-full ${styles["container-lg"]} !px-[10vw] tablet:!px-[5vw] `}>
-          <h2 data-para-anim className={`${styles["title-2"]} mb-[5vw]`}>
-            Frequently Asked Questions
+      <section className="py-[7%] max-md:pt-[20%]" id="faq">
+        <div className={`w-full ml-auto max-md:w-full max-[1025px]:w-full px-[5%]  max-md:px-[6%]`}>
+          <h2 data-para-anim className={`font-heading max-md:mb-[10vw] font-medium text-[3.5vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[5vw]`}>
+            FAQs
           </h2>
           <div className="w-full fadeup">
             {faqData.map((item, index) => (
@@ -84,7 +105,6 @@ const Faq = () => {
               />
             ))}
           </div>
-          <div className="w-full bg-black lineDraw h-[1px] mobile:block tablet:block"></div>
         </div>
       </section>
     </>

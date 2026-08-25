@@ -1,8 +1,10 @@
-/* eslint-disable no-inner-declarations */
 // src/utils/splitText.js
 
 import SplitType from 'split-type';
+import gsap from 'gsap';
+import { SplitText } from 'gsap/SplitText';
 
+gsap.registerPlugin(SplitText);
 
 export function SplitInLineOnly(element) {
   if (!element) return null;
@@ -11,25 +13,16 @@ export function SplitInLineOnly(element) {
   });
 }
 
-export function SplitInLine(element) {
-   if (!element) return null;
- 
-   // Break the text into lines
-   const splitInstance = new SplitType(element, {
-     types: 'lines',
-   });
- 
-   // Add an additional div inside each line with the class name 'line-internal'
-   splitInstance.lines.forEach(line => {
-     const internalDiv = document.createElement('div');
-     internalDiv.className = 'line-internal';
-     internalDiv.innerHTML = line.innerHTML;
-     line.innerHTML = '';
-     line.appendChild(internalDiv);
-   });
- 
-   return splitInstance;
- }
+// GSAP's own SplitText, with its built-in `mask` option, replaces the old
+// split-type + manual 'line-internal' wrapper: it auto-wraps each line in an
+// overflow-clipped mask div, so `split.lines` is ready to animate directly.
+export function splitLine(element) {
+  if (!element) return null;
+  return SplitText.create(element, {
+    type: 'lines',
+    mask: 'lines',
+  });
+}
 
 export function SplitInLineWordChar(element) {
     if (!element) return null;

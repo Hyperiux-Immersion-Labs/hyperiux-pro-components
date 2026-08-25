@@ -34,7 +34,7 @@ const faqItems = [
       </>
     ),
     defaultOpen: false,
-  },
+  }, 
   {
     id: "faq-4",
     question: "Do I own the code?",

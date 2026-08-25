@@ -1,20 +1,62 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { useLenis } from "lenis/react";
+import { X } from "lucide-react";
 import PrimaryButton from "./PrimaryButton";
-import Header from "./Header";
-import styles from "./styles.module.css";
+import BlackButton from "./BlackButton";
+import EnquiryForm from "./VaultComp/EnquiryForm";
 import heroBackground from "./assets/lumera-hero.png";
+import { fadeIn } from "./gsapAnimations";
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero: React.FC = () => {
   const heroImageWrapperRef = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [enquiryMounted, setEnquiryMounted] = useState(false);
+
+  fadeIn();
+
+  const openEnquiryModal = () => {
+    setEnquiryMounted(true);
+    window.requestAnimationFrame(() => setEnquiryOpen(true));
+  };
+
+  const closeEnquiryModal = () => {
+    setEnquiryOpen(false);
+    window.setTimeout(() => setEnquiryMounted(false), 300);
+  };
+
+  useEffect(() => {
+    if (!enquiryMounted) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeEnquiryModal();
+      }
+    };
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    lenis?.stop?.();
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      lenis?.start?.();
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [enquiryMounted, lenis]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -38,8 +80,6 @@ const Hero: React.FC = () => {
         delay: 2.5,
       });
 
-      // Replaces locomotive-scroll's data-scroll-speed="-0.7" parallax: the
-      // image drifts opposite to scroll while its section is in view.
       if (heroImageWrapperRef.current) {
         gsap.fromTo(
           heroImageWrapperRef.current,
@@ -60,10 +100,7 @@ const Hero: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
-  // Replaces locomotive-scroll's data-scroll-to/data-scroll-duration anchor
-  // scroll. Routed through Lenis (this page is wrapped in
-  // <LenisSmoothScroll />) so the scroll stays in sync with Lenis's
-  // virtualized scroll position instead of fighting it.
+
   const handleNavScroll = (event: React.MouseEvent<HTMLAnchorElement>, target: string) => {
     event.preventDefault();
 
@@ -77,77 +114,83 @@ const Hero: React.FC = () => {
 
   return (
     <>
-      <section id="hero" className="">
-        <div className="w-screen h-full relative ">
-          <div className={`${styles["container-lg"]} w-screen h-[125vw] relative isolate overflow-hidden pt-[3%] tablet:h-[240vw] tablet:pt-[7%]`}>
-            <Header />
-            <div ref={heroImageWrapperRef} className="absolute inset-[-10%] z-[-1]">
-              <Image
-                quality={90}
-                src={heroBackground}
-                alt="Hero Image"
-                fill
-                className=" w-full h-full object-top"
-              />
-            </div>
-            <div className="relative z-10 pt-[10vw] space-y-[6vw]">
-              <h1 className={`text-white text-[6vw] leading-[1] ${styles["text-head"]} font-light uppercase flex flex-col gap-[1vw] opacity-90 tablet:text-[14vw] tablet:gap-[4vw]`}>
-                <span data-para-anim>EXCEPTIONAL </span>
-                <div className="flex items-start gap-[1.5vw] tablet:flex-col tablet:items-start tablet:gap-[4vw]">
-                  <span data-para-anim>LIVING IN DUBAI</span>
-                  <a
-                    aria-label="Select Title"
-                    href="#about"
-                    onClick={(event) => handleNavScroll(event, "#about")}
-                    className="w-fit mt-[0.5vw] tablet:mt-0 h-fit p-[1.5vw] rounded-full flex justify-center items-center border-[2px] border-white cursor-pointer fadeup tablet:p-[4vw]"
-                  >
-                    <svg
-                      viewBox="0 0 10 10"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className={`${styles["btn-icon"]} rotate-90 w-[2vw] h-[2vw] tablet:w-[7vw] tablet:h-[7vw]`}
+      <section id="hero" className="relative overflow-hidden">
+        <div className="relative isolate flex min-h-[200vh] w-screen flex-col gap-[5vw] px-[5%] py-[3%] max-[1025px]:min-h-[240vw] max-[1025px]:gap-[8vw] max-[1025px]:py-[7%]">
+          <div ref={heroImageWrapperRef} className="absolute inset-0 z-[-1]">
+            <Image
+              quality={90}
+              src={heroBackground}
+              alt="Hero Image"
+              fill
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+          <div className="relative z-10 flex h-screen flex-col justify-end gap-[8vw] max-[1025px]:gap-[12vw]">
+            <div className="flex flex-col gap-[3vw] max-[1025px]:gap-[6vw] mb-30">
+              <MaskTextReveal>
+                <h1 className="font-heading font-medium! flex flex-col gap-[1vw] text-[9.9vw] leading-[0.94]   uppercase text-white/95 max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[14vw]">
+                  <span>Exceptional</span>
+                  <div className="flex items-end gap-[1.8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[4vw]">
+                    <span>Living In Dubai</span>
+                    <a
+                      aria-label="Scroll to about section"
+                      href="#about"
+                      onClick={(event) => handleNavScroll(event, "#about")}
+                      data-fade-in
+                      className="flex h-[6.5vw] w-[6.5vw] items-center justify-center self-center rounded-full border-4 border-white text-white transition-colors hover:bg-white/10 max-[1025px]:h-[18vw] max-[1025px]:w-[18vw] max-[1025px]:self-start"
                     >
-                      <path
-                        data-v-f4363f2a
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z"
-                        className={styles["btn-path"]}
-                        fill="white"
-                      />
-                      <path
-                        data-v-f4363f2a
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z"
-                        className={styles["btn-path"]}
-                        fill="white"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </h1>
-            <div className="text-white w-[35vw]">
-              <p>A curated collection of remarkable residences across Dubai’s most sought-after addresses, selected for their design, location and way of life.</p>
-              </div>
+                      <svg
+                        viewBox="0 0 10 10"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-[2.3vw] w-[2.3vw] rotate-90 max-[1025px]:h-[7vw] max-[1025px]:w-[7vw]"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </a>
+                  </div>
+                </h1>
+              </MaskTextReveal>
             </div>
-            <div className="flex  mt-[3vw] mobile:gap-[10vw] mobile:mt-[20vw] tablet:gap-[5vw] tablet:mt-[10vw]">
-              <div className="fadeup space-x-[5vw]">
+          </div>
+
+          <div className="relative z-10 flex min-h-screen pb-20 flex-col justify-between gap-[8vw] max-[1025px]:min-h-[110vw] max-[1025px]:gap-[10vw]">
+            <div className="flex flex-col gap-[4vw] max-[1025px]:gap-[8vw]">
+              <div className="w-[38vw] text-white max-[1025px]:w-full">
+                <MaskTextReveal>
+                  <p className="text-[1.45vw] max-md:leading-[1.4] max-md:text-[5vw]  leading-[1.65] text-white/92 ">
+                    A curated collection of remarkable residences across Dubai&apos;s most sought-after addresses, selected for their design, location and way of life.
+                  </p>
+                </MaskTextReveal>
+              </div>
+
+              <div className="flex items-center gap-[1vw] max-md:flex-col max-md:items-start max-md:gap-[4vw] max-md:w-[80%] max-[1025px]:flex-wrap max-[1025px]:gap-[3vw]">
                 <PrimaryButton
-                  link={"#"}
-                  btnText={"Explore Our Collection"}
-                  className="shadow-2xl drop-shadow-2xl "
+                  data-fade-in
+                  link="#"
+                  btnText="Explore Our Collection"
+                  className="max-md:w-[70vw] font-normal!"
                 />
-                <PrimaryButton
-                  link={"#"}
-                  btnText={"Speak With an Advisor"}
-                  className="shadow-2xl drop-shadow-2xl "
+                <BlackButton
+                  data-fade-in
+                  link="#"
+                  btnText="Speak With an Advisor"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    openEnquiryModal();
+                  }}
+                  className="border border-white shadow-2xl drop-shadow-2xl"
                 />
               </div>
             </div>
 
-
-            <div className="relative z-10 mt-[4vw] grid grid-cols-4 gap-[1vw] mobile:grid-cols-2 mobile:gap-[3vw] tablet:mt-[8vw]">
+            <div className="grid grid-cols-4 gap-[5vw] self-stretch max-md:grid-cols-2 max-md:gap-[3vw] max-[1025px]:gap-[3vw]">
               {[
                 { value: "4.2M+", suffix: "/AED", label: "Starting Price" },
                 { value: "80+", label: "Stories" },
@@ -156,17 +199,18 @@ const Hero: React.FC = () => {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className={`${styles.glassmorphism} fadeup rounded-2xl bg-gradient-to-r from-black/70 to-black/30 px-[1.5vw] py-[1.8vw] text-center tablet:px-[3vw] tablet:py-[4vw]`}
+                  data-fade-in
+                  className="rounded-[1.2vw] bg-black/10 px-[1.5vw] py-[2vw] max-md:py-[5vw] text-center backdrop-blur-[0.5vw] max-[1025px]:rounded-[4vw] flex flex-col justify-between max-md:min-h-[12vh] min-h-[18vh] border border-[#F9F9F91A]"
                 >
-                  <p className="text-white text-[2vw] font-medium leading-none tablet:text-[6vw]">
+                  <p className="inline-flex items-end justify-center gap-[0.25vw] text-[2.9vw] font-medium leading-none text-white max-[1025px]:gap-[1vw] max-[1025px]:text-[6vw]">
                     {stat.value}
                     {stat.suffix && (
-                      <span className="text-[1vw] font-normal align-super tablet:text-[3vw]">
+                      <span className="mb-[0.15vw] text-[0.75vw] font-normal leading-none max-[1025px]:mb-[0.4vw] max-[1025px]:text-[2.5vw]">
                         {stat.suffix}
                       </span>
                     )}
                   </p>
-                  <p className="mt-[0.8vw] text-white/80 text-[1vw] tablet:mt-[2vw] tablet:text-[3vw]">
+                  <p className="text-[1.1vw] text-white/80 max-[1025px]:text-[3vw]">
                     {stat.label}
                   </p>
                 </div>
@@ -175,6 +219,37 @@ const Hero: React.FC = () => {
           </div>
         </div>
       </section>
+      {enquiryMounted && (
+        <div
+          className={`fixed inset-0 z-100 flex items-center justify-center bg-black/70 px-[5%] py-[5vw] backdrop-blur-[8px] transition-opacity duration-300 max-[1025px]:items-start max-[1025px]:overflow-y-auto max-[1025px]:py-[10vw] ${
+            enquiryOpen ? "opacity-100" : "opacity-0"
+          }`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Lumera enquiry form"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeEnquiryModal();
+            }
+          }}
+        >
+          <div
+            className={`relative w-full max-w-[42vw] rounded-[1.4vw] bg-[#f7f2ea] p-[2vw] shadow-2xl transition-all duration-300 max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw] ${
+              enquiryOpen ? "translate-y-0 scale-100 opacity-100" : "translate-y-[2vw] scale-[0.98] opacity-0"
+            }`}
+          >
+            <button
+              type="button"
+              aria-label="Close enquiry form"
+              onClick={closeEnquiryModal}
+              className="absolute right-[1.2vw] top-[1.2vw] z-10 flex h-[2.8vw] w-[2.8vw] items-center justify-center rounded-full bg-[#1c1b1a] text-white transition-transform hover:scale-95 max-[1025px]:right-[4vw] max-[1025px]:top-[4vw] max-[1025px]:h-[9vw] max-[1025px]:w-[9vw]"
+            >
+              <X className="h-[1.2vw] w-[1.2vw] max-[1025px]:h-[4vw] max-[1025px]:w-[4vw]" strokeWidth={1.8} />
+            </button>
+            <EnquiryForm />
+          </div>
+        </div>
+      )}
     </>
   );
 };

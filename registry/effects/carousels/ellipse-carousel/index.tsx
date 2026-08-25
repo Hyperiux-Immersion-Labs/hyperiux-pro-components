@@ -1,4 +1,5 @@
-import EllipseCarouselComp, { type EllipseCarouselProps, type EllipseCarouselItem } from "./EllipseCarousel";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+import EllipseCarouselComp, { type EllipseCarouselProps, type EllipseCarouselItem } from "./EllipseCarouselComp";
 
 const defaultItems: EllipseCarouselItem[] = [
   { bgColor: "#f5f5f2", textColor: "#111111", title: "↑" },

@@ -1,42 +1,100 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import { useRef } from "react";
 import gsap from "gsap";
-import Image from "next/image";
-import styles from "./styles.module.css";
+import Image, { type StaticImageData } from "next/image";
+
+import masterLivingRoomIcon from "./assets/icons/master-living-room.svg";
+import privateStudyIcon from "./assets/icons/private-study.svg";
+import waterPavilionIcon from "./assets/icons/water-pavilion.svg";
+import spaIcon from "./assets/icons/spa.svg";
+import sunkenSunIcon from "./assets/icons/sunken-sun.svg";
+import beachLoungeIcon from "./assets/icons/beach-lounge.svg";
+import poolAndBeachIcon from "./assets/icons/pool-and-beach.svg";
+import privateBeachIcon from "./assets/icons/private-beach.svg";
+import entranceLobby from "./assets/icons/entrance-lobby.svg";
+import featureStaircase from "./assets/icons/feature-staircase.svg";
+import entranceLobbyImage from "./assets/entrans-lobby.png";
+import featureStaircaseImage from "./assets/feature-staircase.png";
+import fireplaceImage from "./assets/fireplace.png";
+import masterLivingRoomImage from "./assets/master-living-room.png";
+import poolBeachImage from "./assets/pool-beach.png";
+import privateBeachImage from "./assets/private-beach.png";
+import spaImage from "./assets/spa.png";
+import studyBarImage from "./assets/study-bar.png";
+import sunkenSunbedImage from "./assets/sunken-senbed.png";
+import waterPavilionImage from "./assets/water-pavilion.png";
 
 interface GalleryFeature {
   name: string;
-  icon: string;
-  image: string;
+  icon: StaticImageData;
+  image: StaticImageData;
   color: string;
 }
 
-const features: GalleryFeature[] = [
+const leftFeatures: GalleryFeature[] = [
   {
-    name: "Architecture",
-    icon: "/assets/icons/area.svg",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop",
+    name: "Entrance Lobby",
+    icon: entranceLobby,
+    image: entranceLobbyImage,
+    color: "#E5DCCF",
+  },
+  {
+    name: "Feature Staircase",
+    icon: featureStaircase,
+    image: featureStaircaseImage,
     color: "#E0D4C6",
   },
   {
-    name: "Interiors",
-    icon: "/assets/icons/beds.svg",
-    image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1600&auto=format&fit=crop",
-    color: "#D8CEBF",
-  },
-  {
-    name: "Landscape",
-    icon: "/assets/icons/location.svg",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1600&auto=format&fit=crop",
+    name: "Private Master Living Room",
+    icon: masterLivingRoomIcon,
+    image: masterLivingRoomImage,
     color: "#DED2C2",
   },
   {
-    name: "Lighting",
-    icon: "/assets/icons/tub.svg",
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1600&auto=format&fit=crop",
+    name: "Private Study / Cigar Bar",
+    icon: privateStudyIcon,
+    image: studyBarImage,
     color: "#E4D9CB",
+  },
+  {
+    name: "Water Pavilion",
+    icon: waterPavilionIcon,
+    image: waterPavilionImage,
+    color: "#DDD1C0",
+  },
+];
+
+const rightFeatures: GalleryFeature[] = [
+  {
+    name: "Spa",
+    icon: spaIcon,
+    image: spaImage,
+    color: "#E2D7C8",
+  },
+  {
+    name: "Sunken Sun Bed Deck",
+    icon: sunkenSunIcon,
+    image: sunkenSunbedImage,
+    color: "#E6DCCE",
+  },
+  {
+    name: "Beach Lounge & Fireplace",
+    icon: beachLoungeIcon,
+    image: fireplaceImage,
+    color: "#DFD3C3",
+  },
+  {
+    name: "Pool & Beach Shower",
+    icon: poolAndBeachIcon,
+    image: poolBeachImage,
+    color: "#E3D8CA",
+  },
+  {
+    name: "Private Beach",
+    icon: privateBeachIcon,
+    image: privateBeachImage,
+    color: "#E7DDD0",
   },
 ];
 
@@ -61,7 +119,7 @@ const Gallery = () => {
     }
 
     const newImg = document.createElement("img");
-    newImg.src = imgSrc;
+    newImg.src = imgSrc.src;
     newImg.style.position = "absolute";
     newImg.style.left = "-100%";
     newImg.style.width = "100%";
@@ -73,17 +131,17 @@ const Gallery = () => {
     gsap.to(newImg, { duration: 1, left: "0%" });
   };
 
-  const renderHeadings = () => {
+  const renderColumn = (columnFeatures: GalleryFeature[]) => {
     return (
-      <div className="w-full mt-[10vw] grid grid-cols-2 gap-x-[42%] justify-between tablet:flex tablet:flex-col tablet:order-1 mobile:gap-[5vw] mobile:mt-[12vw] tablet:gap-0 tablet:mt-0">
-        {features.map((feature, index) => (
+      <div className="flex flex-col gap-[3vw] w-full max-[1025px]:gap-[4vw]">
+        {columnFeatures.map((feature, index) => (
           <div
             key={index}
-            className="mb-[3vw] cursor-pointer"
+            className="cursor-pointer"
             onMouseEnter={() => handleImageHover(feature)}
           >
-            <div className="fadeup flex gap-[2vw] items-center mb-[0.5vw] px-[1vw] mobile:gap-[4vw] tablet:mb-[1.5vw]">
-              <div className="h-[2.5vw] w-[2.5vw] mobile:w-[10vw] mobile:h-[10vw] tablet:w-[3vw] tablet:h-[3vw]">
+            <div className="fadeup flex gap-[2vw]  items-center pb-[1vw] max-md:gap-[4vw] max-[1025px]:pb-[1.5vw]">
+              <div className="h-[2.6vw] w-[2.6vw] shrink-0 max-md:w-[9vw] max-md:h-[9vw] max-[1025px]:w-[3.5vw] max-[1025px]:h-[3.5vw]">
                 <div className="w-full h-full relative">
                   <Image
                     quality={100}
@@ -94,11 +152,11 @@ const Gallery = () => {
                   />
                 </div>
               </div>
-              <h4 className="font-head uppercase text-[1.25vw] mobile:text-[4.5vw] tablet:text-[2vw]">
+              <h4 className="font-head uppercase text-[1.25vw] tracking-wide max-md:text-[3.8vw] max-[1025px]:text-[2.2vw]">
                 {feature.name}
               </h4>
             </div>
-            <div className="bg-black/40 w-full h-[1px] lineDraw"></div>
+            <div className="bg-black/20 w-full h-px lineDraw"></div>
           </div>
         ))}
       </div>
@@ -106,27 +164,33 @@ const Gallery = () => {
   };
 
   return (
-    <section className="py-[8%] bg-[#E0D4C6] relative z-10 mobile:py-[20%] tablet:py-[10%]" ref={bodyRef}>
-      <div className={styles["container-lg"]}>
-        <h2 data-title-anim className={`${styles["title-2"]} mb-[2vw]`}>
-          Studio Gallery
+    <section className="py-[5%] bg-[#E0D4C6] relative z-10 max-md:py-[10%] max-[1025px]:py-[7%]" ref={bodyRef}>
+      <div className="px-[5%] max-md:px-[6%]">
+        <h2
+          data-title-anim
+          className={`font-heading font-medium text-[3.9vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
+        >
+          Core Features
         </h2>
-        <p data-para-anim className="w-[40%] tablet:w-full">
-          A glimpse into the disciplines we bring together on every project.
+        <p data-para-anim className="w-[40%] max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.25vw] tracking-wide max-[1025px]:w-full">
+          The interiors of Lumera Heights reflect a refined balance of modern luxury and functional elegance.
         </p>
-        <div className="w-full mt-[12vw] mb-[8vw] relative tablet:flex mobile:flex-col tablet:gap-[4vw]">
-          {renderHeadings()}
-          <div className="w-[35%] h-[45vw] z-10 overflow-hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 fadeup tablet:static tablet:translate-x-0 tablet:translate-y-0 mobile:w-[90vw] mobile:h-[120vw] tablet:w-[90vw] tablet:h-[70vw]">
+        <div className="w-full mt-[6vw]  mb-[2vw] relative flex items-start justify-between gap-[3vw] max-[1025px]:flex-col max-md:gap-[4vw]">
+          <div className="w-[27%] my-auto max-[1025px]:w-full max-[1025px]:order-1">{renderColumn(leftFeatures)}</div>
+
+          <div className="w-[33%] h-[45vw] shrink-0 z-10 overflow-hidden relative fadeup max-[1025px]:static max-[1025px]:w-full max-md:w-full max-md:h-[120vw] max-[1025px]:h-[70vw] max-[1025px]:order-0">
             <div className="w-full h-full relative overflow-hidden" ref={previewContainerRef}>
               <Image
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop"
-                alt="Image"
+                src={leftFeatures[0].image}
+                alt="Core feature preview"
                 fill
                 quality={100}
                 className="object-cover w-full h-full"
               />
             </div>
           </div>
+
+          <div className="w-[27%] my-auto max-[1025px]:w-full max-[1025px]:order-2">{renderColumn(rightFeatures)}</div>
         </div>
       </div>
     </section>

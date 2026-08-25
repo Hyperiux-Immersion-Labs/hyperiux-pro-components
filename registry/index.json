@@ -435,7 +435,7 @@
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/arc-flow-carousel",
-    "tier": "pro",
+    "tier": "free",
     "main": "index.tsx",
     "exportName": "ArcFlowCarousel",
     "exportKind": "default",
@@ -2198,8 +2198,14 @@
   },
   {
     "name": "dimensional-switch-slider",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-08-24",
+        "summary": "Add autoplay controls and numeric width/height/text-size/border-radius props",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-20",
@@ -2264,6 +2270,31 @@
         }
       },
       {
+        "name": "autoplay",
+        "type": "boolean",
+        "default": true,
+        "description": "Automatically advances to the next slide on a timer.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "autoplayDelay",
+        "type": "number",
+        "default": 2600,
+        "description": "Time between automatic slide changes in milliseconds.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 1200,
+          "max": 6000,
+          "step": 100
+        }
+      },
+      {
         "name": "ease",
         "type": "string",
         "default": "cubic-bezier(1, -0.001, 0.159, 0.838)",
@@ -2282,46 +2313,58 @@
       },
       {
         "name": "textSize",
-        "type": "string",
-        "default": "5.5vw",
-        "description": "CSS font-size of the slide text.",
+        "type": "number | string",
+        "default": 84,
+        "description": "Font size of the slide text. Numbers are treated as pixels; strings can use any CSS length.",
         "remixer": {
-          "control": "text",
+          "control": "range",
           "group": "style",
-          "groupTitle": "Style"
+          "groupTitle": "Style",
+          "min": 32,
+          "max": 160,
+          "step": 1
         }
       },
       {
         "name": "cardWidth",
-        "type": "string",
-        "default": "50vw",
-        "description": "CSS width of the card.",
+        "type": "number | string",
+        "default": 680,
+        "description": "Width of the card. Numbers are treated as pixels; strings can use any CSS length.",
         "remixer": {
-          "control": "text",
+          "control": "range",
           "group": "style",
-          "groupTitle": "Style"
+          "groupTitle": "Style",
+          "min": 280,
+          "max": 1000,
+          "step": 10
         }
       },
       {
         "name": "cardHeight",
-        "type": "string",
-        "default": "34vw",
-        "description": "CSS height of the card.",
+        "type": "number | string",
+        "default": 460,
+        "description": "Height of the card. Numbers are treated as pixels; strings can use any CSS length.",
         "remixer": {
-          "control": "text",
+          "control": "range",
           "group": "style",
-          "groupTitle": "Style"
+          "groupTitle": "Style",
+          "min": 220,
+          "max": 720,
+          "step": 10
         }
       },
       {
         "name": "cardBorderRadius",
-        "type": "string",
-        "default": "1rem",
-        "description": "CSS border-radius applied to both card faces, so the rounding stays consistent front and back.",
+        "type": "number | string",
+        "default": 16,
+        "description": "Border radius applied to both card faces. Numbers are treated as pixels; strings can use any CSS length.",
         "remixer": {
-          "control": "text",
+          "control": "range",
           "group": "style",
-          "groupTitle": "Style"
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 80,
+          "step": 1
         }
       },
       {
@@ -2552,7 +2595,7 @@
     "dependencies": [],
     "registryDependencies": [],
     "previewUrl": "/demo/dot-transition",
-    "tier": "pro",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "DotTransition",
@@ -3505,7 +3548,7 @@
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/ellipse-carousel",
-    "tier": "pro",
+    "tier": "free",
     "main": "index.tsx",
     "exportName": "EllipseCarousel",
     "exportKind": "default",
@@ -6234,7 +6277,7 @@
     "registryDependencies": [],
     "previewUrl": "/demo/orbit-flip-slider",
     "coverImage": "orbit-flip-slider",
-    "tier": "pro",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "OrbitFlipSlider",

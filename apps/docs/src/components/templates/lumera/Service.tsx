@@ -2,8 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import styles from "./styles.module.css";
+import { useEffect, useRef, useState } from "react";
+import firePlace from "./assets/fire-place.png";
+import lapPool from "./assets/lap-pool.png";
+import relaxationLounge from "./assets/relaxation-lounge.png";
+import spaAndWellness from "./assets/spa-and-wellness.png";
+import wineCellar from "./assets/wine-cellar.png";
 
 interface ServiceButtonProps {
   link: string;
@@ -13,46 +17,45 @@ interface ServiceButtonProps {
 
 const ServiceButton = ({ link, btnText, className }: ServiceButtonProps) => {
   return (
-    <Link href={link} className={`${styles["service-btn"]} fadeUp ${className ?? ""}`}>
-      <span data-primary className="btn-text ">
-        {btnText}
-      </span>
-      <div aria-hidden="true" className={styles["btn-circle"]}>
-        <div className={`${styles["btn-circle-text"]} ml-[-0.5vw] mobile:ml-[2px]`}>
-          <span>{btnText}</span>
-          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles["btn-icon"]}>
-            <path data-v-f4363f2a fillRule="evenodd" clipRule="evenodd" d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z" className={`${styles["btn-path"]} fill-current`} />
-            <path data-v-f4363f2a fillRule="evenodd" clipRule="evenodd" d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z" className={`${styles["btn-path"]} fill-current`} />
-          </svg>
-        </div>
-      </div>
+    <Link
+      href={link}
+      className={`fadeUp inline-flex h-[4.2vw] min-w-[21vw] max-md:w-full items-center justify-center rounded-full border border-[#ca8216] bg-white px-[2.5vw] text-center text-[1.1vw] font-medium text-[#1c1b1a] [text-rendering:geometricPrecision] transition-all duration-300 hover:bg-white hover:text-[#1c1b1a] max-[1025px]:h-[7vw] max-[1025px]:min-w-[33.5vw] max-[1025px]:px-[2.5vw] max-[1025px]:text-[2.2vw] max-[1025px]:font-normal max-md:h-[15vw] max-md:min-w-[65vw] max-md:px-[4.5vw] max-md:text-[4.2vw] max-md:font-normal ${className ?? ""}`}
+    >
+      <span>{btnText}</span>
     </Link>
   );
 };
 
 const serviceButtons = [
-  { text: "Architecture" },
-  { text: "Interior Design" },
-  { text: "Landscape" },
-  { text: "Consulting" },
+  { text: "Download Brochure" },
+  { text: "Download Floor Plan" },
+  { text: "Download Payment Plan" },
+  { text: "Download Architectural Drawings" },
+  { text: "View Amenities" },
+  { text: "Schedule a Visit" },
+  { text: "Contact Sales Team" },
 ];
 
 const services = [
   {
-    title: "Residential",
-    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1400&auto=format&fit=crop",
+    title: "RELAXATION LOUNGE",
+    img: relaxationLounge,
   },
   {
-    title: "Commercial",
-    img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1400&auto=format&fit=crop",
+    title: "65 Foot Lap Pool",
+    img: lapPool,
   },
   {
-    title: "Hospitality",
-    img: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1400&auto=format&fit=crop",
+    title: "Spa and Wellness",
+    img: spaAndWellness,
   },
   {
-    title: "Renovation",
-    img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1400&auto=format&fit=crop",
+    title: "Fire Place",
+    img: firePlace,
+  },
+  {
+    title: "Wine Cellar",
+    img: wineCellar,
   },
 ];
 
@@ -63,14 +66,90 @@ export default function Service() {
     setIsOpen(!isOpen);
   };
 
+  const buttonsScrollRef = useRef<HTMLDivElement>(null);
+  const buttonsDragState = useRef<{ pointerId: number; startX: number; startScrollLeft: number; moved: boolean } | null>(null);
+  const [isDraggingButtons, setIsDraggingButtons] = useState(false);
+  const [buttonsThumb, setButtonsThumb] = useState({ widthPct: 100, leftPct: 0 });
+
+  const updateButtonsThumb = () => {
+    const el = buttonsScrollRef.current;
+    if (!el) return;
+    const widthPct = Math.min(100, (el.clientWidth / el.scrollWidth) * 100);
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const scrollRatio = maxScroll > 0 ? el.scrollLeft / maxScroll : 0;
+    setButtonsThumb({ widthPct, leftPct: scrollRatio * (100 - widthPct) });
+  };
+
+  useEffect(() => {
+    updateButtonsThumb();
+    window.addEventListener("resize", updateButtonsThumb);
+    return () => window.removeEventListener("resize", updateButtonsThumb);
+  }, []);
+
+  const handleButtonsPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const el = buttonsScrollRef.current;
+    if (!el) return;
+    buttonsDragState.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScrollLeft: el.scrollLeft,
+      moved: false,
+    };
+    setIsDraggingButtons(true);
+    el.setPointerCapture(event.pointerId);
+  };
+
+  const handleButtonsPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const el = buttonsScrollRef.current;
+    const drag = buttonsDragState.current;
+    if (!el || !drag || drag.pointerId !== event.pointerId) return;
+    const delta = event.clientX - drag.startX;
+    if (Math.abs(delta) > 3) drag.moved = true;
+    el.scrollLeft = drag.startScrollLeft - delta;
+    updateButtonsThumb();
+  };
+
+  const endButtonsDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    const el = buttonsScrollRef.current;
+    const drag = buttonsDragState.current;
+    if (!el || !drag || drag.pointerId !== event.pointerId) return;
+    el.releasePointerCapture(event.pointerId);
+    buttonsDragState.current = null;
+    setIsDraggingButtons(false);
+  };
+
+  const handleButtonsClickCapture = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (buttonsDragState.current?.moved) {
+      event.preventDefault();
+    }
+  };
+
+  const servicesScrollRef = useRef<HTMLDivElement>(null);
+  const [servicesThumb, setServicesThumb] = useState({ widthPct: 100, leftPct: 0 });
+
+  const updateServicesThumb = () => {
+    const el = servicesScrollRef.current;
+    if (!el) return;
+    const widthPct = Math.min(100, (el.clientWidth / el.scrollWidth) * 100);
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const scrollRatio = maxScroll > 0 ? el.scrollLeft / maxScroll : 0;
+    setServicesThumb({ widthPct, leftPct: scrollRatio * (100 - widthPct) });
+  };
+
+  useEffect(() => {
+    updateServicesThumb();
+    window.addEventListener("resize", updateServicesThumb);
+    return () => window.removeEventListener("resize", updateServicesThumb);
+  }, []);
+
   return (
     <>
-      <section className="w-screen mobile:py-[20%] tablet:py-[10%] tablet:overflow-hidden mobile:overflow-hidden" id="services">
-        <div className={`${styles["container-lg"]} flex flex-col py-[10%] gap-[7vw] tablet:py-0 mobile:gap-[1vw]`}>
-          <div className="relative hidden mobile:block tablet:block">
+      <section className="w-screen max-md:py-[20%] max-[1025px]:py-[10%] max-[1025px]:overflow-hidden max-md:overflow-hidden" id="services">
+        <div className={` flex flex-col py-[10%] gap-[7vw] max-[1025px]:py-0 max-md:gap-[1vw]`}>
+          <div className="relative hidden max-md:px-[6%] max-md:block max-[1025px]:block">
             <button
               onClick={toggleDropdown}
-              className="bg-secondary-color text-black border border-black rounded-full px-6 py-3 text-[2.5vw] mobile:text-[4vw] hover:bg-opacity-90 transition-colors"
+              className="bg-secondary-color text-black border border-black rounded-full px-6 py-3 text-[2.5vw] max-md:text-[4vw] hover:bg-opacity-90 transition-colors"
             >
               Our Services
               <svg
@@ -85,7 +164,7 @@ export default function Service() {
             </button>
 
             {isOpen && (
-              <div className="absolute z-10 mt-2 w-fit bg-white rounded-[3vw] shadow-2xl px-[4vw] py-[4vw] transition-all duration-300 ease-in mobile:w-fit">
+              <div className="absolute z-10 mt-2 w-fit bg-white rounded-[3vw] shadow-2xl max-md:px-[6%]! py-[4vw] transition-all duration-300 ease-in max-md:w-[85vw]">
                 <ul className="py-2 text-gray-700 space-y-[2vw]">
                   {serviceButtons.map((item, index) => (
                     <li key={index}>
@@ -97,24 +176,69 @@ export default function Service() {
             )}
           </div>
 
-          <div className="flex gap-[0.5vw] fadeup flex-wrap tablet:hidden mobile:hidden">
-            {serviceButtons.map((item, index) => (
-              <ServiceButton key={index} link="#" btnText={item.text} />
-            ))}
+          <div className="max-[1025px]:hidden max-md:hidden">
+            <div
+              ref={buttonsScrollRef}
+              className={`fadeup no-scrollbar flex flex-nowrap gap-[2vw] overflow-x-auto touch-pan-x px-[4vw] select-none pb-[1vw] ${
+                isDraggingButtons ? "cursor-grabbing" : "cursor-grab"
+              }`}
+              onScroll={updateButtonsThumb}
+              onPointerDown={handleButtonsPointerDown}
+              onPointerMove={handleButtonsPointerMove}
+              onPointerUp={endButtonsDrag}
+              onPointerCancel={endButtonsDrag}
+              onPointerLeave={endButtonsDrag}
+              onClickCapture={handleButtonsClickCapture}
+              onDragStart={(event) => event.preventDefault()}
+            >
+              {serviceButtons.map((item, index) => (
+                <ServiceButton key={index} link="#" btnText={item.text} className="shrink-0" />
+              ))}
+            </div>
+
+            <div className="relative mt-[0.8vw] mx-[4vw] w-[80%] h-[0.4vw]  overflow-hidden rounded-full bg-[#e5e5e5]">
+              <div
+                className="absolute inset-y-0 rounded-l-full bg-black"
+                style={{ width: `${buttonsThumb.widthPct}%`, left: `${buttonsThumb.leftPct}%` }}
+              />
+            </div>
           </div>
 
-          <div className={`w-full h-full tablet:overflow-x-auto overflow-hidden mobile:mt-[10%] tablet:w-[100vw] tablet:ml-[-5vw] ${styles["custom-scroll"]}`}>
-            <div className="flex relative gap-[1.5%] overflow-hidden aspect-[2.5] fadeup tablet:flex tablet:w-[400vw] tablet:ml-[5%] tablet:aspect-auto tablet:overflow-visible tablet:mb-[5vw] tablet:gap-[3vw] mobile:gap-[1.5%]">
-              {services.map((service, index) => (
-                <div key={index} className={`${styles.stripe} group tablet:w-full tablet:h-[50vh] tablet:p-[4vw]`}>
-                  <Image fill alt={service.title} src={service.img} loading="lazy" quality={90} className="object-cover" />
-                  <div className="stripe-label backdrop-blur-sm px-[2vw] py-[1vw] bg-white/40 rounded-xl overflow-hidden w-fit duration-500 ease-in-out transition-all tablet:py-[2vw] tablet:px-[3vw]">
-                    <p className="text-[1.25vw] font-head text-white uppercase whitespace-nowrap mobile:text-[4vw] tablet:text-[3vw]">
-                      {service.title}
-                    </p>
+          <div>
+            <div
+              ref={servicesScrollRef}
+              onScroll={updateServicesThumb}
+              className={`w-full h-full px-[5%] no-scrollbar max-[1025px]:overflow-x-auto overflow-hidden max-md:pr-0 max-md:mt-[10%] max-[1025px]:w-[100vw] max-[1025px]:ml-[-5vw] max-md:ml-0 max-md:px-[5vw]`}
+            >
+              <div className="flex relative gap-[1.5%] overflow-hidden aspect-[2.5] fadeup max-[1025px]:flex max-[1025px]:w-[400vw] max-[1025px]:ml-[5%] max-[1025px]:aspect-auto max-[1025px]:overflow-visible max-[1025px]:mb-[5vw] max-[1025px]:gap-[3vw] max-md:gap-[1.5%]">
+                {services.map((service, index) => (
+                  <div
+                    key={index}
+                    className="group w-[20%] flex rounded-[24px] overflow-hidden items-start [clip-path:polygon(0_0,100%_0,100%_100%,0%_100%)] p-[1vw] no-underline transition-all duration-[350ms] ease-in-out relative hover:w-[50%] focus:w-[50%] max-[1025px]:w-full max-[1025px]:hover:w-full max-[1025px]:focus:w-full max-md:w-full max-md:hover:w-full max-md:focus:w-full max-[1025px]:h-[50vh] max-[1025px]:p-[4vw]"
+                  >
+                    <Image
+                      fill
+                      alt={service.title}
+                      src={service.img}
+                      loading="lazy"
+                      quality={90}
+                      className="object-cover object-center transition-all duration-350 ease-in-out scale-110 group-hover:scale-100 group-focus:scale-100"
+                    />
+                    <div className="stripe-label max-w-[15vw] backdrop-blur-sm px-[2vw] py-[1vw] bg-white/10 rounded-lg overflow-hidden w-fit duration-500 ease-in-out transition-all group-hover:max-w-[42vw] group-focus:max-w-[42vw] max-[1025px]:max-w-[90%] max-[1025px]:py-[2vw] max-[1025px]:px-[3vw]">
+                      <p className="truncate text-[1.25vw] font-head text-white uppercase whitespace-nowrap max-md:text-[4vw] max-[1025px]:text-[3vw]" title={service.title}>
+                        {service.title}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            <div className="relative mt-[3vw] mx-[5%] hidden h-[0.4vw] overflow-hidden rounded-full bg-[#e5e5e5] max-[1025px]:block max-[1025px]:h-[0.8vw] max-md:mx-[5vw] max-md:mt-[6vw]">
+              <div
+                className="absolute inset-y-0 rounded-l-full bg-black"
+                style={{ width: `${servicesThumb.widthPct}%`, left: `${servicesThumb.leftPct}%` }}
+              />
             </div>
           </div>
         </div>

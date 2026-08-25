@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 const DEFAULT_ROOT_MARGIN = "256px";
 
 type RafRoot = Element | null | { current: Element | null } | (() => Element | null);

@@ -1,11 +1,11 @@
 {
   "name": "dimensional-switch-slider",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "changelog": [
     {
       "version": "1.0.0",
       "date": "2026-08-20",
-      "summary": "Initial release: 3D card-flip carousel with a configurable horizontal (Y-axis) or vertical (X-axis) flip direction, directional text slide/tilt/fade transitions, custom-ease card flip via GSAP CustomEase, pagination dots, infinite wrap or clamped ends, and prefers-reduced-motion support - under reduced motion the flip/text tweens are skipped entirely and each click swaps content and settles the card to its end rotation instantly, with no rotation, slide, tilt, or fade animation.",
+      "summary": "Initial release",
       "breaking": false
     }
   ],
@@ -66,6 +66,31 @@
       }
     },
     {
+      "name": "autoplay",
+      "type": "boolean",
+      "default": true,
+      "description": "Automatically advances to the next slide on a timer.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "autoplayDelay",
+      "type": "number",
+      "default": 2600,
+      "description": "Time between automatic slide changes in milliseconds.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 1200,
+        "max": 6000,
+        "step": 100
+      }
+    },
+    {
       "name": "ease",
       "type": "string",
       "default": "cubic-bezier(1, -0.001, 0.159, 0.838)",
@@ -84,46 +109,58 @@
     },
     {
       "name": "textSize",
-      "type": "string",
-      "default": "5.5vw",
-      "description": "CSS font-size of the slide text.",
+      "type": "number | string",
+      "default": 84,
+      "description": "Font size of the slide text. Numbers are treated as pixels; strings can use any CSS length.",
       "remixer": {
-        "control": "text",
+        "control": "range",
         "group": "style",
-        "groupTitle": "Style"
+        "groupTitle": "Style",
+        "min": 32,
+        "max": 160,
+        "step": 1
       }
     },
     {
       "name": "cardWidth",
-      "type": "string",
-      "default": "50vw",
-      "description": "CSS width of the card.",
+      "type": "number | string",
+      "default": 680,
+      "description": "Width of the card. Numbers are treated as pixels; strings can use any CSS length.",
       "remixer": {
-        "control": "text",
+        "control": "range",
         "group": "style",
-        "groupTitle": "Style"
+        "groupTitle": "Style",
+        "min": 280,
+        "max": 1000,
+        "step": 10
       }
     },
     {
       "name": "cardHeight",
-      "type": "string",
-      "default": "34vw",
-      "description": "CSS height of the card.",
+      "type": "number | string",
+      "default": 460,
+      "description": "Height of the card. Numbers are treated as pixels; strings can use any CSS length.",
       "remixer": {
-        "control": "text",
+        "control": "range",
         "group": "style",
-        "groupTitle": "Style"
+        "groupTitle": "Style",
+        "min": 220,
+        "max": 720,
+        "step": 10
       }
     },
     {
       "name": "cardBorderRadius",
-      "type": "string",
-      "default": "1rem",
-      "description": "CSS border-radius applied to both card faces, so the rounding stays consistent front and back.",
+      "type": "number | string",
+      "default": 16,
+      "description": "Border radius applied to both card faces. Numbers are treated as pixels; strings can use any CSS length.",
       "remixer": {
-        "control": "text",
+        "control": "range",
         "group": "style",
-        "groupTitle": "Style"
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 80,
+        "step": 1
       }
     },
     {
