@@ -157,12 +157,6 @@ export default function HorizontalFeatureRevealSection() {
         );
       }
 
-      // The horizontal swipe (and everything driven by it) only exists on
-      // desktop - mobile falls back to a plain static stack. containerTween
-      // stays a single plain xPercent tween - exactly the shape the cards'
-      // `containerAnimation`-based triggers below are built around - and its
-      // own start is pushed TEXT_FILL_HOLD_VH later, which is what makes the
-      // track hold still until the text-fill scrub (below) has finished.
       let containerTween: gsap.core.Tween | undefined;
 
       if (isDesktop) {
