@@ -22,13 +22,13 @@ export default function RemixerLauncher({
   onCopyCode,
   onReset,
   defaultOpenGroupId,
-  buttonLabel = "Controls",
+  buttonLabel = "Customize",
   buttonClassName = "",
   panelClassName = "",
   panelInnerClassName = "",
   containerClassName = "",
 }: RemixerLauncherProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   // const [isHidden, setIsHidden] = useState(false);
   const [dragConstraints, setDragConstraints] = useState({
     top: 0,
@@ -115,22 +115,20 @@ export default function RemixerLauncher({
           animate={{
             height: isExpanded ? "auto" : 0,
             opacity: isExpanded ? 1 : 0,
-            y: isExpanded ? 0 : -18,
+            y: isExpanded ? 0 : -10,
           }}
           transition={{
             height: {
               ...remixerPanelTransition,
-              duration: isExpanded ? 0.48 : 0.24,
-              delay: isExpanded ? 0 : 0.12,
+              duration: isExpanded ? 0.48 : 0.32,
             },
             opacity: {
-              duration: isExpanded ? 0.18 : 0.14,
+              duration: isExpanded ? 0.2 : 0.16,
               ease: "easeOut",
             },
             y: {
               ...remixerPanelTransition,
-              duration: isExpanded ? 0.48 : 0.2,
-              delay: isExpanded ? 0 : 0.08,
+              duration: isExpanded ? 0.48 : 0.32,
             },
           }}
           style={{ transformOrigin: "top" }}
@@ -142,12 +140,11 @@ export default function RemixerLauncher({
           <motion.div
             initial={false}
             animate={{
-              y: isExpanded ? 0 : -28,
+              y: 0,
             }}
             transition={{
               ...remixerPanelTransition,
-              duration: isExpanded ? 0.48 : 0.2,
-              delay: isExpanded ? 0.03 : 0,
+              duration: isExpanded ? 0.48 : 0.32,
             }}
             className={`${styles.launcherPanelInner} ${panelInnerClassName}`}
           >

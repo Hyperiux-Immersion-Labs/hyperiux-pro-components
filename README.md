@@ -7,7 +7,7 @@
 
 **A collection of high-quality animation effects and interactive components for Next.js — designed by [Hyperiux](https://hyperiux.com).**
 
-32 free effects are open source and install instantly. 89 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project — you own what you install.
+Hyperiux Vault includes 138 effects total: 48 free effects are open source and install instantly, and 90 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project — you own what you install.
 
 ---
 
@@ -131,7 +131,7 @@ export default function Page() {
 
 ## Free Effects
 
-All 32 free effects install without an account. Browse and preview them at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 48 free effects install without an account. Browse and preview them at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
 
 ```bash
 # Backgrounds
@@ -216,7 +216,7 @@ npx hyperiux add milky-way
 
 ## Pro Effects
 
-89 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
+90 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
 
 ### Getting started with Pro
 
@@ -262,7 +262,7 @@ Or add `HYPERIUX_TOKEN` to your CI secrets and the CLI will pick it up automatic
 
 ### Browse Pro effects
 
-All 89 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 90 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
 
 ---
 

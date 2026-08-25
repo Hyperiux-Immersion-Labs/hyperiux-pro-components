@@ -1,5 +1,9 @@
 import React, { Suspense } from "react";
-import { getEffectsByCategory, getRegistryIndex } from "@/lib/registry";
+import {
+  getEffectTierCounts,
+  getEffectsByCategory,
+  getRegistryIndex,
+} from "@/lib/registry";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
 import FooterV3 from "@/homepage-v3/sections/FooterV3";
@@ -21,6 +25,8 @@ export default function WorkspaceLayout({ children }) {
   for (const [category, effects] of Object.entries(categories)) {
     effectCounts[category] = effects.length;
   }
+
+  Object.assign(effectCounts, getEffectTierCounts());
 
   const totalEffects = registry?.items?.length ?? 0;
 

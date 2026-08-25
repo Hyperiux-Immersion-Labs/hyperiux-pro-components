@@ -212,11 +212,25 @@ export function getRegistryIndex() {
   return JSON.parse(content);
 }
 
-// public/r/index.json (what getRegistryIndex() reads) has no `tier` field on
-// its items, so free-tier counts can't be derived from it - only the private
-// registry.json files under registry/effects/** carry `tier`. Used to keep
-// "free accounts get N effects" messaging in sync with the actual catalog
-// instead of a number that drifts every time a free effect ships.
+export function getEffectTierCounts() {
+  const items = getRegistryIndex()?.items || [];
+
+  return items.reduce(
+    (counts, effect) => {
+      if (effect.tier === "pro") {
+        counts.pro += 1;
+      } else {
+        counts.free += 1;
+      }
+
+      return counts;
+    },
+    { free: 0, pro: 0 }
+  );
+}
+
+// Kept on the private registry path because it is used by account-plan
+// messaging that should reflect install/source access, not only listing data.
 export function getFreeEffectsCount() {
   return getAllPrivateEffects().filter((effect) => effect.tier !== "pro").length;
 }

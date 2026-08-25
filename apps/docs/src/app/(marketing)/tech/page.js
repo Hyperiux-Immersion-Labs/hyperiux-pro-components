@@ -1,7 +1,12 @@
 import { Suspense } from "react";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
-import { getRegistryIndex, getEffectsByCategory, getAllEffectSlugs } from "@/lib/registry";
+import {
+  getAllEffectSlugs,
+  getEffectTierCounts,
+  getEffectsByCategory,
+  getRegistryIndex,
+} from "@/lib/registry";
 import { TECHNOLOGIES, getCountForTech } from "@/components/Tech/tech-data";
 import TechHeader from "@/components/Tech/TechHeader";
 import TechCard from "@/components/Tech/TechCard";
@@ -24,6 +29,8 @@ export default async function TechOverviewPage() {
   for (const [categoryId, effects] of Object.entries(categoriesMap)) {
     effectCounts[categoryId] = effects.length;
   }
+
+  Object.assign(effectCounts, getEffectTierCounts());
 
   return (
     <VaultLayout

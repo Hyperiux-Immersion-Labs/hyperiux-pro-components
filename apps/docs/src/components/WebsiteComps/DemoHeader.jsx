@@ -11,7 +11,7 @@ import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 export default function DemoHeader({
   logoColor = "#1a1a1a",
-  text = "Browse Effects",
+  text = "Back to Effects",
   textColor = "#1a1a1a",
   href = "/effects",
   showText = true,
@@ -91,9 +91,9 @@ export default function DemoHeader({
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link
-              href="/"
+              href="/effects"
               className="inline-flex items-center"
-              aria-label="Go to homepage"
+              aria-label="Go to Effects"
             >
               <span
                 aria-label="Hyperiux"

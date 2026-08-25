@@ -496,17 +496,46 @@ export function VaultContent({
         ? categoryFilter
         : null);
 
+  const tierFilterCounts = useMemo(() => {
+    if (
+      typeof safeEffectCounts.free === "number" &&
+      typeof safeEffectCounts.pro === "number"
+    ) {
+      return {
+        free: safeEffectCounts.free,
+        pro: safeEffectCounts.pro,
+      };
+    }
+
+    if (isEffectsLoading) {
+      return { free: 0, pro: 0 };
+    }
+
+    return safeEffects.reduce(
+      (counts, effect) => {
+        if (effect.tier === "pro") {
+          counts.pro += 1;
+        } else {
+          counts.free += 1;
+        }
+
+        return counts;
+      },
+      { free: 0, pro: 0 }
+    );
+  }, [isEffectsLoading, safeEffectCounts, safeEffects]);
+
   const getQuickCategoryLabel = useCallback((cat) => {
     if (cat === "none") return "None";
-    if (cat === "free") return "Free";
-    if (cat === "pro") return "Pro";
+    if (cat === "free") return `Free (${tierFilterCounts.free})`;
+    if (cat === "pro") return `Pro (${tierFilterCounts.pro})`;
     if (cat === "featured") return "Featured";
     if (cat === "az") return "A-Z";
     if (cat === "za") return "Z-A";
     if (cat === "recent") return "Recently Added";
     if (cat === "webgl") return "WebGL";
     return cat.charAt(0).toUpperCase() + cat.slice(1);
-  }, []);
+  }, [tierFilterCounts]);
 
   useEffect(() => {
     if (!isSignedIn) return;
