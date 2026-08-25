@@ -30,23 +30,27 @@ const Footer = () => {
       gsap.set(footerGlassRef.current, { opacity: 1, yPercent: 0 })
       return
     }
-     if(globalThis.innerWidth>1025){
-       
-       gsap.from(footerGlassRef.current,{
-           // opacity:0,
-           yPercent:20,
-           ease:"power1.out",
-           scrollTrigger:{
-               trigger: footerRef.current,
-               start: "top 60%",
-               end:"bottom bottom",
-               scrub: true,
-               // markers:true,
-           }
-       })
-     
-     }
-  })
+
+    if (globalThis.innerWidth <= 1025) return
+
+    const tween = gsap.from(footerGlassRef.current,{
+        // opacity:0,
+        yPercent:20,
+        ease:"power1.out",
+        scrollTrigger:{
+            trigger: footerRef.current,
+            start: "top 60%",
+            end:"bottom bottom",
+            scrub: true,
+            // markers:true,
+        }
+    })
+
+    return () => {
+        tween.scrollTrigger?.kill()
+        tween.kill()
+    }
+  }, [])
 
   return (
     <>

@@ -8,6 +8,7 @@ import portfolio2Img from "./assets/hero-portfolio-2.png";
 import portfolio3Img from "./assets/hero-portfolio-3.png";
 import portfolio4Img from "./assets/hero-portfolio-4.png";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
+import Line from "./Line";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -196,7 +197,7 @@ const Awards = () => {
       className="relative w-screen bg-[#070707] text-white py-[7vw]"
       id="awards"
     >
-      <div className="w-screen flex items-center px-[4vw] gap-[4vw] overflow-hidden max-[1025px]:px-[5vw]">
+      <div className="w-screen flex items-center px-[4vw] gap-[4vw]  max-[1025px]:px-[5vw]">
         <div className="w-full">
           <OverflowTextReveal stagger={0.015}>
             <h2 className="text-[5.5vw] leading-[1.2]  mb-[4vw] max-[1025px]:text-[7vw] max-md:text-[9vw]">
@@ -221,8 +222,10 @@ const Awards = () => {
                     ref={(el) => {
                       lineRefs.current[i - 1] = el;
                     }}
-                    className="absolute top-0 left-0 h-px w-full bg-white/40 origin-left scale-x-0"
-                  />
+                    className="absolute top-0 left-0 h-px w-full origin-left scale-x-0"
+                  >
+                    <Line strokeColor="rgba(255, 255, 255, 0.4)" />
+                  </div>
                 )}
                 <OverflowTextReveal splitBy="lines">
 
@@ -243,8 +246,10 @@ const Awards = () => {
                 ref={(el) => {
                   lineRefs.current[AWARD_ITEMS.length - 1] = el;
                 }}
-                className="absolute top-0 left-0 h-px w-full bg-white/40 origin-left scale-x-0"
-              />
+                className="absolute top-0 left-0 h-px w-full origin-left scale-x-0"
+              >
+                <Line strokeColor="rgba(255, 255, 255, 0.4)" />
+              </div>
             </div>
           </div>
         </div>

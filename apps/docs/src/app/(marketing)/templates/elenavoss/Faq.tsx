@@ -42,9 +42,28 @@ const FAQ_ITEMS: FaqItem[] = [
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(0);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     const rows = rowRefs.current.filter(Boolean) as HTMLDivElement[];
+
+    // Rows start at opacity-0 (static class, see below) purely to prevent
+    // a FOUC before this effect runs - under reduced motion there's no
+    // fade-in to wait for, so they need to be snapped visible immediately
+    // instead of staying permanently invisible.
+    if (prefersReducedMotion) {
+      gsap.set(rows, { opacity: 1, y: 0 });
+      return;
+    }
+
     const tweens = rows.map((row) =>
       gsap.fromTo(
         row,
@@ -67,7 +86,7 @@ const Faq = () => {
       tweens.forEach((tween) => tween.scrollTrigger?.kill());
       tweens.forEach((tween) => tween.kill());
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <section className="w-screen py-[6vw] px-[10vw] relative bg-[#070707] text-white max-[1025px]:px-[5vw]">

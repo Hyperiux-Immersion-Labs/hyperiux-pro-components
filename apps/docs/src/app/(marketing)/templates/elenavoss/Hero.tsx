@@ -5,7 +5,7 @@ import portfolio1Img from './assets/hero-portfolio-1.png'
 import portfolio3Img from './assets/hero-portfolio-3.png'
 import portfolio2Img from './assets/hero-portfolio-2.png'
 import portfolio4Img from './assets/hero-portfolio-4.png'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/dist/ScrollTrigger'
 import { useLenis } from 'lenis/react'
@@ -24,17 +24,17 @@ const MASK_REVEAL_END = 125
 // one instead of a slow ramp-up that reads as "delayed".
 const IMAGE_REVEAL_DURATION = 3.5
 
-// Intro sequence order: image starts immediately on mount -> h1 starts
-// H1_START_OFFSET seconds after mount, landing HOW_EARLY_H1_STARTS seconds
-// before the image's own reveal finishes (both durations are fixed
-// constants we control, so this is a plain precomputed delay, not a
-// runtime callback) -> side paragraphs start once h1's reveal completes
-// (genuinely dynamic - h1's total duration depends on its real char count
-// via SplitText, so THIS transition uses OverflowTextReveal's onComplete
-// rather than a guessed number) -> header starts once the side paragraphs
-// complete, synced up right after.
+// Intro sequence: a single gsap.timeline() (see the mount effect below)
+// schedules every stage as a fixed offset in seconds from timeline start
+// (image reveal begins at 0) instead of chaining each stage off the
+// previous one's onComplete. All four offsets below are just playback
+// positions on that timeline - retune any of them directly to taste.
 const HOW_EARLY_H1_STARTS = 2.5
 const H1_START_OFFSET = Math.max(IMAGE_REVEAL_DURATION - HOW_EARLY_H1_STARTS, 0)
+// Side paragraphs start this many seconds after the h1 starts revealing.
+const SIDE_TEXT_START_OFFSET = H1_START_OFFSET + 0.5
+// Header/logo fade in this many seconds after the side paragraphs start.
+const HEADER_START_OFFSET = SIDE_TEXT_START_OFFSET + 0.3
 
 // Cursor parallax: the portrait (closer/bigger, reads as "foreground")
 // drifts further than the text (reads as "further back"), same direction,
@@ -73,11 +73,10 @@ const Hero = () => {
     const [startSideText, setStartSideText] = useState(false)
     const lenis = useLenis()
     // useLenis() returns undefined for the first render or two, then the
-    // real instance - read through a ref so handleTextRevealComplete's
-    // identity never changes. It's passed as OverflowTextReveal's onComplete
-    // prop, which sits in that component's own effect dependency array;
-    // a changing reference there tore down and rebuilt the SplitText
-    // char-reveal mid-animation (the reported "glitch" on reload).
+    // real instance - read through a ref inside the intro timeline's header
+    // stage (below) instead of closing over `lenis` directly, since that
+    // effect only runs once on mount and would otherwise capture the stale
+    // undefined value.
     const lenisRef = useRef(lenis)
     useEffect(() => {
         lenisRef.current = lenis
@@ -113,10 +112,11 @@ const Hero = () => {
         lenis?.stop()
     }, [lenis])
 
-    // Image is the first mover: starts unmasking immediately on mount, and
-    // schedules h1's start (a plain precomputed delay - see H1_START_OFFSET)
-    // without waiting on any callback, since both durations involved are
-    // fixed constants.
+    // One master timeline drives the whole intro: image reveal starts at 0,
+    // then h1/side-text/header are each fired at a fixed offset (see the
+    // constants above) via .call() rather than waiting on the previous
+    // stage's onComplete - retune the offsets directly if a stage should
+    // start earlier/later relative to the others.
     useEffect(() => {
         if (introPlayedRef.current) return
         introPlayedRef.current = true
@@ -137,36 +137,28 @@ const Hero = () => {
                 { opacity: 1, duration: 1.5, ease: 'power2.out' },
                 0
             )
+            .call(() => setStartH1(true), undefined, H1_START_OFFSET)
+            .call(() => setStartSideText(true), undefined, SIDE_TEXT_START_OFFSET)
+            .call(() => {
+                const headerEl = document.getElementById('header')
+                // Header.tsx splits its logo into a separate #header-logo
+                // element (its own fixed+blend layer, kept outside header's
+                // stacking context so mix-blend-difference can reach the
+                // Hero content behind it) - it has to be driven through the
+                // same intro tween as #header or it'd pop in out of sync.
+                const headerLogoEl = document.getElementById('header-logo')
 
-        gsap.delayedCall(H1_START_OFFSET, () => setStartH1(true))
-    }, [])
-
-    // h1 finishing is genuinely dynamic (depends on its real char count via
-    // SplitText), so its own onComplete - not a guessed delay - is what
-    // starts the side paragraphs.
-    const handleH1Complete = useCallback(() => {
-        setStartSideText(true)
-    }, [])
-
-    // Same reasoning for the side paragraphs -> header. Targets are
-    // resolved to a real element (not a string selector) because this runs
-    // as a tween-completion callback originating from inside
-    // OverflowTextReveal's gsap.context(fn, containerRef) - GSAP scopes
-    // selector-text resolution to that container while the context is
-    // active, so '#header' would silently fail to match.
-    const handleSideTextComplete = useCallback(() => {
-        const headerEl = document.getElementById('header')
-
-        gsap.fromTo(headerEl,
-            { yPercent: -50, opacity: 0 },
-            {
-                yPercent: 0,
-                opacity: 1,
-                duration: 0.8,
-                ease: 'power3.out',
-                onComplete: () => lenisRef.current?.start(),
-            }
-        )
+                gsap.fromTo([headerEl, headerLogoEl],
+                    { yPercent: -50, opacity: 0 },
+                    {
+                        yPercent: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        ease: 'power3.out',
+                        onComplete: () => lenisRef.current?.start(),
+                    }
+                )
+            }, undefined, HEADER_START_OFFSET)
     }, [])
 
     // Ref-targeted (not string selectors) and mount-only (empty deps, with
@@ -247,7 +239,7 @@ const Hero = () => {
             >
                 <div ref={heroTextRef} className='w-full h-fit flex justify-between max-[1025px]:flex-col max-[1025px]:gap-8'>
                     <div className=' w-[45%] leading-30! max-[1025px]:w-[62%] max-md:w-full'>
-                    <OverflowTextReveal stagger={0.015} start={startH1} onComplete={handleH1Complete}>
+                    <OverflowTextReveal stagger={0.015} start={startH1}>
                     <h1 className='text-[7.5vw] max-[1025px]:text-[12vw]  max-md:text-[15vw] leading-[1.1]!'>
                         Visualise
                         Your Mind
@@ -257,7 +249,7 @@ const Hero = () => {
 
                     </div>
                     <div className='w-[10%] flex flex-col justify-between text-end text-[1.25vw] leading-[1.15] py-[2vw] max-[1025px]:w-[40%] max-[1025px]:text-[3.5vw] max-[1025px]:text-start max-[1025px]:flex-col-reverse  max-md:text-[4.5vw] max-md:gap-[7vw] max-[1025px]:gap-20 max-md:py-0'>
-                        <OverflowTextReveal splitBy='lines' start={startSideText} onComplete={handleSideTextComplete}>
+                        <OverflowTextReveal splitBy='lines' start={startSideText}>
                         <p>
                             Award winning Designs
                         </p>
@@ -278,7 +270,7 @@ const Hero = () => {
                 </div>
                 <div ref={imgRevealRef} className='absolute bottom-[-64%] left-1/2 translate-x-[-49.5%] size-[180%] max-[1025px]:w-full max-[1025px]:translate-x-[-40%] max-md:w-[160%] max-md:top-auto max-md:bottom-[-30%] max-md:h-auto max-md:translate-x-[-40%] hero-av-img hero-mask-reveal opacity-0'>
                     <div ref={heroAvImgRef} className='w-full h-full'>
-                        <Image src={elenavossHeroImg} alt='hero-img' className='w-full h-full object-contain' />
+                        <Image src={elenavossHeroImg} alt='hero-img' className='w-full h-full object-contain' priority />
                     </div>
                 </div>
 

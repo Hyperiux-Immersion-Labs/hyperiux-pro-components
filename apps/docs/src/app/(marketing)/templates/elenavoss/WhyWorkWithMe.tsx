@@ -1,5 +1,5 @@
 "use client";
-import  { useEffect, useRef } from "react";
+import  { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Rocket, Sparkles, Zap } from "lucide-react";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
@@ -29,6 +29,15 @@ const REASONS = [
 
 const WhyWorkWithMe = () => {
   const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     gsap.set(lineRefs.current, { scaleX: 0, transformOrigin: "left center" });
@@ -51,7 +60,12 @@ const WhyWorkWithMe = () => {
   };
 
   useEffect(() => {
-    gsap.from(".work-card", {
+    if (prefersReducedMotion) {
+      gsap.set(".work-card", { opacity: 1, yPercent: 0 });
+      return;
+    }
+
+    const tween = gsap.from(".work-card", {
       opacity: 0,
       yPercent: 10,
       stagger: 0.05,
@@ -61,7 +75,12 @@ const WhyWorkWithMe = () => {
         start: "top top",
       },
     });
-  });
+
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
+  }, [prefersReducedMotion]);
 
   return (
     <section

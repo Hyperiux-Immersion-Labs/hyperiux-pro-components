@@ -15,6 +15,20 @@ const Header = () => {
   const headerRef = useRef<HTMLElement | null>(null);
   const lastScrollYRef = useRef(0);
   const hiddenRef = useRef(false);
+  // A ref (not state) since this is only read inside the scroll handler
+  // below, not rendered - a live-changing media query shouldn't force a
+  // re-render just to update it.
+  const prefersReducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    prefersReducedMotionRef.current = mq.matches;
+    const onChange = (e: MediaQueryListEvent) => {
+      prefersReducedMotionRef.current = e.matches;
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     // Hero.tsx's own intro reveal also animates this element's yPercent
@@ -28,13 +42,20 @@ const Header = () => {
       const currentY = window.scrollY;
       setScrolled(currentY > window.innerHeight * SCROLL_BLUR_THRESHOLD_RATIO);
 
-      const delta = currentY - lastScrollYRef.current;
-      if (delta > 0 && currentY > 0 && !hiddenRef.current) {
-        hiddenRef.current = true;
-        gsap.to(headerRef.current, { yPercent: -100, duration: HEADER_HIDE_DURATION, ease: "power3.out" });
-      } else if (delta < 0 && hiddenRef.current) {
-        hiddenRef.current = false;
-        gsap.to(headerRef.current, { yPercent: 0, duration: HEADER_HIDE_DURATION, ease: "power3.out" });
+      // The hide-on-scroll-down/show-on-scroll-up slide is skipped under
+      // reduced motion - the header just stays put. The backdrop-blur
+      // toggle above is left alone: it's a filter amount, not a moving
+      // element, so it isn't the kind of motion reduced-motion guards
+      // against.
+      if (!prefersReducedMotionRef.current) {
+        const delta = currentY - lastScrollYRef.current;
+        if (delta > 0 && currentY > 0 && !hiddenRef.current) {
+          hiddenRef.current = true;
+          gsap.to(headerRef.current, { yPercent: -100, duration: HEADER_HIDE_DURATION, ease: "power3.out" });
+        } else if (delta < 0 && hiddenRef.current) {
+          hiddenRef.current = false;
+          gsap.to(headerRef.current, { yPercent: 0, duration: HEADER_HIDE_DURATION, ease: "power3.out" });
+        }
       }
       lastScrollYRef.current = currentY;
     };
@@ -52,7 +73,7 @@ const Header = () => {
         }`}
         id="header"
       >
-        <div>
+        <div className="">
           <Image
             src={ElenaVossLogo}
             width={338}

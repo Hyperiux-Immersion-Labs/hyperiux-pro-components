@@ -71,8 +71,10 @@ const Services = () => {
 
   useEffect(() => {
    if (prefersReducedMotionRef.current) return;
+
+   let tween: gsap.core.Tween;
    if(globalThis.innerWidth>1025){
-       gsap.fromTo(
+       tween = gsap.fromTo(
          rowRef.current,
          { xPercent: 70 },
          {
@@ -89,7 +91,7 @@ const Services = () => {
        );
    }
    else if(globalThis.innerWidth<1025 && globalThis.innerWidth>541){
-    gsap.fromTo(
+    tween = gsap.fromTo(
          rowRef.current,
          { xPercent: 50 },
          {
@@ -106,7 +108,7 @@ const Services = () => {
        );
    }
    else{
-       gsap.fromTo(
+       tween = gsap.fromTo(
          rowRef.current,
          { xPercent: 50 },
          {
@@ -122,6 +124,11 @@ const Services = () => {
          },
        );
    }
+
+   return () => {
+     tween.scrollTrigger?.kill();
+     tween.kill();
+   };
   }, []);
 
   const handleActivate = (index: number) => {
@@ -187,8 +194,8 @@ const Services = () => {
                 onMouseEnter={() => handleActivate(index)}
                 className={
                   prefersReducedMotion
-                    ? "relative rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden min-h-[22vw] max-[1025px]:min-h-[32vw] max-[1025px]:p-[3vw] max-md:min-h-0 max-md:p-[5vw]"
-                    : "relative w-[27vw] h-[30vw] shrink-0 rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden max-[1025px]:w-[55vw] max-[1025px]:h-[65vw] max-[1025px]:p-[3vw] max-md:w-[75vw] max-md:h-[85vw] max-md:p-[5vw]"
+                    ? "relative rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden min-h-[22vw] max-[1025px]:min-h-[32vw] max-[1025px]:p-[3vw] max-md:min-h-0 max-md:p-[5vw] border border-white/20"
+                    : "relative w-[27vw] h-[30vw] shrink-0 rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden max-[1025px]:w-[55vw] max-[1025px]:h-[65vw] max-[1025px]:p-[3vw] max-md:w-[75vw] max-md:h-[85vw] max-md:p-[5vw]  border border-white/20 "
                 }
               >
                 <div

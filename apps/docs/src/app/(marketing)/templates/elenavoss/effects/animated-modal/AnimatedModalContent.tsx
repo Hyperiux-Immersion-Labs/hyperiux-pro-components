@@ -127,7 +127,7 @@ const AnimatedModalContent = ({
         type="button"
         aria-label="Close modal"
         onClick={closeOnBackdrop ? onClose : undefined}
-        className="absolute inset-0 cursor-pointer border-0  bg-black/10"
+        className="absolute inset-0 cursor-pointer border-0 backdrop-blur-lg bg-black/10"
       />
 
       {showCloseButton && (
@@ -163,7 +163,17 @@ const AnimatedModalContent = ({
         </button>
       )}
 
+      {/* This wrapper only exists to center the card and spans the full
+          viewport doing so - sitting above the backdrop button (z-1 vs its
+          implicit z-0), it silently absorbs clicks in the empty space
+          around the card before they'd ever reach that button. Checking
+          e.target === e.currentTarget (click landed on the wrapper itself,
+          not bubbled up from the card/form inside it) makes clicking
+          anywhere outside the actual content close the modal too. */}
       <div
+        onClick={(e) => {
+          if (closeOnBackdrop && e.target === e.currentTarget) onClose?.();
+        }}
         className={`
           relative z-1
           flex h-screen w-screen items-center

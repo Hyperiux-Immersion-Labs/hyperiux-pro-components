@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Hero from "./Hero";
 import Portfolio from "./Portfolio";
 import WhyWorkWithMe from "./WhyWorkWithMe";
@@ -13,10 +14,19 @@ import SectionBreak from "./SectionBreak";
 import Clients from "./Clients";
 import { GetInTouchModalProvider } from "./GetInTouchModal";
 
-export const metadata = {
-  title: "Elena Voss - Creative Web Designer Portfolio Template",
-  description:
-    "A single-page portfolio template for creative web designers - award-winning work, services, testimonials, and client showcase, built with GSAP scroll animations.",
+const TITLE = "Elena Voss - Creative Web Designer Portfolio Template";
+const DESCRIPTION =
+  "A single-page portfolio template for creative web designers - award-winning work, services, testimonials, and client showcase, built with GSAP scroll animations.";
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    // TODO: replace with the real hosted OG image URL (1200x630 recommended).
+    images: ["/templates/elenavoss/og-image.png"],
+  },
 };
 
 const page = () => {
