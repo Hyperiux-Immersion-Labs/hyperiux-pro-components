@@ -5,7 +5,6 @@ import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import showcasePoster from "./assets/video-poster.webp";
-import { prefersReducedMotion } from "./reducedMotion";
 import MaskTextReveal from "@/components/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 gsap.registerPlugin(ScrollTrigger);
@@ -34,8 +33,6 @@ const ShowCase = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -65,11 +62,6 @@ const ShowCase = () => {
   }, [videoLoaded]);
 
   useEffect(() => {
-    if (prefersReducedMotion()) {
-      gsap.set(".inner-detail", { opacity: 1 });
-      return;
-    }
-
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
         const tl = gsap.timeline({

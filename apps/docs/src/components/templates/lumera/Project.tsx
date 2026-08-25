@@ -11,7 +11,6 @@ import BlackButton from "./BlackButton";
 import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselComp";
 import refinement1 from "./assets/refinement-1.png";
 import refinement2 from "./assets/refinement-2.png";
-import { prefersReducedMotion } from "./reducedMotion";
 import MaskTextReveal from "@/components/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
@@ -28,11 +27,6 @@ const interiorImages = [
 
 export default function Project() {
   useEffect(() => {
-    if (prefersReducedMotion()) {
-      document.body.style.backgroundColor = "#ffffff";
-      return;
-    }
-
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
         const body = document.body;
@@ -59,7 +53,7 @@ export default function Project() {
   return (
     <section
       id="project"
-      className="w-screen overflow-hidden  pt-[8%] pb-[12%] text-[#1c1b1a] max-md:pt-[20%] max-md:pb-[16%] max-[1025px]:py-[10%]"
+      className="w-screen overflow-hidden pt-[8%] pb-[12%] text-[#1c1b1a] max-md:pt-[20%] max-md:pb-[16%] max-[1025px]:py-[10%]"
     >
       <div className="px-[5%]">
         <MaskTextReveal>

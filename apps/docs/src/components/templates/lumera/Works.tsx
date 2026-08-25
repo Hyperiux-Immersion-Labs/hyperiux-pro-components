@@ -13,7 +13,6 @@ import architecture5 from "./assets/architecture-5.png";
 import squareIcon from "./assets/icons/square.svg";
 import ParallaxImageAnimation from "./VaultComp/ParallaxImageAnimation";
 import Image from "next/image";
-import { prefersReducedMotion } from "./reducedMotion";
 import MaskTextReveal from "./VaultComp/mask-text-reveal";
 gsap.registerPlugin(ScrollTrigger);
 
@@ -104,11 +103,6 @@ const Works = () => {
   }, []);
 
   useEffect(() => {
-    if (prefersReducedMotion()) {
-      document.body.style.backgroundColor = "#1C1B1A";
-      return;
-    }
-
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
         const body = document.body;
@@ -170,8 +164,6 @@ const Works = () => {
   }, []);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-
     const ctx = gsap.context(() => {
       const imagePin = document.getElementById("work-bg-icon");
       const triggerSection = document.getElementById("works");

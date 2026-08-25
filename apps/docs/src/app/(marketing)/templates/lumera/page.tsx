@@ -45,10 +45,10 @@ export default function Page() {
       <ScrollTopOnLoad />
       <LenisSmoothScroll />
       <Header />
-      {/* <Hero />
+      <Hero />
       <About />
       <HorizontalFeatureRevealSection />
-      <Service /> */}
+      <Service />
       <Works />
       <Project />
       <ShowCase />
