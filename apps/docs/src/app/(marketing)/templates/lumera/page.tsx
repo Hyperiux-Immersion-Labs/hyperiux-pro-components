@@ -3,6 +3,7 @@ import "@/components/templates/lumera/lumera-styles.css";
 import type { Metadata } from "next";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import ScrollTopOnLoad from "@/components/templates/lumera/ScrollTopOnLoad";
+import Loader from "@/components/templates/lumera/Loader";
 import ogImage from "@/components/templates/lumera/assets/og.png";
 import Header from "@/components/templates/lumera/Header";
 import Hero from "@/components/templates/lumera/Hero";
@@ -43,6 +44,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div className="relative">
+      <Loader />
       <ScrollTopOnLoad />
       <LenisSmoothScroll />
       <Header />

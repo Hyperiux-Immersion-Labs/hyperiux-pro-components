@@ -28,6 +28,7 @@ import project42 from "../assets/project-4.2.png";
 import project43 from "../assets/project-4.3.png";
 import project44 from "../assets/project-4.4.png";
 import CharStaggerButton from "./char-stagger-button";
+import { FadeUp } from "../gsapAnimations";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
