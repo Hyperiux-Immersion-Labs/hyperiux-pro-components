@@ -78,7 +78,7 @@ export default function Service() {
                 {services.map((service, index) => (
                   <div
                     key={index}
-                    className="group w-[20%] flex rounded-[24px] overflow-hidden items-start [clip-path:polygon(0_0,100%_0,100%_100%,0%_100%)] p-[1vw] no-underline transition-all duration-350 ease-in-out relative hover:w-[50%] focus:w-[50%] max-[1025px]:w-full max-[1025px]:hover:w-full max-[1025px]:focus:w-full max-md:w-full max-md:hover:w-full max-md:focus:w-full max-[1025px]:h-[50vh] max-[1025px]:p-[4vw]"
+                    className="group w-[20%] flex rounded-[24px] h-[65vh] overflow-hidden items-start [clip-path:polygon(0_0,100%_0,100%_100%,0%_100%)] p-[1vw] no-underline transition-all duration-350 ease-in-out relative hover:w-[50%] focus:w-[50%] max-[1025px]:w-full max-[1025px]:hover:w-full max-[1025px]:focus:w-full max-md:w-full max-md:hover:w-full max-md:focus:w-full max-[1025px]:h-[50vh] max-[1025px]:p-[4vw]"
                   >
                     <Image
                       fill

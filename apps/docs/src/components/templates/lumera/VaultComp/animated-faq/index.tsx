@@ -80,7 +80,7 @@ export default function AnimatedFaq() {
     .map((item) => item.id);
 
   return (
-    <section className="py-[7%] max-md:pt-[20%]" id="faq">
+    <section className="py-[5%] max-md:pt-[20%]" id="faq">
       <div className="w-full ml-auto max-md:w-full max-[1025px]:w-full px-[5%] max-md:px-[6%]">
         <MaskTextReveal>
 

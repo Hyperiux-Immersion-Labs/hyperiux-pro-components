@@ -21,7 +21,9 @@ const ProjectHover = () => {
           <div className="w-[90%] flex flex-col">
            
 
-           
+           <FadeUp>
+
+          
             {/* First Project */}
             <div className="text-center group" id="p1">
               <div className="flex w-fit mx-auto items-center justify-center mb-[2.8vw] relative gap-[1.5vw]">
@@ -34,8 +36,11 @@ const ProjectHover = () => {
               </div>
               <span data-line-draw className="w-full block h-px bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
             </div>
+             </FadeUp>
 
+      <FadeUp>
 
+      
             {/* Second Project */}
             <div className="text-center group" id="p2">
               <div className="flex items-center justify-center mt-[3.5vw] mb-[2.8vw] relative gap-[1.5vw]">
@@ -51,6 +56,11 @@ const ProjectHover = () => {
               </div>
               <span data-line-draw className="w-full block h-px bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
             </div>
+            </FadeUp>
+
+            <FadeUp>
+
+           
 
             {/* Third Project */}
             <div className="text-center group" id="p3">
@@ -67,6 +77,7 @@ const ProjectHover = () => {
               </div>
               <span data-line-draw className="w-full block h-px  bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
             </div>
+             </FadeUp>
           </div>
 
         </div>

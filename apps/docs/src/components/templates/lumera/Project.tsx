@@ -84,7 +84,7 @@ export default function Project() {
 
           <p
             data-para-anim
-            className="max-w-[38vw] text-[1.25vw] leading-[1.75] tracking-[-0.02em] text-black/85 max-[1025px]:max-w-full max-[1025px]:text-[2.5vw] max-md:text-[4.6vw]"
+            className="max-w-[38vw] text-[1.25vw] leading-[1.75] tracking-[-0.02em] text-[#1C1B1A] max-[1025px]:max-w-full max-[1025px]:text-[2.5vw] max-md:text-[4.6vw]"
             >
             Immerse yourself in the stylish allure of Lumera Heights, where every
             corner exudes sophistication. This is not just a residence, it&apos;s a

@@ -206,7 +206,7 @@ const Works = () => {
           <div className="w-full h-full flex-col mt-[10vw] relative z-2 max-md:mt-[20vw]">
             <div className="flex w-full h-full justify-between max-md:flex-col max-md:gap-[10vw]">
               <div
-                className="w-[37vw] h-full flex flex-col gap-[2vw] max-md:w-full max-md:gap-[7vw] max-[1025px]:w-[70vw]"
+                className="w-[40vw] h-full flex flex-col gap-[2vw] max-md:w-full max-md:gap-[7vw] max-[1025px]:w-[70vw]"
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "0.1"}
               >
@@ -218,7 +218,7 @@ const Works = () => {
                     wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                     imageClassName="scale-[1.5] -translate-y-[15%]"
                   />
-                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[10vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
+                  <div className={` w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[10vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                     Living Room
                     <div className="w-full h-full flex flex-col gap-[1.5vw] mt-[0.5vw]">
                       <WorkCardMeta />
@@ -229,14 +229,14 @@ const Works = () => {
 
                 <MaskTextReveal>
 
-                <p data-para-anim className=" text-white max-md:text-[3.5vw] text-[1.25vw] tracking-wide">
+                <p data-para-anim className=" text-white w-[38vw] mt-[2vw] max-md:text-[3.5vw] text-[1.25vw] tracking-wide">
                   Every residence is thoughtfully crafted around light, proportion, and timeless materials. From expansive living spaces to serene private retreats, each detail creates an atmosphere of effortless sophistication above it.
                 </p>
                 </MaskTextReveal>
               </div>
 
               <div
-                className="w-[25vw] h-fit relative mr-[8%] mt-[40%] z-4 max-md:mt-auto max-md:mr-auto max-[1025px]:mt-[80%] max-[1025px]:w-[35vw] "
+                className="w-[25vw] h-fit relative mr-[6%] mt-[40%] z-4 max-md:mt-auto max-md:mr-auto max-[1025px]:mt-[80%] max-[1025px]:w-[35vw] "
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "-0.1"}
               >
@@ -250,7 +250,7 @@ const Works = () => {
                   />
                   <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[10vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                     Kitchen
-                    <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
+                    <div className="w-full h-full flex flex-col gap-[1.5vw] mt-[0.5vw]">
                       <WorkCardMeta />
                       <WorkCardButton text="View Gallery" />
                     </div>
@@ -273,7 +273,7 @@ const Works = () => {
                 />
                 <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[10vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                   Bedroom
-                  <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
+                  <div className="w-full h-full flex flex-col gap-[1.5vw] mt-[0.5vw]">
                     <WorkCardMeta />
                     <WorkCardButton text="View Gallery" />
                   </div>
@@ -283,7 +283,7 @@ const Works = () => {
            
                
 
-                <p data-para-anim className="w-[75%] text-white text-left text-[1.25vw] max-md:w-full tracking-wide max-md:text-[3.5vw]">
+                <p data-para-anim className="w-[38vw] text-white text-left text-[1.25vw] max-md:w-full tracking-wide max-md:text-[3.5vw]">
                  From bespoke finishes to panoramic city views, every space is designed to elevate the everyday. Warm materials, considered proportions, and refined craftsmanship come together to create residences that feel as exceptional as the city beyond them.
                 </p>
                
@@ -305,14 +305,14 @@ const Works = () => {
                 />
                 <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[10vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                 Bedroom
-                  <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
+                  <div className="w-full h-full flex flex-col gap-[1.5vw] mt-[0.5vw]">
                     <WorkCardMeta />
                     <WorkCardButton text="View Gallery" />
                   </div>
                 </div>
               </div>
               <div
-                className="w-[30vw] h-full flex flex-col gap-[5vw] max-md:mt-[10vw] max-md:w-full max-[1025px]:w-[40vw]"
+                className="w-[30vw] h-full flex flex-col gap-[4.5vw] max-md:mt-[10vw] max-md:w-full max-[1025px]:w-[40vw]"
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "-0.1"}
               >
@@ -324,9 +324,9 @@ const Works = () => {
                     wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                     imageClassName="scale-[1.5] -translate-y-[15%]"
                   />
-                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
+                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[10vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                     Bathroom
-                    <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
+                    <div className="w-full h-full flex flex-col gap-[1.5vw] mt-[0.5vw]">
                       <WorkCardMeta />
                       <WorkCardButton text="View Gallery" />
                     </div>
@@ -334,7 +334,7 @@ const Works = () => {
                 </div>
                 <MaskTextReveal>
 
-                <p data-para-anim className="text-white text-[1.25vw] tracking-wide max-md:text-[3.5vw]">
+                <p data-para-anim className="text-white text-[1.25vw] tracking-wide max-md:text-[3.5vw] ">
                  Thoughtful interiors, refined materials, and breathtaking views come together in spaces designed for modern living at its highest level.
                 </p>
                 </MaskTextReveal>
@@ -342,13 +342,13 @@ const Works = () => {
             </div>
           </div>
           <div
-            className="w-full h-full absolute top-[10%] left-0 right-0 work-bg-icon"
+            className="w-full h-full absolute top-[10%] left-0  right-0 work-bg-icon"
             id="work-bg-icon"
           >
-            <div className="w-full h-[50vw] relative flex items-center justify-center max-md:h-[90vw]">
+            <div className="w-full h-[50vw] pb-6 relative flex items-center justify-center max-md:h-[90vw]">
               <h2
                 id="work-bg-title"
-                className="w-[60vw] text-center text-white text-[10vw] leading-[1.2] max-md:w-[90vw]"
+                className="w-[60vw] text-center font-medium text-white text-[14vw] leading-[1.2] max-md:w-[90vw]"
               >
                 LUMERA HEIGHTS
               </h2>

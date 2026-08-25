@@ -26,7 +26,7 @@ const CTA = () => {
 
           <h2
             data-para-anim
-            className=" font-medium font-heading text-[3.8vw] leading-[1.15] max-[1025px]:text-[5vw] max-md:text-[6.8vw] "
+            className=" font-medium font-heading text-[3.8vw] leading-[1.15] text-[#1C1B1A] max-[1025px]:text-[5vw] max-md:text-[6.8vw] "
             >
             Some Properties Need to be Experienced in Person
           </h2>
@@ -36,7 +36,7 @@ const CTA = () => {
 
           <p
             data-para-anim
-            className=" text-[1.2vw] leading-[1.6] text-black/75 max-md:text-[4.2vw]  max-[1025px]:text-[2.4vw]"
+            className=" text-[1.2vw] leading-[1.6] text-[#1C1B1A] max-md:text-[4.2vw]  max-[1025px]:text-[2.4vw]"
             >
             Tell us what you are looking for and our team will introduce you to residences that fit your lifestyle, priorities and ambitions in Dubai.
           </p>

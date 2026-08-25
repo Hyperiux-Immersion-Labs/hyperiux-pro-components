@@ -369,7 +369,7 @@ export default function HorizontalFeatureRevealSection() {
                     {item.title}
                   </h3>
 
-                  <p className="lumera-residence-copy mt-[3vw] w-[60%] text-[1.25vw] leading-[1.6] text-[#1c1b1a] opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[4vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-copy mt-[3vw] max-w-[38vw] text-[1.25vw] leading-[1.6] text-[#1c1b1a] opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[4vw] max-[1025px]:opacity-100">
                     {item.description}
                   </p>
 
@@ -377,8 +377,8 @@ export default function HorizontalFeatureRevealSection() {
                     {item.stats.map((stat, index) => (
                       <div
                         key={`${item.number}-${stat.label}`}
-                        className={`lumera-residence-stat relative py-[0.95vw] opacity-0 max-[1025px]:py-[4vw] max-[1025px]:opacity-100 ${
-                          index === 0 ? "pr-[2vw]" : "pl-[2vw] pr-[2vw]"
+                        className={`lumera-residence-stat w-[14vw] relative py-[0.95vw] opacity-0 max-[1025px]:py-[4vw] max-[1025px]:opacity-100 ${
+                          index === 0 ? "pr-[2vw]" : "pl-[2vw] pr-[1.2vw]"
                         } ${
                           index === item.stats.length - 1 ? "pr-0" : ""
                         } max-[1025px]:px-0`}
@@ -392,7 +392,7 @@ export default function HorizontalFeatureRevealSection() {
                         <p className="text-[1.45vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[5vw]">
                           {stat.value}
                         </p>
-                        <p className="mt-[0.8vw] text-[1.25vw] text-[#1c1b1a] max-[1025px]:mt-[1.8vw] max-[1025px]:text-[3.2vw]">
+                        <p className="mt-[0.8vw] text-[1.25vw] text-black max-[1025px]:mt-[1.8vw] max-[1025px]:text-[3.2vw]">
                           {stat.label}
                         </p>
                       </div>

@@ -1,6 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import "@/components/templates/lumera/globals.css";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
+import ScrollTopOnLoad from "@/components/templates/lumera/ScrollTopOnLoad";
 import ogImage from "@/components/templates/lumera/assets/og.png";
 import Header from "@/components/templates/lumera/Header";
 import Hero from "@/components/templates/lumera/Hero";
@@ -41,12 +42,13 @@ export const metadata = {
 export default function Page() {
   return (
     <div className="relative">
+      <ScrollTopOnLoad />
       <LenisSmoothScroll />
       <Header />
-      <Hero />
+      {/* <Hero />
       <About />
       <HorizontalFeatureRevealSection />
-      <Service />
+      <Service /> */}
       <Works />
       <Project />
       <ShowCase />

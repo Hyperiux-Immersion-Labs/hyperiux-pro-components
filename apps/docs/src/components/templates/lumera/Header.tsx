@@ -89,13 +89,13 @@ const Header: React.FC = () => {
               onClick={(event) => handleNavScroll(event, link.target)}
               hoverColor="#ffffff"
               className="text-white/90"
-              textClassName="font-body text-[1.2vw] tracking-wide"
+              textClassName="font-body text-[1.15vw] tracking-wide"
             />
           ))}
         </nav>
 
         <div className="max-[1025px]:hidden ">
-          <PrimaryButton link="#footer" btnText="Enquire Now" className="min-w-0! w-50" />
+          <PrimaryButton link="#footer" btnText="Enquire Now" className="min-w-0! w-50 font-normal!"  />
         </div>
 
         <button

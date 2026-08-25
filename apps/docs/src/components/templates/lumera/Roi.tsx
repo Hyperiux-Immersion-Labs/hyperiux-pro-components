@@ -32,11 +32,11 @@ const Roi = () => {
           <FadeUp>
 
          
-          <div className="flex flex-wrap gap-[4vw] fadeup max-md:gap-[5vw] max-[1025px]:gap-[2.5vw]">
+          <div className="flex flex-wrap gap-[3.5vw] fadeup max-md:gap-[5vw] max-[1025px]:gap-[2.5vw]">
             {roiStats.map((stat) => (
               <div
                 key={stat.label}
-                className="flex flex-col max-[1025px]:w-[45%] mx-auto items-center justify-center gap-[0.4vw] rounded-full max-[1025px]:rounded-lg max-[1025px]:px-2 border border-[#ca8216] px-[4vw] py-[2.2vw] text-center max-md:px-[7vw] max-md:py-[5vw] max-md:gap-[2vw]  max-[1025px]:py-[3vw]"
+                className="flex flex-col max-[1025px]:w-[45%] mx-auto items-center justify-center gap-[0.4vw] rounded-full max-[1025px]:rounded-lg max-[1025px]:px-2 border border-[#ca8216] px-[5vw] py-[2.2vw] text-center max-md:px-[7vw] max-md:py-[5vw] max-md:gap-[2vw]  max-[1025px]:py-[3vw]"
               >
                 <p className="flex items-end justify-center gap-[0.15em] font-heading font-medium text-[2.5vw] leading-none text-[#1c1b1a] max-md:text-[5vw] max-[1025px]:text-[3.2vw]">
                   <span>{stat.value}</span>

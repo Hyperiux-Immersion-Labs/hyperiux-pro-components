@@ -59,7 +59,8 @@ export function lineDraw() {
       gsap.from(element, {
         scrollTrigger: {
           trigger: element,
-          start: "top 85%",
+          start: "top 65%",
+          // markers:true,
         },
         scaleX: 0,
         transformOrigin: "left",

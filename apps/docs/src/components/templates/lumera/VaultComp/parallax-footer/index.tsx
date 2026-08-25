@@ -13,6 +13,7 @@ import facebookIcon from "../../assets/icons/socials/facebook.svg";
 import xIcon from "../../assets/icons/socials/x.svg";
 import instagramIcon from "../../assets/icons/socials/instagram.svg";
 import linkedinIcon from "../../assets/icons/socials/linkedin.svg";
+import CharStaggerButton from "../char-stagger-button";
 
 const socialLinks = [
   { src: facebookIcon, label: "Facebook" },
@@ -71,7 +72,7 @@ const ParallaxFooter = () => {
           </Link>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-3">
+        <div className="flex flex-col items-center justify-center gap-3 text-[#1C1B1A]">
           <Link href="tel:+12125550186" className="font-heading text-[3.4vw] font-medium leading-none max-md:text-[5.5vw] max-[1025px]:text-[5vw]">
             <span data-para-anim>+1 (212) 555-0186</span>
           </Link>
@@ -84,22 +85,21 @@ const ParallaxFooter = () => {
 
         <div className="fadeup flex items-center justify-between pt-[7vw] max-md:gap-[5vw] max-[1025px]:flex-col max-[1025px]:gap-[3vw]">
           <div className="max-[1025px]:order-1 max-[1025px]:w-[70%]">
-            <p className="text-[1vw] uppercase max-md:text-[3.5vw] max-[1025px]:text-center max-[1025px]:text-[2.5vw]">
+            <p className="text-[1vw] text-[#1C1B1A] uppercase max-md:text-[3.5vw] max-[1025px]:text-center max-[1025px]:text-[2.5vw]">
               © 2026. All Rights Reserved
             </p>
           </div>
           <div className="ml-[-5%] w-[35%] max-[1025px]:ml-0 max-[1025px]:w-[80%]">
-            <p className="text-center text-[1vw] leading-[1.2] max-md:text-[3.5vw] max-[1025px]:text-center max-[1025px]:text-[2.5vw]">
+            <p className="text-center text-[#1C1B1A] text-[1vw] leading-[1.2] max-md:text-[3.5vw] max-[1025px]:text-center max-[1025px]:text-[2.5vw]">
               Sheikh Mohammed Bin Rashid Blvd Dubai, United Arab Emirates
             </p>
           </div>
-          <Link href="#" className="max-[1025px]:order-3">
-            <div>
-              <p className="text-[1vw] max-md:text-center max-md:text-[3.2vw] max-[1025px]:text-[2.5vw]">
-                Privacy Policy
-              </p>
-            </div>
-          </Link>
+          <CharStaggerButton
+            href="#"
+            text="Privacy Policy"
+            className="max-[1025px]:order-3 text-[#1C1B1A]"
+            textClassName="text-[1vw] max-md:text-[3.2vw] max-[1025px]:text-[2.5vw]"
+          />
         </div>
       </div>
     </FooterParallax>
