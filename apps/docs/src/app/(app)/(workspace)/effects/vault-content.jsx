@@ -652,16 +652,16 @@ export function VaultContent({
     isEffectsLoading,
   ]);
 
-  const activeCategory = getEffectCategory(categoryFilter);
-
-  const activeCategoryContent =
-    categoryFilter === "all"
-      ? effectsOverviewContent
-      : categoryFilter === "free"
-        ? freeEffectsContent
-        : categoryFilter === "pro"
-          ? proEffectsContent
-          : activeCategory;
+  // Memoized (not just a plain const) so the FAQ-items memo below gets a
+  // dependency the compiler can actually trust as stable across renders -
+  // getEffectCategory()'s return value isn't something it can otherwise
+  // prove is immutable.
+  const activeCategoryContent = useMemo(() => {
+    if (categoryFilter === "all") return effectsOverviewContent;
+    if (categoryFilter === "free") return freeEffectsContent;
+    if (categoryFilter === "pro") return proEffectsContent;
+    return getEffectCategory(categoryFilter);
+  }, [categoryFilter]);
 
   const activeCategoryName = activeCategoryContent?.name || categoryFilter;
 
@@ -681,7 +681,7 @@ export function VaultContent({
         answer: item.answer,
         defaultOpen: index === 0,
       })),
-    [activeCategoryContent?.faqs, categoryFilter]
+    [activeCategoryContent, categoryFilter]
   );
 
   return (
