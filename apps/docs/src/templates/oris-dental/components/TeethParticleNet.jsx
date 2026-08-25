@@ -397,7 +397,7 @@ export default function TeethParticleNet({
     idleDelay = 900,
     retriangulateEvery = 3,
     lift = 0.012,
-    color = '#fff',
+    color = '#D4E2FC',
     fieldSegmentsU = 96,
     fieldSegmentsV = 128,
 }) {
