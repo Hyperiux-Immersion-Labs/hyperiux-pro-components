@@ -21,7 +21,7 @@ const STATS = [
 
 export default function AboutOris() {
   return (
-    <section id='about-oris' className='min-h-screen w-full relative z-10 text-oris-secondary bg-white oris-paddx flex flex-col justify-between py-[6vw]'>
+    <section id='about-oris' className='min-h-screen w-full relative z-10 bg-white oris-paddx flex flex-col justify-between py-[6vw]'>
       {/* Top Section: Subtitle Tag on Left, Main Heading on Right */}
       <div className="flex justify-between items-start w-full">
         {/* Left Subtitle Tag */}

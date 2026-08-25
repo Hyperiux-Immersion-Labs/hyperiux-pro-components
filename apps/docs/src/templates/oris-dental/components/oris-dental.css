@@ -33,7 +33,21 @@
 /* Apply Aeonik font family globally to the template */
 .oris-font,
 #oris-hero,
+#oris-footer,
 #main {
+  font-family:
+    "Aeonik",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+/* globals.css sets font-family directly on h1-h4, which wins over
+   inheritance from #main. Re-assert Aeonik for headings in the template. */
+.oris-font :is(h1, h2, h3, h4, h5, h6),
+#oris-hero :is(h1, h2, h3, h4, h5, h6),
+#oris-footer :is(h1, h2, h3, h4, h5, h6),
+#main :is(h1, h2, h3, h4, h5, h6) {
   font-family:
     "Aeonik",
     system-ui,
@@ -65,7 +79,7 @@
 }
 
 .oris-text32 {
-  font-size: 2vw;
+  font-size: 1.8vw;
 }
 
 .oris-text22 {
@@ -75,6 +89,12 @@
 
 .oris-text64 {
   font-size: 3.7vw;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  font-weight: 500;
+}
+.oris-text48 {
+  font-size: 3vw;
   letter-spacing: -0.01em;
   line-height: 1.15;
   font-weight: 500;

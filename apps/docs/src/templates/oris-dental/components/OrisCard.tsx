@@ -18,9 +18,9 @@ export default function OrisCard({
     className = ""
 }) {
     return (
-        <div className={`w-[30vw] h-[15vw] rounded-[2vw] bg-white p-[2.2vw] flex flex-col justify-between shadow-[0_15px_45px_rgba(0,0,0,0.06)] border border-white/60 relative z-10 ${className}`}>
+        <div className={`w-[30vw] h-fit rounded-[2vw] bg-white p-[2.2vw] flex flex-col justify-between shadow-[0_15px_45px_rgba(0,0,0,0.06)] border border-white/60 relative z-10 ${className}`}>
             {/* Top Text Content */}
-            <div>
+            <div className='mb-[2vw]'>
                 <h3 className="text-oris-secondary oris-text32 font-medium leading-none tracking-tight">
                     {title}
                 </h3>
