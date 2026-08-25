@@ -1,4 +1,6 @@
-import React, { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
 /**
  * Floating-label Input

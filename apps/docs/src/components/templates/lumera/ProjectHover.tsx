@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 import Image from "next/image";
 
 import exp01 from "./assets/exp01.png";
@@ -17,7 +18,7 @@ const ProjectHover = () => {
                   <span className="max-[1025px]:text-[7vw]">25+</span>{" "}Years Of Experience
                 </p>
                 <div className="w-[6vw] absolute right-[-9%] h-[6vw] rtl:right-auto rtl:left-[-20%] top-[-25%] rounded-full overflow-hidden ml-[1.5vw] scale-0 duration-300 ease-out group-hover:scale-100 max-[1025px]:group-hover:scale-0">
-                  <Image src={exp01} alt="Images" width={200} height={200} className="object-cover h-full w-full" />
+                  <Image src={exp01} alt="Lumera Heights architectural detail" width={200} height={200} className="object-cover h-full w-full" />
                 </div>
               </div>
               <span className="w-full block h-px bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
@@ -30,7 +31,7 @@ const ProjectHover = () => {
                   <span className="max-[1025px]:text-[7vw]">50K+</span>{" "}Home
                 </p>{" "}
                 <div className={`w-[6vw] absolute right-[47%] h-[6vw] top-[-10%] rtl:right-auto rtl:left-[35%] overflow-hidden ml-[1.5vw] scale-0 duration-300 ease-out group-hover:scale-100 [clip-path:circle(100%_at_0_100%)] max-[1025px]:hidden`}>
-                  <Image src={exp02} alt="Images" width={250} height={250} className="object-cover h-full w-full" />
+                  <Image src={exp02} alt="Lumera Heights completed home interior" width={250} height={250} className="object-cover h-full w-full" />
                 </div>
                 <p className={`uppercase font-heading text-white group-hover:translate-x-[2.4vw] rtl:group-hover:translate-x-[-4vw] duration-300 text-[4vw] leading-none ease-out max-[1025px]:text-[5vw] max-[1025px]:group-hover:translate-x-0 rtl:max-[1025px]:group-hover:translate-x-0 max-[1025px]:pt-[1vw]`}>
                   Delivered
@@ -46,7 +47,7 @@ const ProjectHover = () => {
                   20+
                 </p>{" "}
                 <div className="w-[12vw] absolute right-[62%] h-[6vw] top-[-15%] rtl:right-auto rtl:left-[48%] overflow-hidden ml-[1.5vw] scale-0 duration-300 ease-out group-hover:scale-100 rounded-xl max-[1025px]:hidden">
-                  <Image src={exp03} alt="Images" width={250} height={250} className="object-cover h-full w-full" />
+                  <Image src={exp03} alt="Lumera Heights luxury project exterior" width={250} height={250} className="object-cover h-full w-full" />
                 </div>
                 <p className={`uppercase font-heading text-white group-hover:translate-x-[5.2vw] rtl:group-hover:translate-x-[-7.5vw] duration-300 text-[4vw] leading-px ease-out max-[1025px]:text-[5vw] max-[1025px]:group-hover:translate-x-0 rtl:max-[1025px]:group-hover:translate-x-0`}>
                   Luxury Projects

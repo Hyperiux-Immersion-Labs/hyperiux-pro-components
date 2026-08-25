@@ -1,5 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -11,6 +13,7 @@ import architecture5 from "./assets/architecture-5.png";
 import squareIcon from "./assets/icons/square.svg";
 import ParallaxImageAnimation from "./VaultComp/ParallaxImageAnimation";
 import Image from "next/image";
+import { prefersReducedMotion } from "./reducedMotion";
 gsap.registerPlugin(ScrollTrigger);
 
 const WORK_BUTTON_CLASS =
@@ -100,6 +103,11 @@ const Works = () => {
   }, []);
 
   useEffect(() => {
+    if (prefersReducedMotion()) {
+      document.body.style.backgroundColor = "#1C1B1A";
+      return;
+    }
+
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
         const body = document.body;
@@ -120,9 +128,11 @@ const Works = () => {
       });
       return () => ctx.revert();
     }
-  });
+  }, []);
 
   useEffect(() => {
+    if (prefersReducedMotion()) return;
+
     const ctx = gsap.context(() => {
       const imagePin = document.getElementById("work-bg-icon");
       const triggerSection = document.getElementById("works");
@@ -137,7 +147,7 @@ const Works = () => {
       });
     });
     return () => ctx.revert();
-  });
+  }, []);
 
   return (
     <>
@@ -180,7 +190,7 @@ const Works = () => {
               </div>
 
               <div
-                className="w-[25vw] h-fit relative mr-[8%] mt-[30%] z-[4] max-md:mt-auto max-md:mr-auto max-[1025px]:mt-[80%] max-[1025px]:w-[35vw] "
+                className="w-[25vw] h-fit relative mr-[8%] mt-[30%] z-4 max-md:mt-auto max-md:mr-auto max-[1025px]:mt-[80%] max-[1025px]:w-[35vw] "
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "-0.1"}
               >
@@ -192,7 +202,7 @@ const Works = () => {
                     wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                     imageClassName="scale-[1.5] -translate-y-[15%]"
                   />
-                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
+                  <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
                     Kitchen
                     <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
                       <WorkCardMeta />
@@ -215,7 +225,7 @@ const Works = () => {
                   wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                   imageClassName="scale-[1.5] -translate-y-[15%]"
                 />
-                <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
+                <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
                   Bedroom
                   <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
                     <WorkCardMeta />
@@ -242,7 +252,7 @@ const Works = () => {
                   wrapperClassName="absolute inset-0 h-full w-full group-hover:scale-[1.1] transition-all ease-in-out duration-500"
                   imageClassName="scale-[1.5] -translate-y-[15%]"
                 />
-                <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-[3] text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
+                <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw]  ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[12vw] transition-all ease-in-out duration-500 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw]`}>
                 Bedroom
                   <div className="w-full h-full flex flex-col gap-[1vw] mt-[1.5vw]">
                     <WorkCardMeta />

@@ -1,9 +1,12 @@
-"use client";
 
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+"use client";
 import { useState } from "react";
 import { type StaticImageData } from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import InfiniteCarouselComp from "./VaultComp/InfiniteCarouselComp";
+import { usePrefersReducedMotion } from "./reducedMotion";
 import portfolio1 from "./assets/portfolio-1.png";
 import portfolio2 from "./assets/portfolio-2.png";
 import portfolio3 from "./assets/portfolio-3.png";
@@ -53,6 +56,7 @@ const CENTER_SLIDE_INDEX = 2;
 
 const About = () => {
   const [activeIndex, setActiveIndex] = useState(CENTER_SLIDE_INDEX);
+  const reducedMotion = usePrefersReducedMotion();
   const activeSlide = aboutSlides[activeIndex] ?? aboutSlides[CENTER_SLIDE_INDEX];
 
   return (
@@ -88,10 +92,10 @@ const About = () => {
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={activeIndex}
-                initial={{ opacity: 0 }}
+                initial={reducedMotion ? false : { opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                exit={reducedMotion ? undefined : { opacity: 0 }}
+                transition={{ duration: reducedMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 <p className={`font-heading text-[2.3vw] leading-[1.2] font-medium max-md:text-[5vw] text-[#1c1b1a] max-[1025px]:text-[5vw]`}>
                   {activeSlide.title}

@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -341,7 +343,7 @@ export default function InfiniteCarouselComp({
             type="button"
             aria-label="Previous slide"
             onClick={() => step(-1)}
-            className="absolute top-1/2 left-[calc(50%-10.5vw)] z-[200] flex size-[3vw] -translate-x-1/2 -translate-y-1/2 items-center border border-white justify-center rounded-full bg-[#A4A4A41A]/10 text-[#1c1b1a] backdrop-blur-sm transition-colors hover:bg-[#A4A4A41A]/20 max-[1024px]:left-[calc(50%-17vw)] max-[1024px]:size-[6vw] max-[640px]:left-[calc(50%-27vw)] max-[640px]:size-[11vw]"
+            className="absolute top-1/2 left-[calc(50%-10.5vw)] z-200 flex size-[3vw] -translate-x-1/2 -translate-y-1/2 items-center border border-white justify-center rounded-full bg-[#A4A4A41A]/10 text-[#1c1b1a] backdrop-blur-sm transition-colors hover:bg-[#A4A4A41A]/20 max-[1024px]:left-[calc(50%-17vw)] max-[1024px]:size-[6vw] max-[640px]:left-[calc(50%-27vw)] max-[640px]:size-[11vw]"
           >
             <svg
               viewBox="0 0 24 24"
@@ -361,7 +363,7 @@ export default function InfiniteCarouselComp({
             type="button"
             aria-label="Next slide"
             onClick={() => step(1)}
-            className="absolute top-1/2 border border-white right-[calc(50%-10.5vw)] z-[200] flex size-[3vw] translate-x-1/2 -translate-y-1/2 backdrop-blur-sm items-center justify-center rounded-full bg-[#A4A4A41A]/10 text-[#1c1b1a]  transition-colors hover:bg-[#A4A4A41A]/20 max-[1024px]:right-[calc(50%-17vw)] max-[1024px]:size-[6vw] max-[640px]:right-[calc(50%-27vw)] max-[640px]:size-[11vw]"
+            className="absolute top-1/2 border border-white right-[calc(50%-10.5vw)] z-200 flex size-[3vw] translate-x-1/2 -translate-y-1/2 backdrop-blur-sm items-center justify-center rounded-full bg-[#A4A4A41A]/10 text-[#1c1b1a]  transition-colors hover:bg-[#A4A4A41A]/20 max-[1024px]:right-[calc(50%-17vw)] max-[1024px]:size-[6vw] max-[640px]:right-[calc(50%-27vw)] max-[640px]:size-[11vw]"
           >
             <svg
               viewBox="0 0 24 24"

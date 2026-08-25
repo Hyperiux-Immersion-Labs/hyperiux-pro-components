@@ -1,5 +1,6 @@
-"use client";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
+"use client";
 import type { MouseEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";

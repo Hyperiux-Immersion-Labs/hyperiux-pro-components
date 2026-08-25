@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 import Image from "next/image";
 
 import BlackButton from "./BlackButton";
@@ -7,7 +8,12 @@ import image2 from "./assets/cta/image2.png";
 import image3 from "./assets/cta/image3.png";
 import image4 from "./assets/cta/image4.png";
 
-const ctaImages = [image1, image2, image3, image4];
+const ctaImages = [
+  { src: image1, alt: "Lumera Heights living room interior" },
+  { src: image2, alt: "Lumera Heights kitchen interior" },
+  { src: image3, alt: "Lumera Heights bedroom interior" },
+  { src: image4, alt: "Lumera Heights building exterior" },
+];
 
 const CTA = () => {
   return (
@@ -16,7 +22,7 @@ const CTA = () => {
         <div className="flex flex-col items-center gap-[1.8vw] px-[6vw] pt-[5vw] text-center max-md:gap-[6vw] max-md:px-[6vw] max-md:pt-[14vw] max-[1025px]:gap-[3vw] max-[1025px]:px-[8vw] max-[1025px]:pt-[8vw]">
           <h2
             data-para-anim
-            className="max-w-[60%] max-[1025px]:max-w-[90%] font-medium font-heading text-[3.6vw] leading-[1.15] max-[1025px]:text-[5vw] max-md:text-[6.8vw] max-md:text-[8.8vw]"
+            className="max-w-[60%] max-[1025px]:max-w-[90%] font-medium font-heading text-[3.6vw] leading-[1.15] max-[1025px]:text-[5vw] max-md:text-[6.8vw]"
           >
             Some Properties Need to be Experienced in Person
           </h2>
@@ -30,7 +36,7 @@ const CTA = () => {
             <BlackButton
               btnText="Arrange Private Consultation"
               link="#"
-              className="bg-[#1c1b1a]"
+              className="bg-[#1c1b1a] font-normal!"
               borderColor="#1c1b1a"
             />
             <PrimaryButton
@@ -42,14 +48,14 @@ const CTA = () => {
         </div>
 
         <div className="mt-[3.5vw] max-[1025px]:pb-[5vw] max-[1025px]:grid-cols-2 max-[1025px]:px-[6vw] grid grid-cols-4 gap-[0.8vw] px-[3vw] pb-[3vw] max-md:mt-[8vw] max-md:grid-cols-2 max-md:gap-[2.5vw] max-md:px-[5vw] max-md:pb-[5vw] max-[1025px]:gap-[1.5vw] ">
-          {ctaImages.map((src, index) => (
+          {ctaImages.map(({ src, alt }, index) => (
             <div
               key={index}
               className="group relative aspect-4/3 overflow-hidden rounded-[1.2vw] max-md:rounded-[3vw] max-[1025px]:rounded-[2vw]"
             >
               <Image
                 src={src}
-                alt="Lumera Heights"
+                alt={alt}
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"
                 className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"

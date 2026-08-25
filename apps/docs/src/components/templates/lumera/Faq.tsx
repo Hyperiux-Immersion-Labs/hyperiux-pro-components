@@ -1,6 +1,8 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface FaqItem {
   title: string;
@@ -38,9 +40,13 @@ const faqData: FaqItem[] = [
 interface SingleAccordionProps extends FaqItem {
   isOpen: boolean;
   onToggle: () => void;
+  index: number;
 }
 
-const SingleAccordion = ({ title, content, isOpen, onToggle }: SingleAccordionProps) => {
+const SingleAccordion = ({ title, content, isOpen, onToggle, index }: SingleAccordionProps) => {
+  const panelId = `faq-panel-${index}`;
+  const buttonId = `faq-trigger-${index}`;
+
   return (
     <div
       className={`group relative overflow-hidden rounded-md border mb-[1.1vw] transition-colors duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] max-md:rounded-[4.5vw] max-md:mb-[4vw] max-[1025px]:rounded-[2.5vw] max-[1025px]:mb-[2vw] ${
@@ -54,7 +60,10 @@ const SingleAccordion = ({ title, content, isOpen, onToggle }: SingleAccordionPr
       ></div>
       <button
         type="button"
+        id={buttonId}
         onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
         className="relative z-2 flex w-full items-center justify-between gap-[2vw] py-[1.6vw] pl-[2.2vw] pr-[1.6vw] text-left max-md:py-[5vw] max-md:pl-[6vw] max-md:pr-[5vw] max-[1025px]:py-[3vw] max-[1025px]:pl-[4vw] max-[1025px]:pr-[3vw] accordion"
       >
         <span className="text-[1.5vw] max-md:w-[80%] font-medium max-md:text-[5vw] max-[1025px]:text-[3.5vw]">{title}</span>
@@ -68,6 +77,9 @@ const SingleAccordion = ({ title, content, isOpen, onToggle }: SingleAccordionPr
         </span>
       </button>
       <div
+        id={panelId}
+        role="region"
+        aria-labelledby={buttonId}
         className={`relative z-2 grid transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] ${
           isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
@@ -98,6 +110,7 @@ const Faq = () => {
             {faqData.map((item, index) => (
               <SingleAccordion
                 key={index}
+                index={index}
                 title={item.title}
                 content={item.content}
                 isOpen={openIndex === index}

@@ -1,6 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLenis } from "lenis/react";
 import gsap from "gsap";
@@ -9,6 +10,7 @@ import PrimaryButton from "./PrimaryButton";
 import CharStaggerButton from "./VaultComp/char-stagger-button";
 import Image from "next/image";
 import lumeraLogo from "./assets/icons/lumera-logo.png";
+import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(useGSAP);
 
@@ -22,17 +24,25 @@ const navLinks = [
 const Header: React.FC = () => {
   const lenis = useLenis();
   const [hidden, setHidden] = useState(false);
-  const [lastY, setLastY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const lastYRef = useRef(0);
 
-useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset;
-      setIsScrolled(scrollTop > 150);
+      const currentY = window.scrollY;
+
+      setIsScrolled(currentY > 150);
+
+      if (currentY > lastYRef.current && currentY > 100) {
+        setHidden(true);
+      } else if (currentY < lastYRef.current) {
+        setHidden(false);
+      }
+      lastYRef.current = currentY;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -43,22 +53,12 @@ useEffect(() => {
     };
   }, [menuOpen]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      if (currentY > lastY && currentY > 100) {
-        setHidden(true);
-      } else if (currentY < lastY) {
-        setHidden(false);
-      }
-      setLastY(currentY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastY]);
-
   useGSAP(() => {
+    if (prefersReducedMotion()) {
+      gsap.set("[data-header-fade]", { opacity: 1 });
+      return;
+    }
+
     gsap.to("[data-header-fade]", {
       opacity: 1,
       duration: 0.8,
@@ -113,17 +113,17 @@ useEffect(() => {
           onClick={() => setMenuOpen((open) => !open)}
           aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={menuOpen}
-          className="relative z-[60] hidden h-[11vw] w-[11vw] shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/10 backdrop-blur-[10px] max-[1025px]:flex max-md:h-[13vw] max-md:w-[13vw]"
+          className="relative z-60 hidden h-[6vw] w-[7vw] shrink-0 items-center justify-center max-[1025px]:flex max-md:h-[8vw] max-md:w-[9vw]"
         >
-          <span className="relative block h-[4vw] w-[5vw] max-md:h-[5vw] max-md:w-[6vw]">
+          <span className="relative block h-[3vw] w-[5.5vw] max-md:h-[4vw] max-md:w-[7vw]">
             <span
               className={`absolute left-0 top-[22%] h-px w-full bg-white transition-transform duration-300 ${
-                menuOpen ? "translate-y-[1.1vw] rotate-45 max-md:translate-y-[1.4vw]" : ""
+                menuOpen ? "translate-y-[1.1vw] rotate-45 max-md:translate-y-[1vw]" : ""
               }`}
             />
             <span
               className={`absolute left-0 top-[68%] h-px w-full bg-white transition-transform duration-300 ${
-                menuOpen ? "-translate-y-[1.1vw] -rotate-45 max-md:-translate-y-[1.4vw]" : ""
+                menuOpen ? "translate-y-[-1.1vw] -rotate-45 max-md:translate-y-[-1vw]" : ""
               }`}
             />
           </span>

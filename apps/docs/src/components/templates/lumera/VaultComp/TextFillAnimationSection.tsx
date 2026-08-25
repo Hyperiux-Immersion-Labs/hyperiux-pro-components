@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -23,6 +25,7 @@ export default function TextFillAnimationSection({
 }: TextFillAnimationSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const textRef = useRef<HTMLHeadingElement | null>(null);
+  const splitRef = useRef<SplitText | null>(null);
 
   useEffect(() => {
     const styleId = `${TEXT_REVEAL_STYLE_PREFIX}${id}`;
@@ -62,6 +65,7 @@ export default function TextFillAnimationSection({
         tag: "span",
         charsClass: "split-chars",
       });
+      splitRef.current = split;
 
       gsap.set(textElement, { opacity: 1 });
 
@@ -96,14 +100,12 @@ export default function TextFillAnimationSection({
             0,
           );
       }
-
-      return () => {
-        split.revert();
-      };
     }, sectionRef);
 
     return () => {
       context.revert();
+      splitRef.current?.revert();
+      splitRef.current = null;
       document.getElementById(styleId)?.remove();
     };
   }, [id]);

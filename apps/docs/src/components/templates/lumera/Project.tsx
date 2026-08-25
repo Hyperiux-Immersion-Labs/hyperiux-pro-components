@@ -1,5 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 
 import gsap from "gsap";
@@ -9,6 +11,7 @@ import BlackButton from "./BlackButton";
 import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselComp";
 import refinement1 from "./assets/refinement-1.png";
 import refinement2 from "./assets/refinement-2.png";
+import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,6 +26,11 @@ const interiorImages = [
 
 export default function Project() {
   useEffect(() => {
+    if (prefersReducedMotion()) {
+      document.body.style.backgroundColor = "#ffffff";
+      return;
+    }
+
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
         const body = document.body;
@@ -58,7 +66,7 @@ export default function Project() {
         >
           A World of Refinement
         </h2>
-        <div className="my-[3.5vw] h-[1px] w-full bg-black/15 lineDraw max-md:my-[8vw] max-[1025px]:my-[5vw]" />
+        <div className="my-[3.5vw] h-px w-full bg-black/15 lineDraw max-md:my-[8vw] max-[1025px]:my-[5vw]" />
 
         <div className="mb-[4.5vw] grid grid-cols-[minmax(0,1fr)_minmax(18rem,34vw)] items-start gap-[4vw] pl-[23%] pr-[2%] max-[1025px]:grid-cols-1 max-[1025px]:gap-[7vw] max-[1025px]:px-0 max-md:mb-[10vw]">
           <div className="fadeup max-[1025px]:order-1">

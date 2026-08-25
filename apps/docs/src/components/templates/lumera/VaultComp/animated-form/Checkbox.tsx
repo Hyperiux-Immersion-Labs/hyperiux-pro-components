@@ -1,5 +1,7 @@
 
-import React, { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
 export type CheckboxProps = {
   id?: string;

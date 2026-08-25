@@ -1,4 +1,6 @@
 
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 /**
@@ -30,7 +32,7 @@
 
  */
 
-import React, { useState, useCallback, useId, type CSSProperties, type FormEvent, type ReactNode } from "react";
+import { useState, useCallback, useId, type CSSProperties, type FormEvent, type KeyboardEvent, type ReactNode } from "react";
 import type { ZodType } from "zod";
 import Input from "./Input";
 import Textarea from "./Textarea";
@@ -90,6 +92,7 @@ export interface ContactFormProps {
   fieldBorderColor?: string;
   inputRoundedness?: number;
   duration?: number;
+  submitButtonColor?: string;
 }
 
 // component
@@ -107,6 +110,7 @@ export default function ContactForm({
  fieldBorderColor ="#e5e7eb",
  inputRoundedness = 28,
  duration = 0.3,
+ submitButtonColor = "#000000",
 }: ContactFormProps) {
  const [values, setValues] = useState(() => buildInitialValues(fields));
  const [errors, setErrors] = useState<Record<string, string>>({});
@@ -195,6 +199,16 @@ export default function ContactForm({
  },
  [fields, validateAll, onSubmit]
  );
+
+ const handleFormKeyDown = useCallback((event: KeyboardEvent<HTMLFormElement>) => {
+ if (event.key !== "Enter" || event.nativeEvent.isComposing) return;
+
+ const target = event.target as HTMLElement | null;
+ if (target?.tagName === "TEXTAREA" && event.shiftKey) return;
+
+ event.preventDefault();
+ event.currentTarget.requestSubmit();
+ }, []);
 
  // ── render field ──
  const renderField = (field: FieldConfig) => {
@@ -286,12 +300,14 @@ export default function ContactForm({
  "--form-field-border": fieldBorderColor,
  "--form-input-radius": `${Math.max(0, Number(inputRoundedness) || 0)}px`,
  "--form-duration": `${Math.max(0.05, Number(duration) || 0.3)}s`,
+ "--form-submit-bg": submitButtonColor,
  } as CSSProperties & Record<`--${string}`, string>}
  >
  <style>{`
  #${sectionId} input,
  #${sectionId} textarea,
  #${sectionId} select,
+ #${sectionId} [data-phone-field],
  #${sectionId} [role="button"][aria-invalid],
  #${sectionId} button[id] {
    background-color: var(--form-input-bg);
@@ -302,6 +318,7 @@ export default function ContactForm({
  }
  #${sectionId} input:focus,
  #${sectionId} textarea:focus,
+ #${sectionId} [data-phone-field]:focus-within,
  #${sectionId} button[id]:focus,
  #${sectionId} .group:focus-within input,
  #${sectionId} .group:focus-within textarea {
@@ -316,7 +333,7 @@ export default function ContactForm({
    background-color: var(--form-input-bg);
  }
  #${sectionId} button[type="submit"] {
-   background-color: var(--form-accent);
+   background-color: var(--form-submit-bg);
    border-radius: var(--form-input-radius);
    color: #ffffff;
    transition-duration: var(--form-duration);
@@ -330,28 +347,31 @@ export default function ContactForm({
  <div className="w-full flex flex-col gap-[2vw]">
  <form
  autoComplete="off"
- className="space-y-[1.2vw] max-md:space-y-[4vw] max-[1025px]:space-y-[4vw]"
+ className="space-y-[0.85vw] max-md:space-y-[3vw] max-[1025px]:space-y-[3vw]"
+ onKeyDown={handleFormKeyDown}
  onSubmit={handleSubmit}
  >
  {fields.map((field) => renderField(field))}
 
- <div className="flex items-center justify-start  max-md:mt-[10vw]">
+ <div className="flex items-center justify-start max-md:mt-[6vw]">
  <Button
  type="submit"
  isLoading={isLoading}
  loadingText={loadingLabel}
- className="mt-[3vw]  max-md:mt-0 max-[1025px]:mt-[3vw]"
+ className="mt-[2vw] max-md:mt-0 max-[1025px]:mt-[2vw]"
  >
  {submitLabel}
  </Button>
  </div>
 
+ <div aria-live="polite">
  {submitted && (
  <p className="text-green-600 text-sm mt-2">{successMessage}</p>
  )}
  {failed && (
  <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
  )}
+ </div>
  </form>
  </div>
  </div>

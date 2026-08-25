@@ -21,7 +21,7 @@ const enquiryFields: FieldConfig[] = [
       { value: "investment", label: "Investment Details" },
     ],
   },
-  { type: "textarea", name: "message", label: "Message", rows: 4 },
+  { type: "textarea", name: "message", label: "Message", rows: 2 },
   {
     type: "checkbox",
     name: "terms",
@@ -110,11 +110,8 @@ export default function AnimatedForm({
   duration = 0.3,
 }: AnimatedFormProps) {
   return (
-    <div className="w-full" style={{ backgroundColor }}>
-      <div className="mb-[2vw] flex flex-col gap-[0.8vw] max-[1025px]:mb-[5vw]">
-        <p className="font-body text-[0.85vw] uppercase tracking-[0.2em] text-[#ca8216] max-[1025px]:text-[2.5vw] max-md:text-[3vw]">
-          Private Enquiry
-        </p>
+    <div data-lenis-prevent className="w-full" style={{ backgroundColor }}>
+      <div className="mb-[1.4vw] flex flex-col gap-[0.8vw] max-[1025px]:mb-[4vw]">
         <h2 className="font-heading text-[3vw] font-medium leading-none text-[#1c1b1a] max-[1025px]:text-[7vw] max-md:text-[9vw]">
           Speak With an Advisor
         </h2>
@@ -134,6 +131,7 @@ export default function AnimatedForm({
         fieldBorderColor={fieldBorderColor}
         inputRoundedness={inputRoundedness}
         duration={duration}
+        submitButtonColor="#1c1b1a"
       />
     </div>
   );

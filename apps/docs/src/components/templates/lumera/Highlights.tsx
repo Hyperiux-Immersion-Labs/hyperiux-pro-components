@@ -1,6 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
-import React from "react";
 import Image from "next/image";
 
 import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselComp";

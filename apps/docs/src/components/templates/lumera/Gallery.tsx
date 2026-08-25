@@ -1,9 +1,10 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import { useRef } from "react";
 import gsap from "gsap";
 import Image, { type StaticImageData } from "next/image";
-
+import { prefersReducedMotion } from "./reducedMotion";
 import masterLivingRoomIcon from "./assets/icons/master-living-room.svg";
 import privateStudyIcon from "./assets/icons/private-study.svg";
 import waterPavilionIcon from "./assets/icons/water-pavilion.svg";
@@ -106,7 +107,11 @@ const Gallery = () => {
     const { image: imgSrc, color } = feature;
 
     if (bodyRef.current) {
-      gsap.to(bodyRef.current, { backgroundColor: color, duration: 0.5 });
+      if (prefersReducedMotion()) {
+        bodyRef.current.style.backgroundColor = color;
+      } else {
+        gsap.to(bodyRef.current, { backgroundColor: color, duration: 0.5 });
+      }
     }
 
     const previewContainer = previewContainerRef.current;
@@ -115,7 +120,11 @@ const Gallery = () => {
     const currentLastImg = previewContainer.querySelector("img:last-child");
 
     if (currentLastImg) {
-      gsap.to(currentLastImg, { duration: 1, scale: 1.2, left: "100%" });
+      if (prefersReducedMotion()) {
+        currentLastImg.remove();
+      } else {
+        gsap.to(currentLastImg, { duration: 1, scale: 1.2, left: "100%" });
+      }
     }
 
     const newImg = document.createElement("img");
@@ -127,6 +136,11 @@ const Gallery = () => {
     newImg.style.objectFit = "cover";
 
     previewContainer.appendChild(newImg);
+
+    if (prefersReducedMotion()) {
+      newImg.style.left = "0%";
+      return;
+    }
 
     gsap.to(newImg, { duration: 1, left: "0%" });
   };

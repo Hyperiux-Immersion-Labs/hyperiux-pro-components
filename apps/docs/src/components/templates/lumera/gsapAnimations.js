@@ -1,7 +1,9 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 /* eslint-disable react-hooks/rules-of-hooks */
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { prefersReducedMotion } from './reducedMotion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -10,6 +12,11 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export function fadeIn() {
   useGSAP(() => {
     const elements = document.querySelectorAll('[data-fade-in]');
+    if (prefersReducedMotion()) {
+      gsap.set(elements, { clearProps: 'opacity,transform' });
+      return;
+    }
+
     elements.forEach((element) => {
       gsap.from(element, {
         scrollTrigger: {
@@ -30,6 +37,11 @@ export function fadeIn() {
 export function lineDraw() {
   useGSAP(() => {
     const elements = document.querySelectorAll('[data-line-draw]');
+    if (prefersReducedMotion()) {
+      gsap.set(elements, { clearProps: 'transform' });
+      return;
+    }
+
     elements.forEach((element) => {
       gsap.from(element, {
         scrollTrigger: {

@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useId, type CSSProperties } from "react";
@@ -104,6 +106,13 @@ export default function HorizontalFeatureRevealSection() {
 
       gsap.set(".lumera-residence-image, .lumera-residence-number, .lumera-residence-title, .lumera-residence-copy, .lumera-residence-stat, .lumera-residence-cta", { opacity: 1 });
 
+      if (reduceMotion) {
+        gsap.set(".lumera-residence-track", { xPercent: 0 });
+        gsap.set(".lumera-residence-image", { x: 0, translateX: 0 });
+        ScrollTrigger.refresh();
+        return;
+      }
+
       const containerTween = gsap.to(".lumera-residence-track", {
         xPercent: -76,
         ease: "none",
@@ -138,34 +147,20 @@ export default function HorizontalFeatureRevealSection() {
 
           gsap.from(
             targets,
-            reduceMotion
-              ? {
-                  opacity: 0,
-                  stagger: 0.05,
-                  duration: 0.5,
-                  delay,
-                  scrollTrigger: {
-                    trigger: card,
-                    start: "left center",
-                    toggleActions: "play none none reverse",
-                    horizontal: true,
-                    containerAnimation: containerTween,
-                  },
-                }
-              : {
-                  ...animation,
-                  stagger: 0.05,
-                  duration: 0.7,
-                  delay,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                    trigger: card,
-                    start: "left center",
-                    toggleActions: "play none none reverse",
-                    horizontal: true,
-                    containerAnimation: containerTween,
-                  },
-                },
+            {
+              ...animation,
+              stagger: 0.05,
+              duration: 0.7,
+              delay,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "left center",
+                toggleActions: "play none none reverse",
+                horizontal: true,
+                containerAnimation: containerTween,
+              },
+            },
           );
         };
 
@@ -177,39 +172,25 @@ export default function HorizontalFeatureRevealSection() {
 
           gsap.from(
             split.lines,
-            reduceMotion
-              ? {
-                  opacity: 0,
-                  stagger: 0.05,
-                  duration: 0.5,
-                  delay: index * 0.05,
-                  scrollTrigger: {
-                    trigger: card,
-                    start: "left center",
-                    toggleActions: "play none none reverse",
-                    horizontal: true,
-                    containerAnimation: containerTween,
-                  },
-                }
-              : {
-                  yPercent: 100,
-                  stagger: 0.05,
-                  duration: 0.7,
-                  delay: index * 0.05,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                    trigger: card,
-                    start: "left center",
-                    toggleActions: "play none none reverse",
-                    horizontal: true,
-                    containerAnimation: containerTween,
-                  },
-                },
+            {
+              yPercent: 100,
+              stagger: 0.05,
+              duration: 0.7,
+              delay: index * 0.05,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "left center",
+                toggleActions: "play none none reverse",
+                horizontal: true,
+                containerAnimation: containerTween,
+              },
+            },
           );
         });
 
         gsap.from(card.querySelectorAll(".lumera-residence-stat"), {
-          y: reduceMotion ? 0 : 40,
+          y: 40,
           opacity: 0,
           stagger: 0.08,
           duration: 0.6,
@@ -223,22 +204,18 @@ export default function HorizontalFeatureRevealSection() {
           },
         });
 
-        if (reduceMotion) {
-          gsap.set(card.querySelector(".lumera-residence-image"), { x: 0 });
-        } else {
-          gsap.to(card.querySelector(".lumera-residence-image"), {
-            translateX: `${imageParallaxRange}%`,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              start: "left right",
-              end: "right left",
-              scrub: true,
-              horizontal: true,
-              containerAnimation: containerTween,
-            },
-          });
-        }
+        gsap.to(card.querySelector(".lumera-residence-image"), {
+          translateX: `${imageParallaxRange}%`,
+          ease: "none",
+          scrollTrigger: {
+            trigger: card,
+            start: "left right",
+            end: "right left",
+            scrub: true,
+            horizontal: true,
+            containerAnimation: containerTween,
+          },
+        });
       });
 
       ScrollTrigger.refresh();

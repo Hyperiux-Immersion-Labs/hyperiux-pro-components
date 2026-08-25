@@ -1,8 +1,11 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import showcasePoster from "./assets/video-poster.webp";
+import { prefersReducedMotion } from "./reducedMotion";
 gsap.registerPlugin(ScrollTrigger);
 
 const nearbyLandmarks = ["Burj Khalifa", "Dubai Mall", "Downtown Dubai", "Palm Jumeirah"];
@@ -29,6 +32,8 @@ const ShowCase = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
+    if (prefersReducedMotion()) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -58,6 +63,11 @@ const ShowCase = () => {
   }, [videoLoaded]);
 
   useEffect(() => {
+    if (prefersReducedMotion()) {
+      gsap.set(".inner-detail", { opacity: 1 });
+      return;
+    }
+
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
         const tl = gsap.timeline({
@@ -66,7 +76,6 @@ const ShowCase = () => {
             start: "40% 80%",
             end: "bottom bottom",
             scrub: 0.25,
-            // markers:true,
           },
         });
         tl.to(".video-block", {
@@ -89,7 +98,7 @@ const ShowCase = () => {
   return (
     <section
       id="showcase"
-      className="py-[10%]  relative z-[5] max-[1025px]:pb-[15%]"
+      className="py-[10%]  relative z-5 max-[1025px]:pb-[15%]"
       data-scroll
       data-scroll-speed={isMobile ? undefined : "-0.3"}
     >
@@ -113,9 +122,9 @@ const ShowCase = () => {
               className="w-full h-full object-cover object-center"
             ></video>
             <div
-              className={`inner-detail absolute bottom-[8%] left-1/2 translate-x-[-50%] z-[6] flex items-center gap-[2vw] rounded-full bg-black/30 backdrop-blur-[10px] px-[2.2vw] py-[1.2vw] opacity-0 max-[1025px]:static max-[1025px]:mt-[4vw] max-[1025px]:w-fit max-[1025px]:flex-wrap max-[1025px]:gap-[3vw] max-[1025px]:px-[5vw] max-[1025px]:py-[4vw] max-[1025px]:opacity-100 max-md:opacity-100`}
+              className={`inner-detail absolute bottom-[8%] left-1/2 translate-x-[-50%] z-6 flex items-center gap-[2vw] rounded-full bg-black/30 backdrop-blur-[10px] px-[2.2vw] py-[1.2vw] opacity-0 max-[1025px]:static max-[1025px]:mt-[4vw] max-[1025px]:w-fit max-[1025px]:flex-wrap max-[1025px]:gap-[3vw] max-[1025px]:px-[5vw] max-[1025px]:py-[4vw] max-[1025px]:opacity-100 max-md:opacity-100`}
             >
-              <p data-para-anim className="text-[1.1vw] leading-[1.25] text-white max-[1025px]:text-[3vw]">
+              <p data-para-anim className="text-[1.1vw] leading-tight text-white max-[1025px]:text-[3vw]">
                 Nearby
                 <br />
                 Landmarks:

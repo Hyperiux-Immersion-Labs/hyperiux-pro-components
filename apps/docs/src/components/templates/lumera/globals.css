@@ -35,6 +35,20 @@ html body {
   font-kerning: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body *,
+  body *::before,
+  body *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
 
 .no-scrollbar {
   scrollbar-width: none; /* Firefox */
@@ -46,6 +60,4 @@ html body {
   height: 0;
   display: none;
 }
-
-
 

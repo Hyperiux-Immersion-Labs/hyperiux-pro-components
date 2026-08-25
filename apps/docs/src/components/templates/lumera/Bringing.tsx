@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -6,6 +8,7 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 import BlackButton from "./BlackButton";
 import bringingPoster from "./assets/video-poster-2.webp";
+import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,6 +21,8 @@ const Bringing = () => {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
+    if (prefersReducedMotion()) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -47,6 +52,8 @@ const Bringing = () => {
   }, [videoLoaded]);
 
   useEffect(() => {
+    if (prefersReducedMotion()) return;
+
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
         const tl = gsap.timeline({
@@ -109,7 +116,7 @@ const Bringing = () => {
       });
       return () => ctx.revert();
     }
-  });
+  }, []);
 
   return (
     <section id="bringing" className="overflow-hidden bg-white" ref={BringingRef}>

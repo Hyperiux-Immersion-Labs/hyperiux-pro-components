@@ -1,5 +1,7 @@
 
-import React, { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+import { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
 export type TextareaProps = {
   id?: string;
@@ -11,7 +13,7 @@ export type TextareaProps = {
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
  function Textarea(
- { id, label, error, rows = 5, className ="", ...rest },
+ { id, label, error, rows = 3, className ="", ...rest },
  ref
 ) {
  return (
@@ -50,7 +52,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
  placeholder=""
  className={`
  w-full border rounded-2xl bg-white
- pt-5 pb-4 pl-5 pr-4 text-sm text-gray-800
+ min-h-24 pt-5 pb-3 pl-5 pr-4 text-sm text-gray-800
  outline-none transition-all resize-none
  border-gray-200
  focus:border-gray-400

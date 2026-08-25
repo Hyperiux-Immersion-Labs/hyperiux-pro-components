@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import Image from "next/image";
@@ -63,13 +65,13 @@ export default function Service() {
             <div
               ref={servicesScrollRef}
               onScroll={updateServicesThumb}
-              className={`w-full h-full px-[5%] no-scrollbar max-[1025px]:overflow-x-auto overflow-hidden max-md:pr-0 max-md:mt-[10%] max-[1025px]:w-[100vw] max-[1025px]:ml-[-5vw] max-md:ml-0 max-md:px-[5vw]`}
+              className={`w-full h-full px-[5%] no-scrollbar max-[1025px]:overflow-x-auto overflow-hidden max-md:pr-0 max-md:mt-[10%] max-[1025px]:w-screen max-[1025px]:ml-[-5vw] max-md:ml-0 max-md:px-[5vw]`}
             >
               <div className="flex relative gap-[1.5%] overflow-hidden aspect-[2.5] fadeup max-[1025px]:flex max-[1025px]:w-[400vw] max-[1025px]:ml-[5%] max-[1025px]:aspect-auto max-[1025px]:overflow-visible max-[1025px]:mb-[5vw] max-[1025px]:gap-[3vw] max-md:gap-[1.5%]">
                 {services.map((service, index) => (
                   <div
                     key={index}
-                    className="group w-[20%] flex rounded-[24px] overflow-hidden items-start [clip-path:polygon(0_0,100%_0,100%_100%,0%_100%)] p-[1vw] no-underline transition-all duration-[350ms] ease-in-out relative hover:w-[50%] focus:w-[50%] max-[1025px]:w-full max-[1025px]:hover:w-full max-[1025px]:focus:w-full max-md:w-full max-md:hover:w-full max-md:focus:w-full max-[1025px]:h-[50vh] max-[1025px]:p-[4vw]"
+                    className="group w-[20%] flex rounded-[24px] overflow-hidden items-start [clip-path:polygon(0_0,100%_0,100%_100%,0%_100%)] p-[1vw] no-underline transition-all duration-350 ease-in-out relative hover:w-[50%] focus:w-[50%] max-[1025px]:w-full max-[1025px]:hover:w-full max-[1025px]:focus:w-full max-md:w-full max-md:hover:w-full max-md:focus:w-full max-[1025px]:h-[50vh] max-[1025px]:p-[4vw]"
                   >
                     <Image
                       fill

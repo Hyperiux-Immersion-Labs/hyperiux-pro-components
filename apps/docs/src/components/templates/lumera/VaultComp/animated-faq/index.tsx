@@ -1,11 +1,13 @@
 
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import {
   FAQContent,
   FAQGroup,
   FAQTitle,
   FAQWrapper,
 } from "./AnimatedFaqComp";
-import React, { type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 export { FAQContent, FAQGroup, FAQTitle, FAQWrapper };
 

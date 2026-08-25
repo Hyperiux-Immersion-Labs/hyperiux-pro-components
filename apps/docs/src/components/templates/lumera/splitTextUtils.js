@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 // src/utils/splitText.js
 
 import SplitType from 'split-type';

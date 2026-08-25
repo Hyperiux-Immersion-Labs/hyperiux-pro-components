@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import React, {
@@ -261,6 +263,10 @@ export function FAQWrapper({
         }
       );
     }
+
+    return () => {
+      gsap.killTweensOf([outer, inner]);
+    };
   }, [isOpen, duration]);
 
   const value: FAQContextValue = {

@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import Image from "next/image";
@@ -12,8 +14,16 @@ import AnimatedForm from "./VaultComp/animated-form";
 import heroBackground from "./assets/lumera-hero.png";
 import { fadeIn } from "./gsapAnimations";
 import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const heroStats = [
+  { value: "4.2M+", suffix: "/AED", label: "Starting Price" },
+  { value: "80+", label: "Stories" },
+  { value: "1,000 FT+", label: "Sky Elevation" },
+  { value: "Q4 2027", label: "Handover" },
+];
 
 const Hero: React.FC = () => {
   const heroImageWrapperRef = useRef<HTMLDivElement>(null);
@@ -60,6 +70,14 @@ const Hero: React.FC = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) {
+        gsap.set(".hero-fadeup, .linedraw", { clearProps: "opacity,transform" });
+        if (heroImageWrapperRef.current) {
+          gsap.set(heroImageWrapperRef.current, { yPercent: 0 });
+        }
+        return;
+      }
+
       gsap.from(".hero-fadeup", {
         yPercent: 50,
         opacity: 0,
@@ -191,12 +209,7 @@ const Hero: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-4 gap-[5vw] self-stretch max-md:grid-cols-2 max-md:gap-[3vw] max-[1025px]:gap-[3vw]">
-              {[
-                { value: "4.2M+", suffix: "/AED", label: "Starting Price" },
-                { value: "80+", label: "Stories" },
-                { value: "1,000 FT+", label: "Sky Elevation" },
-                { value: "Q4 2027", label: "Handover" },
-              ].map((stat) => (
+              {heroStats.map((stat) => (
                 <div
                   key={stat.label}
                   data-fade-in
@@ -221,7 +234,7 @@ const Hero: React.FC = () => {
       </section>
       {enquiryMounted && (
         <div
-          className={`fixed inset-0 z-100 flex items-center justify-center bg-black/70 px-[5%] py-[5vw] backdrop-blur-[8px] transition-opacity duration-300 max-[1025px]:items-start max-[1025px]:overflow-y-auto max-[1025px]:py-[10vw] ${
+          className={`fixed inset-0 z-100 flex items-center justify-center bg-black/70 px-[5%] py-[5vw] backdrop-blur-sm transition-opacity duration-300 max-[1025px]:items-start max-[1025px]:overflow-y-auto max-[1025px]:py-[10vw] ${
             enquiryOpen ? "opacity-100" : "opacity-0"
           }`}
           role="dialog"
@@ -234,7 +247,7 @@ const Hero: React.FC = () => {
           }}
         >
           <div
-            className={`relative w-full max-w-[42vw] rounded-[1.4vw] bg-[white] p-[2vw] shadow-2xl transition-all duration-300 max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw] ${
+            className={`relative h-[85vh] max-md:h-[80vh] w-full max-w-[42vw] overflow-y-auto rounded-[1.4vw] bg-[white] p-[2vw] shadow-2xl transition-all duration-300 max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw] ${
               enquiryOpen ? "translate-y-0 scale-100 opacity-100" : "translate-y-[2vw] scale-[0.98] opacity-0"
             }`}
           >
@@ -242,7 +255,7 @@ const Hero: React.FC = () => {
               type="button"
               aria-label="Close enquiry form"
               onClick={closeEnquiryModal}
-              className="absolute right-[1.2vw] top-[1.2vw] z-10 flex h-[2.8vw] w-[2.8vw] items-center justify-center rounded-full bg-[#1c1b1a] text-white transition-transform hover:scale-95 max-[1025px]:right-[4vw] max-[1025px]:top-[4vw] max-[1025px]:h-[9vw] max-[1025px]:w-[9vw]"
+              className="sticky left-full top-0 z-10 flex h-[2.8vw] w-[2.8vw] items-center justify-center rounded-full bg-[#1c1b1a] text-white transition-transform duration-300 hover:rotate-180 max-[1025px]:h-[9vw] max-[1025px]:w-[9vw]"
             >
               <X className="h-[1.2vw] w-[1.2vw] max-[1025px]:h-[4vw] max-[1025px]:w-[4vw]" strokeWidth={1.8} />
             </button>

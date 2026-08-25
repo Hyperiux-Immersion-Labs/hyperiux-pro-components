@@ -1,6 +1,8 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
-import React, { forwardRef, useEffect, useRef, useState, type ChangeEvent, type ComponentPropsWithoutRef } from "react";
+import { forwardRef, useEffect, useRef, useState, type ChangeEvent, type ComponentPropsWithoutRef } from "react";
 
 export const COUNTRY_CODES = [
   { code: "IN", dial: "+91", flag: "🇮🇳", name: "India" },
@@ -125,6 +127,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(function PhoneI
   return (
     <div ref={rootRef} className={joinClasses("w-full", wrapperClassName)}>
       <div
+        data-phone-field
         className={joinClasses(
           "flex h-14 items-center rounded-full border bg-white transition-all",
           "border-gray-200 focus-within:border-gray-400",

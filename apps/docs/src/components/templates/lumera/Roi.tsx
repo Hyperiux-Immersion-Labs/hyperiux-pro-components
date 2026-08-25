@@ -1,4 +1,4 @@
-import React from "react";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
 const roiStats = [
   { value: "1.85M", suffix: "/AED", label: "Starting Price" },

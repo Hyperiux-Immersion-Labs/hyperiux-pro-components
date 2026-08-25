@@ -1,5 +1,7 @@
 
-import React, { forwardRef, useState, useRef, useEffect } from "react";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+import { forwardRef, useState, useRef, useEffect } from "react";
 
 export interface SelectOption {
   value: string;

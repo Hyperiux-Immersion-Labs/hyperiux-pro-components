@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef, useState, useCallback, type ComponentPropsWithoutRef, type ComponentType, type MouseEvent, type MouseEventHandler, type ReactNode } from "react";
