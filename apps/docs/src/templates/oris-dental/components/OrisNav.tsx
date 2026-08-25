@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react'
 import { useLenis } from 'lenis/react'
+import OrisDotFillBtn from './OrisDotFillBtn'
 
 export default function OrisNav() {
     const [hidden, setHidden] = useState(false)
@@ -35,9 +36,11 @@ export default function OrisNav() {
         >
             <p className="oris-text32">OrisDental</p>
 
-            <button className="px-[2vw] py-[.7vw] rounded-full oris-bg-primary text-white cursor-pointer hover:scale-[0.98] active:scale-95 transition-all">
-                Book Appointment
-            </button>
+            <OrisDotFillBtn
+                text="Book Appointment"
+                href="#oris-form"
+                className="text-[1vw] max-md:text-sm font-medium"
+            />
         </header>
     )
 }

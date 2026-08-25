@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import DotsCanvas from '../components/DotsCanvas'
+import SplitTextLines from '../components/SplitTextLines'
 
 type FooterColumn = {
     title: string
@@ -95,10 +96,9 @@ export default function OrisFooter() {
                 {/* Top Branding & Main Tagline */}
                 <div className="relative z-10 flex flex-col items-start max-w-2xl">
 
-                    <h2 className="oris-text64 font-bold! leading-[1.1] text-white max-w-[35vw] max-md:max-w-full">
-                        OrisDental <br /> Brighten your smile
-                        with expert care.
-                    </h2>
+                    <SplitTextLines as="h2" className="oris-text64 font-bold! leading-[1.1] text-white max-w-[35vw] max-md:max-w-full">
+                        OrisDental Brighten your smile with expert care.
+                    </SplitTextLines>
                 </div>
 
                 {/* Links Navigation: left pair anchored left, right pair anchored right */}

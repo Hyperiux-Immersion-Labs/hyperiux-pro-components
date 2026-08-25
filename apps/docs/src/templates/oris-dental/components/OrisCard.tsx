@@ -2,20 +2,41 @@
 
 import React from 'react'
 
-const DEFAULT_AVATARS = [
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
-    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
-    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+const DEFAULT_PATIENTS = [
+    {
+        name: 'Sarah Jenkins',
+        src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    },
+    {
+        name: 'David Chen',
+        src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    },
+    {
+        name: 'Elena Rostova',
+        src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
+    },
+    {
+        name: 'Marcus Brody',
+        src: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+    },
+    {
+        name: 'Chloe Bennett',
+        src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
+    },
 ]
 
 export default function OrisCard({
     title = "Join 5000+",
     subtitle = "Satisfied members",
     trustedText = "Trusted by 5,000+ happy patients",
-    avatars = DEFAULT_AVATARS,
+    avatars = DEFAULT_PATIENTS,
     className = ""
+}: {
+    title?: string
+    subtitle?: string
+    trustedText?: string
+    avatars?: (string | { name: string; src: string })[]
+    className?: string
 }) {
     return (
         <div className={`w-[30vw] h-fit rounded-[2vw] bg-white p-[2.2vw] flex flex-col justify-between shadow-[0_15px_45px_rgba(0,0,0,0.06)] border border-white/60 relative z-10 ${className}`}>
@@ -33,14 +54,27 @@ export default function OrisCard({
             <div className="flex items-center justify-between w-full">
                 {/* Overlapping Avatar Stack */}
                 <div className="flex items-center space-x-[-0.8vw]">
-                    {avatars.map((src, idx) => (
-                        <img
-                            key={idx}
-                            src={src}
-                            alt={`Patient avatar ${idx + 1}`}
-                            className="w-[3.2vw] h-[3.2vw] rounded-full object-cover border-[0.18vw] border-white shadow-sm select-none"
-                        />
-                    ))}
+                    {avatars.map((item, idx) => {
+                        const name = typeof item === 'string' ? `Patient ${idx + 1}` : item.name
+                        const src = typeof item === 'string' ? item : item.src
+
+                        return (
+                            <div key={idx} className="relative group/avatar z-10 hover:z-30">
+                                <img
+                                    src={src}
+                                    alt={name}
+                                    className="w-[3.2vw] h-[3.2vw] rounded-full object-cover border-[0.18vw] border-white shadow-sm select-none relative transition-all duration-300 ease-out group-hover/avatar:scale-115 group-hover/avatar:shadow-md cursor-pointer"
+                                />
+
+                                {/* Bottom Tooltip */}
+                                <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 opacity-0 -translate-y-1 group-hover/avatar:opacity-100 group-hover/avatar:translate-y-0 pointer-events-none transition-all duration-200 ease-out z-40 whitespace-nowrap bg-[#13314a] text-white text-[0.7vw] max-md:text-xs font-medium py-1 px-2.5 rounded-md shadow-lg shadow-black/20 flex flex-col items-center">
+                                    {/* Tooltip arrow pointing up */}
+                                    <div className="absolute top-[-.2vw] left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[#13314a] rotate-45" />
+                                    <span>{name}</span>
+                                </div>
+                            </div>
+                        )
+                    })}
                 </div>
 
                 {/* Right Text */}
@@ -52,3 +86,4 @@ export default function OrisCard({
         </div>
     )
 }
+

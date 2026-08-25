@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import OrisContactForm from '../components/OrisContactForm'
+import SplitTextLines from '../components/SplitTextLines'
 
 export default function OrisForm() {
     return (
@@ -19,17 +20,15 @@ export default function OrisForm() {
                 />
 
                 {/* Left Content */}
-                <div className="z-10 text-white flex  pt-[1vw] flex-col justify-center max-md:max-w-full">
-                    <h2 className="oris-text64 max-w-[34vw] ">
-                        The first step to the
-                        <br />
-                        smile you deserve
-                    </h2>
-                    <p className="oris-text22 max-w-[36vw]  mt-[2vw] max-md:mt-4 ">
+                <div className="z-10 text-white flex pt-[1vw] flex-col justify-center max-md:max-w-full">
+                    <SplitTextLines as="h2" className="oris-text64 max-w-[34vw]">
+                        The first step to the smile you deserve
+                    </SplitTextLines>
+                    <SplitTextLines as="p" className="oris-text22 max-w-[36vw] mt-[2vw] max-md:mt-4" delay={0.2}>
                         Leave a request and our care coordinator will call you back
                         within 15 minutes. Your first consultation with a 3D scan is
                         free.
-                    </p>
+                    </SplitTextLines>
                 </div>
 
                 {/* Right Floating Form Card */}

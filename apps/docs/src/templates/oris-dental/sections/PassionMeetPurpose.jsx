@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
+import SplitTextLines from '../components/SplitTextLines'
 
 const GALLERY_IMAGES = [
     { id: 1, src: '/templates/oris-detal/imgs/hc1.png', alt: 'Dental consultation' },
@@ -16,12 +17,12 @@ export default function PassionMeetPurpose() {
         >
             {/* Header */}
             <div className="flex flex-col items-center text-center mx-auto">
-                <h2 className="oris-text64 font-normal leading-[1.15]">
+                <SplitTextLines as="h2" className="oris-text64 font-normal leading-[1.15]">
                     Passion Meet Purpose
-                </h2>
-                <p className="oris-text22 text-oris-secondary/80 mt-[1.2vw] max-w-[36vw] max-md:max-w-full">
+                </SplitTextLines>
+                <SplitTextLines as="p" className="oris-text22 text-oris-secondary/80 mt-[1.2vw] max-w-[36vw] max-md:max-w-full" delay={0.15}>
                     Behind every treatment is a team united by one goal: creating better experiences for every patient.
-                </p>
+                </SplitTextLines>
             </div>
 
             {/* 4 Cards Row */}
