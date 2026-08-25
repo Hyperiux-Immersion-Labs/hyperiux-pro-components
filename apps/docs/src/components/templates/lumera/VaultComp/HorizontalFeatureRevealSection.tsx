@@ -2,14 +2,22 @@
 
 "use client";
 
-import { useEffect, useId, type CSSProperties } from "react";
+import { useEffect, useId, useRef, type CSSProperties } from "react";
 import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/dist/SplitText";
 import project1 from "../assets/project-1.png";
+import CharStaggerButton from "./char-stagger-button";
+import { FadeUp } from "../gsapAnimations";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
+
+const TEXT_FILL_STYLE_PREFIX = "lumera-tfa-style-";
+const SPLIT_CHARACTER_SELECTOR = ".split-chars";
+const TEXT_FILL_HOLD_VH = 150;
+const TEXT_FILL_COPY =
+  "Life above the City, Where Every Moment is Framed by Sweeping Skyline Views and Natural Light.";
 
 interface FeatureStat {
   value: string;
@@ -92,37 +100,117 @@ const RESIDENCE_DATA: FeatureItem[] = [
 export default function HorizontalFeatureRevealSection() {
   const uid = useId().replace(/:/g, "");
   const sectionId = `lumera-residences-${uid}`;
+  const textFillId = `${sectionId}-textfill`;
   const imageParallaxRange = 24;
 
+  const textFillSlideRef = useRef<HTMLDivElement | null>(null);
+  const textFillHeadingRef = useRef<HTMLHeadingElement | null>(null);
+
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (window.innerWidth <= 1025) {
-        return;
+    const styleId = `${TEXT_FILL_STYLE_PREFIX}${textFillId}`;
+    const styleElement = document.createElement("style");
+
+    styleElement.id = styleId;
+    styleElement.textContent = `
+      @keyframes lumera-color-transition-${textFillId} {
+        0% { color: rgba(28, 27, 26, 0.18); }
+        30% { color: rgba(28, 27, 26, 0.7); }
+        100% { color: #1c1b1a; }
       }
 
+      #${textFillId} .split__wrapper ${SPLIT_CHARACTER_SELECTOR} {
+        transition: color .4s;
+        color: rgba(28, 27, 26, 0.18);
+      }
+
+      #${textFillId} .split__wrapper ${SPLIT_CHARACTER_SELECTOR}.show {
+        animation: lumera-color-transition-${textFillId} .5s;
+        color: #1c1b1a;
+      }
+    `;
+
+    document.head.appendChild(styleElement);
+
+    const ctx = gsap.context(() => {
+      const isDesktop = window.innerWidth > 1025;
       const reduceMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
-      gsap.set(".lumera-residence-image, .lumera-residence-number, .lumera-residence-title, .lumera-residence-copy, .lumera-residence-stat, .lumera-residence-cta", { opacity: 1 });
+      // Split the heading into characters up front - both branches below
+      // need it, they just differ in how the reveal is driven.
+      const headingElement = textFillHeadingRef.current;
+      let textFillSplit: SplitText | null = null;
+      let characters: Element[] = [];
 
-      if (reduceMotion) {
-        gsap.set(".lumera-residence-track", { xPercent: 0 });
-        gsap.set(".lumera-residence-image", { x: 0, translateX: 0 });
-        ScrollTrigger.refresh();
-        return;
+      if (headingElement) {
+        textFillSplit = SplitText.create(headingElement, {
+          type: "words chars",
+          aria: false as never,
+          tag: "span",
+          charsClass: "split-chars",
+        });
+
+        gsap.set(headingElement, { opacity: 1 });
+        characters = Array.from(
+          headingElement.querySelectorAll(SPLIT_CHARACTER_SELECTOR),
+        );
       }
 
-      const containerTween = gsap.to(".lumera-residence-track", {
-        xPercent: -76,
-        ease: "none",
-        scrollTrigger: {
-          trigger: `#${sectionId}`,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: true,
-        },
-      });
+      // The horizontal swipe (and everything driven by it) only exists on
+      // desktop - mobile falls back to a plain static stack. containerTween
+      // stays a single plain xPercent tween - exactly the shape the cards'
+      // `containerAnimation`-based triggers below are built around - and its
+      // own start is pushed TEXT_FILL_HOLD_VH later, which is what makes the
+      // track hold still until the text-fill scrub (below) has finished.
+      let containerTween: gsap.core.Tween | undefined;
+
+      if (isDesktop) {
+        gsap.set(".lumera-residence-image, .lumera-residence-number, .lumera-residence-title, .lumera-residence-copy, .lumera-residence-stat, .lumera-residence-cta", { opacity: 1 });
+
+        containerTween = gsap.to(".lumera-residence-track", {
+          xPercent: -80.24,
+          ease: "none",
+          scrollTrigger: {
+            trigger: `#${sectionId}`,
+            start: `top+=${TEXT_FILL_HOLD_VH}vh top`,
+            end: "bottom bottom",
+            scrub: true,
+          },
+        });
+
+        if (characters.length) {
+          if (reduceMotion) {
+            gsap.set(characters, { className: "split-chars show" });
+          } else {
+            gsap.timeline({
+              scrollTrigger: {
+                trigger: `#${sectionId}`,
+                start: "top top",
+                end: `+=${TEXT_FILL_HOLD_VH}vh`,
+                scrub: 0.3,
+              },
+            }).to(
+              characters,
+              {
+                className: "split-chars show",
+                duration: 0.4,
+                stagger: 0.04,
+                ease: "power2.inOut",
+              },
+              0,
+            );
+          }
+        }
+      } else if (characters.length) {
+        gsap.set(characters, { className: "split-chars show" });
+      }
+
+      if (!isDesktop) {
+        return () => {
+          textFillSplit?.revert();
+        };
+      }
 
       const cards = gsap.utils.toArray<HTMLElement>(".lumera-residence-card");
 
@@ -219,21 +307,43 @@ export default function HorizontalFeatureRevealSection() {
       });
 
       ScrollTrigger.refresh();
+
+      return () => {
+        textFillSplit?.revert();
+      };
     });
 
-    return () => ctx.revert();
-  }, [sectionId]);
+    return () => {
+      ctx.revert();
+      document.getElementById(styleId)?.remove();
+    };
+  }, [sectionId, textFillId]);
 
   return (
     <section
       id={sectionId}
-      className="relative h-[520vh] bg-[#F3F3F3] text-[#1c1b1a] max-[1025px]:h-auto"
+      className="relative h-[850vh] bg-[#F3F3F3] text-[#1c1b1a] max-[1025px]:h-auto"
     >
       <div className="sticky top-0 h-screen overflow-hidden max-[1025px]:static max-[1025px]:h-auto">
         <div
           className="lumera-residence-track flex h-full w-fit gap-[4vw] max-md:px-[6%] max-[1025px]:flex-col max-[1025px]:gap-[12vw] max-[1025px]:px-[5%] max-[1025px]:py-[15%]"
           style={{ "--card-gap": "4vw" } as CSSProperties}
         >
+          <div
+            id={textFillId}
+            ref={textFillSlideRef}
+            className="flex h-screen w-[98vw] flex-none items-center justify-center overflow-hidden bg-white px-[5vw] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:py-[20vh]"
+          >
+            <div className="split__wrapper relative z-10 mx-auto w-full ">
+              <h2
+                ref={textFillHeadingRef}
+                className="text-center text-[3.8vw] leading-[1.3] font-medium text-[#1c1b1a] opacity-0 max-[1025px]:opacity-100 max-[1025px]:text-[5vw] max-md:text-[8.5vw] max-[1025px]:leading-[1.08]"
+              >
+                {TEXT_FILL_COPY}
+              </h2>
+            </div>
+          </div>
+
           {RESIDENCE_DATA.map((item) => (
             <article
               key={item.number}
@@ -257,15 +367,15 @@ export default function HorizontalFeatureRevealSection() {
 
               <div className="flex  flex-col justify-between px-[3.5vw] py-[3.5vw] max-[1025px]:w-full max-[1025px]:px-0 max-[1025px]:pt-[7vw]">
                 <div>
-                  <p className="lumera-residence-number font-heading text-[5.8vw] font-medium leading-none  opacity-0 max-[1025px]:text-[12vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-number text-[#1c1b1a] font-heading text-[5.8vw] font-medium leading-none  opacity-0 max-[1025px]:text-[12vw] max-[1025px]:opacity-100">
                     {item.number}
                   </p>
 
-                  <h3 className="lumera-residence-title mt-[2vw]  font-heading text-[3.9vw] font-medium  leading-[1.04] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-[1025px]:text-[7vw] max-[1025px]:opacity-100">
+                  <h3 className="lumera-residence-title mt-[2vw]  font-heading text-[3.8vw] font-medium  leading-[1.04] text-[#1c1b1a] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-[1025px]:text-[7vw] max-[1025px]:opacity-100">
                     {item.title}
                   </h3>
 
-                  <p className="lumera-residence-copy mt-[3vw] max-w-[70%] text-[1.25vw] leading-[1.4] text-[#1c1b1a]/85 opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[4vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-copy mt-[3vw] w-[60%] text-[1.25vw] leading-[1.6] text-[#1c1b1a] opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[4vw] max-[1025px]:opacity-100">
                     {item.description}
                   </p>
 
@@ -288,7 +398,7 @@ export default function HorizontalFeatureRevealSection() {
                         <p className="text-[1.45vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[5vw]">
                           {stat.value}
                         </p>
-                        <p className="mt-[0.8vw] text-[1.25vw] text-[#1c1b1a]/75 max-[1025px]:mt-[1.8vw] max-[1025px]:text-[3.2vw]">
+                        <p className="mt-[0.8vw] text-[1.25vw] text-[#1c1b1a] max-[1025px]:mt-[1.8vw] max-[1025px]:text-[3.2vw]">
                           {stat.label}
                         </p>
                       </div>
@@ -297,12 +407,15 @@ export default function HorizontalFeatureRevealSection() {
                 </div>
 
                 <div className="mt-[1vw] flex flex-col items-start justify-between gap-[2vw] max-md:flex-wrap max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:items-start">
+
                   <div className="flex max-md:flex-gap gap-[1vw] max-[1025px]:gap-[3vw]">
                     {item.thumbnails.map((thumb, index) => (
+                     
                       <div
+                        
                         key={`${item.number}-thumb-${index}`}
                         className="overflow-hidden  rounded-[1.3vw] bg-[#ddd4ca] max-[1025px]:rounded-[4vw]"
-                      >
+                        >
                         <Image
                           src={thumb}
                           alt={`${item.title} preview ${index + 1}`}
@@ -310,20 +423,21 @@ export default function HorizontalFeatureRevealSection() {
                           height={1000}
                           quality={95}
                           className="h-[6.2vw] w-[6.2vw]  object-cover max-[1025px]:h-[20vw] max-[1025px]:w-[20vw]"
-                        />
+                          />
                       </div>
+                   
                     ))}
                   </div>
+           
 
-                  <button
-                    type="button"
-                    className="lumera-residence-cta group inline-flex items-center gap-[1vw] border-b border-[#1c1b1a]/60 pb-[0.6vw] font-heading text-[1.8vw] leading-none text-[#1c1b1a] opacity-0 transition-opacity max-[1025px]:pb-[1.8vw] max-[1025px]:pt-[4vw] max-[1025px]:text-[6vw] max-[1025px]:opacity-100"
-                  >
-                    <span>{item.cta}</span>
-                    <span className="transition-transform duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </button>
+                  <CharStaggerButton
+                    text={item.cta}
+                    href="#"
+                    
+                    hoverColor="#1c1b1a"
+                    className="lumera-residence-cta gap-[1vw]  pb-[0.6vw] text-[#1c1b1a] opacity-0 transition-opacity max-[1025px]:pb-[1.8vw] max-[1025px]:pt-[4vw] max-[1025px]:opacity-100"
+                    textClassName="font-heading text-[1.2vw] leading-none max-[1025px]:text-[6vw]"
+                  />
                 </div>
               </div>
             </article>

@@ -1,6 +1,9 @@
 
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
+import { FadeUp } from "../../gsapAnimations";
+import MaskTextReveal from "../mask-text-reveal";
 import {
   FAQContent,
   FAQGroup,
@@ -79,11 +82,17 @@ export default function AnimatedFaq() {
   return (
     <section className="py-[7%] max-md:pt-[20%]" id="faq">
       <div className="w-full ml-auto max-md:w-full max-[1025px]:w-full px-[5%] max-md:px-[6%]">
-        <h2 data-para-anim className="font-heading max-md:mb-[10vw] font-medium text-[3.5vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[5vw]">
+        <MaskTextReveal>
+
+        <h2 data-para-anim className="font-heading text-[#1C1B1A] max-md:mb-[10vw] font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[5vw]">
           FAQs
         </h2>
-        <div className="w-full fadeup">
+        </MaskTextReveal>
+        <FadeUp>
+
+        <div className="w-full ">
           <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
+       
             {faqItems.map((item) => (
               <FAQWrapper
                 key={item.id}
@@ -111,6 +120,7 @@ export default function AnimatedFaq() {
             ))}
           </FAQGroup>
         </div>
+         </FadeUp>
       </div>
     </section>
   );

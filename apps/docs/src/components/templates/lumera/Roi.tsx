@@ -1,4 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 
 const roiStats = [
   { value: "1.85M", suffix: "/AED", label: "Starting Price" },
@@ -13,13 +15,23 @@ const Roi = () => {
       <section className="py-[5%]  max-md:pb-[20%]" id="roi">
         <div className={`px-[5%] max-md:px-[6%] flex flex-col gap-[6vw] max-md:gap-[7vw]`}>
           <div className="flex justify-between max-[1025px]:flex-col max-md:gap-[7vw] max-[1025px]:gap-[5vw]">
-            <h2 data-para-anim className={`font-heading  font-medium text-[3.5vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] w-[35%] max-[1025px]:w-full`}>
+            <MaskTextReveal className="w-[35%] max-[1025px]:w-full">
+
+            <h2 data-para-anim className={`font-heading font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] `}>
               Invest in Dubai&apos;s Next Landmark
             </h2>
-            <p data-para-anim className="w-[40%] max-[1025px]:w-[80%] max-[1025px]:text-[2vw] max-md:w-full max-md:text-[3.5vw] text-[1.3vw]">
+            </MaskTextReveal>
+
+            <MaskTextReveal className="w-[40%] max-[1025px]:w-[80%]">
+
+            <p data-para-anim className=" max-[1025px]:text-[2vw] max-md:w-full max-md:text-[3.5vw] text-[1.3vw]">
               Own a residence where architectural distinction, prime location, and elevated living come together. Lumera Heights offers a compelling opportunity for those seeking long-term value in the heart of Dubai.
             </p>
+            </MaskTextReveal>
           </div>
+          <FadeUp>
+
+         
           <div className="flex flex-wrap gap-[4vw] fadeup max-md:gap-[5vw] max-[1025px]:gap-[2.5vw]">
             {roiStats.map((stat) => (
               <div
@@ -38,6 +50,7 @@ const Roi = () => {
               </div>
             ))}
           </div>
+           </FadeUp>
         </div>
       </section>
     </>

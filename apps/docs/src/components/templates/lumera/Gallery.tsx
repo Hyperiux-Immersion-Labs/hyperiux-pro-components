@@ -25,6 +25,8 @@ import spaImage from "./assets/spa.png";
 import studyBarImage from "./assets/study-bar.png";
 import sunkenSunbedImage from "./assets/sunken-senbed.png";
 import waterPavilionImage from "./assets/water-pavilion.png";
+import MaskTextReveal from "@/components/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 
 interface GalleryFeature {
   name: string;
@@ -180,15 +182,26 @@ const Gallery = () => {
   return (
     <section className="py-[5%] bg-[#E0D4C6] relative z-10 max-md:py-[10%] max-[1025px]:py-[7%]" ref={bodyRef}>
       <div className="px-[5%] max-md:px-[6%]">
+        <MaskTextReveal>
+
         <h2
           data-title-anim
-          className={`font-heading font-medium text-[3.9vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
-        >
+          className={`font-heading font-medium text-[#1C1B1A] text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
+          >
           Core Features
         </h2>
-        <p data-para-anim className="w-[40%] max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.25vw] tracking-wide max-[1025px]:w-full">
+          </MaskTextReveal>
+
+          <MaskTextReveal className="w-[40%] max-[1025px]:w-full">
+
+        <p data-para-anim className=" max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.25vw] text-[#1C1B1A] tracking-wide ">
           The interiors of Lumera Heights reflect a refined balance of modern luxury and functional elegance.
         </p>
+          </MaskTextReveal>
+
+          <FadeUp>
+
+          
         <div className="w-full mt-[6vw]  mb-[2vw] relative flex items-start justify-between gap-[3vw] max-[1025px]:flex-col max-md:gap-[4vw]">
           <div className="w-[27%] my-auto max-[1025px]:w-full max-[1025px]:order-1">{renderColumn(leftFeatures)}</div>
 
@@ -206,6 +219,7 @@ const Gallery = () => {
 
           <div className="w-[27%] my-auto max-[1025px]:w-full max-[1025px]:order-2">{renderColumn(rightFeatures)}</div>
         </div>
+        </FadeUp>
       </div>
     </section>
   );

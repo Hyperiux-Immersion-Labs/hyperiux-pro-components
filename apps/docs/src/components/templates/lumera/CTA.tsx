@@ -7,6 +7,8 @@ import image1 from "./assets/cta/image1.png";
 import image2 from "./assets/cta/image2.png";
 import image3 from "./assets/cta/image3.png";
 import image4 from "./assets/cta/image4.png";
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 
 const ctaImages = [
   { src: image1, alt: "Lumera Heights living room interior" },
@@ -20,32 +22,47 @@ const CTA = () => {
     <section className="relative z-10 bg-white px-[5%] py-[6%] max-md:px-[6%] max-md:py-[14%] max-[1025px]:py-[8%]" id="cta">
       <div className="w-full overflow-hidden rounded-[2.5vw] border border-black max-md:rounded-[6vw] max-[1025px]:rounded-[4vw]">
         <div className="flex flex-col items-center gap-[1.8vw] px-[6vw] pt-[5vw] text-center max-md:gap-[6vw] max-md:px-[6vw] max-md:pt-[14vw] max-[1025px]:gap-[3vw] max-[1025px]:px-[8vw] max-[1025px]:pt-[8vw]">
+          <MaskTextReveal className="max-w-[60%] max-[1025px]:max-w-[90%]">
+
           <h2
             data-para-anim
-            className="max-w-[60%] max-[1025px]:max-w-[90%] font-medium font-heading text-[3.6vw] leading-[1.15] max-[1025px]:text-[5vw] max-md:text-[6.8vw]"
-          >
+            className=" font-medium font-heading text-[3.8vw] leading-[1.15] max-[1025px]:text-[5vw] max-md:text-[6.8vw] "
+            >
             Some Properties Need to be Experienced in Person
           </h2>
+            </MaskTextReveal>
+
+            <MaskTextReveal className="w-[55%] max-[1025px]:w-[90%]">
+
           <p
             data-para-anim
-            className="w-[55%] text-[1.2vw] leading-[1.6] text-black/75 max-md:text-[4.2vw] max-[1025px]:w-[90%] max-[1025px]:text-[2.4vw]"
-          >
+            className=" text-[1.2vw] leading-[1.6] text-black/75 max-md:text-[4.2vw]  max-[1025px]:text-[2.4vw]"
+            >
             Tell us what you are looking for and our team will introduce you to residences that fit your lifestyle, priorities and ambitions in Dubai.
           </p>
+            </MaskTextReveal>
+
+            <FadeUp>
+
           <div className="mt-[1vw] flex items-center gap-[1.2vw] fadeup max-md:mt-[4vw] max-md:w-full max-[1025px]:flex-col max-md:gap-[4vw] max-[1025px]:gap-[2.5vw]">
             <BlackButton
               btnText="Arrange Private Consultation"
               link="#"
               className="bg-[#1c1b1a] font-normal!"
               borderColor="#1c1b1a"
-            />
+              />
             <PrimaryButton
               btnText="Contact Our Team"
               link="#"
               className="border border-[#1c1b1a] max-md:w-full"
-            />
+              />
           </div>
+              </FadeUp>
         </div>
+
+        <FadeUp>
+
+       
 
         <div className="mt-[3.5vw] max-[1025px]:pb-[5vw] max-[1025px]:grid-cols-2 max-[1025px]:px-[6vw] grid grid-cols-4 gap-[0.8vw] px-[3vw] pb-[3vw] max-md:mt-[8vw] max-md:grid-cols-2 max-md:gap-[2.5vw] max-md:px-[5vw] max-md:pb-[5vw] max-[1025px]:gap-[1.5vw] ">
           {ctaImages.map(({ src, alt }, index) => (
@@ -63,6 +80,7 @@ const CTA = () => {
             </div>
           ))}
         </div>
+         </FadeUp>
       </div>
     </section>
   );

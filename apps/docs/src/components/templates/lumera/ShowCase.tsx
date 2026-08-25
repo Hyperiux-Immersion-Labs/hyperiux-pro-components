@@ -6,6 +6,8 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import showcasePoster from "./assets/video-poster.webp";
 import { prefersReducedMotion } from "./reducedMotion";
+import MaskTextReveal from "@/components/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 gsap.registerPlugin(ScrollTrigger);
 
 const nearbyLandmarks = ["Burj Khalifa", "Dubai Mall", "Downtown Dubai", "Palm Jumeirah"];
@@ -104,14 +106,19 @@ const ShowCase = () => {
     >
       <div className={`px-[5%] h-full relative`}>
         <div className="flex w-full gap-[10vw] max-[1025px]:flex-col">
+          <MaskTextReveal className="w-[50%]">
+
           <h2
             data-para-anim
-            className={`w-[50%] text-black font-heading font-medium text-[3.9vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
-          >
+            className={` text-[#1C1B1A] font-heading font-medium text-[3.8vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
+            >
             At the Heart of
             <br />
             Dubai Living
           </h2>
+            </MaskTextReveal>
+
+           
           <div className="w-[40vw] h-[22vw] overflow-hidden rounded-full video-block absolute right-[10%] rtl:left-[10%] rtl:right-auto max-[1025px]:w-[90vw] max-[1025px]:h-[50vw] max-[1025px]:static max-[1025px]:rounded-[4vw]">
             <video
               ref={videoRef}
@@ -141,12 +148,16 @@ const ShowCase = () => {
               </div>
             </div>
           </div>
+
         </div>
 
         <div className="w-full h-full mt-[48vw] flex justify-end max-[1025px]:mt-[7vw]">
-          <p data-para-anim className="w-[40%] max-md:text-[3.5vw] mr-[5vw] text-[1.2vw] text-black max-[1025px]:w-full tracking-wide">
+          <MaskTextReveal className="w-[40%] max-[1025px]:w-full">
+
+          <p data-para-anim className=" max-md:text-[3.5vw] mr-[5vw] text-[1.2vw] text-black  tracking-wide">
             Perfectly located in one of Dubai&apos;s most prestigious districts, Lumera Heights offers unmatched access to culture, business, and lifestyle destinations.
           </p>
+          </MaskTextReveal>
         </div>
       </div>
     </section>

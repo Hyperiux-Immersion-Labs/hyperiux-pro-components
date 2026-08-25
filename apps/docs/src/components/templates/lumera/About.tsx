@@ -12,6 +12,8 @@ import portfolio2 from "./assets/portfolio-2.png";
 import portfolio3 from "./assets/portfolio-3.png";
 import portfolio4 from "./assets/portfolio-4.png";
 import portfolio5 from "./assets/portfolio-5.png";
+import MaskTextReveal from "@/components/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 
 interface AboutSlide {
   src: StaticImageData;
@@ -63,24 +65,38 @@ const About = () => {
     <section className="overflow-hidden bg-[#E0D4C6]" id="about">
       <div className={` py-[5%]  pt-[10%] max-md:py-[20%] max-md:pb-[40%] max-[1025px]:py-[15%]`}>
         <div className="w-full px-[5%] max-md:px-[6%] flex justify-between max-[1025px]:flex-col max-[1025px]:gap-[8vw]">
+          <MaskTextReveal className="w-[50%]">
+
           <h2
             data-para-anim
-            className={`w-[45%] max-md:w-[90%]  font-heading text-[3.9vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw] max-[1025px]:w-[90%] max-[1025px]:text-[8vw]`}
-          >
+            className={`w-full max-md:w-[90%]  font-heading text-[3.8vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw] max-[1025px]:w-[90%] max-[1025px]:text-[8vw]`}
+            >
             Real Estate,
-            <br />
+    < br />
             Considered Differently
           </h2>
-          <div className="w-[35%] space-y-[1.5vw] text-[#1c1b1a]/80 text-[1.25vw] max-md:text-[3.5vw] max-[1025px]:w-full">
+            </MaskTextReveal>
+          <div className="w-[40%] space-y-[1.5vw] text-[#1c1b1a] text-[1.25vw] max-md:text-[3.5vw] max-[1025px]:w-full">
+          <MaskTextReveal>
+
             <p data-para-anim>We believe finding the right home begins with understanding how you want to live.</p>
+          </MaskTextReveal>
+          <MaskTextReveal>
+
             <p data-para-anim>
               From waterfront residences to private villas and landmark penthouses, we bring together exceptional
               properties with thoughtful guidance to make every decision feel considered, personal and effortless.
             </p>
+          </MaskTextReveal>
           </div>
         </div>
 
-        <div className="fadeup mt-[4vw] max-md:mt-[8vw]">
+        <FadeUp>
+
+       
+
+
+        <div className=" mt-[7vw] max-md:mt-[8vw]">
           <InfiniteCarouselComp
             slides={carouselSlides}
             initialIndex={CENTER_SLIDE_INDEX}
@@ -100,13 +116,14 @@ const About = () => {
                 <p className={`font-heading text-[2.3vw] leading-[1.2] font-medium max-md:text-[5vw] text-[#1c1b1a] max-[1025px]:text-[5vw]`}>
                   {activeSlide.title}
                 </p>
-                <p className="mt-[0.5vw] w-[90%] text-center mx-auto text-[1.01vw] text-[#1C1B1A] max-[1025px]:text-[2.5vw] max-md:text-[3vw]">
+                <p className="mt-[1vw] w-[90%] text-center mx-auto text-[1.01vw] text-[#1C1B1A] max-[1025px]:text-[2.5vw] max-md:text-[3vw]">
                   {activeSlide.description}
                 </p>
               </motion.div>
             </AnimatePresence>
           </div>
         </div>
+         </FadeUp>
       </div>
     </section>
   );

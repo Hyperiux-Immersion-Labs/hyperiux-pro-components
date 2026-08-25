@@ -12,6 +12,8 @@ import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselC
 import refinement1 from "./assets/refinement-1.png";
 import refinement2 from "./assets/refinement-2.png";
 import { prefersReducedMotion } from "./reducedMotion";
+import MaskTextReveal from "@/components/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -60,29 +62,42 @@ export default function Project() {
       className="w-screen overflow-hidden  pt-[8%] pb-[12%] text-[#1c1b1a] max-md:pt-[20%] max-md:pb-[16%] max-[1025px]:py-[10%]"
     >
       <div className="px-[5%]">
+        <MaskTextReveal>
+
         <h2
           data-para-anim
-          className="font-medium font-heading text-[3.9vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
-        >
+          className="font-medium text-[#1C1B1A] font-heading text-[3.8vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
+          >
           A World of Refinement
         </h2>
+          </MaskTextReveal>
         <div className="my-[3.5vw] h-px w-full bg-black/15 lineDraw max-md:my-[8vw] max-[1025px]:my-[5vw]" />
 
         <div className="mb-[4.5vw] grid grid-cols-[minmax(0,1fr)_minmax(18rem,34vw)] items-start gap-[4vw] pl-[23%] pr-[2%] max-[1025px]:grid-cols-1 max-[1025px]:gap-[7vw] max-[1025px]:px-0 max-md:mb-[10vw]">
+          <FadeUp>
+
           <div className="fadeup max-[1025px]:order-1">
             <BlackButton btnText="Enquire Now" link="#" className="bg-[#1c1b1a]" borderColor="#1c1b1a" />
           </div>
+          </FadeUp>
+          <MaskTextReveal>
+
           <p
             data-para-anim
             className="max-w-[38vw] text-[1.25vw] leading-[1.75] tracking-[-0.02em] text-black/85 max-[1025px]:max-w-full max-[1025px]:text-[2.5vw] max-md:text-[4.6vw]"
-          >
+            >
             Immerse yourself in the stylish allure of Lumera Heights, where every
             corner exudes sophistication. This is not just a residence, it&apos;s a
             mark of distinction that embodies the luxurious lifestyle you&apos;ve
             always craved.
           </p>
+            </MaskTextReveal>
         </div>
       </div>
+
+      <FadeUp>
+
+      
 
       <div className="">
         <InfiniteCarouselComp
@@ -115,6 +130,7 @@ export default function Project() {
           ))}
         </InfiniteCarouselComp>
       </div>
+      </FadeUp>
     </section>
   );
 }

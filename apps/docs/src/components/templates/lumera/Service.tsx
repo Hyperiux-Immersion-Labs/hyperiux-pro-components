@@ -10,6 +10,7 @@ import relaxationLounge from "./assets/relaxation-lounge.png";
 import spaAndWellness from "./assets/spa-and-wellness.png";
 import wineCellar from "./assets/wine-cellar.png";
 import DraggableMarquee from "./VaultComp/draggable-marquee";
+import { FadeUp } from "./gsapAnimations";
 
 const services = [
   {
@@ -57,11 +58,17 @@ export default function Service() {
     <>
       <section className="w-screen max-md:py-[20%] max-[1025px]:py-[10%] max-[1025px]:overflow-hidden max-md:overflow-hidden" id="services">
         <div className={` flex flex-col py-[10%] gap-[7vw] max-[1025px]:py-0 max-md:gap-[1vw]`}>
+          <FadeUp>
+
           <div className="w-full">
             <DraggableMarquee speed={1} />
           </div>
+          </FadeUp>
 
           <div>
+            <FadeUp>
+
+           
             <div
               ref={servicesScrollRef}
               onScroll={updateServicesThumb}
@@ -90,6 +97,7 @@ export default function Service() {
                 ))}
               </div>
             </div>
+             </FadeUp>
 
             <div className="relative mt-[3vw] mx-[5%] hidden h-[0.4vw] overflow-hidden rounded-full bg-[#e5e5e5] max-[1025px]:block max-[1025px]:h-[0.8vw] max-md:mx-[5vw] max-md:mt-[6vw]">
               <div
