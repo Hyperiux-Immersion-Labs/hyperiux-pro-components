@@ -195,14 +195,14 @@ const Works = () => {
             </h2>
               </MaskTextReveal>
           </div>
-          <div className="w-full h-full flex-col mt-[10vw] relative z-2 max-md:mt-[20vw]">
-            <div className="flex w-full h-full justify-between max-[1025px]:flex-col max-md:gap-[10vw]">
+          <div className="w-full h-full flex-col mt-[10vw] relative z-2 max-[1025px]:mt-[20vw] max-md:mt-[20vw]">
+            <div className="flex w-full h-full justify-between max-[1025px]:flex-col max-[1025px]:gap-[10vw] max-md:gap-[10vw]">
               <div
-                className="w-[40vw] h-full flex flex-col gap-[2vw] max-md:w-full max-md:gap-[7vw] max-[1025px]:w-[70vw] max-[1025px]:mx-auto"
+                className="w-[40vw] h-full flex flex-col gap-[2vw] max-md:w-full max-md:gap-[7vw] max-[1025px]:w-full max-[1025px]:mx-auto"
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "0.1"}
               >
-                <div className="w-[40vw] h-[27vw] relative rounded-[2vw] overflow-hidden p-[2vw] group max-md:w-[85vw] max-md:h-[70vw] max-md:p-[4vw]  max-[1025px]:w-[65vw] max-[1025px]:h-[40vw]">
+                <div className="w-[40vw] h-[27vw] relative rounded-[2vw] overflow-hidden p-[2vw] group max-md:w-[85vw] max-md:h-[70vw] max-md:p-[4vw]  max-[1025px]:w-[85vw] max-[1025px]:h-[70vw]">
                   <ParallaxImageAnimation
                     src={workImages.work5}
                     alt="work-img-5"
@@ -228,11 +228,11 @@ const Works = () => {
               </div>
 
               <div
-                className="w-[25vw]  h-fit relative mr-[6%] mt-[40%] z-4 max-md:mt-auto max-md:mr-auto max-[1025px]:mt-[80%] max-[1025px]:w-[70vw] max-[1025px]:mx-auto "
+                className="w-[25vw]  h-fit relative mr-[6%] mt-[40%] z-4 max-md:mt-0 max-md:mr-auto max-[1025px]:mt-0 max-[1025px]:w-full max-[1025px]:mx-auto "
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "-0.1"}
               >
-                <div className="w-[25vw] max-md:w-[85vw] max-md:h-[70vw] h-[35vw] rounded-[1.5vw] overflow-hidden absolute p-[1.5vw] top-0 left-0 group  max-md:p-[4vw] fadeup max-[1025px]:w-full max-[1025px]:h-[50vw] max-[1025px]:static max-md:ml-0">
+                <div className="w-[25vw] max-md:w-[85vw] max-md:h-[70vw] h-[35vw] rounded-[1.5vw] overflow-hidden absolute p-[1.5vw] top-0 left-0 group  max-md:p-[4vw] fadeup max-[1025px]:w-[85vw] max-[1025px]:h-[70vw] max-[1025px]:static max-md:ml-0">
                   <ParallaxImageAnimation
                     src={workImages.work1}
                     alt="work-img-1"
@@ -251,11 +251,11 @@ const Works = () => {
               </div>
             </div>
             <div
-              className="w-fit h-full  mt-[30vh] relative max-md:mt-[90vw] max-[1025px]:mt-[15vw] max-[1025px]:mx-auto"
+              className="w-fit h-full  mt-[30vh] relative max-md:mt-[15vw] max-[1025px]:mt-[15vw] max-[1025px]:mx-auto"
               data-scroll
               data-scroll-speed={isMobile ? undefined : "-0.1"}
             >
-              <div className="w-[47vw] h-[35vw] relative rounded-[2vw] overflow-hidden ml-[3%] p-[2vw] group max-md:w-[85vw] max-md:h-[70vw] max-md:ml-0 max-md:p-[4vw] fadeup max-[1025px]:w-[70vw] max-[1025px]:h-[45vw] max-[1025px]:ml-0">
+              <div className="w-[47vw] h-[35vw] relative rounded-[2vw] overflow-hidden ml-[3%] p-[2vw] group max-md:w-[85vw] max-md:h-[70vw] max-md:ml-0 max-md:p-[4vw] fadeup max-[1025px]:w-[85vw] max-[1025px]:h-[70vw] max-[1025px]:ml-0">
                 <ParallaxImageAnimation
                   src={workImages.work2}
                   alt="work-img-2"
@@ -283,11 +283,11 @@ const Works = () => {
                </MaskTextReveal>
             </div>
             <div
-              className="w-full h-full flex justify-between max-[1025px]:flex-col max-[1025px]:items-center mt-[15vh] max-md:mt-auto max-md:flex-col max-[1025px]:mt-[10vw]"
+              className="w-full h-full flex justify-between max-[1025px]:flex-col max-[1025px]:items-center mt-[15vh] max-md:mt-[10vw] max-md:flex-col max-[1025px]:mt-[10vw]"
               data-scroll
               data-scroll-speed={isMobile ? undefined : "0.1"}
             >
-              <div className="w-[40vw] h-[27vw] relative rounded-[2vw] overflow-hidden mt-[10vw] p-[2vw] group max-[1025px]:w-[70vw] max-[1025px]:h-[45vw] max-[1025px]:mt-[10vw] max-md:w-[85vw] max-md:h-[70vw] max-md:mt-[10vw] max-md:p-[4vw] fadeup ">
+              <div className="w-[40vw] h-[27vw] relative rounded-[2vw] overflow-hidden mt-[10vw] p-[2vw] group max-[1025px]:w-[85vw] max-[1025px]:h-[70vw] max-[1025px]:mt-[10vw] max-md:w-[85vw] max-md:h-[70vw] max-md:mt-[10vw] max-md:p-[4vw] fadeup ">
                 <ParallaxImageAnimation
                   src={workImages.work4}
                   alt="work-img-4"
@@ -304,11 +304,11 @@ const Works = () => {
                 </div>
               </div>
               <div
-                className="w-[30vw] h-full flex flex-col items-center gap-[4.5vw] max-md:mt-[10vw] max-md:w-full max-[1025px]:w-[70vw] max-[1025px]:mt-[10vw]"
+                className="w-[30vw] h-full flex flex-col items-center gap-[4.5vw] max-md:mt-[10vw] max-md:w-full max-[1025px]:w-full max-[1025px]:mt-[10vw]"
                 data-scroll
                 data-scroll-speed={isMobile ? undefined : "-0.1"}
               >
-                <div className="w-[25vw] h-[35vw] overflow-hidden rounded-[2vw] relative p-[2vw] group max-md:w-[85vw] max-md:h-[70vw] max-md:p-[4vw] fadeup max-[1025px]:w-full max-[1025px]:h-[45vw]">
+                <div className="w-[25vw] h-[35vw] overflow-hidden rounded-[2vw] relative p-[2vw] group max-md:w-[85vw] max-md:h-[70vw] max-md:p-[4vw] fadeup max-[1025px]:w-[85vw] max-[1025px]:h-[70vw]">
                   <ParallaxImageAnimation
                     src={workImages.work3}
                     alt="work-img-3"
