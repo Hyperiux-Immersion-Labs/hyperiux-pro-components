@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 
 const DEFAULT_AVATARS = [
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
@@ -34,10 +35,12 @@ export default function OrisCard({
                 {/* Overlapping Avatar Stack */}
                 <div className="flex items-center space-x-[-0.8vw]">
                     {avatars.map((src, idx) => (
-                        <img
+                        <Image
                             key={idx}
                             src={src}
                             alt={`Patient avatar ${idx + 1}`}
+                            width={80}
+                            height={80}
                             className="w-[3.2vw] h-[3.2vw] rounded-full object-cover border-[0.18vw] border-white shadow-sm select-none"
                         />
                     ))}

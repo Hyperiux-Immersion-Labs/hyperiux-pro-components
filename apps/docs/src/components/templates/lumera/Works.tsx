@@ -1,6 +1,4 @@
 "use client";
-
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
@@ -93,9 +91,12 @@ const Works = () => {
   };
 
   useEffect(() => {
-    checkIsMobile();
+    const frameId = window.requestAnimationFrame(checkIsMobile);
     window.addEventListener("resize", checkIsMobile);
-    return () => window.removeEventListener("resize", checkIsMobile);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", checkIsMobile);
+    };
   }, []);
 
   useEffect(() => {

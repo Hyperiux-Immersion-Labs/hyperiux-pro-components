@@ -1,6 +1,4 @@
 "use client";
-
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -18,10 +16,13 @@ const ShowCase = () => {
   };
 
   useEffect(() => {
-    checkIsMobile();
+    const frameId = window.requestAnimationFrame(checkIsMobile);
     window.addEventListener("resize", checkIsMobile);
 
-    return () => window.removeEventListener("resize", checkIsMobile);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", checkIsMobile);
+    };
   }, []);
 
   const videoRef = useRef<HTMLVideoElement>(null);

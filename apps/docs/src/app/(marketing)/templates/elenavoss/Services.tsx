@@ -56,13 +56,16 @@ const Services = () => {
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     prefersReducedMotionRef.current = mq.matches;
-    setPrefersReducedMotion(mq.matches);
+    const frameId = window.requestAnimationFrame(() => setPrefersReducedMotion(mq.matches));
     const onChange = (e: MediaQueryListEvent) => {
       prefersReducedMotionRef.current = e.matches;
       setPrefersReducedMotion(e.matches);
     };
     mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      mq.removeEventListener("change", onChange);
+    };
   }, []);
 
   useEffect(() => {

@@ -1,6 +1,4 @@
 "use client";
-
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
