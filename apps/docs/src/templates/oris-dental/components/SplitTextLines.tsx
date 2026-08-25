@@ -121,10 +121,12 @@ export default function SplitTextLines({
 
     const content = text !== undefined ? text : children
 
-    return (
-        <Component ref={elRef} className={className}>
-            {content}
-        </Component>
-    )
+    // React.createElement instead of JSX here on purpose: with `Component`
+    // typed as the generic React.ElementType, TSX's JSX checker infers an
+    // overly-narrow overload once a `ref` is also passed - it ends up
+    // typing `children` as `never` even though every concrete element
+    // Component can resolve to (div, span, h1, p, ...) accepts children
+    // fine at runtime. createElement isn't subject to that inference path.
+    return React.createElement(Component, { ref: elRef, className }, content)
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ogImage from "./assets/og-image.webp";
 import Hero from "./Hero";
 import Portfolio from "./Portfolio";
 import WhyWorkWithMe from "./WhyWorkWithMe";
@@ -24,8 +25,22 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
-    // TODO: replace with the real hosted OG image URL (1200x630 recommended).
-    images: ["/templates/elenavoss/og-image.png"],
+    // Imported like every other image in this template, not a public/
+    // path. Next's metadata resolver looks for an item.url string, not
+    // .src, so the raw import object can't be passed directly - it'd
+    // resolve to undefined and get silently dropped. Building the
+    // descriptor from ogImage.src/.width/.height instead resolves to the
+    // real, build-generated /_next/static/media/... URL Next.js serves
+    // for this file, so it's still a genuinely fetchable URL for social
+    // crawlers - width/height come from the actual file, not hand-typed.
+    images: [
+      {
+        url: ogImage.src,
+        width: ogImage.width,
+        height: ogImage.height,
+        alt: TITLE,
+      },
+    ],
   },
 };
 
