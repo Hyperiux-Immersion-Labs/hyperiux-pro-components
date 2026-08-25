@@ -11,6 +11,7 @@ import facebookIcon from "./assets/icons/socials/facebook.svg";
 import xIcon from "./assets/icons/socials/x.svg";
 import instagramIcon from "./assets/icons/socials/instagram.svg";
 import linkedinIcon from "./assets/icons/socials/linkedin.svg";
+import { FadeUp } from "./gsapAnimations";
 
 const socialLinks = [
   { src: facebookIcon, label: "Facebook" },
@@ -31,6 +32,7 @@ const Footer = () => {
         <div className=" pt-[5%] pb-[2%] flex flex-col">
           {/* First Div */}
           <div className="w-full relative flex items-center justify-between max-[1025px]:flex-col-reverse mb-[7vw] max-md:gap-0">
+            <FadeUp>
             <div className="flex   items-center justify-center gap-[1vw] max-md:gap-[3vw] max-md:mb-[5vw]">
               {socialLinks.map(({ src, label }) => (
                 <Link href={"#"} key={label} aria-label={label}>
@@ -40,6 +42,7 @@ const Footer = () => {
                 </Link>
               ))}
             </div>
+            </FadeUp>
 
             {/* Second Div */}
             <div className="absolute left-1/2 top-1/2 flex  -translate-x-1/2 -translate-y-1/2 items-center justify-center fadeup max-[1025px]:static max-[1025px]:w-[40vw] max-md:w-[55vw] max-[1025px]:mb-[6vw] max-md:mb-[10vw] max-[1025px]:translate-x-0 max-md:translate-y-0 ">
@@ -69,6 +72,10 @@ const Footer = () => {
             </Link>
           </div>
 
+          <FadeUp>
+
+          
+
           <div className="flex items-center gap-3  flex-col justify-center">
             <Link href="tel:+12125550186" className={`text-[3.4vw] font-medium font-heading leading-none max-md:text-[5.5vw] max-[1025px]:text-[5vw]`}>
               <span data-para-anim className="">+1 (212) 555-0186</span>
@@ -79,6 +86,7 @@ const Footer = () => {
               </p>
             </Link>
           </div>
+          </FadeUp>
 
           <div className="flex items-center justify-between max-[1025px]:flex-col max-md:gap-[5vw] fadeup pt-[7vw] max-[1025px]:gap-[3vw]">
             <div className="max-[1025px]:w-[70%] max-[1025px]:order-1">

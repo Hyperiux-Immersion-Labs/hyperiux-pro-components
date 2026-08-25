@@ -5,7 +5,6 @@ import ogImage from "@/components/templates/lumera/assets/og.png";
 import Header from "@/components/templates/lumera/Header";
 import Hero from "@/components/templates/lumera/Hero";
 import About from "@/components/templates/lumera/About";
-import TextFillAnimationSection from "@/components/templates/lumera/VaultComp/TextFillAnimationSection";
 import HorizontalFeatureRevealSection from "@/components/templates/lumera/VaultComp/HorizontalFeatureRevealSection";
 import Service from "@/components/templates/lumera/Service";
 import Works from "@/components/templates/lumera/Works";
@@ -46,7 +45,6 @@ export default function Page() {
       <Header />
       <Hero />
       <About />
-      <TextFillAnimationSection />
       <HorizontalFeatureRevealSection />
       <Service />
       <Works />

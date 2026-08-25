@@ -1,16 +1,27 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+"use client";
+
 import Image from "next/image";
 
 import exp01 from "./assets/exp01.png";
 import exp02 from "./assets/exp02.jpg";
 import exp03 from "./assets/exp03.jpg";
+import { FadeUp, lineDraw } from "./gsapAnimations";
 
 const ProjectHover = () => {
+  lineDraw();
+
   return (
     <>
       <section className="py-[10%] bg-[#161616] max-md:py-[20%] max-[1025px]:py-[10%]">
         <div className={`px-[5%] max-md:px-[6%] flex items-center justify-center`}>
+        
+
+        
           <div className="w-[90%] flex flex-col">
+           
+
+           
             {/* First Project */}
             <div className="text-center group" id="p1">
               <div className="flex w-fit mx-auto items-center justify-center mb-[2.8vw] relative gap-[1.5vw]">
@@ -21,8 +32,9 @@ const ProjectHover = () => {
                   <Image src={exp01} alt="Lumera Heights architectural detail" width={200} height={200} className="object-cover h-full w-full" />
                 </div>
               </div>
-              <span className="w-full block h-px bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
+              <span data-line-draw className="w-full block h-px bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
             </div>
+
 
             {/* Second Project */}
             <div className="text-center group" id="p2">
@@ -37,7 +49,7 @@ const ProjectHover = () => {
                   Delivered
                 </p>
               </div>
-              <span className="w-full block h-px bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
+              <span data-line-draw className="w-full block h-px bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
             </div>
 
             {/* Third Project */}
@@ -53,9 +65,10 @@ const ProjectHover = () => {
                   Luxury Projects
                 </p>
               </div>
-              <span className="w-full block h-px  bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
+              <span data-line-draw className="w-full block h-px  bg-white max-md:my-[7vw] max-[1025px]:my-[4vw]"></span>
             </div>
           </div>
+
         </div>
       </section>
     </>

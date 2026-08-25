@@ -7,6 +7,8 @@ import Image from "next/image";
 import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselComp";
 import highlightImage1 from "./assets/highlights/image1.png";
 import highlightImage2 from "./assets/highlights/image2.png";
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 
 const highlightImages = [highlightImage1, highlightImage2];
 
@@ -29,13 +31,20 @@ const Highlights = () => {
     <>
       <section className="pb-[7%] pt-[5%] space-y-[6vw]! max-[1025px]:space-y-[12vw]! overflow-hidden max-md:py-[15%]" id="highlights">
         <div className={`px-[5%] max-md:px-[6%] flex flex-col gap-[1.5vw]`}>
+          <MaskTextReveal>
+
           <h2
             data-para-anim
-            className="font-heading font-medium text-[3.5vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw]"
-          >
+            className="font-heading font-medium text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw]"
+            >
             Nearby Highlights
           </h2>
+            </MaskTextReveal>
         </div>
+
+        <FadeUp>
+
+      
 
         <div className="">
           <InfiniteCarouselComp
@@ -77,6 +86,7 @@ const Highlights = () => {
             ))}
           </InfiniteCarouselComp>
         </div>
+          </FadeUp>
       </section>
     </>
   );
