@@ -98,7 +98,7 @@ const ShowCase = () => {
     >
       <div className={`px-[5%] h-full relative`}>
         <div className="flex w-full gap-[10vw] max-[1025px]:flex-col">
-          <MaskTextReveal className="w-[50%]">
+          <MaskTextReveal className="w-[50%] max-[1025px]:w-full">
 
           <h2
             data-para-anim
@@ -146,7 +146,7 @@ const ShowCase = () => {
         <div className="w-full h-full mt-[48vw] flex justify-end max-[1025px]:mt-[7vw]">
           <MaskTextReveal className="w-[40%] max-[1025px]:w-full">
 
-          <p data-para-anim className=" max-md:text-[3.5vw] mr-[5vw] text-[1.2vw] text-black  tracking-wide">
+          <p data-para-anim className=" max-md:text-[3.5vw] max-[1025px]:text-[3vw] mr-[5vw] text-[1.2vw] text-black  tracking-wide">
             Perfectly located in one of Dubai&apos;s most prestigious districts, Lumera Heights offers unmatched access to culture, business, and lifestyle destinations.
           </p>
           </MaskTextReveal>

@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
@@ -24,38 +24,40 @@ const Bringing = () => {
   const videoWrapperRef = useRef<HTMLDivElement>(null);
   const bodyCopyRef = useRef<HTMLParagraphElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoLoaded, setVideoLoaded] = useState(false);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
 
+    const videos = [videoRef.current, mobileVideoRef.current].filter(
+      (video): video is HTMLVideoElement => video !== null
+    );
+    if (!videos.length) return;
+
+    const loadedVideos = new Set<HTMLVideoElement>();
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const video = videoRef.current;
-            if (video && !videoLoaded) {
-              video.src = dubaiExperienceVideo;
-              video.load();
-              video.play();
-              setVideoLoaded(true);
-            }
-            observer.unobserve(entry.target);
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting && !loadedVideos.has(video)) {
+            video.src = dubaiExperienceVideo;
+            video.load();
+            video.play();
+            loadedVideos.add(video);
+            observer.unobserve(video);
           }
         });
       },
       { threshold: 0.5 }
     );
 
-    const videoElement = videoRef.current;
-    if (videoElement) {
-      observer.observe(videoElement);
-    }
+    videos.forEach((video) => observer.observe(video));
 
     return () => {
-      if (videoElement) observer.unobserve(videoElement);
+      videos.forEach((video) => observer.unobserve(video));
     };
-  }, [videoLoaded]);
+  }, []);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -73,51 +75,33 @@ const Bringing = () => {
             ease: "none",
           },
         });
+        tl.from(headingLineOneRef.current, {
+          xPercent: 120,
+          duration: 3,
+          ease: "power2.inout",
+        }, 0);
+        tl.from(headingLineTwoRef.current, {
+          xPercent: -120,
+          duration: 3,
+          ease: "power2.inout",
+        }, 0);
+        tl.from(headingLineThreeRef.current, {
+          xPercent: 120,
+          duration: 3,
+          ease: "power2.inout",
+        }, 0);
         tl.to(videoWrapperRef.current, {
           scale: 4,
           xPercent: -140,
           yPercent: -30,
-          delay: 0.35,
           position: "absolute",
           duration: 5,
-        }).from(bodyCopyRef.current, {
+        }, 3.5);
+        tl.from(bodyCopyRef.current, {
           y: 50,
           opacity: 0,
           duration: 1,
-        });
-        gsap.from(headingLineOneRef.current, {
-          xPercent: 120,
-          duration: 3,
-          scrollTrigger: {
-            trigger: BringingRef.current,
-            scrub: 0.5,
-            start: "top 80%",
-            end: "bottom bottom",
-          },
-          ease: "power2.inout",
-        });
-        gsap.from(headingLineTwoRef.current, {
-          xPercent: -120,
-          duration: 4,
-          scrollTrigger: {
-            trigger: BringingRef.current,
-            scrub: 0.5,
-            start: "top 80%",
-            end: "bottom bottom",
-          },
-          ease: "power2.inout",
-        });
-        gsap.from(headingLineThreeRef.current, {
-          xPercent: 120,
-          duration: 5,
-          scrollTrigger: {
-            trigger: BringingRef.current,
-            scrub: 0.5,
-            start: "top 80%",
-            end: "bottom bottom",
-          },
-          ease: "power2.inout",
-        });
+        }, ">");
       }, BringingRef);
       return () => ctx.revert();
     }
@@ -125,7 +109,60 @@ const Bringing = () => {
 
   return (
     <>
-    <section id="bringing" className="bg-white isolate h-[250vh]" ref={BringingRef}>
+    <section id="bringing" className="hidden max-[1025px]:block bg-white isolate py-[10%] max-md:py-[20%] max-[1025px]:py-[10%]">
+      <div className="px-[5%] w-full">
+        <div className="flex flex-col items-center justify-center w-full gap-[5vw]">
+          <div className="flex flex-col gap-8 items-center justify-center">
+            <MaskTextReveal>
+              <p className="text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
+                Better Way To
+              </p>
+            </MaskTextReveal>
+            <MaskTextReveal>
+              <p className="text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
+                Experience
+              </p>
+            </MaskTextReveal>
+            <MaskTextReveal>
+              <p className="text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
+                Dubai Property
+              </p>
+            </MaskTextReveal>
+          </div>
+
+          <div className="w-[90vw] h-[50vw] max-md:h-[70vw] rounded-lg overflow-hidden">
+            <video
+              ref={mobileVideoRef}
+              poster={bringingPoster.src}
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover transition-opacity duration-500"
+            />
+          </div>
+
+          <div className="w-full flex flex-col items-center gap-[2.5vw]">
+            <MaskTextReveal>
+              <p className="font-body text-[1.25vw] max-[1025px]:text-[3.5vw] text-center">
+                We look beyond the listing to understand what makes a property worth considering — from its location and layout to its condition, positioning and long-term relevance. The result is a more focused property journey, built around better information and fewer distractions.
+              </p>
+            </MaskTextReveal>
+
+            <FadeUp>
+              <div className="max-md:pt-4">
+                <BlackButton
+                  btnText="Speak With an Advisor"
+                  link="#"
+                  className="bg-[#1c1b1a]"
+                  borderColor="#1c1b1a"
+                />
+              </div>
+            </FadeUp>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="bringing-desktop" className="max-[1025px]:hidden bg-white isolate h-[250vh]" ref={BringingRef}>
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className={`px-[5%] w-full h-full py-[10%] relative max-md:py-[20%] max-[1025px]:py-[10%]`}>
           <div className="flex flex-col items-center justify-center w-full h-full gap-[5vw]">
@@ -165,7 +202,7 @@ const Bringing = () => {
         </div>
       </div>
     </section>
-    <div className="w-[60%] pb-[5vw] max-[1025px]:py-[8vw] max-[1025px]:w-full flex flex-col items-center gap-[2.5vw] mx-auto bg-white">
+    <div className="max-[1025px]:hidden w-[60%] pb-[5vw] flex flex-col items-center gap-[2.5vw] mx-auto bg-white">
       <MaskTextReveal>
         <p
           ref={bodyCopyRef}

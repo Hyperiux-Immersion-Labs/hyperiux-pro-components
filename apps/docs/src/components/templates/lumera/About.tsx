@@ -75,20 +75,20 @@ const About = () => {
 
   return (
     <section className="overflow-hidden bg-[#E0D4C6]" id="about">
-      <div className={` py-[5%]  pt-[10%] max-md:py-[20%] max-md:pb-[40%] max-[1025px]:py-[15%]`}>
+      <div className={` py-[5%]  pt-[10%] max-md:pt-[20%]   max-[1025px]:py-[15%]`}>
         <div className="w-full px-[5%] max-md:px-[6%] flex justify-between max-[1025px]:flex-col max-[1025px]:gap-[8vw]">
-          <MaskTextReveal className="w-[50%]">
+          <MaskTextReveal className="w-[50%] max-md:w-[90%] max-[1025px]:w-[90%]">
 
           <h2
             data-para-anim
-            className={`w-full max-md:w-[90%]  font-neue-montreal text-[3.8vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw] max-[1025px]:w-[90%] max-[1025px]:text-[8vw]`}
+            className={`w-full   font-neue-montreal text-[3.8vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw]  max-[1025px]:text-[8vw]`}
             >
             Real Estate,
             <br />
             Considered Differently
           </h2>
             </MaskTextReveal>
-          <div className="w-[40%] space-y-[1.5vw] text-[#1c1b1a] text-[1.25vw] max-md:text-[3.5vw] max-[1025px]:w-full">
+          <div className="w-[40%] space-y-[1.5vw] text-[#1c1b1a] text-[1.25vw] max-md:text-[3.5vw] max-[1025px]:text-[3vw] max-[1025px]:w-full">
           <MaskTextReveal>
 
             <p data-para-anim>We believe finding the right home begins with understanding how you want to live.</p>
@@ -108,7 +108,7 @@ const About = () => {
        
 
 
-        <div className=" mt-[7vw] max-md:mt-[8vw]">
+        <div className=" mt-[7vw] max-md:mt-[16vw]">
           <InfiniteCarouselComp
             slides={carouselSlides}
             initialIndex={CENTER_SLIDE_INDEX}

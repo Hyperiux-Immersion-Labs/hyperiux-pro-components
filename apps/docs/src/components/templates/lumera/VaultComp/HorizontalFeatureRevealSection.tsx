@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useId, useRef, type CSSProperties } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -123,6 +123,14 @@ export default function HorizontalFeatureRevealSection() {
 
   const textFillSlideRef = useRef<HTMLDivElement | null>(null);
   const textFillHeadingRef = useRef<HTMLHeadingElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIsMobile = () => setIsMobile(window.innerWidth <= 1025);
+    checkIsMobile();
+    window.addEventListener("resize", checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
 
   useEffect(() => {
     const styleId = `${TEXT_FILL_STYLE_PREFIX}${textFillId}`;
@@ -215,7 +223,27 @@ export default function HorizontalFeatureRevealSection() {
           }
         }
       } else if (characters.length) {
-        gsap.set(characters, { className: "split-chars show" });
+        if (reduceMotion) {
+          gsap.set(characters, { className: "split-chars show" });
+        } else {
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: `#${textFillId}`,
+              start: "top 80%",
+              end: "bottom 40%",
+              scrub: 0.3,
+            },
+          }).to(
+            characters,
+            {
+              className: "split-chars show",
+              duration: 0.4,
+              stagger: 0.04,
+              ease: "power2.inOut",
+            },
+            0,
+          );
+        }
       }
 
       if (!isDesktop) {
@@ -356,12 +384,15 @@ export default function HorizontalFeatureRevealSection() {
             </div>
           </div>
 
-          {RESIDENCE_DATA.map((item) => (
-            <article
+          {RESIDENCE_DATA.map((item) => {
+            const CardTag = isMobile ? FadeUp : "article";
+            return (
+            <CardTag
               key={item.number}
+              {...(isMobile ? { as: "article" as const } : {})}
               className="lumera-residence-card flex h-screen w-[98vw] flex-none overflow-hidden rounded-none bg-[#F3F3F3] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col"
             >
-              <div className="h-full w-[42%] overflow-hidden max-md:h-[60vh]  max-[1025px]:w-full max-[1025px]:rounded-[4vw]">
+              <div className="h-full w-[42%] overflow-hidden max-md:h-[60vh] max-[1025px]:h-[60vh]  max-[1025px]:w-full max-[1025px]:rounded-[4vw]">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -379,15 +410,15 @@ export default function HorizontalFeatureRevealSection() {
 
               <div className="flex  flex-col justify-between px-[3.5vw] py-[3.5vw] max-[1025px]:w-full max-[1025px]:px-0 max-[1025px]:pt-[7vw]">
                 <div>
-                  <p className="lumera-residence-number text-[#1c1b1a] font-neue-montreal text-[5.8vw] font-medium leading-none  opacity-0 max-[1025px]:text-[12vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-number text-[#1c1b1a] font-neue-montreal text-[5.8vw] font-medium leading-none max-[1025px]:text-[7vw]  opacity-0 max-md:text-[12vw] max-[1025px]:opacity-100">
                     {item.number}
                   </p>
 
-                  <h3 className="lumera-residence-title mt-[2vw]  font-neue-montreal text-[3.8vw] font-medium  leading-[1.04] text-[#1c1b1a] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-[1025px]:text-[7vw] max-[1025px]:opacity-100">
+                  <h3 className="lumera-residence-title mt-[2vw] max-[1025px]:text-[5vw] font-neue-montreal text-[3.8vw] font-medium  leading-[1.04] text-[#1c1b1a] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-md:text-[7vw] max-[1025px]:opacity-100">
                     {item.title}
                   </h3>
 
-                  <p className="lumera-residence-copy mt-[3vw] max-w-[38vw] text-[1.25vw] leading-[1.6] text-[#1c1b1a] opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[4vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-copy mt-[3vw] max-w-[38vw] text-[1.25vw] leading-[1.6] text-[#1c1b1a] opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[3vw] max-md:text-[4vw] max-[1025px]:opacity-100">
                     {item.description}
                   </p>
 
@@ -395,7 +426,7 @@ export default function HorizontalFeatureRevealSection() {
                     {item.stats.map((stat, index) => (
                       <div
                         key={`${item.number}-${stat.label}`}
-                        className={`lumera-residence-stat w-[14vw] relative py-[0.95vw] opacity-0 max-[1025px]:py-[4vw] max-[1025px]:opacity-100 ${
+                        className={`lumera-residence-stat w-[14vw] max-[1025px]:w-[45vw] relative py-[0.95vw] opacity-0 max-[1025px]:py-[4vw] max-[1025px]:opacity-100 ${
                           index === 0 ? "pr-[2vw]" : "pl-[2vw] pr-[1.2vw]"
                         } ${
                           index === item.stats.length - 1 ? "pr-0" : ""
@@ -407,10 +438,10 @@ export default function HorizontalFeatureRevealSection() {
                             className="absolute left-0 top-1/2 h-[6vw] w-px -translate-y-1/2 bg-[#DADADA] max-[1025px]:hidden"
                           />
                         ) : null}
-                        <p className="text-[1.45vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[5vw]">
+                        <p className="text-[1.45vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[3.5vw] max-md:text-[5vw]">
                           {stat.value}
                         </p>
-                        <p className="mt-[0.8vw] text-[1.25vw] text-black max-[1025px]:mt-[1.8vw] max-[1025px]:text-[3.2vw]">
+                        <p className="mt-[0.8vw] text-[1.25vw] text-black max-[1025px]:mt-[1.8vw] max-[1025px]:text-[2.5vw] max-md:text-[3.2vw]">
                           {stat.label}
                         </p>
                       </div>
@@ -452,8 +483,9 @@ export default function HorizontalFeatureRevealSection() {
                   />
                 </div>
               </div>
-            </article>
-          ))}
+            </CardTag>
+            );
+          })}
         </div>
       </div>
     </section>

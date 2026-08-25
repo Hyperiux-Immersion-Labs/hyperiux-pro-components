@@ -73,14 +73,18 @@ const ParallaxFooter = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-3 text-[#1C1B1A]">
-          <Link href="tel:+12125550186" className="font-neue-montreal text-[3.4vw] font-medium leading-none max-md:text-[5.5vw] max-[1025px]:text-[5vw]">
-            <span data-para-anim>+1 (212) 555-0186</span>
-          </Link>
-          <Link href="mailto:hello@lumeraheights.com">
-            <p data-para-anim className="font-neue-montreal text-[3.2vw] font-medium max-md:text-[5.5vw] max-[1025px]:text-[5vw]">
-              hello@lumeraheights.com
-            </p>
-          </Link>
+          <CharStaggerButton
+            href="tel:+12125550186"
+            text="+1 (212) 555-0186"
+            className="text-[#1C1B1A]"
+            textClassName="font-neue-montreal text-[3.4vw] font-medium leading-none max-md:text-[5.5vw] max-[1025px]:text-[5vw]"
+          />
+          <CharStaggerButton
+            href="mailto:hello@lumeraheights.com"
+            text="hello@lumeraheights.com"
+            className="text-[#1C1B1A]"
+            textClassName="font-neue-montreal text-[3.2vw] font-medium max-md:text-[5.5vw] max-[1025px]:text-[5vw]"
+          />
         </div>
 
         <div className="fadeup flex items-center justify-between pt-[7vw] max-md:gap-[5vw] max-[1025px]:flex-col max-[1025px]:gap-[3vw]">

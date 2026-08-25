@@ -104,10 +104,9 @@ export default function Project() {
           speed={0.8}
           smoothness={9}
           pauseOnHover
-          wrapperClassName="fadeup pl-[25.5%] pr-[5%] pb-[1vw] max-[1025px]:pl-[5%]"
-          wrapperStyle={{ gap: "1.2vw" }}
+          wrapperClassName="fadeup pl-[25.5%] pr-[5%] pb-[1vw] gap-[1.2vw] max-[1025px]:pl-[5%] max-[1025px]:gap-[8vw]"
           itemClassName="cursor-grab active:cursor-grabbing"
-          progressTrackClassName="mt-[3.6vw] ml-[25.5%] h-[0.4vw] w-[74vw] max-md:mt-[7vw] max-md:ml-10 max-md:h-[1.2vw] max-md:w-[80vw] max-[1025px]:ml-[8%]"
+          progressTrackClassName="mt-[3.6vw] ml-[25.5%] h-[0.4vw] w-[74vw] max-md:mt-[7vw] max-md:ml-10 max-md:h-[1.2vw]  max-md:w-[80vw] max-[1025px]:ml-[8%]"
         >
           {interiorImages.map((src, index) => (
             <div
