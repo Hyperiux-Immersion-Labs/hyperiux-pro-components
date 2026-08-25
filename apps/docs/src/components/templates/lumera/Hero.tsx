@@ -8,7 +8,7 @@ import { useLenis } from "lenis/react";
 import { X } from "lucide-react";
 import PrimaryButton from "./PrimaryButton";
 import BlackButton from "./BlackButton";
-import EnquiryForm from "./VaultComp/EnquiryForm";
+import AnimatedForm from "./VaultComp/animated-form";
 import heroBackground from "./assets/lumera-hero.png";
 import { fadeIn } from "./gsapAnimations";
 import MaskTextReveal from "./VaultComp/mask-text-reveal";
@@ -234,7 +234,7 @@ const Hero: React.FC = () => {
           }}
         >
           <div
-            className={`relative w-full max-w-[42vw] rounded-[1.4vw] bg-[#f7f2ea] p-[2vw] shadow-2xl transition-all duration-300 max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw] ${
+            className={`relative w-full max-w-[42vw] rounded-[1.4vw] bg-[white] p-[2vw] shadow-2xl transition-all duration-300 max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw] ${
               enquiryOpen ? "translate-y-0 scale-100 opacity-100" : "translate-y-[2vw] scale-[0.98] opacity-0"
             }`}
           >
@@ -246,7 +246,7 @@ const Hero: React.FC = () => {
             >
               <X className="h-[1.2vw] w-[1.2vw] max-[1025px]:h-[4vw] max-[1025px]:w-[4vw]" strokeWidth={1.8} />
             </button>
-            <EnquiryForm />
+            <AnimatedForm />
           </div>
         </div>
       )}

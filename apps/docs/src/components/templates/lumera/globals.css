@@ -47,7 +47,5 @@ html body {
   display: none;
 }
 
-/* Swiper assigns these classes itself at runtime (swiper/react), so they
-   can't be scoped by CSS Modules - they live here as plain global rules. */
 
 

@@ -1,7 +1,34 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { z } from "zod";
-import ContactForm, { type FieldConfig } from "@/components/animated-form/ContactForm";
+import ContactForm, { type FieldConfig } from "./ContactForm";
+
+const enquiryFields: FieldConfig[] = [
+  { type: "text", name: "name", label: "Full Name*", required: true },
+  { type: "email", name: "email", label: "Email Address*", required: true },
+  { type: "phone", name: "phone", label: "Phone*", required: true, defaultCountry: "IN" },
+  {
+    type: "select",
+    name: "interest",
+    label: "Interested In*",
+    required: true,
+    options: [
+      { value: "brochure", label: "Project Brochure" },
+      { value: "floor-plan", label: "Floor Plan" },
+      { value: "private-viewing", label: "Private Viewing" },
+      { value: "investment", label: "Investment Details" },
+    ],
+  },
+  { type: "textarea", name: "message", label: "Message", rows: 4 },
+  {
+    type: "checkbox",
+    name: "terms",
+    required: true,
+    label: <>I agree to be contacted about Lumera Heights.</>,
+  },
+];
 
 const nationalDigits = (value: string): string =>
   value.replace(/^\+\d+\s*/, "").replace(/\D/g, "");
@@ -31,35 +58,6 @@ const isValidPhone = (value: string): boolean => {
   const [min, max] = NATIONAL_LENGTH_BY_DIAL[dial as string] ?? [6, 14];
   return digits.length >= min && digits.length <= max;
 };
-
-const enquiryFields: FieldConfig[] = [
-  { type: "text", name: "name", label: "Full Name*", required: true },
-  { type: "email", name: "email", label: "Email Address*", required: true },
-  { type: "phone", name: "phone", label: "Phone*", required: true, defaultCountry: "IN" },
-  {
-    type: "select",
-    name: "interest",
-    label: "Interested In*",
-    required: true,
-    options: [
-      { value: "brochure", label: "Project Brochure" },
-      { value: "floor-plan", label: "Floor Plan" },
-      { value: "private-viewing", label: "Private Viewing" },
-      { value: "investment", label: "Investment Details" },
-    ],
-  },
-  { type: "textarea", name: "message", label: "Message", rows: 4 },
-  {
-    type: "checkbox",
-    name: "terms",
-    required: true,
-    label: (
-      <>
-        I agree to be contacted about Lumera Heights.
-      </>
-    ),
-  },
-];
 
 const enquirySchema = z.object({
   name: z
@@ -92,9 +90,27 @@ async function submitEnquiry(data: Record<string, any>) {
   console.log("Lumera enquiry submitted:", data);
 }
 
-export default function EnquiryForm() {
+interface AnimatedFormProps {
+  accentColor?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  inputBackgroundColor?: string;
+  fieldBorderColor?: string;
+  inputRoundedness?: number;
+  duration?: number;
+}
+
+export default function AnimatedForm({
+  accentColor = "#ca8216",
+  backgroundColor = "#ffffff",
+  textColor = "#1c1b1a",
+  inputBackgroundColor = "#ffffff",
+  fieldBorderColor = "#d8d2c8",
+  inputRoundedness = 28,
+  duration = 0.3,
+}: AnimatedFormProps) {
   return (
-    <div className="w-full">
+    <div className="w-full" style={{ backgroundColor }}>
       <div className="mb-[2vw] flex flex-col gap-[0.8vw] max-[1025px]:mb-[5vw]">
         <p className="font-body text-[0.85vw] uppercase tracking-[0.2em] text-[#ca8216] max-[1025px]:text-[2.5vw] max-md:text-[3vw]">
           Private Enquiry
@@ -112,12 +128,12 @@ export default function EnquiryForm() {
         loadingLabel="Sending..."
         successMessage="Thank you. Our advisor will contact you shortly."
         errorMessage="Something went wrong. Please try again."
-        accentColor="#ca8216"
-        textColor="#1c1b1a"
-        inputBackgroundColor="#ffffff"
-        fieldBorderColor="#d8d2c8"
-        inputRoundedness={28}
-        duration={0.3}
+        accentColor={accentColor}
+        textColor={textColor}
+        inputBackgroundColor={inputBackgroundColor}
+        fieldBorderColor={fieldBorderColor}
+        inputRoundedness={inputRoundedness}
+        duration={duration}
       />
     </div>
   );

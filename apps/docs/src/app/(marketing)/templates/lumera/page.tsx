@@ -12,12 +12,11 @@ import ShowCase from "@/components/templates/lumera/ShowCase";
 import Gallery from "@/components/templates/lumera/Gallery";
 import Bringing from "@/components/templates/lumera/Bringing";
 import ProjectHover from "@/components/templates/lumera/ProjectHover";
-import Faq from "@/components/templates/lumera/Faq";
+import AnimatedFaq from "@/components/templates/lumera/VaultComp/animated-faq";
 import Highlights from "@/components/templates/lumera/Highlights";
 import Roi from "@/components/templates/lumera/Roi";
-import Footer from "@/components/templates/lumera/Footer";
+import ParallaxFooter from "@/components/templates/lumera/VaultComp/parallax-footer";
 import CTA from "@/components/templates/lumera/CTA";
-
 
 
 export default function Page() {
@@ -33,16 +32,14 @@ export default function Page() {
       <Works />
       <Project />
       <ShowCase />
-      
-     <Gallery/>
+      <Gallery/>
       <Bringing />
       <ProjectHover />
-      <Faq />
+      <AnimatedFaq />
       <Highlights />
       <Roi />
       <CTA />
-      
-      <Footer />
+      <ParallaxFooter />
     </div>
   );
 }

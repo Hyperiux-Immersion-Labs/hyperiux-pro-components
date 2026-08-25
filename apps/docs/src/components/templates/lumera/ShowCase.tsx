@@ -103,7 +103,7 @@ const ShowCase = () => {
             <br />
             Dubai Living
           </h2>
-          <div className="w-[25vw] h-[25vw] overflow-hidden rounded-[1000px] video-block absolute right-[10%] rtl:left-[10%] rtl:right-auto max-[1025px]:w-[90vw] max-[1025px]:h-[50vw] max-[1025px]:static max-[1025px]:rounded-[4vw]">
+          <div className="w-[40vw] h-[22vw] overflow-hidden rounded-full video-block absolute right-[10%] rtl:left-[10%] rtl:right-auto max-[1025px]:w-[90vw] max-[1025px]:h-[50vw] max-[1025px]:static max-[1025px]:rounded-[4vw]">
             <video
               ref={videoRef}
               poster={showcasePoster.src}
@@ -113,7 +113,7 @@ const ShowCase = () => {
               className="w-full h-full object-cover object-center"
             ></video>
             <div
-              className={`inner-detail absolute bottom-[8%] left-1/2 translate-x-[-50%] z-[6] flex items-center gap-[2vw] rounded-full bg-white/25 backdrop-blur-[10px] px-[2.2vw] py-[1.2vw] opacity-0 max-[1025px]:static max-[1025px]:mt-[4vw] max-[1025px]:w-fit max-[1025px]:flex-wrap max-[1025px]:gap-[3vw] max-[1025px]:px-[5vw] max-[1025px]:py-[4vw] max-[1025px]:opacity-100 max-md:opacity-100`}
+              className={`inner-detail absolute bottom-[8%] left-1/2 translate-x-[-50%] z-[6] flex items-center gap-[2vw] rounded-full bg-black/30 backdrop-blur-[10px] px-[2.2vw] py-[1.2vw] opacity-0 max-[1025px]:static max-[1025px]:mt-[4vw] max-[1025px]:w-fit max-[1025px]:flex-wrap max-[1025px]:gap-[3vw] max-[1025px]:px-[5vw] max-[1025px]:py-[4vw] max-[1025px]:opacity-100 max-md:opacity-100`}
             >
               <p data-para-anim className="text-[1.1vw] leading-[1.25] text-white max-[1025px]:text-[3vw]">
                 Nearby

@@ -3,7 +3,7 @@ import React from "react";
 const roiStats = [
   { value: "1.85M", suffix: "/AED", label: "Starting Price" },
   { value: "60 / 40", label: "Payment Plan" },
-  { value: "1, 3 BR", label: "Residences" },
+  { value: "1-3 BHK", label: "Residences" },
   { value: "Q4 2028", label: "Expected Handover" },
 ];
 

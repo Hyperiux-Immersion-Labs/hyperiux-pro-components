@@ -11,7 +11,7 @@ const ctaImages = [image1, image2, image3, image4];
 
 const CTA = () => {
   return (
-    <section className="px-[5%] max-md:px-[6%] py-[6%] max-md:py-[14%] max-[1025px]:py-[8%]" id="cta">
+    <section className="relative z-10 bg-white px-[5%] py-[6%] max-md:px-[6%] max-md:py-[14%] max-[1025px]:py-[8%]" id="cta">
       <div className="w-full overflow-hidden rounded-[2.5vw] border border-black max-md:rounded-[6vw] max-[1025px]:rounded-[4vw]">
         <div className="flex flex-col items-center gap-[1.8vw] px-[6vw] pt-[5vw] text-center max-md:gap-[6vw] max-md:px-[6vw] max-md:pt-[14vw] max-[1025px]:gap-[3vw] max-[1025px]:px-[8vw] max-[1025px]:pt-[8vw]">
           <h2
