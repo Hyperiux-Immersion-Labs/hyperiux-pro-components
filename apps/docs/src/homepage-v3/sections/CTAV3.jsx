@@ -9,7 +9,7 @@ import LineReveal from "@/components/Animations/LineReveal";
 function CTAButtonV3s() {
   const { open } = useWorkWithHyperiuxModal();
   return (
-    <div className="w-fit flex max-md:gap-[2vw] max-sm:gap-[7vw] items-center max-sm:flex-col max-md:items-start max-md:w-[75%] max-md:mx-auto max-sm:w-[88%] gap-[1.5vw]">
+    <div className="w-fit flex max-[1025px]:gap-[3vw] max-md:gap-[2vw] max-sm:gap-[5vw] items-center max-sm:flex-col max-md:items-start max-md:mx-auto max-md:w-full max-sm:w-full gap-[1.5vw]">
       <ButtonV3
         variant="outline"
         className="max-md:w-full"
@@ -44,22 +44,27 @@ export default function CTAV3() {
           Need something custom? We&apos;ll design and build it from scratch.
         </SplitLine>
 
-        <div className="w-fit flex max-[1025px]:gap-[3vw] max-md:gap-[2vw] max-sm:gap-[5vw] items-center max-sm:flex-col max-md:items-start max-md:mx-auto max-md:w-full max-sm:w-full gap-[1.5vw]">
-          <ButtonV3
-            variant="outline"
-            className="max-md:w-full"
-            text="See Our Work"
-            href="/hyperiux-creds-2026"
-          />
-          <ButtonV3
-            variant="orange"
-            className="max-md:w-full"
-            text="Work with Hyperiux"
-            href="#"
-          />
-        </div>
-
-        {/* <CTAButtonV3s /> */}
+        <Suspense
+          fallback={
+            <div className="w-fit flex max-[1025px]:gap-[3vw] max-md:gap-[2vw] max-sm:gap-[5vw] items-center max-sm:flex-col max-md:items-start max-md:mx-auto max-md:w-full max-sm:w-full gap-[1.5vw]">
+              <ButtonV3
+                variant="outline"
+                className="max-md:w-full"
+                text="See Our Work"
+                href="https://www.hyperiux.com/hyperiux-creds-2026.pdf"
+                target_blank
+              />
+              <ButtonV3
+                variant="orange"
+                className="max-md:w-full"
+                text="Work with Hyperiux"
+                href="#"
+              />
+            </div>
+          }
+        >
+          <CTAButtonV3s />
+        </Suspense>
       </div>
 
       <Piano

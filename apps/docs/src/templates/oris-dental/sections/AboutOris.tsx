@@ -1,4 +1,6 @@
 import React from 'react'
+import SplitTextLines from '../components/SplitTextLines'
+import OrisSlotCounter from '../components/OrisSlotCounter'
 
 const STATS = [
   {
@@ -21,7 +23,7 @@ const STATS = [
 
 export default function AboutOris() {
   return (
-    <section id='about-oris' className='min-h-screen w-full relative z-10 text-oris-secondary bg-white oris-paddx flex flex-col justify-between py-[6vw]'>
+    <section id='about-oris' className='min-h-screen w-full relative z-10 bg-white oris-paddx flex flex-col justify-between py-[6vw]'>
       {/* Top Section: Subtitle Tag on Left, Main Heading on Right */}
       <div className="flex justify-between items-start w-full">
         {/* Left Subtitle Tag */}
@@ -32,9 +34,9 @@ export default function AboutOris() {
 
         {/* Right Main Heading */}
         <div className="w-[60vw]">
-          <h2 className="oris-text64 text-oris-secondary  leading-[1.2] font-normal">
+          <SplitTextLines as="h2" className="oris-text64 text-oris-secondary leading-[1.2] font-normal" start="top 85%">
             At Oris Dental, we believe everyone deserves a confident smile. Our skilled team offers personalized care using modern techniques and a gentle approach.
-          </h2>
+          </SplitTextLines>
         </div>
       </div>
 
@@ -42,12 +44,15 @@ export default function AboutOris() {
       <div className="grid grid-cols-4 gap-[7vw] w-full pt-[8vw]">
         {STATS.map((stat, idx) => (
           <div key={idx} className="flex flex-col shrink-0">
-            <span className="oris-text64 font-normal! text-oris-secondary leading-none">
-              {stat.number}
-            </span>
-            <p className="oris-text22 text-oris-secondary mt-[1.2vw] max-w-[22vw] leading-snug">
+            <OrisSlotCounter
+              value={stat.number}
+              className="oris-text64 font-normal! text-oris-secondary leading-none"
+              baseDelay={idx * 0.12}
+              duration={1.6}
+            />
+            <SplitTextLines as="p" className="oris-text22 text-oris-secondary mt-[1.2vw] max-w-[22vw] leading-snug" delay={idx * 0.05}>
               {stat.label}
-            </p>
+            </SplitTextLines>
           </div>
         ))}
       </div>

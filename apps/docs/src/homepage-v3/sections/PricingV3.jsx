@@ -377,6 +377,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
 
                         <p className="font-geist-mono mt-[1.2vw] text-[0.9vw] text-light-grey max-[1025px]:mt-[2.5vw] max-[1025px]:text-[1.7vw] max-md:mt-[3vw] max-md:text-[1.8vw] max-sm:mt-[5vw] max-sm:text-[3.2vw]">
                             Instant access · npx hyperiux login · Cancel anytime
+                            {isIndia ? " · 18% GST added at checkout" : ""}
                         </p>
                     </div>
                 </div>

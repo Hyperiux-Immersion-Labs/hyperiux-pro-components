@@ -21,8 +21,8 @@ const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 // Same shape the desktop bar exposes, in the order the sheet stacks them: the
 // two menus expand in place, the plain links sit under them.
 const SECTIONS = [
-  { key: "categories", label: "Categories", href: "/effects/featured" },
-  { key: "docs", label: "Docs", href: "/docs" },
+  { key: "categories", label: "Effects", href: "#" },
+  { key: "docs", label: "Docs", href: "#" },
 ];
 
 const LINKS = [
@@ -320,15 +320,6 @@ export default function NavbarMobileV3({
                   className="border-t border-white/10"
                 >
                   <div className="flex items-center justify-between">
-                    <Link
-                      prefetch={false}
-                      href={href}
-                      onClick={close}
-                      className="py-[4.5vw] text-[5.5vw] text-white/90 md:py-[2.6vw] md:text-[3.2vw]"
-                    >
-                      {label}
-                    </Link>
-
                     <button
                       type="button"
                       onClick={() =>
@@ -336,17 +327,20 @@ export default function NavbarMobileV3({
                       }
                       aria-label={`${expanded ? "Collapse" : "Expand"} ${label}`}
                       aria-expanded={expanded}
-                      className="relative flex size-[8vw] shrink-0 items-center justify-center bg-grey text-primary md:size-[4.6vw]"
+                      className="flex w-full items-center justify-between py-[4.5vw] text-left text-[5.5vw] text-white/90 md:py-[2.6vw] md:text-[3.2vw]"
                     >
-                      <span
-                        aria-hidden="true"
-                        className="absolute h-px w-[3.5vw] bg-current md:w-[2vw]"
-                      />
-                      <span
-                        aria-hidden="true"
-                        className={`absolute h-px w-[3.5vw] bg-current md:w-[2vw] transition-transform duration-300 ease-out motion-reduce:transition-none ${expanded ? "rotate-180" : "rotate-90"
-                          }`}
-                      />
+                      <span>{label}</span>
+                      <div className="relative flex size-[8vw] shrink-0 items-center justify-center bg-grey text-primary md:size-[4.6vw]">
+                        <span
+                          aria-hidden="true"
+                          className="absolute h-px w-[3.5vw] bg-current md:w-[2vw]"
+                        />
+                        <span
+                          aria-hidden="true"
+                          className={`absolute h-px w-[3.5vw] bg-current md:w-[2vw] transition-transform duration-300 ease-out motion-reduce:transition-none ${expanded ? "rotate-180" : "rotate-90"
+                            }`}
+                        />
+                      </div>
                     </button>
                   </div>
 

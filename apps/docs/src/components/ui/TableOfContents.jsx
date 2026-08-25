@@ -141,8 +141,8 @@ export function TableOfContents({
 
       setIsVisible(
         !hasReachedStop &&
-          rect.top <= window.innerHeight * 0.45 &&
-          rect.bottom >= window.innerHeight * 0.25
+        rect.top <= window.innerHeight * 0.45 &&
+        rect.bottom >= window.innerHeight * 0.25
       );
     };
 
@@ -267,9 +267,9 @@ export function TableOfContents({
         className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
       />
 
-      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2  bg-[#272727] p-2 py-4 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
+      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 bg-[#272727] p-2 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
         <ul
-          className=" pb-4 overflow-y-auto max-h-[calc(60vh-1rem)] pr-2 toc"
+          className="overflow-y-auto max-h-[calc(60vh-1rem)] toc"
           onMouseLeave={() => setHoveredId(null)}
         >
           {items.map((item) => {
@@ -289,9 +289,8 @@ export function TableOfContents({
                 >
                   <span
                     aria-hidden="true"
-                    className={`absolute inset-0 -z-10 origin-top bg-[#ff5f00] transition-transform duration-300 ease-out motion-reduce:transition-none ${
-                      highlighted ? "scale-y-100" : "scale-y-0"
-                    }`}
+                    className={`absolute inset-0 -z-10 origin-top bg-[#ff5f00] transition-transform duration-300 ease-out motion-reduce:transition-none ${highlighted ? "scale-y-100" : "scale-y-0"
+                      }`}
                   />
                   <span className="relative z-10 block px-3 py-2 text20 font-medium leading-tight text-white">
                     {item.text}
@@ -303,7 +302,7 @@ export function TableOfContents({
         </ul>
       </div>
 
-      <ul className="flex w-12 flex-col items-end gap-5">
+      <ul className="flex w-12 flex-col items-end gap-3">
         {items.map((item) => (
           <li key={item.id}>
             <Link

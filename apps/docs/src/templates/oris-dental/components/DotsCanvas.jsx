@@ -9,7 +9,10 @@ export default function DotsCanvas({
     interactionRadius = 160,
     baseOpacity = 0.3,
     maxOpacity = 0.95,
-    lerpFactor = 0.32
+    lerpFactor = 0.32,
+    gradient = true,
+    shape = 'square',
+    className = ''
 }) {
     const canvasRef = useRef(null)
 
@@ -57,13 +60,20 @@ export default function DotsCanvas({
                 for (let j = 0; j < rows; j++) {
                     const bx = offsetX + i * spacing
                     const by = offsetY + j * spacing
+                    
+                    // Top to bottom gradient factor (0 near top, 1 near bottom)
+                    const gradFactor = gradient
+                        ? Math.min(1, Math.max(0.05, Math.pow(by / Math.max(1, height), 1.1)))
+                        : 1
+
                     dots.push({
                         bx, // Base X
                         by, // Base Y
                         x: bx,
                         y: by,
                         r: baseRadius,
-                        alpha: baseOpacity
+                        alpha: baseOpacity * gradFactor,
+                        gradFactor
                     })
                 }
             }
@@ -105,7 +115,7 @@ export default function DotsCanvas({
                 let targetX = dot.bx
                 let targetY = dot.by
                 let targetR = baseRadius
-                let targetAlpha = baseOpacity
+                let targetAlpha = baseOpacity * (dot.gradFactor || 1)
 
                 if (dist < interactionRadius) {
                     const factor = 1 - dist / interactionRadius
@@ -117,9 +127,10 @@ export default function DotsCanvas({
                     targetX = dot.bx - Math.cos(angle) * push
                     targetY = dot.by - Math.sin(angle) * push
 
-                    // Scale & brighten dot under cursor
+                    // Scale & brighten dot under cursor with gradient weighting
                     targetR = baseRadius + (maxRadius - baseRadius) * easeFactor
-                    targetAlpha = baseOpacity + (maxOpacity - baseOpacity) * easeFactor
+                    const activeAlpha = baseOpacity + (maxOpacity - baseOpacity) * easeFactor
+                    targetAlpha = activeAlpha * (gradient ? Math.max(0.35, dot.gradFactor) : 1)
                 }
 
                 // Snappy physics lerp
@@ -128,11 +139,16 @@ export default function DotsCanvas({
                 dot.r += (targetR - dot.r) * lerpFactor
                 dot.alpha += (targetAlpha - dot.alpha) * lerpFactor
 
-                // Draw dot
-                ctx.beginPath()
-                ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2)
+                // Draw square dot
                 ctx.fillStyle = `rgba(255, 255, 255, ${dot.alpha})`
-                ctx.fill()
+                if (shape === 'square') {
+                    const size = dot.r * 1.9
+                    ctx.fillRect(dot.x - size / 2, dot.y - size / 2, size, size)
+                } else {
+                    ctx.beginPath()
+                    ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2)
+                    ctx.fill()
+                }
             }
 
             animationFrameId = requestAnimationFrame(render)
@@ -146,12 +162,17 @@ export default function DotsCanvas({
             window.removeEventListener('mousemove', handleMouseMove)
             document.removeEventListener('mouseleave', handleMouseLeave)
         }
-    }, [spacing, baseRadius, maxRadius, interactionRadius, baseOpacity, maxOpacity, lerpFactor])
+    }, [spacing, baseRadius, maxRadius, interactionRadius, baseOpacity, maxOpacity, lerpFactor, gradient, shape])
 
     return (
         <canvas
             ref={canvasRef}
-            className="absolute inset-0 w-full h-full pointer-events-none z-0"
+            className={`absolute inset-0 w-full h-full pointer-events-none z-0 ${
+                gradient
+                    ? '[mask-image:linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.25)_20%,rgba(0,0,0,0.8)_60%,rgba(0,0,0,1)_100%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.25)_20%,rgba(0,0,0,0.8)_60%,rgba(0,0,0,1)_100%)]'
+                    : ''
+            } ${className}`}
         />
     )
 }
+

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useUser, useClerk } from "@clerk/nextjs";
+import { User } from "lucide-react";
 
 export default function ProfileDropdown({
   savedCount = 0,
@@ -13,7 +14,16 @@ export default function ProfileDropdown({
   const { user } = useUser();
   const { signOut } = useClerk();
 
-  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isAdmin =
+    user?.publicMetadata?.role === "admin" ||
+    user?.publicMetadata?.role === "super_admin";
+
+  const isPro =
+    plan === "pro" ||
+    user?.publicMetadata?.plan === "pro" ||
+    user?.publicMetadata?.proAccess === true ||
+    isAdmin ||
+    usage?.isAdmin === true;
 
   const usageLabel = !usage
     ? "…"
@@ -53,25 +63,39 @@ export default function ProfileDropdown({
     >
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-3 w-fit h-fit relative"
+        className="group relative flex items-center justify-center p-0.5 rounded-full cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-[#ff5f00]"
+        aria-label="User menu"
+        aria-expanded={open}
       >
-        <Image
-          src={user.imageUrl}
-          alt={user.fullName || "User"}
-          width={40}
-          height={40}
-          className="size-[3.4vw] border border-white/10 object-cover"
-        />
-
-        {plan === "pro" && (
-          <span className="px-2 py-1 text-[0.5vw] bg-white text-black font-medium absolute -top-1 -right-3">
-            PRO
-          </span>
-        )}
+        <div className="relative overflow-hidden rounded-full p-px">
+          <div
+            className="absolute -inset-[100%] animate-[spin_4s_linear_infinite] motion-reduce:animate-none"
+            style={{
+              background: isPro
+                ? "conic-gradient(from 0deg, #f16b0d, #e61216, #ff5f00, #f16b0d)"
+                : "conic-gradient(from 0deg, #2e2e2e, #666666, #999999, #333333, #2e2e2e)",
+            }}
+          />
+          <div className="relative z-10 bg-[#0c0c0c] rounded-full p-1">
+            {user.hasImage ? (
+              <Image
+                src={user.imageUrl}
+                alt={user.fullName || "User"}
+                width={40}
+                height={40}
+                className="size-9.5 object-cover rounded-full block"
+              />
+            ) : (
+              <div className="size-9.5 flex items-center justify-center rounded-full bg-[#161616] text-white/80 transition-colors group-hover:text-white group-hover:bg-[#1f1f1f]">
+                <User className="size-4 text-white/70 group-hover:text-white transition-colors" />
+              </div>
+            )}
+          </div>
+        </div>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-14 w-72  bg-[#272727] backdrop-blur-xl overflow-hidden z-50">
+        <div className="absolute right-0 top-14 w-72 bg-[#141414] border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl z-50">
           <div className="p-5 border-b border-white/10">
             <p className="text-white font-medium">
               {user.fullName}
