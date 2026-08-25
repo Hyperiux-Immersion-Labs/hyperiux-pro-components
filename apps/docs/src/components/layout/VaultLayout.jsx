@@ -7,7 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
 import { getEffectCategoryHref } from "@/lib/categories";
-import { PixelSquaresLoader } from "@/components/ui/PixelSquaresLoader";
+import { GridDots } from "@/components/grid-dots";
 
 const VaultLayoutContext = createContext({
   isSidebarOpen: true,
@@ -420,7 +420,7 @@ export function VaultLayout({
           <main className="relative min-w-0 flex-1">
             {isNavigating ? (
               <div className="absolute inset-x-0 top-0 flex h-screen items-center justify-center">
-                <PixelSquaresLoader />
+                <GridDots size={56} squareSize={8} className="text-primary" />
               </div>
             ) : (
               renderedChildren

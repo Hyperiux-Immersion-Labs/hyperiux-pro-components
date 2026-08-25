@@ -26,43 +26,74 @@ function packHex(hex) {
 }
 
 /**
- * 2x2 Glitch Pixel Squares indicator with smooth slower pixel blink
+ * Grid Squares Loader Component
  */
-function LoopedPixelSquares() {
+function GridSquares({
+  rows = 3,
+  cols = 3,
+  size = 56,
+  squareSize = 8,
+  color = '#ffffff',
+  className = '',
+  style,
+  ...props
+}) {
+  const total = rows * cols
+
   return (
-    <span
-      aria-hidden="true"
-      className="grid grid-cols-2 gap-1.5 md:gap-2"
-    >
+    <>
       <style>{`
-        @keyframes pixelGlitchInLoop {
-          0%, 22%, 44% { opacity: 0; }
-          11%, 33%, 55%, 100% { opacity: 1; }
-        }
-        @keyframes pixelGlitchFlashLoop {
-          0%, 18%, 34%, 56%, 78%, 100% { opacity: 0; }
-          9%, 26%, 45%, 67% { opacity: 1; }
-        }
-        .animate-glitch-square {
-          animation: pixelGlitchInLoop 1.6s steps(1, end) infinite;
-        }
-        .animate-glitch-cell {
-          animation: pixelGlitchFlashLoop 1.4s steps(1, end) infinite;
+        @keyframes amicro-grid-square-wave {
+          0%, 100% {
+            transform: scale(0.35) translateY(0);
+            opacity: 0.2;
+          }
+          40% {
+            transform: scale(1.15) translateY(-2px);
+            opacity: 1;
+          }
+          70% {
+            transform: scale(0.65) translateY(0);
+            opacity: 0.55;
+          }
         }
       `}</style>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <span
-          key={i}
-          style={{ animationDelay: `${i * 200}ms` }}
-          className="animate-glitch-square relative size-4 md:size-6 bg-white shadow-xl"
-        >
-          <span
-            style={{ animationDelay: `${i * 200}ms` }}
-            className="animate-glitch-cell absolute inset-0 bg-[#0e0e0e]"
-          />
-        </span>
-      ))}
-    </span>
+      <div
+        role="status"
+        aria-label="Loading"
+        className={`inline-grid gap-1 items-center justify-center select-none ${className}`}
+        style={{
+          gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+          gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
+          width: size,
+          height: size,
+          ...style,
+        }}
+        {...props}
+      >
+        {Array.from({ length: total }).map((_, i) => {
+          const row = Math.floor(i / cols)
+          const col = i % cols
+          const delay = (row + col) * 0.12
+
+          return (
+            <span
+              key={i}
+              className="rounded-none will-change-transform"
+              style={{
+                width: squareSize,
+                height: squareSize,
+                borderRadius: 0,
+                backgroundColor: color,
+                animation: 'amicro-grid-square-wave 1.4s ease-in-out infinite',
+                animationDelay: `${delay}s`,
+              }}
+            />
+          )
+        })}
+        <span className="sr-only">Loading</span>
+      </div>
+    </>
   )
 }
 
@@ -369,10 +400,10 @@ export default function PageTransition() {
         style={{ imageRendering: 'pixelated' }}
       />
 
-      {/* 2x2 Glitch Pixel Squares Indicator from PricingV3 */}
+      {/* Grid Squares Loading Indicator */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-        <div ref={logoRef} className="opacity-0">
-          <LoopedPixelSquares />
+        <div ref={logoRef} className="opacity-0 flex items-center justify-center">
+          <GridSquares size={56} squareSize={8} color="#0e0e0e" />
         </div>
       </div>
     </div>

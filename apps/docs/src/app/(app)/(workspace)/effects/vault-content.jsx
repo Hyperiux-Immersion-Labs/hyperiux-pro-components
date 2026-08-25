@@ -8,7 +8,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useVaultLayout } from "@/components/layout/VaultLayout";
-import { PixelSquaresLoader } from "@/components/ui/PixelSquaresLoader";
+import { GridDots } from "@/components/grid-dots";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
@@ -127,7 +127,11 @@ function SkeletonBlock({ className = "" }) {
 
 
 function EffectsGridSkeleton() {
-  return <PixelSquaresLoader label="Loading effects" />;
+  return (
+    <div className="flex h-96 w-full items-center justify-center">
+      <GridDots size={56} squareSize={8} className="text-primary" />
+    </div>
+  );
 }
 
 export function VaultContent({
@@ -1210,7 +1214,7 @@ function EffectsGridInner({
       {/* Loading state indicator during batch fetch */}
       {isLoadingBatch && (
         <div className="flex justify-center py-10">
-          <PixelSquaresLoader />
+          <GridDots size={56} squareSize={8} className="text-primary" />
         </div>
       )}
 
