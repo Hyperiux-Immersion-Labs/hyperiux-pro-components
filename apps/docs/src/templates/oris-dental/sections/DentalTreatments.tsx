@@ -173,30 +173,30 @@ export default function DentalTreatments({
                         }}
                         className={`relative w-full min-h-[160vh] ${
                             index === 0 ? "" : "mt-[-80vh]"
-                        } max-md:mt-0 max-md:min-h-0 max-md:mb-[6vw]`}
+                        } max-[1025px]:mt-0 max-[1025px]:min-h-0 max-[1025px]:mb-[6vw]`}
                     >
                         <div
-                            className="sticky top-[18vh] max-md:static"
+                            className="sticky top-[18vh] max-[1025px]:static"
                             style={{ zIndex: index + 1 }}
                         >
                             <div
                                 ref={(el) => {
                                     cardRefs.current[index] = el;
                                 }}
-                                className="w-full h-[62vh] max-md:h-auto rounded-[2.2vw] max-md:rounded-[24px] p-[3.5vw] max-md:p-[6vw] flex flex-col justify-between"
+                                className="w-full h-[62vh] max-[1025px]:h-auto rounded-[2.2vw] max-[1025px]:rounded-[24px] p-[3.5vw] max-[1025px]:p-[6vw] flex flex-col max-[1025px]:gap-[10vw] justify-between"
                                 style={{ backgroundColor: item.bgColor }}
                             >
                                 {/* Top: Title & Tags */}
                                 <div>
-                                    <h3 className="text-white text-[4.4vw] max-md:text-[8vw] leading-none whitespace-pre-line">
+                                    <h3 className="text-white text-[4.4vw] max-[1025px]:text-[8vw] leading-none whitespace-pre-line">
                                         {item.title}
                                     </h3>
-                                    <div className="flex flex-wrap items-center gap-[0.6vw] max-md:gap-[1.5vw] text-white oris-text22 mt-[1.6vw] max-md:mt-[3vw]">
+                                    <div className="flex flex-wrap items-center gap-[0.6vw] max-[1025px]:gap-[1.5vw] text-white oris-text22 mt-[1.6vw] max-[1025px]:mt-[8vw]">
                                         {item.tags.map((tag, tagIdx) => (
                                             <React.Fragment key={tagIdx}>
                                                 <span>{tag}</span>
                                                 {tagIdx < item.tags.length - 1 && (
-                                                    <span className="w-[0.3vw] h-[0.3vw] max-md:w-[1vw] max-md:h-[1vw] rounded-full bg-white inline-block" />
+                                                    <span className="w-[0.3vw] h-[0.3vw] max-[1025px]:w-[1vw] max-[1025px]:h-[1vw] rounded-full bg-white inline-block" />
                                                 )}
                                             </React.Fragment>
                                         ))}
@@ -205,7 +205,7 @@ export default function DentalTreatments({
 
                                 {/* Bottom: Description */}
                                 <div>
-                                    <p className="text-white oris-text32 max-md:text-[3.8vw] max-w-[65vw] max-md:max-w-full">
+                                    <p className="text-white oris-text32  max-w-[65vw] max-[1025px]:max-w-full">
                                         {item.description}
                                     </p>
                                 </div>

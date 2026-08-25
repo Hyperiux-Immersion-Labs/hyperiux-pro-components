@@ -1,14 +1,33 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useLenis } from 'lenis/react'
 import OrisDotFillBtn from './OrisDotFillBtn'
 
 export default function OrisNav() {
     const [hidden, setHidden] = useState(false)
+    const [loaded, setLoaded] = useState(false)
     const prevScrollRef = useRef(0)
 
+    useEffect(() => {
+        const handleLoaderFinished = () => {
+            setTimeout(() => {
+                setLoaded(true)
+            }, 300)
+        }
+
+        if (typeof window !== 'undefined' && (window as any).__orisLoaderFinished) {
+            setLoaded(true)
+            return
+        }
+
+        window.addEventListener('oris-loader-finished', handleLoaderFinished, { once: true })
+        return () => window.removeEventListener('oris-loader-finished', handleLoaderFinished)
+    }, [])
+
     useLenis(({ scroll, velocity, direction }) => {
+        if (!loaded) return
+
         // At the very top, always show navbar
         if (scroll <= 60) {
             setHidden(false)
@@ -28,10 +47,12 @@ export default function OrisNav() {
         prevScrollRef.current = scroll
     })
 
+    const isVisible = loaded && !hidden
+
     return (
         <header
-            className={`text-oris-primary fixed top-0 left-0 z-100 flex items-center w-full justify-between oris-paddx py-[1.5vw] transition-transform duration-500 ${
-                hidden ? '-translate-y-full' : 'translate-y-0'
+            className={`text-oris-primary fixed top-0 left-0 z-100 flex items-center w-full justify-between oris-paddx py-[1.5vw] transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                isVisible ? 'translate-y-0' : '-translate-y-full'
             }`}
         >
             <p className="oris-text32">OrisDental</p>
