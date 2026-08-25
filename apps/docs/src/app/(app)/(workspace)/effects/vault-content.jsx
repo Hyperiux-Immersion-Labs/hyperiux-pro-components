@@ -762,7 +762,7 @@ export function VaultContent({
 
               <div
                 className={[
-                  "category-fadeup flex items-center gap-2.5 font-geist-mono",
+                  "category-fadeup flex items-center gap-2.5",
                   "flex-wrap",
                   "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto max-[1025px]:px-6",
                   "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",

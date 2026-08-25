@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getEffectHref } from "@/lib/categories";
-import { resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
+import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 
 const CARD_SIZES = "(max-width: 768px) 80vw, (max-width: 1025px) 40vw, 22vw";
@@ -46,24 +45,75 @@ function resolveCoverImage(effect) {
 
 function TrendingEffectCard({ effect, priority = false }) {
   const [imageError, setImageError] = useState(false);
+  const [active, setActive] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const [hasAppeared, setHasAppeared] = useState(false);
+
+  const cardRef = useRef(null);
+  const videoRef = useRef(null);
+
   const coverImage = useMemo(() => resolveCoverImage(effect), [effect]);
+  const videoPreviewUrl = useMemo(() => resolveEffectVideoUrl(effect), [effect]);
   const categoryLabel = formatLabel(
     (effect.categories?.length ? effect.categories[0] : effect.category) ||
     "components",
   );
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasAppeared(true);
+        } else {
+          setActive(false);
+        }
+      },
+      { rootMargin: "200px 0px", threshold: 0.1 }
+    );
+
+    observer.observe(card);
+    return () => observer.disconnect();
+  }, []);
+
+  // Drive the <video> imperatively so React never owns `src` - see the same
+  // pattern (and crbug.com/1144736 rationale) in EffectCardNew.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !videoPreviewUrl) return;
+
+    if (active) {
+      if (video.getAttribute("src") !== videoPreviewUrl) {
+        video.src = videoPreviewUrl;
+        video.load();
+      }
+      video.play().catch(() => {});
+    } else if (video.getAttribute("src")) {
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+    }
+  }, [active, videoPreviewUrl]);
+
+  const showVideo = active && videoReady;
 
   return (
     <Link
       href={getEffectHref(effect)}
       prefetch={false}
       draggable={false}
+      ref={cardRef}
+      onMouseEnter={() => videoPreviewUrl && setActive(true)}
+      onMouseLeave={() => setActive(false)}
       className="group relative block h-full w-full overflow-hidden bg-[#161616]"
     >
       <span className="absolute left-5 top-3 z-10 bg-[#2B2B2B] px-3 py-[0.1vw] text-[0.8vw]  tracking-[0.06em] text-white max-md:left-5 max-md:top-5 max-md:px-4 max-md:py-1.5 ">
         {categoryLabel}
       </span>
 
-      <div className="absolute inset-x-3 top-[22%] h-[62%] bottom-3 overflow-hidden bg-[#202020] md:inset-x-5 md:top-[20%] md:bottom-5">
+      <div className="absolute inset-x-3  h-[64%]  overflow-hidden bg-[#202020] md:inset-x-5 top-[17.5%] ">
         {coverImage && !imageError ? (
           <Image
             src={coverImage}
@@ -75,11 +125,34 @@ function TrendingEffectCard({ effect, priority = false }) {
             loading={priority ? undefined : "lazy"}
             draggable={false}
             onError={() => setImageError(true)}
-            className="object-cover object-center select-none transition-transform duration-500 group-hover:scale-[1.04]"
+            className={`object-cover object-center select-none transition-[opacity,transform] duration-500 group-hover:scale-[1.04] ${
+              showVideo ? "opacity-0" : "opacity-100"
+            }`}
           />
         ) : (
           <div className="h-full w-full bg-[#202020]" />
         )}
+        {hasAppeared && videoPreviewUrl && (
+          <video
+            ref={videoRef}
+            muted
+            loop
+            playsInline
+            preload="none"
+            onLoadedData={() => setVideoReady(true)}
+            onEmptied={() => setVideoReady(false)}
+            onError={() => setVideoReady(false)}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+              showVideo ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        )}
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-4 bottom-3 z-10  ">
+        <p className="truncate px-0.5 pb-1.5 font-sans text-[1.15vw] font-medium leading-none text-white max-md:text-sm">
+          {effect.title || effect.name}
+        </p>
       </div>
     </Link>
   );
@@ -266,7 +339,7 @@ export default function TrendingRightNow({ effects = [] }) {
     <section className="relative w-full overflow-hidden  px-8 pt-16 pb-4 max-md:px-0 max-md:pt-12">
       <div className="mb-7 flex items-center max-sm:px-5 justify-between max-md:mb-5">
         <h2 className="font-sans text-2xl font-medium text-foreground max-md:text-2xl">
-          Trending Right Now
+          Trending
         </h2>
 
         <div className="flex shrink-0 items-center gap-2">
@@ -314,7 +387,7 @@ export default function TrendingRightNow({ effects = [] }) {
           {loopEffects.map((effect, index) => (
             <div
               key={`${effect.name}-${index}`}
-              className="h-60 w-80 shrink-0 max-md:h-44 max-md:w-64"
+              className="h-70 w-90 shrink-0 max-md:h-44 max-md:w-64"
             >
               <TrendingEffectCard effect={effect} priority={index < 4} />
             </div>
