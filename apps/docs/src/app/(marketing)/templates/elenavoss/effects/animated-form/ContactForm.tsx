@@ -330,6 +330,16 @@ export default function ContactForm({
           >
             {fields.map((field) => renderField(field))}
 
+            {/* Real submit button, visually hidden - DotFillBtn below
+                renders a link, not a native <button type="submit">, so
+                without this the form has no "default button" and pressing
+                Enter in a field does nothing. This gives the browser's own
+                native Enter-submits-the-form behavior a real target,
+                exactly equivalent to clicking Send. Out of tab order
+                (tabIndex=-1) so keyboard users don't land on an invisible
+                duplicate of the visible button below. */}
+            <button type="submit" disabled={isLoading} className="hidden" aria-hidden="true" tabIndex={-1} />
+
             <div className="flex items-center justify-start  max-md:mt-[10vw]">
               <DotFillBtn
                 btnText={isLoading ? loadingLabel : submitLabel}

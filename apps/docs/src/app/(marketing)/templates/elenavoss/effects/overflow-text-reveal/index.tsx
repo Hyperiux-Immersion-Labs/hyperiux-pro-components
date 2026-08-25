@@ -52,6 +52,14 @@ interface OverflowTextRevealProps {
    *  timing is measured from mount, so a trigger that fires later than
    *  mount (rare for above-the-fold text) would shift it later too. */
   completeOverlap?: number;
+  /** Gates when the reveal actually starts. Defaults to true (starts as
+   *  soon as it would have before this prop existed). Pass false to hold
+   *  the text hidden-but-in-the-DOM (still server-rendered, still crawlable,
+   *  just not yet split/animated) until some external event - flip it to
+   *  true and the reveal begins then. Built for chaining multiple
+   *  OverflowTextReveal instances off of one another's onComplete without
+   *  hardcoding guessed durations. */
+  start?: boolean;
 }
 
 export default function OverflowTextReveal({
@@ -66,6 +74,7 @@ export default function OverflowTextReveal({
   duration = 0.5,
   onComplete,
   completeOverlap = 0,
+  start = true,
 }: OverflowTextRevealProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const splitRefs = useRef<any[]>([]);
@@ -74,7 +83,7 @@ export default function OverflowTextReveal({
   const targetsRef = useRef<any[]>([]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !start) return;
 
     splitRefs.current = [];
     targetsRef.current = [];
@@ -219,7 +228,7 @@ export default function OverflowTextReveal({
       if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
     };
-  }, [animateOnScroll, delay, scrub, direction, splitBy, stagger, duration, onComplete, completeOverlap]);
+  }, [animateOnScroll, delay, scrub, direction, splitBy, stagger, duration, onComplete, completeOverlap, start]);
 
   return (
     <div ref={containerRef} data-copy-wrapper="true" className={`opacity-0 ${className}`}>

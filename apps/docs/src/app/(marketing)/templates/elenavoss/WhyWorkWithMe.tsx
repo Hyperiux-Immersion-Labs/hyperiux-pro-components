@@ -65,7 +65,7 @@ const WhyWorkWithMe = () => {
 
   return (
     <section
-      className="relative w-screen bg-[#070707] text-white pt-[35vw] pb-[10vw] max-[1025px]:pt-[50vw] "
+      className="relative w-screen bg-[#070707] text-white pt-[25vw] pb-[10vw] max-[1025px]:pt-[65vw] "
       id="work-with-me"
     >
       <div className="text-center mb-[5vw] max-md:mb-[10vw]">
@@ -76,7 +76,7 @@ const WhyWorkWithMe = () => {
         </OverflowTextReveal>
 
         <OverflowTextReveal splitBy="lines">
-          <p className="text-[1.25vw] text-white/80 mt-[0.6vw] max-[1025px]:text-[2.2vw] max-md:text-[3.8vw] max-md:mt-[2vw]">
+          <p className="text-[1.25vw] text-white mt-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[4.5vw] max-md:mt-[2vw]">
             Fast-track your Digital Projects
           </p>
         </OverflowTextReveal>
@@ -90,24 +90,24 @@ const WhyWorkWithMe = () => {
               key={reason.title}
               onMouseEnter={() => handleEnter(index)}
               onMouseLeave={() => handleLeave(index)}
-              className={`relative px-[4vw] pt-[2vw] pb-[3vw] h-[25vw] flex flex-col justify-between work-card max-[1025px]:h-auto max-[1025px]:py-[6vw] max-[1025px]:px-[7vw] `}
+              className={`relative px-[4vw] pt-[2vw] pb-[3vw] h-[32vw] flex flex-col justify-between work-card max-[1025px]:h-auto max-[1025px]:py-[6vw] max-[1025px]:px-[5vw] `}
             >
               <div>
                 <Icon
-                  size={40}
+                  size={50}
                   color={ORANGE}
                   strokeWidth={1.5}
                   className="mb-[2.5vw] max-[1025px]:mb-[4vw]"
                 />
 
-                <h3 className="text-[2vw] font-normal mb-[1vw] max-[1025px]:text-[4.2vw] max-md:text-[5.8vw] max-[1025px]:mb-[2vw]">
+                <h3 className="text-[2vw] font-normal mb-[2.5vw] max-[1025px]:text-[4.2vw] max-md:text-[5.8vw] max-[1025px]:mb-[2vw]">
                   {reason.title}
                 </h3>
                 <p className="text-[1.25vw] leading-[1.5] text-white/80 max-[1025px]:text-[2.8vw] max-md:text-[4vw]">
                   {reason.description}
                 </p>
               </div>
-              <div className="relative mt-[3vw] h-px w-full bg-white/15">
+              <div className="relative mt-[3vw] h-px w-full bg-white/20">
                 <span
                   ref={(el) => {
                     lineRefs.current[index] = el;

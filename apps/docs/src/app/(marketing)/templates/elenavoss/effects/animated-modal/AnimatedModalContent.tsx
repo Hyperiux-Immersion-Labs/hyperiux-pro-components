@@ -127,7 +127,7 @@ const AnimatedModalContent = ({
         type="button"
         aria-label="Close modal"
         onClick={closeOnBackdrop ? onClose : undefined}
-        className="absolute inset-0 cursor-pointer border-0 backdrop-blur-md"
+        className="absolute inset-0 cursor-pointer border-0  bg-black/10"
       />
 
       {showCloseButton && (

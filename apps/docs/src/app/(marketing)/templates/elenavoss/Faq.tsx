@@ -70,7 +70,7 @@ const Faq = () => {
   }, []);
 
   return (
-    <section className="w-screen py-[6vw] px-[10vw] relative bg-[#070707] text-white max-[1025px]:px-[6vw] max-md:px-5">
+    <section className="w-screen py-[6vw] px-[10vw] relative bg-[#070707] text-white max-[1025px]:px-[5vw]">
       <OverflowTextReveal stagger={0.015}>
         <h2 className="text-[5.5vw] text-center mb-[6vw] max-[1025px]:text-[7vw] max-md:text-[9vw]">
           Frequently Asked Questions
@@ -117,7 +117,7 @@ const Faq = () => {
                       }`}
                     />
                     <div
-                      className={`absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:opacity-100  duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
+                      className={`absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:scale-100 scale-0 ease-in-out origin-center rounded-full  duration-300 ${isOpen ? "scale-100" : "scale-0"}`}
                     />
                   </div>
                 </div>

@@ -2,11 +2,14 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import portfolio1Img from "./assets/hero-portfolio-1.png";
 import portfolio2Img from "./assets/hero-portfolio-2.png";
 import portfolio3Img from "./assets/hero-portfolio-3.png";
 import portfolio4Img from "./assets/hero-portfolio-4.png";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const AWARD_ITEMS = [
   { title: "Honorable Mention", meta: "2026 - AWWARDS", imgSrc: portfolio1Img },
@@ -47,10 +50,16 @@ const PILL_SNAP_EASE = "back.out(1.6)";
 const IMAGE_REVEAL_DURATION = 0.45;
 const IMAGE_REVEAL_EASE = "power2.out";
 
+// How long the whole image-container fades in/out as the cursor
+// enters/leaves the row list (.awards-container).
+const CONTAINER_FADE_DURATION = 0.4;
+
 const Awards = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const imageContainerRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
   // Strictly increasing with every reveal, so the most-recently-hovered
   // card is *always* guaranteed a higher z-index than every card before
   // it - two fixed values (like "10"/"20") can tie once more than two
@@ -81,6 +90,51 @@ const Awards = () => {
       gsap.set(card, { scale: 0 });
     });
   }, []);
+
+  // Each row divider draws in from the left as it individually scrolls up
+  // to 70% of the viewport - a per-line trigger (not one shared trigger
+  // for the whole list) so they draw one at a time as you scroll past
+  // them, not all at once.
+  useEffect(() => {
+    const lines = lineRefs.current.filter(Boolean) as HTMLDivElement[];
+
+    const tweens = lines.map((line) =>
+      gsap.to(line, {
+        scaleX: 1,
+        duration: 0.8,
+        ease: "power2.inOut",
+        scrollTrigger: {
+          trigger: line,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      })
+    );
+
+    return () => {
+      tweens.forEach((tween) => tween.scrollTrigger?.kill());
+      tweens.forEach((tween) => tween.kill());
+    };
+  }, []);
+
+  // Gates the whole image-container behind cursor presence over the row
+  // list (.awards-container) - everything inside it (pill snap, per-card
+  // scale reveal) is untouched, this just fades the container itself.
+  const handleListEnter = () => {
+    gsap.to(imageContainerRef.current, {
+      opacity: 1,
+      duration: CONTAINER_FADE_DURATION,
+      ease: "power2.out",
+    });
+  };
+
+  const handleListLeave = () => {
+    gsap.to(imageContainerRef.current, {
+      opacity: 0,
+      duration: CONTAINER_FADE_DURATION,
+      ease: "power2.out",
+    });
+  };
 
   const handleRowEnter = (index: number) => {
     // Snap the pill to the hovered row's real position every time,
@@ -142,7 +196,7 @@ const Awards = () => {
       className="relative w-screen bg-[#070707] text-white py-[7vw]"
       id="awards"
     >
-      <div className="w-screen flex items-center px-[4vw] gap-[4vw] overflow-hidden">
+      <div className="w-screen flex items-center px-[4vw] gap-[4vw] overflow-hidden max-[1025px]:px-[5vw]">
         <div className="w-full">
           <OverflowTextReveal stagger={0.015}>
             <h2 className="text-[5.5vw] leading-[1.2]  mb-[4vw] max-[1025px]:text-[7vw] max-md:text-[9vw]">
@@ -152,7 +206,7 @@ const Awards = () => {
             </h2>
           </OverflowTextReveal>
 
-          <div>
+          <div onMouseEnter={handleListEnter} onMouseLeave={handleListLeave}>
             {AWARD_ITEMS.map((item, i) => (
               <div
                 key={item.title}
@@ -160,15 +214,38 @@ const Awards = () => {
                   rowRefs.current[i] = el;
                 }}
                 onMouseEnter={() => handleRowEnter(i)}
-                className={` border-white/40 py-8 ${i == 0 ? "" : "border-t"}`}
+                className="relative py-8 awards-container"
               >
+                {i !== 0 && (
+                  <div
+                    ref={(el) => {
+                      lineRefs.current[i - 1] = el;
+                    }}
+                    className="absolute top-0 left-0 h-px w-full bg-white/40 origin-left scale-x-0"
+                  />
+                )}
+                <OverflowTextReveal splitBy="lines">
+
                 <h3 className="text-[1.8vw] font-normal max-[1025px]:text-[3.4vw] max-md:text-[5.5vw]">{item.title}</h3>
+                </OverflowTextReveal>
+                <OverflowTextReveal splitBy="lines">
+
                 <p className="text-[1.25vw] tracking-wide text-white/30 mt-3 max-[1025px]:text-[2.2vw] max-md:text-[3.6vw]">
                   {item.meta}
                 </p>
+                </OverflowTextReveal>
+
+
               </div>
             ))}
-            <div className="border-t border-white/40" />
+            <div className="relative w-full h-px">
+              <div
+                ref={(el) => {
+                  lineRefs.current[AWARD_ITEMS.length - 1] = el;
+                }}
+                className="absolute top-0 left-0 h-px w-full bg-white/40 origin-left scale-x-0"
+              />
+            </div>
           </div>
         </div>
 
@@ -176,7 +253,10 @@ const Awards = () => {
             on touch), and this panel is absolutely positioned overlapping
             the list - at narrower widths there isn't room for both, so it's
             hidden and the list takes the full row instead. */}
-        <div className="w-[40vw] flex justify-center absolute right-[10%] pointer-events-none max-[1025px]:hidden">
+        <div
+          ref={imageContainerRef}
+          className="w-[40vw] flex justify-center absolute right-[10%] pointer-events-none opacity-0 max-[1025px]:hidden image-container"
+        >
           <div
             ref={containerRef}
             className="w-[40vw] h-[22vw] relative bg-[#F4EFE9] rounded-lg overflow-hidden shadow-2xl will-change-transform"
