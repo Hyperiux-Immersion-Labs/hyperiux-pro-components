@@ -8,6 +8,7 @@ import SmoothInfiniteCarousel, {
   type SmoothInfiniteCarouselRef,
 } from "./effects/smooth-carousel/SmoothInfiniteCarousel";
 import CircularButton from "./effects/circular-button/CircularButton";
+import DotsCanvas from "./teeth-3d/DotsCanvas";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -200,6 +201,18 @@ export default function CareComfort() {
               aria-hidden={idx >= CARE_CARDS.length}
               className={`care-card-anim w-[28vw] max-[1025px]:w-[36vw] max-md:w-[76vw] aspect-[440/477] rounded-xl max-md:rounded-3xl px-[1.8vw] pt-[1.8vw] pb-[5vw] max-md:px-6 max-md:pt-6 max-md:pb-8 flex flex-col justify-end gap-[2.4vw] max-md:gap-6 relative overflow-hidden select-none will-change-transform ${card.bgClassName}`}
             >
+              {/* Interactive Dots on Mouse Move */}
+              <DotsCanvas
+                spacing={20}
+                baseRadius={1.2}
+                maxRadius={4}
+                interactionRadius={280}
+                baseOpacity={0}
+                maxOpacity={0.75}
+                gradient={false}
+                lerpFactor={0.22}
+              />
+
               {/* Card Title */}
               <h3 className="relative z-10 text-white text-[2.4vw] max-[1025px]:text-[4vw] max-md:text-[7vw] font-normal leading-[1.15] whitespace-pre-line tracking-tight">
                 {card.title}
