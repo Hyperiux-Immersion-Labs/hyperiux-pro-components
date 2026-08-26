@@ -156,7 +156,7 @@ function DemoContent({
   return (
     <div
       className={[
-        "absolute inset-0 font-sans  tracking-[-0.01em]",
+        "absolute inset-0   tracking-[-0.01em]",
         isDark ? "bg-[#0b0b0b] text-white/90" : "bg-white text-neutral-900",
       ].join(" ")}
     >

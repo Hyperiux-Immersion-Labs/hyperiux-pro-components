@@ -182,7 +182,7 @@ export function FilterMenu({
         aria-label="Filter effects"
         className={`
           px-6 py-2.5 text-md relative max-md:px-5 max-md:py-2
-          backdrop-blur-[6px] font-sans flex items-center gap-2 justify-center
+          backdrop-blur-[6px] flex items-center gap-2 justify-center
           cursor-pointer transition-colors duration-300 max-md:text-lg text20
           ${activeFilter
             ? "bg-[#ff5f00] text-black hover:bg-[#ff5f00]"

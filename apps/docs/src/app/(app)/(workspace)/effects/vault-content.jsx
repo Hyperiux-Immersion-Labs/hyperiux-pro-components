@@ -948,7 +948,7 @@ export function VaultContent({
                 No effects found
               </h3>
 
-              <p className="font-sans text-base text-muted max-md:text-sm">
+              <p className=" text-base text-muted max-md:text-sm">
                 Try adjusting your search or filter criteria
               </p>
             </div>

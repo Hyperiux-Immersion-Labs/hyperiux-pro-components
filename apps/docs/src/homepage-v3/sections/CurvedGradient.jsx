@@ -40,12 +40,12 @@ export default function CurvedGradient() {
       gsap.set(split2.lines, { yPercent: 100, opacity: 0 });
 
       const tl = gsap.timeline({
-        defaults: { ease: "none" },
         scrollTrigger: {
           trigger: wrapperRef.current,
-          start: "10% 50%",
-          end: "55% 50%",
+          start: "10% 60%",
+          end: "55% 20%",
           scrub: true,
+          // markers:true
         },
       });
 
@@ -53,22 +53,26 @@ export default function CurvedGradient() {
       tl.to(split1.lines, {
         yPercent: 0,
         opacity: 1,
-        stagger: 0.1,
+        ease:"power2.out",
+        stagger: 0.08,
       })
       .to(split1.lines, {
           yPercent: -100,
           opacity: 0,
-          stagger: 0.1,
+           ease:"power2.in",
+          stagger: 0.08,
         },"<.5")
         .to(split2.lines, {
           yPercent: 0,
           opacity: 1,
-          stagger: 0.1,
+           ease:"power2.out",
+          stagger: 0.08,
         })
         .to(split2.lines, {
           yPercent: -100,
           opacity: 0,
-          stagger: 0.1,
+           ease:"power2.in",
+          stagger: 0.08,
         },"<.5");
 
       return () => {
@@ -94,7 +98,7 @@ export default function CurvedGradient() {
           colorNum={8.0}
           scrollTrigger={wrapperRef}
           scrollStart="top bottom"
-          scrollEnd="130% top"
+          scrollEnd="150% top"
           curveStrength={0.6}
           markers={false}
         />

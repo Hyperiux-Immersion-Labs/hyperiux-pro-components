@@ -487,6 +487,18 @@ function CustomAnimationFormModalInner() {
                   </div>
 
                   <div className="col-span-2 mt-4 flex items-center gap-4 max-[1025px]:col-span-1 max-[1025px]:flex-col max-[1025px]:items-start">
+                    {/* WebsiteButton renders a <Link>, not a <button type="submit">,
+                        so it can't be the form's implicit-submit target - without a
+                        real submit control here, pressing Enter in a field does
+                        nothing. This is visually hidden and out of tab order but
+                        still native, so Enter triggers the form's onSubmit normally. */}
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      tabIndex={-1}
+                      aria-hidden="true"
+                      className="h-0 w-0 overflow-hidden border-0 p-0 opacity-0"
+                    />
                     <WebsiteButton
                       text={isSubmitting ? "Sending..." : "Send Request"}
                       href="#"

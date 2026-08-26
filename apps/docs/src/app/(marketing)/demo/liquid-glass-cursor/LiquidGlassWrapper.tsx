@@ -32,7 +32,7 @@ export default function LiquidGlassWrapper({ cursorProps = {} }) {
   return (
     <>
  
-    <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden font-sans selection:bg-black selection:text-white">
+    <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden  selection:bg-black selection:text-white">
       {!isMobile && (
         <LiquidGlassCursor {...cursorProps} />
       )}

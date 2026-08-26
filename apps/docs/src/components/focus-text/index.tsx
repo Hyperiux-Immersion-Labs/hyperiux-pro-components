@@ -193,7 +193,7 @@ export default function FocusText({
     >
       <h1
         data-focus-heading
-        className="m-0 w-full font-sans font-black uppercase leading-none tracking-tight opacity-0"
+        className="m-0 w-full  font-black uppercase leading-none tracking-tight opacity-0"
         style={{
           fontSize: `clamp(2rem, ${fontSize}vw, 8rem)`,
           color: textColor,

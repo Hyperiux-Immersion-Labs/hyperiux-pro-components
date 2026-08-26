@@ -414,7 +414,7 @@ export default function Timeline({
 
             <div className="flex h-1/2 w-full items-center justify-start gap-[.5vw]">
               <div className="h-full w-[20%] pt-[2vw] max-sm:h-fit max-sm:pt-[5vw]">
-                <h2 className="w-[65%] font-sans text-[3vw] leading-[0.95] max-[1025px]:w-[75%] max-[1025px]:text-[7vw] max-md:w-[75%] max-md:text-[7vw] max-sm:text-[8.5vw]">
+                <h2 className="w-[65%]  text-[3vw] leading-[0.95] max-[1025px]:w-[75%] max-[1025px]:text-[7vw] max-md:w-[75%] max-md:text-[7vw] max-sm:text-[8.5vw]">
                   {title}
                 </h2>
               </div>
@@ -438,7 +438,7 @@ export default function Timeline({
 
                     <div className="mt-[-1vw] space-y-[1vw] max-[1025px]:mt-[-1.5vw] max-md:mt-[-1.5vw] max-sm:mt-[-2vw]">
                       <h4
-                        className={`title-${item.id} font-sans text-[2.5vw] leading-[1] max-[1025px]:text-[5vw] max-md:text-[5vw] max-sm:text-[6.4vw]`}
+                        className={`title-${item.id}  text-[2.5vw] leading-[1] max-[1025px]:text-[5vw] max-md:text-[5vw] max-sm:text-[6.4vw]`}
                       >
                         {item.year} {item.month}
                       </h4>
@@ -457,7 +457,7 @@ export default function Timeline({
             <div className="h-1/2 flex items-center justify-start w-full">
               <div className="w-[34%] pt-[2vw] max-sm:pt-[5vw] max-sm:w-[30%] h-full max-md:pt-[5vw]">
                 <p
-                  className="font-sans text-[1.65vw] leading-none max-[1025px]:text-[3vw] max-md:text-[3vw] max-sm:text-[4.2vw]"
+                  className=" text-[1.65vw] leading-none max-[1025px]:text-[3vw] max-md:text-[3vw] max-sm:text-[4.2vw]"
                   style={mutedTextStyle}
                 >
                   {periodLabel}
@@ -483,7 +483,7 @@ export default function Timeline({
 
                     <div className="flex h-full w-full flex-col justify-end space-y-[1vw]">
                       <h4
-                        className={`title-${item.id} font-sans text-[2.5vw] leading-[1] max-[1025px]:text-[5vw] max-md:text-[5vw] max-sm:text-[6.4vw]`}
+                        className={`title-${item.id}  text-[2.5vw] leading-[1] max-[1025px]:text-[5vw] max-md:text-[5vw] max-sm:text-[6.4vw]`}
                       >
                         {item.year} {item.month}
                       </h4>

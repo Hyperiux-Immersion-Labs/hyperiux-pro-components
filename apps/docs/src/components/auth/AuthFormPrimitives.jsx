@@ -78,17 +78,34 @@ export function GlobalError({ message }) {
 // can't trigger native form submission on its own - requestSubmit() on the
 // owning form reuses the exact same submit event (and required-field
 // validation) a native type="submit" button relied on.
+//
+// That same gap breaks Enter-to-submit: browsers only do implicit
+// submission-on-Enter when the form contains a real submit control, and an
+// <a> never counts. The visually-hidden button below is that real control -
+// it renders inside the same <form> as ButtonV3, so pressing Enter in any
+// field fires the browser's native submit against it, which runs this
+// step's onSubmit handler exactly like a ButtonV3 click does via
+// requestSubmit().
 export function SubmitButton({ loading, formRef, children, className }) {
   return (
-    <ButtonV3
-      href="#"
-      preventDefault
-      disabled={loading}
-      onClick={() => formRef.current?.requestSubmit()}
-      className={className || "w-full justify-center"}
-    >
-      {loading ? "Please wait…" : children}
-    </ButtonV3>
+    <>
+      <button
+        type="submit"
+        disabled={loading}
+        tabIndex={-1}
+        aria-hidden="true"
+        className="h-0 w-0 overflow-hidden border-0 p-0 opacity-0"
+      />
+      <ButtonV3
+        href="#"
+        preventDefault
+        disabled={loading}
+        onClick={() => formRef.current?.requestSubmit()}
+        className={className || "w-full justify-center"}
+      >
+        {loading ? "Please wait…" : children}
+      </ButtonV3>
+    </>
   );
 }
 

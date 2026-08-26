@@ -90,7 +90,7 @@ export default function RootLayout({ children }) {
         /> */}
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
-      <body className="min-h-dvh bg-background text-foreground font-sans">
+      <body className="min-h-dvh bg-background text-foreground">
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-NCDH9PHF"

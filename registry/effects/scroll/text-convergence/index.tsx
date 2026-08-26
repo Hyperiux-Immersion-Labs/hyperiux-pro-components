@@ -165,7 +165,7 @@ export default function TextConvergence({
       <div className="sticky top-0 flex h-screen items-center overflow-clip">
         <h3
           ref={textRef}
-          className={`flex w-max whitespace-nowrap gap-[4vw] pl-[100vw] font-sans! text-4xl font-bold leading-[1.1] tracking-tighter ${textColor} sm:text-6xl lg:text-8xl xl:text-9xl`}
+          className={`flex w-max whitespace-nowrap gap-[4vw] pl-[100vw] ! text-4xl font-bold leading-[1.1] tracking-tighter ${textColor} sm:text-6xl lg:text-8xl xl:text-9xl`}
         >
           {text}
         </h3>

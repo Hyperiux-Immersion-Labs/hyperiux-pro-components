@@ -288,7 +288,7 @@ export default function Hero() {
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
                     {skipGPU ? ASCII_FALLBACK : <CubeBackgroundAscii   intro={introRef} />}
                 </div>
-                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-end pb-[11vw] p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
+                <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-center p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
                     <div className="space-y-[3vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-4 ">
                         <div className="flex flex-col h-fit font-neue-haas w-full items-start max-sm:gap-2 max-md:gap-5">
                             <h1 ref={headingRef} style={INTRO_HIDDEN} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[55vw] max-[1025px]:mt-0 max-[1025px]:w-[85%] max-md:mt-0 max-md:w-[95%] max-sm:w-full">
