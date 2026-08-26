@@ -10,6 +10,8 @@ declare module 'next' {
     themeColor?: any;
     [key: string]: any;
   }
+  export type ResolvingMetadata = Promise<Metadata>;
+  export type ResolvingViewport = Promise<any>;
 }
 
 declare module 'next/server.js' {
@@ -17,13 +19,32 @@ declare module 'next/server.js' {
 }
 
 declare module 'next/types.js' {
-  export * from 'next'
+  export type ResolvingMetadata = Promise<import('next').Metadata>;
+  export type ResolvingViewport = Promise<any>;
+}
+
+declare module 'next/dist/lib/metadata/types/metadata-interface.js' {
+  export type ResolvingMetadata = Promise<import('next').Metadata>;
+  export type ResolvingViewport = Promise<any>;
+}
+
+declare module 'next/dist/build/segment-config/app/app-segment-config.js' {
+  export type InstantConfigForTypeCheckInternal = any;
+  export type Prefetch = any;
 }
 
 declare module 'next/dist/*' {
-  const content: any
-  export default content
-  export const config: any
+  export type ResolvingMetadata = Promise<import('next').Metadata>;
+  export type ResolvingViewport = Promise<any>;
+  export type InstantConfigForTypeCheckInternal = any;
+  export type Prefetch = any;
+  export type AppRoutes = string;
+  export type LayoutRoutes = string;
+  export type ParamMap = Record<string, any>;
+  export type AppRouteHandlerRoutes = string;
+  const content: any;
+  export default content;
+  export const config: any;
 }
 
 declare module 'next/server' {
