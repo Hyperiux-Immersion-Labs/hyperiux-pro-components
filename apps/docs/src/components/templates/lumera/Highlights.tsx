@@ -4,7 +4,7 @@
 
 import Image from "next/image";
 
-import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselComp";
+import SmoothInfiniteCarousel from "./VaultComp/InfiniteCarousel/SmoothInfiniteCarousel";
 import highlight1 from "./assets/highlight-1.png";
 import highlight2 from "./assets/highlight-2.png";
 import highlight3 from "./assets/highlight-3.png";
@@ -45,7 +45,7 @@ const Highlights = () => {
       
 
         <div className="">
-          <InfiniteCarouselComp
+          <SmoothInfiniteCarousel
             draggable
             loop={false}
             showNav={false}
@@ -82,7 +82,7 @@ const Highlights = () => {
                 </div>
               </div>
             ))}
-          </InfiniteCarouselComp>
+          </SmoothInfiniteCarousel>
         </div>
           </FadeUp>
       </section>
