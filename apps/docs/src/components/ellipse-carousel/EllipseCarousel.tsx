@@ -195,10 +195,6 @@ const EllipseCarousel = ({
   // Referencing the useCallback binding directly for that is a TDZ risk as
   // far as the linter can prove (even though it's safe here, since GSAP only
   // ever invokes these after the assignment below completes) - going through
-  // a ref that's kept in sync on every render breaks the self-reference
-  // cleanly instead.
-  const scheduleNextStepRef = useRef<() => void>(() => {});
-
   const scheduleNextStep = useCallback(() => {
     if (!autoPlay || reducedMotion || !total) return;
 
@@ -223,14 +219,7 @@ const EllipseCarousel = ({
     });
   }, [autoPlay, holdDuration, pauseOnHover, reducedMotion, render, stepDuration, stepEase, total]);
 
-  // Keep the ref in sync after each render rather than mutating it during
-  // render - GSAP only ever calls through the ref later (delayedCall/tween
-  // callbacks), well after this effect has committed.
   useLayoutEffect(() => {
-    scheduleNextStepRef.current = scheduleNextStep;
-  }, [scheduleNextStep]);
-
-  useEffect(() => {
     scheduleNextStepRef.current = scheduleNextStep;
   }, [scheduleNextStep]);
 

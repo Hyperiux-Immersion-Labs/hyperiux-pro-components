@@ -187,8 +187,8 @@ function ResponsiveModelGroup({ children }: { children: React.ReactNode }) {
 
 export default function TeethCanvas() {
     return (
-        <div className='absolute h-full z-100 w-full'>
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ antialias: true }}>
+        <div className='absolute inset-0 h-full w-full pointer-events-none z-0'>
+            <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ antialias: true }} className="pointer-events-none">
                 <ambientLight intensity={1.35} color="#f4f8ff" />
                 <directionalLight position={[10, 10, 10]} intensity={2.6} color="#ff0000" />
                 <directionalLight position={[-10, 8, -5]} intensity={1.6} color="#eef4ff" />

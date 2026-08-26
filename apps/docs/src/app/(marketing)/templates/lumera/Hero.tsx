@@ -10,11 +10,11 @@ import { useLenis } from "lenis/react";
 import { X } from "lucide-react";
 import PrimaryButton from "./PrimaryButton";
 import BlackButton from "./BlackButton";
-import AnimatedForm from "./VaultComp/animated-form";
+import AnimatedForm from "./effects/animated-form";
 import heroBackground from "./assets/lumera-hero.png";
 import arrowDownIcon from "./assets/icons/arrow-down.svg";
 import { FadeUp } from "./gsapAnimations";
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);

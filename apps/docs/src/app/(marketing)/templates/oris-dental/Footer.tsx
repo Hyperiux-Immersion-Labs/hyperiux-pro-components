@@ -70,7 +70,7 @@ function FooterLinkColumn({ column }: { column: FooterColumn }) {
                     <li key={link.label}>
                         <Link
                             href={link.href}
-                            className="text-white/90 hover:text-white whitespace-nowrap no-underline transition-colors duration-300"
+                            className="text-white/90 hover:text-white whitespace-nowrap no-underline transition-colors duration-300 text-sm md:text-base"
                         >
                             {link.label}
                         </Link>
@@ -93,64 +93,68 @@ export default function Footer() {
         if (!container) return
 
         const ctx = gsap.context(() => {
-            // Parallax glide for top header & tagline
-            if (contentRef.current) {
-                gsap.fromTo(
-                    contentRef.current,
-                    { y: -60, opacity: 0.8 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        ease: 'none',
-                        scrollTrigger: {
-                            trigger: container,
-                            start: 'top bottom',
-                            end: 'bottom bottom',
-                            scrub: 1,
-                        },
-                    }
-                )
-            }
+            const mm = gsap.matchMedia()
 
-            // Staggered upward parallax for the link columns
-            if (navRef.current) {
-                const cols = navRef.current.querySelectorAll('.footer-col')
-                gsap.fromTo(
-                    cols,
-                    { y: 40, opacity: 0.65 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        stagger: 0.04,
-                        ease: 'none',
-                        scrollTrigger: {
-                            trigger: container,
-                            start: 'top bottom',
-                            end: 'bottom bottom',
-                            scrub: 1,
-                        },
-                    }
-                )
-            }
+            mm.add('(min-width: 1025px)', () => {
+                // Parallax glide for top header & tagline
+                if (contentRef.current) {
+                    gsap.fromTo(
+                        contentRef.current,
+                        { y: -60, opacity: 0.8 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            ease: 'none',
+                            scrollTrigger: {
+                                trigger: container,
+                                start: 'top bottom',
+                                end: 'bottom bottom',
+                                scrub: 1,
+                            },
+                        }
+                    )
+                }
 
-            // Rise and scale animation for bottom wordmark
-            if (wordmarkRef.current) {
-                gsap.fromTo(
-                    wordmarkRef.current,
-                    { yPercent: 40, scale: 0.85 },
-                    {
-                        yPercent: 0,
-                        scale: 1.02,
-                        ease: 'none',
-                        scrollTrigger: {
-                            trigger: container,
-                            start: 'top bottom',
-                            end: 'bottom bottom',
-                            scrub: 1,
-                        },
-                    }
-                )
-            }
+                // Staggered upward parallax for the link columns
+                if (navRef.current) {
+                    const cols = navRef.current.querySelectorAll('.footer-col')
+                    gsap.fromTo(
+                        cols,
+                        { y: 40, opacity: 0.65 },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            stagger: 0.04,
+                            ease: 'none',
+                            scrollTrigger: {
+                                trigger: container,
+                                start: 'top bottom',
+                                end: 'bottom bottom',
+                                scrub: 1,
+                            },
+                        }
+                    )
+                }
+
+                // Rise and scale animation for bottom wordmark
+                if (wordmarkRef.current) {
+                    gsap.fromTo(
+                        wordmarkRef.current,
+                        { yPercent: 40, scale: 0.85 },
+                        {
+                            yPercent: 0,
+                            scale: 1.02,
+                            ease: 'none',
+                            scrollTrigger: {
+                                trigger: container,
+                                start: 'top bottom',
+                                end: 'bottom bottom',
+                                scrub: 1,
+                            },
+                        }
+                    )
+                }
+            })
         }, containerRef)
 
         return () => ctx.revert()
@@ -159,13 +163,13 @@ export default function Footer() {
     return (
         <div
             ref={containerRef}
-            className="relative h-screen w-full max-md:h-auto max-md:min-h-screen"
+            className="relative h-screen w-full max-[1025px]:h-auto max-[1025px]:min-h-0"
             style={{ clipPath: 'inset(0 0 0 0)' }}
         >
             <footer
                 ref={footerRef}
                 id="oris-footer"
-                className="fixed bottom-0 left-0 w-full h-screen bg-linear-to-b from-[#3365e2] via-[#234fc7] to-[#0f2b82] text-white overflow-hidden oris-paddx pt-[4vw] flex flex-col justify-between max-md:relative max-md:h-auto max-md:min-h-screen"
+                className="fixed bottom-0 left-0 w-full h-screen bg-linear-to-b from-[#3365e2] via-[#234fc7] to-[#0f2b82] text-white overflow-hidden oris-paddx pt-[4vw] max-[1025px]:pt-14 max-[1025px]:pb-6 flex flex-col justify-between max-[1025px]:relative max-[1025px]:h-auto max-[1025px]:min-h-0"
             >
                 {/* Interactive Background Dots */}
                 <DotsCanvas
@@ -177,24 +181,24 @@ export default function Footer() {
                 />
 
                 {/* Top Branding & Main Tagline */}
-                <div ref={contentRef} className="relative z-10 flex flex-col items-start max-w-2xl">
-                    <SplitTextLines as="h2" className="oris-text64 font-bold! leading-[1.1] text-white max-w-[35vw] max-md:max-w-full">
+                <div ref={contentRef} className="relative z-10 flex flex-col items-start max-w-2xl max-[1025px]:max-w-full">
+                    <SplitTextLines as="h2" className="oris-text64 font-bold! leading-[1.1] text-white max-w-[35vw] max-[1025px]:max-w-full">
                         OrisDental Brighten your smile with expert care.
                     </SplitTextLines>
                 </div>
 
-                {/* Links Navigation: left pair anchored left, right pair anchored right */}
+                {/* Links Navigation */}
                 <nav
                     ref={navRef}
                     aria-label="Footer"
-                    className="relative z-10 flex w-full items-start justify-between mt-[4vw] mb-[3vw] max-md:flex-col max-md:gap-10 max-md:mt-12 max-md:mb-10"
+                    className="relative z-10 flex w-full items-start justify-between mt-[4vw] mb-[3vw] max-[1025px]:grid max-[1025px]:grid-cols-4 max-[1025px]:gap-6 max-[1025px]:mt-10 max-[1025px]:mb-6 max-md:grid-cols-2 max-md:gap-8"
                 >
-                    <div className="flex gap-[8vw] max-md:gap-12 max-sm:gap-8">
+                    <div className="contents max-[1025px]:contents">
                         {LEFT_COLUMNS.map((column) => (
                             <FooterLinkColumn key={column.title} column={column} />
                         ))}
                     </div>
-                    <div className="flex gap-[5vw] max-md:gap-12 max-sm:gap-8">
+                    <div className="contents max-[1025px]:contents">
                         {RIGHT_COLUMNS.map((column) => (
                             <FooterLinkColumn key={column.title} column={column} />
                         ))}
@@ -202,7 +206,7 @@ export default function Footer() {
                 </nav>
 
                 {/* Huge Baseline Wordmark */}
-                <div ref={wordmarkRef} className="relative z-10 w-full flex justify-center items-end select-none pointer-events-none mt-auto">
+                <div ref={wordmarkRef} className="relative z-10 w-full flex justify-center items-end select-none pointer-events-none mt-auto max-[1025px]:mt-6 max-[1025px]:pt-4">
                     <Image
                         src={OrisDentalLogo}
                         alt="OrisDental"

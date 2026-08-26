@@ -4,6 +4,7 @@ import Hero from "./Hero";
 import "./oris-dental.css";
 import OrisWrapper from "./OrisWrapper";
 import AboutOris from "./AboutOris";
+import CareComfort from "./CareComfort";
 import DentalTreatments from "./DentalTreatments";
 import WhyOris from "./WhyOris";
 import ParallaxSectionBreak from "./ParallaxSectionBreak";
@@ -36,8 +37,9 @@ export default function Page() {
       <Hero />
       <div className="z-10 text-oris-secondary relative bg-white">
         <AboutOris />
+        <CareComfort />
         <DentalTreatments />
-        <WhyOris />
+        {/* <WhyOris /> */}
         <ParallaxSectionBreak />
         <Reviews />
         <PassionMeetPurpose />

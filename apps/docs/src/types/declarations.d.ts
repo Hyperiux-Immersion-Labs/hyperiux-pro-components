@@ -1,5 +1,44 @@
+declare module 'next' {
+  export interface Metadata {
+    title?: string | { default: string; template: string };
+    description?: string;
+    openGraph?: any;
+    twitter?: any;
+    icons?: any;
+    keywords?: string | string[];
+    viewport?: any;
+    themeColor?: any;
+    [key: string]: any;
+  }
+}
+
+declare module 'next/server.js' {
+  export * from 'next/server'
+}
+
+declare module 'next/types.js' {
+  export * from 'next'
+}
+
+declare module 'next/dist/*' {
+  const content: any
+  export default content
+  export const config: any
+}
+
+declare module 'next/server' {
+  export class NextResponse extends Response {
+    static json(body: any, init?: ResponseInit): NextResponse
+    static redirect(url: string | URL, status?: number): NextResponse
+    static next(): NextResponse
+  }
+  export class NextRequest extends Request {
+    nextUrl: URL
+  }
+}
+
 declare module 'next/image' {
-  import type { ComponentPropsWithoutRef, FC, ReactElement } from 'react'
+  import type { ComponentPropsWithoutRef, FC, ReactElement, Ref } from 'react'
 
   export interface StaticImageData {
     src: string
@@ -24,6 +63,7 @@ declare module 'next/image' {
 
   export interface ImageProps
     extends Omit<ComponentPropsWithoutRef<'img'>, 'src' | 'loading' | 'ref' | 'width' | 'height'> {
+    ref?: any
     src: string | StaticImport
     width?: number | `${number}`
     height?: number | `${number}`
@@ -112,6 +152,7 @@ declare module 'next/font/google' {
 
   export const Inter: FontLoader
   export const Roboto: FontLoader
+  export const Roboto_Flex: FontLoader
   export const Outfit: FontLoader
   export const Montserrat: FontLoader
   export const Geist: FontLoader
@@ -140,18 +181,28 @@ declare module 'next/dynamic' {
   ): ComponentType<P>
 }
 
+declare module '*.module.css' {
+  const classes: { readonly [key: string]: string }
+  export default classes
+}
+
+declare module '*.css' {
+  const content: string
+  export default content
+}
+
 declare module '*.png' {
-  const content: import('next/image').StaticImageData | string;
+  const content: import('next/image').StaticImageData;
   export default content;
 }
 
 declare module '*.jpg' {
-  const content: import('next/image').StaticImageData | string;
+  const content: import('next/image').StaticImageData;
   export default content;
 }
 
 declare module '*.jpeg' {
-  const content: import('next/image').StaticImageData | string;
+  const content: import('next/image').StaticImageData;
   export default content;
 }
 
@@ -161,12 +212,12 @@ declare module '*.svg' {
 }
 
 declare module '*.webp' {
-  const content: import('next/image').StaticImageData | string;
+  const content: import('next/image').StaticImageData;
   export default content;
 }
 
 declare module '*.gif' {
-  const content: import('next/image').StaticImageData | string;
+  const content: import('next/image').StaticImageData;
   export default content;
 }
 
@@ -189,4 +240,3 @@ declare module '*.woff' {
   const content: string;
   export default content;
 }
-

@@ -5,7 +5,7 @@ import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import showcasePoster from "./assets/video-poster.webp";
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 gsap.registerPlugin(ScrollTrigger);
 

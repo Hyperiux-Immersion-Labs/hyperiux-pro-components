@@ -311,6 +311,28 @@ export default function PageTransition() {
     )
   }, [draw])
 
+  // 2. Reveal new page: dither wave sweeps DOWN all the way off the bottom
+  useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false
+      prevPathRef.current = pathname
+      isTransitioningRef.current = false
+      return
+    }
+
+    const prevPath = prevPathRef.current
+    const currentPath = pathname
+
+    prevPathRef.current = pathname
+
+    if (shouldSkipTransition(prevPath, currentPath)) {
+      isTransitioningRef.current = false
+      return
+    }
+
+    revealScreen()
+  }, [pathname, revealScreen])
+
   // 1. Cover Screen BEFORE route change on link click
   useEffect(() => {
     const handleAnchorClick = (e) => {

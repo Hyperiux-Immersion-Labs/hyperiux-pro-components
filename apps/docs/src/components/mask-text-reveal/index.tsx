@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { SplitText } from "gsap/dist/SplitText";
 import { useEffect, useRef, type ReactNode } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import { prefersReducedMotion } from "@/components/templates/lumera/reducedMotion";
+import { prefersReducedMotion } from "@/app/(marketing)/templates/lumera/reducedMotion";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 

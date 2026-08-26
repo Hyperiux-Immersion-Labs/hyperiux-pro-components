@@ -40,22 +40,22 @@ const TREATMENTS_DATA: TreatmentCard[] = [
             "Clear aligners and modern orthodontic options gently guide teeth into optimal alignment over time. Designed for discreet comfort and easy maintenance throughout your daily routine.",
         bgColor: "#13314a",
     },
-    {
-        id: 4,
-        title: "Restorative\nCrowns & Veneers",
-        tags: ["Porcelain aesthetics", "Precision contouring", "Durable strength"],
-        description:
-            "High-precision porcelain veneers and crowns custom-crafted to repair chips, gaps, and wear, giving you seamless aesthetics with unmatched durability and natural feel.",
-        bgColor: "#3365e2",
-    },
-    {
-        id: 5,
-        title: "Comprehensive\nPeriodontal Care",
-        tags: ["Deep cleaning", "Gum revitalization", "Preventative therapy"],
-        description:
-            "Targeted therapies focused on protecting gum tissue and underlying bone structure, halting progression of gum disease and ensuring a strong foundation for lifelong oral wellness.",
-        bgColor: "#13314a",
-    },
+    // {
+    //     id: 4,
+    //     title: "Restorative\nCrowns & Veneers",
+    //     tags: ["Porcelain aesthetics", "Precision contouring", "Durable strength"],
+    //     description:
+    //         "High-precision porcelain veneers and crowns custom-crafted to repair chips, gaps, and wear, giving you seamless aesthetics with unmatched durability and natural feel.",
+    //     bgColor: "#3365e2",
+    // },
+    // {
+    //     id: 5,
+    //     title: "Comprehensive\nPeriodontal Care",
+    //     tags: ["Deep cleaning", "Gum revitalization", "Preventative therapy"],
+    //     description:
+    //         "Targeted therapies focused on protecting gum tissue and underlying bone structure, halting progression of gum disease and ensuring a strong foundation for lifelong oral wellness.",
+    //     bgColor: "#13314a",
+    // },
 ];
 
 export default function DentalTreatments({
@@ -73,7 +73,7 @@ export default function DentalTreatments({
         rowRefs.current = rowRefs.current.slice(0, cards.length);
         cardRefs.current = cardRefs.current.slice(0, cards.length);
 
-        if (globalThis.innerWidth <= 639) {
+        if (globalThis.innerWidth <= 1025) {
             cardRefs.current.filter(Boolean).forEach((card) => {
                 gsap.set(card, {
                     autoAlpha: 1,
