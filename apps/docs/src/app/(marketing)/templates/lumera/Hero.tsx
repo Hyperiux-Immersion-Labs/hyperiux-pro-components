@@ -11,7 +11,8 @@ import { X } from "lucide-react";
 import PrimaryButton from "./PrimaryButton";
 import BlackButton from "./BlackButton";
 import AnimatedForm from "./effects/animated-form";
-import heroBackground from "./assets/lumera-hero.png";
+import NumberCounter from "./effects/number-counter";
+import heroBackground from "./assets/hero.png";
 import arrowDownIcon from "./assets/icons/arrow-down.svg";
 import { FadeUp } from "./gsapAnimations";
 import MaskTextReveal from "./effects/mask-text-reveal";
@@ -100,7 +101,7 @@ const Hero: React.FC = () => {
       if (heroImageWrapperRef.current) {
         gsap.fromTo(
           heroImageWrapperRef.current,
-          { yPercent: -15 },
+          { yPercent: 0 },
           {
             yPercent: 15,
             ease: "none",
@@ -133,22 +134,26 @@ const Hero: React.FC = () => {
     <>
       <section id="hero" className="relative overflow-hidden">
         <div className="relative isolate flex min-h-[200vh] w-screen flex-col gap-[5vw] px-[5%] py-[3%] max-[1025px]:min-h-[240vw] max-[1025px]:gap-[8vw] max-[1025px]:py-[7%]">
-                   <div ref={heroImageWrapperRef} className="absolute inset-0 z-[-1]">
-
-            <Image
-              quality={100}
-              src={heroBackground}
-              alt="Hero Image"
-              fill
-              sizes="100vw"
-              className="h-full w-full object-cover"
-            />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden z-[-1]"
+          >
+            <div ref={heroImageWrapperRef} className="relative h-full w-full">
+              <Image
+                quality={100}
+                src={heroBackground}
+                alt=""
+                fill
+                sizes="100vw"
+                className="h-full w-full object-cover object-top"
+              />
+            </div>
           </div>
 
           <div className="relative z-10 flex h-screen flex-col justify-end gap-[8vw] max-[1025px]:gap-[12vw]">
             <div className="flex flex-col gap-[3vw] max-[1025px]:gap-[6vw] mb-30">
               <MaskTextReveal delay={2}>
-                <h1 className="font-neue-montreal font-medium! flex flex-col gap-[1vw] text-[10vw] leading-[0.94]   uppercase text-[#EEEEEE] max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[14vw]">
+                <h1 className="font-neue-montreal font-medium! flex flex-col gap-[1vw] text-[10vw] leading-[0.94]   uppercase text-[#EEEEEE] max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[10vw]">
                   <span>Exceptional</span>
                   <div className="flex items-end gap-[1.8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[4vw]">
                     <span>Living In Dubai</span>
@@ -187,14 +192,14 @@ const Hero: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-[1vw] max-md:flex-col max-md:items-start max-md:gap-[4vw] max-md:w-[80%] max-[1025px]:flex-wrap max-[1025px]:gap-[3vw]">
-                <FadeUp>
+                <FadeUp delay={0.7}>
                   <PrimaryButton
                     link="#"
                     btnText="Explore Our Collection"
                     className="max-md:w-[70vw] font-normal!"
                   />
                 </FadeUp>
-                <FadeUp>
+                <FadeUp delay={0.7}>
                   <BlackButton
                     link="#"
                     btnText="Speak With an Advisor"
@@ -212,10 +217,10 @@ const Hero: React.FC = () => {
               {heroStats.map((stat) => (
                 <FadeUp
                   key={stat.label}
-                  className="rounded-[1.2vw] bg-black/10 px-[1.5vw] py-[2vw] max-md:py-[5vw] max-[1025px]:py-[4vw] text-center backdrop-blur-[0.5vw] max-[1025px]:rounded-[4vw] flex flex-col justify-between max-md:min-h-[12vh] min-h-[19vh] border border-[#F9F9F91A]"
+                  className="rounded-[1.2vw] bg-black/20 px-[1.5vw] py-[2vw] max-md:py-[5vw] max-[1025px]:py-[4vw] font-neue-montreal text-center backdrop-blur-[0.7vw] max-[1025px]:rounded-[4vw] flex flex-col justify-between max-md:min-h-[12vh] min-h-[19vh] border border-[#F9F9F91A]"
                 >
                   <p className="inline-flex items-end justify-center gap-[0.25vw] text-[2.9vw] font-medium leading-none text-white max-[1025px]:gap-[1vw] max-[1025px]:text-[6vw]">
-                    {stat.value}
+                    <NumberCounter value={stat.value} />
                     {stat.suffix && (
                       <span className="mb-[0.15vw] text-[0.75vw] font-normal leading-none max-[1025px]:mb-[0.4vw] max-[1025px]:text-[2.5vw]">
                         {stat.suffix}

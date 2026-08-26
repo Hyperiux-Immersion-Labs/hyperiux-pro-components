@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { type StaticImageData } from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import InfiniteCarouselComp from "./effects/InfiniteCarouselComp";
+import InfiniteCarouselComp from "./InfiniteCarouselComp";
 import { usePrefersReducedMotion } from "./reducedMotion";
 import portfolio1 from "./assets/portfolio-1.png";
 import portfolio2 from "./assets/portfolio-2.png";
@@ -81,7 +81,7 @@ const About = () => {
 
           <h2
             data-para-anim
-            className={`w-full   font-neue-montreal text-[3.8vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw]  max-[1025px]:text-[8vw]`}
+            className={`w-full   font-neue-montreal text-[3.8vw] font-medium! leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw]  max-[1025px]:text-[8vw]`}
             >
             Real Estate,
             <br />
@@ -116,7 +116,7 @@ const About = () => {
             draggable
           />
 
-          <div data-para-anim className="mx-auto mt-[1vw] max-md:mt-[5vw] max-w-[24vw] text-center max-[1025px]:max-w-[70vw] max-md:space-y-[2vw]">
+          <div data-para-anim className="mx-auto mt-[1vw] max-md:mt-[5vw] max-w-[24vw] text-center max-[1025px]:max-w-[80vw] max-md:space-y-[2vw]">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={activeIndex}

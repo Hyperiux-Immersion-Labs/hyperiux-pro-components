@@ -7,34 +7,34 @@ import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/dist/SplitText";
-import project1 from "../assets/project-1.png";
-import project11 from "../assets/project-1.1.png";
-import project12 from "../assets/project-1.2.png";
-import project13 from "../assets/project-1.3.png";
-import project14 from "../assets/project-1.4.png";
-import project2 from "../assets/project-2.png";
-import project21 from "../assets/project-2.1.png";
-import project22 from "../assets/project-2.2.png";
-import project23 from "../assets/project-2.3.png";
-import project24 from "../assets/project-2.4.png";
-import project3 from "../assets/project-3.png";
-import project31 from "../assets/project-3.1.png";
-import project32 from "../assets/project-3.2.png";
-import project33 from "../assets/project-3.3.png";
-import project34 from "../assets/project-3.4.png";
-import project4 from "../assets/project-4.png";
-import project41 from "../assets/project-4.1.png";
-import project42 from "../assets/project-4.2.png";
-import project43 from "../assets/project-4.3.png";
-import project44 from "../assets/project-4.4.png";
-import CharStaggerButton from "./char-stagger-button";
-import { FadeUp } from "../gsapAnimations";
+import project1 from "../../assets/project-1.png";
+import project11 from "../../assets/project-1.1.png";
+import project12 from "../../assets/project-1.2.png";
+import project13 from "../../assets/project-1.3.png";
+import project14 from "../../assets/project-1.4.png";
+import project2 from "../../assets/project-2.png";
+import project21 from "../../assets/project-2.1.png";
+import project22 from "../../assets/project-2.2.png";
+import project23 from "../../assets/project-2.3.png";
+import project24 from "../../assets/project-2.4.png";
+import project3 from "../../assets/project-3.png";
+import project31 from "../../assets/project-3.1.png";
+import project32 from "../../assets/project-3.2.png";
+import project33 from "../../assets/project-3.3.png";
+import project34 from "../../assets/project-3.4.png";
+import project4 from "../../assets/project-4.png";
+import project41 from "../../assets/project-4.1.png";
+import project42 from "../../assets/project-4.2.png";
+import project43 from "../../assets/project-4.3.png";
+import project44 from "../../assets/project-4.4.png";
+import CharStaggerButton from "../char-stagger-button";
+import { FadeUp } from "../../gsapAnimations";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const TEXT_FILL_STYLE_PREFIX = "lumera-tfa-style-";
 const SPLIT_CHARACTER_SELECTOR = ".split-chars";
-const TEXT_FILL_HOLD_VH = 150;
+const TEXT_FILL_HOLD_VH = 100;
 const TEXT_FILL_COPY =
   "Life above the City, Where Every Moment is Framed by Sweeping Skyline Views and Natural Light.";
 
@@ -120,7 +120,7 @@ export default function HorizontalFeatureRevealSection() {
   const uid = useId().replace(/:/g, "");
   const sectionId = `lumera-residences-${uid}`;
   const textFillId = `${sectionId}-textfill`;
-  const imageParallaxRange = 24;
+  const imageParallaxRange = 12;
 
   const textFillSlideRef = useRef<HTMLDivElement | null>(null);
   const textFillHeadingRef = useRef<HTMLHeadingElement | null>(null);
@@ -207,8 +207,8 @@ export default function HorizontalFeatureRevealSection() {
             gsap.timeline({
               scrollTrigger: {
                 trigger: `#${sectionId}`,
-                start: "top top",
-                end: `+=${TEXT_FILL_HOLD_VH}vh`,
+                start: "top 40%",
+                end: `top+=${TEXT_FILL_HOLD_VH * 0.5}vh top`,
                 scrub: 0.3,
               },
             }).to(
@@ -333,18 +333,26 @@ export default function HorizontalFeatureRevealSection() {
           },
         });
 
-        gsap.to(card.querySelector(".lumera-residence-image"), {
-          translateX: `${imageParallaxRange}%`,
-          ease: "none",
-          scrollTrigger: {
-            trigger: card,
-            start: "left right",
-            end: "right left",
-            scrub: true,
-            horizontal: true,
-            containerAnimation: containerTween,
-          },
-        });
+        const image = card.querySelector<HTMLElement>(".lumera-residence-image");
+        if (image) {
+          gsap.fromTo(
+            image,
+            { xPercent: -imageParallaxRange },
+            {
+              xPercent: imageParallaxRange,
+              scale: 1.3,
+              ease: "none",
+              scrollTrigger: {
+                trigger: card,
+                start: "left right",
+                end: "right left",
+                scrub: true,
+                horizontal: true,
+                containerAnimation: containerTween,
+              },
+            },
+          );
+        }
       });
 
       ScrollTrigger.refresh();
@@ -367,7 +375,7 @@ export default function HorizontalFeatureRevealSection() {
     >
       <div className="sticky top-0 h-screen overflow-hidden max-[1025px]:static max-[1025px]:h-auto">
         <div
-          className="lumera-residence-track flex h-full w-fit gap-0  max-[1025px]:flex-col max-[1025px]:gap-[12vw]  max-[1025px]:py-[15%]"
+          className="lumera-residence-track flex h-full w-fit gap-0  max-[1025px]:flex-col max-[1025px]:gap-[12vw]  max-[1025px]:pb-[15%]"
           style={{ "--card-gap": "4vw" } as CSSProperties}
         >
           <div
@@ -375,10 +383,10 @@ export default function HorizontalFeatureRevealSection() {
             ref={textFillSlideRef}
             className="flex h-screen w-screen flex-none items-center justify-center overflow-hidden bg-white px-[5vw] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:py-[20vh]"
           >
-            <div className="split__wrapper relative z-10 mx-auto w-[90%] ">
+            <div className="split__wrapper relative z-10 mx-auto w-[80%] max-[1025px]:w-[90%]">
               <h2
                 ref={textFillHeadingRef}
-                className="text-center text-[3.8vw] leading-[1.3] font-medium text-[#1c1b1a] opacity-0 max-[1025px]:opacity-100 max-[1025px]:text-[5vw] max-md:text-[8.5vw] max-[1025px]:leading-[1.08]"
+                className="text-center text-[3.8vw] font-neue-montreal leading-[1.3] font-medium! text-[#1c1b1a] opacity-0 max-[1025px]:opacity-100 max-[1025px]:text-[5vw] max-md:text-[8.5vw] max-[1025px]:leading-[1.08]"
               >
                 {TEXT_FILL_COPY}
               </h2>
@@ -400,22 +408,17 @@ export default function HorizontalFeatureRevealSection() {
                   width={1000}
                   height={1000}
                   quality={95}
-                  className="lumera-residence-image h-full w-full object-cover translate-x-(--image-shift-start) opacity-0 max-[1025px]:translate-x-0 max-[1025px]:opacity-100"
-                  style={
-                    {
-                      "--image-shift-start": `-${imageParallaxRange}%`,
-                    } as CSSProperties & Record<`--${string}`, string | number>
-                  }
+                  className="lumera-residence-image h-full w-full object-cover opacity-0 scale-[1.3] max-[1025px]:translate-x-0 max-[1025px]:scale-100 max-[1025px]:opacity-100"
                 />
               </div>
 
               <div className="flex  flex-col justify-between px-[3.5vw] py-[3.5vw] max-[1025px]:w-full max-[1025px]:px-0 max-[1025px]:pt-[7vw]">
                 <div>
-                  <p className="lumera-residence-number text-[#1c1b1a] font-neue-montreal text-[5.8vw] font-medium leading-none max-[1025px]:text-[7vw]  opacity-0 max-md:text-[12vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-number text-[#1c1b1a] font-neue-montreal text-[5.8vw] font-medium! leading-none max-[1025px]:text-[7vw]  opacity-0 max-md:text-[12vw] max-[1025px]:opacity-100">
                     {item.number}
                   </p>
 
-                  <h3 className="lumera-residence-title mt-[2vw] max-[1025px]:text-[5vw] font-neue-montreal text-[3.8vw] font-medium  leading-[1.2] text-[#1c1b1a] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-md:text-[7vw] max-[1025px]:opacity-100">
+                  <h3 className="lumera-residence-title mt-[2vw] max-[1025px]:text-[5vw] font-neue-montreal text-[3.8vw] font-medium!  leading-[1.2] text-[#1c1b1a] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-md:text-[7vw] max-[1025px]:opacity-100">
                     {item.title}
                   </h3>
 
@@ -439,7 +442,7 @@ export default function HorizontalFeatureRevealSection() {
                             className="absolute left-0 top-1/2 h-[6vw] w-px -translate-y-1/2 bg-[#DADADA] max-[1025px]:hidden"
                           />
                         ) : null}
-                        <p className="text-[1.45vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[3.5vw] max-md:text-[5vw]">
+                        <p className="text-[1.45vw] font-medium! leading-none tracking-[-0.04em] max-[1025px]:text-[3.5vw] max-md:text-[5vw]">
                           {stat.value}
                         </p>
                         <p className="mt-[0.8vw] text-[1.25vw] text-black max-[1025px]:mt-[1.8vw] max-[1025px]:text-[2.5vw] max-md:text-[3.2vw]">
@@ -458,7 +461,7 @@ export default function HorizontalFeatureRevealSection() {
                       <div
                         
                         key={`${item.number}-thumb-${index}`}
-                        className="overflow-hidden  rounded-[1.3vw] bg-[#ddd4ca] max-[1025px]:rounded-[4vw]"
+                        className="overflow-hidden h-[6.2vw] w-[6.2vw]  rounded-[1.3vw] bg-[#ddd4ca] max-[1025px]:rounded-[4vw] group max-[1025px]:h-[20vw] max-[1025px]:w-[20vw]"
                         >
                         <Image
                           src={thumb}
@@ -466,7 +469,7 @@ export default function HorizontalFeatureRevealSection() {
                           width={1000}
                           height={1000}
                           quality={95}
-                          className="h-[6.2vw] w-[6.2vw]  object-cover max-[1025px]:h-[20vw] max-[1025px]:w-[20vw]"
+                          className="  object-cover group-hover:scale-[1.2] duration-300 ease-in-out transition-all h-full w-full "
                           />
                       </div>
                    

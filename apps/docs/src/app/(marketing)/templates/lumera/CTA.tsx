@@ -26,7 +26,7 @@ const CTA = () => {
 
           <h2
             data-para-anim
-            className=" font-medium font-neue-montreal text-[#1C1B1A] text-[3.8vw] leading-[1.15] max-[1025px]:text-[5vw] max-md:text-[6.8vw] "
+            className=" font-medium! font-neue-montreal text-[#1C1B1A] text-[3.8vw] leading-[1.15] max-[1025px]:text-[5vw] max-md:text-[6.8vw] "
             >
             Some Properties Need to be Experienced in Person
           </h2>
@@ -54,7 +54,7 @@ const CTA = () => {
             <PrimaryButton
               btnText="Contact Our Team"
               link="#"
-              className="border border-[#1c1b1a] max-md:w-full"
+              className="border border-[#1c1b1a] max-[1025px]:w-full"
               />
           </div>
               </FadeUp>
@@ -64,7 +64,7 @@ const CTA = () => {
 
        
 
-        <div className="mt-[3.5vw] max-[1025px]:pb-[5vw] max-[1025px]:grid-cols-2 max-[1025px]:px-[6vw] grid grid-cols-4 gap-[0.8vw] px-[3vw] pb-[3vw] max-md:mt-[8vw] max-md:grid-cols-2 max-md:gap-[2.5vw] max-md:px-[5vw] max-md:pb-[5vw] max-[1025px]:gap-[1.5vw] ">
+        <div className="mt-[3.5vw] max-[1025px]:pb-[5vw] max-[1025px]:grid-cols-2 max-[1025px]:px-[6vw] grid grid-cols-4 gap-[1.5vw] px-[3vw] pb-[3vw] max-md:mt-[8vw] max-md:grid-cols-2 max-md:gap-[2.5vw] max-md:px-[5vw] max-md:pb-[5vw] max-[1025px]:gap-[1.5vw] ">
           {ctaImages.map(({ src, alt }, index) => (
             <div
               key={index}
