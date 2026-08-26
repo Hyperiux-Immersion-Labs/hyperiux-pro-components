@@ -29,39 +29,33 @@ function useIsMobile() {
 export default function LiquidGlassWrapper({ cursorProps = {} }) {
   const isMobile = useIsMobile()
 
-  return (
+  const content = (
     <>
- 
-    <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden  selection:bg-black selection:text-white">
-      {!isMobile && (
-        <LiquidGlassCursor {...cursorProps} />
-      )}
-
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] bg-white rounded-full filter blur-[100px] opacity-60 pointer-events-none"></div>
 
       <div className="relative z-10 flex flex-col items-center justify-center h-screen px-4 space-y-8 max-[1025px]:space-y-20 max-md:space-y-10 max-w-5xl mx-auto">
-        <div data-cursor="text" className="mb-[2vw] h-[5vw] w-[5vw] max-[1025px]:w-[8vw] max-[1025px]:h-[8vw] max-md:mt-4 max-md:w-[9vw] max-md:h-[9vw] text-[#1D1D1F]">
+        <div className="mb-[2vw] h-[5vw] w-[5vw] max-[1025px]:w-[8vw] max-[1025px]:h-[8vw] max-md:mt-4 max-md:w-[9vw] max-md:h-[9vw] text-[#1D1D1F]">
           <CustomIcon className="w-full h-full object-contain" />
         </div>
 
-        <div data-cursor="button" className="px-5 py-1.5 max-[1025px]:mt-4 bg-white border border-[#E5E5EA] rounded-full text-xs font-semibold text-[#86868B] tracking-wide uppercase mb-6 cursor-none hover:scale-105 transition-transform duration-300">
+        <div className="px-5 py-1.5 max-[1025px]:mt-4 bg-white border border-[#E5E5EA] rounded-full text-xs font-semibold text-[#86868B] tracking-wide uppercase mb-6 hover:scale-105 transition-transform duration-300">
           New
         </div>
 
         <div className="text-center space-y-4">
-          <h1 data-cursor="text" className="text-[88px] max-[1025px]:text-6xl leading-tight font-semibold tracking-[-0.04em] text-[#1D1D1F] inline-block px-4 py-2">
+          <h1 className="text-[88px] max-[1025px]:text-6xl leading-tight font-semibold tracking-[-0.04em] text-[#1D1D1F] inline-block px-4 py-2">
             LIQUID PRO.
           </h1>
-          <p data-cursor="text" className="max-[1025px]:text-2xl text-3xl text-[#86868B] font-medium tracking-tight max-w-2xl mx-auto inline-block px-4">
+          <p className="max-[1025px]:text-2xl text-3xl text-[#86868B] font-medium tracking-tight max-w-2xl mx-auto inline-block px-4">
             Mind-blowing fluidity. <br className="max-[1025px]:hidden" /> Design that simply flows.
           </p>
         </div>
 
         <div className="flex flex-row max-md:flex-col items-center gap-6 mt-10">
-          <button data-cursor="button" className="flex items-center justify-center gap-2 px-8 py-3.5 bg-[#1D1D1F] text-white font-medium text-lg max-md:text-lg max-[1025px]:text-xl rounded-full transition-all hover:bg-black hover:scale-105 active:scale-95 cursor-none">
+          <button className="flex items-center justify-center gap-2 px-8 py-3.5 bg-[#1D1D1F] text-white font-medium text-lg max-md:text-lg max-[1025px]:text-xl rounded-full transition-all hover:bg-black hover:scale-105 active:scale-95">
             Buy <ChevronRight className="w-4 h-4 max-md:w-5 max-md:h-5 max-[1025px]:w-6 max-[1025px]:h-6" />
           </button>
-          <button data-cursor="button" className="flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-[#2997FF] font-medium text-lg max-md:text-lg max-[1025px]:text-xl rounded-full transition-all hover:bg-[#2997FF]/10 hover:scale-105 active:scale-95 cursor-none">
+          <button className="flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-[#2997FF] font-medium text-lg max-md:text-lg max-[1025px]:text-xl rounded-full transition-all hover:bg-[#2997FF]/10 hover:scale-105 active:scale-95">
             Watch the film <Play className="w-4 h-4 max-md:w-5 max-md:h-5 max-[1025px]:w-6 max-[1025px]:h-6 fill-current" />
           </button>
         </div>
@@ -74,7 +68,23 @@ Best experienced where hover exists.
           </p>
         )}
       </div>
-    </div>
-     </>
+    </>
+  )
+
+  if (isMobile) {
+    return (
+      <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden font-sans selection:bg-black selection:text-white">
+        {content}
+      </div>
+    )
+  }
+
+  return (
+    <LiquidGlassCursor
+      {...cursorProps}
+      className="min-h-screen w-full bg-[#F5F5F7]! font-sans selection:bg-black selection:text-white"
+    >
+      {content}
+    </LiquidGlassCursor>
   )
 }
