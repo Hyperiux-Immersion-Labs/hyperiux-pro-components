@@ -103,6 +103,7 @@ export default function Reviews({
                 gsap.set(".mid-strip", { yPercent: -80, scale: 0.5 });
                 gsap.set(".left-strip", { yPercent: 3, scale: 0.5 });
                 gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
+                gsap.set(".section-break-wrapper", { scale: 0.82, opacity: 0 });
 
                 cards.forEach((card, index) => {
                     const image = card.querySelector(".project-image");
@@ -150,66 +151,74 @@ export default function Reviews({
                     card._onLeave = onLeave;
                 });
 
+                // Unified single timeline across the 500vh scroll with proper proportional phases
                 const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: `#${sectionId}`,
-                        start: "top 75%",
+                        start: "-8% top",
                         end: "bottom bottom",
-                        scrub: true,
+                        scrub: 1.2,
                     },
                 });
 
-                tl.to(".left-strip", { yPercent: -77, scale: 1 }, 0);
-                tl.to(".mid-strip", { yPercent: -4.5, scale: 1 }, 0);
-                tl.to(".right-strip", { yPercent: -77, scale: 1 }, 0);
-                tl.to(".card-1", {
-                    yPercent: -100,
-                    duration: 0.3 * speedScale,
-                    ease: "power3.inOut",
-                });
-                tl.to(
-                    ".card-2",
-                    {
-                        yPercent: 100,
-                        duration: 0.3 * speedScale,
-                        ease: "power3.inOut",
-                    },
-                    "<"
-                );
+                // Total timeline duration = 12 units:
+                // Phase 1 (0 -> 4.5): Ribbon Strips Drift & Scale up
+                tl.to(".left-strip", { yPercent: -77, scale: 1, ease: "none", duration: 4.5 }, 0);
+                tl.to(".mid-strip", { yPercent: -4.5, scale: 1, ease: "none", duration: 4.5 }, 0);
+                tl.to(".right-strip", { yPercent: -77, scale: 1, ease: "none", duration: 4.5 }, 0);
+
+                // Phase 2 (3.8 -> 6.8): Strips part outwards and center cards split up/down with smooth, gradual easing
                 tl.to(
                     ".left-strip",
                     {
-                        xPercent: -170,
-                        duration: 0.3 * speedScale,
-                        ease: "power3.inOut",
+                        xPercent: -180,
+                        duration: 2.8 * speedScale,
+                        ease: "power2.inOut",
                     },
-                    "<"
+                    3.8
                 );
                 tl.to(
                     ".right-strip",
                     {
-                        xPercent: 170,
-                        duration: 0.3 * speedScale,
-                        ease: "power3.inOut",
+                        xPercent: 180,
+                        duration: 2.8 * speedScale,
+                        ease: "power2.inOut",
                     },
-                    "<"
+                    3.8
+                );
+                tl.to(
+                    ".card-1",
+                    {
+                        yPercent: -130,
+                        duration: 2.8 * speedScale,
+                        ease: "power2.inOut",
+                    },
+                    3.8
+                );
+                tl.to(
+                    ".card-2",
+                    {
+                        yPercent: 130,
+                        duration: 2.8 * speedScale,
+                        ease: "power2.inOut",
+                    },
+                    3.8
                 );
 
-                const sectionBreakTl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: `#${sectionId}`,
-                        start: "65% top",
-                        end: "bottom bottom",
-                        scrub: true,
+                // Phase 3 (5.2 -> 6.6): Section break statement wrapper scales & reveals smoothly
+                tl.to(
+                    ".section-break-wrapper",
+                    {
+                        scale: 1,
+                        opacity: 1,
+                        duration: 1.4 * speedScale,
+                        ease: "power2.out",
                     },
-                });
+                    5
+                );
 
-                sectionBreakTl.from(".section-break-wrapper", {
-                    scale: 0.7,
-                    opacity: 0,
-                    duration: 3 * speedScale,
-                    ease: "power3.inOut",
-                });
+                // Phase 4 & 5 (6.8 -> 12.0): Generous pinned hold time for TextFill to complete and comfortable reading
+                tl.to({}, { duration: 5.2 }, 6.2);
 
                 return () => {
                     cards.forEach((card) => {
@@ -244,9 +253,11 @@ export default function Reviews({
     return (
         <>
             <div
-                className="w-full h-[1000vh] bg-white text-oris-secondary max-[1025px]:hidden relative z-10 overflow-clip"
+                className="w-full h-[500vh] bg-white text-oris-secondary max-[1025px]:hidden relative z-10 overflow-clip"
                 id={sectionId}
             >
+
+
                 {/* Ribbon Strips Layer */}
                 <div className="w-full h-screen sticky top-0 flex justify-between px-[7vw] portfolio-card-container z-2 overflow-hidden">
                     {/* Left Strip */}
@@ -360,7 +371,7 @@ export default function Reviews({
                 </div>
 
                 {/* Section Break Fill Reveal Layer */}
-                <div className="w-full h-screen sticky top-0 section-break text-[3.5vw] leading-[1.2] flex justify-center items-center overflow-hidden">
+                <div className="w-full h-screen sticky top-0 section-break text-[3.5vw] leading-[1.2] flex justify-center items-center overflow-hidden pointer-events-none">
                     <div className="w-[75%] text-center relative section-break-wrapper">
                         <TextFill
                             as="p"
@@ -370,16 +381,26 @@ export default function Reviews({
                             textColor="#13314a"
                             dimColor="rgba(0, 0, 0, 0.2)"
                             trigger={`#${sectionId}`}
-                            start="85% top"
-                            end="bottom bottom"
+                            start="40% top"
+                            end="76% top"
                         />
                     </div>
                 </div>
             </div>
 
             {/* Responsive Layout for Tablet & Mobile */}
-            <div className="hidden w-full bg-white text-oris-secondary max-[1025px]:block px-6 py-20">
-                <div className="mx-auto flex w-full max-w-4xl flex-col gap-10">
+            <div className="hidden w-full bg-white text-oris-secondary max-[1025px]:block px-6 py-20 max-md:py-14">
+                <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-md:gap-8">
+                    {/* Header on Tablet / Mobile */}
+                    <div className="flex flex-col items-center text-center">
+                        <h2 className="oris-text64 font-normal leading-tight">
+                            Reviews
+                        </h2>
+                        <p className="oris-text22 text-oris-secondary/80 mt-2 max-w-xl">
+                            Real experiences and radiant smiles from patients who trust Oris Dental.
+                        </p>
+                    </div>
+
                     <div className="grid grid-cols-3 gap-3 max-md:grid-cols-2">
                         {compactCards.map((item, index) => (
                             <div
@@ -397,8 +418,8 @@ export default function Reviews({
                         ))}
                     </div>
 
-                    <div className="rounded-xl px-4 py-8 text-center bg-gray-50/60 mt-4">
-                        <p className="text-[4.2vw] font-normal leading-[1.3] text-oris-secondary">
+                    <div className="rounded-xl px-4 py-8 text-center bg-[#c4c4c4] mt-4">
+                        <p className="oris-text22 max-md:w-full max-[1025px]:w-[90%] max-[1025px]:mx-auto max-md:text-base font-normal leading-[1.4] text-oris-secondary">
                             {sectionBreakText}
                         </p>
                     </div>

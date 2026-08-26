@@ -78,6 +78,25 @@
   background-color: #13314a;
 }
 
+/* Selection colors */
+::selection,
+#main ::selection,
+.oris-font ::selection,
+#oris-hero ::selection,
+#oris-footer ::selection {
+  background-color: #3365e2;
+  color: #ffffff;
+}
+
+::-moz-selection,
+#main ::-moz-selection,
+.oris-font ::-moz-selection,
+#oris-hero ::-moz-selection,
+#oris-footer ::-moz-selection {
+  background-color: #3365e2;
+  color: #ffffff;
+}
+
 /* Custom scrollbar styled with Oris primary color */
 html,
 body,
@@ -116,15 +135,15 @@ body,
 .oris-text64 {
   font-size: 3.7vw;
   letter-spacing: -0.01em;
-  line-height: 1.15;
-  font-weight: 500;
+  line-height: 1.23;
+  font-weight: 400;
 }
 
 .oris-text48 {
   font-size: 3vw;
   letter-spacing: -0.01em;
   line-height: 1.15;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 @media (max-width: 1025px) {
@@ -132,16 +151,16 @@ body,
     padding-inline: 5vw;
   }
   .oris-text64 {
-    font-size: 5vw;
+    font-size: 6vw;
   }
   .oris-text48 {
     font-size: 4vw;
   }
   .oris-text32 {
-    font-size: 2.8vw;
+    font-size: 3.4vw;
   }
   .oris-text22 {
-    font-size: 1.8vw;
+    font-size: 3vw;
   }
 }
 
@@ -159,6 +178,6 @@ body,
     font-size: 4.5vw;
   }
   .oris-text22 {
-    font-size: 3.2vw;
+    font-size: 4vw;
   }
 }

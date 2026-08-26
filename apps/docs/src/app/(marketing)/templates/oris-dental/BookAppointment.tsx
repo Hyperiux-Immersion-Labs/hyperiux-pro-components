@@ -8,8 +8,8 @@ import FormBg from './assets/animated-form-bg.png'
 
 export default function BookAppointment() {
     return (
-        <section id="oris-form" className="w-full bg-white pt-[6vw]">
-            <div className="relative w-full rounded-t-[2.2vw] max-md:rounded-2xl overflow-hidden min-h-[80vh] flex items-start justify-between oris-paddx py-[5.6vw] max-md:p-6 max-md:flex-col max-md:gap-8">
+        <section id="oris-form" className="w-full bg-white pt-[6vw] max-[1025px]:pt-12">
+            <div className="relative w-full rounded-t-[2.2vw] max-[1025px]:rounded-t-3xl overflow-hidden min-h-[80vh] max-[1025px]:min-h-0 flex items-start justify-between oris-paddx py-[5.6vw] max-[1025px]:p-8 max-md:p-6 max-[1025px]:py-12! max-[1025px]:flex-col max-[1025px]:gap-10">
                 {/* Background Image */}
                 <Image
                     src={FormBg}
@@ -21,11 +21,11 @@ export default function BookAppointment() {
                 />
 
                 {/* Left Content */}
-                <div className="z-10 text-white flex pt-[1vw] flex-col justify-center max-md:max-w-full">
-                    <SplitTextLines as="h2" className="oris-text64 max-w-[34vw]">
+                <div className="z-10 text-white flex pt-[1vw] max-[1025px]:pt-0 flex-col justify-center max-[1025px]:max-w-full">
+                    <SplitTextLines as="h2" className="oris-text64 max-w-[34vw] max-[1025px]:max-w-full">
                         The first step to the smile you deserve
                     </SplitTextLines>
-                    <SplitTextLines as="p" className="oris-text22 max-w-[36vw] mt-[2vw] max-md:mt-4" delay={0.2}>
+                    <SplitTextLines as="p" className="oris-text22 max-w-[36vw] max-[1025px]:max-w-xl mt-[2vw] max-[1025px]:mt-4" delay={0.2}>
                         Leave a request and our care coordinator will call you back
                         within 15 minutes. Your first consultation with a 3D scan is
                         free.
@@ -33,8 +33,8 @@ export default function BookAppointment() {
                 </div>
 
                 {/* Right Floating Form Card */}
-                <div className="z-10 bg-white rounded-[1.8vw] max-md:rounded-2xl p-[2vw] max-md:p-6 w-[45vw] max-md:w-full ">
-                    <h3 className="text-[1.8vw] max-md:text-[6vw] font-medium text-[#1A1A1A] mb-[1.5vw] max-md:mb-4">
+                <div className="z-10 bg-white rounded-[1.8vw] max-[1025px]:rounded-xl p-[2vw] max-[1025px]:p-6 w-[45vw] max-[1025px]:w-full">
+                    <h3 className="text-[1.8vw] max-[1025px]:text-2xl font-medium text-[#1A1A1A] mb-[1.5vw] max-[1025px]:mb-4">
                         Get in touch
                     </h3>
                     <ContactForm />

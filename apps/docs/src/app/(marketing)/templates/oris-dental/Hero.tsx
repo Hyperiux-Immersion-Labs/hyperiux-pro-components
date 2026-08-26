@@ -1,11 +1,27 @@
+'use client'
+
+import React, { useRef } from 'react'
+import { useLenis } from 'lenis/react'
 import TeethCanvas from "./effects/teeth-3d/TeethCanvas";
 import DotsCanvas from "./effects/teeth-3d/DotsCanvas";
 import PatientCard from "./effects/patient-card/PatientCard";
 import SplitTextLines from "./effects/split-text-lines/SplitTextLines";
 
 export default function Hero() {
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+
+  useLenis(() => {
+    if (!overlayRef.current) return;
+    const scrollY = typeof window !== 'undefined' ? window.scrollY || 0 : 0;
+    const vh = typeof window !== 'undefined' ? window.innerHeight || 800 : 800;
+
+    // Progress from 0 (top of page) to 1 (when scrolled ~85% of hero viewport height)
+    const progress = Math.min(Math.max(scrollY / (vh * 0.85), 0), 1);
+    overlayRef.current.style.opacity = (progress * 0.95).toString();
+  });
+
   return (
-    <section id="oris-hero" className=" h-dvh sticky top-0 z-0 bg-linear-to-t from-[#3365E2] via-[#3365E2] to-white overflow-hidden w-full max-[1025px]:h-dvh max-md:h-dvh">
+    <section id="oris-hero" className="h-dvh sticky top-0 z-0 bg-linear-to-t from-[#3365E2] via-[#3365E2] to-white overflow-hidden w-full max-[1025px]:h-dvh max-md:h-dvh">
       <div className="h-full w-full relative flex flex-col justify-between">
 
         <DotsCanvas spacing={22} lerpFactor={0.15} baseRadius={1.4} maxRadius={3.8} interactionRadius={200} />
@@ -27,10 +43,21 @@ export default function Hero() {
               Our treatments are designed to support patients across diverse needs and clinical situations, from routine cleaning to complex restorative procedures. Every treatment plan is personalized to your specific dental health goals, budget considerations, and timeline preferences.
             </SplitTextLines>
 
-            <PatientCard className="max-[1025px]:w-[55vw] max-md:w-full max-[1025px]:p-4 max-[1025px]:rounded-xl" />
+            <PatientCard
+              className="max-[1025px]:w-[55vw] max-md:w-full max-[1025px]:p-4 max-[1025px]:rounded-xl"
+              delay={1.4}
+              waitForLoader
+            />
           </div>
 
         </div>
+
+        {/* Dynamic Dark Blue Scroll Overlay ON TOP of the entire hero */}
+        <div
+          ref={overlayRef}
+          className="absolute inset-0 pointer-events-none z-50 bg-linear-to-b from-[#13314a] via-[#0f283c] to-[#0a1b2a] opacity-0 will-change-opacity"
+          aria-hidden="true"
+        />
       </div>
 
     </section>
