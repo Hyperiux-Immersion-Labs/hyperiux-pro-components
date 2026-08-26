@@ -102,6 +102,7 @@ const INTERNAL_WORKSPACE_PREFIXES = [
   '/dashboard',
   '/app/dashboard',
   '/effects',
+  '/templates',
   '/docs',
   '/legal',
   '/mcp'
