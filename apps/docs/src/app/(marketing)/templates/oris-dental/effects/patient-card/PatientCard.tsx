@@ -110,7 +110,7 @@ export default function PatientCard({
     return (
         <div
             ref={cardRef}
-            className={`w-[30vw] max-[1025px]:w-full h-fit rounded-[2vw] bg-white p-[2.2vw] max-max-[1025px]:p-5 flex flex-col max-[1025px]:flex-row! justify-between border border-white/60 relative z-10 will-change-transform ${className}`}
+            className={`w-[30vw] max-[1025px]:w-full h-fit rounded-[2vw] bg-white p-[2.2vw] max-[1025px]:p-5 flex flex-col max-[1025px]:flex-row! justify-between border border-white/60 relative z-10 will-change-transform ${className}`}
         >
             {/* Top Text Content */}
             <div className='mb-[2vw] max-[1025px]:mb-3'>
