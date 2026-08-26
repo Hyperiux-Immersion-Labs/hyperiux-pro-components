@@ -1,35 +1,49 @@
-import OrisNav from "@/templates/oris-dental/components/OrisNav";
-import OrisHero from "@/templates/oris-dental/sections/OrisHero";
-import "@/templates/oris-dental/components/oris-dental.css";
-import OrisWrapper from "@/templates/oris-dental/components/OrisWrapper";
-import AboutOris from "@/templates/oris-dental/sections/AboutOris";
-import DentalTreatments from "@/templates/oris-dental/sections/DentalTreatments";
-import ParallaxSectionBreakOris from "@/templates/oris-dental/sections/ParallaxSectionBreakOris";
-import OrisReviews from "@/templates/oris-dental/sections/OrisReviews";
-import PassionMeetPurpose from "@/templates/oris-dental/sections/PassionMeetPurpose";
-import OrisForm from "@/templates/oris-dental/sections/OrisForm";
-import OrisFooter from "@/templates/oris-dental/sections/OrisFooter";
-import OrisLoader from "@/templates/oris-dental/sections/OrisLoader";
+import type { Metadata } from "next";
+import Header from "./Header";
+import Hero from "./Hero";
+import "./oris-dental.css";
+import OrisWrapper from "./OrisWrapper";
+import AboutOris from "./AboutOris";
+import DentalTreatments from "./DentalTreatments";
+import WhyOris from "./WhyOris";
+import ParallaxSectionBreak from "./ParallaxSectionBreak";
+import Reviews from "./Reviews";
+import PassionMeetPurpose from "./PassionMeetPurpose";
+import BookAppointment from "./BookAppointment";
+import Footer from "./Footer";
+import Loader from "./Loader";
 import ScrollTopOnLoad from "@/homepage-v3/components/ScrollTopOnLoad";
-import WhyOris from "@/templates/oris-dental/sections/WhyOris";
 
-export default function page() {
-    return (
-        <OrisWrapper>
-            <ScrollTopOnLoad />
-            <OrisLoader />
-            <OrisNav />
-            <OrisHero />
-            <div className="z-10 text-oris-secondary relative bg-white">
-                <AboutOris />
-                <DentalTreatments />
-                <WhyOris />
-                <ParallaxSectionBreakOris />
-                <OrisReviews />
-                <PassionMeetPurpose />
-                <OrisForm />
-            </div>
-            <OrisFooter />
-        </OrisWrapper>
-    )
+const TITLE = "Oris Dental — Modern Dental Clinic & Care Template";
+const DESCRIPTION =
+  "A modern dental clinic template featuring interactive 3D teeth visualizer, smooth scroll animations, treatment showcases, patient reviews, and online appointment booking.";
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+};
+
+export default function Page() {
+  return (
+    <OrisWrapper>
+      <ScrollTopOnLoad />
+      <Loader />
+      <Header />
+      <Hero />
+      <div className="z-10 text-oris-secondary relative bg-white">
+        <AboutOris />
+        <DentalTreatments />
+        <WhyOris />
+        <ParallaxSectionBreak />
+        <Reviews />
+        <PassionMeetPurpose />
+        <BookAppointment />
+      </div>
+      <Footer />
+    </OrisWrapper>
+  );
 }

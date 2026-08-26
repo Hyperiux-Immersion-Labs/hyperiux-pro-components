@@ -41,6 +41,11 @@ function categoryLabel(category) {
   return category.name.replace("Website ", "").replace("Page ", "");
 }
 
+const TIER_CATEGORY_LINKS = [
+  { id: "free", name: "Free Effects" },
+  { id: "pro", name: "Pro Effects" },
+];
+
 function getPathSegments(pathname = "") {
   return pathname.split("/").filter(Boolean);
 }
@@ -190,12 +195,20 @@ export function Sidebar({
 
   const lastPathSegment = getLastPathSegment(pathname);
 
+  const categoryNavigationItems = useMemo(
+    () => [
+      ...TIER_CATEGORY_LINKS,
+      ...effectCategories.filter((category) => category.id !== "featured"),
+    ],
+    []
+  );
+
   const categoryRouteSlugs = useMemo(
     () =>
-      effectCategories.map((category) =>
+      categoryNavigationItems.map((category) =>
         getEffectCategoryHref(category.id).split("/").filter(Boolean).pop()
       ),
-    []
+    [categoryNavigationItems]
   );
 
   const isCategoryRoute =
@@ -239,9 +252,21 @@ export function Sidebar({
         return pathname === basePath && (!hash || activeHash === `#${hash}`);
       }));
 
+  const pathnameCategory = useMemo(() => {
+    if (!pathname.startsWith("/effects/")) return "";
+
+    return (
+      categoryNavigationItems.find((category) => {
+        const [categoryPath] = getEffectCategoryHref(category.id).split("?");
+
+        return pathname === categoryPath;
+      })?.id || ""
+    );
+  }, [categoryNavigationItems, pathname]);
+
   const currentCategory = isDocsActive || isLegalActive
     ? ""
-    : activeCategory || searchParams.get("category") || "";
+    : activeCategory || searchParams.get("category") || pathnameCategory || "";
 
   const isOverviewActive =
     pathname === "/effects" && (!currentCategory || currentCategory === "all");
@@ -355,6 +380,21 @@ export function Sidebar({
     () => getFeaturedEffects(sidebarEffects).length,
     [sidebarEffects]
   );
+
+  const computedTierCounts = useMemo(() => {
+    return sidebarEffects.reduce(
+      (counts, effect) => {
+        if (effect.tier === "pro") {
+          counts.pro += 1;
+        } else {
+          counts.free += 1;
+        }
+
+        return counts;
+      },
+      { free: 0, pro: 0 }
+    );
+  }, [sidebarEffects]);
 
   // Fallback for routes (e.g. /dashboard) that mount Sidebar without ever
   // computing/passing `effectCounts` from the server.
@@ -556,12 +596,10 @@ export function Sidebar({
                 transition={{ duration: 0.24, ease: "easeOut" }}
                 className="ml-7 max-h-[42vh] space-y-3 overflow-y-auto border-l border-white/12 pl-7 pr-3 sidebar-link-content"
               >
-                {effectCategories.map((category,id) => {
-                  // Featured is available through filters, but hidden from the sidebar category list.
-                  if (category.id === "featured") return null;
-
+                {categoryNavigationItems.map((category,id) => {
                   const count =
                     effectCounts[category.id] ??
+                    computedTierCounts[category.id] ??
                     computedCategoryCounts[category.id] ??
                     (category.id === "featured" ? featuredCount : 0);
 

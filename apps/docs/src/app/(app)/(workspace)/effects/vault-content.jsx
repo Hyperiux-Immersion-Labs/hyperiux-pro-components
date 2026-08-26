@@ -8,7 +8,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useVaultLayout } from "@/components/layout/VaultLayout";
-import { PixelSquaresLoader } from "@/components/ui/PixelSquaresLoader";
+import { GridDots } from "@/components/grid-dots";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { EffectCard } from "@/components/ui/EffectCardNew";
@@ -127,7 +127,11 @@ function SkeletonBlock({ className = "" }) {
 
 
 function EffectsGridSkeleton() {
-  return <PixelSquaresLoader label="Loading effects" />;
+  return (
+    <div className="flex h-96 w-full items-center justify-center">
+      <GridDots size={56} squareSize={8} className="text-primary" />
+    </div>
+  );
 }
 
 export function VaultContent({
@@ -492,17 +496,46 @@ export function VaultContent({
         ? categoryFilter
         : null);
 
+  const tierFilterCounts = useMemo(() => {
+    if (
+      typeof safeEffectCounts.free === "number" &&
+      typeof safeEffectCounts.pro === "number"
+    ) {
+      return {
+        free: safeEffectCounts.free,
+        pro: safeEffectCounts.pro,
+      };
+    }
+
+    if (isEffectsLoading) {
+      return { free: 0, pro: 0 };
+    }
+
+    return safeEffects.reduce(
+      (counts, effect) => {
+        if (effect.tier === "pro") {
+          counts.pro += 1;
+        } else {
+          counts.free += 1;
+        }
+
+        return counts;
+      },
+      { free: 0, pro: 0 }
+    );
+  }, [isEffectsLoading, safeEffectCounts, safeEffects]);
+
   const getQuickCategoryLabel = useCallback((cat) => {
     if (cat === "none") return "None";
-    if (cat === "free") return "Free";
-    if (cat === "pro") return "Pro";
+    if (cat === "free") return `Free (${tierFilterCounts.free})`;
+    if (cat === "pro") return `Pro (${tierFilterCounts.pro})`;
     if (cat === "featured") return "Featured";
     if (cat === "az") return "A-Z";
     if (cat === "za") return "Z-A";
     if (cat === "recent") return "Recently Added";
     if (cat === "webgl") return "WebGL";
     return cat.charAt(0).toUpperCase() + cat.slice(1);
-  }, []);
+  }, [tierFilterCounts]);
 
   useEffect(() => {
     if (!isSignedIn) return;
@@ -648,16 +681,16 @@ export function VaultContent({
     isEffectsLoading,
   ]);
 
-  const activeCategory = getEffectCategory(categoryFilter);
-
-  const activeCategoryContent =
-    categoryFilter === "all"
-      ? effectsOverviewContent
-      : categoryFilter === "free"
-        ? freeEffectsContent
-        : categoryFilter === "pro"
-          ? proEffectsContent
-          : activeCategory;
+  // Memoized (not just a plain const) so the FAQ-items memo below gets a
+  // dependency the compiler can actually trust as stable across renders -
+  // getEffectCategory()'s return value isn't something it can otherwise
+  // prove is immutable.
+  const activeCategoryContent = useMemo(() => {
+    if (categoryFilter === "all") return effectsOverviewContent;
+    if (categoryFilter === "free") return freeEffectsContent;
+    if (categoryFilter === "pro") return proEffectsContent;
+    return getEffectCategory(categoryFilter);
+  }, [categoryFilter]);
 
   const activeCategoryName = activeCategoryContent?.name || categoryFilter;
 
@@ -669,12 +702,16 @@ export function VaultContent({
     ? activeCategoryDescription
     : [activeCategoryDescription];
 
-  const activeCategoryFaqItems = (activeCategoryContent?.faqs || []).map((item, index) => ({
-    id: `${categoryFilter}-faq-${index + 1}`,
-    question: item.question,
-    answer: item.answer,
-    defaultOpen: index === 0,
-  }));
+  const activeCategoryFaqItems = useMemo(
+    () =>
+      (activeCategoryContent?.faqs || []).map((item, index) => ({
+        id: `${categoryFilter}-faq-${index + 1}`,
+        question: item.question,
+        answer: item.answer,
+        defaultOpen: index === 0,
+      })),
+    [activeCategoryContent, categoryFilter]
+  );
 
   return (
     <>
@@ -1206,7 +1243,7 @@ function EffectsGridInner({
       {/* Loading state indicator during batch fetch */}
       {isLoadingBatch && (
         <div className="flex justify-center py-10">
-          <PixelSquaresLoader />
+          <GridDots size={56} squareSize={8} className="text-primary" />
         </div>
       )}
 

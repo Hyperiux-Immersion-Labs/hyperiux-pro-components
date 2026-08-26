@@ -48,7 +48,8 @@ export default function SignInFlow() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  // "start" | "forgot-password" | "verify-reset-code" | "reset-password"
+  // "start" | "forgot-password" | "verify-reset-code" | "reset-password" |
+  // "verify-client-trust"
   const [step, setStep] = useState("start");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,6 +65,21 @@ export default function SignInFlow() {
     router.push("/effects");
   }
 
+  // Shared by the reset-password code step and the client-trust code step -
+  // both are a "we just emailed you a code" resend timer.
+  function startResendCooldown() {
+    setResendCooldown(RESEND_COOLDOWN_SECONDS);
+    const timer = setInterval(() => {
+      setResendCooldown((s) => {
+        if (s <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+  }
+
   async function handleSignIn(event) {
     event.preventDefault();
     if (!isLoaded || loading) return;
@@ -76,6 +92,32 @@ export default function SignInFlow() {
 
       if (result.status === "complete") {
         await completeSignIn(result);
+      } else if (result.status === "needs_client_trust") {
+        // Clerk's Device Trust: correct password, but this browser/device
+        // hasn't been seen before, so Clerk wants an email-code check
+        // before it'll trust the client. Mirrors the reset-password code
+        // step below, just against attemptSecondFactor instead of
+        // attemptFirstFactor. (If the account also has real MFA enabled,
+        // Clerk returns needs_second_factor instead of this - MFA takes
+        // precedence, see the branch below.)
+        const emailCodeFactor = result.supportedSecondFactors?.find(
+          (factor) => factor.strategy === "email_code"
+        );
+
+        if (!emailCodeFactor) {
+          console.error("needs_client_trust with no email_code factor available:", result);
+          setError(
+            "This device needs to be verified, but no supported verification method is available. Please contact support."
+          );
+        } else {
+          try {
+            await signIn.prepareSecondFactor({ strategy: "email_code" });
+            setStep("verify-client-trust");
+            startResendCooldown();
+          } catch (err) {
+            setError(errorMessage(err, "Unable to send a verification code. Try again in a moment."));
+          }
+        }
       } else if (result.status === "needs_second_factor") {
         // This flow never implemented a second-factor step (no code path
         // collects a TOTP/SMS/backup code) - if the account has MFA
@@ -110,16 +152,7 @@ export default function SignInFlow() {
     try {
       await signIn.create({ strategy: "reset_password_email_code", identifier: email });
       setStep("verify-reset-code");
-      setResendCooldown(RESEND_COOLDOWN_SECONDS);
-      const timer = setInterval(() => {
-        setResendCooldown((s) => {
-          if (s <= 1) {
-            clearInterval(timer);
-            return 0;
-          }
-          return s - 1;
-        });
-      }, 1000);
+      startResendCooldown();
     } catch (err) {
       setError(errorMessage(err, "Unable to send a reset code. Check your email address."));
     } finally {
@@ -141,9 +174,54 @@ export default function SignInFlow() {
         setStep("reset-password");
       } else if (result.status === "complete") {
         await completeSignIn(result);
+      } else {
+        // No known next step for this status - without this branch the
+        // button just stops loading with zero feedback, which reads as a
+        // broken form rather than an actual error.
+        console.error("attemptFirstFactor (reset code) did not complete:", result);
+        setError(`Something went wrong verifying that code (${result.status}). Please contact support.`);
       }
     } catch (err) {
       setError(errorMessage(err, "That code didn't work. Check it and try again."));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleVerifyClientTrust(event) {
+    event.preventDefault();
+    if (!isLoaded || loading) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await signIn.attemptSecondFactor({ strategy: "email_code", code });
+
+      if (result.status === "complete") {
+        await completeSignIn(result);
+      } else {
+        console.error("attemptSecondFactor (client trust) did not complete:", result);
+        setError(`Additional verification is required for this account (${result.status}). Please contact support.`);
+      }
+    } catch (err) {
+      setError(errorMessage(err, "That code didn't work. Check it and try again."));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResendClientTrustCode() {
+    if (!isLoaded || loading || resendCooldown > 0) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      await signIn.prepareSecondFactor({ strategy: "email_code" });
+      startResendCooldown();
+    } catch (err) {
+      setError(errorMessage(err, "Unable to resend the code. Try again in a moment."));
     } finally {
       setLoading(false);
     }
@@ -166,6 +244,9 @@ export default function SignInFlow() {
 
       if (result.status === "complete") {
         await completeSignIn(result);
+      } else {
+        console.error("resetPassword did not complete:", result);
+        setError(`Something went wrong resetting your password (${result.status}). Please contact support.`);
       }
     } catch (err) {
       setError(errorMessage(err, "Unable to reset your password."));
@@ -228,6 +309,44 @@ export default function SignInFlow() {
               Create an account
             </NextLink>
           </p>
+        </form>
+      )}
+
+      {step === "verify-client-trust" && (
+        <form ref={formRef} onSubmit={handleVerifyClientTrust}>
+          <StepHeading
+            title="Verify this device."
+            subtitle={`For your security, enter the code we sent to ${email} to trust this device.`}
+          />
+
+          <TextField
+            id="client-trust-code"
+            label="Verification code"
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="000000"
+            autoComplete="one-time-code"
+          />
+
+          <div className="mb-6">
+            <SubmitButton loading={loading} formRef={formRef} className="w-fit">Verify device</SubmitButton>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <SecondaryButton onClick={backToStart}>Go back</SecondaryButton>
+            {resendCooldown > 0 ? (
+              <span className="text-white/30">Resend in {resendCooldown}s</span>
+            ) : (
+              <button
+                type="button"
+                onClick={handleResendClientTrustCode}
+                className="text-[#ff5f00] hover:text-[#ff7a29]"
+              >
+                Resend code
+              </button>
+            )}
+          </div>
         </form>
       )}
 

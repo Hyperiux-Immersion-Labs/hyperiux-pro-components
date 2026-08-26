@@ -73,6 +73,13 @@ export default function SignUpFlow() {
 
       if (result.status === "complete") {
         await completeSignUp(result);
+      } else if (result.status === "abandoned") {
+        // SignUpStatus is 'missing_requirements' | 'complete' | 'abandoned' -
+        // an abandoned attempt has no valid next step (Clerk expired/reset
+        // it), so calling prepareEmailAddressVerification() on it would just
+        // surface a confusing Clerk error via the catch block below instead
+        // of a clear "start over" message.
+        setError("Your sign-up session expired. Please try again.");
       } else {
         // Every sign-up on this instance requires email verification before
         // it can complete - prepare it up front rather than branching on
@@ -117,7 +124,12 @@ export default function SignUpFlow() {
       if (result.status === "complete") {
         await completeSignUp(result);
       } else {
-        setError("Additional verification is required for this account. Please contact support.");
+        // Not currently reachable (this instance only requires email
+        // verification), but logged with the real status rather than a bare
+        // "contact support" so it's diagnosable if Clerk's requirements
+        // ever change (e.g. a phone number or additional profile field).
+        console.error("attemptEmailAddressVerification did not complete:", result);
+        setError(`Additional verification is required for this account (${result.status}). Please contact support.`);
       }
     } catch (err) {
       setError(errorMessage(err, "That code didn't work. Check it and try again."));

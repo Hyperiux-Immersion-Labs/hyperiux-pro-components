@@ -8,7 +8,7 @@
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/demo/border-beam",
-  "tier": "pro",
+  "tier": "free",
   "main": "index.tsx",
   "exportName": "BorderBeam",
   "exportKind": "default",
