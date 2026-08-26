@@ -1,16 +1,14 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLenis } from "lenis/react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import PrimaryButton from "./PrimaryButton";
 import CharStaggerButton from "./VaultComp/char-stagger-button";
 import Image from "next/image";
 import lumeraLogo from "./assets/icons/lumera-logo.png";
-
-gsap.registerPlugin(useGSAP);
+import { prefersReducedMotion } from "./reducedMotion";
 
 const navLinks = [
   { label: "About", target: "#about" },
@@ -22,17 +20,26 @@ const navLinks = [
 const Header: React.FC = () => {
   const lenis = useLenis();
   const [hidden, setHidden] = useState(false);
-  const [lastY, setLastY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const lastYRef = useRef(0);
+  const [revealed, setRevealed] = useState(false);
 
-useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset;
-      setIsScrolled(scrollTop > 150);
+      const currentY = window.scrollY;
+
+      setIsScrolled(currentY > 150);
+
+      if (currentY > lastYRef.current && currentY > 100) {
+        setHidden(true);
+      } else if (currentY < lastYRef.current) {
+        setHidden(false);
+      }
+      lastYRef.current = currentY;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -44,28 +51,8 @@ useEffect(() => {
   }, [menuOpen]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      if (currentY > lastY && currentY > 100) {
-        setHidden(true);
-      } else if (currentY < lastY) {
-        setHidden(false);
-      }
-      setLastY(currentY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastY]);
-
-  useGSAP(() => {
-    gsap.to("[data-header-fade]", {
-      opacity: 1,
-      duration: 0.8,
-      stagger: 0.15,
-      delay: 1,
-      ease: "power2.out",
-    });
+    const timer = setTimeout(() => setRevealed(true), 3000);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleNavScroll = (event: React.MouseEvent<HTMLAnchorElement>, target: string) => {
@@ -81,9 +68,13 @@ useEffect(() => {
   };
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 px-[5%] py-[2%] transform transition-all duration-300 tablet:px-[5%] tablet:py-[7%] ${hidden ? "-translate-y-full max-[1025px]:translate-y-0" : "translate-y-0"} ${isScrolled ? "bg-black/10 backdrop-blur-md shadow-md" : ""} `} >
+    <header
+      className={`fixed inset-x-0 top-0 z-50 px-[5%] py-[2%] transform transition-all ease-in-out duration-500 tablet:px-[5%] tablet:py-[7%] ${
+        !revealed ? "-translate-y-full" : hidden ? "-translate-y-full max-[1025px]:translate-y-0" : "translate-y-0"
+      } ${isScrolled ? "bg-black/20 backdrop-blur-md shadow-md" : ""} `}
+    >
       <div className="flex items-center justify-between">
-        <Link href="/" data-header-fade className="relative z-60 flex items-center gap-[0.6vw] tablet:gap-[2vw] opacity-0">
+        <Link href="/" className="relative z-60 flex items-center gap-[0.6vw] tablet:gap-[2vw]">
           <div className="h-fit w-40">
             <Image src={lumeraLogo} alt="Lumera" className="h-full w-full object-contain" />
           </div>
@@ -96,16 +87,15 @@ useEffect(() => {
               text={link.label}
               href={link.target}
               onClick={(event) => handleNavScroll(event, link.target)}
-              data-header-fade
               hoverColor="#ffffff"
-              className="text-white/90 opacity-0"
-              textClassName="font-body text-[1.2vw] tracking-wide"
+              className="text-white/90"
+              textClassName="font-aeonik-pro text-[1.15vw] tracking-wide"
             />
           ))}
         </nav>
 
         <div className="max-[1025px]:hidden ">
-          <PrimaryButton data-header-fade link="#footer" btnText="Enquire Now" className="min-w-0! w-50 opacity-0" />
+          <PrimaryButton link="#footer" btnText="Enquire Now" className="min-w-0! w-50 font-normal!"  />
         </div>
 
         <button
@@ -113,17 +103,17 @@ useEffect(() => {
           onClick={() => setMenuOpen((open) => !open)}
           aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={menuOpen}
-          className="relative z-[60] hidden h-[11vw] w-[11vw] shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/10 backdrop-blur-[10px] max-[1025px]:flex max-md:h-[13vw] max-md:w-[13vw]"
+          className="relative z-60 hidden h-[6vw] w-[7vw] shrink-0 items-center justify-center max-[1025px]:flex max-md:h-[8vw] max-md:w-[9vw]"
         >
-          <span className="relative block h-[4vw] w-[5vw] max-md:h-[5vw] max-md:w-[6vw]">
+          <span className="relative block h-[3vw] w-[5.5vw] max-md:h-[4vw] max-md:w-[7vw]">
             <span
               className={`absolute left-0 top-[22%] h-px w-full bg-white transition-transform duration-300 ${
-                menuOpen ? "translate-y-[1.1vw] rotate-45 max-md:translate-y-[1.4vw]" : ""
+                menuOpen ? "translate-y-[1.1vw] rotate-45 max-md:translate-y-[1vw]" : ""
               }`}
             />
             <span
               className={`absolute left-0 top-[68%] h-px w-full bg-white transition-transform duration-300 ${
-                menuOpen ? "-translate-y-[1.1vw] -rotate-45 max-md:-translate-y-[1.4vw]" : ""
+                menuOpen ? "translate-y-[-1.1vw] -rotate-45 max-md:translate-y-[-1vw]" : ""
               }`}
             />
           </span>
@@ -145,7 +135,7 @@ useEffect(() => {
                 onClick={(event) => handleNavScroll(event, link.target)}
                 hoverColor="rgba(255,255,255,0.7)"
                 className="text-white"
-                textClassName="font-heading text-[9vw] font-medium leading-none max-md:text-[12vw]"
+                textClassName="font-neue-montreal text-[9vw] font-medium leading-none max-md:text-[12vw]"
               />
             ))}
           </div>
@@ -156,7 +146,7 @@ useEffect(() => {
             onClick={(event) => handleNavScroll(event, "#footer")}
             hoverColor="#1c1b1a"
             className="h-[11vw] w-full justify-center rounded-full border border-[#ca8216] bg-white px-[6vw] text-[#1c1b1a] max-md:h-[15vw]"
-            textClassName="font-body text-[3vw] font-medium max-md:text-[4.2vw]"
+            textClassName="font-aeonik-pro text-[3vw] font-medium max-md:text-[4.2vw]"
           />
         </nav>
       </div>

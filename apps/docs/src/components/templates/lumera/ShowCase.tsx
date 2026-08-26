@@ -1,10 +1,12 @@
-"use client";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
-/* eslint-disable react-hooks/rules-of-hooks */
+"use client";
 import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import showcasePoster from "./assets/video-poster.webp";
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 gsap.registerPlugin(ScrollTrigger);
 
 const nearbyLandmarks = ["Burj Khalifa", "Dubai Mall", "Downtown Dubai", "Palm Jumeirah"];
@@ -18,10 +20,13 @@ const ShowCase = () => {
   };
 
   useEffect(() => {
-    checkIsMobile();
+    const frameId = window.requestAnimationFrame(checkIsMobile);
     window.addEventListener("resize", checkIsMobile);
 
-    return () => window.removeEventListener("resize", checkIsMobile);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", checkIsMobile);
+    };
   }, []);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -65,7 +70,6 @@ const ShowCase = () => {
             start: "40% 80%",
             end: "bottom bottom",
             scrub: 0.25,
-            // markers:true,
           },
         });
         tl.to(".video-block", {
@@ -88,21 +92,26 @@ const ShowCase = () => {
   return (
     <section
       id="showcase"
-      className="py-[10%]  relative z-[5] max-[1025px]:pb-[15%]"
+      className="py-[10%]  relative z-5 max-[1025px]:pb-[15%]"
       data-scroll
       data-scroll-speed={isMobile ? undefined : "-0.3"}
     >
       <div className={`px-[5%] h-full relative`}>
         <div className="flex w-full gap-[10vw] max-[1025px]:flex-col">
+          <MaskTextReveal className="w-[50%] max-[1025px]:w-full">
+
           <h2
             data-para-anim
-            className={`w-[50%] text-black font-heading font-medium text-[3.9vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
-          >
+            className={` text-[#1C1B1A] font-neue-montreal font-medium text-[3.8vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
+            >
             At the Heart of
             <br />
             Dubai Living
           </h2>
-          <div className="w-[25vw] h-[25vw] overflow-hidden rounded-[1000px] video-block absolute right-[10%] rtl:left-[10%] rtl:right-auto max-[1025px]:w-[90vw] max-[1025px]:h-[50vw] max-[1025px]:static max-[1025px]:rounded-[4vw]">
+            </MaskTextReveal>
+
+           
+          <div className="w-[40vw] h-[22vw] overflow-hidden rounded-full video-block absolute right-[10%] rtl:left-[10%] rtl:right-auto max-[1025px]:w-[90vw] max-[1025px]:h-[50vw] max-[1025px]:static max-[1025px]:rounded-[4vw]">
             <video
               ref={videoRef}
               poster={showcasePoster.src}
@@ -112,9 +121,9 @@ const ShowCase = () => {
               className="w-full h-full object-cover object-center"
             ></video>
             <div
-              className={`inner-detail absolute bottom-[8%] left-1/2 translate-x-[-50%] z-[6] flex items-center gap-[2vw] rounded-full bg-white/25 backdrop-blur-[10px] px-[2.2vw] py-[1.2vw] opacity-0 max-[1025px]:static max-[1025px]:mt-[4vw] max-[1025px]:w-fit max-[1025px]:flex-wrap max-[1025px]:gap-[3vw] max-[1025px]:px-[5vw] max-[1025px]:py-[4vw] max-[1025px]:opacity-100 max-md:opacity-100`}
+              className={`inner-detail absolute bottom-[8%] left-1/2 translate-x-[-50%] z-6 flex items-center gap-[2vw] rounded-full bg-black/30 backdrop-blur-[10px] px-[2.2vw] py-[1.2vw] opacity-0 max-[1025px]:static max-[1025px]:mt-[4vw] max-[1025px]:w-fit max-[1025px]:flex-wrap max-[1025px]:gap-[3vw] max-[1025px]:px-[5vw] max-[1025px]:py-[4vw] max-[1025px]:opacity-100 max-md:opacity-100`}
             >
-              <p data-para-anim className="text-[1.1vw] leading-[1.25] text-white max-[1025px]:text-[3vw]">
+              <p data-para-anim className="text-[1.1vw] leading-tight text-white max-[1025px]:text-[3vw]">
                 Nearby
                 <br />
                 Landmarks:
@@ -131,12 +140,16 @@ const ShowCase = () => {
               </div>
             </div>
           </div>
+
         </div>
 
         <div className="w-full h-full mt-[48vw] flex justify-end max-[1025px]:mt-[7vw]">
-          <p data-para-anim className="w-[40%] max-md:text-[3.5vw] mr-[5vw] text-[1.2vw] text-black max-[1025px]:w-full tracking-wide">
+          <MaskTextReveal className="w-[40%] max-[1025px]:w-full">
+
+          <p data-para-anim className=" max-md:text-[3.5vw] max-[1025px]:text-[3vw] mr-[5vw] text-[1.2vw] text-black  tracking-wide">
             Perfectly located in one of Dubai&apos;s most prestigious districts, Lumera Heights offers unmatched access to culture, business, and lifestyle destinations.
           </p>
+          </MaskTextReveal>
         </div>
       </div>
     </section>

@@ -97,8 +97,10 @@ export default function DocsBody({ children }) {
       });
     });
 
+    const routeTween = routeTweenRef.current;
+
     return () => {
-      routeTweenRef.current?.kill();
+      routeTween?.kill();
       refreshCall.kill();
     };
   }, [pathname]);

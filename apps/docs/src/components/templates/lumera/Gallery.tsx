@@ -1,9 +1,10 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import { useRef } from "react";
 import gsap from "gsap";
 import Image, { type StaticImageData } from "next/image";
-
+import { prefersReducedMotion } from "./reducedMotion";
 import masterLivingRoomIcon from "./assets/icons/master-living-room.svg";
 import privateStudyIcon from "./assets/icons/private-study.svg";
 import waterPavilionIcon from "./assets/icons/water-pavilion.svg";
@@ -14,16 +15,20 @@ import poolAndBeachIcon from "./assets/icons/pool-and-beach.svg";
 import privateBeachIcon from "./assets/icons/private-beach.svg";
 import entranceLobby from "./assets/icons/entrance-lobby.svg";
 import featureStaircase from "./assets/icons/feature-staircase.svg";
-import entranceLobbyImage from "./assets/entrans-lobby.png";
-import featureStaircaseImage from "./assets/feature-staircase.png";
-import fireplaceImage from "./assets/fireplace.png";
-import masterLivingRoomImage from "./assets/master-living-room.png";
-import poolBeachImage from "./assets/pool-beach.png";
-import privateBeachImage from "./assets/private-beach.png";
-import spaImage from "./assets/spa.png";
-import studyBarImage from "./assets/study-bar.png";
-import sunkenSunbedImage from "./assets/sunken-senbed.png";
-import waterPavilionImage from "./assets/water-pavilion.png";
+import gallery1 from "./assets/gallery-1.png";
+import gallery2 from "./assets/gallery-2.png";
+import gallery3 from "./assets/gallery-3.png";
+import gallery4 from "./assets/gallery-4.png";
+import gallery5 from "./assets/gallery-5.png";
+import gallery6 from "./assets/gallery-6.png";
+import gallery7 from "./assets/gallery-7.png";
+import gallery8 from "./assets/gallery-8.png";
+import gallery9 from "./assets/gallery-9.png";
+import gallery10 from "./assets/gallery-10.png";
+
+
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 
 interface GalleryFeature {
   name: string;
@@ -36,31 +41,31 @@ const leftFeatures: GalleryFeature[] = [
   {
     name: "Entrance Lobby",
     icon: entranceLobby,
-    image: entranceLobbyImage,
+    image: gallery1,
     color: "#E5DCCF",
   },
   {
     name: "Feature Staircase",
     icon: featureStaircase,
-    image: featureStaircaseImage,
+    image: gallery2,
     color: "#E0D4C6",
   },
   {
     name: "Private Master Living Room",
     icon: masterLivingRoomIcon,
-    image: masterLivingRoomImage,
+    image: gallery3,
     color: "#DED2C2",
   },
   {
     name: "Private Study / Cigar Bar",
     icon: privateStudyIcon,
-    image: studyBarImage,
+    image: gallery4,
     color: "#E4D9CB",
   },
   {
     name: "Water Pavilion",
     icon: waterPavilionIcon,
-    image: waterPavilionImage,
+    image: gallery5,
     color: "#DDD1C0",
   },
 ];
@@ -69,31 +74,31 @@ const rightFeatures: GalleryFeature[] = [
   {
     name: "Spa",
     icon: spaIcon,
-    image: spaImage,
+    image: gallery6,
     color: "#E2D7C8",
   },
   {
     name: "Sunken Sun Bed Deck",
     icon: sunkenSunIcon,
-    image: sunkenSunbedImage,
+    image: gallery7,
     color: "#E6DCCE",
   },
   {
     name: "Beach Lounge & Fireplace",
     icon: beachLoungeIcon,
-    image: fireplaceImage,
+    image: gallery8,
     color: "#DFD3C3",
   },
   {
     name: "Pool & Beach Shower",
     icon: poolAndBeachIcon,
-    image: poolBeachImage,
+    image: gallery9,
     color: "#E3D8CA",
   },
   {
     name: "Private Beach",
     icon: privateBeachIcon,
-    image: privateBeachImage,
+    image: gallery10,
     color: "#E7DDD0",
   },
 ];
@@ -106,7 +111,11 @@ const Gallery = () => {
     const { image: imgSrc, color } = feature;
 
     if (bodyRef.current) {
-      gsap.to(bodyRef.current, { backgroundColor: color, duration: 0.5 });
+      if (prefersReducedMotion()) {
+        bodyRef.current.style.backgroundColor = color;
+      } else {
+        gsap.to(bodyRef.current, { backgroundColor: color, duration: 0.5 });
+      }
     }
 
     const previewContainer = previewContainerRef.current;
@@ -115,7 +124,11 @@ const Gallery = () => {
     const currentLastImg = previewContainer.querySelector("img:last-child");
 
     if (currentLastImg) {
-      gsap.to(currentLastImg, { duration: 1, scale: 1.2, left: "100%" });
+      if (prefersReducedMotion()) {
+        currentLastImg.remove();
+      } else {
+        gsap.to(currentLastImg, { duration: 1, scale: 1.2, left: "100%" });
+      }
     }
 
     const newImg = document.createElement("img");
@@ -127,6 +140,11 @@ const Gallery = () => {
     newImg.style.objectFit = "cover";
 
     previewContainer.appendChild(newImg);
+
+    if (prefersReducedMotion()) {
+      newImg.style.left = "0%";
+      return;
+    }
 
     gsap.to(newImg, { duration: 1, left: "0%" });
   };
@@ -148,15 +166,16 @@ const Gallery = () => {
                     loading="lazy"
                     src={feature.icon}
                     fill
+                    sizes="(max-width: 768px) 9vw, (max-width: 1024px) 3.5vw, 2.6vw"
                     alt={feature.name}
                   />
                 </div>
               </div>
-              <h4 className="font-head uppercase text-[1.25vw] tracking-wide max-md:text-[3.8vw] max-[1025px]:text-[2.2vw]">
+              <h4 className="font-head uppercase text-[1.25vw] tracking-wide max-md:text-[3.8vw] max-[1025px]:text-[2.2vw] text-[#2B2B2B]">
                 {feature.name}
               </h4>
             </div>
-            <div className="bg-black/20 w-full h-px lineDraw"></div>
+            <div className="bg-[#11111154] w-full h-px lineDraw"></div>
           </div>
         ))}
       </div>
@@ -166,15 +185,26 @@ const Gallery = () => {
   return (
     <section className="py-[5%] bg-[#E0D4C6] relative z-10 max-md:py-[10%] max-[1025px]:py-[7%]" ref={bodyRef}>
       <div className="px-[5%] max-md:px-[6%]">
+        <MaskTextReveal>
+
         <h2
           data-title-anim
-          className={`font-heading font-medium text-[3.9vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
-        >
+          className={`font-neue-montreal font-medium text-[#1C1B1A] text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
+          >
           Core Features
         </h2>
-        <p data-para-anim className="w-[40%] max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.25vw] tracking-wide max-[1025px]:w-full">
+          </MaskTextReveal>
+
+          <MaskTextReveal className="w-[40%] max-[1025px]:w-full">
+
+        <p data-para-anim className=" max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.25vw] text-[#1C1B1A] tracking-wide ">
           The interiors of Lumera Heights reflect a refined balance of modern luxury and functional elegance.
         </p>
+          </MaskTextReveal>
+
+          <FadeUp>
+
+          
         <div className="w-full mt-[6vw]  mb-[2vw] relative flex items-start justify-between gap-[3vw] max-[1025px]:flex-col max-md:gap-[4vw]">
           <div className="w-[27%] my-auto max-[1025px]:w-full max-[1025px]:order-1">{renderColumn(leftFeatures)}</div>
 
@@ -184,6 +214,7 @@ const Gallery = () => {
                 src={leftFeatures[0].image}
                 alt="Core feature preview"
                 fill
+                sizes="(max-width: 1024px) 100vw, 33vw"
                 quality={100}
                 className="object-cover w-full h-full"
               />
@@ -192,6 +223,7 @@ const Gallery = () => {
 
           <div className="w-[27%] my-auto max-[1025px]:w-full max-[1025px]:order-2">{renderColumn(rightFeatures)}</div>
         </div>
+        </FadeUp>
       </div>
     </section>
   );

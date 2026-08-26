@@ -43,7 +43,8 @@ export default function LocalRemixerDemo({
       registry={draftRegistry}
       component={component}
       render={render}
-      children={children}
-    />
+    >
+      {children}
+    </RegistryRemixerDemo>
   );
 }

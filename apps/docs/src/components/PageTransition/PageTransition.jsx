@@ -187,6 +187,99 @@ export default function PageTransition() {
     return () => window.removeEventListener('resize', initCanvas)
   }, [initCanvas])
 
+  // Cover current page: dither wave sweeps DOWN from top to bottom
+  const coverScreenAndNavigate = useCallback((targetPath) => {
+    if (!containerRef.current) {
+      router.push(targetPath)
+      isTransitioningRef.current = false
+      return
+    }
+
+    progressRef.current.cover = 0
+    progressRef.current.exit = 0
+
+    gsap.set(containerRef.current, { display: 'block', pointerEvents: 'all' })
+    if (logoRef.current) {
+      gsap.set(logoRef.current, { opacity: 0, scale: 0.9 })
+    }
+
+    const tl = gsap.timeline()
+
+    // Sweep dither wave DOWN from top to cover full viewport (slower duration)
+    tl.to(progressRef.current, {
+      cover: 1,
+      duration: 0.65,
+      ease: 'power2.inOut',
+      onUpdate: draw
+    })
+
+    if (logoRef.current) {
+      tl.to(
+        logoRef.current,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.32,
+          ease: 'power2.out'
+        },
+        '-=0.25'
+      )
+    }
+
+    tl.call(() => {
+      // Execute route change while screen is flooded with dithered orange & pixel squares
+      router.push(targetPath)
+    })
+  }, [draw, router])
+
+  const revealScreen = useCallback(() => {
+    if (!containerRef.current) {
+      isTransitioningRef.current = false
+      return
+    }
+
+    if (progressRef.current.cover < 1) {
+      progressRef.current.cover = 1
+      progressRef.current.exit = 0
+      draw()
+      gsap.set(containerRef.current, { display: 'block', pointerEvents: 'all' })
+      if (logoRef.current) {
+        gsap.set(logoRef.current, { opacity: 1, scale: 1 })
+      }
+    }
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        gsap.set(containerRef.current, { display: 'none', pointerEvents: 'none' })
+        progressRef.current.cover = 0
+        progressRef.current.exit = 0
+        draw()
+        isTransitioningRef.current = false
+      }
+    })
+
+    if (logoRef.current) {
+      tl.to(logoRef.current, {
+        opacity: 0,
+        scale: 1.06,
+        duration: 0.25,
+        ease: 'power2.in'
+      })
+    }
+
+    // Sweep dither wave DOWN all the way off the bottom to reveal newly rendered page
+    tl.to(
+      progressRef.current,
+      {
+        exit: 1,
+        duration: 0.72,
+        ease: 'power2.inOut',
+        onUpdate: draw
+      },
+      '-=0.12'
+    )
+  }, [draw])
+
   // 1. Cover Screen BEFORE route change on link click
   useEffect(() => {
     const handleAnchorClick = (e) => {
@@ -238,54 +331,9 @@ export default function PageTransition() {
     return () => {
       document.removeEventListener('click', handleAnchorClick, { capture: true })
     }
-  }, [router])
+  }, [coverScreenAndNavigate])
 
-  // Cover current page: dither wave sweeps DOWN from top to bottom
-  const coverScreenAndNavigate = (targetPath) => {
-    if (!containerRef.current) {
-      router.push(targetPath)
-      isTransitioningRef.current = false
-      return
-    }
-
-    progressRef.current.cover = 0
-    progressRef.current.exit = 0
-
-    gsap.set(containerRef.current, { display: 'block', pointerEvents: 'all' })
-    if (logoRef.current) {
-      gsap.set(logoRef.current, { opacity: 0, scale: 0.9 })
-    }
-
-    const tl = gsap.timeline()
-
-    // Sweep dither wave DOWN from top to cover full viewport (slower duration)
-    tl.to(progressRef.current, {
-      cover: 1,
-      duration: 0.65,
-      ease: 'power2.inOut',
-      onUpdate: draw
-    })
-
-    if (logoRef.current) {
-      tl.to(
-        logoRef.current,
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.32,
-          ease: 'power2.out'
-        },
-        '-=0.25'
-      )
-    }
-
-    tl.call(() => {
-      // Execute route change while screen is flooded with dithered orange & pixel squares
-      router.push(targetPath)
-    })
-  }
-
-  // 2. Reveal new page: dither wave sweeps DOWN all the way off the bottom
+  // 2. Reveal new page: dither wave sweeps UP from bottom to top (opposite direction)
   useEffect(() => {
     if (isFirstRenderRef.current) {
       isFirstRenderRef.current = false
@@ -305,55 +353,7 @@ export default function PageTransition() {
     }
 
     revealScreen()
-  }, [pathname, draw])
-
-  const revealScreen = () => {
-    if (!containerRef.current) {
-      isTransitioningRef.current = false
-      return
-    }
-
-    if (progressRef.current.cover < 1) {
-      progressRef.current.cover = 1
-      progressRef.current.exit = 0
-      draw()
-      gsap.set(containerRef.current, { display: 'block', pointerEvents: 'all' })
-      if (logoRef.current) {
-        gsap.set(logoRef.current, { opacity: 1, scale: 1 })
-      }
-    }
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        gsap.set(containerRef.current, { display: 'none', pointerEvents: 'none' })
-        progressRef.current.cover = 0
-        progressRef.current.exit = 0
-        draw()
-        isTransitioningRef.current = false
-      }
-    })
-
-    if (logoRef.current) {
-      tl.to(logoRef.current, {
-        opacity: 0,
-        scale: 1.06,
-        duration: 0.25,
-        ease: 'power2.in'
-      })
-    }
-
-    // Sweep dither wave DOWN all the way off the bottom to reveal newly rendered page
-    tl.to(
-      progressRef.current,
-      {
-        exit: 1,
-        duration: 0.72,
-        ease: 'power2.inOut',
-        onUpdate: draw
-      },
-      '-=0.12'
-    )
-  }
+  }, [pathname, revealScreen])
 
   return (
     <div

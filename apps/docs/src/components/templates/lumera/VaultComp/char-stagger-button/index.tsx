@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef, useState, useCallback, type ComponentPropsWithoutRef, type ComponentType, type MouseEvent, type MouseEventHandler, type ReactNode } from "react";
@@ -7,7 +9,7 @@ import { ArrowRight } from "lucide-react";
 const DEFAULT_HREF = "#";
 const DEFAULT_TEXT = "Hover me";
 const DEFAULT_STAGGER_STEP = 0.01;
-const DEFAULT_HOVER_COLOR = "#ff6b00";
+const DEFAULT_HOVER_COLOR = "#111111";
 const CHAR_TRANSLATE_Y = "1.3em";
 
 export interface CharStaggerButtonOwnProps {

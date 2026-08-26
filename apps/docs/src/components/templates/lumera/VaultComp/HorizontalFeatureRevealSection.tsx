@@ -1,13 +1,42 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
-import { useEffect, useId, type CSSProperties } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/dist/SplitText";
 import project1 from "../assets/project-1.png";
+import project11 from "../assets/project-1.1.png";
+import project12 from "../assets/project-1.2.png";
+import project13 from "../assets/project-1.3.png";
+import project14 from "../assets/project-1.4.png";
+import project2 from "../assets/project-2.png";
+import project21 from "../assets/project-2.1.png";
+import project22 from "../assets/project-2.2.png";
+import project23 from "../assets/project-2.3.png";
+import project24 from "../assets/project-2.4.png";
+import project3 from "../assets/project-3.png";
+import project31 from "../assets/project-3.1.png";
+import project32 from "../assets/project-3.2.png";
+import project33 from "../assets/project-3.3.png";
+import project34 from "../assets/project-3.4.png";
+import project4 from "../assets/project-4.png";
+import project41 from "../assets/project-4.1.png";
+import project42 from "../assets/project-4.2.png";
+import project43 from "../assets/project-4.3.png";
+import project44 from "../assets/project-4.4.png";
+import CharStaggerButton from "./char-stagger-button";
+import { FadeUp } from "../gsapAnimations";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
+
+const TEXT_FILL_STYLE_PREFIX = "lumera-tfa-style-";
+const SPLIT_CHARACTER_SELECTOR = ".split-chars";
+const TEXT_FILL_HOLD_VH = 150;
+const TEXT_FILL_COPY =
+  "Life above the City, Where Every Moment is Framed by Sweeping Skyline Views and Natural Light.";
 
 interface FeatureStat {
   value: string;
@@ -31,7 +60,7 @@ const RESIDENCE_DATA: FeatureItem[] = [
     description:
       "A contemporary beachfront villa shaped around open spaces, uninterrupted sea views and effortless indoor-outdoor living.",
     image: project1,
-    thumbnails: [project1, project1, project1, project1],
+    thumbnails: [project11, project12, project13, project14],
     cta: "View Residence",
     stats: [
       { value: "12,400 sq. ft.", label: "Living Area" },
@@ -45,8 +74,8 @@ const RESIDENCE_DATA: FeatureItem[] = [
     title: "Skyline Crest Penthouse",
     description:
       "An expansive penthouse retreat with wraparound terraces, double-height entertaining spaces and panoramic city views in every direction.",
-    image: project1,
-    thumbnails: [project1, project1, project1, project1],
+    image: project2,
+    thumbnails: [project21, project22, project23, project24],
     cta: "Explore Penthouse",
     stats: [
       { value: "9,850 sq. ft.", label: "Living Area" },
@@ -60,8 +89,8 @@ const RESIDENCE_DATA: FeatureItem[] = [
     title: "Lagoon Courtyard Villa",
     description:
       "A tranquil villa collection centered around private gardens, water-facing lounges and refined interiors crafted for everyday ease.",
-    image: project1,
-    thumbnails: [project1, project1, project1, project1],
+    image: project3,
+    thumbnails: [project31, project32, project33, project34],
     cta: "Discover Villa",
     stats: [
       { value: "10,200 sq. ft.", label: "Living Area" },
@@ -75,8 +104,8 @@ const RESIDENCE_DATA: FeatureItem[] = [
     title: "Marina Horizon Estate",
     description:
       "A statement residence overlooking the water, pairing spa-style amenities, curated entertaining zones and a seamless resort atmosphere.",
-    image: project1,
-    thumbnails: [project1, project1, project1, project1],
+    image: project4,
+    thumbnails: [project41, project42, project43, project44],
     cta: "See Estate",
     stats: [
       { value: "14,100 sq. ft.", label: "Living Area" },
@@ -90,30 +119,139 @@ const RESIDENCE_DATA: FeatureItem[] = [
 export default function HorizontalFeatureRevealSection() {
   const uid = useId().replace(/:/g, "");
   const sectionId = `lumera-residences-${uid}`;
+  const textFillId = `${sectionId}-textfill`;
   const imageParallaxRange = 24;
 
+  const textFillSlideRef = useRef<HTMLDivElement | null>(null);
+  const textFillHeadingRef = useRef<HTMLHeadingElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (window.innerWidth <= 1025) {
-        return;
+    const checkIsMobile = () => setIsMobile(window.innerWidth <= 1025);
+    checkIsMobile();
+    window.addEventListener("resize", checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
+  useEffect(() => {
+    const styleId = `${TEXT_FILL_STYLE_PREFIX}${textFillId}`;
+    const styleElement = document.createElement("style");
+
+    styleElement.id = styleId;
+    styleElement.textContent = `
+      @keyframes lumera-color-transition-${textFillId} {
+        0% { color: rgba(28, 27, 26, 0.18); }
+        30% { color: rgba(28, 27, 26, 0.7); }
+        100% { color: #1c1b1a; }
       }
 
+      #${textFillId} .split__wrapper ${SPLIT_CHARACTER_SELECTOR} {
+        transition: color .4s;
+        color: rgba(28, 27, 26, 0.18);
+      }
+
+      #${textFillId} .split__wrapper ${SPLIT_CHARACTER_SELECTOR}.show {
+        animation: lumera-color-transition-${textFillId} .5s;
+        color: #1c1b1a;
+      }
+    `;
+
+    document.head.appendChild(styleElement);
+
+    const ctx = gsap.context(() => {
+      const isDesktop = window.innerWidth > 1025;
       const reduceMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
 
-      gsap.set(".lumera-residence-image, .lumera-residence-number, .lumera-residence-title, .lumera-residence-copy, .lumera-residence-stat, .lumera-residence-cta", { opacity: 1 });
+      // Split the heading into characters up front - both branches below
+      // need it, they just differ in how the reveal is driven.
+      const headingElement = textFillHeadingRef.current;
+      let textFillSplit: SplitText | null = null;
+      let characters: Element[] = [];
 
-      const containerTween = gsap.to(".lumera-residence-track", {
-        xPercent: -76,
-        ease: "none",
-        scrollTrigger: {
-          trigger: `#${sectionId}`,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: true,
-        },
-      });
+      if (headingElement) {
+        textFillSplit = SplitText.create(headingElement, {
+          type: "words chars",
+          aria: false as never,
+          tag: "span",
+          charsClass: "split-chars",
+        });
+
+        gsap.set(headingElement, { opacity: 1 });
+        characters = Array.from(
+          headingElement.querySelectorAll(SPLIT_CHARACTER_SELECTOR),
+        );
+      }
+
+      let containerTween: gsap.core.Tween | undefined;
+
+      if (isDesktop) {
+        gsap.set(".lumera-residence-image, .lumera-residence-number, .lumera-residence-title, .lumera-residence-copy, .lumera-residence-stat, .lumera-residence-cta", { opacity: 1 });
+
+        containerTween = gsap.to(".lumera-residence-track", {
+          xPercent: -80.24,
+          ease: "none",
+          scrollTrigger: {
+            trigger: `#${sectionId}`,
+            start: `top+=${TEXT_FILL_HOLD_VH}vh top`,
+            end: "bottom bottom",
+            scrub: true,
+          },
+        });
+
+        if (characters.length) {
+          if (reduceMotion) {
+            gsap.set(characters, { className: "split-chars show" });
+          } else {
+            gsap.timeline({
+              scrollTrigger: {
+                trigger: `#${sectionId}`,
+                start: "top top",
+                end: `+=${TEXT_FILL_HOLD_VH}vh`,
+                scrub: 0.3,
+              },
+            }).to(
+              characters,
+              {
+                className: "split-chars show",
+                duration: 0.4,
+                stagger: 0.04,
+                ease: "power2.inOut",
+              },
+              0,
+            );
+          }
+        }
+      } else if (characters.length) {
+        if (reduceMotion) {
+          gsap.set(characters, { className: "split-chars show" });
+        } else {
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: `#${textFillId}`,
+              start: "top 80%",
+              end: "bottom 40%",
+              scrub: 0.3,
+            },
+          }).to(
+            characters,
+            {
+              className: "split-chars show",
+              duration: 0.4,
+              stagger: 0.04,
+              ease: "power2.inOut",
+            },
+            0,
+          );
+        }
+      }
+
+      if (!isDesktop) {
+        return () => {
+          textFillSplit?.revert();
+        };
+      }
 
       const cards = gsap.utils.toArray<HTMLElement>(".lumera-residence-card");
 
@@ -138,34 +276,20 @@ export default function HorizontalFeatureRevealSection() {
 
           gsap.from(
             targets,
-            reduceMotion
-              ? {
-                  opacity: 0,
-                  stagger: 0.05,
-                  duration: 0.5,
-                  delay,
-                  scrollTrigger: {
-                    trigger: card,
-                    start: "left center",
-                    toggleActions: "play none none reverse",
-                    horizontal: true,
-                    containerAnimation: containerTween,
-                  },
-                }
-              : {
-                  ...animation,
-                  stagger: 0.05,
-                  duration: 0.7,
-                  delay,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                    trigger: card,
-                    start: "left center",
-                    toggleActions: "play none none reverse",
-                    horizontal: true,
-                    containerAnimation: containerTween,
-                  },
-                },
+            {
+              ...animation,
+              stagger: 0.05,
+              duration: 0.7,
+              delay,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "left center",
+                toggleActions: "play none none reverse",
+                horizontal: true,
+                containerAnimation: containerTween,
+              },
+            },
           );
         };
 
@@ -177,39 +301,25 @@ export default function HorizontalFeatureRevealSection() {
 
           gsap.from(
             split.lines,
-            reduceMotion
-              ? {
-                  opacity: 0,
-                  stagger: 0.05,
-                  duration: 0.5,
-                  delay: index * 0.05,
-                  scrollTrigger: {
-                    trigger: card,
-                    start: "left center",
-                    toggleActions: "play none none reverse",
-                    horizontal: true,
-                    containerAnimation: containerTween,
-                  },
-                }
-              : {
-                  yPercent: 100,
-                  stagger: 0.05,
-                  duration: 0.7,
-                  delay: index * 0.05,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                    trigger: card,
-                    start: "left center",
-                    toggleActions: "play none none reverse",
-                    horizontal: true,
-                    containerAnimation: containerTween,
-                  },
-                },
+            {
+              yPercent: 100,
+              stagger: 0.05,
+              duration: 0.7,
+              delay: index * 0.05,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "left center",
+                toggleActions: "play none none reverse",
+                horizontal: true,
+                containerAnimation: containerTween,
+              },
+            },
           );
         });
 
         gsap.from(card.querySelectorAll(".lumera-residence-stat"), {
-          y: reduceMotion ? 0 : 40,
+          y: 40,
           opacity: 0,
           stagger: 0.08,
           duration: 0.6,
@@ -223,46 +333,67 @@ export default function HorizontalFeatureRevealSection() {
           },
         });
 
-        if (reduceMotion) {
-          gsap.set(card.querySelector(".lumera-residence-image"), { x: 0 });
-        } else {
-          gsap.to(card.querySelector(".lumera-residence-image"), {
-            translateX: `${imageParallaxRange}%`,
-            ease: "none",
-            scrollTrigger: {
-              trigger: card,
-              start: "left right",
-              end: "right left",
-              scrub: true,
-              horizontal: true,
-              containerAnimation: containerTween,
-            },
-          });
-        }
+        gsap.to(card.querySelector(".lumera-residence-image"), {
+          translateX: `${imageParallaxRange}%`,
+          ease: "none",
+          scrollTrigger: {
+            trigger: card,
+            start: "left right",
+            end: "right left",
+            scrub: true,
+            horizontal: true,
+            containerAnimation: containerTween,
+          },
+        });
       });
 
       ScrollTrigger.refresh();
+
+      return () => {
+        textFillSplit?.revert();
+      };
     });
 
-    return () => ctx.revert();
-  }, [sectionId]);
+    return () => {
+      ctx.revert();
+      document.getElementById(styleId)?.remove();
+    };
+  }, [sectionId, textFillId]);
 
   return (
     <section
       id={sectionId}
-      className="relative h-[520vh] bg-[#F3F3F3] text-[#1c1b1a] max-[1025px]:h-auto"
+      className="relative h-[850vh] bg-[#F3F3F3] text-[#1c1b1a] max-[1025px]:h-auto"
     >
       <div className="sticky top-0 h-screen overflow-hidden max-[1025px]:static max-[1025px]:h-auto">
         <div
-          className="lumera-residence-track flex h-full w-fit gap-[4vw] max-md:px-[6%] max-[1025px]:flex-col max-[1025px]:gap-[12vw] max-[1025px]:px-[5%] max-[1025px]:py-[15%]"
+          className="lumera-residence-track flex h-full w-fit gap-0  max-[1025px]:flex-col max-[1025px]:gap-[12vw]  max-[1025px]:py-[15%]"
           style={{ "--card-gap": "4vw" } as CSSProperties}
         >
-          {RESIDENCE_DATA.map((item) => (
-            <article
+          <div
+            id={textFillId}
+            ref={textFillSlideRef}
+            className="flex h-screen w-screen flex-none items-center justify-center overflow-hidden bg-white px-[5vw] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:py-[20vh]"
+          >
+            <div className="split__wrapper relative z-10 mx-auto w-[90%] ">
+              <h2
+                ref={textFillHeadingRef}
+                className="text-center text-[3.8vw] leading-[1.3] font-medium text-[#1c1b1a] opacity-0 max-[1025px]:opacity-100 max-[1025px]:text-[5vw] max-md:text-[8.5vw] max-[1025px]:leading-[1.08]"
+              >
+                {TEXT_FILL_COPY}
+              </h2>
+            </div>
+          </div>
+
+          {RESIDENCE_DATA.map((item) => {
+            const CardTag = isMobile ? FadeUp : "article";
+            return (
+            <CardTag
               key={item.number}
-              className="lumera-residence-card flex h-screen w-[98vw] flex-none overflow-hidden rounded-none bg-[#F3F3F3] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col"
+              {...(isMobile ? { as: "article" as const } : {})}
+              className="lumera-residence-card max-[1025px]:px-[6%]  flex h-screen w-[98vw] flex-none overflow-hidden rounded-none bg-[#F3F3F3] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col"
             >
-              <div className="h-full w-[42%] overflow-hidden max-md:h-[60vh]  max-[1025px]:w-full max-[1025px]:rounded-[4vw]">
+              <div className="h-full w-[42%] overflow-hidden max-md:h-[60vh] max-[1025px]:h-[60vh]  max-[1025px]:w-full max-[1025px]:rounded-[4vw]">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -280,15 +411,15 @@ export default function HorizontalFeatureRevealSection() {
 
               <div className="flex  flex-col justify-between px-[3.5vw] py-[3.5vw] max-[1025px]:w-full max-[1025px]:px-0 max-[1025px]:pt-[7vw]">
                 <div>
-                  <p className="lumera-residence-number font-heading text-[5.8vw] font-medium leading-none  opacity-0 max-[1025px]:text-[12vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-number text-[#1c1b1a] font-neue-montreal text-[5.8vw] font-medium leading-none max-[1025px]:text-[7vw]  opacity-0 max-md:text-[12vw] max-[1025px]:opacity-100">
                     {item.number}
                   </p>
 
-                  <h3 className="lumera-residence-title mt-[2vw]  font-heading text-[3.9vw] font-medium  leading-[1.04] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-[1025px]:text-[7vw] max-[1025px]:opacity-100">
+                  <h3 className="lumera-residence-title mt-[2vw] max-[1025px]:text-[5vw] font-neue-montreal text-[3.8vw] font-medium  leading-[1.2] text-[#1c1b1a] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-md:text-[7vw] max-[1025px]:opacity-100">
                     {item.title}
                   </h3>
 
-                  <p className="lumera-residence-copy mt-[3vw] max-w-[70%] text-[1.25vw] leading-[1.4] text-[#1c1b1a]/85 opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[4vw] max-[1025px]:opacity-100">
+                  <p className="lumera-residence-copy mt-[3vw] max-w-[38vw] text-[1.25vw] leading-[1.6] text-[#1c1b1a] opacity-0 max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[3vw] max-md:text-[4vw] max-[1025px]:opacity-100">
                     {item.description}
                   </p>
 
@@ -296,8 +427,8 @@ export default function HorizontalFeatureRevealSection() {
                     {item.stats.map((stat, index) => (
                       <div
                         key={`${item.number}-${stat.label}`}
-                        className={`lumera-residence-stat relative py-[0.95vw] opacity-0 max-[1025px]:py-[4vw] max-[1025px]:opacity-100 ${
-                          index === 0 ? "pr-[2vw]" : "pl-[2vw] pr-[2vw]"
+                        className={`lumera-residence-stat w-[14vw] max-[1025px]:w-[45vw] relative py-[0.95vw] opacity-0 max-[1025px]:py-[4vw] max-[1025px]:opacity-100 ${
+                          index === 0 ? "pr-[2vw]" : "pl-[2vw] pr-[1.2vw]"
                         } ${
                           index === item.stats.length - 1 ? "pr-0" : ""
                         } max-[1025px]:px-0`}
@@ -308,10 +439,10 @@ export default function HorizontalFeatureRevealSection() {
                             className="absolute left-0 top-1/2 h-[6vw] w-px -translate-y-1/2 bg-[#DADADA] max-[1025px]:hidden"
                           />
                         ) : null}
-                        <p className="text-[1.45vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[5vw]">
+                        <p className="text-[1.45vw] font-medium leading-none tracking-[-0.04em] max-[1025px]:text-[3.5vw] max-md:text-[5vw]">
                           {stat.value}
                         </p>
-                        <p className="mt-[0.8vw] text-[1.25vw] text-[#1c1b1a]/75 max-[1025px]:mt-[1.8vw] max-[1025px]:text-[3.2vw]">
+                        <p className="mt-[0.8vw] text-[1.25vw] text-black max-[1025px]:mt-[1.8vw] max-[1025px]:text-[2.5vw] max-md:text-[3.2vw]">
                           {stat.label}
                         </p>
                       </div>
@@ -320,12 +451,15 @@ export default function HorizontalFeatureRevealSection() {
                 </div>
 
                 <div className="mt-[1vw] flex flex-col items-start justify-between gap-[2vw] max-md:flex-wrap max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:items-start">
+
                   <div className="flex max-md:flex-gap gap-[1vw] max-[1025px]:gap-[3vw]">
                     {item.thumbnails.map((thumb, index) => (
+                     
                       <div
+                        
                         key={`${item.number}-thumb-${index}`}
                         className="overflow-hidden  rounded-[1.3vw] bg-[#ddd4ca] max-[1025px]:rounded-[4vw]"
-                      >
+                        >
                         <Image
                           src={thumb}
                           alt={`${item.title} preview ${index + 1}`}
@@ -333,24 +467,26 @@ export default function HorizontalFeatureRevealSection() {
                           height={1000}
                           quality={95}
                           className="h-[6.2vw] w-[6.2vw]  object-cover max-[1025px]:h-[20vw] max-[1025px]:w-[20vw]"
-                        />
+                          />
                       </div>
+                   
                     ))}
                   </div>
+           
 
-                  <button
-                    type="button"
-                    className="lumera-residence-cta group inline-flex items-center gap-[1vw] border-b border-[#1c1b1a]/60 pb-[0.6vw] font-heading text-[1.8vw] leading-none text-[#1c1b1a] opacity-0 transition-opacity max-[1025px]:pb-[1.8vw] max-[1025px]:pt-[4vw] max-[1025px]:text-[6vw] max-[1025px]:opacity-100"
-                  >
-                    <span>{item.cta}</span>
-                    <span className="transition-transform duration-300 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </button>
+                  <CharStaggerButton
+                    text={item.cta}
+                    href="#"
+                    
+                    hoverColor="#1c1b1a"
+                    className="lumera-residence-cta gap-[1vw]  pb-[0.6vw] text-[#1c1b1a] opacity-0 transition-opacity max-[1025px]:pb-[1.8vw] max-[1025px]:pt-[4vw] max-[1025px]:opacity-100"
+                    textClassName="font-neue-montreal text-[1.2vw] leading-none max-[1025px]:text-[6vw]"
+                  />
                 </div>
               </div>
-            </article>
-          ))}
+            </CardTag>
+            );
+          })}
         </div>
       </div>
     </section>

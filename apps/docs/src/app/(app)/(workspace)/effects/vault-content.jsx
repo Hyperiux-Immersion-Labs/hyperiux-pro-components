@@ -669,16 +669,12 @@ export function VaultContent({
     ? activeCategoryDescription
     : [activeCategoryDescription];
 
-  const activeCategoryFaqItems = useMemo(
-    () =>
-      (activeCategoryContent?.faqs || []).map((item, index) => ({
-        id: `${categoryFilter}-faq-${index + 1}`,
-        question: item.question,
-        answer: item.answer,
-        defaultOpen: index === 0,
-      })),
-    [activeCategoryContent?.faqs, categoryFilter]
-  );
+  const activeCategoryFaqItems = (activeCategoryContent?.faqs || []).map((item, index) => ({
+    id: `${categoryFilter}-faq-${index + 1}`,
+    question: item.question,
+    answer: item.answer,
+    defaultOpen: index === 0,
+  }));
 
   return (
     <>

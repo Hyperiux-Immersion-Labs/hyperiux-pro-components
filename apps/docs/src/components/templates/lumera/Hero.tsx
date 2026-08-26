@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import Image from "next/image";
@@ -8,20 +10,27 @@ import { useLenis } from "lenis/react";
 import { X } from "lucide-react";
 import PrimaryButton from "./PrimaryButton";
 import BlackButton from "./BlackButton";
-import EnquiryForm from "./VaultComp/EnquiryForm";
+import AnimatedForm from "./VaultComp/animated-form";
 import heroBackground from "./assets/lumera-hero.png";
-import { fadeIn } from "./gsapAnimations";
+import arrowDownIcon from "./assets/icons/arrow-down.svg";
+import { FadeUp } from "./gsapAnimations";
 import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const heroStats = [
+  { value: "4.2M+", suffix: "/AED", label: "Starting Price" },
+  { value: "80+", label: "Stories" },
+  { value: "1,000 FT+", label: "Sky Elevation" },
+  { value: "Q4 2027", label: "Handover" },
+];
 
 const Hero: React.FC = () => {
   const heroImageWrapperRef = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [enquiryMounted, setEnquiryMounted] = useState(false);
-
-  fadeIn();
 
   const openEnquiryModal = () => {
     setEnquiryMounted(true);
@@ -60,6 +69,14 @@ const Hero: React.FC = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) {
+        gsap.set(".hero-fadeup, .linedraw", { clearProps: "opacity,transform" });
+        if (heroImageWrapperRef.current) {
+          gsap.set(heroImageWrapperRef.current, { yPercent: 0 });
+        }
+        return;
+      }
+
       gsap.from(".hero-fadeup", {
         yPercent: 50,
         opacity: 0,
@@ -116,44 +133,43 @@ const Hero: React.FC = () => {
     <>
       <section id="hero" className="relative overflow-hidden">
         <div className="relative isolate flex min-h-[200vh] w-screen flex-col gap-[5vw] px-[5%] py-[3%] max-[1025px]:min-h-[240vw] max-[1025px]:gap-[8vw] max-[1025px]:py-[7%]">
-          <div ref={heroImageWrapperRef} className="absolute inset-0 z-[-1]">
+                   <div ref={heroImageWrapperRef} className="absolute inset-0 z-[-1]">
+
             <Image
-              quality={90}
+              quality={100}
               src={heroBackground}
               alt="Hero Image"
               fill
+              sizes="100vw"
               className="h-full w-full object-cover"
             />
           </div>
 
           <div className="relative z-10 flex h-screen flex-col justify-end gap-[8vw] max-[1025px]:gap-[12vw]">
             <div className="flex flex-col gap-[3vw] max-[1025px]:gap-[6vw] mb-30">
-              <MaskTextReveal>
-                <h1 className="font-heading font-medium! flex flex-col gap-[1vw] text-[9.9vw] leading-[0.94]   uppercase text-white/95 max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[14vw]">
+              <MaskTextReveal delay={2}>
+                <h1 className="font-neue-montreal font-medium! flex flex-col gap-[1vw] text-[10vw] leading-[0.94]   uppercase text-[#EEEEEE] max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[14vw]">
                   <span>Exceptional</span>
                   <div className="flex items-end gap-[1.8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[4vw]">
                     <span>Living In Dubai</span>
-                    <a
+                    <FadeUp
+                      as="a"
                       aria-label="Scroll to about section"
                       href="#about"
                       onClick={(event) => handleNavScroll(event, "#about")}
-                      data-fade-in
-                      className="flex h-[6.5vw] w-[6.5vw] items-center justify-center self-center rounded-full border-4 border-white text-white transition-colors hover:bg-white/10 max-[1025px]:h-[18vw] max-[1025px]:w-[18vw] max-[1025px]:self-start"
+                      className="group relative flex h-[6.5vw] w-[6.5vw] items-center justify-center self-center overflow-hidden rounded-full border-4 border-white text-white opacity-100 transition-colors  max-[1025px]:h-[18vw] max-[1025px]:w-[18vw] max-[1025px]:self-start"
                     >
-                      <svg
-                        viewBox="0 0 10 10"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-[2.3vw] w-[2.3vw] rotate-90 max-[1025px]:h-[7vw] max-[1025px]:w-[7vw]"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M3.82475e-07 5.625L7.625 5.625L4.125 9.125L5 10L10 5L5 -4.37114e-07L4.125 0.874999L7.625 4.375L4.91753e-07 4.375L3.82475e-07 5.625Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </a>
+                      <Image
+                        src={arrowDownIcon}
+                        alt=""
+                        className="absolute h-[2.3vw] w-auto object-contain transition-transform duration-500 ease-in-out group-hover:translate-y-[180%] max-[1025px]:h-[7vw]"
+                      />
+                      <Image
+                        src={arrowDownIcon}
+                        alt=""
+                        className="absolute h-[2.3vw] w-auto translate-y-[-180%] object-contain transition-transform duration-500 ease-in-out group-hover:translate-y-0 max-[1025px]:h-[7vw]"
+                      />
+                    </FadeUp>
                   </div>
                 </h1>
               </MaskTextReveal>
@@ -164,43 +180,39 @@ const Hero: React.FC = () => {
             <div className="flex flex-col gap-[4vw] max-[1025px]:gap-[8vw]">
               <div className="w-[38vw] text-white max-[1025px]:w-full">
                 <MaskTextReveal>
-                  <p className="text-[1.45vw] max-md:leading-[1.4] max-md:text-[5vw]  leading-[1.65] text-white/92 ">
+                  <p className="text-[1.45vw] max-[1025px]:text-[3vw] max-md:leading-[1.4] max-md:text-[5vw]  leading-[1.65] text-[#EEEEEE] ">
                     A curated collection of remarkable residences across Dubai&apos;s most sought-after addresses, selected for their design, location and way of life.
                   </p>
                 </MaskTextReveal>
               </div>
 
               <div className="flex items-center gap-[1vw] max-md:flex-col max-md:items-start max-md:gap-[4vw] max-md:w-[80%] max-[1025px]:flex-wrap max-[1025px]:gap-[3vw]">
-                <PrimaryButton
-                  data-fade-in
-                  link="#"
-                  btnText="Explore Our Collection"
-                  className="max-md:w-[70vw] font-normal!"
-                />
-                <BlackButton
-                  data-fade-in
-                  link="#"
-                  btnText="Speak With an Advisor"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    openEnquiryModal();
-                  }}
-                  className="border border-white shadow-2xl drop-shadow-2xl"
-                />
+                <FadeUp>
+                  <PrimaryButton
+                    link="#"
+                    btnText="Explore Our Collection"
+                    className="max-md:w-[70vw] font-normal!"
+                  />
+                </FadeUp>
+                <FadeUp>
+                  <BlackButton
+                    link="#"
+                    btnText="Speak With an Advisor"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      openEnquiryModal();
+                    }}
+                    className="border max-md:w-[70vw] border-white shadow-2xl drop-shadow-2xl"
+                  />
+                </FadeUp>
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-[5vw] self-stretch max-md:grid-cols-2 max-md:gap-[3vw] max-[1025px]:gap-[3vw]">
-              {[
-                { value: "4.2M+", suffix: "/AED", label: "Starting Price" },
-                { value: "80+", label: "Stories" },
-                { value: "1,000 FT+", label: "Sky Elevation" },
-                { value: "Q4 2027", label: "Handover" },
-              ].map((stat) => (
-                <div
+            <div className="grid grid-cols-4 gap-[5vw] self-stretch max-[1025px]:grid-cols-2 max-md:gap-[3vw] max-[1025px]:gap-[3vw]">
+              {heroStats.map((stat) => (
+                <FadeUp
                   key={stat.label}
-                  data-fade-in
-                  className="rounded-[1.2vw] bg-black/10 px-[1.5vw] py-[2vw] max-md:py-[5vw] text-center backdrop-blur-[0.5vw] max-[1025px]:rounded-[4vw] flex flex-col justify-between max-md:min-h-[12vh] min-h-[18vh] border border-[#F9F9F91A]"
+                  className="rounded-[1.2vw] bg-black/10 px-[1.5vw] py-[2vw] max-md:py-[5vw] max-[1025px]:py-[4vw] text-center backdrop-blur-[0.5vw] max-[1025px]:rounded-[4vw] flex flex-col justify-between max-md:min-h-[12vh] min-h-[19vh] border border-[#F9F9F91A]"
                 >
                   <p className="inline-flex items-end justify-center gap-[0.25vw] text-[2.9vw] font-medium leading-none text-white max-[1025px]:gap-[1vw] max-[1025px]:text-[6vw]">
                     {stat.value}
@@ -210,10 +222,10 @@ const Hero: React.FC = () => {
                       </span>
                     )}
                   </p>
-                  <p className="text-[1.1vw] text-white/80 max-[1025px]:text-[3vw]">
+                  <p className="text-[1.1vw] text-white max-[1025px]:text-[3vw]">
                     {stat.label}
                   </p>
-                </div>
+                </FadeUp>
               ))}
             </div>
           </div>
@@ -221,7 +233,7 @@ const Hero: React.FC = () => {
       </section>
       {enquiryMounted && (
         <div
-          className={`fixed inset-0 z-100 flex items-center justify-center bg-black/70 px-[5%] py-[5vw] backdrop-blur-[8px] transition-opacity duration-300 max-[1025px]:items-start max-[1025px]:overflow-y-auto max-[1025px]:py-[10vw] ${
+          className={`fixed inset-0 z-100 flex items-center justify-center bg-black/70 px-[5%] py-[5vw] backdrop-blur-sm transition-opacity duration-300 max-[1025px]:items-start max-[1025px]:overflow-y-auto max-[1025px]:py-[10vw] ${
             enquiryOpen ? "opacity-100" : "opacity-0"
           }`}
           role="dialog"
@@ -234,7 +246,7 @@ const Hero: React.FC = () => {
           }}
         >
           <div
-            className={`relative w-full max-w-[42vw] rounded-[1.4vw] bg-[#f7f2ea] p-[2vw] shadow-2xl transition-all duration-300 max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw] ${
+            className={`relative h-[85vh] max-md:h-[80vh] w-full max-w-[42vw] overflow-y-auto rounded-[1.4vw] bg-[white] p-[2vw] shadow-2xl transition-all duration-300 max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw] ${
               enquiryOpen ? "translate-y-0 scale-100 opacity-100" : "translate-y-[2vw] scale-[0.98] opacity-0"
             }`}
           >
@@ -242,11 +254,11 @@ const Hero: React.FC = () => {
               type="button"
               aria-label="Close enquiry form"
               onClick={closeEnquiryModal}
-              className="absolute right-[1.2vw] top-[1.2vw] z-10 flex h-[2.8vw] w-[2.8vw] items-center justify-center rounded-full bg-[#1c1b1a] text-white transition-transform hover:scale-95 max-[1025px]:right-[4vw] max-[1025px]:top-[4vw] max-[1025px]:h-[9vw] max-[1025px]:w-[9vw]"
+              className="sticky left-full top-0 z-10 flex h-[2.8vw] w-[2.8vw] items-center justify-center rounded-full bg-[#1c1b1a] text-white transition-transform duration-300 hover:rotate-180 max-[1025px]:h-[9vw] max-[1025px]:w-[9vw]"
             >
               <X className="h-[1.2vw] w-[1.2vw] max-[1025px]:h-[4vw] max-[1025px]:w-[4vw]" strokeWidth={1.8} />
             </button>
-            <EnquiryForm />
+            <AnimatedForm />
           </div>
         </div>
       )}

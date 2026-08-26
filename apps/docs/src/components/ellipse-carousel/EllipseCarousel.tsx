@@ -94,6 +94,7 @@ const EllipseCarousel = ({
   const settleTweenRef = useRef<gsap.core.Tween | null>(null);
   const autoplayTweenRef = useRef<gsap.core.Tween | null>(null);
   const autoplayDelayRef = useRef<gsap.core.Tween | null>(null);
+  const scheduleNextStepRef = useRef<() => void>(() => {});
 
   const geometryRef = useRef({
     cx: 0,
@@ -193,7 +194,7 @@ const EllipseCarousel = ({
 
     autoplayDelayRef.current = gsap.delayedCall(holdDuration, () => {
       if (draggingRef.current || (pauseOnHover && hoveredRef.current)) {
-        scheduleNextStep();
+        scheduleNextStepRef.current();
         return;
       }
 
@@ -207,10 +208,14 @@ const EllipseCarousel = ({
           rotationRef.current = state.r;
           render();
         },
-        onComplete: scheduleNextStep,
+        onComplete: () => scheduleNextStepRef.current(),
       });
     });
   }, [autoPlay, holdDuration, pauseOnHover, reducedMotion, render, stepDuration, stepEase, total]);
+
+  useEffect(() => {
+    scheduleNextStepRef.current = scheduleNextStep;
+  }, [scheduleNextStep]);
 
   useEffect(() => {
     render();

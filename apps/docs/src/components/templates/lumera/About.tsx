@@ -1,14 +1,21 @@
-"use client";
 
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+"use client";
 import { useState } from "react";
 import { type StaticImageData } from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import InfiniteCarouselComp from "./VaultComp/InfiniteCarouselComp";
+import { usePrefersReducedMotion } from "./reducedMotion";
 import portfolio1 from "./assets/portfolio-1.png";
 import portfolio2 from "./assets/portfolio-2.png";
 import portfolio3 from "./assets/portfolio-3.png";
 import portfolio4 from "./assets/portfolio-4.png";
 import portfolio5 from "./assets/portfolio-5.png";
+import portfolio6 from "./assets/portfolio-6.png";
+import portfolio7 from "./assets/portfolio-7.png";
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import { FadeUp } from "./gsapAnimations";
 
 interface AboutSlide {
   src: StaticImageData;
@@ -43,6 +50,16 @@ const aboutSlides: AboutSlide[] = [
     title: "Poolside Living",
     description: "Resort-style pools framed by warm stone and ambient lighting.",
   },
+  {
+    src: portfolio6,
+    title: "Private Beach",
+    description: "A calm waterfront escape with shaded lounges, lush greenery and uninterrupted horizon views.",
+  },
+  {
+    src: portfolio7,
+    title: "Water Pavilion",
+    description: "An elevated pool pavilion designed for sunlit afternoons, quiet gatherings and open-air relaxation.",
+  },
 ];
 
 // Module scope keeps the array identity stable across renders, so the carousel
@@ -53,30 +70,45 @@ const CENTER_SLIDE_INDEX = 2;
 
 const About = () => {
   const [activeIndex, setActiveIndex] = useState(CENTER_SLIDE_INDEX);
+  const reducedMotion = usePrefersReducedMotion();
   const activeSlide = aboutSlides[activeIndex] ?? aboutSlides[CENTER_SLIDE_INDEX];
 
   return (
     <section className="overflow-hidden bg-[#E0D4C6]" id="about">
-      <div className={` py-[5%]  pt-[10%] max-md:py-[20%] max-md:pb-[40%] max-[1025px]:py-[15%]`}>
+      <div className={` py-[5%]  pt-[10%] max-md:pt-[20%]   max-[1025px]:py-[15%]`}>
         <div className="w-full px-[5%] max-md:px-[6%] flex justify-between max-[1025px]:flex-col max-[1025px]:gap-[8vw]">
+          <MaskTextReveal className="w-[50%] max-md:w-[90%] max-[1025px]:w-[90%]">
+
           <h2
             data-para-anim
-            className={`w-[45%] max-md:w-[90%]  font-heading text-[3.9vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw] max-[1025px]:w-[90%] max-[1025px]:text-[8vw]`}
-          >
+            className={`w-full   font-neue-montreal text-[3.8vw] font-medium leading-[1.2]  max-md:text-[8vw] text-[#1c1b1a] mt-[-1vw]  max-[1025px]:text-[8vw]`}
+            >
             Real Estate,
             <br />
             Considered Differently
           </h2>
-          <div className="w-[35%] space-y-[1.5vw] text-[#1c1b1a]/80 text-[1.25vw] max-md:text-[3.5vw] max-[1025px]:w-full">
+            </MaskTextReveal>
+          <div className="w-[40%] space-y-[1.5vw] text-[#1c1b1a] text-[1.25vw] max-md:text-[3.5vw] max-[1025px]:text-[3vw] max-[1025px]:w-full">
+          <MaskTextReveal>
+
             <p data-para-anim>We believe finding the right home begins with understanding how you want to live.</p>
+          </MaskTextReveal>
+          <MaskTextReveal>
+
             <p data-para-anim>
               From waterfront residences to private villas and landmark penthouses, we bring together exceptional
               properties with thoughtful guidance to make every decision feel considered, personal and effortless.
             </p>
+          </MaskTextReveal>
           </div>
         </div>
 
-        <div className="fadeup mt-[4vw] max-md:mt-[8vw]">
+        <FadeUp>
+
+       
+
+
+        <div className=" mt-[7vw] max-md:mt-[16vw]">
           <InfiniteCarouselComp
             slides={carouselSlides}
             initialIndex={CENTER_SLIDE_INDEX}
@@ -88,21 +120,22 @@ const About = () => {
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={activeIndex}
-                initial={{ opacity: 0 }}
+                initial={reducedMotion ? false : { opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                exit={reducedMotion ? undefined : { opacity: 0 }}
+                transition={{ duration: reducedMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
-                <p className={`font-heading text-[2.3vw] leading-[1.2] font-medium max-md:text-[5vw] text-[#1c1b1a] max-[1025px]:text-[5vw]`}>
+                <p className={`font-neue-montreal text-[2.3vw] leading-[1.2] font-medium max-md:text-[5vw] text-[#1c1b1a] max-[1025px]:text-[5vw]`}>
                   {activeSlide.title}
                 </p>
-                <p className="mt-[0.5vw] w-[90%] text-center mx-auto text-[1.01vw] text-[#1C1B1A] max-[1025px]:text-[2.5vw] max-md:text-[3vw]">
+                <p className="mt-[1vw] w-[90%] text-center mx-auto text-[1.01vw] text-[#1C1B1A] max-[1025px]:text-[2.5vw] max-md:text-[3vw]">
                   {activeSlide.description}
                 </p>
               </motion.div>
             </AnimatePresence>
           </div>
         </div>
+         </FadeUp>
       </div>
     </section>
   );
