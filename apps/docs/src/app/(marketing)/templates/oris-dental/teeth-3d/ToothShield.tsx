@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import gsap from 'gsap'
-import { useControls, folder } from 'leva'
 import { buildToothShell } from './toothShellGeometry'
 import { createToothShieldMaterial, MAX_HITS } from './toothShieldMaterial'
 
@@ -46,79 +45,40 @@ export interface ToothShieldProps {
 }
 
 /**
- * Hex-grid energy shield laid over the tooth with live Leva GUI controls.
+ * Hex-grid energy shield laid over the tooth with hover spotlight and click ripple effects.
  */
 export default function ToothShield({
     source,
-    color: defaultColor = '#3365e2',
-    edgeColor: defaultEdgeColor = '#a8c4ff',
-    inflate: defaultInflate = 0.0,
-    opacity: defaultOpacity = 0.72,
-    hexOpacity: defaultHexOpacity = 0.13,
-    hexScale: defaultHexScale = 8.7,
-    flashSpeed: defaultFlashSpeed = 1.85,
-    flashIntensity: defaultFlashIntensity = 0.07,
-    noiseScale: defaultNoiseScale = 7.0,
-    fresnelStrength: defaultFresnelStrength = 1.9,
-    flowIntensity: defaultFlowIntensity = 2.8,
-    fadeStart: defaultFadeStart = 1.0,
-    revealDuration: defaultRevealDuration = 1.4,
-    metalThreshold: defaultMetalThreshold = 0.13,
-    metalSoftness: defaultMetalSoftness = 0.5,
-    hoverRadius: defaultHoverRadius = 0.5,
-    hoverIntensity: defaultHoverIntensity = 1.05,
-    hitIntensity: defaultHitIntensity = 1.2,
-    hitAlpha: defaultHitAlpha = 0.35,
-    autoPulse: defaultAutoPulse = false,
-    autoPulseInterval: defaultAutoPulseInterval = 8.0,
+    color = '#3365e2',
+    edgeColor = '#a8c4ff',
+    inflate = 0.0,
+    opacity = 0.72,
+    hexOpacity = 0.13,
+    hexScale = 8.7,
+    flashSpeed = 1.85,
+    flashIntensity = 0.07,
+    noiseScale = 7.0,
+    fresnelStrength = 1.9,
+    flowIntensity = 2.8,
+    fadeStart = 1.0,
+    revealDuration = 1.4,
+    metalThreshold = 0.13,
+    metalSoftness = 0.5,
+    hoverRadius = 0.5,
+    hoverIntensity = 1.05,
+    hitIntensity = 1.2,
+    hitAlpha = 0.35,
+    autoPulse = false,
+    autoPulseInterval = 8.0,
 }: ToothShieldProps) {
-    // ── Leva Controls ─────────────────────────────────────────────────────────
-    const [controls] = useControls('Tooth Shield', () => ({
-        'Appearance': folder({
-            color: defaultColor,
-            edgeColor: defaultEdgeColor,
-            opacity: { value: defaultOpacity, min: 0, max: 1, step: 0.01 },
-            inflate: { value: defaultInflate, min: 0, max: 0.03, step: 0.001 },
-            fadeStart: { value: defaultFadeStart, min: -1, max: 1, step: 0.01 },
-        }),
-        'Hex Grid': folder({
-            hexOpacity: { value: defaultHexOpacity, min: 0, max: 1, step: 0.01 },
-            hexScale: { value: defaultHexScale, min: 1, max: 20, step: 0.1 },
-            flashSpeed: { value: defaultFlashSpeed, min: 0, max: 3, step: 0.05 },
-            flashIntensity: { value: defaultFlashIntensity, min: 0, max: 1, step: 0.01 },
-        }),
-        'Hover Effect': folder({
-            hoverRadius: { value: defaultHoverRadius, min: 0.1, max: 1.5, step: 0.05 },
-            hoverIntensity: { value: defaultHoverIntensity, min: 0, max: 3, step: 0.05 },
-        }),
-        'Noise & Flow': folder({
-            noiseScale: { value: defaultNoiseScale, min: 0.5, max: 10, step: 0.1 },
-            fresnelStrength: { value: defaultFresnelStrength, min: 0, max: 5, step: 0.05 },
-            flowIntensity: { value: defaultFlowIntensity, min: 0, max: 10, step: 0.1 },
-        }),
-        'Metal Mask': folder({
-            metalThreshold: { value: defaultMetalThreshold, min: 0, max: 1, step: 0.01 },
-            metalSoftness: { value: defaultMetalSoftness, min: 0.01, max: 0.5, step: 0.01 },
-        }),
-        'Click Impact & Pulses': folder({
-            hitIntensity: { value: defaultHitIntensity, min: 0, max: 5, step: 0.05 },
-            hitAlpha: { value: defaultHitAlpha, min: 0, max: 1, step: 0.01 },
-            autoPulse: defaultAutoPulse,
-            autoPulseInterval: { value: defaultAutoPulseInterval, min: 0.5, max: 10, step: 0.1 },
-        }),
-        'Reveal': folder({
-            revealDuration: { value: defaultRevealDuration, min: 0.2, max: 5, step: 0.1 },
-        }),
-    }))
-
     const meshRef = useRef<THREE.Mesh | null>(null)
     const { gl, camera } = useThree()
 
-    const shell = useMemo(() => buildToothShell(source, { inflate: controls.inflate }), [source, controls.inflate])
+    const shell = useMemo(() => buildToothShell(source, { inflate }), [source, inflate])
 
     const material = useMemo(
-        () => createToothShieldMaterial({ color: controls.color, edgeColor: controls.edgeColor }),
-        [controls.color, controls.edgeColor],
+        () => createToothShieldMaterial({ color, edgeColor }),
+        [color, edgeColor],
     )
 
     const clock = useRef({ time: 0, slot: 0, nextPulse: 2.6 })
@@ -150,22 +110,39 @@ export default function ToothShield({
 
     useEffect(() => {
         const u = material.uniforms
-        u.uOpacity.value = controls.opacity
-        u.uHexOpacity.value = controls.hexOpacity
-        u.uHexScale.value = controls.hexScale
-        u.uFlashSpeed.value = controls.flashSpeed
-        u.uFlashIntensity.value = controls.flashIntensity
-        u.uNoiseScale.value = controls.noiseScale
-        u.uFresnelStrength.value = controls.fresnelStrength
-        u.uFlowIntensity.value = controls.flowIntensity
-        u.uFadeStart.value = controls.fadeStart
-        u.uMetalThreshold.value = controls.metalThreshold
-        u.uMetalSoftness.value = controls.metalSoftness
-        u.uHoverRadius.value = controls.hoverRadius
-        u.uHoverIntensity.value = controls.hoverIntensity
-        u.uHitIntensity.value = controls.hitIntensity
-        u.uHitAlpha.value = controls.hitAlpha
-    }, [material, controls])
+        u.uOpacity.value = opacity
+        u.uHexOpacity.value = hexOpacity
+        u.uHexScale.value = hexScale
+        u.uFlashSpeed.value = flashSpeed
+        u.uFlashIntensity.value = flashIntensity
+        u.uNoiseScale.value = noiseScale
+        u.uFresnelStrength.value = fresnelStrength
+        u.uFlowIntensity.value = flowIntensity
+        u.uFadeStart.value = fadeStart
+        u.uMetalThreshold.value = metalThreshold
+        u.uMetalSoftness.value = metalSoftness
+        u.uHoverRadius.value = hoverRadius
+        u.uHoverIntensity.value = hoverIntensity
+        u.uHitIntensity.value = hitIntensity
+        u.uHitAlpha.value = hitAlpha
+    }, [
+        material,
+        opacity,
+        hexOpacity,
+        hexScale,
+        flashSpeed,
+        flashIntensity,
+        noiseScale,
+        fresnelStrength,
+        flowIntensity,
+        fadeStart,
+        metalThreshold,
+        metalSoftness,
+        hoverRadius,
+        hoverIntensity,
+        hitIntensity,
+        hitAlpha,
+    ])
 
     useEffect(() => {
         return () => {
@@ -182,7 +159,7 @@ export default function ToothShield({
         const start = () => {
             tween = gsap.to(reveal, {
                 value: 0,
-                duration: controls.revealDuration,
+                duration: revealDuration,
                 delay: 0.35,
                 ease: 'power2.inOut',
                 onUpdate: () => {
@@ -203,7 +180,7 @@ export default function ToothShield({
             window.removeEventListener('oris-loader-finished', start)
             tween?.kill()
         }
-    }, [material, controls.revealDuration])
+    }, [material, revealDuration])
 
     // ── Hits ─────────────────────────────────────────────────────────────────
     const registerHit = useMemo(() => {
@@ -296,11 +273,11 @@ export default function ToothShield({
         material.uniforms.uHoverPos.value.copy(hoverState.current.currentPos)
         material.uniforms.uHoverStrength.value = hoverState.current.strength
 
-        if (!controls.autoPulse) return
+        if (!autoPulse) return
 
         clock.current.nextPulse -= delta
         if (clock.current.nextPulse > 0) return
-        clock.current.nextPulse = controls.autoPulseInterval * (0.7 + Math.random() * 0.6)
+        clock.current.nextPulse = autoPulseInterval * (0.7 + Math.random() * 0.6)
 
         const mesh = meshRef.current
         if (!mesh) return

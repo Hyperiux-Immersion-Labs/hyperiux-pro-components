@@ -154,8 +154,8 @@ export default function DentalTreatments({
             className="w-full bg-white h-fit relative z-10 pt-[6vw] pb-[10vw]"
         >
             {/* Header Section */}
-            <div className="oris-paddx mb-[5vw]">
-                <SplitTextLines as="h2" className="text-[4.2vw]">
+            <div className="oris-paddx mb-[5vw] max-md:mb-[15vw] max-[1025px]:mb-[10vw]">
+                <SplitTextLines as="h2" className="text-[4.2vw] max-[1025px]:text-[6vw] max-md:text-[7.5vw]">
                     Dental Care Treatments
                 </SplitTextLines>
                 <SplitTextLines as="p" className="oris-text22 mt-[1.5vw]" delay={0.15}>

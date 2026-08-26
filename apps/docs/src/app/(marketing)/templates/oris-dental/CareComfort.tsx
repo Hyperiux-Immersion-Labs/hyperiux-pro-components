@@ -161,7 +161,7 @@ export default function CareComfort() {
       <div className="oris-paddx mb-[5vw] max-md:mb-8 flex justify-between items-start max-[1025px]:flex-col max-[1025px]:gap-6">
         {/* Left Heading */}
         <div className="w-[50%] max-[1025px]:max-w-full">
-          <SplitTextLines as="h2" className="text-[4.2vw]">
+          <SplitTextLines as="h2" className="text-[4.2vw] max-md:w-[90vw] max-[1025px]:text-[6vw] max-md:text-[7.5vw]">
             Care Designed for Your{"\n"}Lasting Comfort
           </SplitTextLines>
         </div>

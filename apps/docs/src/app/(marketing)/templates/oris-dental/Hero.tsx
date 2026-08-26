@@ -21,7 +21,7 @@ export default function Hero() {
   });
 
   return (
-    <section id="oris-hero" className="h-dvh sticky top-0 z-0 bg-linear-to-t from-[#3365E2] via-[#3365E2] to-white overflow-hidden w-full max-[1025px]:h-dvh max-md:h-dvh">
+    <section id="oris-hero" className="h-dvh sticky top-0 z-0  bg-linear-to-t from-[#3365E2] via-[#3365E2] to-white  overflow-hidden w-full max-[1025px]:h-dvh max-md:h-dvh">
       <div className="h-full w-full relative flex flex-col justify-between">
 
         <DotsCanvas spacing={22} lerpFactor={0.15} baseRadius={1.4} maxRadius={3.8} interactionRadius={200} />
@@ -30,7 +30,7 @@ export default function Hero() {
         <div className="w-full oris-paddx flex items-center justify-between h-full max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:justify-between max-[1025px]:pt-[18vw] max-[1025px]:pb-[5vw] max-md:pt-20 max-md:pb-6 z-10 pointer-events-none *:pointer-events-auto">
 
           <div className="w-1/2 max-[1025px]:w-full gap-[2vw] max-[1025px]:gap-2 flex items-start justify-center flex-col max-[1025px]:h-auto">
-            <SplitTextLines as="h1" className="oris-text64 font-medium! w-[62%] max-[1025px]:w-[75vw] max-md:w-full" delay={1} waitForLoader>
+            <SplitTextLines as="h1" className="oris-text64  font-medium! w-[62%] max-[1025px]:w-[75vw] max-md:w-full" delay={1} waitForLoader>
               Brighten your smile with expert dental care
             </SplitTextLines>
             <SplitTextLines as="p" className="w-[20vw] max-[1025px]:w-[55vw] max-md:w-full oris-text22 " delay={1.25} waitForLoader>

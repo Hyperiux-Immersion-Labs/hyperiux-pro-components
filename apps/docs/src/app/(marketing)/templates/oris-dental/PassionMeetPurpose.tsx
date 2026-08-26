@@ -69,7 +69,7 @@ export default function PassionMeetPurpose() {
         >
             {/* Header */}
             <div className="flex flex-col items-center text-center mx-auto">
-                <SplitTextLines as="h2" className="text-[4.2vw] font-normal leading-[1.15]">
+                <SplitTextLines as="h2" className="text-[4.2vw] max-[1025px]:text-[6vw] max-md:text-[7.5vw] font-normal leading-[1.15]">
                     Passion Meet Purpose
                 </SplitTextLines>
                 <SplitTextLines as="p" className="oris-text22 text-oris-secondary/80 mt-[1.5vw] max-w-[36vw] max-[1025px]:max-w-[80vw]! max-md:max-w-full" delay={0.15}>

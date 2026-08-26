@@ -22,7 +22,7 @@ export default function BookAppointment() {
 
                 {/* Left Content */}
                 <div className="z-10 text-white flex pt-[1vw] max-[1025px]:pt-0 flex-col justify-center max-[1025px]:max-w-full">
-                    <SplitTextLines as="h2" className="oris-text64 max-w-[34vw] max-[1025px]:max-w-full">
+                    <SplitTextLines as="h2" className="max-[1025px]:text-[6vw] max-md:text-[7.5vw] text-[4.2vw] max-w-[34vw] max-[1025px]:max-w-full">
                         The first step to the smile you deserve
                     </SplitTextLines>
                     <SplitTextLines as="p" className="oris-text22 max-w-[36vw] max-[1025px]:max-w-xl mt-[2vw] max-[1025px]:mt-4" delay={0.2}>

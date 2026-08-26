@@ -394,7 +394,7 @@ export default function Reviews({
                 <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-md:gap-8">
                     {/* Header on Tablet / Mobile */}
                     <div className="flex flex-col items-center text-center">
-                        <h2 className="oris-text64 font-normal leading-tight">
+                        <h2 className="max-[1025px]:text-[6vw] max-md:text-[7.5vw] font-normal leading-tight">
                             Reviews
                         </h2>
                         <p className="oris-text22 text-oris-secondary/80 mt-2 max-w-xl">
@@ -419,8 +419,8 @@ export default function Reviews({
                         ))}
                     </div>
 
-                    <div className="rounded-xl px-4 py-8 text-center bg-[#c4c4c4] mt-4">
-                        <p className="oris-text22 max-md:w-full max-[1025px]:w-[90%] max-[1025px]:mx-auto max-md:text-base font-normal leading-[1.4] text-oris-secondary">
+                    <div className="rounded-xl px-4 py-8 text-center bg-[#3365e2] mt-4">
+                        <p className="oris-text22 max-md:w-full max-[1025px]:w-[90%] max-[1025px]:mx-auto max-md:text-base font-normal leading-[1.4] text-white">
                             {sectionBreakText}
                         </p>
                     </div>
