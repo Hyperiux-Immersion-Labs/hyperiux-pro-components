@@ -6,7 +6,7 @@ import { useGLTF, Center, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import gsap from 'gsap'
 import MouseTilt from './MouseTilt'
-import TeethParticleNet from './TeethParticleNet'
+import ToothShield from './ToothShield'
 import { degToRad } from 'three/src/math/MathUtils.js'
 // @ts-ignore - glb asset import
 import teethModel from '../../assets/teeth.glb'
@@ -87,9 +87,9 @@ function Model({ url }: { url: string }) {
                 }
 
                 if (Array.isArray((child as THREE.Mesh).material)) {
-                    ;(child as THREE.Mesh).material = ((child as THREE.Mesh).material as THREE.Material[]).map(upgradeMaterial)
+                    ; (child as THREE.Mesh).material = ((child as THREE.Mesh).material as THREE.Material[]).map(upgradeMaterial)
                 } else {
-                    ;(child as THREE.Mesh).material = upgradeMaterial((child as THREE.Mesh).material)
+                    ; (child as THREE.Mesh).material = upgradeMaterial((child as THREE.Mesh).material)
                 }
             }
         })
@@ -98,7 +98,7 @@ function Model({ url }: { url: string }) {
     return (
         <>
             <primitive object={scene} />
-            <TeethParticleNet source={scene} />
+            <ToothShield source={scene} />
         </>
     )
 }
