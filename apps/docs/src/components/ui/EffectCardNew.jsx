@@ -65,6 +65,13 @@ export function EffectCard({
   toggleWishlist,
   isProUser = false,
   sizes = VAULT_GRID_SIZES,
+  // Template-card mode: 1-3 static preview images shown as a collage instead
+  // of the single cover image/video. Everything below the media area (tags,
+  // Pro badge, title, category, installs, heart/eye/arrow) is unchanged and
+  // fully reused - only the media slot itself differs for a Template.
+  screenshots,
+  href,
+  previewHref,
 }) {
   const [active, setActive] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
@@ -122,8 +129,9 @@ export function EffectCard({
   const videoPreviewUrl = useMemo(() => resolveEffectVideoUrl(effect), [effect]);
   const coverImage = useMemo(() => resolveEffectCoverImage(effect), [effect]);
 
-  const effectHref = getEffectHref(effect);
-  const previewHref = getEffectPreviewHref(effect);
+  const effectHref = href || getEffectHref(effect);
+  const resolvedPreviewHref = previewHref || getEffectPreviewHref(effect);
+  const isScreenshotStack = Array.isArray(screenshots) && screenshots.length > 0;
 
   // Drive the <video> imperatively so React never owns `src`. Activating attaches
   // the source and plays; deactivating detaches it, releasing the WebMediaPlayer
@@ -205,9 +213,48 @@ export function EffectCard({
     >
 
 
-      <div className="pointer-events-none  relative aspect-3/2  px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden  bg-[#161616]">
+      <div
+        className={`pointer-events-none relative ${
+          isScreenshotStack ? "aspect-[63/80]" : "aspect-3/2"
+        } px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden  bg-[#161616]`}
+      >
         <div className=" w-full relative h-[80%] overflow-hidden bg-[#202020]">
-          {coverImage && !imageError ? (
+          {isScreenshotStack ? (
+            <>
+              <Image
+                src={screenshots[0]}
+                alt={effect?.title || effect?.name || ""}
+                fill
+                sizes={sizes}
+                quality={75}
+                priority={priority}
+                loading={priority ? undefined : "lazy"}
+                className="object-cover object-top"
+              />
+              {/* Richer preview for templates with more than one captured
+                  page - a small collage strip under the hero shot. Most
+                  templates ship with just screenshots[0]. */}
+              {screenshots.length > 1 && (
+                <div className="absolute inset-x-0 bottom-0 flex h-[42%] gap-[3%] p-[3%]">
+                  {screenshots.slice(1, 3).map((src, index) => (
+                    <div
+                      key={src + index}
+                      className="relative flex-1 overflow-hidden border border-black/40 bg-[#161616]"
+                    >
+                      <Image
+                        src={src}
+                        alt=""
+                        fill
+                        sizes={sizes}
+                        quality={60}
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : coverImage && !imageError ? (
             <Image
               src={coverImage}
               alt={effect.title || effect.name}
@@ -224,7 +271,7 @@ export function EffectCard({
           ) : (
             <div className="h-full w-full bg-[#202020]" />
           )}
-          {hasAppeared && videoPreviewUrl && (
+          {!isScreenshotStack && hasAppeared && videoPreviewUrl && (
             <video
               ref={videoRef}
               muted
@@ -325,7 +372,7 @@ export function EffectCard({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                window.open(previewHref, "_blank", "noopener,noreferrer");
+                window.open(resolvedPreviewHref, "_blank", "noopener,noreferrer");
               }}
               className="flex h-8 w-8 cursor-pointer items-center justify-center bg-[#242424] text-white transition-colors hover:bg-white/10 max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9"
               aria-label="Preview"
