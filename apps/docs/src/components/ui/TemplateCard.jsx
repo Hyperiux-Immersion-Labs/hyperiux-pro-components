@@ -90,8 +90,8 @@ export function TemplateCard({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="pointer-events-none relative aspect-[63/80] px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden bg-[#161616]">
-        <div className="w-full relative h-[80%] overflow-hidden bg-[#202020]">
+      <div className="pointer-events-none relative aspect-[63/80] flex flex-col px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden bg-[#161616]">
+        <div className="w-full relative flex-1 overflow-hidden bg-[#202020]">
           {screenshots[0] && !imageError ? (
             <Image
               src={screenshots[0]}
@@ -118,14 +118,14 @@ export function TemplateCard({
                   key={src + index}
                   className="relative flex-1 overflow-hidden border border-black/40 bg-[#161616]"
                 >
-                  <Image src={src} alt="" fill sizes={sizes} quality={60} className="object-cover" />
+                  <Image src={src} alt="" fill sizes={sizes} quality={90} className="object-cover" />
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div className="pointer-events-none h-[20%] flex w-full items-center justify-between gap-3 font-geist-mono">
+        <div className="pointer-events-none shrink-0 py-[0.8vw] max-md:py-3 flex w-full items-center justify-between gap-3 font-geist-mono">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 max-md:gap-1.5">
             {tagPills.map((pill) => (
               <span

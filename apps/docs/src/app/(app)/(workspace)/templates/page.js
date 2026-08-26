@@ -22,44 +22,41 @@ export const metadata = createPageMetadata({
   robots: { index: false, follow: false },
 });
 
-// Placeholder art, not real Hyperiux templates - swap for real entries once
-// the registry/Sanity side of the plan is built.
+// Metadata (tags/tier/installCount) is still placeholder pending Sanity, but
+// these three are real, fully-built templates already live at /templates/*.
 const MOCK_TEMPLATES = [
   {
-    slug: "sample-template-one",
-    title: "Sample Template One",
+    slug: "elenavoss",
+    title: "Elena Voss",
     category: "Portfolio",
-    tier: "pro",
-    tags: ["WebGL", "Scroll"],
-    installCount: 1400,
-    screenshots: ["/mock/templates/t1-main.png", "/mock/templates/t1-collage-1.png", "/mock/templates/t1-collage-2.png"],
+    tier: "free",
+    tags: ["GSAP", "Scroll"],
+    installCount: 980,
+    screenshots: ["/assets/templates-listing/elenavoss.png"],
+    href: "/templates/elenavoss",
+    previewHref: "/templates/elenavoss",
   },
   {
-    slug: "sample-template-two",
-    title: "Sample Template Two",
-    category: "SaaS",
+    slug: "oris-dental",
+    title: "Oris Dental",
+    category: "Healthcare",
     tier: "pro",
-    tags: ["WebGL"],
-    installCount: 860,
-    screenshots: ["/mock/templates/t2-main.png"],
+    tags: ["3D", "WebGL"],
+    installCount: 410,
+    screenshots: ["/assets/templates-listing/orisdental.png"],
+    href: "/templates/oris-dental",
+    previewHref: "/templates/oris-dental",
   },
   {
-    slug: "sample-template-three",
-    title: "Sample Template Three",
+    slug: "lumera",
+    title: "Lumera",
     category: "Real Estate",
-    tier: "free",
-    tags: ["Scroll Effects"],
-    installCount: 320,
-    screenshots: ["/mock/templates/t3-main.png"],
-  },
-  {
-    slug: "sample-template-four",
-    title: "Sample Template Four",
-    category: "SaaS",
-    tier: "free",
-    tags: ["Section Transition"],
-    installCount: 95,
-    screenshots: ["/mock/templates/t4-main.png"],
+    tier: "pro",
+    tags: ["GSAP", "Smooth Scroll"],
+    installCount: 640,
+    screenshots: ["/assets/templates-listing/lumera.png"],
+    href: "/templates/lumera",
+    previewHref: "/templates/lumera",
   },
 ];
 
@@ -91,11 +88,7 @@ export default function TemplatesPage() {
       <div className="mx-auto px-10 pt-20 pb-12 max-md:px-0 max-[1025px]:pt-10">
         <div className="grid grid-cols-2 gap-6 rounded-xl max-[1025px]:grid-cols-1 max-md:grid-cols-1 max-md:px-[7vw] max-[1025px]:gap-10 max-md:gap-16">
           {MOCK_TEMPLATES.map((template, index) => (
-            <TemplateCard
-              key={template.slug}
-              template={{ ...template, href: "#", previewHref: "#" }}
-              priority={index === 0}
-            />
+            <TemplateCard key={template.slug} template={template} priority={index === 0} />
           ))}
         </div>
       </div>
