@@ -314,15 +314,13 @@
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  transform: translateY(-6px);
-  transition: grid-template-rows 300ms ease, opacity 280ms ease, transform 280ms ease;
+  transition: grid-template-rows 300ms ease, opacity 280ms ease;
   padding: 0;
 }
 
 .groupOpen .groupBody {
   grid-template-rows: 1fr;
   opacity: 1;
-  transform: translateY(0);
 }
 
 .groupBodyInner {

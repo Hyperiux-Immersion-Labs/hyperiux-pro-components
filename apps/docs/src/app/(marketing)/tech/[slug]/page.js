@@ -3,7 +3,12 @@ import { Suspense } from "react";
 import { VaultLayout } from "@/components/layout/VaultLayout";
 import { VaultHeader } from "@/components/layout/VaultHeader";
 import TechDetailShowcase from "@/components/Tech/TechDetailShowcase";
-import { getRegistryIndex, getEffectsByCategory, getAllEffectSlugs } from "@/lib/registry";
+import {
+  getAllEffectSlugs,
+  getEffectTierCounts,
+  getEffectsByCategory,
+  getRegistryIndex,
+} from "@/lib/registry";
 import { TECHNOLOGIES } from "@/components/Tech/tech-data";
 import TechBackground from "@/components/Tech/TechBackground";
 import { createPageMetadata } from "@/lib/seo-metadata";
@@ -53,6 +58,8 @@ export default async function TechDetailPage({ params }) {
   for (const [categoryId, effects] of Object.entries(categoriesMap)) {
     effectCounts[categoryId] = effects.length;
   }
+
+  Object.assign(effectCounts, getEffectTierCounts());
 
   // Active filter for registry items based on technology
   const filteredEffects = registry.items.filter((item) => {

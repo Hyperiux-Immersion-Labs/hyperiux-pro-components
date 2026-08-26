@@ -282,8 +282,8 @@ const Testimonials = () => {
   const handleNext = useCallback(() => goTo("next"), [goTo]);
 
   return (
-    <section className="w-screen py-30 px-15 relative z-0 bg-[#070707] max-[1025px]:px-10 max-[1025px]:py-20 max-md:px-5 max-md:py-16">
-      <div className="w-full rounded-xl h-[40vw] bg-[#111111] border border-white/8 p-[3vw] max-md:p-8 flex items-center gap-[3vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:h-[90vw] max-[1025px]:gap-6 max-[1025px]:p-8 max-md:flex-col max-md:gap-8 max-md:h-[180vw]">
+    <section className="w-screen py-30 px-15 relative z-0 bg-[#070707] max-[1025px]:px-[5vw] max-[1025px]:py-20 max-md:py-16">
+      <div className="w-full rounded-xl h-[40vw] bg-[#111111] border border-white/8 p-[3vw] flex items-center gap-[3vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:h-[90vw] max-[1025px]:gap-6 max-[1025px]:p-5 max-md:flex-col max-md:gap-8 max-md:h-[200vw]">
         {/* Stacked, clip-path revealed portraits */}
         <div className="relative w-[18vw] h-[24vw]  shrink-0 rounded-lg overflow-hidden bg-[#1c1c1c] max-[1025px]:w-[36vw] max-[1025px]:h-[40vw] max-md:w-full max-md:h-[70vw]">
           {testimonials.map((item, i) => (
@@ -305,7 +305,7 @@ const Testimonials = () => {
           ))}
         </div>
 
-        <div className="flex-1 flex flex-col justify-between h-[24vw] min-h-[160px] max-[1025px]:h-auto max-md:h-auto">
+        <div className="flex-1 flex flex-col justify-between h-[24vw] min-h-[160px] max-[1025px]:h-auto max-md:h-auto w-full">
           <p
             ref={quoteRef}
             className="text-[1.8vw] max-[1025px]:text-[2.6vw] max-md:text-xl leading-[1.5] text-white/90 max-w-[60vw] max-[1025px]:max-w-full max-md:max-w-full"
@@ -313,8 +313,8 @@ const Testimonials = () => {
             {displayItem.quote}
           </p>
 
-          <div className="flex items-end justify-between mt-8 max-md:mt-6">
-            <div className="flex flex-col gap-1 overflow-hidden">
+          <div className="flex items-end justify-between mt-8 max-md:mt-6 w-full">
+            <div className="flex flex-col gap-1 overflow-hidden w-fit">
               <p
                 ref={nameRef}
                 className="text-[2.5vw] max-[1025px]:text-[3.2vw] max-md:text-lg text-[#ff6b00]"
@@ -329,12 +329,12 @@ const Testimonials = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-fit">
               <button
                 type="button"
                 onClick={handlePrev}
                 aria-label="Previous testimonial"
-                className="size-12 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:bg-white/10 hover:text-white transition-colors cursor-pointer relative group overflow-hidden"
+                className="size-12 rounded-full border border-white/20 flex items-center justify-center text-white/80  hover:text-white transition-colors cursor-pointer relative group overflow-hidden"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="relative z-2">
                   <path
@@ -345,7 +345,7 @@ const Testimonials = () => {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:opacity-100 opacity-0 duration-300"/>
+                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:scale-100 scale-0 ease-in-out origin-center rounded-full  duration-300"/>
 
 
               </button>
@@ -353,7 +353,7 @@ const Testimonials = () => {
                 type="button"
                 onClick={handleNext}
                 aria-label="Next testimonial"
-                className="size-12 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:bg-white/10 hover:text-white transition-colors cursor-pointer relative group overflow-hidden"
+                className="size-12 rounded-full border border-white/20 flex items-center justify-center text-white/80  hover:text-white transition-colors cursor-pointer relative group overflow-hidden"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="relative z-2">
                   <path
@@ -364,7 +364,7 @@ const Testimonials = () => {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:opacity-100 opacity-0 duration-300"/>
+                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:scale-100 scale-0 ease-in-out origin-center rounded-full  duration-300 "/>
 
               </button>
             </div>

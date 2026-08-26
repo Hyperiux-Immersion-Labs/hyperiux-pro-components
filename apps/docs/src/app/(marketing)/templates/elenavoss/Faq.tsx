@@ -42,9 +42,28 @@ const FAQ_ITEMS: FaqItem[] = [
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(0);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     const rows = rowRefs.current.filter(Boolean) as HTMLDivElement[];
+
+    // Rows start at opacity-0 (static class, see below) purely to prevent
+    // a FOUC before this effect runs - under reduced motion there's no
+    // fade-in to wait for, so they need to be snapped visible immediately
+    // instead of staying permanently invisible.
+    if (prefersReducedMotion) {
+      gsap.set(rows, { opacity: 1, y: 0 });
+      return;
+    }
+
     const tweens = rows.map((row) =>
       gsap.fromTo(
         row,
@@ -67,10 +86,10 @@ const Faq = () => {
       tweens.forEach((tween) => tween.scrollTrigger?.kill());
       tweens.forEach((tween) => tween.kill());
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
-    <section className="w-screen py-[6vw] px-[10vw] relative bg-[#070707] text-white max-[1025px]:px-[6vw] max-md:px-5">
+    <section className="w-screen py-[6vw] px-[10vw] relative bg-[#070707] text-white max-[1025px]:px-[5vw]">
       <OverflowTextReveal stagger={0.015}>
         <h2 className="text-[5.5vw] text-center mb-[6vw] max-[1025px]:text-[7vw] max-md:text-[9vw]">
           Frequently Asked Questions
@@ -117,7 +136,7 @@ const Faq = () => {
                       }`}
                     />
                     <div
-                      className={`absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:opacity-100  duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
+                      className={`absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:scale-100 scale-0 ease-in-out origin-center rounded-full  duration-300 ${isOpen ? "scale-100" : "scale-0"}`}
                     />
                   </div>
                 </div>

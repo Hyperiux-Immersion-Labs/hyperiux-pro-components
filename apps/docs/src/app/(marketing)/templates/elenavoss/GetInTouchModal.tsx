@@ -60,7 +60,6 @@ export function GetInTouchModalProvider({ children }: { children: ReactNode }) {
   return (
     <GetInTouchModalContext.Provider value={value}>
       {children}
-
       <AnimatedModalContent
         isOpen={isOpen}
         onClose={closeModal}
@@ -99,6 +98,7 @@ export function GetInTouchModalProvider({ children }: { children: ReactNode }) {
           </div>
         </div>
       </AnimatedModalContent>
+        
     </GetInTouchModalContext.Provider>
   );
 }

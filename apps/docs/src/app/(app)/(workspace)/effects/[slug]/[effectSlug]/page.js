@@ -1,7 +1,12 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
-import { getAllPrivateEffects, getEffectMetadata, getEffectSource } from "@/lib/registry";
+import {
+  getAllPrivateEffects,
+  getEffectMetadata,
+  getEffectSource,
+  getEffectTierCounts,
+} from "@/lib/registry";
 
 import {
   getAllSanityEffectEntries,
@@ -275,6 +280,7 @@ export default async function EffectPage({ params }) {
   for (const [categoryId, catEffects] of Object.entries(categoriesMap)) {
     effectCounts[categoryId] = catEffects.length;
   }
+  Object.assign(effectCounts, getEffectTierCounts());
 
   const relatedEffectNames = content?.relatedEffectNames || [];
 

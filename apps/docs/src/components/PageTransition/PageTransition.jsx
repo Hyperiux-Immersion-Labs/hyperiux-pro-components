@@ -26,43 +26,74 @@ function packHex(hex) {
 }
 
 /**
- * 2x2 Glitch Pixel Squares indicator with smooth slower pixel blink
+ * Grid Squares Loader Component
  */
-function LoopedPixelSquares() {
+function GridSquares({
+  rows = 3,
+  cols = 3,
+  size = 56,
+  squareSize = 8,
+  color = '#ffffff',
+  className = '',
+  style,
+  ...props
+}) {
+  const total = rows * cols
+
   return (
-    <span
-      aria-hidden="true"
-      className="grid grid-cols-2 gap-1.5 md:gap-2"
-    >
+    <>
       <style>{`
-        @keyframes pixelGlitchInLoop {
-          0%, 22%, 44% { opacity: 0; }
-          11%, 33%, 55%, 100% { opacity: 1; }
-        }
-        @keyframes pixelGlitchFlashLoop {
-          0%, 18%, 34%, 56%, 78%, 100% { opacity: 0; }
-          9%, 26%, 45%, 67% { opacity: 1; }
-        }
-        .animate-glitch-square {
-          animation: pixelGlitchInLoop 1.6s steps(1, end) infinite;
-        }
-        .animate-glitch-cell {
-          animation: pixelGlitchFlashLoop 1.4s steps(1, end) infinite;
+        @keyframes amicro-grid-square-wave {
+          0%, 100% {
+            transform: scale(0.35) translateY(0);
+            opacity: 0.2;
+          }
+          40% {
+            transform: scale(1.15) translateY(-2px);
+            opacity: 1;
+          }
+          70% {
+            transform: scale(0.65) translateY(0);
+            opacity: 0.55;
+          }
         }
       `}</style>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <span
-          key={i}
-          style={{ animationDelay: `${i * 200}ms` }}
-          className="animate-glitch-square relative size-4 md:size-6 bg-white shadow-xl"
-        >
-          <span
-            style={{ animationDelay: `${i * 200}ms` }}
-            className="animate-glitch-cell absolute inset-0 bg-[#0e0e0e]"
-          />
-        </span>
-      ))}
-    </span>
+      <div
+        role="status"
+        aria-label="Loading"
+        className={`inline-grid gap-1 items-center justify-center select-none ${className}`}
+        style={{
+          gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+          gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
+          width: size,
+          height: size,
+          ...style,
+        }}
+        {...props}
+      >
+        {Array.from({ length: total }).map((_, i) => {
+          const row = Math.floor(i / cols)
+          const col = i % cols
+          const delay = (row + col) * 0.12
+
+          return (
+            <span
+              key={i}
+              className="rounded-none will-change-transform"
+              style={{
+                width: squareSize,
+                height: squareSize,
+                borderRadius: 0,
+                backgroundColor: color,
+                animation: 'amicro-grid-square-wave 1.4s ease-in-out infinite',
+                animationDelay: `${delay}s`,
+              }}
+            />
+          )
+        })}
+        <span className="sr-only">Loading</span>
+      </div>
+    </>
   )
 }
 
@@ -127,7 +158,7 @@ export default function PageTransition() {
     }
   }, [])
 
-  // Draw 2D Bayer Dither Wave Frame (Cover from top -> Exit in opposite direction from bottom to top)
+  // Draw 2D Bayer Dither Wave Frame (Cover sweeps DOWN from top -> Exit sweeps DOWN all the way off the bottom)
   const draw = useCallback(() => {
     const canvas = canvasRef.current
     const { cols, rows, image, pixels } = gridRef.current
@@ -136,7 +167,7 @@ export default function PageTransition() {
     const ctx = canvas.getContext('2d')
     const { cover, exit } = progressRef.current
 
-    if (cover <= 0) {
+    if (cover <= 0 || exit >= 1) {
       ctx.clearRect(0, 0, cols, rows)
       return
     }
@@ -146,23 +177,29 @@ export default function PageTransition() {
 
     pixels.fill(0)
 
+    const span = 0.35
+    const amp = 0.04
+    const range = 1 + span + 2 * amp
+
+    const leadPos = cover * range - amp
+    const trailPos = exit * range - amp
+
     for (let y = 0; y < rows; y++) {
-      const band = y * invRows
+      const v = y * invRows
       const rowBase = (y & 7) * 8
       const offset = y * cols
 
       for (let x = 0; x < cols; x++) {
-        // Wave curve for dynamic bowed dither edge
-        const wave = Math.sin(x * 0.08) * 0.12 + Math.cos(x * 0.04) * 0.08
-        const depth = band + wave * 0.15
+        // Minimal subtle organic curvature
+        const wave = Math.sin(x * 0.03) * 0.015 + Math.cos(x * 0.015) * 0.01
 
-        // Cover: Enters from top to bottom
-        const coverRaw = Math.max(0, Math.min(1, (cover - depth) / 0.35 + 0.5))
+        // Cover leading edge sweeps DOWN
+        const coverAlpha = Math.max(0, Math.min(1, (leadPos - v + wave) / span))
 
-        // Exit: Opposite direction (clears from bottom to top)
-        const exitRaw = Math.max(0, Math.min(1, (1.25 - exit - (1 - band) + wave * 0.15) / 0.35 + 0.5))
+        // Exit trailing edge sweeps DOWN (uncovering from top to bottom all the way off the bottom)
+        const exitAlpha = Math.max(0, Math.min(1, 1 - (trailPos - v + wave) / span))
 
-        const raw = Math.min(coverRaw, exitRaw)
+        const raw = Math.min(coverAlpha, exitAlpha)
         if (raw <= 0) continue
 
         const threshold = (BAYER[rowBase + (x & 7)] + 0.5) / 64
@@ -201,7 +238,7 @@ export default function PageTransition() {
 
     // Sweep dither wave DOWN from top to cover full viewport (slower duration)
     tl.to(progressRef.current, {
-      cover: 1.25,
+      cover: 1,
       duration: 0.65,
       ease: 'power2.inOut',
       onUpdate: draw
@@ -224,16 +261,38 @@ export default function PageTransition() {
       // Execute route change while screen is flooded with dithered orange & pixel squares
       router.push(targetPath)
     })
-  }, [draw, router])
+  }
 
-  const revealScreen = useCallback(() => {
+  // 2. Reveal new page: dither wave sweeps DOWN all the way off the bottom
+  useEffect(() => {
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false
+      prevPathRef.current = pathname
+      isTransitioningRef.current = false
+      return
+    }
+
+    const prevPath = prevPathRef.current
+    const currentPath = pathname
+
+    prevPathRef.current = pathname
+
+    if (shouldSkipTransition(prevPath, currentPath)) {
+      isTransitioningRef.current = false
+      return
+    }
+
+    revealScreen()
+  }, [pathname, draw])
+
+  const revealScreen = () => {
     if (!containerRef.current) {
       isTransitioningRef.current = false
       return
     }
 
     if (progressRef.current.cover < 1) {
-      progressRef.current.cover = 1.25
+      progressRef.current.cover = 1
       progressRef.current.exit = 0
       draw()
       gsap.set(containerRef.current, { display: 'block', pointerEvents: 'all' })
@@ -261,11 +320,11 @@ export default function PageTransition() {
       })
     }
 
-    // Sweep dither wave UP towards top (opposite direction) to reveal newly rendered page (slower duration)
+    // Sweep dither wave DOWN all the way off the bottom to reveal newly rendered page
     tl.to(
       progressRef.current,
       {
-        exit: 1.25,
+        exit: 1,
         duration: 0.72,
         ease: 'power2.inOut',
         onUpdate: draw
@@ -363,10 +422,10 @@ export default function PageTransition() {
         style={{ imageRendering: 'pixelated' }}
       />
 
-      {/* 2x2 Glitch Pixel Squares Indicator from PricingV3 */}
+      {/* Grid Squares Loading Indicator */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-        <div ref={logoRef} className="opacity-0">
-          <LoopedPixelSquares />
+        <div ref={logoRef} className="opacity-0 flex items-center justify-center">
+          <GridSquares size={56} squareSize={8} color="#0e0e0e" />
         </div>
       </div>
     </div>

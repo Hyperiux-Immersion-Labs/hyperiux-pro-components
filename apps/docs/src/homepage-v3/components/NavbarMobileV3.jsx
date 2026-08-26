@@ -327,7 +327,7 @@ export default function NavbarMobileV3({
                       }
                       aria-label={`${expanded ? "Collapse" : "Expand"} ${label}`}
                       aria-expanded={expanded}
-                      className="flex w-full items-center justify-between py-[4.5vw] text-left text-[5.5vw] text-white/90 md:py-[2.6vw] md:text-[3.2vw]"
+                      className="flex w-full items-center justify-between py-[4.5vw] text-left  text-white/90 md:py-[2.6vw] max-[1025px]:text-[3.2vw] max-md:text-[5.5vw]!"
                     >
                       <span>{label}</span>
                       <div className="relative flex size-[8vw] shrink-0 items-center justify-center bg-grey text-primary md:size-[4.6vw]">

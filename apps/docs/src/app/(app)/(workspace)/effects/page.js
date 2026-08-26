@@ -8,6 +8,7 @@ import {
   buildEffectsFromSanity,
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
+import { getEffectTierCounts } from "@/lib/registry";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { sortEffects } from "@/lib/effect-sort";
 import {
@@ -43,6 +44,7 @@ export default async function EffectsPage() {
   for (const [category, catEffects] of Object.entries(categories)) {
     effectCounts[category] = catEffects.length;
   }
+  Object.assign(effectCounts, getEffectTierCounts());
   effectCounts.featured = featuredEffects.length;
   const { userId } = await auth();
   const userPlan = await getUserPlan(userId);

@@ -104,10 +104,10 @@ export default function SectionBreak() {
     <section
       ref={container}
       id="clientblur"
-      className="relative w-screen h-[300vh] text-center z-2  bg-[#070707]"
+      className="relative w-screen h-[240vh] text-center z-2  bg-[#070707]"
     >
       <div className="sticky w-full top-0 h-screen flex items-center justify-center">
-        <div className="w-[60%] max-[1025px]:w-[80%] max-md:w-[90%]">
+        <div className="w-[60%] max-[1025px]:w-[80%]">
           <OverflowTextReveal stagger={0.015}>
             <h3 className="text-[5.5vw]  text-white leading-[1.2] max-[1025px]:text-[7vw] max-md:text-[8vw]">
               Trusted by Founders and Creatives, Built for Ambitious Brands.

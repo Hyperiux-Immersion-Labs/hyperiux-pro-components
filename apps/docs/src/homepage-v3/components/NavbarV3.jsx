@@ -140,7 +140,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
             onFocusCapture={openOnFocus("categories")}
           >
             <HoverLinkV3
-              href="#"
+              href="/effects"
               text="Effects"
               className="group"
               onClick={(event) => togglePanel(event, "categories")}
@@ -160,7 +160,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
             onFocusCapture={openOnFocus("docs")}
           >
             <HoverLinkV3
-              href="#"
+              href="/docs"
               text="Docs"
               className="group"
               onClick={(event) => togglePanel(event, "docs")}

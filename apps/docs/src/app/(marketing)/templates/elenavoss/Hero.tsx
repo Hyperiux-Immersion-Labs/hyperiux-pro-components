@@ -1,11 +1,11 @@
 "use client"
 import Image from 'next/image'
 import elenavossHeroImg from './assets/hero-bg-full-img.png'
-import portfolio1Img from './assets/hero-portfolio-1.png'
-import portfolio3Img from './assets/hero-portfolio-3.png'
-import portfolio2Img from './assets/hero-portfolio-2.png'
-import portfolio4Img from './assets/hero-portfolio-4.png'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import portfolio1Img from './assets/portfolio-img-1.png'
+import portfolio2Img from './assets/portfolio-img-2.png'
+import portfolio3Img from './assets/portfolio-img-3.png'
+import portfolio4Img from './assets/portfolio-img-4.png'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/dist/ScrollTrigger'
 import { useLenis } from 'lenis/react'
@@ -19,24 +19,22 @@ gsap.registerPlugin(ScrollTrigger)
 const MASK_REVEAL_START = -40
 const MASK_REVEAL_END = 125
 
-// How many seconds BEFORE the h1's text reveal visually finishes the image
-// wipe (and, chained after it, the header) starts - creates the overlap.
-// 0 = old behavior (image waits for text to fully finish). Raise this to
-// start the image earlier/more overlapped; it's capped implicitly by the
-// text reveal's own total duration (delay + stagger*(charCount-1) +
-// duration, which for this h1 is well under 1s) - going past that just
-// fires as soon as possible, i.e. right alongside the text. 2s safely
-// clears that ceiling without the value looking like a typo.
-const TEXT_IMAGE_OVERLAP = 2
+// The image wipe runs on roughly the same timescale as the h1's own
+// stagger reveal - a fast-starting ease makes it visibly moving from frame
+// one instead of a slow ramp-up that reads as "delayed".
+const IMAGE_REVEAL_DURATION = 3.5
 
-// The image wipe now runs on roughly the same timescale as the h1's own
-// stagger reveal instead of the old 4.5s - at 4.5s, even starting exactly
-// alongside the text (which TEXT_IMAGE_OVERLAP already guaranteed), the
-// slow power3.inOut ramp-up meant almost no visible movement for the
-// first second, which read as "delayed" even though the tween had
-// technically already started. A shorter duration + a fast-starting ease
-// makes the wipe visibly moving from frame one.
-const IMAGE_REVEAL_DURATION = 2.5
+// Intro sequence: a single gsap.timeline() (see the mount effect below)
+// schedules every stage as a fixed offset in seconds from timeline start
+// (image reveal begins at 0) instead of chaining each stage off the
+// previous one's onComplete. All four offsets below are just playback
+// positions on that timeline - retune any of them directly to taste.
+const HOW_EARLY_H1_STARTS = 2.5
+const H1_START_OFFSET = Math.max(IMAGE_REVEAL_DURATION - HOW_EARLY_H1_STARTS, 0)
+// Side paragraphs start this many seconds after the h1 starts revealing.
+const SIDE_TEXT_START_OFFSET = H1_START_OFFSET + 0.5
+// Header/logo fade in this many seconds after the side paragraphs start.
+const HEADER_START_OFFSET = SIDE_TEXT_START_OFFSET + 0.3
 
 // Cursor parallax: the portrait (closer/bigger, reads as "foreground")
 // drifts further than the text (reads as "further back"), same direction,
@@ -61,22 +59,41 @@ const MOBILE_MARQUEE_IMAGES = [
 const MOBILE_MARQUEE_QUERY = '(max-width: 1025px)'
 
 const Hero = () => {
+    const heroSectionRef = useRef<HTMLElement | null>(null)
+    const heroContainerRef = useRef<HTMLDivElement | null>(null)
     const heroAvImgRef = useRef<HTMLDivElement | null>(null)
     const heroTextRef = useRef<HTMLDivElement | null>(null)
     const imgRevealRef = useRef<HTMLDivElement | null>(null)
     const introPlayedRef = useRef(false)
     const [isMobileMarquee, setIsMobileMarquee] = useState(false)
+    // Gate when each stage's OverflowTextReveal actually starts (see the
+    // "start" prop it accepts) - image is always the first mover so it
+    // doesn't need a flag, it just plays on mount below.
+    const [startH1, setStartH1] = useState(false)
+    const [startSideText, setStartSideText] = useState(false)
     const lenis = useLenis()
     // useLenis() returns undefined for the first render or two, then the
-    // real instance - read through a ref so handleTextRevealComplete's
-    // identity never changes. It's passed as OverflowTextReveal's onComplete
-    // prop, which sits in that component's own effect dependency array;
-    // a changing reference there tore down and rebuilt the SplitText
-    // char-reveal mid-animation (the reported "glitch" on reload).
+    // real instance - read through a ref inside the intro timeline's header
+    // stage (below) instead of closing over `lenis` directly, since that
+    // effect only runs once on mount and would otherwise capture the stale
+    // undefined value.
     const lenisRef = useRef(lenis)
     useEffect(() => {
         lenisRef.current = lenis
     }, [lenis])
+
+    // A reload (not just first visit) can otherwise land wherever the
+    // browser's own scroll-restoration puts it (mid-page, if that's where
+    // the tab was scrolled before refresh) - the intro sequence below
+    // (mask reveal, lenis.stop()) assumes it's starting from scrollY 0,
+    // so every load/reload is forced back to the top first.
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        if ('scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'manual'
+        }
+        window.scrollTo(0, 0)
+    }, [])
 
     useEffect(() => {
         const mq = window.matchMedia(MOBILE_MARQUEE_QUERY)
@@ -86,28 +103,24 @@ const Hero = () => {
         return () => mq.removeEventListener('change', update)
     }, [])
 
-    // Intro sequence: text (handled by OverflowTextReveal itself) -> image
-    // unmask -> header slide-in. Image/header are hidden via a static
-    // opacity-0 class in the JSX itself (not a gsap.set effect) so they're
-    // already invisible in the server-rendered HTML, before hydration ever
-    // runs - a useEffect-driven hide would still let the pre-hydration
-    // paint flash them visible for a frame. handleTextRevealComplete's own
-    // fromTo() calls set the precise from-state the instant the sequence
-    // starts. Scroll stays locked for the whole sequence.
+    // Image/h1/side-text/header are all hidden via a static opacity-0 class
+    // in the JSX itself (not a gsap.set effect) so they're already invisible
+    // in the server-rendered HTML, before hydration ever runs - a
+    // useEffect-driven hide would still let the pre-hydration paint flash
+    // them visible for a frame. Scroll stays locked for the whole sequence.
     useEffect(() => {
         lenis?.stop()
     }, [lenis])
 
-    // Targets are resolved to real elements (not string selectors) because
-    // this runs as a tween-completion callback originating from inside
-    // OverflowTextReveal's gsap.context(fn, containerRef) - GSAP scopes
-    // selector-text resolution to that container while the context is
-    // active, so '#header' would silently fail to match.
-    const handleTextRevealComplete = useCallback(() => {
+    // One master timeline drives the whole intro: image reveal starts at 0,
+    // then h1/side-text/header are each fired at a fixed offset (see the
+    // constants above) via .call() rather than waiting on the previous
+    // stage's onComplete - retune the offsets directly if a stage should
+    // start earlier/later relative to the others.
+    useEffect(() => {
         if (introPlayedRef.current) return
         introPlayedRef.current = true
 
-        const headerEl = document.getElementById('header')
         const maskState = { reveal: MASK_REVEAL_START }
 
         gsap.timeline()
@@ -124,34 +137,62 @@ const Hero = () => {
                 { opacity: 1, duration: 1.5, ease: 'power2.out' },
                 0
             )
-            .fromTo(headerEl,
-                { yPercent: -50, opacity: 0 },
-                {
-                    yPercent: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    ease: 'power3.out',
-                    onComplete: () => lenisRef.current?.start(),
-                },
-                0.6
-            )
+            .call(() => setStartH1(true), undefined, H1_START_OFFSET)
+            .call(() => setStartSideText(true), undefined, SIDE_TEXT_START_OFFSET)
+            .call(() => {
+                const headerEl = document.getElementById('header')
+                // Header.tsx splits its logo into a separate #header-logo
+                // element (its own fixed+blend layer, kept outside header's
+                // stacking context so mix-blend-difference can reach the
+                // Hero content behind it) - it has to be driven through the
+                // same intro tween as #header or it'd pop in out of sync.
+                const headerLogoEl = document.getElementById('header-logo')
+
+                gsap.fromTo([headerEl, headerLogoEl],
+                    { yPercent: -50, opacity: 0 },
+                    {
+                        yPercent: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        ease: 'power3.out',
+                        onComplete: () => lenisRef.current?.start(),
+                    }
+                )
+            }, undefined, HEADER_START_OFFSET)
     }, [])
 
-    useEffect(()=>{
-        // if(globalThis.innerWidth>1024){
-            gsap.to(".hero-container",{
-               scale:0.5,
-               ease:"power2.inOut",
-               scrollTrigger:{
-                   trigger:"#hero",
-                   start:"top top",
-                   end:"bottom bottom",
-                   scrub:true,
-                   // markers:true
-               }
-            })
-        // }
-    })
+    // Ref-targeted (not string selectors) and mount-only (empty deps, with
+    // real cleanup) so this creates exactly one ScrollTrigger for the
+    // lifetime of the component. The old version had no dependency array,
+    // so it re-ran and stacked a brand new, uncleaned-up ScrollTrigger on
+    // every re-render this component does during the intro sequence
+    // (marquee's isMobileMarquee, startH1, startSideText) - multiple
+    // ScrollTriggers all driving the same element's scale from scroll
+    // position is exactly what read as "glitchy". invalidateOnRefresh
+    // means a resize or layout shift (images finishing load, marquee
+    // swapping its image set) re-measures start/end instead of scrubbing
+    // against stale cached positions.
+    useEffect(() => {
+        if (!heroContainerRef.current || !heroSectionRef.current) return
+
+        const tween = gsap.to(heroContainerRef.current, {
+            scale: 0.5,
+            ease: "power2.inOut",
+            scrollTrigger: {
+                trigger: heroSectionRef.current,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: true,
+                invalidateOnRefresh: true,
+                // markers: true,
+            },
+        })
+
+        return () => {
+            tween.scrollTrigger?.kill()
+            tween.kill()
+        }
+    }, [])
 
     useEffect(() => {
         if (globalThis.innerWidth <= 1024) return
@@ -161,8 +202,8 @@ const Hero = () => {
 
         const handleMouseMove = (e: MouseEvent) => {
             const normalizedX = (e.clientX / window.innerWidth) * 2 - 1 // -1..1
-            state.targetImgX = normalizedX * IMAGE_PARALLAX_MAX_X
-            state.targetTextX = normalizedX * TEXT_PARALLAX_MAX_X
+            state.targetImgX = -normalizedX * IMAGE_PARALLAX_MAX_X
+            state.targetTextX = -normalizedX * TEXT_PARALLAX_MAX_X
         }
         window.addEventListener('mousemove', handleMouseMove)
 
@@ -182,9 +223,10 @@ const Hero = () => {
         }
     }, [])
     return (
-        <section className="relative w-screen h-[300vh]" id='hero'>
+        <section ref={heroSectionRef} className="relative w-screen h-[300vh]" id='hero'>
             <div
-                className="w-screen h-screen sticky top-0 flex justify-between items-center hero-container px-[4vw] z-2  max-[1025px]:items-start max-[1025px]:pt-[40vw] overflow-hidden"
+                ref={heroContainerRef}
+                className="w-screen h-screen sticky top-0 flex justify-between items-center hero-container px-[4vw] z-2 max-[1025px]:px-[5vw]  max-[1025px]:items-start max-[1025px]:pt-[30vw] overflow-hidden"
                 style={{
                     backgroundColor: '#180d08',
                     backgroundImage: `
@@ -195,10 +237,10 @@ const Hero = () => {
                     `,
                 }}
             >
-                <div ref={heroTextRef} className='w-full h-fit flex justify-between max-[1025px]:flex-col max-md:gap-8'>
+                <div ref={heroTextRef} className='w-full h-fit flex justify-between max-[1025px]:flex-col max-[1025px]:gap-8'>
                     <div className=' w-[45%] leading-30! max-[1025px]:w-[62%] max-md:w-full'>
-                    <OverflowTextReveal stagger={0.015} onComplete={handleTextRevealComplete} completeOverlap={TEXT_IMAGE_OVERLAP}>
-                    <h1 className='text-[7.5vw] max-[1025px]:text-[10vw]  max-md:text-[15vw] leading-[1.1]!'>
+                    <OverflowTextReveal stagger={0.015} start={startH1}>
+                    <h1 className='text-[7.5vw] max-[1025px]:text-[12vw]  max-md:text-[15vw] leading-[1.1]!'>
                         Visualise
                         Your Mind
                         in Motion
@@ -206,14 +248,14 @@ const Hero = () => {
                     </OverflowTextReveal>
 
                     </div>
-                    <div className='w-[10%] flex flex-col justify-between text-end text-[1.25vw] leading-[1.15] py-[2vw] max-[1025px]:w-[40%] max-[1025px]:text-[2.5vw] max-[1025px]:text-start max-[1025px]:flex-col-reverse  max-md:text-[4.5vw] max-md:gap-[7vw] max-[1025px]:gap-6 max-md:py-0'>
-                        <OverflowTextReveal splitBy='lines'>
+                    <div className='w-[10%] flex flex-col justify-between text-end text-[1.25vw] leading-[1.15] py-[2vw] max-[1025px]:w-[40%] max-[1025px]:text-[3.5vw] max-[1025px]:text-start max-[1025px]:flex-col-reverse  max-md:text-[4.5vw] max-md:gap-[7vw] max-[1025px]:gap-20 max-md:py-0'>
+                        <OverflowTextReveal splitBy='lines' start={startSideText}>
                         <p>
                             Award winning Designs
                         </p>
 
                         </OverflowTextReveal>
-                        <OverflowTextReveal splitBy='lines'>
+                        <OverflowTextReveal splitBy='lines' start={startSideText}>
 
                         <p>
                             Creative<br/>
@@ -226,9 +268,9 @@ const Hero = () => {
 
 
                 </div>
-                <div ref={imgRevealRef} className='absolute bottom-[-64%] left-1/2 translate-x-[-48.5%] size-[180%] max-[1025px]:w-[90%] max-md:w-[160%] max-md:top-auto max-md:bottom-[-20%] max-md:h-auto max-md:translate-x-[-40%] hero-av-img hero-mask-reveal opacity-0'>
+                <div ref={imgRevealRef} className='absolute bottom-[-64%] left-1/2 translate-x-[-49.5%] size-[180%] max-[1025px]:w-full max-[1025px]:translate-x-[-40%] max-md:w-[160%] max-md:top-auto max-md:bottom-[-30%] max-md:h-auto max-md:translate-x-[-40%] hero-av-img hero-mask-reveal opacity-0'>
                     <div ref={heroAvImgRef} className='w-full h-full'>
-                        <Image src={elenavossHeroImg} alt='hero-img' className='w-full h-full object-contain' />
+                        <Image src={elenavossHeroImg} alt='hero-img' className='w-full h-full object-contain' priority />
                     </div>
                 </div>
 

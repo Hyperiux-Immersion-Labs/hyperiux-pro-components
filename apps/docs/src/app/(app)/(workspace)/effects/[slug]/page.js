@@ -15,6 +15,7 @@ import {
   buildEffectsFromSanity,
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
+import { getEffectTierCounts } from "@/lib/registry";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-stats";
@@ -92,6 +93,7 @@ export default async function EffectsCategoryPage({ params }) {
   for (const [catId, catEffects] of Object.entries(categoriesMap)) {
     effectCounts[catId] = catEffects.length;
   }
+  Object.assign(effectCounts, getEffectTierCounts());
   effectCounts.featured = featuredEffects.length;
 
   if (!isFreeListing && !isFeaturedListing && !isProListing && (!category || !categoriesMap[category.id])) {

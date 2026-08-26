@@ -171,7 +171,7 @@ const DotFillBtn = ({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onPointerDown={handlePointerDown}
-            className={`group relative flex w-fit items-center justify-center h-[3.5vw] px-[3vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] transition-colors duration-500 motion-reduce:transition-none max-[1025px]:h-[8vw] max-[1025px]:px-[5vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:h-[12vw] max-md:px-[8vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${className}`}
+            className={`group relative flex w-fit items-center justify-center h-[3.5vw] px-[3vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] transition-colors border-white/20! duration-500 motion-reduce:transition-none max-[1025px]:h-[8vw] max-[1025px]:px-[5vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:h-[12vw] max-md:px-[8vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${className}`}
             style={{
                 background: bgColor,
                 color: hovered ? hoverTextColor : textColor,

@@ -105,24 +105,6 @@
 }
 
 
-.connect-circle-1,
-.connect-circle-2,
-.connect-circle-3 {
-  transform-origin: center;
-  animation: connectripple 3s linear infinite;
-}
-@keyframes connectripple {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(1.4);
-    opacity: 0;
-  }
-}
-
-
 .under-multi {
   text-decoration: none;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgb(0, 0, 0, 0)), linear-gradient(#ffffff, #ffffff);
@@ -157,10 +139,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-1,
-  .marquee-2,
-  .connect-circle-1,
-  .connect-circle-2,
-  .connect-circle-3 {
+  .marquee-2 {
     animation: none;
   }
 }
@@ -172,4 +151,36 @@
 .get-in-touch-form input::placeholder,
 .get-in-touch-form textarea::placeholder {
   color: rgba(255, 255, 255, 0.45);
+}
+
+
+.string-line {
+  height: 1px;
+  position: relative;
+  width: 100%;
+}
+.string-line svg {
+  position: absolute;
+  height: 100px;
+  width: 100%;
+  top: -50px;
+}
+
+.string-line svg path {
+  stroke-width: 1px;
+  stroke: black;
+  fill: none;
+}
+.box {
+  height: 40px;
+  width: 100%;
+  display: flex;
+  position: relative;
+  top: -20px;
+  z-index: 1;
+}
+.box:hover {
+  height: 150px;
+
+  top: -75px;
 }
