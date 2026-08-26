@@ -55,7 +55,7 @@ export default function Page() {
       <Works />
       <Project />
       <ShowCase />
-     <Gallery/>
+      <Gallery/>
       <Bringing />
       <ProjectHover />
       <AnimatedFaq />
