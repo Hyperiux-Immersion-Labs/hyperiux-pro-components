@@ -83,6 +83,7 @@ export function EffectCard({
   const cardRef = useRef(null);
   const videoRef = useRef(null);
   const prefetchTimerRef = useRef(null);
+  const isScreenshotStack = Array.isArray(screenshots) && screenshots.length > 0;
 
 
   useEffect(() => {
@@ -106,9 +107,11 @@ export function EffectCard({
 
   // Package dependencies (gsap, three, etc.) live in each effect's registry
   // manifest, not the effect object itself - fetch it once the card is on
-  // screen rather than for every card in the grid up front.
+  // screen rather than for every card in the grid up front. Templates have
+  // no registry entry (isScreenshotStack) and always pass tags explicitly,
+  // so this fetch would only ever 404 - skip it.
   useEffect(() => {
-    if (!hasAppeared || !effect?.name) return;
+    if (!hasAppeared || !effect?.name || isScreenshotStack) return;
 
     let cancelled = false;
 
@@ -124,14 +127,13 @@ export function EffectCard({
     return () => {
       cancelled = true;
     };
-  }, [hasAppeared, effect?.name]);
+  }, [hasAppeared, effect?.name, isScreenshotStack]);
 
   const videoPreviewUrl = useMemo(() => resolveEffectVideoUrl(effect), [effect]);
   const coverImage = useMemo(() => resolveEffectCoverImage(effect), [effect]);
 
   const effectHref = href || getEffectHref(effect);
   const resolvedPreviewHref = previewHref || getEffectPreviewHref(effect);
-  const isScreenshotStack = Array.isArray(screenshots) && screenshots.length > 0;
 
   // Drive the <video> imperatively so React never owns `src`. Activating attaches
   // the source and plays; deactivating detaches it, releasing the WebMediaPlayer
