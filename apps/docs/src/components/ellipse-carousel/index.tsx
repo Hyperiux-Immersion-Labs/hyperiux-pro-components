@@ -34,7 +34,7 @@ export type { EllipseCarouselItem, EllipseCarouselProps };
 
 const EllipseCarousel = ({
   items = defaultItems,
-  centerLabel = "HYPERIUX",
+  centerLabel = "Ellipse Carousel",
   showCenterLabel = true,
   ...rest
 }: EllipseCarouselProps) => {

@@ -138,6 +138,7 @@ export function VaultContent({
   effects: incomingEffects,
   initialEffects: incomingInitialEffects = [],
   featuredEffects: incomingFeaturedEffects = [],
+  trendingEffects: incomingTrendingEffects = [],
   effectCounts: incomingEffectCounts,
   initialCategory = "all",
   userPlan = "free",
@@ -242,6 +243,14 @@ export function VaultContent({
   const featuredEffectNames = useMemo(
     () => new Set(featuredEffects.map((effect) => effect.name)),
     [featuredEffects]
+  );
+
+  const trendingEffects = useMemo(
+    () =>
+      incomingTrendingEffects?.length > 0
+        ? incomingTrendingEffects
+        : featuredEffects,
+    [incomingTrendingEffects, featuredEffects]
   );
 
   const categoryFromUrl = useMemo(() => {
@@ -775,7 +784,7 @@ export function VaultContent({
         </div>
 
         <div className="category-fadeup fadeup" data-fadeup-delay="0.5">
-          <TrendingRightNow effects={featuredEffects} />
+          <TrendingRightNow effects={trendingEffects} />
         </div>
 
         <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">

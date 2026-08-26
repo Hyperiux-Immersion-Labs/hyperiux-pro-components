@@ -217,7 +217,7 @@ export function EffectCard({
               priority={priority}
               loading={priority ? undefined : "lazy"}
               onError={() => setImageError(true)}
-              className={`object-cover transition-[opacity,transform] duration-500 ${
+              className={`object-cover transition-[opacity,transform] duration-500 scale-[1.05] ${
                 showVideo ? "opacity-0" : "opacity-100"
               }`}
             />
@@ -234,7 +234,7 @@ export function EffectCard({
               onLoadedData={() => setVideoReady(true)}
               onEmptied={() => setVideoReady(false)}
               onError={() => setVideoReady(false)}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 scale-[1.05] ${
                 showVideo ? "opacity-100" : "opacity-0"
               }`}
             />
@@ -253,7 +253,7 @@ export function EffectCard({
             ))}
             {extraDependencyCount > 0 && (
               <Tooltip
-                label={allDependencyLabels.slice(2).join(", ")}
+                label={allDependencyLabels.slice(2).join(" • ")}
                 className="pointer-events-auto max-w-[10vw]"
               >
                 <span className="cursor-default bg-[#2B2B2B] px-[0.8vw] py-[0.1vw] text18 font-medium text-white/70 max-md:px-3 max-md:py-1 max-md:text-[3.5vw]!">

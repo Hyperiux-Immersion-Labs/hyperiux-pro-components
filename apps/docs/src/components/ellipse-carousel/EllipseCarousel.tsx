@@ -60,7 +60,7 @@ export interface EllipseCarouselProps {
 const EllipseCarousel = ({
   items = [],
   backgroundColor = "#eeeeee",
-  centerLabel,
+  centerLabel="Ellipse Carousel",
   showCenterLabel = true,
   cardWidth = 130,
   cardHeight=180,

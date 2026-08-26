@@ -39,7 +39,7 @@
     {
       "name": "centerLabel",
       "type": "string",
-      "default": "HYPERIUX",
+      "default": "Ellipse Carousel",
       "description": "Text shown at the center of the ellipse when enabled.",
       "remixer": {
         "enabled": false,

@@ -1,4 +1,37 @@
-import {defineArrayMember, defineField, defineType} from 'sanity'
+import React from 'react'
+import {orderRankField, orderRankOrdering} from '@sanity/orderable-document-list'
+import {defineArrayMember, defineField, defineType, set} from 'sanity'
+
+function FeaturedCheckboxInput(props) {
+  // Sanity provides these custom input props at runtime.
+  // eslint-disable-next-line react/prop-types
+  const {elementProps, onChange, readOnly, value} = props
+
+  return React.createElement(
+    'label',
+    {
+      style: {
+        alignItems: 'center',
+        display: 'flex',
+        gap: '0.75rem',
+        lineHeight: 1.4,
+      },
+    },
+    React.createElement('input', {
+      ...elementProps,
+      checked: Boolean(value),
+      disabled: readOnly,
+      onChange: (event) => onChange(set(event.currentTarget.checked)),
+      style: {
+        height: '1rem',
+        margin: 0,
+        width: '1rem',
+      },
+      type: 'checkbox',
+    }),
+    React.createElement('span', null, 'Mark as featured')
+  )
+}
 
 const seo = defineType({
   name: 'effectSeo',
@@ -418,7 +451,9 @@ export const effectContent = defineType({
   name: 'effectContent',
   title: 'Effect Content',
   type: 'document',
+  orderings: [orderRankOrdering],
   fields: [
+    orderRankField({type: 'effectContent'}),
     defineField({
       name: 'categorySlug',
       title: 'Category Slug',
@@ -455,6 +490,16 @@ export const effectContent = defineType({
         layout: 'radio',
       },
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'isFeatured',
+      title: 'Featured',
+      type: 'boolean',
+      description: 'Check this to mark the effect as featured.',
+      initialValue: false,
+      components: {
+        input: FeaturedCheckboxInput,
+      },
     }),
     defineField({
       name: 'tags',

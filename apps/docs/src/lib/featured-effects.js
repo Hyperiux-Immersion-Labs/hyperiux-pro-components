@@ -1,38 +1,47 @@
-export const FEATURED_EFFECT_SLUGS = [
-  "circular-split-roll",
-  "spider-particles",
-  "animated-toggle",
-  "ring-carousel",
-  "animated-tabs",
-  "colorful-cursor-aura",
-  "stack-loader",
-  "side-navbar",
-  "circle-text-reveal",
-  "chess-grid-transition",
-  "3d-portfolio-slider",
-  "draggable-marquee",
-  "dither-canvas",
-  "link-button",
-  "infinite-carousel",
-  "animated-modal",
-  "magnetic-image-trail",
-  "lines-loader",
-  "immersive-full-screen-nav",
-  "focus-text",
-  "svg-brush-transition",
-  "progressive-bloom-valley",
-];
+import { effectCategories, resolveEffectCategoryId } from "./categories";
 
 export function getFeaturedEffects(effects = []) {
-  const effectsBySlug = new Map(effects.map((effect) => [effect.name, effect]));
+  return effects.filter((effect) => effect?.isFeatured === true);
+}
 
-  return FEATURED_EFFECT_SLUGS
-    .map((slug) => effectsBySlug.get(slug))
+export function getFeaturedEffectsByCategory(effects = [], categoryId) {
+  if (!categoryId || categoryId === "all" || categoryId === "featured") {
+    return getFeaturedEffects(effects);
+  }
+
+  return getFeaturedEffects(effects).filter(
+    (effect) => resolveEffectCategoryId(effect) === categoryId,
+  );
+}
+
+export function getOverviewFeaturedEffects(effects = []) {
+  const featuredByCategory = new Map();
+
+  for (const effect of getFeaturedEffects(effects)) {
+    const categoryId = resolveEffectCategoryId(effect);
+
+    if (categoryId && !featuredByCategory.has(categoryId)) {
+      featuredByCategory.set(categoryId, effect);
+    }
+  }
+
+  const orderedCategoryIds = effectCategories
+    .map((category) => category.id)
+    .filter((categoryId) => categoryId !== "featured");
+
+  const orderedFeaturedEffects = orderedCategoryIds
+    .map((categoryId) => featuredByCategory.get(categoryId))
     .filter(Boolean);
+
+  const extraFeaturedEffects = [...featuredByCategory.entries()]
+    .filter(([categoryId]) => !orderedCategoryIds.includes(categoryId))
+    .map(([, effect]) => effect);
+
+  return [...orderedFeaturedEffects, ...extraFeaturedEffects];
 }
 
 export function isFeaturedEffect(effect, effects = []) {
-  return getFeaturedEffects(effects).some(
+  return effect?.isFeatured === true || getFeaturedEffects(effects).some(
     (featuredEffect) => featuredEffect.name === effect?.name,
   );
 }
