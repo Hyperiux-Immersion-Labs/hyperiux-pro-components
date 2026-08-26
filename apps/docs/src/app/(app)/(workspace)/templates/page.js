@@ -1,4 +1,4 @@
-import { EffectCard } from "@/components/ui/EffectCardNew";
+import { TemplateCard } from "@/components/ui/TemplateCard";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
@@ -92,18 +92,8 @@ export default function TemplatesPage() {
         <div className="grid grid-cols-2 gap-6 rounded-xl max-[1025px]:grid-cols-1 max-md:grid-cols-1 max-md:px-[7vw] max-[1025px]:gap-10 max-md:gap-16">
           {MOCK_TEMPLATES.map((template, index) => (
             <div key={template.slug} className="effect-card-shell">
-              <EffectCard
-                effect={{
-                  name: template.slug,
-                  title: template.title,
-                  category: template.category,
-                  tier: template.tier,
-                  tags: template.tags,
-                  installCount: template.installCount,
-                }}
-                screenshots={template.screenshots}
-                href="#"
-                previewHref="#"
+              <TemplateCard
+                template={{ ...template, href: "#", previewHref: "#" }}
                 priority={index === 0}
               />
             </div>
