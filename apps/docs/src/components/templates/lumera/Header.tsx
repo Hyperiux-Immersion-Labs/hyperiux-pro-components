@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLenis } from "lenis/react";
 import PrimaryButton from "./PrimaryButton";
-import CharStaggerButton from "./VaultComp/char-stagger-button";
+import CharStaggerButton from "./effects/char-stagger-button";
 import Image from "next/image";
 import lumeraLogo from "./assets/icons/lumera-logo.png";
 import { prefersReducedMotion } from "./reducedMotion";

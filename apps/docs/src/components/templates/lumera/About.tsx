@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { type StaticImageData } from "next/image";
 import { AnimatePresence, motion } from "motion/react";
-import InfiniteCarouselComp from "./VaultComp/InfiniteCarouselComp";
+import InfiniteCarouselComp from "./effects/InfiniteCarouselComp";
 import { usePrefersReducedMotion } from "./reducedMotion";
 import portfolio1 from "./assets/portfolio-1.png";
 import portfolio2 from "./assets/portfolio-2.png";
@@ -14,7 +14,7 @@ import portfolio4 from "./assets/portfolio-4.png";
 import portfolio5 from "./assets/portfolio-5.png";
 import portfolio6 from "./assets/portfolio-6.png";
 import portfolio7 from "./assets/portfolio-7.png";
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
 interface AboutSlide {

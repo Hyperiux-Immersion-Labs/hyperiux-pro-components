@@ -9,7 +9,7 @@ import lapPool from "./assets/lap-pool.png";
 import relaxationLounge from "./assets/relaxation-lounge.png";
 import spaAndWellness from "./assets/spa-and-wellness.png";
 import wineCellar from "./assets/wine-cellar.png";
-import DraggableMarquee from "./VaultComp/draggable-marquee";
+import DraggableMarquee from "./effects/draggable-marquee";
 import { FadeUp } from "./gsapAnimations";
 
 const services = [

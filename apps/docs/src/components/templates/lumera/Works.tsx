@@ -11,9 +11,9 @@ import architecture3 from "./assets/architecture-3.png";
 import architecture4 from "./assets/architecture-4.png";
 import architecture5 from "./assets/architecture-5.png";
 import squareIcon from "./assets/icons/square.svg";
-import ParallaxImageAnimation from "./VaultComp/ParallaxImageAnimation";
+import ParallaxImageAnimation from "./effects/ParallaxImageAnimation";
 import Image from "next/image";
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 gsap.registerPlugin(ScrollTrigger);
 
 const WORK_BUTTON_CLASS =

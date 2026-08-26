@@ -7,7 +7,7 @@ import cta1 from "./assets/cta-1.png";
 import cta2 from "./assets/cta-2.png";
 import cta3 from "./assets/cta-3.png";
 import cta4 from "./assets/cta-4.png";
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
 const ctaImages = [

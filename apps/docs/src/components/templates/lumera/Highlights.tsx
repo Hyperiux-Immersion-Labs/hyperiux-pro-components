@@ -4,12 +4,12 @@
 
 import Image from "next/image";
 
-import SmoothInfiniteCarousel from "./VaultComp/InfiniteCarousel/SmoothInfiniteCarousel";
+import SmoothInfiniteCarousel from "./SmoothInfiniteCarousel";
 import highlight1 from "./assets/highlight-1.png";
 import highlight2 from "./assets/highlight-2.png";
 import highlight3 from "./assets/highlight-3.png";
 import highlight4 from "./assets/highlight-4.png";
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
 const highlightImages = [highlight1,highlight2,highlight3,highlight4];
@@ -53,8 +53,7 @@ const Highlights = () => {
             speed={0.8}
             smoothness={9}
             pauseOnHover
-            wrapperClassName="fadeup pl-[5%] pr-[5%] pb-[1vw]"
-            wrapperStyle={{ gap: "1.2vw" }}
+            wrapperClassName="fadeup pl-[5%] pr-[5%] pb-[1vw] gap-[1.2vw] max-[1025px]:gap-[8vw]"
             itemClassName="cursor-grab active:cursor-grabbing"
             progressTrackClassName="mt-[3.6vw] mx-[5%] h-[0.4vw] w-[90%] max-[1025px]:h-[1.5vw] max-md:mt-[7vw] max-md:w-[90vw]"
           >

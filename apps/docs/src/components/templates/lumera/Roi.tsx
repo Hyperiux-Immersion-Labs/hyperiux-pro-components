@@ -1,5 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
 const roiStats = [

@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { useEffect} from "react";
 import BlackButton from "./BlackButton";
-import SmoothInfiniteCarousel from "./VaultComp/InfiniteCarousel/SmoothInfiniteCarousel";
+import SmoothInfiniteCarousel from "./SmoothInfiniteCarousel";
 import refinement1 from "./assets/refinement-1.png";
 import refinement2 from "./assets/refinement-2.png";
 import refinement3 from "./assets/refinement-3.png";
@@ -13,7 +13,7 @@ import refinement5 from "./assets/refinement-5.png";
 import refinement6 from "./assets/refinement-6.png";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 gsap.registerPlugin(ScrollTrigger);
 

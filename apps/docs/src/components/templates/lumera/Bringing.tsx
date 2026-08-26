@@ -9,7 +9,7 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import BlackButton from "./BlackButton";
 import bringingPoster from "./assets/video-poster-2.webp";
 import { prefersReducedMotion } from "./reducedMotion";
-import MaskTextReveal from "./VaultComp/mask-text-reveal";
+import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
 gsap.registerPlugin(ScrollTrigger);
