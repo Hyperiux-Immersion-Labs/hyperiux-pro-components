@@ -1,0 +1,409 @@
+"use client";
+
+import gsap from "gsap";
+import Image from "next/image";
+import React, { useEffect, useId, useRef } from "react";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import SplitText from "gsap/dist/SplitText";
+import TextFill from "./effects/text-fill/TextFill";
+import review1 from "./assets/reviews/1.png";
+import review2 from "./assets/reviews/2.png";
+import review3 from "./assets/reviews/3.png";
+import review4 from "./assets/reviews/4.png";
+import review5 from "./assets/reviews/5.png";
+import review6 from "./assets/reviews/6.png";
+import review7 from "./assets/reviews/7.png";
+import review8 from "./assets/reviews/8.png";
+import review9 from "./assets/reviews/9.png";
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+}
+
+const REVIEW_IMAGES = [
+    review1,
+    review2,
+    review3,
+    review4,
+    review5,
+    review6,
+    review7,
+    review8,
+    review9,
+];
+
+const PATIENT_NAMES = [
+    "Sarah Jenkins",
+    "Michael Chang",
+    "Emma Watson",
+    "Rachel Patel",
+    "Aria Lin",
+    "Thomas Brooks",
+    "Marcus Wright",
+    "Arthur Chen",
+    "Ananya Gupta",
+];
+
+type RibbonReviewCard = HTMLElement & {
+    _onEnter?: () => void;
+    _onLeave?: () => void;
+};
+
+function buildCards(count: number, startIndex = 0) {
+    return Array.from({ length: count }, (_, i) => {
+        const idx = (startIndex + i) % REVIEW_IMAGES.length;
+        const name = PATIENT_NAMES[(startIndex + i) % PATIENT_NAMES.length];
+        return { src: REVIEW_IMAGES[idx], title: name, href: "#" };
+    });
+}
+
+const sectionBreakText = `From modern treatment rooms to advanced sterilization systems, every space is designed around patient comfort, clinical excellence, and lasting trust.`;
+
+export default function Reviews({
+    driftSpeed = 1,
+    ribbonColor = "#3365e2",
+    showNames = true,
+}: {
+    driftSpeed?: number;
+    ribbonColor?: string;
+    showNames?: boolean;
+}) {
+    const uid = useId().replace(/:/g, "");
+    const sectionId = `oris-reviews-${uid}`;
+    const titleRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+    const hoverSplitsRef = useRef<any[]>([]);
+
+    useEffect(() => {
+        const speedScale = 1 / Math.max(0.05, driftSpeed);
+
+        const ctx = gsap.context(() => {
+            const mm = gsap.matchMedia();
+
+            mm.add("(min-width: 1025px)", () => {
+                const allTitles = titleRefs.current.filter(Boolean);
+                const cards =
+                    gsap.utils.toArray<RibbonReviewCard>(".project-card");
+
+                hoverSplitsRef.current = allTitles.map((el) => {
+                    const split = new SplitText(el, {
+                        type: "chars",
+                        charsClass: "project-char",
+                    });
+
+                    gsap.set(allTitles, { opacity: 1 });
+                    gsap.set(split.chars, {
+                        yPercent: 120,
+                        opacity: 0,
+                        force3D: true,
+                    });
+
+                    return split;
+                });
+
+                gsap.set(".mid-strip", { yPercent: -80, scale: 0.5 });
+                gsap.set(".left-strip", { yPercent: 3, scale: 0.5 });
+                gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
+
+                cards.forEach((card, index) => {
+                    const image = card.querySelector(".project-image");
+                    if (!image) return;
+
+                    gsap.set(image, {
+                        force3D: true,
+                        scale: 1,
+                        opacity: 1,
+                    });
+
+                    const split = hoverSplitsRef.current[index];
+                    if (!split) return;
+
+                    const onEnter = () => {
+                        gsap.killTweensOf(image);
+                        gsap.killTweensOf(split.chars);
+                        gsap.to(split.chars, {
+                            yPercent: 0,
+                            opacity: 1,
+                            stagger: 0.02,
+                            duration: 0.45 * speedScale,
+                            ease: "power3.out",
+                            overwrite: true,
+                        });
+                    };
+
+                    const onLeave = () => {
+                        gsap.killTweensOf(image);
+                        gsap.killTweensOf(split.chars);
+                        gsap.to(split.chars, {
+                            yPercent: 120,
+                            opacity: 0,
+                            stagger: 0.015,
+                            duration: 0.35 * speedScale,
+                            ease: "power3.in",
+                            overwrite: true,
+                        });
+                    };
+
+                    card.addEventListener("mouseenter", onEnter);
+                    card.addEventListener("mouseleave", onLeave);
+
+                    card._onEnter = onEnter;
+                    card._onLeave = onLeave;
+                });
+
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: `#${sectionId}`,
+                        start: "top 75%",
+                        end: "bottom bottom",
+                        scrub: true,
+                    },
+                });
+
+                tl.to(".left-strip", { yPercent: -77, scale: 1 }, 0);
+                tl.to(".mid-strip", { yPercent: -4.5, scale: 1 }, 0);
+                tl.to(".right-strip", { yPercent: -77, scale: 1 }, 0);
+                tl.to(".card-1", {
+                    yPercent: -100,
+                    duration: 0.3 * speedScale,
+                    ease: "power3.inOut",
+                });
+                tl.to(
+                    ".card-2",
+                    {
+                        yPercent: 100,
+                        duration: 0.3 * speedScale,
+                        ease: "power3.inOut",
+                    },
+                    "<"
+                );
+                tl.to(
+                    ".left-strip",
+                    {
+                        xPercent: -170,
+                        duration: 0.3 * speedScale,
+                        ease: "power3.inOut",
+                    },
+                    "<"
+                );
+                tl.to(
+                    ".right-strip",
+                    {
+                        xPercent: 170,
+                        duration: 0.3 * speedScale,
+                        ease: "power3.inOut",
+                    },
+                    "<"
+                );
+
+                const sectionBreakTl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: `#${sectionId}`,
+                        start: "65% top",
+                        end: "bottom bottom",
+                        scrub: true,
+                    },
+                });
+
+                sectionBreakTl.from(".section-break-wrapper", {
+                    scale: 0.7,
+                    opacity: 0,
+                    duration: 3 * speedScale,
+                    ease: "power3.inOut",
+                });
+
+                return () => {
+                    cards.forEach((card) => {
+                        if (card._onEnter) {
+                            card.removeEventListener("mouseenter", card._onEnter);
+                        }
+                        if (card._onLeave) {
+                            card.removeEventListener("mouseleave", card._onLeave);
+                        }
+                    });
+
+                    hoverSplitsRef.current.forEach((split) => split?.revert());
+                };
+            });
+
+            return () => {
+                mm.revert();
+            };
+        });
+
+        return () => ctx.revert();
+    }, [sectionId, driftSpeed, showNames]);
+
+    let titleIndex = 0;
+
+    const allCards = buildCards(22, 0);
+    const leftCards = allCards.slice(0, 8);
+    const midCards = allCards.slice(8, 14);
+    const rightCards = allCards.slice(14, 22);
+    const compactCards = allCards.slice(0, 9);
+
+    return (
+        <>
+            <div
+                className="w-full h-[1000vh] bg-white text-oris-secondary max-[1025px]:hidden relative z-10 overflow-clip"
+                id={sectionId}
+            >
+                {/* Ribbon Strips Layer */}
+                <div className="w-full h-screen sticky top-0 flex justify-between px-[7vw] portfolio-card-container z-2 overflow-hidden">
+                    {/* Left Strip */}
+                    <div className="w-[23vw] h-fit flex flex-col gap-[4vw] items-center left-strip">
+                        {leftCards.map((item, index) => {
+                            const currentIndex = titleIndex++;
+
+                            return (
+                                <a
+                                    href={item.href}
+                                    key={`left-${index}`}
+                                    className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden relative"
+                                >
+                                    <Image
+                                        fill
+                                        sizes="20vw"
+                                        src={item.src}
+                                        alt={item.title}
+                                        className="project-image opacity-0 object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.15] ease-in-out"
+                                    />
+
+                                    {showNames && (
+                                        <div className="absolute bottom-[8%] left-[8%] overflow-hidden pointer-events-none">
+                                            <p
+                                                ref={(el) => {
+                                                    titleRefs.current[currentIndex] = el;
+                                                }}
+                                                className="text-white text-[1.8vw] project-name font-medium leading-none opacity-0"
+                                            >
+                                                {item.title}
+                                            </p>
+                                        </div>
+                                    )}
+                                </a>
+                            );
+                        })}
+                    </div>
+
+                    {/* Mid Strip */}
+                    <div className="w-[28%] h-fit flex flex-col gap-[7vw] items-center mid-strip">
+                        {midCards.map((item, index) => {
+                            const currentIndex = titleIndex++;
+
+                            return (
+                                <a
+                                    href={item.href}
+                                    key={`mid-${index}`}
+                                    className={`project-card w-[90%] h-[34vw] portfolio-card overflow-hidden relative ${index === 0 ? "card-1" : ""
+                                        } ${index === 1 ? "card-2" : ""}`}
+                                >
+                                    <Image
+                                        fill
+                                        sizes="25vw"
+                                        src={item.src}
+                                        alt={item.title}
+                                        className="project-image opacity-0 object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.15] ease-in-out"
+                                    />
+
+                                    {showNames && (
+                                        <div className="absolute bottom-[8%] left-[8%] overflow-hidden pointer-events-none">
+                                            <p
+                                                ref={(el) => {
+                                                    titleRefs.current[currentIndex] = el;
+                                                }}
+                                                className="text-white text-[2vw] project-name font-medium leading-none opacity-0"
+                                            >
+                                                {item.title}
+                                            </p>
+                                        </div>
+                                    )}
+                                </a>
+                            );
+                        })}
+                    </div>
+
+                    {/* Right Strip */}
+                    <div className="w-[23vw] h-fit flex flex-col gap-[4vw] items-center right-strip">
+                        {rightCards.map((item, index) => {
+                            const currentIndex = titleIndex++;
+
+                            return (
+                                <a
+                                    href={item.href}
+                                    key={`right-${index}`}
+                                    className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden relative"
+                                >
+                                    <Image
+                                        fill
+                                        sizes="20vw"
+                                        src={item.src}
+                                        alt={item.title}
+                                        className="project-image opacity-0 object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.15] ease-in-out"
+                                    />
+
+                                    {showNames && (
+                                        <div className="absolute bottom-[8%] left-[8%] overflow-hidden pointer-events-none">
+                                            <p
+                                                ref={(el) => {
+                                                    titleRefs.current[currentIndex] = el;
+                                                }}
+                                                className="text-white text-[1.8vw] project-name font-medium leading-none opacity-0"
+                                            >
+                                                {item.title}
+                                            </p>
+                                        </div>
+                                    )}
+                                </a>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Section Break Fill Reveal Layer */}
+                <div className="w-full h-screen sticky top-0 section-break text-[3.5vw] leading-[1.2] flex justify-center items-center overflow-hidden">
+                    <div className="w-[75%] text-center relative section-break-wrapper">
+                        <TextFill
+                            as="p"
+                            text={sectionBreakText}
+                            className="section-break-content font-normal oris-text48 leading-[1.2]"
+                            primaryColor={ribbonColor}
+                            textColor="#13314a"
+                            dimColor="rgba(0, 0, 0, 0.2)"
+                            trigger={`#${sectionId}`}
+                            start="85% top"
+                            end="bottom bottom"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Responsive Layout for Tablet & Mobile */}
+            <div className="hidden w-full bg-white text-oris-secondary max-[1025px]:block px-6 py-20">
+                <div className="mx-auto flex w-full max-w-4xl flex-col gap-10">
+                    <div className="grid grid-cols-3 gap-3 max-md:grid-cols-2">
+                        {compactCards.map((item, index) => (
+                            <div
+                                key={`compact-${index}`}
+                                className="overflow-hidden rounded-xl relative aspect-[3/4]"
+                            >
+                                <Image
+                                    fill
+                                    sizes="(max-width: 768px) 50vw, 33vw"
+                                    src={item.src}
+                                    alt={item.title}
+                                    className="object-cover"
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="rounded-xl px-4 py-8 text-center bg-gray-50/60 mt-4">
+                        <p className="text-[4.2vw] font-normal leading-[1.3] text-oris-secondary">
+                            {sectionBreakText}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
