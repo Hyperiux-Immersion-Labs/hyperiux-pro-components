@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import DotsCanvas from './effects/teeth-3d/DotsCanvas'
+import DotsCanvas from './teeth-3d/DotsCanvas'
 import SplitTextLines from './effects/split-text-lines/SplitTextLines'
 import OrisDentalLogo from './assets/OrisDental.svg'
 

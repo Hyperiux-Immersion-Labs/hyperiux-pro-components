@@ -6,7 +6,6 @@ import OrisWrapper from "./OrisWrapper";
 import AboutOris from "./AboutOris";
 import CareComfort from "./CareComfort";
 import DentalTreatments from "./DentalTreatments";
-import WhyOris from "./WhyOris";
 import ParallaxSectionBreak from "./ParallaxSectionBreak";
 import Reviews from "./Reviews";
 import PassionMeetPurpose from "./PassionMeetPurpose";

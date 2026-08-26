@@ -5,11 +5,12 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, Center, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import gsap from 'gsap'
-import MouseTilt from './MouseTilt'
+// import MouseTilt from './MouseTilt'
 import ToothShield from './ToothShield'
 import { degToRad } from 'three/src/math/MathUtils.js'
 // @ts-ignore - glb asset import
-import teethModel from '../../assets/teeth.glb'
+import teethModel from '../../oris-dental/assets/teeth.glb'
+import MouseTilt from './MouseTilt'
 
 const MODEL_URL: string =
     typeof teethModel === 'string'

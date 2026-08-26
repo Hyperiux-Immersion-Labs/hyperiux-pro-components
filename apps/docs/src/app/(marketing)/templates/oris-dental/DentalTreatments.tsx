@@ -155,10 +155,10 @@ export default function DentalTreatments({
         >
             {/* Header Section */}
             <div className="oris-paddx mb-[5vw]">
-                <SplitTextLines as="h2" className="oris-text64">
+                <SplitTextLines as="h2" className="text-[4.2vw]">
                     Dental Care Treatments
                 </SplitTextLines>
-                <SplitTextLines as="p" className="oris-text22 mt-[0.8vw]" delay={0.15}>
+                <SplitTextLines as="p" className="oris-text22 mt-[1.5vw]" delay={0.15}>
                     Personalized care designed for every stage of dental health.
                 </SplitTextLines>
             </div>
