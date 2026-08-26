@@ -91,12 +91,11 @@ export default function TemplatesPage() {
       <div className="mx-auto px-10 pt-20 pb-12 max-md:px-0 max-[1025px]:pt-10">
         <div className="grid grid-cols-2 gap-6 rounded-xl max-[1025px]:grid-cols-1 max-md:grid-cols-1 max-md:px-[7vw] max-[1025px]:gap-10 max-md:gap-16">
           {MOCK_TEMPLATES.map((template, index) => (
-            <div key={template.slug} className="effect-card-shell">
-              <TemplateCard
-                template={{ ...template, href: "#", previewHref: "#" }}
-                priority={index === 0}
-              />
-            </div>
+            <TemplateCard
+              key={template.slug}
+              template={{ ...template, href: "#", previewHref: "#" }}
+              priority={index === 0}
+            />
           ))}
         </div>
       </div>
