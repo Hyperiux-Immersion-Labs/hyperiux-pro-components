@@ -14,6 +14,7 @@ const BAYER = [
 
 /** Pack hex string into little-endian ABGR Uint32 */
 function packHex(hex) {
+  
   let h = String(hex).replace('#', '')
   if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]
   if (h.length === 6) h += 'ff'
