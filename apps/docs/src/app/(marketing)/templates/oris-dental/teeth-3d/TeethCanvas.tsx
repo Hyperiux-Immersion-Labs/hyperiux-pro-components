@@ -1,8 +1,9 @@
 'use client'
 
 import React, { Suspense, useMemo, useRef, useEffect } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Center, Environment } from '@react-three/drei'
+import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
+import { Center, Environment } from '@react-three/drei'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as THREE from 'three'
 import gsap from 'gsap'
 // import MouseTilt from './MouseTilt'
@@ -11,6 +12,7 @@ import { degToRad } from 'three/src/math/MathUtils.js'
 // @ts-ignore - glb asset import
 import teethModel from '../../oris-dental/assets/teeth.glb'
 import MouseTilt from './MouseTilt'
+import { markModelParsed, markModelReady, reportModelDownload } from './modelLoadState'
 
 const MODEL_URL: string =
     typeof teethModel === 'string'
@@ -58,8 +60,14 @@ function whitenEnamel(mat: THREE.MeshPhysicalMaterial) {
     return mat
 }
 
+// Stable identity: useLoader only reads the callback on the first (suspending)
+// call, but keeping it out of the render body makes that explicit.
+const handleModelProgress = (event: ProgressEvent) => {
+    reportModelDownload(event.loaded, event.total)
+}
+
 function Model({ url }: { url: string }) {
-    const { scene } = useGLTF(url)
+    const { scene } = useLoader(GLTFLoader, url, undefined, handleModelProgress)
 
     useMemo(() => {
         scene.traverse((child) => {
@@ -94,6 +102,7 @@ function Model({ url }: { url: string }) {
                 }
             }
         })
+        markModelParsed()
     }, [scene])
 
     return (
@@ -102,6 +111,24 @@ function Model({ url }: { url: string }) {
             <ToothShield source={scene} />
         </>
     )
+}
+
+/**
+ * Sits inside the Suspense boundary, so it only mounts once the model *and* the
+ * environment map have resolved. Two rendered frames later the shader variants
+ * are compiled and the first real paint is behind us -- that is the moment the
+ * loader can safely uncover the hero without a freeze.
+ */
+function ReadyProbe() {
+    const frames = useRef(0)
+
+    useFrame(() => {
+        if (frames.current > 2) return
+        frames.current += 1
+        if (frames.current === 3) markModelReady()
+    })
+
+    return null
 }
 
 function ScrollAnimatedGroup({ children }: { children: React.ReactNode }) {
@@ -197,6 +224,7 @@ export default function TeethCanvas() {
                 <Suspense fallback={null}>
                     {/* "studio" is a neutral HDRI -- "city" was pushing warm amber into the enamel. */}
                     <Environment preset="studio" environmentIntensity={0.9} />
+                    <ReadyProbe />
                     <MouseTilt intensity={8}>
                         <ResponsiveModelGroup>
                             <ScrollAnimatedGroup>
@@ -215,5 +243,3 @@ export default function TeethCanvas() {
         </div>
     )
 }
-
-useGLTF.preload(MODEL_URL)
