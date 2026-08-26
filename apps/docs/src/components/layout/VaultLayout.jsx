@@ -113,7 +113,8 @@ export function VaultLayout({
   const [isNavigating, setIsNavigating] = useState(false);
 
   useEffect(() => {
-    setIsNavigating(false);
+    const frameId = window.requestAnimationFrame(() => setIsNavigating(false));
+    return () => window.cancelAnimationFrame(frameId);
   }, [pathname]);
 
   const startNavigation = useCallback(
@@ -311,13 +312,13 @@ export function VaultLayout({
     };
   }, [isSidebarOpen, isSidebarReady, lenis, refreshScrollTrigger]);
 
-  const toggleSidebar = (nextValue) => {
+  const toggleSidebar = useCallback((nextValue) => {
     setIsSidebarOpen((currentValue) =>
       typeof nextValue === "boolean" ? nextValue : !currentValue
     );
 
     refreshScrollTrigger(true);
-  };
+  }, [refreshScrollTrigger]);
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);

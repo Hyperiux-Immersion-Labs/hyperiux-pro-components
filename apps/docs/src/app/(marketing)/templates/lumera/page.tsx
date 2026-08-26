@@ -1,33 +1,55 @@
-import "@/components/templates/lumera/globals.css";
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+import "./lumera-styles.css";
+import type { Metadata } from "next";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
-import Header from "@/components/templates/lumera/Header";
-import Hero from "@/components/templates/lumera/Hero";
-import About from "@/components/templates/lumera/About";
-import TextFillAnimationSection from "@/components/templates/lumera/VaultComp/TextFillAnimationSection";
-import HorizontalFeatureRevealSection from "@/components/templates/lumera/VaultComp/HorizontalFeatureRevealSection";
-import Service from "@/components/templates/lumera/Service";
-import Works from "@/components/templates/lumera/Works";
-import Project from "@/components/templates/lumera/Project";
-import ShowCase from "@/components/templates/lumera/ShowCase";
-import Gallery from "@/components/templates/lumera/Gallery";
-import Bringing from "@/components/templates/lumera/Bringing";
-import ProjectHover from "@/components/templates/lumera/ProjectHover";
-import Faq from "@/components/templates/lumera/Faq";
-import Highlights from "@/components/templates/lumera/Highlights";
-import Roi from "@/components/templates/lumera/Roi";
-import Footer from "@/components/templates/lumera/Footer";
-import CTA from "@/components/templates/lumera/CTA";
+import ScrollTopOnLoad from "./ScrollTopOnLoad";
+import Loader from "./Loader";
+import ogImage from "./assets/og.png";
+import Header from "./Header";
+import Hero from "./Hero";
+import About from "./About";
+import HorizontalFeatureRevealSection from "./effects/HorizontalFeatureRevealSection";
+import Service from "./Service";
+import Works from "./Works";
+import Project from "./Project";
+import ShowCase from "./ShowCase";
+import Gallery from "./Gallery";
+import Bringing from "./Bringing";
+import ProjectHover from "./ProjectHover";
+import AnimatedFaq from "./effects/animated-faq";
+import Highlights from "./Highlights";
+import Roi from "./Roi";
+import ParallaxFooter from "./effects/parallax-footer";
+import CTA from "./CTA";
 
-
+export const metadata: Metadata = {
+  title: "Lumera Heights - Luxury Dubai Real Estate Template",
+  description:
+    "A single-page luxury real estate template for Dubai property launches, featuring residences, amenities, gallery, nearby highlights, and enquiry flows.",
+  openGraph: {
+    title: "Lumera Heights - Luxury Dubai Real Estate Template",
+    description:
+      "A single-page luxury real estate template for Dubai property launches, featuring residences, amenities, gallery, nearby highlights, and enquiry flows.",
+    images: [{ url: ogImage.src, width: ogImage.width, height: ogImage.height }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lumera Heights - Luxury Dubai Real Estate Template",
+    description:
+      "A single-page luxury real estate template for Dubai property launches, featuring residences, amenities, gallery, nearby highlights, and enquiry flows.",
+    images: [ogImage.src],
+  },
+};
 
 export default function Page() {
   return (
     <div className="relative">
+      <Loader />
+      <ScrollTopOnLoad />
       <LenisSmoothScroll />
       <Header />
       <Hero />
       <About />
-      <TextFillAnimationSection />
       <HorizontalFeatureRevealSection />
       <Service />
       <Works />
@@ -36,12 +58,11 @@ export default function Page() {
      <Gallery/>
       <Bringing />
       <ProjectHover />
-      <Faq />
+      <AnimatedFaq />
       <Highlights />
       <Roi />
       <CTA />
-      
-      <Footer />
+      <ParallaxFooter />
     </div>
   );
 }

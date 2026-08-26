@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { Flip } from "gsap/dist/Flip";
@@ -338,41 +338,70 @@ const OrbitFlipSliderComp = ({
   const [activeMode, setActiveMode] = useState<OrbitFlipSliderMode>("flat");
   const reducedMotion = usePrefersReducedMotion();
 
-  const sizes = items.map(() => ({ w: imageWidth, h: imageHeight }));
-  const transforms: ModeTransforms = {
-    flat: {
-      radiusX: flatRadiusX,
-      radiusY: flatRadiusY,
-      scale: flatScale,
-    },
-    tilt: {
-      x: tiltRotateX,
-      y: tiltRotateY,
-      z: tiltRotateZ,
-      radiusX: tiltRadiusX,
-      radiusY: tiltRadiusY,
-      scale: tiltScale,
-      moveY: tiltMoveY,
-    },
-    ring: {
-      x: ringRotateX,
-      y: ringRotateY,
-      z: ringRotateZ,
-      radiusX: ringRadiusX,
-      radiusY: ringRadiusY,
-      scale: ringScale,
-      moveY: 0,
-    },
-    gallery: {
-      x: galleryRotateX,
-      y: galleryRotateY,
-      z: galleryRotateZ,
-      radiusX: galleryRadiusX,
-      radiusY: galleryRadiusY,
-      scale: galleryScale,
-      moveY: 0,
-    },
-  };
+  const sizes = useMemo(
+    () => items.map(() => ({ w: imageWidth, h: imageHeight })),
+    [imageHeight, imageWidth, items]
+  );
+  const transforms: ModeTransforms = useMemo(
+    () => ({
+      flat: {
+        radiusX: flatRadiusX,
+        radiusY: flatRadiusY,
+        scale: flatScale,
+      },
+      tilt: {
+        x: tiltRotateX,
+        y: tiltRotateY,
+        z: tiltRotateZ,
+        radiusX: tiltRadiusX,
+        radiusY: tiltRadiusY,
+        scale: tiltScale,
+        moveY: tiltMoveY,
+      },
+      ring: {
+        x: ringRotateX,
+        y: ringRotateY,
+        z: ringRotateZ,
+        radiusX: ringRadiusX,
+        radiusY: ringRadiusY,
+        scale: ringScale,
+        moveY: 0,
+      },
+      gallery: {
+        x: galleryRotateX,
+        y: galleryRotateY,
+        z: galleryRotateZ,
+        radiusX: galleryRadiusX,
+        radiusY: galleryRadiusY,
+        scale: galleryScale,
+        moveY: 0,
+      },
+    }),
+    [
+      flatRadiusX,
+      flatRadiusY,
+      flatScale,
+      galleryRadiusX,
+      galleryRadiusY,
+      galleryRotateX,
+      galleryRotateY,
+      galleryRotateZ,
+      galleryScale,
+      ringRadiusX,
+      ringRadiusY,
+      ringRotateX,
+      ringRotateY,
+      ringRotateZ,
+      ringScale,
+      tiltMoveY,
+      tiltRadiusX,
+      tiltRadiusY,
+      tiltRotateX,
+      tiltRotateY,
+      tiltRotateZ,
+      tiltScale,
+    ]
+  );
 
   const applyLayout = useCallback(
     (mode: OrbitFlipSliderMode, animate: boolean) => {
@@ -437,31 +466,8 @@ const OrbitFlipSliderComp = ({
     [
       sizes,
       reducedMotion,
-      imageWidth,
-      imageHeight,
       imageGap,
-      flatRadiusX,
-      flatRadiusY,
-      flatScale,
-      ringRotateX,
-      ringRotateY,
-      ringRotateZ,
-      ringRadiusX,
-      ringRadiusY,
-      ringScale,
-      tiltRotateX,
-      tiltRotateY,
-      tiltRotateZ,
-      tiltRadiusX,
-      tiltRadiusY,
-      tiltScale,
-      tiltMoveY,
-      galleryRotateX,
-      galleryRotateY,
-      galleryRotateZ,
-      galleryRadiusX,
-      galleryRadiusY,
-      galleryScale,
+      transforms,
     ]
   );
 

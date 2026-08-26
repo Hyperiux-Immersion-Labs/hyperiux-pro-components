@@ -94,6 +94,7 @@ const EllipseCarousel = ({
   const settleTweenRef = useRef<gsap.core.Tween | null>(null);
   const autoplayTweenRef = useRef<gsap.core.Tween | null>(null);
   const autoplayDelayRef = useRef<gsap.core.Tween | null>(null);
+  const scheduleNextStepRef = useRef<() => void>(() => {});
 
   const geometryRef = useRef({
     cx: 0,
@@ -226,6 +227,10 @@ const EllipseCarousel = ({
   // render - GSAP only ever calls through the ref later (delayedCall/tween
   // callbacks), well after this effect has committed.
   useLayoutEffect(() => {
+    scheduleNextStepRef.current = scheduleNextStep;
+  }, [scheduleNextStep]);
+
+  useEffect(() => {
     scheduleNextStepRef.current = scheduleNextStep;
   }, [scheduleNextStep]);
 

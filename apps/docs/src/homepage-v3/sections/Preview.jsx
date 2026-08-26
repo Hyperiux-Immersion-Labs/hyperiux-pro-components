@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -211,10 +212,12 @@ export default function Preview() {
                     className="h-full max-[1025px]:my-auto w-full"
                   />
                 ) : (
-                  <img
+                  <Image
                     src={step.icon}
                     alt=""
                     aria-hidden
+                    width={160}
+                    height={160}
                     className="h-full max-[1025px]:my-auto w-full object-contain"
                   />
                 )}
