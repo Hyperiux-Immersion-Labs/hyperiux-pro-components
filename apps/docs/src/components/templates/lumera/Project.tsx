@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { useEffect} from "react";
 import BlackButton from "./BlackButton";
-import InfiniteCarouselComp from "./VaultComp/InfiniteCarousel/InfiniteCarouselComp";
+import SmoothInfiniteCarousel from "./VaultComp/InfiniteCarousel/SmoothInfiniteCarousel";
 import refinement1 from "./assets/refinement-1.png";
 import refinement2 from "./assets/refinement-2.png";
 import refinement3 from "./assets/refinement-3.png";
@@ -96,7 +96,7 @@ export default function Project() {
       
 
       <div className="">
-        <InfiniteCarouselComp
+        <SmoothInfiniteCarousel
           draggable
           loop={false}
           showNav={false}
@@ -123,7 +123,7 @@ export default function Project() {
               />
             </div>
           ))}
-        </InfiniteCarouselComp>
+        </SmoothInfiniteCarousel>
       </div>
       </FadeUp>
     </section>

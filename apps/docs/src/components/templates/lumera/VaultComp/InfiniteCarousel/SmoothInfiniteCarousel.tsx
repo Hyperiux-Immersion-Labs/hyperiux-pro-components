@@ -2,12 +2,8 @@
 
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type CSSProperties, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type CSSProperties, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import gsap from "gsap";
-import { Draggable } from "gsap/Draggable";
-import { InertiaPlugin } from "gsap/InertiaPlugin";
-
-gsap.registerPlugin(Draggable, InertiaPlugin);
 
 const prefersReducedMotion = () =>
  typeof window !=="undefined" &&
@@ -32,12 +28,7 @@ interface HorizontalLoopConfig {
  isHoveredRef?: { current: boolean };
 }
 
-/**
- * Returns a gsap.core.Timeline augmented with next/previous/current/toIndex/
- * updateIndex/times/draggable helpers (the official GSAP horizontalLoop
- * recipe) - typed loosely since it's an internal implementation detail, not
- * part of the component's public props.
- */
+
 function horizontalLoop(items: HTMLElement[], config: HorizontalLoopConfig = {}): any {
  items[0].getBoundingClientRect();
 
@@ -120,6 +111,9 @@ function horizontalLoop(items: HTMLElement[], config: HorizontalLoopConfig = {})
  }
 
  function toIndex(index: number, vars: Record<string, any> = {}) {
+ 
+ tl.stopDragTick?.();
+
  if (Math.abs(index - curIndex) > length / 2) {
  index += index > curIndex ? -length : length;
  }
@@ -155,71 +149,143 @@ function horizontalLoop(items: HTMLElement[], config: HorizontalLoopConfig = {})
  tl.reverse();
  }
 
- if (config.draggable) {
- const proxy = document.createElement("div");
+ if (config.draggable && config.wrapperEl) {
  const wrap = gsap.utils.wrap(0, 1);
+ const wrapperEl = config.wrapperEl as HTMLElement;
 
- let ratio: number;
- let startProgress: number;
- let draggableInst: any;
- let dragSnap: number;
- let roundFactor: number;
+ let ratio = 0;
+ let target = 0;
+ let current = 0;
+ let dragSnap = 0;
+ let lastTime = 0;
+ let frameId = 0;
+ let isPointerDown = false;
+ let pointerId: number | null = null;
+ let startClientX = 0;
+ let startTarget = 0;
+ let settleTimer = 0;
 
- const align = () => {
- tl.progress(
- wrap(startProgress + (draggableInst.startX - draggableInst.x) * ratio)
- );
- };
-
- const syncIndex = () => tl.updateIndex();
-
- draggableInst = Draggable.create(proxy, {
- trigger: config.wrapperEl,
- type:"x",
- onPress() {
- startProgress = tl.progress();
- tl.progress(0);
+ const ensureRatio = () => {
+ if (ratio) return;
  populateWidths();
  const totalWidthCache = getTotalWidth();
  ratio = 1 / totalWidthCache;
  dragSnap = totalWidthCache / length;
- roundFactor = Math.pow(
- 10,
- ((dragSnap +"").split(".")[1] ||"").length
- );
- tl.progress(startProgress);
- // Re-evaluated per press so hovering in/out between drags is honored -
- // pauseOnHover stops the post-release momentum coast while the pointer
- // is still over the carousel, same as reduced motion does permanently.
- this.vars.inertia =
- config.pauseOnHover && config.isHoveredRef?.current
- ? false
- : !config.reduceMotion;
- },
- onDrag: align,
- onThrowUpdate: align,
- // Reduced motion drops the post-release momentum coast entirely, so the
- // carousel stops exactly where the drag ends instead of gliding on.
- inertia: !config.reduceMotion,
- snap: (value: any) => {
- const n =
- Math.round(parseFloat(value) / dragSnap) * dragSnap * roundFactor;
- return (n - (n % 1)) / roundFactor;
- },
- onRelease: syncIndex,
- onThrowComplete: () => {
- gsap.set(proxy, { x: 0 });
- syncIndex();
- },
- })[0];
+ };
 
- tl.draggable = draggableInst;
+ const syncIndex = () => tl.updateIndex();
+
+ const snapTargetToNearest = () => {
+ ensureRatio();
+ const totalWidthCache = 1 / ratio;
+ const px = target * totalWidthCache;
+ target = (Math.round(px / dragSnap) * dragSnap) / totalWidthCache;
+ };
+
+ const tick = () => {
+ const now = performance.now();
+ const deltaTime = lastTime ? Math.min((now - lastTime) / 1000, 0.05) : 0.016;
+ lastTime = now;
+
+ current = config.reduceMotion
+ ? target
+ : damp(current, target, 14, deltaTime);
+
+ tl.progress(wrap(current));
+ syncIndex();
+
+ if (!isPointerDown && Math.abs(current - target) < 0.0002) {
+ current = target;
+ tl.progress(wrap(current));
+ syncIndex();
+ frameId = 0;
+ lastTime = 0;
+ return;
+ }
+
+ frameId = requestAnimationFrame(tick);
+ };
+
+ const ensureTicking = () => {
+ if (!frameId) frameId = requestAnimationFrame(tick);
+ };
+
+ tl.stopDragTick = () => {
+ window.clearTimeout(settleTimer);
+ if (frameId) {
+ cancelAnimationFrame(frameId);
+ frameId = 0;
+ lastTime = 0;
+ }
+ };
+
+ // External nudge used by wheel input, kept continuous the same way drag
+ // is, instead of jumping whole slides per gesture.
+ tl.scrubBy = (deltaPixels: number) => {
+ ensureRatio();
+ current = target = tl.progress();
+ target += deltaPixels * ratio;
+ ensureTicking();
+ };
+ tl.snapToNearest = () => {
+ ensureRatio();
+ current = target = tl.progress();
+ snapTargetToNearest();
+ ensureTicking();
+ };
+
+ const onPointerDown = (event: PointerEvent) => {
+ ensureRatio();
+ isPointerDown = true;
+ pointerId = event.pointerId;
+ startClientX = event.clientX;
+ current = target = tl.progress();
+ startTarget = target;
+ window.clearTimeout(settleTimer);
+ wrapperEl.setPointerCapture(event.pointerId);
+ };
+
+ const onPointerMove = (event: PointerEvent) => {
+ if (!isPointerDown || event.pointerId !== pointerId) return;
+ const deltaX = event.clientX - startClientX;
+ target = startTarget - deltaX * ratio;
+ ensureTicking();
+ };
+
+ const onPointerUp = (event: PointerEvent) => {
+ if (!isPointerDown || event.pointerId !== pointerId) return;
+ isPointerDown = false;
+ pointerId = null;
+ wrapperEl.releasePointerCapture(event.pointerId);
+ const stillHovered = config.pauseOnHover && config.isHoveredRef?.current;
+ window.clearTimeout(settleTimer);
+ settleTimer = window.setTimeout(() => {
+ snapTargetToNearest();
+ if (config.reduceMotion || stillHovered) current = target;
+ ensureTicking();
+ }, config.reduceMotion || stillHovered ? 0 : 80);
+ };
+
+ wrapperEl.addEventListener("pointerdown", onPointerDown);
+ wrapperEl.addEventListener("pointermove", onPointerMove);
+ wrapperEl.addEventListener("pointerup", onPointerUp);
+ wrapperEl.addEventListener("pointercancel", onPointerUp);
+
+ tl.draggable = {
+ kill: () => {
+ wrapperEl.removeEventListener("pointerdown", onPointerDown);
+ wrapperEl.removeEventListener("pointermove", onPointerMove);
+ wrapperEl.removeEventListener("pointerup", onPointerUp);
+ wrapperEl.removeEventListener("pointercancel", onPointerUp);
+ tl.stopDragTick();
+ },
+ };
  }
 
  return tl;
 }
 
-interface InfiniteCarouselCompProps {
+interface SmoothInfiniteCarouselProps {
  children?: ReactNode;
  draggable?: boolean;
  showNav?: boolean;
@@ -251,7 +317,7 @@ interface InfiniteCarouselCompProps {
   smoothness?: number;
 }
 
-export default function InfiniteCarouselComp({
+export default function SmoothInfiniteCarousel({
  children,
  draggable = true,
  showNav = true,
@@ -284,7 +350,7 @@ export default function InfiniteCarouselComp({
  showProgress = false,
  loop = true,
  smoothness = 12,
-}: InfiniteCarouselCompProps) {
+}: SmoothInfiniteCarouselProps) {
  const wrapperRef = useRef<HTMLDivElement | null>(null);
  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
  const progressThumbRef = useRef<HTMLDivElement | null>(null);
@@ -294,6 +360,7 @@ export default function InfiniteCarouselComp({
  const isAdjustingScrollRef = useRef(false);
  const isHoveredRef = useRef(false);
  const finiteDragRef = useRef<{ pointerId: number; startX: number; startScrollLeft: number } | null>(null);
+ const loopWheelSettleRef = useRef(0);
  const animateFiniteScrollRef = useRef<() => void>(() => {});
  const finiteSmoothRef = useRef({
  target: 0,
@@ -574,6 +641,32 @@ export default function InfiniteCarouselComp({
  setFiniteTarget(finiteSmoothRef.current.target - delta);
  };
 
+ // Wheel/trackpad input scrubs the loop's progress directly and continuously
+ // (same mechanism drag uses), rather than jumping whole slides per gesture -
+ // this is what makes it feel freely movable instead of stepped. Once wheel
+ // events stop arriving for a beat, it settles to the nearest slide.
+ const handleLoopWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
+ if (isFiniteMode || isWrapMode || !loopRef.current) return;
+
+ const horizontalIntent = Math.abs(event.deltaX) >= Math.abs(event.deltaY);
+ const delta = horizontalIntent ? event.deltaX : event.deltaY;
+ if (!horizontalIntent && !event.shiftKey && Math.abs(delta) < 4) return;
+
+ event.preventDefault();
+
+ if (reduceMotion) {
+ loopRef.current.scrubBy(delta * 1.6);
+ loopRef.current.updateIndex();
+ } else {
+ loopRef.current.scrubBy(delta * 2.2);
+ }
+
+ window.clearTimeout(loopWheelSettleRef.current);
+ loopWheelSettleRef.current = window.setTimeout(() => {
+ loopRef.current?.snapToNearest();
+ }, reduceMotion ? 60 : 140);
+ };
+
  useEffect(() => {
  if (!isSwiperMode || !wrapperRef.current || !childArray.length) return;
 
@@ -723,6 +816,18 @@ export default function InfiniteCarouselComp({
  );
  };
 
+ // Arrow keys drive the same handleNext/handlePrev used by the nav buttons
+ // and wheel/drag settle, so keyboard nav gets identical smooth motion.
+ const handleWrapperKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+ if (event.key === "ArrowRight") {
+ event.preventDefault();
+ handleNext();
+ } else if (event.key === "ArrowLeft") {
+ event.preventDefault();
+ handlePrev();
+ }
+ };
+
  return (
  <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-[1025px]:gap-4 max-md:gap-3 max-md:pb-2 ${pageClassName}`} style={pageStyle}>
  <div className="sr-only" aria-live="polite" aria-atomic="true">
@@ -755,7 +860,11 @@ export default function InfiniteCarouselComp({
 
  <div
  ref={wrapperRef}
- onWheel={isFiniteMode ? handleFiniteWheel : undefined}
+ tabIndex={isWrapMode ? undefined : 0}
+ role={isWrapMode ? undefined : "group"}
+ aria-label={isWrapMode ? undefined : "Carousel"}
+ onKeyDown={isWrapMode ? undefined : handleWrapperKeyDown}
+ onWheel={isFiniteMode ? handleFiniteWheel : handleLoopWheel}
  onPointerDown={handleFinitePointerDown}
  onPointerMove={handleFinitePointerMove}
  onPointerUp={handleFinitePointerEnd}
@@ -769,7 +878,7 @@ export default function InfiniteCarouselComp({
  onPointerLeave={() => {
  isHoveredRef.current = false;
  }}
- className={`relative flex min-h-25 max-[1025px]:pt-14 w-full flex-nowrap items-stretch overflow-hidden ${
+ className={`relative flex min-h-25 max-[1025px]:pt-14 w-full flex-nowrap items-stretch overflow-hidden outline-none ${
  isFiniteMode
  ? "touch-pan-y overflow-hidden select-none"
  : ""
@@ -809,7 +918,7 @@ export default function InfiniteCarouselComp({
 
  {showProgress && (
  <div
- className={`relative overflow-hidden rounded-full bg-[#e5e5e5] ${progressTrackClassName}`}
+ className={`relative w-[50vw] overflow-hidden rounded-full bg-[#e5e5e5] ${progressTrackClassName}`}
  style={progressTrackStyle}
  aria-hidden="true"
  >
