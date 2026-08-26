@@ -120,7 +120,7 @@ export default function Project() {
 
         <h2
           data-para-anim
-          className="font-medium text-[#1C1B1A] font-neue-montreal text-[3.8vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
+          className="font-medium! text-[#1C1B1A] font-neue-montreal text-[3.8vw] leading-[1.06] tracking-[-0.04em] max-[1025px]:text-[6.8vw] max-md:text-[10vw]"
           >
           A World of Refinement
         </h2>

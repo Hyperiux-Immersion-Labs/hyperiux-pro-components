@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import DotsCanvas from './effects/teeth-3d/DotsCanvas'
+import DotsCanvas from './teeth-3d/DotsCanvas'
 import SplitTextLines from './effects/split-text-lines/SplitTextLines'
 import OrisDentalLogo from './assets/OrisDental.svg'
 
@@ -62,7 +62,7 @@ const RIGHT_COLUMNS: FooterColumn[] = [
 function FooterLinkColumn({ column }: { column: FooterColumn }) {
     return (
         <div className="footer-col flex flex-col gap-3">
-            <p className="text-[#C0C0C0] oris-text22 font-normal whitespace-nowrap">
+            <p className="text-white oris-text22 font-medium! whitespace-nowrap">
                 {column.title}
             </p>
             <ul className="flex flex-col gap-2.5">
@@ -182,8 +182,8 @@ export default function Footer() {
 
                 {/* Top Branding & Main Tagline */}
                 <div ref={contentRef} className="relative z-10 flex flex-col items-start max-w-2xl max-[1025px]:max-w-full">
-                    <SplitTextLines as="h2" className="oris-text64 font-bold! leading-[1.1] text-white max-w-[35vw] max-[1025px]:max-w-full">
-                        OrisDental Brighten your smile with expert care.
+                    <SplitTextLines as="h2" className="oris-text64 font-medium! text-white max-w-[35vw] max-[1025px]:max-w-full">
+                        Brighten your smile with expert care.
                     </SplitTextLines>
                 </div>
 
@@ -191,14 +191,14 @@ export default function Footer() {
                 <nav
                     ref={navRef}
                     aria-label="Footer"
-                    className="relative z-10 flex w-full items-start justify-between mt-[4vw] mb-[3vw] max-[1025px]:grid max-[1025px]:grid-cols-4 max-[1025px]:gap-6 max-[1025px]:mt-10 max-[1025px]:mb-6 max-md:grid-cols-2 max-md:gap-8"
+                    className="relative z-10 flex w-full items-start justify-between mt-[4vw] mb-[3vw] max-[1025px]:grid max-[1025px]:grid-cols-2 max-[1025px]:gap-6 max-[1025px]:mt-10 max-[1025px]:mb-6 max-md:grid-cols-2 max-md:gap-8"
                 >
-                    <div className="contents max-[1025px]:contents">
+                    <div className="flex gap-30  max-[1025px]:flex-col max-[1025px]:gap-12 ">
                         {LEFT_COLUMNS.map((column) => (
                             <FooterLinkColumn key={column.title} column={column} />
                         ))}
                     </div>
-                    <div className="contents max-[1025px]:contents">
+                    <div className="flex gap-30  max-[1025px]:flex-col max-[1025px]:gap-16">
                         {RIGHT_COLUMNS.map((column) => (
                             <FooterLinkColumn key={column.title} column={column} />
                         ))}

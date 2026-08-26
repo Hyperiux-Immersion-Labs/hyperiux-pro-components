@@ -8,7 +8,7 @@ import ogImage from "./assets/og.png";
 import Header from "./Header";
 import Hero from "./Hero";
 import About from "./About";
-import HorizontalFeatureRevealSection from "./effects/HorizontalFeatureRevealSection";
+import HorizontalFeatureRevealSection from "./effects/horizontal-feature-reveal/HorizontalFeatureRevealSection";
 import Service from "./Service";
 import Works from "./Works";
 import Project from "./Project";
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="relative">
+    <div className="lumera-page relative">
       <Loader />
       <ScrollTopOnLoad />
       <LenisSmoothScroll />

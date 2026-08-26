@@ -189,7 +189,7 @@ const Gallery = () => {
 
         <h2
           data-title-anim
-          className={`font-neue-montreal font-medium text-[#1C1B1A] text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
+          className={`font-neue-montreal font-medium! text-[#1C1B1A] text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] mb-[2vw]`}
           >
           Core Features
         </h2>

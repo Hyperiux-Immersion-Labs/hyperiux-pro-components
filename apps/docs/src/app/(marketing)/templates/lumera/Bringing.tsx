@@ -67,9 +67,10 @@ const Bringing = () => {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: BringingRef.current,
-            start: "top top",
+            start: "top 50%",
             end: "+=2000 bottom",
             scrub: 0.5,
+            // markers:true,
           },
           defaults: {
             ease: "none",
@@ -114,17 +115,17 @@ const Bringing = () => {
         <div className="flex flex-col items-center justify-center w-full gap-[5vw]">
           <div className="flex flex-col gap-8 items-center justify-center">
             <MaskTextReveal>
-              <p className="text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
+              <p className="text-[9vw] font-medium text-[#353430] font-neue-montreal leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
                 Better Way To
               </p>
             </MaskTextReveal>
             <MaskTextReveal>
-              <p className="text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
+              <p className="text-[9vw] font-medium text-[#353430] font-neue-montreal leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
                 Experience
               </p>
             </MaskTextReveal>
             <MaskTextReveal>
-              <p className="text-[9vw] font-medium text-[#353430] leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
+              <p className="text-[9vw] font-medium text-[#353430] font-neue-montreal leading-[1.1] font-heading uppercase text-center max-[1025px]:leading-[1.3] max-[1025px]:text-[9vw]">
                 Dubai Property
               </p>
             </MaskTextReveal>
@@ -179,7 +180,7 @@ const Bringing = () => {
                 <div className="h-full w-[20vw] relative rounded-lg max-[1025px]:absolute max-md:top-[30%] max-[1025px]:w-[90vw] max-[1025px]:top-[35%]">
                   <div
                     ref={videoWrapperRef}
-                    className="w-[20vw] h-[10vw] absolute z-100 top-0 rounded-lg overflow-hidden max-[1025px]:w-[90vw] max-md:h-[70vw] max-[1025px]:h-[50vw]"
+                    className="w-[20vw] h-[10vw] absolute z-100 top-0 rounded-[0.6vw] overflow-hidden max-[1025px]:w-[90vw] max-md:h-[70vw] max-[1025px]:h-[50vw]"
                   >
                     <video
                       ref={videoRef}
@@ -202,7 +203,7 @@ const Bringing = () => {
         </div>
       </div>
     </section>
-    <div className="max-[1025px]:hidden w-[60%] pb-[5vw] flex flex-col items-center gap-[2.5vw] mx-auto bg-white">
+    <div className="max-[1025px]:hidden w-[60%] pb-[10vw] flex flex-col items-center gap-[2.5vw] mx-auto bg-white">
       <MaskTextReveal>
         <p
           ref={bodyCopyRef}

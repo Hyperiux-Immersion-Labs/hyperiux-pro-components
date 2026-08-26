@@ -92,7 +92,7 @@ const Highlights = () => {
 
           <h2
             data-para-anim
-            className="font-neue-montreal font-medium text-[#1C1B1A] text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw]"
+            className="font-neue-montreal font-medium! text-[#1C1B1A] text-[3.8vw] leading-[1.2] max-[1025px]:text-[6.8vw] max-md:text-[8.8vw]"
             >
             Nearby Highlights
           </h2>
@@ -128,7 +128,7 @@ const Highlights = () => {
                   <p className="text-[1.3vw] text-white/80 max-md:text-[3.2vw]">
                     <span className="font-medium text-white">{place.distance}</span> away from
                   </p>
-                  <p className="font-neue-montreal font-medium uppercase text-white text-[2vw] leading-[1.1] max-md:text-[6vw]">
+                  <p className=" mt-1.5 uppercase text-white text-[2vw] leading-[1.1] max-md:text-[6vw]">
                     {place.location}
                   </p>
                 </div>

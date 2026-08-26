@@ -102,7 +102,7 @@ const ShowCase = () => {
 
           <h2
             data-para-anim
-            className={` text-[#1C1B1A] font-neue-montreal font-medium text-[3.8vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
+            className={` text-[#1C1B1A] font-neue-montreal font-medium! text-[3.8vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
             >
             At the Heart of
             <br />

@@ -5858,13 +5858,20 @@
   },
   {
     "name": "liquid-glass-cursor",
-    "title": "Liquid Glass Cursor",
-    "description": "Fluid glass-like custom cursor with SVG displacement refraction, hover morph states, and GSAP-smoothed tracking.",
-    "category": "cursor",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.1.0",
+    "version": "2.1.0",
     "changelog": [
+      {
+        "version": "2.1.0",
+        "date": "2026-08-26",
+        "summary": "Restore hover shape morphing (circle -> pill on data-cursor button/text targets) on top of the magnifying lens",
+        "breaking": false
+      },
+      {
+        "version": "2.0.0",
+        "date": "2026-08-26",
+        "summary": "Rebuilt as a magnifying glass-lens wrapper with chromatic-aberration SVG refraction over live wrapped content; replaces the GSAP hover-morph cursor API (baseSize/textHoverSize/distortionScale/blurAmount/brightness/borderColor/maxButtonWidth/maxButtonHeight) with a children-based wrapper API (size/magnification/distortion/aberration/className)",
+        "breaking": true
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-22",
@@ -5878,27 +5885,97 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Liquid Glass Cursor",
+    "description": "Magnifying glass-lens cursor with chromatic-aberration SVG refraction over live wrapped content, spring-smoothed tracking.",
+    "category": "cursor",
     "dependencies": [
-      "gsap"
+      "motion"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/cursor/liquid-glass-cursor/registry.json",
-    "importPath": "@/components/effects/liquid-glass-cursor",
-    "target": "src/components/effects/liquid-glass-cursor",
     "previewUrl": "/demo/liquid-glass-cursor",
+    "tier": "pro",
     "main": "index.tsx",
     "exportName": "LiquidGlassCursor",
     "exportKind": "default",
+    "importPath": "@/components/effects/liquid-glass-cursor",
+    "target": "src/components/effects/liquid-glass-cursor",
+    "props": [
+      {
+        "name": "size",
+        "type": "number",
+        "default": 150,
+        "description": "Diameter of the lens in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "size",
+          "groupTitle": "Size",
+          "min": 60,
+          "max": 320,
+          "step": 1
+        }
+      },
+      {
+        "name": "magnification",
+        "type": "number",
+        "default": 1.15,
+        "description": "Zoom level applied to the content copy under the lens.",
+        "remixer": {
+          "control": "range",
+          "group": "size",
+          "groupTitle": "Size",
+          "min": 1,
+          "max": 2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "distortion",
+        "type": "number",
+        "default": 60,
+        "description": "SVG displacement strength for the glass refraction.",
+        "remixer": {
+          "control": "range",
+          "group": "filter",
+          "groupTitle": "Filter",
+          "min": 0,
+          "max": 150,
+          "step": 1
+        }
+      },
+      {
+        "name": "aberration",
+        "type": "number",
+        "default": 1,
+        "description": "Chromatic aberration amount — how far the R/G/B channels split at the rim.",
+        "remixer": {
+          "control": "range",
+          "group": "filter",
+          "groupTitle": "Filter",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "size",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "files": [
       {
         "path": "index.tsx",
         "target": "src/components/effects/liquid-glass-cursor/index.tsx"
-      },
-      {
-        "path": "LiquidText.tsx",
-        "target": "src/components/effects/liquid-glass-cursor/LiquidText.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/cursor/liquid-glass-cursor/registry.json"
   },
   {
     "name": "magnetic-image-trail",

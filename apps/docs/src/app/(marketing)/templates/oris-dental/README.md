@@ -41,10 +41,11 @@ oris-dental/
 │   ├── hc1.png - hc4.png        # Clinic & doctors gallery images
 │   ├── oris-whyus.png           # Why Choose Us banner image
 │   ├── parallax.png             # Parallax full-bleed background
-│   ├── fonts/                   # Self-hosted Aeonik font files (woff2)
-│   │   ├── Aeonik-Regular.woff2
-│   │   ├── Aeonik-Medium.woff2
-│   │   └── Aeonik-Bold.woff2
+│   ├── fonts/                   # Self-hosted AeonikPro font files (woff2)
+│   │   ├── AeonikPro-Light.woff2
+│   │   ├── AeonikPro-Regular.woff2
+│   │   ├── AeonikPro-Medium.woff2
+│   │   └── AeonikPro-Bold.woff2
 │   └── reviews/                 # Review ribbon cards (1.png - 9.png)
 └── effects/                     # Extracted self-contained effects
     ├── dot-fill-button/

@@ -69,12 +69,12 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 px-[5%] py-[2%] transform transition-all ease-in-out duration-500 tablet:px-[5%] tablet:py-[7%] ${
+      className={`fixed inset-x-0 top-0 z-50 px-[5%] pt-[1vw] pb-[1vw] transform transition-all ease-in-out duration-500 max-[1025px]:px-[5%] max-[1025px]:py-[7%] ${
         !revealed ? "-translate-y-full" : hidden ? "-translate-y-full max-[1025px]:translate-y-0" : "translate-y-0"
       } ${isScrolled ? "bg-black/20 backdrop-blur-md shadow-md" : ""} `}
     >
       <div className="flex items-center justify-between">
-        <Link href="/" className="relative z-60 flex items-center gap-[0.6vw] tablet:gap-[2vw]">
+        <Link href="/templates/lumera" className="relative z-60 flex items-center gap-[0.6vw] max-[1025px]:gap-[2vw]">
           <div className="h-fit w-40">
             <Image src={lumeraLogo} alt="Lumera" className="h-full w-full object-contain" />
           </div>
@@ -121,7 +121,7 @@ const Header: React.FC = () => {
       </div>
 
       <div
-        className={`fixed inset-0 z-50 hidden h-dvh bg-[#1c1b1a] px-[5%] pb-[10vw] pt-[28vw] transition-transform duration-500 max-[1025px]:block max-md:pt-[34vw] ${
+        className={`fixed inset-0 z-50 hidden h-dvh bg-[#1c1b1a] px-[5%] pb-[5vw] pt-[28vw] transition-transform duration-500 max-[1025px]:block max-md:pt-[34vw] ${
           menuOpen ? "translate-y-0" : "-translate-y-full"
         }`}
       >

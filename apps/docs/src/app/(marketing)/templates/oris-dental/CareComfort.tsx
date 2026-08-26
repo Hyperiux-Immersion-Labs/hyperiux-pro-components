@@ -8,6 +8,7 @@ import SmoothInfiniteCarousel, {
   type SmoothInfiniteCarouselRef,
 } from "./effects/smooth-carousel/SmoothInfiniteCarousel";
 import CircularButton from "./effects/circular-button/CircularButton";
+import DotsCanvas from "./teeth-3d/DotsCanvas";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -154,13 +155,13 @@ export default function CareComfort() {
     <section
       id="care-comfort"
       ref={sectionRef}
-      className="w-full bg-white relative z-10 py-[6vw] max-md:py-16 overflow-hidden text-oris-secondary"
+      className="w-full bg-white relative z-10 py-[7vw] max-md:py-16 overflow-hidden text-oris-secondary"
     >
       {/* Top Header: Title on Left, Detailed Paragraph on Right */}
       <div className="oris-paddx mb-[5vw] max-md:mb-8 flex justify-between items-start max-[1025px]:flex-col max-[1025px]:gap-6">
         {/* Left Heading */}
-        <div className="max-w-[42vw] max-[1025px]:max-w-full">
-          <SplitTextLines as="h2" className="oris-text64">
+        <div className="w-[50%] max-[1025px]:max-w-full">
+          <SplitTextLines as="h2" className="text-[4.2vw] max-md:w-[90vw] max-[1025px]:text-[6vw] max-md:text-[7.5vw]">
             Care Designed for Your{"\n"}Lasting Comfort
           </SplitTextLines>
         </div>
@@ -182,7 +183,7 @@ export default function CareComfort() {
           -> card 26vw, gap 1.9vw (0.95vw padding per item side).
           Wrapper pl 2.05vw + item pl 0.95vw = 3vw, so the first card's left
           edge lines up exactly with the section heading (oris-paddx = 3vw). */}
-      <div ref={carouselWrapperRef} className="w-full relative overflow-hidden py-4">
+      <div ref={carouselWrapperRef} className="w-full relative overflow-hidden py-6">
         <SmoothInfiniteCarousel
           ref={carouselRef}
           config={{
@@ -198,15 +199,27 @@ export default function CareComfort() {
             <div
               key={`${card.id}-${idx}`}
               aria-hidden={idx >= CARE_CARDS.length}
-              className={`care-card-anim w-[26vw] max-[1025px]:w-[36vw] max-md:w-[76vw] aspect-[440/477] rounded-[1.5vw] max-md:rounded-3xl px-[1.8vw] pt-[1.8vw] pb-[3vw] max-md:px-6 max-md:pt-6 max-md:pb-8 flex flex-col justify-end gap-[2.4vw] max-md:gap-6 relative overflow-hidden select-none will-change-transform ${card.bgClassName}`}
+              className={`care-card-anim w-[28vw] max-[1025px]:w-[50vw] max-md:w-[76vw] aspect-[440/477] rounded-xl max-md:rounded-3xl px-[1.8vw] pt-[1.8vw] pb-[5vw] max-md:px-6 max-md:pt-6 max-md:pb-8 flex flex-col justify-end gap-[2.4vw] max-md:gap-6 relative overflow-hidden select-none will-change-transform ${card.bgClassName}`}
             >
+              {/* Interactive Dots on Mouse Move */}
+              <DotsCanvas
+                spacing={20}
+                baseRadius={1.2}
+                maxRadius={4}
+                interactionRadius={280}
+                baseOpacity={0}
+                maxOpacity={0.75}
+                gradient={false}
+                lerpFactor={0.22}
+              />
+
               {/* Card Title */}
               <h3 className="relative z-10 text-white text-[2.4vw] max-[1025px]:text-[4vw] max-md:text-[7vw] font-normal leading-[1.15] whitespace-pre-line tracking-tight">
                 {card.title}
               </h3>
 
               {/* Card Description */}
-              <p className="relative z-10 text-white/85 text-[1vw] max-[1025px]:text-[2.5vw] max-md:text-[3.6vw] leading-[1.3] max-w-[96%] font-normal">
+              <p className="relative z-10 text-white/85 oris-text22 max-[1025px]:text-[2.5vw] max-md:text-[3.6vw] leading-[1.3] max-w-[96%] font-normal">
                 {card.description}
               </p>
             </div>
