@@ -2,9 +2,11 @@
 
 "use client";
 import Image from "next/image";
-import { useEffect} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import BlackButton from "./BlackButton";
-import SmoothInfiniteCarousel from "./SmoothInfiniteCarousel";
+import SmoothInfiniteCarousel, {
+  type KeyboardSlider,
+} from "./smooth-carousel/SmoothInfiniteCarousel";
 import refinement1 from "./assets/refinement-1.png";
 import refinement2 from "./assets/refinement-2.png";
 import refinement3 from "./assets/refinement-3.png";
@@ -28,6 +30,62 @@ const interiorImages = [
 ];
 
 export default function Project() {
+  const sliderRef = useRef<KeyboardSlider | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const [thumb, setThumb] = useState({ width: 100, left: 0 });
+
+  const carouselConfig = useMemo(
+    () => ({
+      infinite: false,
+      snap: false,
+      setOffset: ({ wrapperWidth }: { wrapperWidth: number }) => {
+        const wrapperEl = sliderRef.current?.wrapper;
+        if (!wrapperEl) return wrapperWidth;
+
+        const cs = getComputedStyle(wrapperEl);
+        const paddingLeft = parseFloat(cs.paddingLeft || "0");
+        const paddingRight = parseFloat(cs.paddingRight || "0");
+        const gap = parseFloat(cs.columnGap || "0");
+        const itemCount = wrapperEl.children.length;
+
+        // Desired: last item's right edge lands at (wrapperWidth - paddingRight).
+        // Core's totalWidth/offset math ignores flex `gap`, so we fold paddingLeft
+        // and the accumulated gaps into the offset to compensate.
+        return (
+          wrapperWidth -
+          paddingRight -
+          paddingLeft -
+          Math.max(0, itemCount - 1) * gap
+        );
+      },
+    }),
+    []
+  );
+
+  const handleReady = (slider: KeyboardSlider) => {
+    sliderRef.current = slider;
+  };
+
+  useEffect(() => {
+    const tick = () => {
+      const slider = sliderRef.current;
+      if (slider) {
+        const width = Math.min(
+          100,
+          (slider.viewport.wrapperWidth / slider.viewport.totalWidth) * 100
+        );
+        const left = slider.progress * (100 - width);
+        setThumb({ width, left });
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
   useEffect(() => {
     if (globalThis.innerWidth > 1024) {
       const ctx = gsap.context(() => {
@@ -97,16 +155,10 @@ export default function Project() {
 
       <div className="">
         <SmoothInfiniteCarousel
-          draggable
-          loop={false}
-          showNav={false}
-          showProgress
-          speed={0.8}
-          smoothness={9}
-          pauseOnHover
+          config={carouselConfig}
           wrapperClassName="fadeup pl-[25.5%] pr-[5%] pb-[1vw] gap-[1.2vw] max-[1025px]:pl-[5%] max-[1025px]:gap-[8vw]"
           itemClassName="cursor-grab active:cursor-grabbing"
-          progressTrackClassName="mt-[3.6vw] ml-[25.5%] h-[0.4vw] w-[65vw] max-md:mt-[7vw] max-md:ml-10 max-md:h-[1.2vw]  max-md:w-[80vw] max-[1025px]:ml-[8%]"
+          onReady={handleReady}
         >
           {interiorImages.map((src, index) => (
             <div
@@ -124,6 +176,15 @@ export default function Project() {
             </div>
           ))}
         </SmoothInfiniteCarousel>
+        <div
+          className="relative overflow-hidden rounded-full bg-[#e5e5e5] mt-[3.6vw] ml-[25.5%] h-[0.4vw] w-[65vw] max-md:mt-[7vw] max-md:ml-10 max-md:h-[1.2vw]  max-md:w-[80vw] max-[1025px]:ml-[8%]"
+          aria-hidden="true"
+        >
+          <div
+            className="absolute inset-y-0 rounded-full bg-black"
+            style={{ width: `${thumb.width}%`, left: `${thumb.left}%` }}
+          />
+        </div>
       </div>
       </FadeUp>
     </section>
