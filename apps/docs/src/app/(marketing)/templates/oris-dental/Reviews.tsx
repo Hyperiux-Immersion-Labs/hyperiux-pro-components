@@ -157,7 +157,8 @@ export default function Reviews({
                         trigger: `#${sectionId}`,
                         start: "-8% top",
                         end: "bottom bottom",
-                        scrub: 1.2,
+                        scrub: true,
+                        markers:true
                     },
                 });
 
@@ -218,7 +219,7 @@ export default function Reviews({
                 );
 
                 // Phase 4 & 5 (6.8 -> 12.0): Generous pinned hold time for TextFill to complete and comfortable reading
-                tl.to({}, { duration: 5.2 }, 6.2);
+                tl.to({}, { duration: 3 }, 3);
 
                 return () => {
                     cards.forEach((card) => {
@@ -376,13 +377,13 @@ export default function Reviews({
                         <TextFill
                             as="p"
                             text={sectionBreakText}
-                            className="section-break-content font-normal oris-text48 leading-[1.2]"
+                            className="section-break-content font-normal text-[3.5vw] leading-[1.2]"
                             primaryColor={ribbonColor}
                             textColor="#13314a"
                             dimColor="rgba(0, 0, 0, 0.2)"
                             trigger={`#${sectionId}`}
-                            start="40% top"
-                            end="76% top"
+                            start="60% top"
+                            end="80% top"
                         />
                     </div>
                 </div>

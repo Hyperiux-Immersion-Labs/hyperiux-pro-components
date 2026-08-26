@@ -33,8 +33,8 @@ export default function BookAppointment() {
                 </div>
 
                 {/* Right Floating Form Card */}
-                <div className="z-10 bg-white rounded-[1.8vw] max-[1025px]:rounded-xl p-[2vw] max-[1025px]:p-6 w-[45vw] max-[1025px]:w-full">
-                    <h3 className="text-[1.8vw] max-[1025px]:text-2xl font-medium text-[#1A1A1A] mb-[1.5vw] max-[1025px]:mb-4">
+                <div className="z-10 bg-white rounded-[1.8vw] max-[1025px]:rounded-xl p-[2vw] py-[4vw] max-[1025px]:p-6 w-[45vw] max-[1025px]:w-full">
+                    <h3 className="text-[1.8vw] font-medium! max-[1025px]:text-2xl text-[#1A1A1A] mb-[2.5vw] max-[1025px]:mb-4">
                         Get in touch
                     </h3>
                     <ContactForm />

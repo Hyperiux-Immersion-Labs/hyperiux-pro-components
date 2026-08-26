@@ -164,7 +164,7 @@ export default function ContactForm() {
                         className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${
                             isNameActive
                                 ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-400'
+                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-700'
                         }`}
                     >
                         Name*
@@ -199,7 +199,7 @@ export default function ContactForm() {
                         className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${
                             isEmailActive
                                 ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-400'
+                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-700'
                         }`}
                     >
                         Business Email*
@@ -247,7 +247,7 @@ export default function ContactForm() {
                             <span className="text-base">{selectedCountry.flag}</span>
                             <span className="text-xs font-medium text-gray-600">{selectedCountry.code}</span>
                             <svg
-                                className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${
+                                className={`w-3.5 h-3.5 text-gray-700 transition-transform duration-200 ${
                                     countryOpen ? 'rotate-180' : ''
                                 }`}
                                 fill="none"
@@ -288,7 +288,7 @@ export default function ContactForm() {
                             className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${
                                 isPhoneActive
                                     ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                    : 'top-1/2 -translate-y-1/2 text-sm text-gray-400'
+                                    : 'top-1/2 -translate-y-1/2 text-sm text-gray-700'
                             }`}
                         >
                             Phone*
@@ -318,7 +318,7 @@ export default function ContactForm() {
                         className={`absolute left-3 transition-all duration-200 px-1 bg-white z-10 pointer-events-none ${
                             isTopicActive
                                 ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-400'
+                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-700'
                         }`}
                     >
                         Topic*
@@ -341,7 +341,7 @@ export default function ContactForm() {
                         </span>
                     </button>
 
-                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-700">
                         <svg
                             className={`w-4 h-4 transition-transform duration-200 ${
                                 topicOpen ? 'rotate-180' : ''
@@ -388,7 +388,7 @@ export default function ContactForm() {
                         className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${
                             isMessageActive
                                 ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                : 'top-4 text-sm text-gray-400'
+                                : 'top-4 text-sm text-gray-700'
                         }`}
                     >
                         Your message

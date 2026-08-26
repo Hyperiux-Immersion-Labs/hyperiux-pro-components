@@ -151,7 +151,7 @@ export default function DentalTreatments({
         <section
             id={sectionId}
             ref={sectionRef}
-            className="w-full bg-white relative z-10 py-[6vw]"
+            className="w-full bg-white h-fit relative z-10 pt-[6vw] pb-[10vw]"
         >
             {/* Header Section */}
             <div className="oris-paddx mb-[5vw]">
@@ -164,31 +164,27 @@ export default function DentalTreatments({
             </div>
 
             {/* Scroll Stack Container */}
-            <div className="w-full flex flex-col items-center oris-paddx">
+            <div className="w-full flex flex-col gap-[20vw] items-center oris-paddx">
                 {cards.map((item, index) => (
                     <div
                         key={item.id}
                         ref={(el) => {
                             rowRefs.current[index] = el;
                         }}
-                        className={`relative w-full min-h-[160vh] ${
-                            index === 0 ? "" : "mt-[-80vh]"
-                        } max-[1025px]:mt-0 max-[1025px]:min-h-0 max-[1025px]:mb-[6vw]`}
+                        style={{ zIndex: index + 1 }}
+                        className={`sticky top-[18%] h-[40vw] w-full`}
                     >
-                        <div
-                            className="sticky top-[18vh] max-[1025px]:static"
-                            style={{ zIndex: index + 1 }}
-                        >
+
                             <div
                                 ref={(el) => {
                                     cardRefs.current[index] = el;
                                 }}
-                                className="w-full h-[62vh] max-[1025px]:h-auto rounded-[2.2vw] max-[1025px]:rounded-[24px] p-[3.5vw] max-[1025px]:p-[6vw] flex flex-col max-[1025px]:gap-[10vw] justify-between"
+                                className="w-full h-full max-[1025px]:h-auto rounded-[2.2vw] max-[1025px]:rounded-[24px] p-[3.5vw] max-[1025px]:p-[6vw] flex flex-col max-[1025px]:gap-[10vw] justify-between"
                                 style={{ backgroundColor: item.bgColor }}
                             >
                                 {/* Top: Title & Tags */}
                                 <div>
-                                    <h3 className="text-white text-[4.4vw] max-[1025px]:text-[8vw] leading-none whitespace-pre-line">
+                                    <h3 className="text-white text-[6vw] max-[1025px]:text-[8vw] leading-[1.2]! whitespace-pre-line">
                                         {item.title}
                                     </h3>
                                     <div className="flex flex-wrap items-center gap-[0.6vw] max-[1025px]:gap-[1.5vw] text-white oris-text22 mt-[1.6vw] max-[1025px]:mt-[8vw]">
@@ -210,7 +206,7 @@ export default function DentalTreatments({
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                       
                     </div>
                 ))}
             </div>
