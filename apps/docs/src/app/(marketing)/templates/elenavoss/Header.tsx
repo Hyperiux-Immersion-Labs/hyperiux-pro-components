@@ -5,6 +5,7 @@ import gsap from "gsap";
 import ElenaVossLogo from "./assets/elena-voss.svg";
 import DotFillBtn from "./effects/dot-fill-button/DotFillButton";
 import { useGetInTouchModal } from "./GetInTouchModal";
+import Link from "next/link";
 
 const SCROLL_BLUR_THRESHOLD_RATIO = 0.4;
 const HEADER_HIDE_DURATION = 0.5;
@@ -73,7 +74,7 @@ const Header = () => {
         }`}
         id="header"
       >
-        <div className="">
+        <Link className="" href={"/"}>
           <Image
             src={ElenaVossLogo}
             width={338}
@@ -82,7 +83,7 @@ const Header = () => {
             loading="lazy"
             className="w-[12vw] max-[1025px]:w-[25vw] max-md:w-[34vw]"
           />
-        </div>
+        </Link>
         <DotFillBtn
           btnText="Get in Touch"
           href={"#"}

@@ -34,7 +34,7 @@ const TREATMENTS_DATA: TreatmentCard[] = [
     },
     {
         id: 3,
-        title: "Orthodontics &\nAligners",
+        title: "Orthodontics \n& Aligners",
         tags: ["Custom fit", "Discreet alignment", "Gentle movement"],
         description:
             "Clear aligners and modern orthodontic options gently guide teeth into optimal alignment over time. Designed for discreet comfort and easy maintenance throughout your daily routine.",
@@ -151,7 +151,7 @@ export default function DentalTreatments({
         <section
             id={sectionId}
             ref={sectionRef}
-            className="w-full bg-white h-fit relative z-10 pt-[6vw] pb-[10vw]"
+            className="w-full bg-white h-fit relative z-10 pt-[6vw] pb-[10vw] max-md:pb-[20vw]"
         >
             {/* Header Section */}
             <div className="oris-paddx mb-[5vw] max-md:mb-[15vw] max-[1025px]:mb-[10vw]">
@@ -164,7 +164,7 @@ export default function DentalTreatments({
             </div>
 
             {/* Scroll Stack Container */}
-            <div className="w-full flex flex-col gap-[20vw] items-center oris-paddx">
+            <div className="w-full flex flex-col gap-[20vw] items-center oris-paddx max-md:gap-[70vw]">
                 {cards.map((item, index) => (
                     <div
                         key={item.id}
@@ -172,14 +172,14 @@ export default function DentalTreatments({
                             rowRefs.current[index] = el;
                         }}
                         style={{ zIndex: index + 1 }}
-                        className={`sticky top-[18%] h-[40vw] w-full`}
+                        className={`sticky top-[18%] h-[40vw] w-full max-md:h-[120vw] max-[1025px]:h-[90vw]`}
                     >
 
                             <div
                                 ref={(el) => {
                                     cardRefs.current[index] = el;
                                 }}
-                                className="w-full h-full max-[1025px]:h-auto rounded-[2.2vw] max-[1025px]:rounded-[24px] p-[3.5vw] max-[1025px]:p-[6vw] flex flex-col max-[1025px]:gap-[10vw] justify-between"
+                                className="w-full h-full rounded-[2.2vw] max-[1025px]:rounded-[24px] p-[3.5vw] max-[1025px]:p-[6vw] flex flex-col max-[1025px]:gap-[10vw] justify-between"
                                 style={{ backgroundColor: item.bgColor }}
                             >
                                 {/* Top: Title & Tags */}

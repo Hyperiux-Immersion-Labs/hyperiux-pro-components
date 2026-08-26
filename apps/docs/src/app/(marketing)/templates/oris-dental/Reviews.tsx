@@ -158,7 +158,7 @@ export default function Reviews({
                         start: "-8% top",
                         end: "bottom bottom",
                         scrub: true,
-                        markers:true
+                        // markers:true
                     },
                 });
 

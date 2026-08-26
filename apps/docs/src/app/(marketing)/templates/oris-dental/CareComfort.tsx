@@ -199,7 +199,7 @@ export default function CareComfort() {
             <div
               key={`${card.id}-${idx}`}
               aria-hidden={idx >= CARE_CARDS.length}
-              className={`care-card-anim w-[28vw] max-[1025px]:w-[36vw] max-md:w-[76vw] aspect-[440/477] rounded-xl max-md:rounded-3xl px-[1.8vw] pt-[1.8vw] pb-[5vw] max-md:px-6 max-md:pt-6 max-md:pb-8 flex flex-col justify-end gap-[2.4vw] max-md:gap-6 relative overflow-hidden select-none will-change-transform ${card.bgClassName}`}
+              className={`care-card-anim w-[28vw] max-[1025px]:w-[50vw] max-md:w-[76vw] aspect-[440/477] rounded-xl max-md:rounded-3xl px-[1.8vw] pt-[1.8vw] pb-[5vw] max-md:px-6 max-md:pt-6 max-md:pb-8 flex flex-col justify-end gap-[2.4vw] max-md:gap-6 relative overflow-hidden select-none will-change-transform ${card.bgClassName}`}
             >
               {/* Interactive Dots on Mouse Move */}
               <DotsCanvas
