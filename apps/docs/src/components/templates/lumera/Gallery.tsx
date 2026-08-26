@@ -27,7 +27,7 @@ import gallery9 from "./assets/gallery-9.png";
 import gallery10 from "./assets/gallery-10.png";
 
 
-import MaskTextReveal from "@/components/mask-text-reveal";
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
 interface GalleryFeature {

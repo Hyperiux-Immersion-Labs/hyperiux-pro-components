@@ -1,9 +1,12 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useRef, type ComponentPropsWithoutRef, type ElementType, type ReactNode } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -55,7 +58,22 @@ export function lineDraw() {
   /* eslint-disable-next-line react-hooks/rules-of-hooks */
   useGSAP(() => {
     const elements = document.querySelectorAll("[data-line-draw]");
+    const reducedMotion = prefersReducedMotion();
+
     elements.forEach((element) => {
+      if (reducedMotion) {
+        gsap.from(element, {
+          scrollTrigger: {
+            trigger: element,
+            start: "top 65%",
+          },
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
+        });
+        return;
+      }
+
       gsap.from(element, {
         scrollTrigger: {
           trigger: element,

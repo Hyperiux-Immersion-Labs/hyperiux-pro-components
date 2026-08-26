@@ -147,7 +147,7 @@ const Hero: React.FC = () => {
 
           <div className="relative z-10 flex h-screen flex-col justify-end gap-[8vw] max-[1025px]:gap-[12vw]">
             <div className="flex flex-col gap-[3vw] max-[1025px]:gap-[6vw] mb-30">
-              <MaskTextReveal>
+              <MaskTextReveal delay={2}>
                 <h1 className="font-neue-montreal font-medium! flex flex-col gap-[1vw] text-[10vw] leading-[0.94]   uppercase text-[#EEEEEE] max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[14vw]">
                   <span>Exceptional</span>
                   <div className="flex items-end gap-[1.8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[4vw]">
@@ -157,7 +157,7 @@ const Hero: React.FC = () => {
                       aria-label="Scroll to about section"
                       href="#about"
                       onClick={(event) => handleNavScroll(event, "#about")}
-                      className="group relative flex h-[6.5vw] w-[6.5vw] items-center justify-center self-center overflow-hidden rounded-full border-4 border-white text-white transition-colors  max-[1025px]:h-[18vw] max-[1025px]:w-[18vw] max-[1025px]:self-start"
+                      className="group relative flex h-[6.5vw] w-[6.5vw] items-center justify-center self-center overflow-hidden rounded-full border-4 border-white text-white opacity-100 transition-colors  max-[1025px]:h-[18vw] max-[1025px]:w-[18vw] max-[1025px]:self-start"
                     >
                       <Image
                         src={arrowDownIcon}

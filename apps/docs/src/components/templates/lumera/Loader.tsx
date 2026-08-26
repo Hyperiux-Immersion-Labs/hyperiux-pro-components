@@ -1,10 +1,12 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { useLenis } from "lenis/react";
 
-const Loader2 = () => {
+const Loader = () => {
     const gradient = useRef(null);
     const loaderMain = useRef(null);
     const lenis = useLenis();
@@ -71,4 +73,4 @@ const Loader2 = () => {
     )
 }
 
-export default Loader2;
+export default Loader;

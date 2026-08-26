@@ -51,7 +51,7 @@ const Header: React.FC = () => {
   }, [menuOpen]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setRevealed(true), 1000);
+    const timer = setTimeout(() => setRevealed(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 

@@ -13,7 +13,7 @@ import refinement5 from "./assets/refinement-5.png";
 import refinement6 from "./assets/refinement-6.png";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import MaskTextReveal from "@/components/mask-text-reveal";
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 gsap.registerPlugin(ScrollTrigger);
 

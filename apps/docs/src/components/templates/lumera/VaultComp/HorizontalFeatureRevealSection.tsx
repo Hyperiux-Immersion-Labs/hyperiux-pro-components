@@ -367,15 +367,15 @@ export default function HorizontalFeatureRevealSection() {
     >
       <div className="sticky top-0 h-screen overflow-hidden max-[1025px]:static max-[1025px]:h-auto">
         <div
-          className="lumera-residence-track flex h-full w-fit gap-[4vw] max-md:px-[6%] max-[1025px]:flex-col max-[1025px]:gap-[12vw] max-[1025px]:px-[5%] max-[1025px]:py-[15%]"
+          className="lumera-residence-track flex h-full w-fit gap-0  max-[1025px]:flex-col max-[1025px]:gap-[12vw]  max-[1025px]:py-[15%]"
           style={{ "--card-gap": "4vw" } as CSSProperties}
         >
           <div
             id={textFillId}
             ref={textFillSlideRef}
-            className="flex h-screen w-[98vw] flex-none items-center justify-center overflow-hidden bg-white px-[5vw] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:py-[20vh]"
+            className="flex h-screen w-screen flex-none items-center justify-center overflow-hidden bg-white px-[5vw] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:py-[20vh]"
           >
-            <div className="split__wrapper relative z-10 mx-auto w-full ">
+            <div className="split__wrapper relative z-10 mx-auto w-[90%] ">
               <h2
                 ref={textFillHeadingRef}
                 className="text-center text-[3.8vw] leading-[1.3] font-medium text-[#1c1b1a] opacity-0 max-[1025px]:opacity-100 max-[1025px]:text-[5vw] max-md:text-[8.5vw] max-[1025px]:leading-[1.08]"
@@ -391,7 +391,7 @@ export default function HorizontalFeatureRevealSection() {
             <CardTag
               key={item.number}
               {...(isMobile ? { as: "article" as const } : {})}
-              className="lumera-residence-card flex h-screen w-[98vw] flex-none overflow-hidden rounded-none bg-[#F3F3F3] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col"
+              className="lumera-residence-card max-[1025px]:px-[6%]  flex h-screen w-[98vw] flex-none overflow-hidden rounded-none bg-[#F3F3F3] max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:flex-col"
             >
               <div className="h-full w-[42%] overflow-hidden max-md:h-[60vh] max-[1025px]:h-[60vh]  max-[1025px]:w-full max-[1025px]:rounded-[4vw]">
                 <Image
@@ -415,7 +415,7 @@ export default function HorizontalFeatureRevealSection() {
                     {item.number}
                   </p>
 
-                  <h3 className="lumera-residence-title mt-[2vw] max-[1025px]:text-[5vw] font-neue-montreal text-[3.8vw] font-medium  leading-[1.04] text-[#1c1b1a] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-md:text-[7vw] max-[1025px]:opacity-100">
+                  <h3 className="lumera-residence-title mt-[2vw] max-[1025px]:text-[5vw] font-neue-montreal text-[3.8vw] font-medium  leading-[1.2] text-[#1c1b1a] tracking-tighter opacity-0 max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-md:text-[7vw] max-[1025px]:opacity-100">
                     {item.title}
                   </h3>
 

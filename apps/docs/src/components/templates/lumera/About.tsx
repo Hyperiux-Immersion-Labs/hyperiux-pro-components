@@ -14,7 +14,7 @@ import portfolio4 from "./assets/portfolio-4.png";
 import portfolio5 from "./assets/portfolio-5.png";
 import portfolio6 from "./assets/portfolio-6.png";
 import portfolio7 from "./assets/portfolio-7.png";
-import MaskTextReveal from "@/components/mask-text-reveal";
+import MaskTextReveal from "./VaultComp/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
 interface AboutSlide {
