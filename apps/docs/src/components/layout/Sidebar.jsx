@@ -271,6 +271,9 @@ export function Sidebar({
   const isOverviewActive =
     pathname === "/effects" && (!currentCategory || currentCategory === "all");
 
+  const isTemplatesActive =
+    pathname === "/templates" || pathname.startsWith("/templates/");
+
   const isCategoriesActive =
     !isDocsActive &&
     !isLegalActive &&
@@ -428,6 +431,17 @@ export function Sidebar({
     router.push("/effects", { scroll: false });
   };
 
+  // No sub-category tree yet (Hero/About/SaaS/etc, per the Figma design) -
+  // that needs real Sanity-backed counts. This is a plain top-level link
+  // until that data exists, same as "All Effects" today.
+  const navigateTemplates = (event) => {
+    event?.preventDefault();
+
+    setOpenSection("");
+    startNavigation("/templates");
+    router.push("/templates", { scroll: false });
+  };
+
   const navigateCategory = (event, categoryId) => {
     event?.preventDefault();
 
@@ -574,6 +588,16 @@ export function Sidebar({
             isActive={hoveredSidebarKey ? hoveredSidebarKey === "overview" : isOverviewActive}
             onClick={navigateOverview}
             onMouseEnter={() => setHoveredSidebarKey("overview")}
+          />
+
+          <NavIconLink
+            label="Templates"
+            href="/templates"
+            icon={Category}
+            isExpanded={isExpanded}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "templates" : isTemplatesActive}
+            onClick={navigateTemplates}
+            onMouseEnter={() => setHoveredSidebarKey("templates")}
           />
 
           <SectionButton
