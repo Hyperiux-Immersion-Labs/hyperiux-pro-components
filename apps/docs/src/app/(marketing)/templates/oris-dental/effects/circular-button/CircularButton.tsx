@@ -62,7 +62,7 @@ export default function CircularButton({
 
   const baseClassName = `
     relative inline-flex items-center justify-center overflow-hidden rounded-full
-    border border-oris-secondary/20 hover:border-transparent cursor-pointer select-none
+    border border-oris-secondary/20 cursor-pointer select-none
     group size-[3.4vw] min-w-11 min-h-11 max-md:size-12
     ${className}
   `;

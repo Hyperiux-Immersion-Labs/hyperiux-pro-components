@@ -7,7 +7,7 @@ interface OrisWrapperProps {
 
 export default function OrisWrapper({ children }: OrisWrapperProps) {
   return (
-    <main id='main' className='bg-white'>
+    <main id='main' className='bg-white oris-dental-main'>
       <LenisSmoothScroll lerp={.1} />
       {children}
     </main>

@@ -23,7 +23,7 @@ const STATS = [
 
 export default function AboutOris() {
   return (
-    <section id='about-oris' className='min-h-screen w-full relative z-10 bg-white oris-paddx flex flex-col justify-between py-[6vw] max-[1025px]:min-h-0 max-[1025px]:py-[12vw] max-[1025px]:gap-12'>
+    <section id='about-oris' className='h-fit w-full relative z-10 bg-white oris-paddx flex flex-col gap-[12vw] justify-between py-[10vw] max-[1025px]:min-h-0 max-[1025px]:py-[12vw] max-[1025px]:gap-12'>
       {/* Top Section: Subtitle Tag on Left, Main Heading on Right */}
       <div className="flex justify-between items-start w-full max-[1025px]:flex-col max-[1025px]:gap-6">
         {/* Left Subtitle Tag */}
@@ -34,14 +34,14 @@ export default function AboutOris() {
 
         {/* Right Main Heading */}
         <div className="w-[60vw] max-[1025px]:w-full">
-          <SplitTextLines as="h2" className="oris-text64 text-oris-secondary leading-[1.2] font-normal" start="top 85%">
+          <SplitTextLines as="h2" className="oris-text64 text-oris-secondary leading-[1.2] font-normal!" start="top 85%">
             At Oris Dental, we believe everyone deserves a confident smile. Our skilled team offers personalized care using modern techniques and a gentle approach.
           </SplitTextLines>
         </div>
       </div>
 
       {/* Bottom Section: 4 Stat Columns */}
-      <div className="grid grid-cols-4 max-[1025px]:grid-cols-2 gap-[7vw] max-[1025px]:gap-8 w-full pt-[8vw] max-[1025px]:pt-6">
+      <div className="grid grid-cols-4 max-[1025px]:grid-cols-2 gap-[7vw] max-[1025px]:gap-8 w-full  max-[1025px]:pt-6">
         {STATS.map((stat, idx) => (
           <div key={idx} className="flex flex-col shrink-0">
             <SlotCounter

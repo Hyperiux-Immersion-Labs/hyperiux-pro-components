@@ -104,6 +104,17 @@ export default function DotsCanvas({
 
         const handleMouseMove = (e: MouseEvent) => {
             const rect = canvas.getBoundingClientRect()
+            if (
+                e.clientX < rect.left - interactionRadius ||
+                e.clientX > rect.right + interactionRadius ||
+                e.clientY < rect.top - interactionRadius ||
+                e.clientY > rect.bottom + interactionRadius
+            ) {
+                mouse.targetX = -1000
+                mouse.targetY = -1000
+                mouse.active = false
+                return
+            }
             mouse.targetX = e.clientX - rect.left
             mouse.targetY = e.clientY - rect.top
             mouse.active = true
@@ -116,7 +127,7 @@ export default function DotsCanvas({
         }
 
         window.addEventListener('resize', initGrid)
-        window.addEventListener('mousemove', handleMouseMove)
+        window.addEventListener('mousemove', handleMouseMove, { passive: true })
         document.addEventListener('mouseleave', handleMouseLeave)
 
         initGrid()
@@ -162,15 +173,17 @@ export default function DotsCanvas({
                 dot.r += (targetR - dot.r) * lerpFactor
                 dot.alpha += (targetAlpha - dot.alpha) * lerpFactor
 
-                // Draw square dot
-                ctx.fillStyle = `rgba(255, 255, 255, ${dot.alpha})`
-                if (shape === 'square') {
-                    const size = dot.r * 1.9
-                    ctx.fillRect(dot.x - size / 2, dot.y - size / 2, size, size)
-                } else {
-                    ctx.beginPath()
-                    ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2)
-                    ctx.fill()
+                if (dot.alpha > 0.005) {
+                    // Draw square dot
+                    ctx.fillStyle = `rgba(255, 255, 255, ${dot.alpha})`
+                    if (shape === 'square') {
+                        const size = dot.r * 1.9
+                        ctx.fillRect(dot.x - size / 2, dot.y - size / 2, size, size)
+                    } else {
+                        ctx.beginPath()
+                        ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2)
+                        ctx.fill()
+                    }
                 }
             }
 
