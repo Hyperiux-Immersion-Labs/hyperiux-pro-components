@@ -325,16 +325,16 @@ export default function PricingV3({ isIndia = false, auth = false }) {
                         <p className="t64 font-neue-haas  max-md:text-[5vw] max-sm:text-[7vw]">Pro</p>
 
                         <div className="mt-[1.5vw] flex items-end gap-[1vw] max-[1025px]:mt-[3vw] max-[1025px]:gap-[2vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
-                            <p
-                                className="t96 font-neue-haas items-center  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]"
-                                aria-label={`${symbol}${planPrice} ${planLabel.toLowerCase()}`}
-                            >
-                                <span aria-hidden="true">{symbol}</span>
-                                <PriceDigits
-                                    monthlyAmount={monthlyAmount}
-                                    yearlyAmount={yearlyAmount}
-                                    isYearly={isYearly}
-                                />
+                            <p className="t96 font-neue-haas items-center  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]">
+                                <span className="sr-only">{`${symbol}${planPrice} ${planLabel.toLowerCase()}`}</span>
+                                <span aria-hidden="true" className="flex items-center leading-none">
+                                    <span>{symbol}</span>
+                                    <PriceDigits
+                                        monthlyAmount={monthlyAmount}
+                                        yearlyAmount={yearlyAmount}
+                                        isYearly={isYearly}
+                                    />
+                                </span>
                             </p>
 
                             <p className="text22 mb-[0.4vw] max-md:text-[2.2vw] max-sm:text-[4vw]">
