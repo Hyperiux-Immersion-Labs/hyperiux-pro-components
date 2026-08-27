@@ -1,7 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import "./lumera-styles.css";
 import type { Metadata } from "next";
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import ScrollTopOnLoad from "./ScrollTopOnLoad";
 import Loader from "./Loader";
 import ogImage from "./assets/og.png";
@@ -21,6 +20,7 @@ import Highlights from "./Highlights";
 import Roi from "./Roi";
 import ParallaxFooter from "./effects/parallax-footer";
 import CTA from "./CTA";
+import LenisSmoothScroll from "./LenisSmoothScroll";
 
 export const metadata: Metadata = {
   title: "Lumera Heights - Luxury Dubai Real Estate Template",

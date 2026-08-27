@@ -1,0 +1,167 @@
+
+
+@font-face {
+  font-family: "Kyntra Helvetica Neue";
+  src: url("./assets/fonts/helvetica-neue-woff2/HelveticaNeueLight.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kyntra Helvetica Neue";
+  src: url("./assets/fonts/helvetica-neue-woff2/HelveticaNeueRoman.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kyntra Helvetica Neue";
+  src: url("./assets/fonts/helvetica-neue-woff2/HelveticaNeueMedium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kyntra Helvetica Neue";
+  src: url("./assets/fonts/helvetica-neue-woff2/HelveticaNeueBold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Aeonik Pro - default body typeface for the whole Kyntra template */
+
+@font-face {
+  font-family: "Kyntra Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kyntra Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kyntra Aeonik Pro";
+  src: url("./assets/fonts/aeonik-pro-woff2/AeonikPro-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+.kyntra-page {
+  --font-helvetica-neue: "Kyntra Helvetica Neue", Arial, Helvetica, sans-serif;
+  --font-aeonik-pro: "Kyntra Aeonik Pro", Arial, Helvetica, sans-serif;
+
+  /* Kyntra brand primary */
+  --kyntra-primary: #134bd6;
+}
+
+/* Every element inside the Kyntra template defaults to Aeonik Pro.
+   Opt into the heading typeface per-element with .font-helvetica-neue. */
+.kyntra-page,
+.kyntra-page * {
+  font-family: var(--font-aeonik-pro);
+}
+
+.kyntra-page .font-helvetica-neue,
+.kyntra-page .font-helvetica-neue * {
+  font-family: var(--font-helvetica-neue);
+}
+
+.kyntra-page .font-aeonik-pro {
+  font-family: var(--font-aeonik-pro);
+}
+
+/* Brand primary colour utilities, scoped to the Kyntra template. */
+.kyntra-page .bg-kyntra-primary {
+  background-color: var(--kyntra-primary);
+}
+
+.kyntra-page .text-kyntra-primary {
+  color: var(--kyntra-primary);
+}
+
+.kyntra-page .fill-kyntra-primary {
+  fill: var(--kyntra-primary);
+}
+
+.kyntra-page .border-kyntra-primary {
+  border-color: var(--kyntra-primary);
+}
+
+/* Headings: Helvetica Neue, tight. h1 sizing/line-height defined here so
+   every Kyntra section shares one display scale. */
+.kyntra-page h1,
+.kyntra-page h2,
+.kyntra-page h3 {
+  font-family: var(--font-helvetica-neue);
+}
+
+.kyntra-page h1 {
+  font-size: 4.8vw;
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 1025px) {
+  .kyntra-page h1 {
+    font-size: 8vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .kyntra-page h1 {
+    font-size: 11vw;
+  }
+}
+
+.kyntra-page h2 {
+  font-size: 3.8vw;
+}
+
+
+.kyntra-page .text-22 {
+  font-size: 1.15vw;
+}
+
+.kyntra-page .text-28 {
+  font-size: 1.45vw;
+}
+
+.kyntra-page .text-20 {
+  font-size: 1vw;
+}
+
+.kyntra-page .text-24 {
+  font-size: 1.25vw;
+}
+
+/* Section wrapper: consistent block/inline padding across Kyntra sections. */
+.kyntra-page .kyntra-container {
+  padding-block: 7%;
+  padding-inline: 5%;
+}
+
+@media (max-width: 1025px) {
+  .kyntra-page .kyntra-container {
+    padding-inline: 6%;
+  }
+}
+
+@media (max-width: 768px) {
+  .kyntra-page .kyntra-container {
+    padding-inline: 7%;
+  }
+}
+
