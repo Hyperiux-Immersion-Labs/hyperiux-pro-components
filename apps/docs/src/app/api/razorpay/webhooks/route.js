@@ -87,6 +87,7 @@ export async function POST(req) {
             currency: payment.currency,
             subscriptionId: subscription.id,
             billingInterval: getBillingInterval(subscription.plan_id),
+            planId: subscription.plan_id,
           });
         } catch (affitorError) {
           console.error("AFFITOR_TRACK_SALE_ERROR:", affitorError);
