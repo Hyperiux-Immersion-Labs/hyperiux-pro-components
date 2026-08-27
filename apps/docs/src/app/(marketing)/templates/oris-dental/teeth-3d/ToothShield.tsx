@@ -99,10 +99,23 @@ export default function ToothShield({
         [],
     )
 
+    // react-hooks/immutability (below, and at every other uniforms.*.value
+    // assignment / useFrame callback in this file) is a React Compiler
+    // readiness rule: it assumes a useMemo'd value is never mutated after
+    // render. Driving a THREE.ShaderMaterial's uniforms imperatively every
+    // frame - not through setState/re-render - is the standard,
+    // required-for-performance react-three-fiber pattern; going through
+    // state here would mean a re-render on every animation frame. This repo
+    // doesn't run React Compiler (no babel-plugin-react-compiler/
+    // next.config reactCompiler flag), so the rule is only advisory today -
+    // suppressed rather than restructured, since rebuilding this around a
+    // ref-recreated material to satisfy a not-yet-enabled compiler isn't
+    // worth the regression risk to a working shader.
     useEffect(() => {
         if (!shell) return
         const u = material.uniforms
         u.uCenter.value.copy(shell.center)
+        // eslint-disable-next-line react-hooks/immutability -- see note above
         u.uInvSize.value = 2 / shell.size
         u.uMetalnessMap.value = shell.metalnessMap
         u.uUseMetalMask.value = shell.metalnessMap ? 1 : 0
@@ -110,6 +123,7 @@ export default function ToothShield({
 
     useEffect(() => {
         const u = material.uniforms
+        // eslint-disable-next-line react-hooks/immutability -- see note above
         u.uOpacity.value = opacity
         u.uHexOpacity.value = hexOpacity
         u.uHexScale.value = hexScale
@@ -183,6 +197,9 @@ export default function ToothShield({
     }, [material, revealDuration])
 
     // ── Hits ─────────────────────────────────────────────────────────────────
+    // registerHit's returned closure mutates material.uniforms imperatively
+    // (same r3f pattern noted above the first useEffect).
+    // eslint-disable-next-line react-hooks/immutability -- see note above
     const registerHit = useMemo(() => {
         const normalised = new THREE.Vector3()
         return (localPoint: THREE.Vector3) => {
@@ -193,11 +210,15 @@ export default function ToothShield({
             const positions = material.uniforms.uHitPos.value as THREE.Vector3[]
             const times = material.uniforms.uHitTime.value as number[]
             positions[slot].copy(normalised)
+            // eslint-disable-next-line react-hooks/immutability -- see note above
             times[slot] = clock.current.time
             clock.current.slot++
         }
     }, [shell, material])
 
+    // This effect calls registerHit, which mutates material.uniforms - same
+    // r3f pattern noted above.
+    // eslint-disable-next-line react-hooks/immutability -- see note above
     useEffect(() => {
         if (!shell) return
 
@@ -259,10 +280,14 @@ export default function ToothShield({
         }
     }, [shell, gl, camera, registerHit])
 
+    // Per-frame uniform updates - same r3f pattern noted above; going
+    // through setState here would re-render the component on every frame.
+    // eslint-disable-next-line react-hooks/immutability -- see note above
     useFrame((state, rawDelta) => {
         if (!shell) return
         const delta = Math.min(rawDelta, 1 / 30)
         clock.current.time += delta
+        // eslint-disable-next-line react-hooks/immutability -- see note above
         material.uniforms.uTime.value = clock.current.time
 
         // Smoothly lerp hover position and strength

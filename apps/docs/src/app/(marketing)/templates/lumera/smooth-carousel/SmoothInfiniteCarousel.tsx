@@ -87,8 +87,19 @@ export default function SmoothInfiniteCarousel({
 }: SmoothInfiniteCarouselProps) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const sliderRef = useRef<KeyboardSlider | null>(null);
+  // Read through a ref instead of closing over the prop directly - onReady
+  // is caller-supplied and often a fresh inline function every render;
+  // declaring it as a dependency of the setup effect below would tear down
+  // and rebuild the whole slider (losing drag/scroll state) on every parent
+  // re-render, not just when the carousel itself actually needs to
+  // reinitialize.
+  const onReadyRef = useRef(onReady);
 
   const childArray = React.Children.toArray(children).filter(Boolean);
+
+  useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
 
   useEffect(() => {
     if (!wrapperRef.current || childArray.length === 0) return;
@@ -105,7 +116,7 @@ export default function SmoothInfiniteCarousel({
     });
 
     sliderRef.current = slider;
-    onReady?.(slider);
+    onReadyRef.current?.(slider);
 
     return () => {
       slider.destroy();

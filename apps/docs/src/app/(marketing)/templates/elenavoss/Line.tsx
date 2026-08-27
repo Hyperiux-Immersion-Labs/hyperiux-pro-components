@@ -28,10 +28,16 @@ function Line({ strokeColor = "#111111", strokeWidth = 2 }: LineProps) {
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mq.matches);
+    // Deferred a frame so this isn't a synchronous setState call inside the
+    // effect body itself (which forces a cascading extra render right after
+    // mount) - matches the same pattern used elsewhere in this template.
+    const frameId = window.requestAnimationFrame(() => setPrefersReducedMotion(mq.matches));
     const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      mq.removeEventListener("change", onChange);
+    };
   }, []);
 
   const setPath = (value: number) => {

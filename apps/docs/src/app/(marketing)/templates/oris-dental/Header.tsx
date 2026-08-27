@@ -17,8 +17,11 @@ export default function Header() {
         }
 
         if (typeof window !== 'undefined' && (window as any).__orisLoaderFinished) {
-            setLoaded(true)
-            return
+            // Deferred a frame so this isn't a synchronous setState call
+            // inside the effect body itself (which forces a cascading
+            // extra render right after mount).
+            const frameId = window.requestAnimationFrame(() => setLoaded(true))
+            return () => window.cancelAnimationFrame(frameId)
         }
 
         window.addEventListener('oris-loader-finished', handleLoaderFinished, { once: true })

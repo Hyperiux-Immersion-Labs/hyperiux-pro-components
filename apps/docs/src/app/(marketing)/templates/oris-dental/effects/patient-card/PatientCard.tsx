@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 
 const DEFAULT_PATIENTS = [
@@ -138,9 +139,18 @@ export default function PatientCard({
                                 }}
                                 className="relative group/avatar z-10 hover:z-30 will-change-transform"
                             >
-                                <img
+                                <Image
                                     src={src}
                                     alt={name}
+                                    width={128}
+                                    height={128}
+                                    // avatars is a public prop accepting any
+                                    // caller-supplied URL (not just the
+                                    // Unsplash defaults) - Next's optimizer
+                                    // needs every source domain allowlisted
+                                    // in next.config ahead of time, which a
+                                    // reusable effect component can't assume.
+                                    unoptimized
                                     className="w-[3.2vw] h-[3.2vw] max-[1025px]:w-10 max-[1025px]:h-10 rounded-full object-cover border-[0.18vw] max-[1025px]:border-2 border-white shadow-sm select-none relative transition-all duration-300 ease-out group-hover/avatar:scale-115 group-hover/avatar:shadow-md cursor-pointer"
                                 />
 

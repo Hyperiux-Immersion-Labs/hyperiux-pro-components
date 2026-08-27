@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -133,41 +133,6 @@ const Awards = () => {
     };
   }, []);
 
-  // Cursor position is tracked with a WINDOW-level listener, not the row
-  // list's own onMouseMove - a listener scoped to the list only fires while
-  // a real mousemove event happens to land inside it, which stayed stale
-  // (or never updated at all if the list's own onMouseEnter/onMouseLeave
-  // boundary was ever slightly off) the moment the page scrolled under a
-  // stationary cursor instead of the cursor itself moving. Tracking
-  // globally means the scroll listener below always has the actual live
-  // position to re-check against, regardless of list hover state.
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      lastMousePosRef.current = { x: event.clientX, y: event.clientY };
-      updateActiveRowAt(event.clientX, event.clientY);
-    };
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // Re-checks the row-under-the-cursor on every scroll tick too, not just
-  // on mousemove - without this, scrolling the page with the mouse resting
-  // still over the list would leave the image stuck on whatever row was
-  // last actually moused over, instead of following whichever row has
-  // scrolled to that same on-screen position. Plain native scroll (not
-  // Lenis's own callback form) - Lenis doesn't suppress native scroll
-  // dispatch, and this only needs a resting position re-check, not a
-  // per-frame velocity/progress feed.
-  useEffect(() => {
-    const handleScroll = () => {
-      const pos = lastMousePosRef.current;
-      if (!pos) return;
-      updateActiveRowAt(pos.x, pos.y);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   // Gates the whole image-container behind cursor presence over the row
   // list (.awards-container) - everything inside it (pill snap, per-card
   // scale reveal) is untouched, this just fades the container itself.
@@ -188,47 +153,11 @@ const Awards = () => {
     });
   };
 
-  // Which row is "hovered" is computed here from raw geometry (a point vs.
-  // each row's own getBoundingClientRect), not from onMouseEnter/
-  // onMouseLeave on the row elements - the divider between rows (.box in
-  // elenavoss.css) has a deliberately oversized pluck hit-region (40px by
-  // default, growing to 150px on its own hover) that visually overlaps
-  // whichever row(s) sit next to it. Relying on the browser's own
-  // mouseenter/mouseleave there meant hovering that overlap either
-  // mis-triggered the wrong row (when the divider was nested inside one
-  // row) or repeatedly flickered the row's own reveal on and off (when the
-  // divider sat between rows as a sibling) - both are just symptoms of
-  // hit-testing an element that was never meant to represent "which row is
-  // active." Recomputing straight from each row's real rect sidesteps the
-  // divider's hit-box entirely, and only calls handleRowEnter when the
-  // computed index actually changes, so moving around within the same
-  // row's own bounds never re-triggers it. Checks both axes (not just Y) -
-  // this now runs off a WINDOW-level position, not one scoped to the list,
-  // so a point that's vertically level with a row but horizontally
-  // somewhere else on the page entirely must not count as hovering it.
-  const updateActiveRowAt = (clientX: number, clientY: number) => {
-    const rows = rowRefs.current;
-    let nextIndex: number | null = null;
-    for (let i = 0; i < rows.length; i += 1) {
-      const rect = rows[i]?.getBoundingClientRect();
-      if (
-        rect &&
-        clientY >= rect.top &&
-        clientY < rect.bottom &&
-        clientX >= rect.left &&
-        clientX < rect.right
-      ) {
-        nextIndex = i;
-        break;
-      }
-    }
-
-    if (nextIndex === null || nextIndex === activeRowIndexRef.current) return;
-    activeRowIndexRef.current = nextIndex;
-    handleRowEnter(nextIndex);
-  };
-
-  const handleRowEnter = (index: number) => {
+  // useCallback (stable identity across renders, since it only closes over
+  // refs and constants) so the mousemove/scroll effects below can safely
+  // declare it as a dependency instead of only capturing whichever version
+  // existed on mount.
+  const handleRowEnter = useCallback((index: number) => {
     // Snap the pill to the hovered row's real position every time,
     // even re-hovering the already-active row, so the pill always
     // tracks properly rather than only reacting to a change of index.
@@ -281,7 +210,82 @@ const Awards = () => {
         ease: IMAGE_REVEAL_EASE,
       });
     }
-  };
+  }, []);
+
+  // Which row is "hovered" is computed here from raw geometry (a point vs.
+  // each row's own getBoundingClientRect), not from onMouseEnter/
+  // onMouseLeave on the row elements - the divider between rows (.box in
+  // elenavoss.css) has a deliberately oversized pluck hit-region (40px by
+  // default, growing to 150px on its own hover) that visually overlaps
+  // whichever row(s) sit next to it. Relying on the browser's own
+  // mouseenter/mouseleave there meant hovering that overlap either
+  // mis-triggered the wrong row (when the divider was nested inside one
+  // row) or repeatedly flickered the row's own reveal on and off (when the
+  // divider sat between rows as a sibling) - both are just symptoms of
+  // hit-testing an element that was never meant to represent "which row is
+  // active." Recomputing straight from each row's real rect sidesteps the
+  // divider's hit-box entirely, and only calls handleRowEnter when the
+  // computed index actually changes, so moving around within the same
+  // row's own bounds never re-triggers it. Checks both axes (not just Y) -
+  // this now runs off a WINDOW-level position, not one scoped to the list,
+  // so a point that's vertically level with a row but horizontally
+  // somewhere else on the page entirely must not count as hovering it.
+  const updateActiveRowAt = useCallback((clientX: number, clientY: number) => {
+    const rows = rowRefs.current;
+    let nextIndex: number | null = null;
+    for (let i = 0; i < rows.length; i += 1) {
+      const rect = rows[i]?.getBoundingClientRect();
+      if (
+        rect &&
+        clientY >= rect.top &&
+        clientY < rect.bottom &&
+        clientX >= rect.left &&
+        clientX < rect.right
+      ) {
+        nextIndex = i;
+        break;
+      }
+    }
+
+    if (nextIndex === null || nextIndex === activeRowIndexRef.current) return;
+    activeRowIndexRef.current = nextIndex;
+    handleRowEnter(nextIndex);
+  }, [handleRowEnter]);
+
+  // Cursor position is tracked with a WINDOW-level listener, not the row
+  // list's own onMouseMove - a listener scoped to the list only fires while
+  // a real mousemove event happens to land inside it, which stayed stale
+  // (or never updated at all if the list's own onMouseEnter/onMouseLeave
+  // boundary was ever slightly off) the moment the page scrolled under a
+  // stationary cursor instead of the cursor itself moving. Tracking
+  // globally means the scroll listener below always has the actual live
+  // position to re-check against, regardless of list hover state.
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      lastMousePosRef.current = { x: event.clientX, y: event.clientY };
+      updateActiveRowAt(event.clientX, event.clientY);
+    };
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [updateActiveRowAt]);
+
+  // Re-checks the row-under-the-cursor on every scroll tick too, not just
+  // on mousemove - without this, scrolling the page with the mouse resting
+  // still over the list would leave the image stuck on whatever row was
+  // last actually moused over, instead of following whichever row has
+  // scrolled to that same on-screen position. Plain native scroll (not
+  // Lenis's own callback form) - Lenis doesn't suppress native scroll
+  // dispatch, and this only needs a resting position re-check, not a
+  // per-frame velocity/progress feed.
+  useEffect(() => {
+    const handleScroll = () => {
+      const pos = lastMousePosRef.current;
+      if (!pos) return;
+      updateActiveRowAt(pos.x, pos.y);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [updateActiveRowAt]);
 
   return (
     <section
