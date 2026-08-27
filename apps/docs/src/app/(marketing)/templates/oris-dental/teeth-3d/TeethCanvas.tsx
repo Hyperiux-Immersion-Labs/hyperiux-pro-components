@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Suspense, useMemo, useRef, useEffect } from 'react'
+import React, { Suspense, useMemo, useRef, useEffect, useState } from 'react'
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber'
 import { Center, Environment } from '@react-three/drei'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -10,14 +10,14 @@ import gsap from 'gsap'
 import ToothShield from './ToothShield'
 import { degToRad } from 'three/src/math/MathUtils.js'
 // @ts-ignore - glb asset import
-import teethModel from '../../oris-dental/assets/teeth.glb'
+import teethModel from '../../oris-dental/assets/teeth-compressed.glb'
 import MouseTilt from './MouseTilt'
 import { markModelParsed, markModelReady, reportModelDownload } from './modelLoadState'
 
 const MODEL_URL: string =
     typeof teethModel === 'string'
         ? teethModel
-        : (teethModel as any)?.src || (teethModel as any)?.default || '/templates/oris-dental/teeth.glb'
+        : (teethModel as any)?.src || (teethModel as any)?.default || '/templates/oris-dental/teeth-compressed.glb'
 
 // The GLB is a single mesh sharing one material between the crown and the
 // titanium post -- they are separated only by the metallicRoughness texture.
@@ -214,9 +214,32 @@ function ResponsiveModelGroup({ children }: { children: React.ReactNode }) {
 }
 
 export default function TeethCanvas() {
+    const containerRef = useRef<HTMLDivElement | null>(null)
+    const [isInView, setIsInView] = useState(true)
+
+    useEffect(() => {
+        const el = containerRef.current
+        if (!el) return
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsInView(entry.isIntersecting)
+            },
+            { threshold: 0 }
+        )
+
+        observer.observe(el)
+        return () => observer.disconnect()
+    }, [])
+
     return (
-        <div className='absolute inset-0 h-full w-full pointer-events-none z-0'>
-            <Canvas camera={{ position: [0, 0, 5], fov: 45 }} gl={{ antialias: true }} className="pointer-events-none">
+        <div ref={containerRef} className='absolute inset-0 h-full w-full pointer-events-none z-0'>
+            <Canvas
+                frameloop={isInView ? 'always' : 'never'}
+                camera={{ position: [0, 0, 5], fov: 45 }}
+                gl={{ antialias: true }}
+                className="pointer-events-none"
+            >
                 <ambientLight intensity={1.35} color="#f4f8ff" />
                 <directionalLight position={[10, 10, 10]} intensity={2.6} color="#ff0000" />
                 <directionalLight position={[-10, 8, -5]} intensity={1.6} color="#eef4ff" />

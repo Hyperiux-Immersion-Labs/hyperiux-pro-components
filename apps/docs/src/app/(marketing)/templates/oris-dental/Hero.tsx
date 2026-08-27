@@ -21,7 +21,7 @@ export default function Hero() {
   });
 
   return (
-    <section id="oris-hero" className="h-dvh sticky top-0 z-0  bg-linear-to-t from-[#3365E2] via-[#3365E2] to-white  overflow-hidden w-full max-[1025px]:h-dvh max-md:h-dvh">
+    <section id="oris-hero" className="h-dvh sticky top-0 z-0 bg-[linear-gradient(to_top,#3365E2_0%,#3365E2_20%,#4a78e7_40%,#789ef1_60%,#b9d0fb_80%,#ffffff_100%)] overflow-hidden w-full max-[1025px]:h-dvh max-md:h-dvh">
       <div className="h-full w-full relative flex flex-col justify-between">
 
         <DotsCanvas spacing={22} lerpFactor={0.15} baseRadius={1.4} maxRadius={3.8} interactionRadius={200} />
