@@ -235,10 +235,10 @@ export default function NavbarMobileV3({
         // Translucent rather than solid: the hero's ASCII field keeps moving
         // under the bar, and the blur is what keeps the logo readable over it.
         className={`fixed top-0 left-0 z-1000 hidden max-[1025px]:flex w-full items-center justify-between border-b border-white/8 bg-background/60 px-[6vw] py-[5vw] backdrop-blur-xl transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none md:px-[3.5vw] md:py-[2.5vw]  ${!intro
-            ? "pointer-events-none translate-y-0 opacity-0"
-            : visible || open
-              ? "translate-y-0 opacity-100"
-              : "translate-y-[-120%] opacity-100"
+          ? "pointer-events-none translate-y-0 opacity-0"
+          : visible || open
+            ? "translate-y-0 opacity-100"
+            : "translate-y-[-120%] opacity-100"
           }`}
         style={{ willChange: "transform" }}
       >
