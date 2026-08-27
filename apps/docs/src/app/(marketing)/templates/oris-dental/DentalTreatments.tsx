@@ -5,6 +5,11 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitTextLines from "./effects/split-text-lines/SplitTextLines";
 
+import Image, { StaticImageData } from "next/image";
+import treatment1 from "./assets/treatment1.png";
+import treatment2 from "./assets/treatment2.png";
+import treatment3 from "./assets/treatment3.png";
+
 gsap.registerPlugin(ScrollTrigger);
 
 export interface TreatmentCard {
@@ -13,6 +18,7 @@ export interface TreatmentCard {
   tags: string[];
   description: string;
   bgColor: string;
+  image: StaticImageData | string;
 }
 
 const TREATMENTS_DATA: TreatmentCard[] = [
@@ -23,6 +29,7 @@ const TREATMENTS_DATA: TreatmentCard[] = [
     description:
       "Professional teeth whitening treatments utilize safe, high-grade bleaching agents activated by specialized light technology to lift years of deep stains, restoring brilliant natural radiance in a single comfortable visit.",
     bgColor: "#13314a",
+    image: treatment1,
   },
   {
     id: 2,
@@ -31,6 +38,7 @@ const TREATMENTS_DATA: TreatmentCard[] = [
     description:
       "Dental implants are titanium posts surgically placed into the jawbone to serve as artificial tooth roots. Once healed, they support custom crowns that look, feel, and function like natural teeth, restoring your ability to eat, speak, and smile with full confidence.",
     bgColor: "#3365e2",
+    image: treatment2,
   },
   {
     id: 3,
@@ -39,6 +47,7 @@ const TREATMENTS_DATA: TreatmentCard[] = [
     description:
       "Clear aligners and modern orthodontic options gently guide teeth into optimal alignment over time. Designed for discreet comfort and easy maintenance throughout your daily routine.",
     bgColor: "#13314a",
+    image: treatment3,
   },
 ];
 
@@ -142,7 +151,7 @@ export default function DentalTreatments({
         className="w-full motion-reduce:h-auto"
       >
         <div className="w-full oris-paddx sticky top-[5vw] max-[1025px]:top-0 h-screen max-[1025px]:h-[100svh] max-[1025px]:flex max-[1025px]:items-center max-[1025px]:justify-center motion-reduce:static motion-reduce:h-auto">
-          <div className="relative w-full h-full max-[1025px]:h-[75vw] max-md:h-[125vw] motion-reduce:h-auto">
+          <div className="relative w-full h-full max-[1025px]:h-[74svh] max-md:h-[76svh] motion-reduce:h-auto">
             {cards.map((item, index) => (
               <div
                 key={item.id}
@@ -160,39 +169,55 @@ export default function DentalTreatments({
                         zIndex: index + 1,
                         backgroundColor: item.bgColor,
                         top: `calc(${index * 6}vw)`,
-                        "--top-tablet": `calc(${index * 4.5}vw)`,
-                        "--top-mobile": `calc(${index * 7}vw)`,
+                        "--top-tablet": `calc(${index * 16}px)`,
+                        "--top-mobile": `calc(${index * 12}px)`,
                       } as React.CSSProperties)
                 }
                 className={`absolute inset-x-0 ${
                   index === 0
                     ? "top-0"
                     : "max-[1025px]:top-[var(--top-tablet)] max-md:top-[var(--top-mobile)] translate-y-[110vh]"
-                } motion-reduce:static motion-reduce:translate-y-0 motion-reduce:mb-[25vw] h-[35vw] max-[1025px]:h-[75vw] max-md:h-[125vw] rounded-[2.2vw] max-[1025px]:rounded-[24px] px-[3.5vw] py-[1.5vw] pb-[2.5vw] max-[1025px]:p-[6vw] flex flex-col max-[1025px]:gap-[8vw] justify-between border border-white/10`}
+                } motion-reduce:static motion-reduce:translate-y-0 motion-reduce:mb-[25vw] h-[35vw] max-[1025px]:h-full rounded-[2.2vw] max-[1025px]:rounded-[24px] py-[1.4vw] pb-[2.8vw] px-[2.8vw] max-[1025px]:p-[4.5vw] max-md:p-[5vw] flex flex-row max-[1025px]:flex-col items-center max-[1025px]:items-start justify-between gap-[3vw] max-[1025px]:gap-[2.5vw] border border-white/10`}
               >
-                {/* Top: Title & Tags */}
-                <div>
-                  <h3 className="text-white w-full text-[3.8vw] max-[1025px]:text-[7.5vw] leading-[1.15]! whitespace-pre-line">
-                    {item.title}
-                  </h3>
-                  <div className="flex flex-wrap items-center gap-[0.6vw] max-[1025px]:gap-[1.5vw] text-white oris-text22 mt-[1.2vw] max-[1025px]:mt-[6vw]">
-                    {item.tags.map((tag, tagIdx) => (
-                      <React.Fragment key={tagIdx}>
-                        <span>{tag}</span>
-                        {tagIdx < item.tags.length - 1 && (
-                          <span className="w-[0.3vw] h-[0.3vw] max-[1025px]:w-[1vw] max-[1025px]:h-[1vw] rounded-full bg-white inline-block" />
-                        )}
-                      </React.Fragment>
-                    ))}
+                {/* Left: Title, Tags & Description */}
+                <div className="flex flex-col justify-between h-full flex-1 max-[1025px]:h-auto max-[1025px]:gap-[2.5vw]">
+                  {/* Top: Title & Tags */}
+                  <div>
+                    <h3 className="text-white w-full text-[3.8vw] max-[1025px]:text-[5.5vw] max-md:text-[7vw] leading-[1.15]! whitespace-pre-line">
+                      {item.title}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-[0.6vw] max-[1025px]:gap-[1.5vw] text-white oris-text22 mt-[1.2vw] max-[1025px]:mt-[2vw]">
+                      {item.tags.map((tag, tagIdx) => (
+                        <React.Fragment key={tagIdx}>
+                          <span>{tag}</span>
+                          {tagIdx < item.tags.length - 1 && (
+                            <span className="w-[0.3vw] h-[0.3vw] max-[1025px]:w-[1vw] max-[1025px]:h-[1vw] rounded-full bg-white inline-block" />
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bottom: Description */}
+                  <div>
+                    <p className="text-white oris-text32 max-w-[55vw] pb-[3vw] max-[1025px]:pb-0 max-[1025px]:max-w-full">
+                      {item.description}
+                    </p>
                   </div>
                 </div>
 
-                {/* Bottom: Description */}
-                <div>
-                  <p className="text-white oris-text32 max-w-[65vw] max-[1025px]:max-w-full">
-                    {item.description}
-                  </p>
-                </div>
+                {/* Right: Image Card */}
+                {item.image && (
+                  <div className="relative w-[24vw] h-[26vw] max-[1025px]:w-full max-[1025px]:h-[30svh] max-md:h-[30svh] rounded-[1.6vw] max-[1025px]:rounded-xl overflow-hidden shrink-0 shadow-lg">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 1025px) 90vw, 25vw"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
