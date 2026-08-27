@@ -320,21 +320,15 @@ export function Sidebar({
     };
   }, [effects]);
 
-  useEffect(() => {
-    router.prefetch?.("/effects");
-
-    for (const link of resolvedTopLinks) {
-      router.prefetch?.(link.href);
-    }
-
-    for (const link of resolvedLegalLinks) {
-      router.prefetch?.(link.href);
-    }
-
-    for (const category of effectCategories) {
-      router.prefetch?.(getEffectCategoryHref(category.id));
-    }
-  }, [router, resolvedTopLinks, resolvedLegalLinks]);
+  // ponytail: removed an eager useEffect that called router.prefetch() for
+  // every docs/legal/category link (~23 routes, each an RSC payload + full
+  // page JS chunk) on every Sidebar mount - confirmed via a live network
+  // trace to be firing in the same burst as the page's own content requests
+  // and contending for bandwidth (reported as "/effects loading very slow").
+  // next/link already prefetches each rendered <Link> lazily as it enters
+  // the viewport (see the sidebar's own <Link> elements below) - this was a
+  // redundant, strictly-worse duplicate of that, blasting everything upfront
+  // instead of staggered as links actually scroll into view.
 
   /*
     Important:
