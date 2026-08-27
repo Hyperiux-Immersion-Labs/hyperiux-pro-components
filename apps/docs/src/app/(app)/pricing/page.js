@@ -36,12 +36,12 @@ const USE_CASES = [
     text: "Pro is licensed per seat by default. Agencies and teams working across multiple client projects should use agency licensing rather than sharing one login.",
     link: "#",
   },
-
 ];
 
 export const metadata = createPageMetadata({
   title: "Hyperiux Vault Pricing | Pro React Effects Library",
-  description: "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 130+ effect library, WebGL scenes, and cursor effects from $20/month.",
+  description:
+    "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 130+ effect library, WebGL scenes, and cursor effects from $20/month.",
   path: "/pricing",
   image:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
@@ -64,26 +64,30 @@ export default async function PricingPage() {
         <main id="main-content">
           <Hero />
           <CubeBackgroundAscii
-            debug={false}            src="/homepage-v3/pricing/11.mp4"
+            debug={false}
+            src="/homepage-v3/pricing/new/3.mp4"
             config={{
-              charSet: "currency",
-              charColumns: 134,
-              charZoom: 1.08,
-              charGap: 0,
-              dither: 0.56,
-              glyphGain: 3,
-              videoScale: 1,
-              videoOffsetX: 0.21,
+              charSet: "hyperiux",
+              charColumns: 179,
+              charZoom: 1.01,
+              charGap: 0.35,
+              dither: 0.45,
+              glyphGain: 2.4,
+              videoScale: 1.36,
+              videoOffsetX: 0.28,
               videoOffsetY: 0,
-              levelsLow: 0.15,
+              levelsLow: 0.43,
               levelsHigh: 1,
-              brightnessMap: 1.69,
-              rampLow: 0.15,
-              rampHigh: 0,
+              brightnessMap: 0.8,
+              rampLow: 0,
+              rampHigh: 0.63,
               invert: false,
             }}
           />
-          <DitherTransition  mobileEndTriggers={'bottom -50%'} className="h-[46vw] max-md:h-[150vw]! bg-background " />
+          <DitherTransition
+            mobileEndTriggers={"bottom -50%"}
+            className="h-[46vw] max-md:h-[150vw]! bg-background "
+          />
           <PricingV3 isIndia={isIndia} auth />
           <DitherTransition
             dotColor="#050505"
@@ -95,7 +99,6 @@ export default async function PricingPage() {
           </div>
           <UseCases useCases={USE_CASES} />
           <div className="max-md:mt-[-55vw]! ">
-
             <FAQV3 faqItems={faqItems} translateTop={false} />
           </div>
           {/* <CTA2 /> */}
@@ -108,22 +111,19 @@ export default async function PricingPage() {
 const faqItems = [
   {
     id: "faq1",
-    question:
-      "Is Pro available now?",
+    question: "Is Pro available now?",
     answer:
       "Yes. Free Core is available immediately with no account required, and Pro is available today through self-serve checkout - no invite, approval, or waitlist needed.",
   },
   {
     id: "faq3",
-    question:
-      "Will pricing change after launch?",
+    question: "Will pricing change after launch?",
     answer:
       "Pro is $20/month or $179/year, with Indian pricing shown in INR (GST included at checkout) for visitors browsing from India.",
   },
   {
     id: "faq4",
-    question:
-      "Can I use Free Core without an account?",
+    question: "Can I use Free Core without an account?",
     answer:
       "Yes. Free Core effects should be available to preview and install without creating an account.",
   },
@@ -188,7 +188,4 @@ const faqItems = [
     answer:
       "We review student, nonprofit, and open-source discount requests case by case - email hello@hyperiux.com with a short description of your use case.",
   },
-
-
 ];
-

@@ -52,7 +52,7 @@ export default function DotFillButton({
             onClick={onClick}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            className={`group relative inline-flex  max-md:scale-100! items-center justify-center gap-[0.7vw] max-[1025px]:gap-2 rounded-full overflow-hidden whitespace-nowrap bg-[#3365e2] text-white select-none transition-colors duration-500 cursor-pointer pl-[1.8vw] pr-[1.5vw] py-[0.9vw] max-[1025px]:pl-5 max-[1025px]:pr-4 max-[1025px]:py-4 max-md:py-2 ${className}`}
+            className={`group relative inline-flex max-md:scale-100! items-center justify-center gap-[0.7vw] max-[1025px]:gap-2 rounded-full overflow-hidden whitespace-nowrap bg-[#3365e2] border border-[#3365e2] text-white select-none transition-colors duration-500 cursor-pointer pl-[1.8vw] pr-[1.5vw] py-[0.9vw] max-[1025px]:pl-5 max-[1025px]:pr-4 max-[1025px]:py-4 max-md:py-2 ${className}`}
             style={{
                 color: hovered ? '#3365e2' : '#ffffff',
             }}

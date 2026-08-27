@@ -183,7 +183,7 @@ export default function CareComfort() {
           -> card 26vw, gap 1.9vw (0.95vw padding per item side).
           Wrapper pl 2.05vw + item pl 0.95vw = 3vw, so the first card's left
           edge lines up exactly with the section heading (oris-paddx = 3vw). */}
-      <div ref={carouselWrapperRef} className="w-full relative overflow-hidden py-6">
+      <div ref={carouselWrapperRef} className="w-full relative  py-6">
         <SmoothInfiniteCarousel
           ref={carouselRef}
           config={{
@@ -199,7 +199,7 @@ export default function CareComfort() {
             <div
               key={`${card.id}-${idx}`}
               aria-hidden={idx >= CARE_CARDS.length}
-              className={`care-card-anim w-[28vw] max-[1025px]:w-[50vw] max-md:w-[76vw] aspect-[440/477] rounded-xl max-md:rounded-3xl px-[1.8vw] pt-[1.8vw] pb-[5vw] max-md:px-6 max-md:pt-6 max-md:pb-8 flex flex-col justify-end gap-[2.4vw] max-md:gap-6 relative overflow-hidden select-none will-change-transform ${card.bgClassName}`}
+              className={`care-card-anim w-[28vw] max-[1025px]:w-[50vw] max-md:w-[76vw] aspect-[440/477] rounded-xl max-md:rounded-3xl px-[1.8vw] pt-[1.8vw] pb-[5vw] max-md:px-6 max-md:pt-6 max-md:pb-8 flex flex-col justify-end gap-[2.4vw] max-md:gap-6 relative  select-none will-change-transform ${card.bgClassName}`}
             >
               {/* Interactive Dots on Mouse Move */}
               <DotsCanvas

@@ -400,8 +400,9 @@ export default function NavbarMobileV3({
               text="Sign In"
               // The button's own ramp jumps to desktop sizing above `md`; inside
               // the tablet sheet it needs to stay touch-sized.
+              href="/sign-in"  
               className="w-full md:py-[1.5vw] md:text-[2vw] md:[--btn-pad:2.4vw] md:[--btn-gap:1vw] md:[--btn-square:1.4vw] md:[--btn-arrow:2vw]"
-              onClick={close}
+              // onClick={close}
             />
           </div>
         </div>

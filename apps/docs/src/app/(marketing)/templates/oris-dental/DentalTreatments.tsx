@@ -8,208 +8,196 @@ import SplitTextLines from "./effects/split-text-lines/SplitTextLines";
 gsap.registerPlugin(ScrollTrigger);
 
 export interface TreatmentCard {
-    id: number;
-    title: string;
-    tags: string[];
-    description: string;
-    bgColor: string;
+  id: number;
+  title: string;
+  tags: string[];
+  description: string;
+  bgColor: string;
 }
 
 const TREATMENTS_DATA: TreatmentCard[] = [
-    {
-        id: 1,
-        title: "Teeth\nWhitening",
-        tags: ["Advanced brightening", "Stain removal", "Instant results"],
-        description:
-            "Professional teeth whitening treatments utilize safe, high-grade bleaching agents activated by specialized light technology to lift years of deep stains, restoring brilliant natural radiance in a single comfortable visit.",
-        bgColor: "#13314a",
-    },
-    {
-        id: 2,
-        title: "Dental\nImplants",
-        tags: ["Permanent solution", "Natural appearance", "Long-term care"],
-        description:
-            "Dental implants are titanium posts surgically placed into the jawbone to serve as artificial tooth roots. Once healed, they support custom crowns that look, feel, and function like natural teeth, restoring your ability to eat, speak, and smile with full confidence.",
-        bgColor: "#3365e2",
-    },
-    {
-        id: 3,
-        title: "Orthodontics \n& Aligners",
-        tags: ["Custom fit", "Discreet alignment", "Gentle movement"],
-        description:
-            "Clear aligners and modern orthodontic options gently guide teeth into optimal alignment over time. Designed for discreet comfort and easy maintenance throughout your daily routine.",
-        bgColor: "#13314a",
-    },
-    // {
-    //     id: 4,
-    //     title: "Restorative\nCrowns & Veneers",
-    //     tags: ["Porcelain aesthetics", "Precision contouring", "Durable strength"],
-    //     description:
-    //         "High-precision porcelain veneers and crowns custom-crafted to repair chips, gaps, and wear, giving you seamless aesthetics with unmatched durability and natural feel.",
-    //     bgColor: "#3365e2",
-    // },
-    // {
-    //     id: 5,
-    //     title: "Comprehensive\nPeriodontal Care",
-    //     tags: ["Deep cleaning", "Gum revitalization", "Preventative therapy"],
-    //     description:
-    //         "Targeted therapies focused on protecting gum tissue and underlying bone structure, halting progression of gum disease and ensuring a strong foundation for lifelong oral wellness.",
-    //     bgColor: "#13314a",
-    // },
+  {
+    id: 1,
+    title: "Teeth Whitening",
+    tags: ["Advanced brightening", "Stain removal", "Instant results"],
+    description:
+      "Professional teeth whitening treatments utilize safe, high-grade bleaching agents activated by specialized light technology to lift years of deep stains, restoring brilliant natural radiance in a single comfortable visit.",
+    bgColor: "#13314a",
+  },
+  {
+    id: 2,
+    title: "Dental Implants",
+    tags: ["Permanent solution", "Natural appearance", "Long-term care"],
+    description:
+      "Dental implants are titanium posts surgically placed into the jawbone to serve as artificial tooth roots. Once healed, they support custom crowns that look, feel, and function like natural teeth, restoring your ability to eat, speak, and smile with full confidence.",
+    bgColor: "#3365e2",
+  },
+  {
+    id: 3,
+    title: "Orthodontics & Aligners",
+    tags: ["Custom fit", "Discreet alignment", "Gentle movement"],
+    description:
+      "Clear aligners and modern orthodontic options gently guide teeth into optimal alignment over time. Designed for discreet comfort and easy maintenance throughout your daily routine.",
+    bgColor: "#13314a",
+  },
 ];
 
 export default function DentalTreatments({
-    cards = TREATMENTS_DATA,
+  cards = TREATMENTS_DATA,
 }: {
-    cards?: TreatmentCard[];
+  cards?: TreatmentCard[];
 }) {
-    const uid = useId().replace(/:/g, "");
-    const sectionId = `dental-treatments-${uid}`;
-    const sectionRef = useRef<HTMLElement>(null);
-    const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
-    const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const uid = useId().replace(/:/g, "");
+  const sectionId = `dental-treatments-${uid}`;
+  const sectionRef = useRef<HTMLElement>(null);
+  const runwayRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    useEffect(() => {
-        rowRefs.current = rowRefs.current.slice(0, cards.length);
-        cardRefs.current = cardRefs.current.slice(0, cards.length);
+  useEffect(() => {
+    cardRefs.current = cardRefs.current.slice(0, cards.length);
 
-        if (globalThis.innerWidth <= 1025) {
-            cardRefs.current.filter(Boolean).forEach((card) => {
-                gsap.set(card, {
-                    autoAlpha: 1,
-                    scale: 1,
-                });
-            });
-            return undefined;
+    const mm = gsap.matchMedia(sectionRef);
+
+    // Reduced motion keeps the cards in normal document flow (see the CSS
+    // below), so no timeline is built at all.
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const runway = runwayRef.current;
+      const cardEls = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+
+      if (!runway || cardEls.length === 0) return;
+
+      // The stage is stuck to the top of the viewport for exactly the
+      // scroll span between these two points, so the timeline runs while
+      // the cards are on screen.
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: runway,
+          start: "20% 50%",
+          end: "bottom bottom",
+          scrub: true,
+          markers: false,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // Only animate subsequent cards (index > 0) onto the stack
+      cardEls.slice(1).forEach((card, i) => {
+        // Incoming card rises up onto the stack
+        tl.fromTo(
+          card,
+          {
+            y: () => window.innerHeight * 1.1 - card.offsetTop,
+          },
+          { y: 0, ease: "none", duration: 1 },
+          i,
+        );
+
+        // Previous cards in the stack scale down to create receding depth
+        for (let prevIdx = 0; prevIdx <= i; prevIdx++) {
+          const prevCard = cardEls[prevIdx];
+          const targetScale = Math.max(0.85, 1 - (i + 1 - prevIdx) * 0.05);
+          tl.to(
+            prevCard,
+            {
+              scale: targetScale,
+              transformOrigin: "center top",
+              ease: "none",
+              duration: 1,
+            },
+            i,
+          );
         }
+      });
 
-        const ctx = gsap.context(() => {
-            const reduceMotion = window.matchMedia(
-                "(prefers-reduced-motion: reduce)"
-            ).matches;
+      // Trailing beat so the finished stack holds before it scrolls away.
+      tl.to({}, { duration: 0.5 });
+    });
 
-            const currentCards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-            const currentRows = rowRefs.current.filter(Boolean) as HTMLDivElement[];
+    return () => mm.revert();
+  }, [cards]);
 
-            currentCards.forEach((card, index) => {
-                gsap.set(card, {
-                    autoAlpha: 1,
-                    scale: reduceMotion || index === 0 ? 1 : 1.08,
-                    transformOrigin: "center center",
-                });
-            });
-
-            currentCards.slice(0, -1).forEach((card, index) => {
-                const nextRow = currentRows[index + 1];
-                const nextCard = currentCards[index + 1];
-
-                if (!nextRow || !nextCard) return;
-
-                const handoff = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: nextRow,
-                        start: "top bottom+=20%",
-                        end: "top top-=28%",
-                        scrub: true,
-                        invalidateOnRefresh: true,
-                    },
-                });
-
-                if (!reduceMotion) {
-                    handoff.to(
-                        nextCard,
-                        {
-                            scale: 1,
-                            ease: "none",
-                        },
-                        0
-                    );
-                }
-
-                gsap.to(card, {
-                    autoAlpha: 0,
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: nextRow,
-                        start: "top top+=14%",
-                        end: "top top+=2%",
-                        scrub: true,
-                        invalidateOnRefresh: true,
-                    },
-                });
-            });
-
-            ScrollTrigger.refresh();
-        }, sectionRef);
-
-        return () => {
-            ctx.revert();
-        };
-    }, [cards]);
-
-    return (
-        <section
-            id={sectionId}
-            ref={sectionRef}
-            className="w-full bg-white h-fit relative z-10 pt-[6vw] pb-[10vw] max-md:pb-[20vw]"
+  return (
+    <section
+      id={sectionId}
+      ref={sectionRef}
+      className="w-full bg-white h-fit relative z-10 pt-[6vw] pb-[2vw] max-md:pb-[20vw]"
+    >
+      {/* Header Section */}
+      <div className="oris-paddx mb-[7vw] max-md:mb-[15vw] max-[1025px]:mb-[10vw]">
+        <SplitTextLines
+          as="h2"
+          className="text-[4.2vw] max-[1025px]:text-[6vw] max-md:text-[7.5vw]"
         >
-            {/* Header Section */}
-            <div className="oris-paddx mb-[5vw] max-md:mb-[15vw] max-[1025px]:mb-[10vw]">
-                <SplitTextLines as="h2" className="text-[4.2vw] max-[1025px]:text-[6vw] max-md:text-[7.5vw]">
-                    Dental Care Treatments
-                </SplitTextLines>
-                <SplitTextLines as="p" className="oris-text22 mt-[1.5vw]" delay={0.15}>
-                    Personalized care designed for every stage of dental health.
-                </SplitTextLines>
-            </div>
+          Dental Care Treatments
+        </SplitTextLines>
+        <SplitTextLines as="p" className="oris-text22 mt-[1.5vw]" delay={0.15}>
+          Personalized care designed for every stage of dental health.
+        </SplitTextLines>
+      </div>
 
-            {/* Scroll Stack Container */}
-            <div className="w-full flex flex-col gap-[20vw] items-center oris-paddx max-md:gap-[70vw]">
-                {cards.map((item, index) => (
-                    <div
-                        key={item.id}
-                        ref={(el) => {
-                            rowRefs.current[index] = el;
-                        }}
-                        style={{ zIndex: index + 1 }}
-                        className={`sticky top-[18%] h-[40vw] w-full max-md:h-[120vw] max-[1025px]:h-[90vw]`}
-                    >
+      {/* Scroll runway -> sticky stage -> absolutely stacked cards */}
+      <div
+        ref={runwayRef}
+        style={{ height: `${cards.length * 50}svh` }}
+        className="w-full motion-reduce:h-auto"
+      >
+        <div className="w-full oris-paddx sticky top-[5vw] max-[1025px]:top-0 h-screen max-[1025px]:h-[100svh] max-[1025px]:flex max-[1025px]:items-center max-[1025px]:justify-center motion-reduce:static motion-reduce:h-auto">
+          <div className="relative w-full h-full max-[1025px]:h-[75vw] max-md:h-[125vw] motion-reduce:h-auto">
+            {cards.map((item, index) => (
+              <div
+                key={item.id}
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
+                style={
+                  index === 0
+                    ? ({
+                        zIndex: 1,
+                        backgroundColor: item.bgColor,
+                        top: 0,
+                      } as React.CSSProperties)
+                    : ({
+                        zIndex: index + 1,
+                        backgroundColor: item.bgColor,
+                        top: `calc(${index * 6}vw)`,
+                        "--top-tablet": `calc(${index * 4.5}vw)`,
+                        "--top-mobile": `calc(${index * 7}vw)`,
+                      } as React.CSSProperties)
+                }
+                className={`absolute inset-x-0 ${
+                  index === 0
+                    ? "top-0"
+                    : "max-[1025px]:top-[var(--top-tablet)] max-md:top-[var(--top-mobile)] translate-y-[110vh]"
+                } motion-reduce:static motion-reduce:translate-y-0 motion-reduce:mb-[25vw] h-[35vw] max-[1025px]:h-[75vw] max-md:h-[125vw] rounded-[2.2vw] max-[1025px]:rounded-[24px] px-[3.5vw] py-[1.5vw] pb-[2.5vw] max-[1025px]:p-[6vw] flex flex-col max-[1025px]:gap-[8vw] justify-between border border-white/10`}
+              >
+                {/* Top: Title & Tags */}
+                <div>
+                  <h3 className="text-white w-full text-[3.8vw] max-[1025px]:text-[7.5vw] leading-[1.15]! whitespace-pre-line">
+                    {item.title}
+                  </h3>
+                  <div className="flex flex-wrap items-center gap-[0.6vw] max-[1025px]:gap-[1.5vw] text-white oris-text22 mt-[1.2vw] max-[1025px]:mt-[6vw]">
+                    {item.tags.map((tag, tagIdx) => (
+                      <React.Fragment key={tagIdx}>
+                        <span>{tag}</span>
+                        {tagIdx < item.tags.length - 1 && (
+                          <span className="w-[0.3vw] h-[0.3vw] max-[1025px]:w-[1vw] max-[1025px]:h-[1vw] rounded-full bg-white inline-block" />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
 
-                            <div
-                                ref={(el) => {
-                                    cardRefs.current[index] = el;
-                                }}
-                                className="w-full h-full rounded-[2.2vw] max-[1025px]:rounded-[24px] p-[3.5vw] max-[1025px]:p-[6vw] flex flex-col max-[1025px]:gap-[10vw] justify-between"
-                                style={{ backgroundColor: item.bgColor }}
-                            >
-                                {/* Top: Title & Tags */}
-                                <div>
-                                    <h3 className="text-white text-[6vw] max-[1025px]:text-[8vw] leading-[1.2]! whitespace-pre-line">
-                                        {item.title}
-                                    </h3>
-                                    <div className="flex flex-wrap items-center gap-[0.6vw] max-[1025px]:gap-[1.5vw] text-white oris-text22 mt-[1.6vw] max-[1025px]:mt-[8vw]">
-                                        {item.tags.map((tag, tagIdx) => (
-                                            <React.Fragment key={tagIdx}>
-                                                <span>{tag}</span>
-                                                {tagIdx < item.tags.length - 1 && (
-                                                    <span className="w-[0.3vw] h-[0.3vw] max-[1025px]:w-[1vw] max-[1025px]:h-[1vw] rounded-full bg-white inline-block" />
-                                                )}
-                                            </React.Fragment>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Bottom: Description */}
-                                <div>
-                                    <p className="text-white oris-text32 max-w-[65vw] max-[1025px]:max-w-full">
-                                        {item.description}
-                                    </p>
-                                </div>
-                            </div>
-                       
-                    </div>
-                ))}
-            </div>
-        </section>
-    );
+                {/* Bottom: Description */}
+                <div>
+                  <p className="text-white oris-text32 max-w-[65vw] max-[1025px]:max-w-full">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
