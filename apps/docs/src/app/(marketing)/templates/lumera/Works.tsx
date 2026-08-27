@@ -137,10 +137,11 @@ const Works = () => {
         trigger: imagePin,
         start: "top 10%",
         endTrigger: triggerSection,
-        end: "bottom 80%",
+        end: "90% 80%",
         invalidateOnRefresh: true,
         pin: imagePin,
-        markers: false,
+        // markers: true,
+
       });
     });
     return () => ctx.revert();
@@ -149,7 +150,7 @@ const Works = () => {
   return (
     <>
       <section id="works" className="w-full h-full overflow-hidden max-md:bg-[#1C1B1A] max-[1025px]:bg-[#1C1B1A] max-[1025px]:py-[10%]">
-        <div className="relative mx-auto h-full w-full max-[1025px]:w-[85%] max-w-[90%] py-[5%]">
+        <div className="relative mx-auto h-full w-full max-[1025px]:w-[85%] max-w-[90%] py-[5%] pb-[12%]">
           <div className="w-full flex justify-center relative z-2">
             <MaskTextReveal className="w-[85%] max-md:w-full max-[1025px]:w-[80%]">
 
@@ -187,7 +188,7 @@ const Works = () => {
 
                 <MaskTextReveal>
 
-                <p data-para-anim className=" text-white w-[38vw] max-[1025px]:w-full mt-[2vw] max-md:text-[3.5vw] max-[1025px]:text-[3vw] text-[1.25vw] tracking-wide">
+                <p data-para-anim className=" text-white w-[38vw] max-[1025px]:w-full mt-[2vw] max-md:text-[4.2vw] max-[1025px]:text-[3vw] text-[1.25vw] tracking-wide">
                   Every residence is thoughtfully crafted around light, proportion, and timeless materials. From expansive living spaces to serene private retreats, each detail creates an atmosphere of effortless sophistication above it.
                 </p>
                 </MaskTextReveal>
@@ -241,7 +242,7 @@ const Works = () => {
 
 
 
-                <p data-para-anim className="w-[38vw] max-[1025px]:w-full text-white text-left text-[1.25vw] max-[1025px]:text-[3vw] max-md:w-full tracking-wide max-md:text-[3.5vw]">
+                <p data-para-anim className="w-[38vw] max-[1025px]:w-full text-white text-left text-[1.25vw] max-[1025px]:text-[3vw] max-md:w-full tracking-wide max-md:text-[4.2vw]">
                  From bespoke finishes to panoramic city views, every space is designed to elevate the everyday. Warm materials, considered proportions, and refined craftsmanship come together to create residences that feel as exceptional as the city beyond them.
                 </p>
                
@@ -292,7 +293,7 @@ const Works = () => {
                 </div>
                 <MaskTextReveal>
 
-                <p data-para-anim className="text-white max-[1025px]:mt-[4vw] text-[1.25vw] tracking-wide max-md:text-[3.5vw] max-[1025px]:text-[3vw]">
+                <p data-para-anim className="text-white max-[1025px]:mt-[4vw] text-[1.25vw] tracking-wide max-md:text-[4.2vw] max-[1025px]:text-[3vw]">
                  Thoughtful interiors, refined materials, and breathtaking views come together in spaces designed for modern living at its highest level.
                 </p>
                 </MaskTextReveal>

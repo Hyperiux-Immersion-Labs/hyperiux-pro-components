@@ -43,7 +43,7 @@ export default function CharStaggerButton({
   showLine = true,
   lineClassName = "",
   hoverColor = DEFAULT_HOVER_COLOR,
-  showArrow = false,
+  showArrow = true,
   icon: Icon = ArrowRight,
   iconVariant = "stacked",
   iconClassName = "",
@@ -195,26 +195,26 @@ export default function CharStaggerButton({
       </div>
 
       {showArrow && Icon && (
-        <div className={`flex size-[1.18em] items-center justify-start overflow-hidden ${iconClassName}`.trim()}>
+        <div className={`relative flex size-[1.18em] items-center justify-start overflow-hidden ${iconClassName}`.trim()}>
           {iconVariant === "single" ? (
             <Icon className="size-[1.18em] shrink-0 motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none" />
           ) : (
-            <div
-              className="flex h-full w-max"
-              style={{
-                transform:
-                  isActive && !prefersReducedMotion
-                    ? "translateX(5%)"
-                    : "translateX(-100%)",
-                transition: prefersReducedMotion
-                  ? "none"
-                  : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
-                willChange: "transform",
-              }}
-            >
-              <Icon className="h-full w-full flex-none" />
-              <Icon className="h-full w-full flex-none" />
-            </div>
+            <>
+              {/* The one already in flow - slides out to the right on
+                  hover, handing off to the absolute one below sliding in
+                  from the same off-screen position. */}
+              <Icon
+                className={`size-[1.18em] shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none ${
+                  isActive && !prefersReducedMotion ? "translate-x-full" : "translate-x-0"
+                }`}
+              />
+              <Icon
+                aria-hidden="true"
+                className={`absolute inset-0 size-[1.18em] shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none ${
+                  isActive && !prefersReducedMotion ? "translate-x-0" : "-translate-x-full"
+                }`}
+              />
+            </>
           )}
         </div>
       )}

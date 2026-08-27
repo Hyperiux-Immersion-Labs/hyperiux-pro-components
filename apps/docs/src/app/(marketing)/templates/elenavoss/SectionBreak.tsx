@@ -52,7 +52,7 @@ export default function SectionBreak() {
       // item's start within the same cluster - small enough that the 2-3
       // items still read as one wave "arriving together", but with a
       // visible beat between each rather than popping in simultaneously.
-      const withinGroupStagger = isDesktop ? 0.18 : 0.22;
+      const withinGroupStagger = isDesktop ? 0.4 : 0.5;
 
       // Split items into small clusters of 2-3, applied uniformly all the
       // way through (including whatever's left in the last cluster) so the
@@ -76,10 +76,10 @@ export default function SectionBreak() {
           gsap.set(item, {
             transformOrigin: "0% 0%",
             opacity: 0,
-            x: isDesktop ? gsap.utils.random(-320, 320) : 0,
-            y: isDesktop ? gsap.utils.random(-320, 320) : gsap.utils.random(-320, 320),
+            x: isDesktop ? gsap.utils.random(-180, 180) : 0,
+            y: isDesktop ? gsap.utils.random(-180, 180) : gsap.utils.random(-180, 180),
             filter: "blur(10px)",
-            z: isDesktop ? gsap.utils.random(-2600, -1400) : gsap.utils.random(-700, -350),
+            z: isDesktop ? gsap.utils.random(-2200, -1600) : gsap.utils.random(-550, -400),
           });
 
           timeline
@@ -98,7 +98,7 @@ export default function SectionBreak() {
               {
                 filter: "blur(10px)",
                 opacity: 0,
-                z: isDesktop ? gsap.utils.random(1600, 2400) : gsap.utils.random(600, 1000),
+                z: isDesktop ? gsap.utils.random(1400, 1800) : gsap.utils.random(500, 700),
                 duration: exitDuration,
               },
               startTime + enterDuration,

@@ -23,9 +23,9 @@ const Roi = () => {
             </h2>
             </MaskTextReveal>
 
-            <MaskTextReveal className="w-[40%] max-[1025px]:w-[80%]">
+            <MaskTextReveal className="w-[40%] max-[1025px]:w-full">
 
-            <p data-para-anim className=" max-[1025px]:text-[2vw] text-[#1C1B1A] max-md:w-full max-md:text-[3.5vw] text-[1.3vw]">
+            <p data-para-anim className=" max-[1025px]:text-[3vw] text-[#1C1B1A] max-md:w-full max-md:text-[4.2vw] text-[1.3vw]">
               Own a residence where architectural distinction, prime location, and elevated living come together. Lumera Heights offers a compelling opportunity for those seeking long-term value in the heart of Dubai.
             </p>
             </MaskTextReveal>
@@ -42,7 +42,7 @@ const Roi = () => {
                 <p className="flex items-end justify-center gap-[0.15em] font-neue-montreal font-medium text-[2.5vw] leading-none text-black max-md:text-[5vw] max-[1025px]:text-[3.2vw]">
                   <NumberCounter value={stat.value} />
                   {stat.suffix && (
-                    <span className="mb-[0.5vw] font-neue-montreal text-[0.9vw] leading-none text-[#1c1b1a] max-md:text-[3vw] max-[1025px]:text-[1.8vw]">
+                    <span className="mb-[0.2vw] font-neue-montreal text-[0.9vw] leading-none text-[#1c1b1a] max-md:text-[3vw] max-[1025px]:text-[1.8vw]">
                       {stat.suffix}
                     </span>
                   )}

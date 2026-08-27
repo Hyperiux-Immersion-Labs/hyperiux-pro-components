@@ -7,7 +7,7 @@ import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/dist/SplitText";
-import project1 from "../../assets/project-1.png";
+import project1 from "../../assets/project-1-new.png";
 import project11 from "../../assets/project-1.1.png";
 import project12 from "../../assets/project-1.2.png";
 import project13 from "../../assets/project-1.3.png";
@@ -17,12 +17,12 @@ import project21 from "../../assets/project-2.1.png";
 import project22 from "../../assets/project-2.2.png";
 import project23 from "../../assets/project-2.3.png";
 import project24 from "../../assets/project-2.4.png";
-import project3 from "../../assets/project-3.png";
+import project3 from "../../assets/project-3-new.png";
 import project31 from "../../assets/project-3.1.png";
 import project32 from "../../assets/project-3.2.png";
 import project33 from "../../assets/project-3.3.png";
 import project34 from "../../assets/project-3.4.png";
-import project4 from "../../assets/project-4.png";
+import project4 from "../../assets/project-4-new.png";
 import project41 from "../../assets/project-4.1.png";
 import project42 from "../../assets/project-4.2.png";
 import project43 from "../../assets/project-4.3.png";
@@ -120,7 +120,7 @@ export default function HorizontalFeatureRevealSection() {
   const uid = useId().replace(/:/g, "");
   const sectionId = `lumera-residences-${uid}`;
   const textFillId = `${sectionId}-textfill`;
-  const imageParallaxRange = 12;
+  const imageParallaxRange = 20;
 
   const textFillSlideRef = useRef<HTMLDivElement | null>(null);
   const textFillHeadingRef = useRef<HTMLHeadingElement | null>(null);
@@ -340,14 +340,14 @@ export default function HorizontalFeatureRevealSection() {
             { xPercent: -imageParallaxRange },
             {
               xPercent: imageParallaxRange,
-              scale: 1.3,
               ease: "none",
               scrollTrigger: {
                 trigger: card,
                 start: "left right",
-                end: "right left",
+                end: "50% left",
                 scrub: true,
                 horizontal: true,
+                // markers:true,
                 containerAnimation: containerTween,
               },
             },
@@ -408,7 +408,7 @@ export default function HorizontalFeatureRevealSection() {
                   width={1000}
                   height={1000}
                   quality={95}
-                  className="lumera-residence-image h-full w-full object-cover opacity-0 scale-[1.3] max-[1025px]:translate-x-0 max-[1025px]:scale-100 max-[1025px]:opacity-100"
+                  className="lumera-residence-image h-full w-full object-cover opacity-0 scale-[1.2] max-[1025px]:translate-x-0 max-[1025px]:scale-100 max-[1025px]:opacity-100"
                 />
               </div>
 
@@ -461,7 +461,7 @@ export default function HorizontalFeatureRevealSection() {
                       <div
                         
                         key={`${item.number}-thumb-${index}`}
-                        className="overflow-hidden h-[6.2vw] w-[6.2vw]  rounded-[1.3vw] bg-[#ddd4ca] max-[1025px]:rounded-[4vw] group max-[1025px]:h-[20vw] max-[1025px]:w-[20vw]"
+                        className="overflow-hidden h-[6.2vw] w-[6.2vw]  rounded-md bg-[#ddd4ca] max-[1025px]:rounded-[4vw] group max-[1025px]:h-[20vw] max-[1025px]:w-[20vw]"
                         >
                         <Image
                           src={thumb}

@@ -207,7 +207,7 @@ const Services = () => {
             className={
               prefersReducedMotion
                 ? "grid grid-cols-3 gap-[1.6vw] px-[4vw] pt-[5vw] max-[1025px]:grid-cols-2 max-md:grid-cols-1"
-                : "flex gap-[1.6vw] px-[4vw] will-change-transform"
+                : "flex gap-[1.6vw] px-[4vw] will-change-transform max-[1025px]:gap-[2.5vw] max-md:gap-[6vw]"
             }
           >
             {SERVICES.map((service, index) => (

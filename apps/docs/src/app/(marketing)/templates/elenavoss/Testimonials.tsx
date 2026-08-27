@@ -283,7 +283,7 @@ const Testimonials = () => {
 
   return (
     <section className="w-screen pb-30 px-15 relative z-0 bg-[#070707] max-[1025px]:px-[5vw] max-[1025px]:py-20 max-md:py-16">
-      <div className="w-full rounded-xl h-[40vw] bg-[#111111] border border-white/8 p-[3vw] flex items-center gap-[3vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:h-[90vw] max-[1025px]:gap-6 max-[1025px]:p-5 max-md:flex-col max-md:gap-8 max-md:h-[200vw]">
+      <div className="w-full rounded-xl h-[40vw] bg-[#111111] border border-white/8 p-[3vw] flex items-center gap-[3vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:h-[90vw] max-[1025px]:gap-6 max-[1025px]:p-5 max-md:flex-col max-md:gap-8 max-md:h-[180vw]">
         {/* Stacked, clip-path revealed portraits */}
         <div className="relative w-[18vw] h-[24vw]  shrink-0 rounded-lg overflow-hidden bg-[#1c1c1c] max-[1025px]:w-[36vw] max-[1025px]:h-[40vw] max-md:w-full max-md:h-[70vw]">
           {testimonials.map((item, i) => (
@@ -317,13 +317,13 @@ const Testimonials = () => {
             <div className="flex flex-col gap-1 overflow-hidden w-fit">
               <p
                 ref={nameRef}
-                className="text-[2.5vw] max-[1025px]:text-[3.2vw] max-md:text-lg text-[#ff6b00]"
+                className="text-[2.5vw] max-[1025px]:text-[4vw] max-md:text-[5.5vw] text-[#ff6b00]"
               >
                 {displayItem.name}
               </p>
               <p
                 ref={roleRef}
-                className="text-[1.25vw] max-[1025px]:text-[2.2vw] max-md:text-sm text-white"
+                className="text-[1.25vw] max-[1025px]:text-[2.5vw] max-md:text-[4vw] text-white"
               >
                 {displayItem.role}
               </p>

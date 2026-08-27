@@ -158,7 +158,7 @@ export default function OverflowTextReveal({
               ...fadeUpProps,
               scrollTrigger: {
                 trigger: containerRef.current,
-                start: "top 80%",
+                start: "top 85%",
                 once: true,
               },
             });
@@ -211,7 +211,7 @@ export default function OverflowTextReveal({
             ...toProps,
             scrollTrigger: {
               trigger: containerRef.current,
-              start: "top 80%",
+              start: "top 85%",
               end: "bottom 68%",
               scrub,
             },

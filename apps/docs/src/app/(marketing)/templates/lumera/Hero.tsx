@@ -196,7 +196,7 @@ const Hero: React.FC = () => {
                   <PrimaryButton
                     link="#"
                     btnText="Explore Our Collection"
-                    className="max-md:w-[70vw] font-normal!"
+                    className="max-md:w-[70vw] "
                   />
                 </FadeUp>
                 <FadeUp delay={0.7}>
@@ -217,7 +217,7 @@ const Hero: React.FC = () => {
               {heroStats.map((stat) => (
                 <FadeUp
                   key={stat.label}
-                  className="rounded-[1.2vw] bg-black/20 px-[1.5vw] py-[2vw] max-md:py-[5vw] max-[1025px]:py-[4vw] font-neue-montreal text-center backdrop-blur-[0.7vw] max-[1025px]:rounded-[4vw] flex flex-col justify-between max-md:min-h-[12vh] min-h-[19vh] border border-[#F9F9F91A]"
+                  className="rounded-[1.2vw] bg-white/5 px-[1.5vw] py-[2vw] max-md:py-[5vw] max-[1025px]:py-[4vw] font-neue-montreal text-center backdrop-blur-2xl max-[1025px]:rounded-[4vw] flex flex-col justify-between max-md:min-h-[12vh] min-h-[19vh] border border-[#F9F9F91A]"
                 >
                   <p className="inline-flex items-end justify-center gap-[0.25vw] text-[2.9vw] font-medium leading-none text-white max-[1025px]:gap-[1vw] max-[1025px]:text-[6vw]">
                     <NumberCounter value={stat.value} />

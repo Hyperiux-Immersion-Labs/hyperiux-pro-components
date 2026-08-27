@@ -110,7 +110,7 @@ function Line({ strokeColor = "#111111", strokeWidth = 2 }: LineProps) {
   };
 
   return (
-    <div ref={wrapperRef} className="w-full max-[1025px]:hidden">
+    <div ref={wrapperRef} className="w-full">
       <div className="string-line lineDraw">
         {/* No hover handlers at all under reduced motion - the hit-box
             still exists but is inert, matching "just a simple straight

@@ -7,13 +7,13 @@ import { type StaticImageData } from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import InfiniteCarouselComp from "./InfiniteCarouselComp";
 import { usePrefersReducedMotion } from "./reducedMotion";
-import portfolio1 from "./assets/portfolio-1.png";
-import portfolio2 from "./assets/portfolio-2.png";
-import portfolio3 from "./assets/portfolio-3.png";
-import portfolio4 from "./assets/portfolio-4.png";
-import portfolio5 from "./assets/portfolio-5.png";
-import portfolio6 from "./assets/portfolio-6.png";
-import portfolio7 from "./assets/portfolio-7.png";
+import portfolio1 from "./assets/portfolio-img-new-1.png";
+import portfolio2 from "./assets/portfolio-img-new-2.png";
+import portfolio3 from "./assets/portfolio-img-new-3.png";
+import portfolio4 from "./assets/portfolio-img-new-4.png";
+import portfolio5 from "./assets/portfolio-img-new-5.png";
+import portfolio6 from "./assets/portfolio-img-new-6.png";
+import portfolio7 from "./assets/portfolio-img-new-7.png";
 import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 
@@ -74,7 +74,7 @@ const About = () => {
   const activeSlide = aboutSlides[activeIndex] ?? aboutSlides[CENTER_SLIDE_INDEX];
 
   return (
-    <section className="overflow-hidden bg-[#E0D4C6]" id="about">
+    <section className="overflow-hidden bg-[#E0D4C6] h-[84vw] max-[1025px]:h-[170vw] max-md:h-[220vw]" id="about">
       <div className={` py-[5%]  pt-[10%] max-md:pt-[20%]   max-[1025px]:py-[15%]`}>
         <div className="w-full px-[5%] max-md:px-[6%] flex justify-between max-[1025px]:flex-col max-[1025px]:gap-[8vw]">
           <MaskTextReveal className="w-[50%] max-md:w-[90%] max-[1025px]:w-[90%]">
