@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -50,6 +50,10 @@ const PILL_SNAP_EASE = "back.out(1.6)";
 // finish (or get close) even under quick successive hovers.
 const IMAGE_REVEAL_DURATION = 0.45;
 const IMAGE_REVEAL_EASE = "power2.out";
+// The resting/revealed scale - slightly over 1 so the image reads as a
+// subtle zoomed-in crop rather than sitting flush at its container's exact
+// edges.
+const IMAGE_ACTIVE_SCALE = 1.05;
 
 // How long the whole image-container fades in/out as the cursor
 // enters/leaves the row list (.awards-container).
@@ -69,6 +73,9 @@ const Awards = () => {
   // top" glitch. A monotonic counter makes that class of bug impossible.
   const zIndexCounterRef = useRef(AWARD_ITEMS.length);
   const prefersReducedMotionRef = useRef(false);
+  // Which row the geometry-based hover tracker (handleListMouseMove below)
+  // last activated - null once the cursor has left the list entirely.
+  const activeRowIndexRef = useRef<number | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -86,7 +93,7 @@ const Awards = () => {
     cardRefs.current.forEach((card, i) => {
       gsap.set(card, { zIndex: i + 1 });
     });
-    gsap.set(cardRefs.current[0], { scale: 1 });
+    gsap.set(cardRefs.current[0], { scale: IMAGE_ACTIVE_SCALE });
     cardRefs.current.slice(1).forEach((card) => {
       gsap.set(card, { scale: 0 });
     });
@@ -130,11 +137,42 @@ const Awards = () => {
   };
 
   const handleListLeave = () => {
+    activeRowIndexRef.current = null;
     gsap.to(imageContainerRef.current, {
       opacity: 0,
       duration: CONTAINER_FADE_DURATION,
       ease: "power2.out",
     });
+  };
+
+  // Which row is "hovered" is computed here from raw geometry (cursor Y vs.
+  // each row's own getBoundingClientRect), not from onMouseEnter/onMouseLeave
+  // on the row elements - the divider between rows (.box in elenavoss.css)
+  // has a deliberately oversized pluck hit-region (40px by default, growing
+  // to 150px on its own hover) that visually overlaps whichever row(s) sit
+  // next to it. Relying on the browser's own mouseenter/mouseleave there
+  // meant hovering that overlap either mis-triggered the wrong row (when the
+  // divider was nested inside one row) or repeatedly flickered the row's own
+  // reveal on and off (when the divider sat between rows as a sibling) -
+  // both are just symptoms of hit-testing an element that was never meant to
+  // represent "which row is active." Recomputing straight from each row's
+  // real rect on every move sidesteps the divider's hit-box entirely, and
+  // only calls handleRowEnter when the computed index actually changes, so
+  // moving around within the same row's own bounds never re-triggers it.
+  const handleListMouseMove = (event: ReactMouseEvent<HTMLDivElement>) => {
+    const rows = rowRefs.current;
+    let nextIndex: number | null = null;
+    for (let i = 0; i < rows.length; i += 1) {
+      const rect = rows[i]?.getBoundingClientRect();
+      if (rect && event.clientY >= rect.top && event.clientY < rect.bottom) {
+        nextIndex = i;
+        break;
+      }
+    }
+
+    if (nextIndex === null || nextIndex === activeRowIndexRef.current) return;
+    activeRowIndexRef.current = nextIndex;
+    handleRowEnter(nextIndex);
   };
 
   const handleRowEnter = (index: number) => {
@@ -181,11 +219,11 @@ const Awards = () => {
     // playing out underneath this one.
     gsap.killTweensOf(incoming);
     if (prefersReducedMotionRef.current) {
-      gsap.set(incoming, { scale: 1 });
+      gsap.set(incoming, { scale: IMAGE_ACTIVE_SCALE });
     } else {
       gsap.set(incoming, { scale: 0 });
       gsap.to(incoming, {
-        scale: 1,
+        scale: IMAGE_ACTIVE_SCALE,
         duration: IMAGE_REVEAL_DURATION,
         ease: IMAGE_REVEAL_EASE,
       });
@@ -207,49 +245,57 @@ const Awards = () => {
             </h2>
           </OverflowTextReveal>
 
-          <div onMouseEnter={handleListEnter} onMouseLeave={handleListLeave}>
+          <div
+            onMouseEnter={handleListEnter}
+            onMouseLeave={handleListLeave}
+            onMouseMove={handleListMouseMove}
+          >
+            {/* Dividers are true siblings between rows, not nested inside
+                either one - see .box in elenavoss.css: its pluck-hit-region
+                is 40px tall by default and grows to 150px on its own hover,
+                way bigger than the visible 1px line, so it inevitably
+                overlaps whichever row(s) sit next to it. Which row counts
+                as "hovered" is decided by handleListMouseMove above from
+                raw geometry, not from onMouseEnter/onMouseLeave on these
+                row divs - see that function's comment for why. */}
             {AWARD_ITEMS.map((item, i) => (
-              <div
-                key={item.title}
-                ref={(el) => {
-                  rowRefs.current[i] = el;
-                }}
-                onMouseEnter={() => handleRowEnter(i)}
-                className="relative py-8 awards-container"
-              >
+              <Fragment key={item.title}>
                 {i !== 0 && (
                   <div
                     ref={(el) => {
                       lineRefs.current[i - 1] = el;
                     }}
-                    className="absolute top-0 left-0 h-px w-full origin-left scale-x-0"
+                    className="relative h-px w-full origin-left scale-x-0"
                   >
                     <Line strokeColor="rgba(255, 255, 255, 0.4)" />
                   </div>
                 )}
-                <OverflowTextReveal splitBy="lines">
+                <div
+                  ref={(el) => {
+                    rowRefs.current[i] = el;
+                  }}
+                  className="relative py-8 awards-container"
+                >
+                  <OverflowTextReveal splitBy="lines">
 
-                <h3 className="text-[1.8vw] font-normal max-[1025px]:text-[3.4vw] max-md:text-[5.5vw]">{item.title}</h3>
-                </OverflowTextReveal>
-                <OverflowTextReveal splitBy="lines">
+                  <h3 className="text-[1.8vw] font-normal max-[1025px]:text-[3.4vw] max-md:text-[5.5vw]">{item.title}</h3>
+                  </OverflowTextReveal>
+                  <OverflowTextReveal splitBy="lines">
 
-                <p className="text-[1.25vw] tracking-wide text-white/30 mt-3 max-[1025px]:text-[2.2vw] max-md:text-[3.6vw]">
-                  {item.meta}
-                </p>
-                </OverflowTextReveal>
-
-
-              </div>
+                  <p className="text-[1.25vw] tracking-wide text-white/30 mt-3 max-[1025px]:text-[2.2vw] max-md:text-[3.6vw]">
+                    {item.meta}
+                  </p>
+                  </OverflowTextReveal>
+                </div>
+              </Fragment>
             ))}
-            <div className="relative w-full h-px">
-              <div
-                ref={(el) => {
-                  lineRefs.current[AWARD_ITEMS.length - 1] = el;
-                }}
-                className="absolute top-0 left-0 h-px w-full origin-left scale-x-0"
-              >
-                <Line strokeColor="rgba(255, 255, 255, 0.4)" />
-              </div>
+            <div
+              ref={(el) => {
+                lineRefs.current[AWARD_ITEMS.length - 1] = el;
+              }}
+              className="relative h-px w-full origin-left scale-x-0"
+            >
+              <Line strokeColor="rgba(255, 255, 255, 0.4)" />
             </div>
           </div>
         </div>
@@ -264,7 +310,7 @@ const Awards = () => {
         >
           <div
             ref={containerRef}
-            className="w-[40vw] h-[22vw] relative bg-[#F4EFE9] rounded-lg overflow-hidden shadow-2xl will-change-transform"
+            className="w-[40vw] h-[22vw] relative bg-[#070707] rounded-lg overflow-hidden shadow-2xl will-change-transform"
           >
             {AWARD_ITEMS.map((item, i) => (
               <div
@@ -277,7 +323,7 @@ const Awards = () => {
                 <Image
                   src={item.imgSrc}
                   alt="awards-image"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-lg "
                   width={600}
                   height={400}
                 />

@@ -75,6 +75,21 @@
   mask-image: linear-gradient(to top left, black var(--reveal, 0%), transparent calc(var(--reveal, 0%) + 25%));
 }
 
+/* Circle-from-center reveal for the services cards' hover fill
+   (Services.tsx): driven by the --reveal custom property, a circle
+   centered on the card grows outward to expose the gradient background
+   beneath the mask. radial-gradient's default "circle" sizing measures
+   100% as the distance to the farthest corner, so --reveal going 0% to
+   100% spreads the fill from the card's center out to its edges. The
+   transparent stop trails --reveal by a shrinking band (capped at 100%
+   via min()) so the growing edge stays soft mid-animation but resolves
+   to a fully opaque fill - not a faint ring - once --reveal reaches 100%. */
+.radial-mask-bg-fill {
+  --reveal: 0%;
+  -webkit-mask-image: radial-gradient(circle at center, black var(--reveal), transparent min(calc(var(--reveal) + 18%), 100%));
+  mask-image: radial-gradient(circle at center, black var(--reveal), transparent min(calc(var(--reveal) + 18%), 100%));
+}
+
 .marquee-1 {
   animation: marquee-scroll-y 10s linear infinite;
   will-change: transform;
