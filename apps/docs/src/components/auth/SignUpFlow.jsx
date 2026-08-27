@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import NextLink from "next/link";
 import { useSignUp } from "@clerk/nextjs/legacy";
-import { loadAffitor } from "@affitor/sdk";
 import SplitAuthLayout from "./SplitAuthLayout";
 import {
   errorMessage,
@@ -27,13 +26,18 @@ const RESEND_COOLDOWN_SECONDS = 30;
 // (see the old sign-up page.js) - keeps the same post-signup funnel.
 const REDIRECT_AFTER_SIGN_UP = "/pricing#pricing-cards";
 
-// Same program id as the homepage-only click tracker
-// (components/WebsiteComps/AffitorTracking.jsx) - this is the counterpart
-// signup half of that funnel. loadAffitor() reads the attribution cookie
-// the tracker script already set, so a referred visitor's account gets
-// bound to their partner here even though this flow never touches
-// AffitorTracking.jsx directly.
-const AFFITOR_PROGRAM_ID = "1062";
+// Reads the click-attribution cookie the homepage-only tracker
+// (components/WebsiteComps/AffitorTracking.jsx) sets, so a referred
+// visitor's affitor_click_id rides along on signUp.create() as
+// unsafeMetadata. Clerk copies that onto the created User, which is what
+// the user.created webhook (api/webhooks/clerk/route.js) reads to bind the
+// lead server-side via trackAffitorLead() - the reliable half of this
+// funnel; see that file for why the client-side tracker's own signup()
+// call isn't used anymore.
+function getAffitorClickId() {
+  const match = document.cookie.match(/(?:^|; )affitor_click_id=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
 
 export default function SignUpFlow() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -64,19 +68,6 @@ export default function SignUpFlow() {
 
   async function completeSignUp(result) {
     await setActive({ session: result.createdSessionId });
-
-    // Must await loadAffitor() directly (not the useAffitor()/useLoadAffitor()
-    // hooks) so this can't be silently skipped by the tracker script still
-    // loading - see @affitor/sdk's own guidance on critical tracking events.
-    if (result.createdUserId) {
-      try {
-        const affitor = await loadAffitor(AFFITOR_PROGRAM_ID);
-        await affitor?.signup(result.createdUserId, result.emailAddress);
-      } catch (affitorError) {
-        console.error("AFFITOR_SIGNUP_TRACKING_ERROR:", affitorError);
-      }
-    }
-
     router.push(REDIRECT_AFTER_SIGN_UP);
   }
 
@@ -88,7 +79,12 @@ export default function SignUpFlow() {
     setError(null);
 
     try {
-      const result = await signUp.create({ emailAddress: email, password });
+      const affitorClickId = getAffitorClickId();
+      const result = await signUp.create({
+        emailAddress: email,
+        password,
+        ...(affitorClickId && { unsafeMetadata: { affitor_click_id: affitorClickId } }),
+      });
 
       if (result.status === "complete") {
         await completeSignUp(result);

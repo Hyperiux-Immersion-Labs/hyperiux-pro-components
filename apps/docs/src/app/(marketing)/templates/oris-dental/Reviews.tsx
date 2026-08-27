@@ -104,6 +104,7 @@ export default function Reviews({
                 gsap.set(".left-strip", { yPercent: 3, scale: 0.5 });
                 gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
                 gsap.set(".section-break-wrapper", { scale: 0.82, opacity: 0 });
+                gsap.set(".reviews-bg-heading", { scale: 0.9, autoAlpha: 0.2 });
 
                 cards.forEach((card, index) => {
                     const image = card.querySelector(".project-image");
@@ -163,10 +164,22 @@ export default function Reviews({
                 });
 
                 // Total timeline duration = 12 units:
-                // Phase 1 (0 -> 4.5): Ribbon Strips Drift & Scale up
+                // Phase 1 (0 -> 4.5): Ribbon Strips Drift & Scale up + Background heading scale
+                tl.to(".reviews-bg-heading", { scale: 1, ease: "none", duration: 3.5 }, 0);
                 tl.to(".left-strip", { yPercent: -77, scale: 1, ease: "none", duration: 4.5 }, 0);
                 tl.to(".mid-strip", { yPercent: -4.5, scale: 1, ease: "none", duration: 4.5 }, 0);
                 tl.to(".right-strip", { yPercent: -77, scale: 1, ease: "none", duration: 4.5 }, 0);
+
+                // Background heading fades out smoothly before paragraph comes in
+                tl.to(
+                    ".reviews-bg-heading",
+                    {
+                        autoAlpha: 0,
+                        duration: 1.5 * speedScale,
+                        ease: "power2.inOut",
+                    },
+                    3.2
+                );
 
                 // Phase 2 (3.8 -> 6.8): Strips part outwards and center cards split up/down with smooth, gradual easing
                 tl.to(
@@ -257,10 +270,18 @@ export default function Reviews({
                 className="w-full h-[500vh] bg-white text-oris-secondary max-[1025px]:hidden relative z-10 overflow-clip"
                 id={sectionId}
             >
-
+                {/* Background Big Heading Layer */}
+                <div className="w-full h-screen sticky top-0 flex justify-center items-center pointer-events-none z-1 overflow-hidden">
+                    <h2
+                        style={{ opacity: 0.2 }}
+                        className="reviews-bg-heading text-[13vw] font-medium tracking-tight text-oris-secondary leading-[.8]! opacity-20 uppercase select-none text-center"
+                    >
+                      CLIENTS
+                    </h2>
+                </div>
 
                 {/* Ribbon Strips Layer */}
-                <div className="w-full h-screen sticky top-0 flex justify-between px-[7vw] portfolio-card-container z-2 overflow-hidden">
+                <div className="w-full h-screen sticky top-0 -mt-[100vh] flex justify-between px-[7vw] portfolio-card-container z-2 overflow-hidden">
                     {/* Left Strip */}
                     <div className="w-[23vw] h-fit flex flex-col gap-[4vw] items-center left-strip">
                         {leftCards.map((item, index) => {

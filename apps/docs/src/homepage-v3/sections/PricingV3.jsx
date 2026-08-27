@@ -16,7 +16,7 @@ if (typeof window !== "undefined") {
 
 const PRICING = {
     USD: { symbol: "$", monthly: 20, yearly: 179 },
-    INR: { symbol: "₹", monthly: 999, yearly: 8990 },
+    INR: { symbol: "₹", monthly: 999, yearly: 8999 },
 };
 
 const ProCta = dynamic(() => import("./PricingV3Cta"), { ssr: false });
