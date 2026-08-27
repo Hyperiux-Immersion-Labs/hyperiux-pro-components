@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { markUserProFromSubscription, markUserFree, sendInvoiceEmail, recordInvoice } from "@/lib/pro-access";
+import { markUserProFromSubscription, markUserFree, sendInvoiceEmail, recordInvoice, getBillingInterval } from "@/lib/pro-access";
 import { releaseFoundingSlot } from "@/lib/founding-slots";
 import { trackAffitorSale } from "@/lib/affitor";
 
@@ -85,6 +85,8 @@ export async function POST(req) {
             amount: payment.amount,
             invoiceId: payment.id,
             currency: payment.currency,
+            subscriptionId: subscription.id,
+            billingInterval: getBillingInterval(subscription.plan_id),
           });
         } catch (affitorError) {
           console.error("AFFITOR_TRACK_SALE_ERROR:", affitorError);

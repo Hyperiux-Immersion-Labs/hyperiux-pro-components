@@ -1,6 +1,7 @@
 "use client";
 
 import { useLoadAffitor } from "@affitor/sdk/react";
+import { AFFITOR_PROGRAM_ID } from "@/lib/affitor-program";
 
 // Affiliate click tracking (docs.affitor.com/brand/tracking/click-tracking).
 // Homepage-only by design - rendered directly in (marketing)/page.js rather
@@ -8,6 +9,6 @@ import { useLoadAffitor } from "@affitor/sdk/react";
 // useLoadAffitor is the SDK's own "standalone alternative to
 // AffitorProvider" for exactly this single-page use case.
 export default function AffitorTracking() {
-  useLoadAffitor("1062");
+  useLoadAffitor(AFFITOR_PROGRAM_ID);
   return null;
 }
