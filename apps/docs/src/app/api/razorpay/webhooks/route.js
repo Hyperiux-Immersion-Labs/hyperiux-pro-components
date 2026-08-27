@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { markUserProFromSubscription, markUserFree, sendInvoiceEmail, recordInvoice } from "@/lib/pro-access";
 import { releaseFoundingSlot } from "@/lib/founding-slots";
+import { trackAffitorSale } from "@/lib/affitor";
 
 // Razorpay's server calls this — authenticated via X-Razorpay-Signature
 // (HMAC of the raw body with the webhook secret), never via Clerk.
@@ -73,6 +74,21 @@ export async function POST(req) {
       if (event.event === "subscription.charged" && payment) {
         await recordInvoice({ clerkUserId, subscription, payment });
         await sendInvoiceEmail({ clerkUserId, subscription, payment });
+
+        // Reports the charge as a sale so Affitor attributes commission to
+        // whichever partner referred this customer at signup. Never lets a
+        // tracking failure fail the whole webhook (Razorpay would retry the
+        // real subscription-activation work above along with it).
+        try {
+          await trackAffitorSale({
+            customerExternalId: clerkUserId,
+            amount: payment.amount,
+            invoiceId: payment.id,
+            currency: payment.currency,
+          });
+        } catch (affitorError) {
+          console.error("AFFITOR_TRACK_SALE_ERROR:", affitorError);
+        }
       }
     } else if (event.event in FREE_EVENTS) {
       await markUserFree({ clerkUserId, status: FREE_EVENTS[event.event] });

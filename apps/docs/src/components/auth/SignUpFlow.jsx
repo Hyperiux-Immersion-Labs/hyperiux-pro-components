@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import NextLink from "next/link";
 import { useSignUp } from "@clerk/nextjs/legacy";
+import { loadAffitor } from "@affitor/sdk";
 import SplitAuthLayout from "./SplitAuthLayout";
 import {
   errorMessage,
@@ -28,6 +29,14 @@ const RESEND_COOLDOWN_SECONDS = 30;
 // Matches the prebuilt <SignUp/> component's existing fallbackRedirectUrl
 // (see the old sign-up page.js) - keeps the same post-signup funnel.
 const REDIRECT_AFTER_SIGN_UP = "/pricing#pricing-cards";
+
+// Same program id as the homepage-only click tracker
+// (components/WebsiteComps/AffitorTracking.jsx) - this is the counterpart
+// signup half of that funnel. loadAffitor() reads the attribution cookie
+// the tracker script already set, so a referred visitor's account gets
+// bound to their partner here even though this flow never touches
+// AffitorTracking.jsx directly.
+const AFFITOR_PROGRAM_ID = "1062";
 
 export default function SignUpFlow() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -58,6 +67,19 @@ export default function SignUpFlow() {
 
   async function completeSignUp(result) {
     await setActive({ session: result.createdSessionId });
+
+    // Must await loadAffitor() directly (not the useAffitor()/useLoadAffitor()
+    // hooks) so this can't be silently skipped by the tracker script still
+    // loading - see @affitor/sdk's own guidance on critical tracking events.
+    if (result.createdUserId) {
+      try {
+        const affitor = await loadAffitor(AFFITOR_PROGRAM_ID);
+        await affitor?.signup(result.createdUserId, result.emailAddress);
+      } catch (affitorError) {
+        console.error("AFFITOR_SIGNUP_TRACKING_ERROR:", affitorError);
+      }
+    }
+
     router.push(REDIRECT_AFTER_SIGN_UP);
   }
 
