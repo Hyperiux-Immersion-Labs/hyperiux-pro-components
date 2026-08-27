@@ -3,6 +3,7 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { createPageMetadata } from "@/lib/seo-metadata";
+import { TEMPLATES } from "@/lib/mock-templates";
 
 // Design-only for now, per the Figma listing page (Enigma-Redesign,
 // node 4304:231) - mock data, no real registry/Sanity backing, no
@@ -21,44 +22,6 @@ export const metadata = createPageMetadata({
   path: "/templates",
   robots: { index: false, follow: false },
 });
-
-// Metadata (tags/tier/installCount) is still placeholder pending Sanity, but
-// these three are real, fully-built templates already live at /templates/*.
-const MOCK_TEMPLATES = [
-  {
-    slug: "elenavoss",
-    title: "Elena Voss",
-    category: "Portfolio",
-    tier: "free",
-    tags: ["GSAP", "Scroll"],
-    installCount: 980,
-    screenshots: ["/assets/templates-listing/elenavoss.png"],
-    href: "/templates/elenavoss",
-    previewHref: "/templates/elenavoss",
-  },
-  {
-    slug: "oris-dental",
-    title: "Oris Dental",
-    category: "Healthcare",
-    tier: "pro",
-    tags: ["3D", "WebGL"],
-    installCount: 410,
-    screenshots: ["/assets/templates-listing/orisdental.png"],
-    href: "/templates/oris-dental",
-    previewHref: "/templates/oris-dental",
-  },
-  {
-    slug: "lumera",
-    title: "Lumera",
-    category: "Real Estate",
-    tier: "pro",
-    tags: ["GSAP", "Smooth Scroll"],
-    installCount: 640,
-    screenshots: ["/assets/templates-listing/lumera.png"],
-    href: "/templates/lumera",
-    previewHref: "/templates/lumera",
-  },
-];
 
 const DESCRIPTION =
   "Full page templates for React & Next.js - agency, portfolio, and industry-specific starters. Preview live, then buy and download.";
@@ -87,7 +50,7 @@ export default function TemplatesPage() {
 
       <div className="mx-auto px-10 pt-20 pb-12 max-md:px-0 max-[1025px]:pt-10">
         <div className="grid grid-cols-2 gap-4 rounded-xl max-[1025px]:grid-cols-1 max-md:grid-cols-1 max-md:px-[7vw] max-[1025px]:gap-10 max-md:gap-16">
-          {MOCK_TEMPLATES.map((template, index) => (
+          {TEMPLATES.map((template, index) => (
             <TemplateCard key={template.slug} template={template} priority={index === 0} />
           ))}
         </div>

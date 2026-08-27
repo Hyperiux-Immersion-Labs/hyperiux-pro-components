@@ -14,7 +14,7 @@ import teethModel from '../../assets/teeth.glb'
 const MODEL_URL: string =
     typeof teethModel === 'string'
         ? teethModel
-        : (teethModel as any)?.src || (teethModel as any)?.default || '/templates/oris-dental/teeth.glb'
+        : (teethModel as any)?.src || (teethModel as any)?.default || '/template-demo/oris-dental/teeth.glb'
 
 // The GLB is a single mesh sharing one material between the crown and the
 // titanium post -- they are separated only by the metallicRoughness texture.

@@ -117,7 +117,7 @@ function SkeletonBlock({ className = "" }) {
         "relative overflow-hidden bg-[#272727]",
         "before:absolute before:inset-0 before:-translate-x-full",
         "before:animate-[shimmer_1.4s_infinite]",
-        "before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent",
+        "before:bg-linear-to-r before:from-transparent before:via-white/10 before:to-transparent",
         className,
       ].join(" ")}
     />
