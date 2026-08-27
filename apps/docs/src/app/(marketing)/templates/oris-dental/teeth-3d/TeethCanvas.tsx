@@ -200,7 +200,7 @@ function ResponsiveModelGroup({ children }: { children: React.ReactNode }) {
     const isTablet = size.width <= 1025
 
     const scale = isMobile ? 2.0 : isTablet ? 2.5 : 3.5
-    const posY = isMobile ? -0.35 : isTablet ? -0.5 : -0.7
+    const posY = isMobile ? -1.3 : isTablet ? -1.2 : -0.7
 
     return (
         <group
