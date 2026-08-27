@@ -3,7 +3,9 @@
   "type": "registry:component",
   "title": "Border Beam",
   "description": "Animated border beam effect for cards and surfaces",
-  "dependencies": [],
+  "dependencies": [
+    "lucide-react"
+  ],
   "registryDependencies": [],
   "exportName": "BorderBeam",
   "exportKind": "default",
@@ -89,7 +91,7 @@
     {
       "name": "theme",
       "type": "string",
-      "default": "light",
+      "default": "auto",
       "description": "Sets the light, dark, or system-aware beam tuning.",
       "remixer": {
         "control": "select",
@@ -125,7 +127,7 @@
     {
       "name": "strength",
       "type": "number",
-      "default": 1,
+      "default": 2,
       "description": "Scales the beam intensity.",
       "remixer": {
         "control": "range",
@@ -140,7 +142,7 @@
       "name": "duration",
       "type": "number",
       "description": "Time for the beam to complete a loop.",
-      "default": 2,
+      "default": 3.3,
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -154,7 +156,7 @@
       "name": "beamWidth",
       "type": "number",
       "description": "Thickness of the animated border beam.",
-      "default": 2,
+      "default": 9,
       "remixer": {
         "control": "range",
         "group": "style",
@@ -168,7 +170,7 @@
       "name": "backgroundColor",
       "type": "color",
       "description": "Card or container background color.",
-      "default": "#f4f5f7",
+      "default": "#212121",
       "remixer": {
         "control": "color",
         "group": "style",
