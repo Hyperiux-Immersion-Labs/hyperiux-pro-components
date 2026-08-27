@@ -12,7 +12,6 @@
   },
   "scripts": {
     "dev": "next dev --webpack",
-    "prebuild": "node ../../scripts/generate-sitemap.mjs",
     "build": "next build --webpack",
     "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",

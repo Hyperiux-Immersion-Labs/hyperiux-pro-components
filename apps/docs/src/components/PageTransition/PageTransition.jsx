@@ -14,6 +14,7 @@ const BAYER = [
 
 /** Pack hex string into little-endian ABGR Uint32 */
 function packHex(hex) {
+  
   let h = String(hex).replace('#', '')
   if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]
   if (h.length === 6) h += 'ff'
@@ -223,61 +224,8 @@ export default function PageTransition() {
     return () => window.removeEventListener('resize', initCanvas)
   }, [initCanvas])
 
-  // 1. Cover Screen BEFORE route change on link click
-  useEffect(() => {
-    const handleAnchorClick = (e) => {
-      const anchor = e.target.closest('a')
-      if (!anchor) return
-
-      const href = anchor.getAttribute('href')
-      if (!href) return
-
-      if (
-        href.startsWith('http') ||
-        href.startsWith('//') ||
-        href.startsWith('mailto:') ||
-        href.startsWith('tel:') ||
-        href.startsWith('#') ||
-        anchor.target === '_blank' ||
-        e.metaKey ||
-        e.ctrlKey ||
-        e.shiftKey ||
-        e.altKey
-      ) {
-        return
-      }
-
-      const currentPath = window.location.pathname
-      let targetPath = href
-      try {
-        targetPath = new URL(href, window.location.origin).pathname
-      } catch (err) {
-        return
-      }
-
-      if (currentPath === targetPath) return
-
-      if (shouldSkipTransition(currentPath, targetPath)) {
-        isTransitioningRef.current = false
-        return
-      }
-
-      if (isTransitioningRef.current) return
-      isTransitioningRef.current = true
-
-      e.preventDefault()
-
-      coverScreenAndNavigate(targetPath)
-    }
-
-    document.addEventListener('click', handleAnchorClick, { capture: true })
-    return () => {
-      document.removeEventListener('click', handleAnchorClick, { capture: true })
-    }
-  }, [router])
-
   // Cover current page: dither wave sweeps DOWN from top to bottom
-  const coverScreenAndNavigate = (targetPath) => {
+  const coverScreenAndNavigate = useCallback((targetPath) => {
     if (!containerRef.current) {
       router.push(targetPath)
       isTransitioningRef.current = false
