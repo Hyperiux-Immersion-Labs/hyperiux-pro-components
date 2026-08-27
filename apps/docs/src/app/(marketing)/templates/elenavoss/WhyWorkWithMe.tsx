@@ -65,21 +65,24 @@ const WhyWorkWithMe = () => {
       return;
     }
 
-    const tween = gsap.from(".work-card", {
+    gsap.fromTo(".work-card", {
       opacity: 0,
       yPercent: 10,
-      stagger: 0.05,
+     
+    },{
+     opacity:1,
+      yPercent: 0,
+       stagger: 0.05,
       ease: "power2.out",
       scrollTrigger: {
         trigger: "#work-with-me",
         start: "top top",
       },
+
+
     });
 
-    return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-    };
+
   }, [prefersReducedMotion]);
 
   return (

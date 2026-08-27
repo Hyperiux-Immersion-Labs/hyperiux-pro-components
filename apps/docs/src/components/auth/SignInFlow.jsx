@@ -37,10 +37,6 @@ import {
 // anything run). `/legacy` restores the classic `{ isLoaded, signIn,
 // setActive }` shape this component is written against.
 
-// Swapped out once the real design asset is provided - see AuthArtPanel.
-const ART_SRC =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg";
-
 const RESEND_COOLDOWN_SECONDS = 30;
 
 export default function SignInFlow() {
@@ -261,7 +257,7 @@ export default function SignInFlow() {
   }
 
   return (
-    <SplitAuthLayout artSrc={ART_SRC}>
+    <SplitAuthLayout>
       <GlobalError message={error} />
 
       {step === "start" && (

@@ -21,9 +21,6 @@ import {
 // a Signals-based shape with no `isLoaded`/`setActive`, which silently
 // breaks the `if (!isLoaded || loading) return;` guards below).
 
-const ART_SRC =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg";
-
 const RESEND_COOLDOWN_SECONDS = 30;
 
 // Matches the prebuilt <SignUp/> component's existing fallbackRedirectUrl
@@ -166,7 +163,7 @@ export default function SignUpFlow() {
   }
 
   return (
-    <SplitAuthLayout artSrc={ART_SRC}>
+    <SplitAuthLayout>
       <GlobalError message={error} />
 
       {step === "start" && (

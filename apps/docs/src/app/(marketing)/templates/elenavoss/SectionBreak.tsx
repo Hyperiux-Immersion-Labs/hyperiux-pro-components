@@ -24,7 +24,9 @@ export default function SectionBreak() {
     () => {
       const grid = gridRef.current;
       if (!grid) return;
-      const gridItems = grid.querySelectorAll(".grid__item");
+      const gridItems = Array.from(grid.querySelectorAll<HTMLElement>(".grid__item"));
+      const total = gridItems.length;
+      if (total === 0) return;
 
       const timeline = gsap.timeline({
         defaults: { ease: "none" },
@@ -37,65 +39,72 @@ export default function SectionBreak() {
         },
       });
 
-      if (globalThis.innerWidth > 1024) {
-        gsap.set(gridItems, {
-          transformOrigin: "0% 0%",
-          opacity: 0,
-          x: () => gsap.utils.random(-150, 150),
-          y: () => gsap.utils.random(-150, 150),
-          filter: "blur(2px)",
-          z: () => gsap.utils.random(-2000, -2000),
-        });
-        gridItems.forEach((item, index) =>
-          timeline
-            .to(item, {
-              z: 0,
-              opacity: 1,
-              filter: "blur(0px) invert(0)",
-              duration: 3,
-              delay: index * -0.4,
-            })
-            .to(
-              item,
-              {
-                filter: "blur(5px)",
-                opacity: 0,
-                z: 2000,
-                duration: 2.5,
-              },
-              ">",
-            ),
-        );
-      } else {
-        gsap.set(gridItems, {
-          transformOrigin: "0% 0%",
-          opacity: 0,
-          x: () => gsap.utils.random(0, 0),
-          y: () => gsap.utils.random(-250, 250),
-          filter: "blur(2px)",
-          z: () => gsap.utils.random(-500, -500),
-        });
-        gridItems.forEach((item, index) =>
-          timeline
-            .to(item, {
-              z: 0,
-              opacity: 1,
-              filter: "blur(0px) invert(0)",
-              duration: 4,
-              delay: -2,
-            })
-            .to(
-              item,
-              {
-                filter: "blur(5px)",
-                opacity: 0,
-                z: 800,
-                duration: 3.5,
-              },
-              ">",
-            ),
-        );
+      const isDesktop = globalThis.innerWidth > 1024;
+      const enterDuration = isDesktop ? 3.5 : 4;
+      const exitDuration = isDesktop ? 2.5 : 3.5;
+      // Gap (in timeline seconds) between one cluster's start and the next -
+      // kept close to enterDuration so a new wave doesn't start arriving
+      // until the current one has essentially finished appearing. Waves
+      // read as distinct "two-three, two-three" beats instead of several
+      // clusters' entrances piling on top of each other.
+      const groupStep = enterDuration + 0.4;
+      // Short, deliberate stagger between one item's start and the next
+      // item's start within the same cluster - small enough that the 2-3
+      // items still read as one wave "arriving together", but with a
+      // visible beat between each rather than popping in simultaneously.
+      const withinGroupStagger = isDesktop ? 0.18 : 0.22;
+
+      // Split items into small clusters of 2-3, applied uniformly all the
+      // way through (including whatever's left in the last cluster) so the
+      // rhythm stays consistent start to finish - no special-cased finale
+      // that dumps every remaining logo in at once.
+      const groups: number[][] = [];
+      for (let i = 0; i < total; ) {
+        const remaining = total - i;
+        const size = Math.min(remaining, gsap.utils.random(2, 3, 1));
+        groups.push(Array.from({ length: size }, (_, k) => i + k));
+        i += size;
       }
+
+      groups.forEach((group, groupIndex) => {
+        const groupStart = groupIndex * groupStep;
+
+        group.forEach((itemIndex, indexInGroup) => {
+          const item = gridItems[itemIndex];
+          const startTime = groupStart + indexInGroup * withinGroupStagger;
+
+          gsap.set(item, {
+            transformOrigin: "0% 0%",
+            opacity: 0,
+            x: isDesktop ? gsap.utils.random(-320, 320) : 0,
+            y: isDesktop ? gsap.utils.random(-320, 320) : gsap.utils.random(-320, 320),
+            filter: "blur(10px)",
+            z: isDesktop ? gsap.utils.random(-2600, -1400) : gsap.utils.random(-700, -350),
+          });
+
+          timeline
+            .to(
+              item,
+              {
+                z: 0,
+                opacity: 1,
+                filter: "blur(0px) invert(0)",
+                duration: enterDuration,
+              },
+              startTime,
+            )
+            .to(
+              item,
+              {
+                filter: "blur(10px)",
+                opacity: 0,
+                z: isDesktop ? gsap.utils.random(1600, 2400) : gsap.utils.random(600, 1000),
+                duration: exitDuration,
+              },
+              startTime + enterDuration,
+            );
+        });
+      });
     },
     { scope: container },
   );
