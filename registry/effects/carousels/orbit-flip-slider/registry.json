@@ -129,7 +129,7 @@
     {
       "name": "perspectiveRotateValue",
       "type": "number",
-      "default": 75,
+      "default": 180,
       "description": "How far each card rotates on hover, in degrees.",
       "remixer": {
         "control": "range",

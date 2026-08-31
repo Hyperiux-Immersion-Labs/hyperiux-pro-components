@@ -69,13 +69,13 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 px-[5%] py-[2%] transform transition-all ease-in-out duration-500 tablet:px-[5%] tablet:py-[7%] ${
+      className={`fixed inset-x-0 top-0 z-50 px-[5%] pt-[1vw] pb-[1vw] transform transition-all ease-in-out duration-500 max-[1025px]:px-[5%] max-[1025px]:py-[4%] ${
         !revealed ? "-translate-y-full" : hidden ? "-translate-y-full max-[1025px]:translate-y-0" : "translate-y-0"
       } ${isScrolled ? "bg-black/20 backdrop-blur-md shadow-md" : ""} `}
     >
       <div className="flex items-center justify-between">
-        <Link href="/" className="relative z-60 flex items-center gap-[0.6vw] tablet:gap-[2vw]">
-          <div className="h-fit w-40">
+        <Link href="/templates/lumera" className="relative z-60 flex items-center gap-[0.6vw] max-[1025px]:gap-[2vw]">
+          <div className="h-fit w-40 max-md:w-30">
             <Image src={lumeraLogo} alt="Lumera" className="h-full w-full object-contain" />
           </div>
         </Link>
@@ -95,7 +95,7 @@ const Header: React.FC = () => {
         </nav>
 
         <div className="max-[1025px]:hidden ">
-          <PrimaryButton link="#footer" btnText="Enquire Now" className="min-w-0! w-50 font-normal!"  />
+          <PrimaryButton link="#footer" btnText="Enquire Now" className="min-w-0! w-50"  />
         </div>
 
         <button
@@ -121,12 +121,12 @@ const Header: React.FC = () => {
       </div>
 
       <div
-        className={`fixed inset-0 z-50 hidden h-dvh bg-[#1c1b1a] px-[5%] pb-[10vw] pt-[28vw] transition-transform duration-500 max-[1025px]:block max-md:pt-[34vw] ${
+        className={`fixed inset-0 z-50 hidden h-dvh bg-[#1c1b1a] px-[5%] pb-[5vw] pt-[28vw] transition-transform duration-500 max-[1025px]:block max-md:py-[34vw] ${
           menuOpen ? "translate-y-0" : "-translate-y-full"
         }`}
       >
         <nav className="flex h-full flex-col justify-between">
-          <div className="flex flex-col gap-[5vw] max-md:gap-[7vw]">
+          <div className="flex flex-col gap-[5vw] ">
             {navLinks.map((link) => (
               <CharStaggerButton
                 key={link.label}
@@ -135,7 +135,7 @@ const Header: React.FC = () => {
                 onClick={(event) => handleNavScroll(event, link.target)}
                 hoverColor="rgba(255,255,255,0.7)"
                 className="text-white"
-                textClassName="font-neue-montreal text-[9vw] font-medium leading-none max-md:text-[12vw]"
+                textClassName="font-neue-montreal text-[9vw] font-medium leading-none max-md:text-[7vw]"
               />
             ))}
           </div>

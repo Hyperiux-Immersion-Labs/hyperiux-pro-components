@@ -28,7 +28,7 @@ export default function TextFill({
     primaryColor = '#3365e2',
     dimColor = 'rgba(255, 255, 255, 0.25)',
     start = 'top 80%',
-    end = 'bottom 40%',
+    end = 'bottom 60%',
     as: Tag = 'h2',
     trigger = '',
 }: TextFillProps) {

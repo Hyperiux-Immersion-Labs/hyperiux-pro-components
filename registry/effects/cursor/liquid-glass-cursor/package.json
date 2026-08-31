@@ -1,11 +1,10 @@
 {
   "name": "@hyperiux/liquid-glass-cursor",
-  "version": "1.1.0",
-  "description": "Fluid glass-like custom cursor with SVG displacement refraction, hover morph states, and GSAP-smoothed tracking.",
+  "version": "2.1.0",
+  "description": "Magnifying glass-lens cursor with chromatic-aberration SVG refraction over live wrapped content, hover shape morphing, and spring-smoothed tracking.",
   "main": "index.tsx",
   "files": [
     "index.tsx",
-    "LiquidText.tsx",
     "registry.json"
   ],
   "keywords": [
@@ -13,6 +12,6 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*"
+    "motion": "*"
   }
 }

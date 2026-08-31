@@ -16,7 +16,9 @@ import {
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
-import CustomAnimationFormModal from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
+import CustomAnimationFormModal, {
+  CustomAnimationFormProvider,
+} from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
 import PageTransition from "@/components/PageTransition/PageTransition";
 
@@ -90,7 +92,7 @@ export default function RootLayout({ children }) {
         /> */}
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
-      <body className="min-h-dvh bg-background text-foreground font-sans">
+      <body className="min-h-dvh bg-background text-foreground">
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-NCDH9PHF"
@@ -112,17 +114,24 @@ export default function RootLayout({ children }) {
         <WebsiteJsonLd />
         <SoftwareApplicationJsonLd />
         <PageTransition />
-        {children}
-        {/* Provider mounts only when a modal opens — never wrap page
-            children or the homepage remounts when reCAPTCHA arms. */}
-        <LazyRecaptchaProvider>
-          <Suspense>
-            <CustomAnimationFormModal />
-          </Suspense>
-          <Suspense>
-            <WorkWithHyperiuxModal />
-          </Suspense>
-        </LazyRecaptchaProvider>
+        {/* CustomAnimationFormProvider adds no DOM of its own (just a
+            Context.Provider) - it wraps children so any page's
+            CustomAnimationFormTrigger can reach the single globally-mounted
+            modal below via local state instead of a URL round-trip. */}
+        <CustomAnimationFormProvider>
+          {children}
+          {/* LazyRecaptchaProvider mounts only when a modal opens — never
+              wrap page children or the homepage remounts when reCAPTCHA
+              arms. */}
+          <LazyRecaptchaProvider>
+            <Suspense>
+              <CustomAnimationFormModal />
+            </Suspense>
+            <Suspense>
+              <WorkWithHyperiuxModal />
+            </Suspense>
+          </LazyRecaptchaProvider>
+        </CustomAnimationFormProvider>
         <Analytics />
         <SpeedInsights />
         <DeferredGTM />

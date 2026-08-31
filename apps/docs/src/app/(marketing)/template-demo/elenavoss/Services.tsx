@@ -50,6 +50,12 @@ const Services = () => {
   const rowRef = useRef<HTMLDivElement | null>(null);
   const gradientRefs = useRef<(HTMLDivElement | null)[]>([]);
   const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
+  // Plain JS tween targets for each card's --reveal custom property (consumed
+  // by .radial-mask-bg-fill in elenavoss.css) - mirrors Hero.tsx's
+  // maskState/--reveal pattern rather than letting GSAP touch the CSS
+  // variable directly, since GSAP can't reliably read/interpolate a custom
+  // property's percentage value without an inline starting value to parse.
+  const revealState = useRef(SERVICES.map((_, i) => ({ value: i === 0 ? 100 : -40 })));
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const prefersReducedMotionRef = useRef(false);
   // The first card reads as "active" (gradient filled) from the start.
@@ -136,22 +142,36 @@ const Services = () => {
 
   const handleActivate = (index: number) => {
     if (index === activeIndex) return;
-    gsap.to(gradientRefs.current[activeIndex], {
-      opacity: 0,
-      duration: 0.5,
+    const prevIndex = activeIndex;
+
+    gsap.to(revealState.current[prevIndex], {
+      value: -40,
+      duration: 0.45,
       ease: "power2.out",
+      onUpdate: () => {
+        gradientRefs.current[prevIndex]?.style.setProperty(
+          "--reveal",
+          `${revealState.current[prevIndex].value}%`
+        );
+      },
     });
-    gsap.to(gradientRefs.current[index], {
-      opacity: 1,
-      duration: 0.5,
+    gsap.to(revealState.current[index], {
+      value: 100,
+      duration: 0.45,
       ease: "power2.out",
+      onUpdate: () => {
+        gradientRefs.current[index]?.style.setProperty(
+          "--reveal",
+          `${revealState.current[index].value}%`
+        );
+      },
     });
     setActiveIndex(index);
   };
 
   return (
     <section
-      className={`relative w-screen bg-[#070707] text-white ${prefersReducedMotion ? "" : "h-[200vh]"}`}
+      className={`relative w-screen bg-[#070707] text-white ${prefersReducedMotion ? "" : "h-[275vh]"}`}
       id="services"
     >
       <div className="relative pt-[6vw] px-[4vw] w-[60%] max-[1025px]:w-[85%] max-md:w-full  max-[1025px]:px-[5vw] max-[1025px]:pt-[15vw]">
@@ -187,7 +207,7 @@ const Services = () => {
             className={
               prefersReducedMotion
                 ? "grid grid-cols-3 gap-[1.6vw] px-[4vw] pt-[5vw] max-[1025px]:grid-cols-2 max-md:grid-cols-1"
-                : "flex gap-[1.6vw] px-[4vw] will-change-transform"
+                : "flex gap-[1.6vw] px-[4vw] will-change-transform max-[1025px]:gap-[2.5vw] max-md:gap-[6vw]"
             }
           >
             {SERVICES.map((service, index) => (
@@ -198,14 +218,18 @@ const Services = () => {
                 className={
                   prefersReducedMotion
                     ? "relative rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden min-h-[22vw] max-[1025px]:min-h-[32vw] max-[1025px]:p-[3vw] max-md:min-h-0 max-md:p-[5vw] border border-white/20"
-                    : "relative w-[27vw] h-[30vw] shrink-0 rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden max-[1025px]:w-[55vw] max-[1025px]:h-[65vw] max-[1025px]:p-[3vw] max-md:w-[75vw] max-md:h-[85vw] max-md:p-[5vw]  border border-white/20 "
+                    : "relative w-[27vw] h-[30vw] shrink-0 rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden max-[1025px]:w-[55vw] max-[1025px]:h-[65vw] max-[1025px]:p-[3vw] max-md:w-[75vw] max-md:h-[85vw] max-md:p-[5vw]  border border-white/20 group "
                 }
               >
                 <div
                   ref={(el) => {
                     gradientRefs.current[index] = el;
+                    // Seeds the CSS var on mount so the first card starts
+                    // fully revealed and the rest start collapsed to a
+                    // point, without waiting on a GSAP tween to set it first.
+                    el?.style.setProperty("--reveal", `${revealState.current[index].value}%`);
                   }}
-                  className={`absolute inset-0 bg-linear-to-r from-[#F16B0D] to-[#E61416] ${activeIndex === index ? "opacity-100" : "opacity-0"}`}
+                  className="absolute inset-0 bg-linear-to-r from-[#F16B0D] to-[#E61416] radial-mask-bg-fill"
                 />
 
                 <div className="relative flex justify-end">
@@ -213,9 +237,17 @@ const Services = () => {
                     ref={(el) => {
                       iconRefs.current[index] = el;
                     }}
-                    className={`w-[3vw] h-[3vw] rounded-full flex items-center justify-center border-white/30 border max-[1025px]:w-[7vw] max-[1025px]:h-[7vw] max-md:w-[9vw] max-md:h-[9vw] ${activeIndex === index ? "bg-white text-black" : "text-white"}`}
+                    className={`w-[3vw] h-[3vw] rounded-full flex items-center justify-center border-white/30 border max-[1025px]:w-[7vw] max-[1025px]:h-[7vw] max-md:w-[9vw] max-md:h-[9vw] duration-300 ease-out overflow-hidden relative ${activeIndex === index ? "bg-white text-black" : "text-white"}`}
                   >
+                    <div className="group-hover:translate-x-[150%] group-hover:translate-y-[-150%] duration-300 ease-out">
                     <ArrowUpRight size={20} />
+
+                    </div>
+                    <div className="absolute translate-x-[-150%] translate-y-[150%] group-hover:translate-x-0 group-hover:translate-y-0 duration-300 ease-out">
+
+                    <ArrowUpRight size={20} />
+                    </div>
+
                   </div>
                 </div>
 

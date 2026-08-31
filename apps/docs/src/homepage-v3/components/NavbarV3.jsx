@@ -110,10 +110,10 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
         // set the `translate` property, so leaving it out snaps the slide and
         // only the opacity reads.
         className={`py-[2vw] flex max-[1025px]:hidden items-center justify-between w-full fixed z-900 top-0 left-0 px-[3vw] transition-[transform,translate,opacity] duration-500 ease-out motion-reduce:transition-none ${!introReady
-            ? "translate-y-0 opacity-0 pointer-events-none"
-            : reveal
-              ? "translate-y-0 opacity-100"
-              : "translate-y-[-120%] opacity-100"
+          ? "translate-y-0 opacity-0 pointer-events-none"
+          : reveal
+            ? "translate-y-0 opacity-100"
+            : "translate-y-[-120%] opacity-100"
           }`}
         style={{ willChange: "transform" }}
         onPointerDownCapture={markPointer}
@@ -199,7 +199,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
           <button
             type="button"
             onClick={openSearch}
-            className="group flex py-[.8vw] cursor-pointer items-center gap-4  bg-[#121212]! px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
+            className="group flex py-[.86vw] cursor-pointer items-center gap-4  bg-[#121212]! px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
             aria-label="Search effects"
           >
             <div className="flex items-center gap-2">

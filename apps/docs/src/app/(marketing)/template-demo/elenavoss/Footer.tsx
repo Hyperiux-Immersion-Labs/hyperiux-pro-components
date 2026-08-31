@@ -25,32 +25,38 @@ const Footer = () => {
   const footerRef = useRef(null);
   const footerGlassRef = useRef(null);
   const { openModal } = useGetInTouchModal();
-  useEffect(()=>{
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.set(footerGlassRef.current, { opacity: 1, yPercent: 0 })
-      return
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(footerGlassRef.current, { opacity: 1, yPercent: 0 });
+      return;
     }
 
-    if (globalThis.innerWidth <= 1025) return
+    if (globalThis.innerWidth <= 1025) return;
 
-    const tween = gsap.from(footerGlassRef.current,{
+    const tween = gsap.fromTo(
+      footerGlassRef.current,
+      {
         // opacity:0,
-        yPercent:20,
-        ease:"power1.out",
-        scrollTrigger:{
-            trigger: footerRef.current,
-            start: "top 60%",
-            end:"bottom bottom",
-            scrub: true,
-            // markers:true,
-        }
-    })
+        yPercent: 20,
+      },
+      {
+        yPercent: 0,
+        ease: "power1.out",
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top 60%",
+          end: "bottom bottom",
+          scrub: true,
+          // markers: true,
+        },
+      },
+    );
 
     return () => {
-        tween.scrollTrigger?.kill()
-        tween.kill()
-    }
-  }, [])
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
+  }, []);
 
   return (
     <>
@@ -147,9 +153,7 @@ const Footer = () => {
                             className="w-full h-full object-contain group-hover:invert transition-all duration-300 ease-in-out"
                           />
                         </div>
-                        <div className="w-full h-full absolute inset-0 origin-center scale-0 group-hover:scale-100 bg-white rounded-full duration-300 ease-in-out z-[-1]">
-
-                        </div>
+                        <div className="w-full h-full absolute inset-0 origin-center scale-0 group-hover:scale-100 bg-white rounded-full duration-300 ease-in-out z-[-1]"></div>
                       </Link>
                     </li>
                   ))}
@@ -158,7 +162,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="flex justify-between py-8 pt-12 text-lg text-foreground max-md:flex-col max-md:gap-2 max-md:text-sm max-md:text-center max-md:py-6 max-md:pt-8">
-            <p>Copyright © Elena Voss Design 2025</p>
+            <p>Copyright © Elena Voss Design 2026</p>
             <p>
               By: <a href="https://www.hyperiux.com/">Hyperiux</a>
             </p>

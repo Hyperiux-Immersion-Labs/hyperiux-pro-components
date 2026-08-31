@@ -142,13 +142,13 @@ export default function LinkButton({
           <span className="relative overflow-hidden inline-flex h-[1.4em]">
             <span
               ref={labelRef}
-              className="inline-block transition-transform duration-300 group-hover:-translate-y-full"
+              className="inline-block transition-transform duration-300 ease-in-out group-hover:-translate-y-full"
             >
               {label}
             </span>
             <span
               ref={labelShadowRef}
-              className="inline-block absolute left-0 top-0 translate-y-full transition-transform duration-300 group-hover:translate-y-0"
+              className="inline-block absolute left-0 top-0 translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0"
             >
               {label}
             </span>

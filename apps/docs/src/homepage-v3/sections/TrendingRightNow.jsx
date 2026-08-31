@@ -6,19 +6,24 @@ import Link from "next/link";
 import { getEffectHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
+import { horizontalLoop } from "./horizontalLoop";
 
 const CARD_SIZES = "(max-width: 768px) 80vw, (max-width: 1025px) 40vw, 22vw";
 const COVER_WIDTH = 640;
 const COVER_HEIGHT = 480;
 
-// Card width (w-80/w-64) + track gap (gap-5/gap-4) below, kept in sync with
-// the track's className so prev/next steps land exactly one card at a time.
-const CARD_STEP = 340;
-const CARD_STEP_MOBILE = 272;
-
-// Continuous autoplay speed, in pixels per animation frame.
-const AUTOPLAY_SPEED = 0.6;
-const LERP_FACTOR = 0.085;
+// pixelsPerSecond inside horizontalLoop is 100 * this - drives both the
+// continuous marquee speed and the base duration of each card's own
+// wrap-around tween. ~0.35 roughly matches the old rAF-lerp marquee's
+// visual pace (was 0.6px/frame at ~60fps, ~36px/s).
+const LOOP_SPEED = 0.35;
+// How long a manual prev/next step takes, and how long autoplay stays
+// paused after one before resuming - mirrors the old manualPauseUntilRef
+// cooldown (900ms) so clicking through doesn't feel like it's immediately
+// yanked back into the marquee mid-look.
+const NAV_STEP_DURATION = 0.4;
+const REDUCED_MOTION_NAV_DURATION = 0.15;
+const AUTOPLAY_RESUME_DELAY = 500;
 
 function formatLabel(value = "") {
   return value
@@ -109,18 +114,17 @@ function TrendingEffectCard({ effect, priority = false }) {
       onMouseLeave={() => setActive(false)}
       className="group relative block h-full w-full overflow-hidden bg-[#161616]"
     >
-      <span className="absolute left-5 top-3 z-10 bg-[#2B2B2B] px-3 py-[0.1vw] text-[0.8vw]  tracking-[0.06em] text-white max-md:left-5 max-md:top-5 max-md:px-4 max-md:py-1.5 ">
+      <span className="absolute left-5 top-3 z-10 bg-[#2B2B2B] px-3 py-[0.1vw] text-[0.8vw]  tracking-[0.06em] text-white max-md:text-[3vw] max-[1025px]:text-[2vw] max-md:px-4 max-md:py-1.5 ">
         {categoryLabel}
       </span>
 
-      <div className="absolute inset-x-3  h-[64%]  overflow-hidden bg-[#202020] md:inset-x-5 top-[17.5%] ">
+      <div className="absolute inset-x-3  h-[64%]  overflow-hidden bg-[#202020] md:inset-x-5 top-[17.5%] max-md:top-[20%] max-md:inset-x-5 ">
         {coverImage && !imageError ? (
           <Image
             src={coverImage}
             alt={effect.title || effect.name}
             fill
             sizes={CARD_SIZES}
-            quality={65}
             priority={priority}
             loading={priority ? undefined : "lazy"}
             draggable={false}
@@ -149,8 +153,8 @@ function TrendingEffectCard({ effect, priority = false }) {
         )}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-4 bottom-3 z-10  ">
-        <p className="truncate px-0.5 pb-1.5 font-sans text-[1.15vw] font-medium leading-none text-white max-md:text-sm">
+      <div className="pointer-events-none absolute inset-x-4 bottom-3 z-10 max-md:inset-x-5  ">
+        <p className="truncate px-0.5 pb-1.5  text-[1.15vw] font-medium leading-none text-white max-md:text-[3.5vw] max-[1025px]:text-[2vw]">
           {effect.title || effect.name}
         </p>
       </div>
@@ -160,166 +164,146 @@ function TrendingEffectCard({ effect, priority = false }) {
 
 export default function TrendingRightNow({ effects = [] }) {
   const trackRef = useRef(null);
+  const cardRefs = useRef([]);
+  const loopRef = useRef(null);
   const isHoveredRef = useRef(false);
-  const isDraggingRef = useRef(false);
-  const manualPauseUntilRef = useRef(0);
-  const setWidthRef = useRef(0);
-  const currentScrollRef = useRef(0);
-  const targetScrollRef = useRef(0);
-  // Separate from isDraggingRef (which only pauses autoplay) - this tracks
-  // the actual pointer-drag gesture: where it started, whether it's crossed
-  // the move threshold yet, and what scroll position to drag from.
-  const dragStateRef = useRef({ isPointerDown: false, isDragging: false, startX: 0, startY: 0, startScroll: 0 });
-
-  // Tripled so the middle copy can be scrolled seamlessly in either
-  // direction before a wrap-reset is needed.
-  const loopEffects = effects.length ? [...effects, ...effects, ...effects] : [];
+  const reduceMotionRef = useRef(false);
+  const attemptsRef = useRef(0);
+  // Purely passive tracking (never preventDefault/stopPropagation itself)
+  // of whether the current pointer gesture crossed the move threshold -
+  // used only to decide whether the eventual click should be suppressed.
+  // horizontalLoop's own native pointer listeners on the same element
+  // handle the actual drag-to-scroll independently; this never touches them.
+  const dragTrackingRef = useRef({ isPointerDown: false, startX: 0, startY: 0, moved: false });
 
   useEffect(() => {
-    const track = trackRef.current;
-    if (!track || !effects.length) return;
+    cardRefs.current = cardRefs.current.slice(0, effects.length);
+  }, [effects.length]);
 
-    const reduceMotion =
+  useEffect(() => {
+    reduceMotionRef.current =
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+  }, []);
 
-    let frameId = null;
+  useEffect(() => {
+    if (!trackRef.current || !effects.length) return;
 
-    const measure = () => {
-      setWidthRef.current = track.scrollWidth / 3;
-    };
+    attemptsRef.current = 0;
 
-    const normalizeScrollPosition = () => {
-      const setWidth = setWidthRef.current;
-      if (setWidth <= 0) return;
+    function tryInit() {
+      const items = cardRefs.current.filter(Boolean);
+      if (!items.length || !trackRef.current) return;
 
-      if (currentScrollRef.current >= setWidth * 2) {
-        currentScrollRef.current -= setWidth;
-        targetScrollRef.current -= setWidth;
-      } else if (currentScrollRef.current <= 0) {
-        currentScrollRef.current += setWidth;
-        targetScrollRef.current += setWidth;
+      // horizontalLoop's getTotalWidth() measures out to the last card's own
+      // right edge - it has no way to know about the trailing gap that
+      // would exist between the last card and a wrapped-around first card,
+      // since spacing here comes from the track's CSS `gap` (gap-6/gap-4),
+      // not margin. Without paddingRight to account for it, the wrap
+      // distance comes up one gap short, so the last card re-enters slightly
+      // early and visibly overlaps whatever's currently at the front - the
+      // "first and last card overlapping" glitch. Read the track's actual
+      // computed gap rather than hardcoding 24px/16px so it's still correct
+      // whichever breakpoint's gap-* class is active at init time.
+      const trackGap = parseFloat(getComputedStyle(trackRef.current).columnGap) || 0;
+
+      const loop = horizontalLoop(items, {
+        repeat: -1,
+        draggable: true,
+        wrapperEl: trackRef.current,
+        speed: LOOP_SPEED,
+        pauseOnHover: true,
+        isHoveredRef,
+        reduceMotion: reduceMotionRef.current,
+        paddingRight: trackGap,
+      });
+
+      if (!loop) {
+        // Items not measurable yet (e.g. images/layout not settled) - retry
+        // next frame, same as SmoothInfiniteCarousel's own init.
+        if (attemptsRef.current < 10) {
+          attemptsRef.current += 1;
+          requestAnimationFrame(tryInit);
+        }
+        return;
       }
-    };
 
-    measure();
-    // Start in the middle copy so both prev and next have room to scroll.
-    currentScrollRef.current = setWidthRef.current;
-    targetScrollRef.current = setWidthRef.current;
-    track.scrollLeft = setWidthRef.current;
-
-    const resizeObserver = new ResizeObserver(measure);
-    resizeObserver.observe(track);
-
-    const tick = () => {
-      const manualPauseActive = Date.now() < manualPauseUntilRef.current;
-
-      if (
-        !isHoveredRef.current &&
-        !isDraggingRef.current &&
-        !manualPauseActive &&
-        !reduceMotion
-      ) {
-        targetScrollRef.current += AUTOPLAY_SPEED;
+      loopRef.current = loop;
+      // The marquee: horizontalLoop's timeline is paused by default (it's
+      // meant to be driven by drag/nav/wheel) - repeat:-1 + play() is what
+      // turns it into continuous automatic movement, at LOOP_SPEED.
+      if (!reduceMotionRef.current) {
+        loop.play();
       }
+    }
 
-      normalizeScrollPosition();
-      currentScrollRef.current +=
-        (targetScrollRef.current - currentScrollRef.current) * LERP_FACTOR;
-      track.scrollLeft = currentScrollRef.current;
-
-      frameId = requestAnimationFrame(tick);
-    };
-
-    frameId = requestAnimationFrame(tick);
+    const raf = requestAnimationFrame(tryInit);
 
     return () => {
-      if (frameId) cancelAnimationFrame(frameId);
-      resizeObserver.disconnect();
+      cancelAnimationFrame(raf);
+      loopRef.current?.draggable?.kill();
+      loopRef.current?.kill();
+      loopRef.current = null;
+      attemptsRef.current = 0;
     };
   }, [effects.length]);
 
-  const step = (direction) => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    const cardStep = window.innerWidth <= 768 ? CARD_STEP_MOBILE : CARD_STEP;
-    const setWidth = setWidthRef.current;
-
-    manualPauseUntilRef.current = Date.now() + 900;
-
-    if (setWidth > 0) {
-      if (currentScrollRef.current >= setWidth * 2) {
-        currentScrollRef.current -= setWidth;
-        targetScrollRef.current -= setWidth;
-      } else if (currentScrollRef.current <= 0) {
-        currentScrollRef.current += setWidth;
-        targetScrollRef.current += setWidth;
+  const resumeAutoplaySoon = () => {
+    window.setTimeout(() => {
+      if (!isHoveredRef.current && !dragTrackingRef.current.isPointerDown && !reduceMotionRef.current) {
+        loopRef.current?.play();
       }
-    }
-
-    targetScrollRef.current += direction * cardStep;
+    }, AUTOPLAY_RESUME_DELAY);
   };
 
-  // Drag updates both current and target scroll refs (not track.scrollLeft
-  // directly) - the autoplay tick loop overwrites track.scrollLeft from
-  // currentScrollRef every frame regardless, so setting the DOM property
-  // directly here would just get stomped on the next frame.
-  const handlePointerDown = (event) => {
-    const track = trackRef.current;
-    if (!track) return;
+  const step = (direction) => {
+    const loop = loopRef.current;
+    if (!loop) return;
 
-    // Not calling setPointerCapture here: capturing on every pointerdown
-    // (including a plain click with no movement) makes Chromium retarget
-    // the resulting click event to the capturing element (this track div)
-    // instead of whatever was actually under the cursor (a card's <a>),
-    // silently breaking card navigation entirely. Only captured once an
-    // actual drag is confirmed, in handlePointerMove below.
-    dragStateRef.current = {
+    loop.pause();
+
+    const vars = {
+      duration: reduceMotionRef.current ? REDUCED_MOTION_NAV_DURATION : NAV_STEP_DURATION,
+      ease: reduceMotionRef.current ? "power2.out" : "power1.inOut",
+      onComplete: resumeAutoplaySoon,
+    };
+
+    if (direction > 0) loop.next(vars);
+    else loop.previous(vars);
+  };
+
+  // Paused unconditionally on pointerdown (before knowing whether this
+  // becomes a real drag or just a click) - horizontalLoop's own draggable
+  // module takes over tl.progress() the same way regardless, and letting
+  // the continuous-autoplay ticker keep advancing tl.time() at the same
+  // time would fight it.
+  const handleTrackPointerDown = (event) => {
+    dragTrackingRef.current = {
       isPointerDown: true,
-      isDragging: false,
       startX: event.clientX,
       startY: event.clientY,
-      startScroll: currentScrollRef.current,
+      moved: false,
     };
+    loopRef.current?.pause();
   };
 
-  const handlePointerMove = (event) => {
-    const track = trackRef.current;
-    const dragState = dragStateRef.current;
-    if (!track || !dragState.isPointerDown) return;
+  const handleTrackPointerMove = (event) => {
+    const state = dragTrackingRef.current;
+    if (!state.isPointerDown) return;
 
-    const deltaX = event.clientX - dragState.startX;
-    const deltaY = event.clientY - dragState.startY;
-    const isHorizontalDrag = Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY);
-
-    if (!isHorizontalDrag && !dragState.isDragging) return;
-
-    if (!dragState.isDragging) {
-      dragState.isDragging = true;
-      isDraggingRef.current = true;
-      track.setPointerCapture?.(event.pointerId);
+    const deltaX = event.clientX - state.startX;
+    const deltaY = event.clientY - state.startY;
+    if (Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      state.moved = true;
     }
-
-    event.preventDefault();
-
-    const next = dragState.startScroll - deltaX;
-    currentScrollRef.current = next;
-    targetScrollRef.current = next;
   };
 
-  const handlePointerEnd = (event) => {
-    const track = trackRef.current;
-    track?.releasePointerCapture?.(event.pointerId);
-
-    isDraggingRef.current = false;
-    manualPauseUntilRef.current = Date.now() + 900;
-
-    const dragState = dragStateRef.current;
-    dragState.isPointerDown = false;
+  const handleTrackPointerUp = () => {
+    dragTrackingRef.current.isPointerDown = false;
+    resumeAutoplaySoon();
     // Deferred so the click event this pointerup produces (if any) still
-    // sees isDragging true and gets suppressed by handleTrackClickCapture.
+    // sees `moved: true` and gets suppressed by handleTrackClickCapture.
     window.setTimeout(() => {
-      dragState.isDragging = false;
+      dragTrackingRef.current.moved = false;
     }, 0);
   };
 
@@ -327,7 +311,7 @@ export default function TrendingRightNow({ effects = [] }) {
   // stopPropagation here keeps a drag-release from also being read as a
   // click-through to the effect page.
   const handleTrackClickCapture = (event) => {
-    if (dragStateRef.current.isDragging) {
+    if (dragTrackingRef.current.moved) {
       event.preventDefault();
       event.stopPropagation();
     }
@@ -338,7 +322,7 @@ export default function TrendingRightNow({ effects = [] }) {
   return (
     <section className="relative w-full overflow-hidden  px-14 pt-16 pb-4 max-md:px-0 max-md:pt-12">
       <div className="mb-7 flex items-center max-sm:px-5 justify-between max-md:mb-5">
-        <h2 className="font-sans text-2xl font-medium text-foreground max-md:text-2xl">
+        <h2 className=" text-2xl font-medium text-foreground">
           Trending
         </h2>
 
@@ -347,7 +331,7 @@ export default function TrendingRightNow({ effects = [] }) {
             type="button"
             onClick={() => step(-1)}
             aria-label="Previous"
-            className="group relative flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
+            className="group relative flex size-9 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
           >
             <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out" />
             <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out" />
@@ -357,7 +341,7 @@ export default function TrendingRightNow({ effects = [] }) {
             type="button"
             onClick={() => step(1)}
             aria-label="Next"
-            className="group relative flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
+            className="group relative flex size-9 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
           >
             <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out" />
             <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out" />
@@ -370,24 +354,30 @@ export default function TrendingRightNow({ effects = [] }) {
           ref={trackRef}
           onPointerEnter={() => {
             isHoveredRef.current = true;
+            loopRef.current?.pause();
           }}
           onPointerLeave={() => {
-            // Not ending an active drag here: setPointerCapture (in
-            // handlePointerDown) keeps move/up events targeting this
-            // element even once the cursor visually leaves its bounds, so
-            // the drag should keep tracking rather than cut off at the edge.
+            // Not clearing drag tracking here: setPointerCapture (inside
+            // horizontalLoop's own draggable module) keeps move/up events
+            // targeting this element even once the cursor visually leaves
+            // its bounds, so an active drag should keep tracking rather
+            // than cut off at the edge.
             isHoveredRef.current = false;
+            resumeAutoplaySoon();
           }}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerEnd}
+          onPointerDown={handleTrackPointerDown}
+          onPointerMove={handleTrackPointerMove}
+          onPointerUp={handleTrackPointerUp}
           onClickCapture={handleTrackClickCapture}
-          className="flex w-full items-stretch gap-6 overflow-x-auto scrollbar-none [-webkit-overflow-scrolling:touch] max-md:gap-4 cursor-grab active:cursor-grabbing touch-pan-y"
+          className="flex w-fit gap-6 overflow-hidden select-none max-md:gap-4 cursor-grab active:cursor-grabbing touch-pan-y"
         >
-          {loopEffects.map((effect, index) => (
+          {effects.map((effect, index) => (
             <div
-              key={`${effect.name}-${index}`}
-              className="h-70 w-90 shrink-0 max-md:h-44 max-md:w-64"
+              key={effect.name}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
+              className="h-70 w-90 shrink-0"
             >
               <TrendingEffectCard effect={effect} priority={index < 4} />
             </div>

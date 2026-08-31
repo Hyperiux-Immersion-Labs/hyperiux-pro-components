@@ -104,6 +104,7 @@ export default function Reviews({
                 gsap.set(".left-strip", { yPercent: 3, scale: 0.5 });
                 gsap.set(".right-strip", { yPercent: 3, scale: 0.5 });
                 gsap.set(".section-break-wrapper", { scale: 0.82, opacity: 0 });
+                gsap.set(".reviews-bg-heading", { scale: 0.9, autoAlpha: 0.2 });
 
                 cards.forEach((card, index) => {
                     const image = card.querySelector(".project-image");
@@ -157,15 +158,28 @@ export default function Reviews({
                         trigger: `#${sectionId}`,
                         start: "-8% top",
                         end: "bottom bottom",
-                        scrub: 1.2,
+                        scrub: true,
+                        // markers:true
                     },
                 });
 
                 // Total timeline duration = 12 units:
-                // Phase 1 (0 -> 4.5): Ribbon Strips Drift & Scale up
+                // Phase 1 (0 -> 4.5): Ribbon Strips Drift & Scale up + Background heading scale
+                tl.to(".reviews-bg-heading", { scale: 1, ease: "none", duration: 3.5 }, 0);
                 tl.to(".left-strip", { yPercent: -77, scale: 1, ease: "none", duration: 4.5 }, 0);
                 tl.to(".mid-strip", { yPercent: -4.5, scale: 1, ease: "none", duration: 4.5 }, 0);
                 tl.to(".right-strip", { yPercent: -77, scale: 1, ease: "none", duration: 4.5 }, 0);
+
+                // Background heading fades out smoothly before paragraph comes in
+                tl.to(
+                    ".reviews-bg-heading",
+                    {
+                        autoAlpha: 0,
+                        duration: 1.5 * speedScale,
+                        ease: "power2.inOut",
+                    },
+                    3.2
+                );
 
                 // Phase 2 (3.8 -> 6.8): Strips part outwards and center cards split up/down with smooth, gradual easing
                 tl.to(
@@ -218,7 +232,7 @@ export default function Reviews({
                 );
 
                 // Phase 4 & 5 (6.8 -> 12.0): Generous pinned hold time for TextFill to complete and comfortable reading
-                tl.to({}, { duration: 5.2 }, 6.2);
+                tl.to({}, { duration: 3 }, 3);
 
                 return () => {
                     cards.forEach((card) => {
@@ -256,10 +270,18 @@ export default function Reviews({
                 className="w-full h-[500vh] bg-white text-oris-secondary max-[1025px]:hidden relative z-10 overflow-clip"
                 id={sectionId}
             >
-
+                {/* Background Big Heading Layer */}
+                <div className="w-full h-screen sticky top-0 flex justify-center items-center pointer-events-none z-1 overflow-hidden">
+                    <h2
+                        style={{ opacity: 0.2 }}
+                        className="reviews-bg-heading text-[13vw] font-medium tracking-tight text-oris-secondary leading-[.8]! opacity-20 uppercase select-none text-center"
+                    >
+                      CLIENTS
+                    </h2>
+                </div>
 
                 {/* Ribbon Strips Layer */}
-                <div className="w-full h-screen sticky top-0 flex justify-between px-[7vw] portfolio-card-container z-2 overflow-hidden">
+                <div className="w-full h-screen sticky top-0 -mt-[100vh] flex justify-between px-[7vw] portfolio-card-container z-2 overflow-hidden">
                     {/* Left Strip */}
                     <div className="w-[23vw] h-fit flex flex-col gap-[4vw] items-center left-strip">
                         {leftCards.map((item, index) => {
@@ -376,13 +398,13 @@ export default function Reviews({
                         <TextFill
                             as="p"
                             text={sectionBreakText}
-                            className="section-break-content font-normal oris-text48 leading-[1.2]"
+                            className="section-break-content font-normal text-[3.5vw] leading-[1.2]"
                             primaryColor={ribbonColor}
                             textColor="#13314a"
                             dimColor="rgba(0, 0, 0, 0.2)"
                             trigger={`#${sectionId}`}
-                            start="40% top"
-                            end="76% top"
+                            start="60% top"
+                            end="80% top"
                         />
                     </div>
                 </div>
@@ -393,7 +415,7 @@ export default function Reviews({
                 <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-md:gap-8">
                     {/* Header on Tablet / Mobile */}
                     <div className="flex flex-col items-center text-center">
-                        <h2 className="oris-text64 font-normal leading-tight">
+                        <h2 className="max-[1025px]:text-[6vw] max-md:text-[7.5vw] font-normal leading-tight">
                             Reviews
                         </h2>
                         <p className="oris-text22 text-oris-secondary/80 mt-2 max-w-xl">
@@ -418,8 +440,8 @@ export default function Reviews({
                         ))}
                     </div>
 
-                    <div className="rounded-xl px-4 py-8 text-center bg-[#c4c4c4] mt-4">
-                        <p className="oris-text22 max-md:w-full max-[1025px]:w-[90%] max-[1025px]:mx-auto max-md:text-base font-normal leading-[1.4] text-oris-secondary">
+                    <div className="rounded-xl px-4 py-8 text-center bg-[#3365e2] mt-4">
+                        <p className="oris-text22 max-md:w-full max-[1025px]:w-[90%] max-[1025px]:mx-auto max-md:text-base font-normal leading-[1.4] text-white">
                             {sectionBreakText}
                         </p>
                     </div>

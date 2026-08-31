@@ -576,10 +576,10 @@ export default function LicenseAgreement() {
             field: "Email",
             details: "support@hyperiux.com",
           },
-          {
-            field: "Phone",
-            details: "+91 81780 26136",
-          },
+          // {
+          //   field: "Phone",
+          //   details: "+91 81780 26136",
+          // },
           {
             field: "Address",
             details:
@@ -640,7 +640,7 @@ export default function LicenseAgreement() {
         deployment scenarios: <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com </a>
       </Para>
 
-      <Para>Phone: <a href="tel:+918178026136" className="text-primary underline">+91 81780 26136 </a></Para>
+      {/* <Para>Phone: <a href="tel:+918178026136" className="text-primary underline">+91 81780 26136 </a></Para> */}
 
       <Para>When writing in, it helps to include:</Para>
 

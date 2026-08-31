@@ -102,7 +102,7 @@ const ShowCase = () => {
 
           <h2
             data-para-anim
-            className={` text-[#1C1B1A] font-neue-montreal font-medium text-[3.8vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
+            className={` text-[#1C1B1A] font-neue-montreal font-medium! text-[3.8vw] leading-[1.2]  max-[1025px]:text-[6.8vw] max-md:text-[8.8vw] max-[1025px]:w-full`}
             >
             At the Heart of
             <br />
@@ -146,7 +146,7 @@ const ShowCase = () => {
         <div className="w-full h-full mt-[48vw] flex justify-end max-[1025px]:mt-[7vw]">
           <MaskTextReveal className="w-[40%] max-[1025px]:w-full">
 
-          <p data-para-anim className=" max-md:text-[3.5vw] max-[1025px]:text-[3vw] mr-[5vw] text-[1.2vw] text-black  tracking-wide">
+          <p data-para-anim className=" max-md:text-[4.2vw] max-[1025px]:text-[3vw] mr-[5vw] text-[1.2vw] text-black  tracking-wide">
             Perfectly located in one of Dubai&apos;s most prestigious districts, Lumera Heights offers unmatched access to culture, business, and lifestyle destinations.
           </p>
           </MaskTextReveal>

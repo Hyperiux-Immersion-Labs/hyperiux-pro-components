@@ -33,10 +33,16 @@ const WhyWorkWithMe = () => {
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mq.matches);
+    // Deferred a frame so this isn't a synchronous setState call inside the
+    // effect body itself (which forces a cascading extra render right after
+    // mount) - matches the same pattern used elsewhere in this template.
+    const frameId = window.requestAnimationFrame(() => setPrefersReducedMotion(mq.matches));
     const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      mq.removeEventListener("change", onChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -65,21 +71,24 @@ const WhyWorkWithMe = () => {
       return;
     }
 
-    const tween = gsap.from(".work-card", {
+    gsap.fromTo(".work-card", {
       opacity: 0,
       yPercent: 10,
-      stagger: 0.05,
+     
+    },{
+     opacity:1,
+      yPercent: 0,
+       stagger: 0.05,
       ease: "power2.out",
       scrollTrigger: {
         trigger: "#work-with-me",
         start: "top top",
       },
+
+
     });
 
-    return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-    };
+
   }, [prefersReducedMotion]);
 
   return (

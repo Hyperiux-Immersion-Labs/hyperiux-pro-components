@@ -124,7 +124,7 @@ export default function ContactForm() {
                 <h4 className="text-[1.5vw] max-md:text-xl font-medium text-oris-secondary">
                     Request Received
                 </h4>
-                <p className="text-gray-500 text-sm mt-2 max-w-xs">
+                <p className="text-gray-500 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] mt-2 max-w-xs">
                     Our care coordinator will call you back within 15 minutes to confirm your 3D scan consultation.
                 </p>
                 <button
@@ -140,7 +140,7 @@ export default function ContactForm() {
                             terms: false,
                         })
                     }}
-                    className="mt-6 text-sm text-[#3365e2] underline font-medium cursor-pointer"
+                    className="mt-6 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-[#3365e2] underline font-medium cursor-pointer"
                 >
                     Send another request
                 </button>
@@ -161,11 +161,10 @@ export default function ContactForm() {
                 <div className="relative w-full">
                     <label
                         htmlFor={nameId}
-                        className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${
-                            isNameActive
-                                ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-400'
-                        }`}
+                        className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${isNameActive
+                                ? `top-0 -translate-y-1/2 text-xs font-medium ${focused.name ? 'text-[#3365e2]' : 'text-gray-700'}`
+                                : 'top-1/2 -translate-y-1/2 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-700'
+                            }`}
                     >
                         Name*
                     </label>
@@ -179,13 +178,12 @@ export default function ContactForm() {
                             setFormData({ ...formData, name: e.target.value })
                             if (errors.name) setErrors({ ...errors, name: '' })
                         }}
-                        className={`w-full border rounded-md bg-white h-13 pl-4 pr-4 text-sm text-gray-800 outline-none transition-all ${
-                            errors.name
+                        className={`w-full border rounded-md bg-white h-13 pl-4 pr-4 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-800 outline-none transition-all ${errors.name
                                 ? 'border-red-400 focus:border-red-400'
                                 : focused.name
-                                ? 'border-gray-500'
-                                : 'border-gray-200 hover:border-gray-300'
-                        }`}
+                                    ? 'border-[#3365e2]'
+                                    : 'border-gray-200 hover:border-gray-300'
+                            }`}
                     />
                 </div>
                 {errors.name && <p className="mt-1 ml-3 text-xs text-red-500">{errors.name}</p>}
@@ -196,11 +194,10 @@ export default function ContactForm() {
                 <div className="relative w-full">
                     <label
                         htmlFor={emailId}
-                        className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${
-                            isEmailActive
-                                ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-400'
-                        }`}
+                        className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${isEmailActive
+                                ? `top-0 -translate-y-1/2 text-xs font-medium ${focused.email ? 'text-[#3365e2]' : 'text-gray-700'}`
+                                : 'top-1/2 -translate-y-1/2 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-700'
+                            }`}
                     >
                         Business Email*
                     </label>
@@ -214,13 +211,12 @@ export default function ContactForm() {
                             setFormData({ ...formData, email: e.target.value })
                             if (errors.email) setErrors({ ...errors, email: '' })
                         }}
-                        className={`w-full border rounded-md bg-white h-13 pl-4 pr-4 text-sm text-gray-800 outline-none transition-all ${
-                            errors.email
+                        className={`w-full border rounded-md bg-white h-13 pl-4 pr-4 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-800 outline-none transition-all ${errors.email
                                 ? 'border-red-400 focus:border-red-400'
                                 : focused.email
-                                ? 'border-gray-500'
-                                : 'border-gray-200 hover:border-gray-300'
-                        }`}
+                                    ? 'border-[#3365e2]'
+                                    : 'border-gray-200 hover:border-gray-300'
+                            }`}
                     />
                 </div>
                 {errors.email && <p className="mt-1 ml-3 text-xs text-red-500">{errors.email}</p>}
@@ -229,27 +225,25 @@ export default function ContactForm() {
             {/* Phone Field */}
             <div className="w-full">
                 <div
-                    className={`flex items-center w-full border rounded-md bg-white h-13 transition-all relative ${
-                        errors.phone
+                    className={`flex items-center w-full border rounded-md bg-white h-13 transition-all relative ${errors.phone
                             ? 'border-red-400'
                             : focused.phone
-                            ? 'border-gray-500'
-                            : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                                ? 'border-[#3365e2]'
+                                : 'border-gray-200 hover:border-gray-300'
+                        }`}
                 >
                     {/* Country select */}
                     <div className="relative shrink-0" ref={countryRef}>
                         <button
                             type="button"
                             onClick={() => setCountryOpen(!countryOpen)}
-                            className="flex items-center gap-1.5 px-3 h-13 text-sm text-gray-700 transition cursor-pointer bg-transparent"
+                            className="flex items-center gap-1.5 px-3 h-13 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-700 transition cursor-pointer bg-transparent"
                         >
                             <span className="text-base">{selectedCountry.flag}</span>
                             <span className="text-xs font-medium text-gray-600">{selectedCountry.code}</span>
                             <svg
-                                className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${
-                                    countryOpen ? 'rotate-180' : ''
-                                }`}
+                                className={`w-3.5 h-3.5 text-gray-700 transition-transform duration-200 ${countryOpen ? 'rotate-180 text-[#3365e2]' : ''
+                                    }`}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -285,11 +279,10 @@ export default function ContactForm() {
                     <div className="relative flex-1 h-full flex items-center">
                         <label
                             htmlFor={phoneId}
-                            className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${
-                                isPhoneActive
-                                    ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                    : 'top-1/2 -translate-y-1/2 text-sm text-gray-400'
-                            }`}
+                            className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${isPhoneActive
+                                    ? `top-0 -translate-y-1/2 text-xs font-medium ${focused.phone ? 'text-[#3365e2]' : 'text-gray-700'}`
+                                    : 'top-1/2 -translate-y-1/2 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-700'
+                                }`}
                         >
                             Phone*
                         </label>
@@ -303,7 +296,7 @@ export default function ContactForm() {
                                 setFormData({ ...formData, phone: e.target.value })
                                 if (errors.phone) setErrors({ ...errors, phone: '' })
                             }}
-                            className="w-full h-full px-3 text-sm text-gray-800 outline-none bg-transparent rounded-r-md"
+                            className="w-full h-full px-3 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-800 outline-none bg-transparent rounded-r-md"
                         />
                     </div>
                 </div>
@@ -315,11 +308,10 @@ export default function ContactForm() {
                 <div className="relative w-full">
                     {/* Floating Label */}
                     <span
-                        className={`absolute left-3 transition-all duration-200 px-1 bg-white z-10 pointer-events-none ${
-                            isTopicActive
-                                ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                : 'top-1/2 -translate-y-1/2 text-sm text-gray-400'
-                        }`}
+                        className={`absolute left-3 transition-all duration-200 px-1 bg-white z-10 pointer-events-none ${isTopicActive
+                                ? `top-0 -translate-y-1/2 text-xs font-medium ${topicOpen ? 'text-[#3365e2]' : 'text-gray-700'}`
+                                : 'top-1/2 -translate-y-1/2 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-700'
+                            }`}
                     >
                         Topic*
                     </span>
@@ -328,24 +320,22 @@ export default function ContactForm() {
                         id={topicId}
                         type="button"
                         onClick={() => setTopicOpen(!topicOpen)}
-                        className={`w-full border rounded-md bg-white h-13 pl-4 pr-10 text-left text-sm outline-none transition-all cursor-pointer flex items-center ${
-                            errors.topic
+                        className={`w-full border rounded-md bg-white h-13 pl-4 pr-10 text-left text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] outline-none transition-all cursor-pointer flex items-center ${errors.topic
                                 ? 'border-red-400'
                                 : topicOpen
-                                ? 'border-gray-500'
-                                : 'border-gray-200 hover:border-gray-300'
-                        }`}
+                                    ? 'border-[#3365e2]'
+                                    : 'border-gray-200 hover:border-gray-300'
+                            }`}
                     >
                         <span className={formData.topic ? 'text-gray-800 font-normal' : 'opacity-0'}>
                             {selectedTopic?.label || 'Topic*'}
                         </span>
                     </button>
 
-                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-700">
                         <svg
-                            className={`w-4 h-4 transition-transform duration-200 ${
-                                topicOpen ? 'rotate-180' : ''
-                            }`}
+                            className={`w-4 h-4 transition-transform duration-200 ${topicOpen ? 'rotate-180 text-[#3365e2]' : ''
+                                }`}
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -365,11 +355,10 @@ export default function ContactForm() {
                                         setTopicOpen(false)
                                         if (errors.topic) setErrors({ ...errors, topic: '' })
                                     }}
-                                    className={`w-full text-left px-4 py-2.5 text-sm transition-all hover:bg-gray-50 cursor-pointer ${
-                                        formData.topic === topic.value
+                                    className={`w-full text-left px-4 py-2.5 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] transition-all hover:bg-gray-50 cursor-pointer ${formData.topic === topic.value
                                             ? 'bg-blue-50/70 text-[#3365e2] font-medium'
                                             : 'text-gray-700'
-                                    }`}
+                                        }`}
                                 >
                                     {topic.label}
                                 </button>
@@ -385,11 +374,10 @@ export default function ContactForm() {
                 <div className="relative w-full">
                     <label
                         htmlFor={messageId}
-                        className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${
-                            isMessageActive
-                                ? 'top-0 -translate-y-1/2 text-xs font-medium text-gray-700'
-                                : 'top-4 text-sm text-gray-400'
-                        }`}
+                        className={`absolute left-3 transition-all duration-200 z-10 pointer-events-none px-1 bg-white ${isMessageActive
+                                ? `top-0 -translate-y-1/2 text-xs font-medium ${focused.message ? 'text-[#3365e2]' : 'text-gray-700'}`
+                                : 'top-4 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-700'
+                            }`}
                     >
                         Your message
                     </label>
@@ -400,11 +388,10 @@ export default function ContactForm() {
                         onFocus={() => handleFocus('message')}
                         onBlur={() => handleBlur('message')}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className={`w-full border rounded-md bg-white pt-3.5 pb-3 pl-4 pr-4 text-sm text-gray-800 outline-none transition-all resize-none ${
-                            focused.message
-                                ? 'border-gray-500'
+                        className={`w-full border rounded-md bg-white pt-3.5 pb-3 pl-4 pr-4 text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] text-gray-800 outline-none transition-all resize-none ${focused.message
+                                ? 'border-[#3365e2]'
                                 : 'border-gray-200 hover:border-gray-300'
-                        }`}
+                            }`}
                     />
                 </div>
             </div>
@@ -421,11 +408,10 @@ export default function ContactForm() {
                             setFormData({ ...formData, terms: next })
                             if (errors.terms) setErrors({ ...errors, terms: '' })
                         }}
-                        className={`shrink-0 w-4 h-4 rounded-full border transition-all duration-200 flex items-center justify-center cursor-pointer ${
-                            formData.terms
-                                ? 'bg-[#3365e2] border-[#3365e2]'
-                                : 'bg-white border-gray-300 hover:border-gray-400'
-                        }`}
+                        className={`shrink-0 w-4 h-4 rounded-full border transition-all duration-200 flex items-center justify-center cursor-pointer ${formData.terms
+                            ? 'bg-[#3365e2] border-[#3365e2]'
+                            : 'bg-white border-gray-300 hover:border-gray-400'
+                            }`}
                     >
                         {formData.terms && (
                             <svg
@@ -470,7 +456,7 @@ export default function ContactForm() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="inline-flex items-center justify-center bg-[#3365e2] hover:bg-[#2853be] text-white text-sm font-medium px-8 py-3.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-[0.98] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed "
+                    className="inline-flex items-center justify-center bg-[#3365e2] hover:bg-[#2853be] text-white text-sm max-[1025px]:text-[2vw] max-md:text-[4vw] font-medium px-8 py-3.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-[0.98] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed "
                 >
                     {loading ? (
                         <span className="flex items-center gap-2">

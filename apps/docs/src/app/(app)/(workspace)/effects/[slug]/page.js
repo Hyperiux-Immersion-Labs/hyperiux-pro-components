@@ -16,7 +16,11 @@ import {
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
 import { getEffectTierCounts } from "@/lib/registry";
-import { getFeaturedEffects } from "@/lib/featured-effects";
+import {
+  getFeaturedEffects,
+  getFeaturedEffectsByCategory,
+  getOverviewFeaturedEffects,
+} from "@/lib/featured-effects";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-stats";
 
@@ -73,6 +77,10 @@ export default async function EffectsCategoryPage({ params }) {
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
   const sortedEffects = sortEffects(allEffects);
   const featuredEffects = getFeaturedEffects(allEffects);
+  const pageTrendingEffects =
+    category?.id && !isFreeListing && !isFeaturedListing && !isProListing
+      ? getFeaturedEffectsByCategory(allEffects, category.id)
+      : getOverviewFeaturedEffects(allEffects);
 
   // Initial category filter matching
   const categoryId = isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category?.id;
@@ -84,10 +92,11 @@ export default async function EffectsCategoryPage({ params }) {
   });
 
   const initialSlice = categoryEffects.slice(0, 18);
-  const initialInstallEffects = [...new Set([...initialSlice, ...featuredEffects])];
+  const initialInstallEffects = [...new Set([...initialSlice, ...featuredEffects, ...pageTrendingEffects])];
   const installCounts = await getEffectInstallCounts(initialInstallEffects);
   const initialEffectsWithCounts = attachInstallCounts(initialSlice, installCounts);
   const featuredEffectsWithCounts = attachInstallCounts(featuredEffects, installCounts);
+  const trendingEffectsWithCounts = attachInstallCounts(pageTrendingEffects, installCounts);
 
   const effectCounts = {};
   for (const [catId, catEffects] of Object.entries(categoriesMap)) {
@@ -117,6 +126,7 @@ export default async function EffectsCategoryPage({ params }) {
           effects={registryIndex}
           initialEffects={initialEffectsWithCounts}
           featuredEffects={featuredEffectsWithCounts}
+          trendingEffects={trendingEffectsWithCounts}
           effectCounts={effectCounts}
           initialCategory={categoryId}
           userPlan={userPlan}

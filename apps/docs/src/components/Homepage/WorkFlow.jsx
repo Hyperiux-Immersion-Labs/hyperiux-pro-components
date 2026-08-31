@@ -39,7 +39,7 @@ const STEPS = [
 ]
 
 /* ── Video sources  ── */
-const VIDEO_SRC = 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/tutorial.mp4'
+const VIDEO_SRC = 'https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/videos/tutorial-new.mp4'
 
 /* ── Shared animation config ── */
 const ACTIVE_BG = '#ffffff'

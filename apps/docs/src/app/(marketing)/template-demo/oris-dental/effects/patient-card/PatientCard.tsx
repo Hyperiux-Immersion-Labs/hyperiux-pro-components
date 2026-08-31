@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 
 const DEFAULT_PATIENTS = [
@@ -110,11 +111,11 @@ export default function PatientCard({
     return (
         <div
             ref={cardRef}
-            className={`w-[30vw] max-[1025px]:w-full h-fit rounded-[2vw] bg-white p-[2.2vw] max-[1025px]:p-5 flex flex-col max-[1025px]:flex-row! justify-between border border-white/60 relative z-10 will-change-transform ${className}`}
+            className={`w-[62%] max-[1025px]:w-full h-fit rounded-[2vw] bg-white p-[2vw] max-[1025px]:p-5 flex flex-col max-[1025px]:flex-row! justify-between border border-white/60 relative z-10 will-change-transform ${className}`}
         >
             {/* Top Text Content */}
             <div className='mb-[2vw] max-[1025px]:mb-3'>
-                <h3 className="text-oris-secondary oris-text32 font-medium leading-none tracking-tight">
+                <h3 className="text-oris-secondary oris-text48 font-medium!  tracking-tight">
                     {title}
                 </h3>
                 <p className="text-oris-secondary oris-text22 font-normal mt-0.5">
@@ -123,7 +124,7 @@ export default function PatientCard({
             </div>
 
             {/* Bottom Content with Avatar Stack & Right Text */}
-            <div className="flex items-center max-[1025px]:justify-end max-[1025px]:w-fit justify-between w-full">
+            <div className="flex items-center justify-between max-[1025px]:justify-end max-[1025px]:w-fit w-full">
                 {/* Overlapping Avatar Stack */}
                 <div className="flex items-center space-x-[-0.8vw] max-[1025px]:space-x-[-8px]">
                     {avatars.map((item, idx) => {
@@ -138,9 +139,18 @@ export default function PatientCard({
                                 }}
                                 className="relative group/avatar z-10 hover:z-30 will-change-transform"
                             >
-                                <img
+                                <Image
                                     src={src}
                                     alt={name}
+                                    width={128}
+                                    height={128}
+                                    // avatars is a public prop accepting any
+                                    // caller-supplied URL (not just the
+                                    // Unsplash defaults) - Next's optimizer
+                                    // needs every source domain allowlisted
+                                    // in next.config ahead of time, which a
+                                    // reusable effect component can't assume.
+                                    unoptimized
                                     className="w-[3.2vw] h-[3.2vw] max-[1025px]:w-10 max-[1025px]:h-10 rounded-full object-cover border-[0.18vw] max-[1025px]:border-2 border-white shadow-sm select-none relative transition-all duration-300 ease-out group-hover/avatar:scale-115 group-hover/avatar:shadow-md cursor-pointer"
                                 />
 
@@ -156,9 +166,8 @@ export default function PatientCard({
                 </div>
 
                 {/* Right Text */}
-                <div className="text-right max-[1025px]:hidden text-oris-gray text-[0.95vw] max-[1025px]:text-xs font-normal leading-tight">
-                    <p>{trustedText.split(' ')[0]} {trustedText.split(' ')[1]}</p>
-                    <p>{trustedText.split(' ').slice(2).join(' ')}</p>
+                <div className=" max-[1025px]:hidden  text-black/30 text-[1.05vw] max-[1025px]:text-xs font-normal">
+                   Trusted by 5,000+<br/> happy patients
                 </div>
             </div>
         </div>

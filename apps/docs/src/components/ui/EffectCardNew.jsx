@@ -205,8 +205,8 @@ export function EffectCard({
     >
 
 
-      <div className="pointer-events-none  relative aspect-3/2  px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden  bg-[#161616]">
-        <div className=" w-full relative h-[80%] overflow-hidden bg-[#202020]">
+      <div className="pointer-events-none  relative aspect-3/2  px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden  bg-[#161616] max-md:aspect-4/3.5">
+        <div className=" w-full relative h-[80%] overflow-hidden bg-[#202020] max-md:h-[70%]">
           {coverImage && !imageError ? (
             <Image
               src={coverImage}
@@ -217,7 +217,7 @@ export function EffectCard({
               priority={priority}
               loading={priority ? undefined : "lazy"}
               onError={() => setImageError(true)}
-              className={`object-cover transition-[opacity,transform] duration-500 ${
+              className={`object-cover transition-[opacity,transform] duration-500 scale-[1.05] ${
                 showVideo ? "opacity-0" : "opacity-100"
               }`}
             />
@@ -234,36 +234,36 @@ export function EffectCard({
               onLoadedData={() => setVideoReady(true)}
               onEmptied={() => setVideoReady(false)}
               onError={() => setVideoReady(false)}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 scale-[1.05] ${
                 showVideo ? "opacity-100" : "opacity-0"
               }`}
             />
           )}
         </div>
 
-        <div className="pointer-events-none h-[20%]  flex w-full items-center justify-between gap-3 font-geist-mono ">
+        <div className="pointer-events-none h-[20%]  flex w-full items-center justify-between gap-3 font-geist-mono max-md:h-[30%] ">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 max-md:gap-1.5">
             {dependencyPills.map((pill) => (
               <span
                 key={pill}
-                className="bg-[#2B2B2B] px-[0.4vw] py-[0.1vw] text18 text-white/90 max-md:px-3 max-md:py-1 max-md:text-[3.5vw]!"
+                className="bg-[#2B2B2B] px-[0.4vw] py-[0.1vw] text18 text-white/90 max-md:px-3 max-md:py-1 max-md:text-[3vw]!"
               >
                 {pill}
               </span>
             ))}
             {extraDependencyCount > 0 && (
               <Tooltip
-                label={allDependencyLabels.slice(2).join(", ")}
+                label={allDependencyLabels.slice(2).join(" • ")}
                 className="pointer-events-auto max-w-[10vw]"
               >
-                <span className="cursor-default bg-[#2B2B2B] px-[0.8vw] py-[0.1vw] text18 font-medium text-white/70 max-md:px-3 max-md:py-1 max-md:text-[3.5vw]!">
+                <span className="cursor-default bg-[#2B2B2B] px-[0.8vw] py-[0.1vw] text18 font-medium text-white/70 max-md:px-3 max-md:py-1 max-md:text-[3vw]!">
                   +{extraDependencyCount}
                 </span>
               </Tooltip>
             )}
           </div>
           {effect.tier === "pro" && (
-            <span className="shrink-0 bg-primary px-[0.8vw] py-[0.1vw] text18 text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
+            <span className="shrink-0 bg-primary px-[0.8vw] py-[0.1vw] text18 text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3vw]!">
               Pro
             </span>
           )}
@@ -280,7 +280,7 @@ export function EffectCard({
         <span className="pointer-events-none max-sm:hidden absolute -bottom-px -right-px h-1.5 w-1.5 border-b border-r border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
 
         <div className="flex min-w-0 flex-col gap-0.5">
-          <h3 className="truncate font-sans text-[1.25vw] max-md:text-[3vw] max-sm:text-[4.5vw] font-medium leading-[1.2]! text-white max-md:text-base">
+          <h3 className="truncate  text-[1.25vw] max-md:text-[3vw] max-sm:text-[4.5vw] font-medium leading-[1.2]! text-white max-md:text-base">
             <span>
               {effect.title}
             </span>

@@ -28,10 +28,16 @@ function Line({ strokeColor = "#111111", strokeWidth = 2 }: LineProps) {
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mq.matches);
+    // Deferred a frame so this isn't a synchronous setState call inside the
+    // effect body itself (which forces a cascading extra render right after
+    // mount) - matches the same pattern used elsewhere in this template.
+    const frameId = window.requestAnimationFrame(() => setPrefersReducedMotion(mq.matches));
     const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      mq.removeEventListener("change", onChange);
+    };
   }, []);
 
   const setPath = (value: number) => {
@@ -110,7 +116,7 @@ function Line({ strokeColor = "#111111", strokeWidth = 2 }: LineProps) {
   };
 
   return (
-    <div ref={wrapperRef} className="w-full max-[1025px]:hidden">
+    <div ref={wrapperRef} className="w-full">
       <div className="string-line lineDraw">
         {/* No hover handlers at all under reduced motion - the hit-box
             still exists but is inert, matching "just a simple straight

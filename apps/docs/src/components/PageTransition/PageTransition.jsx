@@ -14,6 +14,7 @@ const BAYER = [
 
 /** Pack hex string into little-endian ABGR Uint32 */
 function packHex(hex) {
+  
   let h = String(hex).replace('#', '')
   if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2]
   if (h.length === 6) h += 'ff'
@@ -105,7 +106,8 @@ const INTERNAL_WORKSPACE_PREFIXES = [
   '/templates',
   '/docs',
   '/legal',
-  '/mcp'
+  '/mcp',
+  '/templates'
 ]
 
 function isInternalWorkspaceRoute(path) {
@@ -116,6 +118,10 @@ function isInternalWorkspaceRoute(path) {
 }
 
 function shouldSkipTransition(prevPath, targetPath) {
+  // Completely skip transitions for all /templates*** routes
+  if (targetPath?.startsWith('/templates') || prevPath?.startsWith('/templates')) {
+    return true
+  }
   if (isInternalWorkspaceRoute(prevPath) && isInternalWorkspaceRoute(targetPath)) {
     return true
   }
@@ -312,28 +318,6 @@ export default function PageTransition() {
     )
   }, [draw])
 
-  // 2. Reveal new page: dither wave sweeps DOWN all the way off the bottom
-  useEffect(() => {
-    if (isFirstRenderRef.current) {
-      isFirstRenderRef.current = false
-      prevPathRef.current = pathname
-      isTransitioningRef.current = false
-      return
-    }
-
-    const prevPath = prevPathRef.current
-    const currentPath = pathname
-
-    prevPathRef.current = pathname
-
-    if (shouldSkipTransition(prevPath, currentPath)) {
-      isTransitioningRef.current = false
-      return
-    }
-
-    revealScreen()
-  }, [pathname, revealScreen])
-
   // 1. Cover Screen BEFORE route change on link click
   useEffect(() => {
     const handleAnchorClick = (e) => {
@@ -387,7 +371,7 @@ export default function PageTransition() {
     }
   }, [coverScreenAndNavigate])
 
-  // 2. Reveal new page: dither wave sweeps UP from bottom to top (opposite direction)
+  // 2. Reveal new page: dither wave sweeps DOWN only when an active transition is running
   useEffect(() => {
     if (isFirstRenderRef.current) {
       isFirstRenderRef.current = false
@@ -401,7 +385,7 @@ export default function PageTransition() {
 
     prevPathRef.current = pathname
 
-    if (shouldSkipTransition(prevPath, currentPath)) {
+    if (!isTransitioningRef.current || shouldSkipTransition(prevPath, currentPath)) {
       isTransitioningRef.current = false
       return
     }
@@ -414,7 +398,7 @@ export default function PageTransition() {
       ref={containerRef}
       tabIndex={-1}
       aria-hidden="true"
-      className="fixed inset-0 z-[99999] hidden pointer-events-none overflow-hidden select-none"
+      className="fixed inset-0 z-999 hidden pointer-events-none overflow-hidden select-none"
     >
       {/* 2D Bayer Dither Canvas Overlay */}
       <canvas

@@ -241,7 +241,7 @@ export function FAQWrapper({
         {
           height: targetHeight,
           duration: tweenDuration,
-          ease: "power3.out",
+          ease: "cubic.out",
           onComplete: () => {
             gsap.set(outer, {
               height: "auto",
@@ -259,7 +259,7 @@ export function FAQWrapper({
         {
           height: 0,
           duration: tweenDuration,
-          ease: "power3.out",
+          ease: "cubic.out",
         }
       );
     }

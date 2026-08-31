@@ -151,7 +151,7 @@ export function FilterMenu({
                 onSelect(cat);
                 setOpen(false);
               }}
-              className="group relative isolate flex w-full items-center  px-4 py-2.5 text-left text20 cursor-pointer"
+              className="group relative isolate flex w-full items-center  px-4 py-2.5 text-left max-md:text-[4vw] text-[1vw] cursor-pointer"
             >
               <span
                 aria-hidden="true"
@@ -181,9 +181,9 @@ export function FilterMenu({
         aria-expanded={open}
         aria-label="Filter effects"
         className={`
-          px-6 py-2.5 text-md relative max-md:px-5 max-md:py-2
-          backdrop-blur-[6px] font-sans flex items-center gap-2 justify-center
-          cursor-pointer transition-colors duration-300 max-md:text-lg text20
+          px-6 py-3  relative max-md:px-7 max-md:py-3
+          backdrop-blur-[6px] flex items-center gap-2 justify-center
+          cursor-pointer transition-colors duration-300 text-[1vw] max-md:text-[4vw] max-[1025px]:text-[2.5vw]
           ${activeFilter
             ? "bg-[#ff5f00] text-black hover:bg-[#ff5f00]"
             : "bg-[#161616] text-[#ffffff] hover:text-black hover:bg-[#ff5f00]"
@@ -200,7 +200,7 @@ export function FilterMenu({
           </>
         ) : (
           <>
-            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="max-md:h-[4vw] h-[1vw] max-[1025px]:h-[2.5vw]">
               <g clipPath="url(#clip0_491_803)">
                 <rect width="16" height="2" rx="1" fill="currentColor" />
                 <rect x="3" y="5" width="10" height="2" rx="1" fill="currentColor" />
@@ -231,7 +231,7 @@ export function FilterMenu({
                       event.stopPropagation();
                       onClear();
                     }}
-                    className="flex shrink-0 items-center justify-center  p-0.5 hover:bg-black/10"
+                    className="flex shrink-0 items-center justify-center hover:bg-black/10"
                   >
                     <X className="h-3.5 w-3.5" />
                   </span>

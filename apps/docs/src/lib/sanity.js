@@ -56,6 +56,8 @@ export function mergeRegistryWithSanity(effects = [], entries = []) {
       description: sanity.summary || effect.description,
       categorySlug: sanity.categorySlug,
       tier: sanity.tier || effect.tier || 'pro',
+      isFeatured: sanity.isFeatured === true,
+      orderRank: sanity.orderRank || effect.orderRank,
       tags: sanity.tags?.length ? sanity.tags : (effect.tags || []),
       addedAt: sanity.addedAt ? new Date(sanity.addedAt).getTime() : effect.addedAt,
       lastUpdated: sanity.lastUpdated
@@ -88,6 +90,8 @@ export function buildRegistryIndex(entries = []) {
       categories: [entry.categorySlug],
       categorySlug: entry.categorySlug,
       tier: entry.tier || 'pro',
+      isFeatured: entry.isFeatured === true,
+      orderRank: entry.orderRank || null,
       tags: entry.tags || [],
       addedAt: entry.addedAt ? new Date(entry.addedAt).getTime() : null,
       lastUpdated: entry.lastUpdated
@@ -112,6 +116,8 @@ export function buildEffectsFromSanity(entries = []) {
       categories: [entry.categorySlug],
       categorySlug: entry.categorySlug,
       tier: entry.tier || 'pro',
+      isFeatured: entry.isFeatured === true,
+      orderRank: entry.orderRank || null,
       tags: entry.tags || [],
       addedAt: entry.addedAt ? new Date(entry.addedAt).getTime() : null,
       lastUpdated: entry.lastUpdated
@@ -184,12 +190,15 @@ export async function getAllSanityEffectEntries() {
     const client = getSanityClient()
 
     const entries = await client.fetch(
-      `*[_type == "effectContent" && defined(categorySlug) && defined(effectSlug)][]{
+      `*[_type == "effectContent" && defined(categorySlug) && defined(effectSlug)]
+        | order(orderRank asc, addedAt desc, _createdAt asc){
         categorySlug,
         effectSlug,
         title,
         summary,
         tier,
+        isFeatured,
+        orderRank,
         tags,
         addedAt,
         lastUpdated,

@@ -473,10 +473,13 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
             placeholder="Search anything in Vault..."
             className="flex-1 bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none sm:text-lg"
           />
+          <kbd className="space-x-2 h-8 rounded items-center flex justify-center bg-foreground/20 px-1.5 py-0.5 text-xs text-current opacity-50 max-[1025px]:hidden">
+                 ESC
+                </kbd>
 
-          <kbd className="hidden h-8 items-center justify-center  border border-neutral-800 bg-neutral-900 px-2 text-xs font-medium text-neutral-400 sm:inline-flex">
+          {/* <kbd className="hidden h-8 items-center justify-center  border border-neutral-800 bg-neutral-900 px-2 text-xs font-medium text-neutral-400 sm:inline-flex">
             ESC
-          </kbd>
+          </kbd> */}
 
           <button
             type="button"

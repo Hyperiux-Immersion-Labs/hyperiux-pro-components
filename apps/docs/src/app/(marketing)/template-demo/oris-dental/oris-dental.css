@@ -1,58 +1,83 @@
 @font-face {
-  font-family: "Aeonik";
-  src: url("./assets/fonts/Aeonik-Regular.woff2") format("woff2");
+  font-family: "AeonikPro";
+  src: url("./assets/fonts/AeonikPro-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "AeonikPro";
+  src: url("./assets/fonts/AeonikPro-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Aeonik";
-  src: url("./assets/fonts/Aeonik-Medium.woff2") format("woff2");
+  font-family: "AeonikPro";
+  src: url("./assets/fonts/AeonikPro-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Aeonik";
-  src: url("./assets/fonts/Aeonik-Bold.woff2") format("woff2");
+  font-family: "AeonikPro";
+  src: url("./assets/fonts/AeonikPro-Bold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Aeonik";
-  src: url("./assets/fonts/Aeonik-Bold.woff2") format("woff2");
+  font-family: "AeonikPro";
+  src: url("./assets/fonts/AeonikPro-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-/* Apply Aeonik font family globally to the template */
+/* Apply AeonikPro font family globally to the template */
 .oris-font,
 #oris-hero,
 #oris-footer,
 #main {
   font-family:
-    "Aeonik",
+    "AeonikPro",
     system-ui,
     -apple-system,
     sans-serif;
 }
 
 /* globals.css sets font-family directly on h1-h4, which wins over
-   inheritance from #main. Re-assert Aeonik for headings in the template. */
+   inheritance from #main. Re-assert AeonikPro for headings in the template. */
 .oris-font :is(h1, h2, h3, h4, h5, h6),
 #oris-hero :is(h1, h2, h3, h4, h5, h6),
 #oris-footer :is(h1, h2, h3, h4, h5, h6),
 #main :is(h1, h2, h3, h4, h5, h6) {
   font-family:
-    "Aeonik",
+    "AeonikPro",
     system-ui,
     -apple-system,
     sans-serif;
+}
+
+.oris-dental-main{
+  line-height: 1.3;
+}
+
+/* globals.css's unlayered `html, body { color: var(--foreground) }` (white)
+   otherwise inherits into any element here with no color of its own.
+   Give the template its own base text color so it never depends on the
+   app shell's theme, and keep #oris-hero explicit since its text sat on
+   the blue-to-white gradient relying on that inherited white. */
+#main {
+  color: #13314a;
+}
+
+#oris-hero {
+  color: #ffffff;
 }
 
 .text-oris-primary {
@@ -60,7 +85,7 @@
 }
 
 .oris-paddx {
-  padding-inline: 3vw;
+  padding-inline: 4vw;
 }
 
 .text-oris-secondary {
@@ -123,26 +148,27 @@ body,
   background-color: #2552d0;
 }
 
+
 .oris-text32 {
   font-size: 1.8vw;
 }
 
 .oris-text22 {
-  font-size: 1.25vw;
+  font-size: 1.15vw;
   font-weight: 400;
+
 }
 
 .oris-text64 {
-  font-size: 3.7vw;
+  font-size: 3.5vw;
   letter-spacing: -0.01em;
-  line-height: 1.23;
-  font-weight: 400;
+  line-height: 1.2;
 }
 
 .oris-text48 {
   font-size: 3vw;
   letter-spacing: -0.01em;
-  line-height: 1.15;
+  line-height: 1.2;
   font-weight: 400;
 }
 

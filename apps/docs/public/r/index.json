@@ -529,12 +529,12 @@
         "cursor"
       ],
       "dependencies": [
-        "gsap"
+        "motion"
       ],
       "registryDependencies": [],
       "exportName": "LiquidGlassCursor",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "2.1.0",
       "tier": "pro"
     },
     {
@@ -1447,7 +1447,7 @@
       "registryDependencies": [],
       "exportName": "DimensionalSwitchSlider",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "tier": "free"
     },
     {
@@ -1622,11 +1622,13 @@
       "categories": [
         "components"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "exportName": "BorderBeam",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "tier": "free"
     },
     {

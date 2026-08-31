@@ -127,7 +127,7 @@ export default function TechDetailShowcase({ slug, tech, filteredEffects }) {
 
         <div className="lg:col-span-1 bg-zinc-950/60 p-6 rounded-2xl border border-border/20 backdrop-blur-md space-y-6">
           <h3 className="font-semibold text-white text-lg tracking-tight">Integration Specs</h3>
-          <div className="space-y-4 text-sm font-sans">
+          <div className="space-y-4 text-sm ">
             <div className="flex justify-between border-b border-border/10 pb-2"><span className="text-muted">Target Ecosystem</span><span className="text-white font-medium">{tech.name}</span></div>
             <div className="flex justify-between border-b border-border/10 pb-2"><span className="text-muted">Render Track</span><span className="text-white font-medium">{slug === "threejs" || slug === "webgl" ? "GPU Accelerated" : "CPU DOM Thread"}</span></div>
             <div className="flex justify-between border-b border-border/10 pb-2"><span className="text-muted">Esm / Dynamic</span><span className="text-white font-medium">Fully Supported</span></div>

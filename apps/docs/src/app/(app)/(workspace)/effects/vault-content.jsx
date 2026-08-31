@@ -138,6 +138,7 @@ export function VaultContent({
   effects: incomingEffects,
   initialEffects: incomingInitialEffects = [],
   featuredEffects: incomingFeaturedEffects = [],
+  trendingEffects: incomingTrendingEffects = [],
   effectCounts: incomingEffectCounts,
   initialCategory = "all",
   userPlan = "free",
@@ -242,6 +243,14 @@ export function VaultContent({
   const featuredEffectNames = useMemo(
     () => new Set(featuredEffects.map((effect) => effect.name)),
     [featuredEffects]
+  );
+
+  const trendingEffects = useMemo(
+    () =>
+      incomingTrendingEffects?.length > 0
+        ? incomingTrendingEffects
+        : featuredEffects,
+    [incomingTrendingEffects, featuredEffects]
   );
 
   const categoryFromUrl = useMemo(() => {
@@ -751,7 +760,7 @@ export function VaultContent({
 
             <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
               <h1
-                className="mb-4 w-[80%] leading-normal t96 font-display font-normal text-foreground max-md:w-[90%] max-md:text-4xl ml-[-0.4vw]"
+                className="mb-4 w-[80%] leading-normal t96 font-display font-normal text-foreground max-md:w-[90%] max-md:text-4xl"
                 style={{ lineHeight: "1.3" }}
               >
                 {activeCategoryName}
@@ -775,7 +784,7 @@ export function VaultContent({
         </div>
 
         <div className="category-fadeup fadeup " data-fadeup-delay="0.5">
-          <TrendingRightNow effects={featuredEffects} />
+          <TrendingRightNow effects={trendingEffects} />
         </div>
 
         <div className="mx-auto px-14 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
@@ -836,7 +845,7 @@ export function VaultContent({
                         handleCategoryLinkClick(cat);
                       }}
                       className={`
-                          px-6 py-2.5 text-[1vw] text-center relative max-md:px-5 max-md:py-2
+                          px-6 py-3 text-[1vw] max-md:text-[4vw] max-[1025px]:text-[2.5vw] text-center relative max-md:px-7 max-md:py-3
                           backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
                           transition-colors duration-300 
                           ${isSelected
@@ -851,7 +860,7 @@ export function VaultContent({
                 })}
               </div>
             </div>
-            <div className="flex items-center gap-4 max-sm:hidden">
+            <div className="flex items-center gap-4 max-[1025px]:hidden">
               <p>Layout</p>
               {/* Grid density viewer: 2 or 3 cards per row */}
               <div className="relative shrink-0 max-[1025px]:hidden flex items-end gap-1  bg-[#161616] p-1">
@@ -948,7 +957,7 @@ export function VaultContent({
                 No effects found
               </h3>
 
-              <p className="font-sans text-base text-muted max-md:text-sm">
+              <p className=" text-base text-muted max-md:text-sm">
                 Try adjusting your search or filter criteria
               </p>
             </div>
@@ -978,9 +987,9 @@ export function VaultContent({
                   activeCategoryContent?.cta.buttonText) && (
                   <section
                     key={`category-cta-${categoryFilter}`}
-                    className="category-fadeup fadeup w-full bg-[#272727]  max-sm:w-[90%] text-center mb-[7vw] mx-auto"
+                    className="category-fadeup fadeup w-full bg-[#272727]  max-sm:w-[90%] text-center my-[5vw] mx-auto max-[1025px]:px-6 max-md:px-[7vw] px-10 max-md:mt-[20vw] "
                   >
-                    <div className="mx-auto w-full flex flex-col items-center max-w-6xl px-10 max-[1025px]:px-6 max-md:px-[7vw] py-15">
+                    <div className="mx-auto w-full flex flex-col items-center max-w-6xl  py-15">
                       {activeCategoryContent.cta.heading && (
                         <h2 className="text-[4vw] font-medium text-foreground max-md:text-[7vw]">
                           {activeCategoryContent.cta.heading}
@@ -995,13 +1004,13 @@ export function VaultContent({
 
                       {activeCategoryContent.cta.buttonText && (
                         <CustomAnimationFormTrigger>
-                          <div className="mt-6 w-fit">
+                          <div className="mt-6 ">
                             <ButtonV3
                               preventDefault={false}
                               text={activeCategoryContent.cta.buttonText}
                               href={activeCategoryContent.cta.buttonLink || "#"}
                               variant="white"
-                              className="shrink-0 w-fit mx-auto bg-white"
+                              className="shrink-0 w-fit max-md:w-[90%] mx-auto max-md:pl-[6vw]! max-md:pr-[10vw]! bg-white"
                               scaleClass="group-hover:scale-[100]"
                             />
                           </div>

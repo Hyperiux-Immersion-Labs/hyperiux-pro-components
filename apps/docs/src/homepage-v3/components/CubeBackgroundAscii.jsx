@@ -140,7 +140,7 @@ export const CUBE_ASCII_DEFAULTS = {
 };
 
 /** Viewport the phone framing below takes over at — Tailwind's `md` edge. */
-const MOBILE_QUERY = "(max-width: 767px)";
+const MOBILE_QUERY = "(max-width: 1025px)";
 
 /**
  * Phone framing. A portrait canvas is nowhere near the 16:9 clip's shape, so the
@@ -1124,7 +1124,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
     const mouse = { x: -9999, y: -9999, vx: 0, vy: 0 };
     const trail = [];
     const now = () => performance.now();
-    const isMobile = () => window.matchMedia("(max-width: 639px)").matches;
+    const isMobile = () => window.matchMedia("(max-width: 1025px)").matches;
 
     const onMove = (event) => {
       if (isMobile()) return;

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { Fragment, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
@@ -50,6 +50,10 @@ const PILL_SNAP_EASE = "back.out(1.6)";
 // finish (or get close) even under quick successive hovers.
 const IMAGE_REVEAL_DURATION = 0.45;
 const IMAGE_REVEAL_EASE = "power2.out";
+// The resting/revealed scale - slightly over 1 so the image reads as a
+// subtle zoomed-in crop rather than sitting flush at its container's exact
+// edges.
+const IMAGE_ACTIVE_SCALE = 1.05;
 
 // How long the whole image-container fades in/out as the cursor
 // enters/leaves the row list (.awards-container).
@@ -69,6 +73,17 @@ const Awards = () => {
   // top" glitch. A monotonic counter makes that class of bug impossible.
   const zIndexCounterRef = useRef(AWARD_ITEMS.length);
   const prefersReducedMotionRef = useRef(false);
+  // Which row the geometry-based hover tracker (updateActiveRowAt below)
+  // last activated - null once the cursor has left the list entirely.
+  const activeRowIndexRef = useRef<number | null>(null);
+  // Live cursor position, tracked globally (see the window mousemove effect
+  // below) rather than only while a React onMouseMove fires from inside the
+  // list - client coordinates don't change when the page scrolls under a
+  // stationary cursor, so re-running the same row lookup against this on
+  // every scroll tick (see the scroll listener below) is what makes the
+  // image follow whichever row has scrolled under the cursor, even when
+  // only the page, not the mouse, is moving.
+  const lastMousePosRef = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -86,7 +101,7 @@ const Awards = () => {
     cardRefs.current.forEach((card, i) => {
       gsap.set(card, { zIndex: i + 1 });
     });
-    gsap.set(cardRefs.current[0], { scale: 1 });
+    gsap.set(cardRefs.current[0], { scale: IMAGE_ACTIVE_SCALE });
     cardRefs.current.slice(1).forEach((card) => {
       gsap.set(card, { scale: 0 });
     });
@@ -130,6 +145,7 @@ const Awards = () => {
   };
 
   const handleListLeave = () => {
+    activeRowIndexRef.current = null;
     gsap.to(imageContainerRef.current, {
       opacity: 0,
       duration: CONTAINER_FADE_DURATION,
@@ -137,7 +153,11 @@ const Awards = () => {
     });
   };
 
-  const handleRowEnter = (index: number) => {
+  // useCallback (stable identity across renders, since it only closes over
+  // refs and constants) so the mousemove/scroll effects below can safely
+  // declare it as a dependency instead of only capturing whichever version
+  // existed on mount.
+  const handleRowEnter = useCallback((index: number) => {
     // Snap the pill to the hovered row's real position every time,
     // even re-hovering the already-active row, so the pill always
     // tracks properly rather than only reacting to a change of index.
@@ -181,16 +201,91 @@ const Awards = () => {
     // playing out underneath this one.
     gsap.killTweensOf(incoming);
     if (prefersReducedMotionRef.current) {
-      gsap.set(incoming, { scale: 1 });
+      gsap.set(incoming, { scale: IMAGE_ACTIVE_SCALE });
     } else {
       gsap.set(incoming, { scale: 0 });
       gsap.to(incoming, {
-        scale: 1,
+        scale: IMAGE_ACTIVE_SCALE,
         duration: IMAGE_REVEAL_DURATION,
         ease: IMAGE_REVEAL_EASE,
       });
     }
-  };
+  }, []);
+
+  // Which row is "hovered" is computed here from raw geometry (a point vs.
+  // each row's own getBoundingClientRect), not from onMouseEnter/
+  // onMouseLeave on the row elements - the divider between rows (.box in
+  // elenavoss.css) has a deliberately oversized pluck hit-region (40px by
+  // default, growing to 150px on its own hover) that visually overlaps
+  // whichever row(s) sit next to it. Relying on the browser's own
+  // mouseenter/mouseleave there meant hovering that overlap either
+  // mis-triggered the wrong row (when the divider was nested inside one
+  // row) or repeatedly flickered the row's own reveal on and off (when the
+  // divider sat between rows as a sibling) - both are just symptoms of
+  // hit-testing an element that was never meant to represent "which row is
+  // active." Recomputing straight from each row's real rect sidesteps the
+  // divider's hit-box entirely, and only calls handleRowEnter when the
+  // computed index actually changes, so moving around within the same
+  // row's own bounds never re-triggers it. Checks both axes (not just Y) -
+  // this now runs off a WINDOW-level position, not one scoped to the list,
+  // so a point that's vertically level with a row but horizontally
+  // somewhere else on the page entirely must not count as hovering it.
+  const updateActiveRowAt = useCallback((clientX: number, clientY: number) => {
+    const rows = rowRefs.current;
+    let nextIndex: number | null = null;
+    for (let i = 0; i < rows.length; i += 1) {
+      const rect = rows[i]?.getBoundingClientRect();
+      if (
+        rect &&
+        clientY >= rect.top &&
+        clientY < rect.bottom &&
+        clientX >= rect.left &&
+        clientX < rect.right
+      ) {
+        nextIndex = i;
+        break;
+      }
+    }
+
+    if (nextIndex === null || nextIndex === activeRowIndexRef.current) return;
+    activeRowIndexRef.current = nextIndex;
+    handleRowEnter(nextIndex);
+  }, [handleRowEnter]);
+
+  // Cursor position is tracked with a WINDOW-level listener, not the row
+  // list's own onMouseMove - a listener scoped to the list only fires while
+  // a real mousemove event happens to land inside it, which stayed stale
+  // (or never updated at all if the list's own onMouseEnter/onMouseLeave
+  // boundary was ever slightly off) the moment the page scrolled under a
+  // stationary cursor instead of the cursor itself moving. Tracking
+  // globally means the scroll listener below always has the actual live
+  // position to re-check against, regardless of list hover state.
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      lastMousePosRef.current = { x: event.clientX, y: event.clientY };
+      updateActiveRowAt(event.clientX, event.clientY);
+    };
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [updateActiveRowAt]);
+
+  // Re-checks the row-under-the-cursor on every scroll tick too, not just
+  // on mousemove - without this, scrolling the page with the mouse resting
+  // still over the list would leave the image stuck on whatever row was
+  // last actually moused over, instead of following whichever row has
+  // scrolled to that same on-screen position. Plain native scroll (not
+  // Lenis's own callback form) - Lenis doesn't suppress native scroll
+  // dispatch, and this only needs a resting position re-check, not a
+  // per-frame velocity/progress feed.
+  useEffect(() => {
+    const handleScroll = () => {
+      const pos = lastMousePosRef.current;
+      if (!pos) return;
+      updateActiveRowAt(pos.x, pos.y);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [updateActiveRowAt]);
 
   return (
     <section
@@ -208,48 +303,53 @@ const Awards = () => {
           </OverflowTextReveal>
 
           <div onMouseEnter={handleListEnter} onMouseLeave={handleListLeave}>
+            {/* Dividers are true siblings between rows, not nested inside
+                either one - see .box in elenavoss.css: its pluck-hit-region
+                is 40px tall by default and grows to 150px on its own hover,
+                way bigger than the visible 1px line, so it inevitably
+                overlaps whichever row(s) sit next to it. Which row counts
+                as "hovered" is decided by updateActiveRowAt above from raw
+                geometry (fed by the window mousemove/scroll listeners), not
+                from onMouseEnter/onMouseLeave on these row divs - see that
+                function's comment for why. */}
             {AWARD_ITEMS.map((item, i) => (
-              <div
-                key={item.title}
-                ref={(el) => {
-                  rowRefs.current[i] = el;
-                }}
-                onMouseEnter={() => handleRowEnter(i)}
-                className="relative py-8 awards-container"
-              >
+              <Fragment key={item.title}>
                 {i !== 0 && (
                   <div
                     ref={(el) => {
                       lineRefs.current[i - 1] = el;
                     }}
-                    className="absolute top-0 left-0 h-px w-full origin-left scale-x-0"
+                    className="relative h-px w-full origin-left scale-x-0"
                   >
                     <Line strokeColor="rgba(255, 255, 255, 0.4)" />
                   </div>
                 )}
-                <OverflowTextReveal splitBy="lines">
+                <div
+                  ref={(el) => {
+                    rowRefs.current[i] = el;
+                  }}
+                  className="relative py-8 awards-container"
+                >
+                  <OverflowTextReveal splitBy="lines">
 
-                <h3 className="text-[1.8vw] font-normal max-[1025px]:text-[3.4vw] max-md:text-[5.5vw]">{item.title}</h3>
-                </OverflowTextReveal>
-                <OverflowTextReveal splitBy="lines">
+                  <h3 className="text-[1.8vw] font-normal max-[1025px]:text-[3.4vw] max-md:text-[5.5vw]">{item.title}</h3>
+                  </OverflowTextReveal>
+                  <OverflowTextReveal splitBy="lines">
 
-                <p className="text-[1.25vw] tracking-wide text-white/30 mt-3 max-[1025px]:text-[2.2vw] max-md:text-[3.6vw]">
-                  {item.meta}
-                </p>
-                </OverflowTextReveal>
-
-
-              </div>
+                  <p className="text-[1.25vw] tracking-wide text-white/30 mt-3 max-[1025px]:text-[2.2vw] max-md:text-[3.6vw]">
+                    {item.meta}
+                  </p>
+                  </OverflowTextReveal>
+                </div>
+              </Fragment>
             ))}
-            <div className="relative w-full h-px">
-              <div
-                ref={(el) => {
-                  lineRefs.current[AWARD_ITEMS.length - 1] = el;
-                }}
-                className="absolute top-0 left-0 h-px w-full origin-left scale-x-0"
-              >
-                <Line strokeColor="rgba(255, 255, 255, 0.4)" />
-              </div>
+            <div
+              ref={(el) => {
+                lineRefs.current[AWARD_ITEMS.length - 1] = el;
+              }}
+              className="relative h-px w-full origin-left scale-x-0"
+            >
+              <Line strokeColor="rgba(255, 255, 255, 0.4)" />
             </div>
           </div>
         </div>
@@ -264,7 +364,7 @@ const Awards = () => {
         >
           <div
             ref={containerRef}
-            className="w-[40vw] h-[22vw] relative bg-[#F4EFE9] rounded-lg overflow-hidden shadow-2xl will-change-transform"
+            className="w-[40vw] h-[22vw] relative bg-[#070707] rounded-lg overflow-hidden shadow-2xl will-change-transform"
           >
             {AWARD_ITEMS.map((item, i) => (
               <div
@@ -277,7 +377,7 @@ const Awards = () => {
                 <Image
                   src={item.imgSrc}
                   alt="awards-image"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-lg "
                   width={600}
                   height={400}
                 />

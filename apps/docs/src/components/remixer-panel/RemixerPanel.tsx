@@ -315,7 +315,7 @@ export default function RemixerPanel({
         <div className={styles.footerActions}>
           <button type="button" onClick={handleCopy} className={styles.footerButton}>
             {copied ? <Check className={styles.actionIcon} /> : <Copy className={styles.actionIcon} />}
-            <span className={styles.footerButtonText}>{copied ? "Copied" : "Copy code"}</span>
+            <span className={styles.footerButtonText}>{copied ? "Copied" : "Copy Props"}</span>
           </button>
           <button type="button" onClick={onReset} className={styles.footerButton}>
             <RotateCcw className={styles.actionIcon} />

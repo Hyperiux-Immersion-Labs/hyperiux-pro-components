@@ -25,13 +25,6 @@ function compareByRecent(a, b) {
   return result || compareByTitle(a, b);
 }
 
-function compareByTierThenRecent(a, b) {
-  const aTierRank = a?.tier === "pro" ? 1 : 0;
-  const bTierRank = b?.tier === "pro" ? 1 : 0;
-
-  return aTierRank - bTierRank || compareByRecent(a, b);
-}
-
 export function sortEffects(effects = [], sortFilter = null) {
   const sortedEffects = [...effects];
 
@@ -47,5 +40,5 @@ export function sortEffects(effects = [], sortFilter = null) {
     return sortedEffects.sort(compareByRecent);
   }
 
-  return sortedEffects.sort(compareByTierThenRecent);
+  return sortedEffects;
 }

@@ -15,6 +15,16 @@
   font-family: var(--font-aeonik-pro);
 }
 
+.lumera-page ::selection {
+  background-color: #1c1b1a;
+  color: #eeeeee;
+}
+
+.lumera-page ::-moz-selection {
+  background-color: #1c1b1a;
+  color: #eeeeee;
+}
+
 body {
   width: 100vw;
   height: 100%;

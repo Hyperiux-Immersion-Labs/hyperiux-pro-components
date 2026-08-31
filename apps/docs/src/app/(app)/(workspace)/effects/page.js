@@ -9,7 +9,7 @@ import {
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
 import { getEffectTierCounts } from "@/lib/registry";
-import { getFeaturedEffects } from "@/lib/featured-effects";
+import { getFeaturedEffects, getOverviewFeaturedEffects } from "@/lib/featured-effects";
 import { sortEffects } from "@/lib/effect-sort";
 import {
   getEffectCategoryContent,
@@ -32,13 +32,15 @@ export default async function EffectsPage() {
   const categories = getEffectsByCategoryFromSanity(sanityEntries);
   const sortedEffects = sortEffects(allEffects);
   const featuredEffects = getFeaturedEffects(allEffects);
+  const trendingEffects = getOverviewFeaturedEffects(allEffects);
 
   // Initial 18 cards for immediate first paint
   const initialSlice = sortedEffects.slice(0, 18);
-  const initialInstallEffects = [...new Set([...initialSlice, ...featuredEffects])];
+  const initialInstallEffects = [...new Set([...initialSlice, ...featuredEffects, ...trendingEffects])];
   const installCounts = await getEffectInstallCounts(initialInstallEffects);
   const initialEffectsWithCounts = attachInstallCounts(initialSlice, installCounts);
   const featuredEffectsWithCounts = attachInstallCounts(featuredEffects, installCounts);
+  const trendingEffectsWithCounts = attachInstallCounts(trendingEffects, installCounts);
 
   const effectCounts = {};
   for (const [category, catEffects] of Object.entries(categories)) {
@@ -58,6 +60,7 @@ export default async function EffectsPage() {
           effects={registryIndex}
           initialEffects={initialEffectsWithCounts}
           featuredEffects={featuredEffectsWithCounts}
+          trendingEffects={trendingEffectsWithCounts}
           effectCounts={effectCounts}
           userPlan={userPlan}
         />

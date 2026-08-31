@@ -40,6 +40,10 @@ export default function MaskTextReveal({
         const el = containerRef.current;
         if (!el) return;
 
+        const prefersReduced =
+            window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
         splitRefs.current = [];
         linesRef.current = [];
         triggersRef.current = [];
@@ -73,31 +77,6 @@ export default function MaskTextReveal({
             await waitForFonts();
             if (unmounted) return;
 
-            forceAriaVisible(el);
-
-            if (prefersReducedMotion()) {
-                gsap.set(el, { opacity: 0 });
-
-                const tween = gsap.to(el, {
-                    opacity: 1,
-                    duration: Math.min(duration, 0.4),
-                    delay,
-                    ease: "power1.out",
-                    scrollTrigger: animateOnScroll
-                        ? {
-                            trigger: el,
-                            start: "top 80%",
-                            once: true,
-                        }
-                        : undefined,
-                });
-
-                if (tween?.scrollTrigger) {
-                    triggersRef.current.push(tween.scrollTrigger);
-                }
-                return;
-            }
-
             elements.forEach((element) => {
                 const split = SplitText.create(element, {
                     type: "lines",
@@ -121,6 +100,8 @@ export default function MaskTextReveal({
 
             if (!linesRef.current.length) return;
 
+            // The mask-position wipe is a clip reveal, not a translate/scale/
+            // parallax motion - subtle enough to keep for reduced motion too.
             gsap.set(el, { opacity: 1 });
 
             gsap.set(linesRef.current, {
@@ -136,13 +117,16 @@ export default function MaskTextReveal({
             };
 
             if (animateOnScroll) {
+               
+                const effectiveScrub = prefersReduced ? false : scrub;
+
                 const tween = gsap.to(linesRef.current, {
                     ...animationProps,
                     scrollTrigger: {
                         trigger: el,
                         start: "top 80%",
-                        once: scrub ? false : true,
-                        scrub: scrub,
+                        once: effectiveScrub ? false : true,
+                        scrub: effectiveScrub,
                         onEnter: () => elements.forEach(forceAriaVisible),
                     },
                 });

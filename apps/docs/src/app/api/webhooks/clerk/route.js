@@ -10,6 +10,7 @@ import { renderPasswordRemovedEmail } from "@/lib/emails/password-removed-email"
 import { renderPrimaryEmailAddressChangedEmail } from "@/lib/emails/primary-email-address-changed-email";
 import { renderAccountLockedEmail } from "@/lib/emails/account-locked-email";
 import { renderNewDeviceSignInEmail } from "@/lib/emails/new-device-sign-in-email";
+import { trackAffitorLead } from "@/lib/affitor";
 
 // Clerk's "Delivered by Clerk" toggle hands templates to us via the
 // email.created webhook instead of sending them itself. Each entry maps a
@@ -118,7 +119,7 @@ export async function POST(request) {
   }
 
   if (event.type === "user.created") {
-    const { id: clerkUserId, email_addresses, created_at } = event.data;
+    const { id: clerkUserId, email_addresses, created_at, unsafe_metadata } = event.data;
 
     const email = email_addresses?.[0]?.email_address;
 
@@ -149,6 +150,23 @@ export async function POST(request) {
         text: welcomeText(),
         emailType: "welcome",
       });
+    }
+
+    // Binds this signup to whichever partner referred them, if any. Every
+    // sign-up path (SignUpFlow.jsx's custom flow, and the Clerk-hosted
+    // <SignUp/> widget at signup/continue) sets affitor_click_id in
+    // unsafeMetadata from the affitor_click_id cookie at signup time, which
+    // Clerk copies onto the created user - that's what lands here. No entry
+    // means an organic (non-referred) signup, correctly skipped rather than
+    // calling Affitor with nothing to bind.
+    const affitorClickId = unsafe_metadata?.affitor_click_id;
+
+    if (affitorClickId) {
+      try {
+        await trackAffitorLead({ customerExternalId: clerkUserId, clickId: affitorClickId, email });
+      } catch (affitorError) {
+        console.error("AFFITOR_TRACK_LEAD_ERROR:", affitorError);
+      }
     }
   } else if (event.type === "email.created") {
     // Fires for any Clerk system email whose "Delivered by Clerk" toggle is
