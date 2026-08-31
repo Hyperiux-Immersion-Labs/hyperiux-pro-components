@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 import { getTemplateBySlug, getRelatedTemplates } from "@/lib/mock-templates";
 import { createPageMetadata } from "@/lib/seo-metadata";
+import { getTemplateAccessDecision } from "@/lib/template-access";
 import { TemplateDetail } from "./template-detail";
 
 export async function generateStaticParams() {
@@ -36,10 +38,18 @@ export default async function TemplateDetailPage({ params }) {
 
   if (!template) notFound();
 
+  const { userId } = await auth();
+  const templateAccess = await getTemplateAccessDecision({
+    clerkUserId: userId,
+    templateSlug: slug,
+    includedInAnnualPro: template.pricing?.includedInAnnualPro ?? false,
+  });
+
   return (
     <TemplateDetail
       template={template}
       relatedTemplates={getRelatedTemplates(slug)}
+      templateAccess={templateAccess}
     />
   );
 }

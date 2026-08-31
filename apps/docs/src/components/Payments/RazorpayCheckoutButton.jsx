@@ -5,11 +5,13 @@ import Script from "next/script";
 import { useUser } from "@clerk/nextjs";
 
 // Razorpay Standard Checkout button. Two modes:
-//   <RazorpayCheckoutButton amount={1} />          one-time order (testing)
-//   <RazorpayCheckoutButton plan="monthly" />      subscription (monthly|yearly|founding)
+//   <RazorpayCheckoutButton amount={1} />                        one-time order (testing)
+//   <RazorpayCheckoutButton amount={29} templateSlug="elenavoss" />  one-time template purchase
+//   <RazorpayCheckoutButton plan="monthly" />                    subscription (monthly|yearly|founding)
 export default function RazorpayCheckoutButton({
   amount,
   plan,
+  templateSlug,
   currency = "USD",
   className = "",
   onSuccess,
@@ -33,7 +35,9 @@ export default function RazorpayCheckoutButton({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          plan ? { plan, currency, idempotencyKey: crypto.randomUUID() } : { amount }
+          plan
+            ? { plan, currency, idempotencyKey: crypto.randomUUID() }
+            : { amount, currency, templateSlug }
         ),
       });
       const data = await res.json();

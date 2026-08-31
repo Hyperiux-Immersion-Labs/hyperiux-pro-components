@@ -19,11 +19,14 @@
     "component:test": "npm --prefix apps/docs run test -- src/lib/component-workflow.test.js",
     "sanity:code:diff": "node ./scripts/sanity-code-sync.mjs diff",
     "sanity:code:sync": "node ./scripts/sanity-code-sync.mjs sync",
-    "sanity:code:test": "npm --prefix apps/docs run test -- src/lib/sanity-code-sync.test.js"
+    "sanity:code:test": "npm --prefix apps/docs run test -- src/lib/sanity-code-sync.test.js",
+    "template:package": "node ./scripts/package-template.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@next/bundle-analyzer": "^16.2.10",
+    "@vercel/blob": "^2.8.0",
+    "archiver": "^7.0.1",
     "disposable-email-domains": "^1.0.62",
     "jspdf": "^4.2.1",
     "leva": "^0.10.1",

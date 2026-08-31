@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { razorpay } from "@/lib/razorpay";
 import { markUserProFromSubscription } from "@/lib/pro-access";
+import { recordTemplatePurchase } from "@/lib/template-purchases";
 
 function isValidSignature(payload, signature) {
   const expected = Buffer.from(
@@ -80,13 +81,42 @@ export async function POST(req) {
       return NextResponse.json({ verified: true, ...result });
     }
 
+    // Order (one-time payment) branch - re-fetch the order rather than
+    // trusting anything the client sent, same reasoning as create-order not
+    // trusting a client-supplied amount. order.notes carries whatever
+    // create-order stamped on it server-side (clerk_user_id always;
+    // template_slug only for a template purchase).
+    const order = await razorpay.orders.fetch(razorpay_order_id);
+
+    if (order?.notes?.clerk_user_id !== userId) {
+      return NextResponse.json(
+        { error: "Order does not belong to this user" },
+        { status: 403 }
+      );
+    }
+
+    if (order?.notes?.template_slug) {
+      await recordTemplatePurchase({
+        clerkUserId: userId,
+        templateSlug: order.notes.template_slug,
+        razorpayPaymentId: razorpay_payment_id,
+        razorpayOrderId: razorpay_order_id,
+        amount: typeof order.amount === "number" ? order.amount / 100 : null,
+        currency: order.currency || "USD",
+      });
+    }
+
     console.log("RAZORPAY_PAYMENT_VERIFIED:", {
       userId,
       razorpay_order_id,
       razorpay_payment_id,
+      templateSlug: order?.notes?.template_slug || null,
     });
 
-    return NextResponse.json({ verified: true });
+    return NextResponse.json({
+      verified: true,
+      templateSlug: order?.notes?.template_slug || null,
+    });
   } catch (error) {
     console.error("RAZORPAY_VERIFY_PAYMENT_ERROR:", error);
 

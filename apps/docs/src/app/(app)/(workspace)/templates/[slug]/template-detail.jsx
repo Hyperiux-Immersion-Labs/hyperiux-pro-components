@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Monitor, Tablet, Smartphone } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Monitor, Tablet, Smartphone, Download } from "lucide-react";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { TemplateCard } from "@/components/ui/TemplateCard";
+import { TemplatePaywallModal } from "@/components/ui/TemplatePaywallModal";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
@@ -49,17 +51,52 @@ function formatTemplateDate(value) {
   }).format(date);
 }
 
-export function TemplateDetail({ template, relatedTemplates = [] }) {
+export function TemplateDetail({
+  template,
+  relatedTemplates = [],
+  templateAccess = { allowed: false, reason: "anonymous" },
+}) {
   useFadeUp();
   useLineAnim();
 
+  const router = useRouter();
   const [device, setDevice] = useState("web");
   const [scale, setScale] = useState(1);
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
+  // Access is re-derived server-side on every navigation via
+  // getTemplateAccessDecision (page.js), but that only reruns on a real
+  // request - after a successful in-place purchase this flips optimistically
+  // so "Download Zip" works immediately, without waiting on a full reload.
+  const [hasAccess, setHasAccess] = useState(templateAccess.allowed);
   const previewBoxRef = useRef(null);
 
   const publishedLabel = formatTemplateDate(template.publishedAt);
   const updatedLabel = formatTemplateDate(template.updatedAt);
   const preset = DEVICE_PRESETS[device];
+
+  const downloadHref = `/api/templates/${template.slug}/download`;
+
+  const handleDownloadClick = () => {
+    if (hasAccess) {
+      // Deliberately window.location, not ButtonV3's Next <Link> - a <Link>
+      // to a Route Handler risks Next's client-router prefetch machinery
+      // interfering with what needs to be a real file-download response.
+      window.location.href = downloadHref;
+      return;
+    }
+
+    setIsPaywallOpen(true);
+  };
+
+  const handlePurchased = () => {
+    setHasAccess(true);
+    setIsPaywallOpen(false);
+    window.location.href = downloadHref;
+    // Re-syncs the server-derived access decision in the background so a
+    // later visit (or a refresh right now) reflects the real Supabase row
+    // rather than only this optimistic client flag.
+    router.refresh();
+  };
 
   useEffect(() => {
     const box = previewBoxRef.current;
@@ -149,14 +186,25 @@ export function TemplateDetail({ template, relatedTemplates = [] }) {
                 ))}
               </div>
 
-              <ButtonV3
-                text="Open in New Tab"
-                href={template.previewHref}
-                target_blank={true}
-                target="_blank"
-                variant="orange"
-                className="shrink-0"
-              />
+              <div className="flex shrink-0 items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleDownloadClick}
+                  className="group flex items-center gap-2 border border-white/20 bg-white/5 px-4 py-2.5 text18 text-white transition-colors duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-black"
+                >
+                  <Download className="h-4 w-4" aria-hidden="true" />
+                  {hasAccess ? "Download Zip" : `Buy — $${template.pricing?.standaloneOneTime ?? "—"}`}
+                </button>
+
+                <ButtonV3
+                  text="Open in New Tab"
+                  href={template.previewHref}
+                  target_blank={true}
+                  target="_blank"
+                  variant="orange"
+                  className="shrink-0"
+                />
+              </div>
             </div>
 
             <div
@@ -229,6 +277,13 @@ export function TemplateDetail({ template, relatedTemplates = [] }) {
           )}
         </section>
       </main>
+
+      <TemplatePaywallModal
+        template={template}
+        open={isPaywallOpen}
+        onClose={() => setIsPaywallOpen(false)}
+        onPurchased={handlePurchased}
+      />
     </div>
   );
 }
