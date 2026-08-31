@@ -66,7 +66,7 @@ function SkeletonBlock({ className = "" }) {
 
 function EffectDetailMainSkeleton() {
   return (
-    <main className="mx-auto w-full relative px-10 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
+    <main className="mx-auto w-full relative px-14 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
       <section className="space-y-7">
         <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
           <div className="w-full space-y-5">
@@ -451,7 +451,7 @@ export function EffectDetailContent({
           {isMainDataLoading ? (
             <EffectDetailMainSkeleton />
           ) : (
-            <main className="mx-auto w-full relative px-10 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
+            <main className="mx-auto w-full relative px-14 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
               <section className="space-y-7">
                 <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
                   <div className="w-full space-y-5">

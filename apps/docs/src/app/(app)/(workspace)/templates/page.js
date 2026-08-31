@@ -1,9 +1,9 @@
-import { TemplateCard } from "@/components/ui/TemplateCard";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { TEMPLATES } from "@/lib/mock-templates";
+import { TemplatesGrid } from "./TemplatesGrid";
 
 // Design-only for now, per the Figma listing page (Enigma-Redesign,
 // node 4304:231) - mock data, no real registry/Sanity backing, no
@@ -11,11 +11,11 @@ import { TEMPLATES } from "@/lib/mock-templates";
 // (annual-Pro included, everyone else buys separately) is a per-template
 // detail-page concern, not a listing-page one - see md/sections-templates-plan.md.
 //
-// Header block (breadcrumb / heading / description) and grid deliberately
-// reuse the exact classNames from effects/vault-content.jsx so this page
-// matches /effects pixel-for-pixel - filter/category chips and the layout
-// (2/3 column) toggle are skipped for now, not enough templates yet to
-// need them.
+// Header block (breadcrumb / heading / description) reuses the exact
+// classNames from effects/vault-content.jsx so this page matches /effects
+// pixel-for-pixel. The filter chip row + grid live in TemplatesGrid (a
+// client component, styled the same way as vault-content.jsx's own category
+// chips) since this file stays a server component for its `metadata` export.
 export const metadata = createPageMetadata({
   title: "Templates | Hyperiux Vault",
   description: "Full page templates for React & Next.js - agency, portfolio, and industry-specific starters.",
@@ -29,7 +29,7 @@ const DESCRIPTION =
 export default function TemplatesPage() {
   return (
     <div className="relative min-h-screen text-foreground effects-comp border-b border-white/10">
-      <div className="px-8 pt-28 pb-12 space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16">
+      <div className="px-14 pt-28 pb-12 space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16">
         <Breadcrumb className="fadeup" />
 
         <HeadAnim animateOnScroll={false} delay={0.3}>
@@ -48,13 +48,7 @@ export default function TemplatesPage() {
         </div>
       </div>
 
-      <div className="mx-auto px-10 pt-20 pb-12 max-md:px-0 max-[1025px]:pt-10">
-        <div className="grid grid-cols-2 gap-4 rounded-xl max-[1025px]:grid-cols-1 max-md:grid-cols-1 max-md:px-[7vw] max-[1025px]:gap-10 max-md:gap-16">
-          {TEMPLATES.map((template, index) => (
-            <TemplateCard key={template.slug} template={template} priority={index === 0} />
-          ))}
-        </div>
-      </div>
+      <TemplatesGrid templates={TEMPLATES} />
     </div>
   );
 }

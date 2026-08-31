@@ -745,13 +745,13 @@ export function VaultContent({
         <div>
           <div
             key={`category-intro-${categoryFilter}`}
-            className=" px-8 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
+            className=" px-14 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
           >
             <Breadcrumb className="fadeup" />
 
             <HeadAnim animateOnScroll={false} delay={0.3} animationKey={routeKey}>
               <h1
-                className="mb-4 w-[80%] leading-normal t96 font-display font-normal text-foreground max-md:w-[90%] max-md:text-4xl"
+                className="mb-4 w-[80%] leading-normal t96 font-display font-normal text-foreground max-md:w-[90%] max-md:text-4xl ml-[-0.4vw]"
                 style={{ lineHeight: "1.3" }}
               >
                 {activeCategoryName}
@@ -774,11 +774,11 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className="category-fadeup fadeup" data-fadeup-delay="0.5">
+        <div className="category-fadeup fadeup " data-fadeup-delay="0.5">
           <TrendingRightNow effects={featuredEffects} />
         </div>
 
-        <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
+        <div className="mx-auto px-14 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
           <div
             className="relative max-[1025px]:w-full flex items-start gap-4 fadein"
             data-fadein-delay="0.4"
@@ -896,7 +896,7 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-md:px-0">
+        <div className="category-fadeup fadeup mx-auto relative px-14 pb-12 max-md:px-0">
           <div
             className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
               ? "mb-8 min-h-10 opacity-100"

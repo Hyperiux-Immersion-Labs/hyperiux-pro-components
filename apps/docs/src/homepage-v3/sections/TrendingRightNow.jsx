@@ -336,7 +336,7 @@ export default function TrendingRightNow({ effects = [] }) {
   if (!effects.length) return null;
 
   return (
-    <section className="relative w-full overflow-hidden  px-8 pt-16 pb-4 max-md:px-0 max-md:pt-12">
+    <section className="relative w-full overflow-hidden  px-14 pt-16 pb-4 max-md:px-0 max-md:pt-12">
       <div className="mb-7 flex items-center max-sm:px-5 justify-between max-md:mb-5">
         <h2 className="font-sans text-2xl font-medium text-foreground max-md:text-2xl">
           Trending
