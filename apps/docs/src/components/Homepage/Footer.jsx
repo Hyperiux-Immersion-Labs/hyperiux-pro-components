@@ -185,7 +185,7 @@ export default function Footer() {
         </div>
 
       </div>
-      <p className="text-center text18 absolute bottom-[2vw] max-md:bottom-[10vw] left-[4%] text-light-grey z-4 max-[1025px]:w-[80vw] max-md:left-[11%] max-md:text-[3.5vw]!">© 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux Studio · Small motion. Big signal.</p>
+      <p className="text-center text18 absolute bottom-[2vw] max-md:bottom-[10vw] left-[4%] text-light-grey z-4 max-[1025px]:w-[80vw] max-md:left-[11%] max-md:text-[3.5vw]!">© 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux · Small motion. Big signal.</p>
       {/* ── Footer links grid ── */}
       <div className="relative z-3 mt-[10vw] max-md:mt-[25vw] ">
 
@@ -283,7 +283,7 @@ export default function Footer() {
                 <FooterBlockLink href="mailto:hello@hyperiux.com">hello@hyperiux.com</FooterBlockLink>
               </li>
               <li>
-                <FooterBlockLink href="tel:+918178026136">+91 81780 26136</FooterBlockLink>
+                {/* <FooterBlockLink href="tel:+918178026136">+91 81780 26136</FooterBlockLink> */}
               </li>
             </ul>
           </div>

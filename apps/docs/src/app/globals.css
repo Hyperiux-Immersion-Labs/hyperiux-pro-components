@@ -212,6 +212,55 @@ h4 {
   display: none;
 }
 
+/* Mobile nav overlay (VaultHeader.jsx / NavbarMobileV3.jsx) - the default
+   8px gradient scrollbar below is way too heavy once an expanded Categories/
+   Documentation accordion pushes the overlay's own content tall enough to
+   scroll; slim it down instead of hiding it outright (still visible = still
+   discoverable that there's more to scroll). Explicit thumb/track rules
+   (not just relying on the universal *::-webkit-scrollbar-thumb below) so
+   the site's own red-to-orange gradient still shows at the slimmer width -
+   Firefox's scrollbar-color can't take a gradient, so it gets a flat
+   approximation instead. */
+.mobile-nav-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #f16b0d transparent; /* Firefox */
+}
+
+.mobile-nav-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+
+.mobile-nav-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mobile-nav-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #e61216 0%, #f16b0d 100%);
+}
+
+/* Request Custom Animation modal's scrollable content
+   (CustomAnimationFormModal.jsx) - same red-to-orange gradient thumb as the
+   root scrollbar below, just slimmed down to suit a contained scroll area
+   instead of the full page. Firefox's scrollbar-color can't take a
+   gradient, so it gets a flat approximation instead (same as
+   .mobile-nav-scroll above). */
+.custom-animation-form-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #f16b0d transparent; /* Firefox */
+}
+
+.custom-animation-form-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-animation-form-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-animation-form-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #e61216 0%, #f16b0d 100%);
+}
+
 *::-webkit-scrollbar {
   width: 8px;
   height: 5px;

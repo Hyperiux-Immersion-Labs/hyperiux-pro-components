@@ -282,7 +282,7 @@ export default function NavbarMobileV3({
       >
         <div
           data-lenis-prevent
-          className="absolute inset-0 overflow-y-auto px-[6vw] pt-[22vw] pb-[12vw] md:px-[3.5vw] md:pt-[11vw] md:pb-[7vw]"
+          className="mobile-nav-scroll absolute inset-0 overflow-y-auto px-[6vw] pt-[22vw] pb-[12vw] md:px-[3.5vw] md:pt-[11vw] md:pb-[7vw]"
         >
           <button
             data-mobile-row

@@ -405,10 +405,10 @@ export default function PrivacyPolicy() {
             field: "Email",
             details: "support@hyperiux.com",
           },
-          {
-            field: "Phone",
-            details: "+91 81780 26136",
-          },
+          // {
+          //   field: "Phone",
+          //   details: "+91 81780 26136",
+          // },
           {
             field: "Address",
             details:
@@ -435,7 +435,7 @@ export default function PrivacyPolicy() {
 
       <a href="mailto:support@hyperiux.com" className="text-primary underline">support@hyperiux.com</a>
 
-      <Para>Phone: <a href="tel:+91 81780 26136" className="text-primary underline">+91 81780 26136</a></Para>
+      {/* <Para>Phone: <a href="tel:+91 81780 26136" className="text-primary underline">+91 81780 26136</a></Para> */}
 
       <Para>
         Address: 312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh,

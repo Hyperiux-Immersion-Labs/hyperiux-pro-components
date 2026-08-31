@@ -232,7 +232,7 @@ export function Sidebar({
   const [fetchedEffects, setFetchedEffects] = useState([]);
   const [openSection, setOpenSection] = useState(initialOpenSection);
   const [hoveredSidebarKey, setHoveredSidebarKey] = useState("");
-  const { startNavigation } = useVaultLayout();
+  const { startNavigation, scrollToTop } = useVaultLayout();
 
   const previousRouteSectionRef = useRef(initialOpenSection);
   const categoryNavigationInProgressRef = useRef(false);
@@ -414,6 +414,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("");
     startNavigation("/effects");
+    scrollToTop();
 
     const wasHandled = onOverviewNavigate?.();
 
@@ -429,6 +430,7 @@ export function Sidebar({
     setOpenSection("categories");
     const targetHref = getEffectCategoryHref(categoryId);
     startNavigation(targetHref);
+    scrollToTop();
 
     const wasHandled = onCategoryNavigate?.(categoryId);
 
@@ -443,6 +445,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("docs");
     startNavigation(href);
+    scrollToTop();
 
     if (typeof window !== "undefined") {
       const docsRouteEvent = new CustomEvent("hyperiux:docs-route-request", {
@@ -468,6 +471,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("legal");
     startNavigation(href);
+    scrollToTop();
 
     const wasHandled = onDocumentationNavigate?.(href);
 
@@ -762,6 +766,10 @@ export function Sidebar({
             icon={Pricing}
             isExpanded={isExpanded}
             isActive={hoveredSidebarKey ? hoveredSidebarKey === "pricing" : pathname === "/pricing"}
+            onClick={() => {
+              startNavigation("/pricing");
+              scrollToTop();
+            }}
             onMouseEnter={() => setHoveredSidebarKey("pricing")}
           />
 
@@ -791,6 +799,7 @@ export function Sidebar({
             icon={Mcp}
             isExpanded={isExpanded}
             isActive={hoveredSidebarKey ? hoveredSidebarKey === "mcp" : pathname === "/docs/mcp"}
+            onClick={(event) => navigateDocumentation(event, "/docs/mcp")}
             onMouseEnter={() => setHoveredSidebarKey("mcp")}
           />
         </nav>

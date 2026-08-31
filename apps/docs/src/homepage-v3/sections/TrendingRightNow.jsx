@@ -114,11 +114,11 @@ function TrendingEffectCard({ effect, priority = false }) {
       onMouseLeave={() => setActive(false)}
       className="group relative block h-full w-full overflow-hidden bg-[#161616]"
     >
-      <span className="absolute left-5 top-3 z-10 bg-[#2B2B2B] px-3 py-[0.1vw] text-[0.8vw]  tracking-[0.06em] text-white max-md:left-5 max-md:top-5 max-md:px-4 max-md:py-1.5 ">
+      <span className="absolute left-5 top-3 z-10 bg-[#2B2B2B] px-3 py-[0.1vw] text-[0.8vw]  tracking-[0.06em] text-white max-md:text-[3vw] max-[1025px]:text-[2vw] max-md:px-4 max-md:py-1.5 ">
         {categoryLabel}
       </span>
 
-      <div className="absolute inset-x-3  h-[64%]  overflow-hidden bg-[#202020] md:inset-x-5 top-[17.5%] ">
+      <div className="absolute inset-x-3  h-[64%]  overflow-hidden bg-[#202020] md:inset-x-5 top-[17.5%] max-md:top-[20%] max-md:inset-x-5 ">
         {coverImage && !imageError ? (
           <Image
             src={coverImage}
@@ -153,8 +153,8 @@ function TrendingEffectCard({ effect, priority = false }) {
         )}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-4 bottom-3 z-10  ">
-        <p className="truncate px-0.5 pb-1.5  text-[1.15vw] font-medium leading-none text-white max-md:text-sm">
+      <div className="pointer-events-none absolute inset-x-4 bottom-3 z-10 max-md:inset-x-5  ">
+        <p className="truncate px-0.5 pb-1.5  text-[1.15vw] font-medium leading-none text-white max-md:text-[3.5vw] max-[1025px]:text-[2vw]">
           {effect.title || effect.name}
         </p>
       </div>
@@ -194,6 +194,18 @@ export default function TrendingRightNow({ effects = [] }) {
       const items = cardRefs.current.filter(Boolean);
       if (!items.length || !trackRef.current) return;
 
+      // horizontalLoop's getTotalWidth() measures out to the last card's own
+      // right edge - it has no way to know about the trailing gap that
+      // would exist between the last card and a wrapped-around first card,
+      // since spacing here comes from the track's CSS `gap` (gap-6/gap-4),
+      // not margin. Without paddingRight to account for it, the wrap
+      // distance comes up one gap short, so the last card re-enters slightly
+      // early and visibly overlaps whatever's currently at the front - the
+      // "first and last card overlapping" glitch. Read the track's actual
+      // computed gap rather than hardcoding 24px/16px so it's still correct
+      // whichever breakpoint's gap-* class is active at init time.
+      const trackGap = parseFloat(getComputedStyle(trackRef.current).columnGap) || 0;
+
       const loop = horizontalLoop(items, {
         repeat: -1,
         draggable: true,
@@ -202,6 +214,7 @@ export default function TrendingRightNow({ effects = [] }) {
         pauseOnHover: true,
         isHoveredRef,
         reduceMotion: reduceMotionRef.current,
+        paddingRight: trackGap,
       });
 
       if (!loop) {
@@ -309,7 +322,7 @@ export default function TrendingRightNow({ effects = [] }) {
   return (
     <section className="relative w-full overflow-hidden  px-8 pt-16 pb-4 max-md:px-0 max-md:pt-12">
       <div className="mb-7 flex items-center max-sm:px-5 justify-between max-md:mb-5">
-        <h2 className=" text-2xl font-medium text-foreground max-md:text-2xl">
+        <h2 className=" text-2xl font-medium text-foreground">
           Trending
         </h2>
 
@@ -318,7 +331,7 @@ export default function TrendingRightNow({ effects = [] }) {
             type="button"
             onClick={() => step(-1)}
             aria-label="Previous"
-            className="group relative flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
+            className="group relative flex size-9 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
           >
             <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 group-hover:translate-x-[-180%] duration-300 ease-in-out" />
             <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%] group-hover:translate-x-0 duration-300 ease-in-out" />
@@ -328,7 +341,7 @@ export default function TrendingRightNow({ effects = [] }) {
             type="button"
             onClick={() => step(1)}
             aria-label="Next"
-            className="group relative flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
+            className="group relative flex size-9 cursor-pointer items-center justify-center overflow-hidden hover:text-black bg-[#161616] text-white transition-colors duration-300 hover:bg-[#ff5f00]"
           >
             <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 group-hover:translate-x-[180%] duration-300 ease-in-out" />
             <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%] group-hover:translate-x-0 duration-300 ease-in-out" />
@@ -356,7 +369,7 @@ export default function TrendingRightNow({ effects = [] }) {
           onPointerMove={handleTrackPointerMove}
           onPointerUp={handleTrackPointerUp}
           onClickCapture={handleTrackClickCapture}
-          className="flex w-full items-stretch gap-6 overflow-hidden select-none max-md:gap-4 cursor-grab active:cursor-grabbing touch-pan-y"
+          className="flex w-fit gap-6 overflow-hidden select-none max-md:gap-4 cursor-grab active:cursor-grabbing touch-pan-y"
         >
           {effects.map((effect, index) => (
             <div
@@ -364,7 +377,7 @@ export default function TrendingRightNow({ effects = [] }) {
               ref={(el) => {
                 cardRefs.current[index] = el;
               }}
-              className="h-70 w-90 shrink-0 max-md:h-44 max-md:w-64"
+              className="h-70 w-90 shrink-0"
             >
               <TrendingEffectCard effect={effect} priority={index < 4} />
             </div>

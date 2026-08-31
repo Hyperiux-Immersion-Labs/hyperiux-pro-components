@@ -15,6 +15,7 @@ const VaultLayoutContext = createContext({
   isNavigating: false,
   toggleSidebar: () => {},
   startNavigation: () => {},
+  scrollToTop: () => {},
 });
 
 export function useVaultLayout() {
@@ -386,8 +387,16 @@ export function VaultLayout({
       isNavigating,
       toggleSidebar,
       startNavigation,
+      scrollToTop,
     }),
-    [isSidebarOpen, isSidebarReady, isNavigating, toggleSidebar, startNavigation]
+    [
+      isSidebarOpen,
+      isSidebarReady,
+      isNavigating,
+      toggleSidebar,
+      startNavigation,
+      scrollToTop,
+    ]
   );
 
   return (

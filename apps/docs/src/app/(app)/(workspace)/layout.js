@@ -32,7 +32,7 @@ export default function WorkspaceLayout({ children }) {
 
   return (
     <Suspense fallback={<VaultLayoutFallback />}>
-      <NavbarMobile />
+      {/* <NavbarMobile /> */}
       <VaultLayout
         effectCounts={effectCounts}
         totalEffects={totalEffects}
