@@ -1,6 +1,8 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import ScrollStack, { type ScrollStackCard } from "./effects/scroll-stack";
 
+import FocusTextWrap from "./effects/focus-text/wrap";
+import { ParaAnim } from "./Animations/gsapAnim";
 const SHARED = {
   description:
     "Stay ahead of servicing, cleaning and recurring maintenance with timely reminders.",
@@ -28,13 +30,18 @@ const Features = () => {
     <section className="kyntra-container w-full bg-white text-black">
       <div className="mx-auto pb-[5vw] max-w-400">
         <div className="max-w-[46vw] max-[1025px]:max-w-full">
-          <h2 className="font-helvetica-neue leading-[1.12] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]">
-            Your Dedicated Operating Layer for the Home
-          </h2>
-          <p className="text-24 mt-[1.6vw] max-w-[30vw] leading-normal text-black/70 max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]">
+          <FocusTextWrap>
+            <h2 className="font-helvetica-neue leading-[1.12] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]">
+              Your Dedicated Operating Layer for the Home
+            </h2>
+          </FocusTextWrap>
+          <ParaAnim
+            as="p"
+            className="text-24 mt-[1.6vw] max-w-[30vw] leading-normal text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
+          >
             The More Kyntra Understands Your Property, The Easier It Becomes To
             Manage Everything Around It.
-          </p>
+          </ParaAnim>
         </div>
       </div>
 

@@ -9,6 +9,8 @@ import SmoothInfiniteCarousel, {
 } from "./smooth-carousel/SmoothInfiniteCarousel";
 import CarouselNavButtons from "./Buttons/NavButtons";
 
+import FocusTextWrap from "./effects/focus-text/wrap";
+import { ParaAnim } from "./Animations/gsapAnim";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -67,7 +69,6 @@ const SMARTER_CARDS: SmarterCardData[] = [
   },
 ];
 
-
 const CAROUSEL_CARDS = [...SMARTER_CARDS, ...SMARTER_CARDS];
 
 export default function Smarter() {
@@ -125,16 +126,21 @@ export default function Smarter() {
     >
       {/* Header */}
       <div className="mx-auto flex max-w-400 flex-col gap-[3vw] px-[5%] py-[5%] max-md:gap-8 max-md:mb-8">
-        <h2 className="font-helvetica-neue leading-[1.1] font-normal tracking-[-0.02em] whitespace-pre-line text-black max-[1025px]:text-[6vw] max-md:text-[7.5vw]">
-          Every Visit Makes Kyntra{"\n"}Smarter About your Home
-        </h2>
+        <FocusTextWrap>
+          <h2 className="font-helvetica-neue w-[60%] leading-[1.1] font-normal tracking-[-0.02em] whitespace-pre-line text-black max-[1025px]:text-[6vw] max-md:text-[7.5vw]">
+            Every Visit Makes Kyntra Smarter About your Home
+          </h2>
+        </FocusTextWrap>
 
         {/* Paragraph far left, nav buttons far right */}
         <div className="flex items-center justify-between gap-[4vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-6">
-          <p className="text-24 max-w-[40vw] leading-normal text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]">
+          <ParaAnim
+            as="p"
+            className="text-24 max-w-[40vw] leading-normal text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
+          >
             Kyntra Keeps Your Appliances, Repairs, Warranties And Maintenance
             History Together So Every Future Job Starts With Context.
-          </p>
+          </ParaAnim>
 
           <CarouselNavButtons
             onPrev={() => sliderRef.current?.goToPrev()}
@@ -171,7 +177,9 @@ export default function Smarter() {
                 className="smarter-card-anim flex aspect-440/477 w-[28vw] flex-col overflow-hidden rounded-xl p-[1.8vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
                 style={{
                   backgroundColor: isPrimary ? KYNTRA_PRIMARY : "#0d0d0d",
-                  border: isPrimary ? "none" : "1px solid rgba(255,255,255,0.25)",
+                  border: isPrimary
+                    ? "none"
+                    : "1px solid rgba(255,255,255,0.25)",
                   // Icon inherits this via currentColor: white on blue cards,
                   // Kyntra primary on dark cards.
                   color: isPrimary ? "#ffffff" : KYNTRA_PRIMARY,
@@ -184,7 +192,7 @@ export default function Smarter() {
                 </div>
 
                 <div className="flex flex-1 flex-col gap-[1.4vw] max-md:gap-4">
-                  <h3 className="font-helvetica-neue text-[2.4vw] leading-[1.15] font-normal tracking-tight whitespace-pre-line text-white max-[1025px]:text-[4vw] max-md:text-[7vw]">
+                  <h3 className="font-helvetica-neue text-44 leading-[1.15] font-normal tracking-tight whitespace-pre-line text-white max-[1025px]:text-[4vw] max-md:text-[7vw]">
                     {card.title}
                   </h3>
 
@@ -197,7 +205,6 @@ export default function Smarter() {
           })}
         </SmoothInfiniteCarousel>
       </div>
-
     </section>
   );
 }

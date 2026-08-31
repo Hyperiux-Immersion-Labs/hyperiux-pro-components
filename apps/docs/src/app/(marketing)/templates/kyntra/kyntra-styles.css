@@ -99,6 +99,15 @@
   border-color: var(--kyntra-primary);
 }
 
+
+.kyntra-page [data-open].bg-kyntra-primary {
+  background-color: #ffffff;
+}
+
+.kyntra-page [data-open].text-white {
+  color: var(--kyntra-primary);
+}
+
 /* Headings: Helvetica Neue, tight. h1 sizing/line-height defined here so
    every Kyntra section shares one display scale. */
 .kyntra-page h1,
@@ -130,6 +139,9 @@
   font-size: 3.8vw;
 }
 
+.kyntra-page .text-18 {
+  font-size: 0.9vw;
+}
 
 .kyntra-page .text-22 {
   font-size: 1.15vw;
@@ -145,6 +157,10 @@
 
 .kyntra-page .text-24 {
   font-size: 1.25vw;
+}
+
+.kyntra-page .text-44 {
+  font-size: 2.4vw;
 }
 
 /* Section wrapper: consistent block/inline padding across Kyntra sections. */
@@ -165,3 +181,7 @@
   }
 }
 
+
+.focus-word {
+  white-space: nowrap;
+}

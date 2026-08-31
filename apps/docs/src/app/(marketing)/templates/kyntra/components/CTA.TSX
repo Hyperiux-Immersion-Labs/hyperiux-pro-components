@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
+import { FadeUp } from "./Animations/gsapAnim";
 
 const CTA = () => {
   const [hovered, setHovered] = useState(false);
@@ -18,18 +19,24 @@ const CTA = () => {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <CharStaggerPrimaryButton
-          text="Different Home, Different Chaos"
-          href="#"
-          hoverColor="#ffffff"
-          className="w-[55vw] justify-center rounded-full bg-black py-[5vw] text-center max-[1025px]:w-[75vw] max-[1025px]:py-[9vw] max-md:w-full max-md:py-[14vw]"
-          textClassName="font-helvetica-neue text-[2.6vw] leading-[1.1] font-normal tracking-[-0.02em] text-white max-[1025px]:text-[5vw] max-md:text-[7vw]"
-        />
+        <FadeUp>
+          <CharStaggerPrimaryButton
+            text="Different Home, Different Chaos"
+            href="#"
+            hoverColor="#ffffff"
+            className="w-[45vw] justify-center rounded-full bg-black py-[2.5vw] text-center max-[1025px]:w-[75vw] max-[1025px]:py-[9vw] max-md:w-full max-md:py-[14vw]"
+            textClassName=" text-44 leading-[1.1] font-normal tracking-[-0.02em] text-white max-[1025px]:text-[5vw] max-md:text-[7vw]"
+          />
+        </FadeUp>
       </div>
 
-      <p className="text-24 mt-[2vw] text-black max-[1025px]:text-[2.6vw] max-md:mt-[6vw] max-md:text-[4vw]">
+      <FadeUp
+        as="p"
+        delay={0.15}
+        className="text-24 mt-[2vw] text-black max-[1025px]:text-[2.6vw] max-md:mt-[6vw] max-md:text-[4vw]"
+      >
         Download Kyntra and create your first home profile.
-      </p>
+      </FadeUp>
     </section>
   );
 };

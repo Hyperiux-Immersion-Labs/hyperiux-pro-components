@@ -67,7 +67,9 @@ const Header: React.FC = () => {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 px-[3vw] py-[1.6vw] transition-all duration-500 ease-in-out max-[1025px]:px-[5%] max-[1025px]:py-[5%] ${
-        hidden ? "-translate-y-full max-[1025px]:translate-y-0" : "translate-y-0"
+        hidden
+          ? "-translate-y-full max-[1025px]:translate-y-0"
+          : "translate-y-0"
       } ${isScrolled ? "bg-black/20 shadow-md backdrop-blur-md" : ""}`}
     >
       <div className="flex items-center justify-between">
@@ -116,19 +118,25 @@ const Header: React.FC = () => {
         <button
           type="button"
           onClick={() => setMenuOpen((open) => !open)}
-          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-label={
+            menuOpen ? "Close navigation menu" : "Open navigation menu"
+          }
           aria-expanded={menuOpen}
           className="relative z-60 hidden h-[6vw] w-[7vw] shrink-0 items-center justify-center max-[1025px]:flex max-md:h-[8vw] max-md:w-[9vw]"
         >
           <span className="relative block h-[3vw] w-[5.5vw] max-md:h-[4vw] max-md:w-[7vw]">
             <span
               className={`absolute left-0 top-[22%] h-px w-full bg-white transition-transform duration-300 ${
-                menuOpen ? "translate-y-[1.1vw] rotate-45 max-md:translate-y-[1vw]" : ""
+                menuOpen
+                  ? "translate-y-[1.1vw] rotate-45 max-md:translate-y-[1vw]"
+                  : ""
               }`}
             />
             <span
               className={`absolute left-0 top-[68%] h-px w-full bg-white transition-transform duration-300 ${
-                menuOpen ? "translate-y-[-1.1vw] -rotate-45 max-md:translate-y-[-1vw]" : ""
+                menuOpen
+                  ? "translate-y-[-1.1vw] -rotate-45 max-md:translate-y-[-1vw]"
+                  : ""
               }`}
             />
           </span>

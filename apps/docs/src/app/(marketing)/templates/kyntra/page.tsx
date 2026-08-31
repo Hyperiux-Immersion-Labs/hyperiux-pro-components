@@ -10,6 +10,9 @@ import KyntraFaq from './components/KyntraFaq'
 import CTA from './components/CTA'
 import ParallaxFooter from './components/effects/parallax-footer'
 import LenisSmoothScroll from "./components/LenisSmoothScroll";
+import Trust from "./components/Trust";
+import Perspective from "./components/Perspective";
+import Experience from "./components/Experience";
 
 const page = () => {
   return (
@@ -22,6 +25,9 @@ const page = () => {
         <Features />
         <Smarter />
         <HowKyntraWorks />
+        <Trust />
+        <Perspective />
+        <Experience />
         <KyntraFaq />
         <CTA />
         <ParallaxFooter />

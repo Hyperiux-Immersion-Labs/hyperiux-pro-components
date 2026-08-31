@@ -7,6 +7,7 @@ import {
 } from "./effects/animated-faq/AnimatedFaqComp";
 import { type ReactNode } from "react";
 
+import FocusTextWrap from "./effects/focus-text/wrap";
 interface FAQItem {
   id: string;
   title: ReactNode;
@@ -94,9 +95,11 @@ export default function KyntraFaq() {
       className="kyntra-container relative w-full bg-white text-black"
     >
       <div className="mx-auto max-w-400">
-        <h2 className="font-helvetica-neue mb-[4vw] leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:mb-[8vw] max-[1025px]:text-[6vw] max-md:text-[8vw]">
-          Frequently Asked Questions
-        </h2>
+        <FocusTextWrap>
+          <h2 className="font-helvetica-neue mb-[4vw] leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:mb-[8vw] max-[1025px]:text-[6vw] max-md:text-[8vw]">
+            Frequently Asked Questions
+          </h2>
+        </FocusTextWrap>
 
         <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
           {faqItems.map((item) => (
@@ -106,7 +109,7 @@ export default function KyntraFaq() {
               className="group relative overflow-hidden rounded-[1.4vw] transition-colors duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] max-md:rounded-[4.5vw]"
               titleClassName="relative z-2 font-helvetica-neue text-[1.6vw] font-normal text-black transition-colors duration-500 group-aria-expanded:text-white max-[1025px]:text-[3.4vw] max-md:text-[5vw]"
               contentClassName="relative z-2"
-              iconClassName="flex h-[2.4vw] w-[2.4vw] items-center justify-center rounded-full bg-kyntra-primary text-white transition-colors duration-500 data-open:bg-white data-open:text-kyntra-primary max-md:h-[9vw] max-md:w-[9vw] max-[1025px]:h-[6vw] max-[1025px]:w-[6vw]"
+              iconClassName="flex h-[2.4vw] w-[2.4vw] items-center justify-center rounded-full bg-kyntra-primary text-white transition-colors duration-500 max-md:h-[9vw] max-md:w-[9vw] max-[1025px]:h-[6vw] max-[1025px]:w-[6vw]"
               iconSize={18}
               iconStrokeWidth={1.8}
               duration={0.5}

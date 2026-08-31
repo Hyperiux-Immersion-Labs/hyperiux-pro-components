@@ -6,6 +6,8 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 
+import FocusTextWrap from "./effects/focus-text/wrap";
+import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -126,16 +128,25 @@ export default function HowKyntraWorks() {
       ref={sectionRef}
       className="kyntra-container relative w-full bg-white text-black"
     >
-      <div className="mx-auto max-w-400 text-center space-y-[2vw]">
-        <h2 className="font-helvetica-neue leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]">
-          How Kyntra Works
-        </h2>
+      {/* flex+gap rather than space-y: the heading is wrapped by FocusTextWrap,
+          whose display:contents div is the element `space-y-*` would margin -
+          and a contents box is discarded, so the spacing never appeared. gap
+          spaces the laid-out boxes, which passes through correctly. */}
+      <div className="mx-auto flex max-w-400 flex-col gap-[2vw] text-center">
+        <FocusTextWrap>
+          <h2 className="font-helvetica-neue leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]">
+            How Kyntra Works
+          </h2>
+        </FocusTextWrap>
 
-        <p className="text-24 mx-auto  w-[60vw] leading-[1.6] text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]">
+        <ParaAnim
+          as="p"
+          className="text-24 mx-auto  w-[60vw] leading-[1.6] text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
+        >
           Kyntra Makes It Simple To Get Any Home Service Done In Just A Few
           Steps. First, You Tell Us What You Need By Choosing A Service Or
           Describing The Issue You&apos;re Facing At Home.
-        </p>
+        </ParaAnim>
       </div>
 
       <div className="relative mx-auto mt-[5vw] flex w-full flex-col items-center">
@@ -160,7 +171,7 @@ export default function HowKyntraWorks() {
         ))}
       </div>
 
-      <div className="mt-[4vw] flex justify-center">
+      <FadeUp className="mt-[4vw] flex justify-center">
         <CharStaggerPrimaryButton
           text="Book Your First Service"
           href="#"
@@ -171,7 +182,7 @@ export default function HowKyntraWorks() {
           iconClassName="text-white"
           style={{ backgroundColor: KYNTRA_PRIMARY }}
         />
-      </div>
+      </FadeUp>
     </section>
   );
 }
