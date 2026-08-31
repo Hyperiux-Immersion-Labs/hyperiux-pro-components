@@ -8,7 +8,7 @@ import { GlobalCanvas, SmoothScrollbar } from "@14islands/r3f-scroll-rig";
 import { EffectComposer } from "@react-three/postprocessing";
 
 export default function ScrollRigExpClient() {
-  const fontUrl = "/giestsans.ttf";
+  const fontUrl = "/extras/scrollrig-exp/giestsans.ttf";
 
   return (
     <>
