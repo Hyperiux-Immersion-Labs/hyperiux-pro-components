@@ -71,7 +71,7 @@ export default function TermsOfService() {
 
       <Para>
         Hyperiux also separately offers bespoke design and development services
-        (&quot;Hyperiux Studio&quot; / &quot;Work with Hyperiux&quot;) under terms agreed
+        (&quot;Hyperiux&quot; / &quot;Work with Hyperiux&quot;) under terms agreed
         individually with each client, which are not covered by these Terms unless the
         relevant engagement letter says otherwise.
       </Para>
@@ -416,10 +416,10 @@ export default function TermsOfService() {
             field: "Email",
             details: "support@hyperiux.com",
           },
-          {
-            field: "Phone",
-            details: "+91 81780 26136",
-          },
+          // {
+          //   field: "Phone",
+          //   details: "+91 81780 26136",
+          // },
           {
             field: "Address",
             details:
@@ -482,7 +482,7 @@ export default function TermsOfService() {
 <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>
       
 
-      <Para>Phone: <a href="tel:+91 81780 26136" className="text-primary underline"> +91 81780 26136 </a></Para>
+      {/* <Para>Phone: <a href="tel:+91 81780 26136" className="text-primary underline"> +91 81780 26136 </a></Para> */}
     </DocsContent>
   );
 }

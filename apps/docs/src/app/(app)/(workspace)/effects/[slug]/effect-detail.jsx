@@ -150,7 +150,7 @@ function EffectDetailMainSkeleton() {
           </div>
         </div>
 
-        <section className="my-20 relative max-md:pt-[5vh] space-y-10 max-[1025px]:space-y-16">
+        <section className="my-20 relative space-y-10 max-[1025px]:space-y-16">
           <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
             <SkeletonBlock className="h-12 w-[30%]  bg-[#272727] max-[1025px]:w-[60%] max-md:w-[80%]" />
             <SkeletonBlock className="h-12 w-44  bg-[#ff5f00]/45 max-[1025px]:hidden" />
@@ -459,7 +459,7 @@ export function EffectDetailContent({
 
                     {pageTitle && (
                       <HeadAnim>
-                        <h1 className="w-full max-md:text-[6vw] max-md:font-bold max-[1025px]:w-[90%] max-md:w-[80%] max-[1025px]:mx-auto max-[1025px]:text-center font-semibold leading-[1.3]! text-foreground text80">
+                        <h1 className="w-full max-md:text-[6vw] max-md:font-bold max-[1025px]:w-[90%] max-md:w-[80%]  font-semibold leading-[1.3]! text-foreground text80">
                           {pageTitle}
                         </h1>
                       </HeadAnim>
@@ -467,13 +467,13 @@ export function EffectDetailContent({
 
                     {pageSummary && (
                       <Copy delay={0.5}>
-                        <p className="mt-4 w-full max-[1025px]:text-center max-[1025px]:w-[90%] max-[1025px]:mx-auto text-foreground opacity-90 text22 leading-relaxed max-[1025px]:leading-[1.3]">
+                        <p className="mt-4 w-full max-[1025px]:w-[90%] text-foreground opacity-90 text22 leading-relaxed max-[1025px]:leading-[1.3]">
                           {pageSummary}
                         </p>
                       </Copy>
                     )}
                     {shouldShowEffectDates && (
-                      <div className="mt-5 flex items-start gap-x-5 gap-y-1 text18 text-white/80 max-sm:text-[3vw]! ">
+                      <div className="mt-5 flex items-start gap-x-5 gap-y-1 text18 text-white/80 max-md:text-[3vw]! max-md:flex-col ">
                         <div className="fadeup "><span className="font-laygrotesk">Published On: </span>   {addedAtLabel} </div>
                         <div className="fadeup "> <span className="font-laygrotesk ">Last Updated:</span>  {lastUpdatedLabel} </div>
                       </div>
@@ -597,7 +597,7 @@ export function EffectDetailContent({
                 {safeRelatedEffects?.length > 0 && (
                   <section
                     ref={relatedEffectsRef}
-                    className="my-20 relative max-md:pt-[5vh] space-y-10 max-[1025px]:space-y-16"
+                    className="my-20 relative space-y-10 max-[1025px]:space-y-16"
                   >
                     <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
                       <HeadAnim>
@@ -681,10 +681,10 @@ export function EffectDetailContent({
                             onClick={() => scrollRelatedEffects("previous")}
                             disabled={!canScrollPrev}
                             aria-label="Show previous related effects"
-                            className={`group relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#161616] text-white transition-colors duration-300 ${!canScrollPrev ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-[#ff5f00]"}`}
+                            className={`group relative flex size-10 items-center justify-center overflow-hidden  bg-[#161616] text-white transition-colors duration-300 ${!canScrollPrev ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-[#ff5f00]"}`}
                           >
-                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135  ${!canScrollPrev?"":"group-hover:translate-x-[-180%] duration-300 ease-in-out"}`}/>
-                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 -rotate-135 absolute translate-x-[180%]  ${!canScrollPrev?"":"group-hover:translate-x-0 duration-300 ease-in-out"}`} />
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:size-4 -rotate-135  ${!canScrollPrev?"":"group-hover:translate-x-[-180%] duration-300 ease-in-out"}`}/>
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:size-4 -rotate-135 absolute translate-x-[180%]  ${!canScrollPrev?"":"group-hover:translate-x-0 duration-300 ease-in-out"}`} />
 
                           </button>
 
@@ -693,10 +693,10 @@ export function EffectDetailContent({
                             onClick={() => scrollRelatedEffects("next")}
                             disabled={!canScrollNext}
                             aria-label="Show next related effects"
-                            className={`group relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#161616] text-white transition-colors duration-300 ${!canScrollNext ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-[#ff5f00]"}`}
+                            className={`group relative flex size-10 items-center justify-center overflow-hidden  bg-[#161616] text-white transition-colors duration-300 ${!canScrollNext ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:bg-[#ff5f00]"}`}
                           >
-                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45  ${!canScrollNext?"":"group-hover:translate-x-[180%] duration-300 ease-in-out"}`} />
-                            <ArrowIcon className={`h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 rotate-45 absolute translate-x-[-180%]  ${!canScrollNext?"":"group-hover:translate-x-0 duration-300 ease-in-out"}`} />
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:size-4 rotate-45  ${!canScrollNext?"":"group-hover:translate-x-[180%] duration-300 ease-in-out"}`} />
+                            <ArrowIcon className={`h-4.5 w-4.5 max-md:size-4 rotate-45 absolute translate-x-[-180%]  ${!canScrollNext?"":"group-hover:translate-x-0 duration-300 ease-in-out"}`} />
                           </button>
                         </div>
                       )}
@@ -790,7 +790,7 @@ function EffectCtaSection({ cta, sectionRef }) {
   return (
     <section
       ref={sectionRef}
-      className="fadeup w-full bg-[#272727]  my-[5vw] mx-auto"
+      className="fadeup w-full bg-[#272727]  my-[5vw] max-md:mt-[20vw] mx-auto"
     >
       <div className="mx-auto w-full flex flex-col items-start max-w-6xl px-10 max-[1025px]:px-6 max-md:px-[6vw] py-15">
         {cta.heading && (
@@ -813,10 +813,10 @@ function EffectCtaSection({ cta, sectionRef }) {
                 preventDefault={false}
                 text={cta.buttonText}
                 href={buttonLink}
-                scaleClass="group-hover:scale-[100]!"
+                scaleClass="group-hover:scale-[100]! "
                 target="_blank"
                 variant="white"
-                className="shrink-0 w-fit max-md:px-5! bg-white max-md:py-3! max-md:gap-4! max-md:text-lg!"
+                className=" shrink-0 w-fit max-md:w-[90%] max-md:pl-[5vw]! max-md:pr-[12vw]! bg-white"
               />
             )}
           </CustomAnimationFormTrigger>
@@ -985,7 +985,7 @@ function EffectPropsTable({ props = [] }) {
     <div className="space-y-3 fadeup">
       <h3 className="text-xl tracking-tighter text-foreground">Props</h3>
 
-      <div className={styles.tableWrap} data-variant="vault">
+      <div className={`${styles.tableWrap} ${styles.propsTableWrap}`} data-variant="vault">
         <table className={styles.table}>
           <thead>
             <tr>
@@ -1123,25 +1123,25 @@ function SanityBodyBlock({ block, isLocked = false }) {
                 <FAQWrapper
                   key={itemId}
                   itemId={itemId}
-                  className={`group border-grey px-[2.5vw] py-[2vw] max-md:px-[4vw] max-md:py-[4vw] max-sm:px-[6vw] max-sm:py-[6vw] ${index > 0 ? "border-t" : ""
+                  className={`group border-grey px-[2.5vw] py-[2vw] max-[1025px]:px-[4vw] max-[1025px]:py-[4vw] max-md:px-[6vw] max-md:py-[6vw] ${index > 0 ? "border-t" : ""
                     }`}
-                  iconClassName="mt-[0.55vw] max-md:mt-[1vw] max-sm:mt-[1.5vw] text-light-grey transition-colors duration-500 ease-out group-hover:text-white"
+                  iconClassName="mt-[0.55vw] max-md:mt-[1vw] max-md:mt-[1.5vw] text-light-grey transition-colors duration-500 ease-out group-hover:text-white"
                   iconSize={18}
                   iconStrokeWidth={1.5}
                   duration={0.6}
                 >
                   <FAQTitle
-                    className="pb-0 items-start! justify-start! gap-[1.5vw]! max-md:gap-[3vw]! max-sm:gap-[4vw]!"
+                    className="pb-0 items-start! justify-start! gap-[1.5vw]! max-[1025px]:gap-[3vw]! max-md:gap-[4vw]!"
                     iconPosition="left"
                     iconMode="rotate-left-down"
                   >
-                    <h3 className="text-[1.55vw]! font-neue-haas leading-tight! my-0! max-md:text-[3.4vw]! max-sm:text-[5.2vw]!">
+                    <h3 className="text-[1.55vw]! font-neue-haas leading-tight! my-0! max-[1025px]:text-[3.4vw]! max-md:text-[5.2vw]!">
                       {item.question}
                     </h3>
                   </FAQTitle>
 
-                  <FAQContent className="pt-[1.2vw] pl-[2.8vw] max-md:pt-[2.5vw] max-md:pl-[7vw] max-sm:pt-[4vw] max-sm:pl-[8vw]">
-                    <p className="text-[1.15vw]! font-neue-haas text-white! leading-[1.45]! max-md:text-[2.2vw]! max-sm:text-[4vw]!">
+                  <FAQContent className="pt-[1.2vw] pl-[2.8vw] max-[1025px]:pt-[2.5vw] max-[1025px]:pl-[7vw] max-md:pt-[4vw] max-md:pl-[8vw]">
+                    <p className="text-[1.15vw]! font-neue-haas text-white! leading-[1.45]! max-[1025px]:text-[2.2vw]! max-md:text-[4vw]!">
                       {item.answer}
                     </p>
                   </FAQContent>
@@ -1300,7 +1300,7 @@ function LockedCodePlaceholder({ filename }) {
         <LockKeyhole className="h-16 w-16 text-white" strokeWidth={1.2} />
 
         <div className="flex flex-col items-center gap-0">
-          <h3 className="text-3xl font-bold text-white max-md:text-2xl max-sm:text-xl">
+          <h3 className="text-3xl font-bold text-white max-md:text-2xl max-md:text-xl">
             This is a Pro Effect.
           </h3>
 

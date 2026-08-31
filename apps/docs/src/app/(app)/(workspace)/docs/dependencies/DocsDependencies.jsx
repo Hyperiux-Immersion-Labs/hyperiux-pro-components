@@ -214,7 +214,7 @@ export default function DocsDependencies() {
         If an effect touches the browser directly, it usually needs a client boundary.
       </Para>
 
-      <CodeBlock code={useClientCode} language="tsx" />
+      <CodeBlock code={useClientCode} language="tsx" showLanguageToggle={false} />
 
       <Para>Servers are many things.</Para>
 
@@ -457,7 +457,7 @@ export default function DocsDependencies() {
 
       <Para>Prefer direct imports.</Para>
 
-      <CodeBlock code={directImportCode} language="tsx" />
+      <CodeBlock code={directImportCode} language="tsx" showLanguageToggle={false} />
 
       <Para>
         Avoid importing a full local index of effects into a shared layout unless you
@@ -490,7 +490,7 @@ export default function DocsDependencies() {
         For Next.js, heavy WebGL components often work best with dynamic imports.
       </Para>
 
-      <CodeBlock code={dynamicImportCode} language="tsx" />
+      <CodeBlock code={dynamicImportCode} language="tsx" showLanguageToggle={false} />
 
       <Para>Use this when server rendering does not make sense.</Para>
 
@@ -515,7 +515,7 @@ export default function DocsDependencies() {
 
       <Para>Example:</Para>
 
-      <CodeBlock code={tailwindConfigCode} language="ts" />
+      <CodeBlock code={tailwindConfigCode} language="ts" showLanguageToggle={false} />
 
       <Para>
         Tailwind v4 projects may handle configuration differently depending on the setup.
@@ -617,7 +617,7 @@ export default function DocsDependencies() {
         For component-level behavior, check reduced motion in JavaScript when needed.
       </Para>
 
-      <CodeBlock code={reducedMotionJsCode} language="ts" />
+      <CodeBlock code={reducedMotionJsCode} language="ts" showLanguageToggle={false} />
 
       <Para>Reduced motion is not the boring version.</Para>
 
@@ -716,7 +716,7 @@ export default function DocsDependencies() {
      
       <Para>Make sure Tailwind scans the Vault directory.</Para>
 
-      <CodeBlock code={tailwindContentPathCode} language="ts" />
+      <CodeBlock code={tailwindContentPathCode} language="ts" showLanguageToggle={false} />
 
       <Para>
         For Tailwind v4, check your CSS or project configuration entry point instead of

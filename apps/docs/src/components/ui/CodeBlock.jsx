@@ -169,6 +169,7 @@ export function CodeBlock({
     onBeforeCopy,
     lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
     lockedCtaHref = null,
+    showLanguageToggle = true,
 }) {
     const [copied, setCopied] = useState(false);
 
@@ -222,7 +223,9 @@ export function CodeBlock({
                     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
                         <span className="text-lg text-white max-md:text-sm">{displayFilename || ""}</span>
                         <div className="flex items-center gap-2">
-                            {isJsVariant && <LanguageDropdown value={variant} onChange={setVariant} />}
+                            {isJsVariant && showLanguageToggle && (
+                                <LanguageDropdown value={variant} onChange={setVariant} />
+                            )}
                             <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
                                 <CopyBtn
                                     value={displayCode}

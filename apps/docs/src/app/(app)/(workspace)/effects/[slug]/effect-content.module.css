@@ -458,6 +458,43 @@
   --table-cell-color: rgba(255, 255, 255, 0.76);
 }
 
+/* EffectPropsTable only (see the extra class alongside styles.tableWrap on
+   its wrapper) - the shared .table's min-width is min(38rem, 100%), which
+   on mobile evaluates to 100% (38rem is wider than the viewport), so it
+   never actually needed to scroll - columns just got squeezed narrow
+   instead. Below md, force it wider than any phone viewport so it scrolls
+   horizontally with legible columns instead of wrapping every cell.
+   The wrapper's right edge also bleeds out past the page's own
+   max-md:px-[7vw] gutter (negative right margin only - the left edge stays
+   where it already lines up with the rest of the page) and fades out
+   toward that trailing edge with a mask, instead of hard-clipping there.
+   Previously the overflow was invisible at rest - a fully-opaque clip
+   flush with the padded edge looks like the table just ends, giving no
+   hint it scrolls. Letting the next column visibly peek out and fade
+   toward the true screen edge reads as "this continues off-screen." */
+@media (max-width: 767px) {
+  .propsTableWrap {
+    margin-right: -7vw;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 12vw), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 12vw), transparent 100%);
+  }
+
+  /* 4 columns x 12.5rem each = 50rem - also the table's own floor, so
+     table-layout:fixed has room to actually give each column that much
+     rather than squeezing back to an even split of a narrower table.
+     max() with the viewport term keeps it at least 100vw+6vw too, so the
+     bleed/fade above still has genuine overflow to work with even on
+     wider phones where 50rem alone might not clear the viewport by much. */
+  .propsTableWrap .table {
+    min-width: max(50rem, calc(100vw + 6vw));
+  }
+
+  .propsTableWrap .table th,
+  .propsTableWrap .table td {
+    min-width: 12.5rem;
+  }
+}
+
 .numberList {
   padding-left: 1.25rem;
 }

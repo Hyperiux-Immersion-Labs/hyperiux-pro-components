@@ -86,19 +86,22 @@ export default async function PricingPage() {
           />
           <DitherTransition
             mobileEndTriggers={"bottom -50%"}
-            className="h-[46vw] max-md:h-[150vw]! bg-background "
+            className="h-[46vw]  max-[1025px]:h-[150vw]! bg-background "
           />
+          <div className="max-[1025px]:mt-[-50vw] max-md:mt-0">
           <PricingV3 isIndia={isIndia} auth />
+
+          </div>
           <DitherTransition
             dotColor="#050505"
             accentColor="#eaeaea"
-            className="h-[50vw] mt-[-5vw] max-md:h-[150vw]! bg-foreground"
+            className="h-[50vw] mt-[-5vw] max-[1025px]:h-[150vw]! bg-foreground"
           />
-          <div className="mt-[-25vw]">
+          <div className="mt-[-40vw]">
             <PricingCompareTable />
           </div>
           <UseCases useCases={USE_CASES} />
-          <div className="max-md:mt-[-55vw]! ">
+          <div className="max-md:mt-[-30vw]! max-[] ">
             <FAQV3 faqItems={faqItems} translateTop={false} />
           </div>
           {/* <CTA2 /> */}
