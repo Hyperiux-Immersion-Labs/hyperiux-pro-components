@@ -2,7 +2,17 @@
 
 "use client";
 
-import { useEffect, useRef, useState, useCallback, type ComponentPropsWithoutRef, type ComponentType, type MouseEvent, type MouseEventHandler, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  type ComponentPropsWithoutRef,
+  type ComponentType,
+  type MouseEvent,
+  type MouseEventHandler,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -21,16 +31,22 @@ export interface CharStaggerButtonOwnProps {
   children?: ReactNode;
   staggerStep?: number;
   showLine?: boolean;
+  /** Run the underline under the arrow too, not just the text. */
+  lineSpansArrow?: boolean;
   lineClassName?: string;
   hoverColor?: string;
   showArrow?: boolean;
   icon?: ComponentType<{ className?: string }>;
-  iconVariant?: 'stacked' | 'single';
+  iconVariant?: "stacked" | "single";
   iconClassName?: string;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-export type CharStaggerButtonProps = CharStaggerButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, 'href' | 'onClick' | keyof CharStaggerButtonOwnProps>;
+export type CharStaggerButtonProps = CharStaggerButtonOwnProps &
+  Omit<
+    ComponentPropsWithoutRef<typeof Link>,
+    "href" | "onClick" | keyof CharStaggerButtonOwnProps
+  >;
 
 export default function CharStaggerButton({
   text = DEFAULT_TEXT,
@@ -41,6 +57,7 @@ export default function CharStaggerButton({
   children,
   staggerStep = DEFAULT_STAGGER_STEP,
   showLine = true,
+  lineSpansArrow = false,
   lineClassName = "",
   hoverColor = DEFAULT_HOVER_COLOR,
   showArrow = false,
@@ -65,7 +82,10 @@ export default function CharStaggerButton({
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
     const syncReducedMotion = (event: MediaQueryList | MediaQueryListEvent) => {
-      const matches = "matches" in event ? event.matches : ((event as any).currentTarget as MediaQueryList).matches;
+      const matches =
+        "matches" in event
+          ? event.matches
+          : ((event as any).currentTarget as MediaQueryList).matches;
       setPrefersReducedMotion(matches);
     };
 
@@ -112,7 +132,9 @@ export default function CharStaggerButton({
         ? "none"
         : "transform 0.6s cubic-bezier(0.625, 0.05, 0, 1)";
       span.style.willChange = "transform";
-      span.style.transitionDelay = prefersReducedMotion ? "0s" : `${index * staggerStep}s`;
+      span.style.transitionDelay = prefersReducedMotion
+        ? "0s"
+        : `${index * staggerStep}s`;
       if (char === " ") span.style.whiteSpace = "pre";
       textElement.appendChild(span);
     });
@@ -123,9 +145,10 @@ export default function CharStaggerButton({
     if (!textElement) return;
     Array.from(textElement.children).forEach((span) => {
       const spanEl = span as HTMLElement;
-      spanEl.style.transform = isActive && !prefersReducedMotion
-        ? `translateY(-${CHAR_TRANSLATE_Y}) rotate(0.001deg)`
-        : "translateY(0em) rotate(0.001deg)";
+      spanEl.style.transform =
+        isActive && !prefersReducedMotion
+          ? `translateY(-${CHAR_TRANSLATE_Y}) rotate(0.001deg)`
+          : "translateY(0em) rotate(0.001deg)";
     });
   }, [isActive, prefersReducedMotion]);
 
@@ -156,6 +179,24 @@ export default function CharStaggerButton({
     color: isActive ? hoverColor : props.style?.color,
   };
 
+  // One element, positioned against either the text span or the whole link -
+  // see `lineSpansArrow`. Kept in a variable so both placements stay identical.
+  const lineElement = (
+    <span
+      ref={lineRef}
+      aria-hidden="true"
+      className="absolute left-0 bottom-[15%] w-full bg-current"
+      style={{
+        height: "1.5px",
+        transform: `scaleX(${isActive && !prefersReducedMotion ? 1 : 0})`,
+        transformOrigin: "left center",
+        transition: prefersReducedMotion
+          ? "none"
+          : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
+      }}
+    />
+  );
+
   // Render
   return (
     <Link
@@ -168,34 +209,36 @@ export default function CharStaggerButton({
       onTouchStart={onTouchStart}
       onMouseDown={onMouseDown}
       style={mergedStyle}
-      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none ${className}`.trim()}
+      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none ${
+        showLine && lineSpansArrow ? "relative" : ""
+      } ${className}`.trim()}
     >
       <div className="mt-[0.3vw]">
-        <span className={["inline-block relative", showLine && "w-fit", lineClassName].filter(Boolean).join(" ")}>
-          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-[1025px]:text-[3vw]  ${textClassName}`.trim()}>
+        <span
+          className={[
+            "inline-block relative",
+            showLine && "w-fit",
+            lineClassName,
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <span
+            ref={textRef}
+            data-text={sourceText}
+            className={`overflow-hidden relative inline-block leading-[1.2] max-[1025px]:text-[3vw]  ${textClassName}`.trim()}
+          >
             {sourceText}
           </span>
 
-          {showLine && (
-            <span
-              ref={lineRef}
-              aria-hidden="true"
-              className="absolute left-0 bottom-[15%] w-full bg-current"
-              style={{
-                height: "1.5px",
-                transform: `scaleX(${isActive && !prefersReducedMotion ? 1 : 0})`,
-                transformOrigin: "left center",
-                transition: prefersReducedMotion
-                  ? "none"
-                  : "transform 0.5s cubic-bezier(0.625, 0.05, 0, 1)",
-              }}
-            />
-          )}
+          {showLine && !lineSpansArrow && lineElement}
         </span>
       </div>
 
       {showArrow && Icon && (
-        <div className={`flex size-[1.18em] items-center justify-start overflow-hidden ${iconClassName}`.trim()}>
+        <div
+          className={`flex size-[1.18em] items-center justify-start overflow-hidden ${iconClassName}`.trim()}
+        >
           {iconVariant === "single" ? (
             <Icon className="size-[1.18em] shrink-0 motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none" />
           ) : (
@@ -218,6 +261,8 @@ export default function CharStaggerButton({
           )}
         </div>
       )}
+
+      {showLine && lineSpansArrow && lineElement}
     </Link>
   );
 }

@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import aboutPhone1 from "../assets/about01.png";
 import aboutPhone2 from "../assets/about02.png";
 import aboutPhone3 from "../assets/about03.png";
+import aboutLine from "../assets/about-line.svg";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { ParaAnim } from "./Animations/gsapAnim";
@@ -24,6 +25,7 @@ const About = () => {
   const midRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLImageElement>(null);
 
   useGSAP(() => {
     const cluster = clusterRef.current;
@@ -32,7 +34,7 @@ const About = () => {
 
     
     if (prefersReducedMotion()) {
-      gsap.set(phones, { opacity: 1 });
+      gsap.set([...phones, lineRef.current], { opacity: 1 });
       return;
     }
 
@@ -53,6 +55,23 @@ const About = () => {
       // Array order (centre, right, left) drives the sequence, not DOM order.
       stagger: 0.6,
     });
+
+    // The connector reads as joining phones that are already there, so it waits
+    // out the stagger above (3 phones x 0.6s apart, 1s each) before fading in.
+    if (lineRef.current) {
+      gsap.to(lineRef.current, {
+        scrollTrigger: {
+          trigger: cluster,
+          start: "top 65%",
+          once: true,
+          // markers:true,
+        },
+        opacity: 1,
+        duration: 0.8,
+       
+        ease: "power2.out",
+      });
+    }
   }, []);
 
   return (
@@ -66,7 +85,7 @@ const About = () => {
 
         <ParaAnim
           as="p"
-          className="text-24 w-[34vw] leading-[1.6] text-black/80 max-[1025px]:text-[2.6vw] max-[1025px]:text-left max-md:text-[4vw] lg:text-right"
+          className="text-24 w-[35vw] leading-[1.6] tracking-wide text-black/80 max-[1025px]:text-[2.6vw] max-[1025px]:text-left max-md:text-[4vw] lg:text-right"
         >
           Kyntra Gives Every Home A Memory Keeping Repairs, Warranties,
           Maintenance And Service History Connected, So Each Future Decision
@@ -80,9 +99,22 @@ const About = () => {
         ref={clusterRef}
         className="relative mx-auto mt-[6vw] flex max-w-400 items-start justify-center gap-[3vw] max-md:mt-[12vw]"
       >
+        {/* Dashed connector running behind the phones. The artwork is drawn
+            wider than its viewBox on both sides so the line bleeds past the
+            cluster; `w-screen` + the centring translate keep that bleed
+            symmetrical instead of clipping it at the max-w-400 edge. */}
+        <Image
+          ref={lineRef}
+          src={aboutLine}
+          alt=""
+          aria-hidden
+          priority
+          className="pointer-events-none absolute top-1/2 left-1/2 w-screen max-w-none -translate-x-1/2 -translate-y-1/2 opacity-0 select-none"
+        />
+
         <div
           ref={leftRef}
-          className="w-[22vw] opacity-0 max-[1025px]:w-[28vw] max-md:w-[31vw]"
+          className="relative w-[22vw] opacity-0 max-[1025px]:w-[28vw] max-md:w-[31vw]"
         >
           <Image
             src={aboutPhone1}
@@ -105,7 +137,7 @@ const About = () => {
 
         <div
           ref={rightRef}
-          className="w-[22vw] opacity-0 max-[1025px]:w-[28vw] max-md:w-[31vw]"
+          className="relative w-[22vw] opacity-0 max-[1025px]:w-[28vw] max-md:w-[31vw]"
         >
           <Image
             src={aboutPhone3}

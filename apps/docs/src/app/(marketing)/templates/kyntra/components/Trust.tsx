@@ -6,6 +6,7 @@ import trustOutside from "../assets/trust-outside.png";
 import trustInside from "../assets/trust-inside.png";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
+import { FadeUp } from "./Animations/gsapAnim";
 const STATS = [
   { value: "4.9/5", label: "Average Rating" },
   { value: "25K+", label: "Services Completed" },
@@ -16,7 +17,7 @@ const STATS = [
 const Trust = () => {
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black text-white">
-      {/* Full-bleed background image (blurred) */}
+  
       <Image
         src={trustOutside}
         alt=""
@@ -26,8 +27,8 @@ const Trust = () => {
       />
 
       {/* Inset glass card */}
-      <div className="relative z-10 flex h-full w-full items-center justify-center px-[10vw] max-md:p-[6vw]">
-        <div className="relative h-full max-h-[76vh] w-full max-w-360 overflow-hidden rounded-[1.6vw] border border-white/20 max-md:rounded-[5vw]">
+      <div className="relative z-10 flex h-full w-full pb-2 items-center justify-center px-[10vw] max-md:p-[6vw]">
+        <div className="relative h-full  max-h-[76vh] w-full max-w-360 overflow-hidden rounded-[1.6vw]  max-md:rounded-[5vw]">
           {/* Card background image - parallax on scroll scrub */}
           <ParallaxImageAnimation
             src={trustInside.src}
@@ -50,7 +51,7 @@ const Trust = () => {
             </FocusTextWrap>
 
             <div className="grid grid-cols-4 gap-[3vw] max-md:grid-cols-2 max-md:gap-x-[6vw] max-md:gap-y-[8vw]">
-              {STATS.map((stat) => (
+              {STATS.map((stat, index) => (
                 <div key={stat.label} className="flex flex-col">
                   <div className="flex h-[3.2vw] items-end leading-none **:leading-none max-[1025px]:h-[5vw] max-md:h-[9vw]">
                     <NumberCounterThree
@@ -61,9 +62,13 @@ const Trust = () => {
                     />
                   </div>
                   <div className="mt-[1.2vw] h-px w-full bg-white/50 max-md:mt-[3vw]" />
-                  <span className="mt-[0.9vw] text-22 text-white/85 max-[1025px]:text-[1.6vw] max-md:mt-[2.5vw] max-md:text-[3.2vw]">
+                  <FadeUp
+                    as="span"
+                    delay={index * 0.1}
+                    className="mt-[0.9vw] text-22 tracking-wide text-white/85 max-[1025px]:text-[1.6vw] max-md:mt-[2.5vw] max-md:text-[3.2vw]"
+                  >
                     {stat.label}
-                  </span>
+                  </FadeUp>
                 </div>
               ))}
             </div>

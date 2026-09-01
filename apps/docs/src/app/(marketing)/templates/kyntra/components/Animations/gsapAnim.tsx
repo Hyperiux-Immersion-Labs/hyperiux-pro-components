@@ -23,6 +23,13 @@ type FadeUpProps<T extends ElementType> = {
   className?: string;
   /** Seconds to hold before starting, for staggering siblings by hand. */
   delay?: number;
+  /**
+   * CSS selector for the element whose visibility should start the animation,
+   * instead of this one. For content inside a `position: fixed` block, which
+   * never leaves the viewport and so would otherwise animate at page load -
+   * point this at the scrolling container that reveals it.
+   */
+  watch?: string;
 } & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
 
 /**
@@ -30,12 +37,14 @@ type FadeUpProps<T extends ElementType> = {
  * Wrap any block that should animate in:
  *
  *   <FadeUp as="h2" className="..." delay={0.1}>Heading</FadeUp>
+ *   <FadeUp watch="#footer">Inside a fixed block…</FadeUp>
  */
 export function FadeUp<T extends ElementType = "div">({
   as,
   children,
   className = "",
   delay = 0,
+  watch,
   ...props
 }: FadeUpProps<T>) {
   const Tag = (as ?? "div") as any;
@@ -57,6 +66,11 @@ export function FadeUp<T extends ElementType = "div">({
     // the tween animates back from.
     gsap.set(el, { y: 24 });
 
+    // Watching a different element than the one that moves: a fixed-position
+    // element reports as on-screen from the first frame, so its own box is
+    // useless as a cue. Falls back to itself when the selector matches nothing.
+    const target = (watch && document.querySelector(watch)) || el;
+
     // An observer rather than a ScrollTrigger: this fires once, needs no
     // refresh bookkeeping, and disconnects itself the moment it has run.
     const observer = new IntersectionObserver(
@@ -73,7 +87,7 @@ export function FadeUp<T extends ElementType = "div">({
       },
       { rootMargin: "0px 0px -15% 0px" },
     );
-    observer.observe(el);
+    observer.observe(target);
 
     return () => observer.disconnect();
   }, []);
@@ -205,5 +219,71 @@ export function ParaAnim<T extends ElementType = "div">({
     <Tag ref={ref} className={`opacity-0 ${className}`.trim()} {...props}>
       {children}
     </Tag>
+  );
+}
+
+/**
+ * Draws every `[data-line-draw]` element on the page out from its left edge as
+ * it scrolls into view - for hairline rules and dividers.
+ *
+ * Call it once from a client component that renders the lines:
+ *
+ *   lineDraw();
+ *   ...
+ *   <span data-line-draw className="h-px w-full bg-black/15" />
+ *
+ * Under reduced motion the line fades in at full width instead of scaling.
+ */
+export function lineDraw() {
+  /* eslint-disable-next-line react-hooks/rules-of-hooks */
+  useGSAP(
+    () => {
+      const elements =
+        document.querySelectorAll<HTMLElement>("[data-line-draw]");
+      const reducedMotion = prefersReducedMotion();
+
+      elements.forEach((element) => {
+        // The trigger is the line's own container, not the 1px line itself: a
+        // hairline is too short for `top 75%` to ever resolve sensibly, and an
+        // absolutely-positioned one (a card's bottom rule) reports a box that
+        // moves with whatever transform its ancestors carry.
+        const trigger = element.parentElement ?? element;
+
+        if (reducedMotion) {
+          gsap.from(element, {
+            scrollTrigger: { 
+              trigger, 
+              start: "top 65%",
+              // markers:true,
+             },
+            opacity: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            
+          });
+          return;
+        }
+
+        gsap.fromTo(
+          element,
+          { scaleX: 0 },
+          {
+            scrollTrigger: { 
+              trigger, 
+              start: "top 65%",
+              // markers:true,
+             },
+            scaleX: 1,
+            transformOrigin: "left",
+            duration: 0.8,
+            ease: "power2.out",
+          },
+        );
+      });
+    },
+    // Empty deps: without it this re-runs on every render of the host
+    // component, stacking a fresh trigger and re-zeroing lines that had
+    // already drawn (the FAQ re-renders on every open/close).
+    { dependencies: [] },
   );
 }

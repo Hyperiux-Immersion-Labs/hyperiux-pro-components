@@ -88,7 +88,7 @@ const Header: React.FC = () => {
           </div>
         </Link>
 
-        <nav className="flex items-center gap-[2.6vw] max-[1025px]:hidden">
+        <nav className="flex items-center gap-[3vw] max-[1025px]:hidden">
           {navLinks.map((link) => (
             <CharStaggerButton
               key={link.label}
@@ -97,7 +97,7 @@ const Header: React.FC = () => {
               onClick={(event) => handleNavScroll(event, link.target)}
               hoverColor="#ffffff"
               className="text-white"
-              textClassName="font-aeonik-pro text-[1vw] tracking-tight"
+              textClassName="font-aeonik-pro text-22 "
             />
           ))}
         </nav>
@@ -110,7 +110,7 @@ const Header: React.FC = () => {
             hoverColor="#000000"
             showArrow
             className="rounded-full bg-white px-[1.8vw] py-[0.7vw] text-black"
-            textClassName="font-aeonik-pro text-[1vw] tracking-tight"
+            textClassName="font-aeonik-pro text-22 tracking-tight"
             iconClassName="text-black"
           />
         </div>

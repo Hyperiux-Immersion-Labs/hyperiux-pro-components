@@ -6,10 +6,18 @@ import Link from "next/link";
 import { FooterParallax } from "./ParallaxFooter";
 import CharStaggerButton from "../char-stagger-button";
 import { GooglePlay } from "../../Buttons/icons";
+import { FadeUp } from "../../Animations/gsapAnim";
 import kyntraLogo from "../../../assets/kyntra-logo.png";
-import footerImg from "../../../assets/footer-img.png";
+import footerImg from "../../../assets/footer.png";
 
 const KYNTRA_PRIMARY = "#134BD6";
+
+// The footer itself is `position: fixed`, so it is always "in view" and cannot
+// cue its own reveal. Its outer wrapper scrolls normally - watch that instead.
+const FOOTER_TRIGGER = "#footer";
+
+
+const FOOTER_DELAY = 0.5;
 
 const serviceLinks = [
   "Plumbing",
@@ -37,34 +45,53 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
       footerClassName="text-white"
       footerStyle={{ backgroundColor: footerBgColor }}
     >
-      <div className="relative flex h-[80vh] w-full flex-col justify-between px-[5%] pt-[6vw] pb-[2.5vw] max-md:h-auto max-md:pt-[16vw] max-md:pb-[8vw]">
-        {/* Phone mockup - absolutely centered, anchored to bottom, bleeds off edge */}
+      <div className="relative flex h-[80vh] w-full flex-col justify-between px-[5%] pt-[6vw] pb-[2vw] max-md:h-auto max-md:pt-[16vw] max-md:pb-[8vw]">
+       
         <div className="pointer-events-none absolute bottom-0 left-1/2 w-[22vw] -translate-x-1/2 max-[1025px]:static max-[1025px]:left-auto max-[1025px]:my-[10vw] max-[1025px]:w-[45vw] max-[1025px]:translate-x-0 max-[1025px]:self-center max-md:w-[62vw]">
-          <Image
-            src={footerImg}
-            alt="Kyntra app"
-            className="h-auto w-full object-contain"
-          />
+          <FadeUp watch={FOOTER_TRIGGER} delay={FOOTER_DELAY + 0.15}>
+            <Image
+              src={footerImg}
+              height={900}
+              width={900}
+              alt="Kyntra app"
+              className="h-auto w-full object-contain"
+            />
+          </FadeUp>
         </div>
 
         {/* Top: brand + link columns */}
         <div className="relative flex justify-between gap-[4vw] max-[1025px]:flex-col max-[1025px]:gap-[10vw]">
           {/* Brand column */}
           <div className="flex w-[28vw] flex-col max-[1025px]:w-full">
-            <div className="w-[14vw] max-[1025px]:w-[42vw] max-md:w-[50vw]">
+            <FadeUp
+              watch={FOOTER_TRIGGER}
+              delay={FOOTER_DELAY}
+              className="w-[20vw] max-[1025px]:w-[42vw] max-md:w-[50vw]"
+            >
               <Image
                 src={kyntraLogo}
+                width={900}
+                height={900}
                 alt="Kyntra"
                 className="h-auto w-full object-contain brightness-0 invert"
               />
-            </div>
+            </FadeUp>
 
-            <p className="text-24 mt-[2vw] w-[24vw] leading-normal text-white/90 max-[1025px]:mt-[4vw] max-[1025px]:w-[60vw] max-[1025px]:text-[2.8vw] max-md:w-full max-md:text-[4vw]">
+            <FadeUp
+              as="p"
+              watch={FOOTER_TRIGGER}
+              delay={FOOTER_DELAY + 0.08}
+              className="text-24 mt-[2vw] w-[24vw] leading-normal text-white/90 max-[1025px]:mt-[4vw] max-[1025px]:w-[60vw] max-[1025px]:text-[2.8vw] max-md:w-full max-md:text-[4vw]"
+            >
               Home intelligence, maintenance and trusted services managed from
               one app.
-            </p>
+            </FadeUp>
 
-            <div className="mt-[2.5vw] flex gap-[1.2vw] max-[1025px]:mt-[6vw] max-[1025px]:gap-[3vw]">
+            <FadeUp
+              watch={FOOTER_TRIGGER}
+              delay={FOOTER_DELAY + 0.16}
+              className="mt-[2.5vw] flex gap-[1.2vw] max-[1025px]:mt-[6vw] max-[1025px]:gap-[3vw]"
+            >
               <StoreButton
                 href="#"
                 topLine="Download on the"
@@ -81,7 +108,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
                   <GooglePlay className="h-[2vw] w-[2vw] max-[1025px]:h-[5vw] max-[1025px]:w-[5vw] max-md:h-[7vw] max-md:w-[7vw]" />
                 }
               />
-            </div>
+            </FadeUp>
           </div>
 
           {/* Link columns */}
@@ -93,26 +120,34 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
 
         {/* Bottom bar */}
         <div className="relative flex items-end justify-between">
-          <p className="text-[1vw] text-white/90 max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
+          <FadeUp
+            as="p"
+            watch={FOOTER_TRIGGER}
+            delay={FOOTER_DELAY + 0.3}
+            className="text-22 text-white/90 max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]"
+          >
             &copy; 2026 KYNTRA. All Rights Reserved.
-          </p>
+          </FadeUp>
 
-          <CharStaggerButton
-            text="Back To Top"
-            href="#"
-            showLine
-            showArrow
-            icon={ArrowUp}
-            iconVariant="single"
-            hoverColor="rgba(255,255,255,0.7)"
-            onClick={(event) => {
-              event.preventDefault();
-              scrollToTop();
-            }}
-            className="text-white"
-            textClassName="font-aeonik-pro text-[1vw] tracking-tight max-[1025px]:text-[2.6vw] max-md:text-[3.6vw]"
-            iconClassName="text-white"
-          />
+          <FadeUp watch={FOOTER_TRIGGER} delay={FOOTER_DELAY + 0.36}>
+            <CharStaggerButton
+              text="Back To Top"
+              href="#"
+              showLine
+              lineSpansArrow
+              showArrow
+              icon={ArrowUp}
+              iconVariant="single"
+              hoverColor="white"
+              onClick={(event) => {
+                event.preventDefault();
+                scrollToTop();
+              }}
+              className="text-white"
+              textClassName="font-aeonik-pro text-22 tracking-tight max-[1025px]:text-[2.6vw] max-md:text-[3.6vw]"
+              iconClassName="text-white"
+            />
+          </FadeUp>
         </div>
       </div>
     </FooterParallax>
@@ -127,20 +162,30 @@ const FooterLinkColumn = ({
   links: string[];
 }) => (
   <div className="flex flex-col">
-    <span className="text-[1.05vw] tracking-wide text-white max-[1025px]:text-[2.8vw] max-md:text-[4vw]">
+    <FadeUp
+      as="span"
+      watch={FOOTER_TRIGGER}
+      delay={FOOTER_DELAY}
+      className="text-22 tracking-wide text-white max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
+    >
       {title.toUpperCase()}
-    </span>
+    </FadeUp>
 
     <div className="mt-[1.4vw] flex flex-col gap-[0.9vw] max-[1025px]:mt-[4vw] max-[1025px]:gap-[2.5vw]">
-      {links.map((label) => (
-        <CharStaggerButton
+      {links.map((label, index) => (
+        <FadeUp
           key={label}
-          text={label}
-          href="#"
-          hoverColor="rgba(255,255,255,0.7)"
-          className="text-white/90"
-          textClassName="font-aeonik-pro text-[1.05vw] tracking-tight max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
-        />
+          watch={FOOTER_TRIGGER}
+          delay={FOOTER_DELAY + 0.08 + index * 0.06}
+        >
+          <CharStaggerButton
+            text={label}
+            href="#"
+            hoverColor="white"
+            className="text-white"
+            textClassName="font-aeonik-pro text-22 tracking-tight max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
+          />
+        </FadeUp>
       ))}
     </div>
   </div>
@@ -163,10 +208,10 @@ const StoreButton = ({
   >
     {icon}
     <span className="flex flex-col text-left leading-none">
-      <span className="text-[0.7vw] max-[1025px]:text-[1.8vw] max-md:text-[2.6vw]">
+      <span className="text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[2.6vw]">
         {topLine}
       </span>
-      <span className="mt-[0.3vw] text-[1.1vw] font-medium max-[1025px]:text-[3vw] max-md:text-[4.4vw]">
+      <span className="mt-[0.3vw] text-28 font-light max-[1025px]:text-[3vw] max-md:text-[4.4vw]">
         {mainLine}
       </span>
     </span>

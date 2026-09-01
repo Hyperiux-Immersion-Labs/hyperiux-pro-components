@@ -51,7 +51,7 @@ const Hero = () => {
 
           <ParaAnim
             as="p"
-            className=" w-[24vw] text-22 leading-[1.6] text-black/80 max-[1025px]:mx-auto max-[1025px]:text-[2.6vw] max-md:max-w-none max-md:text-[4vw]"
+            className=" w-[24vw] text-22 leading-[1.6] tracking-wide text-black/80 max-[1025px]:mx-auto max-[1025px]:text-[2.6vw] max-md:max-w-none max-md:text-[4vw]"
           >
             Kyntra Remembers Your Home, Tracks What Needs Attention, And Gets
             Trusted Help When Something Needs Doing.
@@ -69,10 +69,10 @@ const Hero = () => {
 
             <FadeUp
               delay={0.3}
-              className=" flex items-center gap-[0.5vw] text-[0.95vw] text-black/80 max-[1025px]:justify-center max-[1025px]:gap-[1vw] max-[1025px]:text-[2vw] text-20 max-md:text-[3vw]"
+              className=" flex items-center gap-[0.5vw] text-20 text-black max-[1025px]:justify-center max-[1025px]:gap-[1vw] max-[1025px]:text-[2vw] text-20 max-md:text-[3vw]"
             >
-              <span className="text-[#12D415] font-medium">4.9</span>
-              <Star className="fill-[#12D415] text-[#12D415] w-[1vw] max-[1025px]:w-[2.2vw] max-md:w-[3.4vw]" />
+              <span className="text-[#12D415] font-medium">4.9 ★ </span>
+              {/* <Star className="fill-[#12D415] text-[#12D415] w-[1vw] max-[1025px]:w-[2.2vw] max-md:w-[3.4vw]" /> */}
               <span className="text-20">
                 From <span className="font-medium text-black">8,400+</span>{" "}
                 Households Across The UAE

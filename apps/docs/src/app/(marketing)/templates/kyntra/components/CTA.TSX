@@ -33,7 +33,11 @@ const CTA = () => {
       <FadeUp
         as="p"
         delay={0.15}
-        className="text-24 mt-[2vw] text-black max-[1025px]:text-[2.6vw] max-md:mt-[6vw] max-md:text-[4vw]"
+        // Colour is driven by the same `hovered` state as the section
+        // background, so the copy flips to white as the panel turns blue.
+        className={`text-24 mt-[2vw] transition-colors duration-300 ease-in-out max-[1025px]:text-[2.6vw] max-md:mt-[6vw] max-md:text-[4vw] ${
+          hovered ? "text-white" : "text-black"
+        }`}
       >
         Download Kyntra and create your first home profile.
       </FadeUp>

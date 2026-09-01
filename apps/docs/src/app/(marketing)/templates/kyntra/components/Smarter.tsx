@@ -71,13 +71,33 @@ const SMARTER_CARDS: SmarterCardData[] = [
 
 const CAROUSEL_CARDS = [...SMARTER_CARDS, ...SMARTER_CARDS];
 
+const SLIDER_GUTTER_PCT = 5;
+
 export default function Smarter() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const carouselWrapperRef = useRef<HTMLDivElement | null>(null);
   const sliderRef = useRef<KeyboardSlider | null>(null);
 
+  const stripShiftRef = useRef<HTMLDivElement | null>(null);
+
+  const syncStripShift = () => {
+    const slider = sliderRef.current;
+    const strip = stripShiftRef.current;
+    if (!slider || !strip) return;
+
+    const { wrapperWidth, itemWidth } = slider.viewport;
+    if (!wrapperWidth || !itemWidth) return;
+
+    const gutter = (wrapperWidth * SLIDER_GUTTER_PCT) / 100;
+    const shift = wrapperWidth / 2 - itemWidth / 2 - gutter;
+    strip.style.transform = `translateX(${-shift}px)`;
+  };
+
   const handleReady = (slider: KeyboardSlider) => {
     sliderRef.current = slider;
+    stripShiftRef.current = slider.wrapper as HTMLDivElement;
+
+    requestAnimationFrame(syncStripShift);
   };
 
   useEffect(() => {
@@ -118,6 +138,12 @@ export default function Smarter() {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.addEventListener("resize", syncStripShift);
+    return () => window.removeEventListener("resize", syncStripShift);
+  }, []);
+
   return (
     <section
       id="smarter"
@@ -125,7 +151,7 @@ export default function Smarter() {
       className=" relative z-10 w-full overflow-hidden bg-white"
     >
       {/* Header */}
-      <div className="mx-auto flex max-w-400 flex-col gap-[3vw] px-[5%] py-[5%] max-md:gap-8 max-md:mb-8">
+      <div className="mx-auto flex max-w-400 flex-col gap-[2vw] px-[5%] py-[5%] max-md:gap-8 max-md:mb-8">
         <FocusTextWrap>
           <h2 className="font-helvetica-neue w-[60%] leading-[1.1] font-normal tracking-[-0.02em] whitespace-pre-line text-black max-[1025px]:text-[6vw] max-md:text-[7.5vw]">
             Every Visit Makes Kyntra Smarter About your Home
@@ -136,7 +162,7 @@ export default function Smarter() {
         <div className="flex items-center justify-between gap-[4vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-6">
           <ParaAnim
             as="p"
-            className="text-24 max-w-[40vw] leading-normal text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
+            className="text-24 max-w-[40vw] leading-normal  text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
           >
             Kyntra Keeps Your Appliances, Repairs, Warranties And Maintenance
             History Together So Every Future Job Starts With Context.
@@ -154,7 +180,7 @@ export default function Smarter() {
       {/* Infinite carousel */}
       <div
         ref={carouselWrapperRef}
-        className="relative w-full overflow-hidden py-6"
+        className="relative w-full overflow-hidden pb-14"
       >
         <SmoothInfiniteCarousel
           config={{
@@ -164,7 +190,7 @@ export default function Smarter() {
             lerpFactor: 0.12,
             dragSensitivity: 0.005,
           }}
-          wrapperClassName="py-2 pl-[2.05vw] max-[1025px]:pl-[3.7vw] max-md:pl-[3vw]"
+          wrapperClassName="py-2"
           itemClassName="px-[0.95vw] max-[1025px]:px-[1.3vw] max-md:px-[2vw] cursor-grab active:cursor-grabbing"
           onReady={handleReady}
         >
@@ -174,14 +200,13 @@ export default function Smarter() {
               <div
                 key={`${card.id}-${idx}`}
                 aria-hidden={idx >= SMARTER_CARDS.length}
-                className="smarter-card-anim flex aspect-440/477 w-[28vw] flex-col overflow-hidden rounded-xl p-[1.8vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
+                className="smarter-card-anim flex aspect-440/477 w-[28vw] flex-col overflow-hidden rounded-xl p-[2vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
                 style={{
                   backgroundColor: isPrimary ? KYNTRA_PRIMARY : "#0d0d0d",
                   border: isPrimary
                     ? "none"
                     : "1px solid rgba(255,255,255,0.25)",
-                  // Icon inherits this via currentColor: white on blue cards,
-                  // Kyntra primary on dark cards.
+              
                   color: isPrimary ? "#ffffff" : KYNTRA_PRIMARY,
                 }}
               >
@@ -191,12 +216,12 @@ export default function Smarter() {
                   <DatabaseIcon className="h-[5vw] w-[5vw] max-[1025px]:h-[7vw] max-[1025px]:w-[7vw] max-md:h-[11vw] max-md:w-[11vw]" />
                 </div>
 
-                <div className="flex flex-1 flex-col gap-[1.4vw] max-md:gap-4">
+                <div className="flex flex-1 flex-col gap-[1.8vw] max-md:gap-4">
                   <h3 className="font-helvetica-neue text-44 leading-[1.15] font-normal tracking-tight whitespace-pre-line text-white max-[1025px]:text-[4vw] max-md:text-[7vw]">
                     {card.title}
                   </h3>
 
-                  <p className="max-w-[96%] text-[1.15vw] leading-[1.3] font-normal text-white/85 max-[1025px]:text-[2.5vw] max-md:text-[3.6vw]">
+                  <p className="max-w-[96%] text-22 tracking-wide leading-[1.3] font-normal text-white max-[1025px]:text-[2.5vw] max-md:text-[3.6vw]">
                     {card.description}
                   </p>
                 </div>

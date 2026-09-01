@@ -1,4 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+"use client";
+
 import {
   FAQContent,
   FAQGroup,
@@ -8,6 +10,7 @@ import {
 import { type ReactNode } from "react";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
+import { FadeUp, lineDraw } from "./Animations/gsapAnim";
 interface FAQItem {
   id: string;
   title: ReactNode;
@@ -85,6 +88,8 @@ const faqItems: FAQItem[] = [
 ];
 
 export default function KyntraFaq() {
+  lineDraw();
+
   const defaultOpenItems = faqItems
     .filter((item) => item.defaultOpen)
     .map((item) => item.id);
@@ -114,19 +119,22 @@ export default function KyntraFaq() {
               iconStrokeWidth={1.8}
               duration={0.5}
             >
-              {/* Blue fill wipes in from the top, same timing as the height reveal */}
+      
               <div className="absolute inset-0 origin-top scale-y-0 bg-kyntra-primary transition-transform duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-aria-expanded:scale-y-100" />
               {/* Inset bottom hairline, hidden once the card fills blue */}
-              <div className="absolute right-[1.4vw] bottom-0 left-[1.4vw] z-2 h-px bg-black/15 transition-opacity duration-300 group-aria-expanded:opacity-0 max-md:right-[4.5vw] max-md:left-[4.5vw]" />
+              <div
+                data-line-draw
+                className="absolute right-[1.4vw] bottom-0 left-[1.4vw] z-2 h-px bg-black/15 transition-opacity duration-300 group-aria-expanded:opacity-0 max-md:right-[4.5vw] max-md:left-[4.5vw]"
+              />
               <FAQTitle
-                className="gap-[2vw] py-[1.6vw] pr-[1.4vw] pl-[2vw] text-left max-md:py-[5vw] max-md:pr-[5vw] max-md:pl-[6vw] max-[1025px]:py-[3vw] max-[1025px]:pr-[3vw] max-[1025px]:pl-[4vw]"
+                className="gap-[2vw] text-[1.65vw] py-[1.6vw] pr-[1.4vw] pl-[2vw] text-left max-md:py-[5vw] max-md:pr-[5vw] max-md:pl-[6vw] max-[1025px]:py-[3vw] max-[1025px]:pr-[3vw] max-[1025px]:pl-[4vw]"
                 iconMode="plus"
               >
-                {item.title}
+                <FadeUp>{item.title}</FadeUp>
               </FAQTitle>
 
-              <FAQContent className="w-[70%] space-y-[1vw] pr-[2vw] pb-[1.8vw] pl-[2vw] text-[1.05vw] leading-[1.6] font-normal text-white/90 max-md:w-full max-md:space-y-[4vw] max-md:pr-[6vw] max-md:pb-[6vw] max-md:pl-[6vw] max-md:text-[4vw] max-[1025px]:w-[90%] max-[1025px]:pr-[4vw] max-[1025px]:pb-[3vw] max-[1025px]:pl-[4vw] max-[1025px]:text-[2.7vw]">
-                {item.content}
+              <FAQContent className="w-[70%] space-y-[1vw] pr-[2vw] pb-[1.8vw] pl-[2vw] text-22 leading-[1.6] font-normal text-white/90 max-md:w-full max-md:space-y-[4vw] max-md:pr-[6vw] max-md:pb-[6vw] max-md:pl-[6vw] max-md:text-[4vw] max-[1025px]:w-[90%] max-[1025px]:pr-[4vw] max-[1025px]:pb-[3vw] max-[1025px]:pl-[4vw] max-[1025px]:text-[2.7vw]">
+                <FadeUp>{item.content}</FadeUp>
               </FAQContent>
             </FAQWrapper>
           ))}

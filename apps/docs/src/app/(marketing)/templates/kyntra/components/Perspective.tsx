@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -124,7 +124,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
       >
         <h3
           data-panel-item
-          className="w-[90%] text-[1.55vw] leading-[1.2] font-normal text-white max-[1025px]:text-[3vw] max-md:text-[6vw]"
+          className="w-[90%] text-30 leading-[1.2] font-normal text-white max-[1025px]:text-[3vw] max-md:text-[6vw]"
         >
           {article.title}
         </h3>
@@ -141,7 +141,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
             showLine
             hoverColor="rgba(255,255,255,0.7)"
             className="mt-[1.4vw] text-white max-md:mt-[5vw]"
-            textClassName="font-helvetica-neue text-22 tracking-tight max-[1025px]:text-[1.8vw] max-md:text-[3.6vw]"
+            textClassName=" text-22 tracking-tight max-[1025px]:text-[1.8vw] max-md:text-[3.6vw]"
             iconClassName="text-white"
           />
         </div>
@@ -152,6 +152,30 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
 const Perspective = () => {
   const sliderRef = useRef<KeyboardSlider | null>(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+
+  // In non-infinite mode the core clamps `target` between 0 (first card) and
+  // `maxScroll` (last card flush right), so those bounds are the disabled
+  // states. Polled on GSAP's ticker rather than `onSlideChange`, which only
+  // fires on index changes and so misses free dragging with `snap: false`.
+  useEffect(() => {
+    const check = () => {
+      const slider = sliderRef.current;
+      if (!slider) return;
+
+      const { target, maxScroll } = slider;
+      // A pixel of slack: `target` eases toward its bound and lands fractions
+      // short, which would otherwise leave a button live at the very end.
+      const EPS = 1;
+      setAtStart(target >= -EPS);
+      setAtEnd(maxScroll >= -EPS ? true : target <= maxScroll + EPS);
+    };
+
+    check();
+    gsap.ticker.add(check);
+    return () => gsap.ticker.remove(check);
+  }, []);
 
   // Non-infinite: stop when the last card's right edge reaches the viewport
   // edge. Core ignores flex `gap`, so fold padding + accumulated gaps into
@@ -210,18 +234,22 @@ const Perspective = () => {
               hoverColor="#ffffff"
               showArrow
               className="w-fit rounded-full bg-[#134BD6] px-[1.8vw] py-[0.7vw] text-white max-[1025px]:px-6 max-[1025px]:py-3"
-              textClassName="font-helvetica-neue text-[1vw] tracking-tight max-[1025px]:text-[2.4vw] max-md:text-[3.6vw]"
+              textClassName=" text-22 tracking-tight max-[1025px]:text-[2.4vw] max-md:text-[3.6vw]"
               iconClassName="text-white"
             />
           </FadeUp>
 
-          <CarouselNavButtons
-            onPrev={() => sliderRef.current?.goToPrev()}
-            onNext={() => sliderRef.current?.goToNext()}
-          />
+          <FadeUp className="w-fit" delay={0.1}>
+            <CarouselNavButtons
+              onPrev={() => sliderRef.current?.goToPrev()}
+              onNext={() => sliderRef.current?.goToNext()}
+              prevDisabled={atStart}
+              nextDisabled={atEnd}
+            />
+          </FadeUp>
         </div>
 
-        <div className="min-w-0 flex-1">
+        <FadeUp className="min-w-0 flex-1">
           <SmoothInfiniteCarousel
             config={carouselConfig}
             wrapperClassName="pr-[5%] pb-[1vw] gap-[1.5vw] max-md:gap-[4vw]"
@@ -234,7 +262,7 @@ const Perspective = () => {
               <ArticleCard key={article.title} article={article} />
             ))}
           </SmoothInfiniteCarousel>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );

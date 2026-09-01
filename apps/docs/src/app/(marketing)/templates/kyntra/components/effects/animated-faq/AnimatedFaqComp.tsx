@@ -14,6 +14,7 @@ import React, {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
+import { FadeUp } from "../../Animations/gsapAnim";
 
 import gsap from "gsap";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -69,7 +70,8 @@ export function FAQGroup({
   onChange,
 }: FAQGroupProps) {
   const isControlled = Array.isArray(value);
-  const [internalOpenItems, setInternalOpenItems] = useState<string[]>(defaultOpenItems);
+  const [internalOpenItems, setInternalOpenItems] =
+    useState<string[]>(defaultOpenItems);
 
   const openItems = isControlled ? (value as string[]) : internalOpenItems;
 
@@ -93,7 +95,7 @@ export function FAQGroup({
 
       onChange?.(next);
     },
-    [allowMultiple, isControlled, onChange, openItems]
+    [allowMultiple, isControlled, onChange, openItems],
   );
 
   const contextValue = useMemo(
@@ -102,7 +104,7 @@ export function FAQGroup({
       openItems,
       toggleItem,
     }),
-    [allowMultiple, openItems, toggleItem]
+    [allowMultiple, openItems, toggleItem],
   );
 
   return (
@@ -160,7 +162,8 @@ export function FAQWrapper({
   const openHeightRef = useRef(0);
   const reduceMotionRef = useRef(
     typeof window !== "undefined" &&
-      (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
+      (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ??
+        false),
   );
 
   const contentId = useId();
@@ -198,7 +201,7 @@ export function FAQWrapper({
 
   const handleWrapperClick = (event: ReactMouseEvent<HTMLDivElement>) => {
     const isInteractive = (event.target as HTMLElement).closest(
-      "a, button, input, textarea, select"
+      "a, button, input, textarea, select",
     );
 
     if (isInteractive) return;
@@ -246,7 +249,7 @@ export function FAQWrapper({
               overflow: "visible",
             });
           },
-        }
+        },
       );
     } else {
       gsap.set(outer, { overflow: "hidden" });
@@ -258,7 +261,7 @@ export function FAQWrapper({
           height: 0,
           duration: tweenDuration,
           ease: "cubic.out",
-        }
+        },
       );
     }
   }, [isOpen, duration]);
@@ -298,8 +301,8 @@ export interface FAQTitleProps {
   children?: ReactNode;
   className?: string;
   showIcon?: boolean;
-  iconPosition?: 'left' | 'right';
-  iconMode?: 'rotate' | 'rotate-left-down' | 'plus';
+  iconPosition?: "left" | "right";
+  iconMode?: "rotate" | "rotate-left-down" | "plus";
 }
 
 export function FAQTitle({
@@ -309,45 +312,45 @@ export function FAQTitle({
   iconPosition = "right",
   iconMode = "rotate",
 }: FAQTitleProps) {
-  const {
-    isOpen,
-    titleClassName,
-    iconClassName,
-    iconSize,
-    iconStrokeWidth,
-  } = useFAQContext();
+  const { isOpen, titleClassName, iconClassName, iconSize, iconStrokeWidth } =
+    useFAQContext();
 
   const icon = showIcon ? (
-    <div data-open={isOpen ? "" : undefined} className={`shrink-0 ${iconClassName}`}>
-      {iconMode === "plus" ? (
-        <span className="relative flex h-full w-full items-center justify-center" aria-hidden="true">
-          <span className="absolute h-[1.5px] w-[40%] bg-current" />
+    <FadeUp className="shrink-0">
+      <div data-open={isOpen ? "" : undefined} className={iconClassName}>
+        {iconMode === "plus" ? (
           <span
-            className={`absolute h-[1.5px] w-[40%] bg-current transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none ${
-              isOpen ? "rotate-0" : "rotate-90"
+            className="relative flex h-full w-full items-center justify-center"
+            aria-hidden="true"
+          >
+            <span className="absolute h-[1.5px] w-[40%] bg-current" />
+            <span
+              className={`absolute h-[1.5px] w-[40%] bg-current transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none ${
+                isOpen ? "rotate-0" : "rotate-90"
+              }`}
+            />
+          </span>
+        ) : iconMode === "rotate-left-down" ? (
+          <ChevronRight
+            size={iconSize}
+            strokeWidth={iconStrokeWidth}
+            className={`transition-transform duration-300 ease-out motion-reduce:transition-none ${
+              isOpen ? "rotate-90" : "rotate-0"
             }`}
+            aria-hidden="true"
           />
-        </span>
-      ) : iconMode === "rotate-left-down" ? (
-        <ChevronRight
-          size={iconSize}
-          strokeWidth={iconStrokeWidth}
-          className={`transition-transform duration-300 ease-out motion-reduce:transition-none ${
-            isOpen ? "rotate-90" : "rotate-0"
-          }`}
-          aria-hidden="true"
-        />
-      ) : (
-        <ChevronDown
-          size={iconSize}
-          strokeWidth={iconStrokeWidth}
-          className={`transition-transform duration-300 ease-out motion-reduce:transition-none ${
-            isOpen ? "rotate-180" : "rotate-0"
-          }`}
-          aria-hidden="true"
-        />
-      )}
-    </div>
+        ) : (
+          <ChevronDown
+            size={iconSize}
+            strokeWidth={iconStrokeWidth}
+            className={`transition-transform duration-300 ease-out motion-reduce:transition-none ${
+              isOpen ? "rotate-180" : "rotate-0"
+            }`}
+            aria-hidden="true"
+          />
+        )}
+      </div>
+    </FadeUp>
   ) : null;
 
   return (

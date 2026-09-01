@@ -128,10 +128,7 @@ export default function HowKyntraWorks() {
       ref={sectionRef}
       className="kyntra-container relative w-full bg-white text-black"
     >
-      {/* flex+gap rather than space-y: the heading is wrapped by FocusTextWrap,
-          whose display:contents div is the element `space-y-*` would margin -
-          and a contents box is discarded, so the spacing never appeared. gap
-          spaces the laid-out boxes, which passes through correctly. */}
+    
       <div className="mx-auto flex max-w-400 flex-col gap-[2vw] text-center">
         <FocusTextWrap>
           <h2 className="font-helvetica-neue leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]">
@@ -141,7 +138,7 @@ export default function HowKyntraWorks() {
 
         <ParaAnim
           as="p"
-          className="text-24 mx-auto  w-[60vw] leading-[1.6] text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
+          className="text-24 mx-auto tracking-wide w-[60vw] leading-[1.6] text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
         >
           Kyntra Makes It Simple To Get Any Home Service Done In Just A Few
           Steps. First, You Tell Us What You Need By Choosing A Service Or
@@ -160,10 +157,10 @@ export default function HowKyntraWorks() {
               }}
               className="mt-[2vw] mb-[1vw] space-y-[1vw] text-center"
             >
-              <h3 className="step-title font-helvetica-neue text-[1.8vw] font-normal max-[1025px]:text-[3.4vw] max-md:text-[5.5vw]">
+              <h3 className="step-title font-helvetica-neue text-[1.65vw] font-normal max-[1025px]:text-[3.4vw] max-md:text-[5.5vw]">
                 {step.title}
               </h3>
-              <p className="text-24 text-[#333333] max-[1025px]:text-[2.6vw] max-md:text-[4vw]">
+              <p className="text-22 text-[#333333] max-[1025px]:text-[2.6vw] max-md:text-[4vw]">
                 {step.description}
               </p>
             </div>
@@ -178,7 +175,7 @@ export default function HowKyntraWorks() {
           hoverColor="#ffffff"
           showArrow
           className="rounded-full px-[2.5vw] py-[1vw] text-white max-md:px-[6vw] max-md:py-[3vw]"
-          textClassName="font-aeonik-pro text-[1vw] tracking-tight max-md:text-[3.5vw]"
+          textClassName="font-aeonik-pro text-22 tracking-tight max-md:text-[3.5vw]"
           iconClassName="text-white"
           style={{ backgroundColor: KYNTRA_PRIMARY }}
         />

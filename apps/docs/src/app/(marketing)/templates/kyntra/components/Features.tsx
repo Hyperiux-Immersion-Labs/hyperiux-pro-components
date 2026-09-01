@@ -37,7 +37,7 @@ const Features = () => {
           </FocusTextWrap>
           <ParaAnim
             as="p"
-            className="text-24 mt-[1.6vw] max-w-[30vw] leading-normal text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
+            className="text-24 mt-[1.6vw] max-w-[30vw] tracking-wide leading-normal text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
           >
             The More Kyntra Understands Your Property, The Easier It Becomes To
             Manage Everything Around It.
