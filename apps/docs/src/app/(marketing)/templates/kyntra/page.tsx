@@ -13,8 +13,8 @@ import CTA from "./components/CTA";
 import ParallaxFooter from "./components/effects/parallax-footer";
 import LenisSmoothScroll from "./components/LenisSmoothScroll";
 import Trust from "./components/Trust";
-import Perspective from "./components/Perspective";
-import Experience from "./components/Experience";
+import Testimonial from "./components/Testimonial";
+import Blogs from "./components/Blogs";
 
 const title = "Kyntra - Smart Home Management App Template";
 const description =
@@ -50,8 +50,8 @@ const page = () => {
       <Smarter />
       <HowKyntraWorks />
       <Trust />
-      <Experience />
-      <Perspective />
+      <Testimonial />
+      <Blogs />
       <KyntraFaq />
       <CTA />
       <ParallaxFooter />

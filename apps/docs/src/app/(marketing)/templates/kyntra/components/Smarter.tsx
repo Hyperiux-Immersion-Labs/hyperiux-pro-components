@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SmoothInfiniteCarousel, {
@@ -11,6 +12,13 @@ import CarouselNavButtons from "./Buttons/NavButtons";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { ParaAnim } from "./Animations/gsapAnim";
+
+import bookService from "../assets/smarter/book-service.svg";
+import visit from "../assets/smarter/visit.svg";
+import serviceRecord from "../assets/smarter/service-record.svg";
+import home from "../assets/smarter/home.svg";
+import maintainance from "../assets/smarter/maintainance.svg";
+
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -21,51 +29,50 @@ export interface SmarterCardData {
   id: number;
   title: string;
   description: string;
+  icon: StaticImageData;
   variant: "primary" | "dark";
 }
 
 const SMARTER_CARDS: SmarterCardData[] = [
   {
     id: 1,
-    title: "Home\nMemory",
+    title: "Book a\nService",
     description:
-      "Appliances, warranties, repairs and important home details stay organised in one living record.",
+      "Tell Kyntra what your home needs and book the right service at a time that works for you.",
+    icon: bookService,
     variant: "primary",
   },
   {
     id: 2,
-    title: "Maintenance, Before\nThe Breakdown",
+    title: "Professional\nVisits",
     description:
-      "Kyntra tracks upcoming maintenance and reminds you before small issues become bigger problems.",
+      "A trusted professional arrives with the details they need to understand your home and the job at hand.",
+    icon: visit,
     variant: "dark",
   },
   {
     id: 3,
-    title: "One Tap To Get It\nHandled",
+    title: "Service Gets\nRecorded",
     description:
-      "Describe what's wrong. Kyntra identifies the service, shows the cost and finds the right professional.",
+      "Every completed service is automatically added to your home's history, creating a clear record for future needs.",
+    icon: serviceRecord,
     variant: "primary",
   },
   {
     id: 4,
-    title: "The Job,\nDone Right",
+    title: "Kyntra Learns\nYour Home",
     description:
-      "Every visit, part and invoice is recorded, so the fix becomes part of your home's permanent history.",
+      "Over time, Kyntra builds a better understanding of your home, its systems, preferences, and maintenance patterns.",
+    icon: home,
     variant: "dark",
   },
   {
     id: 5,
-    title: "Context That\nCompounds",
+    title: "Future Maintenance\nGets Easier",
     description:
-      "The more Kyntra learns about your home, the sharper every future recommendation becomes.",
+      "With everything in one place, Kyntra can help you stay ahead of maintenance and make future services faster and simpler.",
+    icon: maintainance,
     variant: "primary",
-  },
-  {
-    id: 6,
-    title: "One Place For\nEvery Pro",
-    description:
-      "Trusted technicians, past ratings and repeat bookings all live in a single connected view.",
-    variant: "dark",
   },
 ];
 
@@ -213,7 +220,12 @@ export default function Smarter() {
                 {/* Fixed-height icon zone so every card's heading starts at
                     the same y regardless of title length. */}
                 <div className="flex h-[45%] shrink-0 items-start">
-                  <DatabaseIcon className="h-[5vw] w-[5vw] max-[1025px]:h-[7vw] max-[1025px]:w-[7vw] max-md:h-[11vw] max-md:w-[11vw]" />
+                  <Image
+                    src={card.icon}
+                    alt=""
+                    aria-hidden
+                    className="h-[3vw] w-[3vw] object-contain max-[1025px]:h-[5.5vw] max-[1025px]:w-[5.5vw] max-md:h-[9vw] max-md:w-[9vw]"
+                  />
                 </div>
 
                 <div className="flex flex-1 flex-col gap-[1.8vw] max-md:gap-4">
@@ -231,24 +243,5 @@ export default function Smarter() {
         </SmoothInfiniteCarousel>
       </div>
     </section>
-  );
-}
-
-function DatabaseIcon({ className = "" }: { className?: string }) {
-  // Stacked-cylinder "database" glyph. Fills with currentColor so the card
-  // controls it (white on primary cards, Kyntra primary on dark cards).
-  return (
-    <svg
-      viewBox="0 0 99 99"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden
-    >
-      <path d="M49.416 72.9954C62.0991 72.9954 72.3808 67.12 72.3808 59.8726V72.9954C72.3808 80.2428 62.0991 86.118 49.416 86.118C36.7329 86.118 26.4512 80.2428 26.4512 72.9954V59.8726C26.4512 67.12 36.7329 72.9954 49.416 72.9954Z" />
-      <path d="M49.416 55.7717C62.0991 55.7717 72.3808 49.8964 72.3808 42.6489V55.7717C72.3808 63.0192 62.0991 68.8944 49.416 68.8944C36.7329 68.8944 26.4512 63.0192 26.4512 55.7717V42.6489C26.4512 49.8964 36.7329 55.7717 49.416 55.7717Z" />
-      <path d="M69.3086 31.9869C71.2625 30.0567 72.3808 27.8157 72.3808 25.4255C72.3808 18.178 62.0991 12.3027 49.416 12.3027C36.7329 12.3027 26.4512 18.178 26.4512 25.4255C26.4512 27.8157 27.5695 30.0567 29.5235 31.9869C33.4942 28.0644 40.9158 25.4255 49.416 25.4255C57.9163 25.4255 65.3378 28.0644 69.3086 31.9869Z" />
-      <path d="M49.416 38.5481C62.0991 38.5481 72.3808 32.6727 72.3808 25.4253V38.5481C72.3808 45.7955 62.0991 51.6708 49.416 51.6708C36.7329 51.6708 26.4512 45.7955 26.4512 38.5481V25.4253C26.4512 32.6727 36.7329 38.5481 49.416 38.5481Z" />
-    </svg>
   );
 }

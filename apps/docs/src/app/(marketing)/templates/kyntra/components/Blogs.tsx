@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import SmoothInfiniteCarousel, {
@@ -11,7 +11,11 @@ import SmoothInfiniteCarousel, {
 import CarouselNavButtons from "./Buttons/NavButtons";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import CharStaggerButton from "./effects/char-stagger-button";
-import pers01 from "../assets/pers01.png";
+import blog1 from "../assets/blogs/blog1.png";
+import blog2 from "../assets/blogs/blog2.png";
+import blog3 from "../assets/blogs/blog3.png";
+import blog4 from "../assets/blogs/blog4.png";
+import blog5 from "../assets/blogs/blog5.png";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
@@ -19,7 +23,7 @@ type Article = {
   title: string;
   date: string;
   href: string;
-  image: typeof pers01;
+  image: StaticImageData;
 };
 
 const ARTICLES: Article[] = [
@@ -27,31 +31,31 @@ const ARTICLES: Article[] = [
     title: "Why Your AC Usually Warns You Before It Fails",
     date: "09 July 2026",
     href: "#",
-    image: pers01,
+    image: blog1,
   },
   {
     title: "The Quiet Cost of Skipping Seasonal Maintenance",
     date: "22 June 2026",
     href: "#",
-    image: pers01,
+    image: blog2,
   },
   {
     title: "What a Well-Run Home Actually Looks Like",
     date: "14 June 2026",
     href: "#",
-    image: pers01,
+    image: blog3,
   },
   {
     title: "Small Repairs That Prevent Expensive Ones",
     date: "02 June 2026",
     href: "#",
-    image: pers01,
+    image: blog4,
   },
   {
     title: "Reading the Signals Your House Is Sending",
     date: "19 May 2026",
     href: "#",
-    image: pers01,
+    image: blog5,
   },
 ];
 
@@ -150,15 +154,11 @@ const ArticleCard = ({ article }: { article: Article }) => {
   );
 };
 
-const Perspective = () => {
+const Blogs = () => {
   const sliderRef = useRef<KeyboardSlider | null>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
-  // In non-infinite mode the core clamps `target` between 0 (first card) and
-  // `maxScroll` (last card flush right), so those bounds are the disabled
-  // states. Polled on GSAP's ticker rather than `onSlideChange`, which only
-  // fires on index changes and so misses free dragging with `snap: false`.
   useEffect(() => {
     const check = () => {
       const slider = sliderRef.current;
@@ -177,13 +177,13 @@ const Perspective = () => {
     return () => gsap.ticker.remove(check);
   }, []);
 
-  // Non-infinite: stop when the last card's right edge reaches the viewport
-  // edge. Core ignores flex `gap`, so fold padding + accumulated gaps into
-  // the offset (same approach as lumera/Project.tsx).
   const carouselConfig = useMemo(
     () => ({
       infinite: false,
       snap: false,
+      // Drag and the nav buttons only — the wheel/trackpad must not move the
+      // strip while the page scrolls past this section.
+      wheelInput: false,
       setOffset: ({ wrapperWidth }: { wrapperWidth: number }) => {
         const wrapperEl = sliderRef.current?.wrapper;
         if (!wrapperEl) return wrapperWidth;
@@ -223,8 +223,6 @@ const Perspective = () => {
         </ParaAnim>
       </div>
 
-      {/* Two columns: a fixed left rail (button + nav), then the slider in
-          its own clipped column so the cards never travel over the rail. */}
       <div className="mt-[4vw] flex items-stretch gap-[3vw] pl-[5%] max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:gap-[6vw]">
         <div className="flex w-[24%] pb-[2vw] shrink-0 flex-col justify-between  max-[1025px]:w-full max-[1025px]:flex-row max-[1025px]:items-center max-[1025px]:py-0 max-[1025px]:pr-[5%]">
           <FadeUp className="w-fit">
@@ -268,4 +266,4 @@ const Perspective = () => {
   );
 };
 
-export default Perspective;
+export default Blogs;

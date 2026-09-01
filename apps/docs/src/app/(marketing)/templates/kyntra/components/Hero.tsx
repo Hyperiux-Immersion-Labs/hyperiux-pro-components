@@ -10,8 +10,7 @@ import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 const Hero = () => {
   return (
     <section className="kyntra-hero relative min-h-screen h-full w-full overflow-hidden bg-white">
-      {/* Gradient confined to the top ~90vh, then solid white below.
-          Long black -> blue merge, and an equally long blue -> white merge. */}
+
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[90vh] bg-[linear-gradient(180deg,#000000_0%,#000000_28%,#0A1633_42%,#16295F_54%,#26429C_63%,#3E63D0_71%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)]"

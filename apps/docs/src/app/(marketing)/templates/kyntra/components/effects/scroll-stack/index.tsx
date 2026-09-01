@@ -5,25 +5,14 @@ import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import CharStaggerPrimaryButton from "../char-stagger-primary-button";
-import feature01 from "../../../assets/feature01.svg";
-import feature02 from "../../../assets/feature02.svg";
-import feature03 from "../../../assets/feature03.svg";
-import feature04 from "../../../assets/feature04.svg";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const KYNTRA_PRIMARY = "#134BD6";
 
-
-const FEATURE_ICONS: StaticImageData[] = [
-  feature01,
-  feature02,
-  feature03,
-  feature04,
-];
-
 export interface ScrollStackFeatureItem {
   label: string;
+  icon: StaticImageData;
 }
 
 export interface ScrollStackCard {
@@ -210,7 +199,7 @@ export default function ScrollStack({
 
                   <div className="flex pt-[4vh] items-start justify-between gap-[3vw] max-[1025px]:flex-col max-[1025px]:gap-[4vw]">
                     {card.items && card.items.length > 0 && (
-                      <div className="grid w-[40%] grid-cols-2 gap-y-[2vw] max-[1025px]:w-full max-md:grid-cols-1 max-md:gap-y-[5vw]">
+                      <div className="grid w-[45%] grid-cols-2 gap-y-[2vw] max-[1025px]:w-full max-md:grid-cols-1 max-md:gap-y-[5vw]">
                         {card.items.map((item, i) => (
                           <div
                             key={item.label}
@@ -231,7 +220,7 @@ export default function ScrollStack({
                               }}
                             >
                               <Image
-                                src={FEATURE_ICONS[i % FEATURE_ICONS.length]}
+                                src={item.icon}
                                 alt=""
                                 aria-hidden
                                 className="w-[2.3vw] h-auto object-contain max-[1025px]:size-[3vw] max-md:size-[6vw]"
@@ -241,7 +230,7 @@ export default function ScrollStack({
                                 }}
                               />
                             </span>
-                            <span className="text-[1.05vw] max-[1025px]:text-[2.4vw] max-md:text-[4.4vw]">
+                            <span className="text-22 max-[1025px]:text-[2.4vw] max-md:text-[4.4vw]">
                               {item.label}
                             </span>
                           </div>
@@ -252,7 +241,7 @@ export default function ScrollStack({
                     {/* Right: description + CTA */}
                     <div className="flex w-[35%] flex-col items-start gap-[1.8vw] max-[1025px]:w-full max-md:gap-[6vw]">
                       {card.description && (
-                        <p className="text-22 leading-normal max-[1025px]:text-[2.4vw] max-md:text-[4.4vw]">
+                        <p className="text-22 w-[85%] leading-normal max-[1025px]:text-[2.4vw] max-md:text-[4.4vw]">
                           {card.description}
                         </p>
                       )}

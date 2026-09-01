@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
+import EnquiryModal from "./EnquiryModal";
 import CharStaggerButton from "./effects/char-stagger-button";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import kyntraLogo from "../assets/kyntra-logo.png";
@@ -23,6 +24,20 @@ const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const lastYRef = useRef(0);
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+
+  const openEnquiryModal = () => {
+    setMenuOpen(false);
+    setEnquiryOpen(true);
+  };
+
+  const closeEnquiryModal = () => setEnquiryOpen(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setRevealed(true), 500);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,9 +82,11 @@ const Header: React.FC = () => {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 px-[3vw] py-[1.6vw] transition-all duration-500 ease-in-out max-[1025px]:px-[5%] max-[1025px]:py-[5%] ${
-        hidden
-          ? "-translate-y-full max-[1025px]:translate-y-0"
-          : "translate-y-0"
+        !revealed
+          ? "-translate-y-full"
+          : hidden
+            ? "-translate-y-full max-[1025px]:translate-y-0"
+            : "translate-y-0"
       } ${isScrolled ? "bg-black/20 shadow-md backdrop-blur-md" : ""}`}
     >
       <div className="flex items-center justify-between">
@@ -106,7 +123,10 @@ const Header: React.FC = () => {
           <CharStaggerPrimaryButton
             text="Get Started"
             href="#get-started"
-            onClick={(event) => handleNavScroll(event, "#get-started")}
+            onClick={(event) => {
+              event.preventDefault();
+              openEnquiryModal();
+            }}
             hoverColor="#000000"
             showArrow
             className="rounded-full bg-white px-[1.8vw] py-[0.7vw] text-black"
@@ -166,7 +186,10 @@ const Header: React.FC = () => {
           <CharStaggerPrimaryButton
             text="Get Started"
             href="#get-started"
-            onClick={(event) => handleNavScroll(event, "#get-started")}
+            onClick={(event) => {
+              event.preventDefault();
+              openEnquiryModal();
+            }}
             hoverColor="#000000"
             showArrow
             className="h-[13vw] w-full justify-center rounded-full bg-white px-[6vw] text-black max-md:h-[16vw]"
@@ -175,6 +198,8 @@ const Header: React.FC = () => {
           />
         </nav>
       </div>
+
+      <EnquiryModal open={enquiryOpen} onClose={closeEnquiryModal} />
     </header>
   );
 };

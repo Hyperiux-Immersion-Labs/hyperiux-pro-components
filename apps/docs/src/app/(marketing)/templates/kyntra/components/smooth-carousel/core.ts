@@ -2,8 +2,11 @@
  * Vendored from `smooothy` v0.0.35 (package/src/core.ts).
  *
  * Unmodified except: the `virtual-scroll` import now points at the local
- * vendored copy, and the config/viewport interfaces are exported so consumers
- * can type against them (upstream exports them via its generated .d.ts).
+ * vendored copy, the config/viewport interfaces are exported so consumers
+ * can type against them (upstream exports them via its generated .d.ts), and
+ * a `wheelInput` flag was added so a slider can opt out of wheel/trackpad
+ * input entirely (upstream always binds it, which makes a horizontal slider
+ * drift while the page scrolls past it).
  *
  * The MIT License (MIT) — Copyright (c) vallafederico
  * https://github.com/vallafederico/smooothy
@@ -44,6 +47,8 @@ export interface CoreConfig {
   virtualScroll: VirtualScrollConfig
   setOffset: (viewport: Viewport) => number
   scrollInput: boolean
+  /** Bind wheel/trackpad input. Off means only drag, keys and the API move it. */
+  wheelInput: boolean
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
   onUpdate?: (core: Core) => void
@@ -79,6 +84,7 @@ const DEFAULT_CONFIG: CoreConfig = {
 
   /** Functionality */
   scrollInput: false,
+  wheelInput: true,
 }
 
 export class Core {
@@ -162,7 +168,7 @@ export class Core {
     this.wrapper.style.cursor = "grab"
 
     this.#setupViewport()
-    this.#setupVirtualScroll()
+    if (this.config.wheelInput) this.#setupVirtualScroll()
 
     // Center first slide for variable width non-infinite sliders
     if (
@@ -779,7 +785,7 @@ export class Core {
       this.#handleDragStart(touch)
     })
     if (this.resizeTimeout) clearTimeout(this.resizeTimeout)
-    if (this.virtualScroll && this.config.scrollInput) {
+    if (this.virtualScroll) {
       this.virtualScroll.destroy()
     }
     if (this.observer) {

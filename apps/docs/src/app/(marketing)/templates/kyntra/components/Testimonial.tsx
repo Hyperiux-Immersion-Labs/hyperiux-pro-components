@@ -16,15 +16,11 @@ import SmoothInfiniteCarousel, {
 } from "./smooth-carousel/SmoothInfiniteCarousel";
 import CarouselNavButtons from "./Buttons/NavButtons";
 
-import exp01 from "../assets/exp-a.jpg";
-
-import exp02 from "../assets/exp02.jpg";
-import exp03 from "../assets/exp03.jpg";
-import exp04 from "../assets/exp04.jpg";
-// Stand-in imagery for the three newest testimonials until real portraits land.
-import pers01 from "../assets/exp-e.jpg";
-import trustInside from "../assets/exp-f.jpg";
-import trustOutside from "../assets/exp-g.jpg";
+import sarah from "../assets/testimonial/sarah.png";
+import james from "../assets/testimonial/james.jpg";
+import priya from "../assets/testimonial/priya.jpg";
+import daniel from "../assets/testimonial/daniel.jpg";
+import marcus from "../assets/testimonial/marcus.jpg";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
@@ -45,49 +41,35 @@ const TESTIMONIALS: Testimonial[] = [
       "The thing I didn't expect to love was the history. I can open the apartment and see every repair we've done since moving in. When the AC had the same problem twice, Kyntra already knew the previous technician, the unit and what had been repaired.",
     name: "Sarah Mitchell",
     meta: "Kyntra member for 18 months",
-    image: exp01,
+    image: sarah,
   },
   {
     quote:
       "Booking a professional used to mean three phone calls and re-explaining everything. Now I describe the problem once, Kyntra pulls the appliance record and the right person shows up with context.",
     name: "James Whitfield",
     meta: "Kyntra member for 11 months",
-    image: exp02,
+    image: james,
   },
   {
     quote:
       "We manage two properties and every warranty, invoice and service visit lives in the right place. Nothing gets lost between tenants anymore.",
     name: "Priya Nair",
     meta: "Kyntra member for 2 years",
-    image: exp03,
+    image: priya,
   },
   {
     quote:
       "The maintenance reminders alone paid for the subscription. Small things get handled before they turn into the expensive kind.",
     name: "Daniel Osei",
     meta: "Kyntra member for 7 months",
-    image: exp04,
-  },
-  {
-    quote:
-      "We inherited a house full of appliances nobody had paperwork for. Scanning them in took an afternoon, and now every manual and warranty date is a search away.",
-    name: "Elena Volkov",
-    meta: "Kyntra member for 9 months",
-    image: pers01,
+    image: daniel,
   },
   {
     quote:
       "What sold me was the handover. When we sold the flat, the buyers got the entire service history in one link instead of a shoebox of receipts.",
     name: "Marcus Bennett",
     meta: "Kyntra member for 14 months",
-    image: trustInside,
-  },
-  {
-    quote:
-      "I used to guess whether a repair was still under warranty. Kyntra flags it before I book, and that has saved me two call-out fees already.",
-    name: "Aisha Rahman",
-    meta: "Kyntra member for 5 months",
-    image: trustOutside,
+    image: marcus,
   },
 ];
 
@@ -122,7 +104,7 @@ const STRIP = Array.from(
   (_, i) => TESTIMONIALS[i % TESTIMONIALS.length],
 );
 
-const Experience = () => {
+const Testimonial = () => {
   const sliderRef = useRef<KeyboardSlider | null>(null);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
@@ -538,4 +520,4 @@ const Experience = () => {
   );
 };
 
-export default Experience;
+export default Testimonial;
