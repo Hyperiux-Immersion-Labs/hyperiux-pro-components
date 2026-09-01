@@ -41,18 +41,18 @@ const cards = [
   },
   {
     title: 'Dependency clarity',
-    description: "Dependency honest. Every effect pulls in only what's needed.",
+    description: "Dependency-honest. Every effect pulls in only what's needed.",
     label: 'Hidden Bundle Size',
   },
   {
     title: 'Mobile fallbacks',
-    description: 'Responsive behaviour built for touch and smaller screens.',
+    description: 'Responsive behavior built for touch and smaller screens.',
     label: 'Touch Devices ',
   },
   {
     title: 'Cleanup on unmount',
     description: 'No leaks, no ghosts, no lingering listeners.',
-    label: 'Memory leaks',
+    label: 'Memory Leaks',
   },
 ]
 

@@ -27,7 +27,7 @@ const STEPS = [
     title: "Install",
     number: "/homepage-v3/svgs/2.svg",
     icon: "/homepage-v3/svgs/install.svg",
-    text: "Use the Honyaku CLI to add only the effect you need. Vault adds only the files that effect needs, not a full interaction ocean. You can inspect and own the implementation.",
+    text: "Use the Hyperiux CLI to add only the effect you need. Vault adds only the files that effect needs, not a full interaction ocean. You can inspect and own the implementation.",
   },
   {
     id: "tune",

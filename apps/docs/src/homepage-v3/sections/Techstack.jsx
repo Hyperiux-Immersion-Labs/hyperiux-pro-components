@@ -76,7 +76,7 @@ export default function Techstack() {
 
                         <StatCard
                             framed
-                            label="WebGL | Three.JS"
+                            label="WebGL | Three.js"
                             className="-mt-px min-h-[24vw] max-[1025px]:min-h-[30vw] max-md:min-h-[36vw] max-sm:min-h-[52vw]"
                             contentClassName="flex h-full items-start justify-between gap-[1vw] pt-[1vw] max-[1025px]:gap-[2vw] max-[1025px]:pt-[2vw]"
                         >
@@ -107,7 +107,7 @@ export default function Techstack() {
 
                         <StatCard
                             framed
-                            label="React.JS | Next.JS"
+                            label="React | Next.js"
                             className="-mt-px min-h-[24vw] max-[1025px]:min-h-[30vw] max-md:min-h-[36vw] max-sm:min-h-[52vw]"
                             contentClassName="flex h-full items-center gap-[1vw] pt-[1vw] max-[1025px]:justify-between max-[1025px]:pt-[2vw] max-md:justify-between"
                         >
