@@ -9,7 +9,7 @@ import { useFadeUp } from '@/components/Animations/gsapAnimations'
 const SOLUTION_TEXT = "Scroll systems, cursor effects, text reveals, page transitions, and WebGL scenes, refined on real client launches. Preview the moment you need, install it with one command, then tune it in your own repo. It’s not a black box. It’s not another UI kit. It’s real, inspectable code you own."
 
 const WORKFLOW_TEXT =
-    'That’s the whole workflow. The files land in your project. You change anything you want.'
+    'That’s the whole workflow. The files land in your project. You can change anything you want.'
 
 export default function ExplainVault() {
     useFadeUp()

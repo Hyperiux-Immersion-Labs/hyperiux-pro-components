@@ -41,8 +41,10 @@ const ParallaxFooter = () => {
           <FadeUp className="flex items-center justify-center gap-[1vw] max-md:mb-[5vw] max-md:gap-[3vw]">
             {socialLinks.map(({ src, label }) => (
               <Link href="#" key={label} aria-label={label}>
-                <div className="relative flex size-[2.7vw] group duration-300 transition-all ease-in-out items-center justify-center overflow-hidden rounded-full bg-[#1C1B1A] p-[0.75vw] max-md:h-[10vw] max-md:w-[10vw] max-md:p-[2.5vw] max-[1025px]:h-[5vw] max-[1025px]:w-[5vw] max-[1025px]:p-[1.3vw]">
-                  <Image src={src} alt={label} width={24} height={24} className="h-full duration-300 transition-all ease-in-out group-hover:scale-[1.1] w-full object-contain" />
+                <div className="relative flex size-[2.7vw] group duration-300 transition-all ease-in-out items-center justify-center overflow-hidden rounded-full bg-[#1C1B1A] border border-[#1C1B1A] p-[0.75vw] max-md:h-[10vw] max-md:w-[10vw] max-md:p-[2.5vw] max-[1025px]:h-[5vw] max-[1025px]:w-[5vw] max-[1025px]:p-[1.3vw]">
+                  <Image src={src} alt={label} width={24} height={24} className="h-full duration-300 transition-all ease-in-out group-hover:brightness-0 w-full object-contain relative z-2" />
+            <span className="bg-white rounded-full scale-0 absolute origin-center group-hover:scale-100 w-full h-full duration-300 ease-in-out "/>
+                    
                 </div>
               </Link>
             ))}
@@ -105,12 +107,13 @@ const ParallaxFooter = () => {
               © 2026. All Rights Reserved
             </p>
           </div>
-          <div className="absolute bottom-[6%] max-[1025px]:bottom-[20%] -translate-x-1/2 left-1/2 w-[35%] max-[1025px]:ml-0 max-[1025px]:w-[80%]">
+          <div className="absolute bottom-[7%] max-[1025px]:bottom-[20%] -translate-x-1/2 left-1/2 w-[35%] max-[1025px]:ml-0 max-[1025px]:w-[80%]">
             <p className="text-center text-[#1C1B1A] text-[1vw] leading-[1.2] max-md:text-[3.5vw] max-[1025px]:text-center max-[1025px]:text-[2.5vw]">
               Sheikh Mohammed Bin Rashid Blvd Dubai, United Arab Emirates
             </p>
           </div>
           <CharStaggerButton
+            showArrow={false}
             href="#"
             text="Privacy Policy"
             className="max-[1025px]:order-3 max-[1025px]:pt-[8vh] text-[#1C1B1A]"

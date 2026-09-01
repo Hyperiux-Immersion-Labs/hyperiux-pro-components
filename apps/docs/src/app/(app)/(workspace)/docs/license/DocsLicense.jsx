@@ -495,7 +495,7 @@ export default function DocsLicense() {
       </Para>
       
      
-       <LinkButton href={"mailto:hello@hyperiux.com"} shimmer={false} tilted={false} showArrow={false}  text={"hello@hyperiux.com"}/>
+       <LinkButton href={"mailto:hello@hyperiux.com"} shimmer={false} tilted={false} showArrow={false}  text={"hello@hyperiux.com"} className="text-[#ff5f00]!"/>
        
 
       <Para>Useful details to include:</Para>

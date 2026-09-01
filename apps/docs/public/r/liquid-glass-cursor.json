@@ -83,7 +83,7 @@
     {
       "name": "maxButtonWidth",
       "type": "number",
-      "default": 220,
+      "default": 260,
       "description": "Lens width when hovering a data-cursor=\"button\" target.",
       "remixer": {
         "control": "range",
@@ -97,7 +97,7 @@
     {
       "name": "maxButtonHeight",
       "type": "number",
-      "default": 150,
+      "default": 110,
       "description": "Lens height when hovering a data-cursor=\"button\" target.",
       "remixer": {
         "control": "range",

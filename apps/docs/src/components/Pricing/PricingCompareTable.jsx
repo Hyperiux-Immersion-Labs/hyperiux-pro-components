@@ -61,12 +61,12 @@ function Cell({ value, isPro = false, highlight = false }) {
 
 export default function PricingCompareTable() {
   return (
-    <section className="w-screen pb-[30vw] max-md:pb-[40vw]! overflow-hidden text-white px-[5vw] py-[8vw] max-[1025px]:px-0 max-[1025px]:py-[16vw]">
+    <section className="w-screen pb-[30vw] max-md:pb-[40vw]! overflow-hidden text-white px-[5vw] py-[8vw] max-[1025px]:px-0 max-[1025px]:pt-0 max-[1025px]:pb-[15vw] relative z-10">
 
       {/* Heading */}
       <LineReveal
         as="h2"
-        className="text110 text-center mb-[6vw] max-md:w-[80%] max-[1025px]:mb-[12vw] w-[75vw] max-[1025px]:w-full mx-auto"
+        className="text110 text-center mb-[6vw] max-md:mb-[12vw] w-[75vw] max-[1025px]:w-[80%] mx-auto"
       >
         <span className="gradient-text-animate">Free vs. Pro,</span> feature by feature.
       </LineReveal>
@@ -113,7 +113,7 @@ export default function PricingCompareTable() {
       {/* Footer note */}
       <SplitLine
         as="p"
-        className="text24 max-[1025px]:text-sm text-center mt-[3vw] max-[1025px]:mt-[8vw]"
+        className="text24 max-[1025px]:text-sm text-center mt-[3vw] max-[1025px]:mt-[8vw] max-[1025px]:px-[10vw]"
       >
         All plans include source code you own. No black boxes.
       </SplitLine>

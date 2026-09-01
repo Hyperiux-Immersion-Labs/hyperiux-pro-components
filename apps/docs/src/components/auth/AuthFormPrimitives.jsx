@@ -14,11 +14,15 @@ export function errorMessage(err, fallback) {
   return err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || fallback;
 }
 
+// Sized in fixed steps (not vw) because the card itself is now a fixed
+// max-width (see SplitAuthLayout), not a viewport-relative column - vw units
+// would keep growing with screen width even though the card stops growing
+// past its cap.
 export function StepHeading({ title, subtitle }) {
   return (
-    <div className="mb-8 space-y-2">
-      <h1 className="text-[3.4vw] font-semibold text-white">{title}</h1>
-      {subtitle && <p className="text-[1.1vw] text-white">{subtitle}</p>}
+    <div className="mb-8 space-y-2 max-[1025px]:mb-7 max-md:mb-10 max-md:space-y-3">
+      <h1 className="text-4xl font-semibold text-white max-[1025px]:text-[2rem] max-md:text-3xl">{title}</h1>
+      {subtitle && <p className="text-base text-white max-md:text-sm">{subtitle}</p>}
     </div>
   );
 }
@@ -28,8 +32,8 @@ export function TextField({ id, label, type = "text", value, onChange, placehold
   const [visible, setVisible] = useState(false);
 
   return (
-    <div className="mb-5 space-y-2">
-      <label htmlFor={id} className="block text-[1vw] font-geist-mono font-medium tracking-wide text-white/80">
+    <div className="mb-5 space-y-2 max-md:mb-4">
+      <label htmlFor={id} className="block text-sm font-geist-mono font-medium tracking-wide text-white/80">
         {label}
       </label>
       <div className="group relative w-full h-fit">
@@ -42,7 +46,9 @@ export function TextField({ id, label, type = "text", value, onChange, placehold
           placeholder={placeholder}
           autoComplete={autoComplete}
           required
-          className={`w-full border border-white/10 bg-white/5 py-3 text-[1vw]! text-white placeholder:text-white/30 outline-none transition ${
+          // text-base (16px), not smaller, on every breakpoint - anything
+          // under 16px makes iOS Safari auto-zoom the page on focus.
+          className={`w-full border border-white/10 bg-white/5 py-3 text-base! text-white placeholder:text-white/30 outline-none transition ${
             isPassword ? "pl-4 pr-12" : "px-4"
           }`}
         />
@@ -53,7 +59,7 @@ export function TextField({ id, label, type = "text", value, onChange, placehold
             className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white"
             aria-label={visible ? "Hide password" : "Show password"}
           >
-            {visible ? <EyeOff className="h-[1vw] w-[1vw] min-h-4 min-w-4" /> : <Eye className="h-[1vw] w-[1vw] min-h-4 min-w-4" />}
+            {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         )}
         <span className="pointer-events-none max-sm:hidden absolute top-0 left-0 h-1.5 w-1.5 border-t border-l border-primary opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 max-md:h-3 max-md:w-3 focus-frame" />

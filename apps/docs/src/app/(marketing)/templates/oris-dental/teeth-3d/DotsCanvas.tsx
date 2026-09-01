@@ -45,10 +45,13 @@ export default function DotsCanvas({
         const ctx = canvas.getContext('2d')
         if (!ctx) return
 
-        let animationFrameId: number
+        let animationFrameId: number = 0
         let width = 0
         let height = 0
         let dpr = 1
+        let isLooping = false
+        let isVisible = false
+        let isTabActive = !document.hidden
 
         const mouse = {
             x: -1000,
@@ -65,10 +68,12 @@ export default function DotsCanvas({
             const rect = canvas.getBoundingClientRect()
             width = rect.width
             height = rect.height
-            dpr = Math.min(window.devicePixelRatio || 1, 2)
+            if (width === 0 || height === 0) return
 
-            canvas.width = width * dpr
-            canvas.height = height * dpr
+            dpr = Math.min(window.devicePixelRatio || 1, 2)
+            canvas.width = Math.floor(width * dpr)
+            canvas.height = Math.floor(height * dpr)
+            ctx.resetTransform?.()
             ctx.scale(dpr, dpr)
 
             dots = []
@@ -83,7 +88,7 @@ export default function DotsCanvas({
                 for (let j = 0; j < rows; j++) {
                     const bx = offsetX + i * spacing
                     const by = offsetY + j * spacing
-                    
+
                     // Top to bottom gradient factor (0 near top, 1 near bottom)
                     const gradFactor = gradient
                         ? Math.min(1, Math.max(0.05, Math.pow(by / Math.max(1, height), 1.1)))
@@ -100,9 +105,51 @@ export default function DotsCanvas({
                     })
                 }
             }
+
+            drawStaticFrame()
+        }
+
+        const drawStaticFrame = () => {
+            if (!ctx || width === 0 || height === 0) return
+            ctx.clearRect(0, 0, width, height)
+
+            for (let i = 0; i < dots.length; i++) {
+                const dot = dots[i]
+                dot.x = dot.bx
+                dot.y = dot.by
+                dot.r = baseRadius
+                dot.alpha = baseOpacity * dot.gradFactor
+
+                if (dot.alpha > 0.005) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${dot.alpha})`
+                    if (shape === 'square') {
+                        const size = dot.r * 1.9
+                        ctx.fillRect(dot.x - size / 2, dot.y - size / 2, size, size)
+                    } else {
+                        ctx.beginPath()
+                        ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2)
+                        ctx.fill()
+                    }
+                }
+            }
+        }
+
+        const startLoop = () => {
+            if (isLooping || !isVisible || !isTabActive) return
+            isLooping = true
+            animationFrameId = requestAnimationFrame(render)
+        }
+
+        const stopLoop = () => {
+            isLooping = false
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId)
+                animationFrameId = 0
+            }
         }
 
         const handleMouseMove = (e: MouseEvent) => {
+            if (!isVisible) return
             const rect = canvas.getBoundingClientRect()
             if (
                 e.clientX < rect.left - interactionRadius ||
@@ -110,34 +157,42 @@ export default function DotsCanvas({
                 e.clientY < rect.top - interactionRadius ||
                 e.clientY > rect.bottom + interactionRadius
             ) {
-                mouse.targetX = -1000
-                mouse.targetY = -1000
-                mouse.active = false
+                if (mouse.active) {
+                    mouse.targetX = -1000
+                    mouse.targetY = -1000
+                    mouse.active = false
+                    startLoop()
+                }
                 return
             }
             mouse.targetX = e.clientX - rect.left
             mouse.targetY = e.clientY - rect.top
             mouse.active = true
+            startLoop()
         }
 
         const handleMouseLeave = () => {
-            mouse.targetX = -1000
-            mouse.targetY = -1000
-            mouse.active = false
+            if (mouse.active) {
+                mouse.targetX = -1000
+                mouse.targetY = -1000
+                mouse.active = false
+                startLoop()
+            }
         }
 
-        window.addEventListener('resize', initGrid)
-        window.addEventListener('mousemove', handleMouseMove, { passive: true })
-        document.addEventListener('mouseleave', handleMouseLeave)
-
-        initGrid()
-
         const render = () => {
+            if (!isVisible || !isTabActive) {
+                isLooping = false
+                return
+            }
+
             // Direct / snappy mouse tracking with higher lerp speed
             mouse.x += (mouse.targetX - mouse.x) * lerpFactor
             mouse.y += (mouse.targetY - mouse.y) * lerpFactor
 
             ctx.clearRect(0, 0, width, height)
+
+            let isAnyDotMoving = false
 
             for (let i = 0; i < dots.length; i++) {
                 const dot = dots[i]
@@ -168,10 +223,24 @@ export default function DotsCanvas({
                 }
 
                 // Snappy physics lerp
-                dot.x += (targetX - dot.x) * lerpFactor
-                dot.y += (targetY - dot.y) * lerpFactor
-                dot.r += (targetR - dot.r) * lerpFactor
-                dot.alpha += (targetAlpha - dot.alpha) * lerpFactor
+                const diffX = targetX - dot.x
+                const diffY = targetY - dot.y
+                const diffR = targetR - dot.r
+                const diffAlpha = targetAlpha - dot.alpha
+
+                dot.x += diffX * lerpFactor
+                dot.y += diffY * lerpFactor
+                dot.r += diffR * lerpFactor
+                dot.alpha += diffAlpha * lerpFactor
+
+                if (
+                    Math.abs(diffX) > 0.02 ||
+                    Math.abs(diffY) > 0.02 ||
+                    Math.abs(diffR) > 0.01 ||
+                    Math.abs(diffAlpha) > 0.003
+                ) {
+                    isAnyDotMoving = true
+                }
 
                 if (dot.alpha > 0.005) {
                     // Draw square dot
@@ -187,16 +256,54 @@ export default function DotsCanvas({
                 }
             }
 
+            // Idle detection: when mouse is inactive and dots have settled back to base
+            if (!mouse.active && !isAnyDotMoving && Math.abs(mouse.x - mouse.targetX) < 1) {
+                // Snap cleanly to static state and stop rAF loop
+                drawStaticFrame()
+                isLooping = false
+                return
+            }
+
             animationFrameId = requestAnimationFrame(render)
         }
 
-        render()
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        isVisible = true
+                        initGrid()
+                    } else {
+                        isVisible = false
+                        stopLoop()
+                    }
+                }
+            },
+            { threshold: 0.01 }
+        )
+
+        const handleVisibilityChange = () => {
+            isTabActive = !document.hidden
+            if (isTabActive && isVisible) {
+                startLoop()
+            } else {
+                stopLoop()
+            }
+        }
+
+        observer.observe(canvas)
+        window.addEventListener('resize', initGrid)
+        window.addEventListener('mousemove', handleMouseMove, { passive: true })
+        document.addEventListener('mouseleave', handleMouseLeave)
+        document.addEventListener('visibilitychange', handleVisibilityChange)
 
         return () => {
-            cancelAnimationFrame(animationFrameId)
+            stopLoop()
+            observer.disconnect()
             window.removeEventListener('resize', initGrid)
             window.removeEventListener('mousemove', handleMouseMove)
             document.removeEventListener('mouseleave', handleMouseLeave)
+            document.removeEventListener('visibilitychange', handleVisibilityChange)
         }
     }, [spacing, baseRadius, maxRadius, interactionRadius, baseOpacity, maxOpacity, lerpFactor, gradient, shape])
 

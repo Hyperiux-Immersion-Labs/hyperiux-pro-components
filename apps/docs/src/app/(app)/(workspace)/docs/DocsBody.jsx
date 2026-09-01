@@ -127,7 +127,7 @@ export default function DocsBody({ children }) {
           </div>
         </div>
 
-        <aside className="h-fit fixed right-4 top-1/2 -translate-y-1/2">
+        <aside className="h-fit fixed right-4 top-1/2 -translate-y-1/2 max-[1025px]:hidden">
           <TableOfContents
             containerRef={contentRef}
             watchKey={pathname}

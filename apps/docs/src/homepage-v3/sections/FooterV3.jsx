@@ -150,7 +150,7 @@ export default function FooterV3() {
   return (
     <footer
       ref={footerRef}
-      className="relative z-200 py-[7vw]  w-full overflow-hidden max-[1025px]:px-[5vw] max-[1025px]:py-[10vw] max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw]"
+      className="relative z-200 py-[7vw]  w-full overflow-hidden max-[1025px]:px-[5vw] max-[1025px]:py-[10vw] max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw] max-[1025px]:bg-[#111110]"
     >
       {!isMobile ? (
         <div className="absolute inset-0 top-0 z-1 pointer-events-auto">
@@ -175,7 +175,7 @@ export default function FooterV3() {
           as="h2"
           className="t96 font-neue-haas pointer-events-auto max-[1025px]:w-full max-sm:w-full max-sm:px-0! w-[80%]"
         >
-          Build The Interaction Layer Your Website Is Missing.
+          Build the Interaction Layer Your Website is Missing.
         </LineReveal>
 
         <div className="flex max-sm:flex-col mt-[3vw]  max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-[1025px]:mb-[10vw] max-[1025px]:gap-[3vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] gap-[2vw] fadeup">
@@ -206,8 +206,7 @@ export default function FooterV3() {
         </div>
       </div>
       <p className="text-center text18 absolute bottom-[2vw] max-[1025px]:bottom-[4vw] max-[1025px]:w-[90vw] max-sm:bottom-[10vw] left-[4%] text-light-grey z-4 max-md:w-[80vw] max-sm:left-[11%] max-sm:text-[3.5vw]!">
-        © 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux
-        Studio · Small motion. Big signal.
+        © 2026 Hyperiux. All rights reserved. · Vault is built by Hyperiux · Small motion. Big signal.
       </p>
       {/* ── Footer links grid ── */}
       <div className="relative z-3 mt-[10vw] max-[1025px]:mt-[14vw] max-sm:mt-[25vw] ">

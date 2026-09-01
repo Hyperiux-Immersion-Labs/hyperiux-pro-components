@@ -1,6 +1,6 @@
 {
   "name": "border-beam",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "registry:component",
   "title": "Border Beam",
   "description": "Animated border beam effect for cards and surfaces",
@@ -199,6 +199,12 @@
     }
   ],
   "changelog": [
+    {
+      "version": "1.0.2",
+      "date": "2026-08-27",
+      "summary": "Sync internal refactor from docs source: renamed hooks/helpers/state identifiers (useSystemTheme->usePreferredScheme, generateBeamCSS->buildRimCSS, etc.) and moved active-sync + glow-scale reset from effects to render-phase derived state; no public API or behavior change",
+      "breaking": false
+    },
     {
       "version": "1.0.1",
       "date": "2026-07-31",

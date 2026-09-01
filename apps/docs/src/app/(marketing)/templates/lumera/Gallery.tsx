@@ -103,6 +103,15 @@ const rightFeatures: GalleryFeature[] = [
   },
 ];
 
+// Matches Awards.tsx's per-card reveal: each hovered feature's image grows
+// in from its own center (scale 0 -> slightly over 1) and stacks on top of
+// whatever's already there, instead of sliding across. Hovering quickly
+// shows several images scaling up over one another rather than one shared
+// element being replaced.
+const IMAGE_REVEAL_DURATION = 0.45;
+const IMAGE_REVEAL_EASE = "power2.out";
+const IMAGE_ACTIVE_SCALE = 1.05;
+
 const Gallery = () => {
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLElement>(null);
@@ -121,32 +130,51 @@ const Gallery = () => {
     const previewContainer = previewContainerRef.current;
     if (!previewContainer) return;
 
-    const currentLastImg = previewContainer.querySelector("img:last-child");
-
-    if (currentLastImg) {
-      if (prefersReducedMotion()) {
-        currentLastImg.remove();
-      } else {
-        gsap.to(currentLastImg, { duration: 1, scale: 1.2, left: "100%" });
-      }
-    }
-
     const newImg = document.createElement("img");
     newImg.src = imgSrc.src;
     newImg.style.position = "absolute";
-    newImg.style.left = "-100%";
-    newImg.style.width = "100%";
-    newImg.style.height = "100%";
+    newImg.style.inset = "0";
     newImg.style.objectFit = "cover";
 
     previewContainer.appendChild(newImg);
 
     if (prefersReducedMotion()) {
-      newImg.style.left = "0%";
+      // No animation to wait on - everything behind it can go immediately.
+      Array.from(previewContainer.children)
+        .filter((child) => child !== newImg)
+        .forEach((child) => child.remove());
       return;
     }
 
-    gsap.to(newImg, { duration: 1, left: "0%" });
+    gsap.fromTo(
+      newImg,
+      { scale: 0 },
+      {
+        scale: IMAGE_ACTIVE_SCALE,
+        duration: IMAGE_REVEAL_DURATION,
+        ease: IMAGE_REVEAL_EASE,
+        onComplete: () => {
+          // Once fully grown this image opaquely covers everything BEHIND
+          // it, so only its older siblings (appended before it) are safe to
+          // drop here. Deliberately never touches anything appended AFTER
+          // it: under fast hovering, several images can be mid-grow at
+          // once, and this tween's onComplete can fire after a newer image
+          // has already been appended on top of it - removing that newer,
+          // still-animating (or still-loading) image is exactly what made
+          // fast hovers look like "the new image never rendered and the
+          // old one just vanished." Walking only previousElementSibling
+          // guarantees a completed image can never delete something newer
+          // than itself.
+          let sibling = newImg.previousElementSibling;
+          while (sibling) {
+            const toRemove = sibling;
+            sibling = sibling.previousElementSibling;
+            gsap.killTweensOf(toRemove);
+            toRemove.remove();
+          }
+        },
+      }
+    );
   };
 
   const renderColumn = (columnFeatures: GalleryFeature[]) => {
@@ -197,7 +225,7 @@ const Gallery = () => {
 
           <MaskTextReveal className="w-[40%] max-[1025px]:w-full">
 
-        <p data-para-anim className=" max-md:py-[3vw] max-[1025px]:text-[3.5vw] text-[1.25vw] text-[#1C1B1A] tracking-wide ">
+        <p data-para-anim className=" max-md:py-[3vw] max-[1025px]:text-[3.5vw] max-md:text-[4.2vw] text-[1.25vw] text-[#1C1B1A] tracking-wide ">
           The interiors of Lumera Heights reflect a refined balance of modern luxury and functional elegance.
         </p>
           </MaskTextReveal>

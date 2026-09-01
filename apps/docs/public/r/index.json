@@ -1622,11 +1622,13 @@
       "categories": [
         "components"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "lucide-react"
+      ],
       "registryDependencies": [],
       "exportName": "BorderBeam",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "tier": "free"
     },
     {

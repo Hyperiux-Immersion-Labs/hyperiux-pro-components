@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/border-beam",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Animated border beam effect for cards and surfaces",
   "main": "index.tsx",
   "files": [

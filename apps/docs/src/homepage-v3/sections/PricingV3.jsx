@@ -16,7 +16,7 @@ if (typeof window !== "undefined") {
 
 const PRICING = {
     USD: { symbol: "$", monthly: 20, yearly: 179 },
-    INR: { symbol: "₹", monthly: 999, yearly: 8990 },
+    INR: { symbol: "₹", monthly: 999, yearly: 8999 },
 };
 
 const ProCta = dynamic(() => import("./PricingV3Cta"), { ssr: false });
@@ -139,7 +139,7 @@ function FeatureList({ features, className = "", onDark = false }) {
                 <li key={feature} className="flex items-start gap-[1vw] max-[1025px]:gap-[2vw] max-md:gap-[2.5vw] max-sm:gap-[3.5vw]">
                     <CheckSquare
                         onDark={onDark}
-                        className="mt-[0.25vw] size-[1.1vw] max-[1025px]:mt-[0.6vw] max-[1025px]:size-[2.2vw] max-md:mt-[0.6vw] max-md:size-[2.4vw] max-sm:mt-[0.8vw] max-sm:size-[4vw]"
+                        className="mt-[0.25vw] size-[1.1vw] max-[1025px]:mt-[0.6vw] max-[1025px]:size-[2.2vw] max-md:mt-[1.4vw] max-md:size-[2.4vw] max-sm:size-[4vw]"
                     />
                     <span className="text22 leading-[1.35] max-md:text-[2.2vw] max-sm:text-[4vw]">
                         {feature}
@@ -263,7 +263,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
         >
             {/* HEADING */}
             <div className="text-center w-full">
-                <LineReveal  as="h2" className="t96 w-full max-md:w-[95%] max-md:mx-auto font-neue-haas ">
+                <LineReveal  as="h2" className="t96 w-full max-[1025px]:w-[95%] max-[1025px]:mx-auto font-neue-haas ">
                     Start Free. Upgrade When You&rsquo;re{" "}
                     <span className="gradient-text-animate">Ready.</span>
                 </LineReveal>
@@ -325,16 +325,16 @@ export default function PricingV3({ isIndia = false, auth = false }) {
                         <p className="t64 font-neue-haas  max-md:text-[5vw] max-sm:text-[7vw]">Pro</p>
 
                         <div className="mt-[1.5vw] flex items-end gap-[1vw] max-[1025px]:mt-[3vw] max-[1025px]:gap-[2vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
-                            <p
-                                className="t96 font-neue-haas items-center  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]"
-                                aria-label={`${symbol}${planPrice} ${planLabel.toLowerCase()}`}
-                            >
-                                <span aria-hidden="true">{symbol}</span>
-                                <PriceDigits
-                                    monthlyAmount={monthlyAmount}
-                                    yearlyAmount={yearlyAmount}
-                                    isYearly={isYearly}
-                                />
+                            <p className="t96 font-neue-haas items-center  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]">
+                                <span className="sr-only">{`${symbol}${planPrice} ${planLabel.toLowerCase()}`}</span>
+                                <span aria-hidden="true" className="flex items-center leading-none">
+                                    <span>{symbol}</span>
+                                    <PriceDigits
+                                        monthlyAmount={monthlyAmount}
+                                        yearlyAmount={yearlyAmount}
+                                        isYearly={isYearly}
+                                    />
+                                </span>
                             </p>
 
                             <p className="text22 mb-[0.4vw] max-md:text-[2.2vw] max-sm:text-[4vw]">
@@ -385,7 +385,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
 
             {/* FOOTNOTE */}
             <SplitLine as="p" className="text32  mx-auto mt-[5vw] w-[52vw] text-center leading-[1.35] max-[1025px]:mt-[8vw] max-[1025px]:w-[85%] max-md:mt-[10vw] max-md:w-[75vw]  max-sm:mt-[14vw] max-sm:w-[90%] ">
-                Cancel anytime. The free core stays free forever. Every effect lives in
+                The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
             </SplitLine>
         </section>

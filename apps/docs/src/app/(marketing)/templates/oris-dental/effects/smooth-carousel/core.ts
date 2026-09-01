@@ -95,6 +95,7 @@ export class Core {
 
   #currentSlide: number = 0
   #previousSlide: number = 0
+  #isSettled: boolean = false
 
   config: CoreConfig
   wrapper: HTMLElement
@@ -481,6 +482,22 @@ export class Core {
     this.deltaTime = (currentTime - this.#previousTime) / 1000
     this.#previousTime = currentTime
 
+    const isMoving =
+      Math.abs(this.target - this.current) > 0.0001 ||
+      this.isDragging ||
+      this.isTouching ||
+      Math.abs(this.speed) > 0.001
+
+    if (!isMoving) {
+      if (this.#isSettled) {
+        return
+      }
+      this.current = this.target
+      this.#isSettled = true
+    } else {
+      this.#isSettled = false
+    }
+
     if (this.config.snap && !this.isDragging) {
       if (this.config.variableWidth) {
         const snapped = this.#snapToNearest(this.target)
@@ -493,12 +510,14 @@ export class Core {
       }
     }
 
-    this.current = damp(
-      this.current,
-      this.target,
-      1 / this.config.lerpFactor,
-      this.deltaTime
-    )
+    if (isMoving) {
+      this.current = damp(
+        this.current,
+        this.target,
+        1 / this.config.lerpFactor,
+        this.deltaTime
+      )
+    }
 
     if (this.config.infinite) {
       if (this.config.variableWidth) {

@@ -37,11 +37,17 @@ const SIDE_TEXT_START_OFFSET = H1_START_OFFSET + 0.5
 const HEADER_START_OFFSET = SIDE_TEXT_START_OFFSET + 0.3
 
 // Cursor parallax: the portrait (closer/bigger, reads as "foreground")
-// drifts further than the text (reads as "further back"), same direction,
-// both lerped toward the cursor's normalized -1..1 position for a smooth
-// catch-up rather than snapping straight to it.
+// drifts further than the text (reads as "further back") on the X axis,
+// both moving the same direction, both lerped toward the cursor's
+// normalized -1..1 position for a smooth catch-up rather than snapping
+// straight to it. The Y axis drifts too, but image and text move opposite
+// ways vertically (image follows the cursor, text counters it) - that
+// cross-motion is what actually reads as depth/parallax, rather than the
+// whole hero just sliding as one block.
 const IMAGE_PARALLAX_MAX_X = 30
 const TEXT_PARALLAX_MAX_X = 12
+const IMAGE_PARALLAX_MAX_Y = 30
+const TEXT_PARALLAX_MAX_Y = 12
 const PARALLAX_LERP = 0.08
 
 // translateY(-51.1%) in elenavoss.css loops seamlessly because each list
@@ -198,12 +204,21 @@ const Hero = () => {
         if (globalThis.innerWidth <= 1024) return
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-        const state = { targetImgX: 0, currentImgX: 0, targetTextX: 0, currentTextX: 0 }
+        const state = {
+            targetImgX: 0, currentImgX: 0, targetTextX: 0, currentTextX: 0,
+            targetImgY: 0, currentImgY: 0, targetTextY: 0, currentTextY: 0,
+        }
 
         const handleMouseMove = (e: MouseEvent) => {
             const normalizedX = (e.clientX / window.innerWidth) * 2 - 1 // -1..1
+            const normalizedY = (e.clientY / window.innerHeight) * 2 - 1 // -1..1
             state.targetImgX = -normalizedX * IMAGE_PARALLAX_MAX_X
             state.targetTextX = -normalizedX * TEXT_PARALLAX_MAX_X
+            // Opposite sign from each other (not from the X axis) - image
+            // follows the cursor's Y position, text counters it, so they
+            // visibly move apart/together instead of drifting as one unit.
+            state.targetImgY = -normalizedY * IMAGE_PARALLAX_MAX_Y
+            state.targetTextY = -normalizedY * TEXT_PARALLAX_MAX_Y
         }
         window.addEventListener('mousemove', handleMouseMove)
 
@@ -211,8 +226,10 @@ const Hero = () => {
         const tick = () => {
             state.currentImgX += (state.targetImgX - state.currentImgX) * PARALLAX_LERP
             state.currentTextX += (state.targetTextX - state.currentTextX) * PARALLAX_LERP
-            gsap.set(heroAvImgRef.current, { x: state.currentImgX })
-            gsap.set(heroTextRef.current, { x: state.currentTextX })
+            state.currentImgY += (state.targetImgY - state.currentImgY) * PARALLAX_LERP
+            state.currentTextY += (state.targetTextY - state.currentTextY) * PARALLAX_LERP
+            gsap.set(heroAvImgRef.current, { x: state.currentImgX, y: state.currentImgY })
+            gsap.set(heroTextRef.current, { x: state.currentTextX, y: state.currentTextY })
             frameId = requestAnimationFrame(tick)
         }
         frameId = requestAnimationFrame(tick)

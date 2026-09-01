@@ -32,6 +32,10 @@ const AT_ACTIONS = 2.75;
 // it mounts. `visibility` (not `display`) so they still take up layout and the
 // hero never reflows when they appear, and it is exactly what GSAP's
 // `autoAlpha` writes, so the intro's own `autoAlpha: 1` clears it for free.
+//
+// The headline is the exception and ships painted — it is the LCP element, and
+// hidden markup puts the metric behind the whole loader. See the layout effect,
+// which hides it at hydration instead.
 const INTRO_HIDDEN = { visibility: "hidden" };
 
 // Any path that decides the intro will not run has to put the copy back —
@@ -71,6 +75,7 @@ export default function Hero() {
     const headingRef = useRef(null);
     const copyRef = useRef(null);
     const actionsRef = useRef(null);
+    const coverRef = useRef(null);
     const loaderComplete = useLoaderV3Complete();
     // Start conservative: visible copy, no WebGL chunk. Layout effect below
     // enables the real intro only after client signals prove this is not PSI.
@@ -82,18 +87,37 @@ export default function Hero() {
     const introRef = useRef(0);
 
     useLayoutEffect(() => {
+        // The headline ships painted rather than hidden, because it is the
+        // largest thing on the page and therefore what LCP measures: markup
+        // that hides it means the metric cannot be recorded until the intro
+        // plays it in, seconds later, behind a loader. What nobody may see is
+        // the paint it gets credited with — hence the cover, which is in the
+        // same server HTML and comes off here, in the same breath as the copy
+        // is settled either way. The loader's own backdrop is not enough to
+        // lean on: it is a separate component and takes itself down when *it*
+        // hydrates, which can be several frames before this runs, and the
+        // headline is on screen for every one of them.
+        const dropCover = () => gsap.set(coverRef.current, { display: "none" });
+
         if (shouldBypassHeroIntroForAudit() || prefersReducedMotion()) {
             introRef.current = 1;
-            // No intro on this path, so nothing else will ever clear the
-            // markup's `visibility: hidden`. Put the copy back before paint.
+            // No intro on this path, so nothing else will ever settle the copy.
+            // Put it back before paint.
             revealIntroTargets(
                 headingRef.current,
                 copyRef.current,
                 actionsRef.current
             );
+            dropCover();
             unlockScrollV3();
             return;
         }
+        hideIntroTargets(
+            headingRef.current,
+            copyRef.current,
+            actionsRef.current
+        );
+        dropCover();
         // GPU capability detection reads WebGL context / renderer info that
         // only exists client-side - can't be a lazy useState initializer
         // without risking a hydration mismatch.
@@ -291,8 +315,13 @@ export default function Hero() {
                 <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-center p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
                     <div className="space-y-[3vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-4 ">
                         <div className="flex flex-col h-fit font-neue-haas w-full items-start max-sm:gap-2 max-md:gap-5">
-                            <h1 ref={headingRef} style={INTRO_HIDDEN} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[55vw] max-[1025px]:mt-0 max-[1025px]:w-[85%] max-md:mt-0 max-md:w-[95%] max-sm:w-full">
-                                The Interaction Layer your Website is <span className="gradient-text-animate">Missing.</span>
+                            {/* No INTRO_HIDDEN here, unlike the copy and the
+                                actions below: this is the LCP element, and it
+                                has to reach the screen with the server's HTML
+                                to be measured at all. The layout effect above
+                                hides it at hydration. */}
+                            <h1 ref={headingRef} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[55vw] max-[1025px]:mt-0 max-[1025px]:w-[85%] max-md:mt-0 max-md:w-[95%] max-sm:w-full">
+                                The Interaction Layer Your Website is <span className="gradient-text-animate">Missing.</span>
                             </h1>
                         </div>
 
@@ -312,7 +341,7 @@ export default function Hero() {
                                 className="max-sm:w-full max-sm:justify-center"
                             />
                             <ButtonV3
-                                text="Browser All Effects"
+                                text="Browse All Effects"
                                       href="/effects"
                                 variant="orange"
                                 scrollOffset={-1000}
@@ -325,6 +354,14 @@ export default function Hero() {
             <div
                 ref={overlayRef}
                 className="pointer-events-none absolute inset-0 z-20 bg-background opacity-0"
+            />
+            {/* Over everything the hero paints, for exactly as long as it takes
+                this to hydrate. It is what lets the headline ship visible
+                without ever being seen that way — see the layout effect. */}
+            <div
+                ref={coverRef}
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 z-30 bg-background"
             />
         </main>
     );

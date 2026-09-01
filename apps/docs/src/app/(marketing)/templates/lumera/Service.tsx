@@ -74,7 +74,7 @@ export default function Service() {
               onScroll={updateServicesThumb}
               className={`w-full h-full px-[5%] no-scrollbar max-[1025px]:overflow-x-auto overflow-hidden max-md:pr-0 max-md:mt-[10%] max-[1025px]:w-screen max-[1025px]:ml-0 max-md:ml-0 max-md:px-[5vw]`}
             >
-              <div className="flex relative gap-[1.5%] overflow-hidden aspect-[2.5] fadeup max-[1025px]:flex max-[1025px]:w-[400vw] max-[1025px]:ml-[5%] max-[1025px]:aspect-auto max-[1025px]:overflow-visible max-[1025px]:mb-[5vw] max-[1025px]:gap-[3vw] max-md:gap-[1.5%]">
+              <div className="flex relative gap-[1.5%] aspect-[2.5] fadeup max-[1025px]:flex max-[1025px]:w-[400vw] max-[1025px]:ml-[5%] max-[1025px]:aspect-auto max-[1025px]:overflow-visible max-[1025px]:mb-[5vw] max-[1025px]:gap-[3vw] max-md:gap-[1.5%]">
                 {services.map((service, index) => (
                   <div
                     key={index}
@@ -88,7 +88,7 @@ export default function Service() {
                       quality={90}
                       className="object-cover object-center h-full w-full transition-all duration-350 ease-in-out scale-110 group-hover:scale-100 group-focus:scale-100"
                     />
-                    <div className="stripe-label max-w-[15vw] backdrop-blur-sm px-[2vw] py-[1vw] bg-white/10 rounded-lg overflow-hidden w-fit duration-500 ease-in-out transition-all group-hover:max-w-[42vw] group-focus:max-w-[42vw] max-[1025px]:max-w-[90%] max-[1025px]:py-[2vw] max-[1025px]:px-[3vw]">
+                    <div className="stripe-label max-w-[15vw] backdrop-blur-xl px-[2vw] py-[1vw] bg-white/10 rounded-lg overflow-hidden w-fit duration-500 ease-in-out transition-all group-hover:max-w-[42vw] group-focus:max-w-[42vw] max-[1025px]:max-w-[90%] max-[1025px]:py-[2vw] max-[1025px]:px-[3vw]">
                       <p className="truncate text-[1.15vw] font-medium! font-head text-white uppercase whitespace-nowrap max-md:text-[4vw] max-[1025px]:text-[3vw]" title={service.title}>
                         {service.title}
                       </p>

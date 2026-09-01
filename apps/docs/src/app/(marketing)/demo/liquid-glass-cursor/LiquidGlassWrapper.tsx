@@ -42,7 +42,7 @@ export default function LiquidGlassWrapper({ cursorProps = {} }) {
           New
         </div>
 
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4" data-cursor="text">
           <h1 className="text-[88px] max-[1025px]:text-6xl leading-tight font-semibold tracking-[-0.04em] text-[#1D1D1F] inline-block px-4 py-2">
             LIQUID PRO.
           </h1>
@@ -52,10 +52,10 @@ export default function LiquidGlassWrapper({ cursorProps = {} }) {
         </div>
 
         <div className="flex flex-row max-md:flex-col items-center gap-6 mt-10">
-          <button className="flex items-center justify-center gap-2 px-8 py-3.5 bg-[#1D1D1F] text-white font-medium text-lg max-md:text-lg max-[1025px]:text-xl rounded-full transition-all hover:bg-black hover:scale-105 active:scale-95">
+          <button data-cursor="button" className="flex items-center justify-center gap-2 px-8 py-3.5 bg-[#1D1D1F] text-white font-medium text-lg max-md:text-lg max-[1025px]:text-xl rounded-full transition-all hover:bg-black hover:scale-105 active:scale-95">
             Buy <ChevronRight className="w-4 h-4 max-md:w-5 max-md:h-5 max-[1025px]:w-6 max-[1025px]:h-6" />
           </button>
-          <button className="flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-[#2997FF] font-medium text-lg max-md:text-lg max-[1025px]:text-xl rounded-full transition-all hover:bg-[#2997FF]/10 hover:scale-105 active:scale-95">
+          <button data-cursor="button" className="flex items-center justify-center gap-2 px-8 py-3.5 bg-transparent text-[#2997FF] font-medium text-lg max-md:text-lg max-[1025px]:text-xl rounded-full transition-all hover:bg-[#2997FF]/10 hover:scale-105 active:scale-95">
             Watch the film <Play className="w-4 h-4 max-md:w-5 max-md:h-5 max-[1025px]:w-6 max-[1025px]:h-6 fill-current" />
           </button>
         </div>

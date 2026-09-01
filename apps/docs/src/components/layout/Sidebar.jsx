@@ -232,7 +232,7 @@ export function Sidebar({
   const [fetchedEffects, setFetchedEffects] = useState([]);
   const [openSection, setOpenSection] = useState(initialOpenSection);
   const [hoveredSidebarKey, setHoveredSidebarKey] = useState("");
-  const { startNavigation } = useVaultLayout();
+  const { startNavigation, scrollToTop } = useVaultLayout();
 
   const previousRouteSectionRef = useRef(initialOpenSection);
   const categoryNavigationInProgressRef = useRef(false);
@@ -320,21 +320,15 @@ export function Sidebar({
     };
   }, [effects]);
 
-  useEffect(() => {
-    router.prefetch?.("/effects");
-
-    for (const link of resolvedTopLinks) {
-      router.prefetch?.(link.href);
-    }
-
-    for (const link of resolvedLegalLinks) {
-      router.prefetch?.(link.href);
-    }
-
-    for (const category of effectCategories) {
-      router.prefetch?.(getEffectCategoryHref(category.id));
-    }
-  }, [router, resolvedTopLinks, resolvedLegalLinks]);
+  // ponytail: removed an eager useEffect that called router.prefetch() for
+  // every docs/legal/category link (~23 routes, each an RSC payload + full
+  // page JS chunk) on every Sidebar mount - confirmed via a live network
+  // trace to be firing in the same burst as the page's own content requests
+  // and contending for bandwidth (reported as "/effects loading very slow").
+  // next/link already prefetches each rendered <Link> lazily as it enters
+  // the viewport (see the sidebar's own <Link> elements below) - this was a
+  // redundant, strictly-worse duplicate of that, blasting everything upfront
+  // instead of staggered as links actually scroll into view.
 
   /*
     Important:
@@ -420,6 +414,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("");
     startNavigation("/effects");
+    scrollToTop();
 
     const wasHandled = onOverviewNavigate?.();
 
@@ -435,6 +430,7 @@ export function Sidebar({
     setOpenSection("categories");
     const targetHref = getEffectCategoryHref(categoryId);
     startNavigation(targetHref);
+    scrollToTop();
 
     const wasHandled = onCategoryNavigate?.(categoryId);
 
@@ -449,6 +445,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("docs");
     startNavigation(href);
+    scrollToTop();
 
     if (typeof window !== "undefined") {
       const docsRouteEvent = new CustomEvent("hyperiux:docs-route-request", {
@@ -474,6 +471,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("legal");
     startNavigation(href);
+    scrollToTop();
 
     const wasHandled = onDocumentationNavigate?.(href);
 
@@ -768,6 +766,10 @@ export function Sidebar({
             icon={Pricing}
             isExpanded={isExpanded}
             isActive={hoveredSidebarKey ? hoveredSidebarKey === "pricing" : pathname === "/pricing"}
+            onClick={() => {
+              startNavigation("/pricing");
+              scrollToTop();
+            }}
             onMouseEnter={() => setHoveredSidebarKey("pricing")}
           />
 
@@ -797,6 +799,7 @@ export function Sidebar({
             icon={Mcp}
             isExpanded={isExpanded}
             isActive={hoveredSidebarKey ? hoveredSidebarKey === "mcp" : pathname === "/docs/mcp"}
+            onClick={(event) => navigateDocumentation(event, "/docs/mcp")}
             onMouseEnter={() => setHoveredSidebarKey("mcp")}
           />
         </nav>

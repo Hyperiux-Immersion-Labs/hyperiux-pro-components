@@ -76,21 +76,42 @@
       "type": "number",
       "default": 130,
       "description": "Lens diameter when hovering a data-cursor=\"text\" target.",
-      "remixer": { "control": "range", "group": "size", "groupTitle": "Size", "min": 60, "max": 260, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "size",
+        "groupTitle": "Size",
+        "min": 60,
+        "max": 260,
+        "step": 1
+      }
     },
     {
       "name": "maxButtonWidth",
       "type": "number",
-      "default": 220,
+      "default": 260,
       "description": "Lens width when hovering a data-cursor=\"button\" target.",
-      "remixer": { "control": "range", "group": "button", "groupTitle": "Button Hover", "min": 80, "max": 420, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "button",
+        "groupTitle": "Button Hover",
+        "min": 80,
+        "max": 420,
+        "step": 1
+      }
     },
     {
       "name": "maxButtonHeight",
       "type": "number",
-      "default": 150,
+      "default": 110,
       "description": "Lens height when hovering a data-cursor=\"button\" target.",
-      "remixer": { "control": "range", "group": "button", "groupTitle": "Button Hover", "min": 40, "max": 240, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "button",
+        "groupTitle": "Button Hover",
+        "min": 40,
+        "max": 240,
+        "step": 1
+      }
     },
     {
       "name": "distortion",

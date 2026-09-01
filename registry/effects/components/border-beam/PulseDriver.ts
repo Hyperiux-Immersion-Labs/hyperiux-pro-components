@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 /**
  * Shared breathing driver for the Pulse effects.
  *
@@ -31,39 +32,37 @@ export interface PulseDriverConfig {
   hue: { prop: string, range: number, period: number, continuous: boolean } | null;
 }
 
-interface PulseInstance {
+interface PulseEntry {
   el: HTMLElement;
   config: PulseDriverConfig;
 }
 
-const instances = new Set<PulseInstance>();
+const activeSet = new Set<PulseEntry>();
 
-let rafId: number | null = null;
-let lastFrame = 0;
+let frameHandle: number | null = null;
+let lastTick = 0;
 
-// ~30 fps. Subtract a small slack so a frame that lands a hair early still runs.
-const FRAME_INTERVAL = 1000 / 30 - 2;
-const TWO_PI = Math.PI * 2;
+// ~30 fps. Subtract a small slack so a tick that lands a hair early still runs.
+const MIN_TICK_GAP = 1000 / 30 - 2;
+const TAU = Math.PI * 2;
 
-/**
- * Cosine ease-in-out factor in [0, 1]: 0 at phase 0/1, 1 at phase 0.5.
- */
-function pingPong(phase: number): number {
-  return (1 - Math.cos(TWO_PI * phase)) / 2;
+/** Cosine ease-in-out factor in [0, 1]: 0 at phase 0/1, 1 at phase 0.5. */
+function easeCycle(phase: number): number {
+  return (1 - Math.cos(TAU * phase)) / 2;
 }
 
-function frame(ts: number) {
-  rafId = requestAnimationFrame(frame);
-  if (ts - lastFrame < FRAME_INTERVAL) return;
-  lastFrame = ts;
+function tick(ts: number) {
+  frameHandle = requestAnimationFrame(tick);
+  if (ts - lastTick < MIN_TICK_GAP) return;
+  lastTick = ts;
 
   const tSec = ts / 1000;
 
-  instances.forEach(({ el, config }) => {
+  activeSet.forEach(({ el, config }) => {
     for (const osc of config.oscillators) {
       // Match CSS animation-delay semantics: a positive delay starts later.
       const phase = (tSec - osc.delay) / osc.period;
-      const value = osc.a + (osc.b - osc.a) * pingPong(phase);
+      const value = osc.a + (osc.b - osc.a) * easeCycle(phase);
       el.style.setProperty(
         osc.prop,
         osc.unit === 'px' ? `${value.toFixed(2)}px` : value.toFixed(4)
@@ -76,39 +75,39 @@ function frame(ts: number) {
       // sweeps through every edge; otherwise drift between -range and +range.
       const value = continuous
         ? ((tSec / period) % 1) * range
-        : -range + 2 * range * pingPong(tSec / period);
+        : -range + 2 * range * easeCycle(tSec / period);
       el.style.setProperty(prop, `${value.toFixed(2)}deg`);
     }
   });
 }
 
-function startLoop() {
-  if (rafId == null) {
-    lastFrame = 0;
-    rafId = requestAnimationFrame(frame);
+function ensureLoop() {
+  if (frameHandle == null) {
+    lastTick = 0;
+    frameHandle = requestAnimationFrame(tick);
   }
 }
 
-function stopLoopIfIdle() {
-  if (instances.size === 0 && rafId != null) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
+function haltIfEmpty() {
+  if (activeSet.size === 0 && frameHandle != null) {
+    cancelAnimationFrame(frameHandle);
+    frameHandle = null;
   }
 }
 
 /**
  * Register an element to be driven by the shared pulse loop.
  *
- * @param config - config from getPulseDriverConfig() in styles.js
- * @returns cleanup function that unregisters the instance (and
- *          stops the shared loop once no instances remain).
+ * @param config - config from buildPulseConfig() in styles.js
+ * @returns cleanup function that unregisters the entry (and
+ *          stops the shared loop once no entries remain).
  */
-export function registerPulseInstance(el: HTMLElement, config: PulseDriverConfig): () => void {
-  const instance = { el, config };
-  instances.add(instance);
-  startLoop();
+export function attachPulse(el: HTMLElement, config: PulseDriverConfig): () => void {
+  const entry = { el, config };
+  activeSet.add(entry);
+  ensureLoop();
   return () => {
-    instances.delete(instance);
-    stopLoopIfIdle();
+    activeSet.delete(entry);
+    haltIfEmpty();
   };
 }

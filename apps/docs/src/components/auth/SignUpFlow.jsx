@@ -20,14 +20,24 @@ import {
 // a Signals-based shape with no `isLoaded`/`setActive`, which silently
 // breaks the `if (!isLoaded || loading) return;` guards below).
 
-const ART_SRC =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg";
-
 const RESEND_COOLDOWN_SECONDS = 30;
 
 // Matches the prebuilt <SignUp/> component's existing fallbackRedirectUrl
 // (see the old sign-up page.js) - keeps the same post-signup funnel.
 const REDIRECT_AFTER_SIGN_UP = "/pricing#pricing-cards";
+
+// Reads the click-attribution cookie the homepage-only tracker
+// (components/WebsiteComps/AffitorTracking.jsx) sets, so a referred
+// visitor's affitor_click_id rides along on signUp.create() as
+// unsafeMetadata. Clerk copies that onto the created User, which is what
+// the user.created webhook (api/webhooks/clerk/route.js) reads to bind the
+// lead server-side via trackAffitorLead() - the reliable half of this
+// funnel; see that file for why the client-side tracker's own signup()
+// call isn't used anymore.
+function getAffitorClickId() {
+  const match = document.cookie.match(/(?:^|; )affitor_click_id=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
 
 export default function SignUpFlow() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -69,7 +79,12 @@ export default function SignUpFlow() {
     setError(null);
 
     try {
-      const result = await signUp.create({ emailAddress: email, password });
+      const affitorClickId = getAffitorClickId();
+      const result = await signUp.create({
+        emailAddress: email,
+        password,
+        ...(affitorClickId && { unsafeMetadata: { affitor_click_id: affitorClickId } }),
+      });
 
       if (result.status === "complete") {
         await completeSignUp(result);
@@ -144,7 +159,7 @@ export default function SignUpFlow() {
   }
 
   return (
-    <SplitAuthLayout artSrc={ART_SRC}>
+    <SplitAuthLayout>
       <GlobalError message={error} />
 
       {step === "start" && (

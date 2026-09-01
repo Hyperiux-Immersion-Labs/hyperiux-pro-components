@@ -16,6 +16,7 @@ import gsap from "gsap";
 export class KeyboardSlider extends Core {
   #tickerFn: () => void;
   #currentTilt: number = 0;
+  #hadActiveTilt: boolean = false;
 
   constructor(wrapper: HTMLElement, config?: Partial<CoreConfig>) {
     super(wrapper, config);
@@ -83,13 +84,32 @@ export class KeyboardSlider extends Core {
 
     const tilt = Math.abs(this.#currentTilt) > 0.01 ? this.#currentTilt : 0;
 
+    // If tilt is 0 and was already at rest, skip DOM manipulation entirely
+    if (tilt === 0 && Math.abs(targetTilt) < 0.001) {
+      if (this.#hadActiveTilt) {
+        this.#hadActiveTilt = false;
+        for (let i = 0; i < this.items.length; i++) {
+          const item = this.items[i];
+          const card = (item.firstElementChild || item) as HTMLElement;
+          if (card) {
+            card.style.transform = "";
+            card.style.willChange = "";
+          }
+        }
+      }
+      return;
+    }
+
+    this.#hadActiveTilt = true;
+    const tiltStr = `rotate(${tilt.toFixed(2)}deg)`;
+
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i];
       const card = (item.firstElementChild || item) as HTMLElement;
       if (card) {
-        card.style.transform = tilt ? `rotate(${tilt.toFixed(2)}deg)` : "";
+        card.style.transform = tiltStr;
         card.style.transformOrigin = "center 85%";
-        card.style.willChange = tilt ? "transform" : "";
+        card.style.willChange = "transform";
       }
     }
   }

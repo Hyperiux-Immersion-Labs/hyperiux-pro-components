@@ -18,6 +18,10 @@ export const NAV_MENUS_V3 = {
   categories: {
     columns: [
       {
+        title: "Browse",
+        items: pick("All Effects", "Featured"),
+      },
+      {
         title: "By type",
         items: pick(
           "Text",
@@ -32,10 +36,7 @@ export const NAV_MENUS_V3 = {
         title: "In motion",
         items: pick("Scroll", "Cursor", "Transitions", "Loaders", "WebGL"),
       },
-      {
-        title: "Browse",
-        items: pick("All Effects", "Featured"),
-      },
+      
     ],
   },
   docs: {
