@@ -502,12 +502,12 @@ export const effectCategories = [
   },
   {
     id: "navigation",
-    name: "Navigation Effects",
+    name: "Navigations",
     slug: "navigation",
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/navigation.jpg",
     metadata: {
-      title: "Navigation Effects for React & Next.js | Hyperiux Vault",
-      description: "React navigation effects for menus and navbars: directional menus, immersive overlays, elevated headers, and expanding navbars.",
+      title: "Navigations for React & Next.js | Hyperiux Vault",
+      description: "React navigations for menus and navbars: directional menus, immersive overlays, elevated headers, and expanding navbars.",
     },
     description: "Make menus, navbars and navigation patterns feel more polished and responsive with interactions that add character while helping users stay oriented and move confidently between important parts of the experience.",
     cta: {

@@ -1,5 +1,4 @@
 import Homepage from "@/components/Homepage/Homepage";
-import React from "react";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { getSearchIndexEffects } from "@/lib/search-index";
@@ -11,7 +10,7 @@ const faqItems = [
     question: "What is Hyperiux Vault?",
     answer: (
       <>
-        Vault is a source-first interaction effects library for React and Next.js. It covers scroll effects, text animations, cursor systems, page transitions, WebGL scenes, backgrounds, navigation patterns, creative components, and microinteractions. Effects install as editable code inside your project.
+        Vault is a source-first interaction effects library for React and Next.js. It covers scroll effects, text animations, cursor systems, page transitions, WebGL scenes, backgrounds, navigations, creative components. Effects install as editable code inside your project.
       </>
     ),
     defaultOpen: true,

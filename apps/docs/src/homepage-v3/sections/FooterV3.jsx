@@ -175,7 +175,7 @@ export default function FooterV3() {
           as="h2"
           className="t96 font-neue-haas pointer-events-auto max-[1025px]:w-full max-sm:w-full max-sm:px-0! w-[80%]"
         >
-          Build The Interaction Layer Your Website Is Missing.
+          Build the Interaction Layer Your Website is Missing.
         </LineReveal>
 
         <div className="flex max-sm:flex-col mt-[3vw]  max-sm:gap-[4vw] pb-[2vw] mb-[4.5vw] max-[1025px]:mb-[10vw] max-[1025px]:gap-[3vw] max-md:mb-[15vw] relative max-sm:mb-[10vw] gap-[2vw] fadeup">

@@ -53,15 +53,15 @@ const COLUMNS = [
     ],
     [
         {
-            title: "Text Animation",
-            tag: "Text Animation",
-            action: "Text Animation",
+            title: "Text Animations",
+            tag: "Text Animations",
+            action: "Text Animations",
             href: "/effects/text-animations",
             ...effectMedia("rolling-text", "text-animations"),
         },
         {
             title: "Page Transitions",
-            tag: "Page Transition",
+            tag: "Page Transitions",
             action: "Page Transitions",
             href: "/effects/page-transitions",
             ...effectMedia("depth-shift-transition", "page-transitions"),
@@ -139,7 +139,7 @@ export default function ExploreTheEffects() {
                 </LineReveal>
                 <SplitLine as='p' delay={.25} className="t22 w-[52vw] mx-auto text-center max-[1025px]:w-[85%] max-md:w-full max-md:text-[2.4vw] max-sm:text-[4vw]">
                     Vault is easiest to understand when you feel it. Preview a few
-                    high-impact effects below, then open the full catalogue when you are
+                    high-impact effects below, then open the full catalog when you are
                     ready.
                 </SplitLine>
             </div>

@@ -321,7 +321,7 @@ export default function Hero() {
                                 to be measured at all. The layout effect above
                                 hides it at hydration. */}
                             <h1 ref={headingRef} className="relative max-md:text-[13vw]! t96 mt-[1vw] w-[55vw] max-[1025px]:mt-0 max-[1025px]:w-[85%] max-md:mt-0 max-md:w-[95%] max-sm:w-full">
-                                The Interaction Layer your Website is <span className="gradient-text-animate">Missing.</span>
+                                The Interaction Layer Your Website is <span className="gradient-text-animate">Missing.</span>
                             </h1>
                         </div>
 
@@ -341,7 +341,7 @@ export default function Hero() {
                                 className="max-sm:w-full max-sm:justify-center"
                             />
                             <ButtonV3
-                                text="Browser All Effects"
+                                text="Browse All Effects"
                                       href="/effects"
                                 variant="orange"
                                 scrollOffset={-1000}

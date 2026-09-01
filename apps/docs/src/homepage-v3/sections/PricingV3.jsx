@@ -385,7 +385,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
 
             {/* FOOTNOTE */}
             <SplitLine as="p" className="text32  mx-auto mt-[5vw] w-[52vw] text-center leading-[1.35] max-[1025px]:mt-[8vw] max-[1025px]:w-[85%] max-md:mt-[10vw] max-md:w-[75vw]  max-sm:mt-[14vw] max-sm:w-[90%] ">
-                Cancel anytime. The free core stays free forever. Every effect lives in
+                The free core stays free forever. Every effect lives in
                 your repo. So even if you leave, your code stays.
             </SplitLine>
         </section>

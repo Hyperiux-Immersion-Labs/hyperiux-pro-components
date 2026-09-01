@@ -103,7 +103,7 @@ export default function CurvedGradient() {
           markers={false}
         />
         <h2 ref={firstRef} id="curved-gradient-heading" className={headingClass}>
-          What makes an interface memorable is what happens when someone touches it; How a section enters, how a cursor reacts, how a page changes, and how a moment resolves.
+          What makes an interface memorable is what happens when someone touches it: how a section enters, how a cursor reacts, how a page changes, and how a moment resolves.
         </h2>
         <h2
           ref={secondRef}
