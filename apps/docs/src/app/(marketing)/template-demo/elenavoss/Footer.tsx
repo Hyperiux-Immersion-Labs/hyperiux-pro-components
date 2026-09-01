@@ -13,6 +13,7 @@ import LinkedInIcon from "./assets/linkedIn.svg";
 import TwitterIcon from "./assets/twitter.svg";
 import DotFillBtn from "./effects/dot-fill-button/DotFillButton";
 import { useGetInTouchModal } from "./GetInTouchModal";
+import Gradient from "./Gradient";
 
 const SocialLinks = [
   { label: "Facebook", href: "#", icon: FacebookIcon },
@@ -71,9 +72,9 @@ const Footer = () => {
           height={900}
           alt="Footer Background"
           loading="lazy"
-          className="absolute -bottom-20 left-0 right-0 w-full max-md:scale-[5] max-md:bottom-0"
+          className="absolute z-2 bottom-[-20%] left-0 right-0 w-full max-md:scale-[5] max-md:bottom-0"
         />
-        <div className="relative z-[1]">
+        <div className="relative z-3">
           <div
             className="rounded-4xl bg-black/5 border border-white/30 backdrop-blur-2xl px-12 py-12 flex flex-col gap-20 justify-between max-[1025px]:flex-col max-[1025px]:items-center max-[1025px]:gap-10 max-[1025px]:px-8 max-[1025px]:py-15 max-md:px-6 max-md:gap-8"
             ref={footerGlassRef}
@@ -101,6 +102,7 @@ const Footer = () => {
                     e.preventDefault();
                     openModal();
                   }}
+                  className=" border"
                   textClassName="font-normal text-[1.15vw] max-[1025px]:text-[3vw] max-md:text-[4.2vw]"
                   bgColor="#ffffff"
                   dotColor="#070707"
@@ -167,6 +169,13 @@ const Footer = () => {
               By: <a href="https://www.hyperiux.com/">Hyperiux</a>
             </p>
           </div>
+        </div>
+
+        {/* Desktop-only decorative shader gradient - too heavy/unnecessary
+            on mobile & tablet (max-[1025px]), same breakpoint convention
+            used throughout this template. */}
+        <div className="pointer-events-none absolute bottom-[20%] left-0 w-full max-[1025px]:hidden">
+          <Gradient />
         </div>
       </footer>
     </>

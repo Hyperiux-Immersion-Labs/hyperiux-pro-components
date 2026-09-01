@@ -4,10 +4,15 @@
 // zip - the deliverable a template buyer downloads. See
 // md/template-download-purchase-plan.md for the full plan this implements.
 //
-// Usage: node scripts/package-template.mjs <slug>
-//   BLOB_READ_WRITE_TOKEN=... node scripts/package-template.mjs <slug>   # also uploads to Vercel Blob
+// Usage: npm run template:update <slug>
+// Picks up BLOB_READ_WRITE_TOKEN from apps/docs/.env.local automatically
+// (see the loadEnvFile calls below) - after editing a template's source,
+// this one command rebuilds its zip, uploads the new version to Vercel
+// Blob, and rewrites template-scaffolds.js to point at it. Review and
+// commit that file change same as any other code change.
 //
-// What this does NOT do: touch the real apps/docs app in any way. It only
+// What this does NOT do: touch the real apps/docs app in any way beyond
+// that one rewritten line in template-scaffolds.js. Everything else only
 // reads from template-demo/<slug>/ and a few other known-self-contained
 // shared files (see TEMPLATES[slug].extraFiles below), and writes to
 // dist/template-zips/ and a throwaway build dir under dist/template-build/.
@@ -25,6 +30,45 @@ const DOCS_ROOT = path.join(REPO_ROOT, "apps/docs");
 const SCAFFOLD_DIR = path.join(__dirname, "template-scaffold");
 const BUILD_ROOT = path.join(REPO_ROOT, "dist/template-build");
 const ZIP_ROOT = path.join(REPO_ROOT, "dist/template-zips");
+const SCAFFOLDS_FILE = path.join(DOCS_ROOT, "src/lib/template-scaffolds.js");
+
+// Auto-loads BLOB_READ_WRITE_TOKEN (and anything else) from apps/docs's own
+// env files so `npm run template:update <slug>` works as a single command -
+// without this, every run needed BLOB_READ_WRITE_TOKEN=... prefixed by hand.
+// Real env vars (already exported in the shell) always win - never
+// overwrites a key that's already set. .env.local first since that's where
+// this token actually lives; .env is a lower-priority fallback, same
+// precedence order Next.js itself uses.
+//
+// Hand-rolled rather than process.loadEnvFile(): confirmed by direct test
+// that Node's built-in parser silently stops reading the ENTIRE file at the
+// first line that isn't valid KEY=value syntax - a real risk here since
+// apps/docs/.env.local has accumulated ad-hoc notes (test card numbers, a
+// bare token) that aren't KEY=value lines. This parser instead just skips
+// any line it doesn't recognize and keeps going.
+function loadEnvFileTolerant(filePath) {
+  let content;
+  try {
+    content = fssync.readFileSync(filePath, "utf8");
+  } catch {
+    return; // Missing file is fine - not every checkout has both.
+  }
+
+  for (const line of content.split("\n")) {
+    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+    if (!match) continue;
+
+    const [, key, rawValue] = match;
+    if (process.env[key] !== undefined) continue;
+
+    const quoted = rawValue.match(/^(['"])(.*)\1$/);
+    process.env[key] = quoted ? quoted[2] : rawValue;
+  }
+}
+
+for (const envFile of [".env.local", ".env"]) {
+  loadEnvFileTolerant(path.join(DOCS_ROOT, envFile));
+}
 
 // Versions pinned to match apps/docs/package.json exactly - this repo's
 // AGENTS.md warns Next/React/TS are intentionally non-default versions with
@@ -307,6 +351,33 @@ async function buildNextConfig(manifest) {
   return content;
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Closes the loop this script's own re-upload comment used to leave open:
+// paste the printed URL into template-scaffolds.js by hand. Only rewrites
+// the one string literal for this slug's TEMPLATE_SCAFFOLD_BLOB_URLS entry
+// (matched via the key + a following quoted string, not a full-line
+// reconstruction) so the file's own formatting/comments survive untouched.
+async function updateScaffoldUrl(slug, newUrl) {
+  const source = await fs.readFile(SCAFFOLDS_FILE, "utf8");
+  const key = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(slug) ? slug : JSON.stringify(slug);
+  const pattern = new RegExp(`(${escapeRegExp(key)}:\\s*)"[^"]*"`);
+
+  if (!pattern.test(source)) {
+    console.warn(
+      `[${slug}] couldn't find a TEMPLATE_SCAFFOLD_BLOB_URLS["${slug}"] entry in ${path.relative(REPO_ROOT, SCAFFOLDS_FILE)} to update automatically - paste the URL above in by hand.`
+    );
+    return;
+  }
+
+  await fs.writeFile(SCAFFOLDS_FILE, source.replace(pattern, `$1${JSON.stringify(newUrl)}`), "utf8");
+  console.log(
+    `[${slug}] updated ${path.relative(REPO_ROOT, SCAFFOLDS_FILE)} with the new URL - review and commit that change.`
+  );
+}
+
 async function packageTemplate(slug) {
   const manifest = TEMPLATES[slug];
   if (!manifest) usageError(`Unknown template slug: "${slug}"`);
@@ -440,9 +511,7 @@ async function packageTemplate(slug) {
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
     console.log(`[${slug}] uploaded to Vercel Blob: ${blob.url}`);
-    console.log(
-      `[${slug}] paste this into template-scaffolds.js's TEMPLATE_SCAFFOLD_BLOB_URLS["${slug}"], replacing whatever URL is there now.`
-    );
+    await updateScaffoldUrl(slug, blob.url);
   } else {
     console.log(
       `[${slug}] BLOB_READ_WRITE_TOKEN not set - zip left on disk only. ` +

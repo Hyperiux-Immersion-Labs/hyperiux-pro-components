@@ -2,23 +2,72 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { LockKeyhole, X } from "lucide-react";
+import { Check, User, X } from "lucide-react";
 import RazorpayCheckoutButton from "@/components/Payments/RazorpayCheckoutButton";
+import { buttonV3ClassName, ButtonV3Chrome } from "@/homepage-v3/components/ButtonV3";
 
-// Same blurred-code visual language as effect-detail.jsx's
-// LockedCodePlaceholder, adapted into a modal (that one is an inline
-// section, not a dismissible overlay) with an inline one-time-purchase
-// checkout instead of a link to /pricing - this is a real purchase, not a
-// subscription upsell.
-const TEASER_LINES = [
-  "const zip = unlock({ technique: 'inspect-element-jutsu' });",
-  "if (devtools.open) throw new Error('nice try, detective');",
-  "console.log('inspect will not work every time, boss');",
-  "const fallbackPlan = purchase({ reason: 'time saved > ego' });",
-  "return 'blurred until you buy the template';",
+// Same USD figures Pricing.jsx displays for Vault Pro - kept local since
+// that component doesn't export its PRICING map. Templates checkout only
+// ever runs in USD today (RazorpayCheckoutButton's default), same as this
+// modal's one-time-purchase button already assumed before this change.
+const MONTHLY_PRICE = 20;
+const YEARLY_PRICE = 179;
+const YEARLY_MONTHLY_EQUIVALENT = (YEARLY_PRICE / 12).toFixed(2);
+const YEARLY_SAVINGS = MONTHLY_PRICE * 12 - YEARLY_PRICE;
+
+const ANNUAL_FEATURES = [
+  "Full template library",
+  "All Pro features",
+  "Download projects and use in any IDE",
 ];
 
-export function TemplatePaywallModal({ template, open, onClose, onPurchased, autoOpenCheckout = false }) {
+// RazorpayCheckoutButton renders a real <button> with its own payment/
+// loading logic (Razorpay script load, order/subscription creation, the
+// checkout modal itself) - it isn't a navigation <Link> like ButtonV3, so
+// it can't just be swapped for one. This wraps it in ButtonV3's exact
+// visual chrome (buttonV3ClassName + ButtonV3Chrome, the same pieces the
+// real ButtonV3 is built from) while leaving RazorpayCheckoutButton's own
+// click handling, disabled/loading state, and props completely untouched.
+// The wrapping div only exists to catch pointer enter/leave for the
+// scramble-text hover (RazorpayCheckoutButton doesn't forward those props)
+// - `contents` keeps it out of layout entirely.
+function RazorpayButtonV3({ variant = "orange", label, className = "", ...razorpayProps }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      className="contents"
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+    >
+      <RazorpayCheckoutButton
+        {...razorpayProps}
+        className={buttonV3ClassName({
+          variant,
+          className: `disabled:pointer-events-none disabled:opacity-60 ${className}`,
+        })}
+      >
+        <ButtonV3Chrome label={label} hovered={hovered} />
+      </RazorpayCheckoutButton>
+    </div>
+  );
+}
+
+// Reached from TemplateDetail's "Buy"/"Download" button whenever the
+// signed-in visitor doesn't already have access to this template - see
+// getTemplateAccessDecision() in lib/template-access.js for the reasons.
+// Monthly Pro doesn't include templates (annual-only), so a Pro Monthly
+// subscriber gets an upsell to Annual alongside the one-time purchase; a
+// free/no-subscription visitor gets the same card minus the "you're
+// currently on Pro Monthly" framing, which wouldn't apply to them.
+export function TemplatePaywallModal({
+  template,
+  open,
+  onClose,
+  onPurchased,
+  autoOpenCheckout = false,
+  templateAccess = null,
+}) {
   const [mounted, setMounted] = useState(false);
 
   // SSR-safe mounted flag - gates the createPortal() call below, which
@@ -48,74 +97,115 @@ export function TemplatePaywallModal({ template, open, onClose, onPurchased, aut
   if (!mounted || !open) return null;
 
   const price = template.pricing?.standaloneOneTime;
+  const isMonthlyPro = templateAccess?.reason === "monthly-pro-not-included";
 
   return createPortal(
     <div
-      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/70 backdrop-blur-md p-4"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 max-md:p-0"
       role="dialog"
       aria-modal="true"
       aria-labelledby="template-paywall-title"
       onClick={onClose}
     >
       <div
-        className="relative w-[42vw] max-md:w-full max-[1025px]:w-[70%] overflow-hidden border border-white/30 bg-[#0e0e0e] shadow-2xl"
+        className="relative w-[40vw] max-h-[90vh] overflow-y-auto border border-white/15 bg-[#111111] px-9 py-9 max-[1025px]:w-[85%] max-[1025px]:px-7 max-[1025px]:py-8 max-md:h-[80vh] max-md:max-h-none  max-md:border-x-0 max-md:border-b-0 max-md:px-5 max-md:py-12"
         onClick={(event) => event.stopPropagation()}
       >
         <button
           type="button"
           aria-label="Close"
           onClick={onClose}
-          className="group absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center border border-white/20 bg-white/10 text-white/70 transition-all duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white"
+          className="group absolute right-4 top-4 flex h-9 w-9 items-center justify-center border border-white/20 group bg-white/10 text-white/70 transition-all duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white max-md:right-3 max-md:top-3 max-md:h-8 max-md:w-8"
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4 group-hover:rotate-90 duration-500 ease-in-out" />
         </button>
 
-        <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
-          <div className="absolute left-2 top-0 px-6 py-5 text-[11px] leading-6 text-white">
-            {TEASER_LINES.map((line, index) => (
-              <p key={`${line}-${index}`} className="whitespace-nowrap blur-md select-none">
-                <span className="mr-3 text-primary">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {line}
+        <div className="flex flex-col items-center gap-4 text-center max-md:gap-3">
+          <div className="flex flex-col items-center gap-2.5 max-md:gap-2">
+            <h3
+              id="template-paywall-title"
+              className="text-4xl font-semibold text-white max-[1025px]:text-3xl max-md:text-2xl"
+            >
+              Unlock {template.title}
+            </h3>
+            <p className="text-sm text-white/70">Templates are included with Pro Annual.</p>
+
+            {isMonthlyPro && (
+              <p className="max-w-sm text-sm leading-relaxed text-white/45">
+                You&apos;re currently on Pro Monthly at ${MONTHLY_PRICE}/month. Upgrade to
+                Annual to unlock this template and the entire template library.
               </p>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-7 border border-white/15 px-6 py-6 w-[80%] mx-auto max-[1025px]:w-full max-md:mt-5 max-md:w-full max-md:px-4 max-md:py-5">
+          <p className="text-xs font-medium tracking-wide text-primary">PRO ANNUAL</p>
+
+          <div className="mt-2 flex items-end justify-between gap-4 max-md:flex-col max-md:items-start max-md:gap-1">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-medium text-white max-md:text-2xl">${YEARLY_PRICE}</span>
+              <span className="text-sm text-white/50">/ year</span>
+            </div>
+
+            <div className="text-right max-md:text-left">
+              <p className="text-sm font-medium text-primary">Save ${YEARLY_SAVINGS}/year</p>
+              <p className="text-xs text-white/40">vs Pro Monthly</p>
+            </div>
+          </div>
+          <p className="mt-0.5 text-xs text-white/40">
+            ${YEARLY_MONTHLY_EQUIVALENT} / month
+          </p>
+
+          <div className="mt-5 flex flex-col gap-2.5 border-t border-white/10 pt-5 max-md:mt-4 max-md:pt-4">
+            {ANNUAL_FEATURES.map((feature) => (
+              <div key={feature} className="flex items-center gap-2.5">
+                <Check className="h-4 w-4 shrink-0 text-white/70" />
+                <span className="text-sm text-white/70">{feature}</span>
+              </div>
             ))}
           </div>
         </div>
 
-        <div className="relative z-10 flex min-h-[40vh] flex-col items-center justify-center gap-3 bg-white/5 px-8 py-10 text-center">
-          <LockKeyhole className="h-16 w-16 text-white" strokeWidth={1.2} />
+        <div className="mt-5 w-[80%] mx-auto max-[1025px]:w-full max-md:mt-4 max-md:w-full">
+          <RazorpayButtonV3
+            variant="orange"
+            label="Upgrade to Pro Annual"
+            plan="yearly"
+            currency="USD"
+            className="w-full justify-center"
+            onSuccess={() => onPurchased?.()}
+          />
+        </div>
 
-          <div className="flex flex-col items-center gap-1">
-            <h3 id="template-paywall-title" className="text-2xl font-bold text-white">
-              Buy {template.title}
-            </h3>
-
-            <p className="max-w-sm text-sm leading-relaxed text-white/50">
-              One-time purchase — download the full project and run it in any
-              IDE with <code className="text-white/70">npm i</code>. Or get
-              every template included with an annual Vault Pro subscription.
-            </p>
+        {isMonthlyPro && (
+          <div className="mt-4 flex items-center justify-center gap-2 border-t border-white/10 pt-4 text-xs text-white/50 w-[80%] mx-auto max-[1025px]:w-full max-md:w-full">
+            <User className="h-3.5 w-3.5" />
+            <span>
+              You&apos;re currently on Pro Monthly &middot; ${MONTHLY_PRICE}/month
+            </span>
           </div>
+        )}
 
-          <div className="flex flex-col items-center gap-3 pt-3">
-            <RazorpayCheckoutButton
+        <div
+          className={
+            isMonthlyPro
+              ? "mt-4 max-md:mt-3 text-center"
+              : "mt-6 border-t border-white/10 pt-5 max-md:mt-5 max-md:pt-4 text-center"
+          }
+        >
+          <p className="text-sm text-white/70">Just want this template?</p>
+          <div className="mt-3 flex justify-center max-md:mt-2.5">
+            <RazorpayButtonV3
+              variant="outline"
+              label={`Buy ${template.title} for $${price}`}
               amount={price}
               currency="USD"
               templateSlug={template.slug}
-              className="cursor-pointer bg-primary px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#e0540a] disabled:cursor-not-allowed disabled:opacity-50"
               onSuccess={() => onPurchased?.()}
               autoOpen={autoOpenCheckout}
-            >
-              {`Buy Template — $${price}`}
-            </RazorpayCheckoutButton>
-
-            <a
-              href="/pricing"
-              className="text-xs text-white/40 underline underline-offset-2 transition-colors hover:text-white/70"
-            >
-              or get every template with annual Vault Pro
-            </a>
+              className="max-md:w-full max-md:justify-center"
+            />
           </div>
         </div>
       </div>

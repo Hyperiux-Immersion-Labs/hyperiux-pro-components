@@ -505,8 +505,17 @@ export function VaultContent({
         ? categoryFilter
         : null);
 
+  // Free/Pro counts in the filter dropdown need to reflect whichever
+  // category is currently active (e.g. "Free (12)" while filtered to
+  // Backgrounds, not the site-wide free-effects total) - safeEffectCounts.
+  // free/.pro are server-computed ALL-CATEGORIES totals (see
+  // getEffectTierCounts() in page.js), so that shortcut is only valid when
+  // no category filter is applied. Any specific category always derives its
+  // counts from the actual (already fully loaded, unpaginated) effects
+  // list instead.
   const tierFilterCounts = useMemo(() => {
     if (
+      effectiveCategoryFilter === "all" &&
       typeof safeEffectCounts.free === "number" &&
       typeof safeEffectCounts.pro === "number"
     ) {
@@ -516,11 +525,14 @@ export function VaultContent({
       };
     }
 
-    if (isEffectsLoading) {
-      return { free: 0, pro: 0 };
-    }
+    const categoryEffects =
+      effectiveCategoryFilter === "all"
+        ? safeEffects
+        : safeEffects.filter(
+          (effect) => resolveEffectCategoryId(effect) === effectiveCategoryFilter
+        );
 
-    return safeEffects.reduce(
+    return categoryEffects.reduce(
       (counts, effect) => {
         if (effect.tier === "pro") {
           counts.pro += 1;
@@ -532,7 +544,7 @@ export function VaultContent({
       },
       { free: 0, pro: 0 }
     );
-  }, [isEffectsLoading, safeEffectCounts, safeEffects]);
+  }, [effectiveCategoryFilter, safeEffectCounts, safeEffects]);
 
   const getQuickCategoryLabel = useCallback((cat) => {
     if (cat === "none") return "None";

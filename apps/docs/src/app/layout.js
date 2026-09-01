@@ -20,6 +20,7 @@ import CustomAnimationFormModal, {
   CustomAnimationFormProvider,
 } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
+import { ExitIntentInviteModal } from "@/components/WebsiteComps/modals/ExitIntentInviteModal";
 import PageTransition from "@/components/PageTransition/PageTransition";
 
 const neueHaasUnica = localFont({
@@ -122,7 +123,10 @@ export default function RootLayout({ children }) {
           {children}
           {/* LazyRecaptchaProvider mounts only when a modal opens — never
               wrap page children or the homepage remounts when reCAPTCHA
-              arms. */}
+              arms. ExitIntentInviteModal has to live inside this provider
+              (not on the homepage route itself) so its executeRecaptcha()
+              call actually has a <ReCaptchaProvider> ancestor - it gates
+              itself back down to homepage-only via usePathname(). */}
           <LazyRecaptchaProvider>
             <Suspense>
               <CustomAnimationFormModal />
@@ -130,6 +134,7 @@ export default function RootLayout({ children }) {
             <Suspense>
               <WorkWithHyperiuxModal />
             </Suspense>
+            <ExitIntentInviteModal />
           </LazyRecaptchaProvider>
         </CustomAnimationFormProvider>
         <Analytics />

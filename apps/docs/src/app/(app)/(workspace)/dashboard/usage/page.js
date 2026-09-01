@@ -54,7 +54,7 @@ function matchesDateFilter(lastCopiedAt, filterId) {
 
 function StatCard({ label, value, detail }) {
   return (
-    <div className="flex h-full flex-col justify-between rounded-md p-6 bg-[#272727]">
+    <div className="flex h-full flex-col justify-between  p-6 bg-[#272727]">
       <p className="text-white mb-3">{label}</p>
 
       <p className="text-2xl font-medium font-laygrotesk leading-none">{value}</p>
@@ -246,9 +246,9 @@ export default function UsagePage() {
           value={isUnlimited ? "Unlimited" : `${count} / ${limit}`}
           detail={
             isUnlimited ? null : (
-              <div className="mt-1 h-2 w-full rounded-full bg-white/10 overflow-hidden">
+              <div className="mt-1 h-2 w-full  bg-white/10 overflow-hidden">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${
+                  className={`h-full  transition-all duration-500 ${
                     remaining === 0 ? "bg-[#ff5f00]" : "bg-white"
                   }`}
                   style={{ width: `${usagePct}%` }}
@@ -298,7 +298,7 @@ export default function UsagePage() {
                     type="button"
                     onClick={() => setDateFilter(filter.id)}
                     className={`
-                      px-5 py-2 text-sm rounded-full border transition
+                      px-5 py-2 text-sm  border transition
                       ${active
                         ? "bg-white text-black border-white"
                         : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
@@ -336,7 +336,7 @@ export default function UsagePage() {
         )}
 
         {copiedEffects.length === 0 ? (
-          <div className="rounded-md p-12 bg-[#272727] text-center">
+          <div className=" p-12 bg-[#272727] text-center">
             <h3 className="text-2xl text-white mb-2">No copied effects yet</h3>
 
             <p className="text-zinc-400">
@@ -344,7 +344,7 @@ export default function UsagePage() {
             </p>
           </div>
         ) : filteredEffects.length === 0 ? (
-          <div className="rounded-md p-12 text-center bg-[#272727] backdrop-blur-lg">
+          <div className=" p-12 text-center bg-[#272727] backdrop-blur-lg">
             <h3 className="text-xl text-white mb-2">
               No copied effects match these filters
             </h3>

@@ -9,11 +9,12 @@ import "server-only";
 // ("never a public/static path"). `server-only` also hard-fails the build
 // if anything ever tries to import this from client code.
 //
-// Populated by `npm run template:package <slug>` (scripts/package-template.mjs)
-// - each run prints the Vercel Blob URL to paste in here after upload.
+// Populated automatically by `npm run template:update <slug>`
+// (scripts/package-template.mjs) - each run rebuilds the zip, uploads it,
+// and rewrites the matching entry below directly.
 export const TEMPLATE_SCAFFOLD_BLOB_URLS = {
   elenavoss:
-    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/elenavoss-fa8E4Nhbh9OV7w4tLM0YQdQM2MkI9F.zip",
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/elenavoss-lHY1cEryPhxRErAoz0kTFjpiUXgnlu.zip",
   lumera:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/lumera.zip",
   "oris-dental":

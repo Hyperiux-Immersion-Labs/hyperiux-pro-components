@@ -66,18 +66,47 @@ export default function SectionBreak() {
         i += size;
       }
 
+      // Items within the same cluster are visible on screen at the same
+      // time, so their random start offsets need to be kept apart -
+      // otherwise two logos can fly in from overlapping positions. Offsets
+      // are picked with rejection sampling until they clear a minimum
+      // distance from the others already chosen for that cluster.
+      const offsetRange = 180;
+      const minOffsetDistance = isDesktop ? 150 : 110;
+      const pickGroupOffsets = (count: number) => {
+        const points: { x: number; y: number }[] = [];
+        for (let i = 0; i < count; i++) {
+          let point = { x: 0, y: 0 };
+          let attempts = 0;
+          do {
+            point = {
+              x: isDesktop ? gsap.utils.random(-offsetRange, offsetRange, 1) : 0,
+              y: gsap.utils.random(-offsetRange, offsetRange, 1),
+            };
+            attempts += 1;
+          } while (
+            attempts < 30 &&
+            points.some((p) => Math.hypot(p.x - point.x, p.y - point.y) < minOffsetDistance)
+          );
+          points.push(point);
+        }
+        return points;
+      };
+
       groups.forEach((group, groupIndex) => {
         const groupStart = groupIndex * groupStep;
+        const offsets = pickGroupOffsets(group.length);
 
         group.forEach((itemIndex, indexInGroup) => {
           const item = gridItems[itemIndex];
           const startTime = groupStart + indexInGroup * withinGroupStagger;
+          const offset = offsets[indexInGroup];
 
           gsap.set(item, {
             transformOrigin: "0% 0%",
             opacity: 0,
-            x: isDesktop ? gsap.utils.random(-180, 180) : 0,
-            y: isDesktop ? gsap.utils.random(-180, 180) : gsap.utils.random(-180, 180),
+            x: offset.x,
+            y: offset.y,
             filter: "blur(10px)",
             z: isDesktop ? gsap.utils.random(-2200, -1600) : gsap.utils.random(-550, -400),
           });

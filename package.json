@@ -20,7 +20,9 @@
     "sanity:code:diff": "node ./scripts/sanity-code-sync.mjs diff",
     "sanity:code:sync": "node ./scripts/sanity-code-sync.mjs sync",
     "sanity:code:test": "npm --prefix apps/docs run test -- src/lib/sanity-code-sync.test.js",
-    "template:package": "node ./scripts/package-template.mjs"
+    "template:package": "node ./scripts/package-template.mjs",
+    "template:update": "node ./scripts/package-template.mjs",
+    "template:create": "node ./scripts/create-template.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

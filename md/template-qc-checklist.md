@@ -192,6 +192,52 @@ since section-level QC alone can't catch cross-section conflicts.
       explaining where to get real ones — not silently required with no
       guidance.
 
+**Starting a brand-new template:** scaffold its folder before building
+anything by hand:
+
+```bash
+npm run template:create -- <slug> ["Title Case Name"]
+# e.g. npm run template:create -- aria-clinic "Aria Clinic"
+```
+
+`--` matters if the title has spaces — without it, npm forwards a quoted
+arg as several separate words instead of one (the script now tolerates
+either way by joining everything after `<slug>`, but `--` is the
+unambiguous form). This runs `scripts/create-template.mjs`, which:
+
+- Creates `template-demo/<slug>/` with a starter `page.tsx`, a scoped
+  `<slug>.css`, an `assets/` folder, and a `README.md` already in the shape
+  `fixReadme()` (used by `template:update` below) expects.
+- Adds a `<slug>: null` placeholder to
+  `apps/docs/src/lib/template-scaffolds.js` so `template:update` has
+  somewhere to write the real URL once this template has one.
+- Prints ready-to-paste manifest snippets for
+  `scripts/package-template.mjs`'s `TEMPLATES` object and
+  `apps/docs/src/lib/mock-templates.js`'s `TEMPLATES` array — deliberately
+  **not** auto-inserted, since pricing, category, dependencies, and tagline
+  are real decisions the script can't guess at.
+
+Build the template's sections by hand from there (see
+`template-demo/elenavoss/` for a fully-built reference), fill in the two
+pasted manifest snippets with real values, and clear every [BLOCK] item in
+this checklist before packaging it.
+
+**Updating an already-shipped template:** after editing a template's source
+under `template-demo/<slug>/`, run
+
+```bash
+npm run template:update <slug>
+```
+
+from the repo root (`scripts/package-template.mjs`). One command rebuilds
+the zip from the latest source, uploads it to Vercel Blob, and rewrites the
+matching entry in `apps/docs/src/lib/template-scaffolds.js` directly —
+review and commit that file change like any other code change. Requires
+`BLOB_READ_WRITE_TOKEN` (auto-loaded from `apps/docs/.env.local` if not
+already set in the shell). Re-run the relevant [BLOCK] items above (§3 build,
+§12 zip integrity, §15 preview parity) after any update before considering
+the new version shipped.
+
 ## 13. Pricing & access control
 
 - [ ] **[BLOCK]** `getTemplateAccessDecision` correctly grants access to

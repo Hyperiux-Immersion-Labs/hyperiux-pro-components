@@ -161,24 +161,39 @@ const Portfolio = () => {
       gsap.set(curveRef.current, {
         clipPath: `ellipse(${150}% 100% at 50% 100%)`,
       });
-      gsap.to(curveRef.current, {
-        clipPath: `ellipse(${60}% 100% at 50% 100%)`,
-        ease:"power2.out",
-        scrollTrigger: {
-          trigger: "#portfolio",
-          start: "top bottom",
-          end: "30% bottom",
-          scrub: true,
-        //   markers: true,
-        },
-      });
+      if(globalThis.innerWidth>=1025){
+        gsap.to(curveRef.current, {
+          clipPath: `ellipse(${60}% 100% at 50% 100%)`,
+          ease:"power2.out",
+          scrollTrigger: {
+            trigger: "#portfolio",
+            start: "top bottom",
+            end: "30% bottom",
+            scrub: true,
+          //   markers: true,
+          },
+        });
+      }
+      else{
+         gsap.to(curveRef.current, {
+          clipPath: `ellipse(${80}% 100% at 50% 100%)`,
+          ease:"power2.out",
+          scrollTrigger: {
+            trigger: "#portfolio",
+            start: "top bottom",
+            end: "30% bottom",
+            scrub: true,
+          //   markers: true,
+          },
+        });
+      }
     }
    
   }, []);
 
   return (
     <section
-      className={`relative w-screen h-[360vh] text-white ${prefersReducedMotion ? "pt-[8vw]" : "pt-[8vw] max-[1025px]:pt-[30vw]"}`}
+      className={`relative w-screen h-[360vh] text-white pt-[8vw] max-[1025px]:pt-0`}
       id="portfolio"
     >
       <div

@@ -187,14 +187,14 @@ export function TemplateDetail({
               <Breadcrumb />
 
               <HeadAnim>
-                <h1 className="w-full max-md:text-[6vw] max-md:font-bold max-[1025px]:w-[90%] max-md:w-[80%] max-[1025px]:mx-auto max-[1025px]:text-center font-semibold leading-[1.3]! text-foreground text80">
+                <h1 className="w-full max-md:text-[6vw] max-md:font-bold max-[1025px]:w-[90%] max-md:w-[80%]  font-semibold leading-[1.3]! text-foreground text80">
                   {template.title}
                 </h1>
               </HeadAnim>
 
               {template.tagline && (
                 <Copy delay={0.5}>
-                  <p className="mt-4 w-full max-[1025px]:text-center max-[1025px]:w-[90%] max-[1025px]:mx-auto text-foreground opacity-90 text22 leading-relaxed max-[1025px]:leading-[1.3]">
+                  <p className="mt-4 w-full max-[1025px]:w-[90%] text-foreground opacity-90 text22 leading-relaxed max-[1025px]:leading-[1.3]">
                     {template.tagline}
                   </p>
                 </Copy>
@@ -243,14 +243,14 @@ export function TemplateDetail({
                 ))}
               </div>
 
-              <div className="flex shrink-0 items-center gap-3">
+              <div className="flex shrink-0 items-center gap-3 max-md:flex-col max-md:items-start">
                 <button
                   type="button"
                   onClick={handleDownloadClick}
-                  className="group flex items-center gap-2 border border-white/20 bg-white/5 px-4 py-2.5 text18 text-white transition-colors duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-black"
+                  className="group flex items-center gap-2 border border-white/20 bg-white/5 px-4 py-3 text20 text-white transition-colors duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-black"
                 >
                   <Download className="h-4 w-4" aria-hidden="true" />
-                  {hasAccess ? "Download Zip" : `Buy — $${template.pricing?.standaloneOneTime ?? "—"}`}
+                  {hasAccess ? "Download Zip" : `Buy - $${template.pricing?.standaloneOneTime ?? "-"}`}
                 </button>
 
                 <ButtonV3
@@ -315,7 +315,7 @@ export function TemplateDetail({
                   </h2>
                 </HeadAnim>
 
-                <div className="fadeup flex flex-col justify-center items-end gap-5 max-[1025px]:w-full max-[1025px]:items-stretch">
+                <div className="fadeup flex flex-col justify-center items-end gap-5">
                   <ButtonV3
                     text="Explore all templates"
                     href="/templates"
@@ -344,6 +344,7 @@ export function TemplateDetail({
         }}
         onPurchased={handlePurchased}
         autoOpenCheckout={autoOpenCheckout}
+        templateAccess={templateAccess}
       />
 
       <ToastViewport toast={toast} onDismiss={dismissToast} />

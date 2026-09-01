@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
+import { CustomSelect } from "@/components/ui/CustomSelect";
 import { useAdminRole } from "@/lib/useAdminRole";
 import { TEMPLATES } from "@/lib/mock-templates";
 
@@ -235,18 +236,11 @@ export default function AdminInvoicingPage() {
       </div>
 
       <div className="flex gap-3 flex-wrap">
-        <div className="relative">
-          <select
-            value={testFilter}
-            onChange={(e) => setTestFilter(e.target.value)}
-            className="appearance-none  border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
-          >
-            {TEST_FILTERS.map((f) => (
-              <option key={f.id} value={f.id}>{f.label}</option>
-            ))}
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-        </div>
+        <CustomSelect
+          value={testFilter}
+          onChange={setTestFilter}
+          options={TEST_FILTERS.map((f) => ({ value: f.id, label: f.label }))}
+        />
       </div>
 
       {error && (
@@ -383,18 +377,11 @@ export default function AdminInvoicingPage() {
       </div>
 
       <div className="flex gap-3 flex-wrap">
-        <div className="relative">
-          <select
-            value={templateFilter}
-            onChange={(e) => setTemplateFilter(e.target.value)}
-            className="appearance-none  border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
-          >
-            {TEMPLATE_FILTERS.map((f) => (
-              <option key={f.id} value={f.id}>{f.label}</option>
-            ))}
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-        </div>
+        <CustomSelect
+          value={templateFilter}
+          onChange={setTemplateFilter}
+          options={TEMPLATE_FILTERS.map((f) => ({ value: f.id, label: f.label }))}
+        />
       </div>
 
       {templateError && (
