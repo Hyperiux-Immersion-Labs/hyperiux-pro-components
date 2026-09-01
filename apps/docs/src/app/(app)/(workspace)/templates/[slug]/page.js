@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { getTemplateBySlug, getRelatedTemplates } from "@/lib/mock-templates";
@@ -46,10 +47,15 @@ export default async function TemplateDetailPage({ params }) {
   });
 
   return (
-    <TemplateDetail
-      template={template}
-      relatedTemplates={getRelatedTemplates(slug)}
-      templateAccess={templateAccess}
-    />
+    // TemplateDetail reads useSearchParams() (to resume a purchase after a
+    // signed-out "Buy" click bounces through /sign-in and back) - Next
+    // requires a Suspense boundary around any client component that does.
+    <Suspense fallback={null}>
+      <TemplateDetail
+        template={template}
+        relatedTemplates={getRelatedTemplates(slug)}
+        templateAccess={templateAccess}
+      />
+    </Suspense>
   );
 }

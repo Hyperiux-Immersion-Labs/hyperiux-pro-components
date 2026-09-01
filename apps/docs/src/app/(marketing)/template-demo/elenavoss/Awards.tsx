@@ -3,10 +3,10 @@ import { Fragment, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import portfolio1Img from './assets/portfolio-img-1.png'
-import portfolio2Img from './assets/portfolio-img-2.png'
-import portfolio3Img from './assets/portfolio-img-3.png'
-import portfolio4Img from './assets/portfolio-img-4.png'
+import portfolio1Img from './assets/portfolio-img-1-new.webp'
+import portfolio2Img from './assets/portfolio-img-2.webp'
+import portfolio3Img from './assets/portfolio-img-3.webp'
+import portfolio4Img from './assets/portfolio-img-4.webp'
 import OverflowTextReveal from "./effects/overflow-text-reveal";
 import Line from "./Line";
 

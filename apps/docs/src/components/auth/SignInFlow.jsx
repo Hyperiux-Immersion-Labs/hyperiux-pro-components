@@ -1,12 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import NextLink from "next/link";
 import { useSignIn } from "@clerk/nextjs/legacy";
 import SplitAuthLayout from "./SplitAuthLayout";
 import {
   errorMessage,
+  getSafeRedirectUrl,
   StepHeading,
   TextField,
   GlobalError,
@@ -42,7 +43,17 @@ const RESEND_COOLDOWN_SECONDS = 30;
 export default function SignInFlow() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const formRef = useRef(null);
+
+  // Lets a gated action (e.g. buying a template while signed out) bounce
+  // an anonymous visitor through sign-in and land back exactly where they
+  // clicked, instead of always dropping them at /effects.
+  const rawRedirectUrl = searchParams.get("redirect_url");
+  const redirectUrl = getSafeRedirectUrl(rawRedirectUrl, "/effects");
+  const signUpHref = rawRedirectUrl
+    ? `/sign-up?redirect_url=${encodeURIComponent(redirectUrl)}`
+    : "/sign-up";
 
   // "start" | "forgot-password" | "verify-reset-code" | "reset-password" |
   // "verify-client-trust"
@@ -57,8 +68,16 @@ export default function SignInFlow() {
   const [resendCooldown, setResendCooldown] = useState(0);
 
   async function completeSignIn(result) {
-    await setActive({ session: result.createdSessionId });
-    router.push("/effects");
+    // redirectUrl passed directly into setActive() - the ClerkProvider in
+    // (app)/layout.js sets signInForceRedirectUrl="/effects" globally,
+    // which setActive() otherwise falls back to for its own internal
+    // navigation (it runs "just before the session...is set", per Clerk's
+    // types) regardless of what a later router.push() here tries to do.
+    // An explicit per-call redirectUrl is the documented way to override
+    // that. router.push stays as a fallback in case this Clerk version's
+    // own redirect doesn't fully complete the client-side transition.
+    await setActive({ session: result.createdSessionId, redirectUrl });
+    router.push(redirectUrl);
   }
 
   // Shared by the reset-password code step and the client-trust code step -
@@ -301,7 +320,7 @@ export default function SignInFlow() {
 
           <p className="mt-6 text-left text-sm text-white/50 font-geist-mono">
             New here?{" "}
-            <NextLink href="/sign-up" className="text-[#ff5f00] hover:text-[#ff7a29]">
+            <NextLink href={signUpHref} className="text-[#ff5f00] hover:text-[#ff7a29]">
               Create an account
             </NextLink>
           </p>

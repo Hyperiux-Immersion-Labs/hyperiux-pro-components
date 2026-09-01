@@ -77,10 +77,11 @@ const TSCONFIG = {
 
 // Per-template manifest. `extraFiles` lists shared files (outside the
 // template's own template-demo/<slug>/ folder) that need to be copied in
-// and have their `@/...` imports rewritten to relative paths - confirmed by
-// research to be at most 1-3 files per template. Only elenavoss is filled
-// in for this pass (it has zero extra-file needs); lumera/oris-dental are
-// stubbed for the Phase F follow-up.
+// and have their OWN `@/...` imports rewritten to relative paths.
+// `sourceRewrites` handles the other half: files already copied by
+// copyDir() (part of the template's own source) that reference one of
+// those extraFiles via its old "@/..." alias, which needs rewriting to
+// wherever that extraFile actually lands.
 const TEMPLATES = {
   elenavoss: {
     title: "Elena Voss - Creative Web Designer Portfolio Template",
@@ -94,7 +95,104 @@ const TEMPLATES = {
       zod: "^4.4.3",
     },
     extraFiles: [],
+    sourceRewrites: [],
     needsGlbLoader: false,
+  },
+  lumera: {
+    title: "Lumera - Luxury Real Estate Template",
+    description:
+      "A single-page luxury real estate template for Dubai property launches - residences, amenities, gallery, nearby highlights, and enquiry flows, built with GSAP scroll animations.",
+    dependencies: {
+      gsap: "^3.15.0",
+      "@gsap/react": "^2.1.2",
+      lenis: "^1.3.23",
+      "lucide-react": "^0.577.0",
+      zod: "^4.4.3",
+      motion: "^12.40.0",
+    },
+    extraFiles: [
+      {
+        from: "apps/docs/src/components/SmoothScroll/LenisScroll.jsx",
+        to: "components/SmoothScroll/LenisScroll.jsx",
+        rewriteImports: [['"@/lib/motion"', '"../../lib/motion"']],
+      },
+      {
+        from: "apps/docs/src/lib/motion.js",
+        to: "lib/motion.js",
+        rewriteImports: [],
+      },
+    ],
+    sourceRewrites: [
+      {
+        file: "page.tsx",
+        find: '"@/components/SmoothScroll/LenisScroll"',
+        replace: '"./components/SmoothScroll/LenisScroll"',
+      },
+      {
+        file: "effects/parallax-image-animation/ParallaxImageAnimation.tsx",
+        find: '"@/lib/motion"',
+        replace: '"../../lib/motion"',
+      },
+      {
+        file: "effects/draggable-marquee/DraggableMarqueeComp.tsx",
+        find: '"@/lib/motion"',
+        replace: '"../../lib/motion"',
+      },
+    ],
+    needsGlbLoader: false,
+  },
+  "oris-dental": {
+    title: "Oris Dental - Modern Dental Clinic Template",
+    description:
+      "A modern dental clinic template built around an interactive 3D teeth visualizer, with treatment showcases, patient reviews, and online appointment booking.",
+    dependencies: {
+      gsap: "^3.15.0",
+      lenis: "^1.3.23",
+      three: "^0.182.0",
+      "@react-three/fiber": "^9.6.0",
+      "@react-three/drei": "^10.7.7",
+    },
+    extraFiles: [
+      {
+        from: "apps/docs/src/components/SmoothScroll/LenisScroll.jsx",
+        to: "components/SmoothScroll/LenisScroll.jsx",
+        rewriteImports: [['"@/lib/motion"', '"../../lib/motion"']],
+      },
+      {
+        from: "apps/docs/src/lib/motion.js",
+        to: "lib/motion.js",
+        rewriteImports: [],
+      },
+      {
+        from: "apps/docs/src/homepage-v3/components/ScrollTopOnLoad.jsx",
+        to: "components/ScrollTopOnLoad.jsx",
+        rewriteImports: [],
+      },
+    ],
+    sourceRewrites: [
+      {
+        file: "OrisWrapper.tsx",
+        find: "'@/components/SmoothScroll/LenisScroll'",
+        replace: "'./components/SmoothScroll/LenisScroll'",
+      },
+      {
+        file: "page.tsx",
+        find: '"@/homepage-v3/components/ScrollTopOnLoad"',
+        replace: '"./components/ScrollTopOnLoad"',
+      },
+      {
+        // Pre-existing quirk in the source, not something packaging
+        // introduced: this only resolved because template-demo/oris-dental/
+        // happens to share its name with the traversal target
+        // ('../../oris-dental/assets/...' from teeth-3d/ round-trips back
+        // into the same folder by coincidence). Renamed to app/ here, so
+        // the coincidence breaks - fix it to a direct relative path.
+        file: "teeth-3d/TeethCanvas.tsx",
+        find: "'../../oris-dental/assets/teeth-compressed.glb'",
+        replace: "'../assets/teeth-compressed.glb'",
+      },
+    ],
+    needsGlbLoader: true,
   },
 };
 
@@ -128,7 +226,16 @@ async function copyDir(src, dest, { skip = [] } = {}) {
 // is wrong, since it assumes the monorepo-nested route path. Targeted
 // replace rather than a from-scratch README template, so per-template
 // authored content survives.
-function fixReadme(source) {
+//
+// Not every template's README needs every fix here (confirmed by reading
+// all three): elenavoss and oris-dental both have the broken monorepo-path
+// section, lumera's "Getting started" section never referenced it to begin
+// with; oris-dental's folder-tree diagram starts with its own slug as a
+// bare dir name (elenavoss's does too), lumera has no such diagram; lumera
+// already ships its own "## License" section, the other two don't. So each
+// fix is applied only when its corresponding pattern is actually present,
+// rather than assuming every template needs every fix.
+function fixReadme(source, slug) {
   const brokenSection = /## Running it locally\n\n[\s\S]*?(?=\n## )/;
   const fixedSection = `## Running it locally
 
@@ -143,29 +250,37 @@ Then open **http://localhost:3000**.
 
 `;
 
-  if (!brokenSection.test(source)) {
-    throw new Error(
-      "fixReadme: couldn't find the expected '## Running it locally' section - README structure changed, update this script's regex."
-    );
+  let result = source;
+  if (brokenSection.test(result)) {
+    result = result.replace(brokenSection, fixedSection);
   }
 
-  return source
-    .replace(brokenSection, fixedSection)
-    .replace(/^elenavoss\/\n├── page\.tsx/m, "app/\n├── page.tsx")
-    .replace(
-      /$/,
-      `\n## License\n\nSee [\`LICENSE.md\`](./LICENSE.md).\n`
-    );
+  const folderTreeHeader = new RegExp(`^${slug}/\\n├── page\\.tsx`, "m");
+  result = result.replace(folderTreeHeader, "app/\n├── page.tsx");
+
+  if (!/\n## License\b/.test(result)) {
+    result = result.replace(/$/, `\n## License\n\nSee [\`LICENSE.md\`](./LICENSE.md).\n`);
+  }
+
+  return result;
 }
 
 function buildPackageJson(slug, manifest) {
+  // Next 16 defaults to Turbopack, which hard-errors on a `webpack()`
+  // config function ("no `turbopack` config" - see next.config.mjs's
+  // needsGlbLoader branch) rather than silently ignoring it. apps/docs
+  // itself hits the same thing and forces `--webpack` in its own
+  // dev/build scripts for exactly this reason - same fix here, for any
+  // template whose next.config.mjs ends up with a webpack() block.
+  const webpackFlag = manifest.needsGlbLoader ? " --webpack" : "";
+
   return {
     name: slug,
     version: "1.0.0",
     private: true,
     scripts: {
-      dev: "next dev",
-      build: "next build",
+      dev: `next dev${webpackFlag}`,
+      build: `next build${webpackFlag}`,
       start: "next start",
     },
     dependencies: {
@@ -220,6 +335,23 @@ async function packageTemplate(slug) {
     await fs.writeFile(to, content, "utf8");
   }
 
+  // Files already copied by copyDir() above (part of the template's own
+  // template-demo/<slug>/ source) that reference an extraFile via its old
+  // "@/..." alias path - that alias doesn't exist in the generated project
+  // (no @/* in tsconfig.json, matching the plan's "every template file uses
+  // relative imports only"), so it must be rewritten to the extra file's
+  // real relative location, same find/replace approach as extraFiles above.
+  for (const rewrite of manifest.sourceRewrites || []) {
+    const target = path.join(buildDir, "app", rewrite.file);
+    const content = await fs.readFile(target, "utf8");
+    if (!content.includes(rewrite.find)) {
+      throw new Error(
+        `[${slug}] sourceRewrite couldn't find ${JSON.stringify(rewrite.find)} in ${rewrite.file} - source file changed, update this manifest entry.`
+      );
+    }
+    await fs.writeFile(target, content.split(rewrite.find).join(rewrite.replace), "utf8");
+  }
+
   console.log(`[${slug}] writing package.json / tsconfig.json ...`);
   await fs.writeFile(
     path.join(buildDir, "package.json"),
@@ -271,7 +403,7 @@ async function packageTemplate(slug) {
 
   console.log(`[${slug}] writing README.md / LICENSE.md ...`);
   const sourceReadme = await fs.readFile(path.join(sourceDir, "README.md"), "utf8");
-  await fs.writeFile(path.join(buildDir, "README.md"), fixReadme(sourceReadme), "utf8");
+  await fs.writeFile(path.join(buildDir, "README.md"), fixReadme(sourceReadme, slug), "utf8");
   const licenseSource = await fs.readFile(
     path.join(SCAFFOLD_DIR, "LICENSE.md.template"),
     "utf8"
@@ -291,17 +423,20 @@ async function packageTemplate(slug) {
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     const { put } = await import("@vercel/blob");
     const buffer = await fs.readFile(zipPath);
-    // addRandomSuffix left at its default (true) deliberately - Vercel Blob
-    // is a CDN-backed store built around content at a URL being immutable,
-    // so overwriting the SAME url (addRandomSuffix: false) risks serving a
-    // stale cached zip for a while with no reliable way to force-invalidate
-    // it. Every re-run instead gets a genuinely new URL; updating a
-    // template means pasting that new URL into template-scaffolds.js (a
-    // one-line, version-controlled change - same review/deploy path as any
-    // other code change, with a clean git history of when each template's
-    // shipped content last changed).
+    // addRandomSuffix explicitly true - @vercel/blob@2.x's own default is
+    // false (verified against its type defs, despite an earlier assumption
+    // here that it defaulted to true), which would silently overwrite the
+    // SAME url on every re-run. Vercel Blob is a CDN-backed store built
+    // around content at a URL being immutable, so overwriting risks serving
+    // a stale cached zip for a while with no reliable way to
+    // force-invalidate it. Every re-run instead gets a genuinely new URL;
+    // updating a template means pasting that new URL into
+    // template-scaffolds.js (a one-line, version-controlled change - same
+    // review/deploy path as any other code change, with a clean git history
+    // of when each template's shipped content last changed).
     const blob = await put(`templates/${slug}.zip`, buffer, {
       access: "public",
+      addRandomSuffix: true,
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
     console.log(`[${slug}] uploaded to Vercel Blob: ${blob.url}`);

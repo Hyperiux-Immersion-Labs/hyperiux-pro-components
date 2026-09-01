@@ -10,6 +10,7 @@ import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 const BASE_TABS = [
   { label: "Overview", href: "/dashboard" },
   { label: "Saved Effects", href: "/dashboard/saved" },
+  { label: "My Templates", href: "/dashboard/templates" },
   { label: "Usage", href: "/dashboard/usage" },
   { label: "Invoicing", href: "/dashboard/invoicing" },
   { label: "Settings", href: "/dashboard/settings" },

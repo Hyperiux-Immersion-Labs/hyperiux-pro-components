@@ -14,6 +14,18 @@ export function errorMessage(err, fallback) {
   return err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || fallback;
 }
 
+// Only ever redirect to a same-app relative path after auth completes -
+// `redirect_url` comes straight from a query param (e.g. a "buy this
+// template" link bouncing an anonymous visitor through sign-in), so an
+// unvalidated value would let a crafted link send a freshly authenticated
+// session to an attacker's origin. "/" prefix only, and explicitly not
+// "//..." (protocol-relative - still cross-origin).
+export function getSafeRedirectUrl(rawValue, fallback) {
+  if (typeof rawValue !== "string") return fallback;
+  if (!rawValue.startsWith("/") || rawValue.startsWith("//")) return fallback;
+  return rawValue;
+}
+
 // Sized in fixed steps (not vw) because the card itself is now a fixed
 // max-width (see SplitAuthLayout), not a viewport-relative column - vw units
 // would keep growing with screen width even though the card stops growing

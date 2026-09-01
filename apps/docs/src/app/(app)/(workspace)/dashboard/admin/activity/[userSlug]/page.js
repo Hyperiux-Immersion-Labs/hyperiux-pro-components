@@ -30,8 +30,8 @@ function ActivityDetailSkeleton() {
         </div>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-5">
+        {Array.from({ length: 5 }).map((_, i) => (
           <StatCardSkeleton key={i} />
         ))}
       </div>
@@ -106,6 +106,23 @@ function formatRupees(amount) {
   }).format(amount || 0);
 }
 
+// template_purchases.amount is already whole currency units (see
+// api/admin/activity/[userSlug]/route.js), unlike invoices.amount above -
+// this must not divide by 100.
+function formatTemplateAmount(amount, currency = "USD") {
+  if (typeof amount !== "number") return "-";
+
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    return `${amount.toFixed(2)} ${currency}`;
+  }
+}
+
 function StatusBadge({ status }) {
   const isPaid = status === "paid";
 
@@ -176,8 +193,17 @@ export default function AdminUserActivityPage({ params }) {
     );
   }
 
-  const { profile, session, subscription, stats, copyTrend, savedEffects, copiedEffects, invoices } =
-    data;
+  const {
+    profile,
+    session,
+    subscription,
+    stats,
+    copyTrend,
+    savedEffects,
+    copiedEffects,
+    invoices,
+    templatePurchases,
+  } = data;
 
   return (
     <div className="space-y-6">
@@ -231,10 +257,11 @@ export default function AdminUserActivityPage({ params }) {
         </div>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-5">
         <StatCard label="Saved Effects" value={stats.savedCount} />
         <StatCard label="Effects Copied" value={stats.copiedCount} />
         <StatCard label="Lifetime Spend" value={formatRupees(stats.lifetimeSpend)} />
+        <StatCard label="Templates Purchased" value={templatePurchases.length} />
         <StatCard
           label="Last Sign-in"
           value={profile.lastSignInAt ? formatDate(profile.lastSignInAt) : "Never"}
@@ -368,6 +395,54 @@ export default function AdminUserActivityPage({ params }) {
 
                     <td className="px-6 py-4">
                       <StatusBadge status={invoice.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h2 className="mb-3 text-lg font-medium text-white">
+          Template Purchases ({templatePurchases.length})
+        </h2>
+
+        {templatePurchases.length === 0 ? (
+          <div className="rounded-md bg-[#272727] p-6 text-center text-sm text-white/40">
+            No template purchases yet.
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-md bg-[#272727]">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-white/50">
+                  <th className="px-6 py-4 font-medium">Date</th>
+                  <th className="px-6 py-4 font-medium">Template</th>
+                  <th className="px-6 py-4 font-medium">Amount</th>
+                  <th className="px-6 py-4 font-medium">Payment ID</th>
+                  <th className="px-6 py-4 font-medium">Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {templatePurchases.map((purchase) => (
+                  <tr key={purchase.id} className="border-b border-white/5 last:border-0">
+                    <td className="px-6 py-4 text-white">{formatDateTime(purchase.createdAt)}</td>
+
+                    <td className="px-6 py-4 text-white/80">{purchase.templateTitle}</td>
+
+                    <td className="px-6 py-4 text-white">
+                      {formatTemplateAmount(purchase.amount, purchase.currency)}
+                    </td>
+
+                    <td className="px-6 py-4 font-mono text-xs text-white/50">
+                      {purchase.paymentId ? `${purchase.paymentId.slice(0, 16)}…` : "-"}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <StatusBadge status={purchase.status} />
                     </td>
                   </tr>
                 ))}

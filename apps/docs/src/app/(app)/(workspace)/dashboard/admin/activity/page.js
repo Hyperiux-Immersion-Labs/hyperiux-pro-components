@@ -199,21 +199,21 @@ export default function AdminActivityPage() {
 
       {loading || !overview ? (
         <>
-          <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-5">
-            {Array.from({ length: 5 }).map((_, i) => (
+          <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, i) => (
               <StatCardSkeleton key={i} />
             ))}
           </div>
 
           <div className="grid gap-5 lg:grid-cols-2">
-            {Array.from({ length: 6 }).map((_, i) => (
+            {Array.from({ length: 7 }).map((_, i) => (
               <ChartPanelSkeleton key={i} />
             ))}
           </div>
         </>
       ) : (
         <>
-          <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-5">
+          <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-6">
             <StatCard label="Total Users" value={overview.stats.totalUsers} />
             <StatCard label="Pro Users" value={overview.stats.proUsers} />
             <StatCard label="Copies Today" value={overview.stats.copiesToday} />
@@ -221,6 +221,10 @@ export default function AdminActivityPage() {
             <StatCard
               label="Revenue (MTD)"
               value={formatCurrency(overview.stats.monthToDateRevenue)}
+            />
+            <StatCard
+              label="Template Purchases (MTD)"
+              value={overview.stats.monthToDateTemplatePurchases}
             />
           </div>
 
@@ -249,6 +253,15 @@ export default function AdminActivityPage() {
                 xKey="label"
                 color="#4ade80"
                 valueLabel="revenue (₹)"
+              />
+            </ChartPanel>
+
+            <ChartPanel title="Template purchases — last 30 days">
+              <LineTrendChart
+                data={overview.templatePurchaseTrend}
+                xKey="label"
+                color="#facc15"
+                valueLabel="purchases"
               />
             </ChartPanel>
 

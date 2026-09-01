@@ -6,6 +6,7 @@ import { getEffectMetadata } from "@/lib/registry";
 import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
 import { buildDailyBuckets, fillDailyBuckets, utcDateString } from "@/lib/admin-activity";
 import { buildUserActivitySlug } from "@/lib/user-slug";
+import { getTemplateBySlug } from "@/lib/mock-templates";
 
 const TREND_DAYS = 30;
 
@@ -81,6 +82,7 @@ export async function GET(request, { params }) {
     const [
       { data: subscriptionRow, error: subscriptionError },
       { data: invoiceRows, error: invoicesError },
+      { data: templatePurchaseRows, error: templatePurchasesError },
       { data: savedRows, error: savedError },
       { data: copyRows, error: copyError },
       sanityEntries,
@@ -96,6 +98,12 @@ export async function GET(request, { params }) {
       supabase
         .from("invoices")
         .select("id,amount,currency,status,plan_label,is_test,created_at")
+        .eq("clerk_user_id", userId)
+        .order("created_at", { ascending: false }),
+
+      supabase
+        .from("template_purchases")
+        .select("id,template_slug,razorpay_payment_id,amount,currency,status,created_at")
         .eq("clerk_user_id", userId)
         .order("created_at", { ascending: false }),
 
@@ -116,7 +124,8 @@ export async function GET(request, { params }) {
       getAllSanityEffectEntries(),
     ]);
 
-    const firstError = subscriptionError || invoicesError || savedError || copyError;
+    const firstError =
+      subscriptionError || invoicesError || templatePurchasesError || savedError || copyError;
 
     if (firstError) {
       console.error("ADMIN_ACTIVITY_USER_ERROR:", userId, firstError);
@@ -173,6 +182,20 @@ export async function GET(request, { params }) {
         .filter((row) => row.status === "paid" && !row.is_test)
         .reduce((sum, row) => sum + row.amount, 0) / 100;
 
+    // amount is already whole currency units here (verify-payment/route.js
+    // divides Razorpay's paise/cents amount by 100 before recording), unlike
+    // invoices.amount above - do not divide this by 100 again.
+    const templatePurchases = (templatePurchaseRows || []).map((row) => ({
+      id: row.id,
+      templateSlug: row.template_slug,
+      templateTitle: getTemplateBySlug(row.template_slug)?.title || row.template_slug,
+      paymentId: row.razorpay_payment_id,
+      amount: row.amount,
+      currency: row.currency,
+      status: row.status,
+      createdAt: row.created_at,
+    }));
+
     return NextResponse.json({
       profile: {
         id: clerkUser.id,
@@ -203,6 +226,7 @@ export async function GET(request, { params }) {
       savedEffects,
       copiedEffects,
       invoices: invoiceRows || [],
+      templatePurchases,
     });
   } catch (error) {
     // userId may not be assigned yet if the error happened before the slug

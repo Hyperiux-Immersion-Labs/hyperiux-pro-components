@@ -1,15 +1,22 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Monitor, Tablet, Smartphone, Download } from "lucide-react";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { TemplateCard } from "@/components/ui/TemplateCard";
 import { TemplatePaywallModal } from "@/components/ui/TemplatePaywallModal";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
+
+// Query flag a signed-out "Buy" click appends before bouncing through
+// /sign-in?redirect_url=... - on the way back, its presence (plus now being
+// signed in) is what tells this page to resume the purchase itself instead
+// of making the visitor click Buy a second time.
+const RESUME_PURCHASE_PARAM = "buy";
 
 // Design-only for now, per the Figma template detail page (Enigma-Redesign,
 // node 4304:540) - mock data, no real registry/Sanity backing, no purchase
@@ -60,15 +67,22 @@ export function TemplateDetail({
   useLineAnim();
 
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [device, setDevice] = useState("web");
   const [scale, setScale] = useState(1);
   const [isPaywallOpen, setIsPaywallOpen] = useState(false);
+  // Only true for the sign-in-then-resume path below - a direct click on
+  // "Buy" while already signed in still opens the modal normally, requiring
+  // its own Buy click, same as before this feature existed.
+  const [autoOpenCheckout, setAutoOpenCheckout] = useState(false);
   // Access is re-derived server-side on every navigation via
   // getTemplateAccessDecision (page.js), but that only reruns on a real
   // request - after a successful in-place purchase this flips optimistically
   // so "Download Zip" works immediately, without waiting on a full reload.
   const [hasAccess, setHasAccess] = useState(templateAccess.allowed);
   const previewBoxRef = useRef(null);
+  const { toast, showToast, dismissToast } = useToastQueue();
 
   const publishedLabel = formatTemplateDate(template.publishedAt);
   const updatedLabel = formatTemplateDate(template.updatedAt);
@@ -81,7 +95,23 @@ export function TemplateDetail({
       // Deliberately window.location, not ButtonV3's Next <Link> - a <Link>
       // to a Route Handler risks Next's client-router prefetch machinery
       // interfering with what needs to be a real file-download response.
+      // Content-Disposition: attachment on this route means the browser
+      // downloads it in place rather than navigating away, so the toast
+      // below stays on screen through and after the download.
       window.location.href = downloadHref;
+      showToast({
+        title: `${template.title} downloaded`,
+        description: `${template.title} has been downloaded.`,
+      });
+      return;
+    }
+
+    if (templateAccess.reason === "anonymous") {
+      // Bounce through sign-in and land back on this exact page with
+      // ?buy=1, which the effect below reads to resume the purchase
+      // automatically instead of making them find and click Buy again.
+      const resumeUrl = `${pathname}?${RESUME_PURCHASE_PARAM}=1`;
+      router.push(`/sign-in?redirect_url=${encodeURIComponent(resumeUrl)}`);
       return;
     }
 
@@ -91,12 +121,39 @@ export function TemplateDetail({
   const handlePurchased = () => {
     setHasAccess(true);
     setIsPaywallOpen(false);
+    setAutoOpenCheckout(false);
+    // Content-Disposition: attachment on this route means the browser
+    // downloads it in place rather than navigating away, so the toast below
+    // stays on screen through and after the download.
     window.location.href = downloadHref;
+    showToast({
+      title: `${template.title} purchased`,
+      description: `${template.title} has been purchased and downloaded.`,
+    });
     // Re-syncs the server-derived access decision in the background so a
     // later visit (or a refresh right now) reflects the real Supabase row
     // rather than only this optimistic client flag.
     router.refresh();
   };
+
+  useEffect(() => {
+    // Resume path: signed-out visitor clicked Buy, went through
+    // /sign-in?redirect_url=<this page>?buy=1, and is now back here already
+    // authenticated. templateAccess is recomputed server-side on this fresh
+    // navigation, so reason !== "anonymous" reliably reflects the real,
+    // just-established session - open the paywall and let
+    // RazorpayCheckoutButton's autoOpen skip the second click.
+    if (searchParams.get(RESUME_PURCHASE_PARAM) !== "1") return;
+    if (hasAccess || templateAccess.reason === "anonymous") return;
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsPaywallOpen(true);
+    setAutoOpenCheckout(true);
+    router.replace(pathname, { scroll: false });
+    // Only ever meant to run once, off the URL this page loaded with - not
+    // meant to re-fire on later state changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const box = previewBoxRef.current;
@@ -209,7 +266,7 @@ export function TemplateDetail({
 
             <div
               ref={previewBoxRef}
-              className="relative flex h-[46vw] max-h-[820px] min-h-[520px] w-full items-center justify-center overflow-hidden bg-[#111111] max-md:h-[70vh]"
+              className="relative flex h-[40.75vw] max-h-205  w-full items-center justify-center overflow-hidden bg-[#111111] max-md:h-[70vh]"
             >
               <div
                 style={{
@@ -281,9 +338,15 @@ export function TemplateDetail({
       <TemplatePaywallModal
         template={template}
         open={isPaywallOpen}
-        onClose={() => setIsPaywallOpen(false)}
+        onClose={() => {
+          setIsPaywallOpen(false);
+          setAutoOpenCheckout(false);
+        }}
         onPurchased={handlePurchased}
+        autoOpenCheckout={autoOpenCheckout}
       />
+
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
     </div>
   );
 }

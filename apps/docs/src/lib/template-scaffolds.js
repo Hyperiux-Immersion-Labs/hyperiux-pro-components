@@ -14,8 +14,10 @@ import "server-only";
 export const TEMPLATE_SCAFFOLD_BLOB_URLS = {
   elenavoss:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/elenavoss-fa8E4Nhbh9OV7w4tLM0YQdQM2MkI9F.zip",
-  lumera: null,
-  "oris-dental": null,
+  lumera:
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/lumera.zip",
+  "oris-dental":
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/oris-dental.zip",
 };
 
 export function getTemplateScaffoldUrl(slug) {

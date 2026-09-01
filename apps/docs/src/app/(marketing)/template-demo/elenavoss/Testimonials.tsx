@@ -3,11 +3,11 @@ import Image, { type StaticImageData } from "next/image";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import Testimonial1 from "./assets/testimonial-1.png";
-import Testimonial2 from "./assets/testimonial-2.png";
-import Testimonial3 from "./assets/testimonial-3.png";
-import Testimonial4 from "./assets/testimonial-4.png";
-import Testimonial5 from "./assets/testimonial-5.png";
+import Testimonial1 from "./assets/testimonial-1-new.webp";
+import Testimonial2 from "./assets/testimonial-2-new.webp";
+import Testimonial3 from "./assets/testimonial-3-new.webp";
+import Testimonial4 from "./assets/testimonial-4-new.webp";
+import Testimonial5 from "./assets/testimonial-5-new.webp";
 
 gsap.registerPlugin(SplitText);
 

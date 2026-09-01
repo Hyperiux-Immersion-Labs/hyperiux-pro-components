@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { useUser } from "@clerk/nextjs";
 
@@ -17,11 +17,13 @@ export default function RazorpayCheckoutButton({
   onSuccess,
   onError,
   children = "Pay with Razorpay",
+  autoOpen = false,
 }) {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [scriptReady, setScriptReady] = useState(false);
   const [error, setError] = useState(null);
+  const autoOpenedRef = useRef(false);
 
   async function handlePay() {
     setLoading(true);
@@ -103,6 +105,18 @@ export default function RazorpayCheckoutButton({
       setLoading(false);
     }
   }
+
+  // Resumes a purchase that started while the visitor was signed out - once
+  // sign-in redirects them back here with autoOpen set, this opens the
+  // Razorpay checkout itself instead of waiting for a second click on the
+  // button. Only ever fires once per mount (autoOpenedRef), and only once
+  // Razorpay's own script has loaded (handlePay needs window.Razorpay).
+  useEffect(() => {
+    if (!autoOpen || !scriptReady || autoOpenedRef.current) return;
+    autoOpenedRef.current = true;
+    handlePay();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoOpen, scriptReady]);
 
   return (
     <>

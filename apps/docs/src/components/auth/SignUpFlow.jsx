@@ -1,12 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import NextLink from "next/link";
 import { useSignUp } from "@clerk/nextjs/legacy";
 import SplitAuthLayout from "./SplitAuthLayout";
 import {
   errorMessage,
+  getSafeRedirectUrl,
   StepHeading,
   TextField,
   GlobalError,
@@ -22,9 +23,11 @@ import {
 
 const RESEND_COOLDOWN_SECONDS = 30;
 
-// Matches the prebuilt <SignUp/> component's existing fallbackRedirectUrl
-// (see the old sign-up page.js) - keeps the same post-signup funnel.
-const REDIRECT_AFTER_SIGN_UP = "/pricing#pricing-cards";
+// Matches SignInFlow.jsx's post-auth destination, the ClerkProvider's
+// signInFallbackRedirectUrl, and the invite-accept continuation flow
+// (signup/continue/page.js) - a new signup should land in the vault like
+// every other auth path, not detour through pricing.
+const REDIRECT_AFTER_SIGN_UP = "/effects";
 
 // Reads the click-attribution cookie the homepage-only tracker
 // (components/WebsiteComps/AffitorTracking.jsx) sets, so a referred
@@ -42,7 +45,17 @@ function getAffitorClickId() {
 export default function SignUpFlow() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const formRef = useRef(null);
+
+  // Lets a gated action (e.g. buying a template while signed out) bounce
+  // an anonymous visitor through sign-up and land back exactly where they
+  // clicked, instead of always dropping them at /effects.
+  const rawRedirectUrl = searchParams.get("redirect_url");
+  const redirectUrl = getSafeRedirectUrl(rawRedirectUrl, REDIRECT_AFTER_SIGN_UP);
+  const signInHref = rawRedirectUrl
+    ? `/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`
+    : "/sign-in";
 
   // "start" | "verify-email"
   const [step, setStep] = useState("start");
@@ -67,8 +80,16 @@ export default function SignUpFlow() {
   }
 
   async function completeSignUp(result) {
-    await setActive({ session: result.createdSessionId });
-    router.push(REDIRECT_AFTER_SIGN_UP);
+    // redirectUrl passed directly into setActive() - the ClerkProvider in
+    // (app)/layout.js sets signInForceRedirectUrl="/effects" globally,
+    // which setActive() otherwise falls back to for its own internal
+    // navigation (it runs "just before the session...is set", per Clerk's
+    // types) regardless of what a later router.push() here tries to do.
+    // An explicit per-call redirectUrl is the documented way to override
+    // that. router.push stays as a fallback in case this Clerk version's
+    // own redirect doesn't fully complete the client-side transition.
+    await setActive({ session: result.createdSessionId, redirectUrl });
+    router.push(redirectUrl);
   }
 
   async function handleCreateAccount(event) {
@@ -202,7 +223,7 @@ export default function SignUpFlow() {
 
           <p className="mt-6 text-left text-sm text-white/50 font-geist-mono">
             Already have an account?{" "}
-            <NextLink href="/sign-in" className="text-[#ff5f00] hover:text-[#ff7a29]">
+            <NextLink href={signInHref} className="text-[#ff5f00] hover:text-[#ff7a29]">
               Sign in
             </NextLink>
           </p>

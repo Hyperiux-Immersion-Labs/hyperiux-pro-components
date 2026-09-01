@@ -18,7 +18,7 @@ const TEASER_LINES = [
   "return 'blurred until you buy the template';",
 ];
 
-export function TemplatePaywallModal({ template, open, onClose, onPurchased }) {
+export function TemplatePaywallModal({ template, open, onClose, onPurchased, autoOpenCheckout = false }) {
   const [mounted, setMounted] = useState(false);
 
   // SSR-safe mounted flag - gates the createPortal() call below, which
@@ -101,18 +101,11 @@ export function TemplatePaywallModal({ template, open, onClose, onPurchased }) {
           <div className="flex flex-col items-center gap-3 pt-3">
             <RazorpayCheckoutButton
               amount={price}
-              // TEMPORARY: forced to INR to isolate a "3dsecure is not
-              // enabled" decline that showed up testing with USD - Razorpay
-              // test-mode international/3DS card handling, not a bug in
-              // this integration (the decline came back from a real
-              // create-order -> checkout -> Razorpay round trip). Revert to
-              // "USD" once confirmed working end-to-end on INR, then
-              // separately resolve international payments in the Razorpay
-              // dashboard (or with their support) before shipping USD.
-              currency="INR"
+              currency="USD"
               templateSlug={template.slug}
               className="cursor-pointer bg-primary px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#e0540a] disabled:cursor-not-allowed disabled:opacity-50"
               onSuccess={() => onPurchased?.()}
+              autoOpen={autoOpenCheckout}
             >
               {`Buy Template — $${price}`}
             </RazorpayCheckoutButton>

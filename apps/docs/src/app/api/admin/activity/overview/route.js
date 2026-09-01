@@ -40,6 +40,7 @@ export async function GET() {
       { data: allCopyRows, error: allCopyError },
       { data: allSavedRows, error: allSavedError },
       { data: revenueRows, error: revenueError },
+      { data: templatePurchaseRows, error: templatePurchaseError },
       { count: copiesToday, error: copiesTodayError },
       sanityEntries,
     ] = await Promise.all([
@@ -65,6 +66,14 @@ export async function GET() {
         .eq("status", "paid")
         .eq("is_test", false)
         .gte("created_at", thirtyDaysAgoISO),
+      // Counted, not summed by amount: template_purchases mixes currencies
+      // (USD and INR orders both land here - see create-order/route.js),
+      // so summing raw amounts across rows would add unlike units. A
+      // purchase count avoids that without needing currency conversion.
+      supabase
+        .from("template_purchases")
+        .select("created_at")
+        .gte("created_at", thirtyDaysAgoISO),
       supabase
         .from("install_unlocks")
         .select("clerk_user_id", { count: "exact", head: true })
@@ -80,6 +89,7 @@ export async function GET() {
       allCopyError ||
       allSavedError ||
       revenueError ||
+      templatePurchaseError ||
       copiesTodayError;
 
     if (firstError) {
@@ -120,10 +130,20 @@ export async function GET() {
       (row) => row.amount / 100
     );
 
+    const templatePurchaseTrend = fillDailyBuckets(
+      buildDailyBuckets(TREND_DAYS),
+      templatePurchaseRows || [],
+      (row) => new Date(row.created_at).toISOString().slice(0, 10)
+    );
+
     const monthToDateRevenue =
       (revenueRows || [])
         .filter((row) => row.created_at >= monthStartISO)
         .reduce((sum, row) => sum + row.amount, 0) / 100;
+
+    const monthToDateTemplatePurchases = (templatePurchaseRows || []).filter(
+      (row) => row.created_at >= monthStartISO
+    ).length;
 
     const topSavedEffects = topSlugCounts(allSavedRows || [], TOP_EFFECTS_LIMIT).map(
       ({ slug, count }) => ({ name: resolveTitle(slug), value: count })
@@ -145,10 +165,12 @@ export async function GET() {
         copiesToday: copiesToday || 0,
         totalSaved: (allSavedRows || []).length,
         monthToDateRevenue,
+        monthToDateTemplatePurchases,
       },
       signupTrend,
       copyTrend,
       revenueTrend,
+      templatePurchaseTrend,
       planDistribution,
       topSavedEffects,
       topCopiedEffects,
