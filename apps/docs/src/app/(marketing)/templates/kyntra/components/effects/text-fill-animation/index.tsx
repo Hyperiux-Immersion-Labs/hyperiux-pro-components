@@ -121,8 +121,9 @@ export default function TextFillAnimation({
           .timeline({
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: 'top top',
-              end: 'bottom bottom',
+              start: 'top 60%',
+              // markers: true,
+              end: 'bottom 50%',
               scrub: 0.25,
             },
           })
@@ -165,7 +166,7 @@ export default function TextFillAnimation({
     <section
       id={id}
       ref={sectionRef}
-      className={`relative h-[250vh] w-full ${containerClassName}`}
+      className={`relative h-[100vh] w-full ${containerClassName}`}
       style={{ backgroundColor }}
     >
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">

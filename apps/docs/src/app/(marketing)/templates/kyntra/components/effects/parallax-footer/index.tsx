@@ -5,12 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { FooterParallax } from "./ParallaxFooter";
 import CharStaggerButton from "../char-stagger-button";
-import { GooglePlay } from "../../Buttons/icons";
+import { AppleStoreButton, PlayStoreButton } from "../../Buttons";
 import { FadeUp } from "../../Animations/gsapAnim";
 import kyntraLogo from "../../../assets/kyntra-logo.png";
 import footerImg from "../../../assets/footer.png";
 
 const KYNTRA_PRIMARY = "#134BD6";
+
+// Dark ink for the Apple pill, which is white here instead of the hero's blue.
+const FOOTER_BUTTON_TEXT = "#1A1A1A";
 
 // The footer itself is `position: fixed`, so it is always "in view" and cannot
 // cue its own reveal. Its outer wrapper scrolls normally - watch that instead.
@@ -62,7 +65,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
         {/* Top: brand + link columns */}
         <div className="relative flex justify-between gap-[4vw] max-[1025px]:flex-col max-[1025px]:gap-[10vw]">
           {/* Brand column */}
-          <div className="flex w-[28vw] flex-col max-[1025px]:w-full">
+          <div className="flex w-[34vw] flex-col max-[1025px]:w-full">
             <FadeUp
               watch={FOOTER_TRIGGER}
               delay={FOOTER_DELAY}
@@ -90,24 +93,20 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             <FadeUp
               watch={FOOTER_TRIGGER}
               delay={FOOTER_DELAY + 0.16}
-              className="mt-[2.5vw] flex gap-[1.2vw] max-[1025px]:mt-[6vw] max-[1025px]:gap-[3vw]"
+              className="mt-[2.5vw] flex gap-[1.2vw] max-[1025px]:mt-[6vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[3vw] max-md:gap-[4vw]"
             >
-              <StoreButton
+              {/* Same components as the hero, so size, padding and type scale
+                  match by construction. Only the palette differs: on the blue
+                  footer both pills are white. */}
+              <AppleStoreButton
                 href="#"
-                topLine="Download on the"
-                mainLine="App Store"
-                icon={
-                  <AppleGlyph className="h-[2vw] w-[2vw] max-[1025px]:h-[5vw] max-[1025px]:w-[5vw] max-md:h-[7vw] max-md:w-[7vw]" />
-                }
+                style={{
+                  backgroundColor: "#ffffff",
+                  borderColor: "#ffffff",
+                  color: FOOTER_BUTTON_TEXT,
+                }}
               />
-              <StoreButton
-                href="#"
-                topLine="Get it on"
-                mainLine="Google Play"
-                icon={
-                  <GooglePlay className="h-[2vw] w-[2vw] max-[1025px]:h-[5vw] max-[1025px]:w-[5vw] max-md:h-[7vw] max-md:w-[7vw]" />
-                }
-              />
+              <PlayStoreButton href="#" />
             </FadeUp>
           </div>
 
@@ -190,48 +189,6 @@ const FooterLinkColumn = ({
     </div>
   </div>
 );
-
-const StoreButton = ({
-  href,
-  topLine,
-  mainLine,
-  icon,
-}: {
-  href: string;
-  topLine: string;
-  mainLine: string;
-  icon: React.ReactNode;
-}) => (
-  <Link
-    href={href}
-    className="group flex items-center gap-[0.9vw] rounded-full bg-white px-[1.6vw] py-[0.9vw] text-black transition-transform duration-300 hover:scale-[0.97] max-[1025px]:gap-[2.5vw] max-[1025px]:px-[4vw] max-[1025px]:py-[2.5vw] max-md:gap-[3vw] max-md:px-[6vw] max-md:py-[3.5vw]"
-  >
-    {icon}
-    <span className="flex flex-col text-left leading-none">
-      <span className="text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[2.6vw]">
-        {topLine}
-      </span>
-      <span className="mt-[0.3vw] text-28 font-light max-[1025px]:text-[3vw] max-md:text-[4.4vw]">
-        {mainLine}
-      </span>
-    </span>
-  </Link>
-);
-
-function AppleGlyph({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 36 41"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M10.8273 40.982C6.85125 40.4749 2.91537 33.233 1.6989 29.8163C-0.754111 22.9267 -0.555913 13.6941 7.14735 10.3648C11.267 8.58502 12.9465 10.2123 16.6713 11.0838C19.7189 11.7971 20.8415 10.6288 23.54 9.94513C27.7969 8.86587 31.4038 10.4659 34.124 13.7245C27.4165 17.3627 28.2454 27.3184 35.253 30.0659C35.3132 30.3499 33.8849 33.034 33.6297 33.481C32.2014 35.9862 29.1225 40.6121 26.0404 40.982H24.7597C23.3443 40.7245 22.1214 39.8603 20.7404 39.5176C19.3594 39.175 17.7722 39.2039 16.4474 39.5152C15.0031 39.8546 13.7336 40.6908 12.27 40.982C11.8134 40.9411 11.2726 41.0382 10.8289 40.982H10.8273Z" />
-      <path d="M25.4777 -0.00415039C25.9263 3.14937 24.2235 6.59257 21.6598 8.38679C20.3984 9.26945 18.7983 9.97157 17.2264 9.80788C16.9022 8.21667 17.3572 6.48986 18.0986 5.06636C19.5165 2.34213 22.3932 0.293549 25.4777 -0.00415039Z" />
-    </svg>
-  );
-}
 
 function ArrowUp({ className = "" }: { className?: string }) {
   return (

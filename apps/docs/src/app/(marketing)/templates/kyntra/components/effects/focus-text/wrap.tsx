@@ -25,6 +25,9 @@ interface FocusTextWrapProps {
   className?: string;
   characterStagger?: number;
   revealDuration?: number;
+  /** Seconds to hold before the reveal starts. Ignored when `scrub` is on,
+   * since scrub ties progress to scroll position rather than to time. */
+  delay?: number;
   startScale?: number;
   blurAmount?: number;
   /** true = tie progress to scroll position; false = play once on enter. */
@@ -49,8 +52,9 @@ export default function FocusTextWrap({
   className = "",
   characterStagger = 0.02,
   revealDuration = 1.1,
+  delay = 0,
   startScale = 0.4,
-  blurAmount = 18,
+  blurAmount = 0,
   scrub = false,
   scrollStart = "top 85%",
   scrollEnd = "bottom 55%",
@@ -105,6 +109,7 @@ export default function FocusTextWrap({
         gsap.to(characters, {
           opacity: 1,
           duration: REDUCED_MOTION_DURATION,
+          delay,
           ease: "none",
         });
         return;
@@ -115,6 +120,9 @@ export default function FocusTextWrap({
         scale: 1,
         filter: "blur(0px)",
         duration: revealDuration,
+        // A delay on a scrubbed tween would offset it against scroll position
+        // rather than time, which is not what a caller passing `delay` wants.
+        delay: scrub ? 0 : delay,
         stagger: characterStagger,
         ease: FOCUS_EASE,
         force3D: true,
@@ -146,6 +154,7 @@ export default function FocusTextWrap({
   }, [
     characterStagger,
     revealDuration,
+    delay,
     startScale,
     blurAmount,
     scrub,

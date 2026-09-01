@@ -95,7 +95,7 @@ const Header: React.FC = () => {
           className="relative z-60 flex items-center"
           aria-label="Kyntra home"
         >
-          <div className="h-fit w-[8vw] max-[1025px]:w-[28vw] max-md:w-[34vw]">
+          <div className="h-fit w-[8vw] max-[1025px]:w-[20vw] max-md:w-[26vw]">
             <Image
               src={kyntraLogo}
               alt="Kyntra"
@@ -146,16 +146,21 @@ const Header: React.FC = () => {
         >
           <span className="relative block h-[3vw] w-[5.5vw] max-md:h-[4vw] max-md:w-[7vw]">
             <span
-              className={`absolute left-0 top-[22%] h-px w-full bg-white transition-transform duration-300 ${
+              className={`absolute left-0 top-[10%] h-px w-full bg-white transition-all duration-300 ${
                 menuOpen
-                  ? "translate-y-[1.1vw] rotate-45 max-md:translate-y-[1vw]"
+                  ? "translate-y-[1.2vw] rotate-45 max-md:translate-y-[1.6vw]"
                   : ""
               }`}
             />
             <span
-              className={`absolute left-0 top-[68%] h-px w-full bg-white transition-transform duration-300 ${
+              className={`absolute left-0 top-[50%] h-px w-full bg-white transition-all duration-300 ${
+                menuOpen ? "opacity-0" : "opacity-100"
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-[90%] h-px w-full bg-white transition-all duration-300 ${
                 menuOpen
-                  ? "translate-y-[-1.1vw] -rotate-45 max-md:translate-y-[-1vw]"
+                  ? "translate-y-[-1.2vw] -rotate-45 max-md:translate-y-[-1.6vw]"
                   : ""
               }`}
             />

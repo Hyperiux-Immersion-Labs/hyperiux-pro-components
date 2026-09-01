@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Star } from "lucide-react";
 import { AppleStoreButton, PlayStoreButton } from "./Buttons";
-import phoneMockup from "../assets/phone-mockup.png";
+import phoneMockup from "../assets/kyntra-hero-mockup.png";
 import kyntraHero from "../assets/kyntra-hero.png";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
@@ -13,7 +13,7 @@ const Hero = () => {
 
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[90vh] bg-[linear-gradient(180deg,#000000_0%,#000000_28%,#0A1633_42%,#16295F_54%,#26429C_63%,#3E63D0_71%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[90vh] bg-[linear-gradient(180deg,#000000_0%,#000000_28%,#0A1633_42%,#16295F_54%,#26429C_63%,#3E63D0_71%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)] max-[1025px]:h-[105vh] max-[1025px]:bg-[linear-gradient(180deg,#000000_0%,#000000_20%,#0A1633_34%,#16295F_48%,#26429C_60%,#3E63D0_70%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)]"
       />
 
       {/* Oversized KYNTRA watermark  */}
@@ -22,13 +22,13 @@ const Hero = () => {
         alt=""
         aria-hidden
         priority
-        className="pointer-events-none absolute left-1/2 top-[24vh] w-[92vw] max-w-400 -translate-x-1/2 select-none"
+        className="pointer-events-none absolute left-1/2 top-[24vh] max-[1025px]:top-[12vh] w-[92vw] max-w-400 -translate-x-1/2 select-none"
       />
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-400 items-center gap-[10vw] px-[5vw] pb-[8vh] pt-[40vh] max-[1025px]:flex-col max-[1025px]:gap-[8vw] max-[1025px]:pt-[26vh] max-md:gap-[10vw]">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-400 items-center gap-[10vw] px-[5vw] pb-[8vh] pt-[40vh] max-[1025px]:flex-col-reverse max-[1025px]:items-start max-[1025px]:justify-end max-[1025px]:gap-[8vw] max-[1025px]:px-[7vw] max-[1025px]:pb-0 max-[1025px]:pt-[20vh] max-md:gap-[10vw]">
         {/* Phone mockup */}
-        <div className="flex w-[33%] shrink-0 justify-center max-[1025px]:w-[55%] max-md:w-[78%]">
-          <FadeUp className="w-[25vw] ml-20 h-auto">
+        <div className="flex w-[33%] shrink-0 justify-center max-[1025px]:w-full max-md:w-full">
+          <FadeUp className="w-[25vw] ml-20 h-auto max-[1025px]:ml-0 max-[1025px]:w-[62vw] max-md:w-[80vw]">
             <Image
               src={phoneMockup}
               alt="Kyntra app manage every room and service from one home dashboard"
@@ -39,41 +39,46 @@ const Hero = () => {
         </div>
 
        
-        <div className="flex w-[60%] flex-col gap-[3vw] pt-[30vh] max-[1025px]:w-full max-[1025px]:text-center">
+        <div className="flex w-[60%] flex-col gap-[3vw] pt-[30vh] max-[1025px]:w-full max-[1025px]:gap-[6vw] max-[1025px]:pt-0 max-[1025px]:text-left max-md:gap-[7vw]">
           <FocusTextWrap>
-            <h1 className="font-helvetica-neue  text-black max-[1025px]:mx-auto max-md:max-w-none">
+            <h1 className="font-helvetica-neue max-[1025px]:leading-[1.8] text-black max-[1025px]:mx-0 max-[1025px]:text-white max-md:max-w-none">
               One App to
               <br />
-              Manage Your Home
+              Manage Your
+              <br className="hidden max-[1025px]:inline" />{" "}
+              Home
             </h1>
           </FocusTextWrap>
 
           <ParaAnim
             as="p"
-            className=" w-[24vw] text-22 leading-[1.6] tracking-wide text-black/80 max-[1025px]:mx-auto max-[1025px]:text-[2.6vw] max-md:max-w-none max-md:text-[4vw]"
+            className="w-[24vw] text-22 leading-[1.6] max-[1025px]:leading-[1.9] tracking-wide text-black max-[1025px]:mx-0 max-[1025px]:w-full max-[1025px]:max-w-[78%] max-[1025px]:text-white max-md:max-w-none"
           >
             Kyntra Remembers Your Home, Tracks What Needs Attention, And Gets
             Trusted Help When Something Needs Doing.
           </ParaAnim>
 
-          <div className="space-y-[1.2vw]">
-            <div className=" flex flex-wrap items-center gap-[1.2vw] max-[1025px]:justify-center max-[1025px]:gap-[2.5vw] max-md:gap-[3.5vw]">
-              <FadeUp delay={0.1}>
+          <div className="space-y-[1.2vw] max-[1025px]:w-full max-[1025px]:space-y-[4vw] max-md:space-y-[5vw]">
+            <div className=" flex flex-wrap items-center gap-[1.2vw] max-[1025px]:w-full  max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:justify-start max-[1025px]:gap-[3vw] max-md:gap-[4vw]">
+              <FadeUp delay={0.1} className="max-[1025px]:w-[75vw]">
                 <AppleStoreButton href="#app-store" />
               </FadeUp>
-              <FadeUp delay={0.2}>
+              <FadeUp delay={0.2} className="max-[1025px]:w-[75vw]">
                 <PlayStoreButton href="#google-play" />
               </FadeUp>
             </div>
 
             <FadeUp
               delay={0.3}
-              className=" flex items-center gap-[0.5vw] text-20 text-black max-[1025px]:justify-center max-[1025px]:gap-[1vw] max-[1025px]:text-[2vw] text-20 max-md:text-[3vw]"
+              className="flex items-center gap-[0.5vw] text-20 text-black max-[1025px]:justify-start max-[1025px]:gap-[1.2vw] max-[1025px]:text-white max-md:gap-[1.5vw]"
             >
               <span className="text-[#12D415] font-medium">4.9 ★ </span>
               {/* <Star className="fill-[#12D415] text-[#12D415] w-[1vw] max-[1025px]:w-[2.2vw] max-md:w-[3.4vw]" /> */}
               <span className="text-20">
-                From <span className="font-medium text-black">8,400+</span>{" "}
+                From{" "}
+                <span className="font-medium text-black max-[1025px]:text-white">
+                  8,400+
+                </span>{" "}
                 Households Across The UAE
               </span>
             </FadeUp>

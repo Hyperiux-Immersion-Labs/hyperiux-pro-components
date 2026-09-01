@@ -22,17 +22,21 @@ export const AppleStoreButton = ({ href = "#", ...props }: StoreButtonProps) => 
       href={href}
       aria-label="Download from Apple Store"
       {...props}
-      style={{ backgroundColor: APPLE_BG, borderColor: APPLE_BG }}
-      className=" ease group flex w-[16vw] cursor-pointer items-center justify-start gap-4 overflow-hidden rounded-full border px-[2vw] py-[0.6vw] text-white transition-all duration-300 hover:scale-[0.95] max-md:min-w-[30vw] max-md:px-[4vw] max-md:py-[1.5vw] max-sm:w-fit max-sm:min-w-[65vw] max-sm:px-[10vw] max-sm:py-[3vw]"
+      style={{
+        backgroundColor: APPLE_BG,
+        borderColor: APPLE_BG,
+        ...props.style,
+      }}
+      className=" ease group flex w-[16vw] shrink-0 cursor-pointer items-center justify-start gap-4 overflow-hidden rounded-full border px-[2vw] py-[0.6vw] text-white transition-all duration-300 hover:scale-[0.95] max-[1025px]:w-[78%] max-[1025px]:min-w-0 max-[1025px]:justify-start max-[1025px]:gap-[3vw] max-[1025px]:px-[6vw] max-[1025px]:py-[1.8vw] max-md:w-[85%] max-md:min-w-0 max-md:gap-[4vw] max-md:px-[7vw] max-md:py-[2.6vw] max-sm:w-[85%] max-sm:min-w-0 max-sm:px-[7vw] max-sm:py-[2.6vw]"
     >
       <div>
-        <AppleIcon className="mt-[-0.5vw] h-[2vw] w-[2vw] max-md:h-[4.5vw] max-md:w-[4.5vw] max-sm:h-[8vw] max-sm:w-[8vw]" />
+        <AppleIcon className="mt-[-0.5vw] h-[2vw] w-[2vw] max-[1025px]:mt-0 max-[1025px]:h-[4vw] max-[1025px]:w-[4vw] max-md:h-[5.6vw] max-md:w-[5.6vw] max-sm:h-[5.6vw] max-sm:w-[5.6vw]" />
       </div>
-      <div className="flex flex-col gap-1.5 text-left">
-        <span className="h-[0.8vw] text-[0.8vw]  max-md:h-[2.5vw] max-md:text-[2vw] max-sm:h-auto max-sm:text-[3vw]">
+      <div className="flex flex-col gap-1.5 text-left max-[1025px]:gap-0">
+        <span className="text-18 h-[0.8vw] max-[1025px]:h-auto">
           Download on the
         </span>
-        <p className="mb-1.5 text-28 leading-none  max-md:text-[3.2vw] max-sm:text-[6vw]">
+        <p className="mb-1.5 text-28 leading-none text-nowrap max-[1025px]:mb-0">
           App Store
         </p>
       </div>
@@ -46,17 +50,17 @@ export const PlayStoreButton = ({ href = "#", ...props }: StoreButtonProps) => {
       href={href}
       aria-label="Download from Play Store"
       {...props}
-      style={{ borderColor: PLAY_BORDER, color: PLAY_TEXT }}
-      className=" ease group relative z-9999  w-[16vw] cursor-pointer items-center justify-start gap-4 overflow-hidden flex rounded-full border bg-white px-[2vw] py-[0.6vw] transition-all duration-300 hover:scale-[0.95] max-md:w-fit max-md:min-w-[30vw] max-md:px-[4vw] max-md:py-[1.5vw] max-sm:w-fit max-sm:min-w-[65vw] max-sm:px-[10vw] max-sm:py-[3vw]"
+      style={{ borderColor: PLAY_BORDER, color: PLAY_TEXT, ...props.style }}
+      className=" ease group relative z-9999  w-[16vw] shrink-0 cursor-pointer items-center justify-start gap-4 overflow-hidden flex rounded-full border bg-white px-[2vw] py-[0.6vw] transition-all duration-300 hover:scale-[0.95] max-[1025px]:w-[78%] max-[1025px]:min-w-0 max-[1025px]:justify-start max-[1025px]:gap-[3vw] max-[1025px]:px-[6vw] max-[1025px]:py-[1.8vw] max-md:w-[85%] max-md:min-w-0 max-md:gap-[4vw] max-md:px-[7vw] max-md:py-[2.6vw] max-sm:w-[85%] max-sm:min-w-0 max-sm:px-[7vw] max-sm:py-[2.6vw]"
     >
       <div>
-        <GooglePlay className="h-[2vw] w-[2vw] max-md:h-[4.5vw] max-md:w-[4.5vw] max-sm:h-[8vw] max-sm:w-[8vw]" />
+        <GooglePlay className="h-[2vw] w-[2vw] max-[1025px]:h-[4vw] max-[1025px]:w-[4vw] max-md:h-[5.6vw] max-md:w-[5.6vw] max-sm:h-[5.6vw] max-sm:w-[5.6vw]" />
       </div>
-      <div className="flex flex-col gap-1.5 text-left">
-        <span className="h-[0.8vw] text-[0.8vw]  max-md:h-[2.5vw] max-md:text-[2vw] max-sm:h-auto max-sm:text-[3vw]">
+      <div className="flex flex-col gap-1.5 text-left max-[1025px]:gap-0">
+        <span className="text-18 h-[0.8vw] max-[1025px]:h-auto">
           Get it on
         </span>
-        <p className=" text-28 mb-1.5 leading-none  text-nowrap max-md:text-[3.2vw] max-sm:text-[6vw]">
+        <p className="text-28 mb-1.5 leading-none text-nowrap max-[1025px]:mb-0">
           Google Play
         </p>
       </div>
