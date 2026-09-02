@@ -132,6 +132,9 @@ const Testimonial = () => {
   const textRefs = useRef<(HTMLDivElement | null)[]>([]);
   const splitsRef = useRef<SplitText[]>([]);
   const cardTweens = useRef<gsap.core.Tween[]>([]);
+  // Image reveals live apart from cardTweens: once a photo starts clipping
+  // open it must finish, so a following swap never kills it mid-bloom.
+  const imageTweens = useRef<gsap.core.Tween[]>([]);
   // Rising stack order, so each incoming photo clips open above the last.
   const imageZ = useRef(1);
   const reducedRef = useRef(false);
@@ -163,11 +166,10 @@ const Testimonial = () => {
    */
   const transitionCard = (
     idx: number,
-    fromIdx: number,
+    _fromIdx: number,
     opts?: { immediate?: boolean },
   ) => {
     const nextText = textRefs.current[idx];
-    const prevText = textRefs.current[fromIdx];
     const nextImage = imageRefs.current[idx];
     const lines = lineRefs.current[idx];
 
@@ -179,6 +181,8 @@ const Testimonial = () => {
       textRefs.current.forEach((el, i) => {
         if (el) gsap.set(el, { autoAlpha: i === idx ? 1 : 0 });
       });
+      imageTweens.current.forEach((tween) => tween.kill());
+      imageTweens.current = [];
       imageRefs.current.forEach((el, i) => {
         if (!el) return;
         gsap.set(el, {
@@ -197,25 +201,37 @@ const Testimonial = () => {
         clipPath: IMAGE_HIDDEN_CLIP,
         autoAlpha: 1,
       });
-      cardTweens.current.push(
+      imageTweens.current = imageTweens.current.filter((t) => t.isActive());
+      imageTweens.current.push(
         gsap.to(nextImage, {
           clipPath: IMAGE_VISIBLE_CLIP,
           duration: IMAGE_REVEAL_DURATION,
           ease: "power2.inOut",
+          overwrite: "auto",
         }),
       );
     }
 
     // --- text: fade the old out, rise the new in behind it ---
-    if (prevText && fromIdx !== idx) {
+    // Every non-target card is faded, not just the one just left. Killing the
+    // tweens above stops any fade still running from an earlier swap, so on a
+    // fast drag a card two or three steps back would otherwise stay stranded
+    // at partial opacity underneath the incoming copy.
+    textRefs.current.forEach((el, i) => {
+      if (!el || i === idx) return;
       cardTweens.current.push(
-        gsap.to(prevText, {
+        gsap.to(el, {
           autoAlpha: 0,
           duration: TEXT_FADE_DURATION,
           ease: "power2.in",
         }),
       );
-    }
+    });
+
+    lineRefs.current.forEach((els, i) => {
+      if (!els?.length || i === idx) return;
+      gsap.set(els, { yPercent: 0 });
+    });
 
     if (nextText) {
       gsap.set(nextText, { autoAlpha: 1 });
@@ -264,6 +280,8 @@ const Testimonial = () => {
       shiftRef.current?.kill();
       cardTweens.current.forEach((tween) => tween.kill());
       cardTweens.current = [];
+      imageTweens.current.forEach((tween) => tween.kill());
+      imageTweens.current = [];
       splitsRef.current.forEach((split) => split.revert());
       splitsRef.current = [];
       if (hideTimer.current) clearTimeout(hideTimer.current);

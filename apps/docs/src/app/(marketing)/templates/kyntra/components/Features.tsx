@@ -105,7 +105,7 @@ const cards: ScrollStackCard[] = [
 const Features = () => {
   return (
     <section className="kyntra-container w-full bg-white text-black">
-      <div className="mx-auto pb-[5vw] max-w-400">
+      <div className="mx-auto pb-0 max-w-400">
         <div className="max-w-[46vw] max-[1025px]:max-w-full">
           <FocusTextWrap>
             <h2 className="font-helvetica-neue leading-[1.12] font-normal tracking-[-0.02em] ">

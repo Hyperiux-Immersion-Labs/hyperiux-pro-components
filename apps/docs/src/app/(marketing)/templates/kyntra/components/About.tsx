@@ -110,7 +110,7 @@ const About = () => {
 
         <ParaAnim
           as="p"
-          className="text-24 w-[35vw] max-[1025px]:w-full leading-[1.6] tracking-wide text-black/80 text-right max-[1025px]:text-left"
+          className="text-24 w-[33vw] max-[1025px]:w-full leading-[1.6] tracking-wide text-black/80 text-right max-[1025px]:text-left"
         >
           Kyntra gives every home a memory keeping repairs, warranties, maintenance and service history connected, so each future decision starts with context instead of from scratch.
         </ParaAnim>

@@ -178,7 +178,7 @@ export default function ScrollStack({
         style={{ height: `${cards.length * 55}svh` }}
         className="w-full motion-reduce:h-auto"
       >
-        <div className="sticky top-[10vh] h-[58vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto max-[1025px]:top-[22vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-md:top-[50vw]">
+        <div className="sticky top-10 h-[58vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto max-[1025px]:top-[22vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-md:top-[50vw]">
           <div className="relative mx-auto h-full w-full motion-reduce:h-auto">
             {cards.map((card, index) => {
               return (
@@ -202,7 +202,7 @@ export default function ScrollStack({
                       borderRadius: `${cardRadius}px`,
                     } as React.CSSProperties
                   }
-                  className={`absolute inset-x-0 flex h-[26vw] flex-col overflow-hidden border px-[2.4vw] py-[3vw] max-[1025px]:py-[6vh] top-[calc(50%-13vw)] motion-reduce:static motion-reduce:mb-[3vw] motion-reduce:h-auto motion-reduce:translate-y-0 max-[1025px]:pt-[5vh] max-[1025px]:top-[calc(50%-35vh)] max-[1025px]:h-[72vh] max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-[8vw] ${
+                  className={`absolute inset-x-0 flex h-[26vw] flex-col overflow-hidden border px-[2.4vw] py-[3vw] max-[1025px]:py-[6vh] top-25 motion-reduce:static motion-reduce:mb-[3vw] motion-reduce:h-auto motion-reduce:translate-y-0 max-[1025px]:pt-[5vh] max-[1025px]:top-[calc(50%-35vh)] max-[1025px]:h-[72vh] max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-[8vw] ${
                     // Card 0 is in place from the start; the rest wait below.
                     index === 0 ? "" : "translate-y-[110vh]"
                   }`}
