@@ -365,8 +365,17 @@ export default function Piano({
       if (previous) previous.kill();
 
       el.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-      el.style.left = `${(((position + 0.5) / lines.length) * 100).toFixed(3)}%`;
 
+      // Along-the-strip position is expressed as a transform offset (x), not
+      // `left` - `left` is a layout property, and this pool of 14 spans gets
+      // reused round-robin as notes fire while sweeping across the piano, so
+      // a span is often still visible (mid fade-out) from its previous note
+      // when reassigned here. Changing `left` on an already-painted,
+      // nonzero-opacity element is exactly what the Layout Instability API
+      // counts as a shift; `x`/`xPercent` are compositor-only and never
+      // trigger layout, so the element's actual `left` stays fixed (set
+      // once at creation, see the pool setup above) for its entire life.
+      const xBase = ((position + 0.5) / lines.length) * rect.width;
       const drift = (Math.random() * 2 - 1) * rect.height * GLYPH_DRIFT;
       const scale = Math.max(0.7, 1.05 - (midi - 60) * 0.012);
 
@@ -374,7 +383,7 @@ export default function Piano({
       timeline
         .set(el, {
           xPercent: -50,
-          x: 0,
+          x: xBase,
           y: 0,
           scale: scale * 0.55,
           rotation: drift > 0 ? -12 : 12,
@@ -385,7 +394,7 @@ export default function Piano({
           el,
           {
             y: -rect.height * GLYPH_RISE,
-            x: drift,
+            x: xBase + drift,
             rotation: 0,
             duration: GLYPH_DURATION,
             ease: "sine.out",

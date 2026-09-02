@@ -28,6 +28,9 @@ export function ScrambleText({ text, run }) {
         node.textContent = text[index];
         node.style.color = "";
         node.style.opacity = "";
+        node.style.width = "";
+        node.style.textAlign = "";
+        node.style.overflow = "";
       });
     };
 
@@ -54,6 +57,21 @@ export function ScrambleText({ text, run }) {
       node.textContent = text[index];
       node.style.color = "";
       node.style.opacity = "0";
+    });
+
+    // Pin every character's box to its own natural width before any
+    // scrambling starts - the tick loop below mutates textContent to
+    // random glyphs of varying intrinsic width every ~50ms, and an
+    // unconstrained inline-block reflows itself and every character after
+    // it on each swap. A fixed width + centered glyph means swapping the
+    // character shown never changes box size, so there's nothing left to
+    // reflow (same fix as ButtonV3.jsx's ScrambleLabel).
+    chars.forEach((node) => {
+      const charWidth = node.offsetWidth;
+
+      node.style.width = `${charWidth}px`;
+      node.style.textAlign = "center";
+      node.style.overflow = "hidden";
     });
 
     const start = performance.now();

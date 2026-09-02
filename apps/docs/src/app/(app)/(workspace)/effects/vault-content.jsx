@@ -78,12 +78,23 @@ function RouteAnimationSync({ syncKey }) {
 // couple of animation frames after mount, which would otherwise clobber
 // this override if it ran first. Only fires once so a manual close
 // afterwards is respected.
-function EffectsGridDefaults({ gridColumns, isSidebarReady, toggleSidebar }) {
-  const hasRunRef = useRef(false);
+//
+// "Once" is tracked per browser session (sessionStorage), not per component
+// mount - VaultContent itself remounts on every /effects <-> /effects/[slug]
+// navigation (they're different page modules, e.g. clicking a category chip
+// or a sidebar category/Overview link), which used to reset a mount-local
+// ref and made this default re-fire on every such navigation: closing the
+// sidebar, then clicking any category, would force it back open and drop
+// the grid back to 2 columns (via SidebarGridSync below) even though the
+// user had just closed it and/or chosen 3 columns.
+const EFFECTS_SIDEBAR_DEFAULT_SESSION_KEY = "hyperiux-effects-sidebar-default-applied";
 
+function EffectsGridDefaults({ gridColumns, isSidebarReady, toggleSidebar }) {
   useEffect(() => {
-    if (hasRunRef.current || !isSidebarReady) return;
-    hasRunRef.current = true;
+    if (!isSidebarReady || typeof window === "undefined") return;
+    if (window.sessionStorage.getItem(EFFECTS_SIDEBAR_DEFAULT_SESSION_KEY)) return;
+
+    window.sessionStorage.setItem(EFFECTS_SIDEBAR_DEFAULT_SESSION_KEY, "true");
 
     if (gridColumns === 2) {
       toggleSidebar(true);
@@ -99,6 +110,19 @@ function EffectsGridDefaults({ gridColumns, isSidebarReady, toggleSidebar }) {
 // buttons below - drops the grid to 2 columns. Only reacts to isSidebarOpen
 // itself (not gridColumns) so it doesn't fight the density buttons, which
 // already set both values together in the same click.
+// Persisted the same way VaultLayout persists isSidebarOpen - VaultContent
+// remounts on every /effects <-> /effects/[slug] navigation (see
+// EffectsGridDefaults above), and gridColumns is plain useState, so without
+// this a 3-column choice silently reverted to the useState(2) default the
+// moment the user clicked into any category or back to "All Effects".
+const GRID_COLUMNS_STORAGE_KEY = "hyperiux-effects-grid-columns";
+
+function getStoredGridColumns() {
+  if (typeof window === "undefined") return 2;
+
+  return window.localStorage.getItem(GRID_COLUMNS_STORAGE_KEY) === "3" ? 3 : 2;
+}
+
 function SidebarGridSync({ isSidebarOpen, gridColumns, setGridColumns }) {
   useEffect(() => {
     if (isSidebarOpen && gridColumns === 3) {
@@ -127,8 +151,13 @@ function SkeletonBlock({ className = "" }) {
 
 
 function EffectsGridSkeleton() {
+  // Fixed to the viewport (not the document flow) so it stays centered on
+  // screen while the effects are loading, even if the user scrolls the
+  // still-loading page - previously this was a normal h-96 block sitting
+  // wherever it fell in the page's content flow, so scrolling carried it
+  // away like any other element.
   return (
-    <div className="flex h-96 w-full items-center justify-center">
+    <div className="fixed inset-0 z-40 flex items-center justify-center pointer-events-none">
       <GridDots size={56} squareSize={8} className="text-primary" />
     </div>
   );
@@ -228,9 +257,13 @@ export function VaultContent({
 
   const [searchQuery, setSearchQuery] = useState("");
   const [wishlist, setWishlist] = useState([]);
-  const [gridColumns, setGridColumns] = useState(2);
+  const [gridColumns, setGridColumns] = useState(() => getStoredGridColumns());
   const { toast: wishlistToast, showToast: showWishlistSavedToast, dismissToast: dismissWishlistToast } = useToastQueue();
   const [dropdownFilter, setDropdownFilter] = useState(null);
+
+  useEffect(() => {
+    window.localStorage.setItem(GRID_COLUMNS_STORAGE_KEY, String(gridColumns));
+  }, [gridColumns]);
 
   const featuredEffects = useMemo(
     () =>
@@ -955,7 +988,16 @@ export function VaultContent({
           </div>
 
           {isEffectsLoading ? (
-            <EffectsGridSkeleton count={9} />
+            // Portaled straight to document.body (mounted-gated, same as the
+            // two modals below) rather than rendered inline here - RouteFade's
+            // root node gets `gsap.set(page, { y: 0, ... })` applied to it,
+            // and any transform on an ancestor (even y:0) makes that ancestor
+            // the containing block for `position: fixed` descendants instead
+            // of the real viewport. Rendered inline, "fixed" was actually
+            // anchoring to RouteFade's own (scrolling) box, not the screen -
+            // which is exactly why it still scrolled. document.body has no
+            // transform, so a fixed child of it always tracks the viewport.
+            mounted && createPortal(<EffectsGridSkeleton />, document.body)
           ) : filteredEffects.length === 0 ? (
             <div className="py-20 text-center max-md:px-4 max-md:py-14">
               <div className="mb-6 text-6xl max-md:mb-4 max-md:text-4xl">
