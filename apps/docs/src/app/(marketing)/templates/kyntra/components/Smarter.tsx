@@ -132,26 +132,24 @@ export default function Smarter() {
      
       if (prefersReducedMotion()) return;
 
+
       const trigger = {
         trigger: wrapper,
-        start: "top 90%",
+        start: "top 80%",
+        end: "65% 80%",
         // markers: true,
-        once: true,
+        scrub: 1,
       };
 
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1026px)", () => {
-        gsap.set(wrapper, { xPercent: 80 });
+        gsap.set(wrapper, { xPercent: 100 });
 
         gsap.to(wrapper, {
           xPercent: 0,
-          duration: 1.6,
           ease: "power3.out",
           scrollTrigger: trigger,
-          onComplete: () => {
-            gsap.set(wrapper, { clearProps: "transform" });
-          },
         });
       });
 
@@ -161,12 +159,8 @@ export default function Smarter() {
 
         gsap.to(wrapper, {
           opacity: 1,
-          duration: 1,
           ease: "power2.out",
           scrollTrigger: trigger,
-          onComplete: () => {
-            gsap.set(wrapper, { clearProps: "opacity,transform" });
-          },
         });
       });
     }, sectionRef);

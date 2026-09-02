@@ -65,6 +65,9 @@ const ARTICLES: Article[] = [
   },
 ];
 
+/** Rate the hover overlay reverses at; above 1 makes leaving quicker than entering. */
+const LEAVE_SCALE = 1.6;
+
 const ArticleCard = ({ article }: { article: Article }) => {
   const cardRef = useRef<HTMLElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -76,6 +79,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
       if (!panel) return;
 
       const content = panel.querySelectorAll<HTMLElement>("[data-panel-item]");
+      const image = cardRef.current?.querySelector<HTMLElement>("img");
       const reduced = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
@@ -83,22 +87,41 @@ const ArticleCard = ({ article }: { article: Article }) => {
       gsap.set(panel, { yPercent: 100 });
       gsap.set(content, { autoAlpha: 0, y: 16 });
 
-      // Panel slides up first, then the content staggers in after it lands.
-      const tl = gsap.timeline({ paused: true });
+      // One timeline owns the whole overlay — panel, copy and the photo's
+      // push-in — so the three can never drift apart the way the panel and a
+      // separate CSS transition on the image did.
+      const tl = gsap.timeline({
+        paused: true,
+        defaults: { ease: "power2.out", overwrite: "auto" },
+      });
+
       tl.to(panel, {
         yPercent: 0,
-        duration: reduced ? 0 : 0.35,
-        ease: "power3.inOut",
-      }).to(
+        // A long `out` curve: the panel covers most of its travel early, then
+        // eases into place, so the overlay glides up instead of arriving fast.
+        duration: reduced ? 0 : 0.9,
+        ease: "power3.out",
+      });
+
+      if (image) {
+        tl.to(
+          image,
+          { scale: reduced ? 1 : 1.05, duration: reduced ? 0 : 1.3 },
+          0,
+        );
+      }
+
+      // Overlapped rather than sequential: the copy starts rising while the
+      // panel is still travelling, so the two read as one movement.
+      tl.to(
         content,
         {
           autoAlpha: 1,
           y: 0,
-          duration: reduced ? 0 : 0.4,
-          stagger: reduced ? 0 : 0.08,
-          ease: "power2.out",
+          duration: reduced ? 0 : 0.6,
+          stagger: reduced ? 0 : 0.03,
         },
-        reduced ? 0 : ">-0.1",
+        reduced ? 0 : 0.3,
       );
 
       tlRef.current = tl;
@@ -106,8 +129,10 @@ const ArticleCard = ({ article }: { article: Article }) => {
     { scope: cardRef },
   );
 
-  const handleEnter = () => tlRef.current?.play();
-  const handleLeave = () => tlRef.current?.reverse();
+  // The overlay leaves faster than it arrives — a slow entrance reads as
+  // deliberate, but the same pace on the way out feels like lag.
+  const handleEnter = () => tlRef.current?.timeScale(1).play();
+  const handleLeave = () => tlRef.current?.timeScale(LEAVE_SCALE).reverse();
 
   return (
     <article
@@ -124,7 +149,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
         fill
         draggable={false}
         sizes="(max-width: 768px) 82vw, (max-width: 1024px) 42vw, 24vw"
-        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        className="object-cover"
       />
 
       {/* Blurred panel: slides up on hover, then its content fades in. */}

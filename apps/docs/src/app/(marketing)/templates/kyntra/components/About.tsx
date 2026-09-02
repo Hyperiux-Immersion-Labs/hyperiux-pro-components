@@ -40,27 +40,25 @@ const About = () => {
 
     gsap.set(phones, { opacity: 1 });
 
-    // The phones stack into a column below 1025px, where the staggered rise and
-    // the connector line no longer describe the layout - so each viewport gets
-    // its own treatment and matchMedia reverts the other on resize.
+   
     const mm = gsap.matchMedia();
 
     mm.add("(min-width: 1026px)", () => {
-      gsap.from(phones, {
-        scrollTrigger: {
-          trigger: cluster,
-          // Fires once the section is about half way up the viewport.
-          start: "top 50%",
-          // markers:true,
-          once: true,
-        },
-        yPercent: 60,
-        opacity: 0,
-        duration: 1,
-        ease: "power2.out",
-        // Array order (centre, right, left) drives the sequence, not DOM order.
-        stagger: 0.6,
-      });
+      // gsap.from(phones, {
+      //   scrollTrigger: {
+      //     trigger: cluster,
+      //     // Fires once the section is about half way up the viewport.
+      //     start: "top 50%",
+      //     // markers:true,
+      //     once: true,
+      //   },
+      //   yPercent: 60,
+      //   opacity: 0,
+      //   duration: 1,
+      //   ease: "power2.out",
+      //   // Array order (centre, right, left) drives the sequence, not DOM order.
+      //   stagger: 0.6,
+      // });
 
       // The connector reads as joining phones that are already there, so it waits
       // out the stagger above (3 phones x 0.6s apart, 1s each) before fading in.
@@ -96,12 +94,27 @@ const About = () => {
       });
     });
 
+
+    const parallax = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#kyntra-about',
+        start: "30% bottom",
+        end: "bottom top",
+        scrub: 0.5,
+        // markers: true,
+      },
+    });
+
+    parallax
+      .fromTo([leftRef.current, rightRef.current], { y: -72 }, { y: 72 }, 0)
+      .fromTo(midRef.current, { y: 72 }, { y: -72 }, 0);
+
     return () => mm.revert();
   }, []);
 
   return (
-    <section className="kyntra-container relative w-full h-full overflow-hidden bg-white text-black">
-      <div className="mx-auto flex max-w-400 items-start justify-between gap-[6vw] max-[1025px]:flex-col max-[1025px]:gap-[6vw]">
+    <section id='kyntra-about' className="kyntra-container  relative w-full h-full overflow-hidden bg-white text-black">
+      <div className="mx-auto flex max-w-400 py-[4vh] items-start justify-between gap-[6vw] max-[1025px]:flex-col max-[1025px]:gap-[6vw]">
         <FocusTextWrap>
           <h2 className="font-helvetica-neue w-[35vw] max-[1025px]:w-full leading-[1.15] font-normal tracking-[-0.02em] ">
             Everything You Need For a Better Home &amp; Lifestyle
@@ -119,7 +132,7 @@ const About = () => {
 
       <div
         ref={clusterRef}
-        className="relative mx-auto mt-[6vw] flex max-w-400 items-start justify-center gap-[3vw] max-[1025px]:mt-[10vw] max-[1025px]:flex-col max-[1025px]:items-center max-[1025px]:gap-[8vw]"
+        className="relative mx-auto mt-[10vw] flex max-w-400 items-start justify-center gap-[3vw] max-[1025px]:mt-[10vw] max-[1025px]:flex-col max-[1025px]:items-center max-[1025px]:gap-[8vw]"
       >
       
         <Image
@@ -128,7 +141,7 @@ const About = () => {
           alt=""
           aria-hidden
           priority
-          className="pointer-events-none absolute top-1/2 left-1/2 w-screen max-w-none -translate-x-1/2 -translate-y-1/2 opacity-0 select-none max-[1025px]:hidden"
+          className="pointer-events-none absolute top-[70%] left-1/2 w-screen max-w-none -translate-x-1/2 -translate-y-1/2 opacity-0 select-none max-[1025px]:hidden"
         />
 
         <div

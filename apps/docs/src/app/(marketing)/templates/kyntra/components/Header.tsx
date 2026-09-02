@@ -35,7 +35,7 @@ const Header: React.FC = () => {
   const closeEnquiryModal = () => setEnquiryOpen(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setRevealed(true), 500);
+    const timer = window.setTimeout(() => setRevealed(true), 1000);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -81,7 +81,7 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 px-[3vw] py-[1.6vw] transition-all duration-500 ease-in-out max-[1025px]:px-[5%] max-[1025px]:py-[5%] ${
+      className={`fixed inset-x-0 top-0 z-50 px-[3vw] py-[1.6vw] transition-all duration-700 ease-out max-[1025px]:px-[5%] max-[1025px]:py-[5%] ${
         !revealed
           ? "-translate-y-full"
           : hidden

@@ -173,7 +173,7 @@ export function ParaAnim<T extends ElementType = "div">({
       }
 
       gsap.set(el, { opacity: 1 });
-      gsap.set(lines, { yPercent: 100 });
+      gsap.set(lines, { yPercent: 150 });
 
       const to = {
         yPercent: 0,

@@ -1,18 +1,68 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 'use client'
+import { useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AppleStoreButton, PlayStoreButton } from "./Buttons";
 import phoneMockup from "../assets/kyntra-hero-mockup.png";
 import kyntraHero from "../assets/kyntra-hero.png";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
+import { prefersReducedMotion } from "./Animations/reducedMotion";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
 const Hero = () => {
+  const heroRef = useRef<HTMLElement | null>(null);
+  const phoneEntranceRef = useRef<HTMLDivElement | null>(null);
+  const phoneScrollRef = useRef<HTMLDivElement | null>(null);
+
+  useGSAP(
+    () => {
+      const entrance = phoneEntranceRef.current;
+      const phone = phoneScrollRef.current;
+      if (!entrance || !phone) return;
+
+      if (prefersReducedMotion()) {
+        gsap.set(entrance, { opacity: 1, yPercent: 0 });
+        return;
+      }
+
+      // The Tailwind class prevents a pre-hydration flash; GSAP then owns the
+      // exact transform and opacity values for the entrance.
+      gsap.set(entrance, { opacity: 0, yPercent: 110 });
+      gsap.to(entrance, {
+        opacity: 1,
+        yPercent: 0,
+        duration: 1.3,
+        ease: "power3.out",
+      });
+
+      gsap.to(phone, {
+        yPercent: 15,
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.2,
+        },
+      });
+    },
+    { scope: heroRef },
+  );
+
   return (
-    <section className="kyntra-hero relative min-h-screen h-full w-full overflow-hidden bg-white">
+    <section
+      ref={heroRef}
+      className="kyntra-hero relative min-h-screen h-full w-full  bg-white"
+    >
       <motion.div
         aria-hidden
         initial={{ opacity: 0 }}
@@ -38,14 +88,20 @@ const Hero = () => {
       <div className="relative z-10 mx-auto flex min-h-screen max-w-400 items-center gap-[10vw] px-[5vw] pb-[8vh] pt-[40vh] max-[1025px]:flex-col-reverse max-[1025px]:items-start max-[1025px]:justify-end max-[1025px]:gap-[8vw] max-[1025px]:px-[7vw] max-[1025px]:pb-0 max-[1025px]:pt-[20vh] max-md:gap-[10vw]">
         {/* Phone mockup */}
         <div className="flex w-[33%] shrink-0 justify-center max-[1025px]:w-full max-md:w-full">
-          <FadeUp delay={0.5} className="w-[25vw] ml-20 h-auto max-[1025px]:ml-0 max-[1025px]:w-[62vw] max-md:w-[80vw]">
-            <Image
-              src={phoneMockup}
-              alt="Kyntra app manage every room and service from one home dashboard"
-              className="h-auto w-full object-contain"
-              priority
-            />
-          </FadeUp>
+          <div
+            ref={phoneEntranceRef}
+            className="ml-20 opacity-0 h-auto w-[25vw]  max-[1025px]:ml-0 max-[1025px]:w-[62vw] max-md:w-[80vw]"
+            style={{ opacity: 0 }}
+          >
+            <div ref={phoneScrollRef} className="will-change-transform">
+              <Image
+                src={phoneMockup}
+                alt="Kyntra app manage every room and service from one home dashboard"
+                className="h-auto w-full object-contain"
+                priority
+              />
+            </div>
+          </div>
         </div>
 
        

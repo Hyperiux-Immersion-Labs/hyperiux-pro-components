@@ -75,20 +75,17 @@ const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-// The thumbnail strip's travel, driven by one tween rather than the core's
-// exponential damp — that damp is what made the shift read as jerky.
+
 const SHIFT_DURATION = 0.9;
 const SHIFT_EASE = "power3.inOut";
 
-// The big card's in-place swap, independent of the strip's travel so a long
-// thumbnail jump does not stretch the card's transition to match.
+
 const IMAGE_HIDDEN_CLIP = "inset(50%)";
 const IMAGE_VISIBLE_CLIP = "inset(0%)";
 const IMAGE_REVEAL_DURATION = 0.6;
 const LINES_DURATION = 0.72;
 const LINES_STAGGER = 0.06;
-// The outgoing copy clears out before the incoming lines rise, so the two never
-// overlap mid-air and the card never looks doubled.
+
 const TEXT_FADE_DURATION = 0.24;
 
 const THUMB_HIDE_DELAY = 0.75;
@@ -121,24 +118,21 @@ const STRIP = Array.from(
 const Testimonial = () => {
   const stripRef = useRef<KeyboardSlider | null>(null);
 
-  // The card the strip is currently pointing at. State only so the thumbnail
-  // opacity and a11y labels can react; the motion itself never waits on React.
+
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
 
-  // Per-slide reveal targets, indexed by testimonial. Collected once on mount so
-  // playing a card's reveal never touches layout mid-shift.
+
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textRefs = useRef<(HTMLDivElement | null)[]>([]);
   const splitsRef = useRef<SplitText[]>([]);
   const cardTweens = useRef<gsap.core.Tween[]>([]);
-  // Image reveals live apart from cardTweens: once a photo starts clipping
-  // open it must finish, so a following swap never kills it mid-bloom.
+
   const imageTweens = useRef<gsap.core.Tween[]>([]);
-  // Rising stack order, so each incoming photo clips open above the last.
+
   const imageZ = useRef(1);
   const reducedRef = useRef(false);
-  /** The split line elements for each card, by testimonial index. */
+
   const lineRefs = useRef<Element[][]>([]);
 
   const [hiddenThumb, setHiddenThumb] = useState(0);
@@ -148,22 +142,11 @@ const Testimonial = () => {
   // The single tween both sliders read from.
   const shiftRef = useRef<gsap.core.Tween | null>(null);
   const progress = useRef({ t: 0 });
-  // Slide index each slider is headed for, so a mid-flight re-target measures
-  // from the destination rather than from `currentSlide`, which lags behind
-  // while a driven move is in progress.
+
   const stripIndexRef = useRef(1);
 
   const count = TESTIMONIALS.length;
 
-  /**
-   * Swap the big card's contents in place.
-   *
-   * Text: the outgoing copy fades out, then the incoming lines rise from behind
-   * their masks. Image: the incoming photo is stacked on top with a rising
-   * z-index and clipped open from the centre, exactly like the hover effect in
-   * interactive-list-preview — the outgoing photo simply stays put underneath,
-   * so there is never a gap or a flash between the two.
-   */
   const transitionCard = (
     idx: number,
     _fromIdx: number,
@@ -176,7 +159,7 @@ const Testimonial = () => {
     cardTweens.current.forEach((tween) => tween.kill());
     cardTweens.current = [];
 
-    // Reduced motion, or the first paint: show the target outright.
+    // Reduced motion
     if (opts?.immediate || reducedRef.current) {
       textRefs.current.forEach((el, i) => {
         if (el) gsap.set(el, { autoAlpha: i === idx ? 1 : 0 });
@@ -194,7 +177,6 @@ const Testimonial = () => {
       return;
     }
 
-    // --- image: clip open on top of the outgoing one ---
     if (nextImage) {
       gsap.set(nextImage, {
         zIndex: ++imageZ.current,
@@ -212,11 +194,8 @@ const Testimonial = () => {
       );
     }
 
-    // --- text: fade the old out, rise the new in behind it ---
-    // Every non-target card is faded, not just the one just left. Killing the
-    // tweens above stops any fade still running from an earlier swap, so on a
-    // fast drag a card two or three steps back would otherwise stay stranded
-    // at partial opacity underneath the incoming copy.
+    //  text: fade the old out
+
     textRefs.current.forEach((el, i) => {
       if (!el || i === idx) return;
       cardTweens.current.push(
@@ -251,9 +230,6 @@ const Testimonial = () => {
   };
 
   useEffect(() => {
-    // Split every card up front. Re-splitting on each change would force a
-    // synchronous text-layout pass mid-transition; one pass on mount keeps the
-    // swap pure transform afterwards.
     reducedRef.current = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -267,13 +243,12 @@ const Testimonial = () => {
         });
         const list = Array.isArray(splits) ? splits : [splits];
         splitsRef.current.push(...list);
-        // Keep the real line elements the API hands back, rather than matching
-        // on a class name that depends on SplitText's config.
+
         lineRefs.current[i] = list.flatMap((split) => split.lines);
       });
     }
 
-    // Park everything at the starting card, shown outright.
+
     transitionCard(activeRef.current, activeRef.current, { immediate: true });
 
     return () => {
@@ -306,34 +281,26 @@ const Testimonial = () => {
     shiftEl.style.transform = `translateX(${-half}px)`;
   }, []);
 
-  /**
-   * Move both sliders to `idx` on one tween.
-   *
-   * Each slider exposes a scroll position in its own units (the strip is
-   * variable-width pixels, the card is whole slides), so they cannot share a
-   * position — but they can share a clock. We resolve both destinations up
-   * front, then interpolate each from its own origin against the same eased
-   * progress. Same curve, same duration, same frame: they cannot desync.
-   */
+
   const goTo = useCallback(
     (idx: number, opts?: { immediate?: boolean; stripSettled?: boolean }) => {
       const clamped = ((idx % count) + count) % count;
       const strip = stripRef.current;
       if (!strip) return;
 
+
+      if (shiftRef.current && !opts?.immediate && !opts?.stripSettled) return;
+
       const from = activeRef.current;
       if (clamped === from && !opts?.immediate) return;
       activeRef.current = clamped;
       setActive(clamped);
 
-      // Shortest way round the ring, so a 4 -> 0 jump moves one step forward
-      // rather than unwinding four steps backwards.
+
       let delta = clamped - from;
       if (delta > count / 2) delta -= count;
       if (delta < -count / 2) delta += count;
 
-      // After a drag the strip has already carried itself to the new slide;
-      // moving it again would add a phantom extra step on top of the gesture.
       const driveStrip = !opts?.stripSettled;
       if (driveStrip) stripIndexRef.current += delta;
 
@@ -344,10 +311,6 @@ const Testimonial = () => {
 
       shiftRef.current?.kill();
 
-      // The card transitions in place rather than sliding: the old text fades
-      // out, the new text rises in off a SplitText, and the new photo clips
-      // open over the old one. Independent of the strip's travel, so a long
-      // thumbnail jump does not stretch the card's transition to match.
       transitionCard(clamped, from, { immediate: opts?.immediate });
 
       if (opts?.immediate) {
@@ -386,14 +349,12 @@ const Testimonial = () => {
 
   const go = (dir: 1 | -1) => goTo(activeRef.current + dir);
 
-  // Dragging the strip drives the pair too: the card follows whatever slide the
-  // strip settles on, so both entry points end up in the same place. Ignored
-  // while our own tween is running — that motion already owns both sliders.
+
+
   const handleStripSettle = useCallback(
     (current: number) => {
       if (shiftRef.current) return;
-      // A drag moved the strip itself, so adopt its index before deriving the
-      // card's; otherwise the next click would measure from a stale origin.
+  
       stripIndexRef.current = current;
       const centre = ((current % count) + count) % count;
       const target = (centre - 1 + count) % count;
@@ -434,13 +395,10 @@ const Testimonial = () => {
       </div>
 
       <div className="mt-[4vw] max-[1025px]:mt-[12vw]  grid grid-cols-[minmax(0,1fr)_36vw] pl-[5%] max-[1025px]:px-[7%] items-start gap-[1.5vw] max-[1025px]:grid-cols-1 max-[1025px]:gap-[8vw]">
-        {/* Left: the quote card. Contents swap in place — the layout is the
-            original single frame, with the photo and the copy each holding one
-            stacked layer per testimonial. */}
+
         <FadeUp className="border-kyntra-primary relative min-h-[23.5vw] overflow-hidden rounded-[1.6vw] border px-[3vw] py-[3.2vw] max-[1025px]:min-h-0 max-md:rounded-[5vw] max-md:p-[7vw]">
           <div className="flex items-start gap-[2.6vw] max-[1025px]:flex-col max-[1025px]:gap-[5vw] max-md:gap-[6vw]">
-            {/* Photo well: every image is stacked here; the incoming one clips
-                open above the outgoing one, which stays put underneath. */}
+         
             <div className="relative aspect-square w-[18vw] shrink-0 overflow-hidden rounded-[1.1vw] max-[1025px]:w-[30vw] max-[1025px]:rounded-[2.5vw] max-md:w-[45vw] max-md:rounded-[4vw]">
               {TESTIMONIALS.map((t, i) => (
                 <div
@@ -538,14 +496,13 @@ const Testimonial = () => {
                 onReady={(slider) => {
                   stripRef.current = slider;
                   stripShiftRef.current = slider.wrapper as HTMLDivElement;
-                  // Grabbing the strip mid-shift hands control straight back to
-                  // the drag, instead of the tween fighting the gesture.
+              
                   slider.wrapper.addEventListener("pointerdown", () => {
                     shiftRef.current?.kill();
                     shiftRef.current = null;
                   });
                   requestAnimationFrame(() => {
-                    // Start: testimonial 0 in the card, strip begins at 1.
+     
                     slider.goToIndex(1);
                     stripIndexRef.current = 1;
                     syncStripShift();
@@ -559,25 +516,21 @@ const Testimonial = () => {
                       key={`${t.name}-${stripIndex}`}
                       className="pr-[1.6vw] max-md:pr-[3vw]"
                     >
-                      <button
-                        type="button"
-                        onClick={() => goTo(i)}
-                        aria-label={`Show testimonial from ${t.name}`}
-                        aria-hidden={stripIndex >= count}
-                        tabIndex={stripIndex >= count ? -1 : undefined}
+                      <div
+                        aria-hidden
                         className={`relative block aspect-square w-[13vw] overflow-hidden rounded-[1vw] max-[1025px]:w-[25vw] max-md:w-[26vw] max-md:rounded-[3vw] ${
                           hiddenThumb === i ? "opacity-0" : "opacity-100"
                         }`}
                       >
                         <Image
                           src={t.image}
-                          alt={t.name}
+                          alt=""
                           fill
                           sizes="(max-width: 768px) 26vw, 13vw"
                           className="object-cover"
                           draggable={false}
                         />
-                      </button>
+                      </div>
                     </div>
                   );
                 })}

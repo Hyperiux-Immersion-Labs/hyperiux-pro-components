@@ -325,7 +325,7 @@ export function FAQTitle({
           >
             <span className="absolute h-[1.5px] w-[40%] bg-current" />
             <span
-              className={`absolute h-[1.5px] w-[40%] bg-current transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none ${
+              className={`absolute h-[1.5px] w-[40%] bg-current transition-transform duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] motion-reduce:transition-none ${
                 isOpen ? "rotate-0" : "rotate-90"
               }`}
             />

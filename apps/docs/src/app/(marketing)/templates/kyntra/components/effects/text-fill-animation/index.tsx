@@ -123,7 +123,7 @@ export default function TextFillAnimation({
               trigger: sectionRef.current,
               start: 'top 60%',
               // markers: true,
-              end: 'bottom 50%',
+              end: 'bottom 80%',
               scrub: 0.25,
             },
           })
