@@ -310,12 +310,18 @@ export default function ContactForm({
  onSubmit={handleSubmit}
  >
  {fields.map((field, index) => (
- <FadeUp key={field.name} delay={0.15 + index * 0.08}>
+
+ <FadeUp
+ key={field.name}
+ delay={0.15 + index * 0.08}
+ className="relative"
+ style={{ zIndex: fields.length - index }}
+ >
  {renderField(field)}
  </FadeUp>
  ))}
 
- <FadeUp delay={0.15 + fields.length * 0.08} className="flex items-center justify-start pt-[0.8vw] max-[1025px]:pt-[3vw]">
+ <FadeUp delay={0.15 + fields.length * 0.08} className="relative flex items-center justify-start pt-[0.8vw] max-[1025px]:pt-[3vw]" style={{ zIndex: 0 }}>
  {/* The stagger button renders an <a>, so it can't submit on its own -
      it clicks this hidden native submit to keep the normal form flow. */}
  <button ref={submitRef} type="submit" className="hidden" aria-hidden="true" tabIndex={-1} />

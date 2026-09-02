@@ -24,6 +24,7 @@ const CTA = () => {
             text="Different Home, Different Chaos"
             href="#"
             hoverColor="#ffffff"
+            staggerStep={0.006}
             className="w-[45vw] justify-center rounded-full bg-black py-[2.5vw] text-center max-[1025px]:w-[75vw] max-[1025px]:py-[9vw] max-md:w-full max-md:py-[14vw]"
             textClassName=" text-44 leading-[1.1] font-normal tracking-[-0.02em] text-white max-[1025px]:text-[5vw] max-md:text-[7vw]"
           />

@@ -8,6 +8,7 @@ import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
+import { prefersReducedMotion } from "./Animations/reducedMotion";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -56,13 +57,31 @@ export default function HowKyntraWorks() {
     if (typeof window === "undefined") return;
 
     const ctx = gsap.context(() => {
+     
+      if (prefersReducedMotion()) {
+        lineRefs.current.forEach((line) => {
+          gsap.set(line, { strokeDasharray: "none", strokeDashoffset: 0 });
+        });
+        gsap.set(dotRefs.current, {
+          fill: KYNTRA_PRIMARY,
+          attr: { cy: LINE_HEIGHT },
+        });
+        stepRefs.current.forEach((step) => {
+          gsap.set(step, { opacity: 1 });
+          const heading = step.querySelector<HTMLHeadingElement>(".step-title");
+          if (heading) gsap.set(heading, { color: KYNTRA_PRIMARY });
+        });
+        return;
+      }
+
       // One scrubbed timeline draws each line segment and slides its dot down.
       const masterTL = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "10% 70%",
+          start: "10% 55%",
           end: "90% 70%",
           scrub: 0.4,
+          // markers: true,
         },
       });
 
@@ -101,7 +120,8 @@ export default function HowKyntraWorks() {
           trigger: step,
           start: "top 65%",
           end: "top 45%",
-          scrub: 1,
+          scrub: 0.2,
+          // markers:true,
         };
 
         gsap.fromTo(
@@ -148,7 +168,7 @@ export default function HowKyntraWorks() {
 
       <div className="relative mx-auto mt-[5vw] flex w-full flex-col items-center">
         {STEPS.map((step, index) => (
-          <div key={step.title} className="flex w-full flex-col items-center">
+          <div key={step.title} className="flex mb-[2vw] w-full flex-col items-center">
             <TimelineConnector addLineRef={addLineRef} addDotRef={addDotRef} />
 
             <div

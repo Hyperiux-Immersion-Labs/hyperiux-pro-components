@@ -127,6 +127,8 @@ export class Core {
   touchPreviousY?: number
   scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
+  /** Set while an external driver owns `current`; suspends the damp. */
+  #driven: boolean = false
   webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
 
   onSlideChange?: (current: number, previous: number) => void
@@ -392,6 +394,7 @@ export class Core {
           ? this.config.scrollSensitivity
           : this.config.scrollSensitivity * 0.001
         const deltaValue = delta * deltaFactor
+        this.releaseScroll()
         let newTarget = this.target + deltaValue
 
         if (!this.config.infinite) {
@@ -410,6 +413,7 @@ export class Core {
 
   #handleDragStart(event: MouseEvent | Touch): void {
     if (this.#isPaused) return
+    this.releaseScroll()
     this.isDragging = true
     this.dragStart = this.config.vertical ? event.clientY : event.clientX
     this.dragStartTarget = this.target
@@ -487,24 +491,33 @@ export class Core {
     this.deltaTime = (currentTime - this.#previousTime) / 1000
     this.#previousTime = currentTime
 
-    if (this.config.snap && !this.isDragging) {
-      if (this.config.variableWidth) {
-        const snapped = this.#snapToNearest(this.target)
-        const diff = snapped - this.target
-        this.target += diff * this.config.snapStrength
-      } else {
-        const currentSnap = Math.round(this.target)
-        const diff = currentSnap - this.target
-        this.target += diff * this.config.snapStrength
+    // While an external driver owns the position (see `scrollTo`), skip the damp
+    // and the snap correction entirely so nothing fights it for control.
+    if (this.#driven) {
+      // Position is set directly; only the render below needs to run.
+    } else {
+      if (this.config.snap && !this.isDragging) {
+        // Frame-rate corrected so the settle matches on 60Hz and 120Hz.
+        const strength =
+          1 - Math.pow(1 - this.config.snapStrength, this.deltaTime * 60)
+        if (this.config.variableWidth) {
+          const snapped = this.#snapToNearest(this.target)
+          const diff = snapped - this.target
+          this.target += diff * strength
+        } else {
+          const currentSnap = Math.round(this.target)
+          const diff = currentSnap - this.target
+          this.target += diff * strength
+        }
       }
-    }
 
-    this.current = damp(
-      this.current,
-      this.target,
-      1 / this.config.lerpFactor,
-      this.deltaTime
-    )
+      this.current = damp(
+        this.current,
+        this.target,
+        1 / this.config.lerpFactor,
+        this.deltaTime
+      )
+    }
 
     if (this.config.infinite) {
       if (this.config.variableWidth) {
@@ -707,6 +720,49 @@ export class Core {
     this.speed *= this.config.speedDecay
   }
 
+  /**
+   * Send `current` to `to` on an eased curve. In infinite mode the destination is
+   * rebased to the wrap nearest the current position, so the strip takes the
+   * short way round instead of unwinding the whole loop.
+   */
+  /** Current scroll position, in this slider's own units. */
+  get scroll(): number {
+    return this.current
+  }
+
+  /**
+   * Resolve the scroll position that puts `index` in the centre slot. In
+   * infinite mode this picks the wrap nearest the current position, so callers
+   * can step by a signed delta and always take the short way round.
+   */
+  scrollForIndex(index: number): number {
+    if (this.config.variableWidth) {
+      const clamped = this.config.infinite
+        ? ((index % this.items.length) + this.items.length) % this.items.length
+        : Math.min(Math.max(index, 0), this.items.length - 1)
+      return this.#getSnapTargetForIndex(clamped)
+    }
+    return -index
+  }
+
+  /**
+   * Drive the slider to an absolute position, bypassing the damp. Lets an
+   * outside animation own the motion — which is how two sliders stay in lockstep:
+   * one tween writes both, in the same frame, from the same eased value.
+   */
+  scrollTo(position: number): void {
+    this.#driven = true
+    this.current = position
+    this.target = position
+  }
+
+  /** Hand the position back to the internal damp (drag, wheel, snap). */
+  releaseScroll(): void {
+    if (!this.#driven) return
+    this.#driven = false
+    this.target = this.current
+  }
+
   goToNext(): void {
     if (this.config.variableWidth) {
       const nextIndex = this.config.infinite
@@ -866,6 +922,9 @@ export class Core {
   }
 
   resize(): void {
+    // Positions are in pixels, so a resize invalidates whatever an external
+    // driver had. Take back control and settle on the recomputed geometry.
+    this.releaseScroll()
     this.#setupViewport()
 
     // Re-center current slide for variable width non-infinite sliders

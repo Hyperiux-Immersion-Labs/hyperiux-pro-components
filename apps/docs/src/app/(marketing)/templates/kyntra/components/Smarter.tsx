@@ -12,6 +12,7 @@ import CarouselNavButtons from "./Buttons/NavButtons";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { ParaAnim } from "./Animations/gsapAnim";
+import { prefersReducedMotion } from "./Animations/reducedMotion";
 
 import bookService from "../assets/smarter/book-service.svg";
 import visit from "../assets/smarter/visit.svg";
@@ -111,35 +112,28 @@ export default function Smarter() {
     if (typeof window === "undefined") return;
 
     const ctx = gsap.context(() => {
-      if (!carouselWrapperRef.current) return;
+      const wrapper = carouselWrapperRef.current;
+      if (!wrapper) return;
 
-      const cardElements =
-        carouselWrapperRef.current.querySelectorAll(".smarter-card-anim");
+     
+      if (prefersReducedMotion()) return;
 
-      gsap.set(cardElements, { y: 130, autoAlpha: 0 });
+      gsap.set(wrapper, { xPercent: 80 });
 
-      const tl = gsap.timeline({
+      gsap.to(wrapper, {
+        xPercent: 0,
+        duration: 1.6,
+        ease: "power3.out",
         scrollTrigger: {
-          trigger: carouselWrapperRef.current,
-          start: "top 82%",
+          trigger: wrapper,
+          start: "top 90%",
+          // markers: true,
           once: true,
         },
-      });
-
-      tl.to(
-        cardElements,
-        {
-          y: 0,
-          autoAlpha: 1,
-          duration: 1.45,
-          stagger: 0.1,
-          ease: "power4.out",
-          onComplete: () => {
-            gsap.set(cardElements, { clearProps: "y,opacity,visibility" });
-          },
+        onComplete: () => {
+          gsap.set(wrapper, { clearProps: "transform" });
         },
-        0,
-      );
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -207,7 +201,7 @@ export default function Smarter() {
               <div
                 key={`${card.id}-${idx}`}
                 aria-hidden={idx >= SMARTER_CARDS.length}
-                className="smarter-card-anim flex aspect-440/477 w-[28vw] flex-col overflow-hidden rounded-xl p-[2vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
+                className="flex aspect-440/477 w-[28vw] flex-col overflow-hidden rounded-xl p-[2vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
                 style={{
                   backgroundColor: isPrimary ? KYNTRA_PRIMARY : "#0d0d0d",
                   border: isPrimary

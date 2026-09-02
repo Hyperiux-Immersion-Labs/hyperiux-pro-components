@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SmoothInfiniteCarousel, {
   type KeyboardSlider,
 } from "./smooth-carousel/SmoothInfiniteCarousel";
@@ -19,6 +20,11 @@ import blog5 from "../assets/blogs/blog5.png";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 type Article = {
   title: string;
   date: string;
@@ -156,8 +162,36 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
 const Blogs = () => {
   const sliderRef = useRef<KeyboardSlider | null>(null);
+  const carouselWrapperRef = useRef<HTMLDivElement | null>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const ctx = gsap.context(() => {
+      const wrapper = carouselWrapperRef.current;
+      if (!wrapper) return;
+
+      gsap.set(wrapper, { xPercent: 70 });
+
+      gsap.to(wrapper, {
+        xPercent: 0,
+        duration: 1.6,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: wrapper,
+          start: "top 85%",
+          once: true,
+        },
+        onComplete: () => {
+          gsap.set(wrapper, { clearProps: "transform" });
+        },
+      });
+    }, carouselWrapperRef);
+
+    return () => ctx.revert();
+  }, []);
 
   useEffect(() => {
     const check = () => {
@@ -247,7 +281,7 @@ const Blogs = () => {
           </FadeUp>
         </div>
 
-        <FadeUp className="min-w-0 flex-1">
+        <div ref={carouselWrapperRef} className="min-w-0 flex-1">
           <SmoothInfiniteCarousel
             config={carouselConfig}
             wrapperClassName="pr-[5%] pb-[1vw] gap-[1.5vw] max-md:gap-[4vw]"
@@ -260,7 +294,7 @@ const Blogs = () => {
               <ArticleCard key={article.title} article={article} />
             ))}
           </SmoothInfiniteCarousel>
-        </FadeUp>
+        </div>
       </div>
     </section>
   );

@@ -1,8 +1,11 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { FooterParallax } from "./ParallaxFooter";
 import CharStaggerButton from "../char-stagger-button";
 import { AppleStoreButton, PlayStoreButton } from "../../Buttons";
@@ -10,13 +13,16 @@ import { FadeUp } from "../../Animations/gsapAnim";
 import kyntraLogo from "../../../assets/kyntra-logo.png";
 import footerImg from "../../../assets/footer.png";
 
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 const KYNTRA_PRIMARY = "#134BD6";
 
-// Dark ink for the Apple pill, which is white here instead of the hero's blue.
+
 const FOOTER_BUTTON_TEXT = "#1A1A1A";
 
-// The footer itself is `position: fixed`, so it is always "in view" and cannot
-// cue its own reveal. Its outer wrapper scrolls normally - watch that instead.
+
 const FOOTER_TRIGGER = "#footer";
 
 
@@ -39,9 +45,41 @@ const connectLinks = [
 ];
 
 const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
+  const footerImgRef = useRef<HTMLImageElement | null>(null);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const el = footerImgRef.current;
+    if (!el) return;
+
+    const trigger = document.querySelector(FOOTER_TRIGGER);
+    if (!trigger) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { yPercent: 100 },
+        {
+          yPercent: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger,
+            start: "top 80%",
+            end: "bottom top",
+            scrub: 0.2,
+            // markers: true,
+          },
+        },
+      );
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <FooterParallax
@@ -51,15 +89,14 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
       <div className="relative flex h-[80vh] w-full flex-col justify-between px-[5%] pt-[6vw] pb-[2vw] max-md:h-auto max-md:pt-[16vw] max-md:pb-[8vw]">
        
         <div className="pointer-events-none absolute bottom-0 left-1/2 w-[22vw] -translate-x-1/2 max-[1025px]:static max-[1025px]:left-auto max-[1025px]:my-[10vw] max-[1025px]:w-[45vw] max-[1025px]:translate-x-0 max-[1025px]:self-center max-md:w-[62vw]">
-          <FadeUp watch={FOOTER_TRIGGER} delay={FOOTER_DELAY + 0.15}>
-            <Image
-              src={footerImg}
-              height={900}
-              width={900}
-              alt="Kyntra app"
-              className="h-auto w-full object-contain"
-            />
-          </FadeUp>
+          <Image
+            ref={footerImgRef}
+            src={footerImg}
+            height={900}
+            width={900}
+            alt="Kyntra app"
+            className="h-auto w-full object-contain"
+          />
         </div>
 
         {/* Top: brand + link columns */}

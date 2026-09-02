@@ -79,12 +79,9 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      {/* Outer shell owns the glass. `backdrop-filter` is suppressed while an
-          element's own opacity is < 1, so this layer must stay fully opaque
-          while opening or the blur would only resolve once the fade ended.
-          On exit that no longer matters, so it fades out to avoid popping. */}
+      
       <div
-        className={`relative mt-[5vw] h-[75vh] w-[90vw] overflow-hidden rounded-[1.6vw] border border-[#88888880] bg-[#0b1020]/10 backdrop-blur-2xl transition-[transform,opacity] duration-300 max-[1025px]:mt-[10vw] max-[1025px]:max-w-[90vw] max-[1025px]:rounded-[5vw] max-md:max-w-[92vw] ${
+        className={`relative mt-[5vw] pt-2 h-[75vh] w-[90vw] overflow-hidden rounded-[1.6vw] border border-[#88888880] px-[3vw] bg-[#0b1020]/10 backdrop-blur-2xl transition-[transform,opacity] duration-300 max-[1025px]:mt-[10vw] max-[1025px]:max-w-[90vw] max-[1025px]:rounded-[5vw] max-md:max-w-[92vw] ${
           visible
             ? "translate-y-0 scale-100 opacity-100"
             : exiting
