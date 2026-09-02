@@ -379,8 +379,8 @@ export function VaultHeader({
                     />
                   </svg>
                 </div>
-                <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
-                  ⌘K
+                <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current max-[1025px]:hidden">
+                  ⌘ K
                 </kbd>
               </button>
             )}
