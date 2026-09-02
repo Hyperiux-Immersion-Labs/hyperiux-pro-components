@@ -4,6 +4,7 @@ import React, { useEffect, useId, useRef } from "react";
 import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+
 import CharStaggerPrimaryButton from "../char-stagger-primary-button";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -32,13 +33,37 @@ interface ScrollStackProps {
   cardRadius?: number;
 }
 
-const CARD_H = "26vw";
+const MOBILE_BP = 1025;
+const PHONE_BP = 768;
 
+// The peeking strip above each settled card is one title line plus a sliver.
+// The desktop numbers are absolute px, which read as a cramped band once the
+// viewport narrows, so below the breakpoint each part scales with the width.
 const CARD_PAD_TOP_VW = 3;
 const CARD_TITLE_PX = 44;
 const STACK_SLIVER_PX = 18;
-const stackOffset = () =>
-  (window.innerWidth * CARD_PAD_TOP_VW) / 100 + CARD_TITLE_PX + STACK_SLIVER_PX;
+
+const MOBILE_PAD_TOP_VW = 5;
+const MOBILE_TITLE_VW = 7;
+const MOBILE_SLIVER_VW = 3;
+
+
+const PHONE_PAD_TOP_VW = 6;
+const PHONE_TITLE_VW = 9;
+const PHONE_SLIVER_VW = 4;
+
+const stackOffset = () => {
+  const w = window.innerWidth;
+  if (w <= PHONE_BP) {
+    return (w * (PHONE_PAD_TOP_VW + PHONE_TITLE_VW + PHONE_SLIVER_VW)) / 100;
+  }
+  if (w <= MOBILE_BP) {
+    return (
+      (w * (MOBILE_PAD_TOP_VW + MOBILE_TITLE_VW + MOBILE_SLIVER_VW)) / 100
+    );
+  }
+  return (w * CARD_PAD_TOP_VW) / 100 + CARD_TITLE_PX + STACK_SLIVER_PX;
+};
 
 export default function ScrollStack({
   cards = [],
@@ -153,8 +178,8 @@ export default function ScrollStack({
         style={{ height: `${cards.length * 55}svh` }}
         className="w-full motion-reduce:h-auto"
       >
-        <div className="sticky top-[10vh] h-[58vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto">
-          <div className="relative mx-auto h-full w-full  motion-reduce:h-auto">
+        <div className="sticky top-[10vh] h-[58vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto max-[1025px]:top-[22vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-md:top-[50vw]">
+          <div className="relative mx-auto h-full w-full motion-reduce:h-auto">
             {cards.map((card, index) => {
               return (
                 <div
@@ -175,46 +200,49 @@ export default function ScrollStack({
                       "--card-btn-fg": accentColor,
                       "--card-settled": 0,
                       borderRadius: `${cardRadius}px`,
-                      top: `calc(50% - ${CARD_H} / 2)`,
-                      height: CARD_H,
                     } as React.CSSProperties
                   }
-                  className={`absolute inset-x-0 flex flex-col overflow-hidden border px-[2.4vw] py-[3vw] motion-reduce:static motion-reduce:mb-[3vw] motion-reduce:h-auto motion-reduce:translate-y-0 max-md:px-[6vw] max-md:py-[5vw] ${
+                  className={`absolute inset-x-0 flex h-[26vw] flex-col overflow-hidden border px-[2.4vw] py-[3vw] max-[1025px]:py-[6vh] top-[calc(50%-13vw)] motion-reduce:static motion-reduce:mb-[3vw] motion-reduce:h-auto motion-reduce:translate-y-0 max-[1025px]:pt-[5vh] max-[1025px]:top-[calc(50%-35vh)] max-[1025px]:h-[72vh] max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-[8vw] ${
                     // Card 0 is in place from the start; the rest wait below.
                     index === 0 ? "" : "translate-y-[110vh]"
                   }`}
                 >
-                  {/* Title row */}
-                  <h3 className="text-44 font-normal font-helvetica-neue tracking-[-0.01em] max-[1025px]:text-[3.2vw] max-md:text-[5.2vw]">
-                    {card.title}
-                  </h3>
+                  {/* Title row. The +/- badge is a mobile affordance only: it
+                      marks which card is open in the stack, so it is decorative
+                      and hidden from assistive tech. */}
+                  <div className="flex items-center justify-between gap-[4vw]">
+                    <h3 className="text-44 font-normal font-helvetica-neue tracking-[-0.01em] max-[1025px]:text-[4.4vw] max-md:text-[6.4vw] max-[1025px]:mb-[5vw]">
+                      {card.title}
+                    </h3>
+                   
+                  </div>
 
                   <div
-                    className="my-[1.8vw] h-px w-full max-md:my-[5vw]"
+                    className="my-[1.8vw] max-[1025px]:hidden h-px w-full "
                     style={{
                       backgroundColor:
                         "var(--card-rule, rgba(255,255,255,0.25))",
                     }}
                   />
 
-                  <div className="flex pt-[4vh] items-start justify-between gap-[3vw] max-[1025px]:flex-col max-[1025px]:gap-[4vw]">
+                  <div className="flex pt-[4vh] items-start justify-between gap-[3vw] max-[1025px]:min-h-0 max-[1025px]:flex-1 max-[1025px]:flex-col max-[1025px]:gap-[5vw] max-[1025px]:pt-0">
                     {card.items && card.items.length > 0 && (
-                      <div className="grid w-[45%] grid-cols-2 gap-y-[2vw] max-[1025px]:w-full max-md:grid-cols-1 max-md:gap-y-[5vw]">
+                      <div className="grid w-[45%] grid-cols-2 gap-y-[2vw] max-[1025px]:order-2 max-[1025px]:w-full max-[1025px]:grid-cols-1 max-[1025px]:gap-y-0">
                         {card.items.map((item, i) => (
                           <div
                             key={item.label}
-                            className={`flex items-center w-[90%] gap-[1.1vw] max-md:gap-[4vw] ${
+                            className={`flex items-center w-[90%] gap-[1.1vw] max-[1025px]:w-[70%] max-[1025px]:gap-[3vw] max-[1025px]:py-[2.4vw] max-[1025px]:pr-0 max-[1025px]:pl-0 max-md:w-[85%] max-md:gap-[4vw] max-md:py-[3.5vw] ${
                               i % 2 === 0
-                                ? "border-r pr-[2vw] max-md:border-r-0 max-md:pr-0"
-                                : "pl-[2vw] max-md:pl-0"
-                            }`}
+                                ? "border-r pr-[2vw] max-[1025px]:border-r-0"
+                                : "pl-[2vw]"
+                            } ${i === 0 ? "" : "max-[1025px]:border-t"}`}
                             style={{
                               borderColor:
                                 "var(--card-rule, rgba(255,255,255,0.25))",
                             }}
                           >
                             <span
-                              className="flex size-[3.5vw] shrink-0 items-center justify-center rounded-[0.6vw] border max-[1025px]:size-[6vw] max-md:size-[12vw]"
+                              className="flex size-[3.5vw] shrink-0 items-center justify-center rounded-[0.6vw] max-[1025px]:rounded-md border max-[1025px]:size-[6vw] max-md:size-[12vw]"
                               style={{
                                 borderColor: "var(--card-fg, #ffffff)",
                               }}
@@ -239,9 +267,9 @@ export default function ScrollStack({
                     )}
 
                     {/* Right: description + CTA */}
-                    <div className="flex w-[35%] flex-col items-start gap-[1.8vw] max-[1025px]:w-full max-md:gap-[6vw]">
+                    <div className="flex w-[35%] flex-col items-start gap-[1.8vw] max-[1025px]:contents">
                       {card.description && (
-                        <p className="text-22 w-[85%] leading-normal max-[1025px]:text-[2.4vw] max-md:text-[4.4vw]">
+                        <p className="text-22 w-[85%] leading-normal max-[1025px]:order-1 max-[1025px]:w-full max-[1025px]:text-[2.9vw] max-md:text-[4.4vw]">
                           {card.description}
                         </p>
                       )}
@@ -251,7 +279,7 @@ export default function ScrollStack({
                           href={card.buttonHref ?? "#"}
                           showArrow
                           hoverColor={accentColor}
-                          className="rounded-full border px-[1.8vw] py-[0.9vw] max-md:px-[7vw] max-md:py-[4vw]"
+                          className="rounded-full border px-[1.8vw] py-[0.9vw] max-[1025px]:order-3 max-[1025px]:mt-auto max-[1025px]:self-start max-[1025px]:px-[6vw] max-[1025px]:py-[2.6vw] max-md:px-[7vw] max-md:py-[4vw]"
                           textClassName="text-[1.05vw] max-[1025px]:text-[2.4vw] max-md:text-[4.4vw]"
                           style={{
                             backgroundColor: "var(--card-btn-bg, #ffffff)",

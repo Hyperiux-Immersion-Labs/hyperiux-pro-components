@@ -76,7 +76,7 @@ export default function AnimatedForm() {
  <ParaAnim
  as="p"
  delay={0.15}
- className="mt-[2.5vw] w-[28vw] font-aeonik-pro text-22 leading-[1.6] text-white max-[1025px]:mt-[5vw] max-[1025px]:max-w-full max-[1025px]:text-[3.2vw] max-md:text-[4vw]"
+ className="mt-[2.5vw] w-[28vw] font-aeonik-pro text-22 leading-[1.6] text-white max-[1025px]:mt-[5vw] max-[1025px]:w-full max-[1025px]:text-[3.2vw] max-md:text-[4vw]"
  >
  Have a question, need help with a service, or want to know more about
  Kyntra? Tell us what you need and our team will get back to you.

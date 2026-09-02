@@ -34,6 +34,8 @@ interface ParallaxImageAnimationProps {
     imageClassName?: string;
     width?: number;
     height?: number;
+    quality?: number;
+    sizes?: string;
     translateY?: string | number;
     start?: string;
     end?: string;
@@ -50,6 +52,8 @@ const ParallaxImageAnimation = ({
     imageClassName = "",
     width = 700,
     height = 1000,
+    quality = 90,
+    sizes = "100vw",
     translateY = "30%",
     start = "top bottom",
     end = "bottom top",
@@ -105,6 +109,8 @@ const ParallaxImageAnimation = ({
                 height={height}
                 src={src}
                 alt={alt}
+                quality={quality}
+                sizes={sizes}
                 className={`w-full h-full translate-y-[-5%] object-cover scale-110 ${imageClassName}`}
             />
         </div>

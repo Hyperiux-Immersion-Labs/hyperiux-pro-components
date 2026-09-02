@@ -40,81 +40,100 @@ const About = () => {
 
     gsap.set(phones, { opacity: 1 });
 
-    gsap.from(phones, {
-      scrollTrigger: {
-        trigger: cluster,
-        // Fires once the section is about half way up the viewport.
-        start: "top 50%",
-        // markers:true,
-        once: true,
-      },
-      yPercent: 60,
-      opacity: 0,
-      duration: 1,
-      ease: "power2.out",
-      // Array order (centre, right, left) drives the sequence, not DOM order.
-      stagger: 0.6,
-    });
+    // The phones stack into a column below 1025px, where the staggered rise and
+    // the connector line no longer describe the layout - so each viewport gets
+    // its own treatment and matchMedia reverts the other on resize.
+    const mm = gsap.matchMedia();
 
-    // The connector reads as joining phones that are already there, so it waits
-    // out the stagger above (3 phones x 0.6s apart, 1s each) before fading in.
-    if (lineRef.current) {
-      gsap.to(lineRef.current, {
+    mm.add("(min-width: 1026px)", () => {
+      gsap.from(phones, {
         scrollTrigger: {
           trigger: cluster,
-          start: "top 65%",
-          once: true,
+          // Fires once the section is about half way up the viewport.
+          start: "top 50%",
           // markers:true,
+          once: true,
         },
-        opacity: 1,
-        duration: 0.8,
-       
+        yPercent: 60,
+        opacity: 0,
+        duration: 1,
         ease: "power2.out",
+        // Array order (centre, right, left) drives the sequence, not DOM order.
+        stagger: 0.6,
       });
-    }
+
+      // The connector reads as joining phones that are already there, so it waits
+      // out the stagger above (3 phones x 0.6s apart, 1s each) before fading in.
+      if (lineRef.current) {
+        gsap.to(lineRef.current, {
+          scrollTrigger: {
+            trigger: cluster,
+            start: "top 65%",
+            once: true,
+            // markers:true,
+          },
+          opacity: 1,
+          duration: 0.8,
+         
+          ease: "power2.out",
+        });
+      }
+    });
+
+
+    mm.add("(max-width: 1025px)", () => {
+      phones.forEach((phone) => {
+        gsap.from(phone, {
+          scrollTrigger: {
+            trigger: phone as HTMLDivElement,
+            start: "top 85%",
+            once: true,
+          },
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
+        });
+      });
+    });
+
+    return () => mm.revert();
   }, []);
 
   return (
     <section className="kyntra-container relative w-full h-full overflow-hidden bg-white text-black">
-      <div className="mx-auto flex max-w-400 items-start justify-between gap-[6vw] max-[1025px]:flex-col max-[1025px]:gap-[4vw]">
+      <div className="mx-auto flex max-w-400 items-start justify-between gap-[6vw] max-[1025px]:flex-col max-[1025px]:gap-[6vw]">
         <FocusTextWrap>
-          <h2 className="font-helvetica-neue w-[35vw] leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]">
+          <h2 className="font-helvetica-neue w-[35vw] max-[1025px]:w-full leading-[1.15] font-normal tracking-[-0.02em] ">
             Everything You Need For a Better Home &amp; Lifestyle
           </h2>
         </FocusTextWrap>
 
         <ParaAnim
           as="p"
-          className="text-24 w-[35vw] leading-[1.6] tracking-wide text-black/80 max-[1025px]:text-[2.6vw] max-[1025px]:text-left max-md:text-[4vw] lg:text-right"
+          className="text-24 w-[35vw] max-[1025px]:w-full leading-[1.6] tracking-wide text-black/80 text-right max-[1025px]:text-left"
         >
-          Kyntra Gives Every Home A Memory Keeping Repairs, Warranties,
-          Maintenance And Service History Connected, So Each Future Decision
-          Starts With Context Instead Of From Scratch.
+          Kyntra gives every home a memory keeping repairs, warranties, maintenance and service history connected, so each future decision starts with context instead of from scratch.
         </ParaAnim>
       </div>
 
-      {/* Phone mockup cluster - all three the same size; the outer two are
-          shifted down so the centre one leads. */}
+
       <div
         ref={clusterRef}
-        className="relative mx-auto mt-[6vw] flex max-w-400 items-start justify-center gap-[3vw] max-md:mt-[12vw]"
+        className="relative mx-auto mt-[6vw] flex max-w-400 items-start justify-center gap-[3vw] max-[1025px]:mt-[10vw] max-[1025px]:flex-col max-[1025px]:items-center max-[1025px]:gap-[8vw]"
       >
-        {/* Dashed connector running behind the phones. The artwork is drawn
-            wider than its viewBox on both sides so the line bleeds past the
-            cluster; `w-screen` + the centring translate keep that bleed
-            symmetrical instead of clipping it at the max-w-400 edge. */}
+      
         <Image
           ref={lineRef}
           src={aboutLine}
           alt=""
           aria-hidden
           priority
-          className="pointer-events-none absolute top-1/2 left-1/2 w-screen max-w-none -translate-x-1/2 -translate-y-1/2 opacity-0 select-none"
+          className="pointer-events-none absolute top-1/2 left-1/2 w-screen max-w-none -translate-x-1/2 -translate-y-1/2 opacity-0 select-none max-[1025px]:hidden"
         />
 
         <div
           ref={leftRef}
-          className="relative w-[22vw] opacity-0 max-[1025px]:w-[28vw] max-md:w-[31vw]"
+          className="relative w-[22vw] opacity-0 max-[1025px]:w-[90%]"
         >
           <Image
             src={aboutPhone1}
@@ -125,7 +144,7 @@ const About = () => {
 
         <div
           ref={midRef}
-          className="z-10 w-[22vw] opacity-0 max-[1025px]:w-[28vw] max-md:w-[31vw]"
+          className="z-10 w-[22vw] opacity-0 max-[1025px]:w-[90%]"
         >
           <Image
             src={aboutPhone2}
@@ -137,7 +156,7 @@ const About = () => {
 
         <div
           ref={rightRef}
-          className="relative w-[22vw] opacity-0 max-[1025px]:w-[28vw] max-md:w-[31vw]"
+          className="relative w-[22vw] opacity-0 max-[1025px]:w-[90%]"
         >
           <Image
             src={aboutPhone3}

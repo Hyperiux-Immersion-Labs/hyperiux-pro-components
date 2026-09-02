@@ -108,16 +108,15 @@ const Features = () => {
       <div className="mx-auto pb-[5vw] max-w-400">
         <div className="max-w-[46vw] max-[1025px]:max-w-full">
           <FocusTextWrap>
-            <h2 className="font-helvetica-neue leading-[1.12] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]">
+            <h2 className="font-helvetica-neue leading-[1.12] font-normal tracking-[-0.02em] ">
               Your Dedicated Operating Layer for the Home
             </h2>
           </FocusTextWrap>
           <ParaAnim
             as="p"
-            className="text-24 mt-[1.6vw] max-w-[30vw] tracking-wide leading-normal text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
+            className="text-24 mt-[1.6vw] max-[1025px]:mt-[6vw] max-w-[30vw] tracking-wide leading-normal text-black max-[1025px]:max-w-full "
           >
-            The More Kyntra Understands Your Property, The Easier It Becomes To
-            Manage Everything Around It.
+            The more Kyntra understands your property, the easier it becomes to manage everything around it.
           </ParaAnim>
         </div>
       </div>

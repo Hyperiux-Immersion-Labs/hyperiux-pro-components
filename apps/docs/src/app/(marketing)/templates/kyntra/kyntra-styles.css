@@ -213,6 +213,11 @@ html:has(.kyntra-page) ::-webkit-scrollbar-thumb:hover {
     font-size: 8vw;
   }
 
+
+  .kyntra-page h2 {
+  font-size: 6.5vw;
+}
+
   /* The hero heading breaks to three lines here, so it needs a smaller display
      size than the shared heading scale to keep "Manage Your" on one line. */
   .kyntra-page .kyntra-hero h1 {
@@ -261,12 +266,21 @@ html:has(.kyntra-page) ::-webkit-scrollbar-thumb:hover {
     font-size: 20vw;
   }
 
+  .kyntra-page h2 {
+  font-size: 9.5vw;
+}
+
+  .kyntra-page .kyntra-container {
+  padding-block: 15%;
+  padding-inline: 7%;
+}
+
   .kyntra-page .kyntra-hero h1 {
     font-size: 12vw;
   }
 
   .kyntra-page .text-18 {
-    font-size: 2.6vw;
+    font-size: 4.2vw;
   }
 
   .kyntra-page .text-20 {
@@ -274,15 +288,15 @@ html:has(.kyntra-page) ::-webkit-scrollbar-thumb:hover {
   }
 
   .kyntra-page .text-22 {
-    font-size: 4vw;
+    font-size: 4.2vw;
   }
 
   .kyntra-page .text-24 {
-    font-size: 4vw;
+    font-size: 4.2vw;
   }
 
   .kyntra-page .text-28 {
-    font-size: 4vw;
+    font-size: 5vw;
   }
 
   .kyntra-page .text-30 {

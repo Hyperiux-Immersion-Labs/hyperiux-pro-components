@@ -399,31 +399,31 @@ const Testimonial = () => {
   );
 
   return (
-    <section className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[10%]">
-      <div className="pl-[5%]">
+    <section className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[20%]">
+      <div className="pl-[5%] max-[1025px]:px-[7%] ">
         <FocusTextWrap>
-          <h2 className="font-helvetica-neue w-[45vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-full max-[1025px]:text-[6vw] max-md:text-[9vw]">
+          <h2 className="font-helvetica-neue w-[45vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-[82%] max-[1025px]:text-[6vw] max-md:text-[9vw]">
             Real Homes. Real Experiences
           </h2>
         </FocusTextWrap>
         <ParaAnim
           as="p"
-          className="text-24 mt-[1.6vw] max-w-[42vw] tracking-wide leading-[1.6] text-black max-[1025px]:mt-[3vw] max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
+          className="text-24 mt-[1.6vw]  max-w-[42vw] tracking-wide leading-[1.6] text-black max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
         >
           Kyntra Keeps Your Appliances, Repairs, Warranties And Maintenance
           History Together So Every Future Job Starts With Context.
         </ParaAnim>
       </div>
 
-      <div className="mt-[4vw] grid grid-cols-[minmax(0,1fr)_36vw] pl-[5%] items-start gap-[1.5vw] max-[1025px]:grid-cols-1 max-[1025px]:gap-[8vw]">
+      <div className="mt-[4vw] max-[1025px]:mt-[12vw]  grid grid-cols-[minmax(0,1fr)_36vw] pl-[5%] max-[1025px]:px-[7%] items-start gap-[1.5vw] max-[1025px]:grid-cols-1 max-[1025px]:gap-[8vw]">
         {/* Left: the quote card. Contents swap in place — the layout is the
             original single frame, with the photo and the copy each holding one
             stacked layer per testimonial. */}
         <FadeUp className="border-kyntra-primary relative min-h-[23.5vw] overflow-hidden rounded-[1.6vw] border px-[3vw] py-[3.2vw] max-[1025px]:min-h-0 max-md:rounded-[5vw] max-md:p-[7vw]">
-          <div className="flex items-start gap-[2.6vw] max-md:flex-col max-md:gap-[6vw]">
+          <div className="flex items-start gap-[2.6vw] max-[1025px]:flex-col max-[1025px]:gap-[5vw] max-md:gap-[6vw]">
             {/* Photo well: every image is stacked here; the incoming one clips
                 open above the outgoing one, which stays put underneath. */}
-            <div className="relative aspect-square w-[18vw] shrink-0 overflow-hidden rounded-[1.1vw] max-[1025px]:w-[26vw] max-md:w-full max-md:rounded-[4vw]">
+            <div className="relative aspect-square w-[18vw] shrink-0 overflow-hidden rounded-[1.1vw] max-[1025px]:w-[30vw] max-[1025px]:rounded-[2.5vw] max-md:w-[45vw] max-md:rounded-[4vw]">
               {TESTIMONIALS.map((t, i) => (
                 <div
                   key={t.name}
@@ -437,7 +437,7 @@ const Testimonial = () => {
                     src={t.image}
                     alt={t.name}
                     fill
-                    sizes="(max-width: 768px) 84vw, 16vw"
+                    sizes="(max-width: 768px) 45vw, (max-width: 1025px) 30vw, 16vw"
                     className="object-cover grayscale"
                     draggable={false}
                   />
@@ -464,9 +464,7 @@ const Testimonial = () => {
                 />
               </svg>
 
-              {/* Copy: an invisible spacer of the longest quote holds the
-                  frame's height, and every card is overlaid on top of it — so
-                  the card never resizes as quotes of different lengths swap. */}
+     
               <div className="relative mt-[1.4vw] max-md:mt-[5vw]">
                 <div aria-hidden className="invisible">
                   <p className="text-24 leading-[1.4] text-black max-[1025px]:text-[2.4vw] max-md:text-[4vw]">
@@ -490,7 +488,7 @@ const Testimonial = () => {
                     <p className="text-24 leading-[1.4] text-black max-[1025px]:text-[2.4vw] max-md:text-[4vw]">
                       &ldquo;{t.quote}&rdquo;
                     </p>
-                    <p className="mt-[1.6vw] text-[1.55vw] text-kyntra-primary max-[1025px]:text-[2.6vw] max-md:mt-[6vw] max-md:text-[4.4vw]">
+                    <p className="mt-[1.6vw] text-[1.55vw] text-kyntra-primary max-[1025px]:text-[4vw] max-md:mt-[6vw] max-md:text-[5vw]">
                       {t.name}
                     </p>
                     <p className="mt-[0.1vw] text-22 text-black max-[1025px]:text-[2vw] max-md:text-[3.6vw]">
@@ -505,13 +503,13 @@ const Testimonial = () => {
 
         {/* Right: the infinite thumbnail strip. */}
         <div className="flex w-full flex-col items-end gap-[2vw] max-[1025px]:items-start">
-          <div className="pr-[7vw]">
+          <div className="pr-[7vw] max-[1025px]:pr-0">
             <CarouselNavButtons onPrev={() => go(-1)} onNext={() => go(1)} />
           </div>
 
           <div
             style={BLEED_VARS}
-            className="exp-clip -ml-(--exp-bleed) w-[calc(100%+var(--exp-bleed))] overflow-hidden [--exp-bleed:var(--exp-bleed-desktop)] max-[1025px]:[--exp-bleed:var(--exp-bleed-tablet)] max-md:[--exp-bleed:var(--exp-bleed-mobile)]"
+            className="exp-clip -ml-(--exp-bleed) w-[calc(100%+var(--exp-bleed))] overflow-hidden [--exp-bleed:var(--exp-bleed-desktop)] max-[1025px]:hidden [--exp-bleed:var(--exp-bleed-tablet)] max-md:[--exp-bleed:var(--exp-bleed-mobile)]"
           >
             <FadeUp className="w-full">
               <SmoothInfiniteCarousel

@@ -140,7 +140,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
         </h3>
         <p
           data-panel-item
-          className="text-18 mt-[0.9vw] text-white/70 max-[1025px]:text-[1.8vw] max-md:mt-[3vw] max-md:text-[3.6vw]"
+          className="text-18 mt-[0.9vw] text-white/70  max-md:mt-[3vw] "
         >
           {article.date}
         </p>
@@ -151,7 +151,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
             showLine
             hoverColor="rgba(255,255,255,0.7)"
             className="mt-[1.4vw] text-white max-md:mt-[5vw]"
-            textClassName=" text-22 tracking-tight max-[1025px]:text-[1.8vw] max-md:text-[3.6vw]"
+            textClassName=" text-22 tracking-tight "
             iconClassName="text-white"
           />
         </div>
@@ -173,20 +173,42 @@ const Blogs = () => {
       const wrapper = carouselWrapperRef.current;
       if (!wrapper) return;
 
-      gsap.set(wrapper, { xPercent: 70 });
+      const trigger = {
+        trigger: wrapper,
+        start: "top 85%",
+        once: true,
+      };
 
-      gsap.to(wrapper, {
-        xPercent: 0,
-        duration: 1.6,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: wrapper,
-          start: "top 85%",
-          once: true,
-        },
-        onComplete: () => {
-          gsap.set(wrapper, { clearProps: "transform" });
-        },
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 1026px)", () => {
+        gsap.set(wrapper, { xPercent: 70 });
+
+        gsap.to(wrapper, {
+          xPercent: 0,
+          duration: 1.6,
+          ease: "power4.out",
+          scrollTrigger: trigger,
+          onComplete: () => {
+            gsap.set(wrapper, { clearProps: "transform" });
+          },
+        });
+      });
+
+      // The strip runs off the right edge on narrow screens, so sliding it in
+      // reads as a horizontal jolt rather than a reveal. Fade instead.
+      mm.add("(max-width: 1025px)", () => {
+        gsap.set(wrapper, { xPercent: 0, opacity: 0 });
+
+        gsap.to(wrapper, {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: trigger,
+          onComplete: () => {
+            gsap.set(wrapper, { clearProps: "opacity,transform" });
+          },
+        });
       });
     }, carouselWrapperRef);
 
@@ -241,10 +263,10 @@ const Blogs = () => {
 
   return (
     <section className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[10%]">
-      <div className="px-[5%]">
+      <div className="px-[5%] max-[1025px]:px-[7%]">
         {/* Heading + copy */}
         <FocusTextWrap>
-          <h2 className="font-helvetica-neue w-[55vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:max-w-full max-[1025px]:text-[6vw] max-md:text-[9vw]">
+          <h2 className="font-helvetica-neue w-[55vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-full max-[1025px]:text-[6vw] max-md:text-[9vw]">
             Notes from People Who Spend their Days Inside Homes
           </h2>
         </FocusTextWrap>
@@ -257,21 +279,21 @@ const Blogs = () => {
         </ParaAnim>
       </div>
 
-      <div className="mt-[4vw] flex items-stretch gap-[3vw] pl-[5%] max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:gap-[6vw]">
-        <div className="flex w-[24%] pb-[2vw] shrink-0 flex-col justify-between  max-[1025px]:w-full max-[1025px]:flex-row max-[1025px]:items-center max-[1025px]:py-0 max-[1025px]:pr-[5%]">
-          <FadeUp className="w-fit">
+      <div className="mt-[4vw] flex items-stretch gap-[3vw] pl-[5%] max-[1025px]:pl-0 max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:gap-[6vw]">
+        <div className="flex w-[24%] pb-[2vw] shrink-0 flex-col justify-between  max-[1025px]:contents">
+          <FadeUp className="w-fit max-[1025px]:order-1 max-[1025px]:px-[7%]">
             <CharStaggerPrimaryButton
               text="All Articles"
               href="#"
               hoverColor="#ffffff"
               showArrow
-              className="w-fit rounded-full bg-[#134BD6] px-[1.8vw] py-[0.7vw] text-white max-[1025px]:px-6 max-[1025px]:py-3"
+              className="w-fit rounded-full bg-[#134BD6] px-[1.8vw] py-[0.7vw] text-white max-[1025px]:px-20 max-[1025px]:py-5"
               textClassName=" text-22 tracking-tight max-[1025px]:text-[2.4vw] max-md:text-[3.6vw]"
               iconClassName="text-white"
             />
           </FadeUp>
 
-          <FadeUp className="w-fit" delay={0.1}>
+          <FadeUp className="w-fit max-[1025px]:order-3 max-[1025px]:px-[7%]" delay={0.1}>
             <CarouselNavButtons
               onPrev={() => sliderRef.current?.goToPrev()}
               onNext={() => sliderRef.current?.goToNext()}
@@ -281,10 +303,10 @@ const Blogs = () => {
           </FadeUp>
         </div>
 
-        <div ref={carouselWrapperRef} className="min-w-0 flex-1">
+        <div ref={carouselWrapperRef} className="min-w-0 flex-1 max-[1025px]:order-2">
           <SmoothInfiniteCarousel
             config={carouselConfig}
-            wrapperClassName="pr-[5%] pb-[1vw] gap-[1.5vw] max-md:gap-[4vw]"
+            wrapperClassName="pr-[5%] max-[1025px]:px-[7%] pb-[1vw] gap-[1.5vw] max-[1025px]:gap-[3.5vw] max-md:gap-[5vw]"
             itemClassName="cursor-grab active:cursor-grabbing"
             onReady={(slider) => {
               sliderRef.current = slider;

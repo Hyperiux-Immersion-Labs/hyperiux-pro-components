@@ -19,9 +19,16 @@ const FooterParallax = ({
 }: FooterParallaxProps) => {
  const footerRef = useRef<HTMLElement | null>(null);
  const [height, setHeight] = useState(1);
+ // The reveal pins the footer to the viewport bottom and lets the page scroll
+ // over it. That only works while the footer is shorter than the viewport -
+ // below the breakpoint it is taller, so the top would be permanently cut off.
+ // There it renders as a normal block instead.
+ const [parallax, setParallax] = useState(true);
 
  useEffect(() => {
  let frameId: number | undefined;
+
+ const query = window.matchMedia("(min-width: 1026px)");
 
  const updateHeight = () => {
  const el = footerRef.current;
@@ -33,6 +40,9 @@ const FooterParallax = ({
  });
  };
 
+ const updateMode = () => setParallax(query.matches);
+
+ updateMode();
  updateHeight();
 
  const el = footerRef.current;
@@ -42,11 +52,13 @@ const FooterParallax = ({
  resizeObserver.observe(el);
 
  window.addEventListener("resize", updateHeight);
+ query.addEventListener("change", updateMode);
 
  return () => {
  cancelAnimationFrame(frameId as number);
  resizeObserver.disconnect();
  window.removeEventListener("resize", updateHeight);
+ query.removeEventListener("change", updateMode);
  };
  }, [children]);
 
@@ -54,14 +66,17 @@ const FooterParallax = ({
  <div
  id={id}
  className={`relative z-0 w-screen ${outerClassName}`}
- style={{
- height,
- clipPath:"inset(0 0 0 0)",
- }}
+ style={
+ parallax
+ ? { height, clipPath:"inset(0 0 0 0)" }
+ : undefined
+ }
  >
  <footer
  ref={footerRef}
- className={`fixed bottom-0 left-0 z-0 w-screen ${footerClassName}`}
+ className={`left-0 z-0 w-screen ${
+ parallax ?"fixed bottom-0" :"relative"
+ } ${footerClassName}`}
  style={footerStyle}
  >
  {children}

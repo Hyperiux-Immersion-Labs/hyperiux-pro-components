@@ -71,7 +71,7 @@ export default function AnimatedFaq() {
             key={item.id}
             itemId={item.id}
             className="rounded-md border border-white/20 px-6 py-5"
-            titleClassName="text-[1.1rem] font-medium text-white"
+            titleClassName=" font-medium text-white"
             iconSize={16}
             iconStrokeWidth={2}
             duration={0.5}

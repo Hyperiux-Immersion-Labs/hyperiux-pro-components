@@ -15,8 +15,8 @@ const SectionBreak = () => {
       textWidth="75%"
       tabletTextSize="6vw"
       tabletTextWidth="86%"
-      mobileTextSize="7.5vw"
-      mobileTextWidth="92%"
+      mobileTextSize="10.5vw"
+      mobileTextWidth="82%"
     />
   );
 };

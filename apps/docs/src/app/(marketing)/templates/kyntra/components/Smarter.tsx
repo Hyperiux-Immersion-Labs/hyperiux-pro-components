@@ -80,6 +80,19 @@ const SMARTER_CARDS: SmarterCardData[] = [
 const CAROUSEL_CARDS = [...SMARTER_CARDS, ...SMARTER_CARDS];
 
 const SLIDER_GUTTER_PCT = 5;
+// The strip is shifted so the first card sits a gutter's width from the left
+// edge. Mobile needs a wider gutter than the desktop 5% or the card reads as
+// flush against the viewport.
+const SLIDER_GUTTER_PCT_TABLET = 7;
+const SLIDER_GUTTER_PCT_PHONE = 9;
+const TABLET_BP = 1025;
+const PHONE_BP = 768;
+
+const sliderGutterPct = (width: number) => {
+  if (width <= PHONE_BP) return SLIDER_GUTTER_PCT_PHONE;
+  if (width <= TABLET_BP) return SLIDER_GUTTER_PCT_TABLET;
+  return SLIDER_GUTTER_PCT;
+};
 
 export default function Smarter() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -96,7 +109,8 @@ export default function Smarter() {
     const { wrapperWidth, itemWidth } = slider.viewport;
     if (!wrapperWidth || !itemWidth) return;
 
-    const gutter = (wrapperWidth * SLIDER_GUTTER_PCT) / 100;
+    const gutter =
+      (wrapperWidth * sliderGutterPct(window.innerWidth)) / 100;
     const shift = wrapperWidth / 2 - itemWidth / 2 - gutter;
     strip.style.transform = `translateX(${-shift}px)`;
   };
@@ -118,21 +132,42 @@ export default function Smarter() {
      
       if (prefersReducedMotion()) return;
 
-      gsap.set(wrapper, { xPercent: 80 });
+      const trigger = {
+        trigger: wrapper,
+        start: "top 90%",
+        // markers: true,
+        once: true,
+      };
 
-      gsap.to(wrapper, {
-        xPercent: 0,
-        duration: 1.6,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: wrapper,
-          start: "top 90%",
-          // markers: true,
-          once: true,
-        },
-        onComplete: () => {
-          gsap.set(wrapper, { clearProps: "transform" });
-        },
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 1026px)", () => {
+        gsap.set(wrapper, { xPercent: 80 });
+
+        gsap.to(wrapper, {
+          xPercent: 0,
+          duration: 1.6,
+          ease: "power3.out",
+          scrollTrigger: trigger,
+          onComplete: () => {
+            gsap.set(wrapper, { clearProps: "transform" });
+          },
+        });
+      });
+
+
+      mm.add("(max-width: 1025px)", () => {
+        gsap.set(wrapper, { xPercent: 0, opacity: 0 });
+
+        gsap.to(wrapper, {
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: trigger,
+          onComplete: () => {
+            gsap.set(wrapper, { clearProps: "opacity,transform" });
+          },
+        });
       });
     }, sectionRef);
 
@@ -152,9 +187,9 @@ export default function Smarter() {
       className=" relative z-10 w-full overflow-hidden bg-white"
     >
       {/* Header */}
-      <div className="mx-auto flex max-w-400 flex-col gap-[2vw] px-[5%] py-[5%] max-md:gap-8 max-md:mb-8">
+      <div className="mx-auto flex max-w-400 flex-col gap-[2vw] px-[5%] max-[1025px]:px-[7%] py-[5%] max-md:gap-8 max-md:mb-8">
         <FocusTextWrap>
-          <h2 className="font-helvetica-neue w-[60%] leading-[1.1] font-normal tracking-[-0.02em] whitespace-pre-line text-black max-[1025px]:text-[6vw] max-md:text-[7.5vw]">
+          <h2 className="font-helvetica-neue w-[60%] max-[1025px]:w-full leading-[1.1] font-normal tracking-[-0.02em] whitespace-pre-line text-black ">
             Every Visit Makes Kyntra Smarter About your Home
           </h2>
         </FocusTextWrap>
@@ -164,16 +199,14 @@ export default function Smarter() {
           <ParaAnim
             as="p"
             className="text-24 max-w-[40vw] leading-normal  text-black max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"
-          >
-            Kyntra Keeps Your Appliances, Repairs, Warranties And Maintenance
-            History Together So Every Future Job Starts With Context.
+          >Kyntra keeps your appliances, repairs, warranties and maintenance history together so every future job starts with context.
           </ParaAnim>
 
           <CarouselNavButtons
             onPrev={() => sliderRef.current?.goToPrev()}
             onNext={() => sliderRef.current?.goToNext()}
             restColor="#134BD6"
-            className="shrink-0"
+            className="shrink-0 max-[1025px]:hidden"
           />
         </div>
       </div>
@@ -181,7 +214,7 @@ export default function Smarter() {
       {/* Infinite carousel */}
       <div
         ref={carouselWrapperRef}
-        className="relative w-full overflow-hidden pb-14"
+        className="relative w-full overflow-hidden pb-14 max-[1025px]:pb-0"
       >
         <SmoothInfiniteCarousel
           config={{
@@ -192,7 +225,7 @@ export default function Smarter() {
             dragSensitivity: 0.005,
           }}
           wrapperClassName="py-2"
-          itemClassName="px-[0.95vw] max-[1025px]:px-[1.3vw] max-md:px-[2vw] cursor-grab active:cursor-grabbing"
+          itemClassName="px-[0.95vw] max-[1025px]:px-[2.2vw] max-md:px-[3.5vw] cursor-grab active:cursor-grabbing"
           onReady={handleReady}
         >
           {CAROUSEL_CARDS.map((card, idx) => {
@@ -201,7 +234,7 @@ export default function Smarter() {
               <div
                 key={`${card.id}-${idx}`}
                 aria-hidden={idx >= SMARTER_CARDS.length}
-                className="flex aspect-440/477 w-[28vw] flex-col overflow-hidden rounded-xl p-[2vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
+                className="flex aspect-440/477 max-[1025px]:aspect-auto max-[1025px]:h-[42vh] w-[28vw] flex-col overflow-hidden rounded-xl p-[2vw] max-[1025px]:p-[4vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
                 style={{
                   backgroundColor: isPrimary ? KYNTRA_PRIMARY : "#0d0d0d",
                   border: isPrimary
@@ -213,16 +246,16 @@ export default function Smarter() {
               >
                 {/* Fixed-height icon zone so every card's heading starts at
                     the same y regardless of title length. */}
-                <div className="flex h-[45%] shrink-0 items-start">
+                <div className="flex h-[45%] max-[1025px]:h-[40%] shrink-0 items-start">
                   <Image
                     src={card.icon}
                     alt=""
                     aria-hidden
-                    className="h-[3vw] w-[3vw] object-contain max-[1025px]:h-[5.5vw] max-[1025px]:w-[5.5vw] max-md:h-[9vw] max-md:w-[9vw]"
+                    className="h-[3vw] w-[3vw] object-contain max-[1025px]:h-[5.5vw] max-[1025px]:w-[5.5vw] max-md:h-[12vw] max-md:w-[12vw]"
                   />
                 </div>
 
-                <div className="flex flex-1 flex-col gap-[1.8vw] max-md:gap-4">
+                <div className="flex flex-1 flex-col gap-[1.8vw] max-md:gap-6">
                   <h3 className="font-helvetica-neue text-44 leading-[1.15] font-normal tracking-tight whitespace-pre-line text-white max-[1025px]:text-[4vw] max-md:text-[7vw]">
                     {card.title}
                   </h3>
@@ -235,6 +268,16 @@ export default function Smarter() {
             );
           })}
         </SmoothInfiniteCarousel>
+
+      
+        <div className="hidden px-[7%] pt-[8vw] pb-14 max-[1025px]:pb-0 max-[1025px]:flex">
+          <CarouselNavButtons
+            onPrev={() => sliderRef.current?.goToPrev()}
+            onNext={() => sliderRef.current?.goToNext()}
+            restColor="#134BD6"
+            className="shrink-0"
+          />
+        </div>
       </div>
     </section>
   );

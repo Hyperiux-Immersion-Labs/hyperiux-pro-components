@@ -61,21 +61,32 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
     if (!trigger) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        el,
-        { yPercent: 100 },
-        {
-          yPercent: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger,
-            start: "top 80%",
-            end: "bottom top",
-            scrub: 0.2,
-            // markers: true,
+      const mm = gsap.matchMedia();
+
+      // The phone rises out of the footer's bottom edge as the page scrolls
+      // over it. Below the breakpoint the footer is a normal block in flow, so
+      // there is nothing to rise out of - it just sits in place.
+      mm.add("(min-width: 1026px)", () => {
+        gsap.fromTo(
+          el,
+          { yPercent: 100 },
+          {
+            yPercent: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger,
+              start: "top 80%",
+              end: "bottom top",
+              scrub: 0.2,
+              // markers: true,
+            },
           },
-        },
-      );
+        );
+      });
+
+      mm.add("(max-width: 1025px)", () => {
+        gsap.set(el, { yPercent: 0, clearProps: "transform" });
+      });
     });
 
     return () => ctx.revert();
@@ -86,9 +97,9 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
       footerClassName="text-white"
       footerStyle={{ backgroundColor: footerBgColor }}
     >
-      <div className="relative flex h-[80vh] w-full flex-col justify-between px-[5%] pt-[6vw] pb-[2vw] max-md:h-auto max-md:pt-[16vw] max-md:pb-[8vw]">
+      <div className="relative flex h-[80vh] w-full flex-col justify-between px-[5%] pt-[6vw] pb-[2vw] max-[1025px]:h-auto max-[1025px]:px-[7%] max-[1025px]:pt-[12vw] max-[1025px]:pb-0 max-md:pt-[16vw]">
        
-        <div className="pointer-events-none absolute bottom-0 left-1/2 w-[22vw] -translate-x-1/2 max-[1025px]:static max-[1025px]:left-auto max-[1025px]:my-[10vw] max-[1025px]:w-[45vw] max-[1025px]:translate-x-0 max-[1025px]:self-center max-md:w-[62vw]">
+        <div className="pointer-events-none absolute bottom-0 left-1/2 w-[22vw] -translate-x-1/2 max-[1025px]:static max-[1025px]:left-auto max-[1025px]:order-3 max-[1025px]:mt-[12vw] max-[1025px]:mb-0 max-[1025px]:w-[55vw] max-[1025px]:translate-x-0 max-[1025px]:self-center max-md:w-[72vw]">
           <Image
             ref={footerImgRef}
             src={footerImg}
@@ -100,7 +111,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
         </div>
 
         {/* Top: brand + link columns */}
-        <div className="relative flex justify-between gap-[4vw] max-[1025px]:flex-col max-[1025px]:gap-[10vw]">
+        <div className="relative flex justify-between gap-[4vw] max-[1025px]:order-1 max-[1025px]:flex-col max-[1025px]:gap-[12vw]">
           {/* Brand column */}
           <div className="flex w-[34vw] flex-col max-[1025px]:w-full">
             <FadeUp
@@ -121,7 +132,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
               as="p"
               watch={FOOTER_TRIGGER}
               delay={FOOTER_DELAY + 0.08}
-              className="text-24 mt-[2vw] w-[24vw] leading-normal text-white/90 max-[1025px]:mt-[4vw] max-[1025px]:w-[60vw] max-[1025px]:text-[2.8vw] max-md:w-full max-md:text-[4vw]"
+              className="text-24 mt-[2vw] w-[24vw] leading-normal text-white/90 max-[1025px]:mt-[4vw] max-[1025px]:w-[60vw] max-[1025px]:text-[2.8vw] max-md:w-[70%] max-md:text-[4vw]"
             >
               Home intelligence, maintenance and trusted services managed from
               one app.
@@ -130,7 +141,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             <FadeUp
               watch={FOOTER_TRIGGER}
               delay={FOOTER_DELAY + 0.16}
-              className="mt-[2.5vw] flex gap-[1.2vw] max-[1025px]:mt-[6vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[3vw] max-md:gap-[4vw]"
+              className="mt-[2.5vw] flex gap-[1.2vw] max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[3.5vw] max-md:gap-[4vw]"
             >
               {/* Same components as the hero, so size, padding and type scale
                   match by construction. Only the palette differs: on the blue
@@ -148,21 +159,27 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
           </div>
 
           {/* Link columns */}
-          <div className="flex gap-[4vw] max-[1025px]:gap-[12vw]">
+          <div className="flex gap-[4vw] max-[1025px]:flex max-[1025px]:justify-between max-[1025px]:px-[5vw] max-[1025px]:w-full max-[1025px]:grid-cols-2 max-[1025px]:gap-x-[4vw] max-[1025px]:gap-y-0">
             <FooterLinkColumn title="Services" links={serviceLinks} />
             <FooterLinkColumn title="Connect" links={connectLinks} />
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="relative flex items-end justify-between">
+        <div className="relative flex items-end justify-between max-[1025px]:order-2 max-[1025px]:mt-[14vw] max-[1025px]:items-start">
           <FadeUp
             as="p"
             watch={FOOTER_TRIGGER}
             delay={FOOTER_DELAY + 0.3}
-            className="text-22 text-white/90 max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]"
+            className="text-22 text-white/90 max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
           >
-            &copy; 2026 KYNTRA. All Rights Reserved.
+            &copy; 2026 KYNTRA.{" "}
+            {/* Wraps to a second line below the breakpoint, as one line on
+                desktop. */}
+            <span className="hidden max-[1025px]:block">
+              All Rights Reserved.
+            </span>
+            <span className="max-[1025px]:hidden">All Rights Reserved.</span>
           </FadeUp>
 
           <FadeUp watch={FOOTER_TRIGGER} delay={FOOTER_DELAY + 0.36}>
@@ -202,7 +219,7 @@ const FooterLinkColumn = ({
       as="span"
       watch={FOOTER_TRIGGER}
       delay={FOOTER_DELAY}
-      className="text-22 tracking-wide text-white max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
+      className="text-22 tracking-wide text-white max-[1025px]:text-[2.8vw] max-md:text-[5vw]!"
     >
       {title.toUpperCase()}
     </FadeUp>
