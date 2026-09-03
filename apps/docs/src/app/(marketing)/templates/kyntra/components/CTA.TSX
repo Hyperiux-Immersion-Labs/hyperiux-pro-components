@@ -5,15 +5,29 @@ import { useState } from "react";
 import Link from "next/link";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import { FadeUp } from "./Animations/gsapAnim";
+import DownloadAppModal from "./DownloadAppModal";
 
 const CTA = () => {
   const [hovered, setHovered] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // The button is an anchor to "#", so the default jump has to be suppressed
+  // before the modal takes over.
+  const openModal = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    setModalOpen(true);
+  };
+
+  // Opening the modal pulls the pointer off the button, which would otherwise
+  // fire onPointerLeave and drop the blue back to grey. Keeping the panel
+  // latched while the modal is open holds the colour through the interaction.
+  const panelActive = hovered || modalOpen;
 
   return (
     <section
       id="cta"
       className={`relative flex h-screen max-[1025px]:h-[70vh] w-full flex-col items-center justify-center px-[5%] text-black transition-colors duration-300 ease-in-out ${
-        hovered ? "bg-kyntra-primary" : "bg-[#f5f5f5]"
+        panelActive ? "bg-kyntra-primary" : "bg-[#f5f5f5]"
       }`}
     >
       <div
@@ -38,19 +52,21 @@ const CTA = () => {
               which fights a two-line wrap - so it stays desktop-only and mobile
               gets a plain button with ordinary text flow. */}
           <CharStaggerPrimaryButton
-            text="Different Home, Different Chaos"
+            text="Download Kyntra App"
             href="#"
             hoverColor="#ffffff"
             staggerStep={0.006}
+            onClick={openModal}
             className="w-[45vw] justify-center rounded-full bg-black py-[2.5vw] text-center max-[1025px]:hidden"
             textClassName=" text-44 leading-[1.1] font-normal tracking-[-0.02em] text-white"
           />
 
           <Link
             href="#"
+            onClick={openModal}
             className="hidden w-[80vw] rounded-full bg-black px-[6vw] py-[7vw] text-center text-[5vw] leading-tight font-normal tracking-[-0.02em] text-white max-[1025px]:block max-md:w-[85vw] max-md:py-[4vw] max-md:text-[7vw]"
           >
-            Different Home, Different Chaos
+            Download Kyntra App
           </Link>
         </FadeUp>
       </div>
@@ -58,14 +74,24 @@ const CTA = () => {
       <FadeUp
         as="p"
         delay={0.15}
-        // Colour is driven by the same `hovered` state as the section
+        // Colour is driven by the same `panelActive` state as the section
         // background, so the copy flips to white as the panel turns blue.
         className={`text-24 mt-[2vw] transition-colors duration-300 ease-in-out max-[1025px]:mt-[5vw] max-[1025px]:max-w-[62%] max-[1025px]:text-center max-[1025px]:text-[2.9vw] max-md:mt-[6vw] max-md:max-w-[72%] max-md:text-[4.2vw] ${
-          hovered ? "text-white" : "text-black"
+          panelActive ? "text-white" : "text-black"
         }`}
       >
         Download Kyntra and create your first home profile.
       </FadeUp>
+
+      <DownloadAppModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          // Touch latches the blue panel on tap, and the pointer is no longer
+          // over the button on desktop, so the colour is released here.
+          setHovered(false);
+        }}
+      />
     </section>
   );
 };
