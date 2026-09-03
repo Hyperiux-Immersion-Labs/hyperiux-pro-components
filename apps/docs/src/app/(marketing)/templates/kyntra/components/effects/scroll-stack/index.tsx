@@ -48,7 +48,7 @@ const MOBILE_TITLE_VW = 7;
 const MOBILE_SLIVER_VW = 3;
 
 
-const PHONE_PAD_TOP_VW = 6;
+const PHONE_PAD_TOP_VW = 7;
 const PHONE_TITLE_VW = 9;
 const PHONE_SLIVER_VW = 4;
 
@@ -193,7 +193,7 @@ export default function ScrollStack({
       >
         <div
           ref={stickyRef}
-          className="sticky top-25 h-[80vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto max-[1025px]:top-[24vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-md:top-[54vw]"
+          className="sticky top-25 h-[80vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto max-[1025px]:top-[24vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-md:top-[32vw] max-md:h-[82vh]"
         >
           <div className="relative mx-auto h-full w-full motion-reduce:h-auto">
             {cards.map((card, index) => {
@@ -218,7 +218,7 @@ export default function ScrollStack({
                       borderRadius: `${cardRadius}px`,
                     } as React.CSSProperties
                   }
-                  className={`absolute inset-x-0 flex h-[26vw] flex-col overflow-hidden border px-[2.4vw] py-[3vw] max-[1025px]:py-[6vh] top-25 motion-reduce:static motion-reduce:mb-[3vw] motion-reduce:h-auto motion-reduce:translate-y-0 max-[1025px]:pt-[5vh] max-[1025px]:top-[calc(50%-35vh)] max-[1025px]:h-[72vh] max-[1025px]:px-[5vw] max-md:px-[6vw] max-md:py-[8vw] ${
+                  className={`absolute inset-x-0 flex h-[26vw] flex-col overflow-hidden border px-[2.4vw] py-[3vw] max-[1025px]:py-[6vh] top-25 motion-reduce:static motion-reduce:mb-[3vw] motion-reduce:h-auto motion-reduce:translate-y-0 max-[1025px]:pt-[5vh] max-[1025px]:top-[calc(50%-35vh)] max-[1025px]:h-[72vh] max-[1025px]:px-[5vw] max-md:top-0 max-md:h-auto max-md:max-h-[82vh] max-md:px-[6vw] max-md:pt-[7vw] max-md:pb-[7vw] ${
                     // Card 0 is in place from the start; the rest wait below.
                     index === 0 ? "" : "translate-y-[110vh]"
                   }`}
@@ -241,13 +241,13 @@ export default function ScrollStack({
                     }}
                   />
 
-                  <div className="flex pt-[4vh] items-start justify-between gap-[3vw] max-[1025px]:min-h-0 max-[1025px]:flex-1 max-[1025px]:flex-col max-[1025px]:gap-[5vw] max-[1025px]:pt-0">
+                  <div className="flex pt-[4vh] items-start justify-between gap-[3vw] max-[1025px]:min-h-0 max-[1025px]:flex-1 max-[1025px]:flex-col max-[1025px]:gap-[5vw] max-[1025px]:pt-0 max-md:overflow-y-auto">
                     {card.items && card.items.length > 0 && (
                       <div className="grid w-[45%] grid-cols-2 gap-y-[2vw] max-[1025px]:order-2 max-[1025px]:w-full max-[1025px]:grid-cols-1 max-[1025px]:gap-y-0">
                         {card.items.map((item, i) => (
                           <div
                             key={item.label}
-                            className={`flex items-center w-[90%] gap-[1.1vw] max-[1025px]:w-[70%] max-[1025px]:gap-[3vw] max-[1025px]:py-[2.4vw] max-[1025px]:pr-0 max-[1025px]:pl-0 max-md:w-[85%] max-md:gap-[4vw] max-md:py-[3.5vw] ${
+                            className={`flex items-center w-[90%] gap-[1.1vw] max-[1025px]:w-[70%] max-[1025px]:gap-[3vw] max-[1025px]:py-[2.4vw] max-[1025px]:pr-0 max-[1025px]:pl-0 max-md:w-[85%] max-md:gap-[4vw] max-md:py-[2.5vw] ${
                               i % 2 === 0
                                 ? "border-r pr-[2vw] max-[1025px]:border-r-0"
                                 : "pl-[2vw]"

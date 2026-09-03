@@ -12,6 +12,7 @@ import KyntraFaq from "./components/KyntraFaq";
 import CTA from "./components/CTA";
 import ParallaxFooter from "./components/effects/parallax-footer";
 import LenisSmoothScroll from "./components/LenisSmoothScroll";
+import ScrollTopOnLoad from "./components/ScrollTopOnLoad";
 import Trust from "./components/Trust";
 import Testimonial from "./components/Testimonial";
 import Blogs from "./components/Blogs";
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="kyntra-page relative">
+      <ScrollTopOnLoad />
       <LenisSmoothScroll />
       <Header />
       <Hero />

@@ -95,19 +95,24 @@ const About = () => {
     });
 
 
-    const parallax = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#kyntra-about',
-        start: "30% bottom",
-        end: "bottom top",
-        scrub: 0.5,
-        // markers: true,
-      },
-    });
+    // Desktop only: the phones sit side by side there, so the opposing drift
+    // reads as depth. On tablet/mobile they stack vertically and the same
+    // offsets just push them into each other.
+    mm.add("(min-width: 1026px)", () => {
+      const parallax = gsap.timeline({
+        scrollTrigger: {
+          trigger: '#kyntra-about',
+          start: "30% bottom",
+          end: "bottom top",
+          scrub: 0.5,
+          // markers: true,
+        },
+      });
 
-    parallax
-      .fromTo([leftRef.current, rightRef.current], { y: -72 }, { y: 72 }, 0)
-      .fromTo(midRef.current, { y: 72 }, { y: -72 }, 0);
+      parallax
+        .fromTo([leftRef.current, rightRef.current], { y: -72 }, { y: 72 }, 0)
+        .fromTo(midRef.current, { y: 72 }, { y: -72 }, 0);
+    });
 
     return () => mm.revert();
   }, []);

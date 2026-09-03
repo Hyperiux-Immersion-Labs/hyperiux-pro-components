@@ -44,15 +44,21 @@ const Hero = () => {
         ease: "power3.out",
       });
 
-      gsap.to(phone, {
-        yPercent: 15,
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.2,
-        },
+      // Desktop only: on tablet/mobile the phone sits in a stacked, much taller
+      // hero, where the same parallax drags it over the copy below it.
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 1026px)", () => {
+        gsap.to(phone, {
+          yPercent: 15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.2,
+          },
+        });
       });
     },
     { scope: heroRef },

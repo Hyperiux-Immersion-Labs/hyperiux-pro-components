@@ -65,8 +65,8 @@ const ARTICLES: Article[] = [
   },
 ];
 
-/** Rate the hover overlay reverses at; above 1 makes leaving quicker than entering. */
-const LEAVE_SCALE = 2.3;
+/** Rate the hover overlay reverses at. 1 keeps leaving and entering symmetric. */
+const LEAVE_SCALE = 1.5;
 
 const ArticleCard = ({ article }: { article: Article }) => {
   const cardRef = useRef<HTMLElement | null>(null);
@@ -97,10 +97,10 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
       tl.to(panel, {
         yPercent: 0,
-        // The `out` curve covers most of the distance early, then eases into
-        // place so the faster overlay still feels like a glide.
         duration: reduced ? 0 : 0.75,
-        ease: "power3.out",
+        // Symmetric on purpose: an `out` curve reverses into an `in` one,
+        // which parks the panel and then whips it away at the very end.
+        ease: "power2.out",
       });
 
       if (image) {
@@ -129,8 +129,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
     { scope: cardRef },
   );
 
-  // The overlay leaves faster than it arrives — a slow entrance reads as
-  // deliberate, but the same pace on the way out feels like lag.
+  // The overlay leaves exactly as it arrives — same curve, same duration.
   const handleEnter = () => tlRef.current?.timeScale(1).play();
   const handleLeave = () => tlRef.current?.timeScale(LEAVE_SCALE).reverse();
 
