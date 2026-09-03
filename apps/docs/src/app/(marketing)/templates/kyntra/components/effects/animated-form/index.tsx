@@ -28,7 +28,7 @@ const FIELDS: FieldConfig[] = [
  { type: "text", name: "message", label: "Tell Us More" },
 ];
 
-// Accepts an optional leading "+" and country code, then 7-15 digits total.
+// Optional +, code, 7-15 digits
 const isValidPhone = (val: string): boolean => {
  const digits = val.replace(/\D/g, "");
  return digits.length >= 7 && digits.length <= 15;
@@ -64,7 +64,7 @@ async function submitHandler(data: Record<string, any>) {
 export default function AnimatedForm() {
  return (
  <div className="grid w-full grid-cols-2 items-start gap-[4vw] max-[1025px]:grid-cols-1 max-[1025px]:gap-[8vw] pt-[5vh]">
- {/* Left column - heading + copy */}
+ {/* Left column: heading and copy */}
  <div className="max-[1025px]:pr-0 pr-[2vw]">
  <FocusTextWrap>
  <h2 className="font-helvetica-neue text-70 font-medium leading-[1.08] tracking-tight text-white max-[1025px]:text-[8vw] max-md:text-[9vw]">
@@ -83,7 +83,7 @@ export default function AnimatedForm() {
  </ParaAnim>
  </div>
 
- {/* Right column - form */}
+ {/* Right column: form */}
  <div className="w-full">
  <ContactForm
  fields={FIELDS}

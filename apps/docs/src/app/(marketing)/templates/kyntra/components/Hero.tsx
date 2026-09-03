@@ -3,7 +3,7 @@
 'use client'
 import { useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Star } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -34,8 +34,7 @@ const Hero = () => {
         return;
       }
 
-      // The Tailwind class prevents a pre-hydration flash; GSAP then owns the
-      // exact transform and opacity values for the entrance.
+      // Class prevents flash; GSAP owns values
       gsap.set(entrance, { opacity: 0, yPercent: 110 });
       gsap.to(entrance, {
         opacity: 1,
@@ -44,8 +43,7 @@ const Hero = () => {
         ease: "power3.out",
       });
 
-      // Desktop only: on tablet/mobile the phone sits in a stacked, much taller
-      // hero, where the same parallax drags it over the copy below it.
+      // Desktop only: would overlap copy
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1026px)", () => {
@@ -81,7 +79,7 @@ const Hero = () => {
           className="absolute inset-x-0 top-0 h-[90vh] bg-[linear-gradient(180deg,#000000_0%,#000000_28%,#0A1633_42%,#16295F_54%,#26429C_63%,#3E63D0_71%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)] max-[1025px]:h-[105vh] max-[1025px]:bg-[linear-gradient(180deg,#000000_0%,#000000_20%,#0A1633_34%,#16295F_48%,#26429C_60%,#3E63D0_70%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)]"
         />
 
-        {/* Oversized KYNTRA watermark  */}
+        {/* Oversized KYNTRA watermark */}
         <Image
           src={kyntraHero}
           alt=""
@@ -145,7 +143,6 @@ const Hero = () => {
               className="flex items-center gap-[0.5vw] text-20 text-black max-[1025px]:justify-start max-[1025px]:gap-[1.2vw] max-[1025px]:text-white max-md:gap-[1.5vw]"
             >
               <span className="text-[#12D415] font-medium">4.9 ★ </span>
-              {/* <Star className="fill-[#12D415] text-[#12D415] w-[1vw] max-[1025px]:w-[2.2vw] max-md:w-[3.4vw]" /> */}
               <span className="text-20">
                 From{" "}
                 <span className="font-medium text-black max-[1025px]:text-white">

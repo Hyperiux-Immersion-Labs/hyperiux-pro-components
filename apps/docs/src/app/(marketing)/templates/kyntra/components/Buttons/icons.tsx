@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 type IconProps = { className?: string };
 
 export const AppleIcon = ({ className = "" }: IconProps) => {

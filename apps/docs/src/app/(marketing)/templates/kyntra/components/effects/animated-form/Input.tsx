@@ -1,10 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 import React, { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
-/**
- * Floating-label Input (Kyntra glass variant)
- * The label sits inside the pill as a placeholder and floats up on
- * focus / when the field holds a value.
- */
+/** Floating-label input */
 export type InputProps = {
   id?: string;
   label?: ReactNode;

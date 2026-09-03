@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -12,6 +13,7 @@ import { AppleStoreButton, PlayStoreButton } from "../../Buttons";
 import { FadeUp } from "../../Animations/gsapAnim";
 import kyntraLogo from "../../../assets/kyntra-logo.png";
 import footerImg from "../../../assets/footer.png";
+import klogo from '../../../assets/icons/kyntra-logo.svg';
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -19,12 +21,9 @@ if (typeof window !== "undefined") {
 
 const KYNTRA_PRIMARY = "#134BD6";
 
-
 const FOOTER_BUTTON_TEXT = "#1A1A1A";
 
-
 const FOOTER_TRIGGER = "#footer";
-
 
 const FOOTER_DELAY = 0.5;
 
@@ -64,23 +63,33 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
       const mm = gsap.matchMedia();
 
      
-      mm.add("(min-width: 1026px)", () => {
-        gsap.fromTo(
-          el,
-          { yPercent: 100 },
-          {
-            yPercent: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger,
-              start: "top 80%",
-              end: "bottom 10%",
-              scrub: 0.2,
-              // markers: true,
+      mm.add(
+        "(min-width: 1026px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          gsap.fromTo(
+            el,
+            { yPercent: 100 },
+            {
+              yPercent: 0,
+              ease: "none",
+              scrollTrigger: {
+                trigger,
+                start: "top 80%",
+                end: "bottom 10%",
+                scrub: 0.2,
+              },
             },
-          },
-        );
-      });
+          );
+        },
+      );
+
+      // Reduced motion: phone starts placed
+      mm.add(
+        "(min-width: 1026px) and (prefers-reduced-motion: reduce)",
+        () => {
+          gsap.set(el, { yPercent: 0, clearProps: "transform" });
+        },
+      );
 
       mm.add("(max-width: 1025px)", () => {
         gsap.set(el, { yPercent: 0, clearProps: "transform" });
@@ -108,7 +117,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
           />
         </div>
 
-        {/* Top: brand + link columns */}
+        {/* Brand and link columns */}
         <div className="relative flex justify-between gap-[4vw] max-[1025px]:order-1 max-[1025px]:flex-col max-[1025px]:gap-[12vw]">
           {/* Brand column */}
           <div className="flex w-[34vw] flex-col max-[1025px]:w-full">
@@ -118,7 +127,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
               className="w-[20vw] max-[1025px]:w-[42vw] max-md:w-[50vw]"
             >
               <Image
-                src={kyntraLogo}
+                src={klogo}
                 width={900}
                 height={900}
                 alt="Kyntra"
@@ -141,9 +150,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
               delay={FOOTER_DELAY + 0.16}
               className="mt-[2.5vw] flex gap-[1.2vw] max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[3.5vw] max-md:gap-[4vw]"
             >
-              {/* Same components as the hero, so size, padding and type scale
-                  match by construction. Only the palette differs: on the blue
-                  footer both pills are white. */}
+              {/* Same components as the hero */}
               <AppleStoreButton
                 href="#"
                 style={{
@@ -172,8 +179,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             className="text-22 text-white/90 max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
           >
             &copy; 2026 KYNTRA.{" "}
-            {/* Wraps to a second line below the breakpoint, as one line on
-                desktop. */}
+            {/* Wraps to a second line */}
             <span className="hidden max-[1025px]:block">
               All Rights Reserved.
             </span>

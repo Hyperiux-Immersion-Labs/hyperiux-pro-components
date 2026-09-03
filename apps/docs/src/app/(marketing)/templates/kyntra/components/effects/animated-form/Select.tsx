@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 import React, { forwardRef, useState, useRef, useEffect } from "react";
 
 export interface SelectOption {
@@ -43,7 +44,6 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
   return (
     <div className="w-full" ref={containerRef}>
       <div className="relative w-full">
-        {/* Trigger */}
         <button
           type="button"
           id={id}
@@ -66,7 +66,6 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
           {selectedOption ? selectedOption.label : label}
         </button>
 
-        {/* Chevron */}
         <span
           className={`pointer-events-none absolute right-[1.4vw] top-[1.8vw] -translate-y-1/2 text-white transition-transform duration-300 max-[1025px]:right-[5vw] max-[1025px]:top-[6vw] max-md:top-[7vw] ${
             open ? "rotate-180" : ""
@@ -86,8 +85,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
           </svg>
         </span>
 
-        {/* Radio panel - absolutely positioned so it floats over the fields
-            below instead of pushing them down. */}
+        {/* Radio panel floats over fields */}
         <div
           ref={panelRef}
           role="listbox"

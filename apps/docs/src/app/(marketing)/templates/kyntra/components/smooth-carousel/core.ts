@@ -1,16 +1,4 @@
-/**
- * Vendored from `smooothy` v0.0.35 (package/src/core.ts).
- *
- * Unmodified except: the `virtual-scroll` import now points at the local
- * vendored copy, the config/viewport interfaces are exported so consumers
- * can type against them (upstream exports them via its generated .d.ts), and
- * a `wheelInput` flag was added so a slider can opt out of wheel/trackpad
- * input entirely (upstream always binds it, which makes a horizontal slider
- * drift while the page scrolls past it).
- *
- * The MIT License (MIT) — Copyright (c) vallafederico
- * https://github.com/vallafederico/smooothy
- */
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
 import VirtualScroll from "./virtual-scroll"
 import { damp, symmetricMod } from "./utils"
@@ -31,6 +19,8 @@ export interface Viewport {
   wrapperHeight: number
   totalHeight: number
   vertical: boolean
+  gap: number
+  wrapper: HTMLElement
 }
 
 export interface CoreConfig {
@@ -47,16 +37,13 @@ export interface CoreConfig {
   virtualScroll: VirtualScrollConfig
   setOffset: (viewport: Viewport) => number
   scrollInput: boolean
-  /** Bind wheel/trackpad input. Off means only drag, keys and the API move it. */
   wheelInput: boolean
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
   onUpdate?: (core: Core) => void
 }
 
-/** default config */
 const DEFAULT_CONFIG: CoreConfig = {
-  /** Params */
   infinite: true,
   snap: true,
   variableWidth: false,
@@ -82,20 +69,17 @@ const DEFAULT_CONFIG: CoreConfig = {
     vertical,
   }) => (vertical ? itemHeight : itemWidth),
 
-  /** Functionality */
   scrollInput: false,
   wheelInput: true,
 }
 
 export class Core {
-  /* config */
   speed: number = 0
   #lspeed: number = 0
   #offset: number = 0
   #previousTime: number = 0
   deltaTime: number = 0
 
-  /* flags */
   #isActive: boolean = true
   #isPaused: boolean = false
 
@@ -108,6 +92,7 @@ export class Core {
   viewport!: Viewport
   itemWidths: number[] = []
   itemOffsets: number[] = []
+  gapSize: number = 0
   itemHeights: number[] = []
   itemHeightOffsets: number[] = []
   isDragging: boolean = false
@@ -127,9 +112,8 @@ export class Core {
   touchPreviousY?: number
   scrollDirection?: "horizontal" | "vertical"
   parallaxValues?: number[]
-  /** Set while an external driver owns `current`; suspends the damp. */
   #driven: boolean = false
-  webglValue: number = 0 // (*) ADD WEBGL VALUE TO SLIDER (better name)
+  webglValue: number = 0
 
   onSlideChange?: (current: number, previous: number) => void
   onResize?: (core: Core) => void
@@ -163,7 +147,6 @@ export class Core {
     this.#currentSlide = 0
     this.#previousSlide = 0
 
-    // Initialize
     this.#setupViewport()
     this.#setupIntersectionObserver()
     this.#addEventListeners()
@@ -172,7 +155,6 @@ export class Core {
     this.#setupViewport()
     if (this.config.wheelInput) this.#setupVirtualScroll()
 
-    // Center first slide for variable width non-infinite sliders
     if (
       this.config.variableWidth &&
       !this.config.infinite &&
@@ -181,7 +163,6 @@ export class Core {
       const initialTarget = this.#getSnapTargetForIndex(0)
       this.target = initialTarget
       this.current = initialTarget
-      // Immediately render the initial position
       this.#updateFiniteVariableWidth()
     }
   }
@@ -211,13 +192,25 @@ export class Core {
     )
     const wrapperWidth = this.wrapper.clientWidth
     const wrapperHeight = this.wrapper.clientHeight
-    const totalWidth = itemWidths.reduce((sum, width) => sum + width, 0)
-    const totalHeight = itemHeights.reduce((sum, height) => sum + height, 0)
+
+    const cs = getComputedStyle(this.wrapper)
+    const gap = parseFloat(
+      (this.config.vertical ? cs.rowGap : cs.columnGap) || "0"
+    )
+    const gapSize = Number.isFinite(gap) ? gap : 0
+    const gapCount = Math.max(0, this.items.length - 1)
+
+    const totalWidth =
+      itemWidths.reduce((sum, width) => sum + width, 0) +
+      (this.config.vertical ? 0 : gapCount * gapSize)
+    const totalHeight =
+      itemHeights.reduce((sum, height) => sum + height, 0) +
+      (this.config.vertical ? gapCount * gapSize : 0)
 
     let runningOffset = 0
     this.itemOffsets = itemWidths.map(width => {
       const start = runningOffset
-      runningOffset += width
+      runningOffset += width + (this.config.vertical ? 0 : gapSize)
       return start
     })
     this.itemWidths = itemWidths
@@ -225,10 +218,11 @@ export class Core {
     let runningHeightOffset = 0
     this.itemHeightOffsets = itemHeights.map(height => {
       const start = runningHeightOffset
-      runningHeightOffset += height
+      runningHeightOffset += height + (this.config.vertical ? gapSize : 0)
       return start
     })
     this.itemHeights = itemHeights
+    this.gapSize = gapSize
 
     this.viewport = {
       itemWidth: itemWidths[0] ?? 0,
@@ -238,6 +232,8 @@ export class Core {
       wrapperHeight,
       totalHeight,
       vertical: this.config.vertical,
+      gap: gapSize,
+      wrapper: this.wrapper,
     }
 
     this.#offset = this.config.setOffset(this.viewport)
@@ -249,9 +245,10 @@ export class Core {
         this.maxScroll = -(this.viewport.totalWidth - this.#offset)
       }
     } else {
-      const denominator = this.config.vertical
-        ? this.viewport.itemHeight || 1
-        : this.viewport.itemWidth || 1
+      const denominator =
+        (this.config.vertical
+          ? this.viewport.itemHeight
+          : this.viewport.itemWidth) + this.gapSize || 1
       const total = this.config.vertical
         ? this.viewport.totalHeight
         : this.viewport.totalWidth
@@ -298,8 +295,6 @@ export class Core {
         this.scrollDirection = deltaX > deltaY ? "horizontal" : "vertical"
       }
 
-      // For vertical slider, always allow vertical scrolling
-      // For horizontal slider, only allow horizontal scrolling
       const shouldHandle = this.config.vertical
         ? this.scrollDirection === "vertical"
         : this.scrollDirection === "horizontal"
@@ -333,8 +328,6 @@ export class Core {
     })
     resizeObserver.observe(this.wrapper)
   }
-
-  /** Events */
 
   #calculateBounds(newTarget: number): number {
     if (!this.config.infinite) {
@@ -370,7 +363,6 @@ export class Core {
           const deltaX = Math.abs(event.deltaX)
 
           if (deltaY < SCROLL_THRESHOLD && deltaX < SCROLL_THRESHOLD) return
-          // For vertical slider, allow vertical scrolling; for horizontal, only horizontal
           if (this.config.vertical) {
             if (deltaX > deltaY) return
           } else {
@@ -433,15 +425,12 @@ export class Core {
 
     this.target = this.#calculateBounds(newTarget)
 
-    // Calculate movement for both mouse and touch events
     if ("movementX" in event) {
-      // Mouse event - use movementX/movementY property
       const movement = this.config.vertical
         ? (event as MouseEvent).movementY
         : (event as MouseEvent).movementX
       this.speed += movement * 0.01
     } else {
-      // Touch event - calculate movement using tracked previous position
       const current = this.config.vertical ? event.clientY : event.clientX
       const previous = this.config.vertical
         ? this.touchPreviousY || current
@@ -483,7 +472,6 @@ export class Core {
     }
   }
 
-  /** Update */
   update(): void {
     if (!this.isVisible || !this.#isActive) return
 
@@ -491,13 +479,9 @@ export class Core {
     this.deltaTime = (currentTime - this.#previousTime) / 1000
     this.#previousTime = currentTime
 
-    // While an external driver owns the position (see `scrollTo`), skip the damp
-    // and the snap correction entirely so nothing fights it for control.
     if (this.#driven) {
-      // Position is set directly; only the render below needs to run.
     } else {
       if (this.config.snap && !this.isDragging) {
-        // Frame-rate corrected so the settle matches on 60Hz and 120Hz.
         const strength =
           1 - Math.pow(1 - this.config.snapStrength, this.deltaTime * 60)
         if (this.config.variableWidth) {
@@ -562,8 +546,8 @@ export class Core {
   #updateFinite(): void {
     this.parallaxValues = this.items.map((item, i) => {
       const translate = this.config.vertical
-        ? this.current * this.viewport.itemHeight
-        : this.current * this.viewport.itemWidth
+        ? this.current * (this.viewport.itemHeight + this.gapSize)
+        : this.current * (this.viewport.itemWidth + this.gapSize)
       const transform = this.config.vertical
         ? `translateY(${translate}px)`
         : `translateX(${translate}px)`
@@ -578,9 +562,10 @@ export class Core {
       const unitPos = this.current + i
       const x = symmetricMod(unitPos, this.items.length) - i
 
-      const itemSize = this.config.vertical
-        ? this.viewport.itemHeight
-        : this.viewport.itemWidth
+      const itemSize =
+        (this.config.vertical
+          ? this.viewport.itemHeight
+          : this.viewport.itemWidth) + this.gapSize
       const translate = x * itemSize
       const transform = this.config.vertical
         ? `translateY(${translate}px)`
@@ -720,21 +705,10 @@ export class Core {
     this.speed *= this.config.speedDecay
   }
 
-  /**
-   * Send `current` to `to` on an eased curve. In infinite mode the destination is
-   * rebased to the wrap nearest the current position, so the strip takes the
-   * short way round instead of unwinding the whole loop.
-   */
-  /** Current scroll position, in this slider's own units. */
   get scroll(): number {
     return this.current
   }
 
-  /**
-   * Resolve the scroll position that puts `index` in the centre slot. In
-   * infinite mode this picks the wrap nearest the current position, so callers
-   * can step by a signed delta and always take the short way round.
-   */
   scrollForIndex(index: number): number {
     if (this.config.variableWidth) {
       const clamped = this.config.infinite
@@ -745,18 +719,12 @@ export class Core {
     return -index
   }
 
-  /**
-   * Drive the slider to an absolute position, bypassing the damp. Lets an
-   * outside animation own the motion — which is how two sliders stay in lockstep:
-   * one tween writes both, in the same frame, from the same eased value.
-   */
   scrollTo(position: number): void {
     this.#driven = true
     this.current = position
     this.target = position
   }
 
-  /** Hand the position back to the internal damp (drag, wheel, snap). */
   releaseScroll(): void {
     if (!this.#driven) return
     this.#driven = false
@@ -862,7 +830,6 @@ export class Core {
     }
   }
 
-  /** Interfaces */
   kill(): void {
     this.#isActive = false
 
@@ -922,12 +889,9 @@ export class Core {
   }
 
   resize(): void {
-    // Positions are in pixels, so a resize invalidates whatever an external
-    // driver had. Take back control and settle on the recomputed geometry.
     this.releaseScroll()
     this.#setupViewport()
 
-    // Re-center current slide for variable width non-infinite sliders
     if (
       this.config.variableWidth &&
       !this.config.infinite &&
@@ -936,13 +900,11 @@ export class Core {
       const currentIndex = this.currentSlide
       const snapTarget = this.#getSnapTargetForIndex(currentIndex)
       this.target = snapTarget
-      // Only update current if we're already snapped (close to target)
       if (Math.abs(this.current - this.target) < 1) {
         this.current = snapTarget
       }
     }
 
-    // Force a single update, bypassing visibility check
     const wasActive = this.#isActive
     const wasVisible = this.isVisible
 
@@ -957,23 +919,3 @@ export class Core {
 
 export default Core
 
-// ////////////////////////////////////////
-
-/*
-- [ ] ...
-
-    
-*/
-
-/*
-TODO
-
-(*) ADD WEBGL VALUE UTILS
-(/fslider.ts)
-
-  const x =
-    symmetricMod(this.current, this.items.length) *
-    this.viewport.itemWidth *
-    Gl.vp.px
-
-*/

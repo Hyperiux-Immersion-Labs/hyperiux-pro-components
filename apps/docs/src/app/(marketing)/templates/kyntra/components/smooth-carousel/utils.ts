@@ -1,4 +1,4 @@
-
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
 export function lerp(v0: number, v1: number, t: number): number {
   return v0 * (1 - t) + v1 * t

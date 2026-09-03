@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -15,14 +16,11 @@ import { prefersReducedMotion } from "./Animations/reducedMotion";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 
-// Matches EnquiryModal, which is a plain CSS transition: `duration-300` with
-// Tailwind's default timing function. Same curve and length both ways, so the
-// panel leaves exactly the way it arrived.
+// Matches EnquiryModal's curve and length
 const SLIDE_DURATION = 0.5;
-// Tailwind's default transition timing function, as a GSAP ease.
+// Tailwind's default easing as GSAP ease
 const EASE = CustomEase.create("downloadAppModalEase", "0.4,0,0.2,1");
-// The content fades in behind the panel's arrival: it starts partway through
-// the slide so the two overlap rather than running end to end.
+// Content overlaps the panel's slide
 const CONTENT_DURATION = 0.5;
 const CONTENT_STAGGER = 0.09;
 const CONTENT_START = SLIDE_DURATION * 0.45;
@@ -32,18 +30,13 @@ const SCRIM = "rgba(0,0,0,0.4)";
 const SCRIM_CLEAR = "rgba(0,0,0,0)";
 
 export interface DownloadAppModalProps {
-  /** Drives the modal. The component keeps itself mounted while it animates out. */
+  /** Stays mounted while animating out */
   open: boolean;
   onClose: () => void;
   ariaLabel?: string;
 }
 
-/**
- * QR panel for the CTA's "Download Kyntra App" button: a full-height white
- * panel that slides in from the right edge. Once it is on its way in, the QR
- * image and copy fade up in a short stagger; closing slides the panel back out
- * with its content still on it.
- */
+/** Sliding QR panel for the CTA */
 const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
   open,
   onClose,
@@ -57,14 +50,10 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
   const contentRef = useRef<HTMLDivElement | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
-  // `closing` keeps the panel mounted past `open` so the exit timeline can
-  // run; its onComplete clears it, so the unmount follows the tweens rather
-  // than a hand-synced timer.
+  // Keeps panel mounted for the exit
   const [closing, setClosing] = useState(false);
 
-  // Adjusting state during render on a prop change - React's documented
-  // alternative to a syncing effect, and it avoids a frame where the panel has
-  // already unmounted before the exit plays.
+  // Adjust during render, not an effect
   const [prevOpen, setPrevOpen] = useState(open);
   if (prevOpen !== open) {
     setPrevOpen(open);
@@ -81,17 +70,15 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
       const content = contentRef.current;
       if (!overlay || !panel || !closeBtn || !content) return;
 
-      // The QR image and each line of copy, in DOM order.
+      // QR image and copy, DOM order
       const contentItems = gsap.utils.toArray<HTMLElement>(
         content.querySelectorAll("[data-modal-item]"),
       );
 
-      // Supersede any in-flight timeline so a fast toggle animates from
-      // wherever the panel currently sits rather than snapping.
+      // Supersede any in-flight timeline
       timelineRef.current?.kill();
 
-      // The button only ever fades, so make sure no stray transform is left on
-      // it - it sits on the overlay and must not drift with the panel.
+      // Clear stray transforms; it only fades
       gsap.set(closeBtn, { xPercent: 0, x: 0 });
 
       if (prefersReducedMotion()) {
@@ -104,8 +91,7 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
       }
 
       if (open) {
-        // Hide the content up front rather than leaving it to the timeline's
-        // first tick, which would let it paint at full opacity for a frame.
+        // Hide up front; avoids flash frame
         gsap.set(contentItems, { opacity: 0, y: CONTENT_SHIFT });
 
         const tl = gsap.timeline({
@@ -113,9 +99,7 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
         });
         timelineRef.current = tl;
 
-        // Panel and scrim move together on one curve, with the close button
-        // fading on the same curve. The panel's content then fades up in a
-        // stagger that overlaps the tail of the slide.
+        // Panel and scrim share one curve
         tl.fromTo(
           overlay,
           { backgroundColor: SCRIM_CLEAR },
@@ -145,7 +129,7 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
       });
       timelineRef.current = tl;
 
-      // The opening move played backwards - same curve, same length.
+      // The opening move, reversed
       tl.to(panel, { xPercent: 100 }, 0)
         .to(closeBtn, { opacity: 0 }, 0)
         .to(overlay, { backgroundColor: SCRIM_CLEAR }, 0);
@@ -153,7 +137,7 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
     { dependencies: [open, mounted], scope: overlayRef },
   );
 
-  // Lock page scroll and listen for Escape only while the modal is on screen.
+  // Lock scroll, listen for Escape
   useEffect(() => {
     if (!mounted) return;
 
@@ -194,17 +178,13 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
       aria-label={ariaLabel}
       onMouseDown={handleBackdrop}
     >
-      {/* Sits outside the panel, centred on the viewport height and riding
-          just off the panel's left edge. The right offsets mirror the panel
-          widths below so it tracks the edge at every breakpoint. */}
+      {/* Centred, tracks the panel edge */}
       <button
         ref={closeBtnRef}
         type="button"
         aria-label="Close"
         onClick={onClose}
-        // GSAP owns this element's transform, so the centring offsets are
-        // margins rather than translate utilities it would overwrite. The
-        // right offsets mirror the panel widths so it tracks the panel edge.
+        // Margins; GSAP owns the transform
         className="group absolute top-1/2 right-[38vw] z-10 mt-[-1.6vw] mr-[-1.6vw] flex size-[4vw] items-center justify-center rounded-full bg-white text-black shadow-[0_2px_12px_rgba(0,0,0,0.18)] max-[1025px]:right-[62vw] max-[1025px]:mt-[-4vw] max-[1025px]:mr-[-4vw] max-[1025px]:h-[8vw] max-[1025px]:w-[8vw] max-md:right-[88vw] max-md:mt-[-5.5vw] max-md:mr-[-5.5vw] max-md:h-[11vw] max-md:w-[11vw]"
       >
         <X
@@ -213,7 +193,7 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
         />
       </button>
 
-      {/* Full-height panel pinned to the right edge. */}
+      {/* Full-height panel, right edge */}
       <div
         ref={panelRef}
         className="relative flex h-full p-3 w-[36vw] flex-col bg-white will-change-transform max-[1025px]:w-[62vw] max-md:w-[88vw]"
@@ -228,8 +208,7 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
           />
 
           <div className="flex flex-col items-center gap-[1.2vw] pt-[8vh] w-[85%] mx-auto text-center max-[1025px]:gap-[2vw] max-[1025px]:px-[5vw] max-[1025px]:py-[4vw] max-md:gap-[3vw] max-md:px-[7vw] max-md:py-[6vw]">
-            {/* text-30 / text-20 carry their own tablet and phone steps, so no
-                per-breakpoint font-size overrides here. */}
+            {/* Type scale carries its own steps */}
             <h3
               data-modal-item
               className="font-helvetica-neue text-44 leading-[1.15] font-medium! tracking-[-0.02em] text-black "

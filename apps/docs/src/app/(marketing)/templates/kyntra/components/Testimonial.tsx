@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import {
@@ -17,7 +18,7 @@ import SmoothInfiniteCarousel, {
 } from "./smooth-carousel/SmoothInfiniteCarousel";
 import CarouselNavButtons from "./Buttons/NavButtons";
 
-import sarah from "../assets/testimonial/sarah.png";
+import sarah from "../assets/testimonial/sarah.jpg";
 import james from "../assets/testimonial/james.jpg";
 import priya from "../assets/testimonial/priya.jpg";
 import daniel from "../assets/testimonial/daniel.jpg";
@@ -75,10 +76,8 @@ const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-
 const SHIFT_DURATION = 0.9;
 const SHIFT_EASE = "power3.inOut";
-
 
 const IMAGE_HIDDEN_CLIP = "inset(50%)";
 const IMAGE_VISIBLE_CLIP = "inset(0%)";
@@ -104,7 +103,7 @@ const BLEED_VARS = {
   "--exp-bleed-mobile": bleed(26, 3),
 } as CSSProperties;
 
-/** Longest quote, used as an invisible spacer so the card height never jumps. */
+/** Invisible spacer, fixes card height */
 const LONGEST_QUOTE = TESTIMONIALS.reduce(
   (longest, t) => (t.quote.length > longest.length ? t.quote : longest),
   "",
@@ -118,10 +117,8 @@ const STRIP = Array.from(
 const Testimonial = () => {
   const stripRef = useRef<KeyboardSlider | null>(null);
 
-
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
-
 
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const textRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -139,7 +136,7 @@ const Testimonial = () => {
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stripShiftRef = useRef<HTMLDivElement | null>(null);
 
-  // The single tween both sliders read from.
+  // One tween drives both sliders
   const shiftRef = useRef<gsap.core.Tween | null>(null);
   const progress = useRef({ t: 0 });
 
@@ -160,7 +157,6 @@ const Testimonial = () => {
     cardTweens.current.forEach((tween) => tween.kill());
     cardTweens.current = [];
 
-    // Reduced motion
     if (opts?.immediate || reducedRef.current) {
       textRefs.current.forEach((el, i) => {
         if (el) gsap.set(el, { autoAlpha: i === idx ? 1 : 0 });
@@ -195,12 +191,7 @@ const Testimonial = () => {
       );
     }
 
-    // Text: only ever one visible block.
-    //
-    // Killing the tweens above can leave a card stranded part-way through its
-    // fade. Anything that is not the outgoing or incoming card is therefore
-    // cut to 0 immediately - that is the case that used to read as overlapping
-    // quotes when slide changes arrived faster than TEXT_FADE_DURATION.
+    // Cut stranded cards; quotes never overlap
     textRefs.current.forEach((el, i) => {
       if (!el || i === idx) return;
       if (i === fromIdx) {
@@ -222,8 +213,7 @@ const Testimonial = () => {
     });
 
     if (nextText) {
-      // Held hidden until the outgoing quote has cleared, so the two are never
-      // legible at the same time.
+      // Hidden until outgoing quote clears
       gsap.set(nextText, { autoAlpha: 0 });
       cardTweens.current.push(
         gsap.to(nextText, {
@@ -267,7 +257,6 @@ const Testimonial = () => {
       });
     }
 
-
     transitionCard(activeRef.current, activeRef.current, { immediate: true });
 
     return () => {
@@ -302,13 +291,11 @@ const Testimonial = () => {
     shiftEl.style.transform = `translateX(${-half}px)`;
   }, []);
 
-
   const goTo = useCallback(
     (idx: number, opts?: { immediate?: boolean; stripSettled?: boolean }) => {
       const clamped = ((idx % count) + count) % count;
       const strip = stripRef.current;
       if (!strip) return;
-
 
       if (shiftRef.current && !opts?.immediate && !opts?.stripSettled) return;
 
@@ -316,7 +303,6 @@ const Testimonial = () => {
       if (clamped === from && !opts?.immediate) return;
       activeRef.current = clamped;
       setActive(clamped);
-
 
       let delta = clamped - from;
       if (delta > count / 2) delta -= count;
@@ -370,8 +356,6 @@ const Testimonial = () => {
 
   const go = (dir: 1 | -1) => goTo(activeRef.current + dir);
 
-
-
   const handleStripSettle = useCallback(
     (current: number) => {
       if (shiftRef.current) return;
@@ -384,7 +368,6 @@ const Testimonial = () => {
     },
     [count, goTo],
   );
-
 
   const stripConfig = useMemo(
     () => ({
@@ -400,7 +383,7 @@ const Testimonial = () => {
   );
 
   return (
-    <section className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[20%]">
+    <section id="stories" className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[20%]">
       <div className="pl-[5%] max-[1025px]:px-[7%] ">
         <FocusTextWrap>
           <h2 className="font-helvetica-neue w-[45vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-[82%] max-[1025px]:text-[6vw] max-md:text-[9vw]">
@@ -499,7 +482,7 @@ const Testimonial = () => {
           </div>
         </FadeUp>
 
-        {/* Right: the infinite thumbnail strip. */}
+        {/* Infinite thumbnail strip */}
         <div className="flex w-full flex-col items-end gap-[2vw] max-[1025px]:items-start">
           <div className="pr-[7vw] max-[1025px]:pr-0">
             <CarouselNavButtons onPrev={() => go(-1)} onNext={() => go(1)} />
@@ -572,6 +555,5 @@ const Testimonial = () => {
     </section>
   );
 };
-
 
 export default Testimonial;

@@ -1,34 +1,6 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
 "use client";
-
-/**
- *
- * fields: FieldConfig[]
- * Array that drives EVERY form field. Each object can be:
- *
-
- * onSubmit: async (data: Record<string, any>) => void
- * Called with the collected form data when validation passes.
- * Should throw on failure so the form can show the error banner.
- *
- * submitLabel?: string (default"Submit")
- * loadingLabel?: string (default"Sending...")
- * successMessage?: string (default" Form submitted successfully!")
- * errorMessage?: string (default" Error sending message. Please try again.")
- *
- * schema?: ZodType
- * Optional Zod schema for the whole form. When provided it becomes the
- * source of truth for validation and its messages are mapped back onto
- * fields by name (schema key === field.name). The built-in checks below
- * are used only when no schema is supplied.
- *
- * Built-in validation (fallback when no `schema` is passed)
- * - required fields checked automatically
- * - email fields validated with regex
- * - phone fields validated for minimum length
- * - Each field can supply its own `validate(value) => string | undefined`
-
- */
 
 import React, { useState, useCallback, useId, useRef, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import type { ZodType } from "zod";
@@ -39,7 +11,6 @@ import PhoneInput from "./PhoneInput";
 import Checkbox from "./Checkbox";
 import CharStaggerPrimaryButton from "../char-stagger-primary-button";
 import { FadeUp } from "../../Animations/gsapAnim";
-
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -93,7 +64,6 @@ export interface ContactFormProps {
   duration?: number;
 }
 
-// component
 export default function ContactForm({
  fields = [],
  onSubmit,
@@ -118,7 +88,6 @@ export default function ContactForm({
  const uid = useId().replace(/:/g, "");
  const sectionId = `contact-form-${uid}`;
 
- // ── value helpers ──
  const setValue = useCallback((name: string, value: any) => {
  setValues((prev) => ({ ...prev, [name]: value }));
  }, []);
@@ -132,13 +101,12 @@ export default function ContactForm({
  });
  }, []);
 
- // ── per-field validation ──
  const validateField = useCallback(
  (field: FieldConfig, value: any) => {
- // Run built-in checks first
+ // Built-in checks first
  const builtIn = defaultValidate(field, value);
  if (builtIn) return builtIn;
- // Then custom validator
+ // Then the custom validator
  if (field.validate) return field.validate(value);
  return undefined;
  },
@@ -170,7 +138,6 @@ export default function ContactForm({
  return { valid: Object.keys(newErrors).length === 0, data: values };
  }, [fields, values, validateField, schema]);
 
-
  const handleSubmit = useCallback(
  async (e: FormEvent<HTMLFormElement>) => {
  e.preventDefault();
@@ -195,7 +162,6 @@ export default function ContactForm({
  [fields, validateAll, onSubmit]
  );
 
- // ── render field ──
  const renderField = (field: FieldConfig) => {
  const { name, type, label, options, rows, defaultCountry } = field;
  const value = values[name];
@@ -258,7 +224,6 @@ export default function ContactForm({
  />
  );
 
- // text | email | url | number | password |
  default:
  return (
  <Input
@@ -302,10 +267,7 @@ export default function ContactForm({
    transition-duration: var(--form-duration);
  }
  `}</style>
- {/* One fade for the whole form. Per-field stagger used to leave each
-     wrapper at a fractional opacity mid-tween, which switches off the
-     frosted `backdrop-filter` on the inputs inside it - so the blur only
-     appeared once the field had finished animating. */}
+ {/* One fade for the whole form */}
  <FadeUp className="w-full">
  <div className="w-full flex flex-col gap-[2vw]">
  <form
@@ -314,9 +276,7 @@ export default function ContactForm({
  onSubmit={handleSubmit}
  >
  {fields.map((field, index) => (
- // Plain wrapper: the whole form shares one fade (see the FadeUp above),
- // so nothing here animates on its own. The stacking order is still needed
- // for the select's dropdown to sit over the fields below it.
+ // Stacking order only; form fades once
  <div
  key={field.name}
  className="relative"
@@ -327,8 +287,7 @@ export default function ContactForm({
  ))}
 
  <div className="relative flex items-center justify-start pt-[0.8vw] max-[1025px]:pt-[3vw]" style={{ zIndex: 0 }}>
- {/* The stagger button renders an <a>, so it can't submit on its own -
-     it clicks this hidden native submit to keep the normal form flow. */}
+ {/* Renders an anchor; cannot self-submit */}
  <button ref={submitRef} type="submit" className="hidden" aria-hidden="true" tabIndex={-1} />
  <CharStaggerPrimaryButton
  text={isLoading ? loadingLabel : submitLabel}

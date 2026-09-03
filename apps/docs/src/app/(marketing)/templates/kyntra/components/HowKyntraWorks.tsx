@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -74,14 +75,13 @@ export default function HowKyntraWorks() {
         return;
       }
 
-      // One scrubbed timeline draws each line segment and slides its dot down.
+      // One scrubbed timeline draws the line
       const masterTL = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "10% 55%",
           end: "90% 70%",
           scrub: 0.4,
-          // markers: true,
         },
       });
 
@@ -113,7 +113,7 @@ export default function HowKyntraWorks() {
         }
       });
 
-      // Each step fades up and its heading shifts from black to brand blue.
+      // Each step fades up, heading blues
       stepRefs.current.forEach((step) => {
         const heading = step.querySelector<HTMLHeadingElement>(".step-title");
         const scrollTrigger = {
@@ -121,7 +121,6 @@ export default function HowKyntraWorks() {
           start: "top 65%",
           end: "top 45%",
           scrub: 0.2,
-          // markers:true,
         };
 
         gsap.fromTo(
@@ -145,6 +144,7 @@ export default function HowKyntraWorks() {
 
   return (
     <section
+      id="how-it-works"
       ref={sectionRef}
       className="kyntra-container relative w-full bg-white text-black"
     >
@@ -213,7 +213,6 @@ function TimelineConnector({
 }) {
   return (
     <svg width="20" height={LINE_HEIGHT} className="overflow-visible">
-      {/* Track */}
       <line
         x1="10"
         y1="0"
@@ -222,7 +221,7 @@ function TimelineConnector({
         stroke="#D1D5DB"
         strokeWidth="1"
       />
-      {/* Progress fill, drawn by the scroll timeline */}
+      {/* Progress fill, drawn on scroll */}
       <line
         ref={addLineRef}
         x1="10"
@@ -232,7 +231,7 @@ function TimelineConnector({
         stroke={KYNTRA_PRIMARY}
         strokeWidth="1"
       />
-      {/* Dot that travels down the line */}
+      {/* Dot travels down the line */}
       <circle
         ref={addDotRef}
         cx="10"

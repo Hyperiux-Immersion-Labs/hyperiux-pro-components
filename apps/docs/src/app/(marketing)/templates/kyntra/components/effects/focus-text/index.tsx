@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -10,10 +12,7 @@ gsap.registerPlugin(ScrollTrigger, CustomEase);
 const FOCUS_EASE = CustomEase.create("focusTextEase", "0.16,1,0.3,1");
 
 interface FocusTextProps {
-  /**
-   * Element the text renders as. Defaults to "p" so the component never
-   * injects a heading level into a page that already has its own.
-   */
+  /** Element to render as, default p */
   as?: keyof React.JSX.IntrinsicElements;
   text?: string;
   className?: string;
@@ -57,10 +56,7 @@ export default function FocusText({
   textColor = "#ffffff",
   showReplayButton = true,
 }: FocusTextProps) {
-  // Rendering the `as` union directly makes TS intersect the props of every
-  // intrinsic element, so className/style resolve to `never`. Narrowing to a
-  // single element component keeps the prop flexible for callers while giving
-  // the JSX below one concrete, well-typed signature.
+  // Narrowed to keep props typed
   const Tag = as as React.ElementType<React.HTMLAttributes<HTMLElement>>;
 
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -119,13 +115,11 @@ export default function FocusText({
       );
       if (!characters.length) return;
 
-      // The heading renders at opacity 0 to avoid a flash of unstyled
-      // characters before GSAP applies the from-state.
+      // Opacity 0 avoids a flash
       gsap.set(section.querySelector("[data-focus-heading]"), { opacity: 1 });
 
       if (prefersReducedMotion) {
-        // No scale, no blur, no per-character stagger, no loop and never
-        // tied to scroll position - just a short fade to the final state.
+        // Reduced motion: short fade only
         tweenRef.current = gsap.fromTo(
           characters,
           { opacity: 0 },
@@ -155,8 +149,7 @@ export default function FocusText({
           duration: effectiveRevealDuration,
           stagger: characterStagger,
           ease: FOCUS_EASE,
-          // Scrubbing hands playback to the scroll position, so looping and
-          // the hold between cycles no longer apply.
+          // Scrubbing overrides loop and hold
           repeat: !scrub && loop ? -1 : 0,
           repeatDelay: holdDuration,
           onStart: () => setIsPlaying(true),

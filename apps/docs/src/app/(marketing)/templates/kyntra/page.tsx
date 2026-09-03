@@ -1,6 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 import "./kyntra-styles.css";
 import type { Metadata } from "next";
-import ogImage from "./assets/kyntra-og.png";
+import ogImage from "./assets/kyntra-og.jpg";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import About from "./components/About";

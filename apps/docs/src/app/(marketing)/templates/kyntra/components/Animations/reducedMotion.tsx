@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from "react";
 
-/** One-shot read, for imperative code (GSAP setup, event handlers). */
+/** One-shot read for imperative code */
 export function prefersReducedMotion() {
   return (
     typeof window !== "undefined" &&
@@ -12,7 +12,7 @@ export function prefersReducedMotion() {
   );
 }
 
-/** Reactive read, for components that must re-render when the setting flips. */
+/** Reactive read, re-renders on change */
 export function usePrefersReducedMotion() {
   const [reducedMotion, setReducedMotion] = useState(false);
 

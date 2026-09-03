@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useRef, type ComponentPropsWithoutRef, type MouseEvent } from "react";
@@ -11,7 +13,7 @@ gsap.registerPlugin(useGSAP, SplitText, ScrollToPlugin);
 
 type PrimaryButtonProps = {
   text: string;
-  /** Extra classes for the sliding background pill. */
+  /** Classes for the sliding pill */
   background?: string;
   className?: string;
   href?: string;
@@ -63,7 +65,7 @@ const PrimaryButton = ({
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     parentOnClick?.(event);
 
-    // Smooth-scroll to same-page hash targets (ignore a bare "#").
+    // Smooth-scroll to hash targets
     if (typeof href === "string" && href.startsWith("#") && href.length > 1) {
       event.preventDefault();
 

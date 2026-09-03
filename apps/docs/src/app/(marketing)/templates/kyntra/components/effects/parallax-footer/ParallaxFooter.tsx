@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
@@ -19,10 +21,7 @@ const FooterParallax = ({
 }: FooterParallaxProps) => {
  const footerRef = useRef<HTMLElement | null>(null);
  const [height, setHeight] = useState(1);
- // The reveal pins the footer to the viewport bottom and lets the page scroll
- // over it. That only works while the footer is shorter than the viewport -
- // below the breakpoint it is taller, so the top would be permanently cut off.
- // There it renders as a normal block instead.
+ // Pins only when shorter than viewport
  const [parallax, setParallax] = useState(true);
 
  useEffect(() => {

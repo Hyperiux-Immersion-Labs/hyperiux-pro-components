@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -12,11 +13,11 @@ import SmoothInfiniteCarousel, {
 import CarouselNavButtons from "./Buttons/NavButtons";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import CharStaggerButton from "./effects/char-stagger-button";
-import blog1 from "../assets/blogs/blog1.png";
+import blog1 from "../assets/blogs/blog1.jpg";
 import blog2 from "../assets/blogs/blog2.png";
-import blog3 from "../assets/blogs/blog3.png";
-import blog4 from "../assets/blogs/blog4.png";
-import blog5 from "../assets/blogs/blog5.png";
+import blog3 from "../assets/blogs/blog3.jpg";
+import blog4 from "../assets/blogs/blog4.jpg";
+import blog5 from "../assets/blogs/blog5.jpg";
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
@@ -65,7 +66,7 @@ const ARTICLES: Article[] = [
   },
 ];
 
-/** Rate the hover overlay reverses at. 1 keeps leaving and entering symmetric. */
+/** Rate the hover overlay reverses */
 const LEAVE_SCALE = 1.5;
 
 const ArticleCard = ({ article }: { article: Article }) => {
@@ -87,9 +88,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
       gsap.set(panel, { yPercent: 100 });
       gsap.set(content, { autoAlpha: 0, y: 16 });
 
-      // One timeline owns the whole overlay — panel, copy and the photo's
-      // push-in — so the three can never drift apart the way the panel and a
-      // separate CSS transition on the image did.
+      // One timeline keeps all three synced
       const tl = gsap.timeline({
         paused: true,
         defaults: { ease: "power2.out", overwrite: "auto" },
@@ -98,8 +97,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
       tl.to(panel, {
         yPercent: 0,
         duration: reduced ? 0 : 0.75,
-        // Symmetric on purpose: an `out` curve reverses into an `in` one,
-        // which parks the panel and then whips it away at the very end.
+        // Symmetric: same curve both ways
         ease: "power2.out",
       });
 
@@ -111,8 +109,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
         );
       }
 
-      // Overlapped rather than sequential: the copy starts rising while the
-      // panel is still travelling, so the two read as one movement.
+      // Copy rises as panel still travels
       tl.to(
         content,
         {
@@ -129,7 +126,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
     { scope: cardRef },
   );
 
-  // The overlay leaves exactly as it arrives — same curve, same duration.
+  // Leaves exactly as it arrives
   const handleEnter = () => tlRef.current?.timeScale(1).play();
   const handleLeave = () => tlRef.current?.timeScale(LEAVE_SCALE).reverse();
 
@@ -146,12 +143,13 @@ const ArticleCard = ({ article }: { article: Article }) => {
         src={article.image}
         alt={article.title}
         fill
+        quality={95}
         draggable={false}
         sizes="(max-width: 768px) 82vw, (max-width: 1024px) 42vw, 24vw"
         className="object-cover rounded-lg overflow-hidden"
       />
 
-      {/* Blurred panel: slides up on hover, then its content fades in. */}
+      {/* Blurred panel, slides up on hover */}
       <div
         ref={panelRef}
         className="absolute inset-x-0 bottom-0 rounded-t-lg  bg-black/40 px-[1.8vw] py-[1.6vw] backdrop-blur-md max-md:px-[6vw] max-md:py-[6vw]"
@@ -205,23 +203,43 @@ const Blogs = () => {
 
       const mm = gsap.matchMedia();
 
-      mm.add("(min-width: 1026px)", () => {
-        gsap.set(wrapper, { xPercent: 30, opacity: 0 });
+      mm.add(
+        "(min-width: 1026px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          gsap.set(wrapper, { xPercent: 30, opacity: 0 });
 
-        gsap.to(wrapper, {
-          xPercent: 0,
-          opacity: 1,
-          duration: 1.8,
-          ease: "power4.out",
-          scrollTrigger: trigger,
-          onComplete: () => {
-            gsap.set(wrapper, { clearProps: "opacity,transform" });
-          },
-        });
-      });
+          gsap.to(wrapper, {
+            xPercent: 0,
+            opacity: 1,
+            duration: 1.8,
+            ease: "power4.out",
+            scrollTrigger: trigger,
+            onComplete: () => {
+              gsap.set(wrapper, { clearProps: "opacity,transform" });
+            },
+          });
+        },
+      );
 
-      // The strip runs off the right edge on narrow screens, so sliding it in
-      // reads as a horizontal jolt rather than a reveal. Fade instead.
+      // Reduced motion: fade, no travel
+      mm.add(
+        "(min-width: 1026px) and (prefers-reduced-motion: reduce)",
+        () => {
+          gsap.set(wrapper, { xPercent: 0, opacity: 0 });
+
+          gsap.to(wrapper, {
+            opacity: 1,
+            duration: 1,
+            ease: "power2.out",
+            scrollTrigger: trigger,
+            onComplete: () => {
+              gsap.set(wrapper, { clearProps: "opacity,transform" });
+            },
+          });
+        },
+      );
+
+      // Fade on narrow screens, not slide
       mm.add("(max-width: 1025px)", () => {
         gsap.set(wrapper, { xPercent: 0, opacity: 0 });
 
@@ -246,9 +264,8 @@ const Blogs = () => {
       if (!slider) return;
 
       const { target, maxScroll } = slider;
-      // A pixel of slack: `target` eases toward its bound and lands fractions
-      // short, which would otherwise leave a button live at the very end.
-      const EPS = 1;
+      // target in item units, not pixels
+      const EPS = 0.02;
       setAtStart(target >= -EPS);
       setAtEnd(maxScroll >= -EPS ? true : target <= maxScroll + EPS);
     };
@@ -262,34 +279,31 @@ const Blogs = () => {
     () => ({
       infinite: false,
       snap: false,
-      // Drag and the nav buttons only — the wheel/trackpad must not move the
-      // strip while the page scrolls past this section.
+      // Drag and nav buttons only
       wheelInput: false,
-      setOffset: ({ wrapperWidth }: { wrapperWidth: number }) => {
-        const wrapperEl = sliderRef.current?.wrapper;
-        if (!wrapperEl) return wrapperWidth;
-
-        const cs = getComputedStyle(wrapperEl);
+      // Wrapper content box; core counts gaps
+      setOffset: ({
+        wrapperWidth,
+        wrapper,
+      }: {
+        wrapperWidth: number;
+        wrapper: HTMLElement;
+      }) => {
+        // From viewport; ref is null here
+        const cs = getComputedStyle(wrapper);
         const paddingLeft = parseFloat(cs.paddingLeft || "0");
         const paddingRight = parseFloat(cs.paddingRight || "0");
-        const gap = parseFloat(cs.columnGap || "0");
-        const itemCount = wrapperEl.children.length;
 
-        return (
-          wrapperWidth -
-          paddingRight -
-          paddingLeft -
-          Math.max(0, itemCount - 1) * gap
-        );
+        return wrapperWidth - paddingRight - paddingLeft;
       },
     }),
     [],
   );
 
   return (
-    <section className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[10%]">
+    <section id="resources" className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[10%]">
       <div className="px-[5%] max-[1025px]:px-[7%]">
-        {/* Heading + copy */}
+        {/* Heading and copy */}
         <FocusTextWrap>
           <h2 className="font-helvetica-neue w-[55vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-full max-[1025px]:text-[6vw] max-md:text-[9vw]">
             Notes from People Who Spend their Days Inside Homes
@@ -312,7 +326,7 @@ const Blogs = () => {
               href="#"
               hoverColor="#ffffff"
               showArrow
-              className="w-fit rounded-full bg-[#134BD6] px-[1.8vw] py-[0.7vw] text-white max-[1025px]:px-20 max-[1025px]:py-5"
+              className="w-fit rounded-full max-[1025px]:mb-7 bg-[#134BD6] px-[1.8vw] py-[0.7vw] text-white max-[1025px]:px-20 max-[1025px]:py-5"
               textClassName=" text-22 tracking-tight max-[1025px]:text-[2.4vw] max-md:text-[3.6vw]"
               iconClassName="text-white"
             />
@@ -344,10 +358,6 @@ const Blogs = () => {
               <ArticleCard key={article.title} article={article} />
             ))}
           </SmoothInfiniteCarousel>
-          {/* <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[20vw] bg-linear-to-r from-white  to-transparent  max-[1025px]:hidden"
-          /> */}
         </div>
       </div>
     </section>

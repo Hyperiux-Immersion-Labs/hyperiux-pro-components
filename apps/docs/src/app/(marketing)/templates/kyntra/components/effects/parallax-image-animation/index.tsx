@@ -1,15 +1,16 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import gsap from "gsap";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import { prefersReducedMotion } from "@/lib/motion";
+import { prefersReducedMotion } from "../../Animations/reducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Reduced motion: keep the parallax, just much weaker - "reduce", not
-// remove. Applies to both the translateY shift and the optional scale range.
+// Reduced motion: weaker, not removed
 const REDUCED_MOTION_FACTOR = 0.25;
 const DEFAULT_SRC =
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg";

@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useEffect, useRef, useState, useCallback, type ComponentPropsWithoutRef, type ComponentType, type MouseEvent, type MouseEventHandler, type ReactNode } from "react";
@@ -10,7 +12,7 @@ const DEFAULT_STAGGER_STEP = 0.006;
 const DEFAULT_HOVER_COLOR = "#ff6b00";
 const CHAR_TRANSLATE_Y = "1.3em";
 
-export interface CharStaggerButtonOwnProps {
+export interface CharStaggerPrimaryButtonOwnProps {
   text?: string;
   href?: string;
   className?: string;
@@ -28,9 +30,9 @@ export interface CharStaggerButtonOwnProps {
   onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-export type CharStaggerButtonProps = CharStaggerButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, 'href' | 'onClick' | keyof CharStaggerButtonOwnProps>;
+export type CharStaggerPrimaryButtonProps = CharStaggerPrimaryButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, 'href' | 'onClick' | keyof CharStaggerPrimaryButtonOwnProps>;
 
-export default function CharStaggerButton({
+export default function CharStaggerPrimaryButton({
   text = DEFAULT_TEXT,
   href = DEFAULT_HREF,
   className = "",
@@ -47,18 +49,15 @@ export default function CharStaggerButton({
   iconClassName = "",
   onClick,
   ...props
-}: CharStaggerButtonProps) {
-  // Refs
+}: CharStaggerPrimaryButtonProps) {
   const textRef = useRef<HTMLSpanElement | null>(null);
   const lineRef = useRef<HTMLSpanElement | null>(null);
   const isTouchRef = useRef(false);
   const hasMountedRef = useRef(false);
 
-  // State
   const [isActive, setIsActive] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Effects
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
@@ -127,7 +126,6 @@ export default function CharStaggerButton({
     });
   }, [isActive, prefersReducedMotion]);
 
-  // Event handlers
   const onMouseEnter = useCallback(() => {
     if (isTouchRef.current) return;
     setIsActive(true);
@@ -147,14 +145,12 @@ export default function CharStaggerButton({
     if (isTouchRef.current) e.preventDefault();
   }, []);
 
-  // Derived
   const sourceText = typeof children === "string" ? children : text;
   const mergedStyle = {
     ...props.style,
     color: isActive ? hoverColor : props.style?.color,
   };
 
-  // Render
   return (
     <Link
       href={href}

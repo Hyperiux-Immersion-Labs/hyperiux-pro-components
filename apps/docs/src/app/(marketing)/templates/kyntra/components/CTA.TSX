@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useState } from "react";
@@ -11,16 +12,13 @@ const CTA = () => {
   const [hovered, setHovered] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // The button is an anchor to "#", so the default jump has to be suppressed
-  // before the modal takes over.
+  // Suppress the default hash jump
   const openModal = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     setModalOpen(true);
   };
 
-  // Opening the modal pulls the pointer off the button, which would otherwise
-  // fire onPointerLeave and drop the blue back to grey. Keeping the panel
-  // latched while the modal is open holds the colour through the interaction.
+  // Stay latched while modal is open
   const panelActive = hovered || modalOpen;
 
   return (
@@ -37,8 +35,7 @@ const CTA = () => {
         onPointerLeave={(e) => {
           if (e.pointerType === "mouse") setHovered(false);
         }}
-        // Touch gets no hover model: tapping toggles the panel instead of
-        // latching it on, since the link itself does not navigate.
+        // Touch toggles instead of latching
         onClick={(e) => {
           const { pointerType } = e.nativeEvent as PointerEvent;
           if (pointerType === "touch" || pointerType === "pen") {
@@ -48,9 +45,7 @@ const CTA = () => {
       >
         <FadeUp>
          
-          {/* The char-stagger renders every character as its own inline-block,
-              which fights a two-line wrap - so it stays desktop-only and mobile
-              gets a plain button with ordinary text flow. */}
+          {/* Each character is its own inline-block */}
           <CharStaggerPrimaryButton
             text="Download Kyntra App"
             href="#"
@@ -74,8 +69,7 @@ const CTA = () => {
       <FadeUp
         as="p"
         delay={0.15}
-        // Colour is driven by the same `panelActive` state as the section
-        // background, so the copy flips to white as the panel turns blue.
+        // Copy flips white with the panel
         className={`text-24 mt-[2vw] transition-colors duration-300 ease-in-out max-[1025px]:mt-[5vw] max-[1025px]:max-w-[62%] max-[1025px]:text-center max-[1025px]:text-[2.9vw] max-md:mt-[6vw] max-md:max-w-[72%] max-md:text-[4.2vw] ${
           panelActive ? "text-white" : "text-black"
         }`}
@@ -87,8 +81,7 @@ const CTA = () => {
         open={modalOpen}
         onClose={() => {
           setModalOpen(false);
-          // Touch latches the blue panel on tap, and the pointer is no longer
-          // over the button on desktop, so the colour is released here.
+          // Release the colour on leave
           setHovered(false);
         }}
       />

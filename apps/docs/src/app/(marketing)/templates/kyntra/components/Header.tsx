@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -10,12 +11,13 @@ import CharStaggerButton from "./effects/char-stagger-button";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import kyntraLogo from "../assets/kyntra-logo.png";
 
+// Each label points at its section
 const navLinks = [
-  { label: "For Homes", target: "#" },
-  { label: "Product", target: "#" },
-  { label: "Kyntra Care", target: "#" },
-  { label: "Stories", target: "#" },
-  { label: "Resources", target: "#" },
+  { label: "For Homes", target: "#kyntra-about" },
+  { label: "Product", target: "#features" },
+  { label: "Kyntra Care", target: "#how-it-works" },
+  { label: "Stories", target: "#stories" },
+  { label: "Resources", target: "#resources" },
 ];
 
 const Header: React.FC = () => {

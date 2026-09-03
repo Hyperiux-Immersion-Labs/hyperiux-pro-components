@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import {
@@ -17,19 +18,15 @@ export interface NavButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> 
   children?: ReactNode;
   className?: string;
   innerClassName?: string;
-  /** Colour that fills the button on hover. */
+  /** Fill colour on hover */
   fillColor?: string;
-  /** Icon / text colour at rest. */
+  /** Icon colour at rest */
   restColor?: string;
   ariaLabel?: string;
   style?: CSSProperties;
 }
 
-/**
- * Circular nav button with a radial fill that expands from the cursor on
- * hover (mirrors oris-dental's CircularButton). Fills with the Kyntra
- * primary colour by default.
- */
+/** Circular nav button, radial hover fill */
 export function NavButton({
   type = "button",
   children,
@@ -46,7 +43,7 @@ export function NavButton({
   const [isHovered, setIsHovered] = useState(false);
 
   const positionFill = (e: MouseEvent<HTMLElement>, scale: number) => {
-    // No radial fill while disabled - it would read as an available control.
+    // No fill while disabled
     if (disabled) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -58,9 +55,7 @@ export function NavButton({
     }
   };
 
-  // The fill is driven imperatively, and `pointer-events-none` means a button
-  // disabled while the cursor is still over it never receives mouseleave - so
-  // it would stay frozen mid-fill. Retract it here instead.
+  // Disabled mid-hover never gets mouseleave
   useEffect(() => {
     if (!disabled) return;
     setIsHovered(false);
@@ -91,8 +86,7 @@ export function NavButton({
       } ${className}`}
       style={{
         borderColor: KYNTRA_PRIMARY,
-        // Explicit white while disabled so the retracting fill cannot leave a
-        // tinted ground behind it.
+        // White while disabled; no tint left
         ...(disabled ? { backgroundColor: "#ffffff" } : null),
         ...style,
       }}
@@ -159,18 +153,16 @@ export interface CarouselNavButtonsProps {
   onPrev: () => void;
   onNext: () => void;
   className?: string;
-  /** Icon colour at rest (e.g. white on a dark section). */
+  /** Icon colour at rest */
   restColor?: string;
   fillColor?: string;
-  /** Greys out and blocks the prev button - e.g. at the start of a
-   *  non-infinite carousel. */
+  /** Disables the prev button */
   prevDisabled?: boolean;
-  /** Greys out and blocks the next button - e.g. at the end of a
-   *  non-infinite carousel. */
+  /** Disables the next button */
   nextDisabled?: boolean;
 }
 
-/** Prev/Next pair for the smooth carousel. */
+/** Prev/Next pair for the carousel */
 export default function CarouselNavButtons({
   onPrev,
   onNext,

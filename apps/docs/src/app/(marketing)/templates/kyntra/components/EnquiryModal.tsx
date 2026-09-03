@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -10,7 +11,7 @@ import AnimatedForm from "./effects/animated-form";
 const CLOSE_DURATION = 300;
 
 export interface EnquiryModalProps {
-  /** Drives the modal. The component keeps itself mounted while it animates out. */
+  /** Stays mounted while animating out */
   open: boolean;
   onClose: () => void;
   ariaLabel?: string;
@@ -31,7 +32,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
   useEffect(() => {
     if (open) {
       wasOpen.current = true;
-      // Paint the closed state first, then flip so the transition actually runs.
+      // Paint closed first, then transition
       const raf = window.requestAnimationFrame(() => setVisible(true));
       return () => window.cancelAnimationFrame(raf);
     }
@@ -44,7 +45,7 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
     return () => window.clearTimeout(timer);
   }, [open]);
 
-  // Lock page scroll and listen for Escape only while the modal is on screen.
+  // Lock scroll, listen for Escape
   useEffect(() => {
     if (!mounted) return;
 

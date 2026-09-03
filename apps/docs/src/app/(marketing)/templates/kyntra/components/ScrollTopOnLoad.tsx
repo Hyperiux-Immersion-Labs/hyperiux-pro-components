@@ -5,7 +5,6 @@
 import { useEffect } from "react";
 import { useLenis } from "lenis/react";
 
-
 const INLINE_RESTORATION_RESET =
   "try{if(!location.hash)history.scrollRestoration='manual'}catch(e){}";
 

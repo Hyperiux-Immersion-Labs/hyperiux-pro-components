@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import React, { useEffect, useId, useRef } from "react";
@@ -6,11 +8,11 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 import CharStaggerPrimaryButton from "../char-stagger-primary-button";
+import { usePrefersReducedMotion } from "../../Animations/reducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Cards are a flat white surface; nothing recolours on scroll. Kyntra's
-// primary carries the heading, the icon tiles and the CTA.
+// Flat white cards; brand on accents
 const KYNTRA_PRIMARY = "#134BD6";
 const CARD_BG = "#ffffff";
 const CARD_FG = "#000000";
@@ -39,9 +41,7 @@ interface ScrollStackProps {
 const MOBILE_BP = 1025;
 const PHONE_BP = 768;
 
-// The peeking strip above each settled card is one title line plus a sliver.
-// The desktop numbers are absolute px, which read as a cramped band once the
-// viewport narrows, so below the breakpoint each part scales with the width.
+// Peek scales with width
 const CARD_PAD_TOP_VW = 3;
 const CARD_TITLE_PX = 44;
 const STACK_SLIVER_PX = 18;
@@ -54,9 +54,7 @@ const PHONE_PAD_TOP_VW = 7;
 const PHONE_TITLE_VW = 9;
 const PHONE_SLIVER_VW = 4;
 
-// How far down the viewport an incoming card starts, as a fraction of the
-// viewport height. Also drives the pre-hydration resting place via the
-// --card-entry custom property, so the two stay in sync.
+// Entry point, shared with --card-entry
 const CARD_ENTRY_VH = 0.9;
 
 const SCROLL_DISTANCE_PER_CARD_SVH = 90;
@@ -80,6 +78,8 @@ export default function ScrollStack({
   sectionBgColor = "#ffffff",
   cardRadius = 28,
 }: ScrollStackProps) {
+  // Inline height outranks motion-reduce
+  const reducedMotion = usePrefersReducedMotion();
   const uid = useId().replace(/:/g, "");
   const sectionId = `scroll-stack-${uid}`;
   const transitionCount = Math.max(cards.length - 1, 1);
@@ -87,6 +87,14 @@ export default function ScrollStack({
   const runwayRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Flips after mount; triggers refresh
+  useEffect(() => {
+    if (!reducedMotion) return;
+
+    const frame = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => cancelAnimationFrame(frame);
+  }, [reducedMotion]);
 
   useEffect(() => {
     cardRefs.current = cardRefs.current.slice(0, cards.length);
@@ -103,7 +111,6 @@ export default function ScrollStack({
         scrollTrigger: {
           trigger: runway,
           start: "top 5%",
-          // Finish exactly when CSS sticky releases the card viewport.
           end: () => {
             const stickyTop = Number.parseFloat(
               window.getComputedStyle(sticky).top,
@@ -153,16 +160,20 @@ export default function ScrollStack({
     >
       <div
         ref={runwayRef}
-        style={{
-          height: `${transitionCount * SCROLL_DISTANCE_PER_CARD_SVH + STICKY_VIEWPORT_RESERVE_SVH}svh`,
-        }}
-        className="w-full motion-reduce:h-auto"
+        style={
+          reducedMotion
+            ? undefined
+            : {
+                height: `${transitionCount * SCROLL_DISTANCE_PER_CARD_SVH + STICKY_VIEWPORT_RESERVE_SVH}svh`,
+              }
+        }
+        className="w-full motion-reduce:h-fit"
       >
         <div
           ref={stickyRef}
-          className="sticky top-25 h-[80vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto max-[1025px]:top-[24vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-md:top-[32vw] max-md:h-[82vh]"
+          className="sticky top-25 h-[80vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-fit motion-reduce:max-h-none motion-reduce:pt-[3vw] max-[1025px]:top-[24vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-[1025px]:motion-reduce:h-fit max-md:top-[32vw] max-md:h-[82vh] max-md:motion-reduce:h-fit max-md:motion-reduce:pt-[8vw]"
         >
-          <div className="relative mx-auto h-full w-full motion-reduce:h-auto">
+          <div className="relative mx-auto h-full w-full motion-reduce:h-fit">
             {cards.map((card, index) => {
               return (
                 <div
@@ -180,8 +191,7 @@ export default function ScrollStack({
                       "--card-entry": `${CARD_ENTRY_VH * 100}vh`,
                     } as React.CSSProperties
                   }
-                  className={`absolute inset-x-0 flex h-[26vw] flex-col overflow-hidden border px-[2.4vw] py-[3vw] max-[1025px]:py-[6vh] top-25 motion-reduce:static motion-reduce:mb-[3vw] motion-reduce:h-auto motion-reduce:translate-y-0 max-[1025px]:pt-[5vh] max-[1025px]:top-[calc(50%-35vh)] max-[1025px]:h-[72vh] max-[1025px]:px-[5vw] max-md:top-0 max-md:h-auto max-md:max-h-[82vh] max-md:px-[6vw] max-md:pt-[7vw] max-md:pb-[7vw] ${
-                    // Card 0 is in place from the start; the rest wait below.
+                  className={`absolute inset-x-0 flex h-[26vw] flex-col overflow-hidden border px-[2.4vw] py-[3vw] max-[1025px]:py-[6vh] top-25 motion-reduce:static motion-reduce:mb-[3vw] motion-reduce:h-fit motion-reduce:max-h-none motion-reduce:translate-y-0 max-[1025px]:pt-[5vh] max-[1025px]:top-[calc(50%-35vh)] max-[1025px]:h-[72vh] max-[1025px]:px-[5vw] max-[1025px]:motion-reduce:h-fit max-md:top-0 max-md:h-auto max-md:max-h-[82vh] max-md:px-[6vw] max-md:pt-[7vw] max-md:pb-[7vw] max-md:motion-reduce:h-fit max-md:motion-reduce:max-h-none ${
                     index === 0 ? "" : "translate-y-(--card-entry)"
                   }`}
                 >
@@ -197,7 +207,7 @@ export default function ScrollStack({
                     style={{ backgroundColor: CARD_RULE }}
                   />
 
-                  <div className="flex pt-[4vh] items-start justify-between gap-[3vw] max-[1025px]:min-h-0 max-[1025px]:flex-1 max-[1025px]:flex-col max-[1025px]:gap-[5vw] max-[1025px]:pt-0 max-md:overflow-y-auto">
+                  <div className="flex pt-[4vh] items-start justify-between gap-[3vw] max-[1025px]:min-h-0 max-[1025px]:flex-1 max-[1025px]:flex-col max-[1025px]:gap-[5vw] max-[1025px]:pt-0 max-md:overflow-y-auto max-md:motion-reduce:overflow-y-visible">
                     {card.items && card.items.length > 0 && (
                       <div className="grid w-[45%] grid-cols-2 gap-y-[2vw] max-[1025px]:order-2 max-[1025px]:w-full max-[1025px]:grid-cols-1 max-[1025px]:gap-y-0">
                         {card.items.map((item, i) => (
@@ -214,9 +224,6 @@ export default function ScrollStack({
                               className="flex size-[3.5vw] shrink-0 items-center justify-center rounded-[0.6vw] max-[1025px]:rounded-md max-[1025px]:size-[6vw] max-md:size-[12vw]"
                               style={{ backgroundColor: KYNTRA_PRIMARY }}
                             >
-                              {/* The source SVGs are already drawn
-                                  fill="white", so they read as-is on the
-                                  primary tile - no filter needed. */}
                               <Image
                                 src={item.icon}
                                 alt=""
@@ -232,7 +239,6 @@ export default function ScrollStack({
                       </div>
                     )}
 
-                    {/* Right: description + CTA */}
                     <div className="flex w-[35%] flex-col items-start gap-[1.8vw] max-[1025px]:contents">
                       {card.description && (
                         <p className="text-22 w-[85%] leading-normal max-[1025px]:order-1 max-[1025px]:w-full max-[1025px]:text-[2.9vw] max-md:text-[4.4vw]">
@@ -244,8 +250,6 @@ export default function ScrollStack({
                           text={card.buttonText}
                           href={card.buttonHref ?? "#"}
                           showArrow
-                          // Label stays white on hover; the char-stagger and
-                          // arrow motion carry the affordance.
                           hoverColor={CARD_BG}
                           className="rounded-full px-[1.8vw] py-[0.9vw] max-[1025px]:order-3 max-[1025px]:mt-auto max-[1025px]:self-start max-[1025px]:px-[6vw] max-[1025px]:py-[2.6vw] max-md:px-[7vw] max-md:py-[4vw]"
                           textClassName="text-[1.05vw] max-[1025px]:text-[2.4vw] max-md:text-[4.4vw]"

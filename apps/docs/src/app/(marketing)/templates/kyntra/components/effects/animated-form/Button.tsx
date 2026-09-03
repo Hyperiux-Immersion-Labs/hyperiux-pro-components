@@ -1,8 +1,7 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 import React, { forwardRef, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
-/**
- * Button (Kyntra variant) - white pill with a trailing arrow.
- */
+/** White pill with trailing arrow */
 export type ButtonProps = {
   children?: ReactNode;
   type?: 'button' | 'submit' | 'reset';

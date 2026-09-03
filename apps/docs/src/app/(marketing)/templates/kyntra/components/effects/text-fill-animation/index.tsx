@@ -30,11 +30,9 @@ export default function TextFillAnimation({
   tabletTextSize = '6.5vw',
   tabletTextWidth = '88%',
 }: any) {
-  // State and refs
   const sectionRef = useRef<any>(null);
   const textRef = useRef<any>(null);
 
-  // Effects
   useEffect(() => {
     const styleId = `${TEXT_REVEAL_STYLE_PREFIX}${id}`;
     const styleElement = document.createElement('style');
@@ -122,7 +120,6 @@ export default function TextFillAnimation({
             scrollTrigger: {
               trigger: sectionRef.current,
               start: 'top 60%',
-              // markers: true,
               end: 'bottom 80%',
               scrub: 0.25,
             },
@@ -161,7 +158,6 @@ export default function TextFillAnimation({
     textWidth,
   ]);
 
-  // Return
   return (
     <section
       id={id}

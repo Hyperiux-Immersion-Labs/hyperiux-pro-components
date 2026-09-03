@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import {
@@ -124,11 +125,9 @@ export default function KyntraFaq() {
                 aria-hidden
                 className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
               >
-                <div className="absolute inset-0 origin-top  scale-y-0 bg-kyntra-primary transition-transform duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-aria-expanded:scale-y-100" />
+                <div className="absolute inset-0 origin-top  scale-y-0 bg-kyntra-primary transition-transform duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] motion-reduce:transition-none group-aria-expanded:scale-y-100" />
               </div>
-              {/* Inset bottom hairline. Hidden once this card fills blue, and
-                  also when the next card is open — that line reads as the open
-                  card's top edge. */}
+              {/* Hairline, hidden once card fills */}
               <div
                 data-line-draw
                 className="absolute right-[1.3vw] bottom-0 left-[1.3vw] z-2 h-px bg-black transition-opacity duration-300 group-aria-expanded:opacity-0 max-md:right-0 max-md:left-0"

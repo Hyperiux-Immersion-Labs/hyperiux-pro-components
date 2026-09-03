@@ -1,9 +1,11 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { ReactLenis, type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
-import { prefersReducedMotion } from "@/lib/motion";
+import { prefersReducedMotion } from "./Animations/reducedMotion";
 
 interface LenisSmoothScrollProps {
   duration?: number;
@@ -44,7 +46,6 @@ const LenisSmoothScroll = ({
         duration: duration,
         lerp: lerp,
         smoothWheel: smoothWheel,
-        // syncTouch:true,
         wheelMultiplier: wheelMultiplier,
         touchMultiplier: touchMultiplier,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

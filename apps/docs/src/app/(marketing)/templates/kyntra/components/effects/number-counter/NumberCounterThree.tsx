@@ -1,11 +1,13 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 'use client';
 
 import React, { useEffect, useRef, memo } from'react';
 import gsap from'gsap';
 import { ScrollTrigger } from'gsap/dist/ScrollTrigger';
+import { usePrefersReducedMotion } from'../../Animations/reducedMotion';
 
 gsap.registerPlugin(ScrollTrigger);
-
 
 interface DigitScrollerProps {
   digit: string;
@@ -20,8 +22,11 @@ interface DigitScrollerProps {
 const DigitScroller = memo(({ digit, index, duration = 1.5, stagger = 0.1, trigger, textColor, reducedMotion = false }: DigitScrollerProps) => {
  const containerRef = useRef<HTMLDivElement | null>(null);
 
+ const systemReducedMotion = usePrefersReducedMotion();
+ const isReduced = reducedMotion || systemReducedMotion;
+
  useEffect(() => {
- if (reducedMotion || window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return;
+ if (isReduced) return;
  if (!containerRef.current) return;
 
  const ctx = gsap.context(() => {
@@ -40,9 +45,9 @@ const DigitScroller = memo(({ digit, index, duration = 1.5, stagger = 0.1, trigg
  }, containerRef);
 
  return () => ctx.revert();
- }, [digit, index, duration, stagger, reducedMotion, trigger]);
+ }, [digit, index, duration, stagger, isReduced, trigger]);
 
- if (reducedMotion) {
+ if (isReduced) {
  return (
  <span className="inline-block w-[0.6em] leading-none" style={{ color: textColor }}>
  {digit}
@@ -68,8 +73,6 @@ const DigitScroller = memo(({ digit, index, duration = 1.5, stagger = 0.1, trigg
 });
 
 DigitScroller.displayName ='DigitScroller';
-
-
 
 interface NumberCounterThreeProps {
   value?: string;
@@ -111,7 +114,6 @@ const NumberCounterThree = ({
  );
  }
 
- // non-digit chars
  return (
  <span key={i} style={{ color: textColor }}>
  {char}

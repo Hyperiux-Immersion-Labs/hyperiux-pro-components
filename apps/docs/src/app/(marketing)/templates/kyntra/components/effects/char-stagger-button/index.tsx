@@ -31,7 +31,7 @@ export interface CharStaggerButtonOwnProps {
   children?: ReactNode;
   staggerStep?: number;
   showLine?: boolean;
-  /** Run the underline under the arrow too, not just the text. */
+  /** Underline the arrow as well */
   lineSpansArrow?: boolean;
   lineClassName?: string;
   hoverColor?: string;
@@ -67,17 +67,14 @@ export default function CharStaggerButton({
   onClick,
   ...props
 }: CharStaggerButtonProps) {
-  // Refs
   const textRef = useRef<HTMLSpanElement | null>(null);
   const lineRef = useRef<HTMLSpanElement | null>(null);
   const isTouchRef = useRef(false);
   const hasMountedRef = useRef(false);
 
-  // State
   const [isActive, setIsActive] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Effects
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
@@ -152,7 +149,6 @@ export default function CharStaggerButton({
     });
   }, [isActive, prefersReducedMotion]);
 
-  // Event handlers
   const onMouseEnter = useCallback(() => {
     if (isTouchRef.current) return;
     setIsActive(true);
@@ -172,15 +168,13 @@ export default function CharStaggerButton({
     if (isTouchRef.current) e.preventDefault();
   }, []);
 
-  // Derived
   const sourceText = typeof children === "string" ? children : text;
   const mergedStyle = {
     ...props.style,
     color: isActive ? hoverColor : props.style?.color,
   };
 
-  // One element, positioned against either the text span or the whole link -
-  // see `lineSpansArrow`. Kept in a variable so both placements stay identical.
+  // One element, two placements
   const lineElement = (
     <span
       ref={lineRef}
@@ -197,7 +191,6 @@ export default function CharStaggerButton({
     />
   );
 
-  // Render
   return (
     <Link
       href={href}

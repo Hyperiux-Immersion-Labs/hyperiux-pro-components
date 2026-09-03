@@ -1,4 +1,4 @@
-
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 
 const EVT_ID = "virtualscroll";
 
@@ -39,13 +39,11 @@ function getSupport(): Support {
 
 let support: Support | undefined;
 
-/** IE10's touch-action property, absent from lib.dom's CSSStyleDeclaration. */
 type LegacyStyle = CSSStyleDeclaration & { msTouchAction: string };
 
 function legacyBodyStyle(): LegacyStyle {
   return document.body.style as LegacyStyle;
 }
-
 
 type EmitterHandler = (payload: VirtualScrollEvent) => void;
 
@@ -96,7 +94,6 @@ export interface VirtualScrollEvent {
   deltaX: number;
   deltaY: number;
   originalEvent: Event;
-  /** Never set by this library — upstream `smooothy` reads it defensively. */
   touchDevice?: boolean;
 }
 
@@ -182,11 +179,9 @@ export default class VirtualScroll {
       wheelDeltaY?: number;
     };
 
-    // In Chrome and in Firefox (at least the new one)
     evt.deltaX = legacy.wheelDeltaX || e.deltaX * -1;
     evt.deltaY = legacy.wheelDeltaY || e.deltaY * -1;
 
-    // for our purpose deltamode = 1 means user is on a wheel mouse, not touch pad
     if (support!.isFirefox && e.deltaMode === 1) {
       evt.deltaX *= options.firefoxMultiplier;
       evt.deltaY *= options.firefoxMultiplier;
@@ -206,7 +201,6 @@ export default class VirtualScroll {
       wheelDelta?: number;
     };
 
-    // In Safari, IE and in Chrome if 'wheel' isn't defined
     evt.deltaX = legacy.wheelDeltaX ? legacy.wheelDeltaX : 0;
     evt.deltaY = legacy.wheelDeltaY ? legacy.wheelDeltaY : (legacy.wheelDelta ?? 0);
 

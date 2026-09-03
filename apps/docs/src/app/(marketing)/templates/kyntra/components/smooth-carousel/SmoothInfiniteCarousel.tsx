@@ -25,11 +25,9 @@ export class KeyboardSlider extends Core {
   #handleKeydown = (e: KeyboardEvent) => {
     if (!this.isVisible) return;
 
-    // Numbers 0-9 pressed
     if (/^[0-9]$/.test(e.key)) {
       const slideIndex = parseInt(e.key, 10);
       if (this.config.infinite) {
-        // automatically takes the shortest path
         this.goToIndex(slideIndex);
       } else {
         if (slideIndex > this.items.length - 1) return;
@@ -38,7 +36,6 @@ export class KeyboardSlider extends Core {
       return;
     }
 
-    // Arrows and spacebar
     switch (e.key) {
       case "ArrowLeft":
         this.goToPrev();

@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import {
@@ -14,7 +16,7 @@ import { SplitText } from "gsap/SplitText";
 
 gsap.registerPlugin(ScrollTrigger, CustomEase, SplitText);
 
-// Same curve as the standalone FocusText section.
+// Same curve as FocusText
 const FOCUS_EASE = CustomEase.create("focusTextWrapEase", "0.16,1,0.3,1");
 
 const REDUCED_MOTION_DURATION = 0.3;
@@ -33,7 +35,6 @@ interface FocusTextWrapProps {
   scrollStart?: string;
   scrollEnd?: string;
 }
-
 
 export default function FocusTextWrap({
   children,

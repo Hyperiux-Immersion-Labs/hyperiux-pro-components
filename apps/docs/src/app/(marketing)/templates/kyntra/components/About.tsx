@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import { useRef } from "react";
@@ -19,9 +20,6 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const About = () => {
   const clusterRef = useRef<HTMLDivElement>(null);
-  // Ordered centre -> right -> left, which is the order they animate in. The
-  // DOM order is left, centre, right, so the refs are assigned by hand rather
-  // than by index.
   const midRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
@@ -44,31 +42,14 @@ const About = () => {
     const mm = gsap.matchMedia();
 
     mm.add("(min-width: 1026px)", () => {
-      // gsap.from(phones, {
-      //   scrollTrigger: {
-      //     trigger: cluster,
-      //     // Fires once the section is about half way up the viewport.
-      //     start: "top 50%",
-      //     // markers:true,
-      //     once: true,
-      //   },
-      //   yPercent: 60,
-      //   opacity: 0,
-      //   duration: 1,
-      //   ease: "power2.out",
-      //   // Array order (centre, right, left) drives the sequence, not DOM order.
-      //   stagger: 0.6,
-      // });
 
-      // The connector reads as joining phones that are already there, so it waits
-      // out the stagger above (3 phones x 0.6s apart, 1s each) before fading in.
+      // Waits out the phone stagger
       if (lineRef.current) {
         gsap.to(lineRef.current, {
           scrollTrigger: {
             trigger: cluster,
             start: "top 65%",
             once: true,
-            // markers:true,
           },
           opacity: 1,
           duration: 0.8,
@@ -77,7 +58,6 @@ const About = () => {
         });
       }
     });
-
 
     mm.add("(max-width: 1025px)", () => {
       phones.forEach((phone) => {
@@ -94,10 +74,7 @@ const About = () => {
       });
     });
 
-
-    // Desktop only: the phones sit side by side there, so the opposing drift
-    // reads as depth. On tablet/mobile they stack vertically and the same
-    // offsets just push them into each other.
+    // Desktop only: drift reads as depth
     mm.add("(min-width: 1026px)", () => {
       const parallax = gsap.timeline({
         scrollTrigger: {
@@ -105,7 +82,6 @@ const About = () => {
           start: "30% bottom",
           end: "bottom top",
           scrub: 0.5,
-          // markers: true,
         },
       });
 
@@ -133,7 +109,6 @@ const About = () => {
           Kyntra gives every home a memory keeping repairs, warranties, maintenance and service history connected, so each future decision starts with context instead of from scratch.
         </ParaAnim>
       </div>
-
 
       <div
         ref={clusterRef}
