@@ -124,7 +124,6 @@ const Features = () => {
       <ScrollStack
         cards={cards}
         sectionBgColor="#ffffff"
-        accentColor="#134BD6"
         cardRadius={28}
       />
     </section>
