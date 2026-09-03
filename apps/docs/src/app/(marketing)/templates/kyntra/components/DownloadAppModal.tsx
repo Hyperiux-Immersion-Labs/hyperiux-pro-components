@@ -6,16 +6,21 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { CustomEase } from "gsap/CustomEase";
 import { useLenis } from "lenis/react";
 import { X } from "lucide-react";
 
 import ctaScan from "../assets/cta-scan.png";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, CustomEase);
 
-const SLIDE_DURATION = 0.55;
-const FADE_DURATION = 0.4;
+// Matches EnquiryModal, which is a plain CSS transition: `duration-300` with
+// Tailwind's default timing function. Same curve and length both ways, so the
+// panel leaves exactly the way it arrived.
+const SLIDE_DURATION = 0.5;
+// Tailwind's default transition timing function, as a GSAP ease.
+const EASE = CustomEase.create("downloadAppModalEase", "0.4,0,0.2,1");
 const SCRIM = "rgba(0,0,0,0.4)";
 const SCRIM_CLEAR = "rgba(0,0,0,0)";
 
@@ -28,8 +33,9 @@ export interface DownloadAppModalProps {
 
 /**
  * QR panel for the CTA's "Download Kyntra App" button: a full-height white
- * panel that slides in from the right edge, after which the QR code, heading
- * and copy fade in. Closing reverses the order - content out, then the panel.
+ * panel that slides in from the right edge. The content rides the panel rather
+ * than animating on its own, so everything arrives together; closing is the
+ * same move reversed.
  */
 const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
   open,
@@ -40,7 +46,6 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
@@ -64,73 +69,56 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
     () => {
       const overlay = overlayRef.current;
       const panel = panelRef.current;
-      const content = contentRef.current;
       const closeBtn = closeBtnRef.current;
-      if (!overlay || !panel || !content || !closeBtn) return;
-
-      // The button lives on the overlay now, so it has to travel with the
-      // panel rather than inheriting the panel's transform.
-      const sliding = [panel, closeBtn];
+      if (!overlay || !panel || !closeBtn) return;
 
       // Supersede any in-flight timeline so a fast toggle animates from
       // wherever the panel currently sits rather than snapping.
       timelineRef.current?.kill();
 
+      // The button only ever fades, so make sure no stray transform is left on
+      // it - it sits on the overlay and must not drift with the panel.
+      gsap.set(closeBtn, { xPercent: 0, x: 0 });
+
       if (prefersReducedMotion()) {
         gsap.set(overlay, { backgroundColor: open ? SCRIM : SCRIM_CLEAR });
-        gsap.set(sliding, { xPercent: open ? 0 : 100 });
+        gsap.set(panel, { xPercent: open ? 0 : 100 });
         gsap.set(closeBtn, { opacity: open ? 1 : 0 });
-        gsap.set(content, { opacity: open ? 1 : 0, y: 0 });
         if (!open) setClosing(false);
         return;
       }
 
       if (open) {
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        const tl = gsap.timeline({
+          defaults: { duration: SLIDE_DURATION, ease: EASE },
+        });
         timelineRef.current = tl;
 
-        tl.set(content, { opacity: 0, y: "1vw" })
-          .set(closeBtn, { opacity: 0 })
-          .fromTo(
-            overlay,
-            { backgroundColor: SCRIM_CLEAR },
-            { backgroundColor: SCRIM, duration: SLIDE_DURATION },
-            0,
-          )
-          // Sheet easing: quick off the mark, settling softly at the end.
-          .fromTo(
-            sliding,
-            { xPercent: 100 },
-            { xPercent: 0, duration: SLIDE_DURATION, ease: "expo.out" },
-            0,
-          )
-          // Overlaps the tail of the slide so the content lands as it settles.
-          .to(content, { opacity: 1, y: 0, duration: FADE_DURATION }, 0.3)
-          .to(closeBtn, { opacity: 1, duration: FADE_DURATION }, 0.35);
+        // Panel and scrim move together on one curve; the content is carried
+        // by the panel's transform, so there is nothing else to time. The
+        // close button sits on the overlay and only fades, on the same curve.
+        tl.fromTo(
+          overlay,
+          { backgroundColor: SCRIM_CLEAR },
+          { backgroundColor: SCRIM },
+          0,
+        )
+          .fromTo(panel, { xPercent: 100 }, { xPercent: 0 }, 0)
+          .fromTo(closeBtn, { opacity: 0 }, { opacity: 1 }, 0);
 
         return;
       }
 
       const tl = gsap.timeline({
-        defaults: { ease: "power2.in" },
+        defaults: { duration: SLIDE_DURATION, ease: EASE },
         onComplete: () => setClosing(false),
       });
       timelineRef.current = tl;
 
-      // Mirror of the opening order: content leaves first, then the panel and
-      // its close button slide out together.
-      tl.to(content, { opacity: 0, y: "0.5vw", duration: 0.2 })
-        .to(closeBtn, { opacity: 0, duration: 0.2 }, "<")
-        .to(
-          sliding,
-          { xPercent: 100, duration: SLIDE_DURATION, ease: "power3.inOut" },
-          ">-0.05",
-        )
-        .to(
-          overlay,
-          { backgroundColor: SCRIM_CLEAR, duration: SLIDE_DURATION },
-          "<",
-        );
+      // The opening move played backwards - same curve, same length.
+      tl.to(panel, { xPercent: 100 }, 0)
+        .to(closeBtn, { opacity: 0 }, 0)
+        .to(overlay, { backgroundColor: SCRIM_CLEAR }, 0);
     },
     { dependencies: [open, mounted], scope: overlayRef },
   );
@@ -200,7 +188,7 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
         ref={panelRef}
         className="relative flex h-full p-3 w-[36vw] flex-col bg-white will-change-transform max-[1025px]:w-[62vw] max-md:w-[88vw]"
       >
-        <div ref={contentRef} className="flex w-full flex-col justify-center">
+        <div className="flex w-full flex-col justify-center">
           <Image
             src={ctaScan}
             alt="QR code linking to the Kyntra mobile app download"

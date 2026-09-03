@@ -302,7 +302,11 @@ export default function ContactForm({
    transition-duration: var(--form-duration);
  }
  `}</style>
- <div className="w-full">
+ {/* One fade for the whole form. Per-field stagger used to leave each
+     wrapper at a fractional opacity mid-tween, which switches off the
+     frosted `backdrop-filter` on the inputs inside it - so the blur only
+     appeared once the field had finished animating. */}
+ <FadeUp className="w-full">
  <div className="w-full flex flex-col gap-[2vw]">
  <form
  autoComplete="off"
@@ -310,18 +314,19 @@ export default function ContactForm({
  onSubmit={handleSubmit}
  >
  {fields.map((field, index) => (
-
- <FadeUp
+ // Plain wrapper: the whole form shares one fade (see the FadeUp above),
+ // so nothing here animates on its own. The stacking order is still needed
+ // for the select's dropdown to sit over the fields below it.
+ <div
  key={field.name}
- delay={0.15 + index * 0.08}
  className="relative"
  style={{ zIndex: fields.length - index }}
  >
  {renderField(field)}
- </FadeUp>
+ </div>
  ))}
 
- <FadeUp delay={0.15 + fields.length * 0.08} className="relative flex items-center justify-start pt-[0.8vw] max-[1025px]:pt-[3vw]" style={{ zIndex: 0 }}>
+ <div className="relative flex items-center justify-start pt-[0.8vw] max-[1025px]:pt-[3vw]" style={{ zIndex: 0 }}>
  {/* The stagger button renders an <a>, so it can't submit on its own -
      it clicks this hidden native submit to keep the normal form flow. */}
  <button ref={submitRef} type="submit" className="hidden" aria-hidden="true" tabIndex={-1} />
@@ -341,7 +346,7 @@ export default function ContactForm({
  textClassName="font-aeonik-pro text-22 tracking-tight"
  iconClassName="text-black"
  />
- </FadeUp>
+ </div>
 
  {submitted && (
  <p className="mt-[0.6vw] font-aeonik-pro text-[0.9vw] text-green-400 max-[1025px]:mt-[2vw] max-[1025px]:text-[2.8vw] max-md:text-[3.4vw]">{successMessage}</p>
@@ -351,7 +356,7 @@ export default function ContactForm({
  )}
  </form>
  </div>
- </div>
+ </FadeUp>
  </section>
  );
 }

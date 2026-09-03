@@ -44,7 +44,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textare
           className={`
             w-full resize-none rounded-[0.8vw] border border-white/25 bg-white/5
             px-[1.6vw] pb-[1.2vw] pt-[2.4vw] font-aeonik-pro text-[1.05vw]
-            text-white outline-none backdrop-blur-[1px] transition-colors duration-300
+            text-white outline-none transition-colors duration-300
             hover:border-white/40 focus:border-white/60
             max-[1025px]:rounded-[2.5vw] max-[1025px]:px-[5vw] max-[1025px]:pb-[4vw] max-[1025px]:pt-[7vw] max-[1025px]:text-[3.2vw]
             max-md:text-[4vw]

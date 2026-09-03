@@ -82,6 +82,11 @@ export function FadeUp<T extends ElementType = "div">({
           duration: 0.8,
           delay,
           ease: "power2.out",
+          onComplete: () => {
+       
+            el.style.removeProperty("opacity");
+            el.classList.remove("opacity-0");
+          },
         });
         observer.disconnect();
       },

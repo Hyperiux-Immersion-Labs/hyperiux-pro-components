@@ -63,9 +63,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
-      // The phone rises out of the footer's bottom edge as the page scrolls
-      // over it. Below the breakpoint the footer is a normal block in flow, so
-      // there is nothing to rise out of - it just sits in place.
+     
       mm.add("(min-width: 1026px)", () => {
         gsap.fromTo(
           el,
@@ -76,7 +74,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             scrollTrigger: {
               trigger,
               start: "top 80%",
-              end: "bottom top",
+              end: "bottom 10%",
               scrub: 0.2,
               // markers: true,
             },
@@ -99,7 +97,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
     >
       <div className="relative flex h-[80vh] w-full flex-col justify-between px-[5%] pt-[6vw] pb-[2vw] max-[1025px]:h-auto max-[1025px]:px-[7%] max-[1025px]:pt-[12vw] max-[1025px]:pb-0 max-md:pt-[16vw]">
        
-        <div className="pointer-events-none absolute bottom-0 left-1/2 w-[22vw] -translate-x-1/2 max-[1025px]:static max-[1025px]:left-auto max-[1025px]:order-3 max-[1025px]:mt-[12vw] max-[1025px]:mb-0 max-[1025px]:w-[55vw] max-[1025px]:translate-x-0 max-[1025px]:self-center max-md:w-[72vw]">
+        <div className="pointer-events-none absolute bottom-0 left-[60%] w-[22vw] -translate-x-1/2 max-[1025px]:static max-[1025px]:left-auto max-[1025px]:order-3 max-[1025px]:mt-[12vw] max-[1025px]:mb-0 max-[1025px]:w-[55vw] max-[1025px]:translate-x-0 max-[1025px]:self-center max-md:w-[72vw]">
           <Image
             ref={footerImgRef}
             src={footerImg}
@@ -224,7 +222,7 @@ const FooterLinkColumn = ({
       {title.toUpperCase()}
     </FadeUp>
 
-    <div className="mt-[1.4vw] flex flex-col gap-[0.9vw] max-[1025px]:mt-[4vw] max-[1025px]:gap-[2.5vw]">
+    <div className="mt-[1.4vw] flex flex-col gap-[0.3vw] max-[1025px]:mt-[4vw] max-[1025px]:gap-[2.5vw]">
       {links.map((label, index) => (
         <FadeUp
           key={label}
@@ -236,7 +234,7 @@ const FooterLinkColumn = ({
             href="#"
             hoverColor="white"
             className="text-white"
-            textClassName="font-aeonik-pro text-22 tracking-tight max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
+            textClassName="font-aeonik-pro text-22 tracking-wide max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
           />
         </FadeUp>
       ))}

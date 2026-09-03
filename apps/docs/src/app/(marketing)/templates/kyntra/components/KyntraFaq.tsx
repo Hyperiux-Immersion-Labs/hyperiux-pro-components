@@ -111,8 +111,8 @@ export default function KyntraFaq() {
             <FAQWrapper
               key={item.id}
               itemId={item.id}
-              className="group relative overflow-hidden rounded-[1.4vw] transition-colors duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] has-[+[aria-expanded=true]]:[&_[data-line-draw]]:opacity-0 max-md:rounded-[4.5vw]"
-              titleClassName="relative z-2 font-helvetica-neue text-[1.6vw] font-normal text-black transition-colors duration-500 group-aria-expanded:text-white max-[1025px]:text-[3.4vw] max-md:text-[5vw]"
+              className="group relative rounded-lg transition-[padding,color] duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] aria-expanded:py-3 has-[+[aria-expanded=true]]:[&_[data-line-draw]]:opacity-0 max-md:rounded-[4.5vw]"
+              titleClassName="relative z-2 font-helvetica-neue text-[1.6vw] font-normal text-black transition-colors duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-aria-expanded:text-white max-[1025px]:text-[3.4vw] max-md:text-[5vw]"
               contentClassName="relative z-2"
               iconClassName="flex h-[2.4vw] w-[2.4vw] items-center justify-center rounded-full bg-kyntra-primary text-white transition-colors duration-500 max-md:h-[9vw] max-md:w-[9vw] max-[1025px]:h-[6vw] max-[1025px]:w-[6vw]"
               iconSize={18}
@@ -120,13 +120,18 @@ export default function KyntraFaq() {
               duration={0.5}
             >
       
-              <div className="absolute inset-0 origin-top scale-y-0 bg-kyntra-primary transition-transform duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-aria-expanded:scale-y-100" />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
+              >
+                <div className="absolute inset-0 origin-top  scale-y-0 bg-kyntra-primary transition-transform duration-500 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-aria-expanded:scale-y-100" />
+              </div>
               {/* Inset bottom hairline. Hidden once this card fills blue, and
                   also when the next card is open — that line reads as the open
                   card's top edge. */}
               <div
                 data-line-draw
-                className="absolute right-[1.4vw] bottom-0 left-[1.4vw] z-2 h-px bg-black transition-opacity duration-300 group-aria-expanded:opacity-0 max-md:right-0 max-md:left-0"
+                className="absolute right-[1.3vw] bottom-0 left-[1.3vw] z-2 h-px bg-black transition-opacity duration-300 group-aria-expanded:opacity-0 max-md:right-0 max-md:left-0"
               />
               <FAQTitle
                 className="gap-[2vw] text-[1.65vw] max-[1025px]:text-[5vw] max-md:text-[6vw]! py-[1.6vw] pr-[1.4vw] pl-[1vw] text-left max-md:py-[5vw] max-md:pr-[5vw] max-md:pl-[5vw] max-[1025px]:py-[3vw] max-[1025px]:pr-[3vw] max-[1025px]:pl-[3vw]"

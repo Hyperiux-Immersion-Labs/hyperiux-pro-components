@@ -52,6 +52,9 @@ const PHONE_PAD_TOP_VW = 6;
 const PHONE_TITLE_VW = 9;
 const PHONE_SLIVER_VW = 4;
 
+const SCROLL_DISTANCE_PER_CARD_SVH = 90;
+const STICKY_VIEWPORT_RESERVE_SVH = 95;
+
 const stackOffset = () => {
   const w = window.innerWidth;
   if (w <= PHONE_BP) {
@@ -73,8 +76,10 @@ export default function ScrollStack({
 }: ScrollStackProps) {
   const uid = useId().replace(/:/g, "");
   const sectionId = `scroll-stack-${uid}`;
+  const transitionCount = Math.max(cards.length - 1, 1);
   const sectionRef = useRef<HTMLElement>(null);
   const runwayRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -84,8 +89,9 @@ export default function ScrollStack({
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const runway = runwayRef.current;
+      const sticky = stickyRef.current;
       const cardEls = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-      if (!runway || cardEls.length === 0) return;
+      if (!runway || !sticky || cardEls.length === 0) return;
 
     
      
@@ -118,10 +124,15 @@ export default function ScrollStack({
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: runway,
-          start: "top 30%",
-          end: "bottom bottom",
+          start: "top 5%",
+          // Finish exactly when CSS sticky releases the card viewport.
+          end: () => {
+            const stickyTop = Number.parseFloat(
+              window.getComputedStyle(sticky).top,
+            );
+            return `bottom ${sticky.offsetHeight + (stickyTop || 0)}px`;
+          },
           scrub: true,
-          // markers:true,
           invalidateOnRefresh: true,
         },
       });
@@ -160,7 +171,6 @@ export default function ScrollStack({
         }
       });
 
-      tl.to({}, { duration: 0.5 });
     });
 
     return () => mm.revert();
@@ -175,10 +185,16 @@ export default function ScrollStack({
     >
       <div
         ref={runwayRef}
-        style={{ height: `${cards.length * 55}svh` }}
-        className="w-full motion-reduce:h-auto"
+        
+        style={{
+          height: `${transitionCount * SCROLL_DISTANCE_PER_CARD_SVH + STICKY_VIEWPORT_RESERVE_SVH}svh`,
+        }}
+        className="w-full motion-reduce:h-auto "
       >
-        <div className="sticky top-10 h-[58vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto max-[1025px]:top-[22vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-md:top-[50vw]">
+        <div
+          ref={stickyRef}
+          className="sticky top-25 h-[80vw] max-h-[86vh] w-full motion-reduce:static motion-reduce:h-auto max-[1025px]:top-[24vw] max-[1025px]:h-[70vh] max-[1025px]:max-h-none max-md:top-[54vw]"
+        >
           <div className="relative mx-auto h-full w-full motion-reduce:h-auto">
             {cards.map((card, index) => {
               return (

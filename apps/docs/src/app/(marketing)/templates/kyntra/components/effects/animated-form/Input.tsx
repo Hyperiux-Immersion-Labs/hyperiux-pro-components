@@ -48,7 +48,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           className={`
             h-[3.6vw] w-full rounded-[0.8vw] border border-white/25 bg-white/5 max-[1025px]:rounded-[2.5vw]
             pl-[1.6vw] pr-[1.6vw] font-aeonik-pro text-[1.05vw]
-            text-white outline-none backdrop-blur-[1px] transition-colors duration-300
+            text-white outline-none transition-colors duration-300
             hover:border-white/40 focus:border-white/60
             max-[1025px]:h-[12vw] max-[1025px]:pl-[5vw] max-[1025px]:pr-[5vw] max-[1025px]:text-[3.2vw]
             max-md:h-[14vw] max-md:text-[4vw]

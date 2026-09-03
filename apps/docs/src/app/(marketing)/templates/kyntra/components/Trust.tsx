@@ -2,8 +2,8 @@
 import Image from "next/image";
 import NumberCounterThree from "./effects/number-counter/NumberCounterThree";
 import ParallaxImageAnimation from "./effects/parallax-image-animation";
-import trustOutside from "../assets/trust-outside.png";
-import trustInside from "../assets/trust-inside.png";
+
+import trust from "../assets/trust.jpg"
 
 import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp } from "./Animations/gsapAnim";
@@ -19,19 +19,20 @@ const Trust = () => {
     <section className="relative h-screen w-full overflow-hidden bg-black text-white ">
   
       <Image
-        src={trustOutside}
+        src={trust}
         alt=""
         aria-hidden
         priority
         className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover "
       />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-black/55" />
 
       {/* Inset glass card */}
       <div className="relative z-10 flex h-full w-full pb-2 items-center justify-center px-[10vw] max-[1025px]:px-[3vw] max-[1025px]:py-[10vw] max-md:p-[5vw]">
         <div className="relative h-full  max-h-[76vh] w-full max-w-360 overflow-hidden rounded-[1.6vw] max-[1025px]:h-full max-[1025px]:max-h-[90vh] max-[1025px]:rounded-[4vw]  max-md:rounded-[4vw]">
           {/* Card background image - parallax on scroll scrub */}
           <ParallaxImageAnimation
-            src={trustInside.src}
+            src={trust.src}
             alt="Kyntra verified professionals"
             start="top bottom"
             width={1440}
@@ -43,7 +44,7 @@ const Trust = () => {
             scrub
           />
 
-          <div className="absolute inset-0 bg-black/10" />
+          <div aria-hidden className="pointer-events-none absolute inset-0 bg-black/25" />
 
           <div className="relative max-[1025px]:mt-[5vh] flex h-full flex-col justify-between p-[3.5vw] max-[1025px]:h-auto max-[1025px]:min-h-[100vw] max-[1025px]:gap-[10vw] max-[1025px]:p-[6vw] max-md:min-h-[175vw] max-md:gap-[12vw] max-md:p-[7vw]">
             <FocusTextWrap>

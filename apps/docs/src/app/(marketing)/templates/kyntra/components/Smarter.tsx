@@ -127,12 +127,12 @@ export default function Smarter() {
     <section
       id="smarter"
       ref={sectionRef}
-      className="relative z-10 w-full bg-white"
+      className="relative z-10 mt-[-20vh] w-full bg-white"
     >
       {/* Scroll range: the sticky viewport below stays put for its length
           while the card track is scrubbed sideways. Header rides along inside
           it so the copy stays on screen for the whole sweep. */}
-      <div ref={scrollRangeRef} className="relative h-[150vh]">
+      <div ref={scrollRangeRef} className="relative h-[190vh]">
         <div className="sticky top-0 flex h-screen w-full flex-col justify-center gap-[4vw] overflow-hidden max-[1025px]:gap-[6vw] max-md:gap-10">
           {/* Header */}
           <div className="mx-auto flex w-full max-w-400 shrink-0 flex-col gap-[2vw] px-[5%] max-[1025px]:px-[7%] max-md:gap-8">

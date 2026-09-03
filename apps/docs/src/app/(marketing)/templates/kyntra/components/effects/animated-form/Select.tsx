@@ -55,7 +55,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(function Select(
           className={`
             flex h-[3.6vw] w-full cursor-pointer items-center rounded-[0.8vw] max-[1025px]:rounded-[2.5vw]
             border border-white/25 bg-white/5 pl-[1.6vw] pr-[3.2vw] text-left
-            font-aeonik-pro text-[1.05vw] outline-none backdrop-blur-[1px]
+            font-aeonik-pro text-[1.05vw] outline-none
             text-white transition-colors duration-300 hover:border-white/40
             max-[1025px]:h-[12vw] max-[1025px]:pl-[5vw] max-[1025px]:pr-[10vw] max-[1025px]:text-[3.2vw]
             max-md:h-[14vw] max-md:text-[4vw]

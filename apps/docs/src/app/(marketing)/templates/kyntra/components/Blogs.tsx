@@ -66,7 +66,7 @@ const ARTICLES: Article[] = [
 ];
 
 /** Rate the hover overlay reverses at; above 1 makes leaving quicker than entering. */
-const LEAVE_SCALE = 1.6;
+const LEAVE_SCALE = 2.3;
 
 const ArticleCard = ({ article }: { article: Article }) => {
   const cardRef = useRef<HTMLElement | null>(null);
@@ -97,16 +97,16 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
       tl.to(panel, {
         yPercent: 0,
-        // A long `out` curve: the panel covers most of its travel early, then
-        // eases into place, so the overlay glides up instead of arriving fast.
-        duration: reduced ? 0 : 0.9,
+        // The `out` curve covers most of the distance early, then eases into
+        // place so the faster overlay still feels like a glide.
+        duration: reduced ? 0 : 0.75,
         ease: "power3.out",
       });
 
       if (image) {
         tl.to(
           image,
-          { scale: reduced ? 1 : 1.05, duration: reduced ? 0 : 1.3 },
+          { scale: reduced ? 1 : 1.05, duration: reduced ? 0 : 0.75 },
           0,
         );
       }
@@ -118,10 +118,10 @@ const ArticleCard = ({ article }: { article: Article }) => {
         {
           autoAlpha: 1,
           y: 0,
-          duration: reduced ? 0 : 0.6,
+          duration: reduced ? 0 : 0.5,
           stagger: reduced ? 0 : 0.03,
         },
-        reduced ? 0 : 0.3,
+        reduced ? 0 : 0.25,
       );
 
       tlRef.current = tl;
@@ -141,7 +141,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
       onMouseLeave={handleLeave}
       onFocusCapture={handleEnter}
       onBlurCapture={handleLeave}
-      className="group relative h-[34vw] w-[30vw] shrink-0 overflow-hidden rounded-[1.4vw] max-[1025px]:h-[52vw] max-[1025px]:w-[42vw] max-md:h-[110vw] max-md:w-[82vw] max-md:rounded-[4vw]"
+      className="group relative h-[34vw] overflow-hidden w-[30vw] shrink-0  rounded-[1.4vw] max-[1025px]:h-[52vw] max-[1025px]:w-[42vw] max-md:h-[110vw] max-md:w-[82vw] max-md:rounded-[4vw]"
     >
       <Image
         src={article.image}
@@ -149,13 +149,13 @@ const ArticleCard = ({ article }: { article: Article }) => {
         fill
         draggable={false}
         sizes="(max-width: 768px) 82vw, (max-width: 1024px) 42vw, 24vw"
-        className="object-cover"
+        className="object-cover rounded-lg overflow-hidden"
       />
 
       {/* Blurred panel: slides up on hover, then its content fades in. */}
       <div
         ref={panelRef}
-        className="absolute inset-x-0 bottom-0 rounded-t-lg bg-black/40 px-[1.8vw] py-[1.6vw] backdrop-blur-md max-md:px-[6vw] max-md:py-[6vw]"
+        className="absolute inset-x-0 bottom-0 rounded-t-lg  bg-black/40 px-[1.8vw] py-[1.6vw] backdrop-blur-md max-md:px-[6vw] max-md:py-[6vw]"
       >
         <h3
           data-panel-item
@@ -207,15 +207,16 @@ const Blogs = () => {
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1026px)", () => {
-        gsap.set(wrapper, { xPercent: 70 });
+        gsap.set(wrapper, { xPercent: 30, opacity: 0 });
 
         gsap.to(wrapper, {
           xPercent: 0,
-          duration: 1.6,
+          opacity: 1,
+          duration: 1.8,
           ease: "power4.out",
           scrollTrigger: trigger,
           onComplete: () => {
-            gsap.set(wrapper, { clearProps: "transform" });
+            gsap.set(wrapper, { clearProps: "opacity,transform" });
           },
         });
       });
@@ -328,10 +329,13 @@ const Blogs = () => {
           </FadeUp>
         </div>
 
-        <div ref={carouselWrapperRef} className="min-w-0 flex-1 max-[1025px]:order-2">
+        <div
+          ref={carouselWrapperRef}
+          className="relative min-w-0 flex-1   max-[1025px]:order-2"
+        >
           <SmoothInfiniteCarousel
             config={carouselConfig}
-            wrapperClassName="pr-[5%] max-[1025px]:px-[7%] pb-[1vw] gap-[1.5vw] max-[1025px]:gap-[3.5vw] max-md:gap-[5vw]"
+            wrapperClassName="pr-[5%] max-[1025px]:px-[7%]  gap-[1.5vw] max-[1025px]:gap-[3.5vw] max-md:gap-[5vw] "
             itemClassName="cursor-grab active:cursor-grabbing"
             onReady={(slider) => {
               sliderRef.current = slider;
@@ -341,6 +345,10 @@ const Blogs = () => {
               <ArticleCard key={article.title} article={article} />
             ))}
           </SmoothInfiniteCarousel>
+          {/* <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[20vw] bg-linear-to-r from-white  to-transparent  max-[1025px]:hidden"
+          /> */}
         </div>
       </div>
     </section>

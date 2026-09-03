@@ -144,12 +144,13 @@ const Testimonial = () => {
   const progress = useRef({ t: 0 });
 
   const stripIndexRef = useRef(1);
+  const dragCleanup = useRef<(() => void) | null>(null);
 
   const count = TESTIMONIALS.length;
 
   const transitionCard = (
     idx: number,
-    _fromIdx: number,
+    fromIdx: number,
     opts?: { immediate?: boolean },
   ) => {
     const nextText = textRefs.current[idx];
@@ -194,17 +195,25 @@ const Testimonial = () => {
       );
     }
 
-    //  text: fade the old out
-
+    // Text: only ever one visible block.
+    //
+    // Killing the tweens above can leave a card stranded part-way through its
+    // fade. Anything that is not the outgoing or incoming card is therefore
+    // cut to 0 immediately - that is the case that used to read as overlapping
+    // quotes when slide changes arrived faster than TEXT_FADE_DURATION.
     textRefs.current.forEach((el, i) => {
       if (!el || i === idx) return;
-      cardTweens.current.push(
-        gsap.to(el, {
-          autoAlpha: 0,
-          duration: TEXT_FADE_DURATION,
-          ease: "power2.in",
-        }),
-      );
+      if (i === fromIdx) {
+        cardTweens.current.push(
+          gsap.to(el, {
+            autoAlpha: 0,
+            duration: TEXT_FADE_DURATION,
+            ease: "power2.in",
+          }),
+        );
+      } else {
+        gsap.set(el, { autoAlpha: 0 });
+      }
     });
 
     lineRefs.current.forEach((els, i) => {
@@ -213,7 +222,17 @@ const Testimonial = () => {
     });
 
     if (nextText) {
-      gsap.set(nextText, { autoAlpha: 1 });
+      // Held hidden until the outgoing quote has cleared, so the two are never
+      // legible at the same time.
+      gsap.set(nextText, { autoAlpha: 0 });
+      cardTweens.current.push(
+        gsap.to(nextText, {
+          autoAlpha: 1,
+          duration: 0,
+          delay: TEXT_FADE_DURATION,
+          overwrite: "auto",
+        }),
+      );
       if (lines?.length) {
         gsap.set(lines, { yPercent: 100 });
         cardTweens.current.push(
@@ -260,6 +279,8 @@ const Testimonial = () => {
       splitsRef.current.forEach((split) => split.revert());
       splitsRef.current = [];
       if (hideTimer.current) clearTimeout(hideTimer.current);
+      dragCleanup.current?.();
+      dragCleanup.current = null;
     };
   }, []);
 
@@ -363,6 +384,7 @@ const Testimonial = () => {
     },
     [count, goTo],
   );
+
 
   const stripConfig = useMemo(
     () => ({
@@ -497,10 +519,18 @@ const Testimonial = () => {
                   stripRef.current = slider;
                   stripShiftRef.current = slider.wrapper as HTMLDivElement;
               
-                  slider.wrapper.addEventListener("pointerdown", () => {
+                  const startDrag = () => {
                     shiftRef.current?.kill();
                     shiftRef.current = null;
-                  });
+                  };
+                  slider.wrapper.addEventListener("pointerdown", startDrag);
+                  dragCleanup.current?.();
+                  dragCleanup.current = () => {
+                    slider.wrapper.removeEventListener(
+                      "pointerdown",
+                      startDrag,
+                    );
+                  };
                   requestAnimationFrame(() => {
      
                     slider.goToIndex(1);
