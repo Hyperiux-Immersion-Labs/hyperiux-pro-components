@@ -83,13 +83,13 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 px-[3vw] py-[1.6vw] transition-all duration-700 ease-out max-[1025px]:px-[5%] max-[1025px]:py-[5%] ${
+      className={`fixed inset-x-0 top-0 z-50 px-[3vw] py-[1.1vw] transition-all duration-700 ease-out max-[1025px]:px-[5%] max-[1025px]:py-[5%] ${
         !revealed
           ? "-translate-y-full"
           : hidden
             ? "-translate-y-full max-[1025px]:translate-y-0"
             : "translate-y-0"
-      } ${isScrolled ? "bg-black/20 shadow-md backdrop-blur-md" : ""}`}
+      } ${isScrolled ? "bg-black/30  backdrop-blur-md" : ""}`}
     >
       <div className="flex items-center justify-between">
         <Link

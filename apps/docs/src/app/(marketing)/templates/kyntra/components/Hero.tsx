@@ -4,7 +4,6 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { Star } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,52 +11,41 @@ import { AppleStoreButton, PlayStoreButton } from "./Buttons";
 import phoneMockup from "../assets/kyntra-hero-mockup.png";
 import kyntraHero from "../assets/kyntra-hero.png";
 
-import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
-import { prefersReducedMotion } from "./Animations/reducedMotion";
+import { useReducedMotionSync } from "./Animations/reducedMotion";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Hero = () => {
   const heroRef = useRef<HTMLElement | null>(null);
-  const phoneEntranceRef = useRef<HTMLDivElement | null>(null);
   const phoneScrollRef = useRef<HTMLDivElement | null>(null);
+
+  // Synchronous: `initial` is read once, so it must be right on first render
+  const reduced = useReducedMotionSync();
 
   useGSAP(
     () => {
-      const entrance = phoneEntranceRef.current;
       const phone = phoneScrollRef.current;
-      if (!entrance || !phone) return;
+      if (!phone) return;
 
-      if (prefersReducedMotion()) {
-        gsap.set(entrance, { opacity: 1, yPercent: 0 });
-        return;
-      }
-
-      // Class prevents flash; GSAP owns values
-      gsap.set(entrance, { opacity: 0, yPercent: 110 });
-      gsap.to(entrance, {
-        opacity: 1,
-        yPercent: 0,
-        duration: 1.3,
-        ease: "power3.out",
-      });
-
-      // Desktop only: would overlap copy
+      // Desktop only: would overlap copy. Reduced motion drops the scrub
       const mm = gsap.matchMedia();
 
-      mm.add("(min-width: 1026px)", () => {
-        gsap.to(phone, {
-          yPercent: 15,
-          ease: "none",
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: 0.2,
-          },
-        });
-      });
+      mm.add(
+        "(min-width: 1026px) and (prefers-reduced-motion: no-preference)",
+        () => {
+          gsap.to(phone, {
+            yPercent: 15,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.2,
+            },
+          });
+        },
+      );
     },
     { scope: heroRef },
   );
@@ -91,11 +79,16 @@ const Hero = () => {
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-400 items-center gap-[10vw] px-[5vw] pb-[8vh] pt-[40vh] max-[1025px]:flex-col-reverse max-[1025px]:items-start max-[1025px]:justify-end max-[1025px]:gap-[8vw] max-[1025px]:px-[7vw] max-[1025px]:pb-0 max-[1025px]:pt-[20vh] max-md:gap-[10vw]">
         {/* Phone mockup */}
-        <div className="flex w-[33%] shrink-0 justify-center max-[1025px]:w-full max-md:w-full">
-          <div
-            ref={phoneEntranceRef}
-            className="ml-20 opacity-0 h-auto w-[25vw]  max-[1025px]:ml-0 max-[1025px]:w-[62vw] max-md:w-[80vw]"
-            style={{ opacity: 0 }}
+        <div className="flex w-[33%] shrink-0 justify-center  max-[1025px]:w-full max-md:w-full">
+          <motion.div
+            initial={{ opacity: 0, y: reduced ? 0 : "110%" }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={
+              reduced
+                ? { duration: 0.4, ease: "linear" }
+                : { duration: 1.3, ease: [0.16, 1, 0.3, 1] }
+            }
+            className="ml-20 h-auto w-[25vw] will-change-transform max-[1025px]:ml-0 max-[1025px]:w-[62vw] max-md:w-[80vw]"
           >
             <div ref={phoneScrollRef} className="will-change-transform">
               <Image
@@ -105,20 +98,22 @@ const Hero = () => {
                 priority
               />
             </div>
-          </div>
+          </motion.div>
         </div>
 
        
         <div className="flex w-[60%] flex-col gap-[3vw] pt-[30vh] max-[1025px]:w-full max-[1025px]:gap-[6vw] max-[1025px]:pt-0 max-[1025px]:text-left max-md:gap-[7vw]">
-          <FocusTextWrap delay={0.5}>
-            <h1 className="font-helvetica-neue max-[1025px]:leading-[1.8] text-black max-[1025px]:mx-0 max-[1025px]:text-white max-md:max-w-none">
-              One App to
-              <br />
-              Manage Your
-              <br className="hidden max-[1025px]:inline" />{" "}
-              Home
-            </h1>
-          </FocusTextWrap>
+          <ParaAnim
+            as="h1"
+            delay={0.5}
+            className="font-helvetica-neue max-[1025px]:leading-[1.8] text-black max-[1025px]:mx-0 max-[1025px]:text-white max-md:max-w-none"
+          >
+            One App to
+            <br />
+            Manage Your
+          
+            Home
+          </ParaAnim>
 
           <ParaAnim
             as="p"

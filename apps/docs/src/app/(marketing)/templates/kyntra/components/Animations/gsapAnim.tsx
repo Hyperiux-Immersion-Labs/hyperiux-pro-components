@@ -16,6 +16,9 @@ import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 
+// Reduced motion still reveals, just as a short fade
+const REDUCED_MOTION_FADE = 0.3;
+
 type FadeUpProps<T extends ElementType> = {
   /** Element to render as */
   as?: T;
@@ -124,14 +127,32 @@ export function ParaAnim<T extends ElementType = "div">({
     const el = ref.current;
     if (!el) return;
 
-    // Class prevents flash; paths restore it
-    if (prefersReducedMotion()) {
-      gsap.set(el, { opacity: 1 });
-      return;
-    }
-
     let split: SplitText | null = null;
     let trigger: ScrollTrigger | null = null;
+
+    if (prefersReducedMotion()) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return;
+          gsap.to(el, {
+            opacity: 1,
+            duration: REDUCED_MOTION_FADE,
+    
+            delay: scrub ? 0 : delay,
+            ease: "none",
+            onComplete: () => {
+              el.style.removeProperty("opacity");
+              el.classList.remove("opacity-0");
+            },
+          });
+          observer.disconnect();
+        },
+        { rootMargin: "0px 0px -15% 0px" },
+      );
+      observer.observe(el);
+
+      return () => observer.disconnect();
+    }
 
     // Split after fonts load
     const init = () => {

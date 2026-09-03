@@ -7,7 +7,6 @@ import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
-import FocusTextWrap from "./effects/focus-text/wrap";
 import { ParaAnim } from "./Animations/gsapAnim";
 import {
   prefersReducedMotion,
@@ -226,11 +225,12 @@ export default function Smarter() {
           }`}
         >
           <div className="mx-auto flex w-full max-w-400 shrink-0 flex-col gap-[2vw] px-[5%] max-[1025px]:px-[7%] max-md:gap-8">
-            <FocusTextWrap>
-              <h2 className="font-helvetica-neue w-[60%] max-[1025px]:w-full leading-[1.1] font-normal tracking-[-0.02em] whitespace-pre-line text-black ">
-                Every Visit Makes Kyntra Smarter About your Home
-              </h2>
-            </FocusTextWrap>
+            <ParaAnim
+              as="h2"
+              className="font-helvetica-neue w-[60%] max-[1025px]:w-full leading-[1.1] font-normal tracking-[-0.02em] whitespace-pre-line text-black "
+            >
+              Every Visit Makes Kyntra Smarter About your Home
+            </ParaAnim>
 
             <div className="flex items-center justify-between gap-[4vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-6">
               <ParaAnim

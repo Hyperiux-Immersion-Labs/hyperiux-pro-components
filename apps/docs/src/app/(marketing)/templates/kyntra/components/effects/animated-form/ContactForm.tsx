@@ -10,7 +10,6 @@ import Select, { type SelectOption } from "./Select";
 import PhoneInput from "./PhoneInput";
 import Checkbox from "./Checkbox";
 import CharStaggerPrimaryButton from "../char-stagger-primary-button";
-import { FadeUp } from "../../Animations/gsapAnim";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -267,8 +266,7 @@ export default function ContactForm({
    transition-duration: var(--form-duration);
  }
  `}</style>
- {/* One fade for the whole form */}
- <FadeUp className="w-full">
+ <div className="w-full">
  <div className="w-full flex flex-col gap-[2vw]">
  <form
  autoComplete="off"
@@ -315,7 +313,7 @@ export default function ContactForm({
  )}
  </form>
  </div>
- </FadeUp>
+ </div>
  </section>
  );
 }

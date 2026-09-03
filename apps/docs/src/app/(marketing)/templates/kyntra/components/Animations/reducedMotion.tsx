@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 
 /** One-shot read for imperative code */
 export function prefersReducedMotion() {
@@ -28,4 +28,19 @@ export function usePrefersReducedMotion() {
   }, []);
 
   return reducedMotion;
+}
+
+/** Reactive read that is correct on the very first render */
+export function useReducedMotionSync() {
+  const subscribe = useCallback((onChange: () => void) => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return () => {};
+
+    mediaQuery.addEventListener("change", onChange);
+    return () => mediaQuery.removeEventListener("change", onChange);
+  }, []);
+
+  // Server render has no preference to read, so it assumes no-preference and
+  // the first client render corrects it before paint.
+  return useSyncExternalStore(subscribe, prefersReducedMotion, () => false);
 }

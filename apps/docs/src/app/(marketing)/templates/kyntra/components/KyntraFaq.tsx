@@ -10,8 +10,7 @@ import {
 } from "./effects/animated-faq/AnimatedFaqComp";
 import { type ReactNode } from "react";
 
-import FocusTextWrap from "./effects/focus-text/wrap";
-import { FadeUp, lineDraw } from "./Animations/gsapAnim";
+import { FadeUp, ParaAnim, lineDraw } from "./Animations/gsapAnim";
 interface FAQItem {
   id: string;
   title: ReactNode;
@@ -101,11 +100,12 @@ export default function KyntraFaq() {
       className="kyntra-container relative w-full bg-white text-black"
     >
       <div className="mx-auto max-w-400">
-        <FocusTextWrap>
-          <h2 className="font-helvetica-neue mb-[4vw] leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:mb-[8vw] max-[1025px]:text-[6vw] max-md:text-[8vw]">
-            Frequently Asked Questions
-          </h2>
-        </FocusTextWrap>
+        <ParaAnim
+          as="h2"
+          className="font-helvetica-neue mb-[4vw] leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:mb-[8vw] max-[1025px]:text-[6vw] max-md:text-[8vw]"
+        >
+          Frequently Asked Questions
+        </ParaAnim>
 
         <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
           {faqItems.map((item) => (

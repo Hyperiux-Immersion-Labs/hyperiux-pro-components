@@ -11,7 +11,6 @@ import { FooterParallax } from "./ParallaxFooter";
 import CharStaggerButton from "../char-stagger-button";
 import { AppleStoreButton, PlayStoreButton } from "../../Buttons";
 import { FadeUp } from "../../Animations/gsapAnim";
-import kyntraLogo from "../../../assets/kyntra-logo.png";
 import footerImg from "../../../assets/footer.png";
 import klogo from '../../../assets/icons/kyntra-logo.svg';
 
@@ -22,6 +21,8 @@ if (typeof window !== "undefined") {
 const KYNTRA_PRIMARY = "#134BD6";
 
 const FOOTER_BUTTON_TEXT = "#1A1A1A";
+// Store buttons sit smaller here than in the hero
+const FOOTER_BUTTON_SCALE = 0.8;
 
 const FOOTER_TRIGGER = "#footer";
 
@@ -106,7 +107,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
     >
       <div className="relative flex h-[80vh] w-full flex-col justify-between px-[5%] pt-[6vw] pb-[2vw] max-[1025px]:h-auto max-[1025px]:px-[7%] max-[1025px]:pt-[12vw] max-[1025px]:pb-0 max-md:pt-[16vw]">
        
-        <div className="pointer-events-none absolute bottom-0 left-[60%] w-[22vw] -translate-x-1/2 max-[1025px]:static max-[1025px]:left-auto max-[1025px]:order-3 max-[1025px]:mt-[12vw] max-[1025px]:mb-0 max-[1025px]:w-[55vw] max-[1025px]:translate-x-0 max-[1025px]:self-center max-md:w-[72vw]">
+        <div className="pointer-events-none absolute bottom-0 left-1/2 w-[22vw] -translate-x-1/2 max-[1025px]:static max-[1025px]:left-auto max-[1025px]:order-3 max-[1025px]:mt-[12vw] max-[1025px]:mb-0 max-[1025px]:w-[55vw] max-[1025px]:translate-x-0 max-[1025px]:self-center max-md:w-[72vw]">
           <Image
             ref={footerImgRef}
             src={footerImg}
@@ -148,23 +149,26 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             <FadeUp
               watch={FOOTER_TRIGGER}
               delay={FOOTER_DELAY + 0.16}
-              className="mt-[2.5vw] flex gap-[1.2vw] max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[3.5vw] max-md:gap-[4vw]"
+              className="mt-[2.5vw] flex gap-[5vw] max-[1025px]:mt-[8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[3.5vw] max-md:gap-[4vw]"
             >
               {/* Same components as the hero */}
               <AppleStoreButton
                 href="#"
+                scale={FOOTER_BUTTON_SCALE}
                 style={{
                   backgroundColor: "#ffffff",
                   borderColor: "#ffffff",
                   color: FOOTER_BUTTON_TEXT,
+                  padding: "0.6vw 1.2vw",
+                  width: '14vw',
                 }}
               />
-              <PlayStoreButton href="#" />
+              <PlayStoreButton href="#" scale={FOOTER_BUTTON_SCALE} />
             </FadeUp>
           </div>
 
           {/* Link columns */}
-          <div className="flex gap-[4vw] max-[1025px]:flex max-[1025px]:justify-between max-[1025px]:px-[5vw] max-[1025px]:w-full max-[1025px]:grid-cols-2 max-[1025px]:gap-x-[4vw] max-[1025px]:gap-y-0">
+          <div className="flex gap-[7vw] max-[1025px]:flex max-[1025px]:justify-between max-[1025px]:px-[5vw] max-[1025px]:w-full max-[1025px]:grid-cols-2 max-[1025px]:gap-x-[4vw] max-[1025px]:gap-y-0">
             <FooterLinkColumn title="Services" links={serviceLinks} />
             <FooterLinkColumn title="Connect" links={connectLinks} />
           </div>

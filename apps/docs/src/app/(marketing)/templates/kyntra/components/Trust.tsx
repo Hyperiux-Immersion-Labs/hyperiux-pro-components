@@ -5,8 +5,7 @@ import ParallaxImageAnimation from "./effects/parallax-image-animation";
 
 import trust from "../assets/trust.jpg"
 
-import FocusTextWrap from "./effects/focus-text/wrap";
-import { FadeUp } from "./Animations/gsapAnim";
+import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 const STATS = [
   { value: "4.9/5", label: "Average Rating" },
   { value: "25K+", label: "Services Completed" },
@@ -47,11 +46,12 @@ const Trust = () => {
           <div aria-hidden className="pointer-events-none absolute inset-0 bg-black/25" />
 
           <div className="relative max-[1025px]:mt-[5vh] flex h-full flex-col justify-between p-[3.5vw] max-[1025px]:h-auto max-[1025px]:min-h-[100vw] max-[1025px]:gap-[10vw] max-[1025px]:p-[6vw] max-md:min-h-[175vw] max-md:gap-[12vw] max-md:p-[7vw]">
-            <FocusTextWrap>
-              <h2 className="font-helvetica-neue max-w-[10ch]  leading-[1.05] font-normal tracking-[-0.02em] max-[1025px]:text-[5vw] max-md:text-[10vw]">
-                Trusted by Homeowners
-              </h2>
-            </FocusTextWrap>
+            <ParaAnim
+              as="h2"
+              className="font-helvetica-neue w-[50%] max-[1025px]:w-[90%] leading-[1.05] font-normal tracking-[-0.02em] max-[1025px]:text-[5vw] max-md:text-[10vw]"
+            >
+              Trusted by Homeowners
+            </ParaAnim>
 
             <div className="grid grid-cols-4 gap-[3vw] max-[1025px]:grid-cols-1 max-[1025px]:gap-y-[7vw] max-md:gap-y-[9vw]">
               {STATS.map((stat, index) => (

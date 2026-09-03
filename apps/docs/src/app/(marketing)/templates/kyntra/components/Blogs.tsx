@@ -19,7 +19,6 @@ import blog3 from "../assets/blogs/blog3.jpg";
 import blog4 from "../assets/blogs/blog4.jpg";
 import blog5 from "../assets/blogs/blog5.jpg";
 
-import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 
 if (typeof window !== "undefined") {
@@ -304,11 +303,12 @@ const Blogs = () => {
     <section id="resources" className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[10%]">
       <div className="px-[5%] max-[1025px]:px-[7%]">
         {/* Heading and copy */}
-        <FocusTextWrap>
-          <h2 className="font-helvetica-neue w-[55vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-full max-[1025px]:text-[6vw] max-md:text-[9vw]">
-            Notes from People Who Spend their Days Inside Homes
-          </h2>
-        </FocusTextWrap>
+        <ParaAnim
+          as="h2"
+          className="font-helvetica-neue w-[55vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-full max-[1025px]:text-[6vw] max-md:text-[9vw]"
+        >
+          Notes from People Who Spend their Days Inside Homes
+        </ParaAnim>
         <ParaAnim
           as="p"
           className="text-24 mt-[1.6vw] max-w-[30vw] leading-[1.6] text-black max-[1025px]:mt-[3vw] max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"

@@ -4,11 +4,24 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
 import { X } from "lucide-react";
 import AnimatedForm from "./effects/animated-form";
+import { prefersReducedMotion } from "./Animations/reducedMotion";
 
-const CLOSE_DURATION = 300;
+gsap.registerPlugin(useGSAP);
+
+const OPEN_DURATION = 0.7;
+const CLOSE_DURATION = 0.5;
+const OPEN_EASE = "power3.out";
+const CLOSE_EASE = "power2.in";
+// Reduced motion still shows the change, just as a short fade
+const REDUCED_MOTION_FADE = 0.2;
+
+const OVERLAY_OPACITY = 0.7;
+const PANEL_CLOSED_SCALE = 0.8;
 
 export interface EnquiryModalProps {
   /** Stays mounted while animating out */
@@ -24,26 +37,90 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
 }) => {
   const lenis = useLenis();
 
-  const wasOpen = useRef(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const tweenRef = useRef<gsap.core.Timeline | null>(null);
+
   const [exiting, setExiting] = useState(false);
-  const [visible, setVisible] = useState(false);
+  // Derived during render: the node must stay mounted for the whole close
+  // tween, and `open` flipping back on cancels a close already in flight.
+  const [lastOpen, setLastOpen] = useState(open);
+  if (open !== lastOpen) {
+    setLastOpen(open);
+    // Only a real open -> closed edge animates out
+    setExiting(!open && lastOpen);
+  }
   const mounted = open || exiting;
 
-  useEffect(() => {
-    if (open) {
-      wasOpen.current = true;
-      // Paint closed first, then transition
-      const raf = window.requestAnimationFrame(() => setVisible(true));
-      return () => window.cancelAnimationFrame(raf);
-    }
+  useGSAP(
+    () => {
+      const overlay = overlayRef.current;
+      const panel = panelRef.current;
+      if (!overlay || !panel) return;
 
-    if (!wasOpen.current) return;
+      // A new tween always replaces the one in flight
+      tweenRef.current?.kill();
 
-    setVisible(false);
-    setExiting(true);
-    const timer = window.setTimeout(() => setExiting(false), CLOSE_DURATION);
-    return () => window.clearTimeout(timer);
-  }, [open]);
+      const reduced = prefersReducedMotion();
+
+      if (open) {
+        const timeline = gsap.timeline();
+        tweenRef.current = timeline;
+
+        if (reduced) {
+          gsap.set(panel, { scale: 1 });
+          timeline
+            .fromTo(
+              overlay,
+              { opacity: 0 },
+              { opacity: OVERLAY_OPACITY, duration: REDUCED_MOTION_FADE, ease: "none" },
+            )
+            .fromTo(
+              panel,
+              { opacity: 0 },
+              { opacity: 1, duration: REDUCED_MOTION_FADE, ease: "none" },
+              0,
+            );
+          return;
+        }
+
+        timeline
+          .fromTo(
+            overlay,
+            { opacity: 0 },
+            { opacity: OVERLAY_OPACITY, duration: OPEN_DURATION, ease: OPEN_EASE },
+          )
+          .fromTo(
+            panel,
+            { opacity: 0, scale: PANEL_CLOSED_SCALE },
+            { opacity: 1, scale: 1, duration: OPEN_DURATION, ease: OPEN_EASE },
+            0,
+          );
+
+        return;
+      }
+
+      const duration = reduced ? REDUCED_MOTION_FADE : CLOSE_DURATION;
+      const ease = reduced ? "none" : CLOSE_EASE;
+
+      const timeline = gsap.timeline({ onComplete: () => setExiting(false) });
+      tweenRef.current = timeline;
+
+      timeline
+        .to(overlay, { opacity: 0, duration, ease })
+        .to(
+          panel,
+          {
+            opacity: 0,
+            scale: reduced ? 1 : PANEL_CLOSED_SCALE,
+            duration,
+            ease,
+          },
+          0,
+        );
+    },
+    { dependencies: [open], revertOnUpdate: false },
+  );
 
   // Lock scroll, listen for Escape
   useEffect(() => {
@@ -66,13 +143,13 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
     };
   }, [mounted, lenis, onClose]);
 
+  useEffect(() => () => void tweenRef.current?.kill(), []);
+
   if (!mounted) return null;
 
   return createPortal(
     <div
-      className={`kyntra-page fixed inset-0 z-100 flex items-center justify-center transition-colors duration-300 max-[1025px]:py-[10vw] ${
-        visible ? "bg-black/40" : "bg-black/0"
-      }`}
+      className="kyntra-page fixed inset-0 z-100 flex items-center justify-center max-[1025px]:py-[10vw]"
       role="dialog"
       aria-modal="true"
       aria-label={ariaLabel}
@@ -80,15 +157,17 @@ const EnquiryModal: React.FC<EnquiryModalProps> = ({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      
       <div
-        className={`relative mt-[5vw] pt-2 h-[75vh] w-[90vw] overflow-hidden rounded-[1.6vw] border border-[#88888880] px-[3vw] bg-[#0b1020]/10 backdrop-blur-2xl transition-[transform,opacity] duration-300 max-[1025px]:mt-[10vw] max-[1025px]:max-w-[90vw] max-[1025px]:rounded-[5vw] max-md:max-w-[92vw] ${
-          visible
-            ? "translate-y-0 scale-100 opacity-100"
-            : exiting
-              ? "translate-y-[2vw] scale-[0.98] opacity-0"
-              : "translate-y-[2vw] scale-[0.98]"
-        }`}
+        ref={overlayRef}
+        aria-hidden
+        style={{ opacity: 0 }}
+        className="pointer-events-none absolute inset-0 bg-black will-change-[opacity]"
+      />
+
+      <div
+        ref={panelRef}
+        style={{ opacity: 0, transform: `scale(${PANEL_CLOSED_SCALE})` }}
+        className="relative mt-[5vw] pt-2 h-[75vh] w-[90vw] overflow-hidden rounded-[1.6vw] border border-[#88888880] px-[3vw] bg-[#0b1020]/10 backdrop-blur-2xl will-change-[transform,opacity] max-[1025px]:mt-[10vw] max-[1025px]:max-w-[90vw] max-[1025px]:rounded-[5vw] max-md:max-w-[92vw]"
       >
         <div
           data-lenis-prevent

@@ -7,7 +7,6 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 
-import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 if (typeof window !== "undefined") {
@@ -150,11 +149,12 @@ export default function HowKyntraWorks() {
     >
     
       <div className="mx-auto flex max-w-400 flex-col gap-[2vw] max-[1025px]:gap-[8vw] text-center">
-        <FocusTextWrap>
-          <h2 className="font-helvetica-neue leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]">
-            How Kyntra Works
-          </h2>
-        </FocusTextWrap>
+        <ParaAnim
+          as="h2"
+          className="font-helvetica-neue leading-[1.15] font-normal tracking-[-0.02em] max-[1025px]:text-[6vw] max-md:text-[8vw]"
+        >
+          How Kyntra Works
+        </ParaAnim>
 
         <ParaAnim
           as="p"

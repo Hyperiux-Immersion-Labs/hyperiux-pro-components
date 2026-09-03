@@ -24,7 +24,6 @@ import priya from "../assets/testimonial/priya.jpg";
 import daniel from "../assets/testimonial/daniel.jpg";
 import marcus from "../assets/testimonial/marcus.jpg";
 
-import FocusTextWrap from "./effects/focus-text/wrap";
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 
 if (typeof window !== "undefined") {
@@ -385,11 +384,12 @@ const Testimonial = () => {
   return (
     <section id="stories" className="relative w-full overflow-hidden bg-white py-[7%] text-black max-[1025px]:py-[20%]">
       <div className="pl-[5%] max-[1025px]:px-[7%] ">
-        <FocusTextWrap>
-          <h2 className="font-helvetica-neue w-[45vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-[82%] max-[1025px]:text-[6vw] max-md:text-[9vw]">
-            Real Homes. Real Experiences
-          </h2>
-        </FocusTextWrap>
+        <ParaAnim
+          as="h2"
+          className="font-helvetica-neue w-[45vw] text-[3.8vw] leading-[1.1] font-normal tracking-[-0.02em] max-[1025px]:w-[82%] max-[1025px]:text-[6vw] max-md:text-[9vw]"
+        >
+          Real Homes. Real Experiences
+        </ParaAnim>
         <ParaAnim
           as="p"
           className="text-24 mt-[1.6vw]  max-w-[42vw] tracking-wide leading-[1.6] text-black max-[1025px]:mt-[6vw] max-[1025px]:max-w-full max-[1025px]:text-[2.6vw] max-md:text-[4vw]"

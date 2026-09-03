@@ -12,7 +12,6 @@ import aboutPhone2 from "../assets/about02.png";
 import aboutPhone3 from "../assets/about03.png";
 import aboutLine from "../assets/about-line.svg";
 
-import FocusTextWrap from "./effects/focus-text/wrap";
 import { ParaAnim } from "./Animations/gsapAnim";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 
@@ -96,11 +95,12 @@ const About = () => {
   return (
     <section id='kyntra-about' className="kyntra-container  relative w-full h-full overflow-hidden bg-white text-black">
       <div className="mx-auto flex max-w-400 py-[4vh] items-start justify-between gap-[6vw] max-[1025px]:flex-col max-[1025px]:gap-[6vw]">
-        <FocusTextWrap>
-          <h2 className="font-helvetica-neue w-[35vw] max-[1025px]:w-full leading-[1.15] font-normal tracking-[-0.02em] ">
-            Everything You Need For a Better Home &amp; Lifestyle
-          </h2>
-        </FocusTextWrap>
+        <ParaAnim
+          as="h2"
+          className="font-helvetica-neue w-[35vw] max-[1025px]:w-full leading-[1.15] font-normal tracking-[-0.02em] "
+        >
+          Everything You Need For a Better Home &amp; Lifestyle
+        </ParaAnim>
 
         <ParaAnim
           as="p"

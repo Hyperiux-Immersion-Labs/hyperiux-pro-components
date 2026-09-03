@@ -1,7 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import ScrollStack, { type ScrollStackCard } from "./effects/scroll-stack";
 
-import FocusTextWrap from "./effects/focus-text/wrap";
 import { ParaAnim } from "./Animations/gsapAnim";
 
 import card1Property from "../assets/features/card1/property.svg";
@@ -107,11 +106,12 @@ const Features = () => {
     <section id="features" className="kyntra-container w-full bg-white text-black">
       <div className="mx-auto pb-0 max-w-400">
         <div className="max-w-[46vw] max-[1025px]:max-w-full">
-          <FocusTextWrap>
-            <h2 className="font-helvetica-neue leading-[1.12] font-normal tracking-[-0.02em] ">
-              Your Dedicated Operating Layer for the Home
-            </h2>
-          </FocusTextWrap>
+          <ParaAnim
+            as="h2"
+            className="font-helvetica-neue leading-[1.12] font-normal tracking-[-0.02em] "
+          >
+            Your Dedicated Operating Layer for the Home
+          </ParaAnim>
           <ParaAnim
             as="p"
             className="text-24 max-[1025px]:pb-[7vh] mt-[1.6vw] max-[1025px]:mt-[6vw] max-w-[30vw] tracking-wide leading-normal text-black max-[1025px]:max-w-full "
