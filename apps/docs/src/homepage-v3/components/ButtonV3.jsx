@@ -27,6 +27,9 @@ function ScrambleLabel({ text, active }) {
         node.textContent = text[index];
         node.style.color = "";
         node.style.opacity = "";
+        node.style.width = "";
+        node.style.textAlign = "";
+        node.style.overflow = "";
       });
       line.style.transform = "";
     };
@@ -61,8 +64,22 @@ function ScrambleLabel({ text, active }) {
     const center = (position) =>
       `translate3d(${(fullWidth - widthAt(position)) / 2}px, 0, 0)`;
 
-    chars.forEach((node) => {
+    // Pin every character's box to its own settled (final-glyph) width
+    // before any scrambling starts - the swap below mutates textContent to
+    // random glyphs of varying intrinsic width every ~50ms, and an
+    // unconstrained inline-block reflows (self and every char after it)
+    // each time, which is exactly what shows up as a stream of Layout
+    // Shift entries in a performance trace even though each one's visual
+    // score rounds to ~0. A fixed width + centered glyph means swapping
+    // the character shown never changes box size, so there's nothing left
+    // to reflow.
+    chars.forEach((node, index) => {
+      const charWidth = edges[index] - (index === 0 ? 0 : edges[index - 1]);
+
       node.style.opacity = "0";
+      node.style.width = `${charWidth}px`;
+      node.style.textAlign = "center";
+      node.style.overflow = "hidden";
     });
     line.style.transform = center(0);
 

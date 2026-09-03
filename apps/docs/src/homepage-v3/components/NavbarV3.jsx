@@ -199,7 +199,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
           <button
             type="button"
             onClick={openSearch}
-            className="group flex py-[.86vw] cursor-pointer items-center gap-4  bg-[#121212]! px-3 text-xs text-white/70 backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
+            className="group flex py-[.86vw] cursor-pointer items-center gap-4  bg-[#121212]! px-3 text-xs text-white backdrop-blur-md transition-colors duration-300 hover:bg-white/10 hover:border-[#ff5f00] hover:text-forground max-md:hidden max-md:gap-3"
             aria-label="Search effects"
           >
             <div className="flex items-center gap-2">
@@ -218,7 +218,7 @@ export default function NavbarV3({ effects = [], introOnLoader = false }) {
               </svg>
             </div>
 
-            <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current opacity-50 max-md:hidden">
+            <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current max-md:hidden">
               ⌘ K
             </kbd>
           </button>

@@ -217,7 +217,7 @@ export function EffectCard({
               priority={priority}
               loading={priority ? undefined : "lazy"}
               onError={() => setImageError(true)}
-              className={`object-cover transition-[opacity,transform] duration-500 scale-[1.05] ${
+              className={`object-cover ${
                 showVideo ? "opacity-0" : "opacity-100"
               }`}
             />
@@ -234,7 +234,7 @@ export function EffectCard({
               onLoadedData={() => setVideoReady(true)}
               onEmptied={() => setVideoReady(false)}
               onError={() => setVideoReady(false)}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 scale-[1.05] ${
+              className={`absolute inset-0 h-full w-full object-cover  ${
                 showVideo ? "opacity-100" : "opacity-0"
               }`}
             />

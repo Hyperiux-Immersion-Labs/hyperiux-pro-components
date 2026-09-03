@@ -57,6 +57,7 @@ export function createPageMetadata({
     },
     twitter: {
       card: "summary_large_image",
+      site: "@_hyperiux_",
       title: resolvedTitle,
       description: resolvedDescription,
       images: [imageUrl],
@@ -103,6 +104,7 @@ export function createRootMetadata() {
     },
     twitter: {
       card: "summary_large_image",
+      site: "@_hyperiux_",
       title,
       description,
       images: [imageUrl],
