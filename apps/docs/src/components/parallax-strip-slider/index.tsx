@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
@@ -15,10 +16,10 @@ const REVEAL_DURATION = 0.5;
 const STRIP_STAGGER = 0.04;
 const ZOOM_DURATION = 0.9;
 const ZOOM_FROM = 1.2;
-// Incoming caption: SplitText line reveal from the y-axis.
-const TITLE_LINE_DURATION = 0.75;
-const TITLE_LINE_STAGGER = 0.09;
-const TITLE_LINE_Y_PERCENT = 110;
+const TITLE_CHAR_DURATION = 0.6;
+const TITLE_CHAR_STAGGER = 0.04;
+const TITLE_CHAR_Y_PERCENT = 100;
+const PROGRESS_DURATION = 0.9;
 
 type Slide = {
   src: string;
@@ -38,12 +39,36 @@ function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
+function ArrowIcon({
+  dir,
+  className = "",
+}: {
+  dir: TransitionDirection;
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d={dir === "prev" ? "M10 3L5 8L10 13" : "M6 3L11 8L6 13"}
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function ParallaxStripSlider({
   slides,
   className = "",
   stripCount = STRIP_COUNT,
 }: ParallaxStripSliderProps) {
-  // State and refs
   const [current, setCurrent] = useState(0);
   const [incoming, setIncoming] = useState<number | null>(null);
   const [caption, setCaption] = useState(0);
@@ -53,10 +78,13 @@ export default function ParallaxStripSlider({
   const chapterRef = useRef<HTMLSpanElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
+  const counterNumRef = useRef<HTMLSpanElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const stripsRef = useRef<HTMLDivElement[]>([]);
   const zoomRef = useRef<HTMLDivElement[]>([]);
   const isAnimating = useRef(false);
   const isFirstCaption = useRef(true);
+  const splitRef = useRef<SplitText | null>(null);
 
   const total = slides.length;
 
@@ -79,7 +107,7 @@ export default function ParallaxStripSlider({
     [current, total, goTo]
   );
 
-  // Runs once the incoming layer has mounted, so the strips exist to animate.
+  // Wipe + zoom + progress on slide change.
   useGSAP(
     () => {
       if (incoming === null) return;
@@ -108,8 +136,7 @@ export default function ParallaxStripSlider({
 
       const tl = gsap.timeline({ onComplete: settle });
 
-      // Reverse both the stagger and clip origin when moving backward, so the
-      // wipe sweeps right-to-left on "prev" and each strip peels from its right edge.
+      // Reverse stagger + clip origin when moving backward.
       tl.fromTo(
         orderedStrips,
         { clipPath: isPrevious ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)" },
@@ -122,8 +149,6 @@ export default function ParallaxStripSlider({
         0
       );
 
-      // Zoom starts on the same frame as the first strip so the image is
-      // already settling as the leading strips wipe open.
       tl.fromTo(
         zooms,
         { scale: ZOOM_FROM },
@@ -135,11 +160,28 @@ export default function ParallaxStripSlider({
         0
       );
 
-      // Outgoing caption texts fade out under cover of the strips. The incoming
-      // texts are animated separately, by the SplitText effect keyed on `caption`.
-      if (captionRef.current) {
+      // Bar slides toward the incoming fill.
+      if (progressRef.current) {
         tl.to(
-          [captionRef.current, counterRef.current],
+          progressRef.current,
+          {
+            scaleX: (incoming + 1) / total,
+            duration: PROGRESS_DURATION,
+            ease: "power3.inOut",
+          },
+          0
+        );
+      }
+
+      // Outgoing caption texts fade out under the strips.
+      const outgoing = [
+        captionRef.current,
+        titleRef.current,
+        counterRef.current,
+      ].filter(Boolean);
+      if (outgoing.length) {
+        tl.to(
+          outgoing,
           {
             autoAlpha: 0,
             y: -2,
@@ -154,61 +196,97 @@ export default function ParallaxStripSlider({
     { dependencies: [incoming, direction, stripCount], scope: rootRef }
   );
 
-  // Incoming caption reveal: fired after `caption` swaps and the new text has
-  // rendered. Fades the caption block back in and drops the title in line by
-  // line from the y-axis with SplitText.
+  // Revert the split before React commits the new title.
+  useLayoutEffect(() => {
+    splitRef.current?.revert();
+    splitRef.current = null;
+  }, [caption]);
+
+  // Incoming caption reveal: title chars, chapter fade, counter number.
   useGSAP(
     () => {
       if (isFirstCaption.current) {
         isFirstCaption.current = false;
         return;
       }
-      const targets = [
-        chapterRef.current,
-        titleRef.current,
-        counterRef.current,
-      ].filter((el): el is HTMLElement => el !== null);
-      if (!captionRef.current || !targets.length) return;
+      if (!captionRef.current || !titleRef.current) return;
+
+      // Snap back what the outgoing tween hid.
+      gsap.set([captionRef.current, titleRef.current], { autoAlpha: 1, y: 0 });
 
       if (prefersReducedMotion()) {
-        gsap.set([captionRef.current, counterRef.current], {
-          autoAlpha: 1,
-          y: 0,
-        });
+        gsap.set(
+          [chapterRef.current, titleRef.current, counterRef.current, counterNumRef.current],
+          { autoAlpha: 1, y: 0, yPercent: 0 }
+        );
         return;
       }
 
-      // `mask: "lines"` wraps every line in its own overflow-clip box, so each
-      // line rises into view from below its own mask on the y-axis. All three
-      // caption texts — chapter label, title, counter — get the same reveal.
-      const split = new SplitText(targets, {
-        type: "lines",
-        mask: "lines",
-      });
+      // Chars only — no line/mask wrappers that shift metrics.
+      const split = new SplitText(titleRef.current, { type: "chars" });
+      splitRef.current = split;
 
       const tl = gsap.timeline({
-        onComplete: () => split.revert(),
+        // Restore plain <h2> once the reveal is done.
+        onComplete: () => {
+          split.revert();
+          if (splitRef.current === split) splitRef.current = null;
+        },
       });
 
-      tl.fromTo(
-        [captionRef.current, counterRef.current],
-        { autoAlpha: 0, y: 0 },
-        { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.inOut" },
-        0
-      );
-
+      // Title: char stagger up from below the clip.
       tl.from(
-        split.lines,
+        split.chars,
         {
-          yPercent: TITLE_LINE_Y_PERCENT,
-          duration: TITLE_LINE_DURATION,
-          ease: "power3.out",
-          stagger: TITLE_LINE_STAGGER,
+          yPercent: TITLE_CHAR_Y_PERCENT,
+          duration: TITLE_CHAR_DURATION,
+          ease: "power2.out",
+          stagger: TITLE_CHAR_STAGGER,
         },
         0
       );
+
+      // Chapter: fade only.
+      if (chapterRef.current) {
+        tl.fromTo(
+          chapterRef.current,
+          { autoAlpha: 0, y: 0 },
+          { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" },
+          0
+        );
+      }
+
+      // Counter: fade block, lift just the number.
+      if (counterRef.current) {
+        tl.fromTo(
+          counterRef.current,
+          { autoAlpha: 0, y: 0 },
+          { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+          0
+        );
+      }
+      if (counterNumRef.current) {
+        tl.from(
+          counterNumRef.current,
+          {
+            yPercent: 110,
+            duration: 0.55,
+            ease: "power3.out",
+          },
+          0
+        );
+      }
     },
     { dependencies: [caption], scope: rootRef }
+  );
+
+  // Drop the last live split on unmount.
+  useGSAP(
+    () => () => {
+      splitRef.current?.revert();
+      splitRef.current = null;
+    },
+    { scope: rootRef }
   );
 
   const renderStrips = (slide: Slide) => {
@@ -224,13 +302,12 @@ export default function ParallaxStripSlider({
         style={{
           left: `${i * width}%`,
           width: `${width}%`,
-          // Cover the seam between neighbours so no hairline shows through.
+          // Cover the seam between neighbours.
           marginLeft: i === 0 ? 0 : "-0.5px",
           paddingLeft: i === 0 ? 0 : "0.5px",
         }}
       >
-        {/* Sized to the full slider and pulled back by the strip's own offset,
-            so every strip shows its correct slice of one shared image. */}
+        {/* Full-width image pulled back by this strip's offset. */}
         <div
           className="absolute inset-y-0"
           style={{
@@ -242,13 +319,15 @@ export default function ParallaxStripSlider({
             ref={(el) => {
               if (el) zoomRef.current[i] = el;
             }}
-            className="h-full w-full will-change-transform"
+            className="relative h-full w-full will-change-transform"
           >
-            <img
+            <Image
               src={slide.src}
               alt=""
+              fill
+              sizes="100vw"
               draggable={false}
-              className="h-full w-full object-cover select-none"
+              className="object-cover select-none"
             />
           </div>
         </div>
@@ -261,66 +340,100 @@ export default function ParallaxStripSlider({
   return (
     <div
       ref={rootRef}
-      className={`relative h-full w-full overflow-hidden bg-black ${className}`}
+      className={`parallax-strip-slider relative h-full w-full overflow-hidden bg-black ${className}`}
     >
-      {/* Outgoing slide sits underneath, untouched, and is revealed away. */}
+      {/* Outgoing slide, revealed away underneath. */}
       <div className="absolute inset-0">
-        <img
+        <Image
           src={slides[current].src}
           alt={slides[current].title}
+          fill
+          priority
+          sizes="100vw"
           draggable={false}
-          className="h-full w-full object-cover select-none"
+          className="object-cover select-none"
         />
       </div>
 
-      {/* Incoming slide, only mounted while a transition is running. */}
+      {/* Incoming slide, mounted only during a transition. */}
       {incoming !== null && (
         <div className="absolute inset-0">{renderStrips(slides[incoming])}</div>
       )}
 
-      {/* Overlays */}
+      {/* Top progress bar, floating over the image. */}
+      <div className="pointer-events-none absolute inset-x-10 top-7 z-10 h-px bg-white/20">
+        <div
+          ref={progressRef}
+          className="h-full w-full origin-left bg-white"
+          style={{ transform: `scaleX(${(caption + 1) / total})` }}
+        />
+      </div>
+
+      {/* Top-left label */}
       <div
         ref={captionRef}
-        className="pointer-events-none absolute inset-0 flex flex-col justify-between p-6 md:p-10"
+        className="pointer-events-none absolute inset-x-0 top-0 p-10"
       >
-        <span ref={chapterRef} className="text-xs tracking-wide text-white/70">
-          {activeSlide.chapter ?? `Chapter ${String(caption + 1).padStart(2, "0")}`}
+        <span
+          ref={chapterRef}
+          className="block text-xs font-medium tracking-wide text-white"
+        >
+          {activeSlide.chapter ??
+            `Collection ${String(caption + 1).padStart(2, "0")}`}
         </span>
+      </div>
+
+      {/* Bottom bar: three fixed thirds on one line. */}
+      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10">
         <h2
           ref={titleRef}
-          className="text-5xl font-light text-white md:text-7xl"
+          className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none text-white flex items-end"
+          style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
         >
           {activeSlide.title}
         </h2>
+
+        {/* Controls */}
+        <div className="flex w-1/3 shrink-0 items-end justify-center gap-2">
+          <button
+            type="button"
+            onClick={onPrev}
+            aria-label="Previous slide"
+            className="group flex size-11 items-center justify-center rounded-full border  border-white/25 bg-white/5 text-white backdrop-blur-md transition-all duration-300   active:scale-95"
+          >
+            <span className="transition-transform duration-300 group-hover:-translate-x-0.5">
+              <ArrowIcon dir="prev" className="size-4" />
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={onNext}
+            aria-label="Next slide"
+            className="group flex size-11 items-center justify-center rounded-full border border-white/25 bg-white/5 text-white backdrop-blur-md transition-all duration-300   active:scale-95"
+          >
+            <span className="transition-transform duration-300 group-hover:translate-x-0.5">
+              <ArrowIcon dir="next" className="size-4" />
+            </span>
+          </button>
+        </div>
+
+        <span
+          ref={counterRef}
+          className="pointer-events-none flex w-1/3 pb-5 shrink-0 h-full items-center  pt-5! justify-end text-xs text-white/70"
+        >
+          {/* Fixed-width clip so the number can lift in without reflow. */}
+          <span className="inline-block w-[2ch] overflow-hidden text-right">
+            <span ref={counterNumRef} className="inline-block">
+              {String(caption + 1).padStart(2, "0")}
+            </span>
+          </span>
+          <span> / {String(total).padStart(2, "0")}</span>
+        </span>
       </div>
 
-      {/* Controls */}
-      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-2 md:bottom-10">
-        <button
-          type="button"
-          onClick={onPrev}
-          aria-label="Previous slide"
-          className="flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition-colors hover:bg-white/25"
-        >
-          <span aria-hidden="true">&#8249;</span>
-        </button>
-        <button
-          type="button"
-          onClick={onNext}
-          aria-label="Next slide"
-          className="flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition-colors hover:bg-white/25"
-        >
-          <span aria-hidden="true">&#8250;</span>
-        </button>
-      </div>
-
-      <span
-        ref={counterRef}
-        className="pointer-events-none absolute bottom-6 right-6 text-xs text-white/70 md:bottom-10 md:right-10"
-      >
-        {String(caption + 1).padStart(2, "0")} /{" "}
-        {String(total).padStart(2, "0")}
-      </span>
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
+      `}</style>
     </div>
   );
 }
