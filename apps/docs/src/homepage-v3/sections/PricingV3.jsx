@@ -352,7 +352,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
 
                         {isIndia && (
                             <p className="font-geist-mono mt-[0.3vw] text-[1vw] text-[#c5c5c5] max-[1025px]:text-[1.7vw] max-md:text-[1.8vw] max-sm:text-[3.2vw]">
-                                +18% TAX
+                                +18% GST
                             </p>
                         )}
 
