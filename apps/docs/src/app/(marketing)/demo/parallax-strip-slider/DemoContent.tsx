@@ -35,7 +35,11 @@ export default function DemoContent({
       remixer={registry.remixer}
       render={(values) => (
         <main className="h-dvh w-full bg-black">
-          <ParallaxStripSlider slides={SLIDES} {...values} />
+          <ParallaxStripSlider
+            slides={SLIDES}
+            clueText="Click either side and watch the next strip cut through."
+            {...values}
+          />
         </main>
       )}
     >

@@ -157,17 +157,6 @@
       }
     },
     {
-      "name": "clueText",
-      "type": "string",
-      "default": "Click either side and watch the next strip cut through.",
-      "description": "Text shown in the hint pill.",
-      "remixer": {
-        "control": "text",
-        "group": "ui",
-        "groupTitle": "UI"
-      }
-    },
-    {
       "name": "accentColor",
       "type": "color",
       "default": "#ffffff",
