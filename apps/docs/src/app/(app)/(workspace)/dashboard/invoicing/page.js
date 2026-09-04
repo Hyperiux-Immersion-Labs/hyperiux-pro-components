@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { Download, Loader2 } from "lucide-react";
+import { Download } from "lucide-react";
 
 function formatDate(value) {
   if (!value) return "Unknown";
@@ -162,8 +162,6 @@ export default function InvoicingPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
-  const [generating, setGenerating] = useState(false);
-  const [testError, setTestError] = useState("");
 
   async function loadInvoices() {
     try {
@@ -179,10 +177,6 @@ export default function InvoicingPage() {
       setLoadError(false);
     } catch (error) {
       console.error(error);
-      // Falls through to Clerk's client-side plan metadata below rather
-      // than blocking the whole page - lets "Generate test invoice" stay
-      // usable even when the list itself failed to load (e.g. the
-      // invoices table not existing yet).
       setLoadError(true);
     } finally {
       setLoading(false);
@@ -207,34 +201,6 @@ export default function InvoicingPage() {
 
     return () => cancelAnimationFrame(frame);
   }, [isLoaded, isAdmin]);
-
-  async function handleGenerateTestInvoice() {
-    setGenerating(true);
-    setTestError("");
-
-    try {
-      const res = await fetch("/api/dashboard/invoices/test", { method: "POST" });
-      const result = await res.json();
-
-      if (!res.ok) {
-        setTestError(result.error || "Unable to generate a test invoice.");
-        return;
-      }
-
-      setData((prev) => {
-        const base = prev || { plan: "pro", subscription: null, invoices: [] };
-        return { ...base, invoices: [result.invoice, ...base.invoices] };
-      });
-      // A successful write proves the invoices table exists now, even if
-      // the initial list load failed before it did.
-      setLoadError(false);
-    } catch (err) {
-      console.error(err);
-      setTestError("Something went wrong. Please try again.");
-    } finally {
-      setGenerating(false);
-    }
-  }
 
   if (!isLoaded || isAdmin || loading) {
     return (
@@ -324,24 +290,6 @@ export default function InvoicingPage() {
       <div>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
           <h2 className="text-2xl font-semibold text-white">Previous Bills</h2>
-
-          {isPro && (
-            <div className="flex flex-col items-end gap-2">
-              <button
-                type="button"
-                onClick={handleGenerateTestInvoice}
-                disabled={generating}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm text-white transition hover:bg-white hover:text-black disabled:opacity-60 cursor-pointer"
-              >
-                {generating && <Loader2 className="h-4 w-4 animate-spin" />}
-                Generate test invoice
-              </button>
-
-              {testError && (
-                <p className="text-xs text-red-400">{testError}</p>
-              )}
-            </div>
-          )}
         </div>
 
         {invoices.length === 0 ? (
@@ -374,11 +322,6 @@ export default function InvoicingPage() {
 
                     <td className="px-6 py-4 text-white/80">
                       {invoice.plan_label || "Vault Pro"}
-                      {invoice.is_test && (
-                        <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/50">
-                          Test
-                        </span>
-                      )}
                     </td>
 
                     <td className="px-6 py-4 text-white">
@@ -402,14 +345,14 @@ export default function InvoicingPage() {
                           </a>
                         )}
 
-                        <button
+                        {/* <button
                           type="button"
                           onClick={() => downloadInvoiceReceipt(invoice)}
                           className="inline-flex items-center gap-1.5 text-white/70 transition hover:text-white cursor-pointer"
                         >
                           <Download className="h-3.5 w-3.5" />
                           Download
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>

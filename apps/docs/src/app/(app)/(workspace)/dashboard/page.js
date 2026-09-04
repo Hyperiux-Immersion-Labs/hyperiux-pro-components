@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CliTokenManager from "@/components/Dashboard/CliTokenManager";
+import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 
 function formatDate(value) {
   if (!value) return "Unknown";
@@ -130,7 +131,6 @@ export default function DashboardPage() {
           label="Plan"
           value={planLabel}
           detail={data.plan === "pro" ? "Full vault access" : "Starter access"}
-          href="/pricing"
         />
 
         <StatCard
@@ -143,7 +143,6 @@ export default function DashboardPage() {
           label={data.plan === "pro" ? "Valid Until" : "Plan Validity"}
           value={data.plan === "pro" ? formatDate(data.planValidUntil) : "Free"}
           detail={proValidityDetail}
-          href={data.plan === "pro" ? undefined : "/pricing"}
         />
       </div>
 
@@ -188,7 +187,8 @@ export default function DashboardPage() {
           {data.plan === "free" && (
             <>
               <Link
-                href="/pricing"
+                href="/pricing#pricing-cards"
+                onClick={markScrollToPricingCards}
                 className="inline-flex px-5 py-3  bg-white text-black transition duration-300 hover:bg-[#ff5f00] hover:text-black"
               >
                 Upgrade to Pro

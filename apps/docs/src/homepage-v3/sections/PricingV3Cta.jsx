@@ -2,14 +2,14 @@
 
 import { useUser } from "@clerk/nextjs";
 import ButtonV3 from "../components/ButtonV3";
-import RazorpayCheckoutButton from "@/components/Payments/RazorpayCheckoutButton";
-
-const ORANGE_BTN =
-  "bg-primary text-black font-neue-haas cursor-pointer px-[1.2vw] py-[0.8vw] text-[1.15vw] max-[1025px]:w-full max-[1025px]:px-5 max-[1025px]:py-4 max-[1025px]:text-[2vw] max-md:text-[2.2vw] max-sm:w-full max-sm:justify-center max-sm:py-4 max-sm:text-[4vw]";
+import RazorpayButtonV3 from "@/components/Payments/RazorpayButtonV3";
 
 export default function PricingV3Cta({ isYearly, currency }) {
   const { isLoaded, isSignedIn, user } = useUser();
   const userPlan = isSignedIn ? user?.publicMetadata?.plan || "free" : null;
+  const billingInterval = isSignedIn
+    ? user?.publicMetadata?.billingInterval || null
+    : null;
 
   if (!isLoaded || !isSignedIn) {
     return (
@@ -23,23 +23,30 @@ export default function PricingV3Cta({ isYearly, currency }) {
   }
 
   if (userPlan === "pro") {
+    // A monthly Pro subscriber toggling the card to Yearly is looking at a
+    // plan they don't have yet - "You're on Pro" reads as "nothing to do
+    // here" when there plainly is. Only actually nothing-to-do when the
+    // toggle matches (or exceeds) their real billing interval: monthly
+    // subscriber viewing Monthly, or a yearly subscriber viewing either.
+    const isUpsellOpportunity = isYearly && billingInterval === "monthly";
+
     return (
       <ButtonV3
         variant="orange"
         href="/dashboard"
-        text="You're on Pro"
+        text={isUpsellOpportunity ? "Upgrade your plan" : "You're on Pro"}
         className="max-sm:w-full max-sm:justify-center"
       />
     );
   }
 
   return (
-    <RazorpayCheckoutButton
+    <RazorpayButtonV3
+      variant="orange"
+      label="Upgrade to Pro"
       plan={isYearly ? "yearly" : "monthly"}
       currency={currency}
-      className={ORANGE_BTN}
-    >
-      Upgrade to Pro
-    </RazorpayCheckoutButton>
+      className="max-sm:w-full max-sm:justify-center"
+    />
   );
 }

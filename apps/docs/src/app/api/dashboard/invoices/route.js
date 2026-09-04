@@ -40,6 +40,11 @@ export async function GET() {
           "id,amount,currency,status,billing_interval,plan_label,invoice_url,is_test,razorpay_payment_id,created_at"
         )
         .eq("clerk_user_id", userId)
+        // Real purchases only - recordInvoice() in @/lib/pro-access always
+        // sets is_test: false for actual webhook-driven invoices, so this
+        // excludes any rows left over from the (now-removed) test-invoice
+        // generator without needing a data migration to clean them up.
+        .eq("is_test", false)
         .order("created_at", { ascending: false }),
     ]);
 

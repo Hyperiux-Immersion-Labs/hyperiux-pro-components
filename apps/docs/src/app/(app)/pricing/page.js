@@ -95,13 +95,13 @@ export default async function PricingPage() {
           <DitherTransition
             dotColor="#050505"
             accentColor="#eaeaea"
-            className="h-[50vw] mt-[-5vw] max-[1025px]:h-[150vw]! bg-foreground"
+            className="h-[70vw] mt-[-5vw] max-[1025px]:h-[150vw]! bg-foreground"
           />
-          <div className="mt-[-40vw]">
-            <PricingCompareTable />
+          <div className="mt-[-35vw]">
+            <PricingCompareTable isIndia={isIndia} />
           </div>
           <UseCases useCases={USE_CASES} />
-          <div className="max-md:mt-[-30vw]! max-[] ">
+          <div className="max-md:mt-[-30vw]!  ">
             <FAQV3 faqItems={faqItems} translateTop={false} />
           </div>
           {/* <CTA2 /> */}
