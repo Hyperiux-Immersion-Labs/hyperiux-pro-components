@@ -155,12 +155,12 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
               <AppleStoreButton
                 href="#"
                 scale={FOOTER_BUTTON_SCALE}
+             
+                className="min-[1026px]:w-[14vw] min-[1026px]:px-[1.2vw] min-[1026px]:py-[0.6vw]"
                 style={{
                   backgroundColor: "#ffffff",
                   borderColor: "#ffffff",
                   color: FOOTER_BUTTON_TEXT,
-                  padding: "0.6vw 1.2vw",
-                  width: '14vw',
                 }}
               />
               <PlayStoreButton href="#" scale={FOOTER_BUTTON_SCALE} />

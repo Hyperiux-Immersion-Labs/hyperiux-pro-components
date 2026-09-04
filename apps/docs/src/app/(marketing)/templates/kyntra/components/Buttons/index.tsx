@@ -27,6 +27,7 @@ const PLAY_TEXT = "#1A1A1A";
 export const AppleStoreButton = ({
   href = "#",
   scale = 1,
+  className = "",
   ...props
 }: StoreButtonProps) => {
   return (
@@ -44,7 +45,7 @@ export const AppleStoreButton = ({
         marginRight: `calc(-1 * ${1 - scale} * 100%)`,
         ...props.style,
       } as CSSProperties}
-      className=" ease group flex w-[16vw] shrink-0 cursor-pointer items-center justify-start gap-4 overflow-hidden rounded-full border px-[2vw] py-[0.6vw] text-white origin-left scale-[var(--store-btn-scale)] transition-all duration-300 hover:scale-[calc(var(--store-btn-scale)*0.95)] max-[1025px]:w-[78%] max-[1025px]:min-w-0 max-[1025px]:justify-start max-[1025px]:gap-[3vw] max-[1025px]:px-[6vw] max-[1025px]:py-[1.8vw] max-md:w-[85%] max-md:min-w-0 max-md:gap-[4vw] max-md:px-[7vw] max-md:py-[2.6vw] max-sm:w-[85%] max-sm:min-w-0 max-sm:px-[7vw] max-sm:py-[2.6vw]"
+      className={`ease group flex w-[16vw] shrink-0 cursor-pointer items-center justify-start gap-4 overflow-hidden rounded-full border px-[2vw] py-[0.6vw] text-white origin-left scale-(--store-btn-scale) transition-all duration-300 hover:scale-[calc(var(--store-btn-scale)*0.95)] ${className} max-[1025px]:w-[78%] max-[1025px]:min-w-0 max-[1025px]:justify-start max-[1025px]:gap-[3vw] max-[1025px]:px-[6vw] max-[1025px]:py-[1.8vw] max-md:w-[85%] max-md:min-w-0 max-md:gap-[4vw] max-md:px-[7vw] max-md:py-[2.6vw] max-sm:w-[85%] max-sm:min-w-0 max-sm:px-[7vw] max-sm:py-[2.6vw]`}
     >
       <div>
         <AppleIcon className="mt-[-0.5vw] h-[2vw] w-[2vw] max-[1025px]:mt-0 max-[1025px]:h-[4vw] max-[1025px]:w-[4vw] max-md:h-[5.6vw] max-md:w-[5.6vw] max-sm:h-[5.6vw] max-sm:w-[5.6vw]" />
@@ -64,6 +65,7 @@ export const AppleStoreButton = ({
 export const PlayStoreButton = ({
   href = "#",
   scale = 1,
+  className = "",
   ...props
 }: StoreButtonProps) => {
   return (
@@ -81,7 +83,7 @@ export const PlayStoreButton = ({
         marginRight: `calc(-1 * ${1 - scale} * 100%)`,
         ...props.style,
       } as CSSProperties}
-      className=" ease group relative z-9999  w-[16vw] shrink-0 cursor-pointer items-center justify-start gap-4 overflow-hidden flex rounded-full border bg-white px-[2vw] py-[0.6vw] origin-left scale-[var(--store-btn-scale)] transition-all duration-300 hover:scale-[calc(var(--store-btn-scale)*0.95)] max-[1025px]:w-[78%] max-[1025px]:min-w-0 max-[1025px]:justify-start max-[1025px]:gap-[3vw] max-[1025px]:px-[6vw] max-[1025px]:py-[1.8vw] max-md:w-[85%] max-md:min-w-0 max-md:gap-[4vw] max-md:px-[7vw] max-md:py-[2.6vw] max-sm:w-[85%] max-sm:min-w-0 max-sm:px-[7vw] max-sm:py-[2.6vw]"
+      className={`ease group relative z-9999 flex w-[16vw] shrink-0 cursor-pointer items-center justify-start gap-4 overflow-hidden rounded-full border bg-white px-[2vw] py-[0.6vw] origin-left scale-[var(--store-btn-scale)] transition-all duration-300 hover:scale-[calc(var(--store-btn-scale)*0.95)] ${className} max-[1025px]:w-[78%] max-[1025px]:min-w-0 max-[1025px]:justify-start max-[1025px]:gap-[3vw] max-[1025px]:px-[6vw] max-[1025px]:py-[1.8vw] max-md:w-[85%] max-md:min-w-0 max-md:gap-[4vw] max-md:px-[7vw] max-md:py-[2.6vw] max-sm:w-[85%] max-sm:min-w-0 max-sm:px-[7vw] max-sm:py-[2.6vw]`}
     >
       <div>
         <GooglePlay className="h-[2vw] w-[2vw] max-[1025px]:h-[4vw] max-[1025px]:w-[4vw] max-md:h-[5.6vw] max-md:w-[5.6vw] max-sm:h-[5.6vw] max-sm:w-[5.6vw]" />
