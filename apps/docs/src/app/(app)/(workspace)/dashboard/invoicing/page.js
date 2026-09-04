@@ -352,7 +352,7 @@ export default function InvoicingPage() {
                         >
                           <Download className="h-3.5 w-3.5" />
                           Download
-                        </button> */}
+                        </button> */} 
                       </div>
                     </td>
                   </tr>
