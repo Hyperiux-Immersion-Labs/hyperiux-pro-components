@@ -383,18 +383,19 @@ export default function ParallaxStripSlider({
         </span>
       </div>
 
-      {/* Bottom bar: three fixed thirds on one line. */}
-      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10">
+      {/* Bottom bar: three fixed thirds on one line; on mobile it stacks with
+          the title + counter above and the controls below. */}
+      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6">
         <h2
           ref={titleRef}
-          className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none text-white flex items-end"
+          className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none text-white flex items-end max-[1025px]:order-1 max-[1025px]:w-full"
           style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
         >
           {activeSlide.title}
         </h2>
 
         {/* Controls */}
-        <div className="flex w-1/3 shrink-0 items-end justify-center gap-2">
+        <div className="flex w-1/3 shrink-0 items-end justify-center gap-2 max-[1025px]:order-3 max-[1025px]:w-full max-[1025px]:justify-center">
           <button
             type="button"
             onClick={onPrev}
@@ -419,7 +420,7 @@ export default function ParallaxStripSlider({
 
         <span
           ref={counterRef}
-          className="pointer-events-none flex w-1/3 pb-5 shrink-0 h-full items-center  pt-5! justify-end text-xs text-white/70"
+          className="pointer-events-none flex w-1/3 pb-5 shrink-0 h-full items-center  pt-5! justify-end text-xs text-white/70 max-[1025px]:order-2 max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:justify-start max-[1025px]:p-0"
         >
           {/* Fixed-width clip so the number can lift in without reflow. */}
           <span className="inline-block w-[2ch] overflow-hidden text-right">
