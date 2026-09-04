@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -16,6 +16,7 @@ const REVEAL_DURATION = 0.5;
 const STRIP_STAGGER = 0.04;
 const ZOOM_DURATION = 0.9;
 const ZOOM_FROM = 1.2;
+const AUTOPLAY_INTERVAL = 5000;
 const TITLE_CHAR_DURATION = 0.6;
 const TITLE_CHAR_STAGGER = 0.04;
 const TITLE_CHAR_Y_PERCENT = 100;
@@ -30,7 +31,30 @@ type Slide = {
 type ParallaxStripSliderProps = {
   slides: Slide[];
   className?: string;
+  /** Number of vertical strips in the wipe reveal. */
   stripCount?: number;
+  /** Duration of each strip's clip-path wipe, in seconds. */
+  revealDuration?: number;
+  /** Delay between consecutive strips, in seconds. */
+  stripStagger?: number;
+  /** Starting scale of the incoming image (Ken-Burns zoom). */
+  zoomFrom?: number;
+  /** Duration of the image zoom settle, in seconds. */
+  zoomDuration?: number;
+  /** Auto-advance slides on a timer. */
+  autoplay?: boolean;
+  /** Show the top progress bar. */
+  showProgressBar?: boolean;
+  /** Show the numeric slide counter. */
+  showCounter?: boolean;
+  /** Enable the click-to-navigate overlay and its circular cursor (left half = prev, right half = next). */
+  showControls?: boolean;
+  /** Show the hint pill telling the viewer to click either side to navigate. */
+  showClue?: boolean;
+  /** Text shown in the hint pill. */
+  clueText?: string;
+  /** Color of the progress bar fill, caption text, and control borders. */
+  accentColor?: string;
 };
 
 type TransitionDirection = "next" | "prev";
@@ -39,35 +63,21 @@ function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
-function ArrowIcon({
-  dir,
-  className = "",
-}: {
-  dir: TransitionDirection;
-  className?: string;
-}) {
-  return (
-    <svg
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <path
-        d={dir === "prev" ? "M10 3L5 8L10 13" : "M6 3L11 8L6 13"}
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export default function ParallaxStripSlider({
   slides,
   className = "",
   stripCount = STRIP_COUNT,
+  revealDuration = REVEAL_DURATION,
+  stripStagger = STRIP_STAGGER,
+  zoomFrom = ZOOM_FROM,
+  zoomDuration = ZOOM_DURATION,
+  autoplay = false,
+  showProgressBar = true,
+  showCounter = true,
+  showControls = true,
+  showClue = true,
+  clueText = "Click either side and watch the next strip cut through.",
+  accentColor = "#ffffff",
 }: ParallaxStripSliderProps) {
   const [current, setCurrent] = useState(0);
   const [incoming, setIncoming] = useState<number | null>(null);
@@ -85,6 +95,14 @@ export default function ParallaxStripSlider({
   const isAnimating = useRef(false);
   const isFirstCaption = useRef(true);
   const splitRef = useRef<SplitText | null>(null);
+
+  // Circular click-to-navigate cursor.
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const line1Ref = useRef<HTMLSpanElement>(null);
+  const line2Ref = useRef<HTMLSpanElement>(null);
+  const isInside = useRef(false);
+  const mouse = useRef({ x: 0, y: 0 });
+  const pos = useRef({ x: 0, y: 0 });
 
   const total = slides.length;
 
@@ -106,6 +124,17 @@ export default function ParallaxStripSlider({
     () => goTo((current - 1 + total) % total, "prev"),
     [current, total, goTo]
   );
+
+  // Auto-advance on a timer; pauses while a transition is mid-flight and when
+  // reduced motion is requested.
+  useEffect(() => {
+    if (!autoplay || total < 2) return;
+    if (typeof window !== "undefined" && prefersReducedMotion()) return;
+    const id = window.setInterval(() => {
+      if (!isAnimating.current) onNext();
+    }, AUTOPLAY_INTERVAL);
+    return () => window.clearInterval(id);
+  }, [autoplay, total, onNext]);
 
   // Wipe + zoom + progress on slide change.
   useGSAP(
@@ -142,19 +171,19 @@ export default function ParallaxStripSlider({
         { clipPath: isPrevious ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)" },
         {
           clipPath: isPrevious ? "inset(0 0 0 0%)" : "inset(0 0% 0 0)",
-          duration: REVEAL_DURATION,
+          duration: revealDuration,
           ease: "power3.out",
-          stagger: STRIP_STAGGER,
+          stagger: stripStagger,
         },
         0
       );
 
       tl.fromTo(
         zooms,
-        { scale: ZOOM_FROM },
+        { scale: zoomFrom },
         {
           scale: 1,
-          duration: ZOOM_DURATION,
+          duration: zoomDuration,
           ease: "power3.out",
         },
         0
@@ -193,7 +222,7 @@ export default function ParallaxStripSlider({
         tl.add(() => setCaption(incoming), 0.5);
       }
     },
-    { dependencies: [incoming, direction, stripCount], scope: rootRef }
+    { dependencies: [incoming, direction, stripCount, revealDuration, stripStagger, zoomFrom, zoomDuration], scope: rootRef }
   );
 
   // Revert the split before React commits the new title.
@@ -289,6 +318,114 @@ export default function ParallaxStripSlider({
     { scope: rootRef }
   );
 
+  // Circular cursor: smooth follow + arrow that flips with the pointer side.
+  // Mirrors the clip-path-slider interaction (0.12 lerp, power3 eases).
+  useEffect(() => {
+    if (!showControls) return;
+    const cursor = cursorRef.current;
+    const l1 = line1Ref.current;
+    const l2 = line2Ref.current;
+    if (!cursor || !l1 || !l2) return;
+
+    gsap.set(cursor, { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.6 });
+    gsap.set(l1, {
+      transformOrigin: "100% 50%",
+      xPercent: -50,
+      yPercent: -50,
+      y: -1.5,
+      rotation: 45,
+      x: 0,
+    });
+    gsap.set(l2, {
+      transformOrigin: "100% 50%",
+      xPercent: -50,
+      yPercent: -50,
+      y: 1.5,
+      rotation: -45,
+      x: 0,
+    });
+
+    let currentSide: "left" | "right" = "right";
+    let rafId: number | null = null;
+
+    const handleMove = (e: MouseEvent) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      const target = e.target instanceof Element ? e.target : null;
+      const isOverControls = Boolean(
+        target?.closest(
+          'button, input, textarea, select, a, label, [role="button"], [contenteditable="true"], [class*="remixer-panel"]'
+        )
+      );
+
+      mouse.current.x = x;
+      mouse.current.y = y;
+
+      const rect = rootRef.current?.getBoundingClientRect();
+      const isOut =
+        !rect ||
+        x <= rect.left ||
+        y <= rect.top ||
+        x >= rect.right ||
+        y >= rect.bottom;
+
+      if (isOut || isOverControls) {
+        if (isInside.current) {
+          isInside.current = false;
+          gsap.to(cursor, {
+            opacity: 0,
+            scale: 0.6,
+            duration: 0.25,
+            ease: "power3.inOut",
+          });
+        }
+        return;
+      }
+
+      if (!isInside.current) {
+        pos.current.x = x;
+        pos.current.y = y;
+        gsap.set(cursor, { x, y });
+        gsap.to(cursor, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.25,
+          ease: "power3.out",
+        });
+        isInside.current = true;
+      }
+
+      const isLeft = rect ? x < rect.left + rect.width / 2 : false;
+      const nextSide = isLeft ? "left" : "right";
+
+      if (nextSide !== currentSide) {
+        currentSide = nextSide;
+        if (nextSide === "left") {
+          gsap.to(l1, { rotation: 135, x: "-1vw", duration: 0.35, ease: "power3.inOut" });
+          gsap.to(l2, { rotation: -135, x: "-1vw", duration: 0.35, ease: "power3.inOut" });
+        } else {
+          gsap.to(l1, { rotation: 45, x: 4, duration: 0.35, ease: "power3.inOut" });
+          gsap.to(l2, { rotation: -45, x: 4, duration: 0.35, ease: "power3.inOut" });
+        }
+      }
+    };
+
+    const render = () => {
+      pos.current.x += (mouse.current.x - pos.current.x) * 0.12;
+      pos.current.y += (mouse.current.y - pos.current.y) * 0.12;
+      gsap.set(cursor, { x: pos.current.x, y: pos.current.y });
+      rafId = requestAnimationFrame(render);
+    };
+
+    window.addEventListener("mousemove", handleMove);
+    render();
+
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [showControls]);
+
   const renderStrips = (slide: Slide) => {
     const width = 100 / stripCount;
 
@@ -360,23 +497,48 @@ export default function ParallaxStripSlider({
         <div className="absolute inset-0">{renderStrips(slides[incoming])}</div>
       )}
 
-      {/* Top progress bar, floating over the image. */}
-      <div className="pointer-events-none absolute inset-x-10 top-7 z-10 h-px bg-white/20">
+      {/* Click-to-navigate overlay: left half steps back, right half advances. */}
+      {showControls && total > 1 && (
         <div
-          ref={progressRef}
-          className="h-full w-full origin-left bg-white"
-          style={{ transform: `scaleX(${(caption + 1) / total})` }}
+          className="absolute inset-0 z-20"
+          style={{ cursor: "none" }}
+          onClick={(e) => {
+            if (isAnimating.current) return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const isLeft = e.clientX < rect.left + rect.width / 2;
+            if (isLeft) onPrev();
+            else onNext();
+          }}
         />
-      </div>
+      )}
+
+      {/* Top progress bar, floating over the image. Pushed clear of the fixed
+          demo header. */}
+      {showProgressBar && (
+        <div
+          className="pointer-events-none absolute inset-x-10 top-20 z-10 h-px max-[1025px]:top-28"
+          style={{ backgroundColor: `${accentColor}33` }}
+        >
+          <div
+            ref={progressRef}
+            className="h-full w-full origin-left"
+            style={{
+              transform: `scaleX(${(caption + 1) / total})`,
+              backgroundColor: accentColor,
+            }}
+          />
+        </div>
+      )}
 
       {/* Top-left label */}
       <div
         ref={captionRef}
-        className="pointer-events-none absolute inset-x-0 top-0 p-10"
+        className="pointer-events-none absolute inset-x-0 top-0 px-10 pb-10 pt-24 max-[1025px]:pt-32"
       >
         <span
           ref={chapterRef}
-          className="block text-xs font-medium tracking-wide text-white"
+          className="block text-xs font-medium tracking-wide"
+          style={{ color: accentColor }}
         >
           {activeSlide.chapter ??
             `Collection ${String(caption + 1).padStart(2, "0")}`}
@@ -385,52 +547,71 @@ export default function ParallaxStripSlider({
 
       {/* Bottom bar: three fixed thirds on one line; on mobile it stacks with
           the title + counter above and the controls below. */}
-      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6">
+      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-md:pb-32">
         <h2
           ref={titleRef}
-          className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none text-white flex items-end max-[1025px]:order-1 max-[1025px]:w-full"
-          style={{ fontFamily: '"Instrument Serif", Georgia, serif' }}
+          className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none flex items-end max-[1025px]:order-1 max-[1025px]:w-full"
+          style={{
+            fontFamily: '"Instrument Serif", Georgia, serif',
+            color: accentColor,
+          }}
         >
           {activeSlide.title}
         </h2>
 
-        {/* Controls */}
-        <div className="flex w-1/3 shrink-0 items-end justify-center gap-2 max-[1025px]:order-3 max-[1025px]:w-full max-[1025px]:justify-center">
-          <button
-            type="button"
-            onClick={onPrev}
-            aria-label="Previous slide"
-            className="group flex size-11 items-center justify-center rounded-full border  border-white/25 bg-white/5 text-white backdrop-blur-md transition-all duration-300   active:scale-95"
-          >
-            <span className="transition-transform duration-300 group-hover:-translate-x-0.5">
-              <ArrowIcon dir="prev" className="size-4" />
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={onNext}
-            aria-label="Next slide"
-            className="group flex size-11 items-center justify-center rounded-full border border-white/25 bg-white/5 text-white backdrop-blur-md transition-all duration-300   active:scale-95"
-          >
-            <span className="transition-transform duration-300 group-hover:translate-x-0.5">
-              <ArrowIcon dir="next" className="size-4" />
-            </span>
-          </button>
-        </div>
+        {/* Middle third keeps its width so the counter stays pinned to the
+            right. On mobile the spacer collapses. */}
+        <div aria-hidden className="w-1/3 shrink-0 max-[1025px]:hidden" />
 
-        <span
-          ref={counterRef}
-          className="pointer-events-none flex w-1/3 pb-5 shrink-0 h-full items-center  pt-5! justify-end text-xs text-white/70 max-[1025px]:order-2 max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:justify-start max-[1025px]:p-0"
-        >
-          {/* Fixed-width clip so the number can lift in without reflow. */}
-          <span className="inline-block w-[2ch] overflow-hidden text-right">
-            <span ref={counterNumRef} className="inline-block">
-              {String(caption + 1).padStart(2, "0")}
+        {showCounter && (
+          <span
+            ref={counterRef}
+            className="pointer-events-none flex w-1/3 pb-5 shrink-0 h-full items-center pt-5! justify-end text-xs max-[1025px]:order-2 max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:justify-start max-[1025px]:p-0 max-md:order-first max-md:justify-end"
+            style={{ color: `${accentColor}b3` }}
+          >
+            {/* Fixed-width clip so the number can lift in without reflow. */}
+            <span className="inline-block w-[2ch] overflow-hidden text-right">
+              <span ref={counterNumRef} className="inline-block">
+                {String(caption + 1).padStart(2, "0")}
+              </span>
             </span>
+            <span> / {String(total).padStart(2, "0")}</span>
           </span>
-          <span> / {String(total).padStart(2, "0")}</span>
-        </span>
+        )}
       </div>
+
+      {/* Circular nav cursor — follows the pointer, arrow flips per side. */}
+      {showControls && total > 1 && (
+        <div
+          ref={cursorRef}
+          className="pointer-events-none fixed left-0 top-0 z-100 max-[1025px]:hidden"
+        >
+          <div
+            className="flex size-15 items-center justify-center rounded-full"
+            style={{ backgroundColor: accentColor }}
+          >
+            <div className="relative size-7.5">
+              <span
+                ref={line1Ref}
+                className="absolute left-1/2 top-1/2 h-0.5 w-4"
+                style={{ backgroundColor: "#000000" }}
+              />
+              <span
+                ref={line2Ref}
+                className="absolute left-1/2 top-1/2 h-0.5 w-4"
+                style={{ backgroundColor: "#000000" }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {showClue && clueText && total > 1 && (
+        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm leading-relaxed text-white/80 backdrop-blur-md max-md:bottom-6 max-md:w-[70%] max-md:text-sm max-[1025px]:text-base">
+          {clueText}
+        </p>
+      )}
 
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
