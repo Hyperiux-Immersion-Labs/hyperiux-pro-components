@@ -8,6 +8,7 @@ import type {
   RegistryProp,
   RegistryRemixerConfig,
 } from "@/components/remixer-panel/types";
+import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 export default function DemoContent({
   registry,
@@ -30,6 +31,7 @@ export default function DemoContent({
       {({ effect }) => (
         <>
           <DemoHeader logoColor="#141414" textColor="#141414" />
+          <ScrollBottom textColor="text-black" />
           <LenisSmoothScroll />
           {effect}
         </>
