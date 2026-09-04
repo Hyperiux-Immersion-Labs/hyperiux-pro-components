@@ -534,8 +534,8 @@
       "registryDependencies": [],
       "exportName": "LiquidGlassCursor",
       "exportKind": "default",
-      "version": "2.1.0",
-      "tier": "pro"
+      "version": "2.2.0",
+      "tier": "free"
     },
     {
       "name": "magnetic-image-trail",

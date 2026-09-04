@@ -1,7 +1,13 @@
 {
   "name": "liquid-glass-cursor",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "changelog": [
+    {
+      "version": "2.2.0",
+      "date": "2026-09-04",
+      "summary": "Move to the free tier — source is now published in the public registry and installable without authentication",
+      "breaking": false
+    },
     {
       "version": "2.1.0",
       "date": "2026-08-26",
@@ -36,7 +42,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/liquid-glass-cursor",
-  "tier": "pro",
+  "tier": "free",
   "main": "index.tsx",
   "exportName": "LiquidGlassCursor",
   "exportKind": "default",

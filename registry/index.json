@@ -6030,8 +6030,14 @@
   },
   {
     "name": "liquid-glass-cursor",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "changelog": [
+      {
+        "version": "2.2.0",
+        "date": "2026-09-04",
+        "summary": "Move to the free tier — source is now published in the public registry and installable without authentication",
+        "breaking": false
+      },
       {
         "version": "2.1.0",
         "date": "2026-08-26",
@@ -6059,14 +6065,14 @@
     ],
     "type": "registry:component",
     "title": "Liquid Glass Cursor",
-    "description": "Magnifying glass-lens cursor with chromatic-aberration SVG refraction over live wrapped content, spring-smoothed tracking.",
+    "description": "Magnifying glass-lens cursor with chromatic-aberration SVG refraction over live wrapped content, hover shape morphing, and spring-smoothed tracking.",
     "category": "cursor",
     "dependencies": [
       "motion"
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/liquid-glass-cursor",
-    "tier": "pro",
+    "tier": "free",
     "main": "index.tsx",
     "exportName": "LiquidGlassCursor",
     "exportKind": "default",
@@ -6099,6 +6105,48 @@
           "min": 1,
           "max": 2,
           "step": 0.01
+        }
+      },
+      {
+        "name": "textHoverSize",
+        "type": "number",
+        "default": 130,
+        "description": "Lens diameter when hovering a data-cursor=\"text\" target.",
+        "remixer": {
+          "control": "range",
+          "group": "size",
+          "groupTitle": "Size",
+          "min": 60,
+          "max": 260,
+          "step": 1
+        }
+      },
+      {
+        "name": "maxButtonWidth",
+        "type": "number",
+        "default": 260,
+        "description": "Lens width when hovering a data-cursor=\"button\" target.",
+        "remixer": {
+          "control": "range",
+          "group": "button",
+          "groupTitle": "Button Hover",
+          "min": 80,
+          "max": 420,
+          "step": 1
+        }
+      },
+      {
+        "name": "maxButtonHeight",
+        "type": "number",
+        "default": 110,
+        "description": "Lens height when hovering a data-cursor=\"button\" target.",
+        "remixer": {
+          "control": "range",
+          "group": "button",
+          "groupTitle": "Button Hover",
+          "min": 40,
+          "max": 240,
+          "step": 1
         }
       },
       {
