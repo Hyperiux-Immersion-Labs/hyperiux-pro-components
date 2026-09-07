@@ -1,6 +1,6 @@
 {
   "name": "timeline",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Timeline",
   "description": "Horizontal scroll timeline with Lenis smoothing, GSAP milestone reveals, and reduced-motion support.",
@@ -97,12 +97,6 @@
     }
   ],
   "changelog": [
-    {
-      "version": "1.0.1",
-      "date": "2026-08-21",
-      "summary": "Added timeline remixer controls for colors, duration, and reduced-motion behavior.",
-      "breaking": false
-    },
     {
       "version": "1.0.0",
       "date": "2026-08-21",

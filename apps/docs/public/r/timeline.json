@@ -12,14 +12,8 @@
   "exportName": "Timeline",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "changelog": [
-    {
-      "version": "1.0.1",
-      "date": "2026-08-21",
-      "summary": "Added timeline remixer controls for colors, duration, and reduced-motion behavior.",
-      "breaking": false
-    },
     {
       "version": "1.0.0",
       "date": "2026-08-21",

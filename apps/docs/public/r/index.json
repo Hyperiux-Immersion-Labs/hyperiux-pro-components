@@ -298,22 +298,6 @@
       "tier": "pro"
     },
     {
-      "name": "stack-spread",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "motion"
-      ],
-      "registryDependencies": [],
-      "exportName": "StackSpread",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "free"
-    },
-    {
       "name": "stacking-cards",
       "type": "registry:component",
       "category": "scroll",
@@ -1511,22 +1495,6 @@
       ],
       "registryDependencies": [],
       "exportName": "OrbitFlipSlider",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "free"
-    },
-    {
-      "name": "parallax-strip-slider",
-      "type": "registry:component",
-      "category": "carousels",
-      "categories": [
-        "carousels"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ParallaxStripSlider",
       "exportKind": "default",
       "version": "1.0.0",
       "tier": "free"

@@ -100,11 +100,6 @@
     "tarball": "registry/dist/hyperiux-orbit-flip-slider-1.0.0.tgz"
   },
   {
-    "name": "@hyperiux/parallax-strip-slider",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-parallax-strip-slider-1.0.0.tgz"
-  },
-  {
     "name": "@hyperiux/ring-carousel",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-ring-carousel-1.0.1.tgz"
@@ -171,8 +166,8 @@
   },
   {
     "name": "@hyperiux/information-drawer",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-information-drawer-1.0.1.tgz"
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-information-drawer-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/interactive-list-preview",
@@ -191,8 +186,8 @@
   },
   {
     "name": "@hyperiux/timeline",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-timeline-1.0.1.tgz"
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-timeline-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/video-player",
@@ -246,8 +241,8 @@
   },
   {
     "name": "@hyperiux/liquid-glass-cursor",
-    "version": "2.1.0",
-    "tarball": "registry/dist/hyperiux-liquid-glass-cursor-2.1.0.tgz"
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-liquid-glass-cursor-1.1.0.tgz"
   },
   {
     "name": "@hyperiux/magnetic-image-trail",
@@ -408,11 +403,6 @@
     "name": "@hyperiux/square-translate",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-square-translate-1.0.1.tgz"
-  },
-  {
-    "name": "@hyperiux/stack-spread",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-stack-spread-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/stacking-cards",

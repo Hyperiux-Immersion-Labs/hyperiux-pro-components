@@ -1,6 +1,6 @@
 {
   "name": "information-drawer",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "type": "registry:component",
   "title": "Information Drawer",
   "description": "Team profile grid with an animated information drawer and editable panel styling",
@@ -140,12 +140,6 @@
     }
   ],
   "changelog": [
-    {
-      "version": "1.0.1",
-      "date": "2026-08-21",
-      "summary": "Added reduced-motion support so the drawer and overlay settle instantly when users prefer reduced motion.",
-      "breaking": false
-    },
     {
       "version": "1.0.0",
       "date": "2026-08-21",
