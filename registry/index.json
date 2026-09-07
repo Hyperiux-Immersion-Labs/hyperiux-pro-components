@@ -7324,6 +7324,40 @@
     ]
   },
   {
+    "name": "parallax-strip-slider",
+    "title": "Parallax Strip Slider",
+    "description": "Fullscreen image slider that reveals each slide through staggered vertical strips with a Ken-Burns zoom and a GSAP SplitText title reveal",
+    "category": "carousels",
+    "type": "registry:component",
+    "tier": "free",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-04",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "registryPath": "registry/effects/carousels/parallax-strip-slider/registry.json",
+    "importPath": "@/components/effects/parallax-strip-slider",
+    "target": "src/components/effects/parallax-strip-slider",
+    "previewUrl": "/demo/parallax-strip-slider",
+    "main": "index.tsx",
+    "exportName": "ParallaxStripSlider",
+    "exportKind": "default",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/parallax-strip-slider/index.tsx"
+      }
+    ]
+  },
+  {
     "name": "perspective-text-reveal",
     "title": "Perspective Text Reveal",
     "description": "3D perspective rotation text reveal with lines flipping into view on scroll",
@@ -9021,6 +9055,40 @@
       }
     ],
     "registryPath": "registry/effects/loaders/stack-loader/registry.json"
+  },
+  {
+    "name": "stack-spread",
+    "title": "Stack Spread",
+    "description": "A clustered stack of images that spreads into a full-bleed composition on scroll while centre text fades in behind it",
+    "category": "scroll",
+    "type": "registry:component",
+    "tier": "free",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-04",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "dependencies": [
+      "motion"
+    ],
+    "registryDependencies": [],
+    "registryPath": "registry/effects/scroll/stack-spread/registry.json",
+    "importPath": "@/components/effects/stack-spread",
+    "target": "src/components/effects/stack-spread",
+    "previewUrl": "/demo/stack-spread",
+    "main": "index.tsx",
+    "exportName": "StackSpread",
+    "exportKind": "default",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/stack-spread/index.tsx"
+      }
+    ]
   },
   {
     "name": "stacking-cards",
