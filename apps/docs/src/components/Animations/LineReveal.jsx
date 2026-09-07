@@ -170,10 +170,24 @@ export default function LineReveal({
       });
     };
 
-    run();
+    // ponytail: same fix as RandomBlur/SplitLine - SplitText.create() inside
+    // run() is a forced-layout DOM mutation, so it's deferred behind an
+    // IntersectionObserver instead of firing on every mount regardless of
+    // scroll position.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          io.disconnect();
+          run();
+        }
+      },
+      { rootMargin: "500px 0px" }
+    );
+    io.observe(container);
 
     return () => {
       isKilled = true;
+      io.disconnect();
 
       tweenRef.current?.kill();
       triggerRef.current?.kill();

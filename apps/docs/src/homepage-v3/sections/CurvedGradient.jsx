@@ -25,59 +25,90 @@ export default function CurvedGradient() {
     () => {
       const first = firstRef.current;
       const second = secondRef.current;
-      if (!first || !second) return;
+      const wrapper = wrapperRef.current;
+      if (!first || !second || !wrapper) return;
 
-      const split1 = SplitText.create(first, {
-        type: "lines",
-        linesClass: "split-line",
-      });
-      const split2 = SplitText.create(second, {
-        type: "lines",
-        linesClass: "split-line",
-      });
+      let split1;
+      let split2;
 
-      gsap.set(split1.lines, { yPercent: 100, opacity: 0 });
-      gsap.set(split2.lines, { yPercent: 100, opacity: 0 });
+      // ponytail: same fix as RandomBlur/SplitLine - SplitText.create() is a
+      // forced-layout DOM mutation; this section is well below the fold, so
+      // defer the split until it's nearly on screen instead of on mount.
+      const mount = () => {
+        split1 = SplitText.create(first, {
+          type: "lines",
+          linesClass: "split-line",
+        });
+        split2 = SplitText.create(second, {
+          type: "lines",
+          linesClass: "split-line",
+        });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: wrapperRef.current,
-          start: "10% 60%",
-          end: "55% 20%",
-          scrub: true,
-          // markers:true
-        },
-      });
+        gsap.set(split1.lines, { yPercent: 100, opacity: 0 });
+        gsap.set(split2.lines, { yPercent: 100, opacity: 0 });
 
-      // First heading in, then out — then the second takes the same beat.
-      tl.to(split1.lines, {
-        yPercent: 0,
-        opacity: 1,
-        ease:"power2.out",
-        stagger: 0.08,
-      })
-      .to(split1.lines, {
-          yPercent: -100,
-          opacity: 0,
-           ease:"power2.in",
-          stagger: 0.08,
-        },"<.5")
-        .to(split2.lines, {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: wrapper,
+            start: "10% 60%",
+            end: "55% 20%",
+            scrub: true,
+            // markers:true
+          },
+        });
+
+        // First heading in, then out — then the second takes the same beat.
+        tl.to(split1.lines, {
           yPercent: 0,
           opacity: 1,
-           ease:"power2.out",
+          ease: "power2.out",
           stagger: 0.08,
         })
-        .to(split2.lines, {
-          yPercent: -100,
-          opacity: 0,
-           ease:"power2.in",
-          stagger: 0.08,
-        },"<.5");
+          .to(
+            split1.lines,
+            {
+              yPercent: -100,
+              opacity: 0,
+              ease: "power2.in",
+              stagger: 0.08,
+            },
+            "<.5"
+          )
+          .to(split2.lines, {
+            yPercent: 0,
+            opacity: 1,
+            ease: "power2.out",
+            stagger: 0.08,
+          })
+          .to(
+            split2.lines,
+            {
+              yPercent: -100,
+              opacity: 0,
+              ease: "power2.in",
+              stagger: 0.08,
+            },
+            "<.5"
+          );
+
+        ScrollTrigger.refresh(true);
+      };
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            io.disconnect();
+            mount();
+          }
+        },
+        { rootMargin: "500px 0px" }
+      );
+      io.observe(wrapper);
 
       return () => {
-        split1.revert();
-        split2.revert();
+        io.disconnect();
+        split1?.revert();
+        split2?.revert();
       };
     },
     { scope: wrapperRef },

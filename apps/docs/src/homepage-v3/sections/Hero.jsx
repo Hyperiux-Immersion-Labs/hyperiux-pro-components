@@ -81,6 +81,12 @@ export default function Hero() {
     // enables the real intro only after client signals prove this is not PSI.
     const [playIntro, setPlayIntro] = useState(false);
     const [skipGPU, setSkipGPU] = useState(true);
+    // Mobile gets a plain <video> instead of the ASCII canvas (which itself
+    // renders from a video texture) - same 768px cutoff the parallax
+    // matchMedia below already uses. Starts false (desktop-first) so SSR
+    // and first client paint agree; the layout effect below corrects it
+    // before paint, same pattern as skipGPU.
+    const [isMobile, setIsMobile] = useState(false);
 
     useScrollLockLenis();
 
@@ -123,6 +129,7 @@ export default function Hero() {
         // without risking a hydration mismatch.
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setSkipGPU(shouldSkipRealtimeGPU());
+        setIsMobile(window.matchMedia("(max-width: 767px)").matches);
         setPlayIntro(true);
     }, []);
 
@@ -310,7 +317,21 @@ export default function Hero() {
         >
             <div ref={layerRef} className="absolute  inset-0 origin-center max-md:w-full will-change-transform">
                 <div ref={canvasRef} className="absolute inset-0 will-change-transform">
-                    {skipGPU ? ASCII_FALLBACK : <CubeBackgroundAscii   intro={introRef} />}
+                    {isMobile ? (
+                        <video
+                            className="absolute inset-0 h-full w-full object-cover"
+                            src="/assets/videos/home_bg_vid.mp4"
+                            poster="/assets/videos/home_bg_vid_poster.webp"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                        />
+                    ) : skipGPU ? (
+                        ASCII_FALLBACK
+                    ) : (
+                        <CubeBackgroundAscii intro={introRef} />
+                    )}
                 </div>
                 <div className="pointer-events-none max-md:w-full absolute inset-0 z-10 flex items-center p-[3vw] max-[1025px]:p-[6vw] max-md:items-end max-md:p-6 max-sm:p-5">
                     <div className="space-y-[3vw] relative z-10 w-full max-[1025px]:space-y-[4vw] max-md:space-y-4 ">
