@@ -85,127 +85,155 @@ export default function TextFillAnimationV3({
 
     document.head.appendChild(styleElement);
 
+    let io;
+
+    // ponytail: same fix as RandomBlur/SplitLine/CurvedGradient - defer the
+    // forced-layout SplitText.create() until this section is nearly on
+    // screen instead of splitting on every mount.
     const context = gsap.context(() => {
       const textElement = textRef.current;
+      const section = sectionRef.current;
 
-      if (!textElement) {
+      if (!textElement || !section) {
         return;
       }
 
-      const split = SplitText.create(textElement, {
-        type: 'words chars',
-        aria: false,
-        tag: 'span',
-        charsClass: 'split-chars',
-      });
+      let split;
+      let splitCleanup;
 
-      gsap.set(textElement, {
-        opacity: 1,
-      });
+      const mount = () => {
+        split = SplitText.create(textElement, {
+          type: 'words chars',
+          aria: false,
+          tag: 'span',
+          charsClass: 'split-chars',
+        });
 
-      const characters = split.chars?.length
-        ? Array.from(split.chars)
-        : gsap.utils.toArray(
-            textElement.querySelectorAll(SPLIT_CHARACTER_SELECTOR)
-          );
+        gsap.set(textElement, {
+          opacity: 1,
+        });
 
-      const prefersReducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches;
+        const characters = split.chars?.length
+          ? Array.from(split.chars)
+          : gsap.utils.toArray(
+              textElement.querySelectorAll(SPLIT_CHARACTER_SELECTOR)
+            );
 
-      if (prefersReducedMotion) {
-        gsap.set(characters, { color: textColor });
+        const prefersReducedMotion = window.matchMedia(
+          '(prefers-reduced-motion: reduce)'
+        ).matches;
 
-        return () => {
-          gsap.killTweensOf(characters);
-          split.revert();
-        };
-      }
+        if (prefersReducedMotion) {
+          gsap.set(characters, { color: textColor });
 
-      // Contiguous reveal cursor. Forward = start fill tweens (finish even if
-      // you stop). Backward = hard-snap the whole string so in-flight fills
-      // can't complete later and leave white orphans.
-      let revealed = 0;
-
-      gsap.set(characters, {
-        color: dimColor,
-      });
-
-      const playFill = (char) => {
-        gsap.killTweensOf(char);
-
-        gsap.fromTo(
-          char,
-          { color: dimColor },
-          {
-            keyframes: [
-              { color: primaryColor, duration: 0.15 },
-              { color: textColor, duration: 0.25 },
-            ],
-            ease: 'none',
-            overwrite: true,
-          }
-        );
-      };
-
-      const snapToTarget = (target) => {
-        gsap.killTweensOf(characters);
-
-        if (target > 0) {
-          gsap.set(characters.slice(0, target), {
-            color: textColor,
-            overwrite: true,
-          });
-        }
-
-        if (target < characters.length) {
-          gsap.set(characters.slice(target), {
-            color: dimColor,
-            overwrite: true,
-          });
-        }
-
-        revealed = target;
-      };
-
-      const syncFromProgress = (progress, { immediate = false } = {}) => {
-        const target = Math.min(
-          characters.length,
-          Math.max(0, Math.round(progress * characters.length))
-        );
-
-        if (target === revealed) return;
-
-        // Scroll up / refresh jump backward: kill every fill and snap clean.
-        if (target < revealed || immediate) {
-          snapToTarget(target);
+          splitCleanup = () => {
+            gsap.killTweensOf(characters);
+            split.revert();
+          };
           return;
         }
 
-        for (let i = revealed; i < target; i++) {
-          playFill(characters[i]);
-        }
+        // Contiguous reveal cursor. Forward = start fill tweens (finish even if
+        // you stop). Backward = hard-snap the whole string so in-flight fills
+        // can't complete later and leave white orphans.
+        let revealed = 0;
 
-        revealed = target;
+        gsap.set(characters, {
+          color: dimColor,
+        });
+
+        const playFill = (char) => {
+          gsap.killTweensOf(char);
+
+          gsap.fromTo(
+            char,
+            { color: dimColor },
+            {
+              keyframes: [
+                { color: primaryColor, duration: 0.15 },
+                { color: textColor, duration: 0.25 },
+              ],
+              ease: 'none',
+              overwrite: true,
+            }
+          );
+        };
+
+        const snapToTarget = (target) => {
+          gsap.killTweensOf(characters);
+
+          if (target > 0) {
+            gsap.set(characters.slice(0, target), {
+              color: textColor,
+              overwrite: true,
+            });
+          }
+
+          if (target < characters.length) {
+            gsap.set(characters.slice(target), {
+              color: dimColor,
+              overwrite: true,
+            });
+          }
+
+          revealed = target;
+        };
+
+        const syncFromProgress = (progress, { immediate = false } = {}) => {
+          const target = Math.min(
+            characters.length,
+            Math.max(0, Math.round(progress * characters.length))
+          );
+
+          if (target === revealed) return;
+
+          // Scroll up / refresh jump backward: kill every fill and snap clean.
+          if (target < revealed || immediate) {
+            snapToTarget(target);
+            return;
+          }
+
+          for (let i = revealed; i < target; i++) {
+            playFill(characters[i]);
+          }
+
+          revealed = target;
+        };
+
+        // Trigger is the text itself, not a tall spacer — the reveal is mapped to
+        // the block crossing the viewport instead of to a pinned scroll distance.
+        ScrollTrigger.create({
+          trigger: section,
+          start,
+          end,
+          onUpdate: (self) => {
+            syncFromProgress(self.progress);
+          },
+          onRefresh: (self) => {
+            syncFromProgress(self.progress, { immediate: true });
+          },
+        });
+
+        splitCleanup = () => {
+          gsap.killTweensOf(characters);
+          split.revert();
+        };
       };
 
-      // Trigger is the text itself, not a tall spacer — the reveal is mapped to
-      // the block crossing the viewport instead of to a pinned scroll distance.
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start,
-        end,
-        onUpdate: (self) => {
-          syncFromProgress(self.progress);
+      io = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            io.disconnect();
+            mount();
+          }
         },
-        onRefresh: (self) => {
-          syncFromProgress(self.progress, { immediate: true });
-        },
-      });
+        { rootMargin: '500px 0px' }
+      );
+      io.observe(section);
 
       return () => {
-        gsap.killTweensOf(characters);
-        split.revert();
+        io?.disconnect();
+        splitCleanup?.();
       };
     }, sectionRef);
 

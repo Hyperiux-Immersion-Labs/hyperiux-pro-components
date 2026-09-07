@@ -5,6 +5,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import dynamic from "next/dynamic";
+import { useLenis } from "lenis/react";
+import {
+    clearScrollToPricingCardsIntent,
+    hasScrollToPricingCardsIntent,
+} from "@/lib/pricingScrollIntent";
 import ButtonV3 from "../components/ButtonV3";
 import { ScrambleText } from "../components/HoverLinkV3";
 import LineReveal from "@/components/Animations/LineReveal";
@@ -225,6 +230,48 @@ export default function PricingV3({ isIndia = false, auth = false }) {
     const planLabel = isYearly ? "Yearly" : "Monthly";
     const planPrice = isYearly ? yearlyAmount : monthlyAmount;
 
+    // Anything that links here wanting to land on the cards (VaultHeader's
+    // "Upgrade to Pro", the dashboard, CliTokenManager, etc.) needs a manual
+    // scroll for two independent reasons: Lenis owns scroll and resets
+    // position on init, so the browser's native anchor-jump doesn't stick on
+    // its own - and a client-side <Link> navigation into /pricing from
+    // elsewhere in the app was observed dropping the #pricing-cards hash
+    // (and any query string) from the URL entirely once it lands, so a
+    // window.location.hash check alone never fires for that path. The
+    // sessionStorage flag from lib/pricingScrollIntent.js is what actually
+    // covers that case reliably; the hash check stays as a fallback for a
+    // real full page load (typing the URL, a shared link).
+    const lenis = useLenis();
+    const hasScrolledToHash = useRef(false);
+
+    useEffect(() => {
+        if (hasScrolledToHash.current) return;
+        if (typeof window === "undefined") return;
+
+        const wantsScroll =
+            window.location.hash === "#pricing-cards" || hasScrollToPricingCardsIntent();
+
+        if (!wantsScroll) return;
+
+        const target = document.getElementById("pricing-cards");
+        if (!target) return;
+
+        const timer = setTimeout(() => {
+            const targetTop = target.getBoundingClientRect().top + window.scrollY;
+
+            if (lenis) {
+                lenis.scrollTo(targetTop, { force: true });
+            } else {
+                window.scrollTo({ top: targetTop, left: 0, behavior: "smooth" });
+            }
+
+            hasScrolledToHash.current = true;
+            clearScrollToPricingCardsIntent();
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [lenis]);
+
     // A fresh object identity restarts the write-on, so the perk replays every
     // time the toggle lands back on yearly.
     const perkRun = useMemo(() => ({ active: isYearly && armed }), [isYearly, armed]);
@@ -280,7 +327,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
             </div>
 
             {/* CARDS */}
-            <div className="mt-[1.5vw] w-[75%] fadeup mx-auto flex items-stretch max-[1025px]:mt-[4vw] max-[1025px]:w-[90%] max-[1025px]:flex-col-reverse max-[1025px]:gap-[5vw] max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]">
+            <div className="mt-[1.5vw] w-[75%] fadeup mx-auto flex items-stretch max-[1025px]:mt-[4vw] max-[1025px]:w-[90%] max-[1025px]:flex-col-reverse max-[1025px]:gap-[5vw] max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]" id="pricing-cards">
                 {/* FREE */}
                 <div className="pricing-v3-card relative flex w-1/2 flex-col justify-between border border-background/15 px-[3vw] py-[3vw] max-[1025px]:w-full max-[1025px]:px-[4vw] max-[1025px]:py-[4.5vw] max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
                     <PixelSquares flashClassName="bg-background" />
@@ -350,6 +397,12 @@ export default function PricingV3({ isIndia = false, auth = false }) {
                             </p>
                         </div>
 
+                        {isIndia && (
+                            <p className="font-geist-mono mt-[0.3vw] text-[1vw] text-[#c5c5c5] max-[1025px]:text-[1.7vw] max-md:text-[1.8vw] max-sm:text-[3.2vw]">
+                                +18% GST
+                            </p>
+                        )}
+
                         <p className="text22  mt-[1.5vw] max-[1025px]:mt-[3vw] max-md:mt-[3vw] max-md:text-[2.2vw] max-sm:mt-[5vw] max-sm:text-[4vw]">
                             For developers, founders, and agencies shipping premium work.
                         </p>
@@ -377,7 +430,6 @@ export default function PricingV3({ isIndia = false, auth = false }) {
 
                         <p className="font-geist-mono mt-[1.2vw] text-[0.9vw] text-light-grey max-[1025px]:mt-[2.5vw] max-[1025px]:text-[1.7vw] max-md:mt-[3vw] max-md:text-[1.8vw] max-sm:mt-[5vw] max-sm:text-[3.2vw]">
                             Instant access · npx hyperiux login · Cancel anytime
-                            {isIndia ? " · 18% GST added at checkout" : ""}
                         </p>
                     </div>
                 </div>

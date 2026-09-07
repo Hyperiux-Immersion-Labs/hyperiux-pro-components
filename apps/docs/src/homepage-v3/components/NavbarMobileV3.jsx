@@ -33,6 +33,22 @@ const LINKS = [
 function Accordion({ open, children }) {
   const wrapperRef = useRef(null);
   const contentRef = useRef(null);
+  // `children` here is every icon + link for one nav section (mask-image
+  // SVGs, fetched the moment they're in the DOM regardless of this
+  // wrapper's collapsed height). Both SECTIONS render one of these
+  // unconditionally on mount - so without this gate, every section's icons
+  // load on first paint whether or not the sheet has even been opened.
+  // Mounted lazily on first expand and left mounted after that so a
+  // collapse still has real content to measure/animate down from.
+  const [everOpened, setEverOpened] = useState(open);
+  // Adjusted during render (React's own pattern for this - see NavDropdownV3's
+  // identical `if (panel && panel !== visible) setVisible(panel)`), not from an
+  // effect: the layout effect below reads `content.scrollHeight` synchronously
+  // in the same commit `open` flips true, and that only measures real content
+  // if `everOpened` is already true by then. A plain effect fires a commit too
+  // late - the open animation would measure an empty div's zero height on the
+  // very first expand.
+  if (open && !everOpened) setEverOpened(true);
 
   useIsoLayoutEffect(() => {
     const wrapper = wrapperRef.current;
@@ -61,7 +77,7 @@ function Accordion({ open, children }) {
   return (
     <div ref={wrapperRef} className="h-0 overflow-hidden opacity-0">
       <div ref={contentRef} className="pb-[6vw] md:pb-[3.5vw]">
-        {children}
+        {everOpened ? children : null}
       </div>
     </div>
   );

@@ -1,10 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import SplitLine from "../WebsiteComps/SplitLine";
 import LineReveal from "../Animations/LineReveal";
 
-const rows = [
+// Same map/shape as PricingV3.jsx and Pricing.jsx - each pricing-displaying
+// component keeps its own local copy rather than a shared constants module,
+// matching this codebase's existing pattern (Pricing.jsx duplicates this
+// exact map already).
+const PRICING = {
+  USD: { symbol: "$", monthly: 20, yearly: 179 },
+  INR: { symbol: "₹", monthly: 999, yearly: 8999 },
+};
+
+const BASE_ROWS = [
   { feature: "Effects included", free: "40+ effects", pro: "Full library, all categories", proHighlight: true },
   { feature: "New effects", free: null, pro: "Added monthly", proHighlight: true },
   { feature: "Scroll & text effects", free: true, pro: true },
@@ -17,7 +26,6 @@ const rows = [
   { feature: "Updates & fixes", free: "Community cadence", pro: "Priority", proHighlight: true },
   { feature: "Support", free: "GitHub / community", pro: "Email support", proHighlight: true },
   { feature: "Team / agency use", free: "Individual use", pro: "Per seat - agency licensing available", proHighlight: true },
-  { feature: "Price", free: "$0 forever", pro: "$20/mo or $179/yr", proHighlight: true },
 ];
 
 function Tick() {
@@ -59,7 +67,23 @@ function Cell({ value, isPro = false, highlight = false }) {
   );
 }
 
-export default function PricingCompareTable() {
+export default function PricingCompareTable({ isIndia = false }) {
+  const currency = isIndia ? "INR" : "USD";
+  const { symbol, monthly, yearly } = PRICING[currency];
+
+  const rows = useMemo(
+    () => [
+      ...BASE_ROWS,
+      {
+        feature: "Price",
+        free: `${symbol}0 forever`,
+        pro: `${symbol}${monthly}/mo or ${symbol}${yearly}/yr`,
+        proHighlight: true,
+      },
+    ],
+    [symbol, monthly, yearly]
+  );
+
   return (
     <section className="w-screen pb-[30vw] max-md:pb-[40vw]! overflow-hidden text-white px-[5vw] py-[8vw] max-[1025px]:px-0 max-[1025px]:pt-0 max-[1025px]:pb-[15vw] relative z-10">
 
