@@ -1,23 +1,11 @@
 {
   "name": "liquid-glass-cursor",
-  "version": "2.1.0",
+  "version": "1.1.0",
   "changelog": [
     {
-      "version": "2.1.0",
-      "date": "2026-08-26",
-      "summary": "Restore hover shape morphing (circle -> pill on data-cursor button/text targets) on top of the magnifying lens",
-      "breaking": false
-    },
-    {
-      "version": "2.0.0",
-      "date": "2026-08-26",
-      "summary": "Rebuilt as a magnifying glass-lens wrapper with chromatic-aberration SVG refraction over live wrapped content; replaces the GSAP hover-morph cursor API (baseSize/textHoverSize/distortionScale/blurAmount/brightness/borderColor/maxButtonWidth/maxButtonHeight) with a children-based wrapper API (size/magnification/distortion/aberration/className)",
-      "breaking": true
-    },
-    {
       "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "reduce-motion applied",
+      "date": "2026-08-26",
+      "summary": "Rebuilt as a magnifying glass-lens wrapper with chromatic-aberration SVG refraction over live wrapped content, replacing the previous GSAP hover-morph cursor API",
       "breaking": false
     },
     {
@@ -36,7 +24,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/liquid-glass-cursor",
-  "tier": "pro",
+  "tier": "free",
   "main": "index.tsx",
   "exportName": "LiquidGlassCursor",
   "exportKind": "default",

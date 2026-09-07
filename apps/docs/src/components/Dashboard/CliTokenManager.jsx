@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 
 export default function CliTokenManager({ plan }) {
   const [token, setToken] = useState("");
@@ -79,7 +80,7 @@ export default function CliTokenManager({ plan }) {
 
           <p className="mt-6 max-w-2xl">
             Generate a private token to identify yourself to the Hyperiux CLI
-            and MCP — logging in like this is now required to have your daily
+            and MCP - logging in like this is now required to have your daily
             install limit tracked correctly, instead of falling back to a
             stricter anonymous limit. Keep it secret: anyone with this token
             can install under your account, including Pro downloads if you
@@ -93,7 +94,11 @@ export default function CliTokenManager({ plan }) {
                 <>
                   On the Free plan this raises your daily install limit from 1
                   (anonymous) to 3.{" "}
-                  <Link href="/pricing" className="text-[#ff5f00] hover:underline">
+                  <Link
+                    href="/pricing#pricing-cards"
+                    onClick={markScrollToPricingCards}
+                    className="text-[#ff5f00] hover:underline"
+                  >
                     Upgrade to Pro
                   </Link>{" "}
                   for 10/day and Pro effect downloads.

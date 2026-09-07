@@ -177,7 +177,7 @@ export default function Timeline({
     const isMobile = window.innerWidth < 642;
     const slidePercent = isTablet ? -60 : isMobile ? -57 : -65;
     const lineWidth = isTablet ? "75%" : isMobile ? "65%" : "98%";
-    const lineStart = isTablet ? "top 50%" : isMobile ? "top 30%" : "top 60%";
+    const lineStart = isTablet ? "top 20%" : isMobile ? "top 30%" : "top 25%";
     const slideEnd = isMobile ? "82% 50%" : "92% bottom";
     const lineEnd = isMobile ? "80% 50%" : isTablet ? "90% bottom" : "92% bottom";
 
@@ -212,6 +212,7 @@ export default function Timeline({
         start: lineStart,
         end: lineEnd,
         scrub: true,
+
       },
     });
   }, { dependencies: [reducedMotion], scope: sectionRef });
@@ -378,15 +379,15 @@ export default function Timeline({
     <section
       ref={sectionRef}
       id="journey"
-      className="h-[200vw] max-md:h-[400vh] max-sm:h-[400vh] w-full relative py-[7%]"
+      className="h-[200vw] max-[1025px]:h-[400vh] max-md:h-[400vh] w-full relative py-[7%]"
       style={sectionStyle}
     >
-      <div className="h-screen w-screen sticky top-[10%] pt-[5%] overflow-hidden max-sm:top-[5%] ">
+      <div className="h-screen w-screen sticky top-[10%] pt-[5%] overflow-hidden max-md:top-[5%] ">
         <div
           ref={wholeSliderRef}
-          className="mr-[2vw] flex h-[30vw] w-[240vw] items-center gap-[5vw] px-[5vw] max-[1025px]:h-[70vh] max-[1025px]:w-[400vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[2vw] max-[1025px]:px-[5vw] max-md:w-[400vw] max-md:px-[5vw] max-sm:h-[80vh] max-sm:w-[800vw] max-sm:px-[7vw]"
+          className="mr-[2vw] flex h-[30vw] w-[240vw] items-center gap-[5vw] px-[5vw] max-[1025px]:h-[70vh] max-[1025px]:w-[400vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[2vw] max-[1025px]:px-[5vw] max-md:h-[80vh] max-md:w-[800vw] max-md:px-[7vw]"
         >
-          <div className="h-full w-[30vw] overflow-hidden rounded-[1vw] max-[1025px]:h-[40vw] max-[1025px]:w-[15%] max-[1025px]:rounded-[3vw] max-md:h-[40vw] max-md:w-[15%] max-md:rounded-[3vw] max-sm:h-[65vw] max-sm:w-[85vw] max-sm:rounded-[5vw]">
+          <div className="h-full w-[30vw] overflow-hidden rounded-[1vw] max-[1025px]:h-[40vw] max-[1025px]:w-[15%] max-[1025px]:rounded-[3vw] max-md:h-[65vw] max-md:w-[85vw] max-md:rounded-[5vw]">
             <Image
               src={imageUrl}
               alt={imageAlt}
@@ -396,10 +397,10 @@ export default function Timeline({
             />
           </div>
 
-          <div className="relative h-full w-full max-[1025px]:h-[50%] max-md:h-[50%]">
+          <div className="relative h-full w-full  max-[1025px]:h-[50%]">
             <div className="w-full absolute left-0 top-[49%] tranlate-y-[-50%] flex items-center h-fit">
               <div
-                className="h-[.8vw] max-sm:h-[2vw] max-sm:w-[2vw] w-[.8vw] rounded-full max-md:w-[1.5vw] max-md:h-[1.5vw]"
+                className="h-[.8vw] max-md:h-[2vw] max-md:w-[2vw] w-[.8vw] rounded-full max-[1025px]:w-[1.5vw] max-[1025px]:h-[1.5vw]"
                 style={activeStyle}
               ></div>
               <div
@@ -407,27 +408,27 @@ export default function Timeline({
                 style={activeStyle}
               ></div>
               <div
-                className="h-[.8vw] max-sm:h-[2vw] max-sm:w-[2vw] w-[.8vw] rounded-full max-md:w-[1.5vw] max-md:h-[1.5vw]"
+                className="h-[.8vw] max-md:h-[2vw] max-md:w-[2vw] w-[.8vw] rounded-full max-[1025px]:w-[1.5vw] max-[1025px]:h-[1.5vw]"
                 style={activeStyle}
               ></div>
             </div>
 
             <div className="flex h-1/2 w-full items-center justify-start gap-[.5vw]">
-              <div className="h-full w-[20%] pt-[2vw] max-sm:h-fit max-sm:pt-[5vw]">
-                <h2 className="w-[65%]  text-[3vw] leading-[0.95] max-[1025px]:w-[75%] max-[1025px]:text-[7vw] max-md:w-[75%] max-md:text-[7vw] max-sm:text-[8.5vw]">
+              <div className="h-full w-[20%] pt-[2vw] max-md:h-fit max-md:pt-[5vw]">
+                <h2 className="w-[65%]  text-[3vw] leading-[0.95] max-[1025px]:w-[75%] max-[1025px]:text-[7vw] max-md:text-[8.5vw]">
                   {title}
                 </h2>
               </div>
 
-              <div className="w-full flex h-full gap-x-[15vw] max-sm:gap-x-[40vw]">
+              <div className="w-full flex h-full gap-x-[15vw] max-md:gap-x-[40vw]">
                 {topJourneyData.map((item) => (
                   <div
                     key={`top-${item.id}`}
-                    className="relative h-full w-[30vw] px-[3vw] max-[1025px]:w-[50vw] max-[1025px]:px-[5vw] max-md:w-[50vw] max-md:px-[5vw] max-sm:flex max-sm:w-[70vw] max-sm:flex-col max-sm:px-[7vw]"
+                    className="relative h-full w-[30vw] px-[3vw]  max-[1025px]:w-[50vw] max-[1025px]:px-[5vw] max-md:flex max-md:w-[70vw] max-md:flex-col max-md:px-[7vw]"
                   >
                     <div className="w-full absolute left-0 bottom-0 top-0 h-full">
                       <div
-                        className={`size-[1vw] max-sm:size-[2.5vw] max-md:size-[2vw] translate-x-[-50%] relative aspect-square rounded-full jd-${item.id}`}
+                        className={`size-[1vw] max-md:size-[2.5vw] max-[1025px]:size-[2vw] translate-x-[-50%] relative aspect-square rounded-full jd-${item.id}`}
                         style={activeStyle}
                       ></div>
                       <div
@@ -436,14 +437,14 @@ export default function Timeline({
                       ></div>
                     </div>
 
-                    <div className="mt-[-1vw] space-y-[1vw] max-[1025px]:mt-[-1.5vw] max-md:mt-[-1.5vw] max-sm:mt-[-2vw]">
+                    <div className="mt-[-1vw] space-y-[1vw] max-[1025px]:mt-[-1.5vw] max-md:mt-[-2vw]">
                       <h4
-                        className={`title-${item.id}  text-[2.5vw] leading-[1] max-[1025px]:text-[5vw] max-md:text-[5vw] max-sm:text-[6.4vw]`}
+                        className={`title-${item.id}  text-[2.5vw] leading-none max-[1025px]:text-[5vw] max-md:text-[6.4vw]`}
                       >
                         {item.year} {item.month}
                       </h4>
                       <p
-                        className={`description-${item.id} w-[90%] text-[1.5vw] leading-[1.15] max-[1025px]:w-[70%] max-[1025px]:text-[3.2vw] max-md:w-[70%] max-md:text-[3.2vw] max-sm:w-[90%] max-sm:text-[4.8vw]`}
+                        className={`description-${item.id} w-[90%] text-[1.5vw] leading-[1.15] max-[1025px]:w-[70%] max-[1025px]:text-[3.2vw] max-md:w-[90%] max-md:text-[4.8vw]`}
                         style={mutedTextStyle}
                       >
                         {item.content}
@@ -455,40 +456,40 @@ export default function Timeline({
             </div>
 
             <div className="h-1/2 flex items-center justify-start w-full">
-              <div className="w-[34%] pt-[2vw] max-sm:pt-[5vw] max-sm:w-[30%] h-full max-md:pt-[5vw]">
+              <div className="w-[34%] pt-[2vw] max-md:pt-[5vw] max-md:w-[30%] h-full max-[1025px]:pt-[5vw]">
                 <p
-                  className=" text-[1.65vw] leading-none max-[1025px]:text-[3vw] max-md:text-[3vw] max-sm:text-[4.2vw]"
+                  className=" text-[1.65vw] leading-none max-[1025px]:text-[3vw] max-md:text-[4.2vw]"
                   style={mutedTextStyle}
                 >
                   {periodLabel}
                 </p>
               </div>
 
-              <div className="w-full flex h-full gap-x-[20vw] ml-[7vw] max-sm:gap-x-[40vw] max-md:ml-0 max-sm:ml-[7vw]">
+              <div className="w-full flex h-full gap-x-[20vw] ml-[7vw] max-md:gap-x-[40vw] max-[1025px]:ml-0 max-md:ml-[7vw]">
                 {bottomJourneyData.map((item) => (
                   <div
                     key={`bottom-${item.id}`}
-                    className="relative h-full w-[25vw] px-[3vw] max-[1025px]:flex max-[1025px]:w-[20%] max-[1025px]:flex-col max-[1025px]:justify-center max-[1025px]:px-[5vw] max-md:flex max-md:w-[20%] max-md:flex-col max-md:justify-center max-md:px-[5vw] max-sm:w-[70vw] max-sm:px-[7vw]"
+                    className="relative h-full w-[25vw] px-[3vw]  max-[1025px]:flex max-[1025px]:w-[20%] max-[1025px]:flex-col max-[1025px]:justify-center max-[1025px]:px-[5vw] max-md:w-[70vw] max-md:px-[7vw]"
                   >
                     <div className="w-full absolute left-0 bottom-[-1%] h-full">
                       <div
-                        className={`h-[94%] origin-top w-px rounded-full max-sm:h-full jl-${item.id}`}
+                        className={`h-[94%] origin-top w-px rounded-full max-md:h-full jl-${item.id}`}
                         style={activeStyle}
                       ></div>
                       <div
-                        className={`size-[1vw] max-sm:size-[2.5vw] max-md:size-[2vw] translate-x-[-50%] relative w-auto aspect-square rounded-full jd-${item.id}`}
+                        className={`size-[1vw] max-md:size-[2.5vw] max-[1025px]:size-[2vw] translate-x-[-50%] relative w-auto aspect-square rounded-full jd-${item.id}`}
                         style={activeStyle}
                       ></div>
                     </div>
 
                     <div className="flex h-full w-full flex-col justify-end space-y-[1vw]">
                       <h4
-                        className={`title-${item.id}  text-[2.5vw] leading-[1] max-[1025px]:text-[5vw] max-md:text-[5vw] max-sm:text-[6.4vw]`}
+                        className={`title-${item.id}  text-[2.5vw] leading-none max-[1025px]:text-[5vw] max-md:text-[6.4vw]`}
                       >
                         {item.year} {item.month}
                       </h4>
                       <p
-                        className={`description-${item.id} w-[90%] text-[1.5vw] leading-[1.15] max-[1025px]:w-[70%] max-[1025px]:text-[3.2vw] max-md:w-[70%] max-md:text-[3.2vw] max-sm:w-[90%] max-sm:text-[4.8vw]`}
+                        className={`description-${item.id} w-[90%] text-[1.5vw] leading-[1.15] max-[1025px]:w-[70%] max-[1025px]:text-[3.2vw] max-md:w-[90%] max-md:text-[4.8vw]`}
                         style={mutedTextStyle}
                       >
                         {item.content}

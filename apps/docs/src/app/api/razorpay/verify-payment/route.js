@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { razorpay } from "@/lib/razorpay";
-import { markUserProFromSubscription } from "@/lib/pro-access";
+import { markUserProFromSubscription, recordInvoice } from "@/lib/pro-access";
 import { recordTemplatePurchase } from "@/lib/template-purchases";
 
 function isValidSignature(payload, signature) {
@@ -77,6 +77,23 @@ export async function POST(req) {
         clerkUserId: userId,
         subscription,
       });
+
+      // Records the invoice here too, not just from the subscription.charged
+      // webhook - that webhook is the only place this happened before, so a
+      // real paying customer whose webhook delivery is delayed, never
+      // configured for this environment, or (as in local dev) simply
+      // unreachable would activate Pro correctly but never see an invoice
+      // in their Invoicing tab. recordInvoice() upserts on razorpay_payment_id
+      // with ignoreDuplicates, so if the webhook also lands later for the
+      // same payment it's a safe no-op, not a duplicate row. Wrapped so a
+      // Razorpay fetch hiccup here can't block the plan activation the user
+      // is waiting on.
+      try {
+        const payment = await razorpay.payments.fetch(razorpay_payment_id);
+        await recordInvoice({ clerkUserId: userId, subscription, payment });
+      } catch (invoiceError) {
+        console.error("VERIFY_PAYMENT_RECORD_INVOICE_ERROR:", invoiceError);
+      }
 
       return NextResponse.json({ verified: true, ...result });
     }

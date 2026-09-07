@@ -29,6 +29,7 @@ import { ChevronRight } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
 import { prefersReducedMotion } from "@/lib/motion";
+import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 
 const useIsoLayoutEffect =
@@ -422,8 +423,8 @@ export function VaultHeader({
                     />
                   </svg>
                 </div>
-                <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current opacity-50 max-[1025px]:hidden">
-                  ⌘K
+                <kbd className="space-x-2 rounded bg-foreground/20 px-1.5 py-0.5 text-sm text-current max-[1025px]:hidden">
+                  ⌘ K
                 </kbd>
               </button>
             )}
@@ -433,7 +434,8 @@ export function VaultHeader({
                 <ButtonV3
                   text="Upgrade to Pro"
                   id={"upgrade-to-pro-navbar"}
-                  href="/pricing"
+                  href="/pricing#pricing-cards"
+                  onClick={markScrollToPricingCards}
                   className="border-white/50!"
                   variant="outline"
                 />
@@ -656,8 +658,11 @@ export function VaultHeader({
               {!hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && (
                 <ButtonV3
                   text="Upgrade to Pro"
-                  href="/pricing"
-                  onClick={close}
+                  href="/pricing#pricing-cards"
+                  onClick={() => {
+                    close();
+                    markScrollToPricingCards();
+                  }}
                   variant="outline"
                   className="w-full border-white/50! md:py-[1.5vw] md:text-[2vw] md:[--btn-pad:2.4vw] md:[--btn-gap:1vw] md:[--btn-square:1.4vw] md:[--btn-arrow:2vw]"
                 />

@@ -293,7 +293,7 @@ export default function FAQV3({ faqItems, translateTop = true }) {
           <LinkButton
             href="#"
             onClick={() => setIsExpanded(true)}
-            shimmer shimmerColor="var(--primary)"
+            shimmer
             tilted={false}
           underline={true}
             showArrow

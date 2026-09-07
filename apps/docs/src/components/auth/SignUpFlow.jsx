@@ -29,19 +29,6 @@ const RESEND_COOLDOWN_SECONDS = 30;
 // every other auth path, not detour through pricing.
 const REDIRECT_AFTER_SIGN_UP = "/effects";
 
-// Reads the click-attribution cookie the homepage-only tracker
-// (components/WebsiteComps/AffitorTracking.jsx) sets, so a referred
-// visitor's affitor_click_id rides along on signUp.create() as
-// unsafeMetadata. Clerk copies that onto the created User, which is what
-// the user.created webhook (api/webhooks/clerk/route.js) reads to bind the
-// lead server-side via trackAffitorLead() - the reliable half of this
-// funnel; see that file for why the client-side tracker's own signup()
-// call isn't used anymore.
-function getAffitorClickId() {
-  const match = document.cookie.match(/(?:^|; )affitor_click_id=([^;]*)/);
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
 export default function SignUpFlow() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
@@ -89,6 +76,19 @@ export default function SignUpFlow() {
     // that. router.push stays as a fallback in case this Clerk version's
     // own redirect doesn't fully complete the client-side transition.
     await setActive({ session: result.createdSessionId, redirectUrl });
+
+    // Client-side only: ReferralRocket's server-side REST API
+    // (addParticipant) needs a paid-plan API key we don't have, so this is
+    // the sole lead-tracking path - the widget script (loaded on the
+    // homepage, see ReferralRocketTracking.jsx) reads the rr_referral_code
+    // cookie it set at click time and, if present, attributes this signup
+    // to that referrer. Never lets a tracking failure block the real signup.
+    try {
+      window.Rocket?.getCampaign?.().addParticipant({ email });
+    } catch (referralRocketError) {
+      console.error("REFERRAL_ROCKET_ADD_PARTICIPANT_ERROR:", referralRocketError);
+    }
+
     router.push(redirectUrl);
   }
 
@@ -100,11 +100,9 @@ export default function SignUpFlow() {
     setError(null);
 
     try {
-      const affitorClickId = getAffitorClickId();
       const result = await signUp.create({
         emailAddress: email,
         password,
-        ...(affitorClickId && { unsafeMetadata: { affitor_click_id: affitorClickId } }),
       });
 
       if (result.status === "complete") {

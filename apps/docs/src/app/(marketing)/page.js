@@ -2,7 +2,7 @@ import Homepage from "@/components/Homepage/Homepage";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { getSearchIndexEffects } from "@/lib/search-index";
-import AffitorTracking from "@/components/WebsiteComps/AffitorTracking";
+import ReferralRocketTracking from "@/components/WebsiteComps/ReferralRocketTracking";
 
 const faqItems = [
   {
@@ -104,7 +104,7 @@ export default async function page() {
     <>
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
-      <AffitorTracking />
+      <ReferralRocketTracking />
       <Homepage faqItems={faqItems} effects={effects} />
     </>
   );

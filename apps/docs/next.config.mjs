@@ -136,6 +136,11 @@ const nextConfig = {
   images: {
     qualities: [60, 65, 75, 90, 95, 100],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 280, 320, 384, 560, 640],
+    // Next's default is 4h - these /_next/image URLs are content-addressed
+    // (src+width+quality baked into the query string), so a stale cached
+    // response is never actually stale. A year removes the "uncached asset"
+    // SEO/perf flag with no correctness downside.
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       {
         protocol: "https",

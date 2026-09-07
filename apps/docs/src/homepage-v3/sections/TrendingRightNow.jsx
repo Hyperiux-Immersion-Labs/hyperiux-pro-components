@@ -129,7 +129,7 @@ function TrendingEffectCard({ effect, priority = false }) {
             loading={priority ? undefined : "lazy"}
             draggable={false}
             onError={() => setImageError(true)}
-            className={`object-cover object-center select-none transition-[opacity,transform] duration-500 group-hover:scale-[1.04] ${
+            className={`object-cover object-center select-none ${
               showVideo ? "opacity-0" : "opacity-100"
             }`}
           />
@@ -146,7 +146,7 @@ function TrendingEffectCard({ effect, priority = false }) {
             onLoadedData={() => setVideoReady(true)}
             onEmptied={() => setVideoReady(false)}
             onError={() => setVideoReady(false)}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+            className={`absolute inset-0 h-full w-full object-cover ${
               showVideo ? "opacity-100" : "opacity-0"
             }`}
           />

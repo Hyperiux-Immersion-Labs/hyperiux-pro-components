@@ -220,9 +220,16 @@ export function Sidebar({
     return pathname === basePath;
   });
 
+  // MCP has its own dedicated icon at the bottom of the sidebar (separate
+  // from the Documentation dropdown, even though "/docs/mcp" is also listed
+  // as one of Documentation's own sub-links) - being on that exact page
+  // should only light up the MCP icon, not double up with the Documentation
+  // section button too.
+  const isMcpDocsRoute = pathname === "/docs/mcp";
+
   const initialOpenSection = isLegalRoute
     ? "legal"
-    : pathname.startsWith("/docs")
+    : pathname.startsWith("/docs") && !isMcpDocsRoute
       ? "docs"
       : isCategoryRoute
         ? "categories"
@@ -233,6 +240,24 @@ export function Sidebar({
   const [openSection, setOpenSection] = useState(initialOpenSection);
   const [hoveredSidebarKey, setHoveredSidebarKey] = useState("");
   const { startNavigation, scrollToTop } = useVaultLayout();
+
+  // A single scrollToTop() call at click time can lose the race against
+  // layout recalculation that happens shortly after the route actually
+  // changes - GSAP's ScrollTrigger.refresh() re-measuring pinned/scrubbed
+  // sections on the destination page (this app uses those extensively) can
+  // itself nudge the scroll position, and that refresh is deliberately
+  // staggered up to 360ms out (see VaultLayout's refreshScrollTrigger) to
+  // catch content that resizes as it loads. One immediate call isn't
+  // enough to guarantee "clicking a sidebar link always lands at the top" -
+  // this re-asserts scroll=0 several times over the following beat so it
+  // wins regardless of what else fires after it.
+  const forceScrollToTop = () => {
+    scrollToTop();
+    requestAnimationFrame(scrollToTop);
+    requestAnimationFrame(() => requestAnimationFrame(scrollToTop));
+    window.setTimeout(scrollToTop, 150);
+    window.setTimeout(scrollToTop, 400);
+  };
 
   const previousRouteSectionRef = useRef(initialOpenSection);
   const categoryNavigationInProgressRef = useRef(false);
@@ -245,6 +270,7 @@ export function Sidebar({
 
   const isDocsActive =
     !isLegalActive &&
+    !isMcpDocsRoute &&
     (pathname.startsWith("/docs") ||
       resolvedTopLinks.some((link) => {
         const [basePath, hash] = link.href.split("#");
@@ -417,7 +443,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("");
     startNavigation("/effects");
-    scrollToTop();
+    forceScrollToTop();
 
     const wasHandled = onOverviewNavigate?.();
 
@@ -444,7 +470,7 @@ export function Sidebar({
     setOpenSection("categories");
     const targetHref = getEffectCategoryHref(categoryId);
     startNavigation(targetHref);
-    scrollToTop();
+    forceScrollToTop();
 
     const wasHandled = onCategoryNavigate?.(categoryId);
 
@@ -459,7 +485,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("docs");
     startNavigation(href);
-    scrollToTop();
+    forceScrollToTop();
 
     if (typeof window !== "undefined") {
       const docsRouteEvent = new CustomEvent("hyperiux:docs-route-request", {
@@ -485,7 +511,7 @@ export function Sidebar({
     categoryNavigationInProgressRef.current = false;
     setOpenSection("legal");
     startNavigation(href);
-    scrollToTop();
+    forceScrollToTop();
 
     const wasHandled = onDocumentationNavigate?.(href);
 
@@ -547,7 +573,16 @@ export function Sidebar({
         }`}
       >
         <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
-          <Link prefetch={false} href="/" className="flex min-w-0 items-center gap-3">
+          <Link
+            prefetch={false}
+            href="/"
+            scroll={false}
+            onClick={() => {
+              startNavigation("/");
+              forceScrollToTop();
+            }}
+            className="flex min-w-0 items-center gap-3"
+          >
 
            <Image
               src="/hyperiux.svg"
@@ -792,7 +827,7 @@ export function Sidebar({
             isActive={hoveredSidebarKey ? hoveredSidebarKey === "pricing" : pathname === "/pricing"}
             onClick={() => {
               startNavigation("/pricing");
-              scrollToTop();
+              forceScrollToTop();
             }}
             onMouseEnter={() => setHoveredSidebarKey("pricing")}
           />
