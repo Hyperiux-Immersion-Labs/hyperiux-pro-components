@@ -12,22 +12,20 @@ import {
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-// ---------------------------------------------------------------------------
-// Demo content
-// ---------------------------------------------------------------------------
+
 
 const IMG_BASE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/scroll-scatter";
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/stack-spread";
 
 const IMG = {
-  plane: `${IMG_BASE}/img01.png`,
-  painting: `${IMG_BASE}/img02.png`,
-  breaker: `${IMG_BASE}/img03.png`,
-  dog: `${IMG_BASE}/img04.png`,
-  footballer: `${IMG_BASE}/img05.png`,
-  jacket: `${IMG_BASE}/img06.jpg`,
-  meadow: `${IMG_BASE}/img07.jpg`,
-  stripes: `${IMG_BASE}/img08.png`,
+  plane: `${IMG_BASE}/img1.png`,
+  painting: `${IMG_BASE}/img2.png`,
+  breaker: `${IMG_BASE}/img3.png`,
+  dog: `${IMG_BASE}/img4.png`,
+  footballer: `${IMG_BASE}/img5.png`,
+  jacket: `${IMG_BASE}/img6.png`,
+  meadow: `${IMG_BASE}/img7.png`,
+  stripes: `${IMG_BASE}/img8.png`,
 } as const;
 
 // per-image rest scale, keyed by img index (1-8). default 1, drop below to shrink.

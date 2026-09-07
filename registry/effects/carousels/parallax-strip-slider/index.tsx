@@ -1,6 +1,8 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
@@ -27,25 +29,8 @@ type Slide = {
   chapter?: string;
 };
 
-const DEFAULT_SLIDES: Slide[] = [
-  {
-    src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=80",
-    title: "Fire",
-    chapter: "Collection 01",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1600&q=80",
-    title: "Allure",
-    chapter: "Collection 02",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=80",
-    title: "Ember",
-    chapter: "Collection 03",
-  },
-];
-
 type ParallaxStripSliderProps = {
+  /** Slides to cycle through. Defaults to a built-in sample set. */
   slides?: Slide[];
   className?: string;
   /** Number of vertical strips in the wipe reveal. */
@@ -73,6 +58,24 @@ type ParallaxStripSliderProps = {
   /** Color of the progress bar fill, caption text, and control borders. */
   accentColor?: string;
 };
+
+const DEFAULT_SLIDES: Slide[] = [
+  {
+    src: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1600&q=80",
+    title: "Fire",
+    chapter: "Collection 01",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1520975954732-35dd22299614?auto=format&fit=crop&w=1600&q=80",
+    title: "Allure",
+    chapter: "Collection 02",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1600&q=80",
+    title: "Ember",
+    chapter: "Collection 03",
+  },
+];
 
 type TransitionDirection = "next" | "prev";
 
@@ -475,12 +478,13 @@ export default function ParallaxStripSlider({
             }}
             className="relative h-full w-full will-change-transform"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={slide.src}
               alt=""
+              fill
+              sizes="100vw"
               draggable={false}
-              className="absolute inset-0 h-full w-full object-cover select-none"
+              className="object-cover select-none"
             />
           </div>
         </div>
@@ -497,12 +501,14 @@ export default function ParallaxStripSlider({
     >
       {/* Outgoing slide, revealed away underneath. */}
       <div className="absolute inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={slides[current].src}
           alt={slides[current].title}
+          fill
+          priority
+          sizes="100vw"
           draggable={false}
-          className="absolute inset-0 h-full w-full object-cover select-none"
+          className="object-cover select-none"
         />
       </div>
 
@@ -620,7 +626,7 @@ export default function ParallaxStripSlider({
         </div>
       )}
 
-      {/* Hint pill — same treatment as the clip-path slider. */}
+
       {showClue && clueText && total > 1 && (
         <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm leading-relaxed text-white/80 backdrop-blur-md max-md:bottom-6 max-md:w-[70%] max-md:text-sm max-[1025px]:text-base">
           {clueText}

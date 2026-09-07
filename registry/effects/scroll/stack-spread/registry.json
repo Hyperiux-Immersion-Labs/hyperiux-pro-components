@@ -37,7 +37,9 @@
       "default": 350,
       "description": "Total scroll distance the spread plays out over, in vh. Sets the section height.",
       "docsOnly": true,
-      "remixer": { "enabled": false }
+      "remixer": {
+        "enabled": false
+      }
     },
     {
       "name": "clusterRotation",

@@ -2,6 +2,7 @@
 
 "use client";
 
+import Image from "next/image";
 import {
   motion,
   useScroll,
@@ -266,14 +267,15 @@ function CardFace({
 }) {
   return (
     <div
-      className="h-full w-full overflow-hidden max-md:rounded-[4vw]"
+      className="relative h-full w-full overflow-hidden max-md:rounded-[4vw]"
       style={{ borderRadius: `${cardRadius}px` }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={item.src}
         alt={item.alt ?? ""}
-        className="h-full w-full object-cover"
+        fill
+        sizes="(max-width: 1025px) 40vw, 25vw"
+        className="object-cover"
         draggable={false}
       />
     </div>

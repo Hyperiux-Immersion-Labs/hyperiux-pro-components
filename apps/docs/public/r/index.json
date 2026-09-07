@@ -1523,6 +1523,7 @@
         "carousels"
       ],
       "dependencies": [
+        "@gsap/react",
         "gsap"
       ],
       "registryDependencies": [],

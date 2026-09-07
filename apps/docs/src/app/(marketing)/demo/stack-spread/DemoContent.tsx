@@ -1,7 +1,7 @@
 "use client";
 
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import { LocalRemixerDemo } from "@/components/local-remixer";
+import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import StackSpread from "@/components/stack-spread";
 import type {
@@ -21,13 +21,7 @@ export default function DemoContent({
   };
 }) {
   return (
-    <LocalRemixerDemo
-      name={registry.name}
-      category={registry.category}
-      props={registry.props ?? []}
-      remixer={registry.remixer}
-      render={(values) => <StackSpread {...values} />}
-    >
+    <RegistryRemixerDemo registry={registry} component={StackSpread}>
       {({ effect }) => (
         <>
           <DemoHeader logoColor="#141414" textColor="#141414" />
@@ -36,6 +30,6 @@ export default function DemoContent({
           {effect}
         </>
       )}
-    </LocalRemixerDemo>
+    </RegistryRemixerDemo>
   );
 }

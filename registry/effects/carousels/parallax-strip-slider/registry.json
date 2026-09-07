@@ -14,6 +14,7 @@
   "description": "Fullscreen image slider that reveals each slide through staggered vertical strips with a Ken-Burns zoom and a GSAP SplitText title reveal",
   "category": "carousels",
   "dependencies": [
+    "@gsap/react",
     "gsap"
   ],
   "registryDependencies": [],

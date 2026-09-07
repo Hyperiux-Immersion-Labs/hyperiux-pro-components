@@ -1,7 +1,7 @@
 "use client";
 
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import { LocalRemixerDemo } from "@/components/local-remixer";
+import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import ParallaxStripSlider from "@/components/parallax-strip-slider";
 import type {
   RegistryProp,
@@ -28,11 +28,8 @@ export default function DemoContent({
   };
 }) {
   return (
-    <LocalRemixerDemo
-      name={registry.name}
-      category={registry.category}
-      props={registry.props ?? []}
-      remixer={registry.remixer}
+    <RegistryRemixerDemo
+      registry={registry}
       render={(values) => (
         <main className="h-dvh w-full bg-black">
           <ParallaxStripSlider
@@ -49,6 +46,6 @@ export default function DemoContent({
           {effect}
         </>
       )}
-    </LocalRemixerDemo>
+    </RegistryRemixerDemo>
   );
 }

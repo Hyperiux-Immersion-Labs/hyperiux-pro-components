@@ -29,7 +29,8 @@ type Slide = {
 };
 
 type ParallaxStripSliderProps = {
-  slides: Slide[];
+  /** Slides to cycle through. Defaults to a built-in sample set. */
+  slides?: Slide[];
   className?: string;
   /** Number of vertical strips in the wipe reveal. */
   stripCount?: number;
@@ -57,6 +58,15 @@ type ParallaxStripSliderProps = {
   accentColor?: string;
 };
 
+const R2_BASE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/strip-paralax-slider";
+
+const DEFAULT_SLIDES: Slide[] = [
+  { src: `${R2_BASE}/img01.png`, title: "Fire", chapter: "Collection 01" },
+  { src: `${R2_BASE}/img02.png`, title: "Allure", chapter: "Collection 02" },
+  { src: `${R2_BASE}/img03.png`, title: "Ember", chapter: "Collection 03" },
+];
+
 type TransitionDirection = "next" | "prev";
 
 function prefersReducedMotion() {
@@ -64,7 +74,7 @@ function prefersReducedMotion() {
 }
 
 export default function ParallaxStripSlider({
-  slides,
+  slides = DEFAULT_SLIDES,
   className = "",
   stripCount = STRIP_COUNT,
   revealDuration = REVEAL_DURATION,
