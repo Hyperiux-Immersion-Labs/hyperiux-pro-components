@@ -1752,7 +1752,7 @@
       "exportName": "InformationDrawer",
       "exportKind": "default",
       "version": "1.0.1",
-      "tier": "pro"
+      "tier": "free"
     },
     {
       "name": "interactive-list-preview",
@@ -1813,8 +1813,7 @@
       "dependencies": [
         "@gsap/react",
         "gsap",
-        "lenis",
-        "next"
+        "lenis"
       ],
       "registryDependencies": [],
       "exportName": "Timeline",

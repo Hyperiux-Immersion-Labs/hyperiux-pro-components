@@ -1,4 +1,6 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 import InformationDrawerComp, { type InformationDrawerCompProps, type TeamMember } from "./InformationDrawerComp";
+
 
 export const DEFAULT_TEAM: TeamMember[] = [
   {

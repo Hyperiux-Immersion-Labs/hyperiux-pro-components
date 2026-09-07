@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";

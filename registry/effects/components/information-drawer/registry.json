@@ -11,7 +11,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/information-drawer",
-  "tier": "pro",
+  "tier": "free",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "InformationDrawer",

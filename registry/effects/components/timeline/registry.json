@@ -8,8 +8,7 @@
   "dependencies": [
     "@gsap/react",
     "gsap",
-    "lenis",
-    "next"
+    "lenis"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/timeline",
