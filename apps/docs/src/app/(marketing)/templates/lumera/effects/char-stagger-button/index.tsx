@@ -43,7 +43,7 @@ export default function CharStaggerButton({
   showLine = true,
   lineClassName = "",
   hoverColor = DEFAULT_HOVER_COLOR,
-  showArrow = true,
+  showArrow = false,
   icon: Icon = ArrowRight,
   iconVariant = "stacked",
   iconClassName = "",

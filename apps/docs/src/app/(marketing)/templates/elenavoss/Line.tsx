@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import { playStringPluck } from "./stringPluckAudio";
 
 // Vertical space this needs around its 1px baseline - matches
 // .string-line's own CSS in elenavoss.css (the <svg> is 100px tall,
@@ -12,9 +13,11 @@ const CONTROL_X_RATIO = 0.5; // control point stays horizontally centered
 interface LineProps {
   strokeColor?: string;
   strokeWidth?: number;
+  /** Set false to keep the visual pluck but stay silent. */
+  sound?: boolean;
 }
 
-function Line({ strokeColor = "#111111", strokeWidth = 2 }: LineProps) {
+function Line({ strokeColor = "#111111", strokeWidth = 2, sound = true }: LineProps) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
   // Mutable animation state as refs, not plain `let`s in the component
@@ -112,6 +115,10 @@ function Line({ strokeColor = "#111111", strokeWidth = 2 }: LineProps) {
 
   const resetAnimation = () => {
     if (reqIdRef.current != null) cancelAnimationFrame(reqIdRef.current);
+    // Sounded here rather than on enter: this is the instant the string is
+    // released and actually starts vibrating, and progressRef still holds
+    // how far it was bent, which is exactly the pluck's strength.
+    if (sound) playStringPluck(progressRef.current);
     animateOut();
   };
 
