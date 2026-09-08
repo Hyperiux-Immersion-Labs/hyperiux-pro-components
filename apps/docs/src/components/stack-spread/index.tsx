@@ -8,9 +8,12 @@ import {
   useScroll,
   useTransform,
   useReducedMotion,
+  useMotionValue,
+  useSpring,
+  useMotionValueEvent,
   type MotionValue,
 } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 
 
@@ -125,6 +128,12 @@ const CARDS: StackSpreadCard[] = [
 const SCATTER_START = 0.12;
 const SCATTER_END = 0.9;
 
+const PARALLAX_X = 2.6;
+const PARALLAX_Y = 2.2;
+const PARALLAX_SPRING = { stiffness: 90, damping: 22, mass: 0.6 };
+const parallaxDepth = (i: number, total: number) =>
+  total <= 1 ? 1 : 0.55 + (i / (total - 1)) * 0.75;
+
 const SUB = "Digital products, interfaces, and experiences built around people.";
 
 const RESPONSIVE = {
@@ -153,6 +162,42 @@ function useResponsive() {
     return () => window.removeEventListener("resize", read);
   }, []);
   return r;
+}
+
+function usePointerParallax(active: boolean, enabled: boolean) {
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const x = useSpring(rawX, PARALLAX_SPRING);
+  const y = useSpring(rawY, PARALLAX_SPRING);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    if (!active) {
+      rawX.set(0);
+      rawY.set(0);
+      return;
+    }
+
+    const onMove = (event: PointerEvent) => {
+      rawX.set((event.clientX / window.innerWidth) * 2 - 1);
+      rawY.set((event.clientY / window.innerHeight) * 2 - 1);
+    };
+    const onLeave = () => {
+      rawX.set(0);
+      rawY.set(0);
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("pointerleave", onLeave);
+
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerleave", onLeave);
+    };
+  }, [active, enabled, rawX, rawY]);
+
+  return { x, y };
 }
 
 export interface StackSpreadItem {
@@ -193,6 +238,8 @@ function Card({
   fixedCard,
   stackScale,
   cardRadius,
+  pointer,
+  depth,
 }: {
   card: StackSpreadCard;
   progress: MotionValue<number>;
@@ -207,6 +254,8 @@ function Card({
   stackScale: number;
   /** corner radius on each card, in px (desktop) */
   cardRadius: number;
+  pointer: { x: MotionValue<number>; y: MotionValue<number> };
+  depth: number;
 }) {
   const { item, target } = card;
 
@@ -226,11 +275,17 @@ function Card({
   const endRotate = flat || isSmall ? 0 : target.rotate;
 
   // -50% keeps card centred on its anchor
-  const translate = useTransform(progress, (p) => {
-    const tx = stackOffset.x + (endX - stackOffset.x) * p;
-    const ty = stackOffset.y + (endY - stackOffset.y) * p;
-    return `calc(-50% + ${tx}vw) calc(-50% + ${ty}vh)`;
-  });
+  const translate = useTransform(
+    [progress, pointer.x, pointer.y],
+    ([p, px, py]: number[]) => {
+      const tx = stackOffset.x + (endX - stackOffset.x) * p;
+      const ty = stackOffset.y + (endY - stackOffset.y) * p;
+      const drift = depth * p;
+      const dx = tx - px * PARALLAX_X * drift;
+      const dy = ty - py * PARALLAX_Y * drift;
+      return `calc(-50% + ${dx}vw) calc(-50% + ${dy}vh)`;
+    },
+  );
   const rotate = useTransform(progress, [0, 1], [stackRotate, endRotate]);
   const scale = useTransform(progress, [0, 1], [stackScale, restScale]);
 
@@ -321,6 +376,13 @@ function StackSpreadStage({
 
   // centre text always fades in on scroll; the scale-in is dropped only when
   // reduced motion is confirmed (`true`), not on the null SSR value.
+  const [spread, setSpread] = useState(false);
+  useMotionValueEvent(progress, "change", (p) => {
+    setSpread((was) => (was ? p > 0.985 : p >= 0.999));
+  });
+  const parallaxEnabled = reduce !== true && !isSmall;
+  const pointer = usePointerParallax(spread, parallaxEnabled);
+
   const noScale = reduce === true;
   const copyOpacity = useTransform(progress, [textFadeStart, textFadeStart + 0.35], [0, 1]);
   const copyScale = useTransform(progress, [textFadeStart, 0.9], [0.85, 1]);
@@ -375,6 +437,8 @@ function StackSpreadStage({
               fixedCard={fixedCard}
               stackScale={stackScale}
               cardRadius={cardRadius}
+              pointer={pointer}
+              depth={parallaxEnabled ? parallaxDepth(i, cards.length) : 0}
             />
           ))}
         </div>
@@ -383,9 +447,6 @@ function StackSpreadStage({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Public component
-// ---------------------------------------------------------------------------
 
 export interface StackSpreadProps {
   /** scatter scroll distance, in vh */

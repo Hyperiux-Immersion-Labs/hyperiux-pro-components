@@ -8,31 +8,27 @@ import {
   useScroll,
   useTransform,
   useReducedMotion,
+  useMotionValue,
+  useSpring,
+  useMotionValueEvent,
   type MotionValue,
 } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-// ---------------------------------------------------------------------------
-// Demo content
-// ---------------------------------------------------------------------------
+
+
+const IMG_BASE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/stack-spread";
 
 const IMG = {
-  plane:
-    "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1200&q=80",
-  painting:
-    "https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&w=1200&q=80",
-  breaker:
-    "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=1200&q=80",
-  dog:
-    "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80",
-  footballer:
-    "https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=1200&q=80",
-  jacket:
-    "https://images.unsplash.com/photo-1520975954732-35dd22299614?auto=format&fit=crop&w=1200&q=80",
-  meadow:
-    "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1200&q=80",
-  stripes:
-    "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=80",
+  plane: `${IMG_BASE}/img1.png`,
+  painting: `${IMG_BASE}/img2.png`,
+  breaker: `${IMG_BASE}/img3.png`,
+  dog: `${IMG_BASE}/img4.png`,
+  footballer: `${IMG_BASE}/img5.png`,
+  jacket: `${IMG_BASE}/img6.png`,
+  meadow: `${IMG_BASE}/img7.png`,
+  stripes: `${IMG_BASE}/img8.png`,
 } as const;
 
 // per-image rest scale, keyed by img index (1-8). default 1, drop below to shrink.
@@ -132,6 +128,12 @@ const CARDS: StackSpreadCard[] = [
 const SCATTER_START = 0.12;
 const SCATTER_END = 0.9;
 
+const PARALLAX_X = 2.6;
+const PARALLAX_Y = 2.2;
+const PARALLAX_SPRING = { stiffness: 90, damping: 22, mass: 0.6 };
+const parallaxDepth = (i: number, total: number) =>
+  total <= 1 ? 1 : 0.55 + (i / (total - 1)) * 0.75;
+
 const SUB = "Digital products, interfaces, and experiences built around people.";
 
 const RESPONSIVE = {
@@ -160,6 +162,42 @@ function useResponsive() {
     return () => window.removeEventListener("resize", read);
   }, []);
   return r;
+}
+
+function usePointerParallax(active: boolean, enabled: boolean) {
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const x = useSpring(rawX, PARALLAX_SPRING);
+  const y = useSpring(rawY, PARALLAX_SPRING);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    if (!active) {
+      rawX.set(0);
+      rawY.set(0);
+      return;
+    }
+
+    const onMove = (event: PointerEvent) => {
+      rawX.set((event.clientX / window.innerWidth) * 2 - 1);
+      rawY.set((event.clientY / window.innerHeight) * 2 - 1);
+    };
+    const onLeave = () => {
+      rawX.set(0);
+      rawY.set(0);
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("pointerleave", onLeave);
+
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerleave", onLeave);
+    };
+  }, [active, enabled, rawX, rawY]);
+
+  return { x, y };
 }
 
 export interface StackSpreadItem {
@@ -200,6 +238,8 @@ function Card({
   fixedCard,
   stackScale,
   cardRadius,
+  pointer,
+  depth,
 }: {
   card: StackSpreadCard;
   progress: MotionValue<number>;
@@ -214,6 +254,8 @@ function Card({
   stackScale: number;
   /** corner radius on each card, in px (desktop) */
   cardRadius: number;
+  pointer: { x: MotionValue<number>; y: MotionValue<number> };
+  depth: number;
 }) {
   const { item, target } = card;
 
@@ -233,11 +275,17 @@ function Card({
   const endRotate = flat || isSmall ? 0 : target.rotate;
 
   // -50% keeps card centred on its anchor
-  const translate = useTransform(progress, (p) => {
-    const tx = stackOffset.x + (endX - stackOffset.x) * p;
-    const ty = stackOffset.y + (endY - stackOffset.y) * p;
-    return `calc(-50% + ${tx}vw) calc(-50% + ${ty}vh)`;
-  });
+  const translate = useTransform(
+    [progress, pointer.x, pointer.y],
+    ([p, px, py]: number[]) => {
+      const tx = stackOffset.x + (endX - stackOffset.x) * p;
+      const ty = stackOffset.y + (endY - stackOffset.y) * p;
+      const drift = depth * p;
+      const dx = tx - px * PARALLAX_X * drift;
+      const dy = ty - py * PARALLAX_Y * drift;
+      return `calc(-50% + ${dx}vw) calc(-50% + ${dy}vh)`;
+    },
+  );
   const rotate = useTransform(progress, [0, 1], [stackRotate, endRotate]);
   const scale = useTransform(progress, [0, 1], [stackScale, restScale]);
 
@@ -328,6 +376,13 @@ function StackSpreadStage({
 
   // centre text always fades in on scroll; the scale-in is dropped only when
   // reduced motion is confirmed (`true`), not on the null SSR value.
+  const [spread, setSpread] = useState(false);
+  useMotionValueEvent(progress, "change", (p) => {
+    setSpread((was) => (was ? p > 0.985 : p >= 0.999));
+  });
+  const parallaxEnabled = reduce !== true && !isSmall;
+  const pointer = usePointerParallax(spread, parallaxEnabled);
+
   const noScale = reduce === true;
   const copyOpacity = useTransform(progress, [textFadeStart, textFadeStart + 0.35], [0, 1]);
   const copyScale = useTransform(progress, [textFadeStart, 0.9], [0.85, 1]);
@@ -382,6 +437,8 @@ function StackSpreadStage({
               fixedCard={fixedCard}
               stackScale={stackScale}
               cardRadius={cardRadius}
+              pointer={pointer}
+              depth={parallaxEnabled ? parallaxDepth(i, cards.length) : 0}
             />
           ))}
         </div>
@@ -390,9 +447,6 @@ function StackSpreadStage({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Public component
-// ---------------------------------------------------------------------------
 
 export interface StackSpreadProps {
   /** scatter scroll distance, in vh */
