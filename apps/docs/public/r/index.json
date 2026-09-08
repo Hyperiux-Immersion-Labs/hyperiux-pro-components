@@ -1736,7 +1736,7 @@
       "registryDependencies": [],
       "exportName": "InformationDrawer",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.0",
       "tier": "free"
     },
     {
@@ -1803,7 +1803,7 @@
       "registryDependencies": [],
       "exportName": "Timeline",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.0",
       "tier": "free"
     },
     {
