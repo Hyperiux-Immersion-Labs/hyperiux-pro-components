@@ -7,7 +7,7 @@ import Image from "next/image";
 import type { StaticImageData } from "next/image";
 import { useEffect, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import { prefersReducedMotion } from "@/lib/motion";
+import { prefersReducedMotion } from "../../reducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 

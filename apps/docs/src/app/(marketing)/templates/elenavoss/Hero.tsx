@@ -239,7 +239,7 @@ const Hero = () => {
                 <div ref={heroTextRef} className='w-full h-fit flex justify-between max-[1025px]:flex-col max-[1025px]:gap-8'>
                     <div className=' w-[45%] leading-30! max-[1025px]:w-[62%] max-md:w-full'>
                     <OverflowTextReveal stagger={0.015} start={startH1}>
-                    <h1 className='text-[7.5vw] max-[1025px]:text-[12vw]  max-md:text-[15vw] leading-[1.1]!'>
+                    <h1 className='text-[7.5vw] text-white max-[1025px]:text-[12vw]  max-md:text-[15vw] leading-[1.1]!'>
                         Visualise
                         Your Mind
                         in Motion
@@ -249,14 +249,14 @@ const Hero = () => {
                     </div>
                     <div className='w-[10%] flex flex-col justify-between text-end text-[1.25vw] leading-[1.15] py-[2vw] max-[1025px]:w-[40%] max-[1025px]:text-[3.5vw] max-[1025px]:text-start max-[1025px]:flex-col-reverse  max-md:text-[4.5vw] max-md:gap-[7vw] max-[1025px]:gap-20 max-md:py-0'>
                         <OverflowTextReveal splitBy='lines' start={startSideText}>
-                        <p>
+                        <p className='text-white'>
                             Award winning Designs
                         </p>
 
                         </OverflowTextReveal>
                         <OverflowTextReveal splitBy='lines' start={startSideText}>
 
-                        <p>
+                        <p className='text-white'>
                             Creative<br/>
                             Web Designer
                         </p>

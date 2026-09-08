@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import DotsCanvas from './teeth-3d/DotsCanvas'
@@ -208,7 +209,14 @@ export default function Footer() {
 
         
                 <p className="relative z-10 oris-text22 text-white/80 max-[1025px]:text-center">
-                    Copyright &copy; vault.hyperiux.com
+                    <Link
+                      href="https://vault.hyperiux.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      &copy;
+                    </Link>{" "}
+                    2026 Oris Dental. All Rights Reserved.
                 </p>
 
                 {/* Huge Baseline Wordmark */}

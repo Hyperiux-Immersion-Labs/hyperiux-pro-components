@@ -75,8 +75,8 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
               ease: "none",
               scrollTrigger: {
                 trigger,
-                start: "top 80%",
-                end: "bottom 12%",
+                 start: "top 80%",
+                end: "top 12%",
                 scrub: 0.2,
                 invalidateOnRefresh: true,
                 // markers: true,
@@ -209,7 +209,19 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             delay={FOOTER_DELAY + 0.3}
             className="text-22 text-white/90 max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
           >
-            Copyright &copy; vault.hyperiux.com
+            <Link
+              href="https://vault.hyperiux.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              &copy;
+            </Link>{" "}
+            2026 KYNTRA.{" "}
+            {/* Wraps to a second line */}
+            <span className="hidden max-[1025px]:block">
+              All Rights Reserved.
+            </span>
+            <span className="max-[1025px]:hidden">All Rights Reserved.</span>
           </FadeUp>
 
           <FadeUp watch={FOOTER_TRIGGER} delay={FOOTER_DELAY + 0.36}>

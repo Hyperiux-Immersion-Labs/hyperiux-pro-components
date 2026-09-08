@@ -12,7 +12,7 @@ import PassionMeetPurpose from "./PassionMeetPurpose";
 import BookAppointment from "./BookAppointment";
 import Footer from "./Footer";
 import Loader from "./Loader";
-import ScrollTopOnLoad from "@/homepage-v3/components/ScrollTopOnLoad";
+import ScrollTopOnLoad from "./ScrollTopOnLoad";
 
 const TITLE = "Oris Dental — Modern Dental Clinic & Care Template";
 const DESCRIPTION =
