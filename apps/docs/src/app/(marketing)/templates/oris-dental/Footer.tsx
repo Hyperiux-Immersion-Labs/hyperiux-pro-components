@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import DotsCanvas from './teeth-3d/DotsCanvas'
 import SplitTextLines from './effects/split-text-lines/SplitTextLines'
+import CharStaggerButton from './effects/char-stagger-button'
 import OrisDentalLogo from './assets/OrisDental.svg'
 
 if (typeof window !== 'undefined') {
@@ -23,7 +23,7 @@ const LEFT_COLUMNS: FooterColumn[] = [
         title: 'Our Treatments',
         links: [
             { label: 'Teeth Whitening', href: '#' },
-            { label: 'Calm My Mind', href: '#' },
+            { label: 'Smile Restoration', href: '#' },
             { label: 'Dental Implants', href: '#' },
             { label: 'Braces & Aligners', href: '#' },
         ],
@@ -68,12 +68,13 @@ function FooterLinkColumn({ column }: { column: FooterColumn }) {
             <ul className="flex flex-col gap-2.5">
                 {column.links.map((link) => (
                     <li key={link.label}>
-                        <Link
+                        <CharStaggerButton
+                            text={link.label}
                             href={link.href}
-                            className="text-white/90 hover:text-white whitespace-nowrap no-underline transition-colors duration-300 text-sm md:text-base"
-                        >
-                            {link.label}
-                        </Link>
+                            hoverColor="#ffffff"
+                            className="text-white/90"
+                            textClassName="whitespace-nowrap text-sm md:text-base"
+                        />
                     </li>
                 ))}
             </ul>
