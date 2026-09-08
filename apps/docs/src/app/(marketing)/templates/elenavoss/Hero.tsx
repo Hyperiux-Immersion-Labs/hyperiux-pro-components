@@ -94,12 +94,14 @@ const Hero = () => {
 
 
     useEffect(() => {
+        
         if (introPlayedRef.current) return
         introPlayedRef.current = true
 
         const maskState = { reveal: MASK_REVEAL_START }
 
-        gsap.timeline()
+        const introTimeline = gsap.timeline()
+        introTimeline
             .to(maskState, {
                 reveal: MASK_REVEAL_END,
                 duration: IMAGE_REVEAL_DURATION,
@@ -131,6 +133,13 @@ const Hero = () => {
                     }
                 )
             }, undefined, HEADER_START_OFFSET)
+
+        return () => {
+            introTimeline.kill()
+            introPlayedRef.current = false
+            setStartH1(false)
+            setStartSideText(false)
+        }
     }, [])
 
 

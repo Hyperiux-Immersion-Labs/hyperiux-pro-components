@@ -2,10 +2,25 @@
 
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { X } from "lucide-react";
 import AnimatedForm from "./effects/animated-form";
+import { prefersReducedMotion } from "./reducedMotion";
+
+gsap.registerPlugin(useGSAP);
+
+const OPEN_DURATION = 0.7;
+const CLOSE_DURATION = 0.5;
+const OPEN_EASE = "power3.out";
+const CLOSE_EASE = "power2.in";
+// Reduced motion still shows the change, just as a short fade
+const REDUCED_MOTION_FADE = 0.2;
+
+const OVERLAY_OPACITY = 0.7;
+const PANEL_CLOSED_SCALE = 0.8;
 
 // The enquiry modal is opened from several places that aren't in the same
 // subtree (Header's "Enquire Now", Hero's "Speak With an Advisor" and
@@ -28,20 +43,77 @@ export function useEnquiryModal(): EnquiryContextValue {
 
 export const EnquiryModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const lenis = useLenis();
-  // `mounted` keeps the dialog in the DOM through its 300ms close transition;
-  // `open` drives the opacity/scale classes.
+
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const tweenRef = useRef<gsap.core.Timeline | null>(null);
+
   const [enquiryOpen, setEnquiryOpen] = useState(false);
-  const [enquiryMounted, setEnquiryMounted] = useState(false);
+  // The node has to stay mounted for the whole close tween, so `exiting` is
+  // tracked separately; reopening mid-close cancels the exit.
+  const [exiting, setExiting] = useState(false);
+  const [lastOpen, setLastOpen] = useState(enquiryOpen);
+  if (enquiryOpen !== lastOpen) {
+    setLastOpen(enquiryOpen);
+    setExiting(!enquiryOpen && lastOpen);
+  }
+  const enquiryMounted = enquiryOpen || exiting;
 
-  const openEnquiryModal = useCallback(() => {
-    setEnquiryMounted(true);
-    window.requestAnimationFrame(() => setEnquiryOpen(true));
-  }, []);
+  const openEnquiryModal = useCallback(() => setEnquiryOpen(true), []);
+  const closeEnquiryModal = useCallback(() => setEnquiryOpen(false), []);
 
-  const closeEnquiryModal = useCallback(() => {
-    setEnquiryOpen(false);
-    window.setTimeout(() => setEnquiryMounted(false), 300);
-  }, []);
+  useGSAP(
+    () => {
+      const overlay = overlayRef.current;
+      const panel = panelRef.current;
+      if (!overlay || !panel) return;
+
+      // A new tween always replaces the one in flight
+      tweenRef.current?.kill();
+
+      const reduced = prefersReducedMotion();
+      const duration = reduced
+        ? REDUCED_MOTION_FADE
+        : enquiryOpen
+          ? OPEN_DURATION
+          : CLOSE_DURATION;
+      const ease = reduced ? "none" : enquiryOpen ? OPEN_EASE : CLOSE_EASE;
+
+      if (enquiryOpen) {
+        const timeline = gsap.timeline();
+        tweenRef.current = timeline;
+
+        timeline
+          .fromTo(
+            overlay,
+            { opacity: 0 },
+            { opacity: OVERLAY_OPACITY, duration, ease },
+          )
+          .fromTo(
+            panel,
+            { opacity: 0, scale: reduced ? 1 : PANEL_CLOSED_SCALE },
+            { opacity: 1, scale: 1, duration, ease },
+            0,
+          );
+
+        return;
+      }
+
+      const timeline = gsap.timeline({ onComplete: () => setExiting(false) });
+      tweenRef.current = timeline;
+
+      timeline
+        .to(overlay, { opacity: 0, duration, ease })
+        .to(
+          panel,
+          { opacity: 0, scale: reduced ? 1 : PANEL_CLOSED_SCALE, duration, ease },
+          0,
+        );
+    },
+    { dependencies: [enquiryOpen], revertOnUpdate: false },
+  );
+
+  useEffect(() => () => void tweenRef.current?.kill(), []);
 
   useEffect(() => {
     if (!enquiryMounted) return;
@@ -78,9 +150,7 @@ export const EnquiryModalProvider: React.FC<{ children: React.ReactNode }> = ({ 
       {children}
       {enquiryMounted && (
         <div
-          className={`fixed inset-0 z-100 flex items-center justify-center bg-black/70 px-[5%] py-[5vw] backdrop-blur-sm transition-opacity duration-300 max-[1025px]:items-start max-[1025px]:overflow-y-auto max-[1025px]:py-[10vw] ${
-            enquiryOpen ? "opacity-100" : "opacity-0"
-          }`}
+          className="fixed inset-0 z-100 flex items-center justify-center px-[5%] py-[5vw] max-[1025px]:items-start max-[1025px]:overflow-y-auto max-[1025px]:py-[10vw]"
           role="dialog"
           aria-modal="true"
           aria-label="Lumera enquiry form"
@@ -91,9 +161,16 @@ export const EnquiryModalProvider: React.FC<{ children: React.ReactNode }> = ({ 
           }}
         >
           <div
-            className={`relative h-[85vh] max-md:h-[80vh] w-full max-w-[42vw] overflow-y-auto rounded-[1.4vw] bg-[white] p-[2vw] shadow-2xl transition-all duration-300 max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw] ${
-              enquiryOpen ? "translate-y-0 scale-100 opacity-100" : "translate-y-[2vw] scale-[0.98] opacity-0"
-            }`}
+            ref={overlayRef}
+            aria-hidden
+            style={{ opacity: 0 }}
+            className="pointer-events-none absolute inset-0 bg-black backdrop-blur-sm will-change-[opacity]"
+          />
+
+          <div
+            ref={panelRef}
+            style={{ opacity: 0, transform: `scale(${PANEL_CLOSED_SCALE})` }}
+            className="relative h-[85vh] max-md:h-[80vh] w-full max-w-[42vw] overflow-y-auto rounded-[1.4vw] bg-[white] p-[2vw] shadow-2xl will-change-[transform,opacity] max-[1025px]:max-w-[86vw] max-[1025px]:rounded-[4vw] max-[1025px]:p-[5vw] max-md:max-w-[92vw] max-md:p-[6vw]"
           >
             <button
               type="button"

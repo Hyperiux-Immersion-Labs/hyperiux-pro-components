@@ -162,7 +162,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="flex justify-between py-8 pt-12 text-lg text-foreground max-md:flex-col max-md:gap-2 max-md:text-sm max-md:text-center max-md:py-6 max-md:pt-8">
-            <p>Copyright © Elena Voss Design 2026</p>
+            <p>Copyright © vault.hyperiux.com</p>
             <p>
               By: <a href="https://www.hyperiux.com/">Hyperiux</a>
             </p>

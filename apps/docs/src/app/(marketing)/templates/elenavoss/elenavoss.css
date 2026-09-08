@@ -50,6 +50,17 @@
   font-weight: 400;
 }
 
+
+.elenavoss-body ::selection {
+  background-color: #F16B0D;
+  color: #070707;
+}
+
+.elenavoss-body ::-moz-selection {
+  background-color: #F16B0D;
+  color: #070707;
+}
+
 .elenavoss-body .font-light {
   font-weight: 300 !important;
 }

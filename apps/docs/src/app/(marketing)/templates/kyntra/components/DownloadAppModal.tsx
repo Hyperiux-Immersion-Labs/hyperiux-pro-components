@@ -11,7 +11,7 @@ import { CustomEase } from "gsap/CustomEase";
 import { useLenis } from "lenis/react";
 import { X } from "lucide-react";
 
-import ctaScan from "../assets/cta-scan.png";
+import ctaScan from "../assets/scan-cta.png";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 
 gsap.registerPlugin(useGSAP, CustomEase);
@@ -198,7 +198,7 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
         ref={panelRef}
         className="relative flex h-full p-3 w-[36vw] flex-col bg-white will-change-transform max-[1025px]:w-[62vw] max-md:w-[88vw]"
       >
-        <div ref={contentRef} className="flex w-full flex-col justify-center">
+        <div ref={contentRef} className="flex w-full max-[1025px]:flex-1 flex-col justify-center">
           <Image
             data-modal-item
             src={ctaScan}

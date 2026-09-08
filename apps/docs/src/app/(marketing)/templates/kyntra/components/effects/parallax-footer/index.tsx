@@ -209,12 +209,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             delay={FOOTER_DELAY + 0.3}
             className="text-22 text-white/90 max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
           >
-            &copy; 2026 KYNTRA.{" "}
-            {/* Wraps to a second line */}
-            <span className="hidden max-[1025px]:block">
-              All Rights Reserved.
-            </span>
-            <span className="max-[1025px]:hidden">All Rights Reserved.</span>
+            Copyright &copy; vault.hyperiux.com
           </FadeUp>
 
           <FadeUp watch={FOOTER_TRIGGER} delay={FOOTER_DELAY + 0.36}>
@@ -233,7 +228,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
               }}
               className="text-white"
               textClassName="font-aeonik-pro text-22 tracking-tight max-[1025px]:text-[2.6vw] max-md:text-[3.6vw]"
-              iconClassName="text-white"
+              iconClassName="text-white max-md:hidden"
             />
           </FadeUp>
         </div>

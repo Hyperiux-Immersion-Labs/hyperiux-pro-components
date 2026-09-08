@@ -11,7 +11,7 @@ import architecture4 from "./assets/architecture-4.png";
 import architecture5 from "./assets/architecture-5.png";
 import squareIcon from "./assets/icons/square.svg";
 import ParallaxImageAnimation from "./effects/parallax-image-animation/ParallaxImageAnimation";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import MaskTextReveal from "./effects/mask-text-reveal";
 import PrimaryButton from "./PrimaryButton";
 gsap.registerPlugin(ScrollTrigger);
@@ -19,7 +19,7 @@ gsap.registerPlugin(ScrollTrigger);
 const GLASS_PANEL_CLASS =
   "backdrop-blur-[14px] [backdrop-filter:blur(14px)]";
 
-const WorkCardMeta = () => (
+const WorkCardMeta = ({ image }: { image: StaticImageData }) => (
   <div className="flex items-center gap-[0.6vw] max-[1025px]:gap-[1vw] max-md:gap-[2vw]">
     <Image
       src={squareIcon}
@@ -27,7 +27,9 @@ const WorkCardMeta = () => (
       alt="square-icon"
       aria-hidden="true"
     />
-    <p className="tracking-tight text-[1vw]">300 x 400</p>
+    <p className="tracking-tight text-[1vw]">
+      {image.width} x {image.height}
+    </p>
   </div>
 );
 
@@ -180,7 +182,7 @@ const Works = () => {
                   <div className={` w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw] font-neue-montreal font-neue-montreal font-medium! ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[11vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                     Living Room
                     <div className="w-full h-full flex flex-col gap-[1.5vw] max-[1025px]:mt-[2vw] mt-[0.5vw]">
-                      <WorkCardMeta />
+                      <WorkCardMeta image={workImages.work5} />
                       <WorkCardButton text="View Gallery" />
                     </div>
                   </div>
@@ -210,7 +212,7 @@ const Works = () => {
                   <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw] font-neue-montreal font-medium! ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[11vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                     Kitchen
                     <div className="w-full h-full flex flex-col gap-[1.5vw] max-[1025px]:mt-[2vw] mt-[0.5vw]">
-                      <WorkCardMeta />
+                      <WorkCardMeta image={workImages.work1} />
                       <WorkCardButton text="View Gallery" />
                     </div>
                   </div>
@@ -233,7 +235,7 @@ const Works = () => {
                 <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw] font-neue-montreal font-medium! ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[11vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                   Bedroom
                   <div className="w-full h-full flex flex-col max-[1025px]:mt-[2vw] gap-[1.5vw] mt-[0.5vw]">
-                    <WorkCardMeta />
+                    <WorkCardMeta image={workImages.work2} />
                     <WorkCardButton text="View Gallery" />
                   </div>
                 </div>
@@ -265,7 +267,7 @@ const Works = () => {
                 <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw] font-neue-montreal font-medium! ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[11vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                 Bedroom
                   <div className="w-full h-full flex flex-col max-[1025px]:mt-[2vw] gap-[1.5vw] mt-[0.5vw]">
-                    <WorkCardMeta />
+                    <WorkCardMeta image={workImages.work4} />
                     <WorkCardButton text="View Gallery" />
                   </div>
                 </div>
@@ -286,7 +288,7 @@ const Works = () => {
                   <div className={`w-fit h-[3.5vw] p-[1vw] px-[1vw] rounded-[0.8vw] bg-white/40 relative z-3 text-[1.2vw] font-neue-montreal font-medium! ${GLASS_PANEL_CLASS} overflow-hidden group-hover:h-[11vw] transition-all ease-in-out duration-300 max-md:text-[3.5vw] max-md:h-[10vw] max-md:px-[3vw] max-md:py-[3vw] max-md:group-hover:h-[30vw] max-[1025px]:text-[2.5vw] max-[1025px]:h-[7vw] max-[1025px]:px-[2vw] text-[1.25vw] max-[1025px]:py-[2vw] max-[1025px]:group-hover:h-[20vw] max-md:w-[30vw]`}>
                     Bathroom
                     <div className="w-full h-full flex flex-col max-[1025px]:mt-[2vw] gap-[1.5vw] mt-[0.5vw]">
-                      <WorkCardMeta />
+                      <WorkCardMeta image={workImages.work3} />
                       <WorkCardButton text="View Gallery" />
                     </div>
                   </div>

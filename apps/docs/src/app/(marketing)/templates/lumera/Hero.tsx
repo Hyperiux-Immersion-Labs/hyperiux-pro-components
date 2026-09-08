@@ -157,12 +157,9 @@ const Hero: React.FC = () => {
               <div className="flex items-center gap-[1vw] max-md:flex-col max-md:items-start max-md:gap-[4vw] max-md:w-[80%] max-[1025px]:flex-wrap max-[1025px]:gap-[3vw]">
                 <FadeUp delay={0.7}>
                   <PrimaryButton
-                    link="#"
+                    link="#works"
                     btnText="Explore Our Collection"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      openEnquiryModal();
-                    }}
+                    onClick={(event) => handleNavScroll(event, "#works")}
                     className="max-md:w-[70vw] "
                   />
                 </FadeUp>

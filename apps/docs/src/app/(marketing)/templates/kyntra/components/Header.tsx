@@ -6,10 +6,16 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
+import gsap from "gsap";
 import EnquiryModal from "./EnquiryModal";
+import { prefersReducedMotion } from "./Animations/reducedMotion";
 import CharStaggerButton from "./effects/char-stagger-button";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import kyntraLogo from "../assets/kyntra-logo.png";
+
+
+const CLOSED_CLIP = "inset(0% 0% 100% 0%)";
+const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 
 // Each label points at its section
 const navLinks = [
@@ -24,6 +30,10 @@ const Header: React.FC = () => {
   const lenis = useLenis();
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const menuTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  // Nothing should play on the first render - the sheet just starts hidden.
+  const menuOpenedRef = useRef(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const lastYRef = useRef(0);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
@@ -64,6 +74,89 @@ const Header: React.FC = () => {
     return () => {
       document.body.style.overflow = "";
     };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const overlay = mobileMenuRef.current;
+    if (!overlay) return;
+
+    const rows = overlay.querySelectorAll<HTMLElement>("[data-mobile-menu-row]");
+
+    const cleanup = () => {
+      menuTimelineRef.current?.kill();
+      menuTimelineRef.current = null;
+    };
+
+    menuTimelineRef.current?.kill();
+    gsap.killTweensOf([overlay, ...Array.from(rows)]);
+
+    // First render: park the sheet out of view without animating.
+    if (!menuOpen && !menuOpenedRef.current) {
+      gsap.set(overlay, { autoAlpha: 0, clipPath: CLOSED_CLIP });
+      return cleanup;
+    }
+
+    const reduce = prefersReducedMotion();
+    const timeline = gsap.timeline();
+    menuTimelineRef.current = timeline;
+
+    if (menuOpen) {
+      menuOpenedRef.current = true;
+      gsap.set(overlay, { autoAlpha: 1 });
+
+      if (reduce) {
+        timeline
+          .set(overlay, { clipPath: OPEN_CLIP })
+          .fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.2 })
+          .set(rows, { opacity: 1, y: 0 });
+        return cleanup;
+      }
+
+      timeline
+        .fromTo(
+          overlay,
+          { clipPath: CLOSED_CLIP },
+          { clipPath: OPEN_CLIP, duration: 0.5, ease: "power3.inOut" },
+          0,
+        )
+        .fromTo(
+          rows,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "power3.out",
+            stagger: 0.05,
+            clearProps: "opacity,transform",
+          },
+          0.18,
+        );
+
+      return cleanup;
+    }
+
+    if (reduce) {
+      timeline.to(overlay, { autoAlpha: 0, duration: 0.15 });
+      return cleanup;
+    }
+
+    timeline
+      .to(
+        rows,
+        {
+          opacity: 0,
+          y: 12,
+          duration: 0.2,
+          ease: "power2.in",
+          stagger: { each: 0.02, from: "end" },
+        },
+        0,
+      )
+      .to(overlay, { clipPath: CLOSED_CLIP, duration: 0.38, ease: "power3.inOut" }, 0.06)
+      .set(overlay, { autoAlpha: 0 });
+
+    return cleanup;
   }, [menuOpen]);
 
   const handleNavScroll = (
@@ -123,6 +216,7 @@ const Header: React.FC = () => {
 
         <div className="max-[1025px]:hidden">
           <CharStaggerPrimaryButton
+            data-mobile-menu-row
             text="Get Started"
             href="#get-started"
             onClick={(event) => {
@@ -171,15 +265,16 @@ const Header: React.FC = () => {
       </div>
 
       <div
-        className={`fixed inset-0 z-50 hidden h-dvh bg-black px-[5%] pb-[5vw] pt-[28vw] transition-transform duration-500 max-[1025px]:block max-md:pt-[34vw] ${
-          menuOpen ? "translate-y-0" : "-translate-y-full"
-        }`}
+        ref={mobileMenuRef}
+        style={{ clipPath: CLOSED_CLIP, visibility: "hidden", opacity: 0 }}
+        className="fixed inset-0 z-50 hidden h-dvh bg-black px-[5%] pb-[5vw] pt-[28vw] max-[1025px]:block max-md:pt-[34vw]"
       >
         <nav className="flex h-full flex-col justify-between">
           <div className="flex flex-col gap-[5vw] max-md:gap-[7vw]">
             {navLinks.map((link) => (
               <CharStaggerButton
                 key={link.label}
+                data-mobile-menu-row
                 text={link.label}
                 href={link.target}
                 onClick={(event) => handleNavScroll(event, link.target)}

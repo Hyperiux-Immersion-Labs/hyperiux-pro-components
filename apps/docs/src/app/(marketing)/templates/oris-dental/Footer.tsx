@@ -206,6 +206,11 @@ export default function Footer() {
                     </div>
                 </nav>
 
+        
+                <p className="relative z-10 oris-text22 text-white/80 max-[1025px]:text-center">
+                    Copyright &copy; vault.hyperiux.com
+                </p>
+
                 {/* Huge Baseline Wordmark */}
                 <div ref={wordmarkRef} className="relative z-10 w-full flex justify-center items-end select-none pointer-events-none mt-auto max-[1025px]:mt-6 max-[1025px]:pt-4">
                     <Image

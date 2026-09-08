@@ -1,4 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
+"use client";
+
 import Image from "next/image";
 
 import BlackButton from "./BlackButton";
@@ -8,6 +11,7 @@ import cta2 from "./assets/cta-2.png";
 import cta3 from "./assets/cta-3.png";
 import cta4 from "./assets/cta-4.png";
 import MaskTextReveal from "./effects/mask-text-reveal";
+import { useEnquiryModal } from "./EnquiryModal";
 import { FadeUp } from "./gsapAnimations";
 
 const ctaImages = [
@@ -18,9 +22,16 @@ const ctaImages = [
 ];
 
 const CTA = () => {
+  const { openEnquiryModal } = useEnquiryModal();
+
+  const handleOpenEnquiry = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    openEnquiryModal();
+  };
+
   return (
     <section className="relative z-10 bg-white px-[5%] py-[6%] max-md:px-[6%] max-md:py-[14%] max-[1025px]:py-[8%]" id="cta">
-      <div className="w-full overflow-hidden rounded-[2.5vw] border border-black max-md:rounded-[6vw] max-[1025px]:rounded-[4vw]">
+      <FadeUp className="w-full overflow-hidden rounded-[2.5vw] border border-black max-md:rounded-[6vw] max-[1025px]:rounded-[4vw]">
         <div className="flex flex-col items-center gap-[1.8vw] px-[6vw] pt-[5vw] text-center max-md:gap-[6vw] max-md:px-[6vw] max-md:pt-[14vw] max-[1025px]:gap-[3vw] max-[1025px]:px-[8vw] max-[1025px]:pt-[8vw]">
           <MaskTextReveal className="max-w-[60%] max-[1025px]:max-w-[90%]">
 
@@ -48,12 +59,14 @@ const CTA = () => {
             <BlackButton
               btnText="Arrange Private Consultation"
               link="#"
+              onClick={handleOpenEnquiry}
               className="bg-[#1c1b1a] font-normal!"
               borderColor="#1c1b1a"
               />
             <PrimaryButton
               btnText="Contact Our Team"
               link="#"
+              onClick={handleOpenEnquiry}
               className="border border-[#1c1b1a] max-[1025px]:w-full"
               />
           </div>
@@ -81,7 +94,7 @@ const CTA = () => {
           ))}
         </div>
          </FadeUp>
-      </div>
+      </FadeUp>
     </section>
   );
 };
