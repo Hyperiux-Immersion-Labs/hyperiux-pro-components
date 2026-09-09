@@ -1,17 +1,46 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
 import { LineTrendChart } from "@/components/admin/charts/LineTrendChart";
 
+// Users can land here from three different places (User Management, the
+// Activity tab's user table, or its "Top users by copies" list) - going
+// back should return to whichever of those was actually clicked, not
+// always the Activity tab. router.back() does that; the history-length
+// check is only a fallback for a cold load (bookmark, refresh, direct
+// link) where there's nothing in this tab's history to go back to.
+function BackLink() {
+  const router = useRouter();
+
+  function handleBack() {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/dashboard/admin/activity");
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleBack}
+      className="flex items-center gap-1.5 text-sm text-white/50 transition hover:text-white"
+    >
+      <ArrowLeft className="h-3.5 w-3.5" />
+      Back
+    </button>
+  );
+}
+
 function StatCardSkeleton() {
   return (
-    <div className="flex h-full flex-col justify-between rounded-md p-6 bg-[#272727]">
-      <div className="mb-3 h-4 w-20 animate-pulse rounded bg-white/10" />
-      <div className="h-7 w-16 animate-pulse rounded bg-white/15" />
+    <div className="flex h-full flex-col justify-between  p-6 bg-[#272727]">
+      <div className="mb-3 h-4 w-20 animate-pulse  bg-white/10" />
+      <div className="h-7 w-16 animate-pulse  bg-white/15" />
     </div>
   );
 }
@@ -19,14 +48,14 @@ function StatCardSkeleton() {
 function ActivityDetailSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="h-4 w-32 animate-pulse rounded bg-white/10" />
+      <div className="h-4 w-32 animate-pulse  bg-white/10" />
 
       <div className="flex items-center gap-4">
-        <div className="h-14 w-14 animate-pulse rounded-full bg-white/10" />
+        <div className="h-14 w-14 animate-pulse  bg-white/10" />
 
         <div className="space-y-2">
-          <div className="h-5 w-40 animate-pulse rounded bg-white/10" />
-          <div className="h-4 w-52 animate-pulse rounded bg-white/8" />
+          <div className="h-5 w-40 animate-pulse  bg-white/10" />
+          <div className="h-4 w-52 animate-pulse  bg-white/8" />
         </div>
       </div>
 
@@ -36,16 +65,16 @@ function ActivityDetailSkeleton() {
         ))}
       </div>
 
-      <div className="rounded-md bg-[#272727] p-6">
-        <div className="mb-4 h-4 w-48 animate-pulse rounded bg-white/10" />
-        <div className="h-[220px] animate-pulse rounded bg-white/5" />
+      <div className=" bg-[#272727] p-6">
+        <div className="mb-4 h-4 w-48 animate-pulse  bg-white/10" />
+        <div className="h-[220px] animate-pulse  bg-white/5" />
       </div>
 
       <div className="grid gap-5 lg:grid-cols-2">
         {Array.from({ length: 2 }).map((_, i) => (
           <div key={i} className="space-y-3">
-            <div className="h-5 w-40 animate-pulse rounded bg-white/10" />
-            <div className="divide-y divide-white/6 overflow-hidden rounded-lg border border-white/10">
+            <div className="h-5 w-40 animate-pulse  bg-white/10" />
+            <div className="divide-y divide-white/6 overflow-hidden  border border-white/10">
               {Array.from({ length: 4 }).map((__, j) => (
                 <div key={j} className="h-14 animate-pulse bg-white/5" />
               ))}
@@ -111,7 +140,7 @@ function StatusBadge({ status }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium capitalize ${
+      className={`inline-flex items-center  px-3 py-1 text-xs font-medium capitalize ${
         isPaid ? "bg-emerald-500/15 text-emerald-400" : "bg-white/10 text-white/60"
       }`}
     >
@@ -161,15 +190,9 @@ export default function AdminUserActivityPage({ params }) {
   if (error || !data) {
     return (
       <div className="space-y-6">
-        <Link
-          href="/dashboard/admin/activity"
-          className="flex items-center gap-1.5 text-sm text-white/50 transition hover:text-white"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Activity
-        </Link>
+        <BackLink />
 
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <div className=" border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           {error || "User not found."}
         </div>
       </div>
@@ -181,13 +204,7 @@ export default function AdminUserActivityPage({ params }) {
 
   return (
     <div className="space-y-6">
-      <Link
-        href="/dashboard/admin/activity"
-        className="flex items-center gap-1.5 text-sm text-white/50 transition hover:text-white"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" />
-        Activity
-      </Link>
+      <BackLink />
 
       <div className="flex items-center gap-4">
         {profile.imageUrl ? (
@@ -196,10 +213,10 @@ export default function AdminUserActivityPage({ params }) {
             alt={profile.name || ""}
             width={56}
             height={56}
-            className="h-14 w-14 rounded-full object-cover ring-1 ring-white/10"
+            className="h-14 w-14  object-cover ring-1 ring-white/10"
           />
         ) : (
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-lg font-medium">
+          <div className="flex h-14 w-14 items-center justify-center  bg-white/10 text-lg font-medium">
             {(profile.name?.[0] || profile.email?.[0] || "?").toUpperCase()}
           </div>
         )}
@@ -209,14 +226,14 @@ export default function AdminUserActivityPage({ params }) {
             <h1 className="text-2xl font-semibold">{profile.name || "Unnamed user"}</h1>
 
             {profile.isAdmin && (
-              <span className="rounded-full bg-[#ff5f00]/15 px-2.5 py-0.5 text-xs font-medium text-[#ff5f00]">
+              <span className=" bg-[#ff5f00]/15 px-2.5 py-0.5 text-xs font-medium text-[#ff5f00]">
                 Admin
               </span>
             )}
 
             {!profile.isAdmin && (
               <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                className={` px-2.5 py-0.5 text-xs font-medium ${
                   subscription?.plan === "pro"
                     ? "bg-[#ff5f00]/15 text-[#ff5f00]"
                     : "bg-white/8 text-white/60"
@@ -252,7 +269,7 @@ export default function AdminUserActivityPage({ params }) {
         />
       </div>
 
-      <div className="rounded-md bg-[#272727] p-6">
+      <div className=" bg-[#272727] p-6">
         <p className="mb-4 text-white">Copy activity — last 30 days</p>
         <LineTrendChart data={copyTrend} xKey="label" color="#ff5f00" valueLabel="copies" />
       </div>
@@ -264,11 +281,11 @@ export default function AdminUserActivityPage({ params }) {
           </h2>
 
           {savedEffects.length === 0 ? (
-            <div className="rounded-md bg-[#272727] p-6 text-center text-sm text-white/40">
+            <div className=" bg-[#272727] p-6 text-center text-sm text-white/40">
               No saved effects yet.
             </div>
           ) : (
-            <div className="divide-y divide-white/6 overflow-hidden rounded-lg border border-white/10">
+            <div className="divide-y divide-white/6 overflow-hidden  border border-white/10">
               {savedEffects.map((effect) => (
                 <div
                   key={effect.id}
@@ -282,7 +299,7 @@ export default function AdminUserActivityPage({ params }) {
                   </div>
 
                   {effect.tier === "pro" && (
-                    <span className="shrink-0 rounded-full bg-[#ff5f00]/15 px-2.5 py-0.5 text-xs font-medium text-[#ff5f00]">
+                    <span className="shrink-0  bg-[#ff5f00]/15 px-2.5 py-0.5 text-xs font-medium text-[#ff5f00]">
                       Pro
                     </span>
                   )}
@@ -298,11 +315,11 @@ export default function AdminUserActivityPage({ params }) {
           </h2>
 
           {copiedEffects.length === 0 ? (
-            <div className="rounded-md bg-[#272727] p-6 text-center text-sm text-white/40">
+            <div className=" bg-[#272727] p-6 text-center text-sm text-white/40">
               No copied effects yet.
             </div>
           ) : (
-            <div className="divide-y divide-white/6 overflow-hidden rounded-lg border border-white/10">
+            <div className="divide-y divide-white/6 overflow-hidden  border border-white/10">
               {copiedEffects.map((effect) => (
                 <div
                   key={effect.name}
@@ -316,7 +333,7 @@ export default function AdminUserActivityPage({ params }) {
                   </div>
 
                   {effect.tier === "pro" && (
-                    <span className="shrink-0 rounded-full bg-[#ff5f00]/15 px-2.5 py-0.5 text-xs font-medium text-[#ff5f00]">
+                    <span className="shrink-0  bg-[#ff5f00]/15 px-2.5 py-0.5 text-xs font-medium text-[#ff5f00]">
                       Pro
                     </span>
                   )}
@@ -333,11 +350,11 @@ export default function AdminUserActivityPage({ params }) {
         </h2>
 
         {invoices.length === 0 ? (
-          <div className="rounded-md bg-[#272727] p-6 text-center text-sm text-white/40">
+          <div className=" bg-[#272727] p-6 text-center text-sm text-white/40">
             No invoices yet.
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-md bg-[#272727]">
+          <div className="overflow-x-auto  bg-[#272727]">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-white/50">
@@ -356,7 +373,7 @@ export default function AdminUserActivityPage({ params }) {
                     <td className="px-6 py-4 text-white/80">
                       {invoice.plan_label || "Vault Pro"}
                       {invoice.is_test && (
-                        <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/50">
+                        <span className="ml-2  bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/50">
                           Test
                         </span>
                       )}
