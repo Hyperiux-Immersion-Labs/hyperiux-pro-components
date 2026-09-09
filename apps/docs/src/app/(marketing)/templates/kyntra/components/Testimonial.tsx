@@ -18,11 +18,11 @@ import SmoothInfiniteCarousel, {
 } from "./smooth-carousel/SmoothInfiniteCarousel";
 import CarouselNavButtons from "./Buttons/NavButtons";
 
-import sarah from "../assets/testimonial/sarah.jpg";
-import james from "../assets/testimonial/james.jpg";
-import priya from "../assets/testimonial/priya.jpg";
-import daniel from "../assets/testimonial/daniel.jpg";
-import marcus from "../assets/testimonial/marcus.jpg";
+import sarah from "../assets/testimonial/sarah.webp";
+import james from "../assets/testimonial/james.webp";
+import priya from "../assets/testimonial/priya.webp";
+import daniel from "../assets/testimonial/daniel.webp";
+import marcus from "../assets/testimonial/marcus.webp";
 
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 

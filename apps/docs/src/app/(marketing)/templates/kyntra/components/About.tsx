@@ -7,9 +7,9 @@ import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import aboutPhone1 from "../assets/about01.png";
-import aboutPhone2 from "../assets/about02.png";
-import aboutPhone3 from "../assets/about03.png";
+import aboutPhone1 from "../assets/about01.webp";
+import aboutPhone2 from "../assets/about02.webp";
+import aboutPhone3 from "../assets/about03.webp";
 import aboutLine from "../assets/about-line.svg";
 
 import { ParaAnim } from "./Animations/gsapAnim";

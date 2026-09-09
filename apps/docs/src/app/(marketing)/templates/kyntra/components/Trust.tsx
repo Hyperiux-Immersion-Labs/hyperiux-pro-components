@@ -3,7 +3,7 @@ import Image from "next/image";
 import NumberCounterThree from "./effects/number-counter/NumberCounterThree";
 import ParallaxImageAnimation from "./effects/parallax-image-animation";
 
-import trust from "../assets/trust.jpg"
+import trust from "../assets/trust.webp"
 
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 const STATS = [

@@ -11,7 +11,7 @@ import { CustomEase } from "gsap/CustomEase";
 import { useLenis } from "lenis/react";
 import { X } from "lucide-react";
 
-import ctaScan from "../assets/scan-cta.png";
+import ctaScan from "../assets/scan-cta.webp";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 
 gsap.registerPlugin(useGSAP, CustomEase);

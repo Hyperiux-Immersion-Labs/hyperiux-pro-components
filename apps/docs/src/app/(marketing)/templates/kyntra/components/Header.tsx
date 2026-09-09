@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 import CharStaggerButton from "./effects/char-stagger-button";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
-import kyntraLogo from "../assets/kyntra-logo.png";
+import kyntraLogo from "../assets/kyntra-logo.webp";
 
 // Above the fold: keep the modal out of the critical bundle until it is used
 const EnquiryModal = dynamic(() => import("./EnquiryModal"));

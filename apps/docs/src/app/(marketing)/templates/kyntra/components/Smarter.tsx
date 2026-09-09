@@ -18,7 +18,7 @@ import visit from "../assets/smarter/visit.svg";
 import serviceRecord from "../assets/smarter/service-record.svg";
 import home from "../assets/smarter/home.svg";
 import maintainance from "../assets/smarter/maintainance.svg";
-import cardTexture from "../assets/card-texture.png";
+import cardTexture from "../assets/card-texture.webp";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);

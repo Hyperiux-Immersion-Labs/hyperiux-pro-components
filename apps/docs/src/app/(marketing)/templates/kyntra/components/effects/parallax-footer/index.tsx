@@ -11,7 +11,7 @@ import { FooterParallax, FOOTER_RESIZE_EVENT } from "./ParallaxFooter";
 import CharStaggerButton from "../char-stagger-button";
 import { AppleStoreButton, PlayStoreButton } from "../../Buttons";
 import { FadeUp } from "../../Animations/gsapAnim";
-import footerImg from "../../../assets/footer.png";
+import footerImg from "../../../assets/footer.webp";
 import klogo from '../../../assets/icons/kyntra-logo.svg';
 
 if (typeof window !== "undefined") {

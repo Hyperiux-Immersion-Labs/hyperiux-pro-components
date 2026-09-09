@@ -12,8 +12,8 @@ import dynamic from "next/dynamic";
 
 
 const Gradient = dynamic(() => import("./shader/gradient"), { ssr: false });
-import phoneMockup from "../assets/kyntra-hero-mockup.png";
-import kyntraHero from "../assets/kyntra-hero.png";
+import phoneMockup from "../assets/kyntra-hero-mockup.webp";
+import kyntraHero from "../assets/kyntra-hero.webp";
 
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 import { useReducedMotionSync } from "./Animations/reducedMotion";
