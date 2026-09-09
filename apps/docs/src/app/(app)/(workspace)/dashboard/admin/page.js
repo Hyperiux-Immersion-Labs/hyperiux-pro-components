@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
@@ -15,56 +15,48 @@ import {
   Upload,
   CheckCircle2,
   XCircle,
+  UserCog,
+  FileDown,
 } from "lucide-react";
 import { useAdminRole } from "@/lib/useAdminRole";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { StatCard } from "@/components/admin/StatCard";
+import { buildUserActivitySlug } from "@/lib/user-slug";
 
-const USERS_PER_PAGE = 10;
+const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100, 250, 500];
+const DEFAULT_PAGE_SIZE = 10;
 
-function formatCurrency(amountInSubunits, currency = "INR") {
-  if (typeof amountInSubunits !== "number") return "-";
-  try {
-    return new Intl.NumberFormat("en", {
-      style: "currency",
-      currency,
-      maximumFractionDigits: 0,
-    }).format(amountInSubunits / 100);
-  } catch {
-    return `${(amountInSubunits / 100).toFixed(2)} ${currency}`;
-  }
+const DATE_RANGE_OPTIONS = [
+  { value: "today", label: "Today" },
+  { value: "7d", label: "Last 7 days" },
+  { value: "30d", label: "Last 30 days" },
+  { value: "90d", label: "Last 90 days" },
+  { value: "all", label: "All time" },
+];
+
+function formatDate(value) {
+  if (!value) return "-";
+  return new Intl.DateTimeFormat("en", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(value));
 }
 
-function RevenueOverview() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetch("/api/admin/revenue/overview")
-      .then((res) => (res.ok ? res.json() : null))
-      .then(setData)
-      .catch(() => setData(null));
-  }, []);
-
-  const stats = [
-    { label: "Total Revenue", value: data ? formatCurrency(data.totalRevenue, data.currency) : "…" },
-    { label: "This Month", value: data ? formatCurrency(data.revenueThisMonth, data.currency) : "…" },
-    { label: "Last 30 Days", value: data ? formatCurrency(data.revenueLast30Days, data.currency) : "…" },
-    {
-      label: "Active Pro",
-      value: data ? `${data.activeProCount} (${data.monthlySubscribers}mo / ${data.yearlySubscribers}yr)` : "…",
-    },
-  ];
-
-  return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      {stats.map((stat) => (
-        <div key={stat.label} className=" border border-white/10 bg-white/3 px-4 py-3">
-          <p className="text-xs uppercase tracking-wider text-white/45">{stat.label}</p>
-          <p className="mt-1 text-lg font-semibold text-white">{stat.value}</p>
-        </div>
-      ))}
-    </div>
-  );
+// Clerk's Name field is optional by default, so some existing accounts have
+// none - falls back to the email's local part rather than a bare "-", which
+// reads as broken data rather than "this person just never set a name".
+// The real fix is requiring a name at sign-up (Clerk Dashboard -> User &
+// Authentication -> Personal Information -> Name -> Required), which only
+// affects future sign-ups; this fallback covers accounts that predate that.
+function displayName(user) {
+  if (user.name) return user.name;
+  if (user.email) {
+    const local = user.email.split("@")[0];
+    return local.charAt(0).toUpperCase() + local.slice(1);
+  }
+  return "Unnamed user";
 }
 
 function RoleBadge({ role }) {
@@ -82,16 +74,11 @@ function RoleBadge({ role }) {
       </span>
     );
   }
-  return <span className="text-xs text-white/25">-</span>;
-}
-
-function formatDate(value) {
-  if (!value) return "-";
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
+  return (
+    <span className="inline-flex items-center bg-white/6 px-3 py-1 text-xs font-medium text-white/50">
+      User
+    </span>
+  );
 }
 
 function PlanBadge({ plan }) {
@@ -105,6 +92,62 @@ function PlanBadge({ plan }) {
     >
       {plan === "pro" ? "Pro" : "Free"}
     </span>
+  );
+}
+
+// Site-wide activity for the selected window, scoped by real Supabase data
+// (signups, first-ever paid invoices, install unlocks, saves) - not the
+// per-user table's own filters, so switching table pages/filters never
+// changes what these four numbers mean.
+function UserStatsTiles({ range, onRangeChange }) {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    // Clears the previous window's numbers immediately so a range switch
+    // never flashes stale data while the new fetch is in flight - a real
+    // external-system sync, not derivable during render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setData(null);
+
+    fetch(`/api/admin/users/stats?range=${range}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (active) setData(json);
+      })
+      .catch(() => {
+        if (active) setData(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [range]);
+
+  const stats = [
+    { label: "New Users", value: data ? data.newUsers : "…" },
+    { label: "New Pro Users", value: data ? data.newProUsers : "…" },
+    { label: "Copies", value: data ? data.copies : "…" },
+    { label: "Saves", value: data ? data.saves : "…" },
+  ];
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs uppercase tracking-wider text-white/45">Activity window</p>
+        <CustomSelect
+          size="compact"
+          value={range}
+          onChange={onRangeChange}
+          options={DATE_RANGE_OPTIONS}
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {stats.map((stat) => (
+          <StatCard key={stat.label} label={stat.label} value={stat.value} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -457,31 +500,335 @@ function InviteModal({ onClose }) {
   );
 }
 
+const ROLE_LABELS = { "": "No access", admin: "Admin", super_admin: "Super Admin" };
+const BILLING_LABELS = { monthly: "1 month", yearly: "1 year" };
+
+function ModalShell({ onClose, children, maxWidth = "max-w-lg" }) {
+  return (
+    <motion.div
+      className="fixed inset-0 z-900 flex items-center justify-center bg-black/60 px-4 backdrop-blur-md"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+    >
+      <motion.div
+        className={`relative w-full ${maxWidth}  border border-white/10 bg-[#0a0a0a] p-6`}
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+      >
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+        >
+          <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
+            <span className="h-px w-4 rotate-45 bg-white" />
+            <span className="absolute h-px w-4 -rotate-45 bg-white" />
+          </div>
+        </button>
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// Single entry point for both plan and role changes on one user - replaces
+// the old per-row duration-select + upgrade/downgrade button + role-select
+// trio with one "Manage" action, and gates the actual mutation behind an
+// explicit confirmation step naming exactly what's about to change (no
+// action here fires straight off a click any more).
+function ManageUserModal({ user, isOwnRow, onClose, onSaved }) {
+  const [nextPlan, setNextPlan] = useState(user.plan === "pro" ? "pro" : "free");
+  // Monthly is the default billing interval when granting/changing Pro,
+  // regardless of what the user's own current interval happens to be -
+  // yearly is an explicit opt-in, not the fallback.
+  const [nextInterval, setNextInterval] = useState(
+    user.plan === "pro" ? user.billingInterval || "monthly" : "monthly"
+  );
+  const [nextRole, setNextRole] = useState(user.role || "");
+  const [step, setStep] = useState("edit");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+
+  const planChanged =
+    nextPlan !== (user.plan === "pro" ? "pro" : "free") ||
+    (nextPlan === "pro" && nextInterval !== (user.billingInterval || "monthly"));
+  const roleChanged = nextRole !== (user.role || "");
+  const hasChanges = planChanged || roleChanged;
+
+  const changeSummaries = [];
+  if (planChanged) {
+    if (nextPlan === "free") {
+      changeSummaries.push({
+        text: "Downgrade to Free — this immediately revokes Pro access and any active CLI token.",
+        danger: true,
+      });
+    } else if (user.plan !== "pro") {
+      changeSummaries.push({ text: `Upgrade to Pro, billed ${BILLING_LABELS[nextInterval]}.` });
+    } else {
+      changeSummaries.push({ text: `Change billing interval to ${BILLING_LABELS[nextInterval]}.` });
+    }
+  }
+  if (roleChanged) {
+    if (nextRole === "super_admin") {
+      changeSummaries.push({
+        text: "Grant Super Admin — full access including billing and role management.",
+        danger: true,
+      });
+    } else if (!nextRole && user.role) {
+      changeSummaries.push({ text: `Remove ${ROLE_LABELS[user.role]} access.`, danger: true });
+    } else {
+      changeSummaries.push({ text: `Set role to ${ROLE_LABELS[nextRole] || "No access"}.` });
+    }
+  }
+
+  async function handleConfirm() {
+    setSaving(true);
+    setError(null);
+
+    try {
+      const patch = {};
+
+      if (planChanged) {
+        const res = await fetch("/api/admin/users/update-plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clerkUserId: user.id,
+            plan: nextPlan,
+            billingInterval: nextPlan === "pro" ? nextInterval : null,
+          }),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Plan update failed");
+        patch.plan = nextPlan;
+        patch.status = json.status;
+        patch.billingInterval = json.billingInterval;
+        patch.planValidUntil = json.currentPeriodEnd;
+      }
+
+      if (roleChanged) {
+        const res = await fetch("/api/admin/users/update-role", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clerkUserId: user.id, role: nextRole || null }),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Role update failed");
+        patch.role = json.role;
+        patch.isAdmin = json.role !== null;
+      }
+
+      onSaved(patch);
+      onClose();
+    } catch (err) {
+      setError(err.message);
+      setStep("edit");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <ModalShell onClose={onClose}>
+      <div className="mb-6 flex items-center gap-3">
+        {user.imageUrl ? (
+          <Image
+            src={user.imageUrl}
+            alt={user.name || ""}
+            width={40}
+            height={40}
+            className="h-10 w-10 object-cover ring-1 ring-white/10"
+          />
+        ) : (
+          <div className="flex h-10 w-10 items-center justify-center bg-white/10 text-sm font-medium">
+            {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
+          </div>
+        )}
+        <div className="min-w-0">
+          <h2 className="truncate text-lg font-semibold">{displayName(user)}</h2>
+          <p className="truncate text-xs text-white/45">{user.email || user.id}</p>
+        </div>
+      </div>
+
+      {step === "edit" && (
+        <div className="space-y-5">
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wider text-white/45">Plan</p>
+            <p className="mb-3 text-sm text-white/50">
+              Currently{" "}
+              <span className="text-white">
+                {user.plan === "pro"
+                  ? `Pro, billed ${BILLING_LABELS[user.billingInterval || "monthly"]}`
+                  : "Free"}
+              </span>
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <CustomSelect
+                value={nextPlan}
+                onChange={setNextPlan}
+                options={[
+                  { value: "free", label: "Free" },
+                  { value: "pro", label: "Pro" },
+                ]}
+              />
+              {nextPlan === "pro" && (
+                <CustomSelect
+                  value={nextInterval}
+                  onChange={setNextInterval}
+                  options={[
+                    { value: "monthly", label: "1 month" },
+                    { value: "yearly", label: "1 year" },
+                  ]}
+                />
+              )}
+            </div>
+            {/* Explicit, unmissable downgrade action - not just "pick Free
+                from the same dropdown" - since revoking a paying customer's
+                access is exactly the kind of change that shouldn't hide
+                inside a generic control. */}
+            {nextPlan === "pro" && user.plan === "pro" && (
+              <button
+                type="button"
+                onClick={() => setNextPlan("free")}
+                className="mt-2 text-xs text-red-400 underline underline-offset-2 transition hover:text-red-300"
+              >
+                Downgrade to Free
+              </button>
+            )}
+          </div>
+
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wider text-white/45">Role</p>
+            {isOwnRow ? (
+              <p className="text-sm text-white/50">
+                You can&apos;t change your own role — ask another super admin.
+              </p>
+            ) : (
+              <CustomSelect
+                value={nextRole}
+                onChange={setNextRole}
+                options={[
+                  { value: "", label: "No access" },
+                  { value: "admin", label: "Admin" },
+                  { value: "super_admin", label: "Super Admin" },
+                ]}
+              />
+            )}
+          </div>
+
+          {error && <p className="text-sm text-red-400">{error}</p>}
+
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm text-white/60 transition hover:text-white"
+            >
+              Cancel
+            </button>
+            <ButtonV3
+              href="#"
+              preventDefault
+              disabled={!hasChanges}
+              onClick={() => setStep("confirm")}
+              variant="orange"
+              text="Review Changes"
+            />
+          </div>
+        </div>
+      )}
+
+      {step === "confirm" && (
+        <div className="space-y-5">
+          <p className="text-sm text-white/70">
+            You&apos;re about to make the following change{changeSummaries.length === 1 ? "" : "s"}
+            {" "}to <span className="text-white">{user.name || user.email}</span>:
+          </p>
+
+          <ul className="space-y-2">
+            {changeSummaries.map((change) => (
+              <li
+                key={change.text}
+                className={`border px-3 py-2 text-sm ${
+                  change.danger
+                    ? "border-red-500/25 bg-red-500/10 text-red-300"
+                    : "border-white/10 bg-white/5 text-white/80"
+                }`}
+              >
+                {change.text}
+              </li>
+            ))}
+          </ul>
+
+          {error && <p className="text-sm text-red-400">{error}</p>}
+
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setStep("edit")}
+              disabled={saving}
+              className="px-4 py-2 text-sm text-white/60 transition hover:text-white disabled:opacity-50"
+            >
+              Back
+            </button>
+            <ButtonV3
+              href="#"
+              preventDefault
+              disabled={saving}
+              onClick={handleConfirm}
+              variant="orange"
+              text={saving ? "Saving…" : "Confirm"}
+            />
+          </div>
+        </div>
+      )}
+    </ModalShell>
+  );
+}
+
 export default function AdminPage() {
   const { user: viewer } = useUser();
   const { isSuperAdmin } = useAdminRole();
   const [users, setUsers] = useState([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [planFilter, setPlanFilter] = useState("all");
-  const [updatingId, setUpdatingId] = useState(null);
+  const [dateRange, setDateRange] = useState("all");
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [error, setError] = useState(null);
-  const [intervalByUser, setIntervalByUser] = useState({});
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [manageUser, setManageUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [prevSearch, setPrevSearch] = useState(search);
   const [prevPlanFilter, setPrevPlanFilter] = useState(planFilter);
+  const [prevDateRange, setPrevDateRange] = useState(dateRange);
+  const [prevPageSize, setPrevPageSize] = useState(pageSize);
 
   // Reset to page 1 whenever a filter changes - derived purely from values
   // already available during render, so adjust it here instead of in an effect.
-  if (prevSearch !== search || prevPlanFilter !== planFilter) {
+  if (
+    prevSearch !== search ||
+    prevPlanFilter !== planFilter ||
+    prevDateRange !== dateRange ||
+    prevPageSize !== pageSize
+  ) {
     setPrevSearch(search);
     setPrevPlanFilter(planFilter);
+    setPrevDateRange(dateRange);
+    setPrevPageSize(pageSize);
     setCurrentPage(1);
   }
 
   useEffect(() => {
-    if (!showInviteModal) return;
+    if (!showInviteModal && !manageUser) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -489,92 +836,76 @@ export default function AdminPage() {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [showInviteModal]);
+  }, [showInviteModal, manageUser]);
+
+  // Guards against out-of-order responses: a broad, slow request (e.g. no
+  // search text, a large page size) can resolve *after* a narrower, faster
+  // one fired right behind it (e.g. once search text lands), which would
+  // otherwise overwrite the correct filtered result with a stale unfiltered
+  // one - exactly the "search box has text but the table shows everyone"
+  // symptom. Only the most recently *started* request is allowed to apply
+  // its result.
+  const requestIdRef = useRef(0);
 
   const fetchUsers = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
     setLoading(true);
     setError(null);
     try {
       const params = new URLSearchParams();
       if (search) params.set("search", search);
       if (planFilter !== "all") params.set("plan", planFilter);
+      if (dateRange !== "all") params.set("joined", dateRange);
+      params.set("limit", String(pageSize));
+      params.set("offset", String((currentPage - 1) * pageSize));
 
       const res = await fetch(`/api/admin/users?${params.toString()}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to load users");
+      if (requestId !== requestIdRef.current) return;
       setUsers(json.users || []);
+      setTotal(json.total || 0);
     } catch (err) {
+      if (requestId !== requestIdRef.current) return;
       setError(err.message);
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) setLoading(false);
     }
-  }, [search, planFilter]);
+  }, [search, planFilter, dateRange, pageSize, currentPage]);
 
   useEffect(() => {
     const timer = setTimeout(fetchUsers, 300);
     return () => clearTimeout(timer);
   }, [fetchUsers]);
 
-  async function togglePlan(user) {
-    const newPlan = user.plan === "pro" ? "free" : "pro";
-    const billingInterval = newPlan === "pro" ? intervalByUser[user.id] || "yearly" : null;
-    setUpdatingId(user.id);
-    try {
-      const res = await fetch("/api/admin/users/update-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clerkUserId: user.id, plan: newPlan, billingInterval }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Update failed");
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === user.id
-            ? {
-                ...u,
-                plan: newPlan,
-                status: newPlan === "pro" ? "active" : "inactive",
-                billingInterval: json.billingInterval,
-                planValidUntil: json.currentPeriodEnd,
-              }
-            : u
-        )
-      );
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setUpdatingId(null);
-    }
+  // A plain same-origin GET, pointed straight at the API URL - the server's
+  // Content-Disposition: attachment header is what makes the browser
+  // download it rather than navigate, so this needs no fetch/blob JS at
+  // all. The earlier fetch-to-blob-to-<a download> version broke under
+  // Chrome's device-emulation mode (and possibly other constrained
+  // contexts): the blob click fell through to a real top-level navigation
+  // to the blob's bare id instead of triggering a save, 404ing because
+  // that's not a real route. A plain link is what every "Download PDF"
+  // link on the web actually is - no JS delivery mechanism to break.
+  function handleExport() {
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    if (planFilter !== "all") params.set("plan", planFilter);
+    if (dateRange !== "all") params.set("joined", dateRange);
+
+    const link = document.createElement("a");
+    link.href = `/api/admin/users/export?${params.toString()}`;
+    link.rel = "noopener";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 
-  async function updateRole(user, role) {
-    setUpdatingId(user.id);
-    try {
-      const res = await fetch("/api/admin/users/update-role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clerkUserId: user.id, role }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Update failed");
-      setUsers((prev) =>
-        prev.map((u) => (u.id === user.id ? { ...u, role, isAdmin: role !== null } : u))
-      );
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setUpdatingId(null);
-    }
+  function applyManageChanges(userId, patch) {
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...patch } : u)));
   }
 
-  const proCount = users.filter((u) => u.plan === "pro").length;
-  const freeCount = users.filter((u) => u.plan === "free").length;
-
-  const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
-  const pagedUsers = users.slice(
-    (currentPage - 1) * USERS_PER_PAGE,
-    currentPage * USERS_PER_PAGE
-  );
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
     <>
@@ -582,11 +913,17 @@ export default function AdminPage() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">User Management</h1>
-          <p className="mt-1 text-sm text-white/50">
-            {users.length} users · {proCount} Pro · {freeCount} Free
-          </p>
+          <p className="mt-1 text-sm text-white/50">{total} users total</p>
         </div>
         <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={handleExport}
+            className="inline-flex items-center gap-2  border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+          >
+            Export CSV
+            <FileDown className="h-3.5 w-3.5" />
+          </button>
           <button
             onClick={() => setShowInviteModal(true)}
             className="inline-flex items-center gap-2  border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
@@ -604,29 +941,41 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {isSuperAdmin && <RevenueOverview />}
+      <UserStatsTiles range={dateRange} onRangeChange={setDateRange} />
 
       {/* Filters */}
-      <div className="flex gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-60">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
-          <input
-            type="text"
-            placeholder="Search by name or email…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+      <div className="flex gap-3 flex-wrap items-center justify-between">
+        <div className="flex gap-3 flex-wrap flex-1">
+          <div className="relative flex-1 min-w-60">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+            <input
+              type="text"
+              placeholder="Search by name or email…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+            />
+          </div>
+          <CustomSelect
+            value={planFilter}
+            onChange={setPlanFilter}
+            options={[
+              { value: "all", label: "All plans" },
+              { value: "pro", label: "Pro" },
+              { value: "free", label: "Free" },
+            ]}
           />
         </div>
-        <CustomSelect
-          value={planFilter}
-          onChange={setPlanFilter}
-          options={[
-            { value: "all", label: "All plans" },
-            { value: "pro", label: "Pro" },
-            { value: "free", label: "Free" },
-          ]}
-        />
+
+        <div className="flex items-center gap-2 text-sm text-white/45">
+          Per page
+          <CustomSelect
+            size="compact"
+            value={String(pageSize)}
+            onChange={(value) => setPageSize(Number(value))}
+            options={PAGE_SIZE_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))}
+          />
+        </div>
       </div>
 
       {error && (
@@ -641,142 +990,118 @@ export default function AdminPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/10 bg-white/3">
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">User</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Role</th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">User</th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Role</th>
+                <th className="px-3 py-2.5 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Copies</th>
+                <th className="px-3 py-2.5 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Saves</th>
                 {isSuperAdmin && (
                   <>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Razorpay</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
+                    <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
+                    <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Razorpay</th>
                   </>
                 )}
+                <th className="px-3 py-2.5 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/6">
               {loading ? (
-                Array.from({ length: 6 }).map((_, i) => (
+                Array.from({ length: Math.min(pageSize, 6) }).map((_, i) => (
                   <tr key={i}>
-                    {Array.from({ length: isSuperAdmin ? 7 : 4 }).map((__, j) => (
-                      <td key={j} className="px-4 py-3">
-                        <div className="h-4 bg-white/8 animate-pulse" style={{ width: j === 0 ? "140px" : "80px" }} />
+                    {Array.from({ length: isSuperAdmin ? 9 : 7 }).map((__, j) => (
+                      <td key={j} className="px-3 py-2.5">
+                        <div className="h-4 bg-white/8 animate-pulse" style={{ width: j === 0 ? "120px" : "70px" }} />
                       </td>
                     ))}
                   </tr>
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={isSuperAdmin ? 7 : 4} className="px-4 py-10 text-center text-white/40">
+                  <td colSpan={isSuperAdmin ? 9 : 7} className="px-3 py-10 text-center text-white/40">
                     No users found.
                   </td>
                 </tr>
               ) : (
-                pagedUsers.map((user) => (
+                users.map((user) => (
                   <tr key={user.id} className="transition hover:bg-white/2">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
+                    <td className="px-3 py-2.5">
+                      <div className="flex items-center gap-2.5">
                         {user.imageUrl ? (
                           <Image
                             src={user.imageUrl}
                             alt={user.name || ""}
-                            width={32}
-                            height={32}
-                            className="h-8 w-8  object-cover ring-1 ring-white/10"
+                            width={28}
+                            height={28}
+                            className="h-7 w-7  object-cover ring-1 ring-white/10"
                           />
                         ) : (
-                          <div className="flex h-8 w-8 items-center justify-center  bg-white/10 text-xs font-medium">
+                          <div className="flex h-7 w-7 items-center justify-center  bg-white/10 text-xs font-medium">
                             {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="truncate font-medium text-white max-w-48">
-                            {user.name || "-"}
+                          <p className="truncate font-medium text-white max-w-32">
+                            {displayName(user)}
                           </p>
-                          <p className="truncate text-xs text-white/45 max-w-48">
+                          <p className="truncate text-xs text-white/45 max-w-32">
                             {user.email || user.id}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-white/60 whitespace-nowrap">
+                    <td className="px-3 py-2.5 text-white/60 whitespace-nowrap">
                       {formatDate(user.joinedAt)}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2.5">
                       <PlanBadge plan={user.plan} />
                     </td>
-                    <td className="px-4 py-3">
-                      {isSuperAdmin && user.id !== viewer?.id ? (
-                        <CustomSelect
-                          size="compact"
-                          value={user.role || ""}
-                          onChange={(newValue) => updateRole(user, newValue || null)}
-                          disabled={updatingId === user.id}
-                          options={[
-                            { value: "", label: "No access" },
-                            { value: "admin", label: "Admin" },
-                            { value: "super_admin", label: "Super Admin" },
-                          ]}
-                        />
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <RoleBadge role={user.role} />
-                          {isSuperAdmin && user.id === viewer?.id && (
-                            <span className="text-xs text-white/30">(you)</span>
-                          )}
-                        </div>
-                      )}
+                    <td className="px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <RoleBadge role={user.role} />
+                        {isSuperAdmin && user.id === viewer?.id && (
+                          <span className="text-xs text-white/30">(you)</span>
+                        )}
+                      </div>
                     </td>
+                    <td className="px-3 py-2.5 text-right text-white/70">{user.copiesCount ?? 0}</td>
+                    <td className="px-3 py-2.5 text-right text-white/70">{user.savesCount ?? 0}</td>
                     {isSuperAdmin && (
                       <>
-                        <td className="px-4 py-3 text-white/60 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-white/60 whitespace-nowrap">
                           {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-3 py-2.5">
                           {user.razorpayCustomerId ? (
                             <span className="font-mono text-xs text-white/40" title={user.razorpayCustomerId}>
-                              {user.razorpayCustomerId.slice(0, 12)}…
+                              {user.razorpayCustomerId.slice(0, 10)}…
                             </span>
                           ) : (
                             <span className="text-xs text-white/25">-</span>
                           )}
                         </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-end gap-2">
-                            {user.plan !== "pro" && (
-                              <CustomSelect
-                                size="compact"
-                                align="right"
-                                value={intervalByUser[user.id] || "yearly"}
-                                onChange={(newValue) =>
-                                  setIntervalByUser((prev) => ({ ...prev, [user.id]: newValue }))
-                                }
-                                disabled={updatingId === user.id}
-                                options={[
-                                  { value: "monthly", label: "1 month" },
-                                  { value: "yearly", label: "1 year" },
-                                ]}
-                              />
-                            )}
-                            <button
-                              onClick={() => togglePlan(user)}
-                              disabled={updatingId === user.id}
-                              className={` px-3 py-1.5 text-xs font-medium transition disabled:opacity-50 disabled:cursor-not-allowed ${
-                                user.plan === "pro"
-                                  ? "bg-white/10 text-white/70 hover:bg-white/15"
-                                  : "bg-[#ff5f00]/15 text-[#ff5f00] hover:bg-[#ff5f00]/25"
-                              }`}
-                            >
-                              {updatingId === user.id
-                                ? "Updating…"
-                                : user.plan === "pro"
-                                  ? "Downgrade"
-                                  : "Upgrade to Pro"}
-                            </button>
-                          </div>
-                        </td>
                       </>
                     )}
+                    <td className="px-3 py-2.5 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/dashboard/admin/activity/${buildUserActivitySlug(user)}`}
+                          className="inline-flex items-center gap-1.5 border border-white/15 px-2.5 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
+                        >
+                          View
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </Link>
+                        {isSuperAdmin && (
+                          <button
+                            onClick={() => setManageUser(user)}
+                            className="inline-flex items-center gap-1.5 border border-white/15 px-2.5 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
+                          >
+                            <UserCog className="h-3.5 w-3.5" />
+                            Manage
+                          </button>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -816,6 +1141,14 @@ export default function AdminPage() {
     <AnimatePresence>
       {showInviteModal && (
         <InviteModal onClose={() => setShowInviteModal(false)} />
+      )}
+      {manageUser && (
+        <ManageUserModal
+          user={manageUser}
+          isOwnRow={manageUser.id === viewer?.id}
+          onClose={() => setManageUser(null)}
+          onSaved={(patch) => applyManageChanges(manageUser.id, patch)}
+        />
       )}
     </AnimatePresence>
     </>

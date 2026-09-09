@@ -45,3 +45,19 @@ export function fillDailyBuckets(buckets, rows, getDate, getValue = () => 1) {
 
   return buckets;
 }
+
+// Shared "Today / 7d / 30d / 90d / All time" preset used by every admin
+// endpoint that exposes the same date-range picker - one definition so the
+// boundary can't drift between the users list, its export, and its stats.
+export const DATE_RANGE_DAYS = { today: 0, "7d": 6, "30d": 29, "90d": 89 };
+
+// UTC start-of-day boundary for a range preset, or null for "all"/unknown
+// (no lower bound - the caller simply omits the filter in that case).
+export function resolveRangeStart(range) {
+  if (!range || !(range in DATE_RANGE_DAYS)) return null;
+
+  const date = new Date();
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCDate(date.getUTCDate() - DATE_RANGE_DAYS[range]);
+  return date;
+}
