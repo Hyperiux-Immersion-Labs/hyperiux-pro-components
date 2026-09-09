@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import ogImage from "./assets/og-image.webp";
 import Hero from "./Hero";
-import Portfolio from "./Portfolio";
-import WhyWorkWithMe from "./WhyWorkWithMe";
-import Services from "./Services";
-import Awards from "./Awards";
-import Testimonials from "./Testimonials";
-import Faq from "./Faq";
 import "./elenavoss.css";
 import ReactLenis from "lenis/react";
-import Footer from "./Footer";
 import Header from "./Header";
-import SectionBreak from "./SectionBreak";
 import { GetInTouchModalProvider } from "./GetInTouchModal";
+
+const Portfolio = dynamic(() => import("./Portfolio"));
+const WhyWorkWithMe = dynamic(() => import("./WhyWorkWithMe"));
+const Services = dynamic(() => import("./Services"));
+const Awards = dynamic(() => import("./Awards"));
+const SectionBreak = dynamic(() => import("./SectionBreak"));
+const Testimonials = dynamic(() => import("./Testimonials"));
+const Faq = dynamic(() => import("./Faq"));
+const Footer = dynamic(() => import("./Footer"));
 
 const TITLE = "Elena Voss - Creative Web Designer Portfolio Template";
 const DESCRIPTION =

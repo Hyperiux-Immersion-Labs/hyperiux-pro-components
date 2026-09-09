@@ -1,27 +1,32 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import "./lumera-styles.css";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import ScrollTopOnLoad from "./ScrollTopOnLoad";
 import Loader from "./Loader";
 import ogImage from "./assets/og.png";
 import Header from "./Header";
 import Hero from "./Hero";
-import About from "./About";
-import HorizontalFeatureRevealSection from "./effects/horizontal-feature-reveal/HorizontalFeatureRevealSection";
-import Service from "./Service";
-import Works from "./Works";
-import Project from "./Project";
-import ShowCase from "./ShowCase";
-import Gallery from "./Gallery";
-import Bringing from "./Bringing";
-import ProjectHover from "./ProjectHover";
-import AnimatedFaq from "./effects/animated-faq";
-import Highlights from "./Highlights";
-import Roi from "./Roi";
-import ParallaxFooter from "./effects/parallax-footer";
-import CTA from "./CTA";
 import LenisSmoothScroll from "./LenisSmoothScroll";
 import EnquiryModalProvider from "./EnquiryModal";
+
+
+const About = dynamic(() => import("./About"));
+const HorizontalFeatureRevealSection = dynamic(
+  () => import("./effects/horizontal-feature-reveal/HorizontalFeatureRevealSection"),
+);
+const Service = dynamic(() => import("./Service"));
+const Works = dynamic(() => import("./Works"));
+const Project = dynamic(() => import("./Project"));
+const ShowCase = dynamic(() => import("./ShowCase"));
+const Gallery = dynamic(() => import("./Gallery"));
+const Bringing = dynamic(() => import("./Bringing"));
+const ProjectHover = dynamic(() => import("./ProjectHover"));
+const AnimatedFaq = dynamic(() => import("./effects/animated-faq"));
+const Highlights = dynamic(() => import("./Highlights"));
+const Roi = dynamic(() => import("./Roi"));
+const CTA = dynamic(() => import("./CTA"));
+const ParallaxFooter = dynamic(() => import("./effects/parallax-footer"));
 
 export const metadata: Metadata = {
   title: "Lumera Heights - Luxury Dubai Real Estate Template",

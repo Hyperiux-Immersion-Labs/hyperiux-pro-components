@@ -120,7 +120,6 @@ const About = () => {
           src={aboutLine}
           alt=""
           aria-hidden
-          priority
           className="pointer-events-none absolute top-[70%] left-1/2 w-screen max-w-none -translate-x-1/2 -translate-y-1/2 opacity-0 select-none max-[1025px]:hidden"
         />
 
@@ -143,7 +142,6 @@ const About = () => {
             src={aboutPhone2}
             alt="Kyntra app - everything your home needs, one app"
             className="h-auto w-full object-contain"
-            priority
           />
         </div>
 

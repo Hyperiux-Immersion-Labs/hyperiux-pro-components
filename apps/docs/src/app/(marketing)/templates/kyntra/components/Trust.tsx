@@ -21,7 +21,6 @@ const Trust = () => {
         src={trust}
         alt=""
         aria-hidden
-        priority
         className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover "
       />
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-black/55" />

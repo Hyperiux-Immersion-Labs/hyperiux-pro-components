@@ -3,18 +3,23 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import { FadeUp } from "./Animations/gsapAnim";
-import DownloadAppModal from "./DownloadAppModal";
+
+// Loaded on first interaction
+const DownloadAppModal = dynamic(() => import("./DownloadAppModal"));
 
 const CTA = () => {
   const [hovered, setHovered] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalUsed, setModalUsed] = useState(false);
 
   // Suppress the default hash jump
   const openModal = (event: { preventDefault: () => void }) => {
     event.preventDefault();
+    setModalUsed(true);
     setModalOpen(true);
   };
 
@@ -77,14 +82,16 @@ const CTA = () => {
         Download Kyntra and create your first home profile.
       </FadeUp>
 
-      <DownloadAppModal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          // Release the colour on leave
-          setHovered(false);
-        }}
-      />
+      {modalUsed && (
+        <DownloadAppModal
+          open={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+            // Release the colour on leave
+            setHovered(false);
+          }}
+        />
+      )}
     </section>
   );
 };

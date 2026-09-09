@@ -7,11 +7,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
 import gsap from "gsap";
-import EnquiryModal from "./EnquiryModal";
+import dynamic from "next/dynamic";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 import CharStaggerButton from "./effects/char-stagger-button";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import kyntraLogo from "../assets/kyntra-logo.png";
+
+// Above the fold: keep the modal out of the critical bundle until it is used
+const EnquiryModal = dynamic(() => import("./EnquiryModal"));
 
 
 const CLOSED_CLIP = "inset(0% 0% 100% 0%)";
@@ -37,10 +40,12 @@ const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const lastYRef = useRef(0);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
+  const [enquiryUsed, setEnquiryUsed] = useState(false);
   const [revealed, setRevealed] = useState(false);
 
   const openEnquiryModal = () => {
     setMenuOpen(false);
+    setEnquiryUsed(true);
     setEnquiryOpen(true);
   };
 
@@ -195,7 +200,8 @@ const Header: React.FC = () => {
               src={kyntraLogo}
               alt="Kyntra"
               className="h-full w-full object-contain"
-              priority
+              loading="eager"
+              fetchPriority="high"
             />
           </div>
         </Link>
@@ -301,7 +307,9 @@ const Header: React.FC = () => {
         </nav>
       </div>
 
-      <EnquiryModal open={enquiryOpen} onClose={closeEnquiryModal} />
+      {enquiryUsed && (
+        <EnquiryModal open={enquiryOpen} onClose={closeEnquiryModal} />
+      )}
     </header>
   );
 };

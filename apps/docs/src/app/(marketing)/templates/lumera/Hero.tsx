@@ -97,17 +97,19 @@ const Hero: React.FC = () => {
     <>
       <section id="hero" className="relative overflow-hidden">
         <div className="relative isolate flex min-h-[200vh] w-screen flex-col gap-[5vw] px-[5%] py-[3%] max-[1025px]:min-h-[240vw] max-[1025px]:gap-[8vw] max-[1025px]:py-[7%]">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 overflow-hidden z-[-1]"
-          >
+          {/* The largest thing painted above the fold, so it carries the LCP.
+              An aria-hidden / alt="" image is never an LCP candidate, and the
+              headings above are all inside SplitText wrappers, which are. */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden z-[-1]">
             <div ref={heroImageWrapperRef} className="relative h-full w-full">
               <Image
                 quality={100}
                 src={heroBackground}
-                alt=""
+                alt="Lumera Heights luxury residences in Dubai"
                 fill
                 sizes="100vw"
+                loading="eager"
+                fetchPriority="high"
                 className="h-full w-full object-cover object-top"
               />
             </div>

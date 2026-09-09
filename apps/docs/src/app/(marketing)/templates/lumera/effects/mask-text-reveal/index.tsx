@@ -10,6 +10,11 @@ import { prefersReducedMotion } from "../../reducedMotion";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
+// `document.fonts.ready` waits on every face on the page, holding copy at
+// opacity 0 the whole time. Faces are `font-display: swap`, so text is already
+// painting in the fallback by the time this cap fires.
+const FONT_WAIT_CAP = 300;
+
 const DEFAULT_TEXT = <p className="text-2xl">Pull the words from the noise.</p>;
 
 interface MaskTextRevealProps {
@@ -46,13 +51,65 @@ export default function MaskTextReveal({
 
         const elements = Array.from(el.children) as HTMLElement[];
 
-        const waitForFonts = async () => {
-            if (document.fonts && document.fonts.ready) {
+        let unmounted = false;
+        let fontTimer: number | undefined;
+        let deferredObserver: IntersectionObserver | null = null;
+
+        // Wait only on the faces this element actually renders in, capped so a
+        // slow font can never block the reveal.
+        const waitForFonts = () =>
+            new Promise<void>((resolve) => {
+                const fonts = document.fonts;
+                if (!fonts) {
+                    resolve();
+                    return;
+                }
+
+                let done = false;
+                const runOnce = () => {
+                    if (done) return;
+                    done = true;
+                    window.clearTimeout(fontTimer);
+                    resolve();
+                };
+
+                const { fontFamily, fontWeight, fontSize } = getComputedStyle(el);
                 try {
-                    await document.fonts.ready;
-                } catch { }
-            }
-        };
+                    fonts.load(`${fontWeight} ${fontSize} ${fontFamily}`).then(runOnce, runOnce);
+                } catch {
+                    // Malformed shorthand: fall back to the whole-page promise
+                    fonts.ready.then(runOnce, runOnce);
+                }
+
+                fontTimer = window.setTimeout(runOnce, FONT_WAIT_CAP);
+            });
+
+        // SplitText forces a synchronous layout read per element, so splitting
+        // every instance on mount is the main Style & Layout cost. Copy far
+        // from the viewport waits, with enough margin that the reveal is still
+        // set up well before it scrolls into view.
+        const waitForViewport = () =>
+            new Promise<void>((resolve) => {
+                const box = el.getBoundingClientRect();
+                const nearViewport =
+                    box.top < window.innerHeight * 1.5 && box.bottom > -window.innerHeight;
+
+                if (nearViewport) {
+                    resolve();
+                    return;
+                }
+
+                deferredObserver = new IntersectionObserver(
+                    ([entry], obs) => {
+                        if (!entry.isIntersecting) return;
+                        obs.disconnect();
+                        deferredObserver = null;
+                        resolve();
+                    },
+                    { rootMargin: "200% 0px" },
+                );
+                deferredObserver.observe(el);
+            });
 
         const forceAriaVisible = (root?: Element) => {
             if (!root) return;
@@ -67,9 +124,10 @@ export default function MaskTextReveal({
             line.style.maskImage = "linear-gradient(150deg, #e8e8e8 33.3%, rgba(255, 255, 255, 0) 66.6%)";
         };
 
-        let unmounted = false;
-
         (async () => {
+            await waitForViewport();
+            if (unmounted) return;
+
             await waitForFonts();
             if (unmounted) return;
 
@@ -157,6 +215,8 @@ export default function MaskTextReveal({
 
         return () => {
             unmounted = true;
+            window.clearTimeout(fontTimer);
+            deferredObserver?.disconnect();
 
             triggersRef.current.forEach((trigger) => trigger?.kill());
             triggersRef.current = [];

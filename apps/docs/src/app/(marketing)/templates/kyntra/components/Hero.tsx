@@ -55,27 +55,28 @@ const Hero = () => {
       ref={heroRef}
       className="kyntra-hero relative min-h-screen h-full w-full  bg-white"
     >
-      <motion.div
-        aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-        style={{ willChange: "opacity" }}
-        className="pointer-events-none absolute inset-0"
-      >
-        <div
+      {/* Un-nested: the watermark must not sit under an opacity-0 ancestor,
+          or it is disqualified as an LCP candidate */}
+      <div className="pointer-events-none absolute inset-0">
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          style={{ willChange: "opacity" }}
           className="absolute inset-x-0 top-0 h-[90vh] bg-[linear-gradient(180deg,#000000_0%,#000000_28%,#0A1633_42%,#16295F_54%,#26429C_63%,#3E63D0_71%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)] max-[1025px]:h-[105vh] max-[1025px]:bg-[linear-gradient(180deg,#000000_0%,#000000_20%,#0A1633_34%,#16295F_48%,#26429C_60%,#3E63D0_70%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)]"
         />
 
-        {/* Oversized KYNTRA watermark */}
+        {/* Oversized KYNTRA watermark - the LCP element, so it carries a real
+            alt and is never gated behind an animation */}
         <Image
           src={kyntraHero}
-          alt=""
-          aria-hidden
-          priority
+          alt="Kyntra"
+          loading="eager"
+          fetchPriority="high"
           className="absolute left-1/2 top-[24vh] max-[1025px]:top-[12vh] w-[92vw] max-w-400 -translate-x-1/2 select-none"
         />
-      </motion.div>
+      </div>
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-400 items-center gap-[10vw] px-[5vw] pb-[8vh] pt-[40vh] max-[1025px]:flex-col-reverse max-[1025px]:items-start max-[1025px]:justify-end max-[1025px]:gap-[8vw] max-[1025px]:px-[7vw] max-[1025px]:pb-0 max-[1025px]:pt-[20vh] max-md:gap-[10vw]">
         {/* Phone mockup */}
@@ -95,7 +96,8 @@ const Hero = () => {
                 src={phoneMockup}
                 alt="Kyntra app manage every room and service from one home dashboard"
                 className="h-auto w-full object-contain"
-                priority
+                loading="eager"
+                fetchPriority="high"
               />
             </div>
           </motion.div>

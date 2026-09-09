@@ -139,7 +139,6 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             src={footerImg}
             height={900}
             width={900}
-            priority
             alt="Kyntra app"
             className="h-auto w-full object-contain"
           />

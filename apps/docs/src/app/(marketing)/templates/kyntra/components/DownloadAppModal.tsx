@@ -203,7 +203,6 @@ const DownloadAppModal: React.FC<DownloadAppModalProps> = ({
             data-modal-item
             src={ctaScan}
             alt="QR code linking to the Kyntra mobile app download"
-            priority
             className="w-full"
           />
 
