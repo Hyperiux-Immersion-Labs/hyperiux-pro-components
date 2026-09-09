@@ -97,7 +97,7 @@ export function TemplateCard({
               src={screenshots[0]}
               alt={template.title || template.slug || ""}
               fill
-              sizes={sizes}
+              // sizes={sizes}
               quality={75}
               priority={priority}
               loading={priority ? undefined : "lazy"}

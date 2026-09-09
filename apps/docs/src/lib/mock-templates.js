@@ -63,6 +63,26 @@ export const TEMPLATES = [
       "GSAP-driven smooth scroll and reveal animations run throughout, with an enquiry flow ready to connect to a real lead form.",
     ],
   },
+  {
+    slug: "kyntra",
+    title: "Kyntra",
+    category: "App",
+    tier: "pro",
+    pricing: { standaloneOneTime: 39, includedInAnnualPro: true },
+    tags: ["GSAP", "Lenis"],
+    installCount: 0,
+    screenshots: ["/assets/templates-listing/kyntra.png"],
+    href: "/templates/kyntra",
+    previewHref: "/template-demo/kyntra",
+    publishedAt: "2026-09-09",
+    updatedAt: "2026-09-09",
+    tagline:
+      "A single-page app landing template for home maintenance and service booking, with animated app mockups and a full onboarding walkthrough.",
+    overview: [
+      "Kyntra is a smart-home service-booking app landing page: hero with an animated device mockup, appliance records and warranty tracking, a step-by-step \"how it works\" walkthrough, trusted-professional credibility section, testimonials, and an article listing.",
+      "Every section transition runs on GSAP scroll animation with Lenis smooth scroll underneath, and the footer ships with a working enquiry form and an app-download modal ready to wire up to a real backend.",
+    ],
+  },
 ];
 
 export function getTemplateBySlug(slug) {

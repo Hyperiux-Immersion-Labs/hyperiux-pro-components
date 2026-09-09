@@ -40,7 +40,6 @@ const RESUME_PURCHASE_PARAM = "buy";
 // 1vw inside the frame always means "1% of a real 1920/768/390px device".
 const DEVICE_PRESETS = {
   web: { label: "Web", icon: Monitor, width: 1920, height: 1080 },
-  tablet: { label: "Tablet", icon: Tablet, width: 768, height: 1024 },
   mobile: { label: "Mobile", icon: Smartphone, width: 390, height: 844 },
 };
 
@@ -247,7 +246,7 @@ export function TemplateDetail({
                 <button
                   type="button"
                   onClick={handleDownloadClick}
-                  className="group flex items-center gap-2 border border-white/20 bg-white/5 px-4 py-3 text20 text-white transition-colors duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-black"
+                  className="group flex items-center gap-2 border border-white/20 bg-white/5 px-4 py-4 text20 text-white transition-colors duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-black"
                 >
                   <Download className="h-4 w-4" aria-hidden="true" />
                   {hasAccess ? "Download Zip" : `Buy - $${template.pricing?.standaloneOneTime ?? "-"}`}
