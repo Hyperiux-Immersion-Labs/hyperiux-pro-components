@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import { FooterParallax } from "./ParallaxFooter";
+import { FooterParallax, FOOTER_RESIZE_EVENT } from "./ParallaxFooter";
 import CharStaggerButton from "../char-stagger-button";
 import { AppleStoreButton, PlayStoreButton } from "../../Buttons";
 import { FadeUp } from "../../Animations/gsapAnim";
@@ -75,9 +75,11 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
               ease: "none",
               scrollTrigger: {
                 trigger,
-                start: "top 80%",
-                end: "bottom 10%",
+                 start: "top 80%",
+                end: "top 12%",
                 scrub: 0.2,
+                invalidateOnRefresh: true,
+                // markers: true,
               },
             },
           );
@@ -97,7 +99,31 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
       });
     });
 
-    return () => ctx.revert();
+
+    let frameId = 0;
+    const refresh = () => {
+      cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+
+    window.addEventListener(FOOTER_RESIZE_EVENT, refresh);
+    window.addEventListener("load", refresh);
+
+    if (!el.complete) {
+      el.addEventListener("load", refresh);
+      el.addEventListener("error", refresh);
+    }
+
+    refresh();
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener(FOOTER_RESIZE_EVENT, refresh);
+      window.removeEventListener("load", refresh);
+      el.removeEventListener("load", refresh);
+      el.removeEventListener("error", refresh);
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -113,6 +139,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             src={footerImg}
             height={900}
             width={900}
+            priority
             alt="Kyntra app"
             className="h-auto w-full object-contain"
           />
@@ -182,7 +209,14 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
             delay={FOOTER_DELAY + 0.3}
             className="text-22 text-white/90 max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
           >
-            &copy; 2026 KYNTRA.{" "}
+            <Link
+              href="https://vault.hyperiux.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              &copy;
+            </Link>{" "}
+            2026 KYNTRA.{" "}
             {/* Wraps to a second line */}
             <span className="hidden max-[1025px]:block">
               All Rights Reserved.
@@ -206,7 +240,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
               }}
               className="text-white"
               textClassName="font-aeonik-pro text-22 tracking-tight max-[1025px]:text-[2.6vw] max-md:text-[3.6vw]"
-              iconClassName="text-white"
+              iconClassName="text-white max-md:hidden"
             />
           </FadeUp>
         </div>

@@ -2,8 +2,23 @@
 
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { X } from "lucide-react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP);
+
+const OPEN_DURATION = 0.7;
+const CLOSE_DURATION = 0.5;
+const OPEN_EASE = "power3.out";
+const CLOSE_EASE = "power2.in";
+const REDUCED_MOTION_FADE = 0.2;
+const PANEL_CLOSED_SCALE = 0.8;
+
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export interface AnimatedModalContentProps {
   isOpen?: boolean;
@@ -36,10 +51,70 @@ const AnimatedModalContent = ({
 }: AnimatedModalContentProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const previousFocusRef = useRef<Element | null>(null);
+  const backdropRef = useRef<HTMLButtonElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const tweenRef = useRef<gsap.core.Timeline | null>(null);
   const safeOverlayOpacity = Math.min(1, Math.max(0, Number(overlayOpacity) || 0));
 
+  // The node has to stay mounted for the whole close tween, so closing is
+  // tracked separately from `isOpen`; reopening mid-close cancels the exit.
+  const [exiting, setExiting] = useState(false);
+  const [lastOpen, setLastOpen] = useState(isOpen);
+  if (isOpen !== lastOpen) {
+    setLastOpen(isOpen);
+    setExiting(!isOpen && lastOpen);
+  }
+  const active = isOpen || exiting;
+
+  useGSAP(
+    () => {
+      const backdrop = backdropRef.current;
+      const panel = panelRef.current;
+      if (!backdrop || !panel) return;
+
+      tweenRef.current?.kill();
+
+      const reduced = prefersReducedMotion();
+      const duration = reduced
+        ? REDUCED_MOTION_FADE
+        : isOpen
+          ? OPEN_DURATION
+          : CLOSE_DURATION;
+      const ease = reduced ? "none" : isOpen ? OPEN_EASE : CLOSE_EASE;
+
+      if (isOpen) {
+        const timeline = gsap.timeline();
+        tweenRef.current = timeline;
+
+        timeline
+          .fromTo(backdrop, { opacity: 0 }, { opacity: 1, duration, ease })
+          .fromTo(
+            panel,
+            { opacity: 0, scale: reduced ? 1 : PANEL_CLOSED_SCALE },
+            { opacity: 1, scale: 1, duration, ease },
+            0,
+          );
+        return;
+      }
+
+      const timeline = gsap.timeline({ onComplete: () => setExiting(false) });
+      tweenRef.current = timeline;
+
+      timeline
+        .to(backdrop, { opacity: 0, duration, ease })
+        .to(
+          panel,
+          { opacity: 0, scale: reduced ? 1 : PANEL_CLOSED_SCALE, duration, ease },
+          0,
+        );
+    },
+    { dependencies: [isOpen], revertOnUpdate: false },
+  );
+
+  useEffect(() => () => void tweenRef.current?.kill(), []);
+
   useEffect(() => {
-    if (!isOpen) return;
+    if (!active) return;
 
     const container = containerRef.current;
 
@@ -95,7 +170,7 @@ const AnimatedModalContent = ({
       // Return focus to whatever triggered the modal.
       (previousFocusRef.current as any)?.focus?.();
     };
-  }, [isOpen, onClose, closeOnEsc]);
+  }, [active, onClose, closeOnEsc]);
 
   return (
     <div
@@ -109,11 +184,7 @@ const AnimatedModalContent = ({
       {...(!isOpen ? { inert: true, "aria-hidden": "true" } : {})}
       className={`
         fixed inset-0 z-9999
-        ${
-          isOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }
+        ${isOpen ? "pointer-events-auto" : "pointer-events-none"}
         ${className}
       `}
     >
@@ -124,10 +195,12 @@ const AnimatedModalContent = ({
           the root's opacity above does a hard 0/100 swap, which reads as
           a clean instant toggle instead of a glitchy partial blur. */}
       <button
+        ref={backdropRef}
         type="button"
         aria-label="Close modal"
         onClick={closeOnBackdrop ? onClose : undefined}
-        className="absolute inset-0 cursor-pointer border-0 backdrop-blur-lg bg-black/10"
+        style={{ opacity: 0 }}
+        className="absolute inset-0 cursor-pointer border-0 backdrop-blur-lg bg-black/10 will-change-[opacity]"
       />
 
       {showCloseButton && (
@@ -171,12 +244,15 @@ const AnimatedModalContent = ({
           not bubbled up from the card/form inside it) makes clicking
           anywhere outside the actual content close the modal too. */}
       <div
+        ref={panelRef}
         onClick={(e) => {
           if (closeOnBackdrop && e.target === e.currentTarget) onClose?.();
         }}
+        style={{ opacity: 0, transform: `scale(${PANEL_CLOSED_SCALE})` }}
         className={`
           relative z-1
           flex h-screen w-screen items-center
+          will-change-[transform,opacity]
           px-0
 
           max-[1025px]:px-0

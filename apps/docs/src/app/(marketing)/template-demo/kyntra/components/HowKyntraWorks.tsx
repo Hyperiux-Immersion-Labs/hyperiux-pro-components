@@ -2,10 +2,11 @@
 
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
+import EnquiryModal from "./EnquiryModal";
 
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
@@ -37,6 +38,7 @@ const STEPS = [
 const LINE_HEIGHT = 150;
 
 export default function HowKyntraWorks() {
+  const [enquiryOpen, setEnquiryOpen] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const lineRefs = useRef<SVGLineElement[]>([]);
   const dotRefs = useRef<SVGCircleElement[]>([]);
@@ -192,6 +194,10 @@ export default function HowKyntraWorks() {
         <CharStaggerPrimaryButton
           text="Book Your First Service"
           href="#"
+          onClick={(event) => {
+            event.preventDefault();
+            setEnquiryOpen(true);
+          }}
           hoverColor="#ffffff"
           showArrow
           className="rounded-full px-[2.5vw] py-[1vw] text-white max-md:px-[6vw] max-md:py-[3vw]"
@@ -200,6 +206,8 @@ export default function HowKyntraWorks() {
           style={{ backgroundColor: KYNTRA_PRIMARY }}
         />
       </FadeUp>
+
+      <EnquiryModal open={enquiryOpen} onClose={() => setEnquiryOpen(false)} />
     </section>
   );
 }

@@ -4,12 +4,12 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 import { useRef } from "react";
-import Awards1 from "./assets/awards-1.png";
-import Awards2 from "./assets/awards-2.png";
-import Awards3 from "./assets/awards-3.png";
-import Awards4 from "./assets/awards-4.png";
-import Awards5 from "./assets/awards-5.png";
-import Awards6 from "./assets/awards-6.png";
+import Client1 from "./assets/clients-1.png";
+import Client2 from "./assets/clients-2.png";
+import Client3 from "./assets/clients-3.png";
+import Client4 from "./assets/clients-4.png";
+import Client5 from "./assets/clients-5.png";
+import Client6 from "./assets/clients-6.png";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
 
 if (typeof window !== "undefined") {
@@ -66,48 +66,19 @@ export default function SectionBreak() {
         i += size;
       }
 
-      // Items within the same cluster are visible on screen at the same
-      // time, so their random start offsets need to be kept apart -
-      // otherwise two logos can fly in from overlapping positions. Offsets
-      // are picked with rejection sampling until they clear a minimum
-      // distance from the others already chosen for that cluster.
-      const offsetRange = 180;
-      const minOffsetDistance = isDesktop ? 150 : 110;
-      const pickGroupOffsets = (count: number) => {
-        const points: { x: number; y: number }[] = [];
-        for (let i = 0; i < count; i++) {
-          let point = { x: 0, y: 0 };
-          let attempts = 0;
-          do {
-            point = {
-              x: isDesktop ? gsap.utils.random(-offsetRange, offsetRange, 1) : 0,
-              y: gsap.utils.random(-offsetRange, offsetRange, 1),
-            };
-            attempts += 1;
-          } while (
-            attempts < 30 &&
-            points.some((p) => Math.hypot(p.x - point.x, p.y - point.y) < minOffsetDistance)
-          );
-          points.push(point);
-        }
-        return points;
-      };
-
       groups.forEach((group, groupIndex) => {
         const groupStart = groupIndex * groupStep;
-        const offsets = pickGroupOffsets(group.length);
 
         group.forEach((itemIndex, indexInGroup) => {
           const item = gridItems[itemIndex];
           const startTime = groupStart + indexInGroup * withinGroupStagger;
-          const offset = offsets[indexInGroup];
 
           gsap.set(item, {
             transformOrigin: "0% 0%",
             opacity: 0,
-            x: offset.x,
-            y: offset.y,
-            filter: "blur(10px)",
+            x: isDesktop ? gsap.utils.random(-180, 180) : 0,
+            y: isDesktop ? gsap.utils.random(-180, 180) : gsap.utils.random(-180, 180),
+            filter: "blur(0.7vw)",
             z: isDesktop ? gsap.utils.random(-2200, -1600) : gsap.utils.random(-550, -400),
           });
 
@@ -117,7 +88,7 @@ export default function SectionBreak() {
               {
                 z: 0,
                 opacity: 1,
-                filter: "blur(0px) invert(0)",
+                filter: "blur(0) invert(0)",
                 duration: enterDuration,
               },
               startTime,
@@ -125,7 +96,7 @@ export default function SectionBreak() {
             .to(
               item,
               {
-                filter: "blur(10px)",
+                filter: "blur(0.7vw)",
                 opacity: 0,
                 z: isDesktop ? gsap.utils.random(1400, 1800) : gsap.utils.random(500, 700),
                 duration: exitDuration,
@@ -145,9 +116,9 @@ export default function SectionBreak() {
       className="relative w-screen h-[240vh] text-center z-2  bg-[#070707]"
     >
       <div className="sticky w-full top-0 h-screen flex items-center justify-center">
-        <div className="w-[60%] max-[1025px]:w-[80%]">
+        <div className="w-3/5 max-lg:w-4/5">
           <OverflowTextReveal stagger={0.015}>
-            <h3 className="text-[5.5vw]  text-white leading-[1.2] max-[1025px]:text-[7vw] max-md:text-[8vw]">
+            <h3 className="text-[5.5vw]  text-white leading-[1.2] max-lg:text-[7vw] max-md:text-[8vw]">
               Trusted by Founders and Creatives, Built for Ambitious Brands.
             </h3>
           </OverflowTextReveal>
@@ -156,16 +127,15 @@ export default function SectionBreak() {
       <div className="left-0 sticky mt-[-100vh] top-0 z-20 h-screen w-screen overflow-hidden flex items-center justify-center">
         <div
           ref={gridRef}
-          className="grid grid-cols-5 gap-[1vw] perspective-[5000px] max-md:px-[20vw]"
+          className="grid grid-cols-5 gap-[3vw] perspective-[350vw] max-md:grid-cols-3 max-md:gap-[6vw]"
         >
           {logos.map((item, index) => (
-            <div key={index} className="grid__item">
+            <div key={index} className="grid__item flex h-[8vw] w-[14vw] items-center justify-center max-md:h-[22vw] max-md:w-[26vw]">
               <Image
-                className="w-[14vw] h-auto max-md:w-[100vw] max-[1025px]:w-[60vw] max-[1025px]:scale-[1.8] max-md:scale-[4] "
-                src={item}
-                alt={"awards-images"}
-                width={200}
-                height={100}
+                className="h-full w-full object-contain"
+                src={item.src}
+                alt={item.alt}
+                sizes="(max-width: 48rem) 26vw, 14vw"
                 quality={100}
               />
             </div>
@@ -176,4 +146,12 @@ export default function SectionBreak() {
   );
 }
 
-const logos = [Awards1, Awards2, Awards3, Awards4, Awards5, Awards6,Awards1, Awards2, Awards3, Awards4, Awards5, Awards6];
+const clients = [
+  { src: Client1, alt: "Google logo" },
+  { src: Client2, alt: "Adobe logo" },
+  { src: Client3, alt: "JP logo" },
+  { src: Client4, alt: "Pinterest logo" },
+  { src: Client5, alt: "IBM logo" },
+  { src: Client6, alt: "Intel logo" },
+];
+const logos = [...clients, ...clients];

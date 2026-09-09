@@ -12,7 +12,6 @@ import ReactLenis from "lenis/react";
 import Footer from "./Footer";
 import Header from "./Header";
 import SectionBreak from "./SectionBreak";
-import Clients from "./Clients";
 import { GetInTouchModalProvider } from "./GetInTouchModal";
 
 const TITLE = "Elena Voss - Creative Web Designer Portfolio Template";
@@ -25,14 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
-    // Imported like every other image in this template, not a public/
-    // path. Next's metadata resolver looks for an item.url string, not
-    // .src, so the raw import object can't be passed directly - it'd
-    // resolve to undefined and get silently dropped. Building the
-    // descriptor from ogImage.src/.width/.height instead resolves to the
-    // real, build-generated /_next/static/media/... URL Next.js serves
-    // for this file, so it's still a genuinely fetchable URL for social
-    // crawlers - width/height come from the actual file, not hand-typed.
+
     images: [
       {
         url: ogImage.src,
@@ -56,7 +48,6 @@ const page = () => {
           <Services/>
           <Awards/>
           <SectionBreak/>
-          <Clients/>
           <Testimonials/>
           <Faq/>
           <Footer/>

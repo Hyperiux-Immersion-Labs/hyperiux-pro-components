@@ -688,5 +688,15 @@
     "name": "@hyperiux/strip-slider",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-strip-slider-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/parallax-strip-slider",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-parallax-strip-slider-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/stack-spread",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-stack-spread-1.0.0.tgz"
   }
 ]

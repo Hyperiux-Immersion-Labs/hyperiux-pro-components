@@ -84,6 +84,8 @@ const ParallaxFooter = () => {
               <CharStaggerButton
                 href="tel:+12125550186"
                 text="+1 (212) 555-0186"
+                lineBottom='-5%'
+                lineHeight="0.18vw"
                 className="text-[#1C1B1A]"
                 textClassName="font-neue-montreal text-[3.4vw] font-medium leading-none max-md:text-[5.5vw] max-[1025px]:text-[5vw]"
               />
@@ -94,6 +96,8 @@ const ParallaxFooter = () => {
               <CharStaggerButton
                 href="mailto:hello@lumeraheights.com"
                 text="hello@lumeraheights.com"
+                lineHeight="0.18vw"
+                lineBottom='-5%'
                 className="text-[#1C1B1A]"
                 textClassName="font-neue-montreal text-[3.2vw] font-medium max-md:text-[5.5vw] max-[1025px]:text-[5vw]"
               />
@@ -103,8 +107,15 @@ const ParallaxFooter = () => {
 
         <div className="fadeup flex items-center justify-between pt-[7vw] max-md:gap-[5vw] max-[1025px]:flex-col max-[1025px]:gap-[3vw]">
           <div className="max-[1025px]:order-1 max-[1025px]:w-[70%]">
-            <p className="text-[1vw] text-[#1C1B1A] uppercase max-md:text-[3.5vw] max-[1025px]:text-center max-[1025px]:text-[2.5vw]">
-              © 2026. All Rights Reserved
+            <p className="text-[1vw] text-[#1C1B1A] normal-case max-md:text-[3.5vw] max-[1025px]:text-center max-[1025px]:text-[2.5vw]">
+              <Link
+                href="https://vault.hyperiux.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ©
+              </Link>{" "}
+              2026 Lumera. All Rights Reserved
             </p>
           </div>
           <div className="absolute bottom-[7%] max-[1025px]:bottom-[20%] -translate-x-1/2 left-1/2 w-[35%] max-[1025px]:ml-0 max-[1025px]:w-[80%]">

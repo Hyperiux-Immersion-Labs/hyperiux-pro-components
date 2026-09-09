@@ -2,12 +2,15 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useLenis } from 'lenis/react'
-import DotFillButton from './effects/dot-fill-button/DotFillButton'
+import DotFillBtn from './effects/dot-fill-btn/DotFillBtn'
 
 export default function Header() {
     const [hidden, setHidden] = useState(false)
     const [loaded, setLoaded] = useState(false)
     const prevScrollRef = useRef(0)
+    // The callback form of useLenis below only subscribes to scroll events;
+    // this returns the instance itself, needed to drive scrollTo.
+    const lenis = useLenis()
 
     useEffect(() => {
         const handleLoaderFinished = () => {
@@ -60,10 +63,20 @@ export default function Header() {
         >
             <p className="oris-text32 max-[1025px]:text-shadow-xs">OrisDental</p>
 
-            <DotFillButton
-                text="Book Appointment"
+            <DotFillBtn
+                btnText="Book Appointment"
                 href="#oris-form"
-                className="text-[1vw] max-md:text-sm max-[1025px]:text-xl font-medium"
+                onClick={(event) => {
+                    if (!lenis) return
+                    event.preventDefault()
+                    lenis.scrollTo('#oris-form')
+                }}
+                bgColor="#3365e2"
+                textColor="#ffffff"
+                hoverTextColor="#3365e2"
+                dotColor="#ffffff"
+                className="border border-[#3365e2]"
+                textClassName="text-[1vw] max-md:text-sm max-[1025px]:text-xl font-medium"
             />
         </header>
     )

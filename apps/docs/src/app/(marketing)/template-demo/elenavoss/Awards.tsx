@@ -3,10 +3,10 @@ import { Fragment, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import portfolio1Img from './assets/portfolio-img-1-new.webp'
-import portfolio2Img from './assets/portfolio-img-2.webp'
-import portfolio3Img from './assets/portfolio-img-3.webp'
-import portfolio4Img from './assets/portfolio-img-4.webp'
+import portfolio1Img from './assets/portfolio-img-1.png'
+import portfolio2Img from './assets/portfolio-img-2.png'
+import portfolio3Img from './assets/portfolio-img-3.png'
+import portfolio4Img from './assets/portfolio-img-4.png'
 import OverflowTextReveal from "./effects/overflow-text-reveal";
 import Line from "./Line";
 
@@ -72,7 +72,10 @@ const Awards = () => {
   // rather than recency, which is what caused the old "wrong image on
   // top" glitch. A monotonic counter makes that class of bug impossible.
   const zIndexCounterRef = useRef(AWARD_ITEMS.length);
-  const prefersReducedMotionRef = useRef(false);
+  const prefersReducedMotionRef = useRef(
+    typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
   // Which row the geometry-based hover tracker (updateActiveRowAt below)
   // last activated - null once the cursor has left the list entirely.
   const activeRowIndexRef = useRef<number | null>(null);
@@ -114,6 +117,15 @@ const Awards = () => {
   useEffect(() => {
     const lines = lineRefs.current.filter(Boolean) as HTMLDivElement[];
 
+    // The dividers are authored at scale-x-0 and only become visible as this
+    // tween runs, so this can't simply be skipped under reduced motion -
+    // they'd stay invisible. They're drawn immediately at full width instead,
+    // which is the finished state without the sweep.
+    if (prefersReducedMotionRef.current) {
+      gsap.set(lines, { scaleX: 1 });
+      return;
+    }
+
     const tweens = lines.map((line) =>
       gsap.to(line, {
         scaleX: 1,
@@ -137,9 +149,11 @@ const Awards = () => {
   // list (.awards-container) - everything inside it (pill snap, per-card
   // scale reveal) is untouched, this just fades the container itself.
   const handleListEnter = () => {
+    // Still shown/hidden under reduced motion - which image is visible is
+    // real information, not decoration - just without the crossfade.
     gsap.to(imageContainerRef.current, {
       opacity: 1,
-      duration: CONTAINER_FADE_DURATION,
+      duration: prefersReducedMotionRef.current ? 0 : CONTAINER_FADE_DURATION,
       ease: "power2.out",
     });
   };
@@ -148,7 +162,7 @@ const Awards = () => {
     activeRowIndexRef.current = null;
     gsap.to(imageContainerRef.current, {
       opacity: 0,
-      duration: CONTAINER_FADE_DURATION,
+      duration: prefersReducedMotionRef.current ? 0 : CONTAINER_FADE_DURATION,
       ease: "power2.out",
     });
   };
@@ -176,11 +190,17 @@ const Awards = () => {
       const rowRect = rowEl.getBoundingClientRect();
       const rowCenterY = rowRect.top + rowRect.height / 2;
       const targetY = rowCenterY - containerRestCenterY;
-      gsap.to(container, {
-        y: targetY,
-        duration: PILL_SNAP_DURATION,
-        ease: PILL_SNAP_EASE,
-      });
+      if (prefersReducedMotionRef.current) {
+        // The springy travel between rows is the most motion-heavy part of
+        // this section; the panel still moves to the right row, immediately.
+        gsap.set(container, { y: targetY });
+      } else {
+        gsap.to(container, {
+          y: targetY,
+          duration: PILL_SNAP_DURATION,
+          ease: PILL_SNAP_EASE,
+        });
+      }
     }
 
     const incoming = cardRefs.current[index];
@@ -303,15 +323,7 @@ const Awards = () => {
           </OverflowTextReveal>
 
           <div onMouseEnter={handleListEnter} onMouseLeave={handleListLeave}>
-            {/* Dividers are true siblings between rows, not nested inside
-                either one - see .box in elenavoss.css: its pluck-hit-region
-                is 40px tall by default and grows to 150px on its own hover,
-                way bigger than the visible 1px line, so it inevitably
-                overlaps whichever row(s) sit next to it. Which row counts
-                as "hovered" is decided by updateActiveRowAt above from raw
-                geometry (fed by the window mousemove/scroll listeners), not
-                from onMouseEnter/onMouseLeave on these row divs - see that
-                function's comment for why. */}
+   
             {AWARD_ITEMS.map((item, i) => (
               <Fragment key={item.title}>
                 {i !== 0 && (

@@ -1,12 +1,27 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { X } from "lucide-react";
 import { getEffectHref } from "@/lib/categories";
+import { prefersReducedMotion } from "@/lib/motion";
 import { navCategoryColumns, navDocsItems } from "@/utils/Links";
+
+gsap.registerPlugin(useGSAP);
+
+
+const OPEN_DURATION = 0.7;
+const CLOSE_DURATION = 0.5;
+const OPEN_EASE = "power3.out";
+const CLOSE_EASE = "power2.in";
+// Reduced motion still shows the change, just as a short fade
+const REDUCED_MOTION_FADE = 0.2;
+
+const PANEL_CLOSED_SCALE = 0.8;
 
 const HOME_ICON_SRC = "/svgs/menu/home.svg";
 
@@ -236,6 +251,7 @@ export function SearchBar({
 
 export function GlobalSearch({ effects = [], externalOpen = 0 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
   const [query, setQuery] = useState("");
   const [globalEffects, setGlobalEffects] = useState([]);
   const [hasTriedGlobalFetch, setHasTriedGlobalFetch] = useState(false);
@@ -243,6 +259,21 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
 
   const inputRef = useRef(null);
   const externalOpenRef = useRef(externalOpen);
+  const backdropRef = useRef(null);
+  const panelRef = useRef(null);
+  const tweenRef = useRef(null);
+
+  const [lastOpen, setLastOpen] = useState(isOpen);
+  if (isOpen !== lastOpen) {
+    setLastOpen(isOpen);
+    // Only a real open -> closed edge animates out
+    setIsExiting(!isOpen && lastOpen);
+  }
+  const isMounted = isOpen || isExiting;
+
+  const openSearch = useCallback(() => {
+    setIsOpen(true);
+  }, []);
 
   const router = useRouter();
   const lenis = useLenis();
@@ -308,6 +339,78 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
     normalizedPassedEffects.length,
   ]);
 
+  useGSAP(
+    () => {
+      const backdrop = backdropRef.current;
+      const panel = panelRef.current;
+      if (!backdrop || !panel) return;
+
+      // A new tween always replaces the one in flight
+      tweenRef.current?.kill();
+
+      const reduced = prefersReducedMotion();
+
+      if (isOpen) {
+        const timeline = gsap.timeline();
+        tweenRef.current = timeline;
+
+        if (reduced) {
+          gsap.set(panel, { scale: 1 });
+          timeline
+            .fromTo(
+              backdrop,
+              { opacity: 0 },
+              { opacity: 1, duration: REDUCED_MOTION_FADE, ease: "none" }
+            )
+            .fromTo(
+              panel,
+              { opacity: 0 },
+              { opacity: 1, duration: REDUCED_MOTION_FADE, ease: "none" },
+              0
+            );
+          return;
+        }
+
+        timeline
+          .fromTo(
+            backdrop,
+            { opacity: 0 },
+            { opacity: 1, duration: OPEN_DURATION, ease: OPEN_EASE }
+          )
+          .fromTo(
+            panel,
+            { opacity: 0, scale: PANEL_CLOSED_SCALE },
+            { opacity: 1, scale: 1, duration: OPEN_DURATION, ease: OPEN_EASE },
+            0
+          );
+
+        return;
+      }
+
+      const duration = reduced ? REDUCED_MOTION_FADE : CLOSE_DURATION;
+      const ease = reduced ? "none" : CLOSE_EASE;
+
+      const timeline = gsap.timeline({ onComplete: () => setIsExiting(false) });
+      tweenRef.current = timeline;
+
+      timeline
+        .to(backdrop, { opacity: 0, duration, ease })
+        .to(
+          panel,
+          {
+            opacity: 0,
+            scale: reduced ? 1 : PANEL_CLOSED_SCALE,
+            duration,
+            ease,
+          },
+          0
+        );
+    },
+    { dependencies: [isOpen], revertOnUpdate: false }
+  );
+
+  useEffect(() => () => void tweenRef.current?.kill(), []);
+
   useEffect(() => {
     if (isOpen) {
       lenis?.stop?.();
@@ -334,10 +437,10 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
 
     if (externalOpen) {
       requestAnimationFrame(() => {
-        setIsOpen(true);
+        openSearch();
       });
     }
-  }, [externalOpen]);
+  }, [externalOpen, openSearch]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -345,7 +448,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
 
       if ((event.metaKey || event.ctrlKey) && key === "k") {
         event.preventDefault();
-        setIsOpen(true);
+        openSearch();
       }
 
       if (event.key === "Escape") {
@@ -358,7 +461,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [openSearch]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -440,16 +543,22 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
     closeSearch();
   };
 
-  if (!isOpen) return null;
+  if (!isMounted) return null;
 
   return (
     <div className="fixed inset-0 z-999 flex items-start justify-center pt-[20vh]">
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        ref={backdropRef}
+        style={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm will-change-[opacity]"
         onClick={closeSearch}
       />
 
-      <div className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden  border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-xl max-[1025px]:h-140 max-md:h-113">
+      <div
+        ref={panelRef}
+        style={{ opacity: 0, transform: `scale(${PANEL_CLOSED_SCALE})` }}
+        className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden  border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-xl will-change-[transform,opacity] max-[1025px]:h-140 max-md:h-113"
+      >
         <div className="flex items-center gap-3 border-b border-neutral-800/50 bg-black/20 px-4 py-4">
           <svg
             className="h-5 w-5 text-neutral-500"
@@ -485,9 +594,9 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
             type="button"
             aria-label="Close search"
             onClick={closeSearch}
-            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center  border border-neutral-800 bg-neutral-900 text-neutral-400 transition-colors hover:border-neutral-700 hover:text-white"
+            className="group flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center  border border-neutral-800 bg-neutral-900 text-neutral-400 transition-colors hover:border-neutral-700 hover:text-white"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" />
           </button>
         </div>
 

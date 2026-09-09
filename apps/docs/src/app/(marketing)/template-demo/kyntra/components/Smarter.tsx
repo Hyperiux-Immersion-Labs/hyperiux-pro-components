@@ -18,12 +18,44 @@ import visit from "../assets/smarter/visit.svg";
 import serviceRecord from "../assets/smarter/service-record.svg";
 import home from "../assets/smarter/home.svg";
 import maintainance from "../assets/smarter/maintainance.svg";
+import cardTexture from "../assets/card-texture.png";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+
+  // Registering the mask centre as <length> lets GSAP tween it and keeps the
+  // px unit; without this the custom properties stay unanimatable strings.
+  const registerLength = (name: string) => {
+    try {
+      CSS.registerProperty({
+        name,
+        syntax: "<length>",
+        inherits: false,
+        initialValue: "0px",
+      });
+    } catch {
+      // Already registered, or unsupported: the mask still renders, it just
+      // snaps to the cursor instead of easing toward it.
+    }
+  };
+
+  if (typeof CSS !== "undefined" && "registerProperty" in CSS) {
+    registerLength("--tx");
+    registerLength("--ty");
+  }
 }
 
 const KYNTRA_PRIMARY = "#134BD6";
+
+// Texture spotlight: a circle of texture follows the cursor on every card.
+// The PNG is near-black with light linework, so it screens over the card —
+// the dark ground drops out and only the lines show, on blue and on black.
+const TEXTURE_OPACITY = 0.9;
+const TEXTURE_RADIUS = 170;
+const TEXTURE_FEATHER = 0.55;
+const TEXTURE_DURATION = 0.45;
+const TEXTURE_FOLLOW = 0.35;
+const TEXTURE_EASE = "power2.out";
 
 export interface SmarterCardData {
   id: number;
@@ -170,21 +202,108 @@ export default function Smarter() {
     return () => ctx.revert();
   }, []);
 
+  // One quickTo pair per card keeps the mask centre tracking the cursor
+  const followers = useRef(new Map<Element, { x: Function; y: Function }>());
+
+  const getFollower = (texture: Element) => {
+    let follower = followers.current.get(texture);
+    if (!follower) {
+      follower = {
+        x: gsap.quickTo(texture, "--tx", {
+          unit: "px",
+          duration: TEXTURE_FOLLOW,
+          ease: TEXTURE_EASE,
+        }),
+        y: gsap.quickTo(texture, "--ty", {
+          unit: "px",
+          duration: TEXTURE_FOLLOW,
+          ease: TEXTURE_EASE,
+        }),
+      };
+      followers.current.set(texture, follower);
+    }
+    return follower;
+  };
+
+  const pointerPosition = (event: React.MouseEvent<HTMLDivElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    return {
+      x: event.clientX - bounds.left,
+      y: event.clientY - bounds.top,
+    };
+  };
+
+  // Spotlight follows the cursor
+  const moveTexture = (event: React.MouseEvent<HTMLDivElement>) => {
+    const texture = event.currentTarget.querySelector(".smarter-card-texture");
+    if (!texture) return;
+
+    const { x, y } = pointerPosition(event);
+    const follower = getFollower(texture);
+    follower.x(x);
+    follower.y(y);
+  };
+
+  const animateTexture = (
+    event: React.MouseEvent<HTMLDivElement>,
+    show: boolean,
+  ) => {
+    const texture = event.currentTarget.querySelector(".smarter-card-texture");
+    if (!texture) return;
+
+    // Jump the mask to the entry point so it fades in under the cursor
+    if (show) {
+      const { x, y } = pointerPosition(event);
+      gsap.set(texture, { "--tx": `${x}px`, "--ty": `${y}px` });
+      getFollower(texture);
+    }
+
+    gsap.to(texture, {
+      opacity: show ? TEXTURE_OPACITY : 0,
+      duration: TEXTURE_DURATION,
+      ease: TEXTURE_EASE,
+      overwrite: "auto",
+    });
+  };
+
   // Shared; both branches render identically
   const cards = SMARTER_CARDS.map((card) => {
     const isPrimary = card.variant === "primary";
     return (
       <div
         key={card.id}
-        className="flex aspect-440/477 max-[1025px]:aspect-auto max-[1025px]:h-[45vh] w-[28vw] shrink-0 flex-col overflow-hidden rounded-xl p-[2vw] max-[1025px]:p-[4vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
+        onMouseEnter={(e) => animateTexture(e, true)}
+        onMouseMove={moveTexture}
+        onMouseLeave={(e) => animateTexture(e, false)}
+        className="relative flex aspect-440/477 max-[1025px]:aspect-auto max-[1025px]:h-[45vh] w-[28vw] shrink-0 flex-col overflow-hidden rounded-xl p-[2vw] max-[1025px]:p-[4vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
         style={{
           backgroundColor: isPrimary ? KYNTRA_PRIMARY : "#0d0d0d",
           border: isPrimary ? "none" : "1px solid rgba(255,255,255,0.25)",
           color: isPrimary ? "#ffffff" : KYNTRA_PRIMARY,
         }}
       >
+        <Image
+          src={cardTexture}
+          alt=""
+          aria-hidden
+          sizes="(max-width: 767px) 76vw, (max-width: 1025px) 50vw, 28vw"
+          className="smarter-card-texture pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 mix-blend-screen will-change-[opacity,mask-position]"
+          style={
+            {
+              "--tx": "0px",
+              "--ty": "0px",
+              maskImage: `radial-gradient(circle ${TEXTURE_RADIUS}px at var(--tx) var(--ty), #000 ${
+                TEXTURE_FEATHER * 100
+              }%, transparent 100%)`,
+              WebkitMaskImage: `radial-gradient(circle ${TEXTURE_RADIUS}px at var(--tx) var(--ty), #000 ${
+                TEXTURE_FEATHER * 100
+              }%, transparent 100%)`,
+            } as React.CSSProperties
+          }
+        />
+
         {/* Fixed icon zone aligns headings */}
-        <div className="flex h-[45%] max-[1025px]:h-[40%] shrink-0 items-start">
+        <div className="relative z-10 flex h-[45%] max-[1025px]:h-[40%] shrink-0 items-start">
           <Image
             src={card.icon}
             alt=""
@@ -193,7 +312,7 @@ export default function Smarter() {
           />
         </div>
 
-        <div className="flex flex-1 flex-col gap-[1.8vw] max-md:gap-6">
+        <div className="relative z-10 flex flex-1 flex-col gap-[1.8vw] max-md:gap-6">
           <h3 className="font-helvetica-neue text-44 leading-[1.15] font-normal tracking-tight whitespace-pre-line text-white max-[1025px]:text-[4vw] max-md:text-[7vw]">
             {card.title}
           </h3>

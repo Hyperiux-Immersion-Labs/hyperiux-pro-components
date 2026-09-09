@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import portfolio1Img from "./assets/portfolio-img-1-new.webp";
-import portfolio2Img from "./assets/portfolio-img-2.webp";
-import portfolio3Img from "./assets/portfolio-img-3.webp";
-import portfolio4Img from "./assets/portfolio-img-4.webp";
+import portfolio1Img from "./assets/portfolio-img-1.png";
+import portfolio2Img from "./assets/portfolio-img-2.png";
+import portfolio3Img from "./assets/portfolio-img-3.png";
+import portfolio4Img from "./assets/portfolio-img-4.png";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -161,39 +161,24 @@ const Portfolio = () => {
       gsap.set(curveRef.current, {
         clipPath: `ellipse(${150}% 100% at 50% 100%)`,
       });
-      if(globalThis.innerWidth>=1025){
-        gsap.to(curveRef.current, {
-          clipPath: `ellipse(${60}% 100% at 50% 100%)`,
-          ease:"power2.out",
-          scrollTrigger: {
-            trigger: "#portfolio",
-            start: "top bottom",
-            end: "30% bottom",
-            scrub: true,
-          //   markers: true,
-          },
-        });
-      }
-      else{
-         gsap.to(curveRef.current, {
-          clipPath: `ellipse(${80}% 100% at 50% 100%)`,
-          ease:"power2.out",
-          scrollTrigger: {
-            trigger: "#portfolio",
-            start: "top bottom",
-            end: "30% bottom",
-            scrub: true,
-          //   markers: true,
-          },
-        });
-      }
+      gsap.to(curveRef.current, {
+        clipPath: `ellipse(${60}% 100% at 50% 100%)`,
+        ease:"power2.out",
+        scrollTrigger: {
+          trigger: "#portfolio",
+          start: "top bottom",
+          end: "30% bottom",
+          scrub: true,
+        //   markers: true,
+        },
+      });
     }
    
   }, []);
 
   return (
     <section
-      className={`relative w-screen h-[360vh] text-white pt-[8vw] max-[1025px]:pt-0`}
+      className={`relative w-screen h-[360vh] text-white ${prefersReducedMotion ? "pt-[8vw]" : "pt-[8vw] max-[1025px]:pt-[30vw]"}`}
       id="portfolio"
     >
       <div

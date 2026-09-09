@@ -177,7 +177,7 @@ export default function Timeline({
     const isMobile = window.innerWidth < 642;
     const slidePercent = isTablet ? -60 : isMobile ? -57 : -65;
     const lineWidth = isTablet ? "75%" : isMobile ? "65%" : "98%";
-    const lineStart = isTablet ? "top 20%" : isMobile ? "top 30%" : "top 25%";
+    const lineStart = isTablet ? "top 10%" : isMobile ? "top top" : "top top";
     const slideEnd = isMobile ? "82% 50%" : "92% bottom";
     const lineEnd = isMobile ? "80% 50%" : isTablet ? "90% bottom" : "92% bottom";
 
@@ -212,7 +212,6 @@ export default function Timeline({
         start: lineStart,
         end: lineEnd,
         scrub: true,
-
       },
     });
   }, { dependencies: [reducedMotion], scope: sectionRef });
@@ -223,6 +222,7 @@ export default function Timeline({
     if (!section) return;
 
     const items = allJourneyItems;
+    const isMobileViewport = window.innerWidth < 642;
 
     if (reducedMotion) {
       items.forEach((item) => {
@@ -281,8 +281,8 @@ export default function Timeline({
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: `${startPos}% 38%`,
-          end: `${endPos}% 50%`,
+          start: `${startPos}% ${isMobileViewport ? "38%" : "top"}`,
+          end: `${endPos}% ${isMobileViewport ? "50%" : "40%"}`,
           scrub: true,
         },
       });
@@ -400,15 +400,15 @@ export default function Timeline({
           <div className="relative h-full w-full  max-[1025px]:h-[50%]">
             <div className="w-full absolute left-0 top-[49%] tranlate-y-[-50%] flex items-center h-fit">
               <div
-                className="h-[.8vw] max-md:h-[2vw] max-md:w-[2vw] w-[.8vw] rounded-full max-[1025px]:w-[1.5vw] max-[1025px]:h-[1.5vw]"
+                className="h-[.8vw] w-[.8vw] shrink-0 rounded-full max-md:h-[2vw] max-md:w-[2vw] max-[1025px]:h-[1.5vw] max-[1025px]:w-[1.5vw]"
                 style={activeStyle}
               ></div>
               <div
-                className="h-px w-[0%] rounded-full journey-line"
+                className="-mx-[.4vw] h-px w-[0%] rounded-full journey-line max-md:-mx-[1.5vw] max-[1025px]:-mx-[1.125vw]"
                 style={activeStyle}
               ></div>
               <div
-                className="h-[.8vw] max-md:h-[2vw] max-md:w-[2vw] w-[.8vw] rounded-full max-[1025px]:w-[1.5vw] max-[1025px]:h-[1.5vw]"
+                className="h-[.8vw] w-[.8vw] shrink-0 rounded-full max-md:h-[2vw] max-md:w-[2vw] max-[1025px]:h-[1.5vw] max-[1025px]:w-[1.5vw]"
                 style={activeStyle}
               ></div>
             </div>

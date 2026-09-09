@@ -32,6 +32,9 @@ import { FadeUp } from "../../gsapAnimations";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+
+export const FEATURE_SECTION_ID = "lumera-features";
+
 const TEXT_FILL_STYLE_PREFIX = "lumera-tfa-style-";
 const SPLIT_CHARACTER_SELECTOR = ".split-chars";
 const TEXT_FILL_HOLD_VH = 100;
@@ -118,8 +121,8 @@ const RESIDENCE_DATA: FeatureItem[] = [
 
 export default function HorizontalFeatureRevealSection() {
   const uid = useId().replace(/:/g, "");
-  const sectionId = `lumera-residences-${uid}`;
-  const textFillId = `${sectionId}-textfill`;
+  const sectionId = FEATURE_SECTION_ID;
+  const textFillId = `lumera-residences-${uid}-textfill`;
   const imageParallaxRange = 20;
 
   const textFillSlideRef = useRef<HTMLDivElement | null>(null);

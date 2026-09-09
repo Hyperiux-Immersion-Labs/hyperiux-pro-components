@@ -28,8 +28,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
               pointer-events-none absolute inset-y-0 left-[1.6vw] z-10 flex items-center
               font-aeonik-pro text-[1.05vw] text-white
               transition-opacity duration-300 ease-out
-              group-focus-within:opacity-0
+              group-focus-within:opacity-40
               has-[+input:not(:placeholder-shown)]:opacity-0
+              group-focus-within:has-[+input:not(:placeholder-shown)]:opacity-0
               max-[1025px]:left-[5vw] max-[1025px]:text-[3.2vw]
               max-md:text-[4vw]
             "

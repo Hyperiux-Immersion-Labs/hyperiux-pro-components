@@ -1500,6 +1500,23 @@
       "tier": "free"
     },
     {
+      "name": "parallax-strip-slider",
+      "type": "registry:component",
+      "category": "carousels",
+      "categories": [
+        "carousels"
+      ],
+      "dependencies": [
+        "@gsap/react",
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "ParallaxStripSlider",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
       "name": "ring-carousel",
       "type": "registry:component",
       "category": "carousels",
@@ -1719,7 +1736,7 @@
       "registryDependencies": [],
       "exportName": "InformationDrawer",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.0",
       "tier": "free"
     },
     {
@@ -1786,7 +1803,7 @@
       "registryDependencies": [],
       "exportName": "Timeline",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.0",
       "tier": "free"
     },
     {
@@ -2249,6 +2266,22 @@
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "pro"
+    },
+    {
+      "name": "stack-spread",
+      "type": "registry:component",
+      "category": "scroll",
+      "categories": [
+        "scroll"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [],
+      "exportName": "StackSpread",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
     }
   ]
 }

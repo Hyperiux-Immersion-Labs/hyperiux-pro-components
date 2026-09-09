@@ -190,117 +190,147 @@ const AsciiMorph = forwardRef(function AsciiMorph(
     const box = boxRef.current;
     if (!canvas || !box) return;
 
-    const list = srcKey.split("|");
     let disposed = false;
-    let gridCols = cols;
-    let gridRows = cols;
-    let cell = 0;
-    let cssW = 0;
-    let cssH = 0;
-    let ctx = null;
-    let color = COLOR;
+    let cleanupMounted = () => {};
 
-    const images = list.map(() => null);
-    const rawCells = list.map(() => null);
-    const densityFor = (index) => (index === 0 ? numberFill : iconFill);
-    const numberAlpha = Math.max(0, Math.min(1, numberBrightness / 100));
+    // Preview.jsx renders four of these up front, each fetching two source
+    // SVGs and running canvas sampling on mount - real work + real requests
+    // for a grid that starts well below the fold. Deferred behind the same
+    // IntersectionObserver-gating pattern used elsewhere (rootMargin 500px)
+    // so nothing fires until the section is actually approaching view.
+    // `setProgress` (below) can still be called by the scroll-driven morph
+    // before this fires - it just records progressRef and calls whatever
+    // drawRef currently is (the no-op stub until mount runs), and `rebuild`
+    // draws from progressRef's latest value once images are ready, so no
+    // scrub position is lost while this waits.
+    const runMount = () => {
+      const list = srcKey.split("|");
+      let gridCols = cols;
+      let gridRows = cols;
+      let cell = 0;
+      let cssW = 0;
+      let cssH = 0;
+      let ctx = null;
+      let color = COLOR;
 
-    const draw = (p) => {
-      if (!ctx || !cell) return;
-      ctx.clearRect(0, 0, cssW, cssH);
-      ctx.fillStyle = color;
-      ctx.globalAlpha = 1;
+      const images = list.map(() => null);
+      const rawCells = list.map(() => null);
+      const densityFor = (index) => (index === 0 ? numberFill : iconFill);
+      const numberAlpha = Math.max(0, Math.min(1, numberBrightness / 100));
 
-      const tokens = tokensRef.current;
-      for (let i = 0; i < tokens.length; i += 1) {
-        const tok = tokens[i];
-        const local = smoothstep(clamp01((p - tok.delay) / (1 - SPREAD)));
-        const x = lerp(tok.ax, tok.bx, local);
-        const y = lerp(tok.ay, tok.by, local);
-        const ch = local < 0.5 ? tok.ach : tok.bch;
-        ctx.globalAlpha = lerp(numberAlpha, 1, local);
-        ctx.fillText(ch, Math.round((x + 0.5) * cell), Math.round((y + 0.5) * cell));
-      }
-    };
-    drawRef.current = draw;
+      const draw = (p) => {
+        if (!ctx || !cell) return;
+        ctx.clearRect(0, 0, cssW, cssH);
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 1;
 
-    const rebuild = () => {
-      if (!rawCells[0] || !rawCells[1]) return;
-      tokensRef.current = buildTokens(rawCells[0], rawCells[1]);
-      draw(progressRef.current);
-    };
-
-    const measure = () => {
-      const { width, height } = box.getBoundingClientRect();
-      if (!width || !height) return;
-
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      // Integer CSS box so the bitmap is never stretched by a fractional layout.
-      cssW = Math.max(1, Math.floor(width));
-      cssH = Math.max(1, Math.floor(height));
-      // `cols` is the ceiling, not a promise: a box too narrow to give each
-      // column MIN_CELL_PX gets fewer, larger cells instead of a fine grid of
-      // sub-pixel smears. Wide boxes are unaffected and keep the requested grid.
-      gridCols = Math.max(1, Math.min(cols, Math.floor(cssW / MIN_CELL_PX)));
-      cell = cssW / gridCols;
-      gridRows = Math.max(1, Math.round(cssH / cell));
-
-      canvas.style.width = `${cssW}px`;
-      canvas.style.height = `${cssH}px`;
-      canvas.width = Math.round(cssW * dpr);
-      canvas.height = Math.round(cssH * dpr);
-
-      ctx = canvas.getContext("2d", { alpha: true });
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.imageSmoothingEnabled = false;
-      // Integer px font — fractional sizes anti-alias into mush.
-      ctx.font = `${Math.max(1, Math.round(cell))}px ui-monospace, SFMono-Regular, Menlo, monospace`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = COLOR;
-      color = window.getComputedStyle(canvas).color || COLOR;
-
-      images.forEach((img, index) => {
-        if (img?.complete && img.naturalWidth)
-          rawCells[index] = sampleShape(
-            img,
-            gridCols,
-            gridRows,
-            fit,
-            densityFor(index),
-          );
-      });
-      rebuild();
-    };
-
-    list.forEach((src, index) => {
-      const img = new window.Image();
-      img.onload = () => {
-        if (disposed) return;
-        images[index] = img;
-        if (cell) {
-          rawCells[index] = sampleShape(
-            img,
-            gridCols,
-            gridRows,
-            fit,
-            densityFor(index),
-          );
-          rebuild();
+        const tokens = tokensRef.current;
+        for (let i = 0; i < tokens.length; i += 1) {
+          const tok = tokens[i];
+          const local = smoothstep(clamp01((p - tok.delay) / (1 - SPREAD)));
+          const x = lerp(tok.ax, tok.bx, local);
+          const y = lerp(tok.ay, tok.by, local);
+          const ch = local < 0.5 ? tok.ach : tok.bch;
+          ctx.globalAlpha = lerp(numberAlpha, 1, local);
+          ctx.fillText(ch, Math.round((x + 0.5) * cell), Math.round((y + 0.5) * cell));
         }
       };
-      img.src = src;
-      images[index] = img;
-    });
+      drawRef.current = draw;
 
-    measure();
+      const rebuild = () => {
+        if (!rawCells[0] || !rawCells[1]) return;
+        tokensRef.current = buildTokens(rawCells[0], rawCells[1]);
+        draw(progressRef.current);
+      };
 
-    const observer = new ResizeObserver(measure);
-    observer.observe(box);
+      const measure = () => {
+        const { width, height } = box.getBoundingClientRect();
+        if (!width || !height) return;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        // Integer CSS box so the bitmap is never stretched by a fractional layout.
+        cssW = Math.max(1, Math.floor(width));
+        cssH = Math.max(1, Math.floor(height));
+        // `cols` is the ceiling, not a promise: a box too narrow to give each
+        // column MIN_CELL_PX gets fewer, larger cells instead of a fine grid of
+        // sub-pixel smears. Wide boxes are unaffected and keep the requested grid.
+        gridCols = Math.max(1, Math.min(cols, Math.floor(cssW / MIN_CELL_PX)));
+        cell = cssW / gridCols;
+        gridRows = Math.max(1, Math.round(cssH / cell));
+
+        canvas.style.width = `${cssW}px`;
+        canvas.style.height = `${cssH}px`;
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+
+        ctx = canvas.getContext("2d", { alpha: true });
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.imageSmoothingEnabled = false;
+        // Integer px font — fractional sizes anti-alias into mush.
+        ctx.font = `${Math.max(1, Math.round(cell))}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = COLOR;
+        color = window.getComputedStyle(canvas).color || COLOR;
+
+        images.forEach((img, index) => {
+          if (img?.complete && img.naturalWidth)
+            rawCells[index] = sampleShape(
+              img,
+              gridCols,
+              gridRows,
+              fit,
+              densityFor(index),
+            );
+        });
+        rebuild();
+      };
+
+      list.forEach((src, index) => {
+        const img = new window.Image();
+        img.onload = () => {
+          if (disposed) return;
+          images[index] = img;
+          if (cell) {
+            rawCells[index] = sampleShape(
+              img,
+              gridCols,
+              gridRows,
+              fit,
+              densityFor(index),
+            );
+            rebuild();
+          }
+        };
+        img.src = src;
+        images[index] = img;
+      });
+
+      measure();
+
+      const observer = new ResizeObserver(measure);
+      observer.observe(box);
+
+      return () => {
+        observer.disconnect();
+      };
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          io.disconnect();
+          cleanupMounted = runMount();
+        }
+      },
+      { rootMargin: "500px 0px" },
+    );
+    io.observe(box);
 
     return () => {
       disposed = true;
-      observer.disconnect();
+      io.disconnect();
+      cleanupMounted();
     };
   }, [srcKey, fit, cols, numberFill, iconFill, numberBrightness]);
 

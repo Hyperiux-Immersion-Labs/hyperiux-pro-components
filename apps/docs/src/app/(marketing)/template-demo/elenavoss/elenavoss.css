@@ -50,6 +50,17 @@
   font-weight: 400;
 }
 
+
+.elenavoss-body ::selection {
+  background-color: #F16B0D;
+  color: #070707;
+}
+
+.elenavoss-body ::-moz-selection {
+  background-color: #F16B0D;
+  color: #070707;
+}
+
 .elenavoss-body .font-light {
   font-weight: 300 !important;
 }
@@ -156,6 +167,73 @@
   .marquee-1,
   .marquee-2 {
     animation: none;
+  }
+
+  /* The pluckable divider's hit-region grows on hover to make the string
+     easier to catch. Line.tsx already disables the pluck itself under
+     reduced motion, so without this the box would still resize on hover
+     for an interaction that no longer does anything. */
+  .box:hover {
+    height: 40px;
+    top: -20px;
+  }
+
+  /* Services cards (Services.tsx). The component also branches on the same
+     preference in JS, but that state is false during server rendering and
+     React does not reconcile className differences while hydrating - so the
+     horizontal-scroll classes from the server HTML would stick. These rules
+     are applied by the browser regardless of hydration, which is what
+     actually makes the grid appear. */
+  .services-section {
+    height: auto !important;
+  }
+
+  .services-sticky {
+    position: static !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin-top: 0 !important;
+  }
+
+  .services-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    transform: none !important;
+    width: auto !important;
+    /* The server HTML carries the horizontal-scroll classes (which have no
+       top padding, since that layout is vertically centred in a pinned
+       viewport), so the gap under the intro copy has to be set here too -
+       the grid sits directly in flow beneath it. */
+    padding-top: 5vw;
+  }
+
+  .services-card {
+    width: auto !important;
+    height: auto !important;
+    min-height: 22vw;
+    flex-shrink: 1 !important;
+  }
+
+  @media (max-width: 767px) {
+    .services-row {
+      grid-template-columns: minmax(0, 1fr);
+      padding-top: 12vw;
+    }
+
+    .services-card {
+      min-height: 0;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1025px) {
+    .services-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding-top: 8vw;
+    }
+
+    .services-card {
+      min-height: 32vw;
+    }
   }
 }
 

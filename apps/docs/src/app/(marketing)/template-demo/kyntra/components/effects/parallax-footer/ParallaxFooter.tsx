@@ -4,6 +4,9 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
+
+export const FOOTER_RESIZE_EVENT = "footer-parallax-resize";
+
 interface FooterParallaxProps {
  children?: ReactNode;
  id?: string;
@@ -26,6 +29,7 @@ const FooterParallax = ({
 
  useEffect(() => {
  let frameId: number | undefined;
+ let lastHeight = -1;
 
  const query = window.matchMedia("(min-width: 1026px)");
 
@@ -35,7 +39,14 @@ const FooterParallax = ({
 
  frameId = requestAnimationFrame(() => {
  const rect = el.getBoundingClientRect();
+ if (Math.abs(lastHeight - rect.height) <= 0.5) return;
+
+ lastHeight = rect.height;
  setHeight(rect.height);
+
+ // The spacer drives ScrollTrigger's measurements, so anything reading
+ // them has to re-measure once the real height lands.
+ window.dispatchEvent(new CustomEvent(FOOTER_RESIZE_EVENT));
  });
  };
 

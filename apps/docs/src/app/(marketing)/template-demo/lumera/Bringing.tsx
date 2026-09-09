@@ -10,6 +10,7 @@ import BlackButton from "./BlackButton";
 import bringingPoster from "./assets/video-poster-2.webp";
 import { prefersReducedMotion } from "./reducedMotion";
 import MaskTextReveal from "./effects/mask-text-reveal";
+import { useEnquiryModal } from "./EnquiryModal";
 import { FadeUp } from "./gsapAnimations";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -17,6 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
 const dubaiExperienceVideo = new URL("./assets/dubai-experience.mp4", import.meta.url).toString();
 
 const Bringing = () => {
+  const { openEnquiryModal } = useEnquiryModal();
   const BringingRef = useRef<HTMLElement>(null);
   const headingLineOneRef = useRef<HTMLDivElement>(null);
   const headingLineTwoRef = useRef<HTMLDivElement>(null);
@@ -154,6 +156,10 @@ const Bringing = () => {
                 <BlackButton
                   btnText="Speak With an Advisor"
                   link="#"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    openEnquiryModal();
+                  }}
                   className="bg-[#1c1b1a]"
                   borderColor="#1c1b1a"
                 />
@@ -218,6 +224,10 @@ const Bringing = () => {
           <BlackButton
             btnText="Speak With an Advisor"
             link="#"
+            onClick={(event) => {
+              event.preventDefault();
+              openEnquiryModal();
+            }}
             className="bg-[#1c1b1a]"
             borderColor="#1c1b1a"
           />

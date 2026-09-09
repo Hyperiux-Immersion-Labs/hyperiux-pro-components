@@ -2353,7 +2353,7 @@
     "previewUrl": "/demo/depth-shift-transition",
     "coverImage": "depth-shift-transition",
     "videoUrl": "depth-shift-transition.mp4",
-    "tier": "pro",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "DepthShiftTransition",
@@ -4534,7 +4534,7 @@
     "description": "Fullscreen crosshair cursor overlay with configurable line size, gap, thickness, smoothing, and blend mode.",
     "category": "cursor",
     "type": "registry:component",
-    "tier": "pro",
+    "tier": "free",
     "version": "1.0.1",
     "changelog": [
       {
@@ -4633,7 +4633,7 @@
     "dependencies": [],
     "registryDependencies": [],
     "previewUrl": "/demo/glowing-text",
-    "tier": "free",
+    "tier": "pro",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "GlowingText",
@@ -5546,29 +5546,38 @@
   },
   {
     "name": "information-drawer",
-    "version": "1.0.1",
-    "type": "registry:component",
     "title": "Information Drawer",
     "description": "Team profile grid with an animated information drawer and editable panel styling",
     "category": "components",
+    "type": "registry:component",
+    "tier": "pro",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-08-21",
+        "summary": "Initial registry release with working drawer motion, panel color, text color, width, and overlay controls.",
+        "breaking": false
+      }
+    ],
     "dependencies": [
       "gsap",
       "lenis"
     ],
     "registryDependencies": [],
+    "registryPath": "registry/effects/components/information-drawer/registry.json",
+    "importPath": "@/components/effects/information-drawer",
+    "target": "src/components/effects/information-drawer",
     "previewUrl": "/demo/information-drawer",
-    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "InformationDrawer",
     "exportKind": "default",
-    "importPath": "@/components/effects/information-drawer",
-    "target": "src/components/effects/information-drawer",
     "props": [
       {
         "name": "duration",
         "type": "number",
-        "default": 0.9,
+        "default": 0.6,
         "description": "Open and close animation duration in seconds.",
         "remixer": {
           "control": "range",
@@ -5638,7 +5647,7 @@
       {
         "name": "sidebarWidth",
         "type": "number | string",
-        "default": 60,
+        "default": 70,
         "description": "Desktop drawer width. Numbers are treated as viewport-width percentages.",
         "remixer": {
           "control": "range",
@@ -5684,22 +5693,7 @@
         "path": "InformationDrawerComp.tsx",
         "target": "src/components/effects/information-drawer/InformationDrawerComp.tsx"
       }
-    ],
-    "changelog": [
-      {
-        "version": "1.0.1",
-        "date": "2026-08-21",
-        "summary": "Added reduced-motion support so the drawer and overlay settle instantly when users prefer reduced motion.",
-        "breaking": false
-      },
-      {
-        "version": "1.0.0",
-        "date": "2026-08-21",
-        "summary": "Initial registry release with working drawer motion, panel color, text color, width, and overlay controls.",
-        "breaking": false
-      }
-    ],
-    "registryPath": "registry/effects/components/information-drawer/registry.json"
+    ]
   },
   {
     "name": "interactive-arrows",
@@ -6030,12 +6024,24 @@
   },
   {
     "name": "liquid-glass-cursor",
-    "version": "1.1.0",
+    "version": "2.1.0",
     "changelog": [
       {
-        "version": "1.1.0",
+        "version": "2.1.0",
         "date": "2026-08-26",
-        "summary": "Rebuilt as a magnifying glass-lens wrapper with chromatic-aberration SVG refraction over live wrapped content, replacing the previous GSAP hover-morph cursor API",
+        "summary": "Restore hover shape morphing (circle -> pill on data-cursor button/text targets) on top of the magnifying lens",
+        "breaking": false
+      },
+      {
+        "version": "2.0.0",
+        "date": "2026-08-26",
+        "summary": "Rebuilt as a magnifying glass-lens wrapper with chromatic-aberration SVG refraction over live wrapped content; replaces the GSAP hover-morph cursor API (baseSize/textHoverSize/distortionScale/blurAmount/brightness/borderColor/maxButtonWidth/maxButtonHeight) with a children-based wrapper API (size/magnification/distortion/aberration/className)",
+        "breaking": true
+      },
+      {
+        "version": "1.1.0",
+        "date": "2026-07-22",
+        "summary": "reduce-motion applied",
         "breaking": false
       },
       {
@@ -6047,14 +6053,14 @@
     ],
     "type": "registry:component",
     "title": "Liquid Glass Cursor",
-    "description": "Magnifying glass-lens cursor with chromatic-aberration SVG refraction over live wrapped content, hover shape morphing, and spring-smoothed tracking.",
+    "description": "Magnifying glass-lens cursor with chromatic-aberration SVG refraction over live wrapped content, spring-smoothed tracking.",
     "category": "cursor",
     "dependencies": [
       "motion"
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/liquid-glass-cursor",
-    "tier": "free",
+    "tier": "pro",
     "main": "index.tsx",
     "exportName": "LiquidGlassCursor",
     "exportKind": "default",
@@ -6087,48 +6093,6 @@
           "min": 1,
           "max": 2,
           "step": 0.01
-        }
-      },
-      {
-        "name": "textHoverSize",
-        "type": "number",
-        "default": 130,
-        "description": "Lens diameter when hovering a data-cursor=\"text\" target.",
-        "remixer": {
-          "control": "range",
-          "group": "size",
-          "groupTitle": "Size",
-          "min": 60,
-          "max": 260,
-          "step": 1
-        }
-      },
-      {
-        "name": "maxButtonWidth",
-        "type": "number",
-        "default": 260,
-        "description": "Lens width when hovering a data-cursor=\"button\" target.",
-        "remixer": {
-          "control": "range",
-          "group": "button",
-          "groupTitle": "Button Hover",
-          "min": 80,
-          "max": 420,
-          "step": 1
-        }
-      },
-      {
-        "name": "maxButtonHeight",
-        "type": "number",
-        "default": 110,
-        "description": "Lens height when hovering a data-cursor=\"button\" target.",
-        "remixer": {
-          "control": "range",
-          "group": "button",
-          "groupTitle": "Button Hover",
-          "min": 40,
-          "max": 240,
-          "step": 1
         }
       },
       {
@@ -7322,6 +7286,186 @@
         "target": "src/components/effects/parallax-slider/index.tsx"
       }
     ]
+  },
+  {
+    "name": "parallax-strip-slider",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-04",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Parallax Strip Slider",
+    "description": "Fullscreen image slider that reveals each slide through staggered vertical strips with a Ken-Burns zoom and a GSAP SplitText title reveal",
+    "category": "carousels",
+    "dependencies": [
+      "@gsap/react",
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/parallax-strip-slider",
+    "tier": "free",
+    "main": "index.tsx",
+    "exportName": "ParallaxStripSlider",
+    "exportKind": "default",
+    "importPath": "@/components/effects/parallax-strip-slider",
+    "target": "src/components/effects/parallax-strip-slider",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/parallax-strip-slider/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "stripCount",
+        "type": "number",
+        "default": 12,
+        "description": "Number of vertical strips the incoming slide is revealed through.",
+        "remixer": {
+          "control": "range",
+          "group": "strips",
+          "groupTitle": "Strips",
+          "min": 4,
+          "max": 24,
+          "step": 1
+        }
+      },
+      {
+        "name": "revealDuration",
+        "type": "number",
+        "default": 0.5,
+        "description": "Duration of each strip's clip-path wipe, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "strips",
+          "groupTitle": "Strips",
+          "min": 0.2,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "stripStagger",
+        "type": "number",
+        "default": 0.04,
+        "description": "Delay between consecutive strips as they wipe in, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "strips",
+          "groupTitle": "Strips",
+          "min": 0,
+          "max": 0.15,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "zoomFrom",
+        "type": "number",
+        "default": 1.2,
+        "description": "Starting scale of the incoming image before it settles to 1 (Ken-Burns zoom).",
+        "remixer": {
+          "control": "range",
+          "group": "image",
+          "groupTitle": "Image",
+          "min": 1,
+          "max": 1.6,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "zoomDuration",
+        "type": "number",
+        "default": 0.9,
+        "description": "Duration of the image zoom settle, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "image",
+          "groupTitle": "Image",
+          "min": 0.3,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "autoplay",
+        "type": "boolean",
+        "default": false,
+        "description": "Auto-advance slides on a 5s timer. Paused while a transition is running and under reduced motion.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "playback",
+          "groupTitle": "Playback"
+        }
+      },
+      {
+        "name": "showProgressBar",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the thin progress bar across the top of the slider.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "ui",
+          "groupTitle": "UI"
+        }
+      },
+      {
+        "name": "showCounter",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the numeric slide counter in the bottom-right.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "ui",
+          "groupTitle": "UI"
+        }
+      },
+      {
+        "name": "showControls",
+        "type": "boolean",
+        "default": true,
+        "description": "Enable the click-to-navigate overlay and its circular cursor (left half = previous, right half = next).",
+        "remixer": {
+          "control": "checkbox",
+          "group": "ui",
+          "groupTitle": "UI"
+        }
+      },
+      {
+        "name": "showClue",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the hint pill telling the viewer to click either side to navigate.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "ui",
+          "groupTitle": "UI"
+        }
+      },
+      {
+        "name": "accentColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Color of the slide title, progress bar fill, caption text, counter, and control borders.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "strips",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/carousels/parallax-strip-slider/registry.json"
   },
   {
     "name": "perspective-text-reveal",
@@ -9023,6 +9167,134 @@
     "registryPath": "registry/effects/loaders/stack-loader/registry.json"
   },
   {
+    "name": "stack-spread",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-04",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Stack Spread",
+    "description": "A clustered stack of images that spreads into a full-bleed composition on scroll while centre text fades in behind it",
+    "category": "scroll",
+    "dependencies": [
+      "motion"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/stack-spread",
+    "tier": "free",
+    "main": "index.tsx",
+    "exportName": "StackSpread",
+    "exportKind": "default",
+    "importPath": "@/components/effects/stack-spread",
+    "target": "src/components/effects/stack-spread",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/stack-spread/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "scrollLength",
+        "type": "number",
+        "default": 350,
+        "description": "Total scroll distance the spread plays out over, in vh. Sets the section height.",
+        "docsOnly": true,
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "clusterRotation",
+        "type": "boolean",
+        "default": true,
+        "description": "Fan the clustered stack with each card's own angle, or start every card flat.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "stackScale",
+        "type": "number",
+        "default": 0.82,
+        "description": "Scale of the cards while clustered, before they spread out to full size.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 1,
+          "step": 0.02
+        }
+      },
+      {
+        "name": "cardRadius",
+        "type": "number",
+        "default": 8,
+        "description": "Corner radius on each card, in px (desktop only — tablet/mobile keep their responsive radius).",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 40,
+          "step": 1
+        }
+      },
+      {
+        "name": "bgColor",
+        "type": "color",
+        "default": "#ececeb",
+        "description": "Background color of the section behind the cards.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#141414",
+        "description": "Color of the centre headline and subtitle.",
+        "remixer": {
+          "control": "color",
+          "group": "text",
+          "groupTitle": "Text"
+        }
+      },
+      {
+        "name": "textFadeStart",
+        "type": "number",
+        "default": 0.3,
+        "description": "Scroll progress (0-1) where the centre text starts fading in.",
+        "remixer": {
+          "control": "range",
+          "group": "text",
+          "groupTitle": "Text",
+          "min": 0,
+          "max": 0.6,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/scroll/stack-spread/registry.json"
+  },
+  {
     "name": "stacking-cards",
     "title": "Stacking Cards",
     "description": "Full-screen card sequence that stacks, tilts, and reveals the next scene on scroll",
@@ -9642,7 +9914,7 @@
   },
   {
     "name": "timeline",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "type": "registry:component",
     "title": "Timeline",
     "description": "Horizontal scroll timeline with Lenis smoothing, GSAP milestone reveals, and reduced-motion support.",
@@ -9650,7 +9922,8 @@
     "dependencies": [
       "@gsap/react",
       "gsap",
-      "lenis"
+      "lenis",
+      "next"
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/timeline",
@@ -9740,17 +10013,14 @@
     ],
     "changelog": [
       {
-        "version": "1.0.1",
-        "date": "2026-08-21",
-        "summary": "Added timeline remixer controls for colors, duration, and reduced-motion behavior.",
-        "breaking": false
-      },
-      {
         "version": "1.0.0",
         "date": "2026-08-21",
         "summary": "Initial timeline registry release with configurable colors, Lenis scroll tuning, and reduced-motion support.",
         "breaking": false
       }
+    ],
+    "categories": [
+      "components"
     ],
     "registryPath": "registry/effects/components/timeline/registry.json"
   },

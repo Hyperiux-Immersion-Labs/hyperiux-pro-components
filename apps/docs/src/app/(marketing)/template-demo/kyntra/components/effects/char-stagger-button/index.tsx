@@ -202,11 +202,11 @@ export default function CharStaggerButton({
       onTouchStart={onTouchStart}
       onMouseDown={onMouseDown}
       style={mergedStyle}
-      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none ${
+      className={`inline-flex items-center gap-2 mt-[0.3vw] no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none ${
         showLine && lineSpansArrow ? "relative" : ""
       } ${className}`.trim()}
     >
-      <div className="mt-[0.3vw]">
+      <div>
         <span
           className={[
             "inline-block relative",
