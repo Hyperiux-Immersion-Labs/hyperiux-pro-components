@@ -27,6 +27,7 @@ const SECTIONS = [
 
 const LINKS = [
   { label: "Pricing", href: "/pricing" },
+  { label: "Blog", href: "/blog" },
   { label: "Github", href: "https://github.com/hyperiux" },
 ];
 

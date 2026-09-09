@@ -28,10 +28,10 @@
   ],
   "dependencies": {
     "@sanity/orderable-document-list": "^2.0.22",
-    "@sanity/vision": "^6.6.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "sanity": "^6.6.0",
+    "@sanity/vision": "^6.13.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sanity": "^6.13.0",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {

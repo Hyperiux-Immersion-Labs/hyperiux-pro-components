@@ -23,7 +23,15 @@ export default defineConfig({
               S,
               context,
             }),
-            ...S.documentTypeListItems().filter((item) => item.getId() !== 'effectContent'),
+            orderableDocumentListDeskItem({
+              type: 'blogPost',
+              title: 'Blog Posts',
+              S,
+              context,
+            }),
+            ...S.documentTypeListItems().filter(
+              (item) => !['effectContent', 'blogPost'].includes(item.getId())
+            ),
           ]),
     }),
     visionTool(),
