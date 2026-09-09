@@ -1,13 +1,17 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 'use client'
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AppleStoreButton, PlayStoreButton } from "./Buttons";
+import dynamic from "next/dynamic";
+
+
+const Gradient = dynamic(() => import("./shader/gradient"), { ssr: false });
 import phoneMockup from "../assets/kyntra-hero-mockup.png";
 import kyntraHero from "../assets/kyntra-hero.png";
 
@@ -22,6 +26,16 @@ const Hero = () => {
 
   // Synchronous: `initial` is read once, so it must be right on first render
   const reduced = useReducedMotionSync();
+
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1026px)");
+    const sync = () => setIsDesktop(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   useGSAP(
     () => {
@@ -64,8 +78,17 @@ const Hero = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           style={{ willChange: "opacity" }}
-          className="absolute inset-x-0 top-0 h-[90vh] bg-[linear-gradient(180deg,#000000_0%,#000000_28%,#0A1633_42%,#16295F_54%,#26429C_63%,#3E63D0_71%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)] max-[1025px]:h-[105vh] max-[1025px]:bg-[linear-gradient(180deg,#000000_0%,#000000_20%,#0A1633_34%,#16295F_48%,#26429C_60%,#3E63D0_70%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)]"
-        />
+          className="absolute inset-x-0 top-0 h-[115vh] max-[1025px]:h-[105vh]"
+        >
+          {isDesktop ? (
+            <Gradient />
+          ) : (
+          
+            <div
+              className="absolute inset-0 bg-[linear-gradient(180deg,#000000_0%,#000000_20%,#0A1633_34%,#16295F_48%,#26429C_60%,#3E63D0_70%,#6E8FE2_82%,#B9CCF4_92%,#ffffff_100%)]"
+            />
+          )}
+        </motion.div>
 
         {/* Oversized KYNTRA watermark - the LCP element, so it carries a real
             alt and is never gated behind an animation */}
