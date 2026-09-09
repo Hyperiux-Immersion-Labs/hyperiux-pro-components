@@ -7,7 +7,7 @@ export const TEMPLATES = [
     slug: "elenavoss",
     title: "Elena Voss",
     category: "Portfolio",
-    tier: "free",
+    tier: "pro",
     pricing: { standaloneOneTime: 29, includedInAnnualPro: true },
     tags: ["GSAP", "Scroll"],
     installCount: 980,
