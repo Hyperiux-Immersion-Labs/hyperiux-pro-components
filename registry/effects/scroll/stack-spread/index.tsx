@@ -17,18 +17,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 
 
-const IMG_BASE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/stack-spread";
+const IMG_PARAMS = "auto=format&fit=crop&w=1200&q=80";
 
 const IMG = {
-  plane: `${IMG_BASE}/img1.png`,
-  painting: `${IMG_BASE}/img2.png`,
-  breaker: `${IMG_BASE}/img3.png`,
-  dog: `${IMG_BASE}/img4.png`,
-  footballer: `${IMG_BASE}/img5.png`,
-  jacket: `${IMG_BASE}/img6.png`,
-  meadow: `${IMG_BASE}/img7.png`,
-  stripes: `${IMG_BASE}/img8.png`,
+  plane: `https://images.unsplash.com/photo-1436491865332-7a61a109cc05?${IMG_PARAMS}`,
+  painting: `https://images.unsplash.com/photo-1578321272176-b7bbc0679853?${IMG_PARAMS}`,
+  breaker: `https://images.unsplash.com/photo-1547153760-18fc86324498?${IMG_PARAMS}`,
+  dog: `https://images.unsplash.com/photo-1507146426996-ef05306b995a?${IMG_PARAMS}`,
+  footballer: `https://images.unsplash.com/photo-1517649763962-0c623066013b?${IMG_PARAMS}`,
+  jacket: `https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?${IMG_PARAMS}`,
+  meadow: `https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?${IMG_PARAMS}`,
+  stripes: `https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?${IMG_PARAMS}`,
 } as const;
 
 // per-image rest scale, keyed by img index (1-8). default 1, drop below to shrink.
@@ -133,6 +132,22 @@ const PARALLAX_Y = 2.2;
 const PARALLAX_SPRING = { stiffness: 90, damping: 22, mass: 0.6 };
 const parallaxDepth = (i: number, total: number) =>
   total <= 1 ? 1 : 0.55 + (i / (total - 1)) * 0.75;
+
+// Deterministic pseudo-random in [0, 1) — keeps SSR and client in sync.
+const rand = (seed: number) => {
+  const v = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return v - Math.floor(v);
+};
+
+/**
+ * Per-card pointer response: each card gets its own signed direction and
+ * per-axis weight, so the spread cards drift every which way instead of
+ * sliding as one block.
+ */
+const parallaxDrift = (i: number) => ({
+  x: (rand(i + 1) < 0.5 ? -1 : 1) * (0.55 + rand(i + 11) * 0.9),
+  y: (rand(i + 21) < 0.5 ? -1 : 1) * (0.55 + rand(i + 31) * 0.9),
+});
 
 const SUB = "Digital products, interfaces, and experiences built around people.";
 
@@ -240,6 +255,7 @@ function Card({
   cardRadius,
   pointer,
   depth,
+  drift,
 }: {
   card: StackSpreadCard;
   progress: MotionValue<number>;
@@ -256,6 +272,8 @@ function Card({
   cardRadius: number;
   pointer: { x: MotionValue<number>; y: MotionValue<number> };
   depth: number;
+  /** signed per-axis pointer response, so each card drifts its own way */
+  drift: { x: number; y: number };
 }) {
   const { item, target } = card;
 
@@ -280,9 +298,9 @@ function Card({
     ([p, px, py]: number[]) => {
       const tx = stackOffset.x + (endX - stackOffset.x) * p;
       const ty = stackOffset.y + (endY - stackOffset.y) * p;
-      const drift = depth * p;
-      const dx = tx - px * PARALLAX_X * drift;
-      const dy = ty - py * PARALLAX_Y * drift;
+      const amount = depth * p;
+      const dx = tx - px * PARALLAX_X * amount * drift.x;
+      const dy = ty - py * PARALLAX_Y * amount * drift.y;
       return `calc(-50% + ${dx}vw) calc(-50% + ${dy}vh)`;
     },
   );
@@ -439,6 +457,7 @@ function StackSpreadStage({
               cardRadius={cardRadius}
               pointer={pointer}
               depth={parallaxEnabled ? parallaxDepth(i, cards.length) : 0}
+              drift={parallaxDrift(i)}
             />
           ))}
         </div>

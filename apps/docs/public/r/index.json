@@ -298,6 +298,22 @@
       "tier": "pro"
     },
     {
+      "name": "stack-spread",
+      "type": "registry:component",
+      "category": "scroll",
+      "categories": [
+        "scroll"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [],
+      "exportName": "StackSpread",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
       "name": "stacking-cards",
       "type": "registry:component",
       "category": "scroll",
@@ -2266,22 +2282,6 @@
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "pro"
-    },
-    {
-      "name": "stack-spread",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "motion"
-      ],
-      "registryDependencies": [],
-      "exportName": "StackSpread",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "free"
     }
   ]
 }

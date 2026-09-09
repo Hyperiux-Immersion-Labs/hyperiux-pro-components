@@ -134,6 +134,18 @@ const PARALLAX_SPRING = { stiffness: 90, damping: 22, mass: 0.6 };
 const parallaxDepth = (i: number, total: number) =>
   total <= 1 ? 1 : 0.55 + (i / (total - 1)) * 0.75;
 
+// Deterministic pseudo-random in [0, 1) — keeps SSR and client in sync.
+const rand = (seed: number) => {
+  const v = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return v - Math.floor(v);
+};
+
+
+const parallaxDrift = (i: number) => ({
+  x: (rand(i + 1) < 0.5 ? -1 : 1) * (0.55 + rand(i + 11) * 0.9),
+  y: (rand(i + 21) < 0.5 ? -1 : 1) * (0.55 + rand(i + 31) * 0.9),
+});
+
 const SUB = "Digital products, interfaces, and experiences built around people.";
 
 const RESPONSIVE = {
@@ -240,6 +252,7 @@ function Card({
   cardRadius,
   pointer,
   depth,
+  drift,
 }: {
   card: StackSpreadCard;
   progress: MotionValue<number>;
@@ -256,6 +269,8 @@ function Card({
   cardRadius: number;
   pointer: { x: MotionValue<number>; y: MotionValue<number> };
   depth: number;
+  /** signed per-axis pointer response, so each card drifts its own way */
+  drift: { x: number; y: number };
 }) {
   const { item, target } = card;
 
@@ -280,9 +295,9 @@ function Card({
     ([p, px, py]: number[]) => {
       const tx = stackOffset.x + (endX - stackOffset.x) * p;
       const ty = stackOffset.y + (endY - stackOffset.y) * p;
-      const drift = depth * p;
-      const dx = tx - px * PARALLAX_X * drift;
-      const dy = ty - py * PARALLAX_Y * drift;
+      const amount = depth * p;
+      const dx = tx - px * PARALLAX_X * amount * drift.x;
+      const dy = ty - py * PARALLAX_Y * amount * drift.y;
       return `calc(-50% + ${dx}vw) calc(-50% + ${dy}vh)`;
     },
   );
@@ -439,6 +454,7 @@ function StackSpreadStage({
               cardRadius={cardRadius}
               pointer={pointer}
               depth={parallaxEnabled ? parallaxDepth(i, cards.length) : 0}
+              drift={parallaxDrift(i)}
             />
           ))}
         </div>
