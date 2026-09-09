@@ -913,7 +913,7 @@ export default function AdminPage() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">User Management</h1>
-          <p className="mt-1 text-sm text-white/50">{total} users total</p>
+          {/* <p className="mt-1 text-sm text-white/50">{total} users total</p> */}
         </div>
         <div className="flex gap-3">
           <button
