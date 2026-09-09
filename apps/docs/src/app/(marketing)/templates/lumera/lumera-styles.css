@@ -70,3 +70,47 @@ html body {
   height: 0;
   display: none;
 }
+
+#preloader {
+  animation: lumera-preloader-out 2.8s linear forwards;
+}
+
+@keyframes lumera-preloader-out {
+  /* Hold while the wordmark sweeps: 0.5s delay + 2s sweep - 0.2s overlap. */
+  0%,
+  82.1% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); /* power3.out */
+  }
+  100% {
+    transform: translateY(-100%);
+    visibility: hidden;
+  }
+}
+
+/* The wordmark sweep, previously tweened by GSAP: 0.5s delay, 2s, power3.out. */
+.lumera-loader-sweep {
+  animation: lumera-loader-sweep 2.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+@keyframes lumera-loader-sweep {
+  0%,
+  20% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No sweep, no slide: the overlay simply is not part of the experience. */
+  #preloader {
+    animation: none;
+    display: none;
+  }
+
+  .lumera-loader-sweep {
+    animation: none;
+  }
+}

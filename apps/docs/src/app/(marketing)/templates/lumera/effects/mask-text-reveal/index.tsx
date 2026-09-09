@@ -25,6 +25,12 @@ interface MaskTextRevealProps {
   delay?: number;
   className?: string;
   scrub?: boolean;
+  /**
+   * Paint the copy in the server HTML instead of hiding it until JS reveals it.
+   * Set on above-the-fold text so it can be the LCP element: the mask still
+   * animates, it just animates from a visible state.
+   */
+  eager?: boolean;
 }
 
 export default function MaskTextReveal({
@@ -35,6 +41,7 @@ export default function MaskTextReveal({
     delay = 0,
     className = "",
     scrub = false,
+    eager = false,
 }: MaskTextRevealProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const splitRefs = useRef<any[]>([]);
@@ -128,12 +135,17 @@ export default function MaskTextReveal({
             await waitForViewport();
             if (unmounted) return;
 
-            await waitForFonts();
-            if (unmounted) return;
+            if (!eager) {
+                await waitForFonts();
+                if (unmounted) return;
+            }
 
             forceAriaVisible(el);
 
             if (prefersReducedMotion()) {
+                // Eager copy is already painted; fading it in from 0 would
+                // undo that and hand LCP back to the animation.
+                if (eager) return;
                 gsap.set(el, { opacity: 0 });
 
                 const tween = gsap.to(el, {
@@ -226,13 +238,13 @@ export default function MaskTextReveal({
 
             linesRef.current = [];
         };
-    }, [animateOnScroll, delay, duration, scrub, stagger]);
+    }, [animateOnScroll, delay, duration, scrub, stagger, eager]);
 
     return (
         <div
             ref={containerRef}
             data-copy-wrapper="true"
-            className={`opacity-0 ${className}`.trim()}
+            className={`${eager ? "" : "opacity-0"} ${className}`.trim()}
         >
             {children}
         </div>
