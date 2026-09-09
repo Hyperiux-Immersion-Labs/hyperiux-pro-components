@@ -10,6 +10,8 @@ const DEFAULT_HREF = "#";
 const DEFAULT_TEXT = "Hover me";
 const DEFAULT_STAGGER_STEP = 0.01;
 const DEFAULT_HOVER_COLOR = "#111111";
+const DEFAULT_LINE_HEIGHT = "1px";
+const DEFAULT_LINE_BOTTOM = "15%";
 const CHAR_TRANSLATE_Y = "1.3em";
 
 export interface CharStaggerButtonOwnProps {
@@ -22,6 +24,10 @@ export interface CharStaggerButtonOwnProps {
   staggerStep?: number;
   showLine?: boolean;
   lineClassName?: string;
+  /** Thickness of the hover underline - any CSS length (e.g. "3px", "0.2vw"). */
+  lineHeight?: string | number;
+  /** How far the hover underline sits above the text box's bottom edge. */
+  lineBottom?: string | number;
   hoverColor?: string;
   showArrow?: boolean;
   icon?: ComponentType<{ className?: string }>;
@@ -42,8 +48,10 @@ export default function CharStaggerButton({
   staggerStep = DEFAULT_STAGGER_STEP,
   showLine = true,
   lineClassName = "",
+  lineHeight = DEFAULT_LINE_HEIGHT,
+  lineBottom = DEFAULT_LINE_BOTTOM,
   hoverColor = DEFAULT_HOVER_COLOR,
-  showArrow = true,
+  showArrow = false,
   icon: Icon = ArrowRight,
   iconVariant = "stacked",
   iconClassName = "",
@@ -180,9 +188,10 @@ export default function CharStaggerButton({
             <span
               ref={lineRef}
               aria-hidden="true"
-              className="absolute left-0 bottom-[15%] w-full bg-current"
+              className="absolute left-0 w-full bg-current"
               style={{
-                height: "1.5px",
+                bottom: lineBottom,
+                height: lineHeight,
                 transform: `scaleX(${isActive && !prefersReducedMotion ? 1 : 0})`,
                 transformOrigin: "left center",
                 transition: prefersReducedMotion

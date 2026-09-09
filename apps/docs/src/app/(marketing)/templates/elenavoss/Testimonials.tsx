@@ -1,15 +1,17 @@
-"use client"
+"use client";
 import Image, { type StaticImageData } from "next/image";
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { SplitText } from "gsap/SplitText";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { motion, AnimatePresence } from "motion/react";
 import Testimonial1 from "./assets/testimonial-1.png";
 import Testimonial2 from "./assets/testimonial-2.png";
 import Testimonial3 from "./assets/testimonial-3.png";
 import Testimonial4 from "./assets/testimonial-4.png";
 import Testimonial5 from "./assets/testimonial-5.png";
+import OverflowTextReveal from "./effects/overflow-text-reveal";
 
-gsap.registerPlugin(SplitText);
+gsap.registerPlugin(ScrollTrigger);
 
 type Testimonial = {
   quote: string;
@@ -56,318 +58,212 @@ const testimonials: Testimonial[] = [
   },
 ];
 
-const DIMMED_BRIGHTNESS = 0.4;
+// How far a drag has to travel before it counts as a swipe rather than a
+// stray pointer movement on the card.
+const SWIPE_THRESHOLD = 100;
+
+// The card is a fixed height rather than one that fits its content: quotes
+// range from ~200 to ~280 characters, so an auto height visibly jumps as you
+// move between them - and because the card is what the thumbnails and arrows
+// are positioned against, everything below it shifts too. Sized to hold the
+// longest quote at each breakpoint, with the content centred inside so the
+// shorter ones sit balanced rather than top-aligned against empty space.
+const CARD_HEIGHT = "h-[30vw] max-[1025px]:h-[52vw] max-md:h-[125vw]";
+
+type SwipeDirection = "next" | "prev";
+
+const TestimonialCard = ({
+  item,
+  onSwipe,
+}: {
+  item: Testimonial;
+  onSwipe: (direction: SwipeDirection) => void;
+}) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 0 }}
+      transition={{ duration: 0.25 }}
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      onDragEnd={(_event, info) => {
+        if (info.offset.x > SWIPE_THRESHOLD) {
+          onSwipe("prev");
+        } else if (info.offset.x < -SWIPE_THRESHOLD) {
+          onSwipe("next");
+        }
+      }}
+      className="pt-[8vw] pb-[4vw] px-[6vw] w-full h-full flex flex-col items-center justify-center gap-[2.5vw] text-center max-[1025px]:pt-[14vw] max-[1025px]:px-[8vw] max-[1025px]:gap-[4vw] max-md:pt-[22vw] max-md:px-[7vw] max-md:pb-[8vw] max-md:gap-[6vw]"
+    >
+      <div className="flex flex-col gap-[0.4vw] max-md:gap-2">
+        <p className="text-[2.6vw] text-[#ff6b00] max-[1025px]:text-[4vw] max-md:text-[6vw]">
+          {item.name}
+        </p>
+        <p className="text-[1.145vw] text-white max-[1025px]:text-[2.2vw] max-md:text-[3.6vw]">
+          {item.role}
+        </p>
+      </div>
+
+      <p className="text-[1.145vw] leading-[1.6] text-white/70 w-[82%] max-[1025px]:text-[2.2vw] max-[1025px]:w-full max-md:text-[3.6vw]">
+        &ldquo;{item.quote}&rdquo;
+      </p>
+    </motion.div>
+  );
+};
 
 const Testimonials = () => {
-  const [index, setIndex] = useState(0);
+  const [active, setActive] = useState(0);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   const total = testimonials.length;
-  const displayItem = testimonials[index];
-
-  const quoteRef = useRef<HTMLParagraphElement | null>(null);
-  const nameRef = useRef<HTMLParagraphElement | null>(null);
-  const roleRef = useRef<HTMLParagraphElement | null>(null);
-  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const splitRef = useRef<any>(null);
-  const isAnimatingRef = useRef(false);
-  const directionRef = useRef<"next" | "prev">("next");
-  const prevIndexRef = useRef<number | null>(null);
-  const isFirstRenderRef = useRef(true);
-  const zIndexRef = useRef(1);
-
-  const reduceMotionRef = useRef(
-    typeof window !== "undefined" &&
-      (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
-  );
 
   useEffect(() => {
-    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    if (!mq) return;
-    const onChange = (event: MediaQueryListEvent) => {
-      reduceMotionRef.current = event.matches;
-    };
-    mq.addEventListener?.("change", onChange);
-    return () => mq.removeEventListener?.("change", onChange);
-  }, []);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const targets = gsap.utils.toArray<HTMLElement>(".testimonial-fade");
 
-  // Stack every image on top of each other. Under full motion, only the
-  // active one is revealed via clip-path (rest clipped away from the
-  // bottom until it's their turn). Under reduced motion, clip-path is
-  // skipped entirely - every image sits fully unclipped and visibility
-  // is driven by opacity alone, so transitions read as a plain crossfade.
-  useEffect(() => {
-    imageRefs.current.forEach((el, i) => {
-      if (!el) return;
-      if (reduceMotionRef.current) {
-        gsap.set(el, {
-          clipPath: "inset(0% 0% 0% 0%)",
-          opacity: i === 0 ? 1 : 0,
-          filter: "brightness(1)",
-          zIndex: i === 0 ? 1 : 0,
-        });
-      } else {
-        gsap.set(el, {
-          clipPath: i === 0 ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
-          filter: "brightness(1)",
-          zIndex: i === 0 ? 1 : 0,
-        });
-      }
-    });
-  }, []);
-
-  // Reduced motion: a plain opacity crossfade, no clip-path wipe at all.
-  // Full motion: the outgoing image stays put and just dims (not clipped
-  // away); the incoming image is raised above everything else and wipes
-  // in over it via a clip-path reveal from the bottom.
-  const animateImage = useCallback((nextIndex: number, prevIndex: number) => {
-    const nextEl = imageRefs.current[nextIndex];
-    const prevEl = imageRefs.current[prevIndex];
-
-    if (reduceMotionRef.current) {
-      const duration = 0.35;
-      if (prevEl) {
-        gsap.to(prevEl, { opacity: 0, duration, ease: "power2.out" });
-      }
-      if (!nextEl) return;
-      zIndexRef.current += 1;
-      gsap.set(nextEl, { opacity: 0, zIndex: zIndexRef.current });
-      gsap.to(nextEl, { opacity: 1, duration, ease: "power2.out" });
+    if (reduced) {
+      gsap.set(targets, { opacity: 1, y: 0 });
       return;
     }
 
-    const duration = 1.1;
-
-    if (prevEl) {
-      gsap.to(prevEl, {
-        filter: `brightness(${DIMMED_BRIGHTNESS})`,
-        duration,
+    const tween = gsap.fromTo(
+      targets,
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.12,
         ease: "power2.out",
-      });
-    }
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          once: true,
+        },
+      }
+    );
 
-    if (!nextEl) return;
-
-    zIndexRef.current += 1;
-    gsap.set(nextEl, {
-      clipPath: "inset(0% 0% 100% 0%)",
-      filter: "brightness(1)",
-      zIndex: zIndexRef.current,
-    });
-    gsap.to(nextEl, {
-      clipPath: "inset(0% 0% 0% 0%)",
-      duration,
-      ease: "power3.inOut",
-    });
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
   }, []);
 
-  const animateText = useCallback(
-    (direction: "next" | "prev", onComplete?: () => void) => {
-      if (splitRef.current) {
-        splitRef.current.revert();
-        splitRef.current = null;
-      }
+  const handleNext = useCallback(() => {
+    setActive((prev) => (prev + 1) % total);
+  }, [total]);
 
-      const meta = [nameRef.current, roleRef.current];
+  const handlePrev = useCallback(() => {
+    setActive((prev) => (prev - 1 + total) % total);
+  }, [total]);
 
-      if (reduceMotionRef.current || !quoteRef.current) {
-        gsap.set(quoteRef.current, { autoAlpha: 1 });
-        gsap.fromTo(
-          meta,
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 0.4, ease: "power2.out", stagger: 0.08, onComplete }
-        );
-        return;
-      }
-
-      const yFrom = direction === "next" ? 100 : -100;
-
-      gsap.set(quoteRef.current, { autoAlpha: 1 });
-
-      // `mask: "lines"` wraps each line in its own overflow-hidden mask so
-      // lines can slide in/out without leaking outside their row.
-      splitRef.current = new SplitText(quoteRef.current, {
-        type: "lines",
-        mask: "lines",
-        linesClass: "split-line",
-      });
-
-      const lines = splitRef.current.lines;
-
-      gsap.set(lines, { yPercent: yFrom });
-      gsap.set(meta, { autoAlpha: 0, y: yFrom > 0 ? 16 : -16 });
-
-      gsap
-        .timeline({ onComplete })
-        .to(lines, {
-          yPercent: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: {
-            each: 0.1,
-            from: direction === "next" ? "start" : "end",
-          },
-        })
-        .to(
-          meta,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power3.out",
-            stagger: 0.1,
-          },
-          "<0.25"
-        );
-    },
-    []
-  );
-
-  // Runs the entrance animation only after React has actually committed the
-  // new quote/name/role text to the DOM (SplitText needs the real content -
-  // splitting synchronously right after setIndex() would still see the
-  // stale text, which is why the copy used to appear to "snap" instantly).
-  useLayoutEffect(() => {
-    if (isFirstRenderRef.current) {
-      isFirstRenderRef.current = false;
-      animateText("next", () => {
-        isAnimatingRef.current = false;
-      });
-      return;
-    }
-
-    const prevIndex = prevIndexRef.current;
-    if (prevIndex !== null && prevIndex !== index) {
-      animateImage(index, prevIndex);
-    }
-
-    animateText(directionRef.current, () => {
-      isAnimatingRef.current = false;
-    });
-  }, [index, animateImage, animateText]);
-
-  const goTo = useCallback(
-    (direction: "next" | "prev") => {
-      if (isAnimatingRef.current || total <= 1) return;
-      isAnimatingRef.current = true;
-      directionRef.current = direction;
-
-      gsap.to([quoteRef.current, nameRef.current, roleRef.current], {
-        autoAlpha: 0,
-        duration: 0.18,
-        ease: "power1.in",
-        onComplete: () => {
-          // Revert SplitText's line/mask DOM *before* React writes the new
-          // quote text, so React updates the original (still-attached)
-          // text node instead of one SplitText has since detached - doing
-          // this after the commit (e.g. inside the entrance animation)
-          // makes React's update land on a detached node, which is why the
-          // copy used to appear stuck on the old testimonial.
-          if (splitRef.current) {
-            splitRef.current.revert();
-            splitRef.current = null;
-          }
-
-          setIndex((prev) => {
-            prevIndexRef.current = prev;
-            return direction === "next" ? (prev + 1) % total : (prev - 1 + total) % total;
-          });
-        },
-      });
-    },
-    [total]
-  );
-
-  const handlePrev = useCallback(() => goTo("prev"), [goTo]);
-  const handleNext = useCallback(() => goTo("next"), [goTo]);
+  // Thumbnails are laid out with CSS `order` rather than by reordering the
+  // array, so each button keeps its identity (and its own transition) while
+  // the row rotates around whichever one is active - the active thumb always
+  // resolves to order 0, with the rest fanning out to either side of it.
+  const getThumbOrder = (index: number) => {
+    const half = Math.floor(total / 2);
+    const relativeIndex = (index - active + total) % total;
+    return relativeIndex <= half ? relativeIndex : relativeIndex - total;
+  };
 
   return (
-    <section className="w-screen pb-30 px-15 relative z-0 bg-[#070707] max-[1025px]:px-[5vw] max-[1025px]:py-20 max-md:py-16">
-      <div className="w-full rounded-xl h-[40vw] bg-[#111111] border border-white/8 p-[3vw] flex items-center gap-[3vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:h-[90vw] max-[1025px]:gap-6 max-[1025px]:p-5 max-md:flex-col max-md:gap-8 max-md:h-[180vw]">
-        {/* Stacked, clip-path revealed portraits */}
-        <div className="relative w-[18vw] h-[24vw]  shrink-0 rounded-lg overflow-hidden bg-[#1c1c1c] max-[1025px]:w-[36vw] max-[1025px]:h-[40vw] max-md:w-full max-md:h-[70vw]">
-          {testimonials.map((item, i) => (
-            <div
-              key={item.name}
-              ref={(el) => {
-                imageRefs.current[i] = el;
-              }}
-              className="absolute inset-0"
-            >
-              <Image
-                src={item.image}
-                alt={item.name}
-                fill
-                sizes="260px"
-                className="object-cover object-top"
-              />
-            </div>
-          ))}
+    <section
+      ref={sectionRef}
+      className="w-screen bg-[#070707] py-[7vw] px-[4vw] max-[1025px]:px-[5vw] max-[1025px]:py-[12vw]"
+      id="testimonials"
+    >
+      <div className="w-full flex flex-col gap-[6vw] max-[1025px]:gap-[12vw]">
+        <div className="w-[55%] mx-auto max-[1025px]:w-full">
+          <OverflowTextReveal stagger={0.015}>
+            <h2 className="text-[5.2vw] leading-[1.2]! text-center max-[1025px]:text-[7vw] max-md:text-[9vw]">
+              Don&apos;t Take It from Us, Take It from Our Clients
+            </h2>
+          </OverflowTextReveal>
         </div>
 
-        <div className="flex-1 flex flex-col justify-between h-[24vw] min-h-[160px] max-[1025px]:h-auto max-md:h-auto w-full">
-          <p
-            ref={quoteRef}
-            className="text-[1.8vw] max-[1025px]:text-[2.6vw] max-md:text-xl leading-[1.5] text-white/90 max-w-[60vw] max-[1025px]:max-w-full max-md:max-w-full"
-          >
-            {displayItem.quote}
-          </p>
+        <div className="relative">
+          <div className={`testimonial-fade opacity-0 relative w-3/5 mx-auto rounded-[2vw] border border-white/10 bg-white/5 overflow-hidden max-[1025px]:w-full max-[1025px]:rounded-[5vw] ${CARD_HEIGHT}`}>
+            {/* mode="wait" so the outgoing card finishes before the next
+                one enters - crossfading them overlaps two blocks of centred
+                text and reads as a flicker. */}
+            <AnimatePresence mode="wait">
+              <TestimonialCard
+                key={testimonials[active].name}
+                item={testimonials[active]}
+                onSwipe={(direction) => {
+                  if (direction === "next") handleNext();
+                  if (direction === "prev") handlePrev();
+                }}
+              />
+            </AnimatePresence>
+          </div>
 
-          <div className="flex items-end justify-between mt-8 max-md:mt-6 w-full">
-            <div className="flex flex-col gap-1 overflow-hidden w-fit">
-              <p
-                ref={nameRef}
-                className="text-[2.5vw] max-[1025px]:text-[4vw] max-md:text-[5.5vw] text-[#ff6b00]"
-              >
-                {displayItem.name}
-              </p>
-              <p
-                ref={roleRef}
-                className="text-[1.25vw] max-[1025px]:text-[2.5vw] max-md:text-[4vw] text-white"
-              >
-                {displayItem.role}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 w-fit">
+          <div className="testimonial-fade opacity-0 flex w-full justify-center items-center absolute -top-[2vw] left-1/2 -translate-x-1/2 max-md:-top-[6vw]">
+            {testimonials.map((item, index) => (
               <button
+                key={item.name}
                 type="button"
-                onClick={handlePrev}
-                aria-label="Previous testimonial"
-                className="size-12 rounded-full border border-white/20 flex items-center justify-center text-white/80  hover:text-white transition-colors cursor-pointer relative group overflow-hidden"
+                onClick={() => setActive(index)}
+                aria-label={`Show testimonial from ${item.name}`}
+                aria-current={index === active}
+                style={{ order: getThumbOrder(index) }}
+                className={`w-[5vw] h-[5vw] rounded-full overflow-hidden transition-transform duration-500 cursor-pointer max-[1025px]:w-[9vw] max-[1025px]:h-[9vw] max-md:w-[12vw] max-md:h-[12vw] ${
+                  index === active
+                    ? "bg-linear-to-r from-[#F16B0D] to-[#E61416] p-[0.3vw] z-10 scale-[1.6] mx-[2vw] max-md:mx-[4vw]"
+                    : "-ml-[1vw] opacity-60 hover:opacity-100"
+                }`}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="relative z-2">
-                  <path
-                    d="M19 12H5M5 12L12 19M5 12L12 5"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:scale-100 scale-0 ease-in-out origin-center rounded-full  duration-300"/>
-
-
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={120}
+                  height={120}
+                  className="w-full h-full object-cover object-top rounded-full"
+                />
               </button>
-              <button
-                type="button"
-                onClick={handleNext}
-                aria-label="Next testimonial"
-                className="size-12 rounded-full border border-white/20 flex items-center justify-center text-white/80  hover:text-white transition-colors cursor-pointer relative group overflow-hidden"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="relative z-2">
-                  <path
-                    d="M5 12H19M19 12L12 5M19 12L12 19"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:scale-100 scale-0 ease-in-out origin-center rounded-full  duration-300 "/>
+            ))}
+          </div>
 
-              </button>
-            </div>
+          {/* Same circle + gradient-fill treatment as the original arrows
+              elsewhere in this template, so the controls stay consistent. */}
+          <div className="testimonial-fade opacity-0 flex justify-center gap-3 mt-[3vw] max-md:mt-[8vw]">
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Previous testimonial"
+              className="size-12 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors cursor-pointer relative group overflow-hidden max-md:size-10"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="relative z-2">
+                <path
+                  d="M19 12H5M5 12L12 19M5 12L12 5"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:scale-100 scale-0 ease-in-out origin-center rounded-full duration-300" />
+            </button>
+
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Next testimonial"
+              className="size-12 rounded-full border border-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors cursor-pointer relative group overflow-hidden max-md:size-10"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="relative z-2">
+                <path
+                  d="M5 12H19M19 12L12 5M19 12L12 19"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416] group-hover:scale-100 scale-0 ease-in-out origin-center rounded-full duration-300" />
+            </button>
           </div>
         </div>
       </div>

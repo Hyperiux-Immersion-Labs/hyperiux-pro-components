@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { ReactLenis, type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
-import { prefersReducedMotion } from "@/lib/motion";
+import { prefersReducedMotion } from "./reducedMotion";
 
 interface LenisSmoothScrollProps {
   duration?: number;

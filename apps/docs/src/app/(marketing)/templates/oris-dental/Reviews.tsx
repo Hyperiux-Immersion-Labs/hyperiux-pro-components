@@ -274,8 +274,10 @@ export default function Reviews({
                 <div className="w-full h-screen sticky top-0 flex justify-center items-center pointer-events-none z-1 overflow-hidden">
                     <h2
                         style={{ opacity: 0.2 }}
-                        className="reviews-bg-heading text-[13vw] font-medium tracking-tight text-oris-secondary leading-[.8]! opacity-20 uppercase select-none text-center"
+                        className="reviews-bg-heading text-[13vw] font-medium tracking-tight text-oris-secondary leading-[1]! opacity-20 uppercase select-none text-center"
                     >
+                     HAPPY
+                     <br />
                       CLIENTS
                     </h2>
                 </div>

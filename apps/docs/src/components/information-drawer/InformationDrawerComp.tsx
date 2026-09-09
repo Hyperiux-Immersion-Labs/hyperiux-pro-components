@@ -59,17 +59,20 @@ export interface InformationDrawerCompProps {
   sidebarWidth?: string | number;
   /** Backdrop opacity while the drawer is open. */
   overlayOpacity?: number;
+  /** GSAP tween duration (seconds) for the staged content fade in/out. */
+  contentDuration?: number;
 }
 
 export default function InformationDrawerComp({
   teams,
-  duration = 0.6,
+  duration = 0.65,
   ease = "power2.inOut",
   delay = 0,
   backgroundColor = "#ffffff",
   textColor = "#111111",
   sidebarWidth = "70%",
   overlayOpacity = 0.2,
+  contentDuration = 0.25,
 }: InformationDrawerCompProps) {
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
@@ -77,6 +80,8 @@ export default function InformationDrawerComp({
   const cardContainer = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   // Accept {teams: []} OR [] OR nothing.
@@ -87,6 +92,10 @@ export default function InformationDrawerComp({
       : [];
 
   const handleDetail = (member: TeamMember) => {
+    if (closeTimeout.current) {
+      clearTimeout(closeTimeout.current);
+      closeTimeout.current = null;
+    }
     setSelectedMember(member);
     setDetailOpen(true);
     lenis?.stop?.();
@@ -99,9 +108,28 @@ export default function InformationDrawerComp({
   };
 
   const handleClose = () => {
-    setDetailOpen(false);
-    setSelectedMember(null);
+    if (closeTimeout.current) clearTimeout(closeTimeout.current);
     lenis?.start?.();
+
+    // Fade the content out first, then slide the drawer away.
+    const fadeOut = prefersReducedMotion ? 0 : contentDuration;
+
+    gsap.to(contentRef.current, {
+      opacity: 0,
+      duration: fadeOut,
+      ease,
+      overwrite: "auto",
+      onComplete: () => setDetailOpen(false),
+    });
+
+    // Clear the member only once the panel has finished sliding out.
+    closeTimeout.current = setTimeout(
+      () => {
+        setSelectedMember(null);
+        closeTimeout.current = null;
+      },
+      (fadeOut + (prefersReducedMotion ? 0 : duration + delay)) * 1000,
+    );
   };
 
   const drawerWidth = useMemo(() => {
@@ -120,6 +148,29 @@ export default function InformationDrawerComp({
       overwrite: "auto",
     });
   }, [detailOpen, duration, ease, delay, overlayOpacity, prefersReducedMotion]);
+
+  // Fade the content in only after the drawer panel has finished sliding open.
+  useEffect(() => {
+    if (typeof window === "undefined" || !detailOpen) return;
+
+    gsap.fromTo(
+      contentRef.current,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: prefersReducedMotion ? 0 : contentDuration,
+        ease,
+        delay: prefersReducedMotion ? 0 : delay + duration,
+        overwrite: "auto",
+      },
+    );
+  }, [detailOpen, selectedMember, duration, contentDuration, ease, delay, prefersReducedMotion]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeout.current) clearTimeout(closeTimeout.current);
+    };
+  }, []);
 
   const sectionStyle = { "--information-drawer-text-color": textColor } as CSSProperties;
   const drawerStyle = {
@@ -249,7 +300,9 @@ export default function InformationDrawerComp({
             className="fixed inset-y-0 right-0 z-[205] flex flex-col gap-[2vw] overflow-y-auto overflow-x-hidden px-[5vw] pointer-events-auto transition-transform ease-in-out max-md:!w-full max-md:gap-[5vw] max-[1025px]:!w-full max-[1025px]:gap-[3vw]"
             style={drawerStyle}
           >
-            <TeamDetail teams={teamInfo} member={selectedMember} handleClose={handleClose} textColor={textColor} />
+            <div ref={contentRef} className="flex flex-col gap-[2vw] max-md:gap-[5vw] max-[1025px]:gap-[3vw] opacity-0">
+              <TeamDetail teams={teamInfo} member={selectedMember} handleClose={handleClose} textColor={textColor} />
+            </div>
           </div>
         </div>
       </section>

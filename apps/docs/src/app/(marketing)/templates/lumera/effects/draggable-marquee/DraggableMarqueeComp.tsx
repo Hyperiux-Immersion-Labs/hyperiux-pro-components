@@ -6,7 +6,7 @@ import React, { useLayoutEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import Draggable from "gsap/Draggable";
 import { createVisibilityGate } from "./createSuspendedRaf";
-import { prefersReducedMotion } from "@/lib/motion";
+import { prefersReducedMotion } from "../../reducedMotion";
 
 gsap.registerPlugin(Draggable);
 

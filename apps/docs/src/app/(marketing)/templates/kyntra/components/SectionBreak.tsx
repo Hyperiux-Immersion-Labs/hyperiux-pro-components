@@ -1,16 +1,16 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-import TextFillAnimation from "./effects/text-fill-animation";
+import TextFill from "./text-fill";
 
 const SectionBreak = () => {
   return (
-    <TextFillAnimation
+    <TextFill
       id="kyntra-section-break"
       text="Every repair should make your home smarter. Kyntra carries the history forward, so each service starts with context and every decision gets easier."
       textColor="#111111"
       primaryColor="#134BD6"
       dimColor="#dddddd"
       backgroundColor="#ffffff"
-      className="font-helvetica-neue"
+      className="font-helvetica-neue font-medium!"
       textSize="5vw"
       textWidth="75%"
       tabletTextSize="6vw"

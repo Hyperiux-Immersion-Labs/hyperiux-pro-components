@@ -56,8 +56,12 @@ const Services = () => {
   // variable directly, since GSAP can't reliably read/interpolate a custom
   // property's percentage value without an inline starting value to parse.
   const revealState = useRef(SERVICES.map((_, i) => ({ value: i === 0 ? 100 : -40 })));
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const prefersReducedMotionRef = useRef(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+  const prefersReducedMotionRef = useRef(prefersReducedMotion);
   // The first card reads as "active" (gradient filled) from the start.
   // Hovering another card hands the active state to it; leaving the
   // cards doesn't clear it - whichever was hovered last just stays lit.
@@ -66,22 +70,42 @@ const Services = () => {
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     prefersReducedMotionRef.current = mq.matches;
-    const frameId = window.requestAnimationFrame(() => setPrefersReducedMotion(mq.matches));
+    setPrefersReducedMotion(mq.matches);
     const onChange = (e: MediaQueryListEvent) => {
       prefersReducedMotionRef.current = e.matches;
       setPrefersReducedMotion(e.matches);
     };
     mq.addEventListener("change", onChange);
     return () => {
-      window.cancelAnimationFrame(frameId);
       mq.removeEventListener("change", onChange);
     };
   }, []);
 
+  // This section is 275vh normally and collapses to its natural height under
+  // reduced motion - a ~175vh swing. Every ScrollTrigger further down the
+  // page (the heading reveals in Awards, Testimonials, Faq...) caches its
+  // start/end against document height when it's created, so unless they are
+  // recalculated after this section resizes, their trigger points stay where
+  // the taller layout put them - far below the content they belong to, which
+  // is why those headings never animated in. Runs whenever the height
+  // actually changes, including a live toggle of the OS setting.
   useEffect(() => {
-   if (prefersReducedMotionRef.current) return;
+    // Deferred a frame so the browser has actually applied the new height
+    // before anything is measured - refreshing synchronously in the same
+    // commit reads the old layout back and changes nothing.
+    const frameId = window.requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => window.cancelAnimationFrame(frameId);
+  }, [prefersReducedMotion]);
 
-   let tween: gsap.core.Tween;
+  useEffect(() => {
+   if (prefersReducedMotion) {
+     // The row is a static grid in this mode, so any xPercent left over from
+     // a previous run would leave it sitting shifted off to one side.
+     gsap.set(rowRef.current, { clearProps: "transform" });
+     return;
+   }
+
+   let tween: gsap.core.Tween | undefined;
    if(globalThis.innerWidth>1025){
        tween = gsap.fromTo(
          rowRef.current,
@@ -135,18 +159,22 @@ const Services = () => {
    }
 
    return () => {
-     tween.scrollTrigger?.kill();
-     tween.kill();
+     tween?.scrollTrigger?.kill();
+     tween?.kill();
    };
-  }, []);
+  }, [prefersReducedMotion]);
 
   const handleActivate = (index: number) => {
     if (index === activeIndex) return;
     const prevIndex = activeIndex;
 
+    // The active card still changes - which one is lit is real state - it
+    // just swaps instantly instead of sweeping under reduced motion.
+    const duration = prefersReducedMotionRef.current ? 0 : 0.45;
+
     gsap.to(revealState.current[prevIndex], {
       value: -40,
-      duration: 0.45,
+      duration,
       ease: "power2.out",
       onUpdate: () => {
         gradientRefs.current[prevIndex]?.style.setProperty(
@@ -157,7 +185,7 @@ const Services = () => {
     });
     gsap.to(revealState.current[index], {
       value: 100,
-      duration: 0.45,
+      duration,
       ease: "power2.out",
       onUpdate: () => {
         gradientRefs.current[index]?.style.setProperty(
@@ -171,7 +199,7 @@ const Services = () => {
 
   return (
     <section
-      className={`relative w-screen bg-[#070707] text-white ${prefersReducedMotion ? "" : "h-[275vh]"}`}
+      className={`services-section relative w-screen bg-[#070707] text-white ${prefersReducedMotion ? "" : "h-[275vh]"}`}
       id="services"
     >
       <div className="relative pt-[6vw] px-[4vw] w-[60%] max-[1025px]:w-[85%] max-md:w-full  max-[1025px]:px-[5vw] max-[1025px]:pt-[15vw]">
@@ -195,31 +223,31 @@ const Services = () => {
         </div>
       </div>
       <div
-        className={
+        className={`services-sticky ${
           prefersReducedMotion
             ? "w-screen pb-[6vw]"
             : "w-screen h-screen sticky top-0 overflow-hidden flex flex-col max-md:mt-[-30vw]"
-        }
+        }`}
       >
         <div className={prefersReducedMotion ? "" : "relative flex-1 flex items-center"}>
           <div
             ref={rowRef}
-            className={
+            className={`services-row ${
               prefersReducedMotion
                 ? "grid grid-cols-3 gap-[1.6vw] px-[4vw] pt-[5vw] max-[1025px]:grid-cols-2 max-md:grid-cols-1"
                 : "flex gap-[1.6vw] px-[4vw] will-change-transform max-[1025px]:gap-[2.5vw] max-md:gap-[6vw]"
-            }
+            }`}
           >
             {SERVICES.map((service, index) => (
               <Link
                 href={service.href}
                 key={service.title}
                 onMouseEnter={() => handleActivate(index)}
-                className={
+                className={`services-card ${
                   prefersReducedMotion
                     ? "relative rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden min-h-[22vw] max-[1025px]:min-h-[32vw] max-[1025px]:p-[3vw] max-md:min-h-0 max-md:p-[5vw] border border-white/20"
                     : "relative w-[27vw] h-[30vw] shrink-0 rounded-lg p-[1.6vw] flex flex-col justify-between bg-[#161616] overflow-hidden max-[1025px]:w-[55vw] max-[1025px]:h-[65vw] max-[1025px]:p-[3vw] max-md:w-[75vw] max-md:h-[85vw] max-md:p-[5vw]  border border-white/20 group "
-                }
+                }`}
               >
                 <div
                   ref={(el) => {

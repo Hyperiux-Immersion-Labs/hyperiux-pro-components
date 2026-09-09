@@ -9,6 +9,10 @@ const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;
 const DEFAULT_HREF = "#";
 const STAGGER_STEP = 0.01;
+// Preserve the dot's optical alignment with the template typeface.
+const DOT_OPTICAL_OFFSET = "0.08em";
+// Account for the extra descender space below the visible letters.
+const TEXT_OPTICAL_OFFSET = "0.08em";
 
 export type DotFillBtnProps = {
  btnText?: string;
@@ -171,34 +175,45 @@ const DotFillBtn = ({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onPointerDown={handlePointerDown}
-            className={`group relative flex w-fit items-center justify-center h-[3.5vw] px-[3vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] transition-colors border-white/20! duration-500 motion-reduce:transition-none max-[1025px]:h-[8vw] max-[1025px]:px-[5vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:h-[12vw] max-md:px-[8vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${className}`}
+            className={`group relative flex w-fit items-center justify-center gap-[0.9vw] h-[3.5vw] px-[2vw] rounded-full overflow-hidden whitespace-nowrap no-underline font-medium text-[1.5vw] transition-colors border-white/20! duration-500 motion-reduce:transition-none max-[1025px]:gap-[1.6vw] max-[1025px]:h-[8vw] max-[1025px]:px-[3.5vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:gap-[2.4vw] max-md:h-[12vw] max-md:px-[5vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${className}`}
             style={{
                 background: bgColor,
                 color: hovered ? hoverTextColor : textColor,
             }}
         >
+            {/* Keep the dot and intrinsic button sizing in normal flow. */}
             <span
                 aria-hidden
-                className={`absolute left-[1.7vw] top-[55%] max-[1025px]:top-[57%] w-[0.5vw] h-[0.5vw] rounded-full z-10 transform -translate-y-1/2 transition-transform duration-400 ease-in-out motion-reduce:transition-none max-[1025px]:left-[2.5vw] max-[1025px]:w-[1.5vw] max-[1025px]:h-[1.5vw] max-[1025px]:motion-reduce:transition-none max-md:left-[4vw] max-md:w-[2.3vw] max-md:h-[2.3vw] max-md:motion-reduce:transition-none`}
-                style={{
-                    background: dotColor,
-                    transform:
-                        hovered
-                            ? "translateY(-50%) scale(120)"
-                            : "translateY(-50%) scale(1)",
-                    transitionTimingFunction: "cubic-bezier(0.785, 0.135, 0.15, 0.86)",
-                }}
-            />
-
-            <span className="relative z-20 flex h-full items-center">
+                className="relative z-10 flex shrink-0 items-center justify-center w-[0.5vw] h-[0.5vw] max-[1025px]:w-[1.5vw] max-[1025px]:h-[1.5vw] max-md:w-[2.3vw] max-md:h-[2.3vw]"
+                style={{ marginTop: DOT_OPTICAL_OFFSET }}
+            >
                 <span
-                    ref={textRef}
-                    className={`relative flex items-center overflow-hidden leading-[1.2] ${textClassName}`}
-                    aria-hidden={false}
-                >
+                    className="absolute inset-0 rounded-full transition-transform duration-400 ease-in-out motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none"
+                    style={{
+                        background: dotColor,
+                        transform: hovered ? "scale(120)" : "scale(1)",
+                        transitionTimingFunction: "cubic-bezier(0.785, 0.135, 0.15, 0.86)",
+                    }}
+                />
+            </span>
+
+            <span aria-hidden="true" className={`invisible block h-[1.3em] leading-[1.3] ${textClassName}`}>
+                {btnText}
+            </span>
+            {/* Centre the animation mask on the button itself. Its height
+                matches the 1.3em character animation distance. */}
+            <span
+                className={`absolute left-1/2 top-1/2 z-20 block h-[1.3em] -translate-x-1/2 -translate-y-1/2 overflow-hidden ${textClassName}`}
+                style={{ marginTop: TEXT_OPTICAL_OFFSET }}
+            >
+                <span ref={textRef} className="block leading-[1.3]" aria-hidden={false}>
                     {btnText}
                 </span>
             </span>
+            <span
+                aria-hidden="true"
+                className="block shrink-0 w-[0.5vw] max-[1025px]:w-[1.5vw] max-md:w-[2.3vw]"
+            />
         </Link>
     );
 };

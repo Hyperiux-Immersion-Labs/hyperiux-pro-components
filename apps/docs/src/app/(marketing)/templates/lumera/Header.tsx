@@ -9,16 +9,18 @@ import CharStaggerButton from "./effects/char-stagger-button";
 import Image from "next/image";
 import lumeraLogo from "./assets/icons/lumera-logo.png";
 import { prefersReducedMotion } from "./reducedMotion";
+import { useEnquiryModal } from "./EnquiryModal";
 
 const navLinks = [
   { label: "About", target: "#about" },
-  { label: "Features", target: "#features-slideshow" },
+  { label: "Features", target: "#lumera-features" },
   { label: "Properties", target: "#project" },
   { label: "Locations", target: "#highlights" },
 ];
 
 const Header: React.FC = () => {
   const lenis = useLenis();
+  const { openEnquiryModal } = useEnquiryModal();
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -95,7 +97,15 @@ const Header: React.FC = () => {
         </nav>
 
         <div className="max-[1025px]:hidden ">
-          <PrimaryButton link="#footer" btnText="Enquire Now" className="min-w-0! w-50"  />
+          <PrimaryButton
+            link="#footer"
+            btnText="Enquire Now"
+            onClick={(event) => {
+              event.preventDefault();
+              openEnquiryModal();
+            }}
+            className="min-w-0! w-50"
+          />
         </div>
 
         <button
@@ -143,7 +153,11 @@ const Header: React.FC = () => {
           <CharStaggerButton
             text="Enquire Now"
             href="#footer"
-            onClick={(event) => handleNavScroll(event, "#footer")}
+            onClick={(event) => {
+              event.preventDefault();
+              setMenuOpen(false);
+              openEnquiryModal();
+            }}
             hoverColor="#1c1b1a"
             className="h-[11vw] w-full justify-center rounded-full border border-[#ca8216] bg-white px-[6vw] text-[#1c1b1a] max-md:h-[15vw]"
             textClassName="font-aeonik-pro text-[3vw] font-medium max-md:text-[4.2vw]"

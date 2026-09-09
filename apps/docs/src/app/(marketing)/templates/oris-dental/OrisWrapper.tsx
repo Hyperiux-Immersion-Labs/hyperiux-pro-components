@@ -1,4 +1,4 @@
-import LenisSmoothScroll from '@/components/SmoothScroll/LenisScroll'
+import LenisSmoothScroll from './LenisSmoothScroll'
 import React from 'react'
 
 interface OrisWrapperProps {

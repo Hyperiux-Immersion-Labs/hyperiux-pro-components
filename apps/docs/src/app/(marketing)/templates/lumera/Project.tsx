@@ -16,6 +16,7 @@ import refinement6 from "./assets/refinement-6.png";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import MaskTextReveal from "./effects/mask-text-reveal";
+import { useEnquiryModal } from "./EnquiryModal";
 import { FadeUp } from "./gsapAnimations";
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,6 +31,7 @@ const interiorImages = [
 ];
 
 export default function Project() {
+  const { openEnquiryModal } = useEnquiryModal();
   const sliderRef = useRef<KeyboardSlider | null>(null);
   const rafRef = useRef<number | null>(null);
   const [thumb, setThumb] = useState({ width: 100, left: 0 });
@@ -131,7 +133,16 @@ export default function Project() {
           <FadeUp>
 
           <div className="fadeup max-[1025px]:order-1">
-            <BlackButton btnText="Enquire Now" link="#" className="bg-[#1c1b1a]" borderColor="#1c1b1a" />
+            <BlackButton
+              btnText="Enquire Now"
+              link="#"
+              onClick={(event) => {
+                event.preventDefault();
+                openEnquiryModal();
+              }}
+              className="bg-[#1c1b1a]"
+              borderColor="#1c1b1a"
+            />
           </div>
           </FadeUp>
           <MaskTextReveal>

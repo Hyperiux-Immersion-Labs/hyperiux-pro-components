@@ -21,6 +21,7 @@ import Roi from "./Roi";
 import ParallaxFooter from "./effects/parallax-footer";
 import CTA from "./CTA";
 import LenisSmoothScroll from "./LenisSmoothScroll";
+import EnquiryModalProvider from "./EnquiryModal";
 
 export const metadata: Metadata = {
   title: "Lumera Heights - Luxury Dubai Real Estate Template",
@@ -44,6 +45,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div className="lumera-page relative">
+      <EnquiryModalProvider>
       <Loader />
       <ScrollTopOnLoad />
       <LenisSmoothScroll />
@@ -63,6 +65,7 @@ export default function Page() {
       <Roi />
       <CTA />
       <ParallaxFooter />
+      </EnquiryModalProvider>
     </div>
   );
 }
