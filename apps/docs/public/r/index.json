@@ -1697,6 +1697,22 @@
       "tier": "pro"
     },
     {
+      "name": "elastic-accordion",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "ElasticAccordion",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "gooey-counter",
       "type": "registry:component",
       "category": "components",
@@ -1708,6 +1724,22 @@
       "exportName": "GooeyCounter",
       "exportKind": "default",
       "version": "1.0.1",
+      "tier": "free"
+    },
+    {
+      "name": "gsap-flip-card",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "GsapFlipCard",
+      "exportKind": "default",
+      "version": "1.0.0",
       "tier": "free"
     },
     {
@@ -2282,38 +2314,6 @@
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "pro"
-    },
-    {
-      "name": "elastic-accordion",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "ElasticAccordion",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
-    },
-    {
-      "name": "gsap-flip-card",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "GsapFlipCard",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "free"
     }
   ]
 }

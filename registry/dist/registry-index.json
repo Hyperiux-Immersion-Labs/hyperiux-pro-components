@@ -155,9 +155,19 @@
     "tarball": "registry/dist/hyperiux-draggable-marquee-1.0.1.tgz"
   },
   {
+    "name": "@hyperiux/elastic-accordion",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-elastic-accordion-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/gooey-counter",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-gooey-counter-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/gsap-flip-card",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-gsap-flip-card-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/hover-stack",
@@ -338,6 +348,11 @@
     "name": "@hyperiux/grid-scale",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-grid-scale-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/helix-slider",
+    "version": "1.2.0",
+    "tarball": "registry/dist/hyperiux-helix-slider-1.2.0.tgz"
   },
   {
     "name": "@hyperiux/horizontal-feature-reveal",
@@ -693,20 +708,5 @@
     "name": "@hyperiux/strip-slider",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-strip-slider-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/elastic-accordion",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-elastic-accordion-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/gsap-flip-card",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-gsap-flip-card-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/helix-slider",
-    "version": "1.2.0",
-    "tarball": "registry/dist/hyperiux-helix-slider-1.2.0.tgz"
   }
 ]
