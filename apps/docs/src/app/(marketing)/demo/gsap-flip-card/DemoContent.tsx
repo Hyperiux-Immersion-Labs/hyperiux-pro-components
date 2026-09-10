@@ -14,7 +14,7 @@ export default function DemoContent({ registry }: { registry: RegistryLike }) {
     >
       {({ values, effect }) => (
         <main
-          className="min-h-screen pt-24"
+          className="h-screen "
           style={{ backgroundColor: values.backgroundColor as string }}
         >
           <DemoHeader

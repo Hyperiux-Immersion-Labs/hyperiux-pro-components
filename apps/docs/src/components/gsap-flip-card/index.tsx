@@ -85,45 +85,39 @@ const CAPTION_MOBILE_LINE_RATIO = 1.5;
 const CAPTION_MOBILE_LINE = `${3 * CAPTION_MOBILE_LINE_RATIO}vw`;
 const CAPTION_MOBILE_LINE_SM = `${3.5 * CAPTION_MOBILE_LINE_RATIO}vw`;
 
-const UNSPLASH = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?w=800&h=1000&fit=crop`;
+const IMAGE_BASE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card";
 
 const defaultItems: GsapFlipCardItem[] = [
   {
     id: 0,
-    image: UNSPLASH('1500534623283-312aade485b7'),
-    alt: 'Coastal cliffs meeting open water',
-    caption: 'Late light on the headland, shot from the cliff path.',
+    image: `${IMAGE_BASE}/img01.png`,
+    alt: 'Tennis player mid-backhand against a red studio backdrop',
+    caption: 'The racquet blurs through the frame while the ball hangs still.',
   },
   {
     id: 1,
-    image: UNSPLASH('1519681393784-d120267933ba'),
-    alt: 'Mountain range under night sky',
-    caption: 'The ridge holds its last colour long after the sun goes.',
+    image: `${IMAGE_BASE}/img02.png`,
+    alt: 'Basketball dropping through an orange rim on a deep blue background',
+    caption: 'Caught at the rim, one beat before the net gives way.',
   },
   {
     id: 2,
-    image: UNSPLASH('1470252649378-9c29740c9fa8'),
-    alt: 'Star field over a dark ridge',
-    caption: 'Clear enough that night to read the whole sky at once.',
+    image: `${IMAGE_BASE}/img03.png`,
+    alt: 'Runner suspended mid-stride against a clear blue sky',
+    caption: 'Shot from below, mid-stride, with nothing but sky behind.',
   },
   {
     id: 3,
-    image: UNSPLASH('1506905925346-21bda4d32df4'),
-    alt: 'Mist settling across a valley',
-    caption: 'Mist gathers in the valley before the morning burns it off.',
+    image: `${IMAGE_BASE}/img04.png`,
+    alt: 'Cyclist in a black suit holding a road bike against a lime backdrop',
+    caption: 'Tailoring and carbon on acid green, staged like a portrait.',
   },
   {
     id: 4,
-    image: UNSPLASH('1439066615861-d1af74d74000'),
-    alt: 'Forest ridge in low cloud',
-    caption: 'Cloud sits low on the treeline and refuses to lift.',
-  },
-  {
-    id: 5,
-    image: UNSPLASH('1444927714506-8492d94b4e3d'),
-    alt: 'Waves breaking along a shoreline',
-    caption: 'The tide works the same stretch of shore all afternoon.',
+    image: `${IMAGE_BASE}/img05.png`,
+    alt: 'Profile of an athlete wearing white shield sunglasses in low light',
+    caption: 'A hard side light picks out the visor and leaves the rest dark.',
   },
 ];
 
