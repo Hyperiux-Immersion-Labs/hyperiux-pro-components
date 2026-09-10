@@ -100,6 +100,11 @@
     "tarball": "registry/dist/hyperiux-orbit-flip-slider-1.0.0.tgz"
   },
   {
+    "name": "@hyperiux/parallax-strip-slider",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-parallax-strip-slider-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/ring-carousel",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-ring-carousel-1.0.1.tgz"
@@ -336,8 +341,8 @@
   },
   {
     "name": "@hyperiux/helix-slider",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-helix-slider-1.1.0.tgz"
+    "version": "1.2.0",
+    "tarball": "registry/dist/hyperiux-helix-slider-1.2.0.tgz"
   },
   {
     "name": "@hyperiux/horizontal-feature-reveal",
@@ -403,6 +408,11 @@
     "name": "@hyperiux/square-translate",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-square-translate-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/stack-spread",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-stack-spread-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/stacking-cards",
@@ -688,15 +698,5 @@
     "name": "@hyperiux/strip-slider",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-strip-slider-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/parallax-strip-slider",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-parallax-strip-slider-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/stack-spread",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-stack-spread-1.0.0.tgz"
   }
 ]
