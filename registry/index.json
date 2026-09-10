@@ -3645,6 +3645,191 @@
     "registryPath": "registry/effects/text/drop-text/registry.json"
   },
   {
+    "name": "elastic-accordion",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-10",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Elastic Accordion",
+    "description": "An accordion with gooey elastic expansion and staggered answer reveals.",
+    "category": "components",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/elastic-accordion",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ElasticAccordion",
+    "exportKind": "default",
+    "importPath": "@/components/effects/elastic-accordion",
+    "target": "src/components/effects/elastic-accordion",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/elastic-accordion/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.8,
+        "description": "Expansion animation duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "gooeyStrength",
+        "type": "number",
+        "default": 9,
+        "description": "Strength of the gooey connection between question and answer.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "min": 0,
+          "max": 20,
+          "step": 1
+        },
+        "label": "Gooey strength"
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Delay between answer line reveals in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "default": false,
+        "description": "Allows multiple answers to remain open.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior"
+        }
+      },
+      {
+        "name": "startOpen",
+        "type": "number",
+        "default": 0,
+        "description": "Initially open item index; -1 closes all items.",
+        "remixer": {
+          "control": "select",
+          "group": "behavior",
+          "options": [
+            {
+              "label": "All closed",
+              "value": -1
+            },
+            {
+              "label": "Item 1",
+              "value": 0
+            },
+            {
+              "label": "Item 2",
+              "value": 1
+            },
+            {
+              "label": "Item 3",
+              "value": 2
+            },
+            {
+              "label": "Item 4",
+              "value": 3
+            },
+            {
+              "label": "Item 5",
+              "value": 4
+            }
+          ]
+        }
+      },
+      {
+        "name": "bgColor",
+        "type": "color",
+        "default": "#ebebe9",
+        "description": "Background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "panelColor",
+        "type": "color",
+        "default": "#101010",
+        "description": "Question and answer panel color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#fffaf2",
+        "description": "Text and icon color; secondary elements use reduced opacity.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "elastic.out(1,0.82)",
+        "description": "GSAP easing for expansion. Available in code only.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "items",
+        "type": "ElasticAccordionItem[]",
+        "description": "Question and answer items; defaults to the built-in FAQ."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "",
+        "description": "Additional root class names."
+      },
+      {
+        "name": "onChange",
+        "type": "(index: number, isOpen: boolean) => void",
+        "description": "Called when an item is toggled."
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/elastic-accordion/registry.json"
+  },
+  {
     "name": "elevate-navbar",
     "version": "1.1.0",
     "changelog": [
@@ -4994,6 +5179,250 @@
     ]
   },
   {
+    "name": "gsap-flip-card",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-10",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "GSAP Flip Card",
+    "description": "A card stack that expands into a hero image and thumbnail rail with GSAP Flip transitions.",
+    "category": "components",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/gsap-flip-card",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "GsapFlipCard",
+    "exportKind": "default",
+    "importPath": "@/components/effects/gsap-flip-card",
+    "target": "src/components/effects/gsap-flip-card",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/gsap-flip-card/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.7,
+        "description": "Card transition duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "rounded",
+        "type": "number",
+        "default": 20,
+        "description": "Card corner radius in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "min": 0,
+          "max": 60,
+          "step": 1
+        }
+      },
+      {
+        "name": "stackOffsetX",
+        "type": "number",
+        "default": 3,
+        "description": "Horizontal offset per card in the collapsed desktop stack.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "stackOffsetY",
+        "type": "number",
+        "default": 9,
+        "description": "Vertical offset per card in the collapsed desktop stack.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "stackRotation",
+        "type": "number",
+        "default": 0,
+        "description": "Rotation per card in the collapsed desktop stack, in degrees.",
+        "remixer": {
+          "control": "range",
+          "group": "stack",
+          "min": -15,
+          "max": 15,
+          "step": 1
+        }
+      },
+      {
+        "name": "thumbGap",
+        "type": "number",
+        "default": 12,
+        "description": "Spacing between desktop rail thumbnails in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "min": 0,
+          "max": 40,
+          "step": 1
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#e9e9e7",
+        "description": "Section background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#111111",
+        "description": "Primary text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "mutedColor",
+        "type": "color",
+        "default": "#8a8a86",
+        "description": "Secondary text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power3.inOut",
+        "description": "GSAP transition easing.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "showCounter",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the image counter.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "thumbWidth",
+        "type": "number",
+        "default": 108,
+        "description": "Code-only configuration for thumbWidth."
+      },
+      {
+        "name": "thumbHeight",
+        "type": "number",
+        "default": 120,
+        "description": "Code-only configuration for thumbHeight."
+      },
+      {
+        "name": "heroWidth",
+        "type": "number",
+        "default": 530,
+        "description": "Code-only configuration for heroWidth."
+      },
+      {
+        "name": "heroHeight",
+        "type": "number",
+        "default": 670,
+        "description": "Code-only configuration for heroHeight."
+      },
+      {
+        "name": "captionLines",
+        "type": "number",
+        "default": 2,
+        "description": "Code-only configuration for captionLines."
+      },
+      {
+        "name": "captionFadeDuration",
+        "type": "number",
+        "default": 0.25,
+        "description": "Code-only configuration for captionFadeDuration."
+      },
+      {
+        "name": "captionRevealDuration",
+        "type": "number",
+        "default": 0.55,
+        "description": "Code-only configuration for captionRevealDuration."
+      },
+      {
+        "name": "captionLineStagger",
+        "type": "number",
+        "default": 0.07,
+        "description": "Code-only configuration for captionLineStagger."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "GSAP Flip Card",
+        "description": "Code-only title."
+      },
+      {
+        "name": "meta",
+        "type": "string",
+        "default": "Hyperiux Vault / GSAP Flip / React",
+        "description": "Code-only meta."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "A pile of cards that fans into a hero and a rail. Tap any frame and the two trade places, same nodes, measured and tweened, never re-mounted.",
+        "description": "Code-only description."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "",
+        "description": "Code-only className."
+      },
+      {
+        "name": "items",
+        "type": "GsapFlipCardItem[]",
+        "description": "Gallery images with optional IDs, alt text and captions; defaults to the built-in gallery."
+      },
+      {
+        "name": "onClose",
+        "type": "() => void",
+        "description": "Called when the gallery closes."
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/gsap-flip-card/registry.json"
+  },
+  {
     "name": "helix-slider",
     "version": "1.2.0",
     "changelog": [
@@ -5036,6 +5465,10 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/helix-slider/index.tsx"
+      },
+      {
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/helix-slider/createSuspendedRaf.ts"
       }
     ],
     "props": [

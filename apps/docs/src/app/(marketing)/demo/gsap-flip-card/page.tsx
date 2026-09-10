@@ -1,5 +1,11 @@
-import GsapFlipCard from "@/components/gsap-flip-card";
+import DemoContent from "./DemoContent";
+import { getDemoPageMetadata } from "@/lib/demo-metadata";
+import registry from "../../../../../../../registry/effects/components/gsap-flip-card/registry.json";
 
 export default function Page() {
-  return <GsapFlipCard />;
+  return <DemoContent registry={registry} />;
+}
+
+export async function generateMetadata() {
+  return getDemoPageMetadata("gsap-flip-card");
 }

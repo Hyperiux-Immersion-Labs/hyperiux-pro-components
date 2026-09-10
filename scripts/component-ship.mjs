@@ -901,7 +901,10 @@ function makeRegistryJson({ slug, version, title, description, category, tier, d
   };
 }
 
-function makePackageJson(registryJson, version, existing = {}) {
+function makePackageJson(registryJson, version, existingInput = {}) {
+  // readJsonIfExists() returns null (not undefined) when a component has no
+  // package.json yet, so the parameter default doesn't cover that case.
+  const existing = existingInput || {};
   const files = [...new Set([
     registryJson.main,
     ...(registryJson.files || []).filter((file) => file.type !== "registry:asset").map((file) => file.path),

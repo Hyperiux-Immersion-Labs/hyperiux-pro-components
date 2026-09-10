@@ -24,13 +24,6 @@ if (typeof window !== "undefined") {
   (window as unknown as Record<string, unknown>).gsap = gsap;
 }
 
-const SOLID = "#101010";
-const BG = "#ebebe9";
-const TEXT = "rgba(255,250,242,0.92)";
-const TEXT_2 = "rgba(255,255,255,0.78)";
-const TEXT_3 = "rgba(255,255,255,0.55)";
-const HOVER = "#1e1e1c";
-
 const LINE_CLASS = "flx_body_line";
 
 const LINE_STYLE = `.${LINE_CLASS}{overflow-x:visible;overflow-y:clip;padding-bottom:0.18em;margin-bottom:-0.18em}`;
@@ -55,6 +48,9 @@ export interface ElasticAccordionProps {
   stagger?: number;
   goo?: number;
   ease?: string;
+  bgColor?: string;
+  panelColor?: string;
+  textColor?: string;
   className?: string;
   onChange?: (index: number, isOpen: boolean) => void;
 }
@@ -119,6 +115,9 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
   stagger = 0.05,
   goo = 9,
   ease = "elastic.out(1,0.82)",
+  bgColor = "#ebebe9",
+  panelColor = "#101010",
+  textColor = "#fffaf2",
   className = "",
   onChange,
 }) => {
@@ -126,7 +125,9 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
   const stageRef = useRef<HTMLDivElement | null>(null);
   const rowsRef = useRef<Row[]>([]);
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   const collect = useCallback(
     (i: number) =>
@@ -384,6 +385,9 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
       setClosedShape(r);
       setFilter(r, false);
       gsap.set(r.answer, { autoAlpha: 0 });
+      gsap.set(r.panel, { height: 0 });
+      gsap.set(r.el, { marginTop: 0 });
+      gsap.set(r.icon, { rotation: 0 });
       const isOpen = i === startOpen;
       r.isOpen = isOpen;
       setA11y(r, isOpen);
@@ -482,7 +486,7 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
   return (
     <div
       className={`relative flex h-fit w-full items-center justify-center box-border p-10 max-[1025px]:p-8 max-md:p-5 antialiased ${className}`}
-      style={{ backgroundColor: BG, fontFamily: '"Switzer", -apple-system, BlinkMacSystemFont, sans-serif' }}
+      style={{ backgroundColor: bgColor, fontFamily: '"Switzer", -apple-system, BlinkMacSystemFont, sans-serif' }}
     >
       <style>{LINE_STYLE}</style>
       <div
@@ -537,17 +541,17 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
                 >
                   <div
                     className="flx_blob_head absolute top-0 left-0 w-full will-change-transform"
-                    style={{ backgroundColor: SOLID }}
+                    style={{ backgroundColor: panelColor }}
                   />
                   <div
                     className="flx_blob_drawer absolute top-0 left-0 w-full will-change-transform"
-                    style={{ backgroundColor: SOLID, borderRadius: PANEL_RADIUS }}
+                    style={{ backgroundColor: panelColor, borderRadius: PANEL_RADIUS }}
                   />
                 </div>
 
                 <button
                   className="flx_head relative z-4 flex w-full min-h-14 cursor-pointer items-center gap-3.5 border-0 bg-transparent py-4 px-5.5 text-left box-border font-[inherit] outline-none max-[1025px]:min-h-16 max-[1025px]:gap-4 max-[1025px]:py-[2vw] max-[1025px]:px-[2.5vw] max-md:min-h-14 max-md:gap-3 max-md:py-[4vw] max-md:px-[5vw] focus-visible:outline-2 focus-visible:outline-[#fd551d] focus-visible:outline-offset-2 focus-visible:rounded-full"
-                  style={{ color: TEXT }}
+                  style={{ color: textColor }}
                   data-fx-head
                   id={tid}
                   aria-controls={pid}
@@ -556,19 +560,19 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
                 >
                   <span
                     className="block max-md:hidden shrink-0 min-w-6 text-xs max-[1025px]:text-[1.4vw] font-medium"
-                    style={{ color: TEXT_3 }}
+                    style={{ color: textColor, opacity: 0.55 }}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
                     className="flex-1 text-base max-[1025px]:text-[2.5vw]  max-md:text-[4.2vw] leading-snug tracking-tight"
-                    style={{ color: TEXT, fontWeight: 380 }}
+                    style={{ color: textColor, fontWeight: 380 }}
                   >
                     {item.question}
                   </span>
                   <svg
                     className="flx_mark size-4 max-[1025px]:size-5 max-md:size-5 shrink-0 origin-center will-change-transform"
-                    style={{ color: TEXT_2 }}
+                    style={{ color: textColor, opacity: 0.78 }}
                     data-fx-mark
                     viewBox="0 0 16 16"
                     fill="none"
@@ -591,12 +595,12 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
 
                 <div
                   className="flx_head_solid absolute top-0 left-0 right-0 z-3 pointer-events-none transition-colors duration-300 ease-[cubic-bezier(0.7,0,0.16,1)] group-hover/item:bg-[#1e1e1c]"
-                  style={{ backgroundColor: SOLID }}
+                  style={{ backgroundColor: panelColor }}
                   aria-hidden="true"
                 />
                 <div
                   className="flx_drawer_solid absolute top-0 left-0 z-1 pointer-events-none will-change-transform"
-                  style={{ backgroundColor: SOLID, borderRadius: PANEL_RADIUS }}
+                  style={{ backgroundColor: panelColor, borderRadius: PANEL_RADIUS }}
                   aria-hidden="true"
                 />
 
@@ -611,7 +615,7 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
                   <div className="flx_drawer_pad mt-2.5 px-5.5 py-5 max-[1025px]:px-[6vw] max-[1025px]:py-[2.2vw] max-md:px-[5vw] max-md:py-[4.5vw]">
                     <p
                       className="flx_body m-0 text-sm max-[1025px]:text-[2vw] max-md:text-[3.8vw] leading-relaxed tracking-tight"
-                      style={{ color: TEXT_2, fontWeight: 380 }}
+                      style={{ color: textColor, opacity: 0.78, fontWeight: 380 }}
                       data-fx-body
                       aria-label={item.answer}
                     >

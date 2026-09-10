@@ -5,6 +5,7 @@
   "main": "index.tsx",
   "files": [
     "index.tsx",
+    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

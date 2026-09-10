@@ -3,6 +3,7 @@
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 const COUNT = 30; // at base extent; scales with it
 
@@ -441,6 +442,19 @@ export default function HelixSlider({
   const [aspect, setAspect] = useState(16 / 9);
   const [viewWidth, setViewWidth] = useState(1440);
   const wrapper = useRef<HTMLDivElement>(null);
+  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+
+  // Suspend the render loop while the tab is hidden or the strand is
+  // scrolled offscreen — the spiral autoplays continuously, so without this
+  // it keeps drawing WebGL frames the viewer can't see.
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: wrapper,
+      onChange: (active) => setFrameloop(active ? "always" : "never"),
+    });
+    setFrameloop(gate.isActive ? "always" : "never");
+    return () => gate.destroy();
+  }, []);
 
   useEffect(() => {
     const el = wrapper.current;
@@ -479,6 +493,7 @@ export default function HelixSlider({
       style={{ background, ...style }}
     >
       <Canvas
+        frameloop={frameloop}
         dpr={[1, 1.75]}
         gl={{ antialias: true, alpha: true }}
         camera={{ fov: FOV, near: 0.1, far: 100, position: [0, 0, cameraZ] }}

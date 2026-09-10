@@ -1,8 +1,10 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { createVisibilityGate } from "./createSuspendedRaf";
 
 const COUNT = 30; // at base extent; scales with it
 
@@ -35,20 +37,20 @@ const GRAB_CLASS = "cursor-grab";
 const GRABBING_CLASS = "cursor-grabbing";
 
 export const DEFAULT_IMAGES = [
-  "https://picsum.photos/seed/1/800/600",
-  "https://picsum.photos/seed/2/800/600",
-  "https://picsum.photos/seed/3/800/600",
-  "https://picsum.photos/seed/4/800/600",
-  "https://picsum.photos/seed/5/800/600",
-  "https://picsum.photos/seed/6/800/600",
-  "https://picsum.photos/seed/7/800/600",
-  "https://picsum.photos/seed/8/800/600",
-  "https://picsum.photos/seed/9/800/600",
-  "https://picsum.photos/seed/10/800/600",
-  "https://picsum.photos/seed/11/800/600",
-  "https://picsum.photos/seed/12/800/600",
-  "https://picsum.photos/seed/13/800/600",
-  "https://picsum.photos/seed/14/800/600",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
 ];
 
 type Motion = {
@@ -441,6 +443,19 @@ export default function HelixSlider({
   const [aspect, setAspect] = useState(16 / 9);
   const [viewWidth, setViewWidth] = useState(1440);
   const wrapper = useRef<HTMLDivElement>(null);
+  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+
+  // Suspend the render loop while the tab is hidden or the strand is
+  // scrolled offscreen — the spiral autoplays continuously, so without this
+  // it keeps drawing WebGL frames the viewer can't see.
+  useEffect(() => {
+    const gate = createVisibilityGate({
+      root: wrapper,
+      onChange: (active) => setFrameloop(active ? "always" : "never"),
+    });
+    setFrameloop(gate.isActive ? "always" : "never");
+    return () => gate.destroy();
+  }, []);
 
   useEffect(() => {
     const el = wrapper.current;
@@ -479,6 +494,7 @@ export default function HelixSlider({
       style={{ background, ...style }}
     >
       <Canvas
+        frameloop={frameloop}
         dpr={[1, 1.75]}
         gl={{ antialias: true, alpha: true }}
         camera={{ fov: FOV, near: 0.1, far: 100, position: [0, 0, cameraZ] }}

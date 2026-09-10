@@ -41,6 +41,10 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/helix-slider/index.tsx"
+    },
+    {
+      "path": "createSuspendedRaf.ts",
+      "target": "src/components/effects/helix-slider/createSuspendedRaf.ts"
     }
   ],
   "props": [
