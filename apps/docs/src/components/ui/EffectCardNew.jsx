@@ -31,14 +31,11 @@ function formatInstallCount(value) {
   return String(count);
 }
 
-// Media sits inside inset-x-7 (56px) on desktop / inset-x-4 (32px) on mobile.
-// 280px desktop slot matches ~264px measured display; avoids 400px overshoot in srcset.
 const VAULT_GRID_SIZES =
-  "(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) calc(50vw - 40px), 280px";
+  "(max-width: 639px) calc(100vw - 56px), (max-width: 1025px) calc(100vw - 64px), 30vw";
 
-// 2x the largest slot (280px) for retina listing thumbnails (16:9).
-const LISTING_COVER_WIDTH = 560;
-const LISTING_COVER_HEIGHT = 315;
+const LISTING_COVER_WIDTH = 1200;
+const LISTING_COVER_HEIGHT = 675;
 
 function resolveEffectCoverImage(effect) {
   const raw = effect?.coverImage || effect?.imageSrc;
@@ -213,7 +210,7 @@ export function EffectCard({
               alt={effect.title || effect.name}
               fill
               sizes={sizes}
-              quality={75}
+              quality={90}
               priority={priority}
               loading={priority ? undefined : "lazy"}
               onError={() => setImageError(true)}

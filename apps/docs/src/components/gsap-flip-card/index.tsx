@@ -1,4 +1,3 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client'
 import React, {
   useCallback,
@@ -15,15 +14,15 @@ import Image from "next/image";
 
 gsap.registerPlugin(Flip, SplitText);
 
-export interface StackGalleryItem {
+export interface GsapFlipCardItem {
   id?: string | number;
   image: string;
   alt?: string;
   caption?: string;
 }
 
-export interface StackGalleryProps {
-  items?: StackGalleryItem[];
+export interface GsapFlipCardProps {
+  items?: GsapFlipCardItem[];
   title?: string;
   meta?: string;
   description?: string;
@@ -42,7 +41,6 @@ export interface StackGalleryProps {
   stackOffsetY?: number;
   stackRotation?: number;
   showCounter?: boolean;
-  /** Lines of caption space to reserve so swapping never reflows the copy. */
   captionLines?: number;
   captionFadeDuration?: number;
   captionRevealDuration?: number;
@@ -80,18 +78,9 @@ function usePrefersReducedMotion() {
 }
 
 
-// Caption metrics are pinned rather than left to the cascade: the reserved
-// slot height must be derived from the exact same line-height the text renders
-// at, or the reservation drifts out of sync with the content.
-// Desktop caption renders at text-[1vw] with leading-[1.3], so one line is
-// 1.3vw tall. The reserved slot is derived from the same numbers — if these
-// drift apart the fixed-height guarantee stops holding.
 const CAPTION_FONT_VW = 1;
 const CAPTION_LINE_RATIO = 1.3;
 const CAPTION_LINE_VW = CAPTION_FONT_VW * CAPTION_LINE_RATIO;
-// Mobile caption is sized in vw, so the reserved height is expressed in the
-// same units — an `em` on the wrapper would resolve against the wrapper's own
-// font-size, not the paragraph's, and under-reserve.
 const CAPTION_MOBILE_LINE_RATIO = 1.5;
 const CAPTION_MOBILE_LINE = `${3 * CAPTION_MOBILE_LINE_RATIO}vw`;
 const CAPTION_MOBILE_LINE_SM = `${3.5 * CAPTION_MOBILE_LINE_RATIO}vw`;
@@ -99,7 +88,7 @@ const CAPTION_MOBILE_LINE_SM = `${3.5 * CAPTION_MOBILE_LINE_RATIO}vw`;
 const UNSPLASH = (id: string) =>
   `https://images.unsplash.com/photo-${id}?w=800&h=1000&fit=crop`;
 
-const defaultItems: StackGalleryItem[] = [
+const defaultItems: GsapFlipCardItem[] = [
   {
     id: 0,
     image: UNSPLASH('1500534623283-312aade485b7'),
@@ -139,11 +128,11 @@ const defaultItems: StackGalleryItem[] = [
 ];
 
 
-const StackGallery = ({
+const GsapFlipCard = ({
   items = defaultItems,
-  title = "Stack Gallery",
+  title = "GSAP Flip Card",
   meta = "Hyperiux Vault / GSAP Flip / React",
-  description = "A pile of cards that fans into a hero and a rail. Tap any frame and the two trade places — same nodes, measured and tweened, never re-mounted.",
+  description = "A pile of cards that fans into a hero and a rail. Tap any frame and the two trade places, same nodes, measured and tweened, never re-mounted.",
   backgroundColor = "#e9e9e7",
   textColor = "#111111",
   mutedColor = "#8a8a86",
@@ -165,7 +154,7 @@ const StackGallery = ({
   captionLineStagger = 0.07,
   onClose,
   className = "",
-}: StackGalleryProps) => {
+}: GsapFlipCardProps) => {
   const reducedMotion = usePrefersReducedMotion();
 
   const [order, setOrder] = useState<number[]>(() => items.map((_, i) => i));
@@ -173,16 +162,11 @@ const StackGallery = ({
   const [stageWidth, setStageWidth] = useState(0);
 
   const stageRef = useRef<HTMLDivElement | null>(null);
-  // Measured on the outer wrapper, which is present in BOTH the desktop and
-  // mobile trees and is never padded — so the breakpoint can't feed a
-  // narrowed width back into itself and oscillate.
   const rootRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<Map<number, HTMLElement>>(new Map());
   const flipStateRef = useRef<Flip.FlipState | null>(null);
   const isAnimatingRef = useRef(false);
 
-  // The caption currently painted in the copy column. It lags `order` by one
-  // fade so the outgoing text can leave before the incoming text is mounted.
   const [shownCaption, setShownCaption] = useState<string | undefined>(
     () => items[0]?.caption
   );
@@ -190,10 +174,6 @@ const StackGallery = ({
   const captionTweenRef = useRef<gsap.core.Tween | gsap.core.Timeline | null>(null);
   const captionSplitRef = useRef<SplitText | null>(null);
 
-  // SplitText replaces the paragraph's text node with its own line/mask
-  // elements. React still holds a handle on the original node, so the split
-  // MUST be reverted before React commits new text — otherwise the update
-  // lands on a detached node and the stale string stays on screen.
   const revertCaptionSplit = useCallback(() => {
     captionSplitRef.current?.revert();
     captionSplitRef.current = null;
@@ -223,9 +203,6 @@ const StackGallery = ({
     [order]
   );
 
-  // Mobile breakpoint mirrors the Tailwind `max-[1025px]:` idiom used across
-  // the repo. Below it the component drops the absolutely-positioned Flip
-  // stage entirely and renders a plain flow layout instead.
   const isMobile = stageWidth > 0 && stageWidth <= 1025;
   const isNarrow = stageWidth > 0 && stageWidth < 900;
   const railCount = Math.max(items.length - 1, 0);
@@ -239,11 +216,9 @@ const StackGallery = ({
   const railX = Math.max(24, stageWidth * 0.045);
   const heroX = stageWidth - hW - railX;
 
-  // Resting pile size — portrait card, matching the closed state.
   const stackWidth = Math.min(215 * scale, stageWidth * 0.42);
   const stackHeight = stackWidth * 1.5;
 
-  /** Geometry for the card currently sitting in `slot` (0 = hero). */
   const slotBox = useCallback(
     (slot: number) => {
       if (slot === 0) {
@@ -251,9 +226,6 @@ const StackGallery = ({
       }
       const railHeight = railCount * tH + (railCount - 1) * gap;
       const top = -railHeight / 2 + (slot - 1) * (tH + gap);
-      // Depth descends with slot so the ordering is continuous with the
-      // stacked state — a flat z here makes the pile reshuffle on the first
-      // frame of the opening tween.
       return {
         x: railX,
         y: top + tH / 2,
@@ -269,15 +241,12 @@ const StackGallery = ({
   const select = useCallback(
     (itemIndex: number) => {
       if (itemIndex === order[0] || isAnimatingRef.current) return;
-      // On mobile there is no Flip stage — the grid reflows on its own.
       if (!isMobile) {
         flipStateRef.current = Flip.getState(orderedCards(), { props: "borderRadius" });
       }
       setOrder((prev) => {
         const next = [...prev];
         const from = next.indexOf(itemIndex);
-        // Two-way exchange: clicked card takes the hero slot, old hero drops
-        // into the rail slot the clicked card just vacated.
         next[from] = next[0];
         next[0] = itemIndex;
         return next;
@@ -286,7 +255,6 @@ const StackGallery = ({
     [order, orderedCards, isMobile]
   );
 
-  // Play the swap forward from the captured pre-render state.
   useLayoutEffect(() => {
     const state = flipStateRef.current;
     if (!state) return;
@@ -306,7 +274,6 @@ const StackGallery = ({
     });
   }, [order, duration, ease, reducedMotion, isMobile]);
 
-  // Click the pile to fan it out into hero + rail.
   const open = useCallback(() => {
     if (opened || isAnimatingRef.current || stageWidth === 0) return;
 
@@ -325,7 +292,6 @@ const StackGallery = ({
         ease,
         absolute: true,
         props: "borderRadius",
-        // Cards peel off the pile one after another into their slots.
         stagger: 0.04,
         onComplete: () => {
           isAnimatingRef.current = false;
@@ -334,7 +300,6 @@ const StackGallery = ({
     });
   }, [opened, stageWidth, reducedMotion, orderedCards, duration, ease]);
 
-  // Collapse the fanned-out layout back into the resting pile.
   const close = useCallback(() => {
     if (!opened || isAnimatingRef.current) return;
 
@@ -354,7 +319,6 @@ const StackGallery = ({
         ease,
         absolute: true,
         props: "borderRadius",
-        // Reverse of the open stagger: cards drop back onto the pile in order.
         stagger: { each: 0.035, from: "end" },
         onComplete: () => {
           isAnimatingRef.current = false;
@@ -364,13 +328,7 @@ const StackGallery = ({
     onClose?.();
   }, [opened, reducedMotion, orderedCards, duration, ease, onClose]);
 
-  // Caption cross-fade, part 1: the hero changed, so fade the caption that is
-  // on screen out and only then swap in the new string. Keeping the swap in a
-  // callback is what makes the two halves read as one exchange rather than a
-  // hard cut.
   const nextCaption = items[order[0]]?.caption;
-  // With motion reduced there is nothing to fade, so the caption is simply
-  // derived — no state hop, no cascading render.
   const activeCaption = reducedMotion ? nextCaption : shownCaption;
 
   useEffect(() => {
@@ -396,8 +354,6 @@ const StackGallery = ({
     });
   }, [nextCaption, shownCaption, reducedMotion, captionFadeDuration, revertCaptionSplit]);
 
-  // Caption cross-fade, part 2: the new string is mounted — split it into
-  // masked lines and lift them in from below, staggered.
   useLayoutEffect(() => {
     const el = captionRef.current;
     if (!el || !activeCaption) return;
@@ -409,7 +365,6 @@ const StackGallery = ({
     }
 
     captionTweenRef.current?.kill();
-    // Clear any split left over from the previous caption before measuring.
     revertCaptionSplit();
     gsap.set(el, { opacity: 1, y: 0 });
 
@@ -458,14 +413,11 @@ const StackGallery = ({
 
   const heroItemIndex = order[0];
   const heroItem = items[heroItemIndex];
-  // Counter reflects which source image is on screen, matching the reference.
   const heroSlotLabel = heroItemIndex + 1;
 
   const cardStyle = (itemIndex: number): React.CSSProperties => {
     const slot = order.indexOf(itemIndex);
 
-    // Pre-open: the set rests centred on stage, cards squarely behind one
-    // another and stepped down, so the pile reads as a physical stack.
     if (!opened) {
       const w = stackWidth;
       const h = stackHeight;
@@ -479,7 +431,6 @@ const StackGallery = ({
         transform: `translateY(-50%) translate(${slot * stackOffsetX}px, ${
           slot * stackOffsetY
         }px) rotate(${slot * stackRotation}deg)`,
-        // Front of the pile is the card that will become the hero.
         zIndex: items.length - slot,
       };
     }
@@ -497,7 +448,6 @@ const StackGallery = ({
     };
   };
 
-  // Counter, close button and copy only exist once the pile has fanned out.
   const chromeStyle: React.CSSProperties = {
     opacity: opened ? 1 : 0,
     transition: "opacity 0.5s ease 0.25s",
@@ -509,8 +459,7 @@ const StackGallery = ({
     return (
       <div
         ref={rootRef}
-        className={`hxs-stack-gallery relative w-full min-h-svh overflow-hidden ${className}`}
-        // Colours stay inline: they are props, so Tailwind's JIT can't see them.
+        className={`hxs-gsap-flip-card relative w-full min-h-svh overflow-hidden ${className}`}
         style={{ background: backgroundColor, color: textColor }}
       >
         <div className="min-h-svh px-[5vw] py-[8vw] flex flex-col gap-[6vw]">
@@ -526,7 +475,6 @@ const StackGallery = ({
             </div>
           )}
 
-          {/* Expanded hero */}
           {heroItem && (
             <div
 
@@ -538,7 +486,6 @@ const StackGallery = ({
                 alt={heroItem.alt ?? ""}
                 draggable={false}
                 fill
-                // Hero spans the viewport minus the 5vw gutters.
                 sizes="90vw"
                 priority
                 className="object-cover"
@@ -546,7 +493,6 @@ const StackGallery = ({
             </div>
           )}
 
-          {/* Copy sits below the expanded image */}
           <div className="max-[1025px]:pb-[3vh]">
             <h2
               className="text-[7vw]  max-md:text-[8.5vw] leading-[1.05] m-0 font-normal tracking-[-0.02em]"
@@ -562,8 +508,6 @@ const StackGallery = ({
             <p className="text-[3.2vw] max-md:text-[3.8vw] leading-[1.65] m-0">
               {description}
             </p>
-            {/* Same reserved slot as desktop: keeps the grid below from
-                jumping when a taller caption swaps in. */}
             <div
               className="mt-[5vw] h-[calc(var(--hxs-cap-line)*var(--hxs-cap-lines))] max-md:[--hxs-cap-line:var(--hxs-cap-line-sm)]"
               style={
@@ -583,7 +527,6 @@ const StackGallery = ({
             </div>
           </div>
 
-          {/* Remaining images, 3 per row */}
           <div className="grid grid-cols-3 gap-[3vw]">
             {order.slice(1).map((itemIndex) => {
               const item = items[itemIndex];
@@ -602,7 +545,6 @@ const StackGallery = ({
                     alt={item.alt ?? ""}
                     draggable={false}
                     fill
-                    // Three-up grid inside the 90vw content column.
                     sizes="30vw"
                     className="object-cover"
                   />
@@ -618,14 +560,12 @@ const StackGallery = ({
   return (
     <div
       ref={rootRef}
-      className={`hxs-stack-gallery relative w-full min-h-svh overflow-hidden ${className}`}
-      // Colours stay inline: they are props, so Tailwind's JIT can't see them.
+      className={`hxs-gsap-flip-card relative w-full min-h-svh overflow-hidden ${className}`}
       style={{ background: backgroundColor, color: textColor }}
     >
       {showCounter && (
         <div
-          className="absolute top-[2.22vw] left-[2.78vw] text-[0.9vw] tracking-[0.02em] z-[60]"
-          // chromeStyle is state-driven (opacity/pointer-events follow `opened`).
+          className="absolute top-[2.22vw] left-[2.78vw] text-[0.9vw] tracking-[0.02em] z-60"
           style={chromeStyle}
         >
           <span className="font-semibold">
@@ -637,19 +577,15 @@ const StackGallery = ({
 
       <div
         ref={stageRef}
-        // Clicking empty space (not a card) collapses back to the pile.
         onClick={(e) => {
           if (e.target === e.currentTarget) close();
         }}
         className={`relative w-full min-h-svh ${opened ? "cursor-pointer" : "cursor-default"}`}
       >
-        {/* Copy column, centred between rail and hero */}
         <div
-          // Above the travelling cards so the copy stays readable as they cross.
           className={`absolute top-1/2 -translate-y-1/2 max-w-[22.22vw] z-30 pointer-events-none ${
             isNarrow ? "hidden" : "block"
           }`}
-          // `left` is measured from the live stage width, so it stays inline.
           style={{ ...chromeStyle, left: railX + tW + Math.max(48, stageWidth * 0.06) }}
         >
           <h2
@@ -661,13 +597,8 @@ const StackGallery = ({
             {meta}
           </p>
           <p className="text-[0.97vw] leading-[1.65] m-0">{description}</p>
-          {/* Fixed-height slot. The box is sized for `captionLines` up front so
-              a one-line caption swapping to a two-line one cannot reflow the
-              column — which, being translateY(-50%) centred, would otherwise
-              shift every line of copy above it. */}
           <div
             className="mt-[1.94vw]"
-            // Height is derived from captionLines, so it stays inline.
             style={{ height: `${CAPTION_LINE_VW * captionLines}vw` }}
           >
 
@@ -680,7 +611,6 @@ const StackGallery = ({
           </div>
         </div>
 
-        {/* Single persistent card layer — the Flip subjects */}
         {items.map((item, itemIndex) => {
           const isHero = itemIndex === heroItemIndex;
           return (
@@ -700,7 +630,6 @@ const StackGallery = ({
               className={`p-0 border-none bg-[#d8d8d4] overflow-hidden shadow-[0_18px_40px_-24px_rgba(0,0,0,0.45)] [-webkit-tap-highlight-color:transparent] ${
                 !opened || !isHero ? "cursor-pointer" : "cursor-default"
               }`}
-              // Geometry is measured per-frame and tweened by Flip — inline.
               style={cardStyle(itemIndex)}
             >
               <Image
@@ -708,10 +637,7 @@ const StackGallery = ({
                 alt={item.alt ?? ""}
                 draggable={false}
                 fill
-                // Widest the card ever gets is the hero frame.
                 sizes={`${Math.max(Math.round(hW), 1)}px`}
-                // Radius is a Flip-tweened prop on the button; inheriting keeps
-                // the image clipped to it mid-tween.
                 className="object-cover rounded-[inherit]"
               />
             </button>
@@ -722,4 +648,4 @@ const StackGallery = ({
   );
 };
 
-export default StackGallery;
+export default GsapFlipCard;
