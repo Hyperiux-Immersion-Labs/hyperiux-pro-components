@@ -47,7 +47,7 @@ export default async function BlogIndexPage({ searchParams }) {
       <WebpageJsonLd metadata={metadata} />
       <NavbarV3 effects={effects} />
       <BlogHero />
-      <main className="relative z-20 mx-auto flex max-w-full flex-col gap-[8vw] bg-background px-[4vw] py-[6vw] max-md:gap-[14vw] max-md:px-[6vw] max-md:py-[12vw]">
+      <main className="relative z-20 mx-auto flex max-w-full flex-col gap-[8vw] bg-background px-[4vw] py-[6vw] max-[1025px]:px-[5vw] max-md:gap-[14vw] max-md:px-0 max-md:py-[12vw]">
         <FeaturedBlog featuredPost={featuredPost} />
         <BlogListing
           posts={gridPosts}

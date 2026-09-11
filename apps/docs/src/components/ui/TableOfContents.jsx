@@ -22,6 +22,13 @@ export function TableOfContents({
   stopRef,
   watchKey,
   hideNearFooter = false,
+  // Which way the flyout panel opens from the dashes. "right" (the default)
+  // opens it leftward for the effects/docs pages, which pin the widget to the
+  // right edge; the blog rail sits on the left and passes "left".
+  side = "right",
+  // Effects/docs reveal the widget only while you're inside the article; the
+  // blog rail keeps it mounted for the whole column.
+  alwaysVisible = false,
 }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
@@ -258,18 +265,25 @@ export function TableOfContents({
     };
   }, []);
 
-  if (items.length === 0 || !isVisible || isFooterNearby) return null;
+  if (items.length === 0 || (!alwaysVisible && (!isVisible || isFooterNearby))) {
+    return null;
+  }
+
+  const isLeft = side === "left";
 
   return (
     <div className="group relative flex items-center gap-4">
       <span
         aria-hidden="true"
-        className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
+        className={`absolute top-1/2 h-full min-h-48 w-8 -translate-y-1/2 ${isLeft ? "left-full" : "right-full"}`}
       />
 
-      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 bg-[#161616] p-2 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
+      <div
+        className={`pointer-events-none absolute top-1/2 w-[18vw] -translate-y-1/2 bg-[#161616] p-2 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden ${isLeft ? "left-[calc(100%+1rem)]" : "right-[calc(100%+1rem)]"
+          }`}
+      >
         <ul
-          className="overflow-y-auto max-h-[calc(60vh-1rem)] toc"
+          className="flex flex-col gap-1 overflow-y-auto max-h-[calc(60vh-1rem)] toc"
           onMouseLeave={() => setHoveredId(null)}
         >
           {items.map((item) => {

@@ -29,13 +29,13 @@ function FeaturedBlogContent({ featuredPost }) {
   useFadeUp(sectionRef);
 
   return (
-    <section ref={sectionRef} className="space-y-[8vw] max-md:mt-[6vw]">
+    <section ref={sectionRef} className="space-y-[8vw] max-md:px-[7vw] max-md:mt-[6vw]">
       <div className="space-y-[2vw]">
         <HeadAnim>
-          <h2 className="t96 font-neue-haas text-center">Our Latest Blog</h2>
+          <h2 className="text-[5vw] max-[1025px]:text-[6.5vw] font-neue-haas text-center">Our Latest Blog</h2>
         </HeadAnim>
         <Copy delay={0.5}>
-          <p className="t22 mt-[1.5vw] text-center text-white max-md:mt-[4vw] max-md:text-[2.4vw] max-sm:text-[4vw]">
+          <p className="text-[1.15vw] max-[1025px]:text-[3vw] mt-[1.5vw] text-center text-white max-md:mt-[4vw] max-md:text-[2.4vw] max-sm:text-[4vw]">
             Lorem Ipsum is simply dummy text of the printing and typesetting industry.
           </p>
         </Copy>
@@ -45,7 +45,7 @@ function FeaturedBlogContent({ featuredPost }) {
         {featuredPost.coverImage?.url && (
           <Link
             href={`/blog/${featuredPost.slug}`}
-            className="fadeup group block  shrink-0 h-[80vh] w-[55%] bg-[#1a1a1a] p-[1.8vw] max-[1025px]:w-full max-md:p-[4vw]"
+            className="fadeup group block  shrink-0 h-[80vh] w-[55%] bg-[#1a1a1a] p-[1.8vw] max-[1025px]:h-[50vh] max-md:h-[40vh]  max-[1025px]:w-full max-md:p-[4vw]"
           >
             <div className="relative h-full w-full overflow-hidden bg-grey">
               <Image
@@ -60,7 +60,7 @@ function FeaturedBlogContent({ featuredPost }) {
         )}
 
         <div className="flex w-[45%] grow flex-col gap-2 items-start justify-start my-4 max-[1025px]:w-full">
-          <p className="text-[1vw] font-geist-mono text-light-grey max-md:text-[2.2vw] max-sm:text-[4vw]">
+          <p className="text-[1vw]  font-geist-mono text-light-grey max-[1025px]:text-[2.5vw] max-md:text-[4vw]">
             {formatFeaturedDate(featuredPost.publishedAt)}
           </p>
 
@@ -74,7 +74,7 @@ function FeaturedBlogContent({ featuredPost }) {
 
           {featuredPost.summary && (
             <Copy delay={0.5}>
-              <p className="text-[1.3vw] mt-[1.8vw] text-white w-[85%] max-md:mt-[4vw] max-md:text-[2.2vw] max-sm:text-[4vw]">
+              <p className="text-[1.3vw] mt-[1.8vw] text-white w-[85%] max-md:mt-[4vw] max-[1025px]:text-[2.5vw] max-md:text-[4vw]">
                 {featuredPost.summary}
               </p>
             </Copy>

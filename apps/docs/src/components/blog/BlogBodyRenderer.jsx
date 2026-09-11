@@ -1,6 +1,13 @@
 import Image from "next/image";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { getBlogHeadings } from "@/lib/blog-content";
+import {
+  FAQContent,
+  FAQGroup,
+  FAQTitle,
+  FAQWrapper,
+} from "@/components/animated-faq";
+import styles from "@/app/(marketing)/blog/[slug]/blog-content.module.css";
 
 // Renders a blogPost's Sanity `body` (the same effectBody portable-text
 // schema effectContent uses - block/effectImage/effectCodeBlock/
@@ -9,9 +16,9 @@ import { getBlogHeadings } from "@/lib/blog-content";
 // SanityBodyBlock: those are wired into useCopyLimit()'s Pro-effect
 // copy-paywall, which has no meaning for a blog post - pulling them in would
 // mean importing paywall logic into public content. Same schema, plain
-// rendering, styled entirely by styles/blog.css's bare-tag selectors
-// (.blog-article h2/p/ul/blockquote/code/table/etc.) so blocks need no
-// per-element classes beyond the few custom ones below.
+// rendering, styled by blog-content.module.css's bare-tag selectors under
+// .content (h2/h3/p/ul/blockquote/table/etc.) so blocks need no per-element
+// classes beyond the few custom ones below.
 
 function buildMarkedChildren(block) {
   const markDefs = block.markDefs || [];
@@ -90,11 +97,11 @@ function TextBlock({ block, headingId }) {
   const children = buildMarkedChildren(block);
   const style = block.style || "normal";
 
-  if (style === "h2") return <h2 id={headingId}>{children}</h2>;
-  if (style === "h3") return <h3>{children}</h3>;
-  if (style === "blockquote") return <blockquote>{children}</blockquote>;
+  if (style === "h2") return <h2 id={headingId} className="fadeup">{children}</h2>;
+  if (style === "h3") return <h3 className="fadeup">{children}</h3>;
+  if (style === "blockquote") return <blockquote className="fadeup">{children}</blockquote>;
 
-  return <p>{children}</p>;
+  return <p className="fadeup">{children}</p>;
 }
 
 function BlogBlock({ block, headingId }) {
@@ -118,16 +125,20 @@ function BlogBlock({ block, headingId }) {
 
   if (block._type === "effectImage") {
     return (
-      <figure>
-        <Image
-          src={block.url}
-          alt={block.alt || ""}
-          width={1600}
-          height={900}
-          sizes="(max-width: 768px) 100vw, 720px"
-          style={{ width: "100%", height: "auto" }}
-        />
-        {block.caption && <figcaption>{block.caption}</figcaption>}
+      <figure className="fadeup">
+        <div className={styles.imageFrame}>
+          <Image
+            src={block.url}
+            alt={block.alt || ""}
+            width={1600}
+            height={900}
+            sizes="(max-width: 768px) 100vw, 720px"
+            className={styles.image}
+          />
+        </div>
+        {block.caption && (
+          <figcaption className={styles.caption}>{block.caption}</figcaption>
+        )}
       </figure>
     );
   }
@@ -136,7 +147,7 @@ function BlogBlock({ block, headingId }) {
     return <CodeBlock code={block.code || ""} tsxCode={block.tsxCode} filename={block.filename} />;
   }
 
-  if (block._type === "horizontalRule") return <hr />;
+  if (block._type === "horizontalRule") return <hr className={styles.contentDivider} />;
 
   if (block._type === "effectTableBlock") {
     const headers = Array.isArray(block.headers) ? block.headers : [];
@@ -184,20 +195,56 @@ function BlogBlock({ block, headingId }) {
   }
 
   if (block._type === "effectFaqAccordion") {
-    const items = block.items || [];
+    const faqItems = block.items || [];
 
-    if (!items.length) return null;
+    if (!faqItems.length) return null;
 
     return (
-      <div className="blog-faq">
-        {block.title && <h2>{block.title}</h2>}
-        {items.map((item, index) => (
-          <div className="blog-faq-item" key={item._key || index}>
-            <p className="blog-faq-question">{item.question}</p>
-            <p className="blog-faq-answer">{item.answer}</p>
+      <section className={`fadeup ${styles.faqAccordion}`}>
+        {block.title && (
+          <h2 className={styles.faqAccordionTitle}>{block.title}</h2>
+        )}
+
+        <FAQGroup
+          allowMultiple={false}
+          defaultOpenItems={faqItems[0]?._key ? [faqItems[0]._key] : []}
+        >
+          <div className="border border-grey">
+            {faqItems.map((item, index) => {
+              const itemId = item._key || `faq-${index}`;
+
+              return (
+                <FAQWrapper
+                  key={itemId}
+                  itemId={itemId}
+                  className={`group border-grey px-[2.5vw] py-[2vw] max-[1025px]:px-[4vw] max-[1025px]:py-[4vw] max-md:px-[6vw] max-md:py-[6vw] ${index > 0 ? "border-t" : ""
+                    }`}
+                  iconClassName="mt-[0.55vw] max-md:mt-[1vw] max-md:mt-[1.5vw] text-light-grey transition-colors duration-500 ease-out group-hover:text-white"
+                  iconSize={18}
+                  iconStrokeWidth={1.5}
+                  duration={0.6}
+                >
+                  <FAQTitle
+                    className="pb-0 items-start! justify-start! gap-[1.5vw]! max-[1025px]:gap-[3vw]! max-md:gap-[4vw]!"
+                    iconPosition="left"
+                    iconMode="rotate-left-down"
+                  >
+                    <h3 className="text-[1.55vw]! font-neue-haas leading-tight! my-0! max-[1025px]:text-[3.4vw]! max-md:text-[5.2vw]!">
+                      {item.question}
+                    </h3>
+                  </FAQTitle>
+
+                  <FAQContent className="pt-[1.2vw] pl-[2.8vw] max-[1025px]:pt-[2.5vw] max-[1025px]:pl-[7vw] max-md:pt-[4vw] max-md:pl-[8vw]">
+                    <p className="text-[1.15vw]! font-neue-haas text-white! leading-[1.45]! max-[1025px]:text-[2.2vw]! max-md:text-[4vw]!">
+                      {item.answer}
+                    </p>
+                  </FAQContent>
+                </FAQWrapper>
+              );
+            })}
           </div>
-        ))}
-      </div>
+        </FAQGroup>
+      </section>
     );
   }
 
