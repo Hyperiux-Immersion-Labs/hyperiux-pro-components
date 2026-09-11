@@ -190,7 +190,9 @@ function Strand({
 
   // Read live in the frame loop so slider changes apply without a remount.
   const tuning = useRef({ autoplaySpeed, dragSensitivity, inertiaDecay });
-  tuning.current = { autoplaySpeed, dragSensitivity, inertiaDecay };
+  useEffect(() => {
+    tuning.current = { autoplaySpeed, dragSensitivity, inertiaDecay };
+  }, [autoplaySpeed, dragSensitivity, inertiaDecay]);
 
   const geometry = useMemo(
     () => new THREE.PlaneGeometry(layout.planeW, layout.planeH),

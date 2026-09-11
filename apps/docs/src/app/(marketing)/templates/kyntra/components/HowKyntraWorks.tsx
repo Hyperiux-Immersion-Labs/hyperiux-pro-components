@@ -44,20 +44,9 @@ export default function HowKyntraWorks() {
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [enquiryUsed, setEnquiryUsed] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const lineRefs = useRef<SVGLineElement[]>([]);
-  const dotRefs = useRef<SVGCircleElement[]>([]);
+  const lineRefs = useRef<(SVGLineElement | null)[]>([]);
+  const dotRefs = useRef<(SVGCircleElement | null)[]>([]);
   const stepRefs = useRef<HTMLDivElement[]>([]);
-
-  lineRefs.current = [];
-  dotRefs.current = [];
-
-  const addLineRef = (el: SVGLineElement | null) => {
-    if (el && !lineRefs.current.includes(el)) lineRefs.current.push(el);
-  };
-
-  const addDotRef = (el: SVGCircleElement | null) => {
-    if (el && !dotRefs.current.includes(el)) dotRefs.current.push(el);
-  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -66,6 +55,7 @@ export default function HowKyntraWorks() {
      
       if (prefersReducedMotion()) {
         lineRefs.current.forEach((line) => {
+          if (!line) return;
           gsap.set(line, { strokeDasharray: "none", strokeDashoffset: 0 });
         });
         gsap.set(dotRefs.current, {
@@ -91,6 +81,7 @@ export default function HowKyntraWorks() {
       });
 
       lineRefs.current.forEach((line, index) => {
+        if (!line) return;
         const dot = dotRefs.current[index];
 
         gsap.set(line, {
@@ -175,7 +166,10 @@ export default function HowKyntraWorks() {
       <div className="relative mx-auto mt-[5vw] max-[1025px]:mt-[5vh] flex w-full flex-col items-center">
         {STEPS.map((step, index) => (
           <div key={step.title} className="flex mb-[2vw] w-full flex-col items-center">
-            <TimelineConnector addLineRef={addLineRef} addDotRef={addDotRef} />
+            <TimelineConnector
+              addLineRef={(el) => { lineRefs.current[index] = el; }}
+              addDotRef={(el) => { dotRefs.current[index] = el; }}
+            />
 
             <div
               ref={(el) => {

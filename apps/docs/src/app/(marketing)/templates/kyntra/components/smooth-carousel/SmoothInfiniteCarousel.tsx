@@ -4,6 +4,7 @@
 
 import React, {
   useEffect,
+  useEffectEvent,
   useRef,
   type ReactNode,
   type CSSProperties,
@@ -85,6 +86,10 @@ export default function SmoothInfiniteCarousel({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const sliderRef = useRef<KeyboardSlider | null>(null);
 
+  const notifyReady = useEffectEvent((slider: KeyboardSlider) => {
+    onReady?.(slider);
+  });
+
   const childArray = React.Children.toArray(children).filter(Boolean);
 
   useEffect(() => {
@@ -102,7 +107,7 @@ export default function SmoothInfiniteCarousel({
     });
 
     sliderRef.current = slider;
-    onReady?.(slider);
+    notifyReady(slider);
 
     return () => {
       slider.destroy();

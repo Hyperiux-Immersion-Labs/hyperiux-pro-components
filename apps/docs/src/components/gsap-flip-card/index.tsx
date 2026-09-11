@@ -173,9 +173,11 @@ const GsapFlipCard = ({
     captionSplitRef.current = null;
   }, []);
 
-  useEffect(() => {
+  const [previousItems, setPreviousItems] = useState(items);
+  if (items !== previousItems) {
+    setPreviousItems(items);
     setOrder(items.map((_, i) => i));
-  }, [items]);
+  }
 
   useLayoutEffect(() => {
     const el = rootRef.current;
