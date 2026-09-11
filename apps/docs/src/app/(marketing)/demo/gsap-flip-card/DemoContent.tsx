@@ -3,6 +3,7 @@
 import GsapFlipCard from "@/components/gsap-flip-card";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import SplitLine from "@/components/WebsiteComps/SplitLine";
 import type { RegistryLike } from "@/components/remixer-panel/types";
 
 export default function DemoContent({ registry }: { registry: RegistryLike }) {
@@ -14,7 +15,7 @@ export default function DemoContent({ registry }: { registry: RegistryLike }) {
     >
       {({ values, effect }) => (
         <main
-          className="h-screen "
+          className="relative h-screen"
           style={{ backgroundColor: values.backgroundColor as string }}
         >
           <DemoHeader
@@ -22,6 +23,13 @@ export default function DemoContent({ registry }: { registry: RegistryLike }) {
             logoColor={values.textColor as string}
           />
           {effect}
+          <SplitLine
+            as="p"
+            start="top 120%"
+            className="absolute bottom-[3%] text-black/70 leading-[1.1] w-[20%] left-1/2 -translate-x-1/2 text-center"
+          >
+            Click the stack to spread it out, then any frame to swap it in
+          </SplitLine>
         </main>
       )}
     </RegistryRemixerDemo>

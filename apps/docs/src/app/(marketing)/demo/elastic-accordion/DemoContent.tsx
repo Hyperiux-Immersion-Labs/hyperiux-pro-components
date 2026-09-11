@@ -3,6 +3,7 @@
 import ElasticAccordion from "@/components/elastic-accordion";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import SplitLine from "@/components/WebsiteComps/SplitLine";
 import type { RegistryLike } from "@/components/remixer-panel/types";
 
 export default function DemoContent({ registry }: { registry: RegistryLike }) {
@@ -14,7 +15,7 @@ export default function DemoContent({ registry }: { registry: RegistryLike }) {
     >
       {({ values, effect }) => (
         <main
-          className="min-h-screen w-full pb-16 pt-28 md:pb-[8vw]"
+          className="relative h-screen w-full pt-28 md:pb-[8vw]"
           style={{ backgroundColor: values.bgColor as string }}
         >
           <DemoHeader />
@@ -24,6 +25,13 @@ export default function DemoContent({ registry }: { registry: RegistryLike }) {
             </h1>
           </div>
           {effect}
+          <SplitLine
+            as="p"
+            start="top 120%"
+            className="absolute py-1.5 px-4 border border-black rounded-xl bottom-[4%] left-1/2 -translate-x-1/2 text-center text-[#101010]"
+          >
+            Click on the FAQ triggers
+          </SplitLine>
         </main>
       )}
     </RegistryRemixerDemo>
