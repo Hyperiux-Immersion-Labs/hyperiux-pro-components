@@ -2,17 +2,13 @@ import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertAdmin } from "@/lib/admin";
-import { getEffectMetadata } from "@/lib/registry";
-import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
-import { buildDailyBuckets, fillDailyBuckets, utcDateString } from "@/lib/admin-activity";
+import { buildDailyBucketsForRange, fillDailyBuckets, resolveDateBounds, utcDateString } from "@/lib/admin-activity";
 
 // Stage 2 (Installation-SyncUp.md): calibrate the 2/3/10 daily limits against
 // real install_events data before Stage 3 flips INSTALL_LIMIT_ENFORCE on.
 // The single question this exists to answer: are the limits right, or are
 // CI pipelines / monorepos / shared office IPs about to get falsely capped?
 
-const TREND_DAYS = 30;
-const TOP_EFFECTS_LIMIT = 10;
 const TOP_USERS_LIMIT = 15;
 
 // Same success-vs-attempt distinction as /api/admin/copy-activity - "allowed"
@@ -36,20 +32,6 @@ function topUserCounts(rows, limit) {
     .map(([clerkUserId, count]) => ({ clerkUserId, count }));
 }
 
-function topSlugCounts(rows, limit) {
-  const counts = new Map();
-
-  for (const row of rows) {
-    if (!row.effect_slug) continue;
-    counts.set(row.effect_slug, (counts.get(row.effect_slug) || 0) + 1);
-  }
-
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, limit)
-    .map(([slug, count]) => ({ slug, count }));
-}
-
 function countBy(rows, key) {
   const counts = new Map();
 
@@ -63,65 +45,70 @@ function countBy(rows, key) {
     .map(([name, value]) => ({ name, value }));
 }
 
-export async function GET() {
+export async function GET(request) {
   if (!(await assertAdmin())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   try {
-    const thirtyDaysAgoDate = utcDateString(TREND_DAYS - 1);
-    const thirtyDaysAgoISO = `${thirtyDaysAgoDate}T00:00:00.000Z`;
+    const { searchParams } = new URL(request.url);
+    const range = searchParams.get("range") || "30d";
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+    const { startISO, endISO, startDateString, endDateString } = resolveDateBounds({
+      range,
+      from,
+      to,
+    });
     const today = utcDateString(0);
 
-    const [{ data: eventRows, error: eventsError }, sanityEntries] = await Promise.all([
+    let eventsQuery = supabase
+      .from("install_events")
+      .select(
+        "occurred_at,identity_key,clerk_user_id,device_id,ip_hash,effect_slug,effect_tier,source,plan,decision,reason,enforced,would_have_denied,cli_version,mcp_version"
+      )
+      .order("occurred_at", { ascending: false });
+    if (startISO) eventsQuery = eventsQuery.gte("occurred_at", startISO);
+    if (endISO) eventsQuery = eventsQuery.lt("occurred_at", endISO);
+
+    const [
+      { data: eventRows, error: eventsError },
+      // "Installs Today" is a fixed daily pulse, deliberately independent of
+      // whatever window is selected elsewhere on the page - always today.
+      { count: eventsToday, error: eventsTodayError },
+    ] = await Promise.all([
+      eventsQuery,
       supabase
         .from("install_events")
-        .select(
-          "occurred_at,identity_key,clerk_user_id,device_id,ip_hash,effect_slug,effect_tier,source,plan,decision,reason,enforced,would_have_denied,cli_version,mcp_version"
-        )
-        .gte("occurred_at", thirtyDaysAgoISO)
-        .order("occurred_at", { ascending: false }),
-      getAllSanityEffectEntries(),
+        .select("id", { count: "exact", head: true })
+        .in("decision", SUCCESS_DECISIONS)
+        .gte("occurred_at", `${today}T00:00:00.000Z`),
     ]);
 
-    if (eventsError) {
-      console.error("ADMIN_INSTALLS_ERROR:", eventsError);
+    if (eventsError || eventsTodayError) {
+      console.error("ADMIN_INSTALLS_ERROR:", eventsError || eventsTodayError);
       return NextResponse.json({ error: "Failed to load install events" }, { status: 500 });
     }
 
-    const events = eventRows || [];
-    const sanityEffectsBySlug = new Map(
-      buildEffectsFromSanity(sanityEntries).map((effect) => [effect.name, effect])
-    );
+    const allEvents = eventRows || [];
+    // install_events is the raw attempt log, denied rows included - "Total
+    // Installs" and everything derived from it should mean real, successful
+    // deliveries (matching "Top users by copies" and the event log below),
+    // not attempts that never happened. The denial count itself still
+    // matters (it's what Stage 2 calibration reads), so it stays visible as
+    // its own explicit stat instead of being silently folded into the
+    // "installs" numbers.
+    const events = allEvents.filter((row) => SUCCESS_DECISIONS.includes(row.decision));
+    const deniedEvents = allEvents.filter((row) => !SUCCESS_DECISIONS.includes(row.decision));
 
-    function resolveTitle(slug) {
-      return sanityEffectsBySlug.get(slug)?.title || getEffectMetadata(slug)?.title || slug;
-    }
-
-    const todayEvents = events.filter((row) => row.occurred_at.slice(0, 10) === today);
-    const deniedRows = events.filter((row) => row.would_have_denied);
     const allowedRows = events.filter((row) => row.decision === "allowed");
     const alreadyUnlockedRows = events.filter((row) => row.decision === "already-unlocked");
 
     const installTrend = fillDailyBuckets(
-      buildDailyBuckets(TREND_DAYS),
+      buildDailyBucketsForRange({ startDateString, endDateString }),
       events,
       (row) => row.occurred_at.slice(0, 10)
     );
-
-    const wouldHaveDeniedTrend = fillDailyBuckets(
-      buildDailyBuckets(TREND_DAYS),
-      deniedRows,
-      (row) => row.occurred_at.slice(0, 10)
-    );
-
-    const topEffects = topSlugCounts(events, TOP_EFFECTS_LIMIT).map(({ slug, count }) => ({
-      name: resolveTitle(slug),
-      slug,
-      value: count,
-    }));
-
-    const wouldHaveDeniedRate = events.length ? deniedRows.length / events.length : 0;
 
     const userCounts = topUserCounts(events, TOP_USERS_LIMIT);
     let clerkMap = {};
@@ -135,33 +122,40 @@ export async function GET() {
       clerkMap = Object.fromEntries((results.data || []).map((u) => [u.id, u]));
     }
 
-    const topUsers = userCounts.map(({ clerkUserId, count }) => {
-      const clerkUser = clerkMap[clerkUserId];
-      return {
-        clerkUserId,
-        name: clerkUser?.fullName || clerkUser?.firstName || null,
-        email: clerkUser?.emailAddresses?.[0]?.emailAddress || null,
-        imageUrl: clerkUser?.imageUrl || null,
-        count,
-      };
-    });
+    // Historical install_events rows outlive the account that made them - a
+    // deleted Clerk user still has old events on file. Rather than surface
+    // a blank/unclickable row (there's no profile left to open), those
+    // identities are dropped from the leaderboard entirely.
+    const topUsers = userCounts
+      .filter(({ clerkUserId }) => clerkMap[clerkUserId])
+      .map(({ clerkUserId, count }) => {
+        const clerkUser = clerkMap[clerkUserId];
+        return {
+          clerkUserId,
+          name: clerkUser.fullName || clerkUser.firstName || null,
+          email: clerkUser.emailAddresses?.[0]?.emailAddress || null,
+          imageUrl: clerkUser.imageUrl || null,
+          count,
+        };
+      });
 
     return NextResponse.json({
+      range,
       stats: {
         totalEvents: events.length,
-        eventsToday: todayEvents.length,
+        eventsToday: eventsToday || 0,
         allowedCount: allowedRows.length,
         alreadyUnlockedCount: alreadyUnlockedRows.length,
-        deniedCount: events.length - allowedRows.length - alreadyUnlockedRows.length,
-        wouldHaveDeniedCount: deniedRows.length,
-        wouldHaveDeniedRate,
-        enforced: events.some((row) => row.enforced),
+        deniedCount: deniedEvents.length,
+        // Checked across every attempt, not just successful ones - a denial
+        // can only happen while enforcement is on, so it's the more
+        // complete signal for "was the limit actually active in this
+        // window," even if every *successful* row happened to log false.
+        enforced: allEvents.some((row) => row.enforced),
       },
       sourceBreakdown: countBy(events, "source"),
       planBreakdown: countBy(events, "plan"),
       installTrend,
-      wouldHaveDeniedTrend,
-      topEffects,
       topUsers,
     });
   } catch (error) {

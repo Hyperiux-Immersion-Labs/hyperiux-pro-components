@@ -185,9 +185,11 @@ export async function getInstallLimitDecision({
 
     if (!deviceKey && !ipKey) {
       // No identity at all - can't attribute or limit, deny by policy.
-      // Never actually reached today: web always has a Clerk session or
-      // none (anonymous web reads are unmetered, see risk #4), and
-      // CLI/MCP always send at least a device-ID once Stage 1.6/1.7 land.
+      // Rare in practice (web anonymous reads are unmetered, see risk #4,
+      // and a request without any resolvable IP is unusual) - but a missing
+      // device ID alone is common and handled below, not here: it falls
+      // back to the IP as this caller's identity rather than hitting this
+      // branch.
       return decision("no-identity");
     }
 
@@ -285,7 +287,25 @@ export async function getInstallLimitDecision({
     }
   }
 
-  if (identity.ipKey) {
+  // LIMITS.ip only exists to keep many *different* real devices sharing one
+  // network (an office, a CI runner) from all getting falsely capped once
+  // they've each already passed their own device check above. It was never
+  // meant to apply to a single caller who simply never sent a device ID -
+  // that caller has no other identity, so the IP *is* them, and they must
+  // get the same strict per-anonymous-caller limit a device ID would have
+  // gotten them. Skipping this bucket entirely once a device already
+  // claimed successfully avoids double-spending: a shared-IP ceiling is a
+  // real, separate check in that case, not "the" check.
+  if (identity.ipKey && !identity.deviceKey) {
+    ipClaim = await claimSlot({
+      identityKey: identity.ipKey,
+      clerkUserId: null,
+      usageDate,
+      effectSlug,
+      source,
+      limit: LIMITS.anonymous,
+    });
+  } else if (identity.ipKey) {
     ipClaim = await claimSlot({
       identityKey: identity.ipKey,
       clerkUserId: null,
@@ -310,10 +330,14 @@ export async function getInstallLimitDecision({
     identityKey: primaryKey,
     claim: effectiveClaim,
     reason: effectiveClaim.already_unlocked ? "already-unlocked" : bothAllowed ? "allowed" : "limit-reached",
-    // Device is always checked first and short-circuits its own denial
-    // above (a truthy deviceKey reaching this point already passed, or
-    // wasn't checked at all) - so a denial here is always the IP bucket's.
-    // On success, report whichever bucket was actually the primary one.
-    limit: bothAllowed ? (identity.deviceKey ? LIMITS.anonymous : LIMITS.ip) : LIMITS.ip,
+    // Without a device key, the IP claim above always runs against
+    // LIMITS.anonymous (there's no other bucket in play) - report that,
+    // allowed or denied. With a device key, it's the original logic: device
+    // always checked first and short-circuits its own denial above (a
+    // truthy deviceKey reaching this point already passed), so a denial
+    // here is always the IP bucket's real (looser) limit, and a success
+    // reports the device's own (stricter) limit, since that's the primary
+    // claim a device-having caller was actually bound by.
+    limit: identity.deviceKey ? (bothAllowed ? LIMITS.anonymous : LIMITS.ip) : LIMITS.anonymous,
   });
 }

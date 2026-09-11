@@ -61,3 +61,73 @@ export function resolveRangeStart(range) {
   date.setUTCDate(date.getUTCDate() - DATE_RANGE_DAYS[range]);
   return date;
 }
+
+function parseUTCDateParam(value) {
+  if (!value) return null;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+// One bounds resolver shared by every admin endpoint exposing the "Today /
+// 7d / 30d / 90d / All time / Custom range" picker - explicit `from`/`to`
+// (plain YYYY-MM-DD strings, as sent by an <input type="date">) take
+// precedence over the `range` preset whenever present, since the client
+// only ever sends one or the other. Returns bounds in both forms callers
+// need: ISO timestamps (start inclusive, end EXCLUSIVE - for timestamptz
+// columns) and plain date strings (both ends inclusive - for a DATE column
+// like install_unlocks.usage_date, where "the whole day" is the unit).
+export function resolveDateBounds({ range, from, to } = {}) {
+  const customFrom = parseUTCDateParam(from);
+  const customTo = parseUTCDateParam(to);
+
+  const start = customFrom || resolveRangeStart(range);
+
+  let endExclusive = null;
+  if (customTo) {
+    endExclusive = new Date(customTo);
+    endExclusive.setUTCDate(endExclusive.getUTCDate() + 1);
+  }
+
+  return {
+    startISO: start ? start.toISOString() : null,
+    endISO: endExclusive ? endExclusive.toISOString() : null,
+    startDateString: start ? start.toISOString().slice(0, 10) : null,
+    endDateString: customTo ? customTo.toISOString().slice(0, 10) : null,
+  };
+}
+
+// Trend-chart bucket builder for the same shared date-range picker: unlike
+// the fixed "last 30 days" a chart used to always show, the selected
+// window's length now varies (a day, a quarter, a custom multi-month
+// span, or unbounded "all time"). An open lower bound ("all time", or a
+// custom range with no "from") defaults its chart window to the most
+// recent `maxDays` ending at the window's end; an open upper bound
+// defaults to today. The whole span is then clamped to `maxDays` buckets
+// (keeping the most recent days) so a wide/unbounded range still renders a
+// readable chart - callers use the real (unclamped) start/end bounds
+// separately for their actual aggregate numbers, which stay fully accurate
+// regardless of chart density.
+export function buildDailyBucketsForRange({ startDateString, endDateString, maxDays = 90 } = {}) {
+  const end = endDateString ? new Date(`${endDateString}T00:00:00Z`) : new Date(`${utcDateString(0)}T00:00:00Z`);
+
+  let start;
+  if (startDateString) {
+    start = new Date(`${startDateString}T00:00:00Z`);
+  } else {
+    start = new Date(end);
+    start.setUTCDate(start.getUTCDate() - (maxDays - 1));
+  }
+
+  const totalDays = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
+  const days = Math.min(Math.max(totalDays, 1), maxDays);
+
+  const buckets = [];
+  for (let i = days - 1; i >= 0; i -= 1) {
+    const date = new Date(end);
+    date.setUTCDate(date.getUTCDate() - i);
+    const dateString = date.toISOString().slice(0, 10);
+    buckets.push({ date: dateString, label: formatDayLabel(dateString), value: 0 });
+  }
+
+  return buckets;
+}

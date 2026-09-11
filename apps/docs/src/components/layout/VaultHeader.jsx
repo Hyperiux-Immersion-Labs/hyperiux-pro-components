@@ -19,8 +19,8 @@ import { GlobalSearch } from "./SearchBar";
 const ProfileDropdown = dynamic(() => import("./ProfileDropDown"), {
   ssr: false,
 });
-import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { HyperiuxLogo } from "@/utils/Icons";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -130,16 +130,6 @@ export function VaultHeader({
 
   const pathname = usePathname();
   const [routeShown, setRouteShown] = useState(pathname);
-
-  const hideFoundingAccess =
-    pathname?.startsWith("/docs") || pathname?.startsWith("/legal");
-
-  // Hide the "Browse Free Effects" / Sign In prompt on the effect category
-  // page (/effects/[slug]) only. Still show on the individual effect page
-  // (/effects/[slug]/[effectSlug]) and everywhere else.
-  const effectsSegments = pathname?.split("/").filter(Boolean) ?? [];
-  const isEffectCategoryPage =
-    effectsSegments[0] === "effects" && effectsSegments.length === 2;
 
   useEffect(() => {
     if (!isSignedIn) return;
@@ -386,7 +376,7 @@ export function VaultHeader({
               </button>
             )}
 
-            {isLoaded && !hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && (
+            {isLoaded && user?.publicMetadata?.plan !== "pro" && (
               <div className="block max-[1025px]:hidden">
                 <ButtonV3
                   text="Upgrade to Pro"
@@ -400,16 +390,14 @@ export function VaultHeader({
             )}
 
             {isLoaded && (!isSignedIn ? (
-              !isEffectCategoryPage && (
-                <div className="block max-[1025px]:hidden">
-                  <ButtonV3
-                    text="Sign In"
-                    id={"sign-in-navbar"}
-                    href="/sign-in"
-                    variant="outline2"
-                  />
-                </div>
-              )
+              <div className="block max-[1025px]:hidden">
+                <ButtonV3
+                  text="Sign In"
+                  id={"sign-in-navbar"}
+                  href="/sign-in"
+                  variant="outline2"
+                />
+              </div>
             ) : (
               <div className="max-[1025px]:hidden">
                 <ProfileDropdown savedCount={wishlistCount} usage={usage} plan={user?.publicMetadata?.plan || "free"} />
@@ -422,25 +410,12 @@ export function VaultHeader({
       {/* Mobile/tablet bar - <=1025px only, matches NavbarMobileV3. */}
       <div className="fixed top-0 left-0 z-950 hidden max-[1025px]:flex w-full items-center justify-between border-b border-white/8 bg-background/60 px-[6vw] py-[5vw] backdrop-blur-xl md:px-[3.5vw] md:py-[2.5vw]">
         <Link
-          href="/effects"
+          href="/"
           onClick={close}
           aria-label="Hyperiux Vault home"
-          className="flex items-center gap-[2.5vw] md:gap-[1.2vw]"
+          className="w-[36vw] md:w-[15vw]"
         >
-          <Image
-            src="/hyperiux.svg"
-            alt="Hyperiux"
-            width={28}
-            height={28}
-            className="h-[7vw] w-[7vw] shrink-0 md:h-[3.4vw] md:w-[3.4vw]"
-          />
-          <Image
-            src="/hyperiux-wordmark.svg"
-            alt="Hyperiux"
-            width={128}
-            height={37}
-            className="h-auto w-[26vw] md:w-[11vw]"
-          />
+          <HyperiuxLogo className="size-full text-primary" />
         </Link>
 
         <button
@@ -609,7 +584,7 @@ export function VaultHeader({
 
           {isLoaded && (
             <div data-mobile-row className="mt-[8vw] flex flex-col gap-[3vw] md:mt-[4.6vw] md:gap-[1.5vw]">
-              {!hideFoundingAccess && user?.publicMetadata?.plan !== "pro" && (
+              {user?.publicMetadata?.plan !== "pro" && (
                 <ButtonV3
                   text="Upgrade to Pro"
                   href="/pricing#pricing-cards"
@@ -622,7 +597,7 @@ export function VaultHeader({
                 />
               )}
 
-              {!isSignedIn && !isEffectCategoryPage && (
+              {!isSignedIn && (
                 <ButtonV3
                   text="Sign In"
                   href="/sign-in"

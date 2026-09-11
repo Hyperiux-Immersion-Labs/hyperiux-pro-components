@@ -1,13 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// The aggregation logic itself (countBy, topSlugCounts, topDeniedIdentities,
-// wouldHaveDeniedRate) was verified against real seeded Supabase data during
-// development - this test covers the route's auth gate and response wiring,
+// The aggregation logic itself (countBy, topSlugCounts, topUserCounts) was
+// verified against real seeded Supabase data during development - this test
+// covers the route's auth gate, date-range wiring, and response shape,
 // which a real-data check doesn't exercise on its own.
 
 let isAdminResult;
 let eventRows;
 let queryError;
+let eventsTodayCount;
+let eventsTodayError;
 let clerkUsers;
 
 vi.mock("@/lib/admin", () => ({
@@ -29,19 +31,44 @@ vi.mock("@/lib/sanity", () => ({
   buildEffectsFromSanity: vi.fn(() => []),
 }));
 
+// The route runs two separate queries against install_events (the main
+// event list, and an always-"today" count independent of the selected
+// range) - both share the same chainable-and-thenable shape so they resolve
+// correctly no matter which methods get called or in what order.
+function makeEventsQuery() {
+  const query = {
+    order: vi.fn(() => query),
+    gte: vi.fn(() => query),
+    lt: vi.fn(() => query),
+    then: (resolve) => resolve({ data: eventRows, error: queryError }),
+  };
+  return query;
+}
+
+function makeTodayCountQuery() {
+  const query = {
+    in: vi.fn(() => query),
+    gte: vi.fn(() => query),
+    then: (resolve) => resolve({ count: eventsTodayCount, error: eventsTodayError }),
+  };
+  return query;
+}
+
 vi.mock("@/lib/supabase", () => ({
   supabase: {
     from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        gte: vi.fn(() => ({
-          order: vi.fn(() => Promise.resolve({ data: eventRows, error: queryError })),
-        })),
-      })),
+      select: vi.fn((columns, opts) =>
+        opts && opts.count === "exact" && opts.head === true ? makeTodayCountQuery() : makeEventsQuery()
+      ),
     })),
   },
 }));
 
 const { GET } = await import("./route.js");
+
+function makeRequest(params = "") {
+  return new Request(`http://localhost/api/admin/installs${params}`);
+}
 
 function makeEvent(overrides = {}) {
   return {
@@ -67,11 +94,13 @@ describe("admin/installs route", () => {
     isAdminResult = false;
     eventRows = [];
     queryError = null;
+    eventsTodayCount = 0;
+    eventsTodayError = null;
     clerkUsers = [];
   });
 
   it("403s for a non-admin", async () => {
-    const res = await GET();
+    const res = await GET(makeRequest());
     expect(res.status).toBe(403);
   });
 
@@ -79,7 +108,7 @@ describe("admin/installs route", () => {
     isAdminResult = true;
     queryError = new Error("connection reset");
 
-    const res = await GET();
+    const res = await GET(makeRequest());
     expect(res.status).toBe(500);
   });
 
@@ -87,12 +116,12 @@ describe("admin/installs route", () => {
     isAdminResult = true;
     eventRows = [];
 
-    const res = await GET();
+    const res = await GET(makeRequest());
     const body = await res.json();
 
     expect(res.status).toBe(200);
     expect(body.stats.totalEvents).toBe(0);
-    expect(body.stats.wouldHaveDeniedRate).toBe(0);
+    expect(body.stats.eventsToday).toBe(0);
   });
 
   it("computes correct stats for a mix of allowed/already-unlocked/denied events", async () => {
@@ -120,15 +149,16 @@ describe("admin/installs route", () => {
       }),
     ];
 
-    const res = await GET();
+    const res = await GET(makeRequest());
     const body = await res.json();
 
-    expect(body.stats.totalEvents).toBe(4);
+    // totalEvents (like every other Installs & Copies number) counts real,
+    // successful deliveries only - the 2 denied attempts show up solely in
+    // deniedCount, never folded into "installs".
+    expect(body.stats.totalEvents).toBe(2);
     expect(body.stats.allowedCount).toBe(1);
     expect(body.stats.alreadyUnlockedCount).toBe(1);
     expect(body.stats.deniedCount).toBe(2);
-    expect(body.stats.wouldHaveDeniedCount).toBe(2);
-    expect(body.stats.wouldHaveDeniedRate).toBe(0.5);
   });
 
   it("ranks users by successful copies, resolving name (or falling back to email), and excludes anonymous/denied rows", async () => {
@@ -149,7 +179,7 @@ describe("admin/installs route", () => {
       { id: "user_b", fullName: null, firstName: null, emailAddresses: [{ emailAddress: "bea@example.com" }], imageUrl: null },
     ];
 
-    const res = await GET();
+    const res = await GET(makeRequest());
     const body = await res.json();
 
     expect(body.topUsers).toEqual([
@@ -158,13 +188,44 @@ describe("admin/installs route", () => {
     ]);
   });
 
+  it("drops a user from the leaderboard entirely once their Clerk account is deleted", async () => {
+    isAdminResult = true;
+    eventRows = [
+      makeEvent({ clerk_user_id: "user_a", decision: "allowed", effect_slug: "x" }),
+      // user_deleted has real historical events, but no Clerk account left
+      // to open a profile for - the leaderboard has nothing to link to.
+      makeEvent({ clerk_user_id: "user_deleted", decision: "allowed", effect_slug: "y" }),
+    ];
+    clerkUsers = [
+      { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], imageUrl: "https://img/a" },
+    ];
+
+    const res = await GET(makeRequest());
+    const body = await res.json();
+
+    expect(body.topUsers).toEqual([
+      { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 1 },
+    ]);
+  });
+
   it("reports enforced: true if any event in the window was enforced", async () => {
     isAdminResult = true;
     eventRows = [makeEvent({ enforced: false }), makeEvent({ enforced: true })];
 
-    const res = await GET();
+    const res = await GET(makeRequest());
     const body = await res.json();
 
     expect(body.stats.enforced).toBe(true);
+  });
+
+  it("reports the always-today count independently of the selected range", async () => {
+    isAdminResult = true;
+    eventRows = [];
+    eventsTodayCount = 7;
+
+    const res = await GET(makeRequest("?range=90d"));
+    const body = await res.json();
+
+    expect(body.stats.eventsToday).toBe(7);
   });
 });

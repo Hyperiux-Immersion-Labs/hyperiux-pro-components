@@ -2,7 +2,7 @@ import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
-import { invalidatePlanCache } from "@/lib/subscription";
+import { invalidatePlanCache, ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 import { createSubscriptionInvoiceEmail } from "@/lib/emails/subscription-invoice-email";
 import { confirmFoundingSlot } from "@/lib/founding-slots";
 import {
@@ -10,10 +10,6 @@ import {
   proUnlockedSubject,
   proUnlockedText,
 } from "@/lib/emails/pro-unlocked-email";
-
-// Razorpay subscription statuses that count as "paying customer".
-// "authenticated" = mandate approved, first charge pending (trial-like window).
-export const PAID_STATUSES = ["authenticated", "active"];
 
 const PLAN_INTERVALS = {
   [process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID]: "monthly",
@@ -244,7 +240,7 @@ export async function countPaidUsers() {
     .from("subscriptions")
     .select("id", { count: "exact", head: true })
     .eq("plan", "pro")
-    .in("status", PAID_STATUSES)
+    .in("status", ACTIVE_PRO_STATUSES)
     // Excludes admin-comped/legacy rows with no real Razorpay subscription
     // behind them - only actual paying customers count toward the 100 slots.
     .not("razorpay_subscription_id", "is", null);

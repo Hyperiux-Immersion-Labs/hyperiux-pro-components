@@ -33,7 +33,11 @@ const DATE_RANGE_OPTIONS = [
   { value: "30d", label: "Last 30 days" },
   { value: "90d", label: "Last 90 days" },
   { value: "all", label: "All time" },
+  { value: "custom", label: "Custom range" },
 ];
+
+const DATE_INPUT_CLASSNAME =
+  "border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-white outline-none focus:border-white/25 [color-scheme:dark]";
 
 function formatDate(value) {
   if (!value) return "-";
@@ -59,28 +63,6 @@ function displayName(user) {
   return "Unnamed user";
 }
 
-function RoleBadge({ role }) {
-  if (role === "super_admin") {
-    return (
-      <span className="inline-flex items-center bg-white/10 border border-white/15 px-3 py-1 text-xs font-medium text-white/90">
-        Super Admin
-      </span>
-    );
-  }
-  if (role === "admin") {
-    return (
-      <span className="inline-flex items-center bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium text-[#ff5f00]">
-        Admin
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center bg-white/6 px-3 py-1 text-xs font-medium text-white/50">
-      User
-    </span>
-  );
-}
-
 function PlanBadge({ plan }) {
   return (
     <span
@@ -99,10 +81,16 @@ function PlanBadge({ plan }) {
 // (signups, first-ever paid invoices, install unlocks, saves) - not the
 // per-user table's own filters, so switching table pages/filters never
 // changes what these four numbers mean.
-function UserStatsTiles({ range, onRangeChange }) {
+function UserStatsTiles({ range, onRangeChange, customFrom, customTo, onCustomFromChange, onCustomToChange }) {
   const [data, setData] = useState(null);
+  const isCustom = range === "custom";
 
   useEffect(() => {
+    // A custom range with nothing picked yet has nothing to fetch for -
+    // wait for at least one bound instead of firing a request that's
+    // equivalent to "all time" the instant "Custom range" is selected.
+    if (isCustom && !customFrom && !customTo) return;
+
     let active = true;
     // Clears the previous window's numbers immediately so a range switch
     // never flashes stale data while the new fetch is in flight - a real
@@ -110,7 +98,11 @@ function UserStatsTiles({ range, onRangeChange }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setData(null);
 
-    fetch(`/api/admin/users/stats?range=${range}`)
+    const params = new URLSearchParams({ range });
+    if (isCustom && customFrom) params.set("from", customFrom);
+    if (isCustom && customTo) params.set("to", customTo);
+
+    fetch(`/api/admin/users/stats?${params.toString()}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((json) => {
         if (active) setData(json);
@@ -122,25 +114,54 @@ function UserStatsTiles({ range, onRangeChange }) {
     return () => {
       active = false;
     };
-  }, [range]);
+  }, [range, isCustom, customFrom, customTo]);
+
+  // Only "All time" is actually a headcount ("Total") - every other window,
+  // custom ranges included, is a real "New" conversion count, matching how
+  // the stats API computes each one differently under the hood.
+  const isAllTime = range === "all";
 
   const stats = [
-    { label: "New Users", value: data ? data.newUsers : "…" },
-    { label: "New Pro Users", value: data ? data.newProUsers : "…" },
+    { label: isAllTime ? "Total Users" : "New Users", value: data ? data.newUsers : "…" },
+    { label: isAllTime ? "Total Pro Users" : "New Pro Users", value: data ? data.newProUsers : "…" },
     { label: "Copies", value: data ? data.copies : "…" },
     { label: "Saves", value: data ? data.saves : "…" },
   ];
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <p className="text-xs uppercase tracking-wider text-white/45">Activity window</p>
-        <CustomSelect
-          size="compact"
-          value={range}
-          onChange={onRangeChange}
-          options={DATE_RANGE_OPTIONS}
-        />
+        <div className="flex items-center gap-2">
+          {isCustom && (
+            <>
+              <input
+                type="date"
+                value={customFrom}
+                onChange={(e) => onCustomFromChange(e.target.value)}
+                max={customTo || undefined}
+                className={DATE_INPUT_CLASSNAME}
+                aria-label="From date"
+              />
+              <span className="text-xs text-white/30">to</span>
+              <input
+                type="date"
+                value={customTo}
+                onChange={(e) => onCustomToChange(e.target.value)}
+                min={customFrom || undefined}
+                className={DATE_INPUT_CLASSNAME}
+                aria-label="To date"
+              />
+            </>
+          )}
+          <CustomSelect
+            size="compact"
+            align="right"
+            value={range}
+            onChange={onRangeChange}
+            options={DATE_RANGE_OPTIONS}
+          />
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {stats.map((stat) => (
@@ -801,7 +822,11 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [planFilter, setPlanFilter] = useState("all");
+  const [roleFilter, setRoleFilter] = useState("all");
   const [dateRange, setDateRange] = useState("all");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [error, setError] = useState(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -809,7 +834,11 @@ export default function AdminPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [prevSearch, setPrevSearch] = useState(search);
   const [prevPlanFilter, setPrevPlanFilter] = useState(planFilter);
+  const [prevRoleFilter, setPrevRoleFilter] = useState(roleFilter);
   const [prevDateRange, setPrevDateRange] = useState(dateRange);
+  const [prevCustomFrom, setPrevCustomFrom] = useState(customFrom);
+  const [prevCustomTo, setPrevCustomTo] = useState(customTo);
+  const [prevSortBy, setPrevSortBy] = useState(sortBy);
   const [prevPageSize, setPrevPageSize] = useState(pageSize);
 
   // Reset to page 1 whenever a filter changes - derived purely from values
@@ -817,12 +846,20 @@ export default function AdminPage() {
   if (
     prevSearch !== search ||
     prevPlanFilter !== planFilter ||
+    prevRoleFilter !== roleFilter ||
     prevDateRange !== dateRange ||
+    prevCustomFrom !== customFrom ||
+    prevCustomTo !== customTo ||
+    prevSortBy !== sortBy ||
     prevPageSize !== pageSize
   ) {
     setPrevSearch(search);
     setPrevPlanFilter(planFilter);
+    setPrevRoleFilter(roleFilter);
+    setPrevCustomFrom(customFrom);
+    setPrevCustomTo(customTo);
     setPrevDateRange(dateRange);
+    setPrevSortBy(sortBy);
     setPrevPageSize(pageSize);
     setCurrentPage(1);
   }
@@ -847,6 +884,22 @@ export default function AdminPage() {
   // its result.
   const requestIdRef = useRef(0);
 
+  // Shared by fetchUsers and handleExport, which filter the same table by
+  // the same "Activity window" control - a custom range sends explicit
+  // from/to instead of the "custom" preset name, which the server doesn't
+  // otherwise know how to bound.
+  const appendDateRangeParams = useCallback(
+    (params) => {
+      if (dateRange === "custom") {
+        if (customFrom) params.set("joinedFrom", customFrom);
+        if (customTo) params.set("joinedTo", customTo);
+      } else if (dateRange !== "all") {
+        params.set("joined", dateRange);
+      }
+    },
+    [dateRange, customFrom, customTo]
+  );
+
   const fetchUsers = useCallback(async () => {
     const requestId = ++requestIdRef.current;
     setLoading(true);
@@ -855,7 +908,9 @@ export default function AdminPage() {
       const params = new URLSearchParams();
       if (search) params.set("search", search);
       if (planFilter !== "all") params.set("plan", planFilter);
-      if (dateRange !== "all") params.set("joined", dateRange);
+      if (roleFilter !== "all") params.set("role", roleFilter);
+      appendDateRangeParams(params);
+      if (sortBy !== "newest") params.set("sort", sortBy);
       params.set("limit", String(pageSize));
       params.set("offset", String((currentPage - 1) * pageSize));
 
@@ -871,7 +926,7 @@ export default function AdminPage() {
     } finally {
       if (requestId === requestIdRef.current) setLoading(false);
     }
-  }, [search, planFilter, dateRange, pageSize, currentPage]);
+  }, [search, planFilter, roleFilter, appendDateRangeParams, sortBy, pageSize, currentPage]);
 
   useEffect(() => {
     const timer = setTimeout(fetchUsers, 300);
@@ -891,7 +946,8 @@ export default function AdminPage() {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (planFilter !== "all") params.set("plan", planFilter);
-    if (dateRange !== "all") params.set("joined", dateRange);
+    if (roleFilter !== "all") params.set("role", roleFilter);
+    appendDateRangeParams(params);
 
     const link = document.createElement("a");
     link.href = `/api/admin/users/export?${params.toString()}`;
@@ -941,7 +997,14 @@ export default function AdminPage() {
         </div>
       </div>
 
-      <UserStatsTiles range={dateRange} onRangeChange={setDateRange} />
+      <UserStatsTiles
+        range={dateRange}
+        onRangeChange={setDateRange}
+        customFrom={customFrom}
+        customTo={customTo}
+        onCustomFromChange={setCustomFrom}
+        onCustomToChange={setCustomTo}
+      />
 
       {/* Filters */}
       <div className="flex gap-3 flex-wrap items-center justify-between">
@@ -963,6 +1026,25 @@ export default function AdminPage() {
               { value: "all", label: "All plans" },
               { value: "pro", label: "Pro" },
               { value: "free", label: "Free" },
+            ]}
+          />
+          <CustomSelect
+            value={roleFilter}
+            onChange={setRoleFilter}
+            options={[
+              { value: "all", label: "All roles" },
+              { value: "user", label: "User" },
+              { value: "admin", label: "Admin" },
+              { value: "super_admin", label: "Super Admin" },
+            ]}
+          />
+          <CustomSelect
+            value={sortBy}
+            onChange={setSortBy}
+            options={[
+              { value: "newest", label: "Newest" },
+              { value: "copies", label: "Most Copies" },
+              { value: "saves", label: "Most Saves" },
             ]}
           />
         </div>
@@ -993,23 +1075,21 @@ export default function AdminPage() {
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">User</th>
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
-                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Role</th>
-                <th className="px-3 py-2.5 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Copies</th>
-                <th className="px-3 py-2.5 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Saves</th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Copies / Saves</th>
                 {isSuperAdmin && (
                   <>
                     <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
-                    <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Razorpay</th>
+                    <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Transaction ID</th>
+                    <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
                   </>
                 )}
-                <th className="px-3 py-2.5 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/6">
               {loading ? (
                 Array.from({ length: Math.min(pageSize, 6) }).map((_, i) => (
                   <tr key={i}>
-                    {Array.from({ length: isSuperAdmin ? 9 : 7 }).map((__, j) => (
+                    {Array.from({ length: isSuperAdmin ? 7 : 4 }).map((__, j) => (
                       <td key={j} className="px-3 py-2.5">
                         <div className="h-4 bg-white/8 animate-pulse" style={{ width: j === 0 ? "120px" : "70px" }} />
                       </td>
@@ -1018,7 +1098,7 @@ export default function AdminPage() {
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={isSuperAdmin ? 9 : 7} className="px-3 py-10 text-center text-white/40">
+                  <td colSpan={isSuperAdmin ? 7 : 4} className="px-3 py-10 text-center text-white/40">
                     No users found.
                   </td>
                 </tr>
@@ -1041,9 +1121,17 @@ export default function AdminPage() {
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="truncate font-medium text-white max-w-32">
-                            {displayName(user)}
-                          </p>
+                          <div className="flex items-center gap-1.5">
+                            <Link
+                              href={`/dashboard/admin/activity/${buildUserActivitySlug(user)}`}
+                              className="truncate font-medium text-white max-w-32 hover:text-[#ff5f00] hover:underline underline-offset-2"
+                            >
+                              {displayName(user)}
+                            </Link>
+                            {isSuperAdmin && user.id === viewer?.id && (
+                              <span className="shrink-0 text-xs text-white/30">(you)</span>
+                            )}
+                          </div>
                           <p className="truncate text-xs text-white/45 max-w-32">
                             {user.email || user.id}
                           </p>
@@ -1056,16 +1144,11 @@ export default function AdminPage() {
                     <td className="px-3 py-2.5">
                       <PlanBadge plan={user.plan} />
                     </td>
-                    <td className="px-3 py-2.5">
-                      <div className="flex items-center gap-2">
-                        <RoleBadge role={user.role} />
-                        {isSuperAdmin && user.id === viewer?.id && (
-                          <span className="text-xs text-white/30">(you)</span>
-                        )}
-                      </div>
+                    <td className="px-3 py-2.5 text-center whitespace-nowrap">
+                      <span className="text-blue-400">{user.copiesCount ?? 0}</span>
+                      <span className="mx-1 text-white/25">/</span>
+                      <span className="text-purple-400">{user.savesCount ?? 0}</span>
                     </td>
-                    <td className="px-3 py-2.5 text-right text-white/70">{user.copiesCount ?? 0}</td>
-                    <td className="px-3 py-2.5 text-right text-white/70">{user.savesCount ?? 0}</td>
                     {isSuperAdmin && (
                       <>
                         <td className="px-3 py-2.5 text-white/60 whitespace-nowrap">
@@ -1080,18 +1163,7 @@ export default function AdminPage() {
                             <span className="text-xs text-white/25">-</span>
                           )}
                         </td>
-                      </>
-                    )}
-                    <td className="px-3 py-2.5 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/dashboard/admin/activity/${buildUserActivitySlug(user)}`}
-                          className="inline-flex items-center gap-1.5 border border-white/15 px-2.5 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
-                        >
-                          View
-                          <ArrowUpRight className="h-3.5 w-3.5" />
-                        </Link>
-                        {isSuperAdmin && (
+                        <td className="px-3 py-2.5 text-right">
                           <button
                             onClick={() => setManageUser(user)}
                             className="inline-flex items-center gap-1.5 border border-white/15 px-2.5 py-1.5 text-xs text-white/70 transition hover:border-white/30 hover:text-white"
@@ -1099,9 +1171,9 @@ export default function AdminPage() {
                             <UserCog className="h-3.5 w-3.5" />
                             Manage
                           </button>
-                        )}
-                      </div>
-                    </td>
+                        </td>
+                      </>
+                    )}
                   </tr>
                 ))
               )}

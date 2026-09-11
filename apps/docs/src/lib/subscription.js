@@ -2,7 +2,19 @@ import "server-only";
 import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 
-const ACTIVE_STATUSES = ["active", "trialing"];
+// The one canonical list of subscription statuses that count as "currently
+// has Pro" - shared by every place that gates on plan/status, so a status
+// accepted as "paid" in one place (e.g. admin revenue counting) can never
+// silently be rejected as "not active" in another (e.g. CLI/MCP content
+// access). Previously duplicated - and inconsistently - across this file,
+// effect-access.js, cli-auth.js, and pro-access.js (which used
+// ["authenticated", "active"] while the other three used
+// ["active", "trialing"]); a Razorpay subscriber sitting in "authenticated"
+// (mandate approved, first charge pending) could be counted as a paying
+// customer in the admin dashboard while their CLI token was rejected for
+// actual Pro content. "trialing" is kept for forward-compatibility even
+// though this integration doesn't currently create trial subscriptions.
+export const ACTIVE_PRO_STATUSES = ["authenticated", "active", "trialing"];
 
 // Short-lived last-known-good cache, keyed by clerk_user_id. Exists only to
 // bridge brief Supabase blips: on a genuine query error, serve the last
@@ -54,7 +66,7 @@ export async function getUserPlan(userId) {
   let plan = "free";
   let isExpired = false;
 
-  if (data?.plan === "pro" && ACTIVE_STATUSES.includes(data.status)) {
+  if (data?.plan === "pro" && ACTIVE_PRO_STATUSES.includes(data.status)) {
     if (!data.current_period_end) {
       plan = "pro";
     } else {

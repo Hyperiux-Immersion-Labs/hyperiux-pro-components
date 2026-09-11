@@ -2,7 +2,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { getRole, isSuperAdminUser } from "@/lib/admin";
-import { resolveRangeStart } from "@/lib/admin-activity";
+import { resolveDateBounds } from "@/lib/admin-activity";
 
 const CHUNK = 500;
 // Hard ceiling so an export can never turn into an unbounded loop against
@@ -11,6 +11,8 @@ const MAX_ROWS = 20000;
 
 const SUBSCRIPTION_COLUMNS =
   "clerk_user_id, plan, status, billing_interval, current_period_end, razorpay_customer_id, razorpay_subscription_id, created_at";
+
+const ROLE_OPTIONS = new Set(["admin", "super_admin", "user"]);
 
 function csvCell(value) {
   const str = value === null || value === undefined ? "" : String(value);
@@ -61,8 +63,16 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const search = (searchParams.get("search") || "").trim();
     const planFilter = searchParams.get("plan") || "all";
+    const rawRole = searchParams.get("role") || "all";
+    const roleFilter = ROLE_OPTIONS.has(rawRole) ? rawRole : "all";
     const joinedRange = searchParams.get("joined") || "all";
-    const rangeStart = resolveRangeStart(joinedRange);
+    const joinedFrom = searchParams.get("joinedFrom");
+    const joinedTo = searchParams.get("joinedTo");
+    const { startISO, endISO } = resolveDateBounds({
+      range: joinedRange,
+      from: joinedFrom,
+      to: joinedTo,
+    });
 
     const rows = [];
 
@@ -72,7 +82,8 @@ export async function GET(request) {
       // the MAX_ROWS safety ceiling is hit - never an unconditional loop.
       for (;;) {
         const clerkParams = { query: search, limit: CHUNK, offset, orderBy: "-created_at" };
-        if (rangeStart) clerkParams.createdAtAfter = rangeStart.getTime();
+        if (startISO) clerkParams.createdAtAfter = new Date(startISO).getTime();
+        if (endISO) clerkParams.createdAtBefore = new Date(endISO).getTime();
 
         const { data: clerkUsers } = await clerk.users.getUserList(clerkParams);
         if (!clerkUsers.length) break;
@@ -82,6 +93,7 @@ export async function GET(request) {
         for (const clerkUser of clerkUsers) {
           const sub = subMap[clerkUser.id];
           if (planFilter !== "all" && (sub?.plan || "free") !== planFilter) continue;
+          if (roleFilter !== "all" && (getRole(clerkUser) || "user") !== roleFilter) continue;
           rows.push(toRow(clerkUser, sub, viewerIsSuperAdmin));
           if (rows.length >= MAX_ROWS) break;
         }
@@ -99,7 +111,8 @@ export async function GET(request) {
           .range(offset, offset + CHUNK - 1);
 
         if (planFilter !== "all") query = query.eq("plan", planFilter);
-        if (rangeStart) query = query.gte("created_at", rangeStart.toISOString());
+        if (startISO) query = query.gte("created_at", startISO);
+        if (endISO) query = query.lt("created_at", endISO);
 
         const { data: subscriptions, error } = await query;
         if (error) {
@@ -123,6 +136,7 @@ export async function GET(request) {
             createdAt: null,
             publicMetadata: {},
           };
+          if (roleFilter !== "all" && (getRole(clerkUser) || "user") !== roleFilter) continue;
           rows.push(toRow(clerkUser, sub, viewerIsSuperAdmin));
         }
 

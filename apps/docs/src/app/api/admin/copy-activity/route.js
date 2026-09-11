@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { assertAdmin } from "@/lib/admin";
 import { getEffectMetadata } from "@/lib/registry";
 import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
+import { resolveDateBounds } from "@/lib/admin-activity";
 
 // install_events is the full per-attempt audit trail (web/CLI/MCP) written by
 // getInstallLimitDecision() in lib/install-limit.js - "allowed" and
@@ -11,6 +12,12 @@ import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity"
 // successful copy; "denied" rows are attempts that didn't happen, not
 // something a "who copied what" feed should list.
 const SUCCESS_DECISIONS = ["allowed", "already-unlocked"];
+
+// Matches the ceiling on /api/admin/users - the page-size selector in the
+// admin UI tops out at 500, so a smaller cap here would silently truncate a
+// "500 per page" request to 100 rows while pagination math (total / 500)
+// keeps assuming the full page size, skipping rows between pages.
+const MAX_LIMIT = 500;
 
 export async function GET(request) {
   if (!(await assertAdmin())) {
@@ -21,8 +28,13 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const effectSearch = searchParams.get("effect") || "";
     const source = searchParams.get("source") || "";
-    const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 100);
+    const range = searchParams.get("range") || "all";
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), MAX_LIMIT);
     const offset = parseInt(searchParams.get("offset") || "0", 10);
+
+    const { startISO, endISO } = resolveDateBounds({ range, from, to });
 
     let query = supabase
       .from("install_events")
@@ -36,6 +48,8 @@ export async function GET(request) {
 
     if (effectSearch) query = query.ilike("effect_slug", `%${effectSearch}%`);
     if (source && source !== "all") query = query.eq("source", source);
+    if (startISO) query = query.gte("occurred_at", startISO);
+    if (endISO) query = query.lt("occurred_at", endISO);
 
     const [{ data: rows, error, count }, sanityEntries] = await Promise.all([
       query,
