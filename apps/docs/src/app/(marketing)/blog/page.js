@@ -9,6 +9,8 @@ import { getSearchIndexEffects } from "@/lib/search-index";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { WebpageJsonLd } from "@/lib/json-ld";
 import BlogListing from "./BlogListing";
+import BlogHero from "./BlogHero";
+import FeaturedBlog from "./FeaturedBlog";
 
 const POSTS_PER_PAGE = 9;
 
@@ -44,14 +46,17 @@ export default async function BlogIndexPage({ searchParams }) {
     <>
       <WebpageJsonLd metadata={metadata} />
       <NavbarV3 effects={effects} />
-      <BlogListing
-        posts={gridPosts}
-        categories={categories}
-        featuredPost={featuredPost}
-        activeCategory={category || "all"}
-        page={page}
-        pageCount={pageCount}
-      />
+      <BlogHero />
+      <main className="relative z-20 mx-auto flex max-w-full flex-col gap-[8vw] bg-background px-[4vw] py-[6vw] max-md:gap-[14vw] max-md:px-[6vw] max-md:py-[12vw]">
+        <FeaturedBlog featuredPost={featuredPost} />
+        <BlogListing
+          posts={gridPosts}
+          categories={categories}
+          activeCategory={category || "all"}
+          page={page}
+          pageCount={pageCount}
+        />
+      </main>
       <FooterV3 />
     </>
   );
