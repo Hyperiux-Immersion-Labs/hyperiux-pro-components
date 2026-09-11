@@ -15,7 +15,7 @@ function formatCardDate(value) {
 
 export default function BlogCard({ post, priority = false }) {
   return (
-    <div className="group/card relative h-full w-full">
+    <div className="fadeup group/card relative h-full w-full">
       <div className="flex h-full min-h-[32vw] flex-col gap-[1.2vw] bg-[#161616] p-[1.8vw] max-[1025px]:min-h-0 max-md:gap-[3vw] max-md:p-[4vw] pb-9">
         <div className="h-[18vw] w-full shrink-0 overflow-hidden bg-[#202020] max-[1025px]:h-[30vw] max-md:h-[50vw]">
           {post.coverImage?.url && (

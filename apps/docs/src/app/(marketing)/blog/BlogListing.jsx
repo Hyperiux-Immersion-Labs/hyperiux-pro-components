@@ -1,5 +1,9 @@
+"use client";
+
+import { useRef } from "react";
 import Link from "next/link";
 import BlogCard from "./BlogCard";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 
 function buildHref({ category, page }) {
@@ -29,8 +33,13 @@ export default function BlogListing({
   page = 1,
   pageCount = 1,
 }) {
+  const sectionRef = useRef(null);
+
+
+  useFadeUp(sectionRef, [activeCategory, page]);
+
   return (
-    <section className="flex flex-col gap-[2vw] max-md:gap-[6vw]">
+    <section ref={sectionRef} className="flex flex-col gap-[2vw] max-md:gap-[6vw]">
       {categories.length > 0 && (
         <div className="flex flex-wrap items-center gap-2.5 max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto">
           <Link href={buildHref({ category: "all" })} className={categoryChipClass(activeCategory === "all")}>
