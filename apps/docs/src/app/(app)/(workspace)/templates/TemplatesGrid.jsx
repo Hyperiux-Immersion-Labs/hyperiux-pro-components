@@ -136,7 +136,7 @@ export function TemplatesGrid({ templates }) {
             </FadeUp>
           ))}
         </div>
-      </div>
+      </div> 
 
       <ToastViewport toast={toast} onDismiss={dismissToast} />
     </>
