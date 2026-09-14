@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
@@ -20,6 +21,9 @@ export interface GsapFlipCardItem {
   image: string;
   alt?: string;
   caption?: string;
+  title?: string;
+  meta?: string;
+  description?: string;
 }
 
 export interface GsapFlipCardProps {
@@ -84,47 +88,56 @@ const CAPTION_LINE_RATIO = 1.3;
 const CAPTION_LINE_VW = CAPTION_FONT_VW * CAPTION_LINE_RATIO;
 const CAPTION_MOBILE_LINE_RATIO = 1.5;
 const CAPTION_MOBILE_LINE = `${3 * CAPTION_MOBILE_LINE_RATIO}vw`;
-const CAPTION_MOBILE_LINE_SM = `${3.5 * CAPTION_MOBILE_LINE_RATIO}vw`;
+const CAPTION_MOBILE_LINE_SM = `${4 * CAPTION_MOBILE_LINE_RATIO}vw`;
 
-const UNSPLASH = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?w=800&h=1000&fit=crop`;
+const IMAGE_BASE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card";
 
 const defaultItems: GsapFlipCardItem[] = [
   {
     id: 0,
-    image: UNSPLASH('1500534623283-312aade485b7'),
-    alt: 'Coastal cliffs meeting open water',
-    caption: 'Late light on the headland, shot from the cliff path.',
+    image: `${IMAGE_BASE}/img01.png`,
+    title: "The Backhand",
+    meta: "Tennis / Studio Studies / 01",
+    description: "A backhand cuts across a field of red. The player holds the frame in tension, turning a split-second swing into a study of balance, timing, and control.",
+    alt: 'Tennis player mid-backhand against a red studio backdrop',
+    caption: 'The racquet blurs through the frame while the ball hangs still.',
   },
   {
     id: 1,
-    image: UNSPLASH('1519681393784-d120267933ba'),
-    alt: 'Mountain range under night sky',
-    caption: 'The ridge holds its last colour long after the sun goes.',
+    image: `${IMAGE_BASE}/img02.png`,
+    title: "Nothing but Net",
+    meta: "Basketball / Court Details / 02",
+    description: "An orange rim stands sharp against deep blue. The ball meets the net at the tipping point between anticipation and release, with the whole game distilled into one detail.",
+    alt: 'Basketball dropping through an orange rim on a deep blue background',
+    caption: 'Caught at the rim, one beat before the net gives way.',
   },
   {
     id: 2,
-    image: UNSPLASH('1470252649378-9c29740c9fa8'),
-    alt: 'Star field over a dark ridge',
-    caption: 'Clear enough that night to read the whole sky at once.',
+    image: `${IMAGE_BASE}/img03.png`,
+    title: "Above Ground",
+    meta: "Running / Motion Studies / 03",
+    description: "Seen from below, a runner stretches across an open sky. With the ground out of sight, each stride becomes a brief moment of flight, all reach, rhythm, and forward drive.",
+    alt: 'Runner suspended mid-stride against a clear blue sky',
+    caption: 'Shot from below, mid-stride, with nothing but sky behind.',
   },
   {
     id: 3,
-    image: UNSPLASH('1506905925346-21bda4d32df4'),
-    alt: 'Mist settling across a valley',
-    caption: 'Mist gathers in the valley before the morning burns it off.',
+    image: `${IMAGE_BASE}/img04.png`,
+    title: "A Different Gear",
+    meta: "Cycling / Style in Sport / 04",
+    description: "A black suit and a road bike share an acid-green stage. Precise tailoring meets the clean geometry of carbon, bringing the poise of a fashion portrait to the world of cycling.",
+    alt: 'Cyclist in a black suit holding a road bike against a lime backdrop',
+    caption: 'Tailoring and carbon on acid green, staged like a portrait.',
   },
   {
     id: 4,
-    image: UNSPLASH('1439066615861-d1af74d74000'),
-    alt: 'Forest ridge in low cloud',
-    caption: 'Cloud sits low on the treeline and refuses to lift.',
-  },
-  {
-    id: 5,
-    image: UNSPLASH('1444927714506-8492d94b4e3d'),
-    alt: 'Waves breaking along a shoreline',
-    caption: 'The tide works the same stretch of shore all afternoon.',
+    image: `${IMAGE_BASE}/img05.png`,
+    title: "After Hours",
+    meta: "Eyewear / Athlete Portraits / 05",
+    description: "White shield lenses emerge from the shadows. A narrow band of light traces the athlete’s profile, drawing attention to the sculpted eyewear and the quiet focus behind it.",
+    alt: 'Profile of an athlete wearing white shield sunglasses in low light',
+    caption: 'A hard side light picks out the visor and leaves the rest dark.',
   },
 ];
 
@@ -168,10 +181,15 @@ const GsapFlipCard = ({
   const flipStateRef = useRef<Flip.FlipState | null>(null);
   const isAnimatingRef = useRef(false);
 
-  const [shownCaption, setShownCaption] = useState<string | undefined>(
-    () => items[0]?.caption
-  );
-  const captionRef = useRef<HTMLParagraphElement | null>(null);
+  const selectedItem = items[order[0]];
+  const nextContent = useMemo(() => ({
+    title: selectedItem?.title ?? title,
+    meta: selectedItem?.meta ?? meta,
+    description: selectedItem?.description ?? description,
+    caption: selectedItem?.caption,
+  }), [selectedItem, title, meta, description]);
+  const [shownContent, setShownContent] = useState(nextContent);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const captionTweenRef = useRef<gsap.core.Tween | gsap.core.Timeline | null>(null);
   const captionSplitRef = useRef<SplitText | null>(null);
 
@@ -180,9 +198,11 @@ const GsapFlipCard = ({
     captionSplitRef.current = null;
   }, []);
 
-  useEffect(() => {
+  const [previousItems, setPreviousItems] = useState(items);
+  if (items !== previousItems) {
+    setPreviousItems(items);
     setOrder(items.map((_, i) => i));
-  }, [items]);
+  }
 
   useLayoutEffect(() => {
     const el = rootRef.current;
@@ -329,47 +349,49 @@ const GsapFlipCard = ({
     onClose?.();
   }, [opened, reducedMotion, orderedCards, duration, ease, onClose]);
 
-  const nextCaption = items[order[0]]?.caption;
-  const activeCaption = reducedMotion ? nextCaption : shownCaption;
+  const activeContent = reducedMotion ? nextContent : shownContent;
 
   useEffect(() => {
-    if (reducedMotion || nextCaption === shownCaption) return;
+    if (reducedMotion || nextContent === shownContent) return;
 
-    const el = captionRef.current;
+    const el = contentRef.current;
     if (!el) {
       revertCaptionSplit();
-      setShownCaption(nextCaption);
+      setShownContent(nextContent);
       return;
     }
 
     captionTweenRef.current?.kill();
-    captionTweenRef.current = gsap.to(el, {
+    const fade = gsap.to(el.querySelectorAll("[data-card-text]"), {
       opacity: 0,
       y: -8,
       duration: captionFadeDuration,
       ease: "power2.in",
       onComplete: () => {
         revertCaptionSplit();
-        setShownCaption(nextCaption);
+        setShownContent(nextContent);
       },
     });
-  }, [nextCaption, shownCaption, reducedMotion, captionFadeDuration, revertCaptionSplit]);
+    captionTweenRef.current = fade;
+    return () => { fade.kill(); };
+  }, [nextContent, shownContent, isMobile, reducedMotion, captionFadeDuration, revertCaptionSplit]);
 
   useLayoutEffect(() => {
-    const el = captionRef.current;
-    if (!el || !activeCaption) return;
+    const el = contentRef.current;
+    if (!el) return;
+    const sections = el.querySelectorAll<HTMLElement>("[data-card-text]");
 
     if (reducedMotion) {
       revertCaptionSplit();
-      gsap.set(el, { opacity: 1, y: 0 });
+      gsap.set(sections, { opacity: 1, y: 0 });
       return;
     }
 
     captionTweenRef.current?.kill();
     revertCaptionSplit();
-    gsap.set(el, { opacity: 1, y: 0 });
+    gsap.set(sections, { opacity: 1, y: 0 });
 
-    const split = SplitText.create(el, {
+    const split = SplitText.create(sections, {
       type: "lines",
       linesClass: "hxs-caption-line",
       mask: "lines",
@@ -394,7 +416,7 @@ const GsapFlipCard = ({
       captionTweenRef.current?.kill();
       revertCaptionSplit();
     };
-  }, [activeCaption, reducedMotion, captionRevealDuration, captionLineStagger, revertCaptionSplit]);
+  }, [activeContent, isMobile, reducedMotion, captionRevealDuration, captionLineStagger, revertCaptionSplit]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -494,23 +516,25 @@ const GsapFlipCard = ({
             </div>
           )}
 
-          <div className="max-[1025px]:pb-[3vh]">
+          <div ref={contentRef} className="max-[1025px]:pb-[3vh]">
             <h2
-              className="text-[7vw]  max-md:text-[8.5vw] leading-[1.05] m-0 font-normal tracking-[-0.02em]"
+              data-card-text
+              className="h-[19vw] py-1  max-md:h-[17.85vw] overflow- text-[7vw]  max-md:text-[8.5vw] leading-[1.2] m-0 font-normal tracking-[-0.02em]"
             >
-              {title}
+              {activeContent.title}
             </h2>
             <p
-              className="text-[3vw] max-md:text-[3.5vw] mt-[3vw] mb-[4vw]"
+              data-card-text
+              className="h-[6vw] max-md:h-[5.25vw] leading-[1.5] overflow-hidden text-[3vw] max-md:text-[3.5vw] mt-[3vw] mb-[4vw]"
               style={{ color: mutedColor }}
             >
-              {meta}
+              {activeContent.meta}
             </p>
-            <p className="text-[3.2vw] max-md:text-[3.8vw] leading-[1.65] m-0">
-              {description}
+            <p data-card-text className="h-[21.12vw] max-md:h-[31.35vw] overflow-hidden text-[3.2vw] max-md:text-[3.8vw] leading-[1.65] m-0">
+              {activeContent.description}
             </p>
             <div
-              className="mt-[5vw] h-[calc(var(--hxs-cap-line)*var(--hxs-cap-lines))] max-md:[--hxs-cap-line:var(--hxs-cap-line-sm)]"
+              className="overflow-hidden  h-fit max-md:[--hxs-cap-line:var(--hxs-cap-line-sm)]"
               style={
                 {
                   "--hxs-cap-line": CAPTION_MOBILE_LINE,
@@ -520,10 +544,10 @@ const GsapFlipCard = ({
               }
             >
               <p
-                ref={captionRef}
+                data-card-text
                 className="text-[3vw] text-left max-md:text-left max-md:w-[80%] max-md:text-[4vw] w-[80%]  m-0  leading-normal"
               >
-                {activeCaption}
+                {activeContent.caption}
               </p>
             </div>
           </div>
@@ -584,30 +608,32 @@ const GsapFlipCard = ({
         className={`relative w-full min-h-svh ${opened ? "cursor-pointer" : "cursor-default"}`}
       >
         <div
+          ref={contentRef}
           className={`absolute top-1/2 -translate-y-1/2 max-w-[22.22vw] z-30 pointer-events-none ${
             isNarrow ? "hidden" : "block"
           }`}
           style={{ ...chromeStyle, left: railX + tW + Math.max(48, stageWidth * 0.06) }}
         >
           <h2
-            className="text-[3.2vw] leading-[1.05] font-normal tracking-[-0.02em] m-0"
+              data-card-text
+            className="h-[8vw] overflow-hidden text-[3.2vw] leading-[1.05] font-normal tracking-[-0.02em] m-0"
           >
-            {title}
+            {activeContent.title}
           </h2>
-          <p className="text-[0.9vw] mt-[0.97vw] mb-[1.81vw] mx-0" style={{ color: mutedColor }}>
-            {meta}
+          <p data-card-text className="h-[2.7vw] leading-[1.5] overflow-hidden text-[0.9vw] mt-[0.97vw]  mx-0" style={{ color: mutedColor }}>
+            {activeContent.meta}
           </p>
-          <p className="text-[0.97vw] leading-[1.65] m-0">{description}</p>
+          <p data-card-text className="h-[9.6vw] overflow-hidden text-[0.97vw] leading-[1.65] m-0">{activeContent.description}</p>
           <div
-            className="mt-[1.94vw]"
+            className="overflow-hidden mt-[1vw]"
             style={{ height: `${CAPTION_LINE_VW * captionLines}vw` }}
           >
 
             <p
-              ref={captionRef}
+              data-card-text
               className="text-[1vw] w-[80%] text-left leading-[1.3]  m-0 "
             >
-              {activeCaption}
+              {activeContent.caption}
             </p>
           </div>
         </div>

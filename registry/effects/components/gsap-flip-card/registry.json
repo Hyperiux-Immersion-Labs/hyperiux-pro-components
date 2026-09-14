@@ -184,37 +184,37 @@
       "name": "captionFadeDuration",
       "type": "number",
       "default": 0.25,
-      "description": "Code-only configuration for captionFadeDuration."
+      "description": "Fade-out duration in seconds for all text sections."
     },
     {
       "name": "captionRevealDuration",
       "type": "number",
       "default": 0.55,
-      "description": "Code-only configuration for captionRevealDuration."
+      "description": "Line-reveal duration in seconds for all text sections."
     },
     {
       "name": "captionLineStagger",
       "type": "number",
       "default": 0.07,
-      "description": "Code-only configuration for captionLineStagger."
+      "description": "Stagger between revealed lines across all text sections in seconds."
     },
     {
       "name": "title",
       "type": "string",
       "default": "GSAP Flip Card",
-      "description": "Code-only title."
+      "description": "Fallback title for items without a title."
     },
     {
       "name": "meta",
       "type": "string",
       "default": "Hyperiux Vault / GSAP Flip / React",
-      "description": "Code-only meta."
+      "description": "Fallback metadata for items without metadata."
     },
     {
       "name": "description",
       "type": "string",
       "default": "A pile of cards that fans into a hero and a rail. Tap any frame and the two trade places, same nodes, measured and tweened, never re-mounted.",
-      "description": "Code-only description."
+      "description": "Fallback description for items without a description."
     },
     {
       "name": "className",
@@ -225,7 +225,7 @@
     {
       "name": "items",
       "type": "GsapFlipCardItem[]",
-      "description": "Gallery images with optional IDs, alt text and captions; defaults to the built-in gallery."
+      "description": "Gallery images with optional IDs, alt text, titles, metadata, descriptions and captions; defaults to the built-in gallery."
     },
     {
       "name": "onClose",
