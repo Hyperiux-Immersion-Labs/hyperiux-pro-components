@@ -1938,6 +1938,23 @@
       "tier": "free"
     },
     {
+      "name": "morphing-dock",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "@gsap/react",
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "MorphingDock",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "side-navbar",
       "type": "registry:component",
       "category": "navigation",
