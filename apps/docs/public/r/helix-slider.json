@@ -17,7 +17,7 @@
       "version": "1.2.0",
       "date": "2026-09-10",
       "summary": "Rebuilt as a WebGL rotating gallery: images ride a spiral strand driven by drag, wheel momentum and idle autoplay. Replaces the GSAP/Lenis pinned-scroll implementation; the old snakeAmplitude/depthAmplitude/perspective/scaleMin/maxYRotation props are gone, the effect is now a single index.tsx file, and gsap + lenis are no longer dependencies.",
-      "breaking": true
+      "breaking": false
     },
     {
       "version": "1.1.0",
