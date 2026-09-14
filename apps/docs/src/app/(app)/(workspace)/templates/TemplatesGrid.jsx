@@ -68,8 +68,8 @@ export function TemplatesGrid({ templates }) {
               <div
                 className={[
                   "flex items-center gap-2.5",
-                  "flex-wrap",
-                  "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto max-[1025px]:px-6",
+                  "flex-nowrap",
+                  "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto",
                   "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
                   "[&::-webkit-scrollbar]:h-1",
                   "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:",
@@ -90,7 +90,8 @@ export function TemplatesGrid({ templates }) {
                       className={`
                         px-6 py-2.5 text-[1vw] text-center relative max-md:px-5 max-md:py-2
                         backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
-                        transition-colors duration-300
+                        shrink-0 whitespace-nowrap
+                        transition-colors duration-300 max-[1025px]:text-[2.5vw] max-md:text-[4.2vw]
                         ${isSelected
                           ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"
                           : "bg-[#161616] text-[#FFFFFF] hover:text-black hover:bg-[#ff5f00]"
