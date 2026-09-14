@@ -19,6 +19,8 @@ export const TEMPLATE_SCAFFOLD_BLOB_URLS = {
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/lumera.zip",
   "oris-dental":
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/oris-dental.zip",
+  kyntra:
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/kyntra-9Y0qKrzT9UyaWT3jtsc96tYreNtmrO.zip",
 };
 
 export function getTemplateScaffoldUrl(slug) {

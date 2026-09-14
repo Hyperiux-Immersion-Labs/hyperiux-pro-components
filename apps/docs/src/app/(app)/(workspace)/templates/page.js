@@ -11,7 +11,6 @@ export const metadata = createPageMetadata({
   title: "Interactive React & Next.js Website Templates | Hyperiux Vault",
   description: "Interactive React and Next.js website templates with layout, motion, scrolling and transitions composed together. Source code and Figma included.",
   path: "/templates",
-  robots: { index: false, follow: false },
 });
 
 const DESCRIPTION =
@@ -95,7 +94,7 @@ Yes. Each Template can also be purchased individually without Vault Pro Yearly. 
     question: "What licence do Vault Templates use?",
     answer: (
       <>
-Vault Templates are licensed under the Mozilla Public License 2.0 (MPL-2.0), the licence used for Vault's paid and Pro items. Free items use MIT.
+Vault Templates are licensed under the Mozilla Public License 2.0 (MPL-2.0), the licence used for Vault&apos;s paid and Pro items. Free items use MIT.
       </>
     ),
     defaultOpen: false,

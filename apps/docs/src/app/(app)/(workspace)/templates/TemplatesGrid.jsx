@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { TemplateCard } from "@/components/ui/TemplateCard";
+import FadeUp from "@/components/WebsiteComps/FadeUp";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 function formatLabel(value = "") {
   return value
@@ -22,6 +24,13 @@ function formatLabel(value = "") {
 // matched here.
 export function TemplatesGrid({ templates }) {
   const [activeCategory, setActiveCategory] = useState("all");
+
+  // No containerRef - scans the whole document, same as Hero.jsx/
+  // ExplainVault.jsx's page-wide useFadeUp() calls. This is the only
+  // fadeup-driving call anywhere on /templates, so it also picks up
+  // page.js's own <Breadcrumb className="fadeup" /> above this grid, which
+  // previously had the class with nothing to activate it.
+  useFadeUp();
 
   const categories = useMemo(() => {
     const seen = new Set();
@@ -45,7 +54,7 @@ export function TemplatesGrid({ templates }) {
   return (
     <>
       {categories.length > 1 && (
-        <div className="mx-auto px-14 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
+        <div className="fadeup mx-auto px-14 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
           <div className="relative max-[1025px]:w-full flex items-start gap-4">
             <div className="relative min-w-0 flex-1">
               <div
@@ -101,7 +110,15 @@ export function TemplatesGrid({ templates }) {
       <div className="mx-auto px-14 pb-12 max-md:px-0">
         <div className="grid grid-cols-2 gap-4 rounded-xl max-[1025px]:grid-cols-1 max-md:grid-cols-1 max-md:px-[7vw] max-[1025px]:gap-10 max-md:gap-16">
           {filteredTemplates.map((template, index) => (
-            <TemplateCard key={template.slug} template={template} priority={index === 0} />
+            // FadeUp per card (not one fadeup around the whole grid) so each
+            // card animates independently via its own mount-scoped
+            // useFadeUp() call inside FadeUp itself - switching the category
+            // filter mounts a fresh FadeUp instance for any newly-shown
+            // card, which sets up and fires its own ScrollTrigger without
+            // needing to re-scan (and re-hide) cards already on screen.
+            <FadeUp key={template.slug}>
+              <TemplateCard template={template} priority={index === 0} />
+            </FadeUp>
           ))}
         </div>
       </div>

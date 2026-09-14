@@ -29,7 +29,6 @@ export async function generateMetadata({ params }) {
     title: `${template.title} | Hyperiux Vault Templates`,
     description: template.tagline,
     path: `/templates/${slug}`,
-    robots: { index: false, follow: false },
   });
 }
 

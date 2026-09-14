@@ -38,8 +38,15 @@ export async function POST(req) {
       // Price is looked up server-side from mock-templates.js, never
       // trusted from the request body - unlike the legacy test-payment
       // branch below (fine for a $1 test charge, not fine for real money).
+      //
+      // USD only: templates have no real rupee price anywhere (unlike Pro's
+      // RAZORPAY_PRO_*_INR_PLAN_ID, which map to actual ₹999/₹8999 prices).
+      // Charging the USD number as rupees (₹29 instead of a real ₹-priced
+      // equivalent) would undercharge by roughly 88x - block it server-side
+      // rather than trust a client-supplied currency, until real INR
+      // pricing exists per template.
       amount = price;
-      currency = body?.currency === "INR" ? "INR" : "USD";
+      currency = "USD";
       receipt = `template_${templateSlug}_${Date.now()}`;
       notes.template_slug = templateSlug;
     } else {

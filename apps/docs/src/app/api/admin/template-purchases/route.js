@@ -85,12 +85,25 @@ export async function GET(request) {
       };
     });
 
+    // Grouped by currency, never summed across them (template_purchases
+    // mixes USD and INR - see create-order/route.js's currency handling -
+    // so a single blended total would add unlike units, same reasoning
+    // activity/overview/route.js already documents for this same table).
+    const revenueByCurrency = {};
+    for (const row of allRows || []) {
+      const currency = row.currency || "USD";
+      revenueByCurrency[currency] = (revenueByCurrency[currency] || 0) + (row.amount || 0);
+    }
+
     return NextResponse.json({
       purchases,
       total: count || 0,
       stats: {
         totalPurchases: (allRows || []).length,
-        totalRevenue: (allRows || []).reduce((sum, r) => sum + (r.amount || 0), 0),
+        revenueByCurrency: Object.entries(revenueByCurrency).map(([currency, amount]) => ({
+          currency,
+          amount,
+        })),
       },
     });
   } catch (error) {

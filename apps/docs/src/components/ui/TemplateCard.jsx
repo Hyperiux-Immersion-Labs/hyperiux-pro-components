@@ -42,7 +42,7 @@ function formatInstallCount(value) {
 }
 
 const VAULT_GRID_SIZES =
-  "(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) calc(50vw - 40px), 280px";
+  "(max-width: 840px) calc(100vw - 32px), (max-width: 1023px) calc(50vw - 40px), 640px";
 
 export function TemplateCard({
   template,
@@ -97,7 +97,7 @@ export function TemplateCard({
               src={screenshots[0]}
               alt={template.title || template.slug || ""}
               fill
-              // sizes={sizes}
+              sizes={sizes}
               quality={75}
               priority={priority}
               loading={priority ? undefined : "lazy"}

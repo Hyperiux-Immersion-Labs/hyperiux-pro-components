@@ -363,7 +363,18 @@ export default function AdminInvoicingPage() {
         />
         <StatCard
           label="Total Revenue"
-          value={templateStats ? formatTemplateAmount(templateStats.totalRevenue) : "…"}
+          value={
+            templateStats
+              ? templateStats.revenueByCurrency
+                  .map((r) => formatTemplateAmount(r.amount, r.currency))
+                  .join(" + ") || formatTemplateAmount(0, "USD")
+              : "…"
+          }
+          detail={
+            templateStats && templateStats.revenueByCurrency.length > 1
+              ? "Shown per currency, not summed - mixing USD and INR into one total would be wrong"
+              : undefined
+          }
         />
         <StatCard
           label="Showing"

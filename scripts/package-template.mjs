@@ -238,6 +238,26 @@ const TEMPLATES = {
     ],
     needsGlbLoader: true,
   },
+  kyntra: {
+    title: "Kyntra - Home Service Booking App Landing Page",
+    description:
+      "A single-page app landing template for home maintenance and service booking - animated app mockups, appliance/warranty tracking, a step-by-step onboarding walkthrough, and testimonials, built with GSAP scroll animations.",
+    dependencies: {
+      gsap: "^3.15.0",
+      "@gsap/react": "^2.1.2",
+      lenis: "^1.3.23",
+      "lucide-react": "^0.577.0",
+      motion: "^12.40.0",
+      zod: "^4.4.3",
+    },
+    // Fully self-contained: LenisSmoothScroll.tsx and ScrollTopOnLoad.tsx
+    // live inside kyntra's own template-demo/ folder (confirmed via grep -
+    // no "@/..." aliased imports anywhere in this template), unlike
+    // lumera/oris-dental which pull those in from shared app-level files.
+    extraFiles: [],
+    sourceRewrites: [],
+    needsGlbLoader: false,
+  },
 };
 
 function usageError(message) {
