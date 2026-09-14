@@ -1888,22 +1888,6 @@
       "tier": "free"
     },
     {
-      "name": "displacement-navbar",
-      "type": "registry:component",
-      "category": "navigation",
-      "categories": [
-        "navigation"
-      ],
-      "dependencies": [
-        "gsap"
-      ],
-      "registryDependencies": [],
-      "exportName": "DisplacementNavbar",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
-    },
-    {
       "name": "elevate-navbar",
       "type": "registry:component",
       "category": "navigation",
