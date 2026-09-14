@@ -13,6 +13,14 @@ export async function generateStaticParams() {
   return TEMPLATES.map((template) => ({ slug: template.slug }));
 }
 
+// Already forced dynamic today by the auth() call below (a Clerk/Next
+// dynamic API opts the whole route out of static rendering, generateStaticParams
+// above notwithstanding) - stated explicitly so the related-template view
+// counts stay live even if that call is ever removed or reworked, rather
+// than silently regressing into the same build-time-frozen count bug fixed
+// on /templates/page.js.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const template = getTemplateBySlug(slug);

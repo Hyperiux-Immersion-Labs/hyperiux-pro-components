@@ -8,6 +8,13 @@ import { TemplatesGrid } from "./TemplatesGrid";
 import FAQV3 from "@/homepage-v3/sections/FAQV3";
 
 
+// No dynamic API (auth/cookies/headers) is called on this page, so Next
+// would otherwise statically prerender it once at build/deploy time - the
+// view counts baked into that HTML would then be frozen forever, never
+// reflecting real views recorded afterward via recordTemplateView(). Forces
+// a fresh getTemplateViewCounts() read on every request instead.
+export const dynamic = "force-dynamic";
+
 export const metadata = createPageMetadata({
   title: "Interactive React & Next.js Website Templates | Hyperiux Vault",
   description: "Interactive React and Next.js website templates with layout, motion, scrolling and transitions composed together. Source code and Figma included.",
