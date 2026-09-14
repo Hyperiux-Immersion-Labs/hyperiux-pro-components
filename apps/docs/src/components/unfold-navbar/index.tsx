@@ -1,10 +1,27 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useSyncExternalStore, type ComponentPropsWithoutRef } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CustomEase } from "gsap/CustomEase";
+
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeToReducedMotion(callback: () => void) {
+  const media = window.matchMedia(REDUCED_MOTION_QUERY);
+  media.addEventListener("change", callback);
+  return () => media.removeEventListener("change", callback);
+}
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToReducedMotion,
+    () => window.matchMedia(REDUCED_MOTION_QUERY).matches,
+    () => false,
+  );
+}
 
 gsap.registerPlugin(useGSAP, CustomEase);
 
@@ -41,9 +58,99 @@ const IMG_SCALE = 1.08;
 
 const VIEWPORT_CAP = 0.96;
 
+type LinkHoverProps = Omit<ComponentPropsWithoutRef<typeof Link>, 'children'> & {
+  children: string
+  staggerStep?: number
+  showLine?: boolean
+  arrow?: boolean
+  reduced?: boolean
+}
+
+export function LinkHover({
+  children,
+  className = '',
+  staggerStep = 0.015,
+  showLine = false,
+  arrow = false,
+  reduced = false,
+  ...props
+}: LinkHoverProps) {
+
+  if (reduced) {
+    return (
+      <Link {...props} className={`inline-flex items-center gap-[0.35em] no-underline ${className}`}>
+        <span className="leading-[1.2]">{children}</span>
+        {arrow && (
+          <svg viewBox="0 0 14 14" fill="none" aria-hidden="true" className="h-[0.8em] w-[0.8em] flex-none">
+            <path
+              d="M3 11L11 3M11 3H5M11 3V9"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </Link>
+    )
+  }
+
+  return (
+    <Link
+      {...props}
+      className={`group/link-hover inline-flex items-center gap-[0.35em] no-underline ${className}`}
+    >
+      <span className="sr-only">{children}</span>
+      <span aria-hidden="true" className="relative inline-block overflow-hidden align-middle leading-[1.2]">
+        {[...children].map((char, index) => (
+          <span
+            key={index}
+            className="relative inline-block whitespace-pre transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/link-hover:translate-y-[-1.2em] group-focus-visible/link-hover:translate-y-[-1.2em]"
+            style={{
+              textShadow: '0 1.2em currentColor',
+              transitionDelay: `${index * staggerStep}s`,
+            }}
+          >
+            {char === ' ' ? ' ' : char}
+          </span>
+        ))}
+        {showLine && (
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-right scale-x-0 bg-current transition-transform duration-[0.4s] ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/link-hover:origin-left group-hover/link-hover:scale-x-100 group-focus-visible/link-hover:origin-left group-focus-visible/link-hover:scale-x-100" />
+        )}
+      </span>
+      {arrow && (
+        <svg
+          viewBox="0 0 14 14"
+          fill="none"
+          aria-hidden="true"
+          className="h-[0.8em] w-[0.8em] flex-none transition-transform duration-300 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/link-hover:translate-x-[0.15em] group-hover/link-hover:translate-y-[-0.15em]"
+        >
+          <path
+            d="M3 11L11 3M11 3H5M11 3V9"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
+    </Link>
+  )
+}
+
 type Phase = "closed" | "opening" | "open" | "closing";
 
-interface UnfoldNavbarProps {
+export interface UnfoldNavbarProps {
+  backgroundColor?: string;
+  textColor?: string;
+  mutedColor?: string;
+  animationSpeed?: number;
+  charStagger?: number;
+  showLinkUnderline?: boolean;
+  showNumbers?: boolean;
+  dimInactiveLinks?: boolean;
+  showFeature?: boolean;
+
 
   items?: { label: string; href: string }[];
 
@@ -78,6 +185,15 @@ const DEFAULT_FEATURE_IMAGE =
   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg";
 
 const UnfoldNavbar = ({
+  backgroundColor = "#ebebeb",
+  textColor = "#111111",
+  mutedColor = "rgba(0,0,0,0.5)",
+  animationSpeed = 1,
+  charStagger = 0.015,
+  showLinkUnderline = false,
+  showNumbers = false,
+  dimInactiveLinks = true,
+  showFeature = true,
   items = DEFAULT_ITEMS,
   secondary = DEFAULT_SECONDARY,
   featureImage = DEFAULT_FEATURE_IMAGE,
@@ -86,6 +202,7 @@ const UnfoldNavbar = ({
   position,
   direction = "right",
 }: UnfoldNavbarProps) => {
+  const reducedMotion = usePrefersReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const surfaceRef = useRef<HTMLDivElement>(null);
@@ -160,7 +277,10 @@ const UnfoldNavbar = ({
           gsap.set(ticks[2], { svgOrigin: "12 12", smoothOrigin: false, y: TICK_REST, rotation: 0 });
       };
 
+      const wasOpen = phaseRef.current === "open" || phaseRef.current === "opening";
+      setPhaseBoth("closed");
       reset();
+      surface.setAttribute("inert", "");
       gsap.set(surface, { visibility: "hidden" });
 
       const buildOpen = () => {
@@ -221,7 +341,7 @@ const UnfoldNavbar = ({
         if (caption)
           tl.to(caption, { autoAlpha: 1, y: 0, duration: beat(0.26), ease: EASE_OUT, overwrite: "auto" }, beat(0.885));
 
-        return tl;
+        return tl.timeScale(Math.max(0.1, animationSpeed));
       };
 
       const open = () => {
@@ -281,11 +401,13 @@ const UnfoldNavbar = ({
         if (ticks[0]) tl.to(ticks[0], { y: -TICK_REST, duration: beat(0.2635) }, beat(CLOSE_DROP_AT));
         if (ticks[2]) tl.to(ticks[2], { y: TICK_REST, duration: beat(0.2635) }, beat(CLOSE_DROP_AT));
 
+        tl.timeScale(Math.max(0.1, animationSpeed));
         closeTl.current = tl;
         tl.restart();
       };
 
       api.current = { open, close };
+      if (wasOpen) open();
 
       const onKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Escape") close();
@@ -308,13 +430,17 @@ const UnfoldNavbar = ({
       window.addEventListener("resize", onResize);
 
       return () => {
+        openTl.current?.kill();
+        closeTl.current?.kill();
+        hoverTl.current?.kill();
+        api.current = null;
         document.removeEventListener("keydown", onKeyDown);
         document.removeEventListener("pointerdown", onPointerDown);
         window.removeEventListener("resize", onResize);
         window.clearTimeout(resizeId);
       };
     },
-    { scope: rootRef },
+    { scope: rootRef, dependencies: [animationSpeed, showNumbers, showFeature, items, secondary, reducedMotion], revertOnUpdate: true },
   );
 
   const toggle = () => {
@@ -350,17 +476,22 @@ const UnfoldNavbar = ({
     <div
       ref={rootRef}
       data-phase={phase}
+      data-dim-links={dimInactiveLinks && !reducedMotion}
 
       style={
         {
+          color: textColor,
+          "--un-text": textColor,
+          "--un-muted": mutedColor,
           "--un-radius-open": "20px",
+          ...(!showFeature ? { "--un-tile-w": "0px", "--un-open-w": "min(calc(100vw - 32px), calc(var(--un-gutter) + var(--un-gap) * 2 + var(--un-index-w) + var(--un-pad) + var(--un-slack)))" } : {}),
           "--un-gutter": "var(--un-closed)",
 
           "--un-slack": "2px",
         } as React.CSSProperties
       }
 
-      className="pointer-events-none absolute inset-0 text-[#111] [--un-closed:72px] [--un-radius-closed:36px] [--un-pad:24px] [--un-gap:24px] [--un-tile-w:408px] [--un-index-w:288px] [--un-open-h:min(620px,94vh)] [--un-open-w:calc(var(--un-gutter)+var(--un-gap)*2+var(--un-index-w)+var(--un-tile-w)+var(--un-pad)+var(--un-slack))] max-[1025px]:[--un-open-w:min(780px,calc(100vw-48px))] max-[1025px]:[--un-open-h:min(620px,calc(100dvh-48px))] max-md:[--un-open-w:calc(100vw-32px)] max-md:[--un-open-h:min(620px,calc(100dvh-32px))] max-[1025px]:[--un-closed:52px] max-[1025px]:[--un-radius-closed:26px] max-[1025px]:[--un-gap:20px] max-[1025px]:[--un-pad:20px] max-[1025px]:[--un-index-w:236px] max-[1025px]:[--un-tile-w:300px] max-md:[--un-closed:44px] max-md:[--un-radius-closed:22px] max-md:[--un-gap:16px] max-md:[--un-pad:16px]"
+      className="group/unfold pointer-events-none absolute inset-0 text-[#111] [--un-closed:72px] [--un-radius-closed:36px] [--un-pad:24px] [--un-gap:24px] [--un-tile-w:408px] [--un-index-w:288px] [--un-open-h:min(620px,94vh)] [--un-open-w:calc(var(--un-gutter)+var(--un-gap)*2+var(--un-index-w)+var(--un-tile-w)+var(--un-pad)+var(--un-slack))] max-[1025px]:[--un-open-w:min(780px,calc(100vw-48px))] max-[1025px]:[--un-open-h:min(620px,calc(100dvh-48px))] max-md:[--un-open-w:calc(100vw-32px)] max-md:[--un-open-h:min(620px,calc(100dvh-32px))] max-[1025px]:[--un-closed:52px] max-[1025px]:[--un-radius-closed:26px] max-[1025px]:[--un-gap:20px] max-[1025px]:[--un-pad:20px] max-[1025px]:[--un-index-w:236px] max-[1025px]:[--un-tile-w:300px] max-md:[--un-closed:44px] max-md:[--un-radius-closed:22px] max-md:[--un-gap:16px] max-md:[--un-pad:16px]"
     >
 
       <div
@@ -390,6 +521,7 @@ const UnfoldNavbar = ({
       >
         <div
           ref={bodyRef}
+          style={{ backgroundColor }}
           className="relative box-border max-h-[96vh] max-w-[96vw] overflow-hidden bg-[#ebebeb] will-change-[width,height,border-radius] after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:border after:border-black/12 after:content-['']"
         >
           <button
@@ -399,7 +531,7 @@ const UnfoldNavbar = ({
             aria-controls="unfold-surface"
             aria-label={isOpen ? "Close navigation" : "Open navigation"}
 
-            className="absolute top-1/2 left-9 z-2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-black/92 focus-visible:rounded-lg duration-300 ease-in-out hover:scale-[0.8] max-[1025px]:left-6.5 max-[1025px]:h-9 max-[1025px]:w-9 max-md:left-5.5 max-md:h-8 max-md:w-8"
+            className="absolute top-1/2 left-9 z-2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-(--un-text) focus-visible:rounded-lg duration-300 ease-in-out hover:scale-[0.8] max-[1025px]:left-6.5 max-[1025px]:h-9 max-[1025px]:w-9 max-md:left-5.5 max-md:h-8 max-md:w-8"
           >
 
             <svg viewBox="0 0 24 24" fill="none" aria-hidden className="h-12 w-12 overflow-visible max-[1025px]:h-9 max-[1025px]:w-9 max-md:h-7 max-md:w-7">
@@ -428,53 +560,59 @@ const UnfoldNavbar = ({
               >
                 <div className="flex flex-col gap-1.5">
                   {items.map((item, i) => (
-                    <a
+                    <div
                       key={item.label}
-                      data-row
-                      href={item.href}
+                      className="group/row flex min-w-0 items-baseline gap-3.5 no-underline"
+                    >
+
+                      {showNumbers && <span
+                        data-numeral
+                        aria-hidden
+                        className="w-4.5 flex-none text-left text-[11px] tracking-[0.06em] text-(--un-muted) transition-colors group-data-[dim-links=true]/unfold:group-hover/index:group-[:not(:hover)]/row:text-(--un-muted) group-hover/row:text-(--un-text)"
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>}
+                      <LinkHover
+                        data-row
+                        href={item.href}
+                        reduced={reducedMotion}
+                        staggerStep={charStagger}
+                        showLine={showLinkUnderline}
                       onClick={(e) => {
                         if (item.href === "#") e.preventDefault();
                         api.current?.close();
                       }}
-                      className="group/row flex min-w-0 items-baseline gap-3.5 no-underline transition-transform duration-450 ease-[cubic-bezier(0.16,1,0.3,1)] hover:translate-x-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fd551d]"
-                    >
-
-                      <span
-                        data-numeral
-                        aria-hidden
-                        className="w-4.5 flex-none text-left text-[11px] tracking-[0.06em] text-black/50 transition-colors group-hover/index:text-black/20 group-hover/row:text-black/92"
-                      >
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span
                         data-label
-                        className="flex-1 whitespace-nowrap text-[40px] leading-[1.08] font-light tracking-[-0.03em] text-black/92 transition-colors group-hover/index:text-black/38 group-hover/row:text-black/92 max-[1025px]:text-[32px] max-md:text-[clamp(24px,7.2vw,30px)]"
+                        className="flex-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fd551d] whitespace-nowrap text-[40px] leading-[1.08] font-light tracking-[-0.03em] text-(--un-text) transition-colors group-data-[dim-links=true]/unfold:group-hover/index:group-[:not(:hover)]/row:text-(--un-muted) group-hover/row:text-(--un-text) max-[1025px]:text-[32px] max-md:text-[clamp(24px,7.2vw,30px)]"
                       >
                         {item.label}
-                      </span>
-                    </a>
+                      </LinkHover>
+                    </div>
                   ))}
                 </div>
 
                 <div className="flex flex-col gap-2.25 pt-7.5 max-md:mt-auto max-md:pt-6">
                   {secondary.map((item) => (
-                    <a
+                    <LinkHover
                       key={item.label}
+                      reduced={reducedMotion}
+                        staggerStep={charStagger}
+                        showLine={showLinkUnderline}
                       data-sub
                       href={item.href}
                       onClick={(e) => {
                         if (item.href === "#") e.preventDefault();
                         api.current?.close();
                       }}
-                      className="text-[13px] tracking-[0.01em] text-black/50 no-underline transition-colors hover:text-black/92 focus-visible:text-black/92 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fd551d]"
+                      className="text-[13px] tracking-[0.01em] text-(--un-muted) no-underline transition-colors hover:text-(--un-text) focus-visible:text-(--un-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fd551d]"
                     >
                       {item.label}
-                    </a>
+                    </LinkHover>
                   ))}
                 </div>
               </nav>
 
-              <a
+              {showFeature && <a
                 href={featureHref}
                 onClick={(e) => {
                   if (featureHref === "#") e.preventDefault();
@@ -510,11 +648,11 @@ const UnfoldNavbar = ({
                 </span>
                 <span
                   data-caption
-                  className="flex-none pt-3 text-xs tracking-[0.02em] text-black/50 transition-colors group-hover/tile:text-black/92"
+                  className="flex-none pt-3 text-xs tracking-[0.02em] text-(--un-muted) transition-colors group-hover/tile:text-(--un-text)"
                 >
                   {featureCaption}
                 </span>
-              </a>
+              </a>}
             </div>
           </div>
         </div>

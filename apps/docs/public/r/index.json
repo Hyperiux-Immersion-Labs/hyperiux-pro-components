@@ -1987,6 +1987,23 @@
       "tier": "pro"
     },
     {
+      "name": "unfold-navbar",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "@gsap/react",
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "UnfoldNavbar",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "lines-loader",
       "type": "registry:component",
       "category": "loaders",
