@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getTemplateBySlug, getRelatedTemplates } from "@/lib/mock-templates";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { getTemplateAccessDecision } from "@/lib/template-access";
+import { getTemplateViewCounts } from "@/lib/template-views";
 import { TemplateDetail } from "./template-detail";
 
 export async function generateStaticParams() {
@@ -45,6 +46,11 @@ export default async function TemplateDetailPage({ params }) {
     includedInAnnualPro: template.pricing?.includedInAnnualPro ?? false,
   });
 
+  const relatedTemplates = getRelatedTemplates(slug);
+  const relatedViewCounts = await getTemplateViewCounts(
+    relatedTemplates.map((related) => related.slug)
+  );
+
   return (
     // TemplateDetail reads useSearchParams() (to resume a purchase after a
     // signed-out "Buy" click bounces through /sign-in and back) - Next
@@ -52,7 +58,10 @@ export default async function TemplateDetailPage({ params }) {
     <Suspense fallback={null}>
       <TemplateDetail
         template={template}
-        relatedTemplates={getRelatedTemplates(slug)}
+        relatedTemplates={relatedTemplates.map((related) => ({
+          ...related,
+          viewCount: relatedViewCounts[related.slug] || 0,
+        }))}
         templateAccess={templateAccess}
       />
     </Suspense>

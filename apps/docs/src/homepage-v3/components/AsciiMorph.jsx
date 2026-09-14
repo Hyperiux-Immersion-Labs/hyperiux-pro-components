@@ -3,7 +3,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 
 // Two ends of the morph. Each is sampled into the *same* grid, so a glyph in one
-// shape has a real coordinate to travel to in the other — this is what makes it
+// shape has a real coordinate to travel to in the other - this is what makes it
 // an actual redistribution of glyphs rather than a crossfade.
 const COLOR = "#ff5f00";
 const SPREAD = 0.35; // 0 = every glyph moves together, →1 = long trailing stagger
@@ -18,7 +18,7 @@ const ICON_FILL = 3;
 // cell is empty (no glyph), which is what carves the hollow pupil of the eye.
 //
 // The sources are orange (#ff5f00, luminance ~0.52) sitting on a near-black
-// plate, not shapes on transparency — so a cell's coverage is that orange
+// plate, not shapes on transparency - so a cell's coverage is that orange
 // averaged against the background it shares the cell with. Even a cell dead
 // centre on a stroke only reaches ~0.3–0.43, so a 0.2 cut sat just under the
 // signal and dropped every partially-covered cell: thin strokes came out as
@@ -33,7 +33,7 @@ const ON_THRESHOLD = 0.08;
 //
 // Kept low deliberately: coarsening the grid also thins the shapes, because a
 // stroke only a couple of source pixels wide occupies fewer cells. 2.0 is the
-// point where the rounded font size reaches 2px — enough for a solid glyph —
+// point where the rounded font size reaches 2px - enough for a solid glyph -
 // without giving up more resolution than that costs.
 const MIN_CELL_PX = 2;
 
@@ -266,7 +266,7 @@ const AsciiMorph = forwardRef(function AsciiMorph(
         ctx = canvas.getContext("2d", { alpha: true });
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.imageSmoothingEnabled = false;
-        // Integer px font — fractional sizes anti-alias into mush.
+        // Integer px font - fractional sizes anti-alias into mush.
         ctx.font = `${Math.max(1, Math.round(cell))}px ui-monospace, SFMono-Regular, Menlo, monospace`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";

@@ -8,7 +8,7 @@ import { buildToothShell } from './toothShellGeometry'
 import { createToothShieldMaterial, MAX_HITS } from './toothShieldMaterial'
 
 export interface ToothShieldProps {
-    /** The loaded GLB root — the shield surface is a copy of its geometry. */
+    /** The loaded GLB root - the shield surface is a copy of its geometry. */
     source: THREE.Object3D
     color?: string
     edgeColor?: string

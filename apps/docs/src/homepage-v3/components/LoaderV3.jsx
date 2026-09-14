@@ -22,7 +22,7 @@ const STATIC_CHARS = "!@#$%^*€π§Ωδ∞µΦ≈";
 const WORDMARK_CHARS = "HYPERIUX@#10";
 
 // The counter runs to 92 on its own, then only closes the last 8 once the page
-// has actually finished loading — so the number tracks something real instead
+// has actually finished loading - so the number tracks something real instead
 // of sitting at 100 while assets are still coming in.
 const SETTLE_DURATION = 1.6;
 const CLOSE_DURATION = 0.45;
@@ -31,7 +31,7 @@ const MAX_WAIT_MS = 3000;
 
 // Exit: one scalar drives the whole thing, whichever way the field leaves.
 //
-// Dock — the mark scales down and travels to the navbar's logo, then hands over
+// Dock - the mark scales down and travels to the navbar's logo, then hands over
 // to the real svg. The field's transform is rigid and linear in this scalar, so
 // the ease *is* the motion: it pulls off the centre of the screen and settles
 // onto the logo rather than arriving at speed.
@@ -39,34 +39,34 @@ const DOCK_DURATION = 1.45;
 // The background static dissolves first, on its own scalar, so the mark leaves
 // an empty screen instead of dragging the noise along with it.
 const CLEAR_DURATION = 0.7;
-// How far the mark starts moving before the static has completely gone. Small —
+// How far the mark starts moving before the static has completely gone. Small -
 // enough to tie the two beats together without the noise still travelling.
 const CLEAR_OVERLAP = 0.15;
 // The svg comes up underneath the landed mark and is given the bar's own 500ms
 // intro to reach full strength before the glyphs start to go. Cross-fading the
-// two instead dips in the middle — half-strength glyphs over a half-strength
+// two instead dips in the middle - half-strength glyphs over a half-strength
 // logo is less ink than either, and the mark visibly dulls at the very moment
 // it is supposed to resolve. They are the same shape in the same place, so
 // overlapping them at full strength costs nothing.
 const HANDOFF_HOLD = 0.45;
 const HANDOFF_FADE = 0.35;
 
-// Burst — the field hands each cell its own start time and direction out of the
+// Burst - the field hands each cell its own start time and direction out of the
 // scalar, so the mark breaks apart rather than unwinding letter by letter.
 //
-// Eased with "none" — the field's geometry is linear in this scalar, so a
+// Eased with "none" - the field's geometry is linear in this scalar, so a
 // linear scalar is what gives every glyph constant outward velocity. Any ease
 // here would make the burst surge or coast and read as a dissolve again.
 const BURST_DURATION = 1.8;
 // The black backing clears over the first part of the burst, uncovering the
 // hero underneath while the glyphs are still crossing it. That overlap is the
-// join between the two ASCII fields — hold the backdrop to the end instead and
+// join between the two ASCII fields - hold the backdrop to the end instead and
 // the loader reads as a panel that fades, not as a field that hands over.
 const BACKDROP_LEAD = 0.1;
 const BACKDROP_DURATION = 0.75;
 
 // Same signals as Loader2: Lighthouse/PSI, software WebGL (PSI desktop), and
-// reduced motion — plus the session gate, since a loader that has already
+// reduced motion - plus the session gate, since a loader that has already
 // played this session has nothing left to introduce. Do not start the ASCII
 // field or hold the page for any of them.
 function shouldSkipLoader() {
@@ -86,7 +86,7 @@ function skipLoaderNow() {
 }
 
 /**
- * @param {"dock"|"burst"} exitMode — how the mark leaves. `dock` collapses it
+ * @param {"dock"|"burst"} exitMode - how the mark leaves. `dock` collapses it
  *   onto the navbar's logo and hands over to the real svg; `burst` blows it out
  *   across the hero. Docking falls back to bursting on a page with no navbar
  *   logo to land on.
@@ -129,7 +129,7 @@ export default function LoaderV3({ exitMode = "dock" }) {
       let cancelled = false;
       let waitTimeout = 0;
 
-      // Held from here until the hero's intro has landed — this component is
+      // Held from here until the hero's intro has landed - this component is
       // gone well before that, so the release lives in Hero, not in this
       // timeline's `onComplete` or in the cleanup below.
       lockScrollV3();
@@ -150,7 +150,7 @@ export default function LoaderV3({ exitMode = "dock" }) {
         wordmarkChars: WORDMARK_CHARS,
       });
 
-      // ── Phase 1: Build — progress runs 0 → 0.92 while the page loads ──
+      // ── Phase 1: Build - progress runs 0 → 0.92 while the page loads ──
       const settle = gsap
         .timeline()
         .to(field, {
@@ -174,7 +174,7 @@ export default function LoaderV3({ exitMode = "dock" }) {
         }),
       ]);
 
-      // ── Phase 2: Close — finish the counter, hand the mark over, uncover hero
+      // ── Phase 2: Close - finish the counter, hand the mark over, uncover hero
       Promise.all([settle, capped]).then(() => {
         if (cancelled) return;
 
@@ -191,7 +191,7 @@ export default function LoaderV3({ exitMode = "dock" }) {
           ease: "power2.inOut",
         });
 
-        // Brief beat, then the field leaves — collapsing onto the navbar's logo,
+        // Brief beat, then the field leaves - collapsing onto the navbar's logo,
         // or bursting outward from the centre.
         const docking = exitMode === "dock";
         const clearStart = CLOSE_DURATION + 0.15;
@@ -224,7 +224,7 @@ export default function LoaderV3({ exitMode = "dock" }) {
           {
             exit: 1,
             duration: exitDuration,
-            // Docking reads this scalar rigidly — the ease *is* the motion, so
+            // Docking reads this scalar rigidly - the ease *is* the motion, so
             // it has to be gentle at both ends and never fast in the middle.
             // `power2.inOut` spends most of its travel near peak speed and
             // brakes late, which is what made the mark look like it arrives at
@@ -259,7 +259,7 @@ export default function LoaderV3({ exitMode = "dock" }) {
 
         if (docking) {
           // Landing. The bar is what carries the mark from here: it is told to
-          // come in on this beat, and the glyphs only leave once it has — the
+          // come in on this beat, and the glyphs only leave once it has - the
           // same mark hardening, not one shape replacing another.
           const landing = exitStart + exitDuration;
 
@@ -290,13 +290,13 @@ export default function LoaderV3({ exitMode = "dock" }) {
       className="fixed inset-0 z-1000 overflow-hidden"
     >
       {/* The lock above can only start once this has hydrated, and the markup
-          is scrollable from the moment it paints — which on a cold load is
+          is scrollable from the moment it paints - which on a cold load is
           long enough to wheel most of the way down the page before any of the
           JS lock exists. Shipping the lock as markup closes that window: it is
           in effect from the first byte, and by the time this element goes the
           inline lock has long since taken over. */}
       <style>{"html{overflow:hidden}"}</style>
-      {/* Separate layer from the canvas so it can clear on its own — the
+      {/* Separate layer from the canvas so it can clear on its own - the
           glyphs have to stay at full strength while they burst across the
           hero, which a fade on the whole panel would take out with it. */}
       <div

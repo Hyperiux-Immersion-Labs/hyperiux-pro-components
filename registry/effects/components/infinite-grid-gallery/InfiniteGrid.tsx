@@ -480,7 +480,7 @@ export default class InfiniteGrid {
 
     render() {
         if (this.reduceMotion) {
-            // Snap pan — no ease / coast between target and current.
+            // Snap pan - no ease / coast between target and current.
             this.scroll.current.x = this.scroll.target.x;
             this.scroll.current.y = this.scroll.target.y;
             this.scroll.delta.x.t = this.scroll.delta.x.c = 0;

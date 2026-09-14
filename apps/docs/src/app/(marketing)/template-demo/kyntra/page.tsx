@@ -1,22 +1,29 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import "./kyntra-styles.css";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import ogImage from "./assets/kyntra-og.jpg";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import About from "./components/About";
 import SectionBreak from "./components/SectionBreak";
-import Features from "./components/Features";
-import Smarter from "./components/Smarter";
-import HowKyntraWorks from "./components/HowKyntraWorks";
-import KyntraFaq from "./components/KyntraFaq";
-import CTA from "./components/CTA";
-import ParallaxFooter from "./components/effects/parallax-footer";
 import LenisSmoothScroll from "./components/LenisSmoothScroll";
 import ScrollTopOnLoad from "./components/ScrollTopOnLoad";
-import Trust from "./components/Trust";
-import Testimonial from "./components/Testimonial";
-import Blogs from "./components/Blogs";
+import IntroOverlay from "./components/IntroOverlay";
+
+// Below the fold: these still server-render, only their JS is deferred, so
+// HTML, SEO and no-JS content are unchanged.
+const Features = dynamic(() => import("./components/Features"));
+const Smarter = dynamic(() => import("./components/Smarter"));
+const HowKyntraWorks = dynamic(() => import("./components/HowKyntraWorks"));
+const Trust = dynamic(() => import("./components/Trust"));
+const Testimonial = dynamic(() => import("./components/Testimonial"));
+const Blogs = dynamic(() => import("./components/Blogs"));
+const KyntraFaq = dynamic(() => import("./components/KyntraFaq"));
+const CTA = dynamic(() => import("./components/CTA"));
+const ParallaxFooter = dynamic(
+  () => import("./components/effects/parallax-footer"),
+);
 
 const title = "Kyntra - Smart Home Management App Template";
 const description =
@@ -43,6 +50,7 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div className="kyntra-page relative">
+      <IntroOverlay />
       <ScrollTopOnLoad />
       <LenisSmoothScroll />
       <Header />

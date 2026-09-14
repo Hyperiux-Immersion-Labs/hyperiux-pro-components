@@ -1,8 +1,15 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import AnimatedModalContent from "./effects/animated-modal/AnimatedModalContent";
-import ContactForm, { type FieldConfig } from "./effects/animated-form/ContactForm";
+import dynamic from "next/dynamic";
+import { type FieldConfig } from "./effects/animated-form/ContactForm";
+
+// The provider wraps the whole page, so the modal and its form would otherwise
+// sit in the critical bundle. Both load on first open.
+const AnimatedModalContent = dynamic(
+  () => import("./effects/animated-modal/AnimatedModalContent"),
+);
+const ContactForm = dynamic(() => import("./effects/animated-form/ContactForm"));
 
 const FIELDS: FieldConfig[] = [
   { type: "text", name: "name", label: "Your Name*", required: true },
@@ -43,16 +50,22 @@ function CloseButton({ onClick }: { onClick: () => void }) {
       className="relative shrink-0 size-14 rounded-full overflow-hidden flex items-center justify-center  cursor-pointer max-[1025px]:size-11 max-md:size-9 group"
     >
       <div className="absolute inset-0 w-full h-full bg-linear-to-r from-[#F16B0D] to-[#E61416]" />
-      <span className="absolute h-[2px] z-2 w-4 rounded-full bg-white rotate-45 max-md:w-3 group-hover:rotate-225 duration-500 ease-in-out" />
-      <span className="absolute h-[2px] z-2 w-4 rounded-full bg-white -rotate-45 max-md:w-3 group-hover:rotate-135 duration-500 ease-in-out" />
+      <span className="absolute h-0.5 z-2 w-4 rounded-full bg-white rotate-45 max-md:w-3 group-hover:rotate-225 duration-500 ease-in-out" />
+      <span className="absolute h-0.5 z-2 w-4 rounded-full bg-white -rotate-45 max-md:w-3 group-hover:rotate-135 duration-500 ease-in-out" />
     </button>
   );
 }
 
 export function GetInTouchModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  // The modal plays its own close tween, so unmounting on `isOpen === false`
+  // would cut the exit animation off. Flips true on first open, never back.
+  const [used, setUsed] = useState(false);
 
-  const openModal = useCallback(() => setIsOpen(true), []);
+  const openModal = useCallback(() => {
+    setUsed(true);
+    setIsOpen(true);
+  }, []);
   const closeModal = useCallback(() => setIsOpen(false), []);
 
   const value = useMemo(() => ({ openModal }), [openModal]);
@@ -60,6 +73,7 @@ export function GetInTouchModalProvider({ children }: { children: ReactNode }) {
   return (
     <GetInTouchModalContext.Provider value={value}>
       {children}
+      {used && (
       <AnimatedModalContent
         isOpen={isOpen}
         onClose={closeModal}
@@ -98,7 +112,7 @@ export function GetInTouchModalProvider({ children }: { children: ReactNode }) {
           </div>
         </div>
       </AnimatedModalContent>
-        
+      )}
     </GetInTouchModalContext.Provider>
   );
 }

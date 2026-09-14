@@ -229,7 +229,7 @@ export function ExitIntentInviteModal() {
                   id="exit-intent-title"
                   className="mt-4 text-2xl font-bold leading-tight text-white max-md:text-xl"
                 >
-                  Get instant access to 40+ free effects.
+                  Get instant access to 50+ free effects.
                 </h3>
 
                 <p className="mt-3 text-sm leading-relaxed text-white/60">

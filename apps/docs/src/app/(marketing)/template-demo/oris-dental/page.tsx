@@ -14,7 +14,7 @@ import Footer from "./Footer";
 import Loader from "./Loader";
 import ScrollTopOnLoad from "./ScrollTopOnLoad";
 
-const TITLE = "Oris Dental — Modern Dental Clinic & Care Template";
+const TITLE = "Oris Dental - Modern Dental Clinic & Care Template";
 const DESCRIPTION =
   "A modern dental clinic template featuring interactive 3D teeth visualizer, smooth scroll animations, treatment showcases, patient reviews, and online appointment booking.";
 

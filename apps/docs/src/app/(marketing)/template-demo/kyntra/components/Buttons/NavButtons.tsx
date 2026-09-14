@@ -55,10 +55,14 @@ export function NavButton({
     }
   };
 
+  // Reset hover before committing a newly disabled button.
+  if (disabled && isHovered) {
+    setIsHovered(false);
+  }
+
   // Disabled mid-hover never gets mouseleave
   useEffect(() => {
     if (!disabled) return;
-    setIsHovered(false);
     if (spanRef.current) {
       spanRef.current.style.transform = "translate(-50%, -50%) scale(0)";
     }

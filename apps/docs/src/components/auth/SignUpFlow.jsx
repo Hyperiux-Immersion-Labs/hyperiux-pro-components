@@ -8,6 +8,7 @@ import SplitAuthLayout from "./SplitAuthLayout";
 import {
   errorMessage,
   getSafeRedirectUrl,
+  isSessionExistsError,
   StepHeading,
   TextField,
   GlobalError,
@@ -46,6 +47,7 @@ export default function SignUpFlow() {
 
   // "start" | "verify-email"
   const [step, setStep] = useState("start");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
@@ -100,9 +102,19 @@ export default function SignUpFlow() {
     setError(null);
 
     try {
+      // Split on the first space - Clerk stores first/last name separately,
+      // but this form only asks for one "Name" field. A single-word name
+      // just becomes firstName with no lastName, which is fine everywhere
+      // else in the app (every display already falls back to firstName
+      // when fullName - firstName + lastName - is incomplete).
+      const [firstName, ...rest] = name.trim().split(/\s+/);
+      const lastName = rest.join(" ") || undefined;
+
       const result = await signUp.create({
         emailAddress: email,
         password,
+        firstName,
+        lastName,
       });
 
       if (result.status === "complete") {
@@ -123,6 +135,13 @@ export default function SignUpFlow() {
         startResendCooldown();
       }
     } catch (err) {
+      // Same session_exists case as SignInFlow.jsx - the browser already
+      // has a real, currently-valid session, so route onward instead of
+      // surfacing a dead-end Clerk error.
+      if (isSessionExistsError(err)) {
+        router.push(REDIRECT_AFTER_SIGN_UP);
+        return;
+      }
       setError(errorMessage(err, "Unable to create your account. Check your details and try again."));
     } finally {
       setLoading(false);
@@ -188,6 +207,15 @@ export default function SignUpFlow() {
             subtitle="Create an account and start with the Free Core. Install what you need. Own what you ship."
           />
 
+          <TextField
+            id="full-name"
+            label="Name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            autoComplete="name"
+          />
           <TextField
             id="email-address"
             label="Email"

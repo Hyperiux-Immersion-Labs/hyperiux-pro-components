@@ -20,6 +20,11 @@ const DIRECTION_INITIAL: Record<OverflowTextRevealDirection, { yPercent: number,
   right: { yPercent: 0, xPercent: 100, rotate: 0 },
 };
 
+// `document.fonts.ready` waits on every face on the page, holding copy at
+// opacity 0 the whole time. Faces are `font-display: swap`, so text is already
+// painting in the fallback by the time this cap fires.
+const FONT_WAIT_CAP = 300;
+
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
 const DEFAULT_TEXT = <p>Characters rise from below.</p>;
@@ -97,9 +102,12 @@ export default function OverflowTextReveal({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let ctx: ReturnType<typeof gsap.context> | undefined;
+    let fontTimer: number | undefined;
+    let deferredObserver: IntersectionObserver | null = null;
+    let unmounted = false;
 
-    const init = async () => {
-      await document.fonts.ready;
+    const init = () => {
+      if (unmounted || !containerRef.current) return;
 
       ctx = gsap.context(() => {
         elements.forEach((element) => {
@@ -222,9 +230,63 @@ export default function OverflowTextReveal({
       }, containerRef);
     };
 
-    init();
+    // Wait only on the faces this element actually renders in, capped so a
+    // slow font can never block the reveal.
+    const splitWhenFontReady = () => {
+      let done = false;
+      const runOnce = () => {
+        if (done) return;
+        done = true;
+        window.clearTimeout(fontTimer);
+        init();
+      };
+
+      const fonts = document.fonts;
+      if (!fonts) {
+        init();
+        return;
+      }
+
+      const { fontFamily, fontWeight, fontSize } = getComputedStyle(
+        containerRef.current as HTMLElement,
+      );
+      try {
+        fonts.load(`${fontWeight} ${fontSize} ${fontFamily}`).then(runOnce, runOnce);
+      } catch {
+        // Malformed shorthand: fall back to the whole-page promise
+        fonts.ready.then(runOnce, runOnce);
+      }
+
+      fontTimer = window.setTimeout(runOnce, FONT_WAIT_CAP);
+    };
+
+    // SplitText forces a synchronous layout read per element, so splitting
+    // every instance on mount is the main Style & Layout cost. Copy far from
+    // the viewport waits, with enough margin that the reveal is still set up
+    // well before it scrolls into view.
+    const box = containerRef.current.getBoundingClientRect();
+    const nearViewport =
+      box.top < window.innerHeight * 1.5 && box.bottom > -window.innerHeight;
+
+    if (nearViewport) {
+      splitWhenFontReady();
+    } else {
+      deferredObserver = new IntersectionObserver(
+        ([entry], obs) => {
+          if (!entry.isIntersecting) return;
+          obs.disconnect();
+          deferredObserver = null;
+          splitWhenFontReady();
+        },
+        { rootMargin: "200% 0px" },
+      );
+      deferredObserver.observe(containerRef.current);
+    }
 
     return () => {
+      unmounted = true;
+      window.clearTimeout(fontTimer);
+      deferredObserver?.disconnect();
       if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
     };

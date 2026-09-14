@@ -6,7 +6,7 @@ import { useLenis } from "lenis/react";
 /**
  * Holds the page still from the loader's first frame until the hero's intro has
  * landed. Both are full-screen scenes with nothing to scroll to, and the hero's
- * recede is scrubbed straight off scroll position — letting the page move
+ * recede is scrubbed straight off scroll position - letting the page move
  * underneath means the intro plays against a hero that is already halfway
  * through receding, behind a loader that is still covering it.
  *
@@ -15,14 +15,14 @@ import { useLenis } from "lenis/react";
  *  - `overflow: hidden` on <html>, applied as the loader mounts. For the first
  *    few frames it is the only thing there is.
  *  - `lenis.stop()`, applied as soon as there is an instance to stop. Lenis
- *    owns the wheel once it is running — it preventDefaults the event and moves
- *    the page itself — so the CSS lock alone would leave it integrating wheel
+ *    owns the wheel once it is running - it preventDefaults the event and moves
+ *    the page itself - so the CSS lock alone would leave it integrating wheel
  *    input against a scroll position the browser refuses to change.
  *
  * The instance arrives late by construction, which is what made the previous
  * `lenis?.stop?.()` at mount a no-op: `<ReactLenis root>` is rendered without
  * children, so it never mounts its context provider, and `useLenis()` can only
- * resolve through lenis/react's root store — which ReactLenis fills from an
+ * resolve through lenis/react's root store - which ReactLenis fills from an
  * effect that runs after the loader has already mounted. So the lock records
  * intent, and `useScrollLockLenis` applies it whenever the instance shows up.
  */

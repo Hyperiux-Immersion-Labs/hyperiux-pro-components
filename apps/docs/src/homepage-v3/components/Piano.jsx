@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { shouldSkipRealtimeGPU } from "@/lib/audit";
 
 // A real keyboard: every line is a fixed key with its own pitch, so the same
-// line always sounds the same note. White keys only — a sweep reads as a clean
+// line always sounds the same note. White keys only - a sweep reads as a clean
 // glissando instead of a chromatic smear.
 const WHITE_STEPS = [0, 2, 4, 5, 7, 9, 11];
 const LINES_PER_KEY = 3;
@@ -250,7 +250,7 @@ export default function Piano({
     const queueAudio = () => {
       if (audioFlushQueued) return;
       audioFlushQueued = true;
-      // After paint — never on the same turn as opacity writes.
+      // After paint - never on the same turn as opacity writes.
       requestAnimationFrame(() => {
         setTimeout(flushAudio, 0);
       });
@@ -305,7 +305,7 @@ export default function Piano({
         FALLOFF *
         (1 + Math.min(speed / SPEED_REFERENCE, 1) * (active ? SPEED_WIDEN : 0));
 
-      // Visual trough tracks the pointer directly — lag only for audio/speed.
+      // Visual trough tracks the pointer directly - lag only for audio/speed.
       const visualPos = active ? pointerPos : troughPos;
 
       for (let i = 0; i < lines.length; i += 1) {
@@ -320,7 +320,7 @@ export default function Piano({
       const step = easeStep(deltaMs, SMOOTHING);
 
       // Punch the trough through the live idle wave. Never kill/snap the wave
-      // on enter — that global opacity jump was the first-move jerk.
+      // on enter - that global opacity jump was the first-move jerk.
       for (let i = 0; i < lines.length; i += 1) {
         dip[i] += (dipTarget[i] - dip[i]) * step;
         const wave = waveAt(i, time);
@@ -430,7 +430,7 @@ export default function Piano({
       noteIndex = -1;
     }
 
-    // Pointer handlers only store coordinates — no layout reads.
+    // Pointer handlers only store coordinates - no layout reads.
     const onMove = (event) => {
       pointerX = event.clientX;
       pointerY = event.clientY;

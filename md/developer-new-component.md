@@ -8,7 +8,7 @@ A concise, step-by-step guide from writing your first file to making the compone
 > in `hyperiux-components`) and the complete CLI command reference. This
 > doc only covers creating something new.
 
-> **Audit status (2026-08-12):** spot-checked against the current registry/CLI — the
+> **Audit status (2026-08-12):** spot-checked against the current registry/CLI - the
 > two-repo free-tier rule, `registry.json` field list, `build:registry` step, and
 > `registry/index.json` root-index step all still match reality. No corrections needed.
 

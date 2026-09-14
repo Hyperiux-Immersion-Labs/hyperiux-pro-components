@@ -384,7 +384,7 @@ export default function LinesLoading({
     gsap.set(allTextEls, { opacity: 0, y: 8, filter: "blur(14px)" });
 
     if (prefersReducedMotion()) {
-      // Lines already at final layout — smooth opacity only (no scale morph / wipe).
+      // Lines already at final layout - smooth opacity only (no scale morph / wipe).
       gsap.set(darkLineEls, {
         y: (i: number) => flatY[i],
         scaleX: 1,

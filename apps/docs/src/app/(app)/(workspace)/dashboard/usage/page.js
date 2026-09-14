@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { EffectCard } from "@/components/ui/EffectCardNew";
 import {
@@ -13,13 +12,20 @@ import {
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import { FilterMenu, FILTER_OPTIONS } from "@/app/(app)/(workspace)/effects/FilterMenu";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
 
-const DATE_FILTERS = [
-  { id: "all", label: "All" },
-  { id: "today", label: "Today" },
-  { id: "yesterday", label: "Yesterday" },
-  { id: "week", label: "Last Week" },
-  { id: "month", label: "Last Month" },
+// Same options/dropdown as the admin User Management and Activity pages'
+// date-range control (CustomSelect + DateRangeCalendarPicker for "Custom
+// range"), swapped in for the old Today/Yesterday/Last Week/Last Month
+// button row.
+const DATE_RANGE_OPTIONS = [
+  { value: "today", label: "Today" },
+  { value: "7d", label: "Last 7 days" },
+  { value: "30d", label: "Last 30 days" },
+  { value: "90d", label: "Last 90 days" },
+  { value: "all", label: "All time" },
+  { value: "custom", label: "Custom range" },
 ];
 
 const SOURCE_FILTER_OPTIONS = ["all", "web", "cli", "mcp"];
@@ -39,15 +45,20 @@ function utcDateString(daysAgo = 0) {
   return date.toISOString().slice(0, 10);
 }
 
-function matchesDateFilter(lastCopiedAt, filterId) {
+function matchesDateFilter(lastCopiedAt, filterId, customFrom, customTo) {
   if (filterId === "all") return true;
   if (!lastCopiedAt) return false;
 
   if (filterId === "today") return lastCopiedAt === utcDateString(0);
-  if (filterId === "yesterday") return lastCopiedAt === utcDateString(1);
   // Rolling windows, inclusive of today.
-  if (filterId === "week") return lastCopiedAt >= utcDateString(6);
-  if (filterId === "month") return lastCopiedAt >= utcDateString(29);
+  if (filterId === "7d") return lastCopiedAt >= utcDateString(6);
+  if (filterId === "30d") return lastCopiedAt >= utcDateString(29);
+  if (filterId === "90d") return lastCopiedAt >= utcDateString(89);
+  if (filterId === "custom") {
+    if (customFrom && lastCopiedAt < customFrom) return false;
+    if (customTo && lastCopiedAt > customTo) return false;
+    return true;
+  }
 
   return true;
 }
@@ -65,15 +76,14 @@ function StatCard({ label, value, detail }) {
 }
 
 export default function UsagePage() {
-  const { user, isLoaded } = useUser();
-  const router = useRouter();
-
-  const isAdmin = user?.publicMetadata?.role === "admin";
+  const { isLoaded } = useUser();
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
   const [dateFilter, setDateFilter] = useState("all");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [sourceFilter, setSourceFilter] = useState("all");
 
@@ -127,26 +137,17 @@ export default function UsagePage() {
   };
 
   useEffect(() => {
-    // Usage tracks the daily copy limit, which doesn't apply to admins
-    // (unlimited) - send them back rather than showing an empty/irrelevant
-    // "Unlimited" page.
-    if (isLoaded && isAdmin) {
-      router.replace("/dashboard");
-    }
-  }, [isLoaded, isAdmin, router]);
-
-  useEffect(() => {
-    if (!isLoaded || isAdmin) return;
+    if (!isLoaded) return;
 
     const frame = requestAnimationFrame(() => {
       loadUsage();
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [isLoaded, isAdmin]);
+  }, [isLoaded]);
 
   useEffect(() => {
-    if (!isLoaded || isAdmin) return;
+    if (!isLoaded) return;
 
     let active = true;
 
@@ -162,7 +163,7 @@ export default function UsagePage() {
     return () => {
       active = false;
     };
-  }, [isLoaded, isAdmin]);
+  }, [isLoaded]);
 
   const copiedEffects = useMemo(() => data?.copiedEffects || [], [data]);
 
@@ -200,7 +201,7 @@ export default function UsagePage() {
 
   const filteredEffects = useMemo(() => {
     return copiedEffects.filter((effect) => {
-      if (!matchesDateFilter(effect.lastCopiedAt, dateFilter)) return false;
+      if (!matchesDateFilter(effect.lastCopiedAt, dateFilter, customFrom, customTo)) return false;
       if (sourceFilter !== "all" && effect.source !== sourceFilter) return false;
 
       if (categoryFilter === "all") return true;
@@ -214,9 +215,9 @@ export default function UsagePage() {
 
       return resolveEffectCategoryId(effect) === categoryFilter;
     });
-  }, [copiedEffects, dateFilter, categoryFilter, sourceFilter, featuredEffects]);
+  }, [copiedEffects, dateFilter, customFrom, customTo, categoryFilter, sourceFilter, featuredEffects]);
 
-  if (!isLoaded || isAdmin || loading || !data) {
+  if (!isLoaded || loading || !data) {
     return (
       <div className="flex items-center justify-center py-20">
         <p className="text-zinc-400">Loading usage...</p>
@@ -230,17 +231,17 @@ export default function UsagePage() {
     isUnlimited || !limit ? 0 : Math.min(100, Math.round((count / limit) * 100));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <div>
         <h1 className="text-4xl font-display text-white">Usage</h1>
 
         <p className="text-white mt-2">
-          Track your daily code-copy usage and revisit effects you&apos;ve
-          copied.
+          Track your daily install/copy usage and revisit effects you&apos;ve
+          installed or copied.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-5">
+      <div className="grid md:grid-cols-3 gap-4">
         <StatCard
           label="Today's Usage"
           value={isUnlimited ? "Unlimited" : `${count} / ${limit}`}
@@ -263,7 +264,7 @@ export default function UsagePage() {
           value={isUnlimited ? "Unlimited" : remaining}
           detail={
             isUnlimited
-              ? "Admin accounts have no daily limit."
+              ? ""
               : "Resets daily at midnight UTC."
           }
         />
@@ -282,32 +283,28 @@ export default function UsagePage() {
       </div>
 
       <div>
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-4 mt-10">
           <h2 className="text-2xl font-semibold text-white">
-            Copied Effects
+            Installed &amp; Copied Effects
           </h2>
 
           {copiedEffects.length > 0 && (
-            <div className="flex flex-wrap gap-3">
-              {DATE_FILTERS.map((filter) => {
-                const active = dateFilter === filter.id;
-
-                return (
-                  <button
-                    key={filter.id}
-                    type="button"
-                    onClick={() => setDateFilter(filter.id)}
-                    className={`
-                      px-5 py-2 text-sm  border transition
-                      ${active
-                        ? "bg-white text-black border-white"
-                        : "bg-[#272727] text-white border-white/0 hover:bg-white hover:text-black"}
-                    `}
-                  >
-                    {filter.label}
-                  </button>
-                );
-              })}
+            <div className="flex items-center gap-2 flex-wrap">
+              {dateFilter === "custom" && (
+                <DateRangeCalendarPicker
+                  from={customFrom}
+                  to={customTo}
+                  onFromChange={setCustomFrom}
+                  onToChange={setCustomTo}
+                />
+              )}
+              <CustomSelect
+                size="compact"
+                align="right"
+                value={dateFilter}
+                onChange={setDateFilter}
+                options={DATE_RANGE_OPTIONS}
+              />
             </div>
           )}
         </div>
@@ -337,24 +334,26 @@ export default function UsagePage() {
 
         {copiedEffects.length === 0 ? (
           <div className=" p-12 bg-[#272727] text-center">
-            <h3 className="text-2xl text-white mb-2">No copied effects yet</h3>
+            <h3 className="text-2xl text-white mb-2">No installed or copied effects yet</h3>
 
             <p className="text-zinc-400">
-              Effects you copy code from will show up here.
+              Effects you install or copy code from - on the website, via the CLI, or through
+              MCP - will show up here.
             </p>
           </div>
         ) : filteredEffects.length === 0 ? (
           <div className=" p-12 text-center bg-[#272727] backdrop-blur-lg">
             <h3 className="text-xl text-white mb-2">
-              No copied effects match these filters
+              No installed or copied effects match these filters
             </h3>
 
             <p className="text-zinc-400">
-              Choose another range or category to view your copied effects.
+              Choose another range, category, or source to view your installed and copied
+              effects.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-6 max-[1025px]:grid-cols-2 max-md:grid-cols-1 max-md:gap-12">
+          <div className="grid grid-cols-3 gap-4 max-[1025px]:grid-cols-2 max-md:grid-cols-1 max-md:gap-12">
             {filteredEffects.map((effect) => (
               <EffectCard
                 key={effect.name}

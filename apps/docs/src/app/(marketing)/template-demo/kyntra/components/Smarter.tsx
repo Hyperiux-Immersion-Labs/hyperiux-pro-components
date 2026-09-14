@@ -18,7 +18,7 @@ import visit from "../assets/smarter/visit.svg";
 import serviceRecord from "../assets/smarter/service-record.svg";
 import home from "../assets/smarter/home.svg";
 import maintainance from "../assets/smarter/maintainance.svg";
-import cardTexture from "../assets/card-texture.png";
+import cardTexture from "../assets/card-texture.webp";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -48,7 +48,7 @@ if (typeof window !== "undefined") {
 const KYNTRA_PRIMARY = "#134BD6";
 
 // Texture spotlight: a circle of texture follows the cursor on every card.
-// The PNG is near-black with light linework, so it screens over the card —
+// The PNG is near-black with light linework, so it screens over the card -
 // the dark ground drops out and only the lines show, on blue and on black.
 const TEXTURE_OPACITY = 0.9;
 const TEXTURE_RADIUS = 170;

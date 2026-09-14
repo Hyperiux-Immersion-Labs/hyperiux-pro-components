@@ -1,7 +1,9 @@
 // Design-only mock data for the Templates listing/detail pages - no
 // Sanity/registry backing yet, see md/sections-templates-plan.md. Each of
 // these three is a real, fully-built template already live at
-// /template-demo/<slug>; tags/tier/installCount/dates are still placeholder.
+// /template-demo/<slug>; tags/tier/dates are still placeholder. viewCount is
+// real (see lib/template-views.js), merged onto these at request time by
+// /templates/page.js and /templates/[slug]/page.js - not stored here.
 export const TEMPLATES = [
   {
     slug: "elenavoss",
@@ -10,7 +12,6 @@ export const TEMPLATES = [
     tier: "pro",
     pricing: { standaloneOneTime: 29, includedInAnnualPro: true },
     tags: ["GSAP", "Scroll"],
-    installCount: 980,
     screenshots: ["/assets/templates-listing/elenavoss.png"],
     href: "/templates/elenavoss",
     previewHref: "/template-demo/elenavoss",
@@ -30,7 +31,6 @@ export const TEMPLATES = [
     tier: "pro",
     pricing: { standaloneOneTime: 49, includedInAnnualPro: true },
     tags: ["3D", "WebGL"],
-    installCount: 410,
     screenshots: ["/assets/templates-listing/orisdental.png"],
     href: "/templates/oris-dental",
     previewHref: "/template-demo/oris-dental",
@@ -50,7 +50,6 @@ export const TEMPLATES = [
     tier: "pro",
     pricing: { standaloneOneTime: 39, includedInAnnualPro: true },
     tags: ["GSAP", "Smooth Scroll"],
-    installCount: 640,
     screenshots: ["/assets/templates-listing/lumera.png"],
     href: "/templates/lumera",
     previewHref: "/template-demo/lumera",
@@ -70,7 +69,6 @@ export const TEMPLATES = [
     tier: "pro",
     pricing: { standaloneOneTime: 39, includedInAnnualPro: true },
     tags: ["GSAP", "Lenis"],
-    installCount: 0,
     screenshots: ["/assets/templates-listing/kyntra.png"],
     href: "/templates/kyntra",
     previewHref: "/template-demo/kyntra",

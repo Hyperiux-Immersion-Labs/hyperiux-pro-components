@@ -74,13 +74,13 @@
         "scroll"
       ],
       "dependencies": [
-        "gsap",
-        "lenis"
+        "@react-three/fiber",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "HelixSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "tier": "pro"
     },
     {
@@ -296,6 +296,22 @@
       "exportKind": "default",
       "version": "1.0.1",
       "tier": "pro"
+    },
+    {
+      "name": "stack-spread",
+      "type": "registry:component",
+      "category": "scroll",
+      "categories": [
+        "scroll"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [],
+      "exportName": "StackSpread",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
     },
     {
       "name": "stacking-cards",
@@ -1681,6 +1697,22 @@
       "tier": "pro"
     },
     {
+      "name": "elastic-accordion",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "ElasticAccordion",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "gooey-counter",
       "type": "registry:component",
       "category": "components",
@@ -1692,6 +1724,22 @@
       "exportName": "GooeyCounter",
       "exportKind": "default",
       "version": "1.0.1",
+      "tier": "free"
+    },
+    {
+      "name": "gsap-flip-card",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "GsapFlipCard",
+      "exportKind": "default",
+      "version": "1.0.0",
       "tier": "free"
     },
     {
@@ -2266,22 +2314,6 @@
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "pro"
-    },
-    {
-      "name": "stack-spread",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "motion"
-      ],
-      "registryDependencies": [],
-      "exportName": "StackSpread",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "free"
     }
   ]
 }

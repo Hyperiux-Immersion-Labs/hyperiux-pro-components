@@ -8,7 +8,7 @@ import { useUser } from '@clerk/nextjs'
 import NavbarV3 from '@/homepage-v3/components/NavbarV3'
 
 // NavbarV3 carries its own sheet below `lg`, so the pre-v3 NavbarMobile is not
-// mounted here any more — two mobile bars would stack on top of each other.
+// mounted here any more - two mobile bars would stack on top of each other.
 //
 // VaultShell is only ever used from (app)-group pages (currently just
 // /pricing), which have ClerkProvider available - same pattern as

@@ -23,7 +23,7 @@ export interface LocalRemixerDemoProps {
 /**
  * Phase 0 scratch space: same controls/UI as the production RegistryRemixerDemo,
  * but sourced from a draft { props, remixer } object literal in the demo file
- * instead of an existing registry.json — for components that don't have one yet.
+ * instead of an existing registry.json - for components that don't have one yet.
  * Delete this usage once Phase 2 (`codegen`) swaps the demo to RegistryRemixerDemo
  * reading from the real registry.json.
  */

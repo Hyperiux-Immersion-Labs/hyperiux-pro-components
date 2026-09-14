@@ -3,7 +3,7 @@ import Image from "next/image";
 import NumberCounterThree from "./effects/number-counter/NumberCounterThree";
 import ParallaxImageAnimation from "./effects/parallax-image-animation";
 
-import trust from "../assets/trust.jpg"
+import trust from "../assets/trust.webp"
 
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 const STATS = [
@@ -21,7 +21,6 @@ const Trust = () => {
         src={trust}
         alt=""
         aria-hidden
-        priority
         className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover "
       />
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-black/55" />

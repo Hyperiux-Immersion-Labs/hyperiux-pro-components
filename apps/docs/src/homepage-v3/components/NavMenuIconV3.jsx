@@ -2,8 +2,8 @@
  * Menu icon drawn as a mask rather than an <img>: the source SVGs are stroked
  * in a fixed grey, and masking lets each row colour its own icon.
  *
- * @param {string} src — path to the SVG under /public.
- * @param {string} className — sizing and colour (the mask paints `bg-current`).
+ * @param {string} src - path to the SVG under /public.
+ * @param {string} className - sizing and colour (the mask paints `bg-current`).
  */
 export default function NavMenuIconV3({ src, className = "" }) {
   return (

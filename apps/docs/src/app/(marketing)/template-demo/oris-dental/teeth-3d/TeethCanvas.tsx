@@ -9,15 +9,12 @@ import gsap from 'gsap'
 // import MouseTilt from './MouseTilt'
 import ToothShield from './ToothShield'
 import { degToRad } from 'three/src/math/MathUtils.js'
-// @ts-ignore - glb asset import
-import teethModel from '../../oris-dental/assets/teeth-compressed.glb'
 import MouseTilt from './MouseTilt'
 import { markModelParsed, markModelReady, reportModelDownload } from './modelLoadState'
 
-const MODEL_URL: string =
-    typeof teethModel === 'string'
-        ? teethModel
-        : (teethModel as any)?.src || (teethModel as any)?.default || '/templates/oris-dental/teeth-compressed.glb'
+// The GLB is served as a static file from `public/` rather than imported, so
+// the bundler never has to handle a 6.5MB binary asset.
+const MODEL_URL = '/templates/oris-dental/teeth-compressed.glb'
 
 // The GLB is a single mesh sharing one material between the crown and the
 // titanium post -- they are separated only by the metallicRoughness texture.

@@ -124,7 +124,7 @@ export default function CenterLinesLoading(
         });
 
         if (prefersReducedMotion()) {
-            // Lines already at full width — smooth opacity only (no scale morph / pair wipe).
+            // Lines already at full width - smooth opacity only (no scale morph / pair wipe).
             gsap.set(lines, {
                 scaleX: 1,
                 opacity: 0,

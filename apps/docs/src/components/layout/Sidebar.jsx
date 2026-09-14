@@ -18,6 +18,7 @@ import {
   Pricing,
   Npm,
   Mcp,
+  TemplateIcon
 } from "../WebsiteComps/Icons";
 import Link from "next/link";
 
@@ -623,18 +624,9 @@ export function Sidebar({
             onMouseEnter={() => setHoveredSidebarKey("overview")}
           />
 
-          <NavIconLink
-            label="Templates"
-            href="/templates"
-            icon={Category}
-            isExpanded={isExpanded}
-            isActive={hoveredSidebarKey ? hoveredSidebarKey === "templates" : isTemplatesActive}
-            onClick={navigateTemplates}
-            onMouseEnter={() => setHoveredSidebarKey("templates")}
-          />
 
           <SectionButton
-            label="Categories"
+            label="Effect Categories"
             icon={Category}
             isExpanded={isExpanded}
             isOpen={openSection === "categories"}
@@ -642,6 +634,7 @@ export function Sidebar({
             onClick={() => toggleSection("categories")}
             onMouseEnter={() => setHoveredSidebarKey("categories")}
           />
+
 
           <AnimatePresence initial={false}>
             {isExpanded && openSection === "categories" && (
@@ -702,6 +695,17 @@ export function Sidebar({
               </motion.div>
             )}
           </AnimatePresence>
+
+
+          <NavIconLink
+            label="Templates"
+            href="/templates"
+            icon={TemplateIcon}
+            isExpanded={isExpanded}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "templates" : isTemplatesActive}
+            onClick={navigateTemplates}
+            onMouseEnter={() => setHoveredSidebarKey("templates")}
+          />
 
           <SectionButton
             label="Documentation"

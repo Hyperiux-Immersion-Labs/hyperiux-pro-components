@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Download, Eye, Heart } from "lucide-react";
+import { Eye, Heart } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ArrowIcon } from "../WebsiteComps/Icons";
 
@@ -28,7 +28,7 @@ function formatLabel(value = "") {
     .join(" ");
 }
 
-function formatInstallCount(value) {
+function formatViewCount(value) {
   const count = Number.isFinite(Number(value)) ? Number(value) : 0;
 
   if (count >= 1000) {
@@ -77,10 +77,10 @@ export function TemplateCard({
   );
   const tagPills = allTagLabels.slice(0, 2);
   const extraTagCount = Math.max(allTagLabels.length - 2, 0);
-  const installCount = Number.isFinite(Number(template.installCount))
-    ? Number(template.installCount)
+  const viewCount = Number.isFinite(Number(template.viewCount))
+    ? Number(template.viewCount)
     : 0;
-  const installCountLabel = formatInstallCount(installCount);
+  const viewCountLabel = formatViewCount(viewCount);
 
   return (
     <Link
@@ -168,10 +168,10 @@ export function TemplateCard({
         </div>
 
         <div className="pointer-events-auto relative z-30 flex shrink-0 items-center gap-3 opacity-0 transition-opacity duration-300 max-md:gap-3 group-hover:opacity-100 max-[1025px]:opacity-100">
-          {installCount > 0 && (
+          {viewCount > 0 && (
             <span className="flex items-center gap-1.5 text-[1vw] text-white/55 max-sm:text-[3vw]!">
-              {installCountLabel}
-              <Download className="h-3 w-3 text-white/45 max-sm:h-3 max-sm:w-3" aria-hidden="true" />
+              {viewCountLabel}
+              <Eye className="h-3 w-3 text-white/45 max-sm:h-3 max-sm:w-3" aria-hidden="true" />
             </span>
           )}
 

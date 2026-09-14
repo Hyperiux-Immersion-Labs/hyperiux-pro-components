@@ -11,7 +11,7 @@ import PrimaryButton from "./PrimaryButton";
 import BlackButton from "./BlackButton";
 import { useEnquiryModal } from "./EnquiryModal";
 import NumberCounter from "./effects/number-counter";
-import heroBackground from "./assets/hero.png";
+import heroBackground from "./assets/hero.webp";
 import arrowDownIcon from "./assets/icons/arrow-down.svg";
 import { FadeUp } from "./gsapAnimations";
 import MaskTextReveal from "./effects/mask-text-reveal";
@@ -97,17 +97,19 @@ const Hero: React.FC = () => {
     <>
       <section id="hero" className="relative overflow-hidden">
         <div className="relative isolate flex min-h-[200vh] w-screen flex-col gap-[5vw] px-[5%] py-[3%] max-[1025px]:min-h-[240vw] max-[1025px]:gap-[8vw] max-[1025px]:py-[7%]">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 overflow-hidden z-[-1]"
-          >
+          {/* The largest thing painted above the fold, so it carries the LCP.
+              An aria-hidden / alt="" image is never an LCP candidate, and the
+              headings above are all inside SplitText wrappers, which are. */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden z-[-1]">
             <div ref={heroImageWrapperRef} className="relative h-full w-full">
               <Image
-                quality={100}
+                quality={65}
                 src={heroBackground}
-                alt=""
+                alt="Lumera Heights luxury residences in Dubai"
                 fill
-                sizes="100vw"
+                sizes="(max-width: 1025px) 100vw, 1920px"
+                loading="eager"
+                fetchPriority="high"
                 className="h-full w-full object-cover object-top"
               />
             </div>
@@ -115,7 +117,7 @@ const Hero: React.FC = () => {
 
           <div className="relative z-10 flex h-screen flex-col justify-end gap-[8vw] max-[1025px]:gap-[12vw]">
             <div className="flex flex-col gap-[3vw] max-[1025px]:gap-[6vw] mb-30">
-              <MaskTextReveal delay={2}>
+              <MaskTextReveal delay={2} eager>
                 <h1 className="font-neue-montreal font-medium! flex flex-col gap-[1vw] text-[10vw] leading-[0.94]   uppercase text-[#EEEEEE] max-[1025px]:gap-[4vw] max-md:text-[12vw] max-[1025px]:text-[10vw]">
                   <span>Exceptional</span>
                   <div className="flex items-end gap-[1.8vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[4vw]">

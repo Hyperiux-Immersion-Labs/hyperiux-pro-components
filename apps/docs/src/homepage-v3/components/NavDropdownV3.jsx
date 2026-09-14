@@ -39,10 +39,10 @@ function MenuItem({ item, onNavigate }) {
 /**
  * Full-width menu panel under the v3 navbar.
  *
- * @param {'categories'|'docs'|null} panel — which menu the bar wants open.
+ * @param {'categories'|'docs'|null} panel - which menu the bar wants open.
  *   The panel keeps rendering the last menu while it plays its close, so a
  *   null here is a request, not an immediate unmount.
- * @param {() => void} onNavigate — called when a row is clicked, so the bar can
+ * @param {() => void} onNavigate - called when a row is clicked, so the bar can
  *   drop the menu before the route changes.
  */
 export default function NavDropdownV3({ panel, onNavigate }) {
@@ -133,7 +133,7 @@ export default function NavDropdownV3({ panel, onNavigate }) {
     // them. The travel is a scale, never a width: `width` is a layout property,
     // and tweening it reflows the panel and everything inside it on every one
     // of the ~20 frames, which is exactly what a layout-shift score counts. A
-    // switch that lands mid-travel picks up from where the box actually is —
+    // switch that lands mid-travel picks up from where the box actually is -
     // the width the interrupted travel had reached, carried on the ref because
     // the node that was drawing it has already been replaced.
     const previousWidth = fresh ? 0 : visualWidthRef.current;
@@ -182,7 +182,7 @@ export default function NavDropdownV3({ panel, onNavigate }) {
       // from with its contents already at their natural size and place, so the
       // pair playing back to 1 walks the box across while the columns hold
       // still. The two scales are read off one value rather than tweened
-      // separately — independently eased, they would stop cancelling in the
+      // separately - independently eased, they would stop cancelling in the
       // middle and the columns would breathe.
       const travel = { scale: previousWidth / naturalWidth };
       const applyTravel = () => {
@@ -204,7 +204,7 @@ export default function NavDropdownV3({ panel, onNavigate }) {
       );
 
       // The box clips to its own border box before its scale is applied, so
-      // the columns — let out past that box by the inverse scale — are cut to
+      // the columns - let out past that box by the inverse scale - are cut to
       // the travelling box for free, the same reveal the width tween got from
       // the clip. It leaves the box's own hairline border scaled with it for
       // the length of the travel; at white/10 that reads as the same line.
@@ -260,8 +260,8 @@ export default function NavDropdownV3({ panel, onNavigate }) {
       // The frame is the only node that outlives a menu switch, so it is the
       // only node whose box a switch must not change: it holds the same
       // position and the same size for every menu, and centres whatever is
-      // drawn inside it. Sizing this node to the menu instead — `w-max`
-      // between the gutters — moved its left edge by half the difference
+      // drawn inside it. Sizing this node to the menu instead - `w-max`
+      // between the gutters - moved its left edge by half the difference
       // between the two menus every time they swapped, and an existing element
       // whose start position moves is the definition of a layout shift. The
       // scale that walks the panel across does not settle that debt: it is a
@@ -274,8 +274,8 @@ export default function NavDropdownV3({ panel, onNavigate }) {
       {/* Keyed on the menu so a switch mounts a new panel rather than resizing
           this one. A node that was not in the previous frame has nowhere to
           have shifted from, so the width the two menus differ by costs
-          nothing. `w-max` lets each menu size to its own columns — Docs has
-          two, so it comes out narrower than Categories — and `max-w-full`
+          nothing. `w-max` lets each menu size to its own columns - Docs has
+          two, so it comes out narrower than Categories - and `max-w-full`
           keeps a long menu inside the gutters. */}
       <div
         key={visible}

@@ -5,7 +5,7 @@
  * Ported to TypeScript; behaviour is unchanged from upstream. Kept here so the
  * smooth-carousel effect ships every file it needs and pulls no npm packages.
  *
- * The MIT License (MIT) — Copyright (c) 2014 Florian Morel
+ * The MIT License (MIT) - Copyright (c) 2014 Florian Morel
  * https://github.com/ayamflow/virtual-scroll
  */
 
@@ -106,7 +106,7 @@ export interface VirtualScrollEvent {
   deltaX: number;
   deltaY: number;
   originalEvent: Event;
-  /** Never set by this library — upstream `smooothy` reads it defensively. */
+  /** Never set by this library - upstream `smooothy` reads it defensively. */
   touchDevice?: boolean;
 }
 

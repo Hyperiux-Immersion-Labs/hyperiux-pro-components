@@ -9,11 +9,11 @@ You audit ONE category folder under `registry/effects/{category}/`. For every
 effect subdirectory inside it:
 
 1. Read `registry.json`. Extract every changelog entry that mentions
-   "motion", "reduce", or "reduced" — this is the CLAIM about reduced-motion
+   "motion", "reduce", or "reduced" - this is the CLAIM about reduced-motion
    behavior for that effect. If no such entry exists, note "no claim."
 
 2. Read every `.jsx`/`.tsx` file in the effect folder. Reduced-motion
-   handling can be implemented TWO ways here — check for both before
+   handling can be implemented TWO ways here - check for both before
    concluding there's no code handling:
    - JS-level: `prefersReducedMotion` / `usePrefersReducedMotion` / a
      `matchMedia("(prefers-reduced-motion...")` check.
@@ -21,7 +21,7 @@ effect subdirectory inside it:
      (e.g. `motion-reduce:transition-none`) applied directly to animated
      elements. These compile to a real `@media (prefers-reduced-motion:
      reduce)` query and are just as valid an implementation as a JS
-     branch — do NOT call something a mismatch just because it lacks JS
+     branch - do NOT call something a mismatch just because it lacks JS
      state if these classes are present and applied to the specific
      elements the claim describes.
    For each usage (either kind), note exactly what changes when reduced
@@ -54,16 +54,16 @@ effect subdirectory inside it:
    copy's from step 2:
    - If the mirror is missing a reduced-motion branch the registry has, or
      has extra/stale behavior the registry doesn't, or shows different
-     notice text — that's MIRROR_DRIFT, with a one-sentence reason.
+     notice text - that's MIRROR_DRIFT, with a one-sentence reason.
    - If no mirror folder is found, note "no mirror" (not an error).
-   - Do not flag unrelated prop/styling differences — only reduced-motion-
+   - Do not flag unrelated prop/styling differences - only reduced-motion-
      specific divergence.
 
 Report back TWO lines per effect in this category (omit the second line if
 there's no mirror), in this exact format:
 
-`{effect-name}: {CONSISTENT|MISMATCH|UNDOCUMENTED} — {one-sentence reason, with file:line if relevant}`
-`{effect-name} (mirror): {MIRROR_DRIFT|MIRROR_OK} — {one-sentence reason if drift}`
+`{effect-name}: {CONSISTENT|MISMATCH|UNDOCUMENTED} - {one-sentence reason, with file:line if relevant}`
+`{effect-name} (mirror): {MIRROR_DRIFT|MIRROR_OK} - {one-sentence reason if drift}`
 
 Only elaborate beyond one sentence for MISMATCH or MIRROR_DRIFT cases. Do
 not read files outside `registry/effects/{your-category}/` and

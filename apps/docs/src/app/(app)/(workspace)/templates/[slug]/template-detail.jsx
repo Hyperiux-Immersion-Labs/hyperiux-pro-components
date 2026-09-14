@@ -136,6 +136,16 @@ export function TemplateDetail({
   };
 
   useEffect(() => {
+    // Records a real view once per mount - a real browser render of this
+    // page, not Next's Link prefetch (TemplateCard's Link to here uses
+    // prefetch={false} and only ever calls router.prefetch() manually on
+    // hover, which would otherwise inflate this every time a card is merely
+    // hovered). Fire-and-forget: a failed view record shouldn't block or
+    // error the page itself.
+    fetch(`/api/templates/${template.slug}/view`, { method: "POST" }).catch(() => {});
+  }, [template.slug]);
+
+  useEffect(() => {
     // Resume path: signed-out visitor clicked Buy, went through
     // /sign-in?redirect_url=<this page>?buy=1, and is now back here already
     // authenticated. templateAccess is recomputed server-side on this fresh
@@ -246,7 +256,7 @@ export function TemplateDetail({
                 <button
                   type="button"
                   onClick={handleDownloadClick}
-                  className="group flex items-center gap-2 border border-white/20 bg-white/5 px-4 py-4 text20 text-white transition-colors duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-black"
+                  className="group flex items-center gap-2 border border-white/20 bg-white/5 px-4 py-3 text20 text-white transition-colors duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-black"
                 >
                   <Download className="h-4 w-4" aria-hidden="true" />
                   {hasAccess ? "Download Zip" : `Buy - $${template.pricing?.standaloneOneTime ?? "-"}`}

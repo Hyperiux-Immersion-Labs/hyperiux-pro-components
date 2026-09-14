@@ -18,6 +18,66 @@ const COMMANDS = new Set(["new", "sync", "rename", "move", "delete", "diff", "re
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VERSION_RE = /^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/;
 const SOURCE_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".css"]);
+
+// Docs previews use the private R2 asset bucket, but distributed registry code
+// must point at images anyone can load after installing. Rewrites happen on the
+// way into registry/, so docs keep R2 and the shipped effect ships public URLs.
+const R2_IMAGE_HOST_RE =
+  /https:\/\/pub-[a-z0-9]+\.r2\.dev\/[^"'`\s)]+\.(?:jpe?g|png|webp|avif|gif)/gi;
+// Which public placeholder service the rewritten URLs point at. Override per
+// run with --image-source, or set a different default here; add a provider by
+// giving it an entry that maps a 0-based index to a URL.
+const PUBLIC_IMAGE_SOURCES = {
+  picsum: (index) => `https://picsum.photos/seed/${index + 1}/800/600`,
+  unsplash: (index) =>
+    `https://images.unsplash.com/photo-${UNSPLASH_PHOTO_IDS[index % UNSPLASH_PHOTO_IDS.length]}?w=800&h=600&fit=crop`,
+  placeholder: (index) =>
+    `https://placehold.co/800x600?text=Image+${index + 1}`,
+};
+const DEFAULT_IMAGE_SOURCE = "picsum";
+
+// Stable, permissively-licensed Unsplash photo ids used when --image-source=unsplash.
+const UNSPLASH_PHOTO_IDS = [
+  "1506744038136-46273834b3fb",
+  "1494548162494-384bba4ab999",
+  "1470071459604-3b5ec3a7fe05",
+  "1447752875215-b2761acb3c5d",
+  "1433086966358-54859d0ed716",
+  "1439066615861-d1af74d74000",
+  "1426604966848-d7adac402bff",
+  "1472214103451-9374bd1c798e",
+  "1441974231531-c6227db76b6e",
+  "1518495973542-4542c06a5843",
+];
+
+function resolveImageSource(options = {}) {
+  const name = options.imageSource || DEFAULT_IMAGE_SOURCE;
+  const source = PUBLIC_IMAGE_SOURCES[name];
+  if (!source) {
+    fail(
+      `Unknown --image-source "${name}". Available: ${Object.keys(PUBLIC_IMAGE_SOURCES).join(", ")}.`
+    );
+  }
+  return source;
+}
+
+// Same URL always maps to the same replacement, so a list of N distinct images
+// stays N distinct images and repeats stay repeats.
+function toDistributableContent(relativePath, buffer, imageSource = PUBLIC_IMAGE_SOURCES[DEFAULT_IMAGE_SOURCE]) {
+  if (!/\.(tsx?|jsx?)$/i.test(relativePath)) return buffer;
+  const text = buffer.toString("utf8");
+  if (!R2_IMAGE_HOST_RE.test(text)) {
+    R2_IMAGE_HOST_RE.lastIndex = 0;
+    return buffer;
+  }
+  R2_IMAGE_HOST_RE.lastIndex = 0;
+  const seen = new Map();
+  const out = text.replace(R2_IMAGE_HOST_RE, (url) => {
+    if (!seen.has(url)) seen.set(url, imageSource(seen.size));
+    return seen.get(url);
+  });
+  return Buffer.from(out, "utf8");
+}
 const EXCLUDED_FILE_RE = /(^Demo\.jsx$|\.demo\.jsx$|\.test\.[jt]sx?$|\.spec\.[jt]sx?$|^README\.md$|\.md$)/i;
 const PACKAGE_IMPORT_IGNORE = new Set([
   "react",
@@ -152,7 +212,7 @@ function createNewComponent(options) {
   ensureFreeMirrorReady(freeMirror, options);
   fs.rmSync(registryDir, { recursive: true, force: true });
   fs.mkdirSync(registryDir, { recursive: true });
-  copyDistributableFiles(files, registryDir);
+  copyDistributableFiles(files, registryDir, resolveImageSource(options));
   writeJson(path.join(registryDir, "registry.json"), registryJson);
   writeJson(path.join(registryDir, "package.json"), packageJson);
   updateRootIndex(registryJson, category);
@@ -223,7 +283,7 @@ function syncComponent(options) {
   ensureFreeMirrorReady(freeMirror, options);
   if (options.prune) staleFiles.forEach((file) => fs.rmSync(file, { force: true }));
   fs.mkdirSync(current.dir, { recursive: true });
-  copyDistributableFiles(files, current.dir);
+  copyDistributableFiles(files, current.dir, resolveImageSource(options));
   writeJson(path.join(current.dir, "registry.json"), registryJson);
   writeJson(path.join(current.dir, "package.json"), packageJson);
   updateRootIndex(registryJson, current.category);
@@ -415,7 +475,7 @@ function diffComponent(options) {
 
   if (fs.existsSync(docsDir)) {
     const docsFiles = discoverDistributableFiles(docsDir);
-    rows.push(["docs vs registry files", formatFileDiff(compareSourceToRegistry(docsFiles, current.dir))]);
+    rows.push(["docs vs registry files", formatFileDiff(compareSourceToRegistry(docsFiles, current.dir, resolveImageSource(options)))]);
   } else {
     rows.push(["docs source", `missing: ${relative(docsDir)}`]);
   }
@@ -826,11 +886,16 @@ function listCategories() {
     .sort();
 }
 
-function copyDistributableFiles(files, destDir) {
+function copyDistributableFiles(files, destDir, imageSource) {
   for (const file of files) {
     const dest = path.join(destDir, file.relativePath);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.copyFileSync(file.absolutePath, dest);
+    const content = toDistributableContent(
+      file.relativePath,
+      fs.readFileSync(file.absolutePath),
+      imageSource
+    );
+    fs.writeFileSync(dest, content);
   }
 }
 
@@ -841,7 +906,7 @@ function listStaleRegistryFiles(registryDir, sourceFiles) {
     .filter((file) => !sourceSet.has(slash(path.relative(registryDir, file))));
 }
 
-function compareSourceToRegistry(sourceFiles, registryDir) {
+function compareSourceToRegistry(sourceFiles, registryDir, imageSource) {
   const diffs = [];
   const sourceByRelative = new Map(sourceFiles.map((file) => [file.relativePath, file]));
   const registryFiles = walkFiles(registryDir)
@@ -855,7 +920,11 @@ function compareSourceToRegistry(sourceFiles, registryDir) {
       diffs.push(`missing in registry: ${relativePath}`);
       continue;
     }
-    const sourceContent = fs.readFileSync(sourceFile.absolutePath);
+    const sourceContent = toDistributableContent(
+      relativePath,
+      fs.readFileSync(sourceFile.absolutePath),
+      imageSource
+    );
     const registryContent = fs.readFileSync(registryFile);
     if (!sourceContent.equals(registryContent)) diffs.push(`content differs: ${relativePath}`);
   }

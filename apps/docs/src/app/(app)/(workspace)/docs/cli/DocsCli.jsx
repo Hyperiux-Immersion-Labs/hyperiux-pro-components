@@ -110,7 +110,7 @@ export default function DocsCli() {
 
       <CodeBlock code={addCommand}  />
 
-      <Para>List what is installed.</Para>
+      <Para>List all available effects</Para>
 
       <CodeBlock code={listCommand}  />
 

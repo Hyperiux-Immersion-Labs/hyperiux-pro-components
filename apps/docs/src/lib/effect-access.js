@@ -1,6 +1,7 @@
 import "server-only";
 import { supabase } from "@/lib/supabase";
 import { hashCliToken } from "@/lib/cli-token";
+import { ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 
 // Single authorization decision point for Pro effect content, used by all
 // three places that decide whether to hand over source: the effect detail
@@ -9,8 +10,6 @@ import { hashCliToken } from "@/lib/cli-token";
 // entry-point map - if you're touching this file, check that doc too.
 
 export const POLICY_VERSION = "1";
-
-const ACTIVE_STATUSES = ["active", "trialing"];
 
 function decision(reason, allowed = false) {
   return { allowed, reason, policyVersion: POLICY_VERSION, source: "supabase" };
@@ -24,7 +23,7 @@ function evaluateSubscriptionRow(row) {
 
   if (row.cli_token_revoked_at) return decision("revoked");
 
-  if (row.plan !== "pro" || !ACTIVE_STATUSES.includes(row.status)) {
+  if (row.plan !== "pro" || !ACTIVE_PRO_STATUSES.includes(row.status)) {
     return decision("no-subscription");
   }
 

@@ -4,12 +4,12 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 import { useRef } from "react";
-import Client1 from "./assets/clients-1.png";
-import Client2 from "./assets/clients-2.png";
-import Client3 from "./assets/clients-3.png";
-import Client4 from "./assets/clients-4.png";
-import Client5 from "./assets/clients-5.png";
-import Client6 from "./assets/clients-6.png";
+import Client1 from "./assets/clients-1.webp";
+import Client2 from "./assets/clients-2.webp";
+import Client3 from "./assets/clients-3.webp";
+import Client4 from "./assets/clients-4.webp";
+import Client5 from "./assets/clients-5.webp";
+import Client6 from "./assets/clients-6.webp";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
 
 if (typeof window !== "undefined") {

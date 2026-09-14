@@ -1,8 +1,7 @@
 import "server-only";
 import { supabase } from "@/lib/supabase";
 import { hashCliToken } from "@/lib/cli-token";
-
-const ACTIVE_STATUSES = ["active", "trialing"];
+import { ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 
 export function getCliTokenFromRequest(request) {
   const authorization = request.headers.get("authorization");
@@ -98,7 +97,7 @@ export async function verifyCliToken(token) {
     };
   }
 
-  if (data.plan !== "pro" || !ACTIVE_STATUSES.includes(data.status)) {
+  if (data.plan !== "pro" || !ACTIVE_PRO_STATUSES.includes(data.status)) {
     return {
       valid: false,
       status: 403,

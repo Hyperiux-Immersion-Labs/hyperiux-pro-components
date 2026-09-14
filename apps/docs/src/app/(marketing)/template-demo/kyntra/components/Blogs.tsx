@@ -13,11 +13,11 @@ import SmoothInfiniteCarousel, {
 import CarouselNavButtons from "./Buttons/NavButtons";
 import CharStaggerPrimaryButton from "./effects/char-stagger-primary-button";
 import CharStaggerButton from "./effects/char-stagger-button";
-import blog1 from "../assets/blogs/blog1.jpg";
-import blog2 from "../assets/blogs/blog2.png";
-import blog3 from "../assets/blogs/blog3.jpg";
-import blog4 from "../assets/blogs/blog4.jpg";
-import blog5 from "../assets/blogs/blog5.jpg";
+import blog1 from "../assets/blogs/blog1.webp";
+import blog2 from "../assets/blogs/blog2.webp";
+import blog3 from "../assets/blogs/blog3.webp";
+import blog4 from "../assets/blogs/blog4.webp";
+import blog5 from "../assets/blogs/blog5.webp";
 
 import { FadeUp, ParaAnim } from "./Animations/gsapAnim";
 

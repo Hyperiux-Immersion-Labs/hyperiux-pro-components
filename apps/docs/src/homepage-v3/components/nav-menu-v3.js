@@ -1,6 +1,6 @@
 import { navCategoryColumns, navDocsItems } from "@/utils/Links";
 
-// hrefs and icons keep living in utils/Links — the one place the classic navbar
+// hrefs and icons keep living in utils/Links - the one place the classic navbar
 // reads them from too. v3 only re-groups those same entries into the labelled
 // columns its panel draws, so a link never has to be kept in sync twice.
 const BY_LABEL = new Map(

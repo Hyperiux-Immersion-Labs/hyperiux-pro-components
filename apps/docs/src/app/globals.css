@@ -115,15 +115,24 @@ body {
   color-scheme: dark;
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
+/* Layered (not left bare) so Tailwind's utilities layer - text-sm, text-xs,
+   etc. applied directly to a button/input/textarea/select - can actually
+   override this reset. An unlayered rule here would always win over any
+   layered utility regardless of specificity or source order, per the CSS
+   cascade layers spec, silently breaking every text-size class applied
+   directly to a form control site-wide (as opposed to one applied to a
+   wrapping element, which still works via inheritance either way). */
+@layer base {
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
 
-button {
-  cursor: pointer;
+  button {
+    cursor: pointer;
+  }
 }
 
 h1,
@@ -259,6 +268,38 @@ h4 {
 
 .custom-animation-form-scroll::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, #e61216 0%, #f16b0d 100%);
+}
+
+/* Admin Activity page's effect-rank sliders (EffectRankSlider.jsx) scroll
+   horizontally, so the universal thumb gradient below (top-to-bottom, and a
+   different color) reads as broken here - solid brand orange instead,
+   square (no rounding), sized to this slider's own scroll axis.
+
+   The Firefox-only scrollbar-color/-width fallback is gated behind
+   `@supports not selector(::-webkit-scrollbar)` - Chrome 121+ also
+   understands scrollbar-color now, and once it sees that property it drops
+   to its own standard renderer (fixed, always-rounded thumb) *instead of*
+   the ::-webkit-scrollbar-thumb rules below, silently undoing border-radius:
+   0. Scoping it to browsers that don't support the legacy pseudo-elements
+   keeps Chrome/Safari on the fully customizable path. */
+@supports not selector(::-webkit-scrollbar) {
+  .effect-rank-slider {
+    scrollbar-width: thin;
+    scrollbar-color: #ff5f00 transparent;
+  }
+}
+
+.effect-rank-slider::-webkit-scrollbar {
+  height: 4px;
+}
+
+.effect-rank-slider::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.effect-rank-slider::-webkit-scrollbar-thumb {
+  background: #ff5f00;
+  border-radius: 0;
 }
 
 *::-webkit-scrollbar {
@@ -560,7 +601,7 @@ h4 {
   transition: all 0.3s ease-in-out;
 }
 /* Autofill
-   Chrome paints its own autofill fill — override with an inset box-shadow.
+   Chrome paints its own autofill fill - override with an inset box-shadow.
    Defaults match light inputs; dark surfaces set --input-autofill-bg / text. */
 
 input:-webkit-autofill,
@@ -722,7 +763,7 @@ input:-webkit-autofill:active {
   }
 }
 
-/* The square itself only exists on hover — it stutters in, then holds. */
+/* The square itself only exists on hover - it stutters in, then holds. */
 @keyframes pixel-glitch-in {
   0%,
   22%,

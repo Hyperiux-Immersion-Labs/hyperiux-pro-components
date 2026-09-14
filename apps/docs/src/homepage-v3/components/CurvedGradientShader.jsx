@@ -96,7 +96,7 @@ void main() {
   // ── Curvature: convex dome → flat → concave bowl ──
   // The band has to read as flat exactly when travel puts it on the centre
   // line (uProgress 0.5), so each half ramps to zero on its own slope instead
-  // of one lerp between the end curvatures — that would flatten it late, with
+  // of one lerp between the end curvatures - that would flatten it late, with
   // the band already sitting above centre.
   float fromMid = uProgress - 0.5;
   float baseCurvature = -fromMid * mix(2.5, 1.7, step(0.0, fromMid));
@@ -186,8 +186,8 @@ export default function CurvedGradientShader({
     deform: 0,
     targetDeform: 0,
   });
-  // ScrollTrigger lives in a `useGSAP` (a layout effect), so it is created —
-  // and fires its first onRefresh — before the plain effect below has built
+  // ScrollTrigger lives in a `useGSAP` (a layout effect), so it is created -
+  // and fires its first onRefresh - before the plain effect below has built
   // the context. The stub therefore records that progress instead of dropping
   // it, and the build applies it as soon as it can draw; otherwise a load with
   // the section already on screen keeps targetProgress at 0 and parks the band
@@ -544,7 +544,7 @@ export default function CurvedGradientShader({
   );
 
   // Extra height is clipped by the sticky section (`overflow-hidden`) rather
-  // than a CSS mask on this node — masking a WebGL canvas parent blanks it
+  // than a CSS mask on this node - masking a WebGL canvas parent blanks it
   // after client navigations when the compositor re-layers the page.
   const overscanStyle =
     overscan === 1

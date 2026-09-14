@@ -10,7 +10,7 @@ import { prefersReducedMotion } from "@/lib/motion";
 export const VIDEO_SRC = "/cube.mp4";
 
 export const CUBE_ASCII_DEFAULTS = {
-  /** Key into CHAR_SETS — which glyphs the ramp is built from. */
+  /** Key into CHAR_SETS - which glyphs the ramp is built from. */
   charSet: DEFAULT_CHAR_SET,
   /**
    * Framing of the source clip inside the canvas. The video is stretched to fill
@@ -24,7 +24,7 @@ export const CUBE_ASCII_DEFAULTS = {
   videoOffsetX: 0.25,
   videoOffsetY: 0,
   /**
-   * Off, the clip is stretched to fill the canvas — fine while the canvas is
+   * Off, the clip is stretched to fill the canvas - fine while the canvas is
    * roughly as wide as the 16:9 source. On, it is fitted to cover instead, so
    * the subject keeps its proportions whatever the canvas shape and the overflow
    * is cropped; videoScale then reads as a zoom on top of that fit.
@@ -53,7 +53,7 @@ export const CUBE_ASCII_DEFAULTS = {
   fluidRadiusLife: .30,
   /**
    * Click wave. The hover trail is the fluid above; this is the other half of
-   * the interaction — a ring of scrambled glyphs that expands from the click
+   * the interaction - a ring of scrambled glyphs that expands from the click
    * and dies out, leaving the field exactly as it found it.
    */
   waveEnabled: true,
@@ -62,13 +62,13 @@ export const CUBE_ASCII_DEFAULTS = {
    *
    * Past 1.0 because the click decides where the ring starts and a click near
    * a corner has the whole diagonal to cross before the far corner is covered
-   * — at 0.6 such a ring died most of a screen short, finishing while a chunk
+   * - at 0.6 such a ring died most of a screen short, finishing while a chunk
    * of the field had never been touched. Sized for the worst case so the wave
    * always runs off every edge, wherever it was born.
    */
   waveReach: 1.25,
   /**
-   * Thickness of the lit band at birth, in canvas pixels. Wide — the ring is a
+   * Thickness of the lit band at birth, in canvas pixels. Wide - the ring is a
    * broad wall of churning glyphs rather than a thin outline, and a narrow
    * band reads as a ripple rather than a blast. The band grows as the ring
    * travels, so this is its width at the moment of the click.
@@ -78,7 +78,7 @@ export const CUBE_ASCII_DEFAULTS = {
   waveScramble: 1.0,
   /**
    * Seconds from click to the ring finishing. Lower is a faster, snappier
-   * blast; higher lets it drift out. Paired with waveReach — that sets how far
+   * blast; higher lets it drift out. Paired with waveReach - that sets how far
    * the ring goes, this sets how long it takes to get there, so raising one
    * without the other changes the speed it travels at.
    */
@@ -100,8 +100,8 @@ export const CUBE_ASCII_DEFAULTS = {
   gamma: 1.0,
 
   /**
-   * Input levels. cube.mp4 is high-key — 90% of its pixels sit between 0.74 and
-   * 0.87 — so the band has to be stretched across 0..1 or every cell lands on
+   * Input levels. cube.mp4 is high-key - 90% of its pixels sit between 0.74 and
+   * 0.87 - so the band has to be stretched across 0..1 or every cell lands on
    * the same ramp step. Widen these for footage with real blacks.
    */
   levelsLow: 0.7,
@@ -113,7 +113,7 @@ export const CUBE_ASCII_DEFAULTS = {
    */
   brightnessMap: 0.4,
   /**
-   * Output levels — the slice of the post-curve tone the glyph ramp is spread
+   * Output levels - the slice of the post-curve tone the glyph ramp is spread
    * across. brightnessMap and the invert leave cube.mp4 sitting in roughly
    * 0.11..0.55, so without this window the ramp is only ever indexed over its
    * bottom third and one letter carries the frame. Widening it back to 0..1
@@ -139,13 +139,13 @@ export const CUBE_ASCII_DEFAULTS = {
   grainOnEmpty: 1.0,
 };
 
-/** Viewport the phone framing below takes over at — Tailwind's `md` edge. */
+/** Viewport the phone framing below takes over at - Tailwind's `md` edge. */
 const MOBILE_QUERY = "(max-width: 1025px)";
 
 /**
  * Phone framing. A portrait canvas is nowhere near the 16:9 clip's shape, so the
  * default stretch-to-fill drags the cube into vertical streaks, and the desktop
- * offset — which parks it right of the copy, where there is room — pushes most
+ * offset - which parks it right of the copy, where there is room - pushes most
  * of what is left off the edge. Fitting to cover keeps it square; pulling back
  * off that fit and lifting it puts the cube over the top of the screen and the
  * copy on clean background below, which is the desktop split turned upright.
@@ -200,7 +200,7 @@ const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 /**
  * Source samples per cell axis (grainrad's `samplesPerAxis`): 2, 3 or 4.
  * Costs SAMPLES² texture fetches per *pixel* here, where grainrad pays it once
- * per *cell* in a compute pass — keep this low.
+ * per *cell* in a compute pass - keep this low.
  */
 const SAMPLES = 2;
 
@@ -239,7 +239,7 @@ const TM = 72;
  * How many click waves can be in flight at once. Clicking again before a ring
  * has finished starts a second one alongside it rather than restarting the
  * first, so an impatient visitor gets overlapping rings instead of a stutter.
- * Past this the oldest ring is recycled — by then it is the faintest on screen.
+ * Past this the oldest ring is recycled - by then it is the faintest on screen.
  */
 const WAVE_N = 4;
 /**
@@ -259,7 +259,7 @@ const WAVE_ECHO_LIFE = 1.2;
  * Paired with waveReach below: the ring reaches the furthest corner of a
  * typical viewport at roughly the same moment the void starts filling back in
  * (~1.4s of this 1.8s). Stretching one without the other is what leaves the
- * screen sitting blank with the ring already gone — dead air, not an effect.
+ * screen sitting blank with the ring already gone - dead air, not an effect.
  */
 const WAVE_LIFE = 1.8;
 
@@ -355,8 +355,8 @@ const int CHAR_N = ${charCount};
 const int SAMPLES = ${SAMPLES};
 
 /**
- * Entry. The field arrives on a front sweeping right → left, so the cube — which
- * the default framing parks right of the copy — resolves first and the empty
+ * Entry. The field arrives on a front sweeping right → left, so the cube - which
+ * the default framing parks right of the copy - resolves first and the empty
  * margin last.
  *
  * Width of that front as a fraction of the sweep. Cells inside the band are
@@ -417,7 +417,7 @@ vec3 applyAdjustments(vec3 c) {
   // Gamma
   c = pow(max(c, 0.0), vec3(1.0 / max(uGamma, 0.001)));
 
-  // Input levels — stretch the source's real range across 0..1. Without this a
+  // Input levels - stretch the source's real range across 0..1. Without this a
   // high-key clip occupies a sliver of the ramp and every cell picks one glyph.
   c = clamp((c - uLevelsLow) / max(uLevelsHigh - uLevelsLow, 0.001), 0.0, 1.0);
 
@@ -431,7 +431,7 @@ vec3 applyAdjustments(vec3 c) {
 }
 
 void main() {
-  // Grain is computed up front so empty cells carry it too — noise is graded
+  // Grain is computed up front so empty cells carry it too - noise is graded
   // across the whole frame, not only where a glyph lands.
   float grain = 0.0;
   if (uGrain == 1) {
@@ -464,8 +464,8 @@ void main() {
 
   // The clip's own edge pixels fill whatever the framing no longer covers, which
   // reads as empty only where those edges are flat. Aspect fit overshoots top and
-  // bottom, where they are not — that would streak the frame's first and last row
-  // down the canvas — so cells off the source are dropped to background instead.
+  // bottom, where they are not - that would streak the frame's first and last row
+  // down the canvas - so cells off the source are dropped to background instead.
   if (uFitAspect == 1) {
     vec2 fuv = rawFrameUv(bp / uRes);
     if (fuv.x < 0.0 || fuv.x > 1.0 || fuv.y < 0.0 || fuv.y > 1.0) {
@@ -474,7 +474,7 @@ void main() {
     }
   }
 
-  // Per-cell arrival — see INTRO_FEATHER. The axis runs 0 at the right edge to
+  // Per-cell arrival - see INTRO_FEATHER. The axis runs 0 at the right edge to
   // 1 at the left, so the front crosses right → left; the Bayer offset
   // breaks that edge up, scattering cells in around it instead of switching
   // them on column by column.
@@ -536,13 +536,13 @@ void main() {
 
   lum *= invS * invS;
 
-  // Output levels — the slice of the adjusted tone the glyph ramp spans.
+  // Output levels - the slice of the adjusted tone the glyph ramp spans.
   //
   // Input levels stretch the *source* across 0..1, but brightnessMap then curves
   // that range and the invert flips the curved result back down, so what finally
   // reaches the ramp occupies a band near the bottom (roughly 0.1..0.55 for
   // cube.mp4) rather than all of 0..1. Indexing the ramp with that directly
-  // spends the whole glyph set on its first two or three slots — half the inked
+  // spends the whole glyph set on its first two or three slots - half the inked
   // cells land on one glyph and the heavy end of the set never draws at all.
   // Re-normalising here separates *which* slot a cell gets from *how many* cells
   // are blank, so brightnessMap keeps owning sparseness on its own.
@@ -561,7 +561,7 @@ void main() {
   // ── Click wave ──
   //
   // Each ring is a band centred on a radius that grows with its age. "ring" is
-  // how deep this cell sits inside that band — 0 outside it, 1 on the crest —
+  // how deep this cell sits inside that band - 0 outside it, 1 on the crest -
   // and it is the wave's only output: the band lights cells up and scrambles
   // them, and everything outside it is left exactly as the video drew it. The
   // ring is symmetric about the crest, so its inner and outer edges fall off
@@ -573,7 +573,7 @@ void main() {
     float life = uWA[i];
     if (life <= 0.0) continue;
 
-    // Ring radius in pixels. Only slightly eased — a strong ease-out spends
+    // Ring radius in pixels. Only slightly eased - a strong ease-out spends
     // most of the ring's life almost stationary at the far edge, which is what
     // made the first pass feel like it was over before it started. Close to
     // linear keeps it travelling at a readable speed the whole way.
@@ -594,7 +594,7 @@ void main() {
 
   // The crest lifts cells up the ramp, but only partway and only for the ones
   // that were already going to be inked. Pushing the whole band to the top of
-  // the ramp fills it into a solid slab — the ring has to stay a scatter of
+  // the ramp fills it into a solid slab - the ring has to stay a scatter of
   // individual bright glyphs on background, which is what reads as text
   // churning rather than as a white shape passing over.
   gray = mix(gray, min(1.0, gray * 1.35 + 0.28), ring);
@@ -618,12 +618,12 @@ void main() {
   float scrambleOdds = ring * clamp(uWaveScramble, 0.0, 1.0);
   if (hash(vec2(gx, gy) * 1.37) < scrambleOdds) {
     float roll = hash(vec2(gx, gy) + floor(uTime * 18.0) * 37.7);
-    // Bias the roll high so scrambled cells land on inked slots — the blank
+    // Bias the roll high so scrambled cells land on inked slots - the blank
     // ones at the bottom of the ramp would punch holes in the crest.
     ci = int(clamp(mix(0.35, 1.0, roll), 0.0, 0.9999) * float(CHAR_N));
   }
 
-  // Glyphs grow into their cell as they arrive — the mirror of the loader's
+  // Glyphs grow into their cell as they arrive - the mirror of the loader's
   // glyphs shrinking as they leave, and what makes each one read as arriving
   // rather than just brightening.
   float zoom = max(uCharZoom, 0.01) * (1.0 - clamp(uCharGap, 0.0, 0.95))
@@ -646,7 +646,7 @@ void main() {
 
   // Tone is already carried by *which* glyph was picked. Shading the color by
   // lum as well would darken exactly the cells that got the lightest glyph,
-  // double-attenuating them into invisibility — so keep color near-flat.
+  // double-attenuating them into invisibility - so keep color near-flat.
   float shade = mix(1.0, lum, clamp(uColorFromVideo, 0.0, 1.0));
   vec3 col = vec3(uCharBrightness * shade) * uColorIntensity;
 
@@ -654,7 +654,7 @@ void main() {
   //
   // This is the whole contract: the field is decided by the video and nothing
   // the wave does can remove it. It only ever brightens, and only inside the
-  // band — so the clip is never dimmed, cut, or hidden anywhere on the canvas.
+  // band - so the clip is never dimmed, cut, or hidden anywhere on the canvas.
   col *= 1.0 + ring * uWaveGlow;
 
   // Optional wave tint (off when uWaveColorEnabled == 0 or tint is 0).
@@ -668,8 +668,8 @@ void main() {
 
   // Optional fluid letter tint (off when uFluidColorEnabled == 0).
   //
-  // uFluidTint  — how easily flow paints orange (coverage / sensitivity)
-  // uFluidBoost — how hot that orange reads (1 = hex as-is, >1 neon lift)
+  // uFluidTint  - how easily flow paints orange (coverage / sensitivity)
+  // uFluidBoost - how hot that orange reads (1 = hex as-is, >1 neon lift)
   if (uFluidColorEnabled == 1) {
     float t = clamp(uFluidTint, 0.0, 3.0);
     float b = clamp(uFluidBoost, 0.0, 3.0);
@@ -690,7 +690,7 @@ void main() {
     col += fluidCol * fluidMix * max(b - 1.0, 0.0) * 0.45;
   }
 
-  // Film grain — color only, never character selection
+  // Film grain - color only, never character selection
   col += grain;
 
   col = clamp(col, 0.0, 1.0);
@@ -962,7 +962,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
   const configRef = useRef(config);
 
   // Held behind a ref of its own so the render loop can read whatever `intro`
-  // currently is without the prop being a GL-setup dependency — it is mutated
+  // currently is without the prop being a GL-setup dependency - it is mutated
   // from outside (by GSAP) many times a second, and rebuilding the context for
   // that would be absurd. Absent, the field just draws fully.
   const introRef = useRef(intro);
@@ -980,7 +980,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
   const charSetName = config.charSet ?? DEFAULT_CHAR_SET;
 
   // The render loop reads configRef each frame; keeping it current is all that
-  // is needed for new values to take effect — no GL teardown involved. The ref
+  // is needed for new values to take effect - no GL teardown involved. The ref
   // is seeded with the first config, so the loop never reads a stale one.
   useEffect(() => {
     configRef.current = config;
@@ -1129,7 +1129,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
     const onMove = (event) => {
       if (isMobile()) return;
 
-      // Measured against the canvas, not the viewport — as a component this can
+      // Measured against the canvas, not the viewport - as a component this can
       // sit anywhere on the page, and viewport coords would offset the trail.
       const rect = canvas.getBoundingClientRect();
       const localX = event.clientX - rect.left;
@@ -1178,7 +1178,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
     }));
 
     const spawnWave = (localX, localY, lifeScale = 1) => {
-      // Free slot if there is one, otherwise the oldest ring — by then it is
+      // Free slot if there is one, otherwise the oldest ring - by then it is
       // the faintest thing on screen, so recycling it is invisible.
       let slot = waves.findIndex((wave) => wave.born === null);
       if (slot === -1) {
@@ -1200,7 +1200,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
     const onClick = (event) => {
       if (isMobile()) return;
       if (configRef.current.waveEnabled === false) return;
-      // A ring sweeping the whole viewport is a large, unprompted motion —
+      // A ring sweeping the whole viewport is a large, unprompted motion -
       // exactly what the preference is asking us not to do. Read live rather
       // than captured at mount so toggling it in the OS takes effect without
       // a remount; the ambient field keeps drawing either way.
@@ -1212,7 +1212,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
 
       // Clicks landing on the copy and buttons stacked over the canvas still
       // belong to the page, but the ring is background dressing and reads fine
-      // under them — what it must not do is fire for a click somewhere else on
+      // under them - what it must not do is fire for a click somewhere else on
       // the page entirely, hence the bounds test.
       if (
         localX < 0 ||
@@ -1375,7 +1375,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
 
         // Age each ring and retire the ones past their life. The shader reads
         // age in seconds and derives radius from it, so nothing here has to
-        // track position — a ring is just a point and a clock.
+        // track position - a ring is just a point and a clock.
         //
         // The same duration is sent to the shader below, so a ring's slot is
         // freed on exactly the frame its radius finishes growing. Reading it
@@ -1445,7 +1445,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
           cfg.videoOffsetY ?? 0,
         );
         gl.uniform1i(uFitAspect, cfg.fitAspect ? 1 : 0);
-        // Read off the decoded frame rather than assumed — readyState >= 2 above
+        // Read off the decoded frame rather than assumed - readyState >= 2 above
         // means the dimensions are known by now.
         gl.uniform1f(
           uVideoAspect,
@@ -1518,7 +1518,7 @@ function CubeAsciiCanvas({ config, intro, src, className }) {
 }
 
 /*
- * Loaded on demand so leva stays out of the production bundle — it is only
+ * Loaded on demand so leva stays out of the production bundle - it is only
  * pulled in for the branch that actually renders the panel. It reports values
  * upward rather than wrapping the canvas, which keeps the two modules from
  * importing each other.
@@ -1527,7 +1527,7 @@ const CubeAsciiControls = dynamic(() => import("./with-leva"), { ssr: false });
 
 /**
  * Starts false so the server render and the first client render agree; the
- * effect corrects it before paint, and a config swap costs nothing — the loop
+ * effect corrects it before paint, and a config swap costs nothing - the loop
  * reads it per frame and never rebuilds the GL context.
  */
 function useMatchMedia(query) {
@@ -1549,9 +1549,9 @@ function useMatchMedia(query) {
  * Fluid-reactive ASCII rendering of a looping video, for use as a background.
  *
  * Pass `debug` to mount a leva panel bound to this effect's config. The panel
- * drives only these controls — anything else on the page is untouched.
+ * drives only these controls - anything else on the page is untouched.
  *
- * @param {{ current: number }} [intro] — a mutable holder (a React ref works)
+ * @param {{ current: number }} [intro] - a mutable holder (a React ref works)
  *   read every frame, 0 (nothing drawn) → 1 (full field). Animate it to play
  *   the entry reveal; leave it off and the field simply draws.
  */

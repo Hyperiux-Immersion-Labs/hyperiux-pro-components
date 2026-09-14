@@ -3,6 +3,7 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { TEMPLATES } from "@/lib/mock-templates";
+import { getTemplateViewCounts } from "@/lib/template-views";
 import { TemplatesGrid } from "./TemplatesGrid";
 import FAQV3 from "@/homepage-v3/sections/FAQV3";
 
@@ -101,7 +102,13 @@ Vault Templates are licensed under the Mozilla Public License 2.0 (MPL-2.0), the
   },
 ];
 
-export default function TemplatesPage() {
+export default async function TemplatesPage() {
+  const viewCounts = await getTemplateViewCounts(TEMPLATES.map((template) => template.slug));
+  const templates = TEMPLATES.map((template) => ({
+    ...template,
+    viewCount: viewCounts[template.slug] || 0,
+  }));
+
   return (
     <div className="relative min-h-screen text-foreground effects-comp border-b border-white/10">
       <div className="px-14 pt-28 pb-12 space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16">
@@ -124,7 +131,7 @@ export default function TemplatesPage() {
         </div>
       </div>
 
-      <TemplatesGrid templates={TEMPLATES} />
+      <TemplatesGrid templates={templates} />
 
       <FAQV3 faqItems={faqItems} translateTop={false} />
     </div>

@@ -7,7 +7,11 @@ import { useLenis } from "lenis/react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { X } from "lucide-react";
-import AnimatedForm from "./effects/animated-form";
+import dynamic from "next/dynamic";
+
+// The provider wraps the whole page, so the form would otherwise sit in the
+// critical bundle. The body only renders once the modal has been opened.
+const AnimatedForm = dynamic(() => import("./effects/animated-form"));
 import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(useGSAP);

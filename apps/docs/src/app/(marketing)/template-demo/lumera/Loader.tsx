@@ -2,40 +2,53 @@
 
 "use client";
 
-import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { useLenis } from "lenis/react";
 
 const Loader = () => {
-    const gradient = useRef(null);
     const loaderMain = useRef(null);
     const lenis = useLenis();
 
     useEffect(() => {
         lenis?.stop?.();
 
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline();
-            tl.to(gradient.current, {
-                duration: 2,
-                xPercent: 100,
-                delay: 0.5,
-                ease: "power3.out",
-            }).to(loaderMain.current, {
-                duration: 0.5,
-                yPercent: -100,
-                delay: -0.2,
-                onComplete: () => {
-                    gsap.set(loaderMain.current, {
-                        display: 'none',
-                        pointerEvents: 'none',
-                    })
-                    lenis?.start?.();
-                }
-            })
-        })
-        return () => ctx.revert();
+        // The exit itself is a CSS animation (see `#preloader` in
+        // lumera-styles.css) so it begins on the first painted frame instead of
+        // waiting for this bundle to hydrate. That keeps the overlay from
+        // sitting on top of the hero and delaying LCP. All this effect does is
+        // release the scroll lock when that animation finishes.
+        const el = loaderMain.current as HTMLElement | null;
+        if (!el) return;
+
+        let done = false;
+        const finish = () => {
+            if (done) return;
+            done = true;
+            el.style.display = "none";
+            el.style.pointerEvents = "none";
+            lenis?.start?.();
+        };
+
+        // The sweep animation also bubbles an `animationend` from inside the
+        // overlay, so only react to the panel's own exit.
+        const onEnd = (e: AnimationEvent) => {
+            if (e.target !== el || e.animationName !== "lumera-preloader-out") return;
+            finish();
+        };
+        el.addEventListener("animationend", onEnd);
+        // If the animation never fires (reduced motion disables it), don't strand
+        // the page in a locked-scroll state. Comfortably past the 2.8s exit.
+        const fallback = window.setTimeout(finish, 3200);
+
+        return () => {
+            el.removeEventListener("animationend", onEnd);
+            window.clearTimeout(fallback);
+        };
       }, [lenis]);
+
+    // Safety net: if JS is slow or fails, the overlay must not sit on top of the
+    // hero forever. The CSS animation below clears it on its own schedule.
+
 
     return (
         <>
@@ -66,7 +79,7 @@ const Loader = () => {
 </defs>
 </svg>
 
-                    <span ref={gradient} className="absolute top-0 -left-full block w-[200%] h-full bg-gradient-to-l from-current via-current to-transparent"/>
+                    <span className="lumera-loader-sweep absolute top-0 -left-full block w-[200%] h-full bg-gradient-to-l from-current via-current to-transparent"/>
                 </div>
             </div>
         </>

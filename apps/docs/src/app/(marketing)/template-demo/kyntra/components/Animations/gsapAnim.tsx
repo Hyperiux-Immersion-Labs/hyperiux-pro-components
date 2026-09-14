@@ -19,6 +19,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 // Reduced motion still reveals, just as a short fade
 const REDUCED_MOTION_FADE = 0.3;
 
+
+const FONT_WAIT_CAP = 300;
+
 type FadeUpProps<T extends ElementType> = {
   /** Element to render as */
   as?: T;
@@ -154,7 +157,9 @@ export function ParaAnim<T extends ElementType = "div">({
       return () => observer.disconnect();
     }
 
-    // Split after fonts load
+    let fontTimer: number | undefined;
+    let deferredObserver: IntersectionObserver | null = null;
+
     const init = () => {
       if (!ref.current) return;
 
@@ -194,6 +199,15 @@ export function ParaAnim<T extends ElementType = "div">({
         return;
       }
 
+      // Copy already on screen would otherwise wait for ScrollTrigger's first
+      // refresh before onEnter fires. Same tween, started directly.
+      const rect = el.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (inView) {
+        gsap.to(lines, { ...to, delay });
+        return;
+      }
+
       trigger = ScrollTrigger.create({
         trigger: el,
         start: top,
@@ -202,13 +216,57 @@ export function ParaAnim<T extends ElementType = "div">({
       });
     };
 
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(init);
+    // Wait only on the faces this element actually renders in, and never
+    // longer than FONT_WAIT_CAP.
+    const splitWhenFontReady = () => {
+      let done = false;
+      const runOnce = () => {
+        if (done) return;
+        done = true;
+        window.clearTimeout(fontTimer);
+        init();
+      };
+
+      const fonts = document.fonts;
+      if (!fonts) {
+        init();
+        return;
+      }
+
+      const { fontFamily, fontWeight, fontSize } = getComputedStyle(el);
+      try {
+        fonts.load(`${fontWeight} ${fontSize} ${fontFamily}`).then(runOnce, runOnce);
+      } catch {
+        // Malformed shorthand: fall back to the whole-page promise
+        fonts.ready.then(runOnce, runOnce);
+      }
+
+      fontTimer = window.setTimeout(runOnce, FONT_WAIT_CAP);
+    };
+
+
+    const box = el.getBoundingClientRect();
+    const nearViewport =
+      box.top < window.innerHeight * 1.5 && box.bottom > -window.innerHeight;
+
+    if (nearViewport) {
+      splitWhenFontReady();
     } else {
-      init();
+      deferredObserver = new IntersectionObserver(
+        ([entry], obs) => {
+          if (!entry.isIntersecting) return;
+          obs.disconnect();
+          deferredObserver = null;
+          splitWhenFontReady();
+        },
+        { rootMargin: "200% 0px" },
+      );
+      deferredObserver.observe(el);
     }
 
     return () => {
+      window.clearTimeout(fontTimer);
+      deferredObserver?.disconnect();
       trigger?.kill();
       split?.revert();
     };

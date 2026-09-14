@@ -68,7 +68,7 @@ interface PixelMetrics extends Metrics {
   unit: number;
   /** Extra outward push the enlarged centre slide adds to its neighbours. */
   extra: number;
-  /** Half the stage's own width — the clip edge slides are hidden beyond. */
+  /** Half the stage's own width - the clip edge slides are hidden beyond. */
   stageHalf: number;
 }
 
@@ -192,7 +192,7 @@ export default function InfiniteCarouselComp({
         offset * px.unit + Math.sign(offset) * smoothstep(near) * px.extra;
       const width = px.smallW + (px.centerW - px.smallW) * centerness;
 
-      // Slides never fade — they'd be visibly translucent inside the stage.
+      // Slides never fade - they'd be visibly translucent inside the stage.
       // They only wink out once their near edge has passed the clip boundary,
       // by which point overflow-hidden already hides them completely.
       const clipped = Math.abs(x) - width / 2 >= px.stageHalf;

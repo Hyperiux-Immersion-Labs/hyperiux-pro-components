@@ -1,7 +1,8 @@
 "use client";
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Rocket, Sparkles, Zap } from "lucide-react";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
 
 const ORANGE = "#E8620F";
@@ -29,21 +30,7 @@ const REASONS = [
 
 const WhyWorkWithMe = () => {
   const lineRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => {
-      mq.removeEventListener("change", onChange);
-    };
-  }, []);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     gsap.set(lineRefs.current, { scaleX: 0, transformOrigin: "left center" });
@@ -135,7 +122,7 @@ const WhyWorkWithMe = () => {
                 <h3 className="text-[2vw] font-normal mb-[2.5vw] max-[1025px]:text-[4.2vw] max-md:text-[5.8vw] max-[1025px]:mb-[2vw]">
                   {reason.title}
                 </h3>
-                <p className="text-[1.25vw] leading-[1.5] text-white/80 max-[1025px]:text-[2.8vw] max-md:text-[4vw]">
+                <p className="text-[1.25vw] leading-normal text-white/80 max-[1025px]:text-[2.8vw] max-md:text-[4vw]">
                   {reason.description}
                 </p>
               </div>

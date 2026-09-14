@@ -50,7 +50,7 @@ export default function LiquidGlassCursor({
 
   // Displacement bitmap is generated once at the largest size any shape can
   // reach, then stretched (non-uniformly, via preserveAspectRatio="none") to
-  // match the live lens dimensions — regenerating pixels every frame would jank.
+  // match the live lens dimensions - regenerating pixels every frame would jank.
   const mapSize = Math.max(size, textHoverSize, maxButtonWidth, maxButtonHeight);
 
   const x = useMotionValue(0);

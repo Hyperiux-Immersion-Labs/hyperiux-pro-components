@@ -1,9 +1,10 @@
 "use client";
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 import OverflowTextReveal from "./effects/overflow-text-reveal";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -56,51 +57,22 @@ const Services = () => {
   // variable directly, since GSAP can't reliably read/interpolate a custom
   // property's percentage value without an inline starting value to parse.
   const revealState = useRef(SERVICES.map((_, i) => ({ value: i === 0 ? 100 : -40 })));
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-  const prefersReducedMotionRef = useRef(prefersReducedMotion);
+  const prefersReducedMotion = usePrefersReducedMotion();
   // The first card reads as "active" (gradient filled) from the start.
   // Hovering another card hands the active state to it; leaving the
   // cards doesn't clear it - whichever was hovered last just stays lit.
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    prefersReducedMotionRef.current = mq.matches;
-    setPrefersReducedMotion(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => {
-      prefersReducedMotionRef.current = e.matches;
-      setPrefersReducedMotion(e.matches);
-    };
-    mq.addEventListener("change", onChange);
-    return () => {
-      mq.removeEventListener("change", onChange);
-    };
-  }, []);
 
-  // This section is 275vh normally and collapses to its natural height under
-  // reduced motion - a ~175vh swing. Every ScrollTrigger further down the
-  // page (the heading reveals in Awards, Testimonials, Faq...) caches its
-  // start/end against document height when it's created, so unless they are
-  // recalculated after this section resizes, their trigger points stay where
-  // the taller layout put them - far below the content they belong to, which
-  // is why those headings never animated in. Runs whenever the height
-  // actually changes, including a live toggle of the OS setting.
   useEffect(() => {
-    // Deferred a frame so the browser has actually applied the new height
-    // before anything is measured - refreshing synchronously in the same
-    // commit reads the old layout back and changes nothing.
+
     const frameId = window.requestAnimationFrame(() => ScrollTrigger.refresh());
     return () => window.cancelAnimationFrame(frameId);
   }, [prefersReducedMotion]);
 
   useEffect(() => {
    if (prefersReducedMotion) {
-     // The row is a static grid in this mode, so any xPercent left over from
-     // a previous run would leave it sitting shifted off to one side.
+ 
      gsap.set(rowRef.current, { clearProps: "transform" });
      return;
    }
@@ -170,7 +142,7 @@ const Services = () => {
 
     // The active card still changes - which one is lit is real state - it
     // just swaps instantly instead of sweeping under reduced motion.
-    const duration = prefersReducedMotionRef.current ? 0 : 0.45;
+    const duration = prefersReducedMotion ? 0 : 0.45;
 
     gsap.to(revealState.current[prevIndex], {
       value: -40,

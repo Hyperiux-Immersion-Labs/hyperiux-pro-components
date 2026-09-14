@@ -54,7 +54,7 @@ export function TemplatesGrid({ templates }) {
   return (
     <>
       {categories.length > 1 && (
-        <div className="fadeup mx-auto px-14 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
+        <div className="fadeup mx-auto px-14 pb-7 pt-10 max-md:px-0">
           <div className="relative max-[1025px]:w-full flex items-start gap-4">
             <div className="relative min-w-0 flex-1">
               <div
