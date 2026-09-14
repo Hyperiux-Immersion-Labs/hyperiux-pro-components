@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { TemplateCard } from "@/components/ui/TemplateCard";
 import FadeUp from "@/components/WebsiteComps/FadeUp";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
+import { useTemplateWishlist } from "./useTemplateWishlist";
 
 function formatLabel(value = "") {
   return value
@@ -24,6 +26,13 @@ function formatLabel(value = "") {
 // matched here.
 export function TemplatesGrid({ templates }) {
   const [activeCategory, setActiveCategory] = useState("all");
+  const { toast, showToast, dismissToast } = useToastQueue();
+  const { wishlist, toggleWishlist } = useTemplateWishlist({
+    onSaved: (template) =>
+      showToast({ title: `${template.title} saved`, description: "You'll find it in your dashboard's My Templates." }),
+    onRemoved: (template) =>
+      showToast({ title: `${template.title} removed`, description: "No longer in your saved templates." }),
+  });
 
   // No containerRef - scans the whole document, same as Hero.jsx/
   // ExplainVault.jsx's page-wide useFadeUp() calls. This is the only
@@ -118,11 +127,18 @@ export function TemplatesGrid({ templates }) {
             // card, which sets up and fires its own ScrollTrigger without
             // needing to re-scan (and re-hide) cards already on screen.
             <FadeUp key={template.slug}>
-              <TemplateCard template={template} priority={index === 0} />
+              <TemplateCard
+                template={template}
+                priority={index === 0}
+                isWishlisted={wishlist.includes(template.slug)}
+                toggleWishlist={toggleWishlist}
+              />
             </FadeUp>
           ))}
         </div>
       </div>
+
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
     </>
   );
 }
