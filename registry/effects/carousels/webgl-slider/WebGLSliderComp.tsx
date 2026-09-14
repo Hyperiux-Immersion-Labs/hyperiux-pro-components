@@ -473,7 +473,7 @@ function WebGLSliderComp({
 
         targetUv.set(localX / CARD_W + 0.5, localY / CARD_H + 0.5);
 
-        // Reduced motion: no pointer-following bend — uHover stays at 0, so
+        // Reduced motion: no pointer-following bend - uHover stays at 0, so
         // the card surface is unaffected by the cursor.
         if (enableHoverEffect && !reduceMotion) {
           mesh.material.uniforms.uHoverPos.value.lerp(targetUv, 0.15);

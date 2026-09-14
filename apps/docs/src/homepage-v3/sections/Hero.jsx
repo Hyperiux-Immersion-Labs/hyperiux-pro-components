@@ -27,22 +27,22 @@ const AT_ACTIONS = 2.75;
 
 // The intro animates these in from nothing, so they ship hidden in the markup
 // rather than being hidden by the effect below. Hiding them in JS leaves them
-// painted and visible for the frames between first paint and hydration — which
+// painted and visible for the frames between first paint and hydration - which
 // is long enough on a cold load to read the headline through the loader before
 // it mounts. `visibility` (not `display`) so they still take up layout and the
 // hero never reflows when they appear, and it is exactly what GSAP's
 // `autoAlpha` writes, so the intro's own `autoAlpha: 1` clears it for free.
 //
-// The headline is the exception and ships painted — it is the LCP element, and
+// The headline is the exception and ships painted - it is the LCP element, and
 // hidden markup puts the metric behind the whole loader. See the layout effect,
 // which hides it at hydration instead.
 const INTRO_HIDDEN = { visibility: "hidden" };
 
-// Any path that decides the intro will not run has to put the copy back —
+// Any path that decides the intro will not run has to put the copy back -
 // hidden markup must never be allowed to stay hidden. Writes `visibility`
 // explicitly rather than clearing the inline value: SplitText's `revert()`
 // restores whatever the inline style attribute held when it split, and an
-// element with no inline `visibility` reverts to visible — which is the flash
+// element with no inline `visibility` reverts to visible - which is the flash
 // of un-animated copy between the effect re-running and re-hiding.
 function revealIntroTargets(...els) {
     gsap.set(els.filter(Boolean), { autoAlpha: 1, visibility: "visible" });
@@ -97,7 +97,7 @@ export default function Hero() {
         // largest thing on the page and therefore what LCP measures: markup
         // that hides it means the metric cannot be recorded until the intro
         // plays it in, seconds later, behind a loader. What nobody may see is
-        // the paint it gets credited with — hence the cover, which is in the
+        // the paint it gets credited with - hence the cover, which is in the
         // same server HTML and comes off here, in the same breath as the copy
         // is settled either way. The loader's own backdrop is not enough to
         // lean on: it is a separate component and takes itself down when *it*
@@ -138,7 +138,7 @@ export default function Hero() {
     // effect above, which returns early and reveals there), or it is simply
     // one tick from being switched on. Revealing here cannot tell those apart,
     // and revealing in the second case is what put the copy on screen for a
-    // few frames before the intro hid it again to animate — the flash on
+    // few frames before the intro hid it again to animate - the flash on
     // reload. The layout effect owns the reveal for the paths that skip the
     // intro, so this effect only has to set the canvas scalar.
     useGSAP(
@@ -156,7 +156,7 @@ export default function Hero() {
             // measures line boxes to decide where the copy wraps, and a hidden
             // element still lays out but is the wrong thing to measure against
             // once the intro is about to write its own per-line transforms. The
-            // elements stay invisible either way — the `gsap.set` calls below
+            // elements stay invisible either way - the `gsap.set` calls below
             // immediately re-hide the pieces the timeline animates in.
             revealIntroTargets(
                 headingRef.current,
@@ -235,7 +235,7 @@ export default function Hero() {
         },
         // One dependency, not two. `playIntro` and `loaderComplete` flip at
         // different moments during hydration, so listing both re-runs this
-        // effect — tearing the SplitText down and rebuilding it — the instant
+        // effect - tearing the SplitText down and rebuilding it - the instant
         // the second one lands. The effect only ever does work when both are
         // true, and neither goes back to false, so the conjunction is the real
         // trigger and it fires exactly once.
@@ -378,7 +378,7 @@ export default function Hero() {
             />
             {/* Over everything the hero paints, for exactly as long as it takes
                 this to hydrate. It is what lets the headline ship visible
-                without ever being seen that way — see the layout effect. */}
+                without ever being seen that way - see the layout effect. */}
             <div
                 ref={coverRef}
                 aria-hidden="true"

@@ -1,7 +1,7 @@
 /**
  * Vendored from `smooothy` v0.0.35 (package/src/utils.ts), unmodified.
  *
- * The MIT License (MIT) — Copyright (c) vallafederico
+ * The MIT License (MIT) - Copyright (c) vallafederico
  * https://github.com/vallafederico/smooothy
  */
 

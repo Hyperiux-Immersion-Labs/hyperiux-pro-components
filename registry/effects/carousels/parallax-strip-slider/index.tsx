@@ -271,7 +271,7 @@ export default function ParallaxStripSlider({
         return;
       }
 
-      // Chars only — no line/mask wrappers that shift metrics.
+      // Chars only - no line/mask wrappers that shift metrics.
       const split = new SplitText(titleRef.current, { type: "chars" });
       splitRef.current = split;
 
@@ -600,7 +600,7 @@ export default function ParallaxStripSlider({
         )}
       </div>
 
-      {/* Circular nav cursor — follows the pointer, arrow flips per side. */}
+      {/* Circular nav cursor - follows the pointer, arrow flips per side. */}
       {showControls && total > 1 && (
         <div
           ref={cursorRef}

@@ -6,7 +6,7 @@ import { Leva, folder, useControls } from "leva";
 /**
  * Leva panel for HyperiuxModelDither.
  *
- * Renders no scene of its own — it reports the current values up through
+ * Renders no scene of its own - it reports the current values up through
  * `onChange` and the effect owns the rendering. That keeps this module a leaf,
  * so it can stay behind a dynamic import without a cycle back into index.jsx.
  *
@@ -22,7 +22,7 @@ export default function ModelDitherControls({ base, onChange }) {
                 charGap: { value: base.charGap, min: 0, max: 0.95, step: 0.01 },
                 charJitter: { value: base.charJitter, min: 0, max: 1, step: 0.01 },
                 charColor: { value: base.charColor },
-                /** Cells below this luminance draw nothing — raise to clear speckle. */
+                /** Cells below this luminance draw nothing - raise to clear speckle. */
                 cutoff: { value: base.cutoff, min: 0, max: 0.5, step: 0.005 },
             },
             { collapsed: false },

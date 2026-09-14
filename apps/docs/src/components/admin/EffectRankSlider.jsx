@@ -27,7 +27,7 @@ function resolveCoverImage(effect) {
 // ranking), but keeping the same hover-video preview since that's the one
 // piece of EffectCardNew's interactivity this ranking is actually missing
 // without it: a still cover image only, no motion.
-function RankCard({ effect, valueLabel }) {
+function RankCard({ effect, valueLabel, renderValue }) {
   const [imageError, setImageError] = useState(false);
   const [active, setActive] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
@@ -73,7 +73,7 @@ function RankCard({ effect, valueLabel }) {
             alt={title}
             fill
             sizes={CARD_SIZES}
-            className={`object-cover transition-opacity duration-300 ${showVideo ? "opacity-0" : "opacity-100"}`}
+            className={`object-cover  ${showVideo ? "opacity-0" : "opacity-100"}`}
             onError={() => setImageError(true)}
           />
         ) : (
@@ -89,7 +89,7 @@ function RankCard({ effect, valueLabel }) {
             onLoadedData={() => setVideoReady(true)}
             onEmptied={() => setVideoReady(false)}
             onError={() => setVideoReady(false)}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${showVideo ? "opacity-100" : "opacity-0"}`}
+            className={`absolute inset-0 h-full w-full object-cover  ${showVideo ? "opacity-100" : "opacity-0"}`}
           />
         )}
         {effect.tier === "pro" && (
@@ -104,8 +104,14 @@ function RankCard({ effect, valueLabel }) {
           {title}
         </p>
         <span className="shrink-0 text-lg font-medium text-white">
-          {effect.count}
-          {valueLabel ? <span className="ml-1.5 text-sm text-white/80">{valueLabel}</span> : null}
+          {renderValue ? (
+            renderValue(effect)
+          ) : (
+            <>
+              {effect.count}
+              {valueLabel ? <span className="ml-1.5 text-sm text-white/80">{valueLabel}</span> : null}
+            </>
+          )}
         </span>
       </div>
     </Link>
@@ -117,7 +123,7 @@ function RankCard({ effect, valueLabel }) {
 // Effects" slider on the effect detail page
 // (effects/[slug]/effect-detail.jsx) - this is that same slider, sized for
 // a full-width admin panel instead of the main site's grid.
-export function EffectRankSlider({ title, effects, valueLabel, height = 260 }) {
+export function EffectRankSlider({ title, effects, valueLabel, height = 260, renderValue }) {
   const sliderRef = useRef(null);
   const dragRef = useRef({ isPointerDown: false, isDragging: false, startX: 0, scrollLeft: 0 });
   const [canScrollPrev, setCanScrollPrev] = useState(false);
@@ -129,6 +135,19 @@ export function EffectRankSlider({ title, effects, valueLabel, height = 260 }) {
     setCanScrollPrev(slider.scrollLeft > 8);
     setCanScrollNext(slider.scrollLeft + slider.clientWidth < slider.scrollWidth - 8);
   };
+
+  // canScrollPrev/canScrollNext only ever got set from the slider's own
+  // onScroll/drag handlers below, so on a fresh load (or a reload) both sat
+  // at their useState(false) default - "Prev" correctly disabled, but
+  // "Next" wrongly disabled too, until something scrolled the slider once.
+  // Same fix as the Related Effects slider on the effect detail page
+  // (effect-detail.jsx) - run it once on mount, and again whenever the
+  // effect list itself changes (a different dataset changes scrollWidth).
+  useEffect(() => {
+    if (!sliderRef.current) return;
+
+    queueMicrotask(updateScrollState);
+  }, [effects]);
 
   // One card per click, not a full clientWidth "page" (which at this card
   // size covers 3+ cards in one jump) - measured off the actual rendered
@@ -233,7 +252,7 @@ export function EffectRankSlider({ title, effects, valueLabel, height = 260 }) {
           className="effect-rank-slider flex cursor-grab snap-x snap-mandatory select-none gap-6 overflow-x-auto scroll-smooth pb-6 active:cursor-grabbing"
         >
           {effects.map((effect) => (
-            <RankCard key={effect.slug} effect={effect} valueLabel={valueLabel} />
+            <RankCard key={effect.slug} effect={effect} valueLabel={valueLabel} renderValue={renderValue} />
           ))}
         </div>
       )}

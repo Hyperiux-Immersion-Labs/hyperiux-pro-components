@@ -390,7 +390,7 @@ function InfiniteScrollCamera({ config }: { config: ReturnType<typeof resolveTun
   useEffect(() => {
     const applyDelta = (delta: number) => {
       if (reduceMotionRef.current) {
-        // Reduced-motion: move instantly — no velocity coast.
+        // Reduced-motion: move instantly - no velocity coast.
         scrollVelocity.current = 0;
         targetZ.current += delta;
       } else {
@@ -475,7 +475,7 @@ function InfiniteScrollCamera({ config }: { config: ReturnType<typeof resolveTun
     const resumedFromPause = wallClockGap > 250;
 
     if (reduceMotionRef.current) {
-      // Snap camera to target — no inertia / follow lerp.
+      // Snap camera to target - no inertia / follow lerp.
       scrollVelocity.current = 0;
       if (resumedFromPause) {
         // Camera position didn't move while paused - keep the target in

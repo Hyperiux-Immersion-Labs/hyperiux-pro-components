@@ -150,7 +150,7 @@ const EllipseCarousel = ({
 
   // One pass around the ring: even angular spacing, position on the
   // ellipse, and a size that peaks at the rightmost point (theta = 0) and
-  // bottoms out at the leftmost (theta = pi) — z-index rides the same
+  // bottoms out at the leftmost (theta = pi) - z-index rides the same
   // curve, so the biggest card is always the one stacked on top.
   const render = useCallback(() => {
     if (!total) return;
@@ -188,7 +188,7 @@ const EllipseCarousel = ({
   }, []);
 
   // Hold on the active card, then snap the ring forward by exactly one slot
-  // so the next card lands dead-centre — a beat, not a drift.
+  // so the next card lands dead-centre - a beat, not a drift.
   //
   // scheduleNextStep re-arms itself once the hold/tween finishes, so it needs
   // to call its own latest version from inside GSAP's deferred callbacks.
@@ -230,7 +230,7 @@ const EllipseCarousel = ({
   }, [render, scheduleNextStep, stopAutoplay]);
 
   // Grab-and-spin: 1:1 pointer tracking while held, then a short eased tween
-  // settles the ring onto whichever card ended up nearest the active slot —
+  // settles the ring onto whichever card ended up nearest the active slot -
   // same snap the auto-advance uses, just released from a hand-picked spot.
   useEffect(() => {
     const stage = stageRef.current;
@@ -238,7 +238,7 @@ const EllipseCarousel = ({
 
     // Angle of the pointer around the ellipse centre, in the same terms as
     // a card's theta (cx/cy/radiusX/radiusY), so tracking it 1:1 keeps
-    // whatever the pointer grabbed under the pointer — no matter which side
+    // whatever the pointer grabbed under the pointer - no matter which side
     // of the ring it's on. A flat pixels-to-radians drag looks fine near the
     // front card but visibly reverses direction once the grabbed point is
     // past the top/bottom of the ellipse, since horizontal pixel motion
@@ -321,7 +321,7 @@ const EllipseCarousel = ({
   }, [dragSensitivity, draggable, reducedMotion, render, scheduleNextStep, stopAutoplay, total]);
 
   // Autoplay should only pause for a card actually under the pointer, not
-  // the empty space around/between cards on the stage — so hover is tracked
+  // the empty space around/between cards on the stage - so hover is tracked
   // per card (via a count, since only the topmost overlapping card gets the
   // events) rather than on the stage as a whole.
   const onCardPointerEnter = useCallback(() => {

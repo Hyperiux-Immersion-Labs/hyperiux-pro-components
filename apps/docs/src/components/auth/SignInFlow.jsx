@@ -7,6 +7,7 @@ import { useSignIn } from "@clerk/nextjs/legacy";
 import SplitAuthLayout from "./SplitAuthLayout";
 import {
   errorMessage,
+  isSessionExistsError,
   StepHeading,
   TextField,
   GlobalError,
@@ -132,6 +133,15 @@ export default function SignInFlow() {
         );
       }
     } catch (err) {
+      // The browser already has a real, currently-valid session - stale
+      // client-side "signed out" rendering (e.g. after clearing cookies
+      // that this app's own cache reads but Clerk's own session cookie
+      // survives) is what got them to this form in the first place. Route
+      // them onward instead of surfacing a dead-end Clerk error.
+      if (isSessionExistsError(err)) {
+        router.push("/effects");
+        return;
+      }
       setError(errorMessage(err, "Unable to sign in. Check your email and password."));
     } finally {
       setLoading(false);

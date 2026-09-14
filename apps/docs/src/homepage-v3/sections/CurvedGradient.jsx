@@ -57,7 +57,7 @@ export default function CurvedGradient() {
           },
         });
 
-        // First heading in, then out — then the second takes the same beat.
+        // First heading in, then out - then the second takes the same beat.
         tl.to(split1.lines, {
           yPercent: 0,
           opacity: 1,

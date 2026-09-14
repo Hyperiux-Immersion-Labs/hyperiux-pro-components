@@ -242,7 +242,7 @@ export default function InformationDrawerComp({
                         <div className=" flex w-full justify-between h-full">
                           <div className="flex flex-col max-[1025px]:w-[100%]">
                             <h4 className="text-[1.8vw] font-display leading-[1.3] uppercase max-md:text-[6vw] max-[1025px]:text-[2.4vw]">
-                              {member?.title ?? "—"}
+                              {member?.title ?? "-"}
                             </h4>
                             <p className="max-md:w-full max-md:leading-[1.3] max-md:text-[3vw] text-[1.2vw] max-[1025px]:text-[2vw]">
                               {member?.teams?.designation ?? ""}

@@ -4,7 +4,7 @@ export interface ToothShell {
     geometry: THREE.BufferGeometry
     /** Bounding box centre of the model, in the root's object space. */
     center: THREE.Vector3
-    /** Largest extent of the model — used to normalise the shader space. */
+    /** Largest extent of the model - used to normalise the shader space. */
     size: number
     /**
      * The model's metallicRoughness map, if it has one. The crown and the
@@ -23,14 +23,14 @@ export interface ToothShellOptions {
  * Builds the shield surface: the model's own geometry, pushed out along its
  * normals by a hair.
  *
- * It is deliberately the *same* geometry rather than a fitted proxy — every
+ * It is deliberately the *same* geometry rather than a fitted proxy - every
  * cusp, groove and the collar under the crown stay exactly where they are, so
  * the shield reads as a skin on the tooth instead of a bubble around it.
  *
  * `inflate` has to stay small for a second reason beyond looks: offsetting a
  * surface along its normals folds it through itself wherever the offset exceeds
  * the local radius of curvature. On this model that happens first at the lip
- * under the crown, where the enamel curves back in towards the collar — the
+ * under the crown, where the enamel curves back in towards the collar - the
  * fold showed up as a torn, sparkling ring right at that edge. Depth separation
  * is handled by the material's polygon offset instead, so this stays cosmetic.
  */
@@ -99,7 +99,7 @@ export function buildToothShell(root: THREE.Object3D, options: ToothShellOptions
 
     const positions = new Float32Array(vertexTotal * 3)
     const normals = new Float32Array(vertexTotal * 3)
-    // Always allocated, even when the source has no UVs — a ShaderMaterial that
+    // Always allocated, even when the source has no UVs - a ShaderMaterial that
     // reads `uv` warns on every draw if the attribute is missing entirely.
     const uvs = new Float32Array(vertexTotal * 2)
     const indices = vertexTotal > 65535 ? new Uint32Array(indexTotal) : new Uint16Array(indexTotal)

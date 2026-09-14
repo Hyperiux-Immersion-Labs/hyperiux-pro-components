@@ -8,13 +8,13 @@ import { CHAR_SET_NAMES, DEFAULT_CHAR_SET } from "./char-sets";
 /**
  * Leva panel for CubeBackgroundAscii.
  *
- * Renders no canvas of its own — it reports the current values up through
+ * Renders no canvas of its own - it reports the current values up through
  * `onChange` and the effect owns the rendering. That keeps this module a leaf,
  * so it can stay behind a dynamic import without a cycle back into index.jsx.
  *
  * The per-cell sample count is compiled into the shader source, so it is not
  * exposed here. The glyph set is compiled in too, but is worth switching, so it
- * is a control — picking a new one relinks the program and rebuilds the atlas.
+ * is a control - picking a new one relinks the program and rebuilds the atlas.
  */
 export default function CubeAsciiControls({ base, onChange }) {
     const values = useControls("Cube ASCII", {
@@ -56,10 +56,10 @@ export default function CubeAsciiControls({ base, onChange }) {
                  */
                 levelsLow: { value: base.levelsLow, min: 0, max: 1, step: 0.005 },
                 levelsHigh: { value: base.levelsHigh, min: 0, max: 1, step: 0.005 },
-                /** Below 1 pushes more cells onto the blank slots — this sets sparseness. */
+                /** Below 1 pushes more cells onto the blank slots - this sets sparseness. */
                 brightnessMap: { value: base.brightnessMap, min: 0.1, max: 3, step: 0.01 },
                 /**
-                 * Output levels — the slice of the curved tone the glyph ramp spans.
+                 * Output levels - the slice of the curved tone the glyph ramp spans.
                  * Narrow this onto the range the clip actually lands in or the ramp is
                  * only indexed over its bottom slots and one letter carries the frame.
                  */
@@ -94,7 +94,7 @@ export default function CubeAsciiControls({ base, onChange }) {
             {
                 fluidEnabled: { value: base.fluidEnabled },
                 fluidColor: { value: base.fluidColor },
-                /** Coverage — how easily flow paints orange onto glyphs. */
+                /** Coverage - how easily flow paints orange onto glyphs. */
                 fluidTint: {
                     value: base.fluidTint ?? 1.2,
                     min: 0,
@@ -102,7 +102,7 @@ export default function CubeAsciiControls({ base, onChange }) {
                     step: 0.05,
                     label: "tint (coverage)",
                 },
-                /** Heat — how neon/hot that orange reads. */
+                /** Heat - how neon/hot that orange reads. */
                 fluidBoost: {
                     value: base.fluidBoost ?? 1.35,
                     min: 0.5,
@@ -126,7 +126,7 @@ export default function CubeAsciiControls({ base, onChange }) {
         ),
 
         /**
-         * The click wave — the ring that expands from a pointerdown. Separate
+         * The click wave - the ring that expands from a pointerdown. Separate
          * from Fluid above: that is the hover trail, this is the click.
          */
         "Click Wave": folder(

@@ -48,7 +48,7 @@ if (typeof window !== "undefined") {
 const KYNTRA_PRIMARY = "#134BD6";
 
 // Texture spotlight: a circle of texture follows the cursor on every card.
-// The PNG is near-black with light linework, so it screens over the card —
+// The PNG is near-black with light linework, so it screens over the card -
 // the dark ground drops out and only the lines show, on blue and on black.
 const TEXTURE_OPACITY = 0.9;
 const TEXTURE_RADIUS = 170;

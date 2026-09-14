@@ -28,10 +28,12 @@ const ADMIN_TABS = [
 // gate) in api/admin/invoices/route.js's assertSuperAdmin() check.
 const SUPER_ADMIN_TABS = [{ label: "Invoicing", href: "/dashboard/admin/invoicing" }];
 
-// Usage and Invoicing are customer-account concepts (daily copy limits,
-// personal billing) - an admin has neither, so surfacing them would just
-// show empty/irrelevant state instead of being hidden outright.
-const ADMIN_HIDDEN_TABS = new Set(["/dashboard/usage", "/dashboard/invoicing"]);
+// Invoicing is a customer-account concept (personal billing) - an admin has
+// none, so surfacing it would just show empty/irrelevant state instead of
+// being hidden outright. Usage isn't hidden: admins can still copy/install
+// effects (just without a daily limit), and the main dashboard's Copied/
+// Installed Effects tiles link here for every account, admins included.
+const ADMIN_HIDDEN_TABS = new Set(["/dashboard/invoicing"]);
 
 export function DashboardShell({ children }) {
   const pathname = usePathname();
@@ -79,8 +81,8 @@ export function DashboardShell({ children }) {
           </p>
         </div>
 
-        <div className="flex items-center justify-between gap-4 mb-12 max-[1025px]:flex-col max-[1025px]:items-start">
-          <div className="flex gap-3 overflow-x-auto max-w-full max-md:pb-[4vw] max-md:flex-wrap">
+        <div className="flex items-start justify-between gap-4 mb-12 max-[1025px]:flex-col">
+          <div className="flex gap-3 overflow-x-auto max-w-full pb-3 max-md:pb-[4vw] max-md:flex-wrap">
             {tabs.map((tab) => {
               const active = tab.href === activeTabHref;
 
@@ -89,7 +91,7 @@ export function DashboardShell({ children }) {
                   key={tab.href}
                   href={tab.href}
                   className={`
-                    px-7 py-[.8vw] max-md:py-[2vw]
+                    px-7 py-3 max-md:py-[2vw]
                     transition-all duration-300
                     border shrink-0
                     ${active

@@ -5,7 +5,7 @@
  * vendored copy, and the config/viewport interfaces are exported so consumers
  * can type against them (upstream exports them via its generated .d.ts).
  *
- * The MIT License (MIT) — Copyright (c) vallafederico
+ * The MIT License (MIT) - Copyright (c) vallafederico
  * https://github.com/vallafederico/smooothy
  */
 

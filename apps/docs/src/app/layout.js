@@ -59,7 +59,7 @@ export const metadata = createRootMetadata();
 // Runs synchronously before any HTML is painted - adds a class when loader hasn't run yet
 // so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
 // Skips audit agents: UA/webdriver, plus software WebGL (PSI desktop often has a
-// plain Chrome UA and no navigator.webdriver — see lib/audit.js).
+// plain Chrome UA and no navigator.webdriver - see lib/audit.js).
 const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')==='true')return;if(window.location.pathname!=='/')return;if(window.innerWidth<1025)return;if(navigator.webdriver||/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(navigator.userAgent||''))return;var c=document.createElement('canvas');var gl=c.getContext('webgl')||c.getContext('experimental-webgl');if(gl){var di=gl.getExtension('WEBGL_debug_renderer_info');var r=di?gl.getParameter(di.UNMASKED_RENDERER_WEBGL):(gl.getParameter(gl.RENDERER)||'');if(/SwiftShader|llvmpipe|Software Rasterizer|Mesa OffScreen/i.test(String(r||'')))return;}document.documentElement.classList.add('loader-first-visit');}catch(e){}})();`;
 
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
@@ -124,7 +124,7 @@ export default function RootLayout({ children }) {
             modal below via local state instead of a URL round-trip. */}
         <CustomAnimationFormProvider>
           {children}
-          {/* LazyRecaptchaProvider mounts only when a modal opens — never
+          {/* LazyRecaptchaProvider mounts only when a modal opens - never
               wrap page children or the homepage remounts when reCAPTCHA
               arms. */}
           <LazyRecaptchaProvider>

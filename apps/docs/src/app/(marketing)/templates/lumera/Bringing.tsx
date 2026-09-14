@@ -147,7 +147,7 @@ const Bringing = () => {
           <div className="w-full flex flex-col items-center gap-[2.5vw]">
             <MaskTextReveal>
               <p className="font-body text-[1.25vw] max-[1025px]:text-[3vw] max-md:text-[4.2vw] text-center">
-                We look beyond the listing to understand what makes a property worth considering — from its location and layout to its condition, positioning and long-term relevance. The result is a more focused property journey, built around better information and fewer distractions.
+                We look beyond the listing to understand what makes a property worth considering - from its location and layout to its condition, positioning and long-term relevance. The result is a more focused property journey, built around better information and fewer distractions.
               </p>
             </MaskTextReveal>
 
@@ -215,7 +215,7 @@ const Bringing = () => {
           ref={bodyCopyRef}
           className={`font-aeonik-pro text-[1.25vw] max-[1025px]:text-[3.5vw] text-center`}
         >
-          We look beyond the listing to understand what makes a property worth considering — from its location and layout to its condition, positioning and long-term relevance. The result is a more focused property journey, built around better information and fewer distractions.
+          We look beyond the listing to understand what makes a property worth considering - from its location and layout to its condition, positioning and long-term relevance. The result is a more focused property journey, built around better information and fewer distractions.
         </p>
       </MaskTextReveal>
 

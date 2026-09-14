@@ -84,16 +84,16 @@ function Accordion({ open, children }) {
 }
 
 /**
- * The v3 bar below `lg`, where the desktop pill is hidden — phones and tablets
+ * The v3 bar below `lg`, where the desktop pill is hidden - phones and tablets
  * alike. The `md:` overrides below re-scale the phone-tuned `vw` ramp for the
  * 768–1024px band, where raw viewport units would render everything oversized.
  *
- * @param {boolean} visible — the desktop bar's scroll-reveal state, so both
+ * @param {boolean} visible - the desktop bar's scroll-reveal state, so both
  *   halves hide together on scroll.
- * @param {boolean} intro — whether the bar has been let in yet. Held back until
+ * @param {boolean} intro - whether the bar has been let in yet. Held back until
  *   the loader's mark lands on the logo, and then a fade in place rather than a
  *   slide: the mark is already sitting where the logo goes.
- * @param {() => void} onSearch — opens the single GlobalSearch instance the
+ * @param {() => void} onSearch - opens the single GlobalSearch instance the
  *   navbar owns; the sheet closes itself first so the modal isn't buried.
  */
 export default function NavbarMobileV3({
@@ -163,7 +163,7 @@ export default function NavbarMobileV3({
       gsap.killTweensOf(targets);
     };
 
-    // Nothing to play back on the first render — the sheet just needs to start
+    // Nothing to play back on the first render - the sheet just needs to start
     // out of the way.
     if (!open && !openedRef.current) {
       gsap.set(overlay, { autoAlpha: 0, clipPath: CLOSED_CLIP });

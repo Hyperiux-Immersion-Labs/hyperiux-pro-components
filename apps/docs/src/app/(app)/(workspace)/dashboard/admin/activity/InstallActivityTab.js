@@ -128,6 +128,54 @@ function UserCell({ event }) {
   );
 }
 
+// Shared between "Top users by copies" (web-only) and "Top installers"
+// (web/CLI/MCP combined) - same card layout, different ranking + unit word.
+function UserLeaderboard({ users, emptyMessage, unitSingular, unitPlural }) {
+  if (users.length === 0) {
+    return (
+      <div className="border border-white/10 px-4 py-10 text-center text-sm text-white/40">
+        {emptyMessage}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {users.map((user, index) => (
+        <Link
+          key={user.clerkUserId}
+          href={`/dashboard/admin/activity/${buildUserActivitySlug(user)}`}
+          className="flex items-center gap-3 border border-white/10 bg-white/3 p-4 transition hover:border-white/25 hover:bg-white/5"
+        >
+          {user.imageUrl ? (
+            <Image
+              src={user.imageUrl}
+              alt={resolveDisplayName(user)}
+              width={40}
+              height={40}
+              className="h-10 w-10 shrink-0  object-cover ring-1 ring-white/10"
+            />
+          ) : (
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center  bg-white/10 text-sm font-medium">
+              {resolveDisplayName(user)[0].toUpperCase()}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-white">{resolveDisplayName(user)}</p>
+            <p className="text-xs text-white">
+               {user.count} {user.count === 1 ? unitSingular : unitPlural}
+            </p>
+          </div>
+          <div>
+          #{index + 1}
+
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 function buildRangeQuery({ range, customFrom, customTo }) {
   const params = new URLSearchParams();
   if (range === "custom") {
@@ -183,12 +231,12 @@ function AggregatePanels({ range, customFrom, customTo }) {
   if (loading || !data) {
     return (
       <>
-        <div className="grid gap-5 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
+        <div className="grid gap-4 md:grid-cols-2">
+          {Array.from({ length: 2 }).map((_, i) => (
             <StatCardSkeleton key={i} />
           ))}
         </div>
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
           {Array.from({ length: 3 }).map((_, i) => (
             <ChartPanelSkeleton key={i} />
           ))}
@@ -199,22 +247,12 @@ function AggregatePanels({ range, customFrom, customTo }) {
 
   return (
     <>
-      <div className="grid gap-5 md:grid-cols-4">
-        <StatCard label="Total Installs" value={data.stats.totalEvents} detail="Real, successful deliveries only" />
-        <StatCard label="Installs Today" value={data.stats.eventsToday} />
-        <StatCard
-          label="Denied Attempts"
-          value={data.stats.deniedCount}
-          detail="Blocked by the daily limit - not counted as installs"
-        />
-        <StatCard
-          label="Enforcement"
-          value={data.stats.enforced ? "ON" : "Shadow mode"}
-          detail={data.stats.enforced ? "Limits are actively blocking" : "Tracking only, nothing blocked"}
-        />
+      <div className="grid gap-4 md:grid-cols-2">
+        <StatCard label="Total Installs" value={data.stats.totalInstalls} />
+        <StatCard label="Installs Today" value={data.stats.installsToday} />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <ChartPanel title="Installs">
           <LineTrendChart data={data.installTrend} xKey="label" color="#ff5f00" valueLabel="installs" />
         </ChartPanel>
@@ -228,50 +266,38 @@ function AggregatePanels({ range, customFrom, customTo }) {
         </ChartPanel>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 mt-10">
         <div>
           <h2 className="text-lg font-medium text-white">Top users by copies</h2>
           <p className="mt-1 text-sm text-white/50">
-            Signed-in users ranked by successful copies/installs in the selected window.
+            Signed-in users ranked by successful website copies in the selected window.
             Click a row for their full activity detail.
           </p>
         </div>
 
-        {data.topUsers.length === 0 ? (
-          <div className="border border-white/10 px-4 py-10 text-center text-sm text-white/40">
-            No signed-in copies in this window.
-          </div>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {data.topUsers.map((user, index) => (
-              <Link
-                key={user.clerkUserId}
-                href={`/dashboard/admin/activity/${buildUserActivitySlug(user)}`}
-                className="flex items-center gap-3 border border-white/10 bg-white/3 p-4 transition hover:border-white/25 hover:bg-white/5"
-              >
-                {user.imageUrl ? (
-                  <Image
-                    src={user.imageUrl}
-                    alt={resolveDisplayName(user)}
-                    width={40}
-                    height={40}
-                    className="h-10 w-10 shrink-0  object-cover ring-1 ring-white/10"
-                  />
-                ) : (
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center  bg-white/10 text-sm font-medium">
-                    {resolveDisplayName(user)[0].toUpperCase()}
-                  </div>
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-white">{resolveDisplayName(user)}</p>
-                  <p className="text-xs text-white/45">
-                    #{index + 1} · {user.count} {user.count === 1 ? "copy" : "copies"}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+        <UserLeaderboard
+          users={data.topUsers}
+          emptyMessage="No signed-in copies in this window."
+          unitSingular="copy"
+          unitPlural="copies"
+        />
+      </div>
+
+      <div className="space-y-4 mt-10">
+        <div>
+          <h2 className="text-lg font-medium text-white">Top installers</h2>
+          <p className="mt-1 text-sm text-white/50">
+            Signed-in users ranked by successful installs across web, CLI, and MCP in the
+            selected window. Click a row for their full activity detail.
+          </p>
+        </div>
+
+        <UserLeaderboard
+          users={data.topInstallers}
+          emptyMessage="No signed-in installs in this window."
+          unitSingular="install"
+          unitPlural="installs"
+        />
       </div>
     </>
   );
@@ -342,11 +368,11 @@ function EventLog({ range, customFrom, customTo }) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mt-10">
       <div>
         <h2 className="text-lg font-medium text-white">Recent installs &amp; copies</h2>
         <p className="mt-1 text-sm text-white/50">
-          {total} events across web, CLI, and MCP in the selected window — every one is a real effect delivery.
+          {total} events across web, CLI, and MCP in the selected window - every one is a real effect delivery.
         </p>
       </div>
 
@@ -358,7 +384,7 @@ function EventLog({ range, customFrom, customTo }) {
             placeholder="Search by effect…"
             value={effectSearch}
             onChange={(e) => setEffectSearch(e.target.value)}
-            className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+            className="w-full  border border-white/10 bg-white/5 py-3.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
           />
         </div>
         <CustomSelect
@@ -468,7 +494,7 @@ function EventLog({ range, customFrom, customTo }) {
 
 export function InstallActivitySection({ range, customFrom, customTo }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <AggregatePanels range={range} customFrom={customFrom} customTo={customTo} />
       <EventLog range={range} customFrom={customFrom} customTo={customTo} />
     </div>

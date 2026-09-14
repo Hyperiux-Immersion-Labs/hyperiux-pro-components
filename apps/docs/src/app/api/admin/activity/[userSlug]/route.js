@@ -83,6 +83,7 @@ export async function GET(request, { params }) {
       { data: invoiceRows, error: invoicesError },
       { data: savedRows, error: savedError },
       { data: copyRows, error: copyError },
+      { data: installRows, error: installError },
       sanityEntries,
     ] = await Promise.all([
       supabase
@@ -106,7 +107,24 @@ export async function GET(request, { params }) {
         .order("created_at", { ascending: false }),
 
       // install_unlocks supersedes copy_usage_effects (Installation-SyncUp.md
-      // Stage 1.5) - covers CLI/MCP installs too now, not just web copies.
+      // Stage 1.5) and is the shared ledger across web/CLI/MCP - but
+      // "copies" here specifically means the website's copy button (same as
+      // the Overview page's Total Copies/Copy activity), so it's scoped to
+      // source='web' rather than folding CLI/MCP installs into a "copies"
+      // label.
+      supabase
+        .from("install_unlocks")
+        .select("effect_slug, usage_date")
+        .eq("clerk_user_id", userId)
+        .eq("source", "web")
+        .order("usage_date", { ascending: false }),
+
+      // Unscoped by source, unlike copyRows above - "installed" means every
+      // surface (web/CLI/MCP), same as "Top installed effects" on the
+      // Overview page. Copies are always a subset of this (every web copy
+      // is also an install_unlocks row), which is exactly what lets the
+      // page below hide this slider when it'd just be a duplicate of
+      // "Copied Effects".
       supabase
         .from("install_unlocks")
         .select("effect_slug, usage_date")
@@ -116,7 +134,7 @@ export async function GET(request, { params }) {
       getAllSanityEffectEntries(),
     ]);
 
-    const firstError = subscriptionError || invoicesError || savedError || copyError;
+    const firstError = subscriptionError || invoicesError || savedError || copyError || installError;
 
     if (firstError) {
       console.error("ADMIN_ACTIVITY_USER_ERROR:", userId, firstError);
@@ -130,27 +148,42 @@ export async function GET(request, { params }) {
     function resolveEffect(slug) {
       const metadata = sanityEffectsBySlug.get(slug) || getEffectMetadata(slug);
       return {
+        slug,
         name: slug,
         title: metadata?.title || slug,
         coverImage: metadata?.coverImage || slug,
+        videoUrl: metadata?.videoUrl || null,
         tier: metadata?.tier || "free",
+        // metadata is either a Sanity entry (categorySlug) or a registry
+        // entry (categories[]) - checking both covers whichever shape it
+        // actually is, same as resolveEffectSummary() in the overview
+        // route. Needed so EffectRankSlider's card links (getEffectHref)
+        // land on the right category instead of silently defaulting to
+        // "components".
+        categorySlug: metadata?.categorySlug || metadata?.categories?.[0] || null,
       };
     }
 
-    // Dedupe to most-recent-per-effect for the "copied effects" list, same
-    // as /api/dashboard/usage/route.js - rows are already newest-first.
-    const seenSlugs = new Set();
-    const copiedEffects = [];
+    // Dedupe to most-recent-per-effect - same as /api/dashboard/usage/route.js
+    // - rows are already newest-first. Shared by both copiedEffects and
+    // installedEffects below, since it's the same "one row per effect,
+    // most recent date wins" reduction either way.
+    function dedupeMostRecent(rows, dateField) {
+      const seenSlugs = new Set();
+      const effects = [];
 
-    for (const row of copyRows || []) {
-      if (seenSlugs.has(row.effect_slug)) continue;
-      seenSlugs.add(row.effect_slug);
+      for (const row of rows || []) {
+        if (seenSlugs.has(row.effect_slug)) continue;
+        seenSlugs.add(row.effect_slug);
 
-      copiedEffects.push({
-        ...resolveEffect(row.effect_slug),
-        lastCopiedAt: row.usage_date,
-      });
+        effects.push({ ...resolveEffect(row.effect_slug), [dateField]: row.usage_date });
+      }
+
+      return effects;
     }
+
+    const copiedEffects = dedupeMostRecent(copyRows, "lastCopiedAt");
+    const installedEffects = dedupeMostRecent(installRows, "lastInstalledAt");
 
     const copyTrend = fillDailyBuckets(
       buildDailyBuckets(TREND_DAYS),
@@ -160,23 +193,42 @@ export async function GET(request, { params }) {
 
     const savedEffects = (savedRows || []).map((row) => ({
       id: row.id,
+      slug: row.effect_slug,
       name: row.effect_slug,
       title: row.title || resolveEffect(row.effect_slug).title,
       category: row.category,
       coverImage: row.cover_image || resolveEffect(row.effect_slug).coverImage,
+      videoUrl: resolveEffect(row.effect_slug).videoUrl,
       tier: row.tier || "free",
       savedAt: row.created_at,
     }));
 
-    const lifetimeSpend =
-      (invoiceRows || [])
-        .filter((row) => row.status === "paid" && !row.is_test)
-        .reduce((sum, row) => sum + row.amount, 0) / 100;
+    // Same currency as whatever's actually in Billing History below - a
+    // user's invoices are effectively always one currency in practice
+    // (Razorpay picks it once, by geo, and it doesn't change), so the first
+    // paid invoice's currency is the right one to sum and label this in,
+    // rather than a hardcoded "INR" that reads wrong for a USD customer.
+    const paidInvoices = (invoiceRows || []).filter((row) => row.status === "paid" && !row.is_test);
+    const lifetimeSpend = paidInvoices.reduce((sum, row) => sum + row.amount, 0) / 100;
+    const lifetimeSpendCurrency = paidInvoices[0]?.currency || "INR";
 
     return NextResponse.json({
       profile: {
         id: clerkUser.id,
-        name: clerkUser.fullName || clerkUser.firstName || null,
+        // Name is never blank in the UI: falls back to the email's
+        // local-part, capitalized - same convention as displayName() in
+        // dashboard/admin/page.js and resolveDisplayName() in
+        // InstallActivityTab.js - rather than a generic "Unnamed user"
+        // placeholder when Clerk has no first/last name on file (invited
+        // accounts that completed sign-up through Clerk's own hosted widget
+        // without ever being asked for one, mainly).
+        name:
+          clerkUser.fullName ||
+          clerkUser.firstName ||
+          (() => {
+            const local = clerkUser.emailAddresses?.[0]?.emailAddress?.split("@")[0];
+            return local ? local.charAt(0).toUpperCase() + local.slice(1) : null;
+          })(),
         email: clerkUser.emailAddresses?.[0]?.emailAddress || null,
         imageUrl: clerkUser.imageUrl || null,
         joinedAt: clerkUser.createdAt,
@@ -197,11 +249,13 @@ export async function GET(request, { params }) {
       stats: {
         savedCount: (savedRows || []).length,
         copiedCount: copiedEffects.length,
+        installedCount: installedEffects.length,
         lifetimeSpend,
       },
       copyTrend,
       savedEffects,
       copiedEffects,
+      installedEffects,
       invoices: invoiceRows || [],
     });
   } catch (error) {

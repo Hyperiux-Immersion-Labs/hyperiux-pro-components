@@ -127,7 +127,7 @@ export default function Flower({ data, sprite, config, bloomStrength = 1.2 }: Fl
       state.size.width / state.size.height;
 
     if (reduceMotionRef.current) {
-      // Freeze sway / bloom pulse — keep uTime still and hover off.
+      // Freeze sway / bloom pulse - keep uTime still and hover off.
       runtimeMaterial.uniforms.uHoverIntensity.value = 0;
       return;
     }

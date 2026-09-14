@@ -5,6 +5,7 @@ import { StatCard } from "@/components/admin/StatCard";
 import { LineTrendChart } from "@/components/admin/charts/LineTrendChart";
 import { DonutChart } from "@/components/admin/charts/DonutChart";
 import { EffectRankSlider } from "@/components/admin/EffectRankSlider";
+import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { InstallActivitySection } from "./InstallActivityTab";
 
@@ -21,9 +22,6 @@ const DATE_RANGE_OPTIONS = [
   { value: "all", label: "All time" },
   { value: "custom", label: "Custom range" },
 ];
-
-const DATE_INPUT_CLASSNAME =
-  "border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-white outline-none focus:border-white/25 [color-scheme:dark]";
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat("en-IN", {
@@ -67,25 +65,12 @@ function DateRangePicker({ range, onRangeChange, customFrom, customTo, onCustomF
   return (
     <div className="flex items-center gap-2 flex-wrap">
       {isCustom && (
-        <>
-          <input
-            type="date"
-            value={customFrom}
-            onChange={(e) => onCustomFromChange(e.target.value)}
-            max={customTo || undefined}
-            className={DATE_INPUT_CLASSNAME}
-            aria-label="From date"
-          />
-          <span className="text-xs text-white/30">to</span>
-          <input
-            type="date"
-            value={customTo}
-            onChange={(e) => onCustomToChange(e.target.value)}
-            min={customFrom || undefined}
-            className={DATE_INPUT_CLASSNAME}
-            aria-label="To date"
-          />
-        </>
+        <DateRangeCalendarPicker
+          from={customFrom}
+          to={customTo}
+          onFromChange={onCustomFromChange}
+          onToChange={onCustomToChange}
+        />
       )}
       <CustomSelect size="compact" align="right" value={range} onChange={onRangeChange} options={DATE_RANGE_OPTIONS} />
     </div>
@@ -135,10 +120,6 @@ function OverviewSection({ range, customFrom, customTo }) {
     };
   }, [range, isCustom, customFrom, customTo]);
 
-  // Only "All time" is a real headcount ("Total") - every other window,
-  // custom ranges included, is a "New" count for that window.
-  const isAllTime = range === "all";
-
   if (error) {
     return (
       <div className=" border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
@@ -150,12 +131,12 @@ function OverviewSection({ range, customFrom, customTo }) {
   if (loading || !overview) {
     return (
       <>
-        <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-5">
-          {Array.from({ length: 5 }).map((_, i) => (
+        <div className="grid gap-4 md:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
             <StatCardSkeleton key={i} />
           ))}
         </div>
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
           {Array.from({ length: 6 }).map((_, i) => (
             <ChartPanelSkeleton key={i} />
           ))}
@@ -166,9 +147,7 @@ function OverviewSection({ range, customFrom, customTo }) {
 
   return (
     <>
-      <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-5">
-        <StatCard label={isAllTime ? "Total Users" : "New Users"} value={overview.stats.totalUsers} />
-        <StatCard label={isAllTime ? "Total Pro Users" : "New Pro Users"} value={overview.stats.proUsers} />
+      <div className="grid gap-4 md:grid-cols-3">
         <StatCard
           label={range === "today" ? "Copies Today" : "Total Copies"}
           value={overview.stats.totalCopies}
@@ -176,8 +155,25 @@ function OverviewSection({ range, customFrom, customTo }) {
         <StatCard label="Saved Effects" value={overview.stats.totalSaved} />
         <StatCard label="Revenue" value={formatCurrency(overview.stats.revenue)} />
       </div>
+      <div className="flex flex-col gap-4">
+        <ChartPanel>
+          <EffectRankSlider title="Top saved effects" effects={overview.topSavedEffects} valueLabel="saves" />
+        </ChartPanel>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+        <ChartPanel>
+          <EffectRankSlider title="Top copied effects" effects={overview.topCopiedEffects} valueLabel="copies" />
+        </ChartPanel>
+
+        <ChartPanel>
+          <EffectRankSlider
+            title="Top installed effects"
+            effects={overview.topInstalledEffects}
+            valueLabel="installs"
+          />
+        </ChartPanel>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
         <ChartPanel title="Signups">
           <LineTrendChart data={overview.signupTrend} xKey="label" color="#60a5fa" valueLabel="signups" />
         </ChartPanel>
@@ -195,15 +191,7 @@ function OverviewSection({ range, customFrom, customTo }) {
         </ChartPanel>
       </div>
 
-      <div className="flex flex-col gap-5">
-        <ChartPanel>
-          <EffectRankSlider title="Top saved effects" effects={overview.topSavedEffects} valueLabel="saves" />
-        </ChartPanel>
-
-        <ChartPanel>
-          <EffectRankSlider title="Top copied effects" effects={overview.topCopiedEffects} valueLabel="copies" />
-        </ChartPanel>
-      </div>
+      
     </>
   );
 }
@@ -237,7 +225,7 @@ export default function AdminActivityPage() {
         <OverviewSection range={range} customFrom={customFrom} customTo={customTo} />
       </div>
 
-      <div className="space-y-4 border-t border-white/10 pt-6">
+      <div className="space-y-4 border-t border-white/10 pt-10">
         <h2 className="text-lg font-medium text-white">Installs &amp; Copies</h2>
         <InstallActivitySection range={range} customFrom={customFrom} customTo={customTo} />
       </div>

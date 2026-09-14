@@ -67,7 +67,7 @@ const CARE_CARDS: CareCardData[] = [
 ];
 
 /* smooothy's infinite mode parks each slide at symmetricMod(current + i, N),
-   which clamps to (-N/2, N/2] — so a slide teleports from +N/2 to -N/2 the
+   which clamps to (-N/2, N/2] - so a slide teleports from +N/2 to -N/2 the
    moment it crosses that edge. The jump is only invisible while
    (N / 2) * itemWidth >= the carousel's width.
 
@@ -76,7 +76,7 @@ const CARE_CARDS: CareCardData[] = [
    the half-visible 4th card, which snapped away as soon as you swiped right.
 
    Duplicating the whole set (N = 12) pushes the jump out to 167vw, far past
-   the right edge, and keeps the loop order intact — a partial duplicate would
+   the right edge, and keeps the loop order intact - a partial duplicate would
    stutter (...6, 1, 2, 1, 2, 3...). The two copies sit 167vw apart, so the
    same card can never appear twice on screen. */
 const CAROUSEL_CARDS = [...CARE_CARDS, ...CARE_CARDS];

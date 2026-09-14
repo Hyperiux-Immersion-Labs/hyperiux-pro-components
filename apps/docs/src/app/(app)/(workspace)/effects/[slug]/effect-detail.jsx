@@ -967,7 +967,7 @@ function SanityBodyRenderer({
 }
 
 function formatPropDefault(value) {
-  if (value === undefined) return "—";
+  if (value === undefined) return "-";
   if (typeof value === "string") return value;
   if (typeof value === "boolean" || typeof value === "number") return String(value);
 
@@ -1006,7 +1006,7 @@ function EffectPropsTable({ props = [] }) {
                 <td>
                   <code>{prop.name}</code>
                 </td>
-                <td>{prop.type || "—"}</td>
+                <td>{prop.type || "-"}</td>
                 <td>
                   <code>{formatPropDefault(prop.default)}</code>
                 </td>

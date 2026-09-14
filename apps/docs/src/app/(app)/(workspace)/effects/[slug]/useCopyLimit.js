@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 
@@ -62,6 +62,16 @@ export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
 
   const effectAlreadyUnlocked = Boolean(usage?.effectSlugs?.includes(effectSlug));
 
+  // Holds the in-flight POST's promise, not just a boolean - a second call
+  // that arrives while the first is still pending (near-simultaneous clicks
+  // on this effect's source/install copy buttons, a key-repeat, anything
+  // that fires before `usage` state has updated) awaits the SAME request
+  // instead of racing through the still-stale effectAlreadyUnlocked/
+  // remaining checks above and firing its own POST - each of which would
+  // otherwise write its own install_events row for what should be a single
+  // "this effect is now unlocked" event.
+  const pendingRequestRef = useRef(null);
+
   const requestCopy = useCallback(async () => {
     if (!isLoaded) return false;
 
@@ -82,21 +92,30 @@ export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
       return false;
     }
 
-    try {
-      const res = await fetch("/api/copy-usage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ effectSlug }),
-      });
-      const data = await res.json();
+    if (pendingRequestRef.current) return pendingRequestRef.current;
 
-      setUsage(data);
-      notifyUsage(data);
+    const request = (async () => {
+      try {
+        const res = await fetch("/api/copy-usage", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ effectSlug }),
+        });
+        const data = await res.json();
 
-      return Boolean(data.allowed);
-    } catch {
-      return false;
-    }
+        setUsage(data);
+        notifyUsage(data);
+
+        return Boolean(data.allowed);
+      } catch {
+        return false;
+      } finally {
+        pendingRequestRef.current = null;
+      }
+    })();
+
+    pendingRequestRef.current = request;
+    return request;
   }, [
     isLoaded,
     isSignedIn,

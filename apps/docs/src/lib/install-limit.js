@@ -108,11 +108,27 @@ async function claimSlot({ identityKey, clerkUserId, usageDate, effectSlug, sour
   return data?.[0] ?? null;
 }
 
+// install_unlocks (claimSlot, above) goes through an atomic RPC and can't
+// silently lose a row. This insert is a separate, non-atomic call right
+// after it - on real data, a fraction of these were failing (a transient
+// Supabase error, the 5s query timeout in lib/supabase.js) and, since the
+// caller never awaited or checked this beyond a console.error, going
+// unnoticed: install_unlocks would accrue a real row with no matching
+// install_events row to show for it. One immediate retry (no backoff -
+// this is already the tail end of the request, and a second consecutive
+// failure is worth surfacing rather than delaying further) closes most of
+// that gap without slowing down the common case.
 async function logInstallEvent(row) {
-  const { error } = await supabase.from("install_events").insert(row);
+  const { error: firstError } = await supabase.from("install_events").insert(row);
 
-  if (error) {
-    console.error("INSTALL_EVENT_LOG_ERROR:", error);
+  if (!firstError) return;
+
+  console.error("INSTALL_EVENT_LOG_ERROR (retrying once):", firstError);
+
+  const { error: retryError } = await supabase.from("install_events").insert(row);
+
+  if (retryError) {
+    console.error("INSTALL_EVENT_LOG_ERROR (retry failed):", retryError);
   }
 }
 

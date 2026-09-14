@@ -4,12 +4,19 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // verified against real seeded Supabase data during development - this test
 // covers the route's auth gate, date-range wiring, and response shape,
 // which a real-data check doesn't exercise on its own.
+//
+// The route reads two tables: install_unlocks (totals, trend, source
+// breakdown, both leaderboards - the guaranteed-complete ledger) and
+// install_events (allowed/already-unlocked/denied counts, enforced,
+// plan breakdown - the only place a denied attempt or a plan is recorded).
 
 let isAdminResult;
+let unlockRows;
+let unlocksError;
 let eventRows;
-let queryError;
-let eventsTodayCount;
-let eventsTodayError;
+let eventsError;
+let installsTodayCount;
+let installsTodayError;
 let clerkUsers;
 
 vi.mock("@/lib/admin", () => ({
@@ -31,35 +38,39 @@ vi.mock("@/lib/sanity", () => ({
   buildEffectsFromSanity: vi.fn(() => []),
 }));
 
-// The route runs two separate queries against install_events (the main
-// event list, and an always-"today" count independent of the selected
-// range) - both share the same chainable-and-thenable shape so they resolve
-// correctly no matter which methods get called or in what order.
-function makeEventsQuery() {
+// Every list query (install_unlocks' main select, install_events' select)
+// shares the same chainable-and-thenable shape, so it resolves correctly no
+// matter which methods get called or in what order.
+function makeListQuery(getResult) {
   const query = {
     order: vi.fn(() => query),
     gte: vi.fn(() => query),
     lt: vi.fn(() => query),
-    then: (resolve) => resolve({ data: eventRows, error: queryError }),
+    then: (resolve) => resolve(getResult()),
   };
   return query;
 }
 
 function makeTodayCountQuery() {
   const query = {
-    in: vi.fn(() => query),
-    gte: vi.fn(() => query),
-    then: (resolve) => resolve({ count: eventsTodayCount, error: eventsTodayError }),
+    eq: vi.fn(() => query),
+    then: (resolve) => resolve({ count: installsTodayCount, error: installsTodayError }),
   };
   return query;
 }
 
 vi.mock("@/lib/supabase", () => ({
   supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn((columns, opts) =>
-        opts && opts.count === "exact" && opts.head === true ? makeTodayCountQuery() : makeEventsQuery()
-      ),
+    from: vi.fn((table) => ({
+      select: vi.fn((columns, opts) => {
+        if (opts && opts.count === "exact" && opts.head === true) {
+          return makeTodayCountQuery();
+        }
+        if (table === "install_unlocks") {
+          return makeListQuery(() => ({ data: unlockRows, error: unlocksError }));
+        }
+        return makeListQuery(() => ({ data: eventRows, error: eventsError }));
+      }),
     })),
   },
 }));
@@ -89,13 +100,26 @@ function makeEvent(overrides = {}) {
   };
 }
 
+function makeUnlock(overrides = {}) {
+  return {
+    usage_date: new Date().toISOString().slice(0, 10),
+    identity_key: "user:test",
+    clerk_user_id: "test",
+    effect_slug: "dotted-grid",
+    source: "web",
+    ...overrides,
+  };
+}
+
 describe("admin/installs route", () => {
   beforeEach(() => {
     isAdminResult = false;
+    unlockRows = [];
+    unlocksError = null;
     eventRows = [];
-    queryError = null;
-    eventsTodayCount = 0;
-    eventsTodayError = null;
+    eventsError = null;
+    installsTodayCount = 0;
+    installsTodayError = null;
     clerkUsers = [];
   });
 
@@ -104,27 +128,42 @@ describe("admin/installs route", () => {
     expect(res.status).toBe(403);
   });
 
-  it("500s when the query errors, without throwing", async () => {
+  it("500s when a query errors, without throwing", async () => {
     isAdminResult = true;
-    queryError = new Error("connection reset");
+    unlocksError = new Error("connection reset");
 
     const res = await GET(makeRequest());
     expect(res.status).toBe(500);
   });
 
-  it("returns zeroed stats with no events, not an error", async () => {
+  it("returns zeroed stats with no rows, not an error", async () => {
     isAdminResult = true;
-    eventRows = [];
 
     const res = await GET(makeRequest());
     const body = await res.json();
 
     expect(res.status).toBe(200);
-    expect(body.stats.totalEvents).toBe(0);
-    expect(body.stats.eventsToday).toBe(0);
+    expect(body.stats.totalInstalls).toBe(0);
+    expect(body.stats.installsToday).toBe(0);
   });
 
-  it("computes correct stats for a mix of allowed/already-unlocked/denied events", async () => {
+  // totalInstalls (like Copies everywhere else it's shown) reads
+  // install_unlocks - the guaranteed-complete ledger - not install_events,
+  // which can silently lose a row (see lib/install-limit.js's retry).
+  it("counts totalInstalls from install_unlocks, independent of install_events", async () => {
+    isAdminResult = true;
+    unlockRows = [makeUnlock({ effect_slug: "a" }), makeUnlock({ effect_slug: "b" })];
+    // Deliberately fewer event rows than unlock rows - simulates the
+    // install_events write-gap this split was built to be immune to.
+    eventRows = [makeEvent({ effect_slug: "a" })];
+
+    const res = await GET(makeRequest());
+    const body = await res.json();
+
+    expect(body.stats.totalInstalls).toBe(2);
+  });
+
+  it("computes allowed/already-unlocked/denied counts from install_events", async () => {
     isAdminResult = true;
     eventRows = [
       makeEvent({ decision: "allowed" }),
@@ -152,26 +191,20 @@ describe("admin/installs route", () => {
     const res = await GET(makeRequest());
     const body = await res.json();
 
-    // totalEvents (like every other Installs & Copies number) counts real,
-    // successful deliveries only - the 2 denied attempts show up solely in
-    // deniedCount, never folded into "installs".
-    expect(body.stats.totalEvents).toBe(2);
     expect(body.stats.allowedCount).toBe(1);
     expect(body.stats.alreadyUnlockedCount).toBe(1);
     expect(body.stats.deniedCount).toBe(2);
   });
 
-  it("ranks users by successful copies, resolving name (or falling back to email), and excludes anonymous/denied rows", async () => {
+  it("ranks users by successful copies (install_unlocks, source=web), resolving name (or falling back to email), and excludes anonymous rows", async () => {
     isAdminResult = true;
-    eventRows = [
-      makeEvent({ clerk_user_id: "user_a", decision: "allowed", effect_slug: "x" }),
-      makeEvent({ clerk_user_id: "user_a", decision: "already-unlocked", effect_slug: "x" }),
-      makeEvent({ clerk_user_id: "user_a", decision: "allowed", effect_slug: "y" }),
-      makeEvent({ clerk_user_id: "user_b", decision: "allowed", effect_slug: "x" }),
+    unlockRows = [
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "x" }),
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "y" }),
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "z", source: "cli" }), // not web, excluded from topUsers
+      makeUnlock({ clerk_user_id: "user_b", effect_slug: "x" }),
       // Anonymous - no clerk_user_id, must never appear in topUsers.
-      makeEvent({ clerk_user_id: null, identity_key: "device:anon", decision: "allowed", effect_slug: "x" }),
-      // Denied attempt - not a real delivery, must not count toward the rank.
-      makeEvent({ clerk_user_id: "user_b", decision: "denied", would_have_denied: true, effect_slug: "z" }),
+      makeUnlock({ clerk_user_id: null, identity_key: "device:anon", effect_slug: "x" }),
     ];
     clerkUsers = [
       { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], imageUrl: "https://img/a" },
@@ -183,18 +216,41 @@ describe("admin/installs route", () => {
     const body = await res.json();
 
     expect(body.topUsers).toEqual([
-      { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 3 },
+      { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 2 },
       { clerkUserId: "user_b", name: null, email: "bea@example.com", imageUrl: null, count: 1 },
+    ]);
+  });
+
+  it("ranks topInstallers across all sources, unlike topUsers", async () => {
+    isAdminResult = true;
+    unlockRows = [
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "x", source: "web" }),
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "y", source: "cli" }),
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "z", source: "mcp" }),
+    ];
+    clerkUsers = [
+      { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], imageUrl: "https://img/a" },
+    ];
+
+    const res = await GET(makeRequest());
+    const body = await res.json();
+
+    expect(body.topInstallers).toEqual([
+      { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 3 },
+    ]);
+    // Only the one web-source row counts toward "copies".
+    expect(body.topUsers).toEqual([
+      { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 1 },
     ]);
   });
 
   it("drops a user from the leaderboard entirely once their Clerk account is deleted", async () => {
     isAdminResult = true;
-    eventRows = [
-      makeEvent({ clerk_user_id: "user_a", decision: "allowed", effect_slug: "x" }),
-      // user_deleted has real historical events, but no Clerk account left
+    unlockRows = [
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "x" }),
+      // user_deleted has real historical unlocks, but no Clerk account left
       // to open a profile for - the leaderboard has nothing to link to.
-      makeEvent({ clerk_user_id: "user_deleted", decision: "allowed", effect_slug: "y" }),
+      makeUnlock({ clerk_user_id: "user_deleted", effect_slug: "y" }),
     ];
     clerkUsers = [
       { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], imageUrl: "https://img/a" },
@@ -218,14 +274,13 @@ describe("admin/installs route", () => {
     expect(body.stats.enforced).toBe(true);
   });
 
-  it("reports the always-today count independently of the selected range", async () => {
+  it("reports the always-today count (install_unlocks) independently of the selected range", async () => {
     isAdminResult = true;
-    eventRows = [];
-    eventsTodayCount = 7;
+    installsTodayCount = 7;
 
     const res = await GET(makeRequest("?range=90d"));
     const body = await res.json();
 
-    expect(body.stats.eventsToday).toBe(7);
+    expect(body.stats.installsToday).toBe(7);
   });
 });

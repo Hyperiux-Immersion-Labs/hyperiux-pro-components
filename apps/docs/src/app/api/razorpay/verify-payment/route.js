@@ -46,7 +46,7 @@ export async function POST(req) {
     }
 
     // Signature base differs by flow (per Razorpay docs):
-    // orders: order_id|payment_id — subscriptions: payment_id|subscription_id
+    // orders: order_id|payment_id - subscriptions: payment_id|subscription_id
     const payload = razorpay_subscription_id
       ? `${razorpay_payment_id}|${razorpay_subscription_id}`
       : `${razorpay_order_id}|${razorpay_payment_id}`;
@@ -70,7 +70,7 @@ export async function POST(req) {
         );
       }
 
-      // Activate immediately — covers local dev where webhooks can't reach us.
+      // Activate immediately - covers local dev where webhooks can't reach us.
       // Production webhooks re-confirm on subscription.activated/charged.
       const result = await markUserProFromSubscription({
         clerkUserId: userId,

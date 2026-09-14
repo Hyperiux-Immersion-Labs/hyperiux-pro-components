@@ -7,18 +7,18 @@ import { resolveCharSet } from "./char-sets";
  * coverage buffer, so every cell knows how much ink it carries.
  *
  * Two layers share one grid:
- *   static  — churning random glyphs, thinned out as progress rises.
- *   reveal  — the wordmark shape, dithered in by the Bayer threshold.
+ *   static  - churning random glyphs, thinned out as progress rises.
+ *   reveal  - the wordmark shape, dithered in by the Bayer threshold.
  *
  * There are two ways out, chosen by `mode`:
  *
- *   dock  — the whole field collapses onto the navbar's logo. One similarity
+ *   dock  - the whole field collapses onto the navbar's logo. One similarity
  *           transform carries every cell, so the mark keeps its shape all the
  *           way down and lands exactly on the rect the real svg will occupy,
  *           which is what lets the two cross-fade as a single mark hardening.
  *           The background static fades out ahead of it, so only the wordmark
  *           is still travelling by the time it arrives.
- *   burst — exit is per-cell, not per-letter: the field bursts outward from the
+ *   burst - exit is per-cell, not per-letter: the field bursts outward from the
  *           centre of the screen, every cell shrinking as it travels its own
  *           ray, so the mark breaks into particles that clear the viewport
  *           rather than the word collapsing letter by letter.
@@ -26,7 +26,7 @@ import { resolveCharSet } from "./char-sets";
  * Either way it hands off to the hero's own ASCII field, which is fading up
  * underneath while this is still in flight.
  *
- * Every cell is drawn with a real alpha, so nothing pops on or off — cells are
+ * Every cell is drawn with a real alpha, so nothing pops on or off - cells are
  * batched by (colour, alpha step) through a counting sort, which keeps the
  * whole frame down to a few dozen fillStyle changes.
  *
@@ -60,7 +60,7 @@ const CHURN_SPREAD = 1;
 // A dissolving cell churns harder than a settled one.
 const CHURN_EXIT_BOOST = 2.5;
 const STATIC_DENSITY = 0.18;
-// Width of the soft edge on the static density test — cells inside this band
+// Width of the soft edge on the static density test - cells inside this band
 // ramp their alpha instead of switching on.
 const STATIC_FEATHER = 0.05;
 // Slow per-cell brightness drift, so a settled field still breathes.
@@ -71,7 +71,7 @@ const SWEEP = 0.35;
 
 // ── Exit ────────────────────────────────────────────────────────────────────
 // The burst. Every cell travels a straight line outward from the centre of the
-// screen at constant velocity — linear in time, which is what separates this
+// screen at constant velocity - linear in time, which is what separates this
 // from an eased explosion: the field opens up rather than detonating.
 //
 // Distances are fractions of the viewport's half-diagonal, so the burst covers
@@ -87,7 +87,7 @@ const EXIT_LAUNCH = 0.55;
 // does rather than lagging behind it.
 const EXIT_REACH = 1.1;
 // How far each cell's direction is pulled off its radial ray toward a stable
-// random one. Pure rays expand the wordmark along its own shape — it is a thin
+// random one. Pure rays expand the wordmark along its own shape - it is a thin
 // horizontal band, so it opens sideways and barely at all vertically. Mixing in
 // a random direction is what gives the band real spread on both axes; too much
 // and it stops reading as a burst from a point.
@@ -98,7 +98,7 @@ const EXIT_SCATTER = 0.45;
 const EXIT_SCALE_MIN = 0.18;
 // Portion of the exit timeline spent handing out per-cell start times. The
 // remainder (1 - spread) is how long any single cell takes to dissolve. Kept
-// short so the field goes mostly together — a long stagger reads as a
+// short so the field goes mostly together - a long stagger reads as a
 // dissolve, and this wants to read as one release.
 const EXIT_SPREAD = 0.35;
 // How much of that stagger follows radius rather than being random. Centre
@@ -110,7 +110,7 @@ const EXIT_STATIC_LEAD = 0.25;
 // ── Dock ────────────────────────────────────────────────────────────────────
 // The other exit: the field is mapped onto the navbar's logo rect and the whole
 // map is walked in, so the mark scales down and travels to the corner as one
-// piece. Deliberately rigid — a per-cell stagger here would smear the wordmark
+// piece. Deliberately rigid - a per-cell stagger here would smear the wordmark
 // on the way over and it has to arrive still reading as itself, sitting on the
 // svg that replaces it.
 //
@@ -119,7 +119,7 @@ const EXIT_STATIC_LEAD = 0.25;
 //
 // The mark does not churn on its way to the navbar. Every cell keeps the woven
 // glyph it settled on, so the only thing changing during the travel is the
-// transform itself — the wordmark moves and scales as one fixed piece of
+// transform itself - the wordmark moves and scales as one fixed piece of
 // artwork. Churning here (at any strength, over any window) reads as the mark
 // scrambling or sparkling while it docks, which is precisely what it must not
 // do at the moment it merges with the solid svg underneath it.
@@ -140,7 +140,7 @@ const DOCK_INK_FEATHER = 0.42;
 // continuous strokes rather than a dot screen.
 const DOCK_GLYPH_SWELL = 1.6;
 // And the dither threshold is eased away, so the cells the Bayer matrix was
-// holding back fill in and the mark hardens toward a solid shape — which is
+// holding back fill in and the mark hardens toward a solid shape - which is
 // also what makes the swap to the real svg read as the same mark sharpening
 // rather than one thing being replaced by another.
 const DOCK_HARDEN = 1;
@@ -148,7 +148,7 @@ const DOCK_HARDEN = 1;
 // The background static has its own scalar (`state.clear`) and goes first,
 // before the mark moves at all. Clearing it during the travel instead leaves
 // grey noise sliding across the screen behind the wordmark, which reads as the
-// whole page shrinking rather than the mark leaving the field behind — the
+// whole page shrinking rather than the mark leaving the field behind - the
 // screen empties, and then one thing crosses it.
 
 // Glyph scale is quantised to this many steps, so a whole size's worth of
@@ -165,8 +165,8 @@ const SVG_RATIO = SVG_HEIGHT / SVG_WIDTH;
 // ── Layout ──────────────────────────────────────────────────────────────────
 const MOBILE_BREAKPOINT = 768;
 const WORD_WIDTH_FACTOR = 0.82;
-// The mark is 8:1, so its height — and with it the number of rows of glyphs the
-// letterforms get to be drawn out of — is set entirely by how wide the box is.
+// The mark is 8:1, so its height - and with it the number of rows of glyphs the
+// letterforms get to be drawn out of - is set entirely by how wide the box is.
 // A phone has so little width to give that the wordmark lands on a handful of
 // rows, which is below what it takes to resolve a counter or a crossbar: the
 // letters stop being letters and the mark reads as a band of noise. Give it
@@ -186,7 +186,7 @@ const KIND_STATIC = 0;
 const KIND_FLASH = 1;
 // Wordmark cells occupy a *ramp* of kinds rather than one. KIND_REVEAL is the
 // mark's own orange; each step above it is further toward BURST_COLOR, so a
-// cell cools as it bursts. Nothing else has to know the ramp exists — it is
+// cell cools as it bursts. Nothing else has to know the ramp exists - it is
 // still just an index into KIND_COLORS.
 const KIND_REVEAL = 2;
 
@@ -217,7 +217,7 @@ const KIND_COLORS = [
 const FILL_BUCKETS = KIND_COLORS.length * ALPHA_STEPS;
 const DRAW_BUCKETS = SCALE_STEPS * FILL_BUCKETS;
 
-/** rgba() strings for every (kind, alpha step) pair — built once. */
+/** rgba() strings for every (kind, alpha step) pair - built once. */
 const FILL_STYLES = KIND_COLORS.flatMap((hex) => {
   const value = parseInt(hex.slice(1), 16);
   const r = (value >> 16) & 255;
@@ -251,7 +251,7 @@ function clamp01(v) {
 /**
  * Which `scaleFonts` bucket a cell that is `spread` (0→1) into its own burst
  * belongs in. Scale falls linearly from full size to EXIT_SCALE_MIN, so this is
- * just that ramp read backwards onto the step index — a resting cell (spread 0)
+ * just that ramp read backwards onto the step index - a resting cell (spread 0)
  * always lands on the last step, which is the untouched font size.
  */
 function scaleStepOf(spread) {
@@ -269,7 +269,7 @@ function monoFamily() {
 }
 
 /**
- * The wordmark's resting box in viewport pixels — centred, and the frame the
+ * The wordmark's resting box in viewport pixels - centred, and the frame the
  * dock transform maps out of.
  */
 function wordmarkBox(viewW, viewH) {
@@ -343,7 +343,7 @@ function buildCoverage(cols, rows, cellW, cellH, viewW, viewH, image) {
 
 /**
  * @param {HTMLCanvasElement} canvas
- * @param {object} state — mutated from outside: `progress` 0→1, `exit` 0→1
+ * @param {object} state - mutated from outside: `progress` 0→1, `exit` 0→1
  * @param {object} [options]
  * @param {"dock"|"burst"} [options.mode] How the field leaves. `dock` needs a
  *   target and falls back to `burst` when there is nothing to dock onto.
@@ -378,12 +378,12 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
 
   // Dock geometry, resolved with the grid. `dock` stays null when the mode is
   // burst or the navbar's logo can't be found, and that null is what every
-  // dock branch below tests — the field simply bursts instead.
+  // dock branch below tests - the field simply bursts instead.
   let box = null;
   let dock = null;
   let dockScale = 1;
 
-  // Per-cell constants — stable for the lifetime of a grid size, which is what
+  // Per-cell constants - stable for the lifetime of a grid size, which is what
   // keeps the field from re-rolling itself (and flickering) every frame.
   let rank = null; // static density rank
   let phase = null; // churn offset + breathing phase
@@ -408,7 +408,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
   let frame = 0;
   let lastPaint = 0;
   // Drives the background static's glyph swaps. Tracks `now` until the mark
-  // starts docking, then holds — see the static branch in `paint`.
+  // starts docking, then holds - see the static branch in `paint`.
   let staticChurnClock = 0;
 
   const rebuild = () => {
@@ -427,7 +427,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
     reach = new Float32Array(total);
 
     // Every cell's burst vector is fixed by the grid, so it is solved once here
-    // rather than per frame — exit costs the paint loop two multiplies a cell.
+    // rather than per frame - exit costs the paint loop two multiplies a cell.
     for (let row = 0; row < rows; row++) {
       // Offset from the centre of the viewport, normalised so each axis runs
       // -1..1 over its own extent. Working in this square space rather than in
@@ -507,8 +507,8 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
     // the ratio of the two boxes scales the glyphs and carries the cells.
     dockScale = dock ? dock.w / box.w : 1;
 
-    // Step 0 is the smallest a cell ever gets — the far end of the burst, or
-    // logo size when docking — and the last step is resting size. See
+    // Step 0 is the smallest a cell ever gets - the far end of the burst, or
+    // logo size when docking - and the last step is resting size. See
     // `scaleStepOf`, which is the inverse of this.
     const minScale = dock
       ? Math.min(dockScale * DOCK_GLYPH_SWELL, 1)
@@ -581,7 +581,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
     const dockY = docking ? exit * (dock.y - box.y * dockScale) : 0;
     // The glyphs shrink with the field itself rather than through the burst's
     // step ladder. `scaleStepOf` quantises to SCALE_STEPS buckets, which over a
-    // full-screen-to-logo shrink is eight visible size jumps — fine for a burst
+    // full-screen-to-logo shrink is eight visible size jumps - fine for a burst
     // where cells are scattering anyway, plainly a stair-step when the mark is
     // one rigid shape being scaled. Docking gets its own font, set once for the
     // whole frame: every cell shares the same size, so it costs one `ctx.font`
@@ -609,13 +609,13 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
         const cover = coverage[idx];
 
         // Per-cell exit window: starts at `delay`, then bursts over `exitSpan`.
-        // Left linear on purpose — every downstream use of it (travel, scale,
+        // Left linear on purpose - every downstream use of it (travel, scale,
         // alpha) is a straight ramp, so a cell leaves at constant velocity from
         // the instant its window opens, the way a thrown particle does. Easing
         // here is what would turn this back into a dissolve.
         //
-        // Docking has no per-cell window for the mark — the whole thing travels
-        // together — so `wordExit` there is just the scalar, and only drives the
+        // Docking has no per-cell window for the mark - the whole thing travels
+        // together - so `wordExit` there is just the scalar, and only drives the
         // churn. The static keeps its stagger either way, so it thins out
         // raggedly rather than dimming as one sheet; docking just runs it off
         // `clear`, which is finished before the mark starts moving.
@@ -636,7 +636,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
         let glyph = 0;
 
         if (cover > 0.01) {
-          // Wordmark cell — dithered in by the Bayer threshold, swept L→R
+          // Wordmark cell - dithered in by the Bayer threshold, swept L→R
           const threshold = (BAYER_8[(row % 8) * 8 + (col % 8)] / 64) * (1 - harden);
           const edge =
             cover * (reveal - (col / cols) * SWEEP * 1.12) - threshold;
@@ -647,7 +647,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
             // `harden` sweeps the dither threshold away as the mark docks, so
             // cells the Bayer matrix was holding back cross into view during
             // the travel. Through the narrow resting feather that crossing is
-            // a snap from nothing to solid — a cell popping on, which is the
+            // a snap from nothing to solid - a cell popping on, which is the
             // flicker that reads as the mark sparkling on its way to the
             // navbar. Widening the feather as it hardens turns each of those
             // into a fade instead, so the mark fills in smoothly.
@@ -658,13 +658,13 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
             if (wordExit > 0) {
               if (docking) {
                 // The mark is landing on the navbar's logo, which is this same
-                // orange — so it neither cools nor thins on the way. It arrives
+                // orange - so it neither cools nor thins on the way. It arrives
                 // at full strength and the svg takes over from there.
                 //
                 // Nothing else happens to a docking cell. The glyph it is
                 // holding is the glyph it keeps: no churn, no re-roll. The mark
                 // is a fixed piece of artwork being scaled and moved, so the
-                // only thing changing on screen is the transform — which is
+                // only thing changing on screen is the transform - which is
                 // what makes it read as the wordmark travelling to the navbar
                 // rather than a field of characters that happens to shrink.
               } else {
@@ -679,7 +679,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
                     Math.round(wordExit * (BURST_STEPS - 1))
                   );
                 // Past a beat the letter stops holding its shape and the cell
-                // churns free — this is the "scatter" half of the dissolve.
+                // churns free - this is the "scatter" half of the dissolve.
                 if (wordExit > 0.1) {
                   glyph =
                     (hash(col + 17, row + 5, churnBucket(now, cell, wordExit)) *
@@ -692,11 +692,11 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
         }
 
         if (kind < 0) {
-          // Background static — a stable rank per cell, so cells fade with the
+          // Background static - a stable rank per cell, so cells fade with the
           // density instead of being re-rolled (and strobing) every tick.
           const ceiling = density * (1 - cover * 0.85);
 
-          // `breathe` only ever dims, so cells under the ceiling can't light —
+          // `breathe` only ever dims, so cells under the ceiling can't light -
           // skip the sin for the ~80% of the grid that is dark anyway.
           if (ceiling > rank[idx]) {
             const breathe =
@@ -714,7 +714,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
               alpha = Math.min(1, lit) * (1 - staticExit);
               // The static is carried by the same dock transform as the mark
               // and is not quite gone when the travel begins, so anything still
-              // churning here flickers *while the whole field is moving* — read
+              // churning here flickers *while the whole field is moving* - read
               // as the wordmark sparkling, even though it is the noise behind
               // it. `staticChurnClock` stops advancing once the mark is on the
               // move, so the last of the static fades out frozen instead.
@@ -800,7 +800,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
       ctx.fillText(glyphs[listGlyph[item]], listX[item], listY[item]);
     }
 
-    // Subtle progress counter at the bottom — first thing to go on exit, and it
+    // Subtle progress counter at the bottom - first thing to go on exit, and it
     // leaves with the static when docking: it belongs to the loading screen, so
     // it can't still be sitting there once the screen has emptied.
     const counterAlpha = 1 - clamp01(Math.max(exit / 0.3, clear));
@@ -813,7 +813,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
     // whole grid at 120fps+, not to pace a 60Hz one. Comparing against a flat
     // FRAME_MS does both: rAF on a 60Hz screen delivers frames a hair under
     // 16.67ms apart as often as not, and every one of those was being dropped
-    // outright — a stutter in the middle of the travel, exactly where the mark
+    // outright - a stutter in the middle of the travel, exactly where the mark
     // is moving fastest. The margin lets a nominally-on-time frame through, so
     // 60Hz paints every frame and faster panels still halve.
     if (now - lastPaint < FRAME_MS - 2) return;
@@ -831,7 +831,7 @@ export function createAsciiLoaderField(canvas, state, options = {}) {
   frame = requestAnimationFrame(tick);
   window.addEventListener("resize", onResize);
 
-  // Load the wordmark SVG — rebuild coverage once it arrives.
+  // Load the wordmark SVG - rebuild coverage once it arrives.
   const image = new Image();
   image.onload = () => {
     svgImage = image;

@@ -4764,7 +4764,7 @@
   {
     "name": "glitchy-text",
     "title": "Glitchy Text",
-    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
+    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers - two white and two yellow - out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
@@ -6663,7 +6663,7 @@
         "name": "aberration",
         "type": "number",
         "default": 1,
-        "description": "Chromatic aberration amount — how far the R/G/B channels split at the rim.",
+        "description": "Chromatic aberration amount - how far the R/G/B channels split at the rim.",
         "remixer": {
           "control": "range",
           "group": "filter",
@@ -7062,7 +7062,7 @@
     ],
     "type": "registry:component",
     "title": "Orbit Flip Slider",
-    "description": "GSAP Flip-driven gallery that morphs one ring of images between four camera views — a flat circle, a zoomed-in upper arc, a tilted 3D ring, and a coverflow band — with a bouncy 3D hover tilt on every card.",
+    "description": "GSAP Flip-driven gallery that morphs one ring of images between four camera views - a flat circle, a zoomed-in upper arc, a tilted 3D ring, and a coverflow band - with a bouncy 3D hover tilt on every card.",
     "category": "carousels",
     "dependencies": [
       "gsap"
@@ -7276,7 +7276,7 @@
         "name": "flatScale",
         "type": "number",
         "default": 1,
-        "description": "Uniform zoom on the flat circle as a whole — position spread and card size together.",
+        "description": "Uniform zoom on the flat circle as a whole - position spread and card size together.",
         "remixer": {
           "enabled": false,
           "control": "range",
@@ -7366,7 +7366,7 @@
         "name": "ringScale",
         "type": "number",
         "default": 1,
-        "description": "Uniform zoom on the ring as a whole — position spread and card size together, like moving the camera closer or further on the z axis.",
+        "description": "Uniform zoom on the ring as a whole - position spread and card size together, like moving the camera closer or further on the z axis.",
         "remixer": {
           "enabled": false,
           "control": "range",
@@ -9788,7 +9788,7 @@
         "name": "cardRadius",
         "type": "number",
         "default": 8,
-        "description": "Corner radius on each card, in px (desktop only — tablet/mobile keep their responsive radius).",
+        "description": "Corner radius on each card, in px (desktop only - tablet/mobile keep their responsive radius).",
         "remixer": {
           "control": "range",
           "group": "style",

@@ -14,6 +14,19 @@ export function errorMessage(err, fallback) {
   return err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || fallback;
 }
 
+// Clerk rejects signIn.create()/signUp.create() with this code when the
+// browser already holds a valid session (single-session mode) - a real,
+// currently-valid session, not a stale one. The prebuilt <SignIn/>/<SignUp/>
+// components handle it by redirecting automatically; SignInFlow/SignUpFlow
+// call the lower-level signIn.create()/signUp.create() directly (see
+// SignInFlow.jsx's top comment for why), so without this check the form
+// just dead-ends on a raw Clerk error with no way forward short of a
+// manual reload - which is what actually surfaces the real session, via
+// the sign-in/sign-up page's own server-side auth() redirect.
+export function isSessionExistsError(err) {
+  return err?.errors?.[0]?.code === "session_exists";
+}
+
 // Sized in fixed steps (not vw) because the card itself is now a fixed
 // max-width (see SplitAuthLayout), not a viewport-relative column - vw units
 // would keep growing with screen width even though the card stops growing

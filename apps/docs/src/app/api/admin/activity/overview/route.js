@@ -56,6 +56,7 @@ export async function GET(request) {
       { data: signupRows, error: signupError },
       { data: copyRows, error: copyError },
       { data: allCopyRows, error: allCopyError },
+      { data: allInstallRows, error: allInstallError },
       { data: allSavedRows, error: allSavedError },
       { data: revenueRows, error: revenueError },
       sanityEntries,
@@ -74,9 +75,18 @@ export async function GET(request) {
         .eq("plan", "pro"),
       scoped(supabase.from("subscriptions").select("created_at")),
       // install_unlocks supersedes copy_usage_effects (Installation-SyncUp.md
-      // Stage 1.5) - it's the shared ledger across web/CLI/MCP now, not just
-      // web copies, so "copies" here is really "installs" going forward.
-      scoped(supabase.from("install_unlocks").select("usage_date"), "usage_date"),
+      // Stage 1.5) and is the shared ledger across web/CLI/MCP - but "copies"
+      // specifically means the website's copy button, same as everywhere
+      // else this word is used (Top saved/copied effects, the per-user
+      // detail page), so it's scoped to source='web' here rather than
+      // counting CLI/MCP installs under a "copies" label. "Installs"
+      // elsewhere on this page (AggregatePanels, via /api/admin/installs)
+      // stays unscoped - that one's deliberately meant to cover all three.
+      scoped(supabase.from("install_unlocks").select("usage_date").eq("source", "web"), "usage_date"),
+      scoped(supabase.from("install_unlocks").select("effect_slug").eq("source", "web"), "usage_date"),
+      // Unscoped by source, unlike allCopyRows above - "Top installed
+      // effects" means every surface (web/CLI/MCP), same as everywhere else
+      // "installs" is used on this page.
       scoped(supabase.from("install_unlocks").select("effect_slug"), "usage_date"),
       scoped(supabase.from("wishlisted_effects").select("effect_slug")),
       // is_test excluded - those are admin-generated sample bills, not real revenue.
@@ -94,6 +104,7 @@ export async function GET(request) {
       signupError ||
       copyError ||
       allCopyError ||
+      allInstallError ||
       allSavedError ||
       revenueError;
 
@@ -158,6 +169,10 @@ export async function GET(request) {
       ({ slug, count }) => ({ ...resolveEffectSummary(slug), count })
     );
 
+    const topInstalledEffects = topSlugCounts(allInstallRows || [], TOP_EFFECTS_LIMIT).map(
+      ({ slug, count }) => ({ ...resolveEffectSummary(slug), count })
+    );
+
     const planDistribution = [
       { name: "Pro", value: siteProUsers || 0 },
       { name: "Free", value: Math.max(0, (siteTotalUsers || 0) - (siteProUsers || 0)) },
@@ -168,10 +183,10 @@ export async function GET(request) {
       stats: {
         totalUsers: totalUsers || 0,
         proUsers: proUsers || 0,
-        // Same "copies" count either way - (install_unlocks in the selected
-        // window) - only the label on the frontend changes when the window
-        // itself is "Today", so this doubles as both "Total Copies" and
-        // "Copies Today" without two separate queries.
+        // Same web-only copies count either way (install_unlocks, source=web,
+        // in the selected window) - only the label on the frontend changes
+        // when the window itself is "Today", so this doubles as both "Total
+        // Copies" and "Copies Today" without two separate queries.
         totalCopies: (copyRows || []).length,
         totalSaved: (allSavedRows || []).length,
         revenue,
@@ -182,6 +197,7 @@ export async function GET(request) {
       planDistribution,
       topSavedEffects,
       topCopiedEffects,
+      topInstalledEffects,
     });
   } catch (error) {
     console.error("ADMIN_ACTIVITY_OVERVIEW_ERROR:", error);

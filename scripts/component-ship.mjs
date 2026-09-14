@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Implements md/new-component-workflow.md: registry sync (Phase 1), codegen
-// (Phase 2 — global-remixer swap + registry re-sync + local JSX handoff),
+// (Phase 2 - global-remixer swap + registry re-sync + local JSX handoff),
 // update (Phase 1 + 2 combined for an already-shipped effect), and revert
-// (Phase 3 rollback). Self-contained — does not shell out to
+// (Phase 3 rollback). Self-contained - does not shell out to
 // component-workflow.mjs or sanity-code-sync.mjs.
 
 import { execFileSync, execSync } from "node:child_process";
@@ -40,7 +40,7 @@ const VAULT_HEADER_TEXT = "Built using Hyperiux Vault: https://vault.hyperiux.co
 // apps/docs/src/lib/motion.js is app-internal (not shipped in the registry
 // package), so any effect that imports from it in the docs/demo source needs
 // a self-contained, matchMedia-based equivalent inlined into the registry/
-// codegen copy instead — same behavior, no dependency on this app's @/lib.
+// codegen copy instead - same behavior, no dependency on this app's @/lib.
 const REDUCED_MOTION_LIB_IMPORT_RE = /import\s*\{\s*([^}]*?)\s*\}\s*from\s*["']@\/lib\/motion["'];?\n?/;
 const REDUCED_MOTION_EXPORTS = new Set(["usePrefersReducedMotion", "prefersReducedMotion"]);
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -68,7 +68,7 @@ async function main() {
 async function runShip(options) {
   const slug = requireOption(options, "slug");
   validateSlug(slug);
-  console.log(`component:ship — ${slug}\n`);
+  console.log(`component:ship - ${slug}\n`);
 
   const registryResult = await runRegistry(options);
   printPhase("Phase 1 registry", registryResult);
@@ -108,7 +108,7 @@ async function maybeOfferRevert(slug, options, registryResult) {
 }
 
 // ---------------------------------------------------------------------------
-// Phase 1 — Registry sync
+// Phase 1 - Registry sync
 // ---------------------------------------------------------------------------
 
 async function runRegistry(options) {
@@ -158,7 +158,7 @@ async function runRegistry(options) {
 
       if (options.dryRun) {
         details.push(`dry-run: would create ${relative(registryDir)}`);
-        return { ok: true, summary: "dry run — nothing written", details, wrote: false };
+        return { ok: true, summary: "dry run - nothing written", details, wrote: false };
       }
 
       ensureFreeMirrorReady(tier, options);
@@ -210,7 +210,7 @@ async function runRegistry(options) {
 
       if (options.dryRun) {
         details.push(`dry-run: would sync ${relative(existing.dir)} -> v${nextVersion}`);
-        return { ok: true, summary: "dry run — nothing written", details, wrote: false };
+        return { ok: true, summary: "dry run - nothing written", details, wrote: false };
       }
 
       ensureFreeMirrorReady(registryJson.tier, options);
@@ -270,7 +270,7 @@ function findLocalRemixerUsageFile(demoDir) {
 }
 
 // ---------------------------------------------------------------------------
-// Phase 2 — Codegen (global-remixer swap + registry re-sync + JSX handoff)
+// Phase 2 - Codegen (global-remixer swap + registry re-sync + JSX handoff)
 // ---------------------------------------------------------------------------
 
 async function runCodegen(options) {
@@ -312,10 +312,10 @@ async function runCodegen(options) {
 
 function swapDemoToGlobalRemixer(slug, category) {
   const demoDir = path.join(DOCS_DEMO_DIR, slug);
-  if (!fs.existsSync(demoDir)) return { message: `no demo folder at ${relative(demoDir)} — skipping demo swap` };
+  if (!fs.existsSync(demoDir)) return { message: `no demo folder at ${relative(demoDir)} - skipping demo swap` };
 
   const demoFile = findLocalRemixerUsageFile(demoDir);
-  if (!demoFile) return { message: "demo already uses the global Remixer Panel (no LocalRemixerDemo usage found) — skipping" };
+  if (!demoFile) return { message: "demo already uses the global Remixer Panel (no LocalRemixerDemo usage found) - skipping" };
 
   let content = fs.readFileSync(demoFile, "utf8");
   const before = content;
@@ -346,19 +346,19 @@ function swapDemoToGlobalRemixer(slug, category) {
   );
 
   if (content === before) {
-    return { message: `found LocalRemixerDemo in ${relative(demoFile)} but the swap regex made no changes — review this file manually` };
+    return { message: `found LocalRemixerDemo in ${relative(demoFile)} but the swap regex made no changes - review this file manually` };
   }
 
   fs.writeFileSync(demoFile, content);
   const pageResult = ensurePageImportsRegistry(demoDir, slug, category);
   return {
-    message: `swapped LocalRemixerDemo -> RegistryRemixerDemo in ${relative(demoFile)} (best-effort — review the JSX attributes)${pageResult ? `; ${pageResult}` : ""}`,
+    message: `swapped LocalRemixerDemo -> RegistryRemixerDemo in ${relative(demoFile)} (best-effort - review the JSX attributes)${pageResult ? `; ${pageResult}` : ""}`,
   };
 }
 
 function ensurePageImportsRegistry(demoDir, slug, category) {
   const pageFile = ["page.tsx", "page.jsx", "page.js"].map((name) => path.join(demoDir, name)).find((file) => fs.existsSync(file));
-  if (!pageFile) return "no page.tsx found to wire up the registry import — add it manually";
+  if (!pageFile) return "no page.tsx found to wire up the registry import - add it manually";
 
   let content = fs.readFileSync(pageFile, "utf8");
   const varName = `${toCamelCase(slug.replace(/-([a-z])/g, "-$1"))}Registry`;
@@ -378,12 +378,12 @@ function ensurePageImportsRegistry(demoDir, slug, category) {
   content = content.replace(/<DemoContent(\s+)(?!registry=)/, `<DemoContent registry={${varName}} `);
 
   fs.writeFileSync(pageFile, content);
-  return `added registry.json import to ${relative(pageFile)} — verify <DemoContent> receives it`;
+  return `added registry.json import to ${relative(pageFile)} - verify <DemoContent> receives it`;
 }
 
 function runRegistryResyncIfChanged(existing) {
   const docsDir = docsComponentDir(existing.registry.name);
-  if (!fs.existsSync(docsDir)) return { changed: false, message: "no docs source folder — skipping registry re-sync" };
+  if (!fs.existsSync(docsDir)) return { changed: false, message: "no docs source folder - skipping registry re-sync" };
 
   const files = discoverDistributableFiles(docsDir);
   const changedFiles = files.filter((file) => {
@@ -405,7 +405,7 @@ function runRegistryResyncIfChanged(existing) {
     exportInfo.exportKind !== existing.registry.exportKind;
 
   if (!changedFiles.length && !metadataChanged) {
-    return { changed: false, message: "registry-side files already match source — no re-sync needed" };
+    return { changed: false, message: "registry-side files already match source - no re-sync needed" };
   }
 
   copyDistributableFilesWithHeader(changedFiles.length ? changedFiles : files, existing.dir);
@@ -440,7 +440,7 @@ function writeCodegenOutput(slug, component) {
   for (const file of codeFiles) {
     const outputs = [{ filename: file.filename, content: file.content }];
     // For .tsx/.ts sources, the original is written alongside the
-    // type-stripped .jsx/.js version — not instead of it.
+    // type-stripped .jsx/.js version - not instead of it.
     if (file.tsxCode !== undefined) {
       outputs.push({ filename: file.originalFilename, content: file.tsxCode });
     }
@@ -455,7 +455,7 @@ function writeCodegenOutput(slug, component) {
   details.push(
     written
       ? `wrote ${written} changed file(s) into ${relative(outDir)} for manual Sanity paste`
-      : `${relative(outDir)} already up to date — nothing changed`
+      : `${relative(outDir)} already up to date - nothing changed`
   );
   details.push(`once Sanity is updated, delete ${relative(outDir)} yourself`);
   return { details };
@@ -511,7 +511,7 @@ function loadTypeScript() {
 }
 
 // ---------------------------------------------------------------------------
-// `update` — registry + codegen combined for an already-shipped component
+// `update` - registry + codegen combined for an already-shipped component
 // ---------------------------------------------------------------------------
 
 async function runUpdate(options) {
@@ -628,7 +628,7 @@ function buildTarballForEffect(effectDir) {
 }
 
 // ---------------------------------------------------------------------------
-// Phase 3 — Revert
+// Phase 3 - Revert
 // ---------------------------------------------------------------------------
 
 function runRevert(options) {
@@ -728,7 +728,7 @@ function withPortableReducedMotion(content, ext) {
 
   const specifiers = match[1].split(",").map((s) => s.trim()).filter(Boolean);
   if (!specifiers.length || !specifiers.every((s) => REDUCED_MOTION_EXPORTS.has(s))) {
-    // Mixed with something we don't know how to inline — leave it alone
+    // Mixed with something we don't know how to inline - leave it alone
     // rather than guess at a partial transform.
     return content;
   }
@@ -789,7 +789,7 @@ function ensureNamedImport(content, moduleSpecifier, importName) {
     if (names.includes(importName)) return content;
     return content.replace(existingRe, `import { ${[...names, importName].join(", ")} } from "${moduleSpecifier}";`);
   }
-  // No existing import from this module — add a new one, right before the
+  // No existing import from this module - add a new one, right before the
   // first existing import so it stays with the rest of the import block.
   const firstImportMatch = content.match(/^\s*import\s/m);
   if (!firstImportMatch) return `import { ${importName} } from "${moduleSpecifier}";\n${content}`;
@@ -1042,7 +1042,7 @@ function coerceValue(value) {
 }
 
 function printResult(command, slug, result) {
-  console.log(`component:ship ${command} — ${slug}\n`);
+  console.log(`component:ship ${command} - ${slug}\n`);
   for (const detail of result.details || []) console.log(detail);
   console.log(`\n${result.ok ? "PASSED" : "FAILED"}: ${result.summary}`);
   if (!result.ok) process.exitCode = 1;

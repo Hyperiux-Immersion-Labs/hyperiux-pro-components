@@ -20,21 +20,34 @@ export async function GET() {
     Promise.resolve(getRegistryIndex()),
   ]);
 
-  const [{ data: wishlist, error: wishlistError }, { data: subscription, error: subscriptionError }] =
-    await Promise.all([
-      supabase
-        .from("wishlisted_effects")
-        .select("*")
-        .eq("clerk_user_id", userId),
+  const [
+    { data: wishlist, error: wishlistError },
+    { data: subscription, error: subscriptionError },
+    { data: unlockRows, error: unlockError },
+  ] = await Promise.all([
+    supabase
+      .from("wishlisted_effects")
+      .select("*")
+      .eq("clerk_user_id", userId),
 
-      supabase
-        .from("subscriptions")
-        .select(
-          "plan,status,billing_interval,current_period_end,razorpay_subscription_id,razorpay_plan_id,razorpay_short_url"
-        )
-        .eq("clerk_user_id", userId)
-        .maybeSingle(),
-    ]);
+    supabase
+      .from("subscriptions")
+      .select(
+        "plan,status,billing_interval,current_period_end,razorpay_subscription_id,razorpay_plan_id,razorpay_short_url"
+      )
+      .eq("clerk_user_id", userId)
+      .maybeSingle(),
+
+    // install_unlocks has one row per (day, effect, source) an effect was
+    // newly unlocked - "Copied Effects" is distinct effects unlocked via the
+    // website specifically (source='web'), "Installed Effects" is distinct
+    // effects unlocked via any of the three surfaces (web/CLI/MCP), same
+    // web-vs-all distinction as the admin Activity page's copies/installs.
+    supabase
+      .from("install_unlocks")
+      .select("effect_slug, source")
+      .eq("clerk_user_id", userId),
+  ]);
 
   // Fallback: if no subscription row exists (webhook missed), provision one now
   if (!subscriptionError && !subscription) {
@@ -65,6 +78,13 @@ export async function GET() {
     );
   }
 
+  if (unlockError) {
+    return NextResponse.json(
+      { error: unlockError.message },
+      { status: 500 }
+    );
+  }
+
   const totalEffects = registry.items?.length || 0;
   const totalFreeEffects = getFreeEffectsCount();
   const totalEffectsAccess =
@@ -72,9 +92,19 @@ export async function GET() {
       ? totalEffects
       : Math.min(totalFreeEffects, totalEffects);
 
+  const installedSlugs = new Set();
+  const copiedSlugs = new Set();
+
+  for (const row of unlockRows || []) {
+    installedSlugs.add(row.effect_slug);
+    if (row.source === "web") copiedSlugs.add(row.effect_slug);
+  }
+
   return NextResponse.json({
     savedCount: wishlist?.length || 0,
     savedEffects: wishlist || [],
+    copiedCount: copiedSlugs.size,
+    installedCount: installedSlugs.size,
     joinedAt: user?.createdAt || null,
     plan,
     totalEffects,

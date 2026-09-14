@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-/** Ring buffer depth — the number of ripples that can be in flight at once. */
+/** Ring buffer depth - the number of ripples that can be in flight at once. */
 export const MAX_HITS = 6;
 
 // ── Vertex shader ─────────────────────────────────────────────────────────────
@@ -196,7 +196,7 @@ const fragmentShader = /* glsl */ `
     // ── Hex: triplanar ────────────────────────────────────────────────────────
     // The sphere version picked one cube face from the *position*, which only
     // works on a shape that is a ball. A tooth is not, so the grid is projected
-    // on all three axes and blended by the surface *normal* — the cells then
+    // on all three axes and blended by the surface *normal* - the cells then
     // follow the crown and the cusps instead of shearing across them.
     vec3 blend = pow(abs(normalize(vObjNormal)), vec3(4.0));
     blend /= max(blend.x + blend.y + blend.z, 1e-4);
@@ -218,7 +218,7 @@ const fragmentShader = /* glsl */ `
     // ── Hit ring buffer (click impact & ripples) ──────────────────────────────
     // Each slot is one ripple: an expanding noisy ring plus a short hex
     // highlight around the impact. Distances are straight-line in normalised
-    // object space — on a sphere the original could use a geodesic, but on an
+    // object space - on a sphere the original could use a geodesic, but on an
     // arbitrary shell there is no cheap surface distance and the chord reads
     // the same at these radii.
     float ringContrib = 0.0;
@@ -346,12 +346,12 @@ export function createToothShieldMaterial(
     fragmentShader,
     transparent: true,
     depthWrite: false,
-    // The shell wraps the tooth, so the back half has to draw too — with
+    // The shell wraps the tooth, so the back half has to draw too - with
     // FrontSide the shield would only ever be seen from outside.
     side: THREE.DoubleSide,
     blending: THREE.AdditiveBlending,
     // The layer is only a few thousandths of the model thick, which is far
-    // too little to separate it from the enamel in the depth buffer — at
+    // too little to separate it from the enamel in the depth buffer - at
     // grazing angles the offset along the normal barely moves the fragment
     // towards the camera at all. A slope-scaled depth bias wins that test
     // reliably without the shell having to stand off the tooth visibly.

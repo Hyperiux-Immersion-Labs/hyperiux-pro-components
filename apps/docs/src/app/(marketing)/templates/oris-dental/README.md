@@ -1,6 +1,6 @@
-# Oris Dental — Modern Dental Clinic Template
+# Oris Dental - Modern Dental Clinic Template
 
-A single-page website template for dental clinics, orthodontists, and cosmetic dental practices. One scrolling page — 3D interactive hero, about us with slot counters, scroll-pinned treatments, why choose us, parallax statement break, floating ribbon review showcase, practice gallery, appointment booking form, and interactive footer — built from [Hyperiux Vault](https://vault.hyperiux.com) effects arranged into a full site.
+A single-page website template for dental clinics, orthodontists, and cosmetic dental practices. One scrolling page - 3D interactive hero, about us with slot counters, scroll-pinned treatments, why choose us, parallax statement break, floating ribbon review showcase, practice gallery, appointment booking form, and interactive footer - built from [Hyperiux Vault](https://vault.hyperiux.com) effects arranged into a full site.
 
 ## Tech stack
 
@@ -13,7 +13,7 @@ A single-page website template for dental clinics, orthodontists, and cosmetic d
 | Animation | GSAP 3 (`ScrollTrigger`, `SplitText`) |
 | Smooth scroll | Lenis (`lenis/react`) |
 
-No CMS, no backend — content lives directly in the section files as plain data.
+No CMS, no backend - content lives directly in the section files as plain data.
 
 ## Folder structure
 
@@ -81,7 +81,7 @@ Then open **http://localhost:3000/templates/oris-dental**.
 
 ## Customizing
 
-- **Copy** — every section's text lives as plain data at the top of its file: `STATS` in `AboutOris.tsx`, `TREATMENTS_DATA` in `DentalTreatments.tsx`, `WHY_STATS` in `WhyOris.tsx`, and so on. Edit those directly.
-- **3D Model** — swap the 3D model under `assets/teeth.glb` and adjust lights/materials in `effects/teeth-3d/TeethCanvas.tsx`.
-- **Colors** — Primary blue (`#3365e2`) and secondary navy (`#13314a`) are configured in `oris-dental.css` and can be adjusted across the template.
-- **Contact Form** — Update the `handleSubmit` handler in `effects/contact-form/ContactForm.tsx` to connect to your backend or CRM API.
+- **Copy** - every section's text lives as plain data at the top of its file: `STATS` in `AboutOris.tsx`, `TREATMENTS_DATA` in `DentalTreatments.tsx`, `WHY_STATS` in `WhyOris.tsx`, and so on. Edit those directly.
+- **3D Model** - swap the 3D model under `assets/teeth.glb` and adjust lights/materials in `effects/teeth-3d/TeethCanvas.tsx`.
+- **Colors** - Primary blue (`#3365e2`) and secondary navy (`#13314a`) are configured in `oris-dental.css` and can be adjusted across the template.
+- **Contact Form** - Update the `handleSubmit` handler in `effects/contact-form/ContactForm.tsx` to connect to your backend or CRM API.

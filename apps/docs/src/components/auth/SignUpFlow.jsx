@@ -7,6 +7,7 @@ import { useSignUp } from "@clerk/nextjs/legacy";
 import SplitAuthLayout from "./SplitAuthLayout";
 import {
   errorMessage,
+  isSessionExistsError,
   StepHeading,
   TextField,
   GlobalError,
@@ -113,6 +114,13 @@ export default function SignUpFlow() {
         startResendCooldown();
       }
     } catch (err) {
+      // Same session_exists case as SignInFlow.jsx - the browser already
+      // has a real, currently-valid session, so route onward instead of
+      // surfacing a dead-end Clerk error.
+      if (isSessionExistsError(err)) {
+        router.push(REDIRECT_AFTER_SIGN_UP);
+        return;
+      }
       setError(errorMessage(err, "Unable to create your account. Check your details and try again."));
     } finally {
       setLoading(false);

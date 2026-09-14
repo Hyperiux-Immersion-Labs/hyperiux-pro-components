@@ -1,4 +1,4 @@
-# Kyntra — performance notes
+# Kyntra - performance notes
 
 How the Kyntra template's Lighthouse score was raised from **74 to ~91**, and why
 each change is shaped the way it is. Written to be portable: the reasoning applies
@@ -30,7 +30,7 @@ before and after; the lines still travel `translateY 124 → 0` on the same curv
 LCP ignores `aria-hidden` subtrees.**
 
 Once `ParaAnim` splits a heading, all of its text lives inside those wrappers, so
-the browser has no LCP candidate there — *even at `opacity: 1`*. This is not an
+the browser has no LCP candidate there - *even at `opacity: 1`*. This is not an
 accessibility bug: SplitText puts an `aria-label` on the parent, so screen readers
 still read the heading correctly. Only the metric is blind to it.
 
@@ -84,7 +84,7 @@ gradient keeps that exact 1.2 s fade; only the image moved out from under it:
 
 > Anything you want to be the LCP element must be **outside** every `aria-hidden`
 > subtree, must not sit under an ancestor at `opacity: 0`, and must be above the
-> fold. A SplitText heading can never be the LCP element — plan for an image.
+> fold. A SplitText heading can never be the LCP element - plan for an image.
 
 ---
 
@@ -98,12 +98,12 @@ The main-thread breakdown pointed at layout, not script:
 ```
 
 **SplitText forces a synchronous layout read per element.** The page has ~66
-`ParaAnim` / `FadeUp` instances, and every one of them split on mount — including
+`ParaAnim` / `FadeUp` instances, and every one of them split on mount - including
 sections far below the fold that nobody had scrolled to yet.
 
 ### Three changes in `components/Animations/gsapAnim.tsx`
 
-**a. Defer off-screen splits** (the big win — Style & Layout 1082 ms → 658 ms)
+**a. Defer off-screen splits** (the big win - Style & Layout 1082 ms → 658 ms)
 
 Copy that is not near the viewport waits for an `IntersectionObserver` before
 splitting. `rootMargin: "200% 0px"` means the split still happens well before the
@@ -129,7 +129,7 @@ if (nearViewport) {
 
 **b. Wait only on the fonts an element actually uses**
 
-`document.fonts.ready` resolves only when *every* face on the page has loaded —
+`document.fonts.ready` resolves only when *every* face on the page has loaded -
 here that is 936 KB across 7 files. Above-the-fold copy sat at `opacity: 0` that
 whole time. `fonts.load(shorthand)` waits for just the faces that element renders
 in, and a `FONT_WAIT_CAP = 300` ms timeout guarantees the reveal is never blocked
@@ -173,7 +173,7 @@ disconnects the observer, so a fast unmount cannot fire a split into a dead node
 ## 3. Initial JavaScript: 1437 KB → 1038 KB
 
 **Below-fold sections are dynamically imported** in `page.tsx`. These still
-server-render — only the JS is deferred, so HTML, SEO and no-JS content are
+server-render - only the JS is deferred, so HTML, SEO and no-JS content are
 unchanged.
 
 ```ts
@@ -188,7 +188,7 @@ const CTA = dynamic(() => import("./components/CTA"));
 const ParallaxFooter = dynamic(() => import("./components/effects/parallax-footer"));
 ```
 
-`Header`, `Hero`, `About` and `SectionBreak` stay static — they are above the fold.
+`Header`, `Hero`, `About` and `SectionBreak` stay static - they are above the fold.
 
 **Modals load on first interaction** (`Header`, `CTA`, `HowKyntraWorks`). This
 matters most in `Header`, which is above the fold and was pulling `EnquiryModal`
@@ -196,7 +196,7 @@ into the critical bundle.
 
 The modals keep themselves mounted through their own close tween (`mounted = open
 || exiting`), so unmounting on `open === false` would cut the exit animation off.
-A latch fixes that — it flips true on first open and never flips back:
+A latch fixes that - it flips true on first open and never flips back:
 
 ```tsx
 const [enquiryUsed, setEnquiryUsed] = useState(false);
@@ -210,17 +210,17 @@ const [enquiryUsed, setEnquiryUsed] = useState(false);
 
 `priority` was set on five below-fold images, where it competes with the real LCP
 element for bandwidth. Removed from `About` (×2), `Trust`, `DownloadAppModal` and
-`parallax-footer` — `next/image` lazy loads by default.
+`parallax-footer` - `next/image` lazy loads by default.
 
 **Next.js 16 deprecates `priority` in favour of `preload`.** But the docs warn
 against `preload` when several images could be the LCP depending on viewport,
 which is exactly this hero (watermark on desktop, mockup on mobile). So the hero
-pair and the header logo use `loading="eager"` + `fetchPriority="high"` instead —
+pair and the header logo use `loading="eager"` + `fetchPriority="high"` instead -
 same behaviour, non-deprecated API, no competing preloads.
 
 ---
 
-## 5. `IntroOverlay` — the blank-then-reveal intro
+## 5. `IntroOverlay` - the blank-then-reveal intro
 
 `components/IntroOverlay.tsx`. A plain white sheet held over the page for the
 first few frames, so a reload reads as "blank, then everything arrives in
@@ -228,7 +228,7 @@ sequence".
 
 **Why this is the right shape.** Painting *over* the page is not the same as
 hiding it. The content underneath renders and paints normally, so the browser
-still picks an LCP candidate — an `opacity: 0` hero has none. This gets the
+still picks an LCP candidate - an `opacity: 0` hero has none. This gets the
 visual effect without re-breaking the metric.
 
 Styled with `gsap.set` rather than Tailwind:
@@ -253,7 +253,7 @@ Two details that are easy to get wrong:
 - **The cover is also rendered in the server HTML** with matching inline styles.
   A cover that only appears at hydration lets the page flash through first. Costs
   roughly 2 Lighthouse points; worth it to avoid a visible flash, and easy to drop
-  if you disagree — delete the `style` prop on the returned `<div>`.
+  if you disagree - delete the `style` prop on the returned `<div>`.
 - **A `<noscript>` rule hides it.** Without JS nothing would ever clear the sheet
   and the page would be permanently blank:
   ```tsx
@@ -280,7 +280,7 @@ Watch for regressions in this order:
    `aria-hidden` again, gave it back `alt=""`, or wrapped it in an `opacity: 0`
    ancestor.
 2. **Style & Layout in the main-thread breakdown.** If it climbs back toward
-   1000 ms, a new `ParaAnim` is splitting on mount — check it goes through
+   1000 ms, a new `ParaAnim` is splitting on mount - check it goes through
    `splitWhenFontReady`.
 3. **Initial JS.** A new below-fold section imported statically in `page.tsx`
    undoes the code splitting.

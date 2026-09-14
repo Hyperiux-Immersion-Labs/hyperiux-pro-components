@@ -624,7 +624,7 @@ const GsapFlipCard = ({
               aria-label={
                 opened
                   ? item.alt ?? item.caption ?? `Image ${itemIndex + 1}`
-                  : `Open gallery — ${items.length} images`
+                  : `Open gallery - ${items.length} images`
               }
               aria-current={(opened && isHero) || undefined}
               tabIndex={!opened ? (itemIndex === order[0] ? 0 : -1) : isHero ? -1 : 0}

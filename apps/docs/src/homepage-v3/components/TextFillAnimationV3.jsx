@@ -200,7 +200,7 @@ export default function TextFillAnimationV3({
           revealed = target;
         };
 
-        // Trigger is the text itself, not a tall spacer — the reveal is mapped to
+        // Trigger is the text itself, not a tall spacer - the reveal is mapped to
         // the block crossing the viewport instead of to a pinned scroll distance.
         ScrollTrigger.create({
           trigger: section,

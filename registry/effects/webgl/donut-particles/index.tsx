@@ -454,7 +454,7 @@ function DonutParticle({
  pointsRef.current.material.uniforms.uColor.value.set(particleColor);
  pointsRef.current.material.uniforms.uIntensity.value = intensity;
 
- // Reduced-motion: freeze spin / waves / mouse stretch — hold constrained torus.
+ // Reduced-motion: freeze spin / waves / mouse stretch - hold constrained torus.
  if (reduceMotionRef.current) {
  pointsRef.current.material.uniforms.time.value = 0;
  const majorRadius = TORUS_MAJOR_RADIUS;
