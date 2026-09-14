@@ -52,7 +52,7 @@
       "name": "cardRadius",
       "type": "number",
       "default": 45,
-      "description": "Corner rounding on each card, in px (desktop only — tablet/mobile keep their own responsive radius).",
+      "description": "Corner rounding on each card, in px (desktop only - tablet/mobile keep their own responsive radius).",
       "remixer": { "control": "range", "group": "style", "groupTitle": "Style", "min": 0, "max": 100, "step": 1 }
     }
   ],

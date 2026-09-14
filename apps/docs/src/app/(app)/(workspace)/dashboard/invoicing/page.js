@@ -129,7 +129,7 @@ async function downloadInvoiceReceipt(invoice) {
 
 function StatCard({ label, value, detail }) {
   return (
-    <div className="flex h-full flex-col justify-between rounded-md p-6 bg-[#272727]">
+    <div className="flex h-full flex-col justify-between  p-6 bg-[#272727]">
       <p className="text-white mb-3">{label}</p>
 
       <p className="text-2xl font-medium font-laygrotesk leading-none">{value}</p>
@@ -144,7 +144,7 @@ function StatusBadge({ status }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium capitalize ${
+      className={`inline-flex items-center  px-3 py-1 text-xs font-medium capitalize ${
         isPaid ? "bg-emerald-500/15 text-emerald-400" : "bg-white/10 text-white/60"
       }`}
     >
@@ -230,7 +230,7 @@ export default function InvoicingPage() {
       </div>
 
       {loadError && (
-        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-6 py-4 text-amber-300">
+        <div className=" border border-amber-500/30 bg-amber-500/10 px-6 py-4 text-amber-300">
           Couldn&apos;t load your billing history right now. You can still
           generate a test invoice below.
         </div>
@@ -293,7 +293,7 @@ export default function InvoicingPage() {
         </div>
 
         {invoices.length === 0 ? (
-          <div className="rounded-md p-12 bg-[#272727] text-center">
+          <div className=" p-12 bg-[#272727] text-center">
             <h3 className="text-2xl text-white mb-2">No invoices yet</h3>
 
             <p className="text-zinc-400">
@@ -303,7 +303,7 @@ export default function InvoicingPage() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-md bg-[#272727]">
+          <div className="overflow-x-auto  bg-[#272727]">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-white/50">

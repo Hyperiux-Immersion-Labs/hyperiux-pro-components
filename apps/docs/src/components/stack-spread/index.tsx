@@ -46,7 +46,7 @@ const s = (i: number) => SCALE[i] ?? 1;
 
 // array order = stack order, back (z 2) -> front (z 9)
 const CARDS: StackSpreadCard[] = [
-  // top-left stripes (img08) — sm row 1 left
+  // top-left stripes (img08) - sm row 1 left
   {
     item: { src: IMG.stripes, alt: "Colour stripes" },
     stackOffset: { x: -8, y: -10 },
@@ -55,7 +55,7 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: -22, y: -40 },
     z: 2,
   },
-  // top-right meadow (img07) — sm row 1 right
+  // top-right meadow (img07) - sm row 1 right
   {
     item: { src: IMG.meadow, alt: "Wildflower meadow" },
     stackOffset: { x: 14, y: -10 },
@@ -64,7 +64,7 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: 22, y: -40 },
     z: 3,
   },
-  // mid-left jacket (img06) — sm row 2 left
+  // mid-left jacket (img06) - sm row 2 left
   {
     item: { src: IMG.jacket, alt: "Figure in a leather jacket" },
     stackOffset: { x: -16, y: 0 },
@@ -73,7 +73,7 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: -22, y: -19 },
     z: 4,
   },
-  // top-centre footballer (img05) — sm row 2 right
+  // top-centre footballer (img05) - sm row 2 right
   {
     item: { src: IMG.footballer, alt: "Footballer mid-kick" },
     stackOffset: { x: 1, y: -10 },
@@ -82,7 +82,7 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: 22, y: -19 },
     z: 5,
   },
-  // mid-right dog (img04) — sm row 3 left
+  // mid-right dog (img04) - sm row 3 left
   {
     item: { src: IMG.dog, alt: "Terrier in profile" },
     stackOffset: { x: 18, y: 1 },
@@ -91,7 +91,7 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: -22, y: 20 },
     z: 6,
   },
-  // bottom-left breaker (img03) — sm row 3 right
+  // bottom-left breaker (img03) - sm row 3 right
   {
     item: { src: IMG.breaker, alt: "Breakdancer holding a pose" },
     stackOffset: { x: -6, y: 10 },
@@ -100,7 +100,7 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: 22, y: 20 },
     z: 7,
   },
-  // bottom-centre painting (img02) — sm row 4 left
+  // bottom-centre painting (img02) - sm row 4 left
   {
     item: { src: IMG.painting, alt: "Renaissance fresco detail" },
     stackOffset: { x: 8, y: 7 },
@@ -109,7 +109,7 @@ const CARDS: StackSpreadCard[] = [
     targetSm: { x: -22, y: 40 },
     z: 8,
   },
-  // bottom-right plane (img01) — sm row 4 right
+  // bottom-right plane (img01) - sm row 4 right
   {
     item: { src: IMG.plane, alt: "Vintage fighter plane" },
     stackOffset: { x: 20, y: 12 },
@@ -134,7 +134,7 @@ const PARALLAX_SPRING = { stiffness: 90, damping: 22, mass: 0.6 };
 const parallaxDepth = (i: number, total: number) =>
   total <= 1 ? 1 : 0.55 + (i / (total - 1)) * 0.75;
 
-// Deterministic pseudo-random in [0, 1) — keeps SSR and client in sync.
+// Deterministic pseudo-random in [0, 1) - keeps SSR and client in sync.
 const rand = (seed: number) => {
   const v = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
   return v - Math.floor(v);
@@ -354,7 +354,7 @@ interface StackSpreadStageProps {
   clusterRotation?: boolean;
   /** scale of the cards while clustered, before the scatter */
   stackScale?: number;
-  /** corner radius on each card, in px (desktop only — mobile keeps its responsive radius) */
+  /** corner radius on each card, in px (desktop only - mobile keeps its responsive radius) */
   cardRadius?: number;
   /** color of the centre headline and subtitle */
   textColor?: string;
@@ -472,7 +472,7 @@ export interface StackSpreadProps {
   clusterRotation?: boolean;
   /** scale of the cards while clustered, before the scatter */
   stackScale?: number;
-  /** corner radius on each card, in px (desktop only — mobile keeps its responsive radius) */
+  /** corner radius on each card, in px (desktop only - mobile keeps its responsive radius) */
   cardRadius?: number;
   /** color of the centre headline and subtitle */
   textColor?: string;

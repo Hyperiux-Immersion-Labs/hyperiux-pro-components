@@ -134,7 +134,7 @@ const nextConfig = {
   },
 
   images: {
-    qualities: [60, 75, 90, 95, 100],
+    qualities: [60, 65, 75, 90, 95, 100],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 280, 320, 384, 560, 640],
     // Next's default is 4h - these /_next/image URLs are content-addressed
     // (src+width+quality baked into the query string), so a stale cached

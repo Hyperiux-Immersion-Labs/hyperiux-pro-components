@@ -44,7 +44,7 @@ export const effectsOverviewContent = {
     },
     {
       question: "What's the difference between Free and Pro?",
-      answer: "Free includes 40+ effects covering text, buttons, and basic scroll interactions. Pro unlocks the full 130+ effect library, including cursor effects, WebGL scenes, and advanced page transitions."
+      answer: "Free includes 50+ effects covering text, buttons, and basic scroll interactions. Pro unlocks the full 130+ effect library, including cursor effects, WebGL scenes, and advanced page transitions."
     },
     {
       question: "Do I need an account to use free effects?",
@@ -96,10 +96,10 @@ export const freeEffectsContent = {
   ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/free.jpg",
   metadata: {
     title: "Free React & Next.js Effects | Hyperiux Vault",
-    description: "Browse 40+ free Hyperiux Vault effects for React and Next.js - real scroll, button, and text animations you can install, remix, and ship today.",
+    description: "Browse 50+ free Hyperiux Vault effects for React and Next.js - real scroll, button, and text animations you can install, remix, and ship today.",
   },
   description: [
-    "The Free tier includes 40+ production-ready Hyperiux Vault effects - text animations, buttons, and core scroll interactions that are free to use forever, no account required to preview. Upgrade to Pro when you need cursor effects, WebGL scenes, or the full 130+ effect library.",
+    "The Free tier includes 50+ production-ready Hyperiux Vault effects - text animations, buttons, and core scroll interactions that are free to use forever, no account required to preview. Upgrade to Pro when you need cursor effects, WebGL scenes, or the full 130+ effect library.",
   ],
   faqs: [
     {
@@ -108,7 +108,7 @@ export const freeEffectsContent = {
     },
     {
       question: "What's the difference between Free and Pro?",
-      answer: "Free includes 40+ effects covering text, buttons, and basic scroll interactions. Pro unlocks the full 130+ effect library, including cursor effects, WebGL scenes, and advanced page transitions."
+      answer: "Free includes 50+ effects covering text, buttons, and basic scroll interactions. Pro unlocks the full 130+ effect library, including cursor effects, WebGL scenes, and advanced page transitions."
     },
     {
       question: "Do I need an account to use free effects?",

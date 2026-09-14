@@ -6,7 +6,7 @@ cannot import from this `_shared/` folder.
 
 Full task write-up: [`F-042.md`](./F-042.md)
 
-## `createSuspendedRaf.js` (F-042 — Task 0)
+## `createSuspendedRaf.js` (F-042 - Task 0)
 
 Pauses continuous `requestAnimationFrame` work when:
 
@@ -53,9 +53,9 @@ return () => gate.destroy();
 
 ### Status
 
-- **Task 0:** utility + tests — done  
-- **Task 1 (webgl):** rolled out to all `registry/effects/webgl/**` packages — done  
-- **Task 2 (cursor):** continuous rAF cursor packages — done  
-- **Task 3 (backgrounds):** dither-canvas, spider-particles, dotted-grid — done  
-- **Task 4 (scroll):** continuous rAF scroll packages — done  
-- **Task 5:** docs sync (`apps/docs/src/components/**`) — done  
+- **Task 0:** utility + tests - done  
+- **Task 1 (webgl):** rolled out to all `registry/effects/webgl/**` packages - done  
+- **Task 2 (cursor):** continuous rAF cursor packages - done  
+- **Task 3 (backgrounds):** dither-canvas, spider-particles, dotted-grid - done  
+- **Task 4 (scroll):** continuous rAF scroll packages - done  
+- **Task 5:** docs sync (`apps/docs/src/components/**`) - done  

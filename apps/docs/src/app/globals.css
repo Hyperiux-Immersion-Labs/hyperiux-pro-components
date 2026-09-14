@@ -115,15 +115,24 @@ body {
   color-scheme: dark;
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
+/* Layered (not left bare) so Tailwind's utilities layer - text-sm, text-xs,
+   etc. applied directly to a button/input/textarea/select - can actually
+   override this reset. An unlayered rule here would always win over any
+   layered utility regardless of specificity or source order, per the CSS
+   cascade layers spec, silently breaking every text-size class applied
+   directly to a form control site-wide (as opposed to one applied to a
+   wrapping element, which still works via inheritance either way). */
+@layer base {
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
 
-button {
-  cursor: pointer;
+  button {
+    cursor: pointer;
+  }
 }
 
 h1,
@@ -592,7 +601,7 @@ h4 {
   transition: all 0.3s ease-in-out;
 }
 /* Autofill
-   Chrome paints its own autofill fill — override with an inset box-shadow.
+   Chrome paints its own autofill fill - override with an inset box-shadow.
    Defaults match light inputs; dark surfaces set --input-autofill-bg / text. */
 
 input:-webkit-autofill,
@@ -754,7 +763,7 @@ input:-webkit-autofill:active {
   }
 }
 
-/* The square itself only exists on hover — it stutters in, then holds. */
+/* The square itself only exists on hover - it stutters in, then holds. */
 @keyframes pixel-glitch-in {
   0%,
   22%,

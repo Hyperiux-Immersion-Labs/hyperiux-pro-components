@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { markUserProFromSubscription, markUserFree, sendInvoiceEmail, recordInvoice } from "@/lib/pro-access";
 import { releaseFoundingSlot } from "@/lib/founding-slots";
 
-// Razorpay's server calls this — authenticated via X-Razorpay-Signature
+// Razorpay's server calls this - authenticated via X-Razorpay-Signature
 // (HMAC of the raw body with the webhook secret), never via Clerk.
 // Keep this route out of proxy.js's protected matcher.
 
@@ -58,7 +58,7 @@ export async function POST(req) {
   const clerkUserId = subscription?.notes?.clerk_user_id;
 
   if (!subscription || !clerkUserId) {
-    // Not a subscription event we track (e.g. payment.captured) — ack and move on.
+    // Not a subscription event we track (e.g. payment.captured) - ack and move on.
     return NextResponse.json({ received: true });
   }
 

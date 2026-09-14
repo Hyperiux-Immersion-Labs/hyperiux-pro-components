@@ -140,7 +140,7 @@ export default function Workflow() {
                             trigger: accordionRef.current,
                             start: 'top 30%',
                             end: 'bottom bottom',
-                            // Instant scrub — lagged scrub (2) felt like a late-loading trigger
+                            // Instant scrub - lagged scrub (2) felt like a late-loading trigger
                             // and fought Lenis when layout above (storytelling) settled.
                             scrub: true,
                             invalidateOnRefresh: true,

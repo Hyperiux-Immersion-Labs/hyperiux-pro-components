@@ -36,11 +36,16 @@ function countByUser(rows) {
 // matching the same numbers already shown on the per-user Activity Detail
 // page, not scoped to the table's own joined-date filter (that filter is
 // about who's in the list, not how much of the site's history counts).
+// "Copies" means the website's copy button specifically (source='web'),
+// same convention as everywhere else "copies" is used (Overview's Total
+// Copies, the per-user page, "Top users by copies") - not installs
+// generally, which would fold CLI/MCP installs into a column literally
+// labeled "Copies".
 async function countsForIds(ids) {
   if (!ids.length) return { copiesById: new Map(), savesById: new Map() };
 
   const [{ data: copyRows }, { data: saveRows }] = await Promise.all([
-    supabase.from("install_unlocks").select("clerk_user_id").in("clerk_user_id", ids),
+    supabase.from("install_unlocks").select("clerk_user_id").eq("source", "web").in("clerk_user_id", ids),
     supabase.from("wishlisted_effects").select("clerk_user_id").in("clerk_user_id", ids),
   ]);
 

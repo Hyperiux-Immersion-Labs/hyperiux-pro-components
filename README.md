@@ -5,9 +5,9 @@
 ![CI](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/actions/workflows/ci.yml/badge.svg)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL--2.0-orange.svg?style=flat-square)](LICENSE)
 
-**A collection of high-quality animation effects and interactive components for Next.js — designed by [Hyperiux](https://hyperiux.com).**
+**A collection of high-quality animation effects and interactive components for Next.js - designed by [Hyperiux](https://hyperiux.com).**
 
-Hyperiux Vault includes 138 effects total: 48 free effects are open source and install instantly, and 90 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project — you own what you install.
+Hyperiux Vault includes 138 effects total: 48 free effects are open source and install instantly, and 90 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
 
 ---
 
@@ -95,7 +95,7 @@ export default function Page() {
 | `popEase` | `string \| function` | `Expo.easeOut` | Easing used for the pop-out animation |
 | `idlePopEase` | `string \| function` | `power1.out` | Easing used for idle pop-out animations |
 | `fadeEase` | `string \| function` | `power4.inOut` | Easing used for the fade-out animation |
-| `onImageShow` | `(payload) => void` | — | Callback fired when an image is shown |
+| `onImageShow` | `(payload) => void` | - | Callback fired when an image is shown |
 
 ---
 
@@ -114,14 +114,14 @@ export default function Page() {
 | `npx hyperiux whoami` | Show current login status |
 
 > **Note:** `outdated`/`versions`/`diff` read from a local lockfile that `add` does not
-> currently write to — until that's fixed, they'll report no effects installed even in
+> currently write to - until that's fixed, they'll report no effects installed even in
 > a project with effects already added. Tracked in [`md/versioning.md`](md/versioning.md).
 
 ### Options for `add`
 
 | Flag | Description |
 |---|---|
-| `--overwrite` | Replace existing files. **Required** to overwrite anything already on disk — nothing is overwritten without it |
+| `--overwrite` | Replace existing files. **Required** to overwrite anything already on disk - nothing is overwritten without it |
 | `--yes` | Skip interactive prompts. This does **not** permit overwriting: if files already exist and `--overwrite` was not passed, they are left untouched and the effect is skipped |
 | `--dry-run` | Preview what would be installed without writing files |
 
@@ -190,27 +190,27 @@ npx hyperiux add milky-way
 
 ### Free effects by category
 
-**Backgrounds** — `spider-particles` · `dotted-grid`
+**Backgrounds** - `spider-particles` · `dotted-grid`
 
-**Buttons** — `arrow-fill-button` · `link-button` · `scramble-link-button`
+**Buttons** - `arrow-fill-button` · `link-button` · `scramble-link-button`
 
-**Carousels** — `zoom-slider`
+**Carousels** - `zoom-slider`
 
-**Components** — `animated-faq` · `gooey-counter` · `hover-stack` · `interactive-list-preview`
+**Components** - `animated-faq` · `gooey-counter` · `hover-stack` · `interactive-list-preview`
 
-**Cursor** — `phantom-image-trail` · `pixelated-image-effect`
+**Cursor** - `phantom-image-trail` · `pixelated-image-effect`
 
-**Loaders** — `numeric-tunnel` · `stack-loader`
+**Loaders** - `numeric-tunnel` · `stack-loader`
 
-**Navigation** — `elevate-navbar` · `directional-menu`  · `immersive-full-screen-nav`
+**Navigation** - `elevate-navbar` · `directional-menu`  · `immersive-full-screen-nav`
 
-**Scroll** — `circular-split-roll` · `horizontal-feature-reveal` · `infinite-perspective-slider` · `rotation-slider` · `split-canvas` · `sticky-content-wrapper` · `text-convergence`
+**Scroll** - `circular-split-roll` · `horizontal-feature-reveal` · `infinite-perspective-slider` · `rotation-slider` · `split-canvas` · `sticky-content-wrapper` · `text-convergence`
 
-**Text** — `number-counter` · `rectangular-text-reveal`
+**Text** - `number-counter` · `rectangular-text-reveal`
 
-**Transitions** — `block-transition` · `chess-grid-transition`
+**Transitions** - `block-transition` · `chess-grid-transition`
 
-**WebGL** — `fractal-glass` · `interactive-blur-reveal` · `milky-way`
+**WebGL** - `fractal-glass` · `interactive-blur-reveal` · `milky-way`
 
 ---
 
@@ -268,7 +268,7 @@ All 90 pro effects with live previews, code previews, and installation names are
 
 ## How It Works
 
-The CLI **copies source code** into your project. There is no `hyperiux` import at runtime — the installed files are yours and live in your repo. This means:
+The CLI **copies source code** into your project. There is no `hyperiux` import at runtime - the installed files are yours and live in your repo. This means:
 
 - No vendor lock-in
 - Customize any component freely after installing
@@ -279,7 +279,7 @@ When you run `npx hyperiux add <effect>`, the CLI:
 1. Fetches the component source from the registry
 2. Installs it into `src/components/effects/<effect-name>/`
 3. Installs any peer dependencies (`gsap`, `three`, etc.) via your package manager
-4. Leaves the files in your codebase — no ongoing CLI dependency
+4. Leaves the files in your codebase - no ongoing CLI dependency
 
 ---
 
@@ -313,7 +313,7 @@ Adjust `aliases` to match your project's path aliases.
 - **Next.js** 14+ (App Router)
 - **Tailwind CSS** v3 or v4
 
-Most effects depend on **GSAP**. The CLI installs it automatically. Note that GSAP's premium plugins (SplitText, ScrollTrigger, etc.) require a GSAP license for commercial use — see [gsap.com/licensing](https://gsap.com/licensing/).
+Most effects depend on **GSAP**. The CLI installs it automatically. Note that GSAP's premium plugins (SplitText, ScrollTrigger, etc.) require a GSAP license for commercial use - see [gsap.com/licensing](https://gsap.com/licensing/).
 
 ---
 
@@ -321,7 +321,7 @@ Most effects depend on **GSAP**. The CLI installs it automatically. Note that GS
 
 | Variable | Purpose |
 |---|---|
-| `HYPERIUX_TOKEN` | Authenticate without running `login` — useful in CI |
+| `HYPERIUX_TOKEN` | Authenticate without running `login` - useful in CI |
 | `HYPERIUX_APP_URL` | Override the app URL for testing |
 | `HYPERIUX_API_URL` | Override the API URL independently |
 | `HYPERIUX_REGISTRY_URL` | Override the registry URL for local development |
@@ -331,19 +331,19 @@ Most effects depend on **GSAP**. The CLI installs it automatically. Note that GS
 
 ## Architecture
 
-This repo (`hyperiux-pro-components`) is the source of truth for the whole Vault —
-both free and pro effects — and is a plain npm project, not a pnpm/Turborepo
+This repo (`hyperiux-pro-components`) is the source of truth for the whole Vault -
+both free and pro effects - and is a plain npm project, not a pnpm/Turborepo
 monorepo:
 
-- **`apps/docs`** — the Next.js App Router site at [vault.hyperiux.com](https://vault.hyperiux.com): effect docs, live previews, the remixer panel, Clerk auth, Razorpay billing, the admin dashboard, and the CLI-facing API routes (`/api/cli/*`) that authenticate and serve pro source.
-- **`registry/effects`** — private registry source for **every** effect, free and pro, organized by category. `apps/docs/scripts/build-registry.js` reads it and generates `apps/docs/public/r/*.json`, the public metadata the CLI/MCP server actually fetch. Free effects embed full source in that public JSON; pro effects don't — pro source is served only through the authenticated `/api/cli/effects/[slug]` route.
-- **`hyperiux-vault`** — the Sanity Studio project backing the docs site's content.
-- **`scripts`** — `component-workflow.mjs` (scaffold/rename/move/delete/verify an effect) and `sanity-code-sync.mjs` (keep Sanity's rendered code blocks in sync with the registry). See [`md/component-workflow-tooling.md`](md/component-workflow-tooling.md).
+- **`apps/docs`** - the Next.js App Router site at [vault.hyperiux.com](https://vault.hyperiux.com): effect docs, live previews, the remixer panel, Clerk auth, Razorpay billing, the admin dashboard, and the CLI-facing API routes (`/api/cli/*`) that authenticate and serve pro source.
+- **`registry/effects`** - private registry source for **every** effect, free and pro, organized by category. `apps/docs/scripts/build-registry.js` reads it and generates `apps/docs/public/r/*.json`, the public metadata the CLI/MCP server actually fetch. Free effects embed full source in that public JSON; pro effects don't - pro source is served only through the authenticated `/api/cli/effects/[slug]` route.
+- **`hyperiux-vault`** - the Sanity Studio project backing the docs site's content.
+- **`scripts`** - `component-workflow.mjs` (scaffold/rename/move/delete/verify an effect) and `sanity-code-sync.mjs` (keep Sanity's rendered code blocks in sync with the registry). See [`md/component-workflow-tooling.md`](md/component-workflow-tooling.md).
 
 The CLI itself (`npx hyperiux`, published to npm as `hyperiux`) and the MCP server
 (`hyperiux-mcp-server`) live in the separate, public
 [`hyperiux-components`](https://github.com/Hyperiux-Immersion-Labs/hyperiux-components)
-repo — they're API clients of this repo's `apps/docs`, not part of it. Free effects
+repo - they're API clients of this repo's `apps/docs`, not part of it. Free effects
 are additionally mirrored into that public repo so they're installable and browsable
 without authentication.
 
@@ -361,10 +361,10 @@ npm run dev
 ```
 
 To add a new effect (free or pro), follow
-[`md/developer-new-component.md`](md/developer-new-component.md) — it's a more
+[`md/developer-new-component.md`](md/developer-new-component.md) - it's a more
 complete, currently-accurate walkthrough than a single command. In short: build it
 under `apps/docs/src/components/`, copy it into `registry/effects/<category>/<slug>/`
-with a `registry.json`, run `npm run build:registry`, and — for free effects only —
+with a `registry.json`, run `npm run build:registry`, and - for free effects only -
 mirror the same source into the public `hyperiux-components` repo.
 
 ---

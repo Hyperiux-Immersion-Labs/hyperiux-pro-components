@@ -141,7 +141,7 @@ function SkeletonBlock({ className = "" }) {
         "relative overflow-hidden bg-[#272727]",
         "before:absolute before:inset-0 before:-translate-x-full",
         "before:animate-[shimmer_1.4s_infinite]",
-        "before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent",
+        "before:bg-linear-to-r before:from-transparent before:via-white/10 before:to-transparent",
         className,
       ].join(" ")}
     />
@@ -799,7 +799,7 @@ export function VaultContent({
         <div>
           <div
             key={`category-intro-${categoryFilter}`}
-            className=" px-8 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
+            className=" px-14 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
           >
             <Breadcrumb className="fadeup" />
 
@@ -828,11 +828,11 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className="category-fadeup fadeup" data-fadeup-delay="0.5">
+        <div className="category-fadeup fadeup " data-fadeup-delay="0.5">
           <TrendingRightNow effects={trendingEffects} />
         </div>
 
-        <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
+        <div className="mx-auto px-14 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
           <div
             className="relative max-[1025px]:w-full flex items-start gap-4 fadein"
             data-fadein-delay="0.4"
@@ -950,7 +950,7 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-md:px-0">
+        <div className="category-fadeup fadeup mx-auto relative px-14 pb-12 max-md:px-0">
           <div
             className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
               ? "mb-8 min-h-10 opacity-100"

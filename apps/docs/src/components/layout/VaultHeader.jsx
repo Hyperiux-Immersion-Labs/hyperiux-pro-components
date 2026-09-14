@@ -12,7 +12,12 @@ import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useLenis } from "lenis/react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GlobalSearch } from "./SearchBar";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 // Dynamic so ProfileDropDown's Clerk imports never load on marketing routes -
 // it only renders when isSignedIn, which is always false there.
@@ -115,6 +120,11 @@ export function VaultHeader({
   isLoaded = true,
   isSignedIn = false,
   user = null,
+  // Dashboard renders its own desktop nav (back button + tabs in
+  // DashboardShell) - it only needs this component for the mobile/tablet
+  // bar + hamburger overlay, so it opts out of the >1025px header bar here
+  // rather than showing a second, redundant one.
+  mobileOnly = false,
 }) {
   const [openTrigger, setOpenTrigger] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
@@ -126,6 +136,8 @@ export function VaultHeader({
   const overlayRef = useRef(null);
   const timelineRef = useRef(null);
   const openedRef = useRef(false);
+  const desktopHeaderRef = useRef(null);
+  const mobileBarRef = useRef(null);
   const lenis = useLenis();
 
   const pathname = usePathname();
@@ -196,6 +208,36 @@ export function VaultHeader({
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Both fixed bars (desktop header, mobile/tablet bar) slide fully out of
+  // view once the page's footer (FooterV3, id="footer") starts entering the
+  // viewport, instead of staying pinned on top of it - reverses the moment
+  // the user scrolls back up past that point. Pages that don't render a
+  // #footer (e.g. /tech) just never trigger this, nothing to guard beyond
+  // the null check.
+  useEffect(() => {
+    const footer = document.getElementById("footer");
+    const targets = [desktopHeaderRef.current, mobileBarRef.current].filter(Boolean);
+
+    if (!footer || !targets.length) return;
+
+    const hide = () =>
+      gsap.to(targets, { yPercent: -100, duration: 0.4, ease: "power2.out" });
+    const show = () =>
+      gsap.to(targets, { yPercent: 0, duration: 0.4, ease: "power2.out" });
+
+    const trigger = ScrollTrigger.create({
+      trigger: footer,
+      start: "top bottom",
+      onEnter: hide,
+      onLeaveBack: show,
+    });
+
+    return () => {
+      trigger.kill();
+      gsap.killTweensOf(targets);
+    };
   }, []);
 
   const close = useCallback(() => {
@@ -341,9 +383,10 @@ export function VaultHeader({
 
   return (
     <>
-      {/* Desktop header - untouched, >1025px only. */}
+      {/* Desktop header - untouched, >1025px only (or never, when mobileOnly). */}
       <header
-        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-[2vw] py-5 max-[1025px]:hidden ${isScrolled ? "bg-black/20 shadow-md backdrop-blur-sm" : ""
+        ref={desktopHeaderRef}
+        className={`fixed left-0 right-0 top-(--announcement-offset) transition-[top] duration-300 ease-out z-50 px-[2vw] py-5 ${mobileOnly ? "hidden" : "max-[1025px]:hidden"} ${isScrolled ? "bg-black/20 shadow-md backdrop-blur-sm" : ""
           }`}
       >
         <div className="flex h-full items-center justify-end gap-3">
@@ -408,7 +451,10 @@ export function VaultHeader({
       </header>
 
       {/* Mobile/tablet bar - <=1025px only, matches NavbarMobileV3. */}
-      <div className="fixed top-0 left-0 z-950 hidden max-[1025px]:flex w-full items-center justify-between border-b border-white/8 bg-background/60 px-[6vw] py-[5vw] backdrop-blur-xl md:px-[3.5vw] md:py-[2.5vw]">
+      <div
+        ref={mobileBarRef}
+        className="fixed top-0 left-0 z-950 hidden max-[1025px]:flex w-full items-center justify-between border-b border-white/8 bg-background/60 px-[6vw] py-[5vw] backdrop-blur-xl md:px-[3.5vw] md:py-[2.5vw]"
+      >
         <Link
           href="/"
           onClick={close}
@@ -495,6 +541,15 @@ export function VaultHeader({
               className="flex border-t border-white/10 py-[4.5vw] max-md:text-[5.5vw] max-[1025px]:text-[3.2vw] text-white/90 md:py-[2.6vw] "
             >
               All Effects
+            </Link>
+
+            <Link
+              data-mobile-row
+              href="/templates"
+              onClick={close}
+              className="flex border-t border-white/10 py-[4.5vw] max-md:text-[5.5vw] max-[1025px]:text-[3.2vw] text-white/90 md:py-[2.6vw] "
+            >
+              Templates
             </Link>
 
             <div data-mobile-row className="border-t border-white/10">

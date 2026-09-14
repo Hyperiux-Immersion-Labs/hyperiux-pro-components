@@ -1,7 +1,7 @@
 /**
  * Where the navbar's wordmark comes to rest, in viewport pixels.
  *
- * The loader's ASCII field docks onto this rect — same artwork, same aspect —
+ * The loader's ASCII field docks onto this rect - same artwork, same aspect -
  * so the mark lands exactly on the logo it hands over to.
  *
  * Read off the live DOM rather than from shared constants: the bar's padding
@@ -14,7 +14,7 @@ const NAV_LOGO_SELECTOR = "[data-nav-logo]";
 
 /**
  * The bars are parked off-screen (`translate-y-[-120%]`) until their intro, so
- * the measured rect has to have any ancestor translation backed out of it —
+ * the measured rect has to have any ancestor translation backed out of it -
  * what we want is where the logo *will* sit, not where it is being held.
  */
 function translationOf(node) {

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
 import { LineTrendChart } from "@/components/admin/charts/LineTrendChart";
+import { EffectRankSlider } from "@/components/admin/EffectRankSlider";
 
 // Users can land here from three different places (User Management, the
 // Activity tab's user table, or its "Top users by copies" list) - going
@@ -47,7 +48,7 @@ function StatCardSkeleton() {
 
 function ActivityDetailSkeleton() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="h-4 w-32 animate-pulse  bg-white/10" />
 
       <div className="flex items-center gap-4">
@@ -59,8 +60,8 @@ function ActivityDetailSkeleton() {
         </div>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        {Array.from({ length: 5 }).map((_, i) => (
           <StatCardSkeleton key={i} />
         ))}
       </div>
@@ -70,13 +71,16 @@ function ActivityDetailSkeleton() {
         <div className="h-[220px] animate-pulse  bg-white/5" />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="flex flex-col gap-5">
         {Array.from({ length: 2 }).map((_, i) => (
-          <div key={i} className="space-y-3">
-            <div className="h-5 w-40 animate-pulse  bg-white/10" />
-            <div className="divide-y divide-white/6 overflow-hidden  border border-white/10">
-              {Array.from({ length: 4 }).map((__, j) => (
-                <div key={j} className="h-14 animate-pulse bg-white/5" />
+          <div key={i} className=" bg-[#272727] p-6">
+            <div className="mb-4 h-5 w-40 animate-pulse  bg-white/10" />
+            <div className="flex gap-6 overflow-hidden">
+              {Array.from({ length: 3 }).map((__, j) => (
+                <div key={j} className="min-w-[26vw] max-xl:min-w-[38vw] max-md:min-w-[70vw] shrink-0 space-y-3">
+                  <div className="aspect-3/2 animate-pulse bg-white/5" />
+                  <div className="h-5 w-2/3 animate-pulse bg-white/10" />
+                </div>
               ))}
             </div>
           </div>
@@ -124,15 +128,23 @@ function formatAmount(amount, currency = "INR") {
   }
 }
 
-// stats.lifetimeSpend from the API is already a rupee decimal (pre-divided
-// server-side), not paise - format it directly rather than round-tripping
-// through formatAmount's paise assumption.
-function formatRupees(amount) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 2,
-  }).format(amount || 0);
+// stats.lifetimeSpend from the API is already a decimal (pre-divided
+// server-side), not the smallest currency unit - format it directly rather
+// than round-tripping through formatAmount's paise assumption. Takes the
+// same currency as stats.lifetimeSpendCurrency, which the API derives from
+// the user's own paid invoices - so this always matches what Billing
+// History below shows per-row, instead of a hardcoded "INR" that reads
+// wrong for a USD customer.
+function formatSpend(amount, currency = "INR") {
+  try {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+    }).format(amount || 0);
+  } catch {
+    return `${(amount || 0).toFixed(2)} ${currency}`;
+  }
 }
 
 function StatusBadge({ status }) {
@@ -189,7 +201,7 @@ export default function AdminUserActivityPage({ params }) {
 
   if (error || !data) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <BackLink />
 
         <div className=" border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
@@ -199,11 +211,30 @@ export default function AdminUserActivityPage({ params }) {
     );
   }
 
-  const { profile, session, subscription, stats, copyTrend, savedEffects, copiedEffects, invoices } =
-    data;
+  const {
+    profile,
+    session,
+    subscription,
+    stats,
+    copyTrend,
+    savedEffects,
+    copiedEffects,
+    installedEffects,
+    templatePurchases,
+    invoices,
+  } = data;
+
+  // Copies are always a subset of installs (every web copy is also an
+  // install_unlocks row) - when a user has never installed anything via
+  // CLI/MCP, "Installed Effects" would just be the exact same list as
+  // "Copied Effects" a second time, so it's hidden rather than shown
+  // twice.
+  const installsMatchCopies =
+    installedEffects.length === copiedEffects.length &&
+    installedEffects.every((effect) => copiedEffects.some((copied) => copied.slug === effect.slug));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <BackLink />
 
       <div className="flex items-center gap-4">
@@ -248,10 +279,14 @@ export default function AdminUserActivityPage({ params }) {
         </div>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <StatCard label="Saved Effects" value={stats.savedCount} />
         <StatCard label="Effects Copied" value={stats.copiedCount} />
-        <StatCard label="Lifetime Spend" value={formatRupees(stats.lifetimeSpend)} />
+        <StatCard
+          label="Lifetime Spend"
+          value={formatSpend(stats.lifetimeSpend, stats.lifetimeSpendCurrency)}
+        />
+        <StatCard label="Templates Purchased" value={templatePurchases.length} />
         <StatCard
           label="Last Sign-in"
           value={profile.lastSignInAt ? formatDate(profile.lastSignInAt) : "Never"}
@@ -270,78 +305,69 @@ export default function AdminUserActivityPage({ params }) {
       </div>
 
       <div className=" bg-[#272727] p-6">
-        <p className="mb-4 text-white">Copy activity — last 30 days</p>
+        <p className="mb-4 text-white">Copy activity - last 30 days</p>
         <LineTrendChart data={copyTrend} xKey="label" color="#ff5f00" valueLabel="copies" />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
-        <div>
-          <h2 className="mb-3 text-lg font-medium text-white">
-            Saved Effects ({savedEffects.length})
-          </h2>
-
+      <div className="flex flex-col gap-5">
+        <div className=" bg-[#272727] p-6">
           {savedEffects.length === 0 ? (
-            <div className=" bg-[#272727] p-6 text-center text-sm text-white/40">
-              No saved effects yet.
-            </div>
+            <>
+              <p className="mb-4 text-white text-xl">Saved Effects (0)</p>
+              <div className="text-center text-sm text-white/40">No saved effects yet.</div>
+            </>
           ) : (
-            <div className="divide-y divide-white/6 overflow-hidden  border border-white/10">
-              {savedEffects.map((effect) => (
-                <div
-                  key={effect.id}
-                  className="flex items-center justify-between gap-3 px-4 py-3 text-sm"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-white">{effect.title}</p>
-                    <p className="truncate text-xs text-white/40">
-                      Saved {formatDate(effect.savedAt)}
-                    </p>
-                  </div>
-
-                  {effect.tier === "pro" && (
-                    <span className="shrink-0  bg-[#ff5f00]/15 px-2.5 py-0.5 text-xs font-medium text-[#ff5f00]">
-                      Pro
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
+            <EffectRankSlider
+              title={`Saved Effects (${savedEffects.length})`}
+              effects={savedEffects}
+              renderValue={(effect) => (
+                <span className="text-sm font-normal text-white/60">
+                  Saved {formatDate(effect.savedAt)}
+                </span>
+              )}
+            />
           )}
         </div>
 
-        <div>
-          <h2 className="mb-3 text-lg font-medium text-white">
-            Copied Effects ({copiedEffects.length})
-          </h2>
-
+        <div className=" bg-[#272727] p-6">
           {copiedEffects.length === 0 ? (
-            <div className=" bg-[#272727] p-6 text-center text-sm text-white/40">
-              No copied effects yet.
-            </div>
+            <>
+              <p className="mb-4 text-white text-xl">Copied Effects (0)</p>
+              <div className="text-center text-sm text-white/40">No copied effects yet.</div>
+            </>
           ) : (
-            <div className="divide-y divide-white/6 overflow-hidden  border border-white/10">
-              {copiedEffects.map((effect) => (
-                <div
-                  key={effect.name}
-                  className="flex items-center justify-between gap-3 px-4 py-3 text-sm"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-white">{effect.title}</p>
-                    <p className="truncate text-xs text-white/40">
-                      Last copied {formatDate(effect.lastCopiedAt)}
-                    </p>
-                  </div>
-
-                  {effect.tier === "pro" && (
-                    <span className="shrink-0  bg-[#ff5f00]/15 px-2.5 py-0.5 text-xs font-medium text-[#ff5f00]">
-                      Pro
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
+            <EffectRankSlider
+              title={`Copied Effects (${copiedEffects.length})`}
+              effects={copiedEffects}
+              renderValue={(effect) => (
+                <span className="text-sm font-normal text-white/60">
+                  Last copied {formatDate(effect.lastCopiedAt)}
+                </span>
+              )}
+            />
           )}
         </div>
+
+        {!installsMatchCopies && (
+          <div className=" bg-[#272727] p-6">
+            {installedEffects.length === 0 ? (
+              <>
+                <p className="mb-4 text-white text-xl">Installed Effects (0)</p>
+                <div className="text-center text-sm text-white/40">No installed effects yet.</div>
+              </>
+            ) : (
+              <EffectRankSlider
+                title={`Installed Effects (${installedEffects.length})`}
+                effects={installedEffects}
+                renderValue={(effect) => (
+                  <span className="text-sm font-normal text-white/60">
+                    Last installed {formatDate(effect.lastInstalledAt)}
+                  </span>
+                )}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       <div>
@@ -385,6 +411,54 @@ export default function AdminUserActivityPage({ params }) {
 
                     <td className="px-6 py-4">
                       <StatusBadge status={invoice.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h2 className="mb-3 text-lg font-medium text-white">
+          Template Purchases ({templatePurchases.length})
+        </h2>
+
+        {templatePurchases.length === 0 ? (
+          <div className="rounded-md bg-[#272727] p-6 text-center text-sm text-white/40">
+            No template purchases yet.
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-md bg-[#272727]">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-white/50">
+                  <th className="px-6 py-4 font-medium">Date</th>
+                  <th className="px-6 py-4 font-medium">Template</th>
+                  <th className="px-6 py-4 font-medium">Amount</th>
+                  <th className="px-6 py-4 font-medium">Payment ID</th>
+                  <th className="px-6 py-4 font-medium">Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {templatePurchases.map((purchase) => (
+                  <tr key={purchase.id} className="border-b border-white/5 last:border-0">
+                    <td className="px-6 py-4 text-white">{formatDateTime(purchase.createdAt)}</td>
+
+                    <td className="px-6 py-4 text-white/80">{purchase.templateTitle}</td>
+
+                    <td className="px-6 py-4 text-white">
+                      {formatTemplateAmount(purchase.amount, purchase.currency)}
+                    </td>
+
+                    <td className="px-6 py-4 font-mono text-xs text-white/50">
+                      {purchase.paymentId ? `${purchase.paymentId.slice(0, 16)}…` : "-"}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <StatusBadge status={purchase.status} />
                     </td>
                   </tr>
                 ))}

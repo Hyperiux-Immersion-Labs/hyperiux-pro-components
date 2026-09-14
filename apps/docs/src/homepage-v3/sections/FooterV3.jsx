@@ -150,6 +150,7 @@ export default function FooterV3() {
   return (
     <footer
       ref={footerRef}
+      id="footer"
       className="relative z-200 py-[7vw]  w-full overflow-hidden max-[1025px]:px-[5vw] max-[1025px]:py-[10vw] max-sm:mt-16 px-[3.5vw] max-sm:px-[7vw] max-sm:py-[15vw] max-[1025px]:bg-[#111110]"
     >
       {!isMobile ? (
@@ -200,7 +201,7 @@ export default function FooterV3() {
               shimmerColor="#ffffff"
               className="max-sm:text-sm font-mono max-sm:leading-[1.2] tracking-tight"
             >
-              40+ effects free, forever. No credit card.
+              50+ effects free, forever. No credit card.
             </ShimmerText>
           </p>
         </div>

@@ -43,7 +43,7 @@ export function createSubscriptionInvoiceEmail({
     ? "Welcome to Hyperiux Vault Pro"
     : "Payment received";
   const subject = isFirstPayment
-    ? `You're in — Vault Pro receipt (${amountLabel})`
+    ? `You're in - Vault Pro receipt (${amountLabel})`
     : `Vault Pro renewal receipt (${amountLabel})`;
 
   const intro = isFirstPayment

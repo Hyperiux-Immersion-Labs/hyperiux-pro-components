@@ -305,7 +305,7 @@ const CurvedPlaneHorizontal = ({
       root: container,
       onFrame: () => {
         if (reduceMotionRef.current) {
-          // Snap carousel — no inertia, scroll coast, or curve deformation.
+          // Snap carousel - no inertia, scroll coast, or curve deformation.
           velocityRef.current = 0;
           scrollVelocityRef.current = 0;
           scrollIntensityRef.current = 0;

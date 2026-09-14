@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import SignUpFlow from "@/components/auth/SignUpFlow";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
@@ -19,7 +20,9 @@ export default function SignUpPage() {
     <>
       <NavbarV3 />
       <NavbarMobile />
-      <SignUpFlow />
+      <Suspense fallback={null}>
+        <SignUpFlow />
+      </Suspense>
     </>
   );
 }

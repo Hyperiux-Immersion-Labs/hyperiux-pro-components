@@ -2,7 +2,7 @@
  * Glyph ramps for CubeBackgroundAscii.
  *
  * Each set is sorted lightest → heaviest ink at startup and brightness indexes
- * the result, so the entries here are unordered — only membership matters.
+ * the result, so the entries here are unordered - only membership matters.
  *
  * A " " entry is a real ramp slot that draws nothing: it has no ink, so it
  * sorts to index 0 and the atlas-alpha test drops the cell to background. More

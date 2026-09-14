@@ -6,7 +6,7 @@ import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 
 // Tracking / session-recording scripts (Microsoft Clarity, OpenPanel, reb2b)
 // keep the network continuously busy for lab audits. Skip under headless/audit
-// agents — including PSI's desktop crawler (plain Chrome UA, no webdriver),
+// agents - including PSI's desktop crawler (plain Chrome UA, no webdriver),
 // caught via software WebGL renderer. Real visitors unchanged visually.
 export default function DeferredAnalytics() {
   const [enabled, setEnabled] = useState(false);

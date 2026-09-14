@@ -22,6 +22,7 @@ import { useAdminRole } from "@/lib/useAdminRole";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { StatCard } from "@/components/admin/StatCard";
+import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
 import { buildUserActivitySlug } from "@/lib/user-slug";
 
 const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100, 250, 500];
@@ -35,9 +36,6 @@ const DATE_RANGE_OPTIONS = [
   { value: "all", label: "All time" },
   { value: "custom", label: "Custom range" },
 ];
-
-const DATE_INPUT_CLASSNAME =
-  "border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-white outline-none focus:border-white/25 [color-scheme:dark]";
 
 function formatDate(value) {
   if (!value) return "-";
@@ -124,7 +122,7 @@ function UserStatsTiles({ range, onRangeChange, customFrom, customTo, onCustomFr
   const stats = [
     { label: isAllTime ? "Total Users" : "New Users", value: data ? data.newUsers : "…" },
     { label: isAllTime ? "Total Pro Users" : "New Pro Users", value: data ? data.newProUsers : "…" },
-    { label: "Copies", value: data ? data.copies : "…" },
+    { label: "Installs & Copies", value: data ? data.copies : "…" },
     { label: "Saves", value: data ? data.saves : "…" },
   ];
 
@@ -134,25 +132,12 @@ function UserStatsTiles({ range, onRangeChange, customFrom, customTo, onCustomFr
         <p className="text-xs uppercase tracking-wider text-white/45">Activity window</p>
         <div className="flex items-center gap-2">
           {isCustom && (
-            <>
-              <input
-                type="date"
-                value={customFrom}
-                onChange={(e) => onCustomFromChange(e.target.value)}
-                max={customTo || undefined}
-                className={DATE_INPUT_CLASSNAME}
-                aria-label="From date"
-              />
-              <span className="text-xs text-white/30">to</span>
-              <input
-                type="date"
-                value={customTo}
-                onChange={(e) => onCustomToChange(e.target.value)}
-                min={customFrom || undefined}
-                className={DATE_INPUT_CLASSNAME}
-                aria-label="To date"
-              />
-            </>
+            <DateRangeCalendarPicker
+              from={customFrom}
+              to={customTo}
+              onFromChange={onCustomFromChange}
+              onToChange={onCustomToChange}
+            />
           )}
           <CustomSelect
             size="compact"
@@ -393,7 +378,7 @@ function InviteModal({ onClose }) {
           type="button"
           aria-label="Close"
           onClick={onClose}
-          className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
+          className=" group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
         >
           <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
             <span className="h-px w-4 rotate-45 bg-white" />
@@ -405,7 +390,7 @@ function InviteModal({ onClose }) {
           <h2 className="text-2xl font-semibold">Invite users</h2>
         </div>
         <p className="mb-2 text-sm text-white/80">
-          Add one or more addresses — type and press Enter, paste a list, or
+          Add one or more addresses - type and press Enter, paste a list, or
           upload a CSV. Everyone in the list gets an invite link when you send.
         </p>
         <p className="mb-5 text-xs text-white/45">
@@ -456,7 +441,7 @@ function InviteModal({ onClose }) {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <label className={`inline-flex items-center gap-2  border border-white/15 px-3 py-[.8vw] text-[1.1vw] font-medium text-white/70 transition ${atDailyLimit ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-white/30 hover:text-white"}`}>
+            <label className={`inline-flex items-center gap-2  border border-white/15 px-3 py-[.8vw] text-[1.1vw] max-md:text-[3.5vw] max-[1025px]:text-[2.5vw] font-medium text-white/70 transition ${atDailyLimit ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-white/30 hover:text-white"}`}>
               <Upload className="h-5 w-5" />
               Upload CSV
               <input
@@ -510,7 +495,7 @@ function InviteModal({ onClose }) {
                 )}
                 <span className="truncate text-white/70">{r.email}</span>
                 {!r.success && r.error && (
-                  <span className="truncate text-white/35">— {r.error}</span>
+                  <span className="truncate text-white/35">- {r.error}</span>
                 )}
               </li>
             ))}
@@ -587,7 +572,7 @@ function ManageUserModal({ user, isOwnRow, onClose, onSaved }) {
   if (planChanged) {
     if (nextPlan === "free") {
       changeSummaries.push({
-        text: "Downgrade to Free — this immediately revokes Pro access and any active CLI token.",
+        text: "Downgrade to Free - this immediately revokes Pro access and any active CLI token.",
         danger: true,
       });
     } else if (user.plan !== "pro") {
@@ -599,7 +584,7 @@ function ManageUserModal({ user, isOwnRow, onClose, onSaved }) {
   if (roleChanged) {
     if (nextRole === "super_admin") {
       changeSummaries.push({
-        text: "Grant Super Admin — full access including billing and role management.",
+        text: "Grant Super Admin - full access including billing and role management.",
         danger: true,
       });
     } else if (!nextRole && user.role) {
@@ -729,7 +714,7 @@ function ManageUserModal({ user, isOwnRow, onClose, onSaved }) {
             <p className="mb-2 text-xs uppercase tracking-wider text-white/45">Role</p>
             {isOwnRow ? (
               <p className="text-sm text-white/50">
-                You can&apos;t change your own role — ask another super admin.
+                You can&apos;t change your own role - ask another super admin.
               </p>
             ) : (
               <CustomSelect
@@ -966,7 +951,7 @@ export default function AdminPage() {
   return (
     <>
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 max-md:flex-col max-md:items-start">
         <div>
           <h1 className="text-2xl font-semibold">User Management</h1>
           {/* <p className="mt-1 text-sm text-white/50">{total} users total</p> */}
@@ -975,21 +960,21 @@ export default function AdminPage() {
           <button
             type="button"
             onClick={handleExport}
-            className="inline-flex items-center gap-2  border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+            className="inline-flex items-center gap-2  border border-white/15 px-4 py-3.5 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >
             Export CSV
             <FileDown className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={() => setShowInviteModal(true)}
-            className="inline-flex items-center gap-2  border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+            className="inline-flex items-center gap-2  border border-white/15 px-4 py-3.5 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >
             Invite
             <UserPlus className="h-3.5 w-3.5" />
           </button>
           <Link
             href="/dashboard/admin/emails"
-            className="inline-flex items-center gap-2  border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
+            className="inline-flex items-center gap-2  border border-white/15 px-4 py-3.5 text-sm text-white/70 transition hover:border-white/30 hover:text-white"
           >
             Email Log
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -1016,7 +1001,7 @@ export default function AdminPage() {
               placeholder="Search by name or email…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+              className="w-full  border border-white/10 bg-white/5 py-3.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
             />
           </div>
           <CustomSelect
@@ -1073,14 +1058,14 @@ export default function AdminPage() {
             <thead>
               <tr className="border-b border-white/10 bg-white/3">
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">User</th>
-                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
-                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
-                <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Copies / Saves</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Copies / Saves</th>
                 {isSuperAdmin && (
                   <>
-                    <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
-                    <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Transaction ID</th>
-                    <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Transaction ID</th>
+                    <th className="px-3 py-2.5 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
                   </>
                 )}
               </tr>
@@ -1138,10 +1123,10 @@ export default function AdminPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-3 py-2.5 text-white/60 whitespace-nowrap">
+                    <td className="px-3 py-2.5 text-center text-white/60 whitespace-nowrap">
                       {formatDate(user.joinedAt)}
                     </td>
-                    <td className="px-3 py-2.5">
+                    <td className="px-3 py-2.5 flex justify-center">
                       <PlanBadge plan={user.plan} />
                     </td>
                     <td className="px-3 py-2.5 text-center whitespace-nowrap">
@@ -1151,16 +1136,16 @@ export default function AdminPage() {
                     </td>
                     {isSuperAdmin && (
                       <>
-                        <td className="px-3 py-2.5 text-white/60 whitespace-nowrap">
+                        <td className="px-3 py-2.5 text-white/60 whitespace-nowrap text-center">
                           {user.plan === "pro" ? formatDate(user.planValidUntil) : "-"}
                         </td>
-                        <td className="px-3 py-2.5">
+                        <td className="px-3 py-2.5 text-center">
                           {user.razorpayCustomerId ? (
                             <span className="font-mono text-xs text-white/40" title={user.razorpayCustomerId}>
                               {user.razorpayCustomerId.slice(0, 10)}…
                             </span>
                           ) : (
-                            <span className="text-xs text-white/25">-</span>
+                            <span className="text-xs text-white/25 inline-block w-fit">-</span>
                           )}
                         </td>
                         <td className="px-3 py-2.5 text-right">

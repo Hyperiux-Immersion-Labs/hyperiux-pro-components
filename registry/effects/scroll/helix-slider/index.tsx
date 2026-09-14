@@ -446,7 +446,7 @@ export default function HelixSlider({
   const [frameloop, setFrameloop] = useState<"always" | "never">("always");
 
   // Suspend the render loop while the tab is hidden or the strand is
-  // scrolled offscreen — the spiral autoplays continuously, so without this
+  // scrolled offscreen - the spiral autoplays continuously, so without this
   // it keeps drawing WebGL frames the viewer can't see.
   useEffect(() => {
     const gate = createVisibilityGate({

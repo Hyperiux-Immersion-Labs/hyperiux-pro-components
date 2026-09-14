@@ -99,6 +99,11 @@ export default function CopyBtn({
   const iconRef = useRef(null);
   const resetTimeoutRef = useRef(null);
   const animationTimelineRef = useRef(null);
+  // Guards against a second click landing while the first's onBeforeCopy
+  // (an async server round-trip) is still pending - without it, a fast
+  // double-click/key-repeat fires handleClick twice before either has a
+  // chance to disable anything.
+  const isHandlingRef = useRef(false);
   const copyButtonSlots = copyButtonStyles({ size, color });
 
   // Wraps setCopied so callers (e.g. a Tooltip label switching to "Copied!")
@@ -142,14 +147,15 @@ export default function CopyBtn({
     event.preventDefault();
     event.stopPropagation();
 
-    if (disabled) return;
-
-    if (onBeforeCopy) {
-      const canProceed = await onBeforeCopy();
-      if (!canProceed) return;
-    }
+    if (disabled || isHandlingRef.current) return;
+    isHandlingRef.current = true;
 
     try {
+      if (onBeforeCopy) {
+        const canProceed = await onBeforeCopy();
+        if (!canProceed) return;
+      }
+
       await copyTextToClipboard(value);
 
       if (!iconRef.current) return;
@@ -157,6 +163,8 @@ export default function CopyBtn({
       playCopiedAnimation(iconRef.current);
     } catch {
       // Clipboard failures stay silent.
+    } finally {
+      isHandlingRef.current = false;
     }
   }
 

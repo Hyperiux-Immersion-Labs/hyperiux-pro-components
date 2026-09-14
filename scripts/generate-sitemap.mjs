@@ -19,6 +19,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const REGISTRY_INDEX = path.join(ROOT, "registry", "index.json");
 const SITEMAP_PATH = path.join(ROOT, "apps", "docs", "public", "sitemap.xml");
+const MOCK_TEMPLATES_PATH = path.join(ROOT, "apps", "docs", "src", "lib", "mock-templates.js");
 const SITE_URL = "https://vault.hyperiux.com";
 
 // Mirrors the `id` -> `slug` mapping in apps/docs/src/lib/categories.js.
@@ -58,18 +59,23 @@ function buildUrlBlock(loc, { priority = "0.6400", changefreq = "daily" } = {}) 
   ].join("\n");
 }
 
-function main() {
+async function main() {
   const registry = readJson(REGISTRY_INDEX);
+  const { TEMPLATES } = await import(MOCK_TEMPLATES_PATH);
   const existingXml = fs.readFileSync(SITEMAP_PATH, "utf8");
 
   // Keep every existing <url> block whose <loc> is NOT an effect demo/article
-  // page (i.e. not /demo/<slug> and not /effects/<category>/<slug>).
+  // page (i.e. not /demo/<slug> and not /effects/<category>/<slug>) and not
+  // a template page (/templates or /templates/<slug>) - both are rebuilt
+  // fresh below the same way effects are, so a removed/renamed template
+  // doesn't leave a stale entry and a new one is always included.
   const blocks = existingXml.match(/<url>[\s\S]*?<\/url>/g) || [];
   const staticBlocks = blocks.filter((block) => {
     const loc = (block.match(/<loc>(.*?)<\/loc>/) || [])[1] || "";
     const isDemo = /^https?:\/\/[^/]+\/demo\//.test(loc);
     const isEffectArticle = /^https?:\/\/[^/]+\/effects\/[^/]+\/[^/]+\/?$/.test(loc);
-    return !isDemo && !isEffectArticle;
+    const isTemplatePage = /^https?:\/\/[^/]+\/templates(\/|$)/.test(loc);
+    return !isDemo && !isEffectArticle && !isTemplatePage;
   });
 
   const effectBlocks = registry.flatMap((effect) => {
@@ -86,6 +92,13 @@ function main() {
     ];
   });
 
+  const templateBlocks = [
+    buildUrlBlock(`${SITE_URL}/templates`, { priority: "0.6400" }),
+    ...TEMPLATES.map((template) =>
+      buildUrlBlock(`${SITE_URL}/templates/${template.slug}`, { priority: "0.6400" })
+    ),
+  ];
+
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<?xml-stylesheet type="text/css" href="https://www.xml-sitemaps.com/css/sitemap.css"?>',
@@ -93,14 +106,18 @@ function main() {
     "",
     ...staticBlocks,
     ...effectBlocks,
+    ...templateBlocks,
     "</urlset>",
     "",
   ].join("\n");
 
   fs.writeFileSync(SITEMAP_PATH, xml);
   console.log(
-    `sitemap.xml updated: ${staticBlocks.length} static pages, ${registry.length} effects (${effectBlocks.length} demo+article urls).`
+    `sitemap.xml updated: ${staticBlocks.length} static pages, ${registry.length} effects (${effectBlocks.length} demo+article urls), ${TEMPLATES.length} templates (${templateBlocks.length} urls).`
   );
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

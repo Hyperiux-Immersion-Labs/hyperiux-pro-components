@@ -33,13 +33,17 @@ export default function AppLayout({ children }) {
   return (
     <ClerkProvider
       localization={clerkLocalization}
-      // The custom Elements-based sign-in flow (SignInFlow.jsx) has no
-      // per-component equivalent of the old <SignIn fallbackRedirectUrl/
-      // forceRedirectUrl> props - Clerk reads these two off ClerkProvider
-      // instead once a session completes via Elements. signUp's own
-      // redirect keeps working unchanged via its own component-level props.
+      // Only the fallback variant, not force: SignInFlow.jsx/SignUpFlow.jsx
+      // are fully custom (no <SignIn>/<SignUp> components rendered at all),
+      // and now pass their own redirectUrl straight into setActive() when a
+      // gated action (e.g. buying a template while signed out) needs to
+      // land back on a specific page after auth - forceRedirectUrl is
+      // documented to have precedence "over other redirect props... Use
+      // this prop to override the redirect URL when needed", which would
+      // silently defeat that per-call redirectUrl. Fallback still applies
+      // whenever no more specific redirect is given, so this is a no-op for
+      // every other sign-in path (default destination is still /effects).
       signInFallbackRedirectUrl="/effects"
-      signInForceRedirectUrl="/effects"
       appearance={{
         cssLayerName: "clerk",
         theme: "simple",

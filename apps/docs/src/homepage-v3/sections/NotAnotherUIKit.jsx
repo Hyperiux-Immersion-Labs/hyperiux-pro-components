@@ -33,7 +33,7 @@ const UI_CARDS = [
   {
     id: 5,
     title: "Free entry, clear upgrade",
-    text: "Start with 40+ free effects. Upgrade to Pro when you need the full library, advanced systems, complete packs, and ongoing drops.",
+    text: "Start with 50+ free effects. Upgrade to Pro when you need the full library, advanced systems, complete packs, and ongoing drops.",
   },
 ];
 

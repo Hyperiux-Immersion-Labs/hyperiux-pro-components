@@ -18,7 +18,7 @@ const randomGlyph = () =>
 // rather than revealed in place: a character is invisible until the write head
 // reaches it, churns through glyphs while the head passes over it, then locks
 // to its final letter. Characters render inline inside per-word boxes (instead
-// of ButtonV3's absolute overlay) so the text can still wrap between words —
+// of ButtonV3's absolute overlay) so the text can still wrap between words -
 // widths hold steady because this renders in a monospace face.
 function ScrambleTextV3({ text, active, armed = false, className = "" }) {
   const charsRef = useRef([]);
@@ -101,7 +101,7 @@ function ScrambleTextV3({ text, active, armed = false, className = "" }) {
         const revealAt =
           PRE_HOLD_MS + ((index + 1) / chars.length) * REVEAL_DURATION_MS;
 
-        // Not written yet — stays blank so the line builds up instead of
+        // Not written yet - stays blank so the line builds up instead of
         // scrambling in full from the first frame.
         if (elapsed < revealAt - tailMs) {
           running = true;

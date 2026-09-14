@@ -9,7 +9,7 @@ gsap.registerPlugin(useGSAP);
 // Tile height of the reel, in em. Also hardcoded as 0.8 inside three Tailwind
 // arbitrary-value classes below (h3 leading, reel translate, glyph height),
 // since arbitrary values must be literal strings for Tailwind to pick them
-// up statically — keep all three in sync if this changes.
+// up statically - keep all three in sync if this changes.
 const LINE_HEIGHT = 0.8;
 
 const BACKGROUND_IMAGE =
@@ -117,7 +117,7 @@ const RollingText = ({
         globals.css has an UNLAYERED `h1,h2,h3,h4 { font-weight: 400;
         line-height: 1.2 }` rule. Unlayered CSS always beats anything in
         Tailwind's `@layer utilities`, so font-weight/leading need `!` here
-        to actually apply — every other class on this h3 is safe without it.
+        to actually apply - every other class on this h3 is safe without it.
         font-family is set inline instead, which wins regardless of layers.
       */}
       <h3

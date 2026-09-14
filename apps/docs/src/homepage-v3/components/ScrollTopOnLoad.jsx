@@ -7,7 +7,7 @@ import { useLenis } from "lenis/react";
  * Starts the page at the top on every load, including reloads.
  *
  * Browsers restore the previous scroll offset on a reload, which drops the
- * visitor mid-page behind a loader that is still covering the screen — and the
+ * visitor mid-page behind a loader that is still covering the screen - and the
  * hero's recede is scrubbed off scroll position, so it comes back already
  * halfway through. Two parts, because neither is enough on its own:
  *
@@ -21,7 +21,7 @@ import { useLenis } from "lenis/react";
  *    coming in can nudge the offset back, and Lenis has to be moved through its
  *    own API or it keeps integrating from the position it last recorded.
  *
- * A hash in the url is left alone — that is a request for a specific section.
+ * A hash in the url is left alone - that is a request for a specific section.
  */
 
 const INLINE_RESTORATION_RESET =

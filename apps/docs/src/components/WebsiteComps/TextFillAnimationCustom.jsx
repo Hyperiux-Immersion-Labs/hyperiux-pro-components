@@ -174,7 +174,7 @@ export default function TextFillAnimationCustom({
         trigger: sectionRef.current,
         start: 'top top',
         end: 'bottom bottom',
-        // No scrub on the counter — lagged scrub was overshooting on reverse
+        // No scrub on the counter - lagged scrub was overshooting on reverse
         // and re-starting fills that then finished white after a reset.
         onUpdate: (self) => {
           syncFromProgress(self.progress);

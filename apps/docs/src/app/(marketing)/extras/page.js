@@ -45,7 +45,7 @@ export default async function ExtraPage() {
               <Link
                 href={`/extras/${folder}`}
                 target="_blank"
-        rel="noopener noreferrer"
+                rel="noopener noreferrer"
                 className="text-lg underline underline-offset-4 transition-opacity hover:opacity-70"
               >
                 {folder}

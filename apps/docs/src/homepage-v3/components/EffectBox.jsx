@@ -37,7 +37,7 @@ const ArrowUpRight = ({ className = "" }) => (
  * Constants lifted from the hero (CubeBackgroundAscii) so the trail behaves the
  * same here: same point lifetime and spacing, same fluid forces, same dither
  * and tint. The glyph ramp is the card's own (see TRAIL_CHAR_SET), and the
- * fluid grid differs only because it is sized in pixels rather than in cells —
+ * fluid grid differs only because it is sized in pixels rather than in cells -
  * see FLUID_CELL.
  */
 /** Key into CHAR_SETS. The hero spells HYPERIUX; the cards draw their trail in
@@ -56,7 +56,7 @@ const DITHER = 0.6;
 
 /** The hero's 80×60 grid works out to roughly this many pixels a cell on a
  *  desktop viewport, and a fluid cell's pixel size is what sets the width of
- *  the stroke — so the card matches cell size and derives its own counts. */
+ *  the stroke - so the card matches cell size and derives its own counts. */
 const FLUID_CELL = 18;
 const FLUID_MIN = 8;
 const FLUID_MAX = 64;
@@ -73,7 +73,7 @@ const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 
 /** Flat white, so the trail reads at full contrast against the card's media
  *  once mix-blend-difference inverts whatever is underneath it. The hero's
- *  flow-driven tint toward fluidColor is deliberately not carried over — a
+ *  flow-driven tint toward fluidColor is deliberately not carried over - a
  *  single colour is what keeps the stroke legible over arbitrary artwork. */
 const GLYPH_RGB = [255, 255, 255];
 
@@ -113,8 +113,8 @@ function orderCharsByDensity(chars, cell, padding) {
  * trail is a disturbance in glyphs that are already there. There is no field to
  * disturb here, so the same ramp runs against a black source: cells with no
  * flow land on the ramp's blank slots and draw nothing, and the stroke is
- * whatever the fluid lifts above them. Everything downstream of that — glyph
- * choice, dither, tint — is the hero's, which is what makes the two match.
+ * whatever the fluid lifts above them. Everything downstream of that - glyph
+ * choice, dither, tint - is the hero's, which is what makes the two match.
  */
 function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
   const canvasRef = useRef(null);
@@ -246,7 +246,7 @@ function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
     }
 
     function handlePointerLeave() {
-      // Only the cursor's position is forgotten — the fluid keeps running so
+      // Only the cursor's position is forgotten - the fluid keeps running so
       // the stroke settles instead of vanishing at the card's edge.
       mouse.x = -9999;
       mouse.y = -9999;
@@ -313,7 +313,7 @@ function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
           const fluidIndex = fy * fluid.cols + fx;
 
           // The hero's `hm`: how strongly the fluid is moving through this
-          // cell. Here it only picks the glyph — the colour no longer varies.
+          // cell. Here it only picks the glyph - the colour no longer varies.
           const flow = Math.hypot(fluid.vx[fluidIndex], fluid.vy[fluidIndex]);
           const hm = Math.min(1, flow * 1.1);
           if (hm > peak) peak = hm;
@@ -343,7 +343,7 @@ function DitherTrailCanvas({ blend = "mix-blend-difference" }) {
       }
 
       // The fluid damps out a beat after the last point expires, and a cell
-      // needs roughly a fifth of the ramp before it inks at all — so once the
+      // needs roughly a fifth of the ramp before it inks at all - so once the
       // peak drops this far there is nothing left to draw and the loop parks,
       // keeping idle cards off the frame budget.
       if (trail.length === 0 && peak < 0.05) {
@@ -449,7 +449,7 @@ export default function EffectBox({
     <Link
       prefetch={false}
       href={href}
-      aria-label={`${title}${tag ? ` — ${tag}` : ""}`}
+      aria-label={`${title}${tag ? ` - ${tag}` : ""}`}
       className={`group block w-full cursor-pointer text-white ${className}`}
       onMouseEnter={playOnHover}
       onMouseLeave={stopOnLeave}

@@ -10,7 +10,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/** Bayer 8x8 ordered-dither matrix — gives the clustered, retro halftone grain. */
+/** Bayer 8x8 ordered-dither matrix - gives the clustered, retro halftone grain. */
 const BAYER = [
   0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26, 12, 44, 4, 36,
   14, 46, 6, 38, 60, 28, 52, 20, 62, 30, 54, 22, 3, 35, 11, 43, 1, 33, 9, 41,
@@ -142,7 +142,7 @@ export default function DitherTransition({
   const canvasRef = useRef(null);
   const gridRef = useRef({ cols: 0, rows: 0, shape: "", image: null });
   // Progress 1 is now "flooded solid", so the static state rests at the end of
-  // the build phase instead — the settled edge, not a blank band.
+  // the build phase instead - the settled edge, not a blank band.
   const progressRef = useRef(scrub ? 0 : buildEnd);
 
   const draw = useCallback(() => {
@@ -202,7 +202,7 @@ export default function DitherTransition({
     // `accentLift` slides the accent along the band without moving the dissolve
     // under it. Coverage is linear in the row's depth, so reading it a fixed
     // distance further down the gradient is one multiply-add per column rather
-    // than a second evaluation per cell — and because the step is scaled by the
+    // than a second evaluation per cell - and because the step is scaled by the
     // same per-column slope, the accent rides the crest instead of cutting
     // across it. `flip` reverses which way is downhill.
     const liftScale =
@@ -260,7 +260,7 @@ export default function DitherTransition({
           let colour = dot;
           if (useAccent) {
             // Accent peaks on one iso-coverage contour, which follows the same
-            // bow as the dissolve edge — sampled `accentShift` of the band's
+            // bow as the dissolve edge - sampled `accentShift` of the band's
             // height downhill of the cell it paints, which slides the whole
             // accent toward the dissolving edge.
             const lifted = clamp01(raw + accentLift[x]);
@@ -330,7 +330,7 @@ export default function DitherTransition({
     canvas.width = cols;
     canvas.height = rows;
 
-    // Only the frozen half of each harmonic lives here — sin/cos of the
+    // Only the frozen half of each harmonic lives here - sin/cos of the
     // column's angle. Phase and amplitude are applied per frame in draw(), so
     // the crest can move on scroll without recomputing trig per column.
     const basis = new Float32Array(WAVES * 2 * cols);
