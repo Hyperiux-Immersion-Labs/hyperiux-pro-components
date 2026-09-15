@@ -34,7 +34,7 @@ export default function DemoContent({ registry }: { registry: any }) {
 
             <div className="fixed inset-0">
               <Image
-                src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-23.jpg"
+                src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gradient.jpg"
                 alt="bg image"
                 title="Metallic Button"
                 className="h-full w-full object-cover"
