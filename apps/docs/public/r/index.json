@@ -1385,6 +1385,22 @@
       "tier": "free"
     },
     {
+      "name": "metallic-button",
+      "type": "registry:component",
+      "category": "buttons",
+      "categories": [
+        "buttons"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "MetallicButton",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
       "name": "scramble-link-button",
       "type": "registry:component",
       "category": "buttons",
@@ -1398,6 +1414,20 @@
       "exportName": "ScrambleLinkButton",
       "exportKind": "default",
       "version": "1.1.0",
+      "tier": "free"
+    },
+    {
+      "name": "shiny-button",
+      "type": "registry:component",
+      "category": "buttons",
+      "categories": [
+        "buttons"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "ShinyButton",
+      "exportKind": "default",
+      "version": "1.0.0",
       "tier": "free"
     },
     {

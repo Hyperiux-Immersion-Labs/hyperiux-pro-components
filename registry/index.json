@@ -7117,6 +7117,228 @@
     ]
   },
   {
+    "name": "metallic-button",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-15",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Metallic Button",
+    "description": "Button with a WebGL metallic shader rim, hover and press speed ramps, and a click ripple",
+    "category": "buttons",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/metallic-button",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "MetallicButton",
+    "exportKind": "default",
+    "importPath": "@/components/effects/metallic-button",
+    "target": "src/components/effects/metallic-button",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "Get Started",
+        "description": "Button label text."
+      },
+      {
+        "name": "viewMode",
+        "type": "string",
+        "default": "text",
+        "description": "Renders the label or a single sparkle icon."
+      },
+      {
+        "name": "baseColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Dark base the metal sits on.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "sheenColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Overlay tint; sets how warm or cold the chrome reads.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "bandCount",
+        "type": "number",
+        "default": 4,
+        "description": "Density of the stripe bands.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 1,
+          "max": 10,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "edgeBlur",
+        "type": "number",
+        "default": 0.5,
+        "description": "Colour transition sharpness: 0 is a hard edge, 1 a smooth gradient.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flowAngle",
+        "type": "number",
+        "default": 45,
+        "description": "Direction the pattern flows, in degrees.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 0,
+          "max": 360,
+          "step": 5
+        }
+      },
+      {
+        "name": "zoom",
+        "type": "number",
+        "default": 8,
+        "description": "Zoom into the pattern; higher reads as brighter chrome.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 1,
+          "max": 12,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "warp",
+        "type": "number",
+        "default": 0,
+        "description": "Noise warp over the stripe pattern.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "redFringe",
+        "type": "number",
+        "default": 0.3,
+        "description": "Red-channel dispersion; drives the warm edge fringing.",
+        "remixer": {
+          "control": "range",
+          "group": "chromatic",
+          "groupTitle": "Chromatic",
+          "min": -1,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "blueFringe",
+        "type": "number",
+        "default": 0.3,
+        "description": "Blue-channel dispersion; drives the cool edge fringing.",
+        "remixer": {
+          "control": "range",
+          "group": "chromatic",
+          "groupTitle": "Chromatic",
+          "min": -1,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "idleSpeed",
+        "type": "number",
+        "default": 0.6,
+        "description": "Sweep speed at rest.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "hoverSpeed",
+        "type": "number",
+        "default": 1,
+        "description": "Sweep speed while hovered.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 4,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "clickSpeed",
+        "type": "number",
+        "default": 2.4,
+        "description": "Sweep speed kicked on click, before settling back.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 6,
+          "step": 0.1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "metal",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/metallic-button/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/buttons/metallic-button/registry.json"
+  },
+  {
     "name": "milky-way",
     "title": "Milky Way",
     "description": "GPU-accelerated GPGPU particle galaxy with spiral arms, curl-noise nebula smoke, twinkling sparkle stars, background starfield, and post-processing vignette + edge blur.",
@@ -9954,6 +10176,199 @@
       }
     ],
     "registryPath": "registry/effects/components/shear-wipe/registry.json"
+  },
+  {
+    "name": "shiny-button",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-15",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Shiny Button",
+    "description": "Button with a rotating conic-gradient border, masked dot pattern, and inner shimmer that intensifies on hover",
+    "category": "buttons",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/shiny-button",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ShinyButton",
+    "exportKind": "default",
+    "importPath": "@/components/effects/shiny-button",
+    "target": "src/components/effects/shiny-button",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "Get Started",
+        "description": "Button label text.",
+        "remixer": {
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "fillColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Button fill colour inside the animated border.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "labelColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Label colour.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "accentColor",
+        "type": "color",
+        "default": "#ff5f00",
+        "description": "Colour of the rotating border arc, inner shimmer, and hover glow.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "accentSoftColor",
+        "type": "color",
+        "default": "#ff9253",
+        "description": "Shine colour the border eases into while hovered.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "sweepDuration",
+        "type": "number",
+        "default": 3,
+        "description": "Seconds for one full rotation of the border gradient.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 10,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "easeDuration",
+        "type": "number",
+        "default": 0.8,
+        "description": "Seconds for the hover ease into the wider, brighter border.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 2,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "arcWidth",
+        "type": "number",
+        "default": 5,
+        "description": "Resting width of the bright border arc, as a percentage.",
+        "remixer": {
+          "control": "range",
+          "group": "border",
+          "groupTitle": "Border",
+          "min": 1,
+          "max": 30,
+          "step": 1
+        }
+      },
+      {
+        "name": "cornerRadius",
+        "type": "number",
+        "default": 32,
+        "description": "Corner radius in pixels; 32 and above render as a full pill at the default height.",
+        "remixer": {
+          "control": "range",
+          "group": "border",
+          "groupTitle": "Border",
+          "min": 0,
+          "max": 32,
+          "step": 1
+        }
+      },
+      {
+        "name": "showSpeckle",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the masked dot pattern layer.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "effects",
+          "groupTitle": "Effects"
+        }
+      },
+      {
+        "name": "showSheen",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the rotating inner sheen.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "effects",
+          "groupTitle": "Effects"
+        }
+      },
+      {
+        "name": "speckleOpacity",
+        "type": "number",
+        "default": 0.4,
+        "description": "Strength of the dot pattern layer.",
+        "remixer": {
+          "control": "range",
+          "group": "effects",
+          "groupTitle": "Effects",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "colors",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/shiny-button/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/buttons/shiny-button/registry.json"
   },
   {
     "name": "side-navbar",
