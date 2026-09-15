@@ -68,7 +68,7 @@ const SWIPE_THRESHOLD = 100;
 // are positioned against, everything below it shifts too. Sized to hold the
 // longest quote at each breakpoint, with the content centred inside so the
 // shorter ones sit balanced rather than top-aligned against empty space.
-const CARD_HEIGHT = "h-[30vw] max-[1025px]:h-[52vw] max-md:h-[125vw]";
+const CARD_HEIGHT = "h-[30vw] max-[1025px]:h-[52vw] max-md:h-[95vw]";
 
 type SwipeDirection = "next" | "prev";
 
@@ -175,7 +175,7 @@ const Testimonials = () => {
       id="testimonials"
     >
       <div className="w-full flex flex-col gap-[6vw] max-[1025px]:gap-[12vw]">
-        <div className="w-[55%] mx-auto max-[1025px]:w-full">
+        <div className="w-[65%] mx-auto max-[1025px]:w-full">
           <OverflowTextReveal stagger={0.015}>
             <h2 className="text-[5.2vw] leading-[1.2]! text-center max-[1025px]:text-[7vw] max-md:text-[9vw]">
               Don&apos;t Take It from Us, Take It from Our Clients
@@ -183,7 +183,7 @@ const Testimonials = () => {
           </OverflowTextReveal>
         </div>
 
-        <div className="relative">
+        <div className="relative max-md:mt-10">
           <div className={`testimonial-fade opacity-0 relative w-3/5 mx-auto rounded-[2vw] border border-white/10 bg-white/5 overflow-hidden max-[1025px]:w-full max-[1025px]:rounded-[5vw] ${CARD_HEIGHT}`}>
             {/* mode="wait" so the outgoing card finishes before the next
                 one enters - crossfading them overlaps two blocks of centred
@@ -201,29 +201,60 @@ const Testimonials = () => {
           </div>
 
           <div className="testimonial-fade opacity-0 flex w-full justify-center items-center absolute -top-[2vw] left-1/2 -translate-x-1/2 max-md:-top-[6vw]">
-            {testimonials.map((item, index) => (
-              <button
-                key={item.name}
-                type="button"
-                onClick={() => setActive(index)}
-                aria-label={`Show testimonial from ${item.name}`}
-                aria-current={index === active}
-                style={{ order: getThumbOrder(index) }}
-                className={`w-[5vw] h-[5vw] rounded-full overflow-hidden transition-transform duration-500 cursor-pointer max-[1025px]:w-[9vw] max-[1025px]:h-[9vw] max-md:w-[12vw] max-md:h-[12vw] ${
-                  index === active
-                    ? "bg-linear-to-r from-[#F16B0D] to-[#E61416] p-[0.3vw] z-10 scale-[1.6] mx-[2vw] max-md:mx-[4vw]"
-                    : "-ml-[1vw] opacity-60 hover:opacity-100"
-                }`}
-              >
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  width={120}
-                  height={120}
-                  className="w-full h-full object-cover object-top rounded-full"
-                />
-              </button>
-            ))}
+            {testimonials.map((item, index) => {
+              const order = getThumbOrder(index);
+              const isActive = order === 0;
+
+              return (
+                <motion.button
+                  key={item.name}
+                  type="button"
+                  onClick={() => setActive(index)}
+                  aria-label={`Show testimonial from ${item.name}`}
+                  aria-current={isActive}
+                  // `layout` turns the order/margin swap below into a FLIP
+                  // animation - Motion measures each thumb's position
+                  // before and after `active` changes and smoothly
+                  // interpolates between them, instead of the flex reorder
+                  // just snapping the new active thumb into place. `scale`
+                  // is driven from `animate` rather than a Tailwind class
+                  // for the same reason: Motion needs to own the
+                  // `transform` property itself to merge the FLIP
+                  // repositioning and the scale into one animation - a
+                  // separate CSS transform class here would fight it.
+                  layout
+                  animate={{ scale: isActive ? 1.6 : 1 }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  // z-index falls off with distance from the active thumb
+                  // (rather than following DOM/array order) so whichever
+                  // thumb is visually closer to center - the one the fanned
+                  // layout implies is "in front" - is the one that
+                  // consistently wins the pointer/hover in the sliver where
+                  // two overlapping circles meet, instead of flickering
+                  // between both.
+                  style={{ order, zIndex: isActive ? 10 : total - Math.abs(order) }}
+                  className={`w-[5vw] h-[5vw] rounded-full overflow-hidden [clip-path:circle(50%)] cursor-pointer max-[1025px]:w-[9vw] max-[1025px]:h-[9vw] max-md:w-[12vw] max-md:h-[12vw] ${
+                    isActive
+                      ? "bg-linear-to-r from-[#F16B0D] to-[#E61416] p-[0.3vw] mx-[2vw] max-md:mx-[4vw]"
+                      : // Thumbs left of active pull toward it via -mr, thumbs
+                        // right of active pull toward it via -ml - both sides
+                        // close the same 1vw gap against the active thumb's
+                        // own symmetric mx-[2vw], instead of only the right
+                        // side closing it (which is what made the left side
+                        // read as having extra, unbalanced space).
+                        `opacity-60 hover:opacity-100 ${order < 0 ? "-mr-[1vw]" : "-ml-[1vw]"}`
+                  }`}
+                >
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    width={120}
+                    height={120}
+                    className="w-full h-full object-cover object-top rounded-full"
+                  />
+                </motion.button>
+              );
+            })}
           </div>
 
           {/* Same circle + gradient-fill treatment as the original arrows

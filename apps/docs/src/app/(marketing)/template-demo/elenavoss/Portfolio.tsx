@@ -145,6 +145,7 @@ const Portfolio = () => {
 
 
     if (!prefersReducedMotionRef.current) {
+      if(globalThis.innerWidth > 1024){
       gsap.to(".circle-clip", {
         yPercent: -70,
         ease:"none",
@@ -156,6 +157,20 @@ const Portfolio = () => {
           // markers:true,
         },
       });
+    }
+    else{
+      gsap.to(".circle-clip", {
+        yPercent: -50,
+        ease:"none",
+        scrollTrigger: {
+          trigger: "#portfolio",
+          start: "top bottom",
+          end: "30% bottom",
+          scrub: true,
+          // markers:true,
+        },
+      });
+    }
       
 
       gsap.set(curveRef.current, {

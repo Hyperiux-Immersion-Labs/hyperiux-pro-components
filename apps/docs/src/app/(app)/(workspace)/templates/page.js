@@ -2,16 +2,25 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { createPageMetadata } from "@/lib/seo-metadata";
-import { TEMPLATES } from "@/lib/mock-templates";
+import { TEMPLATES, TEMPLATES_OG_IMAGE } from "@/lib/mock-templates";
 import { getTemplateViewCounts } from "@/lib/template-views";
 import { TemplatesGrid } from "./TemplatesGrid";
 import FAQV3 from "@/homepage-v3/sections/FAQV3";
+import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 
+
+// No dynamic API (auth/cookies/headers) is called on this page, so Next
+// would otherwise statically prerender it once at build/deploy time - the
+// view counts baked into that HTML would then be frozen forever, never
+// reflecting real views recorded afterward via recordTemplateView(). Forces
+// a fresh getTemplateViewCounts() read on every request instead.
+export const dynamic = "force-dynamic";
 
 export const metadata = createPageMetadata({
   title: "Interactive React & Next.js Website Templates | Hyperiux Vault",
   description: "Interactive React and Next.js website templates with layout, motion, scrolling and transitions composed together. Source code and Figma included.",
   path: "/templates",
+  image: TEMPLATES_OG_IMAGE,
 });
 
 const DESCRIPTION =
@@ -111,6 +120,10 @@ export default async function TemplatesPage() {
 
   return (
     <div className="relative min-h-screen text-foreground effects-comp border-b border-white/10">
+      <WebpageJsonLd metadata={metadata} />
+      <BreadcrumbsJSONLD pathname={metadata.url} />
+      <FAQJSONLD faqs={faqItems} />
+
       <div className="px-14 pt-28 pb-12 space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16">
         <Breadcrumb className="fadeup" />
 

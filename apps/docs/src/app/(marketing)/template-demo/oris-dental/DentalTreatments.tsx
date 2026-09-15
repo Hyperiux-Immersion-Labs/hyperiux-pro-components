@@ -6,9 +6,9 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitTextLines from "./effects/split-text-lines/SplitTextLines";
 
 import Image, { StaticImageData } from "next/image";
-import treatment1 from "./assets/treatment1.png";
-import treatment2 from "./assets/treatment2.png";
-import treatment3 from "./assets/treatment3.png";
+import treatment1 from "./assets/treatment1.webp";
+import treatment2 from "./assets/treatment2.webp";
+import treatment3 from "./assets/treatment3.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 

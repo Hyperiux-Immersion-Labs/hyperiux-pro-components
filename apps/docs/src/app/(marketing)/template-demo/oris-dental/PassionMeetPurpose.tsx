@@ -5,10 +5,10 @@ import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/dist/ScrollTrigger'
 import SplitTextLines from './effects/split-text-lines/SplitTextLines'
-import hc1 from './assets/hc1.png'
-import hc2 from './assets/hc2.png'
-import hc3 from './assets/hc3.png'
-import hc4 from './assets/hc4.png'
+import hc1 from './assets/hc1.webp'
+import hc2 from './assets/hc2.webp'
+import hc3 from './assets/hc3.webp'
+import hc4 from './assets/hc4.webp'
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger)

@@ -7,12 +7,12 @@ import BlackButton from "./BlackButton";
 import SmoothInfiniteCarousel, {
   type KeyboardSlider,
 } from "./smooth-carousel/SmoothInfiniteCarousel";
-import refinement1 from "./assets/refinement-1.png";
-import refinement2 from "./assets/refinement-2.png";
-import refinement3 from "./assets/refinement-3.png";
-import refinement4 from "./assets/refinement-4.png";
-import refinement5 from "./assets/refinement-5.png";
-import refinement6 from "./assets/refinement-6.png";
+import refinement1 from "./assets/refinement-1.webp";
+import refinement2 from "./assets/refinement-2.webp";
+import refinement3 from "./assets/refinement-3.webp";
+import refinement4 from "./assets/refinement-4.webp";
+import refinement5 from "./assets/refinement-5.webp";
+import refinement6 from "./assets/refinement-6.webp";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import MaskTextReveal from "./effects/mask-text-reveal";

@@ -5,8 +5,11 @@ import { StatCard } from "@/components/admin/StatCard";
 import { LineTrendChart } from "@/components/admin/charts/LineTrendChart";
 import { DonutChart } from "@/components/admin/charts/DonutChart";
 import { EffectRankSlider } from "@/components/admin/EffectRankSlider";
+import { TemplateRankSlider } from "@/components/admin/TemplateRankSlider";
+import { TemplatePurchasesPanel } from "@/components/admin/TemplatePurchasesPanel";
 import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { useAdminRole } from "@/lib/useAdminRole";
 import { InstallActivitySection } from "./InstallActivityTab";
 
 // Overview and Installs & Copies used to be two tabs reading two different
@@ -23,13 +26,27 @@ const DATE_RANGE_OPTIONS = [
   { value: "custom", label: "Custom range" },
 ];
 
-function formatCurrency(amount) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount || 0);
+function formatCurrency(amount, currency = "INR") {
+  try {
+    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount || 0);
+  } catch {
+    return `${(amount || 0).toFixed(0)} ${currency}`;
+  }
+}
+
+// invoices mixes INR and USD (see the overview route's own comment) - a
+// single blended "Revenue" tile would silently add unlike units, so this
+// looks up each currency's own total from stats.revenueByCurrency instead
+// of summing the array. Currencies with zero real revenue still render a
+// ₹0/$0 tile rather than disappearing, since "no USD revenue yet" is
+// itself useful information, not noise to hide.
+function revenueFor(overview, currency) {
+  return overview.stats.revenueByCurrency?.find((row) => row.currency === currency)?.amount || 0;
 }
 
 function ChartPanel({ title, children }) {
@@ -153,7 +170,10 @@ function OverviewSection({ range, customFrom, customTo }) {
           value={overview.stats.totalCopies}
         />
         <StatCard label="Saved Effects" value={overview.stats.totalSaved} />
-        <StatCard label="Revenue" value={formatCurrency(overview.stats.revenue)} />
+        <StatCard label="Saved Templates" value={overview.stats.totalSavedTemplates} />
+        <StatCard label="Total Template Views" value={overview.stats.totalViews} />
+        <StatCard label="Revenue (INR)" value={formatCurrency(revenueFor(overview, "INR"), "INR")} />
+        <StatCard label="Revenue (USD)" value={formatCurrency(revenueFor(overview, "USD"), "USD")} />
       </div>
       <div className="flex flex-col gap-4">
         <ChartPanel>
@@ -171,6 +191,10 @@ function OverviewSection({ range, customFrom, customTo }) {
             valueLabel="installs"
           />
         </ChartPanel>
+
+        <ChartPanel>
+          <TemplateRankSlider title="Top viewed templates" templates={overview.topViewedTemplates} />
+        </ChartPanel>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -182,11 +206,15 @@ function OverviewSection({ range, customFrom, customTo }) {
           <LineTrendChart data={overview.copyTrend} xKey="label" color="#ff5f00" valueLabel="copies" />
         </ChartPanel>
 
-        <ChartPanel title="Revenue">
-          <LineTrendChart data={overview.revenueTrend} xKey="label" color="#4ade80" valueLabel="revenue (₹)" />
+        <ChartPanel title="Revenue (INR)">
+          <LineTrendChart data={overview.revenueTrendINR} xKey="label" color="#4ade80" valueLabel="revenue (₹)" />
         </ChartPanel>
 
-            <ChartPanel title="Template purchases — last 30 days">
+        <ChartPanel title="Revenue (USD)">
+          <LineTrendChart data={overview.revenueTrendUSD} xKey="label" color="#38bdf8" valueLabel="revenue ($)" />
+        </ChartPanel>
+
+            <ChartPanel title="Template purchases - last 30 days">
               <LineTrendChart
                 data={overview.templatePurchaseTrend}
                 xKey="label"
@@ -209,6 +237,7 @@ export default function AdminActivityPage() {
   const [range, setRange] = useState("all");
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
+  const { isSuperAdmin } = useAdminRole();
 
   return (
     <div className="space-y-6">
@@ -238,6 +267,19 @@ export default function AdminActivityPage() {
         <h2 className="text-lg font-medium text-white">Installs &amp; Copies</h2>
         <InstallActivitySection range={range} customFrom={customFrom} customTo={customTo} />
       </div>
+
+      {isSuperAdmin && (
+        <div className="space-y-4 border-t border-white/10 pt-10">
+          <div>
+            <h2 className="text-lg font-medium text-white">Template Purchases</h2>
+            <p className="mt-1 text-sm text-white/50">
+              Every one-time template sale in the selected window. Super-admin only, same
+              gate as Invoicing.
+            </p>
+          </div>
+          <TemplatePurchasesPanel range={range} customFrom={customFrom} customTo={customTo} />
+        </div>
+      )}
     </div>
   );
 }

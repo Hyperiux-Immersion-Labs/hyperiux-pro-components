@@ -37,20 +37,6 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
-// Whether the recipient clicked the email's CTA - only meaningful for rows
-// whose template routes its CTA through /api/e/[id] (currently invitations).
-function ClickedBadge({ clicked }) {
-  return (
-    <span
-      className={`inline-flex items-center  px-2.5 py-0.5 text-xs font-medium ${
-        clicked ? "bg-emerald-500/15 text-emerald-400" : "bg-white/8 text-white/40"
-      }`}
-    >
-      {clicked ? "Clicked" : "Not clicked"}
-    </span>
-  );
-}
-
 function TypeLabel({ type }) {
   const labels = {
     welcome: "Welcome",
@@ -172,25 +158,35 @@ function EmailPreviewModal({ emailId, onClose }) {
   );
 }
 
-const EMAILS_PER_PAGE = 10;
+const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100, 250, 500];
+const DEFAULT_PAGE_SIZE = 10;
 
 export default function AdminEmailsPage() {
   const [emails, setEmails] = useState([]);
   const [total, setTotal] = useState(0);
+  // Delivered/failed counts across every row matching the current filters -
+  // fetched from the API, not derived from `emails` (which is only the
+  // current page) - counting just the current page is exactly what made
+  // "10 delivered" show up next to "2257 total".
+  const [successCount, setSuccessCount] = useState(0);
+  const [failedCount, setFailedCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [previewId, setPreviewId] = useState(null);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [prevTypeFilter, setPrevTypeFilter] = useState(typeFilter);
   const [prevStatusFilter, setPrevStatusFilter] = useState(statusFilter);
+  const [prevPageSize, setPrevPageSize] = useState(pageSize);
 
   // Reset to page 1 whenever a filter changes - derived purely from values
   // already available during render, so adjust it here instead of in an effect.
-  if (prevTypeFilter !== typeFilter || prevStatusFilter !== statusFilter) {
+  if (prevTypeFilter !== typeFilter || prevStatusFilter !== statusFilter || prevPageSize !== pageSize) {
     setPrevTypeFilter(typeFilter);
     setPrevStatusFilter(statusFilter);
+    setPrevPageSize(pageSize);
     setCurrentPage(1);
   }
 
@@ -201,20 +197,22 @@ export default function AdminEmailsPage() {
       const params = new URLSearchParams();
       if (typeFilter !== "all") params.set("type", typeFilter);
       if (statusFilter !== "all") params.set("status", statusFilter);
-      params.set("limit", String(EMAILS_PER_PAGE));
-      params.set("offset", String((currentPage - 1) * EMAILS_PER_PAGE));
+      params.set("limit", String(pageSize));
+      params.set("offset", String((currentPage - 1) * pageSize));
 
       const res = await fetch(`/api/admin/emails?${params.toString()}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to load emails");
       setEmails(json.emails || []);
       setTotal(json.total || 0);
+      setSuccessCount(json.successCount || 0);
+      setFailedCount(json.failedCount || 0);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [typeFilter, statusFilter, currentPage]);
+  }, [typeFilter, statusFilter, pageSize, currentPage]);
 
   useEffect(() => {
     // Fetches from a network API in response to filter/page changes - this
@@ -223,9 +221,7 @@ export default function AdminEmailsPage() {
     fetchEmails();
   }, [fetchEmails]);
 
-  const totalPages = Math.max(1, Math.ceil(total / EMAILS_PER_PAGE));
-  const successCount = emails.filter((e) => e.status === "success").length;
-  const failedCount = emails.filter((e) => e.status === "failed").length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
     <>
@@ -274,6 +270,15 @@ export default function AdminEmailsPage() {
               { value: "failed", label: "Failed" },
             ]}
           />
+          <div className="flex items-center gap-2 text-sm text-white/45">
+            Per page
+            <CustomSelect
+              size="compact"
+              value={String(pageSize)}
+              onChange={(value) => setPageSize(Number(value))}
+              options={PAGE_SIZE_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))}
+            />
+          </div>
         </div>
 
         {error && (
@@ -291,15 +296,14 @@ export default function AdminEmailsPage() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Subject</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Type</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">Sent At</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-white/45 uppercase tracking-wider">CTA</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Preview</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.06]">
                 {loading ? (
-                  Array.from({ length: 8 }).map((_, i) => (
+                  Array.from({ length: Math.min(pageSize, 8) }).map((_, i) => (
                     <tr key={i}>
-                      {Array.from({ length: 6 }).map((__, j) => (
+                      {Array.from({ length: 5 }).map((__, j) => (
                         <td key={j} className="px-4 py-3">
                           <div className="h-4  bg-white/8 animate-pulse" style={{ width: j === 1 ? "200px" : "100px" }} />
                         </td>
@@ -308,7 +312,7 @@ export default function AdminEmailsPage() {
                   ))
                 ) : emails.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-10 text-center text-white/40">
+                    <td colSpan={5} className="px-4 py-10 text-center text-white/40">
                       No emails found.
                     </td>
                   </tr>
@@ -329,13 +333,6 @@ export default function AdminEmailsPage() {
                       </td>
                       <td className="px-4 py-3 text-white/50 whitespace-nowrap text-xs">
                         {formatDate(email.sent_at)}
-                      </td>
-                      <td className="px-4 py-3">
-                        {email.email_type === "invitations" ? (
-                          <ClickedBadge clicked={email.cta_clicked} />
-                        ) : (
-                          <span className="text-xs text-white/25">-</span>
-                        )}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button

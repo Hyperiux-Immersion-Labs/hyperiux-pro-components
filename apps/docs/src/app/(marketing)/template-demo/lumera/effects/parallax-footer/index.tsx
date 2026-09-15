@@ -8,7 +8,7 @@ import Link from "next/link";
 import { ChevronUp } from "lucide-react";
 
 import { FooterParallax } from "./ParallaxFooter";
-import lumeraLogo from "../../assets/icons/lumera-logo-black.png";
+import lumeraLogo from "../../assets/icons/lumera-logo-black.webp";
 import facebookIcon from "../../assets/icons/socials/facebook.svg";
 import xIcon from "../../assets/icons/socials/x.svg";
 import instagramIcon from "../../assets/icons/socials/instagram.svg";

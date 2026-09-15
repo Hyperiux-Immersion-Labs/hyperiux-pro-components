@@ -3,6 +3,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertSuperAdmin } from "@/lib/admin";
 import { getTemplateBySlug } from "@/lib/mock-templates";
+import { resolveDateBounds } from "@/lib/admin-activity";
 
 // Sibling to api/admin/invoices/route.js - same super-admin gate, same
 // Clerk-enrichment pattern - but for one-time template purchases
@@ -29,23 +30,43 @@ export async function GET(request) {
     const templateFilter = searchParams.get("template") || "all";
     const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 100);
     const offset = parseInt(searchParams.get("offset") || "0", 10);
+    // range/from/to are all optional - omitted entirely by
+    // dashboard/admin/invoicing (which wants "every purchase, ever"),
+    // passed by dashboard/admin/activity's TemplatePurchasesPanel so this
+    // table stays in step with that page's date-range picker instead of
+    // always showing all-time totals regardless of what's selected.
+    const { startISO, endISO } = resolveDateBounds({
+      range: searchParams.get("range"),
+      from: searchParams.get("from"),
+      to: searchParams.get("to"),
+    });
 
-    let query = supabase
-      .from("template_purchases")
-      .select(
-        "id,clerk_user_id,template_slug,razorpay_payment_id,amount,currency,status,created_at",
-        { count: "exact" }
-      )
-      .order("created_at", { ascending: false });
+    function scoped(q) {
+      let query = q;
+      if (startISO) query = query.gte("created_at", startISO);
+      if (endISO) query = query.lt("created_at", endISO);
+      return query;
+    }
+
+    let query = scoped(
+      supabase
+        .from("template_purchases")
+        .select(
+          "id,clerk_user_id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,created_at",
+          { count: "exact" }
+        )
+        .order("created_at", { ascending: false })
+    );
 
     if (templateFilter !== "all") query = query.eq("template_slug", templateFilter);
 
     const [{ data: pageRows, error: pageError, count }, { data: allRows, error: statsError }] =
       await Promise.all([
         query.range(offset, offset + limit - 1),
-        // Stats always reflect every purchase, independent of the current
-        // page/filter, so the top-line numbers don't shift while paging.
-        supabase.from("template_purchases").select("amount"),
+        // Stats always reflect every purchase in the same window,
+        // independent of the current page/template filter, so the top-line
+        // numbers don't shift while paging.
+        scoped(supabase.from("template_purchases").select("amount, currency")),
       ]);
 
     if (pageError || statsError) {
@@ -81,6 +102,7 @@ export async function GET(request) {
         amount: row.amount,
         currency: row.currency,
         status: row.status,
+        invoiceUrl: row.invoice_url,
         createdAt: row.created_at,
       };
     });

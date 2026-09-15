@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { TemplateCard } from "@/components/ui/TemplateCard";
 import FadeUp from "@/components/WebsiteComps/FadeUp";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
+import { useTemplateWishlist } from "./useTemplateWishlist";
 
 function formatLabel(value = "") {
   return value
@@ -24,6 +26,13 @@ function formatLabel(value = "") {
 // matched here.
 export function TemplatesGrid({ templates }) {
   const [activeCategory, setActiveCategory] = useState("all");
+  const { toast, showToast, dismissToast } = useToastQueue();
+  const { wishlist, toggleWishlist } = useTemplateWishlist({
+    onSaved: (template) =>
+      showToast({ title: `${template.title} saved`, description: "You'll find it in your dashboard's My Templates." }),
+    onRemoved: (template) =>
+      showToast({ title: `${template.title} removed`, description: "No longer in your saved templates." }),
+  });
 
   // No containerRef - scans the whole document, same as Hero.jsx/
   // ExplainVault.jsx's page-wide useFadeUp() calls. This is the only
@@ -68,8 +77,8 @@ export function TemplatesGrid({ templates }) {
               <div
                 className={[
                   "flex items-center gap-2.5",
-                  "flex-wrap",
-                  "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto max-[1025px]:px-6",
+                  "flex-nowrap",
+                  "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto",
                   "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
                   "[&::-webkit-scrollbar]:h-1",
                   "[&::-webkit-scrollbar-track]:bg-white/10 [&::-webkit-scrollbar-track]:",
@@ -90,7 +99,8 @@ export function TemplatesGrid({ templates }) {
                       className={`
                         px-6 py-2.5 text-[1vw] text-center relative max-md:px-5 max-md:py-2
                         backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
-                        transition-colors duration-300
+                        shrink-0 whitespace-nowrap
+                        transition-colors duration-300 max-[1025px]:text-[2.5vw] max-md:text-[4.2vw]
                         ${isSelected
                           ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"
                           : "bg-[#161616] text-[#FFFFFF] hover:text-black hover:bg-[#ff5f00]"
@@ -117,11 +127,18 @@ export function TemplatesGrid({ templates }) {
             // card, which sets up and fires its own ScrollTrigger without
             // needing to re-scan (and re-hide) cards already on screen.
             <FadeUp key={template.slug}>
-              <TemplateCard template={template} priority={index === 0} />
+              <TemplateCard
+                template={template}
+                priority={index === 0}
+                isWishlisted={wishlist.includes(template.slug)}
+                toggleWishlist={toggleWishlist}
+              />
             </FadeUp>
           ))}
         </div>
-      </div>
+      </div> 
+
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
     </>
   );
 }

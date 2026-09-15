@@ -1064,7 +1064,7 @@ export default function AdminPage() {
                 {isSuperAdmin && (
                   <>
                     <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
-                    <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Transaction ID</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Payment ID</th>
                     <th className="px-3 py-2.5 text-right text-xs font-medium text-white/45 uppercase tracking-wider">Actions</th>
                   </>
                 )}

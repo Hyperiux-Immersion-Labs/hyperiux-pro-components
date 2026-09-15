@@ -222,7 +222,7 @@ const MorphingDock = ({
 
       // Custom properties come back as authored ("28vw", "min(48vw,52rem)"),
       // so they have to be resolved through a real box before GSAP can tween
-      // them as pixels — parseFloat alone would read "28vw" as 28px.
+      // them as pixels - parseFloat alone would read "28vw" as 28px.
       const probe = document.createElement("div");
       probe.style.cssText =
         "position:absolute;visibility:hidden;pointer-events:none;height:0";
@@ -466,14 +466,14 @@ const MorphingDock = ({
         morphTl.current = tl;
       };
 
-      // The preview panel never resizes — only its contents crossfade between
+      // The preview panel never resizes - only its contents crossfade between
       // the teaser image and the hovered link's descriptor.
       const preview = (key: string | null) => {
         if (!panel || phaseRef.current !== "open" || viewRef.current !== "nav") return;
         if (isTouch()) return;
         if (activeBlurb.current === key) return;
 
-        // The teaser image stays put in every state — only the descriptors
+        // The teaser image stays put in every state - only the descriptors
         // swap above it, so the panel never reads as empty. A null key means
         // "no link hovered", which simply clears every descriptor.
         const incoming = key ? blurbFor(key) : null;
@@ -496,7 +496,7 @@ const MorphingDock = ({
         swapTl.current?.kill();
         const tl = createTimeline({ defaults: { force3D: true } });
 
-        // The scrim never disappears — it just crossfades between its resting
+        // The scrim never disappears - it just crossfades between its resting
         // wash and the deeper state that carries a descriptor.
         if (overlay)
           tl.to(
@@ -535,7 +535,7 @@ const MorphingDock = ({
       };
 
       // Scale always follows the pointer, but the label only rolls up when no
-      // descriptor is showing — otherwise the two would overlap on the image.
+      // descriptor is showing - otherwise the two would overlap on the image.
       const hoverMedia = (on: boolean) => {
         if (phaseRef.current !== "open" || isTouch()) return;
         hoverTl.current?.kill();
@@ -665,7 +665,7 @@ const MorphingDock = ({
             id="morphing-dock-surface"
             className="invisible absolute inset-x-0 top-0 bottom-(--morphing-dock-dock-h)"
           >
-            {/* View A — the nav list plus its preview panel */}
+            {/* View A - the nav list plus its preview panel */}
             <div
               ref={navViewRef}
               className="absolute bottom-0 left-0 box-border flex h-[calc(var(--morphing-dock-nav-h)-var(--morphing-dock-dock-h))] w-(--morphing-dock-nav-w) flex-row items-stretch gap-6 px-6 py-6 will-change-[transform,opacity] max-[1025px]:gap-5 max-md:flex-col max-md:justify-start max-md:gap-0 max-md:px-5 max-md:py-5"
@@ -710,7 +710,7 @@ const MorphingDock = ({
                 </LinkButton>
               </nav>
 
-              {/* Preview panel — swaps contents, never resizes */}
+              {/* Preview panel - swaps contents, never resizes */}
               <div
                 ref={panelRef}
                 aria-hidden
@@ -783,7 +783,7 @@ const MorphingDock = ({
               </div>
             </div>
 
-            {/* View B — the contact card */}
+            {/* View B - the contact card */}
             <div
               ref={contactViewRef}
               className="absolute bottom-0 left-0 box-border flex h-[calc(var(--morphing-dock-contact-h)-var(--morphing-dock-dock-h))] w-(--morphing-dock-contact-w) flex-col justify-between px-6 pt-5 pb-3 will-change-[transform,opacity] max-md:px-5 max-md:pt-4 max-md:pb-2.5"
@@ -820,7 +820,7 @@ const MorphingDock = ({
             </div>
           </div>
 
-          {/* Dock row — always visible, always interactive */}
+          {/* Dock row - always visible, always interactive */}
           <div className="absolute inset-x-0 bottom-0 box-border flex h-(--morphing-dock-dock-h) items-center gap-6 pr-2.5 pl-6 max-md:gap-3 max-md:pr-2 max-md:pl-4">
             <Link
               href="#"

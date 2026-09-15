@@ -46,6 +46,34 @@ export function fillDailyBuckets(buckets, rows, getDate, getValue = () => 1) {
   return buckets;
 }
 
+// Same shape as fillDailyBuckets, for a multi-line trend instead of one
+// value per bucket - each bucket becomes e.g. { date, label, web: 2, cli: 1,
+// mcp: 0 } instead of { date, label, value }. `getSeriesKey` picks which of
+// `seriesKeys` a row belongs to; a row whose key isn't in `seriesKeys` (or
+// whose date has no matching bucket) is silently dropped, same as
+// fillDailyBuckets ignoring out-of-range rows.
+export function fillDailyBucketsBySeries(buckets, rows, getDate, getSeriesKey, seriesKeys) {
+  for (const bucket of buckets) {
+    for (const key of seriesKeys) {
+      bucket[key] = 0;
+    }
+  }
+
+  const byDate = new Map(buckets.map((bucket) => [bucket.date, bucket]));
+
+  for (const row of rows) {
+    const bucket = byDate.get(getDate(row));
+    if (!bucket) continue;
+
+    const key = getSeriesKey(row);
+    if (seriesKeys.includes(key)) {
+      bucket[key] += 1;
+    }
+  }
+
+  return buckets;
+}
+
 // Shared "Today / 7d / 30d / 90d / All time" preset used by every admin
 // endpoint that exposes the same date-range picker - one definition so the
 // boundary can't drift between the users list, its export, and its stats.

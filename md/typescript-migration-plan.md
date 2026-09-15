@@ -9,7 +9,7 @@
 > (formerly `component-automation-plan.md`) still describe/hardcode the pre-migration
 > `.jsx` state and haven't been updated post-migration.
 
-Execution plan for `phase-2-plan.md`'s Wave 2 item "TypeScript, all 115 effects." Scope is
+Execution plan for `phase-2-plan.md`'s Wave 2 item "TypeScript, all 150+ effects." Scope is
 strictly the registry effects - nothing else in the repo (no `Payments`, `Dashboard`, `auth`,
 `Homepage`, etc.).
 
@@ -118,4 +118,4 @@ mid-migration, so they're updated last, once true:
 - `apps/docs/src/CODING_STANDARDS.md` - "Only `.js` and `.jsx` files are allowed" and related
   `index.jsx` mentions
 - `component-automation-plan.md` - file-discovery include/exclude lists and `index.jsx` examples
-- `phase-2-plan.md` - mark the "TypeScript, all 115 effects" row done
+- `phase-2-plan.md` - mark the "TypeScript, all 150+ effects" row done

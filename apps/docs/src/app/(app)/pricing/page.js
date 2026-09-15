@@ -41,7 +41,7 @@ const USE_CASES = [
 export const metadata = createPageMetadata({
   title: "Hyperiux Vault Pricing | Pro React Effects Library",
   description:
-    "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 130+ effect library, WebGL scenes, and cursor effects from $20/month.",
+    "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 150+ effect library, WebGL scenes, and cursor effects from $20/month.",
   path: "/pricing",
   image:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",

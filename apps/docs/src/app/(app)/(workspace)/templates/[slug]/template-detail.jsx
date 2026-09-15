@@ -11,6 +11,7 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
+import { useTemplateWishlist } from "../useTemplateWishlist";
 
 // Query flag a signed-out "Buy" click appends before bouncing through
 // /sign-in?redirect_url=... - on the way back, its presence (plus now being
@@ -82,6 +83,12 @@ export function TemplateDetail({
   const [hasAccess, setHasAccess] = useState(templateAccess.allowed);
   const previewBoxRef = useRef(null);
   const { toast, showToast, dismissToast } = useToastQueue();
+  const { wishlist, toggleWishlist } = useTemplateWishlist({
+    onSaved: (related) =>
+      showToast({ title: `${related.title} saved`, description: "You'll find it in your dashboard's My Templates." }),
+    onRemoved: (related) =>
+      showToast({ title: `${related.title} removed`, description: "No longer in your saved templates." }),
+  });
 
   const publishedLabel = formatTemplateDate(template.publishedAt);
   const updatedLabel = formatTemplateDate(template.updatedAt);
@@ -336,7 +343,12 @@ export function TemplateDetail({
 
               <div className="fadeup grid grid-cols-2 gap-6 max-md:px-[7vw] max-[1025px]:px-[6vw] max-md:grid-cols-1">
                 {relatedTemplates.map((relatedTemplate) => (
-                  <TemplateCard key={relatedTemplate.slug} template={relatedTemplate} />
+                  <TemplateCard
+                    key={relatedTemplate.slug}
+                    template={relatedTemplate}
+                    isWishlisted={wishlist.includes(relatedTemplate.slug)}
+                    toggleWishlist={toggleWishlist}
+                  />
                 ))}
               </div>
             </section>

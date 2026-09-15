@@ -4,11 +4,11 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import service01 from "./assets/service01.png";
-import service02 from "./assets/service02.png";
-import service03 from "./assets/service03.png";
-import service04 from "./assets/service04.png";
-import service05 from "./assets/service05.png";
+import service01 from "./assets/service01.webp";
+import service02 from "./assets/service02.webp";
+import service03 from "./assets/service03.webp";
+import service04 from "./assets/service04.webp";
+import service05 from "./assets/service05.webp";
 import DraggableMarquee from "./effects/draggable-marquee";
 import { FadeUp } from "./gsapAnimations";
 

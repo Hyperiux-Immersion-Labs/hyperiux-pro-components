@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
+import { useAutoplayPreviewVideo } from "@/hooks/useAutoplayPreviewVideo";
 import { Download, Eye, Heart } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ArrowIcon } from "../WebsiteComps/Icons";
@@ -63,36 +64,14 @@ export function EffectCard({
   isProUser = false,
   sizes = VAULT_GRID_SIZES,
 }) {
-  const [active, setActive] = useState(false);
-  const [videoReady, setVideoReady] = useState(false);
-  const [hasAppeared, setHasAppeared] = useState(false);
   const [registryDependencies, setRegistryDependencies] = useState(null);
   const [imageError, setImageError] = useState(false);
 
   const router = useRouter();
-  const cardRef = useRef(null);
-  const videoRef = useRef(null);
+  const videoPreviewUrl = useMemo(() => resolveEffectVideoUrl(effect), [effect]);
+  const { cardRef, hasAppeared, showVideo, shouldRenderVideo, videoProps } =
+    useAutoplayPreviewVideo(videoPreviewUrl);
   const prefetchTimerRef = useRef(null);
-
-
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasAppeared(true);
-        } else {
-          setActive(false);
-        }
-      },
-      { rootMargin: "200px 0px", threshold: 0.1 }
-    );
-
-    observer.observe(card);
-    return () => observer.disconnect();
-  }, []);
 
   // Package dependencies (gsap, three, etc.) live in each effect's registry
   // manifest, not the effect object itself - fetch it once the card is on
@@ -116,37 +95,15 @@ export function EffectCard({
     };
   }, [hasAppeared, effect?.name]);
 
-  const videoPreviewUrl = useMemo(() => resolveEffectVideoUrl(effect), [effect]);
   const coverImage = useMemo(() => resolveEffectCoverImage(effect), [effect]);
 
   const effectHref = getEffectHref(effect);
   const previewHref = getEffectPreviewHref(effect);
 
-  // Drive the <video> imperatively so React never owns `src`. Activating attaches
-  // the source and plays; deactivating detaches it, releasing the WebMediaPlayer
-  // (crbug.com/1144736). An empty <video> holds no decoder, so the element stays
-  // mounted without accumulating toward Chrome's ~75-player limit. (Managing src
-  // via a React prop + a cleanup ref breaks under StrictMode's mount/remount,
-  // which strips the attribute and never restores it.)
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !videoPreviewUrl) return;
-
-    if (active) {
-      if (video.getAttribute("src") !== videoPreviewUrl) {
-        video.src = videoPreviewUrl;
-        video.load();
-      }
-      video.play().catch(() => {});
-    } else if (video.getAttribute("src")) {
-      video.pause();
-      video.removeAttribute("src");
-      video.load();
-    }
-  }, [active, videoPreviewUrl]);
-
+  // Video playback (viewport-driven autoplay, shared concurrency cap,
+  // tab-visibility pause, stall fallback) is handled entirely by
+  // useAutoplayPreviewVideo above - this stays for the route prefetch only.
   const handleMouseEnter = () => {
-    if (videoPreviewUrl) setActive(true);
     // Delay prefetch so brushing past a card while moving the cursor doesn't
     // queue a request for every card under the pointer.
     prefetchTimerRef.current = setTimeout(() => router.prefetch(effectHref), 120);
@@ -154,13 +111,9 @@ export function EffectCard({
 
   const handleMouseLeave = () => {
     clearTimeout(prefetchTimerRef.current);
-    setActive(false);
   };
 
   useEffect(() => () => clearTimeout(prefetchTimerRef.current), []);
-
-  // active drives whether the source is attached/playing; showVideo drives opacity
-  const showVideo = active && videoReady;
 
   const primaryCategoryLabel = useMemo(() => {
     const categories = (
@@ -221,16 +174,9 @@ export function EffectCard({
           ) : (
             <div className="h-full w-full bg-[#202020]" />
           )}
-          {hasAppeared && videoPreviewUrl && (
+          {shouldRenderVideo && (
             <video
-              ref={videoRef}
-              muted
-              loop
-              playsInline
-              preload="none"
-              onLoadedData={() => setVideoReady(true)}
-              onEmptied={() => setVideoReady(false)}
-              onError={() => setVideoReady(false)}
+              {...videoProps}
               className={`absolute inset-0 h-full w-full object-cover  ${
                 showVideo ? "opacity-100" : "opacity-0"
               }`}

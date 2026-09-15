@@ -41,15 +41,20 @@ export async function recordTemplateView({ templateSlug, clerkUserId, ip }) {
 // Batch, for the /templates grid - one query for every card instead of one
 // round trip per card. Counts every day a slug has been viewed, not just
 // today - the number on the card is a running total, same as the static
-// installCount it replaced.
-export async function getTemplateViewCounts(templateSlugs) {
+// installCount it replaced. `startISO`/`endISO` (from lib/admin-activity's
+// resolveDateBounds) optionally scope this to a window - used by the admin
+// Activity overview, which needs "views in the selected range" alongside
+// its other range-scoped stats; omitted entirely (the default) for
+// /templates' own all-time card counts.
+export async function getTemplateViewCounts(templateSlugs, { startISO, endISO } = {}) {
   const counts = Object.fromEntries(templateSlugs.map((slug) => [slug, 0]));
   if (templateSlugs.length === 0) return counts;
 
-  const { data, error } = await supabase
-    .from("template_views")
-    .select("template_slug")
-    .in("template_slug", templateSlugs);
+  let query = supabase.from("template_views").select("template_slug").in("template_slug", templateSlugs);
+  if (startISO) query = query.gte("created_at", startISO);
+  if (endISO) query = query.lt("created_at", endISO);
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("TEMPLATE_VIEW_COUNTS_ERROR:", error);

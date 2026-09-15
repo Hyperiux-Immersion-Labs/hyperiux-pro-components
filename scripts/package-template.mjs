@@ -154,35 +154,13 @@ const TEMPLATES = {
       zod: "^4.4.3",
       motion: "^12.40.0",
     },
-    extraFiles: [
-      {
-        from: "apps/docs/src/components/SmoothScroll/LenisScroll.jsx",
-        to: "components/SmoothScroll/LenisScroll.jsx",
-        rewriteImports: [['"@/lib/motion"', '"../../lib/motion"']],
-      },
-      {
-        from: "apps/docs/src/lib/motion.js",
-        to: "lib/motion.js",
-        rewriteImports: [],
-      },
-    ],
-    sourceRewrites: [
-      {
-        file: "page.tsx",
-        find: '"@/components/SmoothScroll/LenisScroll"',
-        replace: '"./components/SmoothScroll/LenisScroll"',
-      },
-      {
-        file: "effects/parallax-image-animation/ParallaxImageAnimation.tsx",
-        find: '"@/lib/motion"',
-        replace: '"../../lib/motion"',
-      },
-      {
-        file: "effects/draggable-marquee/DraggableMarqueeComp.tsx",
-        find: '"@/lib/motion"',
-        replace: '"../../lib/motion"',
-      },
-    ],
+    // Fully self-contained as of this template's own reducedMotion.ts /
+    // LenisSmoothScroll.tsx / ScrollTopOnLoad.tsx (confirmed via grep - no
+    // "@/..." aliased imports anywhere in this template), same as kyntra
+    // below. Used to pull LenisScroll.jsx and lib/motion.js in from the
+    // shared app-level files; that's no longer true.
+    extraFiles: [],
+    sourceRewrites: [],
     needsGlbLoader: false,
   },
   "oris-dental": {
@@ -196,47 +174,33 @@ const TEMPLATES = {
       "@react-three/fiber": "^9.6.0",
       "@react-three/drei": "^10.7.7",
     },
+    // LenisScroll.jsx/motion.js/ScrollTopOnLoad.jsx are no longer pulled in
+    // from the shared app-level files (this template now ships its own
+    // LenisSmoothScroll.tsx/ScrollTopOnLoad.tsx, confirmed via grep - no
+    // "@/..." aliased imports left anywhere in this template) - only the 3D
+    // model remains a real cross-boundary dependency, since it lives in
+    // apps/docs/public/ (served by URL, not bundled) rather than inside
+    // template-demo/oris-dental/ itself.
     extraFiles: [
       {
-        from: "apps/docs/src/components/SmoothScroll/LenisScroll.jsx",
-        to: "components/SmoothScroll/LenisScroll.jsx",
-        rewriteImports: [['"@/lib/motion"', '"../../lib/motion"']],
-      },
-      {
-        from: "apps/docs/src/lib/motion.js",
-        to: "lib/motion.js",
-        rewriteImports: [],
-      },
-      {
-        from: "apps/docs/src/homepage-v3/components/ScrollTopOnLoad.jsx",
-        to: "components/ScrollTopOnLoad.jsx",
+        from: "apps/docs/public/templates/oris-dental/teeth-compressed.glb",
+        to: "public/teeth-compressed.glb",
         rewriteImports: [],
       },
     ],
     sourceRewrites: [
       {
-        file: "OrisWrapper.tsx",
-        find: "'@/components/SmoothScroll/LenisScroll'",
-        replace: "'./components/SmoothScroll/LenisScroll'",
-      },
-      {
-        file: "page.tsx",
-        find: '"@/homepage-v3/components/ScrollTopOnLoad"',
-        replace: '"./components/ScrollTopOnLoad"',
-      },
-      {
-        // Pre-existing quirk in the source, not something packaging
-        // introduced: this only resolved because template-demo/oris-dental/
-        // happens to share its name with the traversal target
-        // ('../../oris-dental/assets/...' from teeth-3d/ round-trips back
-        // into the same folder by coincidence). Renamed to app/ here, so
-        // the coincidence breaks - fix it to a direct relative path.
+        // MODEL_URL used to be a bundler import of a file inside this
+        // template's own assets/ (hence needsGlbLoader's webpack rule);
+        // it's since moved to a plain public/ URL string served by the
+        // live app - rewritten here to the standalone project's own
+        // public/ root instead.
         file: "teeth-3d/TeethCanvas.tsx",
-        find: "'../../oris-dental/assets/teeth-compressed.glb'",
-        replace: "'../assets/teeth-compressed.glb'",
+        find: "'/templates/oris-dental/teeth-compressed.glb'",
+        replace: "'/teeth-compressed.glb'",
       },
     ],
-    needsGlbLoader: true,
+    needsGlbLoader: false,
   },
   kyntra: {
     title: "Kyntra - Home Service Booking App Landing Page",
@@ -417,8 +381,23 @@ async function packageTemplate(slug) {
   for (const extra of manifest.extraFiles) {
     console.log(`[${slug}] copying extra shared file: ${extra.from}`);
     const from = path.join(REPO_ROOT, extra.from);
-    const to = path.join(buildDir, "app", extra.to);
+    // `to` starting with "public/" lands at the build's own root (a real
+    // Next.js public/ dir, e.g. for a static model/asset served by URL) -
+    // everything else keeps the original behavior of landing under app/
+    // (a source file the template's own code imports).
+    const to = extra.to.startsWith("public/")
+      ? path.join(buildDir, extra.to)
+      : path.join(buildDir, "app", extra.to);
     await fs.mkdir(path.dirname(to), { recursive: true });
+
+    if (!extra.rewriteImports?.length) {
+      // No text rewriting needed - copy raw bytes so binary files (e.g. a
+      // .glb model) survive intact instead of being corrupted by a
+      // read-as-utf8/write-as-utf8 round trip.
+      await fs.copyFile(from, to);
+      continue;
+    }
+
     let content = await fs.readFile(from, "utf8");
     for (const [find, replace] of extra.rewriteImports || []) {
       content = content.split(find).join(replace);

@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 
-import exp01 from "./assets/exp01.png";
+import exp01 from "./assets/exp01.webp";
 import exp02 from "./assets/exp02.jpg";
 import exp03 from "./assets/exp03.jpg";
 import { FadeUp, lineDraw } from "./gsapAnimations";

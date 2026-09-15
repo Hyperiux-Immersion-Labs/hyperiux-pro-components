@@ -5,18 +5,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { Download, Eye } from "lucide-react";
 import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
+import { TemplateCard } from "@/components/ui/TemplateCard";
+import { getTemplateBySlug } from "@/lib/mock-templates";
+import { useTemplateWishlist } from "@/app/(app)/(workspace)/templates/useTemplateWishlist";
 
 // Sibling to dashboard/saved/page.js, same client-fetch-on-mount shape, but
 // for templates the user can download (purchased standalone, or included
 // via an active annual-Pro subscription - see
 // api/dashboard/template-purchases/route.js) rather than saved effects.
+// Also renders a second "Saved" section below - templates hearted via
+// TemplateCard's Save button (wishlisted_templates, not a purchase).
 //
-// No shared card here - TemplateCard.jsx (used for "Related Templates" on
-// the template detail page) is built around a wishlist toggle and a
-// View-Detail arrow, neither of which apply to "a template you already
-// own" - its own header comment explains why it was forked from
-// EffectCardNew instead of branching that component on two concerns; same
-// reasoning applies to not forcing this list through TemplateCard.
+// No shared card for the "Purchased" section - TemplateCard.jsx (used for
+// "Saved" below, and "Related Templates" on the template detail page) is
+// built around a wishlist toggle and a View-Detail arrow, neither of which
+// apply to "a template you already own" - its own header comment explains
+// why it was forked from EffectCardNew instead of branching that component
+// on two concerns; same reasoning applies to not forcing the Purchased list
+// through TemplateCard.
 
 function formatDate(value) {
   if (!value) return null;
@@ -76,7 +82,7 @@ function OwnedTemplateCard({ template, onDownload }) {
           </p>
         </div>
 
-        <div className="mt-auto flex items-center gap-3">
+        <div className="mt-auto flex items-center gap-3 w-fit">
           <button
             type="button"
             onClick={() => {
@@ -86,10 +92,10 @@ function OwnedTemplateCard({ template, onDownload }) {
               window.location.href = template.downloadHref;
               onDownload(template);
             }}
-            className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#e0540a]"
+            className="flex flex-1  h-10 w-10 cursor-pointer items-center justify-center gap-2 bg-primary text-sm font-medium text-white transition-colors hover:bg-[#e0540a]"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
-            Download Zip
+            
           </button>
 
           <Link
@@ -111,6 +117,12 @@ export default function DashboardTemplatesPage() {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const { toast, showToast, dismissToast } = useToastQueue();
+  const { wishlist, toggleWishlist } = useTemplateWishlist({
+    onRemoved: (template) =>
+      showToast({ title: `${template.title} removed`, description: "No longer in your saved templates." }),
+  });
+
+  const savedTemplates = wishlist.map(getTemplateBySlug).filter(Boolean);
 
   const handleDownload = (template) => {
     showToast({
@@ -163,7 +175,7 @@ export default function DashboardTemplatesPage() {
         </p>
       </div>
 
-      {templates.length === 0 ? (
+      {templates.length === 0 && savedTemplates.length === 0 ? (
         <div className="rounded-md bg-[#272727] p-12 text-center">
           <h3 className="mb-2 text-2xl text-white">No templates yet</h3>
           <p className="text-zinc-400">
@@ -178,15 +190,38 @@ export default function DashboardTemplatesPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-6 max-[1025px]:grid-cols-2 max-md:grid-cols-1">
-          {templates.map((template) => (
-            <OwnedTemplateCard
-              key={template.slug}
-              template={template}
-              onDownload={handleDownload}
-            />
-          ))}
-        </div>
+        <>
+          {templates.length > 0 && (
+            <div>
+              <h2 className="mb-4 text-2xl font-semibold text-white">Purchased</h2>
+              <div className="grid grid-cols-3 gap-4 max-[1025px]:grid-cols-2 max-md:grid-cols-1">
+                {templates.map((template) => (
+                  <OwnedTemplateCard
+                    key={template.slug}
+                    template={template}
+                    onDownload={handleDownload}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {savedTemplates.length > 0 && (
+            <div>
+              <h2 className="mb-4 text-2xl font-semibold text-white">Saved</h2>
+              <div className="grid grid-cols-3 gap-4 max-[1025px]:grid-cols-2 max-md:grid-cols-1">
+                {savedTemplates.map((template) => (
+                  <TemplateCard
+                    key={template.slug}
+                    template={template}
+                    isWishlisted
+                    toggleWishlist={toggleWishlist}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
