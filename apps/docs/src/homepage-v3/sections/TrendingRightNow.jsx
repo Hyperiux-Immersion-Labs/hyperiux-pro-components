@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getEffectHref } from "@/lib/categories";
 import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
+import { useAutoplayPreviewVideo } from "@/hooks/useAutoplayPreviewVideo";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 import { horizontalLoop } from "./horizontalLoop";
 
@@ -50,68 +51,26 @@ function resolveCoverImage(effect) {
 
 function TrendingEffectCard({ effect, priority = false }) {
   const [imageError, setImageError] = useState(false);
-  const [active, setActive] = useState(false);
-  const [videoReady, setVideoReady] = useState(false);
-  const [hasAppeared, setHasAppeared] = useState(false);
-
-  const cardRef = useRef(null);
-  const videoRef = useRef(null);
 
   const coverImage = useMemo(() => resolveCoverImage(effect), [effect]);
   const videoPreviewUrl = useMemo(() => resolveEffectVideoUrl(effect), [effect]);
+  const { cardRef, showVideo, shouldRenderVideo, videoProps } =
+    useAutoplayPreviewVideo(videoPreviewUrl);
   const categoryLabel = formatLabel(
     (effect.categories?.length ? effect.categories[0] : effect.category) ||
     "components",
   );
 
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasAppeared(true);
-        } else {
-          setActive(false);
-        }
-      },
-      { rootMargin: "200px 0px", threshold: 0.1 }
-    );
-
-    observer.observe(card);
-    return () => observer.disconnect();
-  }, []);
-
-  // Drive the <video> imperatively so React never owns `src` - see the same
-  // pattern (and crbug.com/1144736 rationale) in EffectCardNew.
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !videoPreviewUrl) return;
-
-    if (active) {
-      if (video.getAttribute("src") !== videoPreviewUrl) {
-        video.src = videoPreviewUrl;
-        video.load();
-      }
-      video.play().catch(() => {});
-    } else if (video.getAttribute("src")) {
-      video.pause();
-      video.removeAttribute("src");
-      video.load();
-    }
-  }, [active, videoPreviewUrl]);
-
-  const showVideo = active && videoReady;
-
+  // Video playback (viewport-driven autoplay, shared concurrency cap - the
+  // same pool EffectCardNew's grid draws from, since both can be on screen
+  // at once on /effects - tab-visibility pause, stall fallback) is handled
+  // entirely by useAutoplayPreviewVideo. No hover handlers needed here.
   return (
     <Link
       href={getEffectHref(effect)}
       prefetch={false}
       draggable={false}
       ref={cardRef}
-      onMouseEnter={() => videoPreviewUrl && setActive(true)}
-      onMouseLeave={() => setActive(false)}
       className="group relative block h-full w-full overflow-hidden bg-[#161616]"
     >
       <span className="absolute left-5 top-3 z-10 bg-[#2B2B2B] px-3 py-[0.1vw] text-[0.8vw]  tracking-[0.06em] text-white max-md:text-[3vw] max-[1025px]:text-[2vw] max-md:px-4 max-md:py-1.5 ">
@@ -136,16 +95,9 @@ function TrendingEffectCard({ effect, priority = false }) {
         ) : (
           <div className="h-full w-full bg-[#202020]" />
         )}
-        {hasAppeared && videoPreviewUrl && (
+        {shouldRenderVideo && (
           <video
-            ref={videoRef}
-            muted
-            loop
-            playsInline
-            preload="none"
-            onLoadedData={() => setVideoReady(true)}
-            onEmptied={() => setVideoReady(false)}
-            onError={() => setVideoReady(false)}
+            {...videoProps}
             className={`absolute inset-0 h-full w-full object-cover ${
               showVideo ? "opacity-100" : "opacity-0"
             }`}
