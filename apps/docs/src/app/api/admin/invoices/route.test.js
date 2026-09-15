@@ -138,29 +138,33 @@ describe("admin/invoices route", () => {
     expect(deletedUser).toMatchObject({ userName: null, userEmail: null });
   });
 
-  it("stats reflect only real (non-test) invoices, regardless of the page/filter", async () => {
+  it("stats reflect only real (non-test) invoices, grouped by currency, regardless of the page", async () => {
     isSuperAdminResult = true;
     pageRows = [makeInvoiceRow({ is_test: true })];
     pageCount = 1;
-    realRows = [{ amount: 199900 }, { amount: 1799000 }];
+    realRows = [{ amount: 199900, currency: "INR" }, { amount: 1799000, currency: "INR" }];
 
-    const res = await GET(makeRequest("?test=test"));
+    const res = await GET(makeRequest());
     const body = await res.json();
 
-    expect(body.stats).toEqual({ totalInvoices: 2, totalRevenue: 1998900 });
+    expect(body.stats).toEqual({
+      totalInvoices: 2,
+      revenueByCurrency: [{ currency: "INR", amount: 1998900 }],
+    });
   });
 
-  it("applies the test/real filter via .eq(is_test, ...) on the page query", async () => {
+  it("always filters both the page and stats queries to real invoices via .eq(is_test, false), regardless of query params", async () => {
     isSuperAdminResult = true;
 
+    // There's no test/real toggle - every real invoice is what this table is
+    // meant to show, so both the page query and the always-real-only stats
+    // query filter is_test=false unconditionally, even with a stray/legacy
+    // `test` param on the request.
     await GET(makeRequest("?test=real"));
-    // Both the page query (filtered) and the stats query (always real-only)
-    // call .eq("is_test", false) here, so both entries are expected.
     expect(eqCalls).toEqual([["is_test", false], ["is_test", false]]);
 
     eqCalls = [];
     await GET(makeRequest("?test=test"));
-    expect(eqCalls).toContainEqual(["is_test", true]);
-    expect(eqCalls).toContainEqual(["is_test", false]);
+    expect(eqCalls).toEqual([["is_test", false], ["is_test", false]]);
   });
 });

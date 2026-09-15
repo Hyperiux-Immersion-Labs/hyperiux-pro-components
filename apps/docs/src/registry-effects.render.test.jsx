@@ -40,6 +40,8 @@ const KNOWN_LIMITATIONS = {
     "same unexplained large-batch-only import failure as dotted-grid - confirmed fine in isolation.",
   "depth-shift-transition":
     "calls next/navigation's usePathname() at render time, which throws outside a real Next.js App Router context (no PathnameContext.Provider in a bare jsdom render) - a harness limitation, not an effect bug.",
+  "elastic-accordion":
+    "calls the standard CSS.escape() (supported in every real browser since ~2016), but jsdom doesn't implement the window.CSS global at all - confirmed via a bare `new JSDOM()` check (`typeof window.CSS` is 'undefined') - a jsdom gap, not an effect bug.",
 };
 
 describe("registry effects - render contract", () => {
