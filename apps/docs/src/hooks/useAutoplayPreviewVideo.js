@@ -8,15 +8,15 @@ import { usePrefersReducedMotion } from "@/lib/motion";
 // (EffectCardNew) and the Trending carousel (TrendingRightNow) can both be
 // on screen at once (the /effects listing page renders both), so this is
 // intentionally one shared budget rather than one pool per component - two
-// independent caps of 4 would still let 8 heavy videos play at once on that
-// page. A dense grid can put a dozen+ cards within the viewport-autoplay
+// independent caps would still let 2x this many heavy videos play at once on
+// that page. A dense grid can put a dozen+ cards within the viewport-autoplay
 // trigger simultaneously; cards past the cap just keep showing their static
 // cover until a slot frees up (another card scrolls out of view) rather
-// than competing for slots or never playing. Kept modest rather than pushed
-// to the browser's real per-tab decoder limit - some preview clips are tens
-// of MB, and each concurrent one competes for the same bandwidth (see the
-// onWaiting stall fallback below).
-const MAX_CONCURRENT_PREVIEW_VIDEOS = 4;
+// than competing for slots or never playing. Some preview clips are tens of
+// MB and each concurrent one competes for the same bandwidth (see the
+// onWaiting stall fallback below), so this is still short of the browser's
+// real per-tab decoder limit even at 12.
+const MAX_CONCURRENT_PREVIEW_VIDEOS = 12;
 const playingCardIds = new Set();
 const waitingForSlot = new Map(); // cardId -> retry callback
 
