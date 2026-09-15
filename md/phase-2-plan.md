@@ -19,9 +19,9 @@
 
 ## Where the compression actually comes from
 
-Five people each running Claude Code doesn't make every task 5x faster - it makes *repetitive, batchable-across-many-files* work compress hard, because the team can split 115 effects into parallel batches and process each one with assistance. It doesn't touch work that's bottlenecked by human review, not typing speed.
+Five people each running Claude Code doesn't make every task 5x faster - it makes *repetitive, batchable-across-many-files* work compress hard, because the team can split 150+ effects into parallel batches and process each one with assistance. It doesn't touch work that's bottlenecked by human review, not typing speed.
 
-- **Compresses hardest:** typing all 115 effects, testing all 115 effects, the code-comments pass - all genuinely parallelizable across the team, batch by batch.
+- **Compresses hardest:** typing all 150+ effects, testing all 150+ effects, the code-comments pass - all genuinely parallelizable across the team, batch by batch.
 - **Compresses moderately:** the remixer panel, the registry/Sanity workflow tool, the admin dashboard - Claude Code speeds up writing and wiring the code, but these are single novel features that still need real iteration and testing, not a batch job.
 - **Barely compresses:** Sanity content entry, comparison-page research and fact-checking, design. These are bottlenecked by a person deciding and reviewing, not by how fast code gets written.
 
@@ -44,7 +44,7 @@ Five people each running Claude Code doesn't make every task 5x faster - it make
 
 Critical path Foundation → Core → Extended: **~4–5 weeks**. Design (Wave 4) runs alongside Core and Extended, not blocking either. The MCP Server stays at the tail of Extended, after Wave 1's registry fix has had time to prove out.
 
-Wave 2's TypeScript and testing retrofits changed most: split across 2–3 people running Claude Code on parallel batches of effects, rather than one person working through 115 effects sequentially.
+Wave 2's TypeScript and testing retrofits changed most: split across 2–3 people running Claude Code on parallel batches of effects, rather than one person working through 150+ effects sequentially.
 
 ---
 
@@ -69,8 +69,8 @@ Registry workflow and props schema run in parallel with CI gate and linting - tw
 |---|---|---|
 | Remixer panel + live prop controls | ~~4–5 days~~ | 🟡 Built, not yet merged - `790541607` → `d0354fb5d` "implemented remixer panel in all effects", still only on `props-remixer` |
 | ~~Props table in Sanity~~ | ~~1–2 days + ongoing~~ | ⏹ Descoped - props/data render directly from the registry on effect detail pages instead of a separate Sanity table |
-| TypeScript, all 115 effects | ~1.5 wk | 🟡 In progress - infra done, pilot (`scroll-stack`, `hover-stack`) converted and verified; see `typescript-migration-plan.md` for the category-by-category rollout |
-| Tests, all 115 effects | ~~1 wk~~ | ✅ Done - [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19) |
+| TypeScript, all 150+ effects | ~1.5 wk | 🟡 In progress - infra done, pilot (`scroll-stack`, `hover-stack`) converted and verified; see `typescript-migration-plan.md` for the category-by-category rollout |
+| Tests, all 150+ effects | ~~1 wk~~ | ✅ Done - [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19) |
 | Admin dashboard expansion | 2–3 days | Login/activity tracking, Vercel Analytics in-app, daily install/copy metric - extends existing email log view |
 | Accessibility badge | 1 day | 94% of effects already handle reduced motion - surfaces it as a trust signal |
 | "Similar effects" recommendations | 1 day | Category/tag-based, no ML needed |
@@ -80,7 +80,7 @@ Registry workflow and props schema run in parallel with CI gate and linting - tw
 | Default image + text hardening | ~~1 day~~ | ✅ Done - remaining components already ship with real images/text, no blank-state gap found |
 | Em dash cleanup in Sanity | 1 day | Same style rule already applied to CLI README/changelog |
 
-**Tests, all 115 effects - shipped, jsdom + `@testing-library/react` harness in `apps/docs`, scope confirmed as render-mounts-cleanly + prop-contract (the "One remaining call" below is now resolved on that basis):** 110/115 effects pass a real mount-without-throwing check; the other 5 are documented, individually-reasoned known limitations, not silent gaps - `fish-eye` imports `three/webgpu`, which can't run outside a real browser GPU context, and 4 effects (`dotted-grid`, `full-screen-crosshair`, `svg-pixel-reveal`, `text-stream`) only fail to import when batched with ~30+ others in one test session despite working fine alone, an unresolved vite-node/esbuild tooling quirk rather than a bug in any of them. Building the harness also surfaced a real, live bug: `liquid-glass-cursor`'s main file held JSX but was named `index.js` instead of `.jsx` - harmless in this repo's own permissive webpack config, but would fail to parse for anyone installing that Pro effect via the CLI into a standard toolchain. Fixed alongside the harness.
+**Tests, all 150+ effects - shipped, jsdom + `@testing-library/react` harness in `apps/docs`, scope confirmed as render-mounts-cleanly + prop-contract (the "One remaining call" below is now resolved on that basis):** 110/150+ effects pass a real mount-without-throwing check; the other 5 are documented, individually-reasoned known limitations, not silent gaps - `fish-eye` imports `three/webgpu`, which can't run outside a real browser GPU context, and 4 effects (`dotted-grid`, `full-screen-crosshair`, `svg-pixel-reveal`, `text-stream`) only fail to import when batched with ~30+ others in one test session despite working fine alone, an unresolved vite-node/esbuild tooling quirk rather than a bug in any of them. Building the harness also surfaced a real, live bug: `liquid-glass-cursor`'s main file held JSX but was named `index.js` instead of `.jsx` - harmless in this repo's own permissive webpack config, but would fail to parse for anyone installing that Pro effect via the CLI into a standard toolchain. Fixed alongside the harness.
 
 ## Wave 3 - Extended
 
@@ -114,8 +114,8 @@ Held for later, correctly - needs a real designer, not dev-driven design-in-code
 
 ## Resolved calls
 
-**How deep should "proper tests for all 115 effects" go?** - Resolved: render-mounts-cleanly + prop-contract, not full pixel-diff visual regression. Shipped on that basis in [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19); see Wave 2 above. Full visual regression remains a separate, larger infrastructure project if it's ever wanted.
+**How deep should "proper tests for all 150+ effects" go?** - Resolved: render-mounts-cleanly + prop-contract, not full pixel-diff visual regression. Shipped on that basis in [PR #19](https://github.com/Hyperiux-Immersion-Labs/hyperiux-pro-components/pull/19); see Wave 2 above. Full visual regression remains a separate, larger infrastructure project if it's ever wanted.
 
 ---
 
-*Hyperiux Vault - Phase 2, Rev. 8 · Wave 1: 3/4 done, 1 built-unmerged · Wave 2: 4 done, 1 built-unmerged, 1 descoped, 6 open · Wave 3: 1/2 done · ~4–5 wk critical path · TS: all 115 effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*
+*Hyperiux Vault - Phase 2, Rev. 8 · Wave 1: 3/4 done, 1 built-unmerged · Wave 2: 4 done, 1 built-unmerged, 1 descoped, 6 open · Wave 3: 1/2 done · ~4–5 wk critical path · TS: all 150+ effects, parallelized · Design: gated, parallel · Comparisons: Aceternity, Magic UI, Osmo + 1*

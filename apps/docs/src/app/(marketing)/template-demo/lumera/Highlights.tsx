@@ -8,10 +8,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import SmoothInfiniteCarousel, {
   type KeyboardSlider,
 } from "./smooth-carousel/SmoothInfiniteCarousel";
-import highlight1 from "./assets/highlight-1.png";
-import highlight2 from "./assets/highlight-2.png";
-import highlight3 from "./assets/highlight-3.png";
-import highlight4 from "./assets/highlight-4.png";
+import highlight1 from "./assets/highlight-1.webp";
+import highlight2 from "./assets/highlight-2.webp";
+import highlight3 from "./assets/highlight-3.webp";
+import highlight4 from "./assets/highlight-4.webp";
 import MaskTextReveal from "./effects/mask-text-reveal";
 import { FadeUp } from "./gsapAnimations";
 

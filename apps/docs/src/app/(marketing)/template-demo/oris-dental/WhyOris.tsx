@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import SlotCounter from './effects/slot-counter/SlotCounter'
 import SplitTextLines from './effects/split-text-lines/SplitTextLines'
-import WhyUsBg from './assets/oris-whyus.png'
+import WhyUsBg from './assets/oris-whyus.webp'
 
 const WHY_STATS = [
     {

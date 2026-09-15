@@ -217,7 +217,7 @@ All 5 effects (`clippath-slider`, `infinite-carousel`, `ring-carousel`, `webgl-s
 
 ## Part 2 - Reduced-motion audit
 
-*(formerly `reduced-motion-audit-report.md`, covers all 115 effects at the time)*
+*(formerly `reduced-motion-audit-report.md`, covers all 150+ effects at the time)*
 
 
 Audits every effect under `registry/effects/{category}/{effect-name}/` for consistency between:
@@ -227,7 +227,7 @@ Audits every effect under `registry/effects/{category}/{effect-name}/` for consi
 
 Status legend: **CONSISTENT** (claim matches code) · **MISMATCH** (claim and code disagree) · **UNDOCUMENTED** (code has reduced-motion logic with no changelog claim) · **MIRROR_OK** / **MIRROR_DRIFT** (docs copy matches / diverges from registry copy).
 
-**Status: complete.** All 11 categories / 115 effects audited (registry `.jsx` code vs. `registry.json` changelog claims, plus the `apps/docs/src/components/{effect-name}/` mirror).
+**Status: complete.** All 11 categories / 150+ effects audited (registry `.jsx` code vs. `registry.json` changelog claims, plus the `apps/docs/src/components/{effect-name}/` mirror).
 
 **Totals:** 109 consistent · 1 mismatch (open) · 5 undocumented (all fixed 2026-07-28) · 5 mirror drifts (all fixed 2026-07-28).
 

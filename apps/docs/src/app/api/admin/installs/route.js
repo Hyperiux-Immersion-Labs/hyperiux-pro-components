@@ -9,7 +9,7 @@ import { buildDailyBucketsForRange, fillDailyBuckets, resolveDateBounds, utcDate
 // The single question this exists to answer: are the limits right, or are
 // CI pipelines / monorepos / shared office IPs about to get falsely capped?
 
-const TOP_USERS_LIMIT = 15;
+const TOP_USERS_LIMIT = 10;
 
 // Same success-vs-attempt distinction as /api/admin/copy-activity - "allowed"
 // and "already-unlocked" are real deliveries, "denied" rows never happened.

@@ -8,11 +8,11 @@ import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 
-import portfolio1 from "./assets/portfolio-img-new-1.png";
-import portfolio2 from "./assets/portfolio-img-new-2.png";
-import portfolio3 from "./assets/portfolio-img-new-3.png";
-import portfolio4 from "./assets/portfolio-img-new-4.png";
-import portfolio5 from "./assets/portfolio-img-new-5.png";
+import portfolio1 from "./assets/portfolio-img-new-1.webp";
+import portfolio2 from "./assets/portfolio-img-new-2.webp";
+import portfolio3 from "./assets/portfolio-img-new-3.webp";
+import portfolio4 from "./assets/portfolio-img-new-4.webp";
+import portfolio5 from "./assets/portfolio-img-new-5.webp";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 

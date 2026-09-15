@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { razorpay } from "@/lib/razorpay";
 import { getTemplateBySlug } from "@/lib/mock-templates";
@@ -18,11 +18,6 @@ export async function POST(req) {
 
     const body = await req.json().catch(() => ({}));
     const { templateSlug } = body;
-
-    let amount;
-    let currency;
-    let receipt;
-    const notes = { clerk_user_id: userId };
 
     if (templateSlug) {
       const template = getTemplateBySlug(templateSlug);
@@ -45,24 +40,64 @@ export async function POST(req) {
       // equivalent) would undercharge by roughly 88x - block it server-side
       // rather than trust a client-supplied currency, until real INR
       // pricing exists per template.
-      amount = price;
-      currency = "USD";
-      receipt = `template_${templateSlug}_${Date.now()}`;
-      notes.template_slug = templateSlug;
-    } else {
-      amount =
-        Number.isFinite(body?.amount) && body.amount > 0
-          ? body.amount
-          : TEST_AMOUNT_INR;
-      currency = "INR";
-      receipt = `test_${Date.now()}`;
+      const amount = price;
+      const currency = "USD";
+
+      // An Invoice, not a bare Order - unlike the legacy test-payment branch
+      // below, so this gets a real Razorpay-hosted receipt (short_url,
+      // rzp.io/... -> invoices.razorpay.com/...) the same way subscription
+      // invoices already do (see lib/pro-access.js's recordInvoice, which
+      // stores the *subscription's* short_url - Orders have no equivalent
+      // field, Invoices do). Razorpay auto-generates an order_id for it,
+      // which Checkout.js opens exactly like a bare order - the frontend
+      // (RazorpayCheckoutButton) needs no changes.
+      const client = await clerkClient();
+      const clerkUser = await client.users.getUser(userId).catch(() => null);
+      const email = clerkUser?.emailAddresses?.[0]?.emailAddress;
+
+      const invoice = await razorpay.invoices.create({
+        type: "invoice",
+        currency,
+        customer: {
+          name: clerkUser?.fullName || clerkUser?.firstName || undefined,
+          email: email || undefined,
+        },
+        line_items: [
+          {
+            name: template.title,
+            amount: Math.round(amount * 100),
+            currency,
+            quantity: 1,
+          },
+        ],
+        notes: { clerk_user_id: userId, template_slug: templateSlug },
+        receipt: `template_${templateSlug}_${Date.now()}`,
+        // Checkout.js is the notification here (the visitor is already in
+        // the payment modal) - Razorpay's own invoice email/SMS default to
+        // on, which would otherwise fire before the visitor has even paid.
+        sms_notify: 0,
+        email_notify: 0,
+      });
+
+      return NextResponse.json({
+        orderId: invoice.order_id,
+        amount: Math.round(amount * 100),
+        currency,
+        keyId: process.env.RAZORPAY_KEY_ID,
+      });
     }
+
+    const amount =
+      Number.isFinite(body?.amount) && body.amount > 0
+        ? body.amount
+        : TEST_AMOUNT_INR;
+    const currency = "INR";
 
     const order = await razorpay.orders.create({
       amount: Math.round(amount * 100),
       currency,
-      receipt,
-      notes,
+      receipt: `test_${Date.now()}`,
+      notes: { clerk_user_id: userId },
     });
 
     return NextResponse.json({

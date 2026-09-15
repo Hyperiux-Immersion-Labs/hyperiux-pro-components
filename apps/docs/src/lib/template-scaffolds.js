@@ -14,13 +14,13 @@ import "server-only";
 // and rewrites the matching entry below directly.
 export const TEMPLATE_SCAFFOLD_BLOB_URLS = {
   elenavoss:
-    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/elenavoss-lHY1cEryPhxRErAoz0kTFjpiUXgnlu.zip",
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/elenavoss-wtU3Eq1fOQIfwD289uQfEeGHk4tsQb.zip",
   lumera:
-    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/lumera.zip",
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/lumera-583eQBwXYa2EArqpNKrcK6djP7VjUF.zip",
   "oris-dental":
-    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/oris-dental.zip",
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/oris-dental-vOJx06TptOh7AdyalL92wIWv7Vj3Kl.zip",
   kyntra:
-    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/kyntra-9Y0qKrzT9UyaWT3jtsc96tYreNtmrO.zip",
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/kyntra-bAFlRQS1AqYezVrMBXAohkgMfWEMsm.zip",
 };
 
 export function getTemplateScaffoldUrl(slug) {

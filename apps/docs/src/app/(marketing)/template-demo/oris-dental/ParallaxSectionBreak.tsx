@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useLenis } from 'lenis/react'
 import React, { useRef } from 'react'
 import TextFill from './effects/text-fill/TextFill'
-import ParallaxBg from './assets/parallax.png'
+import ParallaxBg from './assets/parallax.webp'
 
 const STATEMENT_TEXT =
     "At Oris Dental, our comprehensive dentist services are designed to keep your smile healthy and confident from preventive care that catches issues early to restorative treatments that bring back your natural comfort, we're here to help you enjoy lasting oral health."

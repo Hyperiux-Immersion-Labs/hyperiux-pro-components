@@ -283,21 +283,25 @@ h4 {
    0. Scoping it to browsers that don't support the legacy pseudo-elements
    keeps Chrome/Safari on the fully customizable path. */
 @supports not selector(::-webkit-scrollbar) {
-  .effect-rank-slider {
+  .effect-rank-slider,
+  .template-rank-slider {
     scrollbar-width: thin;
     scrollbar-color: #ff5f00 transparent;
   }
 }
 
-.effect-rank-slider::-webkit-scrollbar {
+.effect-rank-slider::-webkit-scrollbar,
+.template-rank-slider::-webkit-scrollbar {
   height: 4px;
 }
 
-.effect-rank-slider::-webkit-scrollbar-track {
+.effect-rank-slider::-webkit-scrollbar-track,
+.template-rank-slider::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.effect-rank-slider::-webkit-scrollbar-thumb {
+.effect-rank-slider::-webkit-scrollbar-thumb,
+.template-rank-slider::-webkit-scrollbar-thumb {
   background: #ff5f00;
   border-radius: 0;
 }

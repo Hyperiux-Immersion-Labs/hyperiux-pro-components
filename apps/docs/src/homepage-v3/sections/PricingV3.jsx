@@ -34,7 +34,7 @@ const FREE_FEATURES = [
 ];
 
 const PRO_FEATURES = [
-    "All 130+ effects",
+    "All 150+ effects",
     "New effects added regularly",
     "Priority access to upcoming packs",
     "Hyperiux CLI install + auth",

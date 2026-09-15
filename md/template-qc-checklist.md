@@ -200,7 +200,7 @@ npm run template:create -- <slug> ["Title Case Name"]
 # e.g. npm run template:create -- aria-clinic "Aria Clinic"
 ```
 
-`--` matters if the title has spaces — without it, npm forwards a quoted
+`--` matters if the title has spaces - without it, npm forwards a quoted
 arg as several separate words instead of one (the script now tolerates
 either way by joining everything after `<slug>`, but `--` is the
 unambiguous form). This runs `scripts/create-template.mjs`, which:
@@ -213,7 +213,7 @@ unambiguous form). This runs `scripts/create-template.mjs`, which:
   somewhere to write the real URL once this template has one.
 - Prints ready-to-paste manifest snippets for
   `scripts/package-template.mjs`'s `TEMPLATES` object and
-  `apps/docs/src/lib/mock-templates.js`'s `TEMPLATES` array — deliberately
+  `apps/docs/src/lib/mock-templates.js`'s `TEMPLATES` array - deliberately
   **not** auto-inserted, since pricing, category, dependencies, and tagline
   are real decisions the script can't guess at.
 
@@ -231,7 +231,7 @@ npm run template:update <slug>
 
 from the repo root (`scripts/package-template.mjs`). One command rebuilds
 the zip from the latest source, uploads it to Vercel Blob, and rewrites the
-matching entry in `apps/docs/src/lib/template-scaffolds.js` directly —
+matching entry in `apps/docs/src/lib/template-scaffolds.js` directly -
 review and commit that file change like any other code change. Requires
 `BLOB_READ_WRITE_TOKEN` (auto-loaded from `apps/docs/.env.local` if not
 already set in the shell). Re-run the relevant [BLOCK] items above (§3 build,

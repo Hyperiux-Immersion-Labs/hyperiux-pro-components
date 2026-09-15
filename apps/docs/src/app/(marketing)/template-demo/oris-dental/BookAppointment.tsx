@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import ContactForm from './effects/contact-form/ContactForm'
 import SplitTextLines from './effects/split-text-lines/SplitTextLines'
-import FormBg from './assets/animated-form-bg.png'
+import FormBg from './assets/animated-form-bg.webp'
 
 export default function BookAppointment() {
     return (

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 //
 // Render + prop-contract regression net for all registry effects (Phase 2,
-// Wave 2 "Tests, all 115 effects"). Scope is deliberately render-mounts-
+// Wave 2 "Tests, all 150+ effects"). Scope is deliberately render-mounts-
 // cleanly, not pixel-diff visual regression - see phase-2-plan.md.
 //
 // One `it()` per effect (not one file per effect) so the pass/fail list

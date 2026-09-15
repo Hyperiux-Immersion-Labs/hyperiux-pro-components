@@ -13,6 +13,7 @@ export async function recordTemplatePurchase({
   razorpayOrderId,
   amount,
   currency = "USD",
+  invoiceUrl,
 }) {
   if (!clerkUserId || !templateSlug || !razorpayPaymentId) return;
 
@@ -25,6 +26,7 @@ export async function recordTemplatePurchase({
       amount: amount ?? null,
       currency,
       status: "paid",
+      invoice_url: invoiceUrl || null,
     },
     { onConflict: "razorpay_payment_id", ignoreDuplicates: true }
   );

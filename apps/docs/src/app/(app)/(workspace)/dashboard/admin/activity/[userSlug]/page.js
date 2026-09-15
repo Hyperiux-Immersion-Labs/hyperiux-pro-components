@@ -7,6 +7,26 @@ import { ArrowLeft } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
 import { LineTrendChart } from "@/components/admin/charts/LineTrendChart";
 import { EffectRankSlider } from "@/components/admin/EffectRankSlider";
+import { TemplateCard } from "@/components/ui/TemplateCard";
+import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+
+// Same date-range picker as dashboard/admin/activity - every stat, list,
+// and chart on this page is scoped to it, not just a fixed "last 30 days".
+const DATE_RANGE_OPTIONS = [
+  { value: "today", label: "Today" },
+  { value: "7d", label: "Last 7 days" },
+  { value: "30d", label: "Last 30 days" },
+  { value: "90d", label: "Last 90 days" },
+  { value: "all", label: "All time" },
+  { value: "custom", label: "Custom range" },
+];
+
+const INSTALL_SOURCE_SERIES = [
+  { dataKey: "web", color: "#ff5f00", label: "Web" },
+  { dataKey: "cli", color: "#4ade80", label: "CLI" },
+  { dataKey: "mcp", color: "#60a5fa", label: "MCP" },
+];
 
 // Users can land here from three different places (User Management, the
 // Activity tab's user table, or its "Top users by copies" list) - going
@@ -128,16 +148,30 @@ function formatAmount(amount, currency = "INR") {
   }
 }
 
-// stats.lifetimeSpend from the API is already a decimal (pre-divided
-// server-side), not the smallest currency unit - format it directly rather
-// than round-tripping through formatAmount's paise assumption. Takes the
-// same currency as stats.lifetimeSpendCurrency, which the API derives from
-// the user's own paid invoices - so this always matches what Billing
-// History below shows per-row, instead of a hardcoded "INR" that reads
-// wrong for a USD customer.
+// template_purchases.amount is already whole currency units (see
+// api/admin/template-purchases/route.js's own comment on this), unlike
+// invoices.amount above - this must not divide by 100.
+function formatTemplateAmount(amount, currency = "USD") {
+  if (typeof amount !== "number") return "-";
+
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    return `${amount.toFixed(2)} ${currency}`;
+  }
+}
+
+// stats.lifetimeSpendByCurrency amounts are already decimals (pre-divided/
+// combined server-side across invoices and template_purchases), not the
+// smallest currency unit - format directly rather than round-tripping
+// through formatAmount's paise assumption.
 function formatSpend(amount, currency = "INR") {
   try {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
       style: "currency",
       currency,
       minimumFractionDigits: 2,
@@ -145,6 +179,14 @@ function formatSpend(amount, currency = "INR") {
   } catch {
     return `${(amount || 0).toFixed(2)} ${currency}`;
   }
+}
+
+// Looks up each currency's own total instead of summing the array or
+// defaulting to "whichever invoice happened to be first" - a user can have
+// both an INR and a USD payment on file, and blending/mislabeling those is
+// exactly the bug this replaced (a real $179 spend was showing as "₹179").
+function spendFor(stats, currency) {
+  return stats?.lifetimeSpendByCurrency?.find((row) => row.currency === currency)?.amount || 0;
 }
 
 function StatusBadge({ status }) {
@@ -167,16 +209,30 @@ export default function AdminUserActivityPage({ params }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [range, setRange] = useState("all");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+  const isCustomRange = range === "custom";
 
   useEffect(() => {
+    if (isCustomRange && !customFrom && !customTo) return;
+
     let active = true;
 
     async function loadActivity() {
       try {
+        const params = new URLSearchParams();
+        if (isCustomRange) {
+          if (customFrom) params.set("from", customFrom);
+          if (customTo) params.set("to", customTo);
+        } else {
+          params.set("range", range);
+        }
+
         // The API route extracts the real Clerk user id from the slug -
         // forwarding the whole thing keeps the two in lockstep instead of
         // duplicating the "--id" parsing on the client too.
-        const res = await fetch(`/api/admin/activity/${userSlug}`);
+        const res = await fetch(`/api/admin/activity/${userSlug}?${params.toString()}`);
         const json = await res.json();
 
         if (!res.ok) throw new Error(json.error || "Failed to load user activity");
@@ -193,7 +249,7 @@ export default function AdminUserActivityPage({ params }) {
     return () => {
       active = false;
     };
-  }, [userSlug]);
+  }, [userSlug, range, isCustomRange, customFrom, customTo]);
 
   if (loading) {
     return <ActivityDetailSkeleton />;
@@ -216,11 +272,12 @@ export default function AdminUserActivityPage({ params }) {
     session,
     subscription,
     stats,
-    copyTrend,
+    installTrend,
     savedEffects,
     copiedEffects,
     installedEffects,
     templatePurchases,
+    purchasedTemplates,
     invoices,
   } = data;
 
@@ -235,7 +292,21 @@ export default function AdminUserActivityPage({ params }) {
 
   return (
     <div className="space-y-4">
-      <BackLink />
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <BackLink />
+
+        <div className="flex items-center gap-2 flex-wrap">
+          {isCustomRange && (
+            <DateRangeCalendarPicker
+              from={customFrom}
+              to={customTo}
+              onFromChange={setCustomFrom}
+              onToChange={setCustomTo}
+            />
+          )}
+          <CustomSelect size="compact" align="right" value={range} onChange={setRange} options={DATE_RANGE_OPTIONS} />
+        </div>
+      </div>
 
       <div className="flex items-center gap-4">
         {profile.imageUrl ? (
@@ -281,11 +352,8 @@ export default function AdminUserActivityPage({ params }) {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <StatCard label="Saved Effects" value={stats.savedCount} />
-        <StatCard label="Effects Copied" value={stats.copiedCount} />
-        <StatCard
-          label="Lifetime Spend"
-          value={formatSpend(stats.lifetimeSpend, stats.lifetimeSpendCurrency)}
-        />
+        <StatCard label="Total Installed" value={stats.installedCount} />
+        <StatCard label="Copied from Web" value={stats.copiedCount} />
         <StatCard label="Templates Purchased" value={templatePurchases.length} />
         <StatCard
           label="Last Sign-in"
@@ -304,9 +372,20 @@ export default function AdminUserActivityPage({ params }) {
         />
       </div>
 
+      <div className="grid gap-4 md:grid-cols-2">
+        <StatCard
+          label="Lifetime Spend (INR)"
+          value={formatSpend(spendFor(stats, "INR"), "INR")}
+        />
+        <StatCard
+          label="Lifetime Spend (USD)"
+          value={formatSpend(spendFor(stats, "USD"), "USD")}
+        />
+      </div>
+
       <div className=" bg-[#272727] p-6">
-        <p className="mb-4 text-white">Copy activity - last 30 days</p>
-        <LineTrendChart data={copyTrend} xKey="label" color="#ff5f00" valueLabel="copies" />
+        <p className="mb-4 text-white">Installs</p>
+        <LineTrendChart data={installTrend} xKey="label" series={INSTALL_SOURCE_SERIES} />
       </div>
 
       <div className="flex flex-col gap-5">
@@ -368,18 +447,25 @@ export default function AdminUserActivityPage({ params }) {
             )}
           </div>
         )}
+
+        {purchasedTemplates.length > 0 && (
+          <div>
+            <p className="mb-4 text-white text-xl">Purchased Templates ({purchasedTemplates.length})</p>
+            <div className="grid grid-cols-3 gap-4 max-[1025px]:grid-cols-2 max-md:grid-cols-1">
+              {purchasedTemplates.map((template) => (
+                <TemplateCard key={template.slug} template={template} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      <div>
-        <h2 className="mb-3 text-lg font-medium text-white">
-          Billing History ({invoices.length})
-        </h2>
+      {invoices.length > 0 && (
+        <div>
+          <h2 className="mb-3 text-lg font-medium text-white">
+            Billing History ({invoices.length})
+          </h2>
 
-        {invoices.length === 0 ? (
-          <div className=" bg-[#272727] p-6 text-center text-sm text-white/40">
-            No invoices yet.
-          </div>
-        ) : (
           <div className="overflow-x-auto  bg-[#272727]">
             <table className="w-full text-left text-sm">
               <thead>
@@ -387,7 +473,9 @@ export default function AdminUserActivityPage({ params }) {
                   <th className="px-6 py-4 font-medium">Date</th>
                   <th className="px-6 py-4 font-medium">Plan</th>
                   <th className="px-6 py-4 font-medium">Amount</th>
+                  <th className="px-6 py-4 font-medium">Payment ID</th>
                   <th className="px-6 py-4 font-medium">Status</th>
+                  <th className="px-6 py-4 font-medium">Receipt</th>
                 </tr>
               </thead>
 
@@ -396,41 +484,49 @@ export default function AdminUserActivityPage({ params }) {
                   <tr key={invoice.id} className="border-b border-white/5 last:border-0">
                     <td className="px-6 py-4 text-white">{formatDateTime(invoice.created_at)}</td>
 
-                    <td className="px-6 py-4 text-white/80">
-                      {invoice.plan_label || "Vault Pro"}
-                      {invoice.is_test && (
-                        <span className="ml-2  bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/50">
-                          Test
-                        </span>
-                      )}
-                    </td>
+                    <td className="px-6 py-4 text-white/80">{invoice.plan_label || "Vault Pro"}</td>
 
                     <td className="px-6 py-4 text-white">
                       {formatAmount(invoice.amount, invoice.currency)}
                     </td>
 
+                    <td className="px-6 py-4 font-mono text-xs text-white/50">
+                      {invoice.razorpay_payment_id ? `${invoice.razorpay_payment_id.slice(0, 16)}…` : "-"}
+                    </td>
+
                     <td className="px-6 py-4">
                       <StatusBadge status={invoice.status} />
+                    </td>
+
+                    <td className="px-6 py-4">
+                      {invoice.invoice_url ? (
+                        <a
+                          href={invoice.invoice_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#ff5f00] hover:text-[#ff7a29]"
+                        >
+                          View
+                        </a>
+                      ) : (
+                        <span className="text-white/25">-</span>
+                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      <div>
-        <h2 className="mb-3 text-lg font-medium text-white">
-          Template Purchases ({templatePurchases.length})
-        </h2>
+      {templatePurchases.length > 0 && (
+        <div>
+          <h2 className="mb-3 text-lg font-medium text-white">
+            Template Purchases ({templatePurchases.length})
+          </h2>
 
-        {templatePurchases.length === 0 ? (
-          <div className="rounded-md bg-[#272727] p-6 text-center text-sm text-white/40">
-            No template purchases yet.
-          </div>
-        ) : (
-          <div className="overflow-x-auto rounded-md bg-[#272727]">
+          <div className="overflow-x-auto  bg-[#272727]">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-white/50">
@@ -439,6 +535,7 @@ export default function AdminUserActivityPage({ params }) {
                   <th className="px-6 py-4 font-medium">Amount</th>
                   <th className="px-6 py-4 font-medium">Payment ID</th>
                   <th className="px-6 py-4 font-medium">Status</th>
+                  <th className="px-6 py-4 font-medium">Receipt</th>
                 </tr>
               </thead>
 
@@ -460,13 +557,28 @@ export default function AdminUserActivityPage({ params }) {
                     <td className="px-6 py-4">
                       <StatusBadge status={purchase.status} />
                     </td>
+
+                    <td className="px-6 py-4">
+                      {purchase.invoiceUrl ? (
+                        <a
+                          href={purchase.invoiceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#ff5f00] hover:text-[#ff7a29]"
+                        >
+                          View
+                        </a>
+                      ) : (
+                        <span className="text-white/25">-</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

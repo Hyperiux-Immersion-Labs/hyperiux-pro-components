@@ -4,11 +4,11 @@
 import { useEffect, useState } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import architecture1 from "./assets/architecture-1.png";
-import architecture2 from "./assets/architecture-2.png";
-import architecture3 from "./assets/architecture-3.png";
-import architecture4 from "./assets/architecture-4.png";
-import architecture5 from "./assets/architecture-5.png";
+import architecture1 from "./assets/architecture-1.webp";
+import architecture2 from "./assets/architecture-2.webp";
+import architecture3 from "./assets/architecture-3.webp";
+import architecture4 from "./assets/architecture-4.webp";
+import architecture5 from "./assets/architecture-5.webp";
 import squareIcon from "./assets/icons/square.svg";
 import ParallaxImageAnimation from "./effects/parallax-image-animation/ParallaxImageAnimation";
 import Image, { type StaticImageData } from "next/image";

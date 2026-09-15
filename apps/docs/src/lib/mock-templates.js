@@ -1,3 +1,10 @@
+// Shared OG/Twitter card image for the whole Templates section (the
+// /templates listing and every /templates/[slug] detail page) - used
+// instead of a per-template screenshot so a shared link always previews
+// with the same branded "Templates" card.
+export const TEMPLATES_OG_IMAGE =
+  "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/templates-og.jpg";
+
 // Design-only mock data for the Templates listing/detail pages - no
 // Sanity/registry backing yet, see md/sections-templates-plan.md. Each of
 // these three is a real, fully-built template already live at

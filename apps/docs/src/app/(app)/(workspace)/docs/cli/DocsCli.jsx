@@ -47,12 +47,47 @@ const initConfig = `{
   }
 }`;
 
-const listOutput = `Installed Vault effects
+const listOutput = `Available Effects
 
-phantom-image-trail
-  version: 1.0.0
-  path: components/hyperiux/phantom-image-trail/index.jsx
-  dependencies: gsap`;
+Free Effects
+
+Scroll
+
+  circular-split-roll (gsap, lenis)
+  rotation-slider (gsap, lucide-react)
+  text-convergence (gsap)
+
+Cursor
+
+  liquid-glass-cursor (motion)
+  phantom-image-trail (gsap)
+  pixelated-image-effect
+
+Text
+
+  chromatic-text (gsap)
+  typing-text
+
+...
+
+Pro Effects
+
+Scroll
+
+  cards-runway (gsap)
+  helix-slider (@react-three/fiber, three)
+
+Cursor
+
+  colorful-cursor-aura (gsap)
+  full-screen-crosshair
+
+Webgl
+
+  3d-portfolio-slider (three, gsap, lenis)
+  hyperiux-glitter (three, @react-three/fiber, @react-three/drei, @react-three/postprocessing)
+
+... (effects are grouped by tier, then category - run the command yourself for the full, up-to-date list)`;
 
 const recommendedWorkflowCommands = `npx hyperiux init
 npx hyperiux add [effect-name]
@@ -335,7 +370,7 @@ export default function DocsCli() {
 
       <Heading2 id="list" className="text-[#addb67]!">list</Heading2>
 
-      <Para>List the effects installed in the project.</Para>
+      <Para>List all the available effects.</Para>
 
       <CodeBlock code={listCommand} />
 

@@ -7,7 +7,7 @@ import { useLenis } from "lenis/react";
 import PrimaryButton from "./PrimaryButton";
 import CharStaggerButton from "./effects/char-stagger-button";
 import Image from "next/image";
-import lumeraLogo from "./assets/icons/lumera-logo.png";
+import lumeraLogo from "./assets/icons/lumera-logo.webp";
 import { prefersReducedMotion } from "./reducedMotion";
 import { useEnquiryModal } from "./EnquiryModal";
 

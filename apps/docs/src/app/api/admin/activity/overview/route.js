@@ -4,6 +4,10 @@ import { assertAdmin } from "@/lib/admin";
 import { getEffectMetadata } from "@/lib/registry";
 import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
 import { buildDailyBucketsForRange, fillDailyBuckets, resolveDateBounds } from "@/lib/admin-activity";
+import { TEMPLATES } from "@/lib/mock-templates";
+import { getTemplateViewCounts } from "@/lib/template-views";
+
+const TOP_TEMPLATES_LIMIT = 10;
 
 const TOP_EFFECTS_LIMIT = 10;
 
@@ -58,9 +62,11 @@ export async function GET(request) {
       { data: allCopyRows, error: allCopyError },
       { data: allInstallRows, error: allInstallError },
       { data: allSavedRows, error: allSavedError },
+      { data: savedTemplateRows, error: savedTemplateError },
       { data: revenueRows, error: revenueError },
       { data: templatePurchaseRows, error: templatePurchaseError },
       sanityEntries,
+      templateViewCounts,
     ] = await Promise.all([
       scoped(supabase.from("subscriptions").select("clerk_user_id", { count: "exact", head: true })),
       scoped(
@@ -90,9 +96,14 @@ export async function GET(request) {
       // "installs" is used on this page.
       scoped(supabase.from("install_unlocks").select("effect_slug"), "usage_date"),
       scoped(supabase.from("wishlisted_effects").select("effect_slug")),
+      scoped(supabase.from("wishlisted_templates").select("template_slug")),
       // is_test excluded - those are admin-generated sample bills, not real revenue.
       scoped(
-        supabase.from("invoices").select("amount, created_at").eq("status", "paid").eq("is_test", false)
+        supabase
+          .from("invoices")
+          .select("amount, currency, created_at")
+          .eq("status", "paid")
+          .eq("is_test", false)
       ),
       // Counted, not summed by amount: template_purchases mixes currencies
       // (USD and INR orders both land here - see create-order/route.js),
@@ -100,6 +111,13 @@ export async function GET(request) {
       // purchase count avoids that without needing currency conversion.
       scoped(supabase.from("template_purchases").select("created_at")),
       getAllSanityEffectEntries(),
+      // Scoped to the same window as everything else on this page (view
+      // rows carry their own created_at) - unlike /templates' own all-time
+      // card counts, which call this with no range at all.
+      getTemplateViewCounts(
+        TEMPLATES.map((template) => template.slug),
+        { startISO, endISO }
+      ),
     ]);
 
     const firstError =
@@ -112,6 +130,7 @@ export async function GET(request) {
       allCopyError ||
       allInstallError ||
       allSavedError ||
+      savedTemplateError ||
       revenueError ||
       templatePurchaseError;
 
@@ -159,9 +178,18 @@ export async function GET(request) {
       (row) => row.usage_date
     );
 
-    const revenueTrend = fillDailyBuckets(
+    // Split the same way as revenueByCurrency below, and for the same
+    // reason - one blended line would silently add INR and USD amounts.
+    const revenueTrendINR = fillDailyBuckets(
       buildDailyBucketsForRange({ startDateString, endDateString }),
-      revenueRows || [],
+      (revenueRows || []).filter((row) => (row.currency || "INR") === "INR"),
+      (row) => new Date(row.created_at).toISOString().slice(0, 10),
+      (row) => row.amount / 100
+    );
+
+    const revenueTrendUSD = fillDailyBuckets(
+      buildDailyBucketsForRange({ startDateString, endDateString }),
+      (revenueRows || []).filter((row) => row.currency === "USD"),
       (row) => new Date(row.created_at).toISOString().slice(0, 10),
       (row) => row.amount / 100
     );
@@ -172,7 +200,30 @@ export async function GET(request) {
       (row) => new Date(row.created_at).toISOString().slice(0, 10)
     );
 
-    const revenue = (revenueRows || []).reduce((sum, row) => sum + row.amount, 0) / 100;
+    // Grouped by currency, never summed across them - invoices mixes INR and
+    // USD (Razorpay lets a customer's billing region pick either), so a
+    // single blended total would add unlike units. Same reasoning
+    // api/admin/template-purchases/route.js already documents for that
+    // table's own revenueByCurrency.
+    const revenueByCurrencyMap = {};
+    for (const row of revenueRows || []) {
+      const currency = row.currency || "INR";
+      revenueByCurrencyMap[currency] = (revenueByCurrencyMap[currency] || 0) + row.amount / 100;
+    }
+    const revenueByCurrency = Object.entries(revenueByCurrencyMap).map(([currency, amount]) => ({
+      currency,
+      amount,
+    }));
+
+    const totalViews = Object.values(templateViewCounts).reduce((sum, count) => sum + count, 0);
+
+    const topViewedTemplates = TEMPLATES.map((template) => ({
+      ...template,
+      viewCount: templateViewCounts[template.slug] || 0,
+    }))
+      .filter((template) => template.viewCount > 0)
+      .sort((a, b) => b.viewCount - a.viewCount)
+      .slice(0, TOP_TEMPLATES_LIMIT);
 
     const topSavedEffects = topSlugCounts(allSavedRows || [], TOP_EFFECTS_LIMIT).map(
       ({ slug, count }) => ({ ...resolveEffectSummary(slug), count })
@@ -202,16 +253,20 @@ export async function GET(request) {
         // Copies" and "Copies Today" without two separate queries.
         totalCopies: (copyRows || []).length,
         totalSaved: (allSavedRows || []).length,
-        revenue,
+        totalSavedTemplates: (savedTemplateRows || []).length,
+        revenueByCurrency,
+        totalViews,
       },
       signupTrend,
       copyTrend,
-      revenueTrend,
+      revenueTrendINR,
+      revenueTrendUSD,
       templatePurchaseTrend,
       planDistribution,
       topSavedEffects,
       topCopiedEffects,
       topInstalledEffects,
+      topViewedTemplates,
     });
   } catch (error) {
     console.error("ADMIN_ACTIVITY_OVERVIEW_ERROR:", error);

@@ -82,7 +82,7 @@ function OwnedTemplateCard({ template, onDownload }) {
           </p>
         </div>
 
-        <div className="mt-auto flex items-center gap-3">
+        <div className="mt-auto flex items-center gap-3 w-fit">
           <button
             type="button"
             onClick={() => {
@@ -92,10 +92,10 @@ function OwnedTemplateCard({ template, onDownload }) {
               window.location.href = template.downloadHref;
               onDownload(template);
             }}
-            className="flex flex-1 cursor-pointer items-center justify-center gap-2 bg-primary px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#e0540a]"
+            className="flex flex-1  h-10 w-10 cursor-pointer items-center justify-center gap-2 bg-primary text-sm font-medium text-white transition-colors hover:bg-[#e0540a]"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
-            Download Zip
+            
           </button>
 
           <Link
@@ -194,7 +194,7 @@ export default function DashboardTemplatesPage() {
           {templates.length > 0 && (
             <div>
               <h2 className="mb-4 text-2xl font-semibold text-white">Purchased</h2>
-              <div className="grid grid-cols-3 gap-6 max-[1025px]:grid-cols-2 max-md:grid-cols-1">
+              <div className="grid grid-cols-3 gap-4 max-[1025px]:grid-cols-2 max-md:grid-cols-1">
                 {templates.map((template) => (
                   <OwnedTemplateCard
                     key={template.slug}
@@ -209,7 +209,7 @@ export default function DashboardTemplatesPage() {
           {savedTemplates.length > 0 && (
             <div>
               <h2 className="mb-4 text-2xl font-semibold text-white">Saved</h2>
-              <div className="grid grid-cols-3 gap-6 max-[1025px]:grid-cols-2 max-md:grid-cols-1">
+              <div className="grid grid-cols-3 gap-4 max-[1025px]:grid-cols-2 max-md:grid-cols-1">
                 {savedTemplates.map((template) => (
                   <TemplateCard
                     key={template.slug}

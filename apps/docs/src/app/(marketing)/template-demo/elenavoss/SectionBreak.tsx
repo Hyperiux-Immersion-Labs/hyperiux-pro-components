@@ -40,8 +40,8 @@ export default function SectionBreak() {
       });
 
       const isDesktop = globalThis.innerWidth > 1024;
-      const enterDuration = isDesktop ? 3.5 : 4;
-      const exitDuration = isDesktop ? 2.5 : 3.5;
+      const enterDuration = isDesktop ? 1.5 : 4;
+      const exitDuration = isDesktop ? 1.5 : 3.5;
       // Gap (in timeline seconds) between one cluster's start and the next -
       // kept close to enterDuration so a new wave doesn't start arriving
       // until the current one has essentially finished appearing. Waves
@@ -78,7 +78,7 @@ export default function SectionBreak() {
             opacity: 0,
             x: isDesktop ? gsap.utils.random(-180, 180) : 0,
             y: isDesktop ? gsap.utils.random(-180, 180) : gsap.utils.random(-180, 180),
-            filter: "blur(0.7vw)",
+            filter: "blur(10px)",
             z: isDesktop ? gsap.utils.random(-2200, -1600) : gsap.utils.random(-550, -400),
           });
 
@@ -88,7 +88,7 @@ export default function SectionBreak() {
               {
                 z: 0,
                 opacity: 1,
-                filter: "blur(0) invert(0)",
+                filter: "blur(0px)",
                 duration: enterDuration,
               },
               startTime,
@@ -96,7 +96,7 @@ export default function SectionBreak() {
             .to(
               item,
               {
-                filter: "blur(0.7vw)",
+                filter: "blur(10px)",
                 opacity: 0,
                 z: isDesktop ? gsap.utils.random(1400, 1800) : gsap.utils.random(500, 700),
                 duration: exitDuration,
@@ -131,8 +131,19 @@ export default function SectionBreak() {
         >
           {logos.map((item, index) => (
             <div key={index} className="grid__item flex h-[8vw] w-[14vw] items-center justify-center max-md:h-[22vw] max-md:w-[26vw]">
+              {/* The logos are wildly different natural aspect ratios (a
+                  wide wordmark vs. a near-square mark) - object-contain
+                  against the full grid cell lets the squarer ones (Adobe,
+                  IBM) balloon out to the cell's full height while the wider
+                  ones stay small. Giving the image its own smaller, common
+                  height (half the cell's) instead of the cell's full height
+                  makes every logo render at that same height UNLESS it's
+                  wide enough to hit the cell's width limit first - the one
+                  genuinely-wide logo among these six ends up a bit shorter
+                  than the rest, but nothing overflows and nothing looks
+                  randomly oversized. */}
               <Image
-                className="h-full w-full object-contain"
+                className="h-[4vw] w-full object-contain max-md:h-[11vw]"
                 src={item.src}
                 alt={item.alt}
                 sizes="(max-width: 48rem) 26vw, 14vw"

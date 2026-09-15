@@ -6,15 +6,15 @@ import React, { useEffect, useId, useRef } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/dist/SplitText";
 import TextFill from "./effects/text-fill/TextFill";
-import review1 from "./assets/reviews/1.png";
-import review2 from "./assets/reviews/2.png";
-import review3 from "./assets/reviews/3.png";
-import review4 from "./assets/reviews/4.png";
-import review5 from "./assets/reviews/5.png";
-import review6 from "./assets/reviews/6.png";
-import review7 from "./assets/reviews/7.png";
-import review8 from "./assets/reviews/8.png";
-import review9 from "./assets/reviews/9.png";
+import review1 from "./assets/reviews/1.webp";
+import review2 from "./assets/reviews/2.webp";
+import review3 from "./assets/reviews/3.webp";
+import review4 from "./assets/reviews/4.webp";
+import review5 from "./assets/reviews/5.webp";
+import review6 from "./assets/reviews/6.webp";
+import review7 from "./assets/reviews/7.webp";
+import review8 from "./assets/reviews/8.webp";
+import review9 from "./assets/reviews/9.webp";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, SplitText);
