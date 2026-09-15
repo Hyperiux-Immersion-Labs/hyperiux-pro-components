@@ -310,6 +310,11 @@
     "tarball": "registry/dist/hyperiux-directional-menu-1.1.0.tgz"
   },
   {
+    "name": "@hyperiux/displacement-navbar",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-displacement-navbar-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/elevate-navbar",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-elevate-navbar-1.1.0.tgz"
@@ -333,6 +338,11 @@
     "name": "@hyperiux/side-navbar",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-side-navbar-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/unfold-navbar",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-unfold-navbar-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/cards-runway",
@@ -713,10 +723,5 @@
     "name": "@hyperiux/strip-slider",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-strip-slider-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/unfold-navbar",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-unfold-navbar-1.0.0.tgz"
   }
 ]

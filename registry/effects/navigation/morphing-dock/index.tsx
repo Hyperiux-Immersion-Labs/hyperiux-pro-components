@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type ComponentPropsWithoutRef } from "react";
@@ -78,7 +79,7 @@ const DEFAULT_ITEMS = [
 ];
 
 const DEFAULT_TEASER =
-  "https://picsum.photos/seed/1/800/600";
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg";
 
 type LinkButtonProps = Omit<ComponentPropsWithoutRef<typeof Link>, "children"> & {
   children: string;

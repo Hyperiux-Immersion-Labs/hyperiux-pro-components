@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import { useRef, useState, useSyncExternalStore, type ComponentPropsWithoutRef } from "react";
@@ -182,7 +183,7 @@ const DEFAULT_SECONDARY = [
 ];
 
 const DEFAULT_FEATURE_IMAGE =
-  "https://picsum.photos/seed/1/800/600";
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg";
 
 const UnfoldNavbar = ({
   backgroundColor = "#ebebeb",
