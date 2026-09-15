@@ -9,11 +9,13 @@ import {
   getRelatedBlogPosts,
 } from "@/lib/sanity";
 import { getSearchIndexEffects } from "@/lib/search-index";
+import { getReadingTime } from "@/lib/blog-content";
 import { createPageMetadata, getCanonicalUrl } from "@/lib/seo-metadata";
 import { BreadcrumbsJSONLD, WebpageJsonLd, BlogPostingJsonLd, FAQJSONLD } from "@/lib/json-ld";
 import BlogDetailHero from "./BlogDetailHero";
 import BlogBodyRenderer from "@/components/blog/BlogBodyRenderer";
 import BlogArticleBody from "@/components/blog/BlogArticleBody";
+import BlogTags from "@/components/blog/BlogTags";
 import BlogShareLinks from "@/components/blog/BlogShareLinks";
 import BlogPromoCard from "@/components/blog/BlogPromoCard";
 import "@/styles/blog-new.css";
@@ -99,13 +101,12 @@ export default async function BlogPostPage({ params }) {
           <BlogArticleBody
             slug={slug}
             author={post.author}
+            publishedAt={post.publishedAt}
+            categories={post.categories || []}
+            readingMinutes={getReadingTime(post.body || []).minutes}
             shareUrl={canonicalUrl}
             shareTitle={post.title}
-            afterContent={
-              <>
-               
-              </>
-            }
+            afterContent={<BlogTags tags={post.tags || []} />}
           >
             <BlogBodyRenderer body={post.body || []} />
           </BlogArticleBody>

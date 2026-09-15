@@ -1,17 +1,10 @@
 import {orderRankField, orderRankOrdering} from '@sanity/orderable-document-list'
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
-// Reuses effectContent.js's already-generic object types (effectImage,
-// effectCodeBlock, effectTableBlock, effectCalloutBlock, horizontalRule,
-// effectFaqAccordion, effectBody, effectCtaBanner, effectSeo) rather than
-// redefining parallel blog-prefixed copies - nothing about those types is
-// effect-specific, so a blogPost's body/coverImage/ctaBanner/seo fields just
-// point `type:` at the same names. Only truly new types live here.
-
 const author = defineType({
   name: 'blogAuthor',
   title: 'Author',
-  type: 'object',
+  type: 'document',
   fields: [
     defineField({
       name: 'name',
@@ -34,6 +27,8 @@ const author = defineType({
   preview: {
     select: {
       title: 'name',
+      subtitle: 'role',
+      media: 'avatar',
     },
   },
 })
@@ -101,7 +96,9 @@ export const blogPost = defineType({
     defineField({
       name: 'author',
       title: 'Author',
-      type: 'blogAuthor',
+      type: 'reference',
+      to: [{type: 'blogAuthor'}],
+      initialValue: {_type: 'reference', _ref: 'blogAuthor.hitesh-bhardwaj'},
     }),
     defineField({
       name: 'categories',

@@ -239,6 +239,7 @@ export async function getSanityBlogPost(slug) {
       `*[_type == "blogPost" && slug.current == $slug][0]{
         ...,
         slug,
+        "author": select(defined(author._ref) => author->{name, role, avatar}, author),
         categories[]->{title, "slug": slug.current},
       }`,
       {slug}
@@ -282,7 +283,7 @@ const BLOG_LISTING_PROJECTION = `{
   title,
   summary,
   coverImage,
-  author,
+  "author": select(defined(author._ref) => author->{name, role, avatar}, author),
   categories[]->{title, "slug": slug.current},
   tags,
   isFeatured,

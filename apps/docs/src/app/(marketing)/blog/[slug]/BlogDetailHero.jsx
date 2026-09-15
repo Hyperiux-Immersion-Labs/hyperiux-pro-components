@@ -6,25 +6,11 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
-import { getReadingTime } from "@/lib/blog-content";
-import BlogHeroTags from "./BlogHeroTags";
 
 // Client component so the heading/copy/fadeup animations can run - the page
 // itself is an async server component and can't call hooks.
-// Matches the mono, zero-padded date the listing cards use.
-function formatHeroDate(value) {
-  if (!value) return "";
-
-  const date = new Date(value);
-  const month = date.toLocaleDateString("en-US", { month: "long" });
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${month} ${day},${date.getFullYear()}`;
-}
-
 export default function BlogDetailHero({ post }) {
   const heroRef = useRef(null);
-  const readingTime = getReadingTime(post.body || []);
 
   // Scoped to this header: useFadeUp falls back to scanning the whole
   // document when the ref is empty, which would claim the article body's
@@ -50,45 +36,10 @@ export default function BlogDetailHero({ post }) {
           </Copy>
         )}
 
-        {(post.categories?.length > 0 || post.tags?.length > 0) && (
-          <div className="fadeup flex w-full items-start justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-2.5">
-              {post.categories?.map((category) => (
-                <span
-                  key={category.slug}
-                  className="bg-[#2B2B2B] px-[0.4vw] py-[0.1vw] text18 font-geist-mono text-white/90 max-md:px-3 max-md:py-1 max-md:text-[3vw]!"
-                >
-                  {category.title}
-                </span>
-              ))}
-            </div>
-
-            <BlogHeroTags tags={post.tags} />
-          </div>
-        )}
       </header>
 
-      <div className="mt-[3vw] flex w-full items-center justify-between gap-4 max-md:mt-[8vw] max-[1025px]:mt-[5vh] max-[1025px]:gap-8 max-md:gap-8">
-        {post.publishedAt && (
-          <Copy delay={0.5}>
-            <time
-              dateTime={post.publishedAt}
-              className="text18 font-geist-mono text-light-grey max-md:text-[3vw]!"
-            >
-              Published on {formatHeroDate(post.publishedAt)}
-            </time>
-          </Copy>
-        )}
-
-        <Copy delay={0.5}>
-          <span className="text18 font-geist-mono text-light-grey max-md:text-[3vw]!">
-            {readingTime.minutes} min read
-          </span>
-        </Copy>
-      </div>
-
       {post.coverImage?.url && (
-        <div className="fadeup relative mt-[1.2vw] h-[42vw] w-full overflow-hidden max-md:mt-[4vw] max-[1025px]:mt-[3vh] max-md:h-[60vw] rounded-md">
+        <div className="fadeup relative mt-[5vw] h-[42vw] w-full overflow-hidden max-md:mt-[8vw] max-[1025px]:mt-[6vh] max-md:h-[60vw] ">
           <Image
             src={post.coverImage.url}
             alt={post.coverImage.alt || post.title}

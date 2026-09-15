@@ -19,7 +19,7 @@ function buildHref({ category, page }) {
 
 
 function categoryChipClass(isSelected) {
-  return `px-6 py-3 text-[1vw] max-md:text-[4vw] max-[1025px]:text-[2.5vw] text-center relative max-md:px-7 max-md:py-3 backdrop-blur-[6px] font-geist-mono group flex items-center cursor-pointer transition-colors duration-300 ${
+  return `px-4 py-2.5 text-[0.9vw] max-md:text-sm max-[1025px]:text-[2.5vw] text-center relative max-md:px-7 max-md:py-3 backdrop-blur-[6px] font-geist-mono group flex items-center cursor-pointer transition-colors duration-300 ${
     isSelected
       ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"
       : "bg-[#161616] text-[#FFFFFF] hover:text-black hover:bg-[#ff5f00]"
@@ -41,7 +41,7 @@ export default function BlogListing({
   return (
     <section ref={sectionRef} className="flex flex-col gap-[2vw] max-md:gap-[6vw]">
       {categories.length > 0 && (
-        <div className="flex flex-wrap max-md:px-[5vw] items-center gap-2.5 max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto">
+        <div className="flex flex-wrap max-md:px-[5vw] items-center gap-4 max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto">
           <Link href={buildHref({ category: "all" })} className={categoryChipClass(activeCategory === "all")}>
             <span className="leading-none">All</span>
           </Link>
@@ -52,7 +52,7 @@ export default function BlogListing({
               href={buildHref({ category: category.slug })}
               className={categoryChipClass(activeCategory === category.slug)}
             >
-              <span className="leading-none">{category.title}</span>
+              <span className="leading-none text-[0.9vw] max-md:text-sm">{category.title}</span>
             </Link>
           ))}
         </div>

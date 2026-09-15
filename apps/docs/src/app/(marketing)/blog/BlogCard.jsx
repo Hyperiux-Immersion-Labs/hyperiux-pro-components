@@ -32,9 +32,9 @@ export default function BlogCard({ post, priority = false }) {
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-3 pb-3 font-geist-mono ">
+        <div className="flex items-center  mt-2 justify-between gap-3 pb-3 font-geist-mono ">
           {post.categories?.length > 0 && (
-            <span className="bg-[#2B2B2B] px-[0.4vw] py-[0.1vw] text18 text-white/90 max-[1025px]:px-3 max-[1025px]:py-1.5 max-md:px-3 max-md:py-1 max-md:text-[3vw]!">
+            <span className="bg-[#2B2B2B] px-2 py-0.5 text-[0.9vw] text-white/90 max-[1025px]:px-3 max-[1025px]:py-1.5 max-md:px-3 max-md:py-1 max-md:text-[3vw]!">
               {post.categories[0].title}
             </span>
           )}
@@ -43,11 +43,11 @@ export default function BlogCard({ post, priority = false }) {
           </span>
         </div>
 
-        <h3 className="shrink-0 text-[1.5vw] font-medium leading-[1.2]! text-white max-[1025px]:text-[2.8vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
+        <h3 className="shrink-0 text-[1.5vw] font-neue-haas font-medium leading-[1.2]! text-white max-[1025px]:text-[2.8vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
           {post.title}
         </h3>
 
-        <p className="grow text-[1.15vw] max-[1025px]:text-[2vw] leading-[1.2] text-white max-md:text-[3.5vw]!">
+        <p className="grow text-[1.15vw] font-geist max-[1025px]:text-[2vw] leading-[1.2] text-white max-md:text-[3.5vw]!">
           {post.summary}
         </p>
 
@@ -58,7 +58,7 @@ export default function BlogCard({ post, priority = false }) {
           tilted={false}
           underline={true}
           
-          className="relative z-10 mt-5 max-md:mt-0! max-md:text34"
+          className="relative text-[0.9vw] max-md:text-sm z-10 mt-5 max-md:mt-0! max-md:text34"
         />
       </div>
 
