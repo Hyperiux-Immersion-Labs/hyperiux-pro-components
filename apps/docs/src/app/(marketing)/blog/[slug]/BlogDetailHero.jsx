@@ -3,8 +3,7 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import HeadAnim from "@/components/Animations/HeadAnim";
-import Copy from "@/components/Animations/Copy";
+import LineWipe from "@/components/Animations/LineWipe";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 // Client component so the heading/copy/fadeup animations can run - the page
@@ -22,18 +21,18 @@ export default function BlogDetailHero({ post }) {
       <header className="flex flex-col gap-[1.5vw] max-[1025px]:gap-[6vw] max-md:gap-[8vw]">
         <Breadcrumb maxWords={3} />
 
-        <HeadAnim>
+        <LineWipe>
           <h1 className="text-[3.2vw] max-[1025px]:text-[6vw] max-md:text-[9vw] font-neue-haas leading-[1.2]! text-foreground w-[80%] max-[1025px]:w-full">
             {post.title}
           </h1>
-        </HeadAnim>
+        </LineWipe>
 
         {post.summary && (
-          <Copy delay={0.5}>
+          <LineWipe delay={0.5}>
             <p className="t24 leading-relaxed max-[1025px]:leading-[1.2] w-[60%] max-[1025px]:w-full text-white">
               {post.summary}
             </p>
-          </Copy>
+          </LineWipe>
         )}
 
       </header>

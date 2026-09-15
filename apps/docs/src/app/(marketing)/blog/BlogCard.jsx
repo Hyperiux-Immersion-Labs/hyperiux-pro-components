@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
+import LineWipe from "@/components/Animations/LineWipe";
 
 
 function formatCardDate(value) {
@@ -43,13 +44,17 @@ export default function BlogCard({ post, priority = false }) {
           </span>
         </div>
 
-        <h3 className="shrink-0 text-[1.5vw] font-neue-haas font-medium leading-[1.2]! text-white max-[1025px]:text-[2.8vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
-          {post.title}
-        </h3>
+        <LineWipe>
+          <h3 className="shrink-0 text-[1.5vw] font-neue-haas font-medium leading-[1.2]! text-white max-[1025px]:text-[2.8vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
+            {post.title}
+          </h3>
+        </LineWipe>
 
-        <p className="grow text-[1.15vw] font-geist max-[1025px]:text-[2vw] leading-[1.2] text-white max-md:text-[3.5vw]!">
-          {post.summary}
-        </p>
+        <LineWipe delay={0.15}>
+          <p className="grow text-[1.15vw] font-geist max-[1025px]:text-[2vw] leading-[1.2] text-white max-md:text-[3.5vw]!">
+            {post.summary}
+          </p>
+        </LineWipe>
 
         <LinkButton
           href={`/blog/${post.slug}`}
