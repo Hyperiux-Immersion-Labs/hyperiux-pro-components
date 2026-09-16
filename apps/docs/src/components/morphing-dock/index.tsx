@@ -651,6 +651,14 @@ const MorphingDock = ({
       className="[--morphing-dock-dock-w:min(30vw,32rem)] [--morphing-dock-dock-h:4vw] [--morphing-dock-nav-w:var(--morphing-dock-nav-w-user,min(48vw,52rem))] [--morphing-dock-nav-h:var(--morphing-dock-nav-h-user,26vw)] [--morphing-dock-contact-w:min(30vw,32rem)] [--morphing-dock-contact-h:14vw] max-[1025px]:[--morphing-dock-dock-w:min(94vw,35rem)] max-[1025px]:[--morphing-dock-dock-h:9vw] max-[1025px]:[--morphing-dock-nav-w:min(94vw,42.5rem)] max-[1025px]:[--morphing-dock-nav-h:52vw] max-[1025px]:[--morphing-dock-contact-w:min(94vw,35rem)] max-[1025px]:[--morphing-dock-contact-h:26vw] max-md:[--morphing-dock-dock-w:92vw] max-md:[--morphing-dock-dock-h:16vw] max-md:[--morphing-dock-nav-w:92vw] max-md:[--morphing-dock-nav-h:150vw] max-md:[--morphing-dock-contact-w:92vw] max-md:[--morphing-dock-contact-h:50vw]"
     >
       <div
+        aria-hidden
+        data-overlay
+        className={`pointer-events-none fixed inset-0 z-190 bg-black/40 transition-opacity duration-300 ease-out ${
+          isOpen ? "opacity-100" : "opacity-0"
+        }`}
+      />
+
+      <div
         ref={dockRef}
         className="fixed bottom-16 left-1/2 z-200 -translate-x-1/2 max-[1025px]:bottom-12 max-md:bottom-6"
       >

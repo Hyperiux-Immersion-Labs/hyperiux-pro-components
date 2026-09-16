@@ -496,6 +496,14 @@ const UnfoldNavbar = ({
     >
 
       <div
+        aria-hidden
+        data-overlay
+        className={`pointer-events-none fixed inset-0 z-190 bg-black/40 transition-opacity duration-300 ease-out ${
+          isOpen ? "opacity-100" : "opacity-0"
+        }`}
+      />
+
+      <div
         data-anchor
         data-direction={direction}
         style={
@@ -594,21 +602,18 @@ const UnfoldNavbar = ({
 
                 <div className="flex flex-col gap-2.25 pt-7.5 max-md:mt-auto max-md:pt-6">
                   {secondary.map((item) => (
-                    <LinkHover
+                    <Link
                       key={item.label}
-                      reduced={reducedMotion}
-                        staggerStep={charStagger}
-                        showLine={showLinkUnderline}
                       data-sub
                       href={item.href}
                       onClick={(e) => {
                         if (item.href === "#") e.preventDefault();
                         api.current?.close();
                       }}
-                      className="text-[13px] tracking-[0.01em] text-(--un-muted) no-underline transition-colors hover:text-(--un-text) focus-visible:text-(--un-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fd551d]"
+                      className="w-fit text-[13px] tracking-[0.01em] text-(--un-muted) no-underline transition-colors duration-300 ease-out hover:text-black focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fd551d]"
                     >
                       {item.label}
-                    </LinkHover>
+                    </Link>
                   ))}
                 </div>
               </nav>

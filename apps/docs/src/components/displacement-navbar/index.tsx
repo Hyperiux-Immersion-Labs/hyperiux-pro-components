@@ -626,7 +626,7 @@ const DisplacementNavbar = ({
         ref={shelfRef}
         aria-hidden={!isOpen}
         className="fixed top-[4vw] max-[1025px]:top-[16vw] min-[769px]:max-[1025px]:top-[5.5vw] left-0 right-0 z-25 invisible pointer-events-none border-b"
-        style={{ backgroundColor: shelfBackground, borderColor: hairlineColor }}
+        style={{ backgroundColor: shelfBackground, borderColor: hairlineColor, '--displacement-navbar-link': linkColor } as React.CSSProperties}
       >
         <div className="py-[2.2vw] px-[1.7vw] max-[1025px]:py-[10vw] max-[1025px]:px-[5vw] min-[769px]:max-[1025px]:py-[4vw] min-[769px]:max-[1025px]:px-[2.6vw]">
           <div className="flex max-[1025px]:flex-col items-start gap-[4vw] max-[1025px]:gap-[10vw] min-[769px]:max-[1025px]:gap-[4vw]">
@@ -646,7 +646,7 @@ const DisplacementNavbar = ({
                   key={link.label}
                   ref={(node) => registerContent(node, i)}
                   data-role="primary-link"
-                  className="group relative flex items-baseline py-[0.7vw] max-[1025px]:py-[3.2vw] min-[769px]:max-[1025px]:py-[1.3vw]"
+                  className="group relative flex w-fit items-baseline py-[0.7vw] max-[1025px]:py-[3.2vw] min-[769px]:max-[1025px]:py-[1.3vw]"
                   onMouseEnter={() => {
                     // The image swap still runs under reduced motion — it is an
                     // information change, not decoration — but the sibling
@@ -665,7 +665,7 @@ const DisplacementNavbar = ({
                     reduced={reducedMotion}
                     staggerStep={charStagger}
                     showLine={showLinkUnderline}
-                    className="text-[2.2vw] max-[1025px]:text-[7vw] min-[769px]:max-[1025px]:text-[3.4vw] font-light leading-[1.1] tracking-[-0.02em]"
+                    className="w-fit text-[2.2vw] max-[1025px]:text-[7vw] min-[769px]:max-[1025px]:text-[3.4vw] font-light leading-[1.1] tracking-[-0.02em]"
                     style={{ color: linkColor }}
                   >
                     {link.label}
@@ -686,17 +686,13 @@ const DisplacementNavbar = ({
                 Info
               </span>
               {infoLinks.map((link) => (
-                <LinkHover
+                <Link
                   key={link.label}
                   href={link.href ?? '#'}
-                  reduced={reducedMotion}
-                  staggerStep={charStagger}
-                  showLine={showLinkUnderline}
-                  className="text-[0.9vw] max-[1025px]:text-[3.5vw] min-[769px]:max-[1025px]:text-[1.7vw] font-normal tracking-[-0.01em]"
-                  style={{ color: linkColor }}
+                  className="w-fit no-underline text-[0.9vw] max-[1025px]:text-[3.5vw] min-[769px]:max-[1025px]:text-[1.7vw] font-normal tracking-[-0.01em] text-(--displacement-navbar-link) transition-colors duration-300 ease-out hover:text-white focus-visible:text-white"
                 >
                   {link.label}
-                </LinkHover>
+                </Link>
               ))}
             </nav>
 
@@ -718,8 +714,8 @@ const DisplacementNavbar = ({
                         alt=""
                         fill
                         sizes="18vw"
-                        className={`object-cover ${
-                          reducedMotion ? '' : 'hover:scale-105 duration-300 transition-all ease-in-out'
+                        className={`object-cover object-[50%_20%] ${
+                          reducedMotion ? '' : 'origin-[50%_20%] hover:scale-105 duration-300 transition-all ease-in-out'
                         }`}
                       />
                     </div>
@@ -741,29 +737,21 @@ const DisplacementNavbar = ({
             className="flex max-[1025px]:flex-col items-center max-[1025px]:items-start justify-between gap-[2vw] mt-[1.5vw] max-[1025px]:mt-[10vw] min-[769px]:max-[1025px]:mt-[4vw] pt-[0.85vw] max-[1025px]:pt-[7vw] min-[769px]:max-[1025px]:pt-[2.8vw] border-t text-[0.65vw] max-[1025px]:text-[3vw] min-[769px]:max-[1025px]:text-[1.4vw] max-[1025px]:gap-[5vw] min-[769px]:max-[1025px]:gap-[2.2vw]"
             style={{ borderColor: hairlineColor, color: mutedColor }}
           >
-            <LinkHover
-              showLine={false}
-              reduced={reducedMotion}
-              staggerStep={charStagger}
+            <Link
               href={`mailto:${email}`}
-              className="text-sm"
-              style={{ color: linkColor, opacity: 0.8 }}
+              className="w-fit text-sm no-underline text-(--displacement-navbar-link) opacity-80 transition-colors duration-300 ease-out hover:text-white hover:opacity-100 focus-visible:text-white focus-visible:opacity-100"
             >
               {email}
-            </LinkHover>
+            </Link>
             <span className="flex gap-[4vw] max-[1025px]:gap-[14vw] min-[769px]:max-[1025px]:gap-[6vw] ">
               {socials.map((social) => (
-                <LinkHover
+                <Link
                   key={social.label}
-                  showLine={false}
-                  reduced={reducedMotion}
-                  staggerStep={charStagger}
                   href={social.href ?? '#'}
-                  className="text-sm"
-                  style={{ color: linkColor, opacity: 0.8 }}
+                  className="w-fit text-sm no-underline text-(--displacement-navbar-link) opacity-80 transition-colors duration-300 ease-out hover:text-white hover:opacity-100 focus-visible:text-white focus-visible:opacity-100"
                 >
                   {social.label}
-                </LinkHover>
+                </Link>
               ))}
             </span>
             <span className='text-sm'>{cities}</span>
