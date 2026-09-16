@@ -241,6 +241,7 @@ export async function getSanityBlogPost(slug) {
         slug,
         "author": select(defined(author._ref) => author->{name, role, avatar}, author),
         categories[]->{title, "slug": slug.current},
+        "tags": tags[]->name,
       }`,
       {slug}
     )
@@ -285,7 +286,7 @@ const BLOG_LISTING_PROJECTION = `{
   coverImage,
   "author": select(defined(author._ref) => author->{name, role, avatar}, author),
   categories[]->{title, "slug": slug.current},
-  tags,
+  "tags": tags[]->name,
   isFeatured,
   orderRank,
   publishedAt,

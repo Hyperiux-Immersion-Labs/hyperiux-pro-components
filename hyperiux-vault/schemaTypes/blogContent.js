@@ -35,7 +35,7 @@ const author = defineType({
 
 const category = defineType({
   name: 'blogCategory',
-  title: 'Blog Category',
+  title: 'Category',
   type: 'document',
   fields: [
     defineField({
@@ -55,6 +55,25 @@ const category = defineType({
   preview: {
     select: {
       title: 'title',
+    },
+  },
+})
+
+const tag = defineType({
+  name: 'blogTag',
+  title: 'Tag',
+  type: 'document',
+  fields: [
+    defineField({
+      name: 'name',
+      title: 'Name',
+      type: 'string',
+      validation: (rule) => rule.required(),
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'name',
     },
   },
 })
@@ -110,7 +129,7 @@ export const blogPost = defineType({
       name: 'tags',
       title: 'Tags',
       type: 'array',
-      of: [defineArrayMember({type: 'string'})],
+      of: [defineArrayMember({type: 'reference', to: [{type: 'blogTag'}]})],
     }),
     defineField({
       name: 'isFeatured',
@@ -155,4 +174,4 @@ export const blogPost = defineType({
   },
 })
 
-export const blogContentSchemaTypes = [author, category, blogPost]
+export const blogContentSchemaTypes = [author, category, tag, blogPost]

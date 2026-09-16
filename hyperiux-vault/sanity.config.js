@@ -23,14 +23,29 @@ export default defineConfig({
               S,
               context,
             }),
-            orderableDocumentListDeskItem({
-              type: 'blogPost',
-              title: 'Blog Posts',
-              S,
-              context,
-            }),
+            S.listItem()
+              .title('Blog')
+              .id('blog')
+              .child(
+                S.list()
+                  .title('Blog')
+                  .items([
+                    orderableDocumentListDeskItem({
+                      type: 'blogPost',
+                      title: 'Blog Posts',
+                      S,
+                      context,
+                    }),
+                    S.documentTypeListItem('blogAuthor').title('Author'),
+                    S.documentTypeListItem('blogCategory').title('Category'),
+                    S.documentTypeListItem('blogTag').title('Tags'),
+                  ])
+              ),
             ...S.documentTypeListItems().filter(
-              (item) => !['effectContent', 'blogPost'].includes(item.getId())
+              (item) =>
+                !['effectContent', 'blogPost', 'blogAuthor', 'blogCategory', 'blogTag'].includes(
+                  item.getId()
+                )
             ),
           ]),
     }),
