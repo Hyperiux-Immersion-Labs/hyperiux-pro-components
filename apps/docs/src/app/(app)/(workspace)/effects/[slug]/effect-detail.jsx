@@ -612,7 +612,7 @@ export function EffectDetailContent({
 
                       <div className="fadeup flex max-[1025px]:hidden flex-col justify-center items-end gap-5 max-[1025px]:w-full max-[1025px]:items-stretch">
                         <ButtonV3
-                          text="Explore all effects"
+                          text="Explore All Effects"
                           href="/effects"
                           variant="orange"
                           className="shrink-0"
@@ -658,7 +658,7 @@ export function EffectDetailContent({
                         onPointerLeave={handleRelatedPointerEnd}
                         onPointerCancel={handleRelatedPointerEnd}
                         onDragStart={(event) => event.preventDefault()}
-                        className="flex cursor-grab snap-x snap-mandatory select-none gap-6 overflow-x-auto max-md:gap-6 max-[1025px]:gap-2 scroll-smooth pb-4 active:cursor-grabbing"
+                        className="flex cursor-grab snap-x snap-mandatory  bg select-none gap-6 overflow-x-auto max-md:gap-6 max-[1025px]:gap-2 scroll-smooth pb-4 active:cursor-grabbing"
                       >
                         {safeRelatedEffects.map((relatedEffect) => (
                           <div
@@ -666,7 +666,7 @@ export function EffectDetailContent({
                             onClick={(event) =>
                               handleRelatedCardClick(event, relatedEffect)
                             }
-                            className="min-w-[31vw] cursor-pointer max-md:px-[7vw] max-[1025px]:px-[6vw] snap-start max-[1025px]:min-w-[44vw] max-[1025px]:min-w-[55vw]! max-md:min-w-full!"
+                            className="min-w-[31vw] pl-1!  cursor-pointer max-md:px-[7vw] max-[1025px]:px-[6vw] snap-start max-[1025px]:min-w-[44vw] max-[1025px]:min-w-[55vw]! max-md:min-w-full!"
                           >
                             <EffectCard
                               effect={relatedEffect}
@@ -925,8 +925,12 @@ function SanityBodyRenderer({
   const remixerControlNames = new Set(
     (effectRemixerControls || []).map((control) => control?.name).filter(Boolean)
   );
+
   const remixableProps = (effectProps || []).filter(
-    (prop) => prop?.remixer?.control || remixerControlNames.has(prop?.name)
+    (prop) =>
+      (prop?.remixer?.control || remixerControlNames.has(prop?.name)) &&
+      prop?.remixer?.enabled !== false &&
+      prop?.remixer?.disabled !== true
   );
   const showPropsTable = remixableProps.length > 0;
   const hasFaqBlock = groupedBlocks.some(
@@ -978,16 +982,12 @@ function formatPropDefault(value) {
   }
 }
 
-// Rendered directly from the effect's registry.json `props` array, filtered
-// to entries with a remixer control (see SanityBodyRenderer) - not a Sanity
-// content block, so it always reflects what's actually live-editable in the
-// props remixer rather than editorial copy that can drift.
 function EffectPropsTable({ props = [] }) {
   if (!props.length) return null;
 
   return (
-    <div className="space-y-3 fadeup">
-      <h3 className="text-xl tracking-tighter text-foreground">Props</h3>
+    <div className="space-y-5! mt-4! fadeup">
+      <h3 className="text-xl tracking-tighter  text-foreground">Props</h3>
 
       <div className={`${styles.tableWrap} ${styles.propsTableWrap}`} data-variant="vault">
         <table className={styles.table}>

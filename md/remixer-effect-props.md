@@ -176,6 +176,18 @@ Note: `defaultChecked` was removed - all three toggles always start unchecked.
 | `onClick` | undefined | function | custom/function | Click handler passed to the interactive element. |
 | `...props` | undefined | object | object/json | Configuration object for props. |
 
+### Spotlight Button (`spotlight-button`, pro)
+
+| Prop | Default | Type | Remixer control | Short description |
+|---|---|---|---|---|
+| `haloColor` | `#ff5f00` | color | color | Main halo color. |
+| `haloCoreColor` | `#ff9253` | color | color | Core color on hover and focus. |
+| `orbitDuration` | `3` | number | range (1–10) | Seconds per orbit. |
+| `settleDuration` | `0.8` | number | range (0–2) | Hover and focus transition duration in seconds. |
+| `haloWidth` | `5` | number | range (1–20) | Width of each halo gradient segment in percent. |
+| `spotlightIntensity` | `1` | number | range (0–1) | Strength of the border spotlight and glow. |
+| `size` | `"md"` | enum | disabled (hidden) | Button size: `sm`, `md`, or `lg`. |
+
 ## Carousels
 
 ### Clip Path Slider (`clippath-slider`, pro)

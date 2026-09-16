@@ -69,7 +69,7 @@
       "name": "throwFriction",
       "type": "number",
       "default": 0.975,
-      "description": "Momentum decay rate per frame after a drag release - closer to 1 coasts longer.",
+      "description": "Momentum decay rate per frame after a drag release — closer to 1 coasts longer.",
       "remixer": {
         "control": "range",
         "group": "motion",

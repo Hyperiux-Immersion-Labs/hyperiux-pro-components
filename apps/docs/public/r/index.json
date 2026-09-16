@@ -1431,6 +1431,20 @@
       "tier": "free"
     },
     {
+      "name": "spotlight-button",
+      "type": "registry:component",
+      "category": "buttons",
+      "categories": [
+        "buttons"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "SpotlightButton",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "arc-flow-carousel",
       "type": "registry:component",
       "category": "carousels",
@@ -1996,6 +2010,22 @@
       ],
       "registryDependencies": [],
       "exportName": "MorphingDock",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
+      "name": "perspective-shift-menu",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "PerspectiveShiftMenu",
       "exportKind": "default",
       "version": "1.0.0",
       "tier": "pro"

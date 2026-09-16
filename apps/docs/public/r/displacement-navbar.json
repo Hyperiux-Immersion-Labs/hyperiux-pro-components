@@ -2,7 +2,7 @@
   "name": "displacement-navbar",
   "type": "registry:component",
   "title": "Displacement Navbar",
-  "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it — GSAP-driven with a full reduced-motion fallback.",
+  "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it \u2014 GSAP-driven with a full reduced-motion fallback.",
   "dependencies": [
     "gsap"
   ],
@@ -101,10 +101,10 @@
     {
       "name": "pageBackground",
       "type": "string",
-      "default": "#f4f3f1",
-      "description": "Displaced page background color.",
+      "default": "linear-gradient(160deg,#0D47A1 0%,#E3F2FD 100%)",
+      "description": "Displaced page background - any CSS background value, so a gradient works as well as a flat color.",
       "remixer": {
-        "control": "color",
+        "control": "text",
         "group": "style",
         "groupTitle": "Style"
       }
@@ -145,7 +145,7 @@
     {
       "name": "charStagger",
       "type": "number",
-      "default": 0.015,
+      "default": 0.01,
       "description": "Per-character reveal delay on link hover, in seconds.",
       "remixer": {
         "control": "range",
