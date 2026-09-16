@@ -58,6 +58,10 @@ const Hero = () => (
             Read Article
           </Link>
         </div>
+
+        <p className="text-[1vw] tracking-[0.02em] text-[#fffaf2]/60 max-[1025px]:text-[1.8vw] max-md:text-[3.5vw]">
+          [Click the menu to see the effect]
+        </p>
       </div>
     </div>
   </section>

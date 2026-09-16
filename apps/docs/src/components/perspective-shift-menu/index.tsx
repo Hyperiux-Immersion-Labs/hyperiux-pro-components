@@ -8,8 +8,6 @@ import { CustomEase } from "gsap/CustomEase";
 
 gsap.registerPlugin(CustomEase);
 
-// Two bespoke curves drive the whole menu: a decelerating "out" curve for
-// entrances and a symmetric "in-out" curve for exits.
 const EASE_OUT_NAME = "perspectiveShiftOut";
 const EASE_IN_OUT_NAME = "perspectiveShiftInOut";
 if (!CustomEase.get(EASE_OUT_NAME)) {
@@ -33,7 +31,6 @@ function usePrefersReducedMotion() {
   );
 }
 
-// Timing constants, kept together so the whole sequence can be retuned at once.
 const PAGE_TILT = 0.72;
 const GLYPH = 0.45;
 const RULE_WIPE = 0.6;
@@ -49,9 +46,6 @@ const ACC_ITEM = 0.32;
 const ACC_STAGGER = 0.045;
 const LINKS_START = 0.2736;
 
-// Reduced motion keeps every beat of the sequence but strips what actually
-// provokes vestibular discomfort: the 3D page tilt, the full-width slide, and
-// the per-character roll. What is left is a fast crossfade in place.
 const RM_SCALE = 0.55;
 const RM_STAGGER = 0.012;
 const RM_SLIDE = "-4%";
@@ -116,8 +110,6 @@ const SOCIALS: SubItem[] = [
 
 const CONTACT_EMAIL = "hello@hyperiux.com";
 
-// Same per-character roll as unfold-navbar's LinkHover, but as a bare span so
-// it can live inside the parent <button> that opens the drawer.
 const CharRoll = ({
   text,
   stagger = 0.007,
@@ -127,8 +119,6 @@ const CharRoll = ({
   stagger?: number;
   reduced?: boolean;
 }) => {
-  // The roll is a vertical translate per character. Under reduced motion the
-  // text simply sits still and the row's colour change carries the hover.
   if (reduced) {
     return (
       <span aria-hidden="true" className="relative inline-block align-bottom leading-[1.2]">
@@ -146,8 +136,6 @@ const CharRoll = ({
         <span
           key={i}
           className="relative inline-block whitespace-pre text-shadow-[0_1.2em_currentColor] transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/row:translate-y-[-1.2em] group-focus-visible/row:translate-y-[-1.2em]"
-          // With no stagger every glyph rolls together, so the per-character
-          // delay is dropped rather than written as a redundant 0s.
           style={stagger ? { transitionDelay: `${i * stagger}s` } : undefined}
         >
           {char === " " ? " " : char}
@@ -157,16 +145,11 @@ const CharRoll = ({
   );
 };
 
-// The separator rules and the drawer seam are scale-driven off custom
-// properties so GSAP can tween them; @property registration has no Tailwind
-// equivalent, so this stays as the one minimal style block.
 const PROPERTY_REGISTRATION = `
 @property --shift-rule { syntax: "<number>"; inherits: false; initial-value: 0; }
 @property --shift-seam { syntax: "<number>"; inherits: false; initial-value: 0; }
 `;
 
-// Links default to "" so consumers can wire their own routes. An empty href
-// would still navigate to the current route, so those clicks are swallowed.
 const inert = (href: string) => (e: ReactMouseEvent) => {
   if (!href) e.preventDefault();
 };
@@ -228,8 +211,9 @@ const PerspectiveShiftMenu = ({
   const dimRef = useRef<HTMLDivElement>(null);
   const subpanelRef = useRef<HTMLDivElement>(null);
   const stackRef = useRef<HTMLDivElement>(null);
-  const glyphPageRef = useRef<HTMLSpanElement>(null);
-  const glyphColRef = useRef<HTMLSpanElement>(null);
+  const glyphTopRef = useRef<HTMLSpanElement>(null);
+  const glyphMidRef = useRef<HTMLSpanElement>(null);
+  const glyphBotRef = useRef<HTMLSpanElement>(null);
   const metaRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -257,7 +241,6 @@ const PerspectiveShiftMenu = ({
     const stack = stackRef.current;
     if (!wrap || !page || !surface || !dim || !subpanel || !stack) return;
 
-    // Re-bound as consts so narrowing survives inside the hoisted functions.
     const wrapEl = wrap;
     const pageEl = page;
     const surfaceEl = surface;
@@ -274,19 +257,20 @@ const PerspectiveShiftMenu = ({
       const canHover = () => window.matchMedia("(hover: hover)").matches;
 
       const reduced = reducedMotion;
-      // Every duration in the sequence runs through this, so the whole
-      // choreography keeps its shape while finishing noticeably sooner.
       const beat = (value: number) => (reduced ? value * RM_SCALE : value);
+
+      const glyphOffset = () => {
+        const box = glyphMidRef.current?.parentElement;
+        if (!box) return 0;
+        const barHeight = glyphMidRef.current?.offsetHeight ?? 0;
+        return (box.offsetHeight - barHeight) / 2;
+      };
       const stagger = reduced ? RM_STAGGER : linkStagger;
-      // One multiplier drives every timeline, so the choreography keeps its
-      // relative timing no matter how fast the whole sequence is asked to run.
       const speed = Math.max(0.1, animationSpeed);
       const timeline = (vars?: gsap.TimelineVars) =>
         gsap.timeline(vars).timeScale(speed);
       const linksStart = reduced ? beat(LINKS_START) : LINKS_START;
       const subOffset = reduced ? RM_OFFSET : SUB_OFFSET;
-      // Off-screen parking spot for the drawer. Reduced motion keeps it a hair
-      // off its resting place and leans on opacity instead of travel.
       const drawerOff = (mobile: boolean) =>
         reduced ? RM_SLIDE : mobile ? "100%" : "-100%";
 
@@ -296,9 +280,6 @@ const PerspectiveShiftMenu = ({
         setPhase(next);
       };
 
-      // Lock the pageEl where it is. Using fixed + a negative offset keeps the
-      // exact mid-scroll position instead of snapping to the top, and the
-      // scrollbar gutter is replaced so nothing shifts sideways.
       const lockScroll = () => {
         scrollLock.current = window.scrollY;
         const gutter = window.innerWidth - document.documentElement.clientWidth;
@@ -329,8 +310,6 @@ const PerspectiveShiftMenu = ({
       const rowsOf = (els: HTMLElement[]) =>
         els.map((el) => el.parentElement).filter(Boolean) as HTMLElement[];
 
-      // Align the drawer list with the parent link that opened it, so the
-      // first sub-item sits on the same baseline as its trigger.
       const alignOffset = (key: string) => {
         if (isMobile()) return null;
         const parent = surfaceEl.querySelector<HTMLElement>(`[data-shift-parent="${key}"]`);
@@ -347,8 +326,6 @@ const PerspectiveShiftMenu = ({
       const accItems = (el: HTMLElement | null) =>
         el ? gsap.utils.toArray<HTMLElement>("[data-shift-acc-item]", el) : [];
 
-      // Mobile: expand the sub-list inline under its parent. Animating height
-      // to the measured content height is what pushes the links below it down.
       const openAcc = (key: string) => {
         const panel = accFor(key);
         if (!panel) return;
@@ -406,8 +383,6 @@ const PerspectiveShiftMenu = ({
         gsap.set(subpanelEl, {
           "--shift-seam": 0,
           x: drawerOff(isMobile()),
-          // Reduced motion fades the drawer rather than sliding it clear, so it
-          // parks transparent instead of merely off-screen.
           opacity: reduced ? 0 : 1,
         });
         subpanelEl.style.visibility = "hidden";
@@ -418,10 +393,8 @@ const PerspectiveShiftMenu = ({
         }
       };
 
-      // Each open drawer level pushes the pageEl one step further back.
       const leanPage = (depth: number) => {
         if (isMobile()) return;
-        // Reduced motion never tilts the page, so there is no lean to deepen.
         if (reduced) return;
         gsap.to(pageEl, {
           rotationY: -tiltAngle - (tiltAngle / 5) * depth,
@@ -455,18 +428,17 @@ const PerspectiveShiftMenu = ({
           },
         });
 
-        // The glyph's 3D flip is decorative; reduced motion fades the bar in
-        // instead of spinning it.
-        if (glyphPageRef.current && !reduced) {
-          tl.to(glyphPageRef.current, { rotationY: -52, duration: GLYPH, ease: EASE_OUT_NAME }, 0);
+        if (glyphTopRef.current) {
+          tl.to(glyphTopRef.current, { y: 0, rotate: 45, duration: beat(GLYPH), ease: EASE_OUT_NAME }, 0);
         }
-        if (glyphColRef.current) {
-          tl.to(glyphColRef.current, { scaleX: 1, duration: beat(GLYPH * 0.8), ease: EASE_OUT_NAME }, reduced ? 0 : 0.0675);
+        if (glyphBotRef.current) {
+          tl.to(glyphBotRef.current, { y: 0, rotate: -45, duration: beat(GLYPH), ease: EASE_OUT_NAME }, 0);
+        }
+        if (glyphMidRef.current) {
+          tl.to(glyphMidRef.current, { autoAlpha: 0, scaleX: 0, duration: beat(GLYPH * 0.8), ease: EASE_OUT_NAME }, 0);
         }
 
         if (reduced) {
-          // No tilt and no scale-down - the page just dims in place while the
-          // surface crossfades over a token 4% of travel.
           tl.to(pageEl, {
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
@@ -536,7 +508,6 @@ const PerspectiveShiftMenu = ({
         return tl;
       };
 
-      // Swap one drawer list for another without closing the drawer.
       const swapDrawer = (key: string) => {
         const list = listFor(key);
         if (!list) return;
@@ -605,7 +576,6 @@ const PerspectiveShiftMenu = ({
         }
         if (phaseRef.current !== "open") return;
 
-        // Mobile: inline accordion, one open at a time.
         if (isMobile()) {
           if (drawerOpen.current && activeKey.current === key) {
             closeAcc(key);
@@ -776,11 +746,15 @@ const PerspectiveShiftMenu = ({
         if (metaRef.current) {
           tl.to(metaRef.current, { opacity: 0, duration: beat(0.18), ease: "power2.out" }, 0);
         }
-        if (glyphPageRef.current && !reduced) {
-          tl.to(glyphPageRef.current, { rotationY: 0, duration: CLOSE_SPAN * 0.7 }, 0.11);
+        const glyphSplay = glyphOffset();
+        if (glyphTopRef.current) {
+          tl.to(glyphTopRef.current, { y: -glyphSplay, rotate: 0, duration: beat(CLOSE_SPAN * 0.7) }, reduced ? 0 : 0.11);
         }
-        if (glyphColRef.current) {
-          tl.to(glyphColRef.current, { scaleX: 0, duration: beat(CLOSE_SPAN * 0.7) }, reduced ? 0 : 0.11);
+        if (glyphBotRef.current) {
+          tl.to(glyphBotRef.current, { y: glyphSplay, rotate: 0, duration: beat(CLOSE_SPAN * 0.7) }, reduced ? 0 : 0.11);
+        }
+        if (glyphMidRef.current) {
+          tl.to(glyphMidRef.current, { autoAlpha: 1, scaleX: 1, duration: beat(CLOSE_SPAN * 0.7) }, reduced ? 0 : 0.11);
         }
 
         const at = beat(LINK_OUT * 0.55);
@@ -812,7 +786,6 @@ const PerspectiveShiftMenu = ({
         else openMenu();
       };
 
-      // --- initial state -------------------------------------------------
       gsap.set(pageEl, {
         rotationY: 0,
         scale: 1,
@@ -835,11 +808,15 @@ const PerspectiveShiftMenu = ({
         force3D: true,
       });
       if (metaRef.current) gsap.set(metaRef.current, { opacity: 0 });
-      if (glyphPageRef.current) {
-        gsap.set(glyphPageRef.current, { rotationY: 0, transformOrigin: "right center" });
+      const glyphSplay = glyphOffset();
+      if (glyphTopRef.current) {
+        gsap.set(glyphTopRef.current, { yPercent: -50, y: -glyphSplay, rotate: 0, transformOrigin: "center center" });
       }
-      if (glyphColRef.current) {
-        gsap.set(glyphColRef.current, { scaleX: 0, transformOrigin: "left center" });
+      if (glyphBotRef.current) {
+        gsap.set(glyphBotRef.current, { yPercent: -50, y: glyphSplay, rotate: 0, transformOrigin: "center center" });
+      }
+      if (glyphMidRef.current) {
+        gsap.set(glyphMidRef.current, { yPercent: -50, y: 0, autoAlpha: 1, scaleX: 1, transformOrigin: "center center" });
       }
       surfaceEl.setAttribute("inert", "");
       surfaceEl.setAttribute("aria-hidden", "true");
@@ -848,7 +825,6 @@ const PerspectiveShiftMenu = ({
       resetAcc();
       setPhaseState("closed");
 
-      // --- listeners -----------------------------------------------------
       const trigger = triggerRef.current;
       trigger?.addEventListener("click", toggleMenu);
 
@@ -871,7 +847,6 @@ const PerspectiveShiftMenu = ({
       const parents = gsap.utils.toArray<HTMLElement>("[data-shift-parent]", surfaceEl);
       const parentCleanups = parents.map((el) => {
         const key = el.dataset.shiftParent as string;
-        // Hover targets the label + caret, not the empty space past the text.
         const hot = el.querySelector<HTMLElement>("[data-shift-label]") ?? el;
 
         const enter = () => {
@@ -883,8 +858,6 @@ const PerspectiveShiftMenu = ({
           if (pendingKey.current === key) pendingKey.current = null;
         };
         const click = () => {
-          // On hover-capable desktops mouseenter already opened (or queued)
-          // this drawer; re-entering openDrawer here would stack a second one.
           if (canHover() && !isMobile()) {
             if (pendingKey.current === key || activeKey.current === key) return;
           }
@@ -900,14 +873,9 @@ const PerspectiveShiftMenu = ({
         };
       });
 
-      // Hovering a leaf link tucks the drawer away. Nothing moves the label
-      // horizontally - the per-character roll and the separator rule carry the
-      // whole hover state.
       const linkCleanups = links.map((el) => {
         const isParent = el.hasAttribute("data-shift-parent");
 
-        // Sweeping anywhere across a link with no sublist should tuck an open
-        // drawer away.
         const rowEnter = () => {
           if (phaseRef.current !== "open") return;
           if (!isParent && drawerOpen.current && canHover() && !isMobile()) closeDrawer(false);
@@ -919,7 +887,6 @@ const PerspectiveShiftMenu = ({
         };
       });
 
-      // Leaving both columns for anywhere else tucks the drawer back.
       const onColumnLeave = (e: MouseEvent) => {
         if (!drawerOpen.current || !canHover() || isMobile()) return;
         const to = e.relatedTarget as Node | null;
@@ -969,8 +936,6 @@ const PerspectiveShiftMenu = ({
           href=""
           onClick={inert("")}
           aria-label="Hyperiux"
-          // The header sits outside both panels, so the open-state ink comes
-          // from the prop rather than an inherited color.
           style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
           className={`pointer-events-auto block text-[1.1vw] font-medium tracking-[-0.02em] transition-[color,opacity] duration-400 ease-out max-[1025px]:text-[2vw] max-md:text-[4vw] ${
             lit ? "text-(--shift-ink)/90" : "text-white"
@@ -988,35 +953,48 @@ const PerspectiveShiftMenu = ({
           aria-expanded={lit}
           aria-controls="perspective-shift-surface"
           aria-label={lit ? "Close navigation" : "Open navigation"}
-          className="pointer-events-auto relative z-301 flex h-11 w-11 cursor-pointer items-center justify-center border-none bg-transparent p-0"
+          className="group/glyph pointer-events-auto relative z-301 flex h-11 w-11 cursor-pointer items-center justify-center border-none bg-transparent p-0"
         >
-          <span className="relative block h-4 w-6 perspective-[90px]" aria-hidden="true">
-            {/* Stays white: on desktop the trigger sits beside the nav
-                column, over the dark page. Only mobile, where the panel goes
-                full-width and slides under it, takes the panel's text color. */}
+   
+          {/* The spin lives on this wrapper, never on the bars: GSAP owns each
+              bar's own transform, and a Tailwind rotate on the same element
+              would be overwritten mid-tween. Only the open state spins, so the
+              cross turns while the hamburger stays put. */}
+          <span
+            className={`relative block h-[1.2vw] w-[1.7vw] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none max-[1025px]:h-[2.4vw] max-[1025px]:w-[3.4vw] max-md:h-[4vw] max-md:w-[5.6vw] ${
+              lit ? "group-hover/glyph:rotate-90 group-focus-visible/glyph:rotate-90" : ""
+            }`}
+            aria-hidden="true"
+          >
             <span
-              ref={glyphColRef}
+              ref={glyphTopRef}
               style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
-              className={`absolute top-px left-0 block h-3.5 w-0.75 origin-left bg-white transition-colors duration-350 ${
+              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-[1025px]:h-[0.3vw] max-md:h-[0.5vw] ${
                 lit ? "max-md:bg-(--shift-ink)" : ""
               }`}
             />
             <span
-              ref={glyphPageRef}
+              ref={glyphMidRef}
               style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
-              className={`absolute top-px right-0 block h-3.5 w-4.75 origin-right border-[1.5px] border-white transition-colors duration-350 ${
-                lit ? "max-md:border-(--shift-ink)" : ""
+              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-[1025px]:h-[0.3vw] max-md:h-[0.5vw] ${
+                lit ? "max-md:bg-(--shift-ink)" : ""
+              }`}
+            />
+            <span
+              ref={glyphBotRef}
+              style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
+              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-[1025px]:h-[0.3vw] max-md:h-[0.5vw] ${
+                lit ? "max-md:bg-(--shift-ink)" : ""
               }`}
             />
           </span>
         </button>
       </header>
 
-
       <div
         ref={wrapRef}
         style={{ backgroundColor: voidColor }}
-        className="relative w-full overflow-hidden perspective-[1200px] perspective-origin-[50%_40%]"
+        className="relative w-full overflow-hidden perspective-distant perspective-origin-[50%_40%]"
       >
         {/* The page. Its content is whatever the consumer passes as children;
             it is this surface that tilts away when the menu opens. */}
@@ -1057,39 +1035,39 @@ const PerspectiveShiftMenu = ({
               {NAV_ITEMS.map((item) => {
                 const isParent = Boolean(item.items);
                 const expanded = isParent && openKey === item.key;
+        
                 const shared =
-                  "relative flex w-full items-baseline justify-between gap-3 py-3.25 text-left no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-current/12 after:[transform:scaleX(var(--shift-rule,0))] after:content-['']";
+                  "relative flex w-fit items-center gap-3 py-3.25 text-left no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-current/12 after:[transform:scaleX(var(--shift-rule,0))] after:content-['']";
 
                 const label = (
                   <span
                     data-shift-label
-                    className="group/row w-full text-[clamp(26px,min(2.9vw,4.8vh),46px)] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
+                    className="group/row w-fit text-[2.2vw] max-[1025px]:text-[4vw] max-md:text-[7vw] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
                   >
                     <span className="sr-only">{item.label}</span>
                     <CharRoll text={item.label} stagger={charStagger} reduced={reducedMotion} />
                   </span>
                 );
 
-                // One chevron, pointing right at rest and swinging 90° down
-                // while its panel is open. Opacity is resolved in a single
-                // branch so the open state cannot fight the visible state.
                 const caret = (
                   <span
                     aria-hidden="true"
-                    className={`h-4 w-4 flex-shrink-0 self-center transition-[transform,color,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                      expanded
-                        ? "rotate-90 text-current opacity-100"
-                        : lit
-                          ? "rotate-0 text-current/45 opacity-55"
-                          : "rotate-0 text-current/45 opacity-0"
+                    className={`h-4 w-4 ml-1 shrink-0 transition-colors duration-300 ${
+                      expanded ? "text-current" : "text-current/45"
                     }`}
                   >
-                    <CaretIcon />
+                    <span
+                      className={`block h-full text-black w-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+                        expanded ? "rotate-90" : "rotate-0"
+                      }`}
+                    >
+                      <CaretIcon />
+                    </span>
                   </span>
                 );
 
                 return (
-                  <li key={item.label} className="relative last:[&>*]:after:content-none">
+                  <li key={item.label} className="relative last:*:after:content-none">
                     {isParent ? (
                       <button
                         type="button"
@@ -1111,7 +1089,7 @@ const PerspectiveShiftMenu = ({
                       >
                         <span
                           data-shift-label
-                          className="group/row w-fit text-[clamp(26px,min(2.9vw,4.8vh),46px)] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
+                          className="group/row w-fit text-[2.4vw] max-[1025px]:text-[4vw] max-md:text-[7vw] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
                         >
                           <span className="sr-only">{item.label}</span>
                           <CharRoll text={item.label} stagger={charStagger} reduced={reducedMotion} />
@@ -1119,9 +1097,6 @@ const PerspectiveShiftMenu = ({
                       </Link>
                     )}
 
-                    {/* Mobile only: the sub-list expands inline beneath its
-                        parent, so the links below it slide down. Desktop keeps
-                        the side drawer and never renders this open. */}
                     {isParent && (
                       <div
                         data-shift-acc={item.key}
@@ -1168,7 +1143,7 @@ const PerspectiveShiftMenu = ({
           <div ref={metaRef} className="mt-auto flex flex-col gap-1.5 opacity-0">
             <Link
               href={`mailto:${CONTACT_EMAIL}`}
-              className="text-[0.75rem] font-normal tracking-[0.05em] text-current/70 no-underline"
+              className="text-[0.75rem] font-normal tracking-wider text-current/70 no-underline"
             >
               {CONTACT_EMAIL}
             </Link>
@@ -1195,7 +1170,7 @@ const PerspectiveShiftMenu = ({
           ref={subpanelRef}
           aria-hidden="true"
           style={{ ["--shift-panel" as string]: `${panelWidth}vw`, ["--shift-drawer" as string]: `${drawerWidth}vw`, backgroundColor: panelColor, color: textColor }}
-          className="invisible fixed top-0 left-(--shift-panel) z-150 flex h-screen w-(--shift-drawer) flex-col justify-start px-[2.1vw] py-[5.2vw] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-px before:origin-bottom before:bg-current/12 before:[transform:scaleY(var(--shift-seam,0))] before:content-[''] max-[1025px]:left-[38vw] max-[1025px]:w-[30vw] max-[1025px]:px-[3vw] max-[1025px]:py-[7vw] max-md:left-0 max-md:z-210 max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
+          className="invisible fixed top-0 left-(--shift-panel) z-150 flex h-screen w-(--shift-drawer) flex-col justify-start px-[2.1vw] py-[5.2vw] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-px before:origin-bottom before:bg-current/12 before:transform-[scaleY(var(--shift-seam,0))] before:content-[''] max-[1025px]:left-[38vw] max-[1025px]:w-[30vw] max-[1025px]:px-[3vw] max-[1025px]:py-[7vw] max-md:left-0 max-md:z-210 max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
         >
           <button
             type="button"
@@ -1225,11 +1200,11 @@ const PerspectiveShiftMenu = ({
               >
                 <ul data-shift-subitems className="m-0 list-none p-0">
                   {item.items?.map((sub) => (
-                    <li key={sub.label} className="relative last:[&>*]:after:content-none">
+                    <li key={sub.label} className="relative last:*:after:content-none">
                       <Link
                         href={sub.href}
                         onClick={inert(sub.href)}
-                        className="group/sub relative block py-3 no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-current/[0.08] after:[transform:scaleX(var(--shift-rule,0))] after:content-['']"
+                        className="group/sub relative block py-3 no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-current/8 after:transform-[scaleX(var(--shift-rule,0))] after:content-['']"
                       >
                         <span
                           data-shift-sublabel

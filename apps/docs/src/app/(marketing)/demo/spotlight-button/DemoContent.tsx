@@ -15,7 +15,7 @@ export default function DemoContent({ registry }: { registry: any }) {
         <SpotlightButton
           {...values}
           label="Explore Hyperiux"
-          icon={<Sparkles className="h-3.5 w-3.5" />}
+
           size="lg"
           className=""
         />

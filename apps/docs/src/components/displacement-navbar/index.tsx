@@ -27,10 +27,6 @@ export function LinkHover({
   reduced = false,
   ...props
 }: LinkHoverProps) {
-  // The roll-up IS this control's animation, so there is no gentler version of
-  // it to fall back to — under reduced motion the label renders plainly and
-  // hover does nothing. This also drops the per-character spans a screen
-  // reader would otherwise have to step over.
   if (reduced) {
     return (
       <Link {...props} className={`inline-flex items-center gap-[0.35em] no-underline ${className}`}>
@@ -112,13 +108,13 @@ export interface DisplacementNavbarProps {
   openDuration?: number
   /** Page displacement + bar/mark close duration, in seconds. Matches `openDuration` by default so the close mirrors the open. */
   closeDuration?: number
-  /** Delay (seconds) between each shelf content item fading in on open, and out again on close in reverse order. */
+  /** Delay (seconds) between each shelf content item fading in on open. The close clears them outright, so it does not stagger. */
   contentStagger?: number
   /** Duration of the figure image cross-swap on link hover, in seconds. */
   imageSwapDuration?: number
   /** Shelf + header background color. */
   shelfBackground?: string
-  /** Displaced page background color. */
+  /** Displaced page background - any CSS background value, so a gradient works as well as a flat color. */
   pageBackground?: string
   /** Primary/info link text color. */
   linkColor?: string
@@ -175,20 +171,13 @@ const defaultMedia: DisplacementNavbarMedia[] = [
   },
 ]
 
-// Fixed — not exposed to the remixer. `EASE` and `IMG_PARK_SCALE` were excluded
-// by request; the mark-block geometry is an internal detail of the hamburger
-// icon, not a style choice.
 const EASE = 'expo.out'
 const IMG_PARK_SCALE = 1.08
 const MARK_DURATION = 0.45
-const MARK_BLOCK_WIDTH = '60%'
-const MARK_BLOCK_HEIGHT = '32%'
+const MARK_BLOCK_WIDTH = '100%'
+const MARK_BLOCK_HEIGHT = '2px'
+const PAGE_CONTENT_DIM = 0.8
 
-// Reduced motion keeps the same choreography but collapses it: the page still
-// makes room for the shelf (that displacement is the component's function, not
-// decoration), it just gets there quickly, and everything that was travelling
-// or staggering becomes a plain fade. Not remixable — this is an accessibility
-// floor, not a style choice.
 const RM_EASE = 'power1.out'
 const RM_OPEN_DURATION = 0.2
 const RM_CLOSE_DURATION = 0.16
@@ -224,9 +213,11 @@ const DisplacementNavbar = ({
   const barLineRef = useRef<HTMLSpanElement | null>(null)
   const markLineRef = useRef<HTMLSpanElement | null>(null)
   const markBlockRef = useRef<HTMLSpanElement | null>(null)
+  const markMiddleRef = useRef<HTMLSpanElement | null>(null)
   const shelfRef = useRef<HTMLDivElement | null>(null)
   const pageRef = useRef<HTMLDivElement | null>(null)
   const primaryNavRef = useRef<HTMLDivElement | null>(null)
+  const pageContentRef = useRef<HTMLDivElement | null>(null)
   const contentRefs = useRef<HTMLElement[]>([])
   const imageRefs = useRef<HTMLDivElement[]>([])
   const captionRef = useRef<HTMLSpanElement | null>(null)
@@ -246,9 +237,6 @@ const DisplacementNavbar = ({
   const [isOpen, setIsOpen] = useState(false)
   const phase = useRef<'closed' | 'opening' | 'open' | 'closing'>('closed')
 
-  // open/close/swapMedia are stable-identity callbacks, so remixer-driven prop
-  // changes (and the reduced-motion preference) are read through refs at call
-  // time rather than captured in a closure that would go stale.
   const reducedMotion = usePrefersReducedMotion()
   const reducedRef = useRef(reducedMotion)
   const timingRef = useRef({ openDuration, closeDuration, contentStagger, imageSwapDuration })
@@ -272,13 +260,10 @@ const DisplacementNavbar = ({
     if (node) imageRefs.current[index] = node
   }, [])
 
-  // The hamburger's two marks are offset from the centre by a share of the
-  // icon box, not a fixed pixel count — the box is sized in vw and grows a lot
-  // on mobile, where a hardcoded offset would leave the marks nearly touching.
   const markOffsets = useCallback(() => {
     const box = markLineRef.current?.parentElement?.getBoundingClientRect()
     const h = box?.height ?? 14
-    return { line: -h * 0.22, block: h * 0.18, nudge: h * 0.32 }
+    return { line: -h * 0.28, block: h * 0.28, nudge: h * 0.38 }
   }, [])
 
   useLayoutEffect(() => {
@@ -292,17 +277,12 @@ const DisplacementNavbar = ({
       width: MARK_BLOCK_WIDTH,
       height: MARK_BLOCK_HEIGHT,
     })
+    gsap.set(markMiddleRef.current, { xPercent: -50, yPercent: -50, y: 0, autoAlpha: 1 })
+    gsap.set(pageContentRef.current, { autoAlpha: 1 })
     gsap.set(barLineRef.current, { scaleX: 0 })
-    // The shelf travels rather than sitting still and being uncovered: it parks
-    // one shelf-height above its resting slot so its bottom edge is level with
-    // the bar, then slides down in step with the page. Parked, it is invisible
-    // without needing a mask — the wrapper behind it is the same
-    // `shelfBackground`, and its contents start at `autoAlpha: 0`.
     gsap.set(shelfRef.current, { y: -(shelfRef.current?.offsetHeight ?? 0) })
     gsap.set(contentRefs.current, { autoAlpha: 0, y: reducedMotion ? 0 : -18 })
     imageRefs.current.forEach((el, i) => {
-      // Reduced motion swaps images by cross-fade, so they all sit stacked in
-      // place at zero offset and only opacity separates them.
       if (reducedMotion) {
         gsap.set(el, { yPercent: 0, autoAlpha: i === 0 ? 1 : 0, zIndex: i === 0 ? 1 : 0, scale: 1 })
       } else {
@@ -322,8 +302,6 @@ const DisplacementNavbar = ({
     const swapDur = timingRef.current.imageSwapDuration
 
     if (reducedRef.current) {
-      // Cross-fade in place: nothing travels, the outgoing frame just hands off
-      // opacity to the incoming one.
       gsap.killTweensOf(images)
       images.forEach((el) => {
         if (el !== next && el !== prev) gsap.set(el, { autoAlpha: 0, yPercent: 0, zIndex: 0 })
@@ -390,11 +368,6 @@ const DisplacementNavbar = ({
     const distance = shelfH + barH
     scrollYRef.current = window.scrollY
 
-    // Freeze the document at its current visual position while the shelf is
-    // out. `overflow: hidden` alone can jump a tall document back to the top on
-    // some browsers; fixing the body with the inverse scroll offset keeps a
-    // mid-page open perfectly still. Preserve inline styles so embedding this
-    // component never destroys a host page's own scroll-lock state.
     const scrollbar = window.innerWidth - document.documentElement.clientWidth
     scrollLockStylesRef.current = {
       htmlOverflow: document.documentElement.style.overflow,
@@ -433,10 +406,8 @@ const DisplacementNavbar = ({
     const openDur = rm ? RM_OPEN_DURATION : t.openDuration
     const markDur = rm ? RM_OPEN_DURATION : MARK_DURATION
 
-    // Shelf and page share a start, a duration and a curve, so the shelf's
-    // bottom edge stays welded to the top of the page for the whole travel
-    // rather than being uncovered by it.
     tl.to(pageRef.current, { y: distance, duration: openDur, ease }, 0)
+    tl.to(pageContentRef.current, { autoAlpha: PAGE_CONTENT_DIM, duration: openDur, ease }, 0)
     tl.to(shelfRef.current, { y: 0, duration: openDur, ease }, 0)
     tl.to(barLineRef.current, { scaleX: 1, duration: rm ? openDur : Math.max(openDur, 0.1) * 1.2, ease }, 0)
     tl.to(markLineRef.current, { y: 0, rotation: 45, duration: markDur, ease }, 0)
@@ -452,8 +423,7 @@ const DisplacementNavbar = ({
       },
       0
     )
-    // Reduced motion: content arrives as a quick fade — no upward travel, no
-    // stagger cascade — and the images are already at rest scale.
+    tl.to(markMiddleRef.current, { autoAlpha: 0, scaleX: 0, duration: markDur, ease }, 0)
     tl.to(
       contentRefs.current,
       rm
@@ -492,27 +462,12 @@ const DisplacementNavbar = ({
     const closeDur = rm ? RM_CLOSE_DURATION : t.closeDuration
     const markDur = rm ? RM_CLOSE_DURATION : MARK_DURATION
 
-    // The open, read right-to-left. There the content was last to arrive, so
-    // here it is first to leave: it runs from 0 on a reverse stagger — last
-    // item in, first item out — and is gone before the page finishes
-    // travelling. Page, bar and mark share a start, as they do on the way out,
-    // and every duration matches its opening counterpart so the two directions
-    // take the same time. The curve stays `EASE` in both directions: an
-    // inverted `expo.in` holds still for a third of its span before moving,
-    // which reads as lag rather than as a rewind. Under reduced motion content
-    // parks without the upward offset, so reopening is a pure fade.
-    const contentDur = rm ? RM_CONTENT_DURATION : 0.5
-    tl.to(
-      contentRefs.current,
-      rm
-        ? { autoAlpha: 0, y: 0, duration: contentDur, stagger: 0, ease }
-        : { autoAlpha: 0, y: -18, duration: contentDur, stagger: { each: t.contentStagger, from: 'end' }, ease },
-      0
-    )
+    gsap.set(contentRefs.current, { autoAlpha: 0, y: rm ? 0 : -18 })
     if (!rm) {
       tl.to(imageRefs.current, { scale: IMG_PARK_SCALE, duration: closeDur, ease: EASE }, 0)
     }
     tl.to(pageRef.current, { y: 0, duration: closeDur, ease }, 0)
+    tl.to(pageContentRef.current, { autoAlpha: 1, duration: closeDur, ease }, 0)
     tl.to(shelfRef.current, { y: -(shelfRef.current?.offsetHeight ?? 0), duration: closeDur, ease }, 0)
     tl.to(barLineRef.current, { scaleX: 0, duration: rm ? closeDur : Math.max(closeDur, 0.1) * 1.2, ease }, 0)
     const marks = markOffsets()
@@ -529,6 +484,7 @@ const DisplacementNavbar = ({
       },
       0
     )
+    tl.to(markMiddleRef.current, { autoAlpha: 1, scaleX: 1, duration: markDur, ease }, 0)
   }, [markOffsets, unlockScroll])
 
   const toggle = useCallback(() => {
@@ -546,10 +502,6 @@ const DisplacementNavbar = ({
       if (barRef.current?.contains(target) || shelfRef.current?.contains(target)) return
       close()
     }
-    // The document is frozen while open, so a wheel/touch gesture cannot scroll
-    // it — the gesture just dismisses the shelf. Cancelling the event is both
-    // redundant and unreliable (a wheel already handed to the compositor keeps
-    // scrolling), so the lock does the holding and this only triggers the close.
     const onGesture = () => {
       if (phase.current !== 'open' && phase.current !== 'opening') return
       close()
@@ -574,15 +526,13 @@ const DisplacementNavbar = ({
       className={`relative min-h-screen ${className}`}
       style={{ backgroundColor: shelfBackground, color: linkColor }}
     >
-      {/* The bar is transparent when closed so the page shows through it. Once
-          the shelf is out it carries `shelfBackground` itself: the shelf lands
-          with its top edge level with the bar's bottom, so it no longer covers
-          the bar strip, and the page's top padding would otherwise show through
-          as a light band above a dark shelf. */}
+      {/* The bar stays translucent in both states, so whatever sits behind it —
+          the page when closed, the shelf once it is out — reads through the
+          blur rather than being covered by a solid strip. */}
       <header
         ref={barRef}
-        className="fixed top-0 left-0 right-0 z-30 backdrop-blur-sm flex items-center justify-between h-[4vw] max-[1025px]:h-[16vw] min-[769px]:max-[1025px]:h-[5.5vw] px-[1.7vw] max-[1025px]:px-[5vw] min-[769px]:max-[1025px]:px-[2.6vw] transition-colors duration-300"
-        style={{ backgroundColor: isOpen ? shelfBackground : 'transparent', color: isOpen ? linkColor : '#111111' }}
+        className="fixed top-0 left-0 right-0 z-30 bg-black/20 backdrop-blur-md flex items-center justify-between h-[4vw] max-[1025px]:h-[16vw] min-[769px]:max-[1025px]:h-[5.5vw] px-[1.7vw] max-[1025px]:px-[5vw] min-[769px]:max-[1025px]:px-[2.6vw] transition-colors duration-300"
+        style={{ color: linkColor }}
       >
         <Link href="#" aria-label="Home" className="relative block">
           <span className="block text-[2vw] max-[1025px]:text-[4vw]  font-medium tracking-[-0.01em]">
@@ -595,11 +545,15 @@ const DisplacementNavbar = ({
           onClick={toggle}
           onMouseEnter={() => {
             if (reducedMotion || phase.current !== 'closed') return
-            gsap.to(markBlockRef.current, { y: markOffsets().nudge, duration: 0.25, ease: EASE, overwrite: 'auto' })
+            const marks = markOffsets()
+            gsap.to(markBlockRef.current, { y: marks.nudge, duration: 0.25, ease: EASE, overwrite: 'auto' })
+            gsap.to(markLineRef.current, { y: -marks.nudge, duration: 0.25, ease: EASE, overwrite: 'auto' })
           }}
           onMouseLeave={() => {
             if (reducedMotion || phase.current !== 'closed') return
-            gsap.to(markBlockRef.current, { y: markOffsets().block, duration: 0.3, ease: EASE, overwrite: 'auto' })
+            const marks = markOffsets()
+            gsap.to(markBlockRef.current, { y: marks.block, duration: 0.3, ease: EASE, overwrite: 'auto' })
+            gsap.to(markLineRef.current, { y: marks.line, duration: 0.3, ease: EASE, overwrite: 'auto' })
           }}
           aria-expanded={isOpen}
           aria-controls="displacement-navbar-shelf"
@@ -608,7 +562,7 @@ const DisplacementNavbar = ({
         >
           <span
             className={`relative block  max-[1025px]:w-[8vw] max-[1025px]:h-[8vw] min-[769px]:max-[1025px]:w-[3.5vw] min-[769px]:max-[1025px]:h-[3.5vw] transition-transform duration-300 ease-[cubic-bezier(0.625,0.05,0,1)] ${
-              isOpen ? 'group-hover:rotate-90 w-[2vw] h-[2vw]' : 'w-[3vw] h-[1.9vw]'
+              isOpen ? 'group-hover:rotate-90 w-[2vw] h-[2vw]' : 'w-[2.4vw] h-[1.6vw]'
             }`}
           >
             <span
@@ -616,8 +570,12 @@ const DisplacementNavbar = ({
               className="absolute top-1/2 left-1/2 w-full h-0.5 origin-center bg-current"
             />
             <span
+              ref={markMiddleRef}
+              className="absolute top-1/2 left-1/2 w-full h-0.5 origin-center bg-current"
+            />
+            <span
               ref={markBlockRef}
-              className="absolute top-1/2 left-1/2 w-[60%] h-[32%] origin-center bg-current"
+              className="absolute top-1/2 left-1/2 w-full h-0.5 origin-center bg-current"
             />
           </span>
         </button>
@@ -656,9 +614,6 @@ const DisplacementNavbar = ({
                   data-role="primary-link"
                   className="group relative flex w-fit items-baseline py-[0.7vw] max-[1025px]:py-[3.2vw] min-[769px]:max-[1025px]:py-[1.3vw]"
                   onMouseEnter={() => {
-                    // The image swap still runs under reduced motion — it is an
-                    // information change, not decoration — but the sibling
-                    // dimming is purely decorative, so it is skipped.
                     if (showMedia) swapMedia(i % media.length)
                     if (reducedMotion || !dimInactiveLinks) return
                     contentRefs.current.forEach((el, idx) => {
@@ -770,15 +725,20 @@ const DisplacementNavbar = ({
       <div
         ref={pageRef}
         className="relative z-20 min-h-screen pt-[4vw] max-[1025px]:pt-[16vw] min-[769px]:max-[1025px]:pt-[5.5vw] will-change-transform"
-        style={{ backgroundColor: pageBackground, color: '#111111' }}
+        style={{ background: pageBackground, color: '#111111' }}
       >
-        {children ?? (
-          <div className="grid place-items-center min-h-[90vh] px-[1.7vw] max-[1025px]:px-[5vw] min-[769px]:max-[1025px]:px-[2.6vw]">
-            <h1 className="m-0 text-[4vw] max-[1025px]:text-[9vw] min-[769px]:max-[1025px]:text-[4.5vw] font-light leading-[1.05] tracking-[-0.03em] text-center">
-              Displacement Navbar
-            </h1>
-          </div>
-        )}
+        {/* Only the page's content dims while the shelf is open, never the page
+            surface itself — fading the wrapper would take `pageBackground` with
+            it and let the shelf show through the gap. */}
+        <div ref={pageContentRef}>
+          {children ?? (
+            <div className="grid place-items-center min-h-[90vh] px-[1.7vw] max-[1025px]:px-[5vw] min-[769px]:max-[1025px]:px-[2.6vw]">
+              <h1 className="m-0 text-[4vw] max-[1025px]:text-[9vw] min-[769px]:max-[1025px]:text-[4.5vw] font-light leading-[1.05] tracking-[-0.03em] text-center">
+                Displacement Navbar
+              </h1>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

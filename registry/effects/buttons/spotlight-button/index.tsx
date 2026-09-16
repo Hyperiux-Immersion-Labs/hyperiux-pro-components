@@ -82,16 +82,11 @@ export function SpotlightButton({
   const instanceId = useId().replace(/[^a-zA-Z0-9]/g, "");
   const ring = `halo-ring-${instanceId}`;
 
-  // Each instance registers its own properties, so several buttons on a page
-  // orbit independently instead of sharing one global custom property.
   const turn = `--halo-turn-${instanceId}`;
   const lead = `--halo-lead-${instanceId}`;
   const spread = `--halo-spread-${instanceId}`;
   const core = `--halo-core-${instanceId}`;
 
-
-  // Only what Tailwind cannot express: property registration, the conic
-  // border-box paint, and the orbit keyframes. Everything else is a class.
   const css = `
     @property ${turn} {
       syntax: "<angle>";
@@ -137,8 +132,6 @@ export function SpotlightButton({
       animation-composition: add;
     }
 
-    /* Blurred halo copy, clipped to the button by overflow-hidden.
-       Shares ${turn}, so glow and crisp ring stay in step. */
     .${ring}::before {
       content: "";
       position: absolute;
@@ -159,8 +152,6 @@ export function SpotlightButton({
       transition: opacity ${settleDuration}s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
-    /* Inner wash: the same arc bleeding into the pill's interior, clipped to
-       the button so the light fades inward from the lit edge. */
     .${ring}::after {
       content: "";
       position: absolute;
