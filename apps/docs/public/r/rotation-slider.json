@@ -59,7 +59,7 @@
       "name": "scrollSmoothing",
       "type": "number",
       "default": 1,
-      "description": "GSAP ScrollTrigger scrub value on the main horizontal track - higher lags/smooths more, lower tracks scroll 1:1.",
+      "description": "GSAP ScrollTrigger scrub value on the main horizontal track — higher lags/smooths more, lower tracks scroll 1:1.",
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -73,7 +73,7 @@
       "name": "perspective",
       "type": "number",
       "default": 1200,
-      "description": "3D perspective distance, in pixels, applied to the sticky track - lower values look deeper/more distorted.",
+      "description": "3D perspective distance, in pixels, applied to the sticky track — lower values look deeper/more distorted.",
       "remixer": {
         "control": "range",
         "group": "motion",
