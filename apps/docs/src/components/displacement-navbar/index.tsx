@@ -251,10 +251,18 @@ const DisplacementNavbar = ({
   // time rather than captured in a closure that would go stale.
   const reducedMotion = usePrefersReducedMotion()
   const reducedRef = useRef(reducedMotion)
-  reducedRef.current = reducedMotion
-
   const timingRef = useRef({ openDuration, closeDuration, contentStagger, imageSwapDuration })
-  timingRef.current = { openDuration, closeDuration, contentStagger, imageSwapDuration }
+
+  // Mutating a ref's .current directly during render (the previous shape of
+  // these two lines) is a render-phase side effect React disallows - refs
+  // are only guaranteed safe to read/write in effects or event handlers.
+  // Deferring to an effect (no deps, so it re-syncs after every render)
+  // keeps the "always latest value for later imperative reads" behavior the
+  // callbacks below rely on, just moved to the commit phase.
+  useEffect(() => {
+    reducedRef.current = reducedMotion
+    timingRef.current = { openDuration, closeDuration, contentStagger, imageSwapDuration }
+  })
 
   const registerContent = useCallback((node: HTMLElement | null, index: number) => {
     if (node) contentRefs.current[index] = node

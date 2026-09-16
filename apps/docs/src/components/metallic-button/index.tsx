@@ -692,19 +692,28 @@ export function MetallicButton({
   });
   const idleSpeedRef = useRef(idleSpeed);
   const reducedMotionRef = useRef(reducedMotion);
-  uniformsRef.current = {
-    colorBack: baseColor,
-    colorTint: sheenColor,
-    repetition: bandCount,
-    softness: edgeBlur,
-    angle: flowAngle,
-    scale: zoom,
-    distortion: warp,
-    shiftRed: redFringe,
-    shiftBlue: blueFringe,
-  };
-  idleSpeedRef.current = idleSpeed;
-  reducedMotionRef.current = reducedMotion;
+
+  // Mutating a ref's .current directly during render (the previous shape of
+  // these assignments) is a render-phase side effect React disallows - refs
+  // are only guaranteed safe to read/write in effects or event handlers.
+  // Deferring to an effect (no deps, so it re-syncs after every render)
+  // keeps the "always latest value for the shader loop to read" behavior
+  // these refs exist for, just moved to the commit phase.
+  useEffect(() => {
+    uniformsRef.current = {
+      colorBack: baseColor,
+      colorTint: sheenColor,
+      repetition: bandCount,
+      softness: edgeBlur,
+      angle: flowAngle,
+      scale: zoom,
+      distortion: warp,
+      shiftRed: redFringe,
+      shiftBlue: blueFringe,
+    };
+    idleSpeedRef.current = idleSpeed;
+    reducedMotionRef.current = reducedMotion;
+  });
 
   const isIcon = viewMode === "icon";
   const shellSize = isIcon ? "h-11.5 w-11.5" : "h-11.5 w-35.5";
