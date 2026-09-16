@@ -13,15 +13,15 @@ const MAX_LIMIT = 500;
 const SUBSCRIPTION_COLUMNS =
   "clerk_user_id, plan, status, billing_interval, current_period_end, razorpay_customer_id, razorpay_subscription_id, created_at";
 
-// "Most Copies"/"Most Saves" sort by a count that lives in a different
-// table than `subscriptions`, and role lives only in Clerk metadata, not in
-// Supabase at all - neither can be pushed into a Supabase `.order()`/`.eq()`.
-// Whenever either is active, this bounds how many matching rows get pulled
-// into JS to sort/filter by hand. Acceptable at this product's current
-// scale; a real SQL-side aggregate (or mirroring role into Supabase) would
-// be needed past this many matching users.
+// "Most Copies"/"Most Installs"/"Most Saves" sort by a count that lives in a
+// different table than `subscriptions`, and role lives only in Clerk
+// metadata, not in Supabase at all - none of these can be pushed into a
+// Supabase `.order()`/`.eq()`. Whenever any is active, this bounds how many
+// matching rows get pulled into JS to sort/filter by hand. Acceptable at
+// this product's current scale; a real SQL-side aggregate (or mirroring
+// role into Supabase) would be needed past this many matching users.
 const BROAD_FETCH_CAP = 2000;
-const SORT_OPTIONS = new Set(["copies", "saves"]);
+const SORT_OPTIONS = new Set(["copies", "installs", "saves"]);
 const ROLE_OPTIONS = new Set(["admin", "super_admin", "user"]);
 
 function countByUser(rows) {
@@ -32,25 +32,31 @@ function countByUser(rows) {
   return counts;
 }
 
-// Lifetime copy/save totals for exactly this page's users - all-time,
-// matching the same numbers already shown on the per-user Activity Detail
-// page, not scoped to the table's own joined-date filter (that filter is
-// about who's in the list, not how much of the site's history counts).
+// Lifetime copy/install/save totals for exactly this page's users - all-
+// time, matching the same numbers already shown on the per-user Activity
+// Detail page, not scoped to the table's own joined-date filter (that
+// filter is about who's in the list, not how much of the site's history
+// counts).
 // "Copies" means the website's copy button specifically (source='web'),
 // same convention as everywhere else "copies" is used (Overview's Total
-// Copies, the per-user page, "Top users by copies") - not installs
-// generally, which would fold CLI/MCP installs into a column literally
-// labeled "Copies".
+// Copies, the per-user page, "Top users by copies"). "Installs" is
+// unscoped by source (web/CLI/MCP combined) - same as the per-user page's
+// "Installed Effects" and the Overview's "Top installed effects" - so it's
+// always >= copies, since every web copy is itself an install_unlocks row.
 async function countsForIds(ids) {
-  if (!ids.length) return { copiesById: new Map(), savesById: new Map() };
+  if (!ids.length) {
+    return { copiesById: new Map(), installsById: new Map(), savesById: new Map() };
+  }
 
-  const [{ data: copyRows }, { data: saveRows }] = await Promise.all([
+  const [{ data: copyRows }, { data: installRows }, { data: saveRows }] = await Promise.all([
     supabase.from("install_unlocks").select("clerk_user_id").eq("source", "web").in("clerk_user_id", ids),
+    supabase.from("install_unlocks").select("clerk_user_id").in("clerk_user_id", ids),
     supabase.from("wishlisted_effects").select("clerk_user_id").in("clerk_user_id", ids),
   ]);
 
   return {
     copiesById: countByUser(copyRows || []),
+    installsById: countByUser(installRows || []),
     savesById: countByUser(saveRows || []),
   };
 }
@@ -78,7 +84,7 @@ function roleFilterMatches(clerkUser, roleFilter) {
   return role === roleFilter;
 }
 
-function shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, savesById) {
+function shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, installsById, savesById) {
   const role = getRole(clerkUser);
 
   const base = {
@@ -91,6 +97,7 @@ function shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, savesById) {
     role,
     isAdmin: role !== null,
     copiesCount: copiesById.get(clerkUser.id) || 0,
+    installsCount: installsById.get(clerkUser.id) || 0,
     savesCount: savesById.get(clerkUser.id) || 0,
   };
 
@@ -173,7 +180,7 @@ export async function GET(request) {
       const { data: clerkUsers, totalCount } = await clerk.users.getUserList(clerkParams);
       const ids = clerkUsers.map((u) => u.id);
 
-      const [{ data: subRows }, { copiesById, savesById }] = await Promise.all([
+      const [{ data: subRows }, { copiesById, installsById, savesById }] = await Promise.all([
         ids.length
           ? supabase.from("subscriptions").select(SUBSCRIPTION_COLUMNS).in("clerk_user_id", ids)
           : Promise.resolve({ data: [] }),
@@ -182,7 +189,7 @@ export async function GET(request) {
       const subMap = Object.fromEntries((subRows || []).map((s) => [s.clerk_user_id, s]));
 
       let users = clerkUsers.map((u) =>
-        shapeUser(u, subMap[u.id], viewerIsSuperAdmin, copiesById, savesById)
+        shapeUser(u, subMap[u.id], viewerIsSuperAdmin, copiesById, installsById, savesById)
       );
 
       // Plan and role can't be pushed into Clerk's query (plan lives only
@@ -203,12 +210,13 @@ export async function GET(request) {
     }
 
     // No search text. Role lives only in Clerk, and "Most Copies"/"Most
-    // Saves" sort by a count that lives outside `subscriptions` entirely -
-    // neither can be expressed as a Supabase `.eq()`/`.order()`. Whenever
-    // either is active, pull every matching subscription row up to the
-    // fetch cap, resolve all of their Clerk profiles up front, filter/sort
-    // in JS, then paginate the result. Otherwise (the common case - no
-    // role filter, default sort) stay on cheap direct DB pagination.
+    // Installs"/"Most Saves" sort by a count that lives outside
+    // `subscriptions` entirely - none of these can be expressed as a
+    // Supabase `.eq()`/`.order()`. Whenever either is active, pull every
+    // matching subscription row up to the fetch cap, resolve all of their
+    // Clerk profiles up front, filter/sort in JS, then paginate the result.
+    // Otherwise (the common case - no role filter, default sort) stay on
+    // cheap direct DB pagination.
     const needsBroadFetch = sortBy !== "newest" || roleFilter !== "all";
 
     if (needsBroadFetch) {
@@ -250,8 +258,9 @@ export async function GET(request) {
 
       if (sortBy !== "newest") {
         const ids = combined.map((c) => c.sub.clerk_user_id).filter(Boolean);
-        const { copiesById, savesById } = await countsForIds(ids);
-        const countMap = sortBy === "copies" ? copiesById : savesById;
+        const { copiesById, installsById, savesById } = await countsForIds(ids);
+        const countMap =
+          sortBy === "copies" ? copiesById : sortBy === "installs" ? installsById : savesById;
 
         combined.sort(
           (a, b) => (countMap.get(b.sub.clerk_user_id) || 0) - (countMap.get(a.sub.clerk_user_id) || 0)
@@ -260,10 +269,10 @@ export async function GET(request) {
 
       const pageCombined = combined.slice(offset, offset + limit);
       const pageIds = pageCombined.map((c) => c.sub.clerk_user_id).filter(Boolean);
-      const { copiesById, savesById } = await countsForIds(pageIds);
+      const { copiesById, installsById, savesById } = await countsForIds(pageIds);
 
       const users = pageCombined.map(({ sub, clerkUser }) =>
-        shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, savesById)
+        shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, installsById, savesById)
       );
 
       return NextResponse.json({ users, total: totalCount });
@@ -293,7 +302,7 @@ export async function GET(request) {
 
     const clerkUserIds = (subscriptions || []).map((s) => s.clerk_user_id).filter(Boolean);
 
-    const [clerkUsers, { copiesById, savesById }] = await Promise.all([
+    const [clerkUsers, { copiesById, installsById, savesById }] = await Promise.all([
       getClerkUsersByIds(clerk, clerkUserIds),
       countsForIds(clerkUserIds),
     ]);
@@ -306,7 +315,7 @@ export async function GET(request) {
       // crashing the whole page.
       const clerkUser = clerkMap[sub.clerk_user_id] || fallbackClerkUser(sub.clerk_user_id);
 
-      return shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, savesById);
+      return shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, installsById, savesById);
     });
 
     return NextResponse.json({ users, total: count || 0 });

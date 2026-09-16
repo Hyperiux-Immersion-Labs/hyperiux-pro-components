@@ -1276,7 +1276,7 @@ function EffectsGridInner({
     <>
       <div
         ref={gridRef}
-        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
+        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10`}
       >
         {visibleEffects.map((effect, i) => {
           const fullEffect = loadedCards[effect.name] || effect;

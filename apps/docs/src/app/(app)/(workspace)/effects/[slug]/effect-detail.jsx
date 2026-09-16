@@ -150,7 +150,7 @@ function EffectDetailMainSkeleton() {
           </div>
         </div>
 
-        <section className="my-20 relative space-y-10 max-[1025px]:space-y-16">
+        <section className="my-20 relative space-y-10 max-[1025px]:space-y-10">
           <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
             <SkeletonBlock className="h-12 w-[30%]  bg-[#272727] max-[1025px]:w-[60%] max-md:w-[80%]" />
             <SkeletonBlock className="h-12 w-44  bg-[#ff5f00]/45 max-[1025px]:hidden" />
@@ -601,7 +601,7 @@ export function EffectDetailContent({
                 {safeRelatedEffects?.length > 0 && (
                   <section
                     ref={relatedEffectsRef}
-                    className="my-20 relative space-y-10 max-[1025px]:space-y-16"
+                    className="my-20 relative space-y-10 max-[1025px]:space-y-10"
                   >
                     <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
                       <HeadAnim>

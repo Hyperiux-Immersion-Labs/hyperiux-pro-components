@@ -8,6 +8,7 @@ import { useLenis } from "lenis/react";
 import { useReCaptcha } from "next-recaptcha-v3";
 import { Mail } from "lucide-react";
 import { armRecaptcha } from "@/lib/recaptchaEvents";
+import { buttonV3ClassName, ButtonV3Chrome } from "@/homepage-v3/components/ButtonV3";
 
 // Homepage-only exit-intent capture, mirroring WorkWithHyperiuxModal.jsx's
 // technical conventions (motion/react, same MODAL_TRANSITION curve, Lenis
@@ -44,6 +45,7 @@ export function ExitIntentInviteModal() {
   const [agreed, setAgreed] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | submitting | success
   const [error, setError] = useState("");
+  const [sendHovered, setSendHovered] = useState(false);
   const shownRef = useRef(false);
   const { executeRecaptcha } = useReCaptcha();
   const lenis = useLenis();
@@ -227,18 +229,18 @@ export function ExitIntentInviteModal() {
 
                 <h3
                   id="exit-intent-title"
-                  className="mt-4 text-2xl font-bold leading-tight text-white max-md:text-xl"
+                  className="mt-6 text-2xl font-bold leading-tight text-white max-md:text-xl"
                 >
                   Get instant access to 50+ free effects.
                 </h3>
 
-                <p className="mt-3 text-sm leading-relaxed text-white/60">
+                <p className="mt-4 text-sm leading-relaxed text-white/60">
                   Source-first scroll effects, cursor systems, and page transitions for
                   React and Next.js. We&apos;ll email you an invite to set up your free
                   account - no credit card, ever.
                 </p>
 
-                <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
+                <form onSubmit={handleSubmit} noValidate className="mt-14 space-y-8">
                   <input
                     type="email"
                     value={email}
@@ -246,12 +248,31 @@ export function ExitIntentInviteModal() {
                       setEmail(e.target.value);
                       setError("");
                     }}
-                    placeholder="you@example.com"
+                    placeholder="Enter your email address"
                     autoComplete="email"
-                    className="w-full border-b border-white/20 bg-transparent pb-2 text-sm text-white placeholder:text-white/35 outline-none focus:border-[#ff5f00]"
+                    // globals.css's base input:-webkit-autofill rule fakes a
+                    // background override via an inset box-shadow (Chrome's
+                    // own autofill fill can't be styled directly), falling
+                    // back to a light fill meant for light-surface inputs -
+                    // transparent here means that fake fill paints nothing,
+                    // so this field's own transparent background just shows
+                    // through either way. -webkit-text-fill-color still
+                    // needs the explicit white override: browsers force
+                    // autofilled text to a fixed dark color otherwise.
+                    style={{
+                      "--input-autofill-bg": "transparent",
+                      "--input-autofill-text": "#ffffff",
+                    }}
+                    className="w-full border-b border-white bg-transparent pb-4 text-sm text-white placeholder:text-white/60 outline-none focus:border-[#ff5f00]"
                   />
 
-                  <label className="flex cursor-pointer items-start gap-2.5 text-xs text-white/50">
+                  <label className="flex cursor-pointer items-start gap-2.5 text-sm text-white/60">
+                    {/* accent-color styles the browser's native checkbox
+                        widget, which keeps its own rounded corners baked in
+                        by the platform - border-radius/rounded-none can't
+                        override that. Drawing the box as a plain span (with
+                        the real input visually hidden but still driving
+                        state/keyboard/a11y) keeps it a genuine square. */}
                     <input
                       type="checkbox"
                       checked={agreed}
@@ -259,14 +280,32 @@ export function ExitIntentInviteModal() {
                         setAgreed(e.target.checked);
                         setError("");
                       }}
-                      className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer border-white/30 bg-transparent accent-[#ff5f00]"
+                      className="peer sr-only"
                     />
+                    <span
+                      aria-hidden="true"
+                      className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[#ff5f00] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black ${
+                        agreed ? "border-[#ff5f00] bg-[#ff5f00]" : "border-white/30 bg-transparent"
+                      }`}
+                    >
+                      {agreed && (
+                        <svg viewBox="0 0 12 12" fill="none" className="h-2.5 w-2.5 text-white">
+                          <path
+                            d="M2 6l2.5 2.5L10 3"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </span>
                     <span>
                       I agree to the{" "}
                       <Link
                         href="/legal/privacy-policy"
                         target="_blank"
-                        className="text-white/70 underline underline-offset-2 hover:text-white"
+                        className="text-white/80 underline underline-offset-2 hover:text-white"
                       >
                         privacy policy
                       </Link>
@@ -275,13 +314,31 @@ export function ExitIntentInviteModal() {
 
                   {error && <p className="text-xs text-red-400">{error}</p>}
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full cursor-pointer bg-[#ff5f00] px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#e0540a] disabled:cursor-not-allowed disabled:opacity-50"
+                  {/* Same buttonV3ClassName + ButtonV3Chrome pair
+                      TemplatePaywallModal's RazorpayButtonV3 uses - this is
+                      a real form-submitting <button>, not a navigation
+                      <Link>, so it can't just render <ButtonV3> itself, but
+                      these two give it the exact same look (scramble label,
+                      square/arrow chrome) as every other ButtonV3 on the
+                      site. */}
+                  <div
+                    className="contents"
+                    onPointerEnter={() => setSendHovered(true)}
+                    onPointerLeave={() => setSendHovered(false)}
                   >
-                    {isSubmitting ? "Sending…" : "Send it to me"}
-                  </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={buttonV3ClassName({
+                        className: "w-fit disabled:pointer-events-none disabled:opacity-60",
+                      })}
+                    >
+                      <ButtonV3Chrome
+                        label={isSubmitting ? "Sending…" : "Send it to me"}
+                        hovered={sendHovered}
+                      />
+                    </button>
+                  </div>
                 </form>
               </>
             )}

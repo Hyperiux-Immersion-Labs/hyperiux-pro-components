@@ -19,6 +19,23 @@ const MODAL_TRANSITION = {
   ease: [0.76, 0, 0.24, 1],
 };
 
+// Input/Textarea/PhoneInput (components/animated-form) forward unknown
+// props onto their real <input>/<textarea>, so this reaches the actual DOM
+// node without touching those shared components - they're also reused by
+// light-background template-demo forms, which still want the browser's
+// light default. globals.css's base input:-webkit-autofill rule paints an
+// inset box-shadow the size of the field to fake a background override
+// (Chrome's own autofill fill can't be styled directly) - transparent here
+// means that fake fill paints nothing, so the field's own background (set
+// via its own className) just shows through autofilled or not, instead of
+// flashing a solid color. -webkit-text-fill-color still needs the explicit
+// white override regardless: browsers force autofilled text to a fixed dark
+// color otherwise, unreadable here no matter what the background does.
+const AUTOFILL_STYLE = {
+  "--input-autofill-bg": "transparent",
+  "--input-autofill-text": "#ffffff",
+};
+
 const INITIAL_FORM = {
   name: "",
   email: "",
@@ -318,6 +335,7 @@ function WorkWithHyperiuxModalInner() {
                         name="name"
                         label={false}
                         className="rounded-none! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
+                        style={AUTOFILL_STYLE}
                         value={values.name}
                         onChange={updateField("name")}
                         autoComplete="name"
@@ -334,6 +352,7 @@ function WorkWithHyperiuxModalInner() {
                         type="email"
                         label={false}
                         className="rounded-none! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]!"
+                        style={AUTOFILL_STYLE}
                         value={values.email}
                         onChange={updateField("email")}
                         autoComplete="email"
@@ -356,12 +375,20 @@ function WorkWithHyperiuxModalInner() {
                         showCountryName
                         error={errors.number}
                         className="rounded-none! border-white/20 bg-white/10 text-white focus-within:border-[#ff5f00]!"
+                        style={AUTOFILL_STYLE}
                         countryButtonClassName="text-white/80 hover:text-white"
                         flagClassName="text-base"
                         dialCodeClassName="text-white"
                         chevronClassName="text-white/60"
                         dividerClassName="bg-white/15"
-                        inputClassName="text-white placeholder:text-white/35"
+                        // PhoneInput's own <input> hardcodes rounded-r-full
+                        // (it's designed as a standalone pill) - the wrapper
+                        // above is squared via className's rounded-none!,
+                        // but without also squaring the input itself here,
+                        // the browser's autofill fill (which follows the
+                        // input's own border-radius) renders rounded
+                        // corners poking out of the now-square field.
+                        inputClassName="rounded-none! text-white placeholder:text-white/35"
                         dropdownClassName="rounded-none! min-w-64 border-white/10! bg-[#111111]! text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
                         optionClassName="rounded-none! text-white/70 hover:bg-white/10 hover:text-white"
                         activeOptionClassName="text-[#ff5f00]"
@@ -378,6 +405,7 @@ function WorkWithHyperiuxModalInner() {
                       name="message"
                       label={false}
                       className="h-[17.3vw]! rounded-none! border-white/20 bg-white/10 text-white placeholder:text-white/35 focus:border-[#ff5f00]! max-[1025px]:h-36!"
+                      style={AUTOFILL_STYLE}
                       rows={3}
                       value={values.message}
                       onChange={updateField("message")}

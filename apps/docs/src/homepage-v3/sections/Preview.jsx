@@ -234,7 +234,7 @@ export default function Preview() {
               />
               <div className="preview-text-wrapper flex flex-col max-[1025px]:gap-[2vw] max-md:gap-[3vw] gap-[1vw] will-change-transform">
                 <p className="text34">{step.title}</p>
-                <p className="t22 w-[80%] max-[1025px]:w-[95%] max-md:w-[95%]">{step.text}</p>
+                <p className="text-[1.2vw] max-md:text-[3vw] max-[1025px]:text-[2.2vw] w-[80%] max-[1025px]:w-[95%] max-md:w-[95%]">{step.text}</p>
               </div>
             </div>
             <div className="w-[15vw] max-[1025px]:w-[6vw] max-md:w-[5vw] h-full" />

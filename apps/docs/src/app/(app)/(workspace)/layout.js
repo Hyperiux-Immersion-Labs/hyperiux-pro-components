@@ -5,8 +5,8 @@ import {
   getRegistryIndex,
 } from "@/lib/registry";
 import { VaultLayout } from "@/components/layout/VaultLayout";
-import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
-import FooterV3 from "@/homepage-v3/sections/FooterV3";
+// import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
+import WorkspaceFooter from "./WorkspaceFooter";
 
 function VaultLayoutFallback() {
   return (
@@ -40,7 +40,7 @@ export default function WorkspaceLayout({ children }) {
       >
         {children}
       </VaultLayout>
-      <FooterV3 animations={false} />
+      <WorkspaceFooter />
     </Suspense>
   );
 }
