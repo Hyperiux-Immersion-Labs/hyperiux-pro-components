@@ -2,7 +2,7 @@
 
 import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 
@@ -10,17 +10,32 @@ gsap.registerPlugin(CustomEase);
 
 // Two bespoke curves drive the whole menu: a decelerating "out" curve for
 // entrances and a symmetric "in-out" curve for exits.
-const EASE_OUT_NAME = "contextShiftOut";
-const EASE_IN_OUT_NAME = "contextShiftInOut";
+const EASE_OUT_NAME = "perspectiveShiftOut";
+const EASE_IN_OUT_NAME = "perspectiveShiftInOut";
 if (!CustomEase.get(EASE_OUT_NAME)) {
   CustomEase.create(EASE_OUT_NAME, "M0,0 C0.3,0.9 0.1,1 1,1");
   CustomEase.create(EASE_IN_OUT_NAME, "M0,0 C0.7,0 0.16,1 1,1");
 }
 
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeToReducedMotion(callback: () => void) {
+  const media = window.matchMedia(REDUCED_MOTION_QUERY);
+  media.addEventListener("change", callback);
+  return () => media.removeEventListener("change", callback);
+}
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToReducedMotion,
+    () => window.matchMedia(REDUCED_MOTION_QUERY).matches,
+    () => false,
+  );
+}
+
 // Timing constants, kept together so the whole sequence can be retuned at once.
 const PAGE_TILT = 0.72;
 const GLYPH = 0.45;
-const LINK_STAGGER = 0.055;
 const RULE_WIPE = 0.6;
 const CLOSE_SPAN = 0.58;
 const LINK_OUT = 0.22;
@@ -33,6 +48,14 @@ const ACC_SPAN = 0.46;
 const ACC_ITEM = 0.32;
 const ACC_STAGGER = 0.045;
 const LINKS_START = 0.2736;
+
+// Reduced motion keeps every beat of the sequence but strips what actually
+// provokes vestibular discomfort: the 3D page tilt, the full-width slide, and
+// the per-character roll. What is left is a fast crossfade in place.
+const RM_SCALE = 0.55;
+const RM_STAGGER = 0.012;
+const RM_SLIDE = "-4%";
+const RM_OFFSET = -4;
 
 type Phase = "closed" | "opening" | "open" | "closing";
 
@@ -95,19 +118,44 @@ const CONTACT_EMAIL = "hello@hyperiux.com";
 
 // Same per-character roll as unfold-navbar's LinkHover, but as a bare span so
 // it can live inside the parent <button> that opens the drawer.
-const CharRoll = ({ text, stagger = 0.015 }: { text: string; stagger?: number }) => (
-  <span aria-hidden="true" className="relative inline-block overflow-hidden align-middle leading-[1.2]">
-    {[...text].map((char, i) => (
-      <span
-        key={i}
-        className="relative inline-block whitespace-pre transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] text-shadow-[0_1.2em_currentColor] group-hover/row:translate-y-[-1.2em] group-focus-visible/row:translate-y-[-1.2em]"
-        style={{ transitionDelay: `${i * stagger}s` }}
-      >
-        {char === " " ? " " : char}
+const CharRoll = ({
+  text,
+  stagger = 0.007,
+  reduced = false,
+}: {
+  text: string;
+  stagger?: number;
+  reduced?: boolean;
+}) => {
+  // The roll is a vertical translate per character. Under reduced motion the
+  // text simply sits still and the row's colour change carries the hover.
+  if (reduced) {
+    return (
+      <span aria-hidden="true" className="relative inline-block align-bottom leading-[1.2]">
+        {text}
       </span>
-    ))}
-  </span>
-);
+    );
+  }
+
+  return (
+    <span
+      aria-hidden="true"
+      className="relative inline-block overflow-hidden align-bottom leading-[1.2]"
+    >
+      {[...text].map((char, i) => (
+        <span
+          key={i}
+          className="relative inline-block whitespace-pre text-shadow-[0_1.2em_currentColor] transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/row:translate-y-[-1.2em] group-focus-visible/row:translate-y-[-1.2em]"
+          // With no stagger every glyph rolls together, so the per-character
+          // delay is dropped rather than written as a redundant 0s.
+          style={stagger ? { transitionDelay: `${i * stagger}s` } : undefined}
+        >
+          {char === " " ? " " : char}
+        </span>
+      ))}
+    </span>
+  );
+};
 
 // The separator rules and the drawer seam are scale-driven off custom
 // properties so GSAP can tween them; @property registration has no Tailwind
@@ -135,12 +183,45 @@ const CaretIcon = () => (
   </svg>
 );
 
-interface ContextShiftMenuProps {
+export interface PerspectiveShiftMenuProps {
+  /** Opening and closing speed multiplier. Higher values animate faster. */
+  animationSpeed?: number;
+  /** How far the page rotates away, in degrees. 0 slides without tilting. */
+  tiltAngle?: number;
+  /** Delay between nav links as they enter, in seconds. */
+  linkStagger?: number;
+  /** Delay between characters on link hover, in seconds. */
+  charStagger?: number;
+  /** Nav column width, in vw. */
+  panelWidth?: number;
+  /** Sub-drawer width, in vw. */
+  drawerWidth?: number;
+  /** Nav column and sub-drawer surface color. */
+  panelColor?: string;
+  /** Links, headings, and menu icon color. */
+  textColor?: string;
+  /** The void behind the page as it tilts away. */
+  voidColor?: string;
+  /** How strongly the receded page is dimmed, 0 to 1. */
+  dimOpacity?: number;
   /** The page content. It sits inside the surface that tilts away on open. */
   children?: ReactNode;
 }
 
-const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
+const PerspectiveShiftMenu = ({
+  animationSpeed = 1,
+  tiltAngle = 20,
+  linkStagger = 0,
+  charStagger = 0.007,
+  panelWidth = 22,
+  drawerWidth = 18,
+  panelColor = "#ffffff",
+  textColor = "#111111",
+  voidColor = "#0e0e0e",
+  dimOpacity = 0.4,
+  children,
+}: PerspectiveShiftMenuProps) => {
+  const reducedMotion = usePrefersReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
   const surfaceRef = useRef<HTMLDivElement>(null);
@@ -191,6 +272,23 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
 
       const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
       const canHover = () => window.matchMedia("(hover: hover)").matches;
+
+      const reduced = reducedMotion;
+      // Every duration in the sequence runs through this, so the whole
+      // choreography keeps its shape while finishing noticeably sooner.
+      const beat = (value: number) => (reduced ? value * RM_SCALE : value);
+      const stagger = reduced ? RM_STAGGER : linkStagger;
+      // One multiplier drives every timeline, so the choreography keeps its
+      // relative timing no matter how fast the whole sequence is asked to run.
+      const speed = Math.max(0.1, animationSpeed);
+      const timeline = (vars?: gsap.TimelineVars) =>
+        gsap.timeline(vars).timeScale(speed);
+      const linksStart = reduced ? beat(LINKS_START) : LINKS_START;
+      const subOffset = reduced ? RM_OFFSET : SUB_OFFSET;
+      // Off-screen parking spot for the drawer. Reduced motion keeps it a hair
+      // off its resting place and leans on opacity instead of travel.
+      const drawerOff = (mobile: boolean) =>
+        reduced ? RM_SLIDE : mobile ? "100%" : "-100%";
 
       const setPhaseState = (next: Phase) => {
         phaseRef.current = next;
@@ -257,25 +355,25 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         const items = accItems(panel);
 
         accTl.current?.kill();
-        const tl = gsap.timeline({ defaults: { ease: EASE_OUT_NAME } });
+        const tl = timeline({ defaults: { ease: EASE_OUT_NAME } });
 
         gsap.set(panel, { height: "auto" });
         const target = panel.offsetHeight;
         gsap.set(panel, { height: 0 });
-        gsap.set(items, { autoAlpha: 0, y: 10 });
+        gsap.set(items, { autoAlpha: 0, y: reduced ? 0 : 10 });
 
         tl.to(panel, {
           height: target,
-          duration: ACC_SPAN,
+          duration: beat(ACC_SPAN),
           onComplete: () => gsap.set(panel, { height: "auto" }),
         }, 0);
         tl.to(items, {
           autoAlpha: 1,
           y: 0,
-          duration: ACC_ITEM,
-          stagger: ACC_STAGGER,
+          duration: beat(ACC_ITEM),
+          stagger: reduced ? RM_STAGGER : ACC_STAGGER,
           overwrite: "auto",
-        }, 0.08);
+        }, beat(0.08));
 
         accTl.current = tl;
       };
@@ -284,14 +382,14 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         const panel = key ? accFor(key) : null;
         if (!panel) return;
         accTl.current?.kill();
-        const tl = gsap.timeline({ defaults: { ease: EASE_IN_OUT_NAME } });
+        const tl = timeline({ defaults: { ease: EASE_IN_OUT_NAME } });
         tl.to(accItems(panel), {
           autoAlpha: 0,
-          y: -6,
-          duration: ACC_ITEM * 0.6,
+          y: reduced ? 0 : -6,
+          duration: beat(ACC_ITEM * 0.6),
           overwrite: "auto",
         }, 0);
-        tl.to(panel, { height: 0, duration: ACC_SPAN * 0.8 }, 0.04);
+        tl.to(panel, { height: 0, duration: beat(ACC_SPAN * 0.8) }, beat(0.04));
         accTl.current = tl;
       };
 
@@ -299,17 +397,23 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         const panels = gsap.utils.toArray<HTMLElement>("[data-shift-acc]", surfaceEl);
         panels.forEach((panel) => {
           gsap.set(panel, { height: 0 });
-          gsap.set(accItems(panel), { autoAlpha: 0, y: 10 });
+          gsap.set(accItems(panel), { autoAlpha: 0, y: reduced ? 0 : 10 });
         });
       };
 
       const resetDrawer = () => {
         const allLabels = gsap.utils.toArray<HTMLElement>("[data-shift-sublabel]", stackEl);
-        gsap.set(subpanelEl, { "--shift-seam": 0, x: isMobile() ? "100%" : "-100%", opacity: 1 });
+        gsap.set(subpanelEl, {
+          "--shift-seam": 0,
+          x: drawerOff(isMobile()),
+          // Reduced motion fades the drawer rather than sliding it clear, so it
+          // parks transparent instead of merely off-screen.
+          opacity: reduced ? 0 : 1,
+        });
         subpanelEl.style.visibility = "hidden";
         subpanelEl.setAttribute("aria-hidden", "true");
         if (allLabels.length) {
-          gsap.set(allLabels, { autoAlpha: 0, xPercent: SUB_OFFSET, force3D: true });
+          gsap.set(allLabels, { autoAlpha: 0, xPercent: subOffset, force3D: true });
           gsap.set(rowsOf(allLabels), { "--shift-rule": 0 });
         }
       };
@@ -317,8 +421,10 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
       // Each open drawer level pushes the pageEl one step further back.
       const leanPage = (depth: number) => {
         if (isMobile()) return;
+        // Reduced motion never tilts the page, so there is no lean to deepen.
+        if (reduced) return;
         gsap.to(pageEl, {
-          rotationY: -20 - 4 * depth,
+          rotationY: -tiltAngle - (tiltAngle / 5) * depth,
           duration: DRAWER_SLIDE,
           ease: EASE_OUT_NAME,
           overwrite: "auto",
@@ -330,7 +436,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         openTl.current?.kill();
         const mobile = isMobile();
 
-        const tl = gsap.timeline({
+        const tl = timeline({
           paused: true,
           defaults: { ease: EASE_OUT_NAME, force3D: true },
           onStart: () => {
@@ -349,14 +455,31 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
           },
         });
 
-        if (glyphPageRef.current) {
+        // The glyph's 3D flip is decorative; reduced motion fades the bar in
+        // instead of spinning it.
+        if (glyphPageRef.current && !reduced) {
           tl.to(glyphPageRef.current, { rotationY: -52, duration: GLYPH, ease: EASE_OUT_NAME }, 0);
         }
         if (glyphColRef.current) {
-          tl.to(glyphColRef.current, { scaleX: 1, duration: GLYPH * 0.8, ease: EASE_OUT_NAME }, 0.0675);
+          tl.to(glyphColRef.current, { scaleX: 1, duration: beat(GLYPH * 0.8), ease: EASE_OUT_NAME }, reduced ? 0 : 0.0675);
         }
 
-        if (mobile) {
+        if (reduced) {
+          // No tilt and no scale-down - the page just dims in place while the
+          // surface crossfades over a token 4% of travel.
+          tl.to(pageEl, {
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+            duration: beat(PAGE_TILT),
+          }, 0);
+          tl.fromTo(
+            surfaceEl,
+            { x: RM_SLIDE, autoAlpha: 0 },
+            { x: 0, autoAlpha: 1, duration: beat(0.62) },
+            0,
+          );
+          tl.to(dimEl, { opacity: 1, duration: beat(0.612), ease: "power2.out", force3D: false }, 0);
+        } else if (mobile) {
           tl.to(pageEl, {
             scale: 0.94,
             opacity: 0.55,
@@ -369,7 +492,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         } else {
           tl.to(surfaceEl, { x: 0, duration: 0.62 }, 0);
           tl.to(pageEl, {
-            rotationY: -20,
+            rotationY: -tiltAngle,
             borderTopLeftRadius: 10,
             borderBottomLeftRadius: 10,
             duration: PAGE_TILT,
@@ -381,31 +504,32 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
           tl.to(el, {
             autoAlpha: 1,
             xPercent: 0,
-            duration: 0.52,
+            duration: beat(0.52),
             overwrite: "auto",
-          }, LINKS_START + i * LINK_STAGGER);
+          }, linksStart + i * stagger);
         });
 
         if (links.length) {
-          tl.to(links, { "--shift-rule": 1, duration: RULE_WIPE, stagger: LINK_STAGGER }, LINKS_START);
+          tl.to(links, { "--shift-rule": 1, duration: beat(RULE_WIPE), stagger }, linksStart);
         }
 
-        const tail = LINKS_START + (labels.length - 1) * LINK_STAGGER + 0.26;
+        const tail = linksStart + (labels.length - 1) * stagger + beat(0.26);
+        const subGap = reduced ? 0.01 : 0.04;
         sublinks.forEach((el, i) => {
           tl.to(el, {
             autoAlpha: 1,
             xPercent: 0,
-            duration: 0.38,
+            duration: beat(0.38),
             overwrite: "auto",
-          }, tail + 0.04 * i);
+          }, tail + subGap * i);
         });
 
         if (metaRef.current) {
           tl.to(metaRef.current, {
             opacity: 1,
-            duration: 0.35,
+            duration: beat(0.35),
             ease: "power3.out",
-          }, tail + 0.04 * sublinks.length + 0.06);
+          }, tail + subGap * sublinks.length + beat(0.06));
         }
 
         openTl.current = tl;
@@ -423,17 +547,17 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         setOpenKey(key);
         drawerTl.current?.kill();
 
-        const tl = gsap.timeline({ defaults: { ease: EASE_OUT_NAME, force3D: true } });
-        tl.to(subpanelEl, { x: 0, duration: DRAWER_SLIDE, overwrite: "auto" }, 0);
+        const tl = timeline({ defaults: { ease: EASE_OUT_NAME, force3D: true } });
+        tl.to(subpanelEl, { x: 0, autoAlpha: 1, duration: beat(DRAWER_SLIDE), overwrite: "auto" }, 0);
         leanPage(1);
 
         if (outgoing.length) {
           tl.to(outgoing, {
             autoAlpha: 0,
-            xPercent: 20,
-            duration: SWAP_OUT,
+            xPercent: reduced ? -RM_OFFSET : 20,
+            duration: beat(SWAP_OUT),
             ease: "power2.in",
-            stagger: 0.02,
+            stagger: reduced ? RM_STAGGER : 0.02,
             overwrite: "auto",
           }, 0);
         }
@@ -441,14 +565,14 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         tl.call(() => {
           renderedKey.current = key;
           if (incoming.length) {
-            gsap.set(incoming, { autoAlpha: 0, xPercent: SUB_OFFSET, force3D: true });
+            gsap.set(incoming, { autoAlpha: 0, xPercent: subOffset, force3D: true });
             gsap.set(rowsOf(incoming), { "--shift-rule": 0 });
           }
           const offset = alignOffset(key);
           if (offset !== null) {
             gsap.to(stackEl, {
               y: offset,
-              duration: SUBLINK_IN,
+              duration: beat(SUBLINK_IN),
               ease: EASE_OUT_NAME,
               overwrite: "auto",
               force3D: true,
@@ -460,14 +584,14 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
           tl.to(incoming, {
             autoAlpha: 1,
             xPercent: 0,
-            duration: SUBLINK_IN,
-            stagger: SUBLINK_STAGGER,
+            duration: beat(SUBLINK_IN),
+            stagger: reduced ? RM_STAGGER : SUBLINK_STAGGER,
             overwrite: "auto",
           }, 0.2);
           tl.to(rowsOf(incoming), {
             "--shift-rule": 1,
-            duration: RULE_WIPE,
-            stagger: SUBLINK_STAGGER,
+            duration: beat(RULE_WIPE),
+            stagger: reduced ? RM_STAGGER : SUBLINK_STAGGER,
           }, 0.2);
         }
 
@@ -524,26 +648,26 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         const offset = alignOffset(key);
         if (offset !== null) gsap.set(stackEl, { y: offset });
         if (incoming.length) {
-          gsap.set(incoming, { autoAlpha: 0, xPercent: SUB_OFFSET, force3D: true });
+          gsap.set(incoming, { autoAlpha: 0, xPercent: subOffset, force3D: true });
         }
 
         drawerTl.current?.kill();
-        const tl = gsap.timeline({ defaults: { ease: EASE_OUT_NAME, force3D: true } });
-        tl.to(subpanelEl, { "--shift-seam": 1, duration: DRAWER_SLIDE }, 0);
-        tl.to(subpanelEl, { x: 0, duration: DRAWER_SLIDE }, 0);
+        const tl = timeline({ defaults: { ease: EASE_OUT_NAME, force3D: true } });
+        tl.to(subpanelEl, { "--shift-seam": 1, duration: beat(DRAWER_SLIDE) }, 0);
+        tl.to(subpanelEl, { x: 0, autoAlpha: 1, duration: beat(DRAWER_SLIDE) }, 0);
 
         if (incoming.length) {
           tl.to(incoming, {
             autoAlpha: 1,
             xPercent: 0,
-            duration: SUBLINK_IN,
-            stagger: SUBLINK_STAGGER,
+            duration: beat(SUBLINK_IN),
+            stagger: reduced ? RM_STAGGER : SUBLINK_STAGGER,
             overwrite: "auto",
           }, 0.12);
           tl.to(rowsOf(incoming), {
             "--shift-rule": 1,
-            duration: RULE_WIPE,
-            stagger: SUBLINK_STAGGER,
+            duration: beat(RULE_WIPE),
+            stagger: reduced ? RM_STAGGER : SUBLINK_STAGGER,
           }, 0.12);
         }
 
@@ -568,17 +692,21 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         const mobile = isMobile();
         drawerTl.current?.kill();
 
-        const tl = gsap.timeline({
+        const tl = timeline({
           defaults: { ease: EASE_IN_OUT_NAME, force3D: true },
           onComplete: resetDrawer,
         });
-        tl.to(subpanelEl, { "--shift-seam": 0, duration: 0.33 }, 0);
+        tl.to(subpanelEl, { "--shift-seam": 0, duration: beat(0.33) }, 0);
 
         if (withMenu) {
-          const off = mobile ? "-100%" : -(surfaceEl.offsetWidth + subpanelEl.offsetWidth);
-          tl.to(subpanelEl, { x: off, duration: CLOSE_SPAN }, 0);
+          const off = reduced
+            ? RM_SLIDE
+            : mobile
+              ? "-100%"
+              : -(surfaceEl.offsetWidth + subpanelEl.offsetWidth);
+          tl.to(subpanelEl, { x: off, duration: beat(CLOSE_SPAN) }, 0);
         } else {
-          tl.to(subpanelEl, { x: mobile ? "100%" : "-100%", duration: DRAWER_SLIDE * 0.8 }, 0);
+          tl.to(subpanelEl, { x: drawerOff(mobile), duration: beat(DRAWER_SLIDE * 0.8) }, 0);
           leanPage(0);
         }
 
@@ -608,7 +736,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         if (drawerOpen.current) closeDrawer(true);
 
         closeTl.current?.kill();
-        const tl = gsap.timeline({
+        const tl = timeline({
           paused: true,
           defaults: { ease: EASE_IN_OUT_NAME, force3D: true },
           onStart: () => setPhaseState("closing"),
@@ -616,7 +744,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
             surfaceEl.setAttribute("inert", "");
             surfaceEl.setAttribute("aria-hidden", "true");
             surfaceEl.style.visibility = "hidden";
-            gsap.set(surfaceEl, { x: "-100%" });
+            gsap.set(surfaceEl, { x: reduced ? RM_SLIDE : "-100%" });
             gsap.set(links, { "--shift-rule": 0 });
             if (labels.length) {
               gsap.killTweensOf(labels);
@@ -630,33 +758,39 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         labels.forEach((el, i) => {
           tl.to(el, {
             autoAlpha: 0,
-            xPercent: -18,
-            duration: LINK_OUT,
+            xPercent: reduced ? RM_OFFSET : -18,
+            duration: beat(LINK_OUT),
             ease: "power2.in",
             overwrite: "auto",
-          }, 0.025 * i);
+          }, (reduced ? 0.008 : 0.025) * i);
         });
 
         if (sublinks.length) {
           tl.to(sublinks, {
             autoAlpha: 0,
-            xPercent: -22,
-            duration: LINK_OUT * 0.8,
+            xPercent: reduced ? RM_OFFSET : -22,
+            duration: beat(LINK_OUT * 0.8),
             ease: "power2.in",
           }, 0);
         }
         if (metaRef.current) {
-          tl.to(metaRef.current, { opacity: 0, duration: 0.18, ease: "power2.out" }, 0);
+          tl.to(metaRef.current, { opacity: 0, duration: beat(0.18), ease: "power2.out" }, 0);
         }
-        if (glyphPageRef.current) {
+        if (glyphPageRef.current && !reduced) {
           tl.to(glyphPageRef.current, { rotationY: 0, duration: CLOSE_SPAN * 0.7 }, 0.11);
         }
         if (glyphColRef.current) {
-          tl.to(glyphColRef.current, { scaleX: 0, duration: CLOSE_SPAN * 0.7 }, 0.11);
+          tl.to(glyphColRef.current, { scaleX: 0, duration: beat(CLOSE_SPAN * 0.7) }, reduced ? 0 : 0.11);
         }
 
-        const at = LINK_OUT * 0.55;
-        tl.to(surfaceEl, { x: "-100%", duration: CLOSE_SPAN }, at);
+        const at = beat(LINK_OUT * 0.55);
+        tl.to(
+          surfaceEl,
+          reduced
+            ? { x: RM_SLIDE, autoAlpha: 0, duration: beat(CLOSE_SPAN) }
+            : { x: "-100%", duration: CLOSE_SPAN },
+          at,
+        );
         tl.to(pageEl, {
           rotationY: 0,
           scale: 1,
@@ -664,10 +798,10 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
           opacity: 1,
           borderTopLeftRadius: 0,
           borderBottomLeftRadius: 0,
-          duration: CLOSE_SPAN,
+          duration: beat(CLOSE_SPAN),
           overwrite: "auto",
         }, at);
-        tl.to(dimEl, { opacity: 0, duration: CLOSE_SPAN * 0.7, ease: "power2.out" }, at);
+        tl.to(dimEl, { opacity: 0, duration: beat(CLOSE_SPAN * 0.7), ease: "power2.out" }, at);
 
         closeTl.current = tl;
         tl.restart();
@@ -688,10 +822,18 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         transformOrigin: "right center",
       });
       gsap.set(dimEl, { opacity: 0 });
-      gsap.set(surfaceEl, { x: "-100%" });
-      gsap.set(labels, { autoAlpha: 0, xPercent: -18, force3D: true });
+      gsap.set(surfaceEl, { x: reduced ? RM_SLIDE : "-100%" });
+      gsap.set(labels, {
+        autoAlpha: 0,
+        xPercent: reduced ? RM_OFFSET : -18,
+        force3D: true,
+      });
       gsap.set(links, { "--shift-rule": 0 });
-      gsap.set(sublinks, { autoAlpha: 0, xPercent: -22, force3D: true });
+      gsap.set(sublinks, {
+        autoAlpha: 0,
+        xPercent: reduced ? RM_OFFSET : -22,
+        force3D: true,
+      });
       if (metaRef.current) gsap.set(metaRef.current, { opacity: 0 });
       if (glyphPageRef.current) {
         gsap.set(glyphPageRef.current, { rotationY: 0, transformOrigin: "right center" });
@@ -758,27 +900,14 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         };
       });
 
-      // Nudge the label on hover; hovering a leaf link tucks the drawer away.
+      // Hovering a leaf link tucks the drawer away. Nothing moves the label
+      // horizontally - the per-character roll and the separator rule carry the
+      // whole hover state.
       const linkCleanups = links.map((el) => {
-        const label = el.querySelector<HTMLElement>("[data-shift-label]");
-        if (!label) return () => {};
         const isParent = el.hasAttribute("data-shift-parent");
 
-        // The row stays full width for the separator rule, so the nudge binds
-        // to the label itself - hovering the empty space past the text does
-        // nothing.
-        const enter = () => {
-          if (phaseRef.current !== "open") return;
-          gsap.to(label, { x: 6, duration: 0.28, ease: EASE_OUT_NAME, overwrite: "auto", force3D: true });
-        };
-        const leave = () => {
-          gsap.to(label, { x: 0, duration: 0.28, ease: EASE_OUT_NAME, overwrite: "auto", force3D: true });
-        };
-        label.addEventListener("mouseenter", enter);
-        label.addEventListener("mouseleave", leave);
-
-        // Closing the drawer still belongs to the whole row: sweeping anywhere
-        // across a link with no sublist should tuck an open drawer away.
+        // Sweeping anywhere across a link with no sublist should tuck an open
+        // drawer away.
         const rowEnter = () => {
           if (phaseRef.current !== "open") return;
           if (!isParent && drawerOpen.current && canHover() && !isMobile()) closeDrawer(false);
@@ -786,8 +915,6 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         el.addEventListener("mouseenter", rowEnter);
 
         return () => {
-          label.removeEventListener("mouseenter", enter);
-          label.removeEventListener("mouseleave", leave);
           el.removeEventListener("mouseenter", rowEnter);
         };
       });
@@ -827,7 +954,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
     }, wrapRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [reducedMotion, animationSpeed, tiltAngle, linkStagger]);
 
   const lit = phase === "open" || phase === "opening";
 
@@ -837,13 +964,16 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
 
       {/* Header: fixed sibling, so it stays put while the page scrolls and
           is outside the perspective/transform context that would break it. */}
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-300 flex items-center justify-between p-[2.1vw] max-[1025px]:p-[3vw] max-md:p-[5vw]">
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-300 flex items-center justify-between px-[2vw] backdrop-blur-sm max-[1025px]:p-[3vw] max-md:p-[5vw] py-1">
         <Link
           href=""
           onClick={inert("")}
           aria-label="Hyperiux"
+          // The header sits outside both panels, so the open-state ink comes
+          // from the prop rather than an inherited color.
+          style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
           className={`pointer-events-auto block text-[1.1vw] font-medium tracking-[-0.02em] transition-[color,opacity] duration-400 ease-out max-[1025px]:text-[2vw] max-md:text-[4vw] ${
-            lit ? "text-[#fffaf2]/90" : "text-[#111111]"
+            lit ? "text-(--shift-ink)/90" : "text-white"
           } ${lit ? "max-md:pointer-events-none max-md:opacity-0" : ""}`}
         >
           HYPERIUX
@@ -856,21 +986,26 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
           ref={triggerRef}
           data-shift-trigger
           aria-expanded={lit}
-          aria-controls="context-shift-surface"
+          aria-controls="perspective-shift-surface"
           aria-label={lit ? "Close navigation" : "Open navigation"}
           className="pointer-events-auto relative z-301 flex h-11 w-11 cursor-pointer items-center justify-center border-none bg-transparent p-0"
         >
           <span className="relative block h-4 w-6 perspective-[90px]" aria-hidden="true">
+            {/* Stays white: on desktop the trigger sits beside the nav
+                column, over the dark page. Only mobile, where the panel goes
+                full-width and slides under it, takes the panel's text color. */}
             <span
               ref={glyphColRef}
-              className={`absolute top-px left-0 block h-3.5 w-0.75 origin-left transition-colors duration-350 ${
-                lit ? "bg-[#fffaf2]/90" : "bg-[#111111]"
+              style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
+              className={`absolute top-px left-0 block h-3.5 w-0.75 origin-left bg-white transition-colors duration-350 ${
+                lit ? "max-md:bg-(--shift-ink)" : ""
               }`}
             />
             <span
               ref={glyphPageRef}
-              className={`absolute top-px right-0 block h-3.5 w-4.75 origin-right border-[1.5px] transition-colors duration-350 ${
-                lit ? "border-[#fffaf2]/90" : "border-[#111111]"
+              style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
+              className={`absolute top-px right-0 block h-3.5 w-4.75 origin-right border-[1.5px] border-white transition-colors duration-350 ${
+                lit ? "max-md:border-(--shift-ink)" : ""
               }`}
             />
           </span>
@@ -880,7 +1015,8 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
 
       <div
         ref={wrapRef}
-        className="relative w-full overflow-hidden bg-[#0e0e0e] perspective-[1200px] perspective-origin-[50%_40%]"
+        style={{ backgroundColor: voidColor }}
+        className="relative w-full overflow-hidden perspective-[1200px] perspective-origin-[50%_40%]"
       >
         {/* The page. Its content is whatever the consumer passes as children;
             it is this surface that tilts away when the menu opens. */}
@@ -897,19 +1033,21 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
         <div
           ref={dimRef}
           aria-hidden="true"
-          className={`fixed inset-0 z-50 bg-black/40 ${
+          style={{ backgroundColor: `rgba(0,0,0,${dimOpacity})` }}
+          className={`fixed inset-0 z-50 ${
             phase === "open" ? "pointer-events-auto" : "pointer-events-none"
           }`}
         />
 
         {/* Nav column */}
         <div
-          id="context-shift-surface"
+          id="perspective-shift-surface"
           ref={surfaceRef}
           role="dialog"
           aria-modal="true"
           aria-label="Site navigation"
-          className="invisible fixed top-0 left-0 z-200 flex h-screen w-[22vw] flex-col justify-between bg-[#0e0e0e] px-[2.1vw] py-[5.2vw] max-[1025px]:w-[38vw] max-[1025px]:px-[3vw] max-[1025px]:py-[7vw] max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
+          style={{ ["--shift-panel" as string]: `${panelWidth}vw`, ["--shift-drawer" as string]: `${drawerWidth}vw`, backgroundColor: panelColor, color: textColor }}
+          className="invisible fixed top-0 left-0 z-200 flex h-screen w-(--shift-panel) flex-col justify-between px-[2.1vw] py-[5.2vw] max-[1025px]:w-[38vw] max-[1025px]:px-[3vw] max-[1025px]:py-[7vw] max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
         >
           <nav
             aria-label="Main navigation"
@@ -920,26 +1058,31 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
                 const isParent = Boolean(item.items);
                 const expanded = isParent && openKey === item.key;
                 const shared =
-                  "relative flex w-full items-baseline justify-between gap-3 py-3.25 text-left no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-[#fffaf2]/10 after:[transform:scaleX(var(--shift-rule,0))] after:content-['']";
+                  "relative flex w-full items-baseline justify-between gap-3 py-3.25 text-left no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-current/12 after:[transform:scaleX(var(--shift-rule,0))] after:content-['']";
 
                 const label = (
                   <span
                     data-shift-label
-                    className={`group/row w-fit text-[clamp(26px,min(2.9vw,4.8vh),46px)] leading-[1.05] font-light tracking-[-0.03em] transition-colors duration-250 ${
-                      expanded ? "text-white" : "text-[#fffaf2]/70"
-                    } hover:text-white`}
+                    className="group/row w-full text-[clamp(26px,min(2.9vw,4.8vh),46px)] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
                   >
                     <span className="sr-only">{item.label}</span>
-                    <CharRoll text={item.label} />
+                    <CharRoll text={item.label} stagger={charStagger} reduced={reducedMotion} />
                   </span>
                 );
 
+                // One chevron, pointing right at rest and swinging 90° down
+                // while its panel is open. Opacity is resolved in a single
+                // branch so the open state cannot fight the visible state.
                 const caret = (
                   <span
                     aria-hidden="true"
-                    className={`h-4 w-4 flex-shrink-0 self-center transition-[transform,color,opacity] duration-450 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                      lit ? "opacity-55" : "opacity-0"
-                    } ${expanded ? "rotate-90 text-[#fffaf2]/90 opacity-100" : "text-[#fffaf2]/40"}`}
+                    className={`h-4 w-4 flex-shrink-0 self-center transition-[transform,color,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                      expanded
+                        ? "rotate-90 text-current opacity-100"
+                        : lit
+                          ? "rotate-0 text-current/45 opacity-55"
+                          : "rotate-0 text-current/45 opacity-0"
+                    }`}
                   >
                     <CaretIcon />
                   </span>
@@ -953,8 +1096,8 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
                         data-shift-link
                         data-shift-parent={item.key}
                         aria-expanded={expanded}
-                        aria-controls="context-shift-subpanel"
-                        className={`${shared} cursor-pointer border-none bg-transparent font-[inherit] text-[#fffaf2]/90 group`}
+                        aria-controls="perspective-shift-subpanel"
+                        className={`${shared} cursor-pointer border-none bg-transparent font-[inherit] text-current/90 group`}
                       >
                         {label}
                         {caret}
@@ -964,14 +1107,14 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
                         href={item.href}
                         onClick={inert(item.href)}
                         data-shift-link
-                        className={`${shared} text-[#fffaf2]/90`}
+                        className={`${shared} text-current/90`}
                       >
                         <span
                           data-shift-label
-                          className="group/row w-fit text-[clamp(26px,min(2.9vw,4.8vh),46px)] leading-[1.05] font-light tracking-[-0.03em] text-[#fffaf2]/70 transition-colors duration-250 hover:text-white"
+                          className="group/row w-fit text-[clamp(26px,min(2.9vw,4.8vh),46px)] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
                         >
                           <span className="sr-only">{item.label}</span>
-                          <CharRoll text={item.label} />
+                          <CharRoll text={item.label} stagger={charStagger} reduced={reducedMotion} />
                         </span>
                       </Link>
                     )}
@@ -992,7 +1135,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
                                 href={sub.href}
                                 onClick={inert(sub.href)}
                                 data-shift-acc-item
-                                className="group/sub block w-fit  text-[3.8vw] leading-[1.2] font-light tracking-[-0.01em] text-[#fffaf2]/50 no-underline transition-colors duration-250 hover:text-white"
+                                className="group/sub block w-fit  text-[3.8vw] leading-[1.2] font-light tracking-[-0.01em] text-current/50 no-underline transition-colors duration-250 hover:text-current"
                               >
                                 {sub.label}
                               </Link>
@@ -1013,7 +1156,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
                     href={link.href}
                     onClick={inert(link.href)}
                     data-shift-sublink
-                    className="block py-0.5 text-[0.8rem] font-light tracking-[0.04em] text-[#fffaf2]/40 no-underline transition-colors duration-220 hover:text-white"
+                    className="block py-0.5 text-[0.8rem] font-light tracking-[0.04em] text-current/45 no-underline transition-colors duration-220 hover:text-current"
                   >
                     {link.label}
                   </Link>
@@ -1025,7 +1168,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
           <div ref={metaRef} className="mt-auto flex flex-col gap-1.5 opacity-0">
             <Link
               href={`mailto:${CONTACT_EMAIL}`}
-              className="text-[0.75rem] font-normal tracking-[0.05em] text-[#fffaf2]/70 no-underline"
+              className="text-[0.75rem] font-normal tracking-[0.05em] text-current/70 no-underline"
             >
               {CONTACT_EMAIL}
             </Link>
@@ -1037,7 +1180,7 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
                   onClick={inert(s.href)}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[0.7rem] font-normal tracking-[0.06em] text-[#fffaf2]/40 uppercase no-underline transition-colors duration-220 hover:text-white"
+                  className="text-[0.7rem] font-normal tracking-[0.06em] text-current/45 uppercase no-underline transition-colors duration-220 hover:text-current"
                 >
                   {s.label}
                 </Link>
@@ -1048,15 +1191,16 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
 
         {/* Drawer: a second column that slides out from behind the nav column */}
         <div
-          id="context-shift-subpanel"
+          id="perspective-shift-subpanel"
           ref={subpanelRef}
           aria-hidden="true"
-          className="invisible fixed top-0 left-[22vw] z-150 flex h-screen w-[18vw] flex-col justify-start bg-[#0e0e0e] px-[2.1vw] py-[5.2vw] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-px before:origin-bottom before:bg-[#fffaf2]/10 before:[transform:scaleY(var(--shift-seam,0))] before:content-[''] max-[1025px]:left-[38vw] max-[1025px]:w-[30vw] max-[1025px]:px-[3vw] max-[1025px]:py-[7vw] max-md:left-0 max-md:z-210 max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
+          style={{ ["--shift-panel" as string]: `${panelWidth}vw`, ["--shift-drawer" as string]: `${drawerWidth}vw`, backgroundColor: panelColor, color: textColor }}
+          className="invisible fixed top-0 left-(--shift-panel) z-150 flex h-screen w-(--shift-drawer) flex-col justify-start px-[2.1vw] py-[5.2vw] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-px before:origin-bottom before:bg-current/12 before:[transform:scaleY(var(--shift-seam,0))] before:content-[''] max-[1025px]:left-[38vw] max-[1025px]:w-[30vw] max-[1025px]:px-[3vw] max-[1025px]:py-[7vw] max-md:left-0 max-md:z-210 max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
         >
           <button
             type="button"
             data-shift-back
-            className="absolute top-[5vw] left-[5vw] hidden h-11 cursor-pointer items-center gap-2 border-none bg-transparent p-0 font-[inherit] text-[0.75rem] font-normal tracking-[0.06em] text-[#fffaf2]/70 uppercase max-md:flex"
+            className="absolute top-[5vw] left-[5vw] hidden h-11 cursor-pointer items-center gap-2 border-none bg-transparent p-0 font-[inherit] text-[0.75rem] font-normal tracking-[0.06em] text-current/70 uppercase max-md:flex"
           >
             <span aria-hidden="true" className="h-3.5 w-3.5">
               <svg viewBox="0 0 16 16" fill="none" className="block h-full w-full">
@@ -1085,11 +1229,11 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
                       <Link
                         href={sub.href}
                         onClick={inert(sub.href)}
-                        className="group/sub relative block py-3 no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-[#fffaf2]/[0.06] after:[transform:scaleX(var(--shift-rule,0))] after:content-['']"
+                        className="group/sub relative block py-3 no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-current/[0.08] after:[transform:scaleX(var(--shift-rule,0))] after:content-['']"
                       >
                         <span
                           data-shift-sublabel
-                          className="inline-block w-fit text-[1.15rem] leading-[1.2] font-medium tracking-[-0.01em] text-[#fffaf2]/70 transition-colors duration-250 group-hover/sub:text-white"
+                          className="inline-block w-fit text-[1.15rem] leading-[1.2] font-medium tracking-[-0.01em] text-current/70 transition-colors duration-250 group-hover/sub:text-current"
                         >
                           {sub.label}
                         </span>
@@ -1105,4 +1249,4 @@ const ContextShiftMenu = ({ children }: ContextShiftMenuProps) => {
   );
 };
 
-export default ContextShiftMenu;
+export default PerspectiveShiftMenu;

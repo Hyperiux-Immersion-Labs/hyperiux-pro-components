@@ -2015,6 +2015,22 @@
       "tier": "pro"
     },
     {
+      "name": "perspective-shift-menu",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "PerspectiveShiftMenu",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "side-navbar",
       "type": "registry:component",
       "category": "navigation",
