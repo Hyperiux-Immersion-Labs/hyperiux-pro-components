@@ -60,9 +60,24 @@
     "tarball": "registry/dist/hyperiux-link-button-1.0.1.tgz"
   },
   {
+    "name": "@hyperiux/metallic-button",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-metallic-button-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/scramble-link-button",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-scramble-link-button-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/shiny-button",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-shiny-button-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/spotlight-button",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-spotlight-button-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/arc-flow-carousel",
@@ -723,10 +738,5 @@
     "name": "@hyperiux/strip-slider",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-strip-slider-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/spotlight-button",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-spotlight-button-1.0.0.tgz"
   }
 ]

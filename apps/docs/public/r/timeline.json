@@ -17,7 +17,7 @@
     {
       "version": "1.0.0",
       "date": "2026-08-21",
-      "summary": "Initial timeline registry release with configurable colors, Lenis scroll tuning, and reduced-motion support.",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

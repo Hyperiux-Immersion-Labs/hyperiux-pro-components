@@ -16,7 +16,7 @@
     {
       "version": "1.0.0",
       "date": "2026-08-21",
-      "summary": "Initial registry release with working drawer motion, panel color, text color, width, and overlay controls.",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

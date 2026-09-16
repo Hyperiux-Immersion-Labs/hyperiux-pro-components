@@ -145,7 +145,7 @@
     {
       "name": "charStagger",
       "type": "number",
-      "default": 0.015,
+      "default": 0.01,
       "description": "Per-character reveal delay on link hover, in seconds.",
       "remixer": {
         "control": "range",
