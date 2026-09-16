@@ -7,7 +7,7 @@
 
 **A collection of high-quality animation effects and interactive components for Next.js - designed by [Hyperiux](https://hyperiux.com).**
 
-Hyperiux Vault includes 138 effects total: 48 free effects are open source and install instantly, and 90 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
+Hyperiux Vault includes 147 effects total: 55 free effects are open source and install instantly, and 92 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
 
 ---
 
@@ -131,28 +131,41 @@ export default function Page() {
 
 ## Free Effects
 
-All 48 free effects install without an account. Browse and preview them at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 55 free effects install without an account. Browse and preview them at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
 
 ```bash
 # Backgrounds
-npx hyperiux add spider-particles
+npx hyperiux add dot-transition
 npx hyperiux add dotted-grid
+npx hyperiux add spider-particles
 
 # Buttons
 npx hyperiux add arrow-fill-button
 npx hyperiux add link-button
+npx hyperiux add metallic-button
 npx hyperiux add scramble-link-button
+npx hyperiux add shiny-button
 
 # Carousels
+npx hyperiux add arc-flow-carousel
+npx hyperiux add dimensional-switch-slider
+npx hyperiux add ellipse-carousel
+npx hyperiux add orbit-flip-slider
+npx hyperiux add parallax-strip-slider
 npx hyperiux add zoom-slider
 
 # Components
 npx hyperiux add animated-faq
+npx hyperiux add border-beam
 npx hyperiux add gooey-counter
+npx hyperiux add gsap-flip-card
 npx hyperiux add hover-stack
+npx hyperiux add information-drawer
 npx hyperiux add interactive-list-preview
+npx hyperiux add timeline
 
 # Cursor
+npx hyperiux add liquid-glass-cursor
 npx hyperiux add phantom-image-trail
 npx hyperiux add pixelated-image-effect
 
@@ -171,12 +184,23 @@ npx hyperiux add horizontal-feature-reveal
 npx hyperiux add infinite-perspective-slider
 npx hyperiux add rotation-slider
 npx hyperiux add split-canvas
+npx hyperiux add stack-spread
 npx hyperiux add sticky-content-wrapper
 npx hyperiux add text-convergence
 
 # Text
+npx hyperiux add chromatic-text
+npx hyperiux add depth-flip-text
+npx hyperiux add drop-text
+npx hyperiux add flickering-text
+npx hyperiux add focus-text
+npx hyperiux add glowing-text
 npx hyperiux add number-counter
+npx hyperiux add pixel-text-fill
 npx hyperiux add rectangular-text-reveal
+npx hyperiux add rolling-text
+npx hyperiux add typing-text
+npx hyperiux add variable-text-proximity
 
 # Transitions
 npx hyperiux add block-transition
@@ -190,23 +214,23 @@ npx hyperiux add milky-way
 
 ### Free effects by category
 
-**Backgrounds** - `spider-particles` · `dotted-grid`
+**Backgrounds** - `dot-transition` · `dotted-grid` · `spider-particles`
 
-**Buttons** - `arrow-fill-button` · `link-button` · `scramble-link-button`
+**Buttons** - `arrow-fill-button` · `link-button` · `metallic-button` · `scramble-link-button` · `shiny-button`
 
-**Carousels** - `zoom-slider`
+**Carousels** - `arc-flow-carousel` · `dimensional-switch-slider` · `ellipse-carousel` · `orbit-flip-slider` · `parallax-strip-slider` · `zoom-slider`
 
-**Components** - `animated-faq` · `gooey-counter` · `hover-stack` · `interactive-list-preview`
+**Components** - `animated-faq` · `border-beam` · `gooey-counter` · `gsap-flip-card` · `hover-stack` · `information-drawer` · `interactive-list-preview` · `timeline`
 
-**Cursor** - `phantom-image-trail` · `pixelated-image-effect`
+**Cursor** - `liquid-glass-cursor` · `phantom-image-trail` · `pixelated-image-effect`
 
 **Loaders** - `numeric-tunnel` · `stack-loader`
 
-**Navigation** - `elevate-navbar` · `directional-menu`  · `immersive-full-screen-nav`
+**Navigation** - `directional-menu` · `elevate-navbar` · `immersive-full-screen-nav`
 
-**Scroll** - `circular-split-roll` · `horizontal-feature-reveal` · `infinite-perspective-slider` · `rotation-slider` · `split-canvas` · `sticky-content-wrapper` · `text-convergence`
+**Scroll** - `circular-split-roll` · `horizontal-feature-reveal` · `infinite-perspective-slider` · `rotation-slider` · `split-canvas` · `stack-spread` · `sticky-content-wrapper` · `text-convergence`
 
-**Text** - `number-counter` · `rectangular-text-reveal`
+**Text** - `chromatic-text` · `depth-flip-text` · `drop-text` · `flickering-text` · `focus-text` · `glowing-text` · `number-counter` · `pixel-text-fill` · `rectangular-text-reveal` · `rolling-text` · `typing-text` · `variable-text-proximity`
 
 **Transitions** - `block-transition` · `chess-grid-transition`
 
@@ -216,7 +240,7 @@ npx hyperiux add milky-way
 
 ## Pro Effects
 
-90 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
+92 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
 
 ### Getting started with Pro
 
@@ -262,7 +286,31 @@ Or add `HYPERIUX_TOKEN` to your CI secrets and the CLI will pick it up automatic
 
 ### Browse Pro effects
 
-All 90 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 92 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+
+### Pro effects by category
+
+**Backgrounds** - `dither-canvas` · `dotted-trail` · `grid-lift`
+
+**Buttons** - `animated-toggle` · `char-stagger-button` · `char-stagger-primary-button` · `dot-fill-button`
+
+**Carousels** - `clippath-slider` · `depth-card-stack` · `infinite-carousel` · `ring-carousel` · `webgl-slider`
+
+**Components** - `animated-form` · `animated-modal` · `animated-tabs` · `card-drift` · `draggable-marquee` · `elastic-accordion` · `infinite-grid-gallery` · `shear-wipe` · `testimonial-swiper` · `video-player`
+
+**Cursor** - `butterfly-trail-cursor` · `character-trail` · `coffee-bean-cursor` · `colorful-cursor-aura` · `cursor-move` · `fish-eye` · `full-screen-crosshair` · `inertia-img` · `interactive-arrows` · `magnetic-image-trail` · `noise-ripple-cursor` · `pixel-bloom` · `rope-cursor`
+
+**Loaders** - `lines-loader`
+
+**Navigation** - `displacement-navbar` · `expanding-navbar` · `morphing-dock` · `side-navbar` · `unfold-navbar`
+
+**Scroll** - `cards-runway` · `circular-slider` · `grid-scale` · `helix-slider` · `parallax-footer` · `parallax-gallery` · `parallax-image-animation` · `parallax-slider` · `ribbon-drift` · `scroll-distortion` · `scroll-shuffled-cards` · `scroll-stack` · `square-translate` · `stacking-cards` · `svg-path` · `svg-pixel-reveal`
+
+**Text** - `blur-text` · `circle-text-reveal` · `glitchy-text` · `mask-text-reveal` · `overflow-text-reveal` · `perspective-text-reveal` · `scramble-text` · `slide-text-reveal` · `spotlight-text` · `text-cloning` · `text-fill-animation` · `text-hover` · `text-stream`
+
+**Transitions** - `aperture-transition` · `ascend-transition` · `depth-shift-transition` · `page-flip-transition` · `pixel-transition` · `radial-slice-transition` · `svg-brush-transition` · `sweep-lift-transition`
+
+**WebGL** - `3d-portfolio-slider` · `book-flip` · `colliding-models` · `curved-plane` · `donut-particles` · `draggable-canvas` · `file-encryption` · `grid-tunnel` · `hero-banner-animated` · `hover-slider` · `hyperiux-glitter` · `mouse-pixelation` · `progressive-bloom-valley` · `strip-slider`
 
 ---
 
