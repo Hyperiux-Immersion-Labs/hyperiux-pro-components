@@ -1029,6 +1029,7 @@ export default function AdminPage() {
             options={[
               { value: "newest", label: "Newest" },
               { value: "copies", label: "Most Copies" },
+              { value: "installs", label: "Most Installs" },
               { value: "saves", label: "Most Saves" },
             ]}
           />
@@ -1060,7 +1061,7 @@ export default function AdminPage() {
                 <th className="px-3 py-2.5 text-left text-xs font-medium text-white/45 uppercase tracking-wider">User</th>
                 <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Joined</th>
                 <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Plan</th>
-                <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Copies / Saves</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Copies / Installs / Saves</th>
                 {isSuperAdmin && (
                   <>
                     <th className="px-3 py-2.5 text-center text-xs font-medium text-white/45 uppercase tracking-wider">Valid Until</th>
@@ -1132,6 +1133,8 @@ export default function AdminPage() {
                     <td className="px-3 py-2.5 text-center whitespace-nowrap">
                       <span className="text-blue-400">{user.copiesCount ?? 0}</span>
                       <span className="mx-1 text-white/25">/</span>
+                      <span className="text-emerald-400">{user.installsCount ?? 0}</span>
+                      <span className="mx-1 text-white/25">/</span>
                       <span className="text-purple-400">{user.savesCount ?? 0}</span>
                     </td>
                     {isSuperAdmin && (
@@ -1141,11 +1144,11 @@ export default function AdminPage() {
                         </td>
                         <td className="px-3 py-2.5 text-center">
                           {user.razorpayCustomerId ? (
-                            <span className="font-mono text-xs text-white/40" title={user.razorpayCustomerId}>
+                            <span className="font-mono text-xs text-white/60" title={user.razorpayCustomerId}>
                               {user.razorpayCustomerId.slice(0, 10)}…
                             </span>
                           ) : (
-                            <span className="text-xs text-white/25 inline-block w-fit">-</span>
+                            <span className="text-xs text-white/60 inline-block w-fit">-</span>
                           )}
                         </td>
                         <td className="px-3 py-2.5 text-right">

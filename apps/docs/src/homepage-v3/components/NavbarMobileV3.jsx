@@ -18,17 +18,17 @@ const useIsoLayoutEffect =
 const CLOSED_CLIP = "inset(0% 0% 100% 0%)";
 const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 
-// Same shape the desktop bar exposes, in the order the sheet stacks them: the
-// two menus expand in place, the plain links sit under them.
-const SECTIONS = [
-  { key: "categories", label: "Effects", href: "#" },
-  { key: "docs", label: "Docs", href: "#" },
-];
-
-const LINKS = [
-  { label: "Templates", href: "/templates" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Github", href: "https://github.com/hyperiux" },
+// Same items, same order, as the desktop bar (NavbarV3.jsx): Effects,
+// Templates, Docs, Pricing, Github - "section" rows expand an accordion in
+// place, "link" rows are plain links. One ordered list (rather than the old
+// separate SECTIONS/LINKS arrays rendered one after the other) so Templates
+// can sit between Effects and Docs instead of always trailing both menus.
+const NAV_ROWS = [
+  { type: "section", key: "categories", label: "Effects" },
+  { type: "link", label: "Templates", href: "/templates" },
+  { type: "section", key: "docs", label: "Docs" },
+  { type: "link", label: "Pricing", href: "/pricing" },
+  { type: "link", label: "Github", href: "https://github.com/hyperiux" },
 ];
 
 function Accordion({ open, children }) {
@@ -96,11 +96,16 @@ function Accordion({ open, children }) {
  *   slide: the mark is already sitting where the logo goes.
  * @param {() => void} onSearch - opens the single GlobalSearch instance the
  *   navbar owns; the sheet closes itself first so the modal isn't buried.
+ * @param {boolean} isSignedIn - NavbarV3's own `isSignedIn || cachedSignedIn`
+ *   (a Clerk-cookie cache check, not a live Clerk hook - see NavbarV3's own
+ *   comment on why), so the sheet's bottom CTA matches the desktop bar's
+ *   account-icon-vs-Sign-In swap instead of always showing Sign In.
  */
 export default function NavbarMobileV3({
   visible = true,
   intro = true,
   onSearch,
+  isSignedIn = false,
 }) {
   const overlayRef = useRef(null);
   const timelineRef = useRef(null);
@@ -271,25 +276,50 @@ export default function NavbarMobileV3({
           <HyperiuxLogo className="size-full text-primary" />
         </Link>
 
-        <button
-          type="button"
-          onClick={() => setOpen((current) => !current)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          // Trails the logo on the way in, the way the desktop bar's links do.
-          className={`relative flex size-[10vw] shrink-0 items-center justify-center bg-grey text-primary transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none md:size-[5vw] ${intro ? "opacity-100" : "opacity-0"}`}
-        >
-          <span
-            aria-hidden="true"
-            className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "rotate-45" : "-translate-y-[1.2vw] md:translate-y-[-0.6vw]"
-              }`}
-          />
-          <span
-            aria-hidden="true"
-            className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "-rotate-45" : "translate-y-[1.2vw] md:translate-y-[0.6vw]"
-              }`}
-          />
-        </button>
+        <div className="flex items-center gap-[3vw] md:gap-[2vw]">
+          <button
+            type="button"
+            onClick={handleSearch}
+            aria-label="Search effects"
+            // Trails the logo on the way in, same as the hamburger beside it.
+            className={`relative flex size-[10vw] shrink-0 items-center justify-center bg-grey text-primary transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none md:size-[5vw] ${intro ? "opacity-100" : "opacity-0"}`}
+          >
+            <svg
+              className="size-[4.5vw] shrink-0 md:size-[2.4vw]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOpen((current) => !current)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            // Trails the logo on the way in, the way the desktop bar's links do.
+            className={`relative flex size-[10vw] shrink-0 items-center justify-center bg-grey text-primary transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none md:size-[5vw] ${intro ? "opacity-100" : "opacity-0"}`}
+          >
+            <span
+              aria-hidden="true"
+              className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "rotate-45" : "-translate-y-[1.2vw] md:translate-y-[-0.6vw]"
+                }`}
+            />
+            <span
+              aria-hidden="true"
+              className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "-rotate-45" : "translate-y-[1.2vw] md:translate-y-[0.6vw]"
+                }`}
+            />
+          </button>
+        </div>
       </div>
 
       <div
@@ -301,33 +331,28 @@ export default function NavbarMobileV3({
           data-lenis-prevent
           className="mobile-nav-scroll absolute inset-0 overflow-y-auto px-[6vw] pt-[22vw] pb-[12vw] md:px-[3.5vw] md:pt-[11vw] md:pb-[7vw]"
         >
-          <button
-            data-mobile-row
-            type="button"
-            onClick={handleSearch}
-            className="flex w-full my-[5vw] items-center justify-between border border-white/10 bg-[#121212] px-[4vw] py-[3.5vw] text-left text-white/70 md:my-[3vw] md:px-[2.3vw] md:py-[2vw]"
-          >
-            <span className="text-[4vw] md:text-[2.2vw]">Search</span>
-            <span className="flex items-center gap-[3vw] md:gap-[1.8vw]">
-              <svg
-                className="size-[4.5vw] shrink-0 md:size-[2.6vw]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </span>
-          </button>
-
           <div className="mt-[2vw] md:mt-[1.2vw]">
-            {SECTIONS.map(({ key, label, href }) => {
+            {NAV_ROWS.map((row) => {
+              if (row.type === "link") {
+                const external = row.href.startsWith("http");
+
+                return (
+                  <Link
+                    key={row.label}
+                    data-mobile-row
+                    prefetch={false}
+                    href={row.href}
+                    onClick={close}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noopener noreferrer" : undefined}
+                    className="flex border-t border-white/10 max-[1025px]:py-[3vw] max-md:text-[4.75vw] text-white/90 max-md:py-[4.5vw] max-[1025px]:text-[3.75vw]"
+                  >
+                    {row.label}
+                  </Link>
+                );
+              }
+
+              const { key, label } = row;
               const expanded = section === key;
 
               return (
@@ -344,7 +369,7 @@ export default function NavbarMobileV3({
                       }
                       aria-label={`${expanded ? "Collapse" : "Expand"} ${label}`}
                       aria-expanded={expanded}
-                      className="flex w-full items-center justify-between py-[4.5vw] text-left  text-white/90 md:py-[2.6vw] max-[1025px]:text-[3.2vw] max-md:text-[5.5vw]!"
+                      className="flex w-full items-center justify-between py-[4.5vw] text-left  text-white/90 max-md:py-[4.5vw] max-[1025px]:py-[3vw] max-[1025px]:text-[3.75vw] max-md:text-[4.75vw]"
                     >
                       <span>{label}</span>
                       <div className="relative flex size-[8vw] shrink-0 items-center justify-center bg-grey text-primary md:size-[4.6vw]">
@@ -391,36 +416,24 @@ export default function NavbarMobileV3({
                 </div>
               );
             })}
-
-            {LINKS.map(({ label, href }) => {
-              const external = href.startsWith("http");
-
-              return (
-                <Link
-                  key={label}
-                  data-mobile-row
-                  prefetch={false}
-                  href={href}
-                  onClick={close}
-                  target={external ? "_blank" : undefined}
-                  rel={external ? "noopener noreferrer" : undefined}
-                  className="flex border-t border-white/10 py-[4.5vw] text-[5.5vw] text-white/90 md:py-[2.6vw] md:text-[3.2vw]"
-                >
-                  {label}
-                </Link>
-              );
-            })}
           </div>
 
           <div data-mobile-row className="mt-[8vw] flex md:mt-[4.6vw]">
-            <ButtonV3
-              text="Sign In"
-              // The button's own ramp jumps to desktop sizing above `md`; inside
-              // the tablet sheet it needs to stay touch-sized.
-              href="/sign-in"  
-              className="w-full md:py-[1.5vw] md:text-[2vw] md:[--btn-pad:2.4vw] md:[--btn-gap:1vw] md:[--btn-square:1.4vw] md:[--btn-arrow:2vw]"
-              // onClick={close}
-            />
+            {isSignedIn ? (
+              <ButtonV3
+                text="Go to Dashboard"
+                href="/dashboard"
+                className="w-full max-md:py-[1.5vw] max-[1025px]:py-[3vw] max-md:text-[4vw] max-[1025px]:text-[3vw] md:[--btn-pad:2.4vw] md:[--btn-gap:1vw] md:[--btn-square:1.4vw] md:[--btn-arrow:2vw]"
+              />
+            ) : (
+              <ButtonV3
+                text="Sign In"
+                // The button's own ramp jumps to desktop sizing above `md`; inside
+                // the tablet sheet it needs to stay touch-sized.
+                href="/sign-in"
+                className="w-full md:py-[1.5vw] md:text-[2vw] md:[--btn-pad:2.4vw] md:[--btn-gap:1vw] md:[--btn-square:1.4vw] md:[--btn-arrow:2vw]"
+              />
+            )}
           </div>
         </div>
       </div>

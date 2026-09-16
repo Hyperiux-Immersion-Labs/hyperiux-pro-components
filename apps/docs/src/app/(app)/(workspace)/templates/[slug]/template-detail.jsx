@@ -196,7 +196,7 @@ export function TemplateDetail({
 
   return (
     <div className="min-h-screen text-foreground">
-      <main className="mx-auto w-full relative px-14 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
+      <main className="mx-auto w-full relative px-14 max-[1025px]:px-0 pt-25 max-md:pt-36">
         <section className="space-y-7">
           <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
             <div className="w-full space-y-5">
@@ -323,7 +323,7 @@ export function TemplateDetail({
           )}
 
           {relatedTemplates.length > 0 && (
-            <section className="my-20 relative max-md:pt-[5vh] space-y-10 max-[1025px]:space-y-16">
+            <section className="my-20 relative max-md:pt-[5vh] space-y-10 max-[1025px]:space-y-10">
               <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
                 <HeadAnim>
                   <h2 className="text-[3.32vw] max-[1025px]:text-[5vw] max-md:text-[2rem] font-medium text-foreground">
@@ -341,7 +341,7 @@ export function TemplateDetail({
                 </div>
               </div>
 
-              <div className="fadeup grid grid-cols-2 gap-6 max-md:px-[7vw] max-[1025px]:px-[6vw] max-md:grid-cols-1">
+              <div className="fadeup grid grid-cols-2 gap-6 max-md:px-[7vw] max-[1025px]:px-[6vw] max-[1025px]:gap-10 max-md:grid-cols-1">
                 {relatedTemplates.map((relatedTemplate) => (
                   <TemplateCard
                     key={relatedTemplate.slug}

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { X } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useVaultLayout } from "@/components/layout/VaultLayout";
@@ -889,9 +890,15 @@ export function VaultContent({
                         event.preventDefault();
                         handleCategoryLinkClick(cat);
                       }}
+                      aria-current={isSelected ? "page" : undefined}
+                      aria-label={
+                        isSelected
+                          ? `Clear ${label} category filter`
+                          : `Filter by ${label}`
+                      }
                       className={`
                           px-6 py-3 text-[1vw] max-md:text-[4vw] max-[1025px]:text-[2.5vw] text-center relative max-md:px-7 max-md:py-3
-                          backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
+                          backdrop-blur-[6px] font-geistMono group flex items-center justify-center gap-2 cursor-pointer
                           transition-colors duration-300 
                           ${isSelected
                           ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"
@@ -900,6 +907,9 @@ export function VaultContent({
                         `}
                     >
                       <span className="leading-none">{label}</span>
+                      {isSelected && (
+                        <X className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                      )}
                     </Link>
                   );
                 })}
@@ -1276,7 +1286,7 @@ function EffectsGridInner({
     <>
       <div
         ref={gridRef}
-        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
+        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10`}
       >
         {visibleEffects.map((effect, i) => {
           const fullEffect = loadedCards[effect.name] || effect;

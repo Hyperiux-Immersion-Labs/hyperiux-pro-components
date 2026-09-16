@@ -130,7 +130,14 @@ export function TemplateRankSlider({ title, templates, height = 260 }) {
           className="template-rank-slider flex cursor-grab snap-x snap-mandatory select-none gap-6 overflow-x-auto scroll-smooth pb-6 active:cursor-grabbing"
         >
           {templates.map((template) => (
-            <div key={template.slug} className="min-w-[26vw] max-xl:min-w-[38vw] max-md:min-w-[70vw] shrink-0 snap-start">
+            // Fixed width, not min-width - see EffectRankSlider's identical
+            // fix for why min-width alone let cards render at inconsistent,
+            // content-driven sizes instead of a uniform one. Mobile is one
+            // card per view - full width of this slider's own container (%,
+            // not vw, for the same reason documented there: DashboardShell's
+            // max-md:px-[7vw] inset makes a raw vw width ignore how much
+            // space is actually available on a phone-width screen).
+            <div key={template.slug} className="w-[26vw] max-xl:w-[38vw] max-md:w-full shrink-0 snap-start">
               <TemplateCard template={template} sizes={CARD_SIZES} />
             </div>
           ))}

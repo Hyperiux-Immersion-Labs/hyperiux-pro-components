@@ -279,6 +279,7 @@ export default function NavbarV3({
         visible={reveal}
         intro={introReady}
         onSearch={openSearch}
+        isSignedIn={isSignedIn || cachedSignedIn}
       />
 
       <GlobalSearch effects={effects} externalOpen={openTrigger} />

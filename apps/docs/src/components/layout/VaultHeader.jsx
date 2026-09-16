@@ -24,7 +24,8 @@ if (typeof window !== "undefined") {
 const ProfileDropdown = dynamic(() => import("./ProfileDropDown"), {
   ssr: false,
 });
-import { ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { ChevronRight, User as UserIcon } from "lucide-react";
 import { HyperiuxLogo } from "@/utils/Icons";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
@@ -49,6 +50,7 @@ const DOCS_TOP_LINKS = [
 ];
 
 const MOBILE_SECONDARY_LINKS = [
+   { href: "/pricing", label: "Pricing" },
   {
     href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components",
     label: "Github",
@@ -222,21 +224,46 @@ export function VaultHeader({
 
     if (!footer || !targets.length) return;
 
-    const hide = () =>
-      gsap.to(targets, { yPercent: -100, duration: 0.4, ease: "power2.out" });
-    const show = () =>
-      gsap.to(targets, { yPercent: 0, duration: 0.4, ease: "power2.out" });
+    const setVisibility = (isPastFooter) =>
+      gsap.to(targets, {
+        yPercent: isPastFooter ? -100 : 0,
+        duration: 0.4,
+        ease: "power2.out",
+      });
 
+    // onToggle (not onEnter/onLeaveBack) re-derives the header's visibility
+    // from ScrollTrigger's own current isActive boolean every time it
+    // changes, rather than reacting only to a live scroll crossing the
+    // trigger edge. onEnter/onLeaveBack are one-shot direction-specific
+    // events - if ScrollTrigger recalculates its cached trigger position
+    // (see the refresh() below) and that recalculation alone flips isActive
+    // without the user actually scrolling across the edge in that instant,
+    // onEnter fires (hiding the header) with no matching onLeaveBack to ever
+    // undo it, leaving it stuck hidden until a full reload. onToggle stays
+    // correct regardless of *why* isActive changed.
     const trigger = ScrollTrigger.create({
       trigger: footer,
       start: "top bottom",
-      onEnter: hide,
-      onLeaveBack: show,
+      onToggle: (self) => setVisibility(self.isActive),
     });
+
+    // A backgrounded/occluded tab or window doesn't reliably get layout
+    // updates - switching windows or opening another one can leave
+    // ScrollTrigger's cached measurements stale by the time this tab is
+    // visible again. Forcing a refresh on return recalculates them against
+    // reality immediately, so onToggle above corrects any state that drifted
+    // while hidden instead of leaving the header stuck.
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") ScrollTrigger.refresh();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("focus", onVisibilityChange);
 
     return () => {
       trigger.kill();
       gsap.killTweensOf(targets);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("focus", onVisibilityChange);
     };
   }, []);
 
@@ -464,24 +491,50 @@ export function VaultHeader({
           <HyperiuxLogo className="size-full text-primary" />
         </Link>
 
-        <button
-          type="button"
-          onClick={() => setOpen((current) => !current)}
-          aria-label={open ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={open}
-          className="relative flex size-[10vw] shrink-0 items-center justify-center bg-[#161616] text-primary md:size-[5vw]"
-        >
-          <span
-            aria-hidden="true"
-            className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "rotate-45" : "-translate-y-[1.2vw] md:translate-y-[-0.6vw]"
-              }`}
-          />
-          <span
-            aria-hidden="true"
-            className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "-rotate-45" : "translate-y-[1.2vw] md:translate-y-[0.6vw]"
-              }`}
-          />
-        </button>
+        <div className="flex items-center gap-[3vw] md:gap-[2vw]">
+          {showSearch && (
+            <button
+              type="button"
+              onClick={handleSearch}
+              aria-label="Search effects"
+              className="relative flex size-[10vw] shrink-0 items-center justify-center bg-[#161616] text-primary md:size-[5vw]"
+            >
+              <svg
+                className="size-[4.5vw] shrink-0 md:size-[2.4vw]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setOpen((current) => !current)}
+            aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={open}
+            className="relative flex size-[10vw] shrink-0 items-center justify-center bg-[#161616] text-primary md:size-[5vw]"
+          >
+            <span
+              aria-hidden="true"
+              className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "rotate-45" : "-translate-y-[1.2vw] md:translate-y-[-0.6vw]"
+                }`}
+            />
+            <span
+              aria-hidden="true"
+              className={`absolute h-px w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none md:w-[2.4vw] ${open ? "-rotate-45" : "translate-y-[1.2vw] md:translate-y-[0.6vw]"
+                }`}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Mobile/tablet overlay - full-screen clip-path reveal. */}
@@ -494,43 +547,40 @@ export function VaultHeader({
           data-lenis-prevent
           className="mobile-nav-scroll absolute inset-0 overflow-y-auto px-[6vw] pt-[22vw] pb-[12vw] md:px-[3.5vw] md:pt-[11vw] md:pb-[7vw]"
         >
-          {isSignedIn && (
+          {isSignedIn && user && (
             <Link
               data-mobile-row
               href="/dashboard"
               onClick={close}
-              className="flex w-full my-[5vw] items-center justify-between border border-white/10 bg-[#121212] px-[4vw] py-[3.5vw] text-left text-white/90 md:my-[3vw] md:px-[2.3vw] md:py-[2vw]"
+              className="flex w-full my-[5vw] items-center justify-between gap-[3vw] border border-white/10 bg-[#121212] px-[4vw] py-[3.5vw] text-left text-white/90 md:my-[3vw] md:gap-[1.8vw] md:px-[2.3vw] md:py-[2vw]"
             >
-              <span className="text-[4vw] md:text-[2.2vw]">Account</span>
+              <div className="flex min-w-0 items-center gap-[3vw] md:gap-[1.8vw]">
+                {user.hasImage ? (
+                  <Image
+                    src={user.imageUrl}
+                    alt={user.fullName || "User"}
+                    width={40}
+                    height={40}
+                    className="size-[9vw] shrink-0 rounded-full object-cover md:size-[4.6vw]"
+                  />
+                ) : (
+                  <div className="flex size-[9vw] shrink-0 items-center justify-center rounded-full bg-[#1f1f1f] text-white/70 md:size-[4.6vw]">
+                    <UserIcon className="size-[4.5vw] md:size-[2.2vw]" />
+                  </div>
+                )}
+
+                <div className="min-w-0">
+                  <p className="truncate max-md:text-[4vw] text-white/90 max-[1025px]:text-[2.75vw]">
+                    {user.fullName || user.username || "Account"}
+                  </p>
+                  <p className="truncate text-[3.2vw] text-white/50 md:text-[1.7vw]">
+                    {user.primaryEmailAddress?.emailAddress || user.username}
+                  </p>
+                </div>
+              </div>
+
               <ChevronRight className="size-[4.5vw] shrink-0 md:size-[2.6vw]" />
             </Link>
-          )}
-
-          {showSearch && (
-            <button
-              data-mobile-row
-              type="button"
-              onClick={handleSearch}
-              className="flex w-full my-[5vw] items-center justify-between border border-white/10 bg-[#121212] px-[4vw] py-[3.5vw] text-left text-white/70 md:my-[3vw] md:px-[2.3vw] md:py-[2vw]"
-            >
-              <span className="text-[4vw] md:text-[2.2vw]">Search</span>
-              <span className="flex items-center gap-[3vw] md:gap-[1.8vw]">
-                <svg
-                  className="size-[4.5vw] shrink-0 md:size-[2.6vw]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </span>
-            </button>
           )}
 
           <div className="mt-[2vw] md:mt-[1.2vw]">
@@ -538,19 +588,12 @@ export function VaultHeader({
               data-mobile-row
               href="/effects"
               onClick={close}
-              className="flex border-t border-white/10 py-[4.5vw] max-md:text-[5.5vw] max-[1025px]:text-[3.2vw] text-white/90 md:py-[2.6vw] "
+              className="flex border-t border-white/10 py-[4.5vw] max-md:text-[4.75vw] max-[1025px]:text-[3.75vw] text-white/90 max-md:py-[4.5vw] max-[1025px]:py-[3vw] "
             >
               All Effects
             </Link>
 
-            <Link
-              data-mobile-row
-              href="/templates"
-              onClick={close}
-              className="flex border-t border-white/10 py-[4.5vw] max-md:text-[5.5vw] max-[1025px]:text-[3.2vw] text-white/90 md:py-[2.6vw] "
-            >
-              Templates
-            </Link>
+            
 
             <div data-mobile-row className="border-t border-white/10">
               <button
@@ -558,9 +601,9 @@ export function VaultHeader({
                 onClick={() => toggleSection("categories")}
                 aria-label={`${section === "categories" ? "Collapse" : "Expand"} Categories`}
                 aria-expanded={section === "categories"}
-                className="flex w-full items-center justify-between py-[4.5vw] text-left max-md:text-[5.5vw]! max-[1025px]:text-[3.2vw]! text-white/90 md:py-[2.6vw] "
+                className="flex w-full items-center justify-between py-[4.5vw] text-left max-md:text-[4.75vw] max-[1025px]:text-[3.75vw] text-white/90 max-md:py-[4.5vw] max-[1025px]:py-[3vw] "
               >
-                <span>Categories</span>
+                <span>Effect Categories</span>
                 <div className="relative flex size-[8vw] shrink-0 items-center justify-center bg-[#161616] text-primary md:size-[4.6vw]">
                   <span aria-hidden="true" className="absolute h-px w-[3.5vw] bg-current md:w-[2vw]" />
                   <span
@@ -578,7 +621,7 @@ export function VaultHeader({
                       key={category.id}
                       href={getEffectCategoryHref(category.id)}
                       onClick={close}
-                      className="flex items-center py-[2.6vw] text-[4vw] text-white/75 active:text-primary md:py-[1.5vw] md:text-[2.2vw]"
+                      className="flex items-center max-md:py-[1.5vw] max-md:text-[4vw] w-fit text-white/75 active:text-primary md:py-[1.5vw] max-[1025px]:text-[2.75vw]"
                     >
                       {categoryLabel(category)}
                     </Link>
@@ -586,6 +629,14 @@ export function VaultHeader({
                 </div>
               </MobileNavAccordion>
             </div>
+            <Link
+              data-mobile-row
+              href="/templates"
+              onClick={close}
+              className="flex border-t border-white/10 py-[4.5vw] max-md:text-[4.75vw] max-[1025px]:text-[3.75vw] text-white/90 max-md:py-[4.5vw] max-[1025px]:py-[3vw] "
+            >
+              Templates
+            </Link>
 
             <div data-mobile-row className="border-t border-white/10">
               <button
@@ -593,7 +644,7 @@ export function VaultHeader({
                 onClick={() => toggleSection("documentation")}
                 aria-label={`${section === "documentation" ? "Collapse" : "Expand"} Documentation`}
                 aria-expanded={section === "documentation"}
-                className="flex w-full items-center justify-between py-[4.5vw] text-left max-md:text-[5.5vw]! max-[1025px]:text-[3.2vw]! text-white/90 md:py-[2.6vw]"
+                className="flex w-full items-center justify-between py-[4.5vw] text-left max-md:text-[4.75vw] max-[1025px]:text-[3.75vw] text-white/90 max-md:py-[4.5vw] max-[1025px]:py-[3vw]"
               >
                 <span>Documentation</span>
                 <div className="relative flex size-[8vw] shrink-0 items-center justify-center bg-[#161616] text-primary md:size-[4.6vw]">
@@ -613,7 +664,7 @@ export function VaultHeader({
                       key={link.href}
                       href={link.href}
                       onClick={close}
-                      className="flex items-center py-[2.6vw] text-[4vw] text-white/75 active:text-primary md:py-[1.5vw] md:text-[2.2vw]"
+                      className="flex items-center max-md:py-[1.5vw] max-md:text-[4vw] w-fit text-white/75 active:text-primary md:py-[1.5vw] max-[1025px]:text-[2.75vw]"
                     >
                       {link.label}
                     </Link>
@@ -630,7 +681,7 @@ export function VaultHeader({
                 target={link.external ? "_blank" : undefined}
                 rel={link.external ? "noopener noreferrer" : undefined}
                 onClick={close}
-                className="flex border-t border-white/10 py-[4.5vw] text-[5.5vw] text-white/90 md:py-[2.6vw] md:text-[3.2vw]"
+                className="flex border-t border-white/10 py-[4.5vw]  max-md:text-[4.75vw] text-white/90 max-md:py-[4.5vw] max-[1025px]:py-[3vw] max-[1025px]:text-[3.75vw]"
               >
                 {link.label}
               </Link>

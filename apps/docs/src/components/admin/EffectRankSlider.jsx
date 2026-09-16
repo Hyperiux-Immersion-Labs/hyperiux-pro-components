@@ -62,11 +62,22 @@ function RankCard({ effect, valueLabel, renderValue }) {
   return (
     <Link
       href={getEffectHref(effect)}
-      className="group block min-w-[26vw] max-xl:min-w-[38vw] max-md:min-w-[70vw] shrink-0 snap-start"
+      // A fixed width (not min-width): as a flex item with no flex-grow set,
+      // min-width alone only floors the size - a card whose title is wider
+      // than 26vw would render at its own content width instead, which is
+      // exactly why cards used to come out visibly different sizes.
+      //
+      // Mobile is one card per view - full width of this slider's own scroll
+      // container (%, not vw: DashboardShell's max-md:px-[7vw] inset means a
+      // vw-based width ignores how much space is actually available on a
+      // phone screen, throwing card-to-container alignment off in a way
+      // that's only visible once that padding is a meaningful fraction of
+      // the screen, i.e. on phones, not desktop/tablet's fixed px-14).
+      className="group block w-[26vw] max-xl:w-[38vw] max-md:w-full shrink-0 snap-start"
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
     >
-      <div className="relative aspect-3/2 overflow-hidden bg-[#1c1c1c]">
+      <div className="relative overflow-hidden bg-[#1c1c1c] aspect-video">
         {coverImage && !imageError ? (
           <Image
             src={coverImage}
@@ -100,7 +111,12 @@ function RankCard({ effect, valueLabel, renderValue }) {
       </div>
 
       <div className="mt-4 flex items-start justify-between gap-3">
-        <p className="truncate text-lg text-white/85 group-hover:text-white" title={title}>
+        {/* min-w-0: a flex item's min-width defaults to its content's
+            intrinsic width, which overrides truncate's overflow-hidden and
+            lets a long title push this row (and the fixed-width card above)
+            wider than intended - resetting it is what actually makes the
+            ellipsis kick in instead. */}
+        <p className="min-w-0 truncate text-lg text-white/85 group-hover:text-white" title={title}>
           {title}
         </p>
         <span className="shrink-0 text-lg font-medium text-white">

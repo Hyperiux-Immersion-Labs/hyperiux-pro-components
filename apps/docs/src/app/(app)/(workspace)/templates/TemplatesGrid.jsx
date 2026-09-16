@@ -66,17 +66,11 @@ export function TemplatesGrid({ templates }) {
         <div className="fadeup mx-auto px-14 pb-7 pt-10 max-md:px-0">
           <div className="relative max-[1025px]:w-full flex items-start gap-4">
             <div className="relative min-w-0 flex-1">
-              <div
-                className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 hidden w-12 max-[1025px]:block"
-                style={{
-                  background:
-                    "linear-gradient(to left, var(--background, #000) 0%, transparent 100%)",
-                }}
-              />
+              
 
               <div
                 className={[
-                  "flex items-center gap-2.5",
+                  "flex items-center gap-2.5 max-[1025px]:px-[7vw]",
                   "flex-nowrap",
                   "max-[1025px]:flex-nowrap max-[1025px]:overflow-x-auto",
                   "scrollbar-thin [scrollbar-color:#CC4C04_transparent]",
@@ -97,7 +91,7 @@ export function TemplatesGrid({ templates }) {
                         setActiveCategory(isSelected ? "all" : category)
                       }
                       className={`
-                        px-6 py-2.5 text-[1vw] text-center relative max-md:px-5 max-md:py-2
+                        px-6 py-3.5 text-[1vw] text-center relative max-md:px-5
                         backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
                         shrink-0 whitespace-nowrap
                         transition-colors duration-300 max-[1025px]:text-[2.5vw] max-md:text-[4.2vw]
@@ -118,7 +112,7 @@ export function TemplatesGrid({ templates }) {
       )}
 
       <div className="mx-auto px-14 pb-12 max-md:px-0">
-        <div className="grid grid-cols-2 gap-4 rounded-xl max-[1025px]:grid-cols-1 max-md:grid-cols-1 max-md:px-[7vw] max-[1025px]:gap-10 max-md:gap-16">
+        <div className="grid grid-cols-2 gap-4 rounded-xl max-[1025px]:grid-cols-1 max-md:grid-cols-1 max-md:px-[7vw] max-[1025px]:gap-10">
           {filteredTemplates.map((template, index) => (
             // FadeUp per card (not one fadeup around the whole grid) so each
             // card animates independently via its own mount-scoped
