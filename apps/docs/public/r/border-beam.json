@@ -15,13 +15,13 @@
     {
       "version": "1.0.2",
       "date": "2026-08-27",
-      "summary": "Sync internal refactor from docs source: renamed hooks/helpers/state identifiers (useSystemTheme->usePreferredScheme, generateBeamCSS->buildRimCSS, etc.) and moved active-sync + glow-scale reset from effects to render-phase derived state; no public API or behavior change",
+      "summary": "Internal refactor: derived render-phase state replaces sync effects; no API change.",
       "breaking": false
     },
     {
       "version": "1.0.1",
       "date": "2026-07-31",
-      "summary": "Slowed the beam animation under reduced motion and added dynamic remixer props (size, colorVariant, theme, active, strength, duration, beamWidth, backgroundColor).",
+      "summary": "Added reduced motion support.",
       "breaking": false
     },
     {

@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-31",
-      "summary": "Reworked the props API (text size, color, duration, stagger, charType) and fixed default text color and scroll-trigger start so the built-in heading is visible.",
+      "summary": "Added configurable text size, color, duration, stagger, and character-set controls.",
       "breaking": false
     },
     {

@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-22",
-      "summary": "Fixed the last card not reaching full-screen on mobile and the outgoing card's opacity bleeding through under reduced motion.",
+      "summary": "Added reduced motion support.",
       "breaking": false
     },
     {

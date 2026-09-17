@@ -155,7 +155,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Fixed phone validation for international numbers and reworked the props API to real color/border-radius/duration controls.",
+        "summary": "Added configurable color, border-radius, and duration controls.",
         "breaking": false
       },
       {
@@ -174,7 +174,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the props API to real working controls (size, overlay opacity, duration, roundedness, colors), added reduced-motion support, and fixed responsive breakpoint and demo layout issues.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -888,7 +888,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -1103,13 +1103,13 @@
       {
         "version": "1.0.2",
         "date": "2026-08-27",
-        "summary": "Sync internal refactor from docs source: renamed hooks/helpers/state identifiers (useSystemTheme->usePreferredScheme, generateBeamCSS->buildRimCSS, etc.) and moved active-sync + glow-scale reset from effects to render-phase derived state; no public API or behavior change",
+        "summary": "Internal refactor: derived render-phase state replaces sync effects; no API change.",
         "breaking": false
       },
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Slowed the beam animation under reduced motion and added dynamic remixer props (size, colorVariant, theme, active, strength, duration, beamWidth, backgroundColor).",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -1655,7 +1655,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to working lerp/smoothness/circleSize controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -1744,7 +1744,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-24",
-        "summary": "Fixed responsiveness issues and added a reduced-motion notice explaining the continuous scroll-driven rotation.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -5105,7 +5105,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to working baseTextColor/glitchColor controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -5597,7 +5597,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to match the effect's real looping behavior (maxValue, duration, blobColor, backgroundColor, gridSize, roundedness).",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -5657,7 +5657,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -6224,7 +6224,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -6954,7 +6954,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, renamed the component file to match production conventions, and reworked the props API to working imageSize/duration/smoothness/lerp controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -7331,7 +7331,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and fixed the mask reveal not replaying when duration/stagger change in the remixer.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -7968,7 +7968,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -8807,7 +8807,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support (25% strength on off-center item rotation/scale) and fixed a crash in scroll-snap onStart when no Lenis provider is present.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -9287,7 +9287,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-21",
-        "summary": "Added reduced-motion support for accessible lower-motion perspective reveal.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -10288,7 +10288,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Reworked the props API (text size, color, duration, stagger, charType) and fixed default text color and scroll-trigger start so the built-in heading is visible.",
+        "summary": "Added configurable text size, color, duration, stagger, and character-set controls.",
         "breaking": false
       },
       {
@@ -10907,7 +10907,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-21",
-        "summary": "Added reduced-motion support for accessible lower-motion slide reveal.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -11436,7 +11436,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-22",
-        "summary": "Fixed the last card not reaching full-screen on mobile and the outgoing card's opacity bleeding through under reduced motion.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -11682,7 +11682,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-28",
-        "summary": "Added a reduced-motion notice (ported from the docs copy, which already had it): this effect relies on a continuous scroll-driven pixelated-to-sharp transition and can't be simplified to a fade without losing the effect entirely, so it now surfaces that instead of silently ignoring the preference.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -12947,7 +12947,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the props API to match the real component (videoSrc, poster, autoPlay, controls) and replaced the continuous rAF progress loop with native timeupdate events.",
+        "summary": "Replaced the rAF progress loop with native timeupdate events.",
         "breaking": false
       },
       {
@@ -12965,7 +12965,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed images as a public prop.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
