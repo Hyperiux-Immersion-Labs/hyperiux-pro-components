@@ -36,7 +36,7 @@
       "name": "autoConnect",
       "label": "Automatic Routes",
       "type": "boolean",
-      "default": true,
+      "default": false,
       "description": "Periodically animates a route between two random locations.",
       "remixer": {
         "control": "checkbox",
