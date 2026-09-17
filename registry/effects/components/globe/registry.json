@@ -21,7 +21,7 @@
   "registryDependencies": [],
   "previewUrl": "/demo/globe",
   "main": "index.tsx",
-  "exportName": "NetworkGlobe",
+  "exportName": "Globe",
   "exportKind": "default",
   "importPath": "@/components/effects/globe",
   "target": "src/components/effects/globe",

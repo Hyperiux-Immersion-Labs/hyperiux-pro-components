@@ -1,5 +1,5 @@
-import NetworkGlobe from "@/components/globe";
+import Globe from "@/components/globe";
 
 export default function GlobePreviewPage() {
-  return <NetworkGlobe />;
+  return <Globe />;
 }

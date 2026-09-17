@@ -8,7 +8,7 @@
     "lucide-react"
   ],
   "registryDependencies": [],
-  "exportName": "NetworkGlobe",
+  "exportName": "Globe",
   "exportKind": "default",
   "tier": "pro",
   "version": "1.0.0",

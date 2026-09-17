@@ -193,7 +193,7 @@ type Arc = {
     to: number;
     born: number;
 };
-export type NetworkGlobeProps = {
+export type GlobeProps = {
     autoConnect?: boolean;
     autoRotate?: boolean;
     rotationSpeed?: number;
@@ -322,7 +322,7 @@ function buildTourOrder(stores: Store[]): number[] {
     return order;
 }
 const TOUR_ORDER = buildTourOrder(STORES);
-export default function NetworkGlobe({ autoConnect = true, autoRotate = true, rotationSpeed = 4, routeFrequency = 3.5, routeDuration = 1.4, connections = 3, dotDensity = 11000, dotSize = 2.3, markerSize = 5, routeColor = "#fffaf2", mapColor = "#ffffff", markerColor = "#fffaf2", showLabels = true, enableDrag = true, morphDuration = 0.6, className = "", children, }: NetworkGlobeProps) {
+export default function Globe({ autoConnect = true, autoRotate = true, rotationSpeed = 4, routeFrequency = 3.5, routeDuration = 1.4, connections = 3, dotDensity = 11000, dotSize = 2.3, markerSize = 5, routeColor = "#fffaf2", mapColor = "#ffffff", markerColor = "#fffaf2", showLabels = true, enableDrag = true, morphDuration = 0.6, className = "", children, }: GlobeProps) {
     const sectionRef = useRef<HTMLElement | null>(null);
     const stageRef = useRef<HTMLDivElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
