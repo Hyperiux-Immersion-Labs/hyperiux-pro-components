@@ -7,7 +7,6 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import DeferredAnalytics from "@/components/WebsiteComps/DeferredAnalytics";
 import DeferredGTM from "@/components/WebsiteComps/DeferredGTM";
-import TabActivityFavicon from "@/components/WebsiteComps/TabActivityFavicon";
 import LazyRecaptchaProvider from "@/components/WebsiteComps/LazyRecaptchaProvider";
 import {
   ImageObjectJsonLd,
@@ -146,7 +145,6 @@ export default function RootLayout({ children }) {
         <SpeedInsights />
         <DeferredGTM />
         <DeferredAnalytics />
-        <TabActivityFavicon />
       </body>
     </html>
   );

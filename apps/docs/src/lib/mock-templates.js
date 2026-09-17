@@ -17,7 +17,7 @@ export const TEMPLATES = [
     title: "Elena Voss",
     category: "Portfolio",
     tier: "pro",
-    pricing: { standaloneOneTime: 29, includedInAnnualPro: true },
+    pricing: { standaloneOneTime: 39, includedInAnnualPro: true },
     tags: ["GSAP", "Scroll"],
     screenshots: ["/assets/templates-listing/elenavoss.png"],
     href: "/templates/elenavoss",
