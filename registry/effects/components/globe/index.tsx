@@ -1,5 +1,3 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import gsap from "gsap";
@@ -322,7 +320,7 @@ function buildTourOrder(stores: Store[]): number[] {
     return order;
 }
 const TOUR_ORDER = buildTourOrder(STORES);
-export default function Globe({ autoConnect = true, autoRotate = true, rotationSpeed = 4, routeFrequency = 3.5, routeDuration = 1.4, connections = 3, dotDensity = 11000, dotSize = 2.3, markerSize = 5, routeColor = "#fffaf2", mapColor = "#ffffff", markerColor = "#fffaf2", showLabels = true, enableDrag = true, morphDuration = 0.6, className = "", children, }: GlobeProps) {
+export default function Globe({ autoConnect = false, autoRotate = true, rotationSpeed = 4, routeFrequency = 3.5, routeDuration = 1.4, connections = 3, dotDensity = 11000, dotSize = 2.3, markerSize = 5, routeColor = "#fffaf2", mapColor = "#ffffff", markerColor = "#fffaf2", showLabels = true, enableDrag = true, morphDuration = 0.6, className = "", children, }: GlobeProps) {
     const sectionRef = useRef<HTMLElement | null>(null);
     const stageRef = useRef<HTMLDivElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);

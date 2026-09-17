@@ -16,7 +16,7 @@
     {
       "version": "1.0.0",
       "date": "2026-09-17",
-      "summary": "Initial pro release with globe-to-map morphing, animated routes, responsive controls, reduced-motion support, and a complete remixer prop API.",
+      "summary": "Initial release",
       "breaking": false
     }
   ],

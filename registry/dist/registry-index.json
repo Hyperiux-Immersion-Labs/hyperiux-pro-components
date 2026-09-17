@@ -176,8 +176,8 @@
   },
   {
     "name": "@hyperiux/globe",
-    "version": "0.0.1",
-    "tarball": "registry/dist/hyperiux-globe-0.0.1.tgz"
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-globe-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/gooey-counter",
