@@ -147,9 +147,16 @@ export function TemplateCard({
             )}
           </div>
           {template.tier === "pro" && (
-            <span className="shrink-0 bg-primary px-[0.8vw] py-[0.1vw] text18 text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
-              Pro
-            </span>
+            <div className="flex shrink-0 items-center gap-2 max-sm:gap-1.5">
+              {template.pricing?.standaloneOneTime != null && (
+                <span className="text22 text-white max-sm:text-[3.5vw]!">
+                  ${template.pricing.standaloneOneTime}
+                </span>
+              )}
+              <span className="shrink-0 bg-primary px-[0.8vw] py-[0.1vw] text18 text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
+                Pro
+              </span>
+            </div>
           )}
         </div>
       </div>
