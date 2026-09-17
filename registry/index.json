@@ -15,7 +15,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added a reduced-motion notice and fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
+        "summary": "Fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
         "breaking": false
       },
       {
@@ -266,7 +266,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and exposed working styling props (size, colors, duration), removing the non-functional defaultChecked prop.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -311,14 +311,8 @@
   },
   {
     "name": "aperture-transition",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "changelog": [
-      {
-        "version": "1.0.1",
-        "date": "2026-08-21",
-        "summary": "Added reduced-motion support so the drawer and overlay settle instantly when users prefer reduced motion.",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-08-06",
@@ -1983,7 +1977,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and rAF-throttled mousemove handling to cut redundant re-renders.",
+        "summary": "Added reduced-motion support and optimized cursor tracking.",
         "breaking": false
       },
       {
@@ -2635,7 +2629,7 @@
     ],
     "type": "registry:component",
     "title": "Displacement Navbar",
-    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it \u2014 GSAP-driven with a full reduced-motion fallback.",
+    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it — GSAP-driven with a full reduced-motion fallback.",
     "category": "navigation",
     "dependencies": [
       "gsap"
@@ -5063,7 +5057,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and corrected the export-kind metadata.",
+        "summary": "Added reduced-motion support .",
         "breaking": false
       },
       {
@@ -5344,9 +5338,44 @@
     "registryPath": "registry/effects/text/glowing-text/registry.json"
   },
   {
+    "name": "globe",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-17",
+        "summary": "Initial pro release with globe-to-map morphing, animated routes, responsive controls, reduced-motion support, and a complete remixer prop API.",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Network Globe",
+    "description": "Interactive dotted world globe with animated routes, location navigation, and a desktop flat-map projection.",
+    "category": "components",
+    "tier": "pro",
+    "dependencies": [
+      "gsap",
+      "lucide-react"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/globe",
+    "main": "index.tsx",
+    "exportName": "NetworkGlobe",
+    "exportKind": "default",
+    "importPath": "@/components/effects/globe",
+    "target": "src/components/effects/globe",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/globe/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/components/globe/registry.json"
+  },
+  {
     "name": "gooey-counter",
     "title": "Gooey Counter",
-    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0\u201310 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
+    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
     "category": "components",
     "type": "registry:component",
     "tier": "free",
@@ -6689,7 +6718,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Added a reduced-motion notice and reworked the remixer panel (removed the image-texture control, changed mouse interaction to a checkbox).",
+        "summary": "Documented the lack of a reduced-motion fallback and reworked the remixer controls.",
         "breaking": false
       },
       {
@@ -9525,7 +9554,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and removed stale duplicate files that had diverged from the originals and were being shipped to installers.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -11280,7 +11309,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.0.0",
     "dependencies": [
       "three"
     ],
@@ -11307,12 +11336,6 @@
       }
     ],
     "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-06-04",

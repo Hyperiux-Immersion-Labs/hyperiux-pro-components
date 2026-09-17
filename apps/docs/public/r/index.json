@@ -1757,6 +1757,23 @@
       "tier": "pro"
     },
     {
+      "name": "globe",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap",
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "NetworkGlobe",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "gooey-counter",
       "type": "registry:component",
       "category": "components",

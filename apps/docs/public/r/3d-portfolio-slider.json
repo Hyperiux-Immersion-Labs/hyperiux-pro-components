@@ -17,7 +17,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added a reduced-motion notice and fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
+      "summary": "Fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
       "breaking": false
     },
     {
