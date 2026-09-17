@@ -8,6 +8,7 @@ import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 import { TemplateCard } from "@/components/ui/TemplateCard";
 import { getTemplateBySlug } from "@/lib/mock-templates";
 import { useTemplateWishlist } from "@/app/(app)/(workspace)/templates/useTemplateWishlist";
+import { useTemplateAccess } from "@/app/(app)/(workspace)/templates/useTemplateAccess";
 
 // Sibling to dashboard/saved/page.js, same client-fetch-on-mount shape, but
 // for templates the user can download (purchased standalone, or included
@@ -121,6 +122,7 @@ export default function DashboardTemplatesPage() {
     onRemoved: (template) =>
       showToast({ title: `${template.title} removed`, description: "No longer in your saved templates." }),
   });
+  const accessSlugs = useTemplateAccess();
 
   const savedTemplates = wishlist.map(getTemplateBySlug).filter(Boolean);
 
@@ -216,6 +218,8 @@ export default function DashboardTemplatesPage() {
                     template={template}
                     isWishlisted
                     toggleWishlist={toggleWishlist}
+                    showPurchase
+                    hasAccess={accessSlugs.includes(template.slug)}
                   />
                 ))}
               </div>

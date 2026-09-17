@@ -10,17 +10,17 @@ import { Mail } from "lucide-react";
 import { armRecaptcha } from "@/lib/recaptchaEvents";
 import { buttonV3ClassName, ButtonV3Chrome } from "@/homepage-v3/components/ButtonV3";
 
-// Homepage-only exit-intent capture, mirroring WorkWithHyperiuxModal.jsx's
-// technical conventions (motion/react, same MODAL_TRANSITION curve, Lenis
-// scroll-lock) but with local useState instead of a query-param-driven open
-// state - this modal is triggered by cursor behavior, not a link anyone
-// needs to deep-link to or share.
+// Site-wide exit-intent capture (except sign-in and /dashboard - see
+// isExcludedRoute below), mirroring WorkWithHyperiuxModal.jsx's technical
+// conventions (motion/react, same MODAL_TRANSITION curve, Lenis scroll-lock)
+// but with local useState instead of a query-param-driven open state - this
+// modal is triggered by cursor behavior, not a link anyone needs to
+// deep-link to or share.
 //
 // Mounted globally from the root layout (inside LazyRecaptchaProvider, so
 // executeRecaptcha() below actually has a provider to talk to - see
-// lib/recaptchaEvents.js) rather than from the homepage route itself, so the
-// pathname check below is what keeps this homepage-only, not where it's
-// rendered from.
+// lib/recaptchaEvents.js) rather than per-route, so the pathname check below
+// is what keeps it off the excluded routes, not where it's rendered from.
 //
 // Submitting creates a real Clerk invitation and emails it via the existing
 // waitlist-invite-email template (see api/exit-intent-invite/route.js) -
@@ -28,8 +28,18 @@ import { buttonV3ClassName, ButtonV3Chrome } from "@/homepage-v3/components/Butt
 // flow as an admin-sent waitlist invite.
 
 const SESSION_KEY = "hyperiux_exit_intent_shown";
-const ARM_DELAY_MS = 4000;
-const TOP_EDGE_TRIGGER_PX = 0;
+// Was 4000ms, then 1200ms - both read as the modal "not working" to anyone
+// testing it by opening the page and immediately mousing off the top edge,
+// since the exit-intent listener isn't armed yet during that whole window.
+// 200ms is just enough to not fire mid-paint on the very first frame, while
+// being effectively instant for a real exit attempt.
+const ARM_DELAY_MS = 200;
+// Was 0 - required event.clientY to be exactly <=0 at the moment
+// `mouseleave` fired, which real cursor movement (sampled, not continuous)
+// rarely lands on exactly, hence needing several attempts before one
+// happened to register. A small margin catches any leave-via-the-top
+// gesture reliably on the first try.
+const TOP_EDGE_TRIGGER_PX = 30;
 
 const MODAL_TRANSITION = {
   duration: 0.5,
@@ -42,7 +52,7 @@ export function ExitIntentInviteModal() {
   const [open, setOpen] = useState(false);
   const [armed, setArmed] = useState(false);
   const [email, setEmail] = useState("");
-  const [agreed, setAgreed] = useState(false);
+  const [agreed, setAgreed] = useState(true);
   const [status, setStatus] = useState("idle"); // idle | submitting | success
   const [error, setError] = useState("");
   const [sendHovered, setSendHovered] = useState(false);
@@ -50,18 +60,25 @@ export function ExitIntentInviteModal() {
   const { executeRecaptcha } = useReCaptcha();
   const lenis = useLenis();
   const pathname = usePathname();
-  const isHomepage = pathname === "/";
+  // Was homepage-only ("/") - now every route except sign-in (mid-auth-flow,
+  // an invite-to-sign-up popup is redundant there) and the whole /dashboard
+  // app (already-signed-in users past the point this invite is for).
+  const isExcludedRoute =
+    pathname === "/sign-in" ||
+    pathname.startsWith("/sign-in/") ||
+    pathname.startsWith("/dashboard") || pathname.startsWith("/template-demo") || pathname.startsWith("/demo")
+  const isEligibleRoute = !isExcludedRoute;
 
   // Arms after a short delay (so a visitor who bounces in the first few
   // seconds doesn't get ambushed instantly) and only once per tab session -
   // sessionStorage, not localStorage, so it's fair game again on a fresh
   // visit later, just not spammed across repeated mouse-out flicks in one visit.
-  // Now mounted globally (see the note above), so this also has to bail out
-  // on every route except "/" itself - re-checked on every pathname change
-  // since the component no longer unmounts on navigation.
+  // Mounted globally (see the note above), so this also has to bail out on
+  // excluded routes - re-checked on every pathname change since the
+  // component no longer unmounts on navigation.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!isHomepage) return;
+    if (!isEligibleRoute) return;
     if (window.sessionStorage.getItem(SESSION_KEY) === "1") return;
 
     const armTimer = window.setTimeout(() => {
@@ -73,11 +90,11 @@ export function ExitIntentInviteModal() {
       armRecaptcha();
     }, ARM_DELAY_MS);
     return () => window.clearTimeout(armTimer);
-  }, [isHomepage]);
+  }, [isEligibleRoute]);
 
   useEffect(() => {
     if (!armed) return;
-    if (!isHomepage) return;
+    if (!isEligibleRoute) return;
 
     function handleMouseLeave(event) {
       if (shownRef.current) return;
@@ -93,7 +110,7 @@ export function ExitIntentInviteModal() {
 
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => document.removeEventListener("mouseleave", handleMouseLeave);
-  }, [armed, isHomepage]);
+  }, [armed, isEligibleRoute]);
 
   useEffect(() => {
     if (!open) return;
@@ -120,7 +137,7 @@ export function ExitIntentInviteModal() {
     if (open) return;
     const id = window.setTimeout(() => {
       setEmail("");
-      setAgreed(false);
+      setAgreed(true);
       setStatus("idle");
       setError("");
     }, 500);
@@ -170,7 +187,7 @@ export function ExitIntentInviteModal() {
 
   // Safety net alongside the effect guards above: covers the moment a
   // client-side navigation fires while the modal happens to already be open.
-  if (!isHomepage) return null;
+  if (!isEligibleRoute) return null;
 
   return (
     <AnimatePresence mode="wait">
@@ -290,12 +307,21 @@ export function ExitIntentInviteModal() {
                     >
                       {agreed && (
                         <svg viewBox="0 0 12 12" fill="none" className="h-2.5 w-2.5 text-white">
-                          <path
+                          {/* pathLength (a Motion-specific SVG prop) animates
+                              the stroke as if it were being drawn, rather
+                              than just appearing - remounts (and so
+                              replays) every time the checkbox goes from
+                              unchecked to checked, including the initial
+                              checked-by-default state on open. */}
+                          <motion.path
                             d="M2 6l2.5 2.5L10 3"
                             stroke="currentColor"
                             strokeWidth="1.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
                           />
                         </svg>
                       )}
@@ -307,7 +333,7 @@ export function ExitIntentInviteModal() {
                         target="_blank"
                         className="text-white/80 underline underline-offset-2 hover:text-white"
                       >
-                        privacy policy
+                        Privacy Policy
                       </Link>
                     </span>
                   </label>

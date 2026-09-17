@@ -279,7 +279,7 @@ export function EffectCard({
 
           <Tooltip label="View Detail">
             <div
-              className="flex h-8 w-8 relative items-center justify-center bg-primary text-white max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9 group/arrow overflow-hidden arrow-container"
+              className="flex h-8 w-8 relative items-center justify-center bg-primary text-black max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9 group/arrow overflow-hidden arrow-container"
               aria-hidden="true"
             >
               <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 group-hover/arrow:-translate-y-[180%] group-hover/arrow:translate-x-[180%] duration-300 ease-in-out"/>

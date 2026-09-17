@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { X } from "lucide-react";
 import { TemplateCard } from "@/components/ui/TemplateCard";
 import FadeUp from "@/components/WebsiteComps/FadeUp";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 import { useTemplateWishlist } from "./useTemplateWishlist";
+import { useTemplateAccess } from "./useTemplateAccess";
 
 function formatLabel(value = "") {
   return value
@@ -33,6 +35,7 @@ export function TemplatesGrid({ templates }) {
     onRemoved: (template) =>
       showToast({ title: `${template.title} removed`, description: "No longer in your saved templates." }),
   });
+  const accessSlugs = useTemplateAccess();
 
   // No containerRef - scans the whole document, same as Hero.jsx/
   // ExplainVault.jsx's page-wide useFadeUp() calls. This is the only
@@ -66,8 +69,6 @@ export function TemplatesGrid({ templates }) {
         <div className="fadeup mx-auto px-14 pb-7 pt-10 max-md:px-0">
           <div className="relative max-[1025px]:w-full flex items-start gap-4">
             <div className="relative min-w-0 flex-1">
-              
-
               <div
                 className={[
                   "flex items-center gap-2.5 max-[1025px]:px-[7vw]",
@@ -90,9 +91,14 @@ export function TemplatesGrid({ templates }) {
                       onClick={() =>
                         setActiveCategory(isSelected ? "all" : category)
                       }
+                      aria-label={
+                        isSelected
+                          ? `Clear ${formatLabel(category)} category filter`
+                          : `Filter by ${formatLabel(category)}`
+                      }
                       className={`
-                        px-6 py-3.5 text-[1vw] text-center relative max-md:px-5
-                        backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
+                        px-6 py-3 text-[1vw] text-center relative max-md:px-5
+                        backdrop-blur-[6px] font-geistMono group flex items-center justify-center gap-2 cursor-pointer
                         shrink-0 whitespace-nowrap
                         transition-colors duration-300 max-[1025px]:text-[2.5vw] max-md:text-[4.2vw]
                         ${isSelected
@@ -102,6 +108,9 @@ export function TemplatesGrid({ templates }) {
                       `}
                     >
                       <span className="leading-none">{formatLabel(category)}</span>
+                      {isSelected && (
+                        <X className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                      )}
                     </button>
                   );
                 })}
@@ -126,11 +135,13 @@ export function TemplatesGrid({ templates }) {
                 priority={index === 0}
                 isWishlisted={wishlist.includes(template.slug)}
                 toggleWishlist={toggleWishlist}
+                showPurchase
+                hasAccess={accessSlugs.includes(template.slug)}
               />
             </FadeUp>
           ))}
         </div>
-      </div> 
+      </div>
 
       <ToastViewport toast={toast} onDismiss={dismissToast} />
     </>
