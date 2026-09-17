@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Monitor, Tablet, Smartphone, Download } from "lucide-react";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { TemplateCard } from "@/components/ui/TemplateCard";
 import { TemplatePaywallModal } from "@/components/ui/TemplatePaywallModal";
 import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
@@ -12,6 +13,7 @@ import Copy from "@/components/Animations/Copy";
 import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 import { useTemplateWishlist } from "../useTemplateWishlist";
+import { useTemplateAccess } from "../useTemplateAccess";
 
 // Query flag a signed-out "Buy" click appends before bouncing through
 // /sign-in?redirect_url=... - on the way back, its presence (plus now being
@@ -89,6 +91,7 @@ export function TemplateDetail({
     onRemoved: (related) =>
       showToast({ title: `${related.title} removed`, description: "No longer in your saved templates." }),
   });
+  const relatedAccessSlugs = useTemplateAccess();
 
   const publishedLabel = formatTemplateDate(template.publishedAt);
   const updatedLabel = formatTemplateDate(template.updatedAt);
@@ -149,7 +152,7 @@ export function TemplateDetail({
     // hover, which would otherwise inflate this every time a card is merely
     // hovered). Fire-and-forget: a failed view record shouldn't block or
     // error the page itself.
-    fetch(`/api/templates/${template.slug}/view`, { method: "POST" }).catch(() => {});
+    fetch(`/api/templates/${template.slug}/view`, { method: "POST" }).catch(() => { });
   }, [template.slug]);
 
   useEffect(() => {
@@ -197,7 +200,7 @@ export function TemplateDetail({
   return (
     <div className="min-h-screen text-foreground">
       <main className="mx-auto w-full relative px-14 max-[1025px]:px-0 pt-25 max-md:pt-36">
-        <section className="space-y-7">
+        <section className="space-y-10">
           <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
             <div className="w-full space-y-5">
               <Breadcrumb />
@@ -243,40 +246,52 @@ export function TemplateDetail({
 
           <div className="fadeup max-md:px-[7vw] max-[1025px]:px-[6vw] w-full space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="inline-flex items-center gap-1 bg-[#161616] p-1">
+              <div className="relative inline-flex items-center gap-1 bg-[#161616] p-1">
+                {/* Same sliding-highlight technique as the grid-density toggle
+                    in vault-content.jsx - one absolutely positioned span
+                    behind the buttons, translated by a slot's width instead
+                    of each button carrying its own background. */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-1 top-1 h-9 w-10 bg-primary transition-transform duration-300 ease-out"
+                  style={{
+                    transform: `translateX(${device === "mobile" ? "calc(2.5rem + 0.25rem)" : "0"})`,
+                  }}
+                />
                 {Object.entries(DEVICE_PRESETS).map(([key, { label, icon: Icon }]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setDevice(key)}
-                    aria-pressed={device === key}
-                    className={`flex cursor-pointer items-center gap-2 px-3 py-2 text18 transition-colors ${device === key ? "bg-primary text-white" : "text-white/60 hover:text-white"
-                      }`}
-                  >
-                    <Icon className="h-4 w-4" aria-hidden="true" />
-                    {label}
-                  </button>
+                  <Tooltip key={key} label={label}>
+                    <button
+                      type="button"
+                      onClick={() => setDevice(key)}
+                      aria-pressed={device === key}
+                      className={`relative z-10 flex h-9 w-10 cursor-pointer items-center justify-center text18 transition-colors ${device === key ? "text-black" : "text-white/60 hover:text-white"
+                        }`}
+                    >
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  </Tooltip>
                 ))}
               </div>
 
               <div className="flex shrink-0 items-center gap-3 max-md:flex-col max-md:items-start">
+                <ButtonV3
+                  text="Preview"
+                  href={template.previewHref}
+                  target_blank={true}
+                  target="_blank"
+                  variant="outline"
+                  className="shrink-0"
+                />
                 <button
                   type="button"
                   onClick={handleDownloadClick}
-                  className="group flex items-center gap-2 border border-white/20 bg-white/5 px-4 py-3 text20 text-white transition-colors duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-black"
+                  className="group flex items-center gap-2 border bg-[#ff5f00] px-4 py-3 text20 text-black transition-colors duration-300 border-[#ff5f00] hover:border-[#ff7300] hover:bg-[#ff7300] hover:text-black"
                 >
                   <Download className="h-4 w-4" aria-hidden="true" />
                   {hasAccess ? "Download Zip" : `Buy - $${template.pricing?.standaloneOneTime ?? "-"}`}
                 </button>
 
-                <ButtonV3
-                  text="Open in New Tab"
-                  href={template.previewHref}
-                  target_blank={true}
-                  target="_blank"
-                  variant="orange"
-                  className="shrink-0"
-                />
+
               </div>
             </div>
 
@@ -348,6 +363,8 @@ export function TemplateDetail({
                     template={relatedTemplate}
                     isWishlisted={wishlist.includes(relatedTemplate.slug)}
                     toggleWishlist={toggleWishlist}
+                    showPurchase
+                    hasAccess={relatedAccessSlugs.includes(relatedTemplate.slug)}
                   />
                 ))}
               </div>

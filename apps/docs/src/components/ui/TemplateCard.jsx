@@ -3,9 +3,11 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Eye, Heart } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { Eye, Heart, Download } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { TemplatePaywallModal } from "@/components/ui/TemplatePaywallModal";
 import { ArrowIcon } from "../WebsiteComps/Icons";
 
 // Dedicated card for Templates - forked from EffectCardNew.jsx rather than
@@ -50,10 +52,21 @@ export function TemplateCard({
   isWishlisted = false,
   toggleWishlist,
   sizes = VAULT_GRID_SIZES,
+  // Opt-in: callers that don't know per-user purchase state (admin viewing
+  // someone else's history, the anonymous "top viewed" rank slider) just
+  // omit these and get the exact same card as before. Callers that do (the
+  // main /templates grid, Related Templates) pass showPurchase plus
+  // whichever `hasAccess` a useTemplateAccess() lookup resolved for this
+  // template.
+  showPurchase = false,
+  hasAccess = false,
 }) {
   const [imageError, setImageError] = useState(false);
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
+  const { isLoaded, isSignedIn } = useUser();
   const prefetchTimerRef = useRef(null);
 
   const templateHref = template.href || "#";
@@ -81,8 +94,33 @@ export function TemplateCard({
     ? Number(template.viewCount)
     : 0;
   const viewCountLabel = formatViewCount(viewCount);
+  const downloadHref = `/api/templates/${template.slug}/download`;
+
+  // Same three-way branch as TemplateDetail's own Buy/Download button:
+  // already-owned downloads directly, signed-out bounces through /sign-in
+  // and back to wherever this card is rendered, signed-in-but-unpurchased
+  // opens the paywall right here instead of navigating to the detail page.
+  const handlePurchaseClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (hasAccess) {
+      window.location.href = downloadHref;
+      return;
+    }
+
+    if (!isLoaded) return;
+
+    if (!isSignedIn) {
+      router.push(`/sign-in?redirect_url=${encodeURIComponent(pathname)}`);
+      return;
+    }
+
+    setIsPaywallOpen(true);
+  };
 
   return (
+    <>
     <Link
       href={templateHref}
       prefetch={false}
@@ -147,16 +185,43 @@ export function TemplateCard({
             )}
           </div>
           {template.tier === "pro" && (
-            <div className="flex shrink-0 items-center gap-2 max-sm:gap-1.5">
-              {template.pricing?.standaloneOneTime != null && (
-                <span className="text22 text-white max-sm:text-[3.5vw]!">
-                  ${template.pricing.standaloneOneTime}
+            showPurchase ? (
+              // Real Buy/Download action in place of the old passive
+              // price+"Pro" badge - pointer-events-auto to escape this
+              // row's pointer-events-none (the row exists to let clicks
+              // fall through to the card's own <Link>), and
+              // stopPropagation via handlePurchaseClick so clicking it
+              // triggers the purchase/download flow instead of navigating.
+              <button
+                type="button"
+                data-no-card-link
+                onClick={handlePurchaseClick}
+                className="pointer-events-auto shrink-0 flex items-center gap-1.5 px-3 py-1.5 text18 font-medium bg-primary text-black transition-colors max-sm:px-4 max-sm:py-2 max-sm:text-[3.5vw]! hover:bg-[#ff7300]"
+              >
+                {hasAccess ? (
+                  <>
+                    <Download className="h-3.5 w-3.5 shrink-0 max-sm:h-4 max-sm:w-4" aria-hidden="true" />
+                    Download
+                  </>
+                ) : (
+                  `Buy $${template.pricing?.standaloneOneTime ?? "-"}`
+                )}
+              </button>
+            ) : (
+              // Callers that don't wire up purchase state (admin views, the
+              // anonymous "top viewed" slider) still get the passive
+              // price+"Pro" signal, just no actionable button.
+              <div className="flex shrink-0 items-center gap-2 max-sm:gap-1.5">
+                {template.pricing?.standaloneOneTime != null && (
+                  <span className="text22 text-white max-sm:text-[3.5vw]!">
+                    ${template.pricing.standaloneOneTime}
+                  </span>
+                )}
+                <span className="shrink-0 bg-primary px-[0.8vw] py-[0.1vw] text18 text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
+                  Pro
                 </span>
-              )}
-              <span className="shrink-0 bg-primary px-[0.8vw] py-[0.1vw] text18 text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3.5vw]!">
-                Pro
-              </span>
-            </div>
+              </div>
+            )
           )}
         </div>
       </div>
@@ -220,7 +285,7 @@ export function TemplateCard({
 
           <Tooltip label="View Detail">
             <div
-              className="flex h-8 w-8 relative items-center justify-center bg-primary text-white max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9 group/arrow overflow-hidden arrow-container"
+              className="flex h-8 w-8 relative items-center justify-center bg-primary text-black max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9 group/arrow overflow-hidden arrow-container"
               aria-hidden="true"
             >
               <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 group-hover/arrow:-translate-y-[180%] group-hover/arrow:translate-x-[180%] duration-300 ease-in-out" />
@@ -230,5 +295,18 @@ export function TemplateCard({
         </div>
       </div>
     </Link>
+
+    {showPurchase && (
+      <TemplatePaywallModal
+        template={template}
+        open={isPaywallOpen}
+        onClose={() => setIsPaywallOpen(false)}
+        onPurchased={() => {
+          setIsPaywallOpen(false);
+          window.location.href = downloadHref;
+        }}
+      />
+    )}
+    </>
   );
 }

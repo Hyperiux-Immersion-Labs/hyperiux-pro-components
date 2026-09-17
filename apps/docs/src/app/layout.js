@@ -21,6 +21,7 @@ import CustomAnimationFormModal, {
 } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
 import { ExitIntentInviteModal } from "@/components/WebsiteComps/modals/ExitIntentInviteModal";
+import { CookieConsentNudge } from "@/components/WebsiteComps/CookieConsentNudge";
 import PageTransition from "@/components/PageTransition/PageTransition";
 
 const neueHaasUnica = localFont({
@@ -119,6 +120,7 @@ export default function RootLayout({ children }) {
         <WebsiteJsonLd />
         <SoftwareApplicationJsonLd />
         <PageTransition />
+        <CookieConsentNudge />
         {/* CustomAnimationFormProvider adds no DOM of its own (just a
             Context.Provider) - it wraps children so any page's
             CustomAnimationFormTrigger can reach the single globally-mounted
