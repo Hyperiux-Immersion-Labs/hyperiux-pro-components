@@ -15,7 +15,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-28",
-      "summary": "Added reduced-motion support and exposed slides, clueText, and cursor styling as public props.",
+      "summary": "Added reduced-motion support and customizable slides and cursor styling.",
       "breaking": false
     },
     {

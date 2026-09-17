@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added reduced-motion support and replaced a Next.js-only style tag with a plain global style tag for framework portability.",
+      "summary": "Added reduced-motion support.",
       "breaking": false
     },
     {

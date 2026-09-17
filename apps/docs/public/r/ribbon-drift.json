@@ -16,7 +16,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Reworked the props API to match the real component (content now comes from a built-in image/name pool with imageSize/showNames), wired up reduced-motion support, fixed the demo not rendering, and fixed mobile layout/typo regressions.",
+      "summary": "Added reduced-motion support.",
       "breaking": false
     },
     {

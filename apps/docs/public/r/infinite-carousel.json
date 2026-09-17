@@ -16,7 +16,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-28",
-      "summary": "Added reduced-motion support and exposed cards, draggable, showNav, and mobileBreakpoint as public props.",
+      "summary": "Added reduced-motion support and configurable carousel controls.",
       "breaking": false
     },
     {

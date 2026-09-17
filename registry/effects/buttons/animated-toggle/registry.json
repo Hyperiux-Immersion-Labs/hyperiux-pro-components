@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Added reduced-motion support and exposed working styling props (size, colors, duration), removing the non-functional defaultChecked prop.",
+      "summary": "Added reduced-motion support.",
       "breaking": false
     },
     {

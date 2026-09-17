@@ -1,7 +1,7 @@
 {
   "name": "@hyperiux/elevate-navbar",
   "version": "1.1.0",
-  "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
+  "description": "A responsive glassmorphism navbar with animated dropdowns, text-swap hover effects, and a collapsible mobile menu.",
   "main": "index.tsx",
   "files": [
     "index.tsx",
