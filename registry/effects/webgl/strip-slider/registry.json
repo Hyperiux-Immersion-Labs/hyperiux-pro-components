@@ -1,13 +1,7 @@
 {
   "name": "strip-slider",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "changelog": [
-    {
-      "version": "1.1.0",
-      "date": "2026-07-22",
-      "summary": "Added reduced-motion notice",
-      "breaking": false
-    },
     {
       "version": "1.0.0",
       "date": "2026-06-04",

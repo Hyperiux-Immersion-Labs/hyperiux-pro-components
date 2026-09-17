@@ -15,7 +15,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Added reduced-motion support and reworked heading-related props so remixer changes (timing, blur, variant, once) reliably rerun the reveal animation.",
+      "summary": "Added reduced-motion support.",
       "breaking": false
     },
     {

@@ -15,7 +15,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Reworked the public API to match the real component (data, accentColor, cardColor, speed, gap, perspective), added reduced-motion support, and fixed desktop scroll-trigger/card-width sizing bugs.",
+      "summary": "Added reduced-motion support, configurable styling, and improved desktop sizing.",
       "breaking": false
     },
     {

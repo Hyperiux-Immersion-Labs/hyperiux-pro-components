@@ -1227,7 +1227,7 @@
       "registryDependencies": [],
       "exportName": "TextFillAnimation",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.0",
       "tier": "pro"
     },
     {
@@ -1752,6 +1752,23 @@
       ],
       "registryDependencies": [],
       "exportName": "ElasticAccordion",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
+      "name": "globe",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap",
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "Globe",
       "exportKind": "default",
       "version": "1.0.0",
       "tier": "pro"
@@ -2422,7 +2439,7 @@
       "registryDependencies": [],
       "exportName": "StripSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.0.0",
       "tier": "pro"
     }
   ]

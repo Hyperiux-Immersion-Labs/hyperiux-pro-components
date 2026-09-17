@@ -13,7 +13,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Added reduced-motion support, fixed the demo not rendering, and reworked the props API (items, spread, rotation, duration, accentColor) to match the real component.",
+      "summary": "Added reduced-motion support and configurable stack controls.",
       "breaking": false
     },
     {

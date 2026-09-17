@@ -5,7 +5,7 @@
     {
       "version": "1.1.0",
       "date": "2026-07-30",
-      "summary": "Removed end from the public/remixer API and added duration and stagger controls for the perspective line reveal.",
+      "summary": "Added reduced motion support.",
       "breaking": false
     },
     {

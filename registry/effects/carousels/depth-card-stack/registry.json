@@ -35,7 +35,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Added reduced-motion support, reworked the props API to match the real per-slot layout system (rotation, duration, mouseInteraction, bgVisible, lerp, smoothness), and fixed styling.",
+      "summary": "Added reduced-motion support.",
       "breaking": false
     },
     {

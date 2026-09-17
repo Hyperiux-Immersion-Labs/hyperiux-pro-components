@@ -17,7 +17,7 @@
   ],
   "type": "registry:component",
   "title": "Elevate Navbar",
-  "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
+  "description": "A responsive glassmorphism navbar with animated dropdowns, text-swap hover effects, and a collapsible mobile menu.",
   "category": "navigation",
   "dependencies": [
     "gsap",

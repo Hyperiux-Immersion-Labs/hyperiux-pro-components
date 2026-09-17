@@ -15,7 +15,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added a reduced-motion notice and fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
+        "summary": "Fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
         "breaking": false
       },
       {
@@ -87,7 +87,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Synced the registry copy with production (iconMode prop, array-based controlled-mode detection, height-based open/close animation) and documented its existing reduced-motion behavior.",
+        "summary": "Updated accordion behavior and documented reduced-motion support.",
         "breaking": false
       },
       {
@@ -155,7 +155,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Fixed phone validation for international numbers and reworked the props API to real color/border-radius/duration controls.",
+        "summary": "Added configurable color, border-radius, and duration controls.",
         "breaking": false
       },
       {
@@ -174,7 +174,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the props API to real working controls (size, overlay opacity, duration, roundedness, colors), added reduced-motion support, and fixed responsive breakpoint and demo layout issues.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -266,7 +266,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and exposed working styling props (size, colors, duration), removing the non-functional defaultChecked prop.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -311,14 +311,8 @@
   },
   {
     "name": "aperture-transition",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "changelog": [
-      {
-        "version": "1.0.1",
-        "date": "2026-08-21",
-        "summary": "Added reduced-motion support so the drawer and overlay settle instantly when users prefer reduced motion.",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-08-06",
@@ -809,7 +803,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked heading-related props so remixer changes (timing, blur, variant, once) reliably rerun the reveal animation.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -894,7 +888,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -1109,13 +1103,13 @@
       {
         "version": "1.0.2",
         "date": "2026-08-27",
-        "summary": "Sync internal refactor from docs source: renamed hooks/helpers/state identifiers (useSystemTheme->usePreferredScheme, generateBeamCSS->buildRimCSS, etc.) and moved active-sync + glow-scale reset from effects to render-phase derived state; no public API or behavior change",
+        "summary": "Internal refactor: derived render-phase state replaces sync effects; no API change.",
         "breaking": false
       },
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Slowed the beam animation under reduced motion and added dynamic remixer props (size, colorVariant, theme, active, strength, duration, beamWidth, backgroundColor).",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -1207,7 +1201,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added a reduced-motion notice, reworked the props API to real theme/physics controls (bgColor, cardBg, driftAmount, rotationAmount, smoothness, lerp), and stopped rebuilding the layout on every remixer change.",
+        "summary": "Added reduced-motion support and configurable visual and motion controls.",
         "breaking": false
       },
       {
@@ -1327,7 +1321,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the public API to match the real component (data, accentColor, cardColor, speed, gap, perspective), added reduced-motion support, and fixed desktop scroll-trigger/card-width sizing bugs.",
+        "summary": "Added reduced-motion support, configurable styling, and improved desktop sizing.",
         "breaking": false
       },
       {
@@ -1451,7 +1445,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and replaced a Next.js-only style tag with a plain global style tag for framework portability.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -1661,7 +1655,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to working lerp/smoothness/circleSize controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -1727,7 +1721,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-24",
-        "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven wheel rotation cannot be reduced to a static fade.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -1750,7 +1744,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-24",
-        "summary": "Fixed responsiveness issues and added a reduced-motion notice explaining the continuous scroll-driven rotation.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -1791,7 +1785,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed slides, clueText, and cursor styling as public props.",
+        "summary": "Added reduced-motion support and customizable slides and cursor styling.",
         "breaking": false
       },
       {
@@ -1983,7 +1977,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and rAF-throttled mousemove handling to cut redundant re-renders.",
+        "summary": "Added reduced-motion support and optimized cursor tracking.",
         "breaking": false
       },
       {
@@ -2100,7 +2094,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, reworked the props API to match the real per-slot layout system (rotation, duration, mouseInteraction, bgVisible, lerp, smoothness), and fixed styling.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -2635,7 +2629,7 @@
     ],
     "type": "registry:component",
     "title": "Displacement Navbar",
-    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it \u2014 GSAP-driven with a full reduced-motion fallback.",
+    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it — GSAP-driven with a full reduced-motion fallback.",
     "category": "navigation",
     "dependencies": [
       "gsap"
@@ -4186,7 +4180,7 @@
     ],
     "type": "registry:component",
     "title": "Elevate Navbar",
-    "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
+    "description": "A responsive glassmorphism navbar with animated dropdowns, text-swap hover effects, and a collapsible mobile menu.",
     "category": "navigation",
     "dependencies": [
       "gsap",
@@ -5063,7 +5057,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and corrected the export-kind metadata.",
+        "summary": "Added reduced-motion support .",
         "breaking": false
       },
       {
@@ -5111,7 +5105,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to working baseTextColor/glitchColor controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -5137,6 +5131,254 @@
         "target": "src/components/effects/glitchy-text/index.tsx"
       }
     ]
+  },
+  {
+    "name": "globe",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-17",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Network Globe",
+    "description": "Interactive dotted world globe with animated routes, location navigation, and a desktop flat-map projection.",
+    "category": "components",
+    "tier": "pro",
+    "dependencies": [
+      "gsap",
+      "lucide-react"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/globe",
+    "main": "index.tsx",
+    "exportName": "Globe",
+    "exportKind": "default",
+    "importPath": "@/components/effects/globe",
+    "target": "src/components/effects/globe",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/globe/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "autoConnect",
+        "label": "Automatic Routes",
+        "type": "boolean",
+        "default": false,
+        "description": "Periodically animates a route between two random locations.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "autoRotate",
+        "label": "Auto Rotate",
+        "type": "boolean",
+        "default": true,
+        "description": "Continuously rotates the globe when it is idle.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "rotationSpeed",
+        "label": "Rotation Speed",
+        "type": "number",
+        "default": 4,
+        "description": "Automatic globe rotation speed in degrees per second.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 20,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "routeFrequency",
+        "label": "Route Frequency",
+        "type": "number",
+        "default": 3.5,
+        "description": "Delay in seconds between automatic route animations.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 10,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "routeDuration",
+        "label": "Route Duration",
+        "type": "number",
+        "default": 1.4,
+        "description": "Duration of each animated route in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "connections",
+        "label": "Connections",
+        "type": "number",
+        "default": 3,
+        "description": "Number of nearby routes emitted after selecting a location.",
+        "remixer": {
+          "control": "range",
+          "group": "routes",
+          "groupTitle": "Routes",
+          "min": 1,
+          "max": 7,
+          "step": 1
+        }
+      },
+      {
+        "name": "dotDensity",
+        "label": "Dot Density",
+        "type": "number",
+        "default": 11000,
+        "description": "Number of sphere samples used to build the dotted land field.",
+        "remixer": {
+          "control": "range",
+          "group": "geometry",
+          "groupTitle": "Geometry",
+          "min": 2000,
+          "max": 30000,
+          "step": 500
+        }
+      },
+      {
+        "name": "dotSize",
+        "label": "Dot Size",
+        "type": "number",
+        "default": 2.3,
+        "description": "Rendered diameter of each land dot in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "geometry",
+          "groupTitle": "Geometry",
+          "min": 0.5,
+          "max": 6,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "markerSize",
+        "label": "Marker Size",
+        "type": "number",
+        "default": 5,
+        "description": "Rendered diameter of each location marker in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "geometry",
+          "groupTitle": "Geometry",
+          "min": 1,
+          "max": 12,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "routeColor",
+        "label": "Route Color",
+        "type": "color",
+        "default": "#fffaf2",
+        "description": "Color of animated connection routes.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "mapColor",
+        "label": "Map Color",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Color of the dotted land field.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "markerColor",
+        "label": "Marker Color",
+        "type": "color",
+        "default": "#fffaf2",
+        "description": "Color of location markers and the globe outline.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "showLabels",
+        "label": "Show Labels",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows location labels around the globe.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "enableDrag",
+        "label": "Enable Drag",
+        "type": "boolean",
+        "default": true,
+        "description": "Allows pointer dragging to rotate the globe.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "morphDuration",
+        "label": "Morph Duration",
+        "type": "number",
+        "default": 0.6,
+        "description": "Duration of the globe-to-map projection transition in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 3,
+          "step": 0.1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "behavior",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/globe/registry.json"
   },
   {
     "name": "glowing-text",
@@ -5346,7 +5588,7 @@
   {
     "name": "gooey-counter",
     "title": "Gooey Counter",
-    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0\u201310 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
+    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
     "category": "components",
     "type": "registry:component",
     "tier": "free",
@@ -5355,7 +5597,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to match the effect's real looping behavior (maxValue, duration, blobColor, backgroundColor, gridSize, roundedness).",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -5415,7 +5657,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -5438,7 +5680,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and fixed a malformed ScrollTrigger start value that anchored the floating-words timeline to page top instead of the section.",
+        "summary": "Added reduced-motion support and fixed scroll-trigger positioning.",
         "breaking": false
       },
       {
@@ -5767,7 +6009,7 @@
       {
         "version": "1.2.0",
         "date": "2026-09-10",
-        "summary": "Rebuilt as a WebGL rotating gallery: images ride a spiral strand driven by drag, wheel momentum and idle autoplay. Replaces the GSAP/Lenis pinned-scroll implementation; the old snakeAmplitude/depthAmplitude/perspective/scaleMin/maxYRotation props are gone, the effect is now a single index.tsx file, and gsap + lenis are no longer dependencies.",
+        "summary": "Rebuilt as a WebGL rotating gallery with drag, wheel momentum, and idle autoplay.",
         "breaking": true
       },
       {
@@ -5982,7 +6224,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -6118,7 +6360,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, fixed the demo not rendering, and reworked the props API (items, spread, rotation, duration, accentColor) to match the real component.",
+        "summary": "Added reduced-motion support and configurable stack controls.",
         "breaking": false
       },
       {
@@ -6291,7 +6533,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed cards, draggable, showNav, and mobileBreakpoint as public props.",
+        "summary": "Added reduced-motion support and configurable carousel controls.",
         "breaking": false
       },
       {
@@ -6689,7 +6931,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Added a reduced-motion notice and reworked the remixer panel (removed the image-texture control, changed mouse interaction to a checkbox).",
+        "summary": "Documented the lack of a reduced-motion fallback and reworked the remixer controls.",
         "breaking": false
       },
       {
@@ -6712,7 +6954,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, renamed the component file to match production conventions, and reworked the props API to working imageSize/duration/smoothness/lerp controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -7089,7 +7331,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and fixed the mask reveal not replaying when duration/stagger change in the remixer.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -7726,7 +7968,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -7799,7 +8041,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to working duration/stagger controls across all counter variants.",
+        "summary": "Added reduced-motion support and configurable animation timing.",
         "breaking": false
       },
       {
@@ -8565,7 +8807,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support (25% strength on off-center item rotation/scale) and fixed a crash in scroll-snap onStart when no Lenis provider is present.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -9045,7 +9287,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-21",
-        "summary": "Added reduced-motion support for accessible lower-motion perspective reveal.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -9525,7 +9767,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and removed stale duplicate files that had diverged from the originals and were being shipped to installers.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -9696,7 +9938,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the props API to match the real component (content now comes from a built-in image/name pool with imageSize/showNames), wired up reduced-motion support, fixed the demo not rendering, and fixed mobile layout/typo regressions.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -10046,7 +10288,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Reworked the props API (text size, color, duration, stagger, charType) and fixed default text color and scroll-trigger start so the built-in heading is visible.",
+        "summary": "Added configurable text size, color, duration, stagger, and character-set controls.",
         "breaking": false
       },
       {
@@ -10085,7 +10327,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-21",
-        "summary": "Added prefers-reduced-motion support: the WebGL image transition drops its displacement/RGB-shift warp for a plain crossfade, and the text transition fades instead of sliding",
+        "summary": "Added reduced-motion transitions.",
         "breaking": false
       },
       {
@@ -10665,7 +10907,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-21",
-        "summary": "Added reduced-motion support for accessible lower-motion slide reveal.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -11194,7 +11436,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-22",
-        "summary": "Fixed the last card not reaching full-screen on mobile and the outgoing card's opacity bleeding through under reduced motion.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -11239,7 +11481,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, fixed an uncolored gap between content and image panes, and exposed image-scale props; removed the unused stepGap prop.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -11280,7 +11522,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.0.0",
     "dependencies": [
       "three"
     ],
@@ -11307,12 +11549,6 @@
       }
     ],
     "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-06-04",
@@ -11446,7 +11682,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-28",
-        "summary": "Added a reduced-motion notice (ported from the docs copy, which already had it): this effect relies on a continuous scroll-driven pixelated-to-sharp transition and can't be simplified to a fade without losing the effect entirely, so it now surfaces that instead of silently ignoring the preference.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -11670,7 +11906,7 @@
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "dependencies": [
       "gsap"
     ],
@@ -11689,12 +11925,6 @@
       }
     ],
     "changelog": [
-      {
-        "version": "1.0.1",
-        "date": "2026-07-30",
-        "summary": "Removed text from the remixer controls while keeping the built-in heading content and visual controls.",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-07-29",
@@ -12717,7 +12947,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the props API to match the real component (videoSrc, poster, autoPlay, controls) and replaced the continuous rAF progress loop with native timeupdate events.",
+        "summary": "Replaced the rAF progress loop with native timeupdate events.",
         "breaking": false
       },
       {
@@ -12735,7 +12965,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed images as a public prop.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -12782,7 +13012,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed title, subheading, and sliderData as public props.",
+        "summary": "Added reduced-motion support and customizable slider content.",
         "breaking": false
       },
       {

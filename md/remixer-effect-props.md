@@ -348,6 +348,26 @@ Note: `beamColor` and `paused` were removed - `beamColor` only hue-rotated the e
 | `lerp` | `0.18` | number | range/number | Pointer-follow smoothing amount; higher values track faster. |
 | `smoothness` | `0.4` | number | range/number | Hover enter/leave smoothing duration for card tilt and texture reveal. |
 
+### Network Globe (`globe`, pro)
+
+| Prop | Default | Type | Remixer control | Short description |
+|---|---|---|---|---|
+| `autoConnect` | `true` | boolean | checkbox | Periodically animates a route between random locations. |
+| `autoRotate` | `true` | boolean | checkbox | Continuously rotates the globe while idle. |
+| `rotationSpeed` | `4` | number | range | Automatic rotation speed in degrees per second. |
+| `routeFrequency` | `3.5` | number | range | Delay in seconds between automatic routes. |
+| `routeDuration` | `1.4` | number | range | Duration of each route animation in seconds. |
+| `connections` | `3` | number | range | Number of nearby routes emitted after selecting a location. |
+| `dotDensity` | `11000` | number | range | Sphere samples used to build the dotted land field. |
+| `dotSize` | `2.3` | number | range | Diameter of each land dot in pixels. |
+| `markerSize` | `5` | number | range | Diameter of each location marker in pixels. |
+| `routeColor` | `#fffaf2` | color | color | Color of animated connection routes. |
+| `mapColor` | `#ffffff` | color | color | Color of the dotted land field. |
+| `markerColor` | `#fffaf2` | color | color | Color of location markers and the globe outline. |
+| `showLabels` | `true` | boolean | checkbox | Shows location labels around the globe. |
+| `enableDrag` | `true` | boolean | checkbox | Allows pointer dragging to rotate the globe. |
+| `morphDuration` | `0.6` | number | range | Globe-to-map projection transition duration in seconds. |
+
 ### Gooey Counter (`gooey-counter`, free)
 
 | Prop | Default | Type | Remixer control | Short description |

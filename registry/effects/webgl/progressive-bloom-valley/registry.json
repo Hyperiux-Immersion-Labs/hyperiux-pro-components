@@ -76,7 +76,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added reduced-motion support and removed stale duplicate files that had diverged from the originals and were being shipped to installers.",
+      "summary": "Added reduced-motion support.",
       "breaking": false
     },
     {
