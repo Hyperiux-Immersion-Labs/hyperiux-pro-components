@@ -14,7 +14,7 @@ const randomGlyph = () =>
   SCRAMBLE_GLYPHS[Math.floor(Math.random() * SCRAMBLE_GLYPHS.length)];
 
 // Exported so other sections can play the navbar's exact write-on. `run` is an
-// object rather than a boolean on purpose — see the effect's dependency note.
+// object rather than a boolean on purpose - see the effect's dependency note.
 export function ScrambleText({ text, run }) {
   const charsRef = useRef([]);
   const active = run.active;
@@ -44,7 +44,7 @@ export function ScrambleText({ text, run }) {
     }
 
     // The tail is what makes the label read as written rather than decoded in
-    // place, so it has to stay short relative to the label — on "Docs" a fixed
+    // place, so it has to stay short relative to the label - on "Docs" a fixed
     // six characters would cover the whole word and scramble it all at once.
     const tail = Math.max(
       1,
@@ -91,7 +91,7 @@ export function ScrambleText({ text, run }) {
           PRE_HOLD_MS + ((index + 1) / chars.length) * REVEAL_DURATION_MS;
         const final = text[index];
 
-        // Not written yet — stays blank so the label builds up left to right.
+        // Not written yet - stays blank so the label builds up left to right.
         if (elapsed < revealAt - tailMs) {
           running = true;
           return;

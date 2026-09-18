@@ -31,7 +31,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-24",
-      "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven wheel rotation cannot be reduced to a static fade.",
+      "summary": "Added reduced-motion support.",
       "breaking": false
     },
     {

@@ -76,7 +76,7 @@ const AnimatedTabsComp = ({
  if (!currentContent || !nextContent || currentIndex === nextIndex) return;
 
  const direction = nextIndex > currentIndex ? 1 : -1;
- // Reduced-motion: opacity fade only — no X slide.
+ // Reduced-motion: opacity fade only - no X slide.
  const useSlide =
  animationType ==="slide" && !reduceMotionRef.current;
 

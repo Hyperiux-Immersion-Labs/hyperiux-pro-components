@@ -66,7 +66,7 @@ function SkeletonBlock({ className = "" }) {
 
 function EffectDetailMainSkeleton() {
   return (
-    <main className="mx-auto w-full relative px-10 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
+    <main className="mx-auto w-full relative px-14 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
       <section className="space-y-7">
         <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
           <div className="w-full space-y-5">
@@ -150,7 +150,7 @@ function EffectDetailMainSkeleton() {
           </div>
         </div>
 
-        <section className="my-20 relative space-y-10 max-[1025px]:space-y-16">
+        <section className="my-20 relative space-y-10 max-[1025px]:space-y-10">
           <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
             <SkeletonBlock className="h-12 w-[30%]  bg-[#272727] max-[1025px]:w-[60%] max-md:w-[80%]" />
             <SkeletonBlock className="h-12 w-44  bg-[#ff5f00]/45 max-[1025px]:hidden" />
@@ -451,7 +451,7 @@ export function EffectDetailContent({
           {isMainDataLoading ? (
             <EffectDetailMainSkeleton />
           ) : (
-            <main className="mx-auto w-full relative px-10 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
+            <main className="mx-auto w-full relative px-14 max-[1025px]:px-0 pt-25 pb-12 max-md:pt-36">
               <section className="space-y-7">
                 <div className="flex items-start max-md:px-[7vw] max-[1025px]:px-[6vw] justify-between gap-5">
                   <div className="w-full space-y-5">
@@ -474,8 +474,12 @@ export function EffectDetailContent({
                     )}
                     {shouldShowEffectDates && (
                       <div className="mt-5 flex items-start gap-x-5 gap-y-1 text18 text-white/80 max-md:text-[3vw]! max-md:flex-col ">
-                        <div className="fadeup "><span className="font-laygrotesk">Published On: </span>   {addedAtLabel} </div>
-                        <div className="fadeup "> <span className="font-laygrotesk ">Last Updated:</span>  {lastUpdatedLabel} </div>
+                        <Copy delay={0.6} animationKey={addedAtLabel}>
+                          <div><span className="font-laygrotesk">Published On: </span>{addedAtLabel}</div>
+                        </Copy>
+                        <Copy delay={0.7} animationKey={lastUpdatedLabel}>
+                          <div><span className="font-laygrotesk">Last Updated: </span>{lastUpdatedLabel}</div>
+                        </Copy>
                       </div>
                     )}
 
@@ -569,7 +573,7 @@ export function EffectDetailContent({
                 </div>
 
                 <div className="relative max-md:px-[7vw] max-[1025px]:px-[6vw] pt-0">
-                  <div className="fixed right-4 top-1/2 z-30 hidden -translate-y-1/2 xl:block">
+                  <div className="fixed right-4 top-1/2 z-30 block -translate-y-1/2 max-[1025px]:hidden">
                     <TableOfContents
                       containerRef={contentRef}
                       stopRef={hasCtaSection ? ctaSectionRef : relatedEffectsRef}
@@ -597,7 +601,7 @@ export function EffectDetailContent({
                 {safeRelatedEffects?.length > 0 && (
                   <section
                     ref={relatedEffectsRef}
-                    className="my-20 relative space-y-10 max-[1025px]:space-y-16"
+                    className="my-20 relative space-y-10 max-[1025px]:space-y-10"
                   >
                     <div className="flex items-center justify-between gap-5 max-[1025px]:flex-col">
                       <HeadAnim>
@@ -608,7 +612,7 @@ export function EffectDetailContent({
 
                       <div className="fadeup flex max-[1025px]:hidden flex-col justify-center items-end gap-5 max-[1025px]:w-full max-[1025px]:items-stretch">
                         <ButtonV3
-                          text="Explore all effects"
+                          text="Explore All Effects"
                           href="/effects"
                           variant="orange"
                           className="shrink-0"
@@ -654,7 +658,7 @@ export function EffectDetailContent({
                         onPointerLeave={handleRelatedPointerEnd}
                         onPointerCancel={handleRelatedPointerEnd}
                         onDragStart={(event) => event.preventDefault()}
-                        className="flex cursor-grab snap-x snap-mandatory select-none gap-6 overflow-x-auto max-md:gap-6 max-[1025px]:gap-2 scroll-smooth pb-4 active:cursor-grabbing"
+                        className="flex cursor-grab snap-x snap-mandatory  bg select-none gap-6 overflow-x-auto max-md:gap-6 max-[1025px]:gap-2 scroll-smooth pb-4 active:cursor-grabbing"
                       >
                         {safeRelatedEffects.map((relatedEffect) => (
                           <div
@@ -662,7 +666,7 @@ export function EffectDetailContent({
                             onClick={(event) =>
                               handleRelatedCardClick(event, relatedEffect)
                             }
-                            className="min-w-[31vw] cursor-pointer max-md:px-[7vw] max-[1025px]:px-[6vw] snap-start max-[1025px]:min-w-[44vw] max-[1025px]:min-w-[55vw]! max-md:min-w-full!"
+                            className="min-w-[31vw] pl-1!  cursor-pointer max-md:px-[7vw] max-[1025px]:px-[6vw] snap-start max-[1025px]:min-w-[44vw] max-[1025px]:min-w-[55vw]! max-md:min-w-full!"
                           >
                             <EffectCard
                               effect={relatedEffect}
@@ -921,8 +925,12 @@ function SanityBodyRenderer({
   const remixerControlNames = new Set(
     (effectRemixerControls || []).map((control) => control?.name).filter(Boolean)
   );
+
   const remixableProps = (effectProps || []).filter(
-    (prop) => prop?.remixer?.control || remixerControlNames.has(prop?.name)
+    (prop) =>
+      (prop?.remixer?.control || remixerControlNames.has(prop?.name)) &&
+      prop?.remixer?.enabled !== false &&
+      prop?.remixer?.disabled !== true
   );
   const showPropsTable = remixableProps.length > 0;
   const hasFaqBlock = groupedBlocks.some(
@@ -963,7 +971,7 @@ function SanityBodyRenderer({
 }
 
 function formatPropDefault(value) {
-  if (value === undefined) return "—";
+  if (value === undefined) return "-";
   if (typeof value === "string") return value;
   if (typeof value === "boolean" || typeof value === "number") return String(value);
 
@@ -974,16 +982,12 @@ function formatPropDefault(value) {
   }
 }
 
-// Rendered directly from the effect's registry.json `props` array, filtered
-// to entries with a remixer control (see SanityBodyRenderer) - not a Sanity
-// content block, so it always reflects what's actually live-editable in the
-// props remixer rather than editorial copy that can drift.
 function EffectPropsTable({ props = [] }) {
   if (!props.length) return null;
 
   return (
-    <div className="space-y-3 fadeup">
-      <h3 className="text-xl tracking-tighter text-foreground">Props</h3>
+    <div className="space-y-5! mt-4! fadeup">
+      <h3 className="text-xl tracking-tighter  text-foreground">Props</h3>
 
       <div className={`${styles.tableWrap} ${styles.propsTableWrap}`} data-variant="vault">
         <table className={styles.table}>
@@ -1002,7 +1006,7 @@ function EffectPropsTable({ props = [] }) {
                 <td>
                   <code>{prop.name}</code>
                 </td>
-                <td>{prop.type || "—"}</td>
+                <td>{prop.type || "-"}</td>
                 <td>
                   <code>{formatPropDefault(prop.default)}</code>
                 </td>
@@ -1300,7 +1304,7 @@ function LockedCodePlaceholder({ filename }) {
         <LockKeyhole className="h-16 w-16 text-white" strokeWidth={1.2} />
 
         <div className="flex flex-col items-center gap-0">
-          <h3 className="text-3xl font-bold text-white max-md:text-2xl max-md:text-xl">
+          <h3 className="text-3xl font-bold text-white  max-md:text-xl">
             This is a Pro Effect.
           </h3>
 

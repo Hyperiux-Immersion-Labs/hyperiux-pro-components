@@ -18,7 +18,7 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     '@id': `${homepage}#organization`,
     name: "Hyperiux",
-    description: "Start with 40+ free source-first effects. Join Pro for 130+ Pro effects.",
+    description: "Start with 50+ free source-first effects. Join Pro for 150+ effects.",
     url: homepage,
     telephone: "+91 8178 026 136",
     email: "hello@hyperiux.com",
@@ -72,7 +72,7 @@ export function SoftwareApplicationJsonLd() {
     "@id": `${homepage}/#software-application`,
     name: "Hyperiux Vault",
     description:
-      "Start with 40+ free source-first effects. Join Pro for 130+ Pro effects.",
+      "Start with 50+ free source-first effects. Join Pro for 150+ effects.",
     url: homepage,
     applicationCategory: "DeveloperApplication",
     applicationSubCategory: "UI component library",
@@ -81,7 +81,7 @@ export function SoftwareApplicationJsonLd() {
     browserRequirements: "Requires JavaScript and a modern web browser",
     softwareVersion: "1.1.1",
     featureList: [
-      "130+ premium interactive effects",
+      "150+ premium interactive effects",
       "Copy-paste React and Next.js components",
       "Hyperiux CLI installation support",
       "Scroll, WebGL, loader, navigation, button, text, slider, and transition effects",

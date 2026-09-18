@@ -14,7 +14,7 @@ const FADE_SPEED = 0.04;
 const REDUCED_MOTION_FACTOR = 0.6;
 
 // Reduced motion: spread (spotlight radius, web reach) and speed (lerp/fade)
-// are scaled down, not frozen — matches the convention used elsewhere in
+// are scaled down, not frozen - matches the convention used elsewhere in
 // this repo (parallax-slider, text-convergence, parallax-gallery).
 
 // GLSL Shaders

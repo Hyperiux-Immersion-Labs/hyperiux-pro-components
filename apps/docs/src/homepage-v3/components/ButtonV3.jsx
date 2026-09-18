@@ -171,12 +171,12 @@ function ScrambleLabel({ text, active }) {
 }
 
 // Shared with any non-Link trigger that wants ButtonV3's exact look/feel
-// (e.g. a Razorpay checkout button, which is a real <button> with payment
-// logic, not navigation) - keeps the className string (all the --btn-*
-// custom properties driving the square/arrow/label geometry) in one place
-// instead of copy-pasted.
+// (e.g. TemplatePaywallModal's Razorpay buttons, which are real <button>s
+// with payment logic, not navigation) - keeps the className string (all the
+// --btn-* custom properties driving the square/arrow/label geometry) in one
+// place instead of copy-pasted.
 export function buttonV3ClassName({ variant = "orange", disabled = false, className = "" } = {}) {
-  return `group relative flex font-neue-haas shrink-0 items-center overflow-hidden text-nowrap max-[1025px]:justify-between max-[1025px]:gap-(--btn-gap) max-[1025px]:px-[7vw] max-md:px-[10vw] px-(--btn-pad) py-[.8vw] text-[1.15vw] tracking-wide transition-colors duration-300 max-[1025px]:py-4 max-[1025px]:text-[2vw] max-md:text-[2.2vw] max-sm:py-4 max-sm:text-[4vw] motion-reduce:transition-none [--btn-pad:1.2vw] [--btn-gap:.5vw] [--btn-square:.7vw] [--btn-arrow:1vw] max-[1025px]:[--btn-pad:20px] max-[1025px]:[--btn-gap:12px] max-[1025px]:[--btn-square:8px] max-[1025px]:[--btn-arrow:16px] max-sm:[--btn-pad:24px] max-sm:[--btn-gap:14px] max-sm:[--btn-square:8px] max-sm:[--btn-arrow:18px] [--btn-slot:calc(var(--btn-square)+var(--btn-gap))] [--btn-room:max(0px,var(--btn-arrow)+var(--btn-gap)-var(--btn-slot))] [--btn-inset:calc((var(--btn-pad)*1.8+var(--btn-slot)+var(--btn-room)-var(--btn-arrow)-var(--btn-gap))*.5)] [--btn-shift:calc(var(--btn-pad)+var(--btn-slot)-var(--btn-inset))] ${variant === "outline" ? "border border-current/60 bg-background text-white [--btn-flash:var(--primary)] [--btn-pre:#6f6f6f]" : "bg-primary text-black [--btn-flash:#ffffff] [--btn-pre:#ffffff]"} ${disabled ? "pointer-events-none opacity-60" : ""} ${className}`;
+  return `group relative flex font-neue-haas shrink-0 items-center overflow-hidden text-nowrap max-[1025px]:justify-between max-[1025px]:gap-(--btn-gap) max-[1025px]:px-[7vw] max-md:px-[10vw] px-(--btn-pad) py-3 text-[1.15vw] tracking-wide transition-colors duration-300 max-[1025px]:py-4 max-[1025px]:text-[2vw] max-md:text-[2.2vw] max-sm:py-4 max-sm:text-[4vw] motion-reduce:transition-none [--btn-pad:1.2vw] [--btn-gap:.5vw] [--btn-square:.7vw] [--btn-arrow:1vw] max-[1025px]:[--btn-pad:20px] max-[1025px]:[--btn-gap:12px] max-[1025px]:[--btn-square:8px] max-[1025px]:[--btn-arrow:16px] max-sm:[--btn-pad:24px] max-sm:[--btn-gap:14px] max-sm:[--btn-square:8px] max-sm:[--btn-arrow:18px] [--btn-slot:calc(var(--btn-square)+var(--btn-gap))] [--btn-room:max(0px,var(--btn-arrow)+var(--btn-gap)-var(--btn-slot))] [--btn-inset:calc((var(--btn-pad)*1.8+var(--btn-slot)+var(--btn-room)-var(--btn-arrow)-var(--btn-gap))*.5)] [--btn-shift:calc(var(--btn-pad)+var(--btn-slot)-var(--btn-inset))] ${variant === "outline" ? "border border-current/60 bg-background text-white [--btn-flash:var(--primary)] [--btn-pre:#6f6f6f]" : "bg-primary text-black [--btn-flash:#ffffff] [--btn-pre:#ffffff]"} ${disabled ? "pointer-events-none opacity-60" : ""} ${className}`;
 }
 
 // The label/square/arrow markup that lives inside ButtonV3's <Link> below -

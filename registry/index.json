@@ -15,7 +15,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added a reduced-motion notice and fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
+        "summary": "Fixed a GPU memory leak by disposing each plane's geometry, material, and texture on unmount.",
         "breaking": false
       },
       {
@@ -87,7 +87,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Synced the registry copy with production (iconMode prop, array-based controlled-mode detection, height-based open/close animation) and documented its existing reduced-motion behavior.",
+        "summary": "Updated accordion behavior and documented reduced-motion support.",
         "breaking": false
       },
       {
@@ -155,7 +155,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Fixed phone validation for international numbers and reworked the props API to real color/border-radius/duration controls.",
+        "summary": "Added configurable color, border-radius, and duration controls.",
         "breaking": false
       },
       {
@@ -174,7 +174,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the props API to real working controls (size, overlay opacity, duration, roundedness, colors), added reduced-motion support, and fixed responsive breakpoint and demo layout issues.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -266,7 +266,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and exposed working styling props (size, colors, duration), removing the non-functional defaultChecked prop.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -311,14 +311,8 @@
   },
   {
     "name": "aperture-transition",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "changelog": [
-      {
-        "version": "1.0.1",
-        "date": "2026-08-21",
-        "summary": "Added reduced-motion support so the drawer and overlay settle instantly when users prefer reduced motion.",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-08-06",
@@ -809,7 +803,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked heading-related props so remixer changes (timing, blur, variant, once) reliably rerun the reveal animation.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -894,7 +888,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -1109,13 +1103,13 @@
       {
         "version": "1.0.2",
         "date": "2026-08-27",
-        "summary": "Sync internal refactor from docs source: renamed hooks/helpers/state identifiers (useSystemTheme->usePreferredScheme, generateBeamCSS->buildRimCSS, etc.) and moved active-sync + glow-scale reset from effects to render-phase derived state; no public API or behavior change",
+        "summary": "Internal refactor: derived render-phase state replaces sync effects; no API change.",
         "breaking": false
       },
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Slowed the beam animation under reduced motion and added dynamic remixer props (size, colorVariant, theme, active, strength, duration, beamWidth, backgroundColor).",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -1207,7 +1201,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added a reduced-motion notice, reworked the props API to real theme/physics controls (bgColor, cardBg, driftAmount, rotationAmount, smoothness, lerp), and stopped rebuilding the layout on every remixer change.",
+        "summary": "Added reduced-motion support and configurable visual and motion controls.",
         "breaking": false
       },
       {
@@ -1327,7 +1321,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the public API to match the real component (data, accentColor, cardColor, speed, gap, perspective), added reduced-motion support, and fixed desktop scroll-trigger/card-width sizing bugs.",
+        "summary": "Added reduced-motion support, configurable styling, and improved desktop sizing.",
         "breaking": false
       },
       {
@@ -1451,7 +1445,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and replaced a Next.js-only style tag with a plain global style tag for framework portability.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -1661,7 +1655,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to working lerp/smoothness/circleSize controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -1727,7 +1721,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-24",
-        "summary": "Added prefers-reduced-motion support (ported from the docs copy): notice explaining the continuous scroll-driven wheel rotation cannot be reduced to a static fade.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -1750,7 +1744,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-24",
-        "summary": "Fixed responsiveness issues and added a reduced-motion notice explaining the continuous scroll-driven rotation.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -1791,7 +1785,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed slides, clueText, and cursor styling as public props.",
+        "summary": "Added reduced-motion support and customizable slides and cursor styling.",
         "breaking": false
       },
       {
@@ -1983,7 +1977,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and rAF-throttled mousemove handling to cut redundant re-renders.",
+        "summary": "Added reduced-motion support and optimized cursor tracking.",
         "breaking": false
       },
       {
@@ -2100,7 +2094,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, reworked the props API to match the real per-slot layout system (rotation, duration, mouseInteraction, bgVisible, lerp, smoothness), and fixed styling.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -2621,6 +2615,344 @@
       }
     ],
     "registryPath": "registry/effects/navigation/directional-menu/registry.json"
+  },
+  {
+    "name": "displacement-navbar",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Displacement Navbar",
+    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it — GSAP-driven with a full reduced-motion fallback.",
+    "category": "navigation",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "packageName": "@hyperiux/displacement-navbar",
+    "sourcePath": "apps/docs/src/components/displacement-navbar",
+    "previewUrl": "/demo/displacement-navbar",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "DisplacementNavbar",
+    "exportKind": "default",
+    "importPath": "@/components/effects/displacement-navbar",
+    "target": "src/components/effects/displacement-navbar",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/displacement-navbar/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "openDuration",
+        "type": "number",
+        "default": 0.65,
+        "description": "Page displacement and bar/mark open duration, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "closeDuration",
+        "type": "number",
+        "default": 0.65,
+        "description": "Page displacement and bar/mark close duration, in seconds. Matches openDuration by default so the close mirrors the open.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "contentStagger",
+        "type": "number",
+        "default": 0.055,
+        "description": "Delay between each shelf content item fading in on open, and out again on close in reverse order.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "imageSwapDuration",
+        "type": "number",
+        "default": 0.5,
+        "description": "Duration of the figure image cross-swap on link hover, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "media",
+          "groupTitle": "Media",
+          "min": 0.15,
+          "max": 1.2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "showMedia",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the figure image panel next to the primary links.",
+        "remixer": {
+          "control": "toggle",
+          "group": "media",
+          "groupTitle": "Media"
+        }
+      },
+      {
+        "name": "shelfBackground",
+        "type": "string",
+        "default": "#151515",
+        "description": "Shelf and header background color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "pageBackground",
+        "type": "string",
+        "default": "linear-gradient(160deg,#0D47A1 0%,#E3F2FD 100%)",
+        "description": "Displaced page background - any CSS background value, so a gradient works as well as a flat color.",
+        "remixer": {
+          "control": "text",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "linkColor",
+        "type": "string",
+        "default": "#f4f3f1",
+        "description": "Primary and info link text color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "mutedColor",
+        "type": "string",
+        "default": "rgba(244,243,241,0.38)",
+        "description": "Index numerals, captions, and dimmed-state color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "hairlineColor",
+        "type": "string",
+        "default": "rgba(244,243,241,0.14)",
+        "description": "Bar seam and footer divider color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "charStagger",
+        "type": "number",
+        "default": 0.01,
+        "description": "Per-character reveal delay on link hover, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "links",
+          "groupTitle": "Links",
+          "min": 0,
+          "max": 0.06,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "showLinkUnderline",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the underline draw-in under hovered links.",
+        "remixer": {
+          "control": "toggle",
+          "group": "links",
+          "groupTitle": "Links"
+        }
+      },
+      {
+        "name": "dimInactiveLinks",
+        "type": "boolean",
+        "default": true,
+        "description": "Dims sibling primary links while one is hovered.",
+        "remixer": {
+          "control": "toggle",
+          "group": "links",
+          "groupTitle": "Links"
+        }
+      },
+      {
+        "name": "primaryLinks",
+        "type": "array",
+        "default": [
+          {
+            "label": "Components"
+          },
+          {
+            "label": "Templates"
+          },
+          {
+            "label": "Showcase"
+          },
+          {
+            "label": "Docs"
+          }
+        ],
+        "description": "Numbered primary navigation links shown in the shelf.",
+        "remixer": {
+          "enabled": false,
+          "control": "json",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "infoLinks",
+        "type": "array",
+        "default": [
+          {
+            "label": "About"
+          },
+          {
+            "label": "Pricing"
+          },
+          {
+            "label": "Changelog"
+          },
+          {
+            "label": "Contact"
+          }
+        ],
+        "description": "Secondary info links shown in the shelf.",
+        "remixer": {
+          "enabled": false,
+          "control": "json",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "socials",
+        "type": "array",
+        "default": [
+          {
+            "label": "X"
+          },
+          {
+            "label": "GitHub"
+          },
+          {
+            "label": "Discord"
+          }
+        ],
+        "description": "Social links shown in the shelf footer.",
+        "remixer": {
+          "enabled": false,
+          "control": "json",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "media",
+        "type": "array",
+        "default": [
+          {
+            "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img01.png",
+            "caption": "Drop-in motion primitives"
+          },
+          {
+            "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img02.png",
+            "caption": "Full pages, wired and ready"
+          },
+          {
+            "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img03.png",
+            "caption": "Built with Hyperiux in the wild"
+          },
+          {
+            "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img04.png",
+            "caption": "Guides, props and recipes"
+          }
+        ],
+        "description": "Images and captions shown in the figure panel, matched to primary links.",
+        "remixer": {
+          "enabled": false,
+          "control": "json",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "Hyperiux",
+        "description": "Brand label shown in the header.",
+        "remixer": {
+          "enabled": false,
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "default": "hello@hyperiux.com",
+        "description": "Contact email shown in the shelf footer.",
+        "remixer": {
+          "enabled": false,
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "cities",
+        "type": "string",
+        "default": "Remote / Worldwide",
+        "description": "Location label shown in the shelf footer.",
+        "remixer": {
+          "enabled": false,
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/navigation/displacement-navbar/registry.json"
   },
   {
     "name": "dither-canvas",
@@ -3645,6 +3977,191 @@
     "registryPath": "registry/effects/text/drop-text/registry.json"
   },
   {
+    "name": "elastic-accordion",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-10",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Elastic Accordion",
+    "description": "An accordion with gooey elastic expansion and staggered answer reveals.",
+    "category": "components",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/elastic-accordion",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ElasticAccordion",
+    "exportKind": "default",
+    "importPath": "@/components/effects/elastic-accordion",
+    "target": "src/components/effects/elastic-accordion",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/elastic-accordion/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.8,
+        "description": "Expansion animation duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "gooeyStrength",
+        "type": "number",
+        "default": 9,
+        "description": "Strength of the gooey connection between question and answer.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "min": 0,
+          "max": 20,
+          "step": 1
+        },
+        "label": "Gooey strength"
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Delay between answer line reveals in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "default": false,
+        "description": "Allows multiple answers to remain open.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior"
+        }
+      },
+      {
+        "name": "startOpen",
+        "type": "number",
+        "default": 0,
+        "description": "Initially open item index; -1 closes all items.",
+        "remixer": {
+          "control": "select",
+          "group": "behavior",
+          "options": [
+            {
+              "label": "All closed",
+              "value": -1
+            },
+            {
+              "label": "Item 1",
+              "value": 0
+            },
+            {
+              "label": "Item 2",
+              "value": 1
+            },
+            {
+              "label": "Item 3",
+              "value": 2
+            },
+            {
+              "label": "Item 4",
+              "value": 3
+            },
+            {
+              "label": "Item 5",
+              "value": 4
+            }
+          ]
+        }
+      },
+      {
+        "name": "bgColor",
+        "type": "color",
+        "default": "#ebebe9",
+        "description": "Background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "panelColor",
+        "type": "color",
+        "default": "#101010",
+        "description": "Question and answer panel color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#fffaf2",
+        "description": "Text and icon color; secondary elements use reduced opacity.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "elastic.out(1,0.82)",
+        "description": "GSAP easing for expansion. Available in code only.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "items",
+        "type": "ElasticAccordionItem[]",
+        "description": "Question and answer items; defaults to the built-in FAQ."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "",
+        "description": "Additional root class names."
+      },
+      {
+        "name": "onChange",
+        "type": "(index: number, isOpen: boolean) => void",
+        "description": "Called when an item is toggled."
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/elastic-accordion/registry.json"
+  },
+  {
     "name": "elevate-navbar",
     "version": "1.1.0",
     "changelog": [
@@ -3663,7 +4180,7 @@
     ],
     "type": "registry:component",
     "title": "Elevate Navbar",
-    "description": "Responsive glass-morphism pill navigation with animated dropdowns, GSAP text-swap hover effects, and a collapsible mobile accordion menu",
+    "description": "A responsive glassmorphism navbar with animated dropdowns, text-swap hover effects, and a collapsible mobile menu.",
     "category": "navigation",
     "dependencies": [
       "gsap",
@@ -4540,7 +5057,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and corrected the export-kind metadata.",
+        "summary": "Added reduced-motion support .",
         "breaking": false
       },
       {
@@ -4579,7 +5096,7 @@
   {
     "name": "glitchy-text",
     "title": "Glitchy Text",
-    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
+    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers - two white and two yellow - out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
@@ -4588,7 +5105,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to working baseTextColor/glitchColor controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -4614,6 +5131,254 @@
         "target": "src/components/effects/glitchy-text/index.tsx"
       }
     ]
+  },
+  {
+    "name": "globe",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-17",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Network Globe",
+    "description": "Interactive dotted world globe with animated routes, location navigation, and a desktop flat-map projection.",
+    "category": "components",
+    "tier": "pro",
+    "dependencies": [
+      "gsap",
+      "lucide-react"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/globe",
+    "main": "index.tsx",
+    "exportName": "Globe",
+    "exportKind": "default",
+    "importPath": "@/components/effects/globe",
+    "target": "src/components/effects/globe",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/globe/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "autoConnect",
+        "label": "Automatic Routes",
+        "type": "boolean",
+        "default": false,
+        "description": "Periodically animates a route between two random locations.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "autoRotate",
+        "label": "Auto Rotate",
+        "type": "boolean",
+        "default": true,
+        "description": "Continuously rotates the globe when it is idle.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "rotationSpeed",
+        "label": "Rotation Speed",
+        "type": "number",
+        "default": 4,
+        "description": "Automatic globe rotation speed in degrees per second.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 20,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "routeFrequency",
+        "label": "Route Frequency",
+        "type": "number",
+        "default": 3.5,
+        "description": "Delay in seconds between automatic route animations.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 10,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "routeDuration",
+        "label": "Route Duration",
+        "type": "number",
+        "default": 1.4,
+        "description": "Duration of each animated route in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "connections",
+        "label": "Connections",
+        "type": "number",
+        "default": 3,
+        "description": "Number of nearby routes emitted after selecting a location.",
+        "remixer": {
+          "control": "range",
+          "group": "routes",
+          "groupTitle": "Routes",
+          "min": 1,
+          "max": 7,
+          "step": 1
+        }
+      },
+      {
+        "name": "dotDensity",
+        "label": "Dot Density",
+        "type": "number",
+        "default": 11000,
+        "description": "Number of sphere samples used to build the dotted land field.",
+        "remixer": {
+          "control": "range",
+          "group": "geometry",
+          "groupTitle": "Geometry",
+          "min": 2000,
+          "max": 30000,
+          "step": 500
+        }
+      },
+      {
+        "name": "dotSize",
+        "label": "Dot Size",
+        "type": "number",
+        "default": 2.3,
+        "description": "Rendered diameter of each land dot in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "geometry",
+          "groupTitle": "Geometry",
+          "min": 0.5,
+          "max": 6,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "markerSize",
+        "label": "Marker Size",
+        "type": "number",
+        "default": 5,
+        "description": "Rendered diameter of each location marker in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "geometry",
+          "groupTitle": "Geometry",
+          "min": 1,
+          "max": 12,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "routeColor",
+        "label": "Route Color",
+        "type": "color",
+        "default": "#fffaf2",
+        "description": "Color of animated connection routes.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "mapColor",
+        "label": "Map Color",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Color of the dotted land field.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "markerColor",
+        "label": "Marker Color",
+        "type": "color",
+        "default": "#fffaf2",
+        "description": "Color of location markers and the globe outline.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "showLabels",
+        "label": "Show Labels",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows location labels around the globe.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "enableDrag",
+        "label": "Enable Drag",
+        "type": "boolean",
+        "default": true,
+        "description": "Allows pointer dragging to rotate the globe.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "morphDuration",
+        "label": "Morph Duration",
+        "type": "number",
+        "default": 0.6,
+        "description": "Duration of the globe-to-map projection transition in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 3,
+          "step": 0.1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "behavior",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/globe/registry.json"
   },
   {
     "name": "glowing-text",
@@ -4832,7 +5597,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to match the effect's real looping behavior (maxValue, duration, blobColor, backgroundColor, gridSize, roundedness).",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -4892,7 +5657,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -4915,7 +5680,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and fixed a malformed ScrollTrigger start value that anchored the floating-words timeline to page top instead of the section.",
+        "summary": "Added reduced-motion support and fixed scroll-trigger positioning.",
         "breaking": false
       },
       {
@@ -4994,36 +5759,259 @@
     ]
   },
   {
-    "name": "helix-slider",
-    "title": "Helix Slider",
-    "description": "Pinned scroll gallery that arranges cards through a helix-like cylindrical path",
-    "category": "scroll",
+    "name": "gsap-flip-card",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-10",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
     "type": "registry:component",
-    "tier": "pro",
-    "version": "1.1.0",
+    "title": "GSAP Flip Card",
+    "description": "A card stack that expands into a hero image and thumbnail rail with GSAP Flip transitions.",
+    "category": "components",
     "dependencies": [
-      "gsap",
-      "lenis"
+      "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/scroll/helix-slider/registry.json",
-    "importPath": "@/components/effects/helix-slider",
-    "target": "src/components/effects/helix-slider",
-    "previewUrl": "/demo/helix-slider",
+    "previewUrl": "/demo/gsap-flip-card",
+    "tier": "free",
+    "subfolder": true,
     "main": "index.tsx",
-    "exportName": "HelixSlider",
+    "exportName": "GsapFlipCard",
     "exportKind": "default",
+    "importPath": "@/components/effects/gsap-flip-card",
+    "target": "src/components/effects/gsap-flip-card",
     "files": [
       {
         "path": "index.tsx",
-        "target": "src/components/effects/helix-slider/index.tsx"
-      },
-      {
-        "path": "HelixSliderComp.tsx",
-        "target": "src/components/effects/helix-slider/HelixSliderComp.tsx"
+        "target": "src/components/effects/gsap-flip-card/index.tsx"
       }
     ],
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.7,
+        "description": "Card transition duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "rounded",
+        "type": "number",
+        "default": 20,
+        "description": "Card corner radius in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "min": 0,
+          "max": 60,
+          "step": 1
+        }
+      },
+      {
+        "name": "stackOffsetX",
+        "type": "number",
+        "default": 3,
+        "description": "Horizontal offset per card in the collapsed desktop stack.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "stackOffsetY",
+        "type": "number",
+        "default": 9,
+        "description": "Vertical offset per card in the collapsed desktop stack.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "stackRotation",
+        "type": "number",
+        "default": 0,
+        "description": "Rotation per card in the collapsed desktop stack, in degrees.",
+        "remixer": {
+          "control": "range",
+          "group": "stack",
+          "min": -15,
+          "max": 15,
+          "step": 1
+        }
+      },
+      {
+        "name": "thumbGap",
+        "type": "number",
+        "default": 12,
+        "description": "Spacing between desktop rail thumbnails in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "min": 0,
+          "max": 40,
+          "step": 1
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#e9e9e7",
+        "description": "Section background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#111111",
+        "description": "Primary text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "mutedColor",
+        "type": "color",
+        "default": "#8a8a86",
+        "description": "Secondary text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors"
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power3.inOut",
+        "description": "GSAP transition easing.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "showCounter",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the image counter.",
+        "remixer": {
+          "enabled": false
+        }
+      },
+      {
+        "name": "thumbWidth",
+        "type": "number",
+        "default": 108,
+        "description": "Code-only configuration for thumbWidth."
+      },
+      {
+        "name": "thumbHeight",
+        "type": "number",
+        "default": 120,
+        "description": "Code-only configuration for thumbHeight."
+      },
+      {
+        "name": "heroWidth",
+        "type": "number",
+        "default": 530,
+        "description": "Code-only configuration for heroWidth."
+      },
+      {
+        "name": "heroHeight",
+        "type": "number",
+        "default": 670,
+        "description": "Code-only configuration for heroHeight."
+      },
+      {
+        "name": "captionLines",
+        "type": "number",
+        "default": 2,
+        "description": "Code-only configuration for captionLines."
+      },
+      {
+        "name": "captionFadeDuration",
+        "type": "number",
+        "default": 0.25,
+        "description": "Code-only configuration for captionFadeDuration."
+      },
+      {
+        "name": "captionRevealDuration",
+        "type": "number",
+        "default": 0.55,
+        "description": "Code-only configuration for captionRevealDuration."
+      },
+      {
+        "name": "captionLineStagger",
+        "type": "number",
+        "default": 0.07,
+        "description": "Code-only configuration for captionLineStagger."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "default": "GSAP Flip Card",
+        "description": "Code-only title."
+      },
+      {
+        "name": "meta",
+        "type": "string",
+        "default": "Hyperiux Vault / GSAP Flip / React",
+        "description": "Code-only meta."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "default": "A pile of cards that fans into a hero and a rail. Tap any frame and the two trade places, same nodes, measured and tweened, never re-mounted.",
+        "description": "Code-only description."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "",
+        "description": "Code-only className."
+      },
+      {
+        "name": "items",
+        "type": "GsapFlipCardItem[]",
+        "description": "Gallery images with optional IDs, alt text and captions; defaults to the built-in gallery."
+      },
+      {
+        "name": "onClose",
+        "type": "() => void",
+        "description": "Called when the gallery closes."
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/gsap-flip-card/registry.json"
+  },
+  {
+    "name": "helix-slider",
+    "version": "1.2.0",
     "changelog": [
+      {
+        "version": "1.2.0",
+        "date": "2026-09-10",
+        "summary": "Rebuilt as a WebGL rotating gallery with drag, wheel momentum, and idle autoplay.",
+        "breaking": true
+      },
       {
         "version": "1.1.0",
         "date": "2026-07-24",
@@ -5036,7 +6024,149 @@
         "summary": "Initial release",
         "breaking": false
       }
-    ]
+    ],
+    "type": "registry:component",
+    "title": "Helix Slider",
+    "description": "WebGL gallery that threads images along a rotating spiral, driven by drag, wheel momentum and idle autoplay",
+    "category": "scroll",
+    "dependencies": [
+      "@react-three/fiber",
+      "three"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/helix-slider",
+    "tier": "pro",
+    "main": "index.tsx",
+    "exportName": "HelixSlider",
+    "exportKind": "default",
+    "importPath": "@/components/effects/helix-slider",
+    "target": "src/components/effects/helix-slider",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/helix-slider/index.tsx"
+      },
+      {
+        "path": "createSuspendedRaf.ts",
+        "target": "src/components/effects/helix-slider/createSuspendedRaf.ts"
+      }
+    ],
+    "props": [
+      {
+        "name": "autoplaySpeed",
+        "type": "number",
+        "default": 0.12,
+        "description": "Idle movement speed; 0 stops autoplay.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "groupCollapsible": false,
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "default": 2.8,
+        "description": "Width of the spiral.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "groupCollapsible": false,
+          "min": 1.5,
+          "max": 4.5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "turns",
+        "type": "number",
+        "default": 3.3,
+        "description": "Number of spiral twists.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "groupCollapsible": false,
+          "min": 1,
+          "max": 5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "cardScale",
+        "type": "number",
+        "default": 1,
+        "description": "Scales image cards proportionally.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "groupCollapsible": false,
+          "min": 0.6,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "dragSensitivity",
+        "type": "number",
+        "default": 0.006,
+        "description": "How strongly the gallery responds to dragging.",
+        "remixer": {
+          "control": "range",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "groupCollapsible": false,
+          "min": 0.002,
+          "max": 0.02,
+          "step": 0.001
+        }
+      },
+      {
+        "name": "inertiaDecay",
+        "type": "number",
+        "default": 2.2,
+        "description": "Higher values stop movement sooner after release.",
+        "remixer": {
+          "control": "range",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "groupCollapsible": false,
+          "min": 0.5,
+          "max": 6,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "background",
+        "type": "color",
+        "default": "#0d0d0d",
+        "description": "Gallery background.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style",
+          "groupCollapsible": false
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/scroll/helix-slider/registry.json"
   },
   {
     "name": "hero-banner-animated",
@@ -5094,7 +6224,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -5230,7 +6360,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, fixed the demo not rendering, and reworked the props API (items, spread, rotation, duration, accentColor) to match the real component.",
+        "summary": "Added reduced-motion support and configurable stack controls.",
         "breaking": false
       },
       {
@@ -5403,7 +6533,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed cards, draggable, showNav, and mobileBreakpoint as public props.",
+        "summary": "Added reduced-motion support and configurable carousel controls.",
         "breaking": false
       },
       {
@@ -5801,7 +6931,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Added a reduced-motion notice and reworked the remixer panel (removed the image-texture control, changed mouse interaction to a checkbox).",
+        "summary": "Documented the lack of a reduced-motion fallback and reworked the remixer controls.",
         "breaking": false
       },
       {
@@ -5824,7 +6954,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, renamed the component file to match production conventions, and reworked the props API to working imageSize/duration/smoothness/lerp controls.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -6113,7 +7243,7 @@
         "name": "aberration",
         "type": "number",
         "default": 1,
-        "description": "Chromatic aberration amount — how far the R/G/B channels split at the rim.",
+        "description": "Chromatic aberration amount - how far the R/G/B channels split at the rim.",
         "remixer": {
           "control": "range",
           "group": "filter",
@@ -6201,7 +7331,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and fixed the mask reveal not replaying when duration/stagger change in the remixer.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -6227,6 +7357,228 @@
         "target": "src/components/effects/mask-text-reveal/index.tsx"
       }
     ]
+  },
+  {
+    "name": "metallic-button",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-15",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Metallic Button",
+    "description": "Button with a WebGL metallic shader rim, hover and press speed ramps, and a click ripple",
+    "category": "buttons",
+    "dependencies": [
+      "lucide-react"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/metallic-button",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "MetallicButton",
+    "exportKind": "default",
+    "importPath": "@/components/effects/metallic-button",
+    "target": "src/components/effects/metallic-button",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "Get Started",
+        "description": "Button label text."
+      },
+      {
+        "name": "viewMode",
+        "type": "string",
+        "default": "text",
+        "description": "Renders the label or a single sparkle icon."
+      },
+      {
+        "name": "baseColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Dark base the metal sits on.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "sheenColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Overlay tint; sets how warm or cold the chrome reads.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "bandCount",
+        "type": "number",
+        "default": 4,
+        "description": "Density of the stripe bands.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 1,
+          "max": 10,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "edgeBlur",
+        "type": "number",
+        "default": 0.5,
+        "description": "Colour transition sharpness: 0 is a hard edge, 1 a smooth gradient.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flowAngle",
+        "type": "number",
+        "default": 45,
+        "description": "Direction the pattern flows, in degrees.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 0,
+          "max": 360,
+          "step": 5
+        }
+      },
+      {
+        "name": "zoom",
+        "type": "number",
+        "default": 8,
+        "description": "Zoom into the pattern; higher reads as brighter chrome.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 1,
+          "max": 12,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "warp",
+        "type": "number",
+        "default": 0,
+        "description": "Noise warp over the stripe pattern.",
+        "remixer": {
+          "control": "range",
+          "group": "metal",
+          "groupTitle": "Metal",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "redFringe",
+        "type": "number",
+        "default": 0.3,
+        "description": "Red-channel dispersion; drives the warm edge fringing.",
+        "remixer": {
+          "control": "range",
+          "group": "chromatic",
+          "groupTitle": "Chromatic",
+          "min": -1,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "blueFringe",
+        "type": "number",
+        "default": 0.3,
+        "description": "Blue-channel dispersion; drives the cool edge fringing.",
+        "remixer": {
+          "control": "range",
+          "group": "chromatic",
+          "groupTitle": "Chromatic",
+          "min": -1,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "idleSpeed",
+        "type": "number",
+        "default": 0.6,
+        "description": "Sweep speed at rest.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "hoverSpeed",
+        "type": "number",
+        "default": 1,
+        "description": "Sweep speed while hovered.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 4,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "clickSpeed",
+        "type": "number",
+        "default": 2.4,
+        "description": "Sweep speed kicked on click, before settling back.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 6,
+          "step": 0.1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "metal",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/metallic-button/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/buttons/metallic-button/registry.json"
   },
   {
     "name": "milky-way",
@@ -6288,6 +7640,287 @@
     ]
   },
   {
+    "name": "morphing-dock",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Morphing Dock",
+    "description": "Floating dock that morphs into navigation and contact panels, with character-stagger links and image previews.",
+    "category": "navigation",
+    "dependencies": [
+      "@gsap/react",
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "packageName": "@hyperiux/morphing-dock",
+    "sourcePath": "apps/docs/src/components/morphing-dock",
+    "previewUrl": "/demo/morphing-dock",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "MorphingDock",
+    "exportKind": "default",
+    "importPath": "@/components/effects/morphing-dock",
+    "target": "src/components/effects/morphing-dock",
+    "props": [
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 1,
+        "description": "Duration multiplier for dock animations; 1 preserves the original timing proportions.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "staggerStep",
+        "type": "number",
+        "default": 0.01,
+        "description": "Delay in seconds between animated letters.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.1,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "showLine",
+        "type": "boolean",
+        "default": true,
+        "description": "Draw navigation link underlines on hover and focus. The CTA never shows an underline.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#111111",
+        "description": "Dock and expanded panel background.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#d2d2d2",
+        "description": "Resting navigation and CTA link color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "hoverColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Navigation and CTA link hover and focus color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "brand",
+        "type": "string",
+        "default": "HYPERIUX",
+        "description": "Dock brand label.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "contactLabel",
+        "type": "string",
+        "default": "Contact",
+        "description": "Contact link label.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "default": "hello@hyperiux.com",
+        "description": "Contact email address.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "emailNote",
+        "type": "string",
+        "default": "Partnerships, press and support.",
+        "description": "Supporting contact text.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "ctaLabel",
+        "type": "string",
+        "default": "Get started",
+        "description": "CTA label.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "ctaHref",
+        "type": "string",
+        "default": "#",
+        "description": "CTA destination.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "teaserImage",
+        "type": "string",
+        "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
+        "description": "Preview image URL.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "teaserHref",
+        "type": "string",
+        "default": "#",
+        "description": "Preview destination.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "expandedWidth",
+        "type": "number",
+        "default": 48,
+        "description": "Expanded nav panel width in viewport units.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 30,
+          "max": 95,
+          "step": 1
+        }
+      },
+      {
+        "name": "expandedHeight",
+        "type": "number",
+        "default": 26,
+        "description": "Expanded nav panel height in viewport units.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 15,
+          "max": 60,
+          "step": 1
+        }
+      },
+      {
+        "name": "items",
+        "type": "array",
+        "default": [
+          {
+            "label": "Components",
+            "href": "#",
+            "blurb": "Drop-in motion primitives"
+          },
+          {
+            "label": "Templates",
+            "href": "#",
+            "blurb": "Full pages, wired and ready"
+          },
+          {
+            "label": "Showcase",
+            "href": "#",
+            "blurb": "Built with Hyperiux in the wild"
+          },
+          {
+            "label": "Docs",
+            "href": "#",
+            "blurb": "Guides, props and recipes"
+          }
+        ],
+        "description": "Navigation items with label, href, and blurb strings.",
+        "remixer": {
+          "enabled": false,
+          "control": "json",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "containerClassName": "z-[300]",
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/morphing-dock/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/navigation/morphing-dock/registry.json"
+  },
+  {
     "name": "mouse-pixelation",
     "title": "Mouse Pixelation",
     "description": "Three R3F WebGL mouse-reactive pixelation effects behind a version-switcher header. V1: GLSL pixel-circle shader with animated orbiting circles and GSAP scroll pin. V2: image texture with velocity-driven block displacement. V3: extruded pixel trail grid paired with a deforming bloom-lit cube that auto-cycles neon colors.",
@@ -6335,7 +7968,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
+        "summary": "added reduced-motion",
         "breaking": false
       },
       {
@@ -6408,7 +8041,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support and reworked the props API to working duration/stagger controls across all counter variants.",
+        "summary": "Added reduced-motion support and configurable animation timing.",
         "breaking": false
       },
       {
@@ -6512,7 +8145,7 @@
     ],
     "type": "registry:component",
     "title": "Orbit Flip Slider",
-    "description": "GSAP Flip-driven gallery that morphs one ring of images between four camera views — a flat circle, a zoomed-in upper arc, a tilted 3D ring, and a coverflow band — with a bouncy 3D hover tilt on every card.",
+    "description": "GSAP Flip-driven gallery that morphs one ring of images between four camera views - a flat circle, a zoomed-in upper arc, a tilted 3D ring, and a coverflow band - with a bouncy 3D hover tilt on every card.",
     "category": "carousels",
     "dependencies": [
       "gsap"
@@ -6726,7 +8359,7 @@
         "name": "flatScale",
         "type": "number",
         "default": 1,
-        "description": "Uniform zoom on the flat circle as a whole — position spread and card size together.",
+        "description": "Uniform zoom on the flat circle as a whole - position spread and card size together.",
         "remixer": {
           "enabled": false,
           "control": "range",
@@ -6816,7 +8449,7 @@
         "name": "ringScale",
         "type": "number",
         "default": 1,
-        "description": "Uniform zoom on the ring as a whole — position spread and card size together, like moving the camera closer or further on the z axis.",
+        "description": "Uniform zoom on the ring as a whole - position spread and card size together, like moving the camera closer or further on the z axis.",
         "remixer": {
           "enabled": false,
           "control": "range",
@@ -7174,7 +8807,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support (25% strength on off-center item rotation/scale) and fixed a crash in scroll-snap onStart when no Lenis provider is present.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -7468,6 +9101,181 @@
     "registryPath": "registry/effects/carousels/parallax-strip-slider/registry.json"
   },
   {
+    "name": "perspective-shift-menu",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-16",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Perspective Shift Menu",
+    "description": "A full-height nav column that slides in while the page tilts away in 3D, with a nested sub-drawer and per-character link rolls.",
+    "category": "navigation",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/perspective-shift-menu",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "PerspectiveShiftMenu",
+    "exportKind": "default",
+    "importPath": "@/components/effects/perspective-shift-menu",
+    "target": "src/components/effects/perspective-shift-menu",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/perspective-shift-menu/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "animationSpeed",
+        "type": "number",
+        "default": 1,
+        "description": "Opening and closing speed multiplier. Higher values animate faster.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 2,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "tiltAngle",
+        "type": "number",
+        "default": 20,
+        "description": "How far the page rotates away, in degrees. 0 slides without tilting.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 45,
+          "step": 1
+        }
+      },
+      {
+        "name": "linkStagger",
+        "type": "number",
+        "default": 0,
+        "description": "Delay between nav links as they enter, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.15,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "charStagger",
+        "type": "number",
+        "default": 0.007,
+        "description": "Delay between characters on link hover, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.05,
+          "step": 0.001
+        }
+      },
+      {
+        "name": "panelWidth",
+        "type": "number",
+        "default": 22,
+        "description": "Nav column width, in vw.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 15,
+          "max": 40,
+          "step": 1
+        }
+      },
+      {
+        "name": "drawerWidth",
+        "type": "number",
+        "default": 18,
+        "description": "Sub-drawer width, in vw.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 12,
+          "max": 35,
+          "step": 1
+        }
+      },
+      {
+        "name": "panelColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Nav column and sub-drawer surface color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#111111",
+        "description": "Links, headings, and menu icon color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "voidColor",
+        "type": "string",
+        "default": "#0e0e0e",
+        "description": "The void behind the page as it tilts away.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "dimOpacity",
+        "type": "number",
+        "default": 0.4,
+        "description": "How strongly the receded page is dimmed, 0 to 1.",
+        "remixer": {
+          "control": "range",
+          "group": "colors",
+          "groupTitle": "Colors",
+          "min": 0,
+          "max": 0.8,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/navigation/perspective-shift-menu/registry.json"
+  },
+  {
     "name": "perspective-text-reveal",
     "title": "Perspective Text Reveal",
     "description": "3D perspective rotation text reveal with lines flipping into view on scroll",
@@ -7479,7 +9287,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-21",
-        "summary": "Added reduced-motion support for accessible lower-motion perspective reveal.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -7959,7 +9767,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-23",
-        "summary": "Added reduced-motion support and removed stale duplicate files that had diverged from the originals and were being shipped to installers.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -8130,7 +9938,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the props API to match the real component (content now comes from a built-in image/name pool with imageSize/showNames), wired up reduced-motion support, fixed the demo not rendering, and fixed mobile layout/typo regressions.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -8480,7 +10288,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-31",
-        "summary": "Reworked the props API (text size, color, duration, stagger, charType) and fixed default text color and scroll-trigger start so the built-in heading is visible.",
+        "summary": "Added configurable text size, color, duration, stagger, and character-set controls.",
         "breaking": false
       },
       {
@@ -8519,7 +10327,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-21",
-        "summary": "Added prefers-reduced-motion support: the WebGL image transition drops its displacement/RGB-shift warp for a plain crossfade, and the text transition fades instead of sliding",
+        "summary": "Added reduced-motion transitions.",
         "breaking": false
       },
       {
@@ -8787,6 +10595,199 @@
     "registryPath": "registry/effects/components/shear-wipe/registry.json"
   },
   {
+    "name": "shiny-button",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-15",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Shiny Button",
+    "description": "Button with a rotating conic-gradient border, masked dot pattern, and inner shimmer that intensifies on hover",
+    "category": "buttons",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/shiny-button",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ShinyButton",
+    "exportKind": "default",
+    "importPath": "@/components/effects/shiny-button",
+    "target": "src/components/effects/shiny-button",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "default": "Get Started",
+        "description": "Button label text.",
+        "remixer": {
+          "control": "text",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "fillColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Button fill colour inside the animated border.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "labelColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Label colour.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "accentColor",
+        "type": "color",
+        "default": "#ff5f00",
+        "description": "Colour of the rotating border arc, inner shimmer, and hover glow.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "accentSoftColor",
+        "type": "color",
+        "default": "#ff9253",
+        "description": "Shine colour the border eases into while hovered.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "sweepDuration",
+        "type": "number",
+        "default": 3,
+        "description": "Seconds for one full rotation of the border gradient.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 10,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "easeDuration",
+        "type": "number",
+        "default": 0.8,
+        "description": "Seconds for the hover ease into the wider, brighter border.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 2,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "arcWidth",
+        "type": "number",
+        "default": 5,
+        "description": "Resting width of the bright border arc, as a percentage.",
+        "remixer": {
+          "control": "range",
+          "group": "border",
+          "groupTitle": "Border",
+          "min": 1,
+          "max": 30,
+          "step": 1
+        }
+      },
+      {
+        "name": "cornerRadius",
+        "type": "number",
+        "default": 32,
+        "description": "Corner radius in pixels; 32 and above render as a full pill at the default height.",
+        "remixer": {
+          "control": "range",
+          "group": "border",
+          "groupTitle": "Border",
+          "min": 0,
+          "max": 32,
+          "step": 1
+        }
+      },
+      {
+        "name": "showSpeckle",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the masked dot pattern layer.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "effects",
+          "groupTitle": "Effects"
+        }
+      },
+      {
+        "name": "showSheen",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the rotating inner sheen.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "effects",
+          "groupTitle": "Effects"
+        }
+      },
+      {
+        "name": "speckleOpacity",
+        "type": "number",
+        "default": 0.4,
+        "description": "Strength of the dot pattern layer.",
+        "remixer": {
+          "control": "range",
+          "group": "effects",
+          "groupTitle": "Effects",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "colors",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/shiny-button/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/buttons/shiny-button/registry.json"
+  },
+  {
     "name": "side-navbar",
     "version": "1.0.0",
     "changelog": [
@@ -8906,7 +10907,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-21",
-        "summary": "Added reduced-motion support for accessible lower-motion slide reveal.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -9036,6 +11037,135 @@
         "target": "src/components/effects/split-canvas/createSuspendedRaf.ts"
       }
     ]
+  },
+  {
+    "name": "spotlight-button",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-16",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Spotlight Button",
+    "description": "Animated orbiting halo button with a glowing border and hover spotlight.",
+    "category": "buttons",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/spotlight-button",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "SpotlightButton",
+    "exportKind": "default",
+    "importPath": "@/components/effects/spotlight-button",
+    "target": "src/components/effects/spotlight-button",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/spotlight-button/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "haloColor",
+        "type": "string",
+        "default": "#ff5f00",
+        "description": "Main color of the orbiting halo.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "haloCoreColor",
+        "type": "string",
+        "default": "#ff9253",
+        "description": "Bright core color on hover and keyboard focus.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "spotlightIntensity",
+        "type": "number",
+        "default": 1,
+        "description": "Strength of the border spotlight and glow.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "orbitDuration",
+        "type": "number",
+        "default": 3,
+        "description": "Seconds for one full orbit.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 1,
+          "max": 10,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "settleDuration",
+        "type": "number",
+        "default": 0.8,
+        "description": "Hover and focus transition duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "haloWidth",
+        "type": "number",
+        "default": 5,
+        "description": "Width of each halo gradient segment as a percentage of the sweep.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 1,
+          "max": 20,
+          "step": 1
+        }
+      },
+      {
+        "name": "size",
+        "type": "\"sm\" | \"md\" | \"lg\"",
+        "default": "md",
+        "description": "Button size: small, medium, or large.",
+        "remixer": {
+          "enabled": false
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "style",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/buttons/spotlight-button/registry.json"
   },
   {
     "name": "spotlight-text",
@@ -9238,7 +11368,7 @@
         "name": "cardRadius",
         "type": "number",
         "default": 8,
-        "description": "Corner radius on each card, in px (desktop only — tablet/mobile keep their responsive radius).",
+        "description": "Corner radius on each card, in px (desktop only - tablet/mobile keep their responsive radius).",
         "remixer": {
           "control": "range",
           "group": "style",
@@ -9306,7 +11436,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-22",
-        "summary": "Fixed the last card not reaching full-screen on mobile and the outgoing card's opacity bleeding through under reduced motion.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -9351,7 +11481,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Added reduced-motion support, fixed an uncolored gap between content and image panes, and exposed image-scale props; removed the unused stepGap prop.",
+        "summary": "Added reduced-motion support.",
         "breaking": false
       },
       {
@@ -9392,7 +11522,7 @@
     "category": "webgl",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.1.0",
+    "version": "1.0.0",
     "dependencies": [
       "three"
     ],
@@ -9419,12 +11549,6 @@
       }
     ],
     "changelog": [
-      {
-        "version": "1.1.0",
-        "date": "2026-07-22",
-        "summary": "Added reduced-motion notice",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-06-04",
@@ -9558,7 +11682,7 @@
       {
         "version": "1.1.0",
         "date": "2026-07-28",
-        "summary": "Added a reduced-motion notice (ported from the docs copy, which already had it): this effect relies on a continuous scroll-driven pixelated-to-sharp transition and can't be simplified to a fade without losing the effect entirely, so it now surfaces that instead of silently ignoring the preference.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -9782,7 +11906,7 @@
     "category": "text",
     "type": "registry:component",
     "tier": "pro",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "dependencies": [
       "gsap"
     ],
@@ -9801,12 +11925,6 @@
       }
     ],
     "changelog": [
-      {
-        "version": "1.0.1",
-        "date": "2026-07-30",
-        "summary": "Removed text from the remixer controls while keeping the built-in heading content and visual controls.",
-        "breaking": false
-      },
       {
         "version": "1.0.0",
         "date": "2026-07-29",
@@ -10415,6 +12533,156 @@
     "registryPath": "registry/effects/text/typing-text/registry.json"
   },
   {
+    "name": "unfold-navbar",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-14",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Unfold Navbar",
+    "description": "A compact side navigation that unfolds vertically and horizontally, with staggered links and a feature image.",
+    "category": "navigation",
+    "dependencies": [
+      "@gsap/react",
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/unfold-navbar",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "UnfoldNavbar",
+    "exportKind": "default",
+    "importPath": "@/components/effects/unfold-navbar",
+    "target": "src/components/effects/unfold-navbar",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/unfold-navbar/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#ebebeb",
+        "description": "Navbar surface color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#111111",
+        "description": "Main links and menu icon color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "mutedColor",
+        "type": "string",
+        "default": "rgba(0,0,0,0.5)",
+        "description": "Numbers, secondary links, captions, and dimmed links color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "animationSpeed",
+        "type": "number",
+        "default": 1,
+        "description": "Opening and closing speed multiplier. Higher values animate faster.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.5,
+          "max": 2,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "charStagger",
+        "type": "number",
+        "default": 0.015,
+        "description": "Delay between characters on link hover, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "links",
+          "groupTitle": "Links",
+          "min": 0,
+          "max": 0.06,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "showLinkUnderline",
+        "type": "boolean",
+        "default": false,
+        "description": "Show the animated underline on link hover.",
+        "remixer": {
+          "control": "toggle",
+          "group": "links",
+          "groupTitle": "Links"
+        }
+      },
+      {
+        "name": "showNumbers",
+        "type": "boolean",
+        "default": false,
+        "description": "Show numbers beside primary links.",
+        "remixer": {
+          "control": "toggle",
+          "group": "links",
+          "groupTitle": "Links"
+        }
+      },
+      {
+        "name": "dimInactiveLinks",
+        "type": "boolean",
+        "default": true,
+        "description": "Dim other primary links while hovering a row.",
+        "remixer": {
+          "control": "toggle",
+          "group": "links",
+          "groupTitle": "Links"
+        }
+      },
+      {
+        "name": "showFeature",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the feature image and caption.",
+        "remixer": {
+          "control": "toggle",
+          "group": "media",
+          "groupTitle": "Media"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "style",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/navigation/unfold-navbar/registry.json"
+  },
+  {
     "name": "variable-text-proximity",
     "version": "1.0.5",
     "changelog": [
@@ -10679,7 +12947,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-30",
-        "summary": "Reworked the props API to match the real component (videoSrc, poster, autoPlay, controls) and replaced the continuous rAF progress loop with native timeupdate events.",
+        "summary": "Replaced the rAF progress loop with native timeupdate events.",
         "breaking": false
       },
       {
@@ -10697,7 +12965,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed images as a public prop.",
+        "summary": "Added reduced motion support.",
         "breaking": false
       },
       {
@@ -10744,7 +13012,7 @@
       {
         "version": "1.0.1",
         "date": "2026-07-28",
-        "summary": "Added reduced-motion support and exposed title, subheading, and sliderData as public props.",
+        "summary": "Added reduced-motion support and customizable slider content.",
         "breaking": false
       },
       {

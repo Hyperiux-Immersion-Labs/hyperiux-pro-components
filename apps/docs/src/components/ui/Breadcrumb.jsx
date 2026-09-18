@@ -17,7 +17,7 @@ function itemsFromPathname(pathname) {
 
       return {
         label: formatSegmentLabel(segment),
-        // `/legal` has no real landing page — send "Legal" to the license agreement.
+        // `/legal` has no real landing page - send "Legal" to the license agreement.
         href: href === "/legal" ? "/legal/license-agreement" : href,
       };
     }),

@@ -17,7 +17,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-28",
-      "summary": "Added reduced-motion support and exposed images as a public prop.",
+      "summary": "Added reduced motion support.",
       "breaking": false
     },
     {

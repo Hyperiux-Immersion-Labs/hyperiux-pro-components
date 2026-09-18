@@ -82,7 +82,7 @@ const freeFeatures = [
   "Code you own"
 ];
 const ProFeatures = [
-  "All 115 effects",
+  "All 150+ effects",
   "New effects added regularly.",
   "Priority access to upcoming packs",
   "Hyperiux CLI install + auth",
@@ -98,9 +98,10 @@ export default function Pricing({ padding, content = true, isIndia = false }) {
   const currency = isIndia ? "INR" : "USD";
   const { symbol, monthly: monthlyAmount, yearly: yearlyAmount } = PRICING[currency];
 
-  // Post-signup lands here via fallbackRedirectUrl="/pricing#pricing-cards".
-  // Lenis owns scroll and resets position on init, so the browser's native
-  // anchor-jump doesn't stick - scroll to the cards ourselves once Lenis is up.
+  // Anything that links here with a #pricing-cards hash (marketing CTAs,
+  // upgrade prompts, etc. - post-signup no longer does, see SignUpFlow.jsx)
+  // needs a manual scroll: Lenis owns scroll and resets position on init, so
+  // the browser's native anchor-jump doesn't stick on its own.
   const lenis = useLenis();
   const hasScrolledToHash = useRef(false);
 

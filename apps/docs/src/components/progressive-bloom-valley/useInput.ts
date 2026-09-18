@@ -107,7 +107,7 @@ export default function useInput({
       root: gl.domElement,
       onFrame: () => {
         if (reduceMotionRef.current) {
-          // No auto-scroll / velocity coast — user wheel/touch already snaps scroll.
+          // No auto-scroll / velocity coast - user wheel/touch already snaps scroll.
           velocity.current = 0;
           return;
         }

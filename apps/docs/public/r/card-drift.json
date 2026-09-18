@@ -15,7 +15,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Added a reduced-motion notice, reworked the props API to real theme/physics controls (bgColor, cardBg, driftAmount, rotationAmount, smoothness, lerp), and stopped rebuilding the layout on every remixer change.",
+      "summary": "Added reduced-motion support and configurable visual and motion controls.",
       "breaking": false
     },
     {

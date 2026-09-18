@@ -53,7 +53,7 @@ export function useLoaderV3Complete(fallbackMs = 6000) {
 }
 
 /**
- * True once the mark has landed. No fallback of its own — a page where the
+ * True once the mark has landed. No fallback of its own - a page where the
  * handoff never happens (the burst exit, or no loader at all) has to fall back
  * on `useLoaderV3Complete`, which knows when it is safe to give up waiting.
  */
@@ -73,7 +73,7 @@ function useLoaderFlag(event, isSet, fallbackMs) {
 
     const already = isSet();
 
-    // Already done before this mounted — the loader was skipped, so this is a
+    // Already done before this mounted - the loader was skipped, so this is a
     // cold hydration and the consumer's intro is about to start on the same
     // frames React is still committing the rest of the page on. Firing on a
     // `setTimeout(0)` puts the animation's first frames right on top of that
@@ -86,7 +86,7 @@ function useLoaderFlag(event, isSet, fallbackMs) {
       });
     }
 
-    // The loader is running normally — no rush, just fall open if it never
+    // The loader is running normally - no rush, just fall open if it never
     // reports back.
     const fallback =
       !already && Number.isFinite(fallbackMs)
@@ -107,7 +107,7 @@ function useLoaderFlag(event, isSet, fallbackMs) {
 // ── Once per session ────────────────────────────────────────────────────────
 // The loader is an entrance, not a page transition: it earns its 3s the first
 // time a visitor arrives and is only in the way on every navigation back to the
-// homepage after that. `sessionStorage` is the right scope for that — it is
+// homepage after that. `sessionStorage` is the right scope for that - it is
 // per-tab and clears when the tab closes, so a fresh visit still gets the full
 // intro while a return trip inside the same session goes straight to the hero.
 const LOADER_V3_PLAYED_KEY = "hyperiux-v3:loader-played";
@@ -134,6 +134,6 @@ export function markLoaderV3Played() {
   try {
     window.sessionStorage.setItem(LOADER_V3_PLAYED_KEY, "1");
   } catch {
-    // Storage unavailable — the loader simply plays again next time.
+    // Storage unavailable - the loader simply plays again next time.
   }
 }

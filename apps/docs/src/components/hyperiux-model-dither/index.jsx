@@ -48,13 +48,13 @@ export const MODEL_DITHER_DEFAULTS = {
     /** Seconds-ish smoothing for the tilt. Lower = snappier. */
     damping: 4,
 
-    /** Cursor light — adds density under the pointer. Set 0 to disable. */
+    /** Cursor light - adds density under the pointer. Set 0 to disable. */
     cursorLightIntensity: 8,
     cursorLightDistance: 3.2,
     /** How far in front of the model the light floats. */
     cursorLightDepth: 1.1,
 
-    /** Cursor reveal — repaints glyphs under the pointer. */
+    /** Cursor reveal - repaints glyphs under the pointer. */
     revealColor: "#ffffff",
     /** Radius in CSS pixels. */
     revealRadius: 100,
@@ -65,7 +65,7 @@ export const MODEL_DITHER_DEFAULTS = {
     /** Higher = the reveal follows the cursor more tightly. */
     revealDamping: 12,
 
-    /** Cursor scramble — glyphs under the pointer reshuffle. Set 0 to disable. */
+    /** Cursor scramble - glyphs under the pointer reshuffle. Set 0 to disable. */
     scrambleAmount: 0.85,
     /** Reshuffles per second. */
     scrambleSpeed: 8,
@@ -120,7 +120,7 @@ function createAtlas() {
 
     // Mipmaps must stay off. The atlas u coordinate is built from fract(), which
     // jumps at every cell boundary, so fragment quads straddling a boundary see a
-    // huge UV derivative and drop to the smallest mip — a flat average of the
+    // huge UV derivative and drop to the smallest mip - a flat average of the
     // whole atlas. That draws a bright line along every cell edge.
     texture.generateMipmaps = false;
     texture.minFilter = THREE.LinearFilter;
@@ -223,7 +223,7 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
   vec3 sc = applyAdjustments(texture2D(inputBuffer, suv).rgb);
   float level = clamp(dot(sc, vec3(0.299, 0.587, 0.114)), 0.0, 1.0);
 
-  // Gate before the ramp — dither and jitter can lift a black cell to index 1
+  // Gate before the ramp - dither and jitter can lift a black cell to index 1
   // on their own, which speckles the empty background with stray glyphs
   if (level < uCutoff) {
     outputColor = vec4(0.0, 0.0, 0.0, 1.0);
@@ -232,12 +232,12 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 
   // Cursor falloff, per cell so a glyph reacts as a whole unit rather than
   // being cut through. Needed this early because it drives glyph choice as
-  // well as colour. Not named "patch" — that is a reserved word in GLSL ES.
+  // well as colour. Not named "patch" - that is a reserved word in GLSL ES.
   float cursorDist = distance(centre, uPointer);
   float cursor = (1.0 - smoothstep(uRevealInner, max(uRevealOuter, uRevealInner + 0.001), cursorDist)) * uRevealStrength;
 
   // Two ways to pick the glyph: a luminance ramp, or a per-cell random draw.
-  // uCharJitter blends between them — 1.0 is the fully scattered look. The
+  // uCharJitter blends between them - 1.0 is the fully scattered look. The
   // hash is seeded on the cell only, so a glyph never flickers between frames.
   float dither = (bayer4(vec2(gx, gy)) - 0.5) / CHAR_N * 1.5;
   float ramp = clamp(level + dither, 0.0, 1.0) * (CHAR_N - 1.0);
@@ -277,7 +277,7 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
   // fragment so a glyph flips as a whole unit instead of being cut through.
   float m = uBaseMix;
 
-  // Oldest first, so a newer disc paints over the ones already under it — a
+  // Oldest first, so a newer disc paints over the ones already under it - a
   // click during a sweep starts turning the colour back from where you clicked.
   for (int i = 0; i < ${MAX_RIPPLES}; i++) {
     float rippleDist = distance(centre, uRippleCentre[i]);
@@ -405,7 +405,7 @@ function AsciiPass({ config }) {
     /** Settled palette: 0 = charColor, 1 = revealColor. Flips once a ripple lands. */
     const baseMix = useRef(0);
     /**
-     * In-flight click ripples, oldest first. Each only ever grows — once one has
+     * In-flight click ripples, oldest first. Each only ever grows - once one has
      * covered the screen its colour becomes the new base and it is retired.
      * Overlapping discs are allowed so a click never has to wait for the sweep
      * before it to finish.
@@ -451,7 +451,7 @@ function AsciiPass({ config }) {
             if (waves.length >= MAX_RIPPLES) return;
 
             // Toggle away from where the newest sweep is heading, not from the
-            // settled base — otherwise a second click repaints the colour already on
+            // settled base - otherwise a second click repaints the colour already on
             // its way in and reads as nothing happening.
             const heading = waves.length > 0 ? waves[waves.length - 1].mix : baseMix.current;
             waves.push({ x: point.x, y: point.y, mix: 1 - heading, progress: 0 });
@@ -497,7 +497,7 @@ function AsciiPass({ config }) {
             strength.current * config.revealStrength;
 
         // Grow the click ripples. The hard edge carries a constant-width feather
-        // along with it — deriving the feather as a fraction of the radius instead
+        // along with it - deriving the feather as a fraction of the radius instead
         // would blow it out to many times the diagonal near the end of the sweep.
         const waves = ripples.current;
         const diagonal = Math.hypot(size.width, size.height) * dpr;
@@ -594,7 +594,7 @@ function Model({ config, src }) {
         const extent = box.getSize(new THREE.Vector3());
         const scale = 2 / Math.max(extent.x, extent.y, 0.0001);
 
-        // Scale first, then offset by the *scaled* centre — the local matrix is
+        // Scale first, then offset by the *scaled* centre - the local matrix is
         // composed T * R * S, so an unscaled offset overshoots and the model ends
         // up orbiting a point outside itself.
         clone.scale.setScalar(scale);
@@ -654,7 +654,7 @@ function Model({ config, src }) {
         // Park the light at the cursor's world position, floating in front of the
         // model. It only ever lights geometry, so the background stays empty.
         if (cursorLight.current) {
-            // Raw pointer, not the anchored one — the light tracks the cursor
+            // Raw pointer, not the anchored one - the light tracks the cursor
             // itself, it isn't a tilt.
             cursorPoint.set(
                 (pointerX * state.viewport.width) / 2,
@@ -692,7 +692,7 @@ function Model({ config, src }) {
 useGLTF.preload(MODEL_SRC);
 
 /**
- * The scene itself. Takes a fully-resolved config — no defaults merging here, so
+ * The scene itself. Takes a fully-resolved config - no defaults merging here, so
  * the leva wrapper and the plain path feed it through exactly the same door.
  */
 export function ModelDitherScene({
@@ -727,7 +727,7 @@ export function ModelDitherScene({
 }
 
 /*
- * Loaded on demand so leva stays out of the production bundle — it is only
+ * Loaded on demand so leva stays out of the production bundle - it is only
  * pulled in for the branch that actually renders the panel. It reports values
  * upward rather than wrapping the scene, which keeps the two modules from
  * importing each other.
@@ -738,7 +738,7 @@ const ModelDitherControls = dynamic(() => import("./with-leva"), { ssr: false })
  * ASCII/dither pass over a 3D model.
  *
  * Pass `debug` to mount a leva panel bound to this effect's config. The panel
- * drives only these controls — anything else on the page is untouched.
+ * drives only these controls - anything else on the page is untouched.
  */
 export default function HyperiuxModelDither({
     config,

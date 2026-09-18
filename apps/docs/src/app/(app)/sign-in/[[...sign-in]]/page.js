@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { createPageMetadata } from "@/lib/seo-metadata";
@@ -28,7 +29,9 @@ export default async function SignInPage() {
     <>
       <NavbarV3 />
       <NavbarMobile />
-      <SignInFlow />
+      <Suspense fallback={null}>
+        <SignInFlow />
+      </Suspense>
     </>
   );
 }

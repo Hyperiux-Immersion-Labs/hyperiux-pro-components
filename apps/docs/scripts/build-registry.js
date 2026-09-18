@@ -286,7 +286,7 @@ async function buildRegistry() {
             .split("-")
             .filter((part) => nameParts.has(part)).length;
           // Helper files (e.g. createSuspendedRaf) can have multiple named
-          // exports that don't match the effect — treat as non-entry, don't throw.
+          // exports that don't match the effect - treat as non-entry, don't throw.
           let hasExport = 20;
           try {
             hasExport = detectExport(entry.content, preferredExportName) ? 0 : 20;

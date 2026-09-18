@@ -16,7 +16,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added reduced-motion support (25% strength on off-center item rotation/scale) and fixed a crash in scroll-snap onStart when no Lenis provider is present.",
+      "summary": "Added reduced motion support.",
       "breaking": false
     },
     {

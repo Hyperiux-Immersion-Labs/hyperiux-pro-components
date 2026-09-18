@@ -1,6 +1,6 @@
 import React from 'react'
 import { ReactLenis } from "lenis/react";
-import HyperiuxLogo from '@/components/HyperiuxLogo/HyperiuxLogo';
+import HyperiuxLogo from '@/components/HyperiuxLogo';
 
 export const metadata = {
   robots: {

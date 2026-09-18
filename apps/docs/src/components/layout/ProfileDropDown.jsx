@@ -17,6 +17,7 @@ export default function ProfileDropdown({
   const isAdmin =
     user?.publicMetadata?.role === "admin" ||
     user?.publicMetadata?.role === "super_admin";
+  const isSuperAdmin = user?.publicMetadata?.role === "super_admin";
 
   const isPro =
     plan === "pro" ||
@@ -148,6 +149,45 @@ export default function ProfileDropdown({
                   {usageLabel}
                 </span>
               </Link>
+            )}
+
+            {isSuperAdmin && (
+              <>
+                <div className="my-2 border-t border-white/10 w-[110%] translate-x-[-5%]" />
+
+                <Link
+                  href="/dashboard/admin/activity"
+                  className="group relative isolate block px-4 py-3 transition"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#0e0e0e] transition-transform duration-300 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
+                  />
+                  Activity
+                </Link>
+
+                <Link
+                  href="/dashboard/admin"
+                  className="group relative isolate block px-4 py-3 transition"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#0e0e0e] transition-transform duration-300 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
+                  />
+                  User Management
+                </Link>
+
+                <Link
+                  href="/dashboard/admin/invoicing"
+                  className="group relative isolate block px-4 py-3 transition"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#0e0e0e] transition-transform duration-300 ease-out group-hover:scale-y-100 motion-reduce:transition-none"
+                  />
+                  Invoicing
+                </Link>
+              </>
             )}
 
             <Link

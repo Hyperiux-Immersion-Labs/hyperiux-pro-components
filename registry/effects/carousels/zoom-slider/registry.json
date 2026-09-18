@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-28",
-      "summary": "Added reduced-motion support and exposed title, subheading, and sliderData as public props.",
+      "summary": "Added reduced-motion support and customizable slider content.",
       "breaking": false
     },
     {

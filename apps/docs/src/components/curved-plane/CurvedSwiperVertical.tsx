@@ -329,7 +329,7 @@ const CurvedPlaneVertical = ({
       root: container,
       onFrame: () => {
         if (reduceMotionRef.current) {
-          // Snap columns — no inertia or curve deformation.
+          // Snap columns - no inertia or curve deformation.
           velocityRef.current = 0;
           targetDeformationRef.current = 0;
           deformationRef.current = 0;

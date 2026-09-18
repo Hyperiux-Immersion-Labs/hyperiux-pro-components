@@ -557,7 +557,7 @@ export default function HoverSliderComp({ items = [], transitionDuration = 0.45,
         for (let i = 0; i < VISIBLE; i++) {
           const offset = i - HALF;
 
-          // Reduced-motion: only the active (center) card — hide the stack above/below.
+          // Reduced-motion: only the active (center) card - hide the stack above/below.
           if (reduceMotion && offset !== 0) {
             meshes[i].material.uniforms.uAlpha.value = 0;
             meshes[i].position.set(0, 0, i);

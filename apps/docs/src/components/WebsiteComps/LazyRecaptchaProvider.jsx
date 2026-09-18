@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ReCaptchaProvider } from "next-recaptcha-v3";
+import { RECAPTCHA_ARM_EVENT } from "@/lib/recaptchaEvents";
 
 const MODAL_KEYS = ["custom-animation-form", "work-with-hyperiux"];
 
@@ -23,6 +24,18 @@ function LazyRecaptchaProviderInner({ children }) {
   if (needsRecaptcha && !armed) {
     setArmed(true);
   }
+
+  // Non-query-param triggers (e.g. ExitIntentInviteModal, opened by cursor
+  // behavior rather than a "?work-with-hyperiux=open" link) can't be
+  // detected from searchParams above, so they ask for the provider via this
+  // event instead - see lib/recaptchaEvents.js.
+  useEffect(() => {
+    if (armed) return;
+
+    const handleArm = () => setArmed(true);
+    window.addEventListener(RECAPTCHA_ARM_EVENT, handleArm);
+    return () => window.removeEventListener(RECAPTCHA_ARM_EVENT, handleArm);
+  }, [armed]);
 
   if (!enabled) return children;
 

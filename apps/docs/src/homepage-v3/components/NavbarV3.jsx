@@ -1,46 +1,42 @@
 "use client";
 import { HyperiuxLogo } from "@/utils/Icons";
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import dynamic from "next/dynamic";
 import ButtonV3 from "./ButtonV3";
 import HoverLinkV3 from "./HoverLinkV3";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, User } from "lucide-react";
 import { useLenis } from "lenis/react";
 import { GlobalSearch } from "@/components/layout/SearchBar";
-import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
+import { hasCachedClerkSession } from "@/lib/clerkSessionCache";
 import { useLoaderV3Complete, useLoaderV3Handoff } from "./loader-v3-state";
 import NavDropdownV3 from "./NavDropdownV3";
 import NavbarMobileV3 from "./NavbarMobileV3";
 import Link from "next/link";
 
-// Dynamic so ProfileDropDown's Clerk imports never load on marketing routes -
-// it only renders when isSignedIn, which is always false there (same
-// reasoning as VaultHeader.jsx, which this mirrors).
-const ProfileDropdown = dynamic(
-  () => import("@/components/layout/ProfileDropDown"),
-  { ssr: false }
-);
-
 // Fallback only. The loader normally lands its mark on the logo and says so,
-// and the bar comes in on that beat — this is what covers an exit that never
+// and the bar comes in on that beat - this is what covers an exit that never
 // gets there (the burst, or the loader bailing out early).
 const INTRO_DELAY_MS = 2400;
 
-// isSignedIn/user default to signed-out (not Clerk-aware by itself) since
-// this component is also rendered on marketing routes with no ClerkProvider
-// in the tree (see Homepage.jsx) - callers on (app)-group pages that DO have
-// Clerk available (e.g. VaultShell, used by the pricing page) should read
-// useUser() themselves and pass the live values down, same pattern as
-// AppVaultHeader supplying VaultHeader with real auth state.
+// isSignedIn defaults to signed-out (not Clerk-aware by itself) since this
+// component is also rendered on marketing routes with no ClerkProvider in
+// the tree (see Homepage.jsx). Deliberately not wired to the rich
+// Clerk-based ProfileDropdown anywhere (including pages that do have a
+// ClerkProvider, like the pricing page via VaultShell) - every page just
+// gets the same plain avatar icon linking to /dashboard when signed in, so
+// this bar never depends on Clerk being loaded.
 export default function NavbarV3({
   effects = [],
   introOnLoader = false,
   isSignedIn = false,
-  user = null,
 }) {
   const navRef = useRef(null);
-  const [wishlistCount, setWishlistCount] = useState(0);
-  const [usage, setUsage] = useState(null);
+  // isSignedIn defaults to false here (no ClerkProvider on marketing
+  // routes - see the component comment above), so a browser that's
+  // actually signed in would otherwise see a "Sign In" prompt every time
+  // it lands back on the homepage/pricing/etc. This is a client-only cache
+  // check (Clerk's __client_uat cookie) that swaps the prompt for the same
+  // generic account icon pointing at /dashboard.
+  const [cachedSignedIn, setCachedSignedIn] = useState(false);
   const [reveal, setReveal] = useState(true);
   const [introTimedOut, setIntroTimedOut] = useState(!introOnLoader);
   const [openTrigger, setOpenTrigger] = useState(0);
@@ -78,7 +74,7 @@ export default function NavbarV3({
   const loaderComplete = useLoaderV3Complete();
   const loaderHandoff = useLoaderV3Handoff();
   // The handoff is the real cue: the loader's mark has come to rest on the logo
-  // and the bar fades up around it, in place. It must not slide in on this —
+  // and the bar fades up around it, in place. It must not slide in on this -
   // the logo is already where it belongs and moving it would undo the merge.
   const introReady = introTimedOut || loaderHandoff;
 
@@ -89,63 +85,15 @@ export default function NavbarV3({
     return () => window.clearTimeout(timer);
   }, [introTimedOut, loaderComplete]);
 
-  // Feeds ProfileDropdown's "Saved Effects"/"Usage" rows - same fetches
-  // VaultHeader.jsx runs for the (app)-group header, so the dropdown shows
-  // real data here too instead of just the avatar shell.
+  // Runs once on mount, client-only - reads the cookie as soon as this
+  // component hydrates rather than waiting on any network round-trip.
+  // Skipped entirely once a real ClerkProvider is already reporting
+  // isSignedIn, since the live value is always more current than the cache.
   useEffect(() => {
-    if (!isSignedIn) return;
-
-    async function loadWishlistCount() {
-      try {
-        const res = await fetch("/api/wishlist");
-
-        if (!res.ok) return;
-
-        const data = await res.json();
-
-        setWishlistCount(data.length);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    loadWishlistCount();
-  }, [isSignedIn]);
-
-  useEffect(() => {
-    if (!isSignedIn) return;
-
-    async function loadUsage() {
-      try {
-        const res = await fetch("/api/copy-usage");
-
-        if (!res.ok) return;
-
-        const data = await res.json();
-
-        setUsage(data);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    loadUsage();
-  }, [isSignedIn]);
-
-  useEffect(() => {
-    if (!isSignedIn) return;
-
-    const handleWishlistChanged = (e) => {
-      setWishlistCount((count) =>
-        e.detail?.saved ? count + 1 : Math.max(0, count - 1)
-      );
-    };
-
-    window.addEventListener(WISHLIST_CHANGED_EVENT, handleWishlistChanged);
-
-    return () => {
-      window.removeEventListener(WISHLIST_CHANGED_EVENT, handleWishlistChanged);
-    };
+    if (isSignedIn) return;
+    // Reads document.cookie, a real external system, not derivable during render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCachedSignedIn(hasCachedClerkSession());
   }, [isSignedIn]);
 
   useEffect(() => {
@@ -185,7 +133,7 @@ export default function NavbarV3({
     <>
       <nav
         ref={navRef}
-        // The intro is a fade in place — the loader's mark lands on the logo
+        // The intro is a fade in place - the loader's mark lands on the logo
         // where it already sits, so the bar can only appear around it. Sliding
         // is reserved for the scroll reveal, once the bar is its own again.
         // `translate` is listed alongside `transform`: the translate-y utilities
@@ -235,6 +183,13 @@ export default function NavbarV3({
                 </div>
               </div>
             </HoverLinkV3>
+          </div>
+          <div
+            className="flex"
+            onPointerEnter={closeOnHover}
+            onFocusCapture={closeOnHover}
+          >
+            <HoverLinkV3 href="/templates" text="Templates" />
           </div>
           <div
             className="flex"
@@ -311,12 +266,14 @@ export default function NavbarV3({
               ⌘ K
             </kbd>
           </button>
-          {isSignedIn ? (
-            <ProfileDropdown
-              savedCount={wishlistCount}
-              usage={usage}
-              plan={user?.publicMetadata?.plan || "free"}
-            />
+          {isSignedIn || cachedSignedIn ? (
+            <Link
+              href="/dashboard"
+              aria-label="Account"
+              className="group flex size-12 items-center justify-center rounded-full border border-primary bg-[#161616] text-white/80 transition-colors hover:bg-[#1f1f1f] hover:text-white"
+            >
+              <User className="size-4" />
+            </Link>
           ) : (
             <ButtonV3 href="/sign-in" text="Sign In" />
           )}
@@ -329,6 +286,7 @@ export default function NavbarV3({
         visible={reveal}
         intro={introReady}
         onSearch={openSearch}
+        isSignedIn={isSignedIn || cachedSignedIn}
       />
 
       <GlobalSearch effects={effects} externalOpen={openTrigger} />

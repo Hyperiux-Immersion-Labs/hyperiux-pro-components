@@ -266,7 +266,7 @@ export default function DepthCardStackComp({
  }, [navigate, autoplayResetKey]);
 
  useEffect(() => {
- // Reduced-motion: no pointer tilt / texture reveal — reset any leftover transforms.
+ // Reduced-motion: no pointer tilt / texture reveal - reset any leftover transforms.
  if (reduceMotion || !mouseInteraction) {
   isHoveredRef.current = false;
   cardFaceRefs.current.forEach((face: any) => {

@@ -68,7 +68,7 @@ export default function Preview() {
       const textWrappers = rows.map((row) =>
         row.querySelector(".preview-text-wrapper"),
       );
-      // One glyph per row, each parked in its own row's second column — empty
+      // One glyph per row, each parked in its own row's second column - empty
       // on compact layouts, where the rows render the icon directly instead.
       const asciis = morphs ? asciiRefs.current : [];
 
@@ -86,7 +86,7 @@ export default function Preview() {
       // ── Numbers → icons: scrubbed glyph morph, one per row ───────────────
       // Every row opens as its step number and its glyphs travel into the icon
       // as that row comes through. Each glyph is a real token moving from its
-      // spot in the numeral to its spot in the icon — an actual morph, not a
+      // spot in the numeral to its spot in the icon - an actual morph, not a
       // dissolve. progress → t is a pure function of scroll, so scrubbing back
       // replays the journey in reverse instead of snapping. The four windows are
       // staggered and don't overlap, so the rows turn over one at a time and the
@@ -109,7 +109,7 @@ export default function Preview() {
       // Row 0 starts active. Rows 1–3 start with marks hidden.
       gsap.set(marks.slice(1).flat(), { autoAlpha: 0 });
 
-      // ── x translate — inverted neighbour falloff ─────────────────────────
+      // ── x translate - inverted neighbour falloff ─────────────────────────
       // Active row stays flush (closest). Distance pushes neighbours out, so
       // the farther a row is from the current step the farther it sits.
       //
@@ -121,8 +121,8 @@ export default function Preview() {
       // Active row (distance = 0) → factor = 0 → flush.
       // One row away (distance = 1, FALLOFF = 1.5) → factor ≈ 0.67 → ~2vw.
       // Two rows away → factor = 1 → full indent (3vw).
-      const INDENT_VW = 3;       // vw — how far inactive rows translate
-      const FALLOFF    = 1.5;    // rows — how quickly the nudge grows with distance
+      const INDENT_VW = 3;       // vw - how far inactive rows translate
+      const FALLOFF    = 1.5;    // rows - how quickly the nudge grows with distance
 
       const updateX = (progress) => {
         const INDENT_PX = INDENT_VW * 0.01 * window.innerWidth;
@@ -234,7 +234,7 @@ export default function Preview() {
               />
               <div className="preview-text-wrapper flex flex-col max-[1025px]:gap-[2vw] max-md:gap-[3vw] gap-[1vw] will-change-transform">
                 <p className="text34">{step.title}</p>
-                <p className="t22 w-[80%] max-[1025px]:w-[95%] max-md:w-[95%]">{step.text}</p>
+                <p className="text-[1.2vw] max-md:text-[3vw] max-[1025px]:text-[2.2vw] w-[80%] max-[1025px]:w-[95%] max-md:w-[95%]">{step.text}</p>
               </div>
             </div>
             <div className="w-[15vw] max-[1025px]:w-[6vw] max-md:w-[5vw] h-full" />

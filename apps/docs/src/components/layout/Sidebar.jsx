@@ -18,6 +18,7 @@ import {
   Pricing,
   Npm,
   Mcp,
+  TemplateIcon
 } from "../WebsiteComps/Icons";
 import Link from "next/link";
 
@@ -297,6 +298,9 @@ export function Sidebar({
   const isOverviewActive =
     pathname === "/effects" && (!currentCategory || currentCategory === "all");
 
+  const isTemplatesActive =
+    pathname === "/templates" || pathname.startsWith("/templates/");
+
   const isCategoriesActive =
     !isDocsActive &&
     !isLegalActive &&
@@ -447,6 +451,17 @@ export function Sidebar({
     if (wasHandled === true) return;
 
     router.push("/effects", { scroll: false });
+  };
+
+  // No sub-category tree yet (Hero/About/SaaS/etc, per the Figma design) -
+  // that needs real Sanity-backed counts. This is a plain top-level link
+  // until that data exists, same as "All Effects" today.
+  const navigateTemplates = (event) => {
+    event?.preventDefault();
+
+    setOpenSection("");
+    startNavigation("/templates");
+    router.push("/templates", { scroll: false });
   };
 
   const navigateCategory = (event, categoryId) => {
@@ -609,8 +624,9 @@ export function Sidebar({
             onMouseEnter={() => setHoveredSidebarKey("overview")}
           />
 
+
           <SectionButton
-            label="Categories"
+            label="Effect Categories"
             icon={Category}
             isExpanded={isExpanded}
             isOpen={openSection === "categories"}
@@ -618,6 +634,7 @@ export function Sidebar({
             onClick={() => toggleSection("categories")}
             onMouseEnter={() => setHoveredSidebarKey("categories")}
           />
+
 
           <AnimatePresence initial={false}>
             {isExpanded && openSection === "categories" && (
@@ -678,6 +695,17 @@ export function Sidebar({
               </motion.div>
             )}
           </AnimatePresence>
+
+
+          <NavIconLink
+            label="Templates"
+            href="/templates"
+            icon={TemplateIcon}
+            isExpanded={isExpanded}
+            isActive={hoveredSidebarKey ? hoveredSidebarKey === "templates" : isTemplatesActive}
+            onClick={navigateTemplates}
+            onMouseEnter={() => setHoveredSidebarKey("templates")}
+          />
 
           <SectionButton
             label="Documentation"

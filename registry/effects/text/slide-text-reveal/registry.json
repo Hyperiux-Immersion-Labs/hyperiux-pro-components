@@ -5,7 +5,7 @@
     {
       "version": "1.1.0",
       "date": "2026-07-30",
-      "summary": "Removed start/end controls, added duration, speed, stagger, and a left-slide variant. The reveal now plays normally on replay instead of being scrubbed by default.",
+      "summary": "Added reduced motion support.",
       "breaking": false
     },
     {

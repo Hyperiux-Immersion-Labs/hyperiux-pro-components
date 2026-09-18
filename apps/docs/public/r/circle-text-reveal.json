@@ -15,7 +15,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Added reduced-motion support and reworked the props API to working lerp/smoothness/circleSize controls.",
+      "summary": "Added reduced motion support.",
       "breaking": false
     },
     {

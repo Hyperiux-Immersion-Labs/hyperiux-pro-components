@@ -27,14 +27,14 @@ const PRICING = {
 const ProCta = dynamic(() => import("./PricingV3Cta"), { ssr: false });
 
 const FREE_FEATURES = [
-    "40+ production-ready effects",
+    "50+ production-ready effects",
     "Copy-paste + CLI install",
     "Commercial-friendly usage",
     "Code you own",
 ];
 
 const PRO_FEATURES = [
-    "All 130+ effects",
+    "All 150+ effects",
     "New effects added regularly",
     "Priority access to upcoming packs",
     "Hyperiux CLI install + auth",
@@ -157,7 +157,7 @@ function FeatureList({ features, className = "", onDark = false }) {
 
 /**
  * Four-square mark from the design. Hidden until its card is hovered, then the
- * squares stutter in with a white/dark flicker — `flashClassName` picks the
+ * squares stutter in with a white/dark flicker - `flashClassName` picks the
  * flash tone that reads against the card it sits on.
  */
 function PixelSquares({ flashClassName }) {

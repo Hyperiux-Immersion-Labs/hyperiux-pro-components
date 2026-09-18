@@ -74,7 +74,7 @@ const CARD_META = IMAGES.map((_, i) => {
     return { scale, blur };
 });
 
-// Pre-computed per-card stagger fractions — these are pure constants of i and TOTAL,
+// Pre-computed per-card stagger fractions - these are pure constants of i and TOTAL,
 // computing them inside the onUpdate loop was wasting CPU every scroll tick.
 const CARD_STAGGER_FRAC = IMAGES.map((_, i) => {
     const staggerFrac = 0.82;
@@ -130,8 +130,8 @@ export default function SpiralGallery() {
 
             // The full-motion spiral is allowed to overflow because the cards are
             // mid-flight and fade out before they settle. Here they *do* settle, so
-            // the orbit has to be shrunk until every card — at its own depth scale,
-            // plus the bleed its blur adds — fits inside the clipping container.
+            // the orbit has to be shrunk until every card - at its own depth scale,
+            // plus the bleed its blur adds - fits inside the clipping container.
             const fitRadii = () => {
                 const host = cardsContainerRef.current;
                 if (!host) return { rx: RADIUS_X, ry: RADIUS_Y };

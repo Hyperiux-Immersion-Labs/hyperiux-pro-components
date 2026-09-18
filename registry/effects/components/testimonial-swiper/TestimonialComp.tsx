@@ -92,7 +92,7 @@ export default function TestimonialComp({
             isAnimatingRef.current = false;
         };
 
-        // Reduced-motion: skip SplitText / Y slides — opacity fade only.
+        // Reduced-motion: skip SplitText / Y slides - opacity fade only.
         if (reduceMotionRef.current) {
             gsap.set(quoteRef.current, { autoAlpha: 0 });
             gsap.set(meta, { autoAlpha: 0 });

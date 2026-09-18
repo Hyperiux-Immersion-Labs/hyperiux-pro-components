@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added reduced-motion support and rAF-throttled mousemove handling to cut redundant re-renders.",
+      "summary": "Added reduced-motion support and optimized cursor tracking.",
       "breaking": false
     },
     {
