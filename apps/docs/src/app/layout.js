@@ -41,7 +41,6 @@ const neueHaasUnica = localFont({
   display: "swap",
   preload: false,
 });
-
 const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",

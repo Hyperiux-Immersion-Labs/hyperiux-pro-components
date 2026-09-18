@@ -864,7 +864,7 @@ export default function Globe({ autoConnect = false, autoRotate = true, rotation
         showLabels,
     ]);
     const activeStore = STORES[activeIndex];
-    return (<section ref={sectionRef} className={`relative flex h-screen w-full flex-col overflow-hidden bg-[#101010] px-10 pb-10 pt-28 font-sans text-[#fffaf2] max-md:gap-4 max-md:px-5 max-md:pb-5 max-md:pt-24 ${className}`}>
+    return (<section ref={sectionRef} className={`relative flex h-screen w-full flex-col overflow-hidden bg-[#101010] px-10 pb-10 pt-28 text-[#fffaf2] max-md:gap-4 max-md:px-5 max-md:pb-5 max-md:pt-24 ${className}`}>
       
       <div ref={stageRef} className="pointer-events-none absolute inset-0 bottom-23 flex items-center justify-center max-[1025px]:relative max-[1025px]:inset-auto max-[1025px]:order-2 max-[1025px]:aspect-square max-[1025px]:w-full">
         <canvas ref={canvasRef} aria-hidden="true" className={`pointer-events-auto h-full w-full touch-none ${enableDrag ? "cursor-grab active:cursor-grabbing" : "cursor-default"}`}/>
