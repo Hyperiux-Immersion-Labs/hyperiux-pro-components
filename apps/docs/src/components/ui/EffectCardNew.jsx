@@ -39,7 +39,16 @@ const LISTING_COVER_WIDTH = 1200;
 const LISTING_COVER_HEIGHT = 675;
 
 function resolveEffectCoverImage(effect) {
-  const raw = effect?.coverImage || effect?.imageSrc;
+  // The lightweight registry-index item (used for filtering/sorting) has no
+  // coverImage/imageSrc - only the full effect payload (fetched later via
+  // /api/effects/list) does. Sanity itself defaults an effect's coverImage
+  // to its own slug when none is set explicitly (see buildEffectsFromSanity
+  // in sanity.js), so falling back to the slug here lets the card guess the
+  // same deterministic cover URL immediately instead of showing a blank
+  // placeholder until that fetch resolves; onError below still catches a
+  // wrong guess.
+  const raw =
+    effect?.coverImage || effect?.imageSrc || effect?.effectSlug || effect?.slug || effect?.name;
   if (!raw || raw === "/assets/img/image01.webp" || raw === "image01") return null;
 
   const resolved = resolveMediaUrl(raw, {
@@ -177,6 +186,7 @@ export function EffectCard({
           {shouldRenderVideo && (
             <video
               {...videoProps}
+              poster={coverImage || undefined}
               className={`absolute inset-0 h-full w-full object-cover  ${
                 showVideo ? "opacity-100" : "opacity-0"
               }`}

@@ -263,7 +263,7 @@ export default function HeroBannerAnimated({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-              className='absolute py-[5vw] px-[4vw] z-999 pointer-events-none top-0 left-0 text-[var(--hero-accent-color)] w-full h-full max-sm:py-[8vw] max-sm:px-[5vw]'
+              className='absolute py-[5vw] px-[4vw] z-100 pointer-events-none top-0 left-0 text-[var(--hero-accent-color)] w-full h-full max-sm:py-[8vw] max-sm:px-[5vw]'
             >
               <div className='flex items-start max-md:hidden pt-[2vw] gap-[2vw] max-md:pt-[10vw] max-md:gap-[4vw]'>
                 <motion.h1
@@ -278,7 +278,7 @@ export default function HeroBannerAnimated({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                  className='uppercase w-[25vw] translate-y-[-6vw] text-[1vw]  flex items-center justify-center text-left max-[1025px]:w-[45vw] max-md:w-[45vw] max-[1025px]:text-[2vw] max-md:text-[2.8vw] max-md:translate-y-[-8vw]'
+                  className='uppercase w-[28vw] pl-10  translate-y-[-6vw] text-[1vw]  flex items-center justify-center text-left max-[1025px]:w-[45vw] max-md:w-[45vw] max-[1025px]:text-[2vw] max-md:text-[2.8vw] max-md:translate-y-[-8vw]'
                 >
                   Hyperiux immersion labs is an independent design agency in india.
                   <span className='w-6 h-3 flex mt-[1.5vw] bg-[var(--hero-accent-color)] max-sm:hidden items-center justify-center mr-[3vw] max-sm:mt-[3vw]'>

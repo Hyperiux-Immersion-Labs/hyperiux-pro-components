@@ -4,23 +4,95 @@ import { useLenis } from "lenis/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import LinkButton from "../link-button";
-import Button from "./Button";
 import { getEffectRouteSlug } from "@/lib/effect-slugs";
-import ButtonV3 from "@/homepage-v3/components/ButtonV3";
+import { getEffectCategoryBySlug } from "@/lib/categories";
 
+const LIGHT_TEXT_COLORS = new Set(["#ffffff", "#fff", "white"]);
+
+// The exact title/category only exist server-side (Sanity), but the slug in
+// the URL already spells out the title in almost every case (e.g.
+// "hero-banner-animated" -> "Hero Banner Animated") - guessing it from the
+// slug renders instantly instead of leaving the label blank for the
+// round-trip to /api/effects/list below.
+function formatSlugAsTitle(slug = "") {
+  return slug
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function HeaderLink({ href, children }) {
+  return (
+    <Link
+      href={href}
+      className="group relative inline-flex flex-col text-sm leading-none"
+    >
+      <span className="transition-colors duration-300 ease-in-out group-hover:text-[#ff5f00]">
+        {children}
+      </span>
+      {/* Always visible at rest (full width). On hover it undraws to the
+          right then redraws from the left in one pass - see the
+          demo-header-underline keyframes in globals.css. */}
+      <span
+        aria-hidden="true"
+        className="absolute -bottom-1 left-0 h-px w-full bg-current group-hover:bg-[#ff5f00] group-hover:[animation:demo-header-underline_0.6s_ease-in-out]"
+      />
+    </Link>
+  );
+}
+
+/**
+ * @param {{
+ *   text?: string,
+ *   textColor?: string,
+ *   href?: string,
+ *   allEffectsHref?: string,
+ *   logoColor?: string,
+ *   showText?: boolean,
+ * }} props
+ */
 export default function DemoHeader({
-  logoColor = "#1a1a1a",
-  text = "Back to Effects",
+  text = "Home",
   textColor = "#1a1a1a",
-  href = "/effects",
-  showText = true,
+  href = "/",
+  allEffectsHref = "/effects",
+  // logoColor/showText: unused now (no logo/buttons left to color or hide),
+  // but ~150 call sites across /demo still pass them - accepted and ignored
+  // so those call sites keep type-checking instead of needing a mass edit.
+  logoColor,
+  showText,
 }) {
   const [isHidden, setIsHidden] = useState(false);
   const [readArticleHref, setReadArticleHref] = useState(href);
-  const lastScrollRef = useRef(0);
   const pathname = usePathname()?.replace(/\/$/, "") || "";
-  const demoSlug = pathname.startsWith("/demo/") ? pathname.slice(6) : "";
+  // Multi-step demos (transitions with a "click to see the next page" flow)
+  // nest a second route segment under the same effect, e.g.
+  // /demo/aperture-transition/page2 - only the first segment is the actual
+  // effect slug, so page2/page3/etc must never leak into the title lookup.
+  const demoSlug = pathname.startsWith("/demo/") ? pathname.split("/")[2] || "" : "";
+
+  const [effectTitle, setEffectTitle] = useState(() => formatSlugAsTitle(demoSlug));
+  const [categoryName, setCategoryName] = useState("");
+  const [prevDemoSlug, setPrevDemoSlug] = useState(demoSlug);
+  const lastScrollRef = useRef(0);
+
+  // Route changes (client-side nav between demo pages) don't remount this
+  // component, so the guessed title has to be re-derived per-slug too, not
+  // just on first mount. Adjusting state directly during render (React's
+  // documented reset-on-prop-change pattern, tracked via state rather than a
+  // ref) instead of in an effect avoids an extra commit-then-cascading-render
+  // pass.
+  if (demoSlug !== prevDemoSlug) {
+    setPrevDemoSlug(demoSlug);
+    setEffectTitle(formatSlugAsTitle(demoSlug));
+    setCategoryName("");
+  }
+
+  const isDarkBackground = LIGHT_TEXT_COLORS.has(
+    textColor?.toString().toLowerCase()
+  );
+  const textColorClass = isDarkBackground ? "text-white" : "text-black";
 
   useLenis((lenis) => {
     const currentScroll = lenis.scroll;
@@ -48,20 +120,26 @@ export default function DemoHeader({
 
     async function resolveArticleHref() {
       try {
-        const response = await fetch("/api/effects/search-index");
+        const canonicalSlug = getEffectRouteSlug(demoSlug);
+
+        // A single-slug lookup instead of the full search index (every
+        // effect on the site) - much smaller payload, so the real title/
+        // category swap in over the slug-derived guess a lot sooner.
+        const response = await fetch(
+          `/api/effects/list?slugs=${encodeURIComponent(canonicalSlug)}`
+        );
 
         if (!response.ok) {
-          throw new Error(`Failed to load effect index: ${response.status}`);
+          throw new Error(`Failed to load effect: ${response.status}`);
         }
 
         const data = await response.json();
-        const canonicalSlug = getEffectRouteSlug(demoSlug);
         const effect = data.effects?.find(
           (entry) =>
             entry.effectSlug === canonicalSlug ||
             entry.slug === canonicalSlug ||
             entry.name === canonicalSlug
-        );
+        ) || data.effects?.[0];
 
         if (!isActive) return;
 
@@ -70,6 +148,14 @@ export default function DemoHeader({
             ? `/effects/${effect.categorySlug}/${effect.effectSlug}`
             : href
         );
+
+        setEffectTitle(effect?.title || formatSlugAsTitle(demoSlug));
+
+        const category = effect?.categorySlug
+          ? getEffectCategoryBySlug(effect.categorySlug)
+          : null;
+
+        setCategoryName(category?.name || effect?.category || "");
       } catch {
         if (isActive) {
           setReadArticleHref(href);
@@ -84,96 +170,29 @@ export default function DemoHeader({
     };
   }, [demoSlug, href]);
 
+  const label = effectTitle
+    ? categoryName
+      ? `${effectTitle} - ${categoryName}`
+      : effectTitle
+    : "";
 
   return (
-    <>
-      <header className={`fixed left-0 backdrop-blur-sm top-0  z-300 w-full px-10 max-[1025px]:px-5 max-[1025px]:py-6 max-md:py-3 py-2 transition-transform duration-500 ease-out max-md:pt-4 max-[1025px]:pt-6 ${isHidden ? "-translate-y-full" : "translate-y-0"}`}>
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <Link
-              href="/effects"
-              className="inline-flex items-center"
-              aria-label="Go to Effects"
-            >
-              <span
-                aria-label="Hyperiux"
-                role="img"
-                className="inline-flex shrink-0 items-center gap-2"
-                style={{ color: logoColor }}
-              >
-                <svg
-                  width="30"
-                  height="30"
-                  viewBox="0 0 58 65"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M0 0H9.02977V28.5943H0V0Z" fill="currentColor" />
-                  <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="currentColor" />
-                  <path d="M0.0195312 36.1192V64.7135H9.0493V42.139L21.5405 37.4737V28.7449L0.0195312 36.1192Z" fill="currentColor" />
-                  <path d="M48.1777 22.5746V0.00012207H57.3579V28.5944L34.332 37.8697V28.5944L48.1777 22.5746Z" fill="currentColor" />
-                  <path d="M21.9912 29.0459L28.4868 26.8346C28.8573 26.7085 29.2624 26.7316 29.6161 26.8992L34.7834 29.3469M21.9912 29.0459L28.1616 32.2063M21.9912 29.0459V37.1727L28.1616 40.0321M34.7834 29.3469L28.1616 32.2063M34.7834 29.3469C34.7834 32.3443 34.7834 34.1753 34.7834 37.1727L28.1616 40.0321M28.1616 32.2063V40.0321" stroke="currentColor" strokeWidth="0.902977" />
-                </svg>
+    <header
+      className={`fixed left-0 top-0 z-300 w-full px-10 max-[1025px]:px-5 max-[1025px]:py-6 max-md:py-3 py-4 transition-transform duration-500 ease-out max-md:pt-4 max-[1025px]:pt-6 ${
+        isHidden ? "-translate-y-full" : "translate-y-0"
+      } ${textColorClass}`}
+    >
+      <div
+        className="flex items-center gap-6 text-sm max-md:flex-col max-md:gap-2 max-md:items-start"
+        style={{ textShadow: "0 1px 3px rgba(0, 0, 0, 0.3)" }}
+      >
+        <span className="truncate font-semibold">{label}</span>
 
-                <svg
-                  width="156"
-                  height="19"
-                  viewBox="0 0 351 43"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  className="h-10 w-34"
-                >
-                  <path d="M315.441 6.10352e-05H306.862L320.055 15.9603L324.019 21.0695L306.862 42.139H315.591L332.597 21.0695L328.555 15.9603L315.441 6.10352e-05Z" fill="currentColor" />
-                  <path d="M350.055 6.10352e-05H341.326L332.598 10.6853L336.962 15.9527L350.055 6.10352e-05Z" fill="currentColor" />
-                  <path d="M349.905 42.139L341.176 42.139L332.598 31.7548L336.962 26.3369L349.905 42.139Z" fill="currentColor" />
-                  <path d="M264.874 6.10352e-05H258.252V34.0122L269.088 42.139H289.555L300.391 34.0122V6.10352e-05H293.769V29.9349C293.769 30.4164 293.539 30.8688 293.149 31.152L287.543 35.2293C287.286 35.4164 286.976 35.5172 286.658 35.5172H271.985C271.667 35.5172 271.357 35.4164 271.1 35.2293L265.494 31.152C265.104 30.8688 264.874 30.4164 264.874 29.9349V6.10352e-05Z" fill="currentColor" />
-                  <rect x="244.406" y="6.10352e-05" width="6.62183" height="42.1389" fill="currentColor" />
-                  <path d="M195.043 0.000183105H228.002V6.62202H201.665V42.2896H195.043V0.000183105Z" fill="currentColor" />
-                  <path d="M233.269 24.0796L237.182 18.1404V6.62202V0.000183105H195.043V6.62202H230.56V15.8023L225.594 24.0796H233.269Z" fill="currentColor" />
-                  <path d="M221.078 17.7586H201.664V24.3804H217.466L229.205 42.139H237.163L221.078 17.7586Z" fill="currentColor" />
-                  <path d="M182.401 24.3804V17.7585H162.235L153.205 27.9923H162.084L165.245 24.3804H182.401Z" fill="currentColor" />
-                  <path d="M158.322 0H188.421V6.62183H161.031L152.904 15.9526V35.5171H188.421V42.1389H146.282V12.0397L158.322 0Z" fill="currentColor" />
-                  <rect x="97.5234" y="17.7585" width="6.62183" height="24.3804" fill="currentColor" />
-                  <path d="M139.662 0H97.5234V6.62183H133.041V17.7586H111.15L104.534 24.3804H133.643L139.662 18.0595V0Z" fill="currentColor" />
-                  <path d="M55.3826 10.8357L55.3826 0H48.7607L48.7607 14.8991L66.5754 24.2299L66.5193 42.1389H73.1411V24.2299L90.8997 14.7486V0H84.2779V10.8357L69.8302 18.4786L55.3826 10.8357Z" fill="currentColor" />
-                  <rect width="6.62183" height="42.1389" fill="currentColor" />
-                  <rect x="35.5166" width="6.62183" height="42.1389" fill="currentColor" />
-                  <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="currentColor" />
-                </svg>
-              </span>
-            </Link>
-          </div>
-
-          <div className="min-w-0 text-right flex items-center justify-center gap-3">
-            {showText ? (
-              <>
-                <ButtonV3
-                                text="Read Article"
-                                href={readArticleHref}
-                                className="border-white/50! bg-[#0e0e0e]! max-[1025px]:hidden"
-                                variant="outline"
-                              />
-                <ButtonV3
-                  text={text}
-                  href={href}
-                  variant="orange"
-                  className=" max-[1025px]:hidden text-[1.2vw] border border-primary "
-                />
-                <LinkButton
-                  href={href}
-                  text={text}
-                  mobileText={text}
-                  textColor={textColor}
-                  clickedColor={textColor}
-                  className="hidden origin-right whitespace-nowrap text-xl scale-[0.7] transition-transform duration-200 max-[1025px]:block max-[1025px]:text-[4vw] max-md:block"
-                  iconClassName="h-5 w-5 max-[1025px]:h-6 max-[1025px]:w-6 max-md:h-6 max-md:w-6"
-                />
-              </>
-            ) : null}
-          </div>
+        <div className="flex shrink-0 items-center gap-4">
+          <HeaderLink href={readArticleHref}>Read Article</HeaderLink>
+          <HeaderLink href={allEffectsHref}>All Effects</HeaderLink>
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
 }
