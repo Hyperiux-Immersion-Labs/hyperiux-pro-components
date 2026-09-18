@@ -7,7 +7,29 @@ import { useEffect, useRef, useState } from "react";
 import { getEffectRouteSlug } from "@/lib/effect-slugs";
 import { getEffectCategoryBySlug } from "@/lib/categories";
 
-const LIGHT_TEXT_COLORS = new Set(["#ffffff", "#fff", "white"]);
+// Perceived brightness (0-255) of a hex color or "white"/"black" keyword.
+// Callers pass all sorts of near-white/near-black greys (#111111, #1a1a1a,
+// #cccccc, ...) as this signal, not just pure #ffffff/#000000, so this needs
+// to read the actual luminance rather than matching a fixed set of exact
+// strings - anything still mostly light (even with "a little darkness"
+// mixed in) should count as light.
+function getColorBrightness(color) {
+  const value = color?.toString().trim().toLowerCase();
+  if (!value) return 0;
+  if (value === "white") return 255;
+  if (value === "black") return 0;
+
+  const hex = value.replace(/^#/, "");
+  const normalized = hex.length === 3 ? hex.split("").map((c) => c + c).join("") : hex;
+  if (!/^[0-9a-f]{6}$/.test(normalized)) return 0;
+
+  const r = parseInt(normalized.slice(0, 2), 16);
+  const g = parseInt(normalized.slice(2, 4), 16);
+  const b = parseInt(normalized.slice(4, 6), 16);
+  return (r * 299 + g * 587 + b * 114) / 1000;
+}
+
+const LIGHT_COLOR_BRIGHTNESS_THRESHOLD = 128;
 
 // The exact title/category only exist server-side (Sanity), but the slug in
 // the URL already spells out the title in almost every case (e.g.
@@ -54,15 +76,18 @@ function HeaderLink({ href, children }) {
  */
 export default function DemoHeader({
   text = "Home",
-  textColor = "#1a1a1a",
+  textColor,
   href = "/",
   allEffectsHref = "/effects",
-  // logoColor/showText: unused now (no logo/buttons left to color or hide),
-  // but ~150 call sites across /demo still pass them - accepted and ignored
-  // so those call sites keep type-checking instead of needing a mass edit.
+  // logoColor/showText: no logo/buttons left to color or hide, but a few
+  // call sites across /demo only ever set logoColor (never textColor) since
+  // that used to be the color that mattered for a dark background - falling
+  // back to it below keeps those pages' text visible instead of defaulting
+  // to dark-on-dark.
   logoColor,
   showText,
 }) {
+  const resolvedTextColor = textColor ?? logoColor ?? "#1a1a1a";
   const [isHidden, setIsHidden] = useState(false);
   const [readArticleHref, setReadArticleHref] = useState(href);
   const pathname = usePathname()?.replace(/\/$/, "") || "";
@@ -89,9 +114,8 @@ export default function DemoHeader({
     setCategoryName("");
   }
 
-  const isDarkBackground = LIGHT_TEXT_COLORS.has(
-    textColor?.toString().toLowerCase()
-  );
+  const isDarkBackground =
+    getColorBrightness(resolvedTextColor) >= LIGHT_COLOR_BRIGHTNESS_THRESHOLD;
   const textColorClass = isDarkBackground ? "text-white" : "text-black";
 
   useLenis((lenis) => {
@@ -184,7 +208,7 @@ export default function DemoHeader({
     >
       <div
         className="flex items-center gap-6 text-sm max-md:flex-col max-md:gap-2 max-md:items-start"
-        style={{ textShadow: "0 1px 3px rgba(0, 0, 0, 0.3)" }}
+        
       >
         <span className="truncate font-semibold">{label}</span>
 
