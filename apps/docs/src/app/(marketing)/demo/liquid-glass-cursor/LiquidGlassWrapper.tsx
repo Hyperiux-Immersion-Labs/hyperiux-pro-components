@@ -73,7 +73,7 @@ Best experienced where hover exists.
 
   if (isMobile) {
     return (
-      <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden font-sans selection:bg-black selection:text-white">
+      <div className="min-h-screen w-full relative bg-[#F5F5F7] overflow-hidden selection:bg-black selection:text-white">
         {content}
       </div>
     )
@@ -82,7 +82,7 @@ Best experienced where hover exists.
   return (
     <LiquidGlassCursor
       {...cursorProps}
-      className="min-h-screen w-full bg-[#F5F5F7]! font-sans selection:bg-black selection:text-white"
+      className="min-h-screen w-full bg-[#F5F5F7]!  selection:bg-black selection:text-white"
     >
       {content}
     </LiquidGlassCursor>

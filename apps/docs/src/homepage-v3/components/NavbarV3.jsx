@@ -162,7 +162,7 @@ export default function NavbarV3({
         {/* Everything that isn't the logo trails it, so the mark reads as
             having been there first and the bar as assembling around it. */}
         <div
-          className={`flex bg-[#121212] t20 px-[1.5vw] py-[1vw] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 items-center gap-[2.5vw] transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${introReady ? "opacity-100" : "opacity-0"}`}
+          className={`flex bg-[#121212] text20 px-[1.5vw] py-[1vw] absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 items-center gap-[2.5vw] transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${introReady ? "opacity-100" : "opacity-0"}`}
         >
           <div
             className="flex"
