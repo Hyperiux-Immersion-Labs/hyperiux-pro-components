@@ -94,9 +94,16 @@ export async function POST(req) {
     return NextResponse.json({ received: true });
   }
 
-  // "payment.refunded" (not "refund.created") specifically: it only fires
-  // once the payment's refund_status reaches "full", so a partial refund -
-  // which shouldn't cost the buyer their access - never reaches here.
+  // "refund.created"/"refund.processed" - Razorpay has no "payment.refunded"
+  // event (confirmed against the actual webhook event catalog configured on
+  // this endpoint via GET /v1/webhooks; an earlier version of this branch
+  // listened for that non-existent event name and would never have fired).
+  // Both real events carry the same payment.entity.refund_status field
+  // ("partial" | "full") - gated on "full" so a partial refund, which
+  // shouldn't cost the buyer their access, never reaches here. Listening to
+  // both events (rather than just one) is pure redundancy against a missed
+  // delivery - markTemplatePurchaseRefunded/markUserFree are idempotent, so
+  // handling the same payment twice is a safe no-op.
   // Covers both purchase shapes, distinguished the same way every other
   // branch in this file already does (subscription entity present or not):
   //   - a subscription charge refunded -> immediate cutoff, no
@@ -108,10 +115,30 @@ export async function POST(req) {
   //     same as before.
   // Nothing else in the codebase reacts to a refund at all otherwise, so
   // without this branch a fully-refunded buyer keeps access forever.
-  if (event.event === "payment.refunded" && payment?.id) {
+  if (
+    (event.event === "refund.created" || event.event === "refund.processed") &&
+    payment?.id &&
+    payment?.refund_status === "full"
+  ) {
     try {
-      if (subscription && clerkUserId) {
-        await markUserFree({ clerkUserId, status: "refunded" });
+      if (payment.invoice_id) {
+        // A Razorpay-native recurring invoice (each subscription billing
+        // cycle gets one) - distinct from the ad-hoc Invoice
+        // create-order/route.js creates for a template purchase, which
+        // never actually links at the payment level (confirmed directly:
+        // a real subscription payment has invoice_id set, a real template
+        // payment has it null). Walk invoice -> subscription -> notes to
+        // find who this refund belongs to, since the refund/payment
+        // entities themselves carry no clerk_user_id.
+        const invoice = await razorpay.invoices.fetch(payment.invoice_id);
+        const refundedSubscription = invoice?.subscription_id
+          ? await razorpay.subscriptions.fetch(invoice.subscription_id)
+          : null;
+        const refundClerkUserId = refundedSubscription?.notes?.clerk_user_id;
+
+        if (refundClerkUserId) {
+          await markUserFree({ clerkUserId: refundClerkUserId, status: "refunded" });
+        }
       } else {
         await markTemplatePurchaseRefunded(payment.id);
       }
