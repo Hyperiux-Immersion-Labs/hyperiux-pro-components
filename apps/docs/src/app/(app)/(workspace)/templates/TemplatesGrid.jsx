@@ -35,7 +35,7 @@ export function TemplatesGrid({ templates }) {
     onRemoved: (template) =>
       showToast({ title: `${template.title} removed`, description: "No longer in your saved templates." }),
   });
-  const accessSlugs = useTemplateAccess();
+  const { accessSlugs, markPurchased } = useTemplateAccess();
 
   // No containerRef - scans the whole document, same as Hero.jsx/
   // ExplainVault.jsx's page-wide useFadeUp() calls. This is the only
@@ -137,6 +137,7 @@ export function TemplatesGrid({ templates }) {
                 toggleWishlist={toggleWishlist}
                 showPurchase
                 hasAccess={accessSlugs.includes(template.slug)}
+                onPurchased={() => markPurchased(template.slug)}
               />
             </FadeUp>
           ))}

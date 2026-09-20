@@ -155,9 +155,16 @@ export async function POST(req) {
       });
     }
 
-    // Order (one-time payment) branch - only the legacy $1 test-payment path
-    // reaches here now (see create-order/route.js's else branch); every
-    // template purchase goes through the invoice branch above instead.
+    // Order (one-time payment) branch - the comment this replaced assumed
+    // every template purchase goes through the invoice branch above
+    // instead, but that assumption doesn't hold: RazorpayCheckoutButton
+    // opens Checkout.js with only order_id (no invoice_id), and per
+    // Razorpay's own docs that always returns razorpay_order_id, never
+    // razorpay_invoice_id, in the handler callback - so template purchases
+    // actually land HERE, every time, not in the invoice branch above.
+    // create-order/route.js now mirrors the invoice's notes onto this order
+    // via orders.edit() specifically so this branch can identify and record
+    // them, the same way the invoice branch already does for itself.
     const order = await razorpay.orders.fetch(razorpay_order_id);
 
     if (order?.notes?.clerk_user_id !== userId) {
@@ -167,13 +174,28 @@ export async function POST(req) {
       );
     }
 
+    if (order?.notes?.template_slug) {
+      await recordTemplatePurchase({
+        clerkUserId: userId,
+        templateSlug: order.notes.template_slug,
+        razorpayPaymentId: razorpay_payment_id,
+        razorpayOrderId: razorpay_order_id,
+        amount: typeof order.amount === "number" ? order.amount / 100 : null,
+        currency: order.currency || "USD",
+      });
+    }
+
     console.log("RAZORPAY_PAYMENT_VERIFIED:", {
       userId,
       razorpay_order_id,
       razorpay_payment_id,
+      templateSlug: order?.notes?.template_slug || null,
     });
 
-    return NextResponse.json({ verified: true });
+    return NextResponse.json({
+      verified: true,
+      templateSlug: order?.notes?.template_slug || null,
+    });
   } catch (error) {
     console.error("RAZORPAY_VERIFY_PAYMENT_ERROR:", error);
 

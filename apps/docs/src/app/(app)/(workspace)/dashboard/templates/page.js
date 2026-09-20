@@ -122,7 +122,7 @@ export default function DashboardTemplatesPage() {
     onRemoved: (template) =>
       showToast({ title: `${template.title} removed`, description: "No longer in your saved templates." }),
   });
-  const accessSlugs = useTemplateAccess();
+  const { accessSlugs, markPurchased } = useTemplateAccess();
 
   const savedTemplates = wishlist.map(getTemplateBySlug).filter(Boolean);
 
@@ -220,6 +220,7 @@ export default function DashboardTemplatesPage() {
                     toggleWishlist={toggleWishlist}
                     showPurchase
                     hasAccess={accessSlugs.includes(template.slug)}
+                    onPurchased={() => markPurchased(template.slug)}
                   />
                 ))}
               </div>

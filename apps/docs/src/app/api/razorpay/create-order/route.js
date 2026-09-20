@@ -79,6 +79,22 @@ export async function POST(req) {
         email_notify: 0,
       });
 
+      // These notes live on the Invoice object above, NOT automatically on
+      // its auto-generated underlying order - confirmed via direct API
+      // inspection (a real order created this way came back with
+      // "notes": []). RazorpayCheckoutButton opens Checkout.js with only
+      // this order_id (no invoice_id), and per Razorpay's own docs a plain
+      // order_id checkout's handler callback only ever returns
+      // razorpay_order_id/payment_id/signature - never invoice fields - so
+      // verify-payment can only ever look this purchase up by the ORDER's
+      // notes, never the invoice's. Without this edit, every template
+      // purchase 403s in verify-payment ("Order does not belong to this
+      // user") after Razorpay's own checkout already told the buyer it
+      // succeeded, with no recovery path.
+      await razorpay.orders.edit(invoice.order_id, {
+        notes: { clerk_user_id: userId, template_slug: templateSlug },
+      });
+
       return NextResponse.json({
         orderId: invoice.order_id,
         amount: Math.round(amount * 100),

@@ -60,6 +60,11 @@ export function TemplateCard({
   // template.
   showPurchase = false,
   hasAccess = false,
+  // Notifies the caller a purchase just completed, so the accessSlugs list
+  // driving `hasAccess` above can flip (see useTemplateAccess.js's
+  // markPurchased) - without this, hasAccess stays whatever it was on the
+  // last fetch and the button falls back to "Buy" on the next re-render.
+  onPurchased,
 }) {
   const [imageError, setImageError] = useState(false);
   const [isPaywallOpen, setIsPaywallOpen] = useState(false);
@@ -303,6 +308,7 @@ export function TemplateCard({
         onClose={() => setIsPaywallOpen(false)}
         onPurchased={() => {
           setIsPaywallOpen(false);
+          onPurchased?.();
           window.location.href = downloadHref;
         }}
       />
