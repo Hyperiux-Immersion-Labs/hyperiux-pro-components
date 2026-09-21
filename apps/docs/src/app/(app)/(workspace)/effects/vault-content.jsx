@@ -898,7 +898,7 @@ export function VaultContent({
                       }
                       className={`
                           px-6 py-3 text-[1vw] max-md:text-[4vw] max-[1025px]:text-[2.5vw] text-center relative max-md:px-7 max-md:py-3
-                          backdrop-blur-[6px] font-geistMono group flex items-center justify-center gap-2 cursor-pointer
+                          backdrop-blur-[6px] font-geist-mono group flex items-center justify-center gap-2 cursor-pointer
                           transition-colors duration-300 
                           ${isSelected
                           ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"

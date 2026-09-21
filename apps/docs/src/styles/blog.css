@@ -11,7 +11,7 @@
   --blog-bg-subtle: #f9fafb;
   --blog-accent-color: #2563eb;
   --blog-font-serif: Georgia, "Times New Roman", serif;
-  --blog-font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --blog-font-sans: var(--font-neue-haas), system-ui, -apple-system, sans-serif;
   --blog-font-mono: var(--font-geist-mono), "SF Mono", Consolas, monospace;
 
   max-width: var(--blog-max-width);

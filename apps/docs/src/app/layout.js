@@ -1,6 +1,6 @@
 import "@/lib/progress-event-polyfill";
 import localFont from "next/font/local";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -42,13 +42,6 @@ const neueHaasUnica = localFont({
   preload: false,
 });
 
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-  display: "swap",
-  preload: false,
-});
-
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
@@ -78,7 +71,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${neueHaasUnica.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${neueHaasUnica.variable} ${geistMono.variable} antialiased`}
     >
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
