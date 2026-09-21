@@ -821,7 +821,7 @@ export function FileEncryptionComp({
 
  if (!dragRef.current.active) {
  if (reduceMotionRef.current) {
- // No auto-scroll / inertia — drag still moves cards directly.
+ // No auto-scroll / inertia - drag still moves cards directly.
  dragRef.current.velocity = 0;
  } else {
  xRef.current = (xRef.current as number) + (AUTO_SPEED * speedRef.current * dt) / 1000;

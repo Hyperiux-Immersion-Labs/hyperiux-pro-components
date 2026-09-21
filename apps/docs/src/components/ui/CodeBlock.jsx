@@ -214,8 +214,8 @@ export function CodeBlock({
             <div
                 className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
                     shouldShowHeader
-                        ? "max-md:max-h-[50vh] max-[1025px]:max-h-[50vh] max-md:min-h-[12vh]"
-                        : "max-md:h-[8vh] max-md:pt-[3vh] max-[1025px]:h-[5.5vh]"
+                        ? "max-md:max-h-[50vh] max-[1025px]:max-h-[50vh] max-md:min-h-[5vh]"
+                        : "max-md:h-[5vh] max-md:pt-0 max-[1025px]:h-[5.5vh]"
                 }`}
                 style={{ scrollbarGutter: "stable" }}
             >

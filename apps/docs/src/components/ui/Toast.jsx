@@ -47,10 +47,10 @@ export function ToastViewport({ toast, onDismiss }) {
   return createPortal(
     <div
       aria-live="polite"
-      className={`fixed bottom-6 right-6 z-9999 w-[min(22rem,calc(100vw-2rem))] transition-all duration-300 ${
+      className={`fixed top-6 right-6 z-9999 w-[min(22rem,calc(100vw-2rem))] transition-all duration-300 ${
         toast
           ? "translate-y-0 opacity-100"
-          : "pointer-events-none translate-y-3 opacity-0"
+          : "pointer-events-none -translate-y-3 opacity-0"
       }`}
     >
       {toast && (

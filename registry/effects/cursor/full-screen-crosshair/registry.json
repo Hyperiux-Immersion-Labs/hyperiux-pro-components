@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added reduced-motion support and corrected the export-kind metadata.",
+      "summary": "Added reduced-motion support .",
       "breaking": false
     },
     {

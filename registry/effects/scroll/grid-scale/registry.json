@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-23",
-      "summary": "Added reduced-motion support and fixed a malformed ScrollTrigger start value that anchored the floating-words timeline to page top instead of the section.",
+      "summary": "Added reduced-motion support and fixed scroll-trigger positioning.",
       "breaking": false
     },
     {

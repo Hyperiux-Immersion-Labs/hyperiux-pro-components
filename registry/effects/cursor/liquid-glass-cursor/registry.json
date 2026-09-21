@@ -119,7 +119,7 @@
       "name": "aberration",
       "type": "number",
       "default": 1,
-      "description": "Chromatic aberration amount — how far the R/G/B channels split at the rim.",
+      "description": "Chromatic aberration amount - how far the R/G/B channels split at the rim.",
       "remixer": {
         "control": "range",
         "group": "filter",

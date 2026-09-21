@@ -9,7 +9,7 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/** Bayer 8x8 ordered-dither matrix — drives the orange pixel edge only. */
+/** Bayer 8x8 ordered-dither matrix - drives the orange pixel edge only. */
 const BAYER = [
   0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26, 12, 44, 4, 36,
   14, 46, 6, 38, 60, 28, 52, 20, 62, 30, 54, 22, 3, 35, 11, 43, 1, 33, 9, 41,
@@ -102,7 +102,7 @@ function measureGlyphs(node, text, originX, originY) {
  *
  * Soft ordered-dither density (Bayer dissolve): solid behind the crest,
  * thinning scatter into dim ahead of it. `primaryColor` is the dithered fill;
- * `textColor` settles in smoothly behind. `direction` picks the axis —
+ * `textColor` settles in smoothly behind. `direction` picks the axis -
  * `"up"` (bottom→top) or `"right"` (left→right, reading order still line by line).
  */
 export default function TextFillPixelV3({

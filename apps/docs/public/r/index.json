@@ -74,13 +74,13 @@
         "scroll"
       ],
       "dependencies": [
-        "gsap",
-        "lenis"
+        "@react-three/fiber",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "HelixSlider",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "tier": "pro"
     },
     {
@@ -296,6 +296,22 @@
       "exportKind": "default",
       "version": "1.0.1",
       "tier": "pro"
+    },
+    {
+      "name": "stack-spread",
+      "type": "registry:component",
+      "category": "scroll",
+      "categories": [
+        "scroll"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [],
+      "exportName": "StackSpread",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
     },
     {
       "name": "stacking-cards",
@@ -666,20 +682,6 @@
       "exportKind": "named",
       "version": "1.0.1",
       "tier": "free"
-    },
-    {
-      "name": "dotted-trail",
-      "type": "registry:component",
-      "category": "backgrounds",
-      "categories": [
-        "backgrounds"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "DottedTrail",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
     },
     {
       "name": "grid-lift",
@@ -1211,7 +1213,7 @@
       "registryDependencies": [],
       "exportName": "TextFillAnimation",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.0",
       "tier": "pro"
     },
     {
@@ -1369,6 +1371,22 @@
       "tier": "free"
     },
     {
+      "name": "metallic-button",
+      "type": "registry:component",
+      "category": "buttons",
+      "categories": [
+        "buttons"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "MetallicButton",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
       "name": "scramble-link-button",
       "type": "registry:component",
       "category": "buttons",
@@ -1383,6 +1401,34 @@
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "free"
+    },
+    {
+      "name": "shiny-button",
+      "type": "registry:component",
+      "category": "buttons",
+      "categories": [
+        "buttons"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "ShinyButton",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "spotlight-button",
+      "type": "registry:component",
+      "category": "buttons",
+      "categories": [
+        "buttons"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "SpotlightButton",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
     },
     {
       "name": "arc-flow-carousel",
@@ -1681,6 +1727,39 @@
       "tier": "pro"
     },
     {
+      "name": "elastic-accordion",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "ElasticAccordion",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
+      "name": "globe",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap",
+        "lucide-react"
+      ],
+      "registryDependencies": [],
+      "exportName": "Globe",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "gooey-counter",
       "type": "registry:component",
       "category": "components",
@@ -1692,6 +1771,22 @@
       "exportName": "GooeyCounter",
       "exportKind": "default",
       "version": "1.0.1",
+      "tier": "free"
+    },
+    {
+      "name": "gsap-flip-card",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "GsapFlipCard",
+      "exportKind": "default",
+      "version": "1.0.0",
       "tier": "free"
     },
     {
@@ -1840,6 +1935,22 @@
       "tier": "free"
     },
     {
+      "name": "displacement-navbar",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "DisplacementNavbar",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "elevate-navbar",
       "type": "registry:component",
       "category": "navigation",
@@ -1890,6 +2001,39 @@
       "tier": "free"
     },
     {
+      "name": "morphing-dock",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "@gsap/react",
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "MorphingDock",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
+      "name": "perspective-shift-menu",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "PerspectiveShiftMenu",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "side-navbar",
       "type": "registry:component",
       "category": "navigation",
@@ -1901,6 +2045,23 @@
       ],
       "registryDependencies": [],
       "exportName": "SideNavbar",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
+      "name": "unfold-navbar",
+      "type": "registry:component",
+      "category": "navigation",
+      "categories": [
+        "navigation"
+      ],
+      "dependencies": [
+        "@gsap/react",
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "UnfoldNavbar",
       "exportKind": "default",
       "version": "1.0.0",
       "tier": "pro"
@@ -1966,14 +2127,14 @@
         "scroll"
       ],
       "dependencies": [
-        "three",
         "gsap",
-        "lenis"
+        "lenis",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "PortfolioSlider3D",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "tier": "pro"
     },
     {
@@ -2264,24 +2425,8 @@
       "registryDependencies": [],
       "exportName": "StripSlider",
       "exportKind": "default",
-      "version": "1.1.0",
-      "tier": "pro"
-    },
-    {
-      "name": "stack-spread",
-      "type": "registry:component",
-      "category": "scroll",
-      "categories": [
-        "scroll"
-      ],
-      "dependencies": [
-        "motion"
-      ],
-      "registryDependencies": [],
-      "exportName": "StackSpread",
-      "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     }
   ]
 }

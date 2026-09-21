@@ -7,19 +7,20 @@ import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { StatCard } from "@/components/admin/StatCard";
 import { LineTrendChart } from "@/components/admin/charts/LineTrendChart";
-import { BarRankChart } from "@/components/admin/charts/BarRankChart";
 import { DonutChart } from "@/components/admin/charts/DonutChart";
 import { buildUserActivitySlug } from "@/lib/user-slug";
 
 // Merges the former standalone /dashboard/admin/installs (aggregate charts)
-// and /dashboard/admin/copy-activity (raw per-event log) pages into one tab.
-// Both read the same install_events ledger - a copy on the website, a
-// `hyperiux add`, and an MCP hyperiux_get_effect call are all just different
-// sources for the same underlying "this effect is being (or about to be)
-// installed" event, so viewing them as two separate admin pages was drawing
-// a distinction the data itself doesn't have.
+// and /dashboard/admin/copy-activity (raw per-event log) pages into one
+// section of the single Activity page. Both read the same install_events
+// ledger - a copy on the website, a `hyperiux add`, and an MCP
+// hyperiux_get_effect call are all just different sources for the same
+// underlying "this effect is being (or about to be) installed" event, so
+// viewing them as two separate admin pages was drawing a distinction the
+// data itself doesn't have.
 
-const EVENTS_PER_PAGE = 15;
+const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100, 250, 500];
+const DEFAULT_PAGE_SIZE = 10;
 const SOURCES = ["all", "web", "cli", "mcp"];
 
 function ChartPanel({ title, children }) {
@@ -47,10 +48,6 @@ function ChartPanelSkeleton({ height = 260 }) {
       <div className="animate-pulse  bg-white/5" style={{ height }} />
     </div>
   );
-}
-
-function formatPercent(fraction) {
-  return `${Math.round((fraction || 0) * 100)}%`;
 }
 
 function SourceBadge({ source }) {
@@ -82,28 +79,42 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
+// Clerk profiles aren't required to set a display name, so a signed-in
+// event can still have no `userName` - falling back to "-" there just hid
+// the person behind an unhelpful dash when their email was on hand the
+// whole time. Same fallback as displayName() in dashboard/admin/page.js.
+function resolveDisplayName({ name, email }) {
+  if (name) return name;
+  if (email) {
+    const local = email.split("@")[0];
+    return local.charAt(0).toUpperCase() + local.slice(1);
+  }
+  return "Unnamed user";
+}
+
 // A copy event only has a Clerk identity when it came from a signed-in user
 // - anonymous web visitors and unauthenticated CLI/MCP calls are tracked by
 // identity_key (device:/ip:) instead, so there's no name/email to show.
 function UserCell({ event }) {
   if (event.userId) {
+    const name = resolveDisplayName({ name: event.userName, email: event.userEmail });
     return (
       <div className="flex items-center gap-3">
         {event.userImageUrl ? (
           <Image
             src={event.userImageUrl}
-            alt={event.userName || ""}
+            alt={name}
             width={28}
             height={28}
             className="h-7 w-7  object-cover ring-1 ring-white/10"
           />
         ) : (
           <div className="flex h-7 w-7 items-center justify-center  bg-white/10 text-xs font-medium">
-            {(event.userName?.[0] || event.userEmail?.[0] || "?").toUpperCase()}
+            {name[0].toUpperCase()}
           </div>
         )}
         <div className="min-w-0">
-          <p className="truncate font-medium text-white max-w-48">{event.userName || "-"}</p>
+          <p className="truncate font-medium text-white max-w-48">{name}</p>
           <p className="truncate text-xs text-white/45 max-w-48">{event.userEmail || event.userId}</p>
         </div>
       </div>
@@ -117,34 +128,97 @@ function UserCell({ event }) {
   );
 }
 
-function AggregatePanels() {
+// Shared between "Top users by copies" (web-only) and "Top installers"
+// (web/CLI/MCP combined) - same card layout, different ranking + unit word.
+function UserLeaderboard({ users, emptyMessage, unitSingular, unitPlural }) {
+  if (users.length === 0) {
+    return (
+      <div className="border border-white/10 px-4 py-10 text-center text-sm text-white/40">
+        {emptyMessage}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {users.map((user, index) => (
+        <Link
+          key={user.clerkUserId}
+          href={`/dashboard/admin/activity/${buildUserActivitySlug(user)}`}
+          className="flex items-center gap-3 border border-white/10 bg-white/3 p-4 transition hover:border-white/25 hover:bg-white/5"
+        >
+          {user.imageUrl ? (
+            <Image
+              src={user.imageUrl}
+              alt={resolveDisplayName(user)}
+              width={40}
+              height={40}
+              className="h-10 w-10 shrink-0  object-cover ring-1 ring-white/10"
+            />
+          ) : (
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center  bg-white/10 text-sm font-medium">
+              {resolveDisplayName(user)[0].toUpperCase()}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-white">{resolveDisplayName(user)}</p>
+            <p className="text-xs text-white">
+               {user.count} {user.count === 1 ? unitSingular : unitPlural}
+            </p>
+          </div>
+          <div>
+          #{index + 1}
+
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function buildRangeQuery({ range, customFrom, customTo }) {
+  const params = new URLSearchParams();
+  if (range === "custom") {
+    if (customFrom) params.set("from", customFrom);
+    if (customTo) params.set("to", customTo);
+  } else if (range !== "all") {
+    params.set("range", range);
+  }
+  return params;
+}
+
+function AggregatePanels({ range, customFrom, customTo }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let active = true;
+    // Resets loading immediately on a range switch instead of flashing
+    // stale data while the new fetch is in flight - a real external-system
+    // sync, not derivable during render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoading(true);
 
-    async function load() {
-      try {
-        const res = await fetch("/api/admin/installs");
-        const json = await res.json();
+    const params = buildRangeQuery({ range, customFrom, customTo });
 
-        if (!res.ok) throw new Error(json.error || "Failed to load install data");
+    fetch(`/api/admin/installs?${params.toString()}`)
+      .then((res) => res.json().then((json) => ({ ok: res.ok, json })))
+      .then(({ ok, json }) => {
+        if (!ok) throw new Error(json.error || "Failed to load install data");
         if (active) setData(json);
-      } catch (err) {
+      })
+      .catch((err) => {
         if (active) setError(err.message);
-      } finally {
+      })
+      .finally(() => {
         if (active) setLoading(false);
-      }
-    }
-
-    load();
+      });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [range, customFrom, customTo]);
 
   if (error) {
     return (
@@ -157,13 +231,13 @@ function AggregatePanels() {
   if (loading || !data) {
     return (
       <>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
+        <div className="grid gap-4 md:grid-cols-2">
+          {Array.from({ length: 2 }).map((_, i) => (
             <StatCardSkeleton key={i} />
           ))}
         </div>
-        <div className="grid gap-5 lg:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => (
+        <div className="grid gap-4 lg:grid-cols-2">
+          {Array.from({ length: 3 }).map((_, i) => (
             <ChartPanelSkeleton key={i} />
           ))}
         </div>
@@ -173,33 +247,14 @@ function AggregatePanels() {
 
   return (
     <>
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total Installs (30d)" value={data.stats.totalEvents} />
-        <StatCard label="Installs Today" value={data.stats.eventsToday} />
-        <StatCard
-          label="Would-Be-Denied Rate"
-          value={formatPercent(data.stats.wouldHaveDeniedRate)}
-          detail={`${data.stats.wouldHaveDeniedCount} of ${data.stats.totalEvents} would've hit the cap`}
-        />
-        <StatCard
-          label="Enforcement"
-          value={data.stats.enforced ? "ON" : "Shadow mode"}
-          detail={data.stats.enforced ? "Limits are actively blocking" : "Tracking only, nothing blocked"}
-        />
+      <div className="grid gap-4 md:grid-cols-2">
+        <StatCard label="Total Installs" value={data.stats.totalInstalls} />
+        <StatCard label="Installs Today" value={data.stats.installsToday} />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
-        <ChartPanel title="Installs — last 30 days">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ChartPanel title="Installs">
           <LineTrendChart data={data.installTrend} xKey="label" color="#ff5f00" valueLabel="installs" />
-        </ChartPanel>
-
-        <ChartPanel title="Would-be-denied — last 30 days">
-          <LineTrendChart
-            data={data.wouldHaveDeniedTrend}
-            xKey="label"
-            color="#f87171"
-            valueLabel="would-be denials"
-          />
         </ChartPanel>
 
         <ChartPanel title="By source">
@@ -209,95 +264,77 @@ function AggregatePanels() {
         <ChartPanel title="By plan">
           <DonutChart data={data.planBreakdown} />
         </ChartPanel>
-
-        <ChartPanel title="Top effects installed">
-          <BarRankChart data={data.topEffects} nameKey="name" color="#ff5f00" valueLabel="installs" />
-        </ChartPanel>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 mt-10">
         <div>
           <h2 className="text-lg font-medium text-white">Top users by copies</h2>
           <p className="mt-1 text-sm text-white/50">
-            Signed-in users ranked by successful copies/installs in the last 30 days.
+            Signed-in users ranked by successful website copies in the selected window.
             Click a row for their full activity detail.
           </p>
         </div>
 
-        <div className="overflow-hidden  border border-white/10">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/10 bg-white/3">
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-white/45">Rank</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-white/45">User</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-white/45">Copies</th>
-                </tr>
-              </thead>
+        <UserLeaderboard
+          users={data.topUsers}
+          emptyMessage="No signed-in copies in this window."
+          unitSingular="copy"
+          unitPlural="copies"
+        />
+      </div>
 
-              <tbody className="divide-y divide-white/6">
-                {data.topUsers.length === 0 ? (
-                  <tr>
-                    <td colSpan={3} className="px-4 py-10 text-center text-white/40">
-                      No signed-in copies in the last 30 days.
-                    </td>
-                  </tr>
-                ) : (
-                  data.topUsers.map((user, index) => (
-                    <tr key={user.clerkUserId} className="transition hover:bg-white/2">
-                      <td className="px-4 py-3 text-white/45">#{index + 1}</td>
-                      <td className="px-4 py-3">
-                        <Link
-                          href={`/dashboard/admin/activity/${buildUserActivitySlug(user)}`}
-                          className="flex items-center gap-3 w-fit"
-                        >
-                          {user.imageUrl ? (
-                            <Image
-                              src={user.imageUrl}
-                              alt={user.name || ""}
-                              width={28}
-                              height={28}
-                              className="h-7 w-7  object-cover ring-1 ring-white/10"
-                            />
-                          ) : (
-                            <div className="flex h-7 w-7 items-center justify-center  bg-white/10 text-xs font-medium">
-                              {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
-                            </div>
-                          )}
-                          <span className="text-white/80 hover:text-white hover:underline">
-                            {user.name || user.email || user.clerkUserId}
-                          </span>
-                        </Link>
-                      </td>
-                      <td className="px-4 py-3 text-right font-medium text-white">{user.count}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+      <div className="space-y-4 mt-10">
+        <div>
+          <h2 className="text-lg font-medium text-white">Top installers</h2>
+          <p className="mt-1 text-sm text-white/50">
+            Signed-in users ranked by successful installs across web, CLI, and MCP in the
+            selected window. Click a row for their full activity detail.
+          </p>
         </div>
+
+        <UserLeaderboard
+          users={data.topInstallers}
+          emptyMessage="No signed-in installs in this window."
+          unitSingular="install"
+          unitPlural="installs"
+        />
       </div>
     </>
   );
 }
 
-function EventLog() {
+function EventLog({ range, customFrom, customTo }) {
   const [events, setEvents] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [effectSearch, setEffectSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("all");
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [currentPage, setCurrentPage] = useState(1);
   const [prevEffectSearch, setPrevEffectSearch] = useState(effectSearch);
   const [prevSourceFilter, setPrevSourceFilter] = useState(sourceFilter);
+  const [prevPageSize, setPrevPageSize] = useState(pageSize);
+  const [prevRange, setPrevRange] = useState(range);
+  const [prevCustomFrom, setPrevCustomFrom] = useState(customFrom);
+  const [prevCustomTo, setPrevCustomTo] = useState(customTo);
 
   // Reset to page 1 whenever a filter changes - derived purely from values
   // already available during render, so adjust it here instead of in an effect.
-  if (prevEffectSearch !== effectSearch || prevSourceFilter !== sourceFilter) {
+  if (
+    prevEffectSearch !== effectSearch ||
+    prevSourceFilter !== sourceFilter ||
+    prevPageSize !== pageSize ||
+    prevRange !== range ||
+    prevCustomFrom !== customFrom ||
+    prevCustomTo !== customTo
+  ) {
     setPrevEffectSearch(effectSearch);
     setPrevSourceFilter(sourceFilter);
+    setPrevPageSize(pageSize);
+    setPrevRange(range);
+    setPrevCustomFrom(customFrom);
+    setPrevCustomTo(customTo);
     setCurrentPage(1);
   }
 
@@ -305,11 +342,11 @@ function EventLog() {
     setLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams();
+      const params = buildRangeQuery({ range, customFrom, customTo });
       if (effectSearch) params.set("effect", effectSearch);
       if (sourceFilter !== "all") params.set("source", sourceFilter);
-      params.set("limit", String(EVENTS_PER_PAGE));
-      params.set("offset", String((currentPage - 1) * EVENTS_PER_PAGE));
+      params.set("limit", String(pageSize));
+      params.set("offset", String((currentPage - 1) * pageSize));
 
       const res = await fetch(`/api/admin/copy-activity?${params.toString()}`);
       const json = await res.json();
@@ -321,21 +358,21 @@ function EventLog() {
     } finally {
       setLoading(false);
     }
-  }, [effectSearch, sourceFilter, currentPage]);
+  }, [effectSearch, sourceFilter, pageSize, range, customFrom, customTo, currentPage]);
 
   useEffect(() => {
     const timer = setTimeout(fetchEvents, 300);
     return () => clearTimeout(timer);
   }, [fetchEvents]);
 
-  const totalPages = Math.max(1, Math.ceil(total / EVENTS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mt-10">
       <div>
         <h2 className="text-lg font-medium text-white">Recent installs &amp; copies</h2>
         <p className="mt-1 text-sm text-white/50">
-          {total} events across web, CLI, and MCP — every one is a real (or would-be) effect delivery.
+          {total} events across web, CLI, and MCP in the selected window - every one is a real effect delivery.
         </p>
       </div>
 
@@ -347,7 +384,7 @@ function EventLog() {
             placeholder="Search by effect…"
             value={effectSearch}
             onChange={(e) => setEffectSearch(e.target.value)}
-            className="w-full  border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
+            className="w-full  border border-white/10 bg-white/5 py-3.5 pl-10 pr-4 text-sm text-white placeholder:text-white/35 outline-none focus:border-white/25"
           />
         </div>
         <CustomSelect
@@ -358,6 +395,15 @@ function EventLog() {
             label: s === "all" ? "All sources" : s.toUpperCase(),
           }))}
         />
+        <div className="flex items-center gap-2 text-sm text-white/45">
+          Per page
+          <CustomSelect
+            size="compact"
+            value={String(pageSize)}
+            onChange={(value) => setPageSize(Number(value))}
+            options={PAGE_SIZE_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))}
+          />
+        </div>
       </div>
 
       {error && (
@@ -379,7 +425,7 @@ function EventLog() {
             </thead>
             <tbody className="divide-y divide-white/6">
               {loading ? (
-                Array.from({ length: 8 }).map((_, i) => (
+                Array.from({ length: Math.min(pageSize, 8) }).map((_, i) => (
                   <tr key={i}>
                     {Array.from({ length: 4 }).map((__, j) => (
                       <td key={j} className="px-4 py-3">
@@ -446,11 +492,11 @@ function EventLog() {
   );
 }
 
-export function InstallActivityTab() {
+export function InstallActivitySection({ range, customFrom, customTo }) {
   return (
-    <div className="space-y-6">
-      <AggregatePanels />
-      <EventLog />
+    <div className="space-y-4">
+      <AggregatePanels range={range} customFrom={customFrom} customTo={customTo} />
+      <EventLog range={range} customFrom={customFrom} customTo={customTo} />
     </div>
   );
 }

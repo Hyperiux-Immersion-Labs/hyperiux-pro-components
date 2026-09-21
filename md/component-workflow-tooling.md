@@ -6,7 +6,7 @@ plan (keeping Sanity's rendered code blocks in sync with the registry source). B
 were Wave 1 Foundation items and both scripts are built.
 
 > **Audit status (2026-08-12):** both docs are best read as *documentation of what
-> exists* — the described commands are built and match, not aspirational. Two real
+> exists* - the described commands are built and match, not aspirational. Two real
 > gaps found:
 >
 > 1. **`component-workflow.mjs`'s `main` file default is still hardcoded to
@@ -15,10 +15,10 @@ were Wave 1 Foundation items and both scripts are built.
 >    `registry/effects/**/index.*` is now 100% `.tsx` (see
 >    [`typescript-migration-plan.md`](./typescript-migration-plan.md)), running
 >    `component:new` on a new TS-only component without explicitly passing `--main
->    index.tsx` will fail — the script looks for a nonexistent `index.jsx`.
+>    index.tsx` will fail - the script looks for a nonexistent `index.jsx`.
 > 2. **`sanity-code-sync.mjs` has no `--all` batch mode and no `component:sync
 >    --sync-sanity-code` integration flag.** Both are consistent with the plan's own
->    "Minimum Viable Version" scoping — they were always optional/deferred, just still
+>    "Minimum Viable Version" scoping - they were always optional/deferred, just still
 >    genuinely unbuilt.
 > 3. **`component-workflow.mjs` still treats `registry.json` mostly as generated
 >    output, not as the home for curated remixer metadata.** In practice, teams now
@@ -28,12 +28,12 @@ were Wave 1 Foundation items and both scripts are built.
 >    mirror sync. The current script rebuilds core metadata from docs source and does
 >    not yet have a "preserve existing `registry.json.props` when present" rule.
 >
-> Everything else — command boundaries, safety gating (`--yes`/`--dry-run`), the
-> matching/patch-shape logic, required env vars — checks out against the live scripts.
+> Everything else - command boundaries, safety gating (`--yes`/`--dry-run`), the
+> matching/patch-shape logic, required env vars - checks out against the live scripts.
 
 ---
 
-## Part 1 — Component workflow (`scripts/component-workflow.mjs`)
+## Part 1 - Component workflow (`scripts/component-workflow.mjs`)
 
 *(formerly `component-automation-plan.md`)*
 
@@ -1011,7 +1011,7 @@ After that works for pro components, add the free-tier mirror branch.
 
 ---
 
-## Part 2 — Sanity code sync (`scripts/sanity-code-sync.mjs`)
+## Part 2 - Sanity code sync (`scripts/sanity-code-sync.mjs`)
 
 *(formerly `sanity-code-sync-plan.md`)*
 

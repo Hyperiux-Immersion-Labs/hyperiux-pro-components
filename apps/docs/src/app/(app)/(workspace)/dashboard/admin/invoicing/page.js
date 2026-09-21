@@ -3,9 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
 import { useAdminRole } from "@/lib/useAdminRole";
+import { TemplatePurchasesPanel } from "@/components/admin/TemplatePurchasesPanel";
 
 // Payment detail across every user - restricted to super admins (see
 // api/admin/invoices/route.js), unlike the rest of /dashboard/admin which
@@ -14,10 +17,18 @@ import { useAdminRole } from "@/lib/useAdminRole";
 // on top, same pattern as the Revenue Overview strip on User Management.
 
 const EVENTS_PER_PAGE = 15;
-const TEST_FILTERS = [
-  { id: "all", label: "All invoices" },
-  { id: "real", label: "Real only" },
-  { id: "test", label: "Test only" },
+
+// Same date-range picker as dashboard/admin/activity - both tables below
+// (Subscription Invoices via api/admin/invoices, Template Purchases via
+// TemplatePurchasesPanel) get scoped to this one shared range instead of
+// each defaulting to its own "all time" window.
+const DATE_RANGE_OPTIONS = [
+  { value: "today", label: "Today" },
+  { value: "7d", label: "Last 7 days" },
+  { value: "30d", label: "Last 30 days" },
+  { value: "90d", label: "Last 90 days" },
+  { value: "all", label: "All time" },
+  { value: "custom", label: "Custom range" },
 ];
 
 function formatDate(value) {
@@ -33,7 +44,7 @@ function formatAmount(amount, currency = "INR") {
   if (typeof amount !== "number") return "-";
 
   try {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
       style: "currency",
       currency,
       minimumFractionDigits: 2,
@@ -48,29 +59,41 @@ function getBillingLabel(value) {
   return labels[value] || "-";
 }
 
+// Looks up each currency's own total from stats.revenueByCurrency instead
+// of summing the array - invoices mixes INR and USD, so a single blended
+// tile would silently add unlike units (same reasoning as the Activity
+// Overview page's revenueFor()). Currencies with zero real revenue still
+// render a ₹0/$0 tile rather than disappearing.
+function revenueFor(stats, currency) {
+  return stats?.revenueByCurrency?.find((row) => row.currency === currency)?.amount || 0;
+}
+
 // No Clerk identity ever falls back to "Anonymous" here (unlike the
 // install-activity log) - every invoice has a clerk_user_id by construction
 // (recordInvoice() requires one), so the only failure mode is a user whose
 // Clerk account was later deleted, which falls back to the raw id.
-function UserCell({ invoice }) {
+// Shared between the invoices table and the template-purchases table below -
+// both API routes return the same userName/userEmail/userImageUrl/userId
+// shape (see api/admin/invoices and api/admin/template-purchases).
+function UserCell({ record }) {
   return (
     <div className="flex items-center gap-3">
-      {invoice.userImageUrl ? (
+      {record.userImageUrl ? (
         <Image
-          src={invoice.userImageUrl}
-          alt={invoice.userName || ""}
+          src={record.userImageUrl}
+          alt={record.userName || ""}
           width={28}
           height={28}
           className="h-7 w-7  object-cover ring-1 ring-white/10"
         />
       ) : (
         <div className="flex h-7 w-7 items-center justify-center  bg-white/10 text-xs font-medium">
-          {(invoice.userName?.[0] || invoice.userEmail?.[0] || "?").toUpperCase()}
+          {(record.userName?.[0] || record.userEmail?.[0] || "?").toUpperCase()}
         </div>
       )}
       <div className="min-w-0">
-        <p className="truncate font-medium text-white max-w-48">{invoice.userName || "-"}</p>
-        <p className="truncate text-xs text-white/45 max-w-48">{invoice.userEmail || invoice.userId}</p>
+        <p className="truncate font-medium text-white max-w-48">{record.userName || "-"}</p>
+        <p className="truncate text-xs text-white/45 max-w-48">{record.userEmail || record.userId}</p>
       </div>
     </div>
   );
@@ -85,15 +108,18 @@ export default function AdminInvoicingPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [testFilter, setTestFilter] = useState("all");
+  const [range, setRange] = useState("all");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [prevTestFilter, setPrevTestFilter] = useState(testFilter);
+  const [prevRangeKey, setPrevRangeKey] = useState("");
 
-  // Reset to page 1 whenever the filter changes - derived purely from a
+  // Reset to page 1 whenever the range changes - derived purely from a
   // value already available during render, so adjust it here instead of in
   // an effect.
-  if (prevTestFilter !== testFilter) {
-    setPrevTestFilter(testFilter);
+  const rangeKey = `${range}:${customFrom}:${customTo}`;
+  if (prevRangeKey !== rangeKey) {
+    setPrevRangeKey(rangeKey);
     setCurrentPage(1);
   }
 
@@ -111,7 +137,12 @@ export default function AdminInvoicingPage() {
     setError(null);
     try {
       const params = new URLSearchParams();
-      if (testFilter !== "all") params.set("test", testFilter);
+      if (range === "custom") {
+        if (customFrom) params.set("from", customFrom);
+        if (customTo) params.set("to", customTo);
+      } else {
+        params.set("range", range);
+      }
       params.set("limit", String(EVENTS_PER_PAGE));
       params.set("offset", String((currentPage - 1) * EVENTS_PER_PAGE));
 
@@ -126,7 +157,7 @@ export default function AdminInvoicingPage() {
     } finally {
       setLoading(false);
     }
-  }, [testFilter, currentPage]);
+  }, [range, customFrom, customTo, currentPage]);
 
   useEffect(() => {
     if (!isSuperAdmin) return;
@@ -146,38 +177,42 @@ export default function AdminInvoicingPage() {
 
   const totalPages = Math.max(1, Math.ceil(total / EVENTS_PER_PAGE));
 
+  const isCustomRange = range === "custom";
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Invoicing</h1>
-        <p className="mt-1 text-sm text-white/50">
-          Every payment recorded across all users, real and test.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Invoicing</h1>
+          <p className="mt-1 text-sm text-white/50">Every real payment recorded across all users.</p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {isCustomRange && (
+            <DateRangeCalendarPicker
+              from={customFrom}
+              to={customTo}
+              onFromChange={setCustomFrom}
+              onToChange={setCustomTo}
+            />
+          )}
+          <CustomSelect size="compact" align="right" value={range} onChange={setRange} options={DATE_RANGE_OPTIONS} />
+        </div>
       </div>
+
+      <h2 className="text-lg font-medium text-white/90">Subscription Invoices</h2>
 
       <div className="grid gap-5 md:grid-cols-3">
         <StatCard label="Total Invoices" value={stats ? stats.totalInvoices : "…"} detail="Real payments only" />
         <StatCard
-          label="Total Revenue"
-          value={stats ? formatAmount(stats.totalRevenue) : "…"}
+          label="Revenue (INR)"
+          value={stats ? formatAmount(revenueFor(stats, "INR"), "INR") : "…"}
           detail="Real payments only"
         />
-        <StatCard label="Showing" value={total} detail={testFilter === "all" ? "All invoices" : TEST_FILTERS.find((f) => f.id === testFilter)?.label} />
-      </div>
-
-      <div className="flex gap-3 flex-wrap">
-        <div className="relative">
-          <select
-            value={testFilter}
-            onChange={(e) => setTestFilter(e.target.value)}
-            className="appearance-none  border border-white/10 bg-white/5 py-2.5 pl-4 pr-9 text-sm text-white outline-none focus:border-white/25"
-          >
-            {TEST_FILTERS.map((f) => (
-              <option key={f.id} value={f.id}>{f.label}</option>
-            ))}
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-        </div>
+        <StatCard
+          label="Revenue (USD)"
+          value={stats ? formatAmount(revenueFor(stats, "USD"), "USD") : "…"}
+          detail="Real payments only"
+        />
       </div>
 
       {error && (
@@ -221,16 +256,9 @@ export default function AdminInvoicingPage() {
                 invoices.map((invoice) => (
                   <tr key={invoice.id} className="transition hover:bg-white/2">
                     <td className="px-4 py-3">
-                      <UserCell invoice={invoice} />
+                      <UserCell record={invoice} />
                     </td>
-                    <td className="px-4 py-3 text-white/80">
-                      {invoice.planLabel || "Vault Pro"}
-                      {invoice.isTest && (
-                        <span className="ml-2  bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/50">
-                          Test
-                        </span>
-                      )}
-                    </td>
+                    <td className="px-4 py-3 text-white/80">{invoice.planLabel || "Vault Pro"}</td>
                     <td className="px-4 py-3 text-white/60">{getBillingLabel(invoice.billingInterval)}</td>
                     <td className="px-4 py-3 text-right font-medium text-white whitespace-nowrap">
                       {formatAmount(invoice.amount, invoice.currency)}
@@ -290,6 +318,10 @@ export default function AdminInvoicingPage() {
           </div>
         </div>
       )}
+
+      <h2 className="text-lg font-medium text-white/90 pt-4">Template Purchases</h2>
+
+      <TemplatePurchasesPanel range={range} customFrom={customFrom} customTo={customTo} />
     </div>
   );
 }

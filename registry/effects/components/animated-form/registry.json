@@ -54,7 +54,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Fixed phone validation for international numbers and reworked the props API to real color/border-radius/duration controls.",
+      "summary": "Added configurable color, border-radius, and duration controls.",
       "breaking": false
     },
     {

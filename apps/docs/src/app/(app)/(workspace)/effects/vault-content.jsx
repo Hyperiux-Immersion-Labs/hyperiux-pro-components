@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { X } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useVaultLayout } from "@/components/layout/VaultLayout";
@@ -141,7 +142,7 @@ function SkeletonBlock({ className = "" }) {
         "relative overflow-hidden bg-[#272727]",
         "before:absolute before:inset-0 before:-translate-x-full",
         "before:animate-[shimmer_1.4s_infinite]",
-        "before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent",
+        "before:bg-linear-to-r before:from-transparent before:via-white/10 before:to-transparent",
         className,
       ].join(" ")}
     />
@@ -799,7 +800,7 @@ export function VaultContent({
         <div>
           <div
             key={`category-intro-${categoryFilter}`}
-            className=" px-8 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
+            className=" px-14 pt-28 pb-12  space-y-8 max-md:px-7 max-md:pt-32 max-md:pb-16"
           >
             <Breadcrumb className="fadeup" />
 
@@ -828,11 +829,11 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className="category-fadeup fadeup" data-fadeup-delay="0.5">
+        <div className="category-fadeup fadeup " data-fadeup-delay="0.5">
           <TrendingRightNow effects={trendingEffects} />
         </div>
 
-        <div className="mx-auto px-10 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
+        <div className="mx-auto px-14 pb-7 pt-20 max-md:px-0 max-[1025px]:pt-10">
           <div
             className="relative max-[1025px]:w-full flex items-start gap-4 fadein"
             data-fadein-delay="0.4"
@@ -889,9 +890,15 @@ export function VaultContent({
                         event.preventDefault();
                         handleCategoryLinkClick(cat);
                       }}
+                      aria-current={isSelected ? "page" : undefined}
+                      aria-label={
+                        isSelected
+                          ? `Clear ${label} category filter`
+                          : `Filter by ${label}`
+                      }
                       className={`
                           px-6 py-3 text-[1vw] max-md:text-[4vw] max-[1025px]:text-[2.5vw] text-center relative max-md:px-7 max-md:py-3
-                          backdrop-blur-[6px] font-geistMono group flex items-center cursor-pointer
+                          backdrop-blur-[6px] font-geist-mono group flex items-center justify-center gap-2 cursor-pointer
                           transition-colors duration-300 
                           ${isSelected
                           ? "bg-[#ff5f00] text-black hover:text-black hover:bg-[#ff5f00]"
@@ -900,6 +907,9 @@ export function VaultContent({
                         `}
                     >
                       <span className="leading-none">{label}</span>
+                      {isSelected && (
+                        <X className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                      )}
                     </Link>
                   );
                 })}
@@ -950,7 +960,7 @@ export function VaultContent({
           </div>
         </div>
 
-        <div className="category-fadeup fadeup mx-auto relative px-10 pb-12 max-md:px-0">
+        <div className="category-fadeup fadeup mx-auto relative px-14 pb-12 max-md:px-0">
           <div
             className={`flex flex-wrap items-center gap-3 transition-opacity duration-200 ${searchQuery
               ? "mb-8 min-h-10 opacity-100"
@@ -1276,7 +1286,7 @@ function EffectsGridInner({
     <>
       <div
         ref={gridRef}
-        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10 max-md:gap-16`}
+        className={`grid gap-6 rounded-xl max-[1025px]:pt-6 max-md:pt-0 ${baseColsClass} max-[1025px]:grid-cols-1 max-md:px-[7vw] max-md:grid-cols-1 max-[1025px]:gap-10`}
       >
         {visibleEffects.map((effect, i) => {
           const fullEffect = loadedCards[effect.name] || effect;

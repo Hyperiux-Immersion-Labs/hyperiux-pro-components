@@ -29,6 +29,23 @@ function formatAmount(amount, currency = "INR") {
   }
 }
 
+// template_purchases.amount is already whole currency units (see
+// api/admin/template-purchases/route.js's own comment on this), unlike
+// invoices.amount above - this must not divide by 100.
+function formatTemplateAmount(amount, currency = "USD") {
+  if (typeof amount !== "number") return "-";
+
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    return `${amount.toFixed(2)} ${currency}`;
+  }
+}
+
 function getBillingLabel(value) {
   const labels = {
     monthly: "Monthly",
@@ -129,7 +146,7 @@ async function downloadInvoiceReceipt(invoice) {
 
 function StatCard({ label, value, detail }) {
   return (
-    <div className="flex h-full flex-col justify-between rounded-md p-6 bg-[#272727]">
+    <div className="flex h-full flex-col justify-between  p-6 bg-[#272727]">
       <p className="text-white mb-3">{label}</p>
 
       <p className="text-2xl font-medium font-laygrotesk leading-none">{value}</p>
@@ -144,7 +161,7 @@ function StatusBadge({ status }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium capitalize ${
+      className={`inline-flex items-center  px-3 py-1 text-xs font-medium capitalize ${
         isPaid ? "bg-emerald-500/15 text-emerald-400" : "bg-white/10 text-white/60"
       }`}
     >
@@ -216,6 +233,7 @@ export default function InvoicingPage() {
   const plan = data?.plan || user?.publicMetadata?.plan || "free";
   const subscription = data?.subscription || null;
   const invoices = data?.invoices || [];
+  const templatePurchases = data?.templatePurchases || [];
   const isPro = plan === "pro";
   const hasRealSubscription = Boolean(subscription?.razorpay_subscription_id);
 
@@ -230,7 +248,7 @@ export default function InvoicingPage() {
       </div>
 
       {loadError && (
-        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-6 py-4 text-amber-300">
+        <div className=" border border-amber-500/30 bg-amber-500/10 px-6 py-4 text-amber-300">
           Couldn&apos;t load your billing history right now. You can still
           generate a test invoice below.
         </div>
@@ -293,7 +311,7 @@ export default function InvoicingPage() {
         </div>
 
         {invoices.length === 0 ? (
-          <div className="rounded-md p-12 bg-[#272727] text-center">
+          <div className=" p-12 bg-[#272727] text-center">
             <h3 className="text-2xl text-white mb-2">No invoices yet</h3>
 
             <p className="text-zinc-400">
@@ -303,7 +321,7 @@ export default function InvoicingPage() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-md bg-[#272727]">
+          <div className="overflow-x-auto  bg-[#272727]">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-white/50">
@@ -354,6 +372,69 @@ export default function InvoicingPage() {
                           Download
                         </button> */} 
                       </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      <div>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+          <h2 className="text-2xl font-semibold text-white">Template Purchases</h2>
+        </div>
+
+        {templatePurchases.length === 0 ? (
+          <div className=" p-12 bg-[#272727] text-center">
+            <h3 className="text-2xl text-white mb-2">No template purchases yet</h3>
+
+            <p className="text-zinc-400">
+              Templates you buy standalone will show up here.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto  bg-[#272727]">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-white/50">
+                  <th className="px-6 py-4 font-medium">Date</th>
+                  <th className="px-6 py-4 font-medium">Template</th>
+                  <th className="px-6 py-4 font-medium">Amount</th>
+                  <th className="px-6 py-4 font-medium">Status</th>
+                  <th className="px-6 py-4 font-medium">Receipt</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {templatePurchases.map((purchase) => (
+                  <tr key={purchase.id} className="border-b border-white/5 last:border-0">
+                    <td className="px-6 py-4 text-white">{formatDate(purchase.createdAt)}</td>
+
+                    <td className="px-6 py-4 text-white/80">{purchase.templateTitle}</td>
+
+                    <td className="px-6 py-4 text-white">
+                      {formatTemplateAmount(purchase.amount, purchase.currency)}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <StatusBadge status={purchase.status} />
+                    </td>
+
+                    <td className="px-6 py-4">
+                      {purchase.invoiceUrl ? (
+                        <a
+                          href={purchase.invoiceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#ff5f00] hover:text-[#ff7a29]"
+                        >
+                          View
+                        </a>
+                      ) : (
+                        <span className="text-white/25">-</span>
+                      )}
                     </td>
                   </tr>
                 ))}

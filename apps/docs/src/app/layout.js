@@ -1,6 +1,6 @@
 import "@/lib/progress-event-polyfill";
 import localFont from "next/font/local";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -20,6 +20,8 @@ import CustomAnimationFormModal, {
   CustomAnimationFormProvider,
 } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import WorkWithHyperiuxModal from "@/components/WebsiteComps/modals/WorkWithHyperiuxModal";
+import { ExitIntentInviteModal } from "@/components/WebsiteComps/modals/ExitIntentInviteModal";
+import { CookieConsentNudge } from "@/components/WebsiteComps/CookieConsentNudge";
 import PageTransition from "@/components/PageTransition/PageTransition";
 
 const neueHaasUnica = localFont({
@@ -40,13 +42,6 @@ const neueHaasUnica = localFont({
   preload: false,
 });
 
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-  display: "swap",
-  preload: false,
-});
-
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
@@ -59,7 +54,7 @@ export const metadata = createRootMetadata();
 // Runs synchronously before any HTML is painted - adds a class when loader hasn't run yet
 // so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
 // Skips audit agents: UA/webdriver, plus software WebGL (PSI desktop often has a
-// plain Chrome UA and no navigator.webdriver — see lib/audit.js).
+// plain Chrome UA and no navigator.webdriver - see lib/audit.js).
 const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')==='true')return;if(window.location.pathname!=='/')return;if(window.innerWidth<1025)return;if(navigator.webdriver||/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(navigator.userAgent||''))return;var c=document.createElement('canvas');var gl=c.getContext('webgl')||c.getContext('experimental-webgl');if(gl){var di=gl.getExtension('WEBGL_debug_renderer_info');var r=di?gl.getParameter(di.UNMASKED_RENDERER_WEBGL):(gl.getParameter(gl.RENDERER)||'');if(/SwiftShader|llvmpipe|Software Rasterizer|Mesa OffScreen/i.test(String(r||'')))return;}document.documentElement.classList.add('loader-first-visit');}catch(e){}})();`;
 
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
@@ -76,7 +71,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${neueHaasUnica.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${neueHaasUnica.variable} ${geistMono.variable} antialiased`}
     >
       <head>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
@@ -118,15 +113,19 @@ export default function RootLayout({ children }) {
         <WebsiteJsonLd />
         <SoftwareApplicationJsonLd />
         <PageTransition />
+        <CookieConsentNudge />
         {/* CustomAnimationFormProvider adds no DOM of its own (just a
             Context.Provider) - it wraps children so any page's
             CustomAnimationFormTrigger can reach the single globally-mounted
             modal below via local state instead of a URL round-trip. */}
         <CustomAnimationFormProvider>
           {children}
-          {/* LazyRecaptchaProvider mounts only when a modal opens — never
+          {/* LazyRecaptchaProvider mounts only when a modal opens - never
               wrap page children or the homepage remounts when reCAPTCHA
-              arms. */}
+              arms. ExitIntentInviteModal has to live inside this provider
+              (not on the homepage route itself) so its executeRecaptcha()
+              call actually has a <ReCaptchaProvider> ancestor - it gates
+              itself back down to homepage-only via usePathname(). */}
           <LazyRecaptchaProvider>
             <Suspense>
               <CustomAnimationFormModal />
@@ -134,6 +133,7 @@ export default function RootLayout({ children }) {
             <Suspense>
               <WorkWithHyperiuxModal />
             </Suspense>
+            <ExitIntentInviteModal />
           </LazyRecaptchaProvider>
         </CustomAnimationFormProvider>
         <Analytics />

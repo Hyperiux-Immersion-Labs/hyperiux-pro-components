@@ -58,7 +58,7 @@ export default function CameraRig({ curve, cameraProps, scrollConfig = {} }: { c
     const reduceMotion = reduceMotionRef.current;
 
     if (reduceMotion) {
-      // Snap along the path — no lerp coast, breath, intro, or mouse parallax.
+      // Snap along the path - no lerp coast, breath, intro, or mouse parallax.
       progress.current = ((scroll.current % 1) + 1) % 1;
       const p = curve.getPointAt(progress.current);
       const t = curve.getTangentAt(progress.current);

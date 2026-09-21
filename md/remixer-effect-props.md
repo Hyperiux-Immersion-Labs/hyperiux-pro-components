@@ -1,7 +1,7 @@
 # Remixer Effect Prop Inventory
 
-> **Audit status (2026-08-12) — STALE, needs regeneration.** Registry now has 121
-> effects; this doc covers 115 — 6 recent pro effects are missing entirely
+> **Audit status (2026-08-12) - STALE, needs regeneration.** Registry now has 121
+> effects; this doc covers 115 - 6 recent pro effects are missing entirely
 > (`aperture-transition`, `ascend-transition`, `depth-shift-transition`, `shear-wipe`,
 > `side-navbar`, `sweep-lift`). Of the 115 it does cover, 14 have real undocumented new
 > props (e.g. `infinite-carousel` missing `cardSize/cardWidth/cardHeight`, `dither-canvas`
@@ -72,7 +72,7 @@ Notes:
 | `inactiveColor` | `#a1a1aa` | color | color | Box color when a toggle is inactive. |
 | `duration` | `0.32` | number | range/number | Icon transition duration in seconds. |
 
-Note: `defaultChecked` was removed — all three toggles always start unchecked.
+Note: `defaultChecked` was removed - all three toggles always start unchecked.
 
 ### Arrow Fill Button (`arrow-fill-button`, free)
 
@@ -176,21 +176,33 @@ Note: `defaultChecked` was removed — all three toggles always start unchecked.
 | `onClick` | undefined | function | custom/function | Click handler passed to the interactive element. |
 | `...props` | undefined | object | object/json | Configuration object for props. |
 
+### Spotlight Button (`spotlight-button`, pro)
+
+| Prop | Default | Type | Remixer control | Short description |
+|---|---|---|---|---|
+| `haloColor` | `#ff5f00` | color | color | Main halo color. |
+| `haloCoreColor` | `#ff9253` | color | color | Core color on hover and focus. |
+| `orbitDuration` | `3` | number | range (1–10) | Seconds per orbit. |
+| `settleDuration` | `0.8` | number | range (0–2) | Hover and focus transition duration in seconds. |
+| `haloWidth` | `5` | number | range (1–20) | Width of each halo gradient segment in percent. |
+| `spotlightIntensity` | `1` | number | range (0–1) | Strength of the border spotlight and glow. |
+| `size` | `"md"` | enum | disabled (hidden) | Button size: `sm`, `md`, or `lg`. |
+
 ## Carousels
 
 ### Clip Path Slider (`clippath-slider`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `slides` | `defaultSlides` | array | — (not in panel) | Slides rendered by the clip-path transition. |
-| `clueText` | `"Click either side and watch the next scene cut through."` | string | — (not in panel) | Instructional hint shown above the slider. |
+| `slides` | `defaultSlides` | array | - (not in panel) | Slides rendered by the clip-path transition. |
+| `clueText` | `"Click either side and watch the next scene cut through."` | string | - (not in panel) | Instructional hint shown above the slider. |
 | `showClue` | `true` | boolean | checkbox | Shows or hides the instructional clue text. |
 | `cursorBg` | `"#ff5f00"` | color | color | Background color of the custom directional cursor. |
 | `cursorLineColor` | `"#ffffff"` | color | color | Color of the arrow lines inside the custom cursor. |
 | `duration` | `0.75` | number | range | Clip-path transition duration. |
-| `clipDirection` | `"left"` | enum | — (not in panel) | Direction the clipping mask travels during transition. |
-| `easing` | `"power3.inOut"` | string | — (not in panel) | Easing curve used for slide transitions. |
-| `showControls` | `true` | boolean | — (not in panel) | Shows slider navigation controls. |
+| `clipDirection` | `"left"` | enum | - (not in panel) | Direction the clipping mask travels during transition. |
+| `easing` | `"power3.inOut"` | string | - (not in panel) | Easing curve used for slide transitions. |
+| `showControls` | `true` | boolean | - (not in panel) | Shows slider navigation controls. |
 
 `clipDirection`, `easing`, and `showControls` are declared, documented props with defaults but aren't wired into the component's behavior yet and aren't exposed in the live remixer panel.
 
@@ -203,7 +215,7 @@ Note: `defaultChecked` was removed — all three toggles always start unchecked.
 
 `cards`, `showNav`, `mobileBreakpoint`, `speed`, `pauseOnHover`, and `direction` were removed from the public/remixer prop surface (2026-07-29) and are now fixed internally (cards data, `showNav`/`pauseOnHover` true, `mobileBreakpoint` 640, `speed` 1, `direction` `"left"`).
 
-`items` was removed — it duplicated `cards` (both described as "the content rendered in the loop"), predating the real `cards` prop that shipped in 1.2.0.
+`items` was removed - it duplicated `cards` (both described as "the content rendered in the loop"), predating the real `cards` prop that shipped in 1.2.0.
 
 ### Ring Carousel (`ring-carousel`, pro)
 
@@ -303,7 +315,7 @@ Note: `defaultChecked` was removed — all three toggles always start unchecked.
 | `beamWidth` | `2` | number | range/number | Thickness of the animated border beam. |
 | `backgroundColor` | `#f4f5f7` | color | color | Card or container background color. |
 
-Note: `beamColor` and `paused` were removed — `beamColor` only hue-rotated the existing gradient rather than truly recoloring it, and `paused` duplicated `active`. `staticColors` and `hueRange` were later removed from the public props/remixer panel too; the beam still hue-drifts internally at their previous defaults (30, clamped to 13 for `size="line"`; frozen for `colorVariant="mono"`), so only props with simple, direct, reliable mappings are kept.
+Note: `beamColor` and `paused` were removed - `beamColor` only hue-rotated the existing gradient rather than truly recoloring it, and `paused` duplicated `active`. `staticColors` and `hueRange` were later removed from the public props/remixer panel too; the beam still hue-drifts internally at their previous defaults (30, clamped to 13 for `size="line"`; frozen for `colorVariant="mono"`), so only props with simple, direct, reliable mappings are kept.
 
 ### Card Drift (`card-drift`, pro)
 
@@ -336,6 +348,26 @@ Note: `beamColor` and `paused` were removed — `beamColor` only hue-rotated the
 | `lerp` | `0.18` | number | range/number | Pointer-follow smoothing amount; higher values track faster. |
 | `smoothness` | `0.4` | number | range/number | Hover enter/leave smoothing duration for card tilt and texture reveal. |
 
+### Network Globe (`globe`, pro)
+
+| Prop | Default | Type | Remixer control | Short description |
+|---|---|---|---|---|
+| `autoConnect` | `true` | boolean | checkbox | Periodically animates a route between random locations. |
+| `autoRotate` | `true` | boolean | checkbox | Continuously rotates the globe while idle. |
+| `rotationSpeed` | `4` | number | range | Automatic rotation speed in degrees per second. |
+| `routeFrequency` | `3.5` | number | range | Delay in seconds between automatic routes. |
+| `routeDuration` | `1.4` | number | range | Duration of each route animation in seconds. |
+| `connections` | `3` | number | range | Number of nearby routes emitted after selecting a location. |
+| `dotDensity` | `11000` | number | range | Sphere samples used to build the dotted land field. |
+| `dotSize` | `2.3` | number | range | Diameter of each land dot in pixels. |
+| `markerSize` | `5` | number | range | Diameter of each location marker in pixels. |
+| `routeColor` | `#fffaf2` | color | color | Color of animated connection routes. |
+| `mapColor` | `#ffffff` | color | color | Color of the dotted land field. |
+| `markerColor` | `#fffaf2` | color | color | Color of location markers and the globe outline. |
+| `showLabels` | `true` | boolean | checkbox | Shows location labels around the globe. |
+| `enableDrag` | `true` | boolean | checkbox | Allows pointer dragging to rotate the globe. |
+| `morphDuration` | `0.6` | number | range | Globe-to-map projection transition duration in seconds. |
+
 ### Gooey Counter (`gooey-counter`, free)
 
 | Prop | Default | Type | Remixer control | Short description |
@@ -361,7 +393,7 @@ Note: `beamColor` and `paused` were removed — `beamColor` only hue-rotated the
 | `duration` | `0.35` | number | range/number | Hover animation duration. |
 | `accentColor` | `transparent` | color | color | Outline color shown around the active card; transparent by default (matching the original no-outline look) until a color is picked. |
 
-Note: `cards` and `items` were removed — card content (quote, tag, background, accent) is now always the built-in set.
+Note: `cards` and `items` were removed - card content (quote, tag, background, accent) is now always the built-in set.
 
 ### Interactive List Preview (`interactive-list-preview`, free)
 
@@ -381,7 +413,7 @@ Note: `cards` and `items` were removed — card content (quote, tag, background,
 | `showNames` | `true` | boolean | toggle | Shows the project name on hover. |
 | `ribbonColor` | `#000000` | color | color | Color of the section-break reveal text fill. |
 
-Note: `images`, `projectNames`, `ribbons`, `amplitude`, and `pauseOnHover` were removed — content is always drawn from the built-in image/name pool.
+Note: `images`, `projectNames`, `ribbons`, `amplitude`, and `pauseOnHover` were removed - content is always drawn from the built-in image/name pool.
 
 ### Testimonial Swiper (`testimonial-swiper`, pro) - Suggested props
 
@@ -738,9 +770,9 @@ Changing any Stack Loader remixer prop restarts the loader animation so the new 
 | `textSideScale` | `0.68` | number | range | Off-center title scale. |
 | `textSideOpacity` | `0.18` | number | range | Off-center title fade. |
 
-2026-07-29: replaced a 16-prop granular list (`imageCardWidth`/`imageCardHeight`/`leftRadiusX/Y`/`rightRadiusX/Y`/`textCenterScale`/`textSideScale`/`textSideOpacity`/`imageCenterScale`/`imageSideScale`/`imageSideOpacity`/`items`/`segments`/`duration`/`stagger`/`accentColor`) with this clean set — `segments`/`duration`/`stagger`/`accentColor` were phantom (never referenced in the component at all). **Also fixed an actual "nothing is visible" bug**: the wrapper rendered `&lt;CircularSplitRollComp items={showcaseItems} {...rollConfig} /&gt;`, and since `rollConfig` (built from `...props`) included `items` from the remixer's empty-array default, the JSX spread order meant `{...rollConfig}` silently overwrote `items={showcaseItems}` with `[]` — the content array was always empty in the demo. Fixed by removing the spread pattern entirely and explicitly mapping only real props.
+2026-07-29: replaced a 16-prop granular list (`imageCardWidth`/`imageCardHeight`/`leftRadiusX/Y`/`rightRadiusX/Y`/`textCenterScale`/`textSideScale`/`textSideOpacity`/`imageCenterScale`/`imageSideScale`/`imageSideOpacity`/`items`/`segments`/`duration`/`stagger`/`accentColor`) with this clean set - `segments`/`duration`/`stagger`/`accentColor` were phantom (never referenced in the component at all). **Also fixed an actual "nothing is visible" bug**: the wrapper rendered `&lt;CircularSplitRollComp items={showcaseItems} {...rollConfig} /&gt;`, and since `rollConfig` (built from `...props`) included `items` from the remixer's empty-array default, the JSX spread order meant `{...rollConfig}` silently overwrote `items={showcaseItems}` with `[]` - the content array was always empty in the demo. Fixed by removing the spread pattern entirely and explicitly mapping only real props.
 
-`scrollSpeed` was added, inverted to fix its lag/speed semantics, then removed again (2026-07-29) — `scrub` is fixed at the original hardcoded `1.2`.
+`scrollSpeed` was added, inverted to fix its lag/speed semantics, then removed again (2026-07-29) - `scrub` is fixed at the original hardcoded `1.2`.
 
 ### Draggable Marquee (`draggable-marquee`, pro)
 
@@ -751,7 +783,7 @@ Changing any Stack Loader remixer prop restarts the loader animation so the new 
 | `throwMultiplier` | `2.8` | number | range | Drag-release momentum strength. |
 | `throwFriction` | `0.975` | number | range | Momentum decay rate per frame after a drag release. |
 
-These are real props already accepted by `DraggableMarqueeComp` — the wrapper just never threaded them through (2026-07-29 fix). `maxThrowVelocity` was considered but intentionally left out (still hardcoded at `60`).
+These are real props already accepted by `DraggableMarqueeComp` - the wrapper just never threaded them through (2026-07-29 fix). `maxThrowVelocity` was considered but intentionally left out (still hardcoded at `60`).
 
 ### Grid Scale (`grid-scale`, pro)
 
@@ -761,7 +793,7 @@ These are real props already accepted by `DraggableMarqueeComp` — the wrapper 
 | `panelColor` | `#ffffff` | color | color | Background color of the expanding center panel. |
 | `convergeStagger` | `0.7` | number | range | Total stagger spread (seconds) as the floating keyword pills converge to center. |
 
-The previous `items`/`columns`/`scaleAmount`/`gap`/`duration` "suggested" props were never wired into the component at all (2026-07-29); worse, when routed through the generic `SuggestedEffectRemixerDemo` dispatcher, `scaleAmount`'s default (`1.18`) was silently caught by that dispatcher's `scale` heuristic (`firstNumber(values, ["scale", ..., "scaleAmount", ...])`) and applied as `transform: scale(1.18)` on the wrapper div around the entire pinned/sticky scroll section — visibly breaking the effect's layout. Fixed by removing the fake props, moving the demo onto a bespoke `DemoContent.jsx` (`RegistryRemixerDemo` directly, no heuristic wrapper), and adding the real props above.
+The previous `items`/`columns`/`scaleAmount`/`gap`/`duration` "suggested" props were never wired into the component at all (2026-07-29); worse, when routed through the generic `SuggestedEffectRemixerDemo` dispatcher, `scaleAmount`'s default (`1.18`) was silently caught by that dispatcher's `scale` heuristic (`firstNumber(values, ["scale", ..., "scaleAmount", ...])`) and applied as `transform: scale(1.18)` on the wrapper div around the entire pinned/sticky scroll section - visibly breaking the effect's layout. Fixed by removing the fake props, moving the demo onto a bespoke `DemoContent.jsx` (`RegistryRemixerDemo` directly, no heuristic wrapper), and adding the real props above.
 
 ### Helix Slider (`helix-slider`, pro)
 
@@ -771,9 +803,9 @@ The previous `items`/`columns`/`scaleAmount`/`gap`/`duration` "suggested" props 
 | `depthAmplitude` | `200` | number | range | Front-to-back depth of the helix. |
 | `perspective` | `1900` | number | range | 3D perspective depth on the scene. |
 | `scaleMin` | `0.72` | number | range | How small distant cards shrink to. |
-| `maxYRotation` | `0` | number | range | Max card tilt (degrees) around the vertical axis — 0 disables the tilt entirely (matches the previous hardcoded value). |
+| `maxYRotation` | `0` | number | range | Max card tilt (degrees) around the vertical axis - 0 disables the tilt entirely (matches the previous hardcoded value). |
 
-These are all real props already accepted by `HelixSliderComp` — the wrapper just never threaded them through (2026-07-29 fix). The previous `slides`/`radius`/`depth`/`rotationSpeed`/`showControls` were phantom "suggested" props never wired into the component. The remaining props share a single `"motion"` group with `groupCollapsible: false` (2026-07-29) — the panel renders every slider directly, no accordion/dropdown to open first. `scrollDistance` was added then removed again (2026-07-29) — fixed at the original hardcoded `360`.
+These are all real props already accepted by `HelixSliderComp` - the wrapper just never threaded them through (2026-07-29 fix). The previous `slides`/`radius`/`depth`/`rotationSpeed`/`showControls` were phantom "suggested" props never wired into the component. The remaining props share a single `"motion"` group with `groupCollapsible: false` (2026-07-29) - the panel renders every slider directly, no accordion/dropdown to open first. `scrollDistance` was added then removed again (2026-07-29) - fixed at the original hardcoded `360`.
 
 ### Horizontal Feature Reveal (`horizontal-feature-reveal`, free)
 
@@ -784,7 +816,7 @@ These are all real props already accepted by `HelixSliderComp` — the wrapper j
 | `imageParallaxRange` | `30` | number | range | Symmetric parallax shift range (%) each image travels as it scrolls past. |
 | `cardGap` | `15` | number | range | Gap between industry cards, in vw. |
 
-The previous `features`/`scrollLength`/`panelGap`/`accentColor`/`scrub` (2026-07-29, removed) were phantom "suggested" props never wired into the component. `scrollTravel` was added then removed again (2026-07-29) — fixed at the original hardcoded `79`.
+The previous `features`/`scrollLength`/`panelGap`/`accentColor`/`scrub` (2026-07-29, removed) were phantom "suggested" props never wired into the component. `scrollTravel` was added then removed again (2026-07-29) - fixed at the original hardcoded `79`.
 
 ### Infinite Perspective Slider (`infinite-perspective-slider`, free)
 
@@ -876,14 +908,14 @@ The previous `images`/`columns`/`speed`/`gap`/`scaleOnScroll` props (2026-07-29,
 | `sectionHeight` | `400` | number | range | Total scroll-track height (vh). |
 | `shuffleIntensity` | `1` | number | range | Multiplier on how far and how much each card drifts/rotates during the shuffle. |
 
-The previous `rotationAmount` prop (2026-07-29, removed) was a phantom "suggested" prop that was never wired into the component, but its name exactly matched `SuggestedEffectRemixerDemo`'s `rotation` heuristic (`firstNumber(values, ["rotation", "rotationAmount"])`) — so moving that slider applied `transform: rotate()` to the wrapper div around the whole page section. Fixed by removing all the old phantom props, adding the real ones above, and moving the demo onto a bespoke `DemoContent.jsx`.
+The previous `rotationAmount` prop (2026-07-29, removed) was a phantom "suggested" prop that was never wired into the component, but its name exactly matched `SuggestedEffectRemixerDemo`'s `rotation` heuristic (`firstNumber(values, ["rotation", "rotationAmount"])`) - so moving that slider applied `transform: rotate()` to the wrapper div around the whole page section. Fixed by removing all the old phantom props, adding the real ones above, and moving the demo onto a bespoke `DemoContent.jsx`.
 
 ### Scroll Stack (`scroll-stack`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
 | `sectionBgColor` | `#ffffff` | color | color | Background color of the section. |
-| `cardRadius` | `45` | number | range | Corner rounding on each card, in px (desktop only — tablet/mobile keep their own responsive radius via a separate `--card-radius` CSS variable). |
+| `cardRadius` | `45` | number | range | Corner rounding on each card, in px (desktop only - tablet/mobile keep their own responsive radius via a separate `--card-radius` CSS variable). |
 
 The previous `items`/`offset`/`scaleStep`/`stickyTop`/`scrub` (2026-07-29, removed) were phantom "suggested" props never wired into the component. `stackScale`, `stickyOffset`, and `heading` were also considered and intentionally left out (still hardcoded).
 
@@ -894,9 +926,9 @@ The previous `items`/`offset`/`scaleStep`/`stickyTop`/`scrub` (2026-07-29, remov
 | `bgColor` | `#F5F5F0` | color | color | Page background color. |
 | `gridSize` | `16` | number | range | Pixel-dissolve shader's grid cell size, in px. |
 | `numSlices` | `32` | number | range | Number of horizontal slices the pixel-wipe transition is split into. |
-| `canvasSize` | `599` | number | range | Size (px) of the central transitioning canvas panel on desktop — mobile/tablet sizes scale proportionally. |
+| `canvasSize` | `599` | number | range | Size (px) of the central transitioning canvas panel on desktop - mobile/tablet sizes scale proportionally. |
 
-The previous `leftContent`/`rightContent`/`split`/`backgroundColor`/`transitionDuration` props (2026-07-29, removed) were phantom "suggested" props never wired into the component at all — `SplitCanvas`/`PixelScrollCanvas` took no configurable props whatsoever. Fixed by wiring the 4 real props above and moving the demo onto a bespoke `DemoContent.jsx`.
+The previous `leftContent`/`rightContent`/`split`/`backgroundColor`/`transitionDuration` props (2026-07-29, removed) were phantom "suggested" props never wired into the component at all - `SplitCanvas`/`PixelScrollCanvas` took no configurable props whatsoever. Fixed by wiring the 4 real props above and moving the demo onto a bespoke `DemoContent.jsx`.
 
 ### Square Translate (`square-translate`, pro) - Suggested props
 
@@ -928,7 +960,7 @@ The previous `leftContent`/`rightContent`/`split`/`backgroundColor`/`transitionD
 | `activeImageScale` | `1.2` | number | range | Scale of the image while it is active on screen. |
 | `exitImageScale` | `1` | number | range | Scale of an image after it has exited. |
 
-Note: `stepGap` was removed — each section step now always uses a fixed 2s scroll-timeline distance.
+Note: `stepGap` was removed - each section step now always uses a fixed 2s scroll-timeline distance.
 
 ### Marquee on SVG Path (`svg-path`, pro)
 
@@ -940,7 +972,7 @@ Note: `stepGap` was removed — each section step now always uses a fixed 2s scr
 | `slowDownFactor` | `0.3` | number | range | How much the marquee slows down while hovered. |
 | `draggable` | `true` | boolean | checkbox | Enables drag interaction on the marquee. |
 
-These are all real props already accepted by `SVGPathComp` — the wrapper just never threaded them through (2026-07-29 fix). The previous `path`/`viewBox`/`repeat`/`showPath` were phantom "suggested" props.
+These are all real props already accepted by `SVGPathComp` - the wrapper just never threaded them through (2026-07-29 fix). The previous `path`/`viewBox`/`repeat`/`showPath` were phantom "suggested" props.
 
 ### SVG Pixel Reveal (`svg-pixel-reveal`, pro)
 
@@ -959,7 +991,7 @@ These are all real props already accepted by `SVGPathComp` — the wrapper just 
 | `bgColor` | `#111111` | color | color | Background color of the section. |
 | `charRotation` | `20` | number | range | Max random rotation (degrees, plus or minus) each character starts from before flying into place. |
 
-`text` and `textColor` were removed from the public/remixer prop surface (2026-07-29) — `text` is now a fixed internal constant, `textColor` is fixed at `text-white`. `heightMultiplier` was added then removed again (2026-07-29).
+`text` and `textColor` were removed from the public/remixer prop surface (2026-07-29) - `text` is now a fixed internal constant, `textColor` is fixed at `text-white`. `heightMultiplier` was added then removed again (2026-07-29).
 
 ## Text
 
@@ -1223,7 +1255,7 @@ Note: `autoplay` and `runOnScroll` both run by default and can be toggled indepe
 | `scrollSpeed` | `0.01` | number | range | How fast wheel/scroll input moves the carousel. |
 | `showCaption` | `true` | boolean | checkbox | Shows the project caption text overlay. |
 
-The previous `projects`/`radius`/`depth`/`autoRotate`/`backgroundColor` props (2026-07-29, removed) were phantom "suggested" props never wired into the component (`PortfolioSlider3D` took zero params). `snapDuration` was considered but intentionally left out (still hardcoded at `0.5`). `bgColor` was added then removed again (2026-07-29) — background is fixed at `bg-black`.
+The previous `projects`/`radius`/`depth`/`autoRotate`/`backgroundColor` props (2026-07-29, removed) were phantom "suggested" props never wired into the component (`PortfolioSlider3D` took zero params). `snapDuration` was considered but intentionally left out (still hardcoded at `0.5`). `bgColor` was added then removed again (2026-07-29) - background is fixed at `bg-black`.
 
 ### Book Flip (`book-flip`, pro) - Suggested props
 
@@ -1241,7 +1273,7 @@ The previous `projects`/`radius`/`depth`/`autoRotate`/`backgroundColor` props (2
 | `modelScale` | `1` | number | range/number | Scale applied to the 3D model. |
 | `backgroundColor` | `#141518` | color | color | Canvas background color. |
 
-Note: `modelUrl` was removed — the model geometry/materials are fixed GLB assets that can't be swapped without breaking the effect.
+Note: `modelUrl` was removed - the model geometry/materials are fixed GLB assets that can't be swapped without breaking the effect.
 
 ### Curved Plane (`curved-plane`, pro)
 
@@ -1322,7 +1354,7 @@ Note: `modelUrl` was removed — the model geometry/materials are fixed GLB asse
 | `gridColor` | `#272727` | color | color | Color of the resting grid lines. |
 | `hoverColor` | `#ffffff` | color | color | Color of the lifted grid highlight. |
 
-These are the effect's real Leva controls, ported 1:1 (same defaults/min/max/step) — the Leva panel has been removed in favor of the shared remixer panel. `maskSource`/`maskText`/SVG upload remain interactive UI state in the demo's top-left panel, not remixer props.
+These are the effect's real Leva controls, ported 1:1 (same defaults/min/max/step) - the Leva panel has been removed in favor of the shared remixer panel. `maskSource`/`maskText`/SVG upload remain interactive UI state in the demo's top-left panel, not remixer props.
 
 ### Grid Tunnel (`grid-tunnel`, pro) - Suggested props
 
@@ -1421,8 +1453,8 @@ These are the effect's real Leva controls, ported 1:1 (same defaults/min/max/ste
 | `dispScale` | `1` | number | range | Multiplier on the ripple/displacement wave strength across all gallery images (collapsed and expanded). |
 | `cameraSway` | `0.03` | number | range | How much the camera drifts toward the pointer position. |
 
-`bgColor` was added then removed again (2026-07-29) — background is fixed at `#000`/`bg-black`. `touchSpeed` went through the same cycle: added, semantics inverted to fix a "higher = needs more swipe" bug, then removed again (2026-07-29) — the swipe threshold is fixed at the original hardcoded `0.015`.
+`bgColor` was added then removed again (2026-07-29) - background is fixed at `#000`/`bg-black`. `touchSpeed` went through the same cycle: added, semantics inverted to fix a "higher = needs more swipe" bug, then removed again (2026-07-29) - the swipe threshold is fixed at the original hardcoded `0.015`.
 
-**`dispScale` fix (2026-07-29):** was real but nearly invisible — it only fed `uDispScale`, a uniform that controls a subtle normal-map UV-shift term. The actual dominant ripple/wave geometry displacement was driven by `dispVertScale`, a hardcoded GLSL `const` never exposed to any prop — and only existed on the expanded card's material, not the collapsed strip items' instanced material at all. Fixed by converting `dispVertScale` to a real `uniform float uDispVertScale`, adding it to both the instanced (`sharedMat`) and high-res (`highResMat`) materials, and initializing both from `dispScale` (`4.0 * dispScale`, so the default preserves the original hardcoded `4.0`).
+**`dispScale` fix (2026-07-29):** was real but nearly invisible - it only fed `uDispScale`, a uniform that controls a subtle normal-map UV-shift term. The actual dominant ripple/wave geometry displacement was driven by `dispVertScale`, a hardcoded GLSL `const` never exposed to any prop - and only existed on the expanded card's material, not the collapsed strip items' instanced material at all. Fixed by converting `dispVertScale` to a real `uniform float uDispVertScale`, adding it to both the instanced (`sharedMat`) and high-res (`highResMat`) materials, and initializing both from `dispScale` (`4.0 * dispScale`, so the default preserves the original hardcoded `4.0`).
 
 The previous `slides`/`stripCount`/`duration`/`stagger`/`autoplay` (2026-07-29, removed) were phantom "suggested" props never wired into the component. `scrollSpeed` was also considered but intentionally left out (still hardcoded at `0.01`).

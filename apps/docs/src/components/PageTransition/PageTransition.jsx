@@ -103,6 +103,7 @@ const INTERNAL_WORKSPACE_PREFIXES = [
   '/dashboard',
   '/app/dashboard',
   '/effects',
+  '/templates',
   '/docs',
   '/legal',
   '/mcp',
@@ -353,6 +354,13 @@ export default function PageTransition() {
         href.startsWith('tel:') ||
         href.startsWith('#') ||
         anchor.target === '_blank' ||
+        // A `download` attribute (even an empty string, like the CSV
+        // export link sets) is the standard signal that a click is a file
+        // save, not a page navigation - intercepting it here canceled the
+        // real download (e.preventDefault() below) and instead
+        // router.push()'d to an API route with no page to reveal, which is
+        // exactly what left the transition overlay stuck on screen.
+        anchor.hasAttribute('download') ||
         e.metaKey ||
         e.ctrlKey ||
         e.shiftKey ||

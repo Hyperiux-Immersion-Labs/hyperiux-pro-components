@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Added reduced-motion support, fixed an uncolored gap between content and image panes, and exposed image-scale props; removed the unused stepGap prop.",
+      "summary": "Added reduced-motion support.",
       "breaking": false
     },
     {

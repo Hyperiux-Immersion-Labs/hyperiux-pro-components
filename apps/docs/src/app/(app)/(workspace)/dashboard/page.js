@@ -106,21 +106,14 @@ export default function DashboardPage() {
       : "Upgrade to unlock validity";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {justUpgraded && (
         <div className="border border-green-500/30  px-6 py-4 bg-green-500/10 text-green-400">
           🎉 Welcome to Pro! Your account has been upgraded.
         </div>
       )}
 
-      <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-5">
-        <StatCard
-          label="Saved Effects"
-          value={data.savedCount}
-          detail="Effects in your wishlist"
-          href="/dashboard/saved"
-        />
-
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-4">
         <StatCard
           label="Joined"
           value={formatDate(data.joinedAt)}
@@ -143,6 +136,29 @@ export default function DashboardPage() {
           label={data.plan === "pro" ? "Valid Until" : "Plan Validity"}
           value={data.plan === "pro" ? formatDate(data.planValidUntil) : "Free"}
           detail={proValidityDetail}
+        />
+      </div>
+
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
+        <StatCard
+          label="Saved Effects"
+          value={data.savedCount}
+          detail="Effects in your wishlist"
+          href="/dashboard/saved"
+        />
+
+        <StatCard
+          label="Copied Effects"
+          value={data.copiedCount}
+          detail="Effects copied from the website"
+          href="/dashboard/usage"
+        />
+
+        <StatCard
+          label="Installed Effects"
+          value={data.installedCount}
+          detail="Effects installed via web, CLI & MCP"
+          href="/dashboard/usage"
         />
       </div>
 

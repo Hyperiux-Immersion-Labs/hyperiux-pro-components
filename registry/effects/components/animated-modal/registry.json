@@ -5,7 +5,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Reworked the props API to real working controls (size, overlay opacity, duration, roundedness, colors), added reduced-motion support, and fixed responsive breakpoint and demo layout issues.",
+      "summary": "Added reduced motion support.",
       "breaking": false
     },
     {

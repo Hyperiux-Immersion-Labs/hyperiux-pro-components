@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { razorpay } from "@/lib/razorpay";
 import { markUserProFromSubscription, recordInvoice } from "@/lib/pro-access";
+import { recordTemplatePurchase } from "@/lib/template-purchases";
 
 function isValidSignature(payload, signature) {
   const expected = Buffer.from(
@@ -30,6 +31,9 @@ export async function POST(req) {
     const {
       razorpay_order_id,
       razorpay_subscription_id,
+      razorpay_invoice_id,
+      razorpay_invoice_receipt,
+      razorpay_invoice_status,
       razorpay_payment_id,
       razorpay_signature,
     } = await req.json();
@@ -37,7 +41,7 @@ export async function POST(req) {
     if (
       !razorpay_payment_id ||
       !razorpay_signature ||
-      (!razorpay_order_id && !razorpay_subscription_id)
+      (!razorpay_order_id && !razorpay_subscription_id && !razorpay_invoice_id)
     ) {
       return NextResponse.json(
         { error: "Missing payment verification fields" },
@@ -46,10 +50,21 @@ export async function POST(req) {
     }
 
     // Signature base differs by flow (per Razorpay docs):
-    // orders: order_id|payment_id — subscriptions: payment_id|subscription_id
-    const payload = razorpay_subscription_id
-      ? `${razorpay_payment_id}|${razorpay_subscription_id}`
-      : `${razorpay_order_id}|${razorpay_payment_id}`;
+    // orders: order_id|payment_id - subscriptions: payment_id|subscription_id -
+    // invoices: invoice_id|receipt|status|payment_id. Checkout.js's handler
+    // response shape follows whichever entity it was opened against - an
+    // invoice-backed order (see create-order/route.js's template-purchase
+    // branch) returns razorpay_invoice_id/_receipt/_status instead of
+    // razorpay_order_id, even though Checkout itself still opened via that
+    // invoice's underlying order_id.
+    let payload;
+    if (razorpay_subscription_id) {
+      payload = `${razorpay_payment_id}|${razorpay_subscription_id}`;
+    } else if (razorpay_invoice_id) {
+      payload = `${razorpay_invoice_id}|${razorpay_invoice_receipt}|${razorpay_invoice_status}|${razorpay_payment_id}`;
+    } else {
+      payload = `${razorpay_order_id}|${razorpay_payment_id}`;
+    }
 
     if (!isValidSignature(payload, razorpay_signature)) {
       return NextResponse.json(
@@ -70,7 +85,7 @@ export async function POST(req) {
         );
       }
 
-      // Activate immediately — covers local dev where webhooks can't reach us.
+      // Activate immediately - covers local dev where webhooks can't reach us.
       // Production webhooks re-confirm on subscription.activated/charged.
       const result = await markUserProFromSubscription({
         clerkUserId: userId,
@@ -97,13 +112,90 @@ export async function POST(req) {
       return NextResponse.json({ verified: true, ...result });
     }
 
+    // Invoice branch - every template purchase (create-order/route.js
+    // creates a real Razorpay Invoice for these specifically, so there's a
+    // hosted receipt to link to). Re-fetches the invoice rather than
+    // trusting anything the client sent, same reasoning as create-order not
+    // trusting a client-supplied amount - invoice.notes carries whatever
+    // create-order stamped on it server-side, and invoice.short_url is
+    // already the real receipt link, no separate payment/invoice lookup
+    // needed the way the old bare-order flow required.
+    if (razorpay_invoice_id) {
+      const invoice = await razorpay.invoices.fetch(razorpay_invoice_id);
+
+      if (invoice?.notes?.clerk_user_id !== userId) {
+        return NextResponse.json(
+          { error: "Invoice does not belong to this user" },
+          { status: 403 }
+        );
+      }
+
+      if (invoice?.notes?.template_slug) {
+        await recordTemplatePurchase({
+          clerkUserId: userId,
+          templateSlug: invoice.notes.template_slug,
+          razorpayPaymentId: razorpay_payment_id,
+          razorpayOrderId: invoice.order_id || null,
+          amount: typeof invoice.amount === "number" ? invoice.amount / 100 : null,
+          currency: invoice.currency || "USD",
+          invoiceUrl: invoice.short_url || null,
+        });
+      }
+
+      console.log("RAZORPAY_PAYMENT_VERIFIED:", {
+        userId,
+        razorpay_invoice_id,
+        razorpay_payment_id,
+        templateSlug: invoice?.notes?.template_slug || null,
+      });
+
+      return NextResponse.json({
+        verified: true,
+        templateSlug: invoice?.notes?.template_slug || null,
+      });
+    }
+
+    // Order (one-time payment) branch - the comment this replaced assumed
+    // every template purchase goes through the invoice branch above
+    // instead, but that assumption doesn't hold: RazorpayCheckoutButton
+    // opens Checkout.js with only order_id (no invoice_id), and per
+    // Razorpay's own docs that always returns razorpay_order_id, never
+    // razorpay_invoice_id, in the handler callback - so template purchases
+    // actually land HERE, every time, not in the invoice branch above.
+    // create-order/route.js now mirrors the invoice's notes onto this order
+    // via orders.edit() specifically so this branch can identify and record
+    // them, the same way the invoice branch already does for itself.
+    const order = await razorpay.orders.fetch(razorpay_order_id);
+
+    if (order?.notes?.clerk_user_id !== userId) {
+      return NextResponse.json(
+        { error: "Order does not belong to this user" },
+        { status: 403 }
+      );
+    }
+
+    if (order?.notes?.template_slug) {
+      await recordTemplatePurchase({
+        clerkUserId: userId,
+        templateSlug: order.notes.template_slug,
+        razorpayPaymentId: razorpay_payment_id,
+        razorpayOrderId: razorpay_order_id,
+        amount: typeof order.amount === "number" ? order.amount / 100 : null,
+        currency: order.currency || "USD",
+      });
+    }
+
     console.log("RAZORPAY_PAYMENT_VERIFIED:", {
       userId,
       razorpay_order_id,
       razorpay_payment_id,
+      templateSlug: order?.notes?.template_slug || null,
     });
 
-    return NextResponse.json({ verified: true });
+    return NextResponse.json({
+      verified: true,
+      templateSlug: order?.notes?.template_slug || null,
+    });
   } catch (error) {
     console.error("RAZORPAY_VERIFY_PAYMENT_ERROR:", error);
 

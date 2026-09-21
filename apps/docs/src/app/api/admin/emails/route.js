@@ -54,7 +54,11 @@ export async function GET(request) {
     // List with filters
     const emailType = searchParams.get("type") || "";
     const status = searchParams.get("status") || "";
-    const limit = Math.min(parseInt(searchParams.get("limit") || "50", 10), 200);
+    // 500 matches the page-size ceiling in the admin UI (User Management,
+    // the copy-activity log) - a smaller cap here would silently truncate a
+    // "500 per page" request while the page's own pagination math still
+    // assumed the full page size, skipping rows between pages.
+    const limit = Math.min(parseInt(searchParams.get("limit") || "50", 10), 500);
     const offset = parseInt(searchParams.get("offset") || "0", 10);
 
     let query = supabase
@@ -66,9 +70,29 @@ export async function GET(request) {
     if (emailType) query = query.eq("email_type", emailType);
     if (status) query = query.eq("status", status);
 
-    const { data, error, count } = await query;
+    // Delivered/failed counts scoped by the same type/status filters as the
+    // page itself, but never paginated - "10 delivered" reading off just the
+    // current page's 10 rows (while the header's own total counts all 2257)
+    // is exactly the mismatch this fixes.
+    function scopedCount(extraStatus) {
+      let q = supabase.from("sent_emails").select("id", { count: "exact", head: true });
+      if (emailType) q = q.eq("email_type", emailType);
+      if (status) q = q.eq("status", status);
+      return q.eq("status", extraStatus);
+    }
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const [
+      { data, error, count },
+      { count: successCount, error: successError },
+      { count: failedCount, error: failedError },
+    ] = await Promise.all([query, scopedCount("success"), scopedCount("failed")]);
+
+    if (error || successError || failedError) {
+      return NextResponse.json(
+        { error: (error || successError || failedError).message },
+        { status: 500 }
+      );
+    }
 
     const hasInviteRows = (data || []).some((row) => row.email_type === "invitations");
     const invitationStatusByEmail = hasInviteRows
@@ -85,7 +109,12 @@ export async function GET(request) {
       };
     });
 
-    return NextResponse.json({ emails, total: count || 0 });
+    return NextResponse.json({
+      emails,
+      total: count || 0,
+      successCount: successCount || 0,
+      failedCount: failedCount || 0,
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

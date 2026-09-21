@@ -1,3 +1,5 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 import Image from "next/image";
 import {
@@ -146,7 +148,7 @@ export default function Timeline({
   mutedTextColor = "#3f3f46",
   activeColor = "#ff5f00",
   backgroundColor = "#ffffff",
-  imageUrl = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+  imageUrl = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80",
   imageAlt = "Modern office workspace",
 
   duration,
@@ -223,6 +225,8 @@ export default function Timeline({
 
     const items = allJourneyItems;
     const isMobileViewport = window.innerWidth < 642;
+    const isTabletViewport =
+      window.innerWidth >= 642 && window.innerWidth <= 1024;
 
     if (reducedMotion) {
       items.forEach((item) => {
@@ -281,8 +285,12 @@ export default function Timeline({
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: `${startPos}% ${isMobileViewport ? "38%" : "top"}`,
-          end: `${endPos}% ${isMobileViewport ? "50%" : "40%"}`,
+          start: `${startPos}% ${
+            isMobileViewport ? "38%" : isTabletViewport ? "top" : "20%"
+          }`,
+          end: `${endPos}% ${
+            isMobileViewport ? "50%" : isTabletViewport ? "40%" : "60%"
+          }`,
           scrub: true,
         },
       });
@@ -379,20 +387,22 @@ export default function Timeline({
     <section
       ref={sectionRef}
       id="journey"
-      className="h-[200vw] max-[1025px]:h-[400vh] max-md:h-[400vh] w-full relative py-[7%]"
+      className="h-[200vw] max-[1025px]:h-[400vh] max-md:h-[400vh] w-full relative max-[1025px]:py-[7%]"
       style={sectionStyle}
     >
-      <div className="h-screen w-screen sticky top-[10%] pt-[5%] overflow-hidden max-md:top-[5%] ">
+      <div className="h-screen w-screen flex items-center sticky top-0 pt-[5%] overflow-hidden max-[1025px]:block max-[1025px]:top-[10%] max-md:top-[5%] ">
         <div
           ref={wholeSliderRef}
           className="mr-[2vw] flex h-[30vw] w-[240vw] items-center gap-[5vw] px-[5vw] max-[1025px]:h-[70vh] max-[1025px]:w-[400vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[2vw] max-[1025px]:px-[5vw] max-md:h-[80vh] max-md:w-[800vw] max-md:px-[7vw]"
         >
-          <div className="h-full w-[30vw] overflow-hidden rounded-[1vw] max-[1025px]:h-[40vw] max-[1025px]:w-[15%] max-[1025px]:rounded-[3vw] max-md:h-[65vw] max-md:w-[85vw] max-md:rounded-[5vw]">
+          <div className="relative h-full w-[30vw] overflow-hidden rounded-[1vw] max-[1025px]:h-[40vw] max-[1025px]:w-[15%] max-[1025px]:rounded-[3vw] max-md:h-[65vw] max-md:w-[85vw] max-md:rounded-[5vw]">
             <Image
               src={imageUrl}
               alt={imageAlt}
-              width={500}
-              height={500}
+              width={900}
+              height={900}
+              sizes="(max-width: 642px) 85vw, (max-width: 1025px) 40vw, 30vw"
+              quality={90}
               className="h-full w-full object-cover"
             />
           </div>

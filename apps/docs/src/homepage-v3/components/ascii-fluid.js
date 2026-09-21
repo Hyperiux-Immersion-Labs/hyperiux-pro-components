@@ -3,7 +3,7 @@
  *
  * Same passes and constants as the hero background, but the grid size is a
  * parameter: the hero spreads 80×60 across the viewport, while a card-sized
- * canvas needs far fewer cells to keep a cell the same number of pixels — and
+ * canvas needs far fewer cells to keep a cell the same number of pixels - and
  * a fluid cell's pixel size is what sets how wide the trail reads on screen.
  *
  * Velocity is injected from outside (see the trail loop in EffectBox), then

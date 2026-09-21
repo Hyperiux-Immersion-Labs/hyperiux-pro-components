@@ -7,14 +7,14 @@ import { ChevronDown } from "lucide-react";
 // the filter-bar style (default) and the compact per-table-row style.
 const SIZE_STYLES = {
   default: {
-    trigger: "py-2.5 pl-4 pr-9 text-sm",
+    trigger: "py-3.5 pl-4 pr-9 text-sm",
     chevron: "right-3 h-4 w-4",
     option: "px-4 py-2.5 text-sm",
   },
   compact: {
-    trigger: "py-1.5 pl-3 pr-7 text-xs",
+    trigger: "py-3.5 pl-3 pr-7 text-sm",
     chevron: "right-2 h-3.5 w-3.5",
-    option: "px-3 py-2 text-xs",
+    option: "px-3 py-2.5 text-sm",
   },
 };
 
@@ -71,7 +71,7 @@ export function CustomSelect({
   const selected = options.find((option) => option.value === value);
 
   return (
-    <div ref={rootRef} className={`relative inline-block ${className}`}>
+    <div ref={rootRef} className={`relative inline-block text-sm ${className}`}>
       <button
         type="button"
         disabled={disabled}

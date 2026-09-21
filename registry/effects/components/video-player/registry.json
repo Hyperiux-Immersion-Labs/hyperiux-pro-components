@@ -30,7 +30,7 @@
     {
       "version": "1.0.1",
       "date": "2026-07-30",
-      "summary": "Reworked the props API to match the real component (videoSrc, poster, autoPlay, controls) and replaced the continuous rAF progress loop with native timeupdate events.",
+      "summary": "Replaced the rAF progress loop with native timeupdate events.",
       "breaking": false
     },
     {

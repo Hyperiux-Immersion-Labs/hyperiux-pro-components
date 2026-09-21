@@ -246,6 +246,27 @@ describe("getInstallLimitDecision", () => {
       expect(supabaseMock.rpc.mock.calls.length).toBe(rpcCallsBefore + 1);
     });
 
+    it("with no device ID at all, the IP claim itself gets the strict anonymous limit, not the loose shared-network one", async () => {
+      process.env.INSTALL_LIMIT_ENFORCE = "true";
+
+      // No deviceId anywhere below - this caller has no other identity, so
+      // the IP claim must stand in for the strict per-anonymous-caller cap
+      // rather than quietly getting the looser LIMITS.ip (10) meant for
+      // *distinguishable* devices sharing a network.
+      const first = await getInstallLimitDecision({ effectSlug: "a", source: "cli", ip: "5.5.5.5" });
+      expect(first.allowed).toBe(true);
+      expect(first.limit).toBe(LIMITS.anonymous);
+
+      for (let i = 1; i < LIMITS.anonymous; i++) {
+        await getInstallLimitDecision({ effectSlug: `extra-${i}`, source: "cli", ip: "5.5.5.5" });
+      }
+
+      const overCap = await getInstallLimitDecision({ effectSlug: "over-cap", source: "cli", ip: "5.5.5.5" });
+
+      expect(overCap.allowed).toBe(false);
+      expect(overCap.limit).toBe(LIMITS.anonymous); // was LIMITS.ip (10) before this was fixed
+    });
+
     it("stricter verdict wins: device allows but IP bucket denies -> overall denied", async () => {
       process.env.INSTALL_LIMIT_ENFORCE = "true";
 

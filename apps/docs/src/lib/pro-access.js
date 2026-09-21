@@ -2,7 +2,7 @@ import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/resend";
-import { invalidatePlanCache } from "@/lib/subscription";
+import { invalidatePlanCache, ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 import { createSubscriptionInvoiceEmail } from "@/lib/emails/subscription-invoice-email";
 import { confirmFoundingSlot } from "@/lib/founding-slots";
 import {
@@ -10,10 +10,6 @@ import {
   proUnlockedSubject,
   proUnlockedText,
 } from "@/lib/emails/pro-unlocked-email";
-
-// Razorpay subscription statuses that count as "paying customer".
-// "authenticated" = mandate approved, first charge pending (trial-like window).
-export const PAID_STATUSES = ["authenticated", "active"];
 
 const PLAN_INTERVALS = {
   [process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID]: "monthly",
@@ -213,26 +209,38 @@ export async function sendInvoiceEmail({ clerkUserId, subscription, payment }) {
 // api/razorpay/webhooks/route.js) - one row per real charge, including the
 // first one, so the Invoicing tab has full billing history even though the
 // first-payment email itself is the welcome email rather than a receipt.
-// onConflict + ignoreDuplicates makes this safe against Razorpay's webhook
-// retries creating a duplicate row for the same payment.
+// Also called directly from verify-payment/route.js right after checkout,
+// racing the webhook for the same payment - whichever arrives first creates
+// the row, whichever arrives second must not silently no-op (that's how one
+// customer's invoice_url stayed null forever: verify-payment's subscription
+// fetch happened to land before Razorpay had generated the subscription's
+// short_url yet, and the later webhook's already-populated one was then
+// ignored). onConflict without ignoreDuplicates lets the second call update
+// the row instead - invoice_url is only included in the payload when this
+// call actually has one, so a still-missing short_url never overwrites a
+// good value the other call already wrote.
 export async function recordInvoice({ clerkUserId, subscription, payment }) {
   if (!clerkUserId || !payment?.id) return;
 
-  const { error } = await supabase.from("invoices").upsert(
-    {
-      clerk_user_id: clerkUserId,
-      razorpay_payment_id: payment.id,
-      razorpay_subscription_id: subscription?.id || null,
-      amount: payment.amount,
-      currency: payment.currency || "INR",
-      status: "paid",
-      billing_interval: getBillingInterval(subscription?.plan_id),
-      plan_label: getPlanLabel(subscription?.plan_id),
-      invoice_url: subscription?.short_url || null,
-      is_test: false,
-    },
-    { onConflict: "razorpay_payment_id", ignoreDuplicates: true }
-  );
+  const row = {
+    clerk_user_id: clerkUserId,
+    razorpay_payment_id: payment.id,
+    razorpay_subscription_id: subscription?.id || null,
+    amount: payment.amount,
+    currency: payment.currency || "INR",
+    status: "paid",
+    billing_interval: getBillingInterval(subscription?.plan_id),
+    plan_label: getPlanLabel(subscription?.plan_id),
+    is_test: false,
+  };
+
+  if (subscription?.short_url) {
+    row.invoice_url = subscription.short_url;
+  }
+
+  const { error } = await supabase
+    .from("invoices")
+    .upsert(row, { onConflict: "razorpay_payment_id" });
 
   if (error) {
     console.error("RECORD_INVOICE_ERROR:", error);
@@ -244,7 +252,7 @@ export async function countPaidUsers() {
     .from("subscriptions")
     .select("id", { count: "exact", head: true })
     .eq("plan", "pro")
-    .in("status", PAID_STATUSES)
+    .in("status", ACTIVE_PRO_STATUSES)
     // Excludes admin-comped/legacy rows with no real Razorpay subscription
     // behind them - only actual paying customers count toward the 100 slots.
     .not("razorpay_subscription_id", "is", null);

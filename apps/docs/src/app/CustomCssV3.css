@@ -22,8 +22,8 @@
   line-height: 1.15;
 }
 
-/* Below the desktop breakpoint the raw vw scale collapses — 5.25vw is 20px on a
-   390px phone — so the display sizes move to a clamped ramp instead. Each ramp
+/* Below the desktop breakpoint the raw vw scale collapses - 5.25vw is 20px on a
+   390px phone - so the display sizes move to a clamped ramp instead. Each ramp
    is solved to land on its own desktop value at 1025px, so nothing jumps as the
    query engages, and the min stops it shrinking further on small phones. */
 @media (max-width: 1025px) {

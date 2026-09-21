@@ -60,7 +60,7 @@ const freeFeatures = [
   "Code you own",
 ];
 const ProFeatures = [
-  "All 115 effects",
+  "All 150+ effects",
   "New effects added regularly.",
   "Priority access to upcoming packs",
   "Hyperiux CLI install + auth",

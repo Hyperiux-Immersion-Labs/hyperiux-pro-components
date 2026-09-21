@@ -4,10 +4,15 @@ import { supabase } from "@/lib/supabase";
 import { assertAdmin } from "@/lib/admin";
 import { getEffectMetadata } from "@/lib/registry";
 import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
-import { buildDailyBuckets, fillDailyBuckets, utcDateString } from "@/lib/admin-activity";
+import {
+  buildDailyBucketsForRange,
+  fillDailyBucketsBySeries,
+  resolveDateBounds,
+} from "@/lib/admin-activity";
 import { buildUserActivitySlug } from "@/lib/user-slug";
+import { getTemplateBySlug } from "@/lib/mock-templates";
 
-const TREND_DAYS = 30;
+const INSTALL_SOURCES = ["web", "cli", "mcp"];
 
 // Matches the bounded-fetch approach already used for the signups trend in
 // /api/admin/activity/overview - fine at this product's current scale;
@@ -78,11 +83,39 @@ export async function GET(request, { params }) {
       .slice()
       .sort((a, b) => (b.lastActiveAt || 0) - (a.lastActiveAt || 0))[0] || null;
 
+    const { searchParams } = new URL(request.url);
+    const { startISO, endISO, startDateString, endDateString } = resolveDateBounds({
+      range: searchParams.get("range"),
+      from: searchParams.get("from"),
+      to: searchParams.get("to"),
+    });
+
+    function scoped(query, column = "created_at") {
+      let q = query;
+      if (startISO) q = q.gte(column, startISO);
+      if (endISO) q = q.lt(column, endISO);
+      return q;
+    }
+
+    // usage_date is a DATE column (install_unlocks), not a timestamptz -
+    // "the whole day" is the unit, so this uses the inclusive
+    // startDateString/endDateString form resolveDateBounds returns
+    // specifically for that case, not the exclusive-end ISO timestamps
+    // scoped() above uses for created_at columns.
+    function scopedByUsageDate(query) {
+      let q = query;
+      if (startDateString) q = q.gte("usage_date", startDateString);
+      if (endDateString) q = q.lte("usage_date", endDateString);
+      return q;
+    }
+
     const [
       { data: subscriptionRow, error: subscriptionError },
       { data: invoiceRows, error: invoicesError },
+      { data: templatePurchaseRows, error: templatePurchasesError },
       { data: savedRows, error: savedError },
       { data: copyRows, error: copyError },
+      { data: installRows, error: installError },
       sanityEntries,
     ] = await Promise.all([
       supabase
@@ -93,30 +126,69 @@ export async function GET(request, { params }) {
         .eq("clerk_user_id", userId)
         .maybeSingle(),
 
-      supabase
-        .from("invoices")
-        .select("id,amount,currency,status,plan_label,is_test,created_at")
-        .eq("clerk_user_id", userId)
-        .order("created_at", { ascending: false }),
+      scoped(
+        supabase
+          .from("invoices")
+          .select("id,amount,currency,status,plan_label,invoice_url,razorpay_payment_id,is_test,created_at")
+          .eq("clerk_user_id", userId)
+          // Real payments only - matches api/admin/invoices/route.js. Test
+          // invoices (admin-seeded sample bills) don't belong in a user's
+          // real billing history.
+          .eq("is_test", false)
+          .order("created_at", { ascending: false })
+      ),
 
-      supabase
-        .from("wishlisted_effects")
-        .select("id,effect_slug,title,category,cover_image,tier,created_at")
-        .eq("clerk_user_id", userId)
-        .order("created_at", { ascending: false }),
+      scoped(
+        supabase
+          .from("template_purchases")
+          .select("id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,created_at")
+          .eq("clerk_user_id", userId)
+          .order("created_at", { ascending: false })
+      ),
+
+      scoped(
+        supabase
+          .from("wishlisted_effects")
+          .select("id,effect_slug,title,category,cover_image,tier,created_at")
+          .eq("clerk_user_id", userId)
+          .order("created_at", { ascending: false })
+      ),
 
       // install_unlocks supersedes copy_usage_effects (Installation-SyncUp.md
-      // Stage 1.5) - covers CLI/MCP installs too now, not just web copies.
-      supabase
-        .from("install_unlocks")
-        .select("effect_slug, usage_date")
-        .eq("clerk_user_id", userId)
-        .order("usage_date", { ascending: false }),
+      // Stage 1.5) and is the shared ledger across web/CLI/MCP - but
+      // "copies" here specifically means the website's copy button (same as
+      // the Overview page's Total Copies/Copy activity), so it's scoped to
+      // source='web' rather than folding CLI/MCP installs into a "copies"
+      // label.
+      scopedByUsageDate(
+        supabase
+          .from("install_unlocks")
+          .select("effect_slug, usage_date")
+          .eq("clerk_user_id", userId)
+          .eq("source", "web")
+          .order("usage_date", { ascending: false })
+      ),
+
+      // Unscoped by source, unlike copyRows above - "installed" means every
+      // surface (web/CLI/MCP), same as "Top installed effects" on the
+      // Overview page. Copies are always a subset of this (every web copy
+      // is also an install_unlocks row), which is exactly what lets the
+      // page below hide this slider when it'd just be a duplicate of
+      // "Copied Effects". `source` is also what the Installs chart below
+      // splits its three lines by.
+      scopedByUsageDate(
+        supabase
+          .from("install_unlocks")
+          .select("effect_slug, usage_date, source")
+          .eq("clerk_user_id", userId)
+          .order("usage_date", { ascending: false })
+      ),
 
       getAllSanityEffectEntries(),
     ]);
 
-    const firstError = subscriptionError || invoicesError || savedError || copyError;
+    const firstError =
+      subscriptionError || invoicesError || templatePurchasesError || savedError || copyError || installError;
 
     if (firstError) {
       console.error("ADMIN_ACTIVITY_USER_ERROR:", userId, firstError);
@@ -130,53 +202,134 @@ export async function GET(request, { params }) {
     function resolveEffect(slug) {
       const metadata = sanityEffectsBySlug.get(slug) || getEffectMetadata(slug);
       return {
+        slug,
         name: slug,
         title: metadata?.title || slug,
         coverImage: metadata?.coverImage || slug,
+        videoUrl: metadata?.videoUrl || null,
         tier: metadata?.tier || "free",
+        // metadata is either a Sanity entry (categorySlug) or a registry
+        // entry (categories[]) - checking both covers whichever shape it
+        // actually is, same as resolveEffectSummary() in the overview
+        // route. Needed so EffectRankSlider's card links (getEffectHref)
+        // land on the right category instead of silently defaulting to
+        // "components".
+        categorySlug: metadata?.categorySlug || metadata?.categories?.[0] || null,
       };
     }
 
-    // Dedupe to most-recent-per-effect for the "copied effects" list, same
-    // as /api/dashboard/usage/route.js - rows are already newest-first.
-    const seenSlugs = new Set();
-    const copiedEffects = [];
+    // Dedupe to most-recent-per-effect - same as /api/dashboard/usage/route.js
+    // - rows are already newest-first. Shared by both copiedEffects and
+    // installedEffects below, since it's the same "one row per effect,
+    // most recent date wins" reduction either way.
+    function dedupeMostRecent(rows, dateField) {
+      const seenSlugs = new Set();
+      const effects = [];
 
-    for (const row of copyRows || []) {
-      if (seenSlugs.has(row.effect_slug)) continue;
-      seenSlugs.add(row.effect_slug);
+      for (const row of rows || []) {
+        if (seenSlugs.has(row.effect_slug)) continue;
+        seenSlugs.add(row.effect_slug);
 
-      copiedEffects.push({
-        ...resolveEffect(row.effect_slug),
-        lastCopiedAt: row.usage_date,
-      });
+        effects.push({ ...resolveEffect(row.effect_slug), [dateField]: row.usage_date });
+      }
+
+      return effects;
     }
 
-    const copyTrend = fillDailyBuckets(
-      buildDailyBuckets(TREND_DAYS),
-      (copyRows || []).filter((row) => row.usage_date >= utcDateString(TREND_DAYS - 1)),
-      (row) => row.usage_date
+    const copiedEffects = dedupeMostRecent(copyRows, "lastCopiedAt");
+    const installedEffects = dedupeMostRecent(installRows, "lastInstalledAt");
+
+    // Installs, not just web copies - one line per source (web/CLI/MCP)
+    // instead of the single web-only line this used to be, so it actually
+    // shows where this user's installs come from rather than only the
+    // subset that happens to be copies.
+    const installTrend = fillDailyBucketsBySeries(
+      buildDailyBucketsForRange({ startDateString, endDateString }),
+      installRows || [],
+      (row) => row.usage_date,
+      (row) => row.source,
+      INSTALL_SOURCES
     );
 
     const savedEffects = (savedRows || []).map((row) => ({
       id: row.id,
+      slug: row.effect_slug,
       name: row.effect_slug,
       title: row.title || resolveEffect(row.effect_slug).title,
       category: row.category,
       coverImage: row.cover_image || resolveEffect(row.effect_slug).coverImage,
+      videoUrl: resolveEffect(row.effect_slug).videoUrl,
       tier: row.tier || "free",
       savedAt: row.created_at,
     }));
 
-    const lifetimeSpend =
-      (invoiceRows || [])
-        .filter((row) => row.status === "paid" && !row.is_test)
-        .reduce((sum, row) => sum + row.amount, 0) / 100;
+    // Grouped by currency, never summed across them or reduced to "whichever
+    // currency the first row happened to be" - a user can genuinely have
+    // both a USD subscription and an INR one (or vice versa) on file, and
+    // picking just paidInvoices[0]'s currency for the whole total is exactly
+    // what previously mislabeled a real $179 spend as "₹179". Combines both
+    // subscription invoices AND one-time template purchases, since both are
+    // real money this user actually spent - "Lifetime Spend" excluding
+    // template purchases entirely was the other half of that same report.
+    const paidInvoices = (invoiceRows || []).filter((row) => row.status === "paid" && !row.is_test);
+    const paidTemplatePurchases = (templatePurchaseRows || []).filter((row) => row.status === "paid");
+
+    const lifetimeSpendByCurrencyMap = {};
+    for (const row of paidInvoices) {
+      const currency = row.currency || "INR";
+      lifetimeSpendByCurrencyMap[currency] = (lifetimeSpendByCurrencyMap[currency] || 0) + row.amount / 100;
+    }
+    // template_purchases.amount is already whole currency units (see
+    // comment below), unlike invoices.amount above - do not divide by 100.
+    for (const row of paidTemplatePurchases) {
+      const currency = row.currency || "USD";
+      lifetimeSpendByCurrencyMap[currency] = (lifetimeSpendByCurrencyMap[currency] || 0) + row.amount;
+    }
+    const lifetimeSpendByCurrency = Object.entries(lifetimeSpendByCurrencyMap).map(([currency, amount]) => ({
+      currency,
+      amount,
+    }));
+
+    // amount is already whole currency units here (verify-payment/route.js
+    // divides Razorpay's paise/cents amount by 100 before recording), unlike
+    // invoices.amount above - do not divide this by 100 again.
+    const templatePurchases = (templatePurchaseRows || []).map((row) => ({
+      id: row.id,
+      templateSlug: row.template_slug,
+      templateTitle: getTemplateBySlug(row.template_slug)?.title || row.template_slug,
+      paymentId: row.razorpay_payment_id,
+      amount: row.amount,
+      currency: row.currency,
+      status: row.status,
+      invoiceUrl: row.invoice_url,
+      createdAt: row.created_at,
+    }));
+
+    // Full template objects (title, screenshots, tier, href, etc.), not
+    // just the slug/title pair templatePurchases carries - the "Purchased
+    // Templates" slider below renders these as real TemplateCards, same as
+    // the Saved/Copied/Installed Effects sliders above it do for effects.
+    const purchasedTemplates = (templatePurchaseRows || [])
+      .map((row) => getTemplateBySlug(row.template_slug))
+      .filter(Boolean);
 
     return NextResponse.json({
       profile: {
         id: clerkUser.id,
-        name: clerkUser.fullName || clerkUser.firstName || null,
+        // Name is never blank in the UI: falls back to the email's
+        // local-part, capitalized - same convention as displayName() in
+        // dashboard/admin/page.js and resolveDisplayName() in
+        // InstallActivityTab.js - rather than a generic "Unnamed user"
+        // placeholder when Clerk has no first/last name on file (invited
+        // accounts that completed sign-up through Clerk's own hosted widget
+        // without ever being asked for one, mainly).
+        name:
+          clerkUser.fullName ||
+          clerkUser.firstName ||
+          (() => {
+            const local = clerkUser.emailAddresses?.[0]?.emailAddress?.split("@")[0];
+            return local ? local.charAt(0).toUpperCase() + local.slice(1) : null;
+          })(),
         email: clerkUser.emailAddresses?.[0]?.emailAddress || null,
         imageUrl: clerkUser.imageUrl || null,
         joinedAt: clerkUser.createdAt,
@@ -197,12 +350,16 @@ export async function GET(request, { params }) {
       stats: {
         savedCount: (savedRows || []).length,
         copiedCount: copiedEffects.length,
-        lifetimeSpend,
+        installedCount: installedEffects.length,
+        lifetimeSpendByCurrency,
       },
-      copyTrend,
+      installTrend,
       savedEffects,
       copiedEffects,
+      installedEffects,
       invoices: invoiceRows || [],
+      templatePurchases,
+      purchasedTemplates,
     });
   } catch (error) {
     // userId may not be assigned yet if the error happened before the slug

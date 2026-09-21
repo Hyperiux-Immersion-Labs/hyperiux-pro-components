@@ -23,7 +23,7 @@ export default function ExplainVault() {
         if (!line) return
 
         // Arming blanks the line, so it only happens once the reveal is close
-        // enough to follow immediately — the copy stays readable otherwise.
+        // enough to follow immediately - the copy stays readable otherwise.
         const armObserver = new IntersectionObserver(
             (entries) => {
                 if (!entries[0]?.isIntersecting) return
@@ -98,7 +98,7 @@ export default function ExplainVault() {
                         <ScrambleTextV3 text={WORKFLOW_TEXT} active={active} armed={armed} />
                         &nbsp;
                         <span className="fadeup inline-block">
-                            <LinkButton underline={true} className='max-md:mt-[2vw]' href={"#Workflow"} shimmer shimmerColor="var(--primary)" tilted={false} showArrow text={"See How it Works"} />
+                            <LinkButton underline={true} className='max-md:mt-[2vw]' href={"#Workflow"} shimmer shimmerColor="#ffffff" tilted={false} showArrow text={"See How it Works"} />
                         </span>
                     </div>
                 </div>

@@ -81,7 +81,7 @@ class FilmGrainEffectImpl extends Effect {
 
  update(renderer: WebGLRenderer, _inputBuffer: WebGLRenderTarget, deltaTime?: number) {
  if (this._reduceMotion) {
- // Keep grain static — still sync resolution for aspect-correct dots.
+ // Keep grain static - still sync resolution for aspect-correct dots.
  if (renderer && renderer.getSize) {
  const size = renderer.getSize(new Vector2());
  this.setResolution(size.x, size.y);

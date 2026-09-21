@@ -1,14 +1,14 @@
 # Remixer Panel System Plan
 
 > **Audit status (2026-08-12):** the `registry.json` `props`/`remixer` shape this doc
-> prescribes is confirmed live and matching across sampled effects — trust the
+> prescribes is confirmed live and matching across sampled effects - trust the
 > architectural contract. Two things have drifted: (1) the implementation file layout
-> is not what's described below — real files live under
+> is not what's described below - real files live under
 > `apps/docs/src/components/remixer-panel/` as TypeScript (`RemixerPanel.tsx`,
 > `RemixerLauncher.tsx`, `useRemixerControls.ts`, `build-remixer-code.ts`,
 > `remixer-utils.ts`, `types.ts`), not the `hooks/usePropsRemixer.js` /
 > `components/ui/RemixerLauncher.jsx` paths named here; (2) the worked `spider-particles`
-> example below (`showWeb` as docs-only, excluded from copied code) is now wrong —
+> example below (`showWeb` as docs-only, excluded from copied code) is now wrong -
 > `showWeb` is a full public prop with `remixer.control: "checkbox"` in the current
 > registry.
 

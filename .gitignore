@@ -6,6 +6,11 @@ apps/**/docs/**/node_modules
 apps/**/docs/**/.next
 /out
 /build
+
+# scripts/package-template.mjs output (dist/template-build/ has its own
+# node_modules per template; dist/template-zips/ is uploaded to Vercel
+# Blob, not committed - see md/template-download-purchase-plan.md)
+/dist
 .DS_Store
 *.pem
 npm-debug.log*
@@ -31,6 +36,7 @@ CLAUDE.md
 apps/docs/public/r.tmp
 .vercel
 
-# graft's local graph cache — regenerable, not committed (run `graft build`).
+# graft's local graph cache - regenerable, not committed (run `graft build`).
 graft/
 .21st/
+.local

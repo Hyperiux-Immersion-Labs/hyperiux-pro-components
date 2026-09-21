@@ -3,12 +3,13 @@
 // Extracted here since the new admin activity pages need the identical look.
 export function StatCard({ label, value, detail }) {
   return (
-    <div className="flex h-full flex-col justify-between p-6 bg-[#272727]">
-      <p className="text-white mb-3">{label}</p>
+    <div className="flex h-full flex-col justify-between p-6 gap-6 bg-[#272727]">
+      <div className="flex flex-col gap-2">
+        <p className="text-white">{label}</p>
+        {detail && <div className="text-[#838383]">{detail}</div>}
 
+      </div>
       <p className="text-2xl font-medium font-laygrotesk leading-none">{value}</p>
-
-      {detail && <div className="text-[#838383] mt-4">{detail}</div>}
     </div>
   );
 }

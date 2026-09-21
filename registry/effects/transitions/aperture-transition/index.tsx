@@ -1,15 +1,18 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 'use client'
+import { useSyncExternalStore } from "react";
 
 import { TransitionRouter } from 'next-transition-router'
 import { usePathname } from 'next/navigation'
 import React, { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 function prefersReducedMotion() {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
 gsap.registerPlugin(ScrollTrigger)
@@ -83,7 +86,7 @@ export default function ApertureTransition({
       wrapperRef.current.style.transform = 'translateY(0px)'
       wrapperRef.current.style.clipPath = HIDDEN_CLIP
     }
-  }, [pathname])
+  }, [pathname, HIDDEN_CLIP])
 
   return (
     <TransitionRouter
@@ -97,11 +100,6 @@ export default function ApertureTransition({
           return () => tl.kill()
         }
 
-        // Freeze the page at its current scroll position: pin the frame to
-        // the viewport and shift the (possibly much taller) content up by
-        // however far it was scrolled, so what's visually on screen right
-        // now stays exactly where it is once the frame stops being part of
-        // the scrollable document.
         const scrollY = window.scrollY || document.documentElement.scrollTop || 0
         document.body.style.overflow = 'hidden'
 
@@ -117,14 +115,6 @@ export default function ApertureTransition({
 
         const tl = gsap.timeline({
           onComplete: () => {
-            // Freeze the outgoing content as a static clone, stacked
-            // beneath the incoming content's z-index. It inherits its
-            // position:fixed and translateY straight from wrapperRef's
-            // current inline style (cloneNode copies it), and because the
-            // frame is a transformed ancestor by now, that "fixed"
-            // resolves relative to the frame - so the clone tracks the
-            // frame's own scale automatically, with no separate tween of
-            // its own needed.
             const clone = wrapperRef.current!.cloneNode(true) as HTMLElement
             clone.style.pointerEvents = 'none'
             overlayRef.current!.appendChild(clone)
@@ -148,9 +138,6 @@ export default function ApertureTransition({
             cloneRef.current?.remove()
             cloneRef.current = null
 
-            // Release the freeze - the new page goes back to normal,
-            // scrollable in-flow layout instead of staying pinned inside
-            // the fixed frame.
             document.body.style.overflow = ''
             if (frameRef.current) {
               frameRef.current.style.position = ''

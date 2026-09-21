@@ -1,8 +1,7 @@
 import "server-only";
 import { supabase } from "@/lib/supabase";
 import { hashCliToken } from "@/lib/cli-token";
-
-const ACTIVE_STATUSES = ["active", "trialing"];
+import { ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 
 export function getCliTokenFromRequest(request) {
   const authorization = request.headers.get("authorization");
@@ -98,25 +97,16 @@ export async function verifyCliToken(token) {
     };
   }
 
-  if (data.plan !== "pro" || !ACTIVE_STATUSES.includes(data.status)) {
-    return {
-      valid: false,
-      status: 403,
-      reason: "This token does not belong to an active Pro account.",
-    };
-  }
-
-  if (data.current_period_end) {
-    const periodEnd = new Date(data.current_period_end).getTime();
-
-    if (!Number.isNaN(periodEnd) && periodEnd <= Date.now()) {
-      return {
-        valid: false,
-        status: 403,
-        reason: "Your Pro subscription has expired.",
-      };
-    }
-  }
+  // Login only needs "is this a real, non-revoked token" - any signed-in
+  // user (free or Pro) is allowed to log in so free users get their raised
+  // shared daily limit. Whether the account is an *active* Pro account is
+  // reported alongside validity instead of gating it, so Pro-specific access
+  // decisions (e.g. installing a Pro effect) can still check `isPro` without
+  // this function rejecting free/expired-Pro tokens outright.
+  const isActivePro =
+    data.plan === "pro" &&
+    ACTIVE_PRO_STATUSES.includes(data.status) &&
+    (!data.current_period_end || new Date(data.current_period_end).getTime() > Date.now());
 
   await supabase
     .from("subscriptions")
@@ -129,5 +119,7 @@ export async function verifyCliToken(token) {
     valid: true,
     status: 200,
     clerkUserId: data.clerk_user_id,
+    plan: data.plan,
+    isPro: isActivePro,
   };
 }
