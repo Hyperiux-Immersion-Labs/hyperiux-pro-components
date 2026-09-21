@@ -18,6 +18,7 @@ import BlogArticleBody from "@/components/blog/BlogArticleBody";
 import BlogTags from "@/components/blog/BlogTags";
 import BlogShareLinks from "@/components/blog/BlogShareLinks";
 import BlogPromoCard from "@/components/blog/BlogPromoCard";
+import RelatedBlogs from "./RelatedBlogs";
 import "@/styles/blog-new.css";
 
 
@@ -74,7 +75,7 @@ export default async function BlogPostPage({ params }) {
 
   const [effects, relatedPosts] = await Promise.all([
     getSearchIndexEffects(),
-    getRelatedBlogPosts(slug, post),
+    getRelatedBlogPosts(slug, post, 5),
   ]);
 
   const url = `/blog/${slug}`;
@@ -94,7 +95,7 @@ export default async function BlogPostPage({ params }) {
       {faqs.length > 0 && <FAQJSONLD faqs={faqs} />}
       <NavbarV3 effects={effects} />
 
-      <div className="px-[4vw] py-[8vw] max-[1025px]:px-[5vw] max-[1025px]:py-[10vh] max-md:px-[7vw] max-md:py-[26vw]">
+      <div className="px-[4vw] py-[8vw] max-[1025px]:px-[5vw] max-[1025px]:py-[10vh] max-md:px-[7vw] max-md:pt-[26vw] max-md:pb-[10vw]">
         <article className="blog-article text-white">
           <BlogDetailHero post={post} />
 
@@ -112,8 +113,9 @@ export default async function BlogPostPage({ params }) {
           </BlogArticleBody>
         </article>
 
-      
+        
       </div>
+      <RelatedBlogs posts={relatedPosts} />
 
       <FooterV3 />
     </>

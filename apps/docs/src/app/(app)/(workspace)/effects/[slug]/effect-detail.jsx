@@ -1172,7 +1172,7 @@ function SanityBodyBlock({ block, isLocked = false }) {
     if (!columnCount) return null;
 
     return (
-      <div className="space-y-3 fadeup">
+      <div className="space-y-3 py-[2vh] fadeup max-md:py-[1.5vh]">
         {block.caption && (
           <h3 className="text-xl tracking-tighter text-foreground">
             {block.caption}
@@ -1199,11 +1199,20 @@ function SanityBodyBlock({ block, isLocked = false }) {
             <tbody>
               {rows.map((row, rowIndex) => (
                 <tr key={row._key || `${rowIndex}`}>
-                  {Array.from({ length: columnCount }).map((_, cellIndex) => (
-                    <td key={`${rowIndex}-${cellIndex}`}>
-                      {row.cells?.[cellIndex] || ""}
-                    </td>
-                  ))}
+                  {Array.from({ length: columnCount }).map((_, cellIndex) => {
+                    const value = row.cells?.[cellIndex] || "";
+
+                   
+                    if (block.firstColumnAsHeader === true && cellIndex === 0) {
+                      return (
+                        <th key={`${rowIndex}-${cellIndex}`} scope="row">
+                          {value}
+                        </th>
+                      );
+                    }
+
+                    return <td key={`${rowIndex}-${cellIndex}`}>{value}</td>;
+                  })}
                 </tr>
               ))}
             </tbody>

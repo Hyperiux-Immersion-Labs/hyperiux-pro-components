@@ -172,13 +172,21 @@ const tableBlock = defineType({
       initialValue: 'vault',
       options: {
         list: [
-          {title: 'Vault Dark', value: 'vault'},
-          {title: 'Vault Orange', value: 'orange'},
+          {title: 'Solid Header (dark bar + zebra rows)', value: 'vault'},
+          {title: 'Outline (hairline grid, no fills)', value: 'outline'},
+          {title: 'Orange Header', value: 'orange'},
           {title: 'Muted', value: 'muted'},
-          {title: 'Outline', value: 'outline'},
         ],
         layout: 'radio',
       },
+    }),
+    defineField({
+      name: 'firstColumnAsHeader',
+      title: 'Use first column as a header too',
+      description:
+        'Styles the leftmost cell of every row as a header, giving the table a header row across the top and a header rail down the left.',
+      type: 'boolean',
+      initialValue: false,
     }),
     defineField({
       name: 'headers',

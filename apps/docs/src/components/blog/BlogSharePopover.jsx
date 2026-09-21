@@ -152,7 +152,11 @@ export default function BlogSharePopover({ url, title }) {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="absolute bottom-[calc(100%+0.75rem)] left-0 z-50 w-[16vw] min-w-56 overflow-hidden bg-[#161616] shadow-2xl"
+            // z-950 clears the navbar's z-900 - at z-50 the panel opened *behind* the
+            // fixed header, which covered the "Copy link" row and made it unclickable.
+            // left-[2vw] + bottom-[85%] (rather than left-0/bottom-full) nudge the
+            // panel right and down off the trigger instead of opening flush against it.
+            className="absolute bottom-[50%] left-[2vw] z-950 mb-3 w-[16vw] min-w-56 overflow-hidden bg-[#161616] shadow-2xl"
           >
             {/* Same hover treatment as the TOC rows: an inset layer that
                 scales up from the top rather than a background swap, so the

@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { CodeBlock } from "@/components/ui/CodeBlock";
+import BlogCodeBlock from "@/components/blog/BlogCodeBlock";
+import DocsTable from "@/components/DocsContent/Table";
 import { getBlogHeadings } from "@/lib/blog-content";
 import {
   FAQContent,
@@ -9,9 +10,11 @@ import {
 } from "@/components/animated-faq";
 import styles from "@/app/(marketing)/blog/[slug]/blog-content.module.css";
 
-// Renders a blogPost's Sanity `body` (the same effectBody portable-text
-// schema effectContent uses - block/effectImage/effectCodeBlock/
-// effectTableBlock/effectCalloutBlock/horizontalRule/effectFaqAccordion).
+// Renders a blogPost's Sanity `body` (the blogBody portable-text schema -
+// block/effectImage/blogCodeBlock/effectTableBlock/effectCalloutBlock/
+// horizontalRule/effectFaqAccordion. blogBody mirrors the effectBody the
+// effect pages use, but swaps effectCodeBlock for the blog-only
+// blogCodeBlock, which has no JS/TS variants).
 // Deliberately NOT a reuse of effect-detail.jsx's PortableTextBlock/
 // SanityBodyBlock: those are wired into useCopyLimit()'s Pro-effect
 // copy-paywall, which has no meaning for a blog post - pulling them in would
@@ -126,14 +129,17 @@ function BlogBlock({ block, headingId }) {
   if (block._type === "effectImage") {
     return (
       <figure className="fadeup">
-        <div className={styles.imageFrame}>
+        {/* `group` + overflow-hidden on the frame so the image can scale past
+            the frame's edges on hover and get cropped by it, rather than
+            pushing the surrounding prose around. */}
+        <div className={`${styles.imageFrame} group`}>
           <Image
             src={block.url}
             alt={block.alt || ""}
             width={1600}
             height={900}
             sizes="(max-width: 768px) 100vw, 720px"
-            className={styles.image}
+            className={`${styles.image} transition-transform duration-300 ease-in-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100`}
           />
         </div>
         {block.caption && (
@@ -143,12 +149,39 @@ function BlogBlock({ block, headingId }) {
     );
   }
 
+  // Same wrapper rationale as the table below: body blocks render as a flat
+  // list with no spacing parent, and padding on BlogCodeBlock itself would sit
+  // inside its own background instead of separating it from the prose.
+  if (block._type === "blogCodeBlock") {
+    return (
+      <div className="py-5">
+        <BlogCodeBlock
+          code={block.code || ""}
+          language={block.language}
+          filename={block.filename}
+        />
+      </div>
+    );
+  }
+
+  // Posts authored before blogCodeBlock existed still carry effectCodeBlock
+  // blocks - render them through the blog block too, so no post shows the
+  // JS/TS toggle. The tsxCode field is intentionally dropped.
   if (block._type === "effectCodeBlock") {
-    return <CodeBlock code={block.code || ""} tsxCode={block.tsxCode} filename={block.filename} />;
+    return (
+      <div className="py-5">
+        <BlogCodeBlock code={block.code || ""} filename={block.filename} />
+      </div>
+    );
   }
 
   if (block._type === "horizontalRule") return <hr className={styles.contentDivider} />;
 
+  // Was emitting a bare <table> under .blog-table-wrapper, whose styles live
+  // in blog.css - a file this page never imports, so the table rendered with
+  // no borders, padding or header fill at all. DocsTable carries its own
+  // Tailwind styling and the colorVariant/firstColumnAsHeader options the
+  // schema already exposes.
   if (block._type === "effectTableBlock") {
     const headers = Array.isArray(block.headers) ? block.headers : [];
     const rows = Array.isArray(block.rows) ? block.rows : [];
@@ -159,28 +192,27 @@ function BlogBlock({ block, headingId }) {
 
     if (!columnCount) return null;
 
+   
+    const paddedRows = rows.map((row) =>
+      Array.from({ length: columnCount }, (_, index) => row.cells?.[index] || "")
+    );
+    const paddedHeaders = headers.length
+      ? Array.from({ length: columnCount }, (_, index) => headers[index] || "")
+      : undefined;
+
+    // Body blocks render as a flat list with no spacing parent, so the table
+    // needs its own breathing room from the paragraphs around it. The padding
+    // sits on a wrapper rather than on DocsTable itself, whose padding would
+    // land inside its border instead of outside it.
     return (
-      <div className="blog-table-wrapper">
-        <table>
-          {headers.length > 0 && (
-            <thead>
-              <tr>
-                {Array.from({ length: columnCount }).map((_, index) => (
-                  <th key={index}>{headers[index] || ""}</th>
-                ))}
-              </tr>
-            </thead>
-          )}
-          <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr key={row._key || rowIndex}>
-                {Array.from({ length: columnCount }).map((_, cellIndex) => (
-                  <td key={cellIndex}>{row.cells?.[cellIndex] || ""}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="py-[2vh] max-md:py-[1.5vh]">
+        <DocsTable
+          headers={paddedHeaders}
+          rows={paddedRows}
+          caption={block.caption}
+          colorVariant={block.colorVariant || "vault"}
+          firstColumnAsHeader={block.firstColumnAsHeader === true}
+        />
       </div>
     );
   }

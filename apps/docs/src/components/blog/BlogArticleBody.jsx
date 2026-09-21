@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { TableOfContents } from "@/components/ui/TableOfContents";
-import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { useFadeUp, useLineAnim } from "@/components/Animations/gsapAnimations";
 import BlogAuthor from "./BlogAuthor";
 import BlogSharePopover from "./BlogSharePopover";
 import styles from "@/app/(marketing)/blog/[slug]/blog-content.module.css";
@@ -38,6 +38,10 @@ export default function BlogArticleBody({
   // document when the ref is empty, which would claim the hero's elements.
   useFadeUp(articleRef, [slug]);
 
+  // Draws the body's horizontalRule separators in left-to-right as they enter
+  // view, the same treatment the effect detail pages give theirs.
+  useLineAnim(articleRef, [slug]);
+
   return (
     <div ref={articleRef} className="relative flex justify-between mt-[7vw] max-md:mt-[10vw]">
       {/* No `items-start` on the row above: that shrink-wraps each column to
@@ -48,7 +52,11 @@ export default function BlogArticleBody({
           stay visible for the article's full height. */}
       <div className="w-[30%] shrink-0 pl-0 max-[1025px]:hidden">
       
-        <div className="sticky top-[22vh] flex flex-col gap-[1.6vw]">
+        {/* z-950 on the sticky rail, not just on the popover inside it:
+            `position: sticky` creates a stacking context, so the share panel's
+            own z-index is resolved *within* this element and can never beat
+            the fixed navbar (z-900) from the outside. */}
+        <div className="sticky top-[18vh] z-950 flex flex-col gap-[1.6vw]">
           <BlogAuthor author={author} />
 
       
@@ -79,7 +87,7 @@ export default function BlogArticleBody({
 
           <hr className="h-0.5  w-[85%] border-0 bg-[#272727]" />
 
-          <div className="w-fit mt-[10vh]">
+          <div className="w-fit mt-[8vh]">
             <TableOfContents
               containerRef={contentRef}
               stopRef={stopRef}

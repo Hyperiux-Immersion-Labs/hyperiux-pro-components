@@ -45,7 +45,7 @@ export function getReadingTime(body = []) {
   for (const block of body) {
     if (block._type === "block") {
       wordCount += blockPlainText(block).trim().split(/\s+/).filter(Boolean).length;
-    } else if (block._type === "effectCodeBlock") {
+    } else if (block._type === "blogCodeBlock" || block._type === "effectCodeBlock") {
       // Code reads slower than prose - weight it at roughly half the words/minute.
       wordCount += Math.ceil((block.code || "").trim().split(/\s+/).filter(Boolean).length / 2);
     } else if (block._type === "effectCalloutBlock") {
