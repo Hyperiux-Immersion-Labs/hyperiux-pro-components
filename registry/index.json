@@ -2687,7 +2687,7 @@
     ],
     "type": "registry:component",
     "title": "Displacement Navbar",
-    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it — GSAP-driven with a full reduced-motion fallback.",
+    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it \u2014 GSAP-driven with a full reduced-motion fallback.",
     "category": "navigation",
     "dependencies": [
       "gsap"
@@ -3365,6 +3365,39 @@
       }
     ],
     "registryPath": "registry/effects/backgrounds/dotted-grid/registry.json"
+  },
+  {
+    "name": "dotted-trail",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-21",
+        "summary": "Initial release: WebGL dotted grid with an SDF cursor trail, radial two-color blend, and remixer controls.",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Dotted Trail",
+    "description": "Interactive dotted grid with a soft two-color cursor trail",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/dotted-trail",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "DottedTrail",
+    "exportKind": "default",
+    "importPath": "@/components/effects/dotted-trail",
+    "target": "src/components/effects/dotted-trail",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/dotted-trail/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/backgrounds/dotted-trail/registry.json"
   },
   {
     "name": "draggable-canvas",
@@ -5468,7 +5501,7 @@
   {
     "name": "gooey-counter",
     "title": "Gooey Counter",
-    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
+    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0\u201310 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
     "category": "components",
     "type": "registry:component",
     "tier": "free",

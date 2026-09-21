@@ -1,7 +1,7 @@
 {
   "name": "@hyperiux/dotted-trail",
   "version": "1.0.0",
-  "description": "Interactive dotted grid with a soft two-color cursor trail and editable intro copy",
+  "description": "Interactive dotted grid with a soft two-color cursor trail",
   "main": "index.tsx",
   "files": [
     "index.tsx",
