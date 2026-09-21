@@ -684,20 +684,6 @@
       "tier": "free"
     },
     {
-      "name": "dotted-trail",
-      "type": "registry:component",
-      "category": "backgrounds",
-      "categories": [
-        "backgrounds"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "DottedTrail",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "pro"
-    },
-    {
       "name": "grid-lift",
       "type": "registry:component",
       "category": "backgrounds",
