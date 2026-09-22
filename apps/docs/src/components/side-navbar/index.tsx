@@ -47,16 +47,16 @@ const NAV_LINKS: NavLinkItem[] = [
 ];
 
 const SOCIAL_LINKS: SocialLinkItem[] = [
-  { href: "https://x.com/_hyperiux_", text: "Twitter / X" },
-  { href: "https://www.linkedin.com/company/hyperiux/", text: "LinkedIn" },
-  { href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components", text: "GitHub" },
-  { href: "https://www.instagram.com/_hyperiux_/", text: "Instagram" },
+  { href: "#", text: "Twitter / X" },
+  { href: "#", text: "LinkedIn" },
+  { href: "#", text: "GitHub" },
+  { href: "#", text: "Instagram" },
 ];
 
 const SocialLink = ({ href, text }: SocialLinkItem) => (
   <li className="overflow-hidden">
     <Link
-      className="social-link flex items-center gap-[3px] max-md:gap-[2.5vw] group" target="_blank" href={href}>
+      className="social-link flex items-center gap-[3px] max-md:gap-[2.5vw] group" href={href}>
       <span className={LINK_LINE_CLASSES}>
         {text}
       </span>

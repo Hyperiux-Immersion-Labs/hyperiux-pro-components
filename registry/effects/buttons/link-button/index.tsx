@@ -85,7 +85,7 @@ export default function LinkButton({
   };
   const iconClassNames = `${isIconRotated ? "motion-safe:-rotate-45" : ""} ${
     !isCompactViewport ? "motion-safe:group-hover:-rotate-45" : ""
-  } size-[1.1vw] max-[1025px]:size-[2vw] max-md:size-[3.5vw] transition-transform duration-[var(--transition-duration)] motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
+  } size-[1em] shrink-0 max-md:translate-y-[0.1em] transition-transform duration-[var(--transition-duration)] motion-reduce:rotate-0 motion-reduce:transition-none ${iconClassName}`;
 
   return (
     <>
@@ -94,7 +94,7 @@ export default function LinkButton({
         {...linkProps}
         {...restProps}
         onClick={onLinkClick}
-        className={`group block w-fit cursor-pointer text-[1.1vw] leading-[1.2] duration-300 text-(--link-text-color) hover:text-(--link-hover-color) max-[1025px]:text-[4vw] max-md:text-[5.5vw] ${className}`}
+        className={`group block w-fit cursor-pointer text-[1.1vw] leading-[1.2] duration-300 text-(--link-text-color) hover:text-(--link-hover-color) max-[1025px]:text-[4vw] max-md:text-[6.5vw] ${className}`}
         style={mergedStyle}
       >
         <div className="flex items-center justify-start gap-2">

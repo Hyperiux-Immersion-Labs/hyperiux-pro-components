@@ -99,15 +99,32 @@
       }
     },
     {
-      "name": "pageBackground",
+      "name": "pageGradientFrom",
       "type": "string",
-      "default": "linear-gradient(160deg,#0D47A1 0%,#E3F2FD 100%)",
-      "description": "Displaced page background - any CSS background value, so a gradient works as well as a flat color.",
+      "default": "#0D47A1",
+      "description": "Start color of the displaced page's gradient.",
       "remixer": {
-        "control": "text",
+        "control": "color",
         "group": "style",
         "groupTitle": "Style"
       }
+    },
+    {
+      "name": "pageGradientTo",
+      "type": "string",
+      "default": "#E3F2FD",
+      "description": "End color of the displaced page's gradient.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "pageBackground",
+      "type": "string",
+      "description": "Escape hatch for the displaced page background - any CSS background value. Overrides the gradient colors when set.",
+      "docsOnly": true
     },
     {
       "name": "linkColor",

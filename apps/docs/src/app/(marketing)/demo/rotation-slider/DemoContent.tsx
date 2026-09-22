@@ -18,7 +18,7 @@ export default function DemoContent({ registry }: { registry: any }) {
           <DemoHeader />
           <LenisSmoothScroll />
           {effect}
-          <ScrollBottom />
+          <ScrollBottom textColor="text-black" />
         </>
       )}
     </RegistryRemixerDemo>

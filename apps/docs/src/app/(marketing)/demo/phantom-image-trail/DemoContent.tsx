@@ -61,7 +61,7 @@ export default function DemoContent({ registry }: { registry: any }) {
 
           <div className="w-screen h-screen relative isolate bg-white">
             <div className="absolute w-full h-full flex justify-center items-center">
-              <h1 className="text-[5.5vw] max-md:hidden text-stone-800">
+              <h1 className="text-[5vw] w-[50%] text-center max-md:hidden text-stone-800">
                 Move the Mouse to See Magic
               </h1>
               <p className="max-sm:text-[5.5vw] max-md:text-[4vw] font-serif text-center leading-[1.4] hidden max-md:block text-stone-800">

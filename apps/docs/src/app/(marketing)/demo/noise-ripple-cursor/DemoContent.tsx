@@ -21,7 +21,7 @@ export default function DemoContent({ registry }: { registry: any }) {
           <div className="min-h-screen w-full relative bg-[]">
             <section className="h-screen w-full relative">
               <HeadAnim animateOnScroll={false}>
-                <h1 className="text-[10vw] w-[80vw] font-medium tracking-tight leading-[.9]! p-[2vw] absolute text-white max-md:text-[14vw] max-md:w-[90vw] bottom-[1.5vw] max-md:bottom-[10vw] max-sm:bottom-[30vw] max-sm:left-3 pointer-events-none z-10">
+                <h1 className="text-[10vw] w-[80vw] font-medium tracking-tight leading-[1.2]! p-[2vw] absolute text-white max-md:text-[14vw] max-md:w-[90vw] bottom-[1.5vw] max-md:bottom-[10vw] max-sm:bottom-[30vw] max-sm:left-3 pointer-events-none z-10">
                   Noise Ripple Effect
                 </h1>
               </HeadAnim>

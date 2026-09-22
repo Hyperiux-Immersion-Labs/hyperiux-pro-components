@@ -480,7 +480,8 @@ export function NumericTunnelLoader({ children, onComplete, config: configOverri
  <div className="relative h-screen w-full overflow-hidden">
  {children}
  {!isComplete && (
- <div className="absolute inset-0 z-10">
+ 
+ <div className="absolute inset-0 z-400">
  <NumericTunnelCanvas loaderValue={loaderValue} onComplete={handleComplete} config={config} />
  </div>
  )}

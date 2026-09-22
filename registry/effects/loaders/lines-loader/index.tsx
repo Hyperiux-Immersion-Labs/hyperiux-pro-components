@@ -265,6 +265,7 @@ function __LinesLoading_clampNumber(value: unknown, min: number, max: number, fa
 
 interface LinesLoadingProps {
   onComplete?: () => void;
+  onReplay?: () => void;
   duration?: number;
   lineHeight?: number;
   darkLineColor?: string;
@@ -274,6 +275,7 @@ interface LinesLoadingProps {
 
 function Option1({
   onComplete,
+  onReplay,
   duration = 1,
   lineHeight = 1,
   darkLineColor = "#ffffff",
@@ -306,6 +308,10 @@ function Option1({
   const [rowHeight, setRowHeight] = useState(ROW_H);
   const [lineCount, setLineCount] = useState(getLineCount);
   const lineCountRef = useRef(lineCount);
+  const onReplayRef = useRef(onReplay);
+  useEffect(() => {
+    onReplayRef.current = onReplay;
+  }, [onReplay]);
   const safeDuration = __LinesLoading_clampNumber(duration, 0.25, 3, 1);
   const safeLineHeight = __LinesLoading_clampNumber(lineHeight, 1, 12, 1);
   const safeFadeOutDuration = __LinesLoading_clampNumber(fadeOutDuration, 0.1, 3, 0.5);
@@ -351,6 +357,8 @@ function Option1({
   const run = useCallback(() => {
     tlRef.current?.kill();
     setDone(false);
+  
+    onReplayRef.current?.();
 
     recomputeLayout();
 
@@ -673,6 +681,7 @@ interface CenterLinesLoadingProps {
     darkLineColor?: string;
     fadeOutDuration?: number;
     onComplete?: () => void;
+    onReplay?: () => void;
 }
 
 function Option2(
@@ -685,6 +694,7 @@ function Option2(
         darkLineColor = "#ffffff",
         fadeOutDuration = 0.5,
         onComplete,
+        onReplay,
     }: CenterLinesLoadingProps = {}
 ) {
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -700,6 +710,10 @@ function Option2(
       coneScale: [],
     });
     const [done, setDone] = useState(false);
+    const onReplayRef = useRef(onReplay);
+    useEffect(() => {
+        onReplayRef.current = onReplay;
+    }, [onReplay]);
     const safeDuration = __CenterLinesLoading_clampNumber(duration, 0.25, 3, 1);
     const safeLineHeight = __CenterLinesLoading_clampNumber(lineHeight, 1, 12, 1);
     const safeFadeOutDuration = __CenterLinesLoading_clampNumber(fadeOutDuration, 0.1, 3, 0.5);
@@ -738,6 +752,8 @@ function Option2(
     const run = useCallback(() => {
         tlRef.current?.kill();
         setDone(false);
+      
+        onReplayRef.current?.();
 
         const count = Math.max(3, Math.floor(lineCount));
         recomputeLayout(count);
@@ -1083,6 +1099,11 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }: L
     }
   }, []);
 
+  
+  const handleReplay = useCallback(() => {
+    setIsCompleted(false);
+  }, []);
+
   return (
     <>
       <VersionNav
@@ -1094,6 +1115,7 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }: L
         <ActiveComponent
           key={activeVariant}
           onComplete={handleComplete}
+          onReplay={handleReplay}
           {...props}
         />
       ) : (
@@ -1103,6 +1125,7 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }: L
           title="Build better interfaces"
           subtitle="Hyperiux Vault"
           onComplete={handleComplete}
+          onReplay={handleReplay}
           {...props}
         />
       )}

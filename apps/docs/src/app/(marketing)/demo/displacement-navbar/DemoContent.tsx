@@ -38,7 +38,16 @@ const DEMO_CHILDREN = (
 export default function DemoContent({ registry }: { registry: RegistryLike }) {
   return (
     <RegistryRemixerDemo
-      registry={registry}
+      registry={{
+        ...registry,
+        remixer: {
+          ...registry.remixer,
+          layout: {
+            ...registry.remixer?.layout,
+            containerClassName: "[&>div]:top-[14vh]!",
+          },
+        },
+      }}
       component={DisplacementNavbar}
       copyCodeOptions={{ propsVariableName: "displacementNavbarProps" }}
     >

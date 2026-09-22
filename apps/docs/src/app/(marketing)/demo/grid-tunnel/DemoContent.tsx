@@ -3,6 +3,7 @@
 import GridTunnel from "@/components/grid-tunnel";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -15,6 +16,7 @@ export default function DemoContent({ registry }: { registry: any }) {
         <>
           <DemoHeader logoColor="#1a1a1a" textColor="#1a1a1a" />
           {effect}
+          <ScrollBottom textColor="text-black" />
         </>
       )}
     </RegistryRemixerDemo>

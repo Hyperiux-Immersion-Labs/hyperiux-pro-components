@@ -1,4 +1,4 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
+
 "use client";
 
 import gsap from "gsap";
@@ -239,7 +239,7 @@ function HorizontalScrollComp({
 
               <div className="flex flex-col gap-[5vh] w-[60%] pt-[7%] max-md:pt-0 max-[1025px]:w-full max-[1025px]:gap-[4vw] max-md:gap-[7vw]">
                 <p
-                  className={`text-[6em] font-medium font-display text-secondary leading-none opacity-0 industry-no industry-no-${property.no} max-[1025px]:text-[10vw] max-[1025px]:opacity-100`}
+                  className={`text-[6em] font-medium font-display leading-none opacity-0 industry-no industry-no-${property.no} max-[1025px]:text-[10vw] max-[1025px]:opacity-100`}
                 >
                   {property.number}
                 </p>

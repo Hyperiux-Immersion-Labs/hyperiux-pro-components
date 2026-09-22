@@ -62,6 +62,8 @@ export interface InformationDrawerCompProps {
   overlayOpacity?: number;
   /** GSAP tween duration (seconds) for the staged content fade in/out. */
   contentDuration?: number;
+
+  contentDelay?: number;
 }
 
 function InformationDrawerComp({
@@ -74,6 +76,7 @@ function InformationDrawerComp({
   sidebarWidth = "70%",
   overlayOpacity = 0.2,
   contentDuration = 0.25,
+  contentDelay = 0.4,
 }: InformationDrawerCompProps) {
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
@@ -150,7 +153,7 @@ function InformationDrawerComp({
     });
   }, [detailOpen, duration, ease, delay, overlayOpacity, prefersReducedMotion]);
 
-  // Fade the content in only after the drawer panel has finished sliding open.
+  // Fade the staged content in at an absolute offset from the drawer opening.
   useEffect(() => {
     if (typeof window === "undefined" || !detailOpen) return;
 
@@ -161,11 +164,11 @@ function InformationDrawerComp({
         opacity: 1,
         duration: prefersReducedMotion ? 0 : contentDuration,
         ease,
-        delay: prefersReducedMotion ? 0 : delay + duration,
+        delay: prefersReducedMotion ? 0 : contentDelay,
         overwrite: "auto",
       },
     );
-  }, [detailOpen, selectedMember, duration, contentDuration, ease, delay, prefersReducedMotion]);
+  }, [detailOpen, selectedMember, contentDuration, contentDelay, ease, prefersReducedMotion]);
 
   useEffect(() => {
     return () => {

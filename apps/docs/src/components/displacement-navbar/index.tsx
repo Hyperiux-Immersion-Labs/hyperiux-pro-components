@@ -114,7 +114,11 @@ export interface DisplacementNavbarProps {
   imageSwapDuration?: number
   /** Shelf + header background color. */
   shelfBackground?: string
-  /** Displaced page background - any CSS background value, so a gradient works as well as a flat color. */
+  /** Start color of the displaced page's gradient. */
+  pageGradientFrom?: string
+  /** End color of the displaced page's gradient. */
+  pageGradientTo?: string
+  /** Escape hatch for the displaced page background - any CSS background value. Overrides `pageGradientFrom`/`pageGradientTo` when set. */
   pageBackground?: string
   /** Primary/info link text color. */
   linkColor?: string
@@ -174,6 +178,8 @@ const defaultMedia: DisplacementNavbarMedia[] = [
 const EASE = 'expo.out'
 const IMG_PARK_SCALE = 1.08
 const MARK_DURATION = 0.45
+
+const MARK_UNSPIN_LEAD = 0.11
 const MARK_BLOCK_WIDTH = '100%'
 const MARK_BLOCK_HEIGHT = '2px'
 const PAGE_CONTENT_DIM = 0.8
@@ -199,7 +205,9 @@ const DisplacementNavbar = ({
   contentStagger = 0.055,
   imageSwapDuration = 0.5,
   shelfBackground = '#151515',
-  pageBackground = '#f4f3f1',
+  pageGradientFrom = '#0D47A1',
+  pageGradientTo = '#E3F2FD',
+  pageBackground,
   linkColor = '#f4f3f1',
   mutedColor = 'rgba(244,243,241,0.38)',
   hairlineColor = 'rgba(244,243,241,0.14)',
@@ -208,6 +216,11 @@ const DisplacementNavbar = ({
   dimInactiveLinks = true,
   showMedia = true,
 }: DisplacementNavbarProps) => {
+  // `pageBackground` stays the escape hatch for any CSS background value; the
+  // two gradient colors are what the remixer exposes as pickers.
+  const resolvedPageBackground =
+    pageBackground ?? `linear-gradient(160deg, ${pageGradientFrom} 0%, ${pageGradientTo} 100%)`
+
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const barRef = useRef<HTMLDivElement | null>(null)
   const barLineRef = useRef<HTMLSpanElement | null>(null)
@@ -260,9 +273,9 @@ const DisplacementNavbar = ({
     if (node) imageRefs.current[index] = node
   }, [])
 
+
   const markOffsets = useCallback(() => {
-    const box = markLineRef.current?.parentElement?.getBoundingClientRect()
-    const h = box?.height ?? 14
+    const h = markLineRef.current?.parentElement?.offsetHeight ?? 14
     return { line: -h * 0.28, block: h * 0.28, nudge: h * 0.38 }
   }, [])
 
@@ -441,6 +454,7 @@ const DisplacementNavbar = ({
     timelineRef.current?.kill()
 
     phase.current = 'closing'
+    setIsOpen(false)
 
     const tl = gsap.timeline({
       defaults: { force3D: true, overwrite: 'auto' },
@@ -450,7 +464,6 @@ const DisplacementNavbar = ({
           shelfRef.current.style.pointerEvents = 'none'
         }
         phase.current = 'closed'
-        setIsOpen(false)
         unlockScroll()
       },
     })
@@ -471,7 +484,8 @@ const DisplacementNavbar = ({
     tl.to(shelfRef.current, { y: -(shelfRef.current?.offsetHeight ?? 0), duration: closeDur, ease }, 0)
     tl.to(barLineRef.current, { scaleX: 0, duration: rm ? closeDur : Math.max(closeDur, 0.1) * 1.2, ease }, 0)
     const marks = markOffsets()
-    tl.to(markLineRef.current, { y: marks.line, rotation: 0, duration: markDur, ease }, 0)
+    const markAt = rm ? 0 : MARK_UNSPIN_LEAD
+    tl.to(markLineRef.current, { y: marks.line, rotation: 0, duration: markDur, ease }, markAt)
     tl.to(
       markBlockRef.current,
       {
@@ -482,9 +496,9 @@ const DisplacementNavbar = ({
         duration: markDur,
         ease,
       },
-      0
+      markAt
     )
-    tl.to(markMiddleRef.current, { autoAlpha: 1, scaleX: 1, duration: markDur, ease }, 0)
+    tl.to(markMiddleRef.current, { autoAlpha: 1, scaleX: 1, duration: markDur, ease }, markAt)
   }, [markOffsets, unlockScroll])
 
   const toggle = useCallback(() => {
@@ -560,9 +574,10 @@ const DisplacementNavbar = ({
           aria-label={isOpen ? 'Close navigation' : 'Open navigation'}
           className="group relative flex items-center justify-center w-[5vw] h-[5vw] max-[1025px]:w-[12vw] max-[1025px]:h-[12vw] min-[769px]:max-[1025px]:w-[5vw] min-[769px]:max-[1025px]:h-[5vw] mr-[-0.8vw] p-0 border-none bg-transparent cursor-pointer text-current"
         >
+ 
           <span
-            className={`relative block  max-[1025px]:w-[8vw] max-[1025px]:h-[8vw] min-[769px]:max-[1025px]:w-[3.5vw] min-[769px]:max-[1025px]:h-[3.5vw] transition-transform duration-300 ease-[cubic-bezier(0.625,0.05,0,1)] ${
-              isOpen ? 'group-hover:rotate-90 w-[2vw] h-[2vw]' : 'w-[2.4vw] h-[1.6vw]'
+            className={`relative block w-[2.4vw] h-[1.6vw] max-[1025px]:w-[8vw] max-[1025px]:h-[8vw] min-[769px]:max-[1025px]:w-[3.5vw] min-[769px]:max-[1025px]:h-[3.5vw] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+              isOpen ? 'group-hover:rotate-90 group-focus-visible:rotate-90' : ''
             }`}
           >
             <span
@@ -725,10 +740,10 @@ const DisplacementNavbar = ({
       <div
         ref={pageRef}
         className="relative z-20 min-h-screen pt-[4vw] max-[1025px]:pt-[16vw] min-[769px]:max-[1025px]:pt-[5.5vw] will-change-transform"
-        style={{ background: pageBackground, color: '#111111' }}
+        style={{ background: resolvedPageBackground, color: '#111111' }}
       >
         {/* Only the page's content dims while the shelf is open, never the page
-            surface itself — fading the wrapper would take `pageBackground` with
+            surface itself — fading the wrapper would take the page background with
             it and let the shelf show through the gap. */}
         <div ref={pageContentRef}>
           {children ?? (

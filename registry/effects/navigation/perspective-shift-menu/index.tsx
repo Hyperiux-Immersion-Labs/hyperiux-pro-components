@@ -70,44 +70,44 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   {
     label: "Effects",
-    href: "",
+    href: "#",
     key: "effects",
     items: [
-      { label: "Text", href: "" },
-      { label: "Navigation", href: "" },
-      { label: "Buttons", href: "" },
-      { label: "Transitions", href: "" },
-      { label: "Backgrounds", href: "" },
+      { label: "Text", href: "#" },
+      { label: "Navigation", href: "#" },
+      { label: "Buttons", href: "#" },
+      { label: "Transitions", href: "#" },
+      { label: "Backgrounds", href: "#" },
     ],
   },
   {
     label: "Components",
-    href: "",
+    href: "#",
     key: "components",
     items: [
-      { label: "Carousels", href: "" },
-      { label: "Cursor", href: "" },
-      { label: "Loaders", href: "" },
-      { label: "Scroll", href: "" },
-      { label: "WebGL", href: "" },
+      { label: "Carousels", href: "#" },
+      { label: "Cursor", href: "#" },
+      { label: "Loaders", href: "#" },
+      { label: "Scroll", href: "#" },
+      { label: "WebGL", href: "#" },
     ],
   },
-  { label: "Docs", href: "" },
-  { label: "Pricing", href: "" },
-  { label: "Home", href: "" },
+  { label: "Docs", href: "#" },
+  { label: "Pricing", href: "#" },
+  { label: "Home", href: "#" },
 ];
 
 const SUB_LINKS: SubItem[] = [
-  { label: "All Effects", href: "" },
-  { label: "Documentation", href: "" },
-  { label: "Pricing", href: "" },
+  { label: "All Effects", href: "#" },
+  { label: "Documentation", href: "#" },
+  { label: "Pricing", href: "#" },
 ];
 
 const SOCIALS: SubItem[] = [
-  { label: "GitHub", href: "" },
-  { label: "X", href: "" },
-  { label: "LinkedIn", href: "" },
-  { label: "Instagram", href: "" },
+  { label: "GitHub", href: "#" },
+  { label: "X", href: "#" },
+  { label: "LinkedIn", href: "#" },
+  { label: "Instagram", href: "#" },
 ];
 
 const CONTACT_EMAIL = "hello@hyperiux.com";
@@ -152,8 +152,11 @@ const PROPERTY_REGISTRATION = `
 @property --shift-seam { syntax: "<number>"; inherits: false; initial-value: 0; }
 `;
 
+// Placeholder destinations are inert: "#" would otherwise be followed and
+// jump the page to the top, which is especially jarring while the menu holds
+// the scroll lock.
 const inert = (href: string) => (e: ReactMouseEvent) => {
-  if (!href) e.preventDefault();
+  if (!href || href === "#") e.preventDefault();
 };
 
 const CaretIcon = () => (
@@ -254,6 +257,12 @@ const PerspectiveShiftMenu = ({
       const labels = gsap.utils.toArray<HTMLElement>("[data-shift-label]", surfaceEl);
       const links = gsap.utils.toArray<HTMLElement>("[data-shift-link]", surfaceEl);
       const sublinks = gsap.utils.toArray<HTMLElement>("[data-shift-sublink]", surfaceEl);
+      const carets = gsap.utils.toArray<HTMLElement>("[data-shift-caret]", surfaceEl);
+
+      // The caret sits beside its label inside the same row, so it travels on
+      // that label's own stagger slot rather than taking one of its own.
+      const caretFor = (label: HTMLElement) =>
+        label.closest("[data-shift-link]")?.querySelector<HTMLElement>("[data-shift-caret]") ?? null;
 
       const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
       const canHover = () => window.matchMedia("(hover: hover)").matches;
@@ -475,12 +484,22 @@ const PerspectiveShiftMenu = ({
         }
 
         labels.forEach((el, i) => {
+          const at = linksStart + i * stagger;
           tl.to(el, {
             autoAlpha: 1,
             xPercent: 0,
             duration: beat(0.52),
             overwrite: "auto",
-          }, linksStart + i * stagger);
+          }, at);
+          const caret = caretFor(el);
+          if (caret) {
+            tl.to(caret, {
+              autoAlpha: 1,
+              xPercent: 0,
+              duration: beat(0.52),
+              overwrite: "auto",
+            }, at);
+          }
         });
 
         if (links.length) {
@@ -722,19 +741,34 @@ const PerspectiveShiftMenu = ({
               gsap.killTweensOf(labels);
               gsap.set(labels, { x: 0 });
             }
+            if (carets.length) {
+              gsap.killTweensOf(carets);
+              gsap.set(carets, { x: 0 });
+            }
             setPhaseState("closed");
             unlockScroll();
           },
         });
 
         labels.forEach((el, i) => {
+          const at = (reduced ? 0.008 : 0.025) * i;
           tl.to(el, {
             autoAlpha: 0,
             xPercent: reduced ? RM_OFFSET : -18,
             duration: beat(LINK_OUT),
             ease: "power2.in",
             overwrite: "auto",
-          }, (reduced ? 0.008 : 0.025) * i);
+          }, at);
+          const caret = caretFor(el);
+          if (caret) {
+            tl.to(caret, {
+              autoAlpha: 0,
+              xPercent: reduced ? RM_OFFSET : -18,
+              duration: beat(LINK_OUT),
+              ease: "power2.in",
+              overwrite: "auto",
+            }, at);
+          }
         });
 
         if (sublinks.length) {
@@ -799,6 +833,11 @@ const PerspectiveShiftMenu = ({
       gsap.set(dimEl, { opacity: 0 });
       gsap.set(surfaceEl, { x: reduced ? RM_SLIDE : "-100%" });
       gsap.set(labels, {
+        autoAlpha: 0,
+        xPercent: reduced ? RM_OFFSET : -18,
+        force3D: true,
+      });
+      gsap.set(carets, {
         autoAlpha: 0,
         xPercent: reduced ? RM_OFFSET : -18,
         force3D: true,
@@ -935,8 +974,8 @@ const PerspectiveShiftMenu = ({
           is outside the perspective/transform context that would break it. */}
       <header className="pointer-events-none fixed inset-x-0 top-0 z-300 flex items-center justify-between px-[2vw] backdrop-blur-sm max-[1025px]:p-[3vw] max-md:p-[5vw] py-1">
         <Link
-          href=""
-          onClick={inert("")}
+          href="#"
+          onClick={inert("#")}
           aria-label="Hyperiux"
           style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
           className={`pointer-events-auto block text-[1.1vw] font-medium tracking-[-0.02em] transition-[color,opacity] duration-400 ease-out max-[1025px]:text-[2vw] max-md:text-[4vw] ${
@@ -1052,7 +1091,11 @@ const PerspectiveShiftMenu = ({
                 );
 
                 const caret = (
+                  // The slide rides this outer span, the expand-rotate the
+                  // inner one: GSAP owns `xPercent` here, so a Tailwind
+                  // rotate on the same element would be overwritten mid-tween.
                   <span
+                    data-shift-caret
                     aria-hidden="true"
                     className={`h-4 w-4 ml-1 shrink-0 transition-colors duration-300 ${
                       expanded ? "text-current" : "text-current/45"

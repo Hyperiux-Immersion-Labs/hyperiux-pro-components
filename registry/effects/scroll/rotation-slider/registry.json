@@ -43,7 +43,7 @@
       "name": "rotationAmount",
       "type": "number",
       "default": 1,
-      "description": "Multiplier on the built-in per-breakpoint rotateY entrance/exit strength as cards scroll by.",
+      "description": "How far each card rotates as it scrolls past.",
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -57,7 +57,7 @@
       "name": "verticalDrift",
       "type": "number",
       "default": 1,
-      "description": "Multiplier on the built-in per-breakpoint vertical offset each card travels while scrolling past.",
+      "description": "How far each card drifts vertically as it scrolls past.",
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -71,7 +71,7 @@
       "name": "scrollSmoothing",
       "type": "number",
       "default": 1,
-      "description": "GSAP ScrollTrigger scrub value on the main horizontal track — higher lags/smooths more, lower tracks scroll 1:1.",
+      "description": "Scroll lag on the track; higher is smoother.",
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -85,7 +85,7 @@
       "name": "perspective",
       "type": "number",
       "default": 1200,
-      "description": "3D perspective distance, in pixels, applied to the sticky track — lower values look deeper/more distorted.",
+      "description": "Perspective depth in pixels; lower looks deeper.",
       "remixer": {
         "control": "range",
         "group": "motion",

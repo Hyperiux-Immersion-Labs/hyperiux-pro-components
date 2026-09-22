@@ -47,13 +47,13 @@ const Hero = () => (
         <div className="flex items-center gap-[1vw] max-[1025px]:gap-[2vw] max-md:gap-[3vw]">
           <Link
             href="/effects"
-            className="bg-[#fffaf2] px-[1.6vw] py-[0.8vw] text-[0.85vw] tracking-[0.1em] text-[#111111] uppercase no-underline transition-opacity duration-250 hover:opacity-80 max-[1025px]:px-[3vw] max-[1025px]:py-[1.5vw] max-[1025px]:text-[1.5vw] max-md:px-[5vw] max-md:py-[3vw] max-md:text-[3.2vw]"
+            className="bg-[#fffaf2] px-[1.6vw] py-[0.8vw] text-[0.85vw] tracking-widest text-[#111111] uppercase no-underline transition-opacity duration-250 hover:opacity-80 max-[1025px]:px-[3vw] max-[1025px]:py-[1.5vw] max-[1025px]:text-[1.5vw] max-md:px-[5vw] max-md:py-[3vw] max-md:text-[3.2vw]"
           >
             Effects
           </Link>
           <Link
             href="/effects/navigation/perspective-shift-menu"
-            className="border border-[#fffaf2]/40 px-[1.6vw] py-[0.8vw] text-[0.85vw] tracking-[0.1em] text-[#fffaf2] uppercase no-underline transition-colors duration-250 hover:border-[#fffaf2] max-[1025px]:px-[3vw] max-[1025px]:py-[1.5vw] max-[1025px]:text-[1.5vw] max-md:px-[5vw] max-md:py-[3vw] max-md:text-[3.2vw]"
+            className="border border-[#fffaf2]/40 px-[1.6vw] py-[0.8vw] text-[0.85vw] tracking-widest text-[#fffaf2] uppercase no-underline transition-colors duration-250 hover:border-[#fffaf2] max-[1025px]:px-[3vw] max-[1025px]:py-[1.5vw] max-[1025px]:text-[1.5vw] max-md:px-[5vw] max-md:py-[3vw] max-md:text-[3.2vw]"
           >
             Read Article
           </Link>
@@ -70,7 +70,16 @@ const Hero = () => (
 const DemoContent = ({ registry }: { registry: RegistryLike }) => {
   return (
     <RegistryRemixerDemo
-      registry={registry}
+      registry={{
+        ...registry,
+        remixer: {
+          ...registry.remixer,
+          layout: {
+            ...registry.remixer?.layout,
+            containerClassName: "[&>div]:top-[14vh]!",
+          },
+        },
+      }}
       copyCodeOptions={{ propsVariableName: "perspectiveShiftMenuProps" }}
       render={(values) => (
         <PerspectiveShiftMenu {...(values as PerspectiveShiftMenuProps)}>

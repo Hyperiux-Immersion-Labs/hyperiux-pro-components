@@ -152,16 +152,7 @@ interface UseFocusTrapParams {
   onEscape?: () => void;
 }
 
-/**
- * Keeps keyboard focus inside `containerRef` while `active` is true.
- *
- * - Captures the element focused before opening and restores focus to it on
- *   close (so the trigger button gets focus back).
- * - Moves focus into the menu on open (to `initialFocusRef` when provided,
- *   otherwise the first focusable element).
- * - Wraps Tab / Shift+Tab around the menu's focusable elements.
- * - Calls `onEscape` when the Escape key is pressed.
- */
+
 export function useFocusTrap({
   active,
   containerRef,
@@ -271,11 +262,15 @@ const prefersReducedMotion = () =>
 function animateColumnIn(colRef: RefObject<HTMLElement | null>, duration: number, ease: string) {
     if (!colRef.current) return;
     const items = Array.from(colRef.current.children).slice(1);
+    // Rows are keyed by index, so React reuses these nodes when the column's
+    // contents change and they arrive still carrying the previous list's
+    // proximity offset. This kill would also cancel the hide branch's own
+    // `x: 0` tween, so clear the offset here rather than relying on it.
     gsap.killTweensOf(items);
     gsap.fromTo(
         items,
-        { opacity: 0, y: -14 },
-        { opacity: 1, y: 0, duration: 0.6 * duration, stagger: 0.05 * duration, ease }
+        { opacity: 0, y: -14, x: 0 },
+        { opacity: 1, y: 0, x: 0, duration: 0.6 * duration, stagger: 0.05 * duration, ease }
     );
 }
 
@@ -614,6 +609,7 @@ export function ExpandingNavbarDesktop({
                                         onMouseEnter={() => {
                                             setActiveMainIndex(index);
                                             setActiveSubIndex(null);
+                                            setActiveNestedIndex(null);
                                         }}
                                         isActive={activeMainIndex === index}
                                         activeColor={activeColor}
@@ -639,7 +635,10 @@ export function ExpandingNavbarDesktop({
                                                     setSelectedSubIndex(subIndex);
                                                     setSelectedNestedIndex(null);
                                                 }}
-                                                onMouseEnter={() => setActiveSubIndex(subIndex)}
+                                                onMouseEnter={() => {
+                                                    setActiveSubIndex(subIndex);
+                                                    setActiveNestedIndex(null);
+                                                }}
                                                 isActive={
                                                     activeSubIndex === subIndex ||
                                                     (activeSubIndex === null && activeMainIndex === selectedIndex && selectedSubIndex === subIndex)

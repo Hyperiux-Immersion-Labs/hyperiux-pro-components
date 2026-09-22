@@ -28,7 +28,8 @@
       "remixer": {
         "control": "text",
         "group": "content",
-        "groupTitle": "Content"
+        "groupTitle": "Content",
+        "enabled": false
       }
     },
     {
