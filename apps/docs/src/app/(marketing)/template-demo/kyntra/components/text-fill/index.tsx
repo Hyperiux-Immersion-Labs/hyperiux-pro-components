@@ -209,12 +209,12 @@ export default function TextFill({
     >
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-x-hidden">
         <div className="tf-text-wrapper relative z-10 mx-auto text-center">
-          <h2
+          <h3
             ref={textRef}
-            className={`tf-heading opacity-0 leading-[1.18] tracking-[-0.03em] ${className}`}
+            className={`tf-heading max-md:text-[9vw]! opacity-0 leading-[1.4] tracking-[-0.03em] ${className}`}
           >
             {text}
-          </h2>
+          </h3>
         </div>
       </div>
     </section>

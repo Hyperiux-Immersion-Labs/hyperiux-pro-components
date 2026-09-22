@@ -265,7 +265,32 @@ const DottedTrail = ({
 	})
 	const reducedMotion = usePrefersReducedMotion()
 
-	settingsRef.current = {
+	// Kept in sync via an effect, not a direct render-time write - the WebGL
+	// loop below (mount-only effect) reads settingsRef.current per frame, so
+	// this only needs to land before the next paint, not during render itself.
+	useEffect(() => {
+		settingsRef.current = {
+			colorA,
+			colorB,
+			backgroundColor,
+			dotColor,
+			activeDotColor,
+			dotSpacing,
+			dotRadius,
+			glowRadius,
+			headRadius,
+			followSpeed,
+			trailLength,
+			fadeOnIdle,
+			idleDelay,
+			idleFade,
+			rimInner,
+			rimOuter,
+			edgeDesaturate,
+			edgeDesaturateSpan,
+			tailTilt,
+		}
+	}, [
 		colorA,
 		colorB,
 		backgroundColor,
@@ -285,7 +310,7 @@ const DottedTrail = ({
 		edgeDesaturate,
 		edgeDesaturateSpan,
 		tailTilt,
-	}
+	])
 
 	useEffect(() => {
 		const canvas = canvasRef.current

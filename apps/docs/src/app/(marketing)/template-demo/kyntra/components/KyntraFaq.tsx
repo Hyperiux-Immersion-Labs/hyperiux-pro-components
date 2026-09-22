@@ -43,7 +43,7 @@ const faqItems: FAQItem[] = [
     content: (
       <p>
         No. You can start with just the essentials and let Kyntra fill in the
-        rest as services happen &mdash; each visit, part and invoice is attached
+        rest as services happen - each visit, part and invoice is attached
         to the right appliance automatically.
       </p>
     ),
@@ -67,7 +67,7 @@ const faqItems: FAQItem[] = [
     content: (
       <p>
         Kyntra keeps the full repair history, so a recurring issue is flagged
-        with everything that was done last time &mdash; the professional starts
+        with everything that was done last time - the professional starts
         with context instead of guessing.
       </p>
     ),
@@ -78,7 +78,7 @@ const faqItems: FAQItem[] = [
     title: "Can I manage more than one property?",
     content: (
       <p>
-        Yes. Add as many homes as you need and switch between them &mdash; each
+        Yes. Add as many homes as you need and switch between them - each
         property keeps its own appliances, warranties, service history and
         professionals.
       </p>
