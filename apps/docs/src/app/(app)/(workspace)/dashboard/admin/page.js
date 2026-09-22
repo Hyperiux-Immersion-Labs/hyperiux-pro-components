@@ -23,6 +23,7 @@ import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { StatCard } from "@/components/admin/StatCard";
 import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 import { buildUserActivitySlug } from "@/lib/user-slug";
 
 const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100, 250, 500];
@@ -802,6 +803,7 @@ function ManageUserModal({ user, isOwnRow, onClose, onSaved }) {
 export default function AdminPage() {
   const { user: viewer } = useUser();
   const { isSuperAdmin } = useAdminRole();
+  const { toast, showToast, dismissToast } = useToastQueue();
   const [users, setUsers] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -936,10 +938,20 @@ export default function AdminPage() {
 
     const link = document.createElement("a");
     link.href = `/api/admin/users/export?${params.toString()}`;
+    // A plain string (not just the attribute's presence) is the actual
+    // signal here - it tells the browser "save this, don't navigate to it"
+    // even in the (rare) case the response ever came back without its own
+    // Content-Disposition: attachment header, e.g. a proxy stripping it.
+    link.download = "";
     link.rel = "noopener";
     document.body.appendChild(link);
     link.click();
     link.remove();
+
+    showToast({
+      title: "Export started",
+      description: "Your CSV download should begin in your browser shortly.",
+    });
   }
 
   function applyManageChanges(userId, patch) {
@@ -1211,6 +1223,7 @@ export default function AdminPage() {
         />
       )}
     </AnimatePresence>
+    <ToastViewport toast={toast} onDismiss={dismissToast} />
     </>
   );
 }

@@ -172,12 +172,43 @@ export async function GET(request) {
     // bug: search only ever looked at the most recently created rows, so
     // anyone outside that window was invisible - not "no results", just
     // silently never checked).
-    if (search) {
-      const clerkParams = { query: search, limit, offset, orderBy: "-created_at" };
-      if (startISO) clerkParams.createdAtAfter = new Date(startISO).getTime();
-      if (endISO) clerkParams.createdAtBefore = new Date(endISO).getTime();
+    //
+    // A date range filter has the same requirement, for a different reason:
+    // it has to match "Joined" as shown in the table, which is Clerk's own
+    // createdAt - filtering subscriptions.created_at instead (whenever that
+    // row was written, usually but not always right at signup) could
+    // silently include/exclude rows relative to what the picked range
+    // actually shows. Routed through this same Clerk-accurate branch
+    // whether or not there's also search text.
+    const hasDateFilter = Boolean(startISO || endISO);
+    const startMs = startISO ? new Date(startISO).getTime() : null;
+    // endISO is exclusive (resolveDateBounds already rolled it one day past
+    // the picked "to" date) - matches createdAtBefore's own exclusive-upper-
+    // bound semantics below.
+    const endMs = endISO ? new Date(endISO).getTime() : null;
 
-      const { data: clerkUsers, totalCount } = await clerk.users.getUserList(clerkParams);
+    // Belt-and-suspenders: don't just trust that Clerk's own
+    // createdAtAfter/createdAtBefore actually bounded what came back -
+    // re-check every row's real createdAt here too, so a picked range is
+    // guaranteed correct even if that filtering silently no-ops for any
+    // reason.
+    function withinDateRange(clerkUser) {
+      if (!hasDateFilter) return true;
+      const createdAtMs = clerkUser.createdAt ? new Date(clerkUser.createdAt).getTime() : null;
+      if (createdAtMs === null || Number.isNaN(createdAtMs)) return false;
+      if (startMs !== null && createdAtMs < startMs) return false;
+      if (endMs !== null && createdAtMs >= endMs) return false;
+      return true;
+    }
+
+    if (search || hasDateFilter) {
+      const clerkParams = { limit, offset, orderBy: "-created_at" };
+      if (search) clerkParams.query = search;
+      if (startISO) clerkParams.createdAtAfter = startMs;
+      if (endISO) clerkParams.createdAtBefore = endMs;
+
+      const { data: rawClerkUsers, totalCount } = await clerk.users.getUserList(clerkParams);
+      const clerkUsers = hasDateFilter ? rawClerkUsers.filter(withinDateRange) : rawClerkUsers;
       const ids = clerkUsers.map((u) => u.id);
 
       const [{ data: subRows }, { copiesById, installsById, savesById }] = await Promise.all([
@@ -195,10 +226,12 @@ export async function GET(request) {
       // Plan and role can't be pushed into Clerk's query (plan lives only
       // in Supabase; Clerk's List Users endpoint has no "filter by
       // metadata value" param) - applied as a post-filter on this page
-      // when combined with search, which can return fewer than `limit`
-      // rows on that page. Search alone, and either filter alone, are both
-      // fully accurate; this is a narrow, documented tradeoff for the rarer
-      // combination of search plus one of these filters at once.
+      // when combined with search and/or a date range, which can return
+      // fewer than `limit` rows on that page (and a `total` that counts
+      // pre-filter matches, same as the withinDateRange re-check above).
+      // Search or a date range alone, and either plan/role filter alone,
+      // are all fully accurate; this is a narrow, documented tradeoff for
+      // the rarer case of combining them.
       if (planFilter !== "all") {
         users = users.filter((u) => u.plan === planFilter);
       }
@@ -209,10 +242,11 @@ export async function GET(request) {
       return NextResponse.json({ users, total: totalCount });
     }
 
-    // No search text. Role lives only in Clerk, and "Most Copies"/"Most
-    // Installs"/"Most Saves" sort by a count that lives outside
-    // `subscriptions` entirely - none of these can be expressed as a
-    // Supabase `.eq()`/`.order()`. Whenever either is active, pull every
+    // No search text and no date filter (both routed through the
+    // Clerk-accurate branch above). Role lives only in Clerk, and "Most
+    // Copies"/"Most Installs"/"Most Saves" sort by a count that lives
+    // outside `subscriptions` entirely - none of these can be expressed as
+    // a Supabase `.eq()`/`.order()`. Whenever either is active, pull every
     // matching subscription row up to the fetch cap, resolve all of their
     // Clerk profiles up front, filter/sort in JS, then paginate the result.
     // Otherwise (the common case - no role filter, default sort) stay on
@@ -227,8 +261,6 @@ export async function GET(request) {
         .range(0, BROAD_FETCH_CAP - 1);
 
       if (planFilter !== "all") broadQuery = broadQuery.eq("plan", planFilter);
-      if (startISO) broadQuery = broadQuery.gte("created_at", startISO);
-      if (endISO) broadQuery = broadQuery.lt("created_at", endISO);
 
       const { data: allSubs, error: broadError } = await broadQuery;
 
@@ -278,11 +310,11 @@ export async function GET(request) {
       return NextResponse.json({ users, total: totalCount });
     }
 
-    // No search text, no role filter, default sort - Supabase is the real
-    // source of truth for the full user list (every signup gets a row via
-    // the Clerk user.created webhook, see api/webhooks/clerk/route.js), so
-    // paginate and count directly against it instead of ever bounding to a
-    // fixed recent window.
+    // No search text, no date filter, no role filter, default sort -
+    // Supabase is the real source of truth for the full user list (every
+    // signup gets a row via the Clerk user.created webhook, see
+    // api/webhooks/clerk/route.js), so paginate and count directly against
+    // it instead of ever bounding to a fixed recent window.
     let query = supabase
       .from("subscriptions")
       .select(SUBSCRIPTION_COLUMNS, { count: "exact" })
@@ -290,8 +322,6 @@ export async function GET(request) {
       .range(offset, offset + limit - 1);
 
     if (planFilter !== "all") query = query.eq("plan", planFilter);
-    if (startISO) query = query.gte("created_at", startISO);
-    if (endISO) query = query.lt("created_at", endISO);
 
     const { data: subscriptions, count, error } = await query;
 

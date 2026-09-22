@@ -57,24 +57,22 @@ export function CookieConsentNudge() {
     <div
       role="dialog"
       aria-label="Cookie notice"
-      className="fixed bottom-5 left-5 z-9000 w-88 max-w-[calc(100vw-2.5rem)] border border-white/10 bg-[#141414] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl max-md:bottom-3 max-md:left-3 max-md:right-3 max-md:w-auto"
+      className="fixed  left-1/2 -translate-x-1/2 bottom-5 w-fit gap-8  z-9000 flex items-center border border-white/10 bg-[#141414] p-4 max-md:w-[80vw] max-md:bottom-8"
     >
-      <p className="text-sm leading-relaxed text-white/70">
-        We use cookies to keep you signed in and understand how Hyperiux Vault
-        is used. By continuing, you agree to our{" "}
+      <p className="text-sm leading-relaxed text-white/70 ">
+        This website uses cookies to improve your experience.  {" "}
         <Link
           href="/legal/privacy-policy"
           className="text-white underline underline-offset-2 hover:text-[#ff5f00]"
         >
-          Privacy Policy
+           Learn more
         </Link>
-        .
       </p>
 
       <button
         type="button"
         onClick={dismiss}
-        className="mt-8 cursor-pointer bg-[#ff5f00] px-5 py-2 text-xs font-medium text-black transition-colors hover:bg-[#ff7300]"
+        className=" cursor-pointer bg-[#ff5f00] px-5 py-2 text-xs font-medium text-black transition-colors hover:bg-[#ff7300]"
       >
         OK
       </button>
