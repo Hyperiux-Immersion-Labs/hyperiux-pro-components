@@ -50,9 +50,18 @@
         "group": "motion",
         "groupTitle": "Motion",
         "options": [
-          { "value": "linear", "label": "Linear" },
-          { "value": "exponential", "label": "Exponential" },
-          { "value": "gaussian", "label": "Gaussian" }
+          {
+            "value": "linear",
+            "label": "Linear"
+          },
+          {
+            "value": "exponential",
+            "label": "Exponential"
+          },
+          {
+            "value": "gaussian",
+            "label": "Gaussian"
+          }
         ]
       }
     },
@@ -120,7 +129,7 @@
       "remixer": {
         "control": "color",
         "group": "colors",
-        "enabled":false,
+        "enabled": false,
         "groupTitle": "Colors"
       }
     },

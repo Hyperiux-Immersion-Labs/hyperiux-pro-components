@@ -5,9 +5,6 @@
   "main": "index.tsx",
   "files": [
     "index.tsx",
-    "CurvedSwiperHorizontal.tsx",
-    "CurvedSwiperVertical.tsx",
-    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

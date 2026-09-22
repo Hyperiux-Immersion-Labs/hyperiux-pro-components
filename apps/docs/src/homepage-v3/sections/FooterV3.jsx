@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 
 import { UnlockIcon } from "@/components/WebsiteComps/Icons";
 import ShimmerText from "@/components/WebsiteComps/ShimmerText";
-import Input from "@/components/animated-form/Input";
+import { Input } from "@/components/animated-form";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 import Image from "next/image";
 import LineReveal from "@/components/Animations/LineReveal";

@@ -27,18 +27,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/milky-way/index.tsx"
-    },
-    {
-      "path": "circular-text.tsx",
-      "target": "src/components/effects/milky-way/circular-text.tsx"
-    },
-    {
-      "path": "edge-blur-effect.tsx",
-      "target": "src/components/effects/milky-way/edge-blur-effect.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "target": "src/components/effects/milky-way/createSuspendedRaf.ts"
     }
   ],
   "changelog": [

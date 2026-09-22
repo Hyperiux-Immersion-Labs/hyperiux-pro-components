@@ -126,10 +126,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/shear-wipe/index.tsx"
-    },
-    {
-      "path": "ShearWipeComp.tsx",
-      "target": "src/components/effects/shear-wipe/ShearWipeComp.tsx"
     }
   ]
 }

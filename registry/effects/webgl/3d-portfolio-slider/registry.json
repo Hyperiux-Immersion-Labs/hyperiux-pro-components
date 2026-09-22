@@ -46,14 +46,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/3d-portfolio-slider/index.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.ts"
-    },
-    {
-      "path": "PortfolioSlider.tsx",
-      "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.tsx"
     }
   ],
   "props": [

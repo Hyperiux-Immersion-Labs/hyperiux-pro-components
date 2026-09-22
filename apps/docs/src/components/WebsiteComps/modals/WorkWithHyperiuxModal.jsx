@@ -5,9 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLenis } from "lenis/react";
 import WebsiteButton from "@/components/WebsiteComps/Button";
-import Input from "@/components/animated-form/Input";
-import PhoneInput from "@/components/animated-form/PhoneInput";
-import Textarea from "@/components/animated-form/Textarea";
+import { Input, PhoneInput, Textarea } from "@/components/animated-form";
 import CustomVerifyCheckbox from "@/components/WebsiteComps/Recaptcha/CustomVerifyCheckbox";
 import { validateForm } from "@/lib/form-validation";
 

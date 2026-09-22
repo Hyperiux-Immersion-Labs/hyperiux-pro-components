@@ -1,6 +1,6 @@
 "use client";
 
-import ClipPathSlider from "@/components/clip-path-slider";
+import ClipPathSlider from "@/components/clippath-slider";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 

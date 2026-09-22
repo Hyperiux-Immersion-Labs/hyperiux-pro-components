@@ -102,18 +102,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/curved-plane/index.tsx"
-    },
-    {
-      "path": "CurvedSwiperHorizontal.tsx",
-      "target": "src/components/effects/curved-plane/CurvedSwiperHorizontal.tsx"
-    },
-    {
-      "path": "CurvedSwiperVertical.tsx",
-      "target": "src/components/effects/curved-plane/CurvedSwiperVertical.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "target": "src/components/effects/curved-plane/createSuspendedRaf.ts"
     }
   ],
   "changelog": [

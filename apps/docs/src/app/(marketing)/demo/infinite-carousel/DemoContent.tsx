@@ -2,7 +2,7 @@
 
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
-import InfiniteCarousel from "@/components/InfiniteCarousel";
+import InfiniteCarousel from "@/components/infinite-carousel";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (

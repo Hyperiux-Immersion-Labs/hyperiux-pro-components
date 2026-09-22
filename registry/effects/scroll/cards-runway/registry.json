@@ -34,10 +34,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/cards-runway/index.tsx"
-    },
-    {
-      "path": "CardsRunway.tsx",
-      "target": "src/components/effects/cards-runway/CardsRunway.tsx"
     }
   ],
   "props": [

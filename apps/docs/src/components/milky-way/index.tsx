@@ -1,16 +1,623 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+'use client';
+import { Center } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { EffectComposer, Vignette } from "@react-three/postprocessing";
+import gsap from "gsap";
+import { Stars } from "lucide-react";
+import { Effect } from "postprocessing";
+import React, { type ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import * as THREE from "three";
+import { type WebGLRenderer, Uniform, Vector2 } from "three";
 
-'use client'
+// ---- edge-blur-effect.tsx ----
 
-import React, { useRef, useMemo, useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Center } from '@react-three/drei'
-import * as THREE from 'three'
-import { EffectComposer, Vignette } from '@react-three/postprocessing'
-import { Stars } from 'lucide-react'
-import EdgeBlurEffect from './EdgeBlurEffect'
-import CircularText from './CircularText'
-import { createVisibilityGate } from './createSuspendedRaf'
+
+
+const classicBlurFragmentShader = /* glsl */ `
+uniform float uBlurStrength;
+uniform float uBlurStart;
+uniform vec2 uResolution;
+
+void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
+ vec2 center = uv - 0.5;
+ float dist = length(center);
+
+ float blurAmount = smoothstep(uBlurStart, 0.75, dist) * uBlurStrength;
+
+ if (blurAmount < 0.001) {
+ outputColor = inputColor;
+ return;
+ }
+
+ float aspect = uResolution.x / uResolution.y;
+ vec2 texelSize = vec2(1.0 / uResolution.x, 1.0 / uResolution.y);
+
+ const int TAPS = 12;
+ vec2 offsets[12];
+ offsets[0] = vec2(-0.326, -0.406);
+ offsets[1] = vec2(-0.840, -0.074);
+ offsets[2] = vec2(-0.696, 0.457);
+ offsets[3] = vec2(-0.203, 0.621);
+ offsets[4] = vec2( 0.962, -0.195);
+ offsets[5] = vec2( 0.473, -0.480);
+ offsets[6] = vec2( 0.519, 0.767);
+ offsets[7] = vec2( 0.185, -0.893);
+ offsets[8] = vec2( 0.507, 0.064);
+ offsets[9] = vec2( 0.896, 0.412);
+ offsets[10] = vec2(-0.322, -0.933);
+ offsets[11] = vec2(-0.792, -0.598);
+
+ float radius = blurAmount * 12.0;
+
+ vec4 blurred = inputColor;
+ float totalWeight = 1.0;
+
+ for (int i = 0; i < TAPS; i++) {
+ vec2 offset = offsets[i] * radius * texelSize;
+ vec4 s = texture2D(inputBuffer, uv + offset);
+ blurred += s;
+ totalWeight += 1.0;
+ }
+
+ blurred /= totalWeight;
+
+ outputColor = blurred;
+}
+`;
+
+const frostedBlurFragmentShader = /* glsl */ `
+uniform float uBlurStrength;
+uniform float uBlurStart;
+uniform vec2 uResolution;
+
+void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
+ vec2 center = uv - 0.5;
+ float dist = length(center);
+
+ float blurAmount = smoothstep(uBlurStart, 0.75, dist) * uBlurStrength;
+
+ if (blurAmount < 0.001) {
+ outputColor = inputColor;
+ return;
+ }
+
+ float aspect = uResolution.x / uResolution.y;
+ vec2 texelSize = vec2(1.0 / uResolution.x, 1.0 / uResolution.y);
+
+ const int TAPS = 12;
+ vec2 offsets[12];
+ offsets[0] = vec2(-0.326, -0.406);
+ offsets[1] = vec2(-0.840, -0.074);
+ offsets[2] = vec2(-0.696, 0.457);
+ offsets[3] = vec2(-0.203, 0.621);
+ offsets[4] = vec2( 0.962, -0.195);
+ offsets[5] = vec2( 0.473, -0.480);
+ offsets[6] = vec2( 0.519, 0.767);
+ offsets[7] = vec2( 0.185, -0.893);
+ offsets[8] = vec2( 0.507, 0.064);
+ offsets[9] = vec2( 0.896, 0.412);
+ offsets[10] = vec2(-0.322, -0.933);
+ offsets[11] = vec2(-0.792, -0.598);
+
+ float radius = blurAmount * 12.0;
+
+ vec4 blurred = inputColor;
+ float totalWeight = 1.0;
+
+ for (int i = 0; i < TAPS; i++) {
+ vec2 offset = offsets[i] * radius * texelSize;
+ vec4 s = texture2D(inputBuffer, uv + offset);
+ blurred += s;
+ totalWeight += 1.0;
+ }
+
+ blurred /= totalWeight;
+
+ // White, semi-transparent veil for frosted-edge effect.
+ vec3 white = vec3(1.0, 1.0, 1.0);
+ float veilAlpha = 0.4 * blurAmount; // Max 0.4 opacity at the strongest blur
+
+ // Correct GLSL: mix(vec3, vec3, float)
+ vec3 outRgb = mix(blurred.rgb, white, veilAlpha);
+ float outAlpha = blurred.a;
+
+ outputColor = vec4(outRgb, outAlpha);
+}
+`;
+
+interface EdgeBlurEffectImplOptions {
+ blurStrength?: number
+ blurStart?: number
+ resolution?: [number, number]
+ frag?: string
+}
+
+class EdgeBlurEffectImpl extends Effect {
+ constructor({
+ blurStrength = 1.0,
+ blurStart = 0.25,
+ resolution = [1280, 720],
+ frag = frostedBlurFragmentShader,
+ }: EdgeBlurEffectImplOptions = {}) {
+ const uniforms = new Map<string, Uniform<any>>([
+ ["uBlurStrength", new Uniform(blurStrength)],
+ ["uBlurStart", new Uniform(blurStart)],
+ ["uResolution", new Uniform(new Vector2(resolution[0], resolution[1]))],
+ ]);
+ super("EdgeBlurEffect", frag, { uniforms });
+ }
+
+ setResolution(width: number, height: number) {
+ const uRes = this.uniforms.get("uResolution");
+ if (uRes) uRes.value.set(width, height);
+ }
+
+ update(renderer: WebGLRenderer) {
+ if (renderer && renderer.getSize) {
+ const size = renderer.getSize(new Vector2());
+ this.setResolution(size.x, size.y);
+ }
+ }
+}
+
+interface EdgeBlurEffectProps {
+ blurType?: 'classic' | 'frosted'
+ blurStrength?: number
+ blurStart?: number
+}
+
+function EdgeBlurEffect({
+ blurType ="classic", //"frosted" |"classic"
+ blurStrength = 1.0,
+ blurStart = 0.25,
+}: EdgeBlurEffectProps) {
+ const frag =
+ blurType ==="classic"
+ ? classicBlurFragmentShader
+ : frostedBlurFragmentShader;
+
+ const effect = useMemo(() => {
+ let width = 1280,
+ height = 720;
+ if (typeof window !=="undefined") {
+ width = window.innerWidth;
+ height = window.innerHeight;
+ }
+ return new EdgeBlurEffectImpl({
+ blurStrength,
+ blurStart,
+ resolution: [width, height],
+ frag,
+ });
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+ }, [blurStrength, blurStart, frag]);
+
+ useEffect(() => {
+ if (typeof window ==="undefined") return;
+ const update = () => effect.setResolution(window.innerWidth, window.innerHeight);
+ window.addEventListener("resize", update);
+ update();
+ return () => window.removeEventListener("resize", update);
+ }, [effect]);
+
+ return <primitive object={effect} dispose={null} />;
+}
+
+
+// ---- circular-text.tsx ----
+
+
+
+interface CircularTextProps {
+ text?: string
+ spinDuration?: number
+ onHover?: 'slowDown' | 'speedUp' | 'pause' | 'goBonkers'
+ className?: string
+ radius?: number
+}
+
+const CircularText = ({
+ text ='',
+ spinDuration = 20,
+ onHover ='speedUp',
+ className ='',
+ radius = 80,
+}: CircularTextProps) => {
+ const containerRef = useRef<HTMLDivElement | null>(null)
+ const tweenRef = useRef<gsap.core.Tween | null>(null)
+
+ const letters = Array.from(text)
+
+ useEffect(() => {
+ if (!containerRef.current) return
+
+ tweenRef.current?.kill()
+
+ // Reduced-motion: keep the ring static - no continuous spin.
+ if (
+ window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+ ) {
+ return
+ }
+
+ tweenRef.current = gsap.to(containerRef.current, {
+ rotation: 360,
+ duration: spinDuration,
+ ease:'none',
+ repeat: -1,
+ transformOrigin:'50% 50%',
+ })
+
+ return () => { tweenRef.current?.kill() }
+ }, [spinDuration, text])
+ const handleEnter = () => {
+ if (
+ window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+ ) {
+ return
+ }
+ if (!tweenRef.current) return
+
+ switch (onHover) {
+ case'slowDown':
+ gsap.to(tweenRef.current, { timeScale: 0.5, duration: 0.3 })
+ break
+ case'speedUp':
+ gsap.to(tweenRef.current, { timeScale: 2, duration: 0.3 })
+ break
+ case'pause':
+ tweenRef.current.pause()
+ break
+ case'goBonkers':
+ gsap.to(tweenRef.current, { timeScale: 6, duration: 0.3 })
+ gsap.to(containerRef.current, {
+ scale: 0.85,
+ duration: 0.3,
+ ease:'power2.out',
+ })
+ break
+ }
+ }
+
+ const handleLeave = () => {
+ if (
+ window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+ ) {
+ return
+ }
+ if (!tweenRef.current) return
+
+ tweenRef.current.resume()
+ gsap.to(tweenRef.current, { timeScale: 1, duration: 0.3 })
+
+ gsap.to(containerRef.current, {
+ scale: 1,
+ duration: 0.3,
+ ease:'power2.out',
+ })
+ }
+
+ return (
+ <div>
+
+ <span
+ style={{
+ position:'absolute',
+ left:'50%',
+ top:'50%',
+ width: 56,
+ height: 56,
+ transform:'translate(-50%, -50%)',
+ zIndex: 2,
+ userSelect:'none',
+ pointerEvents:'none',
+ display:'flex',
+ alignItems:'center',
+ justifyContent:'center',
+ }}
+ >
+ {/* Replace with your preferred Lucide icon below */}
+ {/* Make sure to import { CupSoda } from'lucide-react' at the top of this file */}
+ <Stars size={32} strokeWidth={1} />
+ </span>
+
+ <div
+ ref={containerRef}
+ className={className}
+ onMouseEnter={handleEnter}
+ onMouseLeave={handleLeave}
+ style={{
+ width: 180,
+ height: 180,
+ position:'relative',
+ }}
+ >
+
+
+ {letters.map((letter, i) => {
+ const angle = (360 / letters.length) * i
+
+ return (
+ <span
+ key={i}
+ style={{
+ position:'absolute',
+ left:'50%',
+ top:'50%',
+ transform: `
+ rotate(${angle}deg)
+ translate(${radius}px)
+ rotate(90deg)
+ `,
+ transformOrigin:'0 0', 
+ fontSize: 20,
+ fontWeight: 600,
+ whiteSpace:'pre',
+ pointerEvents:'none',
+ zIndex: 3,
+ }}
+ >
+ {letter}
+ </span>
+ )
+ })}
+ </div>
+ </div>
+ )
+}
+
+
+// ---- createSuspendedRaf.ts ----
+const DEFAULT_ROOT_MARGIN = "256px";
+
+type RafRoot = Element | null | { current: Element | null } | (() => Element | null);
+
+function resolveElement(root: RafRoot): Element | null {
+  if (!root) return null;
+  if (typeof root === "function") return root() ?? null;
+  if (typeof root === "object" && "current" in root) return root.current ?? null;
+  return root;
+}
+
+interface VisibilityGateOptions {
+  root?: RafRoot;
+  rootMargin?: string;
+  threshold?: number;
+  observeTab?: boolean;
+  observeOffscreen?: boolean;
+  onChange?: (active: boolean) => void;
+}
+
+interface VisibilityGate {
+  readonly isActive: boolean;
+  observe: (nextRoot?: RafRoot) => void;
+  destroy: () => void;
+}
+
+function createVisibilityGate({
+  root = null,
+  rootMargin = DEFAULT_ROOT_MARGIN,
+  threshold = 0,
+  observeTab = true,
+  observeOffscreen = true,
+  onChange,
+}: VisibilityGateOptions = {}): VisibilityGate {
+  let tabVisible =
+    typeof document === "undefined" ? true : !document.hidden;
+  // Match border-beam: assume onscreen until the observer reports otherwise.
+  let onscreen = true;
+  let destroyed = false;
+  let observer: IntersectionObserver | null = null;
+
+  const isActive = () => {
+    if (destroyed) return false;
+    if (observeTab && !tabVisible) return false;
+    if (observeOffscreen && resolveElement(root) && !onscreen) return false;
+    return true;
+  };
+
+  let lastActive = isActive();
+
+  const emit = () => {
+    if (destroyed) return;
+    const next = isActive();
+    if (next === lastActive) return;
+    lastActive = next;
+    onChange?.(next);
+  };
+
+  const onVisibilityChange = () => {
+    tabVisible = !document.hidden;
+    emit();
+  };
+
+  if (observeTab && typeof document !== "undefined") {
+    document.addEventListener("visibilitychange", onVisibilityChange);
+  }
+
+  const bindObserver = () => {
+    if (!observeOffscreen || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+
+    const el = resolveElement(root);
+    if (!el) return;
+
+    observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          onscreen = entry.isIntersecting;
+        }
+        emit();
+      },
+      { rootMargin, threshold },
+    );
+
+    observer.observe(el);
+  };
+
+  bindObserver();
+
+  return {
+    /** Whether the animation should currently run. */
+    get isActive() {
+      return isActive();
+    },
+
+    /**
+     * Re-bind IntersectionObserver after the root element mounts late
+     * (e.g. ref not ready on first call). Safe to call multiple times.
+     */
+    observe(nextRoot?: RafRoot) {
+      if (destroyed) return;
+      if (nextRoot != null) root = nextRoot;
+      if (observer) {
+        observer.disconnect();
+        observer = null;
+      }
+      onscreen = true;
+      bindObserver();
+      emit();
+    },
+
+    destroy() {
+      if (destroyed) return;
+      destroyed = true;
+      if (observeTab && typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+      }
+      if (observer) {
+        observer.disconnect();
+        observer = null;
+      }
+    },
+  };
+}
+
+interface SuspendedRafOptions {
+  onFrame: (time: number) => void;
+  root?: RafRoot;
+  rootMargin?: string;
+  threshold?: number;
+  observeTab?: boolean;
+  observeOffscreen?: boolean;
+}
+
+interface SuspendedRaf {
+  start: () => void;
+  stop: () => void;
+  readonly isRunning: boolean;
+  readonly isActive: boolean;
+  observe: (nextRoot?: RafRoot) => void;
+  destroy: () => void;
+}
+
+/**
+ * Owns a requestAnimationFrame loop that auto-pauses when the tab is hidden
+ * or the root element is offscreen.
+ */
+function createSuspendedRaf({
+  onFrame,
+  root = null,
+  rootMargin = DEFAULT_ROOT_MARGIN,
+  threshold = 0,
+  observeTab = true,
+  observeOffscreen = true,
+}: SuspendedRafOptions): SuspendedRaf {
+  if (typeof onFrame !== "function") {
+    throw new TypeError("createSuspendedRaf: onFrame is required");
+  }
+
+  let rafId: number | null = null;
+  let running = false;
+  let destroyed = false;
+
+  const stopRaf = () => {
+    if (rafId != null) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  };
+
+  const tick = (time: number) => {
+    rafId = null;
+    if (destroyed || !running || !gate.isActive) return;
+    onFrame(time);
+    if (!destroyed && running && gate.isActive) {
+      rafId = requestAnimationFrame(tick);
+    }
+  };
+
+  const sync = () => {
+    if (destroyed) return;
+    if (running && gate.isActive) {
+      if (rafId == null) {
+        rafId = requestAnimationFrame(tick);
+      }
+    } else {
+      stopRaf();
+    }
+  };
+
+  const gate = createVisibilityGate({
+    root,
+    rootMargin,
+    threshold,
+    observeTab,
+    observeOffscreen,
+    onChange: sync,
+  });
+
+  return {
+    /** Start (or resume) the loop when visibility allows. */
+    start() {
+      if (destroyed) return;
+      running = true;
+      sync();
+    },
+
+    /** Stop requesting frames (visibility listeners stay attached until destroy). */
+    stop() {
+      running = false;
+      stopRaf();
+    },
+
+    /** Whether the caller has started the loop (may still be paused by visibility). */
+    get isRunning() {
+      return running;
+    },
+
+    /** Whether a frame is currently allowed to schedule. */
+    get isActive() {
+      return gate.isActive;
+    },
+
+    /** Re-attach offscreen observer to a (new) root element. */
+    observe(nextRoot?: RafRoot) {
+      gate.observe(nextRoot);
+      sync();
+    },
+
+    /** Tear down listeners and cancel any pending frame. */
+    destroy() {
+      if (destroyed) return;
+      destroyed = true;
+      running = false;
+      stopRaf();
+      gate.destroy();
+    },
+  };
+}
+
+
+// ---- index.tsx ----
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+
+
+
+
 
 const { degToRad } = THREE.MathUtils
 
@@ -23,12 +630,6 @@ const DEFAULT_BACKGROUND_COLOR = '#000000'
 const DEFAULT_MOUSE_INFLUENCE = true
 const DEFAULT_ROTATION = 1
 const DEFAULT_ROTATION_SPEED = 0.2
-
-// Indirection so writing a shader uniform's `.value` (a plain mutable holder,
-// not React state) isn't flagged as mutating a value returned from a hook.
-function setUniformValue(uniform: { value: number }, value: number) {
-   uniform.value = value
-}
 
 function clampNumber(value: unknown, min: number, max: number, fallback: number) {
    const number = Number(value)
@@ -764,13 +1365,10 @@ const SmokeFlow = React.memo(function SmokeFlow({ particleSize, coreColor, accen
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
-      // Colors/size are synced imperatively below - recreating the material
-      // (and its GPU resources) on every prop change would be wasteful.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }), [posTex])
 
    useEffect(() => {
-      setUniformValue(mat.uniforms.uParticleSize, particleSize)
+      mat.uniforms.uParticleSize.value = particleSize
       mat.uniforms.uCoreColor.value.set(coreColor)
       mat.uniforms.uAccentColor.value.set(accentColor)
       mat.uniforms.uOuterColor.value.set(outerColor)
@@ -944,13 +1542,10 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColo
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
-      // Colors/size are synced imperatively below - recreating the material
-      // (and its GPU resources) on every prop change would be wasteful.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }), [posTex])
 
    useEffect(() => {
-      setUniformValue(mat.uniforms.uParticleSize, particleSize)
+      mat.uniforms.uParticleSize.value = particleSize
       mat.uniforms.uCoreColor.value.set(coreColor)
       mat.uniforms.uAccentColor.value.set(accentColor)
       mat.uniforms.uOuterColor.value.set(outerColor)
@@ -1028,9 +1623,6 @@ const BackgroundStars = React.memo(function BackgroundStars({ color }: { color: 
          transparent: true, opacity: 0.7, depthWrite: false,
       })
       return new THREE.Points(geo, mat)
-      // Initial color only - synced imperatively below so the 4000-point
-      // geometry isn't rebuilt on every color change.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [])
 
    useEffect(() => {

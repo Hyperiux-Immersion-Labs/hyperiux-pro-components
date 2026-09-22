@@ -22,14 +22,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/grid-tunnel/index.tsx"
-    },
-    {
-      "path": "GridTunnelComp.tsx",
-      "target": "src/components/effects/grid-tunnel/GridTunnelComp.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "target": "src/components/effects/grid-tunnel/createSuspendedRaf.ts"
     }
   ],
   "changelog": [

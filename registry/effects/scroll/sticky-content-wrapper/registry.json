@@ -36,10 +36,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/sticky-content-wrapper/index.tsx"
-    },
-    {
-      "path": "StickyContentComp.tsx",
-      "target": "src/components/effects/sticky-content-wrapper/StickyContentComp.tsx"
     }
   ],
   "props": [

@@ -87,10 +87,10 @@
         "step": 5
       }
     },
-      {
-        "name": "dotColor",
-        "type": "color",
-        "default": "#64646e",
+    {
+      "name": "dotColor",
+      "type": "color",
+      "default": "#64646e",
       "description": "Idle dot color.",
       "remixer": {
         "control": "color",
@@ -98,10 +98,10 @@
         "groupTitle": "Grid"
       }
     },
-      {
-        "name": "activeDotColor",
-        "type": "color",
-        "default": "#ffffff",
+    {
+      "name": "activeDotColor",
+      "type": "color",
+      "default": "#ffffff",
       "description": "Dot color inside the active cursor radius.",
       "remixer": {
         "control": "color",

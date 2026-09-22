@@ -39,30 +39,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/book-flip/index.tsx"
-    },
-    {
-      "path": "Book.tsx",
-      "target": "src/components/effects/book-flip/Book.tsx"
-    },
-    {
-      "path": "Experience.tsx",
-      "target": "src/components/effects/book-flip/Experience.tsx"
-    },
-    {
-      "path": "PageContext.tsx",
-      "target": "src/components/effects/book-flip/PageContext.tsx"
-    },
-    {
-      "path": "UI.tsx",
-      "target": "src/components/effects/book-flip/UI.tsx"
-    },
-    {
-      "path": "BookFlip.tsx",
-      "target": "src/components/effects/book-flip/BookFlip.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "target": "src/components/effects/book-flip/createSuspendedRaf.ts"
     }
   ],
   "props": [

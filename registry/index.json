@@ -47,14 +47,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/3d-portfolio-slider/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.ts"
-      },
-      {
-        "path": "PortfolioSlider.tsx",
-        "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.tsx"
       }
     ],
     "props": [
@@ -135,10 +127,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/animated-faq/index.tsx"
-      },
-      {
-        "path": "AnimatedFaqComp.tsx",
-        "target": "src/components/effects/animated-faq/AnimatedFaqComp.tsx"
       }
     ],
     "changelog": [
@@ -179,34 +167,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/animated-form/index.tsx"
-      },
-      {
-        "path": "Button.tsx",
-        "target": "src/components/effects/animated-form/Button.tsx"
-      },
-      {
-        "path": "Checkbox.tsx",
-        "target": "src/components/effects/animated-form/Checkbox.tsx"
-      },
-      {
-        "path": "ContactForm.tsx",
-        "target": "src/components/effects/animated-form/ContactForm.tsx"
-      },
-      {
-        "path": "Input.tsx",
-        "target": "src/components/effects/animated-form/Input.tsx"
-      },
-      {
-        "path": "PhoneInput.tsx",
-        "target": "src/components/effects/animated-form/PhoneInput.tsx"
-      },
-      {
-        "path": "Select.tsx",
-        "target": "src/components/effects/animated-form/Select.tsx"
-      },
-      {
-        "path": "Textarea.tsx",
-        "target": "src/components/effects/animated-form/Textarea.tsx"
       }
     ],
     "changelog": [
@@ -261,14 +221,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/animated-modal/index.tsx"
-      },
-      {
-        "path": "AnimatedModalContent.tsx",
-        "target": "src/components/effects/animated-modal/AnimatedModalContent.tsx"
-      },
-      {
-        "path": "ScrollablePopupContent.tsx",
-        "target": "src/components/effects/animated-modal/ScrollablePopupContent.tsx"
       }
     ],
     "registryPath": "registry/effects/components/animated-modal/registry.json"
@@ -295,10 +247,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/animated-tabs/index.tsx"
-      },
-      {
-        "path": "AnimatedTabsComp.tsx",
-        "target": "src/components/effects/animated-tabs/AnimatedTabsComp.tsx"
       }
     ],
     "changelog": [
@@ -351,18 +299,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/animated-toggle/index.tsx"
-      },
-      {
-        "path": "ChevronBird.tsx",
-        "target": "src/components/effects/animated-toggle/ChevronBird.tsx"
-      },
-      {
-        "path": "Cross.tsx",
-        "target": "src/components/effects/animated-toggle/Cross.tsx"
-      },
-      {
-        "path": "Plus.tsx",
-        "target": "src/components/effects/animated-toggle/Plus.tsx"
       }
     ],
     "registryPath": "registry/effects/buttons/animated-toggle/registry.json"
@@ -683,10 +619,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/arc-flow-carousel/index.tsx"
-      },
-      {
-        "path": "ArcFlowCarouselComp.tsx",
-        "target": "src/components/effects/arc-flow-carousel/ArcFlowCarouselComp.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/arc-flow-carousel/registry.json"
@@ -843,7 +775,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/block-transition/index.tsx"
       }
     ],
@@ -883,7 +814,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/blur-text/index.tsx"
       }
     ]
@@ -916,30 +846,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/book-flip/index.tsx"
-      },
-      {
-        "path": "Book.tsx",
-        "target": "src/components/effects/book-flip/Book.tsx"
-      },
-      {
-        "path": "Experience.tsx",
-        "target": "src/components/effects/book-flip/Experience.tsx"
-      },
-      {
-        "path": "PageContext.tsx",
-        "target": "src/components/effects/book-flip/PageContext.tsx"
-      },
-      {
-        "path": "UI.tsx",
-        "target": "src/components/effects/book-flip/UI.tsx"
-      },
-      {
-        "path": "BookFlip.tsx",
-        "target": "src/components/effects/book-flip/BookFlip.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/book-flip/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -1143,18 +1049,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/border-beam/index.tsx"
-      },
-      {
-        "path": "BorderBeam.tsx",
-        "target": "src/components/effects/border-beam/BorderBeam.tsx"
-      },
-      {
-        "path": "PulseDriver.ts",
-        "target": "src/components/effects/border-beam/PulseDriver.ts"
-      },
-      {
-        "path": "styles.ts",
-        "target": "src/components/effects/border-beam/styles.ts"
       }
     ],
     "changelog": [
@@ -1220,10 +1114,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/butterfly-trail-cursor/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/butterfly-trail-cursor/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1249,10 +1139,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/card-drift/index.tsx"
-      },
-      {
-        "path": "CardDriftComp.tsx",
-        "target": "src/components/effects/card-drift/CardDriftComp.tsx"
       }
     ],
     "changelog": [
@@ -1404,10 +1290,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/cards-runway/index.tsx"
-      },
-      {
-        "path": "CardsRunway.tsx",
-        "target": "src/components/effects/cards-runway/CardsRunway.tsx"
       }
     ]
   },
@@ -1526,14 +1408,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/character-trail/index.tsx"
-      },
-      {
-        "path": "CharacterTrailComp.tsx",
-        "target": "src/components/effects/character-trail/CharacterTrailComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/character-trail/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1735,13 +1609,7 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/circle-text-reveal/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "type": "registry:component",
-        "target": "src/components/effects/circle-text-reveal/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1769,10 +1637,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/circular-slider/index.tsx"
-      },
-      {
-        "path": "CircularSliderComp.tsx",
-        "target": "src/components/effects/circular-slider/CircularSliderComp.tsx"
       }
     ],
     "changelog": [
@@ -1829,10 +1693,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/circular-split-roll/index.tsx"
-      },
-      {
-        "path": "CircularSplitRollComp.tsx",
-        "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.tsx"
       }
     ]
   },
@@ -1872,10 +1732,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/clippath-slider/index.tsx"
-      },
-      {
-        "path": "ClippathSliderComp.tsx",
-        "target": "src/components/effects/clippath-slider/ClippathSliderComp.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/clippath-slider/registry.json"
@@ -1921,10 +1777,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/coffee-bean-cursor/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/coffee-bean-cursor/createSuspendedRaf.ts"
       }
     ]
   },
@@ -1958,10 +1810,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/colliding-models/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/colliding-models/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -2016,10 +1864,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/colorful-cursor-aura/index.tsx"
-      },
-      {
-        "path": "ColorfulCursorAuraComp.tsx",
-        "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.tsx"
       }
     ]
   },
@@ -2100,18 +1944,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/curved-plane/index.tsx"
-      },
-      {
-        "path": "CurvedSwiperHorizontal.tsx",
-        "target": "src/components/effects/curved-plane/CurvedSwiperHorizontal.tsx"
-      },
-      {
-        "path": "CurvedSwiperVertical.tsx",
-        "target": "src/components/effects/curved-plane/CurvedSwiperVertical.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/curved-plane/createSuspendedRaf.ts"
       }
     ]
   },
@@ -2138,14 +1970,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/depth-card-stack/index.tsx"
-      },
-      {
-        "path": "DepthCardStackComp.tsx",
-        "target": "src/components/effects/depth-card-stack/DepthCardStackComp.tsx"
-      },
-      {
-        "path": "SliderCard.tsx",
-        "target": "src/components/effects/depth-card-stack/SliderCard.tsx"
       }
     ],
     "changelog": [
@@ -2646,30 +2470,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/directional-menu/index.tsx"
-      },
-      {
-        "path": "DirectionalMegaMenu.tsx",
-        "target": "src/components/effects/directional-menu/DirectionalMegaMenu.tsx"
-      },
-      {
-        "path": "Menu1.tsx",
-        "target": "src/components/effects/directional-menu/Menu1.tsx"
-      },
-      {
-        "path": "Menu2.tsx",
-        "target": "src/components/effects/directional-menu/Menu2.tsx"
-      },
-      {
-        "path": "Menu3.tsx",
-        "target": "src/components/effects/directional-menu/Menu3.tsx"
-      },
-      {
-        "path": "MobileDirectionalMenu.tsx",
-        "target": "src/components/effects/directional-menu/MobileDirectionalMenu.tsx"
-      },
-      {
-        "path": "useFocusTrap.ts",
-        "target": "src/components/effects/directional-menu/useFocusTrap.ts"
       }
     ],
     "registryPath": "registry/effects/navigation/directional-menu/registry.json"
@@ -3046,10 +2846,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/dither-canvas/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/dither-canvas/createSuspendedRaf.ts"
       }
     ],
     "registryPath": "registry/effects/backgrounds/dither-canvas/registry.json"
@@ -3094,10 +2890,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/donut-particles/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/donut-particles/createSuspendedRaf.ts"
       }
     ]
   },
@@ -3315,10 +3107,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/dot-transition/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/dot-transition/createSuspendedRaf.ts"
       }
     ],
     "registryPath": "registry/effects/backgrounds/dot-transition/registry.json"
@@ -3358,10 +3146,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/dotted-grid/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/dotted-grid/createSuspendedRaf.ts"
       }
     ],
     "registryPath": "registry/effects/backgrounds/dotted-grid/registry.json"
@@ -3567,18 +3351,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/draggable-canvas/index.tsx"
-      },
-      {
-        "path": "DragCursor.tsx",
-        "target": "src/components/effects/draggable-canvas/DragCursor.tsx"
-      },
-      {
-        "path": "MaskedContainer.tsx",
-        "target": "src/components/effects/draggable-canvas/MaskedContainer.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/draggable-canvas/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -3633,14 +3405,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/draggable-marquee/index.tsx"
-      },
-      {
-        "path": "DraggableMarqueeComp.tsx",
-        "target": "src/components/effects/draggable-marquee/DraggableMarqueeComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/draggable-marquee/createSuspendedRaf.ts"
       }
     ]
   },
@@ -4259,18 +4023,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/elevate-navbar/index.tsx"
-      },
-      {
-        "path": "ElevateMobileNav.tsx",
-        "target": "src/components/effects/elevate-navbar/ElevateMobileNav.tsx"
-      },
-      {
-        "path": "ElevateDesktopNav.tsx",
-        "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.tsx"
-      },
-      {
-        "path": "useFocusTrap.ts",
-        "target": "src/components/effects/elevate-navbar/useFocusTrap.ts"
       }
     ],
     "registryPath": "registry/effects/navigation/elevate-navbar/registry.json"
@@ -4497,10 +4249,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/ellipse-carousel/index.tsx"
-      },
-      {
-        "path": "EllipseCarousel.tsx",
-        "target": "src/components/effects/ellipse-carousel/EllipseCarousel.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/ellipse-carousel/registry.json"
@@ -4542,26 +4290,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/expanding-navbar/index.tsx"
-      },
-      {
-        "path": "ExpandingNavbarDesktop.tsx",
-        "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.tsx"
-      },
-      {
-        "path": "ExpandingNavbarMobile.tsx",
-        "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.tsx"
-      },
-      {
-        "path": "HoverFillLink.tsx",
-        "target": "src/components/effects/expanding-navbar/HoverFillLink.tsx"
-      },
-      {
-        "path": "data.ts",
-        "target": "src/components/effects/expanding-navbar/data.ts"
-      },
-      {
-        "path": "useFocusTrap.ts",
-        "target": "src/components/effects/expanding-navbar/useFocusTrap.ts"
       }
     ],
     "registryPath": "registry/effects/navigation/expanding-navbar/registry.json"
@@ -4603,18 +4331,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/file-encryption/index.tsx"
-      },
-      {
-        "path": "FileEncryptionComp.tsx",
-        "target": "src/components/effects/file-encryption/FileEncryptionComp.tsx"
-      },
-      {
-        "path": "webgl-context-recovery.ts",
-        "target": "src/components/effects/file-encryption/webgl-context-recovery.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/file-encryption/createSuspendedRaf.ts"
       }
     ]
   },
@@ -4657,10 +4373,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/fish-eye/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/fish-eye/createSuspendedRaf.ts"
       }
     ]
   },
@@ -5096,10 +4808,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/fractal-glass/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/fractal-glass/createSuspendedRaf.ts"
       }
     ]
   },
@@ -5140,14 +4848,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/full-screen-crosshair/index.tsx"
-      },
-      {
-        "path": "useMouse.ts",
-        "target": "src/components/effects/full-screen-crosshair/useMouse.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/full-screen-crosshair/createSuspendedRaf.ts"
       }
     ]
   },
@@ -5185,7 +4885,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/glitchy-text/index.tsx"
       }
     ]
@@ -5705,10 +5404,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/grid-lift/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/grid-lift/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -5805,14 +5500,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/grid-tunnel/index.tsx"
-      },
-      {
-        "path": "GridTunnelComp.tsx",
-        "target": "src/components/effects/grid-tunnel/GridTunnelComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/grid-tunnel/createSuspendedRaf.ts"
       }
     ]
   },
@@ -6103,10 +5790,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/helix-slider/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/helix-slider/createSuspendedRaf.ts"
       }
     ],
     "props": [
@@ -6256,26 +5939,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/hero-banner-animated/index.tsx"
-      },
-      {
-        "path": "CustomGrainNoise.tsx",
-        "target": "src/components/effects/hero-banner-animated/CustomGrainNoise.tsx"
-      },
-      {
-        "path": "EdgeBlurEffect.tsx",
-        "target": "src/components/effects/hero-banner-animated/EdgeBlurEffect.tsx"
-      },
-      {
-        "path": "RoomModel.tsx",
-        "target": "src/components/effects/hero-banner-animated/RoomModel.tsx"
-      },
-      {
-        "path": "VideoUI.tsx",
-        "target": "src/components/effects/hero-banner-animated/VideoUI.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/hero-banner-animated/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -6331,10 +5994,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/horizontal-feature-reveal/index.tsx"
-      },
-      {
-        "path": "HorizontalFeatureRevealComp.tsx",
-        "target": "src/components/effects/horizontal-feature-reveal/HorizontalFeatureRevealComp.tsx"
       }
     ]
   },
@@ -6376,14 +6035,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/hover-slider/index.tsx"
-      },
-      {
-        "path": "HoverSliderComp.tsx",
-        "target": "src/components/effects/hover-slider/HoverSliderComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/hover-slider/createSuspendedRaf.ts"
       }
     ]
   },
@@ -6408,10 +6059,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/hover-stack/index.tsx"
-      },
-      {
-        "path": "HoverStackComp.tsx",
-        "target": "src/components/effects/hover-stack/HoverStackComp.tsx"
       }
     ],
     "changelog": [
@@ -6472,18 +6119,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/hyperiux-glitter/index.tsx"
-      },
-      {
-        "path": "MorphingParticleModelNew.tsx",
-        "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.tsx"
-      },
-      {
-        "path": "MouseTrailParticles.tsx",
-        "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.ts"
       }
     ]
   },
@@ -6524,18 +6159,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/immersive-full-screen-nav/index.tsx"
-      },
-      {
-        "path": "CustomNavbar.tsx",
-        "target": "src/components/effects/immersive-full-screen-nav/CustomNavbar.tsx"
-      },
-      {
-        "path": "FullscreenNav.tsx",
-        "target": "src/components/effects/immersive-full-screen-nav/FullscreenNav.tsx"
-      },
-      {
-        "path": "useFocusTrap.ts",
-        "target": "src/components/effects/immersive-full-screen-nav/useFocusTrap.ts"
       }
     ],
     "registryPath": "registry/effects/navigation/immersive-full-screen-nav/registry.json"
@@ -6577,10 +6200,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/inertia-img/index.tsx"
-      },
-      {
-        "path": "InertiaImgComp.tsx",
-        "target": "src/components/effects/inertia-img/InertiaImgComp.tsx"
       }
     ]
   },
@@ -6622,10 +6241,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/infinite-carousel/index.tsx"
-      },
-      {
-        "path": "InfiniteCarouselComp.tsx",
-        "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/infinite-carousel/registry.json"
@@ -6667,18 +6282,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/infinite-grid-gallery/index.tsx"
-      },
-      {
-        "path": "InfiniteGrid.tsx",
-        "target": "src/components/effects/infinite-grid-gallery/InfiniteGrid.tsx"
-      },
-      {
-        "path": "util.ts",
-        "target": "src/components/effects/infinite-grid-gallery/util.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/infinite-grid-gallery/createSuspendedRaf.ts"
       }
     ]
   },
@@ -6721,14 +6324,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/infinite-perspective-slider/index.tsx"
-      },
-      {
-        "path": "InfinitePerspectiveSliderComp.tsx",
-        "target": "src/components/effects/infinite-perspective-slider/InfinitePerspectiveSliderComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/infinite-perspective-slider/createSuspendedRaf.ts"
       }
     ]
   },
@@ -6876,10 +6471,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/information-drawer/index.tsx"
-      },
-      {
-        "path": "InformationDrawerComp.tsx",
-        "target": "src/components/effects/information-drawer/InformationDrawerComp.tsx"
       }
     ]
   },
@@ -6918,38 +6509,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/interactive-arrows/index.tsx"
-      },
-      {
-        "path": "arrows.tsx",
-        "target": "src/components/effects/interactive-arrows/arrows.tsx"
-      },
-      {
-        "path": "ArrowsLimit.tsx",
-        "target": "src/components/effects/interactive-arrows/ArrowsLimit.tsx"
-      },
-      {
-        "path": "ArrowsOpacity.tsx",
-        "target": "src/components/effects/interactive-arrows/ArrowsOpacity.tsx"
-      },
-      {
-        "path": "ArrowsPlay.tsx",
-        "target": "src/components/effects/interactive-arrows/ArrowsPlay.tsx"
-      },
-      {
-        "path": "lines.tsx",
-        "target": "src/components/effects/interactive-arrows/lines.tsx"
-      },
-      {
-        "path": "points.tsx",
-        "target": "src/components/effects/interactive-arrows/points.tsx"
-      },
-      {
-        "path": "utils.ts",
-        "target": "src/components/effects/interactive-arrows/utils.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/interactive-arrows/createSuspendedRaf.ts"
       }
     ]
   },
@@ -6975,14 +6534,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/interactive-blur-reveal/index.tsx"
-      },
-      {
-        "path": "webgl-context-recovery.ts",
-        "target": "src/components/effects/interactive-blur-reveal/webgl-context-recovery.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/interactive-blur-reveal/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -7038,10 +6589,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/interactive-list-preview/index.tsx"
-      },
-      {
-        "path": "InteractiveListPreviewComp.tsx",
-        "target": "src/components/effects/interactive-list-preview/InteractiveListPreviewComp.tsx"
       }
     ]
   },
@@ -7068,18 +6615,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/lines-loader/index.tsx"
-      },
-      {
-        "path": "CenterLinesLoading.tsx",
-        "target": "src/components/effects/lines-loader/CenterLinesLoading.tsx"
-      },
-      {
-        "path": "LinesLoading.tsx",
-        "target": "src/components/effects/lines-loader/LinesLoading.tsx"
-      },
-      {
-        "path": "utils.ts",
-        "target": "src/components/effects/lines-loader/utils.ts"
       }
     ],
     "props": [
@@ -7366,14 +6901,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/magnetic-image-trail/index.tsx"
-      },
-      {
-        "path": "MagneticTrail.tsx",
-        "target": "src/components/effects/magnetic-image-trail/MagneticTrail.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/magnetic-image-trail/createSuspendedRaf.ts"
       }
     ]
   },
@@ -7411,7 +6938,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/mask-text-reveal/index.tsx"
       }
     ]
@@ -7682,18 +7208,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/milky-way/index.tsx"
-      },
-      {
-        "path": "circular-text.tsx",
-        "target": "src/components/effects/milky-way/circular-text.tsx"
-      },
-      {
-        "path": "edge-blur-effect.tsx",
-        "target": "src/components/effects/milky-way/edge-blur-effect.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/milky-way/createSuspendedRaf.ts"
       }
     ]
   },
@@ -8004,22 +7518,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/mouse-pixelation/index.tsx"
-      },
-      {
-        "path": "EnhancedPixelCube.tsx",
-        "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.tsx"
-      },
-      {
-        "path": "PixelCircle.tsx",
-        "target": "src/components/effects/mouse-pixelation/PixelCircle.tsx"
-      },
-      {
-        "path": "PixelShift.tsx",
-        "target": "src/components/effects/mouse-pixelation/PixelShift.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -8076,14 +7574,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/noise-ripple-cursor/index.tsx"
-      },
-      {
-        "path": "2dCanvasTracker.tsx",
-        "target": "src/components/effects/noise-ripple-cursor/2dCanvasTracker.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/noise-ripple-cursor/createSuspendedRaf.ts"
       }
     ]
   },
@@ -8127,18 +7617,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/number-counter/index.tsx"
-      },
-      {
-        "path": "NumberCounterOne.tsx",
-        "target": "src/components/effects/number-counter/NumberCounterOne.tsx"
-      },
-      {
-        "path": "NumberCounterTwo.tsx",
-        "target": "src/components/effects/number-counter/NumberCounterTwo.tsx"
-      },
-      {
-        "path": "NumberCounterThree.tsx",
-        "target": "src/components/effects/number-counter/NumberCounterThree.tsx"
       }
     ]
   },
@@ -8168,10 +7646,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/numeric-tunnel/index.tsx"
-      },
-      {
-        "path": "NumericTunnelLoader.tsx",
-        "target": "src/components/effects/numeric-tunnel/NumericTunnelLoader.tsx"
       }
     ],
     "changelog": [
@@ -8725,10 +8199,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/orbit-flip-slider/index.tsx"
-      },
-      {
-        "path": "OrbitFlipSliderComp.tsx",
-        "target": "src/components/effects/orbit-flip-slider/OrbitFlipSliderComp.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/orbit-flip-slider/registry.json"
@@ -8767,7 +8237,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/overflow-text-reveal/index.tsx"
       }
     ]
@@ -8809,7 +8278,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/page-flip-transition/index.tsx"
       }
     ],
@@ -8838,10 +8306,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/parallax-footer/index.tsx"
-      },
-      {
-        "path": "ParallaxFooter.tsx",
-        "target": "src/components/effects/parallax-footer/ParallaxFooter.tsx"
       }
     ],
     "changelog": [
@@ -8891,10 +8355,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/parallax-gallery/index.tsx"
-      },
-      {
-        "path": "ParallaxGallery.tsx",
-        "target": "src/components/effects/parallax-gallery/ParallaxGallery.tsx"
       }
     ]
   },
@@ -9367,7 +8827,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/perspective-text-reveal/index.tsx"
       }
     ]
@@ -9410,14 +8869,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/phantom-image-trail/index.tsx"
-      },
-      {
-        "path": "useMouse.ts",
-        "target": "src/components/effects/phantom-image-trail/useMouse.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/phantom-image-trail/createSuspendedRaf.ts"
       }
     ]
   },
@@ -9458,14 +8909,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/pixel-bloom/index.tsx"
-      },
-      {
-        "path": "2dcanvasTracker.tsx",
-        "target": "src/components/effects/pixel-bloom/2dcanvasTracker.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/pixel-bloom/createSuspendedRaf.ts"
       }
     ]
   },
@@ -9768,7 +9211,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/pixel-transition/index.tsx"
       }
     ],
@@ -9856,50 +9298,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/progressive-bloom-valley/index.tsx"
-      },
-      {
-        "path": "CameraRig.tsx",
-        "target": "src/components/effects/progressive-bloom-valley/CameraRig.tsx"
-      },
-      {
-        "path": "CircularText.tsx",
-        "target": "src/components/effects/progressive-bloom-valley/CircularText.tsx"
-      },
-      {
-        "path": "EdgeBlurEffect.tsx",
-        "target": "src/components/effects/progressive-bloom-valley/EdgeBlurEffect.tsx"
-      },
-      {
-        "path": "ExperienceComp.tsx",
-        "target": "src/components/effects/progressive-bloom-valley/ExperienceComp.tsx"
-      },
-      {
-        "path": "FilmGrainEffect.tsx",
-        "target": "src/components/effects/progressive-bloom-valley/FilmGrainEffect.tsx"
-      },
-      {
-        "path": "Flower.tsx",
-        "target": "src/components/effects/progressive-bloom-valley/Flower.tsx"
-      },
-      {
-        "path": "useInput.ts",
-        "target": "src/components/effects/progressive-bloom-valley/useInput.ts"
-      },
-      {
-        "path": "useValleyData.ts",
-        "target": "src/components/effects/progressive-bloom-valley/useValleyData.ts"
-      },
-      {
-        "path": "shaders.tsx",
-        "target": "src/components/effects/progressive-bloom-valley/shaders.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/progressive-bloom-valley/createSuspendedRaf.ts"
-      },
-      {
-        "path": "prefersReducedMotion.ts",
-        "target": "src/components/effects/progressive-bloom-valley/prefersReducedMotion.ts"
       }
     ]
   },
@@ -9979,7 +9377,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/rectangular-text-reveal/index.tsx"
       }
     ]
@@ -10022,10 +9419,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/ribbon-drift/index.tsx"
-      },
-      {
-        "path": "RibbonDriftComp.tsx",
-        "target": "src/components/effects/ribbon-drift/RibbonDriftComp.tsx"
       }
     ]
   },
@@ -10067,10 +9460,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/ring-carousel/index.tsx"
-      },
-      {
-        "path": "RingCarouselComp.tsx",
-        "target": "src/components/effects/ring-carousel/RingCarouselComp.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/ring-carousel/registry.json"
@@ -10240,10 +9629,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/rope-cursor/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/rope-cursor/createSuspendedRaf.ts"
       }
     ]
   },
@@ -10286,10 +9671,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/rotation-slider/index.tsx"
-      },
-      {
-        "path": "RotationSliderComp.tsx",
-        "target": "src/components/effects/rotation-slider/RotationSliderComp.tsx"
       }
     ]
   },
@@ -10368,7 +9749,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/scramble-text/index.tsx"
       }
     ]
@@ -10413,10 +9793,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/scroll-distortion/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/scroll-distortion/createSuspendedRaf.ts"
       }
     ]
   },
@@ -10457,14 +9833,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/scroll-shuffled-cards/index.tsx"
-      },
-      {
-        "path": "ScrollShuffledCardsComp.tsx",
-        "target": "src/components/effects/scroll-shuffled-cards/ScrollShuffledCardsComp.tsx"
-      },
-      {
-        "path": "card.tsx",
-        "target": "src/components/effects/scroll-shuffled-cards/card.tsx"
       }
     ]
   },
@@ -10504,10 +9872,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/scroll-stack/index.tsx"
-      },
-      {
-        "path": "ScrollStackComp.tsx",
-        "target": "src/components/effects/scroll-stack/ScrollStackComp.tsx"
       }
     ],
     "registryPath": "registry/effects/scroll/scroll-stack/registry.json"
@@ -10644,10 +10008,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/shear-wipe/index.tsx"
-      },
-      {
-        "path": "ShearWipeComp.tsx",
-        "target": "src/components/effects/shear-wipe/ShearWipeComp.tsx"
       }
     ],
     "registryPath": "registry/effects/components/shear-wipe/registry.json"
@@ -10945,10 +10305,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/side-navbar/index.tsx"
-      },
-      {
-        "path": "Menu.tsx",
-        "target": "src/components/effects/side-navbar/Menu.tsx"
       }
     ],
     "registryPath": "registry/effects/navigation/side-navbar/registry.json"
@@ -10987,7 +10343,6 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/slide-text-reveal/index.tsx"
       }
     ]
@@ -11014,10 +10369,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/spider-particles/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/spider-particles/createSuspendedRaf.ts"
       }
     ],
     "version": "1.0.1",
@@ -11077,22 +10428,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/split-canvas/index.tsx"
-      },
-      {
-        "path": "PixelScrollCanvas.tsx",
-        "target": "src/components/effects/split-canvas/PixelScrollCanvas.tsx"
-      },
-      {
-        "path": "content.ts",
-        "target": "src/components/effects/split-canvas/content.ts"
-      },
-      {
-        "path": "pixel-transition.ts",
-        "target": "src/components/effects/split-canvas/pixel-transition.ts"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/split-canvas/createSuspendedRaf.ts"
       }
     ]
   },
@@ -11257,13 +10592,7 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/spotlight-text/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "type": "registry:component",
-        "target": "src/components/effects/spotlight-text/createSuspendedRaf.ts"
       }
     ]
   },
@@ -11306,10 +10635,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/square-translate/index.tsx"
-      },
-      {
-        "path": "SquareTranslateComp.tsx",
-        "target": "src/components/effects/square-translate/SquareTranslateComp.tsx"
       }
     ]
   },
@@ -11520,10 +10845,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/stacking-cards/index.tsx"
-      },
-      {
-        "path": "StackingCardComp.tsx",
-        "target": "src/components/effects/stacking-cards/StackingCardComp.tsx"
       }
     ]
   },
@@ -11566,10 +10887,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/sticky-content-wrapper/index.tsx"
-      },
-      {
-        "path": "StickyContentComp.tsx",
-        "target": "src/components/effects/sticky-content-wrapper/StickyContentComp.tsx"
       }
     ]
   },
@@ -11596,14 +10913,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/strip-slider/index.tsx"
-      },
-      {
-        "path": "StripSliderComp.tsx",
-        "target": "src/components/effects/strip-slider/StripSliderComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/strip-slider/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -11682,14 +10991,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/svg-path/index.tsx"
-      },
-      {
-        "path": "SVGPathComp.tsx",
-        "target": "src/components/effects/svg-path/SVGPathComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/svg-path/createSuspendedRaf.ts"
       }
     ],
     "changelog": [
@@ -11730,10 +11031,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/svg-pixel-reveal/index.tsx"
-      },
-      {
-        "path": "PixelatedSvgFilter.tsx",
-        "target": "src/components/effects/svg-pixel-reveal/PixelatedSvgFilter.tsx"
       }
     ],
     "changelog": [
@@ -11863,14 +11160,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/testimonial-swiper/index.tsx"
-      },
-      {
-        "path": "NavigationButtons.tsx",
-        "target": "src/components/effects/testimonial-swiper/NavigationButtons.tsx"
-      },
-      {
-        "path": "TestimonialComp.tsx",
-        "target": "src/components/effects/testimonial-swiper/TestimonialComp.tsx"
       }
     ]
   },
@@ -11906,13 +11195,7 @@
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/text-cloning/index.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "type": "registry:component",
-        "target": "src/components/effects/text-cloning/createSuspendedRaf.ts"
       }
     ]
   },
@@ -12028,14 +11311,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/text-hover/index.tsx"
-      },
-      {
-        "path": "TextHoverComp.tsx",
-        "target": "src/components/effects/text-hover/TextHoverComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/text-hover/createSuspendedRaf.ts"
       }
     ]
   },
@@ -12072,19 +11347,8 @@
     "exportKind": "named",
     "files": [
       {
-        "path": "hooks.ts",
-        "type": "registry:component",
-        "target": "src/components/effects/text-stream/hooks.ts"
-      },
-      {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/text-stream/index.tsx"
-      },
-      {
-        "path": "TextStreamComp.tsx",
-        "type": "registry:component",
-        "target": "src/components/effects/text-stream/TextStreamComp.tsx"
       }
     ]
   },
@@ -12995,10 +12259,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/video-player/index.tsx"
-      },
-      {
-        "path": "VideoPlayerComp.tsx",
-        "target": "src/components/effects/video-player/VideoPlayerComp.tsx"
       }
     ],
     "changelog": [
@@ -13055,10 +12315,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/webgl-slider/index.tsx"
-      },
-      {
-        "path": "WebGLSliderComp.tsx",
-        "target": "src/components/effects/webgl-slider/WebGLSliderComp.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/webgl-slider/registry.json"
@@ -13100,10 +12356,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/zoom-slider/index.tsx"
-      },
-      {
-        "path": "ZoomSliderComp.tsx",
-        "target": "src/components/effects/zoom-slider/ZoomSliderComp.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/zoom-slider/registry.json"

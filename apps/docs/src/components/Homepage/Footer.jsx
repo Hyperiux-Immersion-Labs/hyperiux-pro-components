@@ -13,7 +13,7 @@ const FlowFieldHero = dynamic(() => import("./FlowFieldPlane"), {
 import Button from "../WebsiteComps/Button";
 import { UnlockIcon } from "../WebsiteComps/Icons";
 import ShimmerText from "../WebsiteComps/ShimmerText";
-import Input from "../animated-form/Input";
+import { Input } from "../animated-form";
 import LinkButton from "../WebsiteComps/LinkButton";
 import Image from "next/image";
 import LineReveal from "../Animations/LineReveal";

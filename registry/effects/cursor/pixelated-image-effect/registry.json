@@ -41,21 +41,42 @@
       "type": "number",
       "default": 16,
       "description": "Baseline pixel size for the SVG pixelation filter.",
-      "remixer": { "control": "range", "group": "controls", "groupTitle": "Controls", "min": 1, "max": 64, "step": 1 }
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 1,
+        "max": 64,
+        "step": 1
+      }
     },
     {
       "name": "duration",
       "type": "number",
       "default": 0.25,
       "description": "Smoothing duration for pixel-size changes.",
-      "remixer": { "control": "range", "group": "motion", "groupTitle": "Motion", "min": 0, "max": 2, "step": 0.05 }
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 2,
+        "step": 0.05
+      }
     },
     {
       "name": "mouseReactivity",
       "type": "number",
       "default": 1,
       "description": "Strength of cursor-driven pixelation changes.",
-      "remixer": { "control": "range", "group": "controls", "groupTitle": "Controls", "min": 0, "max": 2, "step": 0.05 }
+      "remixer": {
+        "control": "range",
+        "group": "controls",
+        "groupTitle": "Controls",
+        "min": 0,
+        "max": 2,
+        "step": 0.05
+      }
     }
   ],
   "remixer": {
@@ -65,7 +86,9 @@
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
     },
-    "copyCode": { "includeOnlyPublicProps": true }
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
   },
   "files": [
     {

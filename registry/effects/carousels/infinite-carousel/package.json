@@ -5,7 +5,6 @@
   "main": "index.tsx",
   "files": [
     "index.tsx",
-    "InfiniteCarouselComp.tsx",
     "registry.json"
   ],
   "keywords": [

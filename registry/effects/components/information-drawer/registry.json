@@ -147,10 +147,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/information-drawer/index.tsx"
-    },
-    {
-      "path": "InformationDrawerComp.tsx",
-      "target": "src/components/effects/information-drawer/InformationDrawerComp.tsx"
     }
   ],
   "changelog": [

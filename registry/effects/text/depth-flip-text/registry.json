@@ -51,7 +51,7 @@
       "description": "Background color behind the effect.",
       "remixer": {
         "control": "color",
-        "enabled":false,
+        "enabled": false,
         "group": "colors",
         "groupTitle": "Colors"
       }

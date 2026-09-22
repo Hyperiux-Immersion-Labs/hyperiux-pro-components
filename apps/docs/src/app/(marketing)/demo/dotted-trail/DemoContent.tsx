@@ -1,6 +1,6 @@
 "use client";
 
-import DottedTrail from "@/components/dotter-trail";
+import DottedTrail from "@/components/dotted-trail";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
 export default function DemoContent({ registry }: { registry: any }) {

@@ -36,30 +36,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/directional-menu/index.tsx"
-    },
-    {
-      "path": "DirectionalMegaMenu.tsx",
-      "target": "src/components/effects/directional-menu/DirectionalMegaMenu.tsx"
-    },
-    {
-      "path": "Menu1.tsx",
-      "target": "src/components/effects/directional-menu/Menu1.tsx"
-    },
-    {
-      "path": "Menu2.tsx",
-      "target": "src/components/effects/directional-menu/Menu2.tsx"
-    },
-    {
-      "path": "Menu3.tsx",
-      "target": "src/components/effects/directional-menu/Menu3.tsx"
-    },
-    {
-      "path": "MobileDirectionalMenu.tsx",
-      "target": "src/components/effects/directional-menu/MobileDirectionalMenu.tsx"
-    },
-    {
-      "path": "useFocusTrap.ts",
-      "target": "src/components/effects/directional-menu/useFocusTrap.ts"
     }
   ],
   "props": [

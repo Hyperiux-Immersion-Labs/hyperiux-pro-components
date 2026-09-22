@@ -21,10 +21,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/ribbon-drift/index.tsx"
-    },
-    {
-      "path": "RibbonDriftComp.tsx",
-      "target": "src/components/effects/ribbon-drift/RibbonDriftComp.tsx"
     }
   ],
   "changelog": [

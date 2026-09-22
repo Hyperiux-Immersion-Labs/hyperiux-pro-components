@@ -32,14 +32,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/character-trail/index.tsx"
-    },
-    {
-      "path": "CharacterTrailComp.tsx",
-      "target": "src/components/effects/character-trail/CharacterTrailComp.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "target": "src/components/effects/character-trail/createSuspendedRaf.ts"
     }
   ],
   "props": [

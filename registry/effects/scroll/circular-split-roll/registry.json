@@ -105,10 +105,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/circular-split-roll/index.tsx"
-    },
-    {
-      "path": "CircularSplitRollComp.tsx",
-      "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.tsx"
     }
   ]
 }

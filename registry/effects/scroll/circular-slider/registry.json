@@ -21,10 +21,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/circular-slider/index.tsx"
-    },
-    {
-      "path": "CircularSliderComp.tsx",
-      "target": "src/components/effects/circular-slider/CircularSliderComp.tsx"
     }
   ],
   "changelog": [

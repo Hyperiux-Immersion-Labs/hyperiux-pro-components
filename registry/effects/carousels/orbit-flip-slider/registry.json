@@ -533,10 +533,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/orbit-flip-slider/index.tsx"
-    },
-    {
-      "path": "OrbitFlipSliderComp.tsx",
-      "target": "src/components/effects/orbit-flip-slider/OrbitFlipSliderComp.tsx"
     }
   ]
 }

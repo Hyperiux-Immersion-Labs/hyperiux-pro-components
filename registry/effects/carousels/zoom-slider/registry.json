@@ -100,10 +100,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/zoom-slider/index.tsx"
-    },
-    {
-      "path": "ZoomSliderComp.tsx",
-      "target": "src/components/effects/zoom-slider/ZoomSliderComp.tsx"
     }
   ]
 }

@@ -98,10 +98,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/side-navbar/index.tsx"
-    },
-    {
-      "path": "Menu.tsx",
-      "target": "src/components/effects/side-navbar/Menu.tsx"
     }
   ]
 }

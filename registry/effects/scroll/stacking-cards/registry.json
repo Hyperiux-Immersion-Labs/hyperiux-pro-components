@@ -35,10 +35,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/stacking-cards/index.tsx"
-    },
-    {
-      "path": "StackingCardComp.tsx",
-      "target": "src/components/effects/stacking-cards/StackingCardComp.tsx"
     }
   ],
   "props": [

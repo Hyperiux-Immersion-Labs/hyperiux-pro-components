@@ -35,26 +35,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/expanding-navbar/index.tsx"
-    },
-    {
-      "path": "ExpandingNavbarDesktop.tsx",
-      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.tsx"
-    },
-    {
-      "path": "ExpandingNavbarMobile.tsx",
-      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.tsx"
-    },
-    {
-      "path": "HoverFillLink.tsx",
-      "target": "src/components/effects/expanding-navbar/HoverFillLink.tsx"
-    },
-    {
-      "path": "data.ts",
-      "target": "src/components/effects/expanding-navbar/data.ts"
-    },
-    {
-      "path": "useFocusTrap.ts",
-      "target": "src/components/effects/expanding-navbar/useFocusTrap.ts"
     }
   ],
   "props": [

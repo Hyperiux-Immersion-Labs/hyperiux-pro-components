@@ -143,7 +143,6 @@
   "files": [
     {
       "path": "index.tsx",
-      "type": "registry:component",
       "target": "src/components/effects/scramble-text/index.tsx"
     }
   ]

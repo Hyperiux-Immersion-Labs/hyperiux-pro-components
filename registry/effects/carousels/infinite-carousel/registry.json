@@ -116,10 +116,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/infinite-carousel/index.tsx"
-    },
-    {
-      "path": "InfiniteCarouselComp.tsx",
-      "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.tsx"
     }
   ]
 }

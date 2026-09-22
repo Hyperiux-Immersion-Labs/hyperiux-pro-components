@@ -11,7 +11,7 @@
   ],
   "type": "registry:component",
   "title": "Displacement Navbar",
-  "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it \u2014 GSAP-driven with a full reduced-motion fallback.",
+  "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it — GSAP-driven with a full reduced-motion fallback.",
   "category": "navigation",
   "dependencies": [
     "gsap"

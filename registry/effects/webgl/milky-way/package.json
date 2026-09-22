@@ -5,9 +5,6 @@
   "main": "index.tsx",
   "files": [
     "index.tsx",
-    "circular-text.tsx",
-    "edge-blur-effect.tsx",
-    "createSuspendedRaf.ts",
     "registry.json"
   ],
   "keywords": [

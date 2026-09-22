@@ -1,10 +1,9 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
-import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 

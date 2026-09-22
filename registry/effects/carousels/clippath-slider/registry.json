@@ -180,10 +180,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/clippath-slider/index.tsx"
-    },
-    {
-      "path": "ClippathSliderComp.tsx",
-      "target": "src/components/effects/clippath-slider/ClippathSliderComp.tsx"
     }
   ]
 }

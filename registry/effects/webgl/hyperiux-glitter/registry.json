@@ -25,18 +25,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/hyperiux-glitter/index.tsx"
-    },
-    {
-      "path": "MorphingParticleModelNew.tsx",
-      "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.tsx"
-    },
-    {
-      "path": "MouseTrailParticles.tsx",
-      "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.ts"
     }
   ],
   "changelog": [
