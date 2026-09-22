@@ -70,7 +70,7 @@
     {
       "name": "loop",
       "type": "boolean",
-      "default": false,
+      "default": true,
       "description": "Restarts the phrase sequence after the last entry.",
       "remixer": {
         "control": "checkbox",

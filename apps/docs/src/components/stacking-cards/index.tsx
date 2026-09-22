@@ -21,13 +21,18 @@ interface StackingCardCompProps {
     data?: StackingCardItem[];
     imageZoomEnabled?: boolean;
     tiltEnabled?: boolean;
-    cardCornerRadius?: string;
+    cardCornerRadius?: string | number;
     stackPerspective?: number;
 }
 
-function StackingCardComp({ data = [], imageZoomEnabled = true, tiltEnabled = true, cardCornerRadius = "3vw", stackPerspective = 1200 }: StackingCardCompProps) {
+function resolveCardCornerRadius(value: string | number) {
+    return typeof value === "number" ? `${value}px` : value;
+}
+
+function StackingCardComp({ data = [], imageZoomEnabled = true, tiltEnabled = true, cardCornerRadius = 48, stackPerspective = 1200 }: StackingCardCompProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const resolvedCardCornerRadius = resolveCardCornerRadius(cardCornerRadius);
 
     useLenis(() => {
         ScrollTrigger.update();
@@ -145,7 +150,7 @@ function StackingCardComp({ data = [], imageZoomEnabled = true, tiltEnabled = tr
                         scale: 0.8,
                         rotation: tiltEnabled ? rotateDir : 0,
                         rotateX: tiltEnabled ? 20 : 0,
-                        borderRadius: cardCornerRadius,
+                        borderRadius: resolvedCardCornerRadius,
                         ease: "linear",
                         duration: 0.5,
                     },
@@ -165,7 +170,7 @@ function StackingCardComp({ data = [], imageZoomEnabled = true, tiltEnabled = tr
         }, containerRef);
 
         return () => ctx.revert();
-    }, [cardCornerRadius, data, imageZoomEnabled, stackPerspective, tiltEnabled]);
+    }, [data, imageZoomEnabled, resolvedCardCornerRadius, stackPerspective, tiltEnabled]);
 
     return (
         <section
@@ -192,7 +197,7 @@ function StackingCardComp({ data = [], imageZoomEnabled = true, tiltEnabled = tr
                     >
                         <SliderCard
                             {...item}
-                            cardCornerRadius={cardCornerRadius}
+                            cardCornerRadius={resolvedCardCornerRadius}
                         />
                     </div>
                 ))}

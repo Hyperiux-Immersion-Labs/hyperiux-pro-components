@@ -29,6 +29,7 @@ export default function ChessGridTransition({
 }: ChessGridTransitionProps) {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const gridRef = useRef<HTMLDivElement | null>(null)
+  const activeTimelineRef = useRef<gsap.core.Timeline | null>(null)
 
   const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -101,6 +102,15 @@ export default function ChessGridTransition({
   }
 
   useEffect(() => {
+    // Prop changes (grid size, color, duration) can land mid-animation. If a
+    // previous leave/enter timeline is still running when that happens, it
+    // keeps tweening the cells we're about to reset here, so the next
+    // animation "continues" from wherever those stale tweens left off
+    // instead of restarting cleanly. Kill any in-flight timeline first so
+    // the reset below always starts from a known, static state.
+    activeTimelineRef.current?.kill()
+    activeTimelineRef.current = null
+
     const cells = (gridRef.current as HTMLDivElement).children
 
     Array.from(cells).forEach((cell, i) => {
@@ -108,12 +118,28 @@ export default function ChessGridTransition({
       gsap.set(cell, { xPercent: -(colIndex + 2) * 100 })
     })
 
+    // Killing a timeline mid-tween leaves whatever properties it was
+    // animating (like wrapper opacity during a leave fade-to-color) frozen
+    // at their in-progress value instead of clearing them. Without this,
+    // an interrupted leave can strand the content wrapper at opacity ~0
+    // while the grid cells above have already been reset off-screen,
+    // producing a black/blank screen instead of the revealed content.
+    // Force the wrapper back to its fully-revealed idle state too.
+    if (wrapperRef.current) {
+      gsap.set(wrapperRef.current, { opacity: 1, clearProps: 'opacity' })
+    }
+
     // gsap.set() above needs the actual grid cell DOM nodes to exist, so the
     // "ready to reveal" flag can only be set after that runs post-mount -
     // not derivable during render.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
-  }, [cols, rows])
+
+    return () => {
+      activeTimelineRef.current?.kill()
+      activeTimelineRef.current = null
+    }
+  }, [cols, rows, color, safeDuration])
 
   const totalCells = cols * rows
 
@@ -121,7 +147,18 @@ export default function ChessGridTransition({
     <TransitionRouter
       auto
       leave={(next) => {
-        const tl = gsap.timeline({ onComplete: next })
+        // Cancel any timeline left over from a previous run (e.g. a remix
+        // that changed props mid-animation) so it can't keep animating
+        // cells this new timeline is about to take over.
+        activeTimelineRef.current?.kill()
+
+        const tl = gsap.timeline({
+          onComplete: () => {
+            if (activeTimelineRef.current === tl) activeTimelineRef.current = null
+            next()
+          },
+        })
+        activeTimelineRef.current = tl
 
         if (prefersReducedMotion()) {
           tl.to(wrapperRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0)
@@ -136,7 +173,15 @@ export default function ChessGridTransition({
         return () => tl.kill()
       }}
       enter={(next) => {
-        const tl = gsap.timeline({ onComplete: next })
+        activeTimelineRef.current?.kill()
+
+        const tl = gsap.timeline({
+          onComplete: () => {
+            if (activeTimelineRef.current === tl) activeTimelineRef.current = null
+            next()
+          },
+        })
+        activeTimelineRef.current = tl
 
         if (prefersReducedMotion()) {
           tl.to(wrapperRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all' }, 0)

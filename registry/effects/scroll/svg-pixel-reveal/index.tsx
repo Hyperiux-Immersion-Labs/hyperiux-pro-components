@@ -84,7 +84,7 @@ export default function SVGPixelReveal({
   initialPixelSize: initialPixelSizeProp = 18,
   finalPixelSize = 1,
   start = "top 50%",
-  end = "bottom 35%",
+  end = "bottom bottom",
   crossLayers = true,
   priority = false,
   intensity,
@@ -118,6 +118,7 @@ export default function SVGPixelReveal({
       trigger: container,
       start,
       end,
+      scrub: true,
       animation: tween,
       invalidateOnRefresh: true,
     });

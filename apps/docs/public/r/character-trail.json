@@ -123,16 +123,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/character-trail/index.tsx"
-    },
-    {
-      "path": "CharacterTrailComp.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/character-trail/CharacterTrailComp.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/character-trail/createSuspendedRaf.ts"
     }
   ]
 }

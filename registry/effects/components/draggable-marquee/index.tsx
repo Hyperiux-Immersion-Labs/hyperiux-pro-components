@@ -313,6 +313,21 @@ const DraggableMarqueeComp = ({
     const rootRef = useRef<HTMLDivElement | null>(null);
     const trackRef = useRef<HTMLDivElement | null>(null);
     const dragRef = useRef<InstanceType<typeof Draggable> | null>(null);
+    const motionConfigRef = useRef({
+        speed,
+        pauseOnHover,
+        throwMultiplier,
+        throwFriction,
+        maxThrowVelocity,
+    });
+
+    motionConfigRef.current = {
+        speed,
+        pauseOnHover,
+        throwMultiplier,
+        throwFriction,
+        maxThrowVelocity,
+    };
 
     const duplicatedItems = useMemo(() => {
         return Array.from({ length: repeatCount }).flatMap(() => items);
@@ -421,12 +436,14 @@ const DraggableMarqueeComp = ({
 
         const update = () => {
             if (!isDragging) {
-                if (!reducedMotion && !(pauseOnHover && isPointerOver)) {
-                    x -= speed;
+                const config = motionConfigRef.current;
+
+                if (!reducedMotion && !(config.pauseOnHover && isPointerOver)) {
+                    x -= config.speed;
                 }
 
                 x += throwVelocity;
-                throwVelocity *= throwFriction;
+                throwVelocity *= config.throwFriction;
 
                 if (Math.abs(throwVelocity) < 0.01) {
                     throwVelocity = 0;
@@ -469,11 +486,12 @@ const DraggableMarqueeComp = ({
                         throwVelocity = 0;
                     } else {
                         const sampledVelocity = (dx / dt) * 36.67;
+                        const config = motionConfigRef.current;
 
                         throwVelocity = gsap.utils.clamp(
-                            -maxThrowVelocity,
-                            maxThrowVelocity,
-                            sampledVelocity * throwMultiplier
+                            -config.maxThrowVelocity,
+                            config.maxThrowVelocity,
+                            sampledVelocity * config.throwMultiplier
                         );
                     }
                 }
@@ -495,10 +513,8 @@ const DraggableMarqueeComp = ({
             isPointerOver = false;
         };
 
-        if (pauseOnHover) {
-            root.addEventListener("mouseenter", handleMouseEnter);
-            root.addEventListener("mouseleave", handleMouseLeave);
-        }
+        root.addEventListener("mouseenter", handleMouseEnter);
+        root.addEventListener("mouseleave", handleMouseLeave);
 
         const handleResize = () => {
             scheduleMeasure();
@@ -557,10 +573,8 @@ const DraggableMarqueeComp = ({
 
             window.removeEventListener("resize", handleResize);
 
-            if (pauseOnHover) {
-                root.removeEventListener("mouseenter", handleMouseEnter);
-                root.removeEventListener("mouseleave", handleMouseLeave);
-            }
+            root.removeEventListener("mouseenter", handleMouseEnter);
+            root.removeEventListener("mouseleave", handleMouseLeave);
 
             gsap.ticker.remove(update);
 
@@ -585,12 +599,7 @@ const DraggableMarqueeComp = ({
         };
     }, [
         items,
-        speed,
         repeatCount,
-        pauseOnHover,
-        throwMultiplier,
-        throwFriction,
-        maxThrowVelocity,
         initialOffset,
         loopStart,
         loopEndMultiplier,

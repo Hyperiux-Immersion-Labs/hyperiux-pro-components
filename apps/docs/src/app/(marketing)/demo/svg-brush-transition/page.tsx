@@ -12,7 +12,7 @@ export default function page() {
 
         <HeadAnim>
 
-        <h1 className="text-[7vw] max-md:text-[9vw]">Svg Brush Transition</h1>
+        <h1 className="text-[5vw] max-md:text-[9vw]">Svg Brush Transition</h1>
         </HeadAnim>
 
         <SplitLine>

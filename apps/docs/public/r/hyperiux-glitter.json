@@ -127,21 +127,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/hyperiux-glitter/index.tsx"
-    },
-    {
-      "path": "MorphingParticleModelNew.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/hyperiux-glitter/MorphingParticleModelNew.tsx"
-    },
-    {
-      "path": "MouseTrailParticles.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/hyperiux-glitter/MouseTrailParticles.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/hyperiux-glitter/createSuspendedRaf.ts"
     }
   ]
 }

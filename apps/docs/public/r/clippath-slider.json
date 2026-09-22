@@ -176,11 +176,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/clippath-slider/index.tsx"
-    },
-    {
-      "path": "ClippathSliderComp.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/clippath-slider/ClippathSliderComp.tsx"
     }
   ]
 }

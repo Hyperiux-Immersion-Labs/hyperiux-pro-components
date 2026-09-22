@@ -75,20 +75,6 @@
         "max": 160,
         "step": 1
       }
-    },
-    {
-      "name": "perspective",
-      "type": "number",
-      "default": 900,
-      "description": "Perspective depth applied to the runway track.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0,
-        "max": 2000,
-        "step": 25
-      }
     }
   ],
   "remixer": {
@@ -107,11 +93,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/cards-runway/index.tsx"
-    },
-    {
-      "path": "CardsRunway.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/cards-runway/CardsRunway.tsx"
     }
   ]
 }

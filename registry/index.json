@@ -143,7 +143,98 @@
         "breaking": false
       }
     ],
-    "registryPath": "registry/effects/components/animated-faq/registry.json"
+    "registryPath": "registry/effects/components/animated-faq/registry.json",
+    "props": [
+      {
+        "name": "allowMultiple",
+        "type": "boolean",
+        "default": false,
+        "description": "Lets more than one FAQ answer stay open at once.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.5,
+        "description": "Open and close animation duration.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 0.1,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "showIcon",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows or hides the FAQ trigger icon.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "icon",
+          "groupTitle": "Icon"
+        }
+      },
+      {
+        "name": "iconPosition",
+        "type": "string",
+        "default": "right",
+        "description": "Side where the trigger icon is rendered.",
+        "remixer": {
+          "control": "select",
+          "group": "icon",
+          "groupTitle": "Icon",
+          "options": [
+            {
+              "value": "right",
+              "label": "Right"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            }
+          ]
+        }
+      },
+      {
+        "name": "iconMode",
+        "type": "string",
+        "default": "rotate",
+        "description": "Chevron rotation style used by the trigger icon.",
+        "remixer": {
+          "control": "select",
+          "group": "icon",
+          "groupTitle": "Icon",
+          "options": [
+            {
+              "value": "rotate",
+              "label": "Rotate Down"
+            },
+            {
+              "value": "rotate-left-down",
+              "label": "Rotate Right"
+            }
+          ]
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "behavior",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    }
   },
   {
     "name": "animated-form",
@@ -1403,7 +1494,70 @@
         "path": "index.tsx",
         "target": "src/components/effects/cards-runway/index.tsx"
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "accentColor",
+        "type": "color",
+        "default": "#ff5f00",
+        "description": "Accent color used by the runway card bars.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "cardColor",
+        "type": "color",
+        "default": "#161616",
+        "description": "Background color of each card.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "default": 1,
+        "description": "Playback speed multiplier for the runway motion.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "default": 48,
+        "description": "Spacing between runway cards in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 160,
+          "step": 1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "style",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    }
   },
   {
     "name": "char-stagger-button",
@@ -1723,7 +1877,95 @@
         "path": "index.tsx",
         "target": "src/components/effects/circle-text-reveal/index.tsx"
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#111111",
+        "description": "Base text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "circleColorBg",
+        "type": "string",
+        "default": "#ff5f00",
+        "description": "Reveal circle background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "RevealedTextColor",
+        "type": "string",
+        "default": "#fefefe",
+        "description": "Text color inside the revealed layer.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "lerp",
+        "type": "number",
+        "default": 0.15,
+        "description": "Pointer-follow smoothing amount; higher values track faster.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.01,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "smoothness",
+        "type": "number",
+        "default": 0.5,
+        "description": "Mask-size transition duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "circleSize",
+        "type": "number",
+        "default": 500,
+        "description": "Expanded reveal circle size in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 120,
+          "max": 900,
+          "step": 10
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    }
   },
   {
     "name": "circular-slider",
@@ -2178,12 +2420,12 @@
       }
     ],
     "type": "registry:component",
-    "title": "Pers Text",
+    "title": "Depth Flip Text",
     "description": "Vault-themed perspective text flip with staggered character motion and optional crossfade.",
     "category": "text",
     "dependencies": [
-      "@gsap/react",
-      "gsap"
+      "gsap",
+      "@gsap/react"
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/depth-flip-text",
@@ -2199,9 +2441,9 @@
         "name": "phrases",
         "type": "string[]",
         "default": [
-          "Hyperiux Vault",
-          "Premium UI Drops",
-          "Built to Ship"
+          "Hyperiux Vault ships faster",
+          "Premium UI for modern teams",
+          "Built to launch beautifully"
         ],
         "description": "Phrases that cycle through the perspective flip.",
         "copyable": true,
@@ -2219,6 +2461,7 @@
         "description": "Background color behind the effect.",
         "remixer": {
           "control": "color",
+          "enabled": false,
           "group": "colors",
           "groupTitle": "Colors"
         }
@@ -2226,7 +2469,7 @@
       {
         "name": "textColor",
         "type": "string",
-        "default": "#050505",
+        "default": "#ffffff",
         "description": "Text color for both the current and incoming phrase.",
         "remixer": {
           "control": "color",
@@ -2237,7 +2480,7 @@
       {
         "name": "loop",
         "type": "boolean",
-        "default": false,
+        "default": true,
         "description": "Restarts the phrase sequence after the last entry.",
         "remixer": {
           "control": "checkbox",
@@ -2294,6 +2537,42 @@
         "description": "Fades outgoing and incoming characters during the flip.",
         "remixer": {
           "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "scrub",
+        "type": "boolean",
+        "default": false,
+        "description": "Links the first flip transition to scroll progress instead of autoplay.",
+        "remixer": {
+          "enabled": false,
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "scrollStart",
+        "type": "string",
+        "default": "top 80%",
+        "description": "ScrollTrigger start value used when scrub is enabled.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "scrollEnd",
+        "type": "string",
+        "default": "bottom 20%",
+        "description": "ScrollTrigger end value used when scrub is enabled.",
+        "remixer": {
+          "enabled": false,
+          "control": "text",
           "group": "motion",
           "groupTitle": "Motion"
         }
@@ -2584,6 +2863,97 @@
         "target": "src/components/effects/directional-menu/index.tsx"
       }
     ],
+    "props": [
+      {
+        "name": "closeDelay",
+        "type": "number",
+        "default": 80,
+        "description": "Delay before closing the menu.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 540,
+          "step": 10
+        }
+      },
+      {
+        "name": "panelGap",
+        "type": "number",
+        "default": 20,
+        "description": "Gap between trigger and submenu panel.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0,
+          "max": 100,
+          "step": 1
+        }
+      },
+      {
+        "name": "activeColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Color for active menu state.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "inactiveColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Color for inactive menu state.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.35,
+        "description": "Menu transition duration.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "charStagger",
+        "type": "number",
+        "default": 0.03,
+        "description": "Delay between characters when a panel heading reveals, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.1,
+          "step": 0.005
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "style",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "registryPath": "registry/effects/navigation/directional-menu/registry.json"
   },
   {
@@ -4668,7 +5038,7 @@
       {
         "name": "fontSize",
         "type": "number | string",
-        "default": "12vw",
+        "default": "10vw",
         "description": "Font size for the text.",
         "remixer": {
           "control": "text",
@@ -6204,7 +6574,143 @@
         "breaking": false
       }
     ],
-    "registryPath": "registry/effects/components/hover-stack/registry.json"
+    "registryPath": "registry/effects/components/hover-stack/registry.json",
+    "props": [
+      {
+        "name": "cardWidth",
+        "type": "number",
+        "default": 280,
+        "description": "Width of each card in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 160,
+          "max": 420,
+          "step": 4
+        }
+      },
+      {
+        "name": "cardHeight",
+        "type": "number",
+        "default": 360,
+        "description": "Height of each card in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 200,
+          "max": 520,
+          "step": 4
+        }
+      },
+      {
+        "name": "overlap",
+        "type": "number",
+        "default": 96,
+        "description": "Horizontal overlap between resting cards in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 0,
+          "max": 200,
+          "step": 2
+        }
+      },
+      {
+        "name": "pushDistance",
+        "type": "number",
+        "default": 235,
+        "description": "Distance neighboring cards are pushed aside on hover.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 100,
+          "max": 400,
+          "step": 5
+        }
+      },
+      {
+        "name": "hoverLift",
+        "type": "number",
+        "default": 30,
+        "description": "Vertical lift applied to the hovered card in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 0,
+          "max": 100,
+          "step": 2
+        }
+      },
+      {
+        "name": "spread",
+        "type": "number",
+        "description": "Distance cards spread while hovered.",
+        "default": 24,
+        "remixer": {
+          "control": "range",
+          "group": "controls",
+          "groupTitle": "Controls",
+          "min": 0,
+          "max": 72,
+          "step": 1
+        }
+      },
+      {
+        "name": "rotation",
+        "type": "number",
+        "description": "Rotation amount applied to stacked items.",
+        "default": 7,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "description": "Hover animation duration.",
+        "default": 0.35,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "borderColor",
+        "type": "color",
+        "description": "Border color shown around the active card. Transparent by default.",
+        "default": "transparent",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "layout",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    }
   },
   {
     "name": "hyperiux-glitter",
@@ -6366,6 +6872,111 @@
     "exportKind": "default",
     "importPath": "@/components/effects/infinite-carousel",
     "target": "src/components/effects/infinite-carousel",
+    "props": [
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "default": true,
+        "description": "Allows dragging the carousel with pointer/touch input.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "autoPlay",
+        "type": "boolean",
+        "default": false,
+        "description": "Automatically advances the carousel one card at a time.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "autoPlayInterval",
+        "type": "number",
+        "default": 3000,
+        "description": "Milliseconds between automatic slide advances.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 1000,
+          "max": 8000,
+          "step": 100
+        }
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "description": "Spacing between carousel items.",
+        "default": 32,
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 1200,
+          "step": 1
+        }
+      },
+      {
+        "name": "cardSize",
+        "type": "number",
+        "description": "Multiplier applied to card width and height.",
+        "default": 1,
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0.5,
+          "max": 1.6,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "cardWidth",
+        "type": "number",
+        "description": "Desktop card width in pixels.",
+        "default": 512,
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 260,
+          "max": 900,
+          "step": 1
+        }
+      },
+      {
+        "name": "cardHeight",
+        "type": "number",
+        "description": "Card minimum height in viewport height units.",
+        "default": 52,
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 28,
+          "max": 85,
+          "step": 1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "behavior",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "files": [
       {
         "path": "index.tsx",
@@ -7876,24 +8487,17 @@
         }
       },
       {
-        "name": "rounded",
-        "type": "string",
-        "default": "rounded-none",
-        "description": "Tailwind border-radius class applied to each image card.",
+        "name": "roundedness",
+        "type": "number",
+        "default": 0,
+        "description": "Image card corner radius in pixels.",
         "remixer": {
-          "control": "select",
+          "control": "range",
           "group": "general",
           "groupTitle": "General",
-          "options": [
-            "rounded-none",
-            "rounded-sm",
-            "rounded-md",
-            "rounded-lg",
-            "rounded-xl",
-            "rounded-2xl",
-            "rounded-3xl",
-            "rounded-full"
-          ]
+          "min": 0,
+          "max": 80,
+          "step": 1
         }
       },
       {
@@ -7992,7 +8596,6 @@
         "default": 1.6,
         "description": "Horizontal stretch of the flat circle, as a multiplier of its base radius.",
         "remixer": {
-          "enabled": false,
           "control": "range",
           "group": "flat",
           "groupTitle": "Flat",
@@ -8007,7 +8610,6 @@
         "default": 1.2,
         "description": "Vertical stretch of the flat circle, as a multiplier of its base radius.",
         "remixer": {
-          "enabled": false,
           "control": "range",
           "group": "flat",
           "groupTitle": "Flat",
@@ -8082,7 +8684,6 @@
         "default": 1.5,
         "description": "Horizontal stretch of the ring, as a multiplier of its base radius.",
         "remixer": {
-          "enabled": false,
           "control": "range",
           "group": "ring",
           "groupTitle": "Ring",
@@ -8097,7 +8698,6 @@
         "default": 1.2,
         "description": "Vertical stretch of the ring, as a multiplier of its base radius.",
         "remixer": {
-          "enabled": false,
           "control": "range",
           "group": "ring",
           "groupTitle": "Ring",
@@ -8172,7 +8772,6 @@
         "default": 1.9,
         "description": "Horizontal stretch of the tilt view, as a multiplier of its base radius.",
         "remixer": {
-          "enabled": false,
           "control": "range",
           "group": "tilt",
           "groupTitle": "Tilt",
@@ -8187,7 +8786,6 @@
         "default": 1.5,
         "description": "Vertical stretch of the tilt view, as a multiplier of its base radius.",
         "remixer": {
-          "enabled": false,
           "control": "range",
           "group": "tilt",
           "groupTitle": "Tilt",
@@ -8229,7 +8827,7 @@
       {
         "name": "galleryRotateX",
         "type": "number",
-        "default": 0,
+        "default": 10,
         "description": "Rotates the gallery coverflow's ring on the x axis, in degrees.",
         "remixer": {
           "enabled": false,
@@ -8277,7 +8875,6 @@
         "default": 1.3,
         "description": "Horizontal stretch of the gallery coverflow, as a multiplier of its base radius.",
         "remixer": {
-          "enabled": false,
           "control": "range",
           "group": "gallery",
           "groupTitle": "Gallery",
@@ -8292,7 +8889,6 @@
         "default": 1.5,
         "description": "Vertical stretch of the gallery coverflow, as a multiplier of its base radius.",
         "remixer": {
-          "enabled": false,
           "control": "range",
           "group": "gallery",
           "groupTitle": "Gallery",
@@ -9084,6 +9680,14 @@
               "label": "Up"
             },
             {
+              "value": "down",
+              "label": "Down"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
               "value": "right",
               "label": "Right"
             }
@@ -9107,7 +9711,7 @@
       {
         "name": "stagger",
         "type": "number",
-        "default": 12,
+        "default": 32,
         "description": "Character stagger window for the fill head.",
         "remixer": {
           "control": "range",
@@ -9135,7 +9739,7 @@
       {
         "name": "effectWidth",
         "type": "number",
-        "default": 1.8,
+        "default": 1.4,
         "description": "Pixelated fill band width multiplier.",
         "remixer": {
           "control": "range",
@@ -9207,7 +9811,7 @@
       {
         "name": "fontSize",
         "type": "number",
-        "default": 4,
+        "default": 3.2,
         "description": "Font size in vw units.",
         "remixer": {
           "control": "range",
@@ -9225,6 +9829,7 @@
         "description": "Font weight.",
         "remixer": {
           "control": "range",
+          "enabled": false,
           "group": "type",
           "groupTitle": "Type",
           "min": 100,
@@ -9274,14 +9879,14 @@
       {
         "name": "maxWidth",
         "type": "number",
-        "default": 180,
-        "description": "Text wrapper max width in vw units.",
+        "default": 80,
+        "description": "Text wrapper width as a percentage of the section.",
         "remixer": {
           "control": "range",
           "group": "type",
           "groupTitle": "Type",
-          "min": 80,
-          "max": 220,
+          "min": 40,
+          "max": 100,
           "step": 1
         }
       }
@@ -9512,12 +10117,29 @@
   },
   {
     "name": "ribbon-drift",
+    "version": "1.0.1",
+    "type": "registry:component",
     "title": "Ribbon Drift",
     "description": "Scroll-driven ribbon gallery where image strips drift horizontally at alternating speeds, revealing project names with GSAP SplitText on scroll.",
     "category": "scroll",
-    "type": "registry:component",
+    "dependencies": [
+      "gsap",
+      "lenis"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/ribbon-drift",
     "tier": "pro",
-    "version": "1.0.1",
+    "main": "index.tsx",
+    "exportName": "RibbonDrift",
+    "exportKind": "default",
+    "importPath": "@/components/effects/ribbon-drift",
+    "target": "src/components/effects/ribbon-drift",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/ribbon-drift/index.tsx"
+      }
+    ],
     "changelog": [
       {
         "version": "1.0.1",
@@ -9532,24 +10154,70 @@
         "breaking": false
       }
     ],
-    "dependencies": [
-      "gsap",
-      "lenis"
-    ],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/scroll/ribbon-drift/registry.json",
-    "importPath": "@/components/effects/ribbon-drift",
-    "target": "src/components/effects/ribbon-drift",
-    "previewUrl": "/demo/ribbon-drift",
-    "main": "index.tsx",
-    "exportName": "RibbonDrift",
-    "exportKind": "default",
-    "files": [
+    "props": [
       {
-        "path": "index.tsx",
-        "target": "src/components/effects/ribbon-drift/index.tsx"
+        "name": "driftSpeed",
+        "type": "number",
+        "description": "Speed of the ribbon drift.",
+        "default": 1,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "imageSize",
+        "type": "number",
+        "description": "Scale multiplier applied to the ribbon images.",
+        "default": 1,
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0.5,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "showNames",
+        "type": "boolean",
+        "description": "Shows the project name on hover.",
+        "default": true,
+        "remixer": {
+          "control": "checkbox",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "description": "Color of the section-break reveal text fill.",
+        "default": "#000000",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
       }
-    ]
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "content",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/scroll/ribbon-drift/registry.json"
   },
   {
     "name": "ring-carousel",
@@ -9923,7 +10591,113 @@
         "path": "index.tsx",
         "target": "src/components/effects/scroll-distortion/index.tsx"
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "distortionStrength",
+        "type": "number",
+        "default": 0.8,
+        "description": "Strength of the displacement distortion during transitions.",
+        "remixer": {
+          "control": "range",
+          "group": "shader",
+          "groupTitle": "Shader",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "rgbShift",
+        "type": "number",
+        "default": 0.05,
+        "description": "Amount of RGB channel separation during the distortion.",
+        "remixer": {
+          "control": "range",
+          "group": "shader",
+          "groupTitle": "Shader",
+          "min": 0,
+          "max": 0.3,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "distortionScale",
+        "type": "number",
+        "default": 0.15,
+        "description": "Scale of the fold and stretch distortion while transitioning.",
+        "remixer": {
+          "control": "range",
+          "group": "shader",
+          "groupTitle": "Shader",
+          "min": 0,
+          "max": 0.6,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "transitionDuration",
+        "type": "number",
+        "default": 1.25,
+        "description": "Duration of each image distortion transition.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "transitionEase",
+        "type": "string",
+        "default": "power3.inOut",
+        "description": "GSAP ease used by each image distortion transition.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "power3.inOut",
+              "label": "Power 3 In Out"
+            },
+            {
+              "value": "power2.inOut",
+              "label": "Power 2 In Out"
+            },
+            {
+              "value": "power4.inOut",
+              "label": "Power 4 In Out"
+            },
+            {
+              "value": "expo.inOut",
+              "label": "Expo In Out"
+            },
+            {
+              "value": "sine.inOut",
+              "label": "Sine In Out"
+            },
+            {
+              "value": "none",
+              "label": "Linear"
+            }
+          ]
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "shader",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    }
   },
   {
     "name": "scroll-shuffled-cards",
@@ -10036,75 +10810,45 @@
       {
         "name": "componentsTextColor",
         "type": "string",
-        "default": "text-[#0D47A1]",
-        "description": "Tailwind text color class for the Components panel copy.",
+        "default": "#0D47A1",
+        "description": "Text color for the Components panel.",
         "remixer": {
-          "control": "select",
+          "control": "color",
           "group": "components",
-          "groupTitle": "Components Panel",
-          "options": [
-            {
-              "value": "text-[#0D47A1]",
-              "label": "Royal Blue"
-            },
-            {
-              "value": "text-white",
-              "label": "White"
-            },
-            {
-              "value": "text-black",
-              "label": "Black"
-            },
-            {
-              "value": "text-[#EA580C]",
-              "label": "Orange"
-            },
-            {
-              "value": "text-[#166534]",
-              "label": "Forest"
-            },
-            {
-              "value": "text-[#7C3AED]",
-              "label": "Violet"
-            }
-          ]
+          "groupTitle": "Components Panel"
+        }
+      },
+      {
+        "name": "componentsBackgroundColor",
+        "type": "string",
+        "default": "#E3F2FD",
+        "description": "Background color for the Components panel.",
+        "remixer": {
+          "control": "color",
+          "group": "components",
+          "groupTitle": "Components Panel"
         }
       },
       {
         "name": "showcaseTextColor",
         "type": "string",
-        "default": "text-white",
-        "description": "Tailwind text color class for the Showcase panel copy.",
+        "default": "#ffffff",
+        "description": "Text color for the Showcase panel.",
         "remixer": {
-          "control": "select",
+          "control": "color",
           "group": "showcase",
-          "groupTitle": "Showcase Panel",
-          "options": [
-            {
-              "value": "text-white",
-              "label": "White"
-            },
-            {
-              "value": "text-[#0D47A1]",
-              "label": "Royal Blue"
-            },
-            {
-              "value": "text-black",
-              "label": "Black"
-            },
-            {
-              "value": "text-[#EA580C]",
-              "label": "Orange"
-            },
-            {
-              "value": "text-[#166534]",
-              "label": "Forest"
-            },
-            {
-              "value": "text-[#7C3AED]",
-              "label": "Violet"
-            }
-          ]
+          "groupTitle": "Showcase Panel"
+        }
+      },
+      {
+        "name": "showcaseBackgroundColor",
+        "type": "string",
+        "default": "#0D47A1",
+        "description": "Background color for the Showcase panel.",
+        "remixer": {
+          "control": "color",
+          "group": "showcase",
+          "groupTitle": "Showcase Panel"
         }
       },
       {
@@ -10975,15 +11719,73 @@
         "path": "index.tsx",
         "target": "src/components/effects/stacking-cards/index.tsx"
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "imageZoomEnabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Enables the image zoom-in effect during card reveals.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "tiltEnabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Enables the outgoing card tilt, scale, and rotateX treatment.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "cardCornerRadius",
+        "type": "number",
+        "default": 48,
+        "description": "Corner radius in pixels applied to the cards as they stack.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 96,
+          "step": 1
+        }
+      },
+      {
+        "name": "stackPerspective",
+        "type": "number",
+        "default": 1200,
+        "description": "Perspective depth applied to the stacked card scene.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 200,
+          "max": 2400,
+          "step": 10
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "suggested": false,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "controlsButtonClassName": "right-4! top-25!"
+      },
+      "panel": {
+        "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      }
+    }
   },
   {
     "name": "sticky-content-wrapper",
-    "title": "Sticky Content Wrapper",
-    "description": "Split-screen sticky scroll with content on one side and images on the other, revealing on scroll",
-    "category": "scroll",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.0.1",
     "changelog": [
       {
@@ -10999,25 +11801,110 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Sticky Content Wrapper",
+    "description": "Split-screen sticky scroll with content on one side and images on the other, revealing on scroll",
+    "category": "scroll",
     "dependencies": [
       "gsap",
       "lenis"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/scroll/sticky-content-wrapper/registry.json",
-    "importPath": "@/components/effects/sticky-content-wrapper",
-    "target": "src/components/effects/sticky-content-wrapper",
     "previewUrl": "/demo/sticky-content-wrapper",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "StickyContentWrapper",
     "exportKind": "default",
+    "importPath": "@/components/effects/sticky-content-wrapper",
+    "target": "src/components/effects/sticky-content-wrapper",
     "files": [
       {
         "path": "index.tsx",
         "target": "src/components/effects/sticky-content-wrapper/index.tsx"
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "bgColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Background color of the sticky section, including the gap between the content and image panes.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "contentEnterYPercent",
+        "type": "number",
+        "default": 2,
+        "description": "Vertical offset (% of content height) each content block starts from before sliding into place.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 60,
+          "step": 1
+        }
+      },
+      {
+        "name": "initialImageScale",
+        "type": "number",
+        "default": 1.5,
+        "description": "Scale of an image before it becomes the active image.",
+        "remixer": {
+          "control": "range",
+          "group": "image",
+          "groupTitle": "Image",
+          "min": 1,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "activeImageScale",
+        "type": "number",
+        "default": 1.2,
+        "description": "Scale of the image while it is active on screen.",
+        "remixer": {
+          "control": "range",
+          "group": "image",
+          "groupTitle": "Image",
+          "min": 1,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "exitImageScale",
+        "type": "number",
+        "default": 1,
+        "description": "Scale of an image after it has exited.",
+        "remixer": {
+          "control": "range",
+          "group": "image",
+          "groupTitle": "Image",
+          "min": 1,
+          "max": 1.5,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/scroll/sticky-content-wrapper/registry.json"
   },
   {
     "name": "strip-slider",
@@ -11330,11 +12217,6 @@
   },
   {
     "name": "text-convergence",
-    "title": "Text Convergence",
-    "description": "Horizontal scroll-driven text marquee where characters fly in from random positions and converge into place as you scroll",
-    "category": "scroll",
-    "type": "registry:component",
-    "tier": "free",
     "version": "1.0.1",
     "changelog": [
       {
@@ -11350,50 +12232,57 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Text Convergence",
+    "description": "Horizontal scroll-driven text marquee where characters fly in from random positions and converge into place as you scroll",
+    "category": "scroll",
     "dependencies": [
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/scroll/text-convergence/registry.json",
-    "importPath": "@/components/effects/text-convergence",
-    "target": "src/components/effects/text-convergence",
     "previewUrl": "/demo/text-convergence",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "TextConvergence",
     "exportKind": "default",
+    "importPath": "@/components/effects/text-convergence",
+    "target": "src/components/effects/text-convergence",
+    "props": [
+      {
+        "name": "bgColor",
+        "type": "color",
+        "default": "#111111",
+        "description": "Background color of the section.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "files": [
       {
         "path": "index.tsx",
         "target": "src/components/effects/text-convergence/index.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/scroll/text-convergence/registry.json"
   },
   {
     "name": "text-fill-animation",
-    "title": "Text Fill Animation",
-    "description": "Scroll-synced text color fill animation with customizable color sweep effect",
-    "category": "text",
-    "type": "registry:component",
-    "tier": "pro",
     "version": "1.0.0",
-    "dependencies": [
-      "gsap"
-    ],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/text/text-fill-animation/registry.json",
-    "importPath": "@/components/effects/text-fill-animation",
-    "target": "src/components/effects/text-fill-animation",
-    "previewUrl": "/demo/text-fill-animation",
-    "main": "index.tsx",
-    "exportName": "TextFillAnimation",
-    "exportKind": "default",
-    "files": [
-      {
-        "path": "index.tsx",
-        "target": "src/components/effects/text-fill-animation/index.tsx"
-      }
-    ],
     "changelog": [
       {
         "version": "1.0.0",
@@ -11401,7 +12290,134 @@
         "summary": "Initial release",
         "breaking": false
       }
-    ]
+    ],
+    "type": "registry:component",
+    "title": "Text Fill Animation",
+    "description": "Scroll-synced text color fill animation with customizable color sweep effect",
+    "category": "text",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/text-fill-animation",
+    "tier": "pro",
+    "main": "index.tsx",
+    "exportName": "TextFillAnimation",
+    "exportKind": "default",
+    "importPath": "@/components/effects/text-fill-animation",
+    "target": "src/components/effects/text-fill-animation",
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "default": "Design systems should feel effortless, not like you're fighting your own components every time you build.",
+        "description": "Text filled on scroll."
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#111111",
+        "description": "Final text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "primaryColor",
+        "type": "string",
+        "default": "#ff6b00",
+        "description": "Highlight color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "dimColor",
+        "type": "string",
+        "default": "#AAAAAA",
+        "description": "Initial dimmed text color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "string",
+        "default": "#F0EFE9",
+        "description": "Section background color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.4,
+        "description": "Character fill animation duration in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 1.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Delay offset between each animated character.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "fillWidth",
+        "type": "number",
+        "default": 1,
+        "description": "Width of the color fill sweep band applied to each character.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "colors",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/text-fill-animation/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/text/text-fill-animation/registry.json"
   },
   {
     "name": "text-hover",
@@ -12487,6 +13503,72 @@
         "target": "src/components/effects/zoom-slider/index.tsx"
       }
     ],
-    "registryPath": "registry/effects/carousels/zoom-slider/registry.json"
+    "registryPath": "registry/effects/carousels/zoom-slider/registry.json",
+    "props": [
+      {
+        "name": "scaleOnHover",
+        "type": "boolean",
+        "description": "Enables the image scale-up effect on hover.",
+        "default": true,
+        "remixer": {
+          "control": "checkbox",
+          "group": "hover",
+          "groupTitle": "Hover",
+          "groupCollapsible": false
+        }
+      },
+      {
+        "name": "textOnHover",
+        "type": "boolean",
+        "description": "Enables the hover text reveal above each slide.",
+        "default": true,
+        "remixer": {
+          "control": "checkbox",
+          "group": "hover",
+          "groupTitle": "Hover",
+          "groupCollapsible": false
+        }
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "description": "Multiplier applied to zoom slider card width and height.",
+        "default": 1,
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0.5,
+          "max": 1.6,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "easeScrollPercentage",
+        "label": "Zoom Travel",
+        "type": "number",
+        "description": "Controls how much scroll distance the card uses to grow and shrink. Higher values make the zoom change more gradually.",
+        "default": 100,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 20,
+          "max": 180,
+          "step": 1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "hover",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    }
   }
 ]

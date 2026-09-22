@@ -58,13 +58,13 @@ const PerspectiveTextWrapper = ({ effectProps = {} }) => {
                 <button
                   type="button"
                   onClick={() => setReplayKey((value) => value + 1)}
-                  className="mb-7 w-fit border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-[#b9e6ff] backdrop-blur max-md:text-[2.6vw] max-md:tracking-[0.16em]"
+                  className="mb-7 w-fit border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold tracking-[0.08em] text-[#b9e6ff] backdrop-blur max-md:text-[2.6vw]"
                 >
                   Replay animation
                 </button>
 
                 <PerspectiveTextReveal key={`hero-title-${replayKey}`} scrub={false} {...effectProps}>
-                  <h1 className="text-[7vw] font-black uppercase leading-[0.84] text-white max-sm:text-[8vw] max-sm:leading-[0.88]">
+                  <h1 className="text-[7vw] font-black leading-[0.9] text-white max-sm:text-[8vw] max-sm:leading-[0.94]">
                     Lines fall into depth.
                   </h1>
                 </PerspectiveTextReveal>
@@ -100,14 +100,14 @@ const PerspectiveTextWrapper = ({ effectProps = {} }) => {
                   key={label}
                   className="border-white/15 py-5 px-4 border-r last:border-r-0 max-md:border-r-0 max-md:border-t max-md:first:border-t-0"
                 >
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/38 max-md:tracking-[0.16em]">
+                  <p className="text-xs font-semibold tracking-[0.08em] text-white/38">
                     {label}
                   </p>
                   <PerspectiveTextReveal key={`${label}-${replayKey}`} scrub={false} {...effectProps}>
 
                     
 
-                  <p className="mt-2 text-2xl font-black uppercase text-[#b9e6ff] max-md:text-xl">
+                  <p className="mt-2 text-2xl font-black text-[#b9e6ff] max-md:text-xl">
                     {value}
                   </p>
                   </PerspectiveTextReveal>

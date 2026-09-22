@@ -16,7 +16,7 @@ import { Roboto_Flex } from 'next/font/google';
 // Loaded via next/font so the variable font is self-hosted and inlined at
 // build time - a runtime <link> to Google Fonts would flash the fallback
 // font on every load and reflow the layout once the webfont arrived.
-const robotoFlex = Roboto_Flex({ subsets: ['latin'], display: 'swap' });
+const robotoFlex = Roboto_Flex({ subsets: ['latin'], display: 'block' });
 
 function useAnimationFrame(callback: () => void) {
   useEffect(() => {
@@ -288,7 +288,8 @@ const VariableProximityLetters = forwardRef<HTMLSpanElement, VariableTextProximi
                 }}
                 className="hv-variable-letter"
                 style={{
-                  fontVariationSettings: interpolatedSettingsRef.current[currentLetterIndex]
+                  fontVariationSettings: interpolatedSettingsRef.current[currentLetterIndex],
+                  fontStyle: toFontVariationSettings.includes("'slnt' -") ? 'italic' : 'normal'
                 }}
                 aria-hidden="true"
               >
@@ -348,6 +349,7 @@ export default function VariableTextProximity({
           radius={radius}
           falloff={falloff}
           className="hv-variable-heading"
+          style={{ fontStyle: italic ? 'italic' : 'normal' }}
         />
       </div>
       <style>{`

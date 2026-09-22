@@ -161,7 +161,7 @@
     {
       "name": "fontSize",
       "type": "number | string",
-      "default": "12vw",
+      "default": "10vw",
       "description": "Font size for the text.",
       "remixer": {
         "control": "text",

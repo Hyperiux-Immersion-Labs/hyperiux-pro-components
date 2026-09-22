@@ -62,13 +62,16 @@
     },
     {
       "name": "cardCornerRadius",
-      "type": "string",
-      "default": "3vw",
-      "description": "Corner radius applied to the outgoing card as it tilts away.",
+      "type": "number",
+      "default": 48,
+      "description": "Corner radius in pixels applied to the cards as they stack.",
       "remixer": {
-        "control": "text",
+        "control": "range",
         "group": "style",
-        "groupTitle": "Style"
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 96,
+        "step": 1
       }
     },
     {

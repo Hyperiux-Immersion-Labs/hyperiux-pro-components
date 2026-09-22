@@ -37,7 +37,7 @@ interface OrbitFlipSliderCompProps {
   imageWidth?: number;
   imageHeight?: number;
   imageGap?: number;
-  rounded?: string;
+  roundedness?: number;
   enableHoverMovement?: boolean;
   hoverMoveY?: number;
   perspectiveRotateValue?: number;
@@ -313,7 +313,7 @@ const OrbitFlipSliderComp = ({
   imageWidth = 140,
   imageHeight = 200,
   imageGap = 0,
-  rounded = "rounded-none",
+  roundedness = 0,
   enableHoverMovement = true,
   hoverMoveY = -8,
   perspectiveRotateValue = 180,
@@ -626,8 +626,9 @@ const OrbitFlipSliderComp = ({
             style={{ perspective: "500px" }}
           >
             <div
-              className={`orbit-flip-slider-card-inner relative h-full w-full overflow-hidden bg-white ${rounded}`}
+              className="orbit-flip-slider-card-inner relative h-full w-full overflow-hidden bg-white"
               style={{
+                borderRadius: `${roundedness}px`,
                 boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
                 transformStyle: "preserve-3d",
               }}
@@ -679,7 +680,7 @@ interface OrbitFlipSliderProps {
   imageWidth?: number;
   imageHeight?: number;
   imageGap?: number;
-  rounded?: string;
+  roundedness?: number;
   enableHoverMovement?: boolean;
   hoverMoveY?: number;
   perspectiveRotateValue?: number;
@@ -724,7 +725,7 @@ const OrbitFlipSlider = ({
   imageWidth = 140,
   imageHeight = 200,
   imageGap = 0,
-  rounded = "rounded-none",
+  roundedness = 0,
   enableHoverMovement = true,
   hoverMoveY = -8,
   perspectiveRotateValue = 180,
@@ -763,7 +764,7 @@ const OrbitFlipSlider = ({
       imageWidth={imageWidth}
       imageHeight={imageHeight}
       imageGap={imageGap}
-      rounded={rounded}
+      roundedness={roundedness}
       enableHoverMovement={enableHoverMovement}
       hoverMoveY={hoverMoveY}
       perspectiveRotateValue={perspectiveRotateValue}

@@ -1226,7 +1226,7 @@ export function FileEncryptionComp({
  <section
  ref={rootRef}
  className="relative overflow-visible select-none"
- style={{ height: CARD_H * 1.5 + 80, cursor:"grab", touchAction:"none", backgroundColor }}
+ style={{ height: CARD_H * 1.5 + 80, cursor:"grab", touchAction:"none" }}
  aria-label="Encrypted cards marquee"
  >
  {/* WebGL beam canvas - full section coverage, screen blend */}

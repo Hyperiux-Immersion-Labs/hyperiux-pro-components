@@ -90,16 +90,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/3d-portfolio-slider/index.tsx"
-    },
-    {
-      "path": "PortfolioSlider.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.ts"
     }
   ]
 }

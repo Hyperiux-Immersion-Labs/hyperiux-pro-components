@@ -11,9 +11,16 @@ const ScrollBottom = ({ textColor,
   className = 'bottom-[5%] gap-[1vw]',
   as = 'p'
 }) => {
+  const Tag = as;
+  const inlineColor = typeof textColor === 'string' && textColor.startsWith('#') ? { color: textColor } : undefined;
+  const textColorClass = inlineColor ? '' : textColor;
+
   return (
-    <div className={`fixed left-1/2 z-10 -translate-x-1/2 ${textColor} flex flex-col justify-center items-center  ${className}`}>
-      <as>Scroll</as>
+    <div
+      className={`fixed left-1/2 z-10 -translate-x-1/2 ${textColorClass} flex flex-col justify-center items-center  ${className}`}
+      style={inlineColor}
+    >
+      <Tag>Scroll</Tag>
       <svg
         width="20"
         height="28"
@@ -35,7 +42,7 @@ const ScrollBottom = ({ textColor,
         <polyline
           className="chev1 stroke-current"
           points="2,2 10,9 18,2"
-          stroke="white"
+          stroke="currentColor"
           strokeWidth="1.4"
           fill="none"
           strokeLinecap="round"
@@ -44,7 +51,7 @@ const ScrollBottom = ({ textColor,
         <polyline
           className="chev2 stroke-current"
           points="2,10 10,17 18,10"
-          stroke="white"
+          stroke="currentColor"
           strokeWidth="1.4"
           fill="none"
           strokeLinecap="round"
@@ -53,7 +60,7 @@ const ScrollBottom = ({ textColor,
         <polyline
           className="chev3 stroke-current"
           points="2,18 10,25 18,18"
-          stroke="white"
+          stroke="currentColor"
           strokeWidth="1.4"
           fill="none"
           strokeLinecap="round"

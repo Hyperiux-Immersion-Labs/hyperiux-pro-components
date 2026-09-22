@@ -149,9 +149,9 @@
       }
     },
     {
-      "name": "accentColor",
+      "name": "borderColor",
       "type": "color",
-      "description": "Outline color shown around the active card. Transparent by default.",
+      "description": "Border color shown around the active card. Transparent by default.",
       "default": "transparent",
       "remixer": {
         "control": "color",

@@ -131,26 +131,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/mouse-pixelation/index.tsx"
-    },
-    {
-      "path": "EnhancedPixelCube.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/EnhancedPixelCube.tsx"
-    },
-    {
-      "path": "PixelCircle.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/PixelCircle.tsx"
-    },
-    {
-      "path": "PixelShift.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/PixelShift.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/mouse-pixelation/createSuspendedRaf.ts"
     }
   ]
 }

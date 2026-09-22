@@ -15,6 +15,15 @@ const prefersReducedMotion = () =>
 
 const REDUCED_MOTION_NAV_DURATION = 0.15;
 
+/**
+ * Same tween vars used for a nav-button click and for a drag-release snap,
+ * so both interactions end up feeling identical.
+ */
+const getNavVars = (reduceMotion: boolean) =>
+ reduceMotion
+ ? { duration: REDUCED_MOTION_NAV_DURATION, ease:"power2.out" }
+ : { duration: 0.4, ease:"power1.inOut" };
+
 interface HorizontalLoopConfig {
  repeat?: number;
  snap?: number | false;
@@ -27,6 +36,8 @@ interface HorizontalLoopConfig {
  speed?: number;
  pauseOnHover?: boolean;
  isHoveredRef?: { current: boolean };
+ dragThreshold?: number;
+ dragVelocityThreshold?: number;
 }
 
 /**
@@ -159,8 +170,6 @@ function horizontalLoop(items: HTMLElement[], config: HorizontalLoopConfig = {})
  let ratio: number;
  let startProgress: number;
  let draggableInst: any;
- let dragSnap: number;
- let roundFactor: number;
 
  const align = () => {
  tl.progress(
@@ -168,45 +177,44 @@ function horizontalLoop(items: HTMLElement[], config: HorizontalLoopConfig = {})
  );
  };
 
- const syncIndex = () => tl.updateIndex();
+ // Drag release never free-scrolls or settles on the nearest fractional
+ // position - it only ever decides a direction (from distance + velocity)
+ // and then plays the exact same single-card tween a nav-button click
+ // uses, via toIndex/tl.next/tl.previous.
+ const DEFAULT_DRAG_THRESHOLD = 40;
+ const DEFAULT_DRAG_VELOCITY_THRESHOLD = 400;
 
  draggableInst = Draggable.create(proxy, {
  trigger: config.wrapperEl,
  type:"x",
+ inertia: false,
  onPress() {
  startProgress = tl.progress();
  tl.progress(0);
  populateWidths();
  const totalWidthCache = getTotalWidth();
  ratio = 1 / totalWidthCache;
- dragSnap = totalWidthCache / length;
- roundFactor = Math.pow(
- 10,
- ((dragSnap +"").split(".")[1] ||"").length
- );
  tl.progress(startProgress);
- // Re-evaluated per press so hovering in/out between drags is honored -
- // pauseOnHover stops the post-release momentum coast while the pointer
- // is still over the carousel, same as reduced motion does permanently.
- this.vars.inertia =
- config.pauseOnHover && config.isHoveredRef?.current
- ? false
- : !config.reduceMotion;
  },
  onDrag: align,
- onThrowUpdate: align,
- // Reduced motion drops the post-release momentum coast entirely, so the
- // carousel stops exactly where the drag ends instead of gliding on.
- inertia: !config.reduceMotion,
- snap: (value: any) => {
- const n =
- Math.round(parseFloat(value) / dragSnap) * dragSnap * roundFactor;
- return (n - (n % 1)) / roundFactor;
- },
- onRelease: syncIndex,
- onThrowComplete: () => {
- gsap.set(proxy, { x: 0 });
- syncIndex();
+ onRelease() {
+ const deltaX = this.x - this.startX;
+ const velocityX =
+ typeof this.getVelocity ==="function" ? this.getVelocity("x") : 0;
+
+ const dragThreshold = config.dragThreshold ?? DEFAULT_DRAG_THRESHOLD;
+ const dragVelocityThreshold =
+ config.dragVelocityThreshold ?? DEFAULT_DRAG_VELOCITY_THRESHOLD;
+
+ const navVars = getNavVars(!!config.reduceMotion);
+
+ if (deltaX < -dragThreshold || velocityX < -dragVelocityThreshold) {
+ tl.next({ ...navVars });
+ } else if (deltaX > dragThreshold || velocityX > dragVelocityThreshold) {
+ tl.previous({ ...navVars });
+ } else {
+ toIndex(curIndex, { ...navVars });
+ }
  },
  })[0];
 
@@ -222,6 +230,8 @@ interface InfiniteCarouselCompProps {
  showNav?: boolean;
  speed?: number;
  pauseOnHover?: boolean;
+ autoPlay?: boolean;
+ autoPlayInterval?: number;
  direction?: "left" | "right";
  prevLabel?: ReactNode;
  nextLabel?: ReactNode;
@@ -247,6 +257,8 @@ function InfiniteCarouselComp({
  showNav = true,
  speed = 1,
  pauseOnHover = true,
+ autoPlay = false,
+ autoPlayInterval = 3000,
  direction ="left",
  prevLabel ="← Prev",
  nextLabel ="Next →",
@@ -492,11 +504,7 @@ function InfiniteCarouselComp({
 
  if (isWrapMode) return;
 
- loopRef.current?.next(
- reduceMotion
- ? { duration: REDUCED_MOTION_NAV_DURATION, ease:"power2.out" }
- : { duration: 0.4, ease:"power1.inOut" }
- );
+ loopRef.current?.next(getNavVars(reduceMotion));
  };
 
  const handlePrev = () => {
@@ -507,12 +515,22 @@ function InfiniteCarouselComp({
 
  if (isWrapMode) return;
 
- loopRef.current?.previous(
- reduceMotion
- ? { duration: REDUCED_MOTION_NAV_DURATION, ease:"power2.out" }
- : { duration: 0.4, ease:"power1.inOut" }
- );
+ loopRef.current?.previous(getNavVars(reduceMotion));
  };
+
+ useEffect(() => {
+ if (!autoPlay || reduceMotion || slideCount <= 1) return;
+
+ const intervalMs = Math.max(200, Number(autoPlayInterval) || 3000);
+
+ const id = window.setInterval(() => {
+ if (pauseOnHover && isHoveredRef.current) return;
+ handleNext();
+ }, intervalMs);
+
+ return () => window.clearInterval(id);
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+ }, [autoPlay, autoPlayInterval, reduceMotion, pauseOnHover, slideCount, isSwiperMode, isWrapMode]);
 
  return (
  <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-[1025px]:gap-4 max-md:gap-3 max-md:pb-2 ${pageClassName}`} style={pageStyle}>
@@ -521,7 +539,7 @@ function InfiniteCarouselComp({
  </div>
  {showNav && !isWrapMode && (
  <div
- className={`flex w-[95%] items-center justify-end gap-4 max-[1025px]:w-full max-[1025px]:justify-center max-[1025px]:px-3 max-md:gap-3 max-md:px-2 ${controlsClassName}`}
+ className={`flex w-full items-center justify-center gap-4 max-[1025px]:w-full max-[1025px]:justify-center max-[1025px]:px-3 max-md:gap-3 max-md:px-2 ${controlsClassName}`}
  style={controlsStyle}
  >
  <button
@@ -634,6 +652,8 @@ function CarouselCard({ title, subtitle, description, themeClass, points, cardSi
 
 export default function InfiniteCarousel({
     draggable = true,
+    autoPlay = false,
+    autoPlayInterval = 3000,
     gap = 32,
     cardSize = 1,
     cardWidth = 512,
@@ -652,12 +672,12 @@ export default function InfiniteCarousel({
     const carouselLayoutKey = `${resolvedGap}-${resolvedCardSize}-${resolvedCardWidth}-${resolvedCardHeight}`;
 
     return (
-        <section className="min-h-screen w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-[1025px]:pt-6 max-[1025px]:pb-12 max-md:min-h-0 max-md:h-auto max-md:pb-0">
+        <section className="h-fit min-h-0 w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-[1025px]:pt-6 max-[1025px]:pb-12 max-md:h-auto max-md:pb-0">
 
             <div className="w-full">
                 <InfiniteCarouselComp
                     key={carouselLayoutKey}
-                    controlsClassName="pl-8 max-[1025px]:px-3 max-md:px-2"
+                    controlsClassName="max-[1025px]:px-3 max-md:px-2"
                     wrapperStyle={{
                         width: "100%",
                         minHeight: "auto",
@@ -680,6 +700,8 @@ export default function InfiniteCarousel({
                     mobileBreakpoint={mobileBreakpoint}
                     speed={speed}
                     pauseOnHover={pauseOnHover}
+                    autoPlay={autoPlay}
+                    autoPlayInterval={autoPlayInterval}
                     direction={direction}
                 >
                     {cards.map((card) => (

@@ -29,6 +29,9 @@ export default function TextFillAnimation({
   mobileTextWidth = '95%',
   tabletTextSize = '6.5vw',
   tabletTextWidth = '88%',
+  duration = 0.4,
+  stagger = 0.05,
+  fillWidth = 1,
 }: any) {
   // State and refs
   const sectionRef = useRef<any>(null);
@@ -36,6 +39,7 @@ export default function TextFillAnimation({
 
   // Effects
   useEffect(() => {
+    const fillBandDuration = Math.max(0.1, fillWidth) * 0.5;
     const styleId = `${TEXT_REVEAL_STYLE_PREFIX}${id}`;
     const styleElement = document.createElement('style');
 
@@ -48,12 +52,12 @@ export default function TextFillAnimation({
       }
 
       #${id} .split__wrapper ${SPLIT_CHARACTER_SELECTOR} {
-        transition: color .4s;
+        transition: color ${fillBandDuration * 0.8}s;
         color: ${dimColor};
       }
 
       #${id} .split__wrapper ${SPLIT_CHARACTER_SELECTOR}.show {
-        animation: color-transition-${id} .5s;
+        animation: color-transition-${id} ${fillBandDuration}s;
         color: ${textColor};
       }
 
@@ -130,8 +134,8 @@ export default function TextFillAnimation({
             characters,
             {
               className: 'split-chars show',
-              duration: 0.4,
-              stagger: 0.05,
+              duration,
+              stagger,
               ease: 'power2.inOut',
             },
             0
@@ -149,10 +153,13 @@ export default function TextFillAnimation({
     };
   }, [
     dimColor,
+    duration,
+    fillWidth,
     id,
     mobileTextSize,
     mobileTextWidth,
     primaryColor,
+    stagger,
     tabletTextSize,
     tabletTextWidth,
     textColor,

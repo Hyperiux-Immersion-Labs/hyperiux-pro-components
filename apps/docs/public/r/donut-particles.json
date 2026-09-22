@@ -183,11 +183,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/donut-particles/index.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/donut-particles/createSuspendedRaf.ts"
     }
   ]
 }

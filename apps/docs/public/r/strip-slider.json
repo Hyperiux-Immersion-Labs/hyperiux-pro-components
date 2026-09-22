@@ -90,16 +90,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/strip-slider/index.tsx"
-    },
-    {
-      "path": "StripSliderComp.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/strip-slider/StripSliderComp.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/strip-slider/createSuspendedRaf.ts"
     }
   ]
 }

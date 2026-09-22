@@ -78,6 +78,16 @@ export default function GlowingText({
   const eyebrowTokens = useMemo(() => tokenizeWithOffsets(eyebrow), [eyebrow]);
   const lineTokens = useMemo(() => text.split("\n").map(tokenizeWithOffsets), [text]);
 
+  const animationKey = [
+    eyebrow,
+    text,
+    glowColor,
+    glowIntensity,
+    characterStagger,
+    revealDuration,
+    lineGap,
+  ].join("|");
+
   const lineCharDelays = useMemo(() => {
     let elapsed = 0;
 
@@ -119,6 +129,7 @@ export default function GlowingText({
 
   return (
     <section
+      key={animationKey}
       className={`glowing-text-root relative flex min-h-screen w-full items-center overflow-hidden px-6 py-24 ${className}`}
       style={
         {

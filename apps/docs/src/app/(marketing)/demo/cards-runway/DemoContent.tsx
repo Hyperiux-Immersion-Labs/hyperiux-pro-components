@@ -24,7 +24,7 @@ export default function DemoContent({ registry }: { registry: any }) {
             Drag
           </p>
           {effect}
-          <ScrollBottom textColor="#ffffff" className='top-[11vw] gap-[0.5vw] max-md:hidden' />
+          <ScrollBottom className="z-99 top-[11vw]"/>
         </>
       )}
     </RegistryRemixerDemo>

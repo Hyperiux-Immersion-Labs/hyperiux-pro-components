@@ -78,7 +78,7 @@
       }
     },
     {
-      "name": "ribbonColor",
+      "name": "textColor",
       "type": "color",
       "description": "Color of the section-break reveal text fill.",
       "default": "#000000",

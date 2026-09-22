@@ -75,6 +75,11 @@ const CircularSliderComp = ({
  const wheel = wheelRef.current as HTMLDivElement;
  const cards = gsap.utils.toArray(".wheel-card") as HTMLElement[];
 
+ // Tracks the rotation (in degrees) needed to bring the last card into
+ // view. This depends on the gap prop, so it must be recomputed any
+ // time the layout is (re)measured, not hardcoded.
+ const rotationTargetRef = { current: 0 };
+
  const setup = () => {
  const radius = wheel.offsetWidth / 1.1;
  const center = wheel.offsetWidth / 2;
@@ -95,13 +100,22 @@ const CircularSliderComp = ({
  y,
  });
  });
+
+ // The wheel needs to rotate far enough that the last card's angle
+ // (which grows as gap increases) is brought fully into place.
+ // Previously this was a fixed -87deg, which only matched the last
+ // card's position when gap was small; as gap grew, slice grew, the
+ // last card's angle exceeded 87deg, and the scroll animation ended
+ // before reaching it.
+ const lastAngle = (total - 1) * slice;
+ rotationTargetRef.current = -(lastAngle * (180 / Math.PI));
  };
 
  setup();
  window.addEventListener("resize", setup);
 
- gsap.to(wheel, {
- rotate: -87,
+ const tween = gsap.to(wheel, {
+ rotate: () => rotationTargetRef.current,
  ease:"none",
  scrollTrigger: {
  trigger: outerRef.current,
@@ -114,6 +128,7 @@ const CircularSliderComp = ({
 
  return () => {
  window.removeEventListener("resize", setup);
+ tween.kill();
  };
  }, outerRef);
 

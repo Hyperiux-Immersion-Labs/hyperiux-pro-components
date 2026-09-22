@@ -439,19 +439,38 @@ function Strand({
   const tuning = useRef({ autoplaySpeed, dragSensitivity, inertiaDecay });
   tuning.current = { autoplaySpeed, dragSensitivity, inertiaDecay };
 
+  // Bitmaps decoded once per URL, reused when materials get recreated (e.g.
+  // count changing because a remixer prop like radius/turns/cardScale nudges
+  // the layout) so cards don't flash black and refetch on every tweak.
+  const bitmapCache = useRef<Map<string, ImageBitmap>>(new Map());
+
   const geometry = useMemo(
     () => new THREE.PlaneGeometry(layout.planeW, layout.planeH),
     [layout.planeW, layout.planeH]
   );
 
-  // Start black until decoded
+  // Start black until decoded, unless we already have a cached bitmap for
+  // this slot's image - then show it immediately instead of flashing black.
   const materials = useMemo(
     () =>
-      Array.from({ length: count }, () => {
+      Array.from({ length: count }, (_, i) => {
         const m = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
-        m.color.setScalar(0);
+        const url = images[i % images.length];
+        const cached = url ? bitmapCache.current.get(url) : undefined;
+        if (cached) {
+          const texture = new THREE.Texture(cached);
+          texture.colorSpace = THREE.SRGBColorSpace;
+          texture.flipY = false;
+          coverFit(texture, cached.width, cached.height, layout.planeW / layout.planeH);
+          m.map = texture;
+          m.needsUpdate = true;
+          m.color.setScalar(1);
+        } else {
+          m.color.setScalar(0);
+        }
         return m;
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [count]
   );
 
@@ -465,6 +484,16 @@ function Strand({
     };
   }, [geometry, materials]);
 
+  // Close cached bitmaps only when the Strand itself unmounts, not when
+  // materials are recreated due to a prop-driven count change.
+  useEffect(() => {
+    const cache = bitmapCache.current;
+    return () => {
+      for (const bitmap of cache.values()) bitmap.close();
+      cache.clear();
+    };
+  }, []);
+
   useEffect(() => {
     if (!images.length) return;
     let cancelled = false;
@@ -475,6 +504,17 @@ function Strand({
       const url = images[i % images.length];
       // Far planes reveal first
       const order = count - 1 - i;
+
+      const cachedBitmap = url ? bitmapCache.current.get(url) : undefined;
+      if (cachedBitmap) {
+        // Already decoded (e.g. materials were recreated because a remixer
+        // prop shifted the card count) - reuse it instead of refetching, and
+        // show the card immediately instead of fading in from black.
+        const mesh = meshes.current[i];
+        if (mesh) mesh.visible = true;
+        material.color.setScalar(1);
+        return;
+      }
 
       // Revalidate images previously cached by non-CORS <img> requests.
       fetch(url, { mode: "cors", credentials: "omit", cache: "reload" })
@@ -494,6 +534,7 @@ function Strand({
             bitmap.close();
             return;
           }
+          bitmapCache.current.set(url, bitmap);
           const texture = new THREE.Texture(bitmap);
           texture.colorSpace = THREE.SRGBColorSpace;
           texture.flipY = false;

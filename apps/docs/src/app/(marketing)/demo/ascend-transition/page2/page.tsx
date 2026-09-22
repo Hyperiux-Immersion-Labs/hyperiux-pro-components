@@ -22,7 +22,7 @@ export default function page() {
       <div className="relative z-10 space-y-8 max-w-5xl mx-auto text-center text-white">
         {/* Heading */}
         <SplitLine>
-          <h1 className="text-[7vw] max-sm:text-[9vw]">Hyperiux Vault</h1>
+          <h1 className="text-[6vw] max-sm:text-[9vw]">Hyperiux Vault</h1>
         </SplitLine>
 
 

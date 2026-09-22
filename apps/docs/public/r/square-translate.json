@@ -110,11 +110,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/square-translate/index.tsx"
-    },
-    {
-      "path": "SquareTranslateComp.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/square-translate/SquareTranslateComp.tsx"
     }
   ]
 }

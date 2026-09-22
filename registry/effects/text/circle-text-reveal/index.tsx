@@ -313,7 +313,7 @@ interface CircleTextRevealProps {
 
 export default function CircleTextReveal({
  textColor ='#111',
- circleColorBg ='#E76F2E',
+ circleColorBg ='#ff5f00',
  RevealedTextColor ='#fefefe',
  lerp = 0.15,
  smoothness = 0.5,

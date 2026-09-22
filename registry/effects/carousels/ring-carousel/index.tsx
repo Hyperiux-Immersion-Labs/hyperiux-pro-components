@@ -428,7 +428,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
 
  return (
  <div
- className={` relative h-screen w-full select-none overflow-hidden bg-black ${className}`}
+ className={` relative h-[72vh] min-h-[500px] w-full select-none overflow-hidden bg-black max-md:h-[70vh] max-md:min-h-[520px] ${className}`}
  ref={containerRef}
  onMouseEnter={() => {
  isHoveredRef.current = true;
@@ -442,7 +442,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  <div className="sr-only" aria-live="polite" aria-atomic="true">
  {slideAnnouncement}
  </div>
- <div className=" absolute left-1/2 top-[40%] max-md:top-[30%] h-[30vw] w-screen -translate-x-1/2 -translate-y-1/2 perspective-[2000px] transform-3d">
+ <div className=" absolute left-1/2 top-[38%] max-md:top-[30%] h-[30vw] w-screen -translate-x-1/2 -translate-y-1/2 perspective-[2000px] transform-3d">
  <div className=" relative h-full w-full transform-3d" ref={ringRef}>
  {items.map((item, i) => {
  const isImage = typeof item ==="string";
@@ -480,7 +480,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  <div className=" pointer-events-none absolute inset-0 z-2 bg-[linear-gradient(to_right,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0)_20%,rgba(0,0,0,0)_80%,rgba(0,0,0,0.95)_100%)] max-[1025px]:hidden" />
 
  {showNavigation && totalItems > 1 && (
- <div className=" absolute bottom-0 left-1/2 z-20 flex -translate-x-1/2 gap-3 max-md:bottom-[10%]">
+ <div className=" absolute bottom-[2%] left-1/2 z-20 flex -translate-x-1/2 gap-3 max-md:bottom-[8%]">
  <button
  type="button"
  className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-[1025px]:h-14 max-[1025px]:w-14 max-md:h-[15vw] max-md:w-[15vw]"
@@ -502,7 +502,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  )}
 
  {showDots && totalItems > 1 && (
- <div className="absolute bottom-[15%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-[1025px]:bottom-[18%] max-[1025px]:gap-[2vw] max-[1025px]:px-4 max-[1025px]:py-3 max-md:bottom-[30%] max-md:px-3.5 max-md:py-2.5" aria-label="Slider pagination">
+ <div className="absolute bottom-[11%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-[1025px]:bottom-[15%] max-[1025px]:gap-[2vw] max-[1025px]:px-4 max-[1025px]:py-3 max-md:bottom-[24%] max-md:px-3.5 max-md:py-2.5" aria-label="Slider pagination">
  {items.map((_, index) => (
  <button
  key={index}

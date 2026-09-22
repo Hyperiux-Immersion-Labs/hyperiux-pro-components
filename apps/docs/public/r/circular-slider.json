@@ -171,11 +171,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/circular-slider/index.tsx"
-    },
-    {
-      "path": "CircularSliderComp.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/circular-slider/CircularSliderComp.tsx"
     }
   ]
 }

@@ -19,12 +19,10 @@ function CardsRunwayComponent({
   cardColor = "#161616",
   speed = 1,
   gap = 48,
-  perspective = 900,
 }: any) {
   const root = useRef<any>(null);
   const safeSpeed = Math.max(0.2, Number(speed) || 1);
   const safeGap = Math.max(0, Number(gap) || 0);
-  const safePerspective = Math.max(0, Number(perspective) || 0);
 
   useEffect(() => {
     let ctx = gsap.context(() => {
@@ -34,7 +32,8 @@ function CardsRunwayComponent({
       // at xl and up.
       if (globalThis.innerWidth >= 1280) {
         const track = root.current?.querySelector(".cards-runway-container");
-        if (!track) return;
+        const viewport = root.current?.querySelector(".cards-runway-viewport");
+        if (!track || !viewport) return;
 
         gsap.set(track, { x: 0 });
         gsap.set(".cards-runway-card", {
@@ -55,7 +54,7 @@ function CardsRunwayComponent({
           duration: 0.4 / safeSpeed,
           ease: "power1.out",
         }).to(".cards-runway-container", {
-          translateX: "-38%",
+          x: () => -Math.max(0, track.scrollWidth - viewport.clientWidth),
           duration: 1.2 / safeSpeed,
           delay: -0.8 / safeSpeed,
           ease: "power1.inOut",
@@ -89,7 +88,7 @@ function CardsRunwayComponent({
       <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-[1025px]:h-fit max-[1025px]:static pb-5  max-[1025px]:mt-[40vw] max-[1025px]:pb-[4vw] max-[1025px]:overflow-x-scroll mobile-scrollbar max-[1025px]:pr-[7vw] z-15 cards-runway-viewport">
         <div
           className="w-fit h-full flex items-end cards-runway-container"
-          style={{ gap: `${safeGap}px`, perspective: safePerspective }}
+          style={{ gap: `${safeGap}px` }}
         >
           {data.map((card: any) => (
             <div
@@ -153,7 +152,6 @@ export default function CardsRunway({
   cardColor = "#161616",
   speed = 1,
   gap = 48,
-  perspective = 900,
 }) {
   return (
     <CardsRunwayComponent
@@ -162,7 +160,6 @@ export default function CardsRunway({
       cardColor={cardColor}
       speed={speed}
       gap={gap}
-      perspective={perspective}
     />
   );
 }

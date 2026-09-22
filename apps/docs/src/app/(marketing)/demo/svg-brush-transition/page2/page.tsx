@@ -10,7 +10,7 @@ export default function page() {
       <div className="mx-auto max-w-5xl text-black">
         <HeadAnim>
 
-        <h1 className="text-[7vw] max-md:text-[9vw]">Hyperiux Vault</h1>
+        <h1 className="text-[5vw] max-md:text-[9vw]">Hyperiux Vault</h1>
         </HeadAnim>
 
       <SplitLine>

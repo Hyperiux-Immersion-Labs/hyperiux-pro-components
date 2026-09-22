@@ -10,28 +10,28 @@ import React, { useEffect, useId, useRef, useState } from "react";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const IMAGE_POOL = [
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
-	"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+	"https://picsum.photos/seed/1/800/600",
+	"https://picsum.photos/seed/2/800/600",
+	"https://picsum.photos/seed/3/800/600",
+	"https://picsum.photos/seed/4/800/600",
+	"https://picsum.photos/seed/5/800/600",
+	"https://picsum.photos/seed/6/800/600",
+	"https://picsum.photos/seed/7/800/600",
+	"https://picsum.photos/seed/8/800/600",
+	"https://picsum.photos/seed/9/800/600",
+	"https://picsum.photos/seed/10/800/600",
+	"https://picsum.photos/seed/11/800/600",
+	"https://picsum.photos/seed/12/800/600",
+	"https://picsum.photos/seed/13/800/600",
+	"https://picsum.photos/seed/14/800/600",
+	"https://picsum.photos/seed/15/800/600",
+	"https://picsum.photos/seed/16/800/600",
+	"https://picsum.photos/seed/17/800/600",
+	"https://picsum.photos/seed/18/800/600",
+	"https://picsum.photos/seed/19/800/600",
+	"https://picsum.photos/seed/20/800/600",
+	"https://picsum.photos/seed/21/800/600",
+	"https://picsum.photos/seed/22/800/600",
 ];
 
 const PROJECT_NAMES = [
@@ -94,7 +94,7 @@ that make a brand experience unforgettable.`;
 /**
  * @typedef {Object} RibbonDriftCompProps
  * @property {number} [driftSpeed]
- * @property {string} [ribbonColor]
+ * @property {string} [textColor]
  * @property {number} [imageSize]
  * @property {boolean} [showNames]
  */
@@ -102,7 +102,7 @@ that make a brand experience unforgettable.`;
 /** @param {RibbonDriftCompProps} props */
 const RibbonDriftComp = ({
 	driftSpeed = 1,
-	ribbonColor = "#000000",
+	textColor = "#000000",
 	imageSize = 1,
 	showNames = true,
 }: any) => {
@@ -116,6 +116,15 @@ const RibbonDriftComp = ({
 
 	useEffect(() => {
 		const speedScale = 1 / Math.max(0.05, driftSpeed);
+
+		// Defensively kill any stale ScrollTriggers/tweens left over from a
+		// previous run of this effect (e.g. rapid prop changes from the
+		// remixer panel) before rebuilding the timelines below, so the
+		// reveal animation always restarts from a clean state.
+		ScrollTrigger.getAll()
+			.filter((st) => st.trigger && st.trigger.id === sectionId)
+			.forEach((st) => st.kill());
+		gsap.killTweensOf([headingRef.current, paragraphRef.current, sectionBreakFillRef.current]);
 
 		const ctx = gsap.context(() => {
 			const mm = gsap.matchMedia();
@@ -143,7 +152,7 @@ const RibbonDriftComp = ({
 
 					gsap.set(sectionBreakSplit.lines, {
 						color: "transparent",
-						backgroundImage: `linear-gradient(to right, ${ribbonColor} 0%, ${ribbonColor} 100%)`,
+						backgroundImage: `linear-gradient(to right, ${textColor} 0%, ${textColor} 100%)`,
 						backgroundRepeat: "no-repeat",
 						backgroundSize: "0% 100%",
 						backgroundPosition: "left center",
@@ -327,8 +336,15 @@ const RibbonDriftComp = ({
 			};
 		});
 
-		return () => ctx.revert();
-	}, [sectionId, driftSpeed, ribbonColor, imageSize, showNames]);
+		const rafId = window.requestAnimationFrame(() => {
+			ScrollTrigger.refresh();
+		});
+
+		return () => {
+			window.cancelAnimationFrame(rafId);
+			ctx.revert();
+		};
+	}, [sectionId, driftSpeed, textColor, imageSize, showNames]);
 
 	let titleIndex = 0;
 
@@ -372,6 +388,7 @@ const RibbonDriftComp = ({
 							return (
 								<a
 									href={item.href}
+									onClick={(e) => e.preventDefault()}
 									key={`left-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
 								>
@@ -407,6 +424,7 @@ const RibbonDriftComp = ({
 							return (
 								<a
 									href={item.href}
+									onClick={(e) => e.preventDefault()}
 									key={`mid-${index}`}
 									className={`project-card w-[90%] h-[34vw] portfolio-card overflow-hidden drop-shadow-md relative ${index === 0 ? "card-1" : ""
 										} ${index === 1 ? "card-2" : ""}`}
@@ -443,6 +461,7 @@ const RibbonDriftComp = ({
 							return (
 								<a
 									href={item.href}
+									onClick={(e) => e.preventDefault()}
 									key={`right-${index}`}
 									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
 								>
@@ -504,6 +523,7 @@ const RibbonDriftComp = ({
 						{compactCards.map((item, index) => (
 							<a
 								href={item.href}
+								onClick={(e) => e.preventDefault()}
 								key={`compact-${index}`}
 								className="overflow-hidden rounded-sm max-md:mx-auto  w-full max-md:w-[80%]"
 							>
@@ -554,7 +574,7 @@ function usePrefersReducedMotion() {
 
 const RibbonDrift = ({
  driftSpeed = 1,
- ribbonColor = "#000000",
+ textColor = "#000000",
  imageSize = 1,
  showNames = true,
 }) => {
@@ -565,7 +585,7 @@ const RibbonDrift = ({
  <section className="w-screen h-fit max-md:h-full">
  <RibbonDriftComp
  driftSpeed={driftSpeed}
- ribbonColor={ribbonColor}
+ textColor={textColor}
  imageSize={imageSize}
  showNames={showNames}
  />

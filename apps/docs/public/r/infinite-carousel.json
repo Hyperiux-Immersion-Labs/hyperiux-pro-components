@@ -39,6 +39,31 @@
       }
     },
     {
+      "name": "autoPlay",
+      "type": "boolean",
+      "default": false,
+      "description": "Automatically advances the carousel one card at a time.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "behavior",
+        "groupTitle": "Behavior"
+      }
+    },
+    {
+      "name": "autoPlayInterval",
+      "type": "number",
+      "default": 3000,
+      "description": "Milliseconds between automatic slide advances.",
+      "remixer": {
+        "control": "range",
+        "group": "behavior",
+        "groupTitle": "Behavior",
+        "min": 1000,
+        "max": 8000,
+        "step": 100
+      }
+    },
+    {
       "name": "gap",
       "type": "number",
       "description": "Spacing between carousel items.",
@@ -111,11 +136,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/infinite-carousel/index.tsx"
-    },
-    {
-      "path": "InfiniteCarouselComp.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.tsx"
     }
   ]
 }

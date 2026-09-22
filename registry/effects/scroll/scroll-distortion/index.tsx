@@ -430,6 +430,7 @@ interface ScrollDistortionProps {
   rgbShift?: number;
   distortionScale?: number;
   transitionDuration?: number;
+  transitionEase?: string;
 }
 
 export default function ScrollDistortion({
@@ -438,6 +439,7 @@ export default function ScrollDistortion({
   rgbShift,
   distortionScale,
   transitionDuration,
+  transitionEase,
   shaderConfig = EMPTY_SHADER_CONFIG,
   displacementSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg",
 }: ScrollDistortionProps) {
@@ -535,6 +537,7 @@ export default function ScrollDistortion({
       ...(transitionDuration !== undefined
         ? { transitionDuration }
         : {}),
+      ...(transitionEase !== undefined ? { transitionEase } : {}),
       // Reduced motion: zero out the displacement/RGB-shift/scale warp -
       // the shader still runs the same u_progress tween, but with these at
       // 0 the distortion terms drop out and it's left with a plain
@@ -963,6 +966,7 @@ export default function ScrollDistortion({
     rgbShift,
     distortionScale,
     transitionDuration,
+    transitionEase,
   ]);
 
   return (

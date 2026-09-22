@@ -129,7 +129,6 @@ interface StickyContentCompProps {
   bgColor?: string;
   contentEnterYPercent?: number;
   contentExitYPercent?: number;
-  contentTransitionDuration?: number;
   contentDelay?: number;
   stepGap?: number;
   enableImageScaleFlow?: boolean;
@@ -149,7 +148,6 @@ export function StickyContentComp({
   bgColor = "#ffffff",
   contentEnterYPercent = 12,
   contentExitYPercent = -12,
-  contentTransitionDuration = 0.8,
   contentDelay = 0.28,
   stepGap = 2,
   enableImageScaleFlow = true,
@@ -163,6 +161,10 @@ export function StickyContentComp({
   const contentRefsRef = useRef<(HTMLDivElement | null)[]>([]);
   const imageRefsRef = useRef<(HTMLDivElement | null)[]>([]);
   const lenis = useLenis();
+
+  // Fixed content transition duration (previously configurable via
+  // `contentTransitionDuration` prop, now hardcoded).
+  const contentTransitionDuration = 0.9;
 
   // Effects
   useLayoutEffect(() => {
@@ -316,7 +318,6 @@ export function StickyContentComp({
     lenis,
     contentEnterYPercent,
     contentExitYPercent,
-    contentTransitionDuration,
     contentDelay,
     stepGap,
     enableImageScaleFlow,
@@ -451,7 +452,7 @@ const stickyItems = [
  "• Smart and sustainable design",
  ],
  link:{ href:"#", text:"Explore Residences" },
- image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+ image:"https://picsum.photos/seed/1/800/600",
  },
 
  {
@@ -464,7 +465,7 @@ const stickyItems = [
  "• Surrounded by lifestyle hubs",
  ],
  link:{ href:"#", text:"View Locations" },
- image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+ image:"https://picsum.photos/seed/2/800/600",
  },
 
  {
@@ -477,7 +478,7 @@ const stickyItems = [
  "• Strong long-term appreciation potential",
  ],
  link:{ href:"#", text:"Explore Investment" },
- image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+ image:"https://picsum.photos/seed/3/800/600",
  },
 
  {
@@ -490,14 +491,13 @@ const stickyItems = [
  "• Community-driven living spaces",
  ],
  link:{ href:"#", text:"View Amenities" },
- image:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+ image:"https://picsum.photos/seed/4/800/600",
  },
 ];
 
 export default function StickyContentWrapper({
  bgColor = "#ffffff",
  contentEnterYPercent = 2,
- contentTransitionDuration = 0.9,
  initialImageScale = 1.5,
  activeImageScale = 1.2,
  exitImageScale = 1,
@@ -510,7 +510,6 @@ export default function StickyContentWrapper({
  bgColor={bgColor}
  contentEnterYPercent={contentEnterYPercent}
  contentExitYPercent={-2}
- contentTransitionDuration={contentTransitionDuration}
  contentDelay={0.35}
   initialImageScale={initialImageScale}
  activeImageScale={activeImageScale}

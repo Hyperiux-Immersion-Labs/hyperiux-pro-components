@@ -20,7 +20,9 @@ function prefersReducedMotion() {
 // parallax (x shift + scale) is reduced, not removed, and the one-time
 // clip-path reveal loses its eased curve in favor of a linear one.
 const REDUCED_MOTION_FACTOR = 0.25;
-const PARALLAX_SCALE = 1.25;
+// Extra headroom on top of the scale strictly required to cover the
+// translate range, so the image edge never touches the wrapper edge.
+const PARALLAX_SCALE_MARGIN = 1.1;
 
 const PAD_X = "5vw";
 
@@ -120,9 +122,13 @@ function ParallaxSlider({
              * reduced motion. */
             const slides = gsap.utils.toArray(".parallax-img") as HTMLElement[];
             const parallaxRange = reducedMotion ? parallaxAmount * REDUCED_MOTION_FACTOR : parallaxAmount;
-            const parallaxScaleValue = reducedMotion
-                ? 1 + (PARALLAX_SCALE - 1) * REDUCED_MOTION_FACTOR
-                : PARALLAX_SCALE;
+            // The image is translated by `parallaxRange`% of its own (unscaled)
+            // box width in each direction, so it must be overscaled by at
+            // least that much on every side or the translate will slide it
+            // past the wrapper's edge and reveal the background behind it
+            // (visible as an empty gap). Scale is derived from the live
+            // range so it always tracks the current parallaxAmount prop.
+            const parallaxScaleValue = 1 + (parallaxRange / 100) * 2 * PARALLAX_SCALE_MARGIN;
 
             slides.forEach((el) => {
                 gsap.fromTo(

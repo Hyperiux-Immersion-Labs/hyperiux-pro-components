@@ -2,7 +2,6 @@
 "use client";
 
 import { gsap } from "gsap";
-import Image from "next/image";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 function prefersReducedMotion() {
@@ -22,54 +21,27 @@ interface ShearWipeCompProps {
   componentHighlights?: ShearWipeStat[];
   showcaseStats?: ShearWipeStat[];
   clipPathDuration?: number;
-  componentsBgImage?: string;
   componentsTextColor?: string;
-  showcaseBgImage?: string;
+  componentsBackgroundColor?: string;
   showcaseTextColor?: string;
+  showcaseBackgroundColor?: string;
 }
 
-const TEXT_COLOR_CLASS_MAP = {
-  'text-[#0D47A1]': 'text-[#0D47A1]',
-  'text-white': 'text-white',
-  'text-black': 'text-black',
-  'text-[#EA580C]': 'text-[#EA580C]',
-  'text-[#166534]': 'text-[#166534]',
-  'text-[#7C3AED]': 'text-[#7C3AED]',
-} as const;
-
-const BG_COLOR_CLASS_MAP = {
-  'text-[#0D47A1]': 'bg-[#0D47A1]',
-  'text-white': 'bg-white',
-  'text-black': 'bg-black',
-  'text-[#EA580C]': 'bg-[#EA580C]',
-  'text-[#166534]': 'bg-[#166534]',
-  'text-[#7C3AED]': 'bg-[#7C3AED]',
-} as const;
-
-function resolveTextColorClass(color?: string, fallback: keyof typeof TEXT_COLOR_CLASS_MAP = 'text-[#0D47A1]') {
-  return TEXT_COLOR_CLASS_MAP[color as keyof typeof TEXT_COLOR_CLASS_MAP] ?? fallback;
-}
-
-function resolveBgColorClass(color?: string, fallback: keyof typeof BG_COLOR_CLASS_MAP = 'text-[#0D47A1]') {
-  return BG_COLOR_CLASS_MAP[color as keyof typeof BG_COLOR_CLASS_MAP] ?? BG_COLOR_CLASS_MAP[fallback];
-}
 
 const ShearWipeComp = ({
   componentHighlights = [],
   showcaseStats = [],
   clipPathDuration = 0.9,
-  componentsTextColor = 'text-[#0D47A1]',
-  showcaseTextColor = 'text-[#E3F2FD]',
+  componentsTextColor = '#0D47A1',
+  componentsBackgroundColor = '#E3F2FD',
+  showcaseTextColor = '#ffffff',
+  showcaseBackgroundColor = '#0D47A1',
 }: ShearWipeCompProps) => {
   const [activePanel, setActivePanel] = useState<ActivePanel>('components');
   const overlayRef = useRef<HTMLDivElement>(null);
-  const componentsTextColorClass = resolveTextColorClass(componentsTextColor);
-  const showcaseTextColorClass = resolveTextColorClass(showcaseTextColor, 'text-white');
-  const componentsUnderlineClass = resolveBgColorClass(componentsTextColor);
-  const showcaseUnderlineClass = resolveBgColorClass(showcaseTextColor, 'text-white');
-
-  const mobileTabTextColorClass = activePanel === 'components' ? componentsTextColorClass : showcaseTextColorClass;
-  const mobileUnderlineClass = activePanel === 'components' ? componentsUnderlineClass : showcaseUnderlineClass;
+  const mobileTabTextColor = activePanel === 'components' ? componentsTextColor : showcaseTextColor;
+  const mobileUnderlineColor = activePanel === 'components' ? componentsTextColor : showcaseTextColor;
+  const mobileBackgroundColor = activePanel === 'components' ? componentsBackgroundColor : showcaseBackgroundColor;
 
   const componentsTabRef = useRef<HTMLButtonElement>(null);
   const showcaseTabRef = useRef<HTMLButtonElement>(null);
@@ -242,20 +214,19 @@ const ShearWipeComp = ({
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Page Background */}
-      <div className="absolute inset-0 bg-[#E3F2FD]">
-      </div>
+      <div className="absolute inset-0" style={{ backgroundColor: componentsBackgroundColor }} />
 
       {/* Mobile Background - follows the active tab independently of the desktop clip-wipe overlay */}
       <div
-        className={`hidden max-[1025px]:block absolute inset-0 transition-colors duration-300 ease-in-out ${activePanel === 'showcase' ? 'bg-[#0D47A1]' : 'bg-[#E3F2FD]'
-          }`}
+        className="hidden max-[1025px]:block absolute inset-0 transition-colors duration-300 ease-in-out"
+        style={{ backgroundColor: mobileBackgroundColor }}
       />
 
       <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
         {/* Base Panel - Components */}
         <div className="flex h-full items-center">
           <div className="w-full flex items-center justify-center p-[6vw]">
-            <div className={`w-[45vw] space-y-[1vw] ${componentsTextColorClass}`}>
+            <div className="w-[45vw] space-y-[1vw]" style={{ color: componentsTextColor }}>
               <h2 className="text-[3vw] font-bold font-display leading-[1.2] whitespace-nowrap">Design that feels alive</h2>
               <p className="text-[1.5vw]">
                 Every component reacts and transitions naturally , turning interfaces from static to alive.
@@ -270,7 +241,7 @@ const ShearWipeComp = ({
             onMouseLeave={() => handleHoverOut()}
             onClick={() => setActivePanel('showcase')}
           >
-            <div className="text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap text-white">
+            <div className="text-[7vw] font-medium leading-none tracking-tight origin-center rotate-90 whitespace-nowrap" style={{ color: showcaseTextColor }}>
               Showcase
             </div>
           </div>
@@ -284,12 +255,11 @@ const ShearWipeComp = ({
             clipPath: 'polygon(92.5% 0%, 100% 0%, 100% 100%, 88.5% 100%)',
           }}
         >
-          <div className="absolute inset-0 bg-[#0D47A1]">
-          </div>
+          <div className="absolute inset-0" style={{ backgroundColor: showcaseBackgroundColor }} />
 
           <div className="flex h-screen items-center relative">
             <div className="w-full flex items-center justify-center p-[6vw]">
-              <div className={`w-[45vw] space-y-[1vw] ${showcaseTextColorClass}`}>
+              <div className="w-[45vw] space-y-[1vw]" style={{ color: showcaseTextColor }}>
                 <h2 className="text-[3vw] font-bold font-display leading-[1.2] whitespace-nowrap">Motion with meaning</h2>
                 <p className="text-[1.5vw]">
                   Animations explain, creating clarity and confidence across every screen.
@@ -306,7 +276,7 @@ const ShearWipeComp = ({
           onMouseLeave={() => handleHoverOut()}
           onClick={() => setActivePanel('components')}
         >
-          <div className="text-[7vw] font-medium leading-none tracking-tight origin-center -rotate-90 whitespace-nowrap text-[#0D47A1]">
+          <div className="text-[7vw] font-medium leading-none tracking-tight origin-center -rotate-90 whitespace-nowrap" style={{ color: componentsTextColor }}>
             Components
           </div>
         </div>
@@ -320,8 +290,8 @@ const ShearWipeComp = ({
             type="button"
             aria-selected={activePanel === 'components'}
             onClick={() => setActivePanel('components')}
-            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${mobileTabTextColorClass} ${activePanel === 'components' ? '' : 'opacity-35'
-              }`}
+            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2.4vw] max-md:text-[5vw] font-medium leading-none transition-opacity duration-300 ease-in-out ${activePanel === 'components' ? '' : 'opacity-35'}`}
+            style={{ color: mobileTabTextColor }}
           >
             Components
           </button>
@@ -331,32 +301,32 @@ const ShearWipeComp = ({
             type="button"
             aria-selected={activePanel === 'showcase'}
             onClick={() => setActivePanel('showcase')}
-            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2vw] max-md:text-[5vw] font-medium leading-none transition-colors duration-300 ease-in-out ${mobileTabTextColorClass} ${activePanel === 'showcase' ? '' : 'opacity-35'
-              }`}
+            className={`pb-[2vw] max-md:pb-[3.5vw] text-[2vw] max-md:text-[5vw] font-medium leading-none transition-opacity duration-300 ease-in-out ${activePanel === 'showcase' ? '' : 'opacity-35'}`}
+            style={{ color: mobileTabTextColor }}
           >
             Showcase
           </button>
 
-          <span ref={activeLineRef} className={`absolute bottom-0 left-0 h-[0.2vw] max-md:h-[0.6vw] transition-colors duration-300 ease-in-out ${mobileUnderlineClass}`} />
+          <span ref={activeLineRef} className="absolute bottom-0 left-0 h-[0.2vw] max-md:h-[0.6vw] transition-colors duration-300 ease-in-out" style={{ backgroundColor: mobileUnderlineColor }} />
         </div>
 
         <div className="relative mt-[8vw] max-md:mt-[10vw]">
           {/* Components tab content */}
           <div ref={componentsContentRef}>
-            <h2 className={`text-[6vw] max-md:text-[7.5vw] font-display leading-[1.15] ${componentsTextColorClass} mb-[3vw] max-md:mb-[5vw]`}>
+            <h2 className="text-[6vw] max-md:text-[7.5vw] font-display leading-[1.15] mb-[3vw] max-md:mb-[5vw]" style={{ color: componentsTextColor }}>
               Design that feels alive
             </h2>
-            <p className={`text-[2.1vw] max-md:text-[4vw] leading-relaxed ${componentsTextColorClass} opacity-70 mb-[6vw] max-md:mb-[9vw]`}>
+            <p className="text-[2.1vw] max-md:text-[4vw] leading-relaxed opacity-70 mb-[6vw] max-md:mb-[9vw]" style={{ color: componentsTextColor }}>
               Every component reacts and transitions naturally , turning interfaces from static to alive.
             </p>
           </div>
 
           {/* Showcase tab content */}
           <div ref={showcaseContentRef} className="absolute inset-0">
-            <h2 className={`text-[6vw] max-md:text-[7.5vw] font-display leading-[1.15] ${showcaseTextColorClass} mb-[3vw] max-md:mb-[5vw]`}>
+            <h2 className="text-[6vw] max-md:text-[7.5vw] font-display leading-[1.15] mb-[3vw] max-md:mb-[5vw]" style={{ color: showcaseTextColor }}>
               Motion with meaning
             </h2>
-            <p className={` max-md:text-[4vw] leading-relaxed ${showcaseTextColorClass} opacity-70 mb-[7vw] max-md:mb-[10vw]`}>
+            <p className="max-md:text-[4vw] leading-relaxed opacity-70 mb-[7vw] max-md:mb-[10vw]" style={{ color: showcaseTextColor }}>
               Animations explain, creating clarity and confidence across every screen.
             </p>
           </div>
@@ -368,22 +338,26 @@ const ShearWipeComp = ({
 
 interface ShearWipeProps {
   clipPathDuration?: number;
-  componentsBgImage?: string;
   componentsTextColor?: string;
-  showcaseBgImage?: string;
+  componentsBackgroundColor?: string;
   showcaseTextColor?: string;
+  showcaseBackgroundColor?: string;
 }
 
 const ShearWipe = ({
   clipPathDuration,
-  componentsTextColor = 'text-[#0D47A1]',
-  showcaseTextColor = 'text-white',
+  componentsTextColor = '#0D47A1',
+  componentsBackgroundColor = '#E3F2FD',
+  showcaseTextColor = '#ffffff',
+  showcaseBackgroundColor = '#0D47A1',
 }: ShearWipeProps) => {
   return (
     <ShearWipeComp
       clipPathDuration={clipPathDuration}
       componentsTextColor={componentsTextColor}
+      componentsBackgroundColor={componentsBackgroundColor}
       showcaseTextColor={showcaseTextColor}
+      showcaseBackgroundColor={showcaseBackgroundColor}
     />
   );
 };

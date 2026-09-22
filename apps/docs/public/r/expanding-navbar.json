@@ -94,31 +94,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/expanding-navbar/index.tsx"
-    },
-    {
-      "path": "data.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/data.ts"
-    },
-    {
-      "path": "ExpandingNavbarDesktop.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/ExpandingNavbarDesktop.tsx"
-    },
-    {
-      "path": "ExpandingNavbarMobile.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/ExpandingNavbarMobile.tsx"
-    },
-    {
-      "path": "HoverFillLink.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/HoverFillLink.tsx"
-    },
-    {
-      "path": "useFocusTrap.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/expanding-navbar/useFocusTrap.ts"
     }
   ]
 }

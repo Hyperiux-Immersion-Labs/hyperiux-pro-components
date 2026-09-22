@@ -3,6 +3,7 @@
 import CircularSlider from "@/components/circular-slider";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 const defaultItems = [
   {
@@ -65,6 +66,7 @@ export default function DemoContent({ registry }: { registry: any }) {
         <main className="min-h-screen text-white">
           <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
           {effect}
+          <ScrollBottom className="bottom-[3%]"/>
         </main>
       )}
     </RegistryRemixerDemo>

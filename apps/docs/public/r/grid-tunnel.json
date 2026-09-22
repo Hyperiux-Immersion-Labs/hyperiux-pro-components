@@ -126,16 +126,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/grid-tunnel/index.tsx"
-    },
-    {
-      "path": "GridTunnelComp.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/grid-tunnel/GridTunnelComp.tsx"
-    },
-    {
-      "path": "createSuspendedRaf.ts",
-      "type": "registry:component",
-      "target": "src/components/effects/grid-tunnel/createSuspendedRaf.ts"
     }
   ]
 }

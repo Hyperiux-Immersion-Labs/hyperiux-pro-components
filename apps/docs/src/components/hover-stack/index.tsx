@@ -29,6 +29,7 @@ interface HoverStackCompProps {
   spread?: number;
   rotation?: number;
   duration?: number;
+  borderColor?: string;
   accentColor?: string;
   className?: string;
 }
@@ -47,9 +48,11 @@ const HoverStackComp = ({
   spread = 24,
   rotation = 7,
   duration = 0.35,
-  accentColor = "transparent",
+  borderColor,
+  accentColor,
   className = "",
 }: HoverStackCompProps) => {
+  const activeBorderColor = borderColor ?? accentColor ?? "transparent";
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
@@ -148,7 +151,7 @@ const HoverStackComp = ({
         rotate = 0;
         zIndex = 999;
         scale = 1.035;
-        boxShadow = `0 0 0 3px ${accentColor}`;
+        boxShadow = `0 0 0 3px ${activeBorderColor}`;
       }
     }
 
@@ -328,6 +331,19 @@ const cards: HoverStackCard[] = [
     },
 ];
 
+interface HoverStackProps {
+    cardWidth?: number;
+    cardHeight?: number;
+    overlap?: number;
+    pushDistance?: number;
+    hoverLift?: number;
+    spread?: number;
+    rotation?: number;
+    duration?: number;
+    borderColor?: string;
+    accentColor?: string;
+}
+
 const HoverStack = ({
     cardWidth = 280,
     cardHeight = 360,
@@ -337,8 +353,10 @@ const HoverStack = ({
     spread = 24,
     rotation = 7,
     duration = 0.35,
-    accentColor = "transparent",
-}) => {
+    borderColor = "transparent",
+    accentColor,
+}: HoverStackProps) => {
+    const activeBorderColor = borderColor ?? accentColor ?? "transparent";
     return (
         <>
             <section className="w-full h-fit bg-[#fff9ec] py-[10%] max-md:py-[20%] overflow-hidden flex flex-col gap-[7vw] justify-center items-center">
@@ -362,7 +380,7 @@ const HoverStack = ({
                     spread={spread}
                     rotation={rotation}
                     duration={duration}
-                    accentColor={accentColor}
+                    borderColor={activeBorderColor}
                 />
             </section>
         </>

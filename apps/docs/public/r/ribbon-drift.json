@@ -67,7 +67,7 @@
       }
     },
     {
-      "name": "ribbonColor",
+      "name": "textColor",
       "type": "color",
       "description": "Color of the section-break reveal text fill.",
       "default": "#000000",
@@ -94,11 +94,6 @@
       "path": "index.tsx",
       "type": "registry:component",
       "target": "src/components/effects/ribbon-drift/index.tsx"
-    },
-    {
-      "path": "RibbonDriftComp.tsx",
-      "type": "registry:component",
-      "target": "src/components/effects/ribbon-drift/RibbonDriftComp.tsx"
     }
   ]
 }

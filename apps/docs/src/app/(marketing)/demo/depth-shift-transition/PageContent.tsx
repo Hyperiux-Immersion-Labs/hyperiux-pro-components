@@ -16,7 +16,7 @@ export default function PageContent() {
 
       <div className="relative z-10 mx-auto max-w-5xl text-center text-white">
         <SplitLine>
-          <h1 className="text-[7vw] max-md:text-[9vw]">Depth Shift Transition</h1>
+          <h1 className="text-[5vw] max-md:text-[9vw]">Depth Shift Transition</h1>
         </SplitLine>
 
         <SplitLine>

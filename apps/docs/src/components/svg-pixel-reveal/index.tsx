@@ -165,7 +165,7 @@ export default function SVGPixelReveal({
     const initialPixelSize = Math.max(2, intensity);
     const finalPixelSize = 1;
     const start = "top 50%";
-    const end = "bottom 35%";
+    const end = "bottom bottom";
     const [pixelSize, setPixelSize] = useState(initialPixelSize);
     const [prevInitialPixelSize, setPrevInitialPixelSize] = useState(initialPixelSize);
     const reducedMotion = usePrefersReducedMotion();
@@ -203,6 +203,7 @@ export default function SVGPixelReveal({
             trigger: container,
             start,
             end,
+            scrub: true,
             animation: tween,
             invalidateOnRefresh: true,
         });

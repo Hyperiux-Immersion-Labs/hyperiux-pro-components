@@ -86,20 +86,6 @@
         "max": 160,
         "step": 1
       }
-    },
-    {
-      "name": "perspective",
-      "type": "number",
-      "default": 900,
-      "description": "Perspective depth applied to the runway track.",
-      "remixer": {
-        "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
-        "min": 0,
-        "max": 2000,
-        "step": 25
-      }
     }
   ],
   "remixer": {

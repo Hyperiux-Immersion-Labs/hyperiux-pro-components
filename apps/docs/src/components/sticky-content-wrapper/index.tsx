@@ -129,7 +129,6 @@ interface StickyContentCompProps {
   bgColor?: string;
   contentEnterYPercent?: number;
   contentExitYPercent?: number;
-  contentTransitionDuration?: number;
   contentDelay?: number;
   stepGap?: number;
   enableImageScaleFlow?: boolean;
@@ -149,7 +148,6 @@ export function StickyContentComp({
   bgColor = "#ffffff",
   contentEnterYPercent = 12,
   contentExitYPercent = -12,
-  contentTransitionDuration = 0.8,
   contentDelay = 0.28,
   stepGap = 2,
   enableImageScaleFlow = true,
@@ -163,6 +161,10 @@ export function StickyContentComp({
   const contentRefsRef = useRef<(HTMLDivElement | null)[]>([]);
   const imageRefsRef = useRef<(HTMLDivElement | null)[]>([]);
   const lenis = useLenis();
+
+  // Fixed content transition duration (previously configurable via
+  // `contentTransitionDuration` prop, now hardcoded).
+  const contentTransitionDuration = 0.9;
 
   // Effects
   useLayoutEffect(() => {
@@ -316,7 +318,6 @@ export function StickyContentComp({
     lenis,
     contentEnterYPercent,
     contentExitYPercent,
-    contentTransitionDuration,
     contentDelay,
     stepGap,
     enableImageScaleFlow,
@@ -497,7 +498,6 @@ const stickyItems = [
 export default function StickyContentWrapper({
  bgColor = "#ffffff",
  contentEnterYPercent = 2,
- contentTransitionDuration = 0.9,
  initialImageScale = 1.5,
  activeImageScale = 1.2,
  exitImageScale = 1,
@@ -510,7 +510,6 @@ export default function StickyContentWrapper({
  bgColor={bgColor}
  contentEnterYPercent={contentEnterYPercent}
  contentExitYPercent={-2}
- contentTransitionDuration={contentTransitionDuration}
  contentDelay={0.35}
   initialImageScale={initialImageScale}
  activeImageScale={activeImageScale}

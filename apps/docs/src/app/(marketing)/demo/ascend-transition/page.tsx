@@ -20,7 +20,7 @@ export default function page() {
         <div className="relative z-10 max-w-5xl mx-auto text-center text-white">
           {/* Heading */}
           <SplitLine>
-            <h1 className="text-[7vw] max-sm:text-[9vw]">Ascend Transition</h1>
+            <h1 className="text-[6vw] max-sm:text-[9vw]">Ascend Transition</h1>
           </SplitLine>
 
           {/* Subtext */}
