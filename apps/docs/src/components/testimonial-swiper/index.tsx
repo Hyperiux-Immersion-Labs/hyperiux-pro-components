@@ -14,7 +14,7 @@ function NavigationButtons({
     className = "",
 }: any) {
     return (
-        <nav className={`flex gap-1.5 ${className}`}>
+        <nav className={`flex mt-5 gap-1.5 ${className}`}>
             {/* PREV */}
             <button
                 aria-label="Previous testimonial"
@@ -137,11 +137,19 @@ function TestimonialComp({
             gsap.set(meta, { autoAlpha: 0 });
 
             const tl = gsap.timeline({ onComplete: onDone });
-            tl.to([quoteRef.current, quoteMarkRef.current], {
+            tl.to(quoteRef.current, {
                 autoAlpha: 1,
                 duration: 0.5,
                 ease: "power2.out",
             }).to(
+                quoteMarkRef.current,
+                {
+                    autoAlpha: 1,
+                    duration: 0.9,
+                    ease: "power2.out",
+                },
+                "<"
+            ).to(
                 meta,
                 {
                     autoAlpha: 1,
@@ -193,7 +201,7 @@ function TestimonialComp({
             quoteMarkRef.current,
             {
                 autoAlpha: 1,
-                duration: 0.6,
+                duration: 1.1,
                 ease: "power2.out",
             },
             "<"
@@ -219,12 +227,18 @@ function TestimonialComp({
                 titleRef.current,
                 mobileNameRef.current,
                 mobileTitleRef.current,
-                quoteMarkRef.current,
             ];
-            gsap.killTweensOf(targets);
+            gsap.killTweensOf([...targets, quoteMarkRef.current]);
             gsap.to(targets, {
                 autoAlpha: 0,
                 duration: 0.2,
+                ease: "power1.in",
+            });
+            // Resolving on the mark's tween keeps animateIn from hard-setting
+            // it back to 0 partway through this longer fade.
+            gsap.to(quoteMarkRef.current, {
+                autoAlpha: 0,
+                duration: 0.5,
                 ease: "power1.in",
                 onComplete: resolve,
             });
@@ -306,7 +320,7 @@ function TestimonialComp({
             style={{ backgroundColor: bgColor }}
         >
             {/* Header */}
-            <div className="flex items-start justify-between px-8 pr-24 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
+            <div className="flex items-start justify-between px-8 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
                 <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-[1025px]:w-full max-md:w-full max-md:justify-between">
                     <div className="flex items-center gap-2 text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[4vw] font-semibold tracking-[0.12em] uppercase">
                         <span className="text-[9px] max-[1025px]:text-[12px] max-md:text-[15px] text-black">◆</span>
@@ -316,21 +330,12 @@ function TestimonialComp({
                         {pad(current + 1)}&nbsp;/&nbsp;{pad(total)}
                     </span>
                 </div>
-
-                {showNavigation && (
-                    <NavigationButtons
-                        className="max-md:hidden"
-                        onPrev={handlePrev}
-                        onNext={handleNext}
-                        isAnimating={isAnimating}
-                    />
-                )}
             </div>
 
             {/* Body */}
             <div className="flex-1 flex items-start gap-32 px-18 py-5 max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-10 max-[1025px]:px-6 max-[1025px]:py-10 max-md:px-5 max-md:py-4 max-md:gap-6">
 
-                <div className="shrink-0 max-[1025px]:hidden max-md:hidden">
+                <div className="shrink-0 flex flex-col gap-5 max-[1025px]:hidden max-md:hidden">
                     <div
                         ref={desktopImageRef}
                         className="relative w-40 h-50"
@@ -347,6 +352,14 @@ function TestimonialComp({
                             className="object-cover object-top grayscale"
                         />
                     </div>
+
+                    {showNavigation && (
+                        <NavigationButtons
+                            onPrev={handlePrev}
+                            onNext={handleNext}
+                            isAnimating={isAnimating}
+                        />
+                    )}
                 </div>
 
                 {/* Quote area */}
@@ -367,22 +380,33 @@ function TestimonialComp({
                             {displayItem.quote}
                         </blockquote>
 
-                        <div className="hidden max-[1025px]:flex items-center gap-4 mt-6 max-[1025px]:gap-5 max-md:mt-3 max-md:gap-6">
-                            <div
-                                ref={mobileImageRef}
-                                className="relative max-[1025px]:w-30 max-[1025px]:h-36 max-md:w-22 max-md:h-26 shrink-0"
-                                style={{
-                                    width: `${7.5 * safeImageSize}rem`,
-                                    height: `${9 * safeImageSize}rem`,
-                                }}
-                            >
-                                <Image
-                                    fill
-                                    sizes="150px"
-                                    src={displayItem.image}
-                                    alt={displayItem.name}
-                                    className="object-cover object-top grayscale"
-                                />
+                        <div className="hidden max-[1025px]:flex items-start gap-4  max-[1025px]:gap-5 max-md:mt-3 max-md:gap-6">
+                            <div className="flex flex-col gap-5 shrink-0">
+                                <div
+                                    ref={mobileImageRef}
+                                    className="relative max-[1025px]:w-30 max-[1025px]:h-36 max-md:w-22 max-md:h-26 shrink-0"
+                                    style={{
+                                        width: `${7.5 * safeImageSize}rem`,
+                                        height: `${9 * safeImageSize}rem`,
+                                    }}
+                                >
+                                    <Image
+                                        fill
+                                        sizes="150px"
+                                        src={displayItem.image}
+                                        alt={displayItem.name}
+                                        className="object-cover object-top grayscale"
+                                    />
+                                </div>
+
+                                {showNavigation && (
+                                    <NavigationButtons
+                                        className="max-md:hidden"
+                                        onPrev={handlePrev}
+                                        onNext={handleNext}
+                                        isAnimating={isAnimating}
+                                    />
+                                )}
                             </div>
                             <div className="flex flex-col gap-1">
                                 <p ref={mobileNameRef} className="m-0 text-xl font-normal">

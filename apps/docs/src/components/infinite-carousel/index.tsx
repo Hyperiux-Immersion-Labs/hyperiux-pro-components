@@ -2,794 +2,1119 @@
 "use client";
 
 import gsap from "gsap";
-import { Draggable } from "gsap/Draggable";
-import { InertiaPlugin } from "gsap/InertiaPlugin";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useId,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
-gsap.registerPlugin(Draggable, InertiaPlugin);
+function glideDamp(
+  from: number,
+  to: number,
+  lambda: number,
+  deltaTime: number
+): number {
+  return from + (to - from) * (1 - Math.exp(-lambda * deltaTime));
+}
+
+function centeredMod(value: number, base: number): number {
+  let m = value % base;
+  if (Math.abs(m) > base / 2) {
+    m = m > 0 ? m - base : m + base;
+  }
+  return m;
+}
+
+const GLIDE_EVENT = "glidescroll";
+
+interface GlideInputEvent {
+  x: number;
+  y: number;
+  deltaX: number;
+  deltaY: number;
+  originalEvent: Event;
+  touchDevice?: boolean;
+}
+
+interface GlideInputOptions {
+  el?: EventTarget;
+  mouseMultiplier?: number;
+  touchMultiplier?: number;
+  firefoxMultiplier?: number;
+  useTouch?: boolean;
+  passive?: boolean;
+}
+
+interface GlideInputSupport {
+  hasWheelEvent: boolean;
+  hasMouseWheelEvent: boolean;
+  hasTouch: boolean;
+  isFirefox: boolean;
+}
+
+let glideSupport: GlideInputSupport | undefined;
+
+function readGlideSupport(): GlideInputSupport {
+  return {
+    hasWheelEvent: "onwheel" in document,
+    hasMouseWheelEvent: "onmousewheel" in document,
+    hasTouch: "ontouchstart" in document,
+    isFirefox: navigator.userAgent.indexOf("Firefox") > -1,
+  };
+}
+
+type GlideInputHandler = (payload: GlideInputEvent) => void;
+
+class GlideInput {
+  #options: Required<Omit<GlideInputOptions, "el" | "passive">> & {
+    passive?: boolean;
+  };
+  #el: EventTarget;
+  #handlers: GlideInputHandler[] = [];
+  #event: GlideInputEvent;
+  #touchStart: { x: number; y: number };
+
+  listenerOptions?: AddEventListenerOptions;
+
+  constructor(options: GlideInputOptions = {}) {
+    this.#el = options.el ?? window;
+
+    if (!glideSupport) glideSupport = readGlideSupport();
+
+    this.#options = {
+      mouseMultiplier: options.mouseMultiplier ?? 1,
+      touchMultiplier: options.touchMultiplier ?? 2,
+      firefoxMultiplier: options.firefoxMultiplier ?? 15,
+      useTouch: options.useTouch ?? true,
+      passive: options.passive,
+    };
+
+    this.#event = {
+      x: 0,
+      y: 0,
+      deltaX: 0,
+      deltaY: 0,
+      originalEvent: new Event(GLIDE_EVENT),
+    };
+    this.#touchStart = { x: 0, y: 0 };
+
+    if (this.#options.passive !== undefined) {
+      this.listenerOptions = { passive: this.#options.passive };
+    }
+  }
+
+  #notify(e: Event) {
+    const evt = this.#event;
+    evt.x += evt.deltaX;
+    evt.y += evt.deltaY;
+
+    const payload: GlideInputEvent = {
+      x: evt.x,
+      y: evt.y,
+      deltaX: evt.deltaX,
+      deltaY: evt.deltaY,
+      originalEvent: e,
+    };
+
+    for (const handler of this.#handlers.slice()) handler(payload);
+  }
+
+  #onWheel = (e: WheelEvent) => {
+    const evt = this.#event;
+    const legacy = e as WheelEvent & {
+      wheelDeltaX?: number;
+      wheelDeltaY?: number;
+    };
+
+    evt.deltaX = legacy.wheelDeltaX || e.deltaX * -1;
+    evt.deltaY = legacy.wheelDeltaY || e.deltaY * -1;
+
+    if (glideSupport!.isFirefox && e.deltaMode === 1) {
+      evt.deltaX *= this.#options.firefoxMultiplier;
+      evt.deltaY *= this.#options.firefoxMultiplier;
+    }
+
+    evt.deltaX *= this.#options.mouseMultiplier;
+    evt.deltaY *= this.#options.mouseMultiplier;
+
+    this.#notify(e);
+  };
+
+  #onMouseWheel = (e: Event) => {
+    const evt = this.#event;
+    const legacy = e as Event & {
+      wheelDeltaX?: number;
+      wheelDeltaY?: number;
+      wheelDelta?: number;
+    };
+
+    evt.deltaX = legacy.wheelDeltaX ? legacy.wheelDeltaX : 0;
+    evt.deltaY = legacy.wheelDeltaY
+      ? legacy.wheelDeltaY
+      : (legacy.wheelDelta ?? 0);
+
+    this.#notify(e);
+  };
+
+  #onTouchStart = (e: TouchEvent) => {
+    const t = e.targetTouches ? e.targetTouches[0] : (e as unknown as Touch);
+    this.#touchStart.x = t.pageX;
+    this.#touchStart.y = t.pageY;
+  };
+
+  #onTouchMove = (e: TouchEvent) => {
+    const evt = this.#event;
+    const t = e.targetTouches ? e.targetTouches[0] : (e as unknown as Touch);
+
+    evt.deltaX = (t.pageX - this.#touchStart.x) * this.#options.touchMultiplier;
+    evt.deltaY = (t.pageY - this.#touchStart.y) * this.#options.touchMultiplier;
+
+    this.#touchStart.x = t.pageX;
+    this.#touchStart.y = t.pageY;
+
+    this.#notify(e);
+  };
+
+  #bind() {
+    if (glideSupport!.hasWheelEvent) {
+      this.#el.addEventListener(
+        "wheel",
+        this.#onWheel as EventListener,
+        this.listenerOptions
+      );
+    }
+
+    if (glideSupport!.hasMouseWheelEvent) {
+      this.#el.addEventListener(
+        "mousewheel",
+        this.#onMouseWheel as EventListener,
+        this.listenerOptions
+      );
+    }
+
+    if (glideSupport!.hasTouch && this.#options.useTouch) {
+      this.#el.addEventListener(
+        "touchstart",
+        this.#onTouchStart as EventListener,
+        this.listenerOptions
+      );
+      this.#el.addEventListener(
+        "touchmove",
+        this.#onTouchMove as EventListener,
+        this.listenerOptions
+      );
+    }
+  }
+
+  #unbind() {
+    this.#el.removeEventListener("wheel", this.#onWheel as EventListener);
+    this.#el.removeEventListener(
+      "mousewheel",
+      this.#onMouseWheel as EventListener
+    );
+    this.#el.removeEventListener(
+      "touchstart",
+      this.#onTouchStart as EventListener
+    );
+    this.#el.removeEventListener(
+      "touchmove",
+      this.#onTouchMove as EventListener
+    );
+  }
+
+  on(cb: GlideInputHandler) {
+    this.#handlers.push(cb);
+    if (this.#handlers.length === 1) this.#bind();
+  }
+
+  destroy() {
+    this.#handlers = [];
+    this.#unbind();
+  }
+}
+
+interface GlideTrackConfig {
+  infinite: boolean;
+  snap: boolean;
+  dragSensitivity: number;
+  lerpFactor: number;
+  scrollSensitivity: number;
+  snapStrength: number;
+  speedDecay: number;
+  bounceLimit: number;
+  scrollInput: boolean;
+  endInset: number;
+  tiltStrength: number;
+  onSlideChange?: (current: number, previous: number) => void;
+}
+
+interface GlideViewport {
+  itemWidth: number;
+  wrapperWidth: number;
+  totalWidth: number;
+}
+
+const GLIDE_TRACK_DEFAULTS: GlideTrackConfig = {
+  infinite: true,
+  snap: true,
+  dragSensitivity: 0.005,
+  lerpFactor: 0.12,
+  scrollSensitivity: 1,
+  snapStrength: 0.1,
+  speedDecay: 0.85,
+  bounceLimit: 1,
+  scrollInput: false,
+  endInset: 0.03,
+  tiltStrength: 4.2,
+};
+
+const GLIDE_MAX_TILT = 5;
+const GLIDE_AXIS_THRESHOLD = 5;
+
+class GlideTrack {
+  config: GlideTrackConfig;
+  wrapper: HTMLElement;
+  items: HTMLElement[];
+  viewport: GlideViewport = { itemWidth: 0, wrapperWidth: 0, totalWidth: 0 };
+
+  current = 0;
+  target = 0;
+  speed = 0;
+  maxScroll = 0;
+  deltaTime = 0;
+
+  isDragging = false;
+  isTouching = false;
+  isVisible = false;
+
+  #dragStart = 0;
+  #dragStartTarget = 0;
+  #touchStartX = 0;
+  #touchStartY = 0;
+  #touchPreviousX?: number;
+  #dragAxis?: "horizontal" | "vertical";
+
+  #previousTime = 0;
+  #isActive = true;
+  #isPaused = false;
+  #isSettled = false;
+
+  #currentSlide = 0;
+  #previousSlide = 0;
+
+  #currentTilt = 0;
+  #hadActiveTilt = false;
+
+  #resizeTimeout?: ReturnType<typeof setTimeout>;
+  #resizeObserver?: ResizeObserver;
+  #observer?: IntersectionObserver;
+  #glideInput?: GlideInput;
+  #tickerFn: () => void;
+
+  constructor(wrapper: HTMLElement, config: Partial<GlideTrackConfig> = {}) {
+    this.config = { ...GLIDE_TRACK_DEFAULTS, ...config };
+    this.wrapper = wrapper;
+    this.items = [...wrapper.children] as HTMLElement[];
+
+    this.#measure();
+    this.#watchVisibility();
+    this.#addEventListeners();
+    this.#setupGlideInput();
+
+    this.wrapper.style.cursor = "grab";
+
+    this.#tickerFn = this.update.bind(this);
+    gsap.ticker.add(this.#tickerFn);
+  }
+
+  #measure(): void {
+    const itemWidths = this.items.map(
+      (item) => item.getBoundingClientRect().width
+    );
+    const totalWidth = itemWidths.reduce((sum, width) => sum + width, 0);
+    const itemWidth = itemWidths[0] ?? 0;
+
+    this.viewport = {
+      itemWidth,
+      wrapperWidth: this.wrapper.clientWidth,
+      totalWidth,
+    };
+
+    const endInset = this.config.endInset * this.wrapper.clientWidth;
+    const trailing = this.config.infinite
+      ? itemWidth
+      : Math.max(0, Math.min(this.wrapper.clientWidth, totalWidth) - endInset);
+    this.maxScroll = -(totalWidth - trailing) / (itemWidth || 1);
+  }
+
+  #watchVisibility(): void {
+    this.#observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          this.isVisible = entry.isIntersecting;
+        });
+      },
+      { root: null, rootMargin: "50px", threshold: 0 }
+    );
+
+    this.#observer.observe(this.wrapper);
+  }
+
+  #handleMouseDown = (e: MouseEvent) => this.#dragBegin(e);
+  #handleMouseMove = (e: MouseEvent) => this.#dragMove(e);
+  #handleMouseUp = () => this.#dragEnd();
+
+  #handleTouchStart = (e: TouchEvent) => {
+    const touch = e.touches[0];
+    this.#touchStartX = touch.clientX;
+    this.#touchStartY = touch.clientY;
+    this.#touchPreviousX = touch.clientX;
+    this.#dragAxis = undefined;
+    this.isTouching = true;
+    this.#dragBegin(touch);
+  };
+
+  #handleTouchMove = (e: TouchEvent) => {
+    if (!this.isTouching || this.#isPaused) return;
+
+    const touch = e.touches[0];
+    const deltaX = Math.abs(touch.clientX - this.#touchStartX);
+    const deltaY = Math.abs(touch.clientY - this.#touchStartY);
+
+    if (
+      !this.#dragAxis &&
+      (deltaX > GLIDE_AXIS_THRESHOLD || deltaY > GLIDE_AXIS_THRESHOLD)
+    ) {
+      this.#dragAxis = deltaX > deltaY ? "horizontal" : "vertical";
+    }
+
+    if (this.#dragAxis !== "horizontal") return;
+
+    e.preventDefault();
+    this.#dragMove(touch);
+    this.#touchPreviousX = touch.clientX;
+  };
+
+  #handleTouchEnd = () => {
+    this.isTouching = false;
+    this.#dragAxis = undefined;
+    this.#touchPreviousX = undefined;
+    this.#dragEnd();
+  };
+
+  #addEventListeners(): void {
+    this.wrapper.addEventListener("mousedown", this.#handleMouseDown);
+    window.addEventListener("mousemove", this.#handleMouseMove);
+    window.addEventListener("mouseup", this.#handleMouseUp);
+
+    this.wrapper.addEventListener("touchstart", this.#handleTouchStart);
+    window.addEventListener("touchmove", this.#handleTouchMove, {
+      passive: false,
+    });
+    window.addEventListener("touchend", this.#handleTouchEnd);
+
+    this.#resizeObserver = new ResizeObserver(() => {
+      if (this.#resizeTimeout) clearTimeout(this.#resizeTimeout);
+      this.#resizeTimeout = setTimeout(() => this.resize(), 10);
+    });
+    this.#resizeObserver.observe(this.wrapper);
+  }
+
+  #setupGlideInput(): void {
+    this.#glideInput = new GlideInput({
+      el: this.wrapper,
+      mouseMultiplier: 0.5,
+      touchMultiplier: 2,
+      firefoxMultiplier: 30,
+      passive: true,
+    });
+
+    this.#glideInput.on((event) => {
+      if (this.isDragging || this.#isPaused) return;
+
+      if (event.touchDevice) {
+        const deltaY = Math.abs(event.deltaY);
+        const deltaX = Math.abs(event.deltaX);
+        if (deltaY < GLIDE_AXIS_THRESHOLD && deltaX < GLIDE_AXIS_THRESHOLD)
+          return;
+        if (deltaY > deltaX) return;
+      }
+
+      const delta = !this.config.scrollInput
+        ? event.deltaX
+        : Math.abs(event.deltaX) > Math.abs(event.deltaY)
+          ? event.deltaX
+          : event.deltaY;
+
+      const deltaValue = delta * this.config.scrollSensitivity * 0.001;
+      let newTarget = this.target + deltaValue;
+
+      if (!this.config.infinite) {
+        newTarget = Math.min(0, Math.max(this.maxScroll, newTarget));
+      }
+
+      this.target = this.#clampToBounds(newTarget);
+      this.speed = -deltaValue * 10;
+    });
+  }
+
+  #clampToBounds(newTarget: number): number {
+    if (this.config.infinite) return newTarget;
+
+    const bounce = this.config.bounceLimit;
+    if (newTarget > bounce) return bounce;
+    if (newTarget < this.maxScroll - bounce) return this.maxScroll - bounce;
+    return newTarget;
+  }
+
+  #dragBegin(event: MouseEvent | Touch): void {
+    if (this.#isPaused) return;
+    this.isDragging = true;
+    this.#dragStart = event.clientX;
+    this.#dragStartTarget = this.target;
+    this.wrapper.style.cursor = "grabbing";
+  }
+
+  #dragMove(event: MouseEvent | Touch): void {
+    if (!this.isDragging || this.#isPaused) return;
+
+    const delta = event.clientX - this.#dragStart;
+    this.target = this.#clampToBounds(
+      this.#dragStartTarget + delta * this.config.dragSensitivity
+    );
+
+    if ("movementX" in event) {
+      this.speed += (event as MouseEvent).movementX * 0.01;
+    } else {
+      const previous = this.#touchPreviousX ?? event.clientX;
+      this.speed += (event.clientX - previous) * 0.01;
+    }
+  }
+
+  #dragEnd(): void {
+    this.isDragging = false;
+    this.wrapper.style.cursor = "grab";
+
+    if (!this.config.infinite) {
+      if (this.target > 0) {
+        this.target = 0;
+      } else if (this.target < this.maxScroll) {
+        this.target = this.maxScroll;
+      } else if (this.config.snap) {
+        const snapped = Math.round(this.target);
+        this.target =
+          this.target <= this.maxScroll + 0.5
+            ? this.maxScroll
+            : Math.min(0, Math.max(this.maxScroll, snapped));
+      }
+    } else if (this.config.snap) {
+      this.target = Math.round(this.target);
+    }
+  }
+
+  update(): void {
+    if (!this.isVisible || !this.#isActive) return;
+
+    const currentTime = performance.now();
+    this.deltaTime = (currentTime - this.#previousTime) / 1000;
+    this.#previousTime = currentTime;
+
+    const isMoving =
+      Math.abs(this.target - this.current) > 0.0001 ||
+      this.isDragging ||
+      this.isTouching ||
+      Math.abs(this.speed) > 0.001;
+
+    if (!isMoving) {
+      if (this.#isSettled) return;
+      this.current = this.target;
+      this.#isSettled = true;
+    } else {
+      this.#isSettled = false;
+    }
+
+    if (this.config.snap && !this.isDragging) {
+      let snapped = Math.round(this.target);
+      if (!this.config.infinite) {
+        snapped = snapped <= this.maxScroll ? this.maxScroll : Math.min(0, snapped);
+        if (this.target <= this.maxScroll + 0.5) snapped = this.maxScroll;
+      }
+      this.target += (snapped - this.target) * this.config.snapStrength;
+    }
+
+    if (isMoving) {
+      this.current = glideDamp(
+        this.current,
+        this.target,
+        1 / this.config.lerpFactor,
+        this.deltaTime
+      );
+    }
+
+    const count = this.items.length;
+
+    if (this.config.infinite) {
+      const rawIndex = Math.round(-this.current);
+      this.#setCurrentSlide(((rawIndex % count) + count) % count);
+      this.#renderInfinite();
+    } else {
+      this.#setCurrentSlide(Math.round(Math.abs(this.current)));
+      this.#renderFinite();
+    }
+
+    this.speed *= this.config.speedDecay;
+    this.#renderTilt();
+  }
+
+  #renderInfinite(): void {
+    const count = this.items.length;
+    const itemWidth = this.viewport.itemWidth;
+
+    for (let i = 0; i < count; i++) {
+      const x = centeredMod(this.current + i, count) - i;
+      this.items[i].style.transform = `translateX(${x * itemWidth}px)`;
+    }
+  }
+
+  #renderFinite(): void {
+    const translate = this.current * this.viewport.itemWidth;
+    for (let i = 0; i < this.items.length; i++) {
+      this.items[i].style.transform = `translateX(${translate}px)`;
+    }
+  }
+
+  #renderTilt(): void {
+    if (!this.items.length || !this.config.tiltStrength) return;
+
+    const diff = this.target - this.current;
+    const targetTilt = Math.max(
+      -GLIDE_MAX_TILT,
+      Math.min(GLIDE_MAX_TILT, diff * this.config.tiltStrength)
+    );
+
+    const dt = this.deltaTime ? Math.min(this.deltaTime, 0.05) : 0.016;
+    this.#currentTilt = glideDamp(this.#currentTilt, targetTilt, 14, dt);
+
+    const tilt = Math.abs(this.#currentTilt) > 0.01 ? this.#currentTilt : 0;
+
+    if (tilt === 0 && Math.abs(targetTilt) < 0.001) {
+      if (this.#hadActiveTilt) {
+        this.#hadActiveTilt = false;
+        this.#clearTilt();
+      }
+      return;
+    }
+
+    this.#hadActiveTilt = true;
+    const tiltStr = `rotate(${tilt.toFixed(2)}deg)`;
+
+    for (let i = 0; i < this.items.length; i++) {
+      const card = (this.items[i].firstElementChild ||
+        this.items[i]) as HTMLElement;
+      card.style.transform = tiltStr;
+      card.style.transformOrigin = "center bottom";
+      card.style.willChange = "transform";
+    }
+  }
+
+  #clearTilt(): void {
+    for (let i = 0; i < this.items.length; i++) {
+      const card = (this.items[i].firstElementChild ||
+        this.items[i]) as HTMLElement;
+      card.style.transform = "";
+      card.style.willChange = "";
+    }
+  }
+
+  goToNext(): void {
+    this.target = this.config.infinite
+      ? Math.round(this.target - 1)
+      : Math.max(this.maxScroll, Math.round(this.target - 1));
+  }
+
+  goToPrev(): void {
+    this.target = this.config.infinite
+      ? Math.round(this.target + 1)
+      : Math.min(0, Math.round(this.target + 1));
+  }
+
+  goToIndex(index: number): void {
+    if (!this.config.infinite) {
+      this.target = -Math.min(Math.max(index, 0), this.items.length - 1);
+      return;
+    }
+
+    const count = this.items.length;
+    const currentIndex = ((Math.round(-this.target) % count) + count) % count;
+    let step = index - currentIndex;
+    if (Math.abs(step) > count / 2) step += step > 0 ? -count : count;
+
+    this.target = Math.round(this.target) - step;
+  }
+
+  get currentSlide(): number {
+    return this.#currentSlide;
+  }
+
+  #setCurrentSlide(newSlide: number): void {
+    if (this.#currentSlide === newSlide) return;
+    this.#previousSlide = this.#currentSlide;
+    this.#currentSlide = newSlide;
+    this.config.onSlideChange?.(this.#currentSlide, this.#previousSlide);
+  }
+
+  set paused(value: boolean) {
+    this.#isPaused = value;
+  }
+
+  get paused(): boolean {
+    return this.#isPaused;
+  }
+
+  resize(): void {
+    this.#measure();
+
+    const wasActive = this.#isActive;
+    const wasVisible = this.isVisible;
+
+    this.#isActive = true;
+    this.isVisible = true;
+    this.#isSettled = false;
+    this.update();
+
+    this.#isActive = wasActive;
+    this.isVisible = wasVisible;
+  }
+
+  destroy(): void {
+    this.#isActive = false;
+
+    gsap.ticker.remove(this.#tickerFn);
+
+    this.wrapper.removeEventListener("mousedown", this.#handleMouseDown);
+    window.removeEventListener("mousemove", this.#handleMouseMove);
+    window.removeEventListener("mouseup", this.#handleMouseUp);
+    this.wrapper.removeEventListener("touchstart", this.#handleTouchStart);
+    window.removeEventListener("touchmove", this.#handleTouchMove);
+    window.removeEventListener("touchend", this.#handleTouchEnd);
+
+    if (this.#resizeTimeout) clearTimeout(this.#resizeTimeout);
+    this.#resizeObserver?.disconnect();
+    this.#observer?.disconnect();
+    this.#glideInput?.destroy();
+
+    this.#clearTilt();
+    this.items.forEach((item) => {
+      item.style.transform = "";
+    });
+    this.wrapper.style.cursor = "";
+  }
+}
 
 const prefersReducedMotion = () =>
- typeof window !=="undefined" &&
- window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+  typeof window !== "undefined" &&
+  window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
-const REDUCED_MOTION_NAV_DURATION = 0.15;
-
-/**
- * Same tween vars used for a nav-button click and for a drag-release snap,
- * so both interactions end up feeling identical.
- */
-const getNavVars = (reduceMotion: boolean) =>
- reduceMotion
- ? { duration: REDUCED_MOTION_NAV_DURATION, ease:"power2.out" }
- : { duration: 0.4, ease:"power1.inOut" };
-
-interface HorizontalLoopConfig {
- repeat?: number;
- snap?: number | false;
- paddingRight?: string | number;
- draggable?: boolean;
- wrapperEl?: Element;
- onIndexChange?: (index: number) => void;
- reduceMotion?: boolean;
- reversed?: boolean;
- speed?: number;
- pauseOnHover?: boolean;
- isHoveredRef?: { current: boolean };
- dragThreshold?: number;
- dragVelocityThreshold?: number;
+export interface GlideCarouselRef {
+  goToNext: () => void;
+  goToPrev: () => void;
+  goToIndex: (index: number) => void;
+  getTrack: () => GlideTrack | null;
 }
 
-/**
- * Returns a gsap.core.Timeline augmented with next/previous/current/toIndex/
- * updateIndex/times/draggable helpers (the official GSAP horizontalLoop
- * recipe) - typed loosely since it's an internal implementation detail, not
- * part of the component's public props.
- */
-function horizontalLoop(items: HTMLElement[], config: HorizontalLoopConfig = {}): any {
- items[0].getBoundingClientRect();
-
- const tl: any = gsap.timeline({
- repeat: config.repeat,
- paused: true,
- defaults: { ease:"none" },
- onReverseComplete: () => tl.totalTime(tl.rawTime() + tl.duration() * 100),
- });
-
- const length = items.length;
- const startX = items[0].offsetLeft;
- const times: number[] = [];
- const widths: number[] = [];
- const xPercents: number[] = [];
- let curIndex = 0;
-
- const pixelsPerSecond = 100 * Math.max(config.speed ?? 1, 0.01);
- const snap =
- config.snap === false ? ((v: number) => v) : gsap.utils.snap(config.snap || 1);
-
- const populateWidths = () =>
- items.forEach((el, i) => {
- widths[i] = parseFloat(gsap.getProperty(el,"width","px") as string);
- xPercents[i] = snap(
- (parseFloat(gsap.getProperty(el,"x","px") as string) / widths[i]) * 100 +
- (gsap.getProperty(el,"xPercent") as number)
- );
- });
-
- const getTotalWidth = () =>
- items[length - 1].offsetLeft +
- (xPercents[length - 1] / 100) * widths[length - 1] -
- startX +
- items[length - 1].offsetWidth *
- (gsap.getProperty(items[length - 1],"scaleX") as number) +
- (parseFloat(config.paddingRight as string) || 0);
-
- populateWidths();
- if (!widths[0]) return null;
-
- gsap.set(items, { xPercent: (i: number) => xPercents[i] });
- gsap.set(items, { x: 0 });
-
- const totalWidth = getTotalWidth();
-
- for (let i = 0; i < length; i++) {
- const item = items[i];
- const curX = (xPercents[i] / 100) * widths[i];
- const distanceToStart = item.offsetLeft + curX - startX;
- const distanceToLoop =
- distanceToStart + widths[i] * (gsap.getProperty(item,"scaleX") as number);
-
- tl.to(
- item,
- {
- xPercent: snap(((curX - distanceToLoop) / widths[i]) * 100),
- duration: distanceToLoop / pixelsPerSecond,
- },
- 0
- )
- .fromTo(
- item,
- {
- xPercent: snap(
- ((curX - distanceToLoop + totalWidth) / widths[i]) * 100
- ),
- },
- {
- xPercent: xPercents[i],
- duration:
- (curX - distanceToLoop + totalWidth - curX) / pixelsPerSecond,
- immediateRender: false,
- },
- distanceToLoop / pixelsPerSecond
- )
- .add("label" + i, distanceToStart / pixelsPerSecond);
-
- times[i] = distanceToStart / pixelsPerSecond;
- }
-
- function toIndex(index: number, vars: Record<string, any> = {}) {
- if (Math.abs(index - curIndex) > length / 2) {
- index += index > curIndex ? -length : length;
- }
-
- const newIndex = gsap.utils.wrap(0, length, index);
- let time = times[newIndex];
-
- if (time > tl.time() !== index > curIndex) {
- vars.modifiers = { time: gsap.utils.wrap(0, tl.duration()) };
- time += tl.duration() * (index > curIndex ? 1 : -1);
- }
-
- curIndex = newIndex;
- config.onIndexChange?.(newIndex);
- vars.overwrite = true;
- return tl.tweenTo(time, vars);
- }
-
- tl.next = (vars: Record<string, any>) => toIndex(curIndex + 1, vars);
- tl.previous = (vars: Record<string, any>) => toIndex(curIndex - 1, vars);
- tl.current = () => curIndex;
- tl.toIndex = (index: number, vars: Record<string, any>) => toIndex(index, vars);
- tl.updateIndex = () => {
- curIndex = gsap.utils.wrap(0, length, Math.round(tl.progress() * length));
- config.onIndexChange?.(curIndex);
- };
- tl.times = times;
-
- tl.progress(1, true).progress(0, true);
-
- if (config.reversed) {
- tl.vars.onReverseComplete();
- tl.reverse();
- }
-
- if (config.draggable) {
- const proxy = document.createElement("div");
- const wrap = gsap.utils.wrap(0, 1);
-
- let ratio: number;
- let startProgress: number;
- let draggableInst: any;
-
- const align = () => {
- tl.progress(
- wrap(startProgress + (draggableInst.startX - draggableInst.x) * ratio)
- );
- };
-
- // Drag release never free-scrolls or settles on the nearest fractional
- // position - it only ever decides a direction (from distance + velocity)
- // and then plays the exact same single-card tween a nav-button click
- // uses, via toIndex/tl.next/tl.previous.
- const DEFAULT_DRAG_THRESHOLD = 40;
- const DEFAULT_DRAG_VELOCITY_THRESHOLD = 400;
-
- draggableInst = Draggable.create(proxy, {
- trigger: config.wrapperEl,
- type:"x",
- inertia: false,
- onPress() {
- startProgress = tl.progress();
- tl.progress(0);
- populateWidths();
- const totalWidthCache = getTotalWidth();
- ratio = 1 / totalWidthCache;
- tl.progress(startProgress);
- },
- onDrag: align,
- onRelease() {
- const deltaX = this.x - this.startX;
- const velocityX =
- typeof this.getVelocity ==="function" ? this.getVelocity("x") : 0;
-
- const dragThreshold = config.dragThreshold ?? DEFAULT_DRAG_THRESHOLD;
- const dragVelocityThreshold =
- config.dragVelocityThreshold ?? DEFAULT_DRAG_VELOCITY_THRESHOLD;
-
- const navVars = getNavVars(!!config.reduceMotion);
-
- if (deltaX < -dragThreshold || velocityX < -dragVelocityThreshold) {
- tl.next({ ...navVars });
- } else if (deltaX > dragThreshold || velocityX > dragVelocityThreshold) {
- tl.previous({ ...navVars });
- } else {
- toIndex(curIndex, { ...navVars });
- }
- },
- })[0];
-
- tl.draggable = draggableInst;
- }
-
- return tl;
+interface GlideCarouselProps {
+  children?: ReactNode;
+  config?: Partial<GlideTrackConfig>;
+  className?: string;
+  wrapperClassName?: string;
+  itemClassName?: string;
+  onSlideChange?: (index: number) => void;
 }
 
-interface InfiniteCarouselCompProps {
- children?: ReactNode;
- draggable?: boolean;
- showNav?: boolean;
- speed?: number;
- pauseOnHover?: boolean;
- autoPlay?: boolean;
- autoPlayInterval?: number;
- direction?: "left" | "right";
- prevLabel?: ReactNode;
- nextLabel?: ReactNode;
- pageStyle?: CSSProperties;
- controlsStyle?: CSSProperties;
- prevBtnStyle?: CSSProperties;
- nextBtnStyle?: CSSProperties;
- wrapperStyle?: CSSProperties;
- itemStyle?: CSSProperties;
- pageClassName?: string;
- controlsClassName?: string;
- prevBtnClassName?: string;
- nextBtnClassName?: string;
- wrapperClassName?: string;
- itemClassName?: string;
- mobileBreakpoint?: number;
- mobileMode?: "gsap" | "wrap" | "swiper";
-}
-
-function InfiniteCarouselComp({
- children,
- draggable = true,
- showNav = true,
- speed = 1,
- pauseOnHover = true,
- autoPlay = false,
- autoPlayInterval = 3000,
- direction ="left",
- prevLabel ="← Prev",
- nextLabel ="Next →",
-
- pageStyle = {},
- controlsStyle = {},
- prevBtnStyle = {},
- nextBtnStyle = {},
- wrapperStyle = {},
- itemStyle = {},
-
- pageClassName ="",
- controlsClassName ="",
- prevBtnClassName ="",
- nextBtnClassName ="",
- wrapperClassName ="",
- itemClassName ="",
-
- mobileBreakpoint = 640,
- mobileMode ="gsap",
-}: InfiniteCarouselCompProps) {
- const wrapperRef = useRef<HTMLDivElement | null>(null);
- const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
- const loopRef = useRef<any>(null);
- const attemptsRef = useRef(0);
- const mobileCardRefs = useRef<(HTMLDivElement | null)[]>([]);
- const isAdjustingScrollRef = useRef(false);
- const isHoveredRef = useRef(false);
-
- const [isMobile, setIsMobile] = useState(false);
- const [activeIndex, setActiveIndex] = useState(0);
- const [reduceMotion, setReduceMotion] = useState(false);
-
- const childArray: any[] = useMemo(() => {
- return Array.isArray(children)
- ? children.flat().filter(Boolean)
- : children
- ? [children]
- : [];
- }, [children]);
-
- const slideCount = childArray.length;
- const activeChild = slideCount ? childArray[activeIndex] : null;
- const identifyingText =
- activeChild?.props?.title ||
- activeChild?.props?.["aria-label"] ||
- activeChild?.props?.alt ||
- null;
- const slideAnnouncement = slideCount
- ? identifyingText
- ? `${identifyingText}, slide ${activeIndex + 1} of ${slideCount}`
- : `Slide ${activeIndex + 1} of ${slideCount}`
- :"";
-
- const isWrapMode = isMobile && mobileMode ==="wrap";
- const isSwiperMode = isMobile && mobileMode ==="swiper";
-
- const mobileLoopItems = useMemo(() => {
- if (!isSwiperMode) return childArray;
- return [...childArray, ...childArray, ...childArray];
- }, [childArray, isSwiperMode]);
-
- useEffect(() => {
- const checkMode = () => {
- setIsMobile(window.innerWidth <= mobileBreakpoint);
- };
-
- checkMode();
- window.addEventListener("resize", checkMode);
-
- return () => window.removeEventListener("resize", checkMode);
- }, [mobileBreakpoint]);
-
- useEffect(() => {
- const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-
- const syncReducedMotion = (event: MediaQueryList | MediaQueryListEvent) => {
- setReduceMotion("matches" in event ? event.matches : prefersReducedMotion());
- };
-
- if (!mediaQuery) return;
-
- syncReducedMotion(mediaQuery);
- mediaQuery.addEventListener("change", syncReducedMotion);
- return () => mediaQuery.removeEventListener("change", syncReducedMotion);
- }, []);
-
- useEffect(() => {
- itemRefs.current = itemRefs.current.slice(0, childArray.length);
- mobileCardRefs.current = mobileCardRefs.current.slice(0, mobileLoopItems.length);
- }, [childArray.length, mobileLoopItems.length]);
-
- useEffect(() => {
- loopRef.current?.draggable?.kill();
- loopRef.current?.kill();
- loopRef.current = null;
-
- if (!childArray.length) return;
-
- attemptsRef.current = 0;
-
- function tryInit() {
- const items = itemRefs.current.filter(Boolean) as HTMLElement[];
- if (!items.length || !wrapperRef.current) return;
-
- const loop = horizontalLoop(items, {
- draggable,
- reduceMotion,
- speed,
- pauseOnHover,
- isHoveredRef,
- reversed: direction ==="right",
- wrapperEl: wrapperRef.current,
- onIndexChange: setActiveIndex,
- });
-
- if (!loop) {
- if (attemptsRef.current < 10) {
- attemptsRef.current += 1;
- requestAnimationFrame(tryInit);
- }
- return;
- }
-
- loopRef.current = loop;
- setActiveIndex(loop.current());
- }
-
- const raf = requestAnimationFrame(tryInit);
-
- return () => {
- cancelAnimationFrame(raf);
- loopRef.current?.draggable?.kill();
- loopRef.current?.kill();
- loopRef.current = null;
- attemptsRef.current = 0;
- };
- }, [childArray.length, draggable, isMobile, reduceMotion, speed, pauseOnHover, direction]);
-
- useEffect(() => {
- if (!isSwiperMode || !wrapperRef.current || !childArray.length) return;
-
- const wrapper = wrapperRef.current;
-
- const setInitialScroll = () => {
- const firstMiddleItem = mobileCardRefs.current[childArray.length];
- if (!firstMiddleItem) return;
-
- isAdjustingScrollRef.current = true;
- wrapper.scrollLeft = firstMiddleItem.offsetLeft;
- requestAnimationFrame(() => {
- isAdjustingScrollRef.current = false;
- });
- };
-
- const raf = requestAnimationFrame(setInitialScroll);
- return () => cancelAnimationFrame(raf);
- }, [isSwiperMode, childArray.length]);
-
- useEffect(() => {
- if (!isSwiperMode || !wrapperRef.current || !childArray.length) return;
-
- const wrapper = wrapperRef.current;
-
- const handleScroll = () => {
- if (isAdjustingScrollRef.current) return;
-
- const oneSetWidth =
- wrapper.scrollWidth / 3;
-
- const leftBoundary = oneSetWidth * 0.5;
- const rightBoundary = oneSetWidth * 1.5;
-
- if (wrapper.scrollLeft < leftBoundary) {
- isAdjustingScrollRef.current = true;
- wrapper.scrollLeft += oneSetWidth;
- requestAnimationFrame(() => {
- isAdjustingScrollRef.current = false;
- });
- } else if (wrapper.scrollLeft > rightBoundary) {
- isAdjustingScrollRef.current = true;
- wrapper.scrollLeft -= oneSetWidth;
- requestAnimationFrame(() => {
- isAdjustingScrollRef.current = false;
- });
- }
-
- if (!childArray.length) return;
-
- const center = wrapper.scrollLeft + wrapper.clientWidth / 2;
- let closestIndex = 0;
- let closestDistance = Infinity;
-
- mobileCardRefs.current.forEach((el, i) => {
- if (!el) return;
- const cardCenter = el.offsetLeft + el.offsetWidth / 2;
- const distance = Math.abs(cardCenter - center);
- if (distance < closestDistance) {
- closestDistance = distance;
- closestIndex = i % childArray.length;
- }
- });
-
- setActiveIndex(closestIndex);
- };
-
- wrapper.addEventListener("scroll", handleScroll, { passive: true });
- return () => wrapper.removeEventListener("scroll", handleScroll);
- }, [isSwiperMode, childArray.length]);
-
- const getMobileStepAmount = () => {
- const wrapper = wrapperRef.current;
- const firstItem = mobileCardRefs.current[childArray.length] || mobileCardRefs.current[0];
-
- if (!wrapper || !firstItem) return 0;
-
- const styles = getComputedStyle(wrapper);
- const gap =
- parseFloat(styles.columnGap) ||
- parseFloat(styles.gap) ||
- 0;
-
- return firstItem.offsetWidth + gap;
- };
-
- const scrollMobileByCard = (direction: number) => {
- if (!wrapperRef.current) return;
-
- const amount = getMobileStepAmount();
- if (!amount) return;
-
- wrapperRef.current.scrollBy({
- left: direction * amount,
- behavior: reduceMotion ?"auto" :"smooth",
- });
- };
-
- const handleNext = () => {
- if (isSwiperMode) {
- scrollMobileByCard(1);
- return;
- }
-
- if (isWrapMode) return;
-
- loopRef.current?.next(getNavVars(reduceMotion));
- };
-
- const handlePrev = () => {
- if (isSwiperMode) {
- scrollMobileByCard(-1);
- return;
- }
-
- if (isWrapMode) return;
-
- loopRef.current?.previous(getNavVars(reduceMotion));
- };
-
- useEffect(() => {
- if (!autoPlay || reduceMotion || slideCount <= 1) return;
-
- const intervalMs = Math.max(200, Number(autoPlayInterval) || 3000);
-
- const id = window.setInterval(() => {
- if (pauseOnHover && isHoveredRef.current) return;
- handleNext();
- }, intervalMs);
-
- return () => window.clearInterval(id);
- // eslint-disable-next-line react-hooks/exhaustive-deps
- }, [autoPlay, autoPlayInterval, reduceMotion, pauseOnHover, slideCount, isSwiperMode, isWrapMode]);
-
- return (
- <div className={`flex w-full flex-col pb-4 items-stretch justify-start gap-4 max-[1025px]:gap-4 max-md:gap-3 max-md:pb-2 ${pageClassName}`} style={pageStyle}>
- <div className="sr-only" aria-live="polite" aria-atomic="true">
- {slideAnnouncement}
- </div>
- {showNav && !isWrapMode && (
- <div
- className={`flex w-full items-center justify-center gap-4 max-[1025px]:w-full max-[1025px]:justify-center max-[1025px]:px-3 max-md:gap-3 max-md:px-2 ${controlsClassName}`}
- style={controlsStyle}
- >
- <button
- className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14 ${prevBtnClassName}`}
- style={prevBtnStyle}
- onClick={handlePrev}
- type="button"
- >
- {prevLabel}
- </button>
-
- <button
- className={`flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14 ${nextBtnClassName}`}
- style={nextBtnStyle}
- onClick={handleNext}
- type="button"
- >
- {nextLabel}
- </button>
- </div>
- )}
-
- <div
- ref={wrapperRef}
- onPointerEnter={() => {
- isHoveredRef.current = true;
- }}
- onPointerLeave={() => {
- isHoveredRef.current = false;
- }}
- className={`relative flex min-h-25 max-[1025px]:pt-14 w-full flex-nowrap items-stretch overflow-hidden ${
- isWrapMode
- ? "flex-wrap justify-center gap-4 overflow-visible max-[1025px]:gap-3.5 max-md:gap-3"
- : ""
- } ${
- isSwiperMode
- ? "gap-3.5 overflow-x-auto overflow-y-hidden px-3 [scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch] scrollbar-none [&::-webkit-scrollbar]:hidden max-[1025px]:gap-3 max-[1025px]:px-3 max-md:gap-2.5 max-md:px-2"
- : ""
- } ${wrapperClassName}`}
- style={wrapperStyle}
- >
- {(isSwiperMode ? mobileLoopItems : childArray).map((child, i) => {
- const realIndex = childArray.length ? i % childArray.length : i;
-
- return (
- <div
- key={`${realIndex}-${i}`}
- ref={(el) => {
- if (isSwiperMode) {
- mobileCardRefs.current[i] = el;
- } else {
- itemRefs.current[i] = el;
- }
- }}
- className={`relative shrink-0 select-none ${isWrapMode ? "transform-[none!important]" : ""} ${isSwiperMode ? "snap-center snap-always" : ""} ${itemClassName}`}
- style={itemStyle}
- aria-hidden={isSwiperMode && (i < childArray.length || i >= childArray.length * 2)}
- >
- {child}
- </div>
- );
- })}
- </div>
- </div>
- );
-}
-
-interface CarouselCardProps {
-    title: string;
-    subtitle: string;
-    description: string;
-    themeClass: string;
-    points: string[];
-    cardSize?: number;
-    cardWidth?: number;
-    cardHeight?: number;
-}
-
-function CarouselCard({ title, subtitle, description, themeClass, points, cardSize = 1, cardWidth = 512, cardHeight = 52 }: CarouselCardProps) {
-    const resolvedCardSize = Math.max(0.5, Number(cardSize) || 1);
-    const resolvedCardWidth = Math.max(260, Number(cardWidth) || 512) * resolvedCardSize;
-    const resolvedCardHeight = Math.max(28, Number(cardHeight) || 52) * resolvedCardSize;
+const GlideCarousel = forwardRef<GlideCarouselRef, GlideCarouselProps>(
+  function GlideCarousel(
+    {
+      children,
+      config,
+      className = "",
+      wrapperClassName = "",
+      itemClassName = "",
+      onSlideChange,
+    },
+    ref
+  ) {
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
+    const trackRef = useRef<GlideTrack | null>(null);
+    const slideChangeRef = useRef(onSlideChange);
+
+    useEffect(() => {
+      slideChangeRef.current = onSlideChange;
+    }, [onSlideChange]);
+
+    const childArray = React.Children.toArray(children).filter(Boolean);
+    const childCount = childArray.length;
+
+    const configKey = JSON.stringify(config ?? {});
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        goToNext: () => trackRef.current?.goToNext(),
+        goToPrev: () => trackRef.current?.goToPrev(),
+        goToIndex: (index: number) => trackRef.current?.goToIndex(index),
+        getTrack: () => trackRef.current,
+      }),
+      []
+    );
+
+    useEffect(() => {
+      if (!wrapperRef.current || childCount === 0) return;
+
+      const track = new GlideTrack(wrapperRef.current, {
+        ...(JSON.parse(configKey) as Partial<GlideTrackConfig>),
+        onSlideChange: (current) => slideChangeRef.current?.(current),
+      });
+
+      trackRef.current = track;
+
+      return () => {
+        track.destroy();
+        trackRef.current = null;
+      };
+    }, [childCount, configKey]);
 
     return (
+      <div className={`w-full overflow-hidden ${className}`}>
         <div
-            className="h-full w-lg px-3 max-[1025px]:w-md max-[1025px]:min-w-md max-[1025px]:max-w-[calc(100vw-5.5rem)] max-[1025px]:px-3 max-md:w-[calc(100vw-1.5rem)] max-md:min-w-[calc(100vw-1.5rem)] max-md:max-w-[calc(100vw-1.5rem)] max-md:px-2"
-            style={{ width: `${resolvedCardWidth}px`, minWidth: `${resolvedCardWidth}px` }}
+          ref={wrapperRef}
+          className={`flex w-full cursor-grab touch-pan-y select-none active:cursor-grabbing ${wrapperClassName}`}
         >
-            <div
-                className={`flex h-full min-h-[52vh] w-full flex-col gap-[1.2vw] border max-[1025px]:min-h-[58vh] max-[1025px]:gap-[2vw] max-md:min-h-[50vh] max-md:w-full max-md:gap-[4vw] p-[2vw] max-[1025px]:p-[3vw] max-md:px-6 max-md:py-10 overflow-hidden rounded-4xl max-md:rounded-2xl ${themeClass}`}
-                style={{ minHeight: `${resolvedCardHeight}vh`, borderRadius: "1.2vw", borderColor: "rgba(0,0,0,0.2)" }}
-            >
-                <div className="flex h-full flex-col gap-5">
-                    <span className="inline-flex w-fit items-center rounded-full border border-current px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase max-md:text-[0.68rem]">{subtitle}</span>
-                    <h2 className="m-0 text-5xl leading-[0.92] tracking-tighter max-[1025px]:text-[1.75rem] max-md:text-[1.45rem]">{title}</h2>
-                    <p className="m-0 max-w-[92%] text-[1.05rem] leading-[1.45] max-[1025px]:max-w-full max-[1025px]:text-[0.92rem] max-md:text-[0.88rem]">{description}</p>
-
-                    <div className="mt-auto flex flex-col gap-3.5">
-                        {points.map((point, pointIndex) => (
-                            <p key={pointIndex} className="m-0 border-t border-current pt-3.5 text-[0.96rem] leading-[1.45] max-[1025px]:text-[0.92rem] max-md:text-[0.88rem]">
-                                {point}
-                            </p>
-                        ))}
-                    </div>
-                </div>
+          {childArray.map((child, idx) => (
+            <div key={idx} className={`shrink-0 ${itemClassName}`}>
+              {child}
             </div>
+          ))}
         </div>
+      </div>
     );
+  }
+);
+
+export interface InfiniteCarouselCard {
+  id: number;
+  title: string;
+  subtitle: string;
+  description: string;
+  themeClassName: string;
+  points: string[];
+}
+
+function GlideCard({ card }: { card: InfiniteCarouselCard }) {
+  return (
+    <div className="h-full w-full">
+      <div
+        className={`flex h-[var(--glide-card-height)] w-full flex-col gap-[1.2vw] overflow-hidden rounded-[1.2vw] border border-black/20 p-[2vw] select-none will-change-transform max-[1025px]:gap-[2vw] max-[1025px]:p-[3vw] max-md:w-full max-md:gap-[4vw] max-md:rounded-none max-md:px-6 max-md:py-10 ${card.themeClassName}`}
+      >
+        <div className="flex h-full flex-col gap-5">
+          <span className="inline-flex w-fit items-center rounded-full border border-current px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase max-md:text-[0.68rem]">
+            {card.subtitle}
+          </span>
+
+          <h2 className="m-0 text-5xl leading-[0.92] tracking-tighter max-[1025px]:text-[1.75rem] max-md:text-[1.45rem]">
+            {card.title}
+          </h2>
+
+          <p className="m-0 max-w-[92%] text-[1.05rem] leading-[1.45] max-[1025px]:max-w-full max-[1025px]:text-[0.92rem] max-md:text-[0.88rem]">
+            {card.description}
+          </p>
+
+          <div className="mt-auto flex flex-col gap-3.5">
+            {card.points.map((point, pointIndex) => (
+              <p
+                key={pointIndex}
+                className="m-0 border-t border-current py-3.5 text-[0.96rem] leading-[1.45] max-[1025px]:text-[0.92rem] max-md:text-[0.88rem]"
+              >
+                {point}
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export interface InfiniteCarouselProps {
+  cards?: InfiniteCarouselCard[];
+  infinite?: boolean;
+  snap?: boolean;
+  draggable?: boolean;
+  autoPlay?: boolean;
+  autoPlayInterval?: number;
+  lerpFactor?: number;
+  dragSensitivity?: number;
+  snapStrength?: number;
+  tiltOnScroll?: boolean;
+  tiltStrength?: number;
+  showNav?: boolean;
+  cardWidth?: number;
+  cardHeight?: number;
+  gap?: number;
+  bgColor?: string;
+}
+
+const DEFAULT_CARDS: InfiniteCarouselCard[] = [
+  {
+    id: 1,
+    title: "Luxury Residences",
+    subtitle: "Dubai Marina",
+    description:
+      "Experience premium waterfront living with unmatched skyline views, private amenities, and a location built for modern luxury.",
+    themeClassName: "bg-[#111844] text-white",
+    points: [
+      "Private infinity pool, spa, and concierge access.",
+      "Floor-to-ceiling glass with panoramic marina views.",
+      "Designed for buyers who want prestige and convenience.",
+    ],
+  },
+  {
+    id: 2,
+    title: "Commercial Spaces",
+    subtitle: "Downtown Business Bay",
+    description:
+      "High-performance office environments crafted for ambitious brands, fast-growing teams, and companies that want presence.",
+    themeClassName: "bg-[#EAE0CF] text-[#111111]",
+    points: [
+      "Flexible layouts for studios, offices, and hybrid teams.",
+      "Prime location close to transport, hotels, and retail.",
+      "Ideal for startups, agencies, and enterprise hubs.",
+    ],
+  },
+  {
+    id: 3,
+    title: "Beachfront Villas",
+    subtitle: "Palm Jumeirah",
+    description:
+      "Escape into private coastal living with architectural elegance, serene surroundings, and direct beach access.",
+    themeClassName: "bg-[#4B5694] text-[#ffffff]",
+    points: [
+      "Private beach entry and landscaped outdoor decks.",
+      "Large family spaces with premium interior finishes.",
+      "Created for a calmer, more exclusive lifestyle.",
+    ],
+  },
+  {
+    id: 4,
+    title: "Skyline Penthouses",
+    subtitle: "Jumeirah Lake Towers",
+    description:
+      "Elevated urban living for buyers who want privacy, prestige, and dramatic city views from every level.",
+    themeClassName: "bg-[#8CC0EB] text-[#ffffff]",
+    points: [
+      "Expansive terraces with lounge and dining zones.",
+      "Premium finishes and double-height living spaces.",
+      "Perfect for statement living in the heart of the city.",
+    ],
+  },
+  {
+    id: 5,
+    title: "Retail Boutiques",
+    subtitle: "Dubai Hills",
+    description:
+      "Commercial retail environments positioned for visibility, high-value footfall, and strong brand presence.",
+    themeClassName: "bg-[#2C5EAD] text-[#FFFFFF]",
+    points: [
+      "High-traffic locations inside premium districts.",
+      "Flexible layouts for flagship retail experiences.",
+      "Built for visibility, conversion, and long-term value.",
+    ],
+  },
+  {
+    id: 6,
+    title: "Family Townhomes",
+    subtitle: "Arabian Ranches",
+    description:
+      "Well-planned residential communities designed for spacious family living, convenience, and long-term comfort.",
+    themeClassName: "bg-[#E8DDB4] text-[#111111]",
+    points: [
+      "Community parks, schools, and lifestyle amenities.",
+      "Spacious interiors with practical modern layouts.",
+      "A balanced choice for comfort and investment.",
+    ],
+  },
+];
+function buildLoopCards(cards: InfiniteCarouselCard[], infinite: boolean) {
+  if (cards.length === 0) return [];
+  if (!infinite) return cards;
+  return cards.length >= 8 ? cards : [...cards, ...cards];
 }
 
 export default function InfiniteCarousel({
-    draggable = true,
-    autoPlay = false,
-    autoPlayInterval = 3000,
-    gap = 32,
-    cardSize = 1,
-    cardWidth = 512,
-    cardHeight = 52,
-}) {
-    const cards = cardsData;
-    const showNav = true;
-    const mobileBreakpoint = 640;
-    const speed = 1;
-    const pauseOnHover = true;
-    const direction = "left";
-    const resolvedGap = Number(gap) || 32;
-    const resolvedCardSize = Math.max(0.5, Number(cardSize) || 1);
-    const resolvedCardWidth = Math.max(260, Number(cardWidth) || 512);
-    const resolvedCardHeight = Math.max(28, Number(cardHeight) || 52);
-    const carouselLayoutKey = `${resolvedGap}-${resolvedCardSize}-${resolvedCardWidth}-${resolvedCardHeight}`;
+  cards = DEFAULT_CARDS,
+  infinite = true,
+  snap = true,
+  draggable = true,
+  autoPlay = false,
+  autoPlayInterval = 3000,
+  lerpFactor = 0.12,
+  dragSensitivity = 0.005,
+  snapStrength = 0.1,
+  tiltOnScroll = false,
+  tiltStrength = 4.2,
+  showNav = true,
+  cardWidth = 33.8,
+  cardHeight = 60,
+  gap = 1.9,
+  bgColor = "#f4f0ea",
+}: InfiniteCarouselProps) {
+  const carouselRef = useRef<GlideCarouselRef | null>(null);
+  const isHoveredRef = useRef(false);
+  const scopeId = useId().replace(/:/g, "");
 
-    return (
-        <section className="h-fit min-h-0 w-full overflow-hidden bg-[#f4f0ea] px-0 pt-4 max-[1025px]:pt-6 max-[1025px]:pb-12 max-md:h-auto max-md:pb-0">
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
-            <div className="w-full">
-                <InfiniteCarouselComp
-                    key={carouselLayoutKey}
-                    controlsClassName="max-[1025px]:px-3 max-md:px-2"
-                    wrapperStyle={{
-                        width: "100%",
-                        minHeight: "auto",
-                        alignItems: "stretch",
-                        gap: `${resolvedGap}px`,
-                    }}
-                    pageClassName="gap-8 max-[1025px]:gap-6 max-md:gap-4"
-                    prevLabel={<ArrowLeft />}
-                    nextLabel={<ArrowRight />}
-                    prevBtnStyle={{
-                        borderRadius: "999px",
-                        padding: "0.85rem 1rem",
-                    }}
-                    nextBtnStyle={{
-                        borderRadius: "999px",
-                        padding: "0.85rem 1rem",
-                    }}
-                    draggable={draggable}
-                    showNav={showNav}
-                    mobileBreakpoint={mobileBreakpoint}
-                    speed={speed}
-                    pauseOnHover={pauseOnHover}
-                    autoPlay={autoPlay}
-                    autoPlayInterval={autoPlayInterval}
-                    direction={direction}
-                >
-                    {cards.map((card) => (
-                        <CarouselCard key={card.id} {...card} cardSize={resolvedCardSize} cardWidth={resolvedCardWidth} cardHeight={resolvedCardHeight} />
-                    ))}
-                </InfiniteCarouselComp>
-            </div>
-        </section>
-    );
+  const sourceCards = cards.length ? cards : DEFAULT_CARDS;
+  const loopCards = useMemo(
+    () => buildLoopCards(sourceCards, infinite),
+    [sourceCards, infinite]
+  );
+
+  const resolvedCardWidth = Math.max(10, Number(cardWidth) || 33.8);
+  const resolvedCardHeight = Math.max(20, Number(cardHeight) || 60);
+  const resolvedGap = Math.max(0, Number(gap) || 0);
+  const halfGap = Math.round((resolvedGap / 2) * 10) / 10;
+
+  const slideCount = sourceCards.length;
+  const activeCard = slideCount ? sourceCards[activeIndex % slideCount] : null;
+  const slideAnnouncement = slideCount
+    ? `${activeCard?.title.replace(/\n/g, " ") ?? "Slide"}, slide ${
+        (activeIndex % slideCount) + 1
+      } of ${slideCount}`
+    : "";
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return;
+
+    const sync = (event: MediaQueryList | MediaQueryListEvent) => {
+      setReduceMotion(
+        "matches" in event ? event.matches : prefersReducedMotion()
+      );
+    };
+
+    sync(mediaQuery);
+    mediaQuery.addEventListener("change", sync);
+    return () => mediaQuery.removeEventListener("change", sync);
+  }, []);
+
+  const trackConfig = useMemo(
+    () => ({
+      infinite,
+      snap,
+      lerpFactor: reduceMotion ? 0.01 : Math.max(0.01, Number(lerpFactor) || 0.12),
+      dragSensitivity: draggable ? Math.max(0, Number(dragSensitivity) || 0) : 0,
+      snapStrength: reduceMotion ? 1 : Math.max(0, Number(snapStrength) || 0.1),
+      tiltStrength:
+        reduceMotion || !tiltOnScroll ? 0 : Math.max(0, Number(tiltStrength) || 0),
+    }),
+    [
+      infinite,
+      snap,
+      reduceMotion,
+      lerpFactor,
+      draggable,
+      dragSensitivity,
+      snapStrength,
+      tiltOnScroll,
+      tiltStrength,
+    ]
+  );
+
+  const handleNext = () => carouselRef.current?.goToNext();
+  const handlePrev = () => carouselRef.current?.goToPrev();
+
+  useEffect(() => {
+    if (!autoPlay || reduceMotion || slideCount <= 1) return;
+
+    const intervalMs = Math.max(200, Number(autoPlayInterval) || 3000);
+    const id = window.setInterval(() => {
+      if (isHoveredRef.current) return;
+      carouselRef.current?.goToNext();
+    }, intervalMs);
+
+    return () => window.clearInterval(id);
+  }, [autoPlay, autoPlayInterval, reduceMotion, slideCount]);
+
+  return (
+    <section
+      data-glide-scope={scopeId}
+      className="relative z-10 flex h-fit min-h-0 w-full flex-col gap-8 overflow-hidden px-0 py-4 max-[1025px]:gap-6 max-[1025px]:py-6 max-md:h-auto max-md:gap-4 bg-[var(--glide-bg-color)]"
+      onPointerEnter={() => {
+        isHoveredRef.current = true;
+      }}
+      onPointerLeave={() => {
+        isHoveredRef.current = false;
+      }}
+    >
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {slideAnnouncement}
+      </div>
+
+      {showNav && (
+        <div className="flex w-full items-center justify-center gap-4 px-[3vw] max-[1025px]:px-3 max-md:gap-3 max-md:px-2">
+          <button
+            type="button"
+            onClick={handlePrev}
+            aria-label="Previous slide"
+            className="flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14"
+          >
+            <ArrowLeft className="size-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleNext}
+            aria-label="Next slide"
+            className="flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14"
+          >
+            <ArrowRight className="size-5" />
+          </button>
+        </div>
+      )}
+
+      <GlideCarousel
+        ref={carouselRef}
+        config={trackConfig}
+        onSlideChange={setActiveIndex}
+        wrapperClassName="py-[2vw]"
+        itemClassName="box-border px-[var(--glide-item-pad)] max-md:w-screen max-md:px-[3vw]"
+      >
+        {loopCards.map((card, idx) => (
+          <div
+            key={`${card.id}-${idx}`}
+            aria-hidden={idx >= sourceCards.length}
+            className="w-[var(--glide-card-width)] max-[1025px]:w-[52vw] max-md:w-full"
+          >
+            <GlideCard card={card} />
+          </div>
+        ))}
+      </GlideCarousel>
+
+      <style>{`
+        [data-glide-scope="${scopeId}"] {
+          --glide-card-width: ${resolvedCardWidth}vw;
+          --glide-card-height: ${resolvedCardHeight}vh;
+          --glide-item-pad: ${halfGap}vw;
+          --glide-bg-color: ${bgColor};
+        }
+      `}</style>
+    </section>
+  );
 }
-
-const cardsData = [
-    {
-        id: 1,
-        title: "Luxury Residences",
-        subtitle: "Dubai Marina",
-        description:
-            "Experience premium waterfront living with unmatched skyline views, private amenities, and a location built for modern luxury.",
-        themeClass: "bg-[#111844] text-white",
-        points: [
-            "Private infinity pool, spa, and concierge access.",
-            "Floor-to-ceiling glass with panoramic marina views.",
-            "Designed for buyers who want prestige and convenience.",
-        ],
-    },
-    {
-        id: 2,
-        title: "Commercial Spaces",
-        subtitle: "Downtown Business Bay",
-        description:
-            "High-performance office environments crafted for ambitious brands, fast-growing teams, and companies that want presence.",
-        themeClass: "bg-[#EAE0CF] text-[#111111]",
-        points: [
-            "Flexible layouts for studios, offices, and hybrid teams.",
-            "Prime location close to transport, hotels, and retail.",
-            "Ideal for startups, agencies, and enterprise hubs.",
-        ],
-    },
-    {
-        id: 3,
-        title: "Beachfront Villas",
-        subtitle: "Palm Jumeirah",
-        description:
-            "Escape into private coastal living with architectural elegance, serene surroundings, and direct beach access.",
-        themeClass: "bg-[#4B5694] text-[#ffffff]",
-        points: [
-            "Private beach entry and landscaped outdoor decks.",
-            "Large family spaces with premium interior finishes.",
-            "Created for a calmer, more exclusive lifestyle.",
-        ],
-    },
-    {
-        id: 4,
-        title: "Skyline Penthouses",
-        subtitle: "Jumeirah Lake Towers",
-        description:
-            "Elevated urban living for buyers who want privacy, prestige, and dramatic city views from every level.",
-        themeClass: "bg-[#8CC0EB] text-[#ffffff]",
-        points: [
-            "Expansive terraces with lounge and dining zones.",
-            "Premium finishes and double-height living spaces.",
-            "Perfect for statement living in the heart of the city.",
-        ],
-    },
-    {
-        id: 5,
-        title: "Retail Boutiques",
-        subtitle: "Dubai Hills",
-        description:
-            "Commercial retail environments positioned for visibility, high-value footfall, and strong brand presence.",
-        themeClass: "bg-[#2C5EAD] text-[#FFFFFF]",
-        points: [
-            "High-traffic locations inside premium districts.",
-            "Flexible layouts for flagship retail experiences.",
-            "Built for visibility, conversion, and long-term value.",
-        ],
-    },
-    {
-        id: 6,
-        title: "Family Townhomes",
-        subtitle: "Arabian Ranches",
-        description:
-            "Well-planned residential communities designed for spacious family living, convenience, and long-term comfort.",
-        themeClass: "bg-[#E8DDB4] text-[#111111]",
-        points: [
-            "Community parks, schools, and lifestyle amenities.",
-            "Spacious interiors with practical modern layouts.",
-            "A balanced choice for comfort and investment.",
-        ],
-    },
-];

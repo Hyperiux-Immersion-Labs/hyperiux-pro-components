@@ -1,18 +1,10 @@
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-"use client";
-
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import React, { useEffect, useRef, type ComponentProps } from "react";
+"use client"
+import React, { useRef, useEffect, type ComponentProps } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
-
-// True when the user has asked the OS to minimise animation. Safe to call
-// during render - returns false on the server.
-function prefersReducedMotion() {
-    if (typeof window === "undefined") return false
-    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false
-}
 
 const defaultItems = [
     "Websites, web apps, landing pages",
@@ -168,18 +160,16 @@ const items = [
 export default function SquareTranslate(props: ComponentProps<typeof SquareTranslateComp>) {
     return (
         <>
-      <div className="w-full bg-white h-[300vh] pt-[100vh] px-[20vw]">
 
             <SquareTranslateComp
                 items={items}
-                textClassName="text-[1.1vw] max-[1025px]:text-xl"
+                textClassName="text-[1.1vw] max-[1025px]:text-lg"
                 textColor="text-black"
-                squareClassName="w-[.6vw] h-[.6vw] max-[1025px]:w-3 max-[1025px]:h-3"
-                containerClassName="w-[50vw]  max-[1025px]:w-full"
+                squareClassName="w-[.6vw] h-[.6vw] max-md:w-3 max-md:h-3"
+                containerClassName="w-[50vw]  max-md:w-full"
                 borderColor="border-black/10"
                 {...props}
             />
-      </div>
 
         </>
     );
