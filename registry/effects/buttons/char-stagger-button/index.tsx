@@ -1,22 +1,22 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useEffect, useRef, useState, useCallback, type ComponentPropsWithoutRef, type ComponentType, type MouseEvent, type MouseEventHandler, type ReactNode } from "react";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const DEFAULT_HREF = "#";
-const DEFAULT_BTN_TEXT = "Hover me";
+const DEFAULT_TEXT = "Hover me";
 const DEFAULT_STAGGER_STEP = 0.01;
 const DEFAULT_HOVER_COLOR = "#ff6b00";
 const CHAR_TRANSLATE_Y = "1.3em";
 
 export interface CharStaggerButtonOwnProps {
-  btnText?: string;
+  text?: string;
   href?: string;
   className?: string;
   textClassName?: string;
-  linkProps?: Partial<ComponentPropsWithoutRef<'a'>>;
+  linkProps?: Partial<ComponentPropsWithoutRef<typeof Link>>;
   children?: ReactNode;
   staggerStep?: number;
   showLine?: boolean;
@@ -29,16 +29,17 @@ export interface CharStaggerButtonOwnProps {
   onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-export type CharStaggerButtonProps = CharStaggerButtonOwnProps & Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'onClick' | keyof CharStaggerButtonOwnProps>;
+export type CharStaggerButtonProps = CharStaggerButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, 'href' | 'onClick' | keyof CharStaggerButtonOwnProps>;
+
 export default function CharStaggerButton({
-  btnText = DEFAULT_BTN_TEXT,
+  text = DEFAULT_TEXT,
   href = DEFAULT_HREF,
   className = "",
   textClassName = "",
   linkProps = {},
   children,
   staggerStep = DEFAULT_STAGGER_STEP,
-  showLine = true,
+  showLine = false,
   lineClassName = "",
   hoverColor = DEFAULT_HOVER_COLOR,
   showArrow = false,
@@ -96,7 +97,7 @@ export default function CharStaggerButton({
     const textElement = textRef.current;
     if (!textElement) return;
 
-    const sourceText = btnText || textElement.getAttribute("data-text") || "";
+    const sourceText = text || textElement.getAttribute("data-text") || "";
     textElement.innerHTML = "";
 
     [...sourceText].forEach((char, index) => {
@@ -114,7 +115,7 @@ export default function CharStaggerButton({
       if (char === " ") span.style.whiteSpace = "pre";
       textElement.appendChild(span);
     });
-  }, [btnText, staggerStep, prefersReducedMotion]);
+  }, [text, staggerStep, prefersReducedMotion]);
 
   useEffect(() => {
     const textElement = textRef.current;
@@ -143,15 +144,12 @@ export default function CharStaggerButton({
     setIsActive((prev) => !prev);
   }, []);
 
-  const onMouseDown = useCallback(
-    (e: MouseEvent<HTMLAnchorElement>) => {
-      if (isTouchRef.current) e.preventDefault();
-    },
-    []
-  );
+  const onMouseDown = useCallback((e: MouseEvent<HTMLAnchorElement>) => {
+    if (isTouchRef.current) e.preventDefault();
+  }, []);
 
   // Derived
-  const sourceText = typeof children === "string" ? children :  btnText;
+  const sourceText = typeof children === "string" ? children : text;
   const mergedStyle = {
     ...props.style,
     color: isActive ? hoverColor : props.style?.color,
@@ -159,7 +157,8 @@ export default function CharStaggerButton({
 
   // Render
   return (
-    <a href={href}
+    <Link
+      href={href}
       {...linkProps}
       {...props}
       onClick={onClick}
@@ -168,11 +167,11 @@ export default function CharStaggerButton({
       onTouchStart={onTouchStart}
       onMouseDown={onMouseDown}
       style={mergedStyle}
-      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-md:motion-reduce:transition-none ${className}`.trim()}
+      className={`inline-flex items-center gap-2 no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none ${className}`.trim()}
     >
       <div className="mt-[0.3vw]">
         <span className={["inline-block relative", showLine && "w-fit", lineClassName].filter(Boolean).join(" ")}>
-          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-[1025px]:text-[3vw] ${textClassName}`.trim()}>
+          <span ref={textRef} data-text={sourceText} className={`overflow-hidden relative inline-block leading-[1.2] max-[1025px]:text-[3vw]  ${textClassName}`.trim()}>
             {sourceText}
           </span>
 
@@ -197,7 +196,7 @@ export default function CharStaggerButton({
       {showArrow && Icon && (
         <div className={`flex size-[1.18em] items-center justify-start overflow-hidden ${iconClassName}`.trim()}>
           {iconVariant === "single" ? (
-            <Icon className="size-[1.18em] shrink-0 motion-reduce:transition-none max-md:motion-reduce:transition-none" />
+            <Icon className="size-[1.18em] shrink-0 motion-reduce:transition-none max-[1025px]:motion-reduce:transition-none max-md:motion-reduce:transition-none" />
           ) : (
             <div
               className="flex h-full w-max"
@@ -218,6 +217,6 @@ export default function CharStaggerButton({
           )}
         </div>
       )}
-    </a>
+    </Link>
   );
 }

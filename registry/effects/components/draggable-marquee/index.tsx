@@ -1,9 +1,16 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
+import { useSyncExternalStore } from "react";
 
 import gsap from "gsap";
 import Draggable from "gsap/Draggable";
 import React, { useLayoutEffect, useMemo, useRef } from "react";
+
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
 const DEFAULT_ROOT_MARGIN = "256px";
 
@@ -254,13 +261,6 @@ export {
 
 gsap.registerPlugin(Draggable);
 
-// True when the user has asked the OS to minimise animation. Safe to call
-// during render - returns false on the server.
-function prefersReducedMotion() {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-}
-
 interface DraggableMarqueeItem {
     id?: string | number;
     src?: string;
@@ -359,7 +359,7 @@ const DraggableMarqueeComp = ({
 
         const getGap = () => {
             const styles = window.getComputedStyle(track);
-            return parseFloat(styles.columnGap || styles.gap || "0");
+            return parseFloat(String(styles.columnGap || styles.gap || 0));
         };
 
         const buildWrap = () => {
@@ -624,6 +624,7 @@ const DraggableMarqueeComp = ({
                         {renderItem ? (
                             renderItem(item, index % items.length)
                         ) : (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                                 src={item.src}
                                 alt={item.alt || "marquee-item"}

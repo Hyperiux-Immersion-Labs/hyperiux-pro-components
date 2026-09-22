@@ -17,17 +17,18 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 
 
-const IMG_PARAMS = "auto=format&fit=crop&w=1200&q=80";
+const IMG_BASE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/stack-spread";
 
 const IMG = {
-  plane: `https://images.unsplash.com/photo-1436491865332-7a61a109cc05?${IMG_PARAMS}`,
-  painting: `https://images.unsplash.com/photo-1578321272176-b7bbc0679853?${IMG_PARAMS}`,
-  breaker: `https://images.unsplash.com/photo-1547153760-18fc86324498?${IMG_PARAMS}`,
-  dog: `https://images.unsplash.com/photo-1507146426996-ef05306b995a?${IMG_PARAMS}`,
-  footballer: `https://images.unsplash.com/photo-1517649763962-0c623066013b?${IMG_PARAMS}`,
-  jacket: `https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?${IMG_PARAMS}`,
-  meadow: `https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?${IMG_PARAMS}`,
-  stripes: `https://images.unsplash.com/photo-1550859492-d5da9d8e45f3?${IMG_PARAMS}`,
+  plane: `${IMG_BASE}/img1.png`,
+  painting: `${IMG_BASE}/img2.png`,
+  breaker: `${IMG_BASE}/img3.png`,
+  dog: `${IMG_BASE}/img4.png`,
+  footballer: `${IMG_BASE}/img5.png`,
+  jacket: `${IMG_BASE}/img6.png`,
+  meadow: `${IMG_BASE}/img7.png`,
+  stripes: `${IMG_BASE}/img8.png`,
 } as const;
 
 // per-image rest scale, keyed by img index (1-8). default 1, drop below to shrink.
@@ -139,11 +140,7 @@ const rand = (seed: number) => {
   return v - Math.floor(v);
 };
 
-/**
- * Per-card pointer response: each card gets its own signed direction and
- * per-axis weight, so the spread cards drift every which way instead of
- * sliding as one block.
- */
+
 const parallaxDrift = (i: number) => ({
   x: (rand(i + 1) < 0.5 ? -1 : 1) * (0.55 + rand(i + 11) * 0.9),
   y: (rand(i + 21) < 0.5 ? -1 : 1) * (0.55 + rand(i + 31) * 0.9),

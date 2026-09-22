@@ -62,7 +62,7 @@ export interface InformationDrawerCompProps {
   overlayOpacity?: number;
   /** GSAP tween duration (seconds) for the staged content fade in/out. */
   contentDuration?: number;
-
+  /** Delay (seconds) before the staged content fades in, measured from when the drawer starts opening. */
   contentDelay?: number;
 }
 

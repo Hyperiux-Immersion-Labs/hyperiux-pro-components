@@ -14,8 +14,8 @@
   "description": "Deterministic per-character text flicker with adjustable correlation and optional glow bloom.",
   "category": "text",
   "dependencies": [
-    "gsap",
-    "@gsap/react"
+    "@gsap/react",
+    "gsap"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/flickering-text",

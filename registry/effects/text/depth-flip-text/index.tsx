@@ -1,5 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -31,6 +30,8 @@ const DEFAULT_PHRASES = [
   "Premium UI for modern teams",
   "Built to launch beautifully",
 ];
+const BACKGROUND_IMAGE_URL =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-27.jpg";
 
 const LINE_HEIGHT = 0.9;
 
@@ -247,6 +248,11 @@ const DepthFlipText = ({
     >
       <div
         aria-hidden="true"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${BACKGROUND_IMAGE_URL})` }}
+      />
+      <div
+        aria-hidden="true"
         className="absolute inset-0 bg-black/35"
       />
       <div
@@ -282,7 +288,7 @@ interface PhraseProps {
 const Phrase = ({ ref, text, tone, secondary = false }: PhraseProps) => (
   <p
     ref={ref}
-    className={`m-0 w-full whitespace-nowrap max-md:whitespace-normal text-center  text-[6vw] max-md:text-[10vw] max-[1025px]:text-[8vw] font-medium text-white! tracking-[-0.08em]  ${secondary ? "absolute inset-0 opacity-0" : "relative"}`}
+    className={`m-0 w-full whitespace-nowrap max-md:whitespace-normal text-center  text-[6vw] max-md:text-[10vw] max-[1025px]:text-[8vw] font-medium  tracking-[-0.08em]  ${secondary ? "absolute inset-0 opacity-0" : "relative"}`}
     style={{ color: tone, lineHeight: LINE_HEIGHT }}
   >
     {text}

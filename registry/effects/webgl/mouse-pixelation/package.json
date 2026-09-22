@@ -12,9 +12,9 @@
     "hyperiux"
   ],
   "dependencies": {
-    "three": "*",
     "@react-three/fiber": "*",
     "@react-three/postprocessing": "*",
-    "gsap": "*"
+    "gsap": "*",
+    "three": "*"
   }
 }

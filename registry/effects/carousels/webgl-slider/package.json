@@ -12,8 +12,8 @@
     "hyperiux"
   ],
   "dependencies": {
-    "three": "*",
     "gsap": "*",
-    "lenis": "*"
+    "lenis": "*",
+    "three": "*"
   }
 }

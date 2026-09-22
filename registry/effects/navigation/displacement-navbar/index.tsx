@@ -1,9 +1,25 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client'
+import { useSyncExternalStore } from "react";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState, type ComponentPropsWithoutRef } from 'react'
 import { gsap } from 'gsap'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePrefersReducedMotion } from '@/lib/motion'
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+
+      const mediaQueryList = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mediaQueryList.addEventListener("change", callback);
+
+      return () => mediaQueryList.removeEventListener("change", callback);
+    },
+    () => (typeof window === "undefined" ? false : window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false),
+    () => false
+  );
+}
 
 export interface DisplacementNavbarLink {
   label: string
@@ -158,19 +174,19 @@ const defaultSocials: DisplacementNavbarLink[] = [
 
 const defaultMedia: DisplacementNavbarMedia[] = [
   {
-    src: 'https://picsum.photos/seed/1/800/600',
+    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img01.png',
     caption: 'Drop-in motion primitives',
   },
   {
-    src: 'https://picsum.photos/seed/2/800/600',
+    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img02.png',
     caption: 'Full pages, wired and ready',
   },
   {
-    src: 'https://picsum.photos/seed/3/800/600',
+    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img03.png',
     caption: 'Built with Hyperiux in the wild',
   },
   {
-    src: 'https://picsum.photos/seed/4/800/600',
+    src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img04.png',
     caption: 'Guides, props and recipes',
   },
 ]
@@ -178,6 +194,7 @@ const defaultMedia: DisplacementNavbarMedia[] = [
 const EASE = 'expo.out'
 const IMG_PARK_SCALE = 1.08
 const MARK_DURATION = 0.45
+
 const MARK_UNSPIN_LEAD = 0.11
 const MARK_BLOCK_WIDTH = '100%'
 const MARK_BLOCK_HEIGHT = '2px'
@@ -253,6 +270,12 @@ const DisplacementNavbar = ({
   const reducedRef = useRef(reducedMotion)
   const timingRef = useRef({ openDuration, closeDuration, contentStagger, imageSwapDuration })
 
+  // Mutating a ref's .current directly during render (the previous shape of
+  // these two lines) is a render-phase side effect React disallows - refs
+  // are only guaranteed safe to read/write in effects or event handlers.
+  // Deferring to an effect (no deps, so it re-syncs after every render)
+  // keeps the "always latest value for later imperative reads" behavior the
+  // callbacks below rely on, just moved to the commit phase.
   useEffect(() => {
     reducedRef.current = reducedMotion
     timingRef.current = { openDuration, closeDuration, contentStagger, imageSwapDuration }
@@ -265,6 +288,7 @@ const DisplacementNavbar = ({
   const registerImage = useCallback((node: HTMLDivElement | null, index: number) => {
     if (node) imageRefs.current[index] = node
   }, [])
+
 
   const markOffsets = useCallback(() => {
     const h = markLineRef.current?.parentElement?.offsetHeight ?? 14
@@ -532,7 +556,9 @@ const DisplacementNavbar = ({
       className={`relative min-h-screen ${className}`}
       style={{ backgroundColor: shelfBackground, color: linkColor }}
     >
-
+      {/* The bar stays translucent in both states, so whatever sits behind it —
+          the page when closed, the shelf once it is out — reads through the
+          blur rather than being covered by a solid strip. */}
       <header
         ref={barRef}
         className="fixed top-0 left-0 right-0 z-30 bg-black/20 backdrop-blur-md flex items-center justify-between h-[4vw] max-[1025px]:h-[16vw] min-[769px]:max-[1025px]:h-[5.5vw] px-[1.7vw] max-[1025px]:px-[5vw] min-[769px]:max-[1025px]:px-[2.6vw] transition-colors duration-300"
@@ -564,7 +590,7 @@ const DisplacementNavbar = ({
           aria-label={isOpen ? 'Close navigation' : 'Open navigation'}
           className="group relative flex items-center justify-center w-[5vw] h-[5vw] max-[1025px]:w-[12vw] max-[1025px]:h-[12vw] min-[769px]:max-[1025px]:w-[5vw] min-[769px]:max-[1025px]:h-[5vw] mr-[-0.8vw] p-0 border-none bg-transparent cursor-pointer text-current"
         >
-   
+ 
           <span
             className={`relative block w-[2.4vw] h-[1.6vw] max-[1025px]:w-[8vw] max-[1025px]:h-[8vw] min-[769px]:max-[1025px]:w-[3.5vw] min-[769px]:max-[1025px]:h-[3.5vw] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
               isOpen ? 'group-hover:rotate-90 group-focus-visible:rotate-90' : ''

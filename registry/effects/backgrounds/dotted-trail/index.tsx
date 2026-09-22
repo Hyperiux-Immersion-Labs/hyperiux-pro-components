@@ -1,5 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -69,6 +68,17 @@ function rgbaToString(color: Rgba, alpha = color.a) {
   return `rgba(${Math.round(color.r)},${Math.round(color.g)},${Math.round(color.b)},${alpha.toFixed(2)})`;
 }
 
+function mixColor(from: Rgba, to: Rgba, amount: number): Rgba {
+  const t = Math.max(0, Math.min(1, amount));
+
+  return {
+    r: from.r + (to.r - from.r) * t,
+    g: from.g + (to.g - from.g) * t,
+    b: from.b + (to.b - from.b) * t,
+    a: from.a + (to.a - from.a) * t,
+  };
+}
+
 export default function DottedTrail({
   heading = "Trace the invisible",
   clue = "Move your cursor through the field.",
@@ -116,7 +126,7 @@ export default function DottedTrail({
     // trail params
     const maxTrailLength = 30;
     const trailBaseWidth = trailWidth;
-    const glowFeather = Math.max(0, trailBlur);
+    const safeTrailBlur = trailBlur;
     const mouseLerpFactor = 0.05;
     const trailStartColor = colorToRgba(trailColorA, { r: 255, g: 79, b: 216, a: 1 });
     const trailEndColor = colorToRgba(trailColorB, { r: 139, g: 92, b: 246, a: 1 });
@@ -271,31 +281,31 @@ export default function DottedTrail({
       context.fillStyle = canvasClearStyle;
       context.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-      // draw smooth gradient trail
+      // draw blur trail (except Safari)
       if (!isSafari && mouseHistory.length > 1) {
-        context.save();
-        context.globalCompositeOperation = "source-over";
-        for (let i = 0; i < mouseHistory.length; i++) {
+        context.filter = `blur(${safeTrailBlur}px)`;
+        for (let i = 1; i < mouseHistory.length; i++) {
           const age = i / (mouseHistory.length - 1);
-          const point = mouseHistory[i];
-          const tailProgress = age < 0.22 ? age / 0.22 : 1;
-          const coreRadius = Math.max(12, trailBaseWidth * lerp(0.18, 1, tailProgress));
-          const radius = coreRadius + glowFeather;
-          const coreStop = Math.max(0.08, Math.min(0.82, coreRadius / radius));
-          const alpha = Math.max(0.02, 0.34 * age);
-          const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, radius);
+          const alpha = idle ? 0.4 * age : 0.4 * age;
+          const previousAge = (i - 1) / (mouseHistory.length - 1);
+          const trailColor = mixColor(trailStartColor, trailEndColor, age);
+          const previousPoint = mouseHistory[i - 1];
+          const currentPoint = mouseHistory[i];
 
-          glow.addColorStop(0, rgbaToString(trailStartColor, alpha));
-          glow.addColorStop(coreStop * 0.55, rgbaToString(trailStartColor, alpha * 0.76));
-          glow.addColorStop(coreStop, rgbaToString(trailEndColor, alpha * 0.48));
-          glow.addColorStop(1, rgbaToString(trailEndColor, 0));
-
-          context.fillStyle = glow;
           context.beginPath();
-          context.arc(point.x, point.y, radius, 0, Math.PI * 2);
-          context.fill();
+          context.moveTo(previousPoint.x, previousPoint.y);
+          context.lineTo(currentPoint.x, currentPoint.y);
+          context.lineCap = "round";
+          context.lineJoin = "round";
+          const tailProgress = age < 0.22 ? age / 0.22 : 1;
+          context.lineWidth = Math.max(1, trailBaseWidth * lerp(0.12, 1, tailProgress));
+          context.strokeStyle = rgbaToString(
+            trailColor,
+            Math.max(0.08, alpha * (0.65 + previousAge * 0.35))
+          );
+          context.stroke();
         }
-        context.restore();
+        context.filter = "none";
       }
 
       // fade history if inactive

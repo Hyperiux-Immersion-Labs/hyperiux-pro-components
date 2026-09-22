@@ -12,13 +12,13 @@
     "hyperiux"
   ],
   "dependencies": {
-    "@react-three/fiber": "*",
     "@react-three/drei": "*",
+    "@react-three/fiber": "*",
     "@react-three/postprocessing": "*",
-    "postprocessing": "*",
     "gsap": "*",
-    "three": "*",
+    "lucide-react": "*",
     "motion": "*",
-    "lucide-react": "*"
+    "postprocessing": "*",
+    "three": "*"
   }
 }

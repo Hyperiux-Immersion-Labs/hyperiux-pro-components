@@ -4,17 +4,9 @@
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-/**
- * @typedef {Object} NavigationButtonsProps
- * @property {() => void} [onPrev]
- * @property {() => void} [onNext]
- * @property {boolean} [isAnimating]
- * @property {string} [className]
- */
-
-/** @param {NavigationButtonsProps} props */
 function NavigationButtons({
     onPrev,
     onNext,
@@ -28,12 +20,11 @@ function NavigationButtons({
                 aria-label="Previous testimonial"
                 onClick={onPrev}
                 disabled={isAnimating}
-                className="w-11 h-11 relative flex items-center group justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed overflow-hidden"
-                style={{ borderColor: "#00000066", color: "#000000" }}
+                className="w-11 h-11 relative flex items-center group justify-center overflow-hidden border border-[#00000066] bg-transparent text-[#000000] text-base cursor-pointer transition-colors duration-500 ease-in-out hover:bg-[#000000] hover:text-[#ffffff] hover:border-[#000000] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30"
             >
                 <ArrowLeft
                     size={16}
-                    className="absolute top-1/2  -translate-y-1/2  group-hover:scale-[0.9] group-hover:transition-all duration-500 group-hover:ease-out"
+                    className="absolute top-1/2 -translate-y-1/2 transition-transform duration-200 ease-in-out group-hover:scale-[0.9]"
                 />
             </button>
 
@@ -42,12 +33,11 @@ function NavigationButtons({
                 aria-label="Next testimonial"
                 onClick={onNext}
                 disabled={isAnimating}
-                className="w-11 h-11 flex overflow-hidden relative group items-center justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                style={{ borderColor: "#00000066", color: "#000000" }}
+                className="w-11 h-11 flex overflow-hidden relative group items-center justify-center border border-[#00000066] bg-transparent text-[#000000] text-base cursor-pointer transition-colors duration-500 ease-in-out hover:bg-[#000000] hover:text-[#ffffff] hover:border-[#000000] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30"
             >
                 <ArrowRight
                     size={16}
-                    className="absolute top-1/2  -translate-y-1/2  group-hover:scale-[0.9]  group-hover:transition-all duration-500 group-hover:ease-out"
+                    className="absolute top-1/2 -translate-y-1/2 transition-transform duration-200 ease-in-out group-hover:scale-[0.9]"
                 />
             </button>
         </nav>
@@ -85,7 +75,7 @@ function TestimonialComp({
 }: any) {
     const [current, setCurrent] = useState(0);
     const [displayItem, setDisplayItem] = useState(testimonials[0] ?? null);
-    const [, setIsAnimating] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
     const quoteRef = useRef<any>(null);
     const quoteMarkRef = useRef<any>(null);
@@ -134,7 +124,6 @@ function TestimonialComp({
             titleRef.current,
             mobileNameRef.current,
             mobileTitleRef.current,
-            quoteMarkRef.current,
         ];
 
         const onDone = () => {
@@ -144,11 +133,11 @@ function TestimonialComp({
 
         // Reduced-motion: skip SplitText / Y slides - opacity fade only.
         if (reduceMotionRef.current) {
-            gsap.set(quoteRef.current, { autoAlpha: 0 });
+            gsap.set([quoteRef.current, quoteMarkRef.current], { autoAlpha: 0 });
             gsap.set(meta, { autoAlpha: 0 });
 
             const tl = gsap.timeline({ onComplete: onDone });
-            tl.to(quoteRef.current, {
+            tl.to([quoteRef.current, quoteMarkRef.current], {
                 autoAlpha: 1,
                 duration: 0.5,
                 ease: "power2.out",
@@ -180,11 +169,12 @@ function TestimonialComp({
             const wrapper = document.createElement("div");
             wrapper.style.overflow = "hidden";
             wrapper.style.display = "block";
-            /** @type {Node} */ (line.parentNode).insertBefore(wrapper, line);
+            line.parentNode.insertBefore(wrapper, line);
             wrapper.appendChild(line);
         });
 
         gsap.set(lines, { yPercent: yFrom });
+        gsap.set(quoteMarkRef.current, { autoAlpha: 0 });
         gsap.set(meta, {
             autoAlpha: 0,
         });
@@ -200,6 +190,14 @@ function TestimonialComp({
                 from: direction === "next" ? "start" : "end",
             },
         }).to(
+            quoteMarkRef.current,
+            {
+                autoAlpha: 1,
+                duration: 0.6,
+                ease: "power2.out",
+            },
+            "<"
+        ).to(
             meta,
             {
                 autoAlpha: 1,
@@ -213,7 +211,7 @@ function TestimonialComp({
     }, []);
 
     const fadeOutCurrent = useCallback(() => {
-        return /** @type {Promise<void>} */ (new Promise((resolve) => {
+        return new Promise((resolve) => {
             const targets = [
                 quoteRef.current,
                 imageRef.current,
@@ -230,11 +228,11 @@ function TestimonialComp({
                 ease: "power1.in",
                 onComplete: resolve,
             });
-        }));
+        });
     }, []);
 
     const handlePrev = useCallback(async () => {
-        if (isAnimatingRef.current || total === 0) return;
+        if (isAnimatingRef.current || total <= 1) return;
         isAnimatingRef.current = true;
         setIsAnimating(true);
 
@@ -253,7 +251,7 @@ function TestimonialComp({
     }, [total, current, testimonials, fadeOutCurrent]);
 
     const handleNext = useCallback(async () => {
-        if (isAnimatingRef.current || total === 0) return;
+        if (isAnimatingRef.current || total <= 1) return;
         isAnimatingRef.current = true;
         setIsAnimating(true);
 
@@ -308,7 +306,7 @@ function TestimonialComp({
             style={{ backgroundColor: bgColor }}
         >
             {/* Header */}
-            <div className="flex items-start justify-between px-8 pr-50 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
+            <div className="flex items-start justify-between px-8 pr-24 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
                 <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-[1025px]:w-full max-md:w-full max-md:justify-between">
                     <div className="flex items-center gap-2 text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[4vw] font-semibold tracking-[0.12em] uppercase">
                         <span className="text-[9px] max-[1025px]:text-[12px] max-md:text-[15px] text-black">◆</span>
@@ -324,6 +322,7 @@ function TestimonialComp({
                         className="max-md:hidden"
                         onPrev={handlePrev}
                         onNext={handleNext}
+                        isAnimating={isAnimating}
                     />
                 )}
             </div>
@@ -340,10 +339,12 @@ function TestimonialComp({
                             height: `${12.5 * safeImageSize}rem`,
                         }}
                     >
-                        <img
+                        <Image
+                            fill
+                            sizes="200px"
                             src={displayItem.image}
                             alt={displayItem.name}
-                            className="object-cover w-full h-full object-top grayscale"
+                            className="object-cover object-top grayscale"
                         />
                     </div>
                 </div>
@@ -375,10 +376,12 @@ function TestimonialComp({
                                     height: `${9 * safeImageSize}rem`,
                                 }}
                             >
-                                <img
+                                <Image
+                                    fill
+                                    sizes="150px"
                                     src={displayItem.image}
                                     alt={displayItem.name}
-                                    className="object-cover w-full h-full object-top grayscale"
+                                    className="object-cover object-top grayscale"
                                 />
                             </div>
                             <div className="flex flex-col gap-1">
@@ -464,7 +467,7 @@ const TestimonialSwiper = ({
   imageSize = 1,
 }) => {
   return (
-    <div className="h-screen bg-white">
+    <div className="h-screen bg-white max-md:h-fit">
       <TestimonialComp
         testimonials={data}
         bgColor={bgColor}

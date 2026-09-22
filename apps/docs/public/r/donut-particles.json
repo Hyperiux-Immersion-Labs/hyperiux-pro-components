@@ -4,8 +4,8 @@
   "title": "Donut Particles",
   "description": "Interactive 3D donut particle field built with React Three Fiber. Includes cursor-driven flow, inertial motion, and a fullscreen canvas wrapper.",
   "dependencies": [
-    "three",
-    "@react-three/fiber"
+    "@react-three/fiber",
+    "three"
   ],
   "registryDependencies": [],
   "exportName": "DonutParticles",

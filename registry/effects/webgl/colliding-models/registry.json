@@ -20,12 +20,12 @@
   "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",
   "category": "webgl",
   "dependencies": [
-    "three",
-    "@react-three/fiber",
     "@react-three/drei",
-    "@react-three/rapier",
+    "@react-three/fiber",
     "@react-three/postprocessing",
-    "maath"
+    "@react-three/rapier",
+    "maath",
+    "three"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/colliding-models",

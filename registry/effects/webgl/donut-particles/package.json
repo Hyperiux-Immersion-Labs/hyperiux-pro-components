@@ -12,7 +12,7 @@
     "hyperiux"
   ],
   "dependencies": {
-    "three": "*",
-    "@react-three/fiber": "*"
+    "@react-three/fiber": "*",
+    "three": "*"
   }
 }

@@ -1,7 +1,22 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, useSyncExternalStore } from "react";
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+
+      const mediaQueryList = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mediaQueryList.addEventListener("change", callback);
+
+      return () => mediaQueryList.removeEventListener("change", callback);
+    },
+    () => (typeof window === "undefined" ? false : window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false),
+    () => false
+  );
+}
 
 const DEFAULT_ROOT_MARGIN = "256px";
 
@@ -250,18 +265,20 @@ export {
   DEFAULT_ROOT_MARGIN,
 };
 
+const proxy = (url: string) => `/api/media-proxy?url=${encodeURIComponent(url)}`;
+
 const imageUrls = [
- "https://picsum.photos/seed/1/800/600",
-  "https://picsum.photos/seed/2/800/600",
-  "https://picsum.photos/seed/3/800/600",
-  "https://picsum.photos/seed/4/800/600",
-  "https://picsum.photos/seed/5/800/600",
-  "https://picsum.photos/seed/6/800/600",
-  "https://picsum.photos/seed/7/800/600",
-  "https://picsum.photos/seed/8/800/600",
-  "https://picsum.photos/seed/9/800/600",
-  "https://picsum.photos/seed/10/800/600",
-  "https://picsum.photos/seed/11/800/600",
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg"),
+  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg"),
 ];
 
 const SLOTS = [
@@ -620,20 +637,6 @@ function ImageTrail({
  />
  </section>
  );
-}
-
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const update = () => setPrefersReducedMotion(mediaQuery.matches)
-    update()
-    mediaQuery.addEventListener('change', update)
-    return () => mediaQuery.removeEventListener('change', update)
-  }, [])
-
-  return prefersReducedMotion
 }
 
 interface MagneticImageTrailProps {

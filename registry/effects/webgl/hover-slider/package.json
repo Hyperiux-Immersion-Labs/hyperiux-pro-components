@@ -12,7 +12,7 @@
     "hyperiux"
   ],
   "dependencies": {
-    "three": "*",
-    "gsap": "*"
+    "gsap": "*",
+    "three": "*"
   }
 }

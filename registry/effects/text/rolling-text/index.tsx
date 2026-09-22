@@ -1,5 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useRef } from "react";
@@ -8,9 +7,14 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP);
 
-
+// Tile height of the reel, in em. Also hardcoded as 0.8 inside three Tailwind
+// arbitrary-value classes below (h3 leading, reel translate, glyph height),
+// since arbitrary values must be literal strings for Tailwind to pick them
+// up statically - keep all three in sync if this changes.
 const LINE_HEIGHT = 0.8;
 
+const BACKGROUND_IMAGE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-29.png";
 const FONT_FAMILY = "Helvetica Neue, Arial Narrow, system-ui, sans-serif";
 
 interface RollingTextProps {
@@ -107,6 +111,7 @@ const RollingText = ({
     <div
       ref={containerRef}
       className="relative grid place-items-center min-h-dvh bg-[#2a0e5f] bg-cover bg-center"
+      style={{ backgroundImage: `url(${BACKGROUND_IMAGE})` }}
     >
       <div className="absolute inset-0 bg-black/40" aria-hidden />
       {/*

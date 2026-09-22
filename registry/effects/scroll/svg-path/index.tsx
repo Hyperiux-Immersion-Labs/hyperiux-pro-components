@@ -2,6 +2,8 @@
 "use client";
 
 import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, useVelocity, type MotionValue } from "motion/react";
+import Image from "next/image";
+import Link from "next/link";
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState, type PointerEvent, type ReactNode, type RefObject } from "react";
 
 const DEFAULT_ROOT_MARGIN = "256px";
@@ -379,7 +381,6 @@ interface SVGPathCompProps {
   repeat?: number;
   draggable?: boolean;
   dragSensitivity?: number;
-  dragVelocityDecay?: number;
   dragAwareDirection?: boolean;
   grabCursor?: boolean;
   enableRollingZIndex?: boolean;
@@ -429,7 +430,6 @@ const SVGPathComp = ({
   draggable = false,
 
   dragSensitivity = 0.2,
-  dragVelocityDecay = 0.96,
   dragAwareDirection = false,
   grabCursor = false,
 
@@ -660,7 +660,7 @@ const SVGPathComp = ({
 
       // Gradually decay drag velocity back to zero
       if (!isDragging.current && Math.abs(dragVelocity.current) > 0.01) {
-        dragVelocity.current *= dragVelocityDecay
+        dragVelocity.current *= 0.9
       } else if (!isDragging.current) {
         dragVelocity.current = 0
       }
@@ -812,9 +812,23 @@ const circlePath =
 const spiralPath =
   "M0 165C120 40 240 290 360 165C480 40 600 290 720 165C840 40 960 290 1080 165";
 
-const svgPathImages = Array.from({ length: 15 }, (_, i) =>
-  `https://picsum.photos/seed/svg${i + 1}/56/100`
-);
+const svgPathImages = [
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+];
 
 const tabs = [
   {
@@ -846,7 +860,10 @@ const tabs = [
   },
 ];
 
-const imgs = svgPathImages.map((src) => ({ src }));
+const imgs = svgPathImages.map((src) => ({
+  src,
+  link: "/",
+}));
 
 interface SVGPathProps {
   bgColor?: string;
@@ -855,7 +872,6 @@ interface SVGPathProps {
   slowDownFactor?: number;
   draggable?: boolean;
 }
-
 export default function SVGPath({
   bgColor = "#000000",
   baseVelocity = 8,
@@ -873,7 +889,7 @@ export default function SVGPath({
     <>
 
       <section className="relative flex h-[180vh] w-dvw items-center justify-center overflow-hidden" style={{ backgroundColor: bgColor }}>
-        <div className="fixed inset-0 h-dvh w-dvw overflow-hidden" style={{ backgroundColor: bgColor }}>
+        <div className="fixed inset-0 h-svh w-dvw overflow-hidden" style={{ backgroundColor: bgColor }}>
           <div className="pointer-events-auto fixed left-1/2 bottom-[5%] max-[1025px]:bottom-[7%] z-20 flex -translate-x-1/2 items-center gap-[0.8vw] rounded-full border border-white/15 bg-white/10 p-[0.35vw] backdrop-blur-md  max-[1025px]:gap-[1.2vw] max-[1025px]:p-[0.7vw] max-md:w-fit max-[1025px]:h-fit max-md:justify-center max-md:gap-[2vw] max-md:p-[1.4vw]">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
@@ -911,14 +927,18 @@ export default function SVGPath({
             grabCursor
           >
             {imgs.map((img, i) => (
-              <div key={`${currentTab.id}-${i}`} className="h-full w-14 duration-300 ease-in-out hover:scale-150 max-[1025px]:w-16 max-md:w-18">
-                <img
-                  src={img.src}
-                  alt={`Marquee path image ${i + 1}`}
-                  className="h-full w-full object-cover"
-                  draggable={false}
-                />
-              </div>
+              <Link prefetch={false} key={`${currentTab.id}-${i}`} href={img.link}>
+                <div className="h-full w-14 duration-300 ease-in-out hover:scale-150 max-[1025px]:w-16 max-md:w-18">
+                  <Image
+                    src={img.src}
+                    alt={`Marquee path image ${i + 1}`}
+                    width={56}
+                    height={100}
+                    className="h-full w-full object-cover"
+                    draggable={false}
+                  />
+                </div>
+              </Link>
             ))}
           </SVGPathComp>
         </div>

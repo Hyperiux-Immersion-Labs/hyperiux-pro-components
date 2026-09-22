@@ -529,8 +529,8 @@ function ImageChunkContent({ images, slotIndex, config }: { images: string[]; sl
       {panels.map((panel) => (
         <Suspense key={panel.id} fallback={null}>
           <Image
+            alt="panel"
             {...({
-              alt: "panel",
               url: panel.url,
               position: panel.position,
               rotation: panel.rotation,
@@ -698,9 +698,10 @@ function InfiniteScrollCamera({ config }: { config: ReturnType<typeof resolveTun
     };
   }, [config]);
 
-  const lastFrameTimeRef = useRef(
+  const [initialFrameTime] = useState(() =>
     typeof performance !== "undefined" ? performance.now() : 0
   );
+  const lastFrameTimeRef = useRef(initialFrameTime);
 
   useFrame((_, delta) => {
     const cam = cameraRef.current;
@@ -802,6 +803,57 @@ interface GridTunnelCompProps {
   backgroundColor?: string;
 }
 
+const FALLBACK_IMAGES = [
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
+];
+
 function GridTunnelComp({
   images = [],
   gridSize = DEFAULT_GRID_SIZE,
@@ -824,56 +876,6 @@ function GridTunnelComp({
       }),
     [backgroundColor, depth, gridSize, lineColor, speed]
   );
-  const fallbackImages = [
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
-  ];
   // Validate image URLs on the client before passing to the three.js Image loader.
   // This prevents CORS/network failures from flooding the loader with bad URLs.
   const [validatedImages, setValidatedImages] = useState<string[]>([]);
@@ -890,7 +892,7 @@ function GridTunnelComp({
 
   useEffect(() => {
     let mounted = true;
-    const list = images && images.length > 0 ? images : fallbackImages;
+    const list = images && images.length > 0 ? images : FALLBACK_IMAGES;
 
     const validateUrl = (url: string): Promise<{ ok: boolean, url: string }> =>
       new Promise((res) => {
@@ -947,7 +949,7 @@ function GridTunnelComp({
     };
   }, [images]);
 
-  const imageList = !validating && validatedImages && validatedImages.length > 0 ? validatedImages : images.length > 0 ? images : fallbackImages;
+  const imageList = !validating && validatedImages && validatedImages.length > 0 ? validatedImages : images.length > 0 ? images : FALLBACK_IMAGES;
 
   return (
     <section
@@ -999,6 +1001,60 @@ function GridTunnelComp({
   );
 }
 
+const P = "/api/media-proxy?url=";
+const B = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images";
+
+const defaultImages = [
+  `${P}${B}/h-01.jpg`,
+  `${P}${B}/h-02.jpg`,
+  `${P}${B}/h-03.jpg`,
+  `${P}${B}/h-05.jpg`,
+  `${P}${B}/h-06.jpg`,
+  `${P}${B}/h-07.jpg`,
+  `${P}${B}/h-08.jpg`,
+  `${P}${B}/h-09.jpg`,
+  `${P}${B}/h-10.jpg`,
+  `${P}${B}/h-11.jpg`,
+  `${P}${B}/h-12.jpg`,
+  `${P}${B}/h-13.jpg`,
+  `${P}${B}/h-14.jpg`,
+  `${P}${B}/h-15.jpg`,
+  `${P}${B}/v-01.jpg`,
+  `${P}${B}/v-02.jpg`,
+  `${P}${B}/v-03.jpg`,
+  `${P}${B}/v-04.jpg`,
+  `${P}${B}/v-05.jpg`,
+  `${P}${B}/v-06.jpg`,
+  `${P}${B}/v-07.jpg`,
+  `${P}${B}/v-08.jpg`,
+  `${P}${B}/v-09.jpg`,
+  `${P}${B}/v-10.jpg`,
+  `${P}${B}/h-01.jpg`,
+  `${P}${B}/h-02.jpg`,
+  `${P}${B}/h-03.jpg`,
+  `${P}${B}/h-05.jpg`,
+  `${P}${B}/h-06.jpg`,
+  `${P}${B}/h-07.jpg`,
+  `${P}${B}/h-08.jpg`,
+  `${P}${B}/h-09.jpg`,
+  `${P}${B}/h-10.jpg`,
+  `${P}${B}/h-11.jpg`,
+  `${P}${B}/h-12.jpg`,
+  `${P}${B}/h-13.jpg`,
+  `${P}${B}/h-14.jpg`,
+  `${P}${B}/h-15.jpg`,
+  `${P}${B}/v-01.jpg`,
+  `${P}${B}/v-02.jpg`,
+  `${P}${B}/v-03.jpg`,
+  `${P}${B}/v-04.jpg`,
+  `${P}${B}/v-05.jpg`,
+  `${P}${B}/v-06.jpg`,
+  `${P}${B}/v-07.jpg`,
+  `${P}${B}/v-08.jpg`,
+  `${P}${B}/v-09.jpg`,
+  `${P}${B}/v-10.jpg`,
+];
+
 const GridTunnel = ({
   images = defaultImages,
   gridSize = 24,
@@ -1020,54 +1076,3 @@ const GridTunnel = ({
 }
 
 export default GridTunnel
-
-const defaultImages = [
-  "https://picsum.photos/seed/gtunnel0/800/600",
-  "https://picsum.photos/seed/gtunnel1/800/600",
-  "https://picsum.photos/seed/gtunnel2/800/600",
-  "https://picsum.photos/seed/gtunnel3/800/600",
-  "https://picsum.photos/seed/gtunnel4/800/600",
-  "https://picsum.photos/seed/gtunnel5/800/600",
-  "https://picsum.photos/seed/gtunnel6/800/600",
-  "https://picsum.photos/seed/gtunnel7/800/600",
-  "https://picsum.photos/seed/gtunnel8/800/600",
-  "https://picsum.photos/seed/gtunnel9/800/600",
-  "https://picsum.photos/seed/gtunnel10/800/600",
-  "https://picsum.photos/seed/gtunnel11/800/600",
-  "https://picsum.photos/seed/gtunnel12/800/600",
-  "https://picsum.photos/seed/gtunnel13/800/600",
-  "https://picsum.photos/seed/gtunnel14/800/600",
-  "https://picsum.photos/seed/gtunnel15/800/600",
-  "https://picsum.photos/seed/gtunnel16/800/600",
-  "https://picsum.photos/seed/gtunnel17/800/600",
-  "https://picsum.photos/seed/gtunnel18/800/600",
-  "https://picsum.photos/seed/gtunnel19/800/600",
-  "https://picsum.photos/seed/gtunnel20/800/600",
-  "https://picsum.photos/seed/gtunnel21/800/600",
-   "https://picsum.photos/seed/gtunnel22/800/600",
-  "https://picsum.photos/seed/gtunnel23/800/600",
-  "https://picsum.photos/seed/gtunnel24/800/600",
-  "https://picsum.photos/seed/gtunnel25/800/600",
-  "https://picsum.photos/seed/gtunnel26/800/600",
-  "https://picsum.photos/seed/gtunnel27/800/600",
-  "https://picsum.photos/seed/gtunnel28/800/600",
-  "https://picsum.photos/seed/gtunnel29/800/600",
-  "https://picsum.photos/seed/gtunnel30/800/600",
-  "https://picsum.photos/seed/gtunnel31/800/600",
-  "https://picsum.photos/seed/gtunnel32/800/600",
-  "https://picsum.photos/seed/gtunnel33/800/600",
-  "https://picsum.photos/seed/gtunnel34/800/600",
-    "https://picsum.photos/seed/gtunnel35/800/600",
-  "https://picsum.photos/seed/gtunnel36/800/600",
-  "https://picsum.photos/seed/gtunnel37/800/600",
-  "https://picsum.photos/seed/gtunnel38/800/600",
-  "https://picsum.photos/seed/gtunnel39/800/600",
-  "https://picsum.photos/seed/gtunnel40/800/600",
-  "https://picsum.photos/seed/gtunnel41/800/600",
-  "https://picsum.photos/seed/gtunnel42/800/600",
-  "https://picsum.photos/seed/gtunnel43/800/600",
-  "https://picsum.photos/seed/gtunnel44/800/600",
-  "https://picsum.photos/seed/gtunnel45/800/600",
-   "https://picsum.photos/seed/gtunnel46/800/600",
-  "https://picsum.photos/seed/gtunnel47/800/600",
-];

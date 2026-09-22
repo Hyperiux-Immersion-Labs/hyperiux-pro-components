@@ -15,6 +15,7 @@ interface PageFlipTransitionProps {
   children?: ReactNode
   duration?: number
   bgColor?: string
+  config?: { strokeColor?: string; strokeWidth?: number; duration?: number }
 }
 
 export default function PageFlipTransition({

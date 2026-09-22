@@ -1,5 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -33,6 +32,8 @@ const DEFAULT_TEXT =
   "Built for seamless interactions.\nDesigned with thoughtful motion.\nMade to feel unforgettable.";
 const DEFAULT_CHARACTER_STAGGER = 0.05;
 const REDUCED_MOTION_DURATION = 0.3;
+const DEFAULT_BACKGROUND_IMAGE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-23.jpg";
 
 export default function FocusText({
   text = DEFAULT_TEXT,
@@ -185,6 +186,7 @@ export default function FocusText({
       className={`relative flex min-h-screen w-full items-center overflow-hidden px-6 ${className}`}
       style={{
         backgroundColor,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.48)), url(${DEFAULT_BACKGROUND_IMAGE})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",

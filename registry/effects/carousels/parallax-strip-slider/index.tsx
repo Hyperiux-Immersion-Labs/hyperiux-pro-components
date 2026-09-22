@@ -4,7 +4,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 
 if (typeof window !== "undefined") {
@@ -59,22 +58,13 @@ type ParallaxStripSliderProps = {
   accentColor?: string;
 };
 
+const R2_BASE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/strip-paralax-slider";
+
 const DEFAULT_SLIDES: Slide[] = [
-  {
-    src: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1600&q=80",
-    title: "Fire",
-    chapter: "Collection 01",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1520975954732-35dd22299614?auto=format&fit=crop&w=1600&q=80",
-    title: "Allure",
-    chapter: "Collection 02",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1600&q=80",
-    title: "Ember",
-    chapter: "Collection 03",
-  },
+  { src: `${R2_BASE}/img01.png`, title: "Fire", chapter: "Collection 01" },
+  { src: `${R2_BASE}/img02.png`, title: "Allure", chapter: "Collection 02" },
+  { src: `${R2_BASE}/img03.png`, title: "Ember", chapter: "Collection 03" },
 ];
 
 type TransitionDirection = "next" | "prev";
@@ -110,8 +100,8 @@ export default function ParallaxStripSlider({
   const counterRef = useRef<HTMLSpanElement>(null);
   const counterNumRef = useRef<HTMLSpanElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
-  const stripsRef = useRef<HTMLDivElement[]>([]);
-  const zoomRef = useRef<HTMLDivElement[]>([]);
+  const stripsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const zoomRef = useRef<(HTMLDivElement | null)[]>([]);
   const isAnimating = useRef(false);
   const isFirstCaption = useRef(true);
   const splitRef = useRef<SplitText | null>(null);
@@ -157,33 +147,48 @@ export default function ParallaxStripSlider({
   }, [autoplay, total, onNext]);
 
   // Wipe + zoom + progress on slide change.
-  useGSAP(
+  //
+  // Deliberately a plain layout effect, not useGSAP: useGSAP only sets its
+  // internal `mounted` flag in a separate mount-only effect, so its very first
+  // dependency change still tears down the context it just built - the opening
+  // transition would be reverted the instant it was created. We own the
+  // timeline and kill it ourselves instead.
+  useLayoutEffect(
     () => {
       if (incoming === null) return;
 
-      const strips = stripsRef.current.slice(0, stripCount).filter(Boolean);
-      const zooms = zoomRef.current.slice(0, stripCount).filter(Boolean);
-      if (!strips.length) return;
-      const isPrevious = direction === "prev";
-      const orderedStrips = isPrevious ? [...strips].reverse() : strips;
-
-      // Reduced motion: swap without the reveal.
-      if (prefersReducedMotion()) {
-        setCaption(incoming);
-        setCurrent(incoming);
-        setIncoming(null);
-        isAnimating.current = false;
-        return;
-      }
-
-      const settle = () => {
-        setCaption(incoming);
+      // The animated path swaps the caption mid-wipe (see tl.add below); this
+      // only backstops the paths that never build a timeline.
+      const settleState = (withCaption = true) => {
+        if (withCaption) setCaption(incoming);
         setCurrent(incoming);
         setIncoming(null);
         isAnimating.current = false;
       };
 
-      const tl = gsap.timeline({ onComplete: settle });
+      const strips = stripsRef.current
+        .slice(0, stripCount)
+        .filter((el): el is HTMLDivElement => Boolean(el?.isConnected));
+      const zooms = zoomRef.current
+        .slice(0, stripCount)
+        .filter((el): el is HTMLDivElement => Boolean(el?.isConnected));
+
+      // Nothing to reveal (refs not mounted, or all stale) - commit the slide
+      // anyway so the lock never survives the frame.
+      if (strips.length < stripCount) {
+        settleState();
+        return;
+      }
+      const isPrevious = direction === "prev";
+      const orderedStrips = isPrevious ? [...strips].reverse() : strips;
+
+      // Reduced motion: swap without the reveal.
+      if (prefersReducedMotion()) {
+        settleState();
+        return;
+      }
+
+      const tl = gsap.timeline({ onComplete: () => settleState(false) });
 
       // Reverse stagger + clip origin when moving backward.
       tl.fromTo(
@@ -239,10 +244,22 @@ export default function ParallaxStripSlider({
           },
           0.15
         );
-        tl.add(() => setCaption(incoming), 0.5);
       }
+      // Swap the text while it is hidden under the strips - unconditional, so
+      // the caption still advances even if those refs are missing.
+      tl.add(() => setCaption(incoming), outgoing.length ? 0.5 : 0);
+
+      // Killing a finished timeline is a no-op; killing one still in flight
+      // (a prop changed mid-transition) must also release the lock, or every
+      // later click is rejected.
+      return () => {
+        const wasActive = tl.isActive();
+        tl.kill();
+        if (wasActive) isAnimating.current = false;
+      };
     },
-    { dependencies: [incoming, direction, stripCount, revealDuration, stripStagger, zoomFrom, zoomDuration], scope: rootRef }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [incoming, direction, stripCount, revealDuration, stripStagger, zoomFrom, zoomDuration, total]
   );
 
   // Revert the split before React commits the new title.
@@ -252,7 +269,9 @@ export default function ParallaxStripSlider({
   }, [caption]);
 
   // Incoming caption reveal: title chars, chapter fade, counter number.
-  useGSAP(
+  // Plain layout effect for the same reason as the wipe above - useGSAP would
+  // revert this timeline on the first caption change.
+  useLayoutEffect(
     () => {
       if (isFirstCaption.current) {
         isFirstCaption.current = false;
@@ -325,17 +344,26 @@ export default function ParallaxStripSlider({
           0
         );
       }
+
+      return () => {
+        // Only tear down if this split is still the live one - onComplete may
+        // already have reverted it and handed splitRef to a newer reveal.
+        if (splitRef.current !== split) return;
+        tl.kill();
+        split.revert();
+        splitRef.current = null;
+      };
     },
-    { dependencies: [caption], scope: rootRef }
+    [caption]
   );
 
   // Drop the last live split on unmount.
-  useGSAP(
+  useEffect(
     () => () => {
       splitRef.current?.revert();
       splitRef.current = null;
     },
-    { scope: rootRef }
+    []
   );
 
   // Circular cursor: smooth follow + arrow that flips with the pointer side.
@@ -453,7 +481,7 @@ export default function ParallaxStripSlider({
       <div
         key={i}
         ref={(el) => {
-          if (el) stripsRef.current[i] = el;
+          stripsRef.current[i] = el;
         }}
         className="absolute inset-y-0 overflow-hidden"
         style={{
@@ -474,7 +502,7 @@ export default function ParallaxStripSlider({
         >
           <div
             ref={(el) => {
-              if (el) zoomRef.current[i] = el;
+              zoomRef.current[i] = el;
             }}
             className="relative h-full w-full will-change-transform"
           >

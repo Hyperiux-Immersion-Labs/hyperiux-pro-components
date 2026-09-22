@@ -1,10 +1,16 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { prefersReducedMotion } from "@/lib/motion";
+
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
 const BASE_HEIGHT_VH = 600;
 const MIN_HEIGHT_VH = 300;

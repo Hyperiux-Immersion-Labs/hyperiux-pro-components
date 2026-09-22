@@ -93,33 +93,12 @@ const DEFAULT_DURATION = 0.55;
 const DEFAULT_LERP = 0.18;
 const DEFAULT_SMOOTHNESS = 0.4;
 
-function clampNumber(value: number, min: number, max: number, fallback: number) {
+function clampNumber(value: unknown, min: number, max: number, fallback: number) {
  const number = Number(value);
  if (!Number.isFinite(number)) return fallback;
  return Math.min(Math.max(number, min), max);
 }
 
-/**
- * @typedef {Object} DepthCardStackCompProps
- * @property {DepthCardStackCard[]} cards
- */
-
-/**
- * @typedef {Object} SlotProps
- * @property {number} x
- * @property {number} y
- * @property {number} rotateX
- * @property {number} rotateZ
- * @property {number} rotateY
- * @property {number} scale
- * @property {number} opacity
- * @property {number} zIndex
- */
-
-/**
- * @param {number|null} slot
- * @returns {SlotProps}
- */
 function getSlotProps(slot: number | null) {
  switch (slot) {
  case 0:
@@ -137,12 +116,6 @@ function getSlotProps(slot: number | null) {
  }
 }
 
-/**
- * @param {number} cardIdx
- * @param {number} centerIdx
- * @param {number} total
- * @returns {number|null}
- */
 function computeSlot(cardIdx: number, centerIdx: number, total: number) {
  const rel = ((cardIdx - centerIdx) % total + total) % total;
  if (rel === 0) return 0;
@@ -153,7 +126,6 @@ function computeSlot(cardIdx: number, centerIdx: number, total: number) {
  return null;
 }
 
-/** @param {DepthCardStackCompProps} props */
 function DepthCardStackComp({
  cards,
  duration = DEFAULT_DURATION,
@@ -213,7 +185,7 @@ function DepthCardStackComp({
  timelineRef.current?.kill();
  timelineRef.current = null;
 
- cardRefs.current.forEach((el: any, i: number) => {
+ cardRefs.current.forEach((el, i) => {
  if (!el) return;
  gsap.killTweensOf(el);
  const slot = computeSlot(i, centerRef.current, total);
@@ -240,7 +212,7 @@ function DepthCardStackComp({
  cancelAnimationFrame(readyFrame);
  timelineRef.current?.kill();
  timelineRef.current = null;
- cards.forEach((el: any) => el && gsap.killTweensOf(el));
+ cards.forEach((el) => el && gsap.killTweensOf(el));
  };
  }, [applyLayout]);
 
@@ -276,7 +248,7 @@ function DepthCardStackComp({
  });
  timelineRef.current = tl;
 
- cardRefs.current.forEach((cardEl: any, i: number) => {
+ cardRefs.current.forEach((cardEl, i) => {
  if (!cardEl) return;
 
  gsap.killTweensOf(cardEl);
@@ -347,12 +319,12 @@ function DepthCardStackComp({
  // Reduced-motion: no pointer tilt / texture reveal - reset any leftover transforms.
  if (reduceMotion || !mouseInteraction) {
   isHoveredRef.current = false;
-  cardFaceRefs.current.forEach((face: any) => {
+  cardFaceRefs.current.forEach((face) => {
    if (!face) return;
    gsap.killTweensOf(face);
    gsap.set(face, { rotateX: 0, rotateY: 0, x: 0, y: 0 });
   });
-  textureRefs.current.forEach((textureEl: any) => {
+  textureRefs.current.forEach((textureEl) => {
    if (!textureEl) return;
    gsap.killTweensOf(textureEl);
    gsap.set(textureEl, { opacity: 0, "--reveal-x": "50%", "--reveal-y": "50%" });
@@ -369,14 +341,13 @@ function DepthCardStackComp({
  getRaf: () => number | null;
  }> = [];
 
- cards.forEach((cardEl: HTMLDivElement, i: number) => {
+ cards.forEach((cardEl, i) => {
  const cardFace = cardFaceRefs.current[i];
  const textureEl = textureRefs.current[i];
  if (!cardEl || !cardFace || !textureEl) return;
 
  // Track per-card enter progress so first mousemove eases in gently
  let enterProgress = 0;
- /** @type {number | null} */
  let enterRaf: number | null = null;
 
  const handleEnter = (e: MouseEvent) => {

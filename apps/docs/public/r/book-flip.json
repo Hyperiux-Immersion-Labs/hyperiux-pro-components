@@ -4,10 +4,10 @@
   "title": "Book Flip",
   "description": "3D interactive book viewer with realistic page flips, built with React Three Fiber and Drei.",
   "dependencies": [
-    "three",
-    "@react-three/fiber",
     "@react-three/drei",
-    "maath"
+    "@react-three/fiber",
+    "maath",
+    "three"
   ],
   "registryDependencies": [],
   "exportName": "BookFlip",

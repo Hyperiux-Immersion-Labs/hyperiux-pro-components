@@ -12,9 +12,9 @@
     "hyperiux"
   ],
   "dependencies": {
-    "three": "*",
-    "@react-three/fiber": "*",
     "@react-three/drei": "*",
-    "maath": "*"
+    "@react-three/fiber": "*",
+    "maath": "*",
+    "three": "*"
   }
 }

@@ -3,6 +3,8 @@
 
 import gsap from "gsap";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 
 const FOCUSABLE_SELECTOR = [
@@ -62,7 +64,9 @@ export function useFocusTrap({
   onEscape,
 }: UseFocusTrapParams) {
   const onEscapeRef = useRef(onEscape);
-  onEscapeRef.current = onEscape;
+  useLayoutEffect(() => {
+    onEscapeRef.current = onEscape;
+  });
 
   useEffect(() => {
     if (!active) {
@@ -190,6 +194,8 @@ const __ElevateDesktopNav_DEFAULT_MENU_ITEMS = [
 ];
 
 const DROPDOWN_ITEM_OFFSET_Y = -8;
+const DROPDOWN_ITEM_STAGGER_IN = 0.025;
+const DROPDOWN_ITEM_STAGGER_OUT = 0.015;
 const NAV_TEXT_DURATION = 0.35;
 const CTA_DURATION = 0.4;
 const DROPDOWN_POINTER_DELAY = 0.03;
@@ -421,7 +427,7 @@ export function ElevateNavbarDesktop({
       y: 0,
       opacity: 1,
       duration: navTextDuration,
-      stagger: staggerItems ? 0.025 : 0,
+      stagger: staggerItems ? DROPDOWN_ITEM_STAGGER_IN : 0,
       ease,
     });
   }, [dropdownItemOffsetY, ease, getCurrentDropdownItems, killItemTween, navTextDuration, reduceMotion, staggerItems]);
@@ -440,7 +446,7 @@ export function ElevateNavbarDesktop({
 
       if (reduceMotion()) {
         gsap.set(dropdownItems, {
-          y: dropdownItemOffsetY,
+          y: DROPDOWN_ITEM_OFFSET_Y,
           opacity: 0,
           pointerEvents: "none",
         });
@@ -462,7 +468,7 @@ export function ElevateNavbarDesktop({
         y: dropdownItemOffsetY,
         opacity: 0,
         duration: navTextDuration,
-        stagger: staggerItems ? 0.015 : 0,
+        stagger: staggerItems ? DROPDOWN_ITEM_STAGGER_OUT : 0,
         ease,
       });
     },
@@ -564,8 +570,8 @@ export function ElevateNavbarDesktop({
       killSwitchTween,
       menuItems,
       navTextDuration,
-      reduceMotion,
       renderedDropdownIndex,
+      reduceMotion,
       setRenderedDropdownIndex,
       showWrapper,
     ]
@@ -693,9 +699,7 @@ export function ElevateNavbarDesktop({
       .to(
         ctaElement,
         {
-          backgroundColor: isEntering
-            ? ctaHoverBackground
-            : ctaBackground,
+          backgroundColor: isEntering ? ctaHoverBackground : ctaBackground,
         },
         0
       )
@@ -793,7 +797,7 @@ export function ElevateNavbarDesktop({
             const isDropdownActive = activeChevronIndex === index;
 
             return (
-              <a
+              <Link
                 key={item.name}
                 ref={(element) => {
                   navLinksRef.current[index] = element;
@@ -824,15 +828,16 @@ export function ElevateNavbarDesktop({
                     }`}
                   />
                 )}
-              </a>
+              </Link>
             );
           })}
         </div>
 
-        <a
+        <Link
           ref={ctaRef}
           href={cta.href}
-          className="relative overflow-hidden rounded-[0.26vw] bg-white px-[0.65vw] py-[0.65vw] text-[0.98vw] leading-none text-black"
+          style={{ backgroundColor: ctaBackground }}
+          className="relative overflow-hidden rounded-[0.26vw] px-[0.65vw] py-[0.65vw] text-[0.98vw] leading-none text-black"
           onMouseEnter={() => onCtaHover(true)}
           onMouseLeave={() => onCtaHover(false)}
         >
@@ -846,7 +851,7 @@ export function ElevateNavbarDesktop({
           >
             {cta.label}
           </span>
-        </a>
+        </Link>
 
         <div
           ref={dropdownRef}
@@ -863,7 +868,7 @@ export function ElevateNavbarDesktop({
                 }}
                 className="link-btns"
               >
-                <a
+                <Link
                   href={item.href}
                   onMouseEnter={() => onDropdownItemEnter(index)}
                   onMouseLeave={() => onDropdownItemLeave(index)}
@@ -871,7 +876,7 @@ export function ElevateNavbarDesktop({
                 >
                   <div className="flex items-center gap-[1.95vw]">
                     <div className="size-[6.5vw] overflow-hidden rounded-[0.55vw]">
-                      <img
+                      <Image
                         src={item.img}
                         alt={item.title}
                         width={500}
@@ -895,7 +900,7 @@ export function ElevateNavbarDesktop({
                   </div>
 
                   <ChevronRight className="mr-[2.6vw] h-[1.3vw] w-[1.3vw]" />
-                </a>
+                </Link>
               </div>
             ))}
           </div>
@@ -985,7 +990,6 @@ export function ElevateNavbarMobile({
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
   const motionDuration = Math.max(0.05, Number(duration) || 0.35);
 
-  // Trap focus across the toggle + panel while open, restore it on close.
   useFocusTrap({
     active: isMenuOpen,
     containerRef,
@@ -1107,7 +1111,9 @@ export function ElevateNavbarMobile({
           ref={toggleButtonRef}
           type="button"
           onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
-          className="flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] text-white transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+          className={`flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none ${
+            isMenuOpen ? "text-black" : "text-white"
+          }`}
           style={{ backgroundColor: isMenuOpen ? activeColor : undefined }}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -1134,7 +1140,7 @@ export function ElevateNavbarMobile({
 
             if (!hasDropdown) {
               return (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
@@ -1142,7 +1148,7 @@ export function ElevateNavbarMobile({
                   style={{ color: inactiveColor }}
                 >
                   {item.name}
-                </a>
+                </Link>
               );
             }
 
@@ -1179,7 +1185,7 @@ export function ElevateNavbarMobile({
                 >
                   <div className="space-y-[2vw] pt-[1vw]">
                     {(item.dropdown as ElevateDropdownItem[]).map((dropdownItem) => (
-                      <a
+                      <Link
                         key={dropdownItem.title}
                         href={dropdownItem.href}
                         onClick={() => setIsMenuOpen(false)}
@@ -1187,7 +1193,7 @@ export function ElevateNavbarMobile({
                         style={{ color: inactiveColor }}
                       >
                         <div className="relative h-[10vw] w-[10vw] overflow-hidden rounded-[2vw] bg-white/25">
-                          <img
+                          <Image
                             src={dropdownItem.img}
                             alt={dropdownItem.title}
                             width={80}
@@ -1197,7 +1203,7 @@ export function ElevateNavbarMobile({
                         </div>
 
                         <span className="flex-1">{dropdownItem.title}</span>
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -1206,13 +1212,13 @@ export function ElevateNavbarMobile({
           })}
 
           <div className="pt-[3vw]">
-            <a
+            <Link
               href={cta.href}
               onClick={() => setIsMenuOpen(false)}
               className="block w-full max-md:py-[3vw] rounded-[3vw] bg-white py-[1.5vw] text-center max-md:text-[3vw] max-[1025px]:text-[2.5vw] font-semibold text-black"
             >
               {cta.label}
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -1273,6 +1279,15 @@ export default function ElevateNavbar({ navConfig = {}, ...props }: ElevateNavba
       style={{ backgroundColor: config.backgroundColor }}
       className="relative h-screen w-full font-mono text-[0.75vw]"
     >
+      <div className="absolute left-1/2 top-[30%] max-md:top-[15%] w-full -translate-x-1/2 -translate-y-1/2 text-center text-[#363737]">
+        <h1 className="text-[8vw] font-black uppercase">
+          Elevate Navbar
+        </h1>
+        <p className="mt-4 text-[1.2vw] max-[1025px]:text-[2vw] max-[1025px]:w-[80%] max-[1025px]:mx-auto max-md:text-[3vw]">
+          Hover over the navbar to see the effect. Resize the window to see the responsive design in action.
+        </p>
+      </div>
+
       {isMobile ? (
         <ElevateNavbarMobile
           menuItems={menuItems}

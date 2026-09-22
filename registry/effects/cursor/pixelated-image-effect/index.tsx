@@ -163,6 +163,7 @@ export default function PixelatedImageEffect({
   const animationRef = useRef<number | null>(null);
   const [renderedPixelSize, setRenderedPixelSize] = useState(pixelSize);
   const [targetPixelSize, setTargetPixelSize] = useState(pixelSize);
+  const [prevResolvedPixelSize, setPrevResolvedPixelSize] = useState(pixelSize);
   const pixelateFilterId = `pixelate-filter-${useId().replace(/:/g, "")}`;
   const prefersReducedMotion = usePrefersReducedMotion();
   const fallbackSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg";
@@ -171,14 +172,23 @@ export default function PixelatedImageEffect({
   const resolvedDuration = Math.max(Number(duration) || 0, 0);
   const resolvedMouseReactivity = Math.min(Math.max(Number(mouseReactivity) || 0, 0), 2);
 
-  useEffect(() => {
+  // Reset the animation target whenever the resolved pixelSize prop changes,
+  // without clobbering the interactive target set by pointer movement below.
+  // This is pure derived state (no browser API), so it's adjusted directly
+  // during render instead of via an effect.
+  if (resolvedPixelSize !== prevResolvedPixelSize) {
+    setPrevResolvedPixelSize(resolvedPixelSize);
     setTargetPixelSize(resolvedPixelSize);
-  }, [resolvedPixelSize]);
+  }
 
   useEffect(() => {
     if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
 
     if (resolvedDuration === 0) {
+      // Shares this effect with the rAF-driven tween below (same
+      // cancelAnimationFrame bookkeeping) - keeping the instant-jump case
+      // here preserves a single source of truth for animation timing.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRenderedPixelSize(targetPixelSize);
       return undefined;
     }
@@ -203,6 +213,11 @@ export default function PixelatedImageEffect({
     return () => {
       if (animationRef.current !== null) cancelAnimationFrame(animationRef.current);
     };
+    // renderedPixelSize is only read here to snapshot the tween's starting
+    // value, and this same effect updates it every animation frame (see
+    // setRenderedPixelSize above). Depending on it would restart the tween
+    // from scratch on every frame instead of animating smoothly.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedDuration, targetPixelSize]);
 
   const updatePixel = (event: ReactPointerEvent<HTMLDivElement>) => {

@@ -1,7 +1,22 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ComponentProps, type ReactNode, useSyncExternalStore } from "react";
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+
+      const mediaQueryList = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mediaQueryList.addEventListener("change", callback);
+
+      return () => mediaQueryList.removeEventListener("change", callback);
+    },
+    () => (typeof window === "undefined" ? false : window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false),
+    () => false
+  );
+}
 
 const DEFAULT_ROOT_MARGIN = "256px";
 
@@ -554,20 +569,6 @@ function CharacterTrailComp({
  `}</style>
  </div>
  );
-}
-
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const update = () => setPrefersReducedMotion(mediaQuery.matches)
-    update()
-    mediaQuery.addEventListener('change', update)
-    return () => mediaQuery.removeEventListener('change', update)
-  }, [])
-
-  return prefersReducedMotion
 }
 
 const Content = () => (

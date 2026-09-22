@@ -20,8 +20,8 @@
   "description": "WebGPU fish-eye lens distortion on images using Three.ts TSL node materials with smooth cursor tracking",
   "category": "cursor",
   "dependencies": [
-    "@react-three/fiber",
     "@react-three/drei",
+    "@react-three/fiber",
     "three"
   ],
   "registryDependencies": [],

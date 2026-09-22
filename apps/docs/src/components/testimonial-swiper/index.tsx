@@ -20,12 +20,11 @@ function NavigationButtons({
                 aria-label="Previous testimonial"
                 onClick={onPrev}
                 disabled={isAnimating}
-                className="w-11 h-11 relative flex items-center group justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30 overflow-hidden"
-                style={{ borderColor: "#00000066", color: "#000000" }}
+                className="w-11 h-11 relative flex items-center group justify-center overflow-hidden border border-[#00000066] bg-transparent text-[#000000] text-base cursor-pointer transition-colors duration-500 ease-in-out hover:bg-[#000000] hover:text-[#ffffff] hover:border-[#000000] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30"
             >
                 <ArrowLeft
                     size={16}
-                    className="absolute top-1/2  -translate-y-1/2  group-hover:scale-[0.9] group-hover:transition-all duration-500 group-hover:ease-out"
+                    className="absolute top-1/2 -translate-y-1/2 transition-transform duration-200 ease-in-out group-hover:scale-[0.9]"
                 />
             </button>
 
@@ -34,12 +33,11 @@ function NavigationButtons({
                 aria-label="Next testimonial"
                 onClick={onNext}
                 disabled={isAnimating}
-                className="w-11 h-11 flex overflow-hidden relative group items-center justify-center border border-black/18 bg-transparent text-base cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30"
-                style={{ borderColor: "#00000066", color: "#000000" }}
+                className="w-11 h-11 flex overflow-hidden relative group items-center justify-center border border-[#00000066] bg-transparent text-[#000000] text-base cursor-pointer transition-colors duration-500 ease-in-out hover:bg-[#000000] hover:text-[#ffffff] hover:border-[#000000] disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30"
             >
                 <ArrowRight
                     size={16}
-                    className="absolute top-1/2  -translate-y-1/2  group-hover:scale-[0.9]  group-hover:transition-all duration-500 group-hover:ease-out"
+                    className="absolute top-1/2 -translate-y-1/2 transition-transform duration-200 ease-in-out group-hover:scale-[0.9]"
                 />
             </button>
         </nav>
@@ -77,7 +75,7 @@ function TestimonialComp({
 }: any) {
     const [current, setCurrent] = useState(0);
     const [displayItem, setDisplayItem] = useState(testimonials[0] ?? null);
-    const [, setIsAnimating] = useState(false);
+    const [isAnimating, setIsAnimating] = useState(false);
 
     const quoteRef = useRef<any>(null);
     const quoteMarkRef = useRef<any>(null);
@@ -126,7 +124,6 @@ function TestimonialComp({
             titleRef.current,
             mobileNameRef.current,
             mobileTitleRef.current,
-            quoteMarkRef.current,
         ];
 
         const onDone = () => {
@@ -136,11 +133,11 @@ function TestimonialComp({
 
         // Reduced-motion: skip SplitText / Y slides - opacity fade only.
         if (reduceMotionRef.current) {
-            gsap.set(quoteRef.current, { autoAlpha: 0 });
+            gsap.set([quoteRef.current, quoteMarkRef.current], { autoAlpha: 0 });
             gsap.set(meta, { autoAlpha: 0 });
 
             const tl = gsap.timeline({ onComplete: onDone });
-            tl.to(quoteRef.current, {
+            tl.to([quoteRef.current, quoteMarkRef.current], {
                 autoAlpha: 1,
                 duration: 0.5,
                 ease: "power2.out",
@@ -177,6 +174,7 @@ function TestimonialComp({
         });
 
         gsap.set(lines, { yPercent: yFrom });
+        gsap.set(quoteMarkRef.current, { autoAlpha: 0 });
         gsap.set(meta, {
             autoAlpha: 0,
         });
@@ -192,6 +190,14 @@ function TestimonialComp({
                 from: direction === "next" ? "start" : "end",
             },
         }).to(
+            quoteMarkRef.current,
+            {
+                autoAlpha: 1,
+                duration: 0.6,
+                ease: "power2.out",
+            },
+            "<"
+        ).to(
             meta,
             {
                 autoAlpha: 1,
@@ -226,7 +232,7 @@ function TestimonialComp({
     }, []);
 
     const handlePrev = useCallback(async () => {
-        if (isAnimatingRef.current || total === 0) return;
+        if (isAnimatingRef.current || total <= 1) return;
         isAnimatingRef.current = true;
         setIsAnimating(true);
 
@@ -245,7 +251,7 @@ function TestimonialComp({
     }, [total, current, testimonials, fadeOutCurrent]);
 
     const handleNext = useCallback(async () => {
-        if (isAnimatingRef.current || total === 0) return;
+        if (isAnimatingRef.current || total <= 1) return;
         isAnimatingRef.current = true;
         setIsAnimating(true);
 
@@ -316,6 +322,7 @@ function TestimonialComp({
                         className="max-md:hidden"
                         onPrev={handlePrev}
                         onNext={handleNext}
+                        isAnimating={isAnimating}
                     />
                 )}
             </div>

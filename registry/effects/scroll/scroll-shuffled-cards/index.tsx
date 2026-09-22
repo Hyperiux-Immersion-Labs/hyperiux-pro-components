@@ -1,9 +1,16 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
+import { useSyncExternalStore } from "react";
 
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import React, { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from "react";
+
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
 interface CardProps {
   children?: ReactNode;
@@ -20,23 +27,6 @@ interface CardProps {
   style?: CSSProperties;
 }
 
-/**
- * @typedef {Object} CardProps
- * @property {import('react').ReactNode} [children]
- * @property {import('react').ReactNode} [title]
- * @property {import('react').ReactNode} [subtitle]
- * @property {import('react').ReactNode} [content]
- * @property {import('react').ReactNode} [footer]
- * @property {string} [padding]
- * @property {string} [borderColor]
- * @property {string} [bg]
- * @property {string} [radius]
- * @property {boolean} [shadow]
- * @property {string} [className]
- * @property {import('react').CSSProperties} [style]
- */
-
-/** @param {CardProps} props */
 const Card = ({
   children,
   title,
@@ -84,13 +74,6 @@ const Card = ({
 };
 
 gsap.registerPlugin(ScrollTrigger);
-
-// True when the user has asked the OS to minimise animation. Safe to call
-// during render - returns false on the server.
-function prefersReducedMotion() {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-}
 
 const getRandomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
@@ -239,6 +222,11 @@ const ScrollShuffledCardsComp = ({
       }}
     >
       <div className="sticky top-0 flex h-screen w-screen items-center justify-center overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
+          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-[1025px]:text-[7.5vw] max-md:px-[4vw] max-md:text-[10vw]">
+            {heading}
+          </h1>
+        </div>
         <div
           ref={containerRef}
           className="relative z-1 flex h-fit w-fit items-center justify-center gap-[6vw] max-[1025px]:gap-[4vw] max-md:gap-[3vw]"
@@ -247,7 +235,9 @@ const ScrollShuffledCardsComp = ({
           {randomizedCards.map((card, index) => (
             <div
               key={card.id || index}
-              ref={(el) => { cardRefs.current[index] = el; }}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
               className="relative h-fit w-fit shrink-0 opacity-0 will-change-transform"
               style={{ zIndex: card.zIndex }}
             >
@@ -288,102 +278,95 @@ const ScrollShuffledCardsComp = ({
           ))}
         </div>
 
-        <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center">
-          <h1 className="w-full px-[2vw] text-center text-[5.5vw] leading-[0.95] font-semibold text-[#1a1a1a] max-[1025px]:text-[7.5vw] max-md:px-[4vw] max-md:text-[10vw]">
-            {heading}
-          </h1>
-        </div>
       </div>
     </section>
   );
 };
 
 const ScrollShuffledCards = ({
- background = "#FFFBEB",
- cardsGap = 6,
- sectionHeight = 400,
- shuffleIntensity = 1,
+  background = "#FFFBEB",
+  cardsGap = 6,
+  sectionHeight = 400,
+  shuffleIntensity = 1,
 }: { background?: string; cardsGap?: number; sectionHeight?: number; shuffleIntensity?: number }) => {
- const scaleRange = ([min, max]: [number, number]): [number, number] => [min * shuffleIntensity, max * shuffleIntensity];
+  const scaleRange = ([min, max]: [number, number]): [number, number] => [min * shuffleIntensity, max * shuffleIntensity];
 
- return (
+  return (
     <>
-
- <section className="w-screen h-screen">
- <ScrollShuffledCardsComp
- cards={cardsData}
- heading="Scroll Shuffled Cards"
- sectionHeight={sectionHeight}
- cardWidth="25vw"
- cardHeight="30vw"
- cardsGap={`${cardsGap}vw`}
- background={background}
- initialContainerXPercent={100}
- finalContainerXPercent={-100}
- startXRange={scaleRange([-4, 4])}
- startYRange={scaleRange([-4, 4])}
- startRotateRange={scaleRange([-6, 6])}
- endXRange={scaleRange([-20, 30])}
- endYRange={scaleRange([-10, 10])}
- endRotateRange={scaleRange([-10, 10])}
- />
- </section>
-
- </>
- );
+      <section className="w-screen h-screen">
+        <ScrollShuffledCardsComp
+          cards={cardsData}
+          heading="Scroll Shuffled Cards"
+          sectionHeight={sectionHeight}
+          cardWidth="25vw"
+          cardHeight="30vw"
+          cardsGap={`${cardsGap}vw`}
+          background={background}
+          initialContainerXPercent={100}
+          finalContainerXPercent={-100}
+          startXRange={scaleRange([-4, 4])}
+          startYRange={scaleRange([-4, 4])}
+          startRotateRange={scaleRange([-6, 6])}
+          endXRange={scaleRange([-20, 30])}
+          endYRange={scaleRange([-10, 10])}
+          endRotateRange={scaleRange([-10, 10])}
+        />
+      </section>
+    </>
+  );
 };
 
 export default ScrollShuffledCards;
 
 const cardsData = [
- {
- id: 1,
- bgOuter:"bg-[#932F6D]",
- bgInner:"bg-[#E07BE0]",
- text:"text-[#932F6D]",
- eyebrow:"Residential",
- title:"Luxury Living",
- description:
-"Curated homes designed for buyers who want premium finishes, strong location value, and a lifestyle that feels elevated from day one.",
- },
- {
- id: 2,
- bgOuter:"bg-[#29BF12]",
- bgInner:"bg-[#ABFF4F]",
- text:"text-[#29BF12]",
- eyebrow:"Commercial",
- title:"Retail Growth",
- description:
-"High-visibility spaces built for ambitious brands that need stronger walk-ins, better frontage, and a location that supports scale.",
- },
- {
- id: 3,
- bgOuter:"bg-[#4C6085]",
- bgInner:"bg-[#39A0ED]",
- text:"text-[#4C6085]",
- eyebrow:"Investment",
- title:"Future Value",
- description:
-"Properties selected for long-term upside, resilient demand, and the kind of positioning that attracts serious investors.",
- },
- {
- id: 4,
- bgOuter:"bg-[#8c42b7]",
- bgInner:"bg-[#BC96E6]",
- text:"text-[#8c42b7]",
- eyebrow:"Coastal",
- title:"Beach Escape",
- description:
-"Private living environments that combine calm surroundings, direct access, and a premium everyday experience by the water.",
- },
- {
- id: 5,
- bgOuter:"bg-[#b66f3b]",
- bgInner:"bg-[#ECE4B7]",
- text:"text-[#b66f3b]",
- eyebrow:"Urban",
- title:"City Edge",
- description:
-"Sharply positioned spaces built for people who want access, energy, and a stronger connection to the city’s best districts.",
- },
+  {
+    id: 1,
+    bgOuter: "bg-[#932F6D]",
+    bgInner: "bg-[#E07BE0]",
+    text: "text-[#932F6D]",
+    eyebrow: "Residential",
+    title: "Luxury Living",
+    description:
+      "Curated homes designed for buyers who want premium finishes, strong location value, and a lifestyle that feels elevated from day one.",
+  },
+  {
+    id: 2,
+    bgOuter: "bg-[#29BF12]",
+    bgInner: "bg-[#ABFF4F]",
+    text: "text-[#29BF12]",
+    eyebrow: "Commercial",
+    title: "Retail Growth",
+    description:
+      "High-visibility spaces built for ambitious brands that need stronger walk-ins, better frontage, and a location that supports scale.",
+  },
+  {
+    id: 3,
+    bgOuter: "bg-[#4C6085]",
+    bgInner: "bg-[#39A0ED]",
+    text: "text-[#4C6085]",
+    eyebrow: "Investment",
+    title: "Future Value",
+    description:
+      "Properties selected for long-term upside, resilient demand, and the kind of positioning that attracts serious investors.",
+  },
+  {
+    id: 4,
+    bgOuter: "bg-[#8c42b7]",
+    bgInner: "bg-[#BC96E6]",
+    text: "text-[#8c42b7]",
+    eyebrow: "Coastal",
+    title: "Beach Escape",
+    description:
+      "Private living environments that combine calm surroundings, direct access, and a premium everyday experience by the water.",
+  },
+  {
+    id: 5,
+    bgOuter: "bg-[#b66f3b]",
+    bgInner: "bg-[#ECE4B7]",
+    text: "text-[#b66f3b]",
+    eyebrow: "Urban",
+    title: "City Edge",
+    description:
+      "Sharply positioned spaces built for people who want access, energy, and a stronger connection to the city’s best districts.",
+  },
 ];

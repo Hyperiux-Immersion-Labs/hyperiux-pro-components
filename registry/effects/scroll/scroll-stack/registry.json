@@ -34,6 +34,14 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/scroll-stack/index.tsx"
+    },
+    {
+      "path": "v2/index.tsx",
+      "target": "src/components/effects/scroll-stack/v2/index.tsx"
+    },
+    {
+      "path": "v2/ScrollStackComp.tsx",
+      "target": "src/components/effects/scroll-stack/v2/ScrollStackComp.tsx"
     }
   ],
   "props": [

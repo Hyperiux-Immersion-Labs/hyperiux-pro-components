@@ -14,8 +14,8 @@
   "description": "Vault-themed perspective text flip with staggered character motion and optional crossfade.",
   "category": "text",
   "dependencies": [
-    "gsap",
-    "@gsap/react"
+    "@gsap/react",
+    "gsap"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/depth-flip-text",

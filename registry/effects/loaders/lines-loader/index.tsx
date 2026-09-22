@@ -56,7 +56,6 @@ interface NavItem {
   center?: ReactNode;
   right?: ReactNode;
 }
-
 function DemoContent({
   theme = "dark",
   showText = true,
@@ -163,7 +162,7 @@ function DemoContent({
 
   const rowCount = lineCount - 1;
 
-  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-[1025px]:flex max-[1025px]:justify-between";
+  const GRID_CLASS = "grid-cols-[1.25fr_1fr_1fr_1fr_1.25fr_.9fr_28px] max-md:flex max-md:justify-between";
 
   return (
     <div
@@ -176,7 +175,7 @@ function DemoContent({
         <>
           <div
             className={[
-              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-md:text-[3.5vw]",
+              "grid items-center px-5.5 text-[0.85vw] uppercase select-none max-sm:text-[3.5vw]",
               GRID_CLASS,
               isDark ? "text-white/55" : "text-black/55",
             ].join(" ")}
@@ -203,7 +202,7 @@ function DemoContent({
                     : isDark
                       ? "text-white/55"
                       : "text-black/55",
-                  idx > 0 && idx < 6 ? "max-[1025px]:hidden" : "",
+                  idx > 0 && idx < 6 ? "max-md:hidden" : "",
                 ].join(" ")}
               >
                 {item.left || item.center || item.right}
@@ -220,7 +219,7 @@ function DemoContent({
                   rowRefs.current[idx] = el;
                 }}
                 className={[
-                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-md:text-[4vw]",
+                  "grid items-center gap-4.5 px-5.5 text-[0.9vw] leading-[1.2] max-sm:text-[4vw]",
                   GRID_CLASS,
                   "will-change-[filter,transform,opacity]",
                   idx < 9
@@ -235,19 +234,19 @@ function DemoContent({
               >
                 <div
                   className={[
-                    "col-span-2 max-[1025px]:w-full max-[1025px]:whitespace-nowrap max-[1025px]:text-[1.5vw] max-md:text-[4vw]",
+                    "col-span-2 max-md:w-full max-md:whitespace-nowrap max-md:text-[1.5vw] max-sm:text-[4vw]",
                     isDark ? "text-white/90" : "text-neutral-900",
                   ].join(" ")}
                 >
                   {cells[0]}
                 </div>
-                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-[1025px]:hidden"].join(" ")}>
+                <div className={[isDark ? "text-white/90" : "text-neutral-900", "max-md:hidden"].join(" ")}>
                   {cells[1]}
                 </div>
-                <div className="max-[1025px]:hidden">{cells[2]}</div>
-                <div className="max-[1025px]:hidden">{cells[3]}</div>
-                <div className="justify-self-start max-[1025px]:hidden">{cells[4]}</div>
-                <div className="max-[1025px]:hidden"></div>
+                <div className="max-md:hidden">{cells[2]}</div>
+                <div className="max-md:hidden">{cells[3]}</div>
+                <div className="justify-self-start max-md:hidden">{cells[4]}</div>
+                <div className="max-md:hidden"></div>
               </div>
             ))}
           </div>
@@ -357,7 +356,8 @@ function Option1({
   const run = useCallback(() => {
     tlRef.current?.kill();
     setDone(false);
-  
+    // Tell the parent the run restarted, so the post-completion nav hides
+    // again instead of sitting over a loader that is playing from the top.
     onReplayRef.current?.();
 
     recomputeLayout();
@@ -641,7 +641,7 @@ function Option1({
       {done && (
         <button
           onClick={run}
-          className="absolute bottom-7 max-[1025px]:bottom-5 max-md:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-md:text-sm max-[1025px]:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
+          className="absolute bottom-7 max-md:bottom-5 max-sm:bottom-8 left-1/2 z-10 -translate-x-1/2 cursor-pointer max-sm:text-sm max-md:text-base rounded-sm border border-black/25 bg-white/70 px-5.5 py-1.5 font-mono text-sm tracking-widest text-neutral-900 "
         >
           Replay
         </button>
@@ -752,7 +752,7 @@ function Option2(
     const run = useCallback(() => {
         tlRef.current?.kill();
         setDone(false);
-      
+       
         onReplayRef.current?.();
 
         const count = Math.max(3, Math.floor(lineCount));
@@ -982,7 +982,7 @@ function Option2(
             />
             <div className="absolute inset-0 z-50 flex items-center justify-center">
                 <div className="px-6 text-center">
-                    <h1 className="select-none font-mono text-[3.5vw] max-[1025px]:text-[5vw] max-md:text-[10vw] font-semibold leading-[1.05] tracking-[-0.03em] text-black">
+                    <h1 className="select-none font-mono text-[3.5vw] max-md:text-[5vw] max-sm:text-[10vw] font-semibold leading-[1.05] tracking-[-0.03em] text-black">
                         {words.map((word, wordIdx) => (
                             <span key={`${word}-${wordIdx}`}>
                                 <span className="inline-block whitespace-nowrap">
@@ -1029,7 +1029,7 @@ function Option2(
             {done && (
                 <button
                     onClick={run}
-                    className="absolute bottom-7 max-[1025px]:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-[1025px]:text-base max-md:text-sm tracking-widest text-black/70 backdrop-blur max-md:bottom-20"
+                    className="absolute bottom-7 max-md:bottom-10 left-1/2 z-60 -translate-x-1/2 cursor-pointer rounded-sm border border-black/20 bg-black/5 px-5.5 py-1.75 font-mono text-[0.75vw] max-md:text-base max-sm:text-sm tracking-widest text-black/70 backdrop-blur max-sm:bottom-20"
                 >
                     Replay
                 </button>
@@ -1081,8 +1081,7 @@ export default function LinesLoader({ onComplete, onVariantChange, ...props }: L
     onVariantChangeRef.current = onVariantChange;
   }, [onVariantChange]);
 
-  const handleVariantChange = useCallback(
-    (newVariant: LinesLoaderVariant) => {
+  const handleVariantChange = useCallback((newVariant: LinesLoaderVariant) => {
     if (newVariant === activeVariant) return;
 
     setActiveVariant(newVariant);
@@ -1142,7 +1141,7 @@ interface VersionNavProps {
 function VersionNav({ activeVariant, onVariantChange, isCompleted }: VersionNavProps) {
   return (
     <div
-      className={`fixed bottom-30 max-sm:bottom-[14vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-sm:gap-4 transition-all duration-500 max-md:bottom-35  ${
+      className={`fixed bottom-30 max-md:bottom-[14vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-md:gap-4 transition-all duration-500 max-[1025px]:bottom-35  ${
         isCompleted
           ? "translate-y-0 opacity-100 pointer-events-auto"
           : "translate-y-4 opacity-0 pointer-events-none"
@@ -1164,7 +1163,7 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }: VersionNavP
           <ArrowUpRight className="size-4" />
         </Link>
         </div>
-      <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-md:px-3 max-md:py-2 max-sm:px-2 max-sm:py-1.5">
+      <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-[1025px]:px-3 max-[1025px]:py-2 max-md:px-2 max-md:py-1.5">
         {VERSIONS.map((variant) => {
           const isActive = activeVariant === variant.value;
           const btnClass = isCompleted
@@ -1178,7 +1177,7 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }: VersionNavP
               disabled={isActive}
               aria-current={isActive ? "true" : undefined}
               onClick={() => onVariantChange(variant.value)}
-              className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 disabled:cursor-default disabled:pointer-events-none max-md:text-lg max-sm:text-sm ${btnClass}`}
+              className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 disabled:cursor-default disabled:pointer-events-none max-[1025px]:text-lg max-md:text-sm ${btnClass}`}
             >
               {variant.label}
             </button>

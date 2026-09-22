@@ -2,7 +2,8 @@
 "use client";
 
 import gsap from "gsap";
-import { useEffect, useRef, useState, type MouseEvent, type ReactNode, type RefObject } from "react";
+import Link from "next/link";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 
 const SOCIAL_ICONS: Record<string, ReactNode> = {
   instagram: (
@@ -32,13 +33,14 @@ const SOCIAL_ICONS: Record<string, ReactNode> = {
 const DEFAULT_LINK_Y_OFFSET = 30;
 const DEFAULT_LINK_DURATION = 0.8;
 const DEFAULT_LINK_STAGGER = 0.07;
-const IMAGE_INITIAL_SCALE = 0.7;
 const DEFAULT_IMAGE_START_SCALE = 0.8;
 const DEFAULT_IMAGE_DURATION = 0.9;
 const DEFAULT_IMAGE_STAGGER = 0.02;
 const DEFAULT_SOCIAL_Y_OFFSET = 14;
 const DEFAULT_SOCIAL_DURATION = 0.5;
 const DEFAULT_SOCIAL_STAGGER = 0.06;
+
+const IMAGE_INITIAL_SCALE = 0.7;
 const HEADER_Y_OFFSET = -12;
 const LOCATION_Y_OFFSET = 10;
 const DELAY_OFFSET = 0.2;
@@ -46,6 +48,139 @@ const TAGLINE_DELAY_OFFSET = 0.08;
 const IMAGE_DELAY_OFFSET = 0.1;
 const SOCIAL_DELAY_OFFSET = 0.2;
 const LOCATION_DELAY_OFFSET = 0.25;
+
+const ANIM_CHAR_LIFT = "1.3em";
+const ANIM_CHAR_STEP = 0.01;
+const ANIM_GLIDE = "cubic-bezier(0.625, 0.05, 0, 1)";
+
+interface LinkAnimProps {
+  label: string;
+  href: string;
+  className?: string;
+  restColor?: string;
+  activeColor?: string;
+  underline?: boolean;
+  tabIndex?: number;
+  onClick?: () => void;
+}
+
+
+function LinkAnim({
+  label,
+  href,
+  className = "",
+  restColor,
+  activeColor,
+  underline = true,
+  tabIndex,
+  onClick,
+}: LinkAnimProps) {
+  const ruleRef = useRef<HTMLSpanElement | null>(null);
+  const isTouchRef = useRef(false);
+  const hasEnteredRef = useRef(false);
+
+  const [isActive, setIsActive] = useState(false);
+  const [isReduced, setIsReduced] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!query) return;
+
+    const syncReduced = () => setIsReduced(query.matches);
+
+    syncReduced();
+    query.addEventListener("change", syncReduced);
+
+    return () => query.removeEventListener("change", syncReduced);
+  }, []);
+
+  // Retracts the underline back toward the side it came from, so the rule
+  // never looks like it is sliding out from under the cursor.
+  useEffect(() => {
+    if (!hasEnteredRef.current) {
+      hasEnteredRef.current = true;
+      return;
+    }
+
+    const rule = ruleRef.current;
+    if (!rule || isActive || isReduced) return;
+
+    rule.style.transformOrigin = "right center";
+
+    const onSettled = () => {
+      rule.style.transformOrigin = "left center";
+      rule.removeEventListener("transitionend", onSettled);
+    };
+
+    rule.addEventListener("transitionend", onSettled);
+    return () => rule.removeEventListener("transitionend", onSettled);
+  }, [isActive, isReduced]);
+
+  const chars = [...label];
+
+  return (
+    <Link
+      prefetch={false}
+      href={href}
+      tabIndex={tabIndex}
+      onClick={onClick}
+      onMouseEnter={() => {
+        if (isTouchRef.current) return;
+        setIsActive(true);
+      }}
+      onMouseLeave={() => {
+        if (isTouchRef.current) return;
+        setIsActive(false);
+      }}
+      onTouchStart={() => {
+        isTouchRef.current = true;
+      }}
+      style={{ color: isActive ? activeColor : restColor }}
+      className={`inline-flex items-center no-underline transition-colors duration-500 motion-reduce:transition-none ${className}`.trim()}
+    >
+      <span className="relative inline-block w-fit">
+        <span
+          aria-label={label}
+          className="relative inline-block overflow-hidden leading-[1.2]"
+        >
+          {chars.map((char, index) => (
+            <span
+              key={`${char}-${index}`}
+              aria-hidden="true"
+              className="relative inline-block will-change-transform motion-reduce:transition-none"
+              style={{
+                // The shadow copy sits one lift below, so raising the span
+                // swaps it in without a second set of DOM nodes.
+                textShadow: `0px ${ANIM_CHAR_LIFT} currentColor`,
+                transform: isActive && !isReduced
+                  ? `translateY(-${ANIM_CHAR_LIFT}) rotate(0.001deg)`
+                  : "translateY(0em) rotate(0.001deg)",
+                transition: isReduced ? "none" : `transform 0.6s ${ANIM_GLIDE}`,
+                transitionDelay: isReduced ? "0s" : `${index * ANIM_CHAR_STEP}s`,
+                whiteSpace: char === " " ? "pre" : undefined,
+              }}
+            >
+              {char}
+            </span>
+          ))}
+        </span>
+
+        {underline && (
+          <span
+            ref={ruleRef}
+            aria-hidden="true"
+            className="absolute bottom-[15%] left-0 h-[1.5px] w-full bg-current"
+            style={{
+              transform: `scaleX(${isActive && !isReduced ? 1 : 0})`,
+              transformOrigin: "left center",
+              transition: isReduced ? "none" : `transform 0.5s ${ANIM_GLIDE}`,
+            }}
+          />
+        )}
+      </span>
+    </Link>
+  );
+}
 
 export interface CustomNavbarLink {
   label: string;
@@ -126,14 +261,14 @@ function CustomNavbar({
     ]);
   };
 
-  const resetAnimatedElements = () => {
+  const resetAnimatedElements = useCallback(() => {
     gsap.set(linksRef.current, { y: linkOffsetY, opacity: 0 });
     gsap.set(imagesRef.current, { scale: IMAGE_INITIAL_SCALE, opacity: 0 });
     gsap.set(socialsRef.current, { y: socialOffsetY, opacity: 0 });
     gsap.set(agencyRef.current, { y: HEADER_Y_OFFSET, opacity: 0 });
     gsap.set(taglineRef.current, { y: HEADER_Y_OFFSET, opacity: 0 });
     gsap.set(locationRef.current, { y: LOCATION_Y_OFFSET, opacity: 0 });
-  };
+  }, [linkOffsetY, socialOffsetY]);
 
   const setLinkRef = (index: number) => (element: HTMLDivElement | null) => {
     linksRef.current[index] = element;
@@ -239,55 +374,54 @@ function CustomNavbar({
     );
   }, [
     delay,
+    isOpen,
+    linkOffsetY,
+    linkDuration,
+    linkStagger,
+    imageStartScale,
     imageDuration,
     imageStagger,
-    imageStartScale,
-    isOpen,
-    linkDuration,
-    linkOffsetY,
-    linkStagger,
-    socialDuration,
     socialOffsetY,
+    socialDuration,
     socialStagger,
+    resetAnimatedElements,
   ]);
 
-  // Return
   return (
     <div
       style={{ backgroundColor: overlayBg }}
-      className="w-full h-screen flex flex-col justify-between px-28 py-10 pt-28 max-[1025px]:px-6 max-[1025px]:py-20 text-white"
+      className="w-full h-screen flex flex-col justify-between px-28 max-md:px-6 py-10 pt-28 max-[1025px]:pt-36 max-md:pt-30 max-[1025px]:px-6 max-[1025px]:py-10 text-white"
     >
 
-      <div className="flex items-center justify-between gap-10 max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-18 max-[1025px]:gap-18">
+      <div className="flex items-center justify-between gap-10 max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-18 max-md:gap-10">
         <div className="flex flex-col gap-0">
           {links.map((link, index) => (
             <div
               key={link.label}
               ref={setLinkRef(index)}
-              className="text-[6vw] max-[1025px]:text-[11vw] max-[1025px]:text-[7vw] z-60"
+              className="text-[6vw] max-sm:text-[11vw] max-md:text-[7vw] z-60"
               style={{ opacity: 0, transform: `translateY(${linkOffsetY}px)` }}
             >
 
-              <a href={link.href}>
-                {link.label}
-              </a>
+              <LinkAnim label={link.label} href={link.href} />
             </div>
           ))}
         </div>
 
-        <div className="flex h-full flex-col items-end justify-center gap-40 py-5 max-[1025px]:items-start max-[1025px]:gap-28 max-[1025px]:w-full max-[1025px]:gap-25 max-[1025px]:py-0">
-          <div className="flex items-end gap-8 max-[1025px]:gap-10 max-[1025px]:w-full max-[1025px]:gap-3 max-[1025px]:flex-col max-[1025px]:items-start">
+        <div className="flex h-full flex-col items-end justify-center gap-40 py-5 max-[1025px]:items-start max-[1025px]:gap-28 max-md:w-full max-md:gap-25 max-md:py-0">
+          <div className="flex items-end gap-8 max-[1025px]:gap-10 max-md:w-full max-md:gap-3 max-md:flex-col max-[1025px]:items-start">
             {images.slice(0, 4).map((src, index) => (
               <div
                 key={index}
                 ref={setImageRef(index)}
                 style={{ opacity: 0, transform: `scale(${IMAGE_INITIAL_SCALE})` }}
-                className="relative h-[18vw] w-[25vw] overflow-hidden rounded-xl max-[1025px]:h-[25vh] max-[1025px]:w-[35vw] max-[1025px]:h-[30vw] max-[1025px]:w-[60vw] max-[1025px]:rounded-md"
+                className="relative h-[18vw] w-[25vw] overflow-hidden rounded-xl max-[1025px]:h-[25vh] max-[1025px]:w-[35vw] max-md:h-[30vw] max-md:w-[60vw] max-md:rounded-md"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
                   alt={`img-${index}`}
-                  className="absolute inset-0 h-full w-full object-cover transition duration-500 hover:scale-105 motion-reduce:scale-100 motion-reduce:hover:scale-100 motion-reduce:transition-none"
+                  className="object-cover transition duration-500 hover:scale-105 motion-reduce:scale-100 motion-reduce:hover:scale-100 motion-reduce:transition-none absolute inset-0 w-full h-full"
                 />
               </div>
             ))}
@@ -296,16 +430,16 @@ function CustomNavbar({
         </div>
       </div>
 
-      <div className="flex gap-6 items-end justify-end max-[1025px]:justify-start max-[1025px]:pb-10 ">
+      <div className="flex gap-10 items-end justify-end max-[1025px]:justify-start max-[1025px]:pb-10 max-md:pt-5">
         {socials.map((social, index) => (
-          <a
+          <Link
             key={index}
             href={social.href}
             ref={setSocialRef(index)}
             style={{ opacity: 0, transform: `translateY(${socialOffsetY}px)` }}
           >
             {SOCIAL_ICONS[social.type]}
-          </a>
+          </Link>
         ))}
       </div>
     </div>
@@ -369,7 +503,9 @@ export function useFocusTrap({
   onEscape,
 }: UseFocusTrapParams) {
   const onEscapeRef = useRef(onEscape);
-  onEscapeRef.current = onEscape;
+  useLayoutEffect(() => {
+    onEscapeRef.current = onEscape;
+  });
 
   useEffect(() => {
     if (!active) {
@@ -665,14 +801,6 @@ function FullscreenNav({
     onOpenMenu();
   };
 
-  const onLinkMouseEnter = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.currentTarget.style.color = linkHoverColor;
-  };
-
-  const onLinkMouseLeave = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.currentTarget.style.color = linkColor;
-  };
-
   // Effects
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -682,7 +810,6 @@ function FullscreenNav({
     };
   }, [isOpen]);
 
-  // Trap focus inside the overlay while open, restore it to the toggle on close.
   useFocusTrap({
     active: isOpen,
     containerRef: rootRef,
@@ -694,10 +821,10 @@ function FullscreenNav({
   return (
     <div ref={rootRef}>
       <header
-        className={`fixed top-0 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
+        className={`fixed top-6 max-md:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
         <div className="flex items-center gap-3">
-          <a href="/" className="flex items-center gap-3 cursor-pointer">
+          <Link prefetch={false} href="/" className="flex items-center gap-3 cursor-pointer">
           <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={` transition-all duration-300 motion-reduce:transition-none ${isOpen ? "brightness-100  delay-700" : "brightness-0  delay-700"}`}>
             <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
             <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>
@@ -726,7 +853,7 @@ function FullscreenNav({
               <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
             </svg>
           </div>
-          </a>
+          </Link>
         </div>
 
         <button
@@ -738,7 +865,7 @@ function FullscreenNav({
         >
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
+            className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
               ? "translate-y-1.75 rotate-45"
               : isReducedMotion
                 ? "translate-y-0 rotate-0 bg-black"
@@ -747,7 +874,7 @@ function FullscreenNav({
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full transition-all duration-500 delay-300 motion-reduce:transition-none ${isOpen
+            className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-500 delay-300 motion-reduce:transition-none ${isOpen
               ? "scale-x-0 opacity-0"
               : isReducedMotion
                 ? "scale-x-100 opacity-100 bg-black"
@@ -756,7 +883,7 @@ function FullscreenNav({
           />
           <span
             style={{ backgroundColor: isOpen ? headerOpenColor : undefined }}
-            className={`block h-0.5 w-full transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
+            className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
               ? "-translate-y-2.25 -rotate-45"
               : isReducedMotion
                 ? "translate-y-0 rotate-0 bg-black"
@@ -781,18 +908,16 @@ function FullscreenNav({
           {children
             ? children(isOpen)
             : (links as FullscreenNavLink[]).map(({ label, href }) => (
-              <a
+              <LinkAnim
                 key={label}
+                label={label}
                 href={href}
                 onClick={isOpen ? onCloseMenu : undefined}
                 tabIndex={isOpen ? 0 : -1}
-                style={{ color: linkColor }}
-                onMouseEnter={onLinkMouseEnter}
-                onMouseLeave={onLinkMouseLeave}
-                className={`${linkSizeClass} font-normal tracking-tight transition-colors motion-reduce:transition-none`}
-              >
-                {label}
-              </a>
+                restColor={linkColor}
+                activeColor={linkHoverColor}
+                className={`${linkSizeClass} font-normal tracking-tight`}
+              />
             ))}
         </div>
       </nav>
@@ -825,7 +950,7 @@ const NAV_CONTENT: Partial<CustomNavbarProps> = {
     { type: "instagram", href: "#" },
     { type: "facebook", href: "#" },
     { type: "twitter", href: "#" },
-    { type: "linkedIn", href: "#" },
+    { type: "linkedin", href: "#" },
   ],
 };
 
@@ -852,8 +977,8 @@ export interface ImmersiveFullscreenNavProps {
 }
 
 export default function ImmersiveFullscreenNav({
-  navConfig = NAV_CONFIG,
-  navContent = NAV_CONTENT,
+  navConfig,
+  navContent,
   ...props
 }: ImmersiveFullscreenNavProps) {
   const {
@@ -900,6 +1025,7 @@ export default function ImmersiveFullscreenNav({
     ...(socialStagger !== undefined ? { socialStagger } : {}),
     ...(socialOffsetY !== undefined ? { socialOffsetY } : {}),
   };
+
   return (
     <>
       <FullscreenNav {...config}>
@@ -913,36 +1039,6 @@ export default function ImmersiveFullscreenNav({
         )}
       </FullscreenNav>
 
-      <main className="flex h-screen items-center justify-center bg-white max-md:px-[7vw] text-center">
-        <div className="max-w-5xl mx-auto text-center text-black">
-
-          {/* Heading */}
-          <h1 className="text-[7vw] max-md:text-[9vw]">
-            Immersive Full Screen Navigation
-          </h1>
-
-          {/* Subtext */}
-          <p className="mt-8 text-[1.4vw] max-md:text-[4.5vw] max-[1025px]:text-[3vw]">
-            Click on the hamburger to open the navigation
-          </p>
-
-          {/* Buttons */}
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 max-md:text-[4.5vw] max-[1025px]:text-[3vw]">
-            <button className=" rounded-full max-md:min-w-[45vw] bg-black text-white font-medium ">
-              <a href={"/effects/navigation/immersive-full-screen-nav"} className="px-7 py-3 block w-full">
-              Read Article
-              </a>
-            </button>
-
-            <button className=" rounded-full max-md:min-w-[45vw] border border-black ">
-             <a href={"/effects"} className="px-7 py-3 block w-full">
-              Explore Platform
-             </a>
-            </button>
-          </div>
-
-        </div>
-      </main>
     </>
   );
 }

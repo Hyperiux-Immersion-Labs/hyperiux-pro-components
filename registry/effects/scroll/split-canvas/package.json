@@ -5,6 +5,7 @@
   "main": "index.tsx",
   "files": [
     "index.tsx",
+    "shaders/pixelTransition.ts",
     "registry.json"
   ],
   "keywords": [
@@ -13,7 +14,7 @@
   ],
   "dependencies": {
     "gsap": "*",
-    "three": "*",
-    "lenis": "*"
+    "lenis": "*",
+    "three": "*"
   }
 }

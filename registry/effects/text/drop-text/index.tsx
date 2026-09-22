@@ -1,5 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
@@ -44,7 +43,8 @@ type DropTextProps = {
 };
 
 const DEFAULT_TEXT = "Motion Makes Spaces Move";
-
+const DEFAULT_BACKGROUND_IMAGE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 
 function mapStaggerFrom(staggerFrom: StaggerFrom) {
   if (staggerFrom === "left") return "start";
@@ -80,7 +80,7 @@ export default function DropText({
   splitBy = "characters",
   staggerFrom = "random",
   xOffset = 0,
-  yOffset = -115,
+  yOffset = -35,
   rotate = 0,
   blur = 0,
   scaleFrom = 1,
@@ -91,9 +91,9 @@ export default function DropText({
   lineHeight = 1,
   letterSpacing = 0,
   backgroundColor = "#101113",
-  duration = 0.5,
+  duration = 0.4,
   delay = 0,
-  stagger = 0.05,
+  stagger = 0.02,
   ease = "power2.out",
   animateOnScroll = false,
   className = "",
@@ -119,6 +119,10 @@ export default function DropText({
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     if (!mediaQuery) return;
 
+    // matchMedia isn't available during SSR, so the real value can only be
+    // read after mount - this can't be a lazy useState initializer without
+    // risking a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrefersReducedMotion(mediaQuery.matches);
 
     const onReduceMotionChange = (event: MediaQueryListEvent) => {
@@ -187,6 +191,7 @@ export default function DropText({
   useEffect(() => {
     let frame = 0;
     let cancelled = false;
+    const container = containerRef.current;
     const playAfterPaint = () => {
       const fontsReady = "fonts" in document ? document.fonts.ready : Promise.resolve();
 
@@ -203,8 +208,8 @@ export default function DropText({
       return () => {
         cancelled = true;
         cancelAnimationFrame(frame);
-        if (!containerRef.current) return;
-        const pieces = containerRef.current.querySelectorAll<HTMLElement>("[data-drop-piece]");
+        if (!container) return;
+        const pieces = container.querySelectorAll<HTMLElement>("[data-drop-piece]");
         gsap.killTweensOf(pieces);
       };
     }
@@ -226,8 +231,8 @@ export default function DropText({
       cancelled = true;
       cancelAnimationFrame(frame);
       observer.disconnect();
-      if (!containerRef.current) return;
-      const pieces = containerRef.current.querySelectorAll<HTMLElement>("[data-drop-piece]");
+      if (!container) return;
+      const pieces = container.querySelectorAll<HTMLElement>("[data-drop-piece]");
       gsap.killTweensOf(pieces);
     };
   }, [animateOnScroll, playAnimation, segments]);
@@ -238,6 +243,7 @@ export default function DropText({
       className={`flex min-h-screen w-full items-center justify-center overflow-hidden px-5 py-16 ${className}`}
       style={{
         backgroundColor,
+        backgroundImage: `linear-gradient(rgba(16, 17, 19, 0.45), rgba(16, 17, 19, 0.45)), url(${DEFAULT_BACKGROUND_IMAGE})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",

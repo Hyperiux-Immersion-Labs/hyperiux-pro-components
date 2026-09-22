@@ -3,7 +3,8 @@
 
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import { useCallback, useEffect, useRef, useState, type ComponentProps } from "react";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const DEFAULT_ROOT_MARGIN = "256px";
 
@@ -261,8 +262,8 @@ function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 
-const DEFAULT_CARD_WIDTH = 320;
-const DEFAULT_CARD_GAP = 24;
+const VELOCITY_LERP = 0.09;
+
 const MOBILE_BREAKPOINT = 640;
 const TABLET_BREAKPOINT = 1025;
 const MOBILE_CARD_WIDTH = 240;
@@ -270,7 +271,16 @@ const MOBILE_CARD_GAP = 16;
 const TABLET_CARD_WIDTH = 380;
 const TABLET_CARD_GAP = 20;
 
+const ROTATION_SENSITIVITY = 0.025;
+const ROTATION_DAMP = 0.1;
+const ROTATION_LERP = 0.12;
+
 const ACTIVE_CONTENT_CLEAR_DELTA = 2;
+const SCROLL_STOP_DELAY = 180;
+
+const TEXT_ENTER_DURATION = 0.35;
+const TEXT_LEAVE_DURATION = 0.35;
+const TEXT_STAGGER = 0.06;
 const TEXT_LEAVE_STAGGER = 0.04;
 
 interface InfinitePerspectiveSliderItemData {
@@ -293,21 +303,6 @@ interface CardSetter {
   rotateY: (value: number | string) => void;
 }
 
-interface SliderConfig {
-  cardWidth: number;
-  scrollSpeed: number;
-  scrollLerp: number;
-  velocityLerp: number;
-  rotationSensitivity: number;
-  rotationDamp: number;
-  rotationLerp: number;
-  maxRotation: number;
-  scrollStopDelay: number;
-  textEnterDuration: number;
-  textLeaveDuration: number;
-  textStagger: number;
-}
-
 interface InfinitePerspectiveSliderCompProps {
   images?: InfinitePerspectiveSliderItem[];
   cardWidth?: number;
@@ -315,33 +310,17 @@ interface InfinitePerspectiveSliderCompProps {
   perspective?: number;
   scrollSpeed?: number;
   scrollLerp?: number;
-  velocityLerp?: number;
-  rotationSensitivity?: number;
-  rotationDamp?: number;
-  rotationLerp?: number;
   maxRotation?: number;
-  scrollStopDelay?: number;
-  textEnterDuration?: number;
-  textLeaveDuration?: number;
-  textStagger?: number;
 }
 
 export function InfinitePerspectiveSliderComp({
   images = [],
-  cardWidth = DEFAULT_CARD_WIDTH,
-  cardGap = DEFAULT_CARD_GAP,
+  cardWidth: desktopCardWidth = 320,
+  cardGap: desktopCardGap = 24,
   perspective = 2200,
-  scrollSpeed = 1.0,
+  scrollSpeed = 1,
   scrollLerp = 0.1,
-  velocityLerp = 0.09,
-  rotationSensitivity = 0.025,
-  rotationDamp = 0.1,
-  rotationLerp = 0.12,
   maxRotation = 80,
-  scrollStopDelay = 180,
-  textEnterDuration = 0.35,
-  textLeaveDuration = 0.35,
-  textStagger = 0.06,
 }: InfinitePerspectiveSliderCompProps) {
   const stripRef = useRef<HTMLDivElement | null>(null);
   const settersRef = useRef<CardSetter[]>([]);
@@ -359,25 +338,25 @@ export function InfinitePerspectiveSliderComp({
   const leaveHandlersRef = useRef<Record<number, () => void>>({});
   const enterHandlersRef = useRef<Record<number, () => void>>({});
 
-  const [viewportWidth, setViewportWidth] = useState(DEFAULT_CARD_WIDTH * 4);
+  const [viewportWidth, setViewportWidth] = useState(desktopCardWidth * 4);
 
   const isMobileViewport = viewportWidth < MOBILE_BREAKPOINT;
   const isTabletViewport =
     viewportWidth >= MOBILE_BREAKPOINT && viewportWidth < TABLET_BREAKPOINT;
 
-  const resolvedCardWidth = isMobileViewport
+  const cardWidth = isMobileViewport
     ? MOBILE_CARD_WIDTH
     : isTabletViewport
       ? TABLET_CARD_WIDTH
-      : cardWidth;
+      : desktopCardWidth;
 
-  const resolvedCardGap = isMobileViewport
+  const cardGap = isMobileViewport
     ? MOBILE_CARD_GAP
     : isTabletViewport
       ? TABLET_CARD_GAP
-      : cardGap;
+      : desktopCardGap;
 
-  const cardStep = resolvedCardWidth + resolvedCardGap;
+  const cardStep = cardWidth + cardGap;
 
   const cardHeight = isMobileViewport
     ? "calc(40vh + 72px)"
@@ -396,35 +375,6 @@ export function InfinitePerspectiveSliderComp({
     isDragging: false,
     lastX: 0,
   });
-  const configRef = useRef<SliderConfig>({
-    cardWidth: resolvedCardWidth,
-    scrollSpeed,
-    scrollLerp,
-    velocityLerp,
-    rotationSensitivity,
-    rotationDamp,
-    rotationLerp,
-    maxRotation,
-    scrollStopDelay,
-    textEnterDuration,
-    textLeaveDuration,
-    textStagger,
-  });
-
-  configRef.current = {
-    cardWidth: resolvedCardWidth,
-    scrollSpeed,
-    scrollLerp,
-    velocityLerp,
-    rotationSensitivity,
-    rotationDamp,
-    rotationLerp,
-    maxRotation,
-    scrollStopDelay,
-    textEnterDuration,
-    textLeaveDuration,
-    textStagger,
-  };
 
   const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
   const clamp = (value: number, min: number, max: number) =>
@@ -465,7 +415,7 @@ export function InfinitePerspectiveSliderComp({
       if (enterHandler) {
         enterHandler();
       }
-    }, configRef.current.scrollStopDelay);
+    }, SCROLL_STOP_DELAY);
   }, [clearActiveContent]);
 
   const initSetters = () => {
@@ -494,7 +444,7 @@ export function InfinitePerspectiveSliderComp({
 
       const viewW = window.innerWidth;
       const centerX = viewW / 2;
-      const centreOffset = centerX - configRef.current.cardWidth / 2;
+      const centreOffset = centerX - cardWidth / 2;
 
       for (let index = 0; index < cards.length; index += 1) {
         let x = index * cardStep - offset + centreOffset;
@@ -509,7 +459,7 @@ export function InfinitePerspectiveSliderComp({
         setters[index]?.rotateY(rotation);
       }
     },
-    [cardStep, images]
+    [cardStep, cardWidth, images]
   );
 
   useEffect(() => {
@@ -546,34 +496,33 @@ export function InfinitePerspectiveSliderComp({
         state.rotationVelocity = 0;
         state.currentRotation = 0;
       } else {
-        const config = configRef.current;
-        state.current = lerp(state.current, state.target, config.scrollLerp);
+        state.current = lerp(state.current, state.target, scrollLerp);
         state.velocity = state.target - state.current;
 
         state.smoothVelocity = lerp(
           state.smoothVelocity,
           state.velocity,
-          config.velocityLerp
+          VELOCITY_LERP
         );
 
         state.rotationVelocity = lerp(
           state.rotationVelocity,
           state.velocity,
-          config.rotationDamp
+          ROTATION_DAMP
         );
 
         const absVel = Math.abs(state.rotationVelocity);
         const sign = Math.sign(state.rotationVelocity);
-        const targetRotation = sign * absVel * config.rotationSensitivity;
+        const targetRotation = sign * absVel * ROTATION_SENSITIVITY;
 
         state.currentRotation = lerp(
           state.currentRotation,
           targetRotation,
-          config.rotationLerp
+          ROTATION_LERP
         );
       }
 
-      const finalRotation = clamp(state.currentRotation, -configRef.current.maxRotation, configRef.current.maxRotation);
+      const finalRotation = clamp(state.currentRotation, -maxRotation, maxRotation);
 
       if (Math.abs(state.current - state.target) < 0.05) {
         const shift = Math.round(state.current / loopWidth) * loopWidth;
@@ -586,13 +535,14 @@ export function InfinitePerspectiveSliderComp({
     };
 
     const onWheel = (event: WheelEvent) => {
+      if (isMobileViewport || isTabletViewport) return;
       const delta = event.deltaY;
 
       if (Math.abs(delta) >= ACTIVE_CONTENT_CLEAR_DELTA) {
         markScrolling();
       }
 
-      state.target += delta * configRef.current.scrollSpeed;
+      state.target += delta * scrollSpeed;
     };
 
     const onDown = (clientX: number) => {
@@ -612,7 +562,7 @@ export function InfinitePerspectiveSliderComp({
         markScrolling();
       }
 
-      state.target += -delta * configRef.current.scrollSpeed;
+      state.target += -delta * scrollSpeed;
     };
 
     const onUp = () => {
@@ -685,7 +635,17 @@ export function InfinitePerspectiveSliderComp({
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [cardStep, images, positionCards, markScrolling]);
+  }, [
+    cardStep,
+    images,
+    positionCards,
+    markScrolling,
+    scrollSpeed,
+    scrollLerp,
+    maxRotation,
+    isMobileViewport,
+    isTabletViewport,
+  ]);
 
   useEffect(() => {
     if (!images.length) return;
@@ -775,8 +735,8 @@ export function InfinitePerspectiveSliderComp({
             numberLines,
             {
               yPercent: 0,
-              duration: configRef.current.textEnterDuration,
-              stagger: configRef.current.textStagger,
+              duration: TEXT_ENTER_DURATION,
+              stagger: TEXT_STAGGER,
             },
             0
           )
@@ -784,8 +744,8 @@ export function InfinitePerspectiveSliderComp({
             [titleLines, descriptionLines],
             {
               yPercent: 0,
-              duration: configRef.current.textEnterDuration,
-              stagger: configRef.current.textStagger,
+              duration: TEXT_ENTER_DURATION,
+              stagger: TEXT_STAGGER,
             },
             0.05
           );
@@ -810,7 +770,7 @@ export function InfinitePerspectiveSliderComp({
             [titleLines, descriptionLines],
             {
               yPercent: 100,
-              duration: configRef.current.textLeaveDuration,
+              duration: TEXT_LEAVE_DURATION,
               stagger: TEXT_LEAVE_STAGGER,
             },
             0
@@ -819,7 +779,7 @@ export function InfinitePerspectiveSliderComp({
             numberLines,
             {
               yPercent: 100,
-              duration: configRef.current.textLeaveDuration,
+              duration: TEXT_LEAVE_DURATION,
               stagger: TEXT_LEAVE_STAGGER,
             },
             0.04
@@ -887,7 +847,10 @@ export function InfinitePerspectiveSliderComp({
 
   return (
     <div className="h-screen w-screen overflow-hidden">
-      <div className="pointer-events-none relative flex h-full items-center overflow-hidden max-[1025px]:items-center" style={{ perspective }}>
+      <div
+        className="pointer-events-none relative flex h-full items-center overflow-hidden max-[1025px]:items-center "
+        style={{ perspective: `${perspective}px` }}
+      >
         <div
           ref={stripRef}
           className="transform-3d relative w-full"
@@ -904,7 +867,7 @@ export function InfinitePerspectiveSliderComp({
                 }}
                 className="pointer-events-auto absolute left-0 top-0 opacity-0 will-change-transform"
                 style={{
-                  width: resolvedCardWidth,
+                  width: cardWidth,
                   height: cardHeight,
                   transformOrigin: "center center",
                   transform: "translateZ(1px)",
@@ -925,12 +888,16 @@ export function InfinitePerspectiveSliderComp({
                   }}
                   className="relative h-[50vh] w-full overflow-hidden bg-white max-[1025px]:h-[45vh] max-md:h-[40vh]"
                 >
-                  <img
-                    src={src}
-                    alt={`slide-${index}`}
-                    className="absolute inset-0 h-full w-full object-cover"
-                    draggable={false}
-                  />
+                  {src ? (
+                    <Image
+                      fill
+                      sizes="(max-width: 640px) 240px, (max-width: 1025px) 380px, 320px"
+                      src={src}
+                      alt={`slide-${index}`}
+                      className="object-cover"
+                      draggable={false}
+                    />
+                  ) : null}
                 </div>
 
                 <div className="mt-2 space-y-1">
@@ -958,65 +925,12 @@ export function InfinitePerspectiveSliderComp({
         </div>
       </div>
 
-      <div className="absolute bottom-[5%] left-1/2 flex -translate-x-1/2 flex-col items-center justify-center gap-[1vw] text-black">
-        scroll
-
-        <svg
-          width="20"
-          height="28"
-          className="size-[1.5vw] max-[1025px]:size-[3vw] max-md:size-[4vw]"
-          viewBox="0 0 20 28"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <style>{`
-            .chev1 { animation: fadeDown 1.4s ease-in-out infinite; }
-            .chev2 { animation: fadeDown 1.4s ease-in-out 0.22s infinite; }
-            .chev3 { animation: fadeDown 1.4s ease-in-out 0.44s infinite; }
-
-            @keyframes fadeDown {
-              0%   { opacity: 0.08; transform: translateY(-3px); }
-              50%  { opacity: 0.55; transform: translateY(2px); }
-              100% { opacity: 0.08; transform: translateY(-3px); }
-            }
-          `}</style>
-
-          <polyline
-            className="chev1 stroke-current"
-            points="2,2 10,9 18,2"
-            stroke="white"
-            strokeWidth="1.4"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-
-          <polyline
-            className="chev2 stroke-current"
-            points="2,10 10,17 18,10"
-            stroke="white"
-            strokeWidth="1.4"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-
-          <polyline
-            className="chev3 stroke-current"
-            points="2,18 10,25 18,18"
-            stroke="white"
-            strokeWidth="1.4"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
+      
     </div>
   );
 }
 
-export default function InfinitePerspectiveSlider(props: Omit<ComponentProps<typeof InfinitePerspectiveSliderComp>, 'images'>) {
+export default function InfinitePerspectiveSlider(props: Record<string, unknown>) {
     const images = [
         {
             number: '01',
@@ -1079,9 +993,10 @@ export default function InfinitePerspectiveSlider(props: Omit<ComponentProps<typ
             desc: 'Minimal composition',
         },
     ];
+
     return (
         <>
-            <div className=" bg-white flex flex-col justify-center gap-20">
+            <div className="bg-white">
                 <InfinitePerspectiveSliderComp images={images} {...props} />
             </div>
         </>

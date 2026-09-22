@@ -4,10 +4,10 @@
   "title": "Hyperiux Glitter Concept",
   "description": "Glittery particle logo concept with morphing model particles, cursor trail particles, and bloom postprocessing.",
   "dependencies": [
-    "three",
-    "@react-three/fiber",
     "@react-three/drei",
-    "@react-three/postprocessing"
+    "@react-three/fiber",
+    "@react-three/postprocessing",
+    "three"
   ],
   "registryDependencies": [],
   "exportName": "HyperiuxGlitter",

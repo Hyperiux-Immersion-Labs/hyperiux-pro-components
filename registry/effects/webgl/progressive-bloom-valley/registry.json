@@ -6,13 +6,11 @@
   "description": "WebGL particle valley flythrough with scroll-driven camera path, proximity bloom, magnetic flower interaction, film grain, and edge blur post-processing",
   "category": "webgl",
   "dependencies": [
-    "@react-three/fiber",
     "@react-three/drei",
+    "@react-three/fiber",
     "@react-three/postprocessing",
-    "three",
     "postprocessing",
-    "gsap",
-    "lucide-react"
+    "three"
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/progressive-bloom-valley",

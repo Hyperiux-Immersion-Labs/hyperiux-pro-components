@@ -4,11 +4,7 @@
 import gsap from "gsap";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-/**
- * @param {number} [breakpoint]
- * @returns {boolean}
- */
-export function useIsMobile(breakpoint = 768) {
+export function useIsMobile(breakpoint = 640) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {

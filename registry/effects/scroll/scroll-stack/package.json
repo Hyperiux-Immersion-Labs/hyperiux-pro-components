@@ -5,6 +5,8 @@
   "main": "index.tsx",
   "files": [
     "index.tsx",
+    "v2/index.tsx",
+    "v2/ScrollStackComp.tsx",
     "registry.json"
   ],
   "keywords": [

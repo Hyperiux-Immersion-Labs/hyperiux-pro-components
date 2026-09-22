@@ -6,9 +6,9 @@
   "description": "WebGL loader with a 3D numeric tunnel that crossfades into a chromatic aberration warp effect",
   "category": "loaders",
   "dependencies": [
-    "gsap",
-    "@react-three/fiber",
     "@react-three/drei",
+    "@react-three/fiber",
+    "gsap",
     "three"
   ],
   "registryDependencies": [],

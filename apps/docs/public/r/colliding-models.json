@@ -4,12 +4,12 @@
   "title": "Colliding Models",
   "description": "Physics-driven colliding 3D connectors with transmission material and postprocessing, built with R3F + Rapier.",
   "dependencies": [
-    "three",
-    "@react-three/fiber",
     "@react-three/drei",
-    "@react-three/rapier",
+    "@react-three/fiber",
     "@react-three/postprocessing",
-    "maath"
+    "@react-three/rapier",
+    "maath",
+    "three"
   ],
   "registryDependencies": [],
   "exportName": "CollidingModels",

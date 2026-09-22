@@ -158,9 +158,7 @@ const GlitchyText = ({
       linesClass: "lines",
     });
 
-    let split2: GsapSplitText | undefined;
-    let split3: GsapSplitText | undefined;
-    let split4: GsapSplitText | undefined;
+    let split2: GsapSplitText | undefined, split3: GsapSplitText | undefined, split4: GsapSplitText | undefined;
 
     if (!prefersReducedMotion) {
       split2 = SplitText.create(text2Ref.current, {

@@ -12,9 +12,9 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*",
-    "@react-three/fiber": "*",
     "@react-three/drei": "*",
+    "@react-three/fiber": "*",
+    "gsap": "*",
     "three": "*"
   }
 }

@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
+import Image from "next/image";
 import {
   forwardRef,
   useCallback,
@@ -13,6 +13,7 @@ import {
 } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/dist/SplitText";
+import Button from "../WebsiteComps/Button";
 
 gsap.registerPlugin(SplitText);
 
@@ -56,8 +57,7 @@ interface StackToSpreadIntroProps {
   onComplete?: () => void;
 }
 
-const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(
-  function StackToSpreadIntro(
+const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(function StackToSpreadIntro(
   {
     imageSize = 1,
     duration = 1,
@@ -72,7 +72,7 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(
   const imgsWrapperId = `imgs-wrapper-${uid}`;
   const rootRef = useRef<HTMLElement | null>(null);
   const imagesRef = useRef<(HTMLDivElement | null)[]>([]);
-  const text1Ref = useRef<HTMLParagraphElement | null>(null);
+  const text1Ref = useRef<HTMLHeadingElement | null>(null);
   const text2Ref = useRef<HTMLParagraphElement | null>(null);
   const descriptionTextRef = useRef<HTMLParagraphElement | null>(null);
   const onCompleteRef = useRef(onComplete);
@@ -374,16 +374,16 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(
       style={{ backgroundColor }}
     >
       <div className="flex w-full items-center justify-between max-[1025px]:flex-col max-[1025px]:justify-center max-[1025px]:gap-[33vh] max-md:gap-[70vw]">
-        <p
+        <h1
           ref={text1Ref}
           className="opacity-0 max-[1025px]:text-[2.8vw] max-md:text-[5vw]"
         >
           HUMAN THINKERS
-        </p>
+        </h1>
 
         <div
           id={imgsWrapperId}
-          className="relative max-[1025px]:z-99"
+          className="relative max-md:z-99"
           style={{
             width: `clamp(4rem, ${6.5 * safeImageSize}vw, 18rem)`,
             height: `clamp(4rem, ${6.5 * safeImageSize}vw, 18rem)`,
@@ -397,12 +397,13 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(
               }}
               className="absolute top-0 left-0 size-full overflow-hidden rounded-sm opacity-0"
             >
-              <img
+              <Image
                 src={src}
                 width={1000}
                 height={1000}
                 className="h-full w-full object-cover"
-                alt="loader-img"
+                alt="asset-image"
+                priority={index === 0}
               />
             </div>
           ))}
@@ -424,8 +425,7 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(
       </p>
     </section>
   );
-  }
-);
+});
 
 interface StackLoaderProps {
   imageSize?: number;
@@ -486,32 +486,32 @@ export default function StackLoader({
       id={demoUiId}
       className="relative h-screen w-screen overflow-hidden bg-zinc-900"
     >
-      <p
-        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-neutral-300 transition-opacity duration-300 text-center ${
-          isLoaderComplete ? "opacity-100" : "opacity-0"
-        }`}
+      <div
+        className={`absolute inset-0 z-10 flex h-full w-full flex-col items-center justify-center gap-6 transition-all duration-500 ${isLoaderComplete
+          ? "translate-y-0 opacity-100 pointer-events-auto"
+          : "translate-y-4 opacity-0 pointer-events-none"
+          }`}
       >
-        HYPERIUX VAULT
-      </p>
-
-     <button
-  type="button"
-  onClick={handleReplay}
-  className={`absolute top-[calc(50%+4.5rem)] left-1/2 -translate-x-1/2 -translate-y-1/2
-    rounded-full border border-white/15 bg-white/5 px-5 py-2
-    text-sm font-medium text-white backdrop-blur-md
-
-    transition-all duration-300 cursor-pointer
-    hover:scale-105 hover:border-white/30 hover:bg-white/10
-    active:scale-95
-    ${
-      isLoaderComplete
-        ? "opacity-100"
-        : "pointer-events-none opacity-0"
-    }`}
->
-  ↻ Replay
-</button>
+        <p className="text-center text-4xl font-bold text-neutral-300">
+          HYPERIUX VAULT
+        </p>
+        <div className="space-y-3">
+          <Button text="Explore All Effects" href="/effects" variant="orange" />
+          <Button text=" Read Article" href="/effects/loaders/stack-loader" variant="outline2" />
+        </div>
+        <button
+          type="button"
+          onClick={handleReplay}
+          className={`
+            rounded-full border border-white/15 bg-white/5 px-5 py-2
+            text-sm font-medium text-white backdrop-blur-md
+            transition-all duration-300 cursor-pointer
+            hover:scale-105 hover:border-white/30 hover:bg-white/10
+            active:scale-95`}
+        >
+          ↻ Replay
+        </button>
+      </div>
 
       <StackToSpreadIntro
         key={introInstance}

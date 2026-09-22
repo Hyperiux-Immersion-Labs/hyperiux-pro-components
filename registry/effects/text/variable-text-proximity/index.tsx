@@ -1,5 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import {
@@ -271,6 +270,13 @@ const VariableProximityLetters = forwardRef<HTMLSpanElement, VariableTextProximi
       className={`${robotoFlex.className} ${className}`}
       {...restProps}
     >
+      {/*
+        The proximity rAF loop mutates each letter's DOM style directly
+        (bypassing React) on every frame; interpolatedSettingsRef is only
+        read here to seed/restore that value across incidental re-renders
+        (e.g. a `label` change), not for per-frame updates.
+      */}
+      {/* eslint-disable-next-line react-hooks/refs */}
       {words.map((word, wordIndex) => (
         <span key={wordIndex} className="hv-variable-word">
           {word.split('').map(letter => {
@@ -299,6 +305,9 @@ const VariableProximityLetters = forwardRef<HTMLSpanElement, VariableTextProximi
     </span>
   );
 });
+
+VariableProximityLetters.displayName = "VariableProximityLetters";
+
 export default function VariableTextProximity({
   radius = 100,
   falloff = 'linear',
@@ -346,7 +355,11 @@ export default function VariableTextProximity({
       </div>
       <style>{`
         .hv-variable-root {
-          background: var(--hv-variable-bg);
+          background-color: var(--hv-variable-bg);
+          background-image: url('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-30.png');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
           color: var(--hv-variable-color);
         }
 

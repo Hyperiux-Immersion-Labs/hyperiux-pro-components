@@ -21,6 +21,8 @@ interface ChessGridTransitionProps {
   color?: string
 }
 
+type TransitionPhase = 'leave' | 'enter'
+
 export default function ChessGridTransition({
   children,
   duration = 1,
@@ -56,7 +58,13 @@ export default function ChessGridTransition({
 
   const rows = isMobile ? mobileRows : isTablet ? tabletRows : desktopRows
 
-  const getRowCells = (cells: HTMLCollection, rowIndex: number) => {
+
+  const geometryRef = useRef({ cols, rows, safeDuration })
+  const timelineRef = useRef<gsap.core.Timeline | null>(null)
+  const phaseRef = useRef<TransitionPhase | null>(null)
+  const doneRef = useRef<(() => void) | null>(null)
+
+  const getRowCells = (cells: HTMLCollection, rowIndex: number, cols: number) => {
     const rowCells = []
     for (let col = 0; col < cols; col++) {
       rowCells.push(cells[rowIndex * cols + col])
@@ -65,12 +73,15 @@ export default function ChessGridTransition({
   }
 
   const buildAnimation = (tl: gsap.core.Timeline, cells: HTMLCollection, direction = 1) => {
+    const { cols, rows, safeDuration } = geometryRef.current
     const rowsArr = Array.from({ length: rows }, (_, i) => i)
 
     rowsArr.forEach((rowIndex, rowOrderIndex) => {
-      const rowCells = getRowCells(cells, rowIndex)
+      const rowCells = getRowCells(cells, rowIndex, cols)
 
       rowCells.forEach((cell, colIndex) => {
+        if (!cell) return
+
         const delay = rowOrderIndex * 0.1 + colIndex * 0.1
 
         if (direction === 1) {
@@ -101,105 +112,104 @@ export default function ChessGridTransition({
     })
   }
 
-  useEffect(() => {
-    // Prop changes (grid size, color, duration) can land mid-animation. If a
-    // previous leave/enter timeline is still running when that happens, it
-    // keeps tweening the cells we're about to reset here, so the next
-    // animation "continues" from wherever those stale tweens left off
-    // instead of restarting cleanly. Kill any in-flight timeline first so
-    // the reset below always starts from a known, static state.
-    activeTimelineRef.current?.kill()
-    activeTimelineRef.current = null
+  const resetCells = () => {
+    const grid = gridRef.current
+    if (!grid) return
 
-    const cells = (gridRef.current as HTMLDivElement).children
+    const { cols } = geometryRef.current
 
-    Array.from(cells).forEach((cell, i) => {
+    Array.from(grid.children).forEach((cell, i) => {
       const colIndex = i % cols
       gsap.set(cell, { xPercent: -(colIndex + 2) * 100 })
     })
+  }
 
-    // Killing a timeline mid-tween leaves whatever properties it was
-    // animating (like wrapper opacity during a leave fade-to-color) frozen
-    // at their in-progress value instead of clearing them. Without this,
-    // an interrupted leave can strand the content wrapper at opacity ~0
-    // while the grid cells above have already been reset off-screen,
-    // producing a black/blank screen instead of the revealed content.
-    // Force the wrapper back to its fully-revealed idle state too.
-    if (wrapperRef.current) {
-      gsap.set(wrapperRef.current, { opacity: 1, clearProps: 'opacity' })
+  const finishTransition = () => {
+    const done = doneRef.current
+    timelineRef.current = null
+    phaseRef.current = null
+    doneRef.current = null
+    done?.()
+  }
+
+  const runPhase = (phase: TransitionPhase) => {
+    const grid = gridRef.current
+    if (!grid) return
+
+    timelineRef.current?.kill()
+
+    const { safeDuration } = geometryRef.current
+    const tl = gsap.timeline({ onComplete: finishTransition })
+
+    timelineRef.current = tl
+    phaseRef.current = phase
+
+    if (prefersReducedMotion()) {
+      tl.to(
+        wrapperRef.current,
+        phase === 'leave'
+          ? { opacity: 0, duration: 0.2, ease: 'power1.out' }
+          : { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all' },
+        0
+      )
+      return
     }
 
-    // gsap.set() above needs the actual grid cell DOM nodes to exist, so the
-    // "ready to reveal" flag can only be set after that runs post-mount -
-    // not derivable during render.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true)
+    const cells = grid.children
+
+    if (phase === 'leave') {
+      tl.to(wrapperRef.current, { opacity: 0, duration: 0.8 * safeDuration }, 0)
+      buildAnimation(tl, cells, 1)
+      return
+    }
+
+    gsap.set(cells, { xPercent: 0 })
+
+    tl.fromTo(
+      wrapperRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8 * safeDuration, delay: safeDuration, clearProps: 'all' },
+      0
+    )
+    buildAnimation(tl, cells, -1)
+  }
+
+  const startTransition = (phase: TransitionPhase, next: () => void) => {
+    doneRef.current = next
+    runPhase(phase)
 
     return () => {
-      activeTimelineRef.current?.kill()
-      activeTimelineRef.current = null
+      timelineRef.current?.kill()
+      timelineRef.current = null
+      phaseRef.current = null
+      doneRef.current = null
     }
-  }, [cols, rows, color, safeDuration])
+  }
+
+  useEffect(() => {
+    geometryRef.current = { cols, rows, safeDuration }
+
+    // A geometry change while a transition is running means the old cells are
+    // gone; replay the active phase on the new ones instead of parking them
+    // offscreen, which would strand the overlay and never call next().
+    if (phaseRef.current) {
+      runPhase(phaseRef.current)
+    } else {
+      resetCells()
+    }
+
+
+    setMounted(true)
+
+  }, [cols, rows, safeDuration])
 
   const totalCells = cols * rows
 
   return (
     <TransitionRouter
       auto
-      leave={(next) => {
-        // Cancel any timeline left over from a previous run (e.g. a remix
-        // that changed props mid-animation) so it can't keep animating
-        // cells this new timeline is about to take over.
-        activeTimelineRef.current?.kill()
-
-        const tl = gsap.timeline({
-          onComplete: () => {
-            if (activeTimelineRef.current === tl) activeTimelineRef.current = null
-            next()
-          },
-        })
-        activeTimelineRef.current = tl
-
-        if (prefersReducedMotion()) {
-          tl.to(wrapperRef.current, { opacity: 0, duration: 0.2, ease: 'power1.out' }, 0)
-          return () => tl.kill()
-        }
-
-        const cells = (gridRef.current as HTMLDivElement).children
-
-        tl.to(wrapperRef.current, { opacity: 0, duration: 0.8 * safeDuration }, 0)
-
-        buildAnimation(tl, cells, 1)
-        return () => tl.kill()
-      }}
-      enter={(next) => {
-        activeTimelineRef.current?.kill()
-
-        const tl = gsap.timeline({
-          onComplete: () => {
-            if (activeTimelineRef.current === tl) activeTimelineRef.current = null
-            next()
-          },
-        })
-        activeTimelineRef.current = tl
-
-        if (prefersReducedMotion()) {
-          tl.to(wrapperRef.current, { opacity: 1, duration: 0.2, ease: 'power1.out', clearProps: 'all' }, 0)
-          return () => tl.kill()
-        }
-
-        const cells = (gridRef.current as HTMLDivElement).children
-
-        tl.fromTo(
-          wrapperRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.8 * safeDuration, delay: safeDuration, clearProps: 'all' },
-          0
-        )
-
-        buildAnimation(tl, cells, -1)
-        return () => tl.kill()
-      }}
+      leave={(next) => startTransition('leave', next)}
+      enter={(next) => startTransition('enter', next)}
     >
       <div
         ref={gridRef}

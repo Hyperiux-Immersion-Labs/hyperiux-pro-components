@@ -61,7 +61,7 @@ const ScrambleText = ({
  splitRef.current = null;
 
  const ctx = gsap.context(() => {
- const el = elRef.current as HTMLParagraphElement;
+ const el = elRef.current;
 
  const prefersReduced =
  window.matchMedia &&

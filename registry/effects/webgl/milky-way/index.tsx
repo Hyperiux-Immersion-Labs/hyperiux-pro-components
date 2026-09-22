@@ -10,7 +10,7 @@ import React, { type ReactNode, useEffect, useLayoutEffect, useMemo, useRef, use
 import * as THREE from "three";
 import { type WebGLRenderer, Uniform, Vector2 } from "three";
 
-// ---- edge-blur-effect.tsx ----
+
 
 
 
@@ -1830,7 +1830,7 @@ export default function MilkyWay({
             
             <div className="pointer-events-none h-screen w-full absolute left-0 top-0 max-[1025px]:top-5 z-20 flex items-center justify-center max-[1025px]:hidden">
                <div className='h-full w-full relative'>
-                  <div className='absolute top-0 left-[70%] pt-[10vw] px-[2vw] flex items-center max-[1025px]:flex-col max-[1025px]:gap-5 justify-between h-fit'>
+                  <div className='absolute bottom-7 left-[3vw] pt-[10vw] px-[2vw] flex items-center max-[1025px]:flex-col max-[1025px]:gap-5 justify-between h-fit'>
                         <p className='leading-[1.2] '>
                            Move your cursor around and watch the scene respond.
                         </p>

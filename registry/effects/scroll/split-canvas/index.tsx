@@ -4,8 +4,59 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ReactLenis } from "lenis/react";
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useRef, type RefObject, useSyncExternalStore } from "react";
 import * as THREE from "three";
+
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
+export const sections = [
+  {
+    number: '01',
+    title: 'Design that feels alive',
+    description:
+      'Every component in Hyperiux Vault is built to react, transition, and guide attention naturally-making interfaces feel intentional instead of static.',
+  },
+
+  {
+    number: '02',
+    title: 'Motion with meaning',
+    description:
+      'Animations should explain, not distract. Interactions are designed to create clarity, rhythm, and confidence across every screen.',
+  },
+
+  {
+    number: '03',
+    title: 'Built for shipping',
+    description:
+      'Reusable structures, clean APIs, and production-ready patterns help ideas move from prototype to launch without rebuilding everything.',
+  },
+
+  {
+    number: '04',
+    title: 'Expressive by default',
+    description:
+      'Create visual identity through layout, typography, transitions, and composition-without sacrificing usability or performance.',
+  },
+
+  {
+    number: '05',
+    title: 'Human over interface',
+    description:
+      'Technology disappears when experiences feel effortless. The goal is simple: make products people enjoy returning to.',
+  },
+];
+
+export const imageSources = [
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/banana.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/cherry.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/mango.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/pineapple.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/watermelon.png',
+];
 
 export const PixelTransitionVertex = `
  varying vec2 vUv;
@@ -108,59 +159,6 @@ export const PixelTransitionFragment = `
  gl_FragColor = result;
  }
 `;
-
-/**
- * @typedef {Object} SplitCanvasSection
- * @property {string} number
- * @property {string} title
- * @property {string} description
- */
-
-/** @type {SplitCanvasSection[]} */
-export const sections = [
-  {
-    number: '01',
-    title: 'Design that feels alive',
-    description:
-      'Every component in Hyperiux Vault is built to react, transition, and guide attention naturally-making interfaces feel intentional instead of static.',
-  },
-
-  {
-    number: '02',
-    title: 'Motion with meaning',
-    description:
-      'Animations should explain, not distract. Interactions are designed to create clarity, rhythm, and confidence across every screen.',
-  },
-
-  {
-    number: '03',
-    title: 'Built for shipping',
-    description:
-      'Reusable structures, clean APIs, and production-ready patterns help ideas move from prototype to launch without rebuilding everything.',
-  },
-
-  {
-    number: '04',
-    title: 'Expressive by default',
-    description:
-      'Create visual identity through layout, typography, transitions, and composition-without sacrificing usability or performance.',
-  },
-
-  {
-    number: '05',
-    title: 'Human over interface',
-    description:
-      'Technology disappears when experiences feel effortless. The goal is simple: make products people enjoy returning to.',
-  },
-];
-
-export const imageSources = [
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/banana.png',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/cherry.png',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/mango.png',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/pineapple.png',
-'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/watermelon.png',
-];
 
 const DEFAULT_ROOT_MARGIN = "256px";
 
@@ -411,13 +409,6 @@ export {
 
 gsap.registerPlugin(ScrollTrigger);
 
-// True when the user has asked the OS to minimise animation. Safe to call
-// during render - returns false on the server.
-function prefersReducedMotion() {
- if (typeof window === 'undefined') return false;
- return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
-}
-
 // Load SVG as image and render to canvas for proper texture
 const loadSvgAsCanvas = (src: string, size: number): Promise<HTMLCanvasElement> => {
  return new Promise((resolve, reject) => {
@@ -451,7 +442,7 @@ interface PixelScrollCanvasProps {
  canvasSize?: number;
 }
 
-function PixelScrollCanvas({
+function SplitCanvasComp({
  wrapperRef,
  gridSize = 16,
  numSlices = 32,
@@ -642,7 +633,7 @@ function PixelScrollCanvas({
  loop.destroy();
  loop = null;
  }
- ScrollTrigger.getAll().forEach(t => t.kill());
+//  ScrollTrigger.getAll().forEach(t => t.kill());
  if (renderer) {
  renderer.dispose();
  renderer.forceContextLoss();
@@ -657,7 +648,7 @@ function PixelScrollCanvas({
  return (
  <div
  ref={containerRef}
- className="max-md:-translate-y-20 border-r border-t border-black/20"
+ className="max-sm:-translate-y-20 border-r border-t border-black/20"
  />
  );
 }
@@ -668,7 +659,6 @@ interface SplitCanvasProps {
     numSlices?: number;
     canvasSize?: number;
 }
-
 export default function SplitCanvas({
     bgColor = "#F5F5F0",
     gridSize = 16,
@@ -680,9 +670,6 @@ export default function SplitCanvas({
     return (
         <ReactLenis root options={{ autoRaf: true, duration: 1.5 }}>
             <main className="min-h-screen text-black" style={{ backgroundColor: bgColor }}>
-                {/* Hero Section */}
-
-                {/* Scrollable Content */}
                 <div
                     ref={wrapperRef}
                     className="relative"
@@ -690,7 +677,7 @@ export default function SplitCanvas({
                 >
                     {/* Fixed Canvas Container - higher z-index to be visible */}
                     <div className="sticky top-0 overflow-hidden h-screen w-full flex items-center justify-center z-30 max-md:items-center">
-                        <PixelScrollCanvas
+                        <SplitCanvasComp
                             wrapperRef={wrapperRef}
                             gridSize={gridSize}
                             numSlices={numSlices}

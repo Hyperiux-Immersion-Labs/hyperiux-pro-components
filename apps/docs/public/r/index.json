@@ -205,8 +205,7 @@
         "scroll"
       ],
       "dependencies": [
-        "gsap",
-        "lucide-react"
+        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "RotationSlider",
@@ -272,8 +271,8 @@
       ],
       "dependencies": [
         "gsap",
-        "three",
-        "lenis"
+        "lenis",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "SplitCanvas",
@@ -483,8 +482,8 @@
         "cursor"
       ],
       "dependencies": [
-        "@react-three/fiber",
         "@react-three/drei",
+        "@react-three/fiber",
         "three"
       ],
       "registryDependencies": [],
@@ -836,10 +835,7 @@
       "categories": [
         "transitions"
       ],
-      "dependencies": [
-        "gsap",
-        "next-transition-router"
-      ],
+      "dependencies": [],
       "registryDependencies": [],
       "exportName": "PixelTransition",
       "exportKind": "default",
@@ -953,8 +949,8 @@
         "text"
       ],
       "dependencies": [
-        "gsap",
-        "@gsap/react"
+        "@gsap/react",
+        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "DepthFlipText",
@@ -986,8 +982,8 @@
         "text"
       ],
       "dependencies": [
-        "gsap",
-        "@gsap/react"
+        "@gsap/react",
+        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "FlickeringText",
@@ -1145,8 +1141,8 @@
         "text"
       ],
       "dependencies": [
-        "gsap",
-        "@gsap/react"
+        "@gsap/react",
+        "gsap"
       ],
       "registryDependencies": [],
       "exportName": "RollingText",
@@ -1567,7 +1563,6 @@
         "carousels"
       ],
       "dependencies": [
-        "@gsap/react",
         "gsap"
       ],
       "registryDependencies": [],
@@ -1601,9 +1596,9 @@
         "carousels"
       ],
       "dependencies": [
-        "three",
         "gsap",
-        "lenis"
+        "lenis",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "WebGLSlider",
@@ -2105,9 +2100,9 @@
         "loaders"
       ],
       "dependencies": [
-        "gsap",
-        "@react-three/fiber",
         "@react-three/drei",
+        "@react-three/fiber",
+        "gsap",
         "three"
       ],
       "registryDependencies": [],
@@ -2159,10 +2154,10 @@
         "webgl"
       ],
       "dependencies": [
-        "three",
-        "@react-three/fiber",
         "@react-three/drei",
-        "maath"
+        "@react-three/fiber",
+        "maath",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "BookFlip",
@@ -2178,12 +2173,12 @@
         "webgl"
       ],
       "dependencies": [
-        "three",
-        "@react-three/fiber",
         "@react-three/drei",
-        "@react-three/rapier",
+        "@react-three/fiber",
         "@react-three/postprocessing",
-        "maath"
+        "@react-three/rapier",
+        "maath",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "CollidingModels",
@@ -2215,8 +2210,8 @@
         "webgl"
       ],
       "dependencies": [
-        "three",
-        "@react-three/fiber"
+        "@react-three/fiber",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "DonutParticles",
@@ -2280,8 +2275,8 @@
         "webgl"
       ],
       "dependencies": [
-        "@react-three/fiber",
         "@react-three/drei",
+        "@react-three/fiber",
         "three"
       ],
       "registryDependencies": [],
@@ -2298,14 +2293,14 @@
         "webgl"
       ],
       "dependencies": [
-        "@react-three/fiber",
         "@react-three/drei",
+        "@react-three/fiber",
         "@react-three/postprocessing",
-        "postprocessing",
         "gsap",
-        "three",
+        "lucide-react",
         "motion",
-        "lucide-react"
+        "postprocessing",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "HeroBannerAnimated",
@@ -2321,8 +2316,8 @@
         "webgl"
       ],
       "dependencies": [
-        "three",
-        "gsap"
+        "gsap",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "HoverSlider",
@@ -2338,10 +2333,10 @@
         "webgl"
       ],
       "dependencies": [
-        "three",
-        "@react-three/fiber",
         "@react-three/drei",
-        "@react-three/postprocessing"
+        "@react-three/fiber",
+        "@react-three/postprocessing",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "HyperiuxGlitter",
@@ -2371,13 +2366,13 @@
         "webgl"
       ],
       "dependencies": [
-        "@react-three/fiber",
         "@react-three/drei",
+        "@react-three/fiber",
         "@react-three/postprocessing",
-        "postprocessing",
-        "three",
+        "gsap",
         "lucide-react",
-        "gsap"
+        "postprocessing",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "MilkyWay",
@@ -2393,10 +2388,10 @@
         "webgl"
       ],
       "dependencies": [
-        "three",
         "@react-three/fiber",
         "@react-three/postprocessing",
-        "gsap"
+        "gsap",
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "MousePixelation",
@@ -2412,13 +2407,11 @@
         "webgl"
       ],
       "dependencies": [
-        "@react-three/fiber",
         "@react-three/drei",
+        "@react-three/fiber",
         "@react-three/postprocessing",
-        "three",
         "postprocessing",
-        "gsap",
-        "lucide-react"
+        "three"
       ],
       "registryDependencies": [],
       "exportName": "ProgressiveBloomValley",

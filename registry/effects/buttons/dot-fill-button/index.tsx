@@ -1,8 +1,8 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type PointerEvent } from "react";
+import Link from "next/link";
 
 const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;
@@ -11,7 +11,6 @@ const STAGGER_STEP = 0.01;
 
 export type DotFillBtnProps = {
  btnText?: string;
- href?: string;
  className?: string;
  textClassName?: string;
  staggerStep?: number;
@@ -20,10 +19,10 @@ export type DotFillBtnProps = {
  fillColor?: string;
  hoverTextColor?: string;
  dotColor?: string;
-} & Omit<ComponentPropsWithoutRef<'a'>, 'href'>;
+} & ComponentPropsWithoutRef<typeof Link>;
 
 const DotFillBtn = ({
- btnText ="Try demo",
+ btnText ="",
  href = DEFAULT_HREF,
  className ="",
  textClassName ="",
@@ -115,28 +114,34 @@ const DotFillBtn = ({
 		};
 	}, []);
 
-	const handleMouseEnter = () => {
-		if (isMobile) return;
+	const activate = () => {
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
-				const spanEl = span as HTMLElement;
-				spanEl.style.transform = "translateY(-1.3em) rotate(0.001deg)";
+				(span as HTMLElement).style.transform = "translateY(-1.3em) rotate(0.001deg)";
 			});
 		}
 		setHovered(true);
 	};
 
-	const handleMouseLeave = () => {
-		if (isMobile) return;
+	const deactivate = () => {
 		const el = textRef.current;
 		if (el) {
 			Array.from(el.children).forEach((span) => {
-				const spanEl = span as HTMLElement;
-				spanEl.style.transform = "translateY(0em) rotate(0.001deg)";
+				(span as HTMLElement).style.transform = "translateY(0em) rotate(0.001deg)";
 			});
 		}
 		setHovered(false);
+	};
+
+	const handleMouseEnter = () => {
+		if (isMobile) return;
+		activate();
+	};
+
+	const handleMouseLeave = () => {
+		if (isMobile) return;
+		deactivate();
 	};
 
 	const handlePointerDown = (event: PointerEvent<HTMLAnchorElement>) => {
@@ -150,30 +155,16 @@ const DotFillBtn = ({
 			window.clearTimeout(releaseTimeoutRef.current);
 		}
 
-		const el = textRef.current;
-		if (el) {
-			Array.from(el.children).forEach((span) => {
-				const spanEl = span as HTMLElement;
-				spanEl.style.transform = "translateY(-1.3em) rotate(0.001deg)";
-			});
-		}
-		setHovered(true);
+		activate();
 
 		releaseTimeoutRef.current = window.setTimeout(() => {
-			const currentEl = textRef.current;
-			if (currentEl) {
-				Array.from(currentEl.children).forEach((span) => {
-					const spanEl = span as HTMLElement;
-					spanEl.style.transform = "translateY(0em) rotate(0.001deg)";
-				});
-			}
-			setHovered(false);
+			deactivate();
 			releaseTimeoutRef.current = null;
 		}, MOBILE_HOLD_MS);
 	};
 
 	return (
-		<a
+		<Link
 			href={href}
 			{...props}
 			onMouseEnter={handleMouseEnter}
@@ -207,7 +198,7 @@ const DotFillBtn = ({
 					{btnText}
 				</span>
 			</span>
-		</a>
+		</Link>
 	);
 };
 

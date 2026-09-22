@@ -1,5 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 
 import { useMemo, type CSSProperties } from "react";
@@ -31,6 +30,8 @@ const DEFAULT_EYEBROW = "VAULT TRANSMISSION";
 const DEFAULT_TEXT =
   "Connection established with Hyperiux Vault,\nDecrypting premium component signatures,\nMotion presets verified and ready to ship,\nWelcome in. Build something that glows.";
 const SETTLED_WEIGHT = 300;
+const DEFAULT_BACKGROUND_IMAGE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 
 function withAlpha(color: string, alpha: number) {
   if (/^#[0-9a-f]{6}$/i.test(color)) {
@@ -78,6 +79,24 @@ export default function GlowingText({
   const eyebrowTokens = useMemo(() => tokenizeWithOffsets(eyebrow), [eyebrow]);
   const lineTokens = useMemo(() => text.split("\n").map(tokenizeWithOffsets), [text]);
 
+  const lineCharDelays = useMemo(
+    () =>
+      lineTokens.reduce<{ result: number[][]; elapsed: number }>(
+        (state, tokens) => {
+          const charCount = tokens.reduce((total, token) => total + Array.from(token.text).length, 0);
+          const delays = Array.from({ length: charCount }, (_, index) => state.elapsed + index * stagger);
+          const lineDuration = charCount > 0 ? (charCount - 1) * stagger + duration : 0;
+
+          return {
+            result: [...state.result, delays],
+            elapsed: state.elapsed + lineDuration + Math.max(lineGap, 0),
+          };
+        },
+        { result: [], elapsed: 0 }
+      ).result,
+    [lineTokens, stagger, duration, lineGap]
+  );
+
   const animationKey = [
     eyebrow,
     text,
@@ -87,18 +106,6 @@ export default function GlowingText({
     revealDuration,
     lineGap,
   ].join("|");
-
-  const lineCharDelays = useMemo(() => {
-    let elapsed = 0;
-
-    return lineTokens.map((tokens) => {
-      const charCount = tokens.reduce((total, token) => total + Array.from(token.text).length, 0);
-      const delays = Array.from({ length: charCount }, (_, index) => elapsed + index * stagger);
-      const lineDuration = charCount > 0 ? (charCount - 1) * stagger + duration : 0;
-      elapsed += lineDuration + Math.max(lineGap, 0);
-      return delays;
-    });
-  }, [lineTokens, stagger, duration, lineGap]);
 
   const renderTokens = (tokens: Token[], keyPrefix: string, delayFor: (charIndex: number) => number) =>
     tokens.map((token, tokenIndex) => {
@@ -139,6 +146,7 @@ export default function GlowingText({
           "--glow-hard": glowHard,
           "--glow-settled-weight": SETTLED_WEIGHT,
           backgroundColor,
+          backgroundImage: `linear-gradient(rgba(11, 13, 14, 0.52), rgba(11, 13, 14, 0.52)), url(${DEFAULT_BACKGROUND_IMAGE})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",

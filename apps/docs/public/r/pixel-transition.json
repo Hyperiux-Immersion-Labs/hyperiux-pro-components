@@ -3,10 +3,7 @@
   "type": "registry:component",
   "title": "Pixel Transition",
   "description": "Canvas 2D page transition that fills and clears a grid of pixels in a diagonal wave. Leave sweeps pixels up from the bottom-right; enter clears them from the top-left. Supports an optional content shift blur effect.",
-  "dependencies": [
-    "gsap",
-    "next-transition-router"
-  ],
+  "dependencies": [],
   "registryDependencies": [],
   "exportName": "PixelTransition",
   "exportKind": "default",

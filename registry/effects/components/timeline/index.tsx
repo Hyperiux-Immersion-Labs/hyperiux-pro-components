@@ -1,5 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-
 "use client";
 import Image from "next/image";
 import {
@@ -148,7 +147,7 @@ export default function Timeline({
   mutedTextColor = "#3f3f46",
   activeColor = "#ff5f00",
   backgroundColor = "#ffffff",
-  imageUrl = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80",
+  imageUrl = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
   imageAlt = "Modern office workspace",
 
   duration,
@@ -292,6 +291,7 @@ export default function Timeline({
             isMobileViewport ? "50%" : isTabletViewport ? "40%" : "60%"
           }`,
           scrub: true,
+          // markers:true,
         },
       });
 

@@ -3,6 +3,7 @@
 "use client";
 
 import { ShoppingCart } from "lucide-react";
+import Image from "next/image";
 import { forwardRef, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type AnimationEvent, type CSSProperties, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
 // @ts-nocheck
@@ -2652,11 +2653,13 @@ export default function BorderBeam({
         </div>
 
         <div className="absolute bottom-0 right-[-20%] h-[30vw] w-[40vw]  max-sm:right-[-44px] max-sm:scale-90 max-md:h-[50vw] max-md:w-[60vw] max-[1025px]:h-[50vw] max-[1025px]:w-[60vw] max-[1025px]:right-[-10%]">
-          <img
+          <Image
             src="/assets/img/earbud.png"
             alt="earbud"
+            fill
             sizes="(max-width: 1024px) 280px, 250px"
-            className="absolute inset-0 h-full w-full object-contain object-bottom"
+            className="object-contain object-bottom"
+            priority
           />
         </div>
 

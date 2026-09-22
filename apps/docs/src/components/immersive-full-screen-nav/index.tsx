@@ -3,7 +3,7 @@
 
 import gsap from "gsap";
 import Link from "next/link";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 
 const SOCIAL_ICONS: Record<string, ReactNode> = {
   instagram: (
@@ -48,6 +48,139 @@ const TAGLINE_DELAY_OFFSET = 0.08;
 const IMAGE_DELAY_OFFSET = 0.1;
 const SOCIAL_DELAY_OFFSET = 0.2;
 const LOCATION_DELAY_OFFSET = 0.25;
+
+const ANIM_CHAR_LIFT = "1.3em";
+const ANIM_CHAR_STEP = 0.01;
+const ANIM_GLIDE = "cubic-bezier(0.625, 0.05, 0, 1)";
+
+interface LinkAnimProps {
+  label: string;
+  href: string;
+  className?: string;
+  restColor?: string;
+  activeColor?: string;
+  underline?: boolean;
+  tabIndex?: number;
+  onClick?: () => void;
+}
+
+
+function LinkAnim({
+  label,
+  href,
+  className = "",
+  restColor,
+  activeColor,
+  underline = true,
+  tabIndex,
+  onClick,
+}: LinkAnimProps) {
+  const ruleRef = useRef<HTMLSpanElement | null>(null);
+  const isTouchRef = useRef(false);
+  const hasEnteredRef = useRef(false);
+
+  const [isActive, setIsActive] = useState(false);
+  const [isReduced, setIsReduced] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!query) return;
+
+    const syncReduced = () => setIsReduced(query.matches);
+
+    syncReduced();
+    query.addEventListener("change", syncReduced);
+
+    return () => query.removeEventListener("change", syncReduced);
+  }, []);
+
+  // Retracts the underline back toward the side it came from, so the rule
+  // never looks like it is sliding out from under the cursor.
+  useEffect(() => {
+    if (!hasEnteredRef.current) {
+      hasEnteredRef.current = true;
+      return;
+    }
+
+    const rule = ruleRef.current;
+    if (!rule || isActive || isReduced) return;
+
+    rule.style.transformOrigin = "right center";
+
+    const onSettled = () => {
+      rule.style.transformOrigin = "left center";
+      rule.removeEventListener("transitionend", onSettled);
+    };
+
+    rule.addEventListener("transitionend", onSettled);
+    return () => rule.removeEventListener("transitionend", onSettled);
+  }, [isActive, isReduced]);
+
+  const chars = [...label];
+
+  return (
+    <Link
+      prefetch={false}
+      href={href}
+      tabIndex={tabIndex}
+      onClick={onClick}
+      onMouseEnter={() => {
+        if (isTouchRef.current) return;
+        setIsActive(true);
+      }}
+      onMouseLeave={() => {
+        if (isTouchRef.current) return;
+        setIsActive(false);
+      }}
+      onTouchStart={() => {
+        isTouchRef.current = true;
+      }}
+      style={{ color: isActive ? activeColor : restColor }}
+      className={`inline-flex items-center no-underline transition-colors duration-500 motion-reduce:transition-none ${className}`.trim()}
+    >
+      <span className="relative inline-block w-fit">
+        <span
+          aria-label={label}
+          className="relative inline-block overflow-hidden leading-[1.2]"
+        >
+          {chars.map((char, index) => (
+            <span
+              key={`${char}-${index}`}
+              aria-hidden="true"
+              className="relative inline-block will-change-transform motion-reduce:transition-none"
+              style={{
+                // The shadow copy sits one lift below, so raising the span
+                // swaps it in without a second set of DOM nodes.
+                textShadow: `0px ${ANIM_CHAR_LIFT} currentColor`,
+                transform: isActive && !isReduced
+                  ? `translateY(-${ANIM_CHAR_LIFT}) rotate(0.001deg)`
+                  : "translateY(0em) rotate(0.001deg)",
+                transition: isReduced ? "none" : `transform 0.6s ${ANIM_GLIDE}`,
+                transitionDelay: isReduced ? "0s" : `${index * ANIM_CHAR_STEP}s`,
+                whiteSpace: char === " " ? "pre" : undefined,
+              }}
+            >
+              {char}
+            </span>
+          ))}
+        </span>
+
+        {underline && (
+          <span
+            ref={ruleRef}
+            aria-hidden="true"
+            className="absolute bottom-[15%] left-0 h-[1.5px] w-full bg-current"
+            style={{
+              transform: `scaleX(${isActive && !isReduced ? 1 : 0})`,
+              transformOrigin: "left center",
+              transition: isReduced ? "none" : `transform 0.5s ${ANIM_GLIDE}`,
+            }}
+          />
+        )}
+      </span>
+    </Link>
+  );
+}
 
 export interface CustomNavbarLink {
   label: string;
@@ -270,9 +403,7 @@ function CustomNavbar({
               style={{ opacity: 0, transform: `translateY(${linkOffsetY}px)` }}
             >
 
-              <Link prefetch={false} href={link.href}>
-                {link.label}
-              </Link>
+              <LinkAnim label={link.label} href={link.href} />
             </div>
           ))}
         </div>
@@ -670,14 +801,6 @@ function FullscreenNav({
     onOpenMenu();
   };
 
-  const onLinkMouseEnter = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.currentTarget.style.color = linkHoverColor;
-  };
-
-  const onLinkMouseLeave = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.currentTarget.style.color = linkColor;
-  };
-
   // Effects
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -785,18 +908,16 @@ function FullscreenNav({
           {children
             ? children(isOpen)
             : (links as FullscreenNavLink[]).map(({ label, href }) => (
-              <Link
+              <LinkAnim
                 key={label}
+                label={label}
                 href={href}
                 onClick={isOpen ? onCloseMenu : undefined}
                 tabIndex={isOpen ? 0 : -1}
-                style={{ color: linkColor }}
-                onMouseEnter={onLinkMouseEnter}
-                onMouseLeave={onLinkMouseLeave}
-                className={`${linkSizeClass} font-normal tracking-tight transition-colors motion-reduce:transition-none`}
-              >
-                {label}
-              </Link>
+                restColor={linkColor}
+                activeColor={linkHoverColor}
+                className={`${linkSizeClass} font-normal tracking-tight`}
+              />
             ))}
         </div>
       </nav>

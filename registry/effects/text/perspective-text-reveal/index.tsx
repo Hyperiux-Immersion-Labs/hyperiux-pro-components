@@ -12,10 +12,6 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
 
-const DEFAULT_TEXT = <p className="text-2xl">A headline can feel like it has a camera angle.</p>;
-
-
-
 interface PerspectiveTextRevealProps {
  children?: React.ReactNode;
  animateOnScroll?: boolean;
@@ -27,7 +23,7 @@ interface PerspectiveTextRevealProps {
 }
 
 export default function PerspectiveTextReveal({
- children = DEFAULT_TEXT,
+ children,
  animateOnScroll = true,
  delay = 0,
  duration = 0.8,
@@ -53,7 +49,7 @@ export default function PerspectiveTextReveal({
  window.matchMedia &&
  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  let ctx: ReturnType<typeof gsap.context> | undefined;
+ let ctx: ReturnType<typeof gsap.context> | undefined;
 
  const init = async () => {
  await document.fonts.ready;
@@ -67,7 +63,7 @@ export default function PerspectiveTextReveal({
  });
 
  splitRefs.current.push(split);
- linesRef.current.push(.../** @type {HTMLElement[]} */ (split.lines));
+ linesRef.current.push(...split.lines);
  });
 
  if (prefersReduced) {

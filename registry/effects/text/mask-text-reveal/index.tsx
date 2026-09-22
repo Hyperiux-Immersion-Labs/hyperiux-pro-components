@@ -4,8 +4,14 @@
 
 import gsap from "gsap";
 import { SplitText } from "gsap/dist/SplitText";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode, useSyncExternalStore } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+
+function prefersReducedMotion() {
+  if (typeof window === "undefined") return false;
+
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
@@ -116,10 +122,7 @@ export default function MaskTextReveal({
             };
 
             if (animateOnScroll) {
-                // Reduced motion: always play once and never scrub - scrub
-                // ties the reveal continuously to scroll position, which is
-                // the kind of motion reduced-motion should still avoid, even
-                // though the mask wipe itself is subtle enough to keep.
+               
                 const effectiveScrub = prefersReduced ? false : scrub;
 
                 const tween = gsap.to(linesRef.current, {
