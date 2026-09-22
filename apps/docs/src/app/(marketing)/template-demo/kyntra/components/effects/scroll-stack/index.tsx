@@ -231,7 +231,7 @@ export default function ScrollStack({
                                 className="w-[2.3vw] h-auto object-contain max-[1025px]:size-[3vw] max-md:size-[6vw]"
                               />
                             </span>
-                            <span className="text-22 max-[1025px]:text-[2.4vw] max-md:text-[4.4vw]">
+                            <span className="text-22 max-[1025px]:text-[3vw] max-md:text-[4.4vw]">
                               {item.label}
                             </span>
                           </div>
