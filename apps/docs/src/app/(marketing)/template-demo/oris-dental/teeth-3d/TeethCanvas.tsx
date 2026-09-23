@@ -230,7 +230,7 @@ export default function TeethCanvas() {
     }, [])
 
     return (
-        <div ref={containerRef} className='absolute inset-0 h-full w-full pointer-events-none z-0'>
+        <div ref={containerRef} className='absolute inset-0 h-full w-full pointer-events-none z-0 max-md:top-[10%]'>
             <Canvas
                 frameloop={isInView ? 'always' : 'never'}
                 camera={{ position: [0, 0, 5], fov: 45 }}

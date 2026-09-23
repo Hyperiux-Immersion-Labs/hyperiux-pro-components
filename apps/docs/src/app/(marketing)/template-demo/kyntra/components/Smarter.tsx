@@ -275,7 +275,7 @@ export default function Smarter() {
         onMouseEnter={(e) => animateTexture(e, true)}
         onMouseMove={moveTexture}
         onMouseLeave={(e) => animateTexture(e, false)}
-        className="relative flex aspect-440/477 max-[1025px]:aspect-auto max-[1025px]:h-[45vh] w-[28vw] shrink-0 flex-col overflow-hidden rounded-xl p-[2vw] max-[1025px]:p-[4vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
+        className="relative flex aspect-440/477 max-[1025px]:aspect-auto max-[1025px]:h-[45vh] max-md:h-[100vw] w-[28vw] shrink-0 flex-col overflow-hidden rounded-xl p-[2vw] max-[1025px]:p-[4vw] select-none will-change-transform max-[1025px]:w-[50vw] max-md:w-[76vw] max-md:rounded-3xl max-md:p-6"
         style={{
           backgroundColor: isPrimary ? KYNTRA_PRIMARY : "#0d0d0d",
           border: isPrimary ? "none" : "1px solid rgba(255,255,255,0.25)",
@@ -330,7 +330,7 @@ export default function Smarter() {
       id="smarter"
       ref={sectionRef}
       className={`relative z-10 w-full bg-white ${
-        reducedMotion ? "" : "mt-[-20vh]"
+        reducedMotion ? "" : "mt-[-20vh] max-[1025px]:mt-0 max-md:mt-[-8vh]"
       }`}
     >
       {/* Scroll range for the pinned sweep */}

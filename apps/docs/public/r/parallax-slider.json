@@ -69,7 +69,7 @@
       "name": "scrub",
       "type": "number",
       "default": 1,
-      "description": "GSAP ScrollTrigger scrub value on the main horizontal track — higher lags/smooths more, lower tracks scroll 1:1.",
+      "description": "GSAP ScrollTrigger scrub value on the main horizontal track - higher lags/smooths more, lower tracks scroll 1:1.",
       "remixer": {
         "control": "range",
         "group": "motion",

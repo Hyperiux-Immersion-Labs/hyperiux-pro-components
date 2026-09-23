@@ -505,7 +505,7 @@ export default function EffectBox({
         <span className={`${mark} -bottom-px -left-px border-b border-l`} />
         <span className={`${mark} -bottom-px -right-px border-b border-r`} />
 
-        <p className="t22 font-neue-haas leading-none text-white max-md:text-[2.4vw] max-sm:text-[4vw]">
+        <p className="text22 font-neue-haas leading-none text-white max-md:text-[2.4vw] max-sm:text-[4vw]">
           {title}
         </p>
 

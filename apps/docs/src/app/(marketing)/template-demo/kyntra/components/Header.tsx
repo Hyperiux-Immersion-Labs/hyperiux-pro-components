@@ -286,7 +286,7 @@ const Header: React.FC = () => {
                 onClick={(event) => handleNavScroll(event, link.target)}
                 hoverColor="rgba(255,255,255,0.7)"
                 className="text-white"
-                textClassName="font-helvetica-neue text-[9vw] font-medium leading-none max-md:text-[12vw]"
+                textClassName="font-helvetica-neue text-[9vw] font-medium leading-none max-md:text-[9vw]"
               />
             ))}
           </div>

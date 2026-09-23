@@ -81,7 +81,7 @@ export default function ExplainVault() {
                 stagger={40}
                 bandFraction={0.65}
                 settleBlend={0.45}
-                className="t64"
+                className="text64"
                 wrapperClassName="w-[88%]"
                 containerClassName="py-[15vw] font-neue-haas max-md:py-24"
             />
