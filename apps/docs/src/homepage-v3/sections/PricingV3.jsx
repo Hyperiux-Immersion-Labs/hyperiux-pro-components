@@ -333,7 +333,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
                     <PixelSquares flashClassName="bg-background" />
 
                     <div>
-                        <p className="t64  max-md:text-[5vw] font-neue-haas max-sm:text-[7vw]">Free</p>
+                        <p className="text64  max-md:text-[5vw] font-neue-haas max-sm:text-[7vw]">Free</p>
 
                         <div className="mt-[1.5vw] flex items-end gap-[1vw] max-[1025px]:mt-[3vw] max-[1025px]:gap-[2vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
                             <p className="t96 font-neue-haas  leading-none max-md:text-[7vw] max-sm:text-[11vw]">
@@ -369,7 +369,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
                     <PixelSquares flashClassName="bg-white" />
 
                     <div>
-                        <p className="t64 font-neue-haas  max-md:text-[5vw] max-sm:text-[7vw]">Pro</p>
+                        <p className="text64 font-neue-haas  max-md:text-[5vw] max-sm:text-[7vw]">Pro</p>
 
                         <div className="mt-[1.5vw] flex items-end gap-[1vw] max-[1025px]:mt-[3vw] max-[1025px]:gap-[2vw] max-md:mt-[4vw] max-md:gap-[2.5vw] max-sm:mt-[6vw]">
                             <p className="t96 font-neue-haas items-center  flex leading-none max-md:text-[7vw] max-sm:text-[11vw]">

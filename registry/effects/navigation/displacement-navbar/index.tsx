@@ -534,8 +534,8 @@ const DisplacementNavbar = ({
       className={`relative min-h-screen ${className}`}
       style={{ backgroundColor: shelfBackground, color: linkColor }}
     >
-      {/* The bar stays translucent in both states, so whatever sits behind it —
-          the page when closed, the shelf once it is out — reads through the
+      {/* The bar stays translucent in both states, so whatever sits behind it -
+          the page when closed, the shelf once it is out - reads through the
           blur rather than being covered by a solid strip. */}
       <header
         ref={barRef}
@@ -736,7 +736,7 @@ const DisplacementNavbar = ({
         style={{ background: pageBackground, color: '#111111' }}
       >
         {/* Only the page's content dims while the shelf is open, never the page
-            surface itself — fading the wrapper would take `pageBackground` with
+            surface itself - fading the wrapper would take `pageBackground` with
             it and let the shelf show through the gap. */}
         <div ref={pageContentRef}>
           {children ?? (

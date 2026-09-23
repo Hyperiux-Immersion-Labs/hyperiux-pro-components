@@ -110,7 +110,7 @@ export default function TextFillPixelV3({
   textColor = '#ffffff',
   primaryColor = '#ff5f00',
   dimColor = '#272727',
-  className = 't64',
+  className = 'text64',
   wrapperClassName = 'w-[95%] sm:w-[88%] md:w-[90%]',
   containerClassName = '',
   id = 'text-fill-pixel-v3',

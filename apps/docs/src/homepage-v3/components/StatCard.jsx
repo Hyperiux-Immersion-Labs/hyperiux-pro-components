@@ -42,7 +42,7 @@ export default function StatCard({
     >
       <div className={contentClassName}>{content}</div>
       {labelParts?.length ? (
-        <p className="flex items-center gap-[1vw] t22 leading-none font-heading text-white max-[1025px]:gap-2 max-md:gap-1.5 max-md:text-[2.4vw] max-sm:gap-2 max-sm:text-[4vw]">
+        <p className="flex items-center gap-[1vw] text22 leading-none font-heading text-white max-[1025px]:gap-2 max-md:gap-1.5 max-md:text-[2.4vw] max-sm:gap-2 max-sm:text-[4vw]">
           {labelParts.map((part, index) => (
             <span key={`${part}-${index}`} className="contents">
               {index > 0 ? (

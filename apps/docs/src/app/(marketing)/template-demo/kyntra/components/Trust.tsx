@@ -15,7 +15,7 @@ const STATS = [
 
 const Trust = () => {
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black text-white ">
+    <section className="relative h-screen w-full overflow-hidden bg-black text-white max-[1025px]:h-fit  ">
   
       <Image
         src={trust}
@@ -26,8 +26,8 @@ const Trust = () => {
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-black/55" />
 
       {/* Inset glass card */}
-      <div className="relative z-10 flex h-full w-full pb-2 items-center justify-center px-[10vw] max-[1025px]:px-[3vw] max-[1025px]:py-[10vw] max-md:p-[5vw]">
-        <div className="relative h-full  max-h-[76vh] w-full max-w-360 overflow-hidden rounded-[1.6vw] max-[1025px]:h-full max-[1025px]:max-h-[90vh] max-[1025px]:rounded-[4vw]  max-md:rounded-[4vw]">
+      <div className="relative z-10 flex h-full w-full pb-2 items-center justify-center px-[10vw] max-[1025px]:px-[3vw] max-[1025px]:py-[10vw] max-md:p-[7vw] max-md:py-[15vw]">
+        <div className="relative h-[75vh] w-full max-w-360 overflow-hidden rounded-[1.6vw] max-[1025px]:h-full max-[1025px]:rounded-[4vw]  max-md:rounded-[4vw]">
           {/* Background image, parallax on scrub */}
           <ParallaxImageAnimation
             src={trust.src}

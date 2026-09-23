@@ -129,10 +129,10 @@ export default function DentalTreatments({
     <section
       id={sectionId}
       ref={sectionRef}
-      className="w-full bg-white h-fit relative z-10 pt-[6vw] pb-[2vw] max-md:pb-[20vw]"
+      className="w-full bg-white h-fit relative z-10 pt-[6vw] pb-[2vw] max-md:pb-0"
     >
       {/* Header Section */}
-      <div className="oris-paddx mb-[7vw] max-md:mb-[15vw] max-[1025px]:mb-[10vw]">
+      <div className="oris-paddx mb-[7vw] max-[1025px]:mb-[10vw] max-md:mb-[12vw]">
         <SplitTextLines
           as="h2"
           className="text-[4.2vw] max-[1025px]:text-[6vw] max-md:text-[7.5vw]"
@@ -150,7 +150,7 @@ export default function DentalTreatments({
         style={{ height: `${cards.length * 50}svh` }}
         className="w-full motion-reduce:h-auto"
       >
-        <div className="w-full oris-paddx sticky top-[5vw] max-[1025px]:top-0 h-screen max-[1025px]:h-[100svh] max-[1025px]:flex max-[1025px]:items-center max-[1025px]:justify-center motion-reduce:static motion-reduce:h-auto">
+        <div className="w-full oris-paddx sticky top-[5vw] max-[1025px]:top-0 h-screen max-[1025px]:h-[100svh] max-md:top-[13%] max-[1025px]:flex max-[1025px]:items-center max-md:items-start max-[1025px]:justify-center motion-reduce:static motion-reduce:h-auto">
           <div className="relative w-full h-full max-[1025px]:h-[74svh] max-md:h-[76svh] motion-reduce:h-auto">
             {cards.map((item, index) => (
               <div

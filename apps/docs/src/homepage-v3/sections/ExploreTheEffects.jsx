@@ -137,7 +137,7 @@ export default function ExploreTheEffects() {
                     Explore the Moments Your Website is{" "}
                     <span className="gradient-text-animate">Missing.</span>
                 </LineReveal>
-                <SplitLine as='p' delay={.25} className="t22 w-[52vw] mx-auto text-center max-[1025px]:w-[85%] max-md:w-full max-md:text-[2.4vw] max-sm:text-[4vw]">
+                <SplitLine as='p' delay={.25} className="text22 w-[52vw] mx-auto text-center max-[1025px]:w-[85%] max-md:w-full max-md:text-[2.4vw] max-sm:text-[4vw]">
                     Vault is easiest to understand when you feel it. Preview a few
                     high-impact effects below, then open the full catalog when you are
                     ready.
@@ -147,7 +147,7 @@ export default function ExploreTheEffects() {
                 {COLUMNS.map((column, columnIndex) => (
                     <div
                         key={columnIndex}
-                        className="explore-effects-column flex flex-1 flex-col gap-[3vw] max-[1025px]:gap-[4vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10"
+                        className="explore-effects-column flex flex-1 max-[1025px]:min-w-0 flex-col gap-[3vw] max-[1025px]:gap-[4vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10"
                     >
                         {column.map((effect, effectIndex) => (
                             <EffectBox

@@ -346,7 +346,7 @@ export default function Hero() {
                             </h1>
                         </div>
 
-                        <p ref={copyRef} style={INTRO_HIDDEN} className="t22 text-secondary w-[42vw] max-[1025px]:w-[75%] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left">
+                        <p ref={copyRef} style={INTRO_HIDDEN} className="text22 text-secondary w-[42vw] max-[1025px]:w-[75%] max-md:w-[80%] max-sm:w-full max-md:text-left max-sm:text-left">
                           Source-first scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes for React and Next.js. Installed as real files in your project, not a dependency you rent.
                         </p>
 

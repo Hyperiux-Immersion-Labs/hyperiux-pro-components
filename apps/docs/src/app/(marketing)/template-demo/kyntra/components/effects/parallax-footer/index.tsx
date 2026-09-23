@@ -194,7 +194,7 @@ const ParallaxFooter = ({ footerBgColor = KYNTRA_PRIMARY }) => {
           </div>
 
           {/* Link columns */}
-          <div className="flex gap-[7vw] max-[1025px]:flex max-[1025px]:justify-between max-[1025px]:px-[5vw] max-[1025px]:w-full max-[1025px]:grid-cols-2 max-[1025px]:gap-x-[4vw] max-[1025px]:gap-y-0">
+          <div className="flex gap-[7vw] max-[1025px]:flex max-[1025px]:justify-between  max-[1025px]:w-full max-[1025px]:grid-cols-2 max-[1025px]:gap-x-[4vw] max-[1025px]:gap-y-0">
             <FooterLinkColumn title="Services" links={serviceLinks} />
             <FooterLinkColumn title="Connect" links={connectLinks} />
           </div>

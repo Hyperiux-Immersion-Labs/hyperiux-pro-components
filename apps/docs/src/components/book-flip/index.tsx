@@ -14,7 +14,7 @@ export default function BookFlip({
     <>
     <BookFlipp
       images={BOOK_IMAGES}
-      pathPattern="/assets/nature"
+      pathPattern="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip"
       bgColor="#000000"
       cameraDistance={{
         mobile: 9,

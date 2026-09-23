@@ -1,40 +1,6 @@
 @layer theme, base, clerk, components, utilities;
 
 @import "tailwindcss";
-@import "./CustomCss.css";
-@import "./CustomCssV3.css";
-
-@font-face {
-  font-family: "AvenirNextCyr";
-  src: url("/assets/fonts/AvenirNextCyr-Thin.woff2") format("woff2");
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "AvenirNextCyr";
-  src: url("/assets/fonts/AvenirNextCyr-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "AvenirNextCyr";
-  src: url("/assets/fonts/AvenirNextCyr-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "AvenirNextCyr";
-  src: url("/assets/fonts/AvenirNextCyr-Demi.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
 
 :root {
   --background: #050505;
@@ -49,10 +15,6 @@
   --muted: #d2d2d2;
   --grey: #272727;
   --light-grey: #939393;
-  --font-avenier: "AvenirNextCyr", system-ui, sans-serif;
-  --font-avenir-letter-spacing: -0.01em;
-  /* Announcement bar removed - kept at 0 so fixed navbars (which read this
-     for their `top`) and body's top padding don't need per-file changes. */
   --announcement-h: 0px;
   --announcement-offset: var(--announcement-h);
 }
@@ -77,8 +39,7 @@ body {
   --font-neue-haas: var(--font-neue-haas);
   --font-geist: var(--font-geist-sans);
   --font-geist-mono: var(--font-geist-mono);
-  --font-sans: var(--font-avenier);
-
+  --font-geist: var(--font-geist-sans);
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 16px;
@@ -86,9 +47,6 @@ body {
   --radius-2xl: 40px;
   --radius-pill: 56px;
   --radius-full: 100000px;
-/*
-  --breakpoint-md: 1025px;
-  --breakpoint-sm: 768px; */
 }
 
 html,
@@ -115,13 +73,6 @@ body {
   color-scheme: dark;
 }
 
-/* Layered (not left bare) so Tailwind's utilities layer - text-sm, text-xs,
-   etc. applied directly to a button/input/textarea/select - can actually
-   override this reset. An unlayered rule here would always win over any
-   layered utility regardless of specificity or source order, per the CSS
-   cascade layers spec, silently breaking every text-size class applied
-   directly to a form control site-wide (as opposed to one applied to a
-   wrapping element, which still works via inheritance either way). */
 @layer base {
   button,
   input,
@@ -144,64 +95,6 @@ h4 {
   line-height: 1.2;
 }
 
-.display-hero {
-  font-family: var(--font-neue-haas), system-ui, sans-serif;
-  font-size: 80px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.display-secondary {
-  font-family: var(--font-neue-haas), system-ui, sans-serif;
-  font-size: 64px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.display-third {
-  font-family: var(--font-neue-haas), system-ui, sans-serif;
-  font-size: 52px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.btn-pill {
-  border-radius: 56px;
-  padding: 12px 32px;
-  font-family: var(--font-neue-haas), system-ui, sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.16px;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.btn-pill-primary {
-  background: var(--secondary-surface);
-  color: var(--foreground);
-  border: 1px solid var(--secondary-surface);
-}
-
-.btn-pill-primary:hover {
-  background: var(--primary-hover);
-  border-color: var(--primary-hover);
-  color: #ffffff;
-}
-
-.btn-pill-outline {
-  background: transparent;
-  color: var(--foreground);
-  border: 1px solid var(--primary);
-}
-
-.btn-pill-outline:hover {
-  background: var(--primary-hover);
-  border-color: var(--primary-hover);
-  color: #ffffff;
-}
-
 /* Scrollbars */
 
 .toc::-webkit-scrollbar,
@@ -221,15 +114,6 @@ h4 {
   display: none;
 }
 
-/* Mobile nav overlay (VaultHeader.jsx / NavbarMobileV3.jsx) - the default
-   8px gradient scrollbar below is way too heavy once an expanded Categories/
-   Documentation accordion pushes the overlay's own content tall enough to
-   scroll; slim it down instead of hiding it outright (still visible = still
-   discoverable that there's more to scroll). Explicit thumb/track rules
-   (not just relying on the universal *::-webkit-scrollbar-thumb below) so
-   the site's own red-to-orange gradient still shows at the slimmer width -
-   Firefox's scrollbar-color can't take a gradient, so it gets a flat
-   approximation instead. */
 .mobile-nav-scroll {
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: #f16b0d transparent; /* Firefox */
@@ -247,12 +131,6 @@ h4 {
   background: linear-gradient(to bottom, #e61216 0%, #f16b0d 100%);
 }
 
-/* Request Custom Animation modal's scrollable content
-   (CustomAnimationFormModal.jsx) - same red-to-orange gradient thumb as the
-   root scrollbar below, just slimmed down to suit a contained scroll area
-   instead of the full page. Firefox's scrollbar-color can't take a
-   gradient, so it gets a flat approximation instead (same as
-   .mobile-nav-scroll above). */
 .custom-animation-form-scroll {
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: #f16b0d transparent; /* Firefox */
@@ -270,18 +148,6 @@ h4 {
   background: linear-gradient(to bottom, #e61216 0%, #f16b0d 100%);
 }
 
-/* Admin Activity page's effect-rank sliders (EffectRankSlider.jsx) scroll
-   horizontally, so the universal thumb gradient below (top-to-bottom, and a
-   different color) reads as broken here - solid brand orange instead,
-   square (no rounding), sized to this slider's own scroll axis.
-
-   The Firefox-only scrollbar-color/-width fallback is gated behind
-   `@supports not selector(::-webkit-scrollbar)` - Chrome 121+ also
-   understands scrollbar-color now, and once it sees that property it drops
-   to its own standard renderer (fixed, always-rounded thumb) *instead of*
-   the ::-webkit-scrollbar-thumb rules below, silently undoing border-radius:
-   0. Scoping it to browsers that don't support the legacy pseudo-elements
-   keeps Chrome/Safari on the fully customizable path. */
 @supports not selector(::-webkit-scrollbar) {
   .effect-rank-slider,
   .template-rank-slider {
@@ -315,11 +181,11 @@ h4 {
   background: transparent;
 }
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg,  #e61216 0%,#f16b0d 100%);
+  background: linear-gradient(180deg, #e61216 0%, #f16b0d 100%);
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg,  #e61216 0%,#f16b0d 100%);
+  background: linear-gradient(180deg, #e61216 0%, #f16b0d 100%);
 }
 
 ::selection {
@@ -330,10 +196,6 @@ h4 {
 .codeblock-root ::selection {
   background: rgba(99, 102, 241, 0.35);
 }
-
-/* -------------------------------------------------------------------------- */
-/* Clerk Auth Shared Styling */
-/* -------------------------------------------------------------------------- */
 
 .hyperiux-clerk .cl-rootBox {
   width: 100%;
@@ -557,8 +419,6 @@ h4 {
   color: rgba(255, 255, 255, 0.75) !important;
 }
 
-/* OTP / code fields */
-
 .hyperiux-clerk .cl-otpCodeFieldInput {
   width: 48px !important;
   height: 48px !important;
@@ -574,31 +434,27 @@ h4 {
   box-shadow: none !important;
 }
 
-/* Checkbox / secondary auth rows */
-
 .hyperiux-clerk .cl-formFieldRow__signOutOfOtherSessions {
   display: none !important;
 }
-.cl-alternativeMethodsBlockButton {
-  padding: 1vw 0vw !important;
-}
+
 .cl-internal-arrfyj {
   margin-top: 1vw;
 }
 .cl-internal-2l8bgd {
   margin-bottom: 2vw;
 }
-.cl-formFieldErrorText{
+.cl-formFieldErrorText {
   display: flex;
   align-items: center;
 }
-.cl-internal-1u45tiz:hover{
+.cl-internal-1u45tiz:hover {
   background: #ffffff !important;
   color: #0e0e0e !important;
   box-shadow: none !important;
   transition: all 0.3s ease-in-out;
 }
-.cl-internal-1u45tiz:hover{
+.cl-internal-1u45tiz:hover {
   background: #ffffff !important;
   color: #0e0e0e !important;
   box-shadow: none !important;
@@ -640,13 +496,9 @@ input:-webkit-autofill:active {
 .cl-internal-d4j0pk > :first-of-type {
   padding: 0 !important;
 }
-.cl-internal-c3th6r{
+.cl-internal-c3th6r {
   margin-bottom: 2vw;
 }
-
-/* -------------------------------------------------------------------------- */
-/* Responsive */
-/* -------------------------------------------------------------------------- */
 
 @media (max-width: 1025px) {
   .hyperiux-clerk .cl-card {
@@ -656,28 +508,12 @@ input:-webkit-autofill:active {
   .hyperiux-clerk .cl-cardBox {
     border-radius: 1.5rem !important;
   }
-  .cl-alternativeMethodsBlockButton {
-    padding: 2.5vw 5vw !important;
-  }
+
   .cl-internal-arrfyj {
     margin-top: 2vw;
   }
   .cl-internal-2l8bgd {
     margin-bottom: 3vw;
-  }
-}
-
-@media (max-width: 768px) {
-  .display-hero {
-    font-size: 56px;
-  }
-
-  .display-secondary {
-    font-size: 44px;
-  }
-
-  .display-third {
-    font-size: 36px;
   }
 }
 
@@ -689,9 +525,7 @@ input:-webkit-autofill:active {
   .hyperiux-clerk .cl-card {
     padding: 1.5rem !important;
   }
-  .cl-alternativeMethodsBlockButton {
-    padding: 3vw 5vw !important;
-  }
+
   .cl-internal-arrfyj {
     margin-top: 4vw;
   }
@@ -705,10 +539,6 @@ input:-webkit-autofill:active {
     font-size: 4vw;
   }
 }
-
-/* -------------------------------------------------------------------------- */
-/* Animations */
-/* -------------------------------------------------------------------------- */
 
 @keyframes shimmer {
   100% {
@@ -734,7 +564,7 @@ input:-webkit-autofill:active {
 }
 
 .gradient-text-animate {
-  background-image: linear-gradient(to right, #FF8400, #FF4100, #FF8400);
+  background-image: linear-gradient(to right, #ff8400, #ff4100, #ff8400);
   background-size: 300% auto;
   background-position: 0% center;
   -webkit-background-clip: text;
@@ -749,7 +579,6 @@ input:-webkit-autofill:active {
   }
 }
 
-/* Pro badge squares: hard on/off white flicker that settles back to orange. */
 @keyframes pixel-glitch-flash {
   0%,
   18%,
@@ -767,7 +596,6 @@ input:-webkit-autofill:active {
   }
 }
 
-/* The square itself only exists on hover - it stutters in, then holds. */
 @keyframes pixel-glitch-in {
   0%,
   22%,
@@ -806,9 +634,6 @@ input:-webkit-autofill:active {
   }
 }
 
-/* Prevent hero flash before the loader canvas is ready on first visit.
-   The inline script in layout.js adds this class synchronously. Loader.jsx removes it
-   in useLayoutEffect (before first paint) once the canvas is in the DOM. */
 html.loader-first-visit body {
   visibility: hidden;
   background: #ffffff;
@@ -823,10 +648,165 @@ html.loader-first-visit body {
   animation-delay: var(--card-delay, 0s);
 }
 
-/* reCAPTCHA v3's required "protected by" badge - shrunk and raised above modals. */
 .grecaptcha-badge {
   z-index: 9999 !important;
   transform: scale(0.8) translateX(-18%);
 
   transform-origin: bottom right;
+}
+
+.text120 {
+  font-size: 5.5vw;
+}
+.self-padd {
+  padding: 0 3.5vw;
+}
+.text18 {
+  font-size: 0.95vw;
+}
+.text22 {
+  font-size: 1.15vw;
+}
+.text24 {
+  font-size: 1.25vw;
+}
+.text20 {
+  font-size: 1.05vw;
+}
+.text34 {
+  font-size: 1.75vw;
+}
+.text32 {
+  font-size: 1.8vw;
+}
+.text64 {
+  font-size: 3.2vw;
+}
+.text80 {
+  font-size: 4.5vw;
+  line-height: 1.15;
+  font-weight: 400;
+}
+.text110 {
+  font-size: 5.5vw;
+  line-height: 1.15;
+  font-weight: 400;
+}
+.text140 {
+  font-size: 6.8vw;
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+.t96 {
+  font-size: 5vw;
+  line-height: 1.22;
+  letter-spacing: 0%;
+}
+
+@media (max-width: 1025px) {
+  .t96 {
+    font-size: 8.5vw;
+  }
+}
+
+@media (max-width: 1025px) and (min-width: 641px) {
+  .self-padd {
+    padding: 0 5vw;
+  }
+
+  .text120 {
+    font-size: 8.5vw;
+    line-height: 1.2;
+  }
+
+  .text18 {
+    font-size: 2.3vw;
+  }
+
+  .text20 {
+    font-size: 2.5vw;
+  }
+
+  .text22 {
+    font-size: 3vw;
+    line-height: 1.3;
+  }
+
+  .text24 {
+    font-size: 2.8vw;
+  }
+
+  .text32 {
+    font-size: 3.2vw;
+  }
+
+  .text34 {
+    font-size: 3.2vw;
+  }
+
+  .text64 {
+    font-size: 5vw;
+  }
+
+  .text80 {
+    font-size: 7vw;
+    line-height: 1.15;
+  }
+
+  .text110 {
+    font-size: 7vw;
+    line-height: 1.15;
+  }
+
+  .text140 {
+    font-size: 8vw;
+    line-height: 1.1;
+  }
+}
+
+@media (max-width: 640px) {
+  .text120 {
+    font-size: 12.2vw;
+    line-height: 1.2;
+  }
+
+  body {
+    overflow-x: hidden;
+    width: 100vw;
+  }
+
+  .self-padd {
+    padding: 0 7vw;
+  }
+  .text80 {
+    font-size: 8vw;
+  }
+  .text140 {
+    font-size: 13vw;
+  }
+  .text110 {
+    font-size: 9.2vw;
+  }
+  .text64 {
+    font-size: 5.8vw;
+  }
+  .text20 {
+    font-size: 4vw;
+  }
+  .text24 {
+    font-size: 4.4vw;
+  }
+  .text18 {
+    font-size: 3.3vw;
+  }
+  .text22 {
+    font-size: 4.5vw;
+  }
+  .text34 {
+    font-size: 4.5vw;
+  }
+  .text32 {
+    font-size: 4.6vw;
+  }
 }

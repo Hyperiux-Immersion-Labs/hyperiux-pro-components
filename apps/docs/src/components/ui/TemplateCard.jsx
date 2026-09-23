@@ -233,7 +233,7 @@ export function TemplateCard({
         <span className="pointer-events-none max-sm:hidden absolute -bottom-px -right-px h-1.5 w-1.5 border-b border-r border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
 
         <div className="flex min-w-0 flex-col gap-0.5">
-          <h3 className="truncate font-sans text-[1.25vw] max-md:text-[3vw] max-sm:text-[4.5vw] font-medium leading-[1.2]! text-white max-md:text-base">
+          <h3 className="truncate text-[1.25vw] max-md:text-[3vw] max-sm:text-[4.5vw] font-medium leading-[1.2]! text-white max-md:text-base">
             <span>{template.title}</span>
           </h3>
           <p className="text18 text-[#AEAEAE] max-md:text-xs">{formatLabel(template.category || "")}</p>

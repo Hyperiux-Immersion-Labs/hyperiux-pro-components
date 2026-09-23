@@ -14,14 +14,14 @@ if (typeof window !== "undefined") {
 
 // ── The jaw ────────────────────────────────────────────────────────────────
 // Six points, not four. The extra vertices are the whole trick: one corner
-// stays anchored at `100% 50%` — the right-hand hinge — while the left edge
+// stays anchored at `100% 50%` - the right-hand hinge - while the left edge
 // splits open independently along its top and bottom. A four-point polygon
 // can't do that, because its left side is a single edge that can only slide.
 //
 // Reading the points in order: right-hinge, then around the top-left, down
 // the left edge, and back along the bottom.
 //
-//   CLOSED  every point collapsed onto the 50% midline — a hairline.
+//   CLOSED  every point collapsed onto the 50% midline - a hairline.
 //   SPLIT   the left edge tears open top and bottom while the right stays
 //           pinched at the hinge, so the shape reads as a wedge.
 //   OPEN    the top-right and bottom-right corners arrive; full rectangle.
@@ -77,7 +77,7 @@ function SeamReveal({
         return;
       }
 
-      // The panel never moves — only its mask opens. Translating it would drag
+      // The panel never moves - only its mask opens. Translating it would drag
       // the revealed content along with it.
       gsap.set(panel, { clipPath: CLOSED });
       // Hidden through the hairline frames, so the wedge reads as a solid
@@ -98,7 +98,7 @@ function SeamReveal({
 
       // Beat one: the wedge tears open from the midline.
       tl.to(panel, { clipPath: SPLIT, duration: 1 }, 0);
-      // The content fades up once the mask is 30% open — position 0.3 of the
+      // The content fades up once the mask is 30% open - position 0.3 of the
       // two-beat (duration 1 + 1) timeline.
       tl.to(contentRef.current, { autoAlpha: 1, duration: 0.5 }, 0.3);
       // Beat two: the right-hand corners arrive and the rectangle completes.
@@ -151,7 +151,7 @@ function SeamReveal({
                   {subtext}
                 </p>
 
-                {/* Black fill that swaps to white on hover — the border is
+                {/* Black fill that swaps to white on hover - the border is
                     always there, so the shape doesn't shift on the flip. */}
                 <div className="flex flex-wrap items-center gap-[1vw] max-md:gap-[3vw]">
                   <Link
