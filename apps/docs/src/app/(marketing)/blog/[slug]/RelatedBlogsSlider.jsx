@@ -1,10 +1,8 @@
 "use client";
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import BlogCard from "../BlogCard";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 import { useFadeIn } from "@/components/Animations/gsapAnimations";
-import LineReveal from "@/components/Animations/LineReveal";
 import LineWipe from "@/components/Animations/LineWipe";
 
 function SliderButton({ direction, disabled, onClick, activeOrange = false }) {
