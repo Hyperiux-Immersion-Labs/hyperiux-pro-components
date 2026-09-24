@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import gsap from 'gsap'
+import { useLenis } from 'lenis/react'
 
 /** Bayer 8x8 ordered-dither matrix for retro halftone dissolve effect */
 const BAYER = [
@@ -151,6 +152,7 @@ function shouldSkipTransition(prevPath, targetPath) {
 export default function PageTransition() {
   const pathname = usePathname()
   const router = useRouter()
+  const lenis = useLenis()
 
   const prevPathRef = useRef(pathname)
   const isFirstRenderRef = useRef(true)
@@ -244,6 +246,21 @@ export default function PageTransition() {
     window.addEventListener('resize', initCanvas)
     return () => window.removeEventListener('resize', initCanvas)
   }, [initCanvas])
+
+  // Mounted once in the root layout, so this covers every route. Left on
+  // "auto" the browser can restore the previous scroll offset on top of our
+  // own reset below (most visible returning via back/forward, but some
+  // browsers also apply it heuristically around pushState navigations).
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const previous = window.history.scrollRestoration
+    window.history.scrollRestoration = 'manual'
+
+    return () => {
+      window.history.scrollRestoration = previous
+    }
+  }, [])
 
   // Cover current page: dither wave sweeps DOWN from top to bottom
   const coverScreenAndNavigate = useCallback((targetPath) => {
@@ -410,8 +427,31 @@ export default function PageTransition() {
       return
     }
 
+    // router.push() here bypasses next/link's own click handling (the click
+    // listener above calls preventDefault before Link ever sees the click),
+    // so its default scroll-to-top never runs - the new page otherwise
+    // mounts at whatever offset the previous page was scrolled to. Reset
+    // both native scroll and Lenis's own tracked position (Lenis renders
+    // from its internal state, not window.scrollY, so the native reset
+    // alone doesn't move anything on screen) while the cover overlay still
+    // hides the page, before the reveal animation runs. Repeated across a
+    // couple of frames because content still streaming in (images, TOC,
+    // scroll-triggered fadeups) can grow the page and nudge the offset back
+    // right after the first reset.
+    if (!window.location.hash) {
+      const resetScroll = () => {
+        lenis?.scrollTo?.(0, { immediate: true, force: true })
+        window.scrollTo(0, 0)
+      }
+
+      resetScroll()
+      requestAnimationFrame(resetScroll)
+      requestAnimationFrame(() => requestAnimationFrame(resetScroll))
+      window.setTimeout(resetScroll, 150)
+    }
+
     revealScreen()
-  }, [pathname, revealScreen])
+  }, [pathname, revealScreen, lenis])
 
   return (
     <div

@@ -38,7 +38,7 @@ export default function BlogDetailHero({ post }) {
       </header>
 
       {post.coverImage?.url && (
-        <div className="fadeup group relative mt-[5vw] h-[42vw] w-full overflow-hidden max-md:mt-[8vw] max-[1025px]:mt-[6vh] max-md:h-[60vw] ">
+        <div className="fadeup group relative mt-[5vw] h-[48vw] w-full overflow-hidden max-md:mt-[8vw] max-[1025px]:mt-[6vh] max-md:h-[60vw] ">
           <Image
             src={post.coverImage.url}
             alt={post.coverImage.alt || post.title}

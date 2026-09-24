@@ -1,5 +1,6 @@
 import NavbarV3 from "@/homepage-v3/components/NavbarV3";
 import FooterV3 from "@/homepage-v3/sections/FooterV3";
+import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import {
   getSanityBlogEntries,
   getSanityFeaturedBlogPost,
@@ -45,6 +46,7 @@ export default async function BlogIndexPage({ searchParams }) {
     <>
       <WebpageJsonLd metadata={metadata} />
       <NavbarV3 effects={effects} />
+      <LenisSmoothScroll />
       <BlogHero />
       <main className="relative z-20 mx-auto flex max-w-full flex-col gap-[8vw] bg-background px-[4vw] py-[6vw] max-[1025px]:px-[5vw] max-md:gap-[14vw] max-md:px-0 max-md:py-[12vw]">
         <FeaturedBlog featuredPost={featuredPost} />

@@ -48,7 +48,7 @@ export default function BlogArticleBody({
           stay visible for the article's full height. */}
       <div className="w-[30%] shrink-0 pl-0 max-[1025px]:hidden">
       
-        <div className="sticky top-[22vh] flex flex-col gap-[1.6vw]">
+        <div className="sticky top-[15vh] flex flex-col gap-[1.6vw]">
           <BlogAuthor author={author} />
 
       
@@ -79,7 +79,7 @@ export default function BlogArticleBody({
 
           <hr className="h-0.5  w-[85%] border-0 bg-[#272727]" />
 
-          <div className="w-fit mt-[10vh]">
+          <div className="w-fit mt-[5vh]">
             <TableOfContents
               containerRef={contentRef}
               stopRef={stopRef}
