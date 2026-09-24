@@ -1,396 +1,564 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
-type Point = {
-  x: number;
-  y: number;
-};
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
-type Rgba = {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-};
+function subscribeToReducedMotion(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
+  mediaQueryList.addEventListener("change", callback);
+  return () => mediaQueryList.removeEventListener("change", callback);
+}
+
+function getReducedMotionSnapshot(): boolean {
+  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
+}
+
+function getServerReducedMotionSnapshot(): boolean {
+  return false;
+}
+
+// Safe during render - returns false on the server.
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    getServerReducedMotionSnapshot
+  );
+}
+
+// Shader array size, the cap for trailLength
+const TRAIL_LENGTH = 48;
+// Active nodes by default
+const TRAIL_NODES = 18;
+const DOT_SPACING = 34;
+const DOT_RADIUS = 1.2;
+const GLOW_RADIUS = 300;
+const HEAD_RADIUS = 80;
+const FOLLOW_EASE = 0.22;
+const TRAIL_EASE = 0.45;
+// Softens segment weighting
+const WEIGHT_SOFTEN = 400.0;
+// Newer strokes win
+const STACK_BIAS = 8.0;
+// Floor for old segments
+const STACK_FLOOR = 0.02;
+// Tail-to-blob rounding
+const JOIN_SOFTNESS = 0.55;
+// Soft edge band
+const EDGE_INNER = 0.9;
+const EDGE_OUTER = 0.95;
+// Lifts the interior
+const EDGE_GAMMA = 0.75;
+// Blend start inside
+const RIM_INNER = 2.1;
+// Blend end outside
+const RIM_OUTER = 1.5;
+// Edge pulled to colorA
+const EDGE_DESATURATE = 0.3;
+// Desaturation band width
+const EDGE_DESATURATE_SPAN = 2.1;
+// Tail drift to colorB
+const TAIL_TILT = 0.18;
+// Drift build-up range
+const TILT_START = 0.01;
+const TILT_END = 0.92;
+
+// Page behind the grid
+const BACKGROUND_COLOR = "#ffffff";
+// Dot at rest
+const DOT_COLOR = "#d1d1d1";
+// Dot under the trail
+const ACTIVE_DOT_COLOR = "#ffffff";
+// Fade when cursor rests
+const FADE_ON_IDLE = true;
+// Stillness before fading, ms
+const IDLE_DELAY = 100;
+// Idle fade duration, ms
+const IDLE_FADE = 1100;
+
+const VERTEX_SHADER = `#version 300 es
+in vec2 aQuad;
+void main() {
+	gl_Position = vec4(aQuad, 0.0, 1.0);
+}`;
+
+const FRAGMENT_SHADER = `#version 300 es
+precision highp float;
+
+uniform vec2 uResolution;
+uniform vec2 uTrail[${TRAIL_LENGTH}];
+uniform float uPresence;
+uniform vec3 uColorA;
+uniform vec3 uColorB;
+uniform vec3 uBackground;
+uniform vec3 uDotColor;
+uniform vec3 uActiveDotColor;
+uniform float uSpacing;
+uniform float uDotRadius;
+uniform float uGlowRadius;
+uniform float uHeadRadius;
+uniform int uTrailNodes;
+uniform float uRimInner;
+uniform float uRimOuter;
+uniform float uEdgeDesaturate;
+uniform float uEdgeDesaturateSpan;
+uniform float uTailTilt;
+
+out vec4 outColor;
+
+// Point to segment distance
+float distanceToSegment(vec2 point, vec2 a, vec2 b) {
+	vec2 ab = b - a;
+	float lengthSquared = dot(ab, ab);
+	float t = lengthSquared > 0.0001 ? clamp(dot(point - a, ab) / lengthSquared, 0.0, 1.0) : 0.0;
+	return distance(point, a + ab * t);
+}
+
+// Rounded field union
+float smoothMin(float a, float b, float softness) {
+	float h = clamp(0.5 + 0.5 * (b - a) / softness, 0.0, 1.0);
+	return mix(b, a, h) - softness * h * (1.0 - h);
+}
+
+void main() {
+	vec2 fragment = gl_FragCoord.xy;
+
+	// Ribbon distance field
+	float ribbonField = 1e9;
+	float tintHead = 0.0;
+	float tintWeight = 0.0;
+
+	int lastSegment = uTrailNodes - 1;
+	for (int i = 0; i < ${TRAIL_LENGTH - 1}; i++) {
+		if (i >= lastSegment) break;
+		float head = float(i) / float(lastSegment);
+		float segment = distanceToSegment(fragment, uTrail[i], uTrail[i + 1]);
+
+		// Fat head, thin tail
+		float thickness = uHeadRadius * mix(0.32, 1.0, pow(1.0 - head, 1.1));
+		ribbonField = min(ribbonField, segment - thickness);
+
+		float strength = 1.0 - smoothstep(thickness, thickness + uHeadRadius * 0.9, segment);
+
+		// Recency weighting
+		float recency = ${STACK_FLOOR.toFixed(2)} + pow(1.0 - head, ${STACK_BIAS.toFixed(1)});
+		float weight = strength * strength * recency / (segment * segment + ${WEIGHT_SOFTEN.toFixed(1)});
+		tintHead += head * weight;
+		tintWeight += weight;
+	}
+
+	// Position along trail
+	float blendedHead = tintWeight > 0.0 ? tintHead / tintWeight : 0.0;
+
+	float headDistance = distance(fragment, uTrail[0]);
+	float blobField = headDistance - uHeadRadius;
+	float bloom = (1.0 - smoothstep(0.0, uGlowRadius, headDistance)) * uPresence;
+
+	// Head + tail silhouette
+	float bodyField = smoothMin(ribbonField, blobField, uHeadRadius * ${JOIN_SOFTNESS.toFixed(2)});
+	float bodyEdge = 1.0 - smoothstep(-uHeadRadius * ${EDGE_INNER.toFixed(2)}, uHeadRadius * ${EDGE_OUTER.toFixed(2)}, bodyField);
+	float body = pow(bodyEdge, ${EDGE_GAMMA.toFixed(2)}) * uPresence;
+
+	// Flat colour at blob
+	float headLock = 1.0 - smoothstep(uHeadRadius * 0.10, uHeadRadius * 1.1, headDistance);
+	float tilt = clamp((blendedHead - ${TILT_START.toFixed(2)}) / ${(TILT_END - TILT_START).toFixed(2)}, 0.0, 1.0);
+	float gradient = tilt * uTailTilt * (1.0 - headLock);
+
+	// Radial core-to-edge ramp
+	float rim = smoothstep(-uHeadRadius * uRimInner, uHeadRadius * uRimOuter, bodyField);
+	float blend = clamp(gradient + rim, 0.0, 1.0);
+
+	float ink = clamp(body + pow(bloom, 2.0) * 0.8, 0.0, 1.0);
+
+	// Edge fades to colorA
+	float edgeFade = 1.0 - smoothstep(-uHeadRadius * uEdgeDesaturateSpan, uHeadRadius * uEdgeDesaturateSpan, bodyField);
+	vec3 tint = mix(uColorA, uColorB, blend * mix(uEdgeDesaturate, 1.0, edgeFade));
+
+	vec3 color = mix(uBackground, tint, ink);
+
+	// Dots punched as holes
+	vec2 cell = mod(fragment, uSpacing) - uSpacing * 0.5;
+	float dotSize = uDotRadius * (1.0 + ink * 1.8);
+	float dot = 1.0 - smoothstep(dotSize - 0.9, dotSize + 0.9, length(cell));
+
+	vec3 dotColor = mix(uDotColor, uActiveDotColor, ink);
+
+	color = mix(color, dotColor, dot);
+
+	outColor = vec4(color, 1.0);
+}`;
+
+function hexToRgb(hex: string) {
+  const clean = hex.replace("#", "");
+  const full =
+    clean.length === 3
+      ? clean
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : clean;
+  const value = parseInt(full, 16);
+
+  return [
+    ((value >> 16) & 255) / 255,
+    ((value >> 8) & 255) / 255,
+    (value & 255) / 255,
+  ];
+}
+
+function compile(gl: WebGL2RenderingContext, type: number, source: string) {
+  const shader = gl.createShader(type);
+  if (!shader) return null;
+
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    gl.deleteShader(shader);
+    return null;
+  }
+
+  return shader;
+}
 
 export interface DottedTrailProps {
-  heading?: string;
-  clue?: string;
-  trailColorA?: string;
-  trailColorB?: string;
+  colorA?: string;
+  colorB?: string;
+  backgroundColor?: string;
   dotColor?: string;
   activeDotColor?: string;
-  backgroundColor?: string;
   dotSpacing?: number;
-  interactionRadius?: number;
-  trailWidth?: number;
-  trailBlur?: number;
-}
-
-function colorToRgba(color: string, fallback: Rgba): Rgba {
-  const normalized = color.trim();
-  const rgbaMatch = normalized.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-
-  if (rgbaMatch) {
-    return {
-      r: Number(rgbaMatch[1]),
-      g: Number(rgbaMatch[2]),
-      b: Number(rgbaMatch[3]),
-      a: rgbaMatch[4] ? Number(rgbaMatch[4]) : 1,
-    };
-  }
-
-  const hex = normalized.replace("#", "");
-  if (hex.length === 3) {
-    return {
-      r: parseInt(hex[0] + hex[0], 16),
-      g: parseInt(hex[1] + hex[1], 16),
-      b: parseInt(hex[2] + hex[2], 16),
-      a: 1,
-    };
-  }
-
-  if (hex.length === 6) {
-    return {
-      r: parseInt(hex.slice(0, 2), 16),
-      g: parseInt(hex.slice(2, 4), 16),
-      b: parseInt(hex.slice(4, 6), 16),
-      a: 1,
-    };
-  }
-
-  return fallback;
-}
-
-function rgbaToString(color: Rgba, alpha = color.a) {
-  return `rgba(${Math.round(color.r)},${Math.round(color.g)},${Math.round(color.b)},${alpha.toFixed(2)})`;
-}
-
-function mixColor(from: Rgba, to: Rgba, amount: number): Rgba {
-  const t = Math.max(0, Math.min(1, amount));
-
-  return {
-    r: from.r + (to.r - from.r) * t,
-    g: from.g + (to.g - from.g) * t,
-    b: from.b + (to.b - from.b) * t,
-    a: from.a + (to.a - from.a) * t,
-  };
+  dotRadius?: number;
+  glowRadius?: number;
+  headRadius?: number;
+  followSpeed?: number;
+  trailLength?: number;
+  fadeOnIdle?: boolean;
+  idleDelay?: number;
+  idleFade?: number;
+  rimInner?: number;
+  rimOuter?: number;
+  edgeDesaturate?: number;
+  edgeDesaturateSpan?: number;
+  tailTilt?: number;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export default function DottedTrail({
-  heading = "Trace the invisible",
-  clue = "Move your cursor through the field.",
-  trailColorA = "#ff4fd8",
-  trailColorB = "#8b5cf6",
-  dotColor = "#64646e",
-  activeDotColor = "#ffffff",
-  backgroundColor = "#ffffff",
-  dotSpacing = 40,
-  interactionRadius = 200,
-  trailWidth = 140,
-  trailBlur = 70,
+  colorA = "#ff4fd8",
+  colorB = "#8b5cf6",
+  backgroundColor = BACKGROUND_COLOR,
+  dotColor = DOT_COLOR,
+  activeDotColor = ACTIVE_DOT_COLOR,
+  dotSpacing = DOT_SPACING,
+  dotRadius = DOT_RADIUS,
+  glowRadius = GLOW_RADIUS,
+  headRadius = HEAD_RADIUS,
+  followSpeed = FOLLOW_EASE,
+  trailLength = TRAIL_NODES,
+  fadeOnIdle = FADE_ON_IDLE,
+  idleDelay = IDLE_DELAY,
+  idleFade = IDLE_FADE,
+  rimInner = RIM_INNER,
+  rimOuter = RIM_OUTER,
+  edgeDesaturate = EDGE_DESATURATE,
+  edgeDesaturateSpan = EDGE_DESATURATE_SPAN,
+  tailTilt = TAIL_TILT,
+  className = "",
+  children,
 }: DottedTrailProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const settingsRef = useRef({
+    colorA,
+    colorB,
+    backgroundColor,
+    dotColor,
+    activeDotColor,
+    dotSpacing,
+    dotRadius,
+    glowRadius,
+    headRadius,
+    followSpeed,
+    trailLength,
+    fadeOnIdle,
+    idleDelay,
+    idleFade,
+    rimInner,
+    rimOuter,
+    edgeDesaturate,
+    edgeDesaturateSpan,
+    tailTilt,
+  });
+  const reducedMotion = usePrefersReducedMotion();
+
+  settingsRef.current = {
+    colorA,
+    colorB,
+    backgroundColor,
+    dotColor,
+    activeDotColor,
+    dotSpacing,
+    dotRadius,
+    glowRadius,
+    headRadius,
+    followSpeed,
+    trailLength,
+    fadeOnIdle,
+    idleDelay,
+    idleFade,
+    rimInner,
+    rimOuter,
+    edgeDesaturate,
+    edgeDesaturateSpan,
+    tailTilt,
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
-    if (!canvas || !ctx) return;
+    const gl = canvas.getContext("webgl2", { antialias: false, alpha: false });
+    if (!gl) return;
 
-    const canvasElement = canvas;
-    const context = ctx;
+    const vertexShader = compile(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
+    const fragmentShader = compile(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
+    if (!vertexShader || !fragmentShader) return;
 
-    // Detect Safari
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const program = gl.createProgram();
+    if (!program) return;
 
-    // raw & smoothed mouse
-    let mouse: Point | null = null;
-    let smoothedMouse: Point | null = null;
-    let mouseHistory: Point[] = [];
-    let isMouseActive = false;
-    let inactivityTimer: ReturnType<typeof window.setTimeout> | null = null;
-    const inactivityTimeout = 4000; // ms
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
 
-    // idle wander
-    let idle = false;
-    let idlePhase: "waiting" | "moving" = "waiting";
-    let idleWaitTime = 0;
-    const idleMinDelay = 2000;   // ms
-    const idleMaxDelay = 4000;   // ms
-    const idleLerpFactor = 0.02;
-    let idleTarget: Point = { x: 0, y: 0 };
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      gl.deleteProgram(program);
+      return;
+    }
 
-    // trail params
-    const maxTrailLength = 30;
-    const trailBaseWidth = trailWidth;
-    const safeTrailBlur = trailBlur;
-    const mouseLerpFactor = 0.05;
-    const trailStartColor = colorToRgba(trailColorA, { r: 255, g: 79, b: 216, a: 1 });
-    const trailEndColor = colorToRgba(trailColorB, { r: 139, g: 92, b: 246, a: 1 });
+    gl.useProgram(program);
 
-    // dot grid
-    const dotConfig = {
-      spacing: dotSpacing,
-      radius: 1,
-      maxRadius: 2,
-      interactionRadius,
-      baseColor: dotColor,
-      activeColor: activeDotColor,
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 3, -1, -1, 3]),
+      gl.STATIC_DRAW
+    );
+
+    const quadLocation = gl.getAttribLocation(program, "aQuad");
+    gl.enableVertexAttribArray(quadLocation);
+    gl.vertexAttribPointer(quadLocation, 2, gl.FLOAT, false, 0, 0);
+
+    const uniforms = {
+      resolution: gl.getUniformLocation(program, "uResolution"),
+      trail: gl.getUniformLocation(program, "uTrail"),
+      presence: gl.getUniformLocation(program, "uPresence"),
+      colorA: gl.getUniformLocation(program, "uColorA"),
+      colorB: gl.getUniformLocation(program, "uColorB"),
+      background: gl.getUniformLocation(program, "uBackground"),
+      dotColor: gl.getUniformLocation(program, "uDotColor"),
+      activeDotColor: gl.getUniformLocation(program, "uActiveDotColor"),
+      spacing: gl.getUniformLocation(program, "uSpacing"),
+      dotRadius: gl.getUniformLocation(program, "uDotRadius"),
+      glowRadius: gl.getUniformLocation(program, "uGlowRadius"),
+      headRadius: gl.getUniformLocation(program, "uHeadRadius"),
+      trailNodes: gl.getUniformLocation(program, "uTrailNodes"),
+      rimInner: gl.getUniformLocation(program, "uRimInner"),
+      rimOuter: gl.getUniformLocation(program, "uRimOuter"),
+      edgeDesaturate: gl.getUniformLocation(program, "uEdgeDesaturate"),
+      edgeDesaturateSpan: gl.getUniformLocation(program, "uEdgeDesaturateSpan"),
+      tailTilt: gl.getUniformLocation(program, "uTailTilt"),
     };
-    const canvasClearStyle = backgroundColor;
-    let dots: Dot[] = [];
-    let animationFrameId = 0;
 
-    function lerp(a: number, b: number, t: number) {
-      return a + (b - a) * Math.max(0, Math.min(1, t));
+    const trail = new Float32Array(TRAIL_LENGTH * 2);
+    const pointer = { x: 0, y: 0 };
+    const eased = { x: 0, y: 0 };
+    let presence = 0;
+    let targetPresence = 0;
+    let seeded = false;
+    let pixelRatio = 1;
+    let frame = 0;
+    let lastMoved = 0;
+    let pointerInside = false;
+
+    // Clamped to the shader array size
+    const activeNodes = () =>
+      Math.max(
+        2,
+        Math.min(Math.round(settingsRef.current.trailLength), TRAIL_LENGTH)
+      );
+
+    // Live props each frame
+    const pushUniforms = () => {
+      const settings = settingsRef.current;
+
+      gl.uniform3fv(uniforms.colorA, hexToRgb(settings.colorA));
+      gl.uniform3fv(uniforms.colorB, hexToRgb(settings.colorB));
+      gl.uniform3fv(uniforms.background, hexToRgb(settings.backgroundColor));
+      gl.uniform3fv(uniforms.dotColor, hexToRgb(settings.dotColor));
+      gl.uniform3fv(
+        uniforms.activeDotColor,
+        hexToRgb(settings.activeDotColor)
+      );
+      gl.uniform1f(uniforms.spacing, settings.dotSpacing * pixelRatio);
+      gl.uniform1f(uniforms.dotRadius, settings.dotRadius * pixelRatio);
+      gl.uniform1f(uniforms.glowRadius, settings.glowRadius * pixelRatio);
+      gl.uniform1f(uniforms.headRadius, settings.headRadius * pixelRatio);
+      gl.uniform1i(uniforms.trailNodes, activeNodes());
+      gl.uniform1f(uniforms.rimInner, settings.rimInner);
+      gl.uniform1f(uniforms.rimOuter, settings.rimOuter);
+      gl.uniform1f(uniforms.edgeDesaturate, settings.edgeDesaturate);
+      gl.uniform1f(uniforms.edgeDesaturateSpan, settings.edgeDesaturateSpan);
+      gl.uniform1f(uniforms.tailTilt, settings.tailTilt);
+    };
+
+    const resize = () => {
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const { width, height } = container.getBoundingClientRect();
+
+      canvas.width = Math.max(1, Math.round(width * pixelRatio));
+      canvas.height = Math.max(1, Math.round(height * pixelRatio));
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
+    };
+
+    const seed = (x: number, y: number) => {
+      for (let i = 0; i < TRAIL_LENGTH; i++) {
+        trail[i * 2] = x;
+        trail[i * 2 + 1] = y;
+      }
+      eased.x = x;
+      eased.y = y;
+      seeded = true;
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const rect = container.getBoundingClientRect();
+      // Flip Y for gl_FragCoord
+      const x = (event.clientX - rect.left) * pixelRatio;
+      const y = (rect.bottom - event.clientY) * pixelRatio;
+
+      // Only real movement counts
+      if (x !== pointer.x || y !== pointer.y) lastMoved = performance.now();
+
+      pointer.x = x;
+      pointer.y = y;
+      pointerInside = true;
+      targetPresence = 1;
+
+      if (!seeded) seed(pointer.x, pointer.y);
+    };
+
+    const handlePointerLeave = () => {
+      pointerInside = false;
+      targetPresence = 0;
+    };
+
+    const render = () => {
+      frame = requestAnimationFrame(render);
+
+      const settings = settingsRef.current;
+      const followEase = Math.min(Math.max(settings.followSpeed, 0.02), 1);
+
+      // Ramped fade once still
+      let idleFadeAmount = 0.0;
+      if (settings.fadeOnIdle && pointerInside && lastMoved > 0) {
+        const still =
+          performance.now() - lastMoved - Math.max(0, settings.idleDelay);
+        const span = Math.max(1, settings.idleFade);
+        const x = Math.min(Math.max(still / span, 0), 1);
+        // Smootherstep, soft both ends
+        idleFadeAmount = x * x * x * (x * (x * 6 - 15) + 10);
+      }
+
+      presence += (targetPresence - presence) * 0.08;
+      presence = Math.min(presence, 1 - idleFadeAmount);
+      eased.x += (pointer.x - eased.x) * followEase;
+      eased.y += (pointer.y - eased.y) * followEase;
+
+      trail[0] = eased.x;
+      trail[1] = eased.y;
+
+      const nodes = activeNodes();
+      for (let i = 1; i < nodes; i++) {
+        const index = i * 2;
+        const previous = (i - 1) * 2;
+        trail[index] += (trail[previous] - trail[index]) * TRAIL_EASE;
+        trail[index + 1] +=
+          (trail[previous + 1] - trail[index + 1]) * TRAIL_EASE;
+      }
+
+      // Park dormant nodes on the tail tip
+      const tipX = trail[(nodes - 1) * 2];
+      const tipY = trail[(nodes - 1) * 2 + 1];
+      for (let i = nodes; i < TRAIL_LENGTH; i++) {
+        trail[i * 2] = tipX;
+        trail[i * 2 + 1] = tipY;
+      }
+
+      gl.uniform2fv(uniforms.trail, trail);
+      gl.uniform1f(uniforms.presence, presence);
+      pushUniforms();
+
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(container);
+    resize();
+
+    if (reducedMotion) {
+      // Static dot field, one draw
+      gl.uniform2fv(uniforms.trail, trail);
+      gl.uniform1f(uniforms.presence, 0);
+      pushUniforms();
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+      return () => {
+        observer.disconnect();
+        gl.deleteProgram(program);
+        gl.deleteShader(vertexShader);
+        gl.deleteShader(fragmentShader);
+        gl.deleteBuffer(buffer);
+      };
     }
 
-    class Dot {
-      x: number;
-      y: number;
-      radius: number;
-      baseColor: Rgba;
-      activeColor: Rgba;
-      currentColor: Rgba;
-      targetColor: Rgba;
-      holdTime: number;
-      holdDuration: number;
-      radiusLerp: number;
-      colorLerp: number;
-
-      constructor(x: number, y: number) {
-        const baseColor = colorToRgba(dotConfig.baseColor, { r: 100, g: 100, b: 110, a: 0.2 });
-        const activeColor = colorToRgba(dotConfig.activeColor, { r: 255, g: 255, b: 255, a: 1 });
-
-        this.x = x;
-        this.y = y;
-        this.radius = dotConfig.radius;
-        this.baseColor = { ...baseColor, a: baseColor.a === 1 ? 0.2 : baseColor.a };
-        this.activeColor = activeColor;
-        this.currentColor = { ...this.baseColor };
-        this.targetColor = { ...this.baseColor };
-        this.holdTime = 0;
-        this.holdDuration = 1000;
-        this.radiusLerp = 0.5;
-        this.colorLerp = 0.8;
-      }
-
-      update(delta: number, inZone: boolean) {
-        if (inZone) this.holdTime = this.holdDuration;
-        if (this.holdTime > 0) this.holdTime = Math.max(0, this.holdTime - delta);
-        const active = this.holdTime > 0;
-        this.radius = lerp(
-          this.radius,
-          active ? dotConfig.maxRadius : dotConfig.radius,
-          this.radiusLerp
-        );
-        this.targetColor = active ? this.activeColor : this.baseColor;
-        (["r", "g", "b", "a"] as const).forEach((ch) => {
-          this.currentColor[ch] = lerp(
-            this.currentColor[ch],
-            this.targetColor[ch],
-            this.colorLerp
-          );
-        });
-        context.beginPath();
-        context.fillStyle = `rgba(${Math.round(this.currentColor.r)},${Math.round(this.currentColor.g)},${Math.round(this.currentColor.b)},${this.currentColor.a.toFixed(2)})`;
-        context.arc(this.x, this.y, Math.max(this.radius, 0.5), 0, Math.PI * 2);
-        context.fill();
-      }
-    }
-
-    function initCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvasElement.width = window.innerWidth * dpr;
-      canvasElement.height = window.innerHeight * dpr;
-      canvasElement.style.width = `${window.innerWidth}px`;
-      canvasElement.style.height = `${window.innerHeight}px`;
-      context.setTransform(dpr, 0, 0, dpr, 0, 0);
-      dots = [];
-      const cols = Math.floor(window.innerWidth / dotConfig.spacing) + 2;
-      const rows = Math.floor(window.innerHeight / dotConfig.spacing) + 2;
-      const offX = (window.innerWidth - (cols - 2) * dotConfig.spacing) / 2;
-      const offY = (window.innerHeight - (rows - 2) * dotConfig.spacing) / 2;
-      for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-          dots.push(new Dot(
-            offX + i * dotConfig.spacing,
-            offY + j * dotConfig.spacing
-          ));
-        }
-      }
-    }
-
-    function randDelay() {
-      return idleMinDelay + Math.random() * (idleMaxDelay - idleMinDelay);
-    }
-
-    let lastTime = performance.now();
-
-    function canvasLoop(now = performance.now()) {
-      const delta = now - lastTime;
-      lastTime = now;
-
-      // real mouse
-      if (!idle && mouse) {
-        smoothedMouse = smoothedMouse
-          ? {
-              x: lerp(smoothedMouse.x, mouse.x, mouseLerpFactor),
-              y: lerp(smoothedMouse.y, mouse.y, mouseLerpFactor),
-            }
-          : { ...mouse };
-        mouseHistory.push({ x: smoothedMouse.x, y: smoothedMouse.y });
-        if (mouseHistory.length > maxTrailLength) mouseHistory.shift();
-      }
-
-      // idle movement
-      if (idle) {
-        if (idlePhase === 'waiting') {
-          idleWaitTime -= delta;
-          if (idleWaitTime <= 0) {
-            idlePhase = 'moving';
-            idleTarget = {
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight
-            };
-          }
-        }
-        if (idlePhase === 'moving') {
-          smoothedMouse = smoothedMouse
-            ? {
-                x: lerp(smoothedMouse.x, idleTarget.x, idleLerpFactor),
-                y: lerp(smoothedMouse.y, idleTarget.y, idleLerpFactor),
-              }
-            : {
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2,
-              };
-          mouseHistory.push({ x: smoothedMouse.x, y: smoothedMouse.y });
-          if (mouseHistory.length > maxTrailLength) mouseHistory.shift();
-          if (Math.hypot(smoothedMouse.x - idleTarget.x, smoothedMouse.y - idleTarget.y) < 5) {
-            idlePhase = 'waiting';
-            idleWaitTime = randDelay();
-          }
-        }
-      }
-
-      // clear canvas
-      context.fillStyle = canvasClearStyle;
-      context.fillRect(0, 0, window.innerWidth, window.innerHeight);
-
-      // draw blur trail (except Safari)
-      if (!isSafari && mouseHistory.length > 1) {
-        context.filter = `blur(${safeTrailBlur}px)`;
-        for (let i = 1; i < mouseHistory.length; i++) {
-          const age = i / (mouseHistory.length - 1);
-          const alpha = idle ? 0.4 * age : 0.4 * age;
-          const previousAge = (i - 1) / (mouseHistory.length - 1);
-          const trailColor = mixColor(trailStartColor, trailEndColor, age);
-          const previousPoint = mouseHistory[i - 1];
-          const currentPoint = mouseHistory[i];
-
-          context.beginPath();
-          context.moveTo(previousPoint.x, previousPoint.y);
-          context.lineTo(currentPoint.x, currentPoint.y);
-          context.lineCap = "round";
-          context.lineJoin = "round";
-          const tailProgress = age < 0.22 ? age / 0.22 : 1;
-          context.lineWidth = Math.max(1, trailBaseWidth * lerp(0.12, 1, tailProgress));
-          context.strokeStyle = rgbaToString(
-            trailColor,
-            Math.max(0.08, alpha * (0.65 + previousAge * 0.35))
-          );
-          context.stroke();
-        }
-        context.filter = "none";
-      }
-
-      // fade history if inactive
-      if (!isMouseActive && !idle && mouseHistory.length > 0) {
-        mouseHistory.shift();
-      }
-
-      // update dots
-      dots.forEach((dot) => {
-        const dx = (smoothedMouse?.x ?? -9999) - dot.x;
-        const dy = (smoothedMouse?.y ?? -9999) - dot.y;
-        const inZone = Math.hypot(dx, dy) < dotConfig.interactionRadius;
-        dot.update(delta, inZone);
-      });
-
-      animationFrameId = requestAnimationFrame(canvasLoop);
-    }
-
-    function handleMouseMove(e: MouseEvent) {
-      mouse = { x: e.clientX, y: e.clientY };
-      isMouseActive = true;
-      idle = false;
-      if (inactivityTimer) window.clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        isMouseActive = false;
-        idle = true;
-        idlePhase = "waiting";
-        idleWaitTime = randDelay();
-      }, inactivityTimeout);
-    }
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("resize", initCanvas);
-
-    initCanvas();
-    idle = true;
-    idlePhase = "waiting";
-    idleWaitTime = randDelay();
-    canvasLoop();
+    window.addEventListener("pointermove", handlePointerMove, {
+      passive: true,
+    });
+    container.addEventListener("pointerleave", handlePointerLeave);
+    frame = requestAnimationFrame(render);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", initCanvas);
-      window.cancelAnimationFrame(animationFrameId);
-      if (inactivityTimer) window.clearTimeout(inactivityTimer);
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("pointermove", handlePointerMove);
+      container.removeEventListener("pointerleave", handlePointerLeave);
+      gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+      gl.deleteBuffer(buffer);
     };
-  }, [
-    activeDotColor,
-    backgroundColor,
-    dotColor,
-    dotSpacing,
-    interactionRadius,
-    trailBlur,
-    trailColorA,
-    trailColorB,
-    trailWidth,
-  ]);
+  }, [reducedMotion]);
 
   return (
     <div
-      id="canvas-18971"
-      className="max-sm:hidden max-md:hidden"
-      style={{
-        position: 'sticky',
-        top: 0,
-        left: 0,
-        zIndex: 0,
-        overflow: "hidden",
-        marginLeft: "auto",
-        marginRight: "auto",
-        height: "100vh",
-        backgroundColor,
-      }}
+      ref={containerRef}
+      // Runtime colour, so it cannot be a class
+      style={{ backgroundColor }}
+      className={`relative h-screen w-full overflow-hidden ${className}`}
     >
-      <div className="pointer-events-none absolute bottom-[5vw] left-[5vw] z-10 max-w-[min(760px,58vw)]">
-        <h1 className="text-[clamp(48px,7vw,118px)] font-medium uppercase leading-[0.9] text-[#111111]">
-          {heading}
-        </h1>
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      <div className="pointer-events-none relative z-10 h-full w-full">
+        {children}
       </div>
-      <div className="pointer-events-none absolute bottom-[5.3vw] right-[5vw] z-10 max-w-[min(360px,28vw)] text-right">
-        <p className="text-[clamp(14px,1.2vw,20px)] font-medium leading-[1.2] text-[#111111]/60">
-          {clue}
-        </p>
-      </div>
-      <canvas ref={canvasRef} className="block h-screen w-screen" />
     </div>
   );
 }

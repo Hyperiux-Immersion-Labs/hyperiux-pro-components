@@ -91,7 +91,7 @@ export function TemplateDetail({
     onRemoved: (related) =>
       showToast({ title: `${related.title} removed`, description: "No longer in your saved templates." }),
   });
-  const relatedAccessSlugs = useTemplateAccess();
+  const { accessSlugs: relatedAccessSlugs, markPurchased: markRelatedPurchased } = useTemplateAccess();
 
   const publishedLabel = formatTemplateDate(template.publishedAt);
   const updatedLabel = formatTemplateDate(template.updatedAt);
@@ -365,6 +365,7 @@ export function TemplateDetail({
                     toggleWishlist={toggleWishlist}
                     showPurchase
                     hasAccess={relatedAccessSlugs.includes(relatedTemplate.slug)}
+                    onPurchased={() => markRelatedPurchased(relatedTemplate.slug)}
                   />
                 ))}
               </div>

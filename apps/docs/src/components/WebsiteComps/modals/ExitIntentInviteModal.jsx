@@ -28,12 +28,12 @@ import { buttonV3ClassName, ButtonV3Chrome } from "@/homepage-v3/components/Butt
 // flow as an admin-sent waitlist invite.
 
 const SESSION_KEY = "hyperiux_exit_intent_shown";
-// Was 4000ms, then 1200ms - both read as the modal "not working" to anyone
-// testing it by opening the page and immediately mousing off the top edge,
-// since the exit-intent listener isn't armed yet during that whole window.
-// 200ms is just enough to not fire mid-paint on the very first frame, while
-// being effectively instant for a real exit attempt.
-const ARM_DELAY_MS = 200;
+// A visitor who bounces within the first minute hasn't actually engaged with
+// the page yet - showing an invite popup to them reads as an ambush, not an
+// offer. Arming only after 60s of real time on the page means a genuine exit
+// attempt still triggers instantly (the listener is fully armed by then),
+// it's just not listening at all during that first minute.
+const ARM_DELAY_MS = 45000;
 // Was 0 - required event.clientY to be exactly <=0 at the moment
 // `mouseleave` fired, which real cursor movement (sampled, not continuous)
 // rarely lands on exactly, hence needing several attempts before one

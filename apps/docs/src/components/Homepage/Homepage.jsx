@@ -101,7 +101,7 @@ export default async function Homepage({ faqItems, effects = [] }) {
             mobileEndTriggers="bottom -50%"
             markers={false}
             accentColor="#eaeaea"
-            className="h-[75vw] max-md:h-[150vw]! mt-[-10vw] bg-foreground"
+            className="h-[75vw] mt-[-10vw] bg-foreground"
           />
           <FAQV3 faqItems={faqItems} />
           <CTAV3 />

@@ -13,6 +13,14 @@ export const POLICY_VERSION = "1";
 
 const ACTIVE_STATUSES = ["active", "trialing"];
 
+// Reached via FREE_EVENTS in api/razorpay/webhooks/route.js - a graceful
+// cancellation, a billing failure, a pause, or the subscription's own
+// natural lifecycle end. None of these are a refund: the buyer already
+// paid for their current period, so access should last until
+// current_period_end even though the subscription itself is no longer
+// active/renewing - never before this point.
+const GRACE_STATUSES = ["cancelled", "halted", "completed", "expired", "paused"];
+
 function decision(reason, allowed = false) {
   return { allowed, reason, policyVersion: POLICY_VERSION, source: "supabase" };
 }
@@ -23,10 +31,18 @@ function decision(reason, allowed = false) {
 function evaluateAnnualProRow(row, includedInAnnualPro) {
   if (!includedInAnnualPro) return decision("not-included-in-annual-pro");
   if (!row) return decision("no-subscription");
+  if (row.plan !== "pro") return decision("no-subscription");
 
-  if (row.plan !== "pro" || !ACTIVE_STATUSES.includes(row.status)) {
-    return decision("no-subscription");
-  }
+  // A refund is the one status that cuts access off immediately regardless
+  // of current_period_end - the money went back, so there's nothing left
+  // to honor through. Set by markUserFree({ status: "refunded" }) from the
+  // webhook's payment.refunded branch, distinct from GRACE_STATUSES above.
+  if (row.status === "refunded") return decision("refunded");
+
+  const isActive = ACTIVE_STATUSES.includes(row.status);
+  const isGrace = GRACE_STATUSES.includes(row.status);
+
+  if (!isActive && !isGrace) return decision("no-subscription");
 
   if (row.current_period_end) {
     const periodEnd = new Date(row.current_period_end).getTime();
@@ -34,6 +50,11 @@ function evaluateAnnualProRow(row, includedInAnnualPro) {
     if (!Number.isNaN(periodEnd) && periodEnd <= Date.now()) {
       return decision("expired");
     }
+  } else if (isGrace) {
+    // No period_end on record at all - nothing to honor a grace window
+    // against, so a non-active/non-trialing status with no stored period
+    // end can't be trusted to still be inside a paid window.
+    return decision("no-subscription");
   }
 
   if (row.billing_interval !== "yearly") {

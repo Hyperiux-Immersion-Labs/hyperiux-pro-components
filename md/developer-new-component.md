@@ -8,9 +8,11 @@ A concise, step-by-step guide from writing your first file to making the compone
 > in `hyperiux-components`) and the complete CLI command reference. This
 > doc only covers creating something new.
 
-> **Audit status (2026-08-12):** spot-checked against the current registry/CLI - the
+> **Audit status (2026-09-21):** re-checked against the current registry/CLI - the
 > two-repo free-tier rule, `registry.json` field list, `build:registry` step, and
-> `registry/index.json` root-index step all still match reality. No corrections needed.
+> `registry/index.json` root-index step all still match reality. File extensions
+> were corrected from `.jsx`/`.js` to `.tsx`: all 150 registry components use
+> `index.tsx`, and demo pages use `page.tsx`.
 
 ---
 
@@ -43,7 +45,7 @@ hyperiux-components/
     └── effects/
         └── {category}/
             └── {your-slug}/
-                ├── index.jsx
+                ├── index.tsx
                 └── registry.json
 ```
 
@@ -58,16 +60,16 @@ Create a folder inside `apps/docs/src/components/` named after your component us
 ```
 src/components/
 └── glitch-text/
-    ├── index.jsx        ← main component (what gets distributed)
-    └── Demo.jsx         ← optional: demo wrapper just for the docs site
+    ├── index.tsx        ← main component (what gets distributed)
+    └── Demo.tsx         ← optional: demo wrapper just for the docs site
 ```
 
 **Naming rules:**
 - Folder: `glitch-text` (lowercase, hyphens, no spaces or underscores)
-- Main file: always `index.jsx`
-- Sub-components: `PascalCase.jsx` (e.g. `GlitchLayer.jsx`)
+- Main file: always `index.tsx`
+- Sub-components: `PascalCase.tsx` (e.g. `GlitchLayer.tsx`)
 
-**Code rules for `index.jsx`:**
+**Code rules for `index.tsx`:**
 - Use a **default export** - `export default function GlitchText()`
 - Accept a `className` prop so users can override styles
 - No hardcoded colors - use props with sensible defaults
@@ -83,7 +85,7 @@ Every component needs a live preview page so users can see it before installing.
 
 **Create the page at:**
 ```
-apps/docs/src/app/(marketing)/demo/{your-slug}/page.js
+apps/docs/src/app/(marketing)/demo/{your-slug}/page.tsx
 ```
 
 Inside this page, import your component from `@/components/{name}` and render a live demo. The page also calls `getEffectBySlug(slug)` to pull in metadata for the code panel and install instructions - this data comes from the registry you'll set up in the next steps, so you can come back and wire this up fully after Step 4.
@@ -116,7 +118,7 @@ registry/effects/{category}/{your-slug}/
 | `transitions` | Page/route transition animations |
 | `others` | Anything that doesn't fit above |
 
-**Copy only the files users need** - no Demo.jsx, no docs-site-only wrappers. If your component has sub-component files (e.g. `GlitchLayer.jsx`), copy those too.
+**Copy only the files users need** - no Demo.tsx, no docs-site-only wrappers. If your component has sub-component files (e.g. `GlitchLayer.tsx`), copy those too.
 
 ---
 
@@ -140,7 +142,7 @@ This is the most important file. The build script reads this to generate everyth
 | `dependencies` | NPM packages imported by the component | `["gsap", "lucide-react"]` or `[]` |
 | `registryDependencies` | Other Hyperiux slugs this depends on | `[]` |
 | `previewUrl` | Path of the docs preview page from Step 2 | `"/text/glitch-text"` |
-| `main` | Entry file | `"index.jsx"` |
+| `main` | Entry file | `"index.tsx"` |
 | `exportName` | Exact function name of the main component | `"GlitchText"` |
 | `exportKind` | `"named"` or `"default"` matching the export style | `"named"` |
 | `importPath` | How users import it in their project | `"@/components/effects/glitch-text"` |
@@ -150,9 +152,9 @@ This is the most important file. The build script reads this to generate everyth
 **The `files` array** - for a multi-file component like the elevate-navbar example:
 ```
 "files": [
-  { "path": "ElevateDesktopNav.jsx", "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.jsx" },
-  { "path": "ElevateMobileNav.jsx",  "target": "src/components/effects/elevate-navbar/ElevateMobileNav.jsx" },
-  { "path": "index.jsx",             "target": "src/components/effects/elevate-navbar/index.jsx" }
+  { "path": "ElevateDesktopNav.tsx", "target": "src/components/effects/elevate-navbar/ElevateDesktopNav.tsx" },
+  { "path": "ElevateMobileNav.tsx",  "target": "src/components/effects/elevate-navbar/ElevateMobileNav.tsx" },
+  { "path": "index.tsx",             "target": "src/components/effects/elevate-navbar/index.tsx" }
 ]
 ```
 
@@ -229,7 +231,7 @@ When you update a component, always bump the `version` in `package.json`, delete
 
 ### Source
 - [ ] Component folder named in lowercase-hyphens
-- [ ] `index.jsx` uses a default export (`export default function`)
+- [ ] `index.tsx` uses a default export (`export default function`)
 - [ ] Accepts `className` prop
 - [ ] Relative imports between own files (no `@/` aliases)
 - [ ] No hardcoded colors or site-specific tokens
@@ -250,7 +252,7 @@ When you update a component, always bump the `version` in `package.json`, delete
 - [ ] Entry added to `registry/index.json`
 
 ### Docs Site
-- [ ] Preview page created at `src/app/(marketing)/demo/{slug}/page.js`
+- [ ] Preview page created at `src/app/(marketing)/demo/{slug}/page.tsx`
 - [ ] `previewUrl` in `registry.json` is `/demo/{slug}`
 - [ ] Alias added to `effect-slugs.js` if the component has alternate names
 
@@ -271,7 +273,7 @@ When you update a component, always bump the `version` in `package.json`, delete
 - **Using anything other than `"type": "registry:component"`** (e.g. `"effect"`) - every real component in this registry uses `"registry:component"`
 - **`name` in `registry.json` not matching the folder name** - the slug will be wrong everywhere
 - **Missing files in the `files` array** - users get import errors after installing
-- **Leaving a stale duplicate source file lying around** (e.g. an old `index.jsx` next to the real `index.js` after a rename) - when `files` is present it is authoritative, but stale files still confuse humans, package contents, and future syncs. Delete old files when you rename/replace them, don't just stop referencing them.
+- **Leaving a stale duplicate source file lying around** (e.g. an old `index.jsx` next to the real `index.tsx` after a rename) - when `files` is present it is authoritative, but stale files still confuse humans, package contents, and future syncs. Delete old files when you rename/replace them, don't just stop referencing them.
 - **Using `@/` imports between your own files** - `@/` resolves to the user's project, not yours
 - **Editing a component's code without bumping `version` in its `registry.json`** - the registry will silently serve the new code under the old version number, and no CLI command (`outdated`, `diff`, `versions`) will ever detect it changed. See `versioning.md` for the full versioning workflow.
 - **Not bumping the version before re-packing** - old tarballs get silently overwritten

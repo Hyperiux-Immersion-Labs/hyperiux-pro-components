@@ -147,7 +147,7 @@ export default function ExploreTheEffects() {
                 {COLUMNS.map((column, columnIndex) => (
                     <div
                         key={columnIndex}
-                        className="explore-effects-column flex flex-1 flex-col gap-[3vw] max-[1025px]:gap-[4vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10"
+                        className="explore-effects-column flex flex-1 max-[1025px]:min-w-0 flex-col gap-[3vw] max-[1025px]:gap-[4vw] max-md:min-w-[45%] max-md:gap-8 max-sm:w-full max-sm:gap-10"
                     >
                         {column.map((effect, effectIndex) => (
                             <EffectBox
