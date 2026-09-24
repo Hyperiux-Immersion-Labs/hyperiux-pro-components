@@ -52,7 +52,7 @@ export default function BlogArticleBody({
           <BlogAuthor author={author} />
 
       
-          <div className="flex flex-col gap-[0.8vw] font-geist text-[1vw] text-white max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
+          <div className="flex flex-col gap-[0.8vw]  text-[1vw] text-white max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
             {(publishedAt || readingMinutes) && (
               <div className="flex items-center text-[#AEAEAE] text-[0.9vw] gap-[1.2vw]">
                 {publishedAt && (
@@ -72,7 +72,7 @@ export default function BlogArticleBody({
             )}
           </div>
 
-          <div className="flex items-center gap-[0.6vw] font-geist text-[#AEAEAE] text-[0.9vw] max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
+          <div className="flex items-center gap-[0.6vw] text-[#AEAEAE] text-[0.9vw] max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
             <span>Share this Article:</span>
             <BlogSharePopover url={shareUrl} title={shareTitle} />
           </div>
@@ -92,6 +92,20 @@ export default function BlogArticleBody({
       </div>
 
       <div className="w-[66%] min-w-0 max-[1025px]:w-full">
+        <div className="mb-[6vw] hidden flex-col gap-[3vw] max-[1025px]:flex max-md:mb-[8vw] max-md:gap-[4vw]">
+          <BlogAuthor author={author} />
+
+          <div className="flex flex-wrap items-center gap-x-[3vw] gap-y-2 text-[#AEAEAE] max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
+            {publishedAt && (
+              <time dateTime={publishedAt}>Featured: {formatRailDate(publishedAt)}</time>
+            )}
+            {readingMinutes ? <span>Read Time: {readingMinutes} mins</span> : null}
+            {categories.length > 0 && (
+              <span>Category: {categories.map((category) => category.title).join(", ")}</span>
+            )}
+          </div>
+        </div>
+
         <div ref={contentRef} className={styles.content}>
           {children}
         </div>

@@ -37,7 +37,7 @@ export function getBlogHeadings(body = []) {
     .filter((heading) => heading.text);
 }
 
-const WORDS_PER_MINUTE = 200;
+const WORDS_PER_MINUTE = 280;
 
 export function getReadingTime(body = []) {
   let wordCount = 0;

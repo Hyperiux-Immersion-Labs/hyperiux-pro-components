@@ -59,6 +59,13 @@ function buildMarkedChildren(block) {
   });
 }
 
+function getBlogCodeLanguage(language) {
+  if (language === "jsx" || language === "js") return "javascript";
+  if (language === "tsx" || language === "ts") return "typescript";
+
+  return language || "javascript";
+}
+
 // Consecutive list-item blocks of the same listItem/level collapse into one
 // <ul>/<ol> - Sanity stores each bullet as its own top-level block.
 function groupBlocks(body) {
@@ -113,7 +120,7 @@ function BlogBlock({ block, headingId }) {
     const Tag = block.listItem === "number" ? "ol" : "ul";
 
     return (
-      <Tag>
+      <Tag className="fadeup">
         {block.items.map((item, index) => (
           <li key={item._key || `${block._groupKey}-${index}`}>
             {buildMarkedChildren(item)}
@@ -124,6 +131,8 @@ function BlogBlock({ block, headingId }) {
   }
 
   if (block._type === "effectImage") {
+    if (!block.url) return null;
+
     return (
       <figure className="fadeup">
         <div className={styles.imageFrame}>
@@ -144,7 +153,15 @@ function BlogBlock({ block, headingId }) {
   }
 
   if (block._type === "effectCodeBlock") {
-    return <CodeBlock code={block.code || ""} tsxCode={block.tsxCode} filename={block.filename} />;
+    return (
+      <CodeBlock
+        code={block.code || ""}
+        language={getBlogCodeLanguage(block.language)}
+        hideHeaderWhenNoFilename
+        showCopyButton={false}
+        showLanguageToggle={false}
+      />
+    );
   }
 
   if (block._type === "horizontalRule") return <hr className={styles.contentDivider} />;
@@ -159,9 +176,18 @@ function BlogBlock({ block, headingId }) {
 
     if (!columnCount) return null;
 
+    const variantClassName =
+      block.colorVariant === "orange"
+        ? styles.tableOrange
+        : block.colorVariant === "muted"
+          ? styles.tableMuted
+          : block.colorVariant === "outline"
+            ? styles.tableOutline
+            : "";
+
     return (
-      <div className="blog-table-wrapper">
-        <table>
+      <div className={`fadeup ${styles.tableWrap} ${variantClassName}`}>
+        <table className={styles.table}>
           {headers.length > 0 && (
             <thead>
               <tr>

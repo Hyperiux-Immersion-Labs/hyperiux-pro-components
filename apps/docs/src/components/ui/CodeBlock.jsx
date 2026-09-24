@@ -170,6 +170,7 @@ export function CodeBlock({
     lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
     lockedCtaHref = null,
     showLanguageToggle = true,
+    showCopyButton = true,
 }) {
     const [copied, setCopied] = useState(false);
 
@@ -215,7 +216,9 @@ export function CodeBlock({
                 className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
                     shouldShowHeader
                         ? "max-md:max-h-[50vh] max-[1025px]:max-h-[50vh] max-md:min-h-[5vh]"
-                        : "max-md:h-[5vh] max-md:pt-0 max-[1025px]:h-[5.5vh]"
+                        : showCopyButton
+                          ? "max-md:h-[5vh] max-md:pt-0 max-[1025px]:h-[5.5vh]"
+                          : "max-md:max-h-[50vh] max-[1025px]:max-h-[50vh]"
                 }`}
                 style={{ scrollbarGutter: "stable" }}
             >
@@ -226,32 +229,36 @@ export function CodeBlock({
                             {isJsVariant && showLanguageToggle && (
                                 <LanguageDropdown value={variant} onChange={setVariant} />
                             )}
+                            {showCopyButton && (
+                                <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
+                                    <CopyBtn
+                                        value={displayCode}
+                                        color="white"
+                                        className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
+                                        aria-label="Copy code to clipboard"
+                                        disabled={copyLocked}
+                                        onBeforeCopy={onBeforeCopy}
+                                        onCopiedChange={setCopied}
+                                    />
+                                </Tooltip>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    showCopyButton && (
+                        <span className="absolute top-5 right-5 z-10 max-md:top-3.5 max-md:right-6">
                             <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
                                 <CopyBtn
                                     value={displayCode}
                                     color="white"
-                                    className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
                                     aria-label="Copy code to clipboard"
                                     disabled={copyLocked}
                                     onBeforeCopy={onBeforeCopy}
                                     onCopiedChange={setCopied}
                                 />
                             </Tooltip>
-                        </div>
-                    </div>
-                ) : (
-                    <span className="absolute top-5 right-5 z-10 max-md:top-3.5 max-md:right-6">
-                        <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
-                            <CopyBtn
-                                value={displayCode}
-                                color="white"
-                                aria-label="Copy code to clipboard"
-                                disabled={copyLocked}
-                                onBeforeCopy={onBeforeCopy}
-                                onCopiedChange={setCopied}
-                            />
-                        </Tooltip>
-                    </span>
+                        </span>
+                    )
                 )}
                 <div className="relative">
                     <pre

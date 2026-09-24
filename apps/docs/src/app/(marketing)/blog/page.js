@@ -25,10 +25,9 @@ export default async function BlogIndexPage({ searchParams }) {
   const category = typeof params?.category === "string" ? params.category : undefined;
   const page = Math.max(1, Number(params?.page) || 1);
 
-  // Featured post only makes sense on the unfiltered, first page - once a
-  // category filter or later page is active it'd just be a stray extra
-  // fetch shown out of context.
-  const showFeatured = !category && page === 1;
+  // Featured post pins to the top of every category - only pagination
+  // retires it, so it doesn't reappear stacked above page 2+.
+  const showFeatured = page === 1;
 
   const [{ posts, total }, categories, featuredPost, effects] = await Promise.all([
     getSanityBlogEntries({ category, page, pageSize: POSTS_PER_PAGE }),

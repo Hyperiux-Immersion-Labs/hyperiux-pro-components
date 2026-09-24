@@ -38,14 +38,11 @@ export default defineConfig({
                     }),
                     S.documentTypeListItem('blogAuthor').title('Author'),
                     S.documentTypeListItem('blogCategory').title('Category'),
-                    S.documentTypeListItem('blogTag').title('Tags'),
                   ])
               ),
             ...S.documentTypeListItems().filter(
               (item) =>
-                !['effectContent', 'blogPost', 'blogAuthor', 'blogCategory', 'blogTag'].includes(
-                  item.getId()
-                )
+                !['effectContent', 'blogPost', 'blogAuthor', 'blogCategory'].includes(item.getId())
             ),
           ]),
     }),

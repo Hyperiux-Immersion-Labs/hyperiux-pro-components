@@ -31,10 +31,10 @@ function FeaturedBlogContent({ featuredPost }) {
     <section ref={sectionRef} className="space-y-[8vw] max-md:px-[7vw] max-md:mt-[6vw]">
       <div className="space-y-[2vw]">
         <LineWipe>
-          <h2 className="text-[5vw] max-[1025px]:text-[6.5vw] font-neue-haas text-center max-md:text-[9.5vw]">Our Latest Blog</h2>
+          <h2 className="t96 max-[1025px]:text-[6.5vw] font-neue-haas text-center max-md:text-[9.5vw]">Our Latest Blog</h2>
         </LineWipe>
         <LineWipe delay={0.5}>
-          <p className="text-[1.15vw] max-[1025px]:text-[3vw] mt-[1.5vw] text-center text-white font-geist max-md:mt-[4vw] max-md:text-[2.4vw] max-sm:text-[4vw]">
+          <p className="text24 max-[1025px]:text-[3vw] text-center text-white font-geist max-md:mt-[4vw] max-md:text-[2.4vw] max-sm:text-[4vw]">
             Lorem Ipsum is simply dummy text of the printing and typesetting industry.
           </p>
         </LineWipe>
@@ -59,13 +59,15 @@ function FeaturedBlogContent({ featuredPost }) {
         )}
 
         <div className="flex w-[45%] grow flex-col gap-2 items-start justify-start my-4 max-[1025px]:w-full">
-          <p className="text-[1vw]  font-geist-mono text-light-grey max-[1025px]:text-[2.5vw] max-md:text-[4vw]">
-            {formatFeaturedDate(featuredPost.publishedAt)}
-          </p>
+          <LineWipe>
+            <p className="text-[1vw] font-geist-mono text-light-grey max-[1025px]:text-[2.5vw] max-md:text-[4vw]">
+              {formatFeaturedDate(featuredPost.publishedAt)}
+            </p>
+          </LineWipe>
 
           <Link href={`/blog/${featuredPost.slug}`}>
             <LineWipe className='w-[85%]'>
-              <h3 className="t56 font-neue-haas mt-[1.2vw]  max-md:mt-[4vw] max-sm:text-[7.5vw]!">
+              <h3 className="text64 font-neue-haas mt-[1.2vw]  max-md:mt-[4vw] max-sm:text-[7.5vw]!">
                 {featuredPost.title}
               </h3>
             </LineWipe>
@@ -73,7 +75,7 @@ function FeaturedBlogContent({ featuredPost }) {
 
           {featuredPost.summary && (
             <LineWipe delay={0.5}>
-              <p className="text-[1.3vw] ont-geist mt-[1.8vw] text-white w-[85%] max-md:mt-[4vw] max-[1025px]:text-[2.5vw] max-md:text-[4vw]">
+              <p className="text24 font-neue-haas mt-[1.8vw] text-white w-[85%] max-md:mt-[4vw] max-[1025px]:text-[2.5vw] max-md:text-[4vw]">
                 {featuredPost.summary}
               </p>
             </LineWipe>

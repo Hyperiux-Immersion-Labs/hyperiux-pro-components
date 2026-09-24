@@ -3,11 +3,8 @@
 import { useState } from "react";
 
 const PILL_CLASS =
-  "bg-[#2B2B2B] px-[0.4vw] py-[0.1vw] text18 font-geist-mono text-white/90 max-md:px-3 max-md:py-1 max-md:text-[3vw]!";
+  "bg-[#2B2B2B] px-[0.4vw] py-[0.1vw] text-[0.95vw] font-geist-mono text-white/90 max-md:px-3 max-md:py-1 max-md:text-[3vw]!";
 
-// Mobile runs out of room well before the tag list does, so it shows the
-// first few plus a "+n" pill that expands the rest in place. Desktop and
-// tablet have the width for all of them and render the full list.
 const MOBILE_VISIBLE = 3;
 
 export default function BlogHeroTags({ tags = [] }) {

@@ -1,12 +1,11 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import NavbarV3 from "@/homepage-v3/components/NavbarV3";
 import FooterV3 from "@/homepage-v3/sections/FooterV3";
 import {
   getSanityBlogPost,
   getAllSanityBlogSlugs,
   getRelatedBlogPosts,
+  getSanityBlogAuthorForSlug,
 } from "@/lib/sanity";
 import { getSearchIndexEffects } from "@/lib/search-index";
 import { getReadingTime } from "@/lib/blog-content";
@@ -16,10 +15,11 @@ import BlogDetailHero from "./BlogDetailHero";
 import BlogBodyRenderer from "@/components/blog/BlogBodyRenderer";
 import BlogArticleBody from "@/components/blog/BlogArticleBody";
 import BlogTags from "@/components/blog/BlogTags";
-import BlogShareLinks from "@/components/blog/BlogShareLinks";
-import BlogPromoCard from "@/components/blog/BlogPromoCard";
+import RelatedBlogsSlider from "./RelatedBlogsSlider";
 import "@/styles/blog-new.css";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateStaticParams() {
   const entries = await getAllSanityBlogSlugs();
@@ -56,25 +56,16 @@ function extractFaqs(body = []) {
     .filter((item) => item?.question && item?.answer);
 }
 
-function formatDate(value) {
-  if (!value) return "";
-
-  return new Date(value).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 export default async function BlogPostPage({ params }) {
   const { slug } = await params;
   const post = await getSanityBlogPost(slug);
 
   if (!post) notFound();
 
-  const [effects, relatedPosts] = await Promise.all([
+  const [effects, relatedPosts, resolvedAuthor] = await Promise.all([
     getSearchIndexEffects(),
-    getRelatedBlogPosts(slug, post),
+    getRelatedBlogPosts(slug, post, 5),
+    post.author?.name ? Promise.resolve(post.author) : getSanityBlogAuthorForSlug(slug),
   ]);
 
   const url = `/blog/${slug}`;
@@ -84,23 +75,25 @@ export default async function BlogPostPage({ params }) {
     description: post.seo?.description || post.summary,
     path: url,
   });
+  const author = resolvedAuthor || post.author || null;
+  const postWithAuthor = author ? {...post, author} : post;
   const faqs = extractFaqs(post.body || []);
 
   return (
     <>
       <WebpageJsonLd metadata={pageMetadata} />
       <BreadcrumbsJSONLD pathname={url} />
-      <BlogPostingJsonLd post={post} url={url} />
+      <BlogPostingJsonLd post={postWithAuthor} url={url} />
       {faqs.length > 0 && <FAQJSONLD faqs={faqs} />}
       <NavbarV3 effects={effects} />
 
       <div className="px-[4vw] py-[8vw] max-[1025px]:px-[5vw] max-[1025px]:py-[10vh] max-md:px-[7vw] max-md:py-[26vw]">
         <article className="blog-article text-white">
-          <BlogDetailHero post={post} />
+          <BlogDetailHero post={postWithAuthor} />
 
           <BlogArticleBody
             slug={slug}
-            author={post.author}
+            author={author}
             publishedAt={post.publishedAt}
             categories={post.categories || []}
             readingMinutes={getReadingTime(post.body || []).minutes}
@@ -112,7 +105,7 @@ export default async function BlogPostPage({ params }) {
           </BlogArticleBody>
         </article>
 
-      
+        <RelatedBlogsSlider posts={relatedPosts} />
       </div>
 
       <FooterV3 />

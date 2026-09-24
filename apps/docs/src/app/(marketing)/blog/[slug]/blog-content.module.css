@@ -180,9 +180,34 @@
 }
 
 .tableWrap {
+  --table-border: rgba(255, 255, 255, 0.14);
+  --table-header-bg: #272727;
+  --table-header-color: #fff;
+  --table-cell-color: rgba(255, 255, 255, 0.88);
   overflow-x: auto;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--table-border);
   background: transparent;
+}
+
+.tableOrange {
+  --table-border: rgba(255, 95, 0, 0.32);
+  --table-header-bg: var(--primary);
+  --table-header-color: #0e0e0e;
+  --table-cell-color: rgba(255, 255, 255, 0.82);
+}
+
+.tableMuted {
+  --table-border: rgba(147, 147, 147, 0.28);
+  --table-header-bg: rgba(255, 255, 255, 0.08);
+  --table-header-color: rgba(255, 255, 255, 0.9);
+  --table-cell-color: rgba(255, 255, 255, 0.68);
+}
+
+.tableOutline {
+  --table-border: rgba(255, 255, 255, 0.22);
+  --table-header-bg: transparent;
+  --table-header-color: #fff;
+  --table-cell-color: rgba(255, 255, 255, 0.76);
 }
 
 .table {
@@ -192,17 +217,17 @@
 
 .table th,
 .table td {
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--table-border);
   padding: 0.7rem 0.9rem;
   text-align: left;
   font-size: clamp(0.82rem, 0.85vw, 0.9rem);
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--table-cell-color);
 }
 
 .table th {
-  background: #272727;
-  color: #fff;
-  font-weight: 500;
+  background: var(--table-header-bg);
+  color: var(--table-header-color);
+  font-weight: 700;
 }
 
 /* Ramps copied from effect-content.module.css so body copy reads identically

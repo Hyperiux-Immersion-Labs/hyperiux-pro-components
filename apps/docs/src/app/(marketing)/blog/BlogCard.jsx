@@ -3,7 +3,6 @@ import Image from "next/image";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 import LineWipe from "@/components/Animations/LineWipe";
 
-
 function formatCardDate(value) {
   if (!value) return "";
 
@@ -33,38 +32,40 @@ export default function BlogCard({ post, priority = false }) {
           )}
         </div>
 
-        <div className="flex items-center  mt-2 justify-between gap-3 pb-3 font-geist-mono ">
-          {post.categories?.length > 0 && (
-            <span className="bg-[#2B2B2B] px-2 py-0.5 text-[0.9vw] text-white/90 max-[1025px]:px-3 max-[1025px]:py-1.5 max-md:px-3 max-md:py-1 max-md:text-[3vw]!">
-              {post.categories[0].title}
-            </span>
-          )}
-          <span className="text-[0.9vw] text-[#AEAEAE] max-[1025px]:text-[1.8vw] max-md:text-[3vw]!">
+        <div className="mt-2 flex items-center justify-between gap-3 pb-3 font-geist-mono">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            {post.categories?.length > 0 && (
+              <span className="bg-[#2B2B2B] px-2 py-0.5 text-[0.9vw] text-white/90 max-[1025px]:px-3 max-[1025px]:py-1.5 max-[1025px]:text-[2vw] max-md:px-3 max-md:py-1 max-md:text-[3vw]!">
+                {post.categories[0].title}
+              </span>
+            )}
+          </div>
+          <span className="shrink-0 text18 font-neue-haas text-[#AEAEAE] max-[1025px]:text-[1.8vw] max-md:text-[3vw]!">
             {formatCardDate(post.publishedAt)}
           </span>
         </div>
 
         <LineWipe>
-          <h3 className="shrink-0 text-[1.5vw] font-neue-haas font-medium leading-[1.2]! text-white max-[1025px]:text-[2.8vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
+          <h3 className="shrink-0 text32 font-neue-haas font-medium leading-[1.2]! text-white max-[1025px]:text-[2.8vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
             {post.title}
           </h3>
         </LineWipe>
 
         <LineWipe delay={0.15}>
-          <p className="grow text-[1.15vw] font-geist max-[1025px]:text-[2vw] leading-[1.2] text-white max-md:text-[3.5vw]!">
+          <p className="grow text20 max-[1025px]:text-[2vw] leading-[1.2] text-white max-md:text-[3.5vw]!">
             {post.summary}
           </p>
         </LineWipe>
 
-        <LinkButton
-          href={`/blog/${post.slug}`}
-          text="Read More"
-          
-          tilted={false}
-          underline={true}
-          
-          className="relative text-[0.9vw] max-md:text-sm z-10 mt-5 max-md:mt-0! max-md:text34"
-        />
+        <div className="fadein" data-fadein-delay="0.3">
+          <LinkButton
+            href={`/blog/${post.slug}`}
+            text="Read More"
+            tilted={false}
+            underline={true}
+            className="relative text20 max-md:text-sm z-10 mt-5 max-md:mt-0! max-md:text34"
+          />
+        </div>
       </div>
 
       <Link

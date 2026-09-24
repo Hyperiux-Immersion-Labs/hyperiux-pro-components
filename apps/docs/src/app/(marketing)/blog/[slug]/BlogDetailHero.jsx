@@ -17,7 +17,7 @@ export default function BlogDetailHero({ post }) {
   useFadeUp(heroRef);
 
   return (
-    <div ref={heroRef}>
+    <div ref={heroRef} className="pt-[5vw]">
       <header className="flex flex-col gap-[1.5vw] max-[1025px]:gap-[6vw] max-md:gap-[8vw]">
         <Breadcrumb maxWords={3} />
 
@@ -29,7 +29,7 @@ export default function BlogDetailHero({ post }) {
 
         {post.summary && (
           <LineWipe delay={0.5}>
-            <p className="t24 leading-relaxed max-[1025px]:leading-[1.2] w-[60%] max-[1025px]:w-full text-white">
+            <p className="text-[1.25vw] leading-relaxed max-[1025px]:leading-[1.2] w-[60%] max-[1025px]:w-full text-white max-[1025px]:text-[2.8vw] max-sm:text-[4vw]">
               {post.summary}
             </p>
           </LineWipe>
@@ -38,14 +38,14 @@ export default function BlogDetailHero({ post }) {
       </header>
 
       {post.coverImage?.url && (
-        <div className="fadeup relative mt-[5vw] h-[42vw] w-full overflow-hidden max-md:mt-[8vw] max-[1025px]:mt-[6vh] max-md:h-[60vw] ">
+        <div className="fadeup group relative mt-[5vw] h-[42vw] w-full overflow-hidden max-md:mt-[8vw] max-[1025px]:mt-[6vh] max-md:h-[60vw] ">
           <Image
             src={post.coverImage.url}
             alt={post.coverImage.alt || post.title}
             width={1600}
             height={900}
             priority
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
       )}

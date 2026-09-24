@@ -14,13 +14,14 @@ const author = defineType({
     }),
     defineField({
       name: 'role',
-      title: 'Role',
+      title: 'Designation',
       description: 'Shown under the name, e.g. "Content Writer at Hyperiux"',
       type: 'string',
     }),
     defineField({
       name: 'avatar',
-      title: 'Avatar',
+      title: 'Author Image',
+      description: 'Optional. Falls back to a generic user icon on blog pages when not set.',
       type: 'effectImage',
     }),
   ],
@@ -28,7 +29,7 @@ const author = defineType({
     select: {
       title: 'name',
       subtitle: 'role',
-      media: 'avatar',
+      media: 'avatar.image',
     },
   },
 })
@@ -55,25 +56,6 @@ const category = defineType({
   preview: {
     select: {
       title: 'title',
-    },
-  },
-})
-
-const tag = defineType({
-  name: 'blogTag',
-  title: 'Tag',
-  type: 'document',
-  fields: [
-    defineField({
-      name: 'name',
-      title: 'Name',
-      type: 'string',
-      validation: (rule) => rule.required(),
-    }),
-  ],
-  preview: {
-    select: {
-      title: 'name',
     },
   },
 })
@@ -128,8 +110,44 @@ export const blogPost = defineType({
     defineField({
       name: 'tags',
       title: 'Tags',
+      description: 'Add plain tag labels directly here. Press Enter after each tag.',
       type: 'array',
-      of: [defineArrayMember({type: 'reference', to: [{type: 'blogTag'}]})],
+      of: [
+        defineArrayMember({
+          type: 'string',
+          validation: (rule) => rule.required().min(1),
+        }),
+      ],
+      options: {
+        layout: 'tags',
+      },
+      validation: (rule) => rule.unique(),
+    }),
+    defineField({
+      name: 'relatedBlogs',
+      title: 'Related Blogs',
+      description:
+        'Optional: choose up to 5 posts to show on the blog detail page. If fewer are selected, the site fills the rest with other posts.',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'reference',
+          to: [{type: 'blogPost'}],
+          options: {
+            filter: ({document}) => {
+              const id = document?._id?.replace(/^drafts\./, '')
+
+              if (!id) return {filter: 'defined(slug.current)'}
+
+              return {
+                filter: '!(_id in [$id, $draftId])',
+                params: {id, draftId: `drafts.${id}`},
+              }
+            },
+          },
+        }),
+      ],
+      validation: (rule) => rule.unique().max(5),
     }),
     defineField({
       name: 'isFeatured',
@@ -174,4 +192,4 @@ export const blogPost = defineType({
   },
 })
 
-export const blogContentSchemaTypes = [author, category, tag, blogPost]
+export const blogContentSchemaTypes = [author, category, blogPost]
