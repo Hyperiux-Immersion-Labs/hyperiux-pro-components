@@ -4829,7 +4829,7 @@
     ],
     "type": "registry:component",
     "title": "Displacement Navbar",
-    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it \u2014 GSAP-driven with a full reduced-motion fallback.",
+    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it — GSAP-driven with a full reduced-motion fallback.",
     "category": "navigation",
     "dependencies": [
       "gsap"
@@ -8779,7 +8779,7 @@
     "version": "1.0.1",
     "type": "registry:component",
     "title": "Gooey Counter",
-    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0\u201310 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
+    "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
     "category": "components",
     "dependencies": [],
     "registryDependencies": [],
@@ -17721,14 +17721,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/scroll-stack/index.tsx"
-      },
-      {
-        "path": "v2/index.tsx",
-        "target": "src/components/effects/scroll-stack/v2/index.tsx"
-      },
-      {
-        "path": "v2/ScrollStackComp.tsx",
-        "target": "src/components/effects/scroll-stack/v2/ScrollStackComp.tsx"
       }
     ],
     "props": [
@@ -18543,10 +18535,6 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/split-canvas/index.tsx"
-      },
-      {
-        "path": "shaders/pixelTransition.ts",
-        "target": "src/components/effects/split-canvas/shaders/pixelTransition.ts"
       }
     ],
     "props": [

@@ -310,7 +310,7 @@ export default function Footer() {
                     type="email"
                     value={email}
                     label={"Email"}
-                    labelBg="bg-[#111210]! text-[#979797]!"
+                    labelbg="bg-[#111210]! text-[#979797]!"
                     onChange={(event) => {
                       setEmail(event.target.value);
                       if (status === "error") setStatus("idle");

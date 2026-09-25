@@ -8,11 +8,11 @@ export type InputProps = {
   type?: string;
   error?: string;
   className?: string;
-  labelBg?: string;
+  labelbg?: string;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'id' | 'type'>;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { id, label, placeholder, type = "text", error, labelBg = "", className = "", ...rest },
+  { id, label, placeholder, type = "text", error, labelbg = "", className = "", ...rest },
   ref,
 ) {
   const generatedId = useId();

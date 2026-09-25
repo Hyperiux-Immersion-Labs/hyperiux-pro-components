@@ -18,7 +18,7 @@ export type InputProps = {
   type?: string;
   error?: string;
   className?: string;
-  labelBg?: string;
+  labelbg?: string;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'id' | 'type'>;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     placeholder,
     type = "text",
     error,
-    labelBg = "",
+    labelbg = "",
     className = "",
     ...rest
   },
@@ -65,7 +65,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 "
           >
             <span
-              className={`bg-white text-gray-700 inline-flex px-1 text-sm ${labelBg ? labelBg : "bg-white"}`}
+              className={`bg-white text-gray-700 inline-flex px-1 text-sm ${labelbg ? labelbg : "bg-white"}`}
             >
               {label}
             </span>

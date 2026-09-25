@@ -37,10 +37,6 @@
     {
       "path": "index.tsx",
       "target": "src/components/effects/split-canvas/index.tsx"
-    },
-    {
-      "path": "shaders/pixelTransition.ts",
-      "target": "src/components/effects/split-canvas/shaders/pixelTransition.ts"
     }
   ],
   "props": [
