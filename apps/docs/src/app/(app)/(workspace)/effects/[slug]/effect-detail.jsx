@@ -10,8 +10,6 @@ import {
   forwardRef,
 } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { createPortal } from "react-dom";
 import { useRouter, usePathname } from "next/navigation";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { EffectCard } from "@/components/ui/EffectCardNew";
@@ -33,6 +31,8 @@ import styles from "./effect-content.module.css";
 import { LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { CopyLimitProvider, useCopyLimit } from "./useCopyLimit";
+import GetCodeMenu from "./GetCodeMenu";
+import SignInToCopyModal from "./SignInToCopyModal";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 
@@ -199,15 +199,8 @@ export function EffectDetailContent({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [mounted, setMounted] = useState(false);
   const [showSignInToCopyModal, setShowSignInToCopyModal] = useState(false);
-
-  // SSR-safe mounted flag - `mounted` gates a createPortal() call further
-  // down, which needs document.body and so can only run after mount.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
+  const closeSignInToCopyModal = useCallback(() => setShowSignInToCopyModal(false), []);
 
   const [videoReady, setVideoReady] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -497,7 +490,12 @@ export function EffectDetailContent({
                         </div>
                       )}
 
-                      <div className="ml-auto shrink-0 max-md:hidden">
+                      <div className="ml-auto flex shrink-0 items-center gap-3 max-md:hidden">
+                        <GetCodeMenu
+                          effectSlug={slug}
+                          effectTitle={pageTitle || safeEffect.title}
+                          isLocked={isLocked}
+                        />
                         <ButtonV3
                           text="Live Preview"
                           href={previewHref}
@@ -561,14 +559,22 @@ export function EffectDetailContent({
 
                 </div>
 
-                <div className="max-md:flex max-md:px-[7vw] max-[1025px]:px-[6vw] w-full max-md:pt-4 shrink-0 hidden">
+                <div className="max-md:flex max-md:flex-col max-md:gap-3 max-md:px-[7vw] max-[1025px]:px-[6vw] w-full max-md:pt-4 shrink-0 hidden">
                   <ButtonV3
                     text="Live Preview"
                     href={previewHref}
                     target_blank={true}
                     target="_blank"
                     variant="orange"
-                    className="shrink-0"
+                    className="w-full shrink-0"
+                  />
+                  <GetCodeMenu
+                    effectSlug={slug}
+                    effectTitle={pageTitle || safeEffect.title}
+                    isLocked={isLocked}
+                    align="left"
+                    className="w-full"
+                    triggerClassName="w-full"
                   />
                 </div>
 
@@ -721,45 +727,11 @@ export function EffectDetailContent({
           )}
         </div>
 
-      {mounted && createPortal(
-        <div
-          className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-opacity duration-300 ${showSignInToCopyModal ? "opacity-100" : "pointer-events-none opacity-0"}`}
-          onClick={() => setShowSignInToCopyModal(false)}
-        >
-          <div
-            className={`flex w-[35vw] max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${showSignInToCopyModal ? "scale-100" : "scale-95"}`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={() => setShowSignInToCopyModal(false)}
-              className="max-[1025px]:hidden group absolute right-5 top-5 flex h-10 w-10 items-center justify-center  border border-white/20 bg-white/10 text-xl leading-none text-white/70 transition-all duration-500 ease-in-out hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white "
-            >
-              <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
-                <span className="h-px w-4 rotate-45 bg-white" />
-                <span className="absolute h-px w-4 -rotate-45 bg-white" />
-              </div>
-            </button>
-
-            <div className="flex items-start justify-between gap-3">
-              <h2 className="text-xl font-medium text-white">Sign in to copy code</h2>
-            </div>
-            <p className="text-sm text-white/60 text-center">
-              Create a free account or sign in to copy code and install
-              commands from the vault.
-            </p>
-            <Link
-              href={`/sign-in?redirect_url=${encodeURIComponent(pathname)}`}
-              className="inline-flex w-fit items-center gap-1.5  bg-[#ff5f00] px-4 py-2 text-sm font-medium text-white hover:bg-[#e05500] transition-colors"
-              onClick={() => setShowSignInToCopyModal(false)}
-            >
-              Sign In
-            </Link>
-          </div>
-        </div>,
-        document.body
-      )}
+      <SignInToCopyModal
+        open={showSignInToCopyModal}
+        onClose={closeSignInToCopyModal}
+        returnPath={pathname}
+      />
     </CopyLimitProvider>
   );
 }

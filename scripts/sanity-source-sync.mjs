@@ -29,12 +29,17 @@ async function main() {
   const slugs = resolveSlugs(options);
   const client = getSanityConfig();
   const results = [];
+  const record = (result) => {
+    results.push(result);
+    console.log(`${result.status.padEnd(13)} ${result.slug}  (${result.detail})`);
+  };
 
+  console.log(`sanity-source-sync ${command}\n`);
   for (const slug of slugs) {
     const source = readCodegenSource(slug);
     const published = await queryOne(client, `*[_type == "effectContent" && effectSlug == $slug && !(_id in path("drafts.**"))]`, { slug }, slug);
     if (!published) {
-      results.push({ slug, status: "error", detail: "no published effectContent document" });
+      record({ slug, status: "error", detail: "no published effectContent document" });
       continue;
     }
 
@@ -44,15 +49,15 @@ async function main() {
     const changes = ["jsxCode", "tsxCode"].filter((field) => (current[field] || "") !== source[field]);
 
     if (!changes.length) {
-      results.push({ slug, status: "unchanged", detail: draft ? "draft already matches" : "published already matches" });
+      record({ slug, status: "unchanged", detail: draft ? "draft already matches" : "published already matches" });
       continue;
     }
 
     if (command === "sync" && options.yes) {
       await writeDraft(client, published, draftId, source);
-      results.push({ slug, status: "written", detail: `${changes.join(" + ")} -> ${draftId}` });
+      record({ slug, status: "written", detail: `${changes.join(" + ")} -> ${draftId}` });
     } else {
-      results.push({ slug, status: "would change", detail: changes.join(" + ") });
+      record({ slug, status: "would change", detail: changes.join(" + ") });
     }
   }
 
@@ -106,12 +111,25 @@ function getSanityConfig() {
   return { dataset, token, baseUrl: `https://${projectId}.api.sanity.io/v${apiVersion}` };
 }
 
+// Retries transient network failures (timeouts, resets) with backoff - a
+// full --all run makes ~450 requests and one dropped socket shouldn't abort it.
+async function fetchWithRetry(url, init, attempts = 4) {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return await fetch(url, { ...init, signal: AbortSignal.timeout(30_000) });
+    } catch (error) {
+      if (attempt >= attempts) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** (attempt - 1)));
+    }
+  }
+}
+
 async function queryOne(client, query, params, context) {
   const url = new URL(`${client.baseUrl}/data/query/${client.dataset}`);
   url.searchParams.set("query", query);
   for (const [key, value] of Object.entries(params)) url.searchParams.set(`$${key}`, JSON.stringify(value));
 
-  const response = await fetch(url, { headers: { Authorization: `Bearer ${client.token}` } });
+  const response = await fetchWithRetry(url, { headers: { Authorization: `Bearer ${client.token}` } });
   if (!response.ok) fail(`Sanity query failed for ${context} (${response.status}): ${(await response.text()).slice(0, 300)}`);
 
   const results = (await response.json()).result || [];
@@ -120,7 +138,7 @@ async function queryOne(client, query, params, context) {
 }
 
 async function mutate(client, mutations) {
-  const response = await fetch(`${client.baseUrl}/data/mutate/${client.dataset}`, {
+  const response = await fetchWithRetry(`${client.baseUrl}/data/mutate/${client.dataset}`, {
     method: "POST",
     headers: { Authorization: `Bearer ${client.token}`, "Content-Type": "application/json" },
     body: JSON.stringify({ mutations }),
@@ -151,9 +169,6 @@ function parseCli(argv) {
 }
 
 function printResults(command, options, results) {
-  console.log(`sanity-source-sync ${command}\n`);
-  for (const { slug, status, detail } of results) console.log(`${status.padEnd(13)} ${slug}  (${detail})`);
-
   const counts = results.reduce((acc, { status }) => ({ ...acc, [status]: (acc[status] || 0) + 1 }), {});
   console.log(`\n${Object.entries(counts).map(([status, count]) => `${count} ${status}`).join(", ")}`);
   if (command === "sync" && !options.yes && counts["would change"]) {

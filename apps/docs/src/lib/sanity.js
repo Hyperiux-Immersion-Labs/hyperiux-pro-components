@@ -21,6 +21,10 @@ function getSanityClient() {
     apiVersion: API_VERSION,
     useCdn: process.env.NODE_ENV === 'production',
     token: process.env.SANITY_API_TOKEN,
+    // Published documents only. With a token and this apiVersion the default
+    // perspective is "raw", which also returns drafts - any unpublished
+    // Studio edit then shows up as a duplicate effect card on the live site.
+    perspective: 'published',
   })
 }
 
@@ -169,7 +173,14 @@ export async function getSanityEffectContent(categorySlug, effectSlug) {
       {categorySlugs, effectSlugs}
     )
 
-    return content || null
+    if (!content) return null
+
+    // jsxCode/tsxCode hold the full effect source. This content object is
+    // handed to the client component (and serialized into the RSC payload
+    // for every visitor), so the source is dropped here - it's only ever
+    // served through /api/effects/[slug]/copy after access + limit checks.
+    const { jsxCode, tsxCode, ...pageContent } = content
+    return pageContent
   } catch (error) {
     console.warn(
       `Sanity effect content could not be loaded for ${categorySlug}/${effectSlug}`,
@@ -178,6 +189,26 @@ export async function getSanityEffectContent(categorySlug, effectSlug) {
 
     return null
   }
+}
+
+// Full component source for the effect page's "Copy code" dropdown. Server
+// only - call it after the access/limit checks in /api/effects/[slug]/copy.
+// Published documents only (drafts may hold unreviewed code), regardless of
+// whether the client's token could otherwise see drafts.
+export async function getSanityEffectSource(effectSlug) {
+  if (!isSanityConfigured()) return null
+
+  const client = getSanityClient()
+  const effectSlugs = getEffectSlugAliases(effectSlug)
+
+  return client.fetch(
+    `*[_type == "effectContent" && effectSlug in $effectSlugs && !(_id in path("drafts.**"))][0]{
+      tier,
+      jsxCode,
+      tsxCode
+    }`,
+    {effectSlugs}
+  )
 }
 
 export async function getAllSanityEffectEntries() {

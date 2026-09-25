@@ -135,6 +135,20 @@ export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
       usage.remaining <= 0
   );
 
+  // For the "Get code" dropdown, whose copy route does the limit claim
+  // server-side and returns the same usage shape as copy-usage's POST -
+  // this keeps the shared count (and the "X of Y left" toast) in sync
+  // without a second round-trip.
+  const applyUsage = useCallback(
+    (data) => {
+      setUsage(data);
+      notifyUsage(data);
+    },
+    [notifyUsage]
+  );
+
+  const requireSignIn = useCallback(() => onRequireSignIn?.(), [onRequireSignIn]);
+
   // Selection/clipboard is only blocked once we're sure the visitor is
   // signed out - default to selectable while auth is still loading so the
   // code doesn't flash locked-then-unlocked for signed-in users.
@@ -145,6 +159,9 @@ export function CopyLimitProvider({ children, onRequireSignIn, effectSlug }) {
     isSignedIn,
     usage,
     requestCopy,
+    applyUsage,
+    requireSignIn,
+    showToast,
     isLocked,
     selectable,
     lockedCtaHref: usage?.plan === "pro" || usage?.isAdmin ? null : "/pricing",

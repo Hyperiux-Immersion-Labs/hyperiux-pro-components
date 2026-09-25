@@ -74,6 +74,44 @@ async function copyTextToClipboard(text) {
 }
 
 /**
+ * Just the copy -> check icon with CopyBtn's swap animation, for places where
+ * the copy itself happens elsewhere (e.g. a whole menu row that fetches the
+ * text from the server first). Flip `copied` true when the copy lands and
+ * back to false to reset - the swap plays in both directions.
+ * @param {{ copied: boolean; className?: string }} props
+ */
+export function AnimatedCopyIcon({ copied, className = "size-4" }) {
+  const iconRef = useRef(null);
+  const timelineRef = useRef(null);
+  // The icon actually on screen - it only flips at the midpoint of the swap
+  // (scaled to 0), so a ref tracks it without re-running the effect mid-swap.
+  const shownRef = useRef(copied);
+  const [shownCopied, setShownCopied] = useState(copied);
+
+  useEffect(() => {
+    if (!iconRef.current) return;
+    timelineRef.current?.kill();
+    if (copied === shownRef.current) {
+      // Flipped back before the swap's midpoint - just settle the icon.
+      gsap.set(iconRef.current, { scale: 1, rotation: 0 });
+      return;
+    }
+    timelineRef.current = animateIconSwap(iconRef.current, copied ? -180 : 180, () => {
+      shownRef.current = copied;
+      setShownCopied(copied);
+    });
+  }, [copied]);
+
+  useEffect(() => () => timelineRef.current?.kill(), []);
+
+  return (
+    <span ref={iconRef} className={cn("inline-flex shrink-0", className)} aria-hidden="true">
+      {shownCopied ? <Check className="h-full w-full" /> : <Copy className="h-full w-full" />}
+    </span>
+  );
+}
+
+/**
  * @param {{
  *   value: string;
  *   size?: "sm" | "md";
