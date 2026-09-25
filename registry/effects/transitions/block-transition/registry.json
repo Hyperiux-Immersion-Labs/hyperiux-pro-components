@@ -98,5 +98,7 @@
       "path": "index.tsx",
       "target": "src/components/effects/block-transition/index.tsx"
     }
-  ]
+  ],
+  "importPath": "@/components/effects/block-transition",
+  "target": "src/components/effects/block-transition"
 }

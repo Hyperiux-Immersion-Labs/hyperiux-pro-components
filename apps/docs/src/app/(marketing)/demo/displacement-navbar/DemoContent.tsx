@@ -19,7 +19,7 @@ const DEMO_CHILDREN = (
         text="Read Article"
         href="/effects/navigation/displacement-navbar"
         staggerStep={0.01}
-        btnClassName="w-[14vw] max-md:w-[60vw] text-white"
+        btnClassName="w-fit text-white max-md:w-[60vw]"
         bgClassName="bg-[#0D47A1] rounded-full"
         hoverColor="#ffffff"
       />
@@ -27,7 +27,7 @@ const DEMO_CHILDREN = (
         text="Explore All Effects"
         href="/effects"
         staggerStep={0.01}
-        btnClassName="w-[15vw] max-md:w-[60vw] text-white "
+        btnClassName="w-fit text-white max-md:w-[60vw] "
         bgClassName="bg-[#0D47A1] rounded-full "
         hoverColor="#ffffff"
       />

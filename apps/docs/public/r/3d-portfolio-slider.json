@@ -2,7 +2,7 @@
   "name": "3d-portfolio-slider",
   "type": "registry:component",
   "title": "3D Portfolio Slider",
-  "description": "Infinite scroll slider with a Three.ts WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
+  "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
   "dependencies": [
     "gsap",
     "lenis",

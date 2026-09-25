@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";

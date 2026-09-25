@@ -1,8 +1,8 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
-import { TransitionRouter } from 'next-transition-router';
+import { TransitionRouter } from "next-transition-router";
 import { useEffect, useRef } from "react";
-import gsap from 'gsap';
+import gsap from "gsap";
 function prefersReducedMotion() {
     if (typeof window === "undefined")
         return false;

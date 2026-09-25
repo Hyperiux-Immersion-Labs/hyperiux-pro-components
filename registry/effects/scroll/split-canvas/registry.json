@@ -83,7 +83,7 @@
       "name": "canvasSize",
       "type": "number",
       "default": 599,
-      "description": "Size (px) of the central transitioning canvas panel on desktop — mobile/tablet sizes scale proportionally.",
+      "description": "Size (px) of the central transitioning canvas panel on desktop - mobile/tablet sizes scale proportionally.",
       "remixer": {
         "control": "range",
         "group": "shader",

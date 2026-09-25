@@ -11,5 +11,8 @@
     "transitions",
     "hyperiux"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "gsap": "*",
+    "next-transition-router": "*"
+  }
 }

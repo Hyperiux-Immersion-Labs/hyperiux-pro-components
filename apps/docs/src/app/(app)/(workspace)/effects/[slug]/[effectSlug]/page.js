@@ -48,7 +48,7 @@ function redactLockedBody(body, isLocked) {
 
   return body.map((block) => {
     if (block?._type === "effectCodeBlock") {
-      const { code, ...rest } = block;
+      const { code, tsxCode, ...rest } = block;
       return rest;
     }
 

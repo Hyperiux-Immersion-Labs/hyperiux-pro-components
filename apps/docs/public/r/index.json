@@ -835,7 +835,10 @@
       "categories": [
         "transitions"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "gsap",
+        "next-transition-router"
+      ],
       "registryDependencies": [],
       "exportName": "PixelTransition",
       "exportKind": "default",

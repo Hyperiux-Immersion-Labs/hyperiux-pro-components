@@ -24,7 +24,7 @@
     ],
     "type": "registry:component",
     "title": "3D Portfolio Slider",
-    "description": "Infinite scroll slider with a Three.ts WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
+    "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
     "category": "webgl",
     "categories": [
       "webgl",
@@ -1433,6 +1433,8 @@
         "target": "src/components/effects/block-transition/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/block-transition",
+    "target": "src/components/effects/block-transition",
     "registryPath": "registry/effects/transitions/block-transition/registry.json"
   },
   {
@@ -3978,7 +3980,7 @@
     "version": "1.0.1",
     "type": "registry:component",
     "title": "Curved Plane",
-    "description": "Three.ts WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
+    "description": "Three.js WebGL horizontal image carousel with a custom GLSL shader that curves the plane edges on drag and scroll. Images fade toward the edges and deform proportionally to interaction velocity. Supports drag, touch, scroll, and inertia momentum.",
     "category": "webgl",
     "dependencies": [
       "three"
@@ -4829,7 +4831,7 @@
     ],
     "type": "registry:component",
     "title": "Displacement Navbar",
-    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it — GSAP-driven with a full reduced-motion fallback.",
+    "description": "A navbar shelf revealed by displacing the page beneath it, not overlaying it - GSAP-driven with a full reduced-motion fallback.",
     "category": "navigation",
     "dependencies": [
       "gsap"
@@ -5990,14 +5992,6 @@
   {
     "name": "dotted-trail",
     "version": "1.0.0",
-    "changelog": [
-      {
-        "version": "1.0.0",
-        "date": "2026-09-21",
-        "summary": "Initial release: WebGL dotted grid with an SDF cursor trail, radial two-color blend, and remixer controls.",
-        "breaking": false
-      }
-    ],
     "type": "registry:component",
     "title": "Dotted Trail",
     "description": "Interactive dotted grid with a soft two-color cursor trail",
@@ -6006,16 +6000,284 @@
     "registryDependencies": [],
     "previewUrl": "/demo/dotted-trail",
     "tier": "free",
-    "subfolder": true,
     "main": "index.tsx",
     "exportName": "DottedTrail",
     "exportKind": "default",
     "importPath": "@/components/effects/dotted-trail",
     "target": "src/components/effects/dotted-trail",
+    "props": [
+      {
+        "name": "colorA",
+        "type": "color",
+        "default": "#ff4fd8",
+        "description": "Core color at the cursor.",
+        "remixer": {
+          "control": "color",
+          "group": "trail",
+          "groupTitle": "Trail"
+        }
+      },
+      {
+        "name": "colorB",
+        "type": "color",
+        "default": "#8b5cf6",
+        "description": "Outer color the blend runs toward.",
+        "remixer": {
+          "control": "color",
+          "group": "trail",
+          "groupTitle": "Trail"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Page color behind the grid.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "dotColor",
+        "type": "color",
+        "default": "#d1d1d1",
+        "description": "Dot color at rest.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "activeDotColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Dot color under the trail.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "headRadius",
+        "type": "number",
+        "default": 80,
+        "description": "Radius of the blob at the cursor.",
+        "remixer": {
+          "control": "range",
+          "group": "trail",
+          "groupTitle": "Trail",
+          "min": 30,
+          "max": 200,
+          "step": 5
+        }
+      },
+      {
+        "name": "glowRadius",
+        "type": "number",
+        "default": 300,
+        "description": "Reach of the soft glow around the cursor.",
+        "remixer": {
+          "control": "range",
+          "group": "trail",
+          "groupTitle": "Trail",
+          "min": 80,
+          "max": 600,
+          "step": 10
+        }
+      },
+      {
+        "name": "followSpeed",
+        "type": "number",
+        "default": 0.22,
+        "description": "How quickly the trail chases the cursor.",
+        "remixer": {
+          "control": "range",
+          "group": "trail",
+          "groupTitle": "Trail",
+          "min": 0.02,
+          "max": 1,
+          "step": 0.02
+        }
+      },
+      {
+        "name": "trailLength",
+        "type": "number",
+        "default": 18,
+        "description": "How many nodes the tail trails behind.",
+        "remixer": {
+          "control": "range",
+          "group": "trail",
+          "groupTitle": "Trail",
+          "min": 2,
+          "max": 48,
+          "step": 1
+        }
+      },
+      {
+        "name": "fadeOnIdle",
+        "type": "boolean",
+        "default": true,
+        "description": "Fade the cursor out when it rests.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "idle",
+          "groupTitle": "Idle"
+        }
+      },
+      {
+        "name": "idleDelay",
+        "type": "number",
+        "default": 100,
+        "description": "Stillness before the fade starts, ms.",
+        "remixer": {
+          "control": "range",
+          "group": "idle",
+          "groupTitle": "Idle",
+          "min": 0,
+          "max": 3000,
+          "step": 50
+        }
+      },
+      {
+        "name": "idleFade",
+        "type": "number",
+        "default": 1100,
+        "description": "How long the fade takes, ms.",
+        "remixer": {
+          "control": "range",
+          "group": "idle",
+          "groupTitle": "Idle",
+          "min": 100,
+          "max": 4000,
+          "step": 50
+        }
+      },
+      {
+        "name": "rimInner",
+        "type": "number",
+        "default": 2.1,
+        "description": "Where the blend starts, inside the shape.",
+        "remixer": {
+          "control": "range",
+          "group": "blend",
+          "groupTitle": "Blend",
+          "min": 0.2,
+          "max": 3.5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "rimOuter",
+        "type": "number",
+        "default": 1.5,
+        "description": "Where the blend finishes, past the edge.",
+        "remixer": {
+          "control": "range",
+          "group": "blend",
+          "groupTitle": "Blend",
+          "min": 0.1,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "edgeDesaturate",
+        "type": "number",
+        "default": 0.3,
+        "description": "Pulls the fading edge back toward colorA.",
+        "remixer": {
+          "control": "range",
+          "group": "blend",
+          "groupTitle": "Blend",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "edgeDesaturateSpan",
+        "type": "number",
+        "default": 2.1,
+        "description": "Band width that desaturation acts over.",
+        "remixer": {
+          "control": "range",
+          "group": "blend",
+          "groupTitle": "Blend",
+          "min": 0.2,
+          "max": 3.5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "tailTilt",
+        "type": "number",
+        "default": 0.18,
+        "description": "Extra drift toward colorB along the tail.",
+        "remixer": {
+          "control": "range",
+          "group": "blend",
+          "groupTitle": "Blend",
+          "min": 0,
+          "max": 1,
+          "step": 0.02
+        }
+      },
+      {
+        "name": "dotSpacing",
+        "type": "number",
+        "default": 34,
+        "description": "Distance between dots in the grid.",
+        "remixer": {
+          "control": "range",
+          "group": "grid",
+          "groupTitle": "Grid",
+          "min": 20,
+          "max": 80,
+          "step": 2
+        }
+      },
+      {
+        "name": "dotRadius",
+        "type": "number",
+        "default": 1.2,
+        "description": "Radius of an idle dot.",
+        "remixer": {
+          "control": "range",
+          "group": "grid",
+          "groupTitle": "Grid",
+          "min": 0.4,
+          "max": 4,
+          "step": 0.1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "blend",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "files": [
       {
         "path": "index.tsx",
         "target": "src/components/effects/dotted-trail/index.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-09-21",
+        "summary": "Initial release: WebGL dotted grid with an SDF cursor trail, radial two-color blend, and remixer controls.",
+        "breaking": false
       }
     ],
     "registryPath": "registry/effects/backgrounds/dotted-trail/registry.json"
@@ -6236,7 +6498,7 @@
         "name": "throwFriction",
         "type": "number",
         "default": 0.975,
-        "description": "Momentum decay rate per frame after a drag release — closer to 1 coasts longer.",
+        "description": "Momentum decay rate per frame after a drag release - closer to 1 coasts longer.",
         "remixer": {
           "control": "range",
           "group": "motion",
@@ -7454,7 +7716,7 @@
     ],
     "type": "registry:component",
     "title": "Fish Eye",
-    "description": "WebGPU fish-eye lens distortion on images using Three.ts TSL node materials with smooth cursor tracking",
+    "description": "WebGPU fish-eye lens distortion on images using Three.js TSL node materials with smooth cursor tracking",
     "category": "cursor",
     "dependencies": [
       "@react-three/drei",
@@ -8294,7 +8556,7 @@
     ],
     "type": "registry:component",
     "title": "Glitchy Text",
-    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers — two white and two yellow — out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
+    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers - two white and two yellow - out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
     "category": "text",
     "dependencies": [
       "gsap"
@@ -8346,6 +8608,8 @@
         "target": "src/components/effects/glitchy-text/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/glitchy-text",
+    "target": "src/components/effects/glitchy-text",
     "registryPath": "registry/effects/text/glitchy-text/registry.json"
   },
   {
@@ -9598,37 +9862,37 @@
         "name": "captionFadeDuration",
         "type": "number",
         "default": 0.25,
-        "description": "Code-only configuration for captionFadeDuration."
+        "description": "Fade-out duration in seconds for all text sections."
       },
       {
         "name": "captionRevealDuration",
         "type": "number",
         "default": 0.55,
-        "description": "Code-only configuration for captionRevealDuration."
+        "description": "Line-reveal duration in seconds for all text sections."
       },
       {
         "name": "captionLineStagger",
         "type": "number",
         "default": 0.07,
-        "description": "Code-only configuration for captionLineStagger."
+        "description": "Stagger between revealed lines across all text sections in seconds."
       },
       {
         "name": "title",
         "type": "string",
         "default": "GSAP Flip Card",
-        "description": "Code-only title."
+        "description": "Fallback title for items without a title."
       },
       {
         "name": "meta",
         "type": "string",
         "default": "Hyperiux Vault / GSAP Flip / React",
-        "description": "Code-only meta."
+        "description": "Fallback metadata for items without metadata."
       },
       {
         "name": "description",
         "type": "string",
         "default": "A pile of cards that fans into a hero and a rail. Tap any frame and the two trade places, same nodes, measured and tweened, never re-mounted.",
-        "description": "Code-only description."
+        "description": "Fallback description for items without a description."
       },
       {
         "name": "className",
@@ -9639,7 +9903,7 @@
       {
         "name": "items",
         "type": "GsapFlipCardItem[]",
-        "description": "Gallery images with optional IDs, alt text and captions; defaults to the built-in gallery."
+        "description": "Gallery images with optional IDs, alt text, titles, metadata, descriptions and captions; defaults to the built-in gallery."
       },
       {
         "name": "onClose",
@@ -14775,7 +15039,7 @@
         "name": "scrub",
         "type": "number",
         "default": 1,
-        "description": "GSAP ScrollTrigger scrub value on the main horizontal track — higher lags/smooths more, lower tracks scroll 1:1.",
+        "description": "GSAP ScrollTrigger scrub value on the main horizontal track - higher lags/smooths more, lower tracks scroll 1:1.",
         "remixer": {
           "control": "range",
           "group": "motion",
@@ -15937,7 +16201,10 @@
     "title": "Pixel Transition",
     "description": "Canvas 2D page transition that fills and clears a grid of pixels in a diagonal wave. Leave sweeps pixels up from the bottom-right; enter clears them from the top-left. Supports an optional content shift blur effect.",
     "category": "transitions",
-    "dependencies": [],
+    "dependencies": [
+      "gsap",
+      "next-transition-router"
+    ],
     "registryDependencies": [],
     "previewUrl": "/demo/pixel-transition",
     "tier": "pro",
@@ -16028,6 +16295,8 @@
         "target": "src/components/effects/pixel-transition/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/pixel-transition",
+    "target": "src/components/effects/pixel-transition",
     "registryPath": "registry/effects/transitions/pixel-transition/registry.json"
   },
   {
@@ -16487,6 +16756,8 @@
         "target": "src/components/effects/rectangular-text-reveal/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/rectangular-text-reveal",
+    "target": "src/components/effects/rectangular-text-reveal",
     "registryPath": "registry/effects/text/rectangular-text-reveal/registry.json"
   },
   {
@@ -17647,7 +17918,7 @@
         "name": "sectionHeight",
         "type": "number",
         "default": 400,
-        "description": "Total scroll-track height (vh) — controls how much scrolling the shuffle takes.",
+        "description": "Total scroll-track height (vh) - controls how much scrolling the shuffle takes.",
         "remixer": {
           "control": "range",
           "group": "motion",
@@ -18581,7 +18852,7 @@
         "name": "canvasSize",
         "type": "number",
         "default": 599,
-        "description": "Size (px) of the central transitioning canvas panel on desktop — mobile/tablet sizes scale proportionally.",
+        "description": "Size (px) of the central transitioning canvas panel on desktop - mobile/tablet sizes scale proportionally.",
         "remixer": {
           "control": "range",
           "group": "shader",
@@ -19452,7 +19723,7 @@
     ],
     "type": "registry:component",
     "title": "Strip Slider",
-    "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.ts shader materials and GSAP",
+    "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.js shader materials and GSAP",
     "category": "webgl",
     "dependencies": [
       "three"

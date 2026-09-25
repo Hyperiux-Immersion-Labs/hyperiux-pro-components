@@ -150,5 +150,7 @@
       "path": "index.tsx",
       "target": "src/components/effects/rectangular-text-reveal/index.tsx"
     }
-  ]
+  ],
+  "importPath": "@/components/effects/rectangular-text-reveal",
+  "target": "src/components/effects/rectangular-text-reveal"
 }

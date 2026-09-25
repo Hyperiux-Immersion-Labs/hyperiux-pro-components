@@ -1793,7 +1793,6 @@ function EnhancedPixelCube({
             luminanceThreshold={CUBE_BLOOM_THRESHOLD}
             luminanceSmoothing={CUBE_BLOOM_SMOOTHING}
             height={0}
-            layers={[1]}
           />
         </EffectComposer>
 

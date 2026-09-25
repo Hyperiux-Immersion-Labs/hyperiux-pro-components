@@ -2,7 +2,6 @@
 "use client";
 import { useSyncExternalStore } from "react";
 
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
@@ -1472,7 +1471,6 @@ const StripSlider = ({
 
  return (
  <div className="w-full h-screen bg-black">
- <LenisSmoothScroll />
  <StripSliderComp
  items={items}
  dispScale={dispScale}

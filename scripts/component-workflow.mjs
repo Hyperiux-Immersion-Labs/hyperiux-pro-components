@@ -1058,7 +1058,12 @@ function syncFreeMirror(plan, registryDir, options) {
   const destDir = path.join(plan.repoPath, "registry", "effects", registryJson.category, registryJson.name);
   fs.rmSync(destDir, { recursive: true, force: true });
   fs.mkdirSync(path.dirname(destDir), { recursive: true });
-  fs.cpSync(registryDir, destDir, { recursive: true });
+  // The free repo ships source + registry.json only (no npm tarball channel),
+  // so per-effect package.json files are intentionally not mirrored.
+  fs.cpSync(registryDir, destDir, {
+    recursive: true,
+    filter: (src) => path.basename(src) !== "package.json",
+  });
   runMirrorBuilds(plan.repoPath);
 }
 

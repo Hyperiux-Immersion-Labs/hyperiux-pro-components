@@ -1,7 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 import { useSyncExternalStore } from "react";
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 function usePrefersReducedMotion() {
@@ -1116,7 +1115,6 @@ const items = [
 const StripSlider = ({ dispScale = 1, cameraSway = 0.03, hideCentralStrip = false, imageSize = 1, }) => {
     const prefersReducedMotion = usePrefersReducedMotion();
     return (<div className="w-full h-screen bg-black">
- <LenisSmoothScroll />
  <StripSliderComp items={items} dispScale={dispScale} cameraSway={cameraSway} hideCentralStrip={hideCentralStrip} imageSize={imageSize}/>
 
  {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden">

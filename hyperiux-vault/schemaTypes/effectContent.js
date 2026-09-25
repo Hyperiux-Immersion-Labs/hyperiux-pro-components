@@ -538,6 +538,22 @@ export const effectContent = defineType({
       description: 'Path to the live demo page, e.g. /blur-text-reveal',
     }),
     defineField({
+      name: 'jsxCode',
+      title: 'Source Code (JSX)',
+      type: 'text',
+      rows: 20,
+      description:
+        'Full component source as JSX - copied by "Copy code > JSX" on the effect page. Paste codegen/{effectSlug}/index.jsx.',
+    }),
+    defineField({
+      name: 'tsxCode',
+      title: 'Source Code (TSX)',
+      type: 'text',
+      rows: 20,
+      description:
+        'Full component source as TSX - copied by "Copy code > TSX" on the effect page. Paste codegen/{effectSlug}/index.tsx.',
+    }),
+    defineField({
       name: 'body',
       title: 'Body',
       type: 'effectBody',

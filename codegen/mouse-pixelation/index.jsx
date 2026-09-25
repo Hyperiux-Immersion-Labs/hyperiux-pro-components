@@ -1284,7 +1284,7 @@ function EnhancedPixelCube({ notice = CUBE_DEFAULT_NOTICE_TEXT, colorOptions = C
         <PixelGrid mousePositionRef={mousePositionRef} mouseVelocityRef={mouseVelocityRef} trailStrengthRef={trailStrengthRef} gridSize={gridSize} mouseInteraction={mouseInteraction} lerp={lerp} gridEmbossing={gridEmbossing}/>
 
         <EffectComposer>
-          <Bloom intensity={CUBE_BLOOM_INTENSITY} luminanceThreshold={CUBE_BLOOM_THRESHOLD} luminanceSmoothing={CUBE_BLOOM_SMOOTHING} height={0} layers={[1]}/>
+          <Bloom intensity={CUBE_BLOOM_INTENSITY} luminanceThreshold={CUBE_BLOOM_THRESHOLD} luminanceSmoothing={CUBE_BLOOM_SMOOTHING} height={0}/>
         </EffectComposer>
 
         <DeformingCube mousePositionRef={mousePositionRef} mouseVelocityRef={mouseVelocityRef} trailStrengthRef={trailStrengthRef} colorOptions={colorOptions} mouseInteraction={mouseInteraction} lerp={lerp} cubeSize={cubeSize} gridEmbossing={gridEmbossing}/>

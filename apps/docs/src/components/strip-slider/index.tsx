@@ -1,7 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import { usePrefersReducedMotion } from "@/lib/motion";
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
@@ -1457,7 +1456,6 @@ const StripSlider = ({
 
  return (
  <div className="w-full h-screen bg-black">
- <LenisSmoothScroll />
  <StripSliderComp
  items={items}
  dispScale={dispScale}
