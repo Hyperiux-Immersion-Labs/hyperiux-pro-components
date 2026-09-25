@@ -21,6 +21,10 @@ function getSanityClient() {
     apiVersion: API_VERSION,
     useCdn: process.env.NODE_ENV === 'production',
     token: process.env.SANITY_API_TOKEN,
+    // Published documents only. With a token and this apiVersion the default
+    // perspective is "raw", which also returns drafts - any unpublished
+    // Studio edit then shows up as a duplicate effect card on the live site.
+    perspective: 'published',
   })
 }
 
