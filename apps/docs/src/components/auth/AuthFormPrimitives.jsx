@@ -43,11 +43,23 @@ export function isSessionExistsError(err) {
 // max-width (see SplitAuthLayout), not a viewport-relative column - vw units
 // would keep growing with screen width even though the card stops growing
 // past its cap.
-export function StepHeading({ title, subtitle }) {
+// `compact` sizes it for a modal (e.g. the effect page's sign-in modal)
+// instead of the full-page auth layout.
+export function StepHeading({ title, subtitle, compact = false }) {
+  const Heading = compact ? "h2" : "h1";
+
   return (
-    <div className="mb-8 space-y-2 max-[1025px]:mb-7 max-md:mb-10 max-md:space-y-3">
-      <h1 className="text-4xl font-semibold text-white max-[1025px]:text-[2rem] max-md:text-3xl">{title}</h1>
-      {subtitle && <p className="text-base text-white max-md:text-sm">{subtitle}</p>}
+    <div className={compact ? "mb-6 space-y-2" : "mb-8 space-y-2 max-[1025px]:mb-7 max-md:mb-10 max-md:space-y-3"}>
+      <Heading
+        className={
+          compact
+            ? "text-2xl font-semibold text-white max-md:text-xl"
+            : "text-4xl font-semibold text-white max-[1025px]:text-[2rem] max-md:text-3xl"
+        }
+      >
+        {title}
+      </Heading>
+      {subtitle && <p className={compact ? "text-sm text-white/70" : "text-base text-white max-md:text-sm"}>{subtitle}</p>}
     </div>
   );
 }
@@ -61,7 +73,10 @@ export function TextField({ id, label, type = "text", value, onChange, placehold
       <label htmlFor={id} className="block text-sm font-geist-mono font-medium tracking-wide text-white/80">
         {label}
       </label>
-      <div className="group relative w-full h-fit">
+      {/* The field's fill is on this wrapper, not the input, so the input can
+          stay fully transparent when the browser autofills it
+          (autofill-transparent in globals.css). */}
+      <div className="group relative w-full h-fit bg-white/5">
         <input
           id={id}
           name={id}
@@ -73,7 +88,7 @@ export function TextField({ id, label, type = "text", value, onChange, placehold
           required
           // text-base (16px), not smaller, on every breakpoint - anything
           // under 16px makes iOS Safari auto-zoom the page on focus.
-          className={`w-full border border-white/10 bg-white/5 py-3 text-base! text-white placeholder:text-white/30 outline-none transition ${
+          className={`autofill-transparent w-full border border-white/10 bg-transparent py-3 text-base! text-white placeholder:text-white/30 outline-none transition ${
             isPassword ? "pl-4 pr-12" : "px-4"
           }`}
         />

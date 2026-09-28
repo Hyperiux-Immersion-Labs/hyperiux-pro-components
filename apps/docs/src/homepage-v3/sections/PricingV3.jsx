@@ -19,7 +19,7 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-const PRICING = {
+export const PRICING = {
     USD: { symbol: "$", monthly: 20, yearly: 179 },
     INR: { symbol: "₹", monthly: 999, yearly: 8999 },
 };
@@ -33,7 +33,7 @@ const FREE_FEATURES = [
     "Code you own",
 ];
 
-const PRO_FEATURES = [
+export const PRO_FEATURES = [
     "All 150+ effects",
     "New effects added regularly",
     "Priority access to upcoming packs",
@@ -41,6 +41,17 @@ const PRO_FEATURES = [
     "Dependency, performance & reduced-motion notes per effect",
     "Code you own, commercial-friendly",
 ];
+
+// Templates come with Pro only on yearly billing (lib/template-access.js), so
+// this line only joins the Pro list while the Yearly toggle is on.
+export const PRO_YEARLY_FEATURE = {
+    text: "All Vault templates included, downloadable as ZIP",
+    // tag: "Yearly",
+};
+
+export function getProFeatures(isYearly) {
+    return isYearly ? [...PRO_FEATURES, PRO_YEARLY_FEATURE] : PRO_FEATURES;
+}
 
 const DIGITS = [...Array(10).keys()];
 
@@ -91,7 +102,7 @@ const PriceDigit = memo(function PriceDigit({ digit, visible = true, plan }) {
     );
 });
 
-function PriceDigits({ monthlyAmount, yearlyAmount, isYearly }) {
+export function PriceDigits({ monthlyAmount, yearlyAmount, isYearly }) {
     const monthlyDigits = String(monthlyAmount).split("");
     const yearlyDigits = String(yearlyAmount).split("");
     const leadCount = yearlyDigits.length - monthlyDigits.length;
@@ -137,20 +148,31 @@ function CheckSquare({ className = "", onDark = false }) {
     );
 }
 
-function FeatureList({ features, className = "", onDark = false }) {
+// `features` items are strings, or { text, tag } for a line with a small
+// highlighted label after it (e.g. the yearly-only templates perk).
+export function FeatureList({ features, className = "", onDark = false }) {
     return (
         <ul className={`flex flex-col gap-[1.2vw] max-[1025px]:gap-[2.5vw] max-md:gap-[3vw] max-sm:gap-[4.5vw] ${className}`}>
-            {features.map((feature) => (
-                <li key={feature} className="flex items-start gap-[1vw] max-[1025px]:gap-[2vw] max-md:gap-[2.5vw] max-sm:gap-[3.5vw]">
-                    <CheckSquare
-                        onDark={onDark}
-                        className="mt-[0.25vw] size-[1.1vw] max-[1025px]:mt-[0.6vw] max-[1025px]:size-[2.2vw] max-md:mt-[1.4vw] max-md:size-[2.4vw] max-sm:size-[4vw]"
-                    />
-                    <span className="text22 leading-[1.35] max-md:text-[2.2vw] max-sm:text-[4vw]">
-                        {feature}
-                    </span>
-                </li>
-            ))}
+            {features.map((feature) => {
+                const { text, tag } = typeof feature === "string" ? { text: feature } : feature;
+
+                return (
+                    <li key={text} className="flex items-start gap-[1vw] max-[1025px]:gap-[2vw] max-md:gap-[2.5vw] max-sm:gap-[3.5vw]">
+                        <CheckSquare
+                            onDark={onDark}
+                            className="mt-[0.25vw] size-[1.1vw] max-[1025px]:mt-[0.6vw] max-[1025px]:size-[2.2vw] max-md:mt-[1.4vw] max-md:size-[2.4vw] max-sm:size-[4vw]"
+                        />
+                        <span className="text22 leading-[1.35] max-md:text-[2.2vw] max-sm:text-[4vw]">
+                            {text}
+                            {tag && (
+                                <span className="ml-[0.6vw] whitespace-nowrap font-geist-mono text-[0.75em] uppercase tracking-wider text-primary max-[1025px]:ml-[1.2vw] max-sm:ml-[2vw]">
+                                    {tag}
+                                </span>
+                            )}
+                        </span>
+                    </li>
+                );
+            })}
         </ul>
     );
 }
@@ -160,7 +182,7 @@ function FeatureList({ features, className = "", onDark = false }) {
  * squares stutter in with a white/dark flicker - `flashClassName` picks the
  * flash tone that reads against the card it sits on.
  */
-function PixelSquares({ flashClassName }) {
+export function PixelSquares({ flashClassName }) {
     return (
         <span
             aria-hidden="true"
@@ -182,7 +204,7 @@ function PixelSquares({ flashClassName }) {
     );
 }
 
-function BillingToggle({ isYearly, onChange }) {
+export function BillingToggle({ isYearly, onChange }) {
     return (
         <div className="flex items-center gap-[1vw] text22 max-[1025px]:gap-[2vw] max-md:gap-[2.5vw] max-md:text-[2.2vw] font-mono! max-sm:gap-[3.5vw] max-sm:text-[4vw]">
             <button
@@ -327,7 +349,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
             </div>
 
             {/* CARDS */}
-            <div className="mt-[1.5vw] w-[75%] fadeup mx-auto flex items-stretch max-[1025px]:mt-[4vw] max-[1025px]:w-[90%] max-[1025px]:flex-col-reverse max-[1025px]:gap-[5vw] max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]" id="pricing-cards">
+            <div className="mt-[1.5vw] w-[75%] h-[54vw] max-[1025px]:h-fit fadeup mx-auto flex items-stretch max-[1025px]:mt-[4vw] max-[1025px]:w-[90%] max-[1025px]:flex-col-reverse max-[1025px]:gap-[5vw] max-md:mt-[5vw] max-md:flex-col-reverse max-md:gap-[6vw] max-sm:gap-[8vw]" id="pricing-cards">
                 {/* FREE */}
                 <div className="pricing-v3-card relative flex w-1/2 flex-col justify-between border border-background/15 px-[3vw] py-[3vw] max-[1025px]:w-full max-[1025px]:px-[4vw] max-[1025px]:py-[4.5vw] max-md:w-full max-md:px-[5vw] max-md:py-[6vw] max-sm:px-[6vw] max-sm:py-[8vw]">
                     <PixelSquares flashClassName="bg-background" />
@@ -354,7 +376,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
                         />
                     </div>
 
-                    <div className="mt-[3vw] pb-[2.5vw] w-fit max-[1025px]:mt-[5vw] max-md:mt-[6vw] max-sm:mt-[10vw] max-sm:w-full">
+                    <div className="mt-[3vw] pb-[2vw] w-fit max-[1025px]:mt-[5vw] max-md:mt-[6vw] max-sm:mt-[10vw] max-sm:w-full">
                         <ButtonV3
                             variant="outline"
                             href="/effects/free"
@@ -408,7 +430,7 @@ export default function PricingV3({ isIndia = false, auth = false }) {
                         </p>
 
                         <FeatureList
-                            features={PRO_FEATURES}
+                            features={getProFeatures(isYearly)}
                             onDark
                             className="mt-[2.5vw] max-[1025px]:mt-[4vw] max-md:mt-[5vw] max-sm:mt-[8vw]"
                         />

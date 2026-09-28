@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
@@ -256,6 +257,8 @@ export default async function EffectPage({ params }) {
   }
 
   const { userId } = await auth();
+  // Same currency rule as /pricing - the upgrade modal shows INR in India.
+  const isIndia = (await headers()).get("x-vercel-ip-country") === "IN";
   const effectTier = content.tier ?? effectMeta?.tier ?? "pro";
 
   // userPlan drives general "are you Pro" UI (upgrade CTAs etc.) independent
@@ -341,6 +344,7 @@ export default async function EffectPage({ params }) {
         isLocked={isLocked}
         userPlan={userPlan}
         searchEffects={searchEffectsWithInstallCounts}
+        isIndia={isIndia}
       />
     </>
   );

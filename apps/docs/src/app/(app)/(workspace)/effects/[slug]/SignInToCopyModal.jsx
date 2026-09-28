@@ -1,41 +1,71 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import SignInForm from "@/components/auth/SignInForm";
+import SignUpForm from "@/components/auth/SignUpForm";
 import { useCopyLimit } from "./useCopyLimit";
 
 // Shown instead of the Get Code dropdown (and any other copy action) while
 // the visitor is signed out. Must render inside CopyLimitProvider - it reads
 // the auth state and shares that provider's toast slot.
 //
-// Logging in happens on the /sign-in page, so the "you're logged in" nudge can't be fired from
-// here directly. A sessionStorage flag set on the way out is picked up once
-// the visitor is back on the effect page and signed in.
+// Signing in and creating an account both happen right here (the same
+// SignInForm / SignUpForm as the /sign-in and /sign-up pages), so the visitor
+// never leaves the effect. "Create an account" / "Sign in" switch the modal
+// between the two.
+//
+// While open, the URL carries ?auth=sign-in or ?auth=sign-up (replaceState,
+// so no extra Back-button entry) and an `auth_modal_view` dataLayer event is
+// pushed - both for analytics (GTM's History Change trigger / GA4 page views).
 
-const SIGN_IN_NUDGE_KEY = "hyperiux-sign-in-nudge";
+export const AUTH_MODAL_PARAM = "auth";
+export const AUTH_MODAL_MODES = ["sign-in", "sign-up"];
 
-function markSignInNudge() {
-  try {
-    window.sessionStorage.setItem(SIGN_IN_NUDGE_KEY, "1");
-  } catch {
-    // Storage blocked - they just won't see the nudge.
+function syncAuthUrl(mode) {
+  const url = new URL(window.location.href);
+  if ((url.searchParams.get(AUTH_MODAL_PARAM) || null) === mode) return;
+
+  if (mode) url.searchParams.set(AUTH_MODAL_PARAM, mode);
+  else url.searchParams.delete(AUTH_MODAL_PARAM);
+  window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+
+  if (mode) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "auth_modal_view",
+      auth_modal: mode,
+      page_path: `${url.pathname}${url.search}`,
+    });
   }
 }
 
-function takeSignInNudge() {
-  try {
-    const pending = window.sessionStorage.getItem(SIGN_IN_NUDGE_KEY) === "1";
-    window.sessionStorage.removeItem(SIGN_IN_NUDGE_KEY);
-    return pending;
-  } catch {
-    return false;
-  }
-}
-
-export default function SignInToCopyModal({ open, onClose, returnPath }) {
+/**
+ * @param {{
+ *   mode: "sign-in" | "sign-up" | null;  // null = closed
+ *   onModeChange: (mode: "sign-in" | "sign-up") => void;
+ *   onClose: () => void;
+ *   returnPath: string;
+ * }} props
+ */
+export default function SignInToCopyModal({ mode, onModeChange, onClose, returnPath }) {
   const { isLoaded, isSignedIn, showToast } = useCopyLimit();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const open = mode !== null;
+
+  // What's on screen. It keeps the last mode while the modal fades out, so the
+  // form doesn't vanish mid-fade (that collapsed the box to its padding).
+  const [shownMode, setShownMode] = useState(mode ?? "sign-in");
+  // Bumped on every open so each visit starts with a fresh, empty form.
+  const [formKey, setFormKey] = useState(0);
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open && mode !== shownMode) setShownMode(mode);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setFormKey((key) => key + 1);
+  }
 
   // SSR-safe mounted flag - gates the createPortal() below.
   useEffect(() => {
@@ -43,19 +73,50 @@ export default function SignInToCopyModal({ open, onClose, returnPath }) {
     setMounted(true);
   }, []);
 
-  // Back from sign-in (or signed in from another tab while this was open):
-  // close the modal and confirm with a nudge.
+  // Only clears a ?auth= this modal set (or was opened from) - otherwise the
+  // first run, while still closed, would wipe a deep link before the page
+  // gets to open the modal from it.
+  const urlSyncedRef = useRef(false);
   useEffect(() => {
-    if (!isLoaded || !isSignedIn) return;
-    const pending = takeSignInNudge();
-    if (!pending && !open) return;
-    if (open) onClose();
-    showToast({ title: "You're logged in", description: "You can copy code from the vault now." });
+    if (mode) urlSyncedRef.current = true;
+    else if (!urlSyncedRef.current) return;
+    syncAuthUrl(mode);
+  }, [mode]);
+
+  // Set once a form in this modal actually completes, so the "logged in"
+  // nudge isn't shown to someone who was already signed in.
+  const authCompletedRef = useRef(false);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, onClose]);
+
+  // Signed in while this was open (either form, or another tab) - or opened
+  // from an ?auth= link by someone already signed in: close the modal, and
+  // confirm with a nudge when the sign-in happened here.
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn || !open) return;
+    onClose();
+    if (authCompletedRef.current) {
+      authCompletedRef.current = false;
+      showToast({ title: "You're logged in", description: "You can copy code from the vault now." });
+    }
   }, [isLoaded, isSignedIn, open, onClose, showToast]);
 
   if (!mounted) return null;
 
-  const signInHref = `/sign-in?redirect_url=${encodeURIComponent(returnPath)}`;
+  const switchTo = (nextMode) => () => onModeChange(nextMode);
+  // Server components re-render with the new session (e.g. a Pro account's
+  // Pro effect unlocks); the isSignedIn effect above closes the modal.
+  const onAuthComplete = () => {
+    authCompletedRef.current = true;
+    router.refresh();
+  };
 
   return createPortal(
     <div
@@ -66,8 +127,8 @@ export default function SignInToCopyModal({ open, onClose, returnPath }) {
       <div
         role="dialog"
         aria-modal="true"
-        aria-labelledby="sign-in-to-copy-title"
-        className={`flex w-[35vw] max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-center  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${open ? "scale-100" : "scale-95"}`}
+        aria-label={shownMode === "sign-up" ? "Create a Hyperiux Vault account" : "Sign in to Hyperiux Vault"}
+        className={`flex w-[35vw] max-md:w-full max-[1025px]:w-[70%] flex-col gap-6 items-stretch max-h-[90vh] overflow-y-auto  border border-white/20 bg-[#0e0e0e] p-10 max-[1025px]:p-6 shadow-2xl transition-transform duration-300 relative ${open ? "scale-100" : "scale-95"}`}
         onClick={(event) => event.stopPropagation()}
       >
         <button
@@ -82,24 +143,24 @@ export default function SignInToCopyModal({ open, onClose, returnPath }) {
           </div>
         </button>
 
-        <h2 id="sign-in-to-copy-title" className="text-xl font-medium text-white">
-          Log in first
-        </h2>
-        <p className="text-sm text-white/60 text-center">
-          Create a free account or log in to copy code and install commands from the vault.
-        </p>
-
-        <div className="flex w-full max-w-80 flex-col items-stretch">
-          <Link
-            href={signInHref}
-            className="inline-flex items-center justify-center gap-1.5 bg-[#ff5f00] px-4 py-3 text-sm font-medium text-white hover:bg-[#e05500] transition-colors"
-            onClick={() => {
-              markSignInNudge();
-              onClose();
-            }}
-          >
-            Log in
-          </Link>
+        <div className="w-full">
+          {shownMode === "sign-up" ? (
+            <SignUpForm
+              key={`sign-up-${formKey}`}
+              compact
+              redirectUrl={returnPath}
+              onSignInClick={switchTo("sign-in")}
+              onComplete={onAuthComplete}
+            />
+          ) : (
+            <SignInForm
+              key={`sign-in-${formKey}`}
+              compact
+              redirectUrl={returnPath}
+              onSignUpClick={switchTo("sign-up")}
+              onComplete={onAuthComplete}
+            />
+          )}
         </div>
       </div>
     </div>,

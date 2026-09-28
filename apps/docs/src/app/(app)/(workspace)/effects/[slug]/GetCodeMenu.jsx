@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, FileCode2, LoaderCircle, LockKeyhole } from "lucide-react";
+import { buttonV3ClassName, ButtonV3Chrome } from "@/homepage-v3/components/ButtonV3";
 import { useCopyLimit } from "./useCopyLimit";
 
 // "Get code" dropdown beside Live Preview - the only way to take an effect's
@@ -13,8 +14,9 @@ import { useCopyLimit } from "./useCopyLimit";
 // by the CLI/MCP themselves.
 //
 // Signed out: the trigger opens the "log in first" modal instead of the
-// dropdown. Pro effect without Pro: every row is locked (no hover, no copy)
-// and the panel carries a single "Upgrade to Pro" link at the bottom.
+// dropdown. Pro effect without Pro: the panel still opens with every row
+// visible but locked, under an overlay with an "Upgrade to Pro" button that
+// opens the upgrade modal.
 //
 // Picking a row closes the panel straight away; the trigger itself then
 // reports the copy - spinner + "Copying ...", tick + "... copied", and back
@@ -109,7 +111,7 @@ function MenuItem({ children, trailing = null, onSelect, disabled = false, class
       role="menuitem"
       disabled={disabled}
       onClick={onSelect}
-      className={`group relative isolate flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-[0.95vw] leading-snug text-foreground outline-none max-[1025px]:text-[1.9vw] max-md:text-[3.8vw] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`group relative isolate flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left text-[0.95vw] leading-snug text-foreground outline-none max-[1025px]:text-[1.9vw] max-md:text-[3.8vw] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       {...props}
     >
       <span
@@ -134,6 +136,33 @@ function LockTrail({ locked = false }) {
   return locked ? <LockKeyhole className="size-4 text-[#ff5f00]" aria-hidden="true" /> : null;
 }
 
+// Covers the open panel on a Pro effect for accounts without Pro.
+function ProLockOverlay({ onUpgrade }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#1a1a1a]/75 px-6 text-center backdrop-blur-[3px]">
+      <LockKeyhole className="size-5 text-[#ff5f00]" aria-hidden="true" />
+      <p className="text-[0.95vw] leading-snug text-white/80 max-[1025px]:text-[1.9vw] max-md:text-[3.8vw]">
+        Pro effect - upgrade to copy or install it.
+      </p>
+      <div className="contents" onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
+        <button
+          type="button"
+          role="menuitem"
+          onClick={onUpgrade}
+          className={buttonV3ClassName({
+            variant: "orange",
+            className: "cursor-pointer outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+          })}
+        >
+          <ButtonV3Chrome label="Upgrade to Pro" hovered={hovered} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function GetCodeMenu({
   effectSlug,
   effectTitle,
@@ -142,8 +171,16 @@ export default function GetCodeMenu({
   className = "",
   triggerClassName = "",
 }) {
-  const { isLoaded, isSignedIn, isLocked: isLimitReached, applyUsage, requireSignIn, showToast, lockedCtaHref } =
-    useCopyLimit();
+  const {
+    isLoaded,
+    isSignedIn,
+    isLocked: isLimitReached,
+    applyUsage,
+    requireSignIn,
+    requireUpgrade,
+    showToast,
+    lockedCtaHref,
+  } = useCopyLimit();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState("menu"); // "menu" | "mcp"
   // null | { key, phase: "copying" | "copied" } - drives the trigger label.
@@ -288,13 +325,12 @@ export default function GetCodeMenu({
       close();
       requireSignIn();
     } else if (data.status === 403) {
-      showToast({
-        title: "Pro effect",
-        description: "Upgrade to Pro to copy this effect's code.",
-        ctaHref: "/pricing",
-        ctaLabel: "Upgrade to Pro",
-      });
-    } else if (data.status !== 429) {
+      requireUpgrade("pro-effect");
+    } else if (data.status === 429) {
+      // Free accounts out of copies get the upgrade offer; Pro accounts
+      // already saw the "limit reached" toast from applyUsage.
+      if (data.plan !== "pro") requireUpgrade("limit");
+    } else {
       showToast({ title: "Couldn't copy", description: data.error || "Something went wrong. Please try again." });
     }
   };
@@ -387,9 +423,17 @@ export default function GetCodeMenu({
             align === "left" ? "left-0" : "right-0"
           }`}
         >
+          {view === "menu" && codeLocked && (
+            <ProLockOverlay
+              onUpgrade={() => {
+                close();
+                requireUpgrade("pro-effect");
+              }}
+            />
+          )}
           {view === "menu" ? (
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 px-4 pt-2 pb-1 text-[0.95vw] text-white max-[1025px]:text-[1.6vw] max-md:text-[3.2vw]">
+            <div className="space-y-1" aria-hidden={codeLocked || undefined}>
+              <div className="flex items-center gap-2 px-3 pt-2 pb-1 text-[0.95vw] text-white max-[1025px]:text-[1.6vw] max-md:text-[3.2vw]">
                 Copy Code
                 {codeLocked && (
                   <span className="inline-flex items-center gap-1 normal-case tracking-normal text-[#ff5f00]">
@@ -452,18 +496,21 @@ export default function GetCodeMenu({
                 </span>
               </MenuItem>
 
-              {(codeLocked || codeLimited) && (
-                <div className="mt-1.5 flex items-center justify-between gap-3 border-t border-white/10 px-4 pt-3 pb-1.5 text-[0.85vw] text-white/60 max-[1025px]:text-[1.7vw] max-md:text-[3.4vw]">
-                  <span>{codeLocked ? "Pro effect - upgrade to copy or install it." : "You've reached today's copy limit."}</span>
-                  {(codeLocked || lockedCtaHref) && (
-                    <Link
-                      href="/pricing"
+              {codeLimited && (
+                <div className="mt-1.5 flex items-center justify-between gap-3 border-t border-white/10 px-3 pt-3 pb-1.5 text-[0.85vw] text-white/60 max-[1025px]:text-[1.7vw] max-md:text-[3.4vw]">
+                  <span>You&apos;ve reached today&apos;s copy limit.</span>
+                  {lockedCtaHref && (
+                    <button
+                      type="button"
                       role="menuitem"
-                      onClick={close}
-                      className="shrink-0 text-[#ff5f00] underline underline-offset-2 outline-none focus-visible:text-white"
+                      onClick={() => {
+                        close();
+                        requireUpgrade("limit");
+                      }}
+                      className="shrink-0 cursor-pointer text-[#ff5f00] underline underline-offset-2 outline-none focus-visible:text-white"
                     >
                       Upgrade to Pro
-                    </Link>
+                    </button>
                   )}
                 </div>
               )}

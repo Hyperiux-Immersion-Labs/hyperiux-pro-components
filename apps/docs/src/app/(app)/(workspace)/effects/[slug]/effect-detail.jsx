@@ -32,7 +32,8 @@ import { LockKeyhole } from "lucide-react";
 import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
 import { CopyLimitProvider, useCopyLimit } from "./useCopyLimit";
 import GetCodeMenu from "./GetCodeMenu";
-import SignInToCopyModal from "./SignInToCopyModal";
+import SignInToCopyModal, { AUTH_MODAL_MODES, AUTH_MODAL_PARAM } from "./SignInToCopyModal";
+import UpgradeToProModal from "./UpgradeToProModal";
 import ButtonV3 from "@/homepage-v3/components/ButtonV3";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 
@@ -192,6 +193,7 @@ export function EffectDetailContent({
   isLocked = false,
   userPlan = "free",
   searchEffects = [],
+  isIndia = false,
 }) {
   useFadeUp();
   useLineAnim();
@@ -199,8 +201,22 @@ export function EffectDetailContent({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [showSignInToCopyModal, setShowSignInToCopyModal] = useState(false);
-  const closeSignInToCopyModal = useCallback(() => setShowSignInToCopyModal(false), []);
+  // null while closed, otherwise which form the auth modal shows.
+  const [authModal, setAuthModal] = useState(null);
+  const closeAuthModal = useCallback(() => setAuthModal(null), []);
+
+  // ?auth=sign-in / ?auth=sign-up opens the modal on load (the modal writes
+  // that param while open, so the tracked URL is also a working deep link).
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get(AUTH_MODAL_PARAM);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (AUTH_MODAL_MODES.includes(requested)) setAuthModal(requested);
+  }, []);
+
+  // null while closed, otherwise why it opened ("pro-effect" | "limit").
+  const [upgradeReason, setUpgradeReason] = useState(null);
+  const openUpgradeModal = useCallback((reason) => setUpgradeReason(reason || "pro-effect"), []);
+  const closeUpgradeModal = useCallback(() => setUpgradeReason(null), []);
 
   const [videoReady, setVideoReady] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -433,7 +449,11 @@ export function EffectDetailContent({
     }) || "/assets/img/image01.webp";
 
   return (
-    <CopyLimitProvider effectSlug={slug} onRequireSignIn={() => setShowSignInToCopyModal(true)}>
+    <CopyLimitProvider
+      effectSlug={slug}
+      onRequireSignIn={() => setAuthModal("sign-in")}
+      onRequireUpgrade={openUpgradeModal}
+    >
       <div className="min-h-screen text-foreground">
           <Suspense fallback={<div className="h-12" />}>
             <VaultHeader effectName={pageTitle || safeEffect.title}
@@ -728,9 +748,16 @@ export function EffectDetailContent({
         </div>
 
       <SignInToCopyModal
-        open={showSignInToCopyModal}
-        onClose={closeSignInToCopyModal}
+        mode={authModal}
+        onModeChange={setAuthModal}
+        onClose={closeAuthModal}
         returnPath={pathname}
+      />
+      <UpgradeToProModal
+        open={upgradeReason !== null}
+        reason={upgradeReason ?? "pro-effect"}
+        onClose={closeUpgradeModal}
+        isIndia={isIndia}
       />
     </CopyLimitProvider>
   );

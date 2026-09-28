@@ -473,6 +473,21 @@ input:-webkit-autofill:active {
   transition: background-color 9999s ease-in-out 0s !important;
 }
 
+/* Opt-in fully transparent autofill (auth forms). Chrome forces its own
+   autofill background with !important, so it can't be recoloured - clipping
+   the background to the text hides it behind the white glyphs instead. The
+   field's fill lives on its wrapper, so the input itself can be transparent. */
+input.autofill-transparent:-webkit-autofill,
+input.autofill-transparent:-webkit-autofill:hover,
+input.autofill-transparent:-webkit-autofill:focus,
+input.autofill-transparent:-webkit-autofill:active {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
 .hyperiux-clerk input:-webkit-autofill,
 .hyperiux-clerk input:-webkit-autofill:hover,
 .hyperiux-clerk input:-webkit-autofill:active {

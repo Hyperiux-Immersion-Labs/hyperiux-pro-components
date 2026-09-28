@@ -6,6 +6,25 @@ import Link from "next/link";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { User } from "lucide-react";
 
+// Pages that only exist for a signed-in account - /dashboard/* is guarded by
+// proxy.js, /cli-auth sends visitors to sign-in. Everywhere else, signing out
+// keeps you on the page you were on.
+const SIGNED_IN_ONLY_PATHS = ["/dashboard", "/cli-auth"];
+
+function leaveAfterSignOut() {
+  const { pathname } = window.location;
+  const needsAccount = SIGNED_IN_ONLY_PATHS.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+
+  if (needsAccount) {
+    window.location.href = "/effects";
+  } else {
+    // Full reload so nothing rendered for the signed-in account stays on screen.
+    window.location.reload();
+  }
+}
+
 export default function ProfileDropdown({
   savedCount = 0,
   usage = null,
@@ -204,9 +223,7 @@ export default function ProfileDropdown({
             <div className="my-2 border-t border-white/10 w-[110%] translate-x-[-5%]" />
 
             <button
-              onClick={() => signOut(() => {
-                window.location.href = "/effects";
-              })}
+              onClick={() => signOut(leaveAfterSignOut)}
               className="group relative isolate w-full text-left px-4 py-3 transition text-red-400"
             >
               <span
