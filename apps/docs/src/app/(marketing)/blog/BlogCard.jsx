@@ -17,7 +17,7 @@ export default function BlogCard({ post, priority = false }) {
   return (
     <div className="fadeup group/card relative h-full w-full">
       <div className="flex h-full min-h-[32vw] flex-col gap-[1.2vw] bg-[#161616] p-[1.6vw] max-md:min-h-[45vh] max-[1025px]:min-h-[45vh]  max-[1025px]:gap-[3vw] max-md:gap-[5vw] max-md:p-[4vw] pb-9 max-md:pb-12">
-        <div className="h-[16vw] w-full shrink-0 overflow-hidden bg-[#202020] max-[1025px]:h-[32vw] max-md:h-[25vh]">
+        <div className="h-[16vw] w-full shrink-0 overflow-hidden bg-[#202020] max-[1025px]:h-[27vw] max-md:h-[25vh]">
           {post.coverImage?.url && (
             <Image
               src={post.coverImage.url}
