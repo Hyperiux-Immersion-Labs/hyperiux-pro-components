@@ -11,6 +11,7 @@ const LenisSmoothScroll = ({
   smoothWheel = true,
   wheelMultiplier = 0.8,
   touchMultiplier = .8,
+  allowNestedScroll = false,
 }) => {
   const lenisRef = useRef(null);
 
@@ -44,6 +45,10 @@ const LenisSmoothScroll = ({
         // syncTouch:true,
         wheelMultiplier: wheelMultiplier,
         touchMultiplier: touchMultiplier,
+        // Nested overflow areas (e.g. code blocks) scroll natively while they
+        // have room in the wheel direction, then hand off to Lenis for the
+        // page - unlike data-lenis-prevent, which traps the wheel inside them.
+        allowNestedScroll: allowNestedScroll,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       }}
       ref={lenisRef}

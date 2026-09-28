@@ -87,7 +87,7 @@ export default async function BlogPostPage({ params }) {
       <BlogPostingJsonLd post={postWithAuthor} url={url} />
       {faqs.length > 0 && <FAQJSONLD faqs={faqs} />}
       <NavbarV3 effects={effects} />
-      <LenisSmoothScroll />
+      <LenisSmoothScroll allowNestedScroll />
 
       <div className="px-[4vw] py-[8vw] max-[1025px]:px-[5vw] max-[1025px]:py-[10vh] max-md:px-[7vw] max-md:py-[26vw]">
         <article className="blog-article text-white">

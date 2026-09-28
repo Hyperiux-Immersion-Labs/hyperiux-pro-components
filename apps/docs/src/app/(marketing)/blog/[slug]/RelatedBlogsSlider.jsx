@@ -5,6 +5,8 @@ import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 import { useFadeIn } from "@/components/Animations/gsapAnimations";
 import LineWipe from "@/components/Animations/LineWipe";
 
+const RELATED_BLOGS_HEADING_LINE_STYLE = { lineHeight: "1.5" };
+
 function SliderButton({ direction, disabled, onClick, activeOrange = false }) {
   const isNext = direction === "next";
 
@@ -158,10 +160,13 @@ export default function RelatedBlogsSlider({ posts = [] }) {
   return (
     <section ref={sectionRef} className="relative mt-[10vw] flex flex-col gap-[3vw] max-[1025px]:mt-[12vw] max-[1025px]:gap-[5vw] max-md:mt-[16vw] max-md:gap-[8vw]">
       <div className="flex items-center justify-between gap-5 max-[1025px]:items-end">
-        <LineWipe>
-        <h2 className="font-neue-haas text80 font-medium leading-none text-white max-[1025px]:text-[7vw] max-md:text-[10vw]">
-          Related Blogs
-        </h2>
+        <LineWipe lineStyle={RELATED_BLOGS_HEADING_LINE_STYLE}>
+          <h2
+            className="font-neue-haas text80 font-medium text-white max-[1025px]:text-[7vw] max-md:text-[10vw]"
+            style={RELATED_BLOGS_HEADING_LINE_STYLE}
+          >
+            Related Blogs
+          </h2>
         </LineWipe>
 
         {showControls && (

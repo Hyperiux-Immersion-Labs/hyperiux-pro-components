@@ -31,11 +31,11 @@ function FeaturedBlogContent({ featuredPost }) {
     <section ref={sectionRef} className="space-y-[8vw] max-md:px-[7vw] max-md:mt-[6vw]">
       <div className="space-y-[2vw]">
         <LineWipe>
-          <h2 className="t96 max-[1025px]:text-[6.5vw] font-neue-haas text-center max-md:text-[9.5vw]">Our Latest Blog</h2>
+          <h2 className="t96 max-[1025px]:text-[6.5vw] font-neue-haas text-center max-md:text-[9.5vw]">Latest From The Vault</h2>
         </LineWipe>
         <LineWipe delay={0.5}>
           <p className="text24 max-[1025px]:text-[3vw] text-center text-white font-geist max-md:mt-[4vw] max-md:text-[2.4vw] max-sm:text-[4vw]">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            Fresh notes on the effects, systems, and decisions behind Hyperiux Vault.
           </p>
         </LineWipe>
       </div>

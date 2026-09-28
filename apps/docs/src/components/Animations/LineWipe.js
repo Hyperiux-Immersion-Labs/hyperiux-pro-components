@@ -40,6 +40,7 @@ export default function LineWipe({
   accent = ACCENT,
   lit = LIT,
   animationKey = "",
+  lineStyle = null,
 }) {
   const containerRef = useRef(null);
   const splitRefs = useRef([]);
@@ -126,6 +127,7 @@ export default function LineWipe({
       // each line - words on a line sweep together because they share it, and
       // the position is driven by `calc((100 - progress) * 1%)`.
       allLines.forEach((line) => {
+        if (lineStyle) Object.assign(line.style, lineStyle);
         line.style.setProperty("--color-final", lit);
         line.style.backgroundImage =
           `linear-gradient(90deg, var(--color-final) 0%, var(--color-final) 30%, ${accent} 40%, transparent 50%, transparent 60%, transparent 100%)`;
@@ -238,7 +240,7 @@ export default function LineWipe({
         gsap.set(container, { clearProps: "visibility,opacity,transform" });
       }
     };
-  }, [animateOnScroll, delay, duration, stagger, start, accent, lit, animationKey]);
+  }, [animateOnScroll, delay, duration, stagger, start, accent, lit, animationKey, lineStyle]);
 
   const child =
     React.Children.count(children) === 1
