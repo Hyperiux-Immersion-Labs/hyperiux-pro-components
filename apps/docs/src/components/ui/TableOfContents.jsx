@@ -29,6 +29,13 @@ export function TableOfContents({
   // Effects/docs reveal the widget only while you're inside the article; the
   // blog rail keeps it mounted for the whole column.
   alwaysVisible = false,
+  // Fixed height for the flyout panel (any CSS length, e.g. "45vh"). The
+  // list scrolls inside it. Unset keeps the panel sized to its content,
+  // capped at 60vh.
+  panelHeight,
+  // Titles longer than this many characters are cut with an ellipsis (the
+  // full title stays on hover). Unset shows titles in full.
+  maxTitleLength,
 }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
@@ -271,6 +278,11 @@ export function TableOfContents({
 
   const isLeft = side === "left";
 
+  const displayTitle = (text) =>
+    maxTitleLength && text.length > maxTitleLength
+      ? `${text.slice(0, maxTitleLength).trimEnd()}…`
+      : text;
+
   return (
     <div className="group relative flex items-center gap-4">
       <span
@@ -279,11 +291,12 @@ export function TableOfContents({
       />
 
       <div
-        className={`pointer-events-none absolute top-1/2 w-[18vw] -translate-y-1/2 bg-[#161616] p-2 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden ${isLeft ? "left-[calc(100%+1rem)]" : "right-[calc(100%+1rem)]"
+        className={`pointer-events-none absolute top-1/2 w-[18vw] -translate-y-1/2 bg-[#161616] p-2 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 overflow-hidden ${panelHeight ? "flex flex-col" : "max-h-[60vh]"} ${isLeft ? "left-[calc(100%+1rem)]" : "right-[calc(100%+1rem)]"
           }`}
+        style={panelHeight ? { height: panelHeight } : undefined}
       >
         <ul
-          className="flex flex-col gap-1 overflow-y-auto max-h-[calc(60vh-1rem)] toc"
+          className={`flex flex-col gap-1 overflow-y-auto toc ${panelHeight ? "min-h-0 flex-1" : "max-h-[calc(60vh-1rem)]"}`}
           onMouseLeave={() => setHoveredId(null)}
         >
           {items.map((item) => {
@@ -299,6 +312,7 @@ export function TableOfContents({
                   href={`#${item.id}`}
                   onMouseEnter={() => setHoveredId(item.id)}
                   className="group relative isolate block"
+                  title={displayTitle(item.text) !== item.text ? item.text : undefined}
                   onClick={(event) => onTocClick(event, item.id)}
                 >
                   <span
@@ -307,7 +321,7 @@ export function TableOfContents({
                       }`}
                   />
                   <span className="relative z-10 block px-3 py-2 text20 font-medium leading-tight text-white">
-                    {item.text}
+                    {displayTitle(item.text)}
                   </span>
                 </Link>
               </li>

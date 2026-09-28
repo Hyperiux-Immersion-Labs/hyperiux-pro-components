@@ -44,7 +44,7 @@ function FeaturedBlogContent({ featuredPost }) {
         {featuredPost.coverImage?.url && (
           <Link
             href={`/blog/${featuredPost.slug}`}
-            className="fadeup group block  shrink-0 h-[80vh] w-[55%] bg-[#1a1a1a] p-[1.8vw] max-[1025px]:h-[50vh] max-md:h-[40vh]  max-[1025px]:w-full max-md:p-[4vw]"
+            className="fadeup group block  shrink-0 h-[35vw] w-[53%] bg-[#1a1a1a] p-[1.6vw] max-[1025px]:h-[50vh] max-md:h-[40vh]  max-[1025px]:w-full max-md:p-[4vw]"
           >
             <div className="relative h-full w-full overflow-hidden bg-grey">
               <Image

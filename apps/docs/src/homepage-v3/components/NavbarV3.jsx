@@ -231,7 +231,7 @@ export default function NavbarV3({
             onFocusCapture={closeOnHover}
           >
             <HoverLinkV3
-              href="https://github.com/hyperiux"
+              href="https://github.com/Hyperiux-Immersion-Labs/hyperiux-components"
               target_blank
               text="Github"
             />

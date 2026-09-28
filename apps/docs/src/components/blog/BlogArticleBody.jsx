@@ -79,13 +79,15 @@ export default function BlogArticleBody({
 
           <hr className="h-0.5  w-[85%] border-0 bg-[#272727]" />
 
-          <div className="w-fit mt-[5vh]">
+          <div className="w-fit mt-[10vh]">
             <TableOfContents
               containerRef={contentRef}
               stopRef={stopRef}
               watchKey={slug}
               side="left"
               alwaysVisible
+              panelHeight="35vh"
+              maxTitleLength={25}
             />
           </div>
         </div>

@@ -28,7 +28,7 @@ const NAV_ROWS = [
   { type: "link", label: "Templates", href: "/templates" },
   { type: "section", key: "docs", label: "Docs" },
   { type: "link", label: "Pricing", href: "/pricing" },
-  { type: "link", label: "Github", href: "https://github.com/hyperiux" },
+  { type: "link", label: "Github", href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components" },
 ];
 
 function Accordion({ open, children }) {
