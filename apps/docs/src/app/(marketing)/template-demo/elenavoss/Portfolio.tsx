@@ -160,7 +160,7 @@ const Portfolio = () => {
     }
     else{
       gsap.to(".circle-clip", {
-        yPercent: -50,
+        yPercent: -30,
         ease:"none",
         scrollTrigger: {
           trigger: "#portfolio",
@@ -198,7 +198,7 @@ const Portfolio = () => {
     >
       <div
         ref={curveRef}
-        className="w-full h-[50vh]  absolute top-0 left-0 z-2 bg-linear-to-r from-[#F16B0D] to-[#E61416] circle-clip will-change-[clip-path]"
+        className="w-full h-[30vw] max-[1025px]:h-[60vw]  absolute top-0 left-0 z-2 bg-linear-to-r from-[#F16B0D] to-[#E61416] circle-clip will-change-[clip-path]"
       />
 
       <div className="w-screen h-screen sticky top-0 z-3 flex flex-col items-center justify-center px-[4vw] gap-[5vw] overflow-hidden bg-linear-to-r from-[#F16B0D] to-[#E61416] max-md:gap-[15vw] max-[1025px]:gap-12 max-[1025px]:px-[5vw]">

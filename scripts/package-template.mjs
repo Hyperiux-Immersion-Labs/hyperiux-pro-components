@@ -22,6 +22,7 @@ import path from "path";
 import fs from "fs/promises";
 import fssync from "fs";
 import archiver from "archiver";
+import { execFileSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +31,13 @@ const DOCS_ROOT = path.join(REPO_ROOT, "apps/docs");
 const SCAFFOLD_DIR = path.join(__dirname, "template-scaffold");
 const BUILD_ROOT = path.join(REPO_ROOT, "dist/template-build");
 const ZIP_ROOT = path.join(REPO_ROOT, "dist/template-zips");
+// Source .fig files live here, NOT under BUILD_ROOT - packageTemplate()
+// wipes each buildDir on every run (fs.rm below), so anything that needs to
+// survive re-runs has to live outside it. Not committed to git either
+// (dist/ is gitignored - these files are tens to hundreds of MB), so this is
+// the one stable place a template's .fig file is expected to already sit
+// before running template:update for it.
+const FIGMA_ROOT = path.join(REPO_ROOT, "dist/template-figma");
 const SCAFFOLDS_FILE = path.join(DOCS_ROOT, "src/lib/template-scaffolds.js");
 
 // Auto-loads BLOB_READ_WRITE_TOKEN (and anything else) from apps/docs's own
@@ -146,6 +154,7 @@ const TEMPLATES = {
     extraFiles: [],
     sourceRewrites: [],
     needsGlbLoader: false,
+    figmaFile: "ElenaVoss.fig",
   },
   lumera: {
     title: "Lumera - Luxury Real Estate Template",
@@ -167,6 +176,7 @@ const TEMPLATES = {
     extraFiles: [],
     sourceRewrites: [],
     needsGlbLoader: false,
+    figmaFile: "Lumera.fig",
   },
   "oris-dental": {
     title: "Oris Dental - Modern Dental Clinic Template",
@@ -220,6 +230,7 @@ const TEMPLATES = {
       },
     ],
     needsGlbLoader: false,
+    figmaFile: "OrisDental.fig",
   },
   kyntra: {
     title: "Kyntra - Home Service Booking App Landing Page",
@@ -252,6 +263,7 @@ const TEMPLATES = {
     extraFiles: [],
     sourceRewrites: [],
     needsGlbLoader: false,
+    figmaFile: "Kyntra.fig",
   },
 };
 
@@ -740,7 +752,10 @@ The 3D tooth model itself ships as a static asset at \`Code/public/assets/teeth-
   }
 
   if (!/\n## License\b/.test(result)) {
-    result = result.replace(/$/, `\n## License\n\nSee [\`LICENSE.md\`](./LICENSE.md).\n`);
+    // README.md now ships inside Code/ (see "What's in this download"
+    // above), one level below LICENSE.md at the download's top level -
+    // hence ../LICENSE.md rather than ./LICENSE.md.
+    result = result.replace(/$/, `\n## License\n\nSee [\`LICENSE.md\`](../LICENSE.md).\n`);
   }
 
   return result;
@@ -889,29 +904,41 @@ async function packageTemplate(slug) {
 
   console.log(`[${slug}] writing package.json / tsconfig.json ...`);
   await fs.writeFile(
-    path.join(buildDir, "package.json"),
+    path.join(codeDir, "package.json"),
     JSON.stringify(buildPackageJson(slug, manifest), null, 2) + "\n",
     "utf8"
   );
+  // package-lock.json next to package.json: npm resolves the full dependency
+  // tree (exact versions, tarball URLs, integrity hashes for every direct and
+  // transitive package) from the registry without downloading node_modules,
+  // so every buyer's `npm install` gets the exact tree this zip was tested
+  // against instead of whatever the ^ ranges resolve to on the day.
+  console.log(`[${slug}] generating package-lock.json (npm install --package-lock-only) ...`);
+  execFileSync(
+    "npm",
+    ["install", "--package-lock-only", "--ignore-scripts", "--no-audit", "--no-fund"],
+    { cwd: codeDir, stdio: "inherit" }
+  );
+
   await fs.writeFile(
-    path.join(buildDir, "tsconfig.json"),
+    path.join(codeDir, "tsconfig.json"),
     JSON.stringify(TSCONFIG, null, 2) + "\n",
     "utf8"
   );
 
   console.log(`[${slug}] writing next.config.mjs / postcss.config.mjs / .gitignore ...`);
   await fs.writeFile(
-    path.join(buildDir, "next.config.mjs"),
+    path.join(codeDir, "next.config.mjs"),
     await buildNextConfig(manifest),
     "utf8"
   );
   await fs.copyFile(
     path.join(SCAFFOLD_DIR, "postcss.config.mjs"),
-    path.join(buildDir, "postcss.config.mjs")
+    path.join(codeDir, "postcss.config.mjs")
   );
   await fs.copyFile(
     path.join(SCAFFOLD_DIR, ".gitignore"),
-    path.join(buildDir, ".gitignore")
+    path.join(codeDir, ".gitignore")
   );
 
   console.log(`[${slug}] writing src/app/layout.tsx / src/app/globals.css ...`);
@@ -937,9 +964,14 @@ async function packageTemplate(slug) {
     path.join(codeDir, "src/app/globals.css")
   );
 
-  console.log(`[${slug}] writing README.md / LICENSE.md ...`);
+  console.log(`[${slug}] writing README.md ...`);
   const sourceReadme = await fs.readFile(path.join(sourceDir, "README.md"), "utf8");
-  await fs.writeFile(path.join(buildDir, "README.md"), fixReadme(sourceReadme, slug), "utf8");
+  await fs.writeFile(path.join(codeDir, "README.md"), fixReadme(sourceReadme, slug), "utf8");
+
+  // LICENSE.md sits at the download's top level (alongside Code/ and Figma
+  // File/), not inside Code/ - it covers the whole download, not just the
+  // source code.
+  console.log(`[${slug}] writing LICENSE.md ...`);
   const licenseSource = await fs.readFile(
     path.join(SCAFFOLD_DIR, "LICENSE.md.template"),
     "utf8"
@@ -949,6 +981,19 @@ async function packageTemplate(slug) {
     licenseSource.replace("__TITLE__", manifest.title),
     "utf8"
   );
+
+  if (manifest.figmaFile) {
+    const figmaSource = path.join(FIGMA_ROOT, slug, manifest.figmaFile);
+    if (!fssync.existsSync(figmaSource)) {
+      throw new Error(
+        `[${slug}] figmaFile "${manifest.figmaFile}" not found at ${path.relative(REPO_ROOT, figmaSource)} - place the .fig export there before packaging.`
+      );
+    }
+    console.log(`[${slug}] copying Figma File/${manifest.figmaFile} ...`);
+    const figmaDir = path.join(buildDir, "Figma File");
+    await fs.mkdir(figmaDir, { recursive: true });
+    await fs.copyFile(figmaSource, path.join(figmaDir, manifest.figmaFile));
+  }
 
   console.log(`[${slug}] zipping ...`);
   await fs.mkdir(ZIP_ROOT, { recursive: true });

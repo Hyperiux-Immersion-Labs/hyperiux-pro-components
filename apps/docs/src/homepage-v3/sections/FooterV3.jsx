@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import useIsMobile from "@/hooks/useIsMobile";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -11,7 +11,6 @@ import Input from "@/components/animated-form/Input";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 import Image from "next/image";
 import LineReveal from "@/components/Animations/LineReveal";
-import SplitLine from "@/components/WebsiteComps/SplitLine";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import { shouldSkipRealtimeGPU } from "@/lib/audit";
 import ButtonV3 from "../components/ButtonV3";
@@ -80,9 +79,19 @@ function FooterBlockLink({ href, children }) {
       prefetch={false}
       target={isExternal ? "_blank" : "_self"}
       rel={isExternal ? "noopener noreferrer" : undefined}
-      className="group block overflow-hidden bg-transparent transition-colors duration-300 ease-in-out hover:duration-0 hover:bg-primary motion-reduce:transition-none"
+      className="group relative isolate block overflow-hidden"
     >
-      <span className="block py-[0.15vw] max-[1025px]:py-1 max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 group-hover:duration-0 motion-reduce:group-hover:translate-x-0 motion-reduce:transition-none">
+      {/* Orange block behind the label: snaps on, fades out over 150ms. The
+          40ms delay on the way in (label too) is what stops the flicker when
+          the cursor sweeps fast across the list - crossing into the next link
+          can graze the previous one for a single frame, which used to snap it
+          back to full orange and fade it out again. 40ms outlasts a graze and
+          still reads as instant for a real hover. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-primary opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-hover:duration-0 motion-reduce:transition-none"
+      />
+      <span className="block py-[0.15vw] max-[1025px]:py-1 max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 group-hover:duration-0 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0">
         {children}
       </span>
     </Link>
