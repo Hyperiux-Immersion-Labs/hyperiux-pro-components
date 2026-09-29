@@ -16,7 +16,6 @@ import {
   Legal,
   Github,
   Pricing,
-  Blog,
   Npm,
   Mcp,
   TemplateIcon
@@ -835,23 +834,6 @@ export function Sidebar({
               forceScrollToTop();
             }}
             onMouseEnter={() => setHoveredSidebarKey("pricing")}
-          />
-
-          <NavIconLink
-            label="Blog"
-            href="/blog"
-            icon={Blog}
-            isExpanded={isExpanded}
-            isActive={
-              hoveredSidebarKey
-                ? hoveredSidebarKey === "blog"
-                : pathname === "/blog" || pathname.startsWith("/blog/")
-            }
-            onClick={() => {
-              startNavigation("/blog");
-              forceScrollToTop();
-            }}
-            onMouseEnter={() => setHoveredSidebarKey("blog")}
           />
 
           <NavIconLink

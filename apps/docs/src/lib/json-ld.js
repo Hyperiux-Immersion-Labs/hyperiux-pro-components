@@ -296,33 +296,3 @@ export function FAQJSONLD({ faqs }) {
 
   return <JsonLdScript id="faq-jsonld" data={faqJSONLD} />;
 }
-
-export function BlogPostingJsonLd({ post, url }) {
-  const fullUrl = new URL(url, homepage).toString();
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "@id": `${fullUrl}#blogposting`,
-    mainEntityOfPage: { "@type": "WebPage", "@id": fullUrl },
-    headline: post.title,
-    description: post.seo?.description || post.summary,
-    image: post.coverImage?.url ? [post.coverImage.url] : undefined,
-    datePublished: post.publishedAt,
-    dateModified: post.updatedAt || post.publishedAt,
-    author: post.author?.name
-      ? { "@type": "Person", name: post.author.name }
-      : { "@type": "Organization", name: "Hyperiux" },
-    publisher: {
-      "@type": "Organization",
-      name: "Hyperiux",
-      logo: {
-        "@type": "ImageObject",
-        url: `${homepage}/${faviconPath}`,
-      },
-    },
-    keywords: post.tags?.length ? post.tags.join(", ") : undefined,
-  };
-
-  return <JsonLdScript id="blogposting-jsonld" data={jsonLd} />;
-}

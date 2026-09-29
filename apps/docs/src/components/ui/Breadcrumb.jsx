@@ -24,24 +24,10 @@ function itemsFromPathname(pathname) {
   ];
 }
 
-// Long slugs (blog titles especially) make the last crumb wrap the whole
-// nav. Opt in with `maxWords` to clip it to a few words plus an ellipsis.
-function trimToWords(label, maxWords) {
-  if (!maxWords) return label;
-
-  const words = label.split(/\s+/).filter(Boolean);
-
-  if (words.length <= maxWords) return label;
-
-  return `${words.slice(0, maxWords).join(" ")}....`;
-}
-
 /**
  * URL-driven breadcrumb. `/` is Home; each path segment is a crumb.
- *
- * @param {number} [maxWords] - clip the final crumb to this many words.
  */
-export function Breadcrumb({ className = "", lastItemClassName = "", maxWords }) {
+export function Breadcrumb({ className = "", lastItemClassName = "" }) {
   const pathname = usePathname();
   const items = itemsFromPathname(pathname);
 
@@ -67,7 +53,6 @@ export function Breadcrumb({ className = "", lastItemClassName = "", maxWords })
 
             {isLast ? (
               <span
-                title={item.label}
                 className={[
                   "capitalize text-primary text20",
                   lastItemClassName,
@@ -75,7 +60,7 @@ export function Breadcrumb({ className = "", lastItemClassName = "", maxWords })
                   .filter(Boolean)
                   .join(" ")}
               >
-                {trimToWords(item.label, maxWords)}
+                {item.label}
               </span>
             ) : (
               <Link

@@ -68,5 +68,5 @@ const BOOK_IMAGES = [
   "nature11",
   "nature12",
   "nature13",
-  "nature14",
+  "nature03",
 ];

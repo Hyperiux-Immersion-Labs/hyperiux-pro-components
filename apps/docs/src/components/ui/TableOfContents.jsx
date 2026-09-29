@@ -22,20 +22,6 @@ export function TableOfContents({
   stopRef,
   watchKey,
   hideNearFooter = false,
-  // Which way the flyout panel opens from the dashes. "right" (the default)
-  // opens it leftward for the effects/docs pages, which pin the widget to the
-  // right edge; the blog rail sits on the left and passes "left".
-  side = "right",
-  // Effects/docs reveal the widget only while you're inside the article; the
-  // blog rail keeps it mounted for the whole column.
-  alwaysVisible = false,
-  // Fixed height for the flyout panel (any CSS length, e.g. "45vh"). The
-  // list scrolls inside it. Unset keeps the panel sized to its content,
-  // capped at 60vh.
-  panelHeight,
-  // Titles longer than this many characters are cut with an ellipsis (the
-  // full title stays on hover). Unset shows titles in full.
-  maxTitleLength,
 }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
@@ -272,31 +258,18 @@ export function TableOfContents({
     };
   }, []);
 
-  if (items.length === 0 || (!alwaysVisible && (!isVisible || isFooterNearby))) {
-    return null;
-  }
-
-  const isLeft = side === "left";
-
-  const displayTitle = (text) =>
-    maxTitleLength && text.length > maxTitleLength
-      ? `${text.slice(0, maxTitleLength).trimEnd()}…`
-      : text;
+  if (items.length === 0 || !isVisible || isFooterNearby) return null;
 
   return (
     <div className="group relative flex items-center gap-4">
       <span
         aria-hidden="true"
-        className={`absolute top-1/2 h-full min-h-48 w-8 -translate-y-1/2 ${isLeft ? "left-full" : "right-full"}`}
+        className="absolute right-full top-1/2 h-full min-h-48 w-8 -translate-y-1/2"
       />
 
-      <div
-        className={`pointer-events-none absolute top-1/2 w-[18vw] -translate-y-1/2 bg-[#161616] p-2 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 overflow-hidden ${panelHeight ? "flex flex-col" : "max-h-[60vh]"} ${isLeft ? "left-[calc(100%+1rem)]" : "right-[calc(100%+1rem)]"
-          }`}
-        style={panelHeight ? { height: panelHeight } : undefined}
-      >
+      <div className="pointer-events-none absolute right-[calc(100%+1.5rem)] top-1/2 w-[18vw] -translate-y-1/2 bg-[#161616] p-2 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 max-h-[60vh] overflow-hidden">
         <ul
-          className={`flex flex-col gap-1 overflow-y-auto toc ${panelHeight ? "min-h-0 flex-1" : "max-h-[calc(60vh-1rem)]"}`}
+          className="overflow-y-auto max-h-[calc(60vh-1rem)] toc"
           onMouseLeave={() => setHoveredId(null)}
         >
           {items.map((item) => {
@@ -312,7 +285,6 @@ export function TableOfContents({
                   href={`#${item.id}`}
                   onMouseEnter={() => setHoveredId(item.id)}
                   className="group relative isolate block"
-                  title={displayTitle(item.text) !== item.text ? item.text : undefined}
                   onClick={(event) => onTocClick(event, item.id)}
                 >
                   <span
@@ -321,7 +293,7 @@ export function TableOfContents({
                       }`}
                   />
                   <span className="relative z-10 block px-3 py-2 text20 font-medium leading-tight text-white">
-                    {displayTitle(item.text)}
+                    {item.text}
                   </span>
                 </Link>
               </li>

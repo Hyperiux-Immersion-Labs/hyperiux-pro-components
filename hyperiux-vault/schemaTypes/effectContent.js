@@ -71,12 +71,10 @@ const effectImage = defineType({
   type: 'object',
   fields: [
     defineField({
-      name: 'image',
-      title: 'Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
+      name: 'url',
+      title: 'Image URL',
+      type: 'url',
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'alt',
@@ -92,13 +90,11 @@ const effectImage = defineType({
   preview: {
     select: {
       title: 'caption',
-      media: 'image',
-      subtitle: 'alt',
+      subtitle: 'url',
     },
-    prepare({title, media, subtitle}) {
+    prepare({title, subtitle}) {
       return {
         title: title || 'Image',
-        media,
         subtitle,
       }
     },
