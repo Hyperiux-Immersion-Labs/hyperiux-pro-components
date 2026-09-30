@@ -1139,7 +1139,8 @@ const InteractiveArrows = (props: Record<string, unknown>) => {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    const mobileQuery = window.matchMedia("(max-width: 767px)");
+    // Tablet and mobile get the "Open on desktop" disclaimer instead of the effect.
+    const mobileQuery = window.matchMedia("(max-width: 1025px)");
     const updateMobile = () => setIsMobile(mobileQuery.matches);
 
     updateMobile();

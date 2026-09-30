@@ -270,7 +270,6 @@ Note: `defaultChecked` was removed - all three toggles always start unchecked.
 
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `accentColor` | `#111111` | color | color | Accent color for focus, checks, and primary actions. |
 | `backgroundColor` | `#ffffff` | color | color | Page background color around the form. |
 | `textColor` | `#111111` | color | color | Text color for the form heading and field labels. |
 | `inputBackgroundColor` | `#ffffff` | color | color | Background color for inputs, textarea, and select controls. |

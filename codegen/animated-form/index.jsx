@@ -144,7 +144,7 @@ const Select = forwardRef(function Select({ id, label, options = [], error, clas
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 -translate-y-2 pointer-events-none"}
  `}>
- <div className="bg-white p-1 border border-gray-200 rounded-lg shadow-xl overflow-hidden">
+ <div data-select-dropdown="" className="bg-white p-1 border border-gray-200 rounded-lg shadow-xl overflow-hidden">
  {options.map((opt) => (<button key={opt.value} type="button" onClick={() => handleSelect(opt.value)} className={`
  w-full text-left px-5 py-3 text-sm transition-all rounded-lg
  hover:bg-gray-100
@@ -207,7 +207,7 @@ const PhoneInput = forwardRef(function PhoneInput({ id = "phone", label = "Phone
         onChange?.(`${selectedCountry.dial} ${nextNumber}`.trim());
     };
     return (<div ref={rootRef} className={joinClasses("w-full", wrapperClassName)}>
-      <div className={joinClasses("flex h-14 items-center rounded-full border bg-white transition-all", "border-gray-200 focus-within:border-gray-400", error && "border-red-400 focus-within:border-red-400", className)}>
+      <div data-phone-field="" data-invalid={error ? "true" : undefined} className={joinClasses("flex h-14 items-center rounded-full border bg-white transition-all", "border-gray-200 focus-within:border-gray-400", error && "border-red-400 focus-within:border-red-400", className)}>
         <div className="relative shrink-0">
           <button type="button" onClick={() => setOpen((current) => !current)} className={joinClasses("flex h-full cursor-pointer items-center gap-1 pl-4 pr-2 text-sm text-gray-700 transition-colors hover:text-gray-900", countryButtonClassName)} aria-expanded={open} aria-haspopup="listbox">
             <span className={joinClasses("text-base", flagClassName)}>
@@ -223,7 +223,7 @@ const PhoneInput = forwardRef(function PhoneInput({ id = "phone", label = "Phone
             </svg>
           </button>
 
-          {open && (<div role="listbox" className={joinClasses("absolute left-0 top-full z-50 mt-2 max-h-52 min-w-48 overflow-y-auto rounded-2xl border border-gray-200 bg-white py-1 shadow-lg", dropdownClassName)}>
+          {open && (<div role="listbox" data-phone-dropdown="" className={joinClasses("absolute left-0 top-full z-50 mt-2 max-h-52 min-w-48 overflow-y-auto rounded-2xl border border-gray-200 bg-white py-1 shadow-lg", dropdownClassName)}>
               {countries.map((country) => {
                 const isActive = selectedCountry.code === country.code;
                 return (<button key={`${country.code}-${country.dial}`} type="button" role="option" aria-selected={isActive} onClick={() => handleCountrySelect(country)} className={joinClasses("flex w-full cursor-pointer items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50", optionClassName, isActive && joinClasses("font-medium text-orange-500", activeOptionClassName))}>
@@ -245,7 +245,7 @@ const PhoneInput = forwardRef(function PhoneInput({ id = "phone", label = "Phone
 
         <span className={joinClasses("h-6 w-px shrink-0 bg-gray-200", dividerClassName)}/>
 
-        <input ref={ref} id={id} type="tel" value={numberPart} onChange={handleNumberChange} placeholder={placeholder ?? (label === false ? "" : label)} autoComplete="tel" className={joinClasses("h-full flex-1 rounded-r-full bg-transparent pl-4 pr-5 text-sm text-gray-800 outline-none placeholder:text-gray-400", inputClassName)} aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error` : undefined} {...rest}/>
+        <input ref={ref} id={id} data-phone-input="" type="tel" value={numberPart} onChange={handleNumberChange} placeholder={placeholder ?? (label === false ? "" : label)} autoComplete="tel" className={joinClasses("h-full flex-1 rounded-r-full bg-transparent pl-4 pr-5 text-sm text-gray-800 outline-none placeholder:text-gray-400", inputClassName)} aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error` : undefined} {...rest}/>
       </div>
 
       {error && (<p id={`${id}-error`} className={joinClasses("ml-4 mt-1 text-xs text-red-500", errorClassName)}>
@@ -350,7 +350,7 @@ function buildInitialValues(fields) {
     return values;
 }
 // component
-function ContactForm({ fields = [], onSubmit, schema, submitLabel = "Submit", loadingLabel = "Sending...", successMessage = " Form submitted successfully!", errorMessage = " Error sending message. Please try again.", accentColor = "#111111", textColor = "#111111", inputBackgroundColor = "#ffffff", fieldBorderColor = "#e5e7eb", inputRoundedness = 28, duration = 0.3, }) {
+function ContactForm({ fields = [], onSubmit, schema, submitLabel = "Submit", loadingLabel = "Sending...", successMessage = " Form submitted successfully!", errorMessage = " Error sending message. Please try again.", textColor = "#111111", inputBackgroundColor = "#ffffff", fieldBorderColor = "#e5e7eb", inputRoundedness = 28, duration = 0.3, }) {
     const [values, setValues] = useState(() => buildInitialValues(fields));
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
@@ -456,7 +456,6 @@ function ContactForm({ fields = [], onSubmit, schema, submitLabel = "Submit", lo
         }
     };
     return (<section className="h-full w-full" id={sectionId} style={{
-            "--form-accent": accentColor,
             "--form-text": textColor,
             "--form-input-bg": inputBackgroundColor,
             "--form-field-border": fieldBorderColor,
@@ -464,7 +463,7 @@ function ContactForm({ fields = [], onSubmit, schema, submitLabel = "Submit", lo
             "--form-duration": `${Math.max(0.05, Number(duration) || 0.3)}s`,
         }}>
  <style>{`
- #${sectionId} input,
+ #${sectionId} input:not([data-phone-input]),
  #${sectionId} textarea,
  #${sectionId} select,
  #${sectionId} [role="button"][aria-invalid],
@@ -475,12 +474,43 @@ function ContactForm({ fields = [], onSubmit, schema, submitLabel = "Submit", lo
    color: var(--form-text);
    transition-duration: var(--form-duration);
  }
+ #${sectionId} [data-phone-field] {
+   background-color: var(--form-input-bg);
+   border-color: var(--form-field-border);
+   border-radius: var(--form-input-radius);
+   color: var(--form-text);
+   transition-duration: var(--form-duration);
+ }
+ #${sectionId} [data-phone-field] [data-phone-input] {
+   background-color: transparent;
+   color: var(--form-text);
+ }
+ #${sectionId} [data-phone-field] [data-phone-input]::placeholder {
+   color: var(--form-text);
+   opacity: 1;
+ }
+ #${sectionId} [data-phone-dropdown],
+ #${sectionId} [data-select-dropdown] {
+   border-radius: var(--form-input-radius);
+ }
+ #${sectionId} [data-select-dropdown] > button {
+   border-radius: max(0px, calc(var(--form-input-radius) - 4px));
+ }
+ #${sectionId} [data-phone-field] > span {
+   background-color: var(--form-field-border);
+ }
+ #${sectionId} [data-phone-field]:focus-within {
+   border-color: var(--form-text);
+ }
+ #${sectionId} [data-phone-field][data-invalid="true"] {
+   border-color: #f87171;
+ }
  #${sectionId} input:focus,
  #${sectionId} textarea:focus,
  #${sectionId} button[id]:focus,
  #${sectionId} .group:focus-within input,
  #${sectionId} .group:focus-within textarea {
-   border-color: var(--form-accent);
+   border-color: var(--form-text);
  }
  #${sectionId} label span,
  #${sectionId} .text-gray-700,
@@ -491,14 +521,14 @@ function ContactForm({ fields = [], onSubmit, schema, submitLabel = "Submit", lo
    background-color: var(--form-input-bg);
  }
  #${sectionId} button[type="submit"] {
-   background-color: var(--form-accent);
+   background-color: #111111;
    border-radius: var(--form-input-radius);
    color: #ffffff;
    transition-duration: var(--form-duration);
  }
  #${sectionId} [role="checkbox"][aria-checked="true"] {
-   background-color: var(--form-accent);
-   border-color: var(--form-accent);
+   background-color: var(--form-text);
+   border-color: var(--form-text);
  }
  `}</style>
  <div className="w-full h-full">
@@ -602,10 +632,10 @@ const contactSchema = z.object({
 async function submitHandler(data) {
     console.log("Contact form submitted:", data);
 }
-export default function AnimatedForm({ accentColor = "#111111", backgroundColor = "#ffffff", textColor = "#111111", inputBackgroundColor = "#ffffff", fieldBorderColor = "#e5e7eb", inputRoundedness = 28, duration = 0.3, }) {
+export default function AnimatedForm({ backgroundColor = "#ffffff", textColor = "#111111", inputBackgroundColor = "#ffffff", fieldBorderColor = "#e5e7eb", inputRoundedness = 28, duration = 0.3, }) {
     return (<main className="w-full min-h-screen mx-auto py-20 max-[1025px]:pt-28 px-6" style={{ backgroundColor }}>
   <div className="w-[50%] max-[1025px]:w-[90%] max-md:w-[95%] mx-auto">  <h1 className="text-3xl mb-8" style={{ color: textColor }}>Get in touch</h1>
- <ContactForm fields={FIELDS} schema={contactSchema} onSubmit={submitHandler} submitLabel="Send Message" accentColor={accentColor} textColor={textColor} inputBackgroundColor={inputBackgroundColor} fieldBorderColor={fieldBorderColor} inputRoundedness={inputRoundedness} duration={duration}/>
+ <ContactForm fields={FIELDS} schema={contactSchema} onSubmit={submitHandler} submitLabel="Send Message" textColor={textColor} inputBackgroundColor={inputBackgroundColor} fieldBorderColor={fieldBorderColor} inputRoundedness={inputRoundedness} duration={duration}/>
  </div>
  </main>);
 }

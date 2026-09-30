@@ -263,7 +263,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
  }
  `}
  >
- <div className="bg-white p-1 border border-gray-200 rounded-lg shadow-xl overflow-hidden">
+ <div data-select-dropdown="" className="bg-white p-1 border border-gray-200 rounded-lg shadow-xl overflow-hidden">
  {options.map((opt) => (
  <button
  key={opt.value}
@@ -421,6 +421,8 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
   return (
     <div ref={rootRef} className={joinClasses("w-full", wrapperClassName)}>
       <div
+        data-phone-field=""
+        data-invalid={error ? "true" : undefined}
         className={joinClasses(
           "flex h-14 items-center rounded-full border bg-white transition-all",
           "border-gray-200 focus-within:border-gray-400",
@@ -470,6 +472,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
           {open && (
             <div
               role="listbox"
+              data-phone-dropdown=""
               className={joinClasses(
                 "absolute left-0 top-full z-50 mt-2 max-h-52 min-w-48 overflow-y-auto rounded-2xl border border-gray-200 bg-white py-1 shadow-lg",
                 dropdownClassName
@@ -516,6 +519,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         <input
           ref={ref}
           id={id}
+          data-phone-input=""
           type="tel"
           value={numberPart}
           onChange={handleNumberChange}
@@ -761,7 +765,6 @@ export interface ContactFormProps {
   loadingLabel?: string;
   successMessage?: string;
   errorMessage?: string;
-  accentColor?: string;
   textColor?: string;
   inputBackgroundColor?: string;
   fieldBorderColor?: string;
@@ -778,7 +781,6 @@ function ContactForm({
  loadingLabel ="Sending...",
  successMessage =" Form submitted successfully!",
  errorMessage =" Error sending message. Please try again.",
- accentColor ="#111111",
  textColor ="#111111",
  inputBackgroundColor ="#ffffff",
  fieldBorderColor ="#e5e7eb",
@@ -957,7 +959,6 @@ function ContactForm({
  className="h-full w-full"
  id={sectionId}
  style={{
- "--form-accent": accentColor,
  "--form-text": textColor,
  "--form-input-bg": inputBackgroundColor,
  "--form-field-border": fieldBorderColor,
@@ -966,7 +967,7 @@ function ContactForm({
  } as CSSProperties & Record<`--${string}`, string>}
  >
  <style>{`
- #${sectionId} input,
+ #${sectionId} input:not([data-phone-input]),
  #${sectionId} textarea,
  #${sectionId} select,
  #${sectionId} [role="button"][aria-invalid],
@@ -977,12 +978,43 @@ function ContactForm({
    color: var(--form-text);
    transition-duration: var(--form-duration);
  }
+ #${sectionId} [data-phone-field] {
+   background-color: var(--form-input-bg);
+   border-color: var(--form-field-border);
+   border-radius: var(--form-input-radius);
+   color: var(--form-text);
+   transition-duration: var(--form-duration);
+ }
+ #${sectionId} [data-phone-field] [data-phone-input] {
+   background-color: transparent;
+   color: var(--form-text);
+ }
+ #${sectionId} [data-phone-field] [data-phone-input]::placeholder {
+   color: var(--form-text);
+   opacity: 1;
+ }
+ #${sectionId} [data-phone-dropdown],
+ #${sectionId} [data-select-dropdown] {
+   border-radius: var(--form-input-radius);
+ }
+ #${sectionId} [data-select-dropdown] > button {
+   border-radius: max(0px, calc(var(--form-input-radius) - 4px));
+ }
+ #${sectionId} [data-phone-field] > span {
+   background-color: var(--form-field-border);
+ }
+ #${sectionId} [data-phone-field]:focus-within {
+   border-color: var(--form-text);
+ }
+ #${sectionId} [data-phone-field][data-invalid="true"] {
+   border-color: #f87171;
+ }
  #${sectionId} input:focus,
  #${sectionId} textarea:focus,
  #${sectionId} button[id]:focus,
  #${sectionId} .group:focus-within input,
  #${sectionId} .group:focus-within textarea {
-   border-color: var(--form-accent);
+   border-color: var(--form-text);
  }
  #${sectionId} label span,
  #${sectionId} .text-gray-700,
@@ -993,14 +1025,14 @@ function ContactForm({
    background-color: var(--form-input-bg);
  }
  #${sectionId} button[type="submit"] {
-   background-color: var(--form-accent);
+   background-color: #111111;
    border-radius: var(--form-input-radius);
    color: #ffffff;
    transition-duration: var(--form-duration);
  }
  #${sectionId} [role="checkbox"][aria-checked="true"] {
-   background-color: var(--form-accent);
-   border-color: var(--form-accent);
+   background-color: var(--form-text);
+   border-color: var(--form-text);
  }
  `}</style>
  <div className="w-full h-full">
@@ -1131,7 +1163,6 @@ async function submitHandler(data: Record<string, any>) {
 }
 
 export default function AnimatedForm({
- accentColor = "#111111",
  backgroundColor = "#ffffff",
  textColor = "#111111",
  inputBackgroundColor = "#ffffff",
@@ -1147,7 +1178,6 @@ export default function AnimatedForm({
  schema={contactSchema}
  onSubmit={submitHandler}
  submitLabel="Send Message"
- accentColor={accentColor}
  textColor={textColor}
  inputBackgroundColor={inputBackgroundColor}
  fieldBorderColor={fieldBorderColor}

@@ -271,14 +271,26 @@ const SPAWN_ANIMATION = 180;
 const TURN_CELLS = 2;
 const MOUSE_LERP = 0.09;
 
-const COLORS = [
- { bg:"#1a1a2e", text:"#ffffff" },
- { bg:"#c8f752", text:"#1a1a2e" },
- { bg:"#7D4E57", text:"#ffffff" },
- { bg:"#5c3d8f", text:"#ffffff" },
- { bg:"#2d2d2d", text:"#ffffff" },
- { bg:"#c3dfe0", text:"#1a1a2e" },
-];
+const DEFAULT_COLORS = ["#1a1a2e","#c8f752","#7D4E57","#5c3d8f","#2d2d2d","#c3dfe0"];
+const DEFAULT_TEXT_COLORS = ["#ffffff","#1a1a2e","#ffffff","#ffffff","#ffffff","#1a1a2e"];
+const HEX_COLOR_RE = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
+const MAX_COLORS = DEFAULT_COLORS.length;
+
+function normalizeHex(value?: string): string | null {
+ const token = value?.trim();
+ if (!token || !HEX_COLOR_RE.test(token)) return null;
+ return token.startsWith("#") ? token : `#${token}`;
+}
+
+// Dark text on light fills, light text on dark fills.
+function getReadableTextColor(hex: string): string {
+ const raw = hex.replace("#","");
+ const full = raw.length === 3 ? raw.split("").map((c) => c + c).join("") : raw;
+ const r = parseInt(full.slice(0, 2), 16);
+ const g = parseInt(full.slice(2, 4), 16);
+ const b = parseInt(full.slice(4, 6), 16);
+ return (r * 299 + g * 587 + b * 114) / 1000 > 150 ?"#1a1a2e" :"#ffffff";
+}
 
 interface TrailCellColor {
  bg: string;
@@ -307,6 +319,19 @@ interface CharacterTrailCompProps {
  trailLength?: number;
  fontSize?: number;
  textColor?: string;
+ colorCount?: number;
+ color1?: string;
+ color2?: string;
+ color3?: string;
+ color4?: string;
+ color5?: string;
+ color6?: string;
+ textColor1?: string;
+ textColor2?: string;
+ textColor3?: string;
+ textColor4?: string;
+ textColor5?: string;
+ textColor6?: string;
  fadeDuration?: number;
 }
 
@@ -316,6 +341,19 @@ function CharacterTrailComp({
  trailLength = 24,
  fontSize = 18,
  textColor,
+ colorCount = MAX_COLORS,
+ color1,
+ color2,
+ color3,
+ color4,
+ color5,
+ color6,
+ textColor1,
+ textColor2,
+ textColor3,
+ textColor4,
+ textColor5,
+ textColor6,
  fadeDuration = 0.8,
 }: CharacterTrailCompProps) {
  const [trail, setTrail] = useState<TrailCell[]>([]);
@@ -324,6 +362,20 @@ function CharacterTrailComp({
  const resolvedTrailLength = Math.max(0, Math.round(Number(trailLength) || 0));
  const resolvedFontSize = Math.max(0, Number(fontSize) || 0);
  const fadeDurationMs = Math.max(0, Number(fadeDuration) || 0) * 1000;
+ const palette = (() => {
+ // Each slot falls back to its default hex if left empty/invalid.
+ const bgs = [color1, color2, color3, color4, color5, color6];
+ const texts = [textColor1, textColor2, textColor3, textColor4, textColor5, textColor6];
+ const list = bgs.map((value, index) => {
+ const bg = normalizeHex(value) ?? DEFAULT_COLORS[index];
+ // Per-color text color, then the shared textColor, then an auto-contrast pick.
+ const text = normalizeHex(texts[index]) ?? normalizeHex(textColor) ?? getReadableTextColor(bg);
+ return { bg, text };
+ });
+ const count = Math.round(Number(colorCount) || MAX_COLORS);
+ return list.slice(0, Math.min(MAX_COLORS, Math.max(1, count)));
+ })();
+ const paletteKey = palette.map((entry) => `${entry.bg}/${entry.text}`).join("|");
 
  const lastCell = useRef<GridCell | null>(null);
  const activeAxis = useRef<TrailAxis | null>(null);
@@ -332,16 +384,13 @@ function CharacterTrailComp({
  const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
  const clearTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
  const fadingRef = useRef(false);
+ const trailCountRef = useRef(0);
  const mouseTarget = useRef<{x: number, y: number} | null>(null);
  const mouseFollower = useRef<{x: number, y: number} | null>(null);
 
  const getNextTrailCell = useCallback((col: number, row: number) => {
  const char = resolvedCharacters[charIndexRef.current % resolvedCharacters.length];
- const paletteColor = COLORS[colorIndexRef.current % COLORS.length];
- const color = {
- ...paletteColor,
- text: textColor || paletteColor.text,
- };
+ const color = palette[colorIndexRef.current % palette.length];
  charIndexRef.current++;
  colorIndexRef.current++;
 
@@ -353,7 +402,8 @@ function CharacterTrailComp({
  char,
  color,
  };
- }, [resolvedCharacters, textColor]);
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+ }, [resolvedCharacters, paletteKey]);
 
  const getLineCells = useCallback((from: GridCell, to: GridCell, axis: TrailAxis, limit: number = Infinity) => {
  const cells: GridCell[] = [];
@@ -387,6 +437,10 @@ function CharacterTrailComp({
  fadingRef.current = fading;
  }, [fading]);
 
+ useEffect(() => {
+ trailCountRef.current = trail.length;
+ }, [trail]);
+
  
  const updateTrailPosition = useCallback((mx: number, my: number) => {
  if (fadingRef.current) {
@@ -405,6 +459,12 @@ function CharacterTrailComp({
  idleTimer.current = setTimeout(() => {
  setFading(true);
  fadingRef.current = true;
+ // Each cell fades for half the duration, starting after its stagger
+ // delay (see render), so the last cell finishes at
+ // (count - 1) / count + 0.5 of the duration. Clearing any earlier would
+ // cut the tail off mid-fade.
+ const total = Math.max(trailCountRef.current, 1);
+ const fullFadeMs = fadeDurationMs * ((total - 1) / total + 0.5);
  clearTimer.current = setTimeout(() => {
  setTrail([]);
  setFading(false);
@@ -413,7 +473,7 @@ function CharacterTrailComp({
  colorIndexRef.current = 0;
  lastCell.current = null;
  activeAxis.current = null;
- }, fadeDurationMs);
+ }, fullFadeMs + 50);
  }, IDLE_TIMEOUT);
 
  const target = {

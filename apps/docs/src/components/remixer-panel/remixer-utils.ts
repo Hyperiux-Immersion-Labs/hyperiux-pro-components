@@ -51,6 +51,7 @@ export function getGroupsFromProps(props: RegistryProp[] = []): RemixerGroup[] {
         step: prop.remixer.step,
         options: prop.remixer.options,
         placeholder: prop.remixer.placeholder,
+        visibleWhen: prop.remixer.visibleWhen,
         docsOnly: prop.docsOnly,
         copyable: prop.copyable,
       }),
@@ -105,6 +106,17 @@ export function normalizeRemixerGroups(groups: RemixerGroup[] = []): RemixerGrou
       .filter(isRemixerEnabled)
       .map(normalizeRemixerControl),
   }));
+}
+
+export function isRemixerControlVisible(control: RemixerControl, values: RemixerValues = {}) {
+  const condition = control.visibleWhen;
+  if (!condition) return true;
+
+  const current = values[condition.name];
+  if (condition.eq !== undefined && !areRemixerValuesEqual(current, condition.eq)) return false;
+  if (condition.gte !== undefined && !(Number(current) >= condition.gte)) return false;
+  if (condition.lte !== undefined && !(Number(current) <= condition.lte)) return false;
+  return true;
 }
 
 function isRemixerEnabled(config: { enabled?: boolean; disabled?: boolean } = {}) {

@@ -35,7 +35,8 @@
       "remixer": {
         "control": "color",
         "group": "style",
-        "groupTitle": "Style"
+        "groupTitle": "Style",
+        "enabled": false
       }
     },
     {

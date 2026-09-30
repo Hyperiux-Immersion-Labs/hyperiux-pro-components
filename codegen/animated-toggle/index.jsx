@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 export const ChevronBird = ({ isActive = false, size = 14, strokeWidth = 10, prefersReducedMotion = false, duration = 0.32, className = "mt-[0.25vw]", }) => {
-    return (<div className={className}>
+    return (<div className={className} style={{ transitionDuration: prefersReducedMotion ? '0s' : `${duration}s` }}>
         <svg viewBox="0 0 100 100" width={size} height={size} fill="none" aria-hidden="true" style={{
             transform: isActive ? 'translateY(-25%)' : 'translateY(0%)',
             transition: prefersReducedMotion ? 'none' : `transform ${duration}s ease-in-out`,

@@ -85,7 +85,6 @@ function TestimonialComp({
     const mobileTitleRef = useRef<any>(null);
     const desktopImageRef = useRef<any>(null);
     const mobileImageRef = useRef<any>(null);
-    const imageRef = useRef<any>(null);
     const splitRef = useRef<any>(null);
     const prevCurrentRef = useRef<any>(null);
     const pendingDirectionRef = useRef<"next" | "prev">("next");
@@ -117,9 +116,9 @@ function TestimonialComp({
             splitRef.current = null;
         }
 
+        // Images fade in together with the quote, the rest of the meta follows.
+        const images = [desktopImageRef.current, mobileImageRef.current];
         const meta = [
-            desktopImageRef.current,
-            mobileImageRef.current,
             nameRef.current,
             titleRef.current,
             mobileNameRef.current,
@@ -134,7 +133,7 @@ function TestimonialComp({
         // Reduced-motion: skip SplitText / Y slides - opacity fade only.
         if (reduceMotionRef.current) {
             gsap.set([quoteRef.current, quoteMarkRef.current], { autoAlpha: 0 });
-            gsap.set(meta, { autoAlpha: 0 });
+            gsap.set([...images, ...meta], { autoAlpha: 0 });
 
             const tl = gsap.timeline({ onComplete: onDone });
             tl.to(quoteRef.current, {
@@ -149,6 +148,14 @@ function TestimonialComp({
                     ease: "power2.out",
                 },
                 "<"
+            ).to(
+                images,
+                {
+                    autoAlpha: 1,
+                    duration: 0.5,
+                    ease: "power2.out",
+                },
+                0
             ).to(
                 meta,
                 {
@@ -183,7 +190,7 @@ function TestimonialComp({
 
         gsap.set(lines, { yPercent: yFrom });
         gsap.set(quoteMarkRef.current, { autoAlpha: 0 });
-        gsap.set(meta, {
+        gsap.set([...images, ...meta], {
             autoAlpha: 0,
         });
 
@@ -206,6 +213,14 @@ function TestimonialComp({
             },
             "<"
         ).to(
+            images,
+            {
+                autoAlpha: 1,
+                duration: 0.85,
+                ease: "power2.out",
+            },
+            0
+        ).to(
             meta,
             {
                 autoAlpha: 1,
@@ -222,7 +237,8 @@ function TestimonialComp({
         return new Promise((resolve) => {
             const targets = [
                 quoteRef.current,
-                imageRef.current,
+                desktopImageRef.current,
+                mobileImageRef.current,
                 nameRef.current,
                 titleRef.current,
                 mobileNameRef.current,
@@ -316,9 +332,19 @@ function TestimonialComp({
     if (!testimonials.length || !displayItem) return null;
 
     return (
-        <section className="relative w-full min-h-screen max-md:min-h-screen bg-white flex flex-col justify-between max-md:justify-start overflow-hidden text-black pt-22 pb-5 max-[1025px]:pt-28 max-[1025px]:px-6 max-md:pt-24 max-md:px-2"
+        <section className="relative w-full min-h-screen max-md:min-h-screen bg-white flex flex-col justify-between max-md:justify-start overflow-hidden text-black pt-22 pb-5 max-[1025px]:pt-0 max-[1025px]:px-6 max-md:pt-0 max-md:px-2"
             style={{ backgroundColor: bgColor }}
         >
+            {/* Tablet + mobile: nav sits above the "Client Stories" header */}
+            {showNavigation && (
+                <NavigationButtons
+                    className="hidden max-[1025px]:flex max-[1025px]:mt-0 max-[1025px]:pb-5 max-[1025px]:w-full max-[1025px]:justify-center"
+                    onPrev={handlePrev}
+                    onNext={handleNext}
+                    isAnimating={isAnimating}
+                />
+            )}
+
             {/* Header */}
             <div className="flex items-start justify-between px-8 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
                 <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-[1025px]:w-full max-md:w-full max-md:justify-between">
@@ -398,15 +424,6 @@ function TestimonialComp({
                                         className="object-cover object-top grayscale"
                                     />
                                 </div>
-
-                                {showNavigation && (
-                                    <NavigationButtons
-                                        className="max-md:hidden"
-                                        onPrev={handlePrev}
-                                        onNext={handleNext}
-                                        isAnimating={isAnimating}
-                                    />
-                                )}
                             </div>
                             <div className="flex flex-col gap-1">
                                 <p ref={mobileNameRef} className="m-0 text-xl font-normal">

@@ -146,7 +146,7 @@ function useMousePosition(containerRef, lerp = 0.2) {
 }
 function VariableFontAndCursor({ children, containerRef, fontVariationMapping = {
     y: { name: "wght", min: 100, max: 900 },
-}, className = "", as: Tag = "span", transition = "transform 0.05s linear", transformOrigin = "bottom", skewXRange = { min: 0, max: -20 }, lerp = 0.2, }) {
+}, className = "", as: Tag = "span", transition = "transform 0.05s linear", transformOrigin = "bottom", skewXRange = { min: 0, max: -20 }, lerp = 0.2, color, }) {
     const { x, y, width, height, isDesktop } = useMousePosition(containerRef, lerp);
     let fontVariationSettings = '"wght" 400';
     let skewX = 0;
@@ -165,6 +165,7 @@ function VariableFontAndCursor({ children, containerRef, fontVariationMapping = 
             transition,
             transformOrigin,
             display: "inline-block",
+            ...(color ? { color } : {}),
         }}>
       {children}
     </Component>);
@@ -172,7 +173,7 @@ function VariableFontAndCursor({ children, containerRef, fontVariationMapping = 
 export default function CursorMove({ interClassName = "", containerClassName = "", backgroundClassName = "bg-zinc-950", paddingClassName = "p-24", showCrosshair = true, crosshairVariant = "solid", // "solid" | "dotted" | "dashed"
 crosshairClassName = "bg-white/20", crosshairDottedColor = "rgba(255,255,255,0.2)", crosshairDottedDotLength = 2, crosshairDottedGap = 10, crosshairDashedColor = "rgba(255,255,255,0.2)", crosshairDashedDashLength = 10, crosshairDashedGap = 10, crosshairVerticalThicknessClassName = "w-px", crosshairHorizontalThicknessClassName = "h-px", crosshairVerticalClassName = "", crosshairHorizontalClassName = "", showCursorDot = true, cursorDotClassName = "w-3 h-3 bg-orange-500 rounded-sm", cursorDotStyle = {}, text = "hello!", textWrapperClassName = "flex items-center justify-center w-full h-full", textClassName = "text-9xl max-[1025px]:text-6xl max-md:text-5xl text-orange-500 select-none leading-none", textAs = "span", fontVariationMapping = {
     y: { name: "wght", min: 100, max: 900 },
-}, variableTextTransition = "transform 0.05s linear", variableTextTransformOrigin = "bottom", skewXRange = { min: 0, max: -20 }, lerp = 0.2, showCoordinates = true, coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono", coordinatesTextClassName = "text-xs max-[1025px]:text-sm text-white/40 tabular-nums", }) {
+}, variableTextTransition = "transform 0.05s linear", variableTextTransformOrigin = "bottom", skewXRange = { min: 0, max: -20 }, lerp = 0.2, showCoordinates = true, coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono", coordinatesTextClassName = "text-xs max-[1025px]:text-sm text-white/40 tabular-nums", textColor, crosshairColor, cursorDotColor, }) {
     const containerRef = useRef(null);
     const { x, y, isDesktop } = useMousePosition(containerRef, lerp);
     const prefersReducedMotion = usePrefersReducedMotion();
@@ -184,7 +185,13 @@ crosshairClassName = "bg-white/20", crosshairDottedColor = "rgba(255,255,255,0.2
         ? Math.max(0, Number(crosshairDashedGap) || 0)
         : Math.max(0, Number(crosshairDottedGap) || 0);
     const patternPeriod = patternLength + patternGap;
-    const patternColor = (crosshairVariant === "dashed" ? crosshairDashedColor : crosshairDottedColor) ||
+    // crosshairColor (a hex) overrides the class/variant colors; it is drawn at
+    // 20% strength to keep the same subtle look as the defaults.
+    const crosshairTint = crosshairColor
+        ? `color-mix(in srgb, ${crosshairColor} 20%, transparent)`
+        : undefined;
+    const patternColor = crosshairTint ||
+        (crosshairVariant === "dashed" ? crosshairDashedColor : crosshairDottedColor) ||
         "rgba(255,255,255,0.2)";
     return (<div ref={containerRef} className={`relative w-screen h-screen overflow-hidden cursor-none flex items-center justify-center ${backgroundClassName} ${paddingClassName} ${containerClassName} ${interClassName}`}>
       {showCrosshair && isDesktop ? (<>
@@ -196,6 +203,7 @@ crosshairClassName = "bg-white/20", crosshairDottedColor = "rgba(255,255,255,0.2
                 backgroundImage: isPatternCrosshair
                     ? `repeating-linear-gradient(to bottom, ${patternColor} 0, ${patternColor} ${patternLength}px, transparent ${patternLength}px, transparent ${patternPeriod}px)`
                     : undefined,
+                ...(!isPatternCrosshair && crosshairTint ? { backgroundColor: crosshairTint } : {}),
             }}/>
           <div className={isPatternCrosshair
                 ? `absolute left-0 w-full pointer-events-none ${crosshairHorizontalThicknessClassName} ${crosshairHorizontalClassName}`
@@ -205,13 +213,20 @@ crosshairClassName = "bg-white/20", crosshairDottedColor = "rgba(255,255,255,0.2
                 backgroundImage: isPatternCrosshair
                     ? `repeating-linear-gradient(to right, ${patternColor} 0, ${patternColor} ${patternLength}px, transparent ${patternLength}px, transparent ${patternPeriod}px)`
                     : undefined,
+                ...(!isPatternCrosshair && crosshairTint ? { backgroundColor: crosshairTint } : {}),
             }}/>
         </>) : null}
 
-      {showCursorDot && isDesktop ? (<div className={`absolute pointer-events-none z-20 ${cursorDotClassName}`} style={{ left: x, top: y, transform: "translate(-50%, -50%)", ...cursorDotStyle }}/>) : null}
+      {showCursorDot && isDesktop ? (<div className={`absolute pointer-events-none z-20 ${cursorDotClassName}`} style={{
+                left: x,
+                top: y,
+                transform: "translate(-50%, -50%)",
+                ...(cursorDotColor ? { backgroundColor: cursorDotColor } : {}),
+                ...cursorDotStyle,
+            }}/>) : null}
 
       <div className={textWrapperClassName}>
-        <VariableFontAndCursor containerRef={containerRef} fontVariationMapping={fontVariationMapping} className={`${cursorMoveFont.className} ${textClassName}`} as={textAs} transition={variableTextTransition} transformOrigin={variableTextTransformOrigin} skewXRange={skewXRange} lerp={lerp}>
+        <VariableFontAndCursor containerRef={containerRef} fontVariationMapping={fontVariationMapping} className={`${cursorMoveFont.className} ${textClassName}`} as={textAs} transition={variableTextTransition} transformOrigin={variableTextTransformOrigin} skewXRange={skewXRange} lerp={lerp} color={textColor}>
           {text}
         </VariableFontAndCursor>
       </div>

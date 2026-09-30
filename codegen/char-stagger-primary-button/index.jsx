@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-const CharStaggerPrimaryButton = ({ text = "Hover me", href = "#", btnClassName = "", textClassName = "", linkProps = {}, children, staggerStep = 0.01, lineClassName = "", hoverColor = "", showArrow = false, icon: Icon = ArrowRight, iconClassName = "", bgClassName = "", onClick, ...props }) => {
+const CharStaggerPrimaryButton = ({ text = "Hover me", href = "#", btnClassName = "", textClassName = "", linkProps = {}, children, staggerStep = 0.01, lineClassName = "", hoverColor = "", showArrow = false, icon: Icon = ArrowRight, iconClassName = "", bgClassName = "", bgColor = "", onClick, ...props }) => {
     const linkRef = useRef(null);
     const [isTouchHovered, setIsTouchHovered] = useState(false);
     const [supportsTouchHover, setSupportsTouchHover] = useState(false);
@@ -59,7 +59,7 @@ const CharStaggerPrimaryButton = ({ text = "Hover me", href = "#", btnClassName 
     const hoverStateClass = !prefersReducedMotion && isTouchHovered ? "text-[var(--char-hover-color)]" : "";
     const bgHoverClass = !prefersReducedMotion && isTouchHovered ? "scale-[0.95]" : "";
     const iconHoverClass = !prefersReducedMotion && isTouchHovered ? "translate-x-[5%]" : "";
-    return (<Link ref={linkRef} href={href} {...linkProps} {...props} onClick={handleClick} className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none motion-safe:hover:text-(--char-hover-color) motion-safe:focus-visible:text-(--char-hover-color) max-[1025px]:h-[9vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:h-[15vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${hoverStateClass} ${btnClassName}`} style={{ "--char-hover-color": hoverColor }}>
+    return (<Link ref={linkRef} href={href} {...linkProps} {...props} onClick={handleClick} className={`group relative inline-flex h-[4.2vw] items-center justify-center gap-2 px-10 py-3 text-inherit no-underline transition-colors duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] motion-reduce:transition-none motion-safe:hover:text-(--char-hover-color) motion-safe:focus-visible:text-(--char-hover-color) max-[1025px]:h-[9vw] max-[1025px]:text-[3vw] max-[1025px]:font-normal max-[1025px]:motion-reduce:transition-none max-md:h-[15vw] max-md:text-[4.2vw] max-md:motion-reduce:transition-none ${hoverStateClass} ${btnClassName}`} style={{ "--char-hover-color": hoverColor, ...(bgColor ? { "--char-bg-color": bgColor } : {}) }}>
  <div className="relative z-2">
  <span className="relative  flex items-center justify-center">
  <span className={`relative inline-block overflow-hidden leading-[1.2] ${textClassName}`}>
@@ -76,7 +76,7 @@ const CharStaggerPrimaryButton = ({ text = "Hover me", href = "#", btnClassName 
  </span>
  </span>
  </div>
- <div className={`absolute h-full w-full duration-500 motion-reduce:transition-none motion-safe:group-hover:scale-[0.95] motion-safe:group-focus-visible:scale-[0.95] ${bgHoverClass} ${bgClassName}`}/>
+ <div className={`absolute h-full w-full duration-500 motion-reduce:transition-none motion-safe:group-hover:scale-[0.95] motion-safe:group-focus-visible:scale-[0.95] ${bgHoverClass} ${bgColor ? "bg-(--char-bg-color)" : ""} ${bgClassName}`}/>
 
  {showArrow && Icon && (<div className={`flex size-[1em] items-center justify-start overflow-hidden ${iconClassName}`}>
  <div className={`flex h-full w-max -translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] will-change-transform motion-reduce:transition-none motion-safe:group-hover:translate-x-[5%] motion-safe:group-focus-visible:translate-x-[5%] ${iconHoverClass}`}>

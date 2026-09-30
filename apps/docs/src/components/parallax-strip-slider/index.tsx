@@ -524,7 +524,7 @@ export default function ParallaxStripSlider({
   return (
     <div
       ref={rootRef}
-      className={`parallax-strip-slider relative h-full w-full overflow-hidden bg-black ${className}`}
+      className={`parallax-strip-slider relative h-screen w-full overflow-hidden bg-black ${className}`}
     >
       {/* Outgoing slide, revealed away underneath. */}
       <div className="absolute inset-0">

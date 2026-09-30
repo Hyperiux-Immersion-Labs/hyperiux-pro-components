@@ -27,17 +27,6 @@
   ],
   "props": [
     {
-      "name": "accentColor",
-      "type": "color",
-      "default": "#111111",
-      "description": "Accent color for focus states, checkbox checks, and the submit button.",
-      "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
-      }
-    },
-    {
       "name": "backgroundColor",
       "type": "color",
       "default": "#ffffff",

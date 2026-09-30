@@ -28,7 +28,7 @@ function getScrambledText({ finalText, iteration, maxIterations, revealStagger, 
     }
     return output;
 }
-export default function ScrambleLinkButton({ text = DEFAULT_TEXT, href = DEFAULT_HREF, className = "", textClassName = "", linkProps = {}, children, hoverColor = DEFAULT_HOVER_COLOR, showLine = false, lineClassName = "", showArrow = false, icon: Icon = ArrowRight, iconClassName = "", scrambleDuration = DEFAULT_SCRAMBLE_DURATION, stepMs = DEFAULT_STEP_MS, revealStagger = DEFAULT_REVEAL_STAGGER, onClick, ...props }) {
+export default function ScrambleLinkButton({ text = DEFAULT_TEXT, href = DEFAULT_HREF, className = "", textClassName = "", linkProps = {}, children, textColor = "", hoverColor = DEFAULT_HOVER_COLOR, showLine = false, lineClassName = "", showArrow = false, icon: Icon = ArrowRight, iconClassName = "", scrambleDuration = DEFAULT_SCRAMBLE_DURATION, stepMs = DEFAULT_STEP_MS, revealStagger = DEFAULT_REVEAL_STAGGER, onClick, ...props }) {
     const scrambleRef = useRef(null);
     const timeoutRef = useRef(null);
     const [isCompactLayout, setIsCompactLayout] = useState(false);
@@ -114,7 +114,7 @@ export default function ScrambleLinkButton({ text = DEFAULT_TEXT, href = DEFAULT
     const handlePointerCancel = (event) => {
         props.onPointerCancel?.(event);
     };
-    return (<Link href={href} {...linkProps} {...props} data-pressed={isPressed ? "true" : "false"} onClick={onClick} onMouseEnter={onMouseEnter} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp} onPointerCancel={handlePointerCancel} className={`group inline-flex items-center gap-2 cursor-pointer scale-150 text-[1.1vw] text-inherit no-underline transition-colors duration-350 ease-in-out motion-reduce:transition-none hover:text-(--scramble-hover-color) group-data-[pressed=true]:text-(--scramble-hover-color) max-[1025px]:text-[3vw] max-md:text-[4.2vw] ${className}`} style={{ "--scramble-hover-color": hoverColor }}>
+    return (<Link href={href} {...linkProps} {...props} data-pressed={isPressed ? "true" : "false"} onClick={onClick} onMouseEnter={onMouseEnter} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp} onPointerCancel={handlePointerCancel} className={`group inline-flex items-center gap-2 cursor-pointer text-[1.1vw] ${textColor ? "text-(--scramble-text-color)" : "text-inherit"} no-underline transition-colors duration-350 ease-in-out motion-reduce:transition-none hover:text-(--scramble-hover-color) group-data-[pressed=true]:text-(--scramble-hover-color) max-[1025px]:text-[3vw] max-md:text-[4.2vw] ${className}`} style={{ "--scramble-hover-color": hoverColor, ...(textColor ? { "--scramble-text-color": textColor } : {}) }}>
       <span className={innerClassName} style={activeLineStyle}>
         <span className={`pointer-events-none inline-block select-none whitespace-pre invisible [font-variant-ligatures:none] ${textClassName}`} style={activeTextStyle}>
           {finalText}

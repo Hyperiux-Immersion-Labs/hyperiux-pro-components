@@ -350,7 +350,7 @@ export default function ParallaxStripSlider({ slides = DEFAULT_SLIDES, className
       </div>));
     };
     const activeSlide = slides[caption];
-    return (<div ref={rootRef} className={`parallax-strip-slider relative h-full w-full overflow-hidden bg-black ${className}`}>
+    return (<div ref={rootRef} className={`parallax-strip-slider relative h-screen w-full overflow-hidden bg-black ${className}`}>
       {/* Outgoing slide, revealed away underneath. */}
       <div className="absolute inset-0">
         <Image src={slides[current].src} alt={slides[current].title} fill priority sizes="100vw" draggable={false} className="object-cover select-none"/>

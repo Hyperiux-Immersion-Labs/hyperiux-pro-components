@@ -424,6 +424,12 @@ class GlideTrack {
       this.#resizeTimeout = setTimeout(() => this.resize(), 10);
     });
     this.#resizeObserver.observe(this.wrapper);
+    // Card width/gap changes (e.g. via props) resize the items, not the wrapper,
+    // so re-measure when any item changes size too. Gap is item padding, so
+    // observe the border box (the default content box would not change).
+    this.items.forEach((item) =>
+      this.#resizeObserver?.observe(item, { box: "border-box" })
+    );
   }
 
   #setupGlideInput(): void {

@@ -37,7 +37,6 @@ type JourneyItem = {
   content: string;
 };
 
-type PositionRange = readonly [number, number];
 type SplitTextInstance = InstanceType<typeof SplitText>;
 
 type TimelineProps = {
@@ -49,9 +48,10 @@ type TimelineProps = {
   backgroundColor?: string;
   imageUrl?: string;
   imageAlt?: string;
-  duration?: number;
-  scrollDuration?: number;
 };
+
+// Base timing (seconds) for the item reveals and the smooth-scroll feel.
+const ANIMATION_DURATION = 1.2;
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -149,14 +149,18 @@ export default function Timeline({
   imageUrl = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
   imageAlt = "Modern office workspace",
 
-  duration,
-  scrollDuration = 1.2,
 }: TimelineProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const wholeSliderRef = useRef<HTMLDivElement>(null);
+  // Scroll trigger + target width of the horizontal line, shared with the
+  // per-item timelines so they can start when the line's head reaches them.
+  const lineProgressRef = useRef<{
+    trigger: ScrollTrigger;
+    widthFraction: number;
+    slideTrigger?: ScrollTrigger;
+    slidePercent: number;
+  } | null>(null);
   const reducedMotion = usePrefersReducedMotion();
-  const animationDuration = duration ?? scrollDuration;
-  const normalizedDuration = Math.max(0.2, animationDuration);
   const sectionStyle = {
     color: textColor,
     backgroundColor,
@@ -204,7 +208,7 @@ export default function Timeline({
       return;
     }
 
-    gsap.to(".journey-line", {
+    const lineTween = gsap.to(".journey-line", {
       width: lineWidth,
       ease: "none",
       scrollTrigger: {
@@ -214,6 +218,19 @@ export default function Timeline({
         scrub: true,
       },
     });
+
+    if (lineTween.scrollTrigger) {
+      lineProgressRef.current = {
+        trigger: lineTween.scrollTrigger,
+        widthFraction: parseFloat(lineWidth) / 100,
+        slideTrigger: tl.scrollTrigger,
+        slidePercent,
+      };
+    }
+
+    return () => {
+      lineProgressRef.current = null;
+    };
   }, { dependencies: [reducedMotion], scope: sectionRef });
 
   useGSAP(() => {
@@ -222,9 +239,6 @@ export default function Timeline({
     if (!section) return;
 
     const items = allJourneyItems;
-    const isMobileViewport = window.innerWidth < 642;
-    const isTabletViewport =
-      window.innerWidth >= 642 && window.innerWidth <= 1024;
 
     if (reducedMotion) {
       items.forEach((item) => {
@@ -264,11 +278,36 @@ export default function Timeline({
       });
     });
 
-    const createItemTimeline = (
-      item: JourneyItem,
-      startPos: number,
-      endPos: number,
-    ) => {
+    // Scroll progress (0-1 of the horizontal line's draw) at which the line's
+    // head reaches this item's vertical line, measured from real layout so it
+    // holds at every breakpoint. Slider-relative coords cancel out the
+    // slider's own horizontal scroll transform.
+    const getLineProgressAtItem = (item: JourneyItem) => {
+      const slider = wholeSliderRef.current;
+      const lineEl = section.querySelector<HTMLElement>(".journey-line");
+      const itemLineEl = section.querySelector<HTMLElement>(`.jl-${item.id}`);
+      const lineInfo = lineProgressRef.current;
+
+      if (!slider || !lineEl || !itemLineEl || !lineInfo) return 0;
+
+      const sliderLeft = slider.getBoundingClientRect().left;
+      const lineLeft = lineEl.getBoundingClientRect().left - sliderLeft;
+      const itemLeft = itemLineEl.getBoundingClientRect().left - sliderLeft;
+      const lineMaxWidth =
+        (lineEl.parentElement?.clientWidth ?? 0) * lineInfo.widthFraction;
+
+      if (lineMaxWidth <= 0) return 0;
+
+      return gsap.utils.clamp(0, 1, (itemLeft - lineLeft) / lineMaxWidth);
+    };
+
+    // Share of the horizontal line's scroll range each item's own sequence
+    // (vertical line -> dot -> text) takes up.
+    const ITEM_SPAN = 0.14;
+    // Max sideways drift (as a share of viewport width) during one item.
+    const MAX_ITEM_DRIFT = window.innerWidth < 642 ? 0.2 : 0.35;
+
+    const createItemTimeline = (item: JourneyItem) => {
       const lineSelector = `.jl-${item.id}`;
       const dotSelector = `.jd-${item.id}`;
       const titleLines = titleSplits[item.id]?.lines || [];
@@ -280,50 +319,84 @@ export default function Timeline({
         gsap.set(lineSelector, { transformOrigin: "top top" });
       }
 
+      const getRange = () => {
+        const lineTrigger = lineProgressRef.current?.trigger;
+        const lineStartPx = lineTrigger?.start ?? 0;
+        const lineRange = (lineTrigger?.end ?? 0) - lineStartPx;
+        let span = lineRange * ITEM_SPAN;
+
+        // The slider keeps scrolling sideways while an item plays. Cap the
+        // span so the item never drifts more than ~a third of the viewport
+        // (matters on mobile, where the slider moves much faster) before its
+        // text has finished revealing.
+        const slideTrigger = lineProgressRef.current?.slideTrigger;
+        const slideScrollRange = slideTrigger
+          ? slideTrigger.end - slideTrigger.start
+          : 0;
+        const sliderWidth = wholeSliderRef.current?.offsetWidth ?? 0;
+        const slidePxPerScrollPx =
+          slideScrollRange > 0
+            ? (Math.abs(lineProgressRef.current?.slidePercent ?? 0) / 100) *
+              sliderWidth /
+              slideScrollRange
+            : 0;
+
+        if (slidePxPerScrollPx > 0) {
+          span = Math.min(
+            span,
+            (window.innerWidth * MAX_ITEM_DRIFT) / slidePxPerScrollPx,
+          );
+        }
+
+        const start = Math.min(
+          lineStartPx + getLineProgressAtItem(item) * lineRange,
+          lineStartPx + lineRange - span,
+        );
+
+        return { start, end: start + span };
+      };
+
+      gsap.set([...titleLines, ...descriptionLines], { y: 100 });
+
+      // Sequenced: vertical line draws first, then its dot, then the text.
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: `${startPos}% ${
-            isMobileViewport ? "38%" : isTabletViewport ? "top" : "20%"
-          }`,
-          end: `${endPos}% ${
-            isMobileViewport ? "50%" : isTabletViewport ? "40%" : "60%"
-          }`,
+          start: () => getRange().start,
+          end: () => getRange().end,
+          // start/end are functions, so ScrollTrigger re-evaluates them on
+          // every refresh (no invalidateOnRefresh, which would reset the
+          // text lines' starting offset and leave them visible).
           scrub: true,
-          // markers:true,
         },
       });
 
       timeline
         .to(lineSelector, {
           scaleY: 1,
-          duration: normalizedDuration * 0.4,
+          duration: ANIMATION_DURATION * 0.4,
         })
-        .to(
-          dotSelector,
-          {
-            scale: 1,
-            duration: normalizedDuration * 0.4,
-          },
-          "<",
-        )
+        .to(dotSelector, {
+          scale: 1,
+          duration: ANIMATION_DURATION * 0.15,
+        })
         .fromTo(
           titleLines,
           { y: 100 },
           {
             y: 0,
-            delay: -0.8 * normalizedDuration,
-            duration: normalizedDuration,
+            duration: ANIMATION_DURATION * 0.6,
             stagger: 0.02,
             ease: "power2.out",
           },
+          ">-0.05",
         )
         .fromTo(
           descriptionLines,
           { y: 100 },
           {
             y: 0,
-            duration: normalizedDuration,
+            duration: ANIMATION_DURATION * 0.6,
             stagger: 0.02,
             ease: "power2.out",
           },
@@ -333,40 +406,8 @@ export default function Timeline({
       return timeline;
     };
 
-    const positions: PositionRange[] =
-      window.innerWidth < 642
-        ? [
-            [22, 32],
-            [28, 38],
-            [36, 46],
-            [45, 55],
-            [52, 62],
-            [60, 70],
-            [69, 79],
-          ]
-        : window.innerWidth >= 642 && window.innerWidth <= 1024
-          ? [
-              [16, 27],
-              [24, 36],
-              [35, 47],
-              [45, 57],
-              [55, 67],
-              [62, 74],
-              [70, 82],
-            ]
-          : [
-              [6, 26],
-              [16, 36],
-              [26, 46],
-              [35, 55],
-              [45, 65],
-              [55, 75],
-              [65, 85],
-            ];
-
-    items.forEach((item, index) => {
-      const [startPos, endPos] = positions[index];
-      createItemTimeline(item, startPos, endPos);
+    items.forEach((item) => {
+      createItemTimeline(item);
     });
 
     const handleResize = () => {
@@ -380,7 +421,7 @@ export default function Timeline({
       Object.values(descriptionSplits).forEach((split) => split?.revert?.());
       window.removeEventListener("resize", handleResize);
     };
-  }, { dependencies: [normalizedDuration, reducedMotion], scope: sectionRef });
+  }, { dependencies: [reducedMotion], scope: sectionRef });
 
   const content = (
     <section
@@ -435,13 +476,13 @@ export default function Timeline({
                     key={`top-${item.id}`}
                     className="relative h-full w-[30vw] px-[3vw]  max-[1025px]:w-[50vw] max-[1025px]:px-[5vw] max-md:flex max-md:w-[70vw] max-md:flex-col max-md:px-[7vw]"
                   >
-                    <div className="w-full absolute left-0 bottom-0 top-0 h-full">
+                    <div className="w-full absolute left-0 bottom-0 top-0 h-full max-[1025px]:top-[1%] max-md:top-0 max-[1025px]:flex max-[1025px]:flex-col max-md:block">
                       <div
-                        className={`size-[1vw] max-md:size-[2.5vw] max-[1025px]:size-[2vw] translate-x-[-50%] relative aspect-square rounded-full jd-${item.id}`}
+                        className={`size-[1vw] max-md:size-[2.5vw] max-[1025px]:size-[2vw] max-[1025px]:shrink-0 translate-x-[-50%] relative aspect-square rounded-full jd-${item.id}`}
                         style={activeStyle}
                       ></div>
                       <div
-                        className={`h-[94%] w-px origin-bottom rounded-full jl-${item.id}`}
+                        className={`h-[94%] w-px origin-bottom rounded-full max-[1025px]:h-auto max-[1025px]:min-h-0 max-[1025px]:flex-1 max-md:h-[94%] max-md:flex-none jl-${item.id}`}
                         style={activeStyle}
                       ></div>
                     </div>
@@ -480,13 +521,13 @@ export default function Timeline({
                     key={`bottom-${item.id}`}
                     className="relative h-full w-[25vw] px-[3vw]  max-[1025px]:flex max-[1025px]:w-[20%] max-[1025px]:flex-col max-[1025px]:justify-center max-[1025px]:px-[5vw] max-md:w-[70vw] max-md:px-[7vw]"
                   >
-                    <div className="w-full absolute left-0 bottom-[-1%] h-full">
+                    <div className="w-full absolute left-0 bottom-[-1%] h-full max-[1025px]:flex max-[1025px]:flex-col max-md:block">
                       <div
-                        className={`h-[94%] origin-top w-px rounded-full max-md:h-full jl-${item.id}`}
+                        className={`h-[94%] origin-top w-px rounded-full max-[1025px]:h-auto max-[1025px]:min-h-0 max-[1025px]:flex-1 max-md:h-full max-md:flex-none jl-${item.id}`}
                         style={activeStyle}
                       ></div>
                       <div
-                        className={`size-[1vw] max-md:size-[2.5vw] max-[1025px]:size-[2vw] translate-x-[-50%] relative w-auto aspect-square rounded-full jd-${item.id}`}
+                        className={`size-[1vw] max-md:size-[2.5vw] max-[1025px]:size-[2vw] max-[1025px]:shrink-0 translate-x-[-50%] relative w-auto aspect-square rounded-full jd-${item.id}`}
                         style={activeStyle}
                       ></div>
                     </div>
@@ -519,8 +560,8 @@ export default function Timeline({
       root
       options={{
         duration: reducedMotion
-          ? Math.min(normalizedDuration, 0.6)
-          : normalizedDuration,
+          ? Math.min(ANIMATION_DURATION, 0.6)
+          : ANIMATION_DURATION,
         smoothWheel: true,
         syncTouch: true,
         touchMultiplier: 1,

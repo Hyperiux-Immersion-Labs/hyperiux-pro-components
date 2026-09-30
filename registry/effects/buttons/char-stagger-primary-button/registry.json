@@ -69,6 +69,17 @@
       }
     },
     {
+      "name": "bgColor",
+      "type": "color",
+      "default": "#ff6b00",
+      "description": "Background color of the button.",
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
+    },
+    {
       "name": "showArrow",
       "type": "boolean",
       "default": false,

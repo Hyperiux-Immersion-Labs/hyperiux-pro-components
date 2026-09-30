@@ -13,6 +13,15 @@ export type RemixerOption =
       [key: string]: unknown;
     };
 
+/** Show a control only while another control's value satisfies the condition. */
+export interface RemixerVisibleWhen {
+  /** Name (id) of the control whose value is checked. */
+  name: string;
+  gte?: number;
+  lte?: number;
+  eq?: unknown;
+}
+
 export interface RemixerControl {
   id?: string;
   name?: string;
@@ -31,6 +40,7 @@ export interface RemixerControl {
   placeholder?: string;
   docsOnly?: boolean;
   copyable?: boolean;
+  visibleWhen?: RemixerVisibleWhen;
   format?: (value: RemixerValue) => string;
   group?: string;
   groupTitle?: string;
@@ -59,6 +69,7 @@ export interface RegistryPropRemixer {
   step?: number;
   options?: RemixerOption[];
   placeholder?: string;
+  visibleWhen?: RemixerVisibleWhen;
   [key: string]: unknown;
 }
 

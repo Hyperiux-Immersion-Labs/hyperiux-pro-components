@@ -21,7 +21,10 @@ export const ChevronBird = ({
     className = "mt-[0.25vw]",
 }: ChevronBirdProps) => {
     return (
-        <div className={className}>
+        <div
+            className={className}
+            style={{ transitionDuration: prefersReducedMotion ? '0s' : `${duration}s` }}
+        >
         <svg
             viewBox="0 0 100 100"
             width={size}

@@ -55,6 +55,7 @@ const VERTICAL_OUTGOING_DURATION = DURATION * 0.45;
 const TEXT_Z = 60;
 
 export interface DimensionalSwitchSliderProps {
+  className?: string;
   infinite?: boolean;
   ease?: string;
   textColor?: string;
@@ -69,6 +70,7 @@ export interface DimensionalSwitchSliderProps {
 }
 
 const DimensionalSwitchSlider = ({
+  className = "",
   infinite = true,
   ease = DEFAULT_EASE,
   textColor = "#ffffff",
@@ -293,7 +295,7 @@ const DimensionalSwitchSlider = ({
   return (
     <>
       <div
-        className="flex flex-col items-center justify-center w-full h-full gap-4"
+        className={`relative flex flex-col items-center justify-center w-full h-screen overflow-hidden gap-4 ${className}`}
       >
         <div
           className={`dimensional-card relative ${cardClassName}`}
@@ -355,7 +357,7 @@ const DimensionalSwitchSlider = ({
             onClick={() => switchTo("prev")}
             aria-label="Previous"
             disabled={!infinite && currentIndex === 0}
-            className="flex h-12 w-12 max-[1024px]:h-20 max-[1024px]:w-20 max-md:h-16 max-md:w-16 items-center justify-center rounded-full border border-white/20 bg-transparent text-white backdrop-blur-[10px] transition-colors duration-300 ease-in-out hover:bg-[#ff5f00] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            className="flex h-12 w-12 max-[1024px]:h-20 max-[1024px]:w-20 max-md:h-16 max-md:w-16 items-center justify-center rounded-full border border-white/40 bg-black/50 text-white backdrop-blur-[10px] transition-colors duration-300 ease-in-out hover:bg-[#ff5f00] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-black/50"
           >
             <ArrowLeft />
           </button>
@@ -364,7 +366,7 @@ const DimensionalSwitchSlider = ({
             onClick={() => switchTo("next")}
             aria-label="Next"
             disabled={!infinite && currentIndex === ITEMS.length - 1}
-            className="flex h-12 w-12 max-[1024px]:h-20 max-[1024px]:w-20 max-md:h-16 max-md:w-16 items-center justify-center rounded-full border border-white/20 bg-transparent text-white backdrop-blur-[10px] transition-colors duration-300 ease-in-out hover:bg-[#ff5f00] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            className="flex h-12 w-12 max-[1024px]:h-20 max-[1024px]:w-20 max-md:h-16 max-md:w-16 items-center justify-center rounded-full border border-white/40 bg-black/50 text-white backdrop-blur-[10px] transition-colors duration-300 ease-in-out hover:bg-[#ff5f00] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-black/50"
           >
             <ArrowRight />
           </button>
@@ -381,7 +383,7 @@ const DimensionalSwitchSlider = ({
               className={`h-2 max-[1024px]:h-4 max-md:h-3 rounded-full transition-all duration-300 ease-in-out ${
                 idx === currentIndex
                   ? "w-6 max-[1024px]:w-8  bg-[#ff5f00]"
-                  : "w-2 max-[1024px]:w-4 max-md:w-3 bg-white/30 hover:bg-white/50"
+                  : "w-2 max-[1024px]:w-4 max-md:w-3 bg-black/40 ring-1 ring-white/40 hover:bg-black/60"
               }`}
             />
           ))}

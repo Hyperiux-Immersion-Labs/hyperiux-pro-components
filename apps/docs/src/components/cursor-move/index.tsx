@@ -179,6 +179,7 @@ interface VariableFontAndCursorProps {
   transformOrigin?: string;
   skewXRange?: { min: number, max: number };
   lerp?: number;
+  color?: string;
 }
 
 function VariableFontAndCursor({
@@ -193,6 +194,7 @@ function VariableFontAndCursor({
   transformOrigin = "bottom",
   skewXRange = { min: 0, max: -20 },
   lerp = 0.2,
+  color,
 }: VariableFontAndCursorProps) {
   const { x, y, width, height, isDesktop } = useMousePosition(containerRef, lerp);
 
@@ -219,6 +221,7 @@ function VariableFontAndCursor({
         transition,
         transformOrigin,
         display: "inline-block",
+        ...(color ? { color } : {}),
       }}
     >
       {children}
@@ -259,6 +262,9 @@ interface CursorMoveProps {
   showCoordinates?: boolean;
   coordinatesClassName?: string;
   coordinatesTextClassName?: string;
+  textColor?: string;
+  crosshairColor?: string;
+  cursorDotColor?: string;
 }
 
 export default function CursorMove({
@@ -296,6 +302,9 @@ export default function CursorMove({
   showCoordinates = true,
   coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono",
   coordinatesTextClassName = "text-xs max-[1025px]:text-sm text-white/40 tabular-nums",
+  textColor,
+  crosshairColor,
+  cursorDotColor,
 }: CursorMoveProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { x, y, isDesktop } = useMousePosition(containerRef, lerp);
@@ -311,7 +320,13 @@ export default function CursorMove({
       ? Math.max(0, Number(crosshairDashedGap) || 0)
       : Math.max(0, Number(crosshairDottedGap) || 0);
   const patternPeriod = patternLength + patternGap;
+  // crosshairColor (a hex) overrides the class/variant colors; it is drawn at
+  // 20% strength to keep the same subtle look as the defaults.
+  const crosshairTint = crosshairColor
+    ? `color-mix(in srgb, ${crosshairColor} 20%, transparent)`
+    : undefined;
   const patternColor =
+    crosshairTint ||
     (crosshairVariant === "dashed" ? crosshairDashedColor : crosshairDottedColor) ||
     "rgba(255,255,255,0.2)";
 
@@ -334,6 +349,7 @@ export default function CursorMove({
               backgroundImage: isPatternCrosshair
                 ? `repeating-linear-gradient(to bottom, ${patternColor} 0, ${patternColor} ${patternLength}px, transparent ${patternLength}px, transparent ${patternPeriod}px)`
                 : undefined,
+              ...(!isPatternCrosshair && crosshairTint ? { backgroundColor: crosshairTint } : {}),
             }}
           />
           <div
@@ -348,6 +364,7 @@ export default function CursorMove({
               backgroundImage: isPatternCrosshair
                 ? `repeating-linear-gradient(to right, ${patternColor} 0, ${patternColor} ${patternLength}px, transparent ${patternLength}px, transparent ${patternPeriod}px)`
                 : undefined,
+              ...(!isPatternCrosshair && crosshairTint ? { backgroundColor: crosshairTint } : {}),
             }}
           />
         </>
@@ -356,7 +373,13 @@ export default function CursorMove({
       {showCursorDot && isDesktop ? (
         <div
           className={`absolute pointer-events-none z-20 ${cursorDotClassName}`}
-          style={{ left: x, top: y, transform: "translate(-50%, -50%)", ...cursorDotStyle }}
+          style={{
+            left: x,
+            top: y,
+            transform: "translate(-50%, -50%)",
+            ...(cursorDotColor ? { backgroundColor: cursorDotColor } : {}),
+            ...cursorDotStyle,
+          }}
         />
       ) : null}
 
@@ -370,6 +393,7 @@ export default function CursorMove({
           transformOrigin={variableTextTransformOrigin}
           skewXRange={skewXRange}
           lerp={lerp}
+          color={textColor}
         >
           {text}
         </VariableFontAndCursor>

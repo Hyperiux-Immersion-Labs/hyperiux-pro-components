@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Check, ChevronDown, Copy, RotateCcw } from "lucide-react";
+import { isRemixerControlVisible } from "./remixer-utils";
 import styles from "./remixer-panel.module.css";
 import type { RemixerControl, RemixerOption, RemixerPanelProps } from "./types";
 
@@ -257,7 +258,18 @@ export default function RemixerPanel({
   onReset,
   defaultOpenGroupId,
 }: RemixerPanelProps) {
-  const availableGroups = useMemo(() => groups.filter((group) => group.controls?.length), [groups]);
+  // Controls can be hidden via `visibleWhen` (e.g. only show the first N color
+  // pickers), so resolve visibility against the live values before rendering.
+  const availableGroups = useMemo(
+    () =>
+      groups
+        .map((group) => ({
+          ...group,
+          controls: (group.controls ?? []).filter((control) => isRemixerControlVisible(control, values)),
+        }))
+        .filter((group) => group.controls.length),
+    [groups, values],
+  );
   const [openGroupId, setOpenGroupId] = useState<string | null>(
     defaultOpenGroupId ?? availableGroups[0]?.id ?? null,
   );

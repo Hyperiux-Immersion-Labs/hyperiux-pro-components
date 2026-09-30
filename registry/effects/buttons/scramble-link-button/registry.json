@@ -45,6 +45,17 @@
       }
     },
     {
+      "name": "textColor",
+      "type": "color",
+      "default": "#ffffff",
+      "description": "Default text color.",
+      "remixer": {
+        "control": "color",
+        "group": "appearance",
+        "groupTitle": "Appearance"
+      }
+    },
+    {
       "name": "hoverColor",
       "type": "color",
       "default": "#ff6b00",

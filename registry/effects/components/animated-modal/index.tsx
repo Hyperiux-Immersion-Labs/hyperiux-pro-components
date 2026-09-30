@@ -202,26 +202,31 @@ const AnimatedModalContent = ({
       {...(!isOpen ? { inert: true, "aria-hidden": "true" } : {})}
       className={`
         fixed inset-0 z-9999
-        transition-opacity
-        ${
-          isOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }
+        ${isOpen ? "visible pointer-events-auto" : "invisible pointer-events-none"}
         ${className}
       `}
-      style={{ transitionDuration: `${safeDuration}s` }}
+      // Opacity is faded on the backdrop and content separately (not on this
+      // root): a backdrop-filter inside a fading parent pops in instead of
+      // fading. Visibility flips after the fade-out finishes.
+      style={{
+        transition: `visibility 0s linear ${isOpen ? 0 : safeDuration}s`,
+      }}
     >
       <button
         type="button"
         aria-label="Close modal"
         onClick={closeOnBackdrop ? onClose : undefined}
-        className="
+        className={`
           absolute inset-0
           cursor-pointer border-0
           backdrop-blur-md
-        "
-        style={{ backgroundColor: `rgba(0,0,0,${safeOverlayOpacity})` }}
+          transition-opacity ease-out
+          ${isOpen ? "opacity-100" : "opacity-0"}
+        `}
+        style={{
+          backgroundColor: `rgba(0,0,0,${safeOverlayOpacity})`,
+          transitionDuration: `${safeDuration}s`,
+        }}
       />
 
       {showCloseButton && (
@@ -240,6 +245,7 @@ const AnimatedModalContent = ({
             cursor-pointer
             backdrop-blur-md
             transition-all duration-300
+            ${isOpen ? "opacity-100" : "opacity-0"}
             hover:scale-[1.04]
             hover:bg-white/20
             pointer-events-auto
@@ -262,12 +268,15 @@ const AnimatedModalContent = ({
           relative z-1
           flex h-screen w-screen items-center
           px-0
+          transition-opacity
+          ${isOpen ? "opacity-100" : "opacity-0"}
 
           max-[1025px]:px-0
           max-md:justify-center max-md:px-0
 
           ${contentClassName}
         `}
+        style={{ transitionDuration: `${safeDuration}s` }}
       >
         {children}
       </div>
