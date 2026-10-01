@@ -5018,6 +5018,17 @@
           "max": 1.5,
           "step": 0.05
         }
+      },
+      {
+        "name": "menuBgColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Background color of the menu dropdown panels.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
       }
     ],
     "remixer": {
@@ -5122,7 +5133,11 @@
           "groupTitle": "Media",
           "min": 0.15,
           "max": 1.2,
-          "step": 0.05
+          "step": 0.05,
+          "visibleWhen": {
+            "name": "showMedia",
+            "eq": true
+          }
         }
       },
       {
@@ -7775,6 +7790,17 @@
         "type": "string",
         "default": "#ff5f00",
         "description": "Hover or active link accent color.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "menuBackgroundColor",
+        "type": "string",
+        "default": "#111111",
+        "description": "Background color of the menu bar and expanded menu panels.",
         "remixer": {
           "control": "color",
           "group": "style",
@@ -12029,10 +12055,10 @@
         "suggested": true
       },
       {
-        "name": "smoothing",
+        "name": "stiffness",
         "type": "number",
         "default": 0.12,
-        "description": "Motion smoothing for arrow response.",
+        "description": "How tightly arrows track the pointer. Higher is stiffer and snappier, lower is looser and smoother.",
         "suggested": true
       }
     ],
@@ -12082,8 +12108,8 @@
           "step": 1
         },
         {
-          "name": "smoothing",
-          "label": "Smoothing",
+          "name": "stiffness",
+          "label": "Stiffness",
           "type": "range",
           "group": "controls",
           "copyable": true,
@@ -12587,7 +12613,7 @@
       {
         "name": "size",
         "type": "number",
-        "default": 150,
+        "default": 217,
         "description": "Diameter of the lens in pixels.",
         "remixer": {
           "control": "range",
@@ -12601,7 +12627,7 @@
       {
         "name": "magnification",
         "type": "number",
-        "default": 1.15,
+        "default": 1.06,
         "description": "Zoom level applied to the content copy under the lens.",
         "remixer": {
           "control": "range",
@@ -12615,7 +12641,7 @@
       {
         "name": "textHoverSize",
         "type": "number",
-        "default": 130,
+        "default": 107,
         "description": "Lens diameter when hovering a data-cursor=\"text\" target.",
         "remixer": {
           "control": "range",
@@ -12657,7 +12683,7 @@
       {
         "name": "distortion",
         "type": "number",
-        "default": 60,
+        "default": 36,
         "description": "SVG displacement strength for the glass refraction.",
         "remixer": {
           "control": "range",
@@ -12671,7 +12697,7 @@
       {
         "name": "aberration",
         "type": "number",
-        "default": 1,
+        "default": 0.2,
         "description": "Chromatic aberration amount - how far the R/G/B channels split at the rim.",
         "remixer": {
           "control": "range",
@@ -16580,20 +16606,6 @@
           "max": 2,
           "step": 0.05
         }
-      },
-      {
-        "name": "mouseReactivity",
-        "type": "number",
-        "default": 1,
-        "description": "Strength of cursor-driven pixelation changes.",
-        "remixer": {
-          "control": "range",
-          "group": "controls",
-          "groupTitle": "Controls",
-          "min": 0,
-          "max": 2,
-          "step": 0.05
-        }
       }
     ],
     "remixer": {
@@ -18581,13 +18593,16 @@
     "props": [
       {
         "name": "panelWidth",
-        "type": "string",
-        "default": "50%",
-        "description": "Width of the sliding menu panel.",
+        "type": "number",
+        "default": 50,
+        "description": "Width of the sliding menu panel as a percentage of the viewport on desktop.",
         "remixer": {
-          "control": "text",
+          "control": "range",
           "group": "layout",
-          "groupTitle": "Layout"
+          "groupTitle": "Layout",
+          "min": 30,
+          "max": 100,
+          "step": 1
         }
       },
       {
@@ -18630,6 +18645,71 @@
           "min": 0,
           "max": 0.3,
           "step": 0.01
+        }
+      },
+      {
+        "name": "linkColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Color of the menu links, socials and divider.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "panelBackgroundColor",
+        "type": "string",
+        "default": "#000000",
+        "description": "Background color of the sliding menu panel (opacity is set separately).",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "panelOpacity",
+        "type": "number",
+        "default": 0.2,
+        "description": "Opacity of the panel background color.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "panelBlur",
+        "type": "string",
+        "default": "md",
+        "description": "Backdrop blur strength behind the panel.",
+        "remixer": {
+          "control": "select",
+          "group": "style",
+          "groupTitle": "Style",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "sm",
+              "label": "Small"
+            },
+            {
+              "value": "md",
+              "label": "Medium"
+            },
+            {
+              "value": "lg",
+              "label": "Large"
+            }
+          ]
         }
       }
     ],

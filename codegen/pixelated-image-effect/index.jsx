@@ -67,9 +67,10 @@ export function PixelateSvgFilter({ id: idProp, size: propSize = 16, crossLayers
       </defs>
     </svg>);
 }
-export default function PixelatedImageEffect({ src = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", pixelSize = 16, duration = 0.25, mouseReactivity = 1, imageClassName = "", }) {
+export default function PixelatedImageEffect({ src = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", pixelSize = 16, duration = 0.25, imageClassName = "", }) {
     const imageRef = useRef(null);
     const isTouching = useRef(false);
+    const pointerRatio = useRef(null);
     const animationRef = useRef(null);
     const [renderedPixelSize, setRenderedPixelSize] = useState(pixelSize);
     const [targetPixelSize, setTargetPixelSize] = useState(pixelSize);
@@ -80,7 +81,6 @@ export default function PixelatedImageEffect({ src = "https://pub-8abee449136941
     const resolvedSrc = typeof src === "string" && src.trim() ? src.trim() : fallbackSrc;
     const resolvedPixelSize = Math.min(Math.max(Number(pixelSize) || 16, 1), 64);
     const resolvedDuration = Math.max(Number(duration) || 0, 0);
-    const resolvedMouseReactivity = Math.min(Math.max(Number(mouseReactivity) || 0, 0), 2);
     // Reset the animation target whenever the resolved pixelSize prop changes,
     // without clobbering the interactive target set by pointer movement below.
     // This is pure derived state (no browser API), so it's adjusted directly
@@ -123,15 +123,28 @@ export default function PixelatedImageEffect({ src = "https://pub-8abee449136941
         // from scratch on every frame instead of animating smoothly.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [resolvedDuration, targetPixelSize]);
+    const computeTarget = (ratio) => {
+        // Left edge is clear (1), right edge is twice the baseline pixelSize, so
+        // the hover range follows the current prop values.
+        return Math.min(Math.max(1 + ratio * (resolvedPixelSize * 2 - 1), 1), 64);
+    };
     const updatePixel = (event) => {
         if (!imageRef.current)
             return;
         const rect = imageRef.current.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const pointerPixelSize = Math.min(Math.max(x / 30, 1), 64);
-        const nextPixelSize = resolvedPixelSize + (pointerPixelSize - resolvedPixelSize) * resolvedMouseReactivity;
-        setTargetPixelSize(Math.min(Math.max(nextPixelSize, 1), 64));
+        const ratio = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+        pointerRatio.current = ratio;
+        setTargetPixelSize(computeTarget(ratio));
     };
+    // Re-apply the last pointer position when props change mid-hover so the
+    // effect immediately uses the new values instead of the stale target.
+    useEffect(() => {
+        if (pointerRatio.current === null)
+            return;
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setTargetPixelSize(computeTarget(pointerRatio.current));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resolvedPixelSize]);
     const handlePointerDown = (event) => {
         isTouching.current = true;
         updatePixel(event);
@@ -143,6 +156,10 @@ export default function PixelatedImageEffect({ src = "https://pub-8abee449136941
     };
     const handlePointerUp = () => {
         isTouching.current = false;
+    };
+    const handlePointerLeave = () => {
+        isTouching.current = false;
+        pointerRatio.current = null;
     };
     return (<div className="relative flex h-dvh w-dvw pt-6 flex-col gap-15 items-center justify-center">
 
@@ -157,7 +174,7 @@ export default function PixelatedImageEffect({ src = "https://pub-8abee449136941
 
       <PixelateSvgFilter id={pixelateFilterId} size={renderedPixelSize} crossLayers/>
 
-      <div ref={imageRef} className="relative h-[55vh] w-full max-md:max-w-[90%] overflow-hidden max-[1025px]:max-w-[90%] max-w-lg touch-none" style={{ filter: `url(#${pixelateFilterId})` }} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerLeave={handlePointerUp}>
+      <div ref={imageRef} className="relative h-[55vh] w-full max-md:max-w-[90%] overflow-hidden max-[1025px]:max-w-[90%] max-w-lg touch-none" style={{ filter: `url(#${pixelateFilterId})` }} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerLeave={handlePointerLeave}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={resolvedSrc} alt="" className={`object-cover absolute inset-0 ${imageClassName}`.trim()}/>
       </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { buildRemixerDemoCode } from "./build-remixer-code";
-import EffectInfoPopup from "./EffectInfoPopup";
 import RemixerLauncher from "./RemixerLauncher";
 import { useRemixerControls } from "./useRemixerControls";
 import type { RegistryRemixerDemoProps, RemixerControl, RemixerGroup } from "./types";
@@ -83,7 +82,6 @@ export default function RegistryRemixerDemo({
   return (
     <>
       {children ? children({ values, effect }) : effect}
-      <EffectInfoPopup registry={registry} />
       {remixerConfig.enabled ? (
         <RemixerLauncher
           groups={groups}

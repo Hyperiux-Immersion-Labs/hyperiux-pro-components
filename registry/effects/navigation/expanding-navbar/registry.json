@@ -87,6 +87,17 @@
         "group": "style",
         "groupTitle": "Style"
       }
+    },
+    {
+      "name": "menuBackgroundColor",
+      "type": "string",
+      "default": "#111111",
+      "description": "Background color of the menu bar and expanded menu panels.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
     }
   ],
   "remixer": {

@@ -114,7 +114,7 @@ function CustomNavbar({ links = [], images = ["https://pub-8abee449136941f5b0a1c
     { type: "facebook", href: "#" },
     { type: "twitter", href: "#" },
     { type: "linkedin", href: "#" },
-], location = "Pune, India", tagline = "Design. Code. Impact.", isOpen = false, overlayBg = "#000000", delay = 1, linkOffsetY = DEFAULT_LINK_Y_OFFSET, linkDuration = DEFAULT_LINK_DURATION, linkStagger = DEFAULT_LINK_STAGGER, imageStartScale = DEFAULT_IMAGE_START_SCALE, imageDuration = DEFAULT_IMAGE_DURATION, imageStagger = DEFAULT_IMAGE_STAGGER, socialOffsetY = DEFAULT_SOCIAL_Y_OFFSET, socialDuration = DEFAULT_SOCIAL_DURATION, socialStagger = DEFAULT_SOCIAL_STAGGER, }) {
+], location = "Pune, India", tagline = "Design. Code. Impact.", isOpen = false, overlayBg = "#000000", delay = 1, linkOffsetY = DEFAULT_LINK_Y_OFFSET, linkDuration = DEFAULT_LINK_DURATION, linkStagger = DEFAULT_LINK_STAGGER, linkColor, linkHoverColor, imageStartScale = DEFAULT_IMAGE_START_SCALE, imageDuration = DEFAULT_IMAGE_DURATION, imageStagger = DEFAULT_IMAGE_STAGGER, socialOffsetY = DEFAULT_SOCIAL_Y_OFFSET, socialDuration = DEFAULT_SOCIAL_DURATION, socialStagger = DEFAULT_SOCIAL_STAGGER, }) {
     // State & refs
     const linksRef = useRef([]);
     const imagesRef = useRef([]);
@@ -228,7 +228,7 @@ function CustomNavbar({ links = [], images = ["https://pub-8abee449136941f5b0a1c
         <div className="flex flex-col gap-0">
           {links.map((link, index) => (<div key={link.label} ref={setLinkRef(index)} className="text-[6vw] max-sm:text-[11vw] max-md:text-[7vw] z-60" style={{ opacity: 0, transform: `translateY(${linkOffsetY}px)` }}>
 
-              <LinkAnim label={link.label} href={link.href}/>
+              <LinkAnim label={link.label} href={link.href} restColor={linkColor} activeColor={linkHoverColor}/>
             </div>))}
         </div>
 
@@ -511,7 +511,7 @@ function FullscreenNav({ links, brand = "Hyperiux", brandHref = "/", clipOrigin 
       <header className={`fixed top-6 max-md:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}>
         <div className="flex items-center gap-3">
           <Link prefetch={false} href="/" className="flex items-center gap-3 cursor-pointer">
-          <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={` transition-all duration-300 motion-reduce:transition-none ${isOpen ? "brightness-100  delay-700" : "brightness-0  delay-700"}`}>
+          <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={` ${isReducedMotion ? "transition-none" : "transition-all duration-300 delay-700"} ${isOpen ? "brightness-100" : "brightness-0"}`}>
             <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
             <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>
             <path d="M0.0195312 36.1192V64.7135H9.0493V42.139L21.5405 37.4737V28.7449L0.0195312 36.1192Z" fill="#ffffff"/>
@@ -520,7 +520,7 @@ function FullscreenNav({ links, brand = "Hyperiux", brandHref = "/", clipOrigin 
           </svg>
 
           <div className="flex  items-center gap-2">
-            <svg width="156" height="45" viewBox="0 0 351 43" fill="none" xmlns="http://www.w3.org/2000/svg" className={`transition-all duration-300 motion-reduce:transition-none ${isOpen ? "brightness-100  delay-700" : "brightness-0  delay-700"}`}>
+            <svg width="156" height="45" viewBox="0 0 351 43" fill="none" xmlns="http://www.w3.org/2000/svg" className={`${isReducedMotion ? "transition-none" : "transition-all duration-300 delay-700"} ${isOpen ? "brightness-100" : "brightness-0"}`}>
               <path d="M315.441 6.10352e-05H306.862L320.055 15.9603L324.019 21.0695L306.862 42.139H315.591L332.597 21.0695L328.555 15.9603L315.441 6.10352e-05Z" fill="white"/>
               <path d="M350.055 6.10352e-05H341.326L332.598 10.6853L336.962 15.9527L350.055 6.10352e-05Z" fill="white"/>
               <path d="M349.905 42.139L341.176 42.139L332.598 31.7548L336.962 26.3369L349.905 42.139Z" fill="white"/>
@@ -543,17 +543,17 @@ function FullscreenNav({ links, brand = "Hyperiux", brandHref = "/", clipOrigin 
         </div>
 
         <button ref={toggleButtonRef} onClick={onToggleMenu} aria-label="Toggle menu" aria-expanded={isOpen} className="flex size-10 cursor-pointer flex-col items-center justify-center gap-1.5 max-[1025px]:size-14 max-md:size-10">
-          <span style={{ backgroundColor: isOpen ? headerOpenColor : undefined }} className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
+          <span style={{ backgroundColor: isOpen ? headerOpenColor : undefined }} className={`block h-0.5 w-full max-md:w-[70%] ${isReducedMotion ? "transition-none" : "transition-all duration-700 ease-in-out delay-300"} ${isOpen
             ? "translate-y-1.75 rotate-45"
             : isReducedMotion
                 ? "translate-y-0 rotate-0 bg-black"
                 : "bg-black"}`}/>
-          <span style={{ backgroundColor: isOpen ? headerOpenColor : undefined }} className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-500 delay-300 motion-reduce:transition-none ${isOpen
+          <span style={{ backgroundColor: isOpen ? headerOpenColor : undefined }} className={`block h-0.5 w-full max-md:w-[70%] ${isReducedMotion ? "transition-none" : "transition-all duration-500 delay-300"} ${isOpen
             ? "scale-x-0 opacity-0"
             : isReducedMotion
                 ? "scale-x-100 opacity-100 bg-black"
                 : "bg-black"}`}/>
-          <span style={{ backgroundColor: isOpen ? headerOpenColor : undefined }} className={`block h-0.5 w-full max-md:w-[70%] transition-all duration-700 ease-in-out delay-300 motion-reduce:transition-none ${isOpen
+          <span style={{ backgroundColor: isOpen ? headerOpenColor : undefined }} className={`block h-0.5 w-full max-md:w-[70%] ${isReducedMotion ? "transition-none" : "transition-all duration-700 ease-in-out delay-300"} ${isOpen
             ? "-translate-y-2.25 -rotate-45"
             : isReducedMotion
                 ? "translate-y-0 rotate-0 bg-black"
@@ -576,6 +576,8 @@ const NAV_CONFIG = {
     clipOrigin: "bottom",
     overlayBg: "#ff5f00",
     headerOpenColor: "#ffffff",
+    linkColor: "#ffffff",
+    linkHoverColor: "#a3a3a3",
     openDuration: 1.2,
     closeDuration: 1.2,
 };
@@ -626,7 +628,7 @@ export default function ImmersiveFullscreenNav({ navConfig, navContent, ...props
     };
     return (<>
       <FullscreenNav {...config}>
-        {(isOpen) => (<CustomNavbar {...content} isOpen={isOpen} overlayBg={config.overlayBg} delay={config.openDuration}/>)}
+        {(isOpen) => (<CustomNavbar {...content} isOpen={isOpen} overlayBg={config.overlayBg} linkColor={config.linkColor} linkHoverColor={config.linkHoverColor} delay={config.openDuration}/>)}
       </FullscreenNav>
 
     </>);

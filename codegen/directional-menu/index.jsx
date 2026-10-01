@@ -27,7 +27,7 @@ const getPaneHeight = (element) => {
 const prefersReducedMotion = () => typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 const REDUCED_MOTION_FADE_DURATION = 0.16;
-export function DirectionalMegaMenu({ items = [], className = "", navClassName = "", navItemClassName = "", navItemStyle, activeNavItemStyle, activeClassName = "text-white", inactiveClassName = "text-white", panelClassName = "", contentWrapperClassName = "", initialIndex = NO_INDEX, closeDelay = 180, animation = {}, panelGap = 0, menuTop = "", }) {
+export function DirectionalMegaMenu({ items = [], className = "", navClassName = "", navItemClassName = "", navItemStyle, activeNavItemStyle, activeClassName = "text-white", inactiveClassName = "text-white", panelClassName = "", contentWrapperClassName = "", initialIndex = NO_INDEX, closeDelay = 180, animation = {}, panelGap = 0, menuTop = "", contentWrapperStyle, }) {
     // Animation config
     const config = useMemo(() => ({
         contentFadeDelay: animation.contentFadeDelay ?? DEFAULT_ANIMATION.contentFadeDelay,
@@ -417,7 +417,7 @@ export function DirectionalMegaMenu({ items = [], className = "", navClassName =
 
       {isOpen && currentIndex !== NO_INDEX && hasDropdownContent(items[currentIndex]) && (<div className="absolute left-0 w-full" style={{ top: `calc(100% + ${panelGap}px)` }}>
           <div ref={menuPanelRef} className={`menu-container pointer-events-auto w-full overflow-hidden ${menuTop}`}>
-            <div ref={panelRef} className={`w-full overflow-hidden rounded-[0.5vw] border border-neutral-200 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transform-gpu ${panelClassName} ${contentWrapperClassName}`}>
+            <div ref={panelRef} className={`w-full overflow-hidden rounded-[0.5vw] border border-neutral-200 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transform-gpu ${panelClassName} ${contentWrapperClassName}`} style={contentWrapperStyle}>
               <div ref={viewportRef} className="relative" onMouseEnter={clearCloseTimer}>
                 <div key={`current-${currentIndex}`} ref={currentPaneRef} className="relative w-full">
                   {items[currentIndex]?.customContent || null}
@@ -665,7 +665,7 @@ export function useFocusTrap({ active, containerRef, initialFocusRef, onEscape, 
 }
 // ---- MobileDirectionalMenu.tsx ----
 const hasMobileDropdownContent = (item) => Boolean(item?.customContent);
-export function MobileDirectionalMenu({ items = [] }) {
+export function MobileDirectionalMenu({ items = [], backgroundColor = "#ffffff" }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(null);
     const containerRef = useRef(null);
@@ -728,19 +728,19 @@ export function MobileDirectionalMenu({ items = [] }) {
         </button>
       </div>
 
-      <div className={`absolute left-6 right-6 top-18 z-50 overflow-hidden rounded-lg bg-white text-black transition-all duration-300 ease-in-out motion-reduce:transition-none ${isMenuOpen
+      <div className={`absolute left-6 right-6 top-18 z-50 overflow-hidden rounded-lg text-black transition-all duration-300 ease-in-out motion-reduce:transition-none ${isMenuOpen
             ? "max-h-[80vh] overflow-y-scroll p-8 opacity-100 max-md:max-h-[90vh] max-md:p-3"
-            : "max-h-0 p-0 opacity-0 pointer-events-none"}`} aria-hidden={!isMenuOpen}>
+            : "max-h-0 p-0 opacity-0 pointer-events-none"}`} style={{ backgroundColor }} aria-hidden={!isMenuOpen}>
           <div className="flex flex-col max-md:gap-2 gap-5">
             {items.map((item, index) => {
             const isOpen = activeIndex === index;
             const isDropdown = hasMobileDropdownContent(item);
             if (!isDropdown) {
-                return (<a key={item.label} href={item.href || "#"} className="rounded-lg border border-neutral-200 bg-neutral-50/60 px-4 py-4 max-md:text-sm max-[1025px]:text-lg font-semibold uppercase tracking-[0.14em] text-neutral-500 transition-all duration-300 ease-in-out hover:bg-neutral-100 motion-reduce:bg-neutral-50/60 motion-reduce:transition-none max-[1025px]:rounded-none max-[1025px]:border-x-0 max-[1025px]:border-t-0" onClick={() => setIsMenuOpen(false)}>
+                return (<a key={item.label} href={item.href || "#"} className="rounded-lg border border-neutral-200 bg-transparent px-4 py-4 max-md:text-sm max-[1025px]:text-lg font-semibold uppercase tracking-[0.14em] text-neutral-500 transition-all duration-300 ease-in-out hover:bg-black/5 motion-reduce:transition-none max-[1025px]:rounded-none max-[1025px]:border-x-0 max-[1025px]:border-t-0" onClick={() => setIsMenuOpen(false)}>
                     {item.label}
                   </a>);
             }
-            return (<section key={item.label} className="rounded-lg border border-neutral-200 bg-neutral-50/60 transition-all duration-300 ease-in-out motion-reduce:transition-none max-[1025px]:rounded-none max-[1025px]:border-x-0 max-[1025px]:border-t-0">
+            return (<section key={item.label} className="rounded-lg border border-neutral-200 bg-transparent transition-all duration-300 ease-in-out motion-reduce:transition-none max-[1025px]:rounded-none max-[1025px]:border-x-0 max-[1025px]:border-t-0">
                   <button type="button" onClick={() => onToggleSection(index)} className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-all duration-300 ease-in-out motion-reduce:transition-none" aria-expanded={isOpen}>
                     <span className="max-md:text-sm max-[1025px]:text-lg font-semibold uppercase tracking-[0.14em] text-neutral-500">
                       {item.label}
@@ -783,7 +783,7 @@ const menuItems = [
     },
 ];
 const MENU_EASE = "power2.inOut";
-export default function DirectionalMenu({ activeColor = "#ffffff", inactiveColor = "#ffffff", panelGap = 20, closeDelay = 80, duration = 0.35, }) {
+export default function DirectionalMenu({ activeColor = "#ffffff", inactiveColor = "#ffffff", panelGap = 20, closeDelay = 80, duration = 0.35, menuBgColor = "#ffffff", }) {
     return (<div className="relative h-screen overflow-hidden bg-black text-white max-md:h-full max-md:overflow-visible max-md:pb-10">
       {/* Navbar */}
       <header className="relative z-50 border-b border-white/10">
@@ -823,7 +823,7 @@ export default function DirectionalMenu({ activeColor = "#ffffff", inactiveColor
           </div>
 
           {/* Menu */}
-          <DirectionalMegaMenu items={menuItems} closeDelay={closeDelay} panelGap={panelGap} activeClassName="" inactiveClassName="" navItemStyle={{ color: inactiveColor }} activeNavItemStyle={{ color: activeColor }} navClassName="mx-auto w-full  max-w-7xl justify-center px-6 md:px-10 max-[1025px]:translate-x-10 max-md:translate-x-0 " contentWrapperClassName="p-8 bg-white border border-white/10 rounded-3xl max-md:h-[92vh] max-[1025px]:h-[75vh]" animation={{
+          <DirectionalMegaMenu items={menuItems} closeDelay={closeDelay} panelGap={panelGap} activeClassName="" inactiveClassName="" navItemStyle={{ color: inactiveColor }} activeNavItemStyle={{ color: activeColor }} navClassName="mx-auto w-full  max-w-7xl justify-center px-6 md:px-10 max-[1025px]:translate-x-10 max-md:translate-x-0 " contentWrapperStyle={{ backgroundColor: menuBgColor }} contentWrapperClassName="p-8 border border-white/10 rounded-3xl max-md:h-[92vh] max-[1025px]:h-[75vh]" animation={{
             duration,
             ease: MENU_EASE,
             distance: 100,
@@ -834,7 +834,7 @@ export default function DirectionalMenu({ activeColor = "#ffffff", inactiveColor
             heightEase: MENU_EASE,
         }}/>
         </div>
-        <MobileDirectionalMenu items={menuItems}/>
+        <MobileDirectionalMenu items={menuItems} backgroundColor={menuBgColor}/>
       </header>
 
     </div>);

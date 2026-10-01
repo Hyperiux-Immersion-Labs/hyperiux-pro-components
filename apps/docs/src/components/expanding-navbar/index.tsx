@@ -259,6 +259,23 @@ const prefersReducedMotion = () =>
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
+// Read through matchMedia (not only the CSS media query) so the docs
+// reduced-motion preview, which overrides matchMedia, is honored too.
+function useReduceMotionFlag() {
+    const [reduce, setReduce] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+        if (!mediaQuery) return undefined;
+        const update = () => setReduce(mediaQuery.matches === true);
+        update();
+        mediaQuery.addEventListener?.("change", update);
+        return () => mediaQuery.removeEventListener?.("change", update);
+    }, []);
+
+    return reduce;
+}
+
 function animateColumnIn(colRef: RefObject<HTMLElement | null>, duration: number, ease: string) {
     if (!colRef.current) return;
     const items = Array.from(colRef.current.children).slice(1);
@@ -276,6 +293,7 @@ function animateColumnIn(colRef: RefObject<HTMLElement | null>, duration: number
 
 interface ExpandingNavbarDesktopProps {
     activeColor?: string;
+    menuBackgroundColor?: string;
     duration?: number;
     ease?: string;
     expandedWidth?: number;
@@ -283,10 +301,12 @@ interface ExpandingNavbarDesktopProps {
 
 export function ExpandingNavbarDesktop({
     activeColor = "#ff5f00",
+    menuBackgroundColor = "#111111",
     duration = 1,
     ease = "cubic-bezier(0.625, 0.05, 0, 1)",
     expandedWidth = 98,
 }: ExpandingNavbarDesktopProps) {
+    const reduceMotionFlag = useReduceMotionFlag();
     const backgroundOverlayRef = useRef<HTMLDivElement | null>(null);
     const menuWrapperRef = useRef<HTMLDivElement | null>(null);
     const headerRef = useRef<HTMLElement | null>(null);
@@ -570,15 +590,17 @@ export function ExpandingNavbarDesktop({
             />
             <div
                 ref={menuWrapperRef}
-                className="fixed z-999 px-[2vw] py-[1vw] text-white bg-[#111111] bottom-[1vw] left-1/2 -translate-x-1/2 w-[55vw] h-fit rounded-md"
+                className="fixed z-999 px-[2vw] py-[1vw] text-white bottom-[1vw] left-1/2 -translate-x-1/2 w-[55vw] h-fit rounded-md"
+                style={{ backgroundColor: menuBackgroundColor }}
             >
                 {/* FLOATING CONTENT PANEL */}
                 <div
                     ref={menuContentRef}
-                    className="absolute pb-[3vw] opacity-0 p-[1vw] bottom-[2vw] mb-[0.5vw] left-0 w-full h-[75vh] bg-[#111111] flex items-center justify-center gap-[1vw] rounded-md origin-bottom overflow-hidden"
+                    className="absolute pb-[3vw] opacity-0 p-[1vw] bottom-[2vw] mb-[0.5vw] left-0 w-full h-[75vh] flex items-center justify-center gap-[1vw] rounded-md origin-bottom overflow-hidden"
+                    style={{ backgroundColor: menuBackgroundColor }}
                 >
                     <div
-                        className="bg-[#1A1A1A] flex items-start p-[2vw] rounded-md overflow-hidden h-full gap-[2vw] w-[70vw]"
+                        className="bg-white/4 flex items-start p-[2vw] rounded-md overflow-hidden h-full gap-[2vw] w-[70vw]"
                         onMouseLeave={() => {
                             setActiveMainIndex(selectedIndex);
                             setActiveSubIndex(selectedSubIndex);
@@ -751,8 +773,8 @@ export function ExpandingNavbarDesktop({
                         className="flex cursor-pointer duration-300 transition-all hover:bg-[#2E2A2A] motion-reduce:bg-transparent motion-reduce:transition-none p-[1vw] rounded-md items-center justify-center bg-transparent border-0"
                     >
                         <div className="w-[1.5vw] h-[1vw] relative flex items-center justify-center">
-                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 motion-reduce:transition-none ${isMenuOpen ? "rotate-45" : "translate-y-[-0.3vw]"}`}></span>
-                            <span className={`absolute block w-full h-px bg-white transition-all duration-300 motion-reduce:transition-none ${isMenuOpen ? "-rotate-45" : "translate-y-[0.3vw]"}`}></span>
+                            <span className={`absolute block w-full h-px bg-white ${reduceMotionFlag ? "transition-none" : "transition-all duration-300"} ${isMenuOpen ? "rotate-45" : "translate-y-[-0.3vw]"}`}></span>
+                            <span className={`absolute block w-full h-px bg-white ${reduceMotionFlag ? "transition-none" : "transition-all duration-300"} ${isMenuOpen ? "-rotate-45" : "translate-y-[0.3vw]"}`}></span>
                         </div>
                     </button>
                 </header>
@@ -802,15 +824,18 @@ function ExpandToggle({ expanded, size = 22, boxClassName = "size-8 text-white/5
 
 interface ExpandingNavbarMobileProps {
     activeColor?: string;
+    menuBackgroundColor?: string;
     duration?: number;
     ease?: string;
 }
 
 export function ExpandingNavbarMobile({
     activeColor = "#ff5f00",
+    menuBackgroundColor = "#111111",
     duration = 1,
     ease = "cubic-bezier(0.625, 0.05, 0, 1)",
 }: ExpandingNavbarMobileProps) {
+    const reduceMotionFlag = useReduceMotionFlag();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [expandedMain, setExpandedMain] = useState<number | null>(null);
     const [expandedSub, setExpandedSub] = useState<number | null>(null);
@@ -937,7 +962,8 @@ export function ExpandingNavbarMobile({
                 {/* Content Panel with clip-path */}
                 <div
                     ref={contentRef}
-                    className="bg-[#111111] opacity-0 rounded-md p-6 mb-4 h-[75vh] flex flex-col overflow-hidden shadow-2xl relative invisible"
+                    className="opacity-0 rounded-md p-6 mb-4 h-[75vh] flex flex-col overflow-hidden shadow-2xl relative invisible"
+                    style={{ backgroundColor: menuBackgroundColor }}
                 >
                     <div className="flex-1 overflow-y-auto space-y-1 pb-10" style={{ scrollbarWidth: "none" }}>
                         {navigationData.map((item, mainIndex) => (
@@ -1033,7 +1059,7 @@ export function ExpandingNavbarMobile({
                 </div>
 
                 {/* Header Bar */}
-                <div className="bg-[#111111] rounded-md px-6 max-[1025px]:py-6 max-md:py-3 flex items-center justify-between shadow-2xl border border-white/5">
+                <div className="rounded-md px-6 max-[1025px]:py-6 max-md:py-3 flex items-center justify-between shadow-2xl border border-white/5" style={{ backgroundColor: menuBackgroundColor }}>
                     <svg className="max-md:w-24 w-40 h-auto" viewBox="0 0 351 43" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Hyperiux">
                         <path d="M315.441 6.10352e-05H306.862L320.055 15.9603L324.019 21.0695L306.862 42.139H315.591L332.597 21.0695L328.555 15.9603L315.441 6.10352e-05Z" fill="white"/>
                         <path d="M350.055 6.10352e-05H341.326L332.598 10.6853L336.962 15.9527L350.055 6.10352e-05Z" fill="white"/>
@@ -1059,19 +1085,19 @@ export function ExpandingNavbarMobile({
                         onClick={toggleMenu}
                         aria-expanded={isMenuOpen}
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                        className="flex cursor-pointer items-center justify-center max-[1025px]:rounded-md max-md:rounded-sm max-md:p-2.5 max-[1025px]:p-3 text-white transition-all duration-300"
+                        className={`flex cursor-pointer items-center justify-center max-[1025px]:rounded-md max-md:rounded-sm max-md:p-2.5 max-[1025px]:p-3 text-white ${reduceMotionFlag ? "transition-none" : "transition-all duration-300"}`}
                         style={{ backgroundColor: isMenuOpen ? activeColor : "#2E2A2A" }}
                     >
                         <div className="relative max-md:h-3 max-md:w-4 max-[1025px]:w-7 max-[1025px]:h-5">
                             <span
-                                className={`absolute left-0 block h-px w-full origin-center bg-white transition-all duration-300 ${
+                                className={`absolute left-0 block h-px w-full origin-center bg-white ${reduceMotionFlag ? "transition-none" : "transition-all duration-300"} ${
                                     isMenuOpen
                                         ? "top-1/2 -translate-y-1/2 rotate-45"
                                         : "top-[calc(50%-3px)]"
                                 }`}
                             />
                             <span
-                                className={`absolute left-0 block h-px w-full origin-center bg-white transition-all duration-300 ${
+                                className={`absolute left-0 block h-px w-full origin-center bg-white ${reduceMotionFlag ? "transition-none" : "transition-all duration-300"} ${
                                     isMenuOpen
                                         ? "top-1/2 -translate-y-1/2 -rotate-45"
                                         : "top-[calc(50%+3px)]"
@@ -1092,6 +1118,7 @@ export function ExpandingNavbarMobile({
 interface ExpandingNavbarProps {
     backgroundColor?: string;
     activeColor?: string;
+    menuBackgroundColor?: string;
     duration?: number;
     expandedWidth?: number;
 }
@@ -1101,6 +1128,7 @@ const MENU_EASE = "cubic-bezier(0.625, 0.05, 0, 1)";
 export default function ExpandingNavbar({
     backgroundColor = "#ffffff",
     activeColor = "#ff5f00",
+    menuBackgroundColor = "#111111",
     duration = 1,
     expandedWidth = 98,
 }: ExpandingNavbarProps) {
@@ -1135,8 +1163,8 @@ export default function ExpandingNavbar({
                 </div>
             </div>
 
-            <ExpandingNavbarDesktop activeColor={activeColor} duration={duration} ease={MENU_EASE} expandedWidth={expandedWidth} />
-            <ExpandingNavbarMobile activeColor={activeColor} duration={duration} ease={MENU_EASE} />
+            <ExpandingNavbarDesktop activeColor={activeColor} menuBackgroundColor={menuBackgroundColor} duration={duration} ease={MENU_EASE} expandedWidth={expandedWidth} />
+            <ExpandingNavbarMobile activeColor={activeColor} menuBackgroundColor={menuBackgroundColor} duration={duration} ease={MENU_EASE} />
         </div>
     );
 }

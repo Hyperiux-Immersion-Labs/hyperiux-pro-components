@@ -29,13 +29,13 @@ const BUTTON_SELECTOR =
 
 export default function LiquidGlassCursor({
   children,
-  size = 150,
-  magnification = 1.15,
-  textHoverSize = 130,
+  size = 217,
+  magnification = 1.06,
+  textHoverSize = 107,
   maxButtonWidth = 260,
   maxButtonHeight = 110,
-  distortion = 60,
-  aberration = 1,
+  distortion = 36,
+  aberration = 0.2,
   className = "",
 }: LiquidGlassCursorProps) {
   const ref = useRef<HTMLDivElement>(null);

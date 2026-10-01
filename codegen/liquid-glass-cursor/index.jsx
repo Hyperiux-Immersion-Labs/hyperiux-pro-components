@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform, } from "motion/react";
 const TEXT_SELECTOR = '[data-cursor="text"], p, span, h1, h2, h3, h4, h5, h6, label';
 const BUTTON_SELECTOR = '[data-cursor="button"], button, a, [role="button"], input, select, textarea';
-export default function LiquidGlassCursor({ children, size = 150, magnification = 1.15, textHoverSize = 130, maxButtonWidth = 260, maxButtonHeight = 110, distortion = 60, aberration = 1, className = "", }) {
+export default function LiquidGlassCursor({ children, size = 217, magnification = 1.06, textHoverSize = 107, maxButtonWidth = 260, maxButtonHeight = 110, distortion = 36, aberration = 0.2, className = "", }) {
     const ref = useRef(null);
     const rawId = useId();
     const filterId = `lgc-${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;

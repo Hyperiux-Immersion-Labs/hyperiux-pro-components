@@ -234,21 +234,26 @@ export default function RopeCursor({ ropeColor = '#bda985', ropeWidth = 2, ropeO
             segments[0].x += (targetX - segments[0].x) * amount;
             segments[0].y += (targetY - segments[0].y) * amount;
         };
-        const updateFollowingSegments = (segments, deltaSeconds) => {
+        const updateFollowingSegments = (segments, deltaSeconds, activeLength) => {
             for (let i = 1; i < segmentCount; i++) {
                 const previousSegment = segments[i - 1];
                 const currentSegment = segments[i];
                 const deltaX = previousSegment.x - currentSegment.x;
                 const deltaY = previousSegment.y - currentSegment.y;
                 const distanceBetweenSegments = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                if (distanceBetweenSegments > segmentLength) {
+                // Beyond the active length the segment is pulled back to that distance;
+                // within it, it keeps easing toward the previous segment so the tail
+                // still moves.
+                let constrainedX = previousSegment.x;
+                let constrainedY = previousSegment.y;
+                if (distanceBetweenSegments > activeLength) {
                     const angleToTarget = Math.atan2(deltaY, deltaX);
-                    const constrainedX = previousSegment.x - Math.cos(angleToTarget) * segmentLength;
-                    const constrainedY = previousSegment.y - Math.sin(angleToTarget) * segmentLength;
-                    const amount = smoothingAmount(0.15 + i * 0.01, deltaSeconds);
-                    currentSegment.x += (constrainedX - currentSegment.x) * amount;
-                    currentSegment.y += (constrainedY - currentSegment.y) * amount;
+                    constrainedX = previousSegment.x - Math.cos(angleToTarget) * activeLength;
+                    constrainedY = previousSegment.y - Math.sin(angleToTarget) * activeLength;
                 }
+                const amount = smoothingAmount(0.15 + i * 0.01, deltaSeconds);
+                currentSegment.x += (constrainedX - currentSegment.x) * amount;
+                currentSegment.y += (constrainedY - currentSegment.y) * amount;
             }
         };
         const generateSmoothPath = (segments) => {
@@ -263,6 +268,10 @@ export default function RopeCursor({ ropeColor = '#bda985', ropeWidth = 2, ropeO
             return pathData;
         };
         let lastFrameTime = null;
+        // 0..1 share of segmentLength currently in use. It follows cursor speed so a
+        // long rope stretches while moving and retracts to nothing at rest, the
+        // same way a zero-length rope does.
+        let lengthFactor = 0;
         const loop = createSuspendedRaf({
             root: svgRef.current,
             onFrame: (time) => {
@@ -274,8 +283,13 @@ export default function RopeCursor({ ropeColor = '#bda985', ropeWidth = 2, ropeO
                 if (!isInitialized || mouse.x === null) {
                     return;
                 }
+                const previousLeadX = segments[0].x;
+                const previousLeadY = segments[0].y;
                 updateLeadingSegment(segments, mouse.x, mouse.y, deltaSeconds);
-                updateFollowingSegments(segments, deltaSeconds);
+                const leadSpeed = Math.hypot(segments[0].x - previousLeadX, segments[0].y - previousLeadY) / deltaSeconds;
+                const targetFactor = Math.min(leadSpeed / 400, 1);
+                lengthFactor += (targetFactor - lengthFactor) * smoothingAmount(0.15, deltaSeconds);
+                updateFollowingSegments(segments, deltaSeconds, segmentLength * lengthFactor);
                 if (pathRef.current) {
                     pathRef.current.setAttribute('d', generateSmoothPath(segments));
                 }

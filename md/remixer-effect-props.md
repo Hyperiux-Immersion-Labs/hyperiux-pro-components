@@ -556,7 +556,7 @@ Note: `images`, `projectNames`, `ribbons`, `amplitude`, and `pauseOnHover` were 
 | `arrowColor` | `#111111` | color | color | Arrow stroke or fill color. |
 | `activeColor` | `#ff6b00` | color | color | Arrow color near the pointer. |
 | `reactionRadius` | `160` | number | range/number | Pointer radius that rotates or highlights arrows. |
-| `smoothing` | `0.12` | number | range/number | Motion smoothing for arrow response. |
+| `stiffness` | `0.12` | number | range/number | How tightly arrows track the pointer. Higher is stiffer and snappier, lower is looser and smoother. |
 
 ### Liquid Glass Cursor (`liquid-glass-cursor`, pro)
 
@@ -648,7 +648,6 @@ Note: `images`, `projectNames`, `ribbons`, `amplitude`, and `pauseOnHover` were 
 | `src` | `"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg"` | string | text | Image source URL; blank values fall back to the default image. |
 | `pixelSize` | `16` | number | range/number | Baseline SVG pixelation size. |
 | `duration` | `0.25` | number | range/number | Smoothing duration for pixel-size changes. |
-| `mouseReactivity` | `1` | number | range/number | Strength of cursor-driven pixelation changes. |
 
 ### Rope Cursor (`rope-cursor`, pro)
 
@@ -705,6 +704,7 @@ Changing any Stack Loader remixer prop restarts the loader animation so the new 
 | `ease` | `power2.inOut` | string | select | GSAP easing used for menu transitions. |
 | `closeDelay` | `80` | number | range/number | Delay before closing the menu. |
 | `panelGap` | `20` | number | range/number | Gap between trigger and submenu panel. |
+| `menuBgColor` | `#ffffff` | color | color | Background color of the menu dropdown panels. |
 
 ### Elevate Navbar (`elevate-navbar`, free)
 
@@ -728,6 +728,7 @@ Changing any Stack Loader remixer prop restarts the loader animation so the new 
 | `ease` | `cubic-bezier(0.625, 0.05, 0, 1)` | string | select | Easing used for the menu expansion. |
 | `backgroundColor` | `#ffffff` | color | color | Navbar background color. |
 | `activeColor` | `#ff5f00` | color | color | Hover or active link accent color. |
+| `menuBackgroundColor` | `#111111` | color | color | Background color of the menu bar and expanded menu panels. |
 
 ### Immersive Full Screen Navigation (`immersive-full-screen-nav`, free)
 

@@ -9,8 +9,28 @@ import { useEffect, useRef, useState } from "react";
 // Underline that grows in from the right on hover, and retreats back out to
 // the right (not just fading in place) when the hover ends - the origin
 // flips between right/left so scale-x animates from/to the same edge.
-const LINK_LINE_CLASSES =
-  "relative w-fit after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:block after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-500 after:ease-out hover:after:origin-left hover:after:scale-x-100";
+const LINK_LINE_BASE =
+  "relative w-fit after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:block after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-current hover:after:origin-left hover:after:scale-x-100";
+const LINK_LINE_ANIMATED = `${LINK_LINE_BASE} after:transition-transform after:duration-500 after:ease-out`;
+// Reduced motion: the line appears at full width instead of drawing in.
+const LINK_LINE_INSTANT = `${LINK_LINE_BASE} after:transition-none`;
+
+// Read through matchMedia (not only the CSS media query) so the docs
+// reduced-motion preview, which overrides matchMedia, is honored too.
+function useLinkLineClasses() {
+  const [reduce, setReduce] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return undefined;
+    const update = () => setReduce(mediaQuery.matches === true);
+    update();
+    mediaQuery.addEventListener?.("change", update);
+    return () => mediaQuery.removeEventListener?.("change", update);
+  }, []);
+
+  return reduce ? LINK_LINE_INSTANT : LINK_LINE_ANIMATED;
+}
 
 export interface NavLinkItem {
   href: string;
@@ -30,9 +50,11 @@ interface MenuLinkProps {
 }
 
 const MenuLink = ({ href, text, className = "" }: MenuLinkProps) => {
+  const lineClasses = useLinkLineClasses();
+
   return (
     <Link aria-hidden href={href} className={`block w-fit leading-[1.2] font-medium ${className}`} prefetch={false}>
-      <span className={`${LINK_LINE_CLASSES} block`}>{text}</span>
+      <span className={`${lineClasses} block`}>{text}</span>
     </Link>
   )
 }
@@ -53,11 +75,14 @@ const SOCIAL_LINKS: SocialLinkItem[] = [
   { href: "#", text: "Instagram" },
 ];
 
-const SocialLink = ({ href, text }: SocialLinkItem) => (
+const SocialLink = ({ href, text }: SocialLinkItem) => {
+  const lineClasses = useLinkLineClasses();
+
+  return (
   <li className="overflow-hidden">
     <Link
       className="social-link flex items-center gap-[3px] max-md:gap-[2.5vw] group" href={href}>
-      <span className={LINK_LINE_CLASSES}>
+      <span className={lineClasses}>
         {text}
       </span>
       <svg className="relative -rotate-[135deg] w-[1vw] h-[1vw] overflow-hidden max-md:w-[6vw] max-md:h-[6vw] max-[1025px]:w-[3vw] max-[1025px]:h-[3vw]" width="19" height="23" viewBox="0 0 19 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,27 +91,47 @@ const SocialLink = ({ href, text }: SocialLinkItem) => (
       </svg>
     </Link>
   </li>
-);
+  );
+};
 
 interface MenuProps {
   menuOpen: boolean;
   navLinks?: NavLinkItem[];
   socialLinks?: SocialLinkItem[];
-  panelWidth?: string;
+  panelWidth?: number | string;
   openDuration?: number;
   linksStagger?: number;
   socialsStagger?: number;
+  linkColor?: string;
+  panelBackgroundColor?: string;
+  panelOpacity?: number;
+  panelBlur?: PanelBlur;
 }
+
+type PanelBlur = "none" | "sm" | "md" | "lg";
+
+const PANEL_BLUR_CLASSES: Record<PanelBlur, string> = {
+  none: "",
+  sm: "backdrop-blur-sm",
+  md: "backdrop-blur-md",
+  lg: "backdrop-blur-lg",
+};
 
 function Menu({
   menuOpen,
   navLinks = NAV_LINKS,
   socialLinks = SOCIAL_LINKS,
-  panelWidth = '50%',
+  panelWidth = 50,
   openDuration = 0.5,
   linksStagger = 0.05,
   socialsStagger = 0.05,
+  linkColor = "#ffffff",
+  panelBackgroundColor = "#000000",
+  panelOpacity = 0.2,
+  panelBlur = "md",
 }: MenuProps) {
+  // A bare number is a percentage of the viewport; strings pass through as CSS.
+  const resolvedPanelWidth = typeof panelWidth === "number" ? `${panelWidth}%` : panelWidth;
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const [serviceOpen, setServiceOpen] = useState(false);
@@ -97,48 +142,49 @@ function Menu({
     const socialLinks = document.querySelectorAll(".social-link");
 
     if (menuOpen) {
+      if (reduceMotion) {
+        gsap.killTweensOf([navRef.current, links, socialLinks]);
+        gsap.set(navRef.current, { left: 0, x: 0 });
+        gsap.set([...links, ...socialLinks], { clearProps: "all" });
+        return;
+      }
+
       const tl = gsap.timeline()
         .to(navRef.current, {
           left: 0,
           x: 0,
-          duration: reduceMotion ? 0.3 : openDuration,
+          duration: openDuration,
           ease: "power3.out",
         });
 
-      if (reduceMotion) {
-        tl.from(links, {
-          opacity: 0,
-          duration: 0.3,
-          ease: "power1.out",
-        })
-          .from(socialLinks, {
-            opacity: 0,
-            duration: 0.3,
-            ease: "power1.out",
-          });
-      } else {
-        tl.from(links, {
+      tl.from(links, {
+        yPercent: 100,
+        duration: 1,
+        delay: -0.4,
+        ease: "power3.out",
+        stagger: linksStagger
+      })
+        .from(socialLinks, {
+          rotationZ: 5,
           yPercent: 100,
           duration: 1,
-          delay: -0.4,
+          delay: -1,
+          stagger: socialsStagger,
           ease: "power3.out",
-          stagger: linksStagger
-        })
-          .from(socialLinks, {
-            rotationZ: 5,
-            yPercent: 100,
-            duration: 1,
-            delay: -1,
-            stagger: socialsStagger,
-            ease: "power3.out",
-          });
-      }
+        });
     } else {
+      if (reduceMotion) {
+        gsap.killTweensOf(navRef.current);
+        gsap.set(navRef.current, { left: "99px", x: "100%" });
+        setServiceOpen(false);
+        return;
+      }
+
       gsap.timeline()
         .to(navRef.current, {
           left: "99px",
           x: '100%',
-          duration: reduceMotion ? 0.3 : openDuration,
+          duration: openDuration,
           ease: "power3.out",
           onComplete: () => {
             setServiceOpen(false);
@@ -154,14 +200,14 @@ function Menu({
       gsap.to(serviceLinks, {
         opacity: 1,
         x: 0,
-        duration: reduceMotion ? 0.2 : 0.5,
+        duration: reduceMotion ? 0 : 0.5,
         stagger: reduceMotion ? 0 : 0.05,
       })
     } else {
       gsap.to(serviceLinks, {
         opacity: 0,
         x: reduceMotion ? 0 : 50,
-        duration: reduceMotion ? 0.2 : 0.5,
+        duration: reduceMotion ? 0 : 0.5,
         stagger: reduceMotion ? 0 : {
           each: 0.02, from: "end"
         }
@@ -173,19 +219,19 @@ function Menu({
     <div ref={menuRef} className="fixed top-0 z-[199] left-0 right-0 bottom-0 flex items-start justify-end pointer-events-none">
       <nav
         ref={navRef}
-        style={{ '--panel-width': panelWidth } as React.CSSProperties}
-        className={`relative w-(--panel-width) pointer-events-auto translate-x-[100%] left-[99px] h-full bg-black/20 backdrop-blur-md max-md:w-full max-[1025px]:w-[70%]`}
+        style={{ '--panel-width': resolvedPanelWidth, backgroundColor: `color-mix(in srgb, ${panelBackgroundColor} ${Math.min(Math.max(panelOpacity, 0), 1) * 100}%, transparent)` } as React.CSSProperties}
+        className={`relative w-(--panel-width) pointer-events-auto translate-x-[100%] left-[99px] h-full ${PANEL_BLUR_CLASSES[panelBlur] ?? PANEL_BLUR_CLASSES.md} max-md:w-full max-[1025px]:w-[70%]`}
       >
-        <div data-lenis-prevent className="w-full h-full px-[5vw] pt-[5.5vw] pb-[3.5vw] relative flex flex-col justify-between items-start max-[1025px]:justify-between max-[1025px]:py-[15vw] max-md:pt-[25vw] max-md:pb-[10vw] overflow-y-auto">
-          <ul className="text-[4vw] font-display text-white leading-[1.15] max-md:text-[11.5vw] max-[1025px]:text-[6.5vw]">
+        <div data-lenis-prevent style={{ color: linkColor }} className="w-full h-full px-[5vw] pt-[5.5vw] pb-[3.5vw] relative flex flex-col justify-between items-start max-[1025px]:justify-between max-[1025px]:py-[15vw] max-md:pt-[25vw] max-md:pb-[10vw] overflow-y-auto">
+          <ul className="text-[4vw] font-display leading-[1.15] max-md:text-[11.5vw] max-[1025px]:text-[6.5vw]">
             {navLinks.map((link) => (
               <li key={link.text} className={link.liClassName}>
                 <MenuLink className="link-anim" href={link.href} text={link.text} />
               </li>
             ))}
           </ul>
-          <div className="w-full h-[1px] bg-white py-[0.1vw] my-[6vw] hidden max-md:block"></div>
-          <div className="text-[1.1vw] font-medium text-white flex flex-col space-y-[0.5vw] max-md:text-[5vw] max-md:mb-[7vw] max-[1025px]:text-[3vw]">
+          <div className="w-full h-[1px] bg-current py-[0.1vw] my-[6vw] hidden max-md:block"></div>
+          <div className="text-[1.1vw] font-medium flex flex-col space-y-[0.5vw] max-md:text-[5vw] max-md:mb-[7vw] max-[1025px]:text-[3vw]">
             <div className="w-fit overflow-hidden">
               <MenuLink
                 className="link-anim"
@@ -195,7 +241,7 @@ function Menu({
             </div>
 
           </div>
-          <ul className="flex justify-between items-center text-[1vw] text-white font-medium uppercase w-[90%] max-md:flex-col max-md:items-start max-md:text-[4.5vw] max-md:gap-[1.5vw] max-[1025px]:text-[3vw] max-[1025px]:flex-wrap max-[1025px]:items-start max-[1025px]:gap-[2vw]">
+          <ul className="flex justify-between items-center text-[1vw] font-medium uppercase w-[90%] max-md:flex-col max-md:items-start max-md:text-[4.5vw] max-md:gap-[1.5vw] max-[1025px]:text-[3vw] max-[1025px]:flex-wrap max-[1025px]:items-start max-[1025px]:gap-[2vw]">
             {socialLinks.map((link) => (
               <SocialLink key={link.text} href={link.href} text={link.text} />
             ))}
@@ -227,7 +273,11 @@ const HAMBURGER_LINES = [
 interface SideNavbarProps {
   navLinks?: NavLinkItem[];
   socialLinks?: SocialLinkItem[];
-  panelWidth?: string;
+  panelWidth?: number | string;
+  linkColor?: string;
+  panelBackgroundColor?: string;
+  panelOpacity?: number;
+  panelBlur?: PanelBlur;
   openDuration?: number;
   linksStagger?: number;
   socialsStagger?: number;
@@ -237,6 +287,10 @@ const SideNavbar = ({
   navLinks,
   socialLinks,
   panelWidth,
+  linkColor,
+  panelBackgroundColor,
+  panelOpacity,
+  panelBlur,
   openDuration = 0.5,
   linksStagger = 0.05,
   socialsStagger = 0.05,
@@ -349,6 +403,10 @@ const SideNavbar = ({
         navLinks={navLinks}
         socialLinks={socialLinks}
         panelWidth={panelWidth}
+        linkColor={linkColor}
+        panelBackgroundColor={panelBackgroundColor}
+        panelOpacity={panelOpacity}
+        panelBlur={panelBlur}
         openDuration={openDuration}
         linksStagger={linksStagger}
         socialsStagger={socialsStagger}

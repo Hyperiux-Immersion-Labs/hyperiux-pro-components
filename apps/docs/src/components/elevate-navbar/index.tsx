@@ -2,7 +2,7 @@
 "use client";
 
 import gsap from "gsap";
-import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
@@ -195,6 +195,7 @@ const __ElevateDesktopNav_DEFAULT_MENU_ITEMS = [
 
 const DROPDOWN_ITEM_OFFSET_Y = -8;
 const DROPDOWN_ITEM_STAGGER_IN = 0.025;
+const FAST_SWITCH_OUT_DURATION = 0.1;
 const DROPDOWN_ITEM_STAGGER_OUT = 0.015;
 const NAV_TEXT_DURATION = 0.35;
 const CTA_DURATION = 0.4;
@@ -433,7 +434,7 @@ export function ElevateNavbarDesktop({
   }, [dropdownItemOffsetY, ease, getCurrentDropdownItems, killItemTween, navTextDuration, reduceMotion, staggerItems]);
 
   const animateDropdownItemsOut = useCallback(
-    (onComplete?: () => void) => {
+    (onComplete?: () => void, fast = false) => {
       const dropdownItems = getCurrentDropdownItems();
 
       if (!dropdownItems.length) {
@@ -467,8 +468,8 @@ export function ElevateNavbarDesktop({
       itemTweenRef.current.to(dropdownItems, {
         y: dropdownItemOffsetY,
         opacity: 0,
-        duration: navTextDuration,
-        stagger: staggerItems ? DROPDOWN_ITEM_STAGGER_OUT : 0,
+        duration: fast ? FAST_SWITCH_OUT_DURATION : navTextDuration,
+        stagger: staggerItems && !fast ? DROPDOWN_ITEM_STAGGER_OUT : 0,
         ease,
       });
     },
@@ -558,7 +559,7 @@ export function ElevateNavbarDesktop({
           if (activeDropdownIndexRef.current === null) return;
 
           setRenderedDropdownIndex(activeDropdownIndexRef.current);
-        });
+        }, true);
       });
     },
     [
@@ -785,11 +786,17 @@ export function ElevateNavbarDesktop({
       : [];
 
   return (
+    <>
+    <div
+      className={`pointer-events-none fixed inset-0 z-998 bg-black/40 transition-opacity duration-150 ease-out motion-reduce:transition-none ${
+        activeChevronIndex !== null ? "opacity-100" : "opacity-0"
+      }`}
+    />
     <div
       ref={navWrapRef}
       onMouseEnter={onHeaderMouseEnter}
       onMouseLeave={onHeaderMouseLeave}
-      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[0.55vw] bg-[#363737] text-[0.98vw]"
+      className="absolute z-999 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[0.55vw] bg-[#363737] text-[0.98vw]"
     >
       <div className="relative flex h-full w-full items-center gap-[1.95vw] p-[0.39vw] pl-[1.3vw]">
         <div className="flex h-full items-center gap-[1.95vw]">
@@ -907,6 +914,7 @@ export function ElevateNavbarDesktop({
         </div>
       </div>
     </div>
+    </>
   );
 }
 
@@ -981,7 +989,6 @@ export function ElevateNavbarMobile({
   const [activeDropdownIndex, setActiveDropdownIndex] = useState<number | null>(null);
 
   const panelRef = useRef<HTMLDivElement | null>(null);
-  const backdropRef = useRef<HTMLDivElement | null>(null);
   const sectionsRef = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const toggleButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -999,9 +1006,8 @@ export function ElevateNavbarMobile({
 
   useEffect(() => {
     const panelElement = panelRef.current;
-    const backdropElement = backdropRef.current;
 
-    if (!panelElement || !backdropElement) return;
+    if (!panelElement) return;
 
     if (isMenuOpen) {
       gsap.set(panelElement, {
@@ -1009,18 +1015,12 @@ export function ElevateNavbarMobile({
       });
 
       if (reduceMotion()) {
-        gsap.set(backdropElement, { autoAlpha: 1 });
         gsap.set(panelElement, {
           autoAlpha: 1,
           y: 0,
         });
         return;
       }
-
-      gsap.to(backdropElement, {
-        autoAlpha: 1,
-        duration: motionDuration * 0.6,
-      });
 
       gsap.fromTo(
         panelElement,
@@ -1045,9 +1045,6 @@ export function ElevateNavbarMobile({
         y: PANEL_OFFSET_Y,
         pointerEvents: "none",
       });
-      gsap.set(backdropElement, {
-        autoAlpha: 0,
-      });
       return;
     }
 
@@ -1060,11 +1057,6 @@ export function ElevateNavbarMobile({
           pointerEvents: "none",
         });
       },
-    });
-
-    gsap.to(backdropElement, {
-      autoAlpha: 0,
-      duration: motionDuration * 0.6,
     });
   }, [ease, isMenuOpen, motionDuration]);
 
@@ -1092,17 +1084,19 @@ export function ElevateNavbarMobile({
   }, [activeDropdownIndex, ease, motionDuration]);
 
   return (
+    <>
+      <div
+        onClick={() => setIsMenuOpen(false)}
+        className={`fixed inset-0 z-998 bg-black/5 transition-opacity duration-150 ease-out motion-reduce:transition-none ${
+          isMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
     <div
       ref={containerRef}
       className="fixed h-fit left-1/2 max-[1025px]:top-[10%] max-md:top-[31%] -translate-x-1/2 z-999"
     >
-      <div
-        ref={backdropRef}
-        onClick={() => setIsMenuOpen(false)}
-        className="fixed inset-0 "
-      />
 
-      <div className="flex items-center justify-between gap-[2vw] rounded-[4vw] border border-white/10 bg-[#2f2f2f]/90 px-[3vw] max-[1025px]:py-[1vw] max-md:py-[2vw] backdrop-blur-xl">
+      <div className="flex items-center justify-between gap-[2vw] rounded-[2vw] border border-white/10 bg-[#2f2f2f]/90 px-[3vw] max-[1025px]:py-[1vw] max-md:py-[2vw] backdrop-blur-xl">
         <span className="px-[2vw] text-[3vw] uppercase tracking-wide text-white/80">
           Hyperiux
         </span>
@@ -1111,23 +1105,42 @@ export function ElevateNavbarMobile({
           ref={toggleButtonRef}
           type="button"
           onClick={() => setIsMenuOpen((currentValue) => !currentValue)}
-          className={`flex h-[8vw] w-[8vw] items-center justify-center rounded-[2vw] transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none ${
+          className={`flex h-[8vw] w-[8vw] items-center justify-center rounded-[1vw] transition duration-300 hover:scale-90 motion-reduce:transition-none motion-reduce:hover:scale-100 ${
             isMenuOpen ? "text-black" : "text-white"
           }`}
           style={{ backgroundColor: isMenuOpen ? activeColor : undefined }}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
-          {isMenuOpen ? (
-            <X className="max-md:h-[4.5vw] max-md:w-[4.5vw] max-[1025px]:w-[3.5vw] max-[1025px]:h-[3.5vw]" />
-          ) : (
-            <Menu className="max-md:h-[4.5vw] max-md:w-[4.5vw] max-[1025px]:w-[3.5vw] max-[1025px]:h-[3.5vw]" />
-          )}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none relative block h-[3.5vw] w-[3.5vw] max-md:h-[4.5vw] max-md:w-[4.5vw]"
+          >
+            <span
+              className={`absolute left-0 top-1/2 h-[0.4vw] w-full rounded-full bg-current transition-transform duration-300 ease-in-out max-md:h-[0.6vw] motion-reduce:transition-none ${
+                isMenuOpen
+                  ? "-translate-y-[0.2vw] rotate-45 max-md:-translate-y-[0.3vw]"
+                  : "-translate-y-[1.4vw] max-md:-translate-y-[1.8vw]"
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-1/2 h-[0.4vw] w-full -translate-y-[0.2vw] rounded-full bg-current transition-all duration-300 ease-in-out max-md:h-[0.6vw] max-md:-translate-y-[0.3vw] motion-reduce:transition-none ${
+                isMenuOpen ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100"
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-1/2 h-[0.4vw] w-full rounded-full bg-current transition-transform duration-300 ease-in-out max-md:h-[0.6vw] motion-reduce:transition-none ${
+                isMenuOpen
+                  ? "-translate-y-[0.2vw] -rotate-45 max-md:-translate-y-[0.3vw]"
+                  : "translate-y-[1vw] max-md:translate-y-[1.2vw]"
+              }`}
+            />
+          </span>
         </button>
       </div>
 
       <div
         ref={panelRef}
-        className="mt-[2vw] w-[92vw] rounded-[4vw] border border-white/10 bg-[#2f2f2f]/95 p-[2vw] backdrop-blur-xl"
+        className="mt-[2vw] w-[92vw] rounded-[2vw] border border-white/10 bg-[#2f2f2f]/95 p-[2vw] backdrop-blur-xl"
         style={{
           pointerEvents: "none",
           opacity: 0,
@@ -1144,7 +1157,7 @@ export function ElevateNavbarMobile({
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-[1025px]:text-[2.5vw] max-md:text-[3vw] uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+                  className="flex items-center justify-between rounded-[1.2vw] px-[3vw] py-[2.5vw] max-[1025px]:text-[2.5vw] max-md:text-[3vw] uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
                   style={{ color: inactiveColor }}
                 >
                   {item.name}
@@ -1161,7 +1174,7 @@ export function ElevateNavbarMobile({
                       currentIndex === index ? null : index
                     )
                   }
-                  className="flex w-full items-center justify-between rounded-[2.5vw] px-[3vw] py-[2.5vw] max-[1025px]:text-[2.5vw]! max-md:text-[3vw]! uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+                  className="flex w-full items-center justify-between rounded-[1.2vw] px-[3vw] py-[2.5vw] max-[1025px]:text-[2.5vw]! max-md:text-[3vw]! uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
                   style={{ color: inactiveColor }}
                 >
                   {item.name}
@@ -1189,10 +1202,10 @@ export function ElevateNavbarMobile({
                         key={dropdownItem.title}
                         href={dropdownItem.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center gap-[3vw] rounded-[2vw] bg-white/5 p-[2vw] max-md:text-[2.8vw] max-[1025px]:text-[2vw]  uppercase text-white/80 transition hover:bg-white/10 motion-reduce:bg-white/5 motion-reduce:transition-none"
+                        className="flex items-center gap-[3vw] rounded-[1vw] bg-white/5 p-[2vw] max-md:text-[2.8vw] max-[1025px]:text-[2vw]  uppercase text-white/80 transition hover:bg-white/10 motion-reduce:bg-white/5 motion-reduce:transition-none"
                         style={{ color: inactiveColor }}
                       >
-                        <div className="relative h-[10vw] w-[10vw] overflow-hidden rounded-[2vw] bg-white/25">
+                        <div className="relative h-[10vw] w-[10vw] overflow-hidden rounded-[1vw] bg-white/25">
                           <Image
                             src={dropdownItem.img}
                             alt={dropdownItem.title}
@@ -1215,7 +1228,7 @@ export function ElevateNavbarMobile({
             <Link
               href={cta.href}
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full max-md:py-[3vw] rounded-[3vw] bg-white py-[1.5vw] text-center max-md:text-[3vw] max-[1025px]:text-[2.5vw] font-semibold text-black"
+              className="block w-full max-md:py-[3vw] rounded-[1.5vw] bg-white py-[1.5vw] text-center max-md:text-[3vw] max-[1025px]:text-[2.5vw] font-semibold text-black"
             >
               {cta.label}
             </Link>
@@ -1223,6 +1236,7 @@ export function ElevateNavbarMobile({
         </div>
       </div>
     </div>
+    </>
   );
 }
 

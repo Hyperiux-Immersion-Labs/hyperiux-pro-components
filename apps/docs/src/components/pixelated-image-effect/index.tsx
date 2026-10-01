@@ -148,18 +148,17 @@ interface PixelatedImageEffectProps {
   imageClassName?: string;
   pixelSize?: number;
   duration?: number;
-  mouseReactivity?: number;
 }
 
 export default function PixelatedImageEffect({
   src = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
   pixelSize = 16,
   duration = 0.25,
-  mouseReactivity = 1,
   imageClassName = "",
 }: PixelatedImageEffectProps) {
   const imageRef = useRef<HTMLDivElement | null>(null);
   const isTouching = useRef(false);
+  const pointerRatio = useRef<number | null>(null);
   const animationRef = useRef<number | null>(null);
   const [renderedPixelSize, setRenderedPixelSize] = useState(pixelSize);
   const [targetPixelSize, setTargetPixelSize] = useState(pixelSize);
@@ -170,7 +169,6 @@ export default function PixelatedImageEffect({
   const resolvedSrc = typeof src === "string" && src.trim() ? src.trim() : fallbackSrc;
   const resolvedPixelSize = Math.min(Math.max(Number(pixelSize) || 16, 1), 64);
   const resolvedDuration = Math.max(Number(duration) || 0, 0);
-  const resolvedMouseReactivity = Math.min(Math.max(Number(mouseReactivity) || 0, 0), 2);
 
   // Reset the animation target whenever the resolved pixelSize prop changes,
   // without clobbering the interactive target set by pointer movement below.
@@ -220,17 +218,29 @@ export default function PixelatedImageEffect({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedDuration, targetPixelSize]);
 
+  const computeTarget = (ratio: number) => {
+    // Left edge is clear (1), right edge is twice the baseline pixelSize, so
+    // the hover range follows the current prop values.
+    return Math.min(Math.max(1 + ratio * (resolvedPixelSize * 2 - 1), 1), 64);
+  };
+
   const updatePixel = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!imageRef.current) return;
 
     const rect = imageRef.current.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-
-    const pointerPixelSize = Math.min(Math.max(x / 30, 1), 64);
-    const nextPixelSize =
-      resolvedPixelSize + (pointerPixelSize - resolvedPixelSize) * resolvedMouseReactivity;
-    setTargetPixelSize(Math.min(Math.max(nextPixelSize, 1), 64));
+    const ratio = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+    pointerRatio.current = ratio;
+    setTargetPixelSize(computeTarget(ratio));
   };
+
+  // Re-apply the last pointer position when props change mid-hover so the
+  // effect immediately uses the new values instead of the stale target.
+  useEffect(() => {
+    if (pointerRatio.current === null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTargetPixelSize(computeTarget(pointerRatio.current));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolvedPixelSize]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     isTouching.current = true;
@@ -244,6 +254,11 @@ export default function PixelatedImageEffect({
 
   const handlePointerUp = () => {
     isTouching.current = false;
+  };
+
+  const handlePointerLeave = () => {
+    isTouching.current = false;
+    pointerRatio.current = null;
   };
 
   return (
@@ -271,7 +286,7 @@ export default function PixelatedImageEffect({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerLeave={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

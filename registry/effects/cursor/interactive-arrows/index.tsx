@@ -286,51 +286,35 @@ class Arrow {
     this.targetPos = { ...position };
   }
 
-  update(mouseX: number, mouseY: number, reactionRadius: number, angleSmoothing: number, positionSmoothing: number, allowSpacing: boolean) {
+  update(mouseX: number, mouseY: number, reactionRadius: number, angleSmoothing: number, positionSmoothing: number) {
     this.dx = mouseX - this.pos.x;
     this.dy = mouseY - this.pos.y;
+    this.angle = lerpAngle(this.angle, Math.atan2(this.dy, this.dx) * 0.95, angleSmoothing);
 
-    const targetAngle = Math.atan2(this.dy, this.dx) * 0.95;
+    // Everything is measured from the fixed home position so displacement
+    // never feeds back into hover or into the push itself.
+    const hx = this.originalPos.x - mouseX;
+    const hy = this.originalPos.y - mouseY;
+    const dist = Math.hypot(hx, hy);
+    this.isHovered = dist < reactionRadius;
 
-    this.angle = lerpAngle(this.angle, targetAngle, angleSmoothing);
-
-    // Check if mouse is near this arrow
-    const distance = Math.sqrt(
-      Math.pow(mouseX - this.pos.x, 2) +
-      Math.pow(mouseY - this.pos.y, 2)
-    );
-
-    const wasHovered = this.isHovered;
-    this.isHovered = distance < reactionRadius;
-
-    // Handle spacing animation
-    if (this.isHovered !== wasHovered && allowSpacing) {
-      if (this.isHovered) {
-        // Push surrounding arrows away
-        this.arrowsRef.current.forEach(otherArrow => {
-          if (otherArrow !== this) {
-            const dx = otherArrow.pos.x - this.pos.x;
-            const dy = otherArrow.pos.y - this.pos.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const pushRadius = reactionRadius * (70 / 30);
-            if (dist < pushRadius) {
-              const pushForce = (pushRadius - dist) / pushRadius;
-              otherArrow.targetPos = {
-                x: otherArrow.originalPos.x + (dx / dist) * 20 * pushForce,
-                y: otherArrow.originalPos.y + (dy / dist) * 20 * pushForce
-              };
-            }
-          }
-        });
-      } else {
-        // Reset surrounding arrows
-        this.arrowsRef.current.forEach(arrow => {
-          arrow.targetPos = { ...arrow.originalPos };
-        });
-      }
+    // One smooth radial push away from the cursor. The quadratic falloff is
+    // gentler than 1:1 everywhere, so neighbours never cross or bunch up, and
+    // the ease-in near the cursor avoids a direction flip when it sits on an arrow.
+    const pushRadius = reactionRadius * (70 / 30);
+    let pushX = 0;
+    let pushY = 0;
+    if (dist > 0 && dist < pushRadius) {
+      const t = 1 - dist / pushRadius;
+      const edge = Math.min(1, dist / (pushRadius * 0.3));
+      const centre = edge * edge * (3 - 2 * edge);
+      const mag = 20 * t * t * centre;
+      pushX = (hx / dist) * mag;
+      pushY = (hy / dist) * mag;
     }
+    this.targetPos.x = this.originalPos.x + pushX;
+    this.targetPos.y = this.originalPos.y + pushY;
 
-    // Smooth position transition
     this.pos.x += (this.targetPos.x - this.pos.x) * positionSmoothing;
     this.pos.y += (this.targetPos.y - this.pos.y) * positionSmoothing;
   }
@@ -359,32 +343,22 @@ const Arrows = ({
   arrowColor = "black",
   activeColor = "black",
   reactionRadius = 30,
-  smoothing = 0.15,
+  stiffness = 0.15,
 }: {
   arrowCount?: number;
   arrowColor?: string;
   activeColor?: string;
   reactionRadius?: number;
-  smoothing?: number;
+  stiffness?: number;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
   const arrowsRef = useRef<Arrow[]>([]);
-  const controlsRef = useRef({ arrowColor, activeColor, reactionRadius, smoothing });
-  const lastReactionRadiusRef = useRef(reactionRadius);
-  const suppressSpacingFramesRef = useRef(0);
+  const controlsRef = useRef({ arrowColor, activeColor, reactionRadius, stiffness });
 
   useEffect(() => {
-    if (lastReactionRadiusRef.current !== reactionRadius) {
-      lastReactionRadiusRef.current = reactionRadius;
-      suppressSpacingFramesRef.current = 8;
-      arrowsRef.current.forEach((arrow) => {
-        arrow.targetPos = { ...arrow.originalPos };
-      });
-    }
-
-    controlsRef.current = { arrowColor, activeColor, reactionRadius, smoothing };
-  }, [activeColor, arrowColor, reactionRadius, smoothing]);
+    controlsRef.current = { arrowColor, activeColor, reactionRadius, stiffness };
+  }, [activeColor, arrowColor, reactionRadius, stiffness]);
 
   const initializeArrows = useCallback((canvas: HTMLCanvasElement) => {
     const arrows: Arrow[] = [];
@@ -432,15 +406,11 @@ const Arrows = ({
     const mouse = mouseRef.current;
     const controls = controlsRef.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const resolvedSmoothing = controls.smoothing === 0.12 ? 0.15 : controls.smoothing;
-    const allowSpacing = suppressSpacingFramesRef.current <= 0;
+    const resolvedStiffness = controls.stiffness === 0.12 ? 0.15 : controls.stiffness;
     arrows.forEach(arrow => {
-      arrow.update(mouse.x, mouse.y, controls.reactionRadius, resolvedSmoothing, resolvedSmoothing * (0.1 / 0.15), allowSpacing);
+      arrow.update(mouse.x, mouse.y, controls.reactionRadius, resolvedStiffness, resolvedStiffness * (0.1 / 0.15));
       arrow.draw(ctx, controls.arrowColor, controls.activeColor);
     });
-    if (suppressSpacingFramesRef.current > 0) {
-      suppressSpacingFramesRef.current -= 1;
-    }
   }, []);
 
   useEffect(() => {
@@ -489,12 +459,12 @@ class OpacityArrow {
     this.dist = 0;
   }
 
-  update(mx: number, my: number, smoothing: number) {
+  update(mx: number, my: number, stiffness: number) {
     this.dx = mx - this.pos.x;
     this.dy = my - this.pos.y;
     this.dist = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
     const targetAngle = Math.atan2(this.dy, this.dx);
-    this.angle += (targetAngle - this.angle) * smoothing;
+    this.angle += (targetAngle - this.angle) * stiffness;
   }
 
   draw(ctx: CanvasRenderingContext2D, arrowColor: string, activeColor: string, reactionRadius: number) {
@@ -502,13 +472,13 @@ class OpacityArrow {
     ctx.translate(this.pos.x, this.pos.y);
     ctx.rotate(this.angle);
     ctx.beginPath();
-    ctx.moveTo(30, 0);
-    ctx.lineTo(-30, 0);
-    ctx.moveTo(30, 0);
-    ctx.lineTo(5, -30);
-    ctx.moveTo(30, 0);
-    ctx.lineTo(5, 30);
-    ctx.lineWidth = 5;
+    ctx.moveTo(20, 0);
+    ctx.lineTo(-20, 0);
+    ctx.moveTo(20, 0);
+    ctx.lineTo(5, -13);
+    ctx.moveTo(20, 0);
+    ctx.lineTo(5, 13);
+    ctx.lineWidth = this.dist < reactionRadius ? 3 : 2;
     const alpha = 1 - (this.dist / 300);
     ctx.globalAlpha = Math.max(0, alpha);
     ctx.strokeStyle = this.dist < reactionRadius ? activeColor : arrowColor;
@@ -522,13 +492,13 @@ const ArrowsOpacity = ({
   arrowColor = "black",
   activeColor = "black",
   reactionRadius = 30,
-  smoothing = 0.12,
+  stiffness = 0.12,
 }: {
   arrowCount?: number;
   arrowColor?: string;
   activeColor?: string;
   reactionRadius?: number;
-  smoothing?: number;
+  stiffness?: number;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const arrowArrRef = useRef<OpacityArrow[]>([]);
@@ -583,7 +553,7 @@ const ArrowsOpacity = ({
           for (let x = 0; x < canvas.width / 50; x++) {
             const arrow = arrowArrRef.current[y * 10 + x];
             if (arrow) {
-              arrow.update(mx, my, smoothing === 0.12 ? 1 : smoothing);
+              arrow.update(mx, my, stiffness === 0.12 ? 1 : stiffness);
               arrow.draw(ctx, arrowColor, activeColor, reactionRadius);
             }
           }
@@ -597,7 +567,7 @@ const ArrowsOpacity = ({
       canvas.removeEventListener('mousemove', handleMouseMove);
       loop.destroy();
     };
-  }, [activeColor, arrowColor, arrowCount, reactionRadius, smoothing]);
+  }, [activeColor, arrowColor, arrowCount, reactionRadius, stiffness]);
 
   return (
       <canvas ref={canvasRef} className="w-full h-full pointer-events-auto" />
@@ -622,11 +592,11 @@ class LimitArrow {
     this.ease = 0.1;
   }
 
-  update(mouseX: number, mouseY: number, smoothing: number) {
+  update(mouseX: number, mouseY: number, stiffness: number) {
     const targetDx = mouseX - this.pos.x;
     const targetDy = mouseY - this.pos.y;
-    this.dx += (targetDx - this.dx) * smoothing;
-    this.dy += (targetDy - this.dy) * smoothing;
+    this.dx += (targetDx - this.dx) * stiffness;
+    this.dy += (targetDy - this.dy) * stiffness;
     this.angle = Math.atan2(this.dy, this.dx);
   }
 
@@ -658,7 +628,7 @@ interface ArrowsLimitProps {
   arrowColor?: string;
   activeColor?: string;
   reactionRadius?: number;
-  smoothing?: number;
+  stiffness?: number;
 }
 
 const ArrowsLimit = ({
@@ -668,7 +638,7 @@ const ArrowsLimit = ({
   arrowColor = "black",
   activeColor = "black",
   reactionRadius = 30,
-  smoothing = 0.035,
+  stiffness = 0.035,
 }: ArrowsLimitProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
@@ -732,13 +702,13 @@ const ArrowsLimit = ({
     const mouse = mouseRef.current;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const resolvedSmoothing = smoothing === 0.12 ? 0.035 : smoothing;
+    const resolvedStiffness = stiffness === 0.12 ? 0.035 : stiffness;
 
     arrows.forEach(arrow => {
-      arrow.update(mouse.x, mouse.y, resolvedSmoothing);
+      arrow.update(mouse.x, mouse.y, resolvedStiffness);
       arrow.draw(ctx, arrowColor, activeColor, mouse.x, mouse.y, reactionRadius);
     });
-  }, [activeColor, arrowColor, reactionRadius, smoothing]);
+  }, [activeColor, arrowColor, reactionRadius, stiffness]);
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
@@ -790,12 +760,12 @@ class PlayArrow {
     this.rotationEase = 0.12;
   }
 
-  update(mouseX: number, mouseY: number, smoothing: number) {
+  update(mouseX: number, mouseY: number, stiffness: number) {
     this.dx = mouseX - this.pos.x;
     this.dy = mouseY - this.pos.y;
     const targetAngle = Math.atan2(this.dy, this.dx);
 
-    this.angle = lerpAngle(this.angle, targetAngle, smoothing);
+    this.angle = lerpAngle(this.angle, targetAngle, stiffness);
   }
 
   draw(ctx: CanvasRenderingContext2D, arrowColor: string, activeColor: string, mouseX: number, mouseY: number, reactionRadius: number) {
@@ -822,13 +792,13 @@ const ArrowsPlay = ({
   arrowColor = "black",
   activeColor = "black",
   reactionRadius = 30,
-  smoothing = 0.12,
+  stiffness = 0.12,
 }: {
   arrowCount?: number;
   arrowColor?: string;
   activeColor?: string;
   reactionRadius?: number;
-  smoothing?: number;
+  stiffness?: number;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
@@ -918,10 +888,10 @@ const ArrowsPlay = ({
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     arrows.forEach(arrow => {
-      arrow.update(mouse.x, mouse.y, smoothing);
+      arrow.update(mouse.x, mouse.y, stiffness);
       arrow.draw(ctx, arrowColor, activeColor, mouse.x, mouse.y, reactionRadius);
     });
-  }, [activeColor, arrowColor, reactionRadius, smoothing]);
+  }, [activeColor, arrowColor, reactionRadius, stiffness]);
 
   useEffect(() => {
     const canvas = canvasRef.current as HTMLCanvasElement;
@@ -1099,24 +1069,26 @@ const variations = [
     frameClassName: "border-black/15 bg-white",
     component: ArrowsOpacity,
   },
-  {
-    id: "smooth-response",
-    label: "Smooth",
-    frameClassName: "border-black/15 bg-white",
-    component: ArrowsLimit,
-  },
+  // Temporarily hidden from the options:
+  // {
+  //   id: "smooth-response",
+  //   label: "Smooth",
+  //   frameClassName: "border-black/15 bg-white",
+  //   component: ArrowsLimit,
+  // },
   {
     id: "vector-lines",
     label: "Lines",
     frameClassName: "border-black/15 bg-white",
     component: Lines,
   },
-  {
-    id: "playful-arrows",
-    label: "Play",
-    frameClassName: "border-black/15 bg-white",
-    component: ArrowsPlay,
-  },
+  // Temporarily hidden from the options:
+  // {
+  //   id: "playful-arrows",
+  //   label: "Play",
+  //   frameClassName: "border-black/15 bg-white",
+  //   component: ArrowsPlay,
+  // },
 ];
 
 function usePrefersReducedMotion() {
