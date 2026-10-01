@@ -2,7 +2,7 @@
 "use client";
 import { useTexture } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { add, length, mul, oneMinus, sub, texture, uniform, uv } from "three/tsl";
 import * as THREE from "three/webgpu";
 const DEFAULT_ROOT_MARGIN = "256px";
@@ -278,6 +278,19 @@ function ImageNodeMaterial({ src, isMobile, bulgeEffect, duration, smoothness, m
       <planeGeometry args={[width, height]}/>
     </mesh>);
 }
+// Module-level so the identity is stable: R3F re-creates the renderer (and
+// suspends <Canvas>) whenever the `gl` prop changes between renders.
+async function createRenderer({ canvas }) {
+    const renderer = new THREE.WebGPURenderer({
+        canvas,
+        antialias: true,
+    });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NoToneMapping;
+    // Wait for the backend before R3F starts rendering / uploading textures.
+    await renderer.init();
+    return renderer;
+}
 export default function FishEye({ bulgeEffect = 1, duration = 0.125, smoothness = 0.083, mouseInteractive = true, }) {
     const rootRef = useRef(null);
     const [frameloop, setFrameloop] = useState('always');
@@ -294,13 +307,21 @@ export default function FishEye({ bulgeEffect = 1, duration = 0.125, smoothness 
         if (isMobile)
             return undefined;
         let url = null;
+        let cancelled = false;
         loadCorsObjectUrl(DEFAULT_IMAGE_SRC)
             .then((u) => {
+            // Strict Mode runs this effect twice; drop the stale load so the
+            // texture src never swaps (which re-suspends and flashes the image).
+            if (cancelled) {
+                URL.revokeObjectURL(u);
+                return;
+            }
             url = u;
             setObjectUrl(u);
         })
             .catch((err) => console.warn('FishEye texture load failed:', err));
         return () => {
+            cancelled = true;
             if (url)
                 URL.revokeObjectURL(url);
         };
@@ -316,20 +337,11 @@ export default function FishEye({ bulgeEffect = 1, duration = 0.125, smoothness 
     if (isMobile)
         return null;
     return (<div ref={rootRef} className="h-full w-fit">
-      {objectUrl ? (<Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 45 }} className="h-full w-full" frameloop={frameloop} style={{
+      {objectUrl ? (<Suspense fallback={null}><Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 45 }} className="h-full w-full" frameloop={frameloop} style={{
                 pointerEvents: isMobile ? 'none' : 'auto',
                 touchAction: isMobile ? 'none' : 'auto',
-            }} gl={({ canvas }) => {
-                const renderer = new THREE.WebGPURenderer({
-                    canvas,
-                    antialias: true,
-                });
-                renderer.outputColorSpace = THREE.SRGBColorSpace;
-                renderer.toneMapping = THREE.NoToneMapping;
-                renderer.init();
-                return renderer;
-            }}>
+            }} gl={createRenderer}>
           <ImageNodeMaterial src={objectUrl} isMobile={isMobile} bulgeEffect={bulgeEffect} duration={duration} smoothness={smoothness} mouseInteractive={mouseInteractive}/>
-        </Canvas>) : null}
+        </Canvas></Suspense>) : null}
     </div>);
 }

@@ -363,7 +363,7 @@ interface FullScreenCrosshairProps {
 }
 
 const FullScreenCrosshair = ({
-  color = "#ffffff",
+  color = "#000000",
   centerContent = "•",
   hideNativeCursor = true,
   gap = 20,

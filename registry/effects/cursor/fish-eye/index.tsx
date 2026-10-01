@@ -3,7 +3,7 @@
 
 import { useTexture } from "@react-three/drei";
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { add, length, mul, oneMinus, sub, texture, uniform, uv } from "three/tsl";
 import * as THREE from "three/webgpu";
 
@@ -413,6 +413,22 @@ interface FishEyeProps {
   mouseInteractive?: boolean
 }
 
+// Module-level so the identity is stable: R3F re-creates the renderer (and
+// suspends <Canvas>) whenever the `gl` prop changes between renders.
+async function createRenderer({ canvas }: { canvas: HTMLCanvasElement | OffscreenCanvas }) {
+  const renderer = new THREE.WebGPURenderer({
+    canvas: canvas as HTMLCanvasElement,
+    antialias: true,
+  })
+
+  renderer.outputColorSpace = THREE.SRGBColorSpace
+  renderer.toneMapping = THREE.NoToneMapping
+  // Wait for the backend before R3F starts rendering / uploading textures.
+  await renderer.init()
+
+  return renderer
+}
+
 export default function FishEye({
   bulgeEffect = 1,
   duration = 0.125,
@@ -436,14 +452,22 @@ export default function FishEye({
     if (isMobile) return undefined
 
     let url: string | null = null
+    let cancelled = false
     loadCorsObjectUrl(DEFAULT_IMAGE_SRC)
       .then((u) => {
+        // Strict Mode runs this effect twice; drop the stale load so the
+        // texture src never swaps (which re-suspends and flashes the image).
+        if (cancelled) {
+          URL.revokeObjectURL(u)
+          return
+        }
         url = u
         setObjectUrl(u)
       })
       .catch((err) => console.warn('FishEye texture load failed:', err))
 
     return () => {
+      cancelled = true
       if (url) URL.revokeObjectURL(url)
     }
   }, [isMobile])
@@ -462,6 +486,7 @@ export default function FishEye({
   return (
     <div ref={rootRef} className="h-full w-fit">
       {objectUrl ? (
+        <Suspense fallback={null}>
         <Canvas
           dpr={[1, 2]}
           camera={{ position: [0, 0, 5], fov: 45 }}
@@ -471,18 +496,7 @@ export default function FishEye({
             pointerEvents: isMobile ? 'none' : 'auto',
             touchAction: isMobile ? 'none' : 'auto',
           }}
-          gl={({ canvas }: any) => {
-            const renderer = new THREE.WebGPURenderer({
-              canvas,
-              antialias: true,
-            })
-
-            renderer.outputColorSpace = THREE.SRGBColorSpace
-            renderer.toneMapping = THREE.NoToneMapping
-            renderer.init()
-
-            return renderer
-          }}
+          gl={createRenderer as unknown as React.ComponentProps<typeof Canvas>['gl']}
         >
           <ImageNodeMaterial
             src={objectUrl}
@@ -493,6 +507,7 @@ export default function FishEye({
             mouseInteractive={mouseInteractive}
           />
         </Canvas>
+        </Suspense>
       ) : null}
     </div>
   )

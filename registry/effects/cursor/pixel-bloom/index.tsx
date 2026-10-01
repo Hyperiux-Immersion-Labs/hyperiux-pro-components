@@ -423,11 +423,9 @@ const GRID_SIZE = 35;
 const EFFECT_RADIUS = 40;
 const MAX_TRAIL_LENGTH = 8;
 const CELL_LIFETIME = 100;
-const GRID_IMAGE_BASE_URL =
-  "https://picsum.photos/seed/feddleascicursor/1600/1200";
 const DEFAULT_GRID_IMAGE_URLS = Array.from(
   { length: 10 },
-  (_, i) => `${GRID_IMAGE_BASE_URL}/grid-${i}.1.png`
+  (_, i) => `https://picsum.photos/seed/pixel-bloom-${i}/400/400`
 );
 const getCanvasSafeMediaUrl = (source: string) => source;
 

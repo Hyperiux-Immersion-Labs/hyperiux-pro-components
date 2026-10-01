@@ -22,7 +22,7 @@ export type DotFillBtnProps = {
 } & ComponentPropsWithoutRef<typeof Link>;
 
 const DotFillBtn = ({
- btnText ="",
+ btnText ="Try demo",
  href = DEFAULT_HREF,
  className ="",
  textClassName ="",
@@ -42,7 +42,7 @@ const DotFillBtn = ({
  const el = textRef.current;
  if (!el) return;
 
- const sourceText = btnText ||"";
+ const sourceText = btnText ||"Try demo";
  el.innerHTML ="";
 
  [...sourceText].forEach((char, index) => {

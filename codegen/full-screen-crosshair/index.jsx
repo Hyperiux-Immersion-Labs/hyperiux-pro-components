@@ -255,7 +255,7 @@ export const useMouse = ({ smooth = true, lerpFactor = 0.1, } = {}) => {
         smoothMouse,
     };
 };
-const FullScreenCrosshair = ({ color = "#ffffff", centerContent = "•", hideNativeCursor = true, gap = 20, thickness = 1, centerSize = 24, smooth = true, lerpFactor = 0.14, className = "", }) => {
+const FullScreenCrosshair = ({ color = "#000000", centerContent = "•", hideNativeCursor = true, gap = 20, thickness = 1, centerSize = 24, smooth = true, lerpFactor = 0.14, className = "", }) => {
     const crosshairArmLength = 1500;
     const { smoothMouse } = useMouse({
         smooth,
