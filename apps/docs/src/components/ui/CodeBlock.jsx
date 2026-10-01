@@ -215,7 +215,10 @@ export function CodeBlock({
                 className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
                     shouldShowHeader
                         ? "max-md:max-h-[50vh] max-[1025px]:max-h-[50vh] max-md:min-h-[5vh]"
-                        : "max-md:h-[5vh] max-md:pt-0 max-[1025px]:h-[5.5vh]"
+                        : // Sized to content: one-line install commands sit at the
+                          // min height, multi-line snippets (blog posts) grow
+                          // until the cap, then scroll.
+                          "max-md:min-h-[5vh] max-md:max-h-[50vh] max-md:pt-0 max-[1025px]:min-h-[5.5vh] max-[1025px]:max-h-[50vh]"
                 }`}
                 style={{ scrollbarGutter: "stable" }}
             >

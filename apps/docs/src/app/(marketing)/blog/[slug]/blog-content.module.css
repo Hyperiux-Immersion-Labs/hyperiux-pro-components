@@ -3,6 +3,8 @@
    copy-paywall (locked code placeholders, props tables). */
 
 .content {
+  /* h3 size, shared with the FAQ icon so it stays centred on the question. */
+  --h3-size: clamp(1.15rem, 1.55vw, 1.5rem);
   color: white;
   max-width: 100%;
 }
@@ -49,7 +51,7 @@
 /* Sub-headings - "Performance Notes", "Accessibility Notes". */
 .content h3 {
   color: rgb(255 255 255);
-  font-size: 1.55vw;
+  font-size: var(--h3-size);
   line-height: 1.15;
   letter-spacing: -0.03em;
   font-weight: 400;
@@ -167,6 +169,28 @@
   margin-top: 3.5rem;
 }
 
+/* FAQ questions are h3s and answers are ps inside .content, so they inherit
+   the body type ramp below at every breakpoint - only spacing lives here. */
+.faqItem {
+  padding: 1.5rem 2rem;
+}
+
+.content h3.faqQuestion {
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* 18px icon + the title row's 1rem gap, so answers align under the question. */
+.faqAnswer {
+  padding-top: 0.75rem;
+  padding-left: calc(18px + 1rem);
+}
+
+/* Centres the 18px icon on the question's first line. */
+.faqIcon {
+  margin-top: calc((var(--h3-size) * 1.25 - 18px) / 2);
+}
+
 .faqAccordionTitle {
   color: rgb(255 255 255);
   font-size: clamp(1.45rem, 2vw, 2rem);
@@ -236,8 +260,8 @@
     font-size: 1.75rem;
   }
 
-  .content h3 {
-    font-size: 1.25rem;
+  .content {
+    --h3-size: 1.25rem;
   }
 
   .content p,
@@ -249,6 +273,10 @@
   .content th,
   .caption {
     font-size: 0.85rem;
+  }
+
+  .faqItem {
+    padding: 1.25rem 1.5rem;
   }
 
   .imageFrame {
@@ -264,16 +292,20 @@
   .faqAccordionTitle {
     margin-top: 1.5rem;
     margin-bottom: 0.8rem;
-    font-size: 7vw;
+    font-size: clamp(1.5rem, 7vw, 1.75rem);
   }
 
-  .content h3 {
-    font-size: 1.2rem;
+  .content {
+    --h3-size: 1.2rem;
   }
 
   .content p,
   .content li {
     font-size: 1rem;
+  }
+
+  .faqItem {
+    padding: 1.1rem 1.1rem;
   }
 
   .imageFrame {

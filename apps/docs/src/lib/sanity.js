@@ -245,7 +245,12 @@ export async function getAllSanityEffectEntries() {
 // never throws, falls back to null/[] with a console.warn so a Sanity outage
 // degrades the blog rather than breaking the build/page.
 
-const SANITY_BLOG_FETCH_OPTIONS = {cache: 'no-store'}
+// Cached in Next's data cache and refreshed at most every 5 minutes, so a
+// post published in Studio goes live without a redeploy while page views
+// don't each hit the Sanity API. Keep in step with `revalidate` on the blog
+// routes.
+export const BLOG_REVALIDATE_SECONDS = 300
+const SANITY_BLOG_FETCH_OPTIONS = {next: {revalidate: BLOG_REVALIDATE_SECONDS}}
 
 async function hydrateBlogAuthors(client, posts = []) {
   const authorIds = [

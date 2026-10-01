@@ -10,14 +10,20 @@ function formatCardDate(value) {
   const month = date.toLocaleDateString("en-US", { month: "long" });
   const day = String(date.getDate()).padStart(2, "0");
 
-  return `${month} ${day},${date.getFullYear()}`;
+  return `${month} ${day}, ${date.getFullYear()}`;
 }
 
+// Sized off the card's own width (cqi), not the viewport: the same card sits
+// in a 3/2/1-column grid on /blog and in 31vw/55vw/full-width slides in
+// RelatedBlogsSlider, so viewport units gave the same-width card different
+// type at different breakpoints. Values match the desktop design (a ~426px
+// card at 1440px), clamped so narrow cards stay readable and wide ones don't
+// balloon.
 export default function BlogCard({ post, priority = false }) {
   return (
-    <div className="fadeup group/card relative h-full w-full">
-      <div className="flex h-full min-h-[32vw] flex-col gap-[1.2vw] bg-[#161616] p-[1.6vw] max-md:min-h-[45vh] max-[1025px]:min-h-[45vh]  max-[1025px]:gap-[3vw] max-md:gap-[5vw] max-md:p-[4vw] pb-9 max-md:pb-12">
-        <div className="h-[16vw] w-full shrink-0 overflow-hidden bg-[#202020] max-[1025px]:h-[27vw] max-md:h-[25vh]">
+    <div className="fadeup group/card @container relative h-full w-full">
+      <div className="flex h-full flex-col gap-[clamp(0.75rem,4cqi,1.25rem)] bg-[#161616] p-[clamp(1rem,5.4cqi,1.75rem)] pb-[clamp(2.25rem,8.5cqi,3rem)]">
+        <div className="aspect-video w-full shrink-0 overflow-hidden bg-[#202020]">
           {post.coverImage?.url && (
             <Image
               src={post.coverImage.url}
@@ -35,24 +41,24 @@ export default function BlogCard({ post, priority = false }) {
         <div className="mt-2 flex items-center justify-between gap-3 pb-3 font-geist-mono">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             {post.categories?.length > 0 && (
-              <span className="bg-[#2B2B2B] px-2 py-0.5 text-[0.9vw] text-white/90 max-[1025px]:px-3 max-[1025px]:py-1.5 max-[1025px]:text-[2vw] max-md:px-3 max-md:py-1 max-md:text-[3vw]!">
+              <span className="bg-[#2B2B2B] px-2 py-1 text-[clamp(0.75rem,3cqi,0.95rem)] leading-none text-white/90">
                 {post.categories[0].title}
               </span>
             )}
           </div>
-          <span className="shrink-0 text18 font-neue-haas text-[#AEAEAE] max-[1025px]:text-[1.8vw] max-md:text-[3vw]!">
+          <span className="shrink-0 font-neue-haas text-[clamp(0.75rem,3.2cqi,1rem)] text-[#AEAEAE]">
             {formatCardDate(post.publishedAt)}
           </span>
         </div>
 
         <LineWipe>
-          <h3 className="shrink-0 text32 font-neue-haas font-medium leading-[1.2]! text-white max-[1025px]:text-[2.8vw] max-md:text-[3vw] max-sm:text-[4.5vw]">
+          <h3 className="shrink-0 font-neue-haas text-[clamp(1.15rem,6cqi,2rem)] font-medium leading-[1.2]! text-white">
             {post.title}
           </h3>
         </LineWipe>
 
         <LineWipe delay={0.15}>
-          <p className="grow text20 max-[1025px]:text-[2vw] leading-[1.2] text-white max-md:text-[3.5vw]!">
+          <p className="grow text-[clamp(0.95rem,3.55cqi,1.125rem)] leading-[1.4] text-white">
             {post.summary}
           </p>
         </LineWipe>
@@ -63,7 +69,7 @@ export default function BlogCard({ post, priority = false }) {
             text="Read More"
             tilted={false}
             underline={true}
-            className="relative text20 max-md:text-sm z-10 mt-5 max-md:mt-0! max-md:text34"
+            className="relative z-10 mt-[clamp(0.25rem,3cqi,1.25rem)] text-[clamp(0.95rem,3.55cqi,1.125rem)]"
           />
         </div>
       </div>

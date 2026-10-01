@@ -243,25 +243,24 @@ function BlogBlock({ block, headingId }) {
                 <FAQWrapper
                   key={itemId}
                   itemId={itemId}
-                  className={`group border-grey px-[2.5vw] py-[2vw] max-[1025px]:px-[4vw] max-[1025px]:py-[4vw] max-md:px-[6vw] max-md:py-[6vw] ${index > 0 ? "border-t" : ""
-                    }`}
-                  iconClassName="mt-[0.55vw] max-md:mt-[1vw] max-md:mt-[1.5vw] text-light-grey transition-colors duration-500 ease-out group-hover:text-white"
+                  className={`group border-grey ${styles.faqItem} ${index > 0 ? "border-t" : ""}`}
+                  iconClassName={`${styles.faqIcon} text-light-grey transition-colors duration-500 ease-out group-hover:text-white`}
                   iconSize={18}
                   iconStrokeWidth={1.5}
                   duration={0.6}
                 >
                   <FAQTitle
-                    className="pb-0 items-start! justify-start! gap-[1.5vw]! max-[1025px]:gap-[3vw]! max-md:gap-[4vw]!"
+                    className="pb-0 items-start! justify-start! gap-4!"
                     iconPosition="left"
                     iconMode="rotate-left-down"
                   >
-                    <h3 className="text-[1.55vw]! font-neue-haas leading-tight! my-0! max-[1025px]:text-[3.4vw]! max-md:text-[5.2vw]!">
+                    <h3 className={styles.faqQuestion}>
                       {item.question}
                     </h3>
                   </FAQTitle>
 
-                  <FAQContent className="pt-[1.2vw] pl-[2.8vw] max-[1025px]:pt-[2.5vw] max-[1025px]:pl-[7vw] max-md:pt-[4vw] max-md:pl-[8vw]">
-                    <p className="text-[1.15vw]! font-neue-haas text-white! leading-[1.45]! max-[1025px]:text-[2.2vw]! max-md:text-[4vw]!">
+                  <FAQContent className={styles.faqAnswer}>
+                    <p>
                       {item.answer}
                     </p>
                   </FAQContent>

@@ -17,10 +17,11 @@ import BlogBodyRenderer from "@/components/blog/BlogBodyRenderer";
 import BlogArticleBody from "@/components/blog/BlogArticleBody";
 import BlogTags from "@/components/blog/BlogTags";
 import RelatedBlogsSlider from "./RelatedBlogsSlider";
-import "@/styles/blog-new.css";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// ISR: posts are prerendered at build and refreshed in the background every
+// 5 minutes (matches BLOG_REVALIDATE_SECONDS in lib/sanity). Slugs published
+// after the build render on first request.
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const entries = await getAllSanityBlogSlugs();

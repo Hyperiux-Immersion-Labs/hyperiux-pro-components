@@ -16,28 +16,19 @@ const CubeBackgroundAscii = dynamic(
 );
 
 
-const DARK_FIELD_BASE = {
+// 854x480 - the ASCII grid samples far coarser than that, so a 1080p source
+// only adds download weight.
+const VIDEO_SRC = "/blog-hero.mp4";
+const VIDEO_CONFIG = {
   invert: false,
-  brightnessMap: 0.8,
   rampLow: 0,
   rampHigh: 0.63,
+  levelsLow: 0.185,
+  levelsHigh: 0.6,
+  brightnessMap: 0.95,
+  videoScale: 0.8,
+  videoOffsetX: 0.31,
 };
-
-
-const VIDEO_CONFIGS = {
-  "/test1.mp4": {
-    ...DARK_FIELD_BASE,
-    levelsLow: 0.185,
-    levelsHigh: 0.6,
-    brightnessMap: 0.95,
-    videoScale: 0.8,
-    videoOffsetX: 0.31,
-  },
-  "/test2.mp4": { ...DARK_FIELD_BASE, levelsLow: 0.06, levelsHigh: 0.5 },
-};
-
-const VIDEO_SRC = "/test1.mp4";
-const VIDEO_CONFIG = VIDEO_CONFIGS[VIDEO_SRC];
 
 export default function BlogHero() {
   useFadeUp();

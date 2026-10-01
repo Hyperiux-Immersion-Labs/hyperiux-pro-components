@@ -16,7 +16,7 @@ function formatFeaturedDate(value) {
   const month = date.toLocaleDateString("en-US", { month: "long" });
   const day = String(date.getDate()).padStart(2, "0");
 
-  return `${month} ${day},${date.getFullYear()}`;
+  return `${month} ${day}, ${date.getFullYear()}`;
 }
 
 function FeaturedBlogContent({ featuredPost }) {

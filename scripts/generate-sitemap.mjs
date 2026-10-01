@@ -8,6 +8,11 @@
  * the registry, so removed/renamed effects don't leave stale entries and
  * new effects are always included.
  *
+ * Blog entries (/blog + /blog/<slug>) are rebuilt from Sanity's published
+ * blogPost documents. If Sanity can't be reached, the blog entries already in
+ * the sitemap are kept so a flaky network never fails or empties the build.
+ * Posts published between deploys join the sitemap on the next build.
+ *
  * Run manually: node scripts/generate-sitemap.mjs
  * Runs automatically before `npm run build` in apps/docs (see "prebuild").
  */
@@ -21,6 +26,13 @@ const REGISTRY_INDEX = path.join(ROOT, "registry", "index.json");
 const SITEMAP_PATH = path.join(ROOT, "apps", "docs", "public", "sitemap.xml");
 const MOCK_TEMPLATES_PATH = path.join(ROOT, "apps", "docs", "src", "lib", "mock-templates.js");
 const SITE_URL = "https://vault.hyperiux.com";
+
+// Same project/dataset as apps/docs/src/lib/sanity.js. The fallbacks match
+// hyperiux-vault/sanity.config.js for local runs without the docs .env loaded.
+const SANITY_PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "qrtsgg7p";
+const SANITY_DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
+const BLOG_POSTS_QUERY = `*[_type == "blogPost" && defined(slug.current) && !(_id in path("drafts.**"))]
+  | order(publishedAt desc){"slug": slug.current, publishedAt, updatedAt, _updatedAt}`;
 
 // Mirrors the `id` -> `slug` mapping in apps/docs/src/lib/categories.js.
 // Keep in sync if that file's category slugs change.
@@ -47,8 +59,14 @@ function categorySlug(category) {
   return CATEGORY_SLUGS[category] || category;
 }
 
-function buildUrlBlock(loc, { priority = "0.6400", changefreq = "daily" } = {}) {
-  const lastmod = new Date().toISOString().replace(/\.\d+Z$/, "+00:00");
+function toLastmod(date) {
+  return date.toISOString().replace(/\.\d+Z$/, "+00:00");
+}
+
+function buildUrlBlock(
+  loc,
+  { priority = "0.6400", changefreq = "daily", lastmod = toLastmod(new Date()) } = {}
+) {
   return [
     "  <url>",
     `       <loc>${loc}</loc>`,
@@ -57,6 +75,29 @@ function buildUrlBlock(loc, { priority = "0.6400", changefreq = "daily" } = {}) 
     `       <priority>${priority}</priority>`,
     "  </url>",
   ].join("\n");
+}
+
+// Published posts from Sanity, or null when the query fails. Posts are public
+// documents, so this needs no token.
+async function fetchBlogPosts() {
+  const url = new URL(
+    `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/query/${SANITY_DATASET}`
+  );
+  url.searchParams.set("query", BLOG_POSTS_QUERY);
+
+  try {
+    const response = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const { result } = await response.json();
+    return Array.isArray(result) ? result : null;
+  } catch (error) {
+    console.warn(`sitemap: could not load blog posts from Sanity (${error.message}).`);
+    return null;
+  }
+}
+
+function isBlogLoc(loc) {
+  return /^https?:\/\/[^/]+\/blog(\/|$)/.test(loc);
 }
 
 async function main() {
@@ -75,7 +116,7 @@ async function main() {
     const isDemo = /^https?:\/\/[^/]+\/demo\//.test(loc);
     const isEffectArticle = /^https?:\/\/[^/]+\/effects\/[^/]+\/[^/]+\/?$/.test(loc);
     const isTemplatePage = /^https?:\/\/[^/]+\/templates(\/|$)/.test(loc);
-    return !isDemo && !isEffectArticle && !isTemplatePage;
+    return !isDemo && !isEffectArticle && !isTemplatePage && !isBlogLoc(loc);
   });
 
   const effectBlocks = registry.flatMap((effect) => {
@@ -99,6 +140,21 @@ async function main() {
     ),
   ];
 
+  const blogPosts = await fetchBlogPosts();
+  const blogBlocks = blogPosts
+    ? [
+        buildUrlBlock(`${SITE_URL}/blog`, { priority: "0.6400" }),
+        ...blogPosts.map((post) => {
+          const modified = post.updatedAt || post._updatedAt || post.publishedAt;
+          return buildUrlBlock(`${SITE_URL}/blog/${post.slug}`, {
+            priority: "0.6400",
+            changefreq: "weekly",
+            ...(modified ? { lastmod: toLastmod(new Date(modified)) } : {}),
+          });
+        }),
+      ]
+    : blocks.filter((block) => isBlogLoc((block.match(/<loc>(.*?)<\/loc>/) || [])[1] || ""));
+
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<?xml-stylesheet type="text/css" href="https://www.xml-sitemaps.com/css/sitemap.css"?>',
@@ -107,13 +163,14 @@ async function main() {
     ...staticBlocks,
     ...effectBlocks,
     ...templateBlocks,
+    ...blogBlocks,
     "</urlset>",
     "",
   ].join("\n");
 
   fs.writeFileSync(SITEMAP_PATH, xml);
   console.log(
-    `sitemap.xml updated: ${staticBlocks.length} static pages, ${registry.length} effects (${effectBlocks.length} demo+article urls), ${TEMPLATES.length} templates (${templateBlocks.length} urls).`
+    `sitemap.xml updated: ${staticBlocks.length} static pages, ${registry.length} effects (${effectBlocks.length} demo+article urls), ${TEMPLATES.length} templates (${templateBlocks.length} urls), ${blogBlocks.length} blog urls${blogPosts ? "" : " (kept from previous sitemap)"}.`
   );
 }
 
