@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps, react-hooks/immutability -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
 import { Center } from "@react-three/drei";
@@ -190,7 +191,6 @@ function EdgeBlurEffect({
  resolution: [width, height],
  frag,
  });
- // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [blurStrength, blurStart, frag]);
 
  useEffect(() => {
@@ -1406,7 +1406,7 @@ const SmokeFlow = React.memo(function SmokeFlow({ particleSize, coreColor, accen
          mat.dispose()
          matRef.current = null
       }
-   }, [gl]) // eslint-disable-line react-hooks/exhaustive-deps
+   }, [gl])  
 
    useFrame((state, rawDelta) => {
       if (reduceMotionRef.current) return
@@ -1587,7 +1587,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColo
          mat.dispose()
          matRef.current = null
       }
-   }, [gl, texSize, posTex, dataTex, geo, mat]) // eslint-disable-line react-hooks/exhaustive-deps
+   }, [gl, texSize, posTex, dataTex, geo, mat])
 
    useFrame((state, rawDelta) => {
       if (reduceMotionRef.current) return

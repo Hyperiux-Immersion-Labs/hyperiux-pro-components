@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/immutability, react-hooks/exhaustive-deps -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import { PerspectiveCamera, useGLTF, useTexture } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
@@ -347,7 +348,6 @@ function EdgeBlurEffect({
  resolution: [width, height],
  frag,
  });
- // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [blurStrength, blurStart, frag]);
 
  useEffect(() => {

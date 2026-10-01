@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 
 "use client";
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/immutability -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
 import { Canvas, extend, type ThreeEvent, useFrame, useThree } from "@react-three/fiber";
@@ -903,7 +904,6 @@ function resolveTextureSource(source: any) {
   if (imageSource.startsWith("/")) return imageSource;
 
   try {
-    // eslint-disable-next-line no-new
     new URL(imageSource);
 
     // external URL - return as-is (ensure your image host sends CORS headers)

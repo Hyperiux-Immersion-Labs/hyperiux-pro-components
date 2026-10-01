@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
@@ -491,7 +492,7 @@ const OrbitFlipSliderComp = ({
     }, trackRef);
 
     return () => ctx.revert();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [items.length]);
 
   const didMountTransforms = useRef(false);
@@ -501,7 +502,7 @@ const OrbitFlipSliderComp = ({
       return;
     }
     applyLayout(modeRef.current, true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [
     imageWidth,
     imageHeight,

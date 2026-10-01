@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/refs -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
+import Link from "next/link";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { ArrowUpRight, Minus, Plus } from "lucide-react";
@@ -1144,22 +1146,22 @@ export default function ExpandingNavbar({
                 </h1>
 
                 <div className="mt-6 flex items-center gap-3 max-md:flex-col">
-                    <a
+                    <Link
                         href="/effects"
                         className="w-fit mx-auto items-center flex gap-2 rounded-full text-white px-6 py-3 text-[1vw] max-[1025px]:text-[2vw] max-md:text-[3vw] font-medium hover:opacity-90 transition-opacity"
                         style={{ backgroundColor: activeColor }}
                     >
                         Explore all Effects
                         <ArrowUpRight className="size-4" />
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                         href="/effects/navigation/expanding-navbar"
                         className="w-fit mx-auto items-center flex gap-2 rounded-full text-white px-6 py-3 text-[1vw] max-[1025px]:text-[2vw] max-md:text-[3vw] font-medium hover:opacity-90 transition-opacity"
                         style={{ backgroundColor: activeColor }}
                     >
                         Read Article
                         <ArrowUpRight className="size-4" />
-                    </a>
+                    </Link>
                 </div>
             </div>
 

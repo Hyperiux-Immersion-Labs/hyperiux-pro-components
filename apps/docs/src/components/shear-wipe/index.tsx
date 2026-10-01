@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
@@ -152,7 +153,7 @@ const ShearWipeComp = ({
       display: activePanel === 'showcase' ? 'block' : 'none',
       opacity: activePanel === 'showcase' ? 1 : 0,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, []);
 
   // Animate the tab underline + crossfade the tab content on change

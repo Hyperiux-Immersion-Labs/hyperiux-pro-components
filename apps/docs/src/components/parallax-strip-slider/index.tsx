@@ -257,7 +257,6 @@ export default function ParallaxStripSlider({
         if (wasActive) isAnimating.current = false;
       };
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [incoming, direction, stripCount, revealDuration, stripStagger, zoomFrom, zoomDuration, total]
   );
 

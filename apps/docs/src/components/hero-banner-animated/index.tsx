@@ -1,5 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
+import Link from "next/link";
 import { Center, Environment, MeshReflectorMaterial, shaderMaterial, useGLTF, useTexture, useVideoTexture } from "@react-three/drei";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer } from "@react-three/postprocessing";
@@ -1006,7 +1007,6 @@ function EdgeBlurEffect({
  resolution: [width, height],
  frag,
  });
- // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [blurStrength, blurStart, frag]);
 
  useEffect(() => {
@@ -1314,13 +1314,13 @@ export default function HeroBannerAnimated({
   transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
   className='absolute flex items-center justify-center gap-5 bottom-[2vw] uppercase text-[1vw] left-1/2 -translate-x-1/2 w-full text-center text-xs max-[1025px]:text-[2.5vw] max-md:text-[3vw] max-md:bottom-[40%] pointer-events-auto'
 >
-  <a href="/effects" className='pointer-events-auto'>
+  <Link href="/effects" className='pointer-events-auto'>
     Explore All Effects
-  </a>
+  </Link>
   <Play className='w-4 h-4 max-md:hidden' fill='var(--hero-accent-color)' />
-  <a href="/effects/wegl-effects/hero-banner-animated" className='pointer-events-auto'>
+  <Link href="/effects/wegl-effects/hero-banner-animated" className='pointer-events-auto'>
     Read Article
-  </a>
+  </Link>
 
 
 </motion.p>

@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-img-element, react-hooks/refs -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
+import Link from "next/link";
 import gsap from "gsap";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { type CSSProperties, type ReactNode, type RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -1029,7 +1031,7 @@ export function MobileDirectionalMenu({ items = [], backgroundColor = "#ffffff" 
   return (
     <div ref={containerRef} className="relative hidden max-[1025px]:block px-6 py-4">
       <div className="flex items-center justify-between gap-4">
-        <a href="/" className="flex items-center  gap-3 cursor-pointer">
+        <Link href="/" className="flex items-center  gap-3 cursor-pointer">
           <svg width="35" height="35" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
             <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>
@@ -1055,7 +1057,7 @@ export function MobileDirectionalMenu({ items = [], backgroundColor = "#ffffff" 
             <rect x="35.5166" width="6.62183" height="42.1389" fill="white"/>
             <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
           </svg>
-        </a>
+        </Link>
 
         <button
           ref={toggleButtonRef}
@@ -1182,7 +1184,7 @@ export default function DirectionalMenu({
         <div className="max-w-7xl mx-auto max-[1025px]:hidden h-19 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <a href="/" className="flex items-center gap-3 cursor-pointer">
+            <Link href="/" className="flex items-center gap-3 cursor-pointer">
               <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
                 <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>
@@ -1211,7 +1213,7 @@ export default function DirectionalMenu({
                   <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
                 </svg>
               </div>
-            </a>
+            </Link>
           </div>
 
           {/* Menu */}

@@ -222,7 +222,6 @@ export default function PixelatedImageEffect({
   // effect immediately uses the new values instead of the stale target.
   useEffect(() => {
     if (pointerRatio.current === null) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTargetPixelSize(computeTarget(pointerRatio.current));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedPixelSize]);

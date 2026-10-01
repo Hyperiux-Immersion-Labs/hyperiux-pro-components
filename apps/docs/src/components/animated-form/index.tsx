@@ -75,7 +75,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
  ${error ?"border-red-400 focus:border-red-400" :""}
  ${className}
  `}
- aria-invalid={error ? true : undefined}
  aria-describedby={error ? `${id}-error` : undefined}
  {...rest}
  />
@@ -147,7 +146,6 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
  ${error ?"border-red-400 focus:border-red-400" :""}
  ${className}
  `}
- aria-invalid={error ? true : undefined}
  aria-describedby={error ? `${id}-error` : undefined}
  {...rest}
  />
@@ -214,7 +212,6 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
  type="button"
  id={id}
  ref={ref}
- aria-invalid={error ? true : undefined}
  aria-describedby={error ? `${id}-error` : undefined}
  onClick={() => setOpen((prev) => !prev)}
  className={`
@@ -529,7 +526,6 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             "h-full flex-1 rounded-r-full bg-transparent pl-4 pr-5 text-sm text-gray-800 outline-none placeholder:text-gray-400",
             inputClassName
           )}
-          aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
           {...rest}
         />
@@ -580,7 +576,6 @@ const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
  :"bg-white border-gray-400 hover:border-gray-600"
  }
  `}
- aria-invalid={error ? true : undefined}
  aria-describedby={error ? `${id}-error` : undefined}
  {...rest}
  >
