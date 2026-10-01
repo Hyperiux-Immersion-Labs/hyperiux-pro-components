@@ -180,6 +180,10 @@ export async function getSanityEffectContent(categorySlug, effectSlug) {
     const content = await client.fetch(
       `*[_type == "effectContent" && categorySlug in $categorySlugs && effectSlug in $effectSlugs][0]{
         ...,
+        body[]{
+          ...,
+          ${SANITY_IMAGE_BLOCK_PROJECTION}
+        },
         addedAt,
         updatedAt,
         lastUpdated,
