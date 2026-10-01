@@ -49,13 +49,16 @@ function getPathDrawTween(path, drawSVGValue, strokeWidth, tweenProps = {}) {
         ...tweenProps,
     };
 }
+const BRUSH_REST_WIDTH = 2;
+const BRUSH_SWEEP_WIDTH = 300;
 export default function SVGBrushTransition({ children, config = {
     enableBlur: false,
     strokeColor: '#82A0FF',
-    strokeWidth: 2,
     duration: 1.5,
-}, strokeWidth, strokeColor, duration, }) {
-    const resolvedStrokeWidth = clampNumber(strokeWidth ?? config.strokeWidth, 1, 320, 2);
+}, strokeColor, duration, }) {
+    // The brush rests thin, swells to BRUSH_SWEEP_WIDTH while covering the
+    // screen, then thins back out as it is erased.
+    const resolvedStrokeWidth = BRUSH_REST_WIDTH;
     const resolvedStrokeColor = strokeColor ?? config.strokeColor ?? '#82A0FF';
     const resolvedDuration = clampNumber(duration ?? config.duration, 0.25, 4, 1.5);
     const { enableBlur, drawSVGPlugin } = config;
@@ -93,7 +96,7 @@ export default function SVGBrushTransition({ children, config = {
                 backdropFilter: enableBlur ? 'blur(10px)' : 'none',
                 duration: 0.5,
                 ease: 'power2.inOut',
-            }).to(activePath, getPathDrawTween(activePath, '100%', 300, {
+            }).to(activePath, getPathDrawTween(activePath, '100%', BRUSH_SWEEP_WIDTH, {
                 duration: resolvedDuration,
                 ease: 'power2.inOut',
             }), 0);

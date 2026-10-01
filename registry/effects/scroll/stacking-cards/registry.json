@@ -64,7 +64,7 @@
       "name": "cardCornerRadius",
       "type": "number",
       "default": 48,
-      "description": "Corner radius in pixels applied to the cards as they stack.",
+      "description": "Corner radius in pixels applied to the cards as they stack (not the images).",
       "remixer": {
         "control": "range",
         "group": "style",
@@ -78,14 +78,18 @@
       "name": "stackPerspective",
       "type": "number",
       "default": 1200,
-      "description": "Perspective depth applied to the stacked card scene.",
+      "description": "Perspective depth for the tilt. Only applies while tilt is enabled.",
       "remixer": {
         "control": "range",
         "group": "style",
         "groupTitle": "Style",
         "min": 200,
         "max": 2400,
-        "step": 10
+        "step": 10,
+        "visibleWhen": {
+          "name": "tiltEnabled",
+          "eq": true
+        }
       }
     }
   ],

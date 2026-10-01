@@ -373,7 +373,24 @@ function buildMergedSurface(scene) {
     geometry.setAttribute("normal", new THREE.BufferAttribute(mergedNormals, 3));
     return geometry;
 }
-const MorphingParticleModel = ({ url = "/assets/models/hyperiux-new-model.glb", scale = 1, particleCount = 8000, color = "#ffffff", size = 0.18, speed = 1.15, opacity = 1, brightness = 4.5, showModel = false, modelOpacity = 0, parallaxStrength = 0.12, parallaxLerp = 0.08, rotationStrengthX = 0.12, rotationStrengthY = 0.18, rotationStrengthZ = 0.04, rotationLerp = 0.08, interactionRadius = 1.8, interactionStrength = 2.24, interactionDepth = 0.04, interactionLerp = 0.18, returnLerp = 0.012, cursorLerp = 0.2, maxOffset = 1.22, frontFacingThreshold = 0.12, frontFacingSoftness = 0.05, }) => {
+// World-space radius the primitive shapes are built at (before the group's
+// scale is applied), so they read at roughly the same size as the model.
+const PRIMITIVE_WORLD_RADIUS = 1.3;
+function buildPrimitiveGeometry(kind, radius) {
+    switch (kind) {
+        case "torus":
+            return new THREE.TorusGeometry(radius * 0.8, radius * 0.32, 64, 160);
+        case "torusKnot":
+            return new THREE.TorusKnotGeometry(radius * 0.7, radius * 0.22, 220, 32);
+        case "icosahedron":
+            return new THREE.IcosahedronGeometry(radius, 1);
+        case "box":
+            return new THREE.BoxGeometry(radius * 1.5, radius * 1.5, radius * 1.5);
+        default:
+            return new THREE.SphereGeometry(radius, 96, 64);
+    }
+}
+const MorphingParticleModel = ({ url = "/assets/models/hyperiux-new-model.glb", geometry = "model", scale = 1, particleCount = 8000, color = "#ffffff", size = 0.18, speed = 1.15, opacity = 1, brightness = 4.5, showModel = false, modelOpacity = 0, parallaxStrength = 0.12, parallaxLerp = 0.08, rotationStrengthX = 0.12, rotationStrengthY = 0.18, rotationStrengthZ = 0.04, rotationLerp = 0.08, interactionRadius = 1.8, interactionStrength = 2.24, interactionDepth = 0.04, interactionLerp = 0.18, returnLerp = 0.012, cursorLerp = 0.2, maxOffset = 1.22, frontFacingThreshold = 0.12, frontFacingSoftness = 0.05, }) => {
     const groupRef = useRef(null);
     const pointsRef = useRef(null);
     const { scene } = useGLTF(url);
@@ -399,9 +416,11 @@ const MorphingParticleModel = ({ url = "/assets/models/hyperiux-new-model.glb", 
     const normalsRef = useRef(null);
     const countRef = useRef(0);
     useEffect(() => {
-        if (!scene)
-            return;
-        const mergedGeometry = buildMergedSurface(scene);
+        const mergedGeometry = geometry === "model"
+            ? scene
+                ? buildMergedSurface(scene)
+                : null
+            : buildPrimitiveGeometry(geometry, PRIMITIVE_WORLD_RADIUS / Math.max(scale, 0.0001));
         if (!mergedGeometry)
             return;
         const tempMesh = new THREE.Mesh(mergedGeometry, new THREE.MeshBasicMaterial());
@@ -441,7 +460,7 @@ const MorphingParticleModel = ({ url = "/assets/models/hyperiux-new-model.glb", 
         metaRef.current = meta;
         countRef.current = particleCount;
         Promise.resolve().then(() => setParticleBuffers(nextBuffers));
-    }, [scene, particleCount]);
+    }, [scene, particleCount, geometry, scale]);
     const parallaxTarget = useRef(new THREE.Vector3());
     const parallaxCurrent = useRef(new THREE.Vector3());
     const rotationTarget = useRef(new THREE.Euler(0, 0, 0));
@@ -912,13 +931,16 @@ function clampNumber(value, min, max, fallback) {
         return fallback;
     return Math.min(Math.max(number, min), max);
 }
-export default function HyperiuxGlitter({ glitterColor = "#ffffff", accentColor = "#ffffff", speed = 1, mouseInfluence = 1, rotationInfluence = 1, }) {
+export default function HyperiuxGlitter({ glitterColor = "#ffffff", accentColor = "#ffffff", speed = 1, mouseInfluence = 1, rotationInfluence = 1, geometry = "model", demorphStrength = 1, demorphRadius = 1.8, trailLength = 1, }) {
     const rootRef = useRef(null);
     const [frameloop, setFrameloop] = useState("always");
     const [modelScale, setModelScale] = useState(0.15);
     const resolvedSpeed = clampNumber(speed, 0.05, 5, 1);
     const resolvedMouseInfluence = clampNumber(mouseInfluence, 0, 4, 1);
     const resolvedRotationInfluence = clampNumber(rotationInfluence, 0, 4, 1);
+    const resolvedDemorphStrength = clampNumber(demorphStrength, 0, 4, 1);
+    const resolvedDemorphRadius = clampNumber(demorphRadius, 0.2, 5, 1.8);
+    const resolvedTrailLength = clampNumber(trailLength, 0.1, 4, 1);
     useEffect(() => {
         const gate = createVisibilityGate({
             root: rootRef,
@@ -950,10 +972,10 @@ export default function HyperiuxGlitter({ glitterColor = "#ffffff", accentColor 
 
         <Suspense fallback={null}>
           <Center>
-            <MorphingParticleModel url="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-new-model.glb" scale={modelScale} particleCount={10000} color={glitterColor} size={0.18} speed={1.15 * resolvedSpeed} opacity={1} brightness={4.5} showModel={false} modelOpacity={0} parallaxStrength={0.12 * resolvedMouseInfluence} rotationStrengthX={0.12 * resolvedRotationInfluence} rotationStrengthY={0.18 * resolvedRotationInfluence} rotationStrengthZ={0.04 * resolvedRotationInfluence} interactionStrength={2.24 * resolvedMouseInfluence} frontFacingThreshold={0.12} frontFacingSoftness={0.05}/>
+            <MorphingParticleModel url="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-new-model.glb" geometry={geometry} scale={modelScale} particleCount={10000} color={glitterColor} size={0.18} speed={1.15 * resolvedSpeed} opacity={1} brightness={4.5} showModel={false} modelOpacity={0} parallaxStrength={0.12 * resolvedMouseInfluence} rotationStrengthX={0.12 * resolvedRotationInfluence} rotationStrengthY={0.18 * resolvedRotationInfluence} rotationStrengthZ={0.04 * resolvedRotationInfluence} interactionStrength={2.24 * resolvedMouseInfluence * resolvedDemorphStrength} interactionRadius={resolvedDemorphRadius} maxOffset={1.22 * Math.max(resolvedDemorphStrength, 0.25)} frontFacingThreshold={0.12} frontFacingSoftness={0.05}/>
           </Center>
 
-          <MouseTrailParticles maxParticles={700} spawnPerMove={4} particleLife={0.4 / Math.sqrt(resolvedSpeed)} size={0.14} color={accentColor} brightness={5.5} zOffset={0.1} spread={0.035 * Math.max(resolvedMouseInfluence, 0.25)} velocityStrength={0.24 * resolvedMouseInfluence} lerpFactor={0.12} idleDamping={0.92} stopSpeedThreshold={0.0015} idleModeDelay={1.2} idleCometDelayMin={0.5} idleCometDelayMax={1.4} idleCometLife={0.85 / Math.sqrt(resolvedSpeed)} idleCometSpeedMin={4.1 * resolvedSpeed} idleCometSpeedMax={10.1 * resolvedSpeed} idleCometSpawnPerFrame={10} idleCometTrailSpread={0.08 * Math.max(resolvedMouseInfluence, 0.25)} idleCometViewportPadding={0.25}/>
+          <MouseTrailParticles maxParticles={Math.round(700 * Math.max(resolvedTrailLength, 1))} spawnPerMove={4} particleLife={(0.4 * resolvedTrailLength) / Math.sqrt(resolvedSpeed)} size={0.14} color={accentColor} brightness={5.5} zOffset={0.1} spread={0.035 * Math.max(resolvedMouseInfluence, 0.25)} velocityStrength={0.24 * resolvedMouseInfluence} lerpFactor={0.12} idleDamping={0.92} stopSpeedThreshold={0.0015} idleModeDelay={1.2} idleCometDelayMin={0.5} idleCometDelayMax={1.4} idleCometLife={(0.85 * resolvedTrailLength) / Math.sqrt(resolvedSpeed)} idleCometSpeedMin={4.1 * resolvedSpeed} idleCometSpeedMax={10.1 * resolvedSpeed} idleCometSpawnPerFrame={10} idleCometTrailSpread={0.08 * Math.max(resolvedMouseInfluence, 0.25)} idleCometViewportPadding={0.25}/>
         </Suspense>
 
         <EffectComposer multisampling={4}>

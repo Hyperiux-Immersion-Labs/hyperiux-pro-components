@@ -357,24 +357,31 @@ export function InfinitePerspectiveSliderComp({ images = [], cardWidth: desktopC
             positionCards(state.current, finalRotation);
         };
         const onWheel = (event) => {
-            if (isMobileViewport || isTabletViewport)
-                return;
-            const delta = event.deltaY;
+            // Use whichever axis moved more so trackpads scroll it both ways.
+            const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
             if (Math.abs(delta) >= ACTIVE_CONTENT_CLEAR_DELTA) {
                 markScrolling();
             }
             state.target += delta * scrollSpeed;
         };
-        const onDown = (clientX) => {
+        let lastY = 0;
+        const onDown = (clientX, clientY = 0) => {
             state.isDragging = true;
             state.lastX = clientX;
+            lastY = clientY;
             markScrolling();
         };
-        const onMove = (clientX) => {
+        // Horizontal drag, or - on touch - a vertical swipe (scroll gesture).
+        // Whichever axis moved more drives the slider.
+        const onMove = (clientX, clientY) => {
             if (!state.isDragging)
                 return;
-            const delta = clientX - state.lastX;
+            const deltaX = clientX - state.lastX;
+            const deltaY = clientY === undefined ? 0 : clientY - lastY;
+            const delta = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
             state.lastX = clientX;
+            if (clientY !== undefined)
+                lastY = clientY;
             if (Math.abs(delta) >= ACTIVE_CONTENT_CLEAR_DELTA) {
                 markScrolling();
             }
@@ -386,8 +393,8 @@ export function InfinitePerspectiveSliderComp({ images = [], cardWidth: desktopC
         const handleMouseDown = (event) => onDown(event.clientX);
         const handleMouseMove = (event) => onMove(event.clientX);
         const handleMouseUp = () => onUp();
-        const handleTouchStart = (event) => onDown(event.touches[0].clientX);
-        const handleTouchMove = (event) => onMove(event.touches[0].clientX);
+        const handleTouchStart = (event) => onDown(event.touches[0].clientX, event.touches[0].clientY);
+        const handleTouchMove = (event) => onMove(event.touches[0].clientX, event.touches[0].clientY);
         const handleTouchEnd = () => onUp();
         const onResize = () => {
             markScrolling();
@@ -577,7 +584,7 @@ export function InfinitePerspectiveSliderComp({ images = [], cardWidth: desktopC
             hoveredIndexRef.current = null;
         };
     }, [images]);
-    return (<div className="h-screen w-screen overflow-hidden">
+    return (<div className="h-screen w-screen overflow-hidden touch-none">
       <div className="pointer-events-none relative flex h-full items-center overflow-hidden max-[1025px]:items-center " style={{ perspective: `${perspective}px` }}>
         <div ref={stripRef} className="transform-3d relative w-full" style={{ height: cardHeight }}>
           {images.map((item, index) => {

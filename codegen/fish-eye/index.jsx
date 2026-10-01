@@ -189,17 +189,6 @@ const durationToDamp = (duration) => {
     const seconds = Math.max(Number(duration) || 0, 0);
     return seconds === 0 ? 1000 : 1 / seconds;
 };
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener('change', update);
-        return () => mediaQuery.removeEventListener('change', update);
-    }, []);
-    return prefersReducedMotion;
-}
 function loadCorsObjectUrl(src) {
     return fetch(src, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
         .then((res) => {
@@ -294,7 +283,6 @@ export default function FishEye({ bulgeEffect = 1, duration = 0.125, smoothness 
     const [frameloop, setFrameloop] = useState('always');
     const [objectUrl, setObjectUrl] = useState(null);
     const [isMobile, setIsMobile] = useState(false);
-    const prefersReducedMotion = usePrefersReducedMotion();
     useEffect(() => {
         const mediaQuery = window.matchMedia('(pointer: coarse)');
         const update = () => setIsMobile(mediaQuery.matches);
@@ -343,15 +331,5 @@ export default function FishEye({ bulgeEffect = 1, duration = 0.125, smoothness 
             }}>
           <ImageNodeMaterial src={objectUrl} isMobile={isMobile} bulgeEffect={bulgeEffect} duration={duration} smoothness={smoothness} mouseInteractive={mouseInteractive}/>
         </Canvas>) : null}
-      {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden">
-          <h2 className="text-sm leading-none text-black">
-            The lens keeps bending.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black">
-            Fish Eye distorts the image as your cursor moves across it.
-            Since the warp is driven entirely by motion, there&apos;s no
-            reduced motion version to fall back on.
-          </p>
-        </div>)}
     </div>);
 }

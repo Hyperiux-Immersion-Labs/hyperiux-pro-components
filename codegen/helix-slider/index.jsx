@@ -293,13 +293,13 @@ function strandExtent(distance, layout, radius) {
     const visible = 2 * Math.tan(vFov / 2) * (distance + radius);
     return Math.max(HEIGHT, visible + layout.planeH * 2) * layout.ySpacing;
 }
-function Strand({ images, reduced, extent, count, layout, radius, autoplaySpeed, dragSensitivity, inertiaDecay, }) {
+function Strand({ images, reduced, extent, count, layout, radius, autoplaySpeed, dragSensitivity, scrollIntensity, inertiaDecay, }) {
     const { gl } = useThree();
     const motion = useRef(createMotion());
     const meshes = useRef([]);
     // Read live in the frame loop so slider changes apply without a remount.
-    const tuning = useRef({ autoplaySpeed, dragSensitivity, inertiaDecay });
-    tuning.current = { autoplaySpeed, dragSensitivity, inertiaDecay };
+    const tuning = useRef({ autoplaySpeed, dragSensitivity, scrollIntensity, inertiaDecay });
+    tuning.current = { autoplaySpeed, dragSensitivity, scrollIntensity, inertiaDecay };
     // Bitmaps decoded once per URL, reused when materials get recreated (e.g.
     // count changing because a remixer prop like radius/turns/cardScale nudges
     // the layout) so cards don't flash black and refetch on every tweak.
@@ -462,7 +462,7 @@ function Strand({ images, reduced, extent, count, layout, radius, autoplaySpeed,
         const wheel = (e) => {
             if (reduced)
                 return;
-            state.velocity = THREE.MathUtils.clamp(state.velocity + e.deltaY * SCROLL_SENSITIVITY, -INERTIA_MAX, INERTIA_MAX);
+            state.velocity = THREE.MathUtils.clamp(state.velocity + e.deltaY * SCROLL_SENSITIVITY * tuning.current.scrollIntensity, -INERTIA_MAX, INERTIA_MAX);
         };
         el.addEventListener("pointerdown", down);
         el.addEventListener("pointermove", move);
@@ -516,7 +516,7 @@ function Strand({ images, reduced, extent, count, layout, radius, autoplaySpeed,
             }} geometry={geometry} material={material} visible={false}/>))}
     </>);
 }
-export default function HelixSlider({ images = DEFAULT_IMAGES, autoplaySpeed = 0.12, radius = 2.8, turns = 3.3, cardScale = 1, dragSensitivity = 0.006, inertiaDecay = 2.2, background = "#0d0d0d", className, style, }) {
+export default function HelixSlider({ images = DEFAULT_IMAGES, autoplaySpeed = 0.12, radius = 2.8, turns = 3.3, cardScale = 1, dragSensitivity = 0.006, scrollIntensity = 1, inertiaDecay = 2.2, background = "#0d0d0d", className, style, }) {
     const [reduced, setReduced] = useState(false);
     const [aspect, setAspect] = useState(16 / 9);
     const [viewWidth, setViewWidth] = useState(1440);
@@ -562,7 +562,7 @@ export default function HelixSlider({ images = DEFAULT_IMAGES, autoplaySpeed = 0
     return (<div ref={wrapper} className={`relative h-[100svh] w-full overflow-hidden${className ? ` ${className}` : ""}`} style={{ background, ...style }}>
       <Canvas frameloop={frameloop} dpr={[1, 1.75]} gl={{ antialias: true, alpha: true }} camera={{ fov: FOV, near: 0.1, far: 100, position: [0, 0, cameraZ] }} className="block h-full w-full cursor-grab touch-pan-y">
         <Suspense fallback={null}>
-          <Strand images={list} reduced={reduced} extent={extent} count={count} layout={layout} radius={radius} autoplaySpeed={autoplaySpeed} dragSensitivity={dragSensitivity} inertiaDecay={inertiaDecay}/>
+          <Strand images={list} reduced={reduced} extent={extent} count={count} layout={layout} radius={radius} autoplaySpeed={autoplaySpeed} dragSensitivity={dragSensitivity} scrollIntensity={scrollIntensity} inertiaDecay={inertiaDecay}/>
         </Suspense>
       </Canvas>
     </div>);

@@ -439,21 +439,6 @@ function usePrefersReducedMotion() {
     return prefersReducedMotion
 }
 
-function ReducedMotionNote() {
-    return (
-        <div aria-live="polite" className="w-fit rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm">
-            <h2 className="mt-3 text-[clamp(1.5rem,4vw,3rem)] leading-none text-[#111111]">
-                The digits are holding still.
-            </h2>
-            <p className="mx-auto mt-4 w-[53vw] text-base leading-7 text-black/65 max-md:text-sm max-md:w-full">
-                Reduced motion is enabled, so the counters fade in as static numbers
-                instead of rolling vertically. The rolling effect depends on repeated
-                upward motion, and your system preference asks us to keep that still.
-            </p>
-        </div>
-    )
-}
-
 export default function NumberCounter({
     duration = 1.5,
     stagger = 0.1,
@@ -546,7 +531,6 @@ export default function NumberCounter({
                             </button>
                         </div>
                     </div>
-                    {prefersReducedMotion && <ReducedMotionNote />}
                     <style>{`
                         @keyframes number-counter-static-fade {
                             from { opacity: 0; }

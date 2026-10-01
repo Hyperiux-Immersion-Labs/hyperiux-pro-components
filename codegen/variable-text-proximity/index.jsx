@@ -193,17 +193,16 @@ const VariableProximityLetters = forwardRef((props, ref) => {
     </span>);
 });
 VariableProximityLetters.displayName = "VariableProximityLetters";
-export default function VariableTextProximity({ radius = 100, falloff = 'linear', baseWeight = 300, hoverWeight = 800, baseOpticalSize = 9, hoverOpticalSize = 40, backgroundColor = '#080808', textColor = '#ffffff', fontSize = 55, lineHeight = 1.18, minWidth = 920, maxWidth = 1040, italic = false, className = '', }) {
+export default function VariableTextProximity({ radius = 100, falloff = 'linear', baseWeight = 300, hoverWeight = 800, backgroundColor = '#080808', textColor = '#ffffff', fontSize = 55, lineHeight = 1.18, width = 80, italic = false, className = '', }) {
     const stageRef = useRef(null);
-    const fromFontVariationSettings = `'wght' ${baseWeight}, 'opsz' ${baseOpticalSize}, 'slnt' 0`;
-    const toFontVariationSettings = `'wght' ${hoverWeight}, 'opsz' ${hoverOpticalSize}, 'slnt' ${italic ? -10 : 0}`;
+    const fromFontVariationSettings = `'wght' ${baseWeight}, 'slnt' 0`;
+    const toFontVariationSettings = `'wght' ${hoverWeight}, 'slnt' ${italic ? -10 : 0}`;
     const demoStyle = {
         '--hv-variable-bg': backgroundColor,
         '--hv-variable-color': textColor,
         '--hv-variable-font-size': `${fontSize}px`,
         '--hv-variable-line-height': lineHeight,
-        '--hv-variable-min-width': `${minWidth}px`,
-        '--hv-variable-max-width': `${maxWidth}px`,
+        '--hv-variable-width': `${Math.min(100, Math.max(10, width))}%`,
     };
     return (<section className={`hv-variable-root relative flex min-h-screen w-full items-center justify-center overflow-hidden px-6 ${className}`} style={demoStyle}>
       <div ref={stageRef} className="hv-variable-stage relative z-10 mx-auto text-center">
@@ -220,9 +219,8 @@ export default function VariableTextProximity({ radius = 100, falloff = 'linear'
         }
 
         .hv-variable-stage {
-          width: min(var(--hv-variable-max-width), calc(100vw - 2rem));
-          min-width: min(var(--hv-variable-min-width), var(--hv-variable-max-width), calc(100vw - 2rem));
-          max-width: min(var(--hv-variable-max-width), calc(100vw - 2rem));
+          width: var(--hv-variable-width);
+          max-width: calc(100vw - 2rem);
         }
 
         .hv-variable-heading {

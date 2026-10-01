@@ -29,6 +29,8 @@ interface SquareTranslateCompProps {
     borderColor?: string
     totalTranslateImpact?: number
     squareColor?: string
+    /** Square width and height in pixels. Overrides the size from squareClassName. */
+    squareSize?: number
     maxRotation?: number
     transitionDuration?: number
 }
@@ -43,6 +45,7 @@ function SquareTranslateComp({
     borderColor = 'border-black/10',
     totalTranslateImpact = 3,
     squareColor = '#FB450F',
+    squareSize,
     maxRotation = 360,
     transitionDuration = 0.4,
 }: SquareTranslateCompProps) {
@@ -125,12 +128,15 @@ function SquareTranslateComp({
             trigger.kill()
             gsap.set([square, ...itemEls, ...textEls], { clearProps: 'willChange' })
         }
-    }, [items, translateValue, totalTranslateImpact, maxRotation, transitionDuration])
+    }, [items, translateValue, totalTranslateImpact, maxRotation, transitionDuration, squareSize])
 
     return (
         <div ref={containerRef} className={`${containerClassName} relative h-fit`}>
             <div ref={squareRef}
-                style={{ backgroundColor: squareColor }}
+                style={{
+                    backgroundColor: squareColor,
+                    ...(squareSize ? { width: squareSize, height: squareSize } : null),
+                }}
                 className={`${squareClassName} scale-0 absolute top-0 left-0 pointer-events-none z-10`} />
             {items.map((item, i) => (
                 <ul key={i}
@@ -168,6 +174,7 @@ export default function SquareTranslate(props: ComponentProps<typeof SquareTrans
                 squareClassName="w-[.6vw] h-[.6vw] max-md:w-3 max-md:h-3"
                 containerClassName="w-[50vw]  max-md:w-full"
                 borderColor="border-black/10"
+                squareSize={12}
                 {...props}
             />
 

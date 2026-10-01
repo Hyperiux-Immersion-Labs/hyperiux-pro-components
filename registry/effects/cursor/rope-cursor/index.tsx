@@ -250,20 +250,6 @@ export {
   DEFAULT_ROOT_MARGIN,
 };
 
-function usePrefersReducedMotion() {
-	const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
-	useEffect(() => {
-		const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-		const update = () => setPrefersReducedMotion(mediaQuery.matches)
-		update()
-		mediaQuery.addEventListener('change', update)
-		return () => mediaQuery.removeEventListener('change', update)
-	}, [])
-
-	return prefersReducedMotion
-}
-
 interface RopeSegment {
 	x: number
 	y: number
@@ -290,7 +276,6 @@ export default function RopeCursor({
 	const mousePosition = useRef<{ x: number | null; y: number | null }>({ x: null, y: null })
 	const [isVisible, setIsVisible] = useState(false)
 	const [isMobile, setIsMobile] = useState(false)
-	const prefersReducedMotion = usePrefersReducedMotion()
 
 	useEffect(() => {
 		const checkMobile = () => {
@@ -446,21 +431,6 @@ export default function RopeCursor({
  opacity={ropeOpacity}
  />
  </svg>
- {prefersReducedMotion && (
- <div
-   aria-live="polite"
-   className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden"
- >
-   <h2 className="text-sm leading-none text-black">
-     The rope keeps swinging.
-   </h2>
-   <p className="mt-2 text-xs leading-5 text-black">
-     Rope Cursor is a live trail of your cursor&apos;s movement. The
-     motion is the entire effect, so it can&apos;t be swapped for a
-     reduced motion alternative.
-   </p>
- </div>
- )}
  </>
 	)
 }

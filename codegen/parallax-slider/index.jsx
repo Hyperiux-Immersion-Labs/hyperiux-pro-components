@@ -29,7 +29,7 @@ const DEFAULT_IMAGES = [
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
 ];
-function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#111111", parallaxAmount = 25, slideGap = 1.6, scrub = 1, }) {
+function ParallaxSlider({ images = DEFAULT_IMAGES, parallaxAmount = 25, slideGap = 1.6, scrub = 1, }) {
     const outerRef = useRef(null);
     const trackRef = useRef(null);
     /** Dynamic height */
@@ -113,7 +113,7 @@ function ParallaxSlider({ images = DEFAULT_IMAGES, bgColor = "#111111", parallax
         }, outer);
         return () => ctx.revert();
     }, [parallaxAmount, scrub]);
-    return (<div ref={outerRef} className="relative" style={{ height: "400vh", backgroundColor: bgColor }}>
+    return (<div ref={outerRef} className="relative" style={{ height: "400vh", backgroundColor: "#111111" }}>
             <div className="sticky top-0 h-screen overflow-hidden flex items-center">
                 <div ref={trackRef} className="flex items-center will-change-transform" style={{
             gap: `${slideGap}vw`,

@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 import { Expo, gsap } from "gsap";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 const DEFAULT_ROOT_MARGIN = "256px";
 function resolveElement(root) {
     if (!root)
@@ -241,17 +241,6 @@ export const useMouse = ({ smooth = true, lerpFactor = 0.1, } = {}) => {
         movement,
     };
 };
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener("change", update);
-        return () => mediaQuery.removeEventListener("change", update);
-    }, []);
-    return prefersReducedMotion;
-}
 const MOBILE_POINTER_QUERY = "(pointer: coarse)";
 const OFFSCREEN_POSITION = -9999;
 const DEFAULT_IDLE_DISTANCE_THRESHOLD = 2;
@@ -311,7 +300,6 @@ function normalizeImages(images) {
     return validImages.length > 0 ? validImages : DEFAULT_IMAGES;
 }
 export function PhantomImageTrail({ images, className = "", imageClassName = "", imageMultiplier = 3, enableRotation = true, minStartRotation = -35, maxStartRotation = 35, minExitRotation = -15, maxExitRotation = 15, idleSpawn = true, idleDelay = 300, idleDistanceThreshold = DEFAULT_IDLE_DISTANCE_THRESHOLD, triggerDistance = DEFAULT_TRIGGER_DISTANCE_THRESHOLD, cursorOffsetX = -12, cursorOffsetY = -12, popOutDuration = 1, fadeOutDuration = 0.7, idlePopOutMultiplier = 1.8, idleFadeMultiplier = 1.5, startScale = 0.2, endScale = 1, exitScale = 0, smoothMouse = true, lerpFactor = 0.1, disableOnMobile = false, enableMobileTap = true, popEase = Expo.easeOut, idlePopEase = "power1.out", fadeEase = "power4.inOut", onImageShow, }) {
-    const prefersReducedMotion = usePrefersReducedMotion();
     const resolvedImages = useMemo(() => normalizeImages(images), [images]);
     const safeImageMultiplier = Math.max(1, Number(imageMultiplier) || 1);
     const totalImages = resolvedImages.length * safeImageMultiplier;
@@ -566,16 +554,6 @@ export function PhantomImageTrail({ images, className = "", imageClassName = "",
                     }
                 }} src={image.src} alt={image.alt} draggable={false} className={`pointer-events-none absolute left-0 top-0 h-[18vw] w-[17vw] max-w-none rounded-[0.7vw] object-cover opacity-0 will-change-[transform,opacity] max-[1025px]:h-[24vh] max-[1025px]:w-[24vw] max-[1025px]:rounded-[1.2vw] max-md:size-[38vw] max-md:rounded-[3vw] ${imageClassName}`}/>);
         })}
-      {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-4 right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-[1025px]:hidden">
-          <h2 className="text-sm leading-none text-black">
-            The trail keeps spawning.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black">
-            Phantom Image Trail spawns images as the cursor moves. The
-            motion is the effect itself, so there&apos;s no static
-            fallback for reduced motion preferences.
-          </p>
-        </div>)}
     </div>);
 }
 export default PhantomImageTrail;

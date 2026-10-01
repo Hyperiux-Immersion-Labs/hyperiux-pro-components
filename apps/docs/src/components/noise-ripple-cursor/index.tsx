@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import * as THREE from "three";
 
 // Shared cursor targeting utilities.
@@ -419,20 +419,6 @@ export {
   createVisibilityGate,
   DEFAULT_ROOT_MARGIN,
 };
-
-function usePrefersReducedMotion() {
- const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
- useEffect(() => {
- const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
- const update = () => setPrefersReducedMotion(mediaQuery.matches);
- update();
- mediaQuery.addEventListener('change', update);
- return () => mediaQuery.removeEventListener('change', update);
- }, []);
-
- return prefersReducedMotion;
-}
 
 const VERTEX_SRC = `
 varying vec2 vUv;
@@ -852,7 +838,6 @@ export default function NoiseRippleCursor({
  distortion = 0.5,
  radius = 0.08
 }: NoiseRippleCursorProps) {
- const prefersReducedMotion = usePrefersReducedMotion();
  return (
  <div className="h-screen w-screen relative">
 
@@ -889,21 +874,6 @@ export default function NoiseRippleCursor({
  distortStrength={distortion}
  trailDarkness={0}
  />
- {prefersReducedMotion && (
- <div
-   aria-live="polite"
-   className="pointer-events-none fixed top-24 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
- >
-   <h2 className="text-sm leading-none text-white">
-     The ripple keeps rolling.
-   </h2>
-   <p className="mt-2 text-xs leading-5 text-white/65">
-     Noise Ripple Cursor distorts the image live as your cursor
-     moves through it. The distortion is the effect itself, so
-     reduced motion can&apos;t be applied here.
-   </p>
- </div>
- )}
  </div>
  );
 }

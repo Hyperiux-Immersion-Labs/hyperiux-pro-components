@@ -462,14 +462,14 @@ function createSuspendedRaf({ onFrame, root = null, rootMargin = DEFAULT_ROOT_MA
 // ---- index.tsx ----
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 const { degToRad } = THREE.MathUtils;
-const DEFAULT_PARTICLE_SIZE = 1;
-const DEFAULT_CORE_COLOR = '#f5f5ff';
-const DEFAULT_ACCENT_COLOR = '#ffe6ad';
-const DEFAULT_OUTER_COLOR = '#e05c12';
-const DEFAULT_BACKGROUND_COLOR = '#000000';
+const DEFAULT_PARTICLE_SIZE = 2;
+const DEFAULT_CORE_COLOR = '#ffbb00';
+const DEFAULT_ACCENT_COLOR = '#ffffff';
+const DEFAULT_OUTER_COLOR = '#4400ff';
+const DEFAULT_BACKGROUND_COLOR = '#000114';
 const DEFAULT_MOUSE_INFLUENCE = true;
-const DEFAULT_ROTATION = 1;
-const DEFAULT_ROTATION_SPEED = 0.2;
+const DEFAULT_ROTATION = 1.6;
+const DEFAULT_ROTATION_SPEED = 0.9;
 function clampNumber(value, min, max, fallback) {
     const number = Number(value);
     if (!Number.isFinite(number))
@@ -619,14 +619,19 @@ void main(){
  aSeed
  );
  float sz = mix(normalSz, specialSz, isSpecial);
- sz *= uParticleSize;
+ // Grows linearly up to 0.5, then with sqrt: each star's pixel cost rises
+ // with size^2 across ~160k additive sprites, so big sizes must stay cheap.
+ float starScale = uParticleSize <= 0.5 ? uParticleSize : 0.5 * sqrt(uParticleSize / 0.5);
+ sz *= starScale;
  sz *= (420.0 / max(depth, 0.1)) * uPixelRatio;
  float maxSize = mix(
  (${CFG.baseSize.toFixed(1)} * (2.0 + aSeed * 1.0)),
  (${CFG.sparkleSize.toFixed(1)} * (2.0 + aSeed * 1.0)),
  isSpecial
- ) * uParticleSize;
- gl_PointSize = clamp(sz, 0.4, maxSize);
+ ) * starScale;
+ // Hard pixel cap so large particle sizes don't flood the GPU with
+ // overlapping additive sprites (the source of the lag).
+ gl_PointSize = clamp(sz, 0.4, min(maxSize, 10.0 * uPixelRatio));
  gl_Position = projectionMatrix * mvPos;
 }
 `;
@@ -820,9 +825,10 @@ void main(){
  vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
  float depth = -mvPos.z;
  float sizeFactor = mix(0.6, 1.0, 1.0 - aRadiusFrac);
- float sz = ${SMOKE_CFG.particleSize.toFixed(1)} * uParticleSize * sizeFactor * (0.7 + aSeed * 0.6);
+ float sizeScale = sqrt(max(uParticleSize, 0.0));
+ float sz = ${SMOKE_CFG.particleSize.toFixed(1)} * sizeScale * sizeFactor * (0.7 + aSeed * 0.6);
  sz *= (420.0 / max(depth, 0.1)) * uPixelRatio;
- gl_PointSize = clamp(sz, 2.0, ${SMOKE_CFG.particleSize.toFixed(1)} * uParticleSize * 3.0);
+ gl_PointSize = clamp(sz, 2.0, min(${SMOKE_CFG.particleSize.toFixed(1)} * sizeScale * 3.0, 60.0 * uPixelRatio));
  gl_Position = projectionMatrix * mvPos;
 }
 `;
@@ -1257,11 +1263,13 @@ function GalaxyMouseGroup({ children, mouseInfluence, rotation, rotationSpeed })
         const t = 1 - Math.exp(-MOUSE_LERP_LAMBDA * dt);
         s.x = THREE.MathUtils.lerp(s.x, m.x, t);
         s.y = THREE.MathUtils.lerp(s.y, m.y, t);
-        autoRotationRef.current += dt * rotationSpeed * 0.18;
+        // The galaxy itself stays fixed on its axis; only the particles orbit
+        // (driven by rotationSpeed in the GPU simulation). Spinning this whole
+        // group as well turned it around the wrong (outer) axis and wobbled.
         const mouseRotation = mouseInfluence ? rotation : 0;
         g.rotation.x = GALAXY_BASE_ROT[0] - s.y * MOUSE_TILT.x * mouseRotation;
         g.rotation.y = GALAXY_BASE_ROT[1] - s.x * MOUSE_TILT.y * mouseRotation;
-        g.rotation.z = autoRotationRef.current + s.x * s.y * MOUSE_TILT.z * mouseRotation;
+        g.rotation.z = GALAXY_BASE_ROT[2] + s.x * s.y * MOUSE_TILT.z * mouseRotation;
     });
     return (<group position={GALAXY_POSITION}>
          <group ref={groupRef} rotation={GALAXY_BASE_ROT}>
@@ -1269,7 +1277,7 @@ function GalaxyMouseGroup({ children, mouseInfluence, rotation, rotationSpeed })
          </group>
       </group>);
 }
-const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColor, accentColor, outerColor, rotationSpeed }) {
+const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColor, accentColor, outerColor, rotationSpeed, texSize = CFG.texSize }) {
     const { gl } = useThree();
     const groupRef = useRef(null);
     const gpuRef = useRef(null);
@@ -1277,11 +1285,13 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColo
     const dataRef = useRef(null);
     const reduceMotionRef = useRef(typeof window !== 'undefined' &&
         window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
+    // texSize x texSize particles (numberOfParticles). Rebuilt when it changes.
     const { geo, posTex, dataTex } = useMemo(() => {
-        const { posTex, dataTex } = buildTextures(CFG);
-        const geo = buildGeo(CFG);
+        const cfg = { ...CFG, texSize };
+        const { posTex, dataTex } = buildTextures(cfg);
+        const geo = buildGeo(cfg);
         return { geo, posTex, dataTex };
-    }, []);
+    }, [texSize]);
     const mat = useMemo(() => new THREE.ShaderMaterial({
         uniforms: {
             uPosition: { value: posTex },
@@ -1315,7 +1325,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColo
         return () => mq.removeEventListener?.('change', onChange);
     }, []);
     useEffect(() => {
-        const gpu = new GPUCompute(CFG.texSize, CFG.texSize, gl);
+        const gpu = new GPUCompute(texSize, texSize, gl);
         gpu.addVar('pos', SIM_FRAG, posTex);
         gpuRef.current = gpu;
         dataRef.current = dataTex;
@@ -1328,7 +1338,7 @@ const MilkyWayGPGPU = React.memo(function MilkyWayGPGPU({ particleSize, coreColo
             mat.dispose();
             matRef.current = null;
         };
-    }, [gl]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [gl, texSize, posTex, dataTex, geo, mat]); // eslint-disable-line react-hooks/exhaustive-deps
     useFrame((state, rawDelta) => {
         if (reduceMotionRef.current)
             return;
@@ -1389,7 +1399,9 @@ function SceneReady({ onReady }) {
     });
     return null;
 }
-export default function MilkyWay({ particleSize = DEFAULT_PARTICLE_SIZE, coreColor = DEFAULT_CORE_COLOR, accentColor = DEFAULT_ACCENT_COLOR, outerColor = DEFAULT_OUTER_COLOR, backgroundColor = DEFAULT_BACKGROUND_COLOR, mouseInfluence = DEFAULT_MOUSE_INFLUENCE, rotation = typeof mouseInfluence === 'number' ? mouseInfluence : DEFAULT_ROTATION, rotationSpeed = DEFAULT_ROTATION_SPEED, } = {}) {
+export default function MilkyWay({ particleSize = DEFAULT_PARTICLE_SIZE, coreColor = DEFAULT_CORE_COLOR, accentColor = DEFAULT_ACCENT_COLOR, outerColor = DEFAULT_OUTER_COLOR, backgroundColor = DEFAULT_BACKGROUND_COLOR, mouseInfluence = DEFAULT_MOUSE_INFLUENCE, rotation = typeof mouseInfluence === 'number' ? mouseInfluence : DEFAULT_ROTATION, rotationSpeed = DEFAULT_ROTATION_SPEED, numberOfParticles = 80000, } = {}) {
+    // Particles live on a square GPU texture, so the count snaps to size^2.
+    const particleTexSize = Math.round(Math.sqrt(THREE.MathUtils.clamp(Number(numberOfParticles) || CFG.texSize ** 2, 10000, 250000)));
     const resolvedProps = useMemo(() => resolveMilkyWayProps({
         particleSize,
         coreColor,
@@ -1464,7 +1476,7 @@ export default function MilkyWay({ particleSize = DEFAULT_PARTICLE_SIZE, coreCol
                <BackgroundStars color={resolvedProps.coreColor}/>
                <Center rotation={[degToRad(-10), degToRad(0), degToRad(0)]} position={[-1.2, 0.5, 0]}>
                   <GalaxyMouseGroup mouseInfluence={resolvedProps.mouseInfluence} rotation={resolvedProps.rotation} rotationSpeed={resolvedProps.rotationSpeed}>
-                     <MilkyWayGPGPU particleSize={resolvedProps.particleSize} coreColor={resolvedProps.coreColor} accentColor={resolvedProps.accentColor} outerColor={resolvedProps.outerColor} rotationSpeed={resolvedProps.rotationSpeed}/>
+                     <MilkyWayGPGPU particleSize={resolvedProps.particleSize} coreColor={resolvedProps.coreColor} accentColor={resolvedProps.accentColor} outerColor={resolvedProps.outerColor} rotationSpeed={resolvedProps.rotationSpeed} texSize={particleTexSize}/>
                      {isSceneReady && (<SmokeFlow particleSize={resolvedProps.particleSize} coreColor={resolvedProps.coreColor} accentColor={resolvedProps.accentColor} outerColor={resolvedProps.outerColor} rotationSpeed={resolvedProps.rotationSpeed}/>)}
                   </GalaxyMouseGroup>
                </Center>

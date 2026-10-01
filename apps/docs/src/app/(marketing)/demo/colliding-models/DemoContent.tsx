@@ -3,6 +3,7 @@
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import CollidingModels from "@/components/colliding-models";
+import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -13,16 +14,24 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader />
-          <div className="fixed inset-0 h-screen w-screen bg-white flex flex-col overflow-hidden">
-            <div className="max-md:block w-[50%] mx-auto pt-20 pb-7 max-md:mt-10 max-md:w-[80%] max-sm:w-[90%] max-sm:my-0">
-              <h1 className="text-3xl max-sm:text-2xl text-black text-center">
-                We build 3D visual experiences and interactive web worlds that help
-                bold brands stand apart
-              </h1>
+          <DemoHeader textColor="#ffffff" />
+
+          {effect}
+          <ReducedMotionNotice>
+            <div
+              aria-live="polite"
+              className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#0e0e0e]  p-3 text-center"
+            >
+              <h2 className="text-sm leading-none text-white">
+                The models keep colliding.
+              </h2>
+              <p className="mt-2 text-xs leading-5 text-white/90">
+                Colliding Models runs a live physics simulation that reacts to
+                cursor movement continuously. Since the motion is the entire
+                effect, reduced motion can&apos;t be applied here.
+              </p>
             </div>
-            {effect}
-          </div>
+          </ReducedMotionNotice>
         </>
       )}
     </RegistryRemixerDemo>

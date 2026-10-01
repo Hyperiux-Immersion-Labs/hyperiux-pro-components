@@ -1,6 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 const handlersByEl = new WeakMap();
 let targets = []; // [{ el, rect }]
@@ -306,17 +306,6 @@ function createSuspendedRaf({ onFrame, root = null, rootMargin = DEFAULT_ROOT_MA
     };
 }
 export { createSuspendedRaf, createVisibilityGate, DEFAULT_ROOT_MARGIN, };
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener('change', update);
-        return () => mediaQuery.removeEventListener('change', update);
-    }, []);
-    return prefersReducedMotion;
-}
 const VERTEX_SRC = `
 varying vec2 vUv;
 void main() {
@@ -645,7 +634,6 @@ export const NoiseDietherShader = ({ imageSrc = "https://picsum.photos/seed/11/8
     return (<div ref={containerRef} className={className} style={style} aria-label="NoiseRipple interactive background"/>);
 };
 export default function NoiseRippleCursor({ overlayColor = '#1825AA', imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg", pixelSize = 0.5, lerp = 0.2, distortion = 0.5, radius = 0.08 }) {
-    const prefersReducedMotion = usePrefersReducedMotion();
     return (<div className="h-screen w-screen relative">
 
   {imageSrc && (
@@ -660,15 +648,5 @@ export default function NoiseRippleCursor({ overlayColor = '#1825AA', imageSrc =
             }}/>)}
  <div className="h-full w-full absolute inset-0" style={{ backgroundColor: overlayColor, opacity: 0.3 }}/>
  <NoiseDietherShader imageSrc={imageSrc} noiseColor={overlayColor} style={{ width: '100%', height: '100%', position: 'relative', zIndex: 1 }} pixelSize={pixelSize} lerp={lerp} patternDensity={1} fluidRadius={radius} fluidStrength={0.2} fluidDissipation={0.9} distortStrength={distortion} trailDarkness={0}/>
- {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed top-24 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden">
-   <h2 className="text-sm leading-none text-white">
-     The ripple keeps rolling.
-   </h2>
-   <p className="mt-2 text-xs leading-5 text-white/65">
-     Noise Ripple Cursor distorts the image live as your cursor
-     moves through it. The distortion is the effect itself, so
-     reduced motion can&apos;t be applied here.
-   </p>
- </div>)}
  </div>);
 }

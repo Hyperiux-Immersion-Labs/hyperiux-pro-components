@@ -256,27 +256,18 @@ export {
   DEFAULT_ROOT_MARGIN,
 };
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const update = () => setPrefersReducedMotion(mediaQuery.matches)
-    update()
-    mediaQuery.addEventListener('change', update)
-    return () => mediaQuery.removeEventListener('change', update)
-  }, [])
-
-  return prefersReducedMotion
-}
-
 const LOGO_MODEL_URL = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/hyperiux-logo.glb'
 const GLASS_MODEL_URL = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/c-transformed.glb'
 
-const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00', '#ff5f00']
+// First entry is the default spark color; each click cycles to the next.
+const accents = ['#ff5f00', '#4060ff', '#20ffa0', '#ff4060', '#ffcc00']
 const MODEL_SCALE = 0.08
 const COLLIDER_SCALE = 0.5
 const POINTER_RADIUS = 0.55
+
+export type CollidingGeometry = 'model' | 'sphere' | 'torus' | 'icosahedron'
+// Radius the built-in shapes are sized to, roughly matching the logo model.
+const PRIMITIVE_RADIUS = 0.55
 
 const shuffle = (accent = 0, count = 9) => {
   const styles = [
@@ -300,17 +291,21 @@ const shuffle = (accent = 0, count = 9) => {
 interface SceneProps {
   frameloop?: 'always' | 'demand' | 'never'
   connectorCount?: number
-  gravity?: number
   modelScale?: number
   backgroundColor?: string
+  geometry?: CollidingGeometry
+  returnToPosition?: boolean
+  returnSpeed?: number
 }
 
 function Scene({
   frameloop = 'always',
   connectorCount = 8,
-  gravity = 0,
   modelScale = 1,
   backgroundColor = '#141518',
+  geometry = 'model',
+  returnToPosition = true,
+  returnSpeed = 1,
 }: SceneProps) {
   const [accent, click] = useReducer((state: number) => ++state % accents.length, 0)
   const [showTitle, setShowTitle] = useState(true)
@@ -385,13 +380,13 @@ function Scene({
         castShadow
       />
 
-      <Physics gravity={[0, -gravity, 0]}>
+      <Physics gravity={[0, 0, 0]}>
         <Pointer />
         {connectors.map((props, i) => (
-          <Connector key={i} {...props} modelScale={modelScale} connectorRefs={connectorRefs} registerConnector={registerConnector} index={i} />
+          <Connector key={i} {...props} modelScale={modelScale} geometry={geometry} returnToPosition={returnToPosition} returnSpeed={returnSpeed} connectorRefs={connectorRefs} registerConnector={registerConnector} index={i} />
         ))}
-        <Connector position={[10, 10, 5]} connectorRefs={connectorRefs} registerConnector={registerConnector} index={connectors.length}>
-          <Model modelScale={modelScale}>
+        <Connector position={[10, 10, 5]} geometry={geometry} modelScale={modelScale} returnToPosition={returnToPosition} returnSpeed={returnSpeed} connectorRefs={connectorRefs} registerConnector={registerConnector} index={connectors.length}>
+          <Model modelScale={modelScale} geometry={geometry}>
             <MeshTransmissionMaterial
               clearcoat={1}
               thickness={10}
@@ -459,6 +454,11 @@ interface ConnectorOwnProps {
   connectorRefs: RefObject<any[]>
   registerConnector: (index: number, api: any) => () => void
   index: number
+  geometry?: CollidingGeometry
+  /** Pull pieces back to the cluster after the cursor knocks them away. */
+  returnToPosition?: boolean
+  /** How quickly knocked pieces come back (1 = default). */
+  returnSpeed?: number
 }
 
 function Connector({
@@ -471,6 +471,9 @@ function Connector({
   connectorRefs,
   registerConnector,
   index,
+  geometry = 'model',
+  returnToPosition = true,
+  returnSpeed = 1,
   ...props
 }: ConnectorOwnProps & Record<string, any>) {
   const api = useRef<RapierRigidBody | null>(null)
@@ -486,10 +489,14 @@ function Connector({
 
     const myPos = api.current.translation()
 
-    api.current.applyImpulse(
-      vec.copy(myPos).negate().multiplyScalar(0.01),
-      true
-    )
+    // Pull back toward the cluster. 0.03 (was 0.01) with lighter damping
+    // below brings knocked pieces back noticeably faster by default.
+    if (returnToPosition) {
+      api.current.applyImpulse(
+        vec.copy(myPos).negate().multiplyScalar(0.03 * Math.max(0, returnSpeed)),
+        true
+      )
+    }
 
     for (let i = 0; i < connectorRefs.current.length; i++) {
       if (i === index) continue
@@ -514,13 +521,17 @@ function Connector({
 
   return (
     <RigidBody
-      linearDamping={4}
+      linearDamping={returnToPosition ? 2.5 : 4}
       angularDamping={1}
       friction={0.1}
       position={pos}
       ref={api}
       colliders={false}
     >
+      {geometry !== 'model' ? (
+        <BallCollider args={[PRIMITIVE_RADIUS * (props.modelScale ?? 1)]} />
+      ) : (
+      <>
       <CuboidCollider
         args={[
           0.25 * COLLIDER_SCALE,
@@ -545,7 +556,9 @@ function Connector({
         ]}
         position={[0, 0, 0]}
       />
-      {children ? children : <Model {...props} />}
+      </>
+      )}
+      {children ? children : <Model {...props} geometry={geometry} />}
       {accent && (
         <pointLight intensity={4} distance={1.25} color={props.color} />
       )}
@@ -593,9 +606,10 @@ interface ModelProps {
   color?: string
   roughness?: number
   modelScale?: number
+  geometry?: CollidingGeometry
 }
 
-function Model({ children, color = 'white', roughness = 0, modelScale = 1 }: ModelProps) {
+function Model({ children, color = 'white', roughness = 0, modelScale = 1, geometry: shape = 'model' }: ModelProps) {
   const ref = useRef<any>(null)
   const { nodes } = useGLTF(LOGO_MODEL_URL)
   const { materials: materials2 } = useGLTF(GLASS_MODEL_URL)
@@ -607,18 +621,23 @@ function Model({ children, color = 'white', roughness = 0, modelScale = 1 }: Mod
     }
   })
 
-  if (!geometry) return null
+  const isPrimitive = shape !== 'model'
+  if (!isPrimitive && !geometry) return null
 
   const scale = MODEL_SCALE * modelScale
+  const r = PRIMITIVE_RADIUS * modelScale
 
   return (
     <mesh
       ref={ref}
       castShadow
       receiveShadow
-      scale={[scale, scale, scale * 2.3]}
-      geometry={geometry}
+      scale={isPrimitive ? 1 : [scale, scale, scale * 2.3]}
+      geometry={isPrimitive ? undefined : geometry}
     >
+      {shape === 'sphere' && <sphereGeometry args={[r, 48, 32]} />}
+      {shape === 'torus' && <torusGeometry args={[r * 0.72, r * 0.28, 32, 96]} />}
+      {shape === 'icosahedron' && <icosahedronGeometry args={[r, 0]} />}
       <meshPhysicalMaterial
         {...({
           metalness: .4,
@@ -638,13 +657,14 @@ function Model({ children, color = 'white', roughness = 0, modelScale = 1 }: Mod
 
 export default function CollidingModels({
   connectorCount = 8,
-  gravity = 0,
   modelScale = 1,
   backgroundColor = '#141518',
-}: { connectorCount?: number; gravity?: number; modelScale?: number; backgroundColor?: string }) {
+  geometry = 'model',
+  returnToPosition = true,
+  returnSpeed = 1,
+}: { connectorCount?: number; modelScale?: number; backgroundColor?: string; geometry?: CollidingGeometry; returnToPosition?: boolean; returnSpeed?: number }) {
   const rootRef = useRef<HTMLDivElement | null>(null)
   const [frameloop, setFrameloop] = useState<'always' | 'never'>('always')
-  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const gate = createVisibilityGate({
@@ -667,9 +687,11 @@ export default function CollidingModels({
           <Scene
             frameloop={frameloop}
             connectorCount={connectorCount}
-            gravity={gravity}
             modelScale={modelScale}
             backgroundColor={backgroundColor}
+            geometry={geometry}
+            returnToPosition={returnToPosition}
+            returnSpeed={returnSpeed}
           />
           <p className="pointer-events-none max-[1025px]:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-md:bottom-4 max-md:text-xs">
             Move through the field and let the models collide - click to change their spark.
@@ -681,21 +703,6 @@ export default function CollidingModels({
         </div>
       </div>
 
-      {prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#0e0e0e]  p-3 text-center"
-        >
-          <h2 className="text-sm leading-none text-white">
-            The models keep colliding.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-white/90">
-            Colliding Models runs a live physics simulation that reacts to
-            cursor movement continuously. Since the motion is the entire
-            effect, reduced motion can&apos;t be applied here.
-          </p>
-        </div>
-      )}
     </>
   )
 }

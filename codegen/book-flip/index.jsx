@@ -320,34 +320,19 @@ export const Book = ({ images = [], pathPattern = "/assets/nature", pageSpeed = 
     * Animates delayedPage toward target page one page at a time
     * This creates the sequential page-by-page animation
     */
+    // Steps delayedPage one page toward the target per timeout. Scheduling
+    // lives in the effect (not inside a setState updater, which React may call
+    // more than once) so there is only ever one pending timer - stray timers
+    // with a stale target used to keep flipping pages back and forth.
     useEffect(() => {
-        let timeout;
-        const goToPage = () => {
-            setDelayedPage((delayedPage) => {
-                if (page === delayedPage) {
-                    return delayedPage;
-                }
-                else {
-                    // Faster animation for large jumps, slower for single pages
-                    const baseDelay = Math.abs(page - delayedPage) > 2 ? 50 : 150;
-                    timeout = setTimeout(() => {
-                        goToPage();
-                    }, baseDelay / normalizedPageSpeed);
-                    if (page > delayedPage) {
-                        return delayedPage + 1;
-                    }
-                    if (page < delayedPage) {
-                        return delayedPage - 1;
-                    }
-                    return delayedPage;
-                }
-            });
-        };
-        goToPage();
-        return () => {
-            clearTimeout(timeout);
-        };
-    }, [normalizedPageSpeed, page]);
+        if (delayedPage === page)
+            return;
+        const baseDelay = Math.abs(page - delayedPage) > 2 ? 50 : 150;
+        const timeout = setTimeout(() => {
+            setDelayedPage((current) => current === page ? current : current + (page > current ? 1 : -1));
+        }, baseDelay / normalizedPageSpeed);
+        return () => clearTimeout(timeout);
+    }, [normalizedPageSpeed, page, delayedPage]);
     return (<group {...props} rotation-y={-Math.PI / 2} rotation-x={-0.7} scale={responsiveScale * safeBookScale}>
  {pages.map((pageData, index) => (<Page key={index} page={delayedPage} number={index} opened={delayedPage > index} bookClosed={delayedPage === 0 || delayedPage === pages.length} pathPattern={pathPattern} pages={pages} pageSpeed={safePageSpeed} {...pageData}/>))}
  </group>);
@@ -635,19 +620,7 @@ export const BookFlipp = ({ images = [], pathPattern = "/assets/nature", bgColor
 };
 // ---- index.tsx ----
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener("change", update);
-        return () => mediaQuery.removeEventListener("change", update);
-    }, []);
-    return prefersReducedMotion;
-}
 export default function BookFlip({ pageSpeed = 0.8, bookScale = 1, }) {
-    const prefersReducedMotion = usePrefersReducedMotion();
     return (<>
     <BookFlipp images={BOOK_IMAGES} pathPattern="" bgColor="#000000" cameraDistance={{
             mobile: 9,
@@ -663,16 +636,6 @@ export default function BookFlip({ pageSpeed = 0.8, bookScale = 1, }) {
 
     </div>
 
-    {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden">
-        <h2 className="text-sm leading-none text-white">
-          The pages keep turning.
-        </h2>
-        <p className="mt-2 text-xs leading-5 text-white/65">
-          Book Flip animates each page turn as a continuous physical bend
-          when you click or drag. Since that motion is the entire
-          interaction, reduced motion can&apos;t be applied here.
-        </p>
-      </div>)}
     </>);
 }
 const BOOK_IMAGES = [

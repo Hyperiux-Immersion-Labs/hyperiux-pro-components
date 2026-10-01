@@ -3,6 +3,7 @@
 import RopeCursor from "@/components/rope-cursor";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -16,6 +17,21 @@ export default function DemoContent({ registry }: { registry: any }) {
           <DemoHeader />
           <div className="h-screen w-full bg-[#F1EADE] overflow-hidden" style={{ color: values.ropeColor }}>
             {effect}
+            <ReducedMotionNotice>
+              <div
+                aria-live="polite"
+                className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden"
+              >
+                <h2 className="text-sm leading-none text-black">
+                  The rope keeps swinging.
+                </h2>
+                <p className="mt-2 text-xs leading-5 text-black">
+                  Rope Cursor is a live trail of your cursor&apos;s movement. The
+                  motion is the entire effect, so it can&apos;t be swapped for a
+                  reduced motion alternative.
+                </p>
+              </div>
+            </ReducedMotionNotice>
             <div className="flex items-center max-md:hidden justify-center flex-col h-full pointer-events-none">
               <h1 className="text-[4vw] text-center">Rope Cursor</h1>
               <p className="opacity-90 text-[2.5vw] text-center">

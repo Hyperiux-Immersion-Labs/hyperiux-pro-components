@@ -1,6 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 const DEFAULT_ROOT_MARGIN = "256px";
 function resolveElement(root) {
     if (!root)
@@ -179,26 +179,9 @@ function createSuspendedRaf({ onFrame, root = null, rootMargin = DEFAULT_ROOT_MA
     };
 }
 export { createSuspendedRaf, createVisibilityGate, DEFAULT_ROOT_MARGIN, };
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-function subscribeToReducedMotion(callback) {
-    if (typeof window === "undefined")
-        return () => { };
-    const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
-    mediaQueryList.addEventListener("change", callback);
-    return () => mediaQueryList.removeEventListener("change", callback);
-}
-function getReducedMotionSnapshot() {
-    return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
-}
-function getServerReducedMotionSnapshot() {
-    return false;
-}
 // React hook form, for JSX output that depends on the preference (not just
 // the imperative reduceMotion flag already used inside the draw loop below).
 // Safe to call during render - returns false on the server.
-function usePrefersReducedMotion() {
-    return useSyncExternalStore(subscribeToReducedMotion, getReducedMotionSnapshot, getServerReducedMotionSnapshot);
-}
 const DEFAULT_SPACING = 24;
 const DEFAULT_BASE_RADIUS = 7.2;
 const DEFAULT_MOUSE_RADIUS = 380;
@@ -286,7 +269,6 @@ const getRawShapeStrength = (shapeIndex, x, y, time, width, height) => {
 };
 export default function DottedGrid({ spacing = DEFAULT_SPACING, baseRadius = DEFAULT_BASE_RADIUS, mouseRadius = DEFAULT_MOUSE_RADIUS, trailLength = DEFAULT_TRAIL_LENGTH, trailRadius = DEFAULT_TRAIL_RADIUS, trailFadeMs = DEFAULT_TRAIL_FADE_MS, backgroundColor = "#000000", showDesktopHint = true, desktopHint = "Click anywhere to change the pattern.", mobileHint = "Works best on desktop", className = "", }) {
     const canvasRef = useRef(null);
-    const reducedMotion = usePrefersReducedMotion();
     const patternRef = useRef({
         currentShapeIndex: 0,
         transitionStartTime: null,
@@ -521,16 +503,5 @@ export default function DottedGrid({ spacing = DEFAULT_SPACING, baseRadius = DEF
         Here, tap & drag to explore
       </div>
 
-      {reducedMotion && (<div aria-live="polite" className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm">
-          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
-            This effect can&apos;t be reduced.
-          </h2>
-          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
-            Reduced motion is enabled, but this effect is a continuous
-            ambient dot-grid animation with cursor-driven distortion, and
-            can&apos;t be simplified to a fade without losing the effect
-            entirely.
-          </p>
-        </div>)}
     </section>);
 }

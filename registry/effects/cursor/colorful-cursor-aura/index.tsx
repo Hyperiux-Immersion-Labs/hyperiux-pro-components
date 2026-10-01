@@ -176,20 +176,6 @@ function ColorfulCursorAuraComp({
  )
 }
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const update = () => setPrefersReducedMotion(mediaQuery.matches)
-    update()
-    mediaQuery.addEventListener('change', update)
-    return () => mediaQuery.removeEventListener('change', update)
-  }, [])
-
-  return prefersReducedMotion
-}
-
 const ColorfulCursorAura = ({
   auraSize = 325,
   color1 = '#a78bfa',
@@ -197,7 +183,6 @@ const ColorfulCursorAura = ({
   color3 = '#fde68a',
   followSpeed = 0.12,
 }) => {
-  const prefersReducedMotion = usePrefersReducedMotion()
 
   return (
      <div className="relative min-h-screen bg-white">
@@ -218,21 +203,6 @@ const ColorfulCursorAura = ({
         </p>
       </div>
 
-      {prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 p-3 text-center  max-[1025px]:hidden"
-        >
-          <h2 className="text-sm leading-none text-[#111111]">
-            The aura keeps glowing.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black/65">
-            Colorful Cursor Aura renders continuously shifting color driven by
-            cursor movement. The motion is the entire effect, so it
-            can&apos;t be reduced.
-          </p>
-        </div>
-      )}
     </div>
   )
 }

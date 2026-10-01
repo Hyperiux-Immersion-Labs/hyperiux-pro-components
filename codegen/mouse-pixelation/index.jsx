@@ -368,29 +368,6 @@ function PixelCirclesPlane({ gridSize = DEFAULT_GRID_SIZE, mouseInteraction = tr
             window.removeEventListener("resize", onResize);
         };
     }, []);
-    useEffect(() => {
-        const context = gsap.context(() => {
-            gsap.set(".text-left", {
-                opacity: 1,
-            });
-            gsap.from(".text-left", {
-                xPercent: -25,
-                duration: 3.5,
-                ease: "expo.out",
-            });
-            gsap.set(".text-right", {
-                opacity: 1,
-            });
-            gsap.from(".text-right", {
-                xPercent: 25,
-                duration: 3.5,
-                ease: "expo.out",
-            });
-        });
-        return () => {
-            context.revert();
-        };
-    }, []);
     const onPointerEnter = () => {
         if (!mouseInteraction) {
             return;
@@ -440,6 +417,7 @@ function PixelCirclesPlane({ gridSize = DEFAULT_GRID_SIZE, mouseInteraction = tr
 }
 function Pixelation({ firstLine = DEFAULT_FIRST_LINE, secondLine = DEFAULT_SECOND_LINE, mobileNotice = DEFAULT_MOBILE_NOTICE, description = DEFAULT_DESCRIPTION, gridSize = DEFAULT_GRID_SIZE, mouseInteraction = true, lerp = DEFAULT_LERP, backgroundColor = DEFAULT_BACKGROUND_COLOR, }) {
     const rootRef = useRef(null);
+    const textRef = useRef(null);
     const [frameloop, setFrameloop] = useState("always");
     useEffect(() => {
         const gate = createVisibilityGate({
@@ -449,6 +427,19 @@ function Pixelation({ firstLine = DEFAULT_FIRST_LINE, secondLine = DEFAULT_SECON
         setFrameloop(gate.isActive ? "always" : "never");
         return () => gate.destroy();
     }, []);
+    // Simple text intro: each line fades up in turn (a plain fade with
+    // reduced motion). Scoped to this section's own elements.
+    useEffect(() => {
+        const section = textRef.current;
+        if (!section)
+            return;
+        const items = section.querySelectorAll("[data-v1-reveal]");
+        const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+        const context = gsap.context(() => {
+            gsap.fromTo(items, { opacity: 0, y: reduce ? 0 : 30 }, { opacity: 1, y: 0, duration: reduce ? 0.6 : 1, ease: "power3.out", stagger: 0.15, delay: 0.2 });
+        }, section);
+        return () => context.revert();
+    }, []);
     return (<div ref={rootRef} className="relative h-screen w-screen overflow-hidden">
       <div className="fixed left-0 top-0 h-full w-full overflow-hidden">
         <Canvas aria-hidden="true" frameloop={frameloop}>
@@ -457,15 +448,15 @@ function Pixelation({ firstLine = DEFAULT_FIRST_LINE, secondLine = DEFAULT_SECON
         </Canvas>
       </div>
 
-      <section className="pointer-events-none relative z-10 flex h-screen w-full flex-col justify-center gap-[12vw] px-[5vw] max-[1025px]:h-[90vh] max-[1025px]:gap-[7vw] max-md:h-[90vh] max-md:gap-[7vw]">
-        <h1 className="mt-[4vw] flex flex-col text-[8vw] font-medium leading-[1.2] text-white max-[1025px]:text-[12vw] max-md:text-[15vw]">
-          <span className={`${firstLine.className} opacity-0`}>
+      <section ref={textRef} className="pointer-events-none relative z-10 flex h-screen w-full flex-col justify-center gap-[4vw] px-[5vw] pt-[6vw] max-[1025px]:gap-[6vw] max-[1025px]:pt-[14vw] max-md:pt-[24vw]">
+        <h1 className="flex flex-col text-[8vw] font-medium leading-[1.1] text-white max-[1025px]:text-[12vw] max-md:text-[14vw]">
+          <span data-v1-reveal className={firstLine.className}>
             {firstLine.prefix}
             <span className={firstLine.highlightClassName}>
               {firstLine.highlight}
             </span>
           </span>
-          <span className={`${secondLine.className} opacity-0`}>
+          <span data-v1-reveal className={secondLine.className}>
             {secondLine.prefix}
             <span className={secondLine.highlightClassName}>
               {secondLine.highlight}
@@ -473,12 +464,12 @@ function Pixelation({ firstLine = DEFAULT_FIRST_LINE, secondLine = DEFAULT_SECON
           </span>
         </h1>
 
-        <p className="hidden font-medium tracking-wide text-white/70 max-[1025px]:block max-[1025px]:text-[3vw] max-md:text-[4vw]">
-          {mobileNotice}
+        <p data-v1-reveal className="w-[32%] text-[1.4vw] leading-snug text-white/85 max-[1025px]:w-[80%] max-[1025px]:text-[3vw] max-md:w-full max-md:text-[4.5vw]">
+          {description}
         </p>
 
-        <p className="w-[30%] text-[1.5vw] text-white max-[1025px]:mt-[5vw] max-[1025px]:w-[80%] max-[1025px]:text-[3vw] max-md:w-[90%] max-md:text-[5vw]">
-          {description}
+        <p data-v1-reveal className="hidden font-medium tracking-wide text-white/60 max-[1025px]:block max-[1025px]:text-[2.6vw] max-md:text-[3.6vw]">
+          {mobileNotice}
         </p>
       </section>
     </div>);
@@ -1291,19 +1282,6 @@ function EnhancedPixelCube({ notice = CUBE_DEFAULT_NOTICE_TEXT, colorOptions = C
       </Canvas>
     </div>);
 }
-// ---- index.tsx ----
-// Built using Hyperiux Vault: https://vault.hyperiux.com
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener("change", update);
-        return () => mediaQuery.removeEventListener("change", update);
-    }, []);
-    return prefersReducedMotion;
-}
 const MOUSE_DEMO_VARIANTS = {
     "pixel-circle": PixelCircle,
     "pixel-shift": PixelShift,
@@ -1329,9 +1307,8 @@ const MOUSE_DEMO_DEFAULT_LERP = 0.1;
 const MOUSE_DEMO_DEFAULT_BACKGROUND_COLOR = "#000000";
 const MOUSE_DEMO_DEFAULT_CUBE_SIZE = 1;
 const MOUSE_DEMO_DEFAULT_GRID_EMBOSSING = 1;
-export default function MousePixelation({ variant = "pixel-shift", imageUrl = MOUSE_DEMO_DEFAULT_PIXEL_SHIFT_IMAGE, gridSize = MOUSE_DEMO_DEFAULT_GRID_SIZE, mouseInteraction = true, lerp = MOUSE_DEMO_DEFAULT_LERP, backgroundColor = MOUSE_DEMO_DEFAULT_BACKGROUND_COLOR, cubeSize = MOUSE_DEMO_DEFAULT_CUBE_SIZE, gridEmbossing = MOUSE_DEMO_DEFAULT_GRID_EMBOSSING, }) {
+export default function MousePixelation({ variant = "pixel-shift", imageUrl = MOUSE_DEMO_DEFAULT_PIXEL_SHIFT_IMAGE, v1NumberOfGrids = MOUSE_DEMO_DEFAULT_GRID_SIZE, v1Lerp = MOUSE_DEMO_DEFAULT_LERP, v1BackgroundColor = MOUSE_DEMO_DEFAULT_BACKGROUND_COLOR, v2NumberOfGrids = MOUSE_DEMO_DEFAULT_GRID_SIZE, v2Lerp = MOUSE_DEMO_DEFAULT_LERP, v3NumberOfGrids = MOUSE_DEMO_DEFAULT_GRID_SIZE, v3Lerp = MOUSE_DEMO_DEFAULT_LERP, v3CubeSize = MOUSE_DEMO_DEFAULT_CUBE_SIZE, v3GridEmbossing = MOUSE_DEMO_DEFAULT_GRID_EMBOSSING, }) {
     const [activeVariant, setActiveVariant] = useState(MOUSE_DEMO_VARIANTS[variant] ? variant : "pixel-shift");
-    const prefersReducedMotion = usePrefersReducedMotion();
     const ActiveComponent = useMemo(() => {
         return MOUSE_DEMO_VARIANTS[activeVariant] || PixelShift;
     }, [activeVariant]);
@@ -1339,18 +1316,8 @@ export default function MousePixelation({ variant = "pixel-shift", imageUrl = MO
       <VersionNav activeVariant={activeVariant} onVariantChange={setActiveVariant}/>
       <CursorMoveCue />
 
-      <ActiveComponent imageUrl={imageUrl} img={imageUrl} gridSize={gridSize} mouseInteraction={mouseInteraction} lerp={lerp} backgroundColor={backgroundColor} cubeSize={cubeSize} gridEmbossing={gridEmbossing}/>
+      {activeVariant === "pixel-circle" ? (<ActiveComponent gridSize={v1NumberOfGrids} lerp={v1Lerp} backgroundColor={v1BackgroundColor}/>) : activeVariant === "pixel-shift" ? (<ActiveComponent imageUrl={imageUrl} img={imageUrl} gridSize={v2NumberOfGrids} lerp={v2Lerp}/>) : (<ActiveComponent gridSize={v3NumberOfGrids} lerp={v3Lerp} cubeSize={v3CubeSize} gridEmbossing={v3GridEmbossing}/>)}
 
-      {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-28 right-12 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden">
-          <h2 className="text-sm leading-none text-white">
-            The pixels keep shifting.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-white/65">
-            Mouse Pixelation reacts to cursor position across all three
-            variants, in real time. Since the transition is driven entirely
-            by motion, reduced motion can&apos;t be applied here.
-          </p>
-        </div>)}
     </>);
 }
 function CursorMoveCue() {

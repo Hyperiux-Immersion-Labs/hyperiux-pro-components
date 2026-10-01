@@ -179,24 +179,12 @@ function createSuspendedRaf({ onFrame, root = null, rootMargin = DEFAULT_ROOT_MA
     };
 }
 export { createSuspendedRaf, createVisibilityGate, DEFAULT_ROOT_MARGIN, };
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener("change", update);
-        return () => mediaQuery.removeEventListener("change", update);
-    }, []);
-    return prefersReducedMotion;
-}
 const lerp = (start, end, amount) => start + (end - start) * amount;
 const DEFAULT_SVG_MASK_URL = null;
 function GridLiftDesktop({ maskScale = 1.08, fontSize = 350, fontWeight = 200, interactionRange = 120, hoverRadius = 550, hoverFalloff = 1.55, liftRotation = -88, liftHeight = 58, liftSmoothness = 0.08, gridSpacing = 13, strokeSize = 1.15, baseOpacity = 1, hoverOpacity = 0.6, backgroundColor = "#000000", gridColor = "#272727", hoverColor = "#ffffff", }) {
     const canvasRef = useRef(null);
     const fileInputRef = useRef(null);
     const isDesktop = true;
-    const prefersReducedMotion = usePrefersReducedMotion();
     const mouseRef = useRef({ x: -9999, y: -9999, active: false });
     const cellsRef = useRef([]);
     const svgImageRef = useRef(null);
@@ -594,17 +582,6 @@ function GridLiftDesktop({ maskScale = 1.08, fontSize = 350, fontWeight = 200, i
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
  Drift your cursor through the grid to lift
  </div>
- </div>)}
-
- {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden">
-   <h2 className="text-sm leading-none text-white">
-     The grid keeps lifting.
-   </h2>
-   <p className="mt-2 text-xs leading-5 text-white/65">
-     Grid Lift raises the mask grid wherever your cursor drifts, in
-     real time. Since the motion is the entire effect, reduced motion
-     can&apos;t be applied here.
-   </p>
  </div>)}
 
  <input ref={fileInputRef} type="file" accept=".svg,image/svg+xml" onChange={handleSVGUpload} style={{ display: "none" }}/>

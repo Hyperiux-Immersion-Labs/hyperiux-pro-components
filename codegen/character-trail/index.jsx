@@ -1,15 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-function usePrefersReducedMotion() {
-    return useSyncExternalStore((callback) => {
-        if (typeof window === "undefined")
-            return () => { };
-        const mediaQueryList = window.matchMedia("(prefers-reduced-motion: reduce)");
-        mediaQueryList.addEventListener("change", callback);
-        return () => mediaQueryList.removeEventListener("change", callback);
-    }, () => (typeof window === "undefined" ? false : window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false), () => false);
-}
+import { useCallback, useEffect, useRef, useState } from "react";
 const DEFAULT_ROOT_MARGIN = "256px";
 function resolveElement(root) {
     if (!root)
@@ -481,7 +472,6 @@ const Content = () => (<main className="relative min-h-screen max-md:h-screen w-
   </main>);
 const CharacterTrail = (props) => {
     const [isMobile, setIsMobile] = useState(false);
-    const prefersReducedMotion = usePrefersReducedMotion();
     useEffect(() => {
         const check = () => {
             setIsMobile(window.innerWidth < 1025);
@@ -494,15 +484,6 @@ const CharacterTrail = (props) => {
      {isMobile ? (<Content />) : (<CharacterTrailComp {...props}>
           <Content />
         </CharacterTrailComp>)}
-      {!isMobile && prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed top-25 right-8 z-50000 w-fit max-w-65 rounded-md border bg-white/10 border-black/10 backdrop-blur-sm  p-3 text-center max-[1025px]:hidden">
-          <h2 className="text-sm leading-none text-[#111111]">
-            The characters keep trailing.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black/65">
-            Character Trail redraws letters along your cursor&apos;s path in real
-            time. The animation can&apos;t be reduced without removing the effect.
-          </p>
-        </div>)}
     </>);
 };
 export default CharacterTrail;

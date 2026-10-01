@@ -419,6 +419,7 @@ function Strand({
   radius,
   autoplaySpeed,
   dragSensitivity,
+  scrollIntensity,
   inertiaDecay,
 }: {
   images: string[];
@@ -429,6 +430,7 @@ function Strand({
   radius: number;
   autoplaySpeed: number;
   dragSensitivity: number;
+  scrollIntensity: number;
   inertiaDecay: number;
 }) {
   const { gl } = useThree();
@@ -436,8 +438,8 @@ function Strand({
   const meshes = useRef<THREE.Mesh[]>([]);
 
   // Read live in the frame loop so slider changes apply without a remount.
-  const tuning = useRef({ autoplaySpeed, dragSensitivity, inertiaDecay });
-  tuning.current = { autoplaySpeed, dragSensitivity, inertiaDecay };
+  const tuning = useRef({ autoplaySpeed, dragSensitivity, scrollIntensity, inertiaDecay });
+  tuning.current = { autoplaySpeed, dragSensitivity, scrollIntensity, inertiaDecay };
 
   // Bitmaps decoded once per URL, reused when materials get recreated (e.g.
   // count changing because a remixer prop like radius/turns/cardScale nudges
@@ -623,7 +625,7 @@ function Strand({
     const wheel = (e: WheelEvent) => {
       if (reduced) return;
       state.velocity = THREE.MathUtils.clamp(
-        state.velocity + e.deltaY * SCROLL_SENSITIVITY,
+        state.velocity + e.deltaY * SCROLL_SENSITIVITY * tuning.current.scrollIntensity,
         -INERTIA_MAX,
         INERTIA_MAX
       );
@@ -708,6 +710,8 @@ export interface HelixSliderProps {
   turns?: number;
   cardScale?: number;
   dragSensitivity?: number;
+  /** Multiplier for how far each wheel/trackpad scroll spins the helix. */
+  scrollIntensity?: number;
   inertiaDecay?: number;
   background?: string;
   className?: string;
@@ -721,6 +725,7 @@ export default function HelixSlider({
   turns = 3.3,
   cardScale = 1,
   dragSensitivity = 0.006,
+  scrollIntensity = 1,
   inertiaDecay = 2.2,
   background = "#0d0d0d",
   className,
@@ -797,6 +802,7 @@ export default function HelixSlider({
             radius={radius}
             autoplaySpeed={autoplaySpeed}
             dragSensitivity={dragSensitivity}
+            scrollIntensity={scrollIntensity}
             inertiaDecay={inertiaDecay}
           />
         </Suspense>

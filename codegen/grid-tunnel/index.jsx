@@ -1,6 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
-import { Image, Preload } from "@react-three/drei";
+import { Preload, useTexture } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -206,7 +206,7 @@ function clampNumber(value, min, max, fallback) {
         return fallback;
     return THREE.MathUtils.clamp(number, min, max);
 }
-function resolveTunnelConfig({ gridSize = DEFAULT_GRID_SIZE, speed = 1, depth = DEFAULT_DEPTH, lineColor = DEFAULT_LINE_COLOR, backgroundColor = DEFAULT_BACKGROUND_COLOR, }) {
+function resolveTunnelConfig({ gridSize = DEFAULT_GRID_SIZE, roundness = 0, speed = 1, depth = DEFAULT_DEPTH, lineColor = DEFAULT_LINE_COLOR, backgroundColor = DEFAULT_BACKGROUND_COLOR, }) {
     const resolvedGridSize = Math.round(clampNumber(gridSize, 6, 48, DEFAULT_GRID_SIZE));
     const resolvedDepth = clampNumber(depth, 100, 3000, DEFAULT_DEPTH);
     return {
@@ -214,6 +214,7 @@ function resolveTunnelConfig({ gridSize = DEFAULT_GRID_SIZE, speed = 1, depth = 
         gridY: Math.max(2, Math.round(resolvedGridSize / 5)),
         gridZ: Math.max(8, Math.round(resolvedGridSize * 1.5)),
         tunnelDepth: TUNNEL_DEPTH,
+        roundness: clampNumber(roundness, 0, 1, 0),
         scrollSpeed: SCROLL_SPEED * clampNumber(speed, 0, 5, 1),
         maxScrollVelocity: MAX_SCROLL_VELOCITY * Math.max(clampNumber(speed, 0, 5, 1), 0.2),
         lineColor: typeof lineColor === "string" && lineColor ? lineColor : DEFAULT_LINE_COLOR,
@@ -223,17 +224,6 @@ function resolveTunnelConfig({ gridSize = DEFAULT_GRID_SIZE, speed = 1, depth = 
         fogFar: THREE.MathUtils.mapLinear(resolvedDepth, 100, 3000, 38, 180),
         cameraFar: Math.max(1000, resolvedDepth + 120),
     };
-}
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener("change", update);
-        return () => mediaQuery.removeEventListener("change", update);
-    }, []);
-    return prefersReducedMotion;
 }
 function seededRandom(seed) {
     let value = seed;
@@ -259,42 +249,212 @@ function Line({ points, color }) {
       <lineBasicMaterial color={color} transparent opacity={0.9} depthWrite={false}/>
     </line>);
 }
-function GridChunkContent({ config }) {
+const RING_SEGMENTS = 96;
+const PANEL_SEGMENTS = 12;
+const PANEL_INSET = 0.035;
+// Superellipse exponent for a roundness of 0-1: large = square corners,
+// 2 = a full ellipse.
+function roundnessExponent(roundness) {
+    return THREE.MathUtils.lerp(30, 2, THREE.MathUtils.clamp(roundness, 0, 1));
+}
+// Radius of the fully rounded tunnel: a true circle (not an oval) with the
+// same area as the rectangular cross-section.
+const CIRCLE_RADIUS = Math.sqrt((TUNNEL_WIDTH / 2) * (TUNNEL_HEIGHT / 2));
+// Half-extents blend from the rectangle's toward the circle's as roundness
+// goes 0 -> 1, so full roundness is round in both axes.
+function roundedExtents(roundness) {
+    const t = THREE.MathUtils.clamp(roundness, 0, 1);
+    return [
+        THREE.MathUtils.lerp(TUNNEL_WIDTH / 2, CIRCLE_RADIUS, t),
+        THREE.MathUtils.lerp(TUNNEL_HEIGHT / 2, CIRCLE_RADIUS, t),
+    ];
+}
+function superellipsePoint(theta, n, roundness) {
+    const c = Math.cos(theta);
+    const s = Math.sin(theta);
+    const [hw, hh] = roundedExtents(roundness);
+    return [
+        Math.sign(c) * Math.pow(Math.abs(c), 2 / n) * hw,
+        Math.sign(s) * Math.pow(Math.abs(s), 2 / n) * hh,
+    ];
+}
+// Maps a point on the rectangular cross-section onto the rounded one (same
+// direction from the centre), so grid lines and image panels bend together.
+function roundPoint(x, y, roundness) {
+    if (roundness <= 0)
+        return [x, y];
+    const theta = Math.atan2(y / (TUNNEL_HEIGHT / 2), x / (TUNNEL_WIDTH / 2));
+    return superellipsePoint(theta, roundnessExponent(roundness), roundness);
+}
+function GridChunkContent({ shape }) {
     const lines = useMemo(() => {
         const items = [];
         const halfW = TUNNEL_WIDTH / 2;
         const halfH = TUNNEL_HEIGHT / 2;
-        const cellW = TUNNEL_WIDTH / config.gridX;
-        const cellH = TUNNEL_HEIGHT / config.gridY;
-        const cellD = config.tunnelDepth / config.gridZ;
-        for (let zi = 0; zi <= config.gridZ; zi++) {
+        const cellW = TUNNEL_WIDTH / shape.gridX;
+        const cellH = TUNNEL_HEIGHT / shape.gridY;
+        const cellD = shape.tunnelDepth / shape.gridZ;
+        const rounded = shape.roundness > 0;
+        const n = roundnessExponent(shape.roundness);
+        for (let zi = 0; zi <= shape.gridZ; zi++) {
             const z = -zi * cellD;
-            items.push({ points: [[-halfW, halfH, z], [halfW, halfH, z]] }, { points: [[-halfW, -halfH, z], [halfW, -halfH, z]] }, { points: [[-halfW, -halfH, z], [-halfW, halfH, z]] }, { points: [[halfW, -halfH, z], [halfW, halfH, z]] });
+            if (rounded) {
+                const ring = [];
+                for (let i = 0; i <= RING_SEGMENTS; i++) {
+                    const [x, y] = superellipsePoint((i / RING_SEGMENTS) * Math.PI * 2, n, shape.roundness);
+                    ring.push([x, y, z]);
+                }
+                items.push({ points: ring });
+            }
+            else {
+                items.push({ points: [[-halfW, halfH, z], [halfW, halfH, z]] }, { points: [[-halfW, -halfH, z], [halfW, -halfH, z]] }, { points: [[-halfW, -halfH, z], [-halfW, halfH, z]] }, { points: [[halfW, -halfH, z], [halfW, halfH, z]] });
+            }
         }
-        for (let xi = 0; xi <= config.gridX; xi++) {
+        const longitudinal = (x, y) => {
+            const [rx, ry] = roundPoint(x, y, shape.roundness);
+            items.push({ points: [[rx, ry, 0], [rx, ry, -TUNNEL_DEPTH]] });
+        };
+        for (let xi = 0; xi <= shape.gridX; xi++) {
             const x = -halfW + xi * cellW;
-            items.push({ points: [[x, halfH, 0], [x, halfH, -TUNNEL_DEPTH]] }, { points: [[x, -halfH, 0], [x, -halfH, -TUNNEL_DEPTH]] });
+            longitudinal(x, halfH);
+            longitudinal(x, -halfH);
         }
-        for (let yi = 0; yi <= config.gridY; yi++) {
+        for (let yi = 0; yi <= shape.gridY; yi++) {
             const y = -halfH + yi * cellH;
-            items.push({ points: [[-halfW, y, 0], [-halfW, y, -TUNNEL_DEPTH]] }, { points: [[halfW, y, 0], [halfW, y, -TUNNEL_DEPTH]] });
+            longitudinal(-halfW, y);
+            longitudinal(halfW, y);
         }
         return items;
-    }, [config]);
+    }, [shape]);
     return (<>
-      {lines.map((line, index) => (<Line key={index} points={line.points} color={config.lineColor}/>))}
+      {lines.map((line, index) => (<Line key={index} points={line.points} color={shape.lineColor}/>))}
     </>);
 }
-function ImageChunkContent({ images, slotIndex, config }) {
+// A wall panel built directly in tunnel space (no rotation) so it can follow
+// the rounded cross-section. UVs keep the same orientation the old flat
+// drei <Image> planes had, and the texture is "cover"-fitted like they were.
+function CurvedPanel({ panel, roundness }) {
+    const source = useTexture(panel.url);
+    const texture = useMemo(() => {
+        const t = source.clone();
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.wrapS = THREE.ClampToEdgeWrapping;
+        t.wrapT = THREE.ClampToEdgeWrapping;
+        const img = source.image;
+        const texAspect = img?.width && img?.height ? img.width / img.height : 1;
+        const span = Math.abs(panel.a1 - panel.a0);
+        const depth = Math.abs(panel.zNear - panel.zFar);
+        const panelAspect = panel.side <= 1 ? depth / span : span / depth;
+        if (texAspect > panelAspect) {
+            t.repeat.set(panelAspect / texAspect, 1);
+            t.offset.set((1 - t.repeat.x) / 2, 0);
+        }
+        else {
+            t.repeat.set(1, texAspect / panelAspect);
+            t.offset.set(0, (1 - t.repeat.y) / 2);
+        }
+        t.needsUpdate = true;
+        return t;
+    }, [source, panel]);
+    const geometry = useMemo(() => {
+        const halfW = TUNNEL_WIDTH / 2;
+        const halfH = TUNNEL_HEIGHT / 2;
+        const positions = [];
+        const uvs = [];
+        const indices = [];
+        const cols = PANEL_SEGMENTS;
+        for (let j = 0; j <= 1; j++) {
+            const z = j === 0 ? panel.zNear : panel.zFar;
+            for (let i = 0; i <= cols; i++) {
+                const t = i / cols;
+                const a = THREE.MathUtils.lerp(panel.a0, panel.a1, t);
+                let x;
+                let y;
+                if (panel.side === 0) {
+                    x = -halfW;
+                    y = a;
+                }
+                else if (panel.side === 1) {
+                    x = halfW;
+                    y = a;
+                }
+                else if (panel.side === 2) {
+                    x = a;
+                    y = -halfH;
+                }
+                else {
+                    x = a;
+                    y = halfH;
+                }
+                let [rx, ry] = roundPoint(x, y, roundness);
+                const len = Math.hypot(rx, ry) || 1;
+                const k = 1 - PANEL_INSET / len;
+                rx *= k;
+                ry *= k;
+                positions.push(rx, ry, z);
+                const zt = j; // 0 = near, 1 = far
+                let u;
+                let v;
+                if (panel.side === 0) {
+                    u = zt;
+                    v = t;
+                }
+                else if (panel.side === 1) {
+                    u = 1 - zt;
+                    v = t;
+                }
+                else if (panel.side === 2) {
+                    u = t;
+                    v = zt;
+                }
+                else {
+                    u = t;
+                    v = 1 - zt;
+                }
+                uvs.push(u, v);
+            }
+        }
+        for (let i = 0; i < cols; i++) {
+            const a = i;
+            const b = i + 1;
+            const c = i + cols + 1;
+            const d = i + cols + 2;
+            indices.push(a, c, b, b, c, d);
+        }
+        const g = new THREE.BufferGeometry();
+        g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+        g.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+        g.setIndex(indices);
+        return g;
+    }, [panel, roundness]);
+    useEffect(() => () => geometry.dispose(), [geometry]);
+    useEffect(() => () => texture.dispose(), [texture]);
+    return (<mesh geometry={geometry}>
+      <meshBasicMaterial map={texture} side={THREE.DoubleSide} toneMapped={false}/>
+    </mesh>);
+}
+// One image failing to load (network/proxy hiccup) must only drop that
+// panel - without this, the loader error takes down the whole canvas.
+class PanelErrorBoundary extends React.Component {
+    state = { failed: false };
+    static getDerivedStateFromError() {
+        return { failed: true };
+    }
+    render() {
+        return this.state.failed ? null : this.props.children;
+    }
+}
+function ImageChunkContent({ images, slotIndex, shape }) {
     const { viewport, size } = useThree();
     const canvasWidth = size?.width ?? 0;
+    const { gridX, gridY, gridZ, tunnelDepth } = shape;
     const panels = useMemo(() => {
         const random = seededRandom(200 + slotIndex * 13);
         const halfW = TUNNEL_WIDTH / 2;
         const halfH = TUNNEL_HEIGHT / 2;
-        const cellW = TUNNEL_WIDTH / config.gridX;
-        const cellH = TUNNEL_HEIGHT / config.gridY;
-        const cellD = config.tunnelDepth / config.gridZ;
+        const cellW = TUNNEL_WIDTH / gridX;
+        const cellH = TUNNEL_HEIGHT / gridY;
+        const cellD = tunnelDepth / gridZ;
         const pxToWorld = canvasWidth ? viewport.width / canvasWidth : 0.01;
         // Reduce padding on smaller screens so images read larger on mobile.
         const paddingPx = canvasWidth
@@ -304,87 +464,48 @@ function ImageChunkContent({ images, slotIndex, config }) {
                     ? 8
                     : 10
             : 10;
-        const paddingWorld = pxToWorld * paddingPx;
+        const pad = Math.min(pxToWorld * paddingPx, Math.min(cellW, cellH, cellD) * 0.3);
         return Array.from({ length: IMAGE_COUNT_PER_CHUNK }).map((_, i) => {
             const side = Math.floor(random() * 4);
-            const zi = Math.floor(random() * (config.gridZ - 2));
-            let position = [0, 0, 0];
-            let rotation = [0, 0, 0];
-            let scale = [1, 1, 1];
-            if (side === 0) {
-                const yi = Math.floor(random() * config.gridY);
-                const y = -halfH + yi * cellH + cellH / 2;
-                const z = -zi * cellD - cellD / 2;
-                position = [-halfW + 0.035, y, z];
-                rotation = [0, Math.PI / 2, 0];
-                scale = [
-                    Math.max(cellD - paddingWorld * 2, 0.2),
-                    Math.max(cellH - paddingWorld * 2, 0.2),
-                    1,
-                ];
+            const zi = Math.floor(random() * (gridZ - 2));
+            const zNear = -zi * cellD - pad;
+            const zFar = -(zi + 1) * cellD + pad;
+            let a0;
+            let a1;
+            if (side <= 1) {
+                const yi = Math.floor(random() * gridY);
+                a0 = -halfH + yi * cellH + pad;
+                a1 = -halfH + (yi + 1) * cellH - pad;
             }
-            if (side === 1) {
-                const yi = Math.floor(random() * config.gridY);
-                const y = -halfH + yi * cellH + cellH / 2;
-                const z = -zi * cellD - cellD / 2;
-                position = [halfW - 0.035, y, z];
-                rotation = [0, -Math.PI / 2, 0];
-                scale = [
-                    Math.max(cellD - paddingWorld * 2, 0.2),
-                    Math.max(cellH - paddingWorld * 2, 0.2),
-                    1,
-                ];
-            }
-            if (side === 2) {
-                const xi = Math.floor(random() * config.gridX);
-                const x = -halfW + xi * cellW + cellW / 2;
-                const z = -zi * cellD - cellD / 2;
-                position = [x, -halfH + 0.035, z];
-                rotation = [-Math.PI / 2, 0, 0];
-                scale = [
-                    Math.max(cellW - paddingWorld * 2, 0.2),
-                    Math.max(cellD - paddingWorld * 2, 0.2),
-                    1,
-                ];
-            }
-            if (side === 3) {
-                const xi = Math.floor(random() * config.gridX);
-                const x = -halfW + xi * cellW + cellW / 2;
-                const z = -zi * cellD - cellD / 2;
-                position = [x, halfH - 0.035, z];
-                rotation = [Math.PI / 2, 0, 0];
-                scale = [
-                    Math.max(cellW - paddingWorld * 2, 0.2),
-                    Math.max(cellD - paddingWorld * 2, 0.2),
-                    1,
-                ];
+            else {
+                const xi = Math.floor(random() * gridX);
+                a0 = -halfW + xi * cellW + pad;
+                a1 = -halfW + (xi + 1) * cellW - pad;
             }
             return {
                 id: `${slotIndex}-${i}`,
                 url: images[(slotIndex * IMAGE_COUNT_PER_CHUNK + i) % images.length],
-                position,
-                rotation,
-                scale,
+                side,
+                a0,
+                a1,
+                zNear,
+                zFar,
             };
         });
-    }, [canvasWidth, config, images, slotIndex, viewport.width]);
+    }, [canvasWidth, gridX, gridY, gridZ, tunnelDepth, images, slotIndex, viewport.width]);
     return (<>
-      {panels.map((panel) => (<Suspense key={panel.id} fallback={null}>
-          <Image alt="panel" {...{
-            url: panel.url,
-            position: panel.position,
-            rotation: panel.rotation,
-            scale: panel.scale,
-            toneMapped: false,
-        }}/>
-        </Suspense>))}
+      {panels.map((panel) => (<PanelErrorBoundary key={panel.id}>
+          <Suspense fallback={null}>
+            <CurvedPanel panel={panel} roundness={shape.roundness}/>
+          </Suspense>
+        </PanelErrorBoundary>))}
     </>);
 }
-function TunnelChunk({ images, slotIndex, config }) {
+function TunnelChunk({ images, slotIndex, shape }) {
     const group = useRef(null);
     const { camera } = useThree();
-    const initialZ = TUNNEL_START_Z - slotIndex * config.tunnelDepth;
-    const totalLoopDepth = config.tunnelDepth * VISIBLE_CHUNKS;
+    const initialZ = TUNNEL_START_Z - slotIndex * shape.tunnelDepth;
+    const totalLoopDepth = shape.tunnelDepth * VISIBLE_CHUNKS;
     useFrame(() => {
         if (!group.current)
             return;
@@ -400,16 +521,16 @@ function TunnelChunk({ images, slotIndex, config }) {
         }
     });
     return (<group ref={group} position={[0, 0, initialZ]}>
-      <GridChunkContent config={config}/>
-      <ImageChunkContent images={images} slotIndex={slotIndex} config={config}/>
+      <GridChunkContent shape={shape}/>
+      <ImageChunkContent images={images} slotIndex={slotIndex} shape={shape}/>
     </group>);
 }
-function InfiniteTunnelWorld({ images, config }) {
+function InfiniteTunnelWorld({ images, shape }) {
     const chunks = useMemo(() => {
         return Array.from({ length: VISIBLE_CHUNKS }, (_, i) => i);
     }, []);
     return (<>
-      {chunks.map((slotIndex) => (<TunnelChunk key={slotIndex} images={images} slotIndex={slotIndex} config={config}/>))}
+      {chunks.map((slotIndex) => (<TunnelChunk key={slotIndex} images={images} slotIndex={slotIndex} shape={shape}/>))}
     </>);
 }
 function InfiniteScrollCamera({ config }) {
@@ -558,6 +679,8 @@ function InfiniteScrollCamera({ config }) {
     return null;
 }
 function Scene({ images, config }) {
+    const { gridX, gridY, gridZ, tunnelDepth, lineColor, roundness } = config;
+    const shape = useMemo(() => ({ gridX, gridY, gridZ, tunnelDepth, lineColor, roundness }), [gridX, gridY, gridZ, tunnelDepth, lineColor, roundness]);
     return (<>
       <color attach="background" args={[config.backgroundColor]}/>
       <fog attach="fog" args={[config.backgroundColor, 22, config.fogFar]}/>
@@ -565,7 +688,7 @@ function Scene({ images, config }) {
       <ambientLight intensity={2.4}/>
 
       <InfiniteScrollCamera config={config}/>
-      <InfiniteTunnelWorld images={images} config={config}/>
+      <InfiniteTunnelWorld images={images} shape={shape}/>
     </>);
 }
 function FooterMark() {
@@ -623,17 +746,17 @@ const FALLBACK_IMAGES = [
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
     "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
 ];
-function GridTunnelComp({ images = [], gridSize = DEFAULT_GRID_SIZE, speed = 1, depth = DEFAULT_DEPTH, lineColor = DEFAULT_LINE_COLOR, backgroundColor = DEFAULT_BACKGROUND_COLOR, }) {
+function GridTunnelComp({ images = [], numberOfGrids = DEFAULT_GRID_SIZE, shape = "rectangle", speed = 1, depth = DEFAULT_DEPTH, lineColor = DEFAULT_LINE_COLOR, backgroundColor = DEFAULT_BACKGROUND_COLOR, }) {
     const rootRef = useRef(null);
     const [frameloop, setFrameloop] = useState("always");
-    const reducedMotion = usePrefersReducedMotion();
     const config = useMemo(() => resolveTunnelConfig({
-        gridSize,
+        gridSize: numberOfGrids,
+        roundness: shape === "circle" ? 1 : 0,
         speed,
         depth,
         lineColor,
         backgroundColor,
-    }), [backgroundColor, depth, gridSize, lineColor, speed]);
+    }), [backgroundColor, depth, numberOfGrids, shape, lineColor, speed]);
     // Validate image URLs on the client before passing to the three.js Image loader.
     // This prevents CORS/network failures from flooding the loader with bad URLs.
     const [validatedImages, setValidatedImages] = useState([]);
@@ -720,71 +843,63 @@ function GridTunnelComp({ images = [], gridSize = DEFAULT_GRID_SIZE, speed = 1, 
       </Canvas>
        <FooterMark />
 
-      {reducedMotion && (<div aria-live="polite" className="pointer-events-none absolute bottom-6 right-6 z-40 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm">
-          <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
-            Tunnel navigation is instant.
-          </h2>
-          <p className="mx-auto mt-4 text-sm leading-6 text-black">
-            Reduced motion is enabled: scroll and touch move the camera
-            directly with no momentum or easing, instead of coasting
-            smoothly through the tunnel.
-          </p>
-        </div>)}
     </section>);
 }
-const P = "/api/media-proxy?url=";
+// Images load straight from the Vault asset bucket. It serves
+// Access-Control-Allow-Origin: *, so they work as WebGL textures with
+// crossOrigin="anonymous" - no proxy route or next.config needed.
 const B = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images";
 const defaultImages = [
-    `${P}${B}/h-01.jpg`,
-    `${P}${B}/h-02.jpg`,
-    `${P}${B}/h-03.jpg`,
-    `${P}${B}/h-05.jpg`,
-    `${P}${B}/h-06.jpg`,
-    `${P}${B}/h-07.jpg`,
-    `${P}${B}/h-08.jpg`,
-    `${P}${B}/h-09.jpg`,
-    `${P}${B}/h-10.jpg`,
-    `${P}${B}/h-11.jpg`,
-    `${P}${B}/h-12.jpg`,
-    `${P}${B}/h-13.jpg`,
-    `${P}${B}/h-14.jpg`,
-    `${P}${B}/h-15.jpg`,
-    `${P}${B}/v-01.jpg`,
-    `${P}${B}/v-02.jpg`,
-    `${P}${B}/v-03.jpg`,
-    `${P}${B}/v-04.jpg`,
-    `${P}${B}/v-05.jpg`,
-    `${P}${B}/v-06.jpg`,
-    `${P}${B}/v-07.jpg`,
-    `${P}${B}/v-08.jpg`,
-    `${P}${B}/v-09.jpg`,
-    `${P}${B}/v-10.jpg`,
-    `${P}${B}/h-01.jpg`,
-    `${P}${B}/h-02.jpg`,
-    `${P}${B}/h-03.jpg`,
-    `${P}${B}/h-05.jpg`,
-    `${P}${B}/h-06.jpg`,
-    `${P}${B}/h-07.jpg`,
-    `${P}${B}/h-08.jpg`,
-    `${P}${B}/h-09.jpg`,
-    `${P}${B}/h-10.jpg`,
-    `${P}${B}/h-11.jpg`,
-    `${P}${B}/h-12.jpg`,
-    `${P}${B}/h-13.jpg`,
-    `${P}${B}/h-14.jpg`,
-    `${P}${B}/h-15.jpg`,
-    `${P}${B}/v-01.jpg`,
-    `${P}${B}/v-02.jpg`,
-    `${P}${B}/v-03.jpg`,
-    `${P}${B}/v-04.jpg`,
-    `${P}${B}/v-05.jpg`,
-    `${P}${B}/v-06.jpg`,
-    `${P}${B}/v-07.jpg`,
-    `${P}${B}/v-08.jpg`,
-    `${P}${B}/v-09.jpg`,
-    `${P}${B}/v-10.jpg`,
+    `${B}/h-01.jpg`,
+    `${B}/h-02.jpg`,
+    `${B}/h-03.jpg`,
+    `${B}/h-05.jpg`,
+    `${B}/h-06.jpg`,
+    `${B}/h-07.jpg`,
+    `${B}/h-08.jpg`,
+    `${B}/h-09.jpg`,
+    `${B}/h-10.jpg`,
+    `${B}/h-11.jpg`,
+    `${B}/h-12.jpg`,
+    `${B}/h-13.jpg`,
+    `${B}/h-14.jpg`,
+    `${B}/h-15.jpg`,
+    `${B}/v-01.jpg`,
+    `${B}/v-02.jpg`,
+    `${B}/v-03.jpg`,
+    `${B}/v-04.jpg`,
+    `${B}/v-05.jpg`,
+    `${B}/v-06.jpg`,
+    `${B}/v-07.jpg`,
+    `${B}/v-08.jpg`,
+    `${B}/v-09.jpg`,
+    `${B}/v-10.jpg`,
+    `${B}/h-01.jpg`,
+    `${B}/h-02.jpg`,
+    `${B}/h-03.jpg`,
+    `${B}/h-05.jpg`,
+    `${B}/h-06.jpg`,
+    `${B}/h-07.jpg`,
+    `${B}/h-08.jpg`,
+    `${B}/h-09.jpg`,
+    `${B}/h-10.jpg`,
+    `${B}/h-11.jpg`,
+    `${B}/h-12.jpg`,
+    `${B}/h-13.jpg`,
+    `${B}/h-14.jpg`,
+    `${B}/h-15.jpg`,
+    `${B}/v-01.jpg`,
+    `${B}/v-02.jpg`,
+    `${B}/v-03.jpg`,
+    `${B}/v-04.jpg`,
+    `${B}/v-05.jpg`,
+    `${B}/v-06.jpg`,
+    `${B}/v-07.jpg`,
+    `${B}/v-08.jpg`,
+    `${B}/v-09.jpg`,
+    `${B}/v-10.jpg`,
 ];
-const GridTunnel = ({ images = defaultImages, gridSize = 24, speed = 1, depth = 1000, lineColor = "#9ca3af", backgroundColor = "#ffffff", }) => {
-    return (<GridTunnelComp images={images} gridSize={gridSize} speed={speed} depth={depth} lineColor={lineColor} backgroundColor={backgroundColor}/>);
+const GridTunnel = ({ images = defaultImages, numberOfGrids = 24, shape = "rectangle", speed = 1, depth = 1000, lineColor = "#9ca3af", backgroundColor = "#ffffff", }) => {
+    return (<GridTunnelComp images={images} numberOfGrids={numberOfGrids} shape={shape} speed={speed} depth={depth} lineColor={lineColor} backgroundColor={backgroundColor}/>);
 };
 export default GridTunnel;

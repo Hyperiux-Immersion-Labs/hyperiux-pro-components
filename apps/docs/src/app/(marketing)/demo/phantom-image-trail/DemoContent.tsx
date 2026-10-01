@@ -3,6 +3,7 @@
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import PhantomImageTrail from "@/components/phantom-image-trail";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
 
 const images = [
   {
@@ -73,6 +74,21 @@ export default function DemoContent({ registry }: { registry: any }) {
             </div>
 
             {effect}
+            <ReducedMotionNotice>
+              <div
+                aria-live="polite"
+                className="pointer-events-none fixed bottom-4 right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-[1025px]:hidden"
+              >
+                <h2 className="text-sm leading-none text-black">
+                  The trail keeps spawning.
+                </h2>
+                <p className="mt-2 text-xs leading-5 text-black">
+                  Phantom Image Trail spawns images as the cursor moves. The
+                  motion is the effect itself, so there&apos;s no static
+                  fallback for reduced motion preferences.
+                </p>
+              </div>
+            </ReducedMotionNotice>
           </div>
         </div>
       )}

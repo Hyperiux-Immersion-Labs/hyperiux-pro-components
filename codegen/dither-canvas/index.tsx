@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 
 const DEFAULT_ROOT_MARGIN = "256px";
 
@@ -250,36 +250,12 @@ export {
   DEFAULT_ROOT_MARGIN,
 };
 
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 type MediaSource = string | { src: string };
-
-function subscribeToReducedMotion(callback: () => void) {
-  if (typeof window === "undefined") return () => {};
-  const mediaQueryList = window.matchMedia(REDUCED_MOTION_QUERY);
-  mediaQueryList.addEventListener("change", callback);
-  return () => mediaQueryList.removeEventListener("change", callback);
-}
-
-function getReducedMotionSnapshot(): boolean {
-  return window.matchMedia?.(REDUCED_MOTION_QUERY)?.matches ?? false;
-}
-
-function getServerReducedMotionSnapshot(): boolean {
-  return false;
-}
 
 // React hook form, for JSX output that depends on the preference (not just
 // an imperative tween). Safe to call during render - returns false on the
 // server.
-function usePrefersReducedMotion() {
-  return useSyncExternalStore(
-    subscribeToReducedMotion,
-    getReducedMotionSnapshot,
-    getServerReducedMotionSnapshot
-  );
-}
-
 /* ── constants  */
 const FC = 80;
 const FR = 60;
@@ -797,7 +773,6 @@ export default function DitherCanvas({
     colorBoost,
     disableMobileCursor,
   });
-  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     configRef.current = {
@@ -1187,22 +1162,6 @@ export default function DitherCanvas({
         </p>
       )}
 
-      {reducedMotion && (
-        <div
-          aria-live="polite"
-          className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
-        >
-          <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
-            This effect can&apos;t be reduced.
-          </h2>
-          <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
-            Reduced motion is enabled, but this effect is a continuous
-            cursor-driven fluid distortion rendered every frame, and
-            can&apos;t be simplified to a fade without losing the effect
-            entirely.
-          </p>
-        </div>
-      )}
     </>
   );
 }

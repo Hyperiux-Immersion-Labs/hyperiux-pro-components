@@ -2,7 +2,7 @@
 "use client";
 import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 gsap.registerPlugin(Draggable);
 const DEFAULT_DRIFT_AMOUNT = 30;
 const DEFAULT_ROTATION_AMOUNT = 0;
@@ -21,17 +21,6 @@ function getCardRotation(index, amount) {
     return normalized * amount;
 }
 const getNumberProperty = (target, property) => Number(gsap.getProperty(target, property)) || 0;
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener("change", update);
-        return () => mediaQuery.removeEventListener("change", update);
-    }, []);
-    return prefersReducedMotion;
-}
 /**
  * @typedef {Object} CardDriftItem
  * @property {string} [year]
@@ -54,7 +43,6 @@ function CardDriftComp({ data = [], backgroundColor = "#000000", backgroundTextC
         driftAmount: DEFAULT_DRIFT_AMOUNT,
         smoothness: DEFAULT_SMOOTHNESS,
     });
-    const reducedMotion = usePrefersReducedMotion();
     const safeDriftAmount = clampNumber(driftAmount, 0, 90, DEFAULT_DRIFT_AMOUNT);
     const safeSmoothness = clampNumber(smoothness, 0.15, 1.5, DEFAULT_SMOOTHNESS);
     useEffect(() => {
@@ -193,16 +181,6 @@ function CardDriftComp({ data = [], backgroundColor = "#000000", backgroundTextC
  {/* Cards */}
  {data.map((item, index) => (<Card key={index} item={item} cardColor={cardColor} cardTextColor={cardTextColor} barColor={barColor}/>))}
 
- {reducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm">
- <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
- This effect can&apos;t be reduced.
- </h2>
- <p className="mx-auto mt-4 text-sm leading-6 text-black">
- The scattered cards only move when you drag them - dragging
- stays fully interactive since it&apos;s a direct, user-initiated
- action, not automatic motion.
- </p>
- </div>)}
  </div>);
 }
 function Card({ item, cardColor, cardTextColor, barColor }) {

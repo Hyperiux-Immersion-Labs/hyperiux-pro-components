@@ -42,16 +42,23 @@ function prefersReducedMotion() {
 interface HorizontalScrollCompProps {
   propertiesData?: FeatureRevealProperty[];
   bgColor?: string;
-  imageParallaxRange?: number;
+  textColor?: string;
+  /**
+   * Image parallax travel as a % of the image width. Each image starts at
+   * -translateX% and scrolls to +translateX%.
+   */
+  translateX?: number;
   cardGap?: number;
 }
 
 function HorizontalScrollComp({
   propertiesData = defaultPropertiesData,
   bgColor = "#ffffff",
-  imageParallaxRange = 30,
+  textColor = "#000000",
+  translateX = 30,
   cardGap = 15,
 }: HorizontalScrollCompProps) {
+  const travel = Math.max(0, translateX);
   const uid = useId().replace(/:/g, "");
   const sectionId = `industries-${uid}`;
 
@@ -187,9 +194,13 @@ function HorizontalScrollComp({
 
         // this one was already okay, but keep it consistent
         const propertyImgs = card.querySelectorAll(`[class*="industry-img-"]`);
+        // Zoomed in (at least 1.4x) so the +/- travel never shows the
+        // container's edges.
+        const imageScale = Math.max(1.4, 1 + (2 * travel) / 100);
         propertyImgs.forEach((propertyImg) => {
-          gsap.to(propertyImg, {
-            translateX: `${imageParallaxRange}%`,
+          gsap.fromTo(propertyImg, { xPercent: -travel, scale: imageScale }, {
+            xPercent: travel,
+            scale: imageScale,
             ease: "none",
             scrollTrigger: {
               trigger: `#${sectionId}`,
@@ -206,12 +217,12 @@ function HorizontalScrollComp({
     });
 
     return () => ctx.revert();
-  }, [propertiesData, sectionId, imageParallaxRange]);
+  }, [propertiesData, sectionId, travel]);
 
   return (
     <section
-      className="w-screen h-[600vh] text-black relative z-10 max-[1025px]:mt-0 max-[1025px]:h-fit max-[1025px]:py-[15%] max-[1025px]:px-[7vw]"
-      style={{ backgroundColor: bgColor }}
+      className="w-screen h-[600vh] relative z-10 max-[1025px]:mt-0 max-[1025px]:h-fit max-[1025px]:py-[15%] max-[1025px]:px-[7vw]"
+      style={{ backgroundColor: bgColor, color: textColor }}
       id={sectionId}
     >
 
@@ -230,8 +241,7 @@ function HorizontalScrollComp({
                 <img
                   src={property.image}
                   alt={`property-img-${index + 1}`}
-                  className={`w-full h-full translate-x-(--image-shift-start) opacity-0 industry-img industry-${property.imgClass} max-[1025px]:translate-x-0 max-[1025px]:object-cover max-[1025px]:opacity-100`}
-                  style={{ "--image-shift-start": `-${imageParallaxRange}%` } as CSSProperties & Record<`--${string}`, string | number>}
+                  className={`w-full h-full object-cover opacity-0 industry-img industry-${property.imgClass} max-[1025px]:opacity-100`}
                   width={500}
                   height={1080}
                 />
@@ -352,7 +362,8 @@ const PROPERTIES_DATA = [
 
 export const HorizontalFeatureReveal = ({
   bgColor = "#ffffff",
-  imageParallaxRange = 30,
+  textColor = "#000000",
+  translateX = 30,
   cardGap = 15,
 }) => {
   return (
@@ -361,7 +372,8 @@ export const HorizontalFeatureReveal = ({
         <HorizontalScrollComp
           propertiesData={PROPERTIES_DATA}
           bgColor={bgColor}
-          imageParallaxRange={imageParallaxRange}
+          textColor={textColor}
+          translateX={translateX}
           cardGap={cardGap}
         />
       </div>

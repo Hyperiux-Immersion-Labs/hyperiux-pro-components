@@ -4,17 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ReactLenis } from "lenis/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener("change", update);
-        return () => mediaQuery.removeEventListener("change", update);
-    }, []);
-    return prefersReducedMotion;
-}
 const DESKTOP_WIDTH = 1200;
 const TABLET_MIN_WIDTH = 768;
 const LEFT_DEPTH_MAX = 30;
@@ -53,7 +42,6 @@ export function CircularSplitRollComp({ items = [], className = "", sectionHeigh
     const rootRef = useRef(null);
     const stickyRef = useRef(null);
     const progressRef = useRef(0);
-    const reducedMotion = usePrefersReducedMotion();
     const safeItems = useMemo(() => {
         return items.map((item, index) => ({
             id: item.id ?? index,
@@ -215,16 +203,6 @@ export function CircularSplitRollComp({ items = [], className = "", sectionHeigh
         </div>
       </div>
 
-      {reducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm">
-          <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
-            This effect can&apos;t be reduced.
-          </h2>
-          <p className="mx-auto mt-4 text-sm leading-6 text-black">
-            Reduced motion is enabled, but this effect relies on continuous
-            rotation around a circular path as you scroll, and can&apos;t be
-            simplified to a fade without losing the effect entirely.
-          </p>
-        </div>)}
     </section>);
 }
 const TABLET_BREAKPOINT = 1024;

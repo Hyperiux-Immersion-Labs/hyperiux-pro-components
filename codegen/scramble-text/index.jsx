@@ -8,12 +8,15 @@ import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 gsap.registerPlugin(SplitText, ScrambleTextPlugin, ScrollTrigger);
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
-const ScrambleText = ({ speed = 0.6, charType = 'uppercase', textSize, textColor = '#111111', align = 'left', start = 'top 85%', duration = 0.7, stagger = 0.04, className, }) => {
+const ScrambleText = ({ speed = 0.6, charType = 'uppercase', textSize, initialOpacity = 0, textColor = '#111111', align = 'left', start = 'top 85%', duration = 0.7, stagger = 0.04, className, }) => {
     const text = "Signal appears when the noise decides to leave.";
     const elRef = useRef(null);
     const splitRef = useRef(null);
     const tlRef = useRef(null);
-    const resolvedFontSize = typeof textSize === 'number' ? `${textSize}vw` : undefined;
+    // Scales with the viewport but stays readable on phones and capped on
+    // very wide screens.
+    const resolvedFontSize = typeof textSize === 'number' ? `clamp(2rem, ${textSize}vw, 9rem)` : undefined;
+    const startOpacity = Math.min(1, Math.max(0, Number(initialOpacity) || 0));
     const alignClass = align === 'right'
         ? 'text-right'
         : 'text-left';
@@ -45,7 +48,7 @@ const ScrambleText = ({ speed = 0.6, charType = 'uppercase', textSize, textColor
                 const prefersReduced = window.matchMedia &&
                     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
                 if (prefersReduced) {
-                    gsap.set(el, { opacity: 0, y: REDUCED_MOTION_Y_OFFSET });
+                    gsap.set(el, { opacity: startOpacity, y: REDUCED_MOTION_Y_OFFSET });
                     const tl = gsap.timeline({ paused: true });
                     tlRef.current = tl;
                     tl.to(el, {
@@ -83,7 +86,8 @@ const ScrambleText = ({ speed = 0.6, charType = 'uppercase', textSize, textColor
                 });
                 el.removeAttribute('aria-label');
                 chars.forEach((c) => c.removeAttribute('aria-label'));
-                gsap.set(chars, { opacity: 0 });
+                gsap.set(chars, { opacity: startOpacity });
+                gsap.set(el, { opacity: startOpacity > 0 ? 1 : 0 });
                 const originals = chars.map((c) => c.textContent || '');
                 const tl = gsap.timeline({
                     paused: true,
@@ -93,7 +97,9 @@ const ScrambleText = ({ speed = 0.6, charType = 'uppercase', textSize, textColor
                     }
                 });
                 tlRef.current = tl;
-                tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power1.out' });
+                // With a starting opacity above 0 the paragraph is already visible
+                // (the chars carry the dimming); otherwise it fades in as before.
+                tl.fromTo(el, { opacity: startOpacity > 0 ? 1 : 0 }, { opacity: 1, duration: 0.4, ease: 'power1.out' });
                 tl.to(chars, {
                     duration,
                     scrambleText: {
@@ -138,7 +144,7 @@ const ScrambleText = ({ speed = 0.6, charType = 'uppercase', textSize, textColor
             tlRef.current?.kill();
             splitRef.current?.revert();
         };
-    }, [speed, charType, start, duration, stagger]);
+    }, [speed, charType, start, duration, stagger, startOpacity]);
     return (<div className="relative w-full">
  <p aria-hidden="true" className={`${alignClass} invisible w-full tracking-tight ${className ?? ''}`} style={{
             wordBreak: 'keep-all',

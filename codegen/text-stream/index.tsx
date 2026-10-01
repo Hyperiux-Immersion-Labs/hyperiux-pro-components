@@ -22,7 +22,7 @@ const BASE_SPEED = 0.6;
 interface TextStreamCompProps {
   items?: string[];
   speed?: number;
-  stagger?: number;
+  verticalSpacing?: number;
   textColor?: string;
   backgroundColor?: string;
   autoplay?: boolean;
@@ -32,7 +32,7 @@ interface TextStreamCompProps {
 function TextStreamComp({
   items = [],
   speed = 1,
-  stagger = 0.08,
+  verticalSpacing = 0.08,
   textColor = "#ffffff",
   backgroundColor = "#000000",
   autoplay = true,
@@ -69,7 +69,7 @@ function TextStreamComp({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const safeSpeed = Math.max(0, Number(speed) || 0);
-    const safeStagger = Math.max(0, Number(stagger) || 0);
+    const safeSpacing = Math.max(0, Number(verticalSpacing) || 0);
     const idleSpeed = prefersReducedMotion ? 0 : BASE_SPEED * safeSpeed;
     const velocityLerpFactor = prefersReducedMotion ? 1 : 0.14;
 
@@ -147,7 +147,7 @@ function TextStreamComp({
         metricsRef.current.lastScrollDirection = direction;
         if (runOnScroll) {
           metricsRef.current.targetVelocity = direction * boost;
-          metricsRef.current.currentY += metricsRef.current.targetVelocity * Math.max(1, safeStagger * 24);
+          metricsRef.current.currentY += metricsRef.current.targetVelocity * Math.max(1, safeSpacing * 24);
         }
 
         window.clearTimeout(scrollTimeoutRef.current);
@@ -207,14 +207,14 @@ function TextStreamComp({
     });
 
     return () => ctx.revert();
-  }, [autoplay, runOnScroll, speed, stagger]);
+  }, [autoplay, runOnScroll, speed, verticalSpacing]);
 
   const revealMask = isMobile
     ? "linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2) 49%, rgba(0,0,0,1) 49%, rgba(0,0,0,1) 52%, rgba(0,0,0,0.2) 52%, rgba(0,0,0,0.2) 100%)"
     : "linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2) 48%, rgba(0,0,0,1) 48%, rgba(0,0,0,1) 53%, rgba(0,0,0,0.3) 53%, rgba(0,0,0,0.3) 100%)";
 
   if (!items.length) return null;
-  const linePadding = `${Math.max(0.15, 0.25 + Number(stagger) || 0.25)}rem`;
+  const linePadding = `${Math.max(0.15, 0.25 + Number(verticalSpacing) || 0.25)}rem`;
 
   return (
     <div className="flex h-screen" style={{ backgroundColor, color: textColor }}>
@@ -294,7 +294,7 @@ const items = [
 
 const TextStream = ({
   speed = 1,
-  stagger = 0.08,
+  verticalSpacing = 0.08,
   textColor = "#ffffff",
   backgroundColor = "#000000",
   autoplay = true,
@@ -304,7 +304,7 @@ const TextStream = ({
     <TextStreamComp
       items={items}
       speed={speed}
-      stagger={stagger}
+      verticalSpacing={verticalSpacing}
       textColor={textColor}
       backgroundColor={backgroundColor}
       autoplay={autoplay}

@@ -70,7 +70,7 @@ const renderStickyContent = (item: StickyContentItem) => {
   const link = getLink(item);
 
   return (
-    <div className="flex h-full w-full flex-col text-black">
+    <div className="flex h-full w-full flex-col">
       {item.heading && <h3 className="font-medium">{item.heading}</h3>}
 
       {paragraphs.map((paragraph, paragraphIndex) => (
@@ -127,6 +127,8 @@ interface StickyContentCompProps {
   imageClassName?: string;
   containerHeight?: string;
   bgColor?: string;
+  /** Color of the text content and scroll indicator. */
+  textColor?: string;
   contentEnterYPercent?: number;
   contentExitYPercent?: number;
   contentDelay?: number;
@@ -146,6 +148,7 @@ export function StickyContentComp({
   imageClassName = "",
   containerHeight,
   bgColor = "#ffffff",
+  textColor = "#000000",
   contentEnterYPercent = 12,
   contentExitYPercent = -12,
   contentDelay = 0.28,
@@ -337,10 +340,11 @@ export function StickyContentComp({
       style={{
         height: containerHeight || `${items.length * 100}vh`,
         backgroundColor: bgColor,
+        color: textColor,
       }}
     >
-       <div className="fixed bottom-10 left-[20%] z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center text-black items-center ">
-       <p className="text-lg text-black">
+       <div className="fixed bottom-10 left-[20%] z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center items-center ">
+       <p className="text-lg">
         scroll
        </p>
                     
@@ -365,7 +369,7 @@ export function StickyContentComp({
                         <polyline
                             className="chev1 stroke-current"
                             points="2,2 10,9 18,2"
-                            stroke="black"
+                            stroke="currentColor"
                             strokeWidth="1.4"
                             fill="none"
 
@@ -375,7 +379,7 @@ export function StickyContentComp({
                         <polyline
                             className="chev2 stroke-current"
                             points="2,10 10,17 18,10"
-                            stroke="black"
+                            stroke="currentColor"
                             strokeWidth="1.4"
                             fill="none"
 
@@ -385,7 +389,7 @@ export function StickyContentComp({
                         <polyline
                             className="chev3 stroke-current"
                             points="2,18 10,25 18,18"
-                            stroke="black"
+                            stroke="currentColor"
                             strokeWidth="1.4"
                             fill="none"
 
@@ -497,6 +501,7 @@ const stickyItems = [
 
 export default function StickyContentWrapper({
  bgColor = "#ffffff",
+ textColor = "#000000",
  contentEnterYPercent = 2,
  initialImageScale = 1.5,
  activeImageScale = 1.2,
@@ -506,8 +511,8 @@ export default function StickyContentWrapper({
  <section>
  <StickyContentComp
  items={stickyItems}
- leftClassName="text-black"
  bgColor={bgColor}
+ textColor={textColor}
  contentEnterYPercent={contentEnterYPercent}
  contentExitYPercent={-2}
  contentDelay={0.35}

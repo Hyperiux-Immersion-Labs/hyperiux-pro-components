@@ -15,7 +15,7 @@ const DIRECTION_INITIAL = {
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
 const DEFAULT_TEXT = <p>Characters rise from below.</p>;
-export default function OverflowTextReveal({ children = DEFAULT_TEXT, animateOnScroll = true, delay = 0, className = "", scrub = false, direction = "bottom", }) {
+export default function OverflowTextReveal({ children = DEFAULT_TEXT, animateOnScroll = true, delay = 0, className = "", scrub = false, direction = "bottom", splitBy = "words", startOpacity = 0, startRotation = 8, duration = 0.5, stagger = 0.03, ease = "power3.out", }) {
     const containerRef = useRef(null);
     const splitRefs = useRef([]);
     const charsRef = useRef([]);
@@ -35,8 +35,8 @@ export default function OverflowTextReveal({ children = DEFAULT_TEXT, animateOnS
             ctx = gsap.context(() => {
                 elements.forEach((element) => {
                     const split = SplitText.create(element, {
-                        type: "lines,chars",
-                        mask: "chars",
+                        type: splitBy === "lines" ? "lines" : splitBy === "words" ? "lines,words" : "lines,chars",
+                        mask: splitBy,
                         charsClass: "char++",
                         reduceWhiteSpace: false,
                     });
@@ -47,7 +47,7 @@ export default function OverflowTextReveal({ children = DEFAULT_TEXT, animateOnS
                         maskEl.style.boxSizing = "content-box";
                     });
                     splitRefs.current.push(split);
-                    charsRef.current.push(...split.chars);
+                    charsRef.current.push(...(split[splitBy] ?? split.chars));
                 });
                 if (prefersReduced) {
                     gsap.set(charsRef.current, { yPercent: 0, xPercent: 0, rotate: 0, opacity: 1 });
@@ -80,7 +80,8 @@ export default function OverflowTextReveal({ children = DEFAULT_TEXT, animateOnS
                 gsap.set(containerRef.current, { opacity: 1 });
                 const fromProps = {
                     ...initialProps,
-                    opacity: 0,
+                    rotate: Math.sign(initialProps.rotate) * startRotation,
+                    opacity: Math.min(1, Math.max(0, startOpacity)),
                     willChange: "transform",
                 };
                 const toProps = {
@@ -88,9 +89,9 @@ export default function OverflowTextReveal({ children = DEFAULT_TEXT, animateOnS
                     xPercent: 0,
                     rotate: 0,
                     opacity: 1,
-                    duration: 0.5,
-                    stagger: 0.03,
-                    ease: "power3.out",
+                    duration,
+                    stagger,
+                    ease,
                     delay,
                 };
                 if (animateOnScroll) {
@@ -115,7 +116,7 @@ export default function OverflowTextReveal({ children = DEFAULT_TEXT, animateOnS
                 ctx.revert();
             splitRefs.current.forEach((split) => split?.revert());
         };
-    }, [animateOnScroll, delay, scrub, direction]);
+    }, [animateOnScroll, delay, scrub, direction, splitBy, startOpacity, startRotation, duration, stagger, ease]);
     return (<div ref={containerRef} data-copy-wrapper="true" className={`opacity-0 ${className}`}>
       {children}
     </div>);

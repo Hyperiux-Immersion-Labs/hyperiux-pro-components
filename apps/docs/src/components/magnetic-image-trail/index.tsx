@@ -1,7 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { usePrefersReducedMotion } from "@/lib/motion";
 import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 const DEFAULT_ROOT_MARGIN = "256px";
@@ -251,20 +250,22 @@ export {
   DEFAULT_ROOT_MARGIN,
 };
 
-const proxy = (url: string) => `/api/media-proxy?url=${encodeURIComponent(url)}`;
+// Images load straight from the Vault asset bucket. It serves
+// Access-Control-Allow-Origin: *, so they work as WebGL textures with
+// crossOrigin="anonymous" - no proxy route or next.config needed.
 
 const imageUrls = [
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg"),
-  proxy("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg"),
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
 ];
 
 const SLOTS = [
@@ -664,7 +665,6 @@ const Content = () => (
 
 export default function MagneticImageTrail(props: MagneticImageTrailProps) {
   const [isMobile, setIsMobile] = useState<boolean | null>(null)
-  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const check = () => {
@@ -685,21 +685,6 @@ export default function MagneticImageTrail(props: MagneticImageTrailProps) {
   ) : (
     <>
       <ImageTrail {...props} />
-      {prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-9000 w-fit max-w-65 rounded-md border border-black/10 bg-white/40 p-3 text-center max-[1025px]:hidden"
-        >
-          <h2 className="text-sm leading-none text-[#111111]">
-            The images keep pulling.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black/65">
-            Magnetic Image Trail animates images being drawn toward your
-            cursor in real time. Pausing that motion would remove the
-            effect.
-          </p>
-        </div>
-      )}
     </>
   )
 }

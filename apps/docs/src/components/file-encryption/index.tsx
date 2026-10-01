@@ -970,16 +970,23 @@ function CardShell({ card, settersRef, cardScale, speedValue }: { card: CardData
  };
  }, [card._uid, settersRef]);
 
+ // The outer slot takes up the card's *scaled* size in the flex row, so
+ // spacing and the marquee's loop width stay in step with what's drawn
+ // (a bare transform: scale() kept the 380px layout box - cards
+ // overlapped on small gaps and the loop wrapped at the wrong point).
  return (
  <div
  data-card-uid={card._uid}
- className="relative shrink-0 rounded-2xl"
+ className="relative shrink-0"
+ style={{ width: CARD_W * cardScale, height: CARD_H * cardScale }}
+ >
+ <div
+ className="absolute left-0 top-0 rounded-2xl"
  style={{
  width: CARD_W,
  height: CARD_H,
  transform: `scale(${cardScale})`,
- transformOrigin: "center",
- transition: "transform 260ms ease",
+ transformOrigin: "0 0",
  }}
  >
  <div data-plain className="absolute inset-0"
@@ -994,6 +1001,7 @@ function CardShell({ card, settersRef, cardScale, speedValue }: { card: CardData
  speedValue={speedValue}
  cardScale={1}
  />
+ </div>
  </div>
  </div>
  );
@@ -1017,6 +1025,7 @@ export function FileEncryptionComp({
  const rootRef = useRef<HTMLElement | null>(null);
  const trackRef = useRef<HTMLDivElement | null>(null);
  const xRef = useRef<number | null>(null);
+ const lastGroupWidthRef = useRef(0);
  const dragRef = useRef({ active: false, lastX: 0, velocity: 0 });
  const beamCanvasRef = useRef<HTMLCanvasElement | null>(null);
  const particleCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -1091,7 +1100,14 @@ export function FileEncryptionComp({
  mq.addEventListener?.("change", onReduceMotionChange);
  }
 
- if (xRef.current === null) xRef.current = -singleGroupWidth;
+ if (xRef.current === null) {
+ xRef.current = -singleGroupWidth;
+ } else if (lastGroupWidthRef.current && lastGroupWidthRef.current !== singleGroupWidth) {
+ // Card size/gap changed: rescale the offset so the same card stays in
+ // view instead of the track jumping.
+ xRef.current = (xRef.current * singleGroupWidth) / lastGroupWidthRef.current;
+ }
+ lastGroupWidthRef.current = singleGroupWidth;
 
  const onDown = (e: PointerEvent) => {
  dragRef.current.active = true;
@@ -1257,7 +1273,7 @@ export function FileEncryptionComp({
  className="absolute top-1/2 left-0 flex will-change-transform"
 style={{
   gap: visualCardGap,
-  marginTop: -(CARD_H / 2),
+  marginTop: -(CARD_H * resolvedCardSize) / 2,
 }}
  >
  {allCards.map((card) => (

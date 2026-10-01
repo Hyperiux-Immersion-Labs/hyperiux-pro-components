@@ -250,20 +250,6 @@ export {
   DEFAULT_ROOT_MARGIN,
 };
 
-function usePrefersReducedMotion() {
- const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
- useEffect(() => {
- const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
- const update = () => setPrefersReducedMotion(mediaQuery.matches);
- update();
- mediaQuery.addEventListener("change", update);
- return () => mediaQuery.removeEventListener("change", update);
- }, []);
-
- return prefersReducedMotion;
-}
-
 const lerp = (start: number, end: number, amount: number) => start + (end - start) * amount;
 
 const DEFAULT_SVG_MASK_URL = null;
@@ -306,7 +292,6 @@ function GridLiftDesktop({
  const canvasRef = useRef<HTMLCanvasElement | null>(null);
  const fileInputRef = useRef<HTMLInputElement | null>(null);
  const isDesktop = true;
- const prefersReducedMotion = usePrefersReducedMotion();
 
  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
  const cellsRef = useRef<GridCell[]>([]);
@@ -712,21 +697,6 @@ useEffect(() => {
  </div>
  )}
 
- {prefersReducedMotion && (
- <div
-   aria-live="polite"
-   className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
- >
-   <h2 className="text-sm leading-none text-white">
-     The grid keeps lifting.
-   </h2>
-   <p className="mt-2 text-xs leading-5 text-white/65">
-     Grid Lift raises the mask grid wherever your cursor drifts, in
-     real time. Since the motion is the entire effect, reduced motion
-     can&apos;t be applied here.
-   </p>
- </div>
- )}
 
  <input
  ref={fileInputRef}

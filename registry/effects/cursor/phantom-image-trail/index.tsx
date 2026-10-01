@@ -2,7 +2,7 @@
 "use client";
 
 import { Expo, gsap } from "gsap";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 const DEFAULT_ROOT_MARGIN = "256px";
 
@@ -331,20 +331,6 @@ export const useMouse = ({
  };
 };
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setPrefersReducedMotion(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  return prefersReducedMotion;
-}
-
 const MOBILE_POINTER_QUERY = "(pointer: coarse)";
 const OFFSCREEN_POSITION = -9999;
 const DEFAULT_IDLE_DISTANCE_THRESHOLD = 2;
@@ -489,7 +475,6 @@ export function PhantomImageTrail({
 
   onImageShow,
 }: PhantomImageTrailProps) {
-  const prefersReducedMotion = usePrefersReducedMotion();
   const resolvedImages = useMemo(() => normalizeImages(images), [images]);
 
   const safeImageMultiplier = Math.max(1, Number(imageMultiplier) || 1);
@@ -839,21 +824,6 @@ export function PhantomImageTrail({
           />
         );
       })}
-      {prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-500 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-[1025px]:hidden"
-        >
-          <h2 className="text-sm leading-none text-black">
-            The trail keeps spawning.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black">
-            Phantom Image Trail spawns images as the cursor moves. The
-            motion is the effect itself, so there&apos;s no static
-            fallback for reduced motion preferences.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

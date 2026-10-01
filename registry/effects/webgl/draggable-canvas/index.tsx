@@ -265,6 +265,7 @@ interface MaskedContainerProps {
   scaleOnDrag?: number
   canvasBorderColor?: string
   rounded?: number
+  reducedMotion?: boolean
   onPositionUpdate: (size: any, position: { x: number, y: number }) => void
   onHoverChange?: (hovering: boolean) => void
 }
@@ -279,14 +280,17 @@ function MaskedContainer({
   scaleOnDrag = 1.04,
   canvasBorderColor = "#71717a",
   rounded = 0,
+  reducedMotion = false,
   onPositionUpdate,
   onHoverChange,
 }: MaskedContainerProps) {
   const maskRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [position, setPosition] = useState(initialPosition);
-  const safeFriction = Math.min(10, Math.max(0, Number(friction) || 0));
-  const safeScaleOnDrag = Math.min(1.5, Math.max(0.85, Number(scaleOnDrag) || 1));
+  // Reduced motion: maximum friction (the canvas stops where it's released)
+  // and no scale pop on press - the drag itself stays 1:1 with the pointer.
+  const safeFriction = reducedMotion ? 10 : Math.min(10, Math.max(0, Number(friction) || 0));
+  const safeScaleOnDrag = reducedMotion ? 1 : Math.min(1.5, Math.max(0.85, Number(scaleOnDrag) || 1));
   const safeRounded = Math.min(80, Math.max(0, Number(rounded) || 0));
 
   // Canvas drawing function for individual mask
@@ -297,30 +301,35 @@ function MaskedContainer({
     if (!canvas || !video || !maskElement) return;
 
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-    const rect = maskElement.getBoundingClientRect();
+    // Measure the canvas itself, not the mask: the mask's 1px border means
+    // the canvas is smaller and inset, and using the mask's box drew the
+    // video slightly squeezed and offset - so it swam against the screen
+    // as the window moved.
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
 
-    // Set canvas size to match mask
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+    // Backing store at device-pixel resolution, rounded, and only resized
+    // when it really changes (resizing rebuilds the canvas every frame).
+    const dpr = window.devicePixelRatio || 1;
+    const width = Math.round(rect.width * dpr);
+    const height = Math.round(rect.height * dpr);
+    if (canvas.width !== width) canvas.width = width;
+    if (canvas.height !== height) canvas.height = height;
 
-    // Clear canvas with black background
+    // Draw in CSS pixels of the canvas's on-screen box (handles the
+    // scale-on-press too), so one video pixel lands on one screen pixel.
+    ctx.setTransform(width / rect.width, 0, 0, height / rect.height, 0, 0);
     ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, rect.width, rect.height);
 
-    // Calculate video position relative to the mask position
-    const maskX = rect.left;
-    const maskY = rect.top;
-
-    // Draw the portion of the video that should be visible through this mask
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.clip();
-
-    // Draw video with offset to show the correct portion
-    ctx.drawImage(video, -maskX, -maskY, canvasSize.width, canvasSize.height);
-    ctx.restore();
+    // The slice of the full-screen video that sits behind this window.
+    ctx.drawImage(video, -rect.left, -rect.top, canvasSize.width, canvasSize.height);
   }, [video, canvasSize]);
+
+  const drawRef = useRef(drawMaskedVideo);
+  useEffect(() => {
+    drawRef.current = drawMaskedVideo;
+  }, [drawMaskedVideo]);
 
   // Start animation when video is available
   useEffect(() => {
@@ -348,17 +357,21 @@ function MaskedContainer({
         bounds: "body",
         zIndexBoost: false,
         edgeResistance: 0.3,
-        throwProps: {
-          resistance: Math.max(50, safeFriction * 4000),
-          minDuration: 2,
-          maxDuration: 3,
-        },
+        // GSAP 3 reads these as top-level Draggable options (the old
+        // `throwProps` object is ignored, which is why friction did nothing).
+        // Higher friction = more resistance = the throw stops sooner.
+        throwResistance: 50 + safeFriction * 1000,
+        minDuration: 0.2,
+        maxDuration: 3,
         onPress: function () {
           gsap.to(this.target, {
             scale: safeScaleOnDrag,
             duration: 0.18,
             ease: "power2.out",
-            overwrite: true,
+            // "auto", not true: true kills every tween on the target -
+            // including the inertia throw Draggable starts on release,
+            // which is why the throw (and friction) never happened.
+            overwrite: "auto",
           });
         },
         onRelease: function () {
@@ -366,14 +379,22 @@ function MaskedContainer({
             scale: 1,
             duration: 0.28,
             ease: "power2.out",
-            overwrite: true,
+            // "auto", not true: true kills every tween on the target -
+            // including the inertia throw Draggable starts on release,
+            // which is why the throw (and friction) never happened.
+            overwrite: "auto",
           });
         },
+        // Redraw right after Draggable moves the mask, so the video slice
+        // matches the new position this frame instead of lagging one frame
+        // behind (which reads as the video jittering inside the window).
         onDrag: function () {
+          drawRef.current();
           setPosition({ x: this.x, y: this.y });
           onPositionUpdate(size, { x: this.x, y: this.y });
         },
         onThrowUpdate: function () {
+          drawRef.current();
           setPosition({ x: this.x, y: this.y });
           onPositionUpdate(size, { x: this.x, y: this.y });
         },
@@ -582,21 +603,6 @@ export default function DraggableCanvas({
         <p className="pointer-events-none absolute bottom-8 right-8 z-40 max-w-[31vw] max-[1025px]:max-w-[55vw] max-md:max-w-[85vw] px-6 text-right max-[1025px]:text-center max-[1025px]:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-[1025px]:text-base max-md:text-sm max-md:bottom-18">
           Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
         </p>
-        {prefersReducedMotion && (
-         <div
-            aria-live="polite"
-            className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
-          >
-            <h2 className="text-sm leading-none text-white">
-              The canvas keep drifting.
-            </h2>
-            <p className="mt-2 text-xs leading-5 text-white/65">
-              Draggable Canvas is built on continuous drag and inertia
-              physics. Since the motion is the entire effect, reduced motion
-              can&apos;t be applied here.
-            </p>
-          </div>
-        )}
       {/* Hidden video element - single source for all masks */}
       <video
         ref={setVideoRef}
@@ -622,6 +628,7 @@ export default function DraggableCanvas({
           scaleOnDrag={scaleOnDrag}
           canvasBorderColor={canvasBorderColor}
           rounded={rounded}
+          reducedMotion={prefersReducedMotion}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -638,6 +645,7 @@ export default function DraggableCanvas({
           scaleOnDrag={scaleOnDrag}
           canvasBorderColor={canvasBorderColor}
           rounded={rounded}
+          reducedMotion={prefersReducedMotion}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -656,6 +664,7 @@ export default function DraggableCanvas({
           scaleOnDrag={scaleOnDrag}
           canvasBorderColor={canvasBorderColor}
           rounded={rounded}
+          reducedMotion={prefersReducedMotion}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -672,6 +681,7 @@ export default function DraggableCanvas({
           scaleOnDrag={scaleOnDrag}
           canvasBorderColor={canvasBorderColor}
           rounded={rounded}
+          reducedMotion={prefersReducedMotion}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -688,6 +698,7 @@ export default function DraggableCanvas({
           scaleOnDrag={scaleOnDrag}
           canvasBorderColor={canvasBorderColor}
           rounded={rounded}
+          reducedMotion={prefersReducedMotion}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />
@@ -703,6 +714,7 @@ export default function DraggableCanvas({
           scaleOnDrag={scaleOnDrag}
           canvasBorderColor={canvasBorderColor}
           rounded={rounded}
+          reducedMotion={prefersReducedMotion}
           onPositionUpdate={handlePositionUpdate}
           onHoverChange={handleHoverChange}
         />

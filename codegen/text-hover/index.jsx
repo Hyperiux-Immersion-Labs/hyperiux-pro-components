@@ -225,7 +225,11 @@ function TextHoverComp({ data = [], bgColor = "#0a0a0a", textColor = "#ffffff", 
         const description = descriptionRefs.current[index];
         if (!content || !el || !label)
             return null;
-        const contentRect = content.getBoundingClientRect();
+        // Measure from the box the frame is actually positioned in (its offset
+        // parent, inside the content padding) - measuring from the padded
+        // content box shifted the frame right by that padding on mobile/tablet.
+        const frameParent = highlightRef.current?.offsetParent ?? content;
+        const contentRect = frameParent.getBoundingClientRect();
         const elRect = el.getBoundingClientRect();
         const labelRect = label.getBoundingClientRect();
         const descriptionRect = description?.getBoundingClientRect();
@@ -465,7 +469,10 @@ function TextHoverComp({ data = [], bgColor = "#0a0a0a", textColor = "#ffffff", 
             return (<li key={item.label} ref={(el) => {
                     itemRefs.current[i] = el;
                 }} className={[
-                    "group grid w-full text-center",
+                    // Only as wide as its own label/description, so hover
+                    // (mouseenter) only fires over the text itself, not the
+                    // empty space either side of it.
+                    "group grid w-fit max-w-full text-center",
                     "px-10 max-[1025px]:px-6 max-md:px-2",
                     prefersReducedMotion
                         ? "transition-[padding,grid-template-rows] duration-100"

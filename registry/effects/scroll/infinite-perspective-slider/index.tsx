@@ -535,8 +535,9 @@ export function InfinitePerspectiveSliderComp({
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (isMobileViewport || isTabletViewport) return;
-      const delta = event.deltaY;
+      // Use whichever axis moved more so trackpads scroll it both ways.
+      const delta =
+        Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
 
       if (Math.abs(delta) >= ACTIVE_CONTENT_CLEAR_DELTA) {
         markScrolling();
@@ -545,18 +546,26 @@ export function InfinitePerspectiveSliderComp({
       state.target += delta * scrollSpeed;
     };
 
-    const onDown = (clientX: number) => {
+    let lastY = 0;
+
+    const onDown = (clientX: number, clientY = 0) => {
       state.isDragging = true;
       state.lastX = clientX;
+      lastY = clientY;
       markScrolling();
     };
 
-    const onMove = (clientX: number) => {
+    // Horizontal drag, or - on touch - a vertical swipe (scroll gesture).
+    // Whichever axis moved more drives the slider.
+    const onMove = (clientX: number, clientY?: number) => {
       if (!state.isDragging) return;
 
-      const delta = clientX - state.lastX;
+      const deltaX = clientX - state.lastX;
+      const deltaY = clientY === undefined ? 0 : clientY - lastY;
+      const delta = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
 
       state.lastX = clientX;
+      if (clientY !== undefined) lastY = clientY;
 
       if (Math.abs(delta) >= ACTIVE_CONTENT_CLEAR_DELTA) {
         markScrolling();
@@ -574,9 +583,9 @@ export function InfinitePerspectiveSliderComp({
     const handleMouseUp = () => onUp();
 
     const handleTouchStart = (event: TouchEvent) =>
-      onDown(event.touches[0].clientX);
+      onDown(event.touches[0].clientX, event.touches[0].clientY);
     const handleTouchMove = (event: TouchEvent) =>
-      onMove(event.touches[0].clientX);
+      onMove(event.touches[0].clientX, event.touches[0].clientY);
     const handleTouchEnd = () => onUp();
 
     const onResize = () => {
@@ -846,7 +855,7 @@ export function InfinitePerspectiveSliderComp({
   }, [images]);
 
   return (
-    <div className="h-screen w-screen overflow-hidden">
+    <div className="h-screen w-screen overflow-hidden touch-none">
       <div
         className="pointer-events-none relative flex h-full items-center overflow-hidden max-[1025px]:items-center "
         style={{ perspective: `${perspective}px` }}

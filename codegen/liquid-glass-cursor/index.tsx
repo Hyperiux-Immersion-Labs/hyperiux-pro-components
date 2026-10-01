@@ -320,21 +320,6 @@ export default function LiquidGlassCursor({
         />
       </motion.div>
 
-      {reduceMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none absolute bottom-4 right-4 z-40 w-fit max-w-65 rounded-md bg-black/10 p-3 text-center backdrop-blur-md max-md:hidden"
-        >
-          <h2 className="text-sm leading-none text-black">
-            The lens keeps tracking.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black">
-            Liquid Glass Cursor magnifies and refracts whatever your cursor
-            passes over. Since the lens is driven entirely by cursor motion,
-            there&apos;s no reduced motion version to fall back on.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

@@ -159,17 +159,6 @@ const AnimatedModalContent = ({ isOpen = false, onClose, children, className = "
       </div>
     </div>);
 };
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener("change", update);
-        return () => mediaQuery.removeEventListener("change", update);
-    }, []);
-    return prefersReducedMotion;
-}
 const popupSections = [
     {
         heading: "Project Overview",
@@ -210,7 +199,6 @@ const popupSections = [
 ];
 export default function AnimatedModal({ showCloseButton = true, closeOnBackdrop = true, closeOnEsc = true, size = 72, overlayOpacity = 0.82, duration = 0.5, backgroundColor = "#ffffff", textColor = "#111111", roundedness = 24, }) {
     const [isContentOpen, setIsContentOpen] = useState(false);
-    const prefersReducedMotion = usePrefersReducedMotion();
     return (<div className="flex w-full items-center justify-center bg-white">
       <button type="button" onClick={() => {
             setIsContentOpen(true);
@@ -228,15 +216,5 @@ export default function AnimatedModal({ showCloseButton = true, closeOnBackdrop 
         <ScrollablePopupContent title="A Deeper Look at the Project" subtitle="Explore the thinking, design strategy, and long-term value proposition behind the development." sections={popupSections} size={size} backgroundColor={backgroundColor} textColor={textColor} roundedness={roundedness}/>
       </AnimatedModalContent>
 
-      {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center">
-          <h2 className="text-sm leading-none text-[#111111]">
-            The modal fades, not slides.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black/65">
-            Animated Modal already keeps its open and close transition to a
-            simple opacity fade, so it stays comfortable with reduced motion
-            enabled.
-          </p>
-        </div>)}
     </div>);
 }

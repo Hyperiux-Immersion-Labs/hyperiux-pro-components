@@ -11,7 +11,8 @@ function prefersReducedMotion() {
         return false;
     return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
-function HorizontalScrollComp({ propertiesData = defaultPropertiesData, bgColor = "#ffffff", imageParallaxRange = 30, cardGap = 15, }) {
+function HorizontalScrollComp({ propertiesData = defaultPropertiesData, bgColor = "#ffffff", textColor = "#000000", translateX = 30, cardGap = 15, }) {
+    const travel = Math.max(0, translateX);
     const uid = useId().replace(/:/g, "");
     const sectionId = `industries-${uid}`;
     useEffect(() => {
@@ -128,9 +129,13 @@ function HorizontalScrollComp({ propertiesData = defaultPropertiesData, bgColor 
                 });
                 // this one was already okay, but keep it consistent
                 const propertyImgs = card.querySelectorAll(`[class*="industry-img-"]`);
+                // Zoomed in (at least 1.4x) so the +/- travel never shows the
+                // container's edges.
+                const imageScale = Math.max(1.4, 1 + (2 * travel) / 100);
                 propertyImgs.forEach((propertyImg) => {
-                    gsap.to(propertyImg, {
-                        translateX: `${imageParallaxRange}%`,
+                    gsap.fromTo(propertyImg, { xPercent: -travel, scale: imageScale }, {
+                        xPercent: travel,
+                        scale: imageScale,
                         ease: "none",
                         scrollTrigger: {
                             trigger: `#${sectionId}`,
@@ -145,15 +150,15 @@ function HorizontalScrollComp({ propertiesData = defaultPropertiesData, bgColor 
             ScrollTrigger.refresh();
         });
         return () => ctx.revert();
-    }, [propertiesData, sectionId, imageParallaxRange]);
-    return (<section className="w-screen h-[600vh] text-black relative z-10 max-[1025px]:mt-0 max-[1025px]:h-fit max-[1025px]:py-[15%] max-[1025px]:px-[7vw]" style={{ backgroundColor: bgColor }} id={sectionId}>
+    }, [propertiesData, sectionId, travel]);
+    return (<section className="w-screen h-[600vh] relative z-10 max-[1025px]:mt-0 max-[1025px]:h-fit max-[1025px]:py-[15%] max-[1025px]:px-[7vw]" style={{ backgroundColor: bgColor, color: textColor }} id={sectionId}>
 
       <div className="w-screen  overflow-hidden h-screen justify-center items-center sticky top-0 max-[1025px]:static max-[1025px]:w-full max-[1025px]:h-fit max-[1025px]:flex max-[1025px]:flex-col max-[1025px]:items-start">
 
         <div className="flex flex-nowrap w-fit industry-container gap-(--card-gap) max-[1025px]:flex-col max-[1025px]:gap-[10vw] max-md:gap-[15vw]" style={{ "--card-gap": `${cardGap}vw` }}>
           {propertiesData.map((property, index) => (<div key={index} className="w-[80vw] h-screen flex gap-[5vw] industry-card max-[1025px]:h-fit max-[1025px]:flex-col-reverse max-[1025px]:w-full">
               <div className="w-[40vw] h-screen overflow-hidden max-md:h-[110vw] max-[1025px]:w-full max-md:rounded-[4vw] max-[1025px]:h-[80vw] max-[1025px]:rounded-[2vw]">
-                <img src={property.image} alt={`property-img-${index + 1}`} className={`w-full h-full translate-x-(--image-shift-start) opacity-0 industry-img industry-${property.imgClass} max-[1025px]:translate-x-0 max-[1025px]:object-cover max-[1025px]:opacity-100`} style={{ "--image-shift-start": `-${imageParallaxRange}%` }} width={500} height={1080}/>
+                <img src={property.image} alt={`property-img-${index + 1}`} className={`w-full h-full object-cover opacity-0 industry-img industry-${property.imgClass} max-[1025px]:opacity-100`} width={500} height={1080}/>
               </div>
 
               <div className="flex flex-col gap-[5vh] w-[60%] pt-[7%] max-md:pt-0 max-[1025px]:w-full max-[1025px]:gap-[4vw] max-md:gap-[7vw]">
@@ -256,9 +261,9 @@ const PROPERTIES_DATA = [
         },
     },
 ];
-export const HorizontalFeatureReveal = ({ bgColor = "#ffffff", imageParallaxRange = 30, cardGap = 15, }) => {
+export const HorizontalFeatureReveal = ({ bgColor = "#ffffff", textColor = "#000000", translateX = 30, cardGap = 15, }) => {
     return (<div>
-        <HorizontalScrollComp propertiesData={PROPERTIES_DATA} bgColor={bgColor} imageParallaxRange={imageParallaxRange} cardGap={cardGap}/>
+        <HorizontalScrollComp propertiesData={PROPERTIES_DATA} bgColor={bgColor} textColor={textColor} translateX={translateX} cardGap={cardGap}/>
       </div>);
 };
 export default HorizontalFeatureReveal;

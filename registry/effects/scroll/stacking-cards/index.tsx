@@ -185,7 +185,7 @@ function StackingCardComp({ data = [], imageZoomEnabled = true, tiltEnabled = tr
             <div
                 ref={containerRef}
                 className="sticky top-0 h-screen max-md:h-svh w-screen overflow-hidden bg-black"
-                style={{ perspective: `${stackPerspective}px` }}
+                style={{ perspective: tiltEnabled ? `${stackPerspective}px` : undefined }}
             >
                 {data.map((item, i) => (
                     <div
@@ -195,10 +195,7 @@ function StackingCardComp({ data = [], imageZoomEnabled = true, tiltEnabled = tr
                         }}
                         className="absolute inset-0 overflow-hidden opacity-0"
                     >
-                        <SliderCard
-                            {...item}
-                            cardCornerRadius={resolvedCardCornerRadius}
-                        />
+                        <SliderCard {...item} />
                     </div>
                 ))}
             </div>
@@ -213,8 +210,7 @@ const SliderCard = ({
     description,
     image,
     backgroundColor,
-    cardCornerRadius = "3vw",
-}: StackingCardItem & { cardCornerRadius?: string }) => {
+}: StackingCardItem) => {
     return (
         <div
             className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center pt-4 ${backgroundColor}
@@ -236,15 +232,13 @@ const SliderCard = ({
 
                 <div className="mb-6 hidden h-[42svh] w-full max-[1025px]:block">
                     <div
-                        className="h-full max-md:w-full overflow-hidden max-[1025px]:w-[80%] max-[1025px]:mx-auto"
-                        style={{ borderRadius: cardCornerRadius }}
+                        className="h-full max-md:w-full overflow-hidden rounded-[3vw] max-md:rounded-[5vw] max-[1025px]:w-[80%] max-[1025px]:mx-auto"
                     >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                             src={image}
                             alt={title}
                             className="h-full w-full object-cover"
-                            style={{ borderRadius: cardCornerRadius }}
                         />
                     </div>
                 </div>
@@ -285,15 +279,13 @@ const SliderCard = ({
  max-[1025px]:hidden"
             >
                 <div
-                    className="h-full w-full overflow-hidden"
-                    style={{ borderRadius: cardCornerRadius }}
+                    className="h-full w-full overflow-hidden rounded-[2.5vw]"
                 >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={image}
                         alt={title}
                         className="card-image h-full w-full object-cover"
-                        style={{ borderRadius: cardCornerRadius }}
                     />
                 </div>
             </div>

@@ -29,7 +29,6 @@ const PAD_X = "5vw";
 
 interface ParallaxSliderProps {
     images?: string[];
-    bgColor?: string;
     parallaxAmount?: number;
     slideGap?: number;
     scrub?: number | boolean;
@@ -46,7 +45,6 @@ const DEFAULT_IMAGES = [
 
 function ParallaxSlider({
     images = DEFAULT_IMAGES,
-    bgColor = "#111111",
     parallaxAmount = 25,
     slideGap = 1.6,
     scrub = 1,
@@ -158,7 +156,7 @@ function ParallaxSlider({
         <div
             ref={outerRef}
             className="relative"
-            style={{ height: "400vh", backgroundColor: bgColor }}
+            style={{ height: "400vh", backgroundColor: "#111111" }}
         >
             <div className="sticky top-0 h-screen overflow-hidden flex items-center">
                 <div

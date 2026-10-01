@@ -192,7 +192,7 @@ function random01(seed) {
     const value = Math.sin(seed * 127.1 + seed * seed * 311.7) * 43758.5453123;
     return value - Math.floor(value);
 }
-function DonutParticle({ position = [0, 0, 0], scale = 2.5, rotation = [degToRad(-100), degToRad(45), 0], interactive = true, particleSize = 1, particleColor = "#9973ff", speed = 1, intensity = 1, }) {
+function DonutParticle({ position = [0, 0, 0], scale = 2.5, rotation = [degToRad(-100), degToRad(45), 0], interactive = true, particleSize = 1, particleColor = "#9973ff", speed = 1, intensity = 1, morphDuration = 1.5, demorphIntensity = 1, rotationSpeed = 1, }) {
     const pointsRef = useRef(null);
     const simulationRef = useRef(null);
     const { size, camera, gl } = useThree();
@@ -566,7 +566,7 @@ function DonutParticle({ position = [0, 0, 0], scale = 2.5, rotation = [degToRad
         }
         const animTime = time * speed;
         pointsRef.current.material.uniforms.time.value = animTime;
-        pointsRef.current.rotation.z += 0.00095 * speed;
+        pointsRef.current.rotation.z += 0.00095 * speed * rotationSpeed;
         const majorRadius = TORUS_MAJOR_RADIUS;
         const outerMinorRadius = TORUS_OUTER_RADIUS;
         const innerMinorRadius = TORUS_INNER_RADIUS;
@@ -588,7 +588,10 @@ function DonutParticle({ position = [0, 0, 0], scale = 2.5, rotation = [degToRad
         const STICK = 0.8;
         const FLOW = 0.65;
         const CLOSE_FLOW_BOOST = 5.5;
-        const RETURN = 0.003;
+        // Faster/slower settling back into the donut: 1.5s is the original feel.
+        const morphRate = 1.5 / THREE.MathUtils.clamp(morphDuration, 0.2, 5);
+        const demorph = THREE.MathUtils.clamp(demorphIntensity, 0, 4);
+        const RETURN = 0.003 * morphRate;
         const DAMP = 0.7;
         for (let i = 0; i < count; i += 1) {
             const index = i * 3;
@@ -616,12 +619,12 @@ function DonutParticle({ position = [0, 0, 0], scale = 2.5, rotation = [degToRad
                     ? Math.pow(1 - dist / CLOSE_INFLUENCE, 2.4) * motionActivity.current
                     : 0;
                 const flowBoost = 1 + closePower * CLOSE_FLOW_BOOST;
-                fx += dx * STICK * power * 0.05 * intensity;
-                fy += dy * STICK * power * 0.05 * intensity;
-                fz += dz * STICK * power * 0.05 * intensity;
-                fx += localVelocity.x * FLOW * power * flowBoost * intensity;
-                fy += localVelocity.y * FLOW * power * flowBoost * intensity;
-                fz += localVelocity.z * FLOW * power * flowBoost * intensity;
+                fx += dx * STICK * power * 0.05 * intensity * demorph;
+                fy += dy * STICK * power * 0.05 * intensity * demorph;
+                fz += dz * STICK * power * 0.05 * intensity * demorph;
+                fx += localVelocity.x * FLOW * power * flowBoost * intensity * demorph;
+                fy += localVelocity.y * FLOW * power * flowBoost * intensity * demorph;
+                fz += localVelocity.z * FLOW * power * flowBoost * intensity * demorph;
                 stretchPower = power + closePower * 0.4;
                 velocityLerp = THREE.MathUtils.lerp(0.25, 1.0, power);
             }
@@ -636,13 +639,13 @@ function DonutParticle({ position = [0, 0, 0], scale = 2.5, rotation = [degToRad
             const dirY = nextY / radial;
             const tubeOffset = radial - majorRadius;
             const tubeDistance = Math.sqrt(tubeOffset * tubeOffset + nextZ * nextZ) || 0.0001;
-            const stretch = stretchPower * 0.06;
+            const stretch = stretchPower * 0.06 * demorph;
             const maxOuter = outerMinorRadius + stretch;
             const minInner = innerMinorRadius - stretch * 0.4;
             if (tubeDistance > maxOuter || tubeDistance < minInner) {
                 const targetDistance = THREE.MathUtils.clamp(tubeDistance, innerMinorRadius, outerMinorRadius);
                 const scale = targetDistance / tubeDistance;
-                const lerpBack = 0.15;
+                const lerpBack = Math.min(1, 0.15 * morphRate);
                 nextX = THREE.MathUtils.lerp(nextX, dirX * (majorRadius + tubeOffset * scale), lerpBack);
                 nextY = THREE.MathUtils.lerp(nextY, dirY * (majorRadius + tubeOffset * scale), lerpBack);
                 nextZ = THREE.MathUtils.lerp(nextZ, nextZ * scale, lerpBack);
@@ -688,21 +691,8 @@ function DonutParticle({ position = [0, 0, 0], scale = 2.5, rotation = [degToRad
  {particleMaterial ? (<primitive object={particleMaterial} attach="material"/>) : null}
  </points>);
 }
-// The declarative <Canvas camera={{ fov }}> prop applies the value but only
-// calls updateProjectionMatrix() for aspect/left/right/bottom/top changes,
-// so fov edits are silently ignored without this explicit sync.
-function CameraFovSync({ fov }) {
-    const { camera } = useThree();
-    useEffect(() => {
-        if ("fov" in camera && camera.fov !== fov) {
-            // eslint-disable-next-line react-hooks/immutability -- three.js cameras are inherently mutable imperative objects; this is the standard r3f pattern for syncing fov.
-            camera.fov = fov;
-            camera.updateProjectionMatrix();
-        }
-    }, [camera, fov]);
-    return null;
-}
-export default function DonutParticles({ className = "", canvasClassName = "", donutPosition = [0, 0, 0], donutScale = 3.5, donutRotation = [degToRad(-60), degToRad(45), 0], cameraPosition = [2.0, 4, 6], cameraFov = 50, dpr = [1, 2], particleSize = 1, particleColor = "#9973ff", mouseInteraction = true, speed = 1, intensity = 1, }) {
+const CAMERA_FOV = 50;
+export default function DonutParticles({ className = "", canvasClassName = "", donutPosition = [0, 0, 0], donutScale = 3.5, donutRotation = [degToRad(-60), degToRad(45), 0], cameraPosition = [2.0, 4, 6], dpr = [1, 2], particleSize = 1, particleColor = "#9973ff", mouseInteraction = true, speed = 1, intensity = 1, morphDuration = 1.5, demorphIntensity = 1, rotationSpeed = 1, tiltX, tiltY, }) {
     const rootRef = useRef(null);
     const [frameloop, setFrameloop] = useState("always");
     const [viewportWidth, setViewportWidth] = useState(1280);
@@ -737,9 +727,12 @@ export default function DonutParticles({ className = "", canvasClassName = "", d
             ? [donutPosition[0] - 0.35, donutPosition[1], donutPosition[2]]
             : donutPosition);
     return (<div ref={rootRef} className={`h-screen w-full bg-black ${className}`}>
- <Canvas aria-hidden="true" className={canvasClassName} camera={{ position: cameraPosition, fov: cameraFov }} dpr={dpr} frameloop={frameloop}>
- <CameraFovSync fov={cameraFov}/>
- <DonutParticle position={responsivePosition} scale={responsiveScale} rotation={donutRotation} interactive={mouseInteraction && !isTablet && !isMobile} particleSize={particleSize} particleColor={particleColor} speed={speed} intensity={intensity}/>
+ <Canvas aria-hidden="true" className={canvasClassName} camera={{ position: cameraPosition, fov: CAMERA_FOV }} dpr={dpr} frameloop={frameloop}>
+ <DonutParticle position={responsivePosition} scale={responsiveScale} rotation={[
+            typeof tiltX === "number" ? degToRad(tiltX) : donutRotation[0],
+            typeof tiltY === "number" ? degToRad(tiltY) : donutRotation[1],
+            donutRotation[2],
+        ]} interactive={mouseInteraction && !isTablet && !isMobile} particleSize={particleSize} particleColor={particleColor} speed={speed} intensity={intensity} morphDuration={morphDuration} demorphIntensity={demorphIntensity} rotationSpeed={rotationSpeed}/>
  </Canvas>
  </div>);
 }

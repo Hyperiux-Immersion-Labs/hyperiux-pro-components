@@ -321,10 +321,15 @@ function PortfolioSlider({
   const prevRawIndexRef = useRef(0);
   const controlsRef = useRef({ zoomFactor, scrollSpeed });
   const reducedMotion = usePrefersReducedMotion();
+  const reducedMotionRef = useRef(reducedMotion);
 
   useEffect(() => {
     controlsRef.current = { zoomFactor, scrollSpeed };
   }, [zoomFactor, scrollSpeed]);
+
+  useEffect(() => {
+    reducedMotionRef.current = reducedMotion;
+  }, [reducedMotion]);
 
   useEffect(() => {
     let scene: THREE.Scene;
@@ -507,10 +512,16 @@ function PortfolioSlider({
         );
         const scrollOffset = offset * controlsRef.current.scrollSpeed;
 
-        const targetRadius = Math.min(
-          liveViewportConfig.baseRadius + Math.abs(delta) * 0.12,
-          liveViewportConfig.maxRadius,
-        );
+        // Reduced motion: the thumbnail ring keeps a fixed radius (no
+        // pulsing with scroll speed) and the images keep a fixed zoom below -
+        // scrolling still moves them normally.
+        const reduce = reducedMotionRef.current;
+        const targetRadius = reduce
+          ? liveViewportConfig.baseRadius
+          : Math.min(
+              liveViewportConfig.baseRadius + Math.abs(delta) * 0.12,
+              liveViewportConfig.maxRadius,
+            );
         currentRadius += (targetRadius - currentRadius) * 0.1;
 
         if (circleRef.current) {
@@ -583,7 +594,7 @@ function PortfolioSlider({
 
           const arc = Math.cos(norm * Math.PI * 0.5);
 
-          const targetZoom = 1 + (1 - arc) * liveViewportConfig.zoomFactor;
+          const targetZoom = reduce ? 1 : 1 + (1 - arc) * liveViewportConfig.zoomFactor;
 
           plane.material.uniforms.uZoom.value = targetZoom;
         });
@@ -613,7 +624,20 @@ function PortfolioSlider({
       lenis?.stop?.();
     }
 
+    // Keep the canvas matched to the viewport (rotation, mobile address bar,
+    // device-preview resizes) - otherwise the renderer keeps its mount-time
+    // size and the centred image drifts off-centre.
+    const onResize = () => {
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener("resize", onResize);
+
     return () => {
+      window.removeEventListener("resize", onResize);
       loop.destroy();
       gate.destroy();
       if (snapTimeout) clearTimeout(snapTimeout);
@@ -676,12 +700,13 @@ function PortfolioSlider({
                   transform: `rotate(${angle}deg) translateY(var(--radius, -35vh)) rotate(calc(-${angle}deg - var(--rotation, 0deg)))`,
                 }}
               >
-                {/* item.url is served through /api/media-proxy?url=... (a local route with a
- query string) - next/image blocks that without images.localPatterns config,
- so this stays a plain <img>. */}
+                {/* Plain <img> so no next.config images.remotePatterns is needed.
+ crossOrigin matches the WebGL texture request, so the browser cache
+ entry is CORS-enabled for both. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.url}
+                  crossOrigin="anonymous"
                   alt={item.description}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
@@ -690,51 +715,38 @@ function PortfolioSlider({
           })}
         </div>
 
-        {reducedMotion && (
-          <div
-            aria-live="polite"
-            className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
-          >
-            <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
-              This effect can&apos;t be reduced.
-            </h2>
-            <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
-              Reduced motion is enabled, but this continuous scroll-driven 3D
-              carousel is the navigation itself, and can&apos;t be simplified to
-              a fade without losing the ability to browse.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
-const P = "/api/media-proxy?url=";
+// Images load straight from the Vault asset bucket. It serves
+// Access-Control-Allow-Origin: *, so they work as WebGL textures with
+// crossOrigin="anonymous" - no proxy route or next.config needed.
 const B = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images";
 
 const items = [
-  { url: `${P}${B}/h-01.jpg`, description: "PORTFOLIO 01" },
-  { url: `${P}${B}/h-02.jpg`, description: "PORTFOLIO 02" },
-  { url: `${P}${B}/h-03.jpg`, description: "PORTFOLIO 03" },
-  { url: `${P}${B}/h-05.jpg`, description: "PORTFOLIO 04" },
-  { url: `${P}${B}/h-06.jpg`, description: "PORTFOLIO 05" },
-  { url: `${P}${B}/v-10.jpg`, description: "PORTFOLIO 06" },
-  { url: `${P}${B}/h-08.jpg`, description: "PORTFOLIO 07" },
-  { url: `${P}${B}/h-09.jpg`, description: "PORTFOLIO 08" },
-  { url: `${P}${B}/h-10.jpg`, description: "PORTFOLIO 09" },
-  { url: `${P}${B}/h-11.jpg`, description: "PORTFOLIO 10" },
-  { url: `${P}${B}/h-12.jpg`, description: "PORTFOLIO 11" },
-  { url: `${P}${B}/h-13.jpg`, description: "PORTFOLIO 12" },
-  { url: `${P}${B}/h-14.jpg`, description: "PORTFOLIO 13" },
-  { url: `${P}${B}/h-15.jpg`, description: "PORTFOLIO 14" },
-  { url: `${P}${B}/v-01.jpg`, description: "PORTFOLIO 15" },
-  { url: `${P}${B}/v-02.jpg`, description: "PORTFOLIO 16" },
-  { url: `${P}${B}/v-03.jpg`, description: "PORTFOLIO 17" },
-  { url: `${P}${B}/v-04.jpg`, description: "PORTFOLIO 18" },
-  { url: `${P}${B}/v-05.jpg`, description: "PORTFOLIO 19" },
-  { url: `${P}${B}/v-06.jpg`, description: "PORTFOLIO 20" },
-  { url: `${P}${B}/v-07.jpg`, description: "PORTFOLIO 21" },
+  { url: `${B}/h-01.jpg`, description: "PORTFOLIO 01" },
+  { url: `${B}/h-02.jpg`, description: "PORTFOLIO 02" },
+  { url: `${B}/h-03.jpg`, description: "PORTFOLIO 03" },
+  { url: `${B}/h-05.jpg`, description: "PORTFOLIO 04" },
+  { url: `${B}/h-06.jpg`, description: "PORTFOLIO 05" },
+  { url: `${B}/v-10.jpg`, description: "PORTFOLIO 06" },
+  { url: `${B}/h-08.jpg`, description: "PORTFOLIO 07" },
+  { url: `${B}/h-09.jpg`, description: "PORTFOLIO 08" },
+  { url: `${B}/h-10.jpg`, description: "PORTFOLIO 09" },
+  { url: `${B}/h-11.jpg`, description: "PORTFOLIO 10" },
+  { url: `${B}/h-12.jpg`, description: "PORTFOLIO 11" },
+  { url: `${B}/h-13.jpg`, description: "PORTFOLIO 12" },
+  { url: `${B}/h-14.jpg`, description: "PORTFOLIO 13" },
+  { url: `${B}/h-15.jpg`, description: "PORTFOLIO 14" },
+  { url: `${B}/v-01.jpg`, description: "PORTFOLIO 15" },
+  { url: `${B}/v-02.jpg`, description: "PORTFOLIO 16" },
+  { url: `${B}/v-03.jpg`, description: "PORTFOLIO 17" },
+  { url: `${B}/v-04.jpg`, description: "PORTFOLIO 18" },
+  { url: `${B}/v-05.jpg`, description: "PORTFOLIO 19" },
+  { url: `${B}/v-06.jpg`, description: "PORTFOLIO 20" },
+  { url: `${B}/v-07.jpg`, description: "PORTFOLIO 21" },
 ];
 
 export default function PortfolioSlider3D({

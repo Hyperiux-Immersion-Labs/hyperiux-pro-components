@@ -746,12 +746,16 @@ function CardShell({ card, settersRef, cardScale, speedValue }) {
             delete setters[card._uid];
         };
     }, [card._uid, settersRef]);
-    return (<div data-card-uid={card._uid} className="relative shrink-0 rounded-2xl" style={{
+    // The outer slot takes up the card's *scaled* size in the flex row, so
+    // spacing and the marquee's loop width stay in step with what's drawn
+    // (a bare transform: scale() kept the 380px layout box - cards
+    // overlapped on small gaps and the loop wrapped at the wrong point).
+    return (<div data-card-uid={card._uid} className="relative shrink-0" style={{ width: CARD_W * cardScale, height: CARD_H * cardScale }}>
+ <div className="absolute left-0 top-0 rounded-2xl" style={{
             width: CARD_W,
             height: CARD_H,
             transform: `scale(${cardScale})`,
-            transformOrigin: "center",
-            transition: "transform 260ms ease",
+            transformOrigin: "0 0",
         }}>
  <div data-plain className="absolute inset-0" style={{ clipPath: `inset(0 ${CARD_W}px 0 0 round 16px)` }}>
  <PlainFace card={card}/>
@@ -759,12 +763,14 @@ function CardShell({ card, settersRef, cardScale, speedValue }) {
  <div data-ascii className="absolute h-full w-full inset-0" style={{ clipPath: `inset(0 0 0 ${CARD_W}px round 16px)` }}>
  <AsciiFace card={card} beamLit={beamLit} speedValue={speedValue} cardScale={1}/>
  </div>
+ </div>
  </div>);
 }
 export function FileEncryptionComp({ cards = [], speed = 1, accentColor = BEAM_COLOR, backgroundColor = BACKGROUND_COLOR, cardSize = 1, }) {
     const rootRef = useRef(null);
     const trackRef = useRef(null);
     const xRef = useRef(null);
+    const lastGroupWidthRef = useRef(0);
     const dragRef = useRef({ active: false, lastX: 0, velocity: 0 });
     const beamCanvasRef = useRef(null);
     const particleCanvasRef = useRef(null);
@@ -827,8 +833,15 @@ export function FileEncryptionComp({ cards = [], speed = 1, accentColor = BEAM_C
             reduceMotionRef.current = mq.matches;
             mq.addEventListener?.("change", onReduceMotionChange);
         }
-        if (xRef.current === null)
+        if (xRef.current === null) {
             xRef.current = -singleGroupWidth;
+        }
+        else if (lastGroupWidthRef.current && lastGroupWidthRef.current !== singleGroupWidth) {
+            // Card size/gap changed: rescale the offset so the same card stays in
+            // view instead of the track jumping.
+            xRef.current = (xRef.current * singleGroupWidth) / lastGroupWidthRef.current;
+        }
+        lastGroupWidthRef.current = singleGroupWidth;
         const onDown = (e) => {
             dragRef.current.active = true;
             dragRef.current.lastX = e.clientX ?? e.touches?.[0]?.clientX;
@@ -967,7 +980,7 @@ export function FileEncryptionComp({ cards = [], speed = 1, accentColor = BEAM_C
  {/* Card track */}
  <div ref={trackRef} className="absolute top-1/2 left-0 flex will-change-transform" style={{
             gap: visualCardGap,
-            marginTop: -(CARD_H / 2),
+            marginTop: -(CARD_H * resolvedCardSize) / 2,
         }}>
  {allCards.map((card) => (<CardShell key={card._uid} card={card} settersRef={settersRef} cardScale={cardScale} speedValue={resolvedSpeed}/>))}
  </div>

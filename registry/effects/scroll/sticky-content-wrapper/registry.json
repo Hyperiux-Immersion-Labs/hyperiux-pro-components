@@ -51,6 +51,17 @@
       }
     },
     {
+      "name": "textColor",
+      "type": "color",
+      "default": "#000000",
+      "description": "Color of the text content and the scroll indicator.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
       "name": "contentEnterYPercent",
       "type": "number",
       "default": 2,

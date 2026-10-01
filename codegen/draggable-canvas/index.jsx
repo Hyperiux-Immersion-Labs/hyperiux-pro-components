@@ -184,12 +184,14 @@ function createSuspendedRaf({ onFrame, root = null, rootMargin = DEFAULT_ROOT_MA
 }
 // ---- MaskedContainer.tsx ----
 gsap.registerPlugin(Draggable, InertiaPlugin);
-function MaskedContainer({ size, initialPosition, className, video, canvasSize, friction = 0.12, scaleOnDrag = 1.04, canvasBorderColor = "#71717a", rounded = 0, onPositionUpdate, onHoverChange, }) {
+function MaskedContainer({ size, initialPosition, className, video, canvasSize, friction = 0.12, scaleOnDrag = 1.04, canvasBorderColor = "#71717a", rounded = 0, reducedMotion = false, onPositionUpdate, onHoverChange, }) {
     const maskRef = useRef(null);
     const canvasRef = useRef(null);
     const [position, setPosition] = useState(initialPosition);
-    const safeFriction = Math.min(10, Math.max(0, Number(friction) || 0));
-    const safeScaleOnDrag = Math.min(1.5, Math.max(0.85, Number(scaleOnDrag) || 1));
+    // Reduced motion: maximum friction (the canvas stops where it's released)
+    // and no scale pop on press - the drag itself stays 1:1 with the pointer.
+    const safeFriction = reducedMotion ? 10 : Math.min(10, Math.max(0, Number(friction) || 0));
+    const safeScaleOnDrag = reducedMotion ? 1 : Math.min(1.5, Math.max(0.85, Number(scaleOnDrag) || 1));
     const safeRounded = Math.min(80, Math.max(0, Number(rounded) || 0));
     // Canvas drawing function for individual mask
     const drawMaskedVideo = useCallback(() => {
@@ -198,25 +200,34 @@ function MaskedContainer({ size, initialPosition, className, video, canvasSize, 
         if (!canvas || !video || !maskElement)
             return;
         const ctx = canvas.getContext("2d");
-        const rect = maskElement.getBoundingClientRect();
-        // Set canvas size to match mask
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-        // Clear canvas with black background
+        // Measure the canvas itself, not the mask: the mask's 1px border means
+        // the canvas is smaller and inset, and using the mask's box drew the
+        // video slightly squeezed and offset - so it swam against the screen
+        // as the window moved.
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height)
+            return;
+        // Backing store at device-pixel resolution, rounded, and only resized
+        // when it really changes (resizing rebuilds the canvas every frame).
+        const dpr = window.devicePixelRatio || 1;
+        const width = Math.round(rect.width * dpr);
+        const height = Math.round(rect.height * dpr);
+        if (canvas.width !== width)
+            canvas.width = width;
+        if (canvas.height !== height)
+            canvas.height = height;
+        // Draw in CSS pixels of the canvas's on-screen box (handles the
+        // scale-on-press too), so one video pixel lands on one screen pixel.
+        ctx.setTransform(width / rect.width, 0, 0, height / rect.height, 0, 0);
         ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Calculate video position relative to the mask position
-        const maskX = rect.left;
-        const maskY = rect.top;
-        // Draw the portion of the video that should be visible through this mask
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, 0, canvas.width, canvas.height);
-        ctx.clip();
-        // Draw video with offset to show the correct portion
-        ctx.drawImage(video, -maskX, -maskY, canvasSize.width, canvasSize.height);
-        ctx.restore();
+        ctx.fillRect(0, 0, rect.width, rect.height);
+        // The slice of the full-screen video that sits behind this window.
+        ctx.drawImage(video, -rect.left, -rect.top, canvasSize.width, canvasSize.height);
     }, [video, canvasSize]);
+    const drawRef = useRef(drawMaskedVideo);
+    useEffect(() => {
+        drawRef.current = drawMaskedVideo;
+    }, [drawMaskedVideo]);
     // Start animation when video is available
     useEffect(() => {
         if (!video)
@@ -240,17 +251,21 @@ function MaskedContainer({ size, initialPosition, className, video, canvasSize, 
                 bounds: "body",
                 zIndexBoost: false,
                 edgeResistance: 0.3,
-                throwProps: {
-                    resistance: Math.max(50, safeFriction * 4000),
-                    minDuration: 2,
-                    maxDuration: 3,
-                },
+                // GSAP 3 reads these as top-level Draggable options (the old
+                // `throwProps` object is ignored, which is why friction did nothing).
+                // Higher friction = more resistance = the throw stops sooner.
+                throwResistance: 50 + safeFriction * 1000,
+                minDuration: 0.2,
+                maxDuration: 3,
                 onPress: function () {
                     gsap.to(this.target, {
                         scale: safeScaleOnDrag,
                         duration: 0.18,
                         ease: "power2.out",
-                        overwrite: true,
+                        // "auto", not true: true kills every tween on the target -
+                        // including the inertia throw Draggable starts on release,
+                        // which is why the throw (and friction) never happened.
+                        overwrite: "auto",
                     });
                 },
                 onRelease: function () {
@@ -258,14 +273,22 @@ function MaskedContainer({ size, initialPosition, className, video, canvasSize, 
                         scale: 1,
                         duration: 0.28,
                         ease: "power2.out",
-                        overwrite: true,
+                        // "auto", not true: true kills every tween on the target -
+                        // including the inertia throw Draggable starts on release,
+                        // which is why the throw (and friction) never happened.
+                        overwrite: "auto",
                     });
                 },
+                // Redraw right after Draggable moves the mask, so the video slice
+                // matches the new position this frame instead of lagging one frame
+                // behind (which reads as the video jittering inside the window).
                 onDrag: function () {
+                    drawRef.current();
                     setPosition({ x: this.x, y: this.y });
                     onPositionUpdate(size, { x: this.x, y: this.y });
                 },
                 onThrowUpdate: function () {
+                    drawRef.current();
                     setPosition({ x: this.x, y: this.y });
                     onPositionUpdate(size, { x: this.x, y: this.y });
                 },
@@ -403,31 +426,21 @@ export default function DraggableCanvas({ friction = 0.12, scaleOnDrag = 1.04, b
         <p className="pointer-events-none absolute bottom-8 right-8 z-40 max-w-[31vw] max-[1025px]:max-w-[55vw] max-md:max-w-[85vw] px-6 text-right max-[1025px]:text-center max-[1025px]:mx-auto font-mono text-sm  leading-relaxed text-white/75 [text-shadow:0_3px_18px_rgba(0,0,0,0.85)] max-[1025px]:text-base max-md:text-sm max-md:bottom-18">
           Drag the floating canvases - each window steals a different slice of the same moving dream.<span className="lg:hidden"> (best experience on desktop)</span>
         </p>
-        {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-4 left-4 z-40 w-fit max-w-75 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden">
-            <h2 className="text-sm leading-none text-white">
-              The canvas keep drifting.
-            </h2>
-            <p className="mt-2 text-xs leading-5 text-white/65">
-              Draggable Canvas is built on continuous drag and inertia
-              physics. Since the motion is the entire effect, reduced motion
-              can&apos;t be applied here.
-            </p>
-          </div>)}
       {/* Hidden video element - single source for all masks */}
       <video ref={setVideoRef} src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/draggable-video.mp4" className="opacity-0 absolute top-0 left-0 w-full h-full object-cover" autoPlay muted loop playsInline preload="auto" crossOrigin="anonymous"/>
     
 
-      {isVideoReady && (<MaskedContainer size="large" initialPosition={{ x: 0, y: 0 }} className="w-[60vw] h-[35vw] absolute top-[10vh] left-[10vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
+      {isVideoReady && (<MaskedContainer size="large" initialPosition={{ x: 0, y: 0 }} className="w-[60vw] h-[35vw] absolute top-[10vh] left-[10vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} reducedMotion={prefersReducedMotion} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
 
-      {isVideoReady && (<MaskedContainer size="medium" initialPosition={{ x: 0, y: 0 }} className="w-[17vw] h-[9vw] max-md:h-[35vw] max-md:top-[30%] absolute top-[8%] left-[5vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
+      {isVideoReady && (<MaskedContainer size="medium" initialPosition={{ x: 0, y: 0 }} className="w-[17vw] h-[9vw] max-md:h-[35vw] max-md:top-[30%] absolute top-[8%] left-[5vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} reducedMotion={prefersReducedMotion} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
 
     
 
-      {isVideoReady && (<MaskedContainer size="extra1" initialPosition={{ x: 0, y: 0 }} className="w-[35vw] h-[19vw] max-md:h-[50vw] absolute top-[8vh] max-md:top-[25vh] right-[5vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
+      {isVideoReady && (<MaskedContainer size="extra1" initialPosition={{ x: 0, y: 0 }} className="w-[35vw] h-[19vw] max-md:h-[50vw] absolute top-[8vh] max-md:top-[25vh] right-[5vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} reducedMotion={prefersReducedMotion} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
 
-      {isVideoReady && (<MaskedContainer size="extra2" initialPosition={{ x: 0, y: 0 }} className="w-[38vw] h-[22vw] absolute top-[50vh] left-[5vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
+      {isVideoReady && (<MaskedContainer size="extra2" initialPosition={{ x: 0, y: 0 }} className="w-[38vw] h-[22vw] absolute top-[50vh] left-[5vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} reducedMotion={prefersReducedMotion} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
 
-      {isVideoReady && (<MaskedContainer size="extra3" initialPosition={{ x: 0, y: 0 }} className="w-[25vw] h-[14vw] max-md:h-[25vh] absolute bottom-[20%] right-[10vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
-        {isVideoReady && (<MaskedContainer size="small" initialPosition={{ x: 0, y: 0 }} className="w-[22vw] max-md:w-[45vw] max-md:h-[20vh] h-[12vw] absolute bottom-[15vh] max-md:left-[40%] left-1/2 -translate-x-1/2" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
+      {isVideoReady && (<MaskedContainer size="extra3" initialPosition={{ x: 0, y: 0 }} className="w-[25vw] h-[14vw] max-md:h-[25vh] absolute bottom-[20%] right-[10vw]" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} reducedMotion={prefersReducedMotion} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
+        {isVideoReady && (<MaskedContainer size="small" initialPosition={{ x: 0, y: 0 }} className="w-[22vw] max-md:w-[45vw] max-md:h-[20vh] h-[12vw] absolute bottom-[15vh] max-md:left-[40%] left-1/2 -translate-x-1/2" video={videoElement} canvasSize={canvasSize} friction={friction} scaleOnDrag={scaleOnDrag} canvasBorderColor={canvasBorderColor} rounded={rounded} reducedMotion={prefersReducedMotion} onPositionUpdate={handlePositionUpdate} onHoverChange={handleHoverChange}/>)}
     </div>);
 }

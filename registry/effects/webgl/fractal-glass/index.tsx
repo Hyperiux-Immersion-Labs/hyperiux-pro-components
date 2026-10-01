@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 const DEFAULT_ROOT_MARGIN = "256px";
@@ -253,20 +253,6 @@ export {
 
 const DEFAULT_IMAGE_SRC = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg";
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setPrefersReducedMotion(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  return prefersReducedMotion;
-}
-
 const vertexShader = `
  varying vec2 vUv;
  void main() {
@@ -342,8 +328,14 @@ const fragmentShader = `
 
  float parallaxDirection = -sign(0.5 - uMouse.x);
 
+ // Base shift P plus extra per-stripe distortion scaled by |P|. Using the
+ // signed P for the extra term (P * (1 + d * m)) made the sample
+ // x + P + d * (1 + P * m): with the cursor left of centre P is negative, and
+ // where P * m hit -1 the stripe distortion cancelled out completely - one
+ // cursor position showed the image with no fractal effect.
+ float parallaxShift = parallaxDirection * abs(uMouse.x - 0.5) * uParallaxStrength;
  vec2 parallaxOffset = vec2(
- parallaxDirection * abs(uMouse.x - 0.5) * uParallaxStrength * (1.0 + abs(distortionFactor) * uDistortionMultiplier),
+ parallaxShift + abs(parallaxShift) * abs(distortionFactor) * uDistortionMultiplier,
  0.0
  );
 
@@ -353,9 +345,10 @@ const fragmentShader = `
 
  vec2 coverUV = getCoverUV(uv, uTextureSize);
 
- if (coverUV.x < 0.0 || coverUV.x > 1.0 || coverUV.y < 0.0 || coverUV.y > 1.0) {
- coverUV = clamp(coverUV, 0.0, 1.0);
- }
+ // Strong parallax pushes the sample past the image edge. Clamping it
+ // repeated the edge pixel across a whole band, so that band showed no
+ // fractal distortion at all. Mirroring keeps real image detail there.
+ coverUV = 1.0 - abs(1.0 - mod(coverUV, 2.0));
 
  vec4 color = texture2D(uTexture, coverUV);
 
@@ -442,7 +435,6 @@ export default function FractalGlass({
   const mountRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null); // keeps reference to video element for cleanup
   const uniformsRef = useRef<any>(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const el = mountRef.current;
@@ -639,21 +631,6 @@ export default function FractalGlass({
         Works best on desktop
       </div>
 
-      {prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
-        >
-          <h2 className="text-sm leading-none text-white">
-            The glass keeps shifting.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-white/65">
-            Fractal Glass distorts the image based on cursor and touch
-            position in real time. Since the distortion is driven entirely
-            by motion, reduced motion can&apos;t be applied here.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(SplitText, ScrollTrigger);
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
-export default function PerspectiveTextReveal({ children, animateOnScroll = true, delay = 0, duration = 0.8, stagger = 0.08, className = "", scrub = false, }) {
+export default function PerspectiveTextReveal({ children, animateOnScroll = true, delay = 0, duration = 0.8, stagger = 0.08, className = "", scrub = false, startOpacity = 0, direction = "top", splitBy = "lines", rotation = 70, ease = "power3.out", perspective = 800, }) {
     const containerRef = useRef(null);
     const splitRefs = useRef([]);
     const linesRef = useRef([]);
@@ -26,13 +26,19 @@ export default function PerspectiveTextReveal({ children, animateOnScroll = true
             await document.fonts.ready;
             ctx = gsap.context(() => {
                 elements.forEach((element) => {
+                    // Characters are split inside their words so a word never breaks
+                    // across lines mid-animation.
                     const split = SplitText.create(element, {
-                        type: "lines",
+                        type: splitBy === "chars" ? "words,chars" : splitBy === "words" ? "words" : "lines",
                         linesClass: "line++",
                         reduceWhiteSpace: false,
                     });
                     splitRefs.current.push(split);
-                    linesRef.current.push(...split.lines);
+                    const pieces = split[splitBy] ?? split.lines;
+                    if (splitBy !== "lines") {
+                        gsap.set(pieces, { display: "inline-block" });
+                    }
+                    linesRef.current.push(...pieces);
                 });
                 if (prefersReduced) {
                     gsap.set(linesRef.current, { yPercent: 0, rotateX: 0, opacity: 1 });
@@ -59,12 +65,15 @@ export default function PerspectiveTextReveal({ children, animateOnScroll = true
                     }
                     return;
                 }
+                const fromBottom = direction === "bottom";
                 gsap.set(linesRef.current, {
-                    yPercent: -100,
-                    rotateX: 70,
-                    opacity: 0,
-                    transformPerspective: 800,
-                    transformOrigin: "50% 100%",
+                    yPercent: fromBottom ? 100 : -100,
+                    rotateX: fromBottom ? -rotation : rotation,
+                    opacity: Math.min(1, Math.max(0, startOpacity)),
+                    transformPerspective: perspective,
+                    // Hide the mirrored back of each piece while it rotates past 90deg.
+                    backfaceVisibility: "hidden",
+                    transformOrigin: fromBottom ? "50% 0%" : "50% 100%",
                     willChange: "transform, opacity",
                 });
                 gsap.set(containerRef.current, { opacity: 1 });
@@ -74,7 +83,7 @@ export default function PerspectiveTextReveal({ children, animateOnScroll = true
                     opacity: 1,
                     duration,
                     stagger,
-                    ease: "power3.out",
+                    ease,
                     delay,
                 };
                 if (animateOnScroll) {
@@ -99,8 +108,8 @@ export default function PerspectiveTextReveal({ children, animateOnScroll = true
                 ctx.revert();
             splitRefs.current.forEach((split) => split?.revert());
         };
-    }, [animateOnScroll, delay, duration, scrub, stagger]);
-    return (<div ref={containerRef} data-copy-wrapper="true" className={`opacity-0 ${className}`.trim()} style={{ perspective: "800px" }}>
+    }, [animateOnScroll, delay, duration, scrub, stagger, startOpacity, direction, splitBy, rotation, ease, perspective]);
+    return (<div ref={containerRef} data-copy-wrapper="true" className={`opacity-0 ${className}`.trim()} style={{ perspective: `${perspective}px` }}>
  {children}
  </div>);
 }

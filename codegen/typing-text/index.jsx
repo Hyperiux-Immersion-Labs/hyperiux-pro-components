@@ -14,7 +14,7 @@ function getAlignmentClass(textAlign) {
         return "items-end text-right";
     return "items-start text-left";
 }
-export default function TypingText({ lines = DEFAULT_LINES, variant = "sequential", textColor = "#d8d8d8", cursorColor = "#f59e0b", backgroundColor = "#121212", fontSize = 2.4, fontWeight = 500, lineHeight = 1.55, letterSpacing = 0, charactersPerSecond = 18, animationDuration = 1, lineDelay = 0.5, holdDuration = 1.4, blur = 0, rotate = 0, scale = 1, perspective = 800, typingDirection = "left-to-right", cursorWidth = 3, cursorStyle = "bar", textAlign = "left", maxWidth = 80, showCursor = true, className = "", }) {
+export default function TypingText({ lines = DEFAULT_LINES, variant = "sequential", textColor = "#d8d8d8", cursorColor = "#f59e0b", backgroundColor = "#121212", fontSize = 2.4, fontWeight = 500, lineHeight = 1.55, charactersPerSecond = 18, animationDuration = 1, lineDelay = 0.5, holdDuration = 1.4, blur = 0, rotate = 0, scale = 1, perspective = 800, typingDirection = "left-to-right", cursorWidth = 3, cursorStyle = "bar", textAlign = "left", maxWidth = 80, showCursor = true, className = "", }) {
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
     const preparedLines = useMemo(() => lines.map((line) => ({ text: line, chars: Math.max(Array.from(line).length, 1) })), [lines]);
     const animationKey = [
@@ -89,7 +89,6 @@ export default function TypingText({ lines = DEFAULT_LINES, variant = "sequentia
                 fontSize: `clamp(1.2rem, ${fontSize}vw, 5rem)`,
                 fontWeight,
                 lineHeight,
-                letterSpacing: `${letterSpacing}em`,
                 direction: typingDirection === "right-to-left" ? "rtl" : "ltr",
                 textAlign: typingDirection === "right-to-left" ? "right" : "left",
                 transformOrigin: typingDirection === "right-to-left" ? "right center" : "left center",
@@ -101,7 +100,9 @@ export default function TypingText({ lines = DEFAULT_LINES, variant = "sequentia
                         ? "typing-text-loop var(--typing-loop-duration) steps(var(--typing-steps), end) var(--typing-delay) infinite both"
                         : "typing-text-write var(--typing-duration) steps(var(--typing-steps), end) var(--typing-delay) both",
             };
-            return (<span key={`${animationKey}-${line.text}-${index}`} aria-hidden="true" data-cursor-style={showCursor ? cursorStyle : undefined} data-typing-direction={typingDirection} data-typing-variant={variant} className="typing-text-line mb-2 block max-w-full whitespace-nowrap font-mono will-change-[width,opacity]" style={lineStyle}>
+            return (<span key={`${animationKey}-${line.text}-${index}`} aria-hidden="true" 
+            // No caret at all with reduced motion - the text is simply there.
+            data-cursor-style={showCursor && !prefersReducedMotion ? cursorStyle : undefined} data-typing-direction={typingDirection} data-typing-variant={variant} className="typing-text-line mb-2 block max-w-full whitespace-nowrap font-mono will-change-[width,opacity]" style={lineStyle}>
               <span className="typing-text-content block max-w-full overflow-hidden">
                 {Array.from(line.text).map((character, characterIndex) => (<span key={`${characterIndex}-${character}`} className="typing-text-char" style={{ "--char-index": characterIndex }}>
                     {character}
@@ -266,26 +267,29 @@ export default function TypingText({ lines = DEFAULT_LINES, variant = "sequentia
           }
         }
 
-        @keyframes typing-text-fade-in {
-          from {
-            opacity: 0;
-          }
-
-          to {
-            opacity: 1;
-          }
-        }
-
+        /* Reduced motion: every line is fully written from the start - no
+           typing, no fade, no caret (also covers first paint, before the
+           JS matchMedia check drops the caret attribute). */
         @media (prefers-reduced-motion: reduce) {
           .typing-text-line {
             width: auto !important;
             max-width: 100%;
-            opacity: 0;
-            animation: typing-text-fade-in 0.4s ease-out forwards !important;
+            opacity: 1 !important;
+            filter: none !important;
+            transform: none !important;
+            animation: none !important;
           }
 
-          .typing-text-line::after {
-            opacity: 0 !important;
+          .typing-text-line::after,
+          .typing-text-line[data-cursor-style]::after,
+          .typing-text-line[data-cursor-style] .typing-text-char::before {
+            content: none !important;
+            animation: none !important;
+          }
+
+          .typing-text-char {
+            opacity: 1 !important;
+            animation: none !important;
           }
         }
 
@@ -393,12 +397,15 @@ export default function TypingText({ lines = DEFAULT_LINES, variant = "sequentia
           }
 
           .typing-text-char {
-            opacity: 1;
-            animation: none;
+            opacity: 1 !important;
+            animation: none !important;
           }
 
-          .typing-text-char::before {
-            content: none;
+          .typing-text-line .typing-text-char::before,
+          .typing-text-line[data-cursor-style] .typing-text-char::before,
+          .typing-text-line[data-cursor-style]::after {
+            content: none !important;
+            animation: none !important;
           }
         }
       `}</style>

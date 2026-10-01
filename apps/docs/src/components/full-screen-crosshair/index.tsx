@@ -348,20 +348,6 @@ export const useMouse = ({
  };
 };
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setPrefersReducedMotion(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  return prefersReducedMotion;
-}
-
 interface FullScreenCrosshairProps {
   color?: string;
   centerContent?: string;
@@ -392,7 +378,6 @@ const FullScreenCrosshair = ({
     smooth,
     lerpFactor,
   });
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (!hideNativeCursor) return undefined;
@@ -460,21 +445,6 @@ const FullScreenCrosshair = ({
           {centerContent}
         </div>
       </div>
-      {prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-99999 w-fit max-w-65 rounded-md border border-white/15 bg-white/10 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
-        >
-          <h2 className="text-sm leading-none text-white">
-            The crosshair keeps tracking.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-white/65">
-            Full Screen Crosshair follows your cursor continuously across the
-            screen. Since tracking motion is the entire effect, reduced motion
-            can&apos;t be applied here.
-          </p>
-        </div>
-      )}
     </div>
   );
 };

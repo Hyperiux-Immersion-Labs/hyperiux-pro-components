@@ -18,9 +18,7 @@ const ScrambleTextWrapper = ({ effectProps = {} }) => {
         <section className=" px-8 py-8 pt-22 max-[1025px]:pt-25 max-md:pt-20 max-md:px-4 max-md:py-4">
           <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 max-[1025px]:gap-6 border border-black/10 bg-[#fbf8f1] p-8 lg:grid-cols-[1.05fr_0.95fr] max-[1025px]:min-h-fit max-md:p-4">
             <div>
-              <h1 className="mb-6 text-xs font-bold tracking-[0.08em] text-black/45">
-                Scramble Text
-              </h1>
+            
               <ScrambleText
                 text="Signal appears when the noise decides to leave."
                 textColor="#121212"

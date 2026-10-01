@@ -1,9 +1,11 @@
 "use client";
 
 import CircularSlider from "@/components/circular-slider";
+import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
 
 const defaultItems = [
   {
@@ -50,22 +52,32 @@ export default function DemoContent({ registry }: { registry: any }) {
       registry={registry}
       render={(values: any) => (
         <CircularSlider
+          {...values}
           items={values.items?.length ? values.items : defaultItems}
-          title={values.title}
-          subtitle={values.subtitle}
-          backgroundColor={values.backgroundColor}
-          showBottomText={values.showBottomText}
-          gap={values.gap}
-          cardWidth={values.cardWidth}
-          cardHeight={values.cardHeight}
         />
       )}
       copyCodeOptions={{ propsVariableName: "circularSliderProps" }}
     >
       {({ effect }) => (
         <main className="min-h-screen text-white">
+          <LenisSmoothScroll />
           <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
           {effect}
+          <ReducedMotionNotice>
+            <div
+            aria-live="polite"
+            className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
+            >
+            <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
+            This effect can&apos;t be reduced.
+            </h2>
+            <p className="mx-auto mt-4 text-sm leading-6 text-black">
+            Reduced motion is enabled, but this effect relies on continuous
+            scroll-driven rotation around the wheel, and can&apos;t be
+            simplified to a fade without losing the effect entirely.
+            </p>
+            </div>
+          </ReducedMotionNotice>
           <ScrollBottom className="bottom-[3%]"/>
         </main>
       )}

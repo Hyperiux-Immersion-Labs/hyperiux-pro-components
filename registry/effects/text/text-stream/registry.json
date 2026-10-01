@@ -50,7 +50,7 @@
       }
     },
     {
-      "name": "stagger",
+      "name": "verticalSpacing",
       "type": "number",
       "default": 0.08,
       "description": "Vertical spacing between streamed lines.",
@@ -118,5 +118,7 @@
     "copyCode": {
       "includeOnlyPublicProps": true
     }
-  }
+  },
+  "importPath": "@/components/effects/text-stream",
+  "target": "src/components/effects/text-stream"
 }

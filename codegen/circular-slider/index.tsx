@@ -4,23 +4,9 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
-
-function usePrefersReducedMotion() {
- const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
- useEffect(() => {
- const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
- const update = () => setPrefersReducedMotion(mediaQuery.matches);
- update();
- mediaQuery.addEventListener("change", update);
- return () => mediaQuery.removeEventListener("change", update);
- }, []);
-
- return prefersReducedMotion;
-}
 
 interface CircularSliderProduct {
  heading?: string;
@@ -40,7 +26,12 @@ interface CircularSliderCompProps {
  items?: CircularSliderProduct[];
  title?: string;
  subtitle?: string;
- backgroundColor?: string;
+ /** Card background colors, cycled across the cards. Overrides item bgColor. */
+ cardColors?: string[];
+ /** Card text colors, cycled across the cards. Overrides item textColor. */
+ textColors?: string[];
+ /** Moves the whole wheel up (negative) or down (positive), in vh. */
+ verticalOffset?: number;
  gap?: number;
  cardWidth?: number;
  cardHeight?: number;
@@ -54,7 +45,9 @@ const CircularSliderComp = ({
  items,
  title,
  subtitle,
- backgroundColor = "#111111",
+ cardColors,
+ textColors,
+ verticalOffset = 0,
  gap = 24,
  cardWidth = 320,
  cardHeight = 360,
@@ -62,8 +55,11 @@ const CircularSliderComp = ({
 }: CircularSliderCompProps) => {
  const outerRef = useRef<HTMLElement | null>(null);
  const wheelRef = useRef<HTMLDivElement | null>(null);
- const reducedMotion = usePrefersReducedMotion();
- const resolvedItems = items ?? data;
+ const resolvedItems = (items ?? data).map((item, i) => ({
+ ...item,
+ bgColor: cardColors?.length ? cardColors[i % cardColors.length] : item.bgColor,
+ textColor: textColors?.length ? textColors[i % textColors.length] : item.textColor,
+ }));
  const resolvedTitle = title ?? heading;
  const resolvedSubtitle = subtitle ?? para;
  const resolvedGap = Math.max(0, gap);
@@ -140,8 +136,7 @@ const CircularSliderComp = ({
 
  <section
  ref={outerRef}
- className="max-[1025px]:hidden relative h-[250vh]"
- style={{ backgroundColor }}
+ className="max-[1025px]:hidden relative h-[250vh] bg-[#111111]"
  >
  <div
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
@@ -153,7 +148,10 @@ const CircularSliderComp = ({
  </div>
 
  {/* Wheel */}
- <div className="absolute top-[65vw] w-full h-screen">
+ <div
+ className="absolute top-[65vw] w-full h-screen"
+ style={{ transform: `translateY(${verticalOffset}vh)` }}
+ >
  <div
  ref={wheelRef}
  className="absolute flex items-center justify-center top-0 left-[49%] -translate-x-1/2 w-screen h-[100vw] max-w-[125vw] max-h-[125vw]"
@@ -189,8 +187,7 @@ const CircularSliderComp = ({
 
  {/* Mobile / Tablet */}
  <section
- className="hidden max-[1025px]:block py-[15vw] px-[5vw]"
- style={{ backgroundColor }}
+ className="hidden max-[1025px]:block py-[15vw] px-[5vw] bg-[#111111]"
  >
  <h2 className="text-center max-[1025px]:text-[3.5vw] max-md:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
  {resolvedTitle}
@@ -220,21 +217,6 @@ const CircularSliderComp = ({
  ) : null}
  </section>
 
- {reducedMotion && (
- <div
- aria-live="polite"
- className="pointer-events-none fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-white p-6 text-center shadow-sm"
- >
- <h2 className="text-[1.15vw] max-[1025px]:text-[2vw] max-md:text-[3.5vw] leading-none text-black">
- This effect can&apos;t be reduced.
- </h2>
- <p className="mx-auto mt-4 text-sm leading-6 text-black">
- Reduced motion is enabled, but this effect relies on continuous
- scroll-driven rotation around the wheel, and can&apos;t be
- simplified to a fade without losing the effect entirely.
- </p>
- </div>
- )}
  </>
  );
 };
@@ -332,26 +314,76 @@ const defaultItems = [
   },
 ];
 
+const MAX_COLORS = 6;
+
+interface CircularSliderProps {
+  items?: CircularSliderProduct[];
+  title?: string;
+  subtitle?: string;
+  gap?: number;
+  cardWidth?: number;
+  cardHeight?: number;
+  showBottomText?: boolean;
+  /** Moves the whole wheel up (negative) or down (positive), in vh. */
+  verticalOffset?: number;
+  /** How many card colors to cycle through (1 to number of cards). */
+  cardColorCount?: number;
+  cardColor1?: string;
+  cardColor2?: string;
+  cardColor3?: string;
+  cardColor4?: string;
+  cardColor5?: string;
+  cardColor6?: string;
+  /** How many text colors to cycle through (1 to number of cards). */
+  textColorCount?: number;
+  textColor1?: string;
+  textColor2?: string;
+  textColor3?: string;
+  textColor4?: string;
+  textColor5?: string;
+  textColor6?: string;
+}
+
+const pickColors = (count: number, colors: (string | undefined)[], max: number) =>
+  colors.slice(0, Math.min(Math.max(1, Math.round(count)), max)).filter(Boolean) as string[];
+
 const CircularSlider = ({
   items = defaultItems,
   title = "Interfaces that react.",
   subtitle = "Built for motion, crafted for experience.",
-  backgroundColor = "#111111",
   gap = 24,
   cardWidth = 320,
   cardHeight = 360,
   showBottomText = true,
-}) => {
+  verticalOffset = 0,
+  cardColorCount = 5,
+  cardColor1 = "#655A7C",
+  cardColor2 = "#AB92BF",
+  cardColor3 = "#AFC1D6",
+  cardColor4 = "#CEF9F2",
+  cardColor5 = "#D6CA98",
+  cardColor6 = "#F2B5A7",
+  textColorCount = 5,
+  textColor1 = "#2A2433",
+  textColor2 = "#3D2E50",
+  textColor3 = "#2C3E52",
+  textColor4 = "#1A5C53",
+  textColor5 = "#4A3F1A",
+  textColor6 = "#5C2A1F",
+}: CircularSliderProps) => {
+  const max = Math.min(MAX_COLORS, Math.max(1, items.length));
   return (
     <CircularSliderComp
       items={items}
       title={title}
       subtitle={subtitle}
-      backgroundColor={backgroundColor}
       gap={gap}
       cardWidth={cardWidth}
       cardHeight={cardHeight}
       showBottomText={showBottomText}
+      verticalOffset={verticalOffset}
+      cardColors={pickColors(cardColorCount, [cardColor1, cardColor2, cardColor3, cardColor4, cardColor5, cardColor6], max)}
+      textColors={pickColors(textColorCount, [textColor1, textColor2, textColor3, textColor4, textColor5, textColor6], max)}
     />
   );
 };

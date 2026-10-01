@@ -130,7 +130,13 @@ function RoomModel({ onClick, isZoomed, mouseMovement = true, videoRef, ...props
         videoRef.current = videoElement;
         if (isZoomed) {
             const timeout = setTimeout(() => {
-                videoElement.play();
+                // play() returns a promise that rejects if the browser blocks
+                // playback - retry muted/inline instead of failing silently.
+                videoElement.playsInline = true;
+                videoElement.play()?.catch(() => {
+                    videoElement.muted = true;
+                    videoElement.play()?.catch(() => { });
+                });
             }, 300);
             return () => clearTimeout(timeout);
         }
@@ -279,7 +285,7 @@ function RoomModel({ onClick, isZoomed, mouseMovement = true, videoRef, ...props
  </mesh>
 
  {/* 📺 TV */}
- <group onClick={onClick} onPointerEnter={() => (document.body.style.cursor = "pointer")} onPointerLeave={() => (document.body.style.cursor = "auto")}>
+ <group>
  <mesh geometry={nodes.screen.geometry}>
  <meshStandardMaterial {...baseMat}/>
  </mesh>
@@ -781,17 +787,6 @@ blurStrength = 1.0, blurStart = 0.25, }) {
 }
 // ---- index.tsx ----
 // Built using Hyperiux Vault: https://vault.hyperiux.com
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener('change', update);
-        return () => mediaQuery.removeEventListener('change', update);
-    }, []);
-    return prefersReducedMotion;
-}
 // 🌟 CONFIGURATION - tweak these for env intensity levels 🌟
 const ENV_INTENSITY_CONFIG = {
     zoomed: 0,
@@ -916,8 +911,9 @@ export default function HeroBannerAnimated({ mouseMovement = true, intensity = 3
     const [isZoomed, setIsZoomed] = useState(false);
     const [deviceType, setDeviceType] = useState('desktop');
     const videoRef = useRef(null);
-    const isMobile = deviceType === 'mobile';
-    const prefersReducedMotion = usePrefersReducedMotion();
+    // The room scene is desktop-only; phones and tablets get the
+    // "open on desktop" message instead.
+    const isMobile = deviceType !== 'desktop';
     useEffect(() => {
         const gate = createVisibilityGate({
             root: rootRef,
@@ -991,7 +987,10 @@ export default function HeroBannerAnimated({ mouseMovement = true, intensity = 3
         </AnimatePresence>
 
         {!isMobile && (<>
-            <Canvas aria-hidden="true" dpr={[1, 2]} camera={{ position: [0, 0, CAMERA_CONFIG[deviceType].outZ], fov: 55 }} frameloop={frameloop}>
+            <Canvas 
+        // The whole banner toggles the zoom + showreel (not just the
+        // small TV mesh), so any click on the scene plays the video.
+        onClick={() => setIsZoomed((prev) => !prev)} style={{ cursor: 'pointer' }} aria-hidden="true" dpr={[1, 2]} camera={{ position: [0, 0, CAMERA_CONFIG[deviceType].outZ], fov: 55 }} frameloop={frameloop}>
               <Center>
                 <SceneContent isZoomed={isZoomed} setIsZoomed={setIsZoomed} videoRef={videoRef} deviceType={deviceType} mouseMovement={mouseMovement} intensity={intensity} lerp={lerp}/>
               </Center>
@@ -1016,17 +1015,6 @@ export default function HeroBannerAnimated({ mouseMovement = true, intensity = 3
             </div>
           </div>)}
 
-        {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed top-16 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden">
-            <h2 className="text-sm leading-none text-white">
-              The light keeps tracking.
-            </h2>
-            <p className="mt-2 text-xs leading-5 text-white/65">
-              Hero Banner Animated moves light with your cursor in
-              real time and zooms the scene on click. Since that tracking
-              motion is continuous, reduced motion can&apos;t be applied
-              here.
-            </p>
-          </div>)}
       </section>
     </>);
 }

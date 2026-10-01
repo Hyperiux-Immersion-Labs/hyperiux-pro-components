@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 
 /**
  * Shared WebGL context-loss recovery helper.
@@ -305,20 +305,6 @@ export {
   createVisibilityGate,
   DEFAULT_ROOT_MARGIN,
 };
-
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setPrefersReducedMotion(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  return prefersReducedMotion;
-}
 
 const FULLSCREEN_TRIANGLE_VERTICES = new Float32Array([
   -1, -1,
@@ -667,7 +653,6 @@ interface InteractiveBlurRevealProps {
 
 function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/800/1000", iChannel1="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/interactive-blur-reveal-noise.png", mouseRadius = DEFAULT_MOUSE_RADIUS, mouseInteraction = true, duration = DEFAULT_DURATION, className, style }: InteractiveBlurRevealProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const prefersReducedMotion = usePrefersReducedMotion();
   const configRef = useRef({
     mouseRadius: DEFAULT_MOUSE_RADIUS,
     mouseInteraction: true,
@@ -1085,22 +1070,6 @@ function InteractiveBlurReveal({ iChannel0="https://picsum.photos/seed/hover7/80
         }}
       />
 
-      {prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed top-26 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
-        >
-          <h2 className="text-sm leading-none text-white">
-            The reveal keeps trailing.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-white/65">
-            Interactive Blur Reveal clears the blur only where your cursor
-            has recently moved, redrawing continuously. Since the reveal is
-            driven entirely by motion, reduced motion can&apos;t be applied
-            here.
-          </p>
-        </div>
-      )}
     </>
   );
 }

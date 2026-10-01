@@ -29,7 +29,7 @@ const MaskTextWrapper = ({ effectProps = {} }: { effectProps?: Record<string, an
               </div>
 
               <MaskTextReveal key={replayKey} {...replayProps}>
-                <p className="text-[clamp(3rem,7vw,8rem)] max-md:text-[8vw] font-black leading-[0.94] text-white max-sm:text-[3.35rem]">
+                <p className="text-[clamp(3rem,7vw,8rem)] max-md:text-[8vw] font-black leading-[0.94] max-sm:text-[3.35rem]">
                   Hide the sentence until the screen asks for it.
                 </p>
               </MaskTextReveal>

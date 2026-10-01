@@ -10,58 +10,47 @@ function prefersReducedMotion() {
     return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
 gsap.registerPlugin(ScrollTrigger);
-// Reduced motion: keep the parallax, just much weaker - "reduce", not
-// remove. Applies to both the translateY shift and the optional scale range.
-const REDUCED_MOTION_FACTOR = 0.25;
 const DEFAULT_SRC = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg";
-function reduceOffset(value, factor) {
-    if (typeof value !== "string")
-        return value;
-    const match = value.match(/^(-?\d+(?:\.\d+)?)(.*)$/);
-    if (!match)
-        return value;
-    const [, numeric, unit] = match;
-    return `${(parseFloat(numeric) * factor).toFixed(2)}${unit}`;
+/** Accepts 30, "30" or "30%" and returns the percentage as a number. */
+function toPercent(value) {
+    const numeric = typeof value === "number" ? value : parseFloat(value);
+    return Number.isFinite(numeric) ? Math.abs(numeric) : 0;
 }
-function reduceScale(value, factor) {
-    if (typeof value !== "number")
-        return value;
-    return 1 + (value - 1) * factor;
-}
-const ParallaxImageAnimation = ({ src = DEFAULT_SRC, alt = "parallax-img", wrapperClassName = "h-[50vh] w-[50vw]", imageClassName = "", width = 700, height = 1000, translateY = "30%", start = "top bottom", end = "bottom top", scrub = true, enableScale = false, scaleFrom = 1.6, scaleTo = 1.2, }) => {
+const ParallaxImageAnimation = ({ src = DEFAULT_SRC, alt = "parallax-img", wrapperClassName = "h-[50vh] w-[50vw]", imageClassName = "", width = 700, height = 1000, translateY = 30, start = "top bottom", end = "bottom top", enableScale = false, scaleFrom = 1.6, scaleTo = 1.2, }) => {
     const wrapperRef = useRef(null);
     const imageRef = useRef(null);
-    const reducedMotion = prefersReducedMotion();
-    const effectiveTranslateY = reducedMotion
-        ? reduceOffset(translateY, REDUCED_MOTION_FACTOR)
-        : translateY;
-    const effectiveScaleFrom = reducedMotion
-        ? reduceScale(scaleFrom, REDUCED_MOTION_FACTOR)
-        : scaleFrom;
-    const effectiveScaleTo = reducedMotion
-        ? reduceScale(scaleTo, REDUCED_MOTION_FACTOR)
-        : scaleTo;
+    const travel = toPercent(translateY);
     useEffect(() => {
-        if (!wrapperRef.current || !imageRef.current)
+        const image = imageRef.current;
+        if (!wrapperRef.current || !image)
             return;
+        // Reduced motion: the image sits still - no parallax, no scale.
+        if (prefersReducedMotion()) {
+            gsap.set(image, { yPercent: 0, scale: 1 });
+            return () => gsap.set(image, { clearProps: "transform" });
+        }
+        // Without the scale animation, zoom the image just enough that the
+        // +/- travel never reveals the wrapper's edges.
+        const coverScale = 1 + (2 * travel) / 100;
         const ctx = gsap.context(() => {
-            gsap.set(imageRef.current, {
-                scale: enableScale ? effectiveScaleFrom : undefined,
-            });
-            gsap.to(imageRef.current, {
-                translateY: effectiveTranslateY,
-                scale: enableScale ? effectiveScaleTo : undefined,
+            gsap.fromTo(image, {
+                yPercent: -travel,
+                scale: enableScale ? scaleFrom : coverScale,
+            }, {
+                yPercent: travel,
+                scale: enableScale ? scaleTo : coverScale,
                 ease: "none",
                 scrollTrigger: {
                     trigger: wrapperRef.current,
                     start,
                     end,
-                    scrub,
+                    scrub: true,
+                    invalidateOnRefresh: true,
                 },
             });
         }, wrapperRef);
         return () => ctx.revert();
-    }, [effectiveTranslateY, start, end, scrub, enableScale, effectiveScaleFrom, effectiveScaleTo]);
+    }, [travel, start, end, enableScale, scaleFrom, scaleTo]);
     return (<div ref={wrapperRef} className={`overflow-hidden ${wrapperClassName}`}>
             <Image ref={imageRef} width={width} height={height} src={src} alt={alt} className={`w-full h-full object-cover ${imageClassName}`}/>
         </div>);

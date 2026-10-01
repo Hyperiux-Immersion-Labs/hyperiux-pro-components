@@ -1,6 +1,7 @@
 "use client";
 
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import ParallaxFooter from "@/components/parallax-footer";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
@@ -13,6 +14,7 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <div className="relative min-h-screen bg-black">
+          <LenisSmoothScroll />
           <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
           {effect}
         </div>

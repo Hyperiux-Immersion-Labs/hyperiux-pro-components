@@ -477,36 +477,22 @@ export const Book = ({  images = [],
  * Animates delayedPage toward target page one page at a time
  * This creates the sequential page-by-page animation
  */
+ // Steps delayedPage one page toward the target per timeout. Scheduling
+ // lives in the effect (not inside a setState updater, which React may call
+ // more than once) so there is only ever one pending timer - stray timers
+ // with a stale target used to keep flipping pages back and forth.
  useEffect(() => {
- let timeout: ReturnType<typeof setTimeout> | undefined;
- const goToPage = () => {
- setDelayedPage((delayedPage: number) => {
- if (page === delayedPage) {
- return delayedPage;
- } else {
- // Faster animation for large jumps, slower for single pages
+ if (delayedPage === page) return;
+
  const baseDelay = Math.abs(page - delayedPage) > 2 ? 50 : 150;
- timeout = setTimeout(
- () => {
- goToPage();
- },
- baseDelay / normalizedPageSpeed
+ const timeout = setTimeout(() => {
+ setDelayedPage((current: number) =>
+ current === page ? current : current + (page > current ? 1 : -1)
  );
-  if (page > delayedPage) {
- return delayedPage + 1;
- }
- if (page < delayedPage) {
- return delayedPage - 1;
- }
- return delayedPage;
- }
- });
- };
- goToPage();
- return () => {
- clearTimeout(timeout);
- };
- }, [normalizedPageSpeed, page]);
+ }, baseDelay / normalizedPageSpeed);
+
+ return () => clearTimeout(timeout);
+ }, [normalizedPageSpeed, page, delayedPage]);
 
  return (
  <group
@@ -972,25 +958,10 @@ export const BookFlipp = ({  images = [],
 // ---- index.tsx ----
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setPrefersReducedMotion(mediaQuery.matches);
-    update();
-    mediaQuery.addEventListener("change", update);
-    return () => mediaQuery.removeEventListener("change", update);
-  }, []);
-
-  return prefersReducedMotion;
-}
-
 export default function BookFlip({
   pageSpeed = 0.8,
   bookScale = 1,
 }) {
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
     <>
@@ -1017,21 +988,6 @@ export default function BookFlip({
 
     </div>
 
-    {prefersReducedMotion && (
-      <div
-        aria-live="polite"
-        className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
-      >
-        <h2 className="text-sm leading-none text-white">
-          The pages keep turning.
-        </h2>
-        <p className="mt-2 text-xs leading-5 text-white/65">
-          Book Flip animates each page turn as a continuous physical bend
-          when you click or drag. Since that motion is the entire
-          interaction, reduced motion can&apos;t be applied here.
-        </p>
-      </div>
-    )}
     </>
   );
 }

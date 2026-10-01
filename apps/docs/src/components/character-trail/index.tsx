@@ -1,7 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { usePrefersReducedMotion } from "@/lib/motion";
 import { useCallback, useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
 
 const DEFAULT_ROOT_MARGIN = "256px";
@@ -649,7 +648,6 @@ const Content = () => (
 
 const CharacterTrail = (props: ComponentProps<typeof CharacterTrailComp>) => {
      const [isMobile, setIsMobile] = useState(false)
-     const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const check = () => {
@@ -669,20 +667,6 @@ const CharacterTrail = (props: ComponentProps<typeof CharacterTrailComp>) => {
         <CharacterTrailComp {...props}>
           <Content />
         </CharacterTrailComp>
-      )}
-      {!isMobile && prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed top-25 right-8 z-50000 w-fit max-w-65 rounded-md border bg-white/10 border-black/10 backdrop-blur-sm  p-3 text-center max-[1025px]:hidden"
-        >
-          <h2 className="text-sm leading-none text-[#111111]">
-            The characters keep trailing.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black/65">
-            Character Trail redraws letters along your cursor&apos;s path in real
-            time. The animation can&apos;t be reduced without removing the effect.
-          </p>
-        </div>
       )}
     </>
   )

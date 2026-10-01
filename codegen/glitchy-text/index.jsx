@@ -10,7 +10,7 @@ function resetSplitPositions({ splitText, split2, split3, split4 }) {
     gsap.set(splitText.chars, { yPercent: 0 });
     gsap.set(split3.chars, { yPercent: 0 });
 }
-const GlitchyText = ({ initialDelay = 2.5, replayDelay = 0.2, baseTextColor = "#ffffff", glitchColor = "#eab308", }) => {
+const GlitchyText = ({ initialDelay = 2.5, replayDelay = 0.2, baseTextColor = "#ffffff", glitchColor = "#eab308", stagger = 0.025, duration = 0.6, ease = "power2.inOut", }) => {
     const rootRef = useRef(null);
     const splitRef = useRef({});
     const animationTimelineRef = useRef(null);
@@ -55,9 +55,9 @@ const GlitchyText = ({ initialDelay = 2.5, replayDelay = 0.2, baseTextColor = "#
         const tl = gsap.timeline({
             delay,
             defaults: {
-                duration: 0.6,
-                ease: "power2.inOut",
-                stagger: 0.025,
+                duration,
+                ease,
+                stagger,
             },
         });
         animationTimelineRef.current = tl;
@@ -73,7 +73,7 @@ const GlitchyText = ({ initialDelay = 2.5, replayDelay = 0.2, baseTextColor = "#
         tl.to(split4.chars, {
             yPercent: 0,
         }, 0.23);
-    }, [prefersReducedMotion]);
+    }, [prefersReducedMotion, duration, ease, stagger]);
     const handleReplay = () => {
         if (isDisabled)
             return;

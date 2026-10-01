@@ -41,7 +41,7 @@ const renderStickyContent = (item) => {
     const paragraphs = getParagraphs(item);
     const listItems = getListItems(item);
     const link = getLink(item);
-    return (<div className="flex h-full w-full flex-col text-black">
+    return (<div className="flex h-full w-full flex-col">
       {item.heading && <h3 className="font-medium">{item.heading}</h3>}
 
       {paragraphs.map((paragraph, paragraphIndex) => (<p key={`paragraph-${paragraphIndex}`}>{paragraph}</p>))}
@@ -62,7 +62,7 @@ const renderStickyContent = (item) => {
         </a>)}
     </div>);
 };
-export function StickyContentComp({ items = [], className = "", leftClassName = "", rightClassName = "", contentClassName = "", imageClassName = "", containerHeight, bgColor = "#ffffff", contentEnterYPercent = 12, contentExitYPercent = -12, contentDelay = 0.28, stepGap = 2, enableImageScaleFlow = true, initialImageScale = 1.5, activeImageScale = 1.2, exitImageScale = 1, }) {
+export function StickyContentComp({ items = [], className = "", leftClassName = "", rightClassName = "", contentClassName = "", imageClassName = "", containerHeight, bgColor = "#ffffff", textColor = "#000000", contentEnterYPercent = 12, contentExitYPercent = -12, contentDelay = 0.28, stepGap = 2, enableImageScaleFlow = true, initialImageScale = 1.5, activeImageScale = 1.2, exitImageScale = 1, }) {
     // State & refs
     const sectionRef = useRef(null);
     const stickyRef = useRef(null);
@@ -202,9 +202,10 @@ export function StickyContentComp({ items = [], className = "", leftClassName = 
     return (<section ref={sectionRef} className={`flex w-screen justify-between relative ${className}`} style={{
             height: containerHeight || `${items.length * 100}vh`,
             backgroundColor: bgColor,
+            color: textColor,
         }}>
-       <div className="fixed bottom-10 left-[20%] z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center text-black items-center ">
-       <p className="text-lg text-black">
+       <div className="fixed bottom-10 left-[20%] z-30 -translate-x-1/2  flex flex-col gap-[0.5vw] justify-center items-center ">
+       <p className="text-lg">
         scroll
        </p>
                     
@@ -219,9 +220,9 @@ export function StickyContentComp({ items = [], className = "", leftClassName = 
                     100% { opacity: 0.08; transform: translateY(-3px); }
                   }
                 `}</style>
-                        <polyline className="chev1 stroke-current" points="2,2 10,9 18,2" stroke="black" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                        <polyline className="chev2 stroke-current" points="2,10 10,17 18,10" stroke="black" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                        <polyline className="chev3 stroke-current" points="2,18 10,25 18,18" stroke="black" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                        <polyline className="chev1 stroke-current" points="2,2 10,9 18,2" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                        <polyline className="chev2 stroke-current" points="2,10 10,17 18,10" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                        <polyline className="chev3 stroke-current" points="2,18 10,25 18,18" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                 </div>
       <div ref={stickyRef} className="sticky top-0 flex h-screen w-full justify-between max-[1025px]:h-screen max-[1025px]:flex-col-reverse max-[1025px]:justify-start max-[1025px]:px-[5vw] max-md:px-[6vw]">
@@ -289,8 +290,8 @@ const stickyItems = [
         image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
     },
 ];
-export default function StickyContentWrapper({ bgColor = "#ffffff", contentEnterYPercent = 2, initialImageScale = 1.5, activeImageScale = 1.2, exitImageScale = 1, }) {
+export default function StickyContentWrapper({ bgColor = "#ffffff", textColor = "#000000", contentEnterYPercent = 2, initialImageScale = 1.5, activeImageScale = 1.2, exitImageScale = 1, }) {
     return (<section>
- <StickyContentComp items={stickyItems} leftClassName="text-black" bgColor={bgColor} contentEnterYPercent={contentEnterYPercent} contentExitYPercent={-2} contentDelay={0.35} initialImageScale={initialImageScale} activeImageScale={activeImageScale} exitImageScale={exitImageScale}/>
+ <StickyContentComp items={stickyItems} bgColor={bgColor} textColor={textColor} contentEnterYPercent={contentEnterYPercent} contentExitYPercent={-2} contentDelay={0.35} initialImageScale={initialImageScale} activeImageScale={activeImageScale} exitImageScale={exitImageScale}/>
  </section>);
 }

@@ -253,20 +253,6 @@ export {
   DEFAULT_ROOT_MARGIN,
 };
 
-function usePrefersReducedMotion() {
- const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
- useEffect(() => {
- const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
- const update = () => setPrefersReducedMotion(mediaQuery.matches)
- update()
- mediaQuery.addEventListener('change', update)
- return () => mediaQuery.removeEventListener('change', update)
- }, [])
-
- return prefersReducedMotion
-}
-
 const BEAN_COUNT = 300
 const FLOW_DURATION = 4
 const START_X = -8
@@ -572,7 +558,6 @@ export default function CoffeeBeanCursor({
 }) {
  const rootRef = useRef<HTMLDivElement | null>(null)
  const [frameloop, setFrameloop] = useState<'always' | 'never'>('always')
- const prefersReducedMotion = usePrefersReducedMotion()
  const mousePositionRef = useRef({ x: 0, y: 0 })
  const mouseVelocityRef = useRef({ x: 0, y: 0 })
  const targetPositionRef = useRef({ x: 0, y: 0 })
@@ -650,21 +635,6 @@ export default function CoffeeBeanCursor({
   {/* Mouse-following interactive light */}
  <MouseLight mousePositionRef={mousePositionRef} />
  </Canvas>
- {prefersReducedMotion && (
- <div
-   aria-live="polite"
-   className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
- >
-   <h2 className="text-sm leading-none text-white">
-     The beans keep drifting.
-   </h2>
-   <p className="mt-2 text-xs leading-5 text-white/65">
-     Coffee Bean Cursor animates in direct response to cursor movement.
-     The motion is the effect, so it can&apos;t be reduced without
-     disabling it entirely.
-   </p>
- </div>
- )}
  </div>
  )
 }

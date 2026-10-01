@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(SplitText, ScrollTrigger);
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
-export default function SlideTextReveal({ children, animateOnScroll = true, delay = 0, duration = 0.5, speed = 20, stagger = 0.03, variant = "right", className = "", }) {
+export default function SlideTextReveal({ children, animateOnScroll = true, delay = 0, duration = 0.5, horizontalOffset = 20, stagger = 0.03, variant = "right", className = "", }) {
     const containerRef = useRef(null);
     const splitRefs = useRef([]);
     const charsRef = useRef([]);
@@ -62,7 +62,7 @@ export default function SlideTextReveal({ children, animateOnScroll = true, dela
                 gsap.set(containerRef.current, {
                     opacity: 1,
                 });
-                const xFrom = variant === "left" ? -Math.abs(speed) : Math.abs(speed);
+                const xFrom = variant === "left" ? -Math.abs(horizontalOffset) : Math.abs(horizontalOffset);
                 gsap.set(charsRef.current, {
                     x: xFrom,
                     opacity: 0,
@@ -98,7 +98,7 @@ export default function SlideTextReveal({ children, animateOnScroll = true, dela
                 ctx.revert();
             splitRefs.current.forEach((split) => split?.revert());
         };
-    }, [animateOnScroll, delay, duration, speed, stagger, variant]);
+    }, [animateOnScroll, delay, duration, horizontalOffset, stagger, variant]);
     return (<div ref={containerRef} data-copy-wrapper="true" className={`opacity-0 ${className}`}>
       {children}
     </div>);

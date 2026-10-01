@@ -25,6 +25,12 @@ interface MaskTextRevealProps {
   delay?: number;
   className?: string;
   scrub?: boolean;
+  /** Angle of the wipe gradient in degrees. */
+  maskAngle?: number;
+  /** Width of the soft edge of the wipe, as a % of the gradient (0 = hard edge). */
+  maskSoftness?: number;
+  /** Text color. Unset inherits from the surrounding text. */
+  textColor?: string;
 }
 
 export default function MaskTextReveal({
@@ -35,6 +41,9 @@ export default function MaskTextReveal({
     delay = 0,
     className = "",
     scrub = false,
+    maskAngle = 150,
+    maskSoftness = 33.3,
+    textColor,
 }: MaskTextRevealProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const splitRefs = useRef<any[]>([]);
@@ -73,7 +82,12 @@ export default function MaskTextReveal({
             if (!line) return;
 
             line.style.maskSize = "500% 100%";
-            line.style.maskImage = "linear-gradient(150deg, #e8e8e8 33.3%, rgba(255, 255, 255, 0) 66.6%)";
+            // Opaque up to the first stop, transparent after the second - the
+            // gap between them is the soft edge of the wipe.
+            const softness = Math.min(66.6, Math.max(0, maskSoftness));
+            const solidEnd = 50 - softness / 2;
+            const clearStart = 50 + softness / 2;
+            line.style.maskImage = `linear-gradient(${maskAngle}deg, #e8e8e8 ${solidEnd}%, rgba(255, 255, 255, 0) ${clearStart}%)`;
         };
 
         let unmounted = false;
@@ -105,8 +119,31 @@ export default function MaskTextReveal({
 
             if (!linesRef.current.length) return;
 
-            // The mask-position wipe is a clip reveal, not a translate/scale/
-            // parallax motion - subtle enough to keep for reduced motion too.
+            // Reduced motion: no mask wipe at all - the lines are fully
+            // unmasked and the whole block simply fades in.
+            if (prefersReduced) {
+                gsap.set(linesRef.current, { maskImage: "none", webkitMaskImage: "none" });
+                gsap.set(el, { opacity: 0 });
+
+                const fadeProps = { opacity: 1, duration: 0.8, ease: "power2.out", delay };
+
+                if (animateOnScroll) {
+                    const tween = gsap.to(el, {
+                        ...fadeProps,
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top 80%",
+                            once: true,
+                            onEnter: () => elements.forEach(forceAriaVisible),
+                        },
+                    });
+                    if (tween?.scrollTrigger) triggersRef.current.push(tween.scrollTrigger);
+                } else {
+                    gsap.to(el, fadeProps);
+                }
+                return;
+            }
+
             gsap.set(el, { opacity: 1 });
 
             gsap.set(linesRef.current, {
@@ -123,7 +160,7 @@ export default function MaskTextReveal({
 
             if (animateOnScroll) {
                
-                const effectiveScrub = prefersReduced ? false : scrub;
+                const effectiveScrub = scrub;
 
                 const tween = gsap.to(linesRef.current, {
                     ...animationProps,
@@ -155,13 +192,14 @@ export default function MaskTextReveal({
 
             linesRef.current = [];
         };
-    }, [animateOnScroll, delay, duration, scrub, stagger]);
+    }, [animateOnScroll, delay, duration, scrub, stagger, maskAngle, maskSoftness]);
 
     return (
         <div
             ref={containerRef}
             data-copy-wrapper="true"
             className={`opacity-0 ${className}`.trim()}
+            style={textColor ? { color: textColor } : undefined}
         >
             {children}
         </div>

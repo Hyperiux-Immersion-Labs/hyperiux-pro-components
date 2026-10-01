@@ -17,7 +17,7 @@ interface SlideTextRevealProps {
   animateOnScroll?: boolean;
   delay?: number;
   duration?: number;
-  speed?: number;
+  horizontalOffset?: number;
   stagger?: number;
   variant?: "left" | "right";
   className?: string;
@@ -28,7 +28,7 @@ export default function SlideTextReveal({
   animateOnScroll = true,
   delay = 0,
   duration = 0.5,
-  speed = 20,
+  horizontalOffset = 20,
   stagger = 0.03,
   variant = "right",
   className = "",
@@ -100,7 +100,7 @@ export default function SlideTextReveal({
           opacity: 1,
         });
 
-        const xFrom = variant === "left" ? -Math.abs(speed) : Math.abs(speed);
+        const xFrom = variant === "left" ? -Math.abs(horizontalOffset) : Math.abs(horizontalOffset);
 
         gsap.set(charsRef.current, {
           x: xFrom,
@@ -139,7 +139,7 @@ export default function SlideTextReveal({
       if (ctx) ctx.revert();
       splitRefs.current.forEach((split) => split?.revert());
     };
-  }, [animateOnScroll, delay, duration, speed, stagger, variant]);
+  }, [animateOnScroll, delay, duration, horizontalOffset, stagger, variant]);
 
   return (
     <div

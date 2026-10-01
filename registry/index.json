@@ -1543,6 +1543,17 @@
           "group": "behavior",
           "groupTitle": "Behavior"
         }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#111111",
+        "description": "Text color. Unset inherits from the surrounding text.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
       }
     ],
     "remixer": {
@@ -1562,6 +1573,8 @@
         "target": "src/components/effects/blur-text/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/blur-text",
+    "target": "src/components/effects/blur-text",
     "registryPath": "registry/effects/text/blur-text/registry.json"
   },
   {
@@ -2207,17 +2220,151 @@
         }
       },
       {
-        "name": "speed",
-        "type": "number",
-        "default": 1,
-        "description": "Playback speed multiplier for the runway motion.",
+        "name": "textColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Color of the card text.",
         "remixer": {
-          "control": "range",
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power1.out",
+        "description": "GSAP ease for the cards popping up into place.",
+        "remixer": {
+          "control": "select",
           "group": "motion",
           "groupTitle": "Motion",
-          "min": 0.2,
-          "max": 3,
-          "step": 0.05
+          "options": [
+            {
+              "value": "none",
+              "label": "Linear (none)"
+            },
+            {
+              "value": "power1.in",
+              "label": "Power 1 In"
+            },
+            {
+              "value": "power1.out",
+              "label": "Power 1 Out"
+            },
+            {
+              "value": "power1.inOut",
+              "label": "Power 1 In Out"
+            },
+            {
+              "value": "power2.in",
+              "label": "Power 2 In"
+            },
+            {
+              "value": "power2.out",
+              "label": "Power 2 Out"
+            },
+            {
+              "value": "power2.inOut",
+              "label": "Power 2 In Out"
+            },
+            {
+              "value": "power3.in",
+              "label": "Power 3 In"
+            },
+            {
+              "value": "power3.out",
+              "label": "Power 3 Out"
+            },
+            {
+              "value": "power3.inOut",
+              "label": "Power 3 In Out"
+            },
+            {
+              "value": "power4.in",
+              "label": "Power 4 In"
+            },
+            {
+              "value": "power4.out",
+              "label": "Power 4 Out"
+            },
+            {
+              "value": "power4.inOut",
+              "label": "Power 4 In Out"
+            },
+            {
+              "value": "back.in",
+              "label": "Back In"
+            },
+            {
+              "value": "back.out",
+              "label": "Back Out"
+            },
+            {
+              "value": "back.inOut",
+              "label": "Back In Out"
+            },
+            {
+              "value": "bounce.in",
+              "label": "Bounce In"
+            },
+            {
+              "value": "bounce.out",
+              "label": "Bounce Out"
+            },
+            {
+              "value": "bounce.inOut",
+              "label": "Bounce In Out"
+            },
+            {
+              "value": "circ.in",
+              "label": "Circ In"
+            },
+            {
+              "value": "circ.out",
+              "label": "Circ Out"
+            },
+            {
+              "value": "circ.inOut",
+              "label": "Circ In Out"
+            },
+            {
+              "value": "elastic.in",
+              "label": "Elastic In"
+            },
+            {
+              "value": "elastic.out",
+              "label": "Elastic Out"
+            },
+            {
+              "value": "elastic.inOut",
+              "label": "Elastic In Out"
+            },
+            {
+              "value": "expo.in",
+              "label": "Expo In"
+            },
+            {
+              "value": "expo.out",
+              "label": "Expo Out"
+            },
+            {
+              "value": "expo.inOut",
+              "label": "Expo In Out"
+            },
+            {
+              "value": "sine.in",
+              "label": "Sine In"
+            },
+            {
+              "value": "sine.out",
+              "label": "Sine Out"
+            },
+            {
+              "value": "sine.inOut",
+              "label": "Sine In Out"
+            }
+          ]
         }
       },
       {
@@ -3221,17 +3368,6 @@
         "description": "Supporting text shown below the rotating carousel."
       },
       {
-        "name": "backgroundColor",
-        "type": "string",
-        "default": "#111111",
-        "description": "Background color for the full component section.",
-        "remixer": {
-          "control": "color",
-          "group": "layout",
-          "groupTitle": "Layout"
-        }
-      },
-      {
         "name": "showBottomText",
         "type": "boolean",
         "default": true,
@@ -3240,6 +3376,20 @@
           "control": "checkbox",
           "group": "layout",
           "groupTitle": "Layout"
+        }
+      },
+      {
+        "name": "verticalOffset",
+        "type": "number",
+        "default": 0,
+        "description": "Moves the whole slider wheel up (negative) or down (positive), in vh.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": -60,
+          "max": 40,
+          "step": 1
         }
       },
       {
@@ -3283,6 +3433,218 @@
           "max": 520,
           "step": 4
         }
+      },
+      {
+        "name": "cardColorCount",
+        "type": "number",
+        "default": 5,
+        "description": "How many card background colors to cycle through the cards (1 to the number of cards).",
+        "remixer": {
+          "control": "range",
+          "group": "cardColors",
+          "groupTitle": "Card Colors",
+          "min": 1,
+          "max": 6,
+          "step": 1
+        }
+      },
+      {
+        "name": "cardColor1",
+        "label": "Card Color 1",
+        "type": "string",
+        "default": "#655A7C",
+        "description": "Card background color 1.",
+        "remixer": {
+          "control": "color",
+          "group": "cardColors",
+          "groupTitle": "Card Colors"
+        }
+      },
+      {
+        "name": "cardColor2",
+        "label": "Card Color 2",
+        "type": "string",
+        "default": "#AB92BF",
+        "description": "Card background color 2.",
+        "remixer": {
+          "control": "color",
+          "group": "cardColors",
+          "groupTitle": "Card Colors",
+          "visibleWhen": {
+            "name": "cardColorCount",
+            "gte": 2
+          }
+        }
+      },
+      {
+        "name": "cardColor3",
+        "label": "Card Color 3",
+        "type": "string",
+        "default": "#AFC1D6",
+        "description": "Card background color 3.",
+        "remixer": {
+          "control": "color",
+          "group": "cardColors",
+          "groupTitle": "Card Colors",
+          "visibleWhen": {
+            "name": "cardColorCount",
+            "gte": 3
+          }
+        }
+      },
+      {
+        "name": "cardColor4",
+        "label": "Card Color 4",
+        "type": "string",
+        "default": "#CEF9F2",
+        "description": "Card background color 4.",
+        "remixer": {
+          "control": "color",
+          "group": "cardColors",
+          "groupTitle": "Card Colors",
+          "visibleWhen": {
+            "name": "cardColorCount",
+            "gte": 4
+          }
+        }
+      },
+      {
+        "name": "cardColor5",
+        "label": "Card Color 5",
+        "type": "string",
+        "default": "#D6CA98",
+        "description": "Card background color 5.",
+        "remixer": {
+          "control": "color",
+          "group": "cardColors",
+          "groupTitle": "Card Colors",
+          "visibleWhen": {
+            "name": "cardColorCount",
+            "gte": 5
+          }
+        }
+      },
+      {
+        "name": "cardColor6",
+        "label": "Card Color 6",
+        "type": "string",
+        "default": "#F2B5A7",
+        "description": "Card background color 6.",
+        "remixer": {
+          "control": "color",
+          "group": "cardColors",
+          "groupTitle": "Card Colors",
+          "visibleWhen": {
+            "name": "cardColorCount",
+            "gte": 6
+          }
+        }
+      },
+      {
+        "name": "textColorCount",
+        "type": "number",
+        "default": 5,
+        "description": "How many card text colors to cycle through the cards (1 to the number of cards).",
+        "remixer": {
+          "control": "range",
+          "group": "textColors",
+          "groupTitle": "Text Colors",
+          "min": 1,
+          "max": 6,
+          "step": 1
+        }
+      },
+      {
+        "name": "textColor1",
+        "label": "Text Color 1",
+        "type": "string",
+        "default": "#2A2433",
+        "description": "Card text color 1.",
+        "remixer": {
+          "control": "color",
+          "group": "textColors",
+          "groupTitle": "Text Colors"
+        }
+      },
+      {
+        "name": "textColor2",
+        "label": "Text Color 2",
+        "type": "string",
+        "default": "#3D2E50",
+        "description": "Card text color 2.",
+        "remixer": {
+          "control": "color",
+          "group": "textColors",
+          "groupTitle": "Text Colors",
+          "visibleWhen": {
+            "name": "textColorCount",
+            "gte": 2
+          }
+        }
+      },
+      {
+        "name": "textColor3",
+        "label": "Text Color 3",
+        "type": "string",
+        "default": "#2C3E52",
+        "description": "Card text color 3.",
+        "remixer": {
+          "control": "color",
+          "group": "textColors",
+          "groupTitle": "Text Colors",
+          "visibleWhen": {
+            "name": "textColorCount",
+            "gte": 3
+          }
+        }
+      },
+      {
+        "name": "textColor4",
+        "label": "Text Color 4",
+        "type": "string",
+        "default": "#1A5C53",
+        "description": "Card text color 4.",
+        "remixer": {
+          "control": "color",
+          "group": "textColors",
+          "groupTitle": "Text Colors",
+          "visibleWhen": {
+            "name": "textColorCount",
+            "gte": 4
+          }
+        }
+      },
+      {
+        "name": "textColor5",
+        "label": "Text Color 5",
+        "type": "string",
+        "default": "#4A3F1A",
+        "description": "Card text color 5.",
+        "remixer": {
+          "control": "color",
+          "group": "textColors",
+          "groupTitle": "Text Colors",
+          "visibleWhen": {
+            "name": "textColorCount",
+            "gte": 5
+          }
+        }
+      },
+      {
+        "name": "textColor6",
+        "label": "Text Color 6",
+        "type": "string",
+        "default": "#5C2A1F",
+        "description": "Card text color 6.",
+        "remixer": {
+          "control": "color",
+          "group": "textColors",
+          "groupTitle": "Text Colors",
+          "visibleWhen": {
+            "name": "textColorCount",
+            "gte": 6
+          }
+        }
       }
     ],
     "remixer": {
@@ -3293,53 +3655,7 @@
       },
       "panel": {
         "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
-      },
-      "controls": [
-        {
-          "name": "backgroundColor",
-          "label": "Background Color",
-          "type": "color",
-          "group": "layout",
-          "copyable": true
-        },
-        {
-          "name": "showBottomText",
-          "label": "Show Bottom Text",
-          "type": "checkbox",
-          "group": "layout",
-          "copyable": true
-        },
-        {
-          "name": "gap",
-          "label": "Gap",
-          "type": "range",
-          "group": "layout",
-          "copyable": true,
-          "min": 0,
-          "max": 120,
-          "step": 1
-        },
-        {
-          "name": "cardWidth",
-          "label": "Card Width",
-          "type": "range",
-          "group": "layout",
-          "copyable": true,
-          "min": 220,
-          "max": 420,
-          "step": 4
-        },
-        {
-          "name": "cardHeight",
-          "label": "Card Height",
-          "type": "range",
-          "group": "layout",
-          "copyable": true,
-          "min": 240,
-          "max": 520,
-          "step": 4
-        }
-      ]
+      }
     },
     "registryPath": "registry/effects/scroll/circular-slider/registry.json"
   },
@@ -3842,17 +4158,16 @@
     ],
     "props": [
       {
+        "name": "geometry",
+        "type": "string",
+        "default": "model",
+        "description": "Shape of the colliding pieces: the Hyperiux logo model or a built-in geometry."
+      },
+      {
         "name": "connectorCount",
         "type": "number",
         "default": 8,
         "description": "Number of connecting shapes or joints.",
-        "suggested": true
-      },
-      {
-        "name": "gravity",
-        "type": "number",
-        "default": 0,
-        "description": "Physics gravity strength.",
         "suggested": true
       },
       {
@@ -3868,6 +4183,18 @@
         "default": "#141518",
         "description": "Canvas background color.",
         "suggested": true
+      },
+      {
+        "name": "returnToPosition",
+        "type": "boolean",
+        "default": true,
+        "description": "Pull pieces back to the cluster after the cursor knocks them away."
+      },
+      {
+        "name": "returnSpeed",
+        "type": "number",
+        "default": 1,
+        "description": "How quickly knocked pieces come back to the cluster."
       }
     ],
     "remixer": {
@@ -3882,6 +4209,31 @@
       },
       "controls": [
         {
+          "name": "geometry",
+          "label": "Geometry",
+          "type": "select",
+          "group": "controls",
+          "copyable": true,
+          "options": [
+            {
+              "value": "model",
+              "label": "Hyperiux Model"
+            },
+            {
+              "value": "sphere",
+              "label": "Sphere"
+            },
+            {
+              "value": "torus",
+              "label": "Torus"
+            },
+            {
+              "value": "icosahedron",
+              "label": "Icosahedron"
+            }
+          ]
+        },
+        {
           "name": "connectorCount",
           "label": "Connector Count",
           "type": "range",
@@ -3890,16 +4242,6 @@
           "min": 0,
           "max": 24,
           "step": 1
-        },
-        {
-          "name": "gravity",
-          "label": "Gravity",
-          "type": "range",
-          "group": "controls",
-          "copyable": true,
-          "min": 0,
-          "max": 10,
-          "step": 0.1
         },
         {
           "name": "modelScale",
@@ -3917,6 +4259,27 @@
           "type": "color",
           "group": "style",
           "copyable": true
+        },
+        {
+          "name": "returnToPosition",
+          "label": "Return To Position",
+          "type": "toggle",
+          "group": "controls",
+          "copyable": true
+        },
+        {
+          "name": "returnSpeed",
+          "label": "Return Speed",
+          "type": "range",
+          "group": "controls",
+          "copyable": true,
+          "min": 0.1,
+          "max": 5,
+          "step": 0.05,
+          "visibleWhen": {
+            "name": "returnToPosition",
+            "eq": true
+          }
         }
       ]
     },
@@ -4099,6 +4462,17 @@
         }
       },
       {
+        "name": "textColor",
+        "type": "color",
+        "default": "#f97316",
+        "description": "Color of the cursor-reactive text.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
         "name": "showCrosshair",
         "type": "boolean",
         "default": true,
@@ -4141,6 +4515,28 @@
         "description": "Shows the small cursor dot.",
         "remixer": {
           "control": "checkbox",
+          "group": "crosshair",
+          "groupTitle": "Crosshair"
+        }
+      },
+      {
+        "name": "crosshairColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Crosshair line color (drawn at 20% strength).",
+        "remixer": {
+          "control": "color",
+          "group": "crosshair",
+          "groupTitle": "Crosshair"
+        }
+      },
+      {
+        "name": "cursorDotColor",
+        "type": "color",
+        "default": "#f97316",
+        "description": "Color of the small cursor dot.",
+        "remixer": {
+          "control": "color",
           "group": "crosshair",
           "groupTitle": "Crosshair"
         }
@@ -5596,12 +5992,6 @@
         "description": "Scale applied to the particle donut."
       },
       {
-        "name": "cameraFov",
-        "type": "number",
-        "default": 50,
-        "description": "Camera field of view."
-      },
-      {
         "name": "particleColor",
         "type": "color",
         "default": "#9973ff",
@@ -5663,6 +6053,36 @@
           2
         ],
         "description": "Device pixel ratio range used by the canvas."
+      },
+      {
+        "name": "morphDuration",
+        "type": "number",
+        "default": 1.5,
+        "description": "Seconds for scattered particles to settle back into the donut."
+      },
+      {
+        "name": "demorphIntensity",
+        "type": "number",
+        "default": 1,
+        "description": "How strongly the cursor pulls particles out of the donut shape."
+      },
+      {
+        "name": "rotationSpeed",
+        "type": "number",
+        "default": 1,
+        "description": "Donut spin speed multiplier."
+      },
+      {
+        "name": "tiltX",
+        "type": "number",
+        "default": -60,
+        "description": "Donut tilt around the X axis in degrees."
+      },
+      {
+        "name": "tiltY",
+        "type": "number",
+        "default": 45,
+        "description": "Donut tilt around the Y axis in degrees."
       }
     ],
     "remixer": {
@@ -5700,15 +6120,6 @@
           "group": "particles"
         },
         {
-          "name": "cameraFov",
-          "label": "Camera FOV",
-          "type": "range",
-          "group": "camera",
-          "min": 20,
-          "max": 90,
-          "step": 1
-        },
-        {
           "name": "mouseInteraction",
           "label": "Mouse Interaction",
           "type": "toggle",
@@ -5731,6 +6142,67 @@
           "min": 0.2,
           "max": 3,
           "step": 0.1
+        },
+        {
+          "name": "morphDuration",
+          "label": "Morph Duration",
+          "type": "range",
+          "group": "motion",
+          "copyable": true,
+          "min": 0.2,
+          "max": 5,
+          "step": 0.05,
+          "visibleWhen": {
+            "name": "mouseInteraction",
+            "eq": true
+          }
+        },
+        {
+          "name": "demorphIntensity",
+          "label": "Demorph Intensity",
+          "type": "range",
+          "group": "motion",
+          "copyable": true,
+          "min": 0,
+          "max": 4,
+          "step": 0.05,
+          "visibleWhen": {
+            "name": "mouseInteraction",
+            "eq": true
+          }
+        },
+        {
+          "name": "rotationSpeed",
+          "label": "Rotation Speed",
+          "type": "range",
+          "group": "donut",
+          "groupTitle": "Donut",
+          "copyable": true,
+          "min": 0,
+          "max": 5,
+          "step": 0.05
+        },
+        {
+          "name": "tiltX",
+          "label": "Tilt X",
+          "type": "range",
+          "group": "donut",
+          "groupTitle": "Donut",
+          "copyable": true,
+          "min": -180,
+          "max": 180,
+          "step": 1
+        },
+        {
+          "name": "tiltY",
+          "label": "Tilt Y",
+          "type": "range",
+          "group": "donut",
+          "groupTitle": "Donut",
+          "copyable": true,
+          "min": -180,
+          "max": 180,
+          "step": 1
         }
       ]
     },
@@ -8830,6 +9302,171 @@
           "group": "colors",
           "groupTitle": "Colors"
         }
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 0.025,
+        "description": "Delay between consecutive characters in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.15,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.6,
+        "description": "Duration of each character's slide in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power2.inOut",
+        "description": "GSAP ease for the slide.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "none",
+              "label": "none (linear)"
+            },
+            {
+              "value": "power1.in",
+              "label": "power1.in"
+            },
+            {
+              "value": "power1.out",
+              "label": "power1.out"
+            },
+            {
+              "value": "power1.inOut",
+              "label": "power1.inOut"
+            },
+            {
+              "value": "power2.in",
+              "label": "power2.in"
+            },
+            {
+              "value": "power2.out",
+              "label": "power2.out"
+            },
+            {
+              "value": "power2.inOut",
+              "label": "power2.inOut"
+            },
+            {
+              "value": "power3.in",
+              "label": "power3.in"
+            },
+            {
+              "value": "power3.out",
+              "label": "power3.out"
+            },
+            {
+              "value": "power3.inOut",
+              "label": "power3.inOut"
+            },
+            {
+              "value": "power4.in",
+              "label": "power4.in"
+            },
+            {
+              "value": "power4.out",
+              "label": "power4.out"
+            },
+            {
+              "value": "power4.inOut",
+              "label": "power4.inOut"
+            },
+            {
+              "value": "expo.in",
+              "label": "expo.in"
+            },
+            {
+              "value": "expo.out",
+              "label": "expo.out"
+            },
+            {
+              "value": "expo.inOut",
+              "label": "expo.inOut"
+            },
+            {
+              "value": "sine.in",
+              "label": "sine.in"
+            },
+            {
+              "value": "sine.out",
+              "label": "sine.out"
+            },
+            {
+              "value": "sine.inOut",
+              "label": "sine.inOut"
+            },
+            {
+              "value": "circ.in",
+              "label": "circ.in"
+            },
+            {
+              "value": "circ.out",
+              "label": "circ.out"
+            },
+            {
+              "value": "circ.inOut",
+              "label": "circ.inOut"
+            },
+            {
+              "value": "back.in",
+              "label": "back.in"
+            },
+            {
+              "value": "back.out",
+              "label": "back.out"
+            },
+            {
+              "value": "back.inOut",
+              "label": "back.inOut"
+            },
+            {
+              "value": "elastic.in",
+              "label": "elastic.in"
+            },
+            {
+              "value": "elastic.out",
+              "label": "elastic.out"
+            },
+            {
+              "value": "elastic.inOut",
+              "label": "elastic.inOut"
+            },
+            {
+              "value": "bounce.in",
+              "label": "bounce.in"
+            },
+            {
+              "value": "bounce.out",
+              "label": "bounce.out"
+            },
+            {
+              "value": "bounce.inOut",
+              "label": "bounce.inOut"
+            }
+          ]
+        }
       }
     ],
     "remixer": {
@@ -9823,11 +10460,17 @@
     ],
     "props": [
       {
-        "name": "gridSize",
+        "name": "numberOfGrids",
         "type": "number",
         "default": 24,
-        "description": "Tunnel grid density.",
+        "description": "Number of grid cells (density of the tunnel grid).",
         "suggested": true
+      },
+      {
+        "name": "shape",
+        "type": "string",
+        "default": "rectangle",
+        "description": "Tunnel cross-section: rectangle or circle (the images curve with the circular walls)."
       },
       {
         "name": "speed",
@@ -9870,14 +10513,30 @@
       },
       "controls": [
         {
-          "name": "gridSize",
-          "label": "Grid Size",
+          "name": "numberOfGrids",
+          "label": "Number of Grids",
           "type": "range",
           "group": "content",
           "copyable": true,
           "min": 6,
           "max": 48,
           "step": 1
+        },
+        {
+          "name": "shape",
+          "label": "Shape",
+          "type": "select",
+          "group": "content",
+          "options": [
+            {
+              "value": "rectangle",
+              "label": "Rectangle"
+            },
+            {
+              "value": "circle",
+              "label": "Circle"
+            }
+          ]
         },
         {
           "name": "speed",
@@ -10283,6 +10942,21 @@
         }
       },
       {
+        "name": "scrollIntensity",
+        "type": "number",
+        "default": 1,
+        "description": "Multiplier for how far each wheel or trackpad scroll spins the helix.",
+        "remixer": {
+          "control": "range",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "groupCollapsible": false,
+          "min": 0,
+          "max": 5,
+          "step": 0.1
+        }
+      },
+      {
         "name": "inertiaDecay",
         "type": "number",
         "default": 2.2,
@@ -10494,16 +11168,27 @@
         }
       },
       {
-        "name": "imageParallaxRange",
+        "name": "textColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Color of the section text.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "translateX",
         "type": "number",
         "default": 30,
-        "description": "Symmetric parallax shift range (%) each image travels as it scrolls past.",
+        "description": "Image parallax travel as a percentage of the image width. Each image starts at -translateX% and scrolls to +translateX%.",
         "remixer": {
           "control": "range",
           "group": "motion",
           "groupTitle": "Motion",
           "min": 0,
-          "max": 60,
+          "max": 50,
           "step": 1
         }
       },
@@ -10895,6 +11580,30 @@
         "default": 1,
         "description": "Cursor influence on model rotation.",
         "suggested": true
+      },
+      {
+        "name": "geometry",
+        "type": "string",
+        "default": "model",
+        "description": "Shape the glitter forms: the Hyperiux model or a built-in geometry."
+      },
+      {
+        "name": "demorphStrength",
+        "type": "number",
+        "default": 1,
+        "description": "How far the cursor scatters (demorphs) the particles."
+      },
+      {
+        "name": "demorphRadius",
+        "type": "number",
+        "default": 1.8,
+        "description": "How wide an area around the cursor gets demorphed."
+      },
+      {
+        "name": "trailLength",
+        "type": "number",
+        "default": 1,
+        "description": "Length of the glittering mouse trail."
       }
     ],
     "remixer": {
@@ -10951,6 +11660,70 @@
           "min": 0,
           "max": 4,
           "step": 0.05
+        },
+        {
+          "label": "Geometry",
+          "type": "select",
+          "group": "shape",
+          "groupTitle": "Shape",
+          "options": [
+            {
+              "value": "model",
+              "label": "Hyperiux Model"
+            },
+            {
+              "value": "sphere",
+              "label": "Sphere"
+            },
+            {
+              "value": "torus",
+              "label": "Torus"
+            },
+            {
+              "value": "torusKnot",
+              "label": "Torus Knot"
+            },
+            {
+              "value": "icosahedron",
+              "label": "Icosahedron"
+            },
+            {
+              "value": "box",
+              "label": "Box"
+            }
+          ],
+          "name": "geometry",
+          "copyable": true
+        },
+        {
+          "label": "Demorph Strength",
+          "type": "range",
+          "group": "controls",
+          "min": 0,
+          "max": 4,
+          "step": 0.05,
+          "name": "demorphStrength",
+          "copyable": true
+        },
+        {
+          "label": "Demorph Radius",
+          "type": "range",
+          "group": "controls",
+          "min": 0.2,
+          "max": 5,
+          "step": 0.05,
+          "name": "demorphRadius",
+          "copyable": true
+        },
+        {
+          "label": "Trail Length",
+          "type": "range",
+          "group": "motion",
+          "min": 0.1,
+          "max": 4,
+          "step": 0.05,
+          "name": "trailLength",
+          "copyable": true
         }
       ]
     },
@@ -12979,6 +13752,45 @@
           "group": "behavior",
           "groupTitle": "Behavior"
         }
+      },
+      {
+        "name": "maskAngle",
+        "type": "number",
+        "default": 150,
+        "description": "Angle of the wipe in degrees.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 360,
+          "step": 1
+        }
+      },
+      {
+        "name": "maskSoftness",
+        "type": "number",
+        "default": 33.3,
+        "description": "Softness of the wipe's edge, as a % of the gradient (0 = hard edge).",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 66.6,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Text color. Unset inherits from the surrounding text.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
       }
     ],
     "remixer": {
@@ -12998,6 +13810,8 @@
         "target": "src/components/effects/mask-text-reveal/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/mask-text-reveal",
+    "target": "src/components/effects/mask-text-reveal",
     "registryPath": "registry/effects/text/mask-text-reveal/registry.json"
   },
   {
@@ -13271,42 +14085,48 @@
       {
         "name": "particleSize",
         "type": "number",
-        "default": 1,
+        "default": 2,
         "description": "Particle and nebula point size multiplier.",
         "suggested": true
       },
       {
+        "name": "numberOfParticles",
+        "type": "number",
+        "default": 80000,
+        "description": "Number of star particles in the galaxy."
+      },
+      {
         "name": "coreColor",
         "type": "string",
-        "default": "#f5f5ff",
+        "default": "#ffbb00",
         "description": "Bright inner galaxy and starfield color.",
         "suggested": true
       },
       {
         "name": "accentColor",
         "type": "string",
-        "default": "#ffe6ad",
+        "default": "#ffffff",
         "description": "Nebula and sparkle accent color.",
         "suggested": true
       },
       {
         "name": "outerColor",
         "type": "string",
-        "default": "#e05c12",
+        "default": "#4400ff",
         "description": "Outer arm and warm sparkle color.",
         "suggested": true
       },
       {
         "name": "backgroundColor",
         "type": "string",
-        "default": "#000000",
+        "default": "#000114",
         "description": "Canvas background color.",
         "suggested": true
       },
       {
         "name": "rotation",
         "type": "number",
-        "default": 1,
+        "default": 1.6,
         "description": "How strongly the galaxy tilts with mouse movement.",
         "suggested": true
       },
@@ -13320,8 +14140,8 @@
       {
         "name": "rotationSpeed",
         "type": "number",
-        "default": 0.2,
-        "description": "Galaxy simulation and auto-rotation speed.",
+        "default": 0.9,
+        "description": "Speed the particles orbit around the galaxy centre.",
         "suggested": true
       }
     ],
@@ -13345,6 +14165,16 @@
           "min": 0.2,
           "max": 3,
           "step": 0.05
+        },
+        {
+          "name": "numberOfParticles",
+          "label": "Number of Particles",
+          "type": "range",
+          "group": "controls",
+          "copyable": true,
+          "min": 10000,
+          "max": 250000,
+          "step": 5000
         },
         {
           "name": "coreColor",
@@ -13382,7 +14212,11 @@
           "copyable": true,
           "min": 0,
           "max": 2,
-          "step": 0.05
+          "step": 0.05,
+          "visibleWhen": {
+            "name": "mouseInfluence",
+            "eq": true
+          }
         },
         {
           "name": "mouseInfluence",
@@ -13723,45 +14557,63 @@
     "target": "src/components/effects/mouse-pixelation",
     "props": [
       {
-        "name": "gridSize",
+        "name": "v1NumberOfGrids",
         "type": "number",
         "default": 35,
-        "description": "Controls the pixel/grid resolution across all three versions."
+        "description": "V1 · Pixel Circles: number of grid cells across the effect."
       },
       {
-        "name": "mouseInteraction",
-        "type": "boolean",
-        "default": true,
-        "description": "Enables cursor-driven pixel movement, trails, and cube rotation."
-      },
-      {
-        "name": "lerp",
+        "name": "v1Lerp",
         "type": "number",
         "default": 0.1,
-        "description": "Controls the smoothing amount for mouse-following motion."
+        "description": "V1 · Pixel Circles: smoothing of the mouse-following motion."
       },
       {
-        "name": "backgroundColor",
+        "name": "v1BackgroundColor",
         "type": "string",
         "default": "#000000",
-        "description": "Canvas background color for the V1 pixel-circle version."
+        "description": "V1 · Pixel Circles: canvas background color."
       },
       {
-        "name": "cubeSize",
+        "name": "v2NumberOfGrids",
         "type": "number",
-        "default": 1,
-        "description": "Scales the cube in the V3 enhanced pixel cube version."
+        "default": 35,
+        "description": "V2 · Pixel Shift: number of grid cells across the effect."
       },
       {
-        "name": "gridEmbossing",
+        "name": "v2Lerp",
+        "type": "number",
+        "default": 0.1,
+        "description": "V2 · Pixel Shift: smoothing of the mouse-following motion."
+      },
+      {
+        "name": "v3NumberOfGrids",
+        "type": "number",
+        "default": 35,
+        "description": "V3 · Pixel Cube: number of grid cells across the effect."
+      },
+      {
+        "name": "v3Lerp",
+        "type": "number",
+        "default": 0.1,
+        "description": "V3 · Pixel Cube: smoothing of the mouse-following motion."
+      },
+      {
+        "name": "v3CubeSize",
         "type": "number",
         "default": 1,
-        "description": "Controls the extruded grid depth in the V3 enhanced pixel cube version."
+        "description": "V3 · Pixel Cube: scale of the cube."
+      },
+      {
+        "name": "v3GridEmbossing",
+        "type": "number",
+        "default": 1,
+        "description": "V3 · Pixel Cube: depth of the extruded grid."
       }
     ],
     "remixer": {
       "enabled": true,
-      "defaultOpenGroupId": "content",
+      "defaultOpenGroupId": "v1",
       "layout": {
         "controlsButtonClassName": "right-4! top-25!"
       },
@@ -13770,52 +14622,91 @@
       },
       "controls": [
         {
-          "name": "gridSize",
-          "label": "Grid Size",
+          "name": "v1NumberOfGrids",
+          "label": "Number of Grids",
           "type": "range",
-          "group": "content",
+          "group": "v1",
           "min": 8,
           "max": 90,
-          "step": 1
+          "step": 1,
+          "groupTitle": "V1 · Pixel Circles"
         },
         {
-          "name": "mouseInteraction",
-          "label": "Mouse Interaction",
-          "type": "toggle",
-          "group": "content"
-        },
-        {
-          "name": "lerp",
+          "name": "v1Lerp",
           "label": "Lerp",
           "type": "range",
-          "group": "motion",
+          "group": "v1",
           "min": 0.01,
           "max": 0.6,
-          "step": 0.01
+          "step": 0.01,
+          "groupTitle": "V1 · Pixel Circles"
         },
         {
-          "name": "backgroundColor",
-          "label": "V1 Background",
+          "name": "v1BackgroundColor",
+          "label": "Background",
           "type": "color",
-          "group": "style"
+          "group": "v1",
+          "groupTitle": "V1 · Pixel Circles"
         },
         {
-          "name": "cubeSize",
-          "label": "V3 Cube Size",
+          "name": "v2NumberOfGrids",
+          "label": "Number of Grids",
           "type": "range",
-          "group": "style",
+          "group": "v2",
+          "min": 8,
+          "max": 90,
+          "step": 1,
+          "groupTitle": "V2 · Pixel Shift"
+        },
+        {
+          "name": "v2Lerp",
+          "label": "Lerp",
+          "type": "range",
+          "group": "v2",
+          "min": 0.01,
+          "max": 0.6,
+          "step": 0.01,
+          "groupTitle": "V2 · Pixel Shift"
+        },
+        {
+          "name": "v3NumberOfGrids",
+          "label": "Number of Grids",
+          "type": "range",
+          "group": "v3",
+          "min": 8,
+          "max": 90,
+          "step": 1,
+          "groupTitle": "V3 · Pixel Cube"
+        },
+        {
+          "name": "v3Lerp",
+          "label": "Lerp",
+          "type": "range",
+          "group": "v3",
+          "min": 0.01,
+          "max": 0.6,
+          "step": 0.01,
+          "groupTitle": "V3 · Pixel Cube"
+        },
+        {
+          "name": "v3CubeSize",
+          "label": "Cube Size",
+          "type": "range",
+          "group": "v3",
           "min": 0.5,
           "max": 2.2,
-          "step": 0.05
+          "step": 0.05,
+          "groupTitle": "V3 · Pixel Cube"
         },
         {
-          "name": "gridEmbossing",
-          "label": "V3 Grid Embossing",
+          "name": "v3GridEmbossing",
+          "label": "Grid Embossing",
           "type": "range",
-          "group": "style",
+          "group": "v3",
           "min": 0,
           "max": 2,
-          "step": 0.05
+          "step": 0.05,
+          "groupTitle": "V3 · Pixel Cube"
         }
       ]
     },
@@ -14803,6 +15694,224 @@
             }
           ]
         }
+      },
+      {
+        "name": "splitBy",
+        "type": "string",
+        "default": "words",
+        "description": "Animate per character, per word, or per line (each piece is masked).",
+        "remixer": {
+          "control": "select",
+          "group": "style",
+          "groupTitle": "Style",
+          "options": [
+            {
+              "value": "chars",
+              "label": "Characters"
+            },
+            {
+              "value": "words",
+              "label": "Words"
+            },
+            {
+              "value": "lines",
+              "label": "Lines"
+            }
+          ]
+        }
+      },
+      {
+        "name": "startOpacity",
+        "type": "number",
+        "default": 0,
+        "description": "Opacity each piece starts from before it reveals.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "startRotation",
+        "type": "number",
+        "default": 8,
+        "description": "Starting tilt in degrees; the sign follows the direction.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 45,
+          "step": 1
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.5,
+        "description": "Duration of each piece's reveal in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0.1,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 0.03,
+        "description": "Delay between consecutive pieces in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0,
+          "max": 0.3,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power3.out",
+        "description": "GSAP ease for the reveal.",
+        "remixer": {
+          "control": "select",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "options": [
+            {
+              "value": "none",
+              "label": "none (linear)"
+            },
+            {
+              "value": "power1.in",
+              "label": "power1.in"
+            },
+            {
+              "value": "power1.out",
+              "label": "power1.out"
+            },
+            {
+              "value": "power1.inOut",
+              "label": "power1.inOut"
+            },
+            {
+              "value": "power2.in",
+              "label": "power2.in"
+            },
+            {
+              "value": "power2.out",
+              "label": "power2.out"
+            },
+            {
+              "value": "power2.inOut",
+              "label": "power2.inOut"
+            },
+            {
+              "value": "power3.in",
+              "label": "power3.in"
+            },
+            {
+              "value": "power3.out",
+              "label": "power3.out"
+            },
+            {
+              "value": "power3.inOut",
+              "label": "power3.inOut"
+            },
+            {
+              "value": "power4.in",
+              "label": "power4.in"
+            },
+            {
+              "value": "power4.out",
+              "label": "power4.out"
+            },
+            {
+              "value": "power4.inOut",
+              "label": "power4.inOut"
+            },
+            {
+              "value": "expo.in",
+              "label": "expo.in"
+            },
+            {
+              "value": "expo.out",
+              "label": "expo.out"
+            },
+            {
+              "value": "expo.inOut",
+              "label": "expo.inOut"
+            },
+            {
+              "value": "sine.in",
+              "label": "sine.in"
+            },
+            {
+              "value": "sine.out",
+              "label": "sine.out"
+            },
+            {
+              "value": "sine.inOut",
+              "label": "sine.inOut"
+            },
+            {
+              "value": "circ.in",
+              "label": "circ.in"
+            },
+            {
+              "value": "circ.out",
+              "label": "circ.out"
+            },
+            {
+              "value": "circ.inOut",
+              "label": "circ.inOut"
+            },
+            {
+              "value": "back.in",
+              "label": "back.in"
+            },
+            {
+              "value": "back.out",
+              "label": "back.out"
+            },
+            {
+              "value": "back.inOut",
+              "label": "back.inOut"
+            },
+            {
+              "value": "elastic.in",
+              "label": "elastic.in"
+            },
+            {
+              "value": "elastic.out",
+              "label": "elastic.out"
+            },
+            {
+              "value": "elastic.inOut",
+              "label": "elastic.inOut"
+            },
+            {
+              "value": "bounce.in",
+              "label": "bounce.in"
+            },
+            {
+              "value": "bounce.out",
+              "label": "bounce.out"
+            },
+            {
+              "value": "bounce.inOut",
+              "label": "bounce.inOut"
+            }
+          ]
+        }
       }
     ],
     "remixer": {
@@ -14822,6 +15931,8 @@
         "target": "src/components/effects/overflow-text-reveal/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/overflow-text-reveal",
+    "target": "src/components/effects/overflow-text-reveal",
     "registryPath": "registry/effects/text/overflow-text-reveal/registry.json"
   },
   {
@@ -14883,6 +15994,38 @@
           "group": "surface",
           "groupTitle": "Surface"
         }
+      },
+      {
+        "name": "loaderColor",
+        "type": "string",
+        "default": "#000000",
+        "description": "Color of the loading blocks shown during the flip.",
+        "remixer": {
+          "control": "color",
+          "group": "surface",
+          "groupTitle": "Surface"
+        }
+      },
+      {
+        "name": "direction",
+        "type": "\"left-to-right\" | \"right-to-left\"",
+        "default": "left-to-right",
+        "description": "Direction the page flips across the screen.",
+        "remixer": {
+          "control": "select",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "options": [
+            {
+              "value": "left-to-right",
+              "label": "Left to Right"
+            },
+            {
+              "value": "right-to-left",
+              "label": "Right to Left"
+            }
+          ]
+        }
       }
     ],
     "remixer": {
@@ -14902,6 +16045,8 @@
         "target": "src/components/effects/page-flip-transition/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/page-flip-transition",
+    "target": "src/components/effects/page-flip-transition",
     "registryPath": "registry/effects/transitions/page-flip-transition/registry.json"
   },
   {
@@ -15126,24 +16271,16 @@
     "props": [
       {
         "name": "translateY",
-        "type": "string",
-        "default": "30%",
-        "description": "Vertical parallax travel.",
+        "type": "number",
+        "default": 30,
+        "description": "Parallax travel as a percentage of the image height. The image starts at -translateY% and scrolls to +translateY%.",
         "remixer": {
-          "control": "text",
+          "control": "range",
           "group": "motion",
-          "groupTitle": "Motion"
-        }
-      },
-      {
-        "name": "scrub",
-        "type": "boolean | number",
-        "default": true,
-        "description": "Links animation progress to scroll. Accepts true or a numeric scrub delay.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "motion",
-          "groupTitle": "Motion"
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 60,
+          "step": 1
         }
       },
       {
@@ -15168,7 +16305,11 @@
           "groupTitle": "Scale",
           "min": 1,
           "max": 3,
-          "step": 0.05
+          "step": 0.05,
+          "visibleWhen": {
+            "name": "enableScale",
+            "eq": true
+          }
         }
       },
       {
@@ -15182,7 +16323,11 @@
           "groupTitle": "Scale",
           "min": 1,
           "max": 3,
-          "step": 0.05
+          "step": 0.05,
+          "visibleWhen": {
+            "name": "enableScale",
+            "eq": true
+          }
         }
       }
     ],
@@ -15238,17 +16383,6 @@
     "importPath": "@/components/effects/parallax-slider",
     "target": "src/components/effects/parallax-slider",
     "props": [
-      {
-        "name": "bgColor",
-        "type": "color",
-        "default": "#111111",
-        "description": "Slider background color.",
-        "remixer": {
-          "control": "color",
-          "group": "style",
-          "groupTitle": "Style"
-        }
-      },
       {
         "name": "parallaxAmount",
         "type": "number",
@@ -15761,6 +16895,231 @@
           "group": "behavior",
           "groupTitle": "Behavior"
         }
+      },
+      {
+        "name": "startOpacity",
+        "type": "number",
+        "default": 0,
+        "description": "Opacity the text starts from before it reveals.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "direction",
+        "type": "string",
+        "default": "top",
+        "description": "Side the text swings in from.",
+        "remixer": {
+          "control": "select",
+          "group": "style",
+          "groupTitle": "Style",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        }
+      },
+      {
+        "name": "splitBy",
+        "type": "string",
+        "default": "lines",
+        "description": "Animate per character, per word, or per line.",
+        "remixer": {
+          "control": "select",
+          "group": "style",
+          "groupTitle": "Style",
+          "options": [
+            {
+              "value": "chars",
+              "label": "Characters"
+            },
+            {
+              "value": "words",
+              "label": "Words"
+            },
+            {
+              "value": "lines",
+              "label": "Lines"
+            }
+          ]
+        }
+      },
+      {
+        "name": "rotation",
+        "type": "number",
+        "default": 70,
+        "description": "Starting tilt in degrees; its sign follows the direction.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 90,
+          "step": 1
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power3.out",
+        "description": "GSAP ease for the reveal.",
+        "remixer": {
+          "control": "select",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "options": [
+            {
+              "value": "none",
+              "label": "none (linear)"
+            },
+            {
+              "value": "power1.in",
+              "label": "power1.in"
+            },
+            {
+              "value": "power1.out",
+              "label": "power1.out"
+            },
+            {
+              "value": "power1.inOut",
+              "label": "power1.inOut"
+            },
+            {
+              "value": "power2.in",
+              "label": "power2.in"
+            },
+            {
+              "value": "power2.out",
+              "label": "power2.out"
+            },
+            {
+              "value": "power2.inOut",
+              "label": "power2.inOut"
+            },
+            {
+              "value": "power3.in",
+              "label": "power3.in"
+            },
+            {
+              "value": "power3.out",
+              "label": "power3.out"
+            },
+            {
+              "value": "power3.inOut",
+              "label": "power3.inOut"
+            },
+            {
+              "value": "power4.in",
+              "label": "power4.in"
+            },
+            {
+              "value": "power4.out",
+              "label": "power4.out"
+            },
+            {
+              "value": "power4.inOut",
+              "label": "power4.inOut"
+            },
+            {
+              "value": "expo.in",
+              "label": "expo.in"
+            },
+            {
+              "value": "expo.out",
+              "label": "expo.out"
+            },
+            {
+              "value": "expo.inOut",
+              "label": "expo.inOut"
+            },
+            {
+              "value": "sine.in",
+              "label": "sine.in"
+            },
+            {
+              "value": "sine.out",
+              "label": "sine.out"
+            },
+            {
+              "value": "sine.inOut",
+              "label": "sine.inOut"
+            },
+            {
+              "value": "circ.in",
+              "label": "circ.in"
+            },
+            {
+              "value": "circ.out",
+              "label": "circ.out"
+            },
+            {
+              "value": "circ.inOut",
+              "label": "circ.inOut"
+            },
+            {
+              "value": "back.in",
+              "label": "back.in"
+            },
+            {
+              "value": "back.out",
+              "label": "back.out"
+            },
+            {
+              "value": "back.inOut",
+              "label": "back.inOut"
+            },
+            {
+              "value": "elastic.in",
+              "label": "elastic.in"
+            },
+            {
+              "value": "elastic.out",
+              "label": "elastic.out"
+            },
+            {
+              "value": "elastic.inOut",
+              "label": "elastic.inOut"
+            },
+            {
+              "value": "bounce.in",
+              "label": "bounce.in"
+            },
+            {
+              "value": "bounce.out",
+              "label": "bounce.out"
+            },
+            {
+              "value": "bounce.inOut",
+              "label": "bounce.inOut"
+            }
+          ]
+        }
+      },
+      {
+        "name": "perspective",
+        "type": "number",
+        "default": 800,
+        "description": "Perspective distance in px - lower values give a stronger 3D effect.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 200,
+          "max": 2000,
+          "step": 10
+        }
       }
     ],
     "remixer": {
@@ -15780,6 +17139,8 @@
         "target": "src/components/effects/perspective-text-reveal/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/perspective-text-reveal",
+    "target": "src/components/effects/perspective-text-reveal",
     "registryPath": "registry/effects/text/perspective-text-reveal/registry.json"
   },
   {
@@ -17043,9 +18404,9 @@
         }
       },
       {
-        "name": "imageSize",
+        "name": "blockSize",
         "type": "number",
-        "description": "Scale multiplier applied to the ribbon images.",
+        "description": "Size of the card blocks that hold the images in the ribbon strips.",
         "default": 1,
         "remixer": {
           "control": "range",
@@ -17054,12 +18415,13 @@
           "min": 0.5,
           "max": 2,
           "step": 0.05
-        }
+        },
+        "label": "Block Size"
       },
       {
         "name": "showNames",
         "type": "boolean",
-        "description": "Shows the project name on hover.",
+        "description": "Shows project names on hover. When off, the card hover effect is disabled too.",
         "default": true,
         "remixer": {
           "control": "checkbox",
@@ -17070,10 +18432,53 @@
       {
         "name": "textColor",
         "type": "color",
-        "description": "Color of the section-break reveal text fill.",
-        "default": "#000000",
+        "description": "Color of the project name revealed inside a card block on hover.",
+        "default": "#ffffff",
         "remixer": {
           "control": "color",
+          "group": "style",
+          "groupTitle": "Style",
+          "visibleWhen": {
+            "name": "showNames",
+            "eq": true
+          }
+        }
+      },
+      {
+        "name": "borderWidth",
+        "type": "number",
+        "default": 0,
+        "description": "Border width of the card blocks in pixels.",
+        "remixer": {
+          "control": "range",
+          "min": 0,
+          "max": 12,
+          "step": 1,
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "borderColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Border color of the card blocks.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "borderRadius",
+        "type": "number",
+        "default": 0,
+        "description": "Corner radius of the card blocks in pixels.",
+        "remixer": {
+          "control": "range",
+          "min": 0,
+          "max": 80,
+          "step": 1,
           "group": "style",
           "groupTitle": "Style"
         }
@@ -17908,6 +19313,34 @@
           "max": 0.2,
           "step": 0.005
         }
+      },
+      {
+        "name": "textSize",
+        "type": "number",
+        "default": 6,
+        "description": "Headline size in vw (clamped between 2rem and 9rem).",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 2,
+          "max": 12,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "initialOpacity",
+        "type": "number",
+        "default": 0,
+        "description": "Opacity of the characters before they decode (0 = hidden, 1 = fully visible).",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
       }
     ],
     "remixer": {
@@ -17927,6 +19360,8 @@
         "target": "src/components/effects/scramble-text/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/scramble-text",
+    "target": "src/components/effects/scramble-text",
     "registryPath": "registry/effects/text/scramble-text/registry.json"
   },
   {
@@ -18032,28 +19467,128 @@
           "groupTitle": "Motion",
           "options": [
             {
-              "value": "power3.inOut",
-              "label": "Power 3 In Out"
+              "value": "none",
+              "label": "Linear (none)"
+            },
+            {
+              "value": "power1.in",
+              "label": "Power 1 In"
+            },
+            {
+              "value": "power1.out",
+              "label": "Power 1 Out"
+            },
+            {
+              "value": "power1.inOut",
+              "label": "Power 1 In Out"
+            },
+            {
+              "value": "power2.in",
+              "label": "Power 2 In"
+            },
+            {
+              "value": "power2.out",
+              "label": "Power 2 Out"
             },
             {
               "value": "power2.inOut",
               "label": "Power 2 In Out"
             },
             {
+              "value": "power3.in",
+              "label": "Power 3 In"
+            },
+            {
+              "value": "power3.out",
+              "label": "Power 3 Out"
+            },
+            {
+              "value": "power3.inOut",
+              "label": "Power 3 In Out"
+            },
+            {
+              "value": "power4.in",
+              "label": "Power 4 In"
+            },
+            {
+              "value": "power4.out",
+              "label": "Power 4 Out"
+            },
+            {
               "value": "power4.inOut",
               "label": "Power 4 In Out"
+            },
+            {
+              "value": "back.in",
+              "label": "Back In"
+            },
+            {
+              "value": "back.out",
+              "label": "Back Out"
+            },
+            {
+              "value": "back.inOut",
+              "label": "Back In Out"
+            },
+            {
+              "value": "bounce.in",
+              "label": "Bounce In"
+            },
+            {
+              "value": "bounce.out",
+              "label": "Bounce Out"
+            },
+            {
+              "value": "bounce.inOut",
+              "label": "Bounce In Out"
+            },
+            {
+              "value": "circ.in",
+              "label": "Circ In"
+            },
+            {
+              "value": "circ.out",
+              "label": "Circ Out"
+            },
+            {
+              "value": "circ.inOut",
+              "label": "Circ In Out"
+            },
+            {
+              "value": "elastic.in",
+              "label": "Elastic In"
+            },
+            {
+              "value": "elastic.out",
+              "label": "Elastic Out"
+            },
+            {
+              "value": "elastic.inOut",
+              "label": "Elastic In Out"
+            },
+            {
+              "value": "expo.in",
+              "label": "Expo In"
+            },
+            {
+              "value": "expo.out",
+              "label": "Expo Out"
             },
             {
               "value": "expo.inOut",
               "label": "Expo In Out"
             },
             {
-              "value": "sine.inOut",
-              "label": "Sine In Out"
+              "value": "sine.in",
+              "label": "Sine In"
             },
             {
-              "value": "none",
-              "label": "Linear"
+              "value": "sine.out",
+              "label": "Sine Out"
+            },
+            {
+              "value": "sine.inOut",
+              "label": "Sine In Out"
             }
           ]
         }
@@ -18805,7 +20340,7 @@
         }
       },
       {
-        "name": "speed",
+        "name": "horizontalOffset",
         "type": "number",
         "default": 20,
         "description": "Starting horizontal offset in pixels.",
@@ -18871,6 +20406,8 @@
         "target": "src/components/effects/slide-text-reveal/index.tsx"
       }
     ],
+    "importPath": "@/components/effects/slide-text-reveal",
+    "target": "src/components/effects/slide-text-reveal",
     "registryPath": "registry/effects/text/slide-text-reveal/registry.json"
   },
   {
@@ -19524,6 +21061,20 @@
           "group": "style",
           "groupTitle": "Style"
         }
+      },
+      {
+        "name": "squareSize",
+        "type": "number",
+        "default": 12,
+        "description": "Width and height of the square marker in pixels.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 4,
+          "max": 60,
+          "step": 1
+        }
       }
     ],
     "remixer": {
@@ -19846,7 +21397,7 @@
         "name": "cardCornerRadius",
         "type": "number",
         "default": 48,
-        "description": "Corner radius in pixels applied to the cards as they stack.",
+        "description": "Corner radius in pixels applied to the cards as they stack (not the images).",
         "remixer": {
           "control": "range",
           "group": "style",
@@ -19860,14 +21411,18 @@
         "name": "stackPerspective",
         "type": "number",
         "default": 1200,
-        "description": "Perspective depth applied to the stacked card scene.",
+        "description": "Perspective depth for the tilt. Only applies while tilt is enabled.",
         "remixer": {
           "control": "range",
           "group": "style",
           "groupTitle": "Style",
           "min": 200,
           "max": 2400,
-          "step": 10
+          "step": 10,
+          "visibleWhen": {
+            "name": "tiltEnabled",
+            "eq": true
+          }
         }
       }
     ],
@@ -19930,6 +21485,17 @@
         "type": "color",
         "default": "#ffffff",
         "description": "Background color of the sticky section, including the gap between the content and image panes.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#000000",
+        "description": "Color of the text content and the scroll indicator.",
         "remixer": {
           "control": "color",
           "group": "style",
@@ -20144,20 +21710,6 @@
     "target": "src/components/effects/svg-brush-transition",
     "props": [
       {
-        "name": "strokeWidth",
-        "type": "number",
-        "default": 2,
-        "description": "Final brush stroke width after the covering wipe completes.",
-        "remixer": {
-          "control": "range",
-          "group": "brush",
-          "groupTitle": "Brush",
-          "min": 1,
-          "max": 24,
-          "step": 1
-        }
-      },
-      {
         "name": "strokeColor",
         "type": "string",
         "default": "#82A0FF",
@@ -20367,14 +21919,32 @@
         }
       },
       {
-        "name": "crossLayers",
+        "name": "scrub",
         "type": "boolean",
         "default": true,
-        "description": "Enables cross-layer pixel merge detail.",
+        "description": "Tie the reveal to scroll position. When off, the reveal plays once when the image enters the viewport.",
         "remixer": {
           "control": "checkbox",
-          "group": "filter",
-          "groupTitle": "Filter"
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 1.5,
+        "description": "Reveal duration in seconds when scrub is off.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 5,
+          "step": 0.1,
+          "visibleWhen": {
+            "name": "scrub",
+            "eq": false
+          }
         }
       }
     ],
@@ -21045,7 +22615,7 @@
         }
       },
       {
-        "name": "stagger",
+        "name": "verticalSpacing",
         "type": "number",
         "default": 0.08,
         "description": "Vertical spacing between streamed lines.",
@@ -21114,6 +22684,8 @@
         "includeOnlyPublicProps": true
       }
     },
+    "importPath": "@/components/effects/text-stream",
+    "target": "src/components/effects/text-stream",
     "registryPath": "registry/effects/text/text-stream/registry.json"
   },
   {
@@ -21348,20 +22920,6 @@
           "min": 1,
           "max": 2.2,
           "step": 0.05
-        }
-      },
-      {
-        "name": "letterSpacing",
-        "type": "number",
-        "default": 0,
-        "description": "Letter spacing in em units.",
-        "remixer": {
-          "control": "range",
-          "group": "type",
-          "groupTitle": "Type",
-          "min": 0,
-          "max": 0.18,
-          "step": 0.01
         }
       },
       {
@@ -21777,7 +23335,7 @@
     ],
     "type": "registry:component",
     "title": "Variable Hover",
-    "description": "Cursor-driven variable-font text where nearby letters gain weight and optical size",
+    "description": "Cursor-driven variable-font text where nearby letters gain weight",
     "category": "text",
     "dependencies": [
       "motion"
@@ -21860,34 +23418,6 @@
         }
       },
       {
-        "name": "baseOpticalSize",
-        "type": "number",
-        "default": 9,
-        "description": "Optical size away from the pointer.",
-        "remixer": {
-          "control": "range",
-          "group": "motion",
-          "groupTitle": "Motion",
-          "min": 8,
-          "max": 80,
-          "step": 1
-        }
-      },
-      {
-        "name": "hoverOpticalSize",
-        "type": "number",
-        "default": 40,
-        "description": "Optical size nearest the pointer.",
-        "remixer": {
-          "control": "range",
-          "group": "motion",
-          "groupTitle": "Motion",
-          "min": 8,
-          "max": 144,
-          "step": 1
-        }
-      },
-      {
         "name": "backgroundColor",
         "type": "string",
         "default": "#080808",
@@ -21939,31 +23469,17 @@
         }
       },
       {
-        "name": "maxWidth",
+        "name": "width",
         "type": "number",
-        "default": 1040,
-        "description": "Maximum paragraph width in pixels.",
+        "default": 80,
+        "description": "Paragraph width as a percentage of its container.",
         "remixer": {
           "control": "range",
           "group": "type",
           "groupTitle": "Type",
-          "min": 520,
-          "max": 1320,
-          "step": 10
-        }
-      },
-      {
-        "name": "minWidth",
-        "type": "number",
-        "default": 920,
-        "description": "Minimum paragraph width in pixels.",
-        "remixer": {
-          "control": "range",
-          "group": "type",
-          "groupTitle": "Type",
-          "min": 420,
-          "max": 1320,
-          "step": 10
+          "min": 10,
+          "max": 100,
+          "step": 1
         }
       },
       {

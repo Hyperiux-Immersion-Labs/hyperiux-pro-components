@@ -6,6 +6,7 @@ import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -70,6 +71,21 @@ export default function DemoContent({ registry }: { registry: any }) {
               </div>
 
               {effect}
+              <ReducedMotionNotice>
+                <div
+                  aria-live="polite"
+                  className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-[#F8F8F3] p-3 text-center"
+                >
+                  <h2 className="text-sm leading-none text-[#111111]">
+                    The modal fades, not slides.
+                  </h2>
+                  <p className="mt-2 text-xs leading-5 text-black/65">
+                    Animated Modal already keeps its open and close transition to a
+                    simple opacity fade, so it stays comfortable with reduced motion
+                    enabled.
+                  </p>
+                </div>
+              </ReducedMotionNotice>
             </div>
           </section>
         </>

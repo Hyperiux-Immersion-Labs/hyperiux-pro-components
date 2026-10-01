@@ -8,9 +8,8 @@ if (typeof window !== "undefined") {
 }
 const prefersReducedMotion = () => typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
-function CardsRunwayComponent({ data = [], accentColor = "#ff5f00", cardColor = "#161616", speed = 1, gap = 48, }) {
+function CardsRunwayComponent({ data = [], accentColor = "#ff5f00", cardColor = "#161616", textColor = "#ffffff", ease = "power1.out", gap = 48, }) {
     const root = useRef(null);
-    const safeSpeed = Math.max(0.2, Number(speed) || 1);
     const safeGap = Math.max(0, Number(gap) || 0);
     useEffect(() => {
         let ctx = gsap.context(() => {
@@ -39,12 +38,13 @@ function CardsRunwayComponent({ data = [], accentColor = "#ff5f00", cardColor = 
                 tl.to(".cards-runway-card", {
                     y: "0vw",
                     stagger: 0.2,
-                    duration: 0.4 / safeSpeed,
-                    ease: "power1.out",
+                    duration: 0.4,
+                    // Ease of each card popping up into place.
+                    ease,
                 }).to(".cards-runway-container", {
                     x: () => -Math.max(0, track.scrollWidth - viewport.clientWidth),
-                    duration: 1.2 / safeSpeed,
-                    delay: -0.8 / safeSpeed,
+                    duration: 1.2,
+                    delay: -0.8,
                     ease: "power1.inOut",
                 });
             }
@@ -65,8 +65,8 @@ function CardsRunwayComponent({ data = [], accentColor = "#ff5f00", cardColor = 
             }
         }, root);
         return () => ctx.revert();
-    }, [safeSpeed, safeGap]);
-    return (<section ref={root} className="w-full h-[350vh] text-white bg-black max-[1025px]:overflow-hidden max-[1025px]:h-screen max-md:py-[25%] max-[1025px]:py-[12%] relative z-20">
+    }, [ease, safeGap]);
+    return (<section ref={root} style={{ color: textColor }} className="w-full h-[350vh] bg-black max-[1025px]:overflow-hidden max-[1025px]:h-screen max-md:py-[25%] max-[1025px]:py-[12%] relative z-20">
       {/* Cards Runway */}
       <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-[1025px]:h-fit max-[1025px]:static pb-5  max-[1025px]:mt-[40vw] max-[1025px]:pb-[4vw] max-[1025px]:overflow-x-scroll mobile-scrollbar max-[1025px]:pr-[7vw] z-15 cards-runway-viewport">
         <div className="w-fit h-full flex items-end cards-runway-container" style={{ gap: `${safeGap}px` }}>
@@ -113,6 +113,6 @@ const UI_CARDS = [
         text: "From autocompleting a function to explaining an error, AI sits beside developers as a tireless pair. The gap between an idea and a working prototype keeps getting shorter.",
     },
 ];
-export default function CardsRunway({ accentColor = "#ff5f00", cardColor = "#161616", speed = 1, gap = 48, }) {
-    return (<CardsRunwayComponent data={UI_CARDS} accentColor={accentColor} cardColor={cardColor} speed={speed} gap={gap}/>);
+export default function CardsRunway({ accentColor = "#ff5f00", cardColor = "#161616", textColor = "#ffffff", ease = "power1.out", gap = 48, }) {
+    return (<CardsRunwayComponent data={UI_CARDS} accentColor={accentColor} cardColor={cardColor} textColor={textColor} ease={ease} gap={gap}/>);
 }

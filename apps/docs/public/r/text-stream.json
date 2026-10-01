@@ -41,7 +41,7 @@
       }
     },
     {
-      "name": "stagger",
+      "name": "verticalSpacing",
       "type": "number",
       "default": 0.08,
       "description": "Vertical spacing between streamed lines.",

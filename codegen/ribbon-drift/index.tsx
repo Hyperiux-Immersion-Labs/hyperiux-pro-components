@@ -5,7 +5,7 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import SplitText from "gsap/dist/SplitText";
 import { ReactLenis } from "lenis/react";
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useId, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -94,18 +94,33 @@ that make a brand experience unforgettable.`;
 /**
  * @typedef {Object} RibbonDriftCompProps
  * @property {number} [driftSpeed]
- * @property {string} [textColor]
- * @property {number} [imageSize]
+ * @property {string} [textColor] Color of the project name revealed on hover.
+ * @property {number} [blockSize] Scale of the card blocks that hold the images.
  * @property {boolean} [showNames]
+ * @property {number} [borderWidth]
+ * @property {string} [borderColor]
+ * @property {number} [borderRadius]
  */
 
 /** @param {RibbonDriftCompProps} props */
 const RibbonDriftComp = ({
 	driftSpeed = 1,
-	textColor = "#000000",
-	imageSize = 1,
+	textColor = "#ffffff",
+	blockSize = 1,
 	showNames = true,
+	borderWidth = 0,
+	borderColor = "#ffffff",
+	borderRadius = 0,
 }: any) => {
+	const size = Math.min(2, Math.max(0.5, Number(blockSize) || 1));
+	const cardStyle = (baseHeightVw: number): React.CSSProperties => ({
+		width: `calc(90% * ${size})`,
+		height: `calc(${baseHeightVw}vw * ${size})`,
+		borderStyle: "solid",
+		borderWidth,
+		borderColor,
+		borderRadius,
+	});
 	const uid = useId().replace(/:/g, "");
 	const sectionId = `ribbon-drift-${uid}`;
 	const headingRef = useRef<any>(null);
@@ -152,7 +167,7 @@ const RibbonDriftComp = ({
 
 					gsap.set(sectionBreakSplit.lines, {
 						color: "transparent",
-						backgroundImage: `linear-gradient(to right, ${textColor} 0%, ${textColor} 100%)`,
+						backgroundImage: "linear-gradient(to right, #000000 0%, #000000 100%)",
 						backgroundRepeat: "no-repeat",
 						backgroundSize: "0% 100%",
 						backgroundPosition: "left center",
@@ -222,7 +237,6 @@ const RibbonDriftComp = ({
 
 						gsap.set(image, {
 							force3D: true,
-							scale: imageSize,
 							opacity: 1,
 						});
 
@@ -344,7 +358,7 @@ const RibbonDriftComp = ({
 			window.cancelAnimationFrame(rafId);
 			ctx.revert();
 		};
-	}, [sectionId, driftSpeed, textColor, imageSize, showNames]);
+	}, [sectionId, driftSpeed, showNames]);
 
 	let titleIndex = 0;
 
@@ -390,14 +404,15 @@ const RibbonDriftComp = ({
 									href={item.href}
 									onClick={(e) => e.preventDefault()}
 									key={`left-${index}`}
-									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
+									style={cardStyle(27)}
+									className="project-card portfolio-card overflow-hidden drop-shadow-md relative"
 								>
 									<img
 										src={item.src}
 										alt={item.title}
 										width={400}
 										height={600}
-										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
+										className={`project-image opacity-0 w-full h-full object-cover transition duration-500 ease-in-out ${showNames ? "hover:brightness-75 cursor-pointer hover:scale-[1.2]" : ""}`}
 									/>
 
 									{showNames && (
@@ -406,7 +421,8 @@ const RibbonDriftComp = ({
 												ref={(el) => {
 													titleRefs.current[currentIndex] = el;
 												}}
-												className="text-white text-[2vw] project-name font-medium leading-none opacity-0"
+												style={{ color: textColor }}
+												className="text-[2vw] project-name font-medium leading-[1.4] opacity-0"
 											>
 												{item.title}
 											</p>
@@ -426,7 +442,8 @@ const RibbonDriftComp = ({
 									href={item.href}
 									onClick={(e) => e.preventDefault()}
 									key={`mid-${index}`}
-									className={`project-card w-[90%] h-[34vw] portfolio-card overflow-hidden drop-shadow-md relative ${index === 0 ? "card-1" : ""
+									style={cardStyle(34)}
+									className={`project-card portfolio-card overflow-hidden drop-shadow-md relative ${index === 0 ? "card-1" : ""
 										} ${index === 1 ? "card-2" : ""}`}
 								>
 									<img
@@ -434,7 +451,7 @@ const RibbonDriftComp = ({
 										alt={item.title}
 										width={500}
 										height={700}
-										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
+										className={`project-image opacity-0 w-full h-full object-cover transition duration-500 ease-in-out ${showNames ? "hover:brightness-75 cursor-pointer hover:scale-[1.2]" : ""}`}
 									/>
 
 									{showNames && (
@@ -443,7 +460,8 @@ const RibbonDriftComp = ({
 												ref={(el) => {
 													titleRefs.current[currentIndex] = el;
 												}}
-												className="text-white text-[2.2vw] project-name font-medium leading-none opacity-0"
+												style={{ color: textColor }}
+												className="text-[2.2vw] project-name font-medium leading-[1.4] opacity-0"
 											>
 												{item.title}
 											</p>
@@ -463,14 +481,15 @@ const RibbonDriftComp = ({
 									href={item.href}
 									onClick={(e) => e.preventDefault()}
 									key={`right-${index}`}
-									className="project-card w-[90%] h-[27vw] portfolio-card overflow-hidden drop-shadow-md relative"
+									style={cardStyle(27)}
+									className="project-card portfolio-card overflow-hidden drop-shadow-md relative"
 								>
 									<img
 										src={item.src}
 										alt={item.title}
 										width={400}
 										height={600}
-										className="project-image opacity-0 w-full h-full object-cover hover:brightness-75 transition duration-500 cursor-pointer hover:scale-[1.2] ease-in-out"
+										className={`project-image opacity-0 w-full h-full object-cover transition duration-500 ease-in-out ${showNames ? "hover:brightness-75 cursor-pointer hover:scale-[1.2]" : ""}`}
 									/>
 
 									{showNames && (
@@ -479,7 +498,8 @@ const RibbonDriftComp = ({
 												ref={(el) => {
 													titleRefs.current[currentIndex] = el;
 												}}
-												className="text-white text-[2vw] project-name font-medium leading-none opacity-0"
+												style={{ color: textColor }}
+												className="text-[2vw] project-name font-medium leading-[1.4] opacity-0"
 											>
 												{item.title}
 											</p>
@@ -525,7 +545,8 @@ const RibbonDriftComp = ({
 								href={item.href}
 								onClick={(e) => e.preventDefault()}
 								key={`compact-${index}`}
-								className="overflow-hidden rounded-sm max-md:mx-auto  w-full max-md:w-[80%]"
+								className="overflow-hidden max-md:mx-auto  w-full max-md:w-[80%]"
+								style={{ borderStyle: "solid", borderWidth, borderColor, borderRadius }}
 							>
 								<div className="relative max-[1025px]:aspect-4/5 max-md:aspect-auto max-md:h-[35vh]  ">
 									<img
@@ -558,27 +579,15 @@ const RibbonDriftComp = ({
 
 export { RibbonDriftComp };
 
-function usePrefersReducedMotion() {
- const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-
- useEffect(() => {
- const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
- const update = () => setPrefersReducedMotion(mediaQuery.matches)
- update()
- mediaQuery.addEventListener('change', update)
- return () => mediaQuery.removeEventListener('change', update)
- }, [])
-
- return prefersReducedMotion
-}
-
 const RibbonDrift = ({
  driftSpeed = 1,
- textColor = "#000000",
- imageSize = 1,
+ textColor = "#ffffff",
+ blockSize = 1,
  showNames = true,
+ borderWidth = 0,
+ borderColor = "#ffffff",
+ borderRadius = 0,
 }) => {
- const prefersReducedMotion = usePrefersReducedMotion();
 
  return (
  <ReactLenis root>
@@ -586,25 +595,13 @@ const RibbonDrift = ({
  <RibbonDriftComp
  driftSpeed={driftSpeed}
  textColor={textColor}
- imageSize={imageSize}
+ blockSize={blockSize}
  showNames={showNames}
+ borderWidth={borderWidth}
+ borderColor={borderColor}
+ borderRadius={borderRadius}
  />
  </section>
- {prefersReducedMotion && (
- <div
- aria-live="polite"
- className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white/10 backdrop-blur-md p-3 text-center"
- >
- <h2 className="text-sm leading-none text-[#111111]">
- The ribbon keeps drifting.
- </h2>
- <p className="mt-2 text-xs leading-5 text-black/65">
- Ribbon Drift ties its image reveal and text splits to scroll
- position. Since the animation is driven by scroll motion itself,
- it can&apos;t be reduced without removing the effect.
- </p>
- </div>
- )}
  </ReactLenis>
  );
 };

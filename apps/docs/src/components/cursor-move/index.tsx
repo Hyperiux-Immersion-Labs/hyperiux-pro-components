@@ -1,7 +1,6 @@
 'use client'
 import { useRef, useState, useEffect, type ReactNode, type RefObject, type CSSProperties, type ElementType } from "react";
 import { Inter } from "next/font/google";
-import { usePrefersReducedMotion } from "@/lib/motion";
 
 // Inter is a variable font exposing a `wght` axis, which the cursor-driven
 // weight morph below animates. It's loaded here so the component is fully
@@ -308,7 +307,6 @@ export default function CursorMove({
 }: CursorMoveProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { x, y, isDesktop } = useMousePosition(containerRef, lerp);
-  const prefersReducedMotion = usePrefersReducedMotion();
 
   const isPatternCrosshair = crosshairVariant === "dotted" || crosshairVariant === "dashed";
   const patternLength =
@@ -406,21 +404,6 @@ export default function CursorMove({
         </div>
       ) : null}
 
-      {prefersReducedMotion && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
-        >
-          <h2 className="text-sm leading-none text-white">
-            The letters keep bending.
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-white/65">
-            Cursor Move warps text and tracks coordinates live as you move
-            the cursor. The animation is the interaction itself, so it
-            can&apos;t be reduced.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

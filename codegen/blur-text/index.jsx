@@ -11,9 +11,12 @@ const variantMap = {
 };
 const REDUCED_MOTION_Y_OFFSET = 20;
 const DEFAULT_TEXT = "Blur text reveals as you scroll into view.";
-export default function BlurText({ children = DEFAULT_TEXT, delay = 0, duration = 0.5, blur = 10, className = "", variant = "fade", once = false, }) {
+export default function BlurText({ children = DEFAULT_TEXT, delay = 0, duration = 0.5, blur = 10, className = "", textColor, variant = "fade", once = false, viewMargin = "0px", }) {
     const ref = useRef(null);
-    const isInView = useInView(ref, { once, margin: "-100px" });
+    const isInView = useInView(ref, {
+        once,
+        margin: viewMargin,
+    });
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => typeof window !== "undefined" &&
         window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true);
     useEffect(() => {
@@ -37,7 +40,7 @@ export default function BlurText({ children = DEFAULT_TEXT, delay = 0, duration 
         ? { opacity: 0, filter: "blur(0px)", x: 0, y: REDUCED_MOTION_Y_OFFSET }
         : { opacity: 0, filter: `blur(${blur}px)`, x, y };
     const shownState = { opacity: 1, filter: "blur(0px)", x: 0, y: 0 };
-    return (<span ref={ref} className={className}>
+    return (<span ref={ref} className={className} style={textColor ? { color: textColor } : undefined}>
       {words.map((word, index) => (<motion.span key={`${animationKey}-${index}-${typeof word === "string" ? word : "node"}`} initial={hiddenState} animate={isInView ? shownState : hiddenState} transition={{
                 duration,
                 delay: delay + index * 0.1,

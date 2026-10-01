@@ -78,14 +78,12 @@ type VariableTextProximityDemoProps = {
   falloff?: 'linear' | 'exponential' | 'gaussian';
   baseWeight?: number;
   hoverWeight?: number;
-  baseOpticalSize?: number;
-  hoverOpticalSize?: number;
   backgroundColor?: string;
   textColor?: string;
   fontSize?: number;
   lineHeight?: number;
-  minWidth?: number;
-  maxWidth?: number;
+  /** Paragraph width as a percentage of its container (10-100). */
+  width?: number;
   italic?: boolean;
   className?: string;
 };
@@ -95,8 +93,7 @@ type VariableTextProximityDemoStyle = CSSProperties & {
   '--hv-variable-color': string;
   '--hv-variable-font-size': string;
   '--hv-variable-line-height': number;
-  '--hv-variable-min-width': string;
-  '--hv-variable-max-width': string;
+  '--hv-variable-width': string;
 };
 
 const VARIABLE_HOVER_COPY =
@@ -313,27 +310,23 @@ export default function VariableTextProximity({
   falloff = 'linear',
   baseWeight = 300,
   hoverWeight = 800,
-  baseOpticalSize = 9,
-  hoverOpticalSize = 40,
   backgroundColor = '#080808',
   textColor = '#ffffff',
   fontSize = 55,
   lineHeight = 1.18,
-  minWidth = 920,
-  maxWidth = 1040,
+  width = 80,
   italic = false,
   className = '',
 }: VariableTextProximityDemoProps) {
   const stageRef = useRef<HTMLDivElement | null>(null);
-  const fromFontVariationSettings = `'wght' ${baseWeight}, 'opsz' ${baseOpticalSize}, 'slnt' 0`;
-  const toFontVariationSettings = `'wght' ${hoverWeight}, 'opsz' ${hoverOpticalSize}, 'slnt' ${italic ? -10 : 0}`;
+  const fromFontVariationSettings = `'wght' ${baseWeight}, 'slnt' 0`;
+  const toFontVariationSettings = `'wght' ${hoverWeight}, 'slnt' ${italic ? -10 : 0}`;
   const demoStyle: VariableTextProximityDemoStyle = {
     '--hv-variable-bg': backgroundColor,
     '--hv-variable-color': textColor,
     '--hv-variable-font-size': `${fontSize}px`,
     '--hv-variable-line-height': lineHeight,
-    '--hv-variable-min-width': `${minWidth}px`,
-    '--hv-variable-max-width': `${maxWidth}px`,
+    '--hv-variable-width': `${Math.min(100, Math.max(10, width))}%`,
   };
 
   return (
@@ -364,9 +357,8 @@ export default function VariableTextProximity({
         }
 
         .hv-variable-stage {
-          width: min(var(--hv-variable-max-width), calc(100vw - 2rem));
-          min-width: min(var(--hv-variable-min-width), var(--hv-variable-max-width), calc(100vw - 2rem));
-          max-width: min(var(--hv-variable-max-width), calc(100vw - 2rem));
+          width: var(--hv-variable-width);
+          max-width: calc(100vw - 2rem);
         }
 
         .hv-variable-heading {

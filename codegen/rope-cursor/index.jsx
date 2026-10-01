@@ -179,17 +179,6 @@ function createSuspendedRaf({ onFrame, root = null, rootMargin = DEFAULT_ROOT_MA
     };
 }
 export { createSuspendedRaf, createVisibilityGate, DEFAULT_ROOT_MARGIN, };
-function usePrefersReducedMotion() {
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const update = () => setPrefersReducedMotion(mediaQuery.matches);
-        update();
-        mediaQuery.addEventListener('change', update);
-        return () => mediaQuery.removeEventListener('change', update);
-    }, []);
-    return prefersReducedMotion;
-}
 export default function RopeCursor({ ropeColor = '#bda985', ropeWidth = 2, ropeOpacity = 0.6, segmentLength = 0, segmentCount = 8, }) {
     const svgRef = useRef(null);
     const pathRef = useRef(null);
@@ -197,7 +186,6 @@ export default function RopeCursor({ ropeColor = '#bda985', ropeWidth = 2, ropeO
     const mousePosition = useRef({ x: null, y: null });
     const [isVisible, setIsVisible] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const prefersReducedMotion = usePrefersReducedMotion();
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 1025);
@@ -308,15 +296,5 @@ export default function RopeCursor({ ropeColor = '#bda985', ropeWidth = 2, ropeO
  <svg ref={svgRef} className="w-full h-full absolute inset-0" style={{ opacity: isVisible ? 1 : 0 }}>
  <path ref={pathRef} fill="none" stroke={ropeColor} strokeWidth={ropeWidth} strokeLinecap="round" strokeLinejoin="round" opacity={ropeOpacity}/>
  </svg>
- {prefersReducedMotion && (<div aria-live="polite" className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden">
-   <h2 className="text-sm leading-none text-black">
-     The rope keeps swinging.
-   </h2>
-   <p className="mt-2 text-xs leading-5 text-black">
-     Rope Cursor is a live trail of your cursor&apos;s movement. The
-     motion is the entire effect, so it can&apos;t be swapped for a
-     reduced motion alternative.
-   </p>
- </div>)}
  </>);
 }

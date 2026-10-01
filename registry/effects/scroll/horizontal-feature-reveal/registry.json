@@ -50,16 +50,27 @@
       }
     },
     {
-      "name": "imageParallaxRange",
+      "name": "textColor",
+      "type": "color",
+      "default": "#000000",
+      "description": "Color of the section text.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "translateX",
       "type": "number",
       "default": 30,
-      "description": "Symmetric parallax shift range (%) each image travels as it scrolls past.",
+      "description": "Image parallax travel as a percentage of the image width. Each image starts at -translateX% and scrolls to +translateX%.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0,
-        "max": 60,
+        "max": 50,
         "step": 1
       }
     },
