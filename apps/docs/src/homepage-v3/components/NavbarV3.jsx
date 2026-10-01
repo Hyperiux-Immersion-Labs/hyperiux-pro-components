@@ -225,17 +225,6 @@ export default function NavbarV3({
           >
             <HoverLinkV3 href="/blog" text="Blog" />
           </div>
-          <div
-            className="flex"
-            onPointerEnter={closeOnHover}
-            onFocusCapture={closeOnHover}
-          >
-            <HoverLinkV3
-              href="https://github.com/Hyperiux-Immersion-Labs/hyperiux-components"
-              target_blank
-              text="Github"
-            />
-          </div>
         </div>
         <div
           className={`flex items-center gap-2 transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${introReady ? "opacity-100" : "opacity-0"}`}
