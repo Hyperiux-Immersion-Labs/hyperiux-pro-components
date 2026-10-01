@@ -68,7 +68,7 @@ export function PixelateSvgFilter({
 gsap.registerPlugin(ScrollTrigger);
 
 const DEFAULT_SRC =
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg";
+    "https://picsum.photos/seed/v01/1600/1200";
 const DEFAULT_ALT = "Image";
 
 interface SVGPixelRevealProps {

@@ -147,7 +147,7 @@ export default function Timeline({
   mutedTextColor = "#3f3f46",
   activeColor = "#ff5f00",
   backgroundColor = "#ffffff",
-  imageUrl = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+  imageUrl = "https://picsum.photos/1600/900",
   imageAlt = "Modern office workspace",
 
 }: TimelineProps) {

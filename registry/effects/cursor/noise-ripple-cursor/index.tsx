@@ -832,7 +832,7 @@ interface NoiseRippleCursorProps {
 
 export default function NoiseRippleCursor({
  overlayColor ='#1825AA',
- imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+ imageSrc = "https://picsum.photos/seed/h15/1600/1200",
  pixelSize = 0.5,
  lerp = 0.2,
  distortion = 0.5,

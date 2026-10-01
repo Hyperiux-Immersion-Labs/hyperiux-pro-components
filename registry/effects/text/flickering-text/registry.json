@@ -30,7 +30,7 @@
     {
       "name": "backgroundColor",
       "type": "string",
-      "default": "#111844",
+      "default": "#0a0a0a",
       "description": "Background color behind the text.",
       "remixer": {
         "control": "color",

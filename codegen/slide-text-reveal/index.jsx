@@ -7,7 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(SplitText, ScrollTrigger);
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
-export default function SlideTextReveal({ children, animateOnScroll = true, delay = 0, duration = 0.5, horizontalOffset = 20, stagger = 0.03, variant = "right", className = "", }) {
+const DEFAULT_TEXT = <p className="text-2xl">Slide text glides in character by character as it scrolls into view.</p>;
+export default function SlideTextReveal({ children = DEFAULT_TEXT, animateOnScroll = true, delay = 0, duration = 0.5, horizontalOffset = 20, stagger = 0.03, variant = "right", className = "", }) {
     const containerRef = useRef(null);
     const splitRefs = useRef([]);
     const charsRef = useRef([]);

@@ -78,7 +78,7 @@ const DEFAULT_ITEMS = [
 ];
 
 const DEFAULT_TEASER =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg";
+  "https://picsum.photos/seed/v10/1600/1200";
 
 type LinkButtonProps = Omit<ComponentPropsWithoutRef<typeof Link>, "children"> & {
   children: string;

@@ -23,8 +23,10 @@ interface SlideTextRevealProps {
   className?: string;
 }
 
+const DEFAULT_TEXT = <p className="text-2xl">Slide text glides in character by character as it scrolls into view.</p>;
+
 export default function SlideTextReveal({
-  children,
+  children = DEFAULT_TEXT,
   animateOnScroll = true,
   delay = 0,
   duration = 0.5,

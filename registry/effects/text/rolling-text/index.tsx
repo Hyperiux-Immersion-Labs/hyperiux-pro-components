@@ -13,8 +13,6 @@ gsap.registerPlugin(useGSAP);
 // up statically - keep all three in sync if this changes.
 const LINE_HEIGHT = 0.8;
 
-const BACKGROUND_IMAGE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-29.png";
 const FONT_FAMILY = "Helvetica Neue, Arial Narrow, system-ui, sans-serif";
 
 interface RollingTextProps {
@@ -110,10 +108,8 @@ const RollingText = ({
   return (
     <div
       ref={containerRef}
-      className="relative grid place-items-center min-h-dvh bg-[#2a0e5f] bg-cover bg-center"
-      style={{ backgroundImage: `url(${BACKGROUND_IMAGE})` }}
+      className="relative grid place-items-center min-h-dvh bg-[#0a0a0a]"
     >
-      <div className="absolute inset-0 bg-black/40" aria-hidden />
       {/*
         globals.css has an UNLAYERED `h1,h2,h3,h4 { font-weight: 400;
         line-height: 1.2 }` rule. Unlayered CSS always beats anything in

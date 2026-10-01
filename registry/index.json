@@ -3847,37 +3847,37 @@
           {
             "name": "Motion Systems",
             "description": "Crafting immersive motion-driven interfaces with smooth transitions, interactive timelines, and modern animation systems.",
-            "image": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg"
+            "image": "https://picsum.photos/seed/h02/1600/1200"
           },
           {
             "name": "Creative Components",
             "description": "A curated collection of expressive UI components designed for futuristic web experiences and rapid development.",
-            "image": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg"
+            "image": "https://picsum.photos/seed/h03/1600/1200"
           },
           {
             "name": "Visual Interactions",
             "description": "Building visually rich interactions with hover effects, layered depth, dynamic layouts, and fluid user feedback.",
-            "image": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"
+            "image": "https://picsum.photos/seed/h07/1600/1200"
           },
           {
             "name": "Future Interfaces",
             "description": "Exploring next-generation interface patterns that blend cinematic motion with minimal and functional design.",
-            "image": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg"
+            "image": "https://picsum.photos/seed/h08/1600/1200"
           },
           {
             "name": "Design Engine",
             "description": "Creating scalable design systems and reusable interface architectures optimized for modern frontend workflows.",
-            "image": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg"
+            "image": "https://picsum.photos/seed/h09/1600/1200"
           },
           {
             "name": "Scroll Experiences",
             "description": "Designing immersive scroll-based storytelling experiences powered by fluid motion and seamless transitions.",
-            "image": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg"
+            "image": "https://picsum.photos/seed/h10/1600/1200"
           },
           {
             "name": "Interactive Layers",
             "description": "Combining lighting, gradients, and layered compositions to create premium interactive web experiences.",
-            "image": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg"
+            "image": "https://picsum.photos/seed/h06/1600/1200"
           }
         ],
         "description": "Slides rendered by the clip-path sweep transition (name, description, image).",
@@ -5732,19 +5732,19 @@
         "type": "array",
         "default": [
           {
-            "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img01.png",
+            "src": "https://picsum.photos/seed/img01/1600/1200",
             "caption": "Drop-in motion primitives"
           },
           {
-            "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img02.png",
+            "src": "https://picsum.photos/seed/img02/1600/1200",
             "caption": "Full pages, wired and ready"
           },
           {
-            "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img03.png",
+            "src": "https://picsum.photos/seed/img03/1600/1200",
             "caption": "Built with Hyperiux in the wild"
           },
           {
-            "src": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img04.png",
+            "src": "https://picsum.photos/seed/img04/1600/1200",
             "caption": "Guides, props and recipes"
           }
         ],
@@ -8550,7 +8550,7 @@
       {
         "name": "backgroundColor",
         "type": "string",
-        "default": "#111844",
+        "default": "#0a0a0a",
         "description": "Background color behind the text.",
         "remixer": {
           "control": "color",
@@ -14417,7 +14417,7 @@
       {
         "name": "teaserImage",
         "type": "string",
-        "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
+        "default": "https://picsum.photos/seed/v10/1600/1200",
         "description": "Preview image URL.",
         "remixer": {
           "enabled": false,
@@ -17937,7 +17937,7 @@
       {
         "name": "src",
         "type": "string",
-        "default": "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+        "default": "https://picsum.photos/seed/v02/1600/1200",
         "description": "Image source URL."
       },
       {

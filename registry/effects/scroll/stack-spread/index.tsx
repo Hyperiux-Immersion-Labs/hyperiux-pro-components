@@ -18,7 +18,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 
 const IMG_BASE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/stack-spread";
+  "https://picsum.photos/seed/stackspread/1600/1200";
 
 const IMG = {
   plane: `${IMG_BASE}/img1.png`,

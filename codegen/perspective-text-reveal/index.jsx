@@ -7,7 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(SplitText, ScrollTrigger);
 const REDUCED_MOTION_FADE_DURATION = 0.8;
 const REDUCED_MOTION_Y_OFFSET = 24;
-export default function PerspectiveTextReveal({ children, animateOnScroll = true, delay = 0, duration = 0.8, stagger = 0.08, className = "", scrub = false, startOpacity = 0, direction = "top", splitBy = "lines", rotation = 70, ease = "power3.out", perspective = 800, }) {
+const DEFAULT_TEXT = <p className="text-2xl">Perspective text tilts into place as it scrolls into view.</p>;
+export default function PerspectiveTextReveal({ children = DEFAULT_TEXT, animateOnScroll = true, delay = 0, duration = 0.8, stagger = 0.08, className = "", scrub = false, startOpacity = 0, direction = "top", splitBy = "lines", rotation = 70, ease = "power3.out", perspective = 800, }) {
     const containerRef = useRef(null);
     const splitRefs = useRef([]);
     const linesRef = useRef([]);

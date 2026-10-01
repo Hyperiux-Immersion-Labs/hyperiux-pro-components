@@ -58,16 +58,37 @@ type ParallaxStripSliderProps = {
   accentColor?: string;
 };
 
-const R2_BASE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/strip-paralax-slider";
+const imageUrl = (seed: string, portrait = false) =>
+  `https://picsum.photos/seed/stripparalaxslider-${seed}/${portrait ? "1200/1600" : "1600/1200"}`;
 
 const DEFAULT_SLIDES: Slide[] = [
-  { src: `${R2_BASE}/img01.png`, title: "Fire", chapter: "Collection 01" },
-  { src: `${R2_BASE}/img02.png`, title: "Allure", chapter: "Collection 02" },
-  { src: `${R2_BASE}/img03.png`, title: "Ember", chapter: "Collection 03" },
+  { src: imageUrl("img01"), title: "Fire", chapter: "Collection 01" },
+  { src: imageUrl("img02"), title: "Allure", chapter: "Collection 02" },
+  { src: imageUrl("img03"), title: "Ember", chapter: "Collection 03" },
 ];
 
 type TransitionDirection = "next" | "prev";
+
+// Decoded-image cache so a slide is fully ready before its strips animate in;
+// otherwise the wipe plays over empty strips and the picture pops in late, and
+// the final swap onto the base layer flashes.
+const readyImages = new Map<string, Promise<void>>();
+
+function preloadImage(src: string): Promise<void> {
+  const cached = readyImages.get(src);
+  if (cached) return cached;
+  const task = new Promise<void>((resolve) => {
+    const img = new window.Image();
+    img.decoding = "async";
+    img.onload = () => {
+      (img.decode ? img.decode() : Promise.resolve()).then(resolve, resolve);
+    };
+    img.onerror = () => resolve();
+    img.src = src;
+  });
+  readyImages.set(src, task);
+  return task;
+}
 
 function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
@@ -115,15 +136,27 @@ export default function ParallaxStripSlider({
   const pos = useRef({ x: 0, y: 0 });
 
   const total = slides.length;
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    slides.forEach((slide) => void preloadImage(slide.src));
+    return () => {
+      isMounted.current = false;
+    };
+  }, [slides]);
 
   const goTo = useCallback(
     (next: number, transitionDirection: TransitionDirection) => {
       if (isAnimating.current || next === current || total < 2) return;
       isAnimating.current = true;
-      setDirection(transitionDirection);
-      setIncoming(next);
+      preloadImage(slides[next].src).then(() => {
+        if (!isMounted.current) return;
+        setDirection(transitionDirection);
+        setIncoming(next);
+      });
     },
-    [current, total]
+    [current, total, slides]
   );
 
   const onNext = useCallback(
@@ -511,6 +544,7 @@ export default function ParallaxStripSlider({
               alt=""
               fill
               sizes="100vw"
+              unoptimized
               draggable={false}
               className="object-cover select-none"
             />
@@ -534,6 +568,7 @@ export default function ParallaxStripSlider({
           alt={slides[current].title}
           fill
           priority
+          unoptimized
           sizes="100vw"
           draggable={false}
           className="object-cover select-none"

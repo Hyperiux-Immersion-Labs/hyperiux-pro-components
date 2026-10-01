@@ -665,12 +665,12 @@ const PREVIEW_IMAGES = [
   {
     alt: "Dashboard preview",
     heightClassName: "h-54 max-[1025px]:h-60 max-md:h-40",
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
+    src: "https://picsum.photos/seed/h09/1600/1200",
   },
   {
     alt: "Product showcase",
     heightClassName: "h-54 max-[1025px]:h-60 max-md:h-40",
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
+    src: "https://picsum.photos/seed/h07/1600/1200",
   },
 ];
 
@@ -1176,7 +1176,7 @@ export default function DirectionalMenu({
   menuBgColor = "#ffffff",
 }) {
   return (
-    <div className="relative h-screen overflow-hidden bg-black text-white max-md:h-full max-md:overflow-visible max-md:pb-10">
+    <div className="relative h-screen overflow-hidden bg-black text-white max-md:h-full max-md:overflow-visible">
       {/* Navbar */}
       <header className="relative z-50 border-b border-white/10">
         <div className="max-w-7xl mx-auto max-[1025px]:hidden h-19 flex items-center justify-between">

@@ -34,8 +34,10 @@ interface PerspectiveTextRevealProps {
  perspective?: number;
 }
 
+const DEFAULT_TEXT = <p className="text-2xl">Perspective text tilts into place as it scrolls into view.</p>;
+
 export default function PerspectiveTextReveal({
- children,
+ children = DEFAULT_TEXT,
  animateOnScroll = true,
  delay = 0,
  duration = 0.8,

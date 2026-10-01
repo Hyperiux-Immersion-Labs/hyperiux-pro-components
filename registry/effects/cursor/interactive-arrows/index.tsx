@@ -1,4 +1,5 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+'use client'
 import React, { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 
 // ---- utils.ts ----

@@ -128,7 +128,7 @@ function RoomModel({ onClick, isZoomed, mouseMovement = true, videoRef, ...props
  // =========================
  // 📺 TEXTURES
  // =========================
- const tvTextureSource = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/tvtexture.png");
+ const tvTextureSource = useTexture("https://picsum.photos/seed/tvtexture/1600/1200");
  const TVtexture = useMemo(() => {
  const texture = tvTextureSource.clone();
  texture.colorSpace = THREE.SRGBColorSpace;
@@ -281,7 +281,7 @@ function RoomModel({ onClick, isZoomed, mouseMovement = true, videoRef, ...props
  // =========================
  // 🎨 MATERIALS
  // =========================
- const normalMapSource = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/normal.webp");
+ const normalMapSource = useTexture("https://picsum.photos/seed/normal/1600/1200");
  const normalMap = useMemo(() => {
  const texture = normalMapSource.clone();
  texture.colorSpace = THREE.NoColorSpace;
@@ -299,7 +299,7 @@ function RoomModel({ onClick, isZoomed, mouseMovement = true, videoRef, ...props
 
 
  const roughnessMapSource = useTexture(
-"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/bathroom-floor-roughness.png"
+"https://picsum.photos/seed/bathroomfloorroughness/1600/1200"
  );
  const roughnessMap = useMemo(() => {
  const texture = roughnessMapSource.clone();

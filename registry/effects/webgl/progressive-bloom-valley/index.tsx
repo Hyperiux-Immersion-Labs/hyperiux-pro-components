@@ -1549,8 +1549,8 @@ function Experience({
  cameraSpeed = 1,
 }: ExperienceProps) {
  const gltf = useGLTF("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/camera-path07.glb");
- const sprite = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/pool_summer.png");
- const terrainTex = useTexture("https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/terrain.png");
+ const sprite = useTexture("https://picsum.photos/seed/poolsummer/1600/1200");
+ const terrainTex = useTexture("https://picsum.photos/seed/terrain/1600/1200");
 
  const flowerSprite = useMemo(() => {
  const nextSprite = sprite.clone();

@@ -255,7 +255,7 @@ export {
 };
 
 const DEFAULT_IMAGE_SRC =
-  'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg'
+  'https://picsum.photos/seed/v05/1600/1200'
 
 const damp = (current: number, target: number, lambda: number, delta: number) =>
   current + (target - current) * (1 - Math.exp(-lambda * delta))

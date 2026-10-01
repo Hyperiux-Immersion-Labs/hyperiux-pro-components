@@ -91,7 +91,7 @@ const CAPTION_MOBILE_LINE = `${3 * CAPTION_MOBILE_LINE_RATIO}vw`;
 const CAPTION_MOBILE_LINE_SM = `${4 * CAPTION_MOBILE_LINE_RATIO}vw`;
 
 const IMAGE_BASE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card";
+  "https://picsum.photos/seed/gsapflipcard/1600/1200";
 
 const defaultItems: GsapFlipCardItem[] = [
   {

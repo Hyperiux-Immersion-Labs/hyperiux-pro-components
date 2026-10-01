@@ -336,15 +336,15 @@ const ImageDistortionFragment = `
 const DEFAULT_SECTIONS = [
   {
     text: "SHADOW",
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+    src: "https://picsum.photos/seed/h02/1600/1200",
   },
   {
     text: "FLOWER",
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+    src: "https://picsum.photos/seed/h03/1600/1200",
   },
   {
     text: "RUN",
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+    src: "https://picsum.photos/seed/h05/1600/1200",
   },
 ];
 
@@ -441,7 +441,7 @@ export default function ScrollDistortion({
   transitionDuration,
   transitionEase,
   shaderConfig = EMPTY_SHADER_CONFIG,
-  displacementSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg",
+  displacementSrc = "https://picsum.photos/seed/distortionnoise/1600/1200",
 }: ScrollDistortionProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageRefs = useRef<(HTMLImageElement | null)[]>([]);

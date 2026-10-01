@@ -160,9 +160,9 @@ const __ElevateDesktopNav_DEFAULT_MENU_ITEMS = [
     href: "#",
     isDropdown: true,
     dropdown: [
-      { title: "All Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg", href: "#" },
-      { title: "Components", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg", href: "#" },
-      { title: "WebGL", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg", href: "#" },
+      { title: "All Effects", img: "https://picsum.photos/seed/h09/1600/1200", href: "#" },
+      { title: "Components", img: "https://picsum.photos/seed/h10/1600/1200", href: "#" },
+      { title: "WebGL", img: "https://picsum.photos/seed/h11/1600/1200", href: "#" },
     ],
   },
   {
@@ -170,9 +170,9 @@ const __ElevateDesktopNav_DEFAULT_MENU_ITEMS = [
     href: "/tech",
     isDropdown: true,
     dropdown: [
-      { title: "React Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg", href: "#" },
-      { title: "GSAP Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", href: "#" },
-      { title: "Three.js Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg", href: "#" },
+      { title: "React Effects", img: "https://picsum.photos/seed/h01/1600/1200", href: "#" },
+      { title: "GSAP Effects", img: "https://picsum.photos/seed/h02/1600/1200", href: "#" },
+      { title: "Three.js Effects", img: "https://picsum.photos/seed/h03/1600/1200", href: "#" },
     ],
   },
   {
@@ -186,9 +186,9 @@ const __ElevateDesktopNav_DEFAULT_MENU_ITEMS = [
     href: "#",
     isDropdown: true,
     dropdown: [
-      { title: "Introduction", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg", href: "#" },
-      { title: "Installation", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg", href: "#" },
-      { title: "CLI", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg", href: "#" },
+      { title: "Introduction", img: "https://picsum.photos/seed/h05/1600/1200", href: "#" },
+      { title: "Installation", img: "https://picsum.photos/seed/h06/1600/1200", href: "#" },
+      { title: "CLI", img: "https://picsum.photos/seed/h07/1600/1200", href: "#" },
     ],
   },
 ];
@@ -924,9 +924,9 @@ const __ElevateMobileNav_DEFAULT_MENU_ITEMS: ElevateMenuItem[] = [
     href: "#",
     isDropdown: true,
     dropdown: [
-      { title: "All Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg", href: "#" },
-      { title: "Components", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg", href: "#" },
-      { title: "WebGL", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg", href: "#" },
+      { title: "All Effects", img: "https://picsum.photos/seed/h09/1600/1200", href: "#" },
+      { title: "Components", img: "https://picsum.photos/seed/h10/1600/1200", href: "#" },
+      { title: "WebGL", img: "https://picsum.photos/seed/h11/1600/1200", href: "#" },
     ],
   },
   {
@@ -934,9 +934,9 @@ const __ElevateMobileNav_DEFAULT_MENU_ITEMS: ElevateMenuItem[] = [
     href: "/tech",
     isDropdown: true,
     dropdown: [
-      { title: "React Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg", href: "#" },
-      { title: "GSAP Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", href: "#" },
-      { title: "Three.js Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg", href: "#" },
+      { title: "React Effects", img: "https://picsum.photos/seed/h01/1600/1200", href: "#" },
+      { title: "GSAP Effects", img: "https://picsum.photos/seed/h02/1600/1200", href: "#" },
+      { title: "Three.js Effects", img: "https://picsum.photos/seed/h03/1600/1200", href: "#" },
     ],
   },
   {
@@ -950,9 +950,9 @@ const __ElevateMobileNav_DEFAULT_MENU_ITEMS: ElevateMenuItem[] = [
     href: "#",
     isDropdown: true,
     dropdown: [
-      { title: "Introduction", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg", href: "#" },
-      { title: "Installation", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg", href: "#" },
-      { title: "CLI", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg", href: "#" },
+      { title: "Introduction", img: "https://picsum.photos/seed/h05/1600/1200", href: "#" },
+      { title: "Installation", img: "https://picsum.photos/seed/h06/1600/1200", href: "#" },
+      { title: "CLI", img: "https://picsum.photos/seed/h07/1600/1200", href: "#" },
     ],
   },
 ];
@@ -1337,9 +1337,9 @@ const menuItems = [
     href: "#",
     isDropdown: true,
     dropdown: [
-      { title: "All Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg", href: "#" },
-      { title: "Components", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg", href: "#" },
-      { title: "WebGL", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg", href: "#" },
+      { title: "All Effects", img: "https://picsum.photos/seed/h09/1600/1200", href: "#" },
+      { title: "Components", img: "https://picsum.photos/seed/h10/1600/1200", href: "#" },
+      { title: "WebGL", img: "https://picsum.photos/seed/h11/1600/1200", href: "#" },
     ],
   },
   {
@@ -1347,9 +1347,9 @@ const menuItems = [
     href: "/tech",
     isDropdown: true,
     dropdown: [
-      { title: "React Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg", href: "#" },
-      { title: "GSAP Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", href: "#" },
-      { title: "Three.js Effects", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg", href: "#" },
+      { title: "React Effects", img: "https://picsum.photos/seed/h01/1600/1200", href: "#" },
+      { title: "GSAP Effects", img: "https://picsum.photos/seed/h02/1600/1200", href: "#" },
+      { title: "Three.js Effects", img: "https://picsum.photos/seed/h03/1600/1200", href: "#" },
     ],
   },
   {
@@ -1363,9 +1363,9 @@ const menuItems = [
     href: "#",
     isDropdown: true,
     dropdown: [
-      { title: "Introduction", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg", href: "#" },
-      { title: "Installation", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg", href: "#" },
-      { title: "CLI", img: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg", href: "#" },
+      { title: "Introduction", img: "https://picsum.photos/seed/h05/1600/1200", href: "#" },
+      { title: "Installation", img: "https://picsum.photos/seed/h06/1600/1200", href: "#" },
+      { title: "CLI", img: "https://picsum.photos/seed/h07/1600/1200", href: "#" },
     ],
   },
 ];
