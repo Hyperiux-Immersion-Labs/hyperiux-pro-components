@@ -18,11 +18,10 @@ const TITLE_CHAR_DURATION = 0.6;
 const TITLE_CHAR_STAGGER = 0.04;
 const TITLE_CHAR_Y_PERCENT = 100;
 const PROGRESS_DURATION = 0.9;
-const R2_BASE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/strip-paralax-slider";
 const DEFAULT_SLIDES = [
-    { src: `${R2_BASE}/img01.png`, title: "Fire", chapter: "Collection 01" },
-    { src: `${R2_BASE}/img02.png`, title: "Allure", chapter: "Collection 02" },
-    { src: `${R2_BASE}/img03.png`, title: "Ember", chapter: "Collection 03" },
+    { src: "https://picsum.photos/seed/strip1/1600/1200", title: "Fire", chapter: "Collection 01" },
+    { src: "https://picsum.photos/seed/strip2/1600/1200", title: "Allure", chapter: "Collection 02" },
+    { src: "https://picsum.photos/seed/strip3/1600/1200", title: "Ember", chapter: "Collection 03" },
 ];
 // Decoded-image cache so a slide is fully ready before its strips animate in;
 // otherwise the wipe plays over empty strips and the picture pops in late, and
