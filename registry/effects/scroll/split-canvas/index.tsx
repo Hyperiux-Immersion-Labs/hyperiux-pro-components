@@ -51,11 +51,11 @@ export const sections = [
 ];
 
 export const imageSources = [
-'https://picsum.photos/seed/banana/1600/1200',
-'https://picsum.photos/seed/cherry/1600/1200',
-'https://picsum.photos/seed/mango/1600/1200',
-'https://picsum.photos/seed/pineapple/1600/1200',
-'https://picsum.photos/seed/watermelon/1600/1200',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/banana.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/cherry.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/mango.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/pineapple.png',
+'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/pixelated-image/watermelon.png',
 ];
 
 export const PixelTransitionVertex = `

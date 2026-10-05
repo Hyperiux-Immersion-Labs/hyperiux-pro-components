@@ -351,8 +351,6 @@ export default function ScrollDistortion({ sections = DEFAULT_SECTIONS, distorti
         isTransitioningRef.current = false;
         wheelDeltaRef.current = 0;
         touchStartYRef.current = null;
-        textRefs.current = [];
-        imageRefs.current = [];
         Promise.all([
             ...sections.map((section) => loadCorsObjectUrl(section.src)),
             loadCorsObjectUrl(displacementSrc),
@@ -373,6 +371,11 @@ export default function ScrollDistortion({ sections = DEFAULT_SECTIONS, distorti
         return () => {
             isCancelled = true;
             nextObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+            // Clear on cleanup, not on mount: clearing on mount wipes refs that were
+            // just attached, and memoized ref callbacks (React Compiler) never re-run
+            // to refill them, so the text could never be found or hidden.
+            textRefs.current = [];
+            imageRefs.current = [];
         };
     }, [sections]);
     const areImagesDecoded = objectUrls?.length === sections.length + 1 &&

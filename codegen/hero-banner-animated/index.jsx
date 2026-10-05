@@ -115,6 +115,14 @@ function RoomModel({ onClick, isZoomed, mouseMovement = true, videoRef, ...props
         return texture;
     }, [videoTextureSource]);
     const videoElement = videoTextureSource.image;
+
+    // drei only refreshes the source texture each frame, not this clone, so
+    // without this the screen stays on the first frame while the video plays.
+    useFrame(() => {
+        if (videoElement && !videoElement.paused && videoElement.readyState >= 2) {
+            videoTexture.needsUpdate = true;
+        }
+    });
     useEffect(() => {
         return () => {
             TVtexture.dispose();

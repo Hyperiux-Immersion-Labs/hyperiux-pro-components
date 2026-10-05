@@ -124,8 +124,10 @@ const ScrollStackComp = ({ cards = [], sectionBgColor = "#ffffff", cardRadius = 
  ref={(el) => {
  rowRefs.current[index] = el;
  }}
- className={`relative w-full min-h-[180vh] ${
- index === 0 ?"" :"mt-[-70vh]"
+ className={`relative w-full ${
+ index === cards.length - 1 ?"min-h-[180vh]" :"min-h-[210vh]"
+ } ${
+ index === 0 ?"" :"mt-[-100vh]"
  } max-md:mt-0 max-md:min-h-0`}
  >
  <div

@@ -50,6 +50,8 @@ type ParallaxStripSliderProps = {
   showCounter?: boolean;
   /** Enable the click-to-navigate overlay and its circular cursor (left half = prev, right half = next). */
   showControls?: boolean;
+  /** Show the manual prev/next buttons under the title on tablet and mobile. Requires `showControls`. */
+  mobNavButton?: boolean;
   /** Show the hint pill telling the viewer to click either side to navigate. */
   showClue?: boolean;
   /** Text shown in the hint pill. */
@@ -58,13 +60,13 @@ type ParallaxStripSliderProps = {
   accentColor?: string;
 };
 
-const imageUrl = (seed: string, portrait = false) =>
-  `https://picsum.photos/seed/stripparalaxslider-${seed}/${portrait ? "1200/1600" : "1600/1200"}`;
+const R2_BASE =
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/strip-paralax-slider";
 
 const DEFAULT_SLIDES: Slide[] = [
-  { src: imageUrl("img01"), title: "Fire", chapter: "Collection 01" },
-  { src: imageUrl("img02"), title: "Allure", chapter: "Collection 02" },
-  { src: imageUrl("img03"), title: "Ember", chapter: "Collection 03" },
+  { src: `${R2_BASE}/img01.png`, title: "Fire", chapter: "Collection 01" },
+  { src: `${R2_BASE}/img02.png`, title: "Allure", chapter: "Collection 02" },
+  { src: `${R2_BASE}/img03.png`, title: "Ember", chapter: "Collection 03" },
 ];
 
 type TransitionDirection = "next" | "prev";
@@ -106,6 +108,7 @@ export default function ParallaxStripSlider({
   showProgressBar = true,
   showCounter = true,
   showControls = true,
+  mobNavButton = true,
   showClue = true,
   clueText = "Click either side and watch the next strip cut through.",
   accentColor = "#ffffff",
@@ -399,6 +402,11 @@ export default function ParallaxStripSlider({
     []
   );
 
+  // Pivot of the arrow lines (the chevron's bend) sits 8px right of the circle's
+  // centre at x = 0, and the arrow's bounding box is centred at about -2.4.
+  // Lower = further left, higher = further right.
+  const RIGHT_ARROW_X = -1;
+
   // Circular cursor: smooth follow + arrow that flips with the pointer side.
   // Mirrors the clip-path-slider interaction (0.12 lerp, power3 eases).
   useEffect(() => {
@@ -415,7 +423,7 @@ export default function ParallaxStripSlider({
       yPercent: -50,
       y: -1.5,
       rotation: 45,
-      x: 0,
+      x: RIGHT_ARROW_X,
     });
     gsap.set(l2, {
       transformOrigin: "100% 50%",
@@ -423,7 +431,7 @@ export default function ParallaxStripSlider({
       yPercent: -50,
       y: 1.5,
       rotation: -45,
-      x: 0,
+      x: RIGHT_ARROW_X,
     });
 
     let currentSide: "left" | "right" = "right";
@@ -485,8 +493,8 @@ export default function ParallaxStripSlider({
           gsap.to(l1, { rotation: 135, x: "-1vw", duration: 0.35, ease: "power3.inOut" });
           gsap.to(l2, { rotation: -135, x: "-1vw", duration: 0.35, ease: "power3.inOut" });
         } else {
-          gsap.to(l1, { rotation: 45, x: 4, duration: 0.35, ease: "power3.inOut" });
-          gsap.to(l2, { rotation: -45, x: 4, duration: 0.35, ease: "power3.inOut" });
+          gsap.to(l1, { rotation: 45, x: RIGHT_ARROW_X, duration: 0.35, ease: "power3.inOut" });
+          gsap.to(l2, { rotation: -45, x: RIGHT_ARROW_X, duration: 0.35, ease: "power3.inOut" });
         }
       }
     };
@@ -630,17 +638,49 @@ export default function ParallaxStripSlider({
 
       {/* Bottom bar: three fixed thirds on one line; on mobile it stacks with
           the title + counter above and the controls below. */}
-      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-md:pb-32">
-        <h2
-          ref={titleRef}
-          className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none flex items-end max-[1025px]:order-1 max-[1025px]:w-full"
-          style={{
-            fontFamily: '"Instrument Serif", Georgia, serif',
-            color: accentColor,
-          }}
-        >
-          {activeSlide.title}
-        </h2>
+      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-[1025px]:pb-36 max-md:pb-32">
+        {/* Desktop: transparent wrapper (title keeps its third). Tablet and
+            mobile: centred title with the manual nav buttons below it. */}
+        <div className="contents max-[1025px]:order-1 max-[1025px]:flex max-[1025px]:flex-col max-[1025px]:items-center max-[1025px]:gap-6">
+          <h2
+            ref={titleRef}
+            className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none flex items-end max-[1025px]:w-full max-[1025px]:justify-center max-[1025px]:text-center"
+            style={{
+              fontFamily: '"Instrument Serif", Georgia, serif',
+              color: accentColor,
+            }}
+          >
+            {activeSlide.title}
+          </h2>
+
+          {showControls && mobNavButton && total > 1 && (
+            <div className="relative z-30 hidden shrink-0 gap-3 max-[1025px]:flex max-md:gap-2">
+              {(["prev", "next"] as const).map((dir) => (
+                <button
+                  key={dir}
+                  type="button"
+                  aria-label={dir === "prev" ? "Previous slide" : "Next slide"}
+                  onClick={dir === "prev" ? onPrev : onNext}
+                  className="flex size-18 items-center justify-center rounded-full max-md:size-14"
+                  style={{ backgroundColor: accentColor }}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#000000"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="size-6"
+                    aria-hidden="true"
+                  >
+                    <path d={dir === "prev" ? "M14.5 6l-6 6 6 6" : "M9.5 6l6 6-6 6"} />
+                  </svg>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Middle third keeps its width so the counter stays pinned to the
             right. On mobile the spacer collapses. */}

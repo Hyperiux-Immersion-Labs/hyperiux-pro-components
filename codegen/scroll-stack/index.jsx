@@ -79,7 +79,7 @@ const ScrollStackComp = ({ cards = [], sectionBgColor = "#ffffff", cardRadius = 
  <div className="wrap flex w-full flex-col items-center px-[5%] py-[10vw] tablet:gap-[5vw] max-md:gap-[6vw]">
  {cards.map((item, index) => (<div key={item.id} ref={(el) => {
                 rowRefs.current[index] = el;
-            }} className={`relative w-full min-h-[180vh] ${index === 0 ? "" : "mt-[-70vh]"} max-md:mt-0 max-md:min-h-0`}>
+            }} className={`relative w-full ${index === cards.length - 1 ? "min-h-[180vh]" : "min-h-[210vh]"} ${index === 0 ? "" : "mt-[-100vh]"} max-md:mt-0 max-md:min-h-0`}>
  <div className="sticky top-[15vh] max-md:static max-md:space-y-6!" style={{ zIndex: index + 1 }}>
  <Card cardRef={(el) => {
                 cardRefs.current[index] = el;

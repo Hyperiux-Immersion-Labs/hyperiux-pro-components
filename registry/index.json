@@ -16593,6 +16593,17 @@
         }
       },
       {
+        "name": "mobNavButton",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the manual previous/next buttons under the title on tablet and mobile. Requires showControls.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "ui",
+          "groupTitle": "UI"
+        }
+      },
+      {
         "name": "showClue",
         "type": "boolean",
         "default": true,

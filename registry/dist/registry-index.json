@@ -115,11 +115,6 @@
     "tarball": "registry/dist/hyperiux-orbit-flip-slider-1.0.0.tgz"
   },
   {
-    "name": "@hyperiux/parallax-strip-slider",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-parallax-strip-slider-1.0.0.tgz"
-  },
-  {
     "name": "@hyperiux/ring-carousel",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-ring-carousel-1.0.1.tgz"
@@ -748,5 +743,10 @@
     "name": "@hyperiux/side-navbar",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-side-navbar-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/parallax-strip-slider",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-parallax-strip-slider-1.0.0.tgz"
   }
 ]

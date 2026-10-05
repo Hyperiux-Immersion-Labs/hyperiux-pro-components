@@ -49,6 +49,8 @@ type ParallaxStripSliderProps = {
   showCounter?: boolean;
   /** Enable the click-to-navigate overlay and its circular cursor (left half = prev, right half = next). */
   showControls?: boolean;
+  /** Show the manual prev/next buttons under the title on tablet and mobile. Requires `showControls`. */
+  mobNavButton?: boolean;
   /** Show the hint pill telling the viewer to click either side to navigate. */
   showClue?: boolean;
   /** Text shown in the hint pill. */
@@ -68,6 +70,27 @@ const DEFAULT_SLIDES: Slide[] = [
 
 type TransitionDirection = "next" | "prev";
 
+// Decoded-image cache so a slide is fully ready before its strips animate in;
+// otherwise the wipe plays over empty strips and the picture pops in late, and
+// the final swap onto the base layer flashes.
+const readyImages = new Map<string, Promise<void>>();
+
+function preloadImage(src: string): Promise<void> {
+  const cached = readyImages.get(src);
+  if (cached) return cached;
+  const task = new Promise<void>((resolve) => {
+    const img = new window.Image();
+    img.decoding = "async";
+    img.onload = () => {
+      (img.decode ? img.decode() : Promise.resolve()).then(resolve, resolve);
+    };
+    img.onerror = () => resolve();
+    img.src = src;
+  });
+  readyImages.set(src, task);
+  return task;
+}
+
 function prefersReducedMotion() {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 }
@@ -84,6 +107,7 @@ export default function ParallaxStripSlider({
   showProgressBar = true,
   showCounter = true,
   showControls = true,
+  mobNavButton = true,
   showClue = true,
   clueText = "Click either side and watch the next strip cut through.",
   accentColor = "#ffffff",
@@ -114,15 +138,27 @@ export default function ParallaxStripSlider({
   const pos = useRef({ x: 0, y: 0 });
 
   const total = slides.length;
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    slides.forEach((slide) => void preloadImage(slide.src));
+    return () => {
+      isMounted.current = false;
+    };
+  }, [slides]);
 
   const goTo = useCallback(
     (next: number, transitionDirection: TransitionDirection) => {
       if (isAnimating.current || next === current || total < 2) return;
       isAnimating.current = true;
-      setDirection(transitionDirection);
-      setIncoming(next);
+      preloadImage(slides[next].src).then(() => {
+        if (!isMounted.current) return;
+        setDirection(transitionDirection);
+        setIncoming(next);
+      });
     },
-    [current, total]
+    [current, total, slides]
   );
 
   const onNext = useCallback(
@@ -257,6 +293,7 @@ export default function ParallaxStripSlider({
         if (wasActive) isAnimating.current = false;
       };
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [incoming, direction, stripCount, revealDuration, stripStagger, zoomFrom, zoomDuration, total]
   );
 
@@ -364,6 +401,11 @@ export default function ParallaxStripSlider({
     []
   );
 
+  // Pivot of the arrow lines (the chevron's bend) sits 8px right of the circle's
+  // centre at x = 0, and the arrow's bounding box is centred at about -2.4.
+  // Lower = further left, higher = further right.
+  const RIGHT_ARROW_X = -1;
+
   // Circular cursor: smooth follow + arrow that flips with the pointer side.
   // Mirrors the clip-path-slider interaction (0.12 lerp, power3 eases).
   useEffect(() => {
@@ -380,7 +422,7 @@ export default function ParallaxStripSlider({
       yPercent: -50,
       y: -1.5,
       rotation: 45,
-      x: 0,
+      x: RIGHT_ARROW_X,
     });
     gsap.set(l2, {
       transformOrigin: "100% 50%",
@@ -388,7 +430,7 @@ export default function ParallaxStripSlider({
       yPercent: -50,
       y: 1.5,
       rotation: -45,
-      x: 0,
+      x: RIGHT_ARROW_X,
     });
 
     let currentSide: "left" | "right" = "right";
@@ -450,8 +492,8 @@ export default function ParallaxStripSlider({
           gsap.to(l1, { rotation: 135, x: "-1vw", duration: 0.35, ease: "power3.inOut" });
           gsap.to(l2, { rotation: -135, x: "-1vw", duration: 0.35, ease: "power3.inOut" });
         } else {
-          gsap.to(l1, { rotation: 45, x: 4, duration: 0.35, ease: "power3.inOut" });
-          gsap.to(l2, { rotation: -45, x: 4, duration: 0.35, ease: "power3.inOut" });
+          gsap.to(l1, { rotation: 45, x: RIGHT_ARROW_X, duration: 0.35, ease: "power3.inOut" });
+          gsap.to(l2, { rotation: -45, x: RIGHT_ARROW_X, duration: 0.35, ease: "power3.inOut" });
         }
       }
     };
@@ -509,6 +551,7 @@ export default function ParallaxStripSlider({
               alt=""
               fill
               sizes="100vw"
+              unoptimized
               draggable={false}
               className="object-cover select-none"
             />
@@ -532,6 +575,7 @@ export default function ParallaxStripSlider({
           alt={slides[current].title}
           fill
           priority
+          unoptimized
           sizes="100vw"
           draggable={false}
           className="object-cover select-none"
@@ -593,17 +637,49 @@ export default function ParallaxStripSlider({
 
       {/* Bottom bar: three fixed thirds on one line; on mobile it stacks with
           the title + counter above and the controls below. */}
-      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-md:pb-32">
-        <h2
-          ref={titleRef}
-          className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none flex items-end max-[1025px]:order-1 max-[1025px]:w-full"
-          style={{
-            fontFamily: '"Instrument Serif", Georgia, serif',
-            color: accentColor,
-          }}
-        >
-          {activeSlide.title}
-        </h2>
+      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-[1025px]:pb-36 max-md:pb-32">
+        {/* Desktop: transparent wrapper (title keeps its third). Tablet and
+            mobile: centred title with the manual nav buttons below it. */}
+        <div className="contents max-[1025px]:order-1 max-[1025px]:flex max-[1025px]:flex-col max-[1025px]:items-center max-[1025px]:gap-6">
+          <h2
+            ref={titleRef}
+            className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none flex items-end max-[1025px]:w-full max-[1025px]:justify-center max-[1025px]:text-center"
+            style={{
+              fontFamily: '"Instrument Serif", Georgia, serif',
+              color: accentColor,
+            }}
+          >
+            {activeSlide.title}
+          </h2>
+
+          {showControls && mobNavButton && total > 1 && (
+            <div className="relative z-30 hidden shrink-0 gap-3 max-[1025px]:flex max-md:gap-2">
+              {(["prev", "next"] as const).map((dir) => (
+                <button
+                  key={dir}
+                  type="button"
+                  aria-label={dir === "prev" ? "Previous slide" : "Next slide"}
+                  onClick={dir === "prev" ? onPrev : onNext}
+                  className="flex size-18 items-center justify-center rounded-full max-md:size-14"
+                  style={{ backgroundColor: accentColor }}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#000000"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="size-6"
+                    aria-hidden="true"
+                  >
+                    <path d={dir === "prev" ? "M14.5 6l-6 6 6 6" : "M9.5 6l6 6-6 6"} />
+                  </svg>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Middle third keeps its width so the counter stays pinned to the
             right. On mobile the spacer collapses. */}

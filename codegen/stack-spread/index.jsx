@@ -3,16 +3,16 @@
 import Image from "next/image";
 import { motion, useScroll, useTransform, useReducedMotion, useMotionValue, useSpring, useMotionValueEvent, } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-const IMG_BASE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/stack-spread";
+const IMG_BASE = "https://picsum.photos/seed";
 const IMG = {
-    plane: `${IMG_BASE}/img1.png`,
-    painting: `${IMG_BASE}/img2.png`,
-    breaker: `${IMG_BASE}/img3.png`,
-    dog: `${IMG_BASE}/img4.png`,
-    footballer: `${IMG_BASE}/img5.png`,
-    jacket: `${IMG_BASE}/img6.png`,
-    meadow: `${IMG_BASE}/img7.png`,
-    stripes: `${IMG_BASE}/img8.png`,
+    plane: `${IMG_BASE}/stackspread1/1600/1200`,
+    painting: `${IMG_BASE}/stackspread2/1600/1200`,
+    breaker: `${IMG_BASE}/stackspread3/1600/1200`,
+    dog: `${IMG_BASE}/stackspread4/1600/1200`,
+    footballer: `${IMG_BASE}/stackspread5/1600/1200`,
+    jacket: `${IMG_BASE}/stackspread6/1600/1200`,
+    meadow: `${IMG_BASE}/stackspread7/1600/1200`,
+    stripes: `${IMG_BASE}/stackspread8/1600/1200`,
 };
 // per-image rest scale, keyed by img index (1-8). default 1, drop below to shrink.
 const SCALE = {

@@ -448,7 +448,7 @@ export default function AnimatedFaq() {
     .map((item) => item.id);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-4">
+    <div className="mx-auto max-w-4xl space-y-4 bg-black">
       <FAQGroup allowMultiple={false} defaultOpenItems={defaultOpenItems}>
         {faqItems.map((item) => (
           <FAQWrapper
