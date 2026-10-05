@@ -22,12 +22,12 @@ const REDUCED_MOTION_FACTOR = 0.25;
 const PARALLAX_SCALE_MARGIN = 1.1;
 const PAD_X = "5vw";
 const DEFAULT_IMAGES = [
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
+    "https://picsum.photos/seed/h01/1600/1200",
+    "https://picsum.photos/seed/h02/1600/1200",
+    "https://picsum.photos/seed/h03/1600/1200",
+    "https://picsum.photos/seed/h07/1600/1200",
+    "https://picsum.photos/seed/h05/1600/1200",
+    "https://picsum.photos/seed/h06/1600/1200",
 ];
 function ParallaxSlider({ images = DEFAULT_IMAGES, parallaxAmount = 25, slideGap = 1.6, scrub = 1, }) {
     const outerRef = useRef(null);

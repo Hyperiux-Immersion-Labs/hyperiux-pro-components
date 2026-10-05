@@ -265,7 +265,7 @@ export default function SpotlightText({ className = "", size = "text-3xl md:text
         : align === "right"
             ? "text-right"
             : "text-left";
-    return (<section className={`w-full ${className}`}>
+    return (<section className={`w-full bg-[#0a0a0a] ${className}`}>
  <div ref={containerRef} className={`relative font-semibold max-md:font-medium max-md:text-[7vw]! ${size} ${alignment}`} style={isMobile
             ? {}
             : {

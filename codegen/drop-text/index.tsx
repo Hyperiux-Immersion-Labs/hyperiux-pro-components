@@ -43,8 +43,6 @@ type DropTextProps = {
 };
 
 const DEFAULT_TEXT = "Motion Makes Spaces Move";
-const DEFAULT_BACKGROUND_IMAGE =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 
 function mapStaggerFrom(staggerFrom: StaggerFrom) {
   if (staggerFrom === "left") return "start";
@@ -243,10 +241,6 @@ export default function DropText({
       className={`flex min-h-screen w-full items-center justify-center overflow-hidden px-5 py-16 ${className}`}
       style={{
         backgroundColor,
-        backgroundImage: `linear-gradient(rgba(16, 17, 19, 0.45), rgba(16, 17, 19, 0.45)), url(${DEFAULT_BACKGROUND_IMAGE})`,
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
         perspective: variant === "perspective" ? "900px" : undefined,
       }}
     >

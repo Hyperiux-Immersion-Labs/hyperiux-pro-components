@@ -56,7 +56,7 @@ export function PixelateSvgFilter({ id: idProp, size: propSize = 16, crossLayers
       </defs>
     </svg>);
 }
-export default function PixelatedImageEffect({ src = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg", pixelSize = 16, duration = 0.25, imageClassName = "", }) {
+export default function PixelatedImageEffect({ src = "https://picsum.photos/seed/v02/1600/1200", pixelSize = 16, duration = 0.25, imageClassName = "", }) {
     const imageRef = useRef(null);
     const isTouching = useRef(false);
     const pointerRatio = useRef(null);
@@ -65,7 +65,7 @@ export default function PixelatedImageEffect({ src = "https://pub-8abee449136941
     const [targetPixelSize, setTargetPixelSize] = useState(pixelSize);
     const [prevResolvedPixelSize, setPrevResolvedPixelSize] = useState(pixelSize);
     const pixelateFilterId = `pixelate-filter-${useId().replace(/:/g, "")}`;
-    const fallbackSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg";
+    const fallbackSrc = "https://picsum.photos/seed/v02/1600/1200";
     const resolvedSrc = typeof src === "string" && src.trim() ? src.trim() : fallbackSrc;
     const resolvedPixelSize = Math.min(Math.max(Number(pixelSize) || 16, 1), 64);
     const resolvedDuration = Math.max(Number(duration) || 0, 0);

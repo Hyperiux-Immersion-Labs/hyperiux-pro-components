@@ -58,19 +58,19 @@ const defaultSocials = [
 ];
 const defaultMedia = [
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img01.png",
+        src: "https://picsum.photos/seed/img01/1600/1200",
         caption: "Drop-in motion primitives",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img02.png",
+        src: "https://picsum.photos/seed/img02/1600/1200",
         caption: "Full pages, wired and ready",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img03.png",
+        src: "https://picsum.photos/seed/img03/1600/1200",
         caption: "Built with Hyperiux in the wild",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/gsap-flip-card/img04.png",
+        src: "https://picsum.photos/seed/img04/1600/1200",
         caption: "Guides, props and recipes",
     },
 ];

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-const CharStaggerPrimaryButton = ({ text = "Hover me", href = "#", btnClassName = "", textClassName = "", linkProps = {}, children, staggerStep = 0.01, lineClassName = "", hoverColor = "", showArrow = false, icon: Icon = ArrowRight, iconClassName = "", bgClassName = "", bgColor = "", onClick, ...props }) => {
+const CharStaggerPrimaryButton = ({ text = "Hover me", href = "#", btnClassName = "", textClassName = "", linkProps = {}, children, staggerStep = 0.01, lineClassName = "", hoverColor = "#ffffff", showArrow = false, icon: Icon = ArrowRight, iconClassName = "", bgClassName = "", bgColor = "#ff6b00", onClick, ...props }) => {
     const linkRef = useRef(null);
     const [isTouchHovered, setIsTouchHovered] = useState(false);
     const [supportsTouchHover, setSupportsTouchHover] = useState(false);

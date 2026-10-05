@@ -9,7 +9,6 @@ const FOCUS_EASE = CustomEase.create("focusTextEase", "0.16,1,0.3,1");
 const DEFAULT_TEXT = "Built for seamless interactions.\nDesigned with thoughtful motion.\nMade to feel unforgettable.";
 const DEFAULT_CHARACTER_STAGGER = 0.05;
 const REDUCED_MOTION_DURATION = 0.3;
-const DEFAULT_BACKGROUND_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-23.jpg";
 export default function FocusText({ text = DEFAULT_TEXT, className = "", fontSize = 4.5, characterStagger = DEFAULT_CHARACTER_STAGGER, revealDuration = 3.2, startScale = 0.4, blurAmount = 18, holdDuration = 1.2, loop = false, scrub = false, scrollStart = "top 80%", scrollEnd = "bottom 20%", backgroundColor = "#000000", textColor = "#ffffff", showReplayButton = true, }) {
     const sectionRef = useRef(null);
     const tweenRef = useRef(null);
@@ -95,10 +94,6 @@ export default function FocusText({ text = DEFAULT_TEXT, className = "", fontSiz
     };
     return (<section ref={sectionRef} className={`relative flex min-h-screen w-full items-center overflow-hidden px-6 ${className}`} style={{
             backgroundColor,
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.48)), url(${DEFAULT_BACKGROUND_IMAGE})`,
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
         }}>
       <h1 data-focus-heading className="m-0 w-full  font-black uppercase leading-none tracking-tight opacity-0" style={{
             fontSize: `clamp(2rem, ${fontSize}vw, 8rem)`,

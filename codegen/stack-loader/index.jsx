@@ -17,13 +17,13 @@ const STACK_Y_PERCENT_STEP = 20;
 const SPREAD_Y_PERCENT_STEP = 110;
 const IMAGE_FADE_STAGGER = 0.08;
 const STACK_IMAGE_SOURCES = [
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
+    "https://picsum.photos/seed/v01/1600/1200",
+    "https://picsum.photos/seed/v02/1600/1200",
+    "https://picsum.photos/seed/v03/1600/1200",
+    "https://picsum.photos/seed/v04/1600/1200",
+    "https://picsum.photos/seed/v05/1600/1200",
+    "https://picsum.photos/seed/v06/1600/1200",
+    "https://picsum.photos/seed/v07/1600/1200",
 ];
 function clampNumber(value, min, max, fallback) {
     const numericValue = Number(value);

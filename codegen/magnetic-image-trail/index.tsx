@@ -255,17 +255,17 @@ export {
 // crossOrigin="anonymous" - no proxy route or next.config needed.
 
 const imageUrls = [
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+  "https://picsum.photos/seed/h07/1600/1200",
+  "https://picsum.photos/seed/h08/1600/1200",
+  "https://picsum.photos/seed/v01/1600/1200",
+  "https://picsum.photos/seed/h10/1600/1200",
+  "https://picsum.photos/seed/h11/1600/1200",
+  "https://picsum.photos/seed/h12/1600/1200",
+  "https://picsum.photos/seed/h13/1600/1200",
+  "https://picsum.photos/seed/h14/1600/1200",
+  "https://picsum.photos/seed/h15/1600/1200",
+  "https://picsum.photos/seed/h02/1600/1200",
+  "https://picsum.photos/seed/h01/1600/1200",
 ];
 
 const SLOTS = [

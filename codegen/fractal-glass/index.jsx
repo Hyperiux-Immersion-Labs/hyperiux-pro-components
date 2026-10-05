@@ -180,7 +180,7 @@ function createSuspendedRaf({ onFrame, root = null, rootMargin = DEFAULT_ROOT_MA
     };
 }
 export { createSuspendedRaf, createVisibilityGate, DEFAULT_ROOT_MARGIN, };
-const DEFAULT_IMAGE_SRC = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg";
+const DEFAULT_IMAGE_SRC = "https://picsum.photos/seed/h13/1600/1200";
 const vertexShader = `
  varying vec2 vUv;
  void main() {

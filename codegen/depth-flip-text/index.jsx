@@ -11,7 +11,6 @@ const DEFAULT_PHRASES = [
     "Premium UI for modern teams",
     "Built to launch beautifully",
 ];
-const BACKGROUND_IMAGE_URL = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-27.jpg";
 const LINE_HEIGHT = 0.9;
 const CHAR_PERSPECTIVE = 1200;
 const FLIP_EASE = "power4.inOut";
@@ -164,8 +163,6 @@ const DepthFlipText = ({ phrases = DEFAULT_PHRASES, className = "", backgroundCo
         ],
     });
     return (<section className={`relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 sm:px-6 ${className}`} style={{ backgroundColor }}>
-      <div aria-hidden="true" className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${BACKGROUND_IMAGE_URL})` }}/>
-      <div aria-hidden="true" className="absolute inset-0 bg-black/35"/>
       <div ref={containerRef} className="relative z-10 w-full max-w-[1400px] max-md:min-h-[18vw]" style={{ opacity: fontsReady ? 1 : 0 }}>
         <Phrase key={`current-${activeIndex}`} ref={currentRef} text={currentPhrase} tone={textColor}/>
         <Phrase key={`next-${nextIndex}`} ref={nextRef} text={nextPhrase} tone={textColor} secondary/>

@@ -673,7 +673,7 @@ const SHIFT_DEFAULT_GRID_SIZE = 35;
 const SHIFT_DEFAULT_LERP = 0.1;
 const SHIFT_EFFECT_RADIUS = 0.3;
 const SHIFT_EFFECT_INTENSITY = 1.8;
-const SHIFT_DEFAULT_IMAGE_URL = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
+const SHIFT_DEFAULT_IMAGE_URL = "https://picsum.photos/seed/h02/1600/1200";
 const SHIFT_DEFAULT_NOTICE =
   "Heads up: the pixel-drift responds to cursor velocity - desktop is the sweet spot.";
 
@@ -1827,7 +1827,7 @@ const MOUSE_DEMO_VERSIONS: { label: string, value: MousePixelationVariant }[] = 
   },
 ];
 
-const MOUSE_DEMO_DEFAULT_PIXEL_SHIFT_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg";
+const MOUSE_DEMO_DEFAULT_PIXEL_SHIFT_IMAGE = "https://picsum.photos/seed/h02/1600/1200";
 const MOUSE_DEMO_DEFAULT_GRID_SIZE = 35;
 const MOUSE_DEMO_DEFAULT_LERP = 0.1;
 const MOUSE_DEMO_DEFAULT_BACKGROUND_COLOR = "#000000";

@@ -663,27 +663,27 @@ export default function RingCarousel({
 
 const imageItems: RingCarouselItem[] = [
  {
- src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+ src: "https://picsum.photos/seed/h14/1600/1200",
  alt: "Sticky section preview 1",
  },
  {
- src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+ src: "https://picsum.photos/seed/h15/1600/1200",
  alt: "Sticky section preview 2",
  },
  {
- src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+ src: "https://picsum.photos/seed/h11/1600/1200",
  alt: "Sticky section preview 3",
  },
  {
- src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+ src: "https://picsum.photos/seed/h12/1600/1200",
  alt: "Sticky section preview 4",
  },
  {
- src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+ src: "https://picsum.photos/seed/h13/1600/1200",
  alt: "Sticky section preview 5",
  },
  {
- src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+ src: "https://picsum.photos/seed/h10/1600/1200",
  alt: "Sticky section preview 6",
  },
 ];

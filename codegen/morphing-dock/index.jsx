@@ -40,7 +40,7 @@ const DEFAULT_ITEMS = [
     { label: "Showcase", href: "#", blurb: "Built with Hyperiux in the wild" },
     { label: "Docs", href: "#", blurb: "Guides, props and recipes" },
 ];
-const DEFAULT_TEASER = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg";
+const DEFAULT_TEASER = "https://picsum.photos/seed/v10/1600/1200";
 export function LinkButton({ children, className = "", staggerStep = 0.01, showLine = true, ...props }) {
     return (<Link {...props} className={`group/link-button focus-visible:outline-transparent text-[var(--morphing-dock-text,#d2d2d2)] hover:text-[var(--morphing-dock-hover,#ffffff)] focus-visible:text-[var(--morphing-dock-hover,#ffffff)] ${className}`}>
       <span className="sr-only">{children}</span>

@@ -76,7 +76,7 @@ const DEFAULT_SECONDARY = [
     { label: "Support", href: "#" },
     { label: "GitHub", href: "#" },
 ];
-const DEFAULT_FEATURE_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg";
+const DEFAULT_FEATURE_IMAGE = "https://picsum.photos/seed/v01/1600/1200";
 const UnfoldNavbar = ({ backgroundColor = "#ebebeb", textColor = "#111111", mutedColor = "rgba(0,0,0,0.5)", animationSpeed = 1, charStagger = 0.015, showLinkUnderline = false, showNumbers = false, dimInactiveLinks = true, showFeature = true, items = DEFAULT_ITEMS, secondary = DEFAULT_SECONDARY, featureImage = DEFAULT_FEATURE_IMAGE, featureCaption = "Latest Release", featureHref = "#", position, direction = "right", }) => {
     const reducedMotion = usePrefersReducedMotion();
     const rootRef = useRef(null);

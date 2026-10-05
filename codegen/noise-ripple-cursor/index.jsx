@@ -633,7 +633,7 @@ export const NoiseDietherShader = ({ imageSrc = "https://picsum.photos/seed/11/8
     }, [imageSrc, noiseColor, pixelSize, resolvedLerp, patternDensity, fluidRadius, fluidStrength, fluidDissipation, distortStrength, trailDarkness]);
     return (<div ref={containerRef} className={className} style={style} aria-label="NoiseRipple interactive background"/>);
 };
-export default function NoiseRippleCursor({ overlayColor = '#1825AA', imageSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg", pixelSize = 0.5, lerp = 0.2, distortion = 0.5, radius = 0.08 }) {
+export default function NoiseRippleCursor({ overlayColor = '#1825AA', imageSrc = "https://picsum.photos/seed/h15/1600/1200", pixelSize = 0.5, lerp = 0.2, distortion = 0.5, radius = 0.08 }) {
     return (<div className="h-screen w-screen relative">
 
   {imageSrc && (

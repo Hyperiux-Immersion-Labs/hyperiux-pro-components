@@ -254,7 +254,7 @@ const stickyItems = [
             "• Smart and sustainable design",
         ],
         link: { href: "#", text: "Explore Residences" },
-        image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+        image: "https://picsum.photos/seed/v01/1600/1200",
     },
     {
         heading: "Locations That Matter",
@@ -265,7 +265,7 @@ const stickyItems = [
             "• Surrounded by lifestyle hubs",
         ],
         link: { href: "#", text: "View Locations" },
-        image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+        image: "https://picsum.photos/seed/v02/1600/1200",
     },
     {
         heading: "Built for Long-Term Value",
@@ -276,7 +276,7 @@ const stickyItems = [
             "• Strong long-term appreciation potential",
         ],
         link: { href: "#", text: "Explore Investment" },
-        image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+        image: "https://picsum.photos/seed/v03/1600/1200",
     },
     {
         heading: "Crafted for Elevated Experiences",
@@ -287,7 +287,7 @@ const stickyItems = [
             "• Community-driven living spaces",
         ],
         link: { href: "#", text: "View Amenities" },
-        image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+        image: "https://picsum.photos/seed/v04/1600/1200",
     },
 ];
 export default function StickyContentWrapper({ bgColor = "#ffffff", textColor = "#000000", contentEnterYPercent = 2, initialImageScale = 1.5, activeImageScale = 1.2, exitImageScale = 1, }) {

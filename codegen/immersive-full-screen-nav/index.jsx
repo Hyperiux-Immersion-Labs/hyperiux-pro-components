@@ -109,7 +109,7 @@ function LinkAnim({ label, href, className = "", restColor, activeColor, underli
       </span>
     </Link>);
 }
-function CustomNavbar({ links = [], images = ["https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg", "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"], agencyName = "Hyperiux®", socials = [
+function CustomNavbar({ links = [], images = ["https://picsum.photos/seed/h05/1600/1200", "https://picsum.photos/seed/h07/1600/1200"], agencyName = "Hyperiux®", socials = [
     { type: "instagram", href: "#" },
     { type: "facebook", href: "#" },
     { type: "twitter", href: "#" },
@@ -591,7 +591,7 @@ const NAV_CONTENT = {
         { label: "About", href: "#" },
         { label: "Contact", href: "#" },
     ],
-    images: ["https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg", "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg"],
+    images: ["https://picsum.photos/seed/h05/1600/1200", "https://picsum.photos/seed/h07/1600/1200"],
     socials: [
         { type: "instagram", href: "#" },
         { type: "facebook", href: "#" },

@@ -248,31 +248,31 @@ const DEFAULT_TRIGGER_DISTANCE_THRESHOLD = 100;
 const INITIAL_Z_INDEX = 1;
 const DEFAULT_IMAGES = [
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+        src: "https://picsum.photos/seed/h11/1600/1200",
         alt: "Gradient 1",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+        src: "https://picsum.photos/seed/h12/1600/1200",
         alt: "Gradient 2",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+        src: "https://picsum.photos/seed/h13/1600/1200",
         alt: "Gradient 3",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+        src: "https://picsum.photos/seed/h14/1600/1200",
         alt: "Gradient 4",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+        src: "https://picsum.photos/seed/h15/1600/1200",
         alt: "Gradient 5",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
+        src: "https://picsum.photos/seed/h01/1600/1200",
         alt: "Gradient 6",
     },
     {
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+        src: "https://picsum.photos/seed/h02/1600/1200",
         alt: "Gradient 7",
     },
 ];

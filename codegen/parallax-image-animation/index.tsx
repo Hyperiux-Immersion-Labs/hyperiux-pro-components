@@ -15,7 +15,7 @@ function prefersReducedMotion() {
 gsap.registerPlugin(ScrollTrigger);
 
 const DEFAULT_SRC =
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg";
+    "https://picsum.photos/seed/v05/1600/1200";
 
 /** Accepts 30, "30" or "30%" and returns the percentage as a number. */
 function toPercent(value: string | number) {

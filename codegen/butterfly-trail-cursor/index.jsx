@@ -355,7 +355,7 @@ function ButterflyPool({ matcapMaterial, gltfScene, gltfAnimations, butterflyCou
     return <primitive object={poolGroup}/>;
 }
 function ButterflyTrail(props) {
-    const matcapTexture = useLoader(THREE.TextureLoader, 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/matcap-white.webp');
+    const matcapTexture = useLoader(THREE.TextureLoader, 'https://picsum.photos/seed/matcapwhite/1600/1200');
     const { scene: gltfScene, animations: gltfAnimations } = useGLTF('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/butterfly3.glb');
     const matcapMaterial = useMemo(() => {
         return new THREE.MeshMatcapMaterial({

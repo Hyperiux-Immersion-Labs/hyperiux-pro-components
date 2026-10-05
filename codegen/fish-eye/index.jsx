@@ -183,7 +183,7 @@ function createSuspendedRaf({ onFrame, root = null, rootMargin = DEFAULT_ROOT_MA
     };
 }
 export { createSuspendedRaf, createVisibilityGate, DEFAULT_ROOT_MARGIN, };
-const DEFAULT_IMAGE_SRC = 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg';
+const DEFAULT_IMAGE_SRC = 'https://picsum.photos/seed/v05/1600/1200';
 const damp = (current, target, lambda, delta) => current + (target - current) * (1 - Math.exp(-lambda * delta));
 const durationToDamp = (duration) => {
     const seconds = Math.max(Number(duration) || 0, 0);
@@ -282,7 +282,7 @@ function ImageNodeMaterial({ src, isMobile, bulgeEffect, duration, smoothness, m
 // suspends <Canvas>) whenever the `gl` prop changes between renders.
 async function createRenderer({ canvas }) {
     const renderer = new THREE.WebGPURenderer({
-        canvas,
+        canvas: canvas,
         antialias: true,
     });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -337,11 +337,13 @@ export default function FishEye({ bulgeEffect = 1, duration = 0.125, smoothness 
     if (isMobile)
         return null;
     return (<div ref={rootRef} className="h-full w-fit">
-      {objectUrl ? (<Suspense fallback={null}><Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 45 }} className="h-full w-full" frameloop={frameloop} style={{
+      {objectUrl ? (<Suspense fallback={null}>
+        <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 45 }} className="h-full w-full" frameloop={frameloop} style={{
                 pointerEvents: isMobile ? 'none' : 'auto',
                 touchAction: isMobile ? 'none' : 'auto',
             }} gl={createRenderer}>
           <ImageNodeMaterial src={objectUrl} isMobile={isMobile} bulgeEffect={bulgeEffect} duration={duration} smoothness={smoothness} mouseInteractive={mouseInteractive}/>
-        </Canvas></Suspense>) : null}
+        </Canvas>
+        </Suspense>) : null}
     </div>);
 }

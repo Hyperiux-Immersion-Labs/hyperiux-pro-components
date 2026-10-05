@@ -301,7 +301,7 @@ const data = [
     backgroundColor: "bg-[#F7FFDC]",
     description:
       "Explore mysterious galaxies, collapsing stars, and the endless possibilities hidden across the universe.",
-    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
+    image: "https://picsum.photos/seed/v05/1600/1200",
   },
   {
     id: "02",
@@ -310,7 +310,7 @@ const data = [
     backgroundColor: "bg-[#D1F3F5]",
     description:
       "Discover innovative spaces blending sustainability, functionality, and futuristic design philosophies.",
-    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+    image: "https://picsum.photos/seed/v06/1600/1200",
   },
   {
     id: "03",
@@ -319,7 +319,7 @@ const data = [
     backgroundColor: "bg-[#DDD9FF]",
     description:
       "Dive into the natural world through breathtaking ecosystems and stories of survival in the wild.",
-    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
+    image: "https://picsum.photos/seed/v07/1600/1200",
   },
   {
     id: "04",
@@ -328,7 +328,7 @@ const data = [
     backgroundColor: "bg-[#FFDDCA]",
     description:
       "Experience evolving sound cultures, underground artists, and genre-defining musical experiments.",
-    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
+    image: "https://picsum.photos/seed/v08/1600/1200",
   },
   {
     id: "05",
@@ -337,7 +337,7 @@ const data = [
     backgroundColor: "bg-[#DDD9FF]",
     description:
       "Uncover emerging innovations shaping how humans interact with machines and digital ecosystems.",
-    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-09.jpg",
+    image: "https://picsum.photos/seed/v09/1600/1200",
   },
   {
     id: "06",
@@ -346,7 +346,7 @@ const data = [
     backgroundColor: "bg-[#E4F5D4]",
     description:
       "Journey through breathtaking destinations, local traditions, and unforgettable travel experiences.",
-    image: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-10.jpg",
+    image: "https://picsum.photos/seed/v10/1600/1200",
   },
 ];
 

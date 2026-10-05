@@ -451,7 +451,7 @@ const DraggableMarquee = ({ speed = 7.2, pauseOnHover = false, throwMultiplier =
 const marqueeImages = [
     {
         id: 1,
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
+        src: "https://picsum.photos/seed/v01/1600/1200",
         alt: "Image 1",
         title: "image 1",
         width: 420,
@@ -460,7 +460,7 @@ const marqueeImages = [
     },
     {
         id: 2,
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+        src: "https://picsum.photos/seed/v02/1600/1200",
         alt: "Image 2",
         title: "image 2",
         width: 420,
@@ -469,7 +469,7 @@ const marqueeImages = [
     },
     {
         id: 3,
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+        src: "https://picsum.photos/seed/v03/1600/1200",
         alt: "Image 3",
         title: "image 3",
         width: 420,
@@ -478,7 +478,7 @@ const marqueeImages = [
     },
     {
         id: 4,
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+        src: "https://picsum.photos/seed/v04/1600/1200",
         alt: "Image 4",
         title: "image 4",
         width: 420,

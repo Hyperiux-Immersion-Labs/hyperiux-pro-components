@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
 const DEFAULT_TEXT = "Motion Makes Spaces Move";
-const DEFAULT_BACKGROUND_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 function mapStaggerFrom(staggerFrom) {
     if (staggerFrom === "left")
         return "start";
@@ -155,10 +154,6 @@ export default function DropText({ text = DEFAULT_TEXT, variant = "drop", splitB
     }, [animateOnScroll, playAnimation, segments]);
     return (<section ref={sectionRef} className={`flex min-h-screen w-full items-center justify-center overflow-hidden px-5 py-16 ${className}`} style={{
             backgroundColor,
-            backgroundImage: `linear-gradient(rgba(16, 17, 19, 0.45), rgba(16, 17, 19, 0.45)), url(${DEFAULT_BACKGROUND_IMAGE})`,
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
             perspective: variant === "perspective" ? "900px" : undefined,
         }}>
       <h2 ref={containerRef} className="m-0 block w-full select-none whitespace-pre-wrap" style={{

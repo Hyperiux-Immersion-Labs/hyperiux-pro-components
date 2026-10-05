@@ -525,49 +525,49 @@ function ArcFlowCarouselComp({
 
 const defaultItems: SmoothSliderItem[] = [
   {
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
+    src: "https://picsum.photos/seed/h10/1600/1200",
     alt: "Editorial portrait",
     title: "Editorial Portrait",
     description: "Soft-focus studio portrait with a quiet, print-like color grade.",
   },
   {
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
+    src: "https://picsum.photos/seed/h11/1600/1200",
     alt: "Studio still life",
     title: "Studio Still Life",
     description: "A minimal composition built around light falloff and glassy texture.",
   },
   {
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
+    src: "https://picsum.photos/seed/h12/1600/1200",
     alt: "Type poster",
     title: "Type Poster",
     description: "Poster exploration balancing negative space, blur, and sharp letterforms.",
   },
   {
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
+    src: "https://picsum.photos/seed/h13/1600/1200",
     alt: "Product campaign",
     title: "Product Campaign",
     description: "Commercial visual with polished highlights and a restrained luxury tone.",
   },
   {
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
+    src: "https://picsum.photos/seed/h14/1600/1200",
     alt: "Landscape study",
     title: "Landscape Study",
     description: "Atmospheric frame capturing motion, depth, and a misty horizon line.",
   },
   {
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+    src: "https://picsum.photos/seed/h15/1600/1200",
     alt: "Motion frame",
     title: "Motion Frame",
     description: "A cinematic still chosen for its sweeping blur and directional energy.",
   },
   {
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg",
+    src: "https://picsum.photos/seed/h22/1600/1200",
     alt: "Brand artwork",
     title: "Brand Artwork",
     description: "Graphic composition designed to feel tactile, glossy, and dimensional.",
   },
   {
-    src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-23.jpg",
+    src: "https://picsum.photos/seed/h23/1600/1200",
     alt: "Cover art",
     title: "Cover Art",
     description: "A cover-style visual with sculptural forms and a cool editorial palette.",

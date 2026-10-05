@@ -6,7 +6,7 @@ const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;
 const DEFAULT_HREF = "#";
 const STAGGER_STEP = 0.01;
-const DotFillBtn = ({ btnText = "", href = DEFAULT_HREF, className = "", textClassName = "", bgColor = "#ff6b00", textColor = "#ffffff", hoverTextColor = "#ff6b00", dotColor = "#ffffff", ...props }) => {
+const DotFillBtn = ({ btnText = "Try demo", href = DEFAULT_HREF, className = "", textClassName = "", bgColor = "#ff6b00", textColor = "#ffffff", hoverTextColor = "#ff6b00", dotColor = "#ffffff", ...props }) => {
     const textRef = useRef(null);
     const [hovered, setHovered] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -16,7 +16,7 @@ const DotFillBtn = ({ btnText = "", href = DEFAULT_HREF, className = "", textCla
         const el = textRef.current;
         if (!el)
             return;
-        const sourceText = btnText || "";
+        const sourceText = btnText || "Try demo";
         el.innerHTML = "";
         [...sourceText].forEach((char, index) => {
             const span = document.createElement("span");

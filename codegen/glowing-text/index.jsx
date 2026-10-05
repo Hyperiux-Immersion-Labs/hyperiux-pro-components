@@ -4,7 +4,6 @@ import { useMemo } from "react";
 const DEFAULT_EYEBROW = "VAULT TRANSMISSION";
 const DEFAULT_TEXT = "Connection established with Hyperiux Vault,\nDecrypting premium component signatures,\nMotion presets verified and ready to ship,\nWelcome in. Build something that glows.";
 const SETTLED_WEIGHT = 300;
-const DEFAULT_BACKGROUND_IMAGE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-22.jpg";
 function withAlpha(color, alpha) {
     if (/^#[0-9a-f]{6}$/i.test(color)) {
         const red = Number.parseInt(color.slice(1, 3), 16);
@@ -69,10 +68,6 @@ export default function GlowingText({ eyebrow = DEFAULT_EYEBROW, text = DEFAULT_
             "--glow-hard": glowHard,
             "--glow-settled-weight": SETTLED_WEIGHT,
             backgroundColor,
-            backgroundImage: `linear-gradient(rgba(11, 13, 14, 0.52), rgba(11, 13, 14, 0.52)), url(${DEFAULT_BACKGROUND_IMAGE})`,
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
         }}>
       <div className="pointer-events-none absolute inset-0 opacity-70">
         <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.03)_28%,transparent_46%),linear-gradient(165deg,rgba(255,255,255,0.05)_0%,transparent_30%)]"/>

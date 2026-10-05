@@ -217,7 +217,7 @@ export function SpotlightButton({
       <style>{css}</style>
       <button
         type="button"
-        className={`spotlight-button-${instanceId} group/spotlight-button relative flex overflow-hidden ${sizeClasses} cursor-pointer items-center justify-center gap-1.5 rounded-full border-[1.5px] border-transparent bg-transparent font-bold outline-offset-4 ${className}`}
+        className={`spotlight-button-${instanceId} group/spotlight-button relative flex w-fit overflow-hidden ${sizeClasses} cursor-pointer items-center justify-center gap-1.5 rounded-full border-[1.5px] border-transparent bg-transparent font-bold outline-offset-4 ${className}`}
         data-reduced-motion={reducedMotion ? "true" : undefined}
         {...props}
 

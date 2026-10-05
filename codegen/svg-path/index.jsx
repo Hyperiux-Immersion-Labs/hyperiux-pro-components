@@ -506,21 +506,21 @@ const wavePath = "M1 209.434C58.5872 255.935 387.926 325.938 482.583 209.434C600
 const circlePath = "M498 165 m -120, 0 a 120,120 0 1,0 240,0 a 120,120 0 1,0 -240,0";
 const spiralPath = "M0 165C120 40 240 290 360 165C480 40 600 290 720 165C840 40 960 290 1080 165";
 const svgPathImages = [
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-12.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
-    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg",
+    "https://picsum.photos/seed/h01/1600/1200",
+    "https://picsum.photos/seed/h02/1600/1200",
+    "https://picsum.photos/seed/h03/1600/1200",
+    "https://picsum.photos/seed/h13/1600/1200",
+    "https://picsum.photos/seed/h05/1600/1200",
+    "https://picsum.photos/seed/h06/1600/1200",
+    "https://picsum.photos/seed/h07/1600/1200",
+    "https://picsum.photos/seed/h08/1600/1200",
+    "https://picsum.photos/seed/h09/1600/1200",
+    "https://picsum.photos/seed/h10/1600/1200",
+    "https://picsum.photos/seed/h11/1600/1200",
+    "https://picsum.photos/seed/h12/1600/1200",
+    "https://picsum.photos/seed/h13/1600/1200",
+    "https://picsum.photos/seed/h14/1600/1200",
+    "https://picsum.photos/seed/h15/1600/1200",
 ];
 const tabs = [
     {

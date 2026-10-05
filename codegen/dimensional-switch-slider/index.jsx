@@ -8,13 +8,13 @@ import Image from "next/image";
 gsap.registerPlugin(CustomEase);
 const prefersReducedMotion = () => typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
-const R2_BASE = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images";
+const imageUrl = (seed, portrait = false) => `https://picsum.photos/seed/assetsimages-${seed}/${portrait ? "1200/1600" : "1600/1200"}`;
 const ITEMS = [
-    { image: `${R2_BASE}/h-06.jpg`, text: "Dimensional Switch" },
-    { image: `${R2_BASE}/h-18.jpg`, text: "Hyperiux Vault" },
-    { image: `${R2_BASE}/h-20.jpg`, text: "Motion Systems" },
-    { image: `${R2_BASE}/h-11.jpg`, text: "Interaction Design" },
-    { image: `${R2_BASE}/h-15.jpg`, text: "Source-First" },
+    { image: imageUrl("h-06"), text: "Dimensional Switch" },
+    { image: imageUrl("h-18"), text: "Hyperiux Vault" },
+    { image: imageUrl("h-20"), text: "Motion Systems" },
+    { image: imageUrl("h-11"), text: "Interaction Design" },
+    { image: imageUrl("h-15"), text: "Source-First" },
 ];
 const DEFAULT_EASE = "cubic-bezier(1, -0.001, 0.159, 0.838)";
 const CUBIC_BEZIER_RE = /^cubic-bezier\(\s*([^,]+),\s*([^,]+),\s*([^,]+),\s*([^)]+)\)$/;

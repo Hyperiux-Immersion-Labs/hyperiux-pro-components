@@ -50,7 +50,7 @@ const DEFAULT_ITEMS = [
         answer: "Yes. A custom version should define content structure, accessibility behavior, motion rules, reduced-motion behavior, source handoff, and implementation notes for the specific page job.",
     },
 ];
-const ElasticAccordion = ({ items = DEFAULT_ITEMS, startOpen = 0, multiple = false, duration = 0.8, stagger = 0.05, gooeyStrength = 9, ease = "elastic.out(1,0.82)", bgColor = "#ebebe9", panelColor = "#101010", textColor = "#fffaf2", className = "", onChange, }) => {
+const ElasticAccordion = ({ items = DEFAULT_ITEMS, startOpen = 0, multiple = false, duration = 0.8, stagger = 0.05, gooeyStrength = 9, ease = "elastic.out(1,0.82)", bgColor = "transparent", panelColor = "#101010", textColor = "#fffaf2", className = "", onChange, }) => {
     const uid = useId().replace(/:/g, "");
     const stageRef = useRef(null);
     const rowsRef = useRef([]);

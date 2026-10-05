@@ -35,7 +35,7 @@ export function PixelateSvgFilter({ id = "pixelate-filter", size: propSize = 16,
  </svg>);
 }
 gsap.registerPlugin(ScrollTrigger);
-const DEFAULT_SRC = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg";
+const DEFAULT_SRC = "https://picsum.photos/seed/v01/1600/1200";
 const DEFAULT_ALT = "Image";
 export default function SVGPixelReveal({ src = DEFAULT_SRC, alt = DEFAULT_ALT, className = "h-[50vh] w-[50vw]", imageClassName = "", intensity = 22, priority = false, scrub = true, duration = 1.5, }) {
     const containerRef = useRef(null);

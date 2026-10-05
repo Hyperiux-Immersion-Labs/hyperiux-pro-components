@@ -58,6 +58,7 @@ export function ShinyButton({ label = "Get Started", onClick, className = "", fi
       --transition: ${easeDuration}s cubic-bezier(0.25, 1, 0.5, 1);
 
       isolation: isolate;
+      width: fit-content;
       position: relative;
       overflow: hidden;
       cursor: pointer;

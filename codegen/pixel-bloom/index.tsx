@@ -423,11 +423,9 @@ const GRID_SIZE = 35;
 const EFFECT_RADIUS = 40;
 const MAX_TRAIL_LENGTH = 8;
 const CELL_LIFETIME = 100;
-const GRID_IMAGE_BASE_URL =
-  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/FeddleAsciCursor";
 const DEFAULT_GRID_IMAGE_URLS = Array.from(
   { length: 10 },
-  (_, i) => `${GRID_IMAGE_BASE_URL}/grid-${i}.1.png`
+  (_, i) => `https://picsum.photos/seed/pixel-bloom-${i}/400/400`
 );
 const getCanvasSafeMediaUrl = (source: string) => source;
 

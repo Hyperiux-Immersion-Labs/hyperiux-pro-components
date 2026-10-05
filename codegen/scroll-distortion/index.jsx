@@ -263,15 +263,15 @@ const ImageDistortionFragment = `
 const DEFAULT_SECTIONS = [
     {
         text: "SHADOW",
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg",
+        src: "https://picsum.photos/seed/h02/1600/1200",
     },
     {
         text: "FLOWER",
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg",
+        src: "https://picsum.photos/seed/h03/1600/1200",
     },
     {
         text: "RUN",
-        src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-05.jpg",
+        src: "https://picsum.photos/seed/h05/1600/1200",
     },
 ];
 const DEFAULT_SHADER_CONFIG = {
@@ -324,7 +324,7 @@ function createTextureFromImage(imageElement) {
     texture.magFilter = THREE.LinearFilter;
     return texture;
 }
-export default function ScrollDistortion({ sections = DEFAULT_SECTIONS, distortionStrength, rgbShift, distortionScale, transitionDuration, transitionEase, shaderConfig = EMPTY_SHADER_CONFIG, displacementSrc = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/distortion-noise.jpg", }) {
+export default function ScrollDistortion({ sections = DEFAULT_SECTIONS, distortionStrength, rgbShift, distortionScale, transitionDuration, transitionEase, shaderConfig = EMPTY_SHADER_CONFIG, displacementSrc = "https://picsum.photos/seed/distortionnoise/1600/1200", }) {
     const containerRef = useRef(null);
     const imageRefs = useRef([]);
     const textRefs = useRef([]);

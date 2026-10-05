@@ -349,10 +349,7 @@ export default function VariableTextProximity({
       <style>{`
         .hv-variable-root {
           background-color: var(--hv-variable-bg);
-          background-image: url('https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-30.png');
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
+         
           color: var(--hv-variable-color);
         }
 
