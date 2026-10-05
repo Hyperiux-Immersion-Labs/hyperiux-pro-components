@@ -11,6 +11,10 @@ if (typeof window !== "undefined") {
 
 // Animation timing
 const STRIP_COUNT = 12;
+// Pivot of the arrow lines (the chevron's bend) sits 8px right of the circle's
+// centre at x = 0, and the arrow's bounding box is centred at about -2.4.
+// Lower = further left, higher = further right.
+const RIGHT_ARROW_X = -1;
 const REVEAL_DURATION = 0.5;
 const STRIP_STAGGER = 0.04;
 const ZOOM_DURATION = 0.9;
@@ -293,7 +297,6 @@ export default function ParallaxStripSlider({
         if (wasActive) isAnimating.current = false;
       };
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [incoming, direction, stripCount, revealDuration, stripStagger, zoomFrom, zoomDuration, total]
   );
 
@@ -400,11 +403,6 @@ export default function ParallaxStripSlider({
     },
     []
   );
-
-  // Pivot of the arrow lines (the chevron's bend) sits 8px right of the circle's
-  // centre at x = 0, and the arrow's bounding box is centred at about -2.4.
-  // Lower = further left, higher = further right.
-  const RIGHT_ARROW_X = -1;
 
   // Circular cursor: smooth follow + arrow that flips with the pointer side.
   // Mirrors the clip-path-slider interaction (0.12 lerp, power3 eases).
