@@ -907,6 +907,8 @@ function EffectChangelogSection({ changelog = [] }) {
           })}
         </div>
       </FAQGroup>
+
+      <hr className={`fadeup ${styles.contentDivider}`} />
     </section>
   );
 }
@@ -985,8 +987,8 @@ function EffectPropsTable({ props = [] }) {
   if (!props.length) return null;
 
   return (
-    <div className="space-y-5! mt-4! fadeup">
-      <h3 className="text-xl tracking-tighter  text-foreground">Props</h3>
+    <div className="space-y-5! mt-16! fadeup">
+      <h2 className={styles.changelogTitle}>API Reference</h2>
 
       <div className={`${styles.tableWrap} ${styles.propsTableWrap}`} data-variant="vault">
         <table className={styles.table}>
