@@ -1053,6 +1053,8 @@ function SanityBodyBlock({ block, isLocked = false }) {
   }
 
   if (block._type === "effectImage") {
+    if (!block.url) return null;
+
     return (
       <figure className="fadeup">
         <div className={styles.imageFrame}>

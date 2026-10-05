@@ -22,6 +22,7 @@ import path from "path";
 import fs from "fs/promises";
 import fssync from "fs";
 import archiver from "archiver";
+import { execFileSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -907,6 +908,18 @@ async function packageTemplate(slug) {
     JSON.stringify(buildPackageJson(slug, manifest), null, 2) + "\n",
     "utf8"
   );
+  // package-lock.json next to package.json: npm resolves the full dependency
+  // tree (exact versions, tarball URLs, integrity hashes for every direct and
+  // transitive package) from the registry without downloading node_modules,
+  // so every buyer's `npm install` gets the exact tree this zip was tested
+  // against instead of whatever the ^ ranges resolve to on the day.
+  console.log(`[${slug}] generating package-lock.json (npm install --package-lock-only) ...`);
+  execFileSync(
+    "npm",
+    ["install", "--package-lock-only", "--ignore-scripts", "--no-audit", "--no-fund"],
+    { cwd: codeDir, stdio: "inherit" }
+  );
+
   await fs.writeFile(
     path.join(codeDir, "tsconfig.json"),
     JSON.stringify(TSCONFIG, null, 2) + "\n",

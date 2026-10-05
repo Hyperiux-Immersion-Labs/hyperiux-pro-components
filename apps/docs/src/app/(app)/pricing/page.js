@@ -3,7 +3,6 @@ import VaultShell from "@/Layouts/VaultShell";
 import { getSearchIndexEffects } from "@/lib/search-index";
 import Hero from "@/components/Pricing/Hero";
 import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
-import Footer from "@/components/Homepage/Footer";
 import CTA2 from "@/components/Homepage/CTA2";
 import PricingCompareTable from "@/components/Pricing/PricingCompareTable";
 import PricingLicense from "@/components/Pricing/PricingLicense";

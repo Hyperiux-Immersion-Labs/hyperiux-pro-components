@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import useIsMobile from "@/hooks/useIsMobile";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -11,7 +11,6 @@ import { Input } from "@/components/animated-form";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 import Image from "next/image";
 import LineReveal from "@/components/Animations/LineReveal";
-import SplitLine from "@/components/WebsiteComps/SplitLine";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import { shouldSkipRealtimeGPU } from "@/lib/audit";
 import ButtonV3 from "../components/ButtonV3";
@@ -72,6 +71,86 @@ const socialLinks = [
   { label: "Instagram", href: "https://www.instagram.com/_hyperiux_/" },
 ];
 
+// True when the segment (x0,y0)->(x1,y1) passes through `rect`
+// (Liang-Barsky clipping).
+function segmentHitsRect(x0, y0, x1, y1, rect) {
+  const dx = x1 - x0;
+  const dy = y1 - y0;
+  const p = [-dx, dx, -dy, dy];
+  const q = [x0 - rect.left, rect.right - x0, y0 - rect.top, rect.bottom - y0];
+  let t0 = 0;
+  let t1 = 1;
+
+  for (let i = 0; i < 4; i++) {
+    if (p[i] === 0) {
+      if (q[i] < 0) return false;
+    } else {
+      const t = q[i] / p[i];
+      if (p[i] < 0) {
+        if (t > t1) return false;
+        if (t > t0) t0 = t;
+      } else {
+        if (t < t0) return false;
+        if (t < t1) t1 = t;
+      }
+    }
+  }
+
+  return true;
+}
+
+// The browser only hit-tests :hover where a pointermove lands - about once a
+// frame - so a fast sweep can jump clean over a link and it never lights up.
+// This walks the path between consecutive moves and briefly sets data-swept
+// on any link it crossed, which applies the same hover state for a frame so
+// the normal 200ms fade-out plays.
+function useSweepHover(rootRef) {
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    let last = null;
+
+    const flash = (link) => {
+      link.setAttribute("data-swept", "");
+      // Two frames: one to paint the hover state, then release it so the
+      // fade-out transition runs from full.
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => link.removeAttribute("data-swept")),
+      );
+    };
+
+    const onMove = (event) => {
+      if (event.pointerType !== "mouse") return;
+
+      const { clientX: x, clientY: y } = event;
+
+      if (last && (last.x !== x || last.y !== y)) {
+        root.querySelectorAll("[data-sweep-link]").forEach((link) => {
+          if (link.matches(":hover")) return;
+          if (segmentHitsRect(last.x, last.y, x, y, link.getBoundingClientRect())) {
+            flash(link);
+          }
+        });
+      }
+
+      last = { x, y };
+    };
+
+    const onLeave = () => {
+      last = null;
+    };
+
+    root.addEventListener("pointermove", onMove, { passive: true });
+    root.addEventListener("pointerleave", onLeave);
+
+    return () => {
+      root.removeEventListener("pointermove", onMove);
+      root.removeEventListener("pointerleave", onLeave);
+    };
+  }, [rootRef]);
+}
+
 function FooterBlockLink({ href, children }) {
   const isExternal = href?.startsWith("http");
   return (
@@ -80,9 +159,18 @@ function FooterBlockLink({ href, children }) {
       prefetch={false}
       target={isExternal ? "_blank" : "_self"}
       rel={isExternal ? "noopener noreferrer" : undefined}
-      className="group block overflow-hidden bg-transparent transition-colors duration-300 ease-in-out hover:duration-0 hover:bg-primary motion-reduce:transition-none"
+      data-sweep-link
+      className="group relative isolate block overflow-hidden"
     >
-      <span className="block py-[0.15vw] max-[1025px]:py-1 max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 group-hover:duration-0 motion-reduce:group-hover:translate-x-0 motion-reduce:transition-none">
+      {/* Orange block behind the label: snaps on, fades out over 200ms. The
+          label slides in instantly and eases back over the same 200ms.
+          data-swept (useSweepHover) applies the same state for links a fast
+          cursor skips over. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-primary opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-hover:duration-0 group-data-swept:opacity-100 group-data-swept:duration-0 motion-reduce:transition-none"
+      />
+      <span className="block py-[0.15vw] max-[1025px]:py-1 max-md:py-1.5 max-md:px-2 text20 text-foreground transition-transform duration-200 ease-out group-hover:translate-x-5 group-hover:duration-0 group-data-swept:translate-x-5 group-data-swept:duration-0 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-data-swept:translate-x-0">
         {children}
       </span>
     </Link>
@@ -98,6 +186,7 @@ export default function FooterV3() {
   const { isMobile } = useIsMobile();
 
   useFadeUp(footerRef);
+  useSweepHover(footerRef);
 
   useEffect(() => {
     if (isMobile || shouldSkipRealtimeGPU()) return;

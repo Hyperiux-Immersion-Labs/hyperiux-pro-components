@@ -223,11 +223,7 @@ export default function NavbarV3({
             onPointerEnter={closeOnHover}
             onFocusCapture={closeOnHover}
           >
-            <HoverLinkV3
-              href="https://github.com/Hyperiux-Immersion-Labs/hyperiux-components"
-              target_blank
-              text="Github"
-            />
+            <HoverLinkV3 href="/blog" text="Blog" />
           </div>
         </div>
         <div
