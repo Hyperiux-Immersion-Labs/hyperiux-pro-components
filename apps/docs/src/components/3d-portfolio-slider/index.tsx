@@ -739,14 +739,14 @@ const items = [
   { url: `${B}/h-12.jpg`, description: "PORTFOLIO 11" },
   { url: `${B}/h-13.jpg`, description: "PORTFOLIO 12" },
   { url: `${B}/h-14.jpg`, description: "PORTFOLIO 13" },
-  { url: `${B}/h-15.jpg`, description: "PORTFOLIO 14" },
-  { url: `${B}/v-01.jpg`, description: "PORTFOLIO 15" },
+  { url: `${B}/h-28.png`, description: "PORTFOLIO 14" },
+  { url: `${B}/h-16.jpg`, description: "PORTFOLIO 15" },
   { url: `${B}/v-02.jpg`, description: "PORTFOLIO 16" },
   { url: `${B}/v-03.jpg`, description: "PORTFOLIO 17" },
   { url: `${B}/v-04.jpg`, description: "PORTFOLIO 18" },
-  { url: `${B}/v-05.jpg`, description: "PORTFOLIO 19" },
-  { url: `${B}/v-06.jpg`, description: "PORTFOLIO 20" },
-  { url: `${B}/v-07.jpg`, description: "PORTFOLIO 21" },
+  { url: `${B}/h-19.jpg`, description: "PORTFOLIO 19" },
+  { url: `${B}/h-20.jpg`, description: "PORTFOLIO 20" },
+  { url: `${B}/h-21.jpg`, description: "PORTFOLIO 21" },
 ];
 
 export default function PortfolioSlider3D({

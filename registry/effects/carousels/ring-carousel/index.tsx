@@ -502,7 +502,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  )}
 
  {showDots && totalItems > 1 && (
- <div className="absolute bottom-[11%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-[1025px]:bottom-[15%] max-[1025px]:gap-[2vw] max-[1025px]:px-4 max-[1025px]:py-3 max-md:bottom-[24%] max-md:px-3.5 max-md:py-2.5" aria-label="Slider pagination">
+ <div className="absolute bottom-[15%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-[1025px]:bottom-[15%] max-[1025px]:gap-[2vw] max-[1025px]:px-4 max-[1025px]:py-3 max-md:bottom-[24%] max-md:px-3.5 max-md:py-2.5" aria-label="Slider pagination">
  {items.map((_, index) => (
  <button
  key={index}

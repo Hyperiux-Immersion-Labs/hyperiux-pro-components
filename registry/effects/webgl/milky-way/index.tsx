@@ -1803,15 +1803,6 @@ export default function MilkyWay({
                         rotationSpeed={resolvedProps.rotationSpeed}
                         texSize={particleTexSize}
                      />
-                     {isSceneReady && (
-                        <SmokeFlow
-                           particleSize={resolvedProps.particleSize}
-                           coreColor={resolvedProps.coreColor}
-                           accentColor={resolvedProps.accentColor}
-                           outerColor={resolvedProps.outerColor}
-                           rotationSpeed={resolvedProps.rotationSpeed}
-                        />
-                     )}
                   </GalaxyMouseGroup>
                </Center>
                <EffectComposer>

@@ -121,7 +121,7 @@
     {
       "name": "bgColor",
       "type": "color",
-      "default": "transparent",
+      "default": "#ebebe9",
       "description": "Background color.",
       "remixer": {
         "control": "color",
