@@ -12,7 +12,6 @@ import React, {
 import { gsap } from "gsap";
 import { Flip } from "gsap/dist/Flip";
 import { SplitText } from "gsap/dist/SplitText";
-import Image from "next/image";
 
 gsap.registerPlugin(Flip, SplitText);
 
@@ -503,14 +502,11 @@ const GsapFlipCard = ({
               className="relative w-full flex-1 min-h-[45svh] overflow-hidden bg-[#d8d8d4] shadow-[0_18px_40px_-24px_rgba(0,0,0,0.45)]"
               style={{ borderRadius: rounded }}
             >
-              <Image
+              <img
                 src={heroItem.image}
                 alt={heroItem.alt ?? ""}
                 draggable={false}
-                fill
-                sizes="90vw"
-                priority
-                className="object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
           )}
@@ -564,13 +560,11 @@ const GsapFlipCard = ({
                   className="relative p-0 border-none overflow-hidden aspect-4/5 w-full bg-[#d8d8d4] [-webkit-tap-highlight-color:transparent]"
                   style={{ borderRadius: rounded * 0.6 }}
                 >
-                  <Image
+                  <img
                     src={item.image}
                     alt={item.alt ?? ""}
                     draggable={false}
-                    fill
-                    sizes="30vw"
-                    className="object-cover"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </button>
               );
@@ -658,13 +652,11 @@ const GsapFlipCard = ({
               }`}
               style={cardStyle(itemIndex)}
             >
-              <Image
+              <img
                 src={item.image}
                 alt={item.alt ?? ""}
                 draggable={false}
-                fill
-                sizes={`${Math.max(Math.round(hW), 1)}px`}
-                className="object-cover rounded-[inherit]"
+                className="absolute inset-0 h-full w-full object-cover rounded-[inherit]"
               />
             </button>
           );

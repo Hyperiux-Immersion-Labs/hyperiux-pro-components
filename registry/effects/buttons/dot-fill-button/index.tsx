@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type PointerEvent } from "react";
-import Link from "next/link";
 
 const MOBILE_BREAKPOINT = 640;
 const MOBILE_HOLD_MS = 1000;
@@ -19,7 +18,7 @@ export type DotFillBtnProps = {
  fillColor?: string;
  hoverTextColor?: string;
  dotColor?: string;
-} & ComponentPropsWithoutRef<typeof Link>;
+} & ComponentPropsWithoutRef<"a">;
 
 const DotFillBtn = ({
  btnText ="Try demo",
@@ -164,7 +163,7 @@ const DotFillBtn = ({
 	};
 
 	return (
-		<Link
+		<a
 			href={href}
 			{...props}
 			onMouseEnter={handleMouseEnter}
@@ -198,7 +197,7 @@ const DotFillBtn = ({
 					{btnText}
 				</span>
 			</span>
-		</Link>
+		</a>
 	);
 };
 

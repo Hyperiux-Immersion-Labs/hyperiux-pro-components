@@ -3,16 +3,9 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 
-/**
- * @typedef {Object} PixelateSvgFilterProps
- * @property {string} [id]
- * @property {number} [size]
- */
 
-/** @param {PixelateSvgFilterProps} props */
 export function PixelateSvgFilter({
  id ="pixelate-filter",
  size: propSize = 16,
@@ -25,7 +18,6 @@ export function PixelateSvgFilter({
  >
  <defs>
  <filter id={id} x="0" y="0" width="1" height="1">
- {/* Base pixelation */}
  <feConvolveMatrix
  kernelMatrix="1 1 1
  1 1 1
@@ -82,9 +74,7 @@ interface SVGPixelRevealProps {
     end?: string;
     priority?: boolean;
     intensity?: number;
-    /** Tie the reveal to scroll position. When off, it plays once on enter. */
     scrub?: boolean;
-    /** Reveal duration in seconds when scrub is off. */
     duration?: number;
 }
 
@@ -108,10 +98,6 @@ export default function SVGPixelReveal({
     const [prevInitialPixelSize, setPrevInitialPixelSize] = useState(initialPixelSize);
     const shouldApplyFilter = pixelSize > finalPixelSize + 0.01;
 
-    // Reset the displayed pixelSize whenever the initialPixelSize prop
-    // changes, without clobbering the value the GSAP tween below drives via
-    // onUpdate. Pure derived state (no browser API), so it's adjusted
-    // directly during render instead of via an effect.
     if (initialPixelSize !== prevInitialPixelSize) {
         setPrevInitialPixelSize(initialPixelSize);
         setPixelSize(initialPixelSize);
@@ -171,12 +157,10 @@ export default function SVGPixelReveal({
                 className="relative h-full w-full overflow-hidden"
                 style={{ filter: shouldApplyFilter ? `url(#${filterId})` : undefined }}
             >
-                <Image
+                <img
                     src={src}
                     alt={alt}
-                    fill
-                    priority={priority}
-                    className={`object-cover ${imageClassName}`.trim()}
+                    className={`absolute inset-0 h-full w-full object-cover ${imageClassName}`.trim()}
                 />
             </div>
 

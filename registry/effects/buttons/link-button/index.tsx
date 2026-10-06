@@ -2,7 +2,6 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import { useLayoutEffect, useState, type ComponentPropsWithoutRef, type ComponentType, type CSSProperties, type MouseEvent, type MouseEventHandler, type ReactNode } from "react";
 
 const TABLET_BREAKPOINT = 1025;
@@ -19,7 +18,7 @@ export interface LinkButtonOwnProps {
   clickedColor?: string;
   href?: string;
   className?: string;
-  linkProps?: Partial<ComponentPropsWithoutRef<typeof Link>>;
+  linkProps?: Partial<ComponentPropsWithoutRef<"a">>;
   icon?: ComponentType<{ className?: string }>;
   iconClassName?: string;
   showIcon?: boolean;
@@ -33,7 +32,7 @@ export interface LinkButtonOwnProps {
   onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-export type LinkButtonProps = LinkButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, 'href' | 'onClick' | keyof LinkButtonOwnProps>;
+export type LinkButtonProps = LinkButtonOwnProps & Omit<ComponentPropsWithoutRef<"a">, 'href' | 'onClick' | keyof LinkButtonOwnProps>;
 
 export default function LinkButton({
   text = DEFAULT_TEXT,
@@ -86,7 +85,6 @@ export default function LinkButton({
     onClick?.(event);
   };
 
-  // Derived values
   const displayText =
     hasMeasuredViewport && isCompactViewport ? mobileText : children || text;
   const clickedStyle =
@@ -115,7 +113,7 @@ export default function LinkButton({
 
   return (
     <>
-      <Link
+      <a
         href={href}
         {...linkProps}
         {...restProps}
@@ -137,7 +135,7 @@ export default function LinkButton({
 
           {showIcon && Icon && <Icon className={iconClassNames} />}
         </div>
-      </Link>
+      </a>
 
       <style jsx>{`
         li :global(.btn-link-line)::after {

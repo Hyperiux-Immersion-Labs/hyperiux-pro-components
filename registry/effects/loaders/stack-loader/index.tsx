@@ -1,7 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import Image from "next/image";
 import {
   forwardRef,
   useEffect,
@@ -87,7 +86,6 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(func
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ??
       false;
 
-    // Reduced-motion: images already in a vertical line - smooth opacity only.
     if (reduceMotion) {
       const ctx = gsap.context(() => {
         const imageElements = imagesRef.current.filter(Boolean);
@@ -119,7 +117,6 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(func
         });
         tl.timeScale(1 / safeDuration);
 
-        // Smooth opacity in (already laid out vertically).
         tl.to(imageElements, {
           opacity: 1,
           duration: 0.7,
@@ -395,13 +392,12 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(func
               }}
               className="absolute top-0 left-0 size-full overflow-hidden rounded-sm opacity-0"
             >
-              <Image
+              <img
                 src={src}
                 width={1000}
                 height={1000}
                 className="h-full w-full object-cover"
                 alt="asset-image"
-                priority={index === 0}
               />
             </div>
           ))}
@@ -444,7 +440,6 @@ export default function StackLoader({
   const stackToSpreadIntroRef = useRef<HTMLElement | null>(null);
   const previousRemixerPropsRef = useRef<Required<Omit<StackLoaderProps, "onComplete">> | null>(null);
 
-  // Replays the intro whenever a visual prop changes (e.g. live remixer edits).
   useEffect(() => {
     const remixerProps = {
       imageSize,

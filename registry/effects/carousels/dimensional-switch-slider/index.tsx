@@ -1,3 +1,4 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -5,7 +6,6 @@ import { flushSync } from "react-dom";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import Image from "next/image";
 
 gsap.registerPlugin(CustomEase);
 const prefersReducedMotion = () =>
@@ -169,7 +169,6 @@ const DimensionalSwitchSlider = ({
       },
     });
 
-    // Card flip - untouched.
     tl.to(
       flipperRef.current,
       { [flipAxis]: rotateValue, ease: resolvedEase, duration: 0.7 },
@@ -303,12 +302,11 @@ const DimensionalSwitchSlider = ({
           style={{ perspective: "1000px", width: resolvedCardWidth, height: resolvedCardHeight }}
         >
           <div ref={flipperRef} className="relative h-full w-full transform-3d">
-            {/* Front face */}
             <div
               className="absolute inset-0 h-full w-full overflow-hidden backface-hidden prev-card-face"
               style={{ borderRadius: resolvedCardBorderRadius }}
             >
-              <Image
+              <img
                 src={ITEMS[frontIndex].image}
                 className="w-full h-full object-cover"
                 alt={ITEMS[frontIndex].text}
@@ -322,7 +320,7 @@ const DimensionalSwitchSlider = ({
               }`}
               style={{ borderRadius: resolvedCardBorderRadius }}
             >
-              <Image
+              <img
                 src={ITEMS[backIndex].image}
                 className="w-full h-full object-cover"
                 alt={ITEMS[backIndex].text}

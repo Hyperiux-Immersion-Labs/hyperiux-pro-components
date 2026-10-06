@@ -3,8 +3,6 @@
 
 import { gsap } from "gsap/dist/gsap";
 import { useLenis } from "lenis/react";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 
 export interface TeamMember {
@@ -46,23 +44,14 @@ function usePrefersReducedMotion() {
 
 export interface InformationDrawerCompProps {
   teams?: TeamMember[] | { teams: TeamMember[] };
-  /** GSAP tween duration (seconds) for the drawer panel and overlay. */
   duration?: number;
-  /** GSAP ease for the drawer panel and overlay. */
   ease?: string;
-  /** GSAP tween delay (seconds) for the drawer panel and overlay. */
   delay?: number;
-  /** Drawer panel background color. */
   backgroundColor?: string;
-  /** Drawer panel text color. */
   textColor?: string;
-  /** Drawer panel width on desktop. Numbers are treated as percentages. */
   sidebarWidth?: string | number;
-  /** Backdrop opacity while the drawer is open. */
   overlayOpacity?: number;
-  /** GSAP tween duration (seconds) for the staged content fade in/out. */
   contentDuration?: number;
-  /** Delay (seconds) before the staged content fades in, measured from when the drawer starts opening. */
   contentDelay?: number;
 }
 
@@ -88,7 +77,6 @@ function InformationDrawerComp({
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
-  // Accept {teams: []} OR [] OR nothing.
   const teamInfo: TeamMember[] = Array.isArray(teams)
     ? teams
     : Array.isArray((teams as { teams?: TeamMember[] })?.teams)
@@ -115,7 +103,6 @@ function InformationDrawerComp({
     if (closeTimeout.current) clearTimeout(closeTimeout.current);
     lenis?.start?.();
 
-    // Fade the content out first, then slide the drawer away.
     const fadeOut = prefersReducedMotion ? 0 : contentDuration;
 
     gsap.to(contentRef.current, {
@@ -126,7 +113,6 @@ function InformationDrawerComp({
       onComplete: () => setDetailOpen(false),
     });
 
-    // Clear the member only once the panel has finished sliding out.
     closeTimeout.current = setTimeout(
       () => {
         setSelectedMember(null);
@@ -153,7 +139,6 @@ function InformationDrawerComp({
     });
   }, [detailOpen, duration, ease, delay, overlayOpacity, prefersReducedMotion]);
 
-  // Fade the staged content in at an absolute offset from the drawer opening.
   useEffect(() => {
     if (typeof window === "undefined" || !detailOpen) return;
 
@@ -231,12 +216,11 @@ function InformationDrawerComp({
                       <span className="absolute w-[0.2vw] h-[1.5vw] bg-white max-md:w-[0.4vw] max-md:h-[3vw] max-[1025px]:w-[0.2vw] max-[1025px]:h-[1.5vw]"></span>
                       </div>
                       {featuredImageSource && (
-                        <Image
+                        <img
                           loading="lazy"
                           src={featuredImageSource}
                           alt={`${member?.title ?? "Member"} Image`}
-                          fill
-                          className={`object-cover group-hover:grayscale ${
+                          className={`absolute inset-0 h-full w-full object-cover group-hover:grayscale ${
                             prefersReducedMotion ? "" : "transition duration-300"
                           }`}
                         />
@@ -352,11 +336,10 @@ function TeamDetail({
       <div className="w-full flex gap-[2vw] max-md:flex-col max-md:gap-[5vw]">
         {featuredImageSource && (
           <div className="w-[25vw] rounded-xl overflow-hidden h-[30vw] relative max-md:w-[90vw] max-md:h-[120vw] max-[1025px]:w-[40vw] max-[1025px]:h-[50vw]">
-            <Image
+            <img
               src={featuredImageSource}
               alt={`${member.title} Image`}
-              className="object-cover object-top"
-              fill
+              className="absolute inset-0 h-full w-full object-cover object-top"
             />
           </div>
         )}
@@ -374,7 +357,7 @@ function TeamDetail({
 
         <div className="flex gap-[2vw] items-end mt-[1vw] mb-[5%] max-md:mb-[10%] max-[1025px]:mb-[10%] max-md:gap-[6vw] max-[1025px]:gap-[4vw]">
           {member.teams.linkedin && (
-            <Link
+            <a
               target="_blank"
               href={member.teams.linkedin}
               className="opacity-55 hover:opacity-100 duration-300 w-[1.5vw] max-[1025px]:w-[4vw] max-md:w-[6vw]"
@@ -385,18 +368,17 @@ function TeamDetail({
                 <path d="M0.478818 35.355C0.471098 35.2006 0.463379 35.0462 0.463379 34.8918C0.463379 27.2571 0.463379 19.6147 0.463379 11.9801C0.463379 11.8257 0.463379 11.679 0.463379 11.5015C3.1112 11.5015 5.72813 11.5015 8.41455 11.5015C8.41455 19.4526 8.41455 27.4038 8.41455 35.355C5.77445 35.355 3.12663 35.355 0.478818 35.355Z" />
                 <path d="M4.59731e-05 4.12196C0.00776555 2.05311 1.40501 0.416562 3.45842 0.0923393C4.79391 -0.116089 6.08308 -0.00801527 7.21014 0.794821C8.62282 1.80609 9.13231 3.24965 8.83897 4.91708C8.54562 6.60767 7.44944 7.64981 5.80517 8.08211C4.70127 8.37545 3.59737 8.32913 2.52435 7.91228C0.957274 7.29471 -0.00767361 5.83571 4.59731e-05 4.12196Z" />
               </svg>
-            </Link>
+            </a>
           )}
         </div>
 
         {profileImageSource && (
           <div className="w-[62vw] overflow-hidden rounded-xl h-[35vw] relative mb-[5%] max-md:w-[90vw] max-md:h-[90vw] max-md:mb-[10%] max-[1025px]:mb-[10%] max-[1025px]:w-[70vw] max-[1025px]:h-[50vw]">
-            <Image
+            <img
               src={profileImageSource}
               loading="lazy"
               alt={`${member.title} Featured Image`}
-              fill
-              className="object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
         )}

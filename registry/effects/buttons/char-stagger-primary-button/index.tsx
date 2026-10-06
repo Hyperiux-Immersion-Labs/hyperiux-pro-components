@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type ComponentType, type CSSProperties, type MouseEvent, type MouseEventHandler, type ReactNode } from "react";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export interface CharStaggerPrimaryButtonOwnProps {
@@ -10,7 +9,7 @@ export interface CharStaggerPrimaryButtonOwnProps {
     href?: string;
     btnClassName?: string;
     textClassName?: string;
-    linkProps?: Partial<ComponentPropsWithoutRef<typeof Link>>;
+    linkProps?: Partial<ComponentPropsWithoutRef<"a">>;
     children?: ReactNode;
     staggerStep?: number;
     lineClassName?: string;
@@ -23,7 +22,7 @@ export interface CharStaggerPrimaryButtonOwnProps {
     onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-export type CharStaggerPrimaryButtonProps = CharStaggerPrimaryButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, 'href' | 'onClick' | keyof CharStaggerPrimaryButtonOwnProps>;
+export type CharStaggerPrimaryButtonProps = CharStaggerPrimaryButtonOwnProps & Omit<ComponentPropsWithoutRef<"a">, 'href' | 'onClick' | keyof CharStaggerPrimaryButtonOwnProps>;
 
 const CharStaggerPrimaryButton = ({
  text ="Hover me",
@@ -113,7 +112,7 @@ const CharStaggerPrimaryButton = ({
  !prefersReducedMotion && isTouchHovered ?"translate-x-[5%]" :"";
 
  return (
- <Link
+ <a
  ref={linkRef}
  href={href}
  {...linkProps}
@@ -160,7 +159,7 @@ const CharStaggerPrimaryButton = ({
  </div>
  </div>
  )}
- </Link>
+ </a>
  );
 };
 

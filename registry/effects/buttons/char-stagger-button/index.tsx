@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback, type ComponentPropsWithoutRef, type ComponentType, type MouseEvent, type MouseEventHandler, type ReactNode } from "react";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const DEFAULT_HREF = "#";
@@ -16,7 +15,7 @@ export interface CharStaggerButtonOwnProps {
   href?: string;
   className?: string;
   textClassName?: string;
-  linkProps?: Partial<ComponentPropsWithoutRef<typeof Link>>;
+  linkProps?: Partial<ComponentPropsWithoutRef<"a">>;
   children?: ReactNode;
   staggerStep?: number;
   showLine?: boolean;
@@ -29,7 +28,7 @@ export interface CharStaggerButtonOwnProps {
   onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-export type CharStaggerButtonProps = CharStaggerButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, 'href' | 'onClick' | keyof CharStaggerButtonOwnProps>;
+export type CharStaggerButtonProps = CharStaggerButtonOwnProps & Omit<ComponentPropsWithoutRef<"a">, 'href' | 'onClick' | keyof CharStaggerButtonOwnProps>;
 
 export default function CharStaggerButton({
   text = DEFAULT_TEXT,
@@ -49,17 +48,14 @@ export default function CharStaggerButton({
   onClick,
   ...props
 }: CharStaggerButtonProps) {
-  // Refs
   const textRef = useRef<HTMLSpanElement | null>(null);
   const lineRef = useRef<HTMLSpanElement | null>(null);
   const isTouchRef = useRef(false);
   const hasMountedRef = useRef(false);
 
-  // State
   const [isActive, setIsActive] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  // Effects
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
 
@@ -128,7 +124,6 @@ export default function CharStaggerButton({
     });
   }, [isActive, prefersReducedMotion]);
 
-  // Event handlers
   const onMouseEnter = useCallback(() => {
     if (isTouchRef.current) return;
     setIsActive(true);
@@ -148,16 +143,14 @@ export default function CharStaggerButton({
     if (isTouchRef.current) e.preventDefault();
   }, []);
 
-  // Derived
   const sourceText = typeof children === "string" ? children : text;
   const mergedStyle = {
     ...props.style,
     color: isActive ? hoverColor : props.style?.color,
   };
 
-  // Render
   return (
-    <Link
+    <a
       href={href}
       {...linkProps}
       {...props}
@@ -217,6 +210,6 @@ export default function CharStaggerButton({
           )}
         </div>
       )}
-    </Link>
+    </a>
   );
 }

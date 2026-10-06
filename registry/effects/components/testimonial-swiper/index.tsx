@@ -4,7 +4,6 @@
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 function NavigationButtons({
@@ -15,7 +14,6 @@ function NavigationButtons({
 }: any) {
     return (
         <nav className={`flex mt-5 gap-1.5 ${className}`}>
-            {/* PREV */}
             <button
                 aria-label="Previous testimonial"
                 onClick={onPrev}
@@ -28,7 +26,6 @@ function NavigationButtons({
                 />
             </button>
 
-            {/* NEXT */}
             <button
                 aria-label="Next testimonial"
                 onClick={onNext}
@@ -46,25 +43,8 @@ function NavigationButtons({
 
 gsap.registerPlugin(SplitText);
 
-/**
- * @typedef {Object} Testimonial
- * @property {string} quote
- * @property {string} name
- * @property {string} title
- * @property {string} image
- */
 
-/**
- * @typedef {Object} TestimonialCompProps
- * @property {Testimonial[]} [testimonials]
- * @property {string} [bgColor]
- * @property {boolean} [autoplay]
- * @property {number} [autoplayDelay]
- * @property {boolean} [showNavigation]
- * @property {number} [imageSize]
- */
 
-/** @param {TestimonialCompProps} props */
 function TestimonialComp({
     testimonials = [],
     bgColor = "#ffffff",
@@ -95,7 +75,6 @@ function TestimonialComp({
     );
 
     const total = testimonials.length;
-    /** @param {number} n */
     const pad = (n: number) => String(n).padStart(2, "0");
     const safeImageSize = Math.max(0.6, Number(imageSize) || 1);
 
@@ -116,7 +95,6 @@ function TestimonialComp({
             splitRef.current = null;
         }
 
-        // Images fade in together with the quote, the rest of the meta follows.
         const images = [desktopImageRef.current, mobileImageRef.current];
         const meta = [
             nameRef.current,
@@ -130,7 +108,6 @@ function TestimonialComp({
             isAnimatingRef.current = false;
         };
 
-        // Reduced-motion: skip SplitText / Y slides - opacity fade only.
         if (reduceMotionRef.current) {
             gsap.set([quoteRef.current, quoteMarkRef.current], { autoAlpha: 0 });
             gsap.set([...images, ...meta], { autoAlpha: 0 });
@@ -250,8 +227,6 @@ function TestimonialComp({
                 duration: 0.2,
                 ease: "power1.in",
             });
-            // Resolving on the mark's tween keeps animateIn from hard-setting
-            // it back to 0 partway through this longer fade.
             gsap.to(quoteMarkRef.current, {
                 autoAlpha: 0,
                 duration: 0.5,
@@ -315,7 +290,6 @@ function TestimonialComp({
     useEffect(() => {
         if (!quoteRef.current) return;
         animateIn("next");
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -335,7 +309,6 @@ function TestimonialComp({
         <section className="relative w-full min-h-screen max-md:min-h-screen bg-white flex flex-col justify-between max-md:justify-start overflow-hidden text-black pt-22 pb-5 max-[1025px]:pt-0 max-[1025px]:px-6 max-md:pt-0 max-md:px-2"
             style={{ backgroundColor: bgColor }}
         >
-            {/* Tablet + mobile: nav sits above the "Client Stories" header */}
             {showNavigation && (
                 <NavigationButtons
                     className="hidden max-[1025px]:flex max-[1025px]:mt-0 max-[1025px]:pb-5 max-[1025px]:w-full max-[1025px]:justify-center"
@@ -345,7 +318,6 @@ function TestimonialComp({
                 />
             )}
 
-            {/* Header */}
             <div className="flex items-start justify-between px-8 py-5 max-[1025px]:px-6 max-[1025px]:py-4 max-md:px-5 max-md:py-3">
                 <div className="flex max-md:flex-row justify-between items-center max-md:items-center w-[30%] max-[1025px]:w-full max-md:w-full max-md:justify-between">
                     <div className="flex items-center gap-2 text-[0.8vw] max-[1025px]:text-[1.8vw] max-md:text-[4vw] font-semibold tracking-[0.12em] uppercase">
@@ -358,7 +330,6 @@ function TestimonialComp({
                 </div>
             </div>
 
-            {/* Body */}
             <div className="flex-1 flex items-start gap-32 px-18 py-5 max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-10 max-[1025px]:px-6 max-[1025px]:py-10 max-md:px-5 max-md:py-4 max-md:gap-6">
 
                 <div className="shrink-0 flex flex-col gap-5 max-[1025px]:hidden max-md:hidden">
@@ -370,12 +341,10 @@ function TestimonialComp({
                             height: `${12.5 * safeImageSize}rem`,
                         }}
                     >
-                        <Image
-                            fill
-                            sizes="200px"
+                        <img
                             src={displayItem.image}
                             alt={displayItem.name}
-                            className="object-cover object-top grayscale"
+                            className="absolute inset-0 h-full w-full object-cover object-top grayscale"
                         />
                     </div>
 
@@ -388,7 +357,6 @@ function TestimonialComp({
                     )}
                 </div>
 
-                {/* Quote area */}
                 <div className="flex-1 flex flex-col relative">
                     <span
                         className="absolute -top-1 font-serif font-bold leading-none max-[1025px]:top-[-2vw] text-[42px] max-[1025px]:text-[4.5vw] max-md:text-[34px] max-md:relative max-md:top-0 max-md:left-0 max-md:mb-1 text-black"
@@ -416,12 +384,10 @@ function TestimonialComp({
                                         height: `${9 * safeImageSize}rem`,
                                     }}
                                 >
-                                    <Image
-                                        fill
-                                        sizes="150px"
+                                    <img
                                         src={displayItem.image}
                                         alt={displayItem.name}
-                                        className="object-cover object-top grayscale"
+                                        className="absolute inset-0 h-full w-full object-cover object-top grayscale"
                                     />
                                 </div>
                             </div>
@@ -438,7 +404,6 @@ function TestimonialComp({
                             </div>
                         </div>
 
-                        {/* Desktop: name/title */}
                         <div className="flex flex-col gap-1 mt-2 max-[1025px]:hidden max-md:hidden">
                             <p ref={nameRef} className="m-0 text-xl max-[1025px]:text-lg font-normal">
                                 {displayItem.name}

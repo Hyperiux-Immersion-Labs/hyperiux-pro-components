@@ -1,14 +1,13 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
-import Image from "next/image";
 import {
   type CSSProperties,
   useRef,
   useSyncExternalStore,
 } from "react";
 import gsap from "gsap";
-import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import SplitText from "gsap/dist/SplitText";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { SplitText } from "gsap/dist/SplitText";
 import { useGSAP } from "@gsap/react";
 import { ReactLenis } from "lenis/react";
 
@@ -51,7 +50,6 @@ type TimelineProps = {
   imageAlt?: string;
 };
 
-// Base timing (seconds) for the item reveals and the smooth-scroll feel.
 const ANIMATION_DURATION = 1.2;
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -153,8 +151,6 @@ export default function Timeline({
 }: TimelineProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const wholeSliderRef = useRef<HTMLDivElement>(null);
-  // Scroll trigger + target width of the horizontal line, shared with the
-  // per-item timelines so they can start when the line's head reaches them.
   const lineProgressRef = useRef<{
     trigger: ScrollTrigger;
     widthFraction: number;
@@ -279,10 +275,6 @@ export default function Timeline({
       });
     });
 
-    // Scroll progress (0-1 of the horizontal line's draw) at which the line's
-    // head reaches this item's vertical line, measured from real layout so it
-    // holds at every breakpoint. Slider-relative coords cancel out the
-    // slider's own horizontal scroll transform.
     const getLineProgressAtItem = (item: JourneyItem) => {
       const slider = wholeSliderRef.current;
       const lineEl = section.querySelector<HTMLElement>(".journey-line");
@@ -302,10 +294,7 @@ export default function Timeline({
       return gsap.utils.clamp(0, 1, (itemLeft - lineLeft) / lineMaxWidth);
     };
 
-    // Share of the horizontal line's scroll range each item's own sequence
-    // (vertical line -> dot -> text) takes up.
     const ITEM_SPAN = 0.14;
-    // Max sideways drift (as a share of viewport width) during one item.
     const MAX_ITEM_DRIFT = window.innerWidth < 642 ? 0.2 : 0.35;
 
     const createItemTimeline = (item: JourneyItem) => {
@@ -326,10 +315,6 @@ export default function Timeline({
         const lineRange = (lineTrigger?.end ?? 0) - lineStartPx;
         let span = lineRange * ITEM_SPAN;
 
-        // The slider keeps scrolling sideways while an item plays. Cap the
-        // span so the item never drifts more than ~a third of the viewport
-        // (matters on mobile, where the slider moves much faster) before its
-        // text has finished revealing.
         const slideTrigger = lineProgressRef.current?.slideTrigger;
         const slideScrollRange = slideTrigger
           ? slideTrigger.end - slideTrigger.start
@@ -359,15 +344,11 @@ export default function Timeline({
 
       gsap.set([...titleLines, ...descriptionLines], { y: 100 });
 
-      // Sequenced: vertical line draws first, then its dot, then the text.
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: () => getRange().start,
           end: () => getRange().end,
-          // start/end are functions, so ScrollTrigger re-evaluates them on
-          // every refresh (no invalidateOnRefresh, which would reset the
-          // text lines' starting offset and leave them visible).
           scrub: true,
         },
       });
@@ -437,19 +418,17 @@ export default function Timeline({
           className="mr-[2vw] flex h-[30vw] w-[240vw] items-center gap-[5vw] px-[5vw] max-[1025px]:h-[70vh] max-[1025px]:w-[400vw] max-[1025px]:flex-col max-[1025px]:items-start max-[1025px]:gap-[2vw] max-[1025px]:px-[5vw] max-md:h-[80vh] max-md:w-[800vw] max-md:px-[7vw]"
         >
           <div className="relative h-full w-[30vw] overflow-hidden rounded-[1vw] max-[1025px]:h-[40vw] max-[1025px]:w-[15%] max-[1025px]:rounded-[3vw] max-md:h-[65vw] max-md:w-[85vw] max-md:rounded-[5vw]">
-            <Image
+            <img
               src={imageUrl}
               alt={imageAlt}
               width={900}
               height={900}
-              sizes="(max-width: 642px) 85vw, (max-width: 1025px) 40vw, 30vw"
-              quality={90}
               className="h-full w-full object-cover"
             />
           </div>
 
           <div className="relative h-full w-full  max-[1025px]:h-[50%]">
-            <div className="w-full absolute left-0 top-[49%] tranlate-y-[-50%] flex items-center h-fit">
+            <div className="w-full absolute left-0 top-[49%] flex items-center h-fit">
               <div
                 className="h-[.8vw] w-[.8vw] shrink-0 rounded-full max-md:h-[2vw] max-md:w-[2vw] max-[1025px]:h-[1.5vw] max-[1025px]:w-[1.5vw]"
                 style={activeStyle}

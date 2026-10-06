@@ -1,7 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import NextImage from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from "react";
 
 const DEFAULT_ROOT_MARGIN = "256px";
@@ -40,7 +39,6 @@ function createVisibilityGate({
 }: VisibilityGateOptions = {}): VisibilityGate {
   let tabVisible =
     typeof document === "undefined" ? true : !document.hidden;
-  // Match border-beam: assume onscreen until the observer reports otherwise.
   let onscreen = true;
   let destroyed = false;
   let observer: IntersectionObserver | null = null;
@@ -95,15 +93,10 @@ function createVisibilityGate({
   bindObserver();
 
   return {
-    /** Whether the animation should currently run. */
     get isActive() {
       return isActive();
     },
 
-    /**
-     * Re-bind IntersectionObserver after the root element mounts late
-     * (e.g. ref not ready on first call). Safe to call multiple times.
-     */
     observe(nextRoot?: RafRoot) {
       if (destroyed) return;
       if (nextRoot != null) root = nextRoot;
@@ -148,10 +141,6 @@ interface SuspendedRaf {
   destroy: () => void;
 }
 
-/**
- * Owns a requestAnimationFrame loop that auto-pauses when the tab is hidden
- * or the root element is offscreen.
- */
 function createSuspendedRaf({
   onFrame,
   root = null,
@@ -205,36 +194,30 @@ function createSuspendedRaf({
   });
 
   return {
-    /** Start (or resume) the loop when visibility allows. */
     start() {
       if (destroyed) return;
       running = true;
       sync();
     },
 
-    /** Stop requesting frames (visibility listeners stay attached until destroy). */
     stop() {
       running = false;
       stopRaf();
     },
 
-    /** Whether the caller has started the loop (may still be paused by visibility). */
     get isRunning() {
       return running;
     },
 
-    /** Whether a frame is currently allowed to schedule. */
     get isActive() {
       return gate.isActive;
     },
 
-    /** Re-attach offscreen observer to a (new) root element. */
     observe(nextRoot?: RafRoot) {
       gate.observe(nextRoot);
       sync();
     },
 
-    /** Tear down listeners and cancel any pending frame. */
     destroy() {
       if (destroyed) return;
       destroyed = true;
@@ -419,13 +402,12 @@ class InfiniteGrid {
         this.tileSize = { w: 0, h: 0, tileW: 0, tileH: 0, gap: 0, halfGap: 0, leftOffset: 0, topOffset: 0 };
         this.wrapSize = { w: 0, h: 0 };
 
-        // Fixed grid layout (non-overlapping) like the reference.
         this.layout = {
             cols: Math.round(clampNumber(columns, 1, 8, 4)),
             rows: 3,
             gap: clampNumber(gap, 0, 100, 44),
             margin: 40,
-            aspect: 3 / 4, // height = width * aspect (4:3 card)
+            aspect: 3 / 4,
         };
 
         this.scroll = {
@@ -517,21 +499,17 @@ class InfiniteGrid {
                 ? Math.max(this.winW * 0.025, 20)
                 : this.layout.margin;
 
-        // Keep tiles fitting the viewport so we never visually"eat" the gaps.
         const tileW =
             (this.winW - margin * 2 - gap * (cols - 1)) / cols;
         const tileH = tileW * this.layout.aspect;
         const halfGap = gap / 2;
 
-        // Effective outer size per tile includes the gap padding on both sides.
         const outerW = tileW + gap;
         const outerH = tileH + gap;
 
-        // Total set size across the visible grid (outer tiles abut each other).
         const setW = cols * outerW;
         const setH = rows * outerH;
 
-        // Center the grid vertically if there's extra space.
         const topOffset = Math.max(margin, (this.winH - setH) / 2);
         const leftOffset = Math.max(margin, (this.winW - setW) / 2);
 
@@ -571,7 +549,6 @@ class InfiniteGrid {
                 repsY.forEach(offsetY => {
                     const el: GridItemEl = document.createElement('div');
                     el.classList.add('item');
-                    // Add internal padding so gaps stay visually consistent even with borders/hover.
                     el.style.padding = `${this.tileSize.halfGap}px`;
                     el.style.width = `${base.w + this.tileSize.gap}px`;
                     el.style.height = `${base.h + this.tileSize.gap}px`;
@@ -591,9 +568,6 @@ class InfiniteGrid {
                     img.referrerPolicy = 'no-referrer';
                     img.src = base.src;
                     img.alt = base.caption;
-                    // Tiles wrap in from offscreen, so a deferred load would expose the
-                    // card background until the image decodes. Load eagerly and reveal
-                    // once decoded; cached sources resolve synchronously via `complete`.
                     if (img.complete) {
                         img.classList.add('is-loaded');
                     } else {
@@ -610,8 +584,6 @@ class InfiniteGrid {
 
                     if (typeof this.onItemClick === 'function') {
                         el.style.cursor = 'pointer';
-                        // Activation is driven from pointerup (see onPointerUp) rather than
-                        // a click listener: pointer capture retargets click to $container.
                         el.__gridItem = { base, itemImage };
                     }
 
@@ -636,9 +608,6 @@ class InfiniteGrid {
             });
         });
 
-        // The repeated grid spans 2x in each axis (we created copies at +setW/+setH).
-        // Wrapping by the full 2-set span prevents the duplicates from collapsing
-        // onto each other (which can visually eliminate gaps).
         this.wrapSize = { w: this.tileSize.w * 2, h: this.tileSize.h * 2 };
 
         this.scroll.current.x = this.scroll.target.x = this.scroll.last.x = -this.winW * 0.1;
@@ -688,8 +657,6 @@ class InfiniteGrid {
         if (!wasDragging || dragMoved || !pressedItem || !this.enabled) return;
         if (typeof this.onItemClick !== 'function') return;
 
-        // Pointer capture retargets the synthesized click, so resolve the tile under
-        // the release point ourselves and require it to match the pressed one.
         const released = document.elementFromPoint(e.clientX, e.clientY);
         const releasedItem = released instanceof Element ? released.closest('.item') : null;
         if (releasedItem !== pressedItem) return;
@@ -731,7 +698,6 @@ class InfiniteGrid {
 
     render() {
         if (this.reduceMotion) {
-            // Snap pan - no ease / coast between target and current.
             this.scroll.current.x = this.scroll.target.x;
             this.scroll.current.y = this.scroll.target.y;
             this.scroll.delta.x.t = this.scroll.delta.x.c = 0;
@@ -756,7 +722,6 @@ class InfiniteGrid {
         const dirY = this.scroll.current.y > this.scroll.last.y ? 'down' : 'up';
 
         this.items.forEach(item => {
-            // No parallax: keep tiles rigid in the grid.
             const newX = 0;
             const newY = 0;
             const scrollX = this.scroll.current.x;
@@ -778,7 +743,6 @@ class InfiniteGrid {
             const fy = item.y + scrollY + item.extraY + newY;
             item.el.style.transform = `translate(${fx}px, ${fy}px)`;
 
-            // No parallax (keep a tiny scale for coverage).
             item.img.style.transform = `translate(0px, 0px) scale(${1.04 * this.imageScale})`;
         });
 
@@ -1010,7 +974,6 @@ export default function InfiniteGridGallery({
           src,
           caption: (() => {
             if (title) return title;
-            // Deterministic"random" name per index (stable across reloads).
             const adjectives = [
               "Silent",
               "Soft",
@@ -1362,10 +1325,8 @@ export default function InfiniteGridGallery({
               >
                 {slide ? (
                   <>
-                    <NextImage
-                      fill
-                      sizes="90vw"
-                      className={`object-cover backface-hidden ${slide.dir > 0
+                    <img
+                      className={`absolute inset-0 h-full w-full object-cover backface-hidden ${slide.dir > 0
                         ? "infinite-grid-gallery-slide-left-from"
                         : "infinite-grid-gallery-slide-right-from"
                         }`}
@@ -1373,10 +1334,8 @@ export default function InfiniteGridGallery({
                       alt={sources[slide.from].caption ?? ""}
                     />
 
-                    <NextImage
-                      fill
-                      sizes="90vw"
-                      className={`object-cover backface-hidden ${slide.dir > 0
+                    <img
+                      className={`absolute inset-0 h-full w-full object-cover backface-hidden ${slide.dir > 0
                         ? "infinite-grid-gallery-slide-left-to"
                         : "infinite-grid-gallery-slide-right-to"
                         }`}
@@ -1385,10 +1344,8 @@ export default function InfiniteGridGallery({
                     />
                   </>
                 ) : (
-                  <NextImage
-                    fill
-                    sizes="90vw"
-                    className="object-cover"
+                  <img
+                    className="absolute inset-0 h-full w-full object-cover"
                     src={display.src}
                     alt={display.caption ?? ""}
                   />
@@ -1473,10 +1430,8 @@ export default function InfiniteGridGallery({
                           }}
                           aria-label={`Open ${item.caption}`}
                         >
-                          <NextImage
-                            fill
-                            sizes="90px"
-                            className={`object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ? "brightness-105" : "brightness-[0.8]"}`}
+                          <img
+                            className={`absolute inset-0 h-full w-full object-cover transition-[filter] duration-300 ease-[cubic-bezier(0.785,0.135,0.15,0.86)] ${isActive ? "brightness-105" : "brightness-[0.8]"}`}
                             src={item.src}
                             alt={item.caption ?? ""}
                           />

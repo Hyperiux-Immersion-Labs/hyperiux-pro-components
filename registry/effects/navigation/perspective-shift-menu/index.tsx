@@ -2,7 +2,6 @@
 "use client";
 
 import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
-import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
@@ -151,9 +150,6 @@ const PROPERTY_REGISTRATION = `
 @property --shift-seam { syntax: "<number>"; inherits: false; initial-value: 0; }
 `;
 
-// Placeholder destinations are inert: "#" would otherwise be followed and
-// jump the page to the top, which is especially jarring while the menu holds
-// the scroll lock.
 const inert = (href: string) => (e: ReactMouseEvent) => {
   if (!href || href === "#") e.preventDefault();
 };
@@ -171,27 +167,16 @@ const CaretIcon = () => (
 );
 
 export interface PerspectiveShiftMenuProps {
-  /** Opening and closing speed multiplier. Higher values animate faster. */
   animationSpeed?: number;
-  /** How far the page rotates away, in degrees. 0 slides without tilting. */
   tiltAngle?: number;
-  /** Delay between nav links as they enter, in seconds. */
   linkStagger?: number;
-  /** Delay between characters on link hover, in seconds. */
   charStagger?: number;
-  /** Nav column width, in vw. */
   panelWidth?: number;
-  /** Sub-drawer width, in vw. */
   drawerWidth?: number;
-  /** Nav column and sub-drawer surface color. */
   panelColor?: string;
-  /** Links, headings, and menu icon color. */
   textColor?: string;
-  /** The void behind the page as it tilts away. */
   voidColor?: string;
-  /** How strongly the receded page is dimmed, 0 to 1. */
   dimOpacity?: number;
-  /** The page content. It sits inside the surface that tilts away on open. */
   children?: ReactNode;
 }
 
@@ -257,8 +242,6 @@ const PerspectiveShiftMenu = ({
       const sublinks = gsap.utils.toArray<HTMLElement>("[data-shift-sublink]", surfaceEl);
       const carets = gsap.utils.toArray<HTMLElement>("[data-shift-caret]", surfaceEl);
 
-      // The caret sits beside its label inside the same row, so it travels on
-      // that label's own stagger slot rather than taking one of its own.
       const caretFor = (label: HTMLElement) =>
         label.closest("[data-shift-link]")?.querySelector<HTMLElement>("[data-shift-caret]") ?? null;
 
@@ -340,8 +323,6 @@ const PerspectiveShiftMenu = ({
         if (!panel) return;
         const items = accItems(panel);
 
-        // Kill only this panel's tweens: a shared timeline kill here would also
-        // freeze the previous panel's close mid-way, leaving two lists open.
         gsap.killTweensOf([panel, ...items]);
         const tl = timeline({ defaults: { ease: EASE_OUT_NAME } });
 
@@ -350,9 +331,6 @@ const PerspectiveShiftMenu = ({
         gsap.set(panel, { height: 0 });
         gsap.set(items, { autoAlpha: 0, y: reduced ? 0 : 10 });
 
-        // Height uses the same ease/duration/start as closeAcc, so when one
-        // panel swaps for another the shrink and the grow cancel out and the
-        // rows around them don't bounce.
         tl.to(panel, {
           height: target,
           duration: beat(ACC_SPAN),
@@ -972,11 +950,8 @@ const PerspectiveShiftMenu = ({
     <>
       <style>{PROPERTY_REGISTRATION}</style>
 
-      {/* Header: fixed sibling, so it stays put while the page scrolls and
-          is outside the perspective/transform context that would break it. */}
       <header className="pointer-events-none fixed inset-x-0 top-0 z-300 flex items-center justify-between px-[2vw] backdrop-blur-sm max-[1025px]:p-[3vw] max-md:p-[5vw] py-4">
-        <Link
-          prefetch={false}
+        <a
           href="/"
           className={`flex items-center gap-3 cursor-pointer ${lit?"text-black":"text-white"}`}
         >
@@ -1092,10 +1067,8 @@ const PerspectiveShiftMenu = ({
               />
             </svg>
           </div>
-        </Link>
+        </a>
 
-        {/* Closed: an outlined page next to a hidden column. Open: the page
-            tilts away on its right edge while the column slides in. */}
         <button
           type="button"
           ref={triggerRef}
@@ -1106,10 +1079,6 @@ const PerspectiveShiftMenu = ({
           className="group/glyph pointer-events-auto relative z-301 flex h-11 w-11 cursor-pointer items-center justify-center border-none bg-transparent p-0"
         >
    
-          {/* The spin lives on this wrapper, never on the bars: GSAP owns each
-              bar's own transform, and a Tailwind rotate on the same element
-              would be overwritten mid-tween. Only the open state spins, so the
-              cross turns while the hamburger stays put. */}
           <span
             className={`relative block h-[1.2vw] w-[1.7vw] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none max-[1025px]:h-[2.4vw] max-[1025px]:w-[3.4vw] max-md:h-[4vw] max-md:w-[5.6vw] ${
               lit ? "group-hover/glyph:rotate-90 group-focus-visible/glyph:rotate-90" : ""
@@ -1146,8 +1115,6 @@ const PerspectiveShiftMenu = ({
         style={{ backgroundColor: voidColor }}
         className="relative w-full overflow-hidden perspective-distant perspective-origin-[50%_40%]"
       >
-        {/* The page. Its content is whatever the consumer passes as children;
-            it is this surface that tilts away when the menu opens. */}
         <div
           ref={pageRef}
           className="relative w-full origin-right overflow-hidden bg-[#e8e6e1] will-change-transform"
@@ -1157,7 +1124,6 @@ const PerspectiveShiftMenu = ({
 
       </div>
 
-        {/* Dim overlay between the receded page and the nav column */}
         <div
           ref={dimRef}
           aria-hidden="true"
@@ -1167,7 +1133,6 @@ const PerspectiveShiftMenu = ({
           }`}
         />
 
-        {/* Nav column */}
         <div
           id="perspective-shift-surface"
           ref={surfaceRef}
@@ -1200,9 +1165,6 @@ const PerspectiveShiftMenu = ({
                 );
 
                 const caret = (
-                  // The slide rides this outer span, the expand-rotate the
-                  // inner one: GSAP owns `xPercent` here, so a Tailwind
-                  // rotate on the same element would be overwritten mid-tween.
                   <span
                     data-shift-caret
                     aria-hidden="true"
@@ -1235,7 +1197,7 @@ const PerspectiveShiftMenu = ({
                         {caret}
                       </button>
                     ) : (
-                      <Link
+                      <a
                         href={item.href}
                         onClick={inert(item.href)}
                         data-shift-link
@@ -1248,7 +1210,7 @@ const PerspectiveShiftMenu = ({
                           <span className="sr-only">{item.label}</span>
                           <CharRoll text={item.label} stagger={charStagger} reduced={reducedMotion} />
                         </span>
-                      </Link>
+                      </a>
                     )}
 
                     {isParent && (
@@ -1257,19 +1219,17 @@ const PerspectiveShiftMenu = ({
                         className="hidden h-0 overflow-hidden max-md:block"
                         aria-hidden={!expanded}
                       >
-                        {/* Capped + scrollable so an expanded list never pushes
-                            the rest of the menu off screen on mobile. */}
                         <ul className="m-0 flex max-h-[32vh] list-none flex-col gap-2 overflow-y-auto overscroll-contain p-0 pb-[4vw]">
                           {item.items?.map((sub) => (
                             <li key={sub.label}>
-                              <Link
+                              <a
                                 href={sub.href}
                                 onClick={inert(sub.href)}
                                 data-shift-acc-item
                                 className="group/sub block w-fit  text-[3.8vw] leading-[1.2] font-light tracking-[-0.01em] text-current/50 no-underline transition-colors duration-250 hover:text-current"
                               >
                                 {sub.label}
-                              </Link>
+                              </a>
                             </li>
                           ))}
                         </ul>
@@ -1283,29 +1243,29 @@ const PerspectiveShiftMenu = ({
             <ul className="mt-5 mb-auto flex list-none flex-col gap-1 p-0">
               {SUB_LINKS.map((link) => (
                 <li key={link.label}>
-                  <Link
+                  <a
                     href={link.href}
                     onClick={inert(link.href)}
                     data-shift-sublink
                     className="block py-0.5 text-[0.8rem] font-light tracking-[0.04em] text-current/45 no-underline transition-colors duration-220 hover:text-current"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
           </nav>
 
           <div ref={metaRef} className="mt-auto flex flex-col gap-1.5 opacity-0">
-            <Link
+            <a
               href={`mailto:${CONTACT_EMAIL}`}
               className="text-[0.75rem] font-normal tracking-wider text-current/70 no-underline"
             >
               {CONTACT_EMAIL}
-            </Link>
+            </a>
             <span className="flex gap-3">
               {SOCIALS.map((s) => (
-                <Link
+                <a
                   key={s.label}
                   href={s.href}
                   onClick={inert(s.href)}
@@ -1314,13 +1274,12 @@ const PerspectiveShiftMenu = ({
                   className="text-[0.7rem] font-normal tracking-[0.06em] text-current/45 uppercase no-underline transition-colors duration-220 hover:text-current"
                 >
                   {s.label}
-                </Link>
+                </a>
               ))}
             </span>
           </div>
         </div>
 
-        {/* Drawer: a second column that slides out from behind the nav column */}
         <div
           id="perspective-shift-subpanel"
           ref={subpanelRef}
@@ -1357,7 +1316,7 @@ const PerspectiveShiftMenu = ({
                 <ul data-shift-subitems className="m-0 list-none p-0">
                   {item.items?.map((sub) => (
                     <li key={sub.label} className="relative last:*:after:content-none">
-                      <Link
+                      <a
                         href={sub.href}
                         onClick={inert(sub.href)}
                         className="group/sub relative block py-3 no-underline after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:bg-current/8 after:transform-[scaleX(var(--shift-rule,0))] after:content-['']"
@@ -1368,7 +1327,7 @@ const PerspectiveShiftMenu = ({
                         >
                           {sub.label}
                         </span>
-                      </Link>
+                      </a>
                     </li>
                   ))}
                 </ul>

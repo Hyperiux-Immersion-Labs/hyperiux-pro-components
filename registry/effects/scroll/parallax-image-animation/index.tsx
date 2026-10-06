@@ -2,7 +2,6 @@
 "use client";
 
 import gsap from "gsap";
-import Image from "next/image";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
@@ -17,7 +16,6 @@ gsap.registerPlugin(ScrollTrigger);
 const DEFAULT_SRC =
     "https://picsum.photos/seed/v05/1600/1200";
 
-/** Accepts 30, "30" or "30%" and returns the percentage as a number. */
 function toPercent(value: string | number) {
     const numeric = typeof value === "number" ? value : parseFloat(value);
     return Number.isFinite(numeric) ? Math.abs(numeric) : 0;
@@ -30,10 +28,6 @@ interface ParallaxImageAnimationProps {
     imageClassName?: string;
     width?: number;
     height?: number;
-    /**
-     * Parallax travel as a percentage of the image height. The image starts
-     * at -translateY% and ends at +translateY%.
-     */
     translateY?: string | number;
     start?: string;
     end?: string;
@@ -65,14 +59,11 @@ const ParallaxImageAnimation = ({
         const image = imageRef.current;
         if (!wrapperRef.current || !image) return;
 
-        // Reduced motion: the image sits still - no parallax, no scale.
         if (prefersReducedMotion()) {
             gsap.set(image, { yPercent: 0, scale: 1 });
             return () => gsap.set(image, { clearProps: "transform" });
         }
 
-        // Without the scale animation, zoom the image just enough that the
-        // +/- travel never reveals the wrapper's edges.
         const coverScale = 1 + (2 * travel) / 100;
 
         const ctx = gsap.context(() => {
@@ -102,7 +93,7 @@ const ParallaxImageAnimation = ({
 
     return (
         <div ref={wrapperRef} className={`overflow-hidden ${wrapperClassName}`}>
-            <Image
+            <img
                 ref={imageRef}
                 width={width}
                 height={height}

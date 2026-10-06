@@ -2,8 +2,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type ComponentPropsWithoutRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CustomEase } from "gsap/CustomEase";
@@ -41,7 +39,6 @@ const CAPSULE_SHUT = { y: 6, height: 8 };
 
 const PANEL_X = 32;
 
-// The scrim sits softly over the image at rest and deepens behind a descriptor.
 const OVERLAY_REST = 0.45;
 const OVERLAY_ACTIVE = 1;
 const OVERLAY_FADE = 0.34;
@@ -64,9 +61,7 @@ export interface MorphingDockProps {
   ctaHref?: string;
   teaserImage?: string;
   teaserHref?: string;
-  /** Expanded nav panel width in viewport units. */
   expandedWidth?: number;
-  /** Expanded nav panel height in viewport units. */
   expandedHeight?: number;
 }
 
@@ -80,7 +75,7 @@ const DEFAULT_ITEMS = [
 const DEFAULT_TEASER =
   "https://picsum.photos/seed/v10/1600/1200";
 
-type LinkButtonProps = Omit<ComponentPropsWithoutRef<typeof Link>, "children"> & {
+type LinkButtonProps = Omit<ComponentPropsWithoutRef<"a">, "children"> & {
   children: string;
   staggerStep?: number;
   showLine?: boolean;
@@ -94,7 +89,7 @@ export function LinkButton({
   ...props
 }: LinkButtonProps) {
   return (
-    <Link {...props} className={`group/link-button focus-visible:outline-transparent text-[var(--morphing-dock-text,#d2d2d2)] hover:text-[var(--morphing-dock-hover,#ffffff)] focus-visible:text-[var(--morphing-dock-hover,#ffffff)] ${className}`}>
+    <a {...props} className={`group/link-button focus-visible:outline-transparent text-[var(--morphing-dock-text,#d2d2d2)] hover:text-[var(--morphing-dock-hover,#ffffff)] focus-visible:text-[var(--morphing-dock-hover,#ffffff)] ${className}`}>
       <span className="sr-only">{children}</span>
       <span aria-hidden="true" className="relative inline-block overflow-hidden align-middle leading-[1.2]">
         {[...children].map((char, index) => (
@@ -113,7 +108,7 @@ export function LinkButton({
           <span className="pointer-events-none absolute inset-x-0 bottom-0 h-px origin-right scale-x-0 bg-current transition-transform duration-[var(--morphing-dock-line-duration,0.5s)] ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/link-button:origin-left group-hover/link-button:scale-x-100 group-focus-visible/link-button:origin-left group-focus-visible/link-button:scale-x-100 group-active/link-button:origin-left group-active/link-button:scale-x-100 motion-reduce:transition-none" />
         )}
       </span>
-    </Link>
+    </a>
   );
 }
 
@@ -209,8 +204,6 @@ const MorphingDock = ({
       const capsule = capsuleRef.current;
       const triggerRoller = triggerRollerRef.current;
 
-      // Geometry lives in CSS custom properties so the breakpoints stay in
-      // Tailwind; the timelines just read whatever the current values are.
       let dockW = 0;
       let dockH = 0;
       let navW = 0;
@@ -218,9 +211,6 @@ const MorphingDock = ({
       let contactW = 0;
       let contactH = 0;
 
-      // Custom properties come back as authored ("28vw", "min(48vw,52rem)"),
-      // so they have to be resolved through a real box before GSAP can tween
-      // them as pixels - parseFloat alone would read "28vw" as 28px.
       const probe = document.createElement("div");
       probe.style.cssText =
         "position:absolute;visibility:hidden;pointer-events:none;height:0";
@@ -305,7 +295,6 @@ const MorphingDock = ({
           },
         });
 
-        // Two-beat morph: the morphing dock rises first, then widens into the card.
         tl.to(body, { height: navH, duration: RISE, ease: EASE_IN_OUT, force3D: false }, 0);
         tl.to(body, { width: navW, duration: WIDEN, ease: EASE_IN_OUT, force3D: false }, WIDEN_AT);
 
@@ -385,7 +374,6 @@ const MorphingDock = ({
           );
         }
 
-        // Closing reverses the order: narrow first, then drop.
         tl.to(
           body,
           { width: dockW, duration: CLOSE_WIDTH, force3D: false },
@@ -464,23 +452,16 @@ const MorphingDock = ({
         morphTl.current = tl;
       };
 
-      // The preview panel never resizes - only its contents crossfade between
-      // the teaser image and the hovered link's descriptor.
       const preview = (key: string | null) => {
         if (!panel || phaseRef.current !== "open" || viewRef.current !== "nav") return;
         if (isTouch()) return;
         if (activeBlurb.current === key) return;
 
-        // The teaser image stays put in every state - only the descriptors
-        // swap above it, so the panel never reads as empty. A null key means
-        // "no link hovered", which simply clears every descriptor.
         const incoming = key ? blurbFor(key) : null;
         activeBlurb.current = key;
 
         const outgoing: Element[] = blurbs.filter((el) => el !== incoming);
 
-        // A descriptor taking over drops the label, even if the pointer is
-        // still resting on the image.
         if (mediaRoller && incoming) {
           hoverTl.current?.kill();
           gsap.to(mediaRoller, {
@@ -494,8 +475,6 @@ const MorphingDock = ({
         swapTl.current?.kill();
         const tl = createTimeline({ defaults: { force3D: true } });
 
-        // The scrim never disappears - it just crossfades between its resting
-        // wash and the deeper state that carries a descriptor.
         if (overlay)
           tl.to(
             overlay,
@@ -532,8 +511,6 @@ const MorphingDock = ({
         swapTl.current = tl;
       };
 
-      // Scale always follows the pointer, but the label only rolls up when no
-      // descriptor is showing - otherwise the two would overlap on the image.
       const hoverMedia = (on: boolean) => {
         if (phaseRef.current !== "open" || isTouch()) return;
         hoverTl.current?.kill();
@@ -548,7 +525,6 @@ const MorphingDock = ({
 
       api.current = { open, close, toNav, toContact, preview, hoverMedia };
 
-      // Initial state
       surface.setAttribute("inert", "");
       surface.style.visibility = "hidden";
       gsap.set(body, { width: dockW, height: dockH });
@@ -627,7 +603,6 @@ const MorphingDock = ({
   };
 
   const onLinkLeave = () => {
-    // Leaving a link clears its descriptor, so the image reads clean again.
     api.current?.preview(null);
   };
 
@@ -641,9 +616,6 @@ const MorphingDock = ({
         "--morphing-dock-hover": hoverColor,
         "--morphing-dock-char-duration": `${0.6 * motionDuration}s`,
         "--morphing-dock-line-duration": `${0.5 * motionDuration}s`,
-        // Only the desktop tier reads these; the tablet and mobile classes set
-        // the nav tokens from their own literals, so the sliders stop applying
-        // below 1025px instead of pinning every breakpoint to one value.
         "--morphing-dock-nav-w-user": expandedWidthValue,
         "--morphing-dock-nav-h-user": expandedHeightValue,
       } as CSSProperties}
@@ -665,13 +637,11 @@ const MorphingDock = ({
           ref={bodyRef}
           className="relative box-border max-w-[96vw] overflow-hidden rounded-[2vw] border border-white/15 bg-(--morphing-dock-background) shadow-[0_1.5vw_4vw_rgba(0,0,0,0.45)] will-change-[width,height] max-[1025px]:rounded-[3.5vw] max-md:rounded-[6vw]"
         >
-          {/* Everything above the persistent dock row */}
           <div
             ref={surfaceRef}
             id="morphing-dock-surface"
             className="invisible absolute inset-x-0 top-0 bottom-(--morphing-dock-dock-h)"
           >
-            {/* View A - the nav list plus its preview panel */}
             <div
               ref={navViewRef}
               className="absolute bottom-0 left-0 box-border flex h-[calc(var(--morphing-dock-nav-h)-var(--morphing-dock-dock-h))] w-(--morphing-dock-nav-w) flex-row items-stretch gap-6 px-6 py-6 will-change-[transform,opacity] max-[1025px]:gap-5 max-md:flex-col max-md:justify-start max-md:gap-0 max-md:px-5 max-md:py-5"
@@ -716,13 +686,12 @@ const MorphingDock = ({
                 </LinkButton>
               </nav>
 
-              {/* Preview panel - swaps contents, never resizes */}
               <div
                 ref={panelRef}
                 aria-hidden
                 className="relative min-w-0 basis-1/2 will-change-[transform,opacity] max-[1025px]:h-[34vw] max-[1025px]:self-end max-md:order-first max-md:h-[50vw] max-md:basis-auto max-md:self-auto"
               >
-                <Link
+                <a
                   ref={mediaRef}
                   href={teaserHref}
                   onClick={(e) => {
@@ -733,17 +702,13 @@ const MorphingDock = ({
                   className="absolute inset-0 overflow-hidden rounded-lg will-change-[transform,opacity] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent"
                 >
                   <span ref={mediaImgRef} className="absolute inset-0 block h-full w-full will-change-transform">
-                    <Image
+                    <img
                       src={teaserImage}
                       alt=""
-                      fill
-                      sizes="(max-width: 768px) 92vw, 35vw"
-                      className="h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-cover"
                     />
                   </span>
 
-                  {/* Scrim: its own layer above the image and below the text,
-                      so it can crossfade independently of any descriptor. */}
                   <span
                     ref={overlayRef}
                     aria-hidden
@@ -770,7 +735,7 @@ const MorphingDock = ({
                       </span>
                     </span>
                   </span>
-                </Link>
+                </a>
 
                 {items.map((item, i) => (
                   <div
@@ -789,7 +754,6 @@ const MorphingDock = ({
               </div>
             </div>
 
-            {/* View B - the contact card */}
             <div
               ref={contactViewRef}
               className="absolute bottom-0 left-0 box-border flex h-[calc(var(--morphing-dock-contact-h)-var(--morphing-dock-dock-h))] w-(--morphing-dock-contact-w) flex-col justify-between px-6 pt-5 pb-3 will-change-[transform,opacity] max-md:px-5 max-md:pt-4 max-md:pb-2.5"
@@ -813,12 +777,12 @@ const MorphingDock = ({
               </button>
 
               <div className="flex flex-col gap-1.5">
-                <Link
+                <a
                   href={`mailto:${email}`}
                   className="text-xl font-light tracking-[-0.02em] whitespace-nowrap text-white/92 no-underline hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent max-md:text-lg"
                 >
                   {email}
-                </Link>
+                </a>
                 <span className="text-[0.9vw] text-white/50 max-[1025px]:text-[1.6vw] max-md:text-[3.2vw]">
                   {emailNote}
                 </span>
@@ -826,10 +790,8 @@ const MorphingDock = ({
             </div>
           </div>
 
-          {/* Dock row - always visible, always interactive */}
           <div className="absolute inset-x-0 bottom-0 box-border flex h-(--morphing-dock-dock-h) items-center gap-6 pr-2.5 pl-6 max-md:gap-3 max-md:pr-2 max-md:pl-4">
-            <Link
-          prefetch={false}
+            <a
           href="/"
           className="flex items-center gap-3 cursor-pointer text-(--morphing-dock-text)"
         >
@@ -917,7 +879,7 @@ const MorphingDock = ({
               />
             </svg>
           </div>
-        </Link>
+        </a>
 
             <button
               type="button"

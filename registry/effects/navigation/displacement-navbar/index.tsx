@@ -10,8 +10,6 @@ import React, {
   type ComponentPropsWithoutRef,
 } from "react";
 import { gsap } from "gsap";
-import Image from "next/image";
-import Link from "next/link";
 
 function usePrefersReducedMotion() {
   return useSyncExternalStore(
@@ -34,7 +32,7 @@ export interface DisplacementNavbarLink {
 }
 
 type LinkHoverProps = Omit<
-  ComponentPropsWithoutRef<typeof Link>,
+  ComponentPropsWithoutRef<"a">,
   "children"
 > & {
   children: string;
@@ -55,7 +53,7 @@ export function LinkHover({
 }: LinkHoverProps) {
   if (reduced) {
     return (
-      <Link
+      <a
         {...props}
         className={`inline-flex items-center gap-[0.35em] no-underline ${className}`}
       >
@@ -76,12 +74,12 @@ export function LinkHover({
             />
           </svg>
         )}
-      </Link>
+      </a>
     );
   }
 
   return (
-    <Link
+    <a
       {...props}
       className={`group/link-hover inline-flex items-center gap-[0.35em] no-underline ${className}`}
     >
@@ -122,7 +120,7 @@ export function LinkHover({
           />
         </svg>
       )}
-    </Link>
+    </a>
   );
 }
 
@@ -140,35 +138,20 @@ export interface DisplacementNavbarProps {
   cities?: string;
   className?: string;
   children?: React.ReactNode;
-  /** Page displacement + bar/mark open duration, in seconds. */
   openDuration?: number;
-  /** Page displacement + bar/mark close duration, in seconds. Matches `openDuration` by default so the close mirrors the open. */
   closeDuration?: number;
-  /** Delay (seconds) between each shelf content item fading in on open. The close clears them outright, so it does not stagger. */
   contentStagger?: number;
-  /** Duration of the figure image cross-swap on link hover, in seconds. */
   imageSwapDuration?: number;
-  /** Shelf + header background color. */
   shelfBackground?: string;
-  /** Start color of the displaced page's gradient. */
   pageGradientFrom?: string;
-  /** End color of the displaced page's gradient. */
   pageGradientTo?: string;
-  /** Escape hatch for the displaced page background - any CSS background value. Overrides `pageGradientFrom`/`pageGradientTo` when set. */
   pageBackground?: string;
-  /** Primary/info link text color. */
   linkColor?: string;
-  /** Index numerals, captions, and dimmed-state color. */
   mutedColor?: string;
-  /** Bar seam and footer divider color. */
   hairlineColor?: string;
-  /** Per-character reveal delay in `LinkHover`, in seconds. */
   charStagger?: number;
-  /** Shows the underline draw-in under hovered links. */
   showLinkUnderline?: boolean;
-  /** Dims sibling primary links while one is hovered. */
   dimInactiveLinks?: boolean;
-  /** Shows the figure image panel next to the primary links. */
   showMedia?: boolean;
 }
 
@@ -252,8 +235,6 @@ const DisplacementNavbar = ({
   dimInactiveLinks = true,
   showMedia = true,
 }: DisplacementNavbarProps) => {
-  // `pageBackground` stays the escape hatch for any CSS background value; the
-  // two gradient colors are what the remixer exposes as pickers.
   const resolvedPageBackground =
     pageBackground ??
     `linear-gradient(160deg, ${pageGradientFrom} 0%, ${pageGradientTo} 100%)`;
@@ -296,12 +277,6 @@ const DisplacementNavbar = ({
     imageSwapDuration,
   });
 
-  // Mutating a ref's .current directly during render (the previous shape of
-  // these two lines) is a render-phase side effect React disallows - refs
-  // are only guaranteed safe to read/write in effects or event handlers.
-  // Deferring to an effect (no deps, so it re-syncs after every render)
-  // keeps the "always latest value for later imperative reads" behavior the
-  // callbacks below rely on, just moved to the commit phase.
   useEffect(() => {
     reducedRef.current = reducedMotion;
     timingRef.current = {
@@ -355,9 +330,6 @@ const DisplacementNavbar = ({
     });
     gsap.set(pageContentRef.current, { autoAlpha: 1 });
     gsap.set(barLineRef.current, { scaleX: 0 });
-    // Park the shelf fully above the viewport (shelf + bar height), not just
-    // behind the bar - otherwise it sits under the translucent header and reads
-    // as a black strip until it is hidden.
     gsap.set(shelfRef.current, {
       y: -(
         (shelfRef.current?.offsetHeight ?? 0) + (barRef.current?.offsetHeight ?? 0)
@@ -644,8 +616,6 @@ const DisplacementNavbar = ({
     tl.to(
       shelfRef.current,
       {
-        // Same distance the page travels, so the shelf's bottom edge stays glued
-        // to the page's top edge and clears the header as the page returns.
         y: -(
           (shelfRef.current?.offsetHeight ?? 0) +
           (barRef.current?.offsetHeight ?? 0)
@@ -737,16 +707,12 @@ const DisplacementNavbar = ({
       className={`relative min-h-screen ${className}`}
       style={{ backgroundColor: shelfBackground, color: linkColor }}
     >
-      {/* The bar stays translucent in both states, so whatever sits behind it -
-          the page when closed, the shelf once it is out - reads through the
-          blur rather than being covered by a solid strip. */}
       <header
         ref={barRef}
         className={`fixed top-0 left-0 right-0 z-30 backdrop-blur-md flex items-center justify-between h-[6vw] max-md:h-[20vw] max-[1025px]:h-[12vw] px-[1.7vw] max-md:px-[5vw] max-[1025px]:px-[2.6vw] transition-colors duration-300 ${isOpen ? "bg-transparent" : "bg-black/20"}`}
         style={{ color: linkColor }}
       >
-        <Link
-          prefetch={false}
+        <a
           href="/"
           className="flex items-center gap-3 cursor-pointer "
         >
@@ -861,7 +827,7 @@ const DisplacementNavbar = ({
               />
             </svg>
           </div>
-        </Link>
+        </a>
 
         <button
           type="button"
@@ -1011,13 +977,13 @@ const DisplacementNavbar = ({
                 Info
               </span>
               {infoLinks.map((link) => (
-                <Link
+                <a
                   key={link.label}
                   href={link.href ?? "#"}
                   className="w-fit no-underline text-[0.9vw] max-md:text-[3.5vw] max-[1025px]:text-[1.7vw] font-normal tracking-[-0.01em] text-(--displacement-navbar-link) transition-colors duration-300 ease-out hover:text-white focus-visible:text-white"
                 >
                   {link.label}
-                </Link>
+                </a>
               ))}
             </nav>
 
@@ -1034,12 +1000,10 @@ const DisplacementNavbar = ({
                       ref={(node) => registerImage(node, i)}
                       className="absolute inset-0 w-full h-full"
                     >
-                      <Image
+                      <img
                         src={item.src}
                         alt=""
-                        fill
-                        sizes="18vw"
-                        className={`object-cover object-[50%_20%] ${
+                        className={`absolute inset-0 h-full w-full object-cover object-[50%_20%] ${
                           reducedMotion
                             ? ""
                             : "origin-[50%_20%] hover:scale-105 duration-300 transition-all ease-in-out"
@@ -1066,21 +1030,21 @@ const DisplacementNavbar = ({
             className="flex max-md:flex-col items-center max-md:items-start justify-between gap-[2vw] mt-[1.5vw] max-md:mt-[10vw] max-[1025px]:mt-[4vw] pt-[0.85vw] max-md:pt-[7vw] max-[1025px]:pt-[2.8vw] border-t text-[0.65vw] max-md:text-[3vw] max-[1025px]:text-[1.4vw] max-md:gap-[5vw] max-[1025px]:gap-[2.2vw]"
             style={{ borderColor: hairlineColor, color: mutedColor }}
           >
-            <Link
+            <a
               href={`mailto:${email}`}
               className="w-fit text-sm no-underline text-(--displacement-navbar-link) opacity-80 transition-colors duration-300 ease-out hover:text-white hover:opacity-100 focus-visible:text-white focus-visible:opacity-100"
             >
               {email}
-            </Link>
+            </a>
             <span className="flex gap-[4vw] max-md:gap-[14vw] max-[1025px]:gap-[6vw] ">
               {socials.map((social) => (
-                <Link
+                <a
                   key={social.label}
                   href={social.href ?? "#"}
                   className="w-fit text-sm no-underline text-(--displacement-navbar-link) opacity-80 transition-colors duration-300 ease-out hover:text-white hover:opacity-100 focus-visible:text-white focus-visible:opacity-100"
                 >
                   {social.label}
-                </Link>
+                </a>
               ))}
             </span>
             <span className="text-sm">{cities}</span>
@@ -1093,9 +1057,6 @@ const DisplacementNavbar = ({
         className="relative z-20 min-h-screen pt-[4vw] max-md:pt-[16vw] max-[1025px]:pt-[5.5vw] will-change-transform"
         style={{ background: resolvedPageBackground, color: "#111111" }}
       >
-        {/* Only the page's content dims while the shelf is open, never the page
-            surface itself - fading the wrapper would take the page background with
-            it and let the shelf show through the gap. */}
         <div ref={pageContentRef}>
           {children ?? (
             <div className="grid place-items-center min-h-[90vh] px-[1.7vw] max-md:px-[5vw] max-[1025px]:px-[2.6vw]">

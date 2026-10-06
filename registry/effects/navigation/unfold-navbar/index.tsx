@@ -2,8 +2,6 @@
 "use client";
 
 import { useRef, useState, useSyncExternalStore, type ComponentPropsWithoutRef } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CustomEase } from "gsap/CustomEase";
@@ -59,7 +57,7 @@ const IMG_SCALE = 1.08;
 
 const VIEWPORT_CAP = 0.96;
 
-type LinkHoverProps = Omit<ComponentPropsWithoutRef<typeof Link>, 'children'> & {
+type LinkHoverProps = Omit<ComponentPropsWithoutRef<"a">, 'children'> & {
   children: string
   staggerStep?: number
   showLine?: boolean
@@ -79,7 +77,7 @@ export function LinkHover({
 
   if (reduced) {
     return (
-      <Link {...props} className={`inline-flex items-center gap-[0.35em] no-underline ${className}`}>
+      <a {...props} className={`inline-flex items-center gap-[0.35em] no-underline ${className}`}>
         <span className="leading-[1.2]">{children}</span>
         {arrow && (
           <svg viewBox="0 0 14 14" fill="none" aria-hidden="true" className="h-[0.8em] w-[0.8em] flex-none">
@@ -92,12 +90,12 @@ export function LinkHover({
             />
           </svg>
         )}
-      </Link>
+      </a>
     )
   }
 
   return (
-    <Link
+    <a
       {...props}
       className={`group/link-hover inline-flex items-center gap-[0.35em] no-underline ${className}`}
     >
@@ -135,7 +133,7 @@ export function LinkHover({
           />
         </svg>
       )}
-    </Link>
+    </a>
   )
 }
 
@@ -602,7 +600,7 @@ const UnfoldNavbar = ({
 
                 <div className="flex flex-col gap-2.25 pt-7.5 max-md:mt-auto max-md:pt-6">
                   {secondary.map((item) => (
-                    <Link
+                    <a
                       key={item.label}
                       data-sub
                       href={item.href}
@@ -613,7 +611,7 @@ const UnfoldNavbar = ({
                       className="w-fit text-[13px] tracking-[0.01em] text-(--un-muted) no-underline transition-colors duration-300 ease-out hover:text-black focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fd551d]"
                     >
                       {item.label}
-                    </Link>
+                    </a>
                   ))}
                 </div>
               </nav>
@@ -629,12 +627,10 @@ const UnfoldNavbar = ({
               >
                 <span className="relative min-h-0 w-full flex-1 overflow-hidden rounded-lg max-md:min-h-30">
                   <span ref={tileImgRef} className="absolute inset-0 block h-full w-full">
-                    <Image
+                    <img
                       src={featureImage}
                       alt={featureCaption}
-                      fill
-                      sizes="408px"
-                      className="h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-cover"
                     />
                   </span>
                   <span

@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type CSSProperties, type PointerEvent } from "react";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const DEFAULT_HREF = "#";
@@ -25,7 +24,7 @@ export interface ArrowFillButtonOwnProps {
   fillOnHover?: boolean;
 }
 
-export type ArrowFillButtonProps = ArrowFillButtonOwnProps & Omit<ComponentPropsWithoutRef<typeof Link>, keyof ArrowFillButtonOwnProps>;
+export type ArrowFillButtonProps = ArrowFillButtonOwnProps & Omit<ComponentPropsWithoutRef<"a">, keyof ArrowFillButtonOwnProps>;
 
 function ArrowFillButton({
   btnText = "Hover Me",
@@ -139,7 +138,7 @@ function ArrowFillButton({
   };
 
   return (
-    <Link
+    <a
       href={href}
       {...props}
       data-pressed={isPressed ? "true" : "false"}
@@ -214,7 +213,7 @@ function ArrowFillButton({
             strokeWidth={1.8}
           />
         </span>
-    </Link>
+    </a>
   );
 }
 

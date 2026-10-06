@@ -2,21 +2,13 @@
 "use client";
 
 import gsap from "gsap";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-// Underline that grows in from the right on hover, and retreats back out to
-// the right (not just fading in place) when the hover ends - the origin
-// flips between right/left so scale-x animates from/to the same edge.
 const LINK_LINE_BASE =
   "relative w-fit after:content-[''] after:absolute after:inset-x-0 after:bottom-0 after:block after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-current hover:after:origin-left hover:after:scale-x-100";
 const LINK_LINE_ANIMATED = `${LINK_LINE_BASE} after:transition-transform after:duration-500 after:ease-out`;
-// Reduced motion: the line appears at full width instead of drawing in.
 const LINK_LINE_INSTANT = `${LINK_LINE_BASE} after:transition-none`;
 
-// Read through matchMedia (not only the CSS media query) so the docs
-// reduced-motion preview, which overrides matchMedia, is honored too.
 function useLinkLineClasses() {
   const [reduce, setReduce] = useState(false);
 
@@ -53,9 +45,9 @@ const MenuLink = ({ href, text, className = "" }: MenuLinkProps) => {
   const lineClasses = useLinkLineClasses();
 
   return (
-    <Link aria-hidden href={href} className={`block w-fit leading-[1.2] font-medium ${className}`} prefetch={false}>
+    <a aria-hidden href={href} className={`block w-fit leading-[1.2] font-medium ${className}`}>
       <span className={`${lineClasses} block`}>{text}</span>
-    </Link>
+    </a>
   )
 }
 
@@ -80,7 +72,7 @@ const SocialLink = ({ href, text }: SocialLinkItem) => {
 
   return (
   <li className="overflow-hidden">
-    <Link
+    <a
       className="social-link flex items-center gap-[3px] max-md:gap-[2.5vw] group" href={href}>
       <span className={lineClasses}>
         {text}
@@ -89,7 +81,7 @@ const SocialLink = ({ href, text }: SocialLinkItem) => {
         <path className="origin-center -translate-y-[110%] scale-0 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-500 ease-out" d="M9.44186 23C9.38605 22.9324 9.33953 22.8559 9.27442 22.7973C6.25116 19.8649 3.22791 16.9369 0.204652 14.009C0.139535 13.9459 0.0604662 13.8964 1.30208e-06 13.8468C0.576745 13.2973 1.12558 12.7748 1.66512 12.2613C3.82326 14.3514 6.01861 16.4775 8.2093 18.6036C8.23256 18.5901 8.26047 18.5811 8.28372 18.5676C8.28372 12.3829 8.28372 6.19369 8.28372 -4.68423e-07C9.09768 -4.32844e-07 9.87442 -3.98892e-07 10.6744 -3.63923e-07C10.6744 6.19369 10.6744 12.3784 10.6744 18.5901C12.893 16.4369 15.0884 14.3108 17.2651 12.2027C17.8465 12.7568 18.3907 13.2838 19 13.8739C18.9488 13.9009 18.8558 13.9324 18.7907 13.9955C15.7581 16.9279 12.7302 19.8649 9.70233 22.7973C9.64186 22.8559 9.5907 22.9324 9.53488 23C9.50698 23 9.47442 23 9.44186 23Z" fill="currentColor" />
         <path className="origin-center group-hover:scale-0 group-hover:translate-y-[110%] transition-all duration-500 ease-out" d="M9.44186 23C9.38605 22.9324 9.33953 22.8559 9.27442 22.7973C6.25116 19.8649 3.22791 16.9369 0.204652 14.009C0.139535 13.9459 0.0604662 13.8964 1.30208e-06 13.8468C0.576745 13.2973 1.12558 12.7748 1.66512 12.2613C3.82326 14.3514 6.01861 16.4775 8.2093 18.6036C8.23256 18.5901 8.26047 18.5811 8.28372 18.5676C8.28372 12.3829 8.28372 6.19369 8.28372 -4.68423e-07C9.09768 -4.32844e-07 9.87442 -3.98892e-07 10.6744 -3.63923e-07C10.6744 6.19369 10.6744 12.3784 10.6744 18.5901C12.893 16.4369 15.0884 14.3108 17.2651 12.2027C17.8465 12.7568 18.3907 13.2838 19 13.8739C18.9488 13.9009 18.8558 13.9324 18.7907 13.9955C15.7581 16.9279 12.7302 19.8649 9.70233 22.7973C9.64186 22.8559 9.5907 22.9324 9.53488 23C9.50698 23 9.47442 23 9.44186 23Z" fill="currentColor" />
       </svg>
-    </Link>
+    </a>
   </li>
   );
 };
@@ -130,7 +122,6 @@ function Menu({
   panelOpacity = 0.2,
   panelBlur = "md",
 }: MenuProps) {
-  // A bare number is a percentage of the viewport; strings pass through as CSS.
   const resolvedPanelWidth = typeof panelWidth === "number" ? `${panelWidth}%` : panelWidth;
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -319,7 +310,7 @@ const SideNavbar = ({
       >
         <div className="w-full px-[4vw] pt-[2.2%] max-[1025px]:pt-[1%] flex justify-between items-center max-md:py-[4%]">
           <div className="w-fit overflow-hidden">
-            <Link prefetch={false} href="/" className="flex items-center gap-3 cursor-pointer">
+            <a href="/" className="flex items-center gap-3 cursor-pointer">
               <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={` transition-all duration-300 motion-reduce:transition-none`}>
                 <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff" />
                 <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff" />
@@ -348,7 +339,7 @@ const SideNavbar = ({
                   <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="#ffffff" />
                 </svg>
               </div>
-            </Link>
+            </a>
           </div>
           <div className="flex items-center gap-8 relative z-[205] max-[1025px]:gap-4 max-md:gap-0 max-md:items-start">
             <div className="w-[3.5vw] mr-[-0.5%] h-[3.5vw] max-md:w-[12vw] max-md:h-[15vw] relative max-[1025px]:w-[8vw] max-[1025px]:h-[10vw] max-md:mr-[-5%]">
@@ -387,7 +378,7 @@ const SideNavbar = ({
         </div>
       </header>
       <div className={`w-screen h-screen fixed inset-0 ${menuOpen ? "brightness-75 pointer-events-auto" : " "} transition-all duration-300 ease-out z-50`}>
-        <Image src={"https://picsum.photos/seed/h27/1600/1200"} alt="sidenavbar image" className="w-full h-full absolute duration-300 brightness-90 object-cover" width={1920} height={1080} />
+        <img src={"https://picsum.photos/seed/h27/1600/1200"} alt="sidenavbar image" className="w-full h-full absolute duration-300 brightness-90 object-cover" width={1920} height={1080} />
        <div className="w-full h-full flex flex-col justify-center items-center gap-[1.5vw] text-white relative z-1 duration-300 max-[1025px]:px-[10vw]">
         <h1 className=" text-[5vw] max-md:text-[12vw] max-[1025px]:text-[7vw]">
           Side Navbar

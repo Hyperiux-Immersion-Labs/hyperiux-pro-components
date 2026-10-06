@@ -2,7 +2,6 @@
 "use client";
 
 import gsap from "gsap";
-import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 
 const SOCIAL_ICONS: Record<string, ReactNode> = {
@@ -94,8 +93,6 @@ function LinkAnim({
     return () => query.removeEventListener("change", syncReduced);
   }, []);
 
-  // Retracts the underline back toward the side it came from, so the rule
-  // never looks like it is sliding out from under the cursor.
   useEffect(() => {
     if (!hasEnteredRef.current) {
       hasEnteredRef.current = true;
@@ -119,8 +116,7 @@ function LinkAnim({
   const chars = [...label];
 
   return (
-    <Link
-      prefetch={false}
+    <a
       href={href}
       tabIndex={tabIndex}
       onClick={onClick}
@@ -149,8 +145,6 @@ function LinkAnim({
               aria-hidden="true"
               className="relative inline-block will-change-transform motion-reduce:transition-none"
               style={{
-                // The shadow copy sits one lift below, so raising the span
-                // swaps it in without a second set of DOM nodes.
                 textShadow: `0px ${ANIM_CHAR_LIFT} currentColor`,
                 transform: isActive && !isReduced
                   ? `translateY(-${ANIM_CHAR_LIFT}) rotate(0.001deg)`
@@ -178,7 +172,7 @@ function LinkAnim({
           />
         )}
       </span>
-    </Link>
+    </a>
   );
 }
 
@@ -242,7 +236,6 @@ function CustomNavbar({
   socialDuration = DEFAULT_SOCIAL_DURATION,
   socialStagger = DEFAULT_SOCIAL_STAGGER,
 }: CustomNavbarProps) {
-  // State & refs
   const linksRef = useRef<(HTMLDivElement | null)[]>([]);
   const imagesRef = useRef<(HTMLDivElement | null)[]>([]);
   const socialsRef = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -253,7 +246,6 @@ function CustomNavbar({
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
-  // Animation helpers
   const killAllTweens = () => {
     gsap.killTweensOf([
       ...linksRef.current,
@@ -286,7 +278,6 @@ function CustomNavbar({
     socialsRef.current[index] = element;
   };
 
-  // Effects
   useEffect(() => {
     killAllTweens();
 
@@ -426,7 +417,6 @@ function CustomNavbar({
                 style={{ opacity: 0, transform: `scale(${IMAGE_INITIAL_SCALE})` }}
                 className="relative h-[18vw] w-[25vw] overflow-hidden rounded-xl max-[1025px]:h-[25vh] max-[1025px]:w-[35vw] max-md:h-[30vw] max-md:w-[60vw] max-md:rounded-md"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
                   alt={`img-${index}`}
@@ -441,14 +431,14 @@ function CustomNavbar({
 
       <div className="flex gap-10 items-end justify-end max-[1025px]:justify-start max-[1025px]:pb-10 max-md:pt-5">
         {socials.map((social, index) => (
-          <Link
+          <a
             key={index}
             href={social.href}
             ref={setSocialRef(index)}
             style={{ opacity: 0, transform: `translateY(${socialOffsetY}px)` }}
           >
             {SOCIAL_ICONS[social.type]}
-          </Link>
+          </a>
         ))}
       </div>
     </div>
@@ -495,16 +485,6 @@ interface UseFocusTrapParams {
   onEscape?: () => void;
 }
 
-/**
- * Keeps keyboard focus inside `containerRef` while `active` is true.
- *
- * - Captures the element focused before opening and restores focus to it on
- *   close (so the trigger button gets focus back).
- * - Moves focus into the menu on open (to `initialFocusRef` when provided,
- *   otherwise the first focusable element).
- * - Wraps Tab / Shift+Tab around the menu's focusable elements.
- * - Calls `onEscape` when the Escape key is pressed.
- */
 export function useFocusTrap({
   active,
   containerRef,
@@ -549,7 +529,6 @@ export function useFocusTrap({
       target.focus();
     };
 
-    // Defer focus so it lands after the menu has mounted / started animating in.
     const focusFrame = requestAnimationFrame(focusInitial);
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -669,7 +648,6 @@ function FullscreenNav({
   onClose,
   children,
 }: FullscreenNavProps) {
-  // State & refs
   const [isOpen, setIsOpen] = useState(false);
   const overlayRef = useRef<HTMLElement | null>(null);
   const linksWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -681,7 +659,6 @@ function FullscreenNav({
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
-  // Derived values
   const { closedInitial, open: openClipPath, closedFinal } =
     CLIPS[clipOrigin] ?? CLIPS.bottom;
   const isReducedMotion = reduceMotion();
@@ -810,7 +787,6 @@ function FullscreenNav({
     onOpenMenu();
   };
 
-  // Effects
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
 
@@ -826,14 +802,13 @@ function FullscreenNav({
     onEscape: onCloseMenu,
   });
 
-  // Return
   return (
     <div ref={rootRef}>
       <header
         className={`fixed top-6 max-md:top-6 left-0 right-0 z-70 flex h-20 items-center justify-between px-8 ${headerClassName}`}
       >
         <div className="flex items-center gap-3">
-          <Link prefetch={false} href="/" className="flex items-center gap-3 cursor-pointer">
+          <a href="/" className="flex items-center gap-3 cursor-pointer">
           <svg width="30" height="30" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg" className={` ${isReducedMotion ? "transition-none" : "transition-all duration-300 delay-700"} ${isOpen ? "brightness-100" : "brightness-0"}`}>
             <path d="M0 0H9.02977V28.5943H0V0Z" fill="#ffffff"/>
             <path d="M57.1895 64.7134H48.1597V36.1192H57.1895V64.7134Z" fill="#ffffff"/>
@@ -862,7 +837,7 @@ function FullscreenNav({
               <rect x="6.62305" y="17.7585" width="28.8953" height="6.62183" fill="white"/>
             </svg>
           </div>
-          </Link>
+          </a>
         </div>
 
         <button

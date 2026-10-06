@@ -2,8 +2,6 @@
 "use client";
 
 import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, useVelocity, type MotionValue } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState, type PointerEvent, type ReactNode, type RefObject } from "react";
 
 const DEFAULT_ROOT_MARGIN = "256px";
@@ -42,7 +40,6 @@ function createVisibilityGate({
 }: VisibilityGateOptions = {}): VisibilityGate {
   let tabVisible =
     typeof document === "undefined" ? true : !document.hidden;
-  // Match border-beam: assume onscreen until the observer reports otherwise.
   let onscreen = true;
   let destroyed = false;
   let observer: IntersectionObserver | null = null;
@@ -97,15 +94,10 @@ function createVisibilityGate({
   bindObserver();
 
   return {
-    /** Whether the animation should currently run. */
     get isActive() {
       return isActive();
     },
 
-    /**
-     * Re-bind IntersectionObserver after the root element mounts late
-     * (e.g. ref not ready on first call). Safe to call multiple times.
-     */
     observe(nextRoot?: RafRoot) {
       if (destroyed) return;
       if (nextRoot != null) root = nextRoot;
@@ -150,10 +142,6 @@ interface SuspendedRaf {
   destroy: () => void;
 }
 
-/**
- * Owns a requestAnimationFrame loop that auto-pauses when the tab is hidden
- * or the root element is offscreen.
- */
 function createSuspendedRaf({
   onFrame,
   root = null,
@@ -207,36 +195,30 @@ function createSuspendedRaf({
   });
 
   return {
-    /** Start (or resume) the loop when visibility allows. */
     start() {
       if (destroyed) return;
       running = true;
       sync();
     },
 
-    /** Stop requesting frames (visibility listeners stay attached until destroy). */
     stop() {
       running = false;
       stopRaf();
     },
 
-    /** Whether the caller has started the loop (may still be paused by visibility). */
     get isRunning() {
       return running;
     },
 
-    /** Whether a frame is currently allowed to schedule. */
     get isActive() {
       return gate.isActive;
     },
 
-    /** Re-attach offscreen observer to a (new) root element. */
     observe(nextRoot?: RafRoot) {
       gate.observe(nextRoot);
       sync();
     },
 
-    /** Tear down listeners and cancel any pending frame. */
     destroy() {
       if (destroyed) return;
       destroyed = true;
@@ -253,15 +235,11 @@ export {
   DEFAULT_ROOT_MARGIN,
 };
 
-// Custom wrap function
 const wrap = (min: number, max: number, value: number): number => {
   const range = max - min
   return ((((value - min) % range) + range) % range) + min
 }
 
-// How much of each scrolled pixel becomes path-offset percentage in
-// reduced-motion mode. Keeps a normal scroll from spinning the item around
-// the path multiple times.
 const REDUCED_MOTION_SCROLL_FACTOR = 0.05
 
 interface CssVariableInterpolation {
@@ -394,20 +372,17 @@ const SVGPathComp = ({
   children,
   className,
 
-  // Path defaults
   path,
 
   pathId,
   preserveAspectRatio = "xMidYMid meet",
   showPath = false,
 
-  // SVG defaults
   width = "100%",
 
   height = "100%",
   viewBox = "0 0 100 100",
 
-  // Marquee defaults
   baseVelocity = 5,
 
   direction = "normal",
@@ -416,35 +391,28 @@ const SVGPathComp = ({
   slowDownFactor = 0.3,
   slowDownSpringConfig = { damping: 50, stiffness: 400 },
 
-  // Scroll defaults
   useScrollVelocity = false,
 
   scrollAwareDirection = false,
   scrollSpringConfig = { damping: 50, stiffness: 400 },
   scrollContainer,
 
-  // Items repetition
   repeat = 3,
 
-  // Drag defaults
   draggable = false,
 
   dragSensitivity = 0.2,
   dragAwareDirection = false,
   grabCursor = false,
 
-  // Z-index defaults
   enableRollingZIndex = true,
 
-  // Base z-index value
   zIndexBase = 1,
 
-  // Range of z-index values to use
   zIndexRange = 10,
 
   cssVariableInterpolation = [],
 
-  // Responsive defaults
   responsive = false
 }: SVGPathCompProps) => {
   const container = useRef<HTMLDivElement | null>(null)
@@ -458,7 +426,6 @@ const SVGPathComp = ({
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map())
   const generatedPathId = useId()
 
-  // Responsive scaling using direct DOM manipulation (no re-renders)
   useEffect(() => {
     if (!responsive) return
 
@@ -478,19 +445,15 @@ const SVGPathComp = ({
       const scaleY = wrapperHeight / originalHeight
       const scale = Math.min(scaleX, scaleY)
 
-      // Calculate the scaled dimensions
       const scaledWidth = originalWidth * scale
       const scaledHeight = originalHeight * scale
 
-      // Center the marquee container within the wrapper
       const offsetX = (wrapperWidth - scaledWidth) / 2
       const offsetY = (wrapperHeight - scaledHeight) / 2
 
-      // Set fixed dimensions on the container
       marqueeContainer.style.width = `${originalWidth}px`
       marqueeContainer.style.height = `${originalHeight}px`
 
-      // Apply scale and position to center
       marqueeContainer.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`
       marqueeContainer.style.transformOrigin = "top left"
     }
@@ -500,7 +463,6 @@ const SVGPathComp = ({
     return () => window.removeEventListener("resize", updateScale);
   }, [responsive, viewBox])
 
-  // Create an array of items outside of the render function
   const items = React.useMemo(() => {
     const childrenArray = React.Children.toArray(children)
 
@@ -518,21 +480,17 @@ const SVGPathComp = ({
       }));
   }, [children, repeat])
 
-  // Function to calculate z-index based on offset distance
   const calculateZIndex = useCallback((offsetDistance: number) => {
     if (!enableRollingZIndex) {
       return undefined
     }
 
-    // Simple progress-based z-index
     const normalizedDistance = offsetDistance / 100
     return Math.floor(zIndexBase + normalizedDistance * zIndexRange);
   }, [enableRollingZIndex, zIndexBase, zIndexRange])
 
-  // Generate a random ID for the path if not provided
   const id = pathId || `marquee-path-${generatedPathId.replace(/:/g, "")}`
 
-  // Scroll tracking
  const { scrollY } = useScroll({
   container: scrollContainer || undefined,
 })
@@ -540,9 +498,6 @@ const SVGPathComp = ({
   const scrollVelocity = useVelocity(scrollY)
   const smoothVelocity = useSpring(scrollVelocity, scrollSpringConfig)
 
-  // Reduced motion: track raw scroll position directly, no spring/lerp
-  // smoothing - the path item should only move exactly as far as the user
-  // scrolls, with no eased/interpolated catch-up.
   const lastScrollYRef = useRef(0)
 
   useEffect(() => {
@@ -550,20 +505,16 @@ const SVGPathComp = ({
     lastScrollYRef.current = scrollY.get()
   }, [reduceMotion, scrollY])
 
-  // Hover and drag state tracking
   const isHoveredRef = useRef(false)
   const isDragging = useRef(false)
   const dragVelocity = useRef(0)
 
-  // Direction factor for changing direction based on scroll or drag
   const directionFactor = useRef(direction === "normal" ? 1 : -1)
 
-  // Motion values for animation
   const hoverFactorValue = useMotionValue(1)
   const defaultVelocity = useMotionValue(1)
   const smoothHoverFactor = useSpring(hoverFactorValue, slowDownSpringConfig)
 
-  // Transform scroll velocity into a factor that affects marquee speed
   const velocityFactor = useTransform(
     useScrollVelocity ? smoothVelocity : defaultVelocity,
     [0, 1000],
@@ -571,9 +522,6 @@ const SVGPathComp = ({
     { clamp: false }
   )
 
-  // Suspend marquee work while the component is offscreen or the tab is
-  // hidden - useAnimationFrame keeps firing, so the gate ref is what stops
-  // the per-frame offset/style writes from running unseen.
   const isVisibleRef = useRef(true)
 
   useEffect(() => {
@@ -587,21 +535,15 @@ const SVGPathComp = ({
     return () => gate.destroy()
   }, [])
 
-  // Animation frame handler
   useAnimationFrame((_, delta) => {
     if (!isVisibleRef.current) return
 
     if (reduceMotion) {
-      // Static: no autoplay drift, no drag/hover speed changes, no
-      // spring/lerp smoothing. Position only advances by exactly how far
-      // the user has scrolled since the last frame.
       const currentScrollY = scrollY.get()
       const scrollDelta = currentScrollY - lastScrollYRef.current
       lastScrollYRef.current = currentScrollY
 
       if (scrollDelta !== 0) {
-        // scrollDelta is raw pixels, baseOffset is a 0-100 path percentage -
-        // scale it down so a normal scroll only nudges the offset a little.
         baseOffset.set(
           baseOffset.get() +
             scrollDelta * REDUCED_MOTION_SCROLL_FACTOR * directionFactor.current
@@ -614,10 +556,8 @@ const SVGPathComp = ({
     if (isDragging.current && draggable) {
       baseOffset.set(baseOffset.get() + dragVelocity.current)
 
-      // Add decay to dragVelocity
       dragVelocity.current *= 0.9
 
-      // Stop completely if velocity is very small
       if (Math.abs(dragVelocity.current) < 0.01) {
         dragVelocity.current = 0
       }
@@ -625,21 +565,18 @@ const SVGPathComp = ({
       return
     }
 
-    // Update hover factor
     if (isHoveredRef.current) {
       hoverFactorValue.set(slowdownOnHover ? slowDownFactor : 1)
     } else {
       hoverFactorValue.set(1)
     }
 
-    // Calculate regular movement
     let moveBy =
       directionFactor.current *
       baseVelocity *
       (delta / 1000) *
       smoothHoverFactor.get()
 
-    // Adjust movement based on scroll velocity if scrollAwareDirection is enabled
     if (scrollAwareDirection && !isDragging.current) {
       if (velocityFactor.get() < 0) {
         directionFactor.current = -1
@@ -653,12 +590,10 @@ const SVGPathComp = ({
     if (draggable) {
       moveBy += dragVelocity.current
 
-      // Update direction based on drag direction if dragAwareDirection is true
       if (dragAwareDirection && Math.abs(dragVelocity.current) > 0.1) {
         directionFactor.current = Math.sign(dragVelocity.current)
       }
 
-      // Gradually decay drag velocity back to zero
       if (!isDragging.current && Math.abs(dragVelocity.current) > 0.01) {
         dragVelocity.current *= 0.9
       } else if (!isDragging.current) {
@@ -669,7 +604,6 @@ const SVGPathComp = ({
     baseOffset.set(baseOffset.get() + moveBy)
   })
 
-  // Pointer event handlers for dragging
   const lastPointerPosition = useRef({ x: 0, y: 0 })
 
   const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
@@ -683,7 +617,6 @@ const SVGPathComp = ({
     isDragging.current = true
     lastPointerPosition.current = { x: e.clientX, y: e.clientY }
 
-    // Pause automatic animation by setting velocity to 0
     dragVelocity.current = 0
   }
 
@@ -692,18 +625,14 @@ const SVGPathComp = ({
 
     const currentPosition = { x: e.clientX, y: e.clientY }
 
-    // Calculate movement delta - simplified for path movement
     const deltaX = currentPosition.x - lastPointerPosition.current.x
     const deltaY = currentPosition.y - lastPointerPosition.current.y
 
-    // For path following, we use a simple magnitude of movement
     const delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
     const projectedDelta = deltaX > 0 ? delta : -delta
 
-    // Update drag velocity based on the projected movement
     dragVelocity.current = projectedDelta * dragSensitivity
 
-    // Update last position
     lastPointerPosition.current = currentPosition
   }
 
@@ -927,9 +856,9 @@ export default function SVGPath({
             grabCursor
           >
             {imgs.map((img, i) => (
-              <Link prefetch={false} key={`${currentTab.id}-${i}`} href={img.link}>
+              <a key={`${currentTab.id}-${i}`} href={img.link}>
                 <div className="h-full w-14 duration-300 ease-in-out hover:scale-150 max-[1025px]:w-16 max-md:w-18">
-                  <Image
+                  <img
                     src={img.src}
                     alt={`Marquee path image ${i + 1}`}
                     width={56}
@@ -938,7 +867,7 @@ export default function SVGPath({
                     draggable={false}
                   />
                 </div>
-              </Link>
+              </a>
             ))}
           </SVGPathComp>
         </div>

@@ -4,7 +4,6 @@
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type MutableRefObject, type ReactNode } from "react";
 
 export function lerp(a: number, b: number, t: number): number {
@@ -356,8 +355,6 @@ function Option1({
   const run = useCallback(() => {
     tlRef.current?.kill();
     setDone(false);
-    // Tell the parent the run restarted, so the post-completion nav hides
-    // again instead of sitting over a loader that is playing from the top.
     onReplayRef.current?.();
 
     recomputeLayout();
@@ -380,13 +377,11 @@ function Option1({
       opacity: 1,
       left: "50%",
       xPercent: -50,
-      // Keep lines at their final (flat) positions for the entire sequence.
       y: (i: number) => flatY[i],
       scaleX: 0,
       transformOrigin: "50% 50%",
     });
     gsap.set(lightLineEls, {
-      // Black lines are pre-drawn; the wipe (clip-path) reveals them.
       opacity: 1,
       left: "50%",
       xPercent: -50,
@@ -394,8 +389,6 @@ function Option1({
       scaleX: 1,
       transformOrigin: "50% 50%",
     });
-    // Light layer reveals bottom -> top (to match the reference"translate up" wipe)
-    // Start fully clipped from the top, then animate top inset to 0.
     gsap.set(lightLayerRef.current, {
       clipPath: "inset(100% 0 0 0)",
       opacity: 0,
@@ -404,7 +397,6 @@ function Option1({
     gsap.set(allTextEls, { opacity: 0, y: 8, filter: "blur(14px)" });
 
     if (prefersReducedMotion()) {
-      // Lines already at final layout - smooth opacity only (no scale morph / wipe).
       gsap.set(darkLineEls, {
         y: (i: number) => flatY[i],
         scaleX: 1,
@@ -479,7 +471,6 @@ function Option1({
       el ? gsap.quickSetter(el, "scaleX") : null,
     );
 
-    // One continuous tween per line (prevents the"stop" between phase 1 and phase 2).
     const activeLineCount = lineCountRef.current;
     for (let i = 0; i < activeLineCount; i++) {
       const startAt = i * staggerS;
@@ -543,7 +534,6 @@ function Option1({
     );
 
     const textAt = TEXT_REVEAL_AT;
-    // Text reveals on black first (dark layer), while the wipe reveals the light layer (color swap in sync).
     tl.to(
       darkNavTextEls,
       { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, stagger: 0.03 },
@@ -616,7 +606,6 @@ function Option1({
         ref={lightLayerRef}
         className="absolute inset-0 opacity-0 [clip-path:inset(100%_0_0_0)] will-change-[clip-path]"
       >
-        {/* Light layer holds the final UI; its text reveals after the line/wipe sequence */}
         <DemoContent
           theme="light"
           navRefs={lightNavTextRefs}
@@ -737,8 +726,7 @@ function Option2(
         for (let i = 0; i < count; i++) {
             y.push(Math.round(topY + i * spacing));
 
-            // Linear falloff gives a crisp"diamond" edge (not a curved funnel).
-            const t = mid === 0 ? 0 : Math.abs(i - mid) / mid; // 0 at center, 1 at extremes
+            const t = mid === 0 ? 0 : Math.abs(i - mid) / mid;
             const wPct = lerp(DIAMOND_MAX, DIAMOND_MIN, t);
             coneScale.push(wPct);
         }
@@ -778,7 +766,6 @@ function Option2(
         });
 
         if (prefersReducedMotion()) {
-            // Lines already at full width - smooth opacity only (no scale morph / pair wipe).
             gsap.set(lines, {
                 scaleX: 1,
                 opacity: 0,
@@ -897,7 +884,6 @@ function Option2(
         const lastStart = (count - 1) * staggerS;
         const allLinesEnd = lastStart + totalS;
 
-        // Fade top+bottom lines in synchronous pairs, leaving only the middle line.
         const midIdx = Math.floor((count - 1) / 2);
         const pairCount = midIdx;
         const pairFadeDur = safeFadeOutDuration;
@@ -915,7 +901,6 @@ function Option2(
         const pairsEnd = allLinesEnd + (pairCount - 1) * pairGap + pairFadeDur;
         const revealStart = pairsEnd + 0.02;
 
-        // Page reveal: white expands from the center to top and bottom.
         tl.to(
             revealPanelRef.current,
             { scaleY: 1, duration: TRANSLATE_UP_MS / 1000 },
@@ -1148,20 +1133,20 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }: VersionNavP
       }`}
     >
       <div className="flex flex-col items-center">
-        <Link
+        <a
           href="/effects"
           className="rounded-full flex items-center gap-1 px-6 py-2 text-base  text-black transition-colors hover:text-primary duration-300 ease-in"
         >
           Explore all effects
           <ArrowUpRight className="size-4" />
-        </Link>
-          <Link
+        </a>
+          <a
           href="/effects/loaders/lines-loader"
           className="rounded-full flex items-center gap-1 px-6 py-2 text-base  text-black transition-colors hover:text-primary duration-300 ease-in"
         >
           Read Article
           <ArrowUpRight className="size-4" />
-        </Link>
+        </a>
         </div>
       <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-[1025px]:px-3 max-[1025px]:py-2 max-md:px-2 max-md:py-1.5">
         {VERSIONS.map((variant) => {

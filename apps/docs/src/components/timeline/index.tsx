@@ -6,8 +6,8 @@ import {
   useSyncExternalStore,
 } from "react";
 import gsap from "gsap";
-import ScrollTrigger from "gsap/dist/ScrollTrigger";
-import SplitText from "gsap/dist/SplitText";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { SplitText } from "gsap/dist/SplitText";
 import { useGSAP } from "@gsap/react";
 import { ReactLenis } from "lenis/react";
 
@@ -448,7 +448,7 @@ export default function Timeline({
           </div>
 
           <div className="relative h-full w-full  max-[1025px]:h-[50%]">
-            <div className="w-full absolute left-0 top-[49%] tranlate-y-[-50%] flex items-center h-fit">
+            <div className="w-full absolute left-0 top-[49%]  flex items-center h-fit">
               <div
                 className="h-[.8vw] w-[.8vw] shrink-0 rounded-full max-md:h-[2vw] max-md:w-[2vw] max-[1025px]:h-[1.5vw] max-[1025px]:w-[1.5vw]"
                 style={activeStyle}
