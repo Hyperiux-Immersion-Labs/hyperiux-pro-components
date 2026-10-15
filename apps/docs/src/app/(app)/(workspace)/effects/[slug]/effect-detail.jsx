@@ -511,11 +511,11 @@ export function EffectDetailContent({
                       )}
 
                       <div className="ml-auto flex shrink-0 items-center gap-3 max-md:hidden">
-                        <GetCodeMenu
+                        {/* <GetCodeMenu
                           effectSlug={slug}
                           effectTitle={pageTitle || safeEffect.title}
                           isLocked={isLocked}
-                        />
+                        /> */}
                         <ButtonV3
                           text="Live Preview"
                           href={previewHref}
@@ -588,14 +588,14 @@ export function EffectDetailContent({
                     variant="orange"
                     className="w-full shrink-0"
                   />
-                  <GetCodeMenu
+                  {/* <GetCodeMenu
                     effectSlug={slug}
                     effectTitle={pageTitle || safeEffect.title}
                     isLocked={isLocked}
                     align="left"
                     className="w-full"
                     triggerClassName="w-full"
-                  />
+                  /> */}
                 </div>
 
                 <div className="relative max-md:px-[7vw] max-[1025px]:px-[6vw] pt-0">
