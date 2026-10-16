@@ -515,7 +515,7 @@ export default function ButterflyTrailCursor({
 			style={{ backgroundColor: '#EAEAE9' }}
 		>
 			<div className="pointer-events-none absolute left-1/2 top-1/2 z-10 w-[min(90vw,760px)] -translate-x-1/2 -translate-y-1/2 text-center text-[#111111]">
-				<h1 className="text-5xl font-semibold leading-none tracking-tight max-[1025px]:text-4xl max-md:text-3xl">
+				<h1 className="text-5xl font-semibold leading-none tracking-tight max-lg:text-4xl max-md:text-3xl">
 					Butterfly Trail Cursor
 				</h1>
 				<p className="mt-4 text-sm font-medium uppercase tracking-[0.22em] text-black/55 max-md:hidden">

@@ -1,0 +1,659 @@
+"use client";
+
+import { useUser } from "@clerk/nextjs";
+import { useTemplateViewCounts } from "../useTemplateViewCounts";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { preload } from "react-dom";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Download, Heart } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useLenis } from "lenis/react";
+import HeadAnim from "@/components/Animations/HeadAnim";
+import Copy from "@/components/Animations/Copy";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { TemplatePaywallModal } from "@/components/ui/TemplatePaywallModal";
+import { SignInRequiredModal } from "@/components/ui/SignInRequiredModal";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
+import Button from "@/homepage/components/Button";
+import { useTemplateWishlist } from "../useTemplateWishlist";
+import { useTemplateAccess } from "../useTemplateAccess";
+import { TemplateCard } from "../TemplateCard";
+import { BADGE, GUTTER, LABEL, T13, T14, cardReveal, catalogueOf, priceOf } from "../tokens";
+import { GetTemplateModal } from "./GetTemplateModal";
+import { MEDIA } from "@/lib/breakpoints";
+import { markTemplateOwned } from "../useTemplateAccess";
+import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
+
+// three.js only loads when the exploded view is shown.
+const TemplateExploded = dynamic(() => import("./TemplateExploded"), {
+  ssr: false,
+  loading: () => <div className="h-svh" />,
+});
+
+// Same query flag as the live detail page: a signed-out Buy click comes back with ?buy=1.
+const RESUME_PURCHASE_PARAM = "buy";
+
+const DEVICES = [
+  { id: "desktop", label: "Desktop" },
+  { id: "tablet", label: "Tablet" },
+  { id: "phone", label: "Phone" },
+];
+// Live preview viewports: the iframe renders at the real size and is scaled to fit.
+const LIVE_SIZE = {
+  // A real full-HD desktop viewport, scaled down to fit - as on the effect pages.
+  desktop: { width: 1920, height: 1080 },
+  tablet: { width: 820, height: 1180 },
+  phone: { width: 390, height: 844 },
+};
+// Hero: the title and description animate in from 0.5s; everything else fades in 0.5s after.
+const HERO_FADE = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: { delay: 1, duration: 0.8, ease: "easeInOut" },
+};
+
+const MODES = [
+  { id: "exploded", label: "Exploded" },
+  { id: "live", label: "Live" },
+];
+
+const CHIP = `inline-flex h-7 items-center px-2.5 font-mono ${T13}`;
+
+/* ---------- can this device show the exploded view? (desktop, motion allowed, WebGL) ---------- */
+// Desktop only (lg and up, see lib/breakpoints): tablets and phones get the live preview.
+const EXPLODED_QUERY = "(min-width: 1025px) and (prefers-reduced-motion: no-preference)";
+let webgl;
+const hasWebGL = () => {
+  if (webgl === undefined) {
+    // Lighthouse / PSI get the fallback, like the homepage's WebGL
+    if (isLighthouseOrHeadless() || isSoftwareRenderer()) return (webgl = false);
+    try {
+      webgl = !!document.createElement("canvas").getContext("webgl2");
+    } catch {
+      webgl = false;
+    }
+  }
+  return webgl;
+};
+const subscribeExploded = (onChange) => {
+  const mq = window.matchMedia(EXPLODED_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+const canExplode = () => window.matchMedia(EXPLODED_QUERY).matches && hasWebGL();
+
+function formatDate(value) {
+  const date = value ? new Date(value) : null;
+  return date && !Number.isNaN(date.getTime())
+    ? new Intl.DateTimeFormat("en", { month: "long", day: "numeric", year: "numeric" }).format(date)
+    : null;
+}
+
+
+export function TemplateDetail({ template, devices = {}, effects = [], stack = [], related: baseRelated = [] }) {
+  const rootRef = useRef(null);
+  const stageTopRef = useRef(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // The page is cached (ISR), so access is fetched in the browser: the page works
+  // straight away, and the Buy / Download button shows a skeleton until it's known.
+  // The download route re-checks access on the server, so nothing is unlocked early.
+  // Fetched again when the visitor signs in without leaving the page (the sign-in modal).
+  const { isLoaded, isSignedIn } = useUser();
+  const [templateAccess, setTemplateAccess] = useState(null);
+  useEffect(() => {
+    if (!isLoaded) return undefined;
+    let active = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTemplateAccess(null);
+    fetch(`/api/templates/${template.slug}/access`)
+      .then((res) => (res.ok ? res.json() : { allowed: false, reason: "error" }))
+      .catch(() => ({ allowed: false, reason: "error" }))
+      .then((access) => active && setTemplateAccess(access));
+    return () => {
+      active = false;
+    };
+  }, [template.slug, isLoaded, isSignedIn]);
+  const [purchased, setPurchased] = useState(false);
+  // Also updates live when this template is bought or redeemed with a credit from the popup
+  const relatedAccess = useTemplateAccess();
+  const ownedNow = purchased || relatedAccess.includes(template.slug);
+  const accessPending = templateAccess === null && !ownedNow;
+  const hasAccess = ownedNow || !!templateAccess?.allowed;
+  const viewCounts = useTemplateViewCounts(baseRelated.map((t) => t.slug));
+  const related = useMemo(
+    () => baseRelated.map((t) => (viewCounts ? { ...t, viewCount: viewCounts[t.slug] || 0 } : { ...t, viewCountPending: true })),
+    [baseRelated, viewCounts],
+  );
+  const [paywallOpen, setPaywallOpen] = useState(false);
+  // Signed out: the sign-in modal; signing in lands back here with ?buy=1, which resumes the purchase
+  const [buySignInOpen, setBuySignInOpen] = useState(false);
+  const [autoOpenCheckout, setAutoOpenCheckout] = useState(false);
+  const [getOpen, setGetOpen] = useState(false);
+  const [getTab, setGetTab] = useState("buy");
+
+  const explodedOk = useSyncExternalStore(subscribeExploded, canExplode, () => true);
+  const [glFailed, setGlFailed] = useState(false);
+  const [chosenMode, setChosenMode] = useState(null);
+  const hasCapture = Object.keys(devices).length > 0;
+  const mode = explodedOk && !glFailed && hasCapture ? chosenMode || "exploded" : "live";
+  const [device, setDevice] = useState("desktop");
+  // Start the live preview on the visitor's own device: phone view on phones,
+  // tablet view on tablets (same widths as max-md / max-lg).
+  // Intentional: the screen width only exists client-side, so it can't be the initial state without a hydration mismatch
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (window.matchMedia(MEDIA.mobile).matches) setDevice("phone");
+    else if (window.matchMedia(MEDIA.tablet).matches) setDevice("tablet");
+  }, []);
+
+  const { toast, showToast, dismissToast } = useToastQueue();
+  const { wishlist, toggleWishlist, signInModal } = useTemplateWishlist({
+    onSaved: (t) => showToast({ title: `${t.title} saved`, description: "You'll find it in your dashboard's My Templates." }),
+    onRemoved: (t) => showToast({ title: `${t.title} removed`, description: "No longer in your saved templates." }),
+  });
+  useFadeUp(rootRef);
+
+  const price = priceOf(template);
+  const full = catalogueOf(template) === "full";
+  const downloadHref = `/api/templates/${template.slug}/download`;
+  // A device with no exported design falls back to desktop in the exploded view.
+  const capture = devices[device] || devices.desktop || Object.values(devices)[0];
+  const sectionCount = devices.desktop?.sections.length || 0;
+  const updated = formatDate(template.updatedAt);
+  const published = formatDate(template.publishedAt);
+
+  // Record a real view once per mount, like the live detail page.
+  useEffect(() => {
+    fetch(`/api/templates/${template.slug}/view`, { method: "POST" }).catch(() => {});
+  }, [template.slug]);
+
+  // Resume a purchase after the sign-in bounce (?buy=1), like the live detail page -
+  // once, as soon as access is known.
+  const resumedRef = useRef(false);
+  useEffect(() => {
+    if (accessPending || resumedRef.current) return;
+    resumedRef.current = true;
+    if (searchParams.get(RESUME_PURCHASE_PARAM) !== "1") return;
+    if (hasAccess || templateAccess.reason === "anonymous") return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPaywallOpen(true);
+    setAutoOpenCheckout(true);
+    router.replace(pathname, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessPending]);
+
+  const closeGet = useCallback(() => setGetOpen(false), []);
+
+  const download = () => {
+    window.location.href = downloadHref;
+    showToast({ title: `${template.title} downloaded`, description: `${template.title} has been downloaded.` });
+  };
+
+  // The real purchase: owned downloads, signed-out signs in and resumes here, signed-in opens the paywall.
+  // Asked while access is still loading (just signed in from the popup), it runs once access is known.
+  const pendingBuyRef = useRef(false);
+  const buy = () => {
+    setGetOpen(false);
+    if (accessPending) {
+      pendingBuyRef.current = true;
+      return;
+    }
+    if (hasAccess) return download();
+    if (templateAccess.reason === "anonymous") {
+      setBuySignInOpen(true);
+      return;
+    }
+    setPaywallOpen(true);
+  };
+
+  useEffect(() => {
+    if (accessPending || !pendingBuyRef.current) return;
+    pendingBuyRef.current = false;
+    buy();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessPending]);
+
+  const onPurchased = () => {
+    setPurchased(true);
+    markTemplateOwned(template.slug);
+    setPaywallOpen(false);
+    setAutoOpenCheckout(false);
+    window.location.href = downloadHref;
+    showToast({ title: `${template.title} purchased`, description: `${template.title} has been purchased and downloaded.` });
+    router.refresh();
+  };
+
+  // Switching Exploded <-> Live changes the stage's height (the exploded view is
+  // a tall scroll-through), which would leave you further down the page. Bring
+  // the stage back to the top of the screen instead, so you stay on the preview.
+  const lenis = useLenis();
+  const keepStageRef = useRef(false);
+  const chooseMode = (id) => {
+    if (id === mode) return;
+    keepStageRef.current = true;
+    setChosenMode(id);
+  };
+  useLayoutEffect(() => {
+    if (!keepStageRef.current) return;
+    keepStageRef.current = false;
+    const el = stageTopRef.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 80;
+    if (lenis) lenis.scrollTo(top, { immediate: true, force: true });
+    else window.scrollTo(0, top);
+  }, [mode, lenis]);
+
+  // Start downloading the exploded view's images with the page, rather than
+  // only once three.js has loaded and built the scene.
+  if (mode === "exploded" && capture) {
+    if (capture.src) preload(capture.src, { as: "image", fetchPriority: "high" });
+    capture.sections.forEach((sec, i) => sec.src && preload(sec.src, { as: "image", fetchPriority: i < 3 ? "high" : "low" }));
+  }
+
+  // Only effects with a Vault page are listed.
+  const vaultEffects = effects.filter((fx) => fx.href);
+
+  const facts = [
+    ["Sections", sectionCount ? `${sectionCount} on one scrolling page` : "One scrolling page"],
+    ["Stack", stack],
+    ["Built with", `${vaultEffects.length} Vault effects`],
+    ["Includes", "Source code and Figma file"],
+    ["Licence", "Vault License Agreement"],
+  ];
+
+  const toolbar = (
+    <div className="flex flex-wrap items-center gap-3">
+      {explodedOk && !glFailed && hasCapture && <Segment label="View" items={MODES} value={mode} onChange={chooseMode} itemClassName="w-24" />}
+      <Segment label="Device" items={mode === "exploded" ? DEVICES.filter((d) => devices[d.id]) : DEVICES} value={device} onChange={setDevice} itemClassName="w-21" />
+    </div>
+  );
+
+  return (
+    // Fades in, so arriving from the corridor (which fades the listing out) is one smooth cross-fade.
+    <motion.div
+      ref={rootRef}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.9, ease: "easeInOut" }}
+      className="relative text-light"
+    >
+      {/* ---------- hero ---------- */}
+      <section id="template-hero" className={`${GUTTER} flex flex-col gap-10 pt-32 pb-16 max-lg:pt-32 max-md:pt-28`}>
+        <motion.div {...HERO_FADE}>
+          <Breadcrumb />
+        </motion.div>
+
+        <div className="flex items-start justify-between gap-12 max-lg:flex-col max-lg:gap-10">
+          <div className="sticky top-[20%] flex h-fit w-[57%] flex-col gap-6 max-lg:static max-lg:w-full">
+            <HeadAnim rotate={0} animateOnScroll={false} delay={0.5}>
+              <h1 className="type-display">{template.title}</h1>
+            </HeadAnim>
+            {template.tagline && (
+              <Copy animateOnScroll={false} delay={0.7}>
+                <p className="type-body-lg w-[85%] text-foreground max-lg:w-full">{template.tagline}</p>
+              </Copy>
+            )}
+            <motion.div {...HERO_FADE} className="flex flex-wrap gap-1.5 pt-4">
+              <span className={`${BADGE} bg-foreground/5 text-foreground/80`}>{template.category}</span>
+              <span className={`${BADGE} ${full ? "bg-foreground text-background ring-1 ring-inset ring-primary/30" : "bg-primary text-background"}`}>
+                {full ? "Pro+ Only" : "Selected Catalogue"}
+              </span>
+              {hasAccess && <span className={`${BADGE} bg-foreground/5 text-foreground backdrop-blur-lg`}>Yours <span className="text-primary">✓</span></span>}
+            </motion.div>
+          </div>
+
+          <motion.aside {...HERO_FADE} className="flex w-[38%] min-w-0 flex-col gap-6 max-lg:w-full">
+            <dl className="flex flex-col gap-3">
+              {facts.map(([term, value]) => (
+                <div key={term} className="flex items-center gap-3 border-b border-foreground/7 pb-3">
+                  <dt className={`${LABEL} w-[24%] shrink-0 text-foreground/60 max-lg:w-[20%] max-md:w-[32%]`}>{term}</dt>
+                  <dd className={`flex min-w-0 flex-1 flex-wrap gap-1.25 ${T14} text-foreground/90`}>
+                    {Array.isArray(value)
+                      ? value.map((v) => (
+                          <span key={v} className={`${CHIP} h-5.5! px-1.75! text-foreground/70 ring-1 ring-inset ring-foreground/15`}>
+                            {v}
+                          </span>
+                        ))
+                      : value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="flex flex-col gap-4">
+              {price != null && (
+                <p className="flex items-baseline gap-3">
+                  <b className="type-h1 leading-none">${price}</b>
+                  <span className={`${LABEL} text-foreground/60`}>one-time or 1 template credit</span>
+                </p>
+              )}
+              {/* items-stretch: heart, Buy and Demo share one height. */}
+              <div className="flex flex-wrap items-stretch gap-2">
+                <button
+                  type="button"
+                  onClick={() => toggleWishlist(template)}
+                  aria-pressed={wishlist.includes(template.slug)}
+                  aria-label={wishlist.includes(template.slug) ? "Remove from saved" : "Save template"}
+                  className="inline-flex size-11 cursor-pointer items-center justify-center bg-foreground/5 ring-1 ring-inset ring-foreground/15 backdrop-blur-lg transition-shadow duration-500 hover:ring-primary/70"
+                >
+                  <Heart className={`size-4 ${wishlist.includes(template.slug) ? "fill-primary text-primary" : ""}`} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  disabled={accessPending}
+                  aria-busy={accessPending}
+                  onClick={
+                    hasAccess
+                      ? download
+                      : () => {
+                          setGetTab("buy");
+                          setGetOpen(true);
+                        }
+                  }
+                  className="inline-flex h-11 cursor-pointer items-center gap-2 bg-primary px-5 text-[calc(var(--hx-vw,1vw)*1.15)] text-background transition-colors duration-500 hover:bg-primary-hover max-lg:text-[clamp(13px,calc(var(--hx-vw,1vw)*1.6),15px)] max-md:text-[clamp(14px,calc(var(--hx-vw,1vw)*4),16px)]"
+                >
+                  {/* "Buy Template" while ownership is still being checked (disabled for that
+                      moment), then "Download" if it's already yours - no skeleton */}
+                  {hasAccess && !accessPending ? (
+                    <>
+                      <Download className="size-4" aria-hidden="true" /> Download
+                    </>
+                  ) : (
+                    "Buy Template"
+                  )}
+                </button>
+                {/* The live template, in a new tab */}
+                <Button
+                  text="Demo"
+                  href={template.previewHref}
+                  target_blank
+                  variant="outline"
+                  ariaLabel={`Open the ${template.title} demo in a new tab`}
+                  className="tracking-normal!"
+                />
+              </div>
+            </div>
+          </motion.aside>
+        </div>
+      </section>
+
+      {/* ---------- exploded view / live preview ---------- */}
+      {/* The two views cross-fade (opacity only, so the exploded stage stays sticky), and
+          share one shell: a full-height stage with the toolbar at its bottom - the
+          View / Device toggles stay put when switching. */}
+      <div ref={stageTopRef} className="scroll-mt-20">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={mode}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 0.35, ease: [0.7, 0, 0.84, 0] } }}
+          >
+            {mode === "exploded" ? (
+              <TemplateExploded
+                device={device}
+                capture={capture}
+                sections={capture?.sections || []}
+                onUnsupported={() => setGlFailed(true)}
+                toolbar={toolbar}
+              />
+            ) : (
+              <section id="template-preview" aria-label="Live template preview">
+                <LivePreview template={template} device={device} toolbar={toolbar} />
+              </section>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* ---------- what's inside + more templates ---------- */}
+      <div data-sound-hover="off" data-sound-flow="off" className="relative flex flex-col gap-[calc(var(--cvw)*7)] bg-light py-[7%] text-ink max-md:gap-[15vw] max-md:py-[15%]">
+        {/* The copy on top; the sections and the effects it's built from below, side by side */}
+        <section id="template-inside" className={`${GUTTER} flex flex-col gap-[calc(var(--cvw)*3)] max-lg:gap-10`}>
+          {/* Article copy: styled by blog.css. Its light theme applies to a .blog-content
+              inside a .blog-theme-light wrapper (as on the effect page), not to both on one
+              element; body text is #1d1d1d here rather than the theme's #3a3a3a. */}
+          <div className="fadeup flex w-[60%] flex-col gap-6 max-lg:w-full">
+            {/* Outside .blog-content, so it's the page's h1 size with no article margin */}
+            <h2 className="type-h1">
+              What’s <span className="gradient-text-animate">Inside</span>
+            </h2>
+            <div className="blog-theme-light">
+              <div className="blog-content [--blog-text-secondary:#1d1d1d]">
+                {(template.overview || []).map((paragraph, i) => (
+                  <p key={i}>{paragraph}</p>
+                ))}
+              </div>
+            </div>
+            {published && <p className={`${LABEL} text-black/40`}>Published {published}</p>}
+          </div>
+
+          <div className="fadeup flex items-stretch gap-[calc(var(--cvw)*0.9)] max-md:flex-col max-md:gap-[3.5vw]">
+            <InsideCard title="Sections included" className="flex-1">
+              {/* Two columns (first half, then second half), pushed to the card's edges */}
+              <ol
+                className="grid grid-flow-col justify-between gap-x-[calc(var(--cvw)*2)] gap-y-2 max-md:gap-x-6"
+                style={{ gridTemplateRows: `repeat(${Math.max(1, Math.ceil((devices.desktop?.sections || []).length / 2))}, auto)` }}
+              >
+                {(devices.desktop?.sections || []).map((s, i) => (
+                  <li key={`${s.name}-${i}`} className="type-body flex items-baseline gap-3">
+                    <span className={`font-mono ${T13} text-primary`}>{String(i + 1).padStart(2, "0")}</span>
+                    {s.name}
+                  </li>
+                ))}
+              </ol>
+            </InsideCard>
+            <InsideCard title="Built from Vault effects" className="flex-1">
+              <div className="flex flex-wrap gap-1.5">
+                {vaultEffects.map((fx) => (
+                  <Link key={fx.name} href={fx.href} className={`inline-flex h-7.5 items-center bg-light px-3 ${T14} transition-colors duration-500 hover:bg-primary hover:text-background`}>
+                    {fx.title}
+                  </Link>
+                ))}
+              </div>
+            </InsideCard>
+          </div>
+        </section>
+
+        {related.length > 0 && (
+          <section id="related-templates" className={`${GUTTER} flex flex-col gap-12 max-md:gap-10`}>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <HeadAnim rotate={0} by="words">
+                <h2 className="type-h1">
+                  More <span className="gradient-text-animate">Templates</span>
+                </h2>
+              </HeadAnim>
+              <div className="fadeup max-md:hidden">
+                <Button className="tracking-normal!" text="All Templates" href="/templates" />
+              </div>
+            </div>
+            {/* Same spacing and card width as the /templates grid (TemplatesListing) */}
+            <div className="flex flex-wrap gap-[calc(var(--cvw)*2.5)] max-md:gap-y-[12vw]">
+              {/* Same fade-up as the /templates grid (cardReveal). */}
+              {related.map((t, index) => (
+                <motion.div key={t.slug} {...cardReveal(index)} className="w-[calc((100%-2.5vw)/2)] max-md:w-full">
+                  <TemplateCard small template={t} hasAccess={relatedAccess.includes(t.slug)} />
+                </motion.div>
+              ))}
+            </div>
+             <div className="fadeup hidden max-md:block">
+                <Button className="tracking-normal!" text="All Templates" href="/templates" />
+              </div>
+          </section>
+        )}
+      </div>
+
+      {signInModal}
+      <SignInRequiredModal
+        open={buySignInOpen}
+        onClose={() => setBuySignInOpen(false)}
+        redirect={`${pathname}?${RESUME_PURCHASE_PARAM}=1`}
+        action="buy this template"
+      />
+      <GetTemplateModal template={template} open={getOpen} tab={getTab} onTab={setGetTab} onClose={closeGet} onBuy={buy} />
+
+      <TemplatePaywallModal
+        template={template}
+        open={paywallOpen}
+        onClose={() => {
+          setPaywallOpen(false);
+          setAutoOpenCheckout(false);
+        }}
+        onPurchased={onPurchased}
+        autoOpenCheckout={autoOpenCheckout}
+      />
+
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
+    </motion.div>
+  );
+}
+
+/** The live template in an iframe at a real device size, scaled to fit the box (as on the live detail page). */
+function LivePreview({ template, device, toolbar = null }) {
+  const boxRef = useRef(null);
+  const frameRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const [frameKey, setFrameKey] = useState(0);
+  const size = LIVE_SIZE[device] || LIVE_SIZE.desktop;
+
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const update = () => setScale(Math.min(box.clientWidth / size.width, box.clientHeight / size.height, 1) || 1);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(box);
+    return () => ro.disconnect();
+  }, [size.width, size.height]);
+
+  // Click to interact (as on the effect pages): until the preview is clicked, a layer
+  // over it keeps wheel / touch scrolling on the page instead of the template. Leaving
+  // the preview (or tapping outside it) puts the layer back.
+  const [interactive, setInteractive] = useState(false);
+  const tipRef = useRef(null);
+  const moveTip = (event) => {
+    const tip = tipRef.current;
+    if (!tip) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    tip.style.left = `${event.clientX - rect.left}px`;
+    tip.style.top = `${event.clientY - rect.top}px`;
+  };
+  useEffect(() => {
+    if (!interactive) return undefined;
+    const onDown = (event) => {
+      if (!boxRef.current?.contains(event.target)) setInteractive(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [interactive]);
+
+  // The preview must only ever show the template: if it lands on any other page of
+  // ours (which would nest the whole site in here), the main window goes there instead
+  // and the preview resets to the template.
+  const onFrameLoad = () => {
+    try {
+      const location = frameRef.current?.contentWindow?.location;
+      if (location && location.origin === window.location.origin && !location.pathname.startsWith("/template-demo/")) {
+        const url = location.href;
+        setFrameKey((k) => k + 1);
+        window.location.assign(url);
+      }
+    } catch {
+      // Cross-origin page: nothing to read, leave it.
+    }
+  };
+
+  // Same shell as the exploded view's stage (full-height, same background, toolbar at
+  // the bottom), with the device frame fitted between the header area and the toolbar.
+  return (
+    <div className="relative h-svh overflow-hidden bg-[radial-gradient(80%_70%_at_50%_40%,var(--dark-card),var(--background))]">
+    <div
+      ref={boxRef}
+      onPointerLeave={(event) => event.pointerType === "mouse" && setInteractive(false)}
+      className="absolute inset-x-[calc(var(--cvw)*4.5)] top-28 bottom-24 flex items-center justify-center overflow-hidden max-md:inset-x-[6vw] max-md:top-24 max-md:bottom-40"
+    >
+      <div style={{ width: size.width, height: size.height, transform: `scale(${scale})` }} className="shrink-0 origin-center bg-foreground transition-transform duration-300">
+        <iframe
+          key={`${template.previewHref}-${device}-${frameKey}`}
+          ref={frameRef}
+          src={template.previewHref}
+          title={`${template.title} live preview`}
+          width={size.width}
+          height={size.height}
+          onLoad={onFrameLoad}
+          className="block border-0"
+        />
+      </div>
+      {!interactive && (
+        <button
+          type="button"
+          aria-label="Click to interact with the live preview"
+          onClick={() => setInteractive(true)}
+          onPointerMove={moveTip}
+          className="group/interact absolute inset-0 z-5 cursor-pointer"
+        >
+          {/* Hidden until the cursor enters, then follows it; centred on touch screens. */}
+          <span
+            ref={tipRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[calc(100%+0.8vw)] bg-background/80 px-3 py-1.5 text-[calc(var(--cvw)*0.9)] whitespace-nowrap text-foreground opacity-0 ring-1 ring-inset ring-foreground/15 backdrop-blur-lg transition-opacity duration-300 group-hover/interact:opacity-100 [@media(hover:none)]:opacity-100 max-lg:text-[1.6vw] max-md:-translate-y-1/2 max-md:text-[3.3vw]"
+          >
+            Click to interact
+          </span>
+        </button>
+      )}
+    </div>
+      {/* Same position and spacing as the exploded view's toolbar. */}
+      <div className="absolute right-[calc(var(--cvw)*4.5)] bottom-6 left-[calc(var(--cvw)*4.5)] z-10 flex flex-wrap items-center justify-between gap-3 max-md:inset-x-[6vw] max-md:bottom-4">
+        {toolbar}
+      </div>
+    </div>
+  );
+}
+
+function InsideCard({ title, className = "", children }) {
+  return (
+    <div className={`flex flex-col gap-3.5 bg-foreground p-5.5 ring-1 ring-inset ring-black/10 ${className}`}>
+      <p className={`${LABEL} text-black/60`}>{title}</p>
+      {children}
+    </div>
+  );
+}
+
+/** Dark segmented control: an orange block slides to the chosen option. */
+function Segment({ label, items, value, onChange, itemClassName }) {
+  const index = Math.max(0, items.findIndex((item) => item.id === value));
+  return (
+    <div role="radiogroup" aria-label={label} className="relative flex gap-0.5 bg-background/70 p-0.75 ring-1 ring-inset ring-foreground/10 backdrop-blur-lg">
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute top-0.75 bottom-0.75 left-0.75 bg-primary transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] ${itemClassName}`}
+        style={{ transform: `translateX(calc(${index} * (100% + 2px)))` }}
+      />
+      {items.map((item) => {
+        const active = item.id === value;
+        return (
+          <button
+            key={item.id}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onChange(item.id)}
+            className={`relative z-1 flex h-8.5 cursor-pointer items-center justify-center ${T14} transition-colors duration-500 ${itemClassName} ${
+              active ? "text-background" : "text-foreground/60 hover:text-foreground"
+            }`}
+          >
+            {item.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+

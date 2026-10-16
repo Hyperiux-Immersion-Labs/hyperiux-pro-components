@@ -1,0 +1,99 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+// Segments whose label isn't just the slug with spaces
+const SEGMENT_LABELS = { "llm-info": "LLM Info", "ai-components": "AI Components" };
+
+function formatSegmentLabel(segment) {
+  return SEGMENT_LABELS[segment] ?? segment.replace(/-/g, " ");
+}
+
+function itemsFromPathname(pathname) {
+  const segments = (pathname || "/").split("/").filter(Boolean);
+
+  return [
+    { label: "Home", href: "/" },
+    ...segments.map((segment, index) => {
+      const href = "/" + segments.slice(0, index + 1).join("/");
+
+      return {
+        label: formatSegmentLabel(segment),
+        // `/legal` has no real landing page - send "Legal" to the license agreement.
+        href: href === "/legal" ? "/legal/license-agreement" : href,
+      };
+    }),
+  ];
+}
+
+// Long slugs (blog titles especially) make the last crumb wrap the whole
+// nav. Opt in with `maxWords` to clip it to a few words plus an ellipsis.
+function trimToWords(label, maxWords) {
+  if (!maxWords) return label;
+
+  const words = label.split(/\s+/).filter(Boolean);
+
+  if (words.length <= maxWords) return label;
+
+  return `${words.slice(0, maxWords).join(" ")}....`;
+}
+
+/**
+ * URL-driven breadcrumb. `/` is Home; each path segment is a crumb.
+ *
+ * @param {number} [maxWords] - clip the final crumb to this many words.
+ * @param {{label: string, href: string}[]} [items] - crumbs to show instead of the URL's
+ *   (e.g. the dashboard, whose URL carries a user ID).
+ */
+export function Breadcrumb({ className = "", lastItemClassName = "", maxWords, items: givenItems }) {
+  const pathname = usePathname();
+  const items = givenItems || itemsFromPathname(pathname);
+
+  return (
+    <nav
+      aria-label="Breadcrumb"
+      className={[
+        "flex w-fit max-w-full fadeup flex-wrap items-center gap-[calc(var(--cvw)*0.5)] text-muted max-md:gap-[2vw]",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {items.map((item, index) => {
+        const isLast = index === items.length - 1;
+
+        return (
+          <span
+            key={`${item.href}-${item.label}`}
+            className="flex items-center gap-[calc(var(--cvw)*0.5)] max-md:gap-[2vw]"
+          >
+            {index > 0 && <span className="text-foreground/25">/</span>}
+
+            {isLast ? (
+              <span
+                title={item.label}
+                className={[
+                  "capitalize text-primary type-body",
+                  lastItemClassName,
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                {trimToWords(item.label, maxWords)}
+              </span>
+            ) : (
+              <Link
+                href={item.href}
+                scroll={false}
+                className="capitalize type-body transition-colors hover:text-primary"
+              >
+                {item.label}
+              </Link>
+            )}
+          </span>
+        );
+      })}
+    </nav>
+  );
+}

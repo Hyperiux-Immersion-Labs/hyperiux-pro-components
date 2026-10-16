@@ -483,7 +483,9 @@ export default function ParallaxStripSlider({
           >
             <img
               src={slide.src}
-              alt=""
+              alt="slide images"
+              fill
+              sizes="100vw"
               draggable={false}
               className="absolute inset-0 h-full w-full object-cover select-none"
             />
@@ -529,7 +531,7 @@ export default function ParallaxStripSlider({
 
       {showProgressBar && (
         <div
-          className="pointer-events-none absolute inset-x-10 top-20 z-10 h-px max-[1025px]:top-28"
+          className="pointer-events-none absolute inset-x-10 top-20 z-10 h-px max-lg:top-28"
           style={{ backgroundColor: `${accentColor}33` }}
         >
           <div
@@ -545,7 +547,7 @@ export default function ParallaxStripSlider({
 
       <div
         ref={captionRef}
-        className="pointer-events-none absolute inset-x-0 top-0 px-10 pb-10 pt-24 max-[1025px]:pt-32"
+        className="pointer-events-none absolute inset-x-0 top-0 px-10 pb-10 pt-24 max-lg:pt-32"
       >
         <span
           ref={chapterRef}
@@ -557,11 +559,11 @@ export default function ParallaxStripSlider({
         </span>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-[1025px]:flex-col max-[1025px]:items-stretch max-[1025px]:gap-6 max-[1025px]:pb-36 max-md:pb-32">
-        <div className="contents max-[1025px]:order-1 max-[1025px]:flex max-[1025px]:flex-col max-[1025px]:items-center max-[1025px]:gap-6">
+      <div className="absolute inset-x-0 bottom-0 flex items-end px-10 pb-10 max-lg:flex-col max-lg:items-stretch max-lg:gap-6 max-lg:pb-36 max-md:pb-32">
+        <div className="contents max-lg:order-1 max-lg:flex max-lg:flex-col max-lg:items-center max-lg:gap-6">
           <h2
             ref={titleRef}
-            className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none flex items-end max-[1025px]:w-full max-[1025px]:justify-center max-[1025px]:text-center"
+            className="pointer-events-none w-1/3 shrink-0 overflow-hidden text-8xl leading-none flex items-end max-lg:w-full max-lg:justify-center max-lg:text-center"
             style={{
               fontFamily: '"Instrument Serif", Georgia, serif',
               color: accentColor,
@@ -571,7 +573,7 @@ export default function ParallaxStripSlider({
           </h2>
 
           {showControls && mobNavButton && total > 1 && (
-            <div className="relative z-30 hidden shrink-0 gap-3 max-[1025px]:flex max-md:gap-2">
+            <div className="relative z-30 hidden shrink-0 gap-3 max-lg:flex max-md:gap-2">
               {(["prev", "next"] as const).map((dir) => (
                 <button
                   key={dir}
@@ -599,12 +601,12 @@ export default function ParallaxStripSlider({
           )}
         </div>
 
-        <div aria-hidden className="w-1/3 shrink-0 max-[1025px]:hidden" />
+        <div aria-hidden className="w-1/3 shrink-0 max-lg:hidden" />
 
         {showCounter && (
           <span
             ref={counterRef}
-            className="pointer-events-none flex w-1/3 pb-5 shrink-0 h-full items-center pt-5! justify-end text-xs max-[1025px]:order-2 max-[1025px]:h-auto max-[1025px]:w-full max-[1025px]:justify-start max-[1025px]:p-0 max-md:order-first max-md:justify-end"
+            className="pointer-events-none flex w-1/3 pb-5 shrink-0 h-full items-center pt-5! justify-end text-xs max-lg:order-2 max-lg:h-auto max-lg:w-full max-lg:justify-start max-lg:p-0 max-md:order-first max-md:justify-end"
             style={{ color: `${accentColor}b3` }}
           >
             <span className="inline-block w-[2ch] overflow-hidden text-right">
@@ -620,7 +622,7 @@ export default function ParallaxStripSlider({
       {showControls && total > 1 && (
         <div
           ref={cursorRef}
-          className="pointer-events-none fixed left-0 top-0 z-100 max-[1025px]:hidden"
+          className="pointer-events-none fixed left-0 top-0 z-100 max-lg:hidden"
         >
           <div
             className="flex size-15 items-center justify-center rounded-full"
@@ -644,7 +646,7 @@ export default function ParallaxStripSlider({
 
 
       {showClue && clueText && total > 1 && (
-        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm leading-relaxed text-white/80 backdrop-blur-md max-md:bottom-6 max-md:w-[70%] max-md:text-sm max-[1025px]:text-base">
+        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm leading-relaxed text-white/80 backdrop-blur-md max-md:bottom-6 max-md:w-[70%] max-md:text-sm max-lg:text-base">
           {clueText}
         </p>
       )}

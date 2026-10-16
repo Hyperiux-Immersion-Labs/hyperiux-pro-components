@@ -1,0 +1,96 @@
+"use client";
+
+import { useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import Button from "@/homepage/components/Button";
+import LineWipe from "@/components/Animations/LineWipe";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
+
+const INK = "var(--ink)";
+
+function formatFeaturedDate(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  const month = date.toLocaleDateString("en-US", { month: "long" });
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${month} ${day},${date.getFullYear()}`;
+}
+
+// The latest post, at the top of the light sheet (styled like the listing pages' light sections)
+function FeaturedBlogContent({ featuredPost }) {
+  const sectionRef = useRef(null);
+
+  useFadeUp(sectionRef);
+
+  return (
+    <section ref={sectionRef} id="featured-blog" className="site-container section-x flex flex-col gap-[calc(var(--cvw)*5)] py-[7%] max-md:gap-[10vw] max-md:py-[12%]">
+      <div className="flex  items-end justify-between gap-4 max-md:flex-col max-md:items-start max-md:gap-[10vw]">
+        <LineWipe lit={INK}>
+          <h2 className="type-h1 w-[30%] max-md:w-[90%]">Latest From the Vault</h2>
+        </LineWipe>
+        <LineWipe delay={0.5} lit={INK}>
+          <p className="type-body-lg w-[35%] text-black/60 max-md:w-full">
+            Fresh notes on the effects, systems, and decisions behind Hyperiux Vault.
+          </p>
+        </LineWipe>
+      </div>
+
+      <div className="flex items-center gap-[calc(var(--cvw)*4)] bg-foreground p-[calc(var(--cvw)*2.5)] max-lg:flex-col  max-lg:items-start max-md:gap-[6vw] max-md:px-[7vw] max-md:py-[8vw]">
+        {featuredPost.coverImage?.url && (
+          <Link
+            href={`/blog/${featuredPost.slug}`}
+            className="fadeup group block h-[calc(var(--cvw)*34)] w-[55%] shrink-0 max-lg:h-[50vw] max-lg:w-full max-md:h-[60vw]"
+          >
+            <div className="relative h-full w-full overflow-hidden bg-grey">
+              <Image
+                src={featuredPost.coverImage.url}
+                alt={featuredPost.coverImage.alt || featuredPost.title}
+                fill
+                sizes="(max-width: 1025px) 100vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          </Link>
+        )}
+
+        <div className="flex grow flex-col items-start gap-[calc(var(--cvw)*1.2)] max-lg:w-full max-md:gap-[4vw]">
+          <LineWipe lit={INK}>
+            <p className="type-small text-black/60">
+              {formatFeaturedDate(featuredPost.publishedAt)}
+            </p>
+          </LineWipe>
+
+          <Link href={`/blog/${featuredPost.slug}`} className="w-[90%] max-lg:w-full">
+            <LineWipe lit={INK}>
+              <h3 className="type-h2">{featuredPost.title}</h3>
+            </LineWipe>
+          </Link>
+
+          {featuredPost.summary && (
+            <LineWipe delay={0.5} lit={INK}>
+              <p className="type-body-lg w-[75%] text-black/60 max-lg:w-full">
+                {featuredPost.summary}
+              </p>
+            </LineWipe>
+          )}
+
+          <Button
+            text="Read More"
+            href={`/blog/${featuredPost.slug}`}
+            variant="orange"
+            className="fadeup mt-[calc(var(--cvw)*1)] w-fit max-lg:mt-[1.5vw] max-md:mt-[2vw]"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function FeaturedBlog({ featuredPost = null }) {
+  if (!featuredPost) return null;
+
+  return <FeaturedBlogContent featuredPost={featuredPost} />;
+}

@@ -115,6 +115,11 @@
     "tarball": "registry/dist/hyperiux-orbit-flip-slider-1.0.0.tgz"
   },
   {
+    "name": "@hyperiux/parallax-strip-slider",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-parallax-strip-slider-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/ring-carousel",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-ring-carousel-1.0.1.tgz"
@@ -265,6 +270,16 @@
     "tarball": "registry/dist/hyperiux-inertia-img-1.1.0.tgz"
   },
   {
+    "name": "@hyperiux/interactive-arrows",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-interactive-arrows-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/liquid-glass-cursor",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-liquid-glass-cursor-1.1.0.tgz"
+  },
+  {
     "name": "@hyperiux/magnetic-image-trail",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-magnetic-image-trail-1.1.0.tgz"
@@ -285,6 +300,16 @@
     "tarball": "registry/dist/hyperiux-pixel-bloom-1.0.1.tgz"
   },
   {
+    "name": "@hyperiux/pixelated-image-effect",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-pixelated-image-effect-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/rope-cursor",
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-rope-cursor-1.0.1.tgz"
+  },
+  {
     "name": "@hyperiux/lines-loader",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-lines-loader-1.0.1.tgz"
@@ -300,6 +325,31 @@
     "tarball": "registry/dist/hyperiux-stack-loader-1.0.1.tgz"
   },
   {
+    "name": "@hyperiux/directional-menu",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-directional-menu-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/displacement-navbar",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-displacement-navbar-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/elevate-navbar",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-elevate-navbar-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/expanding-navbar",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-expanding-navbar-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/immersive-full-screen-nav",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-immersive-full-screen-nav-1.1.0.tgz"
+  },
+  {
     "name": "@hyperiux/morphing-dock",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-morphing-dock-1.0.0.tgz"
@@ -308,6 +358,11 @@
     "name": "@hyperiux/perspective-shift-menu",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-perspective-shift-menu-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/side-navbar",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-side-navbar-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/unfold-navbar",
@@ -326,8 +381,8 @@
   },
   {
     "name": "@hyperiux/circular-split-roll",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-circular-split-roll-1.0.1.tgz"
+    "version": "1.0.2",
+    "tarball": "registry/dist/hyperiux-circular-split-roll-1.0.2.tgz"
   },
   {
     "name": "@hyperiux/grid-scale",
@@ -693,60 +748,5 @@
     "name": "@hyperiux/strip-slider",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-strip-slider-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/directional-menu",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-directional-menu-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/displacement-navbar",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-displacement-navbar-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/elevate-navbar",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-elevate-navbar-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/expanding-navbar",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-expanding-navbar-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/immersive-full-screen-nav",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-immersive-full-screen-nav-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/interactive-arrows",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-interactive-arrows-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/liquid-glass-cursor",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-liquid-glass-cursor-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/pixelated-image-effect",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-pixelated-image-effect-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/rope-cursor",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-rope-cursor-1.0.1.tgz"
-  },
-  {
-    "name": "@hyperiux/side-navbar",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-side-navbar-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/parallax-strip-slider",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-parallax-strip-slider-1.0.0.tgz"
   }
 ]

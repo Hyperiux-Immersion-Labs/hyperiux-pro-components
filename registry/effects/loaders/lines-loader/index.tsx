@@ -67,7 +67,7 @@ function DemoContent({
 
   const navItems = useMemo(
     (): NavItem[] => [
-      { left: <span className="font-bold tracking-tighter max-[1025px]:text-2xl max-md:text-2xl">Hyperiux Vault</span> },
+      { left: <span className="font-bold tracking-tighter max-lg:text-2xl max-md:text-2xl">Hyperiux Vault</span> },
       { left: "INDEX (22)" },
       { left: "(CONTACT)" },
       { left: "(SERVICES)" },
@@ -1126,7 +1126,7 @@ interface VersionNavProps {
 function VersionNav({ activeVariant, onVariantChange, isCompleted }: VersionNavProps) {
   return (
     <div
-      className={`fixed bottom-30 max-md:bottom-[14vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-md:gap-4 transition-all duration-500 max-[1025px]:bottom-35  ${
+      className={`fixed bottom-30 max-md:bottom-[14vh] left-1/2 z-2 flex -translate-x-1/2 flex-col items-center gap-10 max-md:gap-4 transition-all duration-500 max-lg:bottom-35  ${
         isCompleted
           ? "translate-y-0 opacity-100 pointer-events-auto"
           : "translate-y-4 opacity-0 pointer-events-none"
@@ -1148,7 +1148,7 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }: VersionNavP
           <ArrowUpRight className="size-4" />
         </a>
         </div>
-      <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-[1025px]:px-3 max-[1025px]:py-2 max-md:px-2 max-md:py-1.5">
+      <nav className="flex gap-1 rounded-full border border-white/20 bg-black px-1.5 py-1.5 backdrop-blur-md transition-all duration-300 max-lg:px-3 max-lg:py-2 max-md:px-2 max-md:py-1.5">
         {VERSIONS.map((variant) => {
           const isActive = activeVariant === variant.value;
           const btnClass = isCompleted
@@ -1162,7 +1162,7 @@ function VersionNav({ activeVariant, onVariantChange, isCompleted }: VersionNavP
               disabled={isActive}
               aria-current={isActive ? "true" : undefined}
               onClick={() => onVariantChange(variant.value)}
-              className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 disabled:cursor-default disabled:pointer-events-none max-[1025px]:text-lg max-md:text-sm ${btnClass}`}
+              className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 disabled:cursor-default disabled:pointer-events-none max-lg:text-lg max-md:text-sm ${btnClass}`}
             >
               {variant.label}
             </button>

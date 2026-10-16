@@ -214,12 +214,12 @@ const SliderCard = ({
     return (
         <div
             className={`flex h-full w-full shrink-0 items-stretch justify-between overflow-hidden origin-center pt-4 ${backgroundColor}
- max-md:min-h-[100svh] max-[1025px]:flex-col max-[1025px]:justify-start max-md:py-8`}
+ max-md:min-h-[100svh] max-lg:flex-col max-lg:justify-start max-md:py-8`}
         >
 
             <div
-                className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw] max-[1025px]:py-28
- max-[1025px]:w-full max-[1025px]:w-[80%]  max-md:px-5 max-md:py-6"
+                className="flex h-full w-[55%] flex-col justify-between px-[2vw] py-[4vw] max-lg:py-28
+ max-lg:w-full max-lg:w-[80%]  max-md:px-5 max-md:py-6"
             >
                 <div>
                     <h2
@@ -230,9 +230,9 @@ const SliderCard = ({
                     </h2>
                 </div>
 
-                <div className="mb-6 hidden h-[42svh] w-full max-[1025px]:block">
+                <div className="mb-6 hidden h-[42svh] w-full max-lg:block">
                     <div
-                        className="h-full max-md:w-full overflow-hidden rounded-[3vw] max-md:rounded-[5vw] max-[1025px]:w-[80%] max-[1025px]:mx-auto"
+                        className="h-full max-md:w-full overflow-hidden rounded-[3vw] max-md:rounded-[5vw] max-lg:w-[80%] max-lg:mx-auto"
                     >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -244,7 +244,7 @@ const SliderCard = ({
                 </div>
 
                 <div
-                    className="flex justify-between max-[1025px]:px-8 max-md:px-0 gap-[12vw]
+                    className="flex justify-between max-lg:px-8 max-md:px-0 gap-[12vw]
  max-md:flex-col max-md:gap-5"
                 >
                     <div
@@ -260,13 +260,13 @@ const SliderCard = ({
                     >
                         <h3
                             className="font-display text-[2.5vw] text-black leading-[1.2]
- max-md:text-[7vw] max-[1025px]:text-[4.5vw]"
+ max-md:text-[7vw] max-lg:text-[4.5vw]"
                         >
                             {title}
                         </h3>
                         <p
                             className="text-[1.4vw] leading-[1.2] text-gray-700
- max-md:text-[4.2vw] max-[1025px]:text-[3.5vw] max-md:leading-[1.45]"
+ max-md:text-[4.2vw] max-lg:text-[3.5vw] max-md:leading-[1.45]"
                         >
                             {description}
                         </p>
@@ -276,7 +276,7 @@ const SliderCard = ({
 
             <div
                 className="my-auto h-[75%] w-[40%] p-[4vw]
- max-[1025px]:hidden"
+ max-lg:hidden"
             >
                 <div
                     className="h-full w-full overflow-hidden rounded-[2.5vw]"

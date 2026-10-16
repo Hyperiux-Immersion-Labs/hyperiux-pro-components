@@ -22,7 +22,12 @@
     "sanity:code:test": "npm --prefix apps/docs run test -- src/lib/sanity-code-sync.test.js",
     "template:package": "node ./scripts/package-template.mjs",
     "template:update": "node ./scripts/package-template.mjs",
-    "template:create": "node ./scripts/create-template.mjs"
+    "template:create": "node ./scripts/create-template.mjs",
+    "vault:dev": "npm --prefix vault-main run dev",
+    "vault:build": "npm --prefix vault-main run build",
+    "vault:start": "npm --prefix vault-main run start",
+    "vault:lint": "npm --prefix vault-main run lint",
+    "vault:test": "npm --prefix vault-main run test"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

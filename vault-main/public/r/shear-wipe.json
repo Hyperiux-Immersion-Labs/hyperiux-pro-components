@@ -1,0 +1,100 @@
+{
+  "name": "shear-wipe",
+  "type": "registry:component",
+  "title": "Shear Wipe",
+  "description": "Two full-screen content panels separated by a slanted GSAP clip-path edge that shears open on hover or click, revealing the second panel.",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [],
+  "exportName": "ShearWipe",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.1.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-08-06",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "componentsTextColor",
+      "type": "string",
+      "default": "#0D47A1",
+      "description": "Text color for the Components panel.",
+      "remixer": {
+        "control": "color",
+        "group": "components",
+        "groupTitle": "Components Panel"
+      }
+    },
+    {
+      "name": "componentsBackgroundColor",
+      "type": "string",
+      "default": "#E3F2FD",
+      "description": "Background color for the Components panel.",
+      "remixer": {
+        "control": "color",
+        "group": "components",
+        "groupTitle": "Components Panel"
+      }
+    },
+    {
+      "name": "showcaseTextColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Text color for the Showcase panel.",
+      "remixer": {
+        "control": "color",
+        "group": "showcase",
+        "groupTitle": "Showcase Panel"
+      }
+    },
+    {
+      "name": "showcaseBackgroundColor",
+      "type": "string",
+      "default": "#0D47A1",
+      "description": "Background color for the Showcase panel.",
+      "remixer": {
+        "control": "color",
+        "group": "showcase",
+        "groupTitle": "Showcase Panel"
+      }
+    },
+    {
+      "name": "clipPathDuration",
+      "type": "number",
+      "default": 0.9,
+      "description": "Duration of the shear clip-path wipe between panels.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.3,
+        "max": 2,
+        "step": 0.05
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "motion",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/shear-wipe/index.tsx"
+    }
+  ]
+}
