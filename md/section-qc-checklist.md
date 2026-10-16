@@ -1,6 +1,6 @@
 # Section QC Checklist
 
-*Reference checklist - hyperiux-pro-components / apps/docs - companion to
+*Reference checklist - hyperiux-pro-components / vault-main - companion to
 [`sections-templates-plan.md`](./sections-templates-plan.md) §4 and
 [`template-qc-checklist.md`](./template-qc-checklist.md) (every item here is
 also a prerequisite gate a Section must clear before it's eligible to be
@@ -11,7 +11,7 @@ to ship.
 A Section is registry-shaped exactly like an effect (same `registry.json`,
 same tier/access model, same CLI path - see the plan §1), so this checklist
 reuses the site's own already-published effect quality bar
-(`apps/docs/src/lib/categories.js`, `effectsOverviewContent.faqs`) as its
+(`vault-main/src/lib/categories.js`, `effectsOverviewContent.faqs`) as its
 floor, and adds what's new because a Section is meant to be dropped into a
 real page layout rather than stand alone as a self-contained interaction.*
 
@@ -60,7 +60,7 @@ shipping on its own).
       is missing a file from `registry.json` will break on real install).
 - [ ] **[WARN]** No unused imports or leftover dead code from authoring.
 - [ ] **[WARN]** Component doesn't reach for a docs-app-only helper (e.g.
-      `@/lib/motion`) that doesn't exist outside `apps/docs` - this exact
+      `@/lib/motion`) that doesn't exist outside `vault-main` - this exact
       class of bug has shipped before across 5 transition effects; grep for
       `@/lib/` imports in the registry copy specifically, not just the docs
       mirror.

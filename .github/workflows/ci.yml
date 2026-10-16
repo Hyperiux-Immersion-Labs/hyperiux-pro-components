@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   docs:
-    name: apps/docs (lint, test, build)
+    name: vault-main (lint, test, build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,15 +20,15 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: apps/docs/package-lock.json
+          cache-dependency-path: vault-main/package-lock.json
       - run: npm ci
-        working-directory: apps/docs
+        working-directory: vault-main
       - run: npm run lint
-        working-directory: apps/docs
+        working-directory: vault-main
       - run: npm test
-        working-directory: apps/docs
+        working-directory: vault-main
       - run: npm run build
-        working-directory: apps/docs
+        working-directory: vault-main
         env:
           # Next.js build (150+ effects, WebGL/Three.js) exceeds the default
           # heap on GitHub's standard 7GB runner without this.

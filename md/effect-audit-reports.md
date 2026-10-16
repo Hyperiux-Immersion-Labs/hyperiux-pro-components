@@ -40,7 +40,7 @@ reduced-motion disclaimer audit. Both were snapshots as of late July 2026.
 Audits each effect's Remixer Panel (dynamic props / live controls) for correctness across three pieces:
 - `registry/effects/{category}/{effect}/registry.json` - the `props`/`remixer` metadata (source of truth for what the panel exposes and what copied code contains).
 - The **registry component** (what copied code produces after install).
-- The **docs mirror component** at `apps/docs/src/components/{effect}/` (what the live `/demo/{effect}` preview actually renders).
+- The **docs mirror component** at `vault-main/src/components/{effect}/` (what the live `/demo/{effect}` preview actually renders).
 
 
 
@@ -147,7 +147,7 @@ All 5 effects (`clippath-slider`, `infinite-carousel`, `ring-carousel`, `webgl-s
 | `clipDirection`, `easing`, `showControls` (the whole "Controls" panel group) had live remixer controls despite being dead (see original MISMATCH row below). | Remixer controls removed per instruction - the "Controls" group no longer appears in the panel at all. All 3 stay declared, documented `registry.json` props with their original defaults; they remain unwired in the component (out of scope for this fix - only `duration` was asked to be made functional). This also resolves the `clipDirection` `BROKEN_CONTROL` (empty `select` options) below, since it's no longer rendered. |
 | `duration` was declared with a working-looking `range` remixer control but was never read by `ClippathSliderComp.jsx` - the sweep transition (`runSweepAnimation`'s `gsap.to(proxy, ...)`) and the paired outgoing-layer scale-down tween were both hardcoded to `1.2`s. | Wired for real: both registry and mirror `ClippathSliderComp.jsx` now accept `duration` (default `0.75`, matching `registry.json`) and use it for both of those tweens (they run concurrently as one visual transition). Both `index.jsx` wrappers now accept and forward `duration`. The reduced-motion fade path (`REDUCED_MOTION_FADE_DURATION = 0.18`) is intentionally left untouched - it's a separate accessibility-specific constant, not the "Clip-path transition duration" the prop describes. |
 
-`apps/docs/public/r/clippath-slider.json` regenerated via `apps/docs/scripts/build-registry.js` to match. `REMIXER_EFFECT_PROPS.md` updated (see its own section) - table graduated out of "Suggested props" and now lists the real prop set, matching the `spider-particles`-style formatting used for other graduated effects.
+`vault-main/public/r/clippath-slider.json` regenerated via `vault-main/scripts/build-registry.js` to match. `REMIXER_EFFECT_PROPS.md` updated (see its own section) - table graduated out of "Suggested props" and now lists the real prop set, matching the `spider-particles`-style formatting used for other graduated effects.
 
 ### `infinite-carousel` - FIXED 2026-07-29 (per instruction, adding only the 5 REMIXER_EFFECT_PROPS.md-listed props)
 
@@ -160,7 +160,7 @@ All 5 effects (`clippath-slider`, `infinite-carousel`, `ring-carousel`, `webgl-s
 | `pauseOnHover` (declared, unwired) - "Pauses carousel motion while hovered," but this carousel has no autoplay/continuous motion, only drag and nav-button interaction, so there was nothing to pause. | Confirmed the semantic gap with a follow-up question rather than guessing. Implemented as: while hovered (tracked via a `isHoveredRef` set by `onPointerEnter`/`onPointerLeave` on the track wrapper), a completed drag's post-release momentum coast (GSAP `Draggable`'s `inertia`) is disabled by mutating `draggableInst.vars.inertia` fresh on each `onPress` - the closest real "pause the motion" behavior available in an interaction-only carousel. Reduced motion continues to disable inertia unconditionally, independent of hover. |
 | `direction` had `"control": "select"` with `"options": []` (a `BROKEN_CONTROL`, empty dropdown) and did nothing regardless. | Options fixed to `["left", "right"]`; wired to `horizontalLoop`'s existing (previously-unused-by-this-effect) `config.reversed` flag - `direction === "right"` reverses the timeline. |
 
-`apps/docs/public/r/infinite-carousel.json` regenerated via `apps/docs/scripts/build-registry.js`. `REMIXER_EFFECT_PROPS.md` updated - table graduated out of "Suggested props," lists the real 8-prop set (`cards`/`draggable`/`showNav`/`mobileBreakpoint` plus the 4 newly-wired props; `items` removed), matching the `spider-particles` formatting convention.
+`vault-main/public/r/infinite-carousel.json` regenerated via `vault-main/scripts/build-registry.js`. `REMIXER_EFFECT_PROPS.md` updated - table graduated out of "Suggested props," lists the real 8-prop set (`cards`/`draggable`/`showNav`/`mobileBreakpoint` plus the 4 newly-wired props; `items` removed), matching the `spider-particles` formatting convention.
 
 ### MISMATCH - dead controls (not fixed yet)
 
@@ -168,7 +168,7 @@ All 5 effects (`clippath-slider`, `infinite-carousel`, `ring-carousel`, `webgl-s
 |---|---|---|
 | ~~`clippath-slider`~~ | ~~`clipDirection`, `duration`, `easing`, `showControls` (4/8 declared)~~ | **Fixed 2026-07-29** - see `clippath-slider - FIXED` above. `duration` is now wired and functional; `clipDirection`/`easing`/`showControls` are still unwired but were removed from the remixer panel, so they're no longer *presented* as live controls that silently do nothing - they're now correctly non-interactive documented props. |
 | ~~`infinite-carousel`~~ | ~~`items`, `speed`, `gap`, `pauseOnHover`, `direction` (5/9 declared)~~ | **Fixed 2026-07-29** - see `infinite-carousel - FIXED` above. `speed`/`gap`/`pauseOnHover`/`direction` are now wired and functional (plus the demo page now actually renders the panel, which it didn't before at all); `items` was removed as a redundant duplicate of `cards` rather than wired. |
-| `ring-carousel` | `snap`, `autoPlay`, `autoPlayInterval`, `pauseOnHover`, `showNavigation`, `showDots` (6/6 declared) - **preview-only bug** | `registry.json` and the shipped registry component are actually correct (all 6 props properly destructured and forwarded). The bug is isolated to the docs mirror: `apps/docs/src/components/ring-carousel/index.jsx`'s `RingCarousel()` takes **zero props** and hardcodes `snap`/`autoPlay`/`autoPlayInterval`/`pauseOnHover` as literals when calling `RingCarouselComp`; `showNavigation`/`showDots` aren't passed at all. Since `RegistryRemixerDemo` renders the mirror, every one of the 6 panel controls is a no-op in the live preview - but copy-pasted/installed code (built from the real registry component) works correctly. |
+| `ring-carousel` | `snap`, `autoPlay`, `autoPlayInterval`, `pauseOnHover`, `showNavigation`, `showDots` (6/6 declared) - **preview-only bug** | `registry.json` and the shipped registry component are actually correct (all 6 props properly destructured and forwarded). The bug is isolated to the docs mirror: `vault-main/src/components/ring-carousel/index.jsx`'s `RingCarousel()` takes **zero props** and hardcodes `snap`/`autoPlay`/`autoPlayInterval`/`pauseOnHover` as literals when calling `RingCarouselComp`; `showNavigation`/`showDots` aren't passed at all. Since `RegistryRemixerDemo` renders the mirror, every one of the 6 panel controls is a no-op in the live preview - but copy-pasted/installed code (built from the real registry component) works correctly. |
 | `webgl-slider` | `slides`, `distortionStrength`, `transitionDuration`, `backgroundColor`, `showControls` (5/6 declared) | Neither the registry nor mirror `WebGLSliderComp` destructures these - only `images` is real (added in the 1.2.0 changelog). **Copy-code bug:** `images` (the one working prop) is marked `"copyable": false` while the 5 dead props aren't, so the generated snippet omits the working prop and includes 5 that `WebGLSlider` silently ignores. |
 | `zoom-slider` | `zoomScale`, `duration`, `autoplay`, `showControls`, `slides` (5/8 declared) | Not destructured anywhere. Card/hover scale (`gsap.to(..., { scale: 1.05 })`) and all animation durations are hardcoded literals; no autoplay timer exists (nav is drag/wheel/touch only); no nav-controls UI exists; `slides` sits right next to - and is easily confused with - the real, working `sliderData` prop (only `sliderData` is actually read). |
 
@@ -223,11 +223,11 @@ All 5 effects (`clippath-slider`, `infinite-carousel`, `ring-carousel`, `webgl-s
 Audits every effect under `registry/effects/{category}/{effect-name}/` for consistency between:
 - **The claim** - what `registry.json`'s changelog says about reduced-motion behavior.
 - **The code** - what the `.jsx` actually does when `prefersReducedMotion` is true.
-- **The docs mirror** - whether `apps/docs/src/components/{effect-name}/` matches the registry copy's reduced-motion logic.
+- **The docs mirror** - whether `vault-main/src/components/{effect-name}/` matches the registry copy's reduced-motion logic.
 
 Status legend: **CONSISTENT** (claim matches code) · **MISMATCH** (claim and code disagree) · **UNDOCUMENTED** (code has reduced-motion logic with no changelog claim) · **MIRROR_OK** / **MIRROR_DRIFT** (docs copy matches / diverges from registry copy).
 
-**Status: complete.** All 11 categories / 150+ effects audited (registry `.jsx` code vs. `registry.json` changelog claims, plus the `apps/docs/src/components/{effect-name}/` mirror).
+**Status: complete.** All 11 categories / 150+ effects audited (registry `.jsx` code vs. `registry.json` changelog claims, plus the `vault-main/src/components/{effect-name}/` mirror).
 
 **Totals:** 109 consistent · 1 mismatch (open) · 5 undocumented (all fixed 2026-07-28) · 5 mirror drifts (all fixed 2026-07-28).
 
@@ -261,7 +261,7 @@ Status legend: **CONSISTENT** (claim matches code) · **MISMATCH** (claim and co
 | `horizontal-feature-reveal` | scroll | Registry hard-skipped all SplitText reveals under reduced motion (early return); the mirror instead ran opacity-fade variants of the same tweens for all four reveals - a genuine design difference, not just missing code. | **User's call: made the mirror's gentle-fade approach canonical.** Removed registry's early return; added the `reducedMotion ? {opacity fade} : {directional version}` ternary to all four `gsap.from(...)` reveal blocks (head, number, title, content) and an explicit `if (reducedMotion) { gsap.set(x:0); return }` for the image parallax, matching the mirror. Added `registry.json` v1.2.0 changelog entry. |
 | `svg-pixel-reveal` | scroll | Registry had **zero** reduced-motion code; only the mirror had a "this effect can't be reduced" notice. | Ported the mirror's `usePrefersReducedMotion` hook + notice into the registry `index.jsx` (see UNDOCUMENTED fix above). Both sides now equivalent. |
 
-All edited files (registry + mirror) were syntax-validated (ESLint for files inside `apps/docs`, `acorn-jsx` parse check for registry files outside its lint scope) - zero errors.
+All edited files (registry + mirror) were syntax-validated (ESLint for files inside `vault-main`, `acorn-jsx` parse check for registry files outside its lint scope) - zero errors.
 
 ## Clean categories (no mismatches, no drift)
 

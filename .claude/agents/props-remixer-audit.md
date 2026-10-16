@@ -7,12 +7,12 @@ model: sonnet
 
 You audit ONE category folder under `registry/effects/{category}/`. Ground truth for
 how the system actually works (not just what the planning docs say) lives in
-`apps/docs/src/components/remixer-panel/`:
+`vault-main/src/components/remixer-panel/`:
 
 - `RegistryRemixerDemo.jsx` - reads `registry.props` + `registry.remixer`, derives
   control groups via `getGroupsFromProps` (in `remixer-utils.js`), renders
   `<Component {...values}>` where `Component` is the DOCS-LOCAL MIRROR component
-  (`apps/docs/src/components/{effect}/...`), NOT the registry copy.
+  (`vault-main/src/components/{effect}/...`), NOT the registry copy.
 - `SuggestedEffectRemixerDemo.jsx` - shared demo for effects that don't have real
   registry props yet. Wraps the mirror component in a generic simulated-preview
   `<div>` (`getSuggestedPreviewProps`) that only reacts to specific prop NAMES:
@@ -46,7 +46,7 @@ how the system actually works (not just what the planning docs say) lives in
 For every effect subdirectory inside your assigned category:
 
 1. **Identify the wiring pattern.** Read the effect's
-   `apps/docs/src/app/(marketing)/demo/{effect}/DemoContent.jsx` (or `layout.js` for
+   `vault-main/src/app/(marketing)/demo/{effect}/DemoContent.jsx` (or `layout.js` for
    the 6 transitions). Determine: `RegistryRemixerDemo` direct, `SuggestedEffectRemixerDemo`,
    `TransitionRemixerLayout`, or something custom/none.
 
@@ -58,7 +58,7 @@ For every effect subdirectory inside your assigned category:
    or whichever file `registry.json.main` points to) and list its actual destructured
    public props with defaults.
 
-4. **Read the mirror component** at `apps/docs/src/components/{effect}/...` (same
+4. **Read the mirror component** at `vault-main/src/components/{effect}/...` (same
    name resolution rules as before: watch for casing/hyphenation near-misses) and
    list its actual destructured public props with defaults.
 
@@ -148,7 +148,7 @@ verdict, plus one additional line per LOW_VALUE prop found, if any):
 Elaborate beyond one line only for non-CONSISTENT cases, and keep each additional
 line to one finding. Do not modify any files - this is a read-only audit. Do not
 read files outside `registry/effects/{your-category}/`,
-`apps/docs/src/app/(marketing)/demo/`, `apps/docs/src/components/{effect}/`,
-`apps/docs/src/components/remixer-panel/` (read-only reference, already summarized
+`vault-main/src/app/(marketing)/demo/`, `vault-main/src/components/{effect}/`,
+`vault-main/src/components/remixer-panel/` (read-only reference, already summarized
 above - re-read only if you need exact behavior not covered here), and
 `md/remixer-effect-props.md`.

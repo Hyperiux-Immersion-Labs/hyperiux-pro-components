@@ -44,15 +44,15 @@ This document proposes an automation layer for the workflow described in
 ## Goal
 
 Create one command that takes a component already built in
-`apps/docs/src/components/{slug}/` and prepares every distribution artifact that
+`vault-main/src/components/{slug}/` and prepares every distribution artifact that
 the repo expects:
 
 - `registry/effects/{category}/{slug}/`
 - `registry/effects/{category}/{slug}/registry.json`
 - `registry/effects/{category}/{slug}/package.json`
 - `registry/index.json`
-- `apps/docs/public/r/{slug}.json`
-- `apps/docs/public/r/index.json`
+- `vault-main/public/r/{slug}.json`
+- `vault-main/public/r/index.json`
 - `registry/dist/hyperiux-{slug}-{version}.tgz`
 - for free components only, the mirror in the sibling `hyperiux-components`
   repo
@@ -127,7 +127,7 @@ npm run component:rename -- \
 ```
 
 By default, `component:rename` renames distribution artifacts only. It does not
-rename `apps/docs/src/components/{old-slug}` because that folder may contain
+rename `vault-main/src/components/{old-slug}` because that folder may contain
 in-progress developer work. To rename the docs source folder too, pass
 `--move-docs-source`:
 
@@ -162,11 +162,11 @@ npm run component:delete -- --slug old-component --yes
 `component:delete` is destructive and should print a plan unless `--yes` is
 passed. A full delete removes:
 
-- `apps/docs/src/components/{slug}/`
+- `vault-main/src/components/{slug}/`
 - `registry/effects/{category}/{slug}/`
 - the matching `registry/index.json` entry
-- `apps/docs/public/r/{slug}.json`
-- the matching `apps/docs/public/r/index.json` entry
+- `vault-main/public/r/{slug}.json`
+- the matching `vault-main/public/r/index.json` entry
 - matching `registry/dist/hyperiux-{slug}-*.tgz` files
 - matching `registry/dist/registry-index.json` entries
 - any alias group whose canonical `slug` is the deleted slug
@@ -185,7 +185,7 @@ Required for a new component:
 
 | Input | Example | Notes |
 |---|---|---|
-| `slug` | `immersive-full-screen-nav` | Lowercase hyphen folder name. Must exist in `apps/docs/src/components/{slug}`. |
+| `slug` | `immersive-full-screen-nav` | Lowercase hyphen folder name. Must exist in `vault-main/src/components/{slug}`. |
 | `category` | `navigation` | Must be one of the existing `registry/effects/*` categories. |
 | `tier` | `free` or `pro` | Drives public JSON behavior and free-repo mirror sync. |
 | `title` | `Immersive Full Screen Navigation` | Human-readable title. |
@@ -241,8 +241,8 @@ Optional for a slug rename:
 |---|---|---|
 | `category` | `webgl` | Auto-detected from current registry entry. |
 | `date` | `2026-07-27` | Today's date. |
-| `moveDocsSource` / `move-docs-source` | `true` | Whether to rename `apps/docs/src/components/{from}` to `{to}`. Default is `false` for safety. |
-| `addAlias` | `true` | Add old slug as an alias in `apps/docs/src/lib/effect-slugs.js`. Default `true`. |
+| `moveDocsSource` / `move-docs-source` | `true` | Whether to rename `vault-main/src/components/{from}` to `{to}`. Default is `false` for safety. |
+| `addAlias` | `true` | Add old slug as an alias in `vault-main/src/lib/effect-slugs.js`. Default `true`. |
 | `dryRun` | `true` | Print planned path/metadata changes without writing files. |
 
 Required for a category move:
@@ -282,7 +282,7 @@ Keep the commands explicit so automation does not guess at risky intent:
 - `component:verify` is read-only validation.
 
 If `component:sync --slug old-slug` cannot find
-`apps/docs/src/components/old-slug`, it should fail with a message suggesting
+`vault-main/src/components/old-slug`, it should fail with a message suggesting
 `component:rename --from old-slug --to new-slug`. It should not silently infer a
 rename from nearby folder names.
 
@@ -293,7 +293,7 @@ what it would do without writing files or running mutating build commands.
 
 For `component:new`, dry run should print:
 
-- whether `apps/docs/src/components/{slug}` exists
+- whether `vault-main/src/components/{slug}` exists
 - the detected distributable files
 - the registry folder it would create
 - the generated `registry.json`
@@ -340,7 +340,7 @@ selection is uncertain.
 
 ### Phase 1: Preflight
 
-1. Verify `apps/docs/src/components/{slug}/` exists.
+1. Verify `vault-main/src/components/{slug}/` exists.
 2. Verify `slug` is lowercase hyphenated.
 3. Verify `category` exists under `registry/effects/`.
 4. Verify `tier` is exactly `free` or `pro`.
@@ -348,13 +348,13 @@ selection is uncertain.
    `component:sync` is used.
 6. For `tier=free`, verify the sibling `hyperiux-components` checkout exists,
    unless `--skip-free-mirror` is explicitly passed.
-7. Check that `apps/docs/scripts/build-registry.js` and root
+7. Check that `vault-main/scripts/build-registry.js` and root
    `scripts/build-registry.js` are present.
 8. In dry-run mode, show the full file plan and stop before writes.
 
 ### Phase 2: Discover Distributable Files
 
-Scan `apps/docs/src/components/{slug}/` and include only files users need:
+Scan `vault-main/src/components/{slug}/` and include only files users need:
 
 - include `.js`, `.jsx`, `.css`
 - exclude docs-only files by convention:
@@ -425,7 +425,7 @@ regenerating or dropping them:
 
 That means the workflow should support this real authoring pattern:
 
-1. The developer builds the effect in `apps/docs/src/components/{slug}/`.
+1. The developer builds the effect in `vault-main/src/components/{slug}/`.
 2. The developer hand-edits
    `registry/effects/{category}/{slug}/registry.json` to add curated `props`
    entries, default values, remixer controls, disabled controls, copy-code
@@ -508,13 +508,13 @@ must not silently ship only in the pro repo.
 Run from this repo:
 
 ```bash
-npm --prefix apps/docs run build:registry
+npm --prefix vault-main run build:registry
 ```
 
 This produces:
 
-- `apps/docs/public/r/{slug}.json`
-- refreshed `apps/docs/public/r/index.json`
+- `vault-main/public/r/{slug}.json`
+- refreshed `vault-main/public/r/index.json`
 
 Important behavior already handled by the existing script:
 
@@ -551,7 +551,7 @@ Start with the full rebuild because it already exists and is easier to trust.
 2. Read its current `category`, `tier`, `version`, `dependencies`, `files`,
    `main`, `exportName`, `exportKind`, `props`, and `remixer`.
 3. Copy the latest distributable files from
-   `apps/docs/src/components/{slug}/` to the existing registry folder.
+   `vault-main/src/components/{slug}/` to the existing registry folder.
 4. Bump `registry.json.version` from `--bump`, or set it from `--version`.
 5. Prepend a changelog entry:
 
@@ -568,12 +568,12 @@ Start with the full rebuild because it already exists and is easier to trust.
 7. Update the matching `registry/index.json` entry.
 8. If `tier=free`, copy the same registry folder into
    `../hyperiux-components/registry/effects/{category}/{slug}/`.
-9. Rebuild `apps/docs/public/r`.
+9. Rebuild `vault-main/public/r`.
 10. Rebuild `registry/dist`.
 11. Run `component:verify`.
 
 This is the command that removes the common manual update work. After the
-developer changes the component source in `apps/docs/src/components/{slug}/`,
+developer changes the component source in `vault-main/src/components/{slug}/`,
 `component:sync` should update the registry, changelog, public JSON, tarball,
 and free mirror.
 
@@ -586,8 +586,8 @@ them. This keeps effect-specific prop metadata authoritative in the registry
 folder and ensures it syncs everywhere else correctly:
 
 - `registry/index.json`
-- `apps/docs/public/r/{slug}.json`
-- `apps/docs/public/r/index.json`
+- `vault-main/public/r/{slug}.json`
+- `vault-main/public/r/index.json`
 - `registry/dist/*.tgz`
 - free-tier mirror files in `../hyperiux-components`
 
@@ -646,10 +646,10 @@ by the dedicated phases below.
    - `previewUrl` if present
    - `version`
 9. Add an alias from `from` to `to` in
-   `apps/docs/src/lib/effect-slugs.js` unless `--no-alias` is passed.
+   `vault-main/src/lib/effect-slugs.js` unless `--no-alias` is passed.
 10. If tier is free, mirror the rename into
     `../hyperiux-components/registry/effects/{category}/`.
-11. Rebuild `apps/docs/public/r`.
+11. Rebuild `vault-main/public/r`.
 12. Rebuild `registry/dist`.
 13. Run `component:verify --slug {to}`.
 
@@ -682,12 +682,12 @@ deprecated alias package.
    present, and `version`.
 7. If tier is free, mirror the move into
    `../hyperiux-components/registry/effects/`.
-8. Rebuild `apps/docs/public/r`.
+8. Rebuild `vault-main/public/r`.
 9. Rebuild `registry/dist`.
 10. Run `component:verify --slug {slug}`.
 
 Category moves should not alter the docs component source folder because
-`apps/docs/src/components/{slug}` is slug-based, not category-based.
+`vault-main/src/components/{slug}` is slug-based, not category-based.
 
 ### Phase 11: Verification
 
@@ -696,8 +696,8 @@ The command should verify:
 1. `registry/effects/{category}/{slug}/registry.json` exists.
 2. `registry/effects/{category}/{slug}/package.json` exists.
 3. Every `registry.json.files[].path` exists.
-4. `apps/docs/public/r/{slug}.json` exists.
-5. `apps/docs/public/r/index.json` contains the slug.
+4. `vault-main/public/r/{slug}.json` exists.
+5. `vault-main/public/r/index.json` contains the slug.
 6. `registry/dist/hyperiux-{slug}-{version}.tgz` exists.
 7. For `tier=free`, the mirror repo has the same registry folder.
 8. For `tier=free`, the mirror repo has no effect folders missing from
@@ -728,7 +728,7 @@ The goal is that developers only manually build and test the actual component
 experience in:
 
 ```text
-apps/docs/src/components/{slug}/
+vault-main/src/components/{slug}/
 ```
 
 Everything distribution-related should be automated.
@@ -739,7 +739,7 @@ Automated by `component:new`:
 - generate `registry.json`
 - generate/sync `package.json`
 - update `registry/index.json`
-- rebuild `apps/docs/public/r`
+- rebuild `vault-main/public/r`
 - rebuild `registry/dist`
 - sync `hyperiux-components` for free-tier components
 - verify output
@@ -754,7 +754,7 @@ Automated by `component:sync`:
   confirmation for deleting files from the registry folder
 - sync package version
 - update `registry/index.json`
-- rebuild `apps/docs/public/r`
+- rebuild `vault-main/public/r`
 - rebuild `registry/dist`
 - sync `hyperiux-components` for free-tier components
 - verify output
@@ -798,7 +798,7 @@ mutate the real registry.
 Run with:
 
 ```bash
-npm --prefix apps/docs run test -- scripts/component-workflow
+npm --prefix vault-main run test -- scripts/component-workflow
 ```
 
 Coverage:
@@ -841,7 +841,7 @@ Expected:
 Run with:
 
 ```bash
-npm --prefix apps/docs run test -- scripts/component-workflow/component-workflow.integration.test.js
+npm --prefix vault-main run test -- scripts/component-workflow/component-workflow.integration.test.js
 ```
 
 Coverage:
@@ -877,14 +877,14 @@ Then run a non-dry-run only on a disposable fixture component.
 After the command writes real registry files, run:
 
 ```bash
-npm --prefix apps/docs run build:registry
+npm --prefix vault-main run build:registry
 npm run build:registry
 ```
 
 Expected:
 
-- `apps/docs/public/r/{slug}.json` exists
-- `apps/docs/public/r/index.json` contains the slug
+- `vault-main/public/r/{slug}.json` exists
+- `vault-main/public/r/index.json` contains the slug
 - `registry/dist/hyperiux-{slug}-{version}.tgz` exists
 - `registry/dist/registry-index.json` contains the tarball
 
@@ -893,7 +893,7 @@ Expected:
 For a free component:
 
 ```bash
-node -e "const d=require('./apps/docs/public/r/SLUG.json'); console.log(d.files.some(f => f.content))"
+node -e "const d=require('./vault-main/public/r/SLUG.json'); console.log(d.files.some(f => f.content))"
 ```
 
 Expected: `true`.
@@ -901,7 +901,7 @@ Expected: `true`.
 For a pro component:
 
 ```bash
-node -e "const d=require('./apps/docs/public/r/SLUG.json'); console.log(d.files.some(f => f.content))"
+node -e "const d=require('./vault-main/public/r/SLUG.json'); console.log(d.files.some(f => f.content))"
 ```
 
 Expected: `false`.
@@ -911,7 +911,7 @@ Expected: `false`.
 In a temporary consumer project after registry build:
 
 ```bash
-export HYPERIUX_DEV_REGISTRY_PATH="/absolute/path/to/hyperiux-pro-components/apps/docs/public/r"
+export HYPERIUX_DEV_REGISTRY_PATH="/absolute/path/to/hyperiux-pro-components/vault-main/public/r"
 npx hyperiux init -y
 npx hyperiux add SLUG --yes --dry-run
 ```
@@ -929,10 +929,10 @@ Before merging the automation itself:
 
 ```bash
 git diff --check
-npm --prefix apps/docs run test
+npm --prefix vault-main run test
 ```
 
-Full `npm --prefix apps/docs run lint` is useful but currently may fail on
+Full `npm --prefix vault-main run lint` is useful but currently may fail on
 unrelated React compiler/hook rules. Treat lint failures as blockers only when
 they point at the automation files or generated registry files.
 
@@ -945,7 +945,7 @@ they point at the automation files or generated registry files.
    existing component folder.
 3. Add registry folder generation for pro components only.
 4. Add `registry/index.json` update.
-5. Add `apps/docs` public registry rebuild.
+5. Add `vault-main` public registry rebuild.
 6. Add root tarball rebuild.
 7. Add free-tier mirror copying to `hyperiux-components`.
 8. Add sync/update mode with version bump, changelog insertion, and file-list
@@ -971,7 +971,7 @@ they point at the automation files or generated registry files.
 ## Open Decisions
 
 1. Should automation also create the docs demo page under
-   `apps/docs/src/app/(marketing)/demo/{slug}/page.js`, or only validate that it
+   `vault-main/src/app/(marketing)/demo/{slug}/page.js`, or only validate that it
    exists?
 2. Should free-tier mirror sync be required by default, or should local-only
    development allow `--skip-free-mirror`?
@@ -997,12 +997,12 @@ npm run component:new -- --slug slug --category category --tier pro --title "Tit
 
 It should:
 
-1. Copy files from `apps/docs/src/components/{slug}` to
+1. Copy files from `vault-main/src/components/{slug}` to
    `registry/effects/{category}/{slug}`.
 2. Generate `registry.json`.
 3. Generate `package.json`.
 4. Update `registry/index.json`.
-5. Run `npm --prefix apps/docs run build:registry`.
+5. Run `npm --prefix vault-main run build:registry`.
 6. Run `npm run build:registry`.
 7. Run `component:verify`.
 8. Print a verification summary.
@@ -1041,7 +1041,7 @@ show the new code inside the existing code block.
 The effect detail page renders content from Sanity in:
 
 ```text
-apps/docs/src/app/(app)/effects/[slug]/effect-detail.jsx
+vault-main/src/app/(app)/effects/[slug]/effect-detail.jsx
 ```
 
 Code blocks are rendered when `content.body` contains objects like:

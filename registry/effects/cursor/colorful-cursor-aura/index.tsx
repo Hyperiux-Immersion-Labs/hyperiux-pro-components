@@ -134,15 +134,15 @@ function ColorfulCursorAuraComp({
  ref={container}
  data-cursor-color="#000"
  data-cursor-size="0px"
- className="relative w-screen h-screen overflow-hidden  max-[1025px]:h-[70vh]"
+ className="relative w-screen h-screen overflow-hidden  max-lg:h-[70vh]"
  >
  <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
  <div
  ref={aeroText}
- className="relative w-[70%] max-[1025px]:w-[80%]"
+ className="relative w-[70%] max-lg:w-[80%]"
  >
  <p
- className="text-center font-heading text-[6vw] font-medium max-[1025px]:text-[8vw] max-md:text-[10vw]"
+ className="text-center font-heading text-[6vw] font-medium max-lg:text-[8vw] max-md:text-[10vw]"
  style={{ color: textColor }}
  >
  {text}
@@ -152,7 +152,7 @@ function ColorfulCursorAuraComp({
  <p
  ref={maskedText}
  aria-hidden
- className="pointer-events-none absolute inset-0 text-center font-heading text-[6vw] font-medium text-transparent bg-clip-text [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] max-[1025px]:text-[8vw] max-md:text-[10vw]"
+ className="pointer-events-none absolute inset-0 text-center font-heading text-[6vw] font-medium text-transparent bg-clip-text [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] max-lg:text-[8vw] max-md:text-[10vw]"
  style={{
 '--x-color1':'50%',
 '--y-color1':'50%',
@@ -197,8 +197,8 @@ const ColorfulCursorAura = ({
       />
 
       {/* Mobile only notice */}
-      <div className="hidden max-[1025px]:block absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
-        <p className="text-zinc-700 max-[1025px]:text-[3vw] max-md:text-[4vw] leading-[1.2] font-medium">
+      <div className="hidden max-lg:block absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+        <p className="text-zinc-700 max-lg:text-[3vw] max-md:text-[4vw] leading-[1.2] font-medium">
            Open on desktop to experience the mouse effect
         </p>
       </div>

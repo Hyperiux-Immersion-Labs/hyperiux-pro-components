@@ -365,13 +365,13 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(func
         }
       }}
       id={loaderWrapperId}
-      className="flex h-screen w-full items-center justify-center px-[2.5vw] text-black max-[1025px]:px-[5vw] max-md:px-[6vw]"
+      className="flex h-screen w-full items-center justify-center px-[2.5vw] text-black max-lg:px-[5vw] max-md:px-[6vw]"
       style={{ backgroundColor }}
     >
-      <div className="flex w-full items-center justify-between max-[1025px]:flex-col max-[1025px]:justify-center max-[1025px]:gap-[33vh] max-md:gap-[70vw]">
+      <div className="flex w-full items-center justify-between max-lg:flex-col max-lg:justify-center max-lg:gap-[33vh] max-md:gap-[70vw]">
         <h1
           ref={text1Ref}
-          className="opacity-0 max-[1025px]:text-[2.8vw] max-md:text-[5vw]"
+          className="opacity-0 max-lg:text-[2.8vw] max-md:text-[5vw]"
         >
           HUMAN THINKERS
         </h1>
@@ -405,7 +405,7 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(func
 
         <p
           ref={text2Ref}
-          className="opacity-0 max-[1025px]:text-[2.8vw] max-md:text-[4vw]"
+          className="opacity-0 max-lg:text-[2.8vw] max-md:text-[4vw]"
         >
           DIGITAL MAKERS
         </p>
@@ -413,7 +413,7 @@ const StackToSpreadIntro = forwardRef<HTMLElement, StackToSpreadIntroProps>(func
 
       <p
         ref={descriptionTextRef}
-        className="absolute bottom-[3vw] left-1/2 w-[40vw] -translate-x-1/2 text-center leading-[1.1] text-black opacity-0 max-[1025px]:bottom-[3vw] max-[1025px]:w-[68vw] max-[1025px]:text-[2.4vw] max-md:bottom-[6vw] max-md:w-[90%] max-md:text-[3.5vw]"
+        className="absolute bottom-[3vw] left-1/2 w-[40vw] -translate-x-1/2 text-center leading-[1.1] text-black opacity-0 max-lg:bottom-[3vw] max-lg:w-[68vw] max-lg:text-[2.4vw] max-md:bottom-[6vw] max-md:w-[90%] max-md:text-[3.5vw]"
       >
         Hyperiux Vault
       </p>

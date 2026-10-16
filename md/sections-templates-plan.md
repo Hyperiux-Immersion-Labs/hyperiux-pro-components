@@ -1,6 +1,6 @@
 # Sections & Templates for Hyperiux Vault
 
-*Planning memo - hyperiux-pro-components / apps/docs - approved plan, not yet started*
+*Planning memo - hyperiux-pro-components / vault-main - approved plan, not yet started*
 
 Adds two new content types to the Vault: composed page **Sections** (hero,
 feature, testimonial, footer, etc.) and full multi-page **Templates**
@@ -57,10 +57,10 @@ consumer a free discriminator.
 - New Section entries live at `registry/effects/<category>/<slug>/` exactly
   like effects today, just `"type": "registry:block"` and a Section-specific
   `category`.
-- `apps/docs/scripts/build-registry.js` - no functional change; `type`
+- `vault-main/scripts/build-registry.js` - no functional change; `type`
   already passes through as-is (confirmed at the line reading
   `registryJson.type || "registry:component"`).
-- `apps/docs/test/effect-harness.js` - add `getRegistrySections()` sibling
+- `vault-main/test/effect-harness.js` - add `getRegistrySections()` sibling
   to the existing `getRegistryEffects()`, filtering `registry/index.json` by
   `type === "registry:block"`. No new harness file.
 - CLI (`hyperiux-components/packages/cli/src/commands/add.js`) - **zero
@@ -76,7 +76,7 @@ it - it's already generic display content keyed by `categorySlug`/
 forking the schema.
 
 **Category taxonomy:** add a new exported array `sectionCategories` in
-`apps/docs/src/lib/categories.js`, structurally identical to today's
+`vault-main/src/lib/categories.js`, structurally identical to today's
 `effectCategories` (same shape, same helpers parameterized to accept which
 list to search - don't hand-roll parallel `getSectionCategoryBySlug` copies
 of every helper). Starting category set, following the **denser, folded**
@@ -153,7 +153,7 @@ new schema, unlike Sections:
   `{route, label, thumbnail}`, drives the multi-page preview switcher),
   `ctaBanner`/`seo` (reuse `effectCtaBanner`/`effectSeo` verbatim).
 - `hyperiux-vault/schemaTypes/index.js` - register the new type.
-- `apps/docs/src/lib/sanity.js` - add `getAllSanityTemplateEntries`/
+- `vault-main/src/lib/sanity.js` - add `getAllSanityTemplateEntries`/
   `getSanityTemplateContent`, same query pattern as the existing
   `getAllSanityEffectEntries`, filtered on `_type == "templateContent"`.
 
@@ -169,13 +169,13 @@ storage already used for other Vault assets (Vercel Blob, per the
 **New access-control layer needed** - this is the part that doesn't exist
 today and needs verifying, not assuming, before implementation starts:
 
-- Confirm whether `apps/docs/src/lib/subscription.js`'s `getUserPlan()`
+- Confirm whether `vault-main/src/lib/subscription.js`'s `getUserPlan()`
   currently distinguishes billing **interval** (monthly vs annual) at all,
   or only plan tier (free/pro). If Stripe subscription data isn't already
   surfaced with interval, that's the first real unknown to close - the
   "annual only" rule is unenforceable without it.
 - New `getTemplateAccessDecision({ clerkUserId, templateSlug })` sibling to
-  `getEffectAccessDecision()` (`apps/docs/src/lib/effect-access.js`),
+  `getEffectAccessDecision()` (`vault-main/src/lib/effect-access.js`),
   returning `allowed` if (a) user is on an **annual** Pro plan, OR (b) user
   has a recorded standalone purchase for that specific template slug.
 - New table, e.g. `template_purchases` (`clerk_user_id`, `template_slug`,
@@ -204,7 +204,7 @@ install action) - genuinely optional, not required for v1.
   and pricing (annual-Pro-included vs one-time price) instead of a single
   preview video thumbnail.
 - `/templates/[slug]` - new detail page
-  (`apps/docs/src/app/(app)/templates/[slug]/template-detail.jsx` +
+  (`vault-main/src/app/(app)/templates/[slug]/template-detail.jsx` +
   `page.js` wrapper, mirroring the access-decision-then-render pattern of
   today's `effects/[slug]/[effectSlug]/page.js` but against
   `getTemplateAccessDecision` instead).
@@ -243,7 +243,7 @@ render is measured as an actual problem after shipping.
 **Templates:** given multi-page, whole-project scope, an iframe is the only
 sound option - an in-page live-mount of an entire second Next.js app isn't
 a "dynamic import." New route
-`apps/docs/src/app/(marketing)/template-demo/[slug]/page.tsx` assembles the
+`vault-main/src/app/(marketing)/template-demo/[slug]/page.tsx` assembles the
 template's sections client-side per `template.json`'s `pages[]`/
 `sectionsUsed` list (statically importing each section's compiled module,
 same technique as the effect demo routes), with a client-side page switcher
@@ -262,7 +262,7 @@ preview before the buy button.
 ## 4. QC checklist - Sections
 
 Grounded in the site's own already-published quality bar
-(`apps/docs/src/lib/categories.js`, `effectsOverviewContent.faqs`) plus
+(`vault-main/src/lib/categories.js`, `effectsOverviewContent.faqs`) plus
 what's new because a Section must survive being dropped into a real page
 layout, which a standalone effect never had to prove.
 
@@ -336,7 +336,7 @@ Superset of §4 - every bundled section already had to pass §4 individually.
 ## 6. Verification
 
 - Unit/jsdom: extend the existing registry render-harness pattern
-  (`apps/docs/test/`) with `getRegistrySections()` and a
+  (`vault-main/test/`) with `getRegistrySections()` and a
   `registry-sections.render.test.jsx` sibling to whatever the effect one is
   named today.
 - Templates: new fast unit checks for §5's static-analysis gates

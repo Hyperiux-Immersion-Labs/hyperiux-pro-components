@@ -16,7 +16,7 @@ it. Both were written 2026-07-15 and neither had been updated since.
 > 2. **"Testing locally" env var is wrong.** There is no `HYPERIUX_DEV_REGISTRY_PATH`
 >    env var anywhere in `hyperiux-components`. The real mechanism is a hardcoded,
 >    auto-detected relative path (`packages/cli/src/utils/registry.js:25-28`,
->    `DEV_REGISTRY_PATH = path.join(__dirname, "../../../../apps/docs/public/r")`) -
+>    `DEV_REGISTRY_PATH = path.join(__dirname, "../../../../vault-main/public/r")`) -
 >    no manual export step needed when the sibling repo is checked out alongside this
 >    one.
 > 3. **The free-tier mirror sync is now automated**, contrary to "must copy manually"
@@ -72,7 +72,7 @@ before touching anything.
 
 | Repo | Role |
 |---|---|
-| `hyperiux-pro-components` (this repo) | Source of truth. `registry/effects/**/registry.json` holds each component's metadata including `version`. `apps/docs/scripts/build-registry.js` compiles all of it into `apps/docs/public/r/*.json`, which is what gets served to the CLI (as static files for free effects, via an authenticated API route for pro effects). |
+| `hyperiux-pro-components` (this repo) | Source of truth. `registry/effects/**/registry.json` holds each component's metadata including `version`. `vault-main/scripts/build-registry.js` compiles all of it into `vault-main/public/r/*.json`, which is what gets served to the CLI (as static files for free effects, via an authenticated API route for pro effects). |
 | `hyperiux-components` | Ships the `hyperiux` CLI (`packages/cli`). Also has its own **separate, manually-maintained mirror** of the free effects at `hyperiux-components/registry/` - used only so the CLI can be tested locally without hitting a live server. This mirror is not automatically kept in sync with this repo; see "Updating a component" below. |
 
 ---
@@ -157,10 +157,10 @@ other mechanism that would ever surface it to them.
    changed.
 3. **Rebuild the registry:**
    ```bash
-   cd apps/docs
+   cd vault-main
    npm run build:registry
    ```
-   This regenerates every `apps/docs/public/r/*.json` from source. It's a
+   This regenerates every `vault-main/public/r/*.json` from source. It's a
    full rebuild (all ~115 components), not just the one you changed - that's
    expected and correct, it's idempotent for everything else.
 4. **If the component is free-tier**, also update the mirror in
@@ -170,7 +170,7 @@ other mechanism that would ever surface it to them.
    testing locally (see below); it is **not** auto-synced from this repo.
 5. **Verify** the built output actually has your change before moving on:
    ```bash
-   python3 -c "import json; d=json.load(open('apps/docs/public/r/<slug>.json')); print(d['version'], d.get('changelog'))"
+   python3 -c "import json; d=json.load(open('vault-main/public/r/<slug>.json')); print(d['version'], d.get('changelog'))"
    ```
 
 ---
@@ -202,7 +202,7 @@ published npm package. Undo with `npm unlink -g hyperiux` when done.
 ### Every terminal session
 
 ```bash
-export HYPERIUX_DEV_REGISTRY_PATH="/absolute/path/to/hyperiux-pro-components/apps/docs/public/r"
+export HYPERIUX_DEV_REGISTRY_PATH="/absolute/path/to/hyperiux-pro-components/vault-main/public/r"
 ```
 Tells the CLI to read component data from this repo's real built output
 (reflecting whatever you just built in step 3 above) instead of its own
@@ -248,7 +248,7 @@ already run `hyperiux init`.
 
 | Command | Where | Purpose |
 |---|---|---|
-| `npm run build:registry` | `apps/docs/` | Rebuild `apps/docs/public/r/*.json` from every `registry/effects/**/registry.json`. Run this after any registry.json or component source edit - nothing is picked up automatically. |
+| `npm run build:registry` | `vault-main/` | Rebuild `vault-main/public/r/*.json` from every `registry/effects/**/registry.json`. Run this after any registry.json or component source edit - nothing is picked up automatically. |
 
 ### Recommended workflow for a user checking for updates
 
@@ -308,8 +308,8 @@ Two repos are involved:
 
 - **`hyperiux-pro-components`** (this repo) - the registry source of truth
   (`registry/effects/**/registry.json`) and the build script that turns it
-  into what the CLI fetches (`apps/docs/scripts/build-registry.js` →
-  `apps/docs/public/r/*.json`).
+  into what the CLI fetches (`vault-main/scripts/build-registry.js` →
+  `vault-main/public/r/*.json`).
 - **`hyperiux-components`** - the CLI package the user actually runs
   (`packages/cli/src/commands/*.js`, `packages/cli/src/utils/*.js`).
 
@@ -362,18 +362,18 @@ Start every existing component at `"1.0.0"` in a single migration pass.
 
 ### 1.2 Propagate `version`/`changelog` through the build script
 
-File: `apps/docs/scripts/build-registry.js`.
+File: `vault-main/scripts/build-registry.js`.
 
 Same pattern as the `tier` field (see the `registryItem` object around
 where `tier` is written into the per-effect JSON) - add `version` and
 `changelog` to that same object so they land in
-`apps/docs/public/r/<slug>.json`. This is the only way the CLI (a separate
+`vault-main/public/r/<slug>.json`. This is the only way the CLI (a separate
 repo/process) can see the version - it only ever talks to the public
 registry output or the authenticated pro API, never this repo directly.
 
 ### 1.3 Pro-effect API route needs the same fields
 
-File: `apps/docs/src/app/api/cli/effects/[slug]/route.js` (the
+File: `vault-main/src/app/api/cli/effects/[slug]/route.js` (the
 authenticated route pro users hit). Confirm it reads `version`/`changelog`
 from the same source (`registry.json` via `getEffectBySlug`/registry.js
 helpers) and includes them in its response - pro installs go through this

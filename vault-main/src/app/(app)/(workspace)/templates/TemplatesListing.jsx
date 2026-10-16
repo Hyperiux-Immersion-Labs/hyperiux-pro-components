@@ -1,0 +1,375 @@
+"use client";
+
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+// FAQ registers its reveal with the dist build, a separate ScrollTrigger copy with its own trigger list.
+import { ScrollTrigger as ScrollTriggerDist } from "gsap/dist/ScrollTrigger";
+import dynamic from "next/dynamic";
+import { motion } from "motion/react";
+import HeadAnim from "@/components/Animations/HeadAnim";
+import Copy from "@/components/Animations/Copy";
+import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
+import FAQ from "@/homepage/sections/FAQ";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import Button from "@/homepage/components/Button";
+import { useTemplateWishlist } from "./useTemplateWishlist";
+import { useTemplateAccess } from "./useTemplateAccess";
+import { TemplateCard } from "./TemplateCard";
+import { FilterMenu } from "../effects/FilterMenu";
+import { useTemplateViewCounts } from "./useTemplateViewCounts";
+import { TemplatePreviewDrawer } from "./TemplatePreviewDrawer";
+import { useTemplatePurchase } from "./useTemplatePurchase";
+import { CATALOGUES, TEMPLATE_CARD_WIDTH, TEMPLATE_GRID, DISPLAY, GUTTER, LABEL, PRICE, T11, T14, T16, cardReveal, catalogueOf, priceOf } from "./tokens";
+import { DarkSegment } from "@/components/ui/DarkSegment";
+import { CARD_LAYOUT_TRANSITION } from "../effects/EffectCard";
+import { PLANS, getCreditsPerYear } from "@/lib/plans";
+import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
+
+// three.js only loads when the corridor is shown.
+const TemplateCorridor = dynamic(() => import("./TemplateCorridor"), {
+  ssr: false,
+  loading: () => <div className="h-svh" />,
+});
+
+// Hero: the heading and description animate in first (no stats row - as on the effects
+// listing); the breadcrumb and filter bar then fade up after them, one after another.
+const heroFadeUp = (delay) => ({
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay, duration: 0.9, ease: [0.16, 1, 0.3, 1] },
+});
+
+const VIEWS = [
+  { id: "corr", label: "Corridor" },
+  { id: "grid", label: "Grid" },
+];
+
+// Compact filter chips (T14 text); the ring is inset, so it adds no height
+const CHIP = `inline-flex shrink-0 cursor-pointer items-center px-3 py-1.5 max-md:py-3 ${T14} backdrop-blur-lg transition-[background-color,color,box-shadow] duration-500`;
+const CHIP_OFF = "text-foreground/80 bg-foreground/5 ring-1 ring-inset ring-foreground/15 hover:ring-primary/60";
+const CHIP_ON = "bg-primary text-background";
+
+/* ---------- can this device show the corridor? (desktop, motion allowed, WebGL) ---------- */
+const CORRIDOR_QUERY = "(min-width: 901px) and (prefers-reduced-motion: no-preference)";
+let webgl;
+const hasWebGL = () => {
+  if (webgl === undefined) {
+    // Lighthouse / PSI get the fallback, like the homepage's WebGL
+    if (isLighthouseOrHeadless() || isSoftwareRenderer()) return (webgl = false);
+    try {
+      webgl = !!document.createElement("canvas").getContext("webgl2");
+    } catch {
+      webgl = false;
+    }
+  }
+  return webgl;
+};
+const subscribeCorridor = (onChange) => {
+  const mq = window.matchMedia(CORRIDOR_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+const canShowCorridor = () => window.matchMedia(CORRIDOR_QUERY).matches && hasWebGL();
+
+// "$39, $49 or $59", each price in Aeonik Pro.
+const formatPrices = (prices) =>
+  prices.map((p, i) => (
+    <Fragment key={p}>
+      {i > 0 && (i === prices.length - 1 ? " or " : ", ")}
+      <span className={PRICE}>${p}</span>
+    </Fragment>
+  ));
+
+/**
+ * Sample Templates listing: the v4 design (public/v4/Templates - Hyperiux
+ * Vault (1).html, sidebar left out) merged with the live /templates page.
+ *
+ * From v4: the split hero with stats, the Corridor / Grid view switch, the 3D
+ * corridor, catalogue filters, browser-frame cards and the template credits
+ * section. From /templates: the real catalogue, approved description and FAQ,
+ * view counts, Save (wishlist), and the Buy / Download flow with its paywall.
+ */
+export function TemplatesListing({ templates: baseTemplates = [], description = "", faqItems = [] }) {
+  // The page is static; view counts (Supabase) load in the browser and the cards
+  // show a skeleton until they land.
+  const viewCounts = useTemplateViewCounts(baseTemplates.map((t) => t.slug));
+  const templates = useMemo(
+    () => baseTemplates.map((t) => (viewCounts ? { ...t, viewCount: viewCounts[t.slug] || 0 } : { ...t, viewCountPending: true })),
+    [baseTemplates, viewCounts],
+  );
+  const rootRef = useRef(null);
+  const [category, setCategory] = useState("All");
+  const [catalogue, setCatalogue] = useState("all");
+  const [chosenView, setChosenView] = useState(null);
+  const [glFailed, setGlFailed] = useState(false);
+
+  const corridorOk = useSyncExternalStore(subscribeCorridor, canShowCorridor, () => true) && !glFailed;
+
+  const { toast, showToast, dismissToast } = useToastQueue();
+  const { wishlist, toggleWishlist, signInModal } = useTemplateWishlist({
+    onSaved: (t) => showToast({ title: `${t.title} saved`, description: "You'll find it in your dashboard's My Templates." }),
+    onRemoved: (t) => showToast({ title: `${t.title} removed`, description: "No longer in your saved templates." }),
+  });
+  const accessSlugs = useTemplateAccess();
+
+  // Preview drawer (opened from a card's shot) and the purchase it can start.
+  const [drawerTemplate, setDrawerTemplate] = useState(null);
+  const closeDrawer = useCallback(() => setDrawerTemplate(null), []);
+  const { buy, modals: purchaseModals } = useTemplatePurchase();
+  const buyFromDrawer = (template) => {
+    setDrawerTemplate(null);
+    // Let the drawer slide away before the "Get this template" popup opens.
+    setTimeout(() => buy(template, accessSlugs.includes(template.slug)), 650);
+  };
+
+  useFadeUp(rootRef);
+
+  // The corridor's height follows the filtered count (and it unmounts when one or no
+  // template matches, or for the grid view), so the page's height jumps on a filter change and
+  // every ScrollTrigger below it (fade-ups, FAQ reveal...) keeps stale positions.
+  // Re-measure them whenever the listing's height actually changes.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    let height = root.offsetHeight;
+    let timer;
+    const observer = new ResizeObserver(() => {
+      if (root.offsetHeight === height) return;
+      height = root.offsetHeight;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        ScrollTrigger.refresh();
+        if (ScrollTriggerDist !== ScrollTrigger) ScrollTriggerDist.refresh();
+      }, 120);
+    });
+    observer.observe(root);
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const categories = useMemo(() => ["All", ...new Set(templates.map((t) => t.category).filter(Boolean))], [templates]);
+  const prices = useMemo(() => [...new Set(templates.map(priceOf).filter((p) => p != null))].sort((a, b) => a - b), [templates]);
+  const filtered = useMemo(
+    () =>
+      templates.filter(
+        (t) => (category === "All" || t.category === category) && (catalogue === "all" || catalogueOf(t) === catalogue),
+      ),
+    [templates, category, catalogue],
+  );
+  // One or no match shows only the grid and fades out the corridor option.
+  const canChooseView = corridorOk && filtered.length > 1;
+  const view = canChooseView ? chosenView || "corr" : "grid";
+  const viewItems = VIEWS.map((item) => ({ ...item, hidden: item.id === "corr" && !canChooseView }));
+
+  const clearFilters = () => {
+    setCategory("All");
+    setCatalogue("all");
+  };
+
+  return (
+    <div ref={rootRef} className="relative text-light">
+      {/* ---------- hero ---------- */}
+      <section id="templates-hero" className={`${GUTTER} flex flex-col gap-7 pt-32 pb-12 max-lg:pt-32 max-md:pt-28`}>
+        <motion.div {...heroFadeUp(1)}>
+          <Breadcrumb />
+        </motion.div>
+
+        <div className="flex justify-between gap-12 max-lg:flex-col max-lg:items-stretch max-lg:gap-10">
+          <HeadAnim rotate={0} animateOnScroll={false} delay={0.2}>
+            <h1 className="type-display w-[calc(var(--cvw)*40)] max-lg:w-full -mt-3">
+              Whole Sites. <span className="gradient-text-animate">Ready to Ship.</span>
+            </h1>
+          </HeadAnim>
+
+          <div className="flex w-[calc(var(--cvw)*25)] flex-col gap-6 max-lg:w-full">
+            <Copy animateOnScroll={false} delay={0.5}>
+              <p className="type-body-lg text-foreground/80 max-lg:w-[70%] max-md:w-full">
+                {description} Buy one outright, or redeem a template credit from your plan.
+              </p>
+            </Copy>
+          </div>
+        </div>
+
+        {/* view on the left · category + catalogue on the right */}
+        <motion.div {...heroFadeUp(1.2)} className="flex flex-wrap items-center justify-between gap-3.5 pt-7 max-md:pt-3">
+          <DarkSegment label="View" items={viewItems} value={view} onChange={setChosenView} itemClassName="w-[calc(var(--cvw)*5.5)] max-lg:w-20" />
+          <div className="ml-auto flex flex-wrap items-center gap-3.5 max-md:ml-0">
+            <div role="group" aria-label="Category" className="flex flex-wrap gap-1.5">
+              {categories.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  aria-pressed={category === c}
+                  onClick={() => setCategory(c)}
+                  className={`${CHIP} ${category === c ? CHIP_ON : CHIP_OFF}`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+            {/* Phones: just the category chips - the All / Selected / Pro+ filter is hidden. */}
+            <div className="max-md:hidden">
+              <FilterMenu
+                alignRight
+                // Same resting look as the category chips beside it
+                idleClassName={CHIP_OFF}
+                triggerClassName={`px-3 py-1.5 max-md:py-3 ${T14} before:invisible before:inline-block before:w-0 before:-mr-2 before:content-['.']`}
+                panelClassName="left-auto! right-0"
+                options={CATALOGUES.map((c) => c.id)}
+                activeFilter={catalogue === "all" ? null : catalogue}
+                categoryFilter={catalogue}
+                getLabel={(id) => CATALOGUES.find((c) => c.id === id)?.label}
+                onSelect={setCatalogue}
+                onClear={() => setCatalogue("all")}
+              />
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ---------- corridor ---------- */}
+      {view === "corr" && <TemplateCorridor templates={filtered} onUnsupported={() => setGlFailed(true)} />}
+
+      {/* ---------- grid + credits sheet ---------- */}
+      <div data-sound-hover="off" data-sound-flow="off" className="relative flex flex-col gap-[calc(var(--cvw)*8)] bg-light py-[7%] text-ink max-md:gap-[15vw] max-md:py-[15%]">
+        <section id="templates-grid" className={`${GUTTER} flex flex-col gap-12`}>
+          <div className="flex items-end justify-between gap-4 max-md:flex-col max-md:items-start">
+            <HeadAnim key={category} rotate={0} by="words">
+              <h2 className="type-h1">
+                {category === "All" ? "All" : category} <span className="gradient-text-animate">Templates.</span>
+              </h2>
+            </HeadAnim>
+            <p aria-live="polite" className={`fadeup ${LABEL} text-black/60`}>
+              {filtered.length} of {templates.length} templates
+            </p>
+          </div>
+
+          {filtered.length === 0 ? (
+            <div className="flex flex-col items-center gap-3.5 px-4 py-20 text-center">
+              <b className="type-h2">No templates match that filter yet.</b>
+              <p className="type-body text-black/60">New templates land in the vault regularly.</p>
+              <button
+                type="button"
+                onClick={clearFilters}
+                className={`${LABEL} h-11 cursor-pointer px-5 ring-1 ring-inset ring-black/10 transition-shadow duration-500 hover:ring-primary`}
+              >
+                Clear filters
+              </button>
+            </div>
+          ) : (
+            <div className={TEMPLATE_GRID}>
+              {filtered.map((template, index) => (
+                <motion.div key={template.slug} layout transition={CARD_LAYOUT_TRANSITION} className={TEMPLATE_CARD_WIDTH}>
+                  <motion.div {...cardReveal(index)}>
+                    <TemplateCard
+                      template={template}
+                      priority={index < 2}
+                      isWishlisted={wishlist.includes(template.slug)}
+                      onToggleWishlist={toggleWishlist}
+                      onOpen={setDrawerTemplate}
+                      hasAccess={accessSlugs.includes(template.slug)}
+                    />
+                  </motion.div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* template credits: the pitch on the left, one row per way to get a template on the right */}
+        <section id="template-credits" className={`${GUTTER} flex items-center justify-between gap-[calc(var(--cvw)*4)] max-lg:flex-col max-lg:items-stretch max-lg:gap-10`}>
+          <div className="flex w-[38%] flex-col gap-[calc(var(--cvw)*2)] max-lg:w-full max-lg:gap-6">
+            <HeadAnim rotate={0} by="words">
+              <h2 className={`${DISPLAY} type-h1 font-aeonik`}>
+                <span className="block">One Credit.</span>
+                <span className="block"><span className="gradient-text-animate">One Whole Site.</span></span>
+              </h2>
+            </HeadAnim>
+            <p className="fadeup type-body w-[90%] text-black/60 max-lg:w-full">
+              Buy a template outright, or redeem a credit from your plan. Either way the whole source is yours.
+            </p>
+            <div className="fadeup flex">
+              <Button className="tracking-normal!" text="Compare Plans" href="/pricing#compare" />
+            </div>
+          </div>
+
+          <div className="fadeup flex w-[62%] flex-col gap-[calc(var(--cvw)*0.6)] max-lg:w-full max-md:gap-3">
+            {prices.length > 0 && (
+              <CreditRow
+                figure={<span className={PRICE}>${prices[0]}</span>}
+                caption={prices.length > 1 ? <>or {formatPrices(prices.slice(1))}, per template</> : "per template"}
+                title="No plan needed"
+              >
+                Buy any template outright. One payment, and the source is yours.
+              </CreditRow>
+            )}
+            <CreditRow figure={creditRange("pro")} caption="credits a year" title="Pro">
+              {creditsLine("pro")} Redeem across the selected catalogue.
+            </CreditRow>
+            <CreditRow figure={creditRange("pro_plus")} caption="credits a year" title="Pro+" dark>
+              {creditsLine("pro_plus")} (worth ~<span className={PRICE}>$200</span>). Redeem across the full catalogue.
+            </CreditRow>
+          </div>
+        </section>
+      </div>
+
+      {/* ---------- FAQ (from /templates) ---------- */}
+      {faqItems.length > 0 && (
+        <div className="w-full">
+          <FAQ faqItems={faqItems} translateTop={false} />
+        </div>
+      )}
+
+      <TemplatePreviewDrawer
+        template={drawerTemplate}
+        templates={templates}
+        isWishlisted={(t) => wishlist.includes(t.slug)}
+        hasAccess={(t) => accessSlugs.includes(t.slug)}
+        onToggleWishlist={toggleWishlist}
+        onClose={closeDrawer}
+        onOpen={setDrawerTemplate}
+        onBuy={buyFromDrawer}
+      />
+      {purchaseModals}
+      {signInModal}
+
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
+    </div>
+  );
+}
+
+// Credits a year on quarterly vs yearly billing, from lib/plans: "4–5", or "3" when
+// quarterly earns none (or both are the same).
+function creditRange(tier) {
+  const quarterly = getCreditsPerYear(tier, "quarterly");
+  const yearly = getCreditsPerYear(tier, "yearly");
+  return quarterly && quarterly !== yearly ? `${quarterly}-${yearly}` : String(yearly);
+}
+
+// The billing detail behind creditRange, in words.
+function creditsLine(tier) {
+  const yearly = getCreditsPerYear(tier, "yearly");
+  const rule = PLANS[tier].credits.quarterly;
+  if (!rule) return `${yearly} a year on yearly billing, none on quarterly.`;
+  return `${rule.amount} every quarter, or ${yearly} a year on yearly`;
+}
+
+/** One way to get a template: a big figure with its caption, then the plan and how it works. */
+function CreditRow({ figure, caption, title, dark = false, children }) {
+  return (
+    <div className={`flex items-center gap-[calc(var(--cvw)*2)] px-[calc(var(--cvw)*1.6)] py-[calc(var(--cvw)*1.8)] max-lg:gap-6 max-lg:px-6 max-lg:py-6 max-md:gap-4 max-md:px-4 ${dark ? "bg-ink text-light" : "bg-foreground"}`}>
+      <div className="flex w-[calc(var(--cvw)*8)] shrink-0 flex-col gap-[calc(var(--cvw)*0.3)] max-lg:w-[16vw] max-md:w-[24vw] max-md:gap-1">
+        <span className={`font-aeonik text-[calc(var(--cvw)*2.4)] leading-none max-lg:text-[4.4vw] max-md:text-[8vw] ${dark ? "text-primary" : "text-ink"}`}>{figure}</span>
+        <span className={`${T11} ${dark ? "text-light/50" : "text-black/50"}`}>{caption}</span>
+      </div>
+      <div className="flex min-w-0 flex-col gap-[calc(var(--cvw)*0.4)] max-lg:gap-1.5">
+        <b className="type-h3 font-normal!">{title}</b>
+        <p className={`${T14} ${dark ? "text-light/60" : "text-black/60"}`}>{children}</p>
+      </div>
+    </div>
+  );
+}
+

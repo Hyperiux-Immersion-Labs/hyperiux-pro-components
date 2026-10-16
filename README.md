@@ -383,15 +383,15 @@ This repo (`hyperiux-pro-components`) is the source of truth for the whole Vault
 both free and pro effects - and is a plain npm project, not a pnpm/Turborepo
 monorepo:
 
-- **`apps/docs`** - the Next.js App Router site at [vault.hyperiux.com](https://vault.hyperiux.com): effect docs, live previews, the remixer panel, Clerk auth, Razorpay billing, the admin dashboard, and the CLI-facing API routes (`/api/cli/*`) that authenticate and serve pro source.
-- **`registry/effects`** - private registry source for **every** effect, free and pro, organized by category. `apps/docs/scripts/build-registry.js` reads it and generates `apps/docs/public/r/*.json`, the public metadata the CLI/MCP server actually fetch. Free effects embed full source in that public JSON; pro effects don't - pro source is served only through the authenticated `/api/cli/effects/[slug]` route.
+- **`vault-main`** - the Next.js App Router site at [vault.hyperiux.com](https://vault.hyperiux.com): effect docs, live previews, the remixer panel, Clerk auth, Razorpay billing, the admin dashboard, and the CLI-facing API routes (`/api/cli/*`) that authenticate and serve pro source.
+- **`registry/effects`** - private registry source for **every** effect, free and pro, organized by category. `vault-main/scripts/build-registry.js` reads it and generates `vault-main/public/r/*.json`, the public metadata the CLI/MCP server actually fetch. Free effects embed full source in that public JSON; pro effects don't - pro source is served only through the authenticated `/api/cli/effects/[slug]` route.
 - **`hyperiux-vault`** - the Sanity Studio project backing the docs site's content.
 - **`scripts`** - `component-workflow.mjs` (scaffold/rename/move/delete/verify an effect) and `sanity-code-sync.mjs` (keep Sanity's rendered code blocks in sync with the registry). See [`md/component-workflow-tooling.md`](md/component-workflow-tooling.md).
 
 The CLI itself (`npx hyperiux`, published to npm as `hyperiux`) and the MCP server
 (`hyperiux-mcp-server`) live in the separate, public
 [`hyperiux-components`](https://github.com/Hyperiux-Immersion-Labs/hyperiux-components)
-repo - they're API clients of this repo's `apps/docs`, not part of it. Free effects
+repo - they're API clients of this repo's `vault-main`, not part of it. Free effects
 are additionally mirrored into that public repo so they're installable and browsable
 without authentication.
 
@@ -411,7 +411,7 @@ npm run dev
 To add a new effect (free or pro), follow
 [`md/developer-new-component.md`](md/developer-new-component.md) - it's a more
 complete, currently-accurate walkthrough than a single command. In short: build it
-under `apps/docs/src/components/`, copy it into `registry/effects/<category>/<slug>/`
+under `vault-main/src/components/`, copy it into `registry/effects/<category>/<slug>/`
 with a `registry.json`, run `npm run build:registry`, and - for free effects only -
 mirror the same source into the public `hyperiux-components` repo.
 

@@ -1,0 +1,153 @@
+{
+  "name": "grid-tunnel",
+  "type": "registry:component",
+  "title": "Grid Tunnel",
+  "description": "Infinite 3D image tunnel built with React Three Fiber, procedural wireframe chunks, and inertial wheel-driven camera motion.",
+  "dependencies": [
+    "@react-three/drei",
+    "@react-three/fiber",
+    "three"
+  ],
+  "registryDependencies": [],
+  "exportName": "GridTunnel",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-07-24",
+      "summary": "Added reduced-motion support and hardened camera-frame timing so a long tab-hidden pause no longer displaces the camera on resume.",
+      "breaking": false
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-07-20",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "numberOfGrids",
+      "type": "number",
+      "default": 24,
+      "description": "Number of grid cells (density of the tunnel grid).",
+      "suggested": true
+    },
+    {
+      "name": "shape",
+      "type": "string",
+      "default": "rectangle",
+      "description": "Tunnel cross-section: rectangle or circle (the images curve with the circular walls)."
+    },
+    {
+      "name": "speed",
+      "type": "number",
+      "default": 1,
+      "description": "Scroll and touch travel speed.",
+      "suggested": true
+    },
+    {
+      "name": "depth",
+      "type": "number",
+      "default": 1000,
+      "description": "Visible tunnel fog depth.",
+      "suggested": true
+    },
+    {
+      "name": "lineColor",
+      "type": "string",
+      "default": "#9ca3af",
+      "description": "Grid line color.",
+      "suggested": true
+    },
+    {
+      "name": "backgroundColor",
+      "type": "string",
+      "default": "#ffffff",
+      "description": "Tunnel background color.",
+      "suggested": true
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "suggested": true,
+    "defaultOpenGroupId": "content",
+    "layout": {
+      "controlsButtonClassName": "right-4! top-25!"
+    },
+    "panel": {
+      "className": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "controls": [
+      {
+        "name": "numberOfGrids",
+        "label": "Number of Grids",
+        "type": "range",
+        "group": "content",
+        "copyable": true,
+        "min": 6,
+        "max": 48,
+        "step": 1
+      },
+      {
+        "name": "shape",
+        "label": "Shape",
+        "type": "select",
+        "group": "content",
+        "options": [
+          {
+            "value": "rectangle",
+            "label": "Rectangle"
+          },
+          {
+            "value": "circle",
+            "label": "Circle"
+          }
+        ]
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "range",
+        "group": "motion",
+        "copyable": true,
+        "min": 0,
+        "max": 5,
+        "step": 0.05
+      },
+      {
+        "name": "depth",
+        "label": "Depth",
+        "type": "range",
+        "group": "controls",
+        "copyable": true,
+        "min": 100,
+        "max": 3000,
+        "step": 10
+      },
+      {
+        "name": "lineColor",
+        "label": "Line Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background Color",
+        "type": "color",
+        "group": "style",
+        "copyable": true
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/grid-tunnel/index.tsx"
+    }
+  ]
+}

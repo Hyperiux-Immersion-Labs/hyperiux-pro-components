@@ -2,8 +2,8 @@
 
 ## Context
 
-`/templates` today (`apps/docs/src/app/(app)/(workspace)/templates/`) is explicitly
-"design-only" - mock data (`apps/docs/src/lib/mock-templates.js`), a detail page
+`/templates` today (`vault-main/src/app/(app)/(workspace)/templates/`) is explicitly
+"design-only" - mock data (`vault-main/src/lib/mock-templates.js`), a detail page
 (`[slug]/template-detail.jsx`) that iframes the live preview at
 `/template-demo/<slug>`, and **no purchase flow, no access control, no download
 of any kind.** `md/sections-templates-plan.md` already lays out the intended
@@ -20,7 +20,7 @@ feature but wrong about two concrete things: the payment provider is
 **Razorpay**, not Stripe (already fully wired for subscriptions, with a
 one-time-order primitive that exists but is unused), and there's no migration
 tooling - Supabase schema changes are hand-run in the SQL editor by convention
-(see `apps/docs/test/fixtures/*.sql` for the pattern to match).
+(see `vault-main/test/fixtures/*.sql` for the pattern to match).
 
 The best possible news: `template-demo/elenavoss/` (the actual live
 implementation) is **already almost fully self-contained** - zero `@/`
@@ -51,7 +51,7 @@ extras list," not a rewrite.
 **New: `scripts/template-scaffold/`** - the boilerplate files every exported
 template needs, as templates with `__SLUG__`/`__TITLE__` placeholders:
 - `package.json` - `next@16.3.1`, `react@19.2.7`, `react-dom@19.2.7` (pinned
-  to match `apps/docs/package.json` exactly - this app's `AGENTS.md` warns
+  to match `vault-main/package.json` exactly - this app's `AGENTS.md` warns
   these are intentionally non-default versions), plus only the deps a given
   template actually uses (`gsap`, `@gsap/react`, `lenis`, `lucide-react`,
   `zod` for Elena Voss; `@react-three/fiber`/`@react-three/drei`/`three` added
@@ -62,7 +62,7 @@ template needs, as templates with `__SLUG__`/`__TITLE__` placeholders:
 - `next.config.mjs` - minimal: no bundle analyzer, no Sentry, no redirects, no
   CSP headers, no broad remote-image allowlist (Elena Voss uses zero remote
   images).
-- `postcss.config.mjs` - copy of `apps/docs/postcss.config.mjs` verbatim (5 lines).
+- `postcss.config.mjs` - copy of `vault-main/postcss.config.mjs` verbatim (5 lines).
 - `app/layout.tsx` - html/body with the same dark bg/fg pairing as the real
   site (`#050505`/`#fff`), imports `./globals.css`, per-template `<title>`.
   Explicitly **excludes** everything research confirmed Elena Voss doesn't
@@ -70,14 +70,14 @@ template needs, as templates with `__SLUG__`/`__TITLE__` placeholders:
   Lenis-at-layout-level (Elena Voss self-wraps with `<ReactLenis root>` inside
   its own `page.tsx` already).
 - `app/globals.css` - `@import "tailwindcss";` plus **only** the 7-line
-  `@theme` radius override block copied from `apps/docs/src/app/globals.css`
+  `@theme` radius override block copied from `vault-main/src/app/globals.css`
   (`--radius-sm` through `--radius-full`) - confirmed this is the one real
   visual dependency (`rounded-md/lg/xl/2xl` usage) on the shared theme; no
   color/font tokens are used.
 - `.gitignore` - standard Next.js one.
 - `README.md.template` - real install/run instructions (`npm i`, `npm run
   dev`), fixing the stale path reference the existing `elenavoss/README.md`
-  has (it currently points at `apps/docs/src/app/(marketing)/templates/elenavoss/`,
+  has (it currently points at `vault-main/src/app/(marketing)/templates/elenavoss/`,
   which doesn't exist - the real source is `template-demo/elenavoss/`).
 - `LICENSE.template` - short license note per QC §11 (what a buyer may do
   with the code); match the site's published effect-license language if one
@@ -87,7 +87,7 @@ template needs, as templates with `__SLUG__`/`__TITLE__` placeholders:
 **New: `scripts/package-template.mjs`** (Node, run via `node
 scripts/package-template.mjs <slug>`):
 1. Reads a small per-slug manifest (inline in the script) of: source folder
-   (`apps/docs/src/app/(marketing)/template-demo/<slug>`), extra shared files
+   (`vault-main/src/app/(marketing)/template-demo/<slug>`), extra shared files
    to copy in (empty array for Elena Voss; `["components/SmoothScroll/LenisScroll.jsx",
    "lib/motion.js"]`-style entries for Lumera/Oris Dental in Phase F), and
    extra npm deps beyond the common set.
@@ -117,8 +117,8 @@ zero errors, standalone, in a clean checkout") rather than assuming it works.
 
 ## Phase B - Access control + purchase record
 
-**New: `apps/docs/sql/template_purchases.sql`** (hand-run reference, matching
-the existing fixture convention in `apps/docs/test/fixtures/*.sql` - no
+**New: `vault-main/sql/template_purchases.sql`** (hand-run reference, matching
+the existing fixture convention in `vault-main/test/fixtures/*.sql` - no
 migration tooling exists in this repo, confirmed):
 ```sql
 create table template_purchases (
@@ -137,8 +137,8 @@ create index template_purchases_clerk_user_id_idx on template_purchases (clerk_u
 (User needs to run this by hand in the Supabase SQL editor - same as every
 other schema change in this repo.)
 
-**New: `apps/docs/src/lib/template-access.js`** - sibling to
-`apps/docs/src/lib/effect-access.js`, same `decision()`/reason-string shape.
+**New: `vault-main/src/lib/template-access.js`** - sibling to
+`vault-main/src/lib/effect-access.js`, same `decision()`/reason-string shape.
 `getTemplateAccessDecision({ clerkUserId, templateSlug, includedInAnnualPro })`:
 - No `clerkUserId` → `decision("anonymous")`.
 - Query `subscriptions` with `.select("plan, status, current_period_end,
@@ -154,17 +154,17 @@ other schema change in this repo.)
   if found.
 - No CLI-token branch (templates aren't CLI-installable per the plan doc).
 
-**New: `apps/docs/src/lib/template-purchases.js`** - `recordTemplatePurchase({
+**New: `vault-main/src/lib/template-purchases.js`** - `recordTemplatePurchase({
 clerkUserId, templateSlug, razorpayPaymentId, razorpayOrderId, amount,
 currency })`, mirroring `recordInvoice()`'s upsert pattern in
-`apps/docs/src/lib/pro-access.js` (`onConflict: "razorpay_payment_id"`, same
+`vault-main/src/lib/pro-access.js` (`onConflict: "razorpay_payment_id"`, same
 service-role Supabase client from `@/lib/supabase`).
 
 ---
 
 ## Phase C - One-time purchase flow (extend existing Razorpay routes)
 
-**Modify `apps/docs/src/app/api/razorpay/create-order/route.js`:** accept an
+**Modify `vault-main/src/app/api/razorpay/create-order/route.js`:** accept an
 optional `templateSlug` in the request body. When present, look up the price
 **server-side** from `mock-templates.js`'s new `pricing.standaloneOneTime`
 field (never trust a client-supplied amount for real money - the current
@@ -173,7 +173,7 @@ payment" purpose but must not carry over here). Add `template_slug` to
 `order.notes` alongside the existing `clerk_user_id`, so `verify-payment` can
 read back which template was being bought.
 
-**Modify `apps/docs/src/app/api/razorpay/verify-payment/route.js`:** in the
+**Modify `vault-main/src/app/api/razorpay/verify-payment/route.js`:** in the
 order branch (currently just logs and returns `{ verified: true }` - no
 Supabase write happens for one-time orders today), after signature
 verification: `razorpay.orders.fetch(razorpay_order_id)`, confirm
@@ -187,7 +187,7 @@ Extend its request body to also pass `templateSlug` through to
 `create-order` (small addition - currently it only sends `{ amount }` in the
 non-`plan` branch).
 
-**Modify `apps/docs/src/lib/mock-templates.js`:** add to each of the 3
+**Modify `vault-main/src/lib/mock-templates.js`:** add to each of the 3
 template objects:
 ```js
 pricing: { standaloneOneTime: 29, includedInAnnualPro: true }, // 39 / 49 for lumera/oris-dental
@@ -202,7 +202,7 @@ data" state everywhere else.)
 
 ## Phase D - Gated download route
 
-**New: `apps/docs/src/app/api/templates/[slug]/download/route.js`** (GET):
+**New: `vault-main/src/app/api/templates/[slug]/download/route.js`** (GET):
 1. `auth()` from `@clerk/nextjs/server` → 401 if no `userId`.
 2. Look up the template via `getTemplateBySlug(slug)` from `mock-templates.js`
    → 404 if not found.
@@ -223,7 +223,7 @@ re-checked on every request rather than hidden behind a UI button.
 
 ## Phase E - UI: Download Zip button + paywall
 
-**Modify `apps/docs/src/app/(app)/(workspace)/templates/[slug]/page.js`**
+**Modify `vault-main/src/app/(app)/(workspace)/templates/[slug]/page.js`**
 (confirmed: already an `async` server component doing
 `getTemplateBySlug`/`getRelatedTemplates` and rendering `<TemplateDetail
 template={template} relatedTemplates={...} />` - lines 33-45). Add `const
@@ -245,7 +245,7 @@ inside the same `flex flex-wrap items-center justify-between` row):
   response).
 - If not allowed: opens a paywall modal instead of navigating.
 
-**New: `apps/docs/src/components/ui/TemplatePaywallModal.jsx`** - same visual
+**New: `vault-main/src/components/ui/TemplatePaywallModal.jsx`** - same visual
 language as `LockedCodePlaceholder` (`effect-detail.jsx:1258-1325`: blurred
 code teaser, `LockKeyhole` icon, "This is a Pro Effect."-style heading) but
 templated for "Buy this template" with an inline `<RazorpayCheckoutButton
@@ -298,5 +298,5 @@ both before considering them shippable.
 - **Phase E**: click through both button states in the browser - unpurchased
   monthly-Pro/free user sees the paywall modal and can complete a purchase
   inline; annual-Pro/already-purchased user's click downloads immediately.
-- Re-run `npm run lint` (`apps/docs`) across all new/changed files before
+- Re-run `npm run lint` (`vault-main`) across all new/changed files before
   calling this done, matching this session's established convention.

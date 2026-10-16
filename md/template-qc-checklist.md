@@ -1,6 +1,6 @@
 # Template QC Checklist
 
-*Reference checklist - hyperiux-pro-components / apps/docs - companion to
+*Reference checklist - hyperiux-pro-components / vault-main - companion to
 [`sections-templates-plan.md`](./sections-templates-plan.md) §5. Not yet
 wired into automated tooling; this is the full gate a human (and eventually
 CI) runs before a Template is allowed to ship.*
@@ -209,11 +209,11 @@ unambiguous form). This runs `scripts/create-template.mjs`, which:
   `<slug>.css`, an `assets/` folder, and a `README.md` already in the shape
   `fixReadme()` (used by `template:update` below) expects.
 - Adds a `<slug>: null` placeholder to
-  `apps/docs/src/lib/template-scaffolds.js` so `template:update` has
+  `vault-main/src/lib/template-scaffolds.js` so `template:update` has
   somewhere to write the real URL once this template has one.
 - Prints ready-to-paste manifest snippets for
   `scripts/package-template.mjs`'s `TEMPLATES` object and
-  `apps/docs/src/lib/mock-templates.js`'s `TEMPLATES` array - deliberately
+  `vault-main/src/lib/mock-templates.js`'s `TEMPLATES` array - deliberately
   **not** auto-inserted, since pricing, category, dependencies, and tagline
   are real decisions the script can't guess at.
 
@@ -231,9 +231,9 @@ npm run template:update <slug>
 
 from the repo root (`scripts/package-template.mjs`). One command rebuilds
 the zip from the latest source, uploads it to Vercel Blob, and rewrites the
-matching entry in `apps/docs/src/lib/template-scaffolds.js` directly -
+matching entry in `vault-main/src/lib/template-scaffolds.js` directly -
 review and commit that file change like any other code change. Requires
-`BLOB_READ_WRITE_TOKEN` (auto-loaded from `apps/docs/.env.local` if not
+`BLOB_READ_WRITE_TOKEN` (auto-loaded from `vault-main/.env.local` if not
 already set in the shell). Re-run the relevant [BLOCK] items above (§3 build,
 §12 zip integrity, §15 preview parity) after any update before considering
 the new version shipped.

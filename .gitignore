@@ -1,9 +1,7 @@
 node_modules
 .next
-apps/docs/node_modules
-apps/docs/.next
-apps/**/docs/**/node_modules
-apps/**/docs/**/.next
+vault-main/node_modules
+vault-main/.next
 /out
 /build
 
@@ -33,10 +31,16 @@ coverage
 *.tsbuildinfo
 .turbo
 CLAUDE.md
-apps/docs/public/r.tmp
+vault-main/public/r.tmp
 .vercel
 
 # graft's local graph cache - regenerable, not committed (run `graft build`).
 graft/
 .21st/
 .local
+
+# From the experiments repo (vault-main moved here)
+.env*.local
+next-env.d.ts
+node_modules/
+.next/
