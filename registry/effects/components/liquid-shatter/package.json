@@ -1,0 +1,18 @@
+{
+  "name": "@hyperiux/liquid-shatter",
+  "version": "1.0.0",
+  "description": "Glossy 3D ribbon rings that charge on press-and-hold and shatter into liquid fragments before reforming",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*",
+    "three": "*"
+  }
+}

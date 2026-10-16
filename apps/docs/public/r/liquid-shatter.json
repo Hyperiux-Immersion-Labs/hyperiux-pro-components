@@ -1,0 +1,274 @@
+{
+  "name": "liquid-shatter",
+  "type": "registry:component",
+  "title": "Liquid Shatter",
+  "description": "Glossy 3D ribbon rings that charge on press-and-hold and shatter into liquid fragments before reforming",
+  "dependencies": [
+    "gsap",
+    "three"
+  ],
+  "registryDependencies": [],
+  "exportName": "LiquidShatter",
+  "exportKind": "default",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-16",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "ribbonCount",
+      "type": "number",
+      "default": 7,
+      "description": "Number of ribbon rings.",
+      "remixer": {
+        "control": "range",
+        "group": "shape",
+        "groupTitle": "Shape",
+        "min": 1,
+        "max": 14,
+        "step": 1
+      }
+    },
+    {
+      "name": "scale",
+      "type": "number",
+      "default": 1,
+      "description": "Overall scale of the ribbon cluster.",
+      "remixer": {
+        "control": "range",
+        "group": "shape",
+        "groupTitle": "Shape",
+        "min": 0.5,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "particleCount",
+      "type": "number",
+      "default": 11000,
+      "description": "Fragments spawned when the ribbons shatter.",
+      "remixer": {
+        "control": "range",
+        "group": "shape",
+        "groupTitle": "Shape",
+        "min": 2000,
+        "max": 30000,
+        "step": 500
+      }
+    },
+    {
+      "name": "ribbonColor",
+      "type": "color",
+      "default": "#24120a",
+      "description": "Base color of the ribbons.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "glowColor",
+      "type": "color",
+      "default": "#ff6b00",
+      "description": "Rim glow and streak color.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "backgroundColor",
+      "type": "color",
+      "default": "#111111",
+      "description": "Scene background and fog color.",
+      "remixer": {
+        "control": "color",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "metalness",
+      "type": "number",
+      "default": 0.4,
+      "description": "Ribbon material metalness.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 1,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "roughness",
+      "type": "number",
+      "default": 0.26,
+      "description": "Ribbon material roughness.",
+      "remixer": {
+        "control": "range",
+        "group": "style",
+        "groupTitle": "Style",
+        "min": 0,
+        "max": 1,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "idleMotion",
+      "type": "number",
+      "default": 1,
+      "description": "Strength of the idle drift.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "streakFrequency",
+      "type": "number",
+      "default": 1,
+      "description": "How often light streaks travel along the ribbons.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "hoverStrength",
+      "type": "number",
+      "default": 1,
+      "description": "How strongly the pointer stirs the ribbons.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "tiltStrength",
+      "type": "number",
+      "default": 1,
+      "description": "How much the scene tilts toward the pointer.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "introAnimation",
+      "type": "boolean",
+      "default": true,
+      "description": "Play the ring grow-and-unwind intro on mount.",
+      "remixer": {
+        "control": "toggle",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "holdToShatter",
+      "type": "boolean",
+      "default": true,
+      "description": "Press and hold to charge and shatter the ribbons.",
+      "remixer": {
+        "control": "toggle",
+        "group": "interaction",
+        "groupTitle": "Interaction"
+      }
+    },
+    {
+      "name": "holdDuration",
+      "type": "number",
+      "default": 1.9,
+      "description": "Seconds of holding needed for a full charge.",
+      "remixer": {
+        "control": "range",
+        "group": "interaction",
+        "groupTitle": "Interaction",
+        "min": 0.5,
+        "max": 5,
+        "step": 0.1
+      }
+    },
+    {
+      "name": "reformDelay",
+      "type": "number",
+      "default": 3,
+      "description": "Seconds before fragments reform into ribbons.",
+      "remixer": {
+        "control": "range",
+        "group": "interaction",
+        "groupTitle": "Interaction",
+        "min": 0.5,
+        "max": 10,
+        "step": 0.1
+      }
+    },
+    {
+      "name": "holdHint",
+      "type": "boolean",
+      "default": true,
+      "description": "Show the press-and-hold hint.",
+      "remixer": {
+        "control": "toggle",
+        "group": "interaction",
+        "groupTitle": "Interaction"
+      }
+    },
+    {
+      "name": "sound",
+      "type": "boolean",
+      "default": true,
+      "description": "Play synthesized audio on charge and shatter.",
+      "remixer": {
+        "control": "toggle",
+        "group": "interaction",
+        "groupTitle": "Interaction"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "defaultOpenGroupId": "style",
+    "layout": {
+      "buttonClassName": "right-4! top-25!",
+      "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+    },
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/liquid-shatter/index.tsx"
+    }
+  ]
+}

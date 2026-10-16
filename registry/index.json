@@ -13502,6 +13502,42 @@
     "registryPath": "registry/effects/cursor/liquid-glass-cursor/registry.json"
   },
   {
+    "name": "liquid-shatter",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-10-16",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Liquid Shatter",
+    "description": "Glossy 3D ribbon rings that charge on press-and-hold and shatter into liquid fragments before reforming",
+    "category": "components",
+    "dependencies": [
+      "gsap",
+      "three"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/liquid-shatter",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "LiquidShatter",
+    "exportKind": "default",
+    "importPath": "@/components/effects/liquid-shatter",
+    "target": "src/components/effects/liquid-shatter",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/liquid-shatter/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/components/liquid-shatter/registry.json"
+  },
+  {
     "name": "magnetic-image-trail",
     "version": "1.1.0",
     "changelog": [
