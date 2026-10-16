@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { markUserProFromSubscription, markUserFree, sendInvoiceEmail, recordInvoice } from "@/lib/pro-access";
+import { applyRefund } from "@/lib/refunds";
 import { releaseFoundingSlot } from "@/lib/founding-slots";
 import { grantCreditsForCharge } from "@/lib/template-credits";
 import { cancelReplacedSubscription, shouldApplySubscriptionEvent } from "@/lib/subscription-events";
-import { recordTemplatePurchase, markTemplatePurchaseRefunded } from "@/lib/template-purchases";
-import { razorpay, withRazorpayRetry } from "@/lib/razorpay";
+import { recordTemplatePurchase } from "@/lib/template-purchases";
+import { razorpay } from "@/lib/razorpay";
+import { recordWebhookEvent } from "@/lib/webhook-log";
 
 // Razorpay's server calls this - authenticated via X-Razorpay-Signature
 // (HMAC of the raw body with the webhook secret), never via Clerk.
@@ -36,6 +38,8 @@ export async function POST(req) {
 
   const body = await req.text();
   const signature = req.headers.get("x-razorpay-signature") || "";
+  // Razorpay's id for this event - the same on every redelivery of it
+  const eventId = req.headers.get("x-razorpay-event-id") || null;
 
   const expected = Buffer.from(
     crypto.createHmac("sha256", secret).update(body).digest("hex")
@@ -47,6 +51,7 @@ export async function POST(req) {
     crypto.timingSafeEqual(expected, received);
 
   if (!isValid) {
+    await recordWebhookEvent({ eventId, outcome: "rejected", detail: "Invalid signature" });
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -54,9 +59,32 @@ export async function POST(req) {
   try {
     event = JSON.parse(body);
   } catch {
+    await recordWebhookEvent({ eventId, outcome: "rejected", detail: "Invalid payload" });
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
 
+  // What happened to this delivery, for the webhook log (lib/webhook-log) - each branch
+  // below sets it; logged once, whichever way the handler answers
+  const subscriptionEntity = event?.payload?.subscription?.entity;
+  const paymentEntity = event?.payload?.payment?.entity;
+  const note = {
+    outcome: "ignored",
+    detail: null,
+    clerkUserId: subscriptionEntity?.notes?.clerk_user_id || null,
+    subscriptionId: subscriptionEntity?.id || null,
+    paymentId: paymentEntity?.id || event?.payload?.refund?.entity?.payment_id || null,
+    amount: paymentEntity?.amount ?? event?.payload?.refund?.entity?.amount ?? null,
+    currency: paymentEntity?.currency || null,
+  };
+  try {
+    return await handleEvent(event, note);
+  } finally {
+    await recordWebhookEvent({ eventId, event: event?.event || null, ...note });
+  }
+}
+
+// One verified Razorpay event; `note` records what was done with it
+async function handleEvent(event, note) {
   const subscription = event?.payload?.subscription?.entity;
   const payment = event?.payload?.payment?.entity;
   const clerkUserId = subscription?.notes?.clerk_user_id;
@@ -72,6 +100,7 @@ export async function POST(req) {
       const order = await razorpay.orders.fetch(payment.order_id);
 
       if (order?.notes?.clerk_user_id && order?.notes?.template_slug) {
+        note.clerkUserId = order.notes.clerk_user_id;
         await recordTemplatePurchase({
           clerkUserId: order.notes.clerk_user_id,
           templateSlug: order.notes.template_slug,
@@ -81,64 +110,47 @@ export async function POST(req) {
           currency: payment.currency || order.currency || "USD",
           invoiceUrl: order.notes.invoice_url || null,
         });
+        Object.assign(note, { outcome: "applied", detail: `Template purchase recorded: ${order.notes.template_slug}` });
+      } else {
+        note.detail = "A payment that isn't a template order";
       }
     } catch (error) {
       console.error("RAZORPAY_WEBHOOK_TEMPLATE_PURCHASE_ERROR:", error);
+      Object.assign(note, { outcome: "failed", detail: `Template purchase: ${error?.message || error}` });
       return NextResponse.json({ error: "Handler failed" }, { status: 500 });
     }
 
     return NextResponse.json({ received: true });
   }
 
-  // Full refunds ("refund.created" / "refund.processed" - Razorpay has no
-  // "payment.refunded" event). Partial refunds keep access.
-  //   - a subscription charge (the payment has an invoice_id): the plan ends
-  //     now and the subscription is cancelled on Razorpay, so it never
-  //     charges (and re-grants Pro) again - unless that subscription was
-  //     already replaced by an upgrade
-  //   - a template purchase: the purchase is marked refunded, which stops
-  //     its download (hasTemplatePurchase only counts paid rows)
-  // Razorpay's current payment decides, not the one in the event: the event's
-  // copy can predate the refund (seen live: a full refund whose payment still
-  // didn't say refund_status "full", so the account kept Pro). Both handlers
-  // are idempotent, so the two events for one refund are safe.
+  // Refunds ("refund.created" / "refund.processed" - Razorpay has no
+  // "payment.refunded" event): lib/refunds applyRefund, shared with the admin
+  // dashboard's Refund and Sync. Full refunds end the plan and cancel the
+  // subscription, or mark a template purchase refunded; partial ones keep access.
+  // Idempotent, so the two events for one refund are safe.
   if (event.event === "refund.created" || event.event === "refund.processed") {
     const paymentId = payment?.id || event?.payload?.refund?.entity?.payment_id;
     if (!paymentId) return NextResponse.json({ received: true });
 
     try {
-      const refunded = await withRazorpayRetry(() => razorpay.payments.fetch(paymentId));
-      const isFull = refunded?.refund_status === "full" || (refunded?.amount > 0 && refunded?.amount_refunded >= refunded?.amount);
-      console.info("RAZORPAY_REFUND:", event.event, paymentId, isFull ? "full" : `partial (${refunded?.amount_refunded}/${refunded?.amount})`);
-      if (!isFull) return NextResponse.json({ received: true });
-
-      if (refunded.invoice_id) {
-        const invoice = await withRazorpayRetry(() => razorpay.invoices.fetch(refunded.invoice_id));
-        const refundedSubscription = invoice?.subscription_id
-          ? await withRazorpayRetry(() => razorpay.subscriptions.fetch(invoice.subscription_id))
-          : null;
-        const refundClerkUserId = refundedSubscription?.notes?.clerk_user_id;
-
-        if (
-          refundClerkUserId &&
-          (await shouldApplySubscriptionEvent({ clerkUserId: refundClerkUserId, subscription: refundedSubscription, kind: "end" }))
-        ) {
-          await markUserFree({ clerkUserId: refundClerkUserId, status: "refunded" });
-        }
-
-        // A refunded subscription never charges again - cancelled right away, not
-        // at the end of the cycle, whether or not it's still the account's plan.
-        // Outside the check above so a retry still cancels if this failed after the
-        // downgrade. Its subscription.cancelled webhook then leaves the "refunded"
-        // row as it is (subscription-events).
-        if (refundedSubscription && !["cancelled", "completed", "expired"].includes(refundedSubscription.status)) {
-          await withRazorpayRetry(() => razorpay.subscriptions.cancel(refundedSubscription.id, false));
-        }
-      } else {
-        await markTemplatePurchaseRefunded(paymentId);
-      }
+      const outcome = await applyRefund(paymentId);
+      console.info("RAZORPAY_REFUND:", event.event, paymentId, outcome.kind);
+      if (outcome.clerkUserId) note.clerkUserId = outcome.clerkUserId;
+      if (outcome.subscriptionId) note.subscriptionId = outcome.subscriptionId;
+      Object.assign(
+        note,
+        outcome.kind === "partial"
+          ? { outcome: "skipped", detail: "Partial refund: access kept" }
+          : outcome.kind === "template"
+            ? { outcome: "applied", detail: "Template purchase marked refunded" }
+            : {
+                outcome: "applied",
+                detail: `Full refund: invoice marked refunded${outcome.endedPlan ? ", moved to Free" : ""}${outcome.cancelled ? ", subscription cancelled" : ""}`,
+              }
+      );
     } catch (error) {
       console.error("RAZORPAY_WEBHOOK_REFUND_ERROR:", error);
+      Object.assign(note, { outcome: "failed", detail: `Refund: ${error?.message || error}` });
       return NextResponse.json({ error: "Handler failed" }, { status: 500 });
     }
 
@@ -147,6 +159,7 @@ export async function POST(req) {
 
   if (!subscription || !clerkUserId) {
     // Not a subscription event we track (e.g. payment.captured) - ack and move on.
+    note.detail = subscription ? "A subscription without an account in its notes" : "Not an event we act on";
     return NextResponse.json({ received: true });
   }
 
@@ -162,11 +175,13 @@ export async function POST(req) {
     // After a Pro -> Pro+ upgrade the old subscription still sends events
     // (its own cancellation above all); they must not touch the user's plan
     if (kind && !(await shouldApplySubscriptionEvent({ clerkUserId, subscription, kind }))) {
+      Object.assign(note, { outcome: "skipped", detail: "Not this account's current subscription (replaced by an upgrade), a late event after it ended, or already refunded" });
       return NextResponse.json({ received: true, ignored: "replaced-subscription" });
     }
 
     if (PRO_EVENTS.has(event.event) || isUpgradeStart) {
       await markUserProFromSubscription({ clerkUserId, subscription });
+      Object.assign(note, { outcome: "applied", detail: `Pro (${subscription.notes?.tier || "pro"}), ${subscription.status}` });
 
       // Upgrade: make sure the subscription it replaced is cancelled (also
       // done by verify-payment; a no-op once cancelled)
@@ -189,6 +204,7 @@ export async function POST(req) {
           isUpgradePayment: isUpgradeStart,
         });
         await sendInvoiceEmail({ clerkUserId, subscription, payment });
+        note.detail += ", invoice recorded";
 
         // Referral/affiliate sale tracking is no longer done from here -
         // ReferralRocket has its own native Razorpay webhook integration
@@ -197,6 +213,7 @@ export async function POST(req) {
       }
     } else if (event.event in FREE_EVENTS) {
       await markUserFree({ clerkUserId, status: FREE_EVENTS[event.event] });
+      Object.assign(note, { outcome: "applied", detail: `Moved to Free (${FREE_EVENTS[event.event]})` });
 
       // Only frees the slot if the reservation never got confirmed (a
       // founding member who cancels after activating keeps their slot -
@@ -215,6 +232,7 @@ export async function POST(req) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("RAZORPAY_WEBHOOK_HANDLER_ERROR:", event.event, error);
+    Object.assign(note, { outcome: "failed", detail: error?.message || String(error) });
 
     // Non-200 makes Razorpay retry the delivery later.
     return NextResponse.json({ error: "Handler failed" }, { status: 500 });

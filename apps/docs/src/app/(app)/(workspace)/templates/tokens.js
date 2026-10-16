@@ -1,21 +1,23 @@
 // Shared by the v4 templates listing, its cards and the corridor.
 
-/* ---------- text sizes (vw: desktop · tablet · mobile), same scale as the effects v4 listing ---------- */
-export const T11 = "text-[0.76vw] max-lg:text-[1.4vw] max-md:text-[2.8vw]";
-export const T12 = "text-[0.9vw] max-lg:text-[1.5vw] max-md:text-[3.2vw]";
-export const T13 = "text-[0.9vw] max-lg:text-[1.6vw] max-md:text-[3.3vw]";
-export const T14 = "text-[0.97vw] max-lg:text-[1.7vw] max-md:text-[3.6vw]";
-export const T15 = "text-[1.04vw] max-lg:text-[1.8vw] max-md:text-[3.8vw]";
-export const T16 = "text-[1.1vw] max-lg:text-[1.95vw] max-md:text-[4.1vw]";
-export const T18 = "text-[1.25vw] max-lg:text-[2.2vw] max-md:text-[4.4vw]";
-export const T20 = "text-[1.4vw] max-lg:text-[2.4vw] max-md:text-[5vw]";
+/* ---------- text sizes (vw: desktop · tablet · mobile), same scale as the effects v4 listing ----------
+   Phone sizes grow with the screen up to 430px wide (the largest phones), then hold: unbounded
+   vw made everything between 430px and 767px oversized (14px text at 27px on a 767px window). */
+export const T11 = "text-[0.76vw] max-lg:text-[1.4vw] max-md:text-[min(2.8vw,12px)]";
+export const T12 = "text-[0.9vw] max-lg:text-[1.5vw] max-md:text-[min(3.2vw,14px)]";
+export const T13 = "text-[0.9vw] max-lg:text-[1.6vw] max-md:text-[min(3.3vw,14px)]";
+export const T14 = "text-[0.97vw] max-lg:text-[1.7vw] max-md:text-[min(3.6vw,15.5px)]";
+export const T15 = "text-[1.04vw] max-lg:text-[1.8vw] max-md:text-[min(3.8vw,16.5px)]";
+export const T16 = "text-[1.1vw] max-lg:text-[1.95vw] max-md:text-[min(4.1vw,17.5px)]";
+export const T18 = "text-[1.25vw] max-lg:text-[2.2vw] max-md:text-[min(4.4vw,19px)]";
+export const T20 = "text-[1.4vw] max-lg:text-[2.4vw] max-md:text-[min(5vw,21.5px)]";
 
 // Headings and small labels. Plain case and default letter-spacing throughout
 // these pages; every text size is in vw.
 export const DISPLAY = "font-normal";
 export const LABEL = T14;
-export const T28 = "text-[1.95vw] max-lg:text-[3.4vw] max-md:text-[7vw]";
-export const T24 = "text-[1.7vw] max-lg:text-[3.4vw] max-md:text-[6vw]";
+export const T28 = "text-[1.95vw] max-lg:text-[3.4vw] max-md:text-[min(7vw,30px)]";
+export const T24 = "text-[1.7vw] max-lg:text-[3.4vw] max-md:text-[min(6vw,26px)]";
 
 
 // Prices ($39 and the like) are always set in Aeonik Pro.

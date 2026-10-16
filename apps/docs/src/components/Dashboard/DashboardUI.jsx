@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import { BUTTON_SIZE, ButtonChrome, buttonClassName } from "@/homepage/components/Button";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
@@ -13,6 +13,38 @@ import { SliderArrowButton } from "@/components/ui/SliderArrowButton";
 // The white card, and its padding
 export const CARD = "flex flex-col bg-foreground text-ink ring-1 ring-inset ring-black/10";
 export const CARD_PAD = "p-[calc(var(--cvw)*1.6)] max-lg:p-6 max-md:p-5";
+
+// Wide tables (the admin Users, Invoicing and Emails lists): every column takes the width
+// of its content (cells don't wrap), the card scrolls the table sideways when it doesn't
+// fit, and the last column - the row's actions - stays pinned to the right edge. The pin
+// shows its edge shadow only while there's more table scrolled away beneath it.
+export const TABLE = "w-full min-w-max border-collapse text-left [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap";
+export const STICKY_END =
+  "sticky right-0 z-1 bg-foreground pl-4 transition-shadow duration-300 group-data-[clipped]/scroll:shadow-[-14px_0_14px_-14px_rgba(0,0,0,0.3)]";
+
+export function TableScroll({ children, className = "" }) {
+  const ref = useRef(null);
+  const [clipped, setClipped] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const update = () => setClipped(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    if (el.firstElementChild) observer.observe(el.firstElementChild);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+  return (
+    <div ref={ref} data-clipped={clipped || undefined} className={`group/scroll overflow-x-auto overscroll-x-contain ${className}`}>
+      {children}
+    </div>
+  );
+}
 
 // Where an effect was delivered: web solid, CLI orange, MCP outlined - on white cards,
 // or on dark surfaces with `dark`

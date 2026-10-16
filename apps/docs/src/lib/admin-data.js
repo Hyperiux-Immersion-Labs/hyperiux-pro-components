@@ -4,6 +4,7 @@ import { getRole } from "@/lib/admin";
 import { ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 import { isValidTier } from "@/lib/plans";
 import { fetchAllRows, supabase } from "@/lib/supabase";
+import { getInternalLists } from "@/lib/app-settings";
 
 // Admin totals read whole tables - every row, not the first 1000
 export { fetchAllRows };
@@ -17,19 +18,29 @@ export { fetchAllRows };
 
 // Our own team: kept out of the customer numbers, shown on their own with the
 // Customers / Internal switch. An account is internal when its email is on one
-// of these domains or listed below, it has an admin role, or a super admin set
-// publicMetadata.internal = true on it in Clerk.
+// of these domains or listed below - or added in the admin Settings tab
+// (lib/app-settings getInternalLists) - it has an admin role, or a super admin
+// marked it internal (publicMetadata.internal, set from the Users tab's Manage
+// drawer).
 export const INTERNAL_EMAIL_DOMAINS = ["weareenigma.com"];
 // Team members' personal accounts used for testing
 export const INTERNAL_EMAILS = ["harshgoyalrss7@gmail.com"];
 
-export function isInternalUser(user) {
-  if (!user) return false;
-  if (user.publicMetadata?.internal === true || getRole(user)) return true;
-  return (user.emailAddresses || []).some(({ emailAddress = "" }) => {
-    const email = emailAddress.toLowerCase();
-    return INTERNAL_EMAILS.includes(email) || INTERNAL_EMAIL_DOMAINS.includes(email.split("@")[1]);
-  });
+// Why an account is internal: "marked" (by a super admin), "role" (an admin),
+// "email" (listed above), "domain" (a team domain) - or null for a customer.
+// `lists`: the extra emails / domains saved in Settings ({ emails, domains })
+export function internalReason(user, lists = { emails: [], domains: [] }) {
+  if (!user) return null;
+  if (user.publicMetadata?.internal === true) return "marked";
+  if (getRole(user)) return "role";
+  const emails = (user.emailAddresses || []).map(({ emailAddress = "" }) => emailAddress.toLowerCase());
+  if (emails.some((email) => INTERNAL_EMAILS.includes(email) || lists.emails.includes(email))) return "email";
+  if (emails.some((email) => INTERNAL_EMAIL_DOMAINS.includes(email.split("@")[1]) || lists.domains.includes(email.split("@")[1]))) return "domain";
+  return null;
+}
+
+export function isInternalUser(user, lists) {
+  return internalReason(user, lists) !== null;
 }
 
 // "customers" (the default), "internal" or "all", from ?audience=
@@ -58,14 +69,20 @@ export async function getAllClerkUsers() {
   return users;
 }
 
+// After an admin change to an account (e.g. marking it internal), so this server's
+// next request reads Clerk again instead of the minute-old list
+export function clearClerkUsersCache() {
+  usersCache = null;
+}
+
 /**
  * Who a request counts. `includes(clerkUserId)` decides a row: rows with no
  * signed-in user (anonymous installs, views) are customers; rows from a
  * deleted account are customers too (they're no one on the team).
  */
 export async function getAudience(audience) {
-  const users = await getAllClerkUsers();
-  const internalIds = new Set(users.filter(isInternalUser).map((user) => user.id));
+  const [users, lists] = await Promise.all([getAllClerkUsers(), getInternalLists()]);
+  const internalIds = new Set(users.filter((user) => isInternalUser(user, lists)).map((user) => user.id));
 
   const includes = (clerkUserId) => {
     if (audience === "all") return true;
@@ -75,6 +92,8 @@ export async function getAudience(audience) {
 
   return {
     audience,
+    // The Settings tab's extra internal emails / domains, for internalReason
+    lists,
     internalIds: [...internalIds],
     users: users.filter((user) => includes(user.id)),
     includes,

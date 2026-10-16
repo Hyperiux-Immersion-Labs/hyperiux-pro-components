@@ -56,7 +56,7 @@ export function AdminAudienceToggle({ value, onChange }) {
       items={AUDIENCE_ITEMS}
       value={value}
       onChange={onChange}
-      itemClassName="w-[calc(var(--cvw)*6.5)] max-lg:w-20"
+      itemClassName="w-[calc(var(--cvw)*8)] max-lg:w-28 max-md:w-25"
     />
   );
 }

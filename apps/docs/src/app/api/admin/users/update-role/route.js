@@ -1,6 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { assertSuperAdmin, ROLES } from "@/lib/admin";
+import { recordAdminAction } from "@/lib/admin-audit";
 
 const VALID_ROLES = new Set([ROLES.SUPER_ADMIN, ROLES.ADMIN, null]);
 
@@ -39,6 +40,7 @@ export async function POST(request) {
       publicMetadata: { role },
     });
 
+    await recordAdminAction({ action: "role.update", targetClerkUserId: clerkUserId, details: { role } });
     return NextResponse.json({ success: true, role });
   } catch (error) {
     console.error("ADMIN_UPDATE_ROLE_ERROR:", error);

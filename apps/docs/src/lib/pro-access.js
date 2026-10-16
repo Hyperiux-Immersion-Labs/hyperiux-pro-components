@@ -136,6 +136,15 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
   return { plan: "pro", tier, status, billingInterval, currentPeriodEnd };
 }
 
+// A fully refunded subscription payment: its invoices row stays in the ledger, marked
+// "refunded", and leaves every revenue figure (api/admin/invoices*). A failure is logged,
+// not thrown - the refund itself (plan ended, subscription cancelled) must still happen.
+export async function markInvoiceRefunded(razorpayPaymentId) {
+  if (!razorpayPaymentId) return;
+  const { error } = await supabase.from("invoices").update({ status: "refunded" }).eq("razorpay_payment_id", razorpayPaymentId);
+  if (error) console.error("MARK_INVOICE_REFUNDED_ERROR:", razorpayPaymentId, error);
+}
+
 export async function markUserFree({ clerkUserId, status = "inactive" }) {
   if (!clerkUserId) {
     throw new Error("Missing clerkUserId in markUserFree.");

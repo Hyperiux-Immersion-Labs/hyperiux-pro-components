@@ -74,6 +74,11 @@ function createQuery(store, table, calls) {
     if (state.op === "update") {
       const hit = rows().filter(matches);
       for (const row of hit) Object.assign(row, state.payload);
+      // .update().select().maybeSingle() / .single(): one row (or null), like Supabase
+      if (state.single) {
+        if (state.single === "single" && hit.length !== 1) return { data: null, error: { message: "expected one row" }, count: hit.length };
+        return { data: hit.length ? project(hit[0]) : null, error: null, count: hit.length };
+      }
       return { data: hit.map(project), error: null, count: hit.length };
     }
 
