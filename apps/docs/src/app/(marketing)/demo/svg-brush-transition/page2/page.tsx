@@ -33,5 +33,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("svg-brush-transition");
+  return getDemoPageMetadata("svg-brush-transition", { path: "/demo/svg-brush-transition/page2" });
 }

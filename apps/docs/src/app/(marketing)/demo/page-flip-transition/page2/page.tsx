@@ -32,5 +32,5 @@ export default function page() {
 }
 
 export async function generateMetadata() {
-  return getDemoPageMetadata("page-flip-transition");
+  return getDemoPageMetadata("page-flip-transition", { path: "/demo/page-flip-transition/page2" });
 }

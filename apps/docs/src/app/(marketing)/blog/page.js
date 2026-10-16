@@ -19,11 +19,19 @@ const BlogListing = dynamic(() => import("./BlogListing"));
 
 const POSTS_PER_PAGE = 9;
 
-export const metadata = createPageMetadata({
+const metadata = createPageMetadata({
   title: "Blog | Hyperiux Vault",
   description: "Notes on building React and Next.js interaction effects, from the Hyperiux Vault team.",
   path: "/blog",
 });
+
+// Filtered / paged views (?category, ?page) keep /blog as canonical but drop hreflang,
+// which would otherwise point away from the URL being crawled.
+export async function generateMetadata({ searchParams }) {
+  const params = await searchParams;
+  if (!params?.category && !params?.page) return metadata;
+  return { ...metadata, alternates: { canonical: metadata.alternates.canonical } };
+}
 
 // The listing reads ?category / ?page, so it renders per request - but its Sanity
 // data is cached until a publish clears it (see SANITY_REVALIDATE in lib/sanity),

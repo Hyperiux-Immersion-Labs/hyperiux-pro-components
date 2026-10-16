@@ -28,5 +28,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("chess-grid-transition");
+  return getDemoPageMetadata("chess-grid-transition", { path: "/demo/chess-grid-transition/page2" });
 }

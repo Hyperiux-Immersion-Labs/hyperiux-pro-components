@@ -44,5 +44,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("depth-shift-transition", { title: "Depth Shift Transition" });
+  return getDemoPageMetadata("depth-shift-transition", { title: "Depth Shift Transition", path: "/demo/depth-shift-transition/page2" });
 }

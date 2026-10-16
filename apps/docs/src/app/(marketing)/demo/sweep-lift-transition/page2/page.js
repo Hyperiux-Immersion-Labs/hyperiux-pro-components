@@ -48,5 +48,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("sweep-lift-transition", { title: "Sweep Lift Transition" });
+  return getDemoPageMetadata("sweep-lift-transition", { title: "Sweep Lift Transition", path: "/demo/sweep-lift-transition/page2" });
 }

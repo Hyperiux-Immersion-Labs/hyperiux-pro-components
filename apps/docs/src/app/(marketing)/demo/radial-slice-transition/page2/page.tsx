@@ -35,5 +35,5 @@ export default function page() {
 }
 
 export async function generateMetadata() {
-  return getDemoPageMetadata("radial-slice-transition");
+  return getDemoPageMetadata("radial-slice-transition", { path: "/demo/radial-slice-transition/page2" });
 }

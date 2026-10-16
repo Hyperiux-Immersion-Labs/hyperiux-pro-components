@@ -45,5 +45,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("aperture-transition", { title: "Aperture Transition" });
+  return getDemoPageMetadata("aperture-transition", { title: "Aperture Transition", path: "/demo/aperture-transition/page2" });
 }

@@ -34,5 +34,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("pixel-transition");
+  return getDemoPageMetadata("pixel-transition", { path: "/demo/pixel-transition/page2" });
 }

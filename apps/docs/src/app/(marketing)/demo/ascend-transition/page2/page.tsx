@@ -50,5 +50,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("ascend-transition", { title: "Ascend Transition" });
+  return getDemoPageMetadata("ascend-transition", { title: "Ascend Transition", path: "/demo/ascend-transition/page2" });
 }
