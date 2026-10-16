@@ -32,7 +32,7 @@ export function useToastQueue(autoDismissMs = DEFAULT_AUTO_DISMISS_MS) {
   return { toast, showToast, dismissToast };
 }
 
-export function ToastViewport({ toast, onDismiss }) {
+export function ToastViewport({ toast, onDismiss, position = "top-right" }) {
   const [mounted, setMounted] = useState(false);
 
   // SSR-safe mounted flag - `mounted` gates a createPortal() call further
@@ -45,19 +45,27 @@ export function ToastViewport({ toast, onDismiss }) {
   if (!mounted) return null;
 
   return createPortal(
+    // z-100000: above everything on the page, modals (z-9999) included, and
+    // just below the page transition (z-100001)
     <div
       aria-live="polite"
-      className={`fixed top-6 right-6 z-9999 w-[min(22rem,calc(100vw-2rem))] transition-all duration-300 ${
+      className={`fixed z-100000 w-[min(22rem,calc(100vw-2rem))] transition-all duration-300 ${
+        position === "bottom-center"
+          ? "bottom-6 left-1/2 -translate-x-1/2"
+          : "top-6 right-6"
+      } ${
         toast
           ? "translate-y-0 opacity-100"
-          : "pointer-events-none -translate-y-3 opacity-0"
+          : `pointer-events-none opacity-0 ${
+              position === "bottom-center" ? "translate-y-3" : "-translate-y-3"
+            }`
       }`}
     >
       {toast && (
         <div
           key={toast.id}
           role="status"
-          className="pointer-events-auto flex items-start gap-3  border border-white/15 bg-[#0e0e0e]/95 px-5 py-4 shadow-2xl backdrop-blur-md"
+          className="pointer-events-auto flex items-start gap-3  border border-white/15 bg-background/95 px-5 py-4 shadow-2xl backdrop-blur-lg"
         >
           <div className="min-w-0 flex-1">
             {toast.title && (
@@ -73,9 +81,9 @@ export function ToastViewport({ toast, onDismiss }) {
             {toast.ctaHref && (
               <Link
                 href={toast.ctaHref}
-                className="mt-2 inline-block text-xs font-medium text-[#ff5f00] hover:text-[#ff7a29]"
+                className="mt-2 inline-block text-xs font-medium text-primary hover:text-primary-hover"
               >
-                {toast.ctaLabel || "Learn more"}
+                {toast.ctaLabel || "Learn More"}
               </Link>
             )}
           </div>

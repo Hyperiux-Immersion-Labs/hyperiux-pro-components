@@ -1,20 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { SignInRequiredModal } from "@/components/ui/SignInRequiredModal";
+import { refreshDashboard } from "@/components/Dashboard/useDashboardData";
+
 
 // Shared by TemplatesGrid (the /templates listing) and TemplateDetail's
 // "Related Templates" section - both render TemplateCard, whose Save
 // button needs the same wishlisted_templates state and toggle behind it
 // (api/wishlist-templates), just from two different places in the tree.
-// Signed-out click bounces through /sign-in and back to this exact page,
-// same pattern TemplateDetail's own "Buy" button already uses.
+// Signed-out click opens the same "Sign in required" modal as the effect cards
+// (its Sign In button comes back to this exact page) - render `signInModal`
+// once wherever the hook is used.
 export function useTemplateWishlist({ onSaved, onRemoved } = {}) {
   const { isLoaded, isSignedIn } = useUser();
-  const router = useRouter();
   const pathname = usePathname();
   const [wishlist, setWishlist] = useState([]);
+  const [signInPrompt, setSignInPrompt] = useState(false);
 
   useEffect(() => {
     if (!isSignedIn) return;
@@ -33,13 +37,30 @@ export function useTemplateWishlist({ onSaved, onRemoved } = {}) {
     };
   }, [isSignedIn]);
 
+  // Optimistic, like the effects cards: the heart and toast change on click,
+  // and the server's answer only corrects it (or a failure reverts it).
+  const wishlistRef = useRef(wishlist);
+  useEffect(() => {
+    wishlistRef.current = wishlist;
+  }, [wishlist]);
+  const setSaved = (slug, saved) => {
+    const prev = wishlistRef.current;
+    const next = saved ? (prev.includes(slug) ? prev : [...prev, slug]) : prev.filter((s) => s !== slug);
+    wishlistRef.current = next; // so a quick second click sees this one
+    setWishlist(next);
+  };
+
   const toggleWishlist = async (template) => {
     if (!isLoaded) return;
 
     if (!isSignedIn) {
-      router.push(`/sign-in?redirect_url=${encodeURIComponent(pathname)}`);
+      setSignInPrompt(true);
       return;
     }
+
+    const willSave = !wishlistRef.current.includes(template.slug);
+    setSaved(template.slug, willSave);
+    (willSave ? onSaved : onRemoved)?.(template);
 
     try {
       const res = await fetch("/api/wishlist-templates", {
@@ -47,25 +68,21 @@ export function useTemplateWishlist({ onSaved, onRemoved } = {}) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateSlug: template.slug }),
       });
-
-      if (!res.ok) {
-        console.error(await res.json().catch(() => ({})));
-        return;
-      }
-
+      if (!res.ok) throw new Error(`wishlist-templates ${res.status}`);
       const { saved } = await res.json();
-
-      if (saved) {
-        setWishlist((prev) => (prev.includes(template.slug) ? prev : [...prev, template.slug]));
-        onSaved?.(template);
-      } else {
-        setWishlist((prev) => prev.filter((slug) => slug !== template.slug));
-        onRemoved?.(template);
-      }
+      // Stored: dashboard tabs on screen refetch now
+      refreshDashboard();
+      // The server has the final say (e.g. after a double click).
+      if (typeof saved === "boolean" && saved !== willSave) setSaved(template.slug, saved);
     } catch (err) {
       console.error(err);
+      setSaved(template.slug, !willSave);
     }
   };
 
-  return { wishlist, toggleWishlist };
+  const signInModal = (
+    <SignInRequiredModal open={signInPrompt} onClose={() => setSignInPrompt(false)} redirect={pathname} action="save templates" />
+  );
+
+  return { wishlist, toggleWishlist, signInModal };
 }

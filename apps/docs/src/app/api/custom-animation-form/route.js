@@ -2,7 +2,7 @@ import { CustomAnimationFormEmail } from "@/components/WebsiteComps/emailTemplat
 import { CustomAnimationFormConfirmationEmail } from "@/components/WebsiteComps/emailTemplate/CustomAnimationFormConfirmationEmail";
 import { sendEmail } from "@/lib/resend";
 import { isBlockedEmailDomain } from "@/lib/blocked-email-domains";
-import { verifyRecaptcha } from "@/lib/recaptcha";
+import { clientIp, verifyTurnstile } from "@/lib/turnstile";
 
 function validatePayload(body) {
   const errors = {};
@@ -57,19 +57,19 @@ export async function POST(request) {
       );
     }
 
-    const { success: recaptchaOk } = await verifyRecaptcha(
-      body?.recaptchaToken,
-      "custom_animation_form"
-    );
+    const { success: humanOk } = await verifyTurnstile(body?.turnstileToken, {
+      action: "custom_animation_form",
+      ip: clientIp(request),
+    });
 
-    if (!recaptchaOk) {
+    if (!humanOk) {
       return Response.json(
         { error: "Verification failed. Please try again." },
         { status: 400 }
       );
     }
 
-    const to = process.env.RESEND_FROM_EMAIL;
+    const to = "Hyperiux Vault <admin@hyperiux.com>";
     const subject = `New custom animation request from ${values.name}`;
 
     const teamEmail = await sendEmail({

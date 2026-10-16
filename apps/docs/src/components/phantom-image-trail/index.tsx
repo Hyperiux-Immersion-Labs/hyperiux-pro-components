@@ -5,6 +5,7 @@
 import { Expo, gsap } from "gsap";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
+import Image from "next/image";
 const DEFAULT_ROOT_MARGIN = "256px";
 
 type RafRoot = Element | null | { current: Element | null } | (() => Element | null);
@@ -810,10 +811,9 @@ export function PhantomImageTrail({
         const image = resolvedImages[baseImageIndex];
 
         return (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             key={`${image.src}-${index}`}
-            ref={(element) => {
+            ref={(element: HTMLImageElement | null) => {
               if (element) {
                 imagesRef.current[index] = element;
               }
@@ -821,7 +821,10 @@ export function PhantomImageTrail({
             src={image.src}
             alt={image.alt}
             draggable={false}
-            className={`pointer-events-none absolute left-0 top-0 h-[18vw] w-[17vw] max-w-none rounded-[0.7vw] object-cover opacity-0 will-change-[transform,opacity] max-[1025px]:h-[24vh] max-[1025px]:w-[24vw] max-[1025px]:rounded-[1.2vw] max-md:size-[38vw] max-md:rounded-[3vw] ${imageClassName}`}
+            className={`pointer-events-none absolute left-0 top-0 h-[18vw] w-[17vw] max-w-none rounded-[0.7vw] object-cover opacity-0 will-change-[transform,opacity] max-lg:h-[24vh] max-lg:w-[24vw] max-lg:rounded-[1.2vw] max-md:size-[38vw] max-md:rounded-[3vw] ${imageClassName}`}
+            width={1200}
+            height={800}
+            loading="eager"
           />
         );
       })}

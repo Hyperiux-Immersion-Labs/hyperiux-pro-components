@@ -1,8 +1,6 @@
 "use client";
 
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import StackingCards from "@/components/stacking-cards";
 
@@ -15,10 +13,8 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <LenisSmoothScroll />
-          <DemoHeader logoColor="#111111" />
+          <DemoHeader />
           {effect}
-        <ScrollBottom className="bottom-[1%] text-black"/>
         </>
       )}
 

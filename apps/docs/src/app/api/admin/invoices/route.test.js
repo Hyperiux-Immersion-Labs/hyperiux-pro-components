@@ -36,6 +36,18 @@ function makePageQuery() {
   return query;
 }
 
+// The admin data layer: every row of a query in one go, everyone in the audience
+vi.mock("@/lib/admin-data", () => ({
+  parseAudience: () => "customers",
+  getAudience: async () => ({ audience: "customers", internalIds: [], users: [], includes: () => true, includesIdentity: () => true }),
+  filterToAudience: (query) => query,
+  fetchAllRows: async (build) => {
+    const { data, error } = await build();
+    if (error) throw error;
+    return data || [];
+  },
+}));
+
 vi.mock("@/lib/supabase", () => ({
   supabase: {
     from: vi.fn(() => ({
@@ -117,7 +129,7 @@ describe("admin/invoices route", () => {
     });
   });
 
-  it("falls back to email when Clerk has no name on file, and to nothing when the user can't be resolved at all", async () => {
+  it("reads a name from the email when Clerk has none on file, and gives nothing when the user can't be resolved at all", async () => {
     isSuperAdminResult = true;
     pageRows = [
       makeInvoiceRow({ id: 1, clerk_user_id: "user_b" }),
@@ -134,7 +146,8 @@ describe("admin/invoices route", () => {
     const userB = body.invoices.find((inv) => inv.userId === "user_b");
     const deletedUser = body.invoices.find((inv) => inv.userId === "user_deleted");
 
-    expect(userB).toMatchObject({ userName: null, userEmail: "bea@example.com" });
+    // No name on file: one read from the email (lib/display-name)
+    expect(userB).toMatchObject({ userName: "Bea", userEmail: "bea@example.com" });
     expect(deletedUser).toMatchObject({ userName: null, userEmail: null });
   });
 

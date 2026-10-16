@@ -4,16 +4,8 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 import * as THREE from "three";
 
-// Shared cursor targeting utilities.
-//
-// Goals:
-// - Cache DOM bounds (no getBoundingClientRect() per animation frame)
-// - Detect hovered".fx-target" efficiently
-// - Call per-target handlers only for the currently hovered element
-//
-// Usage:
-// - Add class"fx-target" to any element you want tracked
-// - In a client component, call registerFxTarget(el, { onMove, onEnter, onLeave })
+import Image from "next/image";
+
 
 interface CachedRect {
  left: number;
@@ -842,8 +834,7 @@ export default function NoiseRippleCursor({
  <div className="h-screen w-screen relative">
 
   {imageSrc && (
-  // eslint-disable-next-line @next/next/no-img-element
-  <img
+  <Image
   src={imageSrc}
   alt="Background"
   className='brightness-100'
@@ -855,6 +846,9 @@ export default function NoiseRippleCursor({
   objectFit:'cover',
   zIndex: 0
   }}
+  fill
+  sizes="100vw"
+  loading="eager"
   />
  )}
  <div

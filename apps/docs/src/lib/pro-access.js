@@ -5,45 +5,42 @@ import { sendEmail } from "@/lib/resend";
 import { invalidatePlanCache, ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 import { createSubscriptionInvoiceEmail } from "@/lib/emails/subscription-invoice-email";
 import { confirmFoundingSlot } from "@/lib/founding-slots";
+import { describeRazorpayPlan } from "@/lib/plans.server";
+import { isValidTier } from "@/lib/plans";
+import { expireCredits } from "@/lib/template-credits";
 import {
   renderProUnlockedEmail,
   proUnlockedSubject,
   proUnlockedText,
 } from "@/lib/emails/pro-unlocked-email";
 
-const PLAN_INTERVALS = {
-  [process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID]: "monthly",
-  [process.env.RAZORPAY_PRO_YEARLY_PLAN_ID]: "yearly",
-  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_PLAN_ID]: "yearly",
-  [process.env.RAZORPAY_PRO_MONTHLY_INR_PLAN_ID]: "monthly",
-  [process.env.RAZORPAY_PRO_YEARLY_INR_PLAN_ID]: "yearly",
-  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_INR_PLAN_ID]: "yearly",
-};
-
-// Separate from PLAN_INTERVALS because founding vs. regular yearly share the
-// same "yearly" billing interval but need different copy in the pro-unlocked
-// email ("Vault Pro Annual" vs. "Vault Pro Founding Annual").
-const PLAN_LABELS = {
-  [process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID]: "Vault Pro Monthly",
-  [process.env.RAZORPAY_PRO_YEARLY_PLAN_ID]: "Vault Pro Annual",
-  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_PLAN_ID]: "Vault Pro Founding Annual",
-  [process.env.RAZORPAY_PRO_MONTHLY_INR_PLAN_ID]: "Vault Pro Monthly",
-  [process.env.RAZORPAY_PRO_YEARLY_INR_PLAN_ID]: "Vault Pro Annual",
-  [process.env.RAZORPAY_PRO_FOUNDING_YEARLY_INR_PLAN_ID]: "Vault Pro Founding Annual",
-};
-
+// Billing interval, tier and email/invoice label all come from the Razorpay
+// plan ID - see plans.server.js for the mapping, including legacy plans.
 export function getBillingInterval(planId) {
-  return PLAN_INTERVALS[planId] || null;
+  return describeRazorpayPlan(planId)?.interval || null;
 }
 
 export function getPlanLabel(planId) {
-  return PLAN_LABELS[planId] || "Vault Pro";
+  return describeRazorpayPlan(planId)?.label || "Vault Pro";
 }
 
+// Unknown plan IDs fall back to the tier checkout stamped on the
+// subscription's notes, then to Pro+ (what every pre-tier subscriber is).
+function getTier(subscription) {
+  const fromPlan = describeRazorpayPlan(subscription?.plan_id)?.tier;
+  if (fromPlan) return fromPlan;
+  return isValidTier(subscription?.notes?.tier) ? subscription.notes.tier : "pro_plus";
+}
+
+// End of the paid period. A prorated upgrade (lib/upgrade.js) is paid up
+// front but has no billing cycle until its future start_at, which is when its
+// first full charge falls due - so that's where its paid period ends.
 function getPeriodEnd(subscription) {
-  return subscription?.current_end
-    ? new Date(subscription.current_end * 1000).toISOString()
-    : null;
+  if (subscription?.current_end) return new Date(subscription.current_end * 1000).toISOString();
+  if (subscription?.start_at && subscription.start_at * 1000 > Date.now()) {
+    return new Date(subscription.start_at * 1000).toISOString();
+  }
+  return null;
 }
 
 async function updateClerkPlan(clerkUserId, publicMetadataPatch) {
@@ -53,6 +50,19 @@ async function updateClerkPlan(clerkUserId, publicMetadataPatch) {
   await client.users.updateUser(clerkUserId, {
     publicMetadata: { ...user.publicMetadata, ...publicMetadataPatch },
   });
+}
+
+// Runs a Supabase write up to 3 times (0.5s, then 1.5s apart) while it returns an error -
+// for writes that must land after money has moved
+async function withSupabaseRetry(write, delays = [500, 1500]) {
+  let result = await write();
+  for (const delay of delays) {
+    if (!result?.error) return result;
+    console.error("SUPABASE_WRITE_RETRY:", result.error?.message || result.error);
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    result = await write();
+  }
+  return result;
 }
 
 export async function markUserProFromSubscription({ clerkUserId, subscription }) {
@@ -65,10 +75,14 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
   }
 
   const billingInterval = getBillingInterval(subscription.plan_id);
+  const tier = getTier(subscription);
   const currentPeriodEnd = getPeriodEnd(subscription);
   const status = subscription.status || "active";
 
-  const { error } = await supabase.from("subscriptions").upsert(
+  // Retried: a payment is already taken by now, so a passing network blip (Supabase
+  // "upstream connect error ... connection timeout") mustn't leave the account on Free.
+  // Safe to repeat - it's an upsert on clerk_user_id.
+  const { error } = await withSupabaseRetry(() => supabase.from("subscriptions").upsert(
     {
       clerk_user_id: clerkUserId,
       razorpay_customer_id: subscription.customer_id || null,
@@ -77,12 +91,13 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
       razorpay_short_url: subscription.short_url || null,
       billing_interval: billingInterval,
       plan: "pro",
+      tier,
       status,
       current_period_end: currentPeriodEnd,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "clerk_user_id" }
-  );
+  ));
 
   if (error) {
     console.error("SUPABASE_MARK_PRO_ERROR:", error);
@@ -108,6 +123,7 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
   await updateClerkPlan(clerkUserId, {
     plan: "pro",
     proAccess: true,
+    tier,
     billingInterval,
     subscriptionStatus: status,
     razorpaySubscriptionId: subscription.id,
@@ -117,7 +133,7 @@ export async function markUserProFromSubscription({ clerkUserId, subscription })
 
   invalidatePlanCache(clerkUserId);
 
-  return { plan: "pro", status, billingInterval, currentPeriodEnd };
+  return { plan: "pro", tier, status, billingInterval, currentPeriodEnd };
 }
 
 export async function markUserFree({ clerkUserId, status = "inactive" }) {
@@ -142,12 +158,16 @@ export async function markUserFree({ clerkUserId, status = "inactive" }) {
   await updateClerkPlan(clerkUserId, {
     plan: "free",
     proAccess: false,
+    tier: null,
     billingInterval: null,
     subscriptionStatus: status,
     razorpaySubscriptionId: null,
     razorpayPlanId: null,
     currentPeriodEnd: null,
   });
+
+  // Credits only last while a plan is active
+  await expireCredits(clerkUserId);
 
   invalidatePlanCache(clerkUserId);
 }
@@ -185,6 +205,7 @@ export async function sendInvoiceEmail({ clerkUserId, subscription, payment }) {
     const emailContent = createSubscriptionInvoiceEmail({
       name: user?.firstName || user?.fullName || "there",
       billingInterval: getBillingInterval(subscription.plan_id),
+      planLabel: getPlanLabel(subscription.plan_id),
       amount: payment?.amount,
       currency: payment?.currency,
       paymentId: payment?.id,
@@ -231,7 +252,10 @@ export async function recordInvoice({ clerkUserId, subscription, payment }) {
     status: "paid",
     billing_interval: getBillingInterval(subscription?.plan_id),
     plan_label: getPlanLabel(subscription?.plan_id),
-    is_test: false,
+    // A test-mode payment can only come through a server running Razorpay test keys
+    // (local / preview). Those environments share this database, so without this every
+    // test checkout landed here as real, paid revenue. Live keys (production) -> false.
+    is_test: (process.env.RAZORPAY_KEY_ID || "").startsWith("rzp_test_"),
   };
 
   if (subscription?.short_url) {

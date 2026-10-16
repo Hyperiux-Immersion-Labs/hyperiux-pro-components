@@ -371,7 +371,7 @@ const RibbonDriftComp = ({
 	return (
 		<>
 			<div
-				className="w-screen h-[1000vh] bg-white text-[#1a1a1a] max-[1025px]:hidden"
+				className="w-screen h-[1000vh] bg-white text-[#1a1a1a] max-lg:hidden"
 				id={sectionId}
 			>
 				<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">
@@ -526,7 +526,7 @@ const RibbonDriftComp = ({
 				</div>
 			</div>
 
-			<div className="hidden w-screen bg-white text-[#1a1a1a] max-[1025px]:block max-[1025px]:px-8 max-[1025px]:py-24 max-md:px-5 max-[1025px]:pt-35 max-md:pt-24 max-md:py-10">
+			<div className="hidden w-screen bg-white text-[#1a1a1a] max-lg:block max-lg:px-8 max-lg:py-24 max-md:px-5 max-lg:pt-35 max-md:pt-24 max-md:py-10">
 				<div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-md:gap-10">
 					<div className="flex flex-col gap-8 max-md:gap-6">
 						<p className="text-[6vw] text-center font-medium leading-none max-md:text-[10vw]">
@@ -548,7 +548,7 @@ const RibbonDriftComp = ({
 								className="overflow-hidden max-md:mx-auto  w-full max-md:w-[80%]"
 								style={{ borderStyle: "solid", borderWidth, borderColor, borderRadius }}
 							>
-								<div className="relative max-[1025px]:aspect-4/5 max-md:aspect-auto max-md:h-[35vh]  ">
+								<div className="relative max-lg:aspect-4/5 max-md:aspect-auto max-md:h-[35vh]  ">
 									<img
 										src={item.src}
 										alt={item.title}
@@ -566,7 +566,7 @@ const RibbonDriftComp = ({
 						))}
 					</div>
 
-					<div className="rounded-sm   px-6 py-8 text-center max-[1025px]:px-8 max-md:px-5 max-md:py-6">
+					<div className="rounded-sm   px-6 py-8 text-center max-lg:px-8 max-md:px-5 max-md:py-6">
 						<p className="text-[4vw] font-medium leading-[1.2] max-md:text-[5vw]">
 							{sectionBreakText}
 						</p>

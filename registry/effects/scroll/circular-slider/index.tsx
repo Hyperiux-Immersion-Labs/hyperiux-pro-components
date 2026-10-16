@@ -136,7 +136,7 @@ const CircularSliderComp = ({
 
  <section
  ref={outerRef}
- className="max-[1025px]:hidden relative h-[250vh] bg-[#111111]"
+ className="max-lg:hidden relative h-[250vh] bg-[#111111]"
  >
  <div
  className="sticky top-0 h-screen flex flex-col items-center justify-between pb-[3%] overflow-hidden"
@@ -187,16 +187,16 @@ const CircularSliderComp = ({
 
  {/* Mobile / Tablet */}
  <section
- className="hidden max-[1025px]:block py-[15vw] px-[5vw] bg-[#111111]"
+ className="hidden max-lg:block py-[15vw] px-[5vw] bg-[#111111]"
  >
- <h2 className="text-center max-[1025px]:text-[3.5vw] max-md:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
+ <h2 className="text-center max-lg:text-[3.5vw] max-md:text-[7vw] font-extralight uppercase tracking-widest mb-[10vw]">
  {resolvedTitle}
  </h2>
  <div className="flex flex-col items-center gap-[5vw] max-md:gap-[10vw]">
  {resolvedItems.map((product, i) => (
  <div
  key={i}
- className="max-[1025px]:w-full rounded-[5vw] overflow-hidden"
+ className="max-lg:w-full rounded-[5vw] overflow-hidden"
  style={{ width: "min(85vw, 100%)", maxWidth: `${resolvedCardWidth}px` }}
  >
  <SliderCard
@@ -211,7 +211,7 @@ const CircularSliderComp = ({
  ))}
  </div>
  {showBottomText ? (
- <p className="text-center font-light uppercase tracking-widest max-[1025px]:text-[2.5vw] max-md:text-[6vw] mt-[10vw]">
+ <p className="text-center font-light uppercase tracking-widest max-lg:text-[2.5vw] max-md:text-[6vw] mt-[10vw]">
  {resolvedSubtitle}
  </p>
  ) : null}
@@ -231,7 +231,7 @@ const SliderCard = ({
 }: CircularSliderProduct) => {
  const cardContent = (
  <div
- className="w-full h-full max-[1025px]:h-auto rounded-[1.5vw] max-[1025px]:rounded-[5vw] max-md:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-[1025px]:gap-8 max-md:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-[1025px]:px-[8%] max-md:px-6 py-20 max-[1025px]:py-12 max-md:py-10"
+ className="w-full h-full max-lg:h-auto rounded-[1.5vw] max-lg:rounded-[5vw] max-md:rounded-2xl flex flex-col items-stretch justify-between gap-10 max-lg:gap-8 max-md:gap-6 hover:shadow-xl transition-all duration-500 px-[10%] max-lg:px-[8%] max-md:px-6 py-20 max-lg:py-12 max-md:py-10"
  style={{
  backgroundColor: bgColor ||"rgba(255,255,255,0.7)",
  color: textColor ||"inherit",
@@ -239,13 +239,13 @@ const SliderCard = ({
  >
  <div className="flex flex-col items-center gap-4 max-md:gap-4 justify-center">
  <h2
- className="text-center font-medium text-[1.8vw] max-[1025px]:text-3xl max-md:text-2xl uppercase"
+ className="text-center font-medium text-[1.8vw] max-lg:text-3xl max-md:text-2xl uppercase"
  style={{ color: textColor ||"inherit" }}
  >
  {heading}
  </h2>
  <p
- className="text-[1.15vw] max-md:text-lg max-[1025px]:text-xl text-center mt-[0.5vw] max-md:mt-1"
+ className="text-[1.15vw] max-md:text-lg max-lg:text-xl text-center mt-[0.5vw] max-md:mt-1"
  style={{ color: textColor ||"inherit" }}
  >
  {text}
@@ -254,7 +254,7 @@ const SliderCard = ({
 
  <div className="mt-[1vw] max-md:mt-2 flex items-center cursor-pointer justify-center gap-[0.5vw] max-md:gap-2 group/btn">
  <span
- className="text-[1vw] max-md:text-xs max-[1025px]:text-lg uppercase tracking-widest"
+ className="text-[1vw] max-md:text-xs max-lg:text-lg uppercase tracking-widest"
  style={{ color: textColor ||"inherit" }}
  >
  {ctaLabel}
@@ -269,7 +269,7 @@ const SliderCard = ({
  }
 
  return (
- <a href={link} className="block w-full h-full max-[1025px]:h-auto">
+ <a href={link} className="block w-full h-full max-lg:h-auto">
  {cardContent}
  </a>
  );

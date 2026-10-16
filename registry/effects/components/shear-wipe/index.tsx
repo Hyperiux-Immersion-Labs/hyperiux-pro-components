@@ -218,11 +218,11 @@ const ShearWipeComp = ({
 
       {/* Mobile Background - follows the active tab independently of the desktop clip-wipe overlay */}
       <div
-        className="hidden max-[1025px]:block absolute inset-0 transition-colors duration-300 ease-in-out"
+        className="hidden max-lg:block absolute inset-0 transition-colors duration-300 ease-in-out"
         style={{ backgroundColor: mobileBackgroundColor }}
       />
 
-      <div className="max-[1025px]:hidden relative w-full h-screen px-[10vw]">
+      <div className="max-lg:hidden relative w-full h-screen px-[10vw]">
         {/* Base Panel - Components */}
         <div className="flex h-full items-center">
           <div className="w-full flex items-center justify-center p-[6vw]">
@@ -282,7 +282,7 @@ const ShearWipeComp = ({
         </div>
       </div>
 
-      <div className="hidden max-[1025px]:block px-[6vw] max-md:px-[6vw] pt-[16vw] pb-[10vw] max-md:pt-[26vw] max-md:pb-[14vw]">
+      <div className="hidden max-lg:block px-[6vw] max-md:px-[6vw] pt-[16vw] pb-[10vw] max-md:pt-[26vw] max-md:pb-[14vw]">
         <div role="tablist" aria-orientation="horizontal" className="relative flex gap-[6vw] max-md:gap-[7vw] border-b border-black/15">
           <button
             ref={componentsTabRef}

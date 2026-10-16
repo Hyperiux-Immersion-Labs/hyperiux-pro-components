@@ -40,3 +40,11 @@ apps/docs/public/r.tmp
 graft/
 .21st/
 .local
+
+# Local env files and generated Next types
+.env*.local
+next-env.d.ts
+
+# Backups written by apps/docs/scripts/cleanup-test-data.mjs - payment rows, never committed
+apps/docs/scripts/test-data-backup-*.json
+apps/docs/scripts/install-cleanup-backup-*.json

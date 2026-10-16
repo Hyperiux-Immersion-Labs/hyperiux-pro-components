@@ -1,31 +1,31 @@
 @font-face {
-  font-family: "Elenavoss HostGrotesk";
-  src: url("./assets/fonts/HostGrotesk-Light.woff2") format("woff2");
+  font-family: "Elenavoss Helvetica Neue";
+  src: url("./assets/fonts/HelveticaNeueLight.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Elenavoss HostGrotesk";
-  src: url("./assets/fonts/HostGrotesk-Regular.woff2") format("woff2");
+  font-family: "Elenavoss Helvetica Neue";
+  src: url("./assets/fonts/HelveticaNeueRoman.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Elenavoss HostGrotesk";
-  src: url("./assets/fonts/HostGrotesk-Medium.woff2") format("woff2");
+  font-family: "Elenavoss Helvetica Neue";
+  src: url("./assets/fonts/HelveticaNeueMedium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Elenavoss HostGrotesk";
-  src: url("./assets/fonts/HostGrotesk-SemiBold.woff2") format("woff2");
-  font-weight: 600;
+  font-family: "Elenavoss Helvetica Neue";
+  src: url("./assets/fonts/HelveticaNeueBold.woff2") format("woff2");
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -43,7 +43,7 @@
 .elenavoss-body,
 .elenavoss-body * {
   /* background-color: #080808; */
-  font-family: "Elenavoss HostGrotesk", sans-serif;
+  font-family: "Elenavoss Helvetica Neue", sans-serif;
 }
 
 .elenavoss-body {

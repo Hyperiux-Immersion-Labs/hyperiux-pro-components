@@ -5,22 +5,19 @@ import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLenis } from "lenis/react";
-import { useReCaptcha } from "next-recaptcha-v3";
 import { Mail } from "lucide-react";
-import { armRecaptcha } from "@/lib/recaptchaEvents";
-import { buttonV3ClassName, ButtonV3Chrome } from "@/homepage-v3/components/ButtonV3";
+import Turnstile from "@/components/WebsiteComps/Turnstile";
+import { buttonClassName, ButtonChrome } from "@/homepage/components/Button";
+import { FREE_LABEL } from "@/lib/library-counts";
 
 // Site-wide exit-intent capture (except sign-in and /dashboard - see
-// isExcludedRoute below), mirroring WorkWithHyperiuxModal.jsx's technical
-// conventions (motion/react, same MODAL_TRANSITION curve, Lenis scroll-lock)
-// but with local useState instead of a query-param-driven open state - this
-// modal is triggered by cursor behavior, not a link anyone needs to
-// deep-link to or share.
+// isExcludedRoute below): motion/react with the MODAL_TRANSITION curve and a
+// Lenis scroll-lock, opened by local useState - it's triggered by cursor
+// behavior, not a link anyone needs to deep-link to or share.
 //
-// Mounted globally from the root layout (inside LazyRecaptchaProvider, so
-// executeRecaptcha() below actually has a provider to talk to - see
-// lib/recaptchaEvents.js) rather than per-route, so the pathname check below
-// is what keeps it off the excluded routes, not where it's rendered from.
+// Mounted globally from the root layout rather than per-route, so the
+// pathname check below is what keeps it off the excluded routes, not where
+// it's rendered from.
 //
 // Submitting creates a real Clerk invitation and emails it via the existing
 // waitlist-invite-email template (see api/exit-intent-invite/route.js) -
@@ -57,7 +54,8 @@ export function ExitIntentInviteModal() {
   const [error, setError] = useState("");
   const [sendHovered, setSendHovered] = useState(false);
   const shownRef = useRef(false);
-  const { executeRecaptcha } = useReCaptcha();
+  // Cloudflare Turnstile token for the bot check (see components/WebsiteComps/Turnstile.jsx)
+  const [turnstileToken, setTurnstileToken] = useState(null);
   const lenis = useLenis();
   const pathname = usePathname();
   // Was homepage-only ("/") - now every route except sign-in (mid-auth-flow,
@@ -83,11 +81,6 @@ export function ExitIntentInviteModal() {
 
     const armTimer = window.setTimeout(() => {
       setArmed(true);
-      // Asks LazyRecaptchaProvider to mount <ReCaptchaProvider> now, not on
-      // submit - this modal opens on a mouseleave, not a query param, so it
-      // wouldn't otherwise be picked up (see lib/recaptchaEvents.js) and
-      // executeRecaptcha() would throw "Recaptcha has not been loaded".
-      armRecaptcha();
     }, ARM_DELAY_MS);
     return () => window.clearTimeout(armTimer);
   }, [isEligibleRoute]);
@@ -157,19 +150,25 @@ export function ExitIntentInviteModal() {
       return;
     }
 
+    if (!turnstileToken) {
+      setError("Still checking you're human - give it a moment, then send again.");
+      return;
+    }
+
     setStatus("submitting");
 
     try {
-      const recaptchaToken = await executeRecaptcha("exit_intent_invite");
       const res = await fetch("/api/exit-intent-invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), recaptchaToken }),
+        body: JSON.stringify({ email: email.trim(), turnstileToken }),
       });
       const data = await res.json();
 
       if (!res.ok) {
         setStatus("idle");
+        // Tokens are single-use: dropping it makes the widget fetch a fresh one
+        setTurnstileToken(null);
         setError(data?.error || "Something went wrong. Please try again.");
         return;
       }
@@ -178,6 +177,7 @@ export function ExitIntentInviteModal() {
       window.setTimeout(close, 2000);
     } catch {
       setStatus("idle");
+      setTurnstileToken(null);
       setError("Something went wrong. Please try again.");
     }
   };
@@ -203,7 +203,7 @@ export function ExitIntentInviteModal() {
             type="button"
             aria-label="Close"
             onClick={close}
-            className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-md"
+            className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-lg"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -211,7 +211,7 @@ export function ExitIntentInviteModal() {
           />
 
           <motion.div
-            className="relative z-10 w-[36vw] max-md:w-full max-[1025px]:w-[70%] border border-white/20 bg-[#0e0e0e] p-10 max-md:p-6 shadow-2xl"
+            className="relative z-10 w-[36vw] max-md:w-full max-lg:w-[70%] border border-white/20 bg-background p-10 max-md:p-6 shadow-2xl"
             initial={{ opacity: 0, scale: 0.97, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 10 }}
@@ -221,7 +221,7 @@ export function ExitIntentInviteModal() {
               type="button"
               aria-label="Close"
               onClick={close}
-              className="group absolute right-4 top-4 flex h-9 w-9 items-center justify-center border border-white/20 bg-white/10 text-white/70 transition-all duration-300 hover:border-[#ff5f00] hover:bg-[#ff5f00] hover:text-white"
+              className="group absolute right-4 top-4 flex h-9 w-9 items-center justify-center border border-white/20 bg-white/10 text-white/70 transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white"
             >
               <div className="relative flex h-4 w-4 items-center justify-center duration-500 ease-in-out group-hover:rotate-90">
                 <span className="h-px w-4 rotate-45 bg-white" />
@@ -231,7 +231,7 @@ export function ExitIntentInviteModal() {
 
             {isSuccess ? (
               <div className="flex flex-col items-center gap-3 py-6 text-center">
-                <Mail className="h-10 w-10 text-[#ff5f00]" strokeWidth={1.2} />
+                <Mail className="h-10 w-10 text-primary" strokeWidth={1.2} />
                 <h3 className="text-xl font-bold text-white">Invite sent.</h3>
                 <p className="max-w-sm text-sm leading-relaxed text-white/60">
                   Check your inbox for your Hyperiux Vault invite - accept it to set a
@@ -240,15 +240,15 @@ export function ExitIntentInviteModal() {
               </div>
             ) : (
               <>
-                <span className="inline-block bg-[#ff5f00]/15 px-3 py-1 text-xs font-medium uppercase tracking-wide text-[#ff5f00]">
-                  Before you go
+                <span className="inline-block bg-primary/15 px-3 py-1 text-xs font-medium tracking-wide text-primary">
+                  Before You Go
                 </span>
 
                 <h3
                   id="exit-intent-title"
                   className="mt-6 text-2xl font-bold leading-tight text-white max-md:text-xl"
                 >
-                  Get instant access to 50+ free effects.
+                  Get instant access to {FREE_LABEL} free effects.
                 </h3>
 
                 <p className="mt-4 text-sm leading-relaxed text-white/60">
@@ -278,9 +278,9 @@ export function ExitIntentInviteModal() {
                     // autofilled text to a fixed dark color otherwise.
                     style={{
                       "--input-autofill-bg": "transparent",
-                      "--input-autofill-text": "#ffffff",
+                      "--input-autofill-text": "var(--foreground)",
                     }}
-                    className="w-full border-b border-white bg-transparent pb-4 text-sm text-white placeholder:text-white/60 outline-none focus:border-[#ff5f00]"
+                    className="w-full border-b border-white bg-transparent pb-4 text-sm text-white placeholder:text-white/60 outline-none focus:border-primary"
                   />
 
                   <label className="flex cursor-pointer items-start gap-2.5 text-sm text-white/60">
@@ -301,8 +301,8 @@ export function ExitIntentInviteModal() {
                     />
                     <span
                       aria-hidden="true"
-                      className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-[#ff5f00] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black ${
-                        agreed ? "border-[#ff5f00] bg-[#ff5f00]" : "border-white/30 bg-transparent"
+                      className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black ${
+                        agreed ? "border-primary bg-primary" : "border-white/30 bg-transparent"
                       }`}
                     >
                       {agreed && (
@@ -338,14 +338,22 @@ export function ExitIntentInviteModal() {
                     </span>
                   </label>
 
+                  {/* Invisible unless Cloudflare needs the visitor to click */}
+                  <Turnstile
+                    action="exit_intent_invite"
+                    appearance="interaction-only"
+                    checked={Boolean(turnstileToken)}
+                    onChange={(verified, token) => setTurnstileToken(verified ? token : null)}
+                  />
+
                   {error && <p className="text-xs text-red-400">{error}</p>}
 
-                  {/* Same buttonV3ClassName + ButtonV3Chrome pair
+                  {/* Same buttonClassName + ButtonChrome pair
                       TemplatePaywallModal's RazorpayButtonV3 uses - this is
                       a real form-submitting <button>, not a navigation
-                      <Link>, so it can't just render <ButtonV3> itself, but
+                      <Link>, so it can't just render <Button> itself, but
                       these two give it the exact same look (scramble label,
-                      square/arrow chrome) as every other ButtonV3 on the
+                      square/arrow chrome) as every other Button on the
                       site. */}
                   <div
                     className="contents"
@@ -355,11 +363,12 @@ export function ExitIntentInviteModal() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className={buttonV3ClassName({
+                      data-sound-kind="primary"
+                      className={buttonClassName({
                         className: "w-fit disabled:pointer-events-none disabled:opacity-60",
                       })}
                     >
-                      <ButtonV3Chrome
+                      <ButtonChrome
                         label={isSubmitting ? "Sending…" : "Send it to me"}
                         hovered={sendHovered}
                       />

@@ -651,16 +651,16 @@ function TextHoverComp({
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-dvh overflow-hidden py-12 max-[1025px]:py-20 max-md:py-16"
+      className="relative min-h-dvh overflow-hidden py-12 max-lg:py-20 max-md:py-16"
       style={{ backgroundColor: bgColor }}
     >
-      <div className="pointer-events-none absolute inset-0 overflow-hidden max-[1025px]:hidden">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden max-lg:hidden">
         <div className="absolute left-1/2 top-1/2 h-150 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-900/10 blur-[120px]" />
       </div>
 
       <div
         ref={contentRef}
-        className="container relative mx-auto px-4 max-[1025px]:px-8 max-md:px-5"
+        className="container relative mx-auto px-4 max-lg:px-8 max-md:px-5"
         style={{ opacity: 0, transform: "translateY(80px)" }}
       >
         <div className="relative">
@@ -682,13 +682,13 @@ function TextHoverComp({
                     // (mouseenter) only fires over the text itself, not the
                     // empty space either side of it.
                     "group grid w-fit max-w-full text-center",
-                    "px-10 max-[1025px]:px-6 max-md:px-2",
+                    "px-10 max-lg:px-6 max-md:px-2",
                     prefersReducedMotion
                       ? "transition-[padding,grid-template-rows] duration-100"
                       : "transition-[padding,grid-template-rows] duration-500",
                     isActive
-                      ? "grid-rows-[auto_1fr] py-5 max-[1025px]:py-7 max-md:py-8"
-                      : "grid-rows-[auto_0fr] py-5 max-[1025px]:py-7 max-md:py-8",
+                      ? "grid-rows-[auto_1fr] py-5 max-lg:py-7 max-md:py-8"
+                      : "grid-rows-[auto_0fr] py-5 max-lg:py-7 max-md:py-8",
                   ].join(" ")}
                   onMouseEnter={() => handleDesktopHover(i)}
                   onMouseLeave={handleDesktopLeave}
@@ -716,7 +716,7 @@ function TextHoverComp({
                       <h3
                         className={[
                           "col-start-1 row-start-1 font-mono uppercase leading-none tracking-widest",
-                          "text-2xl max-[1025px]:text-[4vw] max-md:text-[4.5vw]",
+                          "text-2xl max-lg:text-[4vw] max-md:text-[4.5vw]",
                           prefersReducedMotion
                             ? [
                                 "transition-opacity duration-300",
@@ -736,7 +736,7 @@ function TextHoverComp({
                         aria-hidden="true"
                         className={[
                           "col-start-1 row-start-1 font-mono uppercase leading-none tracking-widest",
-                          "text-3xl max-[1025px]:text-[4.8vw] max-md:text-[6vw]",
+                          "text-3xl max-lg:text-[4.8vw] max-md:text-[6vw]",
                           prefersReducedMotion
                             ? [
                                 "transition-opacity duration-300",
@@ -756,14 +756,14 @@ function TextHoverComp({
 
                   <div
                     id={`industry-content-${i}`}
-                    className="mx-auto flex w-[70%] justify-center overflow-hidden max-[1025px]:w-[82%] max-md:w-full"
+                    className="mx-auto flex w-[70%] justify-center overflow-hidden max-lg:w-[82%] max-md:w-full"
                   >
                     <p
                       ref={(el) => {
                         descriptionRefs.current[i] = el;
                       }}
                       className={[
-                        "max-w-107.5 pt-1 text-center text-md font-light leading-relaxed tracking-wide max-[1025px]:max-w-[64vw] max-[1025px]:text-[2.5vw] max-md:max-w-[72vw] max-md:pt-4 max-md:text-[4vw]",
+                        "max-w-107.5 pt-1 text-center text-md font-light leading-relaxed tracking-wide max-lg:max-w-[64vw] max-lg:text-[2.5vw] max-md:max-w-[72vw] max-md:pt-4 max-md:text-[4vw]",
                         prefersReducedMotion
                           ? `transition-opacity duration-300 ${
                               isActive ? "opacity-100" : "opacity-0"
@@ -785,19 +785,19 @@ function TextHoverComp({
             className="pointer-events-none absolute left-0 top-0"
           >
             <CornerSVG
-              className="absolute left-0 top-0 size-8 opacity-70 max-[1025px]:size-7 max-md:size-5"
+              className="absolute left-0 top-0 size-8 opacity-70 max-lg:size-7 max-md:size-5"
               style={{ color: hoverColor }}
             />
             <CornerSVG
-              className="absolute right-0 top-0 size-8 rotate-90 opacity-70 max-[1025px]:size-7 max-md:size-5"
+              className="absolute right-0 top-0 size-8 rotate-90 opacity-70 max-lg:size-7 max-md:size-5"
               style={{ color: hoverColor }}
             />
             <CornerSVG
-              className="absolute bottom-3 left-0 size-8 -rotate-90 opacity-70 max-[1025px]:size-7 max-[1025px]:bottom-2 max-md:size-5"
+              className="absolute bottom-3 left-0 size-8 -rotate-90 opacity-70 max-lg:size-7 max-lg:bottom-2 max-md:size-5"
               style={{ color: hoverColor }}
             />
             <CornerSVG
-              className="absolute bottom-3 right-0 size-8 rotate-180 opacity-70 max-[1025px]:size-7 max-[1025px]:bottom-2 max-md:size-5"
+              className="absolute bottom-3 right-0 size-8 rotate-180 opacity-70 max-lg:size-7 max-lg:bottom-2 max-md:size-5"
               style={{ color: hoverColor }}
             />
           </div>

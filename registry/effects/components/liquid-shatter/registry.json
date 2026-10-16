@@ -11,7 +11,7 @@
   ],
   "type": "registry:component",
   "title": "Liquid Shatter",
-  "description": "Glossy 3D ribbon rings that charge on press-and-hold and shatter into liquid fragments before reforming",
+  "description": "Lacquered WebGL ribbon rings that swell under the pointer, carry running light streaks, and shatter into stirrable glowing shards on press and hold.",
   "category": "components",
   "dependencies": [
     "gsap",
@@ -26,18 +26,25 @@
   "exportKind": "default",
   "importPath": "@/components/effects/liquid-shatter",
   "target": "src/components/effects/liquid-shatter",
+  "files": [
+    {
+      "path": "index.tsx",
+      "target": "src/components/effects/liquid-shatter/index.tsx"
+    }
+  ],
   "props": [
     {
       "name": "ribbonCount",
       "type": "number",
       "default": 7,
-      "description": "Number of ribbon rings.",
+      "label": "Ribbon Count",
+      "description": "Number of nested ribbon rings, from 3 to 9.",
       "remixer": {
         "control": "range",
         "group": "shape",
         "groupTitle": "Shape",
-        "min": 1,
-        "max": 14,
+        "min": 3,
+        "max": 9,
         "step": 1
       }
     },
@@ -45,35 +52,22 @@
       "name": "scale",
       "type": "number",
       "default": 1,
-      "description": "Overall scale of the ribbon cluster.",
+      "description": "Multiplier on the size of the ribbons.",
       "remixer": {
         "control": "range",
         "group": "shape",
         "groupTitle": "Shape",
         "min": 0.5,
-        "max": 2,
+        "max": 1.6,
         "step": 0.05
       }
     },
     {
-      "name": "particleCount",
-      "type": "number",
-      "default": 11000,
-      "description": "Fragments spawned when the ribbons shatter.",
-      "remixer": {
-        "control": "range",
-        "group": "shape",
-        "groupTitle": "Shape",
-        "min": 2000,
-        "max": 30000,
-        "step": 500
-      }
-    },
-    {
       "name": "ribbonColor",
-      "type": "color",
+      "type": "string",
       "default": "#24120a",
-      "description": "Base color of the ribbons.",
+      "label": "Ribbon Color",
+      "description": "Base colour of the lacquered ribbons.",
       "remixer": {
         "control": "color",
         "group": "style",
@@ -82,9 +76,10 @@
     },
     {
       "name": "glowColor",
-      "type": "color",
+      "type": "string",
       "default": "#ff6b00",
-      "description": "Rim glow and streak color.",
+      "label": "Glow Color",
+      "description": "Colour of the hover glow, light streaks, shards and rim light.",
       "remixer": {
         "control": "color",
         "group": "style",
@@ -93,9 +88,10 @@
     },
     {
       "name": "backgroundColor",
-      "type": "color",
+      "type": "string",
       "default": "#111111",
-      "description": "Scene background and fog color.",
+      "label": "Background Color",
+      "description": "Background behind the canvas.",
       "remixer": {
         "control": "color",
         "group": "style",
@@ -106,7 +102,7 @@
       "name": "metalness",
       "type": "number",
       "default": 0.4,
-      "description": "Ribbon material metalness.",
+      "description": "How metallic the ribbon surface is, from 0 to 1.",
       "remixer": {
         "control": "range",
         "group": "style",
@@ -120,7 +116,7 @@
       "name": "roughness",
       "type": "number",
       "default": 0.26,
-      "description": "Ribbon material roughness.",
+      "description": "How rough the ribbon surface is, from 0 to 1.",
       "remixer": {
         "control": "range",
         "group": "style",
@@ -134,7 +130,8 @@
       "name": "idleMotion",
       "type": "number",
       "default": 1,
-      "description": "Strength of the idle drift.",
+      "label": "Idle Motion",
+      "description": "Strength of the slow idle undulation.",
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -148,27 +145,29 @@
       "name": "streakFrequency",
       "type": "number",
       "default": 1,
-      "description": "How often light streaks travel along the ribbons.",
+      "label": "Streak Frequency",
+      "description": "How often a light runs along a ribbon. 0 turns idle and scroll streaks off.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0,
-        "max": 3,
-        "step": 0.05
+        "max": 4,
+        "step": 0.1
       }
     },
     {
       "name": "hoverStrength",
       "type": "number",
       "default": 1,
-      "description": "How strongly the pointer stirs the ribbons.",
+      "label": "Hover Strength",
+      "description": "Strength of the liquid swell that trails the pointer.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0,
-        "max": 3,
+        "max": 2.5,
         "step": 0.05
       }
     },
@@ -176,7 +175,8 @@
       "name": "tiltStrength",
       "type": "number",
       "default": 1,
-      "description": "How much the scene tilts toward the pointer.",
+      "label": "Tilt Strength",
+      "description": "How far the ribbons tilt toward the pointer.",
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -190,20 +190,34 @@
       "name": "introAnimation",
       "type": "boolean",
       "default": true,
-      "description": "Play the ring grow-and-unwind intro on mount.",
+      "description": "Rings ripple out from the centre on mount. Use Replay to see it again.",
       "remixer": {
-        "control": "toggle",
+        "control": "checkbox",
         "group": "motion",
         "groupTitle": "Motion"
+      },
+      "label": "Intro Animation"
+    },
+    {
+      "name": "sound",
+      "type": "boolean",
+      "default": true,
+      "label": "Sound",
+      "description": "Plays sounds on tap, hold, shatter and reform. Audio starts on the first press, as browsers require.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "interaction",
+        "groupTitle": "Interaction"
       }
     },
     {
       "name": "holdToShatter",
       "type": "boolean",
       "default": true,
-      "description": "Press and hold to charge and shatter the ribbons.",
+      "label": "Hold to Shatter",
+      "description": "Press and hold to shatter the ribbons into stirrable shards (mouse and trackpad only).",
       "remixer": {
-        "control": "toggle",
+        "control": "checkbox",
         "group": "interaction",
         "groupTitle": "Interaction"
       }
@@ -212,56 +226,90 @@
       "name": "holdDuration",
       "type": "number",
       "default": 1.9,
-      "description": "Seconds of holding needed for a full charge.",
+      "label": "Hold Duration",
+      "description": "Seconds of holding needed to charge a shatter.",
       "remixer": {
         "control": "range",
         "group": "interaction",
         "groupTitle": "Interaction",
         "min": 0.5,
-        "max": 5,
-        "step": 0.1
+        "max": 4,
+        "step": 0.1,
+        "visibleWhen": {
+          "name": "holdToShatter",
+          "eq": true
+        }
       }
     },
     {
       "name": "reformDelay",
       "type": "number",
       "default": 3,
-      "description": "Seconds before fragments reform into ribbons.",
+      "label": "Reform Delay",
+      "description": "Seconds the shards float, stirrable, before they reform into ribbons.",
       "remixer": {
         "control": "range",
         "group": "interaction",
         "groupTitle": "Interaction",
-        "min": 0.5,
-        "max": 10,
-        "step": 0.1
+        "min": 1,
+        "max": 15,
+        "step": 0.5,
+        "visibleWhen": {
+          "name": "holdToShatter",
+          "eq": true
+        }
+      }
+    },
+    {
+      "name": "particleCount",
+      "type": "number",
+      "default": 11000,
+      "label": "Particle Count",
+      "description": "Number of shards the ribbons break into (about half on phones and low-power devices).",
+      "remixer": {
+        "control": "range",
+        "group": "interaction",
+        "groupTitle": "Interaction",
+        "min": 2000,
+        "max": 24000,
+        "step": 500,
+        "visibleWhen": {
+          "name": "holdToShatter",
+          "eq": true
+        }
       }
     },
     {
       "name": "holdHint",
       "type": "boolean",
       "default": true,
-      "description": "Show the press-and-hold hint.",
-      "remixer": {
-        "control": "toggle",
-        "group": "interaction",
-        "groupTitle": "Interaction"
-      }
+      "label": "Hold Hint",
+      "description": "Shows a small \"Press and hold\" label with a charge bar at the bottom. Mouse and trackpad only.",
+      "docsOnly": true
     },
     {
-      "name": "sound",
-      "type": "boolean",
-      "default": true,
-      "description": "Play synthesized audio on charge and shatter.",
-      "remixer": {
-        "control": "toggle",
-        "group": "interaction",
-        "groupTitle": "Interaction"
-      }
+      "name": "onShatter",
+      "type": "() => void",
+      "description": "Called when a full hold shatters the ribbons.",
+      "docsOnly": true
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "",
+      "description": "Extra classes for the root element. It fills the viewport height by default.",
+      "docsOnly": true
+    },
+    {
+      "name": "children",
+      "type": "React.ReactNode",
+      "description": "Content layered over the canvas. The layer ignores the pointer, so give interactive children pointer-events-auto.",
+      "docsOnly": true
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "style",
+    "defaultOpenGroupId": "shape",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
@@ -269,11 +317,5 @@
     "copyCode": {
       "includeOnlyPublicProps": true
     }
-  },
-  "files": [
-    {
-      "path": "index.tsx",
-      "target": "src/components/effects/liquid-shatter/index.tsx"
-    }
-  ]
+  }
 }

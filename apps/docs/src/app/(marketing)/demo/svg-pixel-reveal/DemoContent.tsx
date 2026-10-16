@@ -3,10 +3,9 @@
 import HeadAnim from "@/components/Animations/HeadAnim";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import SVGPixelReveal from "@/components/svg-pixel-reveal";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
-import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -26,7 +25,12 @@ export default function DemoContent({ registry }: { registry: any }) {
       {({ effect }) => (
         <>
           <LenisSmoothScroll />
-          <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
+          <DemoHeader
+            reducedMotionNote={{
+              title: "This effect can't be reduced.",
+              body: "Reduced motion is enabled, but this effect relies on a continuous scroll-driven transition from pixelated to sharp, and can't be simplified to a fade without losing the effect entirely.",
+            }}
+          />
           <main className="h-full bg-neutral-950 text-white">
             <section className="flex min-h-[40vh] max-sm:h-[30vh] items-center justify-center px-6">
               <div className="w-fit text-center space-y-[1vw]">
@@ -45,22 +49,6 @@ export default function DemoContent({ registry }: { registry: any }) {
 
             <section className="flex min-h-[50vh] max-sm:min-h-[70vh] items-center justify-center px-6 py-20">
               {effect}
-              <ReducedMotionNotice>
-                <div
-                    aria-live="polite"
-                    className="fixed bottom-6 right-6 z-60 w-fit max-w-[min(90vw,26rem)] rounded-md border border-black/10 bg-[#F8F8F3] p-6 text-center shadow-sm"
-                >
-                    <h2 className="text-[1.15vw] max-md:text-[3.5vw] max-[1025px]:text-[2vw] leading-none text-[#111111]">
-                        This effect can&apos;t be reduced.
-                    </h2>
-                    <p className="mx-auto mt-4 text-sm leading-6 text-black/65">
-                        Reduced motion is enabled, but this effect relies on a
-                        continuous scroll-driven transition from pixelated to
-                        sharp, and can&apos;t be simplified to a fade without
-                        losing the effect entirely.
-                    </p>
-                </div>
-              </ReducedMotionNotice>
             </section>
 
             <section aria-hidden="true" className="h-[70vh]" />

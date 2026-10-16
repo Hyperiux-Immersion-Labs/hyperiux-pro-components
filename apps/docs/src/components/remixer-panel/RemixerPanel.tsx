@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Check, ChevronDown, Copy, RotateCcw } from "lucide-react";
-import { isRemixerControlVisible } from "./remixer-utils";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, useLayoutEffect } from "react";
+import { ChevronDown, RotateCcw } from "lucide-react";
+import gsap from "gsap";
+import { CopyButtonContent } from "@/components/ui/CodeBlock";
+import { prefersReducedMotion } from "@/lib/motion";
 import styles from "./remixer-panel.module.css";
 import type { RemixerControl, RemixerOption, RemixerPanelProps } from "./types";
 
@@ -49,6 +51,104 @@ function clampNumber(value: number, control: RemixerControl) {
   return nextValue;
 }
 
+function getFillPercent(value: number, control: RemixerControl) {
+  const min = typeof control.min === "number" ? control.min : 0;
+  const max = typeof control.max === "number" ? control.max : 100;
+  if (max <= min) return 0;
+  return Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+}
+
+const LERP = 0.22;
+
+function roundToStep(value: number, control: RemixerControl) {
+  const step = typeof control.step === "number" && control.step > 0 ? control.step : 1;
+  const min = typeof control.min === "number" ? control.min : 0;
+  const decimals = (String(step).split(".")[1] ?? "").length;
+  return Number((Math.round((value - min) / step) * step + min).toFixed(decimals));
+}
+
+// Range input whose thumb, fill and emitted value ease toward the dragged
+// position instead of jumping. Outside changes (typed value, Reset) snap.
+function SmoothRange({
+  control,
+  value,
+  onChange,
+}: {
+  control: RemixerControl;
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  const [display, setDisplay] = useState(value);
+  const displayRef = useRef(value);
+  const targetRef = useRef(value);
+  const emittedRef = useRef(value);
+  const frameRef = useRef(0);
+  const onChangeRef = useRef(onChange);
+  useLayoutEffect(() => {
+    onChangeRef.current = onChange;
+  });
+
+  useEffect(() => {
+    if (value === emittedRef.current) return;
+    cancelAnimationFrame(frameRef.current);
+    frameRef.current = 0;
+    targetRef.current = displayRef.current = emittedRef.current = value;
+    setDisplay(value);
+  }, [value]);
+
+  useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
+
+  const tick = () => {
+    const target = targetRef.current;
+    let next = displayRef.current + (target - displayRef.current) * LERP;
+    const range = (control.max ?? 100) - (control.min ?? 0) || 1;
+    if (Math.abs(target - next) < range * 0.001) next = target;
+    displayRef.current = next;
+    setDisplay(next);
+    const emitted = next === target ? target : roundToStep(next, control);
+    if (emitted !== emittedRef.current) {
+      emittedRef.current = emitted;
+      onChangeRef.current(emitted);
+    }
+    frameRef.current = next === target ? 0 : requestAnimationFrame(tick);
+  };
+
+  const reduceMotion =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  return (
+    <input
+      type="range"
+      min={control.min}
+      max={control.max}
+      step="any"
+      value={display}
+      onChange={(event) => {
+        const next = roundToStep(Number(event.target.value), control);
+        targetRef.current = next;
+        if (reduceMotion) {
+          displayRef.current = emittedRef.current = next;
+          setDisplay(next);
+          onChangeRef.current(next);
+          return;
+        }
+        if (!frameRef.current) frameRef.current = requestAnimationFrame(tick);
+      }}
+      className={styles.range}
+      style={{ "--fill": `${getFillPercent(display, control)}%` } as CSSProperties}
+    />
+  );
+}
+
+// Drawn with stroke-dashoffset (pathLength=1), so the tick strokes in when checked.
+function CheckTick() {
+  return (
+    <svg viewBox="0 0 12 12" aria-hidden="true" className={styles.checkboxInner}>
+      <path d="M2 6.5 4.8 9 10 3" pathLength={1} />
+    </svg>
+  );
+}
+
 function ControlField({
   control,
   value,
@@ -65,7 +165,7 @@ function ControlField({
       <button type="button" onClick={() => onChange(!value)} className={`${styles.field} ${styles.toggleRow}`}>
         <span className={styles.fieldLabel}>{control.label}</span>
         <span className={`${styles.checkboxOuter} ${value ? styles.checkboxSelected : ""}`}>
-          <span className={styles.checkboxInner} />
+          <CheckTick />
         </span>
       </button>
     );
@@ -77,6 +177,15 @@ function ControlField({
       <div className={styles.field}>
         <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>{control.label}</span>
+          {/* Small swatch (opens the native picker) right beside the hex value. */}
+          <span className={styles.colorValue}>
+          <input
+            type="color"
+            value={colorValue}
+            onChange={(event) => onChange(event.target.value)}
+            className={styles.colorSwatch}
+            aria-label={`${control.label} colour picker`}
+          />
           <input
             key={colorValue}
             type="text"
@@ -96,11 +205,9 @@ function ControlField({
             aria-label={`${control.label} hex value`}
             spellCheck={false}
           />
+          </span>
         </div>
         {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
-        <div className={styles.colorRow}>
-          <input type="color" value={colorValue} onChange={(event) => onChange(event.target.value)} className={styles.colorInput} />
-        </div>
       </div>
     );
   }
@@ -127,7 +234,7 @@ function ControlField({
                 className={`${styles.checkboxOption} ${isSelected ? styles.checkboxOptionSelected : ""}`}
               >
                 <span className={`${styles.checkboxOuter} ${isSelected ? styles.checkboxSelected : ""}`}>
-                  <span className={styles.checkboxInner} />
+                  <CheckTick />
                 </span>
                 <span className={styles.checkboxText}>{optionLabel}</span>
               </button>
@@ -236,15 +343,7 @@ function ControlField({
         />
       </div>
       {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
-      <input
-        type="range"
-        min={control.min}
-        max={control.max}
-        step={control.step ?? 1}
-        value={numberValue}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className={styles.range}
-      />
+      <SmoothRange control={control} value={numberValue} onChange={onChange} />
     </label>
   );
 }
@@ -257,33 +356,39 @@ export default function RemixerPanel({
   onCopyCode,
   onReset,
   defaultOpenGroupId,
-}: RemixerPanelProps) {
-  // Controls can be hidden via `visibleWhen` (e.g. only show the first N color
-  // pickers), so resolve visibility against the live values before rendering.
-  const availableGroups = useMemo(
-    () =>
-      groups
-        .map((group) => ({
-          ...group,
-          controls: (group.controls ?? []).filter((control) => isRemixerControlVisible(control, values)),
-        }))
-        .filter((group) => group.controls.length),
-    [groups, values],
-  );
+  compact = false,
+}: RemixerPanelProps & { compact?: boolean }) {
+  const availableGroups = useMemo(() => groups.filter((group) => group.controls?.length), [groups]);
   const [openGroupId, setOpenGroupId] = useState<string | null>(
     defaultOpenGroupId ?? availableGroups[0]?.id ?? null,
   );
   const [copied, setCopied] = useState(false);
+  const copiedTimerRef = useRef(0);
+  const resetIconRef = useRef<HTMLSpanElement | null>(null);
+  const canCopy = Boolean(onCopyCode);
+
+  useEffect(() => () => window.clearTimeout(copiedTimerRef.current), []);
 
   const handleCopy = async () => {
     if (!onCopyCode) return;
     await copyTextToClipboard(onCopyCode());
     setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
+    window.clearTimeout(copiedTimerRef.current);
+    copiedTimerRef.current = window.setTimeout(() => setCopied(false), 1600);
+  };
+
+  // The reset icon spins back a full turn, like the demo bar's Replay.
+  const handleReset = () => {
+    onReset?.();
+    if (resetIconRef.current && !prefersReducedMotion()) {
+      gsap.fromTo(resetIconRef.current, { rotation: 0 }, { rotation: -360, duration: 0.7, ease: "expo.out", overwrite: true });
+    }
   };
 
   return (
-    <aside className={`${styles.panel} ${isExpanded ? styles.panelOpen : ""}`}>
+    // compact: tighter spacing / tracking and wrapped code, for narrow columns
+    // (the effect page's Playground).
+    <aside className={`${styles.panel} ${isExpanded ? styles.panelOpen : ""} ${compact ? styles.compact : ""}`}>
       <div className={`${styles.body} ${styles.hideScrollbar}`} data-lenis-prevent>
         {availableGroups.map((group) => {
           if (group.collapsible === false) {
@@ -325,12 +430,15 @@ export default function RemixerPanel({
       </div>
       <div className={styles.footer}>
         <div className={styles.footerActions}>
-          <button type="button" onClick={handleCopy} className={styles.footerButton}>
-            {copied ? <Check className={styles.actionIcon} /> : <Copy className={styles.actionIcon} />}
-            <span className={styles.footerButtonText}>{copied ? "Copied" : "Copy Props"}</span>
-          </button>
-          <button type="button" onClick={onReset} className={styles.footerButton}>
-            <RotateCcw className={styles.actionIcon} />
+          {canCopy ? (
+            <button type="button" onClick={handleCopy} aria-label={copied ? "Props copied" : "Copy props"} className={`${styles.footerButton} ${copied ? styles.footerButtonDone : ""}`}>
+              <CopyButtonContent copied={copied} labelClassName={styles.footerButtonText} />
+            </button>
+          ) : null}
+          <button type="button" onClick={handleReset} className={styles.footerButton}>
+            <span ref={resetIconRef} className={styles.resetIcon}>
+              <RotateCcw className={styles.actionIcon} />
+            </span>
             <span className={styles.footerButtonText}>Reset</span>
           </button>
         </div>

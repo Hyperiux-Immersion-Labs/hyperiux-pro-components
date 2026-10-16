@@ -232,7 +232,7 @@ function CardDriftComp({
  >
 
  <h1
- className="absolute inset-0 flex items-center justify-center text-9xl max-[1025px]:text-7xl font-light pointer-events-none select-none text-center leading-none"
+ className="absolute inset-0 flex items-center justify-center text-9xl max-lg:text-7xl font-light pointer-events-none select-none text-center leading-none"
  style={{ color: backgroundTextColor }}
  >
  Draggable <br /> Testimonial
@@ -257,7 +257,7 @@ function Card({ item, cardColor, cardTextColor, barColor }: any) {
  return (
  <div className="testimonial-card opacity-0 absolute cursor-grab active:cursor-grabbing">
  <div
- className="w-96 max-md:w-42 max-[1025px]:w-60"
+ className="w-96 max-md:w-42 max-lg:w-60"
  style={{ backgroundColor: cardColor, color: cardTextColor }}
  >
  {/* Top bar */}
@@ -270,7 +270,7 @@ function Card({ item, cardColor, cardTextColor, barColor }: any) {
  </div>
 
  {/* Content */}
- <div className="p-6 max-[1025px]:p-3  text-lg max-[1025px]:text-lg max-md:text-base leading-none font-light">
+ <div className="p-6 max-lg:p-3  text-lg max-lg:text-lg max-md:text-base leading-none font-light">
  {item.text}
  </div>
  </div>

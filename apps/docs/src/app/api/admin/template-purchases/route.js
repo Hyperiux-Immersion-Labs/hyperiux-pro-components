@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+import { displayName } from "@/lib/display-name";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertSuperAdmin } from "@/lib/admin";
 import { getTemplateBySlug } from "@/lib/mock-templates";
 import { resolveDateBounds } from "@/lib/admin-activity";
+import { fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/lib/admin-data";
 
 // Sibling to api/admin/invoices/route.js - same super-admin gate, same
 // Clerk-enrichment pattern - but for one-time template purchases
@@ -15,10 +17,8 @@ import { resolveDateBounds } from "@/lib/admin-activity";
 // before calling recordTemplatePurchase), unlike invoices.amount which is
 // the raw Razorpay amount - callers must not divide this by 100 again.
 //
-// No is_test column on this table (template purchases don't have an
-// admin-seeded "sample invoice" concept the way subscription invoices do -
-// see api/dashboard/invoices/test/route.js), so there's no real/test filter
-// here, only an optional template slug filter.
+// Real purchases only: is_test rows (taken with Razorpay test keys) are left
+// out, like test invoices. Optional template slug filter.
 
 export async function GET(request) {
   if (!(await assertSuperAdmin())) {
@@ -30,19 +30,19 @@ export async function GET(request) {
     const templateFilter = searchParams.get("template") || "all";
     const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 100);
     const offset = parseInt(searchParams.get("offset") || "0", 10);
-    // range/from/to are all optional - omitted entirely by
-    // dashboard/admin/invoicing (which wants "every purchase, ever"),
-    // passed by dashboard/admin/activity's TemplatePurchasesPanel so this
-    // table stays in step with that page's date-range picker instead of
-    // always showing all-time totals regardless of what's selected.
+    // range/from/to are all optional - without them it's every purchase, ever;
+    // the admin Invoicing page passes its date filter.
     const { startISO, endISO } = resolveDateBounds({
       range: searchParams.get("range"),
       from: searchParams.get("from"),
       to: searchParams.get("to"),
     });
 
+    const audience = await getAudience(parseAudience(searchParams));
+
+    // The window and audience, real purchases only
     function scoped(q) {
-      let query = q;
+      let query = filterToAudience(q.eq("is_test", false), audience);
       if (startISO) query = query.gte("created_at", startISO);
       if (endISO) query = query.lt("created_at", endISO);
       return query;
@@ -52,7 +52,7 @@ export async function GET(request) {
       supabase
         .from("template_purchases")
         .select(
-          "id,clerk_user_id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,created_at",
+          "id,clerk_user_id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,source,created_at",
           { count: "exact" }
         )
         .order("created_at", { ascending: false })
@@ -60,18 +60,26 @@ export async function GET(request) {
 
     if (templateFilter !== "all") query = query.eq("template_slug", templateFilter);
 
-    const [{ data: pageRows, error: pageError, count }, { data: allRows, error: statsError }] =
-      await Promise.all([
-        query.range(offset, offset + limit - 1),
-        // Stats always reflect every purchase in the same window,
-        // independent of the current page/template filter, so the top-line
-        // numbers don't shift while paging.
-        scoped(supabase.from("template_purchases").select("amount, currency")),
-      ]);
+    const [{ data: pageRows, error: pageError, count }, allRows] = await Promise.all([
+      query.range(offset, offset + limit - 1),
+      // Stats always reflect every purchase in the same window, independent
+      // of the current page/template filter, so the top-line numbers don't
+      // shift while paging. Revenue only: paid purchases - not refunded
+      // ones, and not credit redemptions (no money changes hands).
+      fetchAllRows(() =>
+        scoped(
+          supabase
+            .from("template_purchases")
+            .select("amount, currency")
+            .eq("status", "paid")
+            .or("source.is.null,source.neq.credit")
+        )
+      ),
+    ]);
 
-    if (pageError || statsError) {
-      console.error("ADMIN_TEMPLATE_PURCHASES_ERROR:", pageError || statsError);
-      return NextResponse.json({ error: (pageError || statsError).message }, { status: 500 });
+    if (pageError) {
+      console.error("ADMIN_TEMPLATE_PURCHASES_ERROR:", pageError);
+      return NextResponse.json({ error: pageError.message }, { status: 500 });
     }
 
     const rows = pageRows || [];
@@ -93,12 +101,14 @@ export async function GET(request) {
       return {
         id: row.id,
         userId: row.clerk_user_id,
-        userName: clerkUser?.fullName || clerkUser?.firstName || null,
+        userName: displayName(clerkUser),
         userEmail: clerkUser?.emailAddresses?.[0]?.emailAddress || null,
-        userImageUrl: clerkUser?.imageUrl || null,
+        userImageUrl: clerkUser?.hasImage ? clerkUser.imageUrl : null, // a real photo, not Clerk's placeholder
         templateSlug: row.template_slug,
         templateTitle: template?.title || row.template_slug,
         paymentId: row.razorpay_payment_id,
+        // Redeemed with a template credit: no payment, shown as "1 credit"
+        redeemedWithCredit: row.source === "credit" || !row.razorpay_payment_id,
         amount: row.amount,
         currency: row.currency,
         status: row.status,

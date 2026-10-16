@@ -1,4 +1,5 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import { displayName } from "@/lib/display-name";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { assertAdmin } from "@/lib/admin";
@@ -11,8 +12,7 @@ import {
 } from "@/lib/admin-activity";
 import { buildUserActivitySlug } from "@/lib/user-slug";
 import { getTemplateBySlug } from "@/lib/mock-templates";
-
-const INSTALL_SOURCES = ["web", "cli", "mcp"];
+import { INSTALL_SOURCES, fetchInstalls } from "@/lib/admin-data";
 
 // Matches the bounded-fetch approach already used for the signups trend in
 // /api/admin/activity/overview - fine at this product's current scale;
@@ -44,7 +44,7 @@ async function findUserBySlug(clerk, slug) {
     (clerkUsers || []).find(
       (user) =>
         buildUserActivitySlug({
-          name: user.fullName || user.firstName || null,
+          name: displayName(user),
           email: user.emailAddresses?.[0]?.emailAddress || null,
         }) === slug
     ) || null
@@ -97,25 +97,12 @@ export async function GET(request, { params }) {
       return q;
     }
 
-    // usage_date is a DATE column (install_unlocks), not a timestamptz -
-    // "the whole day" is the unit, so this uses the inclusive
-    // startDateString/endDateString form resolveDateBounds returns
-    // specifically for that case, not the exclusive-end ISO timestamps
-    // scoped() above uses for created_at columns.
-    function scopedByUsageDate(query) {
-      let q = query;
-      if (startDateString) q = q.gte("usage_date", startDateString);
-      if (endDateString) q = q.lte("usage_date", endDateString);
-      return q;
-    }
-
     const [
       { data: subscriptionRow, error: subscriptionError },
       { data: invoiceRows, error: invoicesError },
       { data: templatePurchaseRows, error: templatePurchasesError },
       { data: savedRows, error: savedError },
-      { data: copyRows, error: copyError },
-      { data: installRows, error: installError },
+      installs,
       sanityEntries,
     ] = await Promise.all([
       supabase
@@ -143,6 +130,8 @@ export async function GET(request, { params }) {
           .from("template_purchases")
           .select("id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,created_at")
           .eq("clerk_user_id", userId)
+          // Real purchases only, like the invoices above
+          .eq("is_test", false)
           .order("created_at", { ascending: false })
       ),
 
@@ -154,41 +143,15 @@ export async function GET(request, { params }) {
           .order("created_at", { ascending: false })
       ),
 
-      // install_unlocks supersedes copy_usage_effects (Installation-SyncUp.md
-      // Stage 1.5) and is the shared ledger across web/CLI/MCP - but
-      // "copies" here specifically means the website's copy button (same as
-      // the Overview page's Total Copies/Copy activity), so it's scoped to
-      // source='web' rather than folding CLI/MCP installs into a "copies"
-      // label.
-      scopedByUsageDate(
-        supabase
-          .from("install_unlocks")
-          .select("effect_slug, usage_date")
-          .eq("clerk_user_id", userId)
-          .eq("source", "web")
-          .order("usage_date", { ascending: false })
-      ),
-
-      // Unscoped by source, unlike copyRows above - "installed" means every
-      // surface (web/CLI/MCP), same as "Top installed effects" on the
-      // Overview page. Copies are always a subset of this (every web copy
-      // is also an install_unlocks row), which is exactly what lets the
-      // page below hide this slider when it'd just be a duplicate of
-      // "Copied Effects". `source` is also what the Installs chart below
-      // splits its three lines by.
-      scopedByUsageDate(
-        supabase
-          .from("install_unlocks")
-          .select("effect_slug, usage_date, source")
-          .eq("clerk_user_id", userId)
-          .order("usage_date", { ascending: false })
-      ),
+      // Their installs in the window - one effect, one day, from the website, the CLI or
+      // MCP (lib/admin-data fetchInstalls, the count every admin page uses)
+      fetchInstalls({ startISO, endISO, clerkUserId: userId }),
 
       getAllSanityEffectEntries(),
     ]);
 
     const firstError =
-      subscriptionError || invoicesError || templatePurchasesError || savedError || copyError || installError;
+      subscriptionError || invoicesError || templatePurchasesError || savedError;
 
     if (firstError) {
       console.error("ADMIN_ACTIVITY_USER_ERROR:", userId, firstError);
@@ -211,38 +174,27 @@ export async function GET(request, { params }) {
         // metadata is either a Sanity entry (categorySlug) or a registry
         // entry (categories[]) - checking both covers whichever shape it
         // actually is, same as resolveEffectSummary() in the overview
-        // route. Needed so EffectRankSlider's card links (getEffectHref)
+        // route. Needed so the per-user page's effect links (getEffectHref)
         // land on the right category instead of silently defaulting to
         // "components".
         categorySlug: metadata?.categorySlug || metadata?.categories?.[0] || null,
       };
     }
 
-    // Dedupe to most-recent-per-effect - same as /api/dashboard/usage/route.js
-    // - rows are already newest-first. Shared by both copiedEffects and
-    // installedEffects below, since it's the same "one row per effect,
-    // most recent date wins" reduction either way.
-    function dedupeMostRecent(rows, dateField) {
-      const seenSlugs = new Set();
-      const effects = [];
-
-      for (const row of rows || []) {
-        if (seenSlugs.has(row.effect_slug)) continue;
-        seenSlugs.add(row.effect_slug);
-
-        effects.push({ ...resolveEffect(row.effect_slug), [dateField]: row.usage_date });
-      }
-
-      return effects;
+    // Every effect they've installed, once, most recent first, with where they took it
+    const installRows = installs.map((row) => ({ effect_slug: row.effectSlug, usage_date: row.day, source: row.source }));
+    const installedBySlug = new Map();
+    for (const row of installRows) {
+      const entry = installedBySlug.get(row.effect_slug);
+      if (entry) entry.sources.add(row.source);
+      else installedBySlug.set(row.effect_slug, { lastInstalledAt: row.usage_date, sources: new Set([row.source]) });
     }
+    const installedEffects = [...installedBySlug].map(([slug, { lastInstalledAt, sources }]) => ({
+      ...resolveEffect(slug),
+      lastInstalledAt,
+      sources: INSTALL_SOURCES.filter((source) => sources.has(source)),
+    }));
 
-    const copiedEffects = dedupeMostRecent(copyRows, "lastCopiedAt");
-    const installedEffects = dedupeMostRecent(installRows, "lastInstalledAt");
-
-    // Installs, not just web copies - one line per source (web/CLI/MCP)
-    // instead of the single web-only line this used to be, so it actually
-    // shows where this user's installs come from rather than only the
-    // subset that happens to be copies.
     const installTrend = fillDailyBucketsBySeries(
       buildDailyBucketsForRange({ startDateString, endDateString }),
       installRows || [],
@@ -316,22 +268,10 @@ export async function GET(request, { params }) {
     return NextResponse.json({
       profile: {
         id: clerkUser.id,
-        // Name is never blank in the UI: falls back to the email's
-        // local-part, capitalized - same convention as displayName() in
-        // dashboard/admin/page.js and resolveDisplayName() in
-        // InstallActivityTab.js - rather than a generic "Unnamed user"
-        // placeholder when Clerk has no first/last name on file (invited
-        // accounts that completed sign-up through Clerk's own hosted widget
-        // without ever being asked for one, mainly).
-        name:
-          clerkUser.fullName ||
-          clerkUser.firstName ||
-          (() => {
-            const local = clerkUser.emailAddresses?.[0]?.emailAddress?.split("@")[0];
-            return local ? local.charAt(0).toUpperCase() + local.slice(1) : null;
-          })(),
+        // Never blank: the account's name, else one read from its email (lib/display-name)
+        name: displayName(clerkUser),
         email: clerkUser.emailAddresses?.[0]?.emailAddress || null,
-        imageUrl: clerkUser.imageUrl || null,
+        imageUrl: clerkUser.hasImage ? clerkUser.imageUrl : null, // a real photo, not Clerk's placeholder
         joinedAt: clerkUser.createdAt,
         lastSignInAt: clerkUser.lastSignInAt,
         isAdmin: clerkUser.publicMetadata?.role === "admin",
@@ -349,13 +289,13 @@ export async function GET(request, { params }) {
       subscription: subscriptionRow || null,
       stats: {
         savedCount: (savedRows || []).length,
-        copiedCount: copiedEffects.length,
-        installedCount: installedEffects.length,
+        // Installs (one effect, one day) and how many by each source
+        installCount: installRows.length,
+        installsBySource: Object.fromEntries(INSTALL_SOURCES.map((source) => [source, installRows.filter((row) => row.source === source).length])),
         lifetimeSpendByCurrency,
       },
       installTrend,
       savedEffects,
-      copiedEffects,
       installedEffects,
       invoices: invoiceRows || [],
       templatePurchases,

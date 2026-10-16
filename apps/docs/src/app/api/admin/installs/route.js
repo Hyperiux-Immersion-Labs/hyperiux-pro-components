@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { displayName } from "@/lib/display-name";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertAdmin } from "@/lib/admin";
-import { buildDailyBucketsForRange, fillDailyBuckets, resolveDateBounds, utcDateString } from "@/lib/admin-activity";
+import { INSTALL_SOURCES, fetchAllRows, fetchInstalls, getAudience, parseAudience } from "@/lib/admin-data";
+import { buildDailyBucketsForRange, fillDailyBuckets, fillDailyBucketsBySeries, resolveDateBounds, utcDateString } from "@/lib/admin-activity";
 
 // Stage 2 (Installation-SyncUp.md): calibrate the 2/3/10 daily limits against
 // real install_events data before Stage 3 flips INSTALL_LIMIT_ENFORCE on.
@@ -55,14 +57,10 @@ export async function GET(request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    // Matches /api/admin/copy-activity's default - both read the same
-    // install_events ledger, and the shared date-range control in
-    // InstallActivityTab.js's buildRangeQuery() omits the `range` param
-    // entirely for "All time" rather than sending range=all, so whatever
-    // each route falls back to here is what "All time" actually shows.
-    // These silently disagreeing (this used to default to "30d") is why
-    // the installs panel and the copy-activity list could show different
-    // start dates for the exact same underlying data.
+    // Matches /api/admin/copy-activity's default - both read the same ledger, so
+    // a request without a `range` must mean the same window in both (this used
+    // to default to "30d", and the two panels showed different start dates for
+    // the same data).
     const range = searchParams.get("range") || "all";
     const from = searchParams.get("from");
     const to = searchParams.get("to");
@@ -87,44 +85,34 @@ export async function GET(request) {
     // was nothing to unlock), and plan isn't a column on install_unlocks -
     // and for the raw per-attempt event log at /api/admin/copy-activity,
     // which genuinely needs per-decision, per-timestamp granularity.
-    let unlocksQuery = supabase
-      .from("install_unlocks")
-      .select("usage_date,identity_key,clerk_user_id,effect_slug,source")
-      .order("usage_date", { ascending: false });
-    if (startISO) unlocksQuery = unlocksQuery.gte("usage_date", startISO);
-    if (endISO) unlocksQuery = unlocksQuery.lt("usage_date", endISO);
+    const audience = await getAudience(parseAudience(searchParams));
 
-    let eventsQuery = supabase
-      .from("install_events")
-      .select(
-        "occurred_at,identity_key,clerk_user_id,device_id,ip_hash,effect_slug,effect_tier,source,plan,decision,reason,enforced,would_have_denied,cli_version,mcp_version"
-      )
-      .order("occurred_at", { ascending: false });
-    if (startISO) eventsQuery = eventsQuery.gte("occurred_at", startISO);
-    if (endISO) eventsQuery = eventsQuery.lt("occurred_at", endISO);
+    const eventsQuery = () => {
+      let q = supabase
+        .from("install_events")
+        .select(
+          "occurred_at,identity_key,clerk_user_id,device_id,ip_hash,effect_slug,effect_tier,source,plan,decision,reason,enforced,would_have_denied,cli_version,mcp_version"
+        )
+        // Admins are never limited; their installs are only logged for their own usage
+        // tab (lib/install-limit), so they'd skew this limits analysis. plan can be null.
+        .or("plan.is.null,plan.neq.admin")
+        .order("occurred_at", { ascending: false });
+      if (startISO) q = q.gte("occurred_at", startISO);
+      if (endISO) q = q.lt("occurred_at", endISO);
+      return q;
+    };
 
-    const [
-      { data: unlockRows, error: unlocksError },
-      { data: eventRows, error: eventsError },
-      // "Installs Today" is a fixed daily pulse, deliberately independent of
-      // whatever window is selected elsewhere on the page - always today.
-      { count: installsToday, error: installsTodayError },
-    ] = await Promise.all([
-      unlocksQuery,
-      eventsQuery,
-      supabase
-        .from("install_unlocks")
-        .select("id", { count: "exact", head: true })
-        .eq("usage_date", today),
+    const mine = (rows) => rows.filter((row) => audience.includes(row.clerk_user_id));
+    // Installs (lib/admin-data fetchInstalls - one effect, one account, one day; admins
+    // included) in the row shape the counters below read
+    const asRows = (installs) => installs.map((row) => ({ usage_date: row.day, clerk_user_id: row.clerkUserId, identity_key: row.identityKey, effect_slug: row.effectSlug, source: row.source }));
+    const [unlocks, allEvents, todayUnlocks] = await Promise.all([
+      fetchInstalls({ startISO, endISO, audience }).then(asRows),
+      fetchAllRows(eventsQuery).then(mine),
+      // "Installs Today" is a fixed daily pulse, independent of the selected window
+      fetchInstalls({ startISO: `${today}T00:00:00.000Z`, audience }),
     ]);
-
-    if (unlocksError || eventsError || installsTodayError) {
-      console.error("ADMIN_INSTALLS_ERROR:", unlocksError || eventsError || installsTodayError);
-      return NextResponse.json({ error: "Failed to load install events" }, { status: 500 });
-    }
-
-    const unlocks = unlockRows || [];
-    const allEvents = eventRows || [];
+    const installsToday = todayUnlocks.length;
     const deniedEvents = allEvents.filter((row) => !SUCCESS_DECISIONS.includes(row.decision));
     const allowedRows = allEvents.filter((row) => row.decision === "allowed");
     const alreadyUnlockedRows = allEvents.filter((row) => row.decision === "already-unlocked");
@@ -135,21 +123,17 @@ export async function GET(request) {
       (row) => row.usage_date
     );
 
-    // Two leaderboards over the same `unlocks`: "Top users by copies" means
-    // the website's copy button specifically - same as everywhere else
-    // "copies" is used (Overview's Total Copies, the per-user detail page) -
-    // so it ranks a web-only subset. "Top installers" is the all-sources
-    // counterpart (web/CLI/MCP combined), matching everything else above
-    // that's deliberately unscoped by source.
-    const webUnlocks = unlocks.filter((row) => row.source === "web");
-    const webUserCounts = topUserCounts(webUnlocks, TOP_USERS_LIMIT);
-    const allUserCounts = topUserCounts(unlocks, TOP_USERS_LIMIT);
+    const sourceTrend = fillDailyBucketsBySeries(
+      buildDailyBucketsForRange({ startDateString, endDateString }),
+      unlocks,
+      (row) => row.usage_date,
+      (row) => row.source,
+      INSTALL_SOURCES
+    );
 
-    // One Clerk lookup covering both leaderboards' user ids, instead of
-    // fetching twice for whatever users happen to appear on both.
-    const neededClerkUserIds = [
-      ...new Set([...webUserCounts, ...allUserCounts].map((entry) => entry.clerkUserId)),
-    ];
+    // Top installers: every source counted (installs are one thing, web / CLI / MCP)
+    const allUserCounts = topUserCounts(unlocks, TOP_USERS_LIMIT);
+    const neededClerkUserIds = allUserCounts.map((entry) => entry.clerkUserId);
     let clerkMap = {};
     if (neededClerkUserIds.length > 0) {
       const clerk = await clerkClient();
@@ -171,27 +155,22 @@ export async function GET(request) {
           const clerkUser = clerkMap[clerkUserId];
           return {
             clerkUserId,
-            name: clerkUser.fullName || clerkUser.firstName || null,
+            name: displayName(clerkUser),
             email: clerkUser.emailAddresses?.[0]?.emailAddress || null,
-            imageUrl: clerkUser.imageUrl || null,
+            imageUrl: clerkUser.hasImage ? clerkUser.imageUrl : null, // a real photo, not Clerk's placeholder
             count,
           };
         });
     }
 
-    const topUsers = buildLeaderboard(webUserCounts);
     const topInstallers = buildLeaderboard(allUserCounts);
 
     return NextResponse.json({
       range,
       stats: {
-        // Installs is the superset, copies the web-only subset within it -
-        // both now read from install_unlocks, so a user's "Copies" number
-        // (here and everywhere else it's shown) can never exceed their
-        // "Installs" number, the way it could when the leaderboards read
-        // the less-reliable install_events instead.
+        // Installs (web + CLI + MCP), counted as everywhere else (fetchInstalls)
         totalInstalls: unlocks.length,
-        installsToday: installsToday || 0,
+        installsToday,
         // These three stay install_events-based - install_unlocks has no
         // concept of a denied attempt (nothing gets inserted there when a
         // claim is refused) or of what enforcement mode was active, so
@@ -199,6 +178,8 @@ export async function GET(request) {
         allowedCount: allowedRows.length,
         alreadyUnlockedCount: alreadyUnlockedRows.length,
         deniedCount: deniedEvents.length,
+        // Signed-out attempts turned away (every install needs an account)
+        signInRequiredCount: deniedEvents.filter((row) => row.reason === "sign-in-required").length,
         // Checked across every attempt, not just successful ones - a denial
         // can only happen while enforcement is on, so it's the more
         // complete signal for "was the limit actually active in this
@@ -211,7 +192,8 @@ export async function GET(request) {
       // table (a documented exception, not an oversight).
       planBreakdown: countBy(allEvents, "plan"),
       installTrend,
-      topUsers,
+      // The same days split by surface: { date, label, web, cli, mcp }
+      sourceTrend,
       topInstallers,
     });
   } catch (error) {

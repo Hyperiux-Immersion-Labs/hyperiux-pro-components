@@ -7,10 +7,11 @@ import { useUser } from "@clerk/nextjs";
 // Razorpay Standard Checkout button. Two modes:
 //   <RazorpayCheckoutButton amount={1} />                        one-time order (testing)
 //   <RazorpayCheckoutButton amount={29} templateSlug="elenavoss" />  one-time template purchase
-//   <RazorpayCheckoutButton plan="monthly" />                    subscription (monthly|yearly|founding)
+//   <RazorpayCheckoutButton tier="pro_plus" interval="yearly" currency="INR" />  subscription
 export default function RazorpayCheckoutButton({
   amount,
-  plan,
+  tier,
+  interval,
   templateSlug,
   currency = "USD",
   className = "",
@@ -30,15 +31,16 @@ export default function RazorpayCheckoutButton({
     setError(null);
 
     try {
-      const endpoint = plan
+      const isSubscription = Boolean(tier);
+      const endpoint = isSubscription
         ? "/api/razorpay/create-subscription"
         : "/api/razorpay/create-order";
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          plan
-            ? { plan, currency, idempotencyKey: crypto.randomUUID() }
+          isSubscription
+            ? { tier, interval, currency, idempotencyKey: crypto.randomUUID() }
             : { amount, currency, templateSlug }
         ),
       });
@@ -52,7 +54,7 @@ export default function RazorpayCheckoutButton({
 
       const razorpay = new window.Razorpay({
         key: data.keyId,
-        ...(plan
+        ...(isSubscription
           ? { subscription_id: data.subscriptionId }
           : {
               order_id: data.orderId,
@@ -60,24 +62,40 @@ export default function RazorpayCheckoutButton({
               currency: data.currency,
             }),
         name: "Hyperiux Vault",
-        description: plan ? `Vault Pro (${plan})` : "Test payment",
+        description: isSubscription
+          ? `Vault ${tier === "pro_plus" ? "Pro+" : "Pro"} (${interval})`
+          : "Test payment",
         prefill: {
           name: user?.fullName || "",
           email: user?.primaryEmailAddress?.emailAddress || "",
         },
         handler: async function handleCheckoutSuccess(response) {
           try {
-            const verifyRes = await fetch("/api/razorpay/verify-payment", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(response),
-            });
-            const verifyJson = await verifyRes.json();
+            // The money has moved by now: a dropped connection or a server error is
+            // retried (verifying twice is safe) before anything is called a failure
+            const verify = () =>
+              fetch("/api/razorpay/verify-payment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(response),
+              });
+            let verifyRes = null;
+            for (const wait of [0, 1500, 3000]) {
+              if (wait) await new Promise((resolve) => setTimeout(resolve, wait));
+              verifyRes = await verify().catch(() => null);
+              if (verifyRes && verifyRes.status < 500) break;
+            }
+            const verifyJson = verifyRes ? await verifyRes.json().catch(() => ({})) : {};
 
-            if (!verifyRes.ok || !verifyJson.verified) {
-              throw new Error(verifyJson.error || "Payment could not be verified");
+            if (!verifyRes || !verifyRes.ok || !verifyJson.verified) {
+              throw new Error(
+                verifyJson.error ||
+                  "We couldn’t confirm your payment yet. If you were charged, your plan will switch on within a few minutes - contact support if it doesn’t."
+              );
             }
 
+            // `pending`: paid and confirmed, the plan is still being switched on (the
+            // payment webhook finishes it) - still a successful payment
             onSuccess?.({ ...response, ...verifyJson, founding: data.founding === true });
           } catch (err) {
             setError(err.message);
@@ -106,6 +124,12 @@ export default function RazorpayCheckoutButton({
     }
   }
 
+  // Another button on the page may have loaded the script already
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (window.Razorpay) setScriptReady(true);
+  }, []);
+
   // Resumes a purchase that started while the visitor was signed out - once
   // sign-in redirects them back here with autoOpen set, this opens the
   // Razorpay checkout itself instead of waiting for a second click on the
@@ -122,7 +146,9 @@ export default function RazorpayCheckoutButton({
     <>
       <Script
         src="https://checkout.razorpay.com/v1/checkout.js"
-        strategy="lazyOnload"
+        // Straight away when checkout opens by itself; lazyOnload waits for
+        // the browser to go idle, which an animated page may not do for a while
+        strategy={autoOpen ? "afterInteractive" : "lazyOnload"}
         onReady={() => setScriptReady(true)}
         onLoad={() => setScriptReady(true)}
       />

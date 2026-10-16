@@ -5,10 +5,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // covers the route's auth gate, date-range wiring, and response shape,
 // which a real-data check doesn't exercise on its own.
 //
-// The route reads two tables: install_unlocks (totals, trend, source
-// breakdown, both leaderboards - the guaranteed-complete ledger) and
-// install_events (allowed/already-unlocked/denied counts, enforced,
-// plan breakdown - the only place a denied attempt or a plan is recorded).
+// The route reads installs through lib/admin-data's fetchInstalls (totals, trend,
+// source breakdown, the leaderboard - install_unlocks, the guaranteed-complete
+// ledger, plus admins' logged installs) and install_events (allowed /
+// already-unlocked / denied counts, enforced, plan breakdown - the only place a
+// denied attempt or a plan is recorded).
 
 let isAdminResult;
 let unlockRows;
@@ -44,6 +45,7 @@ vi.mock("@/lib/sanity", () => ({
 function makeListQuery(getResult) {
   const query = {
     order: vi.fn(() => query),
+    or: vi.fn(() => query),
     gte: vi.fn(() => query),
     lt: vi.fn(() => query),
     then: (resolve) => resolve(getResult()),
@@ -51,19 +53,45 @@ function makeListQuery(getResult) {
   return query;
 }
 
+// Today's installs: one row per install (the route counts them, for one audience)
 function makeTodayCountQuery() {
   const query = {
     eq: vi.fn(() => query),
-    then: (resolve) => resolve({ count: installsTodayCount, error: installsTodayError }),
+    then: (resolve) =>
+      resolve({ data: Array.from({ length: installsTodayCount || 0 }, () => ({ clerk_user_id: "test" })), error: installsTodayError }),
   };
   return query;
 }
+
+// Every row of each query in one go, and every row in the audience
+vi.mock("@/lib/admin-data", () => ({
+  INSTALL_SOURCES: ["web", "cli", "mcp"],
+  // Installs in fetchInstalls' shape: today's (the always-today count) or the window's
+  fetchInstalls: async ({ startISO } = {}) => {
+    if (startISO && startISO === `${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`) {
+      if (installsTodayError) throw installsTodayError;
+      return Array.from({ length: installsTodayCount || 0 }, () => ({ clerkUserId: "test", effectSlug: "x", source: "web", day: "", at: "" }));
+    }
+    if (unlocksError) throw unlocksError;
+    return (unlockRows || []).map((row) => ({ clerkUserId: row.clerk_user_id, identityKey: row.identity_key, effectSlug: row.effect_slug, source: row.source, day: row.usage_date, at: `${row.usage_date}T00:00:00.000Z` }));
+  },
+  parseAudience: () => "customers",
+  getAudience: async () => ({ audience: "customers", users: [], includes: () => true, includesIdentity: () => true }),
+  fetchAllRows: async (build) => {
+    const { data, error } = await build();
+    if (error) throw error;
+    return data || [];
+  },
+}));
 
 vi.mock("@/lib/supabase", () => ({
   supabase: {
     from: vi.fn((table) => ({
       select: vi.fn((columns, opts) => {
         if (opts && opts.count === "exact" && opts.head === true) {
+          return makeTodayCountQuery();
+        }
+        if (table === "install_unlocks" && columns === "clerk_user_id") {
           return makeTodayCountQuery();
         }
         if (table === "install_unlocks") {
@@ -147,8 +175,8 @@ describe("admin/installs route", () => {
     expect(body.stats.installsToday).toBe(0);
   });
 
-  // totalInstalls (like Copies everywhere else it's shown) reads
-  // install_unlocks - the guaranteed-complete ledger - not install_events,
+  // totalInstalls reads installs (install_unlocks - the guaranteed-complete
+  // ledger - via fetchInstalls), not install_events,
   // which can silently lose a row (see lib/install-limit.js's retry).
   it("counts totalInstalls from install_unlocks, independent of install_events", async () => {
     isAdminResult = true;
@@ -196,40 +224,20 @@ describe("admin/installs route", () => {
     expect(body.stats.deniedCount).toBe(2);
   });
 
-  it("ranks users by successful copies (install_unlocks, source=web), resolving name (or falling back to email), and excludes anonymous rows", async () => {
+  it("ranks top installers across every source (web, CLI, MCP), resolving names, without anonymous rows", async () => {
     isAdminResult = true;
     unlockRows = [
       makeUnlock({ clerk_user_id: "user_a", effect_slug: "x" }),
-      makeUnlock({ clerk_user_id: "user_a", effect_slug: "y" }),
-      makeUnlock({ clerk_user_id: "user_a", effect_slug: "z", source: "cli" }), // not web, excluded from topUsers
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "y", source: "mcp" }),
+      makeUnlock({ clerk_user_id: "user_a", effect_slug: "z", source: "cli" }),
       makeUnlock({ clerk_user_id: "user_b", effect_slug: "x" }),
-      // Anonymous - no clerk_user_id, must never appear in topUsers.
+      // Anonymous - no clerk_user_id, never on the leaderboard.
       makeUnlock({ clerk_user_id: null, identity_key: "device:anon", effect_slug: "x" }),
     ];
     clerkUsers = [
-      { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], imageUrl: "https://img/a" },
-      // user_b has no name set on their Clerk profile - email is the fallback.
+      { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], hasImage: true, imageUrl: "https://img/a" },
+      // user_b has no name set on their Clerk profile - one is read from the email.
       { id: "user_b", fullName: null, firstName: null, emailAddresses: [{ emailAddress: "bea@example.com" }], imageUrl: null },
-    ];
-
-    const res = await GET(makeRequest());
-    const body = await res.json();
-
-    expect(body.topUsers).toEqual([
-      { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 2 },
-      { clerkUserId: "user_b", name: null, email: "bea@example.com", imageUrl: null, count: 1 },
-    ]);
-  });
-
-  it("ranks topInstallers across all sources, unlike topUsers", async () => {
-    isAdminResult = true;
-    unlockRows = [
-      makeUnlock({ clerk_user_id: "user_a", effect_slug: "x", source: "web" }),
-      makeUnlock({ clerk_user_id: "user_a", effect_slug: "y", source: "cli" }),
-      makeUnlock({ clerk_user_id: "user_a", effect_slug: "z", source: "mcp" }),
-    ];
-    clerkUsers = [
-      { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], imageUrl: "https://img/a" },
     ];
 
     const res = await GET(makeRequest());
@@ -237,29 +245,28 @@ describe("admin/installs route", () => {
 
     expect(body.topInstallers).toEqual([
       { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 3 },
+      { clerkUserId: "user_b", name: "Bea", email: "bea@example.com", imageUrl: null, count: 1 },
     ]);
-    // Only the one web-source row counts toward "copies".
-    expect(body.topUsers).toEqual([
-      { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 1 },
-    ]);
+    // Installs are one thing: there's no separate web-only "copies" board any more
+    expect(body.topUsers).toBeUndefined();
   });
 
   it("drops a user from the leaderboard entirely once their Clerk account is deleted", async () => {
     isAdminResult = true;
     unlockRows = [
       makeUnlock({ clerk_user_id: "user_a", effect_slug: "x" }),
-      // user_deleted has real historical unlocks, but no Clerk account left
+      // user_deleted has real historical installs, but no Clerk account left
       // to open a profile for - the leaderboard has nothing to link to.
       makeUnlock({ clerk_user_id: "user_deleted", effect_slug: "y" }),
     ];
     clerkUsers = [
-      { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], imageUrl: "https://img/a" },
+      { id: "user_a", fullName: "Ada Lovelace", emailAddresses: [{ emailAddress: "ada@example.com" }], hasImage: true, imageUrl: "https://img/a" },
     ];
 
     const res = await GET(makeRequest());
     const body = await res.json();
 
-    expect(body.topUsers).toEqual([
+    expect(body.topInstallers).toEqual([
       { clerkUserId: "user_a", name: "Ada Lovelace", email: "ada@example.com", imageUrl: "https://img/a", count: 1 },
     ]);
   });

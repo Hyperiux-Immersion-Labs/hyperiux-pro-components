@@ -27,7 +27,7 @@
     {
       "name": "color",
       "type": "color",
-      "default": "#ffffff",
+      "default": "#000000",
       "demoDefault": "#F0F3FF",
       "description": "Crosshair line and center color.",
       "remixer": {

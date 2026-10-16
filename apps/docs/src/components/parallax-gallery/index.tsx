@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
+ 
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 
+import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger);
 
 // True when the user has asked the OS to minimise animation. Safe to call
@@ -321,7 +322,7 @@ function ScrollParallaxGallery({
  filter:"none",
  }}
  >
- <img src={slide.src} alt={slide.id} className="absolute inset-0 object-cover w-full h-full" style={{ borderRadius: 0, filter:"none" }} draggable={false} />
+ <Image src={slide.src} alt={slide.id} className="absolute inset-0 object-cover w-full h-full" style={{ borderRadius: 0, filter:"none" }} draggable={false} fill sizes="100vw" loading="eager" />
  </div>
  </div>
  ))}
@@ -407,7 +408,7 @@ function ThumbStrip({
  borderRadius: 0,
  }}
  >
- <img src={slide.src} alt={slide.id} className="absolute inset-0 object-cover w-full h-full" style={{ borderRadius: 0, filter:"none" }} draggable={false} />
+ <Image src={slide.src} alt={slide.id} className="absolute inset-0 object-cover w-full h-full" style={{ borderRadius: 0, filter:"none" }} draggable={false} fill sizes="100vw" loading="eager" />
  </div>
  ))}
  </div>
@@ -534,10 +535,10 @@ const ParallaxGallery = ({
 export default ParallaxGallery;
 
 const images = [
-  "https://picsum.photos/seed/1/800/600",
-  "https://picsum.photos/seed/2/800/600",
-  "https://picsum.photos/seed/3/800/600",
-  "https://picsum.photos/seed/4/800/600",
-  "https://picsum.photos/seed/5/800/600",
-  "https://picsum.photos/seed/6/800/600",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-04.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-05.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
 ];

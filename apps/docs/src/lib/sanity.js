@@ -34,14 +34,19 @@ function getSanityClient() {
     projectId: PROJECT_ID,
     dataset: DATASET,
     apiVersion: API_VERSION,
-    useCdn: process.env.NODE_ENV === 'production',
+    useCdn: false,
     token: process.env.SANITY_API_TOKEN,
-    // Published documents only. With a token and this apiVersion the default
-    // perspective is "raw", which also returns drafts - any unpublished
-    // Studio edit then shows up as a duplicate effect card on the live site.
-    perspective: 'published',
   })
 }
+
+// Sanity content is cached until something is published: Sanity's publish
+// webhook calls /api/revalidate, which clears the effects / blog tag so every
+// page using it rebuilds on its next visit. SANITY_REVALIDATE is only a
+// safety net (a day) in case a webhook delivery is missed.
+export const SANITY_REVALIDATE = 86400
+export const SANITY_EFFECTS_TAG = 'sanity-effects'
+export const SANITY_BLOG_TAG = 'sanity-blog'
+const SANITY_EFFECT_FETCH_OPTIONS = {next: {revalidate: SANITY_REVALIDATE, tags: [SANITY_EFFECTS_TAG]}}
 
 function normalizeEffectEntries(entries = []) {
   return entries.map((entry) => {
@@ -189,17 +194,11 @@ export async function getSanityEffectContent(categorySlug, effectSlug) {
         lastUpdated,
         _updatedAt
       }`,
-      {categorySlugs, effectSlugs}
+      {categorySlugs, effectSlugs},
+      SANITY_EFFECT_FETCH_OPTIONS
     )
 
-    if (!content) return null
-
-    // jsxCode/tsxCode hold the full effect source. This content object is
-    // handed to the client component (and serialized into the RSC payload
-    // for every visitor), so the source is dropped here - it's only ever
-    // served through /api/effects/[slug]/copy after access + limit checks.
-    const { jsxCode, tsxCode, ...pageContent } = content
-    return pageContent
+    return content || null
   } catch (error) {
     console.warn(
       `Sanity effect content could not be loaded for ${categorySlug}/${effectSlug}`,
@@ -210,10 +209,9 @@ export async function getSanityEffectContent(categorySlug, effectSlug) {
   }
 }
 
-// Full component source for the effect page's "Copy code" dropdown. Server
+// Full component source for the effect page's "Get code" dropdown. Server
 // only - call it after the access/limit checks in /api/effects/[slug]/copy.
-// Published documents only (drafts may hold unreviewed code), regardless of
-// whether the client's token could otherwise see drafts.
+// Published documents only (drafts may hold unreviewed code).
 export async function getSanityEffectSource(effectSlug) {
   if (!isSanityConfigured()) return null
 
@@ -226,7 +224,8 @@ export async function getSanityEffectSource(effectSlug) {
       jsxCode,
       tsxCode
     }`,
-    {effectSlugs}
+    {effectSlugs},
+    SANITY_EFFECT_FETCH_OPTIONS
   )
 }
 
@@ -257,7 +256,9 @@ export async function getAllSanityEffectEntries() {
         coverImage,
         videoUrl,
         previewUrl
-      }`
+      }`,
+      {},
+      SANITY_EFFECT_FETCH_OPTIONS
     )
 
     return normalizeEffectEntries(entries)
@@ -271,17 +272,54 @@ export async function getAllSanityEffectEntries() {
   }
 }
 
+// Every effect's written guide for /ai-components, /ai-components.json and
+// /llms.txt: summary, SEO description, FAQ and the body's text sections, plus
+// short code blocks only. The body's "Component Code" block is the effect's full
+// source (paid source for Pro effects), so code over a few KB is never fetched
+// here, and lib/ai-catalogue keeps only the "Usage Code" snippet.
+export async function getAllSanityEffectGuides() {
+  if (!isSanityConfigured()) return []
+
+  try {
+    const client = getSanityClient()
+
+    const entries = await client.fetch(
+      `*[_type == "effectContent" && defined(categorySlug) && defined(effectSlug) && !(_id in path("drafts.**"))]
+        | order(orderRank asc, addedAt desc, _createdAt asc){
+        categorySlug,
+        effectSlug,
+        title,
+        summary,
+        tier,
+        tags,
+        relatedEffectNames,
+        "seoDescription": seo.description,
+        "faq": body[_type == "effectFaqAccordion"][0].items[]{question, answer},
+        "body": body[_type in ["block", "effectCodeBlock"]]{
+          _type,
+          style,
+          "text": select(_type == "block" => pt::text(@)),
+          "code": select(_type == "effectCodeBlock" && length(code) <= 4000 => code)
+        }
+      }`,
+      {},
+      SANITY_EFFECT_FETCH_OPTIONS
+    )
+
+    return entries || []
+  } catch (error) {
+    console.warn('Sanity effect guides could not be loaded:', error?.message || error)
+
+    return []
+  }
+}
+
 // --- Blog ---
 // Same pattern as getSanityEffectContent/getAllSanityEffectEntries above:
 // never throws, falls back to null/[] with a console.warn so a Sanity outage
 // degrades the blog rather than breaking the build/page.
 
-// Cached in Next's data cache and refreshed at most every 5 minutes, so a
-// post published in Studio goes live without a redeploy while page views
-// don't each hit the Sanity API. Keep in step with `revalidate` on the blog
-// routes.
-export const BLOG_REVALIDATE_SECONDS = 300
-const SANITY_BLOG_FETCH_OPTIONS = {next: {revalidate: BLOG_REVALIDATE_SECONDS}}
+const SANITY_BLOG_FETCH_OPTIONS = {next: {revalidate: SANITY_REVALIDATE, tags: [SANITY_BLOG_TAG]}}
 
 async function hydrateBlogAuthors(client, posts = []) {
   const authorIds = [

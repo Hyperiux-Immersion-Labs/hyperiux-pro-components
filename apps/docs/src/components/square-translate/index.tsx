@@ -155,7 +155,7 @@ export default function SquareTranslate(props: ComponentProps<typeof SquareTrans
         <>
 
             <SquareTranslateComp
-                textClassName="text-[1.1vw] max-[1025px]:text-lg"
+                textClassName="text-[1.1vw] max-lg:text-lg"
                 textColor="text-black"
                 squareClassName="w-[.6vw] h-[.6vw] max-md:w-3 max-md:h-3"
                 containerClassName="w-[50vw]  max-md:w-full"

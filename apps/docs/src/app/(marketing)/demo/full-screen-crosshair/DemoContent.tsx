@@ -2,10 +2,9 @@
 
 import HeadAnim from "@/components/Animations/HeadAnim";
 import FullScreenCrosshair from "@/components/full-screen-crosshair";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
-import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -16,23 +15,13 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <main className="h-screen w-screen relative bg-[#211951] text-[#826fffaa]">
-          <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
+          <DemoHeader
+            reducedMotionNote={{
+              title: "The crosshair keeps tracking.",
+              body: "Full Screen Crosshair follows your cursor continuously across the screen. Since tracking motion is the entire effect, reduced motion can't be applied here.",
+            }}
+          />
           {effect}
-          <ReducedMotionNotice>
-            <div
-              aria-live="polite"
-              className="pointer-events-none fixed bottom-4 right-4 z-99999 w-fit max-w-65 rounded-md border border-white/15 bg-white/10 p-3 text-center backdrop-blur-sm max-[1025px]:hidden"
-            >
-              <h2 className="text-sm leading-none text-white">
-                The crosshair keeps tracking.
-              </h2>
-              <p className="mt-2 text-xs leading-5 text-white/65">
-                Full Screen Crosshair follows your cursor continuously across the
-                screen. Since tracking motion is the entire effect, reduced motion
-                can&apos;t be applied here.
-              </p>
-            </div>
-          </ReducedMotionNotice>
           <HeadAnim>
             <h1 className="w-full h-full flex items-center justify-center text-center text-[3.5vw] font-medium max-md:text-[6.5vw]">
               Full Screen Crosshair

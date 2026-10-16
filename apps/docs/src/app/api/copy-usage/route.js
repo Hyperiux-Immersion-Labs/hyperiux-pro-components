@@ -27,6 +27,7 @@ export async function GET() {
       signedIn: true,
       isAdmin: true,
       plan: identity.plan,
+      tier: identity.tier,
       limit: null,
       count: 0,
       remaining: null,
@@ -41,6 +42,7 @@ export async function GET() {
     signedIn: true,
     isAdmin: false,
     plan: identity.plan,
+    tier: identity.tier,
     limit: identity.limit,
     count,
     remaining: Math.max(0, identity.limit - count),
@@ -55,7 +57,10 @@ export async function POST(request) {
     return NextResponse.json({ allowed: false, signedIn: false }, { status: 401 });
   }
 
-  const { effectSlug } = await request.json().catch(() => ({}));
+  const { effectSlug, source } = await request.json().catch(() => ({}));
+  // What was copied: code from the site ("web", the default), or a command or prompt
+  // for the CLI ("cli") / an AI editor over MCP ("mcp") - copying one counts as that install
+  const surface = ["web", "cli", "mcp"].includes(source) ? source : "web";
 
   if (!effectSlug || typeof effectSlug !== "string") {
     return NextResponse.json({ allowed: false, error: "Missing effectSlug." }, { status: 400 });
@@ -63,7 +68,7 @@ export async function POST(request) {
 
   const result = await getInstallLimitDecision({
     effectSlug,
-    source: "web",
+    source: surface,
     clerkUserId: userId,
   });
 
@@ -74,6 +79,7 @@ export async function POST(request) {
         signedIn: true,
         isAdmin: false,
         plan: result.plan,
+        tier: result.tier,
         limit: result.limit,
         count: result.count,
         remaining: result.remaining,
@@ -90,6 +96,7 @@ export async function POST(request) {
     signedIn: true,
     isAdmin: result.reason === "admin",
     plan: result.plan,
+    tier: result.tier,
     limit: result.limit,
     count: result.count,
     remaining: result.remaining,

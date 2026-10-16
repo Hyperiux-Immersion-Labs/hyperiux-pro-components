@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
+ 
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import React, { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
 
+import Image from "next/image";
 // True when the user has asked the OS to minimise animation. Safe to call
 // during render - returns false on the server.
 function prefersReducedMotion() {
@@ -217,9 +218,9 @@ export function RotationSliderComp({
                     ref={trackRef}
                     className="
             flex h-full items-center will-change-transform
-            gap-[5vw] max-[1025px]:gap-[8vw] max-md:gap-[12vw]
+            gap-[5vw] max-lg:gap-[8vw] max-md:gap-[12vw]
             pl-[31vw] pr-[31vw]
-            max-[1025px]:pl-[22vw] max-[1025px]:pr-[22vw]
+            max-lg:pl-[22vw] max-lg:pr-[22vw]
             max-md:pl-[12vw] max-md:pr-[12.5vw]
           "
                     style={{ transformStyle: "preserve-3d" }}
@@ -232,9 +233,9 @@ export function RotationSliderComp({
                             }}
                             className="
                 relative flex h-[45vh] w-[38vw] shrink-0 items-center justify-center
-                max-[1025px]:h-[40vh] max-[1025px]:w-[55vw]
+                max-lg:h-[40vh] max-lg:w-[55vw]
                 max-md:h-[35vh] max-md:w-[75vw]
-                max-[1025px]:[&>div]:h-[40vh] max-[1025px]:[&>div]:w-[50vw]
+                max-lg:[&>div]:h-[40vh] max-lg:[&>div]:w-[50vw]
                 max-md:[&>div]:h-[35vh] max-md:[&>div]:w-[75vw]
               "
                             style={{ transformStyle: "preserve-3d" }}
@@ -284,16 +285,20 @@ const RotationCard = forwardRef<HTMLDivElement, RotationCardProps>(({ src, index
                     transformStyle: "preserve-3d",
                 }}
             >
-                <img
+                {src && (
+                <Image
                     src={src}
                     alt="slider"
                     className="absolute inset-0 h-full w-full object-cover"
+                    fill
+                    loading="eager"
                 />
+                )}
             </div>
 
             {showCaptions && text && (
                 <div
-                    className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center text-[1.4vw] font-medium max-[1025px]:text-[2.4vw] max-md:text-[4vw]"
+                    className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-center text-[1.4vw] font-medium max-lg:text-[2.4vw] max-md:text-[4vw]"
                     style={{
                         color: textColor,
                         textShadow:

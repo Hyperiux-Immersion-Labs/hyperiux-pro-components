@@ -79,20 +79,16 @@ export async function POST(req) {
         email_notify: 0,
       });
 
-      // These notes live on the Invoice object above, NOT automatically on
-      // its auto-generated underlying order - confirmed via direct API
-      // inspection (a real order created this way came back with
-      // "notes": []). RazorpayCheckoutButton opens Checkout.js with only
-      // this order_id (no invoice_id), and per Razorpay's own docs a plain
-      // order_id checkout's handler callback only ever returns
-      // razorpay_order_id/payment_id/signature - never invoice fields - so
-      // verify-payment can only ever look this purchase up by the ORDER's
-      // notes, never the invoice's. Without this edit, every template
-      // purchase 403s in verify-payment ("Order does not belong to this
-      // user") after Razorpay's own checkout already told the buyer it
-      // succeeded, with no recovery path.
+      // The invoice's notes don't carry over to its auto-generated order, and
+      // Checkout.js only ever hands verify-payment that ORDER (order_id,
+      // payment_id, signature - never invoice fields). Without copying the
+      // notes onto the order, verify-payment can't tell whose purchase it is
+      // and every template purchase fails after Razorpay already took the
+      // money. Same fix as the reference repo (hyperiux-pro-components).
+      // The invoice's receipt page goes on too, so the purchase is recorded with its link
+      // (the buyer's receipt on the dashboard's Invoicing tab).
       await razorpay.orders.edit(invoice.order_id, {
-        notes: { clerk_user_id: userId, template_slug: templateSlug },
+        notes: { clerk_user_id: userId, template_slug: templateSlug, invoice_url: invoice.short_url || "" },
       });
 
       return NextResponse.json({

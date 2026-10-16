@@ -3,26 +3,18 @@
 import Link from "next/link";
 import ImmersiveFullscreenNav from "@/components/immersive-full-screen-nav";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
     <RegistryRemixerDemo
-      registry={{
-        ...registry,
-        remixer: {
-          ...registry?.remixer,
-          layout: {
-            ...registry?.remixer?.layout,
-            // Drops the launcher below the nav's hamburger button.
-            containerClassName: "[&>div]:top-[12vh]!",
-          },
-        },
-      }}
+      registry={registry}
       component={ImmersiveFullscreenNav}
       copyCodeOptions={{ propsVariableName: "immersiveFullscreenNavProps" }}
     >
       {({ effect }) => (
         <div className="relative min-h-screen bg-white">
+          <DemoHeader />
           {effect}
           <main className="flex h-screen items-center justify-center bg-white max-sm:px-[7vw] text-center">
             <div className="max-w-5xl mx-auto text-center text-black">

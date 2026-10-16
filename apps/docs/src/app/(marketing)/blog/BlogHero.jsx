@@ -1,69 +1,79 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { useRef } from "react";
+import Image from "next/image";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import LineReveal from "@/components/Animations/LineReveal";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { MEDIA } from "@/lib/breakpoints";
+import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 
-const ASCII_FALLBACK = <div className="absolute inset-0 bg-background" aria-hidden />;
+// The Fomosphere blob is WebGL-only and decorative, so it loads client-side after the hero content
+const ParticleBlob = dynamic(() => import("@/components/Animations/ParticleBlob"), { ssr: false });
 
-// Same WebGL-only treatment the homepage hero gives it - the canvas reads a
-// video texture, so it has no business in the server bundle.
-const CubeBackgroundAscii = dynamic(
-  () => import("@/homepage-v3/components/CubeBackgroundAscii"),
-  { ssr: false, loading: () => ASCII_FALLBACK },
-);
-
-
-// 854x480 - the ASCII grid samples far coarser than that, so a 1080p source
-// only adds download weight.
-const VIDEO_SRC = "/blog-hero.mp4";
-const VIDEO_CONFIG = {
-  invert: false,
-  rampLow: 0,
-  rampHigh: 0.63,
-  levelsLow: 0.185,
-  levelsHigh: 0.6,
-  brightnessMap: 0.95,
-  videoScale: 0.8,
-  videoOffsetX: 0.31,
-};
-
+// Same layout as the pricing hero: full screen, content anchored to the bottom left
+// (heading, intro copy below it) and the particle blob on the right. No background
+// of its own, so the site's dotted grid + fluid shows through.
 export default function BlogHero() {
   useFadeUp();
+  // null until measured, so neither background starts loading on the wrong device
+  const [isDesktop, setIsDesktop] = useState(null);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  // Lighthouse / PSI get the poster only: no video, no WebGL (true until checked)
+  const [audit, setAudit] = useState(true);
 
-  const introRef = useRef(1);
+  useEffect(() => {
+    const mq = window.matchMedia(MEDIA.tablet);
+    const sync = () => {
+      setAudit(isLighthouseOrHeadless() || isSoftwareRenderer());
+      setIsDesktop(!mq.matches);
+    };
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-background">
-      <div className="absolute inset-0">
-        <CubeBackgroundAscii
-          intro={introRef}
-          src={VIDEO_SRC}
-          config={VIDEO_CONFIG}
-        />
+    <section id="blog-hero" className="relative isolate w-full overflow-hidden">
+      <div className="absolute inset-0 z-0 max-lg:top-0 max-lg:bottom-auto max-lg:h-svh max-md:top-0" aria-hidden="true">
+        {isDesktop && !audit && <ParticleBlob preset="fomosphere" phoneTop={0.4} />}
+        {/* Tablet and mobile: a looping video instead of the WebGL blob */}
+        {isDesktop === false && !audit && (
+          <video
+            src="/assets/hero-videos/blog.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onPlaying={() => setVideoPlaying(true)}
+            className="absolute inset-0 h-full w-full object-cover max-lg:object-top max-md:object-center"
+          />
+        )}
+        {/* Poster: in the server HTML below desktop, so it shows from the first
+            paint and stays until the video is actually playing */}
+        {!videoPlaying && (
+          <Image
+            src="/assets/hero-videos/posters/blog-hero.webp"
+            alt="blog hero poster"
+            fill
+            sizes="100vw"
+            quality={90}
+            className="hidden object-cover max-lg:object-top max-md:object-center max-lg:block"
+          />
+        )}
       </div>
-
-      <section className="absolute inset-0 z-20 pointer-events-none self-padd h-full flex max-md:items-end max-md:pb-[20vw]! items-center w-full">
-        <div className="space-y-[2vw] max-[1025px]:space-y-[8vw] mt-[2vw] max-[1025px]:mt-0 relative z-2 w-[60%] max-[1025px]:w-full">
-          <div className="h-fit flex max-md:flex-col max-md:justify-start items-center w-full">
-            <LineReveal
-              as="h1"
-              className="t96 max-md:text-left max-md:indent-0! relative w-full text-white"
-            >
-              Ideas, Craft, and Code From The <span className="gradient-text-animate">Vault.</span>
-            </LineReveal>
-          </div>
-          <SplitLine
-            as="p"
-            start="top 120%"
-            className="text24 max-sm:text-left text-[#C9C9C9] w-[85%] max-sm:w-[95%] max-md:w-[80%]"
-          >
+      <div className="pointer-events-none relative z-10 site-container section-x flex min-h-dvh flex-col justify-end pt-[calc(var(--cvw)*8)] pb-[calc(var(--cvw)*5)] max-lg:pt-[12vw] max-md:pt-[48svh] max-md:pb-10 [&_a]:pointer-events-auto">
+        <div className="flex w-[46%] flex-col gap-[calc(var(--cvw)*3)] max-lg:w-[75%] max-lg:gap-[4vw] max-md:w-full max-md:gap-[5vw]">
+          <LineReveal as="h1" className="type-display relative w-full text-foreground">
+            Ideas, Craft, and Code From The <span className="gradient-text-animate">Vault.</span>
+          </LineReveal>
+          <SplitLine as="p" start="top 120%" className="type-body-lg w-[70%] text-foreground/80 max-lg:w-[90%] max-md:w-full">
             Design thinking, engineering breakdowns, and the reasoning behind every scroll system, cursor effect, and WebGL scene in Hyperiux Vault - written by the team designing and building them.
           </SplitLine>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }

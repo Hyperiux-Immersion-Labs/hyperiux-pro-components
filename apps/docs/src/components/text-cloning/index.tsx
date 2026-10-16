@@ -402,7 +402,7 @@ export default function TextCloning({
                 value={text}
                 onChange={(e) => setText(e.target.value || "")}
                 placeholder="Type text"
-                className="w-fit px-[2vw] py-[1vw] rounded-full border border-white/20 fixed bottom-[5%] z-10 left-1/2 -translate-x-1/2 focus:border-[#ff5f00] focus:outline-[#ff5f00] max-[1025px]:px-[5vw] max-md:py-[3vw] max-[1025px]:py-[2vw] max-[1025px]:text-[3vw]! max-md:text-[4vw]! text-center"
+                className="w-fit px-[2vw] py-[1vw] rounded-full border border-white/20 fixed bottom-[5%] z-10 left-1/2 -translate-x-1/2 focus:border-[#ff5f00] focus:outline-[#ff5f00] max-lg:px-[5vw] max-md:py-[3vw] max-lg:py-[2vw] max-lg:text-[3vw]! max-md:text-[4vw]! text-center"
             />
 
             <canvas

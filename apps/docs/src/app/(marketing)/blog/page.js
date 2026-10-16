@@ -1,5 +1,5 @@
-import NavbarV3 from "@/homepage-v3/components/NavbarV3";
-import FooterV3 from "@/homepage-v3/sections/FooterV3";
+import Navbar from "@/homepage/components/Navbar";
+import dynamic from "next/dynamic";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import {
   getSanityBlogEntries,
@@ -9,9 +9,13 @@ import {
 import { getSearchIndexEffects } from "@/lib/search-index";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { WebpageJsonLd } from "@/lib/json-ld";
-import BlogListing from "./BlogListing";
 import BlogHero from "./BlogHero";
 import FeaturedBlog from "./FeaturedBlog";
+import SectionOverlay from "@/components/Animations/SectionOverlay";
+
+// Below-the-fold sections load as separate chunks (still server-rendered)
+const Footer = dynamic(() => import("@/homepage/sections/Footer"));
+const BlogListing = dynamic(() => import("./BlogListing"));
 
 const POSTS_PER_PAGE = 9;
 
@@ -21,6 +25,9 @@ export const metadata = createPageMetadata({
   path: "/blog",
 });
 
+// The listing reads ?category / ?page, so it renders per request - but its Sanity
+// data is cached until a publish clears it (see SANITY_REVALIDATE in lib/sanity),
+// so it doesn't wait on Sanity each time.
 export default async function BlogIndexPage({ searchParams }) {
   const params = await searchParams;
   const category = typeof params?.category === "string" ? params.category : undefined;
@@ -45,20 +52,24 @@ export default async function BlogIndexPage({ searchParams }) {
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
-      <NavbarV3 effects={effects} />
+      <Navbar effects={effects} />
       <LenisSmoothScroll />
       <BlogHero />
-      <main className="relative z-20 mx-auto flex max-w-full flex-col gap-[8vw] bg-background px-[4vw] py-[6vw] max-[1025px]:px-[5vw] max-md:gap-[14vw] max-md:px-0 max-md:py-[12vw]">
+     
+      <SectionOverlay className="relative z-201">
+      <main data-sound-hover="off" data-sound-flow="off" className="relative flex flex-col bg-light text-ink">
         <FeaturedBlog featuredPost={featuredPost} />
         <BlogListing
           posts={gridPosts}
+          total={total}
           categories={categories}
           activeCategory={category || "all"}
           page={page}
           pageCount={pageCount}
         />
       </main>
-      <FooterV3 />
+      </SectionOverlay>
+      <Footer />
     </>
   );
 }

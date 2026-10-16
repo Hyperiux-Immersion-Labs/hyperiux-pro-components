@@ -1,6 +1,6 @@
 "use client";
 
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
@@ -18,7 +18,7 @@ export default function DemoContent({ registry }: { registry: any }) {
           <DemoHeader />
           <LenisSmoothScroll />
           {effect}
-          <ScrollBottom textColor="text-black" />
+          <ScrollBottom />
         </>
       )}
     </RegistryRemixerDemo>

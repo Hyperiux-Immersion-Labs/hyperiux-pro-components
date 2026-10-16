@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
+ 
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+import Image from "next/image";
 gsap.registerPlugin(SplitText);
 
 const SCROLL_PER_PX = 1.0;
@@ -489,7 +490,7 @@ export function ZoomSliderComp({
                 willChange: 'width, height',
               }}
             >
-              <img
+              <Image
                 src={item.src}
                 alt={item.title}
                 draggable={false}
@@ -500,6 +501,8 @@ export function ZoomSliderComp({
                   transition: 'none',
                   willChange: 'auto',
                 }}
+                fill
+                loading="eager"
               />
             </div>
           </div>

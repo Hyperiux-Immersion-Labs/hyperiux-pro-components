@@ -1,9 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { razorpay } from "@/lib/razorpay";
+import { razorpay, withRazorpayRetry } from "@/lib/razorpay";
 import { markUserProFromSubscription, recordInvoice } from "@/lib/pro-access";
+import { grantCreditsForCharge } from "@/lib/template-credits";
+import { cancelReplacedSubscription } from "@/lib/subscription-events";
 import { recordTemplatePurchase } from "@/lib/template-purchases";
+import { ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 
 function isValidSignature(payload, signature) {
   const expected = Buffer.from(
@@ -18,6 +21,16 @@ function isValidSignature(payload, signature) {
     expected.length === received.length &&
     crypto.timingSafeEqual(expected, received)
   );
+}
+
+// Right after checkout Razorpay can still report a just-paid subscription as
+// "created" for a moment. Re-fetch briefly so a real payment isn't refused.
+async function fetchSettledSubscription(subscriptionId, { attempts = 3, delayMs = 1000 } = {}) {
+  for (let attempt = 1; ; attempt++) {
+    const subscription = await withRazorpayRetry(() => razorpay.subscriptions.fetch(subscriptionId));
+    if (subscription?.status !== "created" || attempt >= attempts) return subscription;
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
 }
 
 export async function POST(req) {
@@ -74,9 +87,7 @@ export async function POST(req) {
     }
 
     if (razorpay_subscription_id) {
-      const subscription = await razorpay.subscriptions.fetch(
-        razorpay_subscription_id
-      );
+      const subscription = await fetchSettledSubscription(razorpay_subscription_id);
 
       if (subscription?.notes?.clerk_user_id !== userId) {
         return NextResponse.json(
@@ -85,12 +96,37 @@ export async function POST(req) {
         );
       }
 
+      // A valid proof stays valid forever, so re-posting an old one must not
+      // re-grant a subscription that has since been cancelled (audit H3)
+      if (!ACTIVE_PRO_STATUSES.includes(subscription?.status)) {
+        return NextResponse.json(
+          { error: "This subscription isn't active", reason: "subscription_not_active" },
+          { status: 409 }
+        );
+      }
+
       // Activate immediately - covers local dev where webhooks can't reach us.
       // Production webhooks re-confirm on subscription.activated/charged.
-      const result = await markUserProFromSubscription({
-        clerkUserId: userId,
-        subscription,
-      });
+      // The payment is genuine (signature checked above) and Razorpay has the
+      // subscription active, so a failure to record it here (a database timeout,
+      // already retried inside) isn't a failed payment: the visitor is told it's
+      // received and activating, and the subscription.activated / charged webhook
+      // records it. 202, not 500 - the checkout must not show "payment failed".
+      let result;
+      try {
+        result = await markUserProFromSubscription({
+          clerkUserId: userId,
+          subscription,
+        });
+      } catch (activationError) {
+        console.error("VERIFY_PAYMENT_ACTIVATION_PENDING:", razorpay_subscription_id, activationError);
+        return NextResponse.json({ verified: true, pending: true, reason: "activation_pending" }, { status: 202 });
+      }
+
+      // A Pro -> Pro+ upgrade: Pro+ is paid, so the old Pro subscription is
+      // cancelled now and never charges again. The webhook tries too, in case
+      // this fails.
+      await cancelReplacedSubscription(subscription);
 
       // Records the invoice here too, not just from the subscription.charged
       // webhook - that webhook is the only place this happened before, so a
@@ -103,8 +139,26 @@ export async function POST(req) {
       // Razorpay fetch hiccup here can't block the plan activation the user
       // is waiting on.
       try {
-        const payment = await razorpay.payments.fetch(razorpay_payment_id);
+        const payment = await withRazorpayRetry(() => razorpay.payments.fetch(razorpay_payment_id));
         await recordInvoice({ clerkUserId: userId, subscription, payment });
+
+        // Same reasoning for template credits: the visitor may open a
+        // template right after paying, before the webhook lands. This is
+        // always the subscription's first charge, even if Razorpay hasn't
+        // bumped paid_count yet; the webhook's later grant for the same
+        // payment is a no-op. Logged on its own so a failure here isn't
+        // mistaken for an invoice problem.
+        try {
+          await grantCreditsForCharge({
+            clerkUserId: userId,
+            subscription: { ...subscription, paid_count: subscription.paid_count || 1 },
+            payment,
+            // Checkout's payment for an upgrade is its prorated upfront amount
+            isUpgradePayment: Boolean(subscription.notes?.replaces_subscription_id),
+          });
+        } catch (creditError) {
+          console.error("VERIFY_PAYMENT_GRANT_CREDITS_ERROR:", creditError);
+        }
       } catch (invoiceError) {
         console.error("VERIFY_PAYMENT_RECORD_INVOICE_ERROR:", invoiceError);
       }
@@ -121,12 +175,20 @@ export async function POST(req) {
     // already the real receipt link, no separate payment/invoice lookup
     // needed the way the old bare-order flow required.
     if (razorpay_invoice_id) {
-      const invoice = await razorpay.invoices.fetch(razorpay_invoice_id);
+      const invoice = await withRazorpayRetry(() => razorpay.invoices.fetch(razorpay_invoice_id));
 
       if (invoice?.notes?.clerk_user_id !== userId) {
         return NextResponse.json(
           { error: "Invoice does not belong to this user" },
           { status: 403 }
+        );
+      }
+
+      // Razorpay signs every invoice status, not just "paid" (audit H3)
+      if (invoice?.status !== "paid") {
+        return NextResponse.json(
+          { error: "This invoice hasn't been paid", reason: "invoice_not_paid" },
+          { status: 409 }
         );
       }
 
@@ -155,17 +217,13 @@ export async function POST(req) {
       });
     }
 
-    // Order (one-time payment) branch - the comment this replaced assumed
-    // every template purchase goes through the invoice branch above
-    // instead, but that assumption doesn't hold: RazorpayCheckoutButton
-    // opens Checkout.js with only order_id (no invoice_id), and per
-    // Razorpay's own docs that always returns razorpay_order_id, never
-    // razorpay_invoice_id, in the handler callback - so template purchases
-    // actually land HERE, every time, not in the invoice branch above.
-    // create-order/route.js now mirrors the invoice's notes onto this order
-    // via orders.edit() specifically so this branch can identify and record
-    // them, the same way the invoice branch already does for itself.
-    const order = await razorpay.orders.fetch(razorpay_order_id);
+    // Order (one-time payment) branch. Template purchases land here, every
+    // time: Checkout.js is opened with the invoice's order_id, and its
+    // handler only ever returns razorpay_order_id - never an invoice ID - so
+    // the invoice branch above doesn't see them. create-order copies the
+    // buyer and template onto this order's notes (orders.edit) exactly so
+    // this branch can record the purchase.
+    const order = await withRazorpayRetry(() => razorpay.orders.fetch(razorpay_order_id));
 
     if (order?.notes?.clerk_user_id !== userId) {
       return NextResponse.json(
@@ -182,6 +240,8 @@ export async function POST(req) {
         razorpayOrderId: razorpay_order_id,
         amount: typeof order.amount === "number" ? order.amount / 100 : null,
         currency: order.currency || "USD",
+        // The invoice's receipt page (create-order puts it on the order)
+        invoiceUrl: order.notes.invoice_url || null,
       });
     }
 

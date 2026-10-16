@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import { useEffect, useRef } from "react";
 
+import Image from "next/image";
 gsap.registerPlugin(InertiaPlugin);
 
 interface InertiaImageCompProps {
@@ -143,14 +144,13 @@ function InertiaImageComp({
  ref={rootRef}
  className="relative grid min-h-screen w-full place-items-center "
  >
- <div className="grid grid-cols-4 gap-[1vw] max-[1025px]:gap-[8vw] max-md:gap-[5vw] max-[1025px]:grid-cols-3 max-md:grid-cols-2">
+ <div className="grid grid-cols-4 gap-[1vw] max-lg:gap-[8vw] max-md:gap-[5vw] max-lg:grid-cols-3 max-md:grid-cols-2">
  {images.map((src, i) => (
  <div
  key={i}
- className="media-item relative h-[12vw] w-[12vw] max-[1025px]:h-[22vw] max-[1025px]:w-[22vw] max-md:h-[35vw] max-md:w-[35vw]"
+ className="media-item relative h-[12vw] w-[12vw] max-lg:h-[22vw] max-lg:w-[22vw] max-md:h-[35vw] max-md:w-[35vw]"
  >
- {/* eslint-disable-next-line @next/next/no-img-element */}
- <img src={src} alt="asset-image" className="absolute inset-0 pointer-events-none block rounded-[4%] object-contain will-change-transform" />
+ <Image src={src} alt="asset-image" className="absolute inset-0 pointer-events-none block rounded-[4%] object-contain will-change-transform" fill sizes="100vw" loading="eager" />
  </div>
  ))}
  </div>
@@ -161,18 +161,18 @@ function InertiaImageComp({
 }
 
 const images = [
-   "https://picsum.photos/seed/1/800/600",
-    "https://picsum.photos/seed/2/800/600",
-    "https://picsum.photos/seed/3/800/600",
-    "https://picsum.photos/seed/4/800/600",
-    "https://picsum.photos/seed/5/800/600",
-    "https://picsum.photos/seed/6/800/600",
-    "https://picsum.photos/seed/7/800/600",
-    "https://picsum.photos/seed/8/800/600",
-    "https://picsum.photos/seed/9/800/600",
-    "https://picsum.photos/seed/10/800/600",
-    "https://picsum.photos/seed/11/800/600",
-    "https://picsum.photos/seed/12/800/600",
+   "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-1.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-2.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-3.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-4.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-5.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-6.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-7.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-8.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-9.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-1.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-2.png",
+    "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/inertia-img/inertia-3.png",
 ];
 
 const InertiaImage = ({

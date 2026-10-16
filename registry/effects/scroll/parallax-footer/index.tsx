@@ -94,11 +94,11 @@ const ParallaxFooter = ({
  footerStyle={{ backgroundColor: footerBgColor }}
  >
  <div className="max-w-7xl mx-auto flex justify-between max-md:flex-col max-md:justify-start max-md:gap-[12vw]">
- <div className="w-[40%] max-[1025px]:w-[70%] max-md:w-[80%]">
+ <div className="w-[40%] max-lg:w-[70%] max-md:w-[80%]">
  <h2 className="text-5xl font-semibold max-md:text-[7.5vw]">
 Let’s build something worth remembering.
  </h2>
- <p className="mt-4 text-sm max-[1025px]:text-xl">
+ <p className="mt-4 text-sm max-lg:text-xl">
  Fully dynamic height. Add anything here - it just works.
  </p>
  </div>
@@ -107,7 +107,7 @@ Let’s build something worth remembering.
 <a
   className="inline-flex items-center gap-1 rounded-full bg-white px-6 py-3 text-[#1a1a1a] transition-transform hover:scale-105"
 >
-  Browse effects
+  Browse All Effects
   <ArrowRight className="h-4 w-4" />
 </a>
  </div>

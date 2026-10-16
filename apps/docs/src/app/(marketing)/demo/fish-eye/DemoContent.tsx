@@ -2,9 +2,8 @@
 
 import FishEye from "@/components/fish-eye";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
-import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -29,7 +28,12 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader />
+          <DemoHeader
+            reducedMotionNote={{
+              title: "The lens keeps bending.",
+              body: "Fish Eye distorts the image as your cursor moves across it. Since the warp is driven entirely by motion, there's no reduced motion version to fall back on.",
+            }}
+          />
           <LenisSmoothScroll />
 
           <div className="h-screen w-full bg-zinc-200 max-md:p-[20vw] max-sm:p-[10vw] max-md:flex-col flex items-start p-[5vw] pt-[6.5vw] justify-between max-md:justify-center max-md:gap-[10vw] max-md:items-center">
@@ -54,21 +58,6 @@ export default function DemoContent({ registry }: { registry: any }) {
             </div>
 
             {effect}
-            <ReducedMotionNotice>
-              <div
-                aria-live="polite"
-                className="pointer-events-none fixed bottom-8 left-20 z-40 w-fit max-w-[30vw] rounded-md border border-black/10 bg-white p-3 text-center max-md:hidden"
-              >
-                <h2 className="text-sm leading-none text-black">
-                  The lens keeps bending.
-                </h2>
-                <p className="mt-2 text-xs leading-5 text-black">
-                  Fish Eye distorts the image as your cursor moves across it.
-                  Since the warp is driven entirely by motion, there&apos;s no
-                  reduced motion version to fall back on.
-                </p>
-              </div>
-            </ReducedMotionNotice>
 
             <div className="absolute bottom-[1vw] right-[3vw] z-40 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-full text-black text-[1.1vw] max-md:hidden shadow-md">
               Float your cursor over an image - watch the scene bulge, wobble

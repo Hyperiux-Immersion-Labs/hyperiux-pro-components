@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
+import { keepServerPaint, useFromServerHtml } from "./serverPaint";
 import gsap from "gsap";
 import { SplitText } from "gsap/dist/SplitText";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -34,6 +35,32 @@ function isInViewport(element) {
   return rect.top < window.innerHeight * 0.9 && rect.bottom > 0;
 }
 
+// `gradient-text-single`: one gradient runs across the whole phrase instead
+// of restarting in every word. Each word paints a phrase-wide gradient offset
+// by where it sits in the phrase (words on later lines continue from where
+// the previous line ended); one tween on the phrase drifts it for every word,
+// like .gradient-text-animate's 300%-wide gradient sliding its full span.
+const GRADIENT_DRIFT_S = 10;
+
+function spanGradientAcross(phrase, words) {
+  let x = 0;
+  words.forEach((word, i) => {
+    word.classList.add("gradient-text-single-word");
+    word.style.setProperty("--g-x", `${x}px`);
+    const rect = word.getBoundingClientRect();
+    const next = words[i + 1]?.getBoundingClientRect();
+    const sameLine = next && Math.abs(next.top - rect.top) < rect.height / 2;
+    x += sameLine ? next.left - rect.left : rect.width;
+  });
+  phrase.style.setProperty("--g-w", `${x}px`);
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
+  return gsap.fromTo(
+    phrase,
+    { "--g-shift": "0px" },
+    { "--g-shift": `${-2 * x}px`, duration: GRADIENT_DRIFT_S, ease: "sine.inOut", repeat: -1, yoyo: true },
+  );
+}
+
 export default function LineReveal({
   text,
   children,
@@ -52,9 +79,11 @@ export default function LineReveal({
   const containerRef = useRef(null);
   const splitRef = useRef(null);
   const tweenRef = useRef(null);
+  const driftsRef = useRef([]);
   const triggerRef = useRef(null);
   const refreshRef = useRef(null);
   const runIdRef = useRef(0);
+  const fromServerHtml = useFromServerHtml();
 
   useIsomorphicLayoutEffect(() => {
     const container = containerRef.current;
@@ -63,7 +92,11 @@ export default function LineReveal({
 
     const runId = ++runIdRef.current;
 
+    if (keepServerPaint({ runId, fromServerHtml, element: container })) return;
+
     tweenRef.current?.kill();
+    driftsRef.current.forEach((t) => t.kill());
+    driftsRef.current = [];
     triggerRef.current?.kill();
     refreshRef.current?.kill();
     splitRef.current?.revert();
@@ -89,6 +122,11 @@ export default function LineReveal({
         aria: "none",
       });
 
+      // Each word's mask clips at its line box, which cuts the tails off g, y and p
+      // on tightly set headings. Extend the clip box below the line; the equal
+      // negative margin keeps the layout exactly as it was.
+      gsap.set(splitRef.current.masks, { paddingBottom: "0.1em", marginBottom: "-0.1em" });
+
       const words = splitRef.current.words;
 
       if (!words.length) {
@@ -105,8 +143,13 @@ export default function LineReveal({
       container.querySelectorAll(".gradient-text-animate").forEach((el) => {
         const nested = words.filter((word) => el.contains(word));
         if (!nested.length) return;
-        nested.forEach((word) => word.classList.add("gradient-text-animate"));
         el.classList.remove("gradient-text-animate");
+        if (el.classList.contains("gradient-text-single")) {
+          const drift = spanGradientAcross(el, nested);
+          if (drift) driftsRef.current.push(drift);
+          return;
+        }
+        nested.forEach((word) => word.classList.add("gradient-text-animate"));
       });
 
       const yFrom = direction === "next" ? 110 : -110;
@@ -190,6 +233,8 @@ export default function LineReveal({
       io.disconnect();
 
       tweenRef.current?.kill();
+      driftsRef.current.forEach((t) => t.kill());
+      driftsRef.current = [];
       triggerRef.current?.kill();
       refreshRef.current?.kill();
       splitRef.current?.revert();
@@ -205,7 +250,7 @@ export default function LineReveal({
 
   return React.createElement(
     as,
-    { ref: containerRef, className, style: { opacity: 0 }, ...rest },
+    { ref: containerRef, className, ...rest },
     text ?? children
   );
 }

@@ -4,7 +4,6 @@ import { useState, type ComponentProps } from "react";
 import Image from "next/image";
 import OverflowTextReveal from "@/components/overflow-text-reveal";
 import { ReactLenis } from "lenis/react";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 
 
@@ -24,9 +23,8 @@ const OverflowTextRevealWrapper = ({ effectProps = {} }: OverflowTextRevealWrapp
 
   return (
     <ReactLenis root key={revealKey}>
-      <DemoHeader textColor="#ffffff" logoColor='#FFFFFF' />
       {/* SECTION 1 - direction: bottom (default) */}
-      <section className="relative h-screen flex flex-col pt-[20vh] max-[1025px]:pt-[45vh] max-md:pt-[4vh] max-[1025px]:justify-center max-[1025px]:px-5 overflow-hidden bg-[#0a0a0a]">
+      <section className="relative h-screen flex flex-col pt-[20vh] max-lg:pt-[45vh] max-md:pt-[4vh] max-lg:justify-center max-lg:px-5 overflow-hidden bg-[#0a0a0a]">
         <Image
           src="https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg"
           alt="Nature"

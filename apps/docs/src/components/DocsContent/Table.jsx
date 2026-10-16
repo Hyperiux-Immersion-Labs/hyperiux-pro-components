@@ -45,14 +45,16 @@ export default function DocsTable({
   ...props
 }) {
   const normalizedColumns = normalizeColumns({ columns, headers, rows });
+
   const variantClassName =
     colorVariant === "orange"
-      ? "[--docs-table-border:rgba(255,95,0,0.32)] [--docs-table-header-bg:var(--primary)] [--docs-table-header-color:#0e0e0e] [--docs-table-cell-color:rgba(255,255,255,0.82)]"
+      ? "[--docs-table-border:color-mix(in_srgb,var(--primary)_32%,transparent)] [--docs-table-header-bg:var(--primary)] [--docs-table-header-color:var(--background)] [--docs-table-cell-color:rgba(255,255,255,0.82)]"
       : colorVariant === "muted"
         ? "[--docs-table-border:rgba(147,147,147,0.28)] [--docs-table-header-bg:rgba(255,255,255,0.08)] [--docs-table-header-color:rgba(255,255,255,0.9)] [--docs-table-cell-color:rgba(255,255,255,0.68)]"
         : colorVariant === "outline"
-          ? "[--docs-table-border:rgba(255,255,255,0.22)] [--docs-table-header-bg:transparent] [--docs-table-header-color:#fff] [--docs-table-cell-color:rgba(255,255,255,0.76)]"
-          : "[--docs-table-border:rgba(255,255,255,0.14)] [--docs-table-header-bg:#272727] [--docs-table-header-color:#fff] [--docs-table-cell-color:rgba(255,255,255,0.76)]";
+          ? "[--docs-table-border:rgba(255,255,255,0.22)] [--docs-table-header-bg:transparent] [--docs-table-header-color:white] [--docs-table-cell-color:rgba(255,255,255,0.76)]"
+          : // Default: the docs content sits on the light sheet - dark text and rules, dark header
+            "[--docs-table-border:rgba(29,29,29,0.14)] [--docs-table-header-bg:rgb(0,0,0,0.8)] [--docs-table-header-color:white] [--docs-table-cell-color:rgba(29,29,29,0.82)]";
 
   return (
     <div
@@ -63,14 +65,15 @@ export default function DocsTable({
   )}
   {...props}
 >
+  <div className="relative w-full min-w-[38rem]">
   <table
     className={cx(
-      "w-full min-w-[38rem] border-collapse text-left",
+      "w-full border-collapse text-left",
       tableClassName
     )}
   >
     {caption ? (
-      <caption className="px-4 py-3 text-left text-sm text-white/60">
+      <caption className="px-4 py-3 text-left text-sm text-muted">
         {caption}
       </caption>
     ) : null}
@@ -83,7 +86,7 @@ export default function DocsTable({
               key={col.key ?? idx}
               scope="col"
               className={cx(
-                "bg-(--docs-table-header-bg) px-4 py-3.5 text-[1.2rem] font-semibold text-(--docs-table-header-color) border-b border-(--docs-table-border)",
+                "bg-(--docs-table-header-bg) px-4 py-3.5 font-medium text-(--docs-table-header-color) border-b border-(--docs-table-border)",
                 idx !== normalizedColumns.length - 1 &&
                   "border-r border-(--docs-table-border)",
                 col.headerClassName,
@@ -102,7 +105,7 @@ export default function DocsTable({
         <tr
           key={rowIdx}
           className={cx(
-            "align-top border-b border-white/10",
+            "align-top border-b border-(--docs-table-border) last:border-b-0 hover:bg-transparent!",
             bodyRowClassName
           )}
         >
@@ -124,7 +127,7 @@ export default function DocsTable({
               <td
                 key={col.key ?? colIdx}
                 className={cx(
-                  "px-4 py-3.5 text-sm md:text-base leading-relaxed text-(--docs-table-cell-color) border-(--docs-table-border)",
+                  "px-4 py-3.5 text-(--docs-table-cell-color) border-(--docs-table-border)",
                   colIdx !== normalizedColumns.length - 1 &&
                     "border-r border-(--docs-table-border)",
                   col.cellClassName,
@@ -139,6 +142,7 @@ export default function DocsTable({
       ))}
     </tbody>
   </table>
+  </div>
 </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import ScrollStack from "@/components/scroll-stack";
 
@@ -16,7 +15,6 @@ export default function DemoContent({ registry }: { registry: any }) {
         <>
           <DemoHeader />
           {effect}
-          <ScrollBottom textColor="#111111" className="text-black! bottom-[3vw]"/>
         </>
       )}
     </RegistryRemixerDemo>

@@ -17,39 +17,41 @@ export default function BlogDetailHero({ post }) {
   useFadeUp(heroRef);
 
   return (
-    <div ref={heroRef} className="pt-[5vw]">
-      <header className="flex flex-col gap-[1.5vw] max-[1025px]:gap-[6vw] max-md:gap-[8vw]">
+    <div ref={heroRef} className="flex flex-col gap-[calc(var(--cvw)*3.5)] max-md:gap-0">
+      <section id="blog-hero" className="site-container section-x flex flex-col gap-10 max-md:pb-[12%]">
         <Breadcrumb maxWords={3} />
 
-        <LineWipe>
-          <h1 className="text-[3.2vw] max-[1025px]:text-[6vw] max-md:text-[9vw] font-neue-haas leading-[1.2]! text-foreground w-[80%] max-[1025px]:w-full">
-            {post.title}
-          </h1>
-        </LineWipe>
-
-        {post.summary && (
-          <LineWipe delay={0.5}>
-            <p className="text-[1.25vw] leading-relaxed max-[1025px]:leading-[1.2] w-[60%] max-[1025px]:w-full text-white max-[1025px]:text-[2.8vw] max-sm:text-[4vw]">
-              {post.summary}
-            </p>
+        <div className="flex flex-col gap-6">
+          <LineWipe>
+            <h1 className="type-h1 w-[80%] leading-[1.2] text-[calc(var(--cvw)*3.2)] max-md:text-[8vw] text-foreground max-lg:w-full">
+              {post.title}
+            </h1>
           </LineWipe>
-        )}
 
-      </header>
+          {post.summary && (
+            <LineWipe delay={0.5}>
+              <p className="type-body-lg w-[60%] text-foreground/80 max-lg:w-full">
+                {post.summary}
+              </p>
+            </LineWipe>
+          )}
+        </div>
+      </section>
 
       {post.coverImage?.url && (
-        <div className="fadeup group relative mt-[5vw] h-[48vw] w-full overflow-hidden max-md:mt-[8vw] max-[1025px]:mt-[6vh] max-md:h-[60vw] ">
-          <Image
-            src={post.coverImage.url}
-            alt={post.coverImage.alt || post.title}
-            width={1600}
-            height={900}
-            priority
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
+        <section id="blog-cover" className="fadeup site-container section-x max-md:py-[12%] max-md:pt-4">
+          <div className="group relative h-[calc(var(--cvw)*48)] w-full overflow-hidden max-md:h-[60vw]">
+            <Image
+              src={post.coverImage.url}
+              alt={post.coverImage.alt || post.title}
+              width={1600}
+              height={900}
+              priority
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+        </section>
       )}
-
     </div>
   );
 }

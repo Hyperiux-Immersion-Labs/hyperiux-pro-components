@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { markUserProFromSubscription, markUserFree, sendInvoiceEmail, recordInvoice } from "@/lib/pro-access";
 import { releaseFoundingSlot } from "@/lib/founding-slots";
-import { razorpay } from "@/lib/razorpay";
+import { grantCreditsForCharge } from "@/lib/template-credits";
+import { cancelReplacedSubscription, shouldApplySubscriptionEvent } from "@/lib/subscription-events";
 import { recordTemplatePurchase, markTemplatePurchaseRefunded } from "@/lib/template-purchases";
+import { razorpay } from "@/lib/razorpay";
 
 // Razorpay's server calls this - authenticated via X-Razorpay-Signature
 // (HMAC of the raw body with the webhook secret), never via Clerk.
@@ -59,18 +61,12 @@ export async function POST(req) {
   const payment = event?.payload?.payment?.entity;
   const clerkUserId = subscription?.notes?.clerk_user_id;
 
-  // Safety net for one-time order payments (template purchases): unlike
-  // subscriptions above, which get recorded from this webhook regardless of
-  // whether the browser is still around, a template purchase's ONLY
-  // recording path used to be the client's own fetch to verify-payment
-  // after checkout.js's handler fires - if the tab closes, the network
-  // drops, or an extension interferes between Razorpay confirming the
-  // charge and that fetch landing, the payment is captured (real money
-  // moved) but template_purchases never gets a row and the buyer is stuck
-  // seeing "Buy" forever with no recovery path. This mirrors exactly what
-  // verify-payment/route.js's own order branch already does (fetch the
-  // order for its notes, record the purchase), just triggered by Razorpay's
-  // server instead of the buyer's browser.
+  // Safety net for template purchases: verify-payment records them, but only
+  // if the buyer's browser is still there after Razorpay's checkout. If the
+  // tab closes or the network drops in between, the money is taken but no
+  // purchase is recorded. Razorpay's server reports the captured payment
+  // here regardless; the order's notes (stamped by create-order) say whose
+  // and which template. Same as the reference repo.
   if (event.event === "payment.captured" && payment?.order_id && !subscription) {
     try {
       const order = await razorpay.orders.fetch(payment.order_id);
@@ -83,38 +79,24 @@ export async function POST(req) {
           razorpayOrderId: payment.order_id,
           amount: typeof payment.amount === "number" ? payment.amount / 100 : null,
           currency: payment.currency || order.currency || "USD",
+          invoiceUrl: order.notes.invoice_url || null,
         });
       }
     } catch (error) {
       console.error("RAZORPAY_WEBHOOK_TEMPLATE_PURCHASE_ERROR:", error);
-
       return NextResponse.json({ error: "Handler failed" }, { status: 500 });
     }
 
     return NextResponse.json({ received: true });
   }
 
-  // "refund.created"/"refund.processed" - Razorpay has no "payment.refunded"
-  // event (confirmed against the actual webhook event catalog configured on
-  // this endpoint via GET /v1/webhooks; an earlier version of this branch
-  // listened for that non-existent event name and would never have fired).
-  // Both real events carry the same payment.entity.refund_status field
-  // ("partial" | "full") - gated on "full" so a partial refund, which
-  // shouldn't cost the buyer their access, never reaches here. Listening to
-  // both events (rather than just one) is pure redundancy against a missed
-  // delivery - markTemplatePurchaseRefunded/markUserFree are idempotent, so
-  // handling the same payment twice is a safe no-op.
-  // Covers both purchase shapes, distinguished the same way every other
-  // branch in this file already does (subscription entity present or not):
-  //   - a subscription charge refunded -> immediate cutoff, no
-  //     current_period_end grace (unlike a graceful cancellation/expiry/etc,
-  //     which DO get that grace - see GRACE_STATUSES in template-access.js -
-  //     a refund means the money went back, so there's nothing paid-for
-  //     left to honor through).
-  //   - a one-time template order refunded -> markTemplatePurchaseRefunded,
-  //     same as before.
-  // Nothing else in the codebase reacts to a refund at all otherwise, so
-  // without this branch a fully-refunded buyer keeps access forever.
+  // Full refunds ("refund.created" / "refund.processed" - Razorpay has no
+  // "payment.refunded" event). Partial refunds keep access.
+  //   - a subscription charge (the payment has an invoice_id): the plan ends
+  //     now - unless that subscription was already replaced by an upgrade
+  //   - a template purchase: the purchase is marked refunded, which stops
+  //     its download (hasTemplatePurchase only counts paid rows)
+  // Both handlers are idempotent, so the two events for one refund are safe.
   if (
     (event.event === "refund.created" || event.event === "refund.processed") &&
     payment?.id &&
@@ -122,21 +104,16 @@ export async function POST(req) {
   ) {
     try {
       if (payment.invoice_id) {
-        // A Razorpay-native recurring invoice (each subscription billing
-        // cycle gets one) - distinct from the ad-hoc Invoice
-        // create-order/route.js creates for a template purchase, which
-        // never actually links at the payment level (confirmed directly:
-        // a real subscription payment has invoice_id set, a real template
-        // payment has it null). Walk invoice -> subscription -> notes to
-        // find who this refund belongs to, since the refund/payment
-        // entities themselves carry no clerk_user_id.
         const invoice = await razorpay.invoices.fetch(payment.invoice_id);
         const refundedSubscription = invoice?.subscription_id
           ? await razorpay.subscriptions.fetch(invoice.subscription_id)
           : null;
         const refundClerkUserId = refundedSubscription?.notes?.clerk_user_id;
 
-        if (refundClerkUserId) {
+        if (
+          refundClerkUserId &&
+          (await shouldApplySubscriptionEvent({ clerkUserId: refundClerkUserId, subscription: refundedSubscription, kind: "end" }))
+        ) {
           await markUserFree({ clerkUserId: refundClerkUserId, status: "refunded" });
         }
       } else {
@@ -144,7 +121,6 @@ export async function POST(req) {
       }
     } catch (error) {
       console.error("RAZORPAY_WEBHOOK_REFUND_ERROR:", error);
-
       return NextResponse.json({ error: "Handler failed" }, { status: 500 });
     }
 
@@ -152,20 +128,48 @@ export async function POST(req) {
   }
 
   if (!subscription || !clerkUserId) {
-    // Not a subscription event we track - ack and move on.
+    // Not a subscription event we track (e.g. payment.captured) - ack and move on.
     return NextResponse.json({ received: true });
   }
 
+  // A prorated Pro -> Pro+ upgrade starts in the future (lib/upgrade.js): it's
+  // paid up front, but Razorpay only marks it "authenticated" until the first
+  // full charge, so that event grants Pro+ for upgrades
+  const isUpgradeStart =
+    event.event === "subscription.authenticated" && Boolean(subscription.notes?.replaces_subscription_id);
+
   try {
-    if (PRO_EVENTS.has(event.event)) {
+    const kind = PRO_EVENTS.has(event.event) || isUpgradeStart ? "start" : event.event in FREE_EVENTS ? "end" : null;
+
+    // After a Pro -> Pro+ upgrade the old subscription still sends events
+    // (its own cancellation above all); they must not touch the user's plan
+    if (kind && !(await shouldApplySubscriptionEvent({ clerkUserId, subscription, kind }))) {
+      return NextResponse.json({ received: true, ignored: "replaced-subscription" });
+    }
+
+    if (PRO_EVENTS.has(event.event) || isUpgradeStart) {
       await markUserProFromSubscription({ clerkUserId, subscription });
+
+      // Upgrade: make sure the subscription it replaced is cancelled (also
+      // done by verify-payment; a no-op once cancelled)
+      await cancelReplacedSubscription(subscription);
 
       // Only "charged" corresponds 1:1 with an actual payment - "activated"
       // and "charged" can both fire for the first cycle, so gating the email
       // (and the invoice record) on "charged" alone avoids double-counting
       // one charge.
-      if (event.event === "subscription.charged" && payment) {
+      // An upgrade's "authenticated" event carries its upfront payment, which
+      // pays for its first period - credited as its first charge
+      if ((event.event === "subscription.charged" || isUpgradeStart) && payment) {
         await recordInvoice({ clerkUserId, subscription, payment });
+        // Throws on a Supabase error so Razorpay retries the delivery -
+        // safe, since a payment ID only ever adds credits once.
+        await grantCreditsForCharge({
+          clerkUserId,
+          subscription: isUpgradeStart ? { ...subscription, paid_count: subscription.paid_count || 1 } : subscription,
+          payment,
+          isUpgradePayment: isUpgradeStart,
+        });
         await sendInvoiceEmail({ clerkUserId, subscription, payment });
 
         // Referral/affiliate sale tracking is no longer done from here -

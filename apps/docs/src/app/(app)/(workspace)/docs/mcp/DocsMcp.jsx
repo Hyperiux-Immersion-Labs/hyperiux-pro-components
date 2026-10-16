@@ -1,21 +1,21 @@
 "use client";
 
 import DocsContent from "@/components/DocsContent/DocsContent";
-import Heading from "@/components/DocsContent/Heading";
 import Heading2 from "@/components/DocsContent/Heading2";
 import Heading3 from "@/components/DocsContent/Heading3";
 import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
-import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CodeBlock } from "@/components/DocsContent/DocsCodeBlock";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
+import { TOTAL_EFFECTS } from "@/lib/library-counts";
 
 const DocsLink = ({ href, children }) => (
   <a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="text-[#ff5f00] underline underline-offset-2 transition-colors hover:text-white"
+    className="text-primary underline underline-offset-2 transition-colors hover:text-white"
   >
     {children}
   </a>
@@ -27,7 +27,6 @@ const claudeAddViaNpx = `npx @anthropic-ai/claude-code mcp add hyperiux -- npx -
 const claudeInstallGlobal = `npm install -g @anthropic-ai/claude-code
 claude mcp add hyperiux -- npx -y hyperiux-mcp-server`;
 const claudeAddProjectScope = `claude mcp add hyperiux --scope project -- npx -y hyperiux-mcp-server`;
-const claudeAddViaNpxProjectScope = `npx @anthropic-ai/claude-code mcp add hyperiux --scope project -- npx -y hyperiux-mcp-server`;
 
 const mcpConfigJson = `{
   "mcpServers": {
@@ -49,8 +48,6 @@ const codexConfigToml = `[mcp_servers.hyperiux]
 command = "npx"
 args = ["-y", "hyperiux-mcp-server"]`;
 
-const codexAddProjectLocalOneLiner = `mkdir -p .codex && printf '[mcp_servers.hyperiux]\\ncommand = "npx"\\nargs = ["-y", "hyperiux-mcp-server"]\\n' > .codex/config.toml`;
-
 const runServerDirectly = `npx -y hyperiux-mcp-server`;
 
 const listEffectsResult = `{
@@ -58,7 +55,7 @@ const listEffectsResult = `{
   "count": 12,
   "offset": 0,
   "effects": [
-    { "name": "dotted-grid", "category": "backgrounds", "categories": ["backgrounds"], "dependencies": [], "version": "1.1.1", "tier": "free" }
+    { "name": "dotted-grid", "category": "backgrounds", "categories": ["backgrounds"], "dependencies": [], "version": "1.1.1" }
   ],
   "has_more": false
 }`;
@@ -87,8 +84,8 @@ const getEffectResult = `{
 
 const listCategoriesResult = `{
   "categories": [
-    { "category": "scroll", "count": 23 },
-    { "category": "webgl", "count": 19 },
+    { "category": "scroll", "count": 24 },
+    { "category": "webgl", "count": 17 },
     { "category": "cursor", "count": 16 }
   ]
 }`;
@@ -100,13 +97,7 @@ export default function DocsMcp() {
   useFadeUp();
 
   return (
-    <DocsContent className="max-w-none mx-0">
-      <Heading>Hyperiux MCP Server</Heading>
-
-      <Para>
-        Give your AI coding assistant live, accurate knowledge of the entire
-        Hyperiux Vault effect catalog.
-      </Para>
+    <DocsContent>
 
       <Para>
         <code>hyperiux-mcp-server</code> is an{" "}
@@ -130,7 +121,7 @@ export default function DocsMcp() {
       <Heading2 id="overview">Overview</Heading2>
 
       <Para>
-        Hyperiux Vault ships over a hundred production-quality animation and
+        Hyperiux Vault ships {TOTAL_EFFECTS} production-quality animation and
         interaction effects for Next.js, installed one at a time with the{" "}
         <code>hyperiux</code> CLI (<code>npx hyperiux add &lt;effect&gt;</code>).
         This MCP server sits alongside that CLI as a companion tool built for
@@ -180,15 +171,15 @@ export default function DocsMcp() {
           <DocsLink href="https://antigravity.google">Google Antigravity</DocsLink>, or any
           other client that supports the MCP standard&apos;s local server
           transport. (The ChatGPT web app is a notable exception - see{" "}
-          <a href="#chatgpt-web-app" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+          <a href="#chatgpt-web-app" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
             ChatGPT (web app) - not currently supported
           </a>
           .)
         </DocsListItem>
         <DocsListItem>
-          No account or subscription required to use it for free effects. A{" "}
-          <DocsLink href="https://vault.hyperiux.com/pricing">Hyperiux Pro</DocsLink>{" "}
-          subscription is only needed to retrieve Pro effect source code.
+          A free Hyperiux account covers free effects. A{" "}
+          <DocsLink href="https://vault.hyperiux.com/pricing">Pro or Pro+</DocsLink>{" "}
+          plan is only needed to retrieve Pro effect source code.
         </DocsListItem>
       </DocsList>
 
@@ -250,26 +241,6 @@ export default function DocsMcp() {
 
       <CodeBlock code={claudeAddViaNpx} language="bash" />
 
-      <Para>
-        That writes to your personal <code>~/.claude.json</code>, not a file
-        in the repo. If you specifically want a <strong>repo-local</strong>{" "}
-        config and don&apos;t have <code>claude</code> installed permanently
-        either, combine the <code>npx</code> prefix with{" "}
-        <code>--scope project</code> in one line - this is the single command
-        that covers both constraints at once:
-      </Para>
-
-      <CodeBlock code={claudeAddViaNpxProjectScope} language="bash" />
-
-      <Para>
-        <strong>Note:</strong> a server added this way sometimes shows up as{" "}
-        <strong>disabled</strong> the first time you run <code>/mcp</code> in
-        that project - this is just Claude Code&apos;s one-time
-        per-project approval gate, not a broken install. Select{" "}
-        <code>hyperiux</code> in the <code>/mcp</code> list and enable it
-        there; it stays enabled for that project afterward.
-      </Para>
-
       <DocsList>
         <DocsListItem>
           Or install it permanently first, so plain <code>claude</code> works
@@ -321,7 +292,7 @@ export default function DocsMcp() {
         </DocsListItem>
         <DocsListItem>
           Test it - see{" "}
-          <a href="#try-it-out" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+          <a href="#try-it-out" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
             Try it out
           </a>{" "}
           below.
@@ -374,7 +345,7 @@ export default function DocsMcp() {
 
       <Para>
         <strong>6.</strong> Test it - see{" "}
-        <a href="#try-it-out" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+        <a href="#try-it-out" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
           Try it out
         </a>{" "}
         below.
@@ -386,18 +357,8 @@ export default function DocsMcp() {
 
       <DocsList>
         <DocsListItem>
-          Cursor&apos;s settings UI has moved around across versions, so the
-          most reliable way to find the right screen is the{" "}
-          <strong>Command Palette</strong> (<code>Cmd+Shift+P</code> on
-          macOS, <code>Ctrl+Shift+P</code> on Windows/Linux), then type{" "}
-          <code>MCP</code> and pick whichever MCP-related command shows up
-          (something like &quot;View: Open MCP Settings&quot;). This works
-          regardless of where that settings page currently lives in the
-          sidebar/icon rail. If you&apos;d rather browse manually: open
-          Cursor Settings and look for an <strong>MCP</strong> or{" "}
-          <strong>Tools &amp; Integrations</strong> entry in the left icon
-          rail - hover each icon for its tooltip, since they&apos;re not
-          always text-labeled.
+          Open Cursor&apos;s Settings and find the MCP section (search
+          &quot;MCP&quot; if you don&apos;t see it right away).
         </DocsListItem>
         <DocsListItem>Click &quot;Add new MCP server&quot; and fill in three fields:</DocsListItem>
       </DocsList>
@@ -429,18 +390,11 @@ export default function DocsMcp() {
       <CodeBlock code={mcpConfigJson} language="json" />
 
       <Para>
-        If you created the file by hand while Cursor was already open, run{" "}
-        <code>Cmd+Shift+P</code> → <strong>&quot;Reload Window&quot;</strong>{" "}
-        so it picks up the new file - Cursor doesn&apos;t always watch{" "}
-        <code>.cursor/mcp.json</code> for changes live.
-      </Para>
-
-      <Para>
-        <strong>Then, either way:</strong> open the MCP settings screen again
-        (Command Palette → <code>MCP</code>, as above), confirm{" "}
+        <strong>Then, either way:</strong> go to Cursor{" "}
+        <strong>Settings → Tools &amp; MCP</strong>, confirm{" "}
         <code>hyperiux</code> shows as connected, and enable it if it
         isn&apos;t already. Test it - see{" "}
-        <a href="#try-it-out" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+        <a href="#try-it-out" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
           Try it out
         </a>{" "}
         below.
@@ -514,17 +468,6 @@ export default function DocsMcp() {
 
       <CodeBlock code={codexConfigToml} language="plaintext" />
 
-      <Para>
-        Unlike Claude Code, Codex&apos;s <code>mcp add</code> command has no{" "}
-        <code>--scope</code> flag - running it always writes to the global{" "}
-        <code>~/.codex/config.toml</code>, even via the <code>npx</code> form
-        above. If you want it scoped to just this repo without opening an
-        editor, create the project-local file directly from your terminal in
-        one command instead:
-      </Para>
-
-      <CodeBlock code={codexAddProjectLocalOneLiner} language="bash" />
-
       <Para><strong>Then, either way:</strong></Para>
 
       <DocsList>
@@ -538,7 +481,7 @@ export default function DocsMcp() {
         </DocsListItem>
         <DocsListItem>
           Test it - see{" "}
-          <a href="#try-it-out" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+          <a href="#try-it-out" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
             Try it out
           </a>{" "}
           below.
@@ -614,7 +557,7 @@ export default function DocsMcp() {
 
       <Para>
         <strong>4. Test it</strong> - see{" "}
-        <a href="#try-it-out" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+        <a href="#try-it-out" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
           Try it out
         </a>{" "}
         below. (Antigravity&apos;s exact connected/disconnected indicator
@@ -683,7 +626,7 @@ export default function DocsMcp() {
         <code>text</code>, with counts for each) - not a vague or
         made-up-sounding answer. That&apos;s your sign the connection is live
         and pulling real data. From here, jump into the{" "}
-        <a href="#example-usage" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+        <a href="#example-usage" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
           Example usage
         </a>{" "}
         section below for more things to try.
@@ -698,7 +641,7 @@ export default function DocsMcp() {
 
       <Para>
         To retrieve source code for a <strong>Pro</strong> effect, the server
-        needs a Hyperiux Pro CLI token. It automatically picks one up from
+        needs a Pro or Pro+ CLI token. It automatically picks one up from
         either of these, in order:
       </Para>
 
@@ -760,11 +703,8 @@ export default function DocsMcp() {
       <CodeBlock code={listEffectsResult} language="json" />
 
       <Para>
-        <strong>Note:</strong> each result includes <code>tier</code> (
-        <code>free</code> or <code>pro</code>) - use it to answer
-        aggregate questions like &quot;how many free effects are there&quot;
-        directly from this list, rather than calling{" "}
-        <code>hyperiux_get_effect</code> per item just to total tiers up.
+        <strong>Note:</strong> this tool does not report tier (free vs. Pro)
+        - use <code>hyperiux_get_effect</code> on a specific slug to check.
       </Para>
 
       <Heading3 id="hyperiux-get-effect"><code>hyperiux_get_effect</code></Heading3>
@@ -848,6 +788,35 @@ export default function DocsMcp() {
         never writes files; it only answers questions.
       </Para>
 
+      <Heading2 id="what-this-server-does-not-do">What this server does not do</Heading2>
+
+      <DocsList>
+        <DocsListItem>
+          <strong>It does not install effects.</strong> Installing is handled
+          entirely by the <code>hyperiux</code> CLI. This server&apos;s job
+          is making sure the right effect, dependencies, and import path are
+          known before that install happens.
+        </DocsListItem>
+        <DocsListItem>
+          <strong>It does not expose component props.</strong> There is
+          currently no structured props schema in the registry, so the
+          server cannot yet answer &quot;what props does this component
+          accept?&quot; in a reliable, structured way.
+        </DocsListItem>
+        <DocsListItem>
+          <strong>It does not currently report tier at the list level.</strong>{" "}
+          <code>hyperiux_list_effects</code> and{" "}
+          <code>hyperiux_list_categories</code> cannot distinguish free from
+          Pro effects - only <code>hyperiux_get_effect</code> on a specific
+          slug can. Always verify tier before assuming an effect is
+          installable without a Pro subscription.
+        </DocsListItem>
+        <DocsListItem>
+          <strong>It never returns Pro source without a valid, authenticated
+          token.</strong> There is no way to bypass this from a client -
+          it&apos;s enforced by the same protected API the CLI itself uses.
+        </DocsListItem>
+      </DocsList>
 
       <Heading2 id="troubleshooting">Troubleshooting</Heading2>
 
@@ -976,7 +945,7 @@ export default function DocsMcp() {
         <strong>resources</strong> feature - so a resources-specific check
         correctly finds none. It says nothing about whether the tools
         themselves work. Test with an actual question instead (see{" "}
-        <a href="#try-it-out" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+        <a href="#try-it-out" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
           Try it out
         </a>
         ).
@@ -1001,7 +970,7 @@ export default function DocsMcp() {
 
       <Para>
         This won&apos;t work, and isn&apos;t fixable via configuration - see{" "}
-        <a href="#chatgpt-web-app" className="text-[#ff5f00] underline underline-offset-2 hover:text-white transition-colors">
+        <a href="#chatgpt-web-app" className="text-primary underline underline-offset-2 hover:text-white transition-colors">
           ChatGPT (web app) - not currently supported
         </a>{" "}
         above for why.

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
+import { isRouteLoading } from "@/components/ui/RouteLoading";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { X } from "lucide-react";
@@ -411,11 +412,16 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
 
   useEffect(() => () => void tweenRef.current?.kill(), []);
 
+  // Stop smooth scroll while search is open; start it again only when search
+  // closes (not on every run), so it can't restart Lenis the page-change loader stopped.
+  const stoppedLenisRef = useRef(false);
   useEffect(() => {
     if (isOpen) {
       lenis?.stop?.();
-    } else {
-      lenis?.start?.();
+      stoppedLenisRef.current = true;
+    } else if (stoppedLenisRef.current) {
+      if (!isRouteLoading()) lenis?.start?.();
+      stoppedLenisRef.current = false;
     }
   }, [isOpen, lenis]);
 
@@ -444,7 +450,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      const key = event.key.toLowerCase();
+      const key = event.key?.toLowerCase();
 
       if ((event.metaKey || event.ctrlKey) && key === "k") {
         event.preventDefault();
@@ -516,15 +522,13 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
       document.body.style.removeProperty("overflow");
     }
 
-    lenis?.start?.();
-
-    requestAnimationFrame(() => {
-      lenis?.start?.();
-    });
-
-    window.setTimeout(() => {
-      lenis?.start?.();
-    }, 80);
+    // Never while the page-change loader is up (it restarts Lenis itself)
+    const start = () => {
+      if (!isRouteLoading()) lenis?.start?.();
+    };
+    start();
+    requestAnimationFrame(start);
+    window.setTimeout(start, 80);
   };
 
   const closeSearch = () => {
@@ -550,14 +554,14 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
       <div
         ref={backdropRef}
         style={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm will-change-[opacity]"
+        className="fixed inset-0 bg-black/60 backdrop-blur-lg will-change-[opacity]"
         onClick={closeSearch}
       />
 
       <div
         ref={panelRef}
         style={{ opacity: 0, transform: `scale(${PANEL_CLOSED_SCALE})` }}
-        className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden  border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-xl will-change-[transform,opacity] max-[1025px]:h-140 max-md:h-113"
+        className="relative mx-4 flex h-113 w-full max-w-xl flex-col overflow-hidden  border border-neutral-800/60 bg-neutral-950/90 ring-1 ring-white/5 backdrop-blur-lg will-change-[transform,opacity] max-lg:h-140 max-md:h-113"
       >
         <div className="flex items-center gap-3 border-b border-neutral-800/50 bg-black/20 px-4 py-4">
           <svg
@@ -580,13 +584,13 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search anything in Vault..."
-            className="flex-1 bg-transparent text-base text-white placeholder:text-neutral-500 focus:outline-none sm:text-lg"
+            className="flex-1 bg-transparent text-lg text-white placeholder:text-neutral-500 focus:outline-none max-md:text-base"
           />
-          <kbd className="space-x-2 h-8 rounded items-center flex justify-center bg-foreground/20 px-1.5 py-0.5 text-xs text-current opacity-50 max-[1025px]:hidden">
+          <kbd className="space-x-2 h-8 items-center flex justify-center bg-foreground/20 px-1.5 py-0.5 text-xs text-current opacity-50 max-lg:hidden">
                  ESC
                 </kbd>
 
-          {/* <kbd className="hidden h-8 items-center justify-center  border border-neutral-800 bg-neutral-900 px-2 text-xs font-medium text-neutral-400 sm:inline-flex">
+          {/* <kbd className="inline-flex h-8 items-center justify-center border border-neutral-800 bg-neutral-900 px-2 text-xs font-medium text-neutral-400 max-md:hidden">
             ESC
           </kbd> */}
 

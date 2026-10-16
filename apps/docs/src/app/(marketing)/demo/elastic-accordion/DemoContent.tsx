@@ -1,7 +1,7 @@
 "use client";
 
 import ElasticAccordion from "@/components/elastic-accordion";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
 import type { RegistryLike } from "@/components/remixer-panel/types";
@@ -15,7 +15,7 @@ export default function DemoContent({ registry }: { registry: RegistryLike }) {
     >
       {({ values, effect }) => (
         <main
-          className="relative h-screen w-full pt-28 md:pb-[8vw]"
+          className="relative h-screen w-full overflow-hidden pt-28 md:pb-[8vw]"
           style={{ backgroundColor: values.bgColor as string }}
         >
           <DemoHeader />

@@ -2,8 +2,7 @@
 
 import BookFlip from "@/components/book-flip";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -14,23 +13,13 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+          <DemoHeader
+            reducedMotionNote={{
+              title: "The pages keep turning.",
+              body: "Book Flip animates each page turn as a continuous physical bend when you click or drag. Since that motion is the entire interaction, reduced motion can't be applied here.",
+            }}
+          />
           {effect}
-          <ReducedMotionNotice>
-            <div
-              aria-live="polite"
-              className="pointer-events-none fixed bottom-4 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
-            >
-              <h2 className="text-sm leading-none text-white">
-                The pages keep turning.
-              </h2>
-              <p className="mt-2 text-xs leading-5 text-white/65">
-                Book Flip animates each page turn as a continuous physical bend
-                when you click or drag. Since that motion is the entire
-                interaction, reduced motion can&apos;t be applied here.
-              </p>
-            </div>
-          </ReducedMotionNotice>
         </>
       )}
     </RegistryRemixerDemo>

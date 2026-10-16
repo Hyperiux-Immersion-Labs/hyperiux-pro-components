@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
+ 
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
@@ -7,8 +7,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ReactLenis } from "lenis/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import Image from "next/image";
 const DESKTOP_WIDTH = 1200;
-const TABLET_MIN_WIDTH = 768;
+const TABLET_MIN_WIDTH = 1025;
 
 const LEFT_DEPTH_MAX = 30;
 const RIGHT_DEPTH_MAX = 40;
@@ -79,7 +80,6 @@ interface CircularSplitRollCompProps {
   imageCardWidth?: number;
   imageCardHeight?: number;
   titleSize?: string;
-  pinSpacing?: boolean;
   scrub?: number;
   textCenterScale?: number;
   textSideScale?: number;
@@ -112,7 +112,6 @@ export function CircularSplitRollComp({
   imageCardHeight = 210,
   titleSize = "clamp(28px, 3vw, 56px)",
 
-  pinSpacing = true,
   scrub = 1.2,
 
   textCenterScale = 1,
@@ -135,7 +134,6 @@ export function CircularSplitRollComp({
   gridTitleClassName = "",
 }: CircularSplitRollCompProps) {
   const rootRef = useRef<HTMLElement | null>(null);
-  const stickyRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef(0);
 
   const safeItems = useMemo(() => {
@@ -148,11 +146,11 @@ export function CircularSplitRollComp({
   }, [items]);
 
   useEffect(() => {
-    if (!rootRef.current || !stickyRef.current) return;
+    if (!rootRef.current) return;
 
     const mm = gsap.matchMedia();
 
-    mm.add("(min-width: 769px)", () => {
+    mm.add("(min-width: 1025px)", () => {
       const ctx = gsap.context(() => {
         const leftNodes = gsap.utils.toArray(
           ".circular-scroll-showcase__left-item"
@@ -288,10 +286,8 @@ export function CircularSplitRollComp({
         const scrollTrigger = ScrollTrigger.create({
           trigger: rootRef.current,
           start: "top top",
-          end: `+=${sectionHeight * safeItems.length}%`,
-          pin: stickyRef.current,
+          end: "bottom bottom",
           scrub,
-          pinSpacing,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             render(self.progress);
@@ -318,7 +314,6 @@ export function CircularSplitRollComp({
   }, [
     safeItems,
     scrub,
-    pinSpacing,
     sectionHeight,
     leftRadiusX,
     leftRadiusY,
@@ -343,16 +338,16 @@ export function CircularSplitRollComp({
   return (
     <section
       ref={rootRef}
-      className={`relative min-h-screen w-full overflow-clip bg-black text-white ${className}`}
+      className={`relative h-[calc(100vh+var(--css-scroll-distance))] min-h-screen w-full overflow-clip bg-black text-white max-lg:h-auto ${className}`}
       style={{
         "--css-title-size": titleSize,
+        "--css-scroll-distance": `${sectionHeight * safeItems.length}vh`,
         "--css-card-width": `${imageCardWidth}px`,
         "--css-card-height": `${imageCardHeight}px`,
       } as React.CSSProperties & Record<string, string | number>}
     >
       <div
-        ref={stickyRef}
-        className="relative h-screen w-full overflow-hidden max-[1025px]:hidden"
+        className="sticky top-0 h-screen w-full overflow-hidden max-lg:hidden"
       >
         <div className="relative mx-auto flex h-full w-full">
           <div className="relative flex h-full w-[50vw] translate-x-[-60%] items-center justify-center">
@@ -376,11 +371,14 @@ export function CircularSplitRollComp({
                   className="circular-scroll-showcase__right-item absolute left-1/2 top-1/2 ml-[calc(var(--css-card-width,210px)*-0.5)] mt-[calc(var(--css-card-height,210px)*-0.5)] h-(--css-card-height,210px) w-(--css-card-width,210px) origin-center opacity-0 will-change-[transform,opacity]"
                 >
                   <div className="relative h-full w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_30px_60px_rgba(0,0,0,0.28),0_8px_20px_rgba(0,0,0,0.16)]">
-                    <img
+                    <Image
                       src={item.image}
                       alt={item.alt}
                       className="pointer-events-none block h-full w-full select-none object-cover absolute inset-0"
                       draggable="false"
+                      fill
+                      sizes="100vw"
+                      loading="eager"
                     />
                   </div>
                 </div>
@@ -390,7 +388,7 @@ export function CircularSplitRollComp({
         </div>
       </div>
 
-      <div className="hidden w-full px-5 py-10 max-[1025px]:block max-md:px-4 max-md:py-8">
+      <div className="hidden w-full px-5 py-10 max-lg:block max-md:px-4 max-md:py-8">
         <div className="mx-auto grid w-full max-w-5xl grid-cols-3 gap-5 max-md:grid-cols-2 max-md:gap-4">
           {safeItems.map((item) => (
             <article
@@ -400,11 +398,14 @@ export function CircularSplitRollComp({
               <div
                 className={`relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_18px_38px_rgba(0,0,0,0.28)] max-md:rounded-[14px] ${gridImageClassName}`}
               >
-                <img
+                <Image
                   src={item.image}
                   alt={item.alt}
                   className="block h-full w-full object-cover absolute inset-0"
                   draggable="false"
+                  fill
+                  sizes="100vw"
+                  loading="eager"
                 />
               </div>
 

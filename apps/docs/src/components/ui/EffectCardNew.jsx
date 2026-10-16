@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
-import { resolveEffectVideoUrl, resolveMediaUrl, resizeR2ImageUrl } from "@/lib/media";
+import { LISTING_IMAGE, resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
 import { useAutoplayPreviewVideo } from "@/hooks/useAutoplayPreviewVideo";
 import { Download, Eye, Heart } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
@@ -35,34 +35,15 @@ function formatInstallCount(value) {
 const VAULT_GRID_SIZES =
   "(max-width: 639px) calc(100vw - 56px), (max-width: 1025px) calc(100vw - 64px), 30vw";
 
-const LISTING_COVER_WIDTH = 1200;
-const LISTING_COVER_HEIGHT = 675;
 
 function resolveEffectCoverImage(effect) {
-  // The lightweight registry-index item (used for filtering/sorting) has no
-  // coverImage/imageSrc - only the full effect payload (fetched later via
-  // /api/effects/list) does. Sanity itself defaults an effect's coverImage
-  // to its own slug when none is set explicitly (see buildEffectsFromSanity
-  // in sanity.js), so falling back to the slug here lets the card guess the
-  // same deterministic cover URL immediately instead of showing a blank
-  // placeholder until that fetch resolves; onError below still catches a
-  // wrong guess.
-  const raw =
-    effect?.coverImage || effect?.imageSrc || effect?.effectSlug || effect?.slug || effect?.name;
+  const raw = effect?.coverImage || effect?.imageSrc;
   if (!raw || raw === "/assets/img/image01.webp" || raw === "image01") return null;
 
-  const resolved = resolveMediaUrl(raw, {
-    defaultDirectory: "vault-listing-images",
-    defaultExtension: "png",
-  });
+  const resolved = resolveMediaUrl(raw, LISTING_IMAGE);
 
   if (!resolved || resolved === "/assets/img/image01.webp") return null;
-  if (resolved.startsWith("/")) return resolved;
-
-  return resizeR2ImageUrl(resolved, {
-    width: LISTING_COVER_WIDTH,
-    height: LISTING_COVER_HEIGHT,
-  });
+  return resolved;
 }
 
 export function EffectCard({
@@ -158,14 +139,14 @@ export function EffectCard({
         transition: "opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1)",
         willChange: hasAppeared ? "auto" : "opacity",
       }}
-      className="group relative block w-full cursor-pointer "
+      className="group relative block w-full cursor-pointer  "
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
 
 
-      <div className="pointer-events-none  relative aspect-3/2  px-[1.8vw] pt-[1.8vw] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden  bg-[#161616] max-md:aspect-4/3.5">
-        <div className=" w-full relative h-[80%] overflow-hidden bg-[#202020] max-md:h-[70%]">
+      <div className="pointer-events-none  relative aspect-3/2  px-[calc(var(--cvw)*1.8)] pt-[calc(var(--cvw)*1.8)] max-md:px-[4vw] max-md:pt-[4vw] overflow-hidden  bg-black/20 backdrop-blur-lg max-md:aspect-4/3.5">
+        <div className=" w-full relative h-[80%] overflow-hidden max-md:h-[70%]">
           {coverImage && !imageError ? (
             <Image
               src={coverImage}
@@ -181,12 +162,11 @@ export function EffectCard({
               }`}
             />
           ) : (
-            <div className="h-full w-full bg-[#202020]" />
+            <div className="h-full w-full bg-dark-card" />
           )}
           {shouldRenderVideo && (
             <video
               {...videoProps}
-              poster={coverImage || undefined}
               className={`absolute inset-0 h-full w-full object-cover  ${
                 showVideo ? "opacity-100" : "opacity-0"
               }`}
@@ -194,12 +174,12 @@ export function EffectCard({
           )}
         </div>
 
-        <div className="pointer-events-none h-[20%]  flex w-full items-center justify-between gap-3 font-geist-mono max-md:h-[30%] ">
+        <div className="pointer-events-none h-[20%]  flex w-full items-center justify-between gap-3 font-mono max-md:h-[30%] ">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 max-md:gap-1.5">
             {dependencyPills.map((pill) => (
               <span
                 key={pill}
-                className="bg-[#2B2B2B] px-[0.4vw] py-[0.1vw] text18 text-white/90 max-md:px-3 max-md:py-1 max-md:text-[3vw]!"
+                className="bg-grey px-[calc(var(--cvw)*0.4)] py-[calc(var(--cvw)*0.1)] text18 text-white/90 max-md:px-3 max-md:py-1 max-md:text-[3vw]!"
               >
                 {pill}
               </span>
@@ -207,16 +187,16 @@ export function EffectCard({
             {extraDependencyCount > 0 && (
               <Tooltip
                 label={allDependencyLabels.slice(2).join(" • ")}
-                className="pointer-events-auto max-w-[10vw]"
+                className="pointer-events-auto max-w-[calc(var(--cvw)*10)]"
               >
-                <span className="cursor-default bg-[#2B2B2B] px-[0.8vw] py-[0.1vw] text18 font-medium text-white/70 max-md:px-3 max-md:py-1 max-md:text-[3vw]!">
+                <span className="cursor-default bg-grey px-[calc(var(--cvw)*0.8)] py-[calc(var(--cvw)*0.1)] text18 font-medium text-white/70 max-md:px-3 max-md:py-1 max-md:text-[3vw]!">
                   +{extraDependencyCount}
                 </span>
               </Tooltip>
             )}
           </div>
           {effect.tier === "pro" && (
-            <span className="shrink-0 bg-primary px-[0.8vw] py-[0.1vw] text18 text-white max-sm:px-4 max-sm:py-1 max-sm:text-[3vw]!">
+            <span className="shrink-0 bg-primary px-[calc(var(--cvw)*0.8)] py-[calc(var(--cvw)*0.1)] text18 text-white max-md:px-4 max-md:py-1 max-md:text-[clamp(11px,3vw,13px)]!">
               Pro
             </span>
           )}
@@ -226,28 +206,28 @@ export function EffectCard({
       </div>
 
      
-      <div className="pointer-events-none mt-4 relative flex items-start justify-between gap-4 px-3 pt-3 pb-1.5 max-[1025px]:pt-5 max-md:gap-3 max-md:px-2 max-md:pt-2">
-        <span className="pointer-events-none max-sm:hidden absolute -top-px -left-px h-1.5 w-1.5 border-t border-l border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
-        <span className="pointer-events-none max-sm:hidden absolute -top-px -right-px h-1.5 w-1.5 border-t border-r border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
-        <span className="pointer-events-none max-sm:hidden absolute -bottom-px -left-px h-1.5 w-1.5 border-b border-l border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
-        <span className="pointer-events-none max-sm:hidden absolute -bottom-px -right-px h-1.5 w-1.5 border-b border-r border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-[1025px]:opacity-100 max-md:h-3 max-md:w-3" />
+      <div className="pointer-events-none mt-4 relative flex items-start justify-between gap-4 px-3 pt-3 pb-1.5 max-lg:pt-5 max-md:gap-3 max-md:px-2 max-md:pt-2">
+        {/* <span className="pointer-events-none max-md:hidden absolute -top-px -left-px h-1.5 w-1.5 border-t border-l border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-lg:opacity-100" />
+        <span className="pointer-events-none max-md:hidden absolute -top-px -right-px h-1.5 w-1.5 border-t border-r border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-lg:opacity-100" />
+        <span className="pointer-events-none max-md:hidden absolute -bottom-px -left-px h-1.5 w-1.5 border-b border-l border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-lg:opacity-100" />
+        <span className="pointer-events-none max-md:hidden absolute -bottom-px -right-px h-1.5 w-1.5 border-b border-r border-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-lg:opacity-100" /> */}
 
         <div className="flex min-w-0 flex-col gap-0.5">
-          <h3 className="truncate  text-[1.25vw] max-md:text-[3vw] max-sm:text-[4.5vw] font-medium leading-[1.2]! text-white max-md:text-base">
+          <h3 className="truncate  text-[calc(var(--cvw)*1.3)] font-medium leading-[1.2]! text-white max-md:text-base">
             <span>
               {effect.title}
             </span>
           </h3>
-          <p className="text18 text-[#AEAEAE] max-md:text-xs">
+          <p className="text18 text-border max-md:text-xs">
             {primaryCategoryLabel}
           </p>
         </div>
 
-        <div className="pointer-events-auto relative z-30 flex shrink-0 items-center gap-3 opacity-0 transition-opacity duration-300 max-md:gap-3 group-hover:opacity-100 max-[1025px]:opacity-100 ">
+        <div className="pointer-events-auto relative z-30 flex shrink-0 items-center gap-3 opacity-0 transition-opacity duration-300 max-md:gap-3 group-hover:opacity-100 max-lg:opacity-100 ">
           {installCount > 0 && (
-            <span className="flex items-center gap-1.5 text-[1vw]  text-white/55 max-sm:text-[3vw]!">
+            <span className="flex items-center gap-1.5 text-[calc(var(--cvw)*1)]  text-white/55 max-md:text-[clamp(11px,3vw,13px)]!">
               {installCountLabel}
-              <Download className="h-3 w-3 text-white/45 max-sm:h-3 max-sm:w-3" aria-hidden="true" />
+              <Download className="h-3 w-3 text-white/45" aria-hidden="true" />
             </span>
           )}
 
@@ -260,11 +240,11 @@ export function EffectCard({
                 e.stopPropagation();
                 toggleWishlist?.(effect);
               }}
-              className="flex h-8 w-8 cursor-pointer items-center justify-center  bg-[#242424] text-white transition-colors hover:bg-white/10 max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center  bg-grey text-white transition-colors hover:bg-white/10 max-lg:h-11 max-lg:w-11 max-md:h-9 max-md:w-9"
               aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
             >
               <Heart
-                className={`h-4.5 w-4.5 max-[1025px]:h-5 max-[1025px]:w-5 max-md:h-4 max-md:w-4 ${
+                className={`h-4.5 w-4.5 max-lg:h-5 max-lg:w-5 max-md:h-4 max-md:w-4 ${
                   isWishlisted ? "fill-white" : ""
                 }`}
               />
@@ -280,16 +260,16 @@ export function EffectCard({
                 e.stopPropagation();
                 window.open(previewHref, "_blank", "noopener,noreferrer");
               }}
-              className="flex h-8 w-8 cursor-pointer items-center justify-center bg-[#242424] text-white transition-colors hover:bg-white/10 max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center bg-grey text-white transition-colors hover:bg-white/10 max-lg:h-11 max-lg:w-11 max-md:h-9 max-md:w-9"
               aria-label="Preview"
             >
-              <Eye className="h-4.5 w-4.5 max-[1025px]:h-5 max-[1025px]:w-5 max-md:h-4 max-md:w-4" />
+              <Eye className="h-4.5 w-4.5 max-lg:h-5 max-lg:w-5 max-md:h-4 max-md:w-4" />
             </button>
           </Tooltip>
 
           <Tooltip label="View Detail">
             <div
-              className="flex h-8 w-8 relative items-center justify-center bg-primary text-black max-[1025px]:h-11 max-[1025px]:w-11 max-md:h-9 max-md:w-9 group/arrow overflow-hidden arrow-container"
+              className="flex h-8 w-8 relative items-center justify-center bg-primary text-black max-lg:h-11 max-lg:w-11 max-md:h-9 max-md:w-9 group/arrow overflow-hidden arrow-container"
               aria-hidden="true"
             >
               <ArrowIcon className="h-4.5 w-4.5 max-md:h-3.5 max-md:w-3.5 group-hover/arrow:-translate-y-[180%] group-hover/arrow:translate-x-[180%] duration-300 ease-in-out"/>

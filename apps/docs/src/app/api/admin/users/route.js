@@ -1,109 +1,73 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import { displayName } from "@/lib/display-name";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { getRole, isSuperAdminUser } from "@/lib/admin";
 import { resolveDateBounds } from "@/lib/admin-activity";
+import { fetchAllRows, fetchInstalls, getAdminUserList, parseAudience } from "@/lib/admin-data";
 
 const DEFAULT_LIMIT = 10;
-// Clerk's own /users list endpoint caps `limit` per request at 500 - also
-// used as the batch size when resolving a page of clerk_user_ids from
-// Supabase back into full Clerk profiles.
 const MAX_LIMIT = 500;
 
-const SUBSCRIPTION_COLUMNS =
-  "clerk_user_id, plan, status, billing_interval, current_period_end, razorpay_customer_id, razorpay_subscription_id, created_at";
-
-// "Most Copies"/"Most Installs"/"Most Saves" sort by a count that lives in a
-// different table than `subscriptions`, and role lives only in Clerk
-// metadata, not in Supabase at all - none of these can be pushed into a
-// Supabase `.order()`/`.eq()`. Whenever any is active, this bounds how many
-// matching rows get pulled into JS to sort/filter by hand. Acceptable at
-// this product's current scale; a real SQL-side aggregate (or mirroring
-// role into Supabase) would be needed past this many matching users.
-const BROAD_FETCH_CAP = 2000;
-const SORT_OPTIONS = new Set(["copies", "installs", "saves"]);
+// "installs" (all sources), or one source; "copies" is the old name for web
+const SORT_OPTIONS = new Set(["installs", "web", "cli", "mcp", "saves", "copies"]);
 const ROLE_OPTIONS = new Set(["admin", "super_admin", "user"]);
+const PLAN_OPTIONS = new Set(["pro_plus", "pro", "free", "paid"]);
 
-function countByUser(rows) {
+function countByUser(rows, key = "clerk_user_id") {
   const counts = new Map();
   for (const row of rows) {
-    counts.set(row.clerk_user_id, (counts.get(row.clerk_user_id) || 0) + 1);
+    counts.set(row[key], (counts.get(row[key]) || 0) + 1);
   }
   return counts;
 }
 
-// Lifetime copy/install/save totals for exactly this page's users - all-
-// time, matching the same numbers already shown on the per-user Activity
-// Detail page, not scoped to the table's own joined-date filter (that
-// filter is about who's in the list, not how much of the site's history
-// counts).
-// "Copies" means the website's copy button specifically (source='web'),
-// same convention as everywhere else "copies" is used (Overview's Total
-// Copies, the per-user page, "Top users by copies"). "Installs" is
-// unscoped by source (web/CLI/MCP combined) - same as the per-user page's
-// "Installed Effects" and the Overview's "Top installed effects" - so it's
-// always >= copies, since every web copy is itself an install_unlocks row.
-async function countsForIds(ids) {
-  if (!ids.length) {
-    return { copiesById: new Map(), installsById: new Map(), savesById: new Map() };
-  }
-
-  const [{ data: copyRows }, { data: installRows }, { data: saveRows }] = await Promise.all([
-    supabase.from("install_unlocks").select("clerk_user_id").eq("source", "web").in("clerk_user_id", ids),
-    supabase.from("install_unlocks").select("clerk_user_id").in("clerk_user_id", ids),
-    supabase.from("wishlisted_effects").select("clerk_user_id").in("clerk_user_id", ids),
+// Lifetime installs per user (lib/admin-data fetchInstalls: one effect, one day - admins
+// included), in total and by where they happened: web (the website), cli
+// (`npx hyperiux add`), mcp (the Hyperiux MCP); plus saves (wishlisted_effects).
+// All-time, like the per-user page - the Joined filter decides who's listed, not how
+// much history counts. Every row, not the first 1000.
+async function activityCounts() {
+  const [installs, saveRows] = await Promise.all([
+    fetchInstalls().then((rows) => rows.filter((row) => row.clerkUserId)),
+    fetchAllRows(() => supabase.from("wishlisted_effects").select("clerk_user_id")),
   ]);
-
   return {
-    copiesById: countByUser(copyRows || []),
-    installsById: countByUser(installRows || []),
-    savesById: countByUser(saveRows || []),
+    installsById: countByUser(installs, "clerkUserId"),
+    webById: countByUser(installs.filter((r) => r.source === "web"), "clerkUserId"),
+    cliById: countByUser(installs.filter((r) => r.source === "cli"), "clerkUserId"),
+    mcpById: countByUser(installs.filter((r) => r.source === "mcp"), "clerkUserId"),
+    savesById: countByUser(saveRows),
   };
 }
 
-// Clerk's getUserList caps `userId` filters at its own `limit` ceiling
-// (MAX_LIMIT) per call - chunks larger id lists into parallel calls and
-// merges the results, so callers never have to think about that ceiling.
-async function getClerkUsersByIds(clerk, ids) {
-  if (!ids.length) return [];
-
-  const chunks = [];
-  for (let i = 0; i < ids.length; i += MAX_LIMIT) {
-    chunks.push(ids.slice(i, i + MAX_LIMIT));
-  }
-
-  const results = await Promise.all(
-    chunks.map((chunk) => clerk.users.getUserList({ userId: chunk, limit: chunk.length }))
-  );
-
-  return results.flatMap((r) => r.data || []);
-}
-
-function roleFilterMatches(clerkUser, roleFilter) {
-  const role = getRole(clerkUser) || "user";
-  return role === roleFilter;
-}
-
-function shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, installsById, savesById) {
+function shapeUser({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin, { installsById, webById, cliById, mcpById, savesById }) {
   const role = getRole(clerkUser);
 
   const base = {
     id: clerkUser.id,
     email: clerkUser.emailAddresses?.[0]?.emailAddress || null,
-    name: clerkUser.fullName || clerkUser.firstName || null,
-    imageUrl: clerkUser.imageUrl || null,
+    name: displayName(clerkUser),
+    imageUrl: clerkUser.hasImage ? clerkUser.imageUrl : null, // a real photo, not Clerk's placeholder
     joinedAt: clerkUser.createdAt || sub?.created_at || null,
-    plan: sub?.plan || "free",
+    // The plan they have now: an expired grant or a cancelled subscription is Free
+    plan: currentPlan === "free" ? "free" : "pro",
+    // "pro" | "pro_plus" for a paid plan (not payment data, so every admin sees it)
+    tier: currentPlan === "free" ? null : currentPlan,
     role,
     isAdmin: role !== null,
-    copiesCount: copiesById.get(clerkUser.id) || 0,
     installsCount: installsById.get(clerkUser.id) || 0,
+    webCount: webById.get(clerkUser.id) || 0,
+    cliCount: cliById.get(clerkUser.id) || 0,
+    mcpCount: mcpById.get(clerkUser.id) || 0,
     savesCount: savesById.get(clerkUser.id) || 0,
+    // Suspended (banned in Clerk): can't sign in until restored
+    suspended: Boolean(clerkUser.banned),
   };
 
   // Billing/payment detail is super-admin only - a regular admin gets user
-  // identity + plan tier but no subscription status, renewal date, or
-  // Razorpay IDs, enforced here rather than only hidden in the UI.
+  // identity + plan but no subscription status, renewal date, or Razorpay
+  // IDs, enforced here rather than only hidden in the UI.
   if (!viewerIsSuperAdmin) return base;
 
   return {
@@ -113,18 +77,6 @@ function shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, installsById,
     planValidUntil: sub?.current_period_end || null,
     razorpayCustomerId: sub?.razorpay_customer_id || null,
     razorpaySubscriptionId: sub?.razorpay_subscription_id || null,
-  };
-}
-
-function fallbackClerkUser(clerkUserId) {
-  return {
-    id: clerkUserId,
-    emailAddresses: [],
-    fullName: null,
-    firstName: null,
-    imageUrl: null,
-    createdAt: null,
-    publicMetadata: {},
   };
 }
 
@@ -143,13 +95,8 @@ export async function GET(request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const search = (searchParams.get("search") || "").trim();
-    const planFilter = searchParams.get("plan") || "all";
+    const rawPlan = searchParams.get("plan") || "all";
     const rawRole = searchParams.get("role") || "all";
-    const roleFilter = ROLE_OPTIONS.has(rawRole) ? rawRole : "all";
-    const joinedRange = searchParams.get("joined") || "all";
-    const joinedFrom = searchParams.get("joinedFrom");
-    const joinedTo = searchParams.get("joinedTo");
     const rawSort = searchParams.get("sort") || "newest";
     const sortBy = SORT_OPTIONS.has(rawSort) ? rawSort : "newest";
     const limit = Math.min(
@@ -157,198 +104,40 @@ export async function GET(request) {
       MAX_LIMIT
     );
     const offset = Math.max(parseInt(searchParams.get("offset") || "0", 10) || 0, 0);
-
     const { startISO, endISO } = resolveDateBounds({
-      range: joinedRange,
-      from: joinedFrom,
-      to: joinedTo,
+      range: searchParams.get("joined") || "all",
+      from: searchParams.get("joinedFrom"),
+      to: searchParams.get("joinedTo"),
     });
 
-    // Text search has to run against Clerk - name/email live there, not in
-    // Supabase. Clerk's own `query` param searches its FULL user base
-    // (first name, last name, email, username, phone, web3 wallet) with
-    // real pagination and an accurate totalCount, unlike fetching a bounded
-    // window of subscriptions and filtering client-side afterward (the old
-    // bug: search only ever looked at the most recently created rows, so
-    // anyone outside that window was invisible - not "no results", just
-    // silently never checked).
-    //
-    // A date range filter has the same requirement, for a different reason:
-    // it has to match "Joined" as shown in the table, which is Clerk's own
-    // createdAt - filtering subscriptions.created_at instead (whenever that
-    // row was written, usually but not always right at signup) could
-    // silently include/exclude rows relative to what the picked range
-    // actually shows. Routed through this same Clerk-accurate branch
-    // whether or not there's also search text.
-    const hasDateFilter = Boolean(startISO || endISO);
-    const startMs = startISO ? new Date(startISO).getTime() : null;
-    // endISO is exclusive (resolveDateBounds already rolled it one day past
-    // the picked "to" date) - matches createdAtBefore's own exclusive-upper-
-    // bound semantics below.
-    const endMs = endISO ? new Date(endISO).getTime() : null;
-
-    // Belt-and-suspenders: don't just trust that Clerk's own
-    // createdAtAfter/createdAtBefore actually bounded what came back -
-    // re-check every row's real createdAt here too, so a picked range is
-    // guaranteed correct even if that filtering silently no-ops for any
-    // reason.
-    function withinDateRange(clerkUser) {
-      if (!hasDateFilter) return true;
-      const createdAtMs = clerkUser.createdAt ? new Date(clerkUser.createdAt).getTime() : null;
-      if (createdAtMs === null || Number.isNaN(createdAtMs)) return false;
-      if (startMs !== null && createdAtMs < startMs) return false;
-      if (endMs !== null && createdAtMs >= endMs) return false;
-      return true;
-    }
-
-    if (search || hasDateFilter) {
-      const clerkParams = { limit, offset, orderBy: "-created_at" };
-      if (search) clerkParams.query = search;
-      if (startISO) clerkParams.createdAtAfter = startMs;
-      if (endISO) clerkParams.createdAtBefore = endMs;
-
-      const { data: rawClerkUsers, totalCount } = await clerk.users.getUserList(clerkParams);
-      const clerkUsers = hasDateFilter ? rawClerkUsers.filter(withinDateRange) : rawClerkUsers;
-      const ids = clerkUsers.map((u) => u.id);
-
-      const [{ data: subRows }, { copiesById, installsById, savesById }] = await Promise.all([
-        ids.length
-          ? supabase.from("subscriptions").select(SUBSCRIPTION_COLUMNS).in("clerk_user_id", ids)
-          : Promise.resolve({ data: [] }),
-        countsForIds(ids),
-      ]);
-      const subMap = Object.fromEntries((subRows || []).map((s) => [s.clerk_user_id, s]));
-
-      let users = clerkUsers.map((u) =>
-        shapeUser(u, subMap[u.id], viewerIsSuperAdmin, copiesById, installsById, savesById)
-      );
-
-      // Plan and role can't be pushed into Clerk's query (plan lives only
-      // in Supabase; Clerk's List Users endpoint has no "filter by
-      // metadata value" param) - applied as a post-filter on this page
-      // when combined with search and/or a date range, which can return
-      // fewer than `limit` rows on that page (and a `total` that counts
-      // pre-filter matches, same as the withinDateRange re-check above).
-      // Search or a date range alone, and either plan/role filter alone,
-      // are all fully accurate; this is a narrow, documented tradeoff for
-      // the rarer case of combining them.
-      if (planFilter !== "all") {
-        users = users.filter((u) => u.plan === planFilter);
-      }
-      if (roleFilter !== "all") {
-        users = users.filter((u) => (u.role || "user") === roleFilter);
-      }
-
-      return NextResponse.json({ users, total: totalCount });
-    }
-
-    // No search text and no date filter (both routed through the
-    // Clerk-accurate branch above). Role lives only in Clerk, and "Most
-    // Copies"/"Most Installs"/"Most Saves" sort by a count that lives
-    // outside `subscriptions` entirely - none of these can be expressed as
-    // a Supabase `.eq()`/`.order()`. Whenever either is active, pull every
-    // matching subscription row up to the fetch cap, resolve all of their
-    // Clerk profiles up front, filter/sort in JS, then paginate the result.
-    // Otherwise (the common case - no role filter, default sort) stay on
-    // cheap direct DB pagination.
-    const needsBroadFetch = sortBy !== "newest" || roleFilter !== "all";
-
-    if (needsBroadFetch) {
-      let broadQuery = supabase
-        .from("subscriptions")
-        .select(SUBSCRIPTION_COLUMNS)
-        .order("created_at", { ascending: false })
-        .range(0, BROAD_FETCH_CAP - 1);
-
-      if (planFilter !== "all") broadQuery = broadQuery.eq("plan", planFilter);
-
-      const { data: allSubs, error: broadError } = await broadQuery;
-
-      if (broadError) {
-        console.error("ADMIN_USERS_SUPABASE_ERROR:", broadError);
-        return NextResponse.json({ error: broadError.message }, { status: 500 });
-      }
-
-      const allIds = (allSubs || []).map((s) => s.clerk_user_id).filter(Boolean);
-      const allClerkUsers = await getClerkUsersByIds(clerk, allIds);
-      const clerkMap = Object.fromEntries(allClerkUsers.map((u) => [u.id, u]));
-
-      let combined = (allSubs || []).map((sub) => ({
-        sub,
-        clerkUser: clerkMap[sub.clerk_user_id] || fallbackClerkUser(sub.clerk_user_id),
-      }));
-
-      if (roleFilter !== "all") {
-        combined = combined.filter(({ clerkUser }) => roleFilterMatches(clerkUser, roleFilter));
-      }
-
-      // True total among the fetched candidates - if a filter's real match
-      // count extends past BROAD_FETCH_CAP, this (like the cap itself)
-      // undercounts at the tail rather than ever miscounting the visible
-      // page.
-      const totalCount = combined.length;
-
-      if (sortBy !== "newest") {
-        const ids = combined.map((c) => c.sub.clerk_user_id).filter(Boolean);
-        const { copiesById, installsById, savesById } = await countsForIds(ids);
-        const countMap =
-          sortBy === "copies" ? copiesById : sortBy === "installs" ? installsById : savesById;
-
-        combined.sort(
-          (a, b) => (countMap.get(b.sub.clerk_user_id) || 0) - (countMap.get(a.sub.clerk_user_id) || 0)
-        );
-      }
-
-      const pageCombined = combined.slice(offset, offset + limit);
-      const pageIds = pageCombined.map((c) => c.sub.clerk_user_id).filter(Boolean);
-      const { copiesById, installsById, savesById } = await countsForIds(pageIds);
-
-      const users = pageCombined.map(({ sub, clerkUser }) =>
-        shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, installsById, savesById)
-      );
-
-      return NextResponse.json({ users, total: totalCount });
-    }
-
-    // No search text, no date filter, no role filter, default sort -
-    // Supabase is the real source of truth for the full user list (every
-    // signup gets a row via the Clerk user.created webhook, see
-    // api/webhooks/clerk/route.js), so paginate and count directly against
-    // it instead of ever bounding to a fixed recent window.
-    let query = supabase
-      .from("subscriptions")
-      .select(SUBSCRIPTION_COLUMNS, { count: "exact" })
-      .order("created_at", { ascending: false })
-      .range(offset, offset + limit - 1);
-
-    if (planFilter !== "all") query = query.eq("plan", planFilter);
-
-    const { data: subscriptions, count, error } = await query;
-
-    if (error) {
-      console.error("ADMIN_USERS_SUPABASE_ERROR:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    const clerkUserIds = (subscriptions || []).map((s) => s.clerk_user_id).filter(Boolean);
-
-    const [clerkUsers, { copiesById, installsById, savesById }] = await Promise.all([
-      getClerkUsersByIds(clerk, clerkUserIds),
-      countsForIds(clerkUserIds),
+    // The whole filtered list (Clerk accounts, cached), so every filter, sort and
+    // the total are exact - no more search-only-on-this-page or capped fetches
+    const [list, counts] = await Promise.all([
+      getAdminUserList({
+        audience: parseAudience(searchParams),
+        search: searchParams.get("search") || "",
+        plan: PLAN_OPTIONS.has(rawPlan) ? rawPlan : "all",
+        role: ROLE_OPTIONS.has(rawRole) ? rawRole : "all",
+        startISO,
+        endISO,
+      }),
+      activityCounts(),
     ]);
 
-    const clerkMap = Object.fromEntries(clerkUsers.map((u) => [u.id, u]));
+    if (sortBy !== "newest") {
+      const countMap = {
+        installs: counts.installsById,
+        web: counts.webById,
+        copies: counts.webById,
+        cli: counts.cliById,
+        mcp: counts.mcpById,
+        saves: counts.savesById,
+      }[sortBy];
+      list.sort((a, b) => (countMap.get(b.clerkUser.id) || 0) - (countMap.get(a.clerkUser.id) || 0));
+    }
 
-    const users = (subscriptions || []).map((sub) => {
-      // A subscriptions row with no matching Clerk profile (deleted
-      // account, or a lookup hiccup) still renders as a row instead of
-      // crashing the whole page.
-      const clerkUser = clerkMap[sub.clerk_user_id] || fallbackClerkUser(sub.clerk_user_id);
-
-      return shapeUser(clerkUser, sub, viewerIsSuperAdmin, copiesById, installsById, savesById);
-    });
-
-    return NextResponse.json({ users, total: count || 0 });
+    const users = list.slice(offset, offset + limit).map((entry) => shapeUser(entry, viewerIsSuperAdmin, counts));
+    return NextResponse.json({ users, total: list.length });
   } catch (error) {
     console.error("ADMIN_USERS_ERROR:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -726,7 +726,7 @@ const DisplacementNavbar = ({
           blur rather than being covered by a solid strip. */}
       <header
         ref={barRef}
-        className={`fixed top-0 left-0 right-0 z-30 backdrop-blur-md flex items-center justify-between h-[6vw] max-md:h-[20vw] max-[1025px]:h-[12vw] px-[1.7vw] max-md:px-[5vw] max-[1025px]:px-[2.6vw] transition-colors duration-300 ${isOpen ? "bg-transparent" : "bg-black/20"}`}
+        className={`fixed top-0 left-0 right-0 z-30 backdrop-blur-md flex items-center justify-between h-[6vw] max-md:h-[20vw] max-lg:h-[12vw] px-[1.7vw] max-md:px-[5vw] max-lg:px-[2.6vw] transition-colors duration-300 ${isOpen ? "bg-transparent" : "bg-black/20"}`}
         style={{ color: linkColor }}
       >
         <Link
@@ -885,10 +885,10 @@ const DisplacementNavbar = ({
           aria-expanded={isOpen}
           aria-controls="displacement-navbar-shelf"
           aria-label={isOpen ? "Close navigation" : "Open navigation"}
-          className="group relative flex items-center justify-center w-[5vw] h-[5vw] max-md:w-[12vw] max-md:h-[12vw] max-[1025px]:w-[5vw] max-[1025px]:h-[5vw] mr-[-0.8vw] p-0 border-none bg-transparent cursor-pointer text-current"
+          className="group relative flex items-center justify-center w-[5vw] h-[5vw] max-md:w-[12vw] max-md:h-[12vw] max-lg:w-[5vw] max-lg:h-[5vw] mr-[-0.8vw] p-0 border-none bg-transparent cursor-pointer text-current"
         >
           <span
-            className={`relative block w-[2.4vw] h-[1.6vw] max-md:w-[8vw] max-md:h-[8vw] max-[1025px]:w-[3.5vw] max-[1025px]:h-[3.5vw] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+            className={`relative block w-[2.4vw] h-[1.6vw] max-md:w-[8vw] max-md:h-[8vw] max-lg:w-[3.5vw] max-lg:h-[3.5vw] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
               isOpen
                 ? "group-hover:rotate-90 group-focus-visible:rotate-90"
                 : ""
@@ -911,7 +911,7 @@ const DisplacementNavbar = ({
 
         <span
           ref={barLineRef}
-          className="absolute left-[1.7vw] right-[1.7vw] max-md:left-[5vw] max-md:right-[5vw] max-[1025px]:left-[2.6vw] max-[1025px]:right-[2.6vw] bottom-0 h-px origin-center scale-x-0 pointer-events-none"
+          className="absolute left-[1.7vw] right-[1.7vw] max-md:left-[5vw] max-md:right-[5vw] max-lg:left-[2.6vw] max-lg:right-[2.6vw] bottom-0 h-px origin-center scale-x-0 pointer-events-none"
           style={{ backgroundColor: hairlineColor }}
         />
       </header>
@@ -920,7 +920,7 @@ const DisplacementNavbar = ({
         id="displacement-navbar-shelf"
         ref={shelfRef}
         aria-hidden={!isOpen}
-        className="fixed top-[6vw] max-md:top-[20vw] max-[1025px]:top-[12vw] left-0 right-0 z-25 invisible pointer-events-none border-b"
+        className="fixed top-[6vw] max-md:top-[20vw] max-lg:top-[12vw] left-0 right-0 z-25 invisible pointer-events-none border-b"
         style={
           {
             backgroundColor: shelfBackground,
@@ -929,8 +929,8 @@ const DisplacementNavbar = ({
           } as React.CSSProperties
         }
       >
-        <div className="py-[2.2vw] px-[1.7vw] max-md:py-[10vw] max-md:px-[5vw] max-[1025px]:py-[4vw] max-[1025px]:px-[2.6vw]">
-          <div className="flex max-md:flex-col items-start gap-[4vw] max-md:gap-[10vw] max-[1025px]:gap-[4vw]">
+        <div className="py-[2.2vw] px-[1.7vw] max-md:py-[10vw] max-md:px-[5vw] max-lg:py-[4vw] max-lg:px-[2.6vw]">
+          <div className="flex max-md:flex-col items-start gap-[4vw] max-md:gap-[10vw] max-lg:gap-[4vw]">
             <nav
               ref={primaryNavRef}
               aria-label="Site navigation"
@@ -953,7 +953,7 @@ const DisplacementNavbar = ({
                   key={link.label}
                   ref={(node) => registerContent(node, i)}
                   data-role="primary-link"
-                  className="group relative flex w-fit items-baseline py-[0.7vw] max-md:py-[3.2vw] max-[1025px]:py-[1.3vw]"
+                  className="group relative flex w-fit items-baseline py-[0.7vw] max-md:py-[3.2vw] max-lg:py-[1.3vw]"
                   onMouseEnter={() => {
                     if (showMedia) swapMedia(i % media.length);
                     if (reducedMotion || !dimInactiveLinks) return;
@@ -974,7 +974,7 @@ const DisplacementNavbar = ({
                     reduced={reducedMotion}
                     staggerStep={charStagger}
                     showLine={showLinkUnderline}
-                    className="w-fit text-[2.2vw] max-md:text-[7vw] max-[1025px]:text-[3.4vw] font-light leading-[1.1] tracking-[-0.02em]"
+                    className="w-fit text-[2.2vw] max-md:text-[7vw] max-lg:text-[3.4vw] font-light leading-[1.1] tracking-[-0.02em]"
                     style={{ color: linkColor }}
                   >
                     {link.label}
@@ -986,10 +986,10 @@ const DisplacementNavbar = ({
             <nav
               aria-label="Info"
               ref={(node) => registerContent(node, primaryLinks.length)}
-              className="flex flex-col max-md:flex-row max-md:flex-wrap gap-[0.6vw] max-md:gap-y-[3.5vw] max-md:gap-x-[6vw] max-[1025px]:gap-y-[1.5vw] max-[1025px]:gap-x-[3vw] min-w-[8vw] flex-none mx-auto max-md:mx-0 pt-[0.7vw] max-md:pt-0"
+              className="flex flex-col max-md:flex-row max-md:flex-wrap gap-[0.6vw] max-md:gap-y-[3.5vw] max-md:gap-x-[6vw] max-lg:gap-y-[1.5vw] max-lg:gap-x-[3vw] min-w-[8vw] flex-none mx-auto max-md:mx-0 pt-[0.7vw] max-md:pt-0"
             >
               <span
-                className="w-full text-[0.65vw] max-md:text-[3vw] max-[1025px]:text-[1.4vw] font-semibold tracking-[0.08em] uppercase"
+                className="w-full text-[0.65vw] max-md:text-[3vw] max-lg:text-[1.4vw] font-semibold tracking-[0.08em] uppercase"
                 style={{ color: mutedColor }}
               >
                 Info
@@ -998,7 +998,7 @@ const DisplacementNavbar = ({
                 <Link
                   key={link.label}
                   href={link.href ?? "#"}
-                  className="w-fit no-underline text-[0.9vw] max-md:text-[3.5vw] max-[1025px]:text-[1.7vw] font-normal tracking-[-0.01em] text-(--displacement-navbar-link) transition-colors duration-300 ease-out hover:text-white focus-visible:text-white"
+                  className="w-fit no-underline text-[0.9vw] max-md:text-[3.5vw] max-lg:text-[1.7vw] font-normal tracking-[-0.01em] text-(--displacement-navbar-link) transition-colors duration-300 ease-out hover:text-white focus-visible:text-white"
                 >
                   {link.label}
                 </Link>
@@ -1020,7 +1020,7 @@ const DisplacementNavbar = ({
                     >
                       <Image
                         src={item.src}
-                        alt=""
+                        alt="media"
                         fill
                         sizes="18vw"
                         className={`object-cover object-[50%_20%] ${
@@ -1047,7 +1047,7 @@ const DisplacementNavbar = ({
             ref={(node) =>
               registerContent(node, primaryLinks.length + (showMedia ? 2 : 1))
             }
-            className="flex max-md:flex-col items-center max-md:items-start justify-between gap-[2vw] mt-[1.5vw] max-md:mt-[10vw] max-[1025px]:mt-[4vw] pt-[0.85vw] max-md:pt-[7vw] max-[1025px]:pt-[2.8vw] border-t text-[0.65vw] max-md:text-[3vw] max-[1025px]:text-[1.4vw] max-md:gap-[5vw] max-[1025px]:gap-[2.2vw]"
+            className="flex max-md:flex-col items-center max-md:items-start justify-between gap-[2vw] mt-[1.5vw] max-md:mt-[10vw] max-lg:mt-[4vw] pt-[0.85vw] max-md:pt-[7vw] max-lg:pt-[2.8vw] border-t text-[0.65vw] max-md:text-[3vw] max-lg:text-[1.4vw] max-md:gap-[5vw] max-lg:gap-[2.2vw]"
             style={{ borderColor: hairlineColor, color: mutedColor }}
           >
             <Link
@@ -1056,7 +1056,7 @@ const DisplacementNavbar = ({
             >
               {email}
             </Link>
-            <span className="flex gap-[4vw] max-md:gap-[14vw] max-[1025px]:gap-[6vw] ">
+            <span className="flex gap-[4vw] max-md:gap-[14vw] max-lg:gap-[6vw] ">
               {socials.map((social) => (
                 <Link
                   key={social.label}
@@ -1074,7 +1074,7 @@ const DisplacementNavbar = ({
 
       <div
         ref={pageRef}
-        className="relative z-20 min-h-screen pt-[4vw] max-md:pt-[16vw] max-[1025px]:pt-[5.5vw] will-change-transform"
+        className="relative z-20 min-h-screen pt-[4vw] max-md:pt-[16vw] max-lg:pt-[5.5vw] will-change-transform"
         style={{ background: resolvedPageBackground, color: "#111111" }}
       >
         {/* Only the page's content dims while the shelf is open, never the page
@@ -1082,8 +1082,8 @@ const DisplacementNavbar = ({
             it and let the shelf show through the gap. */}
         <div ref={pageContentRef}>
           {children ?? (
-            <div className="grid place-items-center min-h-[90vh] px-[1.7vw] max-md:px-[5vw] max-[1025px]:px-[2.6vw]">
-              <h1 className="m-0 text-[4vw] max-md:text-[9vw] max-[1025px]:text-[4.5vw] font-light leading-[1.05] tracking-[-0.03em] text-center">
+            <div className="grid place-items-center min-h-[90vh] px-[1.7vw] max-md:px-[5vw] max-lg:px-[2.6vw]">
+              <h1 className="m-0 text-[4vw] max-md:text-[9vw] max-lg:text-[4.5vw] font-light leading-[1.05] tracking-[-0.03em] text-center">
                 Displacement Navbar
               </h1>
             </div>

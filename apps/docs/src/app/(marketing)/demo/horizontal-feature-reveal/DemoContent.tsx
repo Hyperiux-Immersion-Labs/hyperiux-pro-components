@@ -1,7 +1,6 @@
 "use client";
 
-import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import HorizontalFeatureReveal from "@/components/horizontal-feature-reveal";
 
@@ -14,8 +13,7 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <LenisSmoothScroll />
-          <DemoHeader textColor="#ffffff" />
+          <DemoHeader />
           {effect}
         </>
       )}

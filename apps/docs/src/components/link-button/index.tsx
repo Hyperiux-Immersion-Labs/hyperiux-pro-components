@@ -119,7 +119,7 @@ export default function LinkButton({
         {...linkProps}
         {...restProps}
         onClick={onLinkClick}
-        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 text-(--link-text-color) hover:text-(--link-hover-color) max-[1025px]:text-[4vw] max-md:text-[6.5vw] ${className}`}
+        className={`group block w-fit cursor-pointer scale-150 text-[1.1vw] leading-[1.2] duration-300 text-(--link-text-color) hover:text-(--link-hover-color) max-lg:text-[4vw] max-md:text-[6.5vw] ${className}`}
         style={mergedStyle}
       >
         <div className="flex items-center justify-start gap-2">

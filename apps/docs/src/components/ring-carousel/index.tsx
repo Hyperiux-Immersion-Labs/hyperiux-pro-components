@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/set-state-in-effect, @next/next/no-img-element -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
+/* eslint-disable react-hooks/set-state-in-effect -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
@@ -7,6 +7,7 @@ import { Draggable } from "gsap/Draggable";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
+import Image from "next/image";
 gsap.registerPlugin(Draggable);
 
 const prefersReducedMotion = () =>
@@ -462,10 +463,12 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  {renderItem ? (
  renderItem(item, i)
  ) : imageSrc ? (
- <img
+ <Image
  src={imageSrc}
  alt={imageAlt}
  className="pointer-events-none block h-full w-full select-none object-cover absolute inset-0"
+ fill
+ loading="eager"
  />
  ) : (
  item as ReactNode
@@ -478,13 +481,13 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  <div className=" absolute inset-0 z-3 cursor-grab active:cursor-grabbing" ref={draggerRef} />
  </div>
 
- <div className=" pointer-events-none absolute inset-0 z-2 bg-[linear-gradient(to_right,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0)_20%,rgba(0,0,0,0)_80%,rgba(0,0,0,0.95)_100%)] max-[1025px]:hidden" />
+ <div className=" pointer-events-none absolute inset-0 z-2 bg-[linear-gradient(to_right,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0)_20%,rgba(0,0,0,0)_80%,rgba(0,0,0,0.95)_100%)] max-lg:hidden" />
 
  {showNavigation && totalItems > 1 && (
  <div className=" absolute bottom-[2%] left-1/2 z-20 flex -translate-x-1/2 gap-3 max-md:bottom-[8%]">
  <button
  type="button"
- className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-[1025px]:h-14 max-[1025px]:w-14 max-md:h-[15vw] max-md:w-[15vw]"
+ className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-lg:h-14 max-lg:w-14 max-md:h-[15vw] max-md:w-[15vw]"
  onClick={goToPrev}
  aria-label="Previous slide"
  >
@@ -493,7 +496,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
 
  <button
  type="button"
- className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-[1025px]:h-14 max-[1025px]:w-14 max-md:h-[15vw] max-md:w-[15vw]"
+ className="flex h-[3.5vw] min-h-12 w-[3.5vw] min-w-12 items-center justify-center rounded-full border border-white/20 bg-white/8 text-white backdrop-blur-[10px] transition-all duration-300 ease-in-out hover:bg-white/16 motion-reduce:transition-none max-lg:h-14 max-lg:w-14 max-md:h-[15vw] max-md:w-[15vw]"
  onClick={() => goToNext(false)}
  aria-label="Next slide"
  >
@@ -503,7 +506,7 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  )}
 
  {showDots && totalItems > 1 && (
- <div className="absolute bottom-[15%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-[1025px]:bottom-[15%] max-[1025px]:gap-[2vw] max-[1025px]:px-4 max-[1025px]:py-3 max-md:bottom-[24%] max-md:px-3.5 max-md:py-2.5" aria-label="Slider pagination">
+ <div className="absolute bottom-[15%] left-1/2 z-20 flex -translate-x-1/2 items-center gap-[1vw] rounded-full bg-white/6 px-4.5 py-3.5 backdrop-blur-[10px] max-lg:bottom-[15%] max-lg:gap-[2vw] max-lg:px-4 max-lg:py-3 max-md:bottom-[24%] max-md:px-3.5 max-md:py-2.5" aria-label="Slider pagination">
  {items.map((_, index) => (
  <button
  key={index}
@@ -515,9 +518,9 @@ const RingCarouselComp: React.FC<RingCarouselCompProps> = ({
  aria-label={`Go to slide ${index + 1}`}
  >
  <span
- className={`h-2.5 w-2.5 rounded-full bg-white/42 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none max-[1025px]:h-2.25 max-[1025px]:w-2.25 max-md:h-2 max-md:w-2 ${
+ className={`h-2.5 w-2.5 rounded-full bg-white/42 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none max-lg:h-2.25 max-lg:w-2.25 max-md:h-2 max-md:w-2 ${
  activeIndex === index
- ? "w-10.5 bg-white/92 max-[1025px]:w-9 max-md:w-7"
+ ? "w-10.5 bg-white/92 max-lg:w-9 max-md:w-7"
  : ""
  }`}
  />
@@ -635,7 +638,7 @@ export default function RingCarousel({
  const carouselLayoutKey = `${resolvedCardWidth}-${resolvedCardHeight}-${resolvedRoundedness}-${galleryConfig.radius}`;
 
  return (
- <section className={`flex min-h-[40vh] w-full flex-col items-center justify-start overflow-hidden bg-black px-4 max-[1025px]:px-0  pb-8 max-[1025px]:pt-10 max-[1025px]:pb-8 max-md:px-0 max-md:pt-6 max-md:pb-4 ${className}`}>
+ <section className={`flex min-h-[40vh] w-full flex-col items-center justify-start overflow-hidden bg-black px-4 max-lg:px-0  pb-8 max-lg:pt-10 max-lg:pb-8 max-md:px-0 max-md:pt-6 max-md:pb-4 ${className}`}>
  <div className="relative w-full">
  <RingCarouselComp
  key={carouselLayoutKey}
