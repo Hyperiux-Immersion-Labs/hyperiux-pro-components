@@ -66,7 +66,7 @@ export default function CommunityHero() {
           )}
         </div>
         {/* Copy on the left, stacked; the crowd's blob sits on the right */}
-        <div className="site-container px-[calc(var(--cvw)*4.5)] max-lg:px-[6vw] flex pb-[calc(var(--cvw)*3)] max-lg:pt-36 max-lg:pb-[5vw] max-md:pt-[48svh]">
+        <div className="site-container section-x flex pb-[calc(var(--cvw)*3)] max-lg:pt-36 max-lg:pb-[5vw] max-md:pt-[48svh] max-md:pb-[12%]">
           <div className="flex w-[60%] flex-col gap-[calc(var(--cvw)*3)] max-lg:w-[75%] max-lg:gap-[4vw] max-md:w-full max-md:gap-[5vw]">
             <LineReveal
               as="h1"
@@ -87,10 +87,11 @@ export default function CommunityHero() {
           </div>
         </div>
       </section>
-      <section id="crowd-caption" className="px-[calc(var(--cvw)*4.5)] max-lg:px-[6vw] relative z-1 pt-[calc(var(--cvw)*2)] pb-[4vh]" data-zone="crowd">
+      {/* Desktop only: tablet and mobile show a video, not the WebGL crowd you move through */}
+      <section id="crowd-caption" className="section-x relative z-1 pt-[calc(var(--cvw)*2)] pb-[calc(var(--cvw)*3)] max-lg:hidden" data-zone="crowd">
         <p
           aria-hidden="true"
-          className="type-label site-container flex items-center justify-center text-white/40 max-md:justify-start"
+          className="type-label site-container flex items-center justify-center text-white/40"
         >
           Every dot is a seat. Move through the crowd.
         </p>

@@ -129,7 +129,7 @@ export default function CommunityFamiliar() {
 
   return (
     <div ref={rootRef} className="relative z-1 bg-light text-ink" data-zone="sheet" data-sound-flow="off">
-      <section id="familiar" className="px-[calc(var(--cvw)*7.5)] py-[10%] max-lg:px-[6vw] max-md:py-[12%]" aria-labelledby="fam-h">
+      <section id="familiar" className="px-[calc(var(--cvw)*7.5)] py-[10%] max-lg:px-[6vw] max-md:px-[7vw] max-md:py-[12%]" aria-labelledby="fam-h">
         <div className="site-container flex flex-col gap-[calc(var(--cvw)*7)] max-lg:gap-[8vw] max-md:gap-[10vw]">
         <ol data-fam-list className="flex flex-col px-[calc(var(--cvw)*1)]">
           {FAMILIAR.map((item, i) => (
@@ -154,7 +154,7 @@ export default function CommunityFamiliar() {
         </div>
       </section>
 
-      <section id="why" className="mt-20 px-[calc(var(--cvw)*4.5)] pb-[calc(var(--cvw)*10)] max-lg:px-[6vw] max-md:mt-0 max-md:py-[12%]">
+      <section id="why" className="section-x mt-20 pb-[calc(var(--cvw)*10)] max-md:mt-0 max-md:py-[12%]">
         <div className="site-container flex justify-between gap-[calc(var(--cvw)*2)] max-lg:flex-col max-lg:gap-[6vw] max-md:gap-[2vw]">
         <div className="sticky top-[35vh] flex w-[32%] flex-col items-start gap-[calc(var(--cvw)*1)] self-start max-lg:hidden">
           {PANELS.map((p, i) => (
@@ -169,9 +169,9 @@ export default function CommunityFamiliar() {
             </button>
           ))}
         </div>
-        <div className="flex w-[66%] flex-col gap-[calc(var(--cvw)*14)] max-lg:w-full max-lg:gap-[12vw] max-md:gap-[20vw]">
+        <div className="flex w-[66%] flex-col gap-[calc(var(--cvw)*14)] max-lg:w-full max-lg:gap-[12vw] max-md:gap-[16vw]">
           {PANELS.map(({ title, text, Card }, i) => (
-            <article key={title} data-panel={i} className="flex flex-col gap-[calc(var(--cvw)*1.8)] max-lg:gap-[4vw] max-md:gap-[10vw]">
+            <article key={title} data-panel={i} className="flex flex-col gap-[calc(var(--cvw)*1.8)] max-lg:gap-[4vw] max-md:gap-[6vw]">
               <Card joined={joined} />
               <div className="flex flex-col gap-[calc(var(--cvw)*1)] max-lg:gap-[1.5vw] max-md:gap-[3vw]">
                 <LineReveal as="h3" className="type-h3">{title}</LineReveal>
