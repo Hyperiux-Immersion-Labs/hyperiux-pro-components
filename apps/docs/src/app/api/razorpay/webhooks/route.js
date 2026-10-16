@@ -5,7 +5,7 @@ import { releaseFoundingSlot } from "@/lib/founding-slots";
 import { grantCreditsForCharge } from "@/lib/template-credits";
 import { cancelReplacedSubscription, shouldApplySubscriptionEvent } from "@/lib/subscription-events";
 import { recordTemplatePurchase, markTemplatePurchaseRefunded } from "@/lib/template-purchases";
-import { razorpay } from "@/lib/razorpay";
+import { razorpay, withRazorpayRetry } from "@/lib/razorpay";
 
 // Razorpay's server calls this - authenticated via X-Razorpay-Signature
 // (HMAC of the raw body with the webhook secret), never via Clerk.
@@ -93,20 +93,29 @@ export async function POST(req) {
   // Full refunds ("refund.created" / "refund.processed" - Razorpay has no
   // "payment.refunded" event). Partial refunds keep access.
   //   - a subscription charge (the payment has an invoice_id): the plan ends
-  //     now - unless that subscription was already replaced by an upgrade
+  //     now and the subscription is cancelled on Razorpay, so it never
+  //     charges (and re-grants Pro) again - unless that subscription was
+  //     already replaced by an upgrade
   //   - a template purchase: the purchase is marked refunded, which stops
   //     its download (hasTemplatePurchase only counts paid rows)
-  // Both handlers are idempotent, so the two events for one refund are safe.
-  if (
-    (event.event === "refund.created" || event.event === "refund.processed") &&
-    payment?.id &&
-    payment?.refund_status === "full"
-  ) {
+  // Razorpay's current payment decides, not the one in the event: the event's
+  // copy can predate the refund (seen live: a full refund whose payment still
+  // didn't say refund_status "full", so the account kept Pro). Both handlers
+  // are idempotent, so the two events for one refund are safe.
+  if (event.event === "refund.created" || event.event === "refund.processed") {
+    const paymentId = payment?.id || event?.payload?.refund?.entity?.payment_id;
+    if (!paymentId) return NextResponse.json({ received: true });
+
     try {
-      if (payment.invoice_id) {
-        const invoice = await razorpay.invoices.fetch(payment.invoice_id);
+      const refunded = await withRazorpayRetry(() => razorpay.payments.fetch(paymentId));
+      const isFull = refunded?.refund_status === "full" || (refunded?.amount > 0 && refunded?.amount_refunded >= refunded?.amount);
+      console.info("RAZORPAY_REFUND:", event.event, paymentId, isFull ? "full" : `partial (${refunded?.amount_refunded}/${refunded?.amount})`);
+      if (!isFull) return NextResponse.json({ received: true });
+
+      if (refunded.invoice_id) {
+        const invoice = await withRazorpayRetry(() => razorpay.invoices.fetch(refunded.invoice_id));
         const refundedSubscription = invoice?.subscription_id
-          ? await razorpay.subscriptions.fetch(invoice.subscription_id)
+          ? await withRazorpayRetry(() => razorpay.subscriptions.fetch(invoice.subscription_id))
           : null;
         const refundClerkUserId = refundedSubscription?.notes?.clerk_user_id;
 
@@ -116,8 +125,17 @@ export async function POST(req) {
         ) {
           await markUserFree({ clerkUserId: refundClerkUserId, status: "refunded" });
         }
+
+        // A refunded subscription never charges again - cancelled right away, not
+        // at the end of the cycle, whether or not it's still the account's plan.
+        // Outside the check above so a retry still cancels if this failed after the
+        // downgrade. Its subscription.cancelled webhook then leaves the "refunded"
+        // row as it is (subscription-events).
+        if (refundedSubscription && !["cancelled", "completed", "expired"].includes(refundedSubscription.status)) {
+          await withRazorpayRetry(() => razorpay.subscriptions.cancel(refundedSubscription.id, false));
+        }
       } else {
-        await markTemplatePurchaseRefunded(payment.id);
+        await markTemplatePurchaseRefunded(paymentId);
       }
     } catch (error) {
       console.error("RAZORPAY_WEBHOOK_REFUND_ERROR:", error);

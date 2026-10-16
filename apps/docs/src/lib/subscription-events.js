@@ -28,7 +28,10 @@ export async function shouldApplySubscriptionEvent({ clerkUserId, subscription, 
   const rowIsLivePro = data.plan === "pro" && ACTIVE_PRO_STATUSES.includes(data.status);
 
   if (currentId === subscription?.id) {
-    if (kind === "end" || rowIsLivePro) return true;
+    // Refunded: already moved to Free, and the refund cancels the subscription -
+    // its "cancelled" event must not relabel the row as an ordinary cancellation
+    if (kind === "end") return !(data.plan === "free" && data.status === "refunded");
+    if (rowIsLivePro) return true;
 
     // A start event for a subscription the row says has ended. Razorpay
     // redelivers events late and out of order, so this can be a stale
