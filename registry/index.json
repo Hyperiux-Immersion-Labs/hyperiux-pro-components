@@ -13514,7 +13514,7 @@
     ],
     "type": "registry:component",
     "title": "Liquid Shatter",
-    "description": "Glossy 3D ribbon rings that charge on press-and-hold and shatter into liquid fragments before reforming",
+    "description": "Lacquered WebGL ribbon rings that swell under the pointer, carry running light streaks, and shatter into stirrable glowing shards on press and hold.",
     "category": "components",
     "dependencies": [
       "gsap",

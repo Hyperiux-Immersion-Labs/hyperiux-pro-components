@@ -1,7 +1,7 @@
 {
   "name": "@hyperiux/liquid-shatter",
   "version": "1.0.0",
-  "description": "Glossy 3D ribbon rings that charge on press-and-hold and shatter into liquid fragments before reforming",
+  "description": "Lacquered WebGL ribbon rings that swell under the pointer, carry running light streaks, and shatter into stirrable glowing shards on press and hold.",
   "main": "index.tsx",
   "files": [
     "index.tsx",
