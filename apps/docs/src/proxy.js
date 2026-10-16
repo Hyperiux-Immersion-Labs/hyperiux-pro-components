@@ -4,7 +4,8 @@ import { DEV_PREVIEW_USERNAME } from "@/lib/dev/dashboardPreview";
 import { dashboardUsername } from "@/lib/user-slug";
 import { ACCOUNT_DELETED_COOKIE } from "@/lib/account-deleted";
 import registryIndex from "../public/r/index.json";
-import { getEffectSlugAliases } from "@/lib/effect-slugs";
+import { getEffectRouteSlug, getEffectSlugAliases } from "@/lib/effect-slugs";
+import { getEffectCategoryBySlug } from "@/lib/categories";
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
@@ -93,6 +94,27 @@ const withClerk = clerkMiddleware(async (auth, request) => {
 const EFFECT_DETAIL_PATH = /^\/effects\/[^/]+\/([^/]+)\/?$/;
 const knownEffectSlugs = new Set((registryIndex.items || registryIndex).map((effect) => effect.name));
 
+// Every effect has one URL: /effects/<its category's slug>/<its route slug>. The
+// page itself can't redirect anything else with a real status (the workspace
+// loading boundary has already sent a 200 by then, so it falls back to a meta
+// refresh), which left category ids (/effects/scroll/...), old names
+// (text-effects) and wrong categories all serving the page as duplicates.
+// Effect name and every alias -> canonical path.
+const canonicalEffectPaths = new Map();
+for (const effect of registryIndex.items || registryIndex) {
+  const category = getEffectCategoryBySlug(effect.category)?.slug;
+  if (!category) continue;
+  const path = `/effects/${category}/${getEffectRouteSlug(effect.name)}`;
+  for (const alias of getEffectSlugAliases(effect.name)) canonicalEffectPaths.set(alias, path);
+}
+
+const nonCanonicalEffectPath = (pathname) => {
+  const match = pathname.match(/^\/effects\/([^/]+)\/([^/]+)\/?$/);
+  if (!match) return null;
+  const canonical = getEffectSlugAliases(match[2]).map((slug) => canonicalEffectPaths.get(slug)).find(Boolean);
+  return canonical && canonical !== `/effects/${match[1]}/${match[2]}` ? canonical : null;
+};
+
 const isUnknownEffect = (pathname) => {
   const match = pathname.match(EFFECT_DETAIL_PATH);
   if (!match) return false;
@@ -116,6 +138,13 @@ export default async function middleware(request) {
 
   if (isUnknownEffect(request.nextUrl.pathname)) {
     return NextResponse.rewrite(new URL("/_effect-not-found", request.url));
+  }
+
+  const canonicalEffect = nonCanonicalEffectPath(request.nextUrl.pathname);
+  if (canonicalEffect) {
+    const url = request.nextUrl.clone();
+    url.pathname = canonicalEffect;
+    return NextResponse.redirect(url, 308);
   }
 
   if (isMarketingRoute(request)) {

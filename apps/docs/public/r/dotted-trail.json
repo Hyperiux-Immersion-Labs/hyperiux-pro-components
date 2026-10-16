@@ -8,8 +8,14 @@
   "exportName": "DottedTrail",
   "exportKind": "default",
   "tier": "free",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-16",
+      "summary": "Filed under Cursor Effects, matching its docs page",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-09-21",

@@ -23,6 +23,9 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
+  // The demo is the live preview of /templates/elenavoss; without this it inherits the
+  // homepage's canonical and reads to Google as a copy of the homepage.
+  alternates: { canonical: "https://vault.hyperiux.com/templates/elenavoss" },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,

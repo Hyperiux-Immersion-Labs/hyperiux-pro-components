@@ -1,10 +1,10 @@
 {
   "name": "dotted-trail",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Dotted Trail",
   "description": "Interactive dotted grid with a soft two-color cursor trail",
-  "category": "backgrounds",
+  "category": "cursor",
   "dependencies": [],
   "registryDependencies": [],
   "previewUrl": "/demo/dotted-trail",
@@ -282,6 +282,12 @@
     }
   ],
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-16",
+      "summary": "Filed under Cursor Effects, matching its docs page",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-09-21",

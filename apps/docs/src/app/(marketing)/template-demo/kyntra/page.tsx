@@ -32,6 +32,9 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
+  // The demo is the live preview of /templates/kyntra; without this it inherits the
+  // homepage's canonical and reads to Google as a copy of the homepage.
+  alternates: { canonical: "https://vault.hyperiux.com/templates/kyntra" },
   openGraph: {
     title,
     description,

@@ -1,7 +1,7 @@
 import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
-import registry from "../../../../../../../registry/effects/backgrounds/dotted-trail/registry.json";
+import registry from "../../../../../../../registry/effects/cursor/dotted-trail/registry.json";
 
 export default function DottedTrailDemoPage() {
   return (

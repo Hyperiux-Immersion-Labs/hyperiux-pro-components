@@ -15,11 +15,6 @@
     "tarball": "registry/dist/hyperiux-dotted-grid-1.0.1.tgz"
   },
   {
-    "name": "@hyperiux/dotted-trail",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-dotted-trail-1.0.0.tgz"
-  },
-  {
     "name": "@hyperiux/grid-lift",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-grid-lift-1.1.0.tgz"
@@ -210,6 +205,11 @@
     "tarball": "registry/dist/hyperiux-interactive-list-preview-1.0.1.tgz"
   },
   {
+    "name": "@hyperiux/liquid-shatter",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-liquid-shatter-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/shear-wipe",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-shear-wipe-1.1.0.tgz"
@@ -253,6 +253,11 @@
     "name": "@hyperiux/cursor-move",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-cursor-move-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/dotted-trail",
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-dotted-trail-1.0.1.tgz"
   },
   {
     "name": "@hyperiux/fish-eye",
@@ -748,10 +753,5 @@
     "name": "@hyperiux/strip-slider",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-strip-slider-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/liquid-shatter",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-liquid-shatter-1.0.0.tgz"
   }
 ]

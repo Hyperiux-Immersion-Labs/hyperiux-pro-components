@@ -32,6 +32,9 @@ export const metadata: Metadata = {
   title: "Lumera Heights - Luxury Dubai Real Estate Template",
   description:
     "A single-page luxury real estate template for Dubai property launches, featuring residences, amenities, gallery, nearby highlights, and enquiry flows.",
+  // The demo is the live preview of /templates/lumera; without this it inherits the
+  // homepage's canonical and reads to Google as a copy of the homepage.
+  alternates: { canonical: "https://vault.hyperiux.com/templates/lumera" },
   openGraph: {
     title: "Lumera Heights - Luxury Dubai Real Estate Template",
     description:

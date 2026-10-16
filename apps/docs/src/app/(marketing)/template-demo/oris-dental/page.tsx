@@ -21,9 +21,13 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
+  // The demo is the live preview of /templates/oris-dental; without this it inherits the
+  // homepage's canonical and reads to Google as a copy of the homepage.
+  alternates: { canonical: "https://vault.hyperiux.com/templates/oris-dental" },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
+    images: [{ url: "https://vault.hyperiux.com/assets/templates/templates-listing/orisdental.png", alt: TITLE }],
   },
 };
 

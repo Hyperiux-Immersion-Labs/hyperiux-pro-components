@@ -1,5 +1,5 @@
 import { createPageMetadata } from "@/lib/seo-metadata";
-import { WebpageJsonLd, BreadcrumbsJSONLD, SoftwareApplicationJsonLd } from "@/lib/json-ld";
+import { WebpageJsonLd, BreadcrumbsJSONLD } from "@/lib/json-ld";
 import { getAiCatalogue } from "@/lib/ai-catalogue";
 import LlmInfo from "./LlmInfo";
 
@@ -23,7 +23,6 @@ export default async function Page() {
     <>
       <WebpageJsonLd metadata={metadata} />
       <BreadcrumbsJSONLD pathname="/llm-info" />
-      <SoftwareApplicationJsonLd />
       <LlmInfo counts={counts} />
     </>
   );

@@ -4,11 +4,15 @@
  *
  * Static site pages (home, pricing, category listing pages, docs, legal)
  * are read from the current sitemap.xml and kept as-is. All per-effect
- * <url> entries (demo pages + article pages) are dropped and rebuilt from
- * the registry, so removed/renamed effects don't leave stale entries and
- * new effects are always included. Template pages, template demos and blog
- * posts are rebuilt the same way: templates from mock-templates.js, blog posts
- * from Sanity (if Sanity can't be reached, the existing blog entries are kept).
+ * <url> entries (article pages) are dropped and rebuilt from the registry, so
+ * removed/renamed effects don't leave stale entries and new effects are always
+ * included. Template pages and blog posts are rebuilt the same way: templates
+ * from mock-templates.js, blog posts from Sanity (if Sanity can't be reached,
+ * the existing blog entries are kept).
+ *
+ * Demo pages (/demo/<effect>, /template-demo/<template>) are left out: each
+ * one's canonical is its effect or template page, and listing non-canonical
+ * URLs only earns "submitted URL not selected as canonical" in Search Console.
  *
  * Run manually: node scripts/generate-sitemap.mjs
  * Runs automatically before `npm run build` in apps/docs (see "prebuild").
@@ -122,27 +126,14 @@ async function main() {
     return !isDemo && !isEffectArticle && !isTemplatePage && !isBlogPost;
   });
 
-  const effectBlocks = registry.flatMap((effect) => {
-    const slug = effect.name;
-    const catSlug = categorySlug(effect.category);
-    const demoUrl = effect.previewUrl
-      ? `${SITE_URL}${effect.previewUrl}`
-      : `${SITE_URL}/demo/${slug}`;
-    const articleUrl = `${SITE_URL}/effects/${catSlug}/${slug}`;
-
-    return [
-      buildUrlBlock(demoUrl, { priority: "0.6400" }),
-      buildUrlBlock(articleUrl, { priority: "0.6400" }),
-    ];
-  });
+  const effectBlocks = registry.map((effect) =>
+    buildUrlBlock(`${SITE_URL}/effects/${categorySlug(effect.category)}/${effect.name}`, { priority: "0.6400" })
+  );
 
   const templateBlocks = [
     buildUrlBlock(`${SITE_URL}/templates`, { priority: "0.6400" }),
     ...TEMPLATES.map((template) =>
       buildUrlBlock(`${SITE_URL}/templates/${template.slug}`, { priority: "0.6400" })
-    ),
-    ...TEMPLATES.map((template) =>
-      buildUrlBlock(`${SITE_URL}/template-demo/${template.slug}`, { priority: "0.6400" })
     ),
   ];
 
@@ -165,7 +156,7 @@ async function main() {
 
   fs.writeFileSync(SITEMAP_PATH, xml);
   console.log(
-    `sitemap.xml updated: ${staticBlocks.length} static pages, ${registry.length} effects (${effectBlocks.length} demo+article urls), ${TEMPLATES.length} templates (${templateBlocks.length} urls), ${blogPosts ? `${blogBlocks.length} blog posts from Sanity` : "blog posts kept from the existing sitemap"}.`
+    `sitemap.xml updated: ${staticBlocks.length} static pages, ${registry.length} effects (${effectBlocks.length} article urls), ${TEMPLATES.length} templates (${templateBlocks.length} urls), ${blogPosts ? `${blogBlocks.length} blog posts from Sanity` : "blog posts kept from the existing sitemap"}.`
   );
 }
 

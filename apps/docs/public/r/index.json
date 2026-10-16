@@ -475,6 +475,20 @@
       "tier": "pro"
     },
     {
+      "name": "dotted-trail",
+      "type": "registry:component",
+      "category": "cursor",
+      "categories": [
+        "cursor"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "DottedTrail",
+      "exportKind": "default",
+      "version": "1.0.1",
+      "tier": "free"
+    },
+    {
       "name": "fish-eye",
       "type": "registry:component",
       "category": "cursor",
@@ -680,20 +694,6 @@
       "exportName": "DottedGrid",
       "exportKind": "named",
       "version": "1.0.1",
-      "tier": "free"
-    },
-    {
-      "name": "dotted-trail",
-      "type": "registry:component",
-      "category": "backgrounds",
-      "categories": [
-        "backgrounds"
-      ],
-      "dependencies": [],
-      "registryDependencies": [],
-      "exportName": "DottedTrail",
-      "exportKind": "default",
-      "version": "1.0.0",
       "tier": "free"
     },
     {
