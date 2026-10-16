@@ -51,7 +51,8 @@ export async function POST(req) {
     crypto.timingSafeEqual(expected, received);
 
   if (!isValid) {
-    await recordWebhookEvent({ eventId, outcome: "rejected", detail: "Invalid signature" });
+    // Not written to the webhook log: anyone can post here, and the log is for Razorpay's deliveries
+    console.warn("RAZORPAY_WEBHOOK_REJECTED: invalid signature");
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 

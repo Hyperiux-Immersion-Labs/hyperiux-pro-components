@@ -143,6 +143,22 @@ describe("template purchase refund", () => {
   });
 });
 
+describe("a failed invoice update", () => {
+  it("still ends the plan and cancels, but answers 500 so Razorpay redelivers until the invoice is marked", async () => {
+    db.failNext(); // the invoices update is the first database write in applyRefund
+    const first = await post(refundEvent("refund.created"));
+    expect(first.status).toBe(500);
+    expect(db.rows("invoices")[0].status).toBe("paid");
+    expect(subRow()).toMatchObject({ plan: "free", status: "refunded" });
+    expect(cancel).toHaveBeenCalledTimes(1);
+
+    const again = await post(refundEvent("refund.created"));
+    expect(again.status).toBe(200);
+    expect(db.rows("invoices")[0].status).toBe("refunded");
+    expect(cancel).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("webhook log", () => {
   const log = () => db.rows("razorpay_webhook_events");
 
@@ -158,10 +174,12 @@ describe("webhook log", () => {
     expect(log().at(-1)).toMatchObject({ outcome: "skipped", detail: "Partial refund: access kept" });
   });
 
-  it("a forged delivery is logged as rejected, and changes nothing", async () => {
+  it("a forged delivery changes nothing and isn't written to the log", async () => {
+    const before = log().length;
     const raw = JSON.stringify(refundEvent("refund.created"));
-    await webhook(makeRequest("/api/razorpay/webhooks", { method: "POST", body: raw, headers: { "x-razorpay-signature": "forged" } }));
-    expect(log().at(-1)).toMatchObject({ outcome: "rejected", detail: "Invalid signature" });
+    const res = await webhook(makeRequest("/api/razorpay/webhooks", { method: "POST", body: raw, headers: { "x-razorpay-signature": "forged", "x-razorpay-event-id": "x".repeat(5000) } }));
+    expect(res.status).toBe(400);
+    expect(log()).toHaveLength(before);
     expect(subRow()).toMatchObject({ plan: "pro", status: "active" });
   });
 

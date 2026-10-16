@@ -14,8 +14,8 @@ export const WEBHOOK_OUTCOMES = {
 export async function recordWebhookEvent({ eventId = null, event = null, outcome, detail = null, clerkUserId = null, subscriptionId = null, paymentId = null, amount = null, currency = null }) {
   try {
     const { error } = await supabase.from("razorpay_webhook_events").insert({
-      event_id: eventId,
-      event,
+      event_id: eventId ? String(eventId).slice(0, 100) : null,
+      event: event ? String(event).slice(0, 100) : null,
       outcome,
       detail: detail ? String(detail).slice(0, 500) : null,
       clerk_user_id: clerkUserId,

@@ -15,7 +15,7 @@ const FIELD = "type-body bg-foreground/5 px-3 py-2 text-foreground ring-1 ring-i
 const TEMPLATE_TITLES = Object.fromEntries(TEMPLATES.map((template) => [template.slug, template.title]));
 
 /** `post(url, body)` posts as the drawer does (throws the API's error); `onChanged()` refreshes History. */
-export function SupportSection({ user, post, onChanged }) {
+export function SupportSection({ user, post, onChanged, onBusyChange }) {
   const [data, setData] = useState(null);
   const [notes, setNotes] = useState(null);
   const [reload, setReload] = useState(0);
@@ -57,6 +57,12 @@ export function SupportSection({ user, post, onChanged }) {
     };
   }, [user.id, reload]);
 
+  // The drawer stays open while a change is in flight
+  useEffect(() => {
+    onBusyChange?.(busy !== null);
+    return () => onBusyChange?.(false);
+  }, [busy, onBusyChange]);
+
   async function run(kind, work) {
     setBusy(kind);
     setError("");
@@ -76,7 +82,9 @@ export function SupportSection({ user, post, onChanged }) {
   const delta = parseInt(creditDelta, 10);
   const deltaValid = Number.isInteger(delta) && delta !== 0 && Math.abs(delta) <= 20 && (data ? data.credits + delta >= 0 : false);
   const extraCount = parseInt(extra, 10);
-  const extraValid = Number.isInteger(extraCount) && extraCount >= 1 && extraCount <= 20;
+  // Added to any extra already given today; the route stores the day's total (at most 20)
+  const extraTotal = (data?.extraToday || 0) + extraCount;
+  const extraValid = Number.isInteger(extraCount) && extraCount >= 1 && extraTotal <= 20;
   const giveable = TEMPLATES.filter((template) => !data?.templates.includes(template.slug));
   // The picked template, or the first one they don't own yet
   const chosen = giveable.some((template) => template.slug === templateSlug) ? templateSlug : giveable[0]?.slug || "";
@@ -187,19 +195,19 @@ export function SupportSection({ user, post, onChanged }) {
               <p className="type-label text-foreground/80">Extra installs today</p>
               {pending === "installs" ? (
                 <Confirm
-                  lines={[{ text: `Allow ${name} ${extraCount} more install${extraCount === 1 ? "" : "s"} today, until midnight UTC. Their history doesn’t change.` }]}
+                  lines={[{ text: `Allow ${name} ${extraCount} more install${extraCount === 1 ? "" : "s"} today${data.extraToday ? ` (${extraTotal} extra in all)` : ""}, until midnight UTC. Their history doesn’t change.` }]}
                   busy={busy === "installs"}
                   onCancel={() => setPending(null)}
                   onConfirm={() =>
                     run("installs", async () => {
-                      await post("/api/admin/users/install-bonus", { clerkUserId: user.id, extra: extraCount });
-                      return `Done: ${extraCount} extra today.`;
+                      await post("/api/admin/users/install-bonus", { clerkUserId: user.id, extra: extraTotal });
+                      return `Done: ${extraTotal} extra today.`;
                     })
                   }
                 />
               ) : (
                 <div className="flex flex-wrap items-center gap-3">
-                  <input type="number" step="1" min="1" max="20" value={extra} onChange={(event) => setExtra(event.target.value)} aria-label="Extra installs for today" className={`${FIELD} w-24`} />
+                  <input type="number" step="1" min="1" max={20 - (data.extraToday || 0)} value={extra} onChange={(event) => setExtra(event.target.value)} aria-label="Extra installs for today" className={`${FIELD} w-24`} />
                   <button type="button" disabled={!extraValid} onClick={() => setPending("installs")} className={LINE_BUTTON}>
                     Allow
                   </button>

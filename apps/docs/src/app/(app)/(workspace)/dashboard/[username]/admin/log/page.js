@@ -133,6 +133,9 @@ export default function AdminLogPage() {
     );
   }
 
+  // The list for the log on screen - right after switching logs, `data` still holds the
+  // other log's response until the effect clears it, so that counts as loading
+  const items = log === "changes" ? data?.entries : data?.events;
   const pages = Math.max(1, Math.ceil((data?.total || 0) / PER_PAGE));
 
   return (
@@ -200,20 +203,20 @@ export default function AdminLogPage() {
         </div>
       </div>
 
-      {!data ? (
+      {!items ? (
         <SkeletonCard className="gap-3">
           {Array.from({ length: 6 }, (_, i) => (
             <Bar key={i} type="type-body" className="w-full" />
           ))}
         </SkeletonCard>
-      ) : (data.entries || data.events || []).length === 0 ? (
+      ) : items.length === 0 ? (
         <p className="type-body py-10 text-center text-black/60">
           {log === "changes" ? "No changes yet." : "No Razorpay events yet."}
         </p>
       ) : log === "changes" ? (
-        <AuditList entries={data.entries} showTarget tone="light" />
+        <AuditList entries={items} showTarget tone="light" />
       ) : (
-        <WebhookEventList events={data.events} showUser tone="light" />
+        <WebhookEventList events={items} showUser tone="light" />
       )}
 
       <Pager

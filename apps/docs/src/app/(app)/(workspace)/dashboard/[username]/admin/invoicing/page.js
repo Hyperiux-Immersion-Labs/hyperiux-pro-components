@@ -76,7 +76,7 @@ function RevenueToggle({ row, kind, onChange }) {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Failed");
-      onChange(row.id, json.excluded);
+      onChange(kind, row.id, json.excluded);
       setAsking(false);
       refreshDashboard();
     } catch {
@@ -378,11 +378,12 @@ export default function AdminInvoicingPage() {
   const whole = (amount, currency) => new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(amount || 0);
   const split = (stat) =>
     `${whole(stat.subscriptions, stat.currency)} subscriptions · ${whole(stat.templates, stat.currency)} templates${stat.refunded > 0 ? ` · ${whole(stat.refunded, stat.currency)} refunded` : ""}`;
-  // A row's exclusion changed: update it in place (the cards refetch on their own)
-  const setExcluded = (id, excluded) =>
+  // A row's exclusion changed: update it in place (the cards refetch on their own). By the
+  // row's own kind, not the ledger on screen - that may have switched while it saved.
+  const setExcluded = (kind, id, excluded) =>
     setData((current) => {
-      const key = ledger === "subscriptions" ? "invoices" : "templates";
-      const listKey = ledger === "subscriptions" ? "invoices" : "purchases";
+      const key = kind === "subscription" ? "invoices" : "templates";
+      const listKey = kind === "subscription" ? "invoices" : "purchases";
       const list = current[key][listKey].map((row) => (row.id === id ? { ...row, excluded } : row));
       return { ...current, [key]: { ...current[key], [listKey]: list } };
     });

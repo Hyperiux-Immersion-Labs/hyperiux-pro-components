@@ -28,7 +28,7 @@ export async function applyRefund(paymentId) {
     return { kind: "template" };
   }
 
-  await markInvoiceRefunded(paymentId);
+  const invoiceError = await markInvoiceRefunded(paymentId);
   const invoice = await withRazorpayRetry(() => razorpay.invoices.fetch(refunded.invoice_id));
   const subscription = invoice?.subscription_id ? await withRazorpayRetry(() => razorpay.subscriptions.fetch(invoice.subscription_id)) : null;
   const clerkUserId = subscription?.notes?.clerk_user_id || null;
@@ -48,6 +48,10 @@ export async function applyRefund(paymentId) {
     await razorpay.subscriptions.cancel(subscription.id, false);
     cancelled = true;
   }
+
+  // Everything else is done; a failed invoice update still fails the call so the webhook is
+  // redelivered (or Sync run again) until the payment leaves revenue
+  if (invoiceError) throw new Error(`Couldn't mark the invoice for ${paymentId} refunded.`);
 
   return { kind: "subscription", clerkUserId, subscriptionId: subscription?.id || null, endedPlan, cancelled };
 }

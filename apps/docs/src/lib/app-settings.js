@@ -4,24 +4,26 @@ import { supabase } from "@/lib/supabase";
 // Dashboard settings (sql/app_settings.sql), edited in the admin Settings tab. Read on
 // many hot paths (every install decision), so cached for 30 seconds per server instance;
 // a save clears the cache on the instance that made it, and the others catch up within
-// the 30 seconds. A database error falls back to the defaults rather than failing.
+// the 30 seconds. A database error keeps the last values read (the defaults only if none
+// were ever read) and tries again after 5 seconds, so a blip never flips a setting.
 const TTL_MS = 30_000;
+const RETRY_MS = 5_000;
 let cache = null;
 
 export const SETTING_KEYS = ["install_limit_enforced", "internal_emails", "internal_domains"];
 
 export async function getAppSettings() {
-  if (cache && Date.now() - cache.at < TTL_MS) return cache.values;
-  let values = {};
+  if (cache && Date.now() - cache.at < cache.ttl) return cache.values;
   try {
     const { data, error } = await supabase.from("app_settings").select("key, value");
     if (error) throw error;
-    values = Object.fromEntries((data || []).map((row) => [row.key, row.value]));
+    const values = Object.fromEntries((data || []).map((row) => [row.key, row.value]));
+    cache = { at: Date.now(), ttl: TTL_MS, values };
   } catch (error) {
     console.error("APP_SETTINGS_READ_ERROR:", error?.message || error);
+    cache = { at: Date.now(), ttl: RETRY_MS, values: cache?.values || {} };
   }
-  cache = { at: Date.now(), values };
-  return values;
+  return cache.values;
 }
 
 export async function setAppSetting(key, value, updatedBy = null) {
@@ -30,7 +32,8 @@ export async function setAppSetting(key, value, updatedBy = null) {
     .from("app_settings")
     .upsert({ key, value, updated_at: new Date().toISOString(), updated_by: updatedBy }, { onConflict: "key" });
   if (error) throw error;
-  cache = null;
+  // Read again on next use; the saved value stands in if that read fails
+  cache = { at: 0, ttl: 0, values: { ...cache?.values, [key]: value } };
 }
 
 export function clearAppSettingsCache() {

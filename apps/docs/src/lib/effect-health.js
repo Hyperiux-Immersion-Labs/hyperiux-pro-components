@@ -54,13 +54,16 @@ export function computeEffectHealth({ registryItems = [], guides = [], catalogue
     const guide = guideBySlug.get(slug);
     const built = catalogueBySlug.get(item.name);
     const registryCategory = categorySlugOf(item.category);
+    // The live page sits under the guide's category when there is one (the effect page
+    // matches its content on it), so "Page" and "Refresh page" use that
+    const pageCategory = (guide && categorySlugOf(guide.categorySlug)) || registryCategory;
     const entry = {
       slug: item.name,
       title: String(guide?.title || built?.title || item.name).trim(),
-      categorySlug: registryCategory,
+      categorySlug: pageCategory,
       tier: item.tier === "pro" ? "pro" : "free",
       sanityId: guide?._id || null,
-      docsUrl: `/effects/${registryCategory}/${slug}`,
+      docsUrl: `/effects/${pageCategory}/${slug}`,
       issues: [],
     };
 

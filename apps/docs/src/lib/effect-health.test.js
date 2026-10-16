@@ -45,6 +45,8 @@ describe("effect health", () => {
 
   it("flags a category the registry and Sanity disagree on (the Dotted Trail case)", () => {
     expect(kindsOf("dotted-trail")).toContain("category-mismatch");
+    // its live page is under the guide's category, so the links go there
+    expect(health.effects.find((e) => e.slug === "dotted-trail").docsUrl).toBe("/effects/cursor-effects/dotted-trail");
   });
 
   it("checks the raw guide copy and the usage example", () => {

@@ -29,9 +29,12 @@ export async function POST(request) {
 
   const result = await redeemTemplateCredit({ clerkUserId, templateSlug });
   if (result.status !== "redeemed") {
-    // Take the added credit back
-    await supabase.from("template_credits").insert({ clerk_user_id: clerkUserId, delta: -1, reason: "adjust" });
-    const message = result.status === "already-owned" ? "They already own this template." : "Couldn't give the template.";
+    // Take the added credit back; if that fails too, say so - the admin removes it by hand
+    const takeBack = await supabase.from("template_credits").insert({ clerk_user_id: clerkUserId, delta: -1, reason: "adjust" });
+    if (takeBack.error) console.error("ADMIN_GIVE_TEMPLATE_TAKE_BACK_ERROR:", clerkUserId, takeBack.error);
+    const message =
+      (result.status === "already-owned" ? "They already own this template." : "Couldn't give the template.") +
+      (takeBack.error ? " The credit added for it couldn't be taken back - remove 1 under Template credits." : "");
     return NextResponse.json({ error: message }, { status: result.status === "already-owned" ? 400 : 500 });
   }
 

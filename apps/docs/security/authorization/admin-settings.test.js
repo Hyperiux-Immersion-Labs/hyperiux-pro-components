@@ -50,6 +50,20 @@ describe("install-limit enforcement", () => {
     expect(await isInstallLimitEnforced()).toBe(true);
   });
 
+  it("a failed read keeps the last values instead of falling back to the environment", async () => {
+    process.env.INSTALL_LIMIT_ENFORCE = "false";
+    await save("install_limit_enforced", true);
+    expect(await isInstallLimitEnforced()).toBe(true);
+    // the cache expires and the next read fails
+    vi.useFakeTimers({ now: Date.now() + 60_000 });
+    try {
+      db.failNext();
+      expect(await isInstallLimitEnforced()).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("only a super admin can change it, and only to true / false", async () => {
     expect((await save("install_limit_enforced", "yes")).status).toBe(400);
     superAdmin = false;

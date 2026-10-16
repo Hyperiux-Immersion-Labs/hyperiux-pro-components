@@ -333,7 +333,7 @@ export function sampleWebhookEvents() {
     { id: 3, at: ago(2900), event: "subscription.charged", outcome: "applied", detail: "Pro (pro), active, invoice recorded", ...user, paymentId: "pay_SamplePaid", subscriptionId: "sub_SampleSubscription", amount: 159000, currency: "INR" },
     { id: 4, at: ago(4000), event: "payment.captured", outcome: "ignored", detail: "Not an event we act on", paymentId: "pay_SampleCaptured", amount: 2000, currency: "USD" },
     { id: 5, at: ago(5200), event: "subscription.charged", outcome: "failed", detail: "upstream connect error or disconnect/reset before headers", userId: "user_2", userName: "Nadia Rao", userEmail: "nadia@example.com", paymentId: "pay_SampleRetry", subscriptionId: "sub_SampleOther", amount: 117900, currency: "INR" },
-    { id: 6, at: ago(6000), event: null, outcome: "rejected", detail: "Invalid signature" },
+    { id: 6, at: ago(6000), event: null, outcome: "rejected", detail: "Invalid payload" },
   ];
   return { total: events.length, events };
 }

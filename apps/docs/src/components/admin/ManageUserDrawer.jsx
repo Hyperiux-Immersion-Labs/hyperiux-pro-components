@@ -74,6 +74,10 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
   // The account on screen: it outlives `user` until the close animation ends
   const [shown, setShown] = useState(null);
   const [busy, setBusy] = useState(null);
+  // Billing / Support keep their own busy state; either one saving also keeps the drawer open
+  const [billingBusy, setBillingBusy] = useState(false);
+  const [supportBusy, setSupportBusy] = useState(false);
+  const saving = busy !== null || billingBusy || supportBusy;
 
   useEffect(() => {
     if (user) {
@@ -126,20 +130,20 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
   // Escape closes it (not while a change is saving); the close button gets focus
   useEffect(() => {
     if (!open) return undefined;
-    const onKey = (event) => event.key === "Escape" && !busy && onClose();
+    const onKey = (event) => event.key === "Escape" && !saving && onClose();
     window.addEventListener("keydown", onKey);
     const focus = setTimeout(() => closeRef.current?.focus({ preventScroll: true }), PANEL_DURATION * 1000);
     return () => {
       window.removeEventListener("keydown", onKey);
       clearTimeout(focus);
     };
-  }, [open, busy, onClose]);
+  }, [open, saving, onClose]);
   useLenisLock(open);
 
   if (!shown || typeof document === "undefined") return null;
   return createPortal(
     <div role="dialog" aria-modal="true" aria-labelledby="manage-user-title" data-sound-flow="off" className="fixed inset-0 z-990">
-      <div ref={overlayRef} aria-hidden="true" onClick={() => !busy && onClose()} className="absolute inset-0 bg-black/30 backdrop-blur-lg" />
+      <div ref={overlayRef} aria-hidden="true" onClick={() => !saving && onClose()} className="absolute inset-0 bg-black/30 backdrop-blur-lg" />
       <div
         ref={panelRef}
         data-lenis-prevent
@@ -155,6 +159,9 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
             onSaved={onSaved}
             busy={busy}
             setBusy={setBusy}
+            saving={saving}
+            setBillingBusy={setBillingBusy}
+            setSupportBusy={setSupportBusy}
             closeRef={closeRef}
           />
         </div>
@@ -164,7 +171,7 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
   );
 }
 
-function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setBusy, closeRef }) {
+function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setBusy, saving, setBillingBusy, setSupportBusy, closeRef }) {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   // The change waiting for Confirm: "plan" | "role" | "internal" | "suspend"
@@ -278,7 +285,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           ref={closeRef}
           type="button"
           aria-label="Close (Esc)"
-          onClick={() => !busy && onClose()}
+          onClick={() => !saving && onClose()}
           className="group flex size-10 shrink-0 cursor-pointer items-center justify-center border border-foreground/20 bg-foreground/10 transition-colors duration-500 hover:border-primary hover:bg-primary"
         >
           <span className="relative flex size-4 items-center justify-center transition-transform duration-500 ease-in-out group-hover:rotate-90">
@@ -350,9 +357,9 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
         )}
       </section>
 
-      <BillingSection user={user} post={post} onSaved={onSaved} onChanged={() => setHistoryKey((n) => n + 1)} />
+      <BillingSection user={user} post={post} onSaved={onSaved} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setBillingBusy} />
 
-      <SupportSection user={user} post={post} onChanged={() => setHistoryKey((n) => n + 1)} />
+      <SupportSection user={user} post={post} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setSupportBusy} />
 
       {/* role */}
       <section aria-labelledby="manage-role-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>

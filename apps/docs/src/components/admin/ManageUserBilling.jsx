@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ArrowUpRight, LoaderCircle, RefreshCw } from "lucide-react";
 import { DetailRows } from "@/components/Dashboard/DashboardUI";
 import { Confirm, LINE_BUTTON, PANEL_CARD, formatDate, timeAgo } from "@/components/admin/drawerUI";
@@ -41,11 +41,13 @@ const TEXT_BUTTON = "type-small cursor-pointer text-foreground underline underli
  * `post(url, body)` posts as the drawer does (throws the API's error); `onSaved(patch)`
  * updates the user's row; `onChanged()` tells History something was logged.
  */
-export function BillingSection({ user, post, onSaved, onChanged }) {
+export function BillingSection({ user, post, onSaved, onChanged, onBusyChange }) {
   const userId = user.id;
   const [data, setData] = useState(null);
   const [loadError, setLoadError] = useState("");
   const [reload, setReload] = useState(0);
+  // Which reload `data` came from: after a change, actions wait for fresh figures
+  const [loadedFor, setLoadedFor] = useState(-1);
   // null | "cancel_period_end" | "cancel_now" | { refund: paymentId }
   const [pending, setPending] = useState(null);
   const [busy, setBusy] = useState(null);
@@ -58,6 +60,7 @@ export function BillingSection({ user, post, onSaved, onChanged }) {
     if (getDashboardPreview()) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setData(sampleAdminBilling(userId));
+      setLoadedFor(reload);
       return undefined;
     }
     fetch(`/api/admin/users/billing?clerkUserId=${encodeURIComponent(userId)}`, { cache: "no-store" })
@@ -65,6 +68,7 @@ export function BillingSection({ user, post, onSaved, onChanged }) {
       .then((json) => {
         if (!active) return;
         setData(json);
+        setLoadedFor(reload);
         setLoadError("");
       })
       .catch((err) => active && setLoadError(err.message));
@@ -72,6 +76,14 @@ export function BillingSection({ user, post, onSaved, onChanged }) {
       active = false;
     };
   }, [userId, reload]);
+
+  // The drawer stays open while a change is in flight
+  useEffect(() => {
+    onBusyChange?.(busy !== null);
+    return () => onBusyChange?.(false);
+  }, [busy, onBusyChange]);
+  // No new action until nothing is saving and the figures are fresh
+  const locked = busy !== null || loadedFor !== reload;
 
   // After a change: reload, and keep the Users row's plan in step
   async function run(kind, work) {
@@ -91,9 +103,12 @@ export function BillingSection({ user, post, onSaved, onChanged }) {
     }
   }
 
-  // The plan as Billing now shows it, for the Users row
+  // The plan as Billing now shows it, for the Users row - once per load, so a change made
+  // in Plan & access since (which Billing hasn't reloaded for) isn't put back
+  const syncedData = useRef(null);
   useEffect(() => {
-    if (!data?.account) return;
+    if (!data?.account || syncedData.current === data) return;
+    syncedData.current = data;
     const plan = data.account.plan === "free" ? "free" : "pro";
     if (plan !== user.plan) onSaved?.({ plan, tier: plan === "pro" ? data.account.plan : null });
   }, [data, user.plan, onSaved]);
@@ -124,7 +139,7 @@ export function BillingSection({ user, post, onSaved, onChanged }) {
         </h3>
         <button
           type="button"
-          disabled={!data || busy !== null}
+          disabled={!data || locked}
           onClick={() =>
             run("sync", async () => {
               const json = await post("/api/admin/users/sync-subscription", { clerkUserId: user.id });
@@ -215,10 +230,10 @@ export function BillingSection({ user, post, onSaved, onChanged }) {
               />
             ) : (
               <div className="flex flex-wrap items-center gap-3">
-                <button type="button" onClick={() => setPending("cancel_period_end")} className={LINE_BUTTON}>
+                <button type="button" disabled={locked} onClick={() => setPending("cancel_period_end")} className={LINE_BUTTON}>
                   Cancel at period end
                 </button>
-                <button type="button" onClick={() => setPending("cancel_now")} className={`${LINE_BUTTON} text-danger hover:text-danger hover:ring-danger`}>
+                <button type="button" disabled={locked} onClick={() => setPending("cancel_now")} className={`${LINE_BUTTON} text-danger hover:text-danger hover:ring-danger`}>
                   Cancel now
                 </button>
               </div>
@@ -298,7 +313,7 @@ export function BillingSection({ user, post, onSaved, onChanged }) {
                       payment.status !== "refunded" && (
                         <button
                           type="button"
-                          disabled={busy !== null}
+                          disabled={locked}
                           onClick={() => {
                             setPending({ refund: payment.paymentId });
                             setRefundInput((payment.refundable / 100).toFixed(2));
