@@ -14,10 +14,12 @@ const ROLL_EASE = [0.65, 0, 0.35, 1];
 // "Get code" dropdown beside Live Preview - the only way to take an effect's
 // source from its page. JSX/TSX and the AI prompt are fetched from
 // /api/effects/[slug]/copy (sign-in + Pro checks there). The CLI command and
-// MCP prompt carry no source, so they're built here. Every option counts
-// against the daily install limit - the effect's slot for today (copying the
-// same effect again that day is free): the route claims it for JSX/TSX/prompt,
-// and CLI/MCP claim it through useCopyLimit's requestCopy before copying.
+// MCP prompt carry no source, so they're built here. JSX/TSX/prompt count
+// against the daily install limit when copied (the route claims the effect's
+// slot for today; the same effect again that day is free). Copying the CLI
+// command or MCP prompt counts nothing: it's only a command, and the install is
+// claimed and logged when the CLI or MCP server actually fetches the effect
+// (/api/cli/effects/[effectSlug]).
 //
 // Signed out: the trigger opens the "log in first" modal instead of the
 // dropdown. Pro effect without Pro: the panel still opens with every row
@@ -188,7 +190,6 @@ export default function GetCodeMenu({
     lockedCtaHref,
     lockedCtaLabel,
     usage,
-    requestCopy,
   } = useCopyLimit();
   // A Pro effect without Pro, from the visitor's usage once it's loaded. Only
   // shapes the menu - /api/effects/[slug]/copy checks sign-in, plan and the
@@ -280,34 +281,29 @@ export default function GetCodeMenu({
     items[(index + step + items.length) % items.length].focus();
   };
 
-  // CLI / MCP: claim the effect's slot for today first (requestCopy - it also
-  // handles signed out and the limit, with their own messages), then copy. The
-  // clipboard write starts inside the click and resolves once the claim is back
-  // (Safari refuses a write that only begins after a network wait).
+  // CLI / MCP: just the command or prompt - signed in only, nothing claimed or
+  // logged here (see the note at the top). Over today's limit, the copy still
+  // works, with the limit message instead of "Copied", since the install the
+  // command makes is what counts.
   const copyLocalText = async (key, text) => {
+    if (!isLoaded) {
+      showToast({ title: "One moment", description: "Still checking your account - try again in a second." });
+      return;
+    }
+    if (!isSignedIn) {
+      close();
+      requireSignIn();
+      return;
+    }
     startCopy(key);
-    let allowed = null;
-    // `key` is "cli" or "mcp": what this copy counts as
-    const textPromise = requestCopy(key).then((ok) => {
-      allowed = ok;
-      if (!ok) throw new Error("copy-denied");
-      return text;
-    });
     try {
-      if (typeof window.ClipboardItem === "function" && navigator.clipboard?.write) {
-        await navigator.clipboard.write([
-          new window.ClipboardItem({ "text/plain": textPromise.then((t) => new Blob([t], { type: "text/plain" })) }),
-        ]);
-      } else {
-        await navigator.clipboard.writeText(await textPromise);
-      }
+      await navigator.clipboard.writeText(text);
       finishCopy(key);
-      // A limited account already got the "X of Y left" message from requestCopy
-      if (usage?.isAdmin || typeof usage?.limit !== "number") showToast(COPY_TOASTS[key]);
+      const overLimit = usage && !usage.isAdmin && typeof usage.limit === "number" && usage.remaining <= 0 && !usage.effectSlugs?.includes(effectSlug);
+      showToast(overLimit ? getLimitNudge(usage) : COPY_TOASTS[key]);
     } catch {
       failCopy();
-      // Not allowed (signed out / limit): requestCopy already said why
-      if (allowed) showToast({ title: "Couldn't Copy", description: "Your browser blocked clipboard access." });
+      showToast({ title: "Couldn't Copy", description: "Your browser blocked clipboard access." });
     }
   };
 
