@@ -44,3 +44,6 @@ graft/
 # Local env files and generated Next types
 .env*.local
 next-env.d.ts
+
+# Backups written by apps/docs/scripts/cleanup-test-data.mjs - payment rows, never committed
+apps/docs/scripts/test-data-backup-*.json
