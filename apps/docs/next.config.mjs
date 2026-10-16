@@ -35,6 +35,9 @@ const allowedIframeSources = [
   "https://challenges.cloudflare.com",
   "https://api.razorpay.com",
   "https://checkout.razorpay.com",
+  // Google Tag Manager: its <noscript> fallback and Preview / Tag Assistant
+  "https://www.googletagmanager.com",
+  "https://tagassistant.google.com",
 ].join(" ");
 
 // Who may put vault pages in an iframe: the vault itself (effect and template
