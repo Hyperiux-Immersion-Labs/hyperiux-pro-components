@@ -69,6 +69,7 @@ beforeEach(() => {
   db.reset({
     subscriptions: [{ clerk_user_id: "user_buyer", plan: "pro", tier: "pro", status: "active", razorpay_subscription_id: "sub_1", current_period_end: FUTURE }],
     template_purchases: [{ clerk_user_id: "user_buyer", template_slug: "lumera", razorpay_payment_id: "pay_tpl", status: "paid" }],
+    invoices: [{ id: "inv-row-1", clerk_user_id: "user_buyer", razorpay_payment_id: "pay_1", status: "paid", amount: 159000, currency: "INR" }],
   });
 });
 
@@ -78,6 +79,11 @@ describe("full refund of a subscription charge", () => {
     expect(res.status).toBe(200);
     expect(subRow()).toMatchObject({ plan: "free", status: "refunded" });
     expect(clerkPlan()).toMatchObject({ plan: "free", proAccess: false });
+  });
+
+  it("marks the payment refunded in the ledger, so it leaves revenue", async () => {
+    await post(refundEvent("refund.created"));
+    expect(db.rows("invoices")[0].status).toBe("refunded");
   });
 
   it("cancels the subscription right away, so it never charges again", async () => {
@@ -122,6 +128,7 @@ describe("partial refund", () => {
     live.payments.pay_1 = { ...live.payments.pay_1, amount_refunded: 50000, refund_status: "partial", status: "captured" };
     await post(refundEvent("refund.created", { refundAmount: 50000 }));
     expect(subRow()).toMatchObject({ plan: "pro", status: "active" });
+    expect(db.rows("invoices")[0].status).toBe("paid");
     expect(cancel).not.toHaveBeenCalled();
   });
 });
@@ -135,3 +142,56 @@ describe("template purchase refund", () => {
     expect(cancel).not.toHaveBeenCalled();
   });
 });
+
+describe("a failed invoice update", () => {
+  it("still ends the plan and cancels, but answers 500 so Razorpay redelivers until the invoice is marked", async () => {
+    db.failNext(); // the invoices update is the first database write in applyRefund
+    const first = await post(refundEvent("refund.created"));
+    expect(first.status).toBe(500);
+    expect(db.rows("invoices")[0].status).toBe("paid");
+    expect(subRow()).toMatchObject({ plan: "free", status: "refunded" });
+    expect(cancel).toHaveBeenCalledTimes(1);
+
+    const again = await post(refundEvent("refund.created"));
+    expect(again.status).toBe(200);
+    expect(db.rows("invoices")[0].status).toBe("refunded");
+    expect(cancel).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("webhook log", () => {
+  const log = () => db.rows("razorpay_webhook_events");
+
+  it("records each delivery and what was done with it", async () => {
+    await post(refundEvent("refund.created"));
+    expect(log().at(-1)).toMatchObject({ event: "refund.created", outcome: "applied", payment_id: "pay_1", clerk_user_id: "user_buyer" });
+    expect(log().at(-1).detail).toMatch(/Full refund/);
+  });
+
+  it("a partial refund is logged as skipped, with the reason", async () => {
+    live.payments.pay_1 = { ...live.payments.pay_1, amount_refunded: 50000, refund_status: "partial", status: "captured" };
+    await post(refundEvent("refund.created", { refundAmount: 50000 }));
+    expect(log().at(-1)).toMatchObject({ outcome: "skipped", detail: "Partial refund: access kept" });
+  });
+
+  it("a forged delivery changes nothing and isn't written to the log", async () => {
+    const before = log().length;
+    const raw = JSON.stringify(refundEvent("refund.created"));
+    const res = await webhook(makeRequest("/api/razorpay/webhooks", { method: "POST", body: raw, headers: { "x-razorpay-signature": "forged", "x-razorpay-event-id": "x".repeat(5000) } }));
+    expect(res.status).toBe(400);
+    expect(log()).toHaveLength(before);
+    expect(subRow()).toMatchObject({ plan: "pro", status: "active" });
+  });
+
+  it("a handler failure is logged as failed, with the error", async () => {
+    Object.defineProperty(live.payments, "pay_1", {
+      get() {
+        throw new Error("Razorpay is down");
+      },
+    });
+    const res = await post(refundEvent("refund.created"));
+    expect(res.status).toBe(500);
+    expect(log().at(-1)).toMatchObject({ outcome: "failed", detail: "Refund: Razorpay is down" });
+  });
+});
+

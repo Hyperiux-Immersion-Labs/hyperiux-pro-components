@@ -52,7 +52,7 @@ export async function GET(request) {
       supabase
         .from("template_purchases")
         .select(
-          "id,clerk_user_id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,source,created_at",
+          "id,clerk_user_id,template_slug,razorpay_payment_id,amount,currency,status,excluded,invoice_url,source,created_at",
           { count: "exact" }
         )
         .order("created_at", { ascending: false })
@@ -64,14 +64,15 @@ export async function GET(request) {
       query.range(offset, offset + limit - 1),
       // Stats always reflect every purchase in the same window, independent
       // of the current page/template filter, so the top-line numbers don't
-      // shift while paging. Revenue only: paid purchases - not refunded
-      // ones, and not credit redemptions (no money changes hands).
+      // shift while paging. Revenue only: paid purchases - not refunded or
+      // excluded ones, and not credit redemptions (no money changes hands).
       fetchAllRows(() =>
         scoped(
           supabase
             .from("template_purchases")
             .select("amount, currency")
             .eq("status", "paid")
+            .eq("excluded", false)
             .or("source.is.null,source.neq.credit")
         )
       ),
@@ -112,6 +113,8 @@ export async function GET(request) {
         amount: row.amount,
         currency: row.currency,
         status: row.status,
+        // Left out of revenue by an admin ("Exclude from revenue")
+        excluded: Boolean(row.excluded),
         invoiceUrl: row.invoice_url,
         createdAt: row.created_at,
       };

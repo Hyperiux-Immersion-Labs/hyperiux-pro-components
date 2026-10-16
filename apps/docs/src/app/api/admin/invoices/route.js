@@ -44,7 +44,7 @@ export async function GET(request) {
       supabase
         .from("invoices")
         .select(
-          "id,clerk_user_id,razorpay_payment_id,amount,currency,status,billing_interval,plan_label,invoice_url,is_test,created_at",
+          "id,clerk_user_id,razorpay_payment_id,amount,currency,status,excluded,billing_interval,plan_label,invoice_url,is_test,created_at",
           { count: "exact" }
         )
         .order("created_at", { ascending: false })
@@ -55,7 +55,8 @@ export async function GET(request) {
       // Stats always reflect every real invoice in the same window (every
       // row, not the first 1000), independent of the current page, so the
       // top-line numbers don't shift while paging.
-      fetchAllRows(() => scoped(supabase.from("invoices").select("amount, currency"))),
+      // Revenue: refunded and excluded payments left out
+      fetchAllRows(() => scoped(supabase.from("invoices").select("amount, currency").neq("status", "refunded").eq("excluded", false))),
     ]);
 
     if (pageError) {
@@ -88,6 +89,8 @@ export async function GET(request) {
         amount: row.amount,
         currency: row.currency,
         status: row.status,
+        // Left out of revenue by an admin ("Exclude from revenue")
+        excluded: Boolean(row.excluded),
         billingInterval: row.billing_interval,
         planLabel: row.plan_label,
         invoiceUrl: row.invoice_url,

@@ -1,4 +1,5 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import { recordAdminAction } from "@/lib/admin-audit";
 import { NextResponse } from "next/server";
 import { assertSuperAdmin } from "@/lib/admin";
 import { sendEmail } from "@/lib/resend";
@@ -55,6 +56,7 @@ export async function POST(request) {
     }
 
     await clerk.users.updateUserMetadata(clerkUserId, { privateMetadata: { adminResetSentAt: Date.now() } });
+    await recordAdminAction({ action: "password.reset_sent", targetClerkUserId: clerkUserId });
     return NextResponse.json({ sent: true, email });
   } catch (error) {
     console.error("ADMIN_SEND_PASSWORD_RESET_ERROR:", error);

@@ -1,6 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { assertSuperAdmin, isSuperAdminUser } from "@/lib/admin";
+import { recordAdminAction } from "@/lib/admin-audit";
 
 // Suspend or restore an account (the Users tab's Manage drawer). Suspending bans it in
 // Clerk: it's signed out everywhere and can't sign in again until restored. Nothing is
@@ -29,6 +30,7 @@ export async function POST(request) {
     }
 
     const user = suspended ? await clerk.users.banUser(clerkUserId) : await clerk.users.unbanUser(clerkUserId);
+    await recordAdminAction({ action: suspended ? "account.suspend" : "account.restore", targetClerkUserId: clerkUserId });
     return NextResponse.json({ suspended: Boolean(user.banned) });
   } catch (error) {
     console.error("ADMIN_SUSPEND_USER_ERROR:", error);

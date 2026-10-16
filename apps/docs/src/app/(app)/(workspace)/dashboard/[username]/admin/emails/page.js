@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Eye } from "lucide-react";
-import { ACTION_LINE, CARD, CARD_PAD, FILTER_WIDTH, Pager, PerPageMenu } from "@/components/Dashboard/DashboardUI";
+import { ACTION_LINE, CARD, CARD_PAD, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { useLenisLock } from "@/hooks/useLenisLock";
@@ -250,8 +250,8 @@ export default function AdminEmailsPage() {
 
         {error && <p className="type-small bg-danger-strong/10 px-4 py-3 text-danger-strong">{error}</p>}
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[calc(var(--cvw)*60)] border-collapse text-left max-lg:min-w-215">
+        <TableScroll>
+          <table className={TABLE}>
             <thead>
               <tr className="type-label border-b border-black/10 text-black/60">
                 <th className="py-3 pr-4 font-normal">Recipient</th>
@@ -259,7 +259,7 @@ export default function AdminEmailsPage() {
                 <th className="py-3 pr-4 font-normal">Type</th>
                 <th className="py-3 pr-4 font-normal">Status</th>
                 <th className="py-3 pr-4 font-normal">Sent</th>
-                <th className="py-3 text-right font-normal">
+                <th className={`py-3 text-right font-normal ${STICKY_END}`}>
                   <span className="sr-only">Preview</span>
                 </th>
               </tr>
@@ -293,7 +293,7 @@ export default function AdminEmailsPage() {
                         </span>
                       </td>
                       <td className="type-small whitespace-nowrap py-3 pr-4 text-black/60">{formatDate(email.sent_at)}</td>
-                      <td className="py-3 text-right">
+                      <td className={`py-3 text-right ${STICKY_END}`}>
                         <button type="button" onClick={() => setPreviewId(email.id)} className={ACTION_LINE}>
                           <Eye aria-hidden="true" />
                           View
@@ -305,7 +305,7 @@ export default function AdminEmailsPage() {
               )}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
 
         <Pager page={Math.min(page, pages - 1)} pages={pages} total={total} noun={total === 1 ? "email" : "emails"} onPage={setPage} />
       </section>

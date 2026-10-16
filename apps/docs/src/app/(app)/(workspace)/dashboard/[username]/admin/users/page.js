@@ -11,7 +11,7 @@ import { ToastViewport, useToastQueue } from "@/components/ui/Toast";
 import { getDashboardPreview, sampleAdminUsers } from "@/lib/dev/dashboardPreview";
 import Button from "@/homepage/components/Button";
 import { useAdminAudience } from "@/components/admin/AdminAudience";
-import { ACTION_LINE, ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, FILTER_WIDTH, Pager, PerPageMenu } from "@/components/Dashboard/DashboardUI";
+import { ACTION_LINE, ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
 import { StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ManageUserDrawer } from "@/components/admin/ManageUserDrawer";
@@ -413,7 +413,7 @@ function InviteModal({ onClose }) {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <label className={`inline-flex items-center gap-2  border border-white/15 px-3 py-[calc(var(--cvw)*.8)] text-[calc(var(--cvw)*1.1)] max-md:text-[3.5vw] max-lg:text-[2.5vw] font-medium text-white/70 transition ${atDailyLimit ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-white/30 hover:text-white"}`}>
+            <label className={`inline-flex items-center gap-2  border border-white/15 px-3 py-[calc(var(--cvw)*.8)] text-[calc(var(--cvw)*1.1)] max-md:text-[min(3.5vw,15px)] max-lg:text-[2.5vw] font-medium text-white/70 transition ${atDailyLimit ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-white/30 hover:text-white"}`}>
               <Upload className="h-5 w-5" />
               Upload CSV
               <input
@@ -723,8 +723,8 @@ export default function AdminPage() {
         {error && <p className="type-small bg-primary/10 px-4 py-3 text-ink ring-1 ring-inset ring-primary/30">{error}</p>}
 
         {/* the table */}
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[calc(var(--cvw)*60)] border-collapse text-left max-lg:min-w-225">
+        <TableScroll>
+          <table className={TABLE}>
             <thead>
               <tr className="type-label border-b border-black/10 text-black/60">
                 <th className="py-3 pr-4 font-normal">User</th>
@@ -735,8 +735,8 @@ export default function AdminPage() {
                 {isSuperAdmin && (
                   <>
                     <th className="py-3 pr-4 font-normal">Valid until</th>
-                    <th className="py-3 pr-4 font-normal">Payment ID</th>
-                    <th className="py-3 text-right font-normal">
+                    <th className="py-3 pr-4 font-normal">Customer ID</th>
+                    <th className={`py-3 text-right font-normal ${STICKY_END}`}>
                       <span className="sr-only">Manage</span>
                     </th>
                   </>
@@ -772,6 +772,7 @@ export default function AdminPage() {
                             {user.role && user.role !== "user" && <span className="type-small shrink-0 bg-black/5 px-1.5 text-black/60">{user.role === "super_admin" ? "Super admin" : "Admin"}</span>}
                             {isSuperAdmin && user.id === viewer?.id && <span className="type-small shrink-0 text-black/40">(you)</span>}
                             {user.suspended && <span className="type-small shrink-0 bg-danger-strong/10 px-1.5 text-danger-strong">Suspended</span>}
+                            {user.internal && <span className="type-small shrink-0 bg-black/5 px-1.5 text-black/60" title="Kept out of the customer numbers">Internal</span>}
                           </span>
                           <span className="type-small truncate text-black/60">{user.email || user.id}</span>
                         </div>
@@ -797,14 +798,12 @@ export default function AdminPage() {
                         <td className="type-small whitespace-nowrap py-3 pr-4 text-black/60">{user.plan === "pro" ? formatDate(user.planValidUntil) : "—"}</td>
                         <td className="type-small py-3 pr-4 text-black/60">
                           {user.razorpayCustomerId ? (
-                            <span className="font-mono" title={user.razorpayCustomerId}>
-                              {user.razorpayCustomerId.slice(0, 10)}…
-                            </span>
+                            <span className="font-mono">{user.razorpayCustomerId}</span>
                           ) : (
                             "—"
                           )}
                         </td>
-                        <td className="py-3 text-right">
+                        <td className={`py-3 text-right ${STICKY_END}`}>
                           <button type="button" onClick={() => setManageUser(user)} className={ACTION_LINE}>
                             <UserCog aria-hidden="true" />
                             Manage
@@ -817,7 +816,7 @@ export default function AdminPage() {
               )}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
 
         <Pager page={currentPage - 1} pages={totalPages} total={total} noun={total === 1 ? "user" : "users"} onPage={(p) => setCurrentPage(p + 1)} />
       </section>

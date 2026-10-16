@@ -9,7 +9,9 @@ import { fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/li
 // sales both counted), paid subscriptions and template sales. Each card (lib/admin-activity
 // compareStat): the window's total, its change against the window before (all time: last
 // 30 days against the 30 before) and its line. The same rows as the ledger: real payments
-// only (no test-mode rows), template sales without credit redemptions. Super admins only.
+// only (no test-mode rows), template sales without credit redemptions. Refunded payments and
+// ones an admin excluded aren't revenue or sales; each currency's card also says how much
+// was refunded in the window. Super admins only.
 export async function GET(request) {
   if (!(await assertSuperAdmin())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -35,10 +37,20 @@ export async function GET(request) {
         return q;
       });
 
-    const [invoices, templateSales] = await Promise.all([
-      scoped("invoices", "amount, currency, created_at"),
-      scoped("template_purchases", "amount, currency, created_at", (q) => q.eq("status", "paid").or("source.is.null,source.neq.credit")),
+    const [invoiceRows, templateRows] = await Promise.all([
+      scoped("invoices", "amount, currency, created_at, status", (q) => q.eq("excluded", false)),
+      scoped("template_purchases", "amount, currency, created_at, status", (q) =>
+        q.in("status", ["paid", "refunded"]).eq("excluded", false).or("source.is.null,source.neq.credit")
+      ),
     ]);
+    const invoices = invoiceRows.filter((row) => row.status !== "refunded");
+    const templateSales = templateRows.filter((row) => row.status === "paid");
+    const refunds = [
+      ...invoiceRows.filter((row) => row.status === "refunded").map((row) => ({ currency: row.currency || "INR", value: (row.amount || 0) / 100, at: new Date(row.created_at).getTime() })),
+      ...templateRows
+        .filter((row) => row.status === "refunded" && typeof row.amount === "number")
+        .map((row) => ({ currency: row.currency || "USD", value: row.amount, at: new Date(row.created_at).getTime() })),
+    ];
 
     const at = (row) => new Date(row.created_at).getTime();
     // Money items: invoices are in the smallest unit (cents / paise), template sales in whole units
@@ -52,7 +64,8 @@ export async function GET(request) {
     const revenue = (currency) => {
       const items = money.filter((item) => item.currency === currency);
       const split = (kind) => items.filter((item) => item.kind === kind && inWindow(item.at)).reduce((sum, item) => sum + item.value, 0);
-      return { ...card(items), currency, subscriptions: split("subscriptions"), templates: split("templates") };
+      const refunded = refunds.filter((item) => item.currency === currency && inWindow(item.at)).reduce((sum, item) => sum + item.value, 0);
+      return { ...card(items), currency, subscriptions: split("subscriptions"), templates: split("templates"), refunded };
     };
 
     return NextResponse.json({

@@ -6,6 +6,7 @@ import { getUserPlanInfo } from "@/lib/subscription";
 import { PLANS } from "@/lib/plans";
 import { isAdminUser } from "@/lib/admin";
 import { resolveClerkUserIdFromCliToken } from "@/lib/cli-auth";
+import { isInstallLimitEnforced } from "@/lib/app-settings";
 
 // Single decision point for "does this request get to consume an install of
 // this effect today" across all three surfaces (website copy, `hyperiux add`,
@@ -30,11 +31,9 @@ export function getLimitForTier(tier, { isAdmin = false } = {}) {
 }
 export const LIMIT_POLICY_VERSION = "1";
 
-// A function, not a module-load-time constant, so tests can flip
-// process.env.INSTALL_LIMIT_ENFORCE between cases without vi.resetModules().
-function isEnforced() {
-  return process.env.INSTALL_LIMIT_ENFORCE === "true";
-}
+// Whether the limit is applied (vs. only recorded) comes from the dashboard's Settings
+// tab, falling back to INSTALL_LIMIT_ENFORCE: lib/app-settings isInstallLimitEnforced,
+// read once per decision in getInstallLimitDecision.
 
 function todayUTC() {
   return new Date().toISOString().slice(0, 10);
@@ -77,7 +76,7 @@ function decision(reason, overrides = {}) {
     identityKey: null,
     plan: null,
     tier: null,
-    enforced: isEnforced(),
+    enforced: false,
     ...overrides,
   };
 }
@@ -98,6 +97,7 @@ export async function resolveSignedInIdentity(clerkUserId) {
   const isAdmin = isAdminUser(clerkUser);
   const plan = isAdmin ? "admin" : planInfo.plan;
   const tier = isAdmin ? "admin" : planInfo.tier;
+  const baseLimit = getLimitForTier(planInfo.tier, { isAdmin });
 
   return {
     identityKey: `user:${clerkUserId}`,
@@ -105,9 +105,19 @@ export async function resolveSignedInIdentity(clerkUserId) {
     isAdmin,
     plan,
     tier,
-    limit: getLimitForTier(planInfo.tier, { isAdmin }),
+    limit: baseLimit == null ? null : baseLimit + installBonusToday(clerkUser),
   };
 }
+
+// Extra installs an admin allowed for today (the Manage drawer's Support section):
+// privateMetadata.installBonus = { date: "YYYY-MM-DD" (UTC), extra }. Only counts on
+// that date, so it lapses on its own; the install history is never touched.
+export function installBonusToday(clerkUser) {
+  const bonus = clerkUser?.privateMetadata?.installBonus;
+  return bonus?.date === todayUTC() && Number.isInteger(bonus.extra) && bonus.extra > 0 ? bonus.extra : 0;
+}
+
+export { todayUTC };
 
 async function claimSlot({ identityKey, clerkUserId, usageDate, effectSlug, source, limit }) {
   const { data, error } = await supabase.rpc("claim_install_slot", {
@@ -200,6 +210,7 @@ export async function getInstallLimitDecision({
   }
 
   const usageDate = todayUTC();
+  const enforced = await isInstallLimitEnforced();
   const resolvedClerkUserId = clerkUserId || (cliToken ? await resolveClerkUserIdFromCliToken(cliToken) : null);
 
   const telemetry = {
@@ -239,7 +250,7 @@ export async function getInstallLimitDecision({
   // otherwise one `add` of a composite effect could eat a user's entire
   // daily allowance. Not logged either: it's not a real install attempt.
   if (isDependency) {
-    return decision("dependency", { allowed: true });
+    return decision("dependency", { allowed: true, enforced });
   }
 
   const identity = await resolveSignedInIdentity(resolvedClerkUserId);
@@ -259,11 +270,11 @@ export async function getInstallLimitDecision({
       plan: "admin",
       decision: "allowed",
       reason: "admin",
-      enforced: isEnforced(),
+      enforced,
       would_have_denied: false,
       ...telemetry,
     });
-    return decision("admin", { allowed: true, identityKey: identity.identityKey, plan: "admin", tier: "admin", limit: null });
+    return decision("admin", { allowed: true, identityKey: identity.identityKey, plan: "admin", tier: "admin", limit: null, enforced });
   }
 
   const claim = await claimSlot({
@@ -275,7 +286,7 @@ export async function getInstallLimitDecision({
     limit: identity.limit,
   });
 
-  if (!claim) return decision("error", { identityKey: identity.identityKey, plan: identity.plan, tier: identity.tier, limit: identity.limit });
+  if (!claim) return decision("error", { identityKey: identity.identityKey, plan: identity.plan, tier: identity.tier, limit: identity.limit, enforced });
 
   const naturalAllowed = Boolean(claim.allowed);
   const reason = claim.already_unlocked ? "already-unlocked" : naturalAllowed ? "allowed" : "limit-reached";
@@ -292,14 +303,14 @@ export async function getInstallLimitDecision({
     plan: identity.tier ?? identity.plan ?? null,
     decision: claim.already_unlocked ? "already-unlocked" : naturalAllowed ? "allowed" : "denied",
     reason,
-    enforced: isEnforced(),
+    enforced,
     would_have_denied: !naturalAllowed,
     ...telemetry,
   });
 
   return decision(reason, {
     // Shadow mode (INSTALL_LIMIT_ENFORCE unset): the limit is recorded, not applied
-    allowed: isEnforced() ? naturalAllowed : true,
+    allowed: enforced ? naturalAllowed : true,
     limit: identity.limit ?? null,
     count: claim.claim_count ?? 0,
     remaining: claim.remaining ?? null,

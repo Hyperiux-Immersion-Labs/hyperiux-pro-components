@@ -29,6 +29,7 @@ function makePageQuery() {
       eqCalls.push(args);
       return query;
     }),
+    neq: vi.fn(() => query),
     order: vi.fn(() => query),
     range: vi.fn(() => Promise.resolve({ data: pageRows, error: pageError, count: pageCount })),
     then: (resolve) => resolve({ data: realRows, error: statsError }),
@@ -173,11 +174,18 @@ describe("admin/invoices route", () => {
     // meant to show, so both the page query and the always-real-only stats
     // query filter is_test=false unconditionally, even with a stray/legacy
     // `test` param on the request.
+    const testFilters = () => eqCalls.filter(([column]) => column === "is_test");
     await GET(makeRequest("?test=real"));
-    expect(eqCalls).toEqual([["is_test", false], ["is_test", false]]);
+    expect(testFilters()).toEqual([["is_test", false], ["is_test", false]]);
 
     eqCalls = [];
     await GET(makeRequest("?test=test"));
-    expect(eqCalls).toEqual([["is_test", false], ["is_test", false]]);
+    expect(testFilters()).toEqual([["is_test", false], ["is_test", false]]);
+  });
+
+  it("the revenue stats also leave out payments an admin excluded", async () => {
+    isSuperAdminResult = true;
+    await GET(makeRequest());
+    expect(eqCalls).toContainEqual(["excluded", false]);
   });
 });

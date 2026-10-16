@@ -1,6 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { recordAdminAction } from "@/lib/admin-audit";
 import { assertSuperAdmin } from "@/lib/admin";
 import { sendEmail } from "@/lib/resend";
 import {
@@ -138,6 +139,12 @@ export async function POST(request) {
         console.error("ADMIN_UPDATE_PLAN_EMAIL_ERROR:", emailError);
       }
     }
+
+    await recordAdminAction({
+      action: "plan.update",
+      targetClerkUserId: clerkUserId,
+      details: { plan, tier: grantedTier, billingInterval: plan === "pro" ? billingInterval : null, currentPeriodEnd },
+    });
 
     return NextResponse.json({
       success: true,

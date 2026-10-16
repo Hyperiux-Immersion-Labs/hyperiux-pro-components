@@ -4,10 +4,12 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { Ban, Check, Copy, KeyRound, LoaderCircle, RotateCcw } from "lucide-react";
-import { ACTION_PRIMARY, CARD_PAD, CardLink, DetailRows, SourceChip } from "@/components/Dashboard/DashboardUI";
-import { BUTTON_SIZE } from "@/homepage/components/Button";
+import { ACTION_PRIMARY, CardLink, DetailRows, SourceChip } from "@/components/Dashboard/DashboardUI";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { UserAvatar } from "@/components/admin/UserAvatar";
+import { Confirm, LINE_BUTTON, PANEL_CARD, formatDate, timeAgo } from "@/components/admin/drawerUI";
+import { BillingSection, HistorySection } from "@/components/admin/ManageUserBilling";
+import { SupportSection } from "@/components/admin/ManageUserSupport";
 import { useLenisLock } from "@/hooks/useLenisLock";
 import { prefersReducedMotion } from "@/lib/motion";
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
@@ -16,23 +18,19 @@ const LEVELS = { free: "Free", pro: "Pro", pro_plus: "Pro+" };
 const LENGTHS = { monthly: "1 month", quarterly: "3 months", yearly: "1 year" };
 const ROLES = { "": "No access", admin: "Admin", super_admin: "Super Admin" };
 
-const formatDate = (value) => (value ? new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(value)) : "—");
 // "free" | "pro" | "pro_plus" (Pro+ is plan "pro", tier "pro_plus"; old rows have no tier)
 const levelOf = (user) => (user.plan === "pro" ? user.tier || "pro_plus" : "free");
 const roleOf = (user) => (user.role && user.role !== "user" ? user.role : "");
 
-function timeAgo(value) {
-  const minutes = Math.max(1, Math.round((Date.now() - new Date(value).getTime()) / 60000));
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.round(hours / 24);
-  return days === 1 ? "Yesterday" : `${days}d ago`;
-}
+// Why an account is or isn't in the customer numbers (user.internal, from lib/admin-data)
+const INTERNAL_STATUS = {
+  customer: "A customer: their payments, installs and signup count in the customer numbers.",
+  marked: "Marked internal: kept out of the customer numbers.",
+  role: "Internal because they're an admin. Remove the role to count them as a customer.",
+  email: "Internal: a team member's test account (listed in lib/admin-data).",
+  domain: "Internal: a team email domain (listed in lib/admin-data).",
+};
 
-// The drawer's surfaces and buttons, on the dark page (as the effects' preview drawer)
-const PANEL_CARD = `flex flex-col bg-dark-card text-foreground ring-1 ring-inset ring-foreground/10 ${CARD_PAD}`;
-const LINE_BUTTON = `inline-flex w-fit shrink-0 cursor-pointer items-center gap-2 px-4 ${BUTTON_SIZE} text-foreground ring-1 ring-inset ring-foreground/20 transition-[color,box-shadow] duration-300 hover:text-primary hover:ring-primary disabled:cursor-default disabled:opacity-60 [&_svg]:size-4`;
 
 // Open / close choreography of the effects' preview drawer: the panel slides in from the
 // right (power2.inOut) while the backdrop fades, then the content fades in; closing runs
@@ -57,31 +55,6 @@ function Picker({ label, value, options, onChange }) {
   );
 }
 
-// The change about to be made, and Confirm / Cancel - every change here asks first
-function Confirm({ lines, busy, onConfirm, onCancel }) {
-  return (
-    <div className="flex flex-col gap-3 bg-foreground/5 p-4 ring-1 ring-inset ring-foreground/10">
-      <ul className="flex flex-col gap-1.5">
-        {lines.map((line) => (
-          <li key={line.text} className={`type-small flex items-start gap-2 ${line.danger ? "text-danger" : "text-foreground"}`}>
-            <span aria-hidden="true" className={`mt-[0.55em] size-1.5 shrink-0 rounded-full ${line.danger ? "bg-danger" : "bg-primary"}`} />
-            {line.text}
-          </li>
-        ))}
-      </ul>
-      <div className="flex flex-wrap items-center gap-4">
-        <button type="button" onClick={onConfirm} disabled={busy} className={ACTION_PRIMARY}>
-          {busy ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Check aria-hidden="true" />}
-          {busy ? "Saving…" : "Confirm"}
-        </button>
-        <button type="button" onClick={onCancel} disabled={busy} className="type-label cursor-pointer text-foreground/80 underline underline-offset-3 transition-colors duration-300 hover:text-primary">
-          Cancel
-        </button>
-      </div>
-    </div>
-  );
-}
-
 /**
  * Manage one account (super admins, the Users tab): the effects' preview drawer, dark,
  * from the right - who they are, their numbers, plan and access, role, recent installs and
@@ -101,6 +74,10 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
   // The account on screen: it outlives `user` until the close animation ends
   const [shown, setShown] = useState(null);
   const [busy, setBusy] = useState(null);
+  // Billing / Support keep their own busy state; either one saving also keeps the drawer open
+  const [billingBusy, setBillingBusy] = useState(false);
+  const [supportBusy, setSupportBusy] = useState(false);
+  const saving = busy !== null || billingBusy || supportBusy;
 
   useEffect(() => {
     if (user) {
@@ -153,20 +130,20 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
   // Escape closes it (not while a change is saving); the close button gets focus
   useEffect(() => {
     if (!open) return undefined;
-    const onKey = (event) => event.key === "Escape" && !busy && onClose();
+    const onKey = (event) => event.key === "Escape" && !saving && onClose();
     window.addEventListener("keydown", onKey);
     const focus = setTimeout(() => closeRef.current?.focus({ preventScroll: true }), PANEL_DURATION * 1000);
     return () => {
       window.removeEventListener("keydown", onKey);
       clearTimeout(focus);
     };
-  }, [open, busy, onClose]);
+  }, [open, saving, onClose]);
   useLenisLock(open);
 
   if (!shown || typeof document === "undefined") return null;
   return createPortal(
     <div role="dialog" aria-modal="true" aria-labelledby="manage-user-title" data-sound-flow="off" className="fixed inset-0 z-990">
-      <div ref={overlayRef} aria-hidden="true" onClick={() => !busy && onClose()} className="absolute inset-0 bg-black/30 backdrop-blur-lg" />
+      <div ref={overlayRef} aria-hidden="true" onClick={() => !saving && onClose()} className="absolute inset-0 bg-black/30 backdrop-blur-lg" />
       <div
         ref={panelRef}
         data-lenis-prevent
@@ -182,6 +159,9 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
             onSaved={onSaved}
             busy={busy}
             setBusy={setBusy}
+            saving={saving}
+            setBillingBusy={setBillingBusy}
+            setSupportBusy={setSupportBusy}
             closeRef={closeRef}
           />
         </div>
@@ -191,11 +171,13 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
   );
 }
 
-function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setBusy, closeRef }) {
+function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setBusy, saving, setBillingBusy, setSupportBusy, closeRef }) {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  // The change waiting for Confirm: "plan" | "role" | "suspend"
+  // The change waiting for Confirm: "plan" | "role" | "internal" | "suspend"
   const [pending, setPending] = useState(null);
+  // Bumped after every change here, so History shows it
+  const [historyKey, setHistoryKey] = useState(0);
 
   const currentLevel = levelOf(user);
   const [level, setLevel] = useState(currentLevel);
@@ -249,12 +231,19 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
       const patch = await work();
       if (patch) onSaved(patch);
       setPending(null);
+      setHistoryKey((n) => n + 1);
     } catch (err) {
       setError(err.message);
     } finally {
       setBusy(null);
     }
   }
+
+  const internalLines = [
+    user.internal
+      ? { text: `Count ${user.name || user.email} as a customer: their payments, installs and signup go back into the customer numbers.` }
+      : { text: `Mark ${user.name || user.email} as internal: their payments, installs and signup leave the customer numbers and show under Internal.` },
+  ];
 
   const planLines = [
     level === "free"
@@ -296,7 +285,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           ref={closeRef}
           type="button"
           aria-label="Close (Esc)"
-          onClick={() => !busy && onClose()}
+          onClick={() => !saving && onClose()}
           className="group flex size-10 shrink-0 cursor-pointer items-center justify-center border border-foreground/20 bg-foreground/10 transition-colors duration-500 hover:border-primary hover:bg-primary"
         >
           <span className="relative flex size-4 items-center justify-center transition-transform duration-500 ease-in-out group-hover:rotate-90">
@@ -341,7 +330,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           rows={[
             ["Plan", `${LEVELS[currentLevel]}${user.plan === "pro" && user.billingInterval ? ` · ${LENGTHS[user.billingInterval] || user.billingInterval}` : ""}`],
             ["Valid until", user.plan === "pro" ? formatDate(user.planValidUntil) : "—"],
-            ["Payment ID", user.razorpayCustomerId || "—"],
+            ["Customer ID", user.razorpayCustomerId || "—"],
           ]}
         />
         {pending === "plan" ? (
@@ -367,6 +356,10 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           </div>
         )}
       </section>
+
+      <BillingSection user={user} post={post} onSaved={onSaved} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setBillingBusy} />
+
+      <SupportSection user={user} post={post} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setSupportBusy} />
 
       {/* role */}
       <section aria-labelledby="manage-role-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
@@ -398,6 +391,35 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
         <p className="type-small text-foreground/80">Admins see Activity and Users. Only Super Admins see revenue and Invoicing.</p>
       </section>
 
+      {/* internal: kept out of the customer numbers */}
+      <section aria-labelledby="manage-internal-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
+        <h3 id="manage-internal-h" className="type-h3">
+          Internal Account
+        </h3>
+        {pending === "internal" ? (
+          <Confirm
+            lines={internalLines}
+            busy={busy === "internal"}
+            onCancel={() => setPending(null)}
+            onConfirm={() =>
+              run("internal", async () => {
+                const json = await post("/api/admin/users/update-internal", { clerkUserId: user.id, internal: !user.internal });
+                return { internal: json.internal };
+              })
+            }
+          />
+        ) : (
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="type-small min-w-0 flex-1 text-foreground/80">{INTERNAL_STATUS[user.internal || "customer"]}</p>
+            {(!user.internal || user.internal === "marked") && (
+              <button type="button" onClick={() => setPending("internal")} className={`${LINE_BUTTON} ml-auto`}>
+                {user.internal ? "Count as a customer" : "Mark as internal"}
+              </button>
+            )}
+          </div>
+        )}
+      </section>
+
       {/* recent installs */}
       <section aria-labelledby="manage-recent-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
         <div className="flex items-baseline justify-between gap-4">
@@ -424,6 +446,8 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           </ul>
         )}
       </section>
+
+      <HistorySection userId={user.id} reloadKey={historyKey} />
 
       {/* account */}
       <section aria-labelledby="manage-account-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>

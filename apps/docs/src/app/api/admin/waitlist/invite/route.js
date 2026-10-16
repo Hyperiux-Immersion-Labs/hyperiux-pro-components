@@ -9,6 +9,7 @@ import {
   waitlistInviteText,
 } from "@/lib/emails/waitlist-invite-email";
 import { assertAdmin } from "@/lib/admin";
+import { recordAdminAction } from "@/lib/admin-audit";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Hard per-request cap - the admin UI queues up to DAILY_INVITE_LIMIT emails
@@ -188,6 +189,9 @@ export async function POST(req) {
 
     const sentCount = results.filter((r) => r.success).length;
     const failedCount = results.length - sentCount;
+    if (sentCount > 0) {
+      await recordAdminAction({ action: "waitlist.invite", details: { sent: results.filter((r) => r.success).map((r) => r.email) } });
+    }
 
     return NextResponse.json({
       success: failedCount === 0,

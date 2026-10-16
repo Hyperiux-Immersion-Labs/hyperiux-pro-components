@@ -4,16 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { useAdminAudience } from "@/components/admin/AdminAudience";
-import { ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, FILTER_WIDTH, Pager } from "@/components/Dashboard/DashboardUI";
+import { ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, FILTER_WIDTH, Pager, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
-import { useDashboardData } from "@/components/Dashboard/useDashboardData";
+import { refreshDashboard, useDashboardData } from "@/components/Dashboard/useDashboardData";
 import { UserAvatar } from "@/components/admin/UserAvatar";
 import { SlidingSegment } from "@/components/ui/SlidingSegment";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { useAdminRole } from "@/lib/useAdminRole";
 import { TEMPLATES } from "@/lib/mock-templates";
-import { getDashboardPreview, sampleAdminInvoicing } from "@/lib/dev/dashboardPreview";
+import { getDashboardPreview, sampleAdminInvoicing, sampleSubscriptionHealth } from "@/lib/dev/dashboardPreview";
 
 // Every payment across every user - super admins only, here and (the real gate) in
 // api/admin/invoices and api/admin/template-purchases.
@@ -56,6 +56,164 @@ function rangeParams(dates) {
   return params;
 }
 
+// "Exclude from revenue" / "Include" on a ledger row, asked once inline. The payment stays
+// in the ledger either way; the cards refetch after a change.
+function RevenueToggle({ row, kind, onChange }) {
+  const [asking, setAsking] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const LINK = "type-small cursor-pointer text-black/60 underline underline-offset-3 transition-colors duration-300 hover:text-primary disabled:cursor-default disabled:opacity-50";
+
+  async function save() {
+    setBusy(true);
+    setError("");
+    try {
+      if (getDashboardPreview()) throw new Error("Not in the preview");
+      const res = await fetch("/api/admin/payments/exclude", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind, id: row.id, excluded: !row.excluded }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Failed");
+      onChange(kind, row.id, json.excluded);
+      setAsking(false);
+      refreshDashboard();
+    } catch {
+      setError("Didn’t save");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!asking) {
+    return (
+      <button type="button" onClick={() => setAsking(true)} className={LINK} title={row.excluded ? "Count this payment in revenue again" : "Keep this payment in the ledger but out of revenue"}>
+        {row.excluded ? "Include" : "Exclude"}
+      </button>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-2 whitespace-nowrap">
+      <span className="type-small text-black/60">{error || (row.excluded ? "Count in revenue?" : "Leave out of revenue?")}</span>
+      <button type="button" onClick={save} disabled={busy} className={`${LINK} text-ink`}>
+        {busy ? "Saving…" : "Yes"}
+      </button>
+      <button type="button" onClick={() => setAsking(false)} disabled={busy} className={LINK}>
+        No
+      </button>
+    </span>
+  );
+}
+
+// A plain figure card, in the stat cards' style (no trend: these are counts right now)
+function FigureCard({ label, value, note, className = "" }) {
+  return (
+    <section aria-label={label} className={`flex min-w-0 flex-col gap-1 bg-foreground p-[calc(var(--cvw)*1.6)] text-ink ring-1 ring-inset ring-black/10 max-lg:p-6 max-md:p-5 ${className}`}>
+      <p className="type-label pb-[calc(var(--cvw)*0.6)] text-black/60 max-lg:pb-2">{label}</p>
+      <p className="type-h2">{value}</p>
+      {note && <p className="type-small text-black/60">{note}</p>}
+    </section>
+  );
+}
+
+const TIERS = { pro: "Pro", pro_plus: "Pro+" };
+
+// One subscription in the Renewing / Needs attention lists
+function SubscriptionRow({ item, extra }) {
+  return (
+    <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-black/10 py-3 first:border-t-0">
+      <span className="flex min-w-0 items-center gap-3">
+        <UserAvatar name={item.userName} email={item.userEmail} className="size-8" />
+        <span className="flex min-w-0 flex-col">
+          <span className="type-body truncate">{item.userName || item.userEmail || item.userId}</span>
+          <span className="type-small text-black/60">
+            {TIERS[item.tier] || "Pro"} · {INTERVALS[item.billingInterval] || "—"}
+            {extra ? ` · ${extra}` : ""}
+          </span>
+        </span>
+      </span>
+      <span className="flex flex-col items-end">
+        <span className="type-body font-aeonik">{money(item.amount, item.currency, true)}</span>
+        <span className="type-small text-black/60">{formatDate(item.periodEnd)}</span>
+      </span>
+    </li>
+  );
+}
+
+// Subscriptions right now (api/admin/subscriptions/health): MRR per currency, live
+// subscribers, recent ends, then who renews in the next 30 days and who needs attention
+function SubscriptionsSection({ audience, whole }) {
+  const { data } = useDashboardData(`admin-subscriptions:${audience}`, async () => {
+    if (getDashboardPreview()) return sampleSubscriptionHealth();
+    const res = await fetch(`/api/admin/subscriptions/health?audience=${audience}`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`subscriptions ${res.status}`);
+    return res.json();
+  });
+  const ROW = "flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-wrap max-lg:gap-3";
+  const EACH = "flex-1 max-lg:w-[calc((100%-0.75rem)/2)] max-lg:flex-none max-md:w-full";
+
+  if (!data) {
+    return (
+      <div className={ROW}>
+        {[0, 1, 2, 3].map((i) => (
+          <SkeletonCard key={i} className={`gap-2 ${EACH}`}>
+            <Bar type="type-label" className="w-[45%]" />
+            <Bar type="type-h2" className="w-[35%]" />
+          </SkeletonCard>
+        ))}
+      </div>
+    );
+  }
+
+  const mrrOf = (currency) => data.mrr.find((m) => m.currency === currency)?.amount || 0;
+  const subscribers = data.active.pro + data.active.pro_plus;
+  return (
+    <>
+      <div className={ROW}>
+        <FigureCard className={EACH} label="INR MRR" value={whole(mrrOf("INR") / 100, "INR")} note="Monthly recurring revenue" />
+        <FigureCard className={EACH} label="USD MRR" value={whole(mrrOf("USD") / 100, "USD")} note="Monthly recurring revenue" />
+        <FigureCard
+          className={EACH}
+          label="Subscribers"
+          value={subscribers}
+          note={`${data.active.pro} Pro · ${data.active.pro_plus} Pro+${data.active.granted ? ` · ${data.active.granted} given free` : ""}`}
+        />
+        <FigureCard className={EACH} label="Ended" value={data.ended30d} note="Cancelled, refunded or expired in the last 30 days" />
+      </div>
+
+      <section aria-label="Renewals and attention" className={`${CARD} ${CARD_PAD} grid grid-cols-2 gap-[calc(var(--cvw)*2.4)] max-lg:grid-cols-1 max-lg:gap-8`}>
+        <div className="flex min-w-0 flex-col gap-2">
+          <h2 className="type-h3">Renewing Soon</h2>
+          <p className="type-small text-black/60">Renews in the next 30 days, with the expected charge.</p>
+          {data.renewals.length ? (
+            <ul className="flex flex-col">
+              {data.renewals.map((item) => (
+                <SubscriptionRow key={item.userId} item={item} />
+              ))}
+            </ul>
+          ) : (
+            <p className="type-body py-4 text-black/60">None in the next 30 days.</p>
+          )}
+        </div>
+        <div className="flex min-w-0 flex-col gap-2">
+          <h2 className="type-h3">Needs Attention</h2>
+          <p className="type-small text-black/60">Failing payments, and plans cancelled at period end.</p>
+          {data.attention.length ? (
+            <ul className="flex flex-col">
+              {data.attention.map((item) => (
+                <SubscriptionRow key={item.userId} item={item} extra={item.reason} />
+              ))}
+            </ul>
+          ) : (
+            <p className="type-body py-4 text-black/60">Nothing needs attention.</p>
+          )}
+        </div>
+      </section>
+    </>
+  );
+}
+
 function UserCell({ row }) {
   return (
     <div className="flex items-center gap-3">
@@ -84,6 +242,7 @@ function LedgerRowsSkeleton() {
           <Bar type="type-small" className="w-[14%]" />
           <Bar type="type-small" className="w-[10%]" />
           <Bar type="type-small" className="w-8" />
+          <Bar type="type-small" className="w-12" />
         </div>
       ))}
     </div>
@@ -217,7 +376,17 @@ export default function AdminInvoicingPage() {
   const count = (n) => new Intl.NumberFormat("en").format(n || 0);
   // Cards show whole amounts; the ledger keeps the cents
   const whole = (amount, currency) => new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(amount || 0);
-  const split = (stat) => `${whole(stat.subscriptions, stat.currency)} subscriptions · ${whole(stat.templates, stat.currency)} templates`;
+  const split = (stat) =>
+    `${whole(stat.subscriptions, stat.currency)} subscriptions · ${whole(stat.templates, stat.currency)} templates${stat.refunded > 0 ? ` · ${whole(stat.refunded, stat.currency)} refunded` : ""}`;
+  // A row's exclusion changed: update it in place (the cards refetch on their own). By the
+  // row's own kind, not the ledger on screen - that may have switched while it saved.
+  const setExcluded = (kind, id, excluded) =>
+    setData((current) => {
+      const key = kind === "subscription" ? "invoices" : "templates";
+      const listKey = kind === "subscription" ? "invoices" : "purchases";
+      const list = current[key][listKey].map((row) => (row.id === id ? { ...row, excluded } : row));
+      return { ...current, [key]: { ...current[key], [listKey]: list } };
+    });
 
   const rows = ledger === "subscriptions" ? data.invoices.invoices || [] : data.templates.purchases || [];
   const total = ledger === "subscriptions" ? data.invoices.total || 0 : data.templates.total || 0;
@@ -235,6 +404,9 @@ export default function AdminInvoicingPage() {
         <StatCard className={EACH} label="Subscriptions" value={count(k.subscriptions.value)} note="Paid invoices" stat={k.subscriptions} comparison={k.comparison} />
         <StatCard className={EACH} label="Template sales" value={count(k.templateSales.value)} note="Paid, not credits" stat={k.templateSales} comparison={k.comparison} />
       </div>
+
+      {/* subscriptions right now: MRR, subscribers, renewals, what needs attention */}
+      <SubscriptionsSection audience={audience} whole={whole} />
 
       {/* the ledger: subscriptions or template purchases */}
       <section aria-labelledby="ledger-h" className={`${CARD} ${CARD_PAD} gap-[calc(var(--cvw)*1.2)] max-lg:gap-4`}>
@@ -262,8 +434,8 @@ export default function AdminInvoicingPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[calc(var(--cvw)*60)] border-collapse text-left max-lg:min-w-215">
+        <TableScroll>
+          <table className={TABLE}>
             <thead>
               <tr className="type-label border-b border-black/10 text-black/60">
                 <th className="py-3 pr-4 font-normal">User</th>
@@ -271,19 +443,20 @@ export default function AdminInvoicingPage() {
                 <th className="py-3 pr-4 text-right font-normal">Amount</th>
                 <th className="py-3 pr-4 font-normal">Payment ID</th>
                 <th className="py-3 pr-4 font-normal">Date</th>
-                <th className="py-3 text-right font-normal">Receipt</th>
+                <th className="py-3 pr-4 text-right font-normal">Receipt</th>
+                <th className={`py-3 text-right font-normal ${STICKY_END}`}>Revenue</th>
               </tr>
             </thead>
             <tbody>
               {ledgerLoading ? (
                 <tr>
-                  <td colSpan={6}>
+                  <td colSpan={7}>
                     <LedgerRowsSkeleton />
                   </td>
                 </tr>
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="type-body py-10 text-center text-black/60">
+                  <td colSpan={7} className="type-body py-10 text-center text-black/60">
                     No payments in this window.
                   </td>
                 </tr>
@@ -291,7 +464,7 @@ export default function AdminInvoicingPage() {
                 rows.map((row) => {
                   const href = receiptHref(row);
                   return (
-                    <tr key={row.id} className="border-b border-black/10 last:border-b-0">
+                    <tr key={row.id} className={`border-b border-black/10 last:border-b-0 ${row.excluded ? "text-black/40 [&_*]:text-black/40" : ""}`}>
                       <td className="py-[calc(var(--cvw)*0.7)] pr-4 max-lg:py-3">
                         <UserCell row={row} />
                       </td>
@@ -301,14 +474,22 @@ export default function AdminInvoicingPage() {
                           {ledger === "subscriptions" && <span className="type-small text-black/60">{INTERVALS[row.billingInterval] || "—"}</span>}
                         </span>
                       </td>
-                      <td className="type-body whitespace-nowrap py-3 pr-4 text-right font-aeonik">{row.redeemedWithCredit ? "1 credit" : money(row.amount, row.currency, ledger === "subscriptions")}</td>
+                      <td className="py-3 pr-4 text-right">
+                        <span className="flex flex-col items-end">
+                          <span className={`type-body whitespace-nowrap font-aeonik ${row.status === "refunded" ? "text-black/40 line-through" : ""}`}>
+                            {row.redeemedWithCredit ? "1 credit" : money(row.amount, row.currency, ledger === "subscriptions")}
+                          </span>
+                          {row.status === "refunded" && <span className="type-small text-danger-strong">Refunded</span>}
+                          {row.excluded && <span className="type-small">Excluded</span>}
+                        </span>
+                      </td>
                       <td className="type-small py-3 pr-4 text-black/60">
                         <span className="font-mono" title={row.paymentId}>
                           {row.paymentId || "—"}
                         </span>
                       </td>
                       <td className="type-small whitespace-nowrap py-3 pr-4 text-black/60">{formatDate(row.createdAt)}</td>
-                      <td className="py-3 text-right">
+                      <td className="py-3 pr-4 text-right">
                         {href ? (
                           <a href={href} target="_blank" rel="noopener noreferrer" className="type-small text-ink underline underline-offset-3 transition-colors duration-300 hover:text-primary">
                             View
@@ -317,13 +498,21 @@ export default function AdminInvoicingPage() {
                           <span className="type-small text-black/20">—</span>
                         )}
                       </td>
+                      <td className={`py-3 text-right ${STICKY_END}`}>
+                        {/* Credit redemptions and refunds aren't revenue to begin with */}
+                        {row.redeemedWithCredit || row.status === "refunded" ? (
+                          <span className="type-small text-black/20">—</span>
+                        ) : (
+                          <RevenueToggle row={row} kind={ledger === "subscriptions" ? "subscription" : "template"} onChange={setExcluded} />
+                        )}
+                      </td>
                     </tr>
                   );
                 })
               )}
             </tbody>
           </table>
-        </div>
+        </TableScroll>
 
         <Pager page={Math.min(page, pages - 1)} pages={pages} total={total} noun={total === 1 ? "payment" : "payments"} onPage={setPage} />
       </section>

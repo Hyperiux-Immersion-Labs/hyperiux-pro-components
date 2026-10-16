@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { getRole, isSuperAdminUser } from "@/lib/admin";
 import { resolveDateBounds } from "@/lib/admin-activity";
-import { fetchAllRows, fetchInstalls, getAdminUserList, parseAudience } from "@/lib/admin-data";
+import { fetchAllRows, fetchInstalls, getAdminUserList, internalReason, parseAudience } from "@/lib/admin-data";
+import { getInternalLists } from "@/lib/app-settings";
 
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 500;
@@ -41,7 +42,7 @@ async function activityCounts() {
   };
 }
 
-function shapeUser({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin, { installsById, webById, cliById, mcpById, savesById }) {
+function shapeUser({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin, { installsById, webById, cliById, mcpById, savesById }, lists) {
   const role = getRole(clerkUser);
 
   const base = {
@@ -63,6 +64,9 @@ function shapeUser({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin, { instal
     savesCount: savesById.get(clerkUser.id) || 0,
     // Suspended (banned in Clerk): can't sign in until restored
     suspended: Boolean(clerkUser.banned),
+    // Why they're kept out of the customer numbers, if they are:
+    // "marked" | "role" | "email" | "domain" | null (lib/admin-data internalReason)
+    internal: internalReason(clerkUser, lists),
   };
 
   // Billing/payment detail is super-admin only - a regular admin gets user
@@ -136,7 +140,8 @@ export async function GET(request) {
       list.sort((a, b) => (countMap.get(b.clerkUser.id) || 0) - (countMap.get(a.clerkUser.id) || 0));
     }
 
-    const users = list.slice(offset, offset + limit).map((entry) => shapeUser(entry, viewerIsSuperAdmin, counts));
+    const lists = await getInternalLists();
+    const users = list.slice(offset, offset + limit).map((entry) => shapeUser(entry, viewerIsSuperAdmin, counts, lists));
     return NextResponse.json({ users, total: list.length });
   } catch (error) {
     console.error("ADMIN_USERS_ERROR:", error);
