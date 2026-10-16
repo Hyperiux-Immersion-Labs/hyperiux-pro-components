@@ -80,7 +80,6 @@ export function SoftwareApplicationJsonLd() {
     applicationSubCategory: "UI component library",
     isAccessibleForFree: true,
     operatingSystem: "Web-based (React and Next.js)",
-    browserRequirements: "Requires JavaScript and a modern web browser",
     softwareVersion: "1.1.1",
     featureList: [
       `${TOTAL_LABEL} interactive effects (${FREE_LABEL} free)`,

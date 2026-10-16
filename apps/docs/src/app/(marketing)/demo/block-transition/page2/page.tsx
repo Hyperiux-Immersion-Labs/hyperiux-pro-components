@@ -26,5 +26,5 @@ export default function page() {
   );
 }
 export async function generateMetadata() {
-  return getDemoPageMetadata("block-transition");
+  return getDemoPageMetadata("block-transition", { path: "/demo/block-transition/page2" });
 }

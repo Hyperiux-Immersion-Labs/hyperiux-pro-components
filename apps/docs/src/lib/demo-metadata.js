@@ -27,16 +27,18 @@ export async function getDemoPageMetadata(effectSlug, options = {}) {
   const detailPath = entry?.categorySlug
     ? `/effects/${entry.categorySlug}/${effectSlug}`
     : `/demo/${effectSlug}`;
+  // A demo's own URL (page2 routes pass theirs) - hreflang must point at the page itself
+  const pagePath = options.path || `/demo/${effectSlug}`;
   const image = resolveOgImageUrl(entry?.coverImage || effectSlug, LISTING_IMAGE) || "/seo/homepage.png";
 
   if (!entry?.categorySlug) {
     return createPageMetadata({
       title: `${displayTitle} Demo | Hyperiux Vault`,
       description: `Interactive demo for ${displayTitle} from the Hyperiux Vault component library.`,
-      path: `/demo/${effectSlug}`,
+      path: pagePath,
       canonicalPath: detailPath,
-      openGraphPath: `/demo/${effectSlug}`,
-      languagesPath: `/demo/${effectSlug}`,
+      openGraphPath: pagePath,
+      languagesPath: pagePath,
       image,
     });
   }
@@ -44,10 +46,10 @@ export async function getDemoPageMetadata(effectSlug, options = {}) {
   return createPageMetadata({
     title: `${displayTitle} Demo | Hyperiux Vault`,
     description: `Interactive demo for ${displayTitle}. View full documentation, code, and installation on the Hyperiux Vault effect page.`,
-    path: `/demo/${effectSlug}`,
+    path: pagePath,
     canonicalPath: detailPath,
-    openGraphPath: `/demo/${effectSlug}`,
-    languagesPath: `/demo/${effectSlug}`,
+    openGraphPath: pagePath,
+    languagesPath: pagePath,
     image,
   });
 }
