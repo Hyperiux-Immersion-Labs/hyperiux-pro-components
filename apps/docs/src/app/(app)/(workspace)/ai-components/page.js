@@ -9,7 +9,7 @@ export const revalidate = 3600;
 export const metadata = createPageMetadata({
   title: "AI Component Catalogue: React & Next.js Interaction Effects",
   description:
-    "A complete, machine-readable catalogue of Hyperiux Vault for people and AI assistants: every React and Next.js interaction effect with use cases, dependencies, accessibility notes, usage code, props and live demos.",
+    "A complete, machine-readable catalogue of Hyperiux Vault for people and AI assistants: every React and Next.js interaction effect with use cases, dependencies, accessibility notes and live demos, with usage code and props in the JSON and text versions.",
   path: "/ai-components",
 });
 

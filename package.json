@@ -22,6 +22,7 @@
     "sanity:code:diff": "npm --prefix apps/docs run sanity:code:diff",
     "sanity:code:sync": "npm --prefix apps/docs run sanity:code:sync",
     "sanity:code:test": "npm --prefix apps/docs run sanity:code:test",
+    "check:ai-catalogue": "npm --prefix apps/docs run check:ai-catalogue",
     "template:package": "npm --prefix apps/docs run template:package",
     "template:update": "npm --prefix apps/docs run template:update",
     "template:create": "npm --prefix apps/docs run template:create"

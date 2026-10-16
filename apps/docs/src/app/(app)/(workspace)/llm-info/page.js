@@ -1,6 +1,6 @@
 import { createPageMetadata } from "@/lib/seo-metadata";
-import { WebpageJsonLd, BreadcrumbsJSONLD } from "@/lib/json-ld";
-import { getRegistryIndex } from "@/lib/registry";
+import { WebpageJsonLd, BreadcrumbsJSONLD, SoftwareApplicationJsonLd } from "@/lib/json-ld";
+import { getAiCatalogue } from "@/lib/ai-catalogue";
 import LlmInfo from "./LlmInfo";
 
 export const metadata = createPageMetadata({
@@ -10,25 +10,21 @@ export const metadata = createPageMetadata({
   path: "/llm-info",
 });
 
-// Live library counts from the registry, so the page never goes stale
-function getLibraryCounts() {
-  const items = getRegistryIndex()?.items || [];
-  const byCategory = {};
-  for (const item of items) {
-    const entry = (byCategory[item.category] ||= { total: 0, free: 0, pro: 0 });
-    entry.total += 1;
-    entry[item.tier === "pro" ? "pro" : "free"] += 1;
-  }
-  const free = items.filter((item) => item.tier !== "pro").length;
-  return { total: items.length, free, pro: items.length - free, byCategory };
-}
+// Library counts from the AI catalogue - the same numbers and category filing
+// as /llms.txt, /ai-components and its JSON, so they can never disagree.
+// Rebuilt hourly with the catalogue.
+export const revalidate = 3600;
 
-export default function Page() {
+export default async function Page() {
+  const { totals, categories } = await getAiCatalogue();
+  const counts = { total: totals.effects, free: totals.free, pro: totals.pro, categories };
+
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
       <BreadcrumbsJSONLD pathname="/llm-info" />
-      <LlmInfo counts={getLibraryCounts()} />
+      <SoftwareApplicationJsonLd />
+      <LlmInfo counts={counts} />
     </>
   );
 }

@@ -101,10 +101,10 @@ export default function AiComponents({ catalogue: c }) {
       <p>
         This page is a complete, machine-readable catalogue of Hyperiux Vault for people and AI assistants: all{" "}
         {c.totals.effects} interaction effects for React and Next.js, with what each one is for, what it is not for,
-        dependencies, accessibility notes, usage code and props. It is built from the same registry and documentation as
-        the effect pages, so it is always current. The same data is available as{" "}
-        <a href="/ai-components.json">JSON</a>, as a short <a href="/llms.txt">llms.txt</a> index and in full as{" "}
-        <a href="/llms-full.txt">llms-full.txt</a>.
+        dependencies and accessibility notes. It is built from the same registry and documentation as the effect pages,
+        so it is always current. Each effect&apos;s usage code and props are in the{" "}
+        <a href="/ai-components.json">JSON</a> version and in the per-category text files linked from{" "}
+        <a href="/llms.txt">llms.txt</a> (everything in one file: <a href="/llms-full.txt">llms-full.txt</a>).
       </p>
 
       <h2 id="what-is-vault">What Is Hyperiux Vault?</h2>

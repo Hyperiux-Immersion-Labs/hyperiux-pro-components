@@ -16,6 +16,7 @@
     "dev": "next dev --webpack",
     "caddy": "sudo caddy run --config Caddyfile --adapter caddyfile",
     "prebuild": "node scripts/generate-sitemap.mjs",
+    "check:ai-catalogue": "node scripts/check-ai-catalogue.mjs",
     "build": "next build --webpack",
     "analyze": "ANALYZE=true next build --webpack",
     "start": "next start",

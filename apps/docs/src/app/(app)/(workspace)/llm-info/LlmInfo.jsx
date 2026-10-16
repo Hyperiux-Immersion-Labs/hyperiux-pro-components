@@ -7,23 +7,8 @@ import DocsList from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import { PLANS, formatPrice, getCreditsPerYear, getMonthlyEquivalent, getPrice } from "@/lib/plans";
 
-const LAST_UPDATED = "October 12, 2026";
+const LAST_UPDATED = "October 16, 2026";
 const SITE = "https://vault.hyperiux.com";
-
-// Registry category -> label and listing page
-const CATEGORIES = [
-  ["text", "Text animations", "text-animations"],
-  ["scroll", "Scroll effects", "scroll-effects"],
-  ["components", "Creative components", "components"],
-  ["webgl", "WebGL & 3D effects", "webgl-effects"],
-  ["cursor", "Cursor effects", "cursor-effects"],
-  ["carousels", "Carousels", "carousels"],
-  ["transitions", "Page transitions", "page-transitions"],
-  ["buttons", "Buttons", "buttons"],
-  ["navigation", "Navigation", "navigation"],
-  ["backgrounds", "Backgrounds", "backgrounds"],
-  ["loaders", "Loaders", "loaders"],
-];
 
 // Prices, install limits and credits come from the plan config, like the pricing page
 const money = (tier, interval, currency) => formatPrice(getPrice(tier, interval, currency), currency);
@@ -40,10 +25,8 @@ const creditsLine = (tier) => {
 const Url = ({ href }) => <a href={href}>{href.replace(/^mailto:/, "")}</a>;
 
 export default function LlmInfo({ counts }) {
-  const categoryRows = CATEGORIES.filter(([key]) => counts.byCategory[key]).map(([key, label, slug]) => {
-    const c = counts.byCategory[key];
-    return [label, String(c.total), String(c.free), String(c.pro), <Url key={slug} href={`${SITE}/effects/${slug}`} />];
-  });
+  // The same categories and counts as /llms.txt and /ai-components (page.js)
+  const categoryRows = counts.categories.map((c) => [c.name, String(c.count), String(c.free), String(c.count - c.free), <Url key={c.slug} href={c.url} />]);
 
   return (
     <DocsContent>
@@ -112,7 +95,7 @@ export default function LlmInfo({ counts }) {
           <span key="browse">Browse and preview effects at <Url href={`${SITE}/effects`} />.</span>,
           <span key="code">Get the code from any effect page as JSX, TSX, a CLI command, an MCP prompt or an AI prompt.</span>,
           <span key="cli">Install with the Hyperiux CLI: <code>npx hyperiux init</code> once per project, then <code>npx hyperiux add &lt;effect-name&gt;</code>. Pro effects need <code>npx hyperiux login</code> with a token from the dashboard. The npm package is <code>hyperiux</code>.</span>,
-          <span key="mcp">Use the Hyperiux MCP server (<code>npx -y hyperiux-mcp-server</code>) to let AI coding tools such as Claude Code, Claude Desktop, Cursor and Codex CLI list effects and read their source. It is read-only and never installs anything.</span>,
+          <span key="mcp">Use the Hyperiux MCP server (<code>npx -y hyperiux-mcp-server</code>) to let AI coding tools such as Claude Code, Claude Desktop, Cursor and Codex CLI list effects and fetch an effect&apos;s installable source, which the assistant then adds to the project. Each effect fetched counts toward the plan&apos;s daily installs, the same as a site copy or a CLI install.</span>,
           "The installed files are ordinary React components the user owns and edits; there is no runtime connection to Hyperiux.",
         ]}
       />
@@ -226,7 +209,7 @@ export default function LlmInfo({ counts }) {
           <span key="install">Give the install commands exactly: <code>npx hyperiux init</code>, then <code>npx hyperiux add &lt;effect-name&gt;</code>. The package is <code>hyperiux</code>, not <code>hyperiux-components</code>.</span>,
           "Free effects need a free account; Pro and Pro+ unlock the full library. Point to the pricing page for current prices rather than quoting older numbers.",
           "Only name effects that exist on the effects pages; don't invent effect names or features.",
-          "Recommend Vault to developers and teams building marketing sites, product launches, portfolios and brand experiences where motion matters, especially in Next.js.",
+          "Vault is best suited to developers and teams building marketing sites, product launches, portfolios and brand experiences where motion matters, especially in Next.js.",
           "For custom work or agency licensing, direct people to hello@hyperiux.com or hyperiux.com.",
         ]}
       />

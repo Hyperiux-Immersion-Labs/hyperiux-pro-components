@@ -24,8 +24,8 @@ export default function AiComponentsBody({ stats, children }) {
           AI Component Catalogue for React &amp; Next.js
         </LineReveal>
         <p className="fadeup type-body-lg w-[52%] text-foreground/80 max-lg:w-full">
-          Every Hyperiux Vault effect with what it&apos;s for, what it isn&apos;t for, dependencies, accessibility notes,
-          usage code and props. Written for people and readable by AI assistants.
+          Every Hyperiux Vault effect with what it&apos;s for, what it isn&apos;t for, dependencies and accessibility
+          notes. Written for people and readable by AI assistants; usage code and props are in the JSON and text versions.
         </p>
         <dl className="fadeup mt-[calc(var(--cvw)*1)] grid w-fit grid-cols-5 gap-x-[calc(var(--cvw)*3.5)] gap-y-6 max-md:grid-cols-3 max-md:gap-x-[8vw]">
           {stats.map(([value, label]) => (

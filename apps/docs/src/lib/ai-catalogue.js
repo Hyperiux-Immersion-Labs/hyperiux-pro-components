@@ -5,6 +5,7 @@ import { getAllSanityEffectGuides, getSanityBlogEntries } from "@/lib/sanity";
 import { effectCategories, getEffectCategoryBySlug } from "@/lib/categories";
 import { getEffectRouteSlug } from "@/lib/effect-slugs";
 import { TEMPLATES } from "@/lib/mock-templates";
+import { INTERNAL_NOTE } from "@/lib/ai-catalogue-checks";
 
 // One catalogue of every Vault effect for people, crawlers and AI tools:
 // /ai-components (the page), /ai-components.json, /llms.txt and /llms-full.txt.
@@ -54,6 +55,41 @@ const SECTIONS = {
 
 const BULLET = /^\s*[•\-*]\s+/;
 
+// One line of guide text: stray literal "\n"s and runs of whitespace collapsed
+const clean = (text) => String(text ?? "").replace(/\\n/g, " ").replace(/\s+/g, " ").trim();
+
+// Package tags come from the effect's real dependencies - hand-typed ones in
+// Sanity drift from them (GSAP on a Three.js effect, Lenis missing). Sanity's
+// tags are kept only for technique; anything else there is dropped.
+const PACKAGE_TAGS = {
+  gsap: "GSAP",
+  "@gsap/react": null, // part of GSAP
+  motion: "Motion",
+  "framer-motion": "Motion",
+  three: "Three.js",
+  lenis: "Lenis",
+  "lucide-react": "Lucide",
+  "@react-three/fiber": "React Three Fiber",
+  "@react-three/drei": "Drei",
+  "@react-three/postprocessing": "React Postprocessing",
+  "@react-three/rapier": "Rapier",
+};
+const TECHNIQUE_TAGS = {
+  css: "CSS",
+  "vanilla js": "Vanilla JS",
+  canvas: "Canvas",
+  "canvas-shader": "Canvas shader",
+  "webgl shader": "WebGL shader",
+  "mouse-tracking": "Mouse tracking",
+  "svg-path": "SVG path",
+};
+
+export function tagsFor(dependencies = [], sanityTags = []) {
+  const packages = dependencies.map((dep) => (dep in PACKAGE_TAGS ? PACKAGE_TAGS[dep] : dep)).filter(Boolean);
+  const techniques = sanityTags.map((tag) => TECHNIQUE_TAGS[clean(tag).toLowerCase()]).filter(Boolean);
+  return [...new Set([...packages, ...techniques])];
+}
+
 // Sanity body (text blocks and code blocks under h2 headings) -> named sections
 export function readGuide(body = []) {
   const guide = { usage: null };
@@ -73,7 +109,8 @@ export function readGuide(body = []) {
 
     const field = SECTIONS[heading];
     const text = String(block?.text || "").trim();
-    if (!field || !text) continue;
+    // An internal writing note left in some guides - never published
+    if (!field || !text || INTERNAL_NOTE.test(text)) continue;
     (guide[field] ||= []).push(text.replace(BULLET, ""));
   }
 
@@ -115,16 +152,17 @@ export function buildAiCatalogue({ registryItems = [], guides = [], getRegistryE
     const categorySlug = category?.slug || guide.categorySlug || item.category || "effects";
     // The registry decides Free vs Pro everywhere access is checked
     const tier = (item.tier || registryEffect.tier || guide.tier) === "pro" ? "pro" : "free";
+    const dependencies = item.dependencies || registryEffect.dependencies || [];
 
     return {
       slug,
-      title: guide.title || registryEffect.title || slug,
+      title: clean(guide.title || registryEffect.title || slug),
       category: { id: category?.id || categorySlug, slug: categorySlug, name: category?.name || categorySlug },
       tier,
-      summary: guide.summary || registryEffect.description || null,
-      description: guide.seoDescription?.trim() || null,
-      tags: guide.tags || [],
-      dependencies: item.dependencies || registryEffect.dependencies || [],
+      summary: clean(guide.summary || registryEffect.description) || null,
+      description: clean(guide.seoDescription) || null,
+      tags: tagsFor(dependencies, guide.tags || []),
+      dependencies,
       install: `npx hyperiux add ${slug}`,
       usage: sections.usage,
       props: propsOf(registryEffect),
@@ -135,7 +173,9 @@ export function buildAiCatalogue({ registryItems = [], guides = [], getRegistryE
       performance: sections.performance || [],
       accessibility: sections.accessibility || [],
       commonMistakes: sections.commonMistakes || [],
-      faq: (guide.faq || []).filter((qa) => qa?.question && qa?.answer).map((qa) => ({ question: qa.question.trim(), answer: qa.answer.trim() })),
+      faq: (guide.faq || [])
+        .filter((qa) => qa?.question && qa?.answer && !INTERNAL_NOTE.test(qa.answer))
+        .map((qa) => ({ question: clean(qa.question), answer: clean(qa.answer) })),
       relatedTitles: guide.relatedEffectNames || [],
       access: tier === "free"
         ? "Free Core: full source with a free account."
@@ -226,7 +266,7 @@ export const getAiCatalogue = cache(async () => {
 const MAIN_PAGES = [
   ["Home", "/", "Hyperiux Vault - React & Next.js interaction effects"],
   ["Official information about Hyperiux Vault", "/llm-info", "Structured facts for AI assistants - company, product, install, pricing, licensing"],
-  ["AI component catalogue", "/ai-components", "Every effect with use cases, dependencies, accessibility notes, usage code and props"],
+  ["AI component catalogue", "/ai-components", "Every effect with use cases, dependencies and accessibility notes (usage code and props: JSON and per-category text files)"],
   ["All effects", "/effects", "Browse and search the full library"],
   ["Pricing", "/pricing", "Free plan, plus Pro and Pro+ billed quarterly or yearly"],
   ["Templates", "/templates", "Complete interactive website templates, unlocked with template credits on Pro and Pro+"],
@@ -291,7 +331,8 @@ function tail(c) {
     ...linkList("Legal", LEGAL),
     "## Optional",
     "",
-    `- [Full catalogue as text](${SITE}/llms-full.txt): Every effect with use cases, constraints, accessibility notes, usage code and props`,
+    ...c.categories.map((category) => `- [${category.name}: full details](${llmsCategoryUrl(category)}): Every ${category.name.toLowerCase()} effect with use cases, constraints, usage code and props`),
+    `- [Full catalogue as text](${SITE}/llms-full.txt): Every effect in one file (large - the per-category files above are easier to read whole)`,
     `- [Sitemap](${SITE}/sitemap.xml): Full URL index including every individual effect page`,
     `- [Sign up](${SITE}/sign-up): Create a free account to copy and install free effects`,
     "",
@@ -302,7 +343,7 @@ export function toLlmsTxt(c) {
   const lines = [...header(c), ...linkList("Main pages", MAIN_PAGES), ...linkList("Docs", DOCS)];
 
   lines.push("## Effect categories", "");
-  for (const category of c.categories) lines.push(`- [${category.name}](${category.url}): ${category.count} effects (${category.free} free)`);
+  for (const category of c.categories) lines.push(`- [${category.name}](${category.url}): ${category.count} effects (${category.free} free) · [full details as text](${llmsCategoryUrl(category)})`);
   lines.push(`- [Free effects](${SITE}/effects/free): Effects available on the free plan (free account required)`);
   lines.push(`- [Pro effects](${SITE}/effects/pro): Effects unlocked with a Pro or Pro+ plan`, "");
 
@@ -320,37 +361,67 @@ export function toLlmsTxt(c) {
 const bullets = (label, items) => (items.length ? [`${label}:`, ...items.map((item) => `- ${oneLine(item)}`), ""] : []);
 const paragraph = (label, items) => (items.length ? [`${label}: ${items.map(oneLine).join(" ")}`, ""] : []);
 
+// One effect's full record, shared by /llms-full.txt and the per-category files
+function effectRecord(e, category) {
+  const lines = [`### ${e.title}`, ""];
+  lines.push(`- Slug: \`${e.slug}\` · Tier: ${tierLabel(e.tier)} · Category: ${category.name}`);
+  lines.push(`- Install: \`${e.install}\``);
+  lines.push(`- Docs: ${e.docsUrl} · Live demo: ${e.demoUrl}`);
+  lines.push(`- Dependencies: ${e.dependencies.length ? e.dependencies.join(", ") : "none beyond React"}`);
+  if (e.tags.length) lines.push(`- Tags: ${e.tags.join(", ")}`);
+  lines.push(`- Access: ${e.access}`, "");
+  if (e.summary) lines.push(oneLine(e.summary), "");
+  lines.push(...bullets("Best used for", e.bestFor));
+  lines.push(...paragraph("Not for", e.notFor));
+  lines.push(...paragraph("Accessibility and mobile", e.accessibility));
+  lines.push(...paragraph("Performance budget", e.performance));
+  lines.push(...bullets("Common mistakes", e.commonMistakes));
+  if (e.props.length) {
+    lines.push("Props:");
+    for (const prop of e.props) {
+      const meta = [prop.type, prop.default !== null ? `default ${JSON.stringify(prop.default)}` : null].filter(Boolean).join(", ");
+      lines.push(`- \`${prop.name}\`${meta ? ` (${meta})` : ""}${prop.description ? `: ${oneLine(prop.description)}` : ""}`);
+    }
+    lines.push("");
+  }
+  if (e.usage) lines.push("Usage:", "```jsx", e.usage, "```", "");
+  if (e.related.length) lines.push(`Related: ${e.related.map((r) => r.title).join(", ")}`, "");
+  return lines;
+}
+
+const effectsIn = (c, category) => c.effects.filter((effect) => effect.category.id === category.id);
+
 export function toLlmsFullTxt(c) {
   const lines = [...header(c)];
 
   for (const category of c.categories) {
     lines.push(`## ${category.name} (${category.count})`, "");
-    for (const e of c.effects.filter((effect) => effect.category.id === category.id)) {
-      lines.push(`### ${e.title}`, "");
-      lines.push(`- Slug: \`${e.slug}\` · Tier: ${tierLabel(e.tier)} · Category: ${category.name}`);
-      lines.push(`- Install: \`${e.install}\``);
-      lines.push(`- Docs: ${e.docsUrl} · Live demo: ${e.demoUrl}`);
-      lines.push(`- Dependencies: ${e.dependencies.length ? e.dependencies.join(", ") : "none beyond React"}`);
-      if (e.tags.length) lines.push(`- Tags: ${e.tags.join(", ")}`);
-      lines.push(`- Access: ${e.access}`, "");
-      if (e.summary) lines.push(oneLine(e.summary), "");
-      lines.push(...bullets("Best used for", e.bestFor));
-      lines.push(...paragraph("Not for", e.notFor));
-      lines.push(...paragraph("Accessibility and mobile", e.accessibility));
-      lines.push(...paragraph("Performance budget", e.performance));
-      lines.push(...bullets("Common mistakes", e.commonMistakes));
-      if (e.props.length) {
-        lines.push("Props:");
-        for (const prop of e.props) {
-          const meta = [prop.type, prop.default !== null ? `default ${JSON.stringify(prop.default)}` : null].filter(Boolean).join(", ");
-          lines.push(`- \`${prop.name}\`${meta ? ` (${meta})` : ""}${prop.description ? `: ${oneLine(prop.description)}` : ""}`);
-        }
-        lines.push("");
-      }
-      if (e.usage) lines.push("Usage:", "```jsx", e.usage, "```", "");
-      if (e.related.length) lines.push(`Related: ${e.related.map((r) => r.title).join(", ")}`, "");
-    }
+    for (const e of effectsIn(c, category)) lines.push(...effectRecord(e, category));
   }
 
   return [...lines, ...tail(c)].join("\n");
 }
+
+// The per-category slice of /llms-full.txt (/llms/<category>.txt) - small enough
+// for an assistant to read whole. Null for an unknown category.
+export function toLlmsCategoryTxt(c, categorySlug) {
+  const category = c.categories.find((entry) => entry.slug === categorySlug);
+  if (!category) return null;
+
+  const lines = [
+    `# ${c.name}: ${category.name}`,
+    "",
+    `> The ${category.count} effects in ${category.name} (${category.free} free) from ${c.name}, a library of React and Next.js interaction effects installed as source code with the hyperiux CLI.`,
+    "",
+    `- Install: \`${c.install.init}\`, then \`${c.install.add}\` (Pro effects: \`${c.install.login}\` first)`,
+    `- Category page: ${category.url}`,
+    `- Every category: ${SITE}/llms.txt`,
+    "",
+    `## Effects`,
+    "",
+  ];
+  for (const e of effectsIn(c, category)) lines.push(...effectRecord(e, category));
+  return lines.join("\n");
+}
+
+export const llmsCategoryUrl = (category) => `${SITE}/llms/${category.slug}.txt`;

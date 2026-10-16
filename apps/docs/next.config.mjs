@@ -99,6 +99,14 @@ const nextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         ],
       },
+      {
+        // Only the production domain is indexed. Preview deployments, the
+        // *.vercel.app aliases and the old staging project serve the same pages
+        // and would otherwise compete with it as duplicates.
+        source: "/:path*",
+        missing: [{ type: "host", value: "vault.hyperiux.com" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
     ];
   },
 
