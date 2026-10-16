@@ -43,9 +43,9 @@ function untilReset(now) {
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
 
-// Copies `npx hyperiux add …` through the effect cards' copy: it claims the install
-// against the daily limit first, like every other copy on the site. The icon and label
-// flip to a tick and "Copied" with the code blocks' animation.
+// Copies `npx hyperiux add …` through the effect cards' copy - just the command; the
+// install counts when the CLI runs it. The icon and label flip to a tick and "Copied"
+// with the code blocks' animation.
 function CopyCommand({ effect, copyInstall }) {
   const [copied, setCopied] = useState(false);
   const name = effect.title || effect.name;

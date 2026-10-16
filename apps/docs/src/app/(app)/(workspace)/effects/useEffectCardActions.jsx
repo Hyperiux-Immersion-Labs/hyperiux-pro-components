@@ -8,7 +8,7 @@ import { emitWishlistChanged } from "@/lib/wishlistEvents";
 import { refreshDashboard } from "@/components/Dashboard/useDashboardData";
 import { installCommand } from "./EffectCard";
 import { getLimitNudge } from "@/lib/limitNudge";
-import { mergeCopyUsage, publishCopyUsage, subscribeCopyUsage } from "@/lib/copyUsageEvents";
+import { mergeCopyUsage, subscribeCopyUsage } from "@/lib/copyUsageEvents";
 
 
 const subscribeNever = () => () => {};
@@ -88,9 +88,9 @@ export function useEffectCardActions({ userPlan = "free", signInRedirect = "/eff
 
   const wishlistSet = useMemo(() => new Set(wishlist), [wishlist]);
 
-  // Copying an install command counts as an install, against the same daily limit as
-  // the effect page's code copies, the CLI and MCP (POST /api/copy-usage claims one;
-  // copying the same effect again that day is free). `usage` is the last known count.
+  // Copying the install command counts nothing: it's only a command, and the install is
+  // claimed and logged when the CLI actually fetches the effect (/api/cli/effects). `usage`
+  // (today's count) is only read, to warn when today's limit is already used up.
   const [usage, setUsage] = useState(null);
   // Kept in step with the effect page's code blocks and Get code menu
   useEffect(
@@ -111,41 +111,6 @@ export function useEffectCardActions({ userPlan = "free", signInRedirect = "/eff
     };
   }, [isSignedIn, userId]);
 
-  // One request per effect at a time (fast double clicks share it)
-  const pendingClaims = useRef(new Map());
-  // `source`: what the copy counts as - "cli" for the `npx hyperiux add` command
-  const claimInstall = useCallback(
-    (slug, source = "web") => {
-      // Copied earlier today: free, even at the limit
-      if (usage?.isAdmin || usage?.effectSlugs?.includes(slug)) return Promise.resolve({ allowed: true, data: usage });
-      // Limit used up: the same message as everywhere else, no request
-      if (usage && typeof usage.remaining === "number" && usage.remaining <= 0) {
-        return Promise.resolve({ allowed: false, data: usage });
-      }
-      if (pendingClaims.current.has(slug)) return pendingClaims.current.get(slug);
-      const request = (async () => {
-        try {
-          const res = await fetch("/api/copy-usage", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ effectSlug: slug, source }),
-          });
-          const data = await res.json();
-          setUsage(data);
-          publishCopyUsage(data);
-          return { allowed: Boolean(data.allowed), data };
-        } catch {
-          return { allowed: false, data: null, failed: true };
-        } finally {
-          pendingClaims.current.delete(slug);
-        }
-      })();
-      pendingClaims.current.set(slug, request);
-      return request;
-    },
-    [usage],
-  );
-
   // Resolves true once the command is on the clipboard (the card and drawer show
   // "Copied" only then). Signed out: the sign-in prompt instead.
   const copyInstall = useCallback(
@@ -156,60 +121,23 @@ export function useEffectCardActions({ userPlan = "free", signInRedirect = "/eff
       }
       const command = installCommand(effect);
 
-      // Start the clipboard write now, inside the click: Safari refuses one that only
-      // begins after the network wait below. It's filled in (or dropped) once the
-      // install is claimed.
-      let fill;
-      let drop;
-      const text = new Promise((resolve, reject) => {
-        fill = resolve;
-        drop = reject;
-      });
-      let write = null;
-      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
-        write = navigator.clipboard.write([new ClipboardItem({ "text/plain": text.then((t) => new Blob([t], { type: "text/plain" })) })]);
-        write.catch(() => {});
-      }
-
-      // The install command: a CLI install, not a website copy
-      const { allowed, data, failed } = await claimInstall(effect.name, "cli");
-      if (!allowed) {
-        drop(new Error("not allowed"));
-        if (failed || !data) {
-          showToast({ title: "Couldn't Copy the Command", description: "Please try again in a moment." });
-        } else {
-          showToast(getLimitNudge(data));
-        }
-        return false;
-      }
-
-      fill(command);
       let copied = false;
       try {
-        if (write) await write;
-        else await navigator.clipboard.writeText(command);
+        await navigator.clipboard.writeText(command);
         copied = true;
       } catch {
-        try {
-          await navigator.clipboard.writeText(command);
-          copied = true;
-        } catch {
-          copied = false;
-        }
+        copied = false;
       }
 
-      const left =
-        data && !data.isAdmin && typeof data.limit === "number"
-          ? `${Math.max(0, data.remaining ?? 0)} of ${data.limit} daily installs left (copies, CLI & MCP).`
-          : null;
-      showToast(
-        copied
-          ? { title: "Install Command Copied", description: left ?? command }
-          : { title: "Copy This Command", description: command },
-      );
+      // Over today's limit (and not an effect already taken today): the install this
+      // command makes won't go through, so say so instead of "Copied"
+      const overLimit =
+        usage && !usage.isAdmin && typeof usage.limit === "number" && usage.remaining <= 0 && !usage.effectSlugs?.includes(effect.name);
+      if (!copied) showToast({ title: "Copy This Command", description: command });
+      else showToast(overLimit ? getLimitNudge(usage) : { title: "Install Command Copied", description: command });
       return copied;
     },
-    [isSignedIn, claimInstall, showToast],
+    [isSignedIn, usage, showToast],
   );
 
   // Optimistic: the heart, toast and dashboard count update on click; the request
