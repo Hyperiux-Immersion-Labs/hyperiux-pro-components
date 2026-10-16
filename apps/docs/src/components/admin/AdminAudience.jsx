@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
-import { DarkSegment } from "@/components/ui/DarkSegment";
+import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
+import { FILTER_WIDTH } from "@/components/Dashboard/DashboardUI";
 
 // Whose data the admin pages count: customers (the default), our own team's
 // internal accounts (lib/admin-data isInternalUser), or everyone. One choice
-// for every admin page, remembered in this browser.
+// for every admin page that splits by account (Activity, Users, Invoicing), remembered
+// in this browser and picked from the dropdown beside the page's date filter.
 export const AUDIENCE_ITEMS = [
   { id: "customers", label: "Customers" },
   { id: "internal", label: "Internal" },
@@ -48,15 +50,28 @@ export function useAdminAudience() {
   return [audience, setAudience];
 }
 
-export function AdminAudienceToggle({ value, onChange }) {
+const AUDIENCE_LABELS = Object.fromEntries(AUDIENCE_ITEMS.map((item) => [item.id, item.label]));
+
+// The dropdown, styled like the date filter beside it: orange when it isn't the
+// default (Customers), as the date filter is when it isn't "All time". Beside it, both
+// go in AUDIENCE_PAIR: a row, and on phones two equal halves of the width.
+export const AUDIENCE_PAIR = "flex items-center gap-[calc(var(--cvw)*0.7)] max-md:grid max-md:w-full max-md:grid-cols-2 max-md:gap-[2.5vw]";
+export const PAIR_WIDTH = `${FILTER_WIDTH} max-md:w-full`;
+export function AdminAudienceFilter({ widthClassName = FILTER_WIDTH }) {
+  const [audience, setAudience] = useAdminAudience();
   return (
-    <DarkSegment
-      buttonSize
-      label="Accounts"
-      items={AUDIENCE_ITEMS}
-      value={value}
-      onChange={onChange}
-      itemClassName="w-[calc(var(--cvw)*8)] max-lg:w-28 max-md:w-25"
+    <FilterMenu
+      tone="light"
+      variant="label"
+      alignRight
+      widthClassName={widthClassName}
+      label="Whose accounts"
+      panelClassName="left-auto! right-0"
+      options={AUDIENCE_ITEMS.map((item) => item.id)}
+      categoryFilter={audience}
+      activeFilter={audience === DEFAULT ? null : audience}
+      getLabel={(id) => AUDIENCE_LABELS[id]}
+      onSelect={setAudience}
     />
   );
 }

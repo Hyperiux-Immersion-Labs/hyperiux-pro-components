@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { useAdminAudience } from "@/components/admin/AdminAudience";
+import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
 import { ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, FILTER_WIDTH, Pager, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
@@ -336,13 +336,16 @@ export default function AdminInvoicingPage() {
     );
   }
 
-  // The window and whose payments, left; the date filter, right
+  // The window and whose payments, left; whose accounts and the date filter, right
   const header = (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <p className="type-label text-black/60">
         {dates.preset === "custom" ? "Custom range" : DATE_PRESETS[dates.preset]} · {audience === "all" ? "every account" : audience === "internal" ? "internal accounts" : "customers"}
       </p>
-      <DateRangeFilter label="Paid" value={dates} onChange={filter(setDates)} />
+      <div className={AUDIENCE_PAIR}>
+        <AdminAudienceFilter widthClassName={PAIR_WIDTH} />
+        <DateRangeFilter label="Paid" value={dates} onChange={filter(setDates)} widthClassName={PAIR_WIDTH} className="min-w-0" />
+      </div>
     </div>
   );
   const ROW = "flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-wrap max-lg:gap-3";

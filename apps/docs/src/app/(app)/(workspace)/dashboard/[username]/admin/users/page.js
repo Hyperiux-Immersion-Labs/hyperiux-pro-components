@@ -10,7 +10,7 @@ import { Search, X, Upload, CheckCircle2, XCircle, UserCog, Download, Mail, User
 import { ToastViewport, useToastQueue } from "@/components/ui/Toast";
 import { getDashboardPreview, sampleAdminUsers } from "@/lib/dev/dashboardPreview";
 import Button from "@/homepage/components/Button";
-import { useAdminAudience } from "@/components/admin/AdminAudience";
+import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
 import { ACTION_LINE, ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
 import { StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
 import { Tooltip } from "@/components/ui/Tooltip";
@@ -661,7 +661,7 @@ export default function AdminPage() {
     <>
     <ToastViewport toast={toast} onDismiss={dismissToast} />
     <div className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
-      {/* the window and whose accounts, left; export, the email log, invite and the date, right */}
+      {/* the window and whose accounts, left; export, the email log, invite, whose accounts and the date, right */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="type-label text-black/60">
           {dates.preset === "custom" ? "Custom range" : `${DATE_PRESETS[dates.preset]}`} · {audience === "all" ? "every account" : audience === "internal" ? "internal accounts" : "customers"}
@@ -682,7 +682,10 @@ export default function AdminPage() {
               <UserPlus aria-hidden="true" />
             </button>
           </Tooltip>
-          <DateRangeFilter label="Joined" value={dates} onChange={setDates} />
+          <div className={AUDIENCE_PAIR}>
+            <AdminAudienceFilter widthClassName={PAIR_WIDTH} />
+            <DateRangeFilter label="Joined" value={dates} onChange={setDates} widthClassName={PAIR_WIDTH} className="min-w-0" />
+          </div>
         </div>
       </div>
 

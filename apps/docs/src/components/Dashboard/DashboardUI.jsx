@@ -120,15 +120,15 @@ export function resolveDateRange({ preset, from, to }) {
  * shows just the range ("All time"); `label` names the date for screen readers ("Saved",
  * "Joined"); `value` is { preset, from, to }.
  */
-export function DateRangeFilter({ label, value, onChange }) {
+export function DateRangeFilter({ label, value, onChange, widthClassName = FILTER_WIDTH, className = "" }) {
   // The trigger and its panel share one width
   return (
-    <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
+    <div className={`flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw] ${className}`}>
       <FilterMenu
         tone="light"
         variant="label"
         alignRight
-        widthClassName={FILTER_WIDTH}
+        widthClassName={widthClassName}
         label={label ? `${label} date range` : "Date range"}
         panelClassName="left-auto! right-0"
         options={Object.keys(DATE_PRESETS)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
@@ -13,7 +13,6 @@ import { BUTTON_SIZE } from "@/homepage/components/Button";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { DarkSegment } from "@/components/ui/DarkSegment";
-import { AdminAudienceToggle, useAdminAudience } from "@/components/admin/AdminAudience";
 import { ADMIN_HIDDEN_TABS, ADMIN_TABS, USER_TABS, activeTab, dashboardPath, isAdminPath } from "./dashboardRoutes";
 import { DashboardProvider, HERO_ASIDE_ID } from "./DashboardContext";
 
@@ -50,10 +49,48 @@ const TAB = `inline-flex shrink-0 items-center px-3.5 ${BUTTON_SIZE} transition-
 const TAB_ON = "bg-primary text-background";
 const TAB_OFF = "bg-foreground/5 text-foreground/80 ring-1 ring-inset ring-foreground/15 hover:text-foreground hover:ring-primary/60";
 
-// The Customers / Internal / All switch, shared by every admin page (remembered in this browser)
-function AdminAudienceSwitch() {
-  const [audience, setAudience] = useAdminAudience();
-  return <AdminAudienceToggle value={audience} onChange={setAudience} />;
+// The tab row: one line at every width. When it doesn't fit (tablets, phones) it scrolls
+// sideways, the edge with more tabs beyond it fades out, and the current tab is scrolled
+// into view (again when the tabs change - super-admin tabs arrive once the role loads).
+function TabRow({ children, activeKey, tabsKey }) {
+  const ref = useRef(null);
+  const [edges, setEdges] = useState({ start: false, end: false });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const update = () => setEdges({ start: el.scrollLeft > 1, end: el.scrollWidth - el.clientWidth - el.scrollLeft > 1 });
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    const el = ref.current;
+    const active = el?.querySelector('[aria-current="page"]');
+    if (!active) return;
+    if (active.offsetLeft + active.offsetWidth > el.scrollLeft + el.clientWidth || active.offsetLeft < el.scrollLeft) {
+      el.scrollLeft = active.offsetLeft - 24;
+    }
+  }, [activeKey, tabsKey]);
+  const fade = 40;
+  const mask =
+    edges.start || edges.end
+      ? `linear-gradient(to right, ${edges.start ? "transparent" : "black"}, black ${fade}px, black calc(100% - ${fade}px), ${edges.end ? "transparent" : "black"})`
+      : undefined;
+  return (
+    <nav
+      ref={ref}
+      aria-label="Dashboard"
+      style={{ maskImage: mask, WebkitMaskImage: mask }}
+      className="flex gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    >
+      {children}
+    </nav>
+  );
 }
 
 /**
@@ -62,8 +99,9 @@ function AdminAudienceSwitch() {
  * DashboardHeroAside), the tab row, then the tab on a light sheet (restyled tabs) or on the
  * dark page (the rest, until they're restyled).
  *
- * Admins get a View as User / Admin slider at the end of the tab row; Admin swaps the tabs
- * for Activity, Users and (super admins) Invoicing under /dashboard/{username}/admin.
+ * Admins get a View as User / Admin slider at the right of the breadcrumb row; Admin swaps
+ * the tabs for the admin ones under /dashboard/{username}/admin. The admin pages that split
+ * by account (Activity, Users, Invoicing) put that choice beside their own date filter.
  */
 export function DashboardShell({ username, effects = [], catalog = [], children }) {
   const pathname = usePathname();
@@ -134,17 +172,29 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
         <VaultHeader showSearch totalEffects={effects.length} effects={effects} />
 
         <section id="dashboard" className="section-x flex w-full flex-col gap-[calc(var(--cvw)*3)] pt-32 pb-[calc(var(--cvw)*3)] max-lg:gap-10 max-lg:pb-10 max-md:gap-8 max-md:pt-28 max-md:pb-8">
-          {/* back + breadcrumb */}
-          <div className="flex min-w-0 items-center gap-4">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              aria-label="Go back"
-              className="grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
-            >
-              <ArrowLeft className="size-4" aria-hidden="true" />
-            </button>
-            <Breadcrumb items={crumbs} />
+          {/* back + breadcrumb, and for admins the View as User / Admin switch on the right.
+              On phones the breadcrumb is just its last two crumbs, and admins don't get it
+              there at all: View as, the orange tab and the heading already say where they are */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-4">
+              <button
+                type="button"
+                onClick={() => router.back()}
+                aria-label="Go back"
+                className="grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
+              >
+                <ArrowLeft className="size-4" aria-hidden="true" />
+              </button>
+              <Breadcrumb items={crumbs} className="max-md:hidden" />
+              <Breadcrumb items={crumbs.slice(-2)} className={isAdmin ? "hidden" : "md:hidden"} />
+            </div>
+
+            {isAdmin && (
+              <div className="flex shrink-0 items-center gap-3">
+                <span className="type-label text-foreground/80 max-md:hidden">View as</span>
+                <DarkSegment buttonSize label="Dashboard view" items={VIEWS} value={view} onChange={switchView} itemClassName="w-[calc(var(--cvw)*6)] max-lg:w-20 max-md:w-16" />
+              </div>
+            )}
           </div>
 
           {/* the tab's header: heading and line on the left, the tab's own figure on the right */}
@@ -159,8 +209,8 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
             <div id={HERO_ASIDE_ID} className="flex shrink-0 items-end empty:hidden" />
           </header>
 
-          {/* tabs, then (admins) the User / Admin switch at the end of the row */}
-          <nav aria-label="Dashboard" className="flex flex-wrap items-center gap-1.5">
+          {/* the tabs, one row */}
+          <TabRow activeKey={current?.key} tabsKey={tabs.map((tab) => tab.key).join()}>
             {tabs.map((tab) => {
               const active = tab.key === current?.key;
               return (
@@ -169,17 +219,7 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
                 </Link>
               );
             })}
-
-            {isAdmin && (
-              <div className="ml-auto flex flex-wrap items-center gap-3 max-md:ml-0 max-md:w-full">
-                {/* admin pages: whose numbers - customers, our internal accounts, or all (not
-                    the email log, which isn't split by account) */}
-                {adminView && current?.key !== "emails" && <AdminAudienceSwitch />}
-                <span className="type-label text-foreground/80">View as</span>
-                <DarkSegment buttonSize label="Dashboard view" items={VIEWS} value={view} onChange={switchView} itemClassName="w-[calc(var(--cvw)*6)] max-lg:w-20" />
-              </div>
-            )}
-          </nav>
+          </TabRow>
         </section>
 
         {/* the tab: a full-width light sheet (white cards on it), at least half a screen tall

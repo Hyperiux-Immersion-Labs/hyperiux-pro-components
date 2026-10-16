@@ -7,7 +7,7 @@ import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, Pager, PerPageMenu, SourceChip } from "@/components/Dashboard/DashboardUI";
 import { StatCard, StatCardSkeleton, TWO_OF_THREE } from "@/components/Dashboard/TrendStat";
 import { SOURCE_BARS, UsageBars } from "@/components/Dashboard/UsageBars";
-import { useAdminAudience } from "@/components/admin/AdminAudience";
+import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
 import { SlidingSegment } from "@/components/ui/SlidingSegment";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
@@ -222,13 +222,16 @@ export default function AdminActivityPage() {
     };
   }, [query, audience, feedQuery, feedSource, feedPage, feedPerPage, catalog]);
 
-  // The window, at the top right of the sheet (above the stats)
+  // The window and whose accounts, at the top right of the sheet (above the stats)
   const header = (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <p className="type-label text-black/60">
         {dates.preset === "custom" ? "Custom range" : DATE_PRESETS[dates.preset]} · {audience === "all" ? "every account" : audience === "internal" ? "internal accounts" : "customers"}
       </p>
-      <DateRangeFilter label="Showing" value={dates} onChange={setDates} />
+      <div className={AUDIENCE_PAIR}>
+        <AdminAudienceFilter widthClassName={PAIR_WIDTH} />
+        <DateRangeFilter label="Showing" value={dates} onChange={setDates} widthClassName={PAIR_WIDTH} className="min-w-0" />
+      </div>
     </div>
   );
 
