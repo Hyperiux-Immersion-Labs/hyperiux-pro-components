@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -90,8 +89,6 @@ export function EffectsListing({
   scope: initialScope = null,
   content: initialContent = effectsOverviewContent,
 }) {
-  const searchParams = useSearchParams();
-
   // The page is cached (ISR), so the plan is fetched on the client - it works straight
   // away as a free user. Install counts may arrive as a promise; cards show a skeleton until then.
   const { plan: userPlan } = useUserPlan();
@@ -133,25 +130,21 @@ export function EffectsListing({
   const { isProUser, mounted, canInstall, isWishlisted, copyInstall, toggleWishlist, cardActions, overlays } =
     useEffectCardActions({ userPlan });
 
-  /* ---------- filter state (seeded from the URL so links are shareable) ---------- */
-  // `filter` is the old listing's query param (?filter=free|pro|featured) - still honoured
-  // so existing links and bookmarks land on the same view.
-  const legacyFilter = searchParams.get("filter");
-  const [tier, setTier] = useState(() =>
-    TIER_SCOPES.includes(searchParams.get("tier"))
-      ? searchParams.get("tier")
-      : TIER_SCOPES.includes(legacyFilter)
-        ? legacyFilter
-        : TIER_SCOPES.includes(scope)
-          ? scope
-          : "all",
-  );
-  const [featured, setFeatured] = useState(() => searchParams.get("featured") === "1" || legacyFilter === "featured" || scope === "featured");
+  /* ---------- filter state (from the URL after load, so links are shareable) ---------- */
+  // The server renders the page's default view; the query string (?tier, ?q, ...) is
+  // applied once the page has loaded (see readFiltersFromUrl below). Reading it with
+  // useSearchParams() instead made Next send an empty fallback for this cached page
+  // and build every card in the browser - slow to show, and no cards for crawlers.
+  const [tier, setTier] = useState(() => (TIER_SCOPES.includes(scope) ? scope : "all"));
+  const [featured, setFeatured] = useState(() => scope === "featured");
   // On a category route the category comes from the route, not the query string.
-  // ?category= is the old in-place filter link - still honoured on /effects.
-  const [category, setCategory] = useState(() => scopeCategory || (initialScope ? null : searchParams.get("category")) || null);
-  const [query, setQuery] = useState(() => searchParams.get("q") || "");
-  const [chosenSort, setSort] = useState(() => (SORTS[searchParams.get("sort")] ? searchParams.get("sort") : "trend"));
+  const [category, setCategory] = useState(() => scopeCategory || null);
+  const [query, setQuery] = useState("");
+  const [chosenSort, setSort] = useState("trend");
+  // False until the URL's filters have been read, so the URL mirror below can't
+  // overwrite a shared link's ?tier=pro&q=... with the defaults first.
+  const [urlRead, setUrlRead] = useState(false);
+  const [justUpgraded, setJustUpgraded] = useState(false);
   // "Free first" only means something across both tiers - it falls back to the default once a single tier is picked.
   const sort = tier !== "all" && chosenSort === "free-first" ? "trend" : chosenSort;
   // 2 / 3 per row, in step with the sidebar (picking 3 closes it); the cards animate
@@ -160,7 +153,6 @@ export function EffectsListing({
   const [shown, setShown] = useState(PAGE);
   const [drawerEffect, setDrawerEffect] = useState(null);
   const [upgradeDismissed, setUpgradeDismissed] = useState(false);
-  const justUpgraded = searchParams.get("upgraded") === "true";
 
   const rootRef = useRef(null);
   const gridRef = useRef(null);
@@ -245,6 +237,25 @@ export function EffectsListing({
     setQuery("");
   }, []);
 
+  // Apply the URL's filters once the page has loaded. `filter` is the old listing's
+  // query param (?filter=free|pro|featured), still honoured so existing links and
+  // bookmarks land on the same view; ?category= is the old in-place filter link,
+  // still honoured on /effects (a category route takes its category from the route).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const legacyFilter = params.get("filter");
+    const urlTier = TIER_SCOPES.includes(params.get("tier")) ? params.get("tier") : TIER_SCOPES.includes(legacyFilter) ? legacyFilter : null;
+    /* eslint-disable react-hooks/set-state-in-effect */
+    if (urlTier) setTier(urlTier);
+    if (params.get("featured") === "1" || legacyFilter === "featured") setFeatured(true);
+    if (!initialScope && params.get("category")) setCategory(params.get("category"));
+    if (params.get("q")) setQuery(params.get("q"));
+    if (SORTS[params.get("sort")]) setSort(params.get("sort"));
+    if (params.get("upgraded") === "true") setJustUpgraded(true);
+    setUrlRead(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [initialScope]);
+
   // Any filter change starts the grid over from the first page.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -253,6 +264,7 @@ export function EffectsListing({
 
   // Mirror the filters into the URL without a navigation.
   useEffect(() => {
+    if (!urlRead) return;
     const params = new URLSearchParams();
     if (tier !== "all") params.set("tier", tier);
     if (featured) params.set("featured", "1");
@@ -262,7 +274,7 @@ export function EffectsListing({
     const next = params.toString();
     const path = scope ? getEffectCategoryHref(scope) : "/effects";
     window.history.replaceState(window.history.state, "", `${path}${next ? `?${next}` : ""}`);
-  }, [tier, featured, category, query, sort, scope]);
+  }, [urlRead, tier, featured, category, query, sort, scope]);
 
   // The tab title follows the page too (the first page keeps its server title).
   const initialTitleRef = useRef(null);
@@ -461,9 +473,6 @@ export function EffectsListing({
         </div>
 
         <div data-v4-hero className="flex justify-between gap-[calc(var(--cvw)*3)] max-lg:flex-col max-lg:items-stretch max-lg:gap-[5vw]">
-          {/* Same entrances as the effect page: chars for the title, lines for the copy. */}
-          {/* Keyed by page: SplitText owns the heading's text nodes, so a new page gets a
-              fresh heading (and runs its entrance again) instead of a stale update. */}
           <HeadAnim key={scope || "all"} rotate={0} animateOnScroll={false}>
             <h1 className="type-display -mt-3 w-[58%] max-lg:w-full">
               {scope ? (
@@ -491,8 +500,8 @@ export function EffectsListing({
 
       {/* ---------- trending ---------- */}
       {trendingEffects.length > 0 && (
-        <section id="trending" data-v4-fade aria-labelledby="v4-trending" className="mx-auto w-full flex flex-col gap-[calc(var(--cvw)*2)] px-[calc(var(--cvw)*4.5)] pb-28 pt-4 max-lg:gap-8 max-lg:px-0 max-lg:pb-20">
-          <div className="flex items-end justify-between">
+        <section id="trending" data-v4-fade aria-labelledby="v4-trending" className="mx-auto w-full flex flex-col gap-[calc(var(--cvw)*2)] px-[calc(var(--cvw)*4.5)] pb-28 pt-10 max-lg:gap-8 max-lg:px-0 max-lg:pb-20">
+          <div className="flex items-end justify-between space-y-4">
             <h2 id="v4-trending" className={`${DISPLAY} max-md:px-[7vw]  max-lg:px-[5vw] text-[calc(var(--cvw)*2.2)] max-lg:text-[4vw] max-md:text-[7vw]`}>
               Trending this Week
             </h2>
@@ -723,7 +732,7 @@ export function EffectsListing({
                 </p>
               </div>
               <div className="relative flex h-fit flex-wrap gap-2 pt-5">
-                <Button text="See Plans" href="/pricing" />
+                <Button text="See Plans" href="/pricing#plans" />
               </div>
             </div>
           </section>

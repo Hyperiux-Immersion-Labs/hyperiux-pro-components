@@ -145,7 +145,7 @@ const billingOptions = (currency) => [
     {
         id: "y",
         label: "Yearly",
-        save: `Save up to ${Math.max(getYearlySaving("pro", currency).percent, getYearlySaving("pro_plus", currency).percent)}%`,
+        save: `Save ${Math.max(getYearlySaving("pro", currency).percent, getYearlySaving("pro_plus", currency).percent)}%`,
     },
 ];
 
@@ -173,7 +173,7 @@ export default function PricingPlansHome({ currency: initialCurrency, checkout =
     const billRef = useRef(null);
     const pillRef = useRef(null);
     const { sound } = useInteraction();
-    const [period, setPeriod] = useState("y");
+    const [period, setPeriod] = useState("q");
     // Which way the card text rolls: up when going to yearly, down when going back
     const dir = period === "y" ? 1 : -1;
 
@@ -262,7 +262,7 @@ export default function PricingPlansHome({ currency: initialCurrency, checkout =
                                 role="radio"
                                 aria-checked={on}
                                 onClick={() => choose(b.id)}
-                                className={`relative z-1 inline-flex h-10 items-center gap-2.5 px-[2vw] type-sm whitespace-nowrap max-md:h-[12vw] max-md:grow max-md:justify-center max-md:gap-[2vw] max-md:px-[3vw] max-md:text-[2.8vw] font-medium   transition-colors duration-700 ${on ? "text-white" : "text-[#6B6B6B]"}`}
+                                className={`relative z-1 inline-flex h-10 items-center gap-2.5 px-[2vw] type-sm whitespace-nowrap max-md:h-[12vw] max-md:grow max-md:justify-center max-md:gap-[2vw] max-md:px-[3vw] max-md:text-[3.6vw] font-medium   transition-colors duration-700 ${on ? "text-white" : "text-[#6B6B6B]"}`}
                             >
                                 {b.label}
                                 {b.save && (

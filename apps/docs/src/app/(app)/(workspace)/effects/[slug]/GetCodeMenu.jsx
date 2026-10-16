@@ -172,12 +172,7 @@ function ProLockOverlay({ onUpgrade }) {
 export default function GetCodeMenu({
   effectSlug,
   effectTitle,
-  isLocked = false,
-  // The server already found today's limit used up (and this effect not one
-  // of today's) - true before the browser's own usage check has loaded
-  serverLimitReached = false,
-  // The visitor's plan as the server saw it, for the limit message until usage loads
-  lockTier = null,
+  effectTier = "pro",
   align = "right",
   className = "",
   triggerClassName = "",
@@ -195,6 +190,10 @@ export default function GetCodeMenu({
     usage,
     requestCopy,
   } = useCopyLimit();
+  // A Pro effect without Pro, from the visitor's usage once it's loaded. Only
+  // shapes the menu - /api/effects/[slug]/copy checks sign-in, plan and the
+  // daily limit again on every request (a 403 there opens the upgrade modal).
+  const isLocked = effectTier !== "free" && Boolean(usage) && !usage.isAdmin && usage.plan !== "pro";
   const [open, setOpen] = useState(false);
   const [view, setView] = useState("menu"); // "menu" | "mcp"
   // null | { key, phase: "copying" | "copied" } - drives the trigger label.
@@ -387,13 +386,8 @@ export default function GetCodeMenu({
     }
     // Today's limit is used up (and this effect isn't one of today's): no
     // menu, just the limit message for the visitor's plan
-    if ((isLimitReached || serverLimitReached) && !isLocked) {
-      const knownUsage = usage ?? {
-        plan: lockTier === "pro" || lockTier === "pro_plus" ? "pro" : "free",
-        tier: lockTier,
-        isAdmin: lockTier === "admin",
-      };
-      showToast(getLimitNudge(knownUsage));
+    if (isLimitReached && !isLocked && usage) {
+      showToast(getLimitNudge(usage));
       return;
     }
     window.clearTimeout(statusTimerRef.current);
@@ -508,7 +502,7 @@ export default function GetCodeMenu({
           onKeyDown={onPanelKeyDown}
           // Fades and scales in. Phones: the button starts the row at the page gutter, so the panel opens from
           // its left edge across the whole content width (86vw, the stage's width) instead of the button's.
-          className={`absolute top-[calc(100%+var(--cvw)*0.5)] z-40 w-[calc(var(--cvw)*24)] min-w-72 origin-top animate-[hx-scale-in_0.49s_cubic-bezier(0.33,1,0.68,1)] border border-foreground/10 bg-dark-card p-1.5 motion-reduce:animate-none max-lg:w-[55vw] max-md:left-0! max-md:right-auto! max-md:w-[86vw] max-md:min-w-0 ${
+          className={`absolute top-[calc(100%+var(--cvw)*0.5)] z-40 w-[calc(var(--cvw)*24)] min-w-72 origin-top animate-[hx-scale-in_0.39s_cubic-bezier(0.33,1,0.68,1)] border border-foreground/10 bg-dark-card p-1.5 motion-reduce:animate-none max-lg:w-[55vw] max-md:left-0! max-md:right-auto! max-md:w-[86vw] max-md:min-w-0 ${
             align === "left" ? "left-0" : "right-0"
           }`}
         >

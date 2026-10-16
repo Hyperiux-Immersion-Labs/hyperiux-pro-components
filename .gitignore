@@ -47,3 +47,4 @@ next-env.d.ts
 
 # Backups written by apps/docs/scripts/cleanup-test-data.mjs - payment rows, never committed
 apps/docs/scripts/test-data-backup-*.json
+apps/docs/scripts/install-cleanup-backup-*.json
