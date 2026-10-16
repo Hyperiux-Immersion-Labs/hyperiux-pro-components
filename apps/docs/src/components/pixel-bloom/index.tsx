@@ -4,6 +4,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
+import Image from "next/image";
 // Shared cursor targeting utilities.
 //
 // Goals:
@@ -828,7 +829,7 @@ export default function PixelBloom({
   return (
     <div
       ref={containerRef}
-      className={`fx-target relative overflow-hidden rounded-2xl max-[1025px]:rounded-sm max-md:rounded-lg ${className}`}
+      className={`fx-target relative overflow-hidden rounded-2xl max-lg:rounded-sm max-md:rounded-lg ${className}`}
     >
       {type === "video" ? (
         <video
@@ -841,12 +842,15 @@ export default function PixelBloom({
           className={`absolute inset-0 h-full w-full object-cover ${gridLoadFailed ? "opacity-100" : "opacity-0"}`}
         />
       ) : (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <Image
           ref={mediaRef as any}
           src={getCanvasSafeMediaUrl(src)}
           alt="asset-image"
           className={`absolute inset-0 h-full w-full object-cover ${gridLoadFailed ? "opacity-100" : "opacity-0"}`}
+          fill
+          sizes="100vw"
+          loading="eager"
+          unoptimized
         />
       )}
 

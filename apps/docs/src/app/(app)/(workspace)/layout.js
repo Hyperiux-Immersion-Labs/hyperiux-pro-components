@@ -1,17 +1,17 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import {
   getEffectTierCounts,
   getEffectsByCategory,
   getRegistryIndex,
 } from "@/lib/registry";
 import { VaultLayout } from "@/components/layout/VaultLayout";
-// import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
+import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import WorkspaceFooter from "./WorkspaceFooter";
 
 function VaultLayoutFallback() {
   return (
     <div className="flex">
-      <aside className="sticky bottom-0 left-0 top-0 h-screen border-r border-white/10 bg-[#060606] w-22" />
+      <aside className="sticky bottom-0 left-0 top-0 h-screen border-r border-white/10 bg-background w-22" />
       <div className="flex-1 bg-background" />
     </div>
   );
@@ -32,6 +32,7 @@ export default function WorkspaceLayout({ children }) {
 
   return (
     <Suspense fallback={<VaultLayoutFallback />}>
+      <LenisSmoothScroll allowNestedScroll />
       {/* <NavbarMobile /> */}
       <VaultLayout
         effectCounts={effectCounts}

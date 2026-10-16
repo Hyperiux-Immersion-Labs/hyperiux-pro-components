@@ -5,7 +5,6 @@ import { TableOfContents } from "@/components/ui/TableOfContents";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import BlogAuthor from "./BlogAuthor";
 import BlogSharePopover from "./BlogSharePopover";
-import styles from "@/app/(marketing)/blog/[slug]/blog-content.module.css";
 
 
 // "September 06,2026" - the zero-padded format the listing cards use.
@@ -16,7 +15,7 @@ function formatRailDate(value) {
   const month = date.toLocaleDateString("en-US", { month: "long" });
   const day = String(date.getDate()).padStart(2, "0");
 
-  return `${month} ${day}, ${date.getFullYear()}`;
+  return `${month} ${day},${date.getFullYear()}`;
 }
 
 export default function BlogArticleBody({
@@ -39,28 +38,28 @@ export default function BlogArticleBody({
   useFadeUp(articleRef, [slug]);
 
   return (
-    <div ref={articleRef} className="relative flex justify-between mt-[7vw] max-md:mt-[10vw]">
+    <div ref={articleRef} className="relative flex justify-between">
       {/* No `items-start` on the row above: that shrink-wraps each column to
           its own content height, leaving the sticky rail no distance to
           travel. Stretching gives it the article's full height.
 
           Author, share button and TOC share the one sticky container and all
           stay visible for the article's full height. */}
-      <div className="w-[30%] shrink-0 pl-0 max-[1025px]:hidden">
+      <div className="w-[30%] shrink-0 max-lg:hidden">
       
-        <div className="sticky top-[15vh] flex flex-col gap-[1.6vw]">
+        <div className="sticky top-[15vh] flex flex-col gap-[calc(var(--cvw)*1.6)]">
           <BlogAuthor author={author} />
 
       
-          <div className="flex flex-col gap-[0.8vw]  text-[1vw] text-white max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
+          <div className="flex flex-col gap-[calc(var(--cvw)*0.8)] type-small text-ink">
             {(publishedAt || readingMinutes) && (
-              <div className="flex items-center text-[#AEAEAE] text-[0.9vw] gap-[1.2vw]">
+              <div className="flex items-center gap-[calc(var(--cvw)*1.2)] type-small text-black/60">
                 {publishedAt && (
                   <time dateTime={publishedAt}>Featured: {formatRailDate(publishedAt)}</time>
                 )}
 
                 {publishedAt && readingMinutes ? (
-                  <span aria-hidden="true" className="h-[1.6vw] w-px bg-white/25" />
+                  <span aria-hidden="true" className="h-[calc(var(--cvw)*1.6)] w-px bg-black/20" />
                 ) : null}
 
                 {readingMinutes ? <span>Read Time: {readingMinutes} mins</span> : null}
@@ -68,36 +67,35 @@ export default function BlogArticleBody({
             )}
 
             {categories.length > 0 && (
-              <p className="text-[0.9vw] text-[#AEAEAE]">Category: {categories.map((category) => category.title).join(", ")}</p>
+              <p className="type-small text-black/60">Category: {categories.map((category) => category.title).join(", ")}</p>
             )}
           </div>
 
-          <div className="flex items-center gap-[0.6vw] text-[#AEAEAE] text-[0.9vw] max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
+          <div className="flex items-center gap-[calc(var(--cvw)*0.6)] type-small text-black/60">
             <span>Share this Article:</span>
             <BlogSharePopover url={shareUrl} title={shareTitle} />
           </div>
 
-          <hr className="h-0.5  w-[85%] border-0 bg-[#272727]" />
+          <hr className="h-0.5 w-[85%] border-0 bg-black/10" />
 
-          <div className="w-fit mt-[10vh]">
+          {/* .docs-sheet gives the TOC the docs colours (dashes, flyout border/text) */}
+          <div className="docs-sheet bg-transparent! w-fit pt-[5vh]">
             <TableOfContents
               containerRef={contentRef}
               stopRef={stopRef}
               watchKey={slug}
               side="left"
               alwaysVisible
-              panelHeight="35vh"
-              maxTitleLength={25}
             />
           </div>
         </div>
       </div>
 
-      <div className="w-[66%] min-w-0 max-[1025px]:w-full">
-        <div className="mb-[6vw] hidden flex-col gap-[3vw] max-[1025px]:flex max-md:mb-[8vw] max-md:gap-[4vw]">
+      <div className="flex w-[66%] min-w-0 flex-col gap-[calc(var(--cvw)*6)] max-lg:w-full max-md:gap-[8vw]">
+        <div className="hidden flex-col gap-[calc(var(--cvw)*3)] max-lg:flex max-md:gap-[4vw]">
           <BlogAuthor author={author} />
 
-          <div className="flex flex-wrap items-center gap-x-[3vw] gap-y-2 text-[#AEAEAE] max-[1025px]:text-[2.4vw] max-md:text-[3.4vw]">
+          <div className="flex flex-wrap items-center gap-x-[calc(var(--cvw)*3)] gap-y-2 type-small text-black/60">
             {publishedAt && (
               <time dateTime={publishedAt}>Featured: {formatRailDate(publishedAt)}</time>
             )}
@@ -108,7 +106,7 @@ export default function BlogArticleBody({
           </div>
         </div>
 
-        <div ref={contentRef} className={styles.content}>
+        <div ref={contentRef} className="blog-content">
           {children}
         </div>
         <div ref={stopRef}>{afterContent}</div>

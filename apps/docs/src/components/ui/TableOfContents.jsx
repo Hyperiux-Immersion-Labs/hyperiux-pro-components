@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUp } from "lucide-react";
 import Link from "next/link";
 import gsap from "gsap";
 import { useLenis } from "lenis/react";
@@ -29,13 +30,11 @@ export function TableOfContents({
   // Effects/docs reveal the widget only while you're inside the article; the
   // blog rail keeps it mounted for the whole column.
   alwaysVisible = false,
-  // Fixed height for the flyout panel (any CSS length, e.g. "45vh"). The
-  // list scrolls inside it. Unset keeps the panel sized to its content,
-  // capped at 60vh.
-  panelHeight,
-  // Titles longer than this many characters are cut with an ellipsis (the
-  // full title stays on hover). Unset shows titles in full.
-  maxTitleLength,
+  // How far down the viewport (0-1) the article's top must reach before the widget
+  // appears. Docs keep the original 0.45; the effect page passes 0.2.
+  revealAt = 0.45,
+  // Adds a "Back to top" entry after the headings in the flyout.
+  showBackToTop = false,
 }) {
   const [items, setItems] = useState([]);
   const [activeId, setActiveId] = useState("");
@@ -140,6 +139,22 @@ export function TableOfContents({
     [clearActiveLock, lenis]
   );
 
+  // Same easing as the heading jumps; Lenis when the page runs it, native otherwise.
+  const scrollToTop = useCallback(
+    (event) => {
+      event.preventDefault();
+      clearActiveLock();
+      scrollTweenRef.current?.kill();
+      scrollTweenRef.current = null;
+      if (lenis) {
+        lenis.scrollTo(0, { duration: 1.15, easing: (t) => 1 - Math.pow(1 - t, 3), force: true });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    },
+    [clearActiveLock, lenis]
+  );
+
   useEffect(() => {
     const root = containerRef?.current;
 
@@ -155,7 +170,7 @@ export function TableOfContents({
 
       setIsVisible(
         !hasReachedStop &&
-        rect.top <= window.innerHeight * 0.45 &&
+        rect.top <= window.innerHeight * revealAt &&
         rect.bottom >= window.innerHeight * 0.25
       );
     };
@@ -171,7 +186,7 @@ export function TableOfContents({
       window.removeEventListener("scroll", updateVisibility);
       window.removeEventListener("resize", updateVisibility);
     };
-  }, [containerRef, stopRef, watchKey]);
+  }, [containerRef, stopRef, watchKey, revealAt]);
 
   // Reset the footer-proximity flag when the feature is off - derived
   // purely from `hideNearFooter`, which is already available during render.
@@ -207,19 +222,32 @@ export function TableOfContents({
 
     if (!root) return;
 
-    const headings = Array.from(root.querySelectorAll("h2")).map(
-      (el, index) => {
-        const id = ensureHeadingId(el, index);
+    const collect = () => {
+      const headings = Array.from(root.querySelectorAll("h2")).map(
+        (el, index) => {
+          const id = ensureHeadingId(el, index);
 
-        return {
-          id,
-          text: el.textContent || "",
-          level: el.tagName.toLowerCase(),
-        };
-      }
-    );
+          return {
+            id,
+            text: el.textContent || "",
+            level: el.tagName.toLowerCase(),
+          };
+        }
+      );
 
-    setItems(headings);
+      setItems((prev) =>
+        prev.length === headings.length && prev.every((p, i) => p.id === headings[i].id && p.text === headings[i].text)
+          ? prev
+          : headings
+      );
+    };
+
+    collect();
+    // After a client-side page change (docs prev / next) the new content can
+    // arrive after this runs - re-collect whenever headings show up or change.
+    const observer = new MutationObserver(collect);
+    observer.observe(root, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, [containerRef, watchKey]);
 
   useEffect(() => {
@@ -278,25 +306,19 @@ export function TableOfContents({
 
   const isLeft = side === "left";
 
-  const displayTitle = (text) =>
-    maxTitleLength && text.length > maxTitleLength
-      ? `${text.slice(0, maxTitleLength).trimEnd()}…`
-      : text;
-
   return (
-    <div className="group relative flex items-center gap-4">
+    <div className="group relative flex items-center gap-[calc(var(--cvw)*1)]">
       <span
         aria-hidden="true"
         className={`absolute top-1/2 h-full min-h-48 w-8 -translate-y-1/2 ${isLeft ? "left-full" : "right-full"}`}
       />
 
       <div
-        className={`pointer-events-none absolute top-1/2 w-[18vw] -translate-y-1/2 bg-[#161616] p-2 opacity-0 shadow-2xl transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:opacity-100 overflow-hidden ${panelHeight ? "flex flex-col" : "max-h-[60vh]"} ${isLeft ? "left-[calc(100%+1rem)]" : "right-[calc(100%+1.5rem)]"
+        className={`pointer-events-none absolute top-1/2 w-[calc(var(--cvw)*18)] max-h-[60vh] -translate-y-1/2 overflow-hidden border border-foreground/10 bg-light p-[calc(var(--cvw)*0.5)] opacity-0 shadow-float transition-[opacity,translate,scale] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:scale-100 group-hover:opacity-100 ${isLeft ? "left-[calc(100%+1vw)] -translate-x-3" : "right-[calc(100%+1vw)] translate-x-3"} scale-95
           }`}
-        style={panelHeight ? { height: panelHeight } : undefined}
       >
         <ul
-          className={`overflow-y-auto toc ${panelHeight ? "flex min-h-0 flex-1 flex-col gap-1" : "max-h-[calc(60vh-1rem)]"}`}
+          className="flex flex-col gap-[calc(var(--cvw)*0.3)] overflow-y-auto overscroll-contain max-h-[calc(60vh-1vw)] toc"
           onMouseLeave={() => setHoveredId(null)}
         >
           {items.map((item) => {
@@ -312,25 +334,44 @@ export function TableOfContents({
                   href={`#${item.id}`}
                   onMouseEnter={() => setHoveredId(item.id)}
                   className="group relative isolate block"
-                  title={displayTitle(item.text) !== item.text ? item.text : undefined}
                   onClick={(event) => onTocClick(event, item.id)}
                 >
                   <span
                     aria-hidden="true"
-                    className={`absolute inset-0 -z-10 origin-top bg-[#ff5f00] transition-transform duration-300 ease-out motion-reduce:transition-none ${highlighted ? "scale-y-100" : "scale-y-0"
+                    className={`absolute inset-0 -z-10 origin-top bg-primary transition-transform duration-300 ease-out motion-reduce:transition-none ${highlighted ? "scale-y-100" : "scale-y-0"
                       }`}
                   />
-                  <span className="relative z-10 block px-3 py-2 text20 font-medium leading-tight text-white">
-                    {displayTitle(item.text)}
+                  <span className={`relative z-10 block px-3 py-2 type-body font-normal leading-tight transition-colors duration-300 ${highlighted ? "text-background" : "text-(--docs-body,#3a3a3a)"}`}>
+                    {item.text}
                   </span>
                 </Link>
               </li>
             );
           })}
+          {showBackToTop && (
+            <li className="border-t border-foreground/10 py-[calc(var(--cvw)*0.3)]">
+              <a
+                href="#top"
+                onMouseEnter={() => setHoveredId("__top")}
+                onClick={scrollToTop}
+                className="group relative isolate block"
+              >
+                <span
+                  aria-hidden="true"
+                  className={`absolute inset-0 -z-10 origin-top bg-primary transition-transform duration-300 ease-out motion-reduce:transition-none ${hoveredId === "__top" ? "scale-y-100" : "scale-y-0"}`}
+                />
+                <span className={`relative z-10 flex items-center gap-2 px-3 py-2 type-body font-normal leading-tight transition-colors duration-300 ${hoveredId === "__top" ? "text-background" : "text-(--docs-body,#3a3a3a)"}`}>
+                  <ArrowUp className="size-4" aria-hidden="true" />
+                  Back to top
+                </span>
+              </a>
+            </li>
+          )}
         </ul>
       </div>
 
-      <ul className="flex w-12 flex-col items-end gap-3">
+      {/* Dashes sit flush against the page edge the widget is pinned to (right on docs, left on blog) */}
+      <ul className={`flex w-12 flex-col gap-[calc(var(--cvw)*0.8)] ${isLeft ? "items-start" : "items-end"}`}>
         {items.map((item) => (
           <li key={item.id}>
             <Link
@@ -341,10 +382,10 @@ export function TableOfContents({
             >
               <span
                 className={[
-                  "block h-0.5 rounded-full transition-all duration-300 ease-out",
+                  "block h-0.5 transition-all duration-300 ease-out",
                   activeId === item.id
                     ? "w-8 bg-primary"
-                    : "w-8 bg-[#272727] hover:w-8 hover:bg-[#272727]",
+                    : "w-8 bg-background/10 hover:bg-foreground/60",
                 ].join(" ")}
               />
             </Link>

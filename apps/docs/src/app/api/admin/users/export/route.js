@@ -1,4 +1,5 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import { displayName } from "@/lib/display-name";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { getRole, isSuperAdminUser } from "@/lib/admin";
@@ -19,25 +20,10 @@ function csvCell(value) {
   return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
 }
 
-// Same fallback as displayName() in dashboard/admin/page.js - a blank Name
-// cell for every account with no first/last name on file (common for
-// invited accounts that completed sign-up through Clerk's hosted widget
-// without ever being asked for one) is exactly the "a lot of users who
-// don't have a name" gap the table itself already doesn't have.
-function resolveExportName(clerkUser, email) {
-  if (clerkUser.fullName) return clerkUser.fullName;
-  if (clerkUser.firstName) return clerkUser.firstName;
-  if (email) {
-    const local = email.split("@")[0];
-    return local.charAt(0).toUpperCase() + local.slice(1);
-  }
-  return "Unnamed user";
-}
-
 function toRow(clerkUser, sub, viewerIsSuperAdmin) {
   const role = getRole(clerkUser);
   const email = clerkUser.emailAddresses?.[0]?.emailAddress || "";
-  const name = resolveExportName(clerkUser, email);
+  const name = displayName(clerkUser) || "";
   const joinedAt = clerkUser.createdAt || sub?.created_at || "";
 
   const base = [name, email, joinedAt ? new Date(joinedAt).toISOString() : "", sub?.plan || "free", role || "none"];
@@ -90,47 +76,15 @@ export async function GET(request) {
     });
 
     const rows = [];
-    // A date range has to be resolved against Clerk's own createdAt, not
-    // subscriptions.created_at (when that row happened to be written -
-    // usually right at signup via the Clerk user.created webhook, but not
-    // always: backfilled/migrated/delayed-webhook rows can drift from the
-    // real signup date). The exported "Joined At" column already shows
-    // clerkUser.createdAt preferentially - filtering by a different
-    // timestamp than what's displayed meant a picked range could silently
-    // include/exclude the wrong rows. Routed through the same
-    // Clerk-accurate branch search already used below, whether or not
-    // there's also search text.
-    const hasDateFilter = Boolean(startISO || endISO);
-    const startMs = startISO ? new Date(startISO).getTime() : null;
-    // endISO is exclusive (resolveDateBounds already rolled it one day past
-    // the picked "to" date) - matches the exclusive-upper-bound semantics
-    // createdAtBefore itself uses below.
-    const endMs = endISO ? new Date(endISO).getTime() : null;
 
-    // Belt-and-suspenders: don't just trust that Clerk's own
-    // createdAtAfter/createdAtBefore actually bounded what came back -
-    // re-check every row's real createdAt here too, so a picked range is
-    // guaranteed correct even if that filtering silently no-ops for any
-    // reason. Also what makes MAX_ROWS/CHUNK pagination safe when combined
-    // with a date filter: only rows that truly match ever count against it.
-    function withinDateRange(clerkUser) {
-      if (!hasDateFilter) return true;
-      const createdAtMs = clerkUser.createdAt ? new Date(clerkUser.createdAt).getTime() : null;
-      if (createdAtMs === null || Number.isNaN(createdAtMs)) return false;
-      if (startMs !== null && createdAtMs < startMs) return false;
-      if (endMs !== null && createdAtMs >= endMs) return false;
-      return true;
-    }
-
-    if (search || hasDateFilter) {
+    if (search) {
       let offset = 0;
       // Terminates when Clerk returns fewer than CHUNK rows (last page) or
       // the MAX_ROWS safety ceiling is hit - never an unconditional loop.
       for (;;) {
-        const clerkParams = { limit: CHUNK, offset, orderBy: "-created_at" };
-        if (search) clerkParams.query = search;
-        if (startISO) clerkParams.createdAtAfter = startMs;
-        if (endISO) clerkParams.createdAtBefore = endMs;
+        const clerkParams = { query: search, limit: CHUNK, offset, orderBy: "-created_at" };
+        if (startISO) clerkParams.createdAtAfter = new Date(startISO).getTime();
+        if (endISO) clerkParams.createdAtBefore = new Date(endISO).getTime();
 
         const { data: clerkUsers } = await clerk.users.getUserList(clerkParams);
         if (!clerkUsers.length) break;
@@ -138,7 +92,6 @@ export async function GET(request) {
         const subMap = await subscriptionsForIds(clerkUsers.map((u) => u.id));
 
         for (const clerkUser of clerkUsers) {
-          if (!withinDateRange(clerkUser)) continue;
           const sub = subMap[clerkUser.id];
           if (planFilter !== "all" && (sub?.plan || "free") !== planFilter) continue;
           if (roleFilter !== "all" && (getRole(clerkUser) || "user") !== roleFilter) continue;
@@ -158,10 +111,9 @@ export async function GET(request) {
           .order("created_at", { ascending: false })
           .range(offset, offset + CHUNK - 1);
 
-        // No startISO/endISO handling here - hasDateFilter routes into the
-        // Clerk-accurate branch above whenever a date range is active, so
-        // this branch only ever runs unfiltered-by-date.
         if (planFilter !== "all") query = query.eq("plan", planFilter);
+        if (startISO) query = query.gte("created_at", startISO);
+        if (endISO) query = query.lt("created_at", endISO);
 
         const { data: subscriptions, error } = await query;
         if (error) {

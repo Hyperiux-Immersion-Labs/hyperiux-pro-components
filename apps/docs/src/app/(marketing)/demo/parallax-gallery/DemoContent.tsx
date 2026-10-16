@@ -1,9 +1,8 @@
 "use client";
 
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 import ParallaxGallery from "@/components/parallax-gallery";
-import ScrollBottom from "@/components/WebsiteComps/ScrollBottom";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -14,9 +13,8 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader logoColor="#ffffff" textColor="#ffffff" />
+          <DemoHeader />
           {effect}
-          <ScrollBottom className="bottom-[2%]"/>
         </>
       )}
     </RegistryRemixerDemo>

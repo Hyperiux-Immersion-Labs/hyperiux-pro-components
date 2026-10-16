@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
+ 
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
@@ -8,6 +8,8 @@ import SplitText from "gsap/dist/SplitText";
 import { ReactLenis } from "lenis/react";
 import React, { useEffect, useId, useRef } from "react";
 
+import Link from "next/link";
+import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const IMAGE_POOL = [
@@ -372,7 +374,7 @@ const RibbonDriftComp = ({
 	return (
 		<>
 			<div
-				className="w-screen h-[1000vh] bg-white text-[#1a1a1a] max-[1025px]:hidden"
+				className="w-screen h-[1000vh] bg-white text-[#1a1a1a] max-lg:hidden"
 				id={sectionId}
 			>
 				<div className="w-screen h-screen sticky top-0 flex items-center px-[10vw]">
@@ -401,19 +403,20 @@ const RibbonDriftComp = ({
 							const currentIndex = titleIndex++;
 
 							return (
-								<a
+								<Link
 									href={item.href}
 									onClick={(e) => e.preventDefault()}
 									key={`left-${index}`}
 									style={cardStyle(27)}
 									className="project-card portfolio-card overflow-hidden drop-shadow-md relative"
 								>
-									<img
+									<Image
 										src={item.src}
 										alt={item.title}
 										width={400}
 										height={600}
 										className={`project-image opacity-0 w-full h-full object-cover transition duration-500 ease-in-out ${showNames ? "hover:brightness-75 cursor-pointer hover:scale-[1.2]" : ""}`}
+										loading="eager"
 									/>
 
 									{showNames && (
@@ -429,7 +432,7 @@ const RibbonDriftComp = ({
 											</p>
 										</div>
 									)}
-								</a>
+								</Link>
 							);
 						})}
 					</div>
@@ -439,7 +442,7 @@ const RibbonDriftComp = ({
 							const currentIndex = titleIndex++;
 
 							return (
-								<a
+								<Link
 									href={item.href}
 									onClick={(e) => e.preventDefault()}
 									key={`mid-${index}`}
@@ -447,12 +450,13 @@ const RibbonDriftComp = ({
 									className={`project-card portfolio-card overflow-hidden drop-shadow-md relative ${index === 0 ? "card-1" : ""
 										} ${index === 1 ? "card-2" : ""}`}
 								>
-									<img
+									<Image
 										src={item.src}
 										alt={item.title}
 										width={500}
 										height={700}
 										className={`project-image opacity-0 w-full h-full object-cover transition duration-500 ease-in-out ${showNames ? "hover:brightness-75 cursor-pointer hover:scale-[1.2]" : ""}`}
+										loading="eager"
 									/>
 
 									{showNames && (
@@ -468,7 +472,7 @@ const RibbonDriftComp = ({
 											</p>
 										</div>
 									)}
-								</a>
+								</Link>
 							);
 						})}
 					</div>
@@ -478,19 +482,20 @@ const RibbonDriftComp = ({
 							const currentIndex = titleIndex++;
 
 							return (
-								<a
+								<Link
 									href={item.href}
 									onClick={(e) => e.preventDefault()}
 									key={`right-${index}`}
 									style={cardStyle(27)}
 									className="project-card portfolio-card overflow-hidden drop-shadow-md relative"
 								>
-									<img
+									<Image
 										src={item.src}
 										alt={item.title}
 										width={400}
 										height={600}
 										className={`project-image opacity-0 w-full h-full object-cover transition duration-500 ease-in-out ${showNames ? "hover:brightness-75 cursor-pointer hover:scale-[1.2]" : ""}`}
+										loading="eager"
 									/>
 
 									{showNames && (
@@ -506,7 +511,7 @@ const RibbonDriftComp = ({
 											</p>
 										</div>
 									)}
-								</a>
+								</Link>
 							);
 						})}
 					</div>
@@ -527,7 +532,7 @@ const RibbonDriftComp = ({
 				</div>
 			</div>
 
-			<div className="hidden w-screen bg-white text-[#1a1a1a] max-[1025px]:block max-[1025px]:px-8 max-[1025px]:py-24 max-md:px-5 max-[1025px]:pt-35 max-md:pt-24 max-md:py-10">
+			<div className="hidden w-screen bg-white text-[#1a1a1a] max-lg:block max-lg:px-8 max-lg:py-24 max-md:px-5 max-lg:pt-35 max-md:pt-24 max-md:py-10">
 				<div className="mx-auto flex w-full max-w-4xl flex-col gap-10 max-md:gap-10">
 					<div className="flex flex-col gap-8 max-md:gap-6">
 						<p className="text-[6vw] text-center font-medium leading-none max-md:text-[10vw]">
@@ -542,18 +547,21 @@ const RibbonDriftComp = ({
 
 					<div className="grid grid-cols-2 gap-y-10 gap-x-4 max-md:grid-cols-1 max-md:gap-5">
 						{compactCards.map((item, index) => (
-							<a
+							<Link
 								href={item.href}
 								onClick={(e) => e.preventDefault()}
 								key={`compact-${index}`}
 								className="overflow-hidden max-md:mx-auto  w-full max-md:w-[80%]"
 								style={{ borderStyle: "solid", borderWidth, borderColor, borderRadius }}
 							>
-								<div className="relative max-[1025px]:aspect-4/5 max-md:aspect-auto max-md:h-[35vh]  ">
-									<img
+								<div className="relative max-lg:aspect-4/5 max-md:aspect-auto max-md:h-[35vh]  ">
+									<Image
 										src={item.src}
 										alt={item.title}
 										className="object-cover absolute inset-0 w-full h-full"
+										fill
+										sizes="100vw"
+										loading="eager"
 									/>
 								</div>
 								<div className="px-4 py-4 max-md:px-2 max-md:py-5">
@@ -563,11 +571,11 @@ const RibbonDriftComp = ({
 										</p>
 									)}
 								</div>
-							</a>
+							</Link>
 						))}
 					</div>
 
-					<div className="rounded-sm   px-6 py-8 text-center max-[1025px]:px-8 max-md:px-5 max-md:py-6">
+					<div className="rounded-sm   px-6 py-8 text-center max-lg:px-8 max-md:px-5 max-md:py-6">
 						<p className="text-[4vw] font-medium leading-[1.2] max-md:text-[5vw]">
 							{sectionBreakText}
 						</p>

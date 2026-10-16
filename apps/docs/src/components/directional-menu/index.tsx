@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element, react-hooks/refs -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
+/* eslint-disable react-hooks/refs -- React Compiler / legacy-pattern rules: fixing risks changing animation timing (see eslint.config.mjs, issue #16); <img> kept for dynamic user-supplied sources. */
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
 import Link from "next/link";
@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { type CSSProperties, type ReactNode, type RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
+import Image from "next/image";
 // ---- DirectionalMegaMenu.tsx ----
 
 
@@ -595,7 +596,7 @@ export function DirectionalMegaMenu({
                 type="button"
                 onMouseEnter={() => onItemEnter(index)}
                 style={isActive ? activeNavItemStyle : navItemStyle}
-                className={`relative flex cursor-pointer items-center gap-1 text-sm font-medium text-white transition-colors duration-300 hover:text-white motion-reduce:text-white motion-reduce:transition-none max-[1025px]:text-lg max-md:text-sm ${navItemClassName} ${isActive ? activeClassName : inactiveClassName
+                className={`relative flex cursor-pointer items-center gap-1 text-sm font-medium text-white transition-colors duration-300 hover:text-white motion-reduce:text-white motion-reduce:transition-none max-lg:text-lg max-md:text-sm ${navItemClassName} ${isActive ? activeClassName : inactiveClassName
                   }`}
               >
                 {item.label}
@@ -666,57 +667,58 @@ const PRODUCT_LINKS = [
 const PREVIEW_IMAGES = [
   {
     alt: "Dashboard preview",
-    heightClassName: "h-54 max-[1025px]:h-60 max-md:h-40",
+    heightClassName: "h-54 max-lg:h-60 max-md:h-40",
     src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg",
   },
   {
     alt: "Product showcase",
-    heightClassName: "h-54 max-[1025px]:h-60 max-md:h-40",
+    heightClassName: "h-54 max-lg:h-60 max-md:h-40",
     src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-07.jpg",
   },
 ];
 
 export function Menu1() {
   return (
-    <div className="flex justify-between gap-8 max-[1025px]:flex-wrap max-md:flex-col">
-      <div className="flex w-[65%] flex-col gap-6 max-[1025px]:w-[70%] max-md:w-full">
-        <div className="flex flex-col gap-2 max-[1025px]:gap-3 max-md:gap-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-800 max-[1025px]:text-base max-md:text-xs">
+    <div className="flex justify-between gap-8 max-lg:flex-wrap max-md:flex-col">
+      <div className="flex w-[65%] flex-col gap-6 max-lg:w-[70%] max-md:w-full">
+        <div className="flex flex-col gap-2 max-lg:gap-3 max-md:gap-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-800 max-lg:text-base max-md:text-xs">
             Product Navigation
           </p>
-          <h3 className="text-2xl text-neutral-800 font-semibold max-[1025px]:text-4xl max-md:text-2xl">
+          <h3 className="text-2xl text-neutral-800 font-semibold max-lg:text-4xl max-md:text-2xl">
             Explore the product suite
           </h3>
         </div>
 
         <div className="flex flex-col max-md:flex-wrap gap-4">
           {PRODUCT_LINKS.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
               className="flex flex-col gap-1 rounded-lg border border-neutral-200 p-4 transition-colors duration-200 hover:bg-neutral-100 motion-reduce:bg-transparent motion-reduce:transition-none"
             >
-              <div className="text-lg font-medium text-neutral-700 max-[1025px]:text-2xl max-md:text-xl">{item.label}</div>
-              <div className="text-sm text-neutral-600 max-[1025px]:text-lg max-md:text-base">
+              <div className="text-lg font-medium text-neutral-700 max-lg:text-2xl max-md:text-xl">{item.label}</div>
+              <div className="text-sm text-neutral-600 max-lg:text-lg max-md:text-base">
                 Learn more about {item.label.toLowerCase()}.
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
 
-      <div className="flex w-[30%] max-[1025px]:hidden flex-col justify-end gap-4  max-[1025px]:w-full max-[1025px]:grid-cols-2 max-[1025px]:gap-4  ">
+      <div className="flex w-[30%] max-lg:hidden flex-col justify-end gap-4  max-lg:w-full max-lg:grid-cols-2 max-lg:gap-4  ">
         {PREVIEW_IMAGES.map((image) => (
           <div
             key={image.src}
             className={`${image.heightClassName} overflow-hidden rounded-lg `}
           >
-            <img
+            <Image
               src={image.src}
               alt={image.alt}
               width={600}
               height={400}
               className="h-full w-full object-cover"
+              loading="eager"
             />
           </div>
         ))}
@@ -750,28 +752,28 @@ const SOLUTION_BLOCKS = [
 
 export function Menu2() {
   return (
-    <div className="flex flex-col gap-6 max-[1025px]:gap-10">
-      <div className="flex flex-col gap-2 max-[1025px]:gap-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-800 max-[1025px]:text-base max-md:text-xs">
+    <div className="flex flex-col gap-6 max-lg:gap-10">
+      <div className="flex flex-col gap-2 max-lg:gap-3">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-800 max-lg:text-base max-md:text-xs">
           Solutions
         </p>
-        <h3 className="text-2xl text-neutral-800 font-semibold max-[1025px]:text-4xl max-md:text-2xl">
+        <h3 className="text-2xl text-neutral-800 font-semibold max-lg:text-4xl max-md:text-2xl">
           Built for different teams
         </h3>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 max-[1025px]:grid-cols-2">
+      <div className="grid grid-cols-3 gap-6 max-lg:grid-cols-2">
         {SOLUTION_BLOCKS.map((block) => (
-          <a
+          <Link
             key={block.title}
             href={block.href}
             className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-6 transition-all duration-200 hover:bg-neutral-100 max-md:p-4 motion-reduce:bg-transparent motion-reduce:transition-none"
           >
-            <h4 className="text-lg font-semibold text-neutral-800 max-[1025px]:text-3xl max-md:text-xl">{block.title}</h4>
-            <p className="text-sm leading-6 text-neutral-600 max-[1025px]:text-xl max-md:text-base max-md:leading-[1.2]">
+            <h4 className="text-lg font-semibold text-neutral-800 max-lg:text-3xl max-md:text-xl">{block.title}</h4>
+            <p className="text-sm leading-6 text-neutral-600 max-lg:text-xl max-md:text-base max-md:leading-[1.2]">
               {block.description}
             </p>
-          </a>
+          </Link>
         ))}
       </div>
     </div>
@@ -809,22 +811,22 @@ const LINK_GROUPS = [
 
 export function Menu3() {
   return (
-    <div className="grid grid-cols-3 gap-10 max-[1025px]:grid-cols-2">
+    <div className="grid grid-cols-3 gap-10 max-lg:grid-cols-2">
       {LINK_GROUPS.map((group) => (
         <div key={group.heading} className="flex flex-col gap-4">
-          <h4 className="text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800 max-[1025px]:text-2xl max-md:text-sm">
+          <h4 className="text-sm font-semibold uppercase tracking-[0.08em] text-neutral-800 max-lg:text-2xl max-md:text-sm">
             {group.heading}
           </h4>
 
           <div className="flex flex-col gap-3">
             {group.links.map((link) => (
-              <a
+              <Link
                 key={link.label}
                 href={link.href}
-                className="block text-sm font-medium text-neutral-600 transition-opacity duration-200 hover:text-black max-[1025px]:text-xl max-md:text-base motion-reduce:text-neutral-600 motion-reduce:transition-none"
+                className="block text-sm font-medium text-neutral-600 transition-opacity duration-200 hover:text-black max-lg:text-xl max-md:text-base motion-reduce:text-neutral-600 motion-reduce:transition-none"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -1029,7 +1031,7 @@ export function MobileDirectionalMenu({ items = [], backgroundColor = "#ffffff" 
   };
 
   return (
-    <div ref={containerRef} className="relative hidden max-[1025px]:block px-6 py-4">
+    <div ref={containerRef} className="relative hidden max-lg:block px-6 py-4">
       <div className="flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center  gap-3 cursor-pointer">
           <svg width="35" height="35" viewBox="0 0 58 65" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1087,21 +1089,21 @@ export function MobileDirectionalMenu({ items = [], backgroundColor = "#ffffff" 
 
               if (!isDropdown) {
                 return (
-                  <a
+                  <Link
                     key={item.label}
                     href={item.href || "#"}
-                    className="rounded-lg border border-neutral-200 bg-transparent px-4 py-4 max-md:text-sm max-[1025px]:text-lg font-semibold uppercase tracking-[0.14em] text-neutral-500 transition-all duration-300 ease-in-out hover:bg-black/5 motion-reduce:transition-none max-[1025px]:rounded-none max-[1025px]:border-x-0 max-[1025px]:border-t-0"
+                    className="rounded-lg border border-neutral-200 bg-transparent px-4 py-4 max-md:text-sm max-lg:text-lg font-semibold uppercase tracking-[0.14em] text-neutral-500 transition-all duration-300 ease-in-out hover:bg-black/5 motion-reduce:transition-none max-lg:rounded-none max-lg:border-x-0 max-lg:border-t-0"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 );
               }
 
               return (
                 <section
                   key={item.label}
-                  className="rounded-lg border border-neutral-200 bg-transparent transition-all duration-300 ease-in-out motion-reduce:transition-none max-[1025px]:rounded-none max-[1025px]:border-x-0 max-[1025px]:border-t-0"
+                  className="rounded-lg border border-neutral-200 bg-transparent transition-all duration-300 ease-in-out motion-reduce:transition-none max-lg:rounded-none max-lg:border-x-0 max-lg:border-t-0"
                 >
                   <button
                     type="button"
@@ -1109,7 +1111,7 @@ export function MobileDirectionalMenu({ items = [], backgroundColor = "#ffffff" 
                     className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition-all duration-300 ease-in-out motion-reduce:transition-none"
                     aria-expanded={isOpen}
                   >
-                    <span className="max-md:text-sm max-[1025px]:text-lg font-semibold uppercase tracking-[0.14em] text-neutral-500">
+                    <span className="max-md:text-sm max-lg:text-lg font-semibold uppercase tracking-[0.14em] text-neutral-500">
                       {item.label}
                     </span>
 
@@ -1127,7 +1129,7 @@ export function MobileDirectionalMenu({ items = [], backgroundColor = "#ffffff" 
                         : "max-h-0 border-t-0 px-4 py-0 opacity-0"
                     }`}
                   >
-                      <div className="max-[1025px]:[&_.grid]:grid-cols-2 max-md:[&_.grid]:grid-cols-1 ">
+                      <div className="max-lg:[&_.grid]:grid-cols-2 max-md:[&_.grid]:grid-cols-1 ">
                         {item.customContent}
                       </div>
                     </div>
@@ -1181,7 +1183,7 @@ export default function DirectionalMenu({
     <div className="relative h-screen overflow-hidden bg-black text-white max-md:h-full max-md:overflow-visible max-md:pb-10">
       {/* Navbar */}
       <header className="relative z-50 border-b border-white/10">
-        <div className="max-w-7xl mx-auto max-[1025px]:hidden h-19 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto max-lg:hidden h-19 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-3 cursor-pointer">
@@ -1225,9 +1227,9 @@ export default function DirectionalMenu({
             inactiveClassName=""
             navItemStyle={{ color: inactiveColor }}
             activeNavItemStyle={{ color: activeColor }}
-            navClassName="mx-auto w-full  max-w-7xl justify-center px-6 md:px-10 max-[1025px]:translate-x-10 max-md:translate-x-0 "
+            navClassName="mx-auto w-full  max-w-7xl justify-center px-6 md:px-10 max-lg:translate-x-10 max-md:translate-x-0 "
             contentWrapperStyle={{ backgroundColor: menuBgColor }}
-            contentWrapperClassName="p-8 border border-white/10 rounded-3xl max-md:h-[92vh] max-[1025px]:h-[75vh]"
+            contentWrapperClassName="p-8 border border-white/10 rounded-3xl max-md:h-[92vh] max-lg:h-[75vh]"
             animation={{
               duration,
               ease: MENU_EASE,

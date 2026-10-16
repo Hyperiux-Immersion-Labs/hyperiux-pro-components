@@ -1,6 +1,8 @@
 import "server-only";
 import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
+import { isValidTier } from "@/lib/plans";
+import { expireCredits } from "@/lib/template-credits";
 
 // The one canonical list of subscription statuses that count as "currently
 // has Pro" - shared by every place that gates on plan/status, so a status
@@ -28,9 +30,24 @@ export function invalidatePlanCache(userId) {
   if (userId) planCache.delete(userId);
 }
 
+const FREE = { plan: "free", tier: "free" };
+
+// A paid row's tier ("pro" | "pro_plus"). Rows from before Pro+ existed (and
+// admin grants made before then) have no tier - those subscribers pay the old
+// $20/$179 prices, so they count as Pro+.
+function tierOf(row) {
+  return isValidTier(row?.tier) ? row.tier : "pro_plus";
+}
+
 export async function getUserPlan(userId) {
+  return (await getUserPlanInfo(userId)).plan;
+}
+
+// { plan: "free" | "pro", tier: "free" | "pro" | "pro_plus" }. `plan` is what
+// access checks gate on; `tier` is what limits and template credits depend on.
+export async function getUserPlanInfo(userId) {
   if (!userId) {
-    return "free";
+    return FREE;
   }
 
   // Was previously only consulted after a Supabase error - every single
@@ -40,12 +57,12 @@ export async function getUserPlan(userId) {
   // fallback that only ever helped after something had already gone wrong.
   const freshCached = planCache.get(userId);
   if (freshCached && freshCached.expiresAt > Date.now()) {
-    return freshCached.plan;
+    return freshCached.info;
   }
 
   const { data, error } = await supabase
     .from("subscriptions")
-    .select("plan,status,current_period_end")
+    .select("plan,tier,status,current_period_end")
     .eq("clerk_user_id", userId)
     .maybeSingle();
 
@@ -54,25 +71,28 @@ export async function getUserPlan(userId) {
 
     const cached = planCache.get(userId);
     if (cached && cached.expiresAt > Date.now()) {
-      return cached.plan;
+      return cached.info;
     }
 
     // No fresh cached value and Supabase itself errored - fail closed
     // rather than falling through to Clerk metadata, which isn't a
     // verified source of truth for revocation.
-    return "free";
+    return FREE;
   }
 
   let plan = "free";
+  let tier = "free";
   let isExpired = false;
 
   if (data?.plan === "pro" && ACTIVE_PRO_STATUSES.includes(data.status)) {
     if (!data.current_period_end) {
       plan = "pro";
+      tier = tierOf(data);
     } else {
       const periodEnd = new Date(data.current_period_end).getTime();
       if (Number.isNaN(periodEnd) || periodEnd > Date.now()) {
         plan = "pro";
+        tier = tierOf(data);
       } else {
         isExpired = true;
       }
@@ -94,6 +114,7 @@ export async function getUserPlan(userId) {
       user?.publicMetadata?.proAccess === true
     ) {
       plan = "pro";
+      tier = tierOf(user.publicMetadata);
     }
   }
 
@@ -108,6 +129,9 @@ export async function getUserPlan(userId) {
       .from("subscriptions")
       .update({ plan: "free", status: "expired", updated_at: new Date().toISOString() })
       .eq("clerk_user_id", userId);
+
+    // The plan has ended, and its unused template credits with it
+    await expireCredits(userId);
 
     try {
       const clerk = await clerkClient();
@@ -126,6 +150,7 @@ export async function getUserPlan(userId) {
           currentPeriodEnd: null,
           razorpaySubscriptionId: null,
           razorpayPlanId: null,
+          tier: null,
         },
       });
     } catch (metaError) {
@@ -133,7 +158,8 @@ export async function getUserPlan(userId) {
     }
   }
 
-  planCache.set(userId, { plan, expiresAt: Date.now() + PLAN_CACHE_TTL_MS });
+  const info = { plan, tier };
+  planCache.set(userId, { info, expiresAt: Date.now() + PLAN_CACHE_TTL_MS });
 
-  return plan;
+  return info;
 }

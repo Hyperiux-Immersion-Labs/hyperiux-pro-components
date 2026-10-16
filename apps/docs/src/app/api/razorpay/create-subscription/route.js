@@ -1,28 +1,45 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { razorpay } from "@/lib/razorpay";
+import { supabase } from "@/lib/supabase";
+import { ACTIVE_PRO_STATUSES } from "@/lib/subscription";
+import { isValidInterval, isValidTier } from "@/lib/plans";
+import { getRazorpayPlanId } from "@/lib/plans.server";
+import { getUpgradeQuote } from "@/lib/upgrade";
+import { getVisitorCurrency } from "@/lib/visitor-country";
 
-// Founding Annual (first-100-users discounted yearly plan) is disabled for
-// new checkouts - see the comment below. RAZORPAY_PRO_FOUNDING_YEARLY(_INR)_
-// PLAN_ID stay set in env and PLANS is left off this object deliberately -
-// pro-access.js and api/razorpay/webhooks/route.js still read those env vars
-// directly to correctly label/release *existing* founding subscribers.
-const PLANS = {
-  USD: {
-    monthly: process.env.RAZORPAY_PRO_MONTHLY_PLAN_ID,
-    yearly: process.env.RAZORPAY_PRO_YEARLY_PLAN_ID,
-  },
-  INR: {
-    monthly: process.env.RAZORPAY_PRO_MONTHLY_INR_PLAN_ID,
-    yearly: process.env.RAZORPAY_PRO_YEARLY_INR_PLAN_ID,
-  },
-};
+// Starts a Pro or Pro+ subscription, billed quarterly or yearly, in USD or
+// INR - or upgrades a current subscriber (see below). Plan IDs come from
+// plans.server.js. The old monthly/yearly Pro plans (and Founding Annual) are
+// closed to new checkouts - plans.server.js still maps them so existing
+// subscribers keep working.
 
 // Number of billing cycles Razorpay runs the mandate for (max ~100).
 const TOTAL_COUNTS = {
-  monthly: 100, // ~8 years
+  quarterly: 40, // 10 years
   yearly: 20,
 };
+
+// The user's live Razorpay subscription, as { id, tier }, or null. Admin
+// grants (no Razorpay subscription behind them) and ended subscriptions
+// don't count. Rows from before Pro+ have no tier and count as Pro+.
+async function getActiveSubscription(userId) {
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .select("plan, tier, status, current_period_end, razorpay_subscription_id")
+    .eq("clerk_user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("CREATE_SUBSCRIPTION_LOOKUP_ERROR:", error);
+    return null;
+  }
+
+  if (!data?.razorpay_subscription_id) return null;
+  if (data.plan !== "pro" || !ACTIVE_PRO_STATUSES.includes(data.status)) return null;
+  if (data.current_period_end && new Date(data.current_period_end).getTime() <= Date.now()) return null;
+  return { id: data.razorpay_subscription_id, tier: isValidTier(data.tier) ? data.tier : "pro_plus" };
+}
 
 export async function POST(req) {
   try {
@@ -33,30 +50,98 @@ export async function POST(req) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const requestedPlan = body?.plan;
-    const currency = body?.currency === "INR" ? "INR" : "USD";
+    const tier = body?.tier;
+    const interval = body?.interval;
+    // Decided by the visitor's country, the same way the checkout page picks
+    // the price it shows - never by the request body, or anyone could send
+    // currency: "INR" and pay Indian prices from anywhere (security audit H2)
+    const currency = await getVisitorCurrency();
 
-    if (!["monthly", "yearly"].includes(requestedPlan)) {
+    if (!isValidTier(tier) || !isValidInterval(interval)) {
       return NextResponse.json(
-        { error: "Invalid plan. Use monthly or yearly." },
+        { error: "Invalid plan. Use tier pro or pro_plus, interval quarterly or yearly." },
         { status: 400 }
       );
     }
 
-    const planKey = requestedPlan;
-    const planId = PLANS[currency][planKey];
+    // A second subscription would overwrite the first in our one-row-per-user
+    // table while Razorpay kept charging both. The exception is an upgrade
+    // (Pro -> Pro+, or quarterly -> yearly), prorated in lib/upgrade.js: the
+    // new subscription notes the one it replaces, and verify-payment and the
+    // webhook cancel that old one as soon as the new one is paid.
+    const active = await getActiveSubscription(userId);
+    let upgrade = null;
+
+    if (active) {
+      // Pro -> Pro+ or quarterly -> yearly; anything else isn't eligible
+      upgrade = await getUpgradeQuote({ clerkUserId: userId, tier, interval });
+
+      if (upgrade?.reason === "plan-not-configured") {
+        console.error("RAZORPAY_PLAN_NOT_CONFIGURED:", tier, interval, "(upgrade)");
+        return NextResponse.json(
+          { error: "This plan isn't available right now.", reason: "plan_not_configured" },
+          { status: 503 }
+        );
+      }
+
+      if (!upgrade?.eligible) {
+        const intervalBlocked = upgrade?.reason === "interval-not-allowed";
+        return NextResponse.json(
+          {
+            error: intervalBlocked
+              ? "You're on a yearly plan, so upgrade to Pro+ yearly."
+              : "You already have an active subscription. Switching plans is available once it ends.",
+            reason: intervalBlocked ? "upgrade_interval" : "already_subscribed",
+          },
+          { status: 409 }
+        );
+      }
+    }
+
+    // An upgrade bills in the current subscription's currency (its quote has the plan)
+    const planId = upgrade ? upgrade.newPlanId : getRazorpayPlanId(tier, interval, currency);
+
+    if (!planId) {
+      console.error("RAZORPAY_PLAN_NOT_CONFIGURED:", tier, interval, currency);
+      return NextResponse.json(
+        { error: "This plan isn't available right now.", reason: "plan_not_configured" },
+        { status: 503 }
+      );
+    }
 
     let subscription;
 
     try {
       subscription = await razorpay.subscriptions.create({
         plan_id: planId,
-        total_count: TOTAL_COUNTS[planKey],
+        total_count: TOTAL_COUNTS[interval],
         customer_notify: 1,
+        ...(upgrade
+          ? {
+              // Pro+ is paid now (the addon), so its first full charge is one period away
+              start_at: upgrade.renewsAt,
+              addons: [
+                {
+                  item: {
+                    name: upgrade.kind === "interval" ? "Switch to yearly (unused time credited)" : "Upgrade to Pro+ (unused Pro credited)",
+                    amount: upgrade.charge,
+                    currency: upgrade.currency,
+                  },
+                },
+              ],
+            }
+          : {}),
         notes: {
           clerk_user_id: userId,
-          plan_key: planKey,
-          currency,
+          tier,
+          plan_key: interval,
+          currency: upgrade ? upgrade.currency : currency,
+          ...(upgrade
+            ? {
+                replaces_subscription_id: upgrade.replacesSubscriptionId,
+                upgrade_credit: String(upgrade.credit),
+              }
+            : {}),
         },
       });
     } catch (razorpayError) {
@@ -76,6 +161,10 @@ export async function POST(req) {
       planId,
       keyId: process.env.RAZORPAY_KEY_ID,
       founding: false,
+      currency: upgrade ? upgrade.currency : currency,
+      upgrade: upgrade
+        ? { charge: upgrade.charge, credit: upgrade.credit, currency: upgrade.currency, renewsAt: upgrade.renewsAt }
+        : null,
     });
   } catch (error) {
     console.error("RAZORPAY_CREATE_SUBSCRIPTION_ERROR:", error);

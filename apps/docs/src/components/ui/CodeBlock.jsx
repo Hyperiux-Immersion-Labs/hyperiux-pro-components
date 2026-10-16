@@ -1,32 +1,127 @@
 "use client";
 
-import "highlight.js/styles/night-owl.css";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-// lib/core + explicit registrations instead of the full "highlight.js" build,
-// which bundles all 150+ grammars (~300KB of Mathematica/ISBL/GML/... nobody
-// renders). Every language= value used across the site maps to one of these.
-import hljs from "highlight.js/lib/core";
-import javascript from "highlight.js/lib/languages/javascript";
-import typescript from "highlight.js/lib/languages/typescript";
-import xml from "highlight.js/lib/languages/xml";
-import css from "highlight.js/lib/languages/css";
-import bash from "highlight.js/lib/languages/bash";
-import json from "highlight.js/lib/languages/json";
-import plaintext from "highlight.js/lib/languages/plaintext";
-import glsl from "highlight.js/lib/languages/glsl";
-import { ChevronDown, Lock } from "lucide-react";
+import { createContext, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import gsap from "gsap";
+import {
+    PACKAGE_MANAGERS,
+    getPackageManager,
+    getPackageManagerVariants,
+    setPackageManager,
+    subscribePackageManager,
+} from "@/lib/package-manager";
+import { Lock } from "lucide-react";
 import Link from "next/link";
 import CopyBtn from "@/components/ui/CopyBtn";
+import LinkButton from "@/components/WebsiteComps/LinkButton";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { ToastViewport, useToastQueue } from "@/components/ui/Toast";
 
-hljs.registerLanguage("javascript", javascript); // aliases: js, jsx
-hljs.registerLanguage("typescript", typescript); // aliases: ts, tsx
-hljs.registerLanguage("xml", xml); // embedded markup in js template strings
-hljs.registerLanguage("css", css);
-hljs.registerLanguage("bash", bash); // alias: sh
-hljs.registerLanguage("json", json);
-hljs.registerLanguage("plaintext", plaintext); // aliases: text, txt
-hljs.registerLanguage("glsl", glsl); // /tech/webgl shader example
+// The one code block used across docs, blog posts and effect detail pages
+// (ported from the Docs prototype's .cb): dark frame, three round dots +
+// filename / language label, npm / pnpm / yarn / bun switch, JS / TS switch,
+// line numbers and the prototype's token colours. Square corners to match
+// the site. Effect pages also pass the copy-limit props (copyLocked etc.).
+
+const LABELS = { bash: "Terminal", sh: "Terminal", tsx: "TSX", ts: "TS", jsx: "JSX", js: "JS", css: "CSS", json: "JSON", glsl: "GLSL", text: "Text", plaintext: "Text" };
+
+const TOKEN = {
+    c: "text-light-grey italic",
+    s: "text-[#FFB27A]",
+    k: "text-primary-hover",
+    t: "text-[#7fd1c7]",
+    n: "text-[#f2c46d]",
+};
+
+const RX = /(\/\/[^\n]*|#[^\n{]*$)|('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`)|\b(import|from|const|let|var|return|function|if|else|export|default|typeof|new|true|false|null|undefined|await|async|npx|npm|pnpm|yarn|bun|bunx|dlx|install|add|run)\b|(<\/?[A-Za-z][\w.]*|\/?>)|\b(\d+(?:\.\d+)?)\b/gm;
+
+function tokenize(line) {
+    const out = [];
+    let last = 0;
+    let m;
+    RX.lastIndex = 0;
+    while ((m = RX.exec(line))) {
+        if (m[0] === "") { RX.lastIndex++; continue; }
+        if (m.index > last) out.push([null, line.slice(last, m.index)]);
+        out.push([m[1] ? "c" : m[2] ? "s" : m[3] ? "k" : m[4] ? "t" : "n", m[0]]);
+        last = RX.lastIndex;
+    }
+    if (last < line.length) out.push([null, line.slice(last)]);
+    return out;
+}
+
+// Copy -> check swap: the outgoing icon scales down and rotates away while the incoming
+// one scales up and rotates in; the label rolls up from "Copy" to "Copied" (and back).
+// labelClassName: extra classes for the "Copy"/"Copied" label, e.g. "max-lg:hidden" to
+// show only the icon on smaller screens.
+export function CopyButtonContent({ copied, iconOnly = false, labelClassName = "" }) {
+    const copyIconRef = useRef(null);
+    const checkIconRef = useRef(null);
+    const copyLabelRef = useRef(null);
+    const copiedLabelRef = useRef(null);
+    const mounted = useRef(false);
+    const shown = useRef(copied);
+    const animated = useRef(false);
+
+    useLayoutEffect(() => {
+        const [copyIcon, checkIcon, copyLabel, copiedLabel] = [copyIconRef, checkIconRef, copyLabelRef, copiedLabelRef].map((r) => r.current);
+        const show = copied ? checkIcon : copyIcon;
+        const hide = copied ? copyIcon : checkIcon;
+        const labelIn = copied ? copiedLabel : copyLabel;
+        const labelOut = copied ? copyLabel : copiedLabel;
+
+        // The resting state (copy icon and label showing) is in the markup, so mounting
+        // does no GSAP work: a page of cards would otherwise force a style
+        // recalculation per icon. GSAP takes the elements over on the first toggle.
+        if (!mounted.current) {
+            mounted.current = true;
+            return undefined;
+        }
+
+        if (shown.current === copied) return undefined;
+        shown.current = copied;
+
+        if (!animated.current) {
+            animated.current = true;
+            gsap.set([copyIcon, checkIcon, copyLabel, copiedLabel].filter(Boolean), { clearProps: "opacity" });
+            gsap.set(copyIcon, { scale: 1, rotation: 0, opacity: 1 });
+            gsap.set(checkIcon, { scale: 0, rotation: -90, opacity: 0 });
+            if (!iconOnly) {
+                gsap.set(copyLabel, { yPercent: 0, opacity: 1 });
+                gsap.set(copiedLabel, { yPercent: 100, opacity: 0 });
+            }
+        }
+
+        const tl = gsap.timeline({ defaults: { overwrite: "auto" } });
+        tl.to(hide, { scale: 0, rotation: copied ? 90 : -90, opacity: 0, duration: 0.25, ease: "power2.in" }, 0)
+            .fromTo(show, { scale: 0, rotation: copied ? -90 : 90, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.45, ease: "back.out(1.7)" }, 0.15);
+        if (!iconOnly) {
+            tl.to(labelOut, { yPercent: -100, opacity: 0, duration: 0.4, ease: "power3.inOut" }, 0)
+                .fromTo(labelIn, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, ease: "power3.inOut" }, 0);
+        }
+        return () => tl.kill();
+    }, [copied, iconOnly]);
+
+    return (
+        <>
+            <span aria-hidden="true" className="relative size-3.5 shrink-0">
+                <svg ref={copyIconRef} className="absolute inset-0" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <rect height="12" rx="2" width="12" x="8" y="8" />
+                    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+                </svg>
+                <svg ref={checkIconRef} className="absolute inset-0" style={{ opacity: 0 }} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <path d="M5 12.5l4.5 4.5L19 7.5" />
+                </svg>
+            </span>
+            {!iconOnly && (
+                <span className={`relative flex h-[1.2em] overflow-hidden leading-[1.2] ${labelClassName}`}>
+                    <span aria-hidden="true" className="invisible">Copied</span>
+                    <span ref={copyLabelRef} className="absolute left-0 top-0">Copy</span>
+                    <span ref={copiedLabelRef} className="absolute left-0 top-0" style={{ opacity: 0 }}>Copied</span>
+                </span>
+            )}
+        </>
+    );
+}
 
 // Placeholder content shown in place of the real code/command while
 // copyLocked - the overlay alone isn't enough, since the real text would
@@ -40,8 +135,8 @@ function Component() {
 const LOCKED_COMMAND_SAMPLE = "npx hyperiux add <effect>";
 
 const LANGUAGE_VARIANTS = [
-    { value: "jsx", label: "JavaScript" },
-    { value: "tsx", label: "TypeScript" },
+    { value: "jsx", label: "JS" },
+    { value: "tsx", label: "TS" },
 ];
 
 // Shared across every CodeBlock on a page - switching one block's language
@@ -56,65 +151,6 @@ export function CodeBlockLanguageProvider({ children, defaultVariant = "jsx" }) 
         <CodeBlockLanguageContext.Provider value={{ variant, setVariant }}>
             {children}
         </CodeBlockLanguageContext.Provider>
-    );
-}
-
-function LanguageDropdown({ value, onChange }) {
-    const [open, setOpen] = useState(false);
-    const rootRef = useRef(null);
-    const active = LANGUAGE_VARIANTS.find((option) => option.value === value) || LANGUAGE_VARIANTS[0];
-
-    useEffect(() => {
-        if (!open) return;
-
-        function handleClickOutside(event) {
-            if (rootRef.current && !rootRef.current.contains(event.target)) {
-                setOpen(false);
-            }
-        }
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [open]);
-
-    return (
-        <div ref={rootRef} className="relative">
-            <button
-                type="button"
-                onClick={() => setOpen((prev) => !prev)}
-                aria-haspopup="listbox"
-                aria-expanded={open}
-                className="flex items-center gap-1.5 rounded-sm bg-white/10 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-white/20"
-            >
-                {active.label}
-                <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
-            </button>
-
-            {open && (
-                <div
-                    role="listbox"
-                    className="absolute left-0 top-full z-20 mt-1 w-36 overflow-hidden rounded-sm border border-white/10 bg-[#1f1f1f] py-1 shadow-lg"
-                >
-                    {LANGUAGE_VARIANTS.map((option) => (
-                        <button
-                            key={option.value}
-                            type="button"
-                            role="option"
-                            aria-selected={option.value === value}
-                            onClick={() => {
-                                onChange(option.value);
-                                setOpen(false);
-                            }}
-                            className={`flex w-full items-center px-3 py-1.5 text-left text-xs transition-colors hover:bg-white/10 ${
-                                option.value === value ? "text-white" : "text-white/60"
-                            }`}
-                        >
-                            {option.label}
-                        </button>
-                    ))}
-                </div>
-            )}
-        </div>
     );
 }
 
@@ -138,9 +174,9 @@ function getVariantFilename(filename, variant) {
     return `${filename}.jsx`;
 }
 
-function CopyLimitOverlay({ message, ctaHref }) {
+function CopyLimitOverlay({ message, ctaHref, ctaLabel = "Upgrade to Pro" }) {
     return (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white/10 px-6 py-6 text-center backdrop-blur-md">
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white/10 px-6 py-6 text-center backdrop-blur-lg">
             <Lock className="h-8 w-8 text-white/70" strokeWidth={1.5} />
             <p className="max-w-2xl text-sm font-medium text-white">{message}</p>
             {ctaHref && (
@@ -148,31 +184,96 @@ function CopyLimitOverlay({ message, ctaHref }) {
               id={"upgrade-to-pro-codeblock"}
 
                     href={ctaHref}
-                    className="bg-[#ff5f00] px-4 py-2 text-xs font-medium text-white! transition hover:bg-[#e05500]"
+                    className="bg-primary px-4 py-2 text-xs font-medium text-white! transition hover:bg-primary-hover"
                 >
-                    Upgrade to Pro
+                    {ctaLabel}
                 </Link>
             )}
         </div>
     );
 }
 
+// Small segmented switch in the header (package manager, JS / TS)
+// Segmented switch in the code block header. The orange pill slides to the chosen
+// option, like the site's other segmented controls; it's measured from the active
+// button because labels differ in width (npm / pnpm / yarn / bun).
+function HeaderSwitch({ label, options, value, onPick }) {
+    const groupRef = useRef(null);
+    const [pill, setPill] = useState(null);
+
+    // Measured on every change, and again whenever the buttons resize - the code font
+    // loading late, a window resize, a layout change - or the pill keeps a stale size
+    // and spills out of the switch until a reload.
+    useLayoutEffect(() => {
+        const group = groupRef.current;
+        if (!group) return undefined;
+        const measure = () => {
+            const btn = group.querySelector('[aria-checked="true"]');
+            if (!btn) return;
+            setPill((current) =>
+                current && current.x === btn.offsetLeft && current.w === btn.offsetWidth ? current : { x: btn.offsetLeft, w: btn.offsetWidth }
+            );
+        };
+        measure();
+        let ro;
+        if (typeof ResizeObserver !== "undefined") {
+            ro = new ResizeObserver(measure);
+            group.querySelectorAll("button").forEach((btn) => ro.observe(btn));
+        }
+        let live = true;
+        document.fonts?.ready.then(() => live && measure());
+        return () => {
+            live = false;
+            ro?.disconnect();
+        };
+    }, [value, options]);
+
+    return (
+        <span ref={groupRef} role="radiogroup" aria-label={label} className="relative isolate inline-flex gap-0.5 bg-light/6 p-0.5 max-md:hidden">
+            <span
+                aria-hidden="true"
+                className="absolute top-0.5 bottom-0.5 left-0 -z-1 bg-primary transition-[transform,width] duration-500 ease-[cubic-bezier(.16,1,.3,1)]"
+                style={pill ? { width: pill.w, transform: `translateX(${pill.x}px)` } : { opacity: 0 }}
+            />
+            {options.map((option) => (
+                <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={option.value === value}
+                    onClick={() => onPick(option.value)}
+                    className={`h-[26px] cursor-pointer px-[9px] font-mono text-[11.5px] transition-colors duration-500 ${
+                        option.value === value ? "text-background" : "text-light-grey hover:text-white"
+                    }`}
+                >
+                    {option.label}
+                </button>
+            ))}
+        </span>
+    );
+}
+
 export function CodeBlock({
     code,
     tsxCode,
-    language = "jsx",
+    language = "tsx",
     filename,
     className = "",
-    hideHeaderWhenNoFilename = false,
     copyLocked = false,
     selectable = true,
     onBeforeCopy,
-    lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
+    lockedMessage = "You've reached today's install limit. Effects you've already copied today stay unlocked.",
     lockedCtaHref = null,
+    lockedCtaLabel,
     showLanguageToggle = true,
+    showCopyButton = true,
 }) {
-    const [copied, setCopied] = useState(false);
+    // The code scrolls natively; the page's Lenis (allowNestedScroll) hands the
+    // wheel back to the page once the block reaches its edge.
+    const scrollRef = useRef(null);
+    const contentRef = useRef(null);
 
+    // JS / TS: shared by every block under a CodeBlockLanguageProvider
     const isJsVariant = ["jsx", "js", "tsx", "ts"].includes(language);
     const sharedLanguage = useContext(CodeBlockLanguageContext);
     const [localVariant, setLocalVariant] = useState(language === "ts" || language === "tsx" ? "tsx" : "jsx");
@@ -180,100 +281,155 @@ export function CodeBlock({
     const setVariant = sharedLanguage ? sharedLanguage.setVariant : setLocalVariant;
     const activeLanguage = isJsVariant ? variant : language;
 
-    const rawCode = variant === "tsx" && tsxCode ? tsxCode : code;
-    const displayCode = copyLocked ? LOCKED_CODE_SAMPLE : rawCode || "";
-    const displayFilename = isJsVariant ? getVariantFilename(filename, variant) : filename;
+    const pmVariants = useMemo(() => (language === "bash" || language === "sh" ? getPackageManagerVariants(code) : null), [code, language]);
+    const packageManager = useSyncExternalStore(subscribePackageManager, getPackageManager, () => "npm");
+    const rawCode = pmVariants ? pmVariants[packageManager] : variant === "tsx" && tsxCode ? tsxCode : code;
+    const text = String((copyLocked ? LOCKED_CODE_SAMPLE : rawCode) || "").replace(/\n$/, "");
+    const lines = useMemo(() => text.split("\n").map(tokenize), [text]);
+    // Only rename the file when a TS version exists, so JS-only blocks keep their real filename
+    const displayFilename = isJsVariant && tsxCode ? getVariantFilename(filename, variant) : filename;
 
-    const highlighted = useMemo(() => {
-        try {
-            if (!displayCode) return "";
-            if (activeLanguage && hljs.getLanguage(activeLanguage)) {
-                return hljs.highlight(displayCode, { language: activeLanguage, ignoreIllegals: true }).value;
-            }
-            return hljs.highlightAuto(displayCode).value;
-        } catch {
-            return "";
-        }
-    }, [displayCode, activeLanguage]);
+    // Tall code is clipped at the block's height with a "See more" button; clicking it
+    // makes the block scrollable. Short code never gets the button.
+    const [overflows, setOverflows] = useState(false);
+    const [expanded, setExpanded] = useState(false);
+    const seeMoreId = `see-more-${useId().replace(/:/g, "")}`;
 
-    const shouldShowHeader = !hideHeaderWhenNoFilename || Boolean(filename);
+    useEffect(() => {
+        const scroller = scrollRef.current;
+        const content = contentRef.current;
+        if (!scroller || !content || typeof ResizeObserver === "undefined") return undefined;
+        const measure = () => setOverflows(content.offsetHeight > scroller.clientHeight + 1);
+        const ro = new ResizeObserver(measure);
+        ro.observe(content);
+        measure();
+        return () => ro.disconnect();
+    }, []);
 
-    // Copy button clicks aren't the only way code leaves this block - a
-    // manual select + Cmd/Ctrl-C never touches CopyBtn, so the native
-    // `copy` event is the only hook that sees it. Once copyLocked, the DOM
-    // already only contains LOCKED_CODE_SAMPLE, so there's nothing left to
-    // gate here - just record usage for the real-code case.
-    function handleNativeCopy() {
+    const collapsed = overflows && !expanded;
+
+    const [copied, setCopied] = useState(false);
+    const { toast, showToast, dismissToast } = useToastQueue(2500);
+    const codeRef = useRef(null);
+    const firstRender = useRef(true);
+
+    // Commands fade in when the package manager changes, as in the prototype
+    useEffect(() => {
+        if (firstRender.current) { firstRender.current = false; return; }
+        if (!pmVariants || !codeRef.current) return;
+        gsap.fromTo(codeRef.current, { opacity: 0 }, { opacity: 1, duration: 0.35 });
+    }, [packageManager, pmVariants]);
+
+    useEffect(() => {
+        if (!copied) return undefined;
+        const id = setTimeout(() => setCopied(false), 1600);
+        return () => clearTimeout(id);
+    }, [copied]);
+
+    const onCopy = async () => {
         if (copyLocked) return;
-        onBeforeCopy?.();
-    }
+        try {
+            if (onBeforeCopy && !(await onBeforeCopy())) return;
+            await navigator.clipboard.writeText(text);
+        } catch {
+            return;
+        }
+        setCopied(true);
+        showToast({ title: "Copied to clipboard" });
+    };
+
+    const onPickPm = (pm) => {
+        if (pm === packageManager) return;
+        setPackageManager(pm);
+        showToast({ title: `Commands now shown for ${pm}.` });
+    };
+
+    // A manual select + Cmd/Ctrl-C never touches the copy button, so the
+    // native copy event is the only hook that sees it. Once copyLocked the DOM
+    // only holds LOCKED_CODE_SAMPLE, so there is nothing to gate.
+    const onNativeCopy = () => {
+        if (!copyLocked) onBeforeCopy?.();
+    };
 
     return (
-        <div className={`relative overflow-hidden  fadeup codeblock-root ${className}`}>
-            {copyLocked && <CopyLimitOverlay message={lockedMessage} ctaHref={lockedCtaHref} />}
+        <div data-sound-hover="off" className={`codeblock-root fadeup relative my-6 overflow-hidden bg-background shadow-float ${className}`}>
+            {copyLocked && <CopyLimitOverlay message={lockedMessage} ctaHref={lockedCtaHref} ctaLabel={lockedCtaLabel} />}
+            <div className="flex h-12 items-center justify-between border-b border-light/6 bg-dark-card pr-2.5 pl-4">
+                <span className="flex min-w-0 items-center gap-[7px] font-mono text-[13px] text-secondary">
+                    <i className="size-[9px] shrink-0 rounded-full bg-grey" />
+                    <i className="size-[9px] shrink-0 rounded-full bg-grey" />
+                    <i className="mr-2 size-[9px] shrink-0 rounded-full bg-grey" />
+                    <span className="truncate">{displayFilename || LABELS[activeLanguage] || activeLanguage.toUpperCase()}</span>
+                </span>
+                <span className="flex items-center gap-2">
+                    {pmVariants && (
+                        <HeaderSwitch
+                            label="Package manager"
+                            options={PACKAGE_MANAGERS.map((pm) => ({ value: pm, label: pm }))}
+                            value={packageManager}
+                            onPick={onPickPm}
+                        />
+                    )}
+                    {isJsVariant && tsxCode && showLanguageToggle && (
+                        <HeaderSwitch label="Language" options={LANGUAGE_VARIANTS} value={variant} onPick={setVariant} />
+                    )}
+                    {showCopyButton && (
+                        <button
+                            type="button"
+                            aria-label="Copy code"
+                            onClick={onCopy}
+                            disabled={copyLocked}
+                            className={`inline-flex h-[30px] cursor-pointer items-center gap-[7px] px-[11px] text-[12px] font-medium tracking-normal transition-colors duration-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+                                copied
+                                    ? "text-success ring ring-inset ring-success/45"
+                                    : "text-secondary ring ring-inset ring-light/14 hover:bg-light/8 hover:text-white"
+                            }`}
+                        >
+                            <CopyButtonContent copied={copied} />
+                        </button>
+                    )}
+                </span>
+            </div>
+            {/* codeblock: the site's thin code scrollbar (globals.css). */}
             <div
-                className={`max-h-[30vw] overflow-y-auto w-full codeblock  ${
-                    shouldShowHeader
-                        ? "max-md:max-h-[50vh] max-[1025px]:max-h-[50vh] max-md:min-h-[5vh]"
-                        : // Sized to content: one-line install commands sit at the
-                          // min height, multi-line snippets (blog posts) grow
-                          // until the cap, then scroll.
-                          "max-md:min-h-[5vh] max-md:max-h-[50vh] max-md:pt-0 max-[1025px]:min-h-[5.5vh] max-[1025px]:max-h-[50vh]"
-                }`}
-                style={{ scrollbarGutter: "stable" }}
+                ref={scrollRef}
+                className={`codeblock max-h-[420px] ${collapsed ? "overflow-x-auto overflow-y-hidden" : "overflow-auto"}`}
             >
-                {shouldShowHeader ? (
-                    <div className="sticky top-0 z-10 flex items-center justify-between bg-[#484848] px-4 py-2">
-                        <span className="text-lg text-white max-md:text-sm">{displayFilename || ""}</span>
-                        <div className="flex items-center gap-2">
-                            {isJsVariant && showLanguageToggle && (
-                                <LanguageDropdown value={variant} onChange={setVariant} />
-                            )}
-                            <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
-                                <CopyBtn
-                                    value={displayCode}
-                                    color="white"
-                                    className="rounded-sm px-3 py-1.5 transition-colors hover:text-white/80"
-                                    aria-label="Copy code to clipboard"
-                                    disabled={copyLocked}
-                                    onBeforeCopy={onBeforeCopy}
-                                    onCopiedChange={setCopied}
-                                />
-                            </Tooltip>
-                        </div>
-                    </div>
-                ) : (
-                    <span className="absolute top-5 right-5 z-10 max-md:top-3.5 max-md:right-6">
-                        <Tooltip label={copied ? "Copied!" : "Copy code"} position="bottom">
-                            <CopyBtn
-                                value={displayCode}
-                                color="white"
-                                aria-label="Copy code to clipboard"
-                                disabled={copyLocked}
-                                onBeforeCopy={onBeforeCopy}
-                                onCopiedChange={setCopied}
-                            />
-                        </Tooltip>
-                    </span>
-                )}
-                <div className="relative">
-                    <pre
-                        onCopy={handleNativeCopy}
-                        className={`overflow-x-auto bg-[#272727]  max-md:pt-[7vw] tracking-tight! text-sm!  ${
-                            shouldShowHeader ? "max-md:text-xs max-[1025px]:text-sm" : ""
-                        } ${!selectable ? "select-none" : ""}`}
-                    >
-                        {highlighted ? (
-                            <code
-                                className={`hljs bg-[#272727]! max-md:text-xs max-[1025px]:text-sm language-${activeLanguage}`}
-                                dangerouslySetInnerHTML={{ __html: highlighted }}
-                            />
-                        ) : (
-                            <code className={`hljs language-${activeLanguage}`}>{displayCode}</code>
-                        )}
-                    </pre>
+                <div ref={contentRef}>
+                <pre
+                    onCopy={onNativeCopy}
+                    className={`m-0 py-[18px] font-mono text-[13px] leading-[1.75] text-secondary ${!selectable ? "select-none" : ""}`}
+                >
+                    <code ref={codeRef} className="block">
+                        {lines.map((tokens, i) => (
+                            <span key={i} className="flex pr-5">
+                                <span aria-hidden="true" className="inline-block w-12 shrink-0 select-none pr-4 text-right text-grey">{i + 1}</span>
+                                <span className="whitespace-pre">
+                                    {tokens.length ? tokens.map(([k, v], j) => (k ? <span key={j} className={TOKEN[k]}>{v}</span> : v)) : " "}
+                                </span>
+                            </span>
+                        ))}
+                    </code>
+                </pre>
                 </div>
             </div>
+            {collapsed && (
+                <div className="absolute inset-x-0 bottom-0 z-10 flex h-[120px] items-end justify-center bg-linear-to-t from-background via-background/80 to-transparent pb-4">
+                    {/* The site's underlined link with the shimmer; href="#" so it only expands */}
+                    <LinkButton
+                        id={seeMoreId}
+                        href="#"
+                        text="See More"
+                        shimmer
+                        tilted={false}
+                        showArrow
+                        aria-expanded={false}
+                        onClick={() => setExpanded(true)}
+                        className="type-small text-secondary!"
+                    />
+                </div>
+            )}
+            <ToastViewport toast={toast} onDismiss={dismissToast} position="bottom-center" />
         </div>
     );
 }
@@ -283,7 +439,7 @@ export function InstallCommand({
     copyLocked = false,
     selectable = true,
     onBeforeCopy,
-    lockedMessage = "You've reached today's effect copy limit. Effects you've already copied from stay unlocked.",
+    lockedMessage = "You've reached today's install limit. Effects you've already copied today stay unlocked.",
 }) {
     const [copied, setCopied] = useState(false);
     const command = `npx hyperiux add ${effect}`;
@@ -296,6 +452,8 @@ export function InstallCommand({
 
     return (
         <div
+            data-sound-hover="off"
+            data-lenis-prevent
             className={`relative flex items-center gap-2 p-3  bg-neutral-900 border border-neutral-800 overflow-hidden ${
                 copyLocked ? "min-h-32.5" : ""
             }`}

@@ -1,15 +1,16 @@
 import { getEffectRouteSlug } from "./effect-slugs";
 import { createPageMetadata } from "./seo-metadata";
+import { FREE_LABEL, TOTAL_LABEL } from "./library-counts";
 
 export const effectsOverviewContent = {
   name: "Hyperiux Vault Effects",
   ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects.jpg",
   metadata: {
     title: "React & Next.js Effects Library | Hyperiux Vault",
-    description: "Explore 150+ editable interaction effects for React and Next.js, including scroll, cursor, WebGL, buttons and transitions. Preview live and install fast.",
+    description: `Explore ${TOTAL_LABEL} editable interaction effects for React and Next.js, including scroll, cursor, WebGL, buttons and transitions. Preview live and install fast.`,
   },
   description: [
-    "150+ production-ready interaction effects for React & Next.js. Browse scroll systems, cursor effects, WebGL scenes, buttons, and transitions. Preview live, then copy or install with the CLI.",
+    `${TOTAL_LABEL} production-ready interaction effects for React & Next.js. Browse scroll systems, cursor effects, WebGL scenes, buttons, and transitions. Preview live, then copy or install with the CLI.`,
   ],
   cta: {
     heading: "Request a Custom Animation",
@@ -44,15 +45,15 @@ export const effectsOverviewContent = {
     },
     {
       question: "What's the difference between Free and Pro?",
-      answer: "Free includes 50+ effects covering text, buttons, and basic scroll interactions. Pro unlocks the full 150+ effect library, including cursor effects, WebGL scenes, and advanced page transitions."
+      answer: `Free includes ${FREE_LABEL} effects, mostly text, buttons, and core scroll interactions, plus a few from every other category. Pro and Pro+ unlock the full ${TOTAL_LABEL} effect library, including most cursor effects, WebGL scenes, and advanced page transitions.`
     },
     {
       question: "Do I need an account to use free effects?",
-      answer: "Yes. To use or copy even free effects, you need to sign in with an account.Free effects don’t require a Pro plan, but signing in is required so the site can generate your access token, track copy/install usage, and keep your saved effects and account activity synced."
+      answer: "Yes. To use or copy even free effects, you need to sign in with an account. Free effects don’t require a Pro plan, but signing in is required so the site can generate your access token, track copy/install usage, and keep your saved effects and account activity synced."
     },
     {
       question: "How do I upgrade from free to Pro effects?",
-      answer: "You can subscribe to our Pro plans on the Pricing page. Once subscribed, you will receive a CLI token to install Pro effects directly from our registry."
+      answer: "Subscribe to Pro or Pro+ on the Pricing page. Once subscribed, you get a CLI token to install Pro effects directly from our registry."
     },
     {
         question: "What makes a component worth featuring?",
@@ -96,10 +97,10 @@ export const freeEffectsContent = {
   ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/free.jpg",
   metadata: {
     title: "Free React & Next.js Effects | Hyperiux Vault",
-    description: "Browse 50+ free Hyperiux Vault effects for React and Next.js - real scroll, button, and text animations you can install, remix, and ship today.",
+    description: `Browse ${FREE_LABEL} free Hyperiux Vault effects for React and Next.js - real scroll, button, and text animations you can install, remix, and ship today.`,
   },
   description: [
-    "The Free tier includes 50+ production-ready Hyperiux Vault effects - text animations, buttons, and core scroll interactions that are free to use forever, no account required to preview. Upgrade to Pro when you need cursor effects, WebGL scenes, or the full 150+ effect library.",
+    `The Free tier includes ${FREE_LABEL} production-ready Hyperiux Vault effects - text animations, buttons, and core scroll interactions that are free to use forever, no account required to preview. Upgrade to Pro or Pro+ when you need cursor effects, WebGL scenes, or the full ${TOTAL_LABEL} effect library.`,
   ],
   faqs: [
     {
@@ -108,15 +109,15 @@ export const freeEffectsContent = {
     },
     {
       question: "What's the difference between Free and Pro?",
-      answer: "Free includes 50+ effects covering text, buttons, and basic scroll interactions. Pro unlocks the full 150+ effect library, including cursor effects, WebGL scenes, and advanced page transitions."
+      answer: `Free includes ${FREE_LABEL} effects, mostly text, buttons, and core scroll interactions, plus a few from every other category. Pro and Pro+ unlock the full ${TOTAL_LABEL} effect library, including most cursor effects, WebGL scenes, and advanced page transitions.`
     },
     {
       question: "Do I need an account to use free effects?",
-      answer: "No. Copy the code directly from any effect page, or install it via the CLI without creating an account."
+      answer: "Yes, a free account. Anyone can preview effects, but copying the code from an effect page or installing it with the CLI needs a free account."
     },
     {
       question: "How do I upgrade from free to Pro effects?",
-      answer: "You can subscribe to our Pro plans on the Pricing page. Once subscribed, you will receive a CLI token to install Pro effects directly from our registry."
+      answer: "Subscribe to Pro or Pro+ on the Pricing page. Once subscribed, you get a CLI token to install Pro effects directly from our registry."
     }
   ],
 };
@@ -133,6 +134,24 @@ export const proEffectsContent = {
   description: [
     "The Pro tier is where Hyperiux Vault goes deeper - more complex interactions, more refined motion, and effects that take real effort to build from scratch.",
     "Preview available now. Upgrade to Pro for instant install access.",
+  ],
+  faqs: [
+    {
+      question: "What's the difference between Free and Pro?",
+      answer: `Free includes ${FREE_LABEL} effects, mostly text, buttons, and core scroll interactions, plus a few from every other category. Pro and Pro+ unlock the full ${TOTAL_LABEL} effect library, including most cursor effects, WebGL scenes, and advanced page transitions.`
+    },
+    {
+      question: "Do I own the code?",
+      answer: "The effect source is installed inside your project and can be inspected and modified locally. Usage rights follow the Free Core or Pro license attached to the effect."
+    },
+    {
+      question: "How do I upgrade from free to Pro effects?",
+      answer: "Subscribe to Pro or Pro+ on the Pricing page. Once subscribed, you get a CLI token to install Pro effects directly from our registry."
+    },
+    {
+      question: "What do I keep if I cancel Pro?",
+      answer: "Code already installed in your project stays there. Access to new Pro downloads, updates, and future Pro releases follows the current subscription and license terms."
+    }
   ],
 };
 

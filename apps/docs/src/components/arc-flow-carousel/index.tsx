@@ -4,6 +4,7 @@
 import { gsap } from "gsap";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 
+import Image from "next/image";
 function usePrefersReducedMotion() {
   return useSyncExternalStore(
     (callback) => {
@@ -468,12 +469,13 @@ function ArcFlowCarouselComp({
                 boxShadow: "0 18px 40px -12px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.15)",
               }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={item.src}
                 alt={item.alt ?? `Slide ${(i % total) + 1}`}
                 draggable={false}
                 className="pointer-events-none block h-full w-full object-cover select-none"
+                fill
+                loading="eager"
               />
               {(item.title || item.description) ? (
                 <div

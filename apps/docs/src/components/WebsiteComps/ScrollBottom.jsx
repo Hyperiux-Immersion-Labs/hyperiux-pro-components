@@ -8,23 +8,15 @@ import React from 'react'
  * }} props
  */
 const ScrollBottom = ({ textColor,
-  className = 'bottom-[5%] gap-[1vw]',
-  as = 'p'
+  className = 'bottom-[5%] gap-[calc(var(--cvw)*1)]',
 }) => {
-  const Tag = as;
-  const inlineColor = typeof textColor === 'string' && textColor.startsWith('#') ? { color: textColor } : undefined;
-  const textColorClass = inlineColor ? '' : textColor;
-
   return (
-    <div
-      className={`fixed left-1/2 z-10 -translate-x-1/2 ${textColorClass} flex flex-col justify-center items-center  ${className}`}
-      style={inlineColor}
-    >
-      <Tag>Scroll</Tag>
+    <div className={`fixed left-1/2 z-10 -translate-x-1/2 ${textColor} flex flex-col justify-center items-center  ${className}`}>
+      <as>Scroll</as>
       <svg
         width="20"
         height="28"
-        className="size-[1.5vw] max-[1025px]:size-[3vw] max-md:size-[4vw]"
+        className="size-[calc(var(--cvw)*1.5)] max-lg:size-[3vw] max-md:size-[4vw]"
         viewBox="0 0 20 28"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +34,7 @@ const ScrollBottom = ({ textColor,
         <polyline
           className="chev1 stroke-current"
           points="2,2 10,9 18,2"
-          stroke="currentColor"
+          stroke="white"
           strokeWidth="1.4"
           fill="none"
           strokeLinecap="round"
@@ -51,7 +43,7 @@ const ScrollBottom = ({ textColor,
         <polyline
           className="chev2 stroke-current"
           points="2,10 10,17 18,10"
-          stroke="currentColor"
+          stroke="white"
           strokeWidth="1.4"
           fill="none"
           strokeLinecap="round"
@@ -60,7 +52,7 @@ const ScrollBottom = ({ textColor,
         <polyline
           className="chev3 stroke-current"
           points="2,18 10,25 18,18"
-          stroke="currentColor"
+          stroke="white"
           strokeWidth="1.4"
           fill="none"
           strokeLinecap="round"

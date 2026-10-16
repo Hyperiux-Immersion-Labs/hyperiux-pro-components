@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import NavbarV3 from "@/homepage-v3/components/NavbarV3";
-import FooterV3 from "@/homepage-v3/sections/FooterV3";
+import nextDynamic from "next/dynamic";
+import Navbar from "@/homepage/components/Navbar";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
 import {
   getSanityBlogPost,
@@ -16,12 +16,17 @@ import BlogDetailHero from "./BlogDetailHero";
 import BlogBodyRenderer from "@/components/blog/BlogBodyRenderer";
 import BlogArticleBody from "@/components/blog/BlogArticleBody";
 import BlogTags from "@/components/blog/BlogTags";
-import RelatedBlogsSlider from "./RelatedBlogsSlider";
 
-// ISR: posts are prerendered at build and refreshed in the background every
-// 5 minutes (matches BLOG_REVALIDATE_SECONDS in lib/sanity). Slugs published
-// after the build render on first request.
-export const revalidate = 300;
+// Below-the-fold sections load as separate chunks (still server-rendered)
+const Footer = nextDynamic(() => import("@/homepage/sections/Footer"));
+const FAQ = nextDynamic(() => import("@/homepage/sections/FAQ"));
+const RelatedBlogsSlider = nextDynamic(() => import("./RelatedBlogsSlider"));
+
+// ISR: every post is prerendered at build (generateStaticParams) and served from
+// cache until something is published - Sanity's webhook (/api/revalidate) then
+// rebuilds it on the next visit. The daily timer is only a safety net. New posts
+// published after a build are rendered on first visit, then cached the same way.
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const entries = await getAllSanityBlogSlugs();
@@ -80,6 +85,8 @@ export default async function BlogPostPage({ params }) {
   const author = resolvedAuthor || post.author || null;
   const postWithAuthor = author ? {...post, author} : post;
   const faqs = extractFaqs(post.body || []);
+  // The same FAQ section as effect pages, below the article
+  const faqItems = faqs.map((item, index) => ({ id: item._key || `blog-faq-${index}`, question: item.question, answer: item.answer }));
 
   return (
     <>
@@ -87,31 +94,40 @@ export default async function BlogPostPage({ params }) {
       <BreadcrumbsJSONLD pathname={url} />
       <BlogPostingJsonLd post={postWithAuthor} url={url} />
       {faqs.length > 0 && <FAQJSONLD faqs={faqs} />}
-      <NavbarV3 effects={effects} />
+      <Navbar effects={effects} />
       <LenisSmoothScroll allowNestedScroll />
 
-      <div className="px-[4vw] py-[8vw] max-[1025px]:px-[5vw] max-[1025px]:py-[10vh] max-md:px-[7vw] max-md:py-[26vw]">
-        <article className="blog-article text-white">
-          <BlogDetailHero post={postWithAuthor} />
+      <main className="relative flex w-full flex-col gap-[calc(var(--cvw)*5.5)] pt-25 max-lg:pt-32 max-md:gap-[15vw] max-md:pt-28">
+        <BlogDetailHero post={postWithAuthor} />
 
-          <BlogArticleBody
-            slug={slug}
-            author={author}
-            publishedAt={post.publishedAt}
-            categories={post.categories || []}
-            readingMinutes={getReadingTime(post.body || []).minutes}
-            shareUrl={canonicalUrl}
-            shareTitle={post.title}
-            afterContent={<BlogTags tags={post.tags || []} />}
-          >
-            <BlogBodyRenderer body={post.body || []} />
-          </BlogArticleBody>
-        </article>
+        {/* One light area (bg-light) for everything below the cover image, as on the effect page */}
+        <div data-sound-flow="off" className="bg-light text-ink">
+          <article id="blog-content" className="blog-theme-light site-container section-x pt-[calc(var(--cvw)*5.5)] pb-6 max-md:py-[12%]">
+            <BlogArticleBody
+              slug={slug}
+              author={author}
+              publishedAt={post.publishedAt}
+              categories={post.categories || []}
+              readingMinutes={getReadingTime(post.body || []).minutes}
+              shareUrl={canonicalUrl}
+              shareTitle={post.title}
+              afterContent={
+                <>
+                  <BlogTags tags={post.tags || []} />
+                  {/* FAQs sit in the article column, beside the sticky rail */}
+                  {faqItems.length > 0 && <FAQ faqItems={faqItems} translateTop={false} inline />}
+                </>
+              }
+            >
+              <BlogBodyRenderer body={post.body || []} />
+            </BlogArticleBody>
+          </article>
 
-        <RelatedBlogsSlider posts={relatedPosts} />
-      </div>
+          <RelatedBlogsSlider posts={relatedPosts} />
+        </div>
+      </main>
 
-      <FooterV3 />
+      <Footer />
     </>
   );
 }

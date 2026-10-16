@@ -36,12 +36,10 @@ export async function recordTemplatePurchase({
   }
 }
 
-// Used by getTemplateAccessDecision() - true if this user already owns a
-// standalone purchase of this specific template. Filtered to status="paid"
-// so a row markTemplatePurchaseRefunded() below flipped to "refunded" stops
-// granting access - without this filter, a refunded buyer keeps the
-// download forever, since Razorpay handing the money back doesn't touch
-// this row on its own.
+// Used by getTemplateAccessDecision() - true if this user owns this
+// template: bought it, or redeemed a template credit on it. Paid rows only,
+// so a purchase markTemplatePurchaseRefunded() flipped to "refunded" stops
+// granting access.
 export async function hasTemplatePurchase(clerkUserId, templateSlug) {
   const { data, error } = await supabase
     .from("template_purchases")
@@ -49,6 +47,9 @@ export async function hasTemplatePurchase(clerkUserId, templateSlug) {
     .eq("clerk_user_id", clerkUserId)
     .eq("template_slug", templateSlug)
     .eq("status", "paid")
+    // A template can be both bought and redeemed with a credit - any row
+    // means owned, and maybeSingle() would error on two.
+    .limit(1)
     .maybeSingle();
 
   if (error) {
@@ -59,11 +60,10 @@ export async function hasTemplatePurchase(clerkUserId, templateSlug) {
   return Boolean(data);
 }
 
-// Called from the payment.refunded webhook branch - flips this purchase's
-// status so hasTemplatePurchase() above stops granting access. Matched by
-// razorpay_payment_id (the same natural key recordTemplatePurchase()
-// upserts on), not clerk_user_id/template_slug, since that's all the
-// webhook payload reliably gives us.
+// Called from the refund webhook branch - flips this purchase's status so
+// hasTemplatePurchase() above stops granting access. Matched by
+// razorpay_payment_id (recordTemplatePurchase()'s natural key), since that's
+// all the refund payload reliably carries.
 export async function markTemplatePurchaseRefunded(razorpayPaymentId) {
   if (!razorpayPaymentId) return;
 
@@ -74,5 +74,6 @@ export async function markTemplatePurchaseRefunded(razorpayPaymentId) {
 
   if (error) {
     console.error("MARK_TEMPLATE_PURCHASE_REFUNDED_ERROR:", error);
+    throw error;
   }
 }

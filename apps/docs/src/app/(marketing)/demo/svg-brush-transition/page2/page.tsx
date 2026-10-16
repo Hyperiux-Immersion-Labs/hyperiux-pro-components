@@ -14,13 +14,13 @@ export default function page() {
         </HeadAnim>
 
       <SplitLine>
-        <p className="text-[1.4vw] max-[1025px]:text-[3vw] max-md:text-[4.5vw]">
+        <p className="text-[1.4vw] max-lg:text-[3vw] max-md:text-[4.5vw]">
           You&apos;ve just seen the Svg Brush Transition, now if you want to
           see it again click on the &quot;Click here&quot; button.
         </p>
       </SplitLine>
 
-        <div className="mt-12 flex justify-center gap-4 max-[1025px]:items-center max-md:flex-col">
+        <div className="mt-12 flex justify-center gap-4 max-lg:items-center max-md:flex-col">
           <ArrowFillButton
             className="cursor-pointer border border-[#ff5f00] text-[#ffffff]"
             btnText={"Click here"}

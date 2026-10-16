@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
+import Image from "next/image";
 const DEFAULT_ROOT_MARGIN = "256px";
 
 type RafRoot = Element | null | { current: Element | null } | (() => Element | null);
@@ -978,9 +979,8 @@ export default function ScrollDistortion({
       <div className="hidden">
         {objectUrls?.slice(0, sections.length).map((url, index) => (
           <div key={`${resolveImageSource(sections[index]?.src)}-${index}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              ref={(element) => {
+            <Image
+              ref={(element: HTMLImageElement | null) => {
                 imageRefs.current[index] = element;
 
                 if (element?.complete && element.naturalWidth > 0) {
@@ -992,14 +992,17 @@ export default function ScrollDistortion({
               src={url}
               onLoad={() => markImageDecoded(url)}
               alt="asset-image"
+              width={1200}
+              height={800}
+              loading="eager"
+              unoptimized
             />
           </div>
         ))}
 
         {objectUrls?.[sections.length] && (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            ref={(element) => {
+          <Image
+            ref={(element: HTMLImageElement | null) => {
               imageRefs.current[sections.length] = element;
 
               if (element?.complete && element.naturalWidth > 0) {
@@ -1011,19 +1014,25 @@ export default function ScrollDistortion({
             src={objectUrls[sections.length]}
             onLoad={() => markImageDecoded(objectUrls[sections.length])}
             alt="asset-image"
+            width={1200}
+            height={800}
+            loading="eager"
+            unoptimized
           />
         )}
       </div>
 
       {(objectUrls?.[0] || sections[0]?.src) && (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
+        <Image
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
             isSceneReady ? "opacity-0" : "opacity-100"
           }`}
           src={objectUrls?.[0] || resolveImageSource(sections[0].src)}
           alt="asset-image"
           decoding="async"
+          fill
+          loading="eager"
+          unoptimized
         />
       )}
 
@@ -1043,7 +1052,7 @@ export default function ScrollDistortion({
                 aria-hidden="true"
               >
                 <span
-                  ref={(element) => {
+                  ref={(element: HTMLImageElement | null) => {
                     if (!textRefs.current[sectionIndex]) {
                       textRefs.current[sectionIndex] = [];
                     }

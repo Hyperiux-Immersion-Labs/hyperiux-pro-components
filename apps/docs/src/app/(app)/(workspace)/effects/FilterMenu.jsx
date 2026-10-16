@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { prefersReducedMotion } from "@/lib/motion";
 import { createPortal } from "react-dom";
 import { ChevronDown, X } from "lucide-react";
 import { EFFECT_SORT_OPTIONS, FILTER_OPTIONS } from "@/lib/effect-sort";
+import { BREAKPOINTS } from "@/lib/breakpoints";
+import { T14 } from "../templates/tokens";
 
 export { FILTER_OPTIONS };
 
@@ -17,7 +21,23 @@ export function FilterMenu({
   options = FILTER_OPTIONS,
   variant = "icon",
   panelClassName = "",
+  // Below lg the panel is fixed-positioned under the button: by default from its left
+  // edge; alignRight lines it up with the button's right edge instead (kept 16px
+  // inside the screen) - for a button near the right of the page.
+  alignRight = false,
+  // "light" restyles the trigger and panel for light surfaces (the v4 listing sheet).
+  tone = "dark",
+  // Light tone, opt-in: a fixed width class (e.g. "w-44") for the trigger, which the
+  // open panel then matches exactly (the dashboard's dropdown filters).
+  widthClassName,
+  // What the trigger is called for screen readers
+  label = "Filter effects",
+  // Dark tone only: replaces the trigger's default padding / text size (e.g. to match nearby chips).
+  triggerClassName,
+  // Dark tone only: replaces the trigger's resting (no filter chosen) colours.
+  idleClassName = "bg-black/20 backdrop-blur-lg text-foreground hover:text-background hover:bg-primary",
 }) {
+  const light = tone === "light";
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [menuPos, setMenuPos] = useState(null);
@@ -89,15 +109,16 @@ export function FilterMenu({
       if (
         next &&
         typeof window !== "undefined" &&
-        window.innerWidth <= 1025
+        window.innerWidth < BREAKPOINTS.lg
       ) {
         const rect = buttonRef.current?.getBoundingClientRect();
 
         if (rect) {
-          setMenuPos({
-            top: rect.bottom + 8,
-            left: rect.left,
-          });
+          setMenuPos(
+            alignRight
+              ? { top: rect.bottom + 8, right: Math.max(16, window.innerWidth - rect.right), width: widthClassName ? rect.width : undefined }
+              : { top: rect.bottom + 8, left: rect.left, width: widthClassName ? rect.width : undefined },
+          );
         }
       } else {
         setMenuPos(null);
@@ -106,6 +127,18 @@ export function FilterMenu({
       return next;
     });
   };
+
+  // The panel unfolds downwards (clip reveal, an even ease so it's seen opening rather
+  // than snapping), then its rows fade in.
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!open || !panel || prefersReducedMotion()) return undefined;
+    const rows = Array.from(panel.children);
+    const tl = gsap.timeline();
+    tl.fromTo(panel, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.56, ease: "power2.out", clearProps: "clipPath" });
+    tl.fromTo(rows, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out", stagger: 0.035, clearProps: "opacity" }, 0.18);
+    return () => tl.kill();
+  }, [open]);
 
   const panel = open ? (
     <div
@@ -116,12 +149,16 @@ export function FilterMenu({
           ? {
             top: menuPos.top,
             left: menuPos.left,
+            right: menuPos.right,
+            width: menuPos.width,
           }
           : undefined
       }
       className={[
-        "space-y-1.5 min-w-44 border border-white/10 bg-[#1a1a1a]  p-1.5",
-        menuPos ? "fixed z-9999" : "absolute left-0 top-full mt-2 z-30",
+        light
+          ? `space-y-1.5 ${widthClassName ? "w-full min-w-0" : "min-w-44"} border border-black/10 bg-foreground p-1.5`
+          : "space-y-1.5 min-w-44 border border-foreground/10 bg-black/20 p-1.5 backdrop-blur-lg",
+        menuPos ? "fixed z-9999" : "absolute left-0 top-[calc(100%+calc(var(--cvw)*0.5))] z-30",
         panelClassName,
       ]
         .filter(Boolean)
@@ -132,15 +169,16 @@ export function FilterMenu({
         const isSelected = (categoryFilter ?? activeFilter) === cat;
         const highlighted = hoveredCat ? hoveredCat === cat : isSelected;
         const showDivider =
+          index > 0 &&
           EFFECT_SORT_OPTIONS.includes(cat) &&
           !EFFECT_SORT_OPTIONS.includes(options[index - 1]);
 
         return (
-          <div key={cat}>
+          <div key={cat} className="flex flex-col gap-1.5">
             {showDivider && (
               <span
                 aria-hidden="true"
-                className="my-1.5 block h-px w-full bg-white/10"
+                className={`block h-px w-full ${light ? "bg-black/10" : "bg-foreground/10"}`}
               />
             )}
             <button
@@ -151,15 +189,15 @@ export function FilterMenu({
                 onSelect(cat);
                 setOpen(false);
               }}
-              className="group relative isolate flex w-full items-center  px-4 py-2.5 text-left max-md:text-[4vw] text-[1vw] cursor-pointer"
+              className={`group relative isolate flex w-full items-center px-4 py-2.5 text-left cursor-pointer ${T14}`}
             >
               <span
                 aria-hidden="true"
-                className={`absolute inset-0 z-0 origin-top bg-[#ff5f00] transition-transform duration-300 ease-out motion-reduce:transition-none ${highlighted ? "scale-y-100" : "scale-y-0"
+                className={`absolute inset-0 z-0 origin-top bg-primary transition-transform duration-300 ease-out motion-reduce:transition-none ${highlighted ? "scale-y-100" : "scale-y-0"
                   }`}
               />
               <span
-                className={`relative z-10 leading-none transition-colors duration-200 ${highlighted ? "text-[#111111]" : "text-foreground"
+                className={`relative z-10 leading-none transition-colors duration-200 ${highlighted ? "text-background" : light ? "text-ink" : "text-foreground"
                   }`}
               >
                 {getLabel(cat)}
@@ -172,27 +210,34 @@ export function FilterMenu({
   ) : null;
 
   return (
-    <div ref={menuRef} className="relative shrink-0">
+    <div ref={menuRef} className={`relative shrink-0 ${light && widthClassName ? widthClassName : ""}`}>
       <button
         ref={buttonRef}
         type="button"
         onClick={handleToggle}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="Filter effects"
-        className={`
-          px-6 py-3  relative max-md:px-7 max-md:py-3
-          backdrop-blur-[6px] flex items-center gap-2 justify-center
-          cursor-pointer transition-colors duration-300 text-[1vw] max-md:text-[4vw] max-[1025px]:text-[2.5vw]
+        aria-label={label}
+        className={
+          light
+            ? `relative flex h-9.5 cursor-pointer items-center ${widthClassName ? "w-full justify-between" : "justify-center"} gap-2 px-4 ${T14} transition-colors duration-300 ${activeFilter
+              ? "bg-primary text-background"
+              : "bg-foreground text-ink ring-1 ring-inset ring-black/10 transition-shadow hover:ring-primary"
+            }`
+            : `
+          ${triggerClassName ?? `px-6 py-3 max-md:px-7 ${T14}`}
+          relative backdrop-blur-lg flex items-center gap-2 justify-center
+          cursor-pointer transition-colors duration-300
           ${activeFilter
-            ? "bg-[#ff5f00] text-black hover:bg-[#ff5f00]"
-            : "bg-[#161616] text-[#ffffff] hover:text-black hover:bg-[#ff5f00]"
-          }
+              ? "bg-primary text-background hover:bg-primary-hover"
+              : idleClassName
+            }
         `}
       >
         {variant === "label" ? (
           <>
-            <span className="leading-none">{getLabel(categoryFilter)}</span>
+            {/* A truncated label hides overflow, so it needs a full line height or the descenders (g, y) get clipped */}
+            <span className={widthClassName ? "min-w-0 truncate leading-normal" : "leading-none"}>{getLabel(categoryFilter)}</span>
             <ChevronDown
               className={`h-4 w-4 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""
                 }`}
@@ -200,7 +245,7 @@ export function FilterMenu({
           </>
         ) : (
           <>
-            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="max-md:h-[4vw] h-[1vw] max-[1025px]:h-[2.5vw]">
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={light ? "h-3 w-4" : triggerClassName ? "h-[calc(var(--cvw)*0.8)] w-auto max-lg:h-[1.4vw] max-md:h-[3vw]" : "max-md:h-[4vw] h-[calc(var(--cvw)*1)] max-lg:h-[2.5vw]"}>
               <g clipPath="url(#clip0_491_803)">
                 <rect width="16" height="2" rx="1" fill="currentColor" />
                 <rect x="3" y="5" width="10" height="2" rx="1" fill="currentColor" />

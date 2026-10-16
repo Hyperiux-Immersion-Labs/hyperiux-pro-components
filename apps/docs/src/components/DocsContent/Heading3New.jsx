@@ -1,27 +1,29 @@
 "use client";
 
 import React, { useRef } from "react";
+import HeadingAnchor, { slugify } from "./HeadingAnchor";
 
 
-export default function Heading3({ children, text, className, ...props }) {
+export default function Heading3({ children, text, className, id, ...props }) {
+  const anchorId = id ?? slugify(children ?? text);
   const headingRef = useRef(null);
 
   return (
     <h3
       ref={headingRef}
       className={[
-        "relative font-display text-xl md:text-2xl leading-1 font-semibold tracking-tighter text-foreground  first:mt-0 first:pt-0",
+        "group/heading scroll-mt-24 relative leading-1 first:mt-0 first:pt-0",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
+      id={anchorId || undefined}
       {...props}
     >
-      {/* <span
-        aria-hidden="true"
-        className="docs-heading2-line absolute left-0 right-0 top-0 h-px bg-border/60 lineDraw block"
-      /> */}
-      <span className="relative inline-block">{children ?? text}</span>
+      <span className="group/htext">
+        <span className="relative inline-block fadeup">{children ?? text}</span>
+        <HeadingAnchor id={anchorId} />
+      </span>
     </h3>
   );
 }

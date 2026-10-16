@@ -1,25 +1,67 @@
-import { headers } from "next/headers";
+import dynamic from "next/dynamic";
 import VaultShell from "@/Layouts/VaultShell";
 import { getSearchIndexEffects } from "@/lib/search-index";
-import Hero from "@/components/Pricing/Hero";
-import GlowingPlatesDeferred from "@/Experience/GlowingPlatesDeferred";
-import CTA2 from "@/components/Homepage/CTA2";
-import PricingCompareTable from "@/components/Pricing/PricingCompareTable";
-import PricingLicense from "@/components/Pricing/PricingLicense";
+import PricingHero from "@/components/Pricing/pricing-hero/PricingHero";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
-import FAQs from "@/components/Homepage/FAQs";
-import Pricing from "@/components/Pricing/Pricing";
 import { createPageMetadata } from "@/lib/seo-metadata";
-import FAQV3 from "@/homepage-v3/sections/FAQV3";
-import UseCases from "@/homepage-v3/sections/UseCases";
-import PricingV3 from "@/homepage-v3/sections/PricingV3";
-import DitherTransition from "@/homepage-v3/components/DitherTransition";
-import FooterV3 from "@/homepage-v3/sections/FooterV3";
-import CubeBackgroundAscii from "@/homepage-v3/components/CubeBackgroundAscii";
+import SectionOverlay from "@/components/Animations/SectionOverlay";
+
+// Below-the-fold sections load as separate chunks (still server-rendered)
+const FAQ = dynamic(() => import("@/homepage/sections/FAQ"));
+const Footer = dynamic(() => import("@/homepage/sections/Footer"));
+const PricingFinder = dynamic(() => import("@/components/Pricing/exploded/PricingFinder"));
+const PricingCredits = dynamic(() => import("@/components/Pricing/exploded/PricingCredits"));
+const PricingUseCase = dynamic(() => import("@/components/Pricing/exploded/PricingUseCase"));
+const PricingProCompare = dynamic(() => import("@/components/Pricing/exploded/PricingProCompare"));
+const PricingPlansHome = dynamic(() => import("@/homepage/sections/PricingPlansHome"));
+
+export const metadata = createPageMetadata({
+  title: "Hyperiux Vault Pricing | Pro React Effects Library",
+  description:
+    "Simple Vault pricing: start free, go Pro for every component from $6.58/month, or Pro+ for every component and the full template catalogue with 10 installs a day.",
+  path: "/pricing",
+  image:
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
+});
+
+// Static: plans are defined in code and the page is the same for everyone. Its
+// only fetch is the navbar's effect search list (Sanity), so it rebuilds only
+// when an effect is published. INR / USD is chosen in the browser (useCurrency).
+export default async function PricingPage() {
+  const effects = await getSearchIndexEffects();
+
+  return (
+    <>
+      <WebpageJsonLd metadata={metadata} />
+      <FAQJSONLD faqs={faqItems} />
+      <VaultShell effects={effects}>
+        <main id="main-content">
+          <PricingHero />
+          {/* Plans through FAQ are one sheet that scales in after the hero, like the homepage */}
+          {/* Above the footer (z-200), whose ribbons reach up behind the FAQ */}
+          <SectionOverlay className="relative z-201">
+            {/* The homepage plans section, reused as is; #plans is the hero's "See the plans" target */}
+            <div id="plans" className="home-type">
+              <PricingPlansHome checkout />
+              <PricingFinder />
+            </div>
+            <div className="home-type">
+              {/* <PricingCredits /> */}
+              <PricingProCompare />
+            </div>
+            <PricingUseCase useCases={USE_CASES} />
+            <FAQ faqItems={faqItems} translateTop={false} />
+          </SectionOverlay>
+        </main>
+        <Footer/>
+      </VaultShell>
+    </>
+  );
+}
 const USE_CASES = [
   {
     id: 1,
-    title: "Commercial use",
+    title: "Commercial Use",
     text: "Free effects are commercial-friendly where marked in the license. Pro is built for production use on client sites, SaaS products, and internal tools alike.",
     link: "/effects",
   },
@@ -31,127 +73,66 @@ const USE_CASES = [
   },
   {
     id: 3,
-    title: "Team & agency use",
+    title: "Team & Agency Use",
     text: "Pro is licensed per seat by default. Agencies and teams working across multiple client projects should use agency licensing rather than sharing one login.",
-    link: "#",
+    link: "mailto:hello@hyperiux.com",
   },
 ];
 
-export const metadata = createPageMetadata({
-  title: "Hyperiux Vault Pricing | Pro React Effects Library",
-  description:
-    "Simple Vault pricing: start free with 30+ effects, or go Pro for the full 150+ effect library, WebGL scenes, and cursor effects from $20/month.",
-  path: "/pricing",
-  image:
-    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
-});
-
-// Reads Vercel's edge-injected geo header - makes this route dynamic
-// (acceptable here: it's the checkout page, already personalized via
-// Clerk client hooks; unlike the homepage teaser, static rendering isn't
-// the priority for a page whose whole job is a live purchase flow).
-export default async function PricingPage() {
-  const headersList = await headers();
-  const isIndia = headersList.get("x-vercel-ip-country") === "IN";
-  const effects = await getSearchIndexEffects();
-
-  return (
-    <>
-      <WebpageJsonLd metadata={metadata} />
-      <FAQJSONLD faqs={faqItems} />
-      <VaultShell effects={effects}>
-        <main id="main-content">
-          <Hero />
-          <CubeBackgroundAscii
-            debug={false}
-            src="/homepage-v3/pricing/new/3.mp4"
-            config={{
-              charSet: "hyperiux",
-              charColumns: 179,
-              charZoom: 1.01,
-              charGap: 0.35,
-              dither: 0.45,
-              glyphGain: 2.4,
-              videoScale: 1.36,
-              videoOffsetX: 0.28,
-              videoOffsetY: 0,
-              levelsLow: 0.43,
-              levelsHigh: 1,
-              brightnessMap: 0.8,
-              rampLow: 0,
-              rampHigh: 0.63,
-              invert: false,
-            }}
-          />
-          <DitherTransition
-            mobileEndTriggers={"bottom -50%"}
-            className="h-[46vw]  max-[1025px]:h-[150vw]! bg-background "
-          />
-          <div className="max-[1025px]:mt-[-50vw] max-md:mt-0">
-          <PricingV3 isIndia={isIndia} auth />
-
-          </div>
-          <DitherTransition
-            dotColor="#050505"
-            accentColor="#eaeaea"
-            className="h-[70vw] mt-[-5vw] max-[1025px]:h-[150vw]! bg-foreground"
-          />
-          <div className="mt-[-35vw]">
-            <PricingCompareTable isIndia={isIndia} />
-          </div>
-          <UseCases useCases={USE_CASES} />
-          <div className="max-md:mt-[-30vw]!  ">
-            <FAQV3 faqItems={faqItems} translateTop={false} />
-          </div>
-          {/* <CTA2 /> */}
-        </main>
-        <FooterV3 />
-      </VaultShell>
-    </>
-  );
-}
 const faqItems = [
   {
     id: "faq1",
     question: "Is Pro available now?",
     answer:
-      "Yes. Free Core is available immediately with no account required, and Pro is available today through self-serve checkout - no invite, approval, or waitlist needed.",
+      "Yes. Free Core is available immediately with a free account, and Pro is available today through self-serve checkout - no invite, approval, or waitlist needed.",
   },
   {
     id: "faq3",
-    question: "Will pricing change after launch?",
+    question: "How much do Pro and Pro+ cost?",
     answer:
-      "Pro is $20/month or $179/year, with Indian pricing shown in INR (GST included at checkout) for visitors browsing from India.",
+      "Pro is $27 a quarter or $79 a year. Pro+ is $57 a quarter or $179 a year. Visitors from India see INR prices (Pro ₹1,347 a quarter or ₹4,490 a year, Pro+ ₹2,997 a quarter or ₹8,999 a year), with 18% GST added at checkout.",
   },
   {
     id: "faq4",
     question: "Can I use Free Core without an account?",
     answer:
-      "Yes. Free Core effects should be available to preview and install without creating an account.",
+      "No. Anyone can preview effects on the site, but copying the code or installing it with the CLI needs a free account.",
   },
   {
     id: "faq5",
     question: "How does billing work?",
     answer:
-      "Pro is billed automatically to the card on file - monthly at $20/month, or annually at $179/year. You'll get a receipt by email each time you're charged, and you can update or remove your payment method at any time.",
+      "Your plan is billed automatically to your saved payment method, every 3 months or once a year. You'll get a receipt by email each time you're charged, and you can update or remove your payment method at any time.",
   },
   {
     id: "faq6",
-    question: "Can I switch between monthly and annual?",
+    question: "Can I switch plans or billing period?",
     answer:
-      "Yes. Switch to annual at any time and the change applies at your next billing date. Switching from annual to monthly takes effect at the end of your current annual term.",
+      "Pro subscribers can upgrade to Pro+ at any time: click Upgrade to Pro+, pay, and Pro+ starts right away while your Pro plan is cancelled so it doesn't renew. Other changes happen at the end of your billing period: let your plan run out, then pick the new one. Templates you've redeemed, unused credits and code you've installed stay yours.",
+  },
+  {
+    id: "faq-installs",
+    question: "What counts as an install?",
+    answer:
+      "Each new component you copy from the site, add with the Hyperiux CLI or pull in through MCP counts once per day, whichever way you get it. Pro includes 5 a day and Pro+ 10 a day. Getting the same component again that day doesn't count twice, and components you've already got that day stay available even once the limit is reached.",
+  },
+  {
+    id: "faq-credits",
+    question: "How do template credits work?",
+    answer:
+      "Each credit unlocks one whole template, yours to keep even if you cancel. Pro gets 3 credits a year on yearly billing (quarterly Pro has none) for the selected catalogue. Pro+ gets 5 a year on yearly billing (1 every quarter on quarterly) for the full catalogue. Unused credits roll over while your plan is active.",
   },
   {
     id: "faq7",
-    question: "What happens if I cancel Pro?",
+    question: "What happens if I cancel my plan?",
     answer:
-      "Pro access continues until the end of the current billing period, then reverts to the free tier. Effects you've already installed stay in your repository - cancelling stops new Pro installs, it doesn't touch code you've already shipped.",
+      "Your plan's access continues until the end of the current billing period, then reverts to the free tier. Effects you've already installed stay in your repository - cancelling stops new Pro installs, it doesn't touch code you've already shipped.",
   },
   {
     id: "faq8",
     question: "Do you offer refunds?",
     answer:
-      "If Pro isn't right for you, contact us within 7 days of a new subscription and we'll issue a refund. Outside that window, cancel anytime to stop future billing.",
+      "Payments aren't refunded once access has been granted, except for duplicate charges, failure to deliver access, or fraud. If one of those applies, email support@hyperiux.com within 30 days. You can cancel anytime to stop future billing. Full details are in the Refund Policy.",
   },
   {
     id: "faq9",

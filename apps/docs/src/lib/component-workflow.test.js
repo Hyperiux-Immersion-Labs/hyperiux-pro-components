@@ -8,7 +8,7 @@ import { afterEach, describe, expect, it } from "vitest";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../../../..");
-const workflowScript = path.join(repoRoot, "scripts", "component-workflow.mjs");
+const workflowScript = path.join(repoRoot, "apps/docs", "scripts", "component-workflow.mjs");
 const tempRoots = [];
 
 afterEach(() => {
@@ -336,7 +336,7 @@ function createFixtureRepo() {
   writeFile(root, "apps/docs/src/components/sample-card/styles.css", ".sample { color: red; }\n");
   writeFile(root, "apps/docs/src/components/sample-card/Demo.jsx", "export default function Demo() { return null; }\n");
   writeFile(root, "apps/docs/scripts/build-registry.js", "console.log('fixture docs build');\n");
-  writeFile(root, "scripts/build-registry.js", "console.log('fixture root build');\n");
+  writeFile(root, "apps/docs/scripts/build-registry-dist.js", "console.log('fixture root build');\n");
   writeFile(root, "registry/index.json", "[]\n");
   writeFile(root, "apps/docs/public/r/index.json", JSON.stringify({ items: [] }, null, 2));
   writeFile(root, "apps/docs/src/lib/effect-slugs.js", [

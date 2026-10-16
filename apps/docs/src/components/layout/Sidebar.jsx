@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { SidebarPlanCard } from "./SidebarPlanCard";
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
 import { getFeaturedEffects } from "@/lib/featured-effects";
@@ -16,7 +18,6 @@ import {
   Legal,
   Github,
   Pricing,
-  Blog,
   Npm,
   Mcp,
   TemplateIcon
@@ -83,13 +84,13 @@ function NavIconLink({
       onMouseEnter={onMouseEnter}
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
-      className={`group relative flex h-10 items-center gap-3 px-4 py-[1.5vw] text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
-        isExpanded ? "w-[18.5vw]" : "w-[3.8vw]"
+      className={`group relative flex h-10 items-center gap-3 px-4 py-[calc(var(--hx-vw,1vw)*1.5)] text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
+        isExpanded ? "w-[calc(var(--hx-vw,1vw)*18)]" : "w-[calc(var(--hx-vw,1vw)*3.6)]"
       }`}
     >
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 -z-10 origin-top bg-[#1C1C1C] transition-transform duration-300 ease-out motion-reduce:transition-none ${
+        className={`pointer-events-none absolute inset-0 -z-10 origin-top bg-dark-card transition-transform duration-300 ease-out motion-reduce:transition-none ${
           isActive ? "scale-y-100" : "scale-y-0 group-hover:scale-y-100"
         }`}
       />
@@ -129,13 +130,13 @@ function SectionButton({
       type="button"
       onClick={onClick}
       onMouseEnter={onMouseEnter}
-      className={`group relative flex h-10 cursor-pointer items-center rounded-md px-4 py-[1.5vw] text-left text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
-        isExpanded ? "w-[18.5vw]" : "w-[3.8vw]"
+      className={`group relative flex h-10 cursor-pointer items-center px-4 py-[calc(var(--hx-vw,1vw)*1.5)] text-left text22 font-medium text-white/90 transition-[width,color] duration-300 ease-out hover:text-white ${
+        isExpanded ? "w-[calc(var(--hx-vw,1vw)*18)]" : "w-[calc(var(--hx-vw,1vw)*3.6)]"
       } ${isExpanded ? "gap-3" : "gap-1.5"}`}
     >
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 -z-10 origin-top bg-[#1C1C1C] transition-transform duration-300 ease-out motion-reduce:transition-none ${
+        className={`pointer-events-none absolute inset-0 -z-10 origin-top bg-dark-card transition-transform duration-300 ease-out motion-reduce:transition-none ${
           isActive ? "scale-y-100" : "scale-y-0 group-hover:scale-y-100"
         }`}
       />
@@ -182,6 +183,8 @@ export function Sidebar({
   topLinks = DEFAULT_DOCS_TOP_LINKS,
   legalLinks = DEFAULT_LEGAL_LINKS,
   disableInitialTransition = false,
+  // Called once the sidebar has hydrated (VaultLayout applies the stored state after it)
+  onMounted,
   onOverviewNavigate,
   onCategoryNavigate,
   onDocumentationNavigate,
@@ -196,6 +199,8 @@ export function Sidebar({
     : DEFAULT_LEGAL_LINKS;
 
   const lastPathSegment = getLastPathSegment(pathname);
+  // /dashboard/{username}/…: whose dashboard this is (for the plan card), else null
+  const dashboardUser = pathname?.startsWith("/dashboard/") ? pathname.split("/")[2] || null : null;
 
   const categoryNavigationItems = useMemo(
     () => [
@@ -241,7 +246,7 @@ export function Sidebar({
   const [fetchedEffects, setFetchedEffects] = useState([]);
   const [openSection, setOpenSection] = useState(initialOpenSection);
   const [hoveredSidebarKey, setHoveredSidebarKey] = useState("");
-  const { startNavigation, scrollToTop } = useVaultLayout();
+  const { startNavigation, scrollToTop, isSidebarReady } = useVaultLayout();
 
   // A single scrollToTop() call at click time can lose the race against
   // layout recalculation that happens shortly after the route actually
@@ -261,6 +266,21 @@ export function Sidebar({
     window.setTimeout(scrollToTop, 400);
   };
 
+  // Rendered at opacity 0 (server HTML included) and faded in once the page is ready -
+  // after VaultLayout has applied the stored open / closed state (isSidebarReady), so a
+  // reload never shows it open and then snapping shut. It stays mounted across client
+  // navigation, so moving between pages doesn't replay it.
+  const asideRef = useRef(null);
+  const onMountedRef = useRef(onMounted);
+  useLayoutEffect(() => {
+    onMountedRef.current?.();
+  }, []);
+  useLayoutEffect(() => {
+    if (!isSidebarReady) return undefined;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const tween = gsap.to(asideRef.current, { opacity: 1, duration: reduced ? 0 : 0.9, ease: "power2.out" });
+    return () => tween.kill();
+  }, [isSidebarReady]);
   const previousRouteSectionRef = useRef(initialOpenSection);
   const categoryNavigationInProgressRef = useRef(false);
 
@@ -550,19 +570,22 @@ export function Sidebar({
 
   return (
     <aside
-      className={`sticky bottom-0 left-0 top-0 z-51 h-screen bg-[#0E0E0E] text-white max-[1025px]:hidden ${
-        disableInitialTransition
-          ? "transition-none"
-          : "transition-[width] duration-300 ease-out"
-      } ${isExpanded ? "w-[20vw]" : "w-[5.5vw]"}`}
+      ref={asideRef}
+      data-vault-sidebar
+      // Width (and the toggle's spot) come from <html data-sidebar> in globals.css, set
+      // before the first paint from the stored state - so it's right from the first frame
+      // however late this hydrates; the slide is only on once the page is ready.
+      data-sidebar-width
+      data-sound-flow="off"
+      className="sticky bottom-0 left-0 top-0 z-51 h-screen opacity-0 bg-background text-white max-lg:hidden"
     >
       <button
         type="button"
         aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         onClick={toggle}
-        className={`absolute top-6  z-50 bg-[#1C1C1C] hidden size-10 cursor-pointer items-center justify-center  text-white transition-[left,background-color,transform] duration-300 ease-out hover:bg-white/15 sm:flex ${
-          isExpanded ? "left-[20.8vw]" : "left-[6.2vw]"
-        }`}
+        // Its spot follows the sidebar's width (globals.css, html[data-sidebar])
+        data-vault-sidebar-toggle
+        className="absolute top-6  z-50 bg-dark-card flex size-10 cursor-pointer items-center justify-center  text-white hover:bg-stone-700 hover:text-white max-md:hidden"
       >
         <div className={isExpanded ? "" : "-scale-x-100"}>
           <PanelLeft className="h-4 w-4" />
@@ -574,7 +597,7 @@ export function Sidebar({
           isExpanded ? "overflow-hidden" : "overflow-visible"
         }`}
       >
-        <div className="mb-10 flex h-16 w-full items-center justify-start overflow-hidden border-b border-white/10 px-4">
+        <div className="mb-10 flex h-fit pb-6 pt-4 w-full items-center justify-start overflow-hidden border-b border-white/10 px-3.5">
           <Link
             prefetch={false}
             href="/"
@@ -666,17 +689,17 @@ export function Sidebar({
                       onClick={(event) => navigateCategory(event, category.id)}
                       onMouseEnter={() => setHoveredSidebarKey("categories")}
                       className={`relative flex w-full items-center justify-between gap-3  py-1 text-left text-sm transition-colors cursor-pointer ${
-                        id === 0 ? "mt-[0.7vw]" : ""
+                        id === 0 ? "mt-[calc(var(--hx-vw,1vw)*0.7)]" : ""
                       } ${
-                        id === effectCategories.length - 1 ? "mb-[0.7vw]" : ""
+                        id === effectCategories.length - 1 ? "mb-[calc(var(--hx-vw,1vw)*0.7)]" : ""
                       } ${
                         isActive
                           ? "text-white"
-                          : "text-white/42 hover:text-white/75"
+                          : "text-white/60 hover:text-white/90"
                       }`}
                     >
                       {isActive && (
-                        <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
+                        <span className="absolute -left-5 size-1.5 animate-pulse bg-primary" />
                       )}
 
                       <span className="flex min-w-0 items-center truncate">
@@ -686,7 +709,7 @@ export function Sidebar({
                       </span>
 
                       {count > 0 && (
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center bg-[#1C1C1C] text-center text-[0.65vw] text-white">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center bg-dark-card text-center text-[calc(var(--hx-vw,1vw)*0.7)] text-white">
                           {count}
                         </span>
                       )}
@@ -745,18 +768,18 @@ export function Sidebar({
                         navigateDocumentation(event, link.href)
                       }
                       onMouseEnter={() => setHoveredSidebarKey("docs")}
-                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
-                        index === 0 ? "mt-[0.7vw]" : ""
+                      className={`relative flex w-full items-center py-2 text-left text-sm transition-colors cursor-pointer ${
+                        index === 0 ? "mt-[calc(var(--hx-vw,1vw)*0.7)]" : ""
                       } ${
-                        index === resolvedTopLinks.length - 1 ? "mb-[0.7vw]" : ""
+                        index === resolvedTopLinks.length - 1 ? "mb-[calc(var(--hx-vw,1vw)*0.7)]" : ""
                       } ${
                         isActive
                           ? "text-white"
-                          : "text-white/42 hover:text-white/75"
+                          : "text-white/60 hover:text-white/90"
                       }`}
                     >
                       {isActive && (
-                        <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
+                        <span className="absolute -left-5 size-1.5 animate-pulse bg-primary" />
                       )}
 
                       {link.label}
@@ -802,18 +825,18 @@ export function Sidebar({
                       scroll={false}
                       onClick={(event) => navigateLegal(event, link.href)}
                       onMouseEnter={() => setHoveredSidebarKey("legal")}
-                      className={`relative flex w-full items-center rounded-full py-2 text-left text-sm transition-colors cursor-pointer ${
-                        index === 0 ? "mt-[0.7vw]" : ""
+                      className={`relative flex w-full items-center py-2 text-left text-sm transition-colors cursor-pointer ${
+                        index === 0 ? "mt-[calc(var(--hx-vw,1vw)*0.7)]" : ""
                       } ${
-                        index === resolvedLegalLinks.length - 1 ? "mb-[0.7vw]" : ""
+                        index === resolvedLegalLinks.length - 1 ? "mb-[calc(var(--hx-vw,1vw)*0.7)]" : ""
                       } ${
                         isActive
                           ? "text-white"
-                          : "text-white/42 hover:text-white/75"
+                          : "text-white/60 hover:text-white/90"
                       }`}
                     >
                       {isActive && (
-                        <span className="absolute -left-5 h-2 w-2 animate-pulse rounded-full bg-primary" />
+                        <span className="absolute -left-5 size-1.5 animate-pulse bg-primary" />
                       )}
 
                       {link.label}
@@ -835,23 +858,6 @@ export function Sidebar({
               forceScrollToTop();
             }}
             onMouseEnter={() => setHoveredSidebarKey("pricing")}
-          />
-
-          <NavIconLink
-            label="Blog"
-            href="/blog"
-            icon={Blog}
-            isExpanded={isExpanded}
-            isActive={
-              hoveredSidebarKey
-                ? hoveredSidebarKey === "blog"
-                : pathname === "/blog" || pathname.startsWith("/blog/")
-            }
-            onClick={() => {
-              startNavigation("/blog");
-              forceScrollToTop();
-            }}
-            onMouseEnter={() => setHoveredSidebarKey("blog")}
           />
 
           <NavIconLink
@@ -884,6 +890,22 @@ export function Sidebar({
             onMouseEnter={() => setHoveredSidebarKey("mcp")}
           />
         </nav>
+
+        {/* Dashboard pages: the plan card, at the foot. Always mounted (its data loads once),
+            it fades in once the sidebar has opened and out as it closes; its content keeps the
+            open sidebar's width, so it never squashes while the sidebar slides. */}
+        {dashboardUser && (
+          <div
+            aria-hidden={!isExpanded}
+            className={`w-full shrink-0 overflow-hidden pr-2 pt-3 transition-[opacity,visibility] ${
+              isExpanded ? "visible opacity-100 delay-200 duration-300" : "invisible opacity-0 duration-150"
+            }`}
+          >
+            <div className="w-[calc(20vw-1.5vw)]">
+              <SidebarPlanCard username={dashboardUser} />
+            </div>
+          </div>
+        )}
       </div>
     </aside>
   );

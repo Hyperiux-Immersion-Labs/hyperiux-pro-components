@@ -13,9 +13,7 @@ export const remixerPanelTransition = {
 };
 
 const VIEWPORT_MARGIN = 16;
-// Must match .launcherGroup's CSS `top` in remixer-panel.module.css - it's
-// the panel's actual starting offset from the viewport top, not a ratio.
-const INITIAL_TOP_OFFSET = 16;
+const TOP_LIMIT_RATIO = 0.1;
 
 export default function RemixerLauncher({
   groups,
@@ -48,10 +46,10 @@ export default function RemixerLauncher({
       const groupRect = groupRef.current?.getBoundingClientRect();
       const groupWidth = groupRect?.width ?? 0;
       const groupHeight = groupRect?.height ?? 0;
-      const topOffset = INITIAL_TOP_OFFSET;
+      const topOffset = window.innerHeight * TOP_LIMIT_RATIO;
 
       setDragConstraints({
-        top: -Math.max(0, topOffset - VIEWPORT_MARGIN),
+        top: 0,
         right: 0,
         bottom: Math.max(0, window.innerHeight - topOffset - groupHeight - VIEWPORT_MARGIN),
         left: -Math.max(0, window.innerWidth - groupWidth - VIEWPORT_MARGIN),

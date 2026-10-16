@@ -2,8 +2,7 @@
 
 import InteractiveBlurReveal from "@/components/interactive-blur-reveal";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
-import ReducedMotionNotice from "@/components/WebsiteComps/ReducedMotionNotice";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
@@ -23,23 +22,12 @@ export default function DemoContent({ registry }: { registry: any }) {
       {({ effect }) => (
         <main className="relative h-dvh w-dvw overflow-hidden bg-black text-white">
           {effect}
-          <ReducedMotionNotice>
-            <div
-              aria-live="polite"
-              className="pointer-events-none fixed top-26 right-4 z-40 w-fit max-w-65 rounded-md border border-white/15 bg-white/5 p-3 text-center backdrop-blur-sm max-md:hidden"
-            >
-              <h2 className="text-sm leading-none text-white">
-                The reveal keeps trailing.
-              </h2>
-              <p className="mt-2 text-xs leading-5 text-white/65">
-                Interactive Blur Reveal clears the blur only where your cursor
-                has recently moved, redrawing continuously. Since the reveal is
-                driven entirely by motion, reduced motion can&apos;t be applied
-                here.
-              </p>
-            </div>
-          </ReducedMotionNotice>
-          <DemoHeader logoColor="#FFFFFF" textColor="#ffffff" />
+          <DemoHeader
+            reducedMotionNote={{
+              title: "The reveal keeps trailing.",
+              body: "Interactive Blur Reveal clears the blur only where your cursor has recently moved, redrawing continuously. Since the reveal is driven entirely by motion, reduced motion can't be applied here.",
+            }}
+          />
           <div className="pointer-events-none fixed inset-0 z-10 h-screen w-screen">
             <section className="flex h-full w-full flex-col items-start justify-center px-10">
               <div>

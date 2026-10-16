@@ -15,7 +15,7 @@ import CardsRunway from "@/components/cards-runway";
 import CharacterTrail from "@/components/character-trail";
 import CircularSlider from "@/components/circular-slider";
 import CircularSplitRoll from "@/components/circular-split-roll";
-import ClipPathSlider from "@/components/clippath-slider";
+import ClipPathSlider from "@/components/clip-path-slider";
 import CoffeeBeanCursor from "@/components/coffee-bean-cursor";
 import CollidingModels from "@/components/colliding-models";
 import ColorfulCursorAura from "@/components/colorful-cursor-aura";
@@ -34,7 +34,7 @@ import HeroBannerAnimated from "@/components/hero-banner-animated";
 import HorizontalFeatureReveal from "@/components/horizontal-feature-reveal";
 import HoverSlider from "@/components/hover-slider";
 import HyperiuxGlitter from "@/components/hyperiux-glitter";
-import InfiniteCarousel from "@/components/infinite-carousel";
+import InfiniteCarousel from "@/components/InfiniteCarousel";
 import InfiniteGridGallery from "@/components/infinite-grid-gallery";
 import InfinitePerspectiveSlider from "@/components/infinite-perspective-slider";
 import InertiaImg from "@/components/inertia-img";
@@ -64,7 +64,7 @@ import TextStream from "@/components/text-stream";
 import VideoPlayer from "@/components/video-player";
 import WebglSlider from "@/components/webgl-slider";
 import ZoomSlider from "@/components/zoom-slider";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "./RegistryRemixerDemo";
 import type { RegistryLike, RemixerValues, SuggestedPreviewProps } from "./types";
 
@@ -141,7 +141,6 @@ export default function SuggestedEffectRemixerDemo({
   slug: string;
 }) {
   const Component = components[slug];
-  const hideDemoHeader = registry?.category === "navigation" || slug === "lines-loader";
 
   if (!Component) return null;
 
@@ -163,7 +162,7 @@ export default function SuggestedEffectRemixerDemo({
     >
       {({ effect }) => (
         <>
-          {hideDemoHeader ? null : <DemoHeader logoColor="#ffffff" textColor="#ffffff" />}
+          <DemoHeader />
           {effect}
         </>
       )}

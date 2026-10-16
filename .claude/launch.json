@@ -32,30 +32,6 @@
       ],
       "port": 3333,
       "autoPort": true
-    },
-    {
-      "name": "vault-main-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "--prefix",
-        "vault-main",
-        "run",
-        "dev"
-      ],
-      "port": 3000,
-      "autoPort": true
-    },
-    {
-      "name": "vault-main-prod",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "--prefix",
-        "vault-main",
-        "run",
-        "start"
-      ],
-      "port": 3000,
-      "autoPort": true
     }
   ]
 }

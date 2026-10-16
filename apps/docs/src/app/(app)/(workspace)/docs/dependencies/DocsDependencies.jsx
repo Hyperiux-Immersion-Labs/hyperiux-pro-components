@@ -1,14 +1,12 @@
 "use client";
 
 import DocsContent from "@/components/DocsContent/DocsContent";
-import Heading from "@/components/DocsContent/Heading";
 import Heading2 from "@/components/DocsContent/Heading2";
 import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
-import {CodeBlock} from "@/components/ui/CodeBlock";
+import { CodeBlock } from "@/components/DocsContent/DocsCodeBlock";
 import Heading3 from "@/components/DocsContent/Heading3New";
-import { useFadeUp } from "@/components/Animations/gsapAnimations";
 
 const useClientCode = `"use client";`;
 
@@ -97,10 +95,7 @@ const tailwindContentPathCode = `content: [
 export default function DocsDependencies() {
 
   return (
-    <DocsContent className="max-w-none mx-0">
-      <Heading>Dependencies</Heading>
-
-      <Para>Bring the engine you need. Not the whole garage.</Para>
+    <DocsContent>
 
       <Para>
         Hyperiux Vault is source-first. Effects are added into your project as editable

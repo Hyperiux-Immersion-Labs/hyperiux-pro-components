@@ -1,17 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, FileCode2, LoaderCircle, LockKeyhole } from "lucide-react";
-import { buttonV3ClassName, ButtonV3Chrome } from "@/homepage-v3/components/ButtonV3";
+import { buttonClassName, ButtonChrome } from "@/homepage/components/Button";
 import { useCopyLimit } from "./useCopyLimit";
+import { getLimitNudge } from "@/lib/limitNudge";
+import { AnimatePresence, motion } from "motion/react";
+
+// The trigger's text rolls like the code block's Copy -> Copied label
+const ROLL_EASE = [0.65, 0, 0.35, 1];
 
 // "Get code" dropdown beside Live Preview - the only way to take an effect's
 // source from its page. JSX/TSX and the AI prompt are fetched from
-// /api/effects/[slug]/copy (sign-in + Pro checks there; only JSX/TSX use a
-// daily copy slot). The CLI command and MCP prompt carry no source, so
-// they're built here and never metered - an install from them is counted
-// by the CLI/MCP themselves.
+// /api/effects/[slug]/copy (sign-in + Pro checks there). The CLI command and
+// MCP prompt carry no source, so they're built here. Every option counts
+// against the daily install limit - the effect's slot for today (copying the
+// same effect again that day is free): the route claims it for JSX/TSX/prompt,
+// and CLI/MCP claim it through useCopyLimit's requestCopy before copying.
 //
 // Signed out: the trigger opens the "log in first" modal instead of the
 // dropdown. Pro effect without Pro: the panel still opens with every row
@@ -31,11 +37,11 @@ const MIN_COPYING_MS = 450;
 
 // Trigger text for each copy, while it runs and once it's done.
 const TRIGGER_LABELS = {
-  jsx: { copying: "Copying code", copied: "Code copied" },
-  tsx: { copying: "Copying code", copied: "Code copied" },
-  cli: { copying: "Copying CLI command", copied: "CLI command copied" },
-  mcp: { copying: "Copying MCP prompt", copied: "MCP prompt copied" },
-  prompt: { copying: "Copying AI prompt", copied: "AI prompt copied" },
+  jsx: { copying: "Copying Code", copied: "Code Copied" },
+  tsx: { copying: "Copying Code", copied: "Code Copied" },
+  cli: { copying: "Copying CLI Command", copied: "CLI Command Copied" },
+  mcp: { copying: "Copying MCP Prompt", copied: "MCP Prompt Copied" },
+  prompt: { copying: "Copying AI Prompt", copied: "AI Prompt Copied" },
 };
 
 function buildMcpPrompt(slug, title) {
@@ -99,9 +105,9 @@ async function copyServerText(fetchResult) {
 
 // Nudge shown after a copy that doesn't already report daily usage.
 const COPY_TOASTS = {
-  cli: { title: "CLI command copied", description: "Paste it into your project's terminal to install the effect." },
-  mcp: { title: "MCP prompt copied", description: "Paste it into your agent with the Hyperiux MCP installed." },
-  prompt: { title: "AI prompt copied", description: "Paste it into any coding agent to add the effect." },
+  cli: { title: "CLI Command Copied", description: "Paste it into your project's terminal to install the effect." },
+  mcp: { title: "MCP Prompt Copied", description: "Paste it into your agent with the Hyperiux MCP installed." },
+  prompt: { title: "AI Prompt Copied", description: "Paste it into any coding agent to add the effect." },
 };
 
 function MenuItem({ children, trailing = null, onSelect, disabled = false, className = "", ...props }) {
@@ -111,18 +117,18 @@ function MenuItem({ children, trailing = null, onSelect, disabled = false, class
       role="menuitem"
       disabled={disabled}
       onClick={onSelect}
-      className={`group relative isolate flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left text-[0.95vw] leading-snug text-foreground outline-none max-[1025px]:text-[1.9vw] max-md:text-[3.8vw] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`group relative isolate flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left type-small leading-snug text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       {...props}
     >
       <span
         aria-hidden="true"
-        className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#ff5f00] transition-transform duration-300 ease-out group-hover:scale-y-100 group-focus-visible:scale-y-100 group-disabled:scale-y-0! motion-reduce:transition-none"
+        className="absolute inset-0 -z-10 origin-top scale-y-0 bg-primary transition-transform duration-300 ease-out group-hover:scale-y-100 group-focus-visible:scale-y-100 group-disabled:scale-y-0! motion-reduce:transition-none"
       />
-      <span className="flex min-w-0 flex-1 flex-col gap-0.5 transition-colors duration-200 group-hover:text-[#111111] group-focus-visible:text-[#111111] group-disabled:text-foreground!">
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5 transition-colors duration-200 group-hover:text-background group-focus-visible:text-background group-disabled:text-foreground!">
         {children}
       </span>
       {trailing && (
-        <span className="flex shrink-0 items-center text-white/40 transition-colors duration-200 group-hover:text-[#111111] group-focus-visible:text-[#111111] group-disabled:text-white/70!">
+        <span className="flex shrink-0 items-center text-foreground/40 transition-colors duration-200 group-hover:text-background group-focus-visible:text-background group-disabled:text-foreground/70!">
           {trailing}
         </span>
       )}
@@ -133,7 +139,7 @@ function MenuItem({ children, trailing = null, onSelect, disabled = false, class
 // End-of-row icon, only on rows the user can't copy from. Copy progress is
 // shown on the trigger, not per row.
 function LockTrail({ locked = false }) {
-  return locked ? <LockKeyhole className="size-4 text-[#ff5f00]" aria-hidden="true" /> : null;
+  return locked ? <LockKeyhole className="size-4 text-primary" aria-hidden="true" /> : null;
 }
 
 // Covers the open panel on a Pro effect for accounts without Pro.
@@ -141,9 +147,9 @@ function ProLockOverlay({ onUpgrade }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#1a1a1a]/75 px-6 text-center backdrop-blur-[3px]">
-      <LockKeyhole className="size-5 text-[#ff5f00]" aria-hidden="true" />
-      <p className="text-[0.95vw] leading-snug text-white/80 max-[1025px]:text-[1.9vw] max-md:text-[3.8vw]">
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-dark-card/75 px-6 text-center backdrop-blur-lg">
+      <LockKeyhole className="size-5 text-primary" aria-hidden="true" />
+      <p className="type-small leading-snug text-foreground/80">
         Pro effect - upgrade to copy or install it.
       </p>
       <div className="contents" onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
@@ -151,12 +157,12 @@ function ProLockOverlay({ onUpgrade }) {
           type="button"
           role="menuitem"
           onClick={onUpgrade}
-          className={buttonV3ClassName({
+          className={buttonClassName({
             variant: "orange",
-            className: "cursor-pointer outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+            className: "cursor-pointer outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
           })}
         >
-          <ButtonV3Chrome label="Upgrade to Pro" hovered={hovered} />
+          <ButtonChrome label="Upgrade to Pro" hovered={hovered} />
         </button>
       </div>
     </div>
@@ -167,6 +173,11 @@ export default function GetCodeMenu({
   effectSlug,
   effectTitle,
   isLocked = false,
+  // The server already found today's limit used up (and this effect not one
+  // of today's) - true before the browser's own usage check has loaded
+  serverLimitReached = false,
+  // The visitor's plan as the server saw it, for the limit message until usage loads
+  lockTier = null,
   align = "right",
   className = "",
   triggerClassName = "",
@@ -180,13 +191,14 @@ export default function GetCodeMenu({
     requireUpgrade,
     showToast,
     lockedCtaHref,
+    lockedCtaLabel,
+    usage,
+    requestCopy,
   } = useCopyLimit();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState("menu"); // "menu" | "mcp"
   // null | { key, phase: "copying" | "copied" } - drives the trigger label.
   const [copyStatus, setCopyStatus] = useState(null);
-  // Set after the first copy, so "Get Code" only fades back in after one.
-  const [hasCopied, setHasCopied] = useState(false);
   const rootRef = useRef(null);
   const panelRef = useRef(null);
   const triggerRef = useRef(null);
@@ -212,7 +224,6 @@ export default function GetCodeMenu({
       close();
       triggerRef.current?.focus();
       setCopyStatus({ key, phase: "copying" });
-      setHasCopied(true);
     },
     [close]
   );
@@ -270,15 +281,34 @@ export default function GetCodeMenu({
     items[(index + step + items.length) % items.length].focus();
   };
 
+  // CLI / MCP: claim the effect's slot for today first (requestCopy - it also
+  // handles signed out and the limit, with their own messages), then copy. The
+  // clipboard write starts inside the click and resolves once the claim is back
+  // (Safari refuses a write that only begins after a network wait).
   const copyLocalText = async (key, text) => {
     startCopy(key);
+    let allowed = null;
+    // `key` is "cli" or "mcp": what this copy counts as
+    const textPromise = requestCopy(key).then((ok) => {
+      allowed = ok;
+      if (!ok) throw new Error("copy-denied");
+      return text;
+    });
     try {
-      await navigator.clipboard.writeText(text);
+      if (typeof window.ClipboardItem === "function" && navigator.clipboard?.write) {
+        await navigator.clipboard.write([
+          new window.ClipboardItem({ "text/plain": textPromise.then((t) => new Blob([t], { type: "text/plain" })) }),
+        ]);
+      } else {
+        await navigator.clipboard.writeText(await textPromise);
+      }
       finishCopy(key);
-      showToast(COPY_TOASTS[key]);
+      // A limited account already got the "X of Y left" message from requestCopy
+      if (usage?.isAdmin || typeof usage?.limit !== "number") showToast(COPY_TOASTS[key]);
     } catch {
       failCopy();
-      showToast({ title: "Couldn't copy", description: "Your browser blocked clipboard access." });
+      // Not allowed (signed out / limit): requestCopy already said why
+      if (allowed) showToast({ title: "Couldn't Copy", description: "Your browser blocked clipboard access." });
     }
   };
 
@@ -304,17 +334,17 @@ export default function GetCodeMenu({
       return { ...body, ok: response.ok && Boolean(body.allowed), status: response.status };
     });
 
-    // JSX/TSX responses carry the shared daily usage - keep the count and
-    // its toast in sync whether the copy was allowed or hit the limit.
-    if (option !== "prompt" && typeof data.limit !== "undefined") applyUsage(data);
+    // Every response carries the shared daily usage - keep the count and its
+    // toast in sync whether the copy was allowed or hit the limit.
+    if (typeof data.limit !== "undefined") applyUsage(data);
 
     if (!data.ok) failCopy();
 
     if (data.ok) {
       finishCopy(option);
-      // JSX/TSX copies already got the "X of Y left" toast from applyUsage -
-      // except for accounts with no daily limit, which get a plain confirm.
-      const reportedUsage = option !== "prompt" && typeof data.limit === "number" && !data.isAdmin;
+      // The copy already got the "X of Y left" toast from applyUsage - except
+      // for accounts with no daily limit, which get a plain confirm.
+      const reportedUsage = typeof data.limit === "number" && !data.isAdmin;
       if (!reportedUsage) {
         showToast(COPY_TOASTS[option] ?? { title: "Copied", description: `${effectSlug}.${option} is on your clipboard.` });
       }
@@ -327,11 +357,9 @@ export default function GetCodeMenu({
     } else if (data.status === 403) {
       requireUpgrade("pro-effect");
     } else if (data.status === 429) {
-      // Free accounts out of copies get the upgrade offer; Pro accounts
-      // already saw the "limit reached" toast from applyUsage.
-      if (data.plan !== "pro") requireUpgrade("limit");
+      // The limit message already showed, from applyUsage
     } else {
-      showToast({ title: "Couldn't copy", description: data.error || "Something went wrong. Please try again." });
+      showToast({ title: "Couldn't Copy", description: data.error || "Something went wrong. Please try again." });
     }
   };
 
@@ -357,6 +385,17 @@ export default function GetCodeMenu({
       requireSignIn();
       return;
     }
+    // Today's limit is used up (and this effect isn't one of today's): no
+    // menu, just the limit message for the visitor's plan
+    if ((isLimitReached || serverLimitReached) && !isLocked) {
+      const knownUsage = usage ?? {
+        plan: lockTier === "pro" || lockTier === "pro_plus" ? "pro" : "free",
+        tier: lockTier,
+        isAdmin: lockTier === "admin",
+      };
+      showToast(getLimitNudge(knownUsage));
+      return;
+    }
     window.clearTimeout(statusTimerRef.current);
     setCopyStatus(null);
     setOpen(true);
@@ -368,8 +407,26 @@ export default function GetCodeMenu({
   const codeLimited = !isLocked && isLimitReached;
   const busy = copyStatus?.phase === "copying";
   const statusLabel = copyStatus ? TRIGGER_LABELS[copyStatus.key]?.[copyStatus.phase] : null;
-  // Each trigger state fades in as it mounts (`starting:` = @starting-style).
-  const fadeIn = "transition-opacity duration-300 ease-out starting:opacity-0 motion-reduce:transition-none";
+
+  // The trigger label's width, measured from a hidden copy of the label it's moving to
+  const labelSizerRef = useRef(null);
+  const [labelWidth, setLabelWidth] = useState(null);
+  const [labelShrinking, setLabelShrinking] = useState(false);
+  const labelWidthRef = useRef(null);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const width = labelSizerRef.current?.getBoundingClientRect().width;
+      if (!width) return;
+      const next = Math.ceil(width);
+      setLabelShrinking(labelWidthRef.current != null && next < labelWidthRef.current);
+      labelWidthRef.current = next;
+      setLabelWidth(next);
+    };
+    measure();
+    // The text size changes across breakpoints
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [statusLabel]);
 
   return (
     <div ref={rootRef} className={`relative flex shrink-0 self-stretch ${className}`}>
@@ -380,33 +437,63 @@ export default function GetCodeMenu({
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
         onClick={onTriggerClick}
-        className={`relative flex h-full cursor-pointer items-center border bg-white/5 py-[calc(0.75rem-1px)] pr-[3vw] pl-[1.2vw] text-left text-[1.15vw] tracking-wide text-white outline-none transition hover:border-white/25 focus-visible:border-white/25 max-[1025px]:py-[calc(1rem-1px)] max-[1025px]:pr-12 max-[1025px]:pl-5 max-[1025px]:text-[2vw] max-md:text-[4vw] ${
-          open ? "border-white/25" : "border-white/10"
-        } ${triggerClassName}`}
+        // Text size and vertical padding are Button's (buttonClassName), so it sits at the standard
+        // button size; an inset ring rather than a border, which would add 2px of height
+        className={`relative flex h-full cursor-pointer items-center ring-1 ring-inset bg-foreground/5 backdrop-blur-lg py-2 pr-[calc(var(--cvw)*3)] pl-[calc(var(--cvw)*1.2)] text-left text-[calc(var(--hx-vw,1vw)*1.15)] ring-foreground/20 tracking-wide text-foreground outline-none transition hover:ring-foreground/25 focus-visible:ring-foreground/25 max-lg:pr-12 max-lg:pl-5 max-lg:text-[clamp(13px,calc(var(--hx-vw,1vw)*1.6),15px)] max-md:py-3 max-md:text-[clamp(14px,calc(var(--hx-vw,1vw)*4),16px)] ${triggerClassName}`}
       >
-        {statusLabel ? (
-          <span key={`${copyStatus.key}-${copyStatus.phase}`} className={`flex items-center gap-2 whitespace-nowrap ${fadeIn}`}>
-            {copyStatus.phase === "copying" ? (
-              <LoaderCircle
-                aria-hidden="true"
-                className="size-[1.1vw] shrink-0 animate-spin text-white/60 max-[1025px]:size-4 motion-reduce:animate-none"
-              />
-            ) : (
-              <Check aria-hidden="true" className="size-[1.1vw] shrink-0 text-[#ff5f00] max-[1025px]:size-4" />
-            )}
-            {statusLabel}
-          </span>
-        ) : (
-          <span key="idle" className={hasCopied ? fadeIn : ""}>
-            Get Code
-          </span>
-        )}
-        <ChevronDown
+        {/* The label rolls up out of a line clipped top and bottom only (like the code
+            block's copy button), and the line's width eases between labels - clipping it
+            sideways too cut the outgoing label off when the next one was shorter. */}
+        <span ref={labelSizerRef} aria-hidden="true" className="pointer-events-none invisible absolute whitespace-nowrap">
+          {statusLabel ?? "Get Code"}
+        </span>
+        <motion.span
+          className="relative block overflow-x-visible overflow-y-clip whitespace-nowrap"
+          initial={false}
+          animate={labelWidth ? { width: labelWidth } : undefined}
+          // Growing: straight away, so the incoming label has room. Shrinking: only once
+          // the outgoing (longer) label has rolled out, so it never sticks out meanwhile.
+          transition={{ duration: 0.4, ease: ROLL_EASE, delay: labelShrinking ? 0.35 : 0 }}
+        >
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={statusLabel ?? "Get Code"}
+              initial={{ y: "100%", opacity: 0 }}
+              animate={{ y: "0%", opacity: 1 }}
+              exit={{ y: "-100%", opacity: 0 }}
+              transition={{ duration: 0.4, ease: ROLL_EASE }}
+              className="block"
+            >
+              {statusLabel ?? "Get Code"}
+            </motion.span>
+          </AnimatePresence>
+        </motion.span>
+        {/* Chevron, spinner and check share the right-hand slot */}
+        <span
           aria-hidden="true"
-          className={`pointer-events-none absolute top-1/2 right-[1vw] size-[1.1vw] -translate-y-1/2 text-white/40 transition-[transform,opacity] duration-300 max-[1025px]:right-4 max-[1025px]:size-4 motion-reduce:transition-none ${
-            open ? "rotate-180" : ""
-          } ${statusLabel ? "opacity-0" : "opacity-100"}`}
-        />
+          className="pointer-events-none absolute top-1/2 right-[calc(var(--cvw)*1)] grid size-[calc(var(--cvw)*1.1)] -translate-y-1/2 place-items-center max-lg:right-4 max-lg:size-4"
+        >
+          <AnimatePresence initial={false}>
+            <motion.span
+              key={copyStatus?.phase ?? "idle"}
+              initial={{ scale: 0, rotate: -90, opacity: 0 }}
+              animate={{ scale: 1, rotate: 0, opacity: 1 }}
+              exit={{ scale: 0, rotate: 90, opacity: 0 }}
+              transition={{ duration: 0.3, ease: ROLL_EASE }}
+              className="absolute inset-0 grid place-items-center"
+            >
+              {copyStatus?.phase === "copying" ? (
+                <LoaderCircle className="size-full animate-spin text-foreground/60 motion-reduce:animate-none" />
+              ) : copyStatus?.phase === "copied" ? (
+                <Check className="size-full text-primary" />
+              ) : (
+                <ChevronDown
+                  className={`size-full text-foreground/40 transition-transform duration-300 motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+                />
+              )}
+            </motion.span>
+          </AnimatePresence>
+        </span>
       </button>
       <span role="status" aria-live="polite" className="sr-only">
         {statusLabel ?? ""}
@@ -419,7 +506,9 @@ export default function GetCodeMenu({
           role="menu"
           aria-label={`Get the code for ${title}`}
           onKeyDown={onPanelKeyDown}
-          className={`absolute top-full z-40 mt-2 w-[24vw] min-w-72 border border-white/10 bg-[#1a1a1a] p-1.5 shadow-2xl max-[1025px]:w-[55vw] max-md:w-full max-md:min-w-0 ${
+          // Fades and scales in. Phones: the button starts the row at the page gutter, so the panel opens from
+          // its left edge across the whole content width (86vw, the stage's width) instead of the button's.
+          className={`absolute top-[calc(100%+var(--cvw)*0.5)] z-40 w-[calc(var(--cvw)*24)] min-w-72 origin-top animate-[hx-scale-in_0.49s_cubic-bezier(0.33,1,0.68,1)] border border-foreground/10 bg-dark-card p-1.5 motion-reduce:animate-none max-lg:w-[55vw] max-md:left-0! max-md:right-auto! max-md:w-[86vw] max-md:min-w-0 ${
             align === "left" ? "left-0" : "right-0"
           }`}
         >
@@ -433,10 +522,10 @@ export default function GetCodeMenu({
           )}
           {view === "menu" ? (
             <div className="space-y-1" aria-hidden={codeLocked || undefined}>
-              <div className="flex items-center gap-2 px-3 pt-2 pb-1 text-[0.95vw] text-white max-[1025px]:text-[1.6vw] max-md:text-[3.2vw]">
+              <div className="flex items-center gap-2 px-3 py-2 type-small text-foreground">
                 Copy Code
                 {codeLocked && (
-                  <span className="inline-flex items-center gap-1 normal-case tracking-normal text-[#ff5f00]">
+                  <span className="inline-flex items-center gap-1 normal-case tracking-normal text-primary">
                     <LockKeyhole className="size-3" aria-hidden="true" /> Pro
                   </span>
                 )}
@@ -451,23 +540,23 @@ export default function GetCodeMenu({
                   className="pl-6"
                   trailing={<LockTrail locked={codeLocked || codeLimited} />}
                 >
-                  <span className="flex items-center gap-2 font-mono text-[0.92em]">
+                  <span className="flex items-center gap-2 font-mono">
                     <FileCode2 className="size-4 shrink-0 opacity-60" aria-hidden="true" />
                     {effectSlug}.{option}
                   </span>
                 </MenuItem>
               ))}
 
-              <span aria-hidden="true" className="my-1.5 block h-px w-full bg-white/10" />
+              <span aria-hidden="true" className="block py-1.5"><span className="block h-px w-full bg-foreground/10" /></span>
 
               <MenuItem
                 onSelect={() => copyLocalText("cli", cliCommand)}
                 disabled={codeLocked}
-                aria-label="Copy CLI command"
+                aria-label="Copy CLI Command"
                 trailing={<LockTrail locked={codeLocked} />}
               >
-                Copy CLI command
-                <span className="text-[0.8em] text-white/50 group-enabled:group-hover:text-[#111111]/70">
+                Copy CLI Command
+                <span className="type-small text-foreground/50 group-enabled:group-hover:text-background/70">
                   Install it in the terminal of your preferred IDE
                 </span>
               </MenuItem>
@@ -478,8 +567,8 @@ export default function GetCodeMenu({
                 aria-label="Copy MCP prompt"
                 trailing={<LockTrail locked={codeLocked} />}
               >
-                Copy MCP prompt
-                <span className="text-[0.8em] text-white/50 group-enabled:group-hover:text-[#111111]/70">
+                Copy MCP Prompt
+                <span className="type-small text-foreground/50 group-enabled:group-hover:text-background/70">
                   For agents with the Hyperiux MCP installed
                 </span>
               </MenuItem>
@@ -487,17 +576,17 @@ export default function GetCodeMenu({
               <MenuItem
                 onSelect={() => copyFromServer("prompt")}
                 disabled={codeLocked || busy}
-                aria-label="Copy AI prompt"
+                aria-label="Copy AI Prompt"
                 trailing={<LockTrail locked={codeLocked} />}
               >
-                Copy AI prompt
-                <span className="text-[0.8em] text-white/50 group-enabled:group-hover:text-[#111111]/70">
+                Copy AI Prompt
+                <span className="type-small text-foreground/50 group-enabled:group-hover:text-background/70">
                   Full source + setup steps for any coding agent
                 </span>
               </MenuItem>
 
               {codeLimited && (
-                <div className="mt-1.5 flex items-center justify-between gap-3 border-t border-white/10 px-3 pt-3 pb-1.5 text-[0.85vw] text-white/60 max-[1025px]:text-[1.7vw] max-md:text-[3.4vw]">
+                <div className="flex items-center justify-between gap-3 border-t border-foreground/10 px-3 py-2 type-small text-foreground/60">
                   <span>You&apos;ve reached today&apos;s copy limit.</span>
                   {lockedCtaHref && (
                     <button
@@ -505,11 +594,11 @@ export default function GetCodeMenu({
                       role="menuitem"
                       onClick={() => {
                         close();
-                        requireUpgrade("limit");
+                        requireUpgrade(usage?.tier === "pro" ? "limit-pro" : "limit");
                       }}
-                      className="shrink-0 cursor-pointer text-[#ff5f00] underline underline-offset-2 outline-none focus-visible:text-white"
+                      className="shrink-0 cursor-pointer text-primary underline underline-offset-2 outline-none focus-visible:text-foreground"
                     >
-                      Upgrade to Pro
+                      {lockedCtaLabel}
                     </button>
                   )}
                 </div>
@@ -517,7 +606,7 @@ export default function GetCodeMenu({
             </div>
           ) : (
             <div className="space-y-1 p-2">
-              <p className="px-2 pb-2 text-[0.95vw] leading-snug text-foreground max-[1025px]:text-[1.9vw] max-md:text-[3.8vw]">
+              <p className="px-2 pb-2 type-small leading-snug text-foreground">
                 Is the Hyperiux MCP installed in your project?
               </p>
               <MenuItem
@@ -532,17 +621,17 @@ export default function GetCodeMenu({
                 href="/docs/mcp"
                 role="menuitem"
                 onClick={close}
-                className="group relative isolate flex w-full items-center px-4 py-2.5 text-[0.95vw] text-foreground outline-none max-[1025px]:text-[1.9vw] max-md:text-[3.8vw]"
+                className="group relative isolate flex w-full items-center px-4 py-2.5 type-small text-foreground outline-none"
               >
                 <span
                   aria-hidden="true"
-                  className="absolute inset-0 -z-10 origin-top scale-y-0 bg-[#ff5f00] transition-transform duration-300 ease-out group-hover:scale-y-100 group-focus-visible:scale-y-100 motion-reduce:transition-none"
+                  className="absolute inset-0 -z-10 origin-top scale-y-0 bg-primary transition-transform duration-300 ease-out group-hover:scale-y-100 group-focus-visible:scale-y-100 motion-reduce:transition-none"
                 />
-                <span className="transition-colors duration-200 group-hover:text-[#111111] group-focus-visible:text-[#111111]">
+                <span className="transition-colors duration-200 group-hover:text-background group-focus-visible:text-background">
                   No, show me how to install it
                 </span>
               </Link>
-              <MenuItem onSelect={() => setView("menu")} className="text-white/60">
+              <MenuItem onSelect={() => setView("menu")} className="text-foreground/60">
                 Back
               </MenuItem>
             </div>

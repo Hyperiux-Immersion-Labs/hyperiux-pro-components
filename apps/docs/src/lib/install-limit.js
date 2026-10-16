@@ -2,7 +2,8 @@ import "server-only";
 import crypto from "crypto";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { getUserPlan } from "@/lib/subscription";
+import { getUserPlanInfo } from "@/lib/subscription";
+import { PLANS } from "@/lib/plans";
 import { isAdminUser } from "@/lib/admin";
 import { resolveClerkUserIdFromCliToken } from "@/lib/cli-auth";
 
@@ -11,7 +12,22 @@ import { resolveClerkUserIdFromCliToken } from "@/lib/cli-auth";
 // MCP `include_source`) - sibling to effect-access.js, same discipline. See
 // Installation-SyncUp.md for the full plan this implements.
 
-export const LIMITS = { anonymous: 1, free: 3, pro: 10, admin: null, ip: 10 };
+// Unique effects a day, shared across web copies, CLI and MCP. The paid
+// tiers' limits come from plans.js (Pro 5, Pro+ 10).
+export const LIMITS = {
+  anonymous: 1,
+  free: 3,
+  pro: PLANS.pro.installsPerDay,
+  pro_plus: PLANS.pro_plus.installsPerDay,
+  admin: null,
+  ip: 10,
+};
+
+// The daily limit for a signed-in user's tier ("free" | "pro" | "pro_plus")
+export function getLimitForTier(tier, { isAdmin = false } = {}) {
+  if (isAdmin) return LIMITS.admin;
+  return LIMITS[tier] ?? LIMITS.free;
+}
 export const LIMIT_POLICY_VERSION = "1";
 
 // A function, not a module-load-time constant, so tests can flip
@@ -60,6 +76,7 @@ function decision(reason, overrides = {}) {
     remaining: null,
     identityKey: null,
     plan: null,
+    tier: null,
     enforced: isEnforced(),
     ...overrides,
   };
@@ -68,8 +85,8 @@ function decision(reason, overrides = {}) {
 // Exported for callers that need identity/plan context without making a
 // claim (e.g. a GET endpoint rendering "you have N of M left" on page load).
 export async function resolveSignedInIdentity(clerkUserId) {
-  const [rawPlan, clerkUser] = await Promise.all([
-    getUserPlan(clerkUserId),
+  const [planInfo, clerkUser] = await Promise.all([
+    getUserPlanInfo(clerkUserId),
     clerkClient()
       .then((c) => c.users.getUser(clerkUserId))
       .catch((error) => {
@@ -79,14 +96,16 @@ export async function resolveSignedInIdentity(clerkUserId) {
   ]);
 
   const isAdmin = isAdminUser(clerkUser);
-  const plan = isAdmin ? "admin" : rawPlan;
+  const plan = isAdmin ? "admin" : planInfo.plan;
+  const tier = isAdmin ? "admin" : planInfo.tier;
 
   return {
     identityKey: `user:${clerkUserId}`,
     clerkUserId,
     isAdmin,
     plan,
-    limit: isAdmin ? LIMITS.admin : rawPlan === "pro" ? LIMITS.pro : LIMITS.free,
+    tier,
+    limit: getLimitForTier(planInfo.tier, { isAdmin }),
   };
 }
 
@@ -225,7 +244,9 @@ export async function getInstallLimitDecision({
       effect_slug: effectSlug,
       effect_tier: effectTier ?? null,
       source,
-      plan: identity.plan ?? null,
+      // The tier for signed-in users, so the admin installs view can tell
+      // Pro from Pro+ ("free" | "pro" | "pro_plus" | "admin" | "anonymous")
+      plan: identity.tier ?? identity.plan ?? null,
       decision: decisionLabel,
       reason,
       enforced: isEnforced(),
@@ -243,14 +264,34 @@ export async function getInstallLimitDecision({
       remaining: claim?.remaining ?? null,
       identityKey,
       plan: identity.plan ?? null,
+      tier: identity.tier ?? null,
     });
   }
 
   if (!identity.isAnonymous) {
     if (identity.isAdmin) {
-      // Admins bypass entirely - no claim, no ledger row, matches the
-      // existing copy-usage/effect-access precedent of never metering them.
-      return decision("admin", { allowed: true, identityKey: identity.identityKey, plan: "admin", limit: null });
+      // Admins aren't metered - no claim, no ledger row, matches the existing
+      // copy-usage/effect-access precedent. The install is still logged (plan
+      // "admin"), so the admin's own dashboard Usage tab has a history to show.
+      await logInstallEvent({
+        identity_key: identity.identityKey,
+        clerk_user_id: identity.clerkUserId ?? null,
+        device_id: deviceId ?? null,
+        ip_hash: null,
+        effect_slug: effectSlug,
+        effect_tier: effectTier ?? null,
+        source,
+        plan: "admin",
+        decision: "allowed",
+        reason: "admin",
+        enforced: isEnforced(),
+        would_have_denied: false,
+        cli_version: telemetryDisabled ? null : cliVersion ?? null,
+        mcp_version: telemetryDisabled ? null : mcpVersion ?? null,
+        user_agent: telemetryDisabled ? null : userAgent ?? null,
+        anonymous_project_id: telemetryDisabled ? null : anonymousProjectId ?? null,
+      });
+      return decision("admin", { allowed: true, identityKey: identity.identityKey, plan: "admin", tier: "admin", limit: null });
     }
 
     const claim = await claimSlot({
@@ -262,7 +303,7 @@ export async function getInstallLimitDecision({
       limit: identity.limit,
     });
 
-    if (!claim) return decision("error", { identityKey: identity.identityKey, plan: identity.plan, limit: identity.limit });
+    if (!claim) return decision("error", { identityKey: identity.identityKey, plan: identity.plan, tier: identity.tier, limit: identity.limit });
 
     return recordAndReturn({
       identityKey: identity.identityKey,

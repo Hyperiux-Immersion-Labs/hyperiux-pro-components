@@ -3,6 +3,9 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import gsap from 'gsap'
+import { useLenis } from 'lenis/react'
+import { useInteraction } from '@/homepage/components/InteractionProvider'
+import { cssVar } from "@/lib/useCssVar";
 
 /** Bayer 8x8 ordered-dither matrix for retro halftone dissolve effect */
 const BAYER = [
@@ -34,7 +37,7 @@ function GridSquares({
   cols = 3,
   size = 56,
   squareSize = 8,
-  color = '#ffffff',
+  color = 'var(--foreground)',
   className = '',
   style,
   ...props
@@ -151,8 +154,11 @@ function shouldSkipTransition(prevPath, targetPath) {
 export default function PageTransition() {
   const pathname = usePathname()
   const router = useRouter()
+  const lenis = useLenis()
+  const { sound } = useInteraction()
 
   const prevPathRef = useRef(pathname)
+  const forcedTransitionRef = useRef(false)
   const isFirstRenderRef = useRef(true)
   const isTransitioningRef = useRef(false)
 
@@ -199,7 +205,7 @@ export default function PageTransition() {
       return
     }
 
-    const dotColor = packHex('#ff5f00')
+    const dotColor = packHex(cssVar('--primary'))
     const invRows = rows > 1 ? 1 / (rows - 1) : 0
 
     pixels.fill(0)
@@ -245,16 +251,34 @@ export default function PageTransition() {
     return () => window.removeEventListener('resize', initCanvas)
   }, [initCanvas])
 
+  // Mounted once in the root layout, so this covers every route. Left on
+  // "auto" the browser can restore the previous scroll offset on top of our
+  // own reset below (most visible returning via back/forward, but some
+  // browsers also apply it heuristically around pushState navigations).
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const previous = window.history.scrollRestoration
+    window.history.scrollRestoration = 'manual'
+
+    return () => {
+      window.history.scrollRestoration = previous
+    }
+  }, [])
+
   // Cover current page: dither wave sweeps DOWN from top to bottom
-  const coverScreenAndNavigate = useCallback((targetPath) => {
+  const coverScreenAndNavigate = useCallback((targetUrl) => {
     if (!containerRef.current) {
-      router.push(targetPath)
+      router.push(targetUrl)
       isTransitioningRef.current = false
       return
     }
 
     progressRef.current.cover = 0
     progressRef.current.exit = 0
+
+    // Silent until the visitor has turned sound on (the engine gates itself)
+    sound?.whoosh()
 
     gsap.set(containerRef.current, { display: 'block', pointerEvents: 'all' })
     if (logoRef.current) {
@@ -286,9 +310,9 @@ export default function PageTransition() {
 
     tl.call(() => {
       // Execute route change while screen is flooded with dithered orange & pixel squares
-      router.push(targetPath)
+      router.push(targetUrl)
     })
-  }, [draw, router])
+  }, [draw, router, sound])
 
   const revealScreen = useCallback(() => {
     if (!containerRef.current) {
@@ -354,13 +378,8 @@ export default function PageTransition() {
         href.startsWith('tel:') ||
         href.startsWith('#') ||
         anchor.target === '_blank' ||
-        // A `download` attribute (even an empty string, like the CSV
-        // export link sets) is the standard signal that a click is a file
-        // save, not a page navigation - intercepting it here canceled the
-        // real download (e.preventDefault() below) and instead
-        // router.push()'d to an API route with no page to reveal, which is
-        // exactly what left the transition overlay stuck on screen.
-        anchor.hasAttribute('download') ||
+        // In-page view switches (e.g. the vault door's sign-in/sign-up panes)
+        anchor.hasAttribute('data-no-page-transition') ||
         e.metaKey ||
         e.ctrlKey ||
         e.shiftKey ||
@@ -370,26 +389,35 @@ export default function PageTransition() {
       }
 
       const currentPath = window.location.pathname
+      // The path decides whether to animate; the navigation keeps the whole
+      // URL - dropping ?query and #hash lost sign-in's redirect_url and
+      // anchors like /pricing#plans
       let targetPath = href
+      let targetUrl = href
       try {
-        targetPath = new URL(href, window.location.origin).pathname
+        const url = new URL(href, window.location.origin)
+        targetPath = url.pathname
+        targetUrl = `${url.pathname}${url.search}${url.hash}`
       } catch (err) {
         return
       }
 
       if (currentPath === targetPath) return
 
-      if (shouldSkipTransition(currentPath, targetPath)) {
+      // data-page-transition opts a link in even inside the workspace (docs prev / next)
+      const forced = anchor.dataset.pageTransition !== undefined
+      if (!forced && shouldSkipTransition(currentPath, targetPath)) {
         isTransitioningRef.current = false
         return
       }
 
       if (isTransitioningRef.current) return
       isTransitioningRef.current = true
+      forcedTransitionRef.current = forced
 
       e.preventDefault()
 
-      coverScreenAndNavigate(targetPath)
+      coverScreenAndNavigate(targetUrl)
     }
 
     document.addEventListener('click', handleAnchorClick, { capture: true })
@@ -412,20 +440,47 @@ export default function PageTransition() {
 
     prevPathRef.current = pathname
 
-    if (!isTransitioningRef.current || shouldSkipTransition(prevPath, currentPath)) {
+    // An opted-in navigation (forcedTransitionRef) always reveals, even between workspace routes
+    const forced = forcedTransitionRef.current
+    forcedTransitionRef.current = false
+    if (!isTransitioningRef.current || (!forced && shouldSkipTransition(prevPath, currentPath))) {
       isTransitioningRef.current = false
       return
     }
 
+    // router.push() here bypasses next/link's own click handling (the click
+    // listener above calls preventDefault before Link ever sees the click),
+    // so its default scroll-to-top never runs - the new page otherwise
+    // mounts at whatever offset the previous page was scrolled to. Reset
+    // both native scroll and Lenis's own tracked position (Lenis renders
+    // from its internal state, not window.scrollY, so the native reset
+    // alone doesn't move anything on screen) while the cover overlay still
+    // hides the page, before the reveal animation runs. Repeated across a
+    // couple of frames because content still streaming in (images, TOC,
+    // scroll-triggered fadeups) can grow the page and nudge the offset back
+    // right after the first reset.
+    if (!window.location.hash) {
+      const resetScroll = () => {
+        lenis?.scrollTo?.(0, { immediate: true, force: true })
+        window.scrollTo(0, 0)
+      }
+
+      resetScroll()
+      requestAnimationFrame(resetScroll)
+      requestAnimationFrame(() => requestAnimationFrame(resetScroll))
+      window.setTimeout(resetScroll, 150)
+    }
+
     revealScreen()
-  }, [pathname, revealScreen])
+  }, [pathname, revealScreen, lenis])
 
   return (
     <div
       ref={containerRef}
       tabIndex={-1}
       aria-hidden="true"
-      className="fixed inset-0 z-999 hidden pointer-events-none overflow-hidden select-none"
+      // Above every page layer, modals (z-9999) and toasts (z-100000) included
+      className="fixed inset-0 z-100001 hidden pointer-events-none overflow-hidden select-none"
     >
       {/* 2D Bayer Dither Canvas Overlay */}
       <canvas
@@ -437,7 +492,7 @@ export default function PageTransition() {
       {/* Grid Squares Loading Indicator */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
         <div ref={logoRef} className="opacity-0 flex items-center justify-center">
-          <GridSquares size={56} squareSize={8} color="#0e0e0e" />
+          <GridSquares size={56} squareSize={8} color="var(--background)" />
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import {
   FAQTitle,
   FAQWrapper,
 } from "@/components/animated-faq";
-import DemoHeader from "@/components/WebsiteComps/DemoHeader";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
 const faqItems = [
@@ -96,7 +96,7 @@ export default function DemoContent({ registry }: { registry: any }) {
     >
       {({ effect }) => (
         <>
-          <DemoHeader textColor="#ffffff" logoColor="#ffffff" />
+          <DemoHeader />
           <section className="bg-black h-screen px-8 py-20 text-white">
             <div className="max-w-5xl mx-auto text-center text-white mb-12">
               <h1 className="text-[5.5vw] max-sm:text-[11vw] max-md:text-[8vw]">

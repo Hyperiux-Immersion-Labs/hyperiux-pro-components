@@ -1,12 +1,11 @@
 "use client";
 
 import DocsContent from "@/components/DocsContent/DocsContent";
-import Heading from "@/components/DocsContent/Heading";
 import Heading2 from "@/components/DocsContent/Heading2";
 import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
-import { CodeBlock } from "@/components/ui/CodeBlock";
+import { CodeBlock } from "@/components/DocsContent/DocsCodeBlock";
 import Heading3 from "@/components/DocsContent/Heading3New";
 
 const initCommand = `npx hyperiux init`;
@@ -52,7 +51,7 @@ const images = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-hidden bg-black text-white">
+    <main className="min-h-screen overflow-hidden bg-black text-foreground">
       <section className="mx-auto flex min-h-screen max-w-6xl items-center px-6">
         <PhantomImageTrail images={images} />
       </section>
@@ -68,17 +67,6 @@ const PhantomImageTrail = dynamic(
   () => import("@/components/phantom-image-trail"),
   { ssr: false }
 );`;
-
-const remoteImagesConfigCode = `// next.config.ts
-const nextConfig = {
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "pub-8abee449136941f5b0a1cd2c014534e9.r2.dev" },
-    ],
-  },
-};
-
-export default nextConfig;`;
 
 const tailwindConfigCode = `export default {
   content: [
@@ -96,10 +84,7 @@ const tailwindConfigCode = `export default {
 export default function DocsInstallation() {
 
   return (
-    <DocsContent className="max-w-none mx-0">
-      <Heading>Installation Guide</Heading>
-
-      <Para>Install the effect. Own the files.</Para>
+    <DocsContent>
 
       <Para>
         Hyperiux Vault is not designed as a heavy package that quietly expands inside your
@@ -567,23 +552,6 @@ export default function DocsInstallation() {
 
       <Para>Servers are many things. They are not GPU theatres.</Para>
 
-      <Heading3>Remote images</Heading3>
-
-      <Para>
-        Some effects ship with demo images loaded through next/image from a remote host.
-        Next.js blocks remote image hosts until you allow them, so those images will not
-        load until the host is added to your config.
-      </Para>
-
-      <Para>
-        The CLI tells you when an effect needs this and prints the exact hosts. Add them
-        to images.remotePatterns:
-      </Para>
-
-      <CodeBlock code={remoteImagesConfigCode} language="ts" />
-
-      <Para>Swapping in your own images? Allow your own image host instead.</Para>
-
       <Heading2 id="tailwind-notes">Tailwind Notes</Heading2>
 
       <Para>
@@ -624,12 +592,6 @@ export default function DocsInstallation() {
       <Para>Check your Tailwind content paths or v4 source scanning setup.</Para>
 
       <Para>Make sure the folder containing Vault files is included.</Para>
-<Heading3>Images do not load</Heading3>
-
-      <Para>
-        The image host is probably not allowed yet. Add it to images.remotePatterns in
-        your next.config, as shown in the Next.js notes above.
-      </Para>
 <Heading3>The animation works locally but breaks in production</Heading3>
      
       <Para>Check:</Para>

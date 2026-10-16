@@ -10,8 +10,7 @@ import LinkButton from "@/components/WebsiteComps/LinkButton";
 
 export default function RefundPolicy() {
   return (
-    <DocsContent className="max-w-none mx-0">
-      <Heading>Refund Policy</Heading>
+    <DocsContent>
 
       <Para>
         This Refund Policy applies to purchases of Vault Pro made through

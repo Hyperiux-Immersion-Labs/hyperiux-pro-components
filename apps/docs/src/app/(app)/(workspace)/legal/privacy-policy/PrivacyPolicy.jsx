@@ -1,7 +1,6 @@
 "use client";
 
 import DocsContent from "@/components/DocsContent/DocsContent";
-import Heading from "@/components/DocsContent/Heading";
 import Heading2 from "@/components/DocsContent/Heading2";
 import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
@@ -10,8 +9,7 @@ import LinkButton from "@/components/WebsiteComps/LinkButton";
 
 export default function PrivacyPolicy() {
   return (
-    <DocsContent className="max-w-none mx-0">
-      <Heading>Privacy Policy</Heading>
+    <DocsContent>
 
       <Para>
         Hyperiux Immersion Labs Private Limited (&quot;Hyperiux,&quot; &quot;we,&quot;
@@ -107,7 +105,7 @@ export default function PrivacyPolicy() {
         </DocsListItem>
         <DocsListItem>
           Analytics - to understand how visitors use the Service, including pages viewed,
-          traffic sources, and general behavior, using Google Analytics and Openpanel.dev.
+          traffic sources, and general behavior, using Google Analytics.
         </DocsListItem>
         <DocsListItem>
           Visitor identification - we use RB2B, a website visitor identification tool.
@@ -237,8 +235,8 @@ export default function PrivacyPolicy() {
           billing and card details directly; we do not store your full card number.
         </DocsListItem>
         <DocsListItem>
-          Analytics and visitor identification providers: Google Analytics, Openpanel.dev,
-          and RB2B, as described in Section 2.
+          Analytics and visitor identification providers: Google Analytics and RB2B, as
+          described in Section 2.
         </DocsListItem>
         <DocsListItem>
           Email delivery provider: Resend - to send newsletters and transactional email.

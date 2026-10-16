@@ -10,26 +10,33 @@ function formatCardDate(value) {
   const month = date.toLocaleDateString("en-US", { month: "long" });
   const day = String(date.getDate()).padStart(2, "0");
 
-  return `${month} ${day}, ${date.getFullYear()}`;
+  return `${month} ${day},${date.getFullYear()}`;
 }
 
-// Sized off the card's own width (cqi), not the viewport: the same card sits
-// in a 3/2/1-column grid on /blog and in 31vw/55vw/full-width slides in
-// RelatedBlogsSlider, so viewport units gave the same-width card different
-// type at different breakpoints. Values match the desktop design (a ~426px
-// card at 1440px), clamped so narrow cards stay readable and wide ones don't
-// balloon.
-export default function BlogCard({ post, priority = false }) {
+// Card descriptions are cut at a word boundary after about this many characters.
+const SUMMARY_MAX = 80;
+
+function truncateSummary(text = "", max = SUMMARY_MAX) {
+  const clean = text.trim();
+  if (clean.length <= max) return clean;
+  const cut = clean.slice(0, max);
+  const atWord = cut.slice(0, cut.lastIndexOf(" ")) || cut;
+  return `${atWord.replace(/[\s,.;:!?-]+$/, "")}\u2026`;
+}
+
+// `light`: for the light (bg-light) sheets on the blog listing and detail pages
+export default function BlogCard({ post, priority = false, light = false }) {
   return (
-    <div className="fadeup group/card @container relative h-full w-full">
-      <div className="flex h-full flex-col gap-[clamp(0.75rem,4cqi,1.25rem)] bg-[#161616] p-[clamp(1rem,5.4cqi,1.75rem)] pb-[clamp(2.25rem,8.5cqi,3rem)]">
-        <div className="aspect-video w-full shrink-0 overflow-hidden bg-[#202020]">
+    <div className="fadeup group/card relative h-full w-full">
+      <div className={`flex h-full min-h-[calc(var(--cvw)*28)] flex-col gap-[calc(var(--cvw)*1.8)] ${light ? "bg-foreground text-ink transition-shadow duration-500 group-hover/card:shadow-float" : "bg-dark-card"} p-[calc(var(--cvw)*2.2)] max-lg:p-[1.8vw] max-lg:min-h-[45vh] max-lg:gap-[3vw] max-md:gap-[5vw] max-md:px-[7vw] max-md:py-8 pb-9 max-md:pb-12`}>
+        <div className="aspect-[5/3] w-full shrink-0 max-lg:aspect-auto overflow-hidden bg-grey max-lg:h-[32vw] max-md:h-[30vh]">
           {post.coverImage?.url && (
             <Image
               src={post.coverImage.url}
               alt={post.coverImage.alt || post.title}
               width={560}
               height={315}
+              sizes="(max-width: 767px) 100vw, (max-width: 1024px) 50vw, 33vw"
               quality={75}
               priority={priority}
               loading={priority ? undefined : "lazy"}
@@ -38,38 +45,38 @@ export default function BlogCard({ post, priority = false }) {
           )}
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-3 pb-3 font-geist-mono">
+        <div className="flex items-center justify-between gap-3 pb-3 font-avenir">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             {post.categories?.length > 0 && (
-              <span className="bg-[#2B2B2B] px-2 py-1 text-[clamp(0.75rem,3cqi,0.95rem)] leading-none text-white/90">
+              <span className={`${light ? "bg-black/5 text-ink" : "bg-grey text-foreground/90"} px-2 py-0.5 type-small max-lg:px-3 max-lg:py-1.5 max-md:px-3 max-md:py-1`}>
                 {post.categories[0].title}
               </span>
             )}
           </div>
-          <span className="shrink-0 font-neue-haas text-[clamp(0.75rem,3.2cqi,1rem)] text-[#AEAEAE]">
+          <span className={`shrink-0 type-small ${light ? "text-black/60" : "text-foreground/70"}`}>
             {formatCardDate(post.publishedAt)}
           </span>
         </div>
 
-        <LineWipe>
-          <h3 className="shrink-0 font-neue-haas text-[clamp(1.15rem,6cqi,2rem)] font-medium leading-[1.2]! text-white">
+        <LineWipe lit={light ? "var(--ink)" : undefined}>
+          <h3 className={`shrink-0 type-h3 ${light ? "text-ink" : "text-foreground"}`}>
             {post.title}
           </h3>
         </LineWipe>
 
-        <LineWipe delay={0.15}>
-          <p className="grow text-[clamp(0.95rem,3.55cqi,1.125rem)] leading-[1.4] text-white">
-            {post.summary}
+        <LineWipe delay={0.15} lit={light ? "var(--ink)" : undefined}>
+          <p className={`type-body leading-[1.3] ${light ? "text-black/60" : "text-foreground"}`}>
+            {truncateSummary(post.summary)}
           </p>
         </LineWipe>
 
-        <div className="fadein" data-fadein-delay="0.3">
+        <div className="fadein mt-auto" data-fadein-delay="0.3">
           <LinkButton
             href={`/blog/${post.slug}`}
             text="Read More"
             tilted={false}
             underline={true}
-            className="relative z-10 mt-[clamp(0.25rem,3cqi,1.25rem)] text-[clamp(0.95rem,3.55cqi,1.125rem)]"
+            className={`relative type-body z-10 mt-[calc(var(--cvw)*1.2)] max-lg:mt-[2vw] max-md:mt-0 ${light ? "text-ink!" : ""}`}
           />
         </div>
       </div>

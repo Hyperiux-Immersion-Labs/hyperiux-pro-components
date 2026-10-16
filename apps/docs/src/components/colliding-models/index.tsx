@@ -693,11 +693,11 @@ export default function CollidingModels({
             returnToPosition={returnToPosition}
             returnSpeed={returnSpeed}
           />
-          <p className="pointer-events-none max-[1025px]:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-md:bottom-4 max-md:text-xs">
+          <p className="pointer-events-none max-lg:hidden absolute bottom-6 left-1/2 z-10 max-w-130 -translate-x-1/2 px-6 text-center font-mono text-sm leading-relaxed text-white/70 max-md:bottom-4 max-md:text-xs">
             Move through the field and let the models collide - click to change their spark.
           </p>
 
-          <p className='hidden max-[1025px]:block absolute bottom-6 left-1/2 z-10 max-[1025px]:max-w-130 max-md:w-[70%] -translate-x-1/2 px-2 leading-[1.2] max-[1025px]:text-lg max-md:text-sm text-center '>
+          <p className='hidden max-lg:block absolute bottom-6 left-1/2 z-10 max-lg:max-w-130 max-md:w-[70%] -translate-x-1/2 px-2 leading-[1.2] max-lg:text-lg max-md:text-sm text-center '>
             Touch the field and let the models collide , tap to change their spark.
           </p>
         </div>

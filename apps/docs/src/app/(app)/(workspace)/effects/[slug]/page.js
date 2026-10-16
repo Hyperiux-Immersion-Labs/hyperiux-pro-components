@@ -5,28 +5,25 @@ import {
   getEffectCategoryContent,
   getEffectCategoryMetadata,
 } from "@/lib/categories";
-import { VaultContent } from "../vault-content";
-import { getUserPlan } from "@/lib/subscription";
-import { auth } from "@clerk/nextjs/server";
+import { EffectsListing } from "../EffectsListing";
 import { sortEffects } from "@/lib/effect-sort";
 import {
   getAllSanityEffectEntries,
-  buildRegistryIndex,
   buildEffectsFromSanity,
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
-import { getEffectTierCounts } from "@/lib/registry";
 import {
   getFeaturedEffects,
   getFeaturedEffectsByCategory,
   getOverviewFeaturedEffects,
 } from "@/lib/featured-effects";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
-import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-stats";
+import { getEffectInstallCounts } from "@/lib/cli-install-stats";
 
+// Shown while the listing loads: the page colour (#111111), not black, so there's no dark flash
 function VaultFallback() {
   return (
-    <div className="min-h-[300vh] w-screen bg-black">
+    <div className="min-h-[300vh] w-full bg-background">
     </div>
   );
 }
@@ -62,59 +59,44 @@ export async function generateMetadata({ params }) {
   });
 }
 
+// ISR: the listing is cached and rebuilt in the background at most once a
+// minute - matching the install-count cache (lib/cli-install-stats), the
+// shortest-lived data on the page. Effect content itself is cached for an hour
+// and cleared on publish via /api/revalidate. The visitor's plan is fetched on
+// the client (useUserPlan), so the cached page is the same for everyone.
+export const revalidate = 60;
+
+// Category listing (/effects/text, /effects/free, /effects/pro, /effects/featured, ...):
+// the v4 listing scoped to this category, with the category's own hero copy, FAQ
+// and CTA. Every effect is passed so the tier/featured/tag filters and the category
+// chips' counts work; the chips link between category pages.
 export default async function EffectsCategoryPage({ params }) {
-  const { userId } = await auth();
   const { slug } = await params;
   const isFreeListing = slug === "free";
   const isFeaturedListing = slug === "featured";
   const isProListing = slug === "pro";
   const category = getEffectCategoryBySlug(slug);
-  const userPlan = await getUserPlan(userId);
 
   const sanityEntries = await getAllSanityEffectEntries();
-  const registryIndex = buildRegistryIndex(sanityEntries);
-  const allEffects = buildEffectsFromSanity(sanityEntries);
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
-  const sortedEffects = sortEffects(allEffects);
-  const featuredEffects = getFeaturedEffects(allEffects);
-  const pageTrendingEffects =
-    category?.id && !isFreeListing && !isFeaturedListing && !isProListing
-      ? getFeaturedEffectsByCategory(allEffects, category.id)
-      : getOverviewFeaturedEffects(allEffects);
-
-  // Initial category filter matching
-  const categoryId = isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category?.id;
-  const categoryEffects = sortedEffects.filter((effect) => {
-    if (categoryId === "free") return effect.tier !== "pro";
-    if (categoryId === "pro") return effect.tier === "pro";
-    if (categoryId === "featured") return featuredEffects.some((f) => f.name === effect.name);
-    return effect.categorySlug === slug || effect.categories?.includes(slug);
-  });
-
-  const initialSlice = categoryEffects.slice(0, 18);
-  const initialInstallEffects = [...new Set([...initialSlice, ...featuredEffects, ...pageTrendingEffects])];
-  const installCounts = await getEffectInstallCounts(initialInstallEffects);
-  const initialEffectsWithCounts = attachInstallCounts(initialSlice, installCounts);
-  const featuredEffectsWithCounts = attachInstallCounts(featuredEffects, installCounts);
-  const trendingEffectsWithCounts = attachInstallCounts(pageTrendingEffects, installCounts);
-
-  const effectCounts = {};
-  for (const [catId, catEffects] of Object.entries(categoriesMap)) {
-    effectCounts[catId] = catEffects.length;
-  }
-  Object.assign(effectCounts, getEffectTierCounts());
-  effectCounts.featured = featuredEffects.length;
 
   if (!isFreeListing && !isFeaturedListing && !isProListing && (!category || !categoriesMap[category.id])) {
     notFound();
   }
 
-  const pageMetadata = getEffectCategoryMetadata(
-    isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category
-  );
-  const pageContent = getEffectCategoryContent(
-    isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category
-  );
+  const scope = isFreeListing ? "free" : isFeaturedListing ? "featured" : isProListing ? "pro" : category.id;
+
+  const effects = sortEffects(buildEffectsFromSanity(sanityEntries));
+  // Install counts (Supabase) are baked into each ISR build of the page.
+  const installCountsPromise = getEffectInstallCounts(effects).catch(() => ({}));
+  const featuredNames = getFeaturedEffects(effects).map((effect) => effect.name);
+  const trendingEffects =
+    category?.id && !isFreeListing && !isFeaturedListing && !isProListing
+      ? getFeaturedEffectsByCategory(effects, category.id)
+      : getOverviewFeaturedEffects(effects);
+
+  const pageMetadata = getEffectCategoryMetadata(scope === category?.id ? category : scope);
+  const pageContent = getEffectCategoryContent(scope === category?.id ? category : scope);
 
   return (
     <>
@@ -122,14 +104,13 @@ export default async function EffectsCategoryPage({ params }) {
       <BreadcrumbsJSONLD pathname={pageMetadata.url} />
       {pageContent.faqs?.length > 0 && <FAQJSONLD faqs={pageContent.faqs} />}
       <Suspense fallback={<VaultFallback />}>
-        <VaultContent
-          effects={registryIndex}
-          initialEffects={initialEffectsWithCounts}
-          featuredEffects={featuredEffectsWithCounts}
-          trendingEffects={trendingEffectsWithCounts}
-          effectCounts={effectCounts}
-          initialCategory={categoryId}
-          userPlan={userPlan}
+        <EffectsListing
+          effects={effects}
+          trendingEffects={trendingEffects}
+          featuredNames={featuredNames}
+          installCounts={installCountsPromise}
+          scope={scope}
+          content={pageContent}
         />
       </Suspense>
     </>

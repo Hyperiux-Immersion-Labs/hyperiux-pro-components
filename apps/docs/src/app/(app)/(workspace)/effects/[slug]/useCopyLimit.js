@@ -3,6 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
+import { getLimitNudge } from "@/lib/limitNudge";
+import { mergeCopyUsage, publishCopyUsage, subscribeCopyUsage } from "@/lib/copyUsageEvents";
 
 const CopyLimitContext = createContext(null);
 
@@ -16,6 +18,12 @@ export function CopyLimitProvider({ children, onRequireSignIn, onRequireUpgrade,
   const [usage, setUsage] = useState(null);
   const { toast, showToast, dismissToast } = useToastQueue();
 
+  // Kept in step with the effect cards / preview drawer on this page
+  useEffect(
+    () => subscribeCopyUsage((next) => setUsage((previous) => mergeCopyUsage(previous, next))),
+    []
+  );
+
   // Surfaces the "X of Y copies left today" nudge after every copy attempt
   // that actually touches the daily limit - skipped for admins (unlimited)
   // since there's nothing worth reporting.
@@ -27,17 +35,14 @@ export function CopyLimitProvider({ children, onRequireSignIn, onRequireUpgrade,
       const remaining = Math.max(0, data.remaining ?? 0);
       const count = data.count ?? Math.max(0, limit - remaining);
 
+      if (remaining === 0) {
+        showToast(getLimitNudge(data));
+        return;
+      }
+
       showToast({
-        title:
-          remaining > 0
-            ? `${remaining} of ${limit} daily copies left`
-            : "Daily copy limit reached",
-        description:
-          remaining > 0
-            ? `You've copied ${count}/${limit} effects today.`
-            : "Come back tomorrow, or upgrade to Pro for a higher limit.",
-        ctaHref: remaining === 0 && data.plan !== "pro" ? "/pricing" : null,
-        ctaLabel: "Upgrade to Pro",
+        title: `${remaining} of ${limit} daily installs left`,
+        description: `You've used ${count}/${limit} installs today, across copies, CLI and MCP.`,
       });
     },
     [showToast]
@@ -72,7 +77,9 @@ export function CopyLimitProvider({ children, onRequireSignIn, onRequireUpgrade,
   // "this effect is now unlocked" event.
   const pendingRequestRef = useRef(null);
 
-  const requestCopy = useCallback(async () => {
+  // `source`: "web" (code copied from the page), or "cli" / "mcp" for a copied CLI
+  // command or MCP prompt - recorded as that kind of install
+  const requestCopy = useCallback(async (source = "web") => {
     if (!isLoaded) return false;
 
     if (!isSignedIn) {
@@ -99,11 +106,12 @@ export function CopyLimitProvider({ children, onRequireSignIn, onRequireUpgrade,
         const res = await fetch("/api/copy-usage", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ effectSlug }),
+          body: JSON.stringify({ effectSlug, source }),
         });
         const data = await res.json();
 
         setUsage(data);
+        publishCopyUsage(data);
         notifyUsage(data);
 
         return Boolean(data.allowed);
@@ -139,12 +147,15 @@ export function CopyLimitProvider({ children, onRequireSignIn, onRequireUpgrade,
   // server-side and returns the same usage shape as copy-usage's POST -
   // this keeps the shared count (and the "X of Y left" toast) in sync
   // without a second round-trip.
+  // Get code menu responses (counts, no effect list) - merged, and shared
   const applyUsage = useCallback(
     (data) => {
-      setUsage(data);
+      const merged = mergeCopyUsage(usage, data, effectSlug);
+      setUsage(merged);
+      publishCopyUsage(merged);
       notifyUsage(data);
     },
-    [notifyUsage]
+    [notifyUsage, usage, effectSlug]
   );
 
   const requireSignIn = useCallback(() => onRequireSignIn?.(), [onRequireSignIn]);
@@ -167,7 +178,9 @@ export function CopyLimitProvider({ children, onRequireSignIn, onRequireUpgrade,
     showToast,
     isLocked,
     selectable,
-    lockedCtaHref: usage?.plan === "pro" || usage?.isAdmin ? null : "/pricing",
+    // Free -> Upgrade to Pro, Pro -> Upgrade to Pro+, Pro+ -> none (lib/limitNudge.js)
+    lockedCtaHref: getLimitNudge(usage).ctaHref,
+    lockedCtaLabel: getLimitNudge(usage).ctaLabel,
   };
 
   return (

@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 
@@ -15,14 +14,14 @@ import {
   buildEffectsFromSanity,
   getEffectsByCategoryFromSanity,
 } from "@/lib/sanity";
-import { getUserPlan } from "@/lib/subscription";
+import { getUnlockedEffectSlugsToday, resolveSignedInIdentity } from "@/lib/install-limit";
 import { getEffectAccessDecision } from "@/lib/effect-access";
 import { getEffectCategoryBySlug } from "@/lib/categories";
 import { EffectDetailContent } from "../effect-detail";
 import { BreadcrumbsJSONLD, FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
-import { resolveOgImageUrl } from "@/lib/media";
-import { attachInstallCounts, getEffectInstallCounts } from "@/lib/cli-install-stats";
+import { LISTING_IMAGE, resolveOgImageUrl } from "@/lib/media";
+import { getEffectInstallCounts } from "@/lib/cli-install-stats";
 
 // Mirrors effect-detail.jsx's isCodeOnlyBlock - a Sanity portable-text block
 // whose only content is a single "code"-marked span (used for freeform code
@@ -48,7 +47,13 @@ function redactLockedBody(body, isLocked) {
   if (!isLocked || !Array.isArray(body)) return body;
 
   return body.map((block) => {
+    // Blocks nested in others (a callout's content) are stripped the same way
+    if (Array.isArray(block?.content)) {
+      block = { ...block, content: redactLockedBody(block.content, isLocked) };
+    }
+
     if (block?._type === "effectCodeBlock") {
+      // Both versions of the source: tsxCode is the TypeScript one
       const { code, tsxCode, ...rest } = block;
       return rest;
     }
@@ -101,10 +106,7 @@ function getEffectPageMetadata(effect, content, slug, effectSlug) {
     content?.summary ||
     effect?.description;
   const image =
-    resolveOgImageUrl(content?.coverImage || effect?.coverImage || effectSlug, {
-      defaultDirectory: "vault-listing-images",
-      defaultExtension: "png",
-    }) || "/seo/homepage.png";
+    resolveOgImageUrl(content?.coverImage || effect?.coverImage || effectSlug, LISTING_IMAGE) || "/seo/homepage.png";
 
   return createPageMetadata({
     title,
@@ -256,24 +258,42 @@ export default async function EffectPage({ params }) {
     }
   }
 
+  // Started now so the Sanity list loads alongside the access check below.
+  const sanityEntriesPromise = getAllSanityEffectEntries();
   const { userId } = await auth();
-  // Same currency rule as /pricing - the upgrade modal shows INR in India.
-  const isIndia = (await headers()).get("x-vercel-ip-country") === "IN";
   const effectTier = content.tier ?? effectMeta?.tier ?? "pro";
 
-  // userPlan drives general "are you Pro" UI (upgrade CTAs etc.) independent
-  // of this specific effect; access is the actual per-effect gating decision,
-  // shared with the CLI and legacy web API routes - see docs/effect-access.md.
-  const [userPlan, access] = await Promise.all([
-    getUserPlan(userId),
-    getEffectAccessDecision({ effectTier, clerkUserId: userId }),
-  ]);
+  // access is the per-effect gating decision, shared with the CLI and legacy
+  // web API routes - see docs/effect-access.md. It decides whether the Pro
+  // source is sent at all, so it is the one value this page waits for.
+  const access = await getEffectAccessDecision({ effectTier, clerkUserId: userId });
   const isLocked = !access.allowed;
+
+  // Why this page's code is withheld, if it is - decided here, never in the
+  // browser, so the real source only ever reaches people allowed to copy it:
+  //   "sign-in" - signed out
+  //   "pro"     - a Pro effect without Pro
+  //   "limit"   - today's install limit is used up and this effect isn't one
+  //               of today's (effects copied today stay open)
+  let codeLock = null;
+  let lockTier = null;
+  if (!userId) {
+    codeLock = "sign-in";
+  } else if (isLocked) {
+    codeLock = "pro";
+  } else {
+    const identity = await resolveSignedInIdentity(userId);
+    lockTier = identity.tier;
+    if (!identity.isAdmin && identity.limit != null) {
+      const unlockedToday = await getUnlockedEffectSlugsToday({ clerkUserId: userId });
+      if (!unlockedToday.includes(effectSlug) && unlockedToday.length >= identity.limit) codeLock = "limit";
+    }
+  }
 
   // Only attach Pro source content once the requester is confirmed authorized.
   const effect = isLocked ? effectMeta : getEffectSource(effectSlug);
 
-  const sanityEntries = await getAllSanityEffectEntries();
+  const sanityEntries = await sanityEntriesPromise;
   const allEffects = buildEffectsFromSanity(sanityEntries);
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
 
@@ -308,25 +328,24 @@ export default async function EffectPage({ params }) {
       .slice(0, 5);
   }
 
-  const installCounts = await getEffectInstallCounts([
+  // Install counts come from Supabase - not awaited; the related cards show a
+  // skeleton until they stream in.
+  const installCountsPromise = getEffectInstallCounts([
     ...globalSearchEffects,
     ...relatedEffects,
-  ]);
-  const relatedEffectsWithInstallCounts = attachInstallCounts(
-    relatedEffects,
-    installCounts
-  );
-  const searchEffectsWithInstallCounts = attachInstallCounts(
-    globalSearchEffects,
-    installCounts
-  );
+  ]).catch(() => ({}));
 
   const pageMetadata = getEffectPageMetadata(effect, content, slug, effectSlug);
   const faqItems = getSanityFaqs(content);
 
   // Only the object actually sent to the client needs redaction - FAQ/SEO
   // extraction above already ran against the full `content`.
-  const clientContent = { ...content, body: redactLockedBody(content.body, isLocked) };
+  // jsxCode / tsxCode are the effect's full source (the Sanity query takes
+  // every field). The page never needs them - the "Get code" menu fetches
+  // source from /api/effects/[slug]/copy, which checks access and the daily
+  // limit - so they're dropped for everyone.
+  const { jsxCode: _jsx, tsxCode: _tsx, ...publicContent } = content;
+  const clientContent = { ...publicContent, body: redactLockedBody(content.body, Boolean(codeLock)) };
 
   return (
     <>
@@ -338,13 +357,14 @@ export default async function EffectPage({ params }) {
         categorySlug={slug}
         effect={stripFileContent(effect)}
         content={clientContent}
-        relatedEffects={relatedEffectsWithInstallCounts}
+        relatedEffects={relatedEffects}
+        installCounts={installCountsPromise}
         effectCounts={effectCounts}
         totalEffects={sanityEntries.length}
         isLocked={isLocked}
-        userPlan={userPlan}
-        searchEffects={searchEffectsWithInstallCounts}
-        isIndia={isIndia}
+        codeLock={codeLock}
+        lockTier={lockTier}
+        searchEffects={globalSearchEffects}
       />
     </>
   );

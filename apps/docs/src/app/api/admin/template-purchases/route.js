@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { displayName } from "@/lib/display-name";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertSuperAdmin } from "@/lib/admin";
@@ -30,11 +31,8 @@ export async function GET(request) {
     const templateFilter = searchParams.get("template") || "all";
     const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 100);
     const offset = parseInt(searchParams.get("offset") || "0", 10);
-    // range/from/to are all optional - omitted entirely by
-    // dashboard/admin/invoicing (which wants "every purchase, ever"),
-    // passed by dashboard/admin/activity's TemplatePurchasesPanel so this
-    // table stays in step with that page's date-range picker instead of
-    // always showing all-time totals regardless of what's selected.
+    // range/from/to are all optional - without them it's every purchase, ever;
+    // the admin Invoicing page passes its date filter.
     const { startISO, endISO } = resolveDateBounds({
       range: searchParams.get("range"),
       from: searchParams.get("from"),
@@ -52,7 +50,7 @@ export async function GET(request) {
       supabase
         .from("template_purchases")
         .select(
-          "id,clerk_user_id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,created_at",
+          "id,clerk_user_id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,source,created_at",
           { count: "exact" }
         )
         .order("created_at", { ascending: false })
@@ -65,8 +63,15 @@ export async function GET(request) {
         query.range(offset, offset + limit - 1),
         // Stats always reflect every purchase in the same window,
         // independent of the current page/template filter, so the top-line
-        // numbers don't shift while paging.
-        scoped(supabase.from("template_purchases").select("amount, currency")),
+        // numbers don't shift while paging. Revenue only: paid purchases -
+        // not refunded ones, and not credit redemptions (no money changes hands).
+        scoped(
+          supabase
+            .from("template_purchases")
+            .select("amount, currency")
+            .eq("status", "paid")
+            .or("source.is.null,source.neq.credit")
+        ),
       ]);
 
     if (pageError || statsError) {
@@ -93,12 +98,14 @@ export async function GET(request) {
       return {
         id: row.id,
         userId: row.clerk_user_id,
-        userName: clerkUser?.fullName || clerkUser?.firstName || null,
+        userName: displayName(clerkUser),
         userEmail: clerkUser?.emailAddresses?.[0]?.emailAddress || null,
         userImageUrl: clerkUser?.imageUrl || null,
         templateSlug: row.template_slug,
         templateTitle: template?.title || row.template_slug,
         paymentId: row.razorpay_payment_id,
+        // Redeemed with a template credit: no payment, shown as "1 credit"
+        redeemedWithCredit: row.source === "credit" || !row.razorpay_payment_id,
         amount: row.amount,
         currency: row.currency,
         status: row.status,

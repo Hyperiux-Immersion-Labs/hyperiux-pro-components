@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import { displayName } from "@/lib/display-name";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertAdmin } from "@/lib/admin";
-import { buildDailyBucketsForRange, fillDailyBuckets, resolveDateBounds, utcDateString } from "@/lib/admin-activity";
+import { buildDailyBucketsForRange, fillDailyBuckets, fillDailyBucketsBySeries, resolveDateBounds, utcDateString } from "@/lib/admin-activity";
 
 // Stage 2 (Installation-SyncUp.md): calibrate the 2/3/10 daily limits against
 // real install_events data before Stage 3 flips INSTALL_LIMIT_ENFORCE on.
@@ -55,14 +56,10 @@ export async function GET(request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    // Matches /api/admin/copy-activity's default - both read the same
-    // install_events ledger, and the shared date-range control in
-    // InstallActivityTab.js's buildRangeQuery() omits the `range` param
-    // entirely for "All time" rather than sending range=all, so whatever
-    // each route falls back to here is what "All time" actually shows.
-    // These silently disagreeing (this used to default to "30d") is why
-    // the installs panel and the copy-activity list could show different
-    // start dates for the exact same underlying data.
+    // Matches /api/admin/copy-activity's default - both read the same ledger, so
+    // a request without a `range` must mean the same window in both (this used
+    // to default to "30d", and the two panels showed different start dates for
+    // the same data).
     const range = searchParams.get("range") || "all";
     const from = searchParams.get("from");
     const to = searchParams.get("to");
@@ -99,6 +96,9 @@ export async function GET(request) {
       .select(
         "occurred_at,identity_key,clerk_user_id,device_id,ip_hash,effect_slug,effect_tier,source,plan,decision,reason,enforced,would_have_denied,cli_version,mcp_version"
       )
+      // Admins are never limited; their installs are only logged for their own usage
+      // tab (lib/install-limit), so they'd skew this limits analysis. plan can be null.
+      .or("plan.is.null,plan.neq.admin")
       .order("occurred_at", { ascending: false });
     if (startISO) eventsQuery = eventsQuery.gte("occurred_at", startISO);
     if (endISO) eventsQuery = eventsQuery.lt("occurred_at", endISO);
@@ -133,6 +133,14 @@ export async function GET(request) {
       buildDailyBucketsForRange({ startDateString, endDateString }),
       unlocks,
       (row) => row.usage_date
+    );
+
+    const sourceTrend = fillDailyBucketsBySeries(
+      buildDailyBucketsForRange({ startDateString, endDateString }),
+      unlocks,
+      (row) => row.usage_date,
+      (row) => row.source,
+      ["web", "cli", "mcp"]
     );
 
     // Two leaderboards over the same `unlocks`: "Top users by copies" means
@@ -171,7 +179,7 @@ export async function GET(request) {
           const clerkUser = clerkMap[clerkUserId];
           return {
             clerkUserId,
-            name: clerkUser.fullName || clerkUser.firstName || null,
+            name: displayName(clerkUser),
             email: clerkUser.emailAddresses?.[0]?.emailAddress || null,
             imageUrl: clerkUser.imageUrl || null,
             count,
@@ -211,6 +219,8 @@ export async function GET(request) {
       // table (a documented exception, not an oversight).
       planBreakdown: countBy(allEvents, "plan"),
       installTrend,
+      // The same days split by surface: { date, label, web, cli, mcp }
+      sourceTrend,
       topUsers,
       topInstallers,
     });

@@ -623,7 +623,7 @@ function WebGLSliderComp({
             className="absolute top-0 left-0 hidden will-change-transform"
           >
             <div className="flex origin-center -translate-x-1/2 -translate-y-1/2 flex-col">
-              <p className="whitespace-pre-wrap text-[6.5vw] font-bold leading-[0.85] tracking-tighter max-[1025px]:text-[7.6vw] max-md:text-[9.4vw]">
+              <p className="whitespace-pre-wrap text-[6.5vw] font-bold leading-[0.85] tracking-tighter max-lg:text-[7.6vw] max-md:text-[9.4vw]">
                 {img.text}
               </p>
             </div>
@@ -635,17 +635,17 @@ function WebGLSliderComp({
 }
 
 const images: WebGLSliderImage[] = [
- { src:"https://picsum.photos/seed/wgl0/800/1200", text:"PR.00\n /10" },
- { src:"https://picsum.photos/seed/wgl1/800/1200", text:"PR.01\n /10" },
- { src:"https://picsum.photos/seed/wgl2/800/1200", text:"PR.02\n /10" },
- { src:"https://picsum.photos/seed/wgl3/800/1200", text:"PR.03\n /10" },
- { src:"https://picsum.photos/seed/wgl4/800/1200", text:"PR.04\n /10" },
- { src:"https://picsum.photos/seed/wgl5/800/1200", text:"PR.05\n /10" },
- { src:"https://picsum.photos/seed/wgl6/800/1200", text:"PR.06\n /10" },
- { src:"https://picsum.photos/seed/wgl7/800/1200", text:"PR.07\n /10" },
- { src:"https://picsum.photos/seed/wgl8/800/1200", text:"PR.08\n /10" },
- { src:"https://picsum.photos/seed/wgl9/800/1200", text:"PR.09\n /10" },
- { src:"https://picsum.photos/seed/wgl10/800/1200", text:"PR.10\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg", text:"PR.00\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-09.jpg", text:"PR.01\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-10.jpg", text:"PR.02\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg", text:"PR.03\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg", text:"PR.04\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-13.jpg", text:"PR.05\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg", text:"PR.06\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-15.jpg", text:"PR.07\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg", text:"PR.08\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-02.jpg", text:"PR.09\n /10" },
+ { src:"https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-03.jpg", text:"PR.10\n /10" },
 ];
 
 const WebGLSlider = ({

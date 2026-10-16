@@ -41,8 +41,6 @@ graft/
 .21st/
 .local
 
-# vault-main (moved from the experiments repo; replaces apps/docs once live)
-vault-main/node_modules
-vault-main/.next
+# Local env files and generated Next types
 .env*.local
 next-env.d.ts

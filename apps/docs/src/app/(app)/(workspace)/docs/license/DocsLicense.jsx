@@ -1,13 +1,11 @@
 "use client";
 
 import DocsContent from "@/components/DocsContent/DocsContent";
-import Heading from "@/components/DocsContent/Heading";
 import Heading2 from "@/components/DocsContent/Heading2";
 import Para from "@/components/DocsContent/Para";
 import DocsList, { DocsListItem } from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
-import {CodeBlock} from "@/components/ui/CodeBlock";
-import Link from "next/link";
+import { CodeBlock } from "@/components/DocsContent/DocsCodeBlock";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 
 const licenseTiersCode = `Hyperiux Vault
@@ -19,10 +17,7 @@ const licenseTiersCode = `Hyperiux Vault
 export default function DocsLicense() {
 
   return (
-    <DocsContent className="max-w-none mx-0">
-      <Heading>License</Heading>
-
-      <Para>Use the code. Ship the work. Do not repackage the Vault.</Para>
+    <DocsContent>
       <Para>Code already installed remains in project, new Pro downloads and new client-project usage require active access.</Para>
 
       <Para>
@@ -495,7 +490,7 @@ export default function DocsLicense() {
       </Para>
       
      
-       <LinkButton href={"mailto:hello@hyperiux.com"} shimmer={false} tilted={false} showArrow={false}  text={"hello@hyperiux.com"} className="text-[#ff5f00]!"/>
+       <LinkButton href={"mailto:hello@hyperiux.com"} shimmer={false} tilted={false} showArrow={false}  text={"hello@hyperiux.com"} className="text-primary!"/>
        
 
       <Para>Useful details to include:</Para>

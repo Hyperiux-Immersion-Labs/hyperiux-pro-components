@@ -8,10 +8,11 @@ export default function Layout({ children }) {
   const totalEffects = registry?.items?.length ?? 0;
 
   return (
-    <div className="h-fit text-foreground px-14 max-[1025px]:px-[6vw] max-md:px-[7vw] pb-8">
+    <div className="h-fit text-foreground">
       <React.Suspense fallback={<div className="h-12" />}>
         <VaultHeader showSearch totalEffects={totalEffects} effects={registry?.items || []} />
       </React.Suspense>
+      {/* Smooth scroll comes from the workspace layout */}
       <DocsBody>{children}</DocsBody>
     </div>
   );

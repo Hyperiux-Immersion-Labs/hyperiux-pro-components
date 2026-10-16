@@ -569,7 +569,7 @@ const VideoPlayerComp = ({
 
         <button
           type="button"
-          className={`absolute left-1/2 top-1/2 z-3 flex min-h-15 min-w-15 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-black/40 text-white backdrop-blur-sm transition-[opacity,transform] duration-300 ease-in-out h-[5.5vw] w-[5.5vw] 2xl:h-[4.5vw] 2xl:w-[4.5vw] max-[1025px]:h-[8vw] max-[1025px]:w-[8vw] max-md:h-[16vw] max-md:w-[16vw] ${visibilityClasses}`}
+          className={`absolute left-1/2 top-1/2 z-3 flex min-h-15 min-w-15 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-0 bg-black/40 text-white backdrop-blur-sm transition-[opacity,transform] duration-300 ease-in-out h-[5.5vw] w-[5.5vw] 2xl:h-[4.5vw] 2xl:w-[4.5vw] max-lg:h-[8vw] max-lg:w-[8vw] max-md:h-[16vw] max-md:w-[16vw] ${visibilityClasses}`}
           onClick={handleTogglePlay}
           aria-label={isPlaying ? "Pause video" : "Play video"}
         >
@@ -579,7 +579,7 @@ const VideoPlayerComp = ({
         {showCloseButton && typeof onRequestClose === "function" && (
           <button
             type="button"
-            className={`absolute right-[1.8vw] top-[1.8vw] z-5 flex min-h-10.5 min-w-10.5 cursor-pointer items-center justify-center rounded-full border-none bg-black/45 text-white backdrop-blur-sm transition-[opacity,transform,background-color] duration-300 ease-in-out hover:scale-[1.04] hover:bg-black/65 h-[3.8vw] w-[3.8vw] 2xl:right-[1.5vw] 2xl:top-[1.5vw] 2xl:h-[3vw] 2xl:w-[3vw] max-[1025px]:right-[2.4vw] max-[1025px]:top-[2.4vw] max-[1025px]:h-[5.5vw] max-[1025px]:w-[5.5vw] max-md:right-4 max-md:top-4 max-md:h-[11vw] max-md:w-[11vw] touch-manipulation ${visibilityClasses}`}
+            className={`absolute right-[1.8vw] top-[1.8vw] z-5 flex min-h-10.5 min-w-10.5 cursor-pointer items-center justify-center rounded-full border-none bg-black/45 text-white backdrop-blur-sm transition-[opacity,transform,background-color] duration-300 ease-in-out hover:scale-[1.04] hover:bg-black/65 h-[3.8vw] w-[3.8vw] 2xl:right-[1.5vw] 2xl:top-[1.5vw] 2xl:h-[3vw] 2xl:w-[3vw] max-lg:right-[2.4vw] max-lg:top-[2.4vw] max-lg:h-[5.5vw] max-lg:w-[5.5vw] max-md:right-4 max-md:top-4 max-md:h-[11vw] max-md:w-[11vw] touch-manipulation ${visibilityClasses}`}
             onClick={(event) => {
               event.stopPropagation();
               handleClose();
@@ -591,47 +591,47 @@ const VideoPlayerComp = ({
         )}
 
         <div
-          className={`absolute bottom-[1.5vw] left-[1.5vw] right-[1.5vw] z-4 grid grid-cols-[auto_auto_1fr_auto_auto_auto] items-center gap-[1.1vw] rounded-full bg-black/50 px-[1.2vw] py-[1vw] backdrop-blur-[10px] transition-[opacity,transform] duration-300 ease-in-out 2xl:bottom-[1.2vw] 2xl:left-[1.2vw] 2xl:right-[1.2vw] 2xl:gap-[0.9vw] 2xl:px-[1vw] 2xl:py-[0.9vw] max-[1025px]:bottom-[2vw] max-[1025px]:left-[2vw] max-[1025px]:right-[2vw] max-[1025px]:gap-[1.6vw] max-[1025px]:px-[1.8vw] max-[1025px]:py-[1.6vw] max-md:bottom-[3vw] max-md:left-[3vw] max-md:right-[3vw] max-md:gap-[2vw] max-md:px-[3vw] max-md:py-[2.6vw] ${visibilityClasses}`}
+          className={`absolute bottom-[1.5vw] left-[1.5vw] right-[1.5vw] z-4 grid grid-cols-[auto_auto_1fr_auto_auto_auto] items-center gap-[1.1vw] rounded-full bg-black/50 px-[1.2vw] py-[1vw] backdrop-blur-[10px] transition-[opacity,transform] duration-300 ease-in-out 2xl:bottom-[1.2vw] 2xl:left-[1.2vw] 2xl:right-[1.2vw] 2xl:gap-[0.9vw] 2xl:px-[1vw] 2xl:py-[0.9vw] max-lg:bottom-[2vw] max-lg:left-[2vw] max-lg:right-[2vw] max-lg:gap-[1.6vw] max-lg:px-[1.8vw] max-lg:py-[1.6vw] max-md:bottom-[3vw] max-md:left-[3vw] max-md:right-[3vw] max-md:gap-[2vw] max-md:px-[3vw] max-md:py-[2.6vw] ${visibilityClasses}`}
         >
           <button
             type="button"
-            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-[1025px]:h-[4.5vw] max-[1025px]:w-[4.5vw] max-md:h-[9vw] max-md:w-[9vw]"
+            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-lg:h-[4.5vw] max-lg:w-[4.5vw] max-md:h-[9vw] max-md:w-[9vw]"
             onClick={handleTogglePlay}
             aria-label={isPlaying ? "Pause video" : "Play video"}
           >
             {isPlaying ? <Pause size={18} /> : <Play size={18} />}
           </button>
 
-          <div className="whitespace-nowrap text-[1.1vw] leading-none text-white 2xl:text-[0.95vw] max-[1025px]:text-[1.8vw] max-md:text-[3vw]">
+          <div className="whitespace-nowrap text-[1.1vw] leading-none text-white 2xl:text-[0.95vw] max-lg:text-[1.8vw] max-md:text-[3vw]">
             <span>{formatTime(currentTime)}</span>
           </div>
 
           <div
             ref={progressBarRef}
-            className="relative flex h-[1.4vw] w-full cursor-pointer items-center min-h-4.5 2xl:h-[1.2vw] max-[1025px]:h-[2vw] max-md:h-[4vw]"
+            className="relative flex h-[1.4vw] w-full cursor-pointer items-center min-h-4.5 2xl:h-[1.2vw] max-lg:h-[2vw] max-md:h-[4vw]"
             onClick={handleProgressClick}
             onPointerDown={handlePointerDown}
           >
-            <div className="pointer-events-none absolute inset-x-0 h-[0.32vw] rounded-full bg-white/20 min-h-1 2xl:h-[0.25vw] max-[1025px]:h-[0.45vw] max-md:h-[1vw]" />
+            <div className="pointer-events-none absolute inset-x-0 h-[0.32vw] rounded-full bg-white/20 min-h-1 2xl:h-[0.25vw] max-lg:h-[0.45vw] max-md:h-[1vw]" />
 
             <div
-              className={`pointer-events-none absolute left-0 h-[0.32vw] rounded-full bg-white min-h-1 2xl:h-[0.25vw] max-[1025px]:h-[0.45vw] max-md:h-[1vw] ${isScrubbing ? "" : "transition-[width] duration-300 ease-linear"}`}
+              className={`pointer-events-none absolute left-0 h-[0.32vw] rounded-full bg-white min-h-1 2xl:h-[0.25vw] max-lg:h-[0.45vw] max-md:h-[1vw] ${isScrubbing ? "" : "transition-[width] duration-300 ease-linear"}`}
               style={{ width: `${progress}%` }}
             />
 
             <div
-              className={`pointer-events-none absolute top-1/2 h-[1vw] w-[1vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white min-h-3.5 min-w-3.5 2xl:h-[0.9vw] 2xl:w-[0.9vw] max-[1025px]:h-[1.6vw] max-[1025px]:w-[1.6vw] max-md:h-[3vw] max-md:w-[3vw] ${isScrubbing ? "" : "transition-[left] duration-300 ease-linear"}`}
+              className={`pointer-events-none absolute top-1/2 h-[1vw] w-[1vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white min-h-3.5 min-w-3.5 2xl:h-[0.9vw] 2xl:w-[0.9vw] max-lg:h-[1.6vw] max-lg:w-[1.6vw] max-md:h-[3vw] max-md:w-[3vw] ${isScrubbing ? "" : "transition-[left] duration-300 ease-linear"}`}
               style={{ left: `${progress}%` }}
             />
           </div>
 
-          <div className="whitespace-nowrap text-[1.1vw] leading-none text-white 2xl:text-[0.95vw] max-[1025px]:text-[1.8vw] max-md:text-[3vw]">
+          <div className="whitespace-nowrap text-[1.1vw] leading-none text-white 2xl:text-[0.95vw] max-lg:text-[1.8vw] max-md:text-[3vw]">
             <span>{formatTime(duration)}</span>
           </div>
 
           <button
             type="button"
-            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-[1025px]:h-[4.5vw] max-[1025px]:w-[4.5vw] max-md:h-[9vw] max-md:w-[9vw]"
+            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-lg:h-[4.5vw] max-lg:w-[4.5vw] max-md:h-[9vw] max-md:w-[9vw]"
             onClick={handleToggleMute}
             aria-label={isMuted ? "Unmute video" : "Mute video"}
           >
@@ -640,7 +640,7 @@ const VideoPlayerComp = ({
 
           <button
             type="button"
-            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-[1025px]:h-[4.5vw] max-[1025px]:w-[4.5vw] max-md:h-[9vw] max-md:w-[9vw]"
+            className="flex h-[3vw] w-[3vw] min-h-9.5 min-w-9.5 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white 2xl:h-[2.5vw] 2xl:w-[2.5vw] max-lg:h-[4.5vw] max-lg:w-[4.5vw] max-md:h-[9vw] max-md:w-[9vw]"
             onClick={handleToggleFullscreen}
             aria-label={isFullscreen ? "Exit fullscreen" : "Open fullscreen"}
           >

@@ -601,7 +601,7 @@ export const UI = ({ images = [] }: UIProps) => {
  </main>
 
  <div className="relative z-20 h-screen pointer-events-none">
-    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-[1025px]:justify-center max-[1025px]:gap-8 max-md:gap-4 max-[1025px]:top-[85%] max-md:top-[80%]">
+    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-lg:justify-center max-lg:gap-8 max-md:gap-4 max-lg:top-[85%] max-md:top-[80%]">
     <p className="text-[8vw] max-md:text-[10vw] leading-[1.2] text-white">
         BOOK 
        
@@ -993,18 +993,18 @@ export default function BookFlip({
 }
 
 const BOOK_IMAGES = [
-  "https://picsum.photos/seed/book1/800/600",
-  "https://picsum.photos/seed/book2/800/600",
-  "https://picsum.photos/seed/book3/800/600",
-  "https://picsum.photos/seed/book4/800/600",
-  "https://picsum.photos/seed/book5/800/600",
-  "https://picsum.photos/seed/book6/800/600",
-  "https://picsum.photos/seed/book7/800/600",
-  "https://picsum.photos/seed/book8/800/600",
-  "https://picsum.photos/seed/book9/800/600",
-  "https://picsum.photos/seed/book10/800/600",
-  "https://picsum.photos/seed/book11/800/600",
-  "https://picsum.photos/seed/book12/800/600",
-  "https://picsum.photos/seed/book13/800/600",
-  "https://picsum.photos/seed/book14/800/600",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature01.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature02.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature03.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature04.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature05.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature06.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature07.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature08.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature09.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature10.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature11.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature12.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature13.png",
+  "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/book-flip/nature14.png",
 ];

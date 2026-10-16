@@ -1,24 +1,44 @@
 @layer theme, base, clerk, components, utilities;
 
 @import "tailwindcss";
+@import "../styles/blog.css";
 
 :root {
-  --background: #050505;
-  --foreground: #ffffff;
+  /* Header control size (search, sound, buttons, avatar) in VaultHeader and the homepage
+     Navbar: Button's height (1.15vw text x 1.5 line height + py-2), never under 44px. */
+  --vault-ctl-h: max(44px, calc(var(--hx-vw, 1vw) * 1.725 + 1rem));
+  /* "Container vw": 1vw up to the 1536px homepage container, then frozen at
+     its 1536px value, so vw-sized content stops growing once its container
+     stops (homepage sections use calc(var(--cvw)*N) instead of Nvw) */
+  --cvw: min(1vw, 15.36px);
+  --font-code: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --background: #111111;
+  --white: #ffffff;
+  --foreground: var(--white);
   --secondary: #d9d9d9;
   --primary: #ff5f00;
   --primary-hover: #ff9253;
-  --secondary-surface: #101010;
-  --dark-surface: #000000;
   --dark-card: #161616;
   --border: #bcbcbc;
-  --muted: #d2d2d2;
+  --muted-on-dark: #d2d2d2;
+  --muted: var(--muted-on-dark);
   --grey: #272727;
   --light-grey: #939393;
+  /* Light sections: background and text */
+  --light: #F4F4F4;
+  --ink: #1D1D1D;
+  /* Form states (community waitlist, toasts) */
+  --success: #63D69A;
+  --danger: #FF8A78;
+  /* Dim text: black/20 on light surfaces, white/20 on dark ones */
+  --black-20: rgb(0 0 0 / 0.2);
+  --white-20: rgb(255 255 255 / 0.2);
   --announcement-h: 0px;
   --announcement-offset: var(--announcement-h);
 }
 
+/* No background on <body>: <html> paints the page colour, and the site background
+   (SiteBackground, fixed at z-index -1) sits between the two - an opaque body hides it. */
 body {
   padding-top: var(--announcement-h);
 }
@@ -29,29 +49,46 @@ body {
   --color-secondary: var(--secondary);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
-  --color-secondary-surface: var(--secondary-surface);
-  --color-dark-surface: var(--dark-surface);
   --color-dark-card: var(--dark-card);
   --color-border: var(--border);
   --color-muted: var(--muted);
   --color-grey: var(--grey);
   --color-light-grey: var(--light-grey);
-  --font-neue-haas: var(--font-neue-haas);
-  --font-geist-mono: var(--font-geist-mono);
-  --font-geist: var(--font-geist-sans);
+  --color-light: var(--light);
+  --color-ink: var(--ink);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-black-20: var(--black-20);
+  --color-white-20: var(--white-20);
+  /* The site's two faces: font-avenir (text) and font-aeonik (headings / display) */
+  --font-avenir: var(--font-avenir);
+  --font-aeonik: var(--font-aeonik);
+  /* Code face: font-code (and font-mono, so existing code classes follow) */
+  --font-code: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* The one floating-surface shadow (cards on hover, drawers, menus, modals) */
+  --shadow-float: 0 calc(var(--cvw) * 1.2) calc(var(--cvw) * 3) calc(var(--cvw) * -1.2) rgb(0 0 0 / 0.5);
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-2xl: 40px;
-  --radius-pill: 56px;
   --radius-full: 100000px;
+  /* Tablet breakpoint at 1025px (Tailwind's default lg is 1024px), so max-lg:
+     is exactly the old max-lg: and 1024px iPads stay on tablet */
+  --breakpoint-lg: 1025px;
 }
 
 html,
 body {
-  background: var(--background);
   color: var(--foreground);
+}
+
+/* Only <html> paints the page colour. The site-wide dotted grid + fluid
+   (SiteBackground.jsx) is fixed at z-index -1, which paints above the root
+   background but would sit under an opaque <body>. */
+html {
+  background: var(--background);
 }
 
 html {
@@ -59,14 +96,18 @@ html {
 }
 
 .font-heading {
-  font-family: var(--font-neue-haas), system-ui, sans-serif;
+  font-family: var(--font-aeonik), system-ui, sans-serif;
   line-height: 1.2;
 }
 
+html {
+  overflow-x: clip;
+}
+
 body {
-  width: 100vw;
-  overflow-x: hidden;
-  font-family: var(--font-neue-haas);
+  width: 100%;
+  overflow-x: clip;
+  font-family: var(--font-avenir), "Avenir Next", system-ui, sans-serif;
   line-height: 1.5;
   font-size: 16px;
   color-scheme: dark;
@@ -85,14 +126,43 @@ body {
   }
 }
 
-h1,
-h2,
-h3,
-h4 {
-  font-family: var(--font-neue-haas), system-ui, sans-serif;
+/* Heading defaults. They stay unlayered, so every existing heading renders as
+   before, but skip headings that use the shared type scale (`type-*`, see
+   STYLE_GUIDE.md) so the scale and any utility next to it apply normally.
+   The exclusion sits in :where(), so it adds no specificity: the selector
+   ranks exactly like a bare h1 against the classes below. */
+:is(h1, h2, h3, h4):where(:not([class*="type-"])) {
+  font-family: var(--font-aeonik), system-ui, sans-serif;
   font-weight: 400;
   line-height: 1.2;
 }
+
+.home-type {
+  font-family: var(--font-avenir), "Avenir Next", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.home-type :is(h1, h2, h3, h4):where(:not([class*="type-"])),
+.home-type :is(.t96, .text64) {
+  font-family: var(--font-aeonik);
+}
+.home-type :is(.t96, .text64) {
+  line-height: 1.02;
+}
+
+@layer base {
+  .home-type :is(h1, h2, h3, h4),
+  .home-type :is(.t96, .text64) {
+    font-weight: 400;
+  
+    line-height: 1.02;
+  }
+}
+.home-type .t96 { font-size: clamp(2.6rem, calc(var(--cvw) * 6.4), 6.6rem); }   /* .d1 */
+.home-type .text64 { font-size: clamp(2.2rem, calc(var(--cvw) * 4.6), 4.6rem); } /* .d2 */
+.home-type :is(.text32, .text34) { font-size: clamp(1.6rem, calc(var(--cvw) * 2.6), 2.6rem); } /* .d3 */
+.home-type .text24 { font-size: 17px; line-height: 1.45; }      /* lead */
+.home-type :is(.text22, .text20, .text18) { font-size: 16px; line-height: 1.65; } /* body */
 
 /* Scrollbars */
 
@@ -179,12 +249,15 @@ h4 {
 *::-webkit-scrollbar-track {
   background: transparent;
 }
+/* The thumb reads --scrollbar-thumb (falls back to the brand gradient) so it can be
+   hidden at runtime: Chromium repaints a custom scrollbar when a variable it uses
+   changes, but not when a selector-based override starts matching. */
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #e61216 0%, #f16b0d 100%);
+  background: var(--scrollbar-thumb, linear-gradient(180deg, #e61216 0%, #f16b0d 100%));
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #e61216 0%, #f16b0d 100%);
+  background: var(--scrollbar-thumb, linear-gradient(180deg, #e61216 0%, #f16b0d 100%));
 }
 
 ::selection {
@@ -203,7 +276,7 @@ h4 {
 .hyperiux-clerk .cl-cardBox {
   width: 100% !important;
   padding: 4.5vw 6vw;
-  border-radius: clamp(20px, 1vw, 28px) !important;
+  border-radius: 0 !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   /* background: transparent !important; */
   /* box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45) !important; */
@@ -272,7 +345,7 @@ h4 {
   width: 100% !important;
   min-height: 44px !important;
   height: clamp(44px, 3vw, 56px) !important;
-  border-radius: 999px !important;
+  border-radius: 0 !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   background: rgba(255, 255, 255, 0.06) !important;
   padding: 0.75rem 1.25rem !important;
@@ -299,7 +372,7 @@ h4 {
 }
 
 .hyperiux-clerk .cl-formFieldInputGroup {
-  border-radius: 999px !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
 }
 
@@ -321,7 +394,7 @@ h4 {
   width: 100% !important;
   min-height: 44px !important;
   height: clamp(46px, 3vw, 58px) !important;
-  border-radius: 999px !important;
+  border-radius: 0 !important;
   border: none !important;
   background: #ff5f00 !important;
   padding: 0.75rem 1.5rem !important;
@@ -401,7 +474,7 @@ h4 {
 }
 
 .hyperiux-clerk .cl-alert {
-  border-radius: 1rem !important;
+  border-radius: 0 !important;
   border: 1px solid rgba(239, 68, 68, 0.2) !important;
   background: rgba(239, 68, 68, 0.1) !important;
   padding: 0.75rem 1rem !important;
@@ -421,7 +494,7 @@ h4 {
 .hyperiux-clerk .cl-otpCodeFieldInput {
   width: 48px !important;
   height: 48px !important;
-  border-radius: 14px !important;
+  border-radius: 0 !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   background: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
@@ -473,21 +546,6 @@ input:-webkit-autofill:active {
   transition: background-color 9999s ease-in-out 0s !important;
 }
 
-/* Opt-in fully transparent autofill (auth forms). Chrome forces its own
-   autofill background with !important, so it can't be recoloured - clipping
-   the background to the text hides it behind the white glyphs instead. The
-   field's fill lives on its wrapper, so the input itself can be transparent. */
-input.autofill-transparent:-webkit-autofill,
-input.autofill-transparent:-webkit-autofill:hover,
-input.autofill-transparent:-webkit-autofill:focus,
-input.autofill-transparent:-webkit-autofill:active {
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  -webkit-text-fill-color: #ffffff !important;
-  caret-color: #ffffff !important;
-  box-shadow: none !important;
-}
-
 .hyperiux-clerk input:-webkit-autofill,
 .hyperiux-clerk input:-webkit-autofill:hover,
 .hyperiux-clerk input:-webkit-autofill:active {
@@ -520,7 +578,7 @@ input.autofill-transparent:-webkit-autofill:active {
   }
 
   .hyperiux-clerk .cl-cardBox {
-    border-radius: 1.5rem !important;
+    border-radius: 0 !important;
   }
 
   .cl-internal-arrfyj {
@@ -533,7 +591,7 @@ input.autofill-transparent:-webkit-autofill:active {
 
 @media (max-width: 640px) {
   .hyperiux-clerk .cl-cardBox {
-    border-radius: 1.5rem !important;
+    border-radius: 0 !important;
   }
 
   .hyperiux-clerk .cl-card {
@@ -554,42 +612,89 @@ input.autofill-transparent:-webkit-autofill:active {
   }
 }
 
+/* Easter egg (components/easter-egg): the hero dot's glint, the game's
+   entrance and its game-over lines */
+@keyframes hx-egg-glint {
+  0%, 86%, 100% { text-shadow: none; }
+  92% { text-shadow: 0 0 14px rgba(255, 107, 0, .9); }
+}
+@keyframes hx-pop {
+  from { opacity: 0; transform: scale(.96) translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hx-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hx-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes hx-tab-release {
+  0% { color: #F4F4F4; }
+  45% { color: #8a8a8a; }
+  100% { color: #1D1D1D; }
+}
+
+/* Modals (tutorial video, ribbon unlock card): a soft scale + fade in and out */
+@keyframes hx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hx-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes hx-scale-in {
+  from { opacity: 0; transform: scale(.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hx-scale-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: scale(.96); }
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
   }
 }
 
-/* DemoHeader link underline: undraws to the right, then redraws from the
-   left, in a single hover-triggered pass (see DemoHeader.jsx). */
-@keyframes demo-header-underline {
-  0% {
-    transform-origin: right;
-    transform: scaleX(1);
-  }
-  50% {
-    transform-origin: right;
-    transform: scaleX(0);
-  }
-  50.001% {
-    transform-origin: left;
-    transform: scaleX(0);
-  }
-  100% {
-    transform-origin: left;
-    transform: scaleX(1);
-  }
+/* Skeleton shimmer (components/ui/Skeleton): each skeleton has its own soft band, sweeping
+   across it left to right at a steady speed. The gradient is three times the skeleton's
+   width with the band in the middle, so the band starts and ends fully outside the box -
+   the loop's restart is never seen. */
+.skeleton-shimmer {
+  --skeleton-band: color-mix(in srgb, var(--foreground) 10%, transparent);
+  background-image: linear-gradient(100deg, transparent 40%, var(--skeleton-band) 50%, transparent 60%);
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-sweep 1.8s linear infinite;
+}
+.skeleton-shimmer-light {
+  --skeleton-band: color-mix(in srgb, var(--foreground) 80%, transparent);
+}
+@keyframes skeleton-sweep {
+  from { background-position: 100% 0; }
+  to { background-position: 0% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer { animation: none; background-image: none; }
 }
 
-@keyframes card-enter {
-  from {
-    opacity: 0;
-    transform: translateY(34px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@property --g-shift {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+.gradient-text-single-word {
+  background-image: linear-gradient(to right, #ff8400, #ff4100, #ff8400);
+  background-size: calc(var(--g-w) * 3) 100%;
+  background-position: calc(var(--g-shift) - var(--g-x)) center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @keyframes gradient-text-move {
@@ -614,73 +719,9 @@ input.autofill-transparent:-webkit-autofill:active {
   }
 }
 
-@keyframes pixel-glitch-flash {
-  0%,
-  18%,
-  34%,
-  56%,
-  78%,
-  100% {
-    opacity: 0;
-  }
-  9%,
-  26%,
-  45%,
-  67% {
-    opacity: 1;
-  }
-}
-
-@keyframes pixel-glitch-in {
-  0%,
-  22%,
-  44% {
-    opacity: 0;
-  }
-  11%,
-  33%,
-  55%,
-  100% {
-    opacity: 1;
-  }
-}
-
-.pixel-glitch-cell,
-.pixel-glitch-square {
-  opacity: 0;
-}
-
-.pricing-v3-card:hover .pixel-glitch-square {
-  animation: pixel-glitch-in 0.45s steps(1, end) both;
-}
-
-.pricing-v3-card:hover .pixel-glitch-cell {
-  animation: pixel-glitch-flash 0.62s steps(1, end) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pricing-v3-card:hover .pixel-glitch-cell {
-    animation: none;
-  }
-
-  .pricing-v3-card:hover .pixel-glitch-square {
-    animation: none;
-    opacity: 1;
-  }
-}
-
 html.loader-first-visit body {
   visibility: hidden;
   background: #ffffff;
-}
-
-.effect-card-shell {
-  opacity: 0;
-}
-
-.effect-card-shell.card-entered {
-  animation: card-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: var(--card-delay, 0s);
 }
 
 .grecaptcha-badge {
@@ -690,9 +731,6 @@ html.loader-first-visit body {
   transform-origin: bottom right;
 }
 
-.text120 {
-  font-size: 5.5vw;
-}
 .self-padd {
   padding: 0 3.5vw;
 }
@@ -717,21 +755,6 @@ html.loader-first-visit body {
 .text64 {
   font-size: 3.2vw;
 }
-.text80 {
-  font-size: 4.5vw;
-  line-height: 1.15;
-  font-weight: 400;
-}
-.text110 {
-  font-size: 5.5vw;
-  line-height: 1.15;
-  font-weight: 400;
-}
-.text140 {
-  font-size: 6.8vw;
-  line-height: 1.1;
-  font-weight: 400;
-}
 
 .t96 {
   font-size: 5vw;
@@ -748,11 +771,6 @@ html.loader-first-visit body {
 @media (max-width: 1025px) and (min-width: 641px) {
   .self-padd {
     padding: 0 5vw;
-  }
-
-  .text120 {
-    font-size: 8.5vw;
-    line-height: 1.2;
   }
 
   .text18 {
@@ -784,44 +802,17 @@ html.loader-first-visit body {
     font-size: 5vw;
   }
 
-  .text80 {
-    font-size: 7vw;
-    line-height: 1.15;
-  }
-
-  .text110 {
-    font-size: 7vw;
-    line-height: 1.15;
-  }
-
-  .text140 {
-    font-size: 8vw;
-    line-height: 1.1;
-  }
 }
 
 @media (max-width: 640px) {
-  .text120 {
-    font-size: 12.2vw;
-    line-height: 1.2;
-  }
 
   body {
-    overflow-x: hidden;
-    width: 100vw;
+    overflow-x: clip;
+    width: 100%;
   }
 
   .self-padd {
     padding: 0 7vw;
-  }
-  .text80 {
-    font-size: 8vw;
-  }
-  .text140 {
-    font-size: 13vw;
-  }
-  .text110 {
-    font-size: 9.2vw;
   }
   .text64 {
     font-size: 5.8vw;
@@ -845,3 +836,243 @@ html.loader-first-visit body {
     font-size: 4.6vw;
   }
 }
+
+.hx-cursor {
+  position: fixed; left: 0; top: 0; z-index: 9500; pointer-events: none;
+  will-change: transform;
+}
+.hx-cursor-ring {
+  position: absolute; left: 0; top: 0; width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  display: grid; place-items: center; border-radius: 50%;
+  border: 1.5px solid rgba(244, 244, 244, .35); background: transparent;
+  transform: scale(.4); opacity: 0;
+  transition:
+    transform .5s cubic-bezier(.16,1,.3,1), opacity .3s,
+    width .5s cubic-bezier(.16,1,.3,1), height .5s cubic-bezier(.16,1,.3,1), margin .5s cubic-bezier(.16,1,.3,1),
+    background-color .4s, border-color .4s, backdrop-filter .4s;
+}
+
+.hx-cursor-charge { position: absolute; inset: -1.5px; width: calc(100% + 3px); height: calc(100% + 3px); transform: rotate(-90deg); overflow: visible; }
+.hx-cursor-charge circle {
+  fill: none; stroke: var(--primary, #ff6b00); stroke-width: 1.5; stroke-linecap: butt;
+  stroke-dasharray: 100; stroke-dashoffset: 100; opacity: 0;
+  /* Round caps leave a dot even at 0 length, so the stroke is hidden outright when idle */
+  transition: stroke-dashoffset .35s cubic-bezier(.16,1,.3,1), opacity .2s .15s;
+}
+.hx-cursor[data-charging] .hx-cursor-charge circle {
+  stroke-dashoffset: 0; opacity: 1;
+  transition: stroke-dashoffset 1.9s cubic-bezier(.55,.085,.68,.53) .2s, opacity 0s .2s;
+}
+.hx-cursor-eyes { display: flex; gap: 14px; transition: opacity .25s; }
+.hx-cursor-eyes i { width: 4px; height: 4px; border-radius: 50%; background: #fff; }
+.hx-cursor-label {
+  position: absolute; left: 0; top: 0; white-space: nowrap;
+  font-family: var(--font-avenir), system-ui, sans-serif;
+  font-size: 10px; font-weight: 500; color: rgba(244, 244, 244, .7);
+  opacity: 0; transform: translate(-50%, 34px);
+  transition: opacity .3s, transform .5s cubic-bezier(.16,1,.3,1);
+}
+
+/* hold zone: the ring with its eyes, the hint underneath */
+.hx-cursor[data-mode="hold"] .hx-cursor-ring { transform: scale(1); opacity: 1; }
+.hx-cursor[data-mode="hold"] .hx-cursor-label { opacity: 1; transform: translate(-50%, 30px); }
+.hx-cursor[data-mode="hold"][data-pressed] .hx-cursor-ring { transform: scale(.8); }
+
+@media (pointer: coarse) { .hx-cursor { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .hx-cursor-ring, .hx-cursor-label { transition: opacity .2s; }
+}
+
+/* Running shimmer on text (e.g. the "Most complete" badge): primary with a light band sweeping across */
+.text-shimmer {
+  background-image: linear-gradient(110deg, var(--primary) 0%, var(--primary) 40%, #ffe2c8 50%, var(--primary) 60%, var(--primary) 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  animation: text-shimmer 3.2s linear infinite;
+}
+@keyframes text-shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+@media (prefers-reduced-motion: reduce) { .text-shimmer { animation: none; } }
+
+html[data-pc-dev] { overflow: hidden; }
+
+html[data-pc-rm] body *:not([data-demo-header], [data-demo-header] *) {
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@keyframes hx-underline-redraw {
+  0% { background-size: 100% 1px; background-position: 100% 100%; }
+  50% { background-size: 0% 1px; background-position: 100% 100%; }
+  50.01% { background-size: 0% 1px; background-position: 0% 100%; }
+  100% { background-size: 100% 1px; background-position: 0% 100%; }
+}
+
+.docs-sheet {
+  --foreground: var(--ink);
+  --muted: #6B6B6B;
+  --docs-body: #3a3a3a;
+  --docs-line: color-mix(in srgb, var(--ink) 10%, transparent);
+  background: var(--light);
+  color: var(--docs-body);
+}
+.docs-sheet .codeblock-root {
+  --foreground: var(--white);
+  --muted: var(--muted-on-dark);
+  --docs-body: var(--white);
+  --docs-line: var(--white-20);
+  color: var(--foreground);
+}
+.docs-sheet .text-white:not(.codeblock-root *) { color: var(--ink); }
+.docs-sheet .text-white\/60:not(.codeblock-root *) { color: color-mix(in srgb, var(--ink) 60%, transparent); }
+.docs-sheet .border-white\/10:not(.codeblock-root *) { border-color: color-mix(in srgb, var(--ink) 10%, transparent); }
+/* links on the sheet keep their primary colour on hover */
+.docs-sheet .hover\:text-white:not(.codeblock-root *):hover { color: var(--primary); }
+/* Docs type: Avenir for text, Aeonik for headings (code keeps its mono face) */
+.docs-sheet *:not(pre, pre *, code, code *, kbd, .codeblock-root, .codeblock-root *) { font-family: var(--font-avenir), "Avenir Next", system-ui, sans-serif !important; }
+.docs-sheet :is(h1, h2, h3, h4, h5, h6):not(.codeblock-root *), .docs-sheet :is(h1, h2, h3, h4, h5, h6):not(.codeblock-root *) * { font-family: var(--font-aeonik), "Aeonik Pro", system-ui, sans-serif !important; }
+/* Docs footer (helpful? + prev/next) on the sheet */
+.docs-sheet .text-white\/80:not(.codeblock-root *) { color: color-mix(in srgb, var(--ink) 80%, transparent); }
+.docs-sheet .text-white\/70\!:not(.codeblock-root *) { color: color-mix(in srgb, var(--ink) 70%, transparent) !important; }
+.docs-sheet .text-white\/50:not(.codeblock-root *) { color: color-mix(in srgb, var(--ink) 50%, transparent); }
+.docs-sheet .border-white\/15:not(.codeblock-root *) { border-color: color-mix(in srgb, var(--ink) 15%, transparent); }
+.docs-sheet .hover\:border-white\/40:not(.codeblock-root *):hover { border-color: color-mix(in srgb, var(--ink) 40%, transparent); }
+.docs-sheet .bg-white\/\[\.03\]:not(.codeblock-root *) { background-color: color-mix(in srgb, var(--ink) 3%, transparent); }
+.docs-sheet .group:hover .group-hover\:text-primary { color: var(--primary); }
+.docs-sheet .hover\:border-primary\/60:not(.codeblock-root *):hover { border-color: var(--primary); }
+
+html[data-v4-drawer-open] {
+  --scrollbar-thumb: transparent;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html[data-v4-drawer-open] {
+    scrollbar-color: transparent transparent;
+  }
+}
+
+html.lenis.lenis-stopped[data-v4-drawer-open] {
+  overflow: visible;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Shared design system (STYLE_GUIDE.md). Real Tailwind utilities, so a
+   one-off utility on the same element still overrides them without `!`.
+   Sizes use --cvw (1vw capped at the 1536px container); breakpoints are
+   Tailwind's max-lg (<1025px, set above), max-md (<768px), max-sm (<640px).
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Type scale */
+@utility type-display {
+  font-family: var(--font-aeonik), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--cvw) * 6.4);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  @variant max-lg { font-size: 8vw; }
+  @variant max-md { font-size: min(13vw, 65px); }
+}
+@utility type-h1 {
+  font-family: var(--font-aeonik), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--cvw) * 4.6);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  @variant max-lg { font-size: 5.5vw; }
+  @variant max-md { font-size: min(11vw, 46px); }
+}
+@utility type-h2 {
+  font-family: var(--font-aeonik), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--cvw) * 2.6);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  @variant max-lg { font-size: 3.4vw; }
+  @variant max-md { font-size: min(6.5vw, 31px); }
+}
+@utility type-h3 {
+  font-family: var(--font-aeonik), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: calc(var(--cvw) * 1.6);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  @variant max-lg { font-size: 2.2vw; }
+  @variant max-md { font-size: min(5vw, 20px); }
+}
+@utility type-body-lg {
+  font-family: var(--font-avenir), "Avenir Next", system-ui, sans-serif;
+  font-size: calc(var(--cvw) * 1.1);
+  line-height: 1.6;
+  @variant max-lg { font-size: clamp(15px, 2.5vw, 18px); }
+  @variant max-md { font-size: clamp(15px, 4.1vw, 17px); }
+}
+@utility type-body {
+  font-family: var(--font-avenir), "Avenir Next", system-ui, sans-serif;
+  font-size: clamp(15px, calc(var(--cvw) * 1.05), 17px);
+  line-height: 1.65;
+}
+@utility type-small {
+  font-family: var(--font-avenir), "Avenir Next", system-ui, sans-serif;
+  font-size: clamp(13px, calc(var(--cvw) * 0.9), 15px);
+  line-height: 1.5;
+}
+@utility type-label {
+  font-family: var(--font-avenir), "Avenir Next", system-ui, sans-serif;
+  font-size: clamp(15px, calc(var(--cvw) * 0.92), 16px);
+  font-weight: 500;
+  line-height: 1.4;
+  /* text-transform: uppercase; */
+}
+
+/* Layout */
+@utility site-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1536px;
+}
+@utility section-x {
+  padding-inline: calc(var(--cvw) * 4.5);
+  @variant max-lg { padding-inline: 6vw; }
+  @variant max-md { padding-inline: 7vw; }
+}
+
+/* Border beam: a light that travels around a card's edge (from the Vault Community
+   prototype's featured card). Needs @property + keyframes, which Tailwind can't do.
+   Put it on a positioned element; the light is drawn by ::before. */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes border-beam {
+  to { --beam-angle: 360deg; }
+}
+.border-beam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  background: conic-gradient(from var(--beam-angle), transparent 0 55%, var(--primary) 75%, #ffb27a 82%, transparent 95%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: border-beam 5s linear infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .border-beam::before { animation: none; }
+}
+
+/* Workspace sidebar width and its toggle's spot (Sidebar.jsx, VaultLayout.jsx). Driven by
+   <html data-sidebar>, which an inline <head> script sets from the stored open / closed
+   state before the first paint (app/layout.js) and VaultLayout keeps in step after - so
+   a reload shows the right width from the first frame, whenever React hydrates. The
+   slide only runs once the page is ready (data-sidebar-animate). */
+[data-sidebar-width] { width: 20vw; }
+html[data-sidebar="collapsed"] [data-sidebar-width] { width: 5.5vw; }
+[data-vault-sidebar-toggle] { left: 20.4vw; }
+html[data-sidebar="collapsed"] [data-vault-sidebar-toggle] { left: 6vw; }
+html[data-sidebar-animate] [data-sidebar-width] { transition: width 0.3s ease-out; }
+html[data-sidebar-animate] [data-vault-sidebar-toggle] { transition: left 0.3s ease-out, background-color 0.3s ease-out; }

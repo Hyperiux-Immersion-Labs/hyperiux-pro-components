@@ -973,7 +973,7 @@ const PerspectiveShiftMenu = ({
 
       {/* Header: fixed sibling, so it stays put while the page scrolls and
           is outside the perspective/transform context that would break it. */}
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-300 flex items-center justify-between px-[2vw] backdrop-blur-sm max-[1025px]:p-[3vw] max-md:p-[5vw] py-4">
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-300 flex items-center justify-between px-[2vw] backdrop-blur-sm max-lg:p-[3vw] max-md:p-[5vw] py-4">
         <Link
           prefetch={false}
           href="/"
@@ -1110,7 +1110,7 @@ const PerspectiveShiftMenu = ({
               would be overwritten mid-tween. Only the open state spins, so the
               cross turns while the hamburger stays put. */}
           <span
-            className={`relative block h-[1.2vw] w-[1.7vw] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none max-[1025px]:h-[2.4vw] max-[1025px]:w-[3.4vw] max-md:h-[4vw] max-md:w-[5.6vw] ${
+            className={`relative block h-[1.2vw] w-[1.7vw] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none max-lg:h-[2.4vw] max-lg:w-[3.4vw] max-md:h-[4vw] max-md:w-[5.6vw] ${
               lit ? "group-hover/glyph:rotate-90 group-focus-visible/glyph:rotate-90" : ""
             }`}
             aria-hidden="true"
@@ -1118,21 +1118,21 @@ const PerspectiveShiftMenu = ({
             <span
               ref={glyphTopRef}
               style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
-              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-[1025px]:h-[0.3vw] max-md:h-[0.5vw] ${
+              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-lg:h-[0.3vw] max-md:h-[0.5vw] ${
                 lit ? "max-md:bg-(--shift-ink)" : ""
               }`}
             />
             <span
               ref={glyphMidRef}
               style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
-              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-[1025px]:h-[0.3vw] max-md:h-[0.5vw] ${
+              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-lg:h-[0.3vw] max-md:h-[0.5vw] ${
                 lit ? "max-md:bg-(--shift-ink)" : ""
               }`}
             />
             <span
               ref={glyphBotRef}
               style={lit ? { ["--shift-ink" as string]: textColor } : undefined}
-              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-[1025px]:h-[0.3vw] max-md:h-[0.5vw] ${
+              className={`absolute top-1/2 left-0 block h-[0.15vw] w-full origin-center bg-white transition-colors duration-350 max-lg:h-[0.3vw] max-md:h-[0.5vw] ${
                 lit ? "max-md:bg-(--shift-ink)" : ""
               }`}
             />
@@ -1174,7 +1174,7 @@ const PerspectiveShiftMenu = ({
           aria-modal="true"
           aria-label="Site navigation"
           style={{ ["--shift-panel" as string]: `${panelWidth}vw`, ["--shift-drawer" as string]: `${drawerWidth}vw`, backgroundColor: panelColor, color: textColor }}
-          className="invisible fixed top-0 left-0 z-200 flex h-screen w-(--shift-panel) flex-col justify-between px-[2.1vw] py-[5.2vw] max-[1025px]:w-[38vw] max-[1025px]:px-[3vw] max-[1025px]:py-[7vw] max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
+          className="invisible fixed top-0 left-0 z-200 flex h-screen w-(--shift-panel) flex-col justify-between px-[2.1vw] py-[5.2vw] max-lg:w-[38vw] max-lg:px-[3vw] max-lg:py-[7vw] max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
         >
           <nav
             aria-label="Main navigation"
@@ -1191,7 +1191,7 @@ const PerspectiveShiftMenu = ({
                 const label = (
                   <span
                     data-shift-label
-                    className="group/row w-fit text-[2.2vw] max-[1025px]:text-[4vw] max-md:text-[7vw] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
+                    className="group/row w-fit text-[2.2vw] max-lg:text-[4vw] max-md:text-[7vw] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
                   >
                     <span className="sr-only">{item.label}</span>
                     <CharRoll text={item.label} stagger={charStagger} reduced={reducedMotion} />
@@ -1242,7 +1242,7 @@ const PerspectiveShiftMenu = ({
                       >
                         <span
                           data-shift-label
-                          className="group/row w-fit text-[2.4vw] max-[1025px]:text-[4vw] max-md:text-[7vw] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
+                          className="group/row w-fit text-[2.4vw] max-lg:text-[4vw] max-md:text-[7vw] leading-[1.2] font-light tracking-[-0.03em] text-current transition-colors duration-250"
                         >
                           <span className="sr-only">{item.label}</span>
                           <CharRoll text={item.label} stagger={charStagger} reduced={reducedMotion} />
@@ -1325,7 +1325,7 @@ const PerspectiveShiftMenu = ({
           ref={subpanelRef}
           aria-hidden="true"
           style={{ ["--shift-panel" as string]: `${panelWidth}vw`, ["--shift-drawer" as string]: `${drawerWidth}vw`, backgroundColor: panelColor, color: textColor }}
-          className="invisible fixed top-0 left-(--shift-panel) z-150 flex h-screen w-(--shift-drawer) flex-col justify-start px-[2.1vw] py-[5.2vw] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-px before:origin-bottom before:bg-current/12 before:transform-[scaleY(var(--shift-seam,0))] before:content-[''] max-[1025px]:left-[38vw] max-[1025px]:w-[30vw] max-[1025px]:px-[3vw] max-[1025px]:py-[7vw] max-md:left-0 max-md:z-210 max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
+          className="invisible fixed top-0 left-(--shift-panel) z-150 flex h-screen w-(--shift-drawer) flex-col justify-start px-[2.1vw] py-[5.2vw] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-px before:origin-bottom before:bg-current/12 before:transform-[scaleY(var(--shift-seam,0))] before:content-[''] max-lg:left-[38vw] max-lg:w-[30vw] max-lg:px-[3vw] max-lg:py-[7vw] max-md:left-0 max-md:z-210 max-md:w-full max-md:px-[5vw] max-md:py-[12vw]"
         >
           <button
             type="button"

@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+// Segments whose label isn't just the slug with spaces
+const SEGMENT_LABELS = { "llm-info": "LLM Info", "ai-components": "AI Components" };
+
 function formatSegmentLabel(segment) {
-  return segment.replace(/-/g, " ");
+  return SEGMENT_LABELS[segment] ?? segment.replace(/-/g, " ");
 }
 
 function itemsFromPathname(pathname) {
@@ -40,16 +43,18 @@ function trimToWords(label, maxWords) {
  * URL-driven breadcrumb. `/` is Home; each path segment is a crumb.
  *
  * @param {number} [maxWords] - clip the final crumb to this many words.
+ * @param {{label: string, href: string}[]} [items] - crumbs to show instead of the URL's
+ *   (e.g. the dashboard, whose URL carries a user ID).
  */
-export function Breadcrumb({ className = "", lastItemClassName = "", maxWords }) {
+export function Breadcrumb({ className = "", lastItemClassName = "", maxWords, items: givenItems }) {
   const pathname = usePathname();
-  const items = itemsFromPathname(pathname);
+  const items = givenItems || itemsFromPathname(pathname);
 
   return (
     <nav
       aria-label="Breadcrumb"
       className={[
-        "flex w-fit max-w-full fadeup flex-wrap items-center gap-2 text-muted",
+        "flex w-fit max-w-full fadeup flex-wrap items-center gap-[calc(var(--cvw)*0.5)] text-muted max-md:gap-[2vw]",
         className,
       ]
         .filter(Boolean)
@@ -61,15 +66,15 @@ export function Breadcrumb({ className = "", lastItemClassName = "", maxWords })
         return (
           <span
             key={`${item.href}-${item.label}`}
-            className="flex items-center gap-2"
+            className="flex items-center gap-[calc(var(--cvw)*0.5)] max-md:gap-[2vw]"
           >
-            {index > 0 && <span className="text-white/25">/</span>}
+            {index > 0 && <span className="text-foreground/25">/</span>}
 
             {isLast ? (
               <span
                 title={item.label}
                 className={[
-                  "capitalize text-primary text20",
+                  "capitalize text-primary type-body",
                   lastItemClassName,
                 ]
                   .filter(Boolean)
@@ -81,7 +86,7 @@ export function Breadcrumb({ className = "", lastItemClassName = "", maxWords })
               <Link
                 href={item.href}
                 scroll={false}
-                className="capitalize text20 transition-colors hover:text-primary"
+                className="capitalize type-body transition-colors hover:text-primary"
               >
                 {item.label}
               </Link>

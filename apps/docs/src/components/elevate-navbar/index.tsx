@@ -1093,10 +1093,10 @@ export function ElevateNavbarMobile({
       />
     <div
       ref={containerRef}
-      className="fixed h-fit left-1/2 max-[1025px]:top-[10%] max-md:top-[31%] -translate-x-1/2 z-999"
+      className="fixed h-fit left-1/2 max-lg:top-[10%] max-md:top-[31%] -translate-x-1/2 z-999"
     >
 
-      <div className="flex items-center justify-between gap-[2vw] rounded-[2vw] border border-white/10 bg-[#2f2f2f]/90 px-[3vw] max-[1025px]:py-[1vw] max-md:py-[2vw] backdrop-blur-xl">
+      <div className="flex items-center justify-between gap-[2vw] rounded-[2vw] border border-white/10 bg-[#2f2f2f]/90 px-[3vw] max-lg:py-[1vw] max-md:py-[2vw] backdrop-blur-xl">
         <span className="px-[2vw] text-[3vw] uppercase tracking-wide text-white/80">
           Hyperiux
         </span>
@@ -1157,7 +1157,7 @@ export function ElevateNavbarMobile({
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-between rounded-[1.2vw] px-[3vw] py-[2.5vw] max-[1025px]:text-[2.5vw] max-md:text-[3vw] uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+                  className="flex items-center justify-between rounded-[1.2vw] px-[3vw] py-[2.5vw] max-lg:text-[2.5vw] max-md:text-[3vw] uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
                   style={{ color: inactiveColor }}
                 >
                   {item.name}
@@ -1174,7 +1174,7 @@ export function ElevateNavbarMobile({
                       currentIndex === index ? null : index
                     )
                   }
-                  className="flex w-full items-center justify-between rounded-[1.2vw] px-[3vw] py-[2.5vw] max-[1025px]:text-[2.5vw]! max-md:text-[3vw]! uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
+                  className="flex w-full items-center justify-between rounded-[1.2vw] px-[3vw] py-[2.5vw] max-lg:text-[2.5vw]! max-md:text-[3vw]! uppercase text-white/85 transition hover:bg-white/10 motion-reduce:bg-transparent motion-reduce:transition-none"
                   style={{ color: inactiveColor }}
                 >
                   {item.name}
@@ -1202,7 +1202,7 @@ export function ElevateNavbarMobile({
                         key={dropdownItem.title}
                         href={dropdownItem.href}
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center gap-[3vw] rounded-[1vw] bg-white/5 p-[2vw] max-md:text-[2.8vw] max-[1025px]:text-[2vw]  uppercase text-white/80 transition hover:bg-white/10 motion-reduce:bg-white/5 motion-reduce:transition-none"
+                        className="flex items-center gap-[3vw] rounded-[1vw] bg-white/5 p-[2vw] max-md:text-[2.8vw] max-lg:text-[2vw]  uppercase text-white/80 transition hover:bg-white/10 motion-reduce:bg-white/5 motion-reduce:transition-none"
                         style={{ color: inactiveColor }}
                       >
                         <div className="relative h-[10vw] w-[10vw] overflow-hidden rounded-[1vw] bg-white/25">
@@ -1228,7 +1228,7 @@ export function ElevateNavbarMobile({
             <Link
               href={cta.href}
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full max-md:py-[3vw] rounded-[1.5vw] bg-white py-[1.5vw] text-center max-md:text-[3vw] max-[1025px]:text-[2.5vw] font-semibold text-black"
+              className="block w-full max-md:py-[3vw] rounded-[1.5vw] bg-white py-[1.5vw] text-center max-md:text-[3vw] max-lg:text-[2.5vw] font-semibold text-black"
             >
               {cta.label}
             </Link>
@@ -1297,7 +1297,7 @@ export default function ElevateNavbar({ navConfig = {}, ...props }: ElevateNavba
         <h1 className="text-[8vw] font-black uppercase">
           Elevate Navbar
         </h1>
-        <p className="mt-4 text-[1.2vw] max-[1025px]:text-[2vw] max-[1025px]:w-[80%] max-[1025px]:mx-auto max-md:text-[3vw]">
+        <p className="mt-4 text-[1.2vw] max-lg:text-[2vw] max-lg:w-[80%] max-lg:mx-auto max-md:text-[3vw]">
           Hover over the navbar to see the effect. Resize the window to see the responsive design in action.
         </p>
       </div>

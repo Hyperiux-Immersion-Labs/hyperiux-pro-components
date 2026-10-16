@@ -176,6 +176,7 @@ declare module 'next/font/google' {
   export const Roboto_Flex: FontLoader
   export const Outfit: FontLoader
   export const Montserrat: FontLoader
+  export const Geist: FontLoader
   export const Geist_Mono: FontLoader
   export const Plus_Jakarta_Sans: FontLoader
   export const Syne: FontLoader

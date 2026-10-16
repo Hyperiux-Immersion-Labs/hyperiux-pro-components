@@ -18,6 +18,7 @@ function makeSupabaseMock() {
 
 let supabaseMock;
 let userPlan;
+let userTier;
 let adminUser;
 
 vi.mock("@/lib/supabase", () => ({
@@ -26,7 +27,10 @@ vi.mock("@/lib/supabase", () => ({
   },
 }));
 vi.mock("@/lib/subscription", () => ({
-  getUserPlan: vi.fn(async () => userPlan),
+  getUserPlanInfo: vi.fn(async () => ({
+    plan: userPlan,
+    tier: userPlan === "pro" ? userTier ?? "pro" : "free",
+  })),
 }));
 vi.mock("@/lib/admin", () => ({
   isAdminUser: vi.fn((user) => Boolean(adminUser) && user === adminUser),
@@ -72,6 +76,7 @@ describe("getInstallLimitDecision", () => {
     insertedEvents = [];
     cliTokenResolution = null;
     userPlan = "free";
+    userTier = undefined;
     adminUser = null;
     rpcImpl = (args) => ({ data: fakeClaimSlot(store)(args), error: null });
     supabaseMock = makeSupabaseMock();
@@ -96,7 +101,7 @@ describe("getInstallLimitDecision", () => {
     expect(insertedEvents).toHaveLength(0);
   });
 
-  it("bypasses admins entirely - no claim, no ledger row", async () => {
+  it("never meters admins - no claim, no ledger row, but logs the install for their usage tab", async () => {
     adminUser = { id: "admin_1", publicMetadata: { role: "admin" } };
 
     const result = await getInstallLimitDecision({
@@ -109,7 +114,8 @@ describe("getInstallLimitDecision", () => {
     expect(result.reason).toBe("admin");
     expect(result.plan).toBe("admin");
     expect(supabaseMock.rpc).not.toHaveBeenCalled();
-    expect(insertedEvents).toHaveLength(0);
+    expect(insertedEvents).toHaveLength(1);
+    expect(insertedEvents[0]).toMatchObject({ clerk_user_id: "admin_1", effect_slug: "any-effect", plan: "admin", decision: "allowed", reason: "admin" });
   });
 
   describe("signed-in free user (limit 3)", () => {
@@ -131,7 +137,20 @@ describe("getInstallLimitDecision", () => {
       expect(fourth.limit).toBe(LIMITS.free); // a denied response must still report which cap it hit
     });
 
-    it("re-installing an already-unlocked effect is always free, even past the cap", async () => {
+    it("re-installing an already-unlocked effect is free while under the cap", async () => {
+      process.env.INSTALL_LIMIT_ENFORCE = "true";
+
+      for (const slug of ["a", "b"]) {
+        await getInstallLimitDecision({ effectSlug: slug, source: "web", clerkUserId: "user_1" });
+      }
+
+      const reinstall = await getInstallLimitDecision({ effectSlug: "a", source: "cli", clerkUserId: "user_1" });
+      expect(reinstall.allowed).toBe(true);
+      expect(reinstall.reason).toBe("already-unlocked");
+      expect(reinstall.count).toBe(2);
+    });
+
+    it("re-installing an already-unlocked effect stays free even once the cap is used up", async () => {
       process.env.INSTALL_LIMIT_ENFORCE = "true";
 
       for (const slug of ["a", "b", "c"]) {
@@ -141,6 +160,10 @@ describe("getInstallLimitDecision", () => {
       const reinstall = await getInstallLimitDecision({ effectSlug: "a", source: "cli", clerkUserId: "user_1" });
       expect(reinstall.allowed).toBe(true);
       expect(reinstall.reason).toBe("already-unlocked");
+
+      const newOne = await getInstallLimitDecision({ effectSlug: "d", source: "web", clerkUserId: "user_1" });
+      expect(newOne.allowed).toBe(false);
+      expect(newOne.reason).toBe("limit-reached");
     });
 
     it("shadow mode (default): still allowed past the cap, but would_have_denied is logged true", async () => {
@@ -164,12 +187,39 @@ describe("getInstallLimitDecision", () => {
     });
   });
 
-  it("pro users get the pro limit (10) and plan: 'pro' on both the result and the logged event", async () => {
+  it("Pro users get 5 a day, plan: 'pro' and tier: 'pro'", async () => {
     userPlan = "pro";
+    userTier = "pro";
     const result = await getInstallLimitDecision({ effectSlug: "a", source: "web", clerkUserId: "user_1" });
-    expect(result.limit).toBe(LIMITS.pro);
+    expect(LIMITS.pro).toBe(5);
+    expect(result.limit).toBe(5);
     expect(result.plan).toBe("pro");
+    expect(result.tier).toBe("pro");
     expect(insertedEvents.at(-1).plan).toBe("pro");
+  });
+
+  it("Pro+ users get 10 a day and are logged as pro_plus", async () => {
+    userPlan = "pro";
+    userTier = "pro_plus";
+    const result = await getInstallLimitDecision({ effectSlug: "a", source: "web", clerkUserId: "user_1" });
+    expect(LIMITS.pro_plus).toBe(10);
+    expect(result.limit).toBe(10);
+    expect(result.plan).toBe("pro");
+    expect(result.tier).toBe("pro_plus");
+    expect(insertedEvents.at(-1).plan).toBe("pro_plus");
+  });
+
+  it("a Pro user is denied the 6th unique effect of the day when enforced", async () => {
+    process.env.INSTALL_LIMIT_ENFORCE = "true";
+    userPlan = "pro";
+    userTier = "pro";
+    for (const slug of ["a", "b", "c", "d", "e"]) {
+      const ok = await getInstallLimitDecision({ effectSlug: slug, source: slug === "c" ? "cli" : "web", clerkUserId: "user_1" });
+      expect(ok.allowed).toBe(true);
+    }
+    const sixth = await getInstallLimitDecision({ effectSlug: "f", source: "web", clerkUserId: "user_1" });
+    expect(sixth.allowed).toBe(false);
+    expect(sixth.reason).toBe("limit-reached");
   });
 
   describe("CLI token identity", () => {

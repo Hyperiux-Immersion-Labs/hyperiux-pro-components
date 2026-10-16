@@ -6,6 +6,8 @@ import { SplitText } from "gsap/SplitText";
 import { HyperiuxLogo } from "@/utils/Icons";
 import { HyperiuxLogoIcon } from "./Icons";
 import { useLenis } from "lenis/react";
+import { BREAKPOINTS } from "@/lib/breakpoints";
+import { cssVar } from "@/lib/useCssVar";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(SplitText);
@@ -13,7 +15,6 @@ if (typeof window !== "undefined") {
 
 export const LOADER_STORAGE_KEY = "hyperiux-loader-has-run";
 
-const PIXEL_COLOR = "#ffffff";
 const LOGO_REVEAL_DURATION = 1;
 const LOGO_HIDE_DURATION = 1;
 const LOGO_DELAY = 0.3;
@@ -30,7 +31,7 @@ function hasLoaderRun() {
 // loader delays LCP by several seconds and tanks the PageSpeed score.
 function shouldSkipLoader() {
   if (typeof window === "undefined") return false;
-  return window.innerWidth < 1025;
+  return window.innerWidth < BREAKPOINTS.lg;
 }
 
 function markLoaderAsRun() {
@@ -91,8 +92,8 @@ function easeOutQuart(t) {
 function getCols() {
   if (typeof window === "undefined") return 30;
 
-  if (window.innerWidth < 640) return 12;
-  if (window.innerWidth < 1025) return 24;
+  if (window.innerWidth < BREAKPOINTS.sm) return 12;
+  if (window.innerWidth < BREAKPOINTS.lg) return 24;
 
   return 30;
 }
@@ -100,9 +101,9 @@ function getCols() {
 function getRows() {
   if (typeof window === "undefined") return 20;
 
-  if (window.innerWidth < 640) return 22;
+  if (window.innerWidth < BREAKPOINTS.sm) return 22;
 
-  if (window.innerWidth < 1025) {
+  if (window.innerWidth < BREAKPOINTS.lg) {
     const cols = getCols();
     return Math.round(window.innerHeight / (window.innerWidth / cols));
   }
@@ -257,7 +258,7 @@ export default function Loader() {
     const total = cols * rows;
 
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = PIXEL_COLOR;
+    ctx.fillStyle = cssVar("--foreground");
     ctx.globalAlpha = 1;
 
     if (progress <= 0.001) {
@@ -672,34 +673,34 @@ export default function Loader() {
 
       <div
         ref={behindLogoRef}
-        className="behind-logo relative z-10 flex w-fit items-center gap-[1vw] text-[#0E0E0E] max-[1025px]:gap-[3vw]"
+        className="behind-logo relative z-10 flex w-fit items-center gap-[1vw] text-background max-lg:gap-[3vw]"
       >
-        <div className="size-[4vw] max-[1025px]:size-[11vw]">
+        <div className="size-[4vw] max-lg:size-[11vw]">
           <HyperiuxLogoIcon />
         </div>
 
-        <div className="logo-wrapper w-[20vw] max-[1025px]:w-[50vw]">
+        <div className="logo-wrapper w-[20vw] max-lg:w-[50vw]">
           <HyperiuxLogo />
         </div>
       </div>
 
       <div
         ref={frontLogoRef}
-        className="front-logo absolute left-1/2 top-1/2 z-20 flex w-fit -translate-x-1/2 -translate-y-1/2 items-center gap-[1vw] text-[#ff5f00] max-[1025px]:gap-[3vw]"
+        className="front-logo absolute left-1/2 top-1/2 z-20 flex w-fit -translate-x-1/2 -translate-y-1/2 items-center gap-[1vw] text-primary max-lg:gap-[3vw]"
         style={{ clipPath: "inset(0% 100% 0% 0%)" }}
       >
-        <div className="size-[4vw] max-[1025px]:size-[11vw]">
+        <div className="size-[4vw] max-lg:size-[11vw]">
           <HyperiuxLogoIcon />
         </div>
 
-        <div className="logo-wrapper w-[20vw] max-[1025px]:w-[50vw]">
+        <div className="logo-wrapper w-[20vw] max-lg:w-[50vw]">
           <HyperiuxLogo />
         </div>
       </div>
 
       <div
         ref={bottomStripRef}
-        className="bottom-strip absolute bottom-0 left-0 z-30 h-[10px] w-full origin-left scale-x-0 bg-[#ff5f00]"
+        className="bottom-strip absolute bottom-0 left-0 z-30 h-[10px] w-full origin-left scale-x-0 bg-primary"
       />
 
       <div
@@ -709,18 +710,18 @@ export default function Loader() {
 
       <div
         ref={textWrapRef}
-        className="pointer-events-none absolute bottom-[5%] left-1/2 z-20 h-[3.6em] w-[26vw] -translate-x-1/2 overflow-hidden text-center text-[#111111] opacity-0 max-[1025px]:w-[70vw] max-md:bottom-[7%] max-md:w-[84vw]"
+        className="pointer-events-none absolute bottom-[5%] left-1/2 z-20 h-[3.6em] w-[26vw] -translate-x-1/2 overflow-hidden text-center text-background opacity-0 max-lg:w-[70vw] max-md:bottom-[7%] max-md:w-[84vw]"
       >
         <p
           ref={textOneRef}
-          className="absolute inset-0 flex items-center justify-center text-[1.2vw] font-medium leading-tight max-[1025px]:text-[2.5vw] max-md:text-[4vw]"
+          className="absolute inset-0 flex items-center justify-center text-[1.2vw] font-medium leading-tight max-lg:text-[2.5vw] max-md:text-[4vw]"
         >
           Hold Up !!!
         </p>
 
         <p
           ref={textTwoRef}
-          className="absolute inset-0 flex items-center justify-center text-[1.2vw] font-medium leading-tight max-[1025px]:text-[2.5vw] max-md:text-[4vw]"
+          className="absolute inset-0 flex items-center justify-center text-[1.2vw] font-medium leading-tight max-lg:text-[2.5vw] max-md:text-[4vw]"
         >
           The Effects are loading under the hood...
         </p>

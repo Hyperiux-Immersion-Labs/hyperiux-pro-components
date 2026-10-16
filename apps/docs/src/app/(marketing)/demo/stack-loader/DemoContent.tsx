@@ -3,6 +3,7 @@
 import { useState, type ComponentProps } from "react";
 import StackLoader from "@/components/stack-loader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
+import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import Button from "@/components/WebsiteComps/Button";
 
 type StackLoaderProps = ComponentProps<typeof StackLoader>;
@@ -31,7 +32,7 @@ function StackLoaderDemo(props: StackLoaderProps) {
           : "translate-y-4 opacity-0 pointer-events-none"
           }`}
       >
-        <p className="text-center text-[5vw] max-[1025px]:text-4xl font-medium text-neutral-300">
+        <p className="text-center text-[5vw] max-lg:text-4xl font-medium text-neutral-300">
           HYPERIUX VAULT
         </p>
         <div className="space-y-3">
@@ -69,6 +70,13 @@ export default function DemoContent({ registry }: { registry: any }) {
       registry={registry}
       component={StackLoaderDemo}
       copyCodeOptions={{ propsVariableName: "stackLoaderProps" }}
-    />
+    >
+      {({ effect }) => (
+        <>
+          <DemoHeader />
+          {effect}
+        </>
+      )}
+    </RegistryRemixerDemo>
   );
 }

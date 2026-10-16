@@ -1,13 +1,14 @@
 "use client";
 
-import { createContext, useContext, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, Suspense, useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
+import { MEDIA } from "@/lib/breakpoints";
 import { getEffectCategoryHref } from "@/lib/categories";
-import { GridDots } from "@/components/grid-dots";
+import { RouteLoading, isRouteLoading } from "@/components/ui/RouteLoading";
 
 const VaultLayoutContext = createContext({
   isSidebarOpen: true,
@@ -81,12 +82,11 @@ function RouteChangeWatcher({ isSidebarReady, onRouteChange }) {
 function SidebarFallback({ isExpanded }) {
   return (
     <aside
-      className={`sticky bottom-0 left-0 top-0 h-screen border-r border-white/10 bg-[#060606] text-foreground max-[1025px]:hidden ${
-        isExpanded ? "w-[288px]" : "w-22"
-      }`}
+      data-sidebar-width
+      className="sticky bottom-0 left-0 top-0 h-screen border-r border-white/10 bg-background text-foreground max-lg:hidden"
     >
       <div className="flex h-full items-start justify-center px-2 py-3">
-        <div className="h-29.5 w-full border-b border-white/10 bg-[#080808]" />
+        <div className="h-29.5 w-full border-b border-white/10 bg-background" />
       </div>
     </aside>
   );
@@ -111,6 +111,19 @@ export function VaultLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSidebarReady, setIsSidebarReady] = useState(false);
   const [allowSidebarTransition, setAllowSidebarTransition] = useState(false);
+  // The Sidebar sits in its own Suspense boundary, so it can hydrate after this layout.
+  // The stored open / closed state is applied only once it has (sidebarMounted):
+  // applied earlier, React would hydrate the server's open markup against the closed
+  // state, leave the open DOM in place, and catch up later with the transition on -
+  // the sidebar visibly sliding shut on a reload.
+  const [sidebarMounted, setSidebarMounted] = useState(false);
+  const markSidebarMounted = useCallback(() => setSidebarMounted(true), []);
+  useEffect(() => {
+    // Fallback, only for a sidebar that never mounts (it always should). Long on purpose:
+    // firing before a slow hydration finishes would bring the sliding back.
+    const timer = setTimeout(() => setSidebarMounted(true), 10000);
+    return () => clearTimeout(timer);
+  }, []);
   const [isNavigating, setIsNavigating] = useState(false);
 
   useEffect(() => {
@@ -142,21 +155,22 @@ export function VaultLayout({
     refreshTimeoutsRef.current = [];
   }, []);
 
+  // Recovers Lenis after a route change in case something left it stopped, but
+  // never while the page-change loader is up - that keeps it stopped and
+  // starts it itself once the new page is in (see RouteLoading).
   const forceStartLenis = useCallback(() => {
     if (typeof document !== "undefined") {
       document.body.style.removeProperty("overflow");
     }
 
-    lenis?.start?.();
+    const start = () => {
+      if (!isRouteLoading()) lenis?.start?.();
+    };
+    start();
 
     if (typeof window !== "undefined") {
-      requestAnimationFrame(() => {
-        lenis?.start?.();
-      });
-
-      window.setTimeout(() => {
-        lenis?.start?.();
-      }, 80);
+      requestAnimationFrame(start);
+      window.setTimeout(start, 80);
     }
   }, [lenis]);
 
@@ -249,6 +263,7 @@ export function VaultLayout({
   }, [forceStartLenis, refreshScrollTrigger, scrollToTop]);
 
   useEffect(() => {
+    if (!sidebarMounted) return undefined;
     let frameTwo;
     let frameThree;
 
@@ -269,13 +284,38 @@ export function VaultLayout({
       cancelAnimationFrame(frameTwo);
       cancelAnimationFrame(frameThree);
     };
-  }, [refreshScrollTrigger]);
+  }, [refreshScrollTrigger, sidebarMounted]);
 
   useEffect(() => {
     return () => {
       clearRefreshTimeouts();
     };
   }, [clearRefreshTimeouts]);
+
+  // <html data-sidebar> drives the sidebar's width (globals.css). The head script sets it
+  // from storage before the first paint; from here on it follows the state. The slide
+  // transition is switched on (data-sidebar-animate) only once the page is ready.
+  useLayoutEffect(() => {
+    if (!isSidebarReady) return;
+    document.documentElement.dataset.sidebar = isSidebarOpen ? "expanded" : "collapsed";
+  }, [isSidebarOpen, isSidebarReady]);
+  useLayoutEffect(() => {
+    if (!allowSidebarTransition) return undefined;
+    const html = document.documentElement;
+    html.setAttribute("data-sidebar-animate", "");
+    return () => html.removeAttribute("data-sidebar-animate");
+  }, [allowSidebarTransition]);
+
+  // The stored sidebar state is now rendered: let the page-load overlay lift
+  // (PageLoadOverlay waits for this on vault pages, so the layout never shifts in view).
+  useEffect(() => {
+    if (!isSidebarReady) return undefined;
+    const frame = requestAnimationFrame(() => {
+      window.__vaultSidebarReady = true;
+      window.dispatchEvent(new Event("vault:sidebar-ready"));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [isSidebarReady]);
 
   useEffect(() => {
     if (!isSidebarReady) return;
@@ -292,15 +332,13 @@ export function VaultLayout({
   useEffect(() => {
     if (!isSidebarReady) return;
 
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const mediaQuery = window.matchMedia(MEDIA.mobile);
 
+    // The sidebar is never shown on phones or tablets (Sidebar is max-lg:hidden), so
+    // its open state must not pause scrolling there - it used to stop Lenis on phones,
+    // from an old overlay-sidebar design.
     const syncLenis = () => {
-      if (isSidebarOpen && mediaQuery.matches) {
-        lenis?.stop?.();
-      } else {
-        lenis?.start?.();
-      }
-
+      lenis?.start?.();
       refreshScrollTrigger();
     };
 
@@ -313,15 +351,91 @@ export function VaultLayout({
     };
   }, [isSidebarOpen, isSidebarReady, lenis, refreshScrollTrigger]);
 
+  // Opening / closing the sidebar animates the content column's width, so text above
+  // the viewport re-wraps and the page height changes every frame. The browser's scroll
+  // anchoring would normally hide that, but Lenis writes the scroll position itself, so
+  // the page visibly jitters (worst mid-scroll). For the length of the transition (and
+  // the ScrollTrigger refreshes after it) keep the element at the top of the viewport
+  // where it was, by shifting Lenis's scroll state by however far the layout moved it.
+  const anchorHoldRef = useRef(null);
+  // Where the anchor sits by layout alone - offsetTop ignores transforms, so cards
+  // that animate with transforms (motion layout, reveals) don't read as page drift.
+  const layoutTop = (el) => {
+    let top = 0;
+    for (let node = el; node; node = node.offsetParent) top += node.offsetTop;
+    return top - window.scrollY;
+  };
+  const holdScrollAnchor = useCallback(() => {
+    if (typeof window === "undefined" || window.scrollY < 1) return;
+
+    anchorHoldRef.current?.();
+
+    const anchor = document
+      .elementsFromPoint(window.innerWidth * 0.6, window.innerHeight * 0.3)
+      .find(
+        (el) =>
+          el !== document.documentElement &&
+          el !== document.body &&
+          !el.closest("aside, header, [role='dialog']") &&
+          getComputedStyle(el).position !== "fixed" &&
+          el.getBoundingClientRect().height < window.innerHeight
+      );
+    if (!anchor) return;
+
+    const root = document.documentElement;
+    const previousAnchoring = root.style.overflowAnchor;
+    root.style.overflowAnchor = "none";
+
+    let lastTop = layoutTop(anchor);
+    let lastScroll = window.scrollY;
+
+    const tick = () => {
+      if (!anchor.isConnected) return;
+      // How far the layout moved the anchor, beyond what scrolling explains.
+      const drift = layoutTop(anchor) - lastTop + (window.scrollY - lastScroll);
+
+      if (Math.abs(drift) >= 0.5) {
+        if (lenis) {
+          if (lenis.animate?.isRunning) {
+            lenis.animate.value += drift;
+            lenis.animate.from += drift;
+            lenis.animate.to += drift;
+          }
+          lenis.targetScroll += drift;
+          lenis.animatedScroll += drift;
+        }
+        window.scrollTo(0, window.scrollY + drift);
+      }
+
+      lastTop = layoutTop(anchor);
+      lastScroll = window.scrollY;
+    };
+
+    // After Lenis's own update in the same tick (Lenis runs on the gsap ticker too).
+    gsap.ticker.add(tick);
+    const stopTimer = window.setTimeout(() => release(), 1000);
+    const release = () => {
+      gsap.ticker.remove(tick);
+      window.clearTimeout(stopTimer);
+      root.style.overflowAnchor = previousAnchoring;
+      anchorHoldRef.current = null;
+    };
+    anchorHoldRef.current = release;
+  }, [lenis]);
+
+  useEffect(() => () => anchorHoldRef.current?.(), []);
+
   const toggleSidebar = useCallback((nextValue) => {
+    holdScrollAnchor();
     setIsSidebarOpen((currentValue) =>
       typeof nextValue === "boolean" ? nextValue : !currentValue
     );
 
     refreshScrollTrigger(true);
-  }, [refreshScrollTrigger]);
+  }, [holdScrollAnchor, refreshScrollTrigger]);
 
   const closeSidebar = () => {
+    holdScrollAnchor();
     setIsSidebarOpen(false);
     refreshScrollTrigger(true);
   };
@@ -399,9 +513,13 @@ export function VaultLayout({
     ]
   );
 
+  // The dashboard is as tall as its content (at least a screen); the other pages keep the
+  // 200vh floor their scroll effects are built around
+  const pageHeight = pathname?.startsWith("/dashboard") ? "min-h-svh" : "min-h-[200vh]";
+
   return (
     <VaultLayoutContext.Provider value={contextValue}>
-      <div className="relative min-h-[200vh] text-foreground">
+      <div className={`relative ${pageHeight} text-foreground`}>
         <Suspense fallback={null}>
           <RouteChangeWatcher
             isSidebarReady={isSidebarReady}
@@ -409,7 +527,7 @@ export function VaultLayout({
           />
         </Suspense>
 
-        <div className="relative z-300 flex  min-h-[200vh] items-start">
+        <div className={`relative z-300 flex ${pageHeight} items-start`}>
           <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>
             <Sidebar
               effects={effects}
@@ -424,14 +542,14 @@ export function VaultLayout({
               onCategoryNavigate={handleCategoryNavigate}
               onDocumentationNavigate={handleDocumentationNavigate}
               disableInitialTransition={!allowSidebarTransition}
+              onMounted={markSidebarMounted}
             />
           </Suspense>
 
           <main className="relative min-w-0 flex-1">
             {isNavigating ? (
-              <div className="absolute inset-x-0 top-0 flex h-screen items-center justify-center">
-                <GridDots size={56} squareSize={8} className="text-primary" />
-              </div>
+              // Same loader as loading.js: locks scrolling and stops Lenis while it shows
+              <RouteLoading className="absolute inset-x-0 top-0 flex h-screen items-center justify-center" />
             ) : (
               renderedChildren
             )}

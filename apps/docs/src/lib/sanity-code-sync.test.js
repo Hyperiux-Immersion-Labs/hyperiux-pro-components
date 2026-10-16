@@ -9,7 +9,7 @@ import {
   createSanityCodePlan,
   matchRegistryFile,
   run,
-} from "../../../../scripts/sanity-code-sync.mjs";
+} from "../../scripts/sanity-code-sync.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

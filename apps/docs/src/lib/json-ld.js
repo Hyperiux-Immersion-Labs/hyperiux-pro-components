@@ -1,4 +1,6 @@
 import { homepage, faviconPath } from './util';
+import { INTERVALS, PLANS, TIERS, getPrice } from "@/lib/plans";
+import { FREE_LABEL, TOTAL_LABEL } from "@/lib/library-counts";
 
 function JsonLdScript({ id, data }) {
   return (
@@ -18,7 +20,7 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     '@id': `${homepage}#organization`,
     name: "Hyperiux",
-    description: "Start with 50+ free source-first effects. Join Pro for 150+ effects.",
+    description: `Start with ${FREE_LABEL} free source-first effects. Join Pro for ${TOTAL_LABEL} effects.`,
     url: homepage,
     telephone: "+91 8178 026 136",
     email: "hello@hyperiux.com",
@@ -72,7 +74,7 @@ export function SoftwareApplicationJsonLd() {
     "@id": `${homepage}/#software-application`,
     name: "Hyperiux Vault",
     description:
-      "Start with 50+ free source-first effects. Join Pro for 150+ effects.",
+      `Start with ${FREE_LABEL} free source-first effects. Join Pro for ${TOTAL_LABEL} effects.`,
     url: homepage,
     applicationCategory: "DeveloperApplication",
     applicationSubCategory: "UI component library",
@@ -81,7 +83,7 @@ export function SoftwareApplicationJsonLd() {
     browserRequirements: "Requires JavaScript and a modern web browser",
     softwareVersion: "1.1.1",
     featureList: [
-      "150+ premium interactive effects",
+      `${TOTAL_LABEL} interactive effects (${FREE_LABEL} free)`,
       "Copy-paste React and Next.js components",
       "Hyperiux CLI installation support",
       "Scroll, WebGL, loader, navigation, button, text, slider, and transition effects",
@@ -90,27 +92,15 @@ export function SoftwareApplicationJsonLd() {
       "Documentation and usage examples",
     ],
     offers: [
-      {
-        "@type": "Offer",
-        name: "Hyperiux Vault Monthly",
-        price: "$20",
-        priceCurrency: "$",
-        url: `${homepage}/pricing`,
-      },
-      // {
-      //   "@type": "Offer",
-      //   name: "Hyperiux Vault Quarterly",
-      //   price: "$50",
-      //   priceCurrency: "$",
-      //   url: `${homepage}/pricing`,
-      // },
-      {
-        "@type": "Offer",
-        name: "Hyperiux Vault Yearly",
-        price: "$179",
-        priceCurrency: "$",
-        url: `${homepage}/pricing`,
-      },
+      ...TIERS.flatMap((tier) =>
+        INTERVALS.map((interval) => ({
+          "@type": "Offer",
+          name: `Hyperiux Vault ${PLANS[tier].name} ${interval === "yearly" ? "Yearly" : "Quarterly"}`,
+          price: String(getPrice(tier, interval, "USD")),
+          priceCurrency: "USD",
+          url: `${homepage}/pricing`,
+        }))
+      ),
     ],
     ...(hasAggregateRating && {
       aggregateRating: {
@@ -167,7 +157,7 @@ export function LocalBusiness() {
       "https://www.instagram.com/_hyperiux_/",
       "https://x.com/_hyperiux_",
     ],
-    priceRange: "$20-$50",
+    priceRange: `$${getPrice("pro", "quarterly", "USD")}-$${getPrice("pro_plus", "yearly", "USD")}`,
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
@@ -179,7 +169,7 @@ export function LocalBusiness() {
           "Friday"
         ],
         "opens": "09:30",
-        "closes": "06:30"
+        "closes": "18:30"
       }
     ]
   };
