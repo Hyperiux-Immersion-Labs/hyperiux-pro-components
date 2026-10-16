@@ -349,6 +349,8 @@ function detailOf(entry) {
       return d.extra ? `+${d.extra} for ${d.date}` : "Removed";
     case "note.add":
       return d.body || null;
+    case "effect.refresh":
+      return d.path || null;
     case "settings.update":
       return `${d.key}: ${Array.isArray(d.value) ? d.value.join(", ") || "none" : String(d.value)}`;
     default:

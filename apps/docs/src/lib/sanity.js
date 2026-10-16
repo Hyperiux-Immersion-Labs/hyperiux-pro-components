@@ -286,6 +286,7 @@ export async function getAllSanityEffectGuides() {
     const entries = await client.fetch(
       `*[_type == "effectContent" && defined(categorySlug) && defined(effectSlug) && !(_id in path("drafts.**"))]
         | order(orderRank asc, addedAt desc, _createdAt asc){
+        _id,
         categorySlug,
         effectSlug,
         title,

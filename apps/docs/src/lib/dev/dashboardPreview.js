@@ -368,3 +368,19 @@ export function sampleAdminSupport() {
   };
 }
 
+// GET /api/admin/effects/health, made up
+export function sampleEffectHealth() {
+  const issue = (kind, severity, message) => ({ kind, severity, message });
+  return {
+    total: 151,
+    studioUrl: "https://www.sanity.io/@oAa48P5gs/studio/br8l6a6ucf3dbi2mdh8n76vd/default",
+    counts: { "internal-note": 2, "import-path": 1, "undocumented-prop": 2, "no-text-prop": 1, whitespace: 1, "related-missing": 1 },
+    effects: [
+      { slug: "pixel-text-fill", title: "Pixel Text Fill", categorySlug: "text-animations", tier: "free", sanityId: "doc-pixel-text-fill", docsUrl: "/effects/text-animations/pixel-text-fill", issues: [issue("import-path", "high", "usage imports from \"@/components/effects/pixel-fill\" but the CLI installs it at @/components/effects/pixel-text-fill"), issue("no-text-prop", "medium", "a text effect with no documented text/children prop - users can't set the text")] },
+      { slug: "circle-text-reveal", title: "Circle Text Reveal", categorySlug: "text-animations", tier: "free", sanityId: "doc-circle-text-reveal", docsUrl: "/effects/text-animations/circle-text-reveal", issues: [issue("internal-note", "high", "Contains the internal \u201cverify the shipped component API\u201d note."), issue("undocumented-prop", "medium", "usage passes revealText, which isn't a documented prop")] },
+      { slug: "blur-text", title: "Blur Text", categorySlug: "text-animations", tier: "free", sanityId: "doc-blur-text", docsUrl: "/effects/text-animations/blur-text", issues: [issue("internal-note", "high", "Contains the internal \u201cverify the shipped component API\u201d note."), issue("related-missing", "low", "Related effect \u201cCharacter Trail\u201d matches no effect.")] },
+      { slug: "scramble-link-button", title: "Scramble Link Button", categorySlug: "buttons", tier: "free", sanityId: "doc-scramble-link-button", docsUrl: "/effects/buttons/scramble-link-button", issues: [issue("undocumented-prop", "medium", "usage passes text, which isn't a documented prop"), issue("whitespace", "low", "Title has stray spaces or a \\n.")] },
+    ],
+  };
+}
+

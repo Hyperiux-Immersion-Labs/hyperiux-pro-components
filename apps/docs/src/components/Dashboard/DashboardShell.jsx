@@ -29,6 +29,7 @@ const HEROES = {
   users: ["", "Users.", "Everyone with a Vault account, and what they’re doing with it."],
   "admin-invoicing": ["", "Invoicing.", "Every payment across subscriptions and templates."],
   "admin-log": ["Admin", "Log.", "Every change made from the admin dashboard, and who made it."],
+  "admin-effects": ["Effect", "Health.", "Where effects’ Sanity guides and the registry disagree, worst first."],
   "admin-settings": ["Admin", "Settings.", "Install limits and internal accounts, without a redeploy."],
   emails: ["Email", "Log.", "Every email Vault has sent, and whether it was delivered."],
 };

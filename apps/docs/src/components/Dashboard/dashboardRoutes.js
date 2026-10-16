@@ -21,6 +21,7 @@ export const ADMIN_HIDDEN_TABS = new Set(["invoicing"]);
 export const ADMIN_TABS = [
   { key: "activity", label: "Activity", sub: "admin/activity", light: true },
   { key: "users", label: "Users", sub: "admin/users", light: true },
+  { key: "admin-effects", label: "Effects", sub: "admin/effects", light: true },
   { key: "admin-invoicing", label: "Invoicing", sub: "admin/invoicing", superAdmin: true, light: true },
   { key: "admin-log", label: "Log", sub: "admin/log", superAdmin: true, light: true },
   { key: "admin-settings", label: "Settings", sub: "admin/settings", superAdmin: true, light: true },

@@ -29,6 +29,7 @@ export const ADMIN_ACTIONS = {
   "installs.bonus": "Allowed extra installs today",
   "note.add": "Added a note",
   "settings.update": "Changed a setting",
+  "effect.refresh": "Refreshed an effect page",
 };
 
 export async function recordAdminAction({ action, targetClerkUserId = null, details = {} }) {

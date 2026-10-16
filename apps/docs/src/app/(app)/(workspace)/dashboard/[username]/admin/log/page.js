@@ -63,6 +63,7 @@ const ACTIONS = {
   "installs.bonus": "Extra installs",
   "note.add": "Notes",
   "settings.update": "Settings",
+  "effect.refresh": "Page refreshes",
 };
 
 export default function AdminLogPage() {
