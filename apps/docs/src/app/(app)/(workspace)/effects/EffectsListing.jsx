@@ -28,7 +28,7 @@ import { COLUMN_ITEMS, SlidingSegment } from "@/components/ui/SlidingSegment";
 import { usePromiseValue } from "@/lib/usePromiseValue";
 import { useUserPlan } from "@/lib/useUserPlan";
 import { CARD_LAYOUT_TRANSITION, DISPLAY, EffectCard, LABEL } from "./EffectCard";
-import { EFFECT_GRID, EFFECT_GRID_COLS, GUTTER, LIGHT_CHIP, LIGHT_CHIP_OFF, LIGHT_CHIP_ON, T11, T13, T14, T15, T16, T20 } from "../templates/tokens";
+import { EFFECT_GRID, EFFECT_GRID_COLS, GUTTER, LIGHT_CHIP, LIGHT_CHIP_OFF, LIGHT_CHIP_ON, T11, T14, T15, T16, T20 } from "../templates/tokens";
 import { Modal, useEffectCardActions } from "./useEffectCardActions";
 import { PreviewDrawer } from "./PreviewDrawer";
 import { CustomAnimationCta } from "./CustomAnimationCta";
@@ -646,7 +646,7 @@ export function EffectsListing({
                         type="button"
                         onClick={a.clear}
                         aria-label={`Remove filter ${a.label}`}
-                        className={`group inline-flex h-7.5 cursor-pointer items-center gap-[calc(var(--cvw)*0.5)] bg-ink px-2.5 ${T13} text-light max-md:gap-[2vw] ${a.roll ? "w-[calc(var(--cvw)*10)] shrink-0 justify-between max-lg:w-[18vw] max-md:w-[34vw]" : ""}`}
+                        className={`group inline-flex h-9.5 cursor-pointer items-center gap-[calc(var(--cvw)*0.5)] bg-ink px-4 ${T14} text-light max-md:gap-[2vw] ${a.roll ? "w-[calc(var(--cvw)*10)] shrink-0 justify-between max-lg:w-[18vw] max-md:w-[34vw]" : ""}`}
                       >
                         {a.roll ? <RollText text={a.label} block className="min-w-0 flex-1 overflow-clip! whitespace-nowrap text-left" /> : a.label}
                         <X className="size-3 transition-transform duration-300 ease-in-out group-hover:rotate-90 motion-reduce:transition-none" aria-hidden="true" />
@@ -663,7 +663,7 @@ export function EffectsListing({
                         transition={FILTER_SPRING}
                         type="button"
                         onClick={clearAll}
-                        className={`group ${LABEL} h-7.5 cursor-pointer px-2 text-black/60 transition-colors duration-500 hover:text-ink`}
+                        className={`group ${LABEL} h-9.5 cursor-pointer px-2 text-black/60 transition-colors duration-500 hover:text-ink`}
                       >
                         <span className="relative inline-block after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-out group-hover:after:origin-left group-hover:after:scale-x-100 motion-reduce:after:transition-none">Clear All</span>
                       </motion.button>

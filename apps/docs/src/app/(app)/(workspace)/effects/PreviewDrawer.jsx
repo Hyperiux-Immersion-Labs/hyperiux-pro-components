@@ -299,7 +299,9 @@ export function PreviewDrawer({
           {shown.description && (
             <p className={`w-[80%] ${T16} leading-relaxed text-foreground/80 max-lg:w-full`}>{shown.description}</p>
           )}
-          <div className="flex w-full flex-wrap gap-4">
+          {/* isolate: Button lifts its label with z-10, which would otherwise paint over the
+              sticky install bar below as the drawer scrolls on phones */}
+          <div className="isolate flex w-full flex-wrap gap-4">
             {/* items-stretch: the heart takes the buttons' height. Phones: View Article, Demo,
                 then a square heart, filling the row (MOBILE_ROW_BTN). */}
             <div className="flex flex-wrap items-stretch gap-2 max-md:w-full max-md:flex-nowrap">

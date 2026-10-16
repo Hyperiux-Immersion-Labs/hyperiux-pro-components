@@ -48,8 +48,9 @@ export const cardReveal = (index) => ({
   transition: { duration: 1.2, ease: [0.165, 0.84, 0.44, 1], delay: (index % 2) * 0.12 },
 });
 
-// Filter chips on light surfaces (the effects listing's categories, the dashboard's filters)
-export const LIGHT_CHIP = `inline-flex h-8 shrink-0 cursor-pointer items-center gap-[calc(var(--cvw)*0.5)] px-3 ${T13} transition-[background-color,color,box-shadow] duration-500 max-md:gap-[2vw]`;
+// Filter chips on light surfaces (the effects listing's categories). Same height and
+// text size as the All · Free · Pro segment and the Featured toggle beside them.
+export const LIGHT_CHIP = `inline-flex h-9.5 shrink-0 cursor-pointer items-center gap-[calc(var(--cvw)*0.5)] px-4 ${T14} transition-[background-color,color,box-shadow] duration-500 max-md:gap-[2vw]`;
 export const LIGHT_CHIP_OFF = "text-black/60 ring-1 ring-inset ring-black/10 hover:text-ink hover:ring-primary";
 export const LIGHT_CHIP_ON = "bg-primary text-background";
 
