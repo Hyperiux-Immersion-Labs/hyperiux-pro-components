@@ -218,7 +218,7 @@ function TextStreamComp({
 
   return (
     <div className="flex h-screen" style={{ backgroundColor, color: textColor }}>
-      <div className="w-[45%] flex max-md:w-[30%] max-lg:w-[35%] items-center justify-end pr-2">
+      <div className="w-[45%] flex max-md:w-[30%] max-[1025px]:w-[35%] items-center justify-end pr-2">
         <p className="max-md:text-xl text-4xl font-extralight leading-none whitespace-nowrap">
           Hyperiux
         </p>
@@ -226,7 +226,7 @@ function TextStreamComp({
 
       <div
         ref={containerRef}
-        className="relative w-[55%] max-lg:w-[65%] max-md:w-[70%] h-full overflow-hidden "
+        className="relative w-[55%] max-[1025px]:w-[65%] max-md:w-[70%] h-full overflow-hidden "
         style={{
           maskImage: revealMask,
           WebkitMaskImage: revealMask,
@@ -250,10 +250,10 @@ function TextStreamComp({
     py-1
     pl-2
     whitespace-nowrap
-    max-lg:whitespace-normal
-    max-lg:wrap-break-word
+    max-[1025px]:whitespace-normal
+    max-[1025px]:wrap-break-word
     max-md:pr-3
-    max-lg:max-w-full
+    max-[1025px]:max-w-full
   "
   style={{ paddingTop: linePadding, paddingBottom: linePadding }}
 >

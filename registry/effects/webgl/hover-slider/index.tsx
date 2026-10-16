@@ -1031,7 +1031,7 @@ function HoverSliderComp({ items = [], transitionDuration = 0.45, imageScale = 0
       </div>
 
      <p
-        className="pointer-events-none absolute bottom-[20%]! right-0 z-20 max-w-87.5 text-right text-sm leading-relaxed max-lg:hidden  md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0"
+        className="pointer-events-none absolute bottom-[20%]! right-0 z-20 max-w-87.5 text-right text-sm leading-relaxed max-[1025px]:hidden  md:absolute md:bottom-[10vw] md:right-[2vw] md:mt-0"
         style={{ color: "rgba(30,28,24,0.6)" }}
       >
         A curated collection of futuristic UI experiments, motion systems, and
@@ -1039,7 +1039,7 @@ function HoverSliderComp({ items = [], transitionDuration = 0.45, imageScale = 0
         the ordinary.
       </p>
 
-      <p className="absolute bottom-15 right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-lg:block max-lg:bottom-2 max-lg:w-[80vw] max-lg:text-sm">
+      <p className="absolute bottom-15 right-10 z-40 hidden w-[50vw] rounded-lg bg-black/10 p-3 text-center text-lg backdrop-blur-xl max-[1025px]:block max-[1025px]:bottom-2 max-[1025px]:w-[80vw] max-[1025px]:text-sm">
         Click on an item to see the animation. Hover effects available on
         desktop.
       </p>

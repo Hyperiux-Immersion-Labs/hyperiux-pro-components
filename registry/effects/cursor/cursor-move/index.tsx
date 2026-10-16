@@ -290,7 +290,7 @@ export default function CursorMove({
   cursorDotStyle = {},
   text = "hello!",
   textWrapperClassName = "flex items-center justify-center w-full h-full",
-  textClassName = "text-9xl max-lg:text-6xl max-md:text-5xl text-orange-500 select-none leading-none",
+  textClassName = "text-9xl max-[1025px]:text-6xl max-md:text-5xl text-orange-500 select-none leading-none",
   textAs = "span",
   fontVariationMapping = {
     y: { name: "wght", min: 100, max: 900 },
@@ -301,7 +301,7 @@ export default function CursorMove({
   lerp = 0.2,
   showCoordinates = true,
   coordinatesClassName = "absolute bottom-8 left-8 flex flex-col font-mono",
-  coordinatesTextClassName = "text-xs max-lg:text-sm text-white/40 tabular-nums",
+  coordinatesTextClassName = "text-xs max-[1025px]:text-sm text-white/40 tabular-nums",
   textColor,
   crosshairColor,
   cursorDotColor,

@@ -619,7 +619,7 @@ const MorphingDock = ({
         "--morphing-dock-nav-w-user": expandedWidthValue,
         "--morphing-dock-nav-h-user": expandedHeightValue,
       } as CSSProperties}
-      className="[--morphing-dock-dock-w:min(30vw,32rem)] [--morphing-dock-dock-h:4vw] [--morphing-dock-nav-w:var(--morphing-dock-nav-w-user,min(48vw,52rem))] [--morphing-dock-nav-h:var(--morphing-dock-nav-h-user,26vw)] [--morphing-dock-contact-w:min(30vw,32rem)] [--morphing-dock-contact-h:14vw] max-lg:[--morphing-dock-dock-w:min(94vw,35rem)] max-lg:[--morphing-dock-dock-h:9vw] max-lg:[--morphing-dock-nav-w:min(94vw,42.5rem)] max-lg:[--morphing-dock-nav-h:52vw] max-lg:[--morphing-dock-contact-w:min(94vw,35rem)] max-lg:[--morphing-dock-contact-h:26vw] max-md:[--morphing-dock-dock-w:92vw] max-md:[--morphing-dock-dock-h:16vw] max-md:[--morphing-dock-nav-w:92vw] max-md:[--morphing-dock-nav-h:150vw] max-md:[--morphing-dock-contact-w:92vw] max-md:[--morphing-dock-contact-h:50vw]"
+      className="[--morphing-dock-dock-w:min(30vw,32rem)] [--morphing-dock-dock-h:4vw] [--morphing-dock-nav-w:var(--morphing-dock-nav-w-user,min(48vw,52rem))] [--morphing-dock-nav-h:var(--morphing-dock-nav-h-user,26vw)] [--morphing-dock-contact-w:min(30vw,32rem)] [--morphing-dock-contact-h:14vw] max-[1025px]:[--morphing-dock-dock-w:min(94vw,35rem)] max-[1025px]:[--morphing-dock-dock-h:9vw] max-[1025px]:[--morphing-dock-nav-w:min(94vw,42.5rem)] max-[1025px]:[--morphing-dock-nav-h:52vw] max-[1025px]:[--morphing-dock-contact-w:min(94vw,35rem)] max-[1025px]:[--morphing-dock-contact-h:26vw] max-md:[--morphing-dock-dock-w:92vw] max-md:[--morphing-dock-dock-h:16vw] max-md:[--morphing-dock-nav-w:92vw] max-md:[--morphing-dock-nav-h:150vw] max-md:[--morphing-dock-contact-w:92vw] max-md:[--morphing-dock-contact-h:50vw]"
     >
       <div
         aria-hidden
@@ -631,11 +631,11 @@ const MorphingDock = ({
 
       <div
         ref={dockRef}
-        className="fixed bottom-16 left-1/2 z-200 -translate-x-1/2 max-lg:bottom-12 max-md:bottom-6"
+        className="fixed bottom-16 left-1/2 z-200 -translate-x-1/2 max-[1025px]:bottom-12 max-md:bottom-6"
       >
         <div
           ref={bodyRef}
-          className="relative box-border max-w-[96vw] overflow-hidden rounded-[2vw] border border-white/15 bg-(--morphing-dock-background) shadow-[0_1.5vw_4vw_rgba(0,0,0,0.45)] will-change-[width,height] max-lg:rounded-[3.5vw] max-md:rounded-[6vw]"
+          className="relative box-border max-w-[96vw] overflow-hidden rounded-[2vw] border border-white/15 bg-(--morphing-dock-background) shadow-[0_1.5vw_4vw_rgba(0,0,0,0.45)] will-change-[width,height] max-[1025px]:rounded-[3.5vw] max-md:rounded-[6vw]"
         >
           <div
             ref={surfaceRef}
@@ -644,11 +644,11 @@ const MorphingDock = ({
           >
             <div
               ref={navViewRef}
-              className="absolute bottom-0 left-0 box-border flex h-[calc(var(--morphing-dock-nav-h)-var(--morphing-dock-dock-h))] w-(--morphing-dock-nav-w) flex-row items-stretch gap-6 px-6 py-6 will-change-[transform,opacity] max-lg:gap-5 max-md:flex-col max-md:justify-start max-md:gap-0 max-md:px-5 max-md:py-5"
+              className="absolute bottom-0 left-0 box-border flex h-[calc(var(--morphing-dock-nav-h)-var(--morphing-dock-dock-h))] w-(--morphing-dock-nav-w) flex-row items-stretch gap-6 px-6 py-6 will-change-[transform,opacity] max-[1025px]:gap-5 max-md:flex-col max-md:justify-start max-md:gap-0 max-md:px-5 max-md:py-5"
             >
               <nav
                 aria-label="Site navigation"
-                className="flex min-w-0 basis-1/2 flex-col items-start justify-end gap-2.5 max-lg:gap-3 max-md:basis-auto max-md:justify-start max-md:gap-4 max-md:pt-8"
+                className="flex min-w-0 basis-1/2 flex-col items-start justify-end gap-2.5 max-[1025px]:gap-3 max-md:basis-auto max-md:justify-start max-md:gap-4 max-md:pt-8"
               >
                 {items.map((item) => (
                   <LinkButton
@@ -665,7 +665,7 @@ const MorphingDock = ({
                       if (item.href === "#") e.preventDefault();
                       api.current?.close();
                     }}
-                    className="inline-block w-fit text-[2.4vw] leading-[1.15] font-light tracking-[-0.03em] whitespace-nowrap no-underline transition-colors duration-250 will-change-[transform,opacity] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent max-lg:text-[3.6vw] max-md:text-[6.5vw]"
+                    className="inline-block w-fit text-[2.4vw] leading-[1.15] font-light tracking-[-0.03em] whitespace-nowrap no-underline transition-colors duration-250 will-change-[transform,opacity] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent max-[1025px]:text-[3.6vw] max-md:text-[6.5vw]"
                   >
                     {item.label}
                   </LinkButton>
@@ -689,7 +689,7 @@ const MorphingDock = ({
               <div
                 ref={panelRef}
                 aria-hidden
-                className="relative min-w-0 basis-1/2 will-change-[transform,opacity] max-lg:h-[34vw] max-lg:self-end max-md:order-first max-md:h-[50vw] max-md:basis-auto max-md:self-auto"
+                className="relative min-w-0 basis-1/2 will-change-[transform,opacity] max-[1025px]:h-[34vw] max-[1025px]:self-end max-md:order-first max-md:h-[50vw] max-md:basis-auto max-md:self-auto"
               >
                 <a
                   ref={mediaRef}
@@ -743,7 +743,7 @@ const MorphingDock = ({
                     data-blurb={item.label}
                     className="pointer-events-none absolute inset-0 flex flex-col justify-end gap-2 p-4 will-change-[transform,opacity]"
                   >
-                    <span className="text-[0.8vw] tracking-[0.08em] text-white/60 max-lg:text-[1.4vw] max-md:text-[2.8vw]">
+                    <span className="text-[0.8vw] tracking-[0.08em] text-white/60 max-[1025px]:text-[1.4vw] max-md:text-[2.8vw]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="text-sm leading-[1.45] tracking-[0.01em] text-white/90">
@@ -762,7 +762,7 @@ const MorphingDock = ({
                 type="button"
                 onClick={() => api.current?.toNav()}
                 aria-label="Back to navigation"
-                className="flex cursor-pointer items-center gap-1.5 self-start border-none bg-transparent p-0 text-[0.9vw] text-white/50 transition-colors duration-250 hover:text-white/92 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent max-lg:text-[1.6vw] max-md:text-[3.2vw]"
+                className="flex cursor-pointer items-center gap-1.5 self-start border-none bg-transparent p-0 text-[0.9vw] text-white/50 transition-colors duration-250 hover:text-white/92 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-transparent max-[1025px]:text-[1.6vw] max-md:text-[3.2vw]"
               >
                 <svg viewBox="0 0 16 16" fill="none" aria-hidden className="h-3.5 w-3.5 flex-none">
                   <path
@@ -783,7 +783,7 @@ const MorphingDock = ({
                 >
                   {email}
                 </a>
-                <span className="text-[0.9vw] text-white/50 max-lg:text-[1.6vw] max-md:text-[3.2vw]">
+                <span className="text-[0.9vw] text-white/50 max-[1025px]:text-[1.6vw] max-md:text-[3.2vw]">
                   {emailNote}
                 </span>
               </div>
@@ -887,7 +887,7 @@ const MorphingDock = ({
               aria-expanded={isOpen}
               aria-controls="morphing-dock-surface"
               aria-label={isOpen ? "Close navigation" : "Open navigation"}
-              className="flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 border-none bg-transparent p-0 text-[1.05vw] font-normal tracking-[0.01em] whitespace-nowrap text-(--morphing-dock-text) transition-opacity duration-200 hover:opacity-70 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-transparent max-lg:text-[1.8vw] max-md:text-[3.4vw]"
+              className="flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 border-none bg-transparent p-0 text-[1.05vw] font-normal tracking-[0.01em] whitespace-nowrap text-(--morphing-dock-text) transition-opacity duration-200 hover:opacity-70 focus-visible:rounded-lg focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-transparent max-[1025px]:text-[1.8vw] max-md:text-[3.4vw]"
             >
               <svg viewBox="0 0 20 20" fill="none" aria-hidden className="h-5 w-5 flex-none overflow-visible mt-0.5">
                 <rect
@@ -904,8 +904,8 @@ const MorphingDock = ({
               </svg>
               <span aria-hidden className="block h-5 w-fit flex-none overflow-hidden">
                 <span ref={triggerRollerRef} className="flex flex-col items-start will-change-transform">
-                  <span className="block h-5 max-md:text-[3.5vw] max-lg:text-[2.8vw] leading-5 whitespace-nowrap">Menu</span>
-                  <span className="block h-5 max-md:text-[3.5vw] max-lg:text-[2.8vw] leading-5 whitespace-nowrap">Close</span>
+                  <span className="block h-5 max-md:text-[3.5vw] max-[1025px]:text-[2.8vw] leading-5 whitespace-nowrap">Menu</span>
+                  <span className="block h-5 max-md:text-[3.5vw] max-[1025px]:text-[2.8vw] leading-5 whitespace-nowrap">Close</span>
                 </span>
               </span>
             </button>
@@ -917,7 +917,7 @@ const MorphingDock = ({
               onClick={(e) => {
                 if (ctaHref === "#") e.preventDefault();
               }}
-              className="flex h-10  max-lg:h-12  flex-none items-center rounded-full bg-white/10 px-5 text-[1.05vw] max-lg:text-[2.8vw] font-medium whitespace-nowrap no-underline transition-colors duration-200 hover:bg-white/15   max-md:h-10 max-md:px-4  max-md:text-[4vw]"
+              className="flex h-10  max-[1025px]:h-12  flex-none items-center rounded-full bg-white/10 px-5 text-[1.05vw] max-[1025px]:text-[2.8vw] font-medium whitespace-nowrap no-underline transition-colors duration-200 hover:bg-white/15   max-md:h-10 max-md:px-4  max-md:text-[4vw]"
             >
               {ctaLabel}
             </LinkButton>

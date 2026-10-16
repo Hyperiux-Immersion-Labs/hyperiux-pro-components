@@ -441,7 +441,7 @@ const FullScreenCrosshair = ({
         <span className="absolute left-1/2 top-(--crosshair-gap) block h-(--crosshair-line-size) w-(--crosshair-thickness) -translate-x-1/2 bg-(--crosshair-color)" />
         <span className="absolute right-(--crosshair-gap) top-1/2 block h-(--crosshair-thickness) w-(--crosshair-line-size) -translate-y-1/2 bg-(--crosshair-color)" />
 
-        <div className="absolute left-1/2 top-1/2 flex min-h-(--crosshair-center-size) min-w-(--crosshair-center-size) -translate-x-1/2 -translate-y-1/2 select-none items-center justify-center whitespace-nowrap leading-none text-(length:--crosshair-center-size) text-(--crosshair-color) max-lg:text-[calc(var(--crosshair-center-size)*0.9)] max-md:text-[calc(var(--crosshair-center-size)*0.9)]">
+        <div className="absolute left-1/2 top-1/2 flex min-h-(--crosshair-center-size) min-w-(--crosshair-center-size) -translate-x-1/2 -translate-y-1/2 select-none items-center justify-center whitespace-nowrap leading-none text-(length:--crosshair-center-size) text-(--crosshair-color) max-[1025px]:text-[calc(var(--crosshair-center-size)*0.9)] max-md:text-[calc(var(--crosshair-center-size)*0.9)]">
           {centerContent}
         </div>
       </div>

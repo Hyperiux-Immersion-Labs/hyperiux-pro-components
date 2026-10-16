@@ -832,7 +832,7 @@ export function InfinitePerspectiveSliderComp({
   return (
     <div className="h-screen w-screen overflow-hidden touch-none">
       <div
-        className="pointer-events-none relative flex h-full items-center overflow-hidden max-lg:items-center "
+        className="pointer-events-none relative flex h-full items-center overflow-hidden max-[1025px]:items-center "
         style={{ perspective: `${perspective}px` }}
       >
         <div
@@ -861,7 +861,7 @@ export function InfinitePerspectiveSliderComp({
                   ref={(element) => {
                     numberRefs.current[index] = element;
                   }}
-                  className="mb-2 text-2xl leading-none tracking-tight text-black opacity-0 max-lg:text-xl max-md:mb-1 max-md:text-lg"
+                  className="mb-2 text-2xl leading-none tracking-tight text-black opacity-0 max-[1025px]:text-xl max-md:mb-1 max-md:text-lg"
                 >
                   {number}
                 </div>
@@ -870,7 +870,7 @@ export function InfinitePerspectiveSliderComp({
                   ref={(element) => {
                     imageRefs.current[index] = element;
                   }}
-                  className="relative h-[50vh] w-full overflow-hidden bg-white max-lg:h-[45vh] max-md:h-[40vh]"
+                  className="relative h-[50vh] w-full overflow-hidden bg-white max-[1025px]:h-[45vh] max-md:h-[40vh]"
                 >
                   {src ? (
                     <img
@@ -887,7 +887,7 @@ export function InfinitePerspectiveSliderComp({
                     ref={(element) => {
                       titleRefs.current[index] = element;
                     }}
-                    className="text-xl uppercase leading-none tracking-[0.04em] text-black opacity-0 max-lg:text-lg max-md:text-base"
+                    className="text-xl uppercase leading-none tracking-[0.04em] text-black opacity-0 max-[1025px]:text-lg max-md:text-base"
                   >
                     {title}
                   </div>
@@ -896,7 +896,7 @@ export function InfinitePerspectiveSliderComp({
                     ref={(element) => {
                       descriptionRefs.current[index] = element;
                     }}
-                    className="text-sm leading-none text-black/70 opacity-0 max-lg:text-xs max-md:text-xs"
+                    className="text-sm leading-none text-black/70 opacity-0 max-[1025px]:text-xs max-md:text-xs"
                   >
                     {desc || description || ""}
                   </div>

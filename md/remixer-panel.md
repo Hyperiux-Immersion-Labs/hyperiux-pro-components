@@ -4,7 +4,7 @@
 > prescribes is confirmed live and matching across sampled effects - trust the
 > architectural contract. Two things have drifted: (1) the implementation file layout
 > is not what's described below - real files live under
-> `vault-main/src/components/remixer-panel/` as TypeScript (`RemixerPanel.tsx`,
+> `apps/docs/src/components/remixer-panel/` as TypeScript (`RemixerPanel.tsx`,
 > `RemixerLauncher.tsx`, `useRemixerControls.ts`, `build-remixer-code.ts`,
 > `remixer-utils.ts`, `types.ts`), not the `hooks/usePropsRemixer.js` /
 > `components/ui/RemixerLauncher.jsx` paths named here; (2) the worked `spider-particles`
@@ -58,7 +58,7 @@ Each effect needs two connected pieces:
 - `registry/effects/<category>/<effect>/index.jsx`: the installable component must accept the prop in its public API and use it in the live effect.
 - `registry/effects/<category>/<effect>/registry.json`: the same effect should declare public prop metadata that docs, demos, generated copy code, public registry JSON, and Sanity sync scripts can read.
 
-Do not make `vault-main/src/lib/effect-configs.js`, any demo `DemoContent.jsx`, or Sanity the canonical prop source. Those systems should consume the registry metadata, not redefine it.
+Do not make `apps/docs/src/lib/effect-configs.js`, any demo `DemoContent.jsx`, or Sanity the canonical prop source. Those systems should consume the registry metadata, not redefine it.
 
 Recommended `registry.json` shape:
 
@@ -125,13 +125,13 @@ The desired flow is:
 ```txt
 registry/effects/<effect>/index.jsx
   + registry/effects/<effect>/registry.json props/remixer metadata
-  -> vault-main/scripts/build-registry.js
-  -> vault-main/public/r/<effect>.json
+  -> apps/docs/scripts/build-registry.js
+  -> apps/docs/public/r/<effect>.json
   -> docs demo + effect detail + copy-code generator
   -> Sanity sync script later, if Sanity should store/search/display prop metadata
 ```
 
-`vault-main/scripts/build-registry.js` currently writes a curated `registryItem`, so it must be updated to include `props` and `remixer` from each effect `registry.json`. The root `scripts/build-registry.js` packs each effect with its local `registry.json`, so the npm/package artifact will already carry that metadata once it is added.
+`apps/docs/scripts/build-registry.js` currently writes a curated `registryItem`, so it must be updated to include `props` and `remixer` from each effect `registry.json`. The root `scripts/build-registry.js` packs each effect with its local `registry.json`, so the npm/package artifact will already carry that metadata once it is added.
 
 ## Non-Goals For This Planning Step
 
@@ -223,7 +223,7 @@ The Remixer Panel should support today’s existing types and leave a clean path
 
 ### Current Implemented Types
 
-These are already present in `vault-main/src/components/ui/RemixerPanel.jsx`:
+These are already present in `apps/docs/src/components/ui/RemixerPanel.jsx`:
 
 | Type | Value Shape | UI | Code Output |
 |---|---|---|---|
@@ -297,7 +297,7 @@ If a control affects only docs-local preview behavior, keep it in the live panel
 
 ## Shared Files To Create
 
-### 1. `vault-main/src/hooks/usePropsRemixer.js`
+### 1. `apps/docs/src/hooks/usePropsRemixer.js`
 
 Purpose:
 
@@ -325,7 +325,7 @@ Implementation notes:
 - Reset should not keep stale mutated object references.
 - The hook should not know about `DemoContent.jsx`, registry paths, or code generation.
 
-### 2. `vault-main/src/components/ui/RemixerLauncher.jsx`
+### 2. `apps/docs/src/components/ui/RemixerLauncher.jsx`
 
 Purpose:
 
@@ -362,7 +362,7 @@ const preset = {
 
 The launcher should not know about a specific effect. It only knows how to show the panel.
 
-### 3. `vault-main/src/utils/buildRemixCode.js`
+### 3. `apps/docs/src/utils/buildRemixCode.js`
 
 Purpose:
 
@@ -389,7 +389,7 @@ Expected behavior:
 - Copied-code comments include only values emitted in the snippet.
 - Docs-only controls are excluded when building registry snippets.
 
-### 4. `vault-main/src/utils/getRegistryImportPath.js`
+### 4. `apps/docs/src/utils/getRegistryImportPath.js`
 
 Purpose:
 
@@ -410,10 +410,10 @@ getRegistryImportPath("spider-particles")
 
 Files checked:
 
-- `vault-main/src/app/(marketing)/demo/spider-particles/DemoContent.jsx`
-- `vault-main/src/components/spider-particles/index.jsx`
+- `apps/docs/src/app/(marketing)/demo/spider-particles/DemoContent.jsx`
+- `apps/docs/src/components/spider-particles/index.jsx`
 - `registry/effects/backgrounds/spider-particles/index.jsx`
-- `vault-main/src/components/ui/RemixerPanel.jsx`
+- `apps/docs/src/components/ui/RemixerPanel.jsx`
 - `registry/index.json`
 
 Current docs controls:

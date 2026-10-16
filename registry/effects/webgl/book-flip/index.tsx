@@ -601,7 +601,7 @@ export const UI = ({ images = [] }: UIProps) => {
  </main>
 
  <div className="relative z-20 h-screen pointer-events-none">
-    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-lg:justify-center max-lg:gap-8 max-md:gap-4 max-lg:top-[85%] max-md:top-[80%]">
+    <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-10 max-[1025px]:justify-center max-[1025px]:gap-8 max-md:gap-4 max-[1025px]:top-[85%] max-md:top-[80%]">
     <p className="text-[8vw] max-md:text-[10vw] leading-[1.2] text-white">
         BOOK 
        

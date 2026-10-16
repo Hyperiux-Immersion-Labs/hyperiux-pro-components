@@ -4,13 +4,13 @@
 
 ## Context
 
-The admin dashboard (`vault-main/src/app/(app)/(workspace)/dashboard/admin/page.js`) already has an `InviteModal` that lets an admin paste or upload emails and send them *immediately*, capped at 100/day (`DAILY_INVITE_LIMIT` in `vault-main/src/app/api/admin/waitlist/invite/route.js`). There's no way today to hand it a large list and have it trickle out automatically over multiple days.
+The admin dashboard (`apps/docs/src/app/(app)/(workspace)/dashboard/admin/page.js`) already has an `InviteModal` that lets an admin paste or upload emails and send them *immediately*, capped at 100/day (`DAILY_INVITE_LIMIT` in `apps/docs/src/app/api/admin/waitlist/invite/route.js`). There's no way today to hand it a large list and have it trickle out automatically over multiple days.
 
 This adds a second, additive flow: an admin uploads a CSV once; a Vercel Cron job fires daily at **05:30 UTC (11:00 IST, no DST)** and sends the next 70 rows, sharing the *same* 100/day cap the manual flow already enforces. The queue is durable server-side state in Supabase, survives redeploys, self-terminates when exhausted (no looping), and a fresh upload always fully replaces whatever is still queued.
 
 The existing `InviteModal` and manual `/api/admin/waitlist/invite` route are untouched behaviorally - the only change there is a pure refactor so both send paths share one implementation of "invite + email + log" and "how many sent today," so the cap can never drift between the two.
 
-**Note for implementation**: `vault-main/AGENTS.md` flags that this repo's Next.js version has breaking changes vs. training data - check `node_modules/next/dist/docs/` for current route-handler/`formData()` conventions before writing the new routes.
+**Note for implementation**: `apps/docs/AGENTS.md` flags that this repo's Next.js version has breaking changes vs. training data - check `node_modules/next/dist/docs/` for current route-handler/`formData()` conventions before writing the new routes.
 
 ## Free-tier check (confirmed 2026-08-26)
 
@@ -27,7 +27,7 @@ The existing `InviteModal` and manual `/api/admin/waitlist/invite` route are unt
 | Re-upload mid-batch | Old active batch → `status='replaced'` (kept for audit, not deleted); new batch inserted `active`, cursor 0 | Matches the append-don't-delete convention already used for `sent_emails`/`install_events`. |
 | Per-row failure handling | Cursor always advances past attempted rows; a row is claimed once, sent once, marked `sent`/`failed`, never auto-retried | Matches existing manual-route behavior (failed manual invites aren't auto-retried either) and prevents one permanently-bad address from wedging the queue forever. |
 | Cap sharing | Cron sends `min(70, DAILY_INVITE_LIMIT - sentToday, rowsRemaining)` using the same `getInvitesSentToday()` the manual route uses | Explicit requirement - must never become two separate counters. |
-| Concurrency safety | A Postgres function takes `pg_advisory_xact_lock`, re-checks today's `sent_emails` count inside that locked transaction, and atomically advances the cursor | Mirrors the existing `claim_founding_slot`-style pattern in this repo (`vault-main/src/lib/founding-slots.js`, `vault-main/test/fixtures/install-limit-schema.sql`); protects against Vercel's documented "cron delivery is best-effort, occasionally duplicate" behavior. |
+| Concurrency safety | A Postgres function takes `pg_advisory_xact_lock`, re-checks today's `sent_emails` count inside that locked transaction, and atomically advances the cursor | Mirrors the existing `claim_founding_slot`-style pattern in this repo (`apps/docs/src/lib/founding-slots.js`, `apps/docs/test/fixtures/install-limit-schema.sql`); protects against Vercel's documented "cron delivery is best-effort, occasionally duplicate" behavior. |
 
 ## 1. Database schema (run by hand in Supabase SQL editor - no migration tooling exists in this repo)
 
@@ -140,11 +140,11 @@ end;
 $$;
 ```
 
-No RLS - consistent with every other table here; all access goes through the service-role client in `vault-main/src/lib/supabase.js`.
+No RLS - consistent with every other table here; all access goes through the service-role client in `apps/docs/src/lib/supabase.js`.
 
-## 2. Refactor: `vault-main/src/app/api/admin/waitlist/invite/route.js`
+## 2. Refactor: `apps/docs/src/app/api/admin/waitlist/invite/route.js`
 
-**New file `vault-main/src/lib/inviteUser.js`** - move out (verbatim logic, generalized to accept `{email, name}`):
+**New file `apps/docs/src/lib/inviteUser.js`** - move out (verbatim logic, generalized to accept `{email, name}`):
 - `DAILY_INVITE_LIMIT = 100`
 - `EMAIL_RE`
 - `startOfTodayUTC()`
@@ -156,17 +156,17 @@ No RLS - consistent with every other table here; all access goes through the ser
 
 ## 3. New files
 
-**`vault-main/src/lib/csv.js`**
+**`apps/docs/src/lib/csv.js`**
 - `parseCsv(text)` - minimal RFC4180 tokenizer (quoted fields, `""` escaping, `\n`/`\r\n`), returns `string[][]`.
 - `parseInviteCsv(text)` - requires an `email` header (case-insensitive), optional `name`/`full name` header; per row: trim/lowercase email, validate via `EMAIL_RE` (from `@/lib/inviteUser`), dedupe case-insensitively (first wins); returns `{ rows: [{email, name}], invalidCount, duplicateCount }`.
 
-**`vault-main/src/app/api/admin/waitlist/auto-invite/route.js`** (assertAdmin-gated)
+**`apps/docs/src/app/api/admin/waitlist/auto-invite/route.js`** (assertAdmin-gated)
 - `MAX_FILE_SIZE_BYTES = 2MB`, `MAX_BATCH_ROWS = 5000`.
 - `GET` - status for the UI: active/most-recent batch (filename, uploadedAt, totalRows, cursor, sentCount/failedCount/pendingCount via `count:'exact'` queries on `invite_batch_rows`), `sharedCap: { limit, sentToday, remaining }` (via `getInvitesSentToday`), `nextRunAt` (next 05:30 UTC, plain `Date` math, no library needed since offset is fixed).
 - `POST` - reads `req.formData()`, validates file size, `parseInviteCsv(await file.text())`, 400 on zero rows or missing `email` column or `rows.length > MAX_BATCH_ROWS`, else `supabase.rpc("replace_active_invite_batch", { p_uploaded_by: userId, p_filename: file.name, p_rows: rows })` (`userId` from `auth()`).
 - `DELETE` - `supabase.rpc("cancel_active_invite_batch")`.
 
-**`vault-main/src/app/api/cron/auto-invite/route.js`** (CRON_SECRET-gated, not assertAdmin - Vercel's invoker has no Clerk session)
+**`apps/docs/src/app/api/cron/auto-invite/route.js`** (CRON_SECRET-gated, not assertAdmin - Vercel's invoker has no Clerk session)
 ```js
 const authHeader = request.headers.get("authorization");
 if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -177,17 +177,17 @@ Vercel sends `Authorization: Bearer <CRON_SECRET>` automatically to configured c
 
 Body: find `active` batch → `supabase.rpc("claim_invite_batch_rows", { p_batch_id, p_max_rows: 70, p_daily_limit: DAILY_INVITE_LIMIT })` → if empty, no-op 200 → else `inviteManyWithConcurrency(clerk, claimed, CONCURRENCY)` → update each `invite_batch_rows` row to `sent`/`failed` with `error`/`sent_at` (join back to `claimed` by index) → return `{ ok: true, attempted, sent, failed }`.
 
-**`vault-main/vercel.json`** - add:
+**`apps/docs/vercel.json`** - add:
 ```json
 "crons": [{ "path": "/api/cron/auto-invite", "schedule": "30 5 * * *" }]
 ```
 ⚠️ Flag to confirm: Vercel Hobby plan only guarantees cron delivery *within the scheduled hour*, not the exact minute - exact-minute delivery needs Pro/Enterprise. Confirmed acceptable to run on Hobby (see "Free-tier check" above).
 
-**`vault-main/src/components/admin/AutoInviteBatchCard.jsx`** - new client component, rendered from `admin/page.js` as its own section (not inside `InviteModal`): file upload input (confirms via `window.confirm` if replacing a still-active batch), status display (sent/total, pending, status pill, "Next run" in `Asia/Kolkata` via `Intl.DateTimeFormat`), cancel button. Styling matches existing conventions in `admin/page.js` (borders, `ButtonV3`, badge patterns already used for role/plan pills).
+**`apps/docs/src/components/admin/AutoInviteBatchCard.jsx`** - new client component, rendered from `admin/page.js` as its own section (not inside `InviteModal`): file upload input (confirms via `window.confirm` if replacing a still-active batch), status display (sent/total, pending, status pill, "Next run" in `Asia/Kolkata` via `Intl.DateTimeFormat`), cancel button. Styling matches existing conventions in `admin/page.js` (borders, `ButtonV3`, badge patterns already used for role/plan pills).
 
 ## 4. Env vars
 
-- **New**: `CRON_SECRET` - random string, added to `vault-main/.env.local` (placeholder) and Vercel Project Settings (Production + Preview).
+- **New**: `CRON_SECRET` - random string, added to `apps/docs/.env.local` (placeholder) and Vercel Project Settings (Production + Preview).
 - Reused as-is: `RESEND_API_KEY`, `CLERK_SECRET_KEY`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`.
 
 ## 5. Edge cases
@@ -225,11 +225,11 @@ john.smith@example.com,John Smith
 - `name` (optional - not yet used in the email template, but stored for future personalization)
 
 ### Critical files
-- `vault-main/src/lib/inviteUser.js` (new)
-- `vault-main/src/lib/csv.js` (new)
-- `vault-main/src/app/api/admin/waitlist/invite/route.js` (refactor only)
-- `vault-main/src/app/api/admin/waitlist/auto-invite/route.js` (new)
-- `vault-main/src/app/api/cron/auto-invite/route.js` (new)
-- `vault-main/vercel.json` (add crons)
-- `vault-main/src/components/admin/AutoInviteBatchCard.jsx` (new)
-- `vault-main/src/app/(app)/(workspace)/dashboard/admin/page.js` (render the new card)
+- `apps/docs/src/lib/inviteUser.js` (new)
+- `apps/docs/src/lib/csv.js` (new)
+- `apps/docs/src/app/api/admin/waitlist/invite/route.js` (refactor only)
+- `apps/docs/src/app/api/admin/waitlist/auto-invite/route.js` (new)
+- `apps/docs/src/app/api/cron/auto-invite/route.js` (new)
+- `apps/docs/vercel.json` (add crons)
+- `apps/docs/src/components/admin/AutoInviteBatchCard.jsx` (new)
+- `apps/docs/src/app/(app)/(workspace)/dashboard/admin/page.js` (render the new card)

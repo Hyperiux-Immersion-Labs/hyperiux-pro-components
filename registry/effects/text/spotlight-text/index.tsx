@@ -398,7 +398,7 @@ export default function SpotlightText({
  }
  >
  {/* Dim text (mobile becomes fully visible) */}
- <p className="max-lg:opacity-90 leading-tight whitespace-pre-wrap" style={{ color: isMobile ? spotlightColor : baseTextColor }}>
+ <p className="max-[1025px]:opacity-90 leading-tight whitespace-pre-wrap" style={{ color: isMobile ? spotlightColor : baseTextColor }}>
  {text}
  </p>
 

@@ -41,7 +41,7 @@ effect subdirectory inside it:
      with no implementation).
    - Otherwise: CONSISTENT.
 
-4. Find this effect's mirror folder under `vault-main/src/components/{effect-name}/`
+4. Find this effect's mirror folder under `apps/docs/src/components/{effect-name}/`
    (name usually matches exactly; watch for near-misses like
    `clippath-slider` vs `clip-path-slider` or casing differences like
    `infinite-carousel` vs `InfiniteCarousel`). If a mirror exists, read its
@@ -63,5 +63,5 @@ there's no mirror), in this exact format:
 
 Only elaborate beyond one sentence for MISMATCH or MIRROR_DRIFT cases. Do
 not read files outside `registry/effects/{your-category}/` and
-`vault-main/src/components/` (for the mirror check only). Do not modify any
+`apps/docs/src/components/` (for the mirror check only). Do not modify any
 files."""

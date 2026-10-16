@@ -606,7 +606,7 @@ useEffect(() => {
  <div className="fixed  inset-0 h-screen w-screen overflow-hidden bg-black" data-mask-source={maskSourceState}>
  {isDesktop && (
  <>
- <div className="fixed max-lg:hidden left-4 top-25 z-50 pointer-events-auto max-lg:bottom-3 max-lg:left-3 max-lg:right-3 max-lg:top-auto">
+ <div className="fixed max-[1025px]:hidden left-4 top-25 z-50 pointer-events-auto max-[1025px]:bottom-3 max-[1025px]:left-3 max-[1025px]:right-3 max-[1025px]:top-auto">
  <div className="flex flex-col items-stretch gap-2 rounded-[12px] border border-[#232323] bg-[#0f0f0f] p-[10px] max-md:w-full max-md:rounded-[16px]">
  <div className="flex items-center justify-between gap-[10px]">
   <div className="text-[12px] font-black tracking-[0.18em] text-white">HYPERIUX</div>
@@ -690,7 +690,7 @@ useEffect(() => {
  
  {/* Creative clue hint */}
  {isDesktop && (
- <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-lg:bottom-4 max-lg:hidden">
+ <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none max-[1025px]:bottom-4 max-[1025px]:hidden">
  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/70 text-sm font-medium tracking-wide">
  Drift your cursor through the grid to lift
  </div>
@@ -748,7 +748,7 @@ export default function GridLift({
 
  if (!isDesktop) {
   return (
-   <div className="flex min-h-screen w-screen items-center justify-center bg-black px-8 pb-8 pt-24 text-center max-lg:pt-28">
+   <div className="flex min-h-screen w-screen items-center justify-center bg-black px-8 pb-8 pt-24 text-center max-[1025px]:pt-28">
     <div className="pointer-events-none flex max-w-sm flex-col items-center gap-3 text-white">
      <p className="text-[11vw] font-light leading-none tracking-tight uppercase">
       Open on desktop

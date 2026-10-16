@@ -654,11 +654,11 @@ const DraggableMarquee = ({
 					pauseOnHover={pauseOnHover}
 					throwMultiplier={throwMultiplier}
 					throwFriction={throwFriction}
-					gapClassName="gap-[2vw] max-lg:gap-[4vw]"
+					gapClassName="gap-[2vw] max-[1025px]:gap-[4vw]"
 					className="py-10"
 					itemClassName="select-none"
 				/>
-				<div className="absolute bottom-[3vw] max-lg:bottom-[8vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-lg:text-[2.5vw] max-md:text-[3.5vw] text-center max-lg:rounded-[2vw] shadow-lg">
+				<div className="absolute bottom-[3vw] max-[1025px]:bottom-[8vw] left-1/2 -translate-x-1/2 z-40 bg-white/8 backdrop-blur-sm px-4 py-2 rounded-full text-white text-[1.1vw] max-[1025px]:text-[2.5vw] max-md:text-[3.5vw] text-center max-[1025px]:rounded-[2vw] shadow-lg">
 					Drag the strip left or right to reveal the scenes.
 				</div>
 			</section>
@@ -673,7 +673,7 @@ const marqueeImages = [
 		title: "image 1",
 		width: 420,
 		height: 520,
-		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-lg:w-[40vw] max-lg:h-[60vw]    object-cover",
+		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-[1025px]:w-[40vw] max-[1025px]:h-[60vw]    object-cover",
 	},
 	{
 		id: 2,
@@ -682,7 +682,7 @@ const marqueeImages = [
 		title: "image 2",
 		width: 420,
 		height: 520,
-		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-lg:w-[40vw] max-lg:h-[60vw]    object-cover",
+		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-[1025px]:w-[40vw] max-[1025px]:h-[60vw]    object-cover",
 	},
 	{
 		id: 3,
@@ -691,7 +691,7 @@ const marqueeImages = [
 		title: "image 3",
 		width: 420,
 		height: 520,
-		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-lg:w-[40vw] max-lg:h-[60vw]    object-cover",
+		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-[1025px]:w-[40vw] max-[1025px]:h-[60vw]    object-cover",
 	},
 	{
 		id: 4,
@@ -700,7 +700,7 @@ const marqueeImages = [
 		title: "image 4",
 		width: 420,
 		height: 520,
-		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-lg:w-[40vw] max-lg:h-[60vw]    object-cover",
+		imageClassName: "w-[24vw] h-[30vw] rounded-2xl max-[1025px]:w-[40vw] max-[1025px]:h-[60vw]    object-cover",
 	},
 ]
 export default DraggableMarquee;

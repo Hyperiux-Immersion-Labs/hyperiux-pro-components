@@ -825,18 +825,18 @@ function GlideCard({ card }: { card: InfiniteCarouselCard }) {
   return (
     <div className="h-full w-full">
       <div
-        className={`flex h-[var(--glide-card-height)] w-full flex-col gap-[1.2vw] overflow-hidden rounded-[1.2vw] border border-black/20 p-[2vw] select-none will-change-transform max-lg:gap-[2vw] max-lg:p-[3vw] max-md:w-full max-md:gap-[4vw] max-md:rounded-none max-md:px-6 max-md:py-10 ${card.themeClassName}`}
+        className={`flex h-[var(--glide-card-height)] w-full flex-col gap-[1.2vw] overflow-hidden rounded-[1.2vw] border border-black/20 p-[2vw] select-none will-change-transform max-[1025px]:gap-[2vw] max-[1025px]:p-[3vw] max-md:w-full max-md:gap-[4vw] max-md:rounded-none max-md:px-6 max-md:py-10 ${card.themeClassName}`}
       >
         <div className="flex h-full flex-col gap-5">
           <span className="inline-flex w-fit items-center rounded-full border border-current px-4 py-2 text-[0.75rem] font-bold tracking-[0.12em] uppercase max-md:text-[0.68rem]">
             {card.subtitle}
           </span>
 
-          <h2 className="m-0 text-5xl leading-[0.92] tracking-tighter max-lg:text-[1.75rem] max-md:text-[1.45rem]">
+          <h2 className="m-0 text-5xl leading-[0.92] tracking-tighter max-[1025px]:text-[1.75rem] max-md:text-[1.45rem]">
             {card.title}
           </h2>
 
-          <p className="m-0 max-w-[92%] text-[1.05rem] leading-[1.45] max-lg:max-w-full max-lg:text-[0.92rem] max-md:text-[0.88rem]">
+          <p className="m-0 max-w-[92%] text-[1.05rem] leading-[1.45] max-[1025px]:max-w-full max-[1025px]:text-[0.92rem] max-md:text-[0.88rem]">
             {card.description}
           </p>
 
@@ -844,7 +844,7 @@ function GlideCard({ card }: { card: InfiniteCarouselCard }) {
             {card.points.map((point, pointIndex) => (
               <p
                 key={pointIndex}
-                className="m-0 border-t border-current py-3.5 text-[0.96rem] leading-[1.45] max-lg:text-[0.92rem] max-md:text-[0.88rem]"
+                className="m-0 border-t border-current py-3.5 text-[0.96rem] leading-[1.45] max-[1025px]:text-[0.92rem] max-md:text-[0.88rem]"
               >
                 {point}
               </p>
@@ -1061,7 +1061,7 @@ export default function InfiniteCarousel({
   return (
     <section
       data-glide-scope={scopeId}
-      className="relative z-10 flex h-fit min-h-0 w-full flex-col gap-8 overflow-hidden px-0 py-4 max-lg:gap-6 max-lg:py-6 max-md:h-auto max-md:gap-4 bg-[var(--glide-bg-color)]"
+      className="relative z-10 flex h-fit min-h-0 w-full flex-col gap-8 overflow-hidden px-0 py-4 max-[1025px]:gap-6 max-[1025px]:py-6 max-md:h-auto max-md:gap-4 bg-[var(--glide-bg-color)]"
       onPointerEnter={() => {
         isHoveredRef.current = true;
       }}
@@ -1074,12 +1074,12 @@ export default function InfiniteCarousel({
       </div>
 
       {showNav && (
-        <div className="flex w-full items-center justify-center gap-4 px-[3vw] max-lg:px-3 max-md:gap-3 max-md:px-2">
+        <div className="flex w-full items-center justify-center gap-4 px-[3vw] max-[1025px]:px-3 max-md:gap-3 max-md:px-2">
           <button
             type="button"
             onClick={handlePrev}
             aria-label="Previous slide"
-            className="flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-lg:size-14 max-md:size-14"
+            className="flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14"
           >
             <ArrowLeft className="size-5" />
           </button>
@@ -1088,7 +1088,7 @@ export default function InfiniteCarousel({
             type="button"
             onClick={handleNext}
             aria-label="Next slide"
-            className="flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-lg:size-14 max-md:size-14"
+            className="flex size-14 min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border border-neutral-900 bg-transparent text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-neutral-900 hover:text-white max-[1025px]:size-14 max-md:size-14"
           >
             <ArrowRight className="size-5" />
           </button>
@@ -1106,7 +1106,7 @@ export default function InfiniteCarousel({
           <div
             key={`${card.id}-${idx}`}
             aria-hidden={idx >= sourceCards.length}
-            className="w-[var(--glide-card-width)] max-lg:w-[52vw] max-md:w-full"
+            className="w-[var(--glide-card-width)] max-[1025px]:w-[52vw] max-md:w-full"
           >
             <GlideCard card={card} />
           </div>

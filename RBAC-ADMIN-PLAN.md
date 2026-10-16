@@ -2,7 +2,7 @@
 
 ## Context
 
-Today `isAdminUser()` in `vault-main/src/lib/admin.js` is a flat boolean: any Clerk user with `publicMetadata.role === "admin"` (or matching `ADMIN_EMAIL`) gets identical, full access to every admin page and API route - user management, plan overrides, billing details, activity analytics, email logs, waitlist invites. There's no dedicated `users`/`roles` table; role lives entirely in Clerk's `publicMetadata`.
+Today `isAdminUser()` in `apps/docs/src/lib/admin.js` is a flat boolean: any Clerk user with `publicMetadata.role === "admin"` (or matching `ADMIN_EMAIL`) gets identical, full access to every admin page and API route - user management, plan overrides, billing details, activity analytics, email logs, waitlist invites. There's no dedicated `users`/`roles` table; role lives entirely in Clerk's `publicMetadata`.
 
 Goal: grow the team to 1 super admin + 2-3 regular admins, with a real capability split - not just role-management access.
 
@@ -29,9 +29,9 @@ Goal: grow the team to 1 super admin + 2-3 regular admins, with a real capabilit
 
 **Role source stays Clerk `publicMetadata.role`**, a 3-value enum: `"super_admin"`, `"admin"`, or unset. No new table for roles themselves.
 
-**Billing/revenue data already exists** - Supabase `subscriptions` (status, billing_interval, current_period_end, razorpay_customer_id, razorpay_subscription_id) and `invoices` (amount, currency, status, plan_label, is_test, created_at), both keyed by `clerk_user_id`. Same tables already power the user's own `/dashboard/invoicing` page (`vault-main/src/app/api/dashboard/invoices/route.js`) - the admin "billing & revenue" view reuses this data rather than inventing new schema.
+**Billing/revenue data already exists** - Supabase `subscriptions` (status, billing_interval, current_period_end, razorpay_customer_id, razorpay_subscription_id) and `invoices` (amount, currency, status, plan_label, is_test, created_at), both keyed by `clerk_user_id`. Same tables already power the user's own `/dashboard/invoicing` page (`apps/docs/src/app/api/dashboard/invoices/route.js`) - the admin "billing & revenue" view reuses this data rather than inventing new schema.
 
-### 1. `vault-main/src/lib/admin.js` - core role logic
+### 1. `apps/docs/src/lib/admin.js` - core role logic
 
 ```js
 export const ROLES = { SUPER_ADMIN: "super_admin", ADMIN: "admin" };
@@ -67,22 +67,22 @@ export async function assertSuperAdmin() { /* auth()+clerkClient() + isSuperAdmi
 
 ### 2. Role management - super-admin only (unchanged from prior plan)
 
-- **`vault-main/src/app/api/admin/users/update-role/route.js`** (new, POST) - gated `assertSuperAdmin()`. Body `{ clerkUserId, role }`. Self-demotion guard: reject if `clerkUserId` is the requester's own ID.
-- **`vault-main/src/app/api/admin/me/route.js`** (new, GET) - returns `{ role }` for the current viewer, since the client can't compute the `ADMIN_EMAIL` fallback itself.
-- **`vault-main/src/lib/useAdminRole.js`** (new hook) - wraps `/api/admin/me`, returns `{ role, isAdmin, isSuperAdmin }`. Used by `DashboardShell.jsx` and the admin Users page.
+- **`apps/docs/src/app/api/admin/users/update-role/route.js`** (new, POST) - gated `assertSuperAdmin()`. Body `{ clerkUserId, role }`. Self-demotion guard: reject if `clerkUserId` is the requester's own ID.
+- **`apps/docs/src/app/api/admin/me/route.js`** (new, GET) - returns `{ role }` for the current viewer, since the client can't compute the `ADMIN_EMAIL` fallback itself.
+- **`apps/docs/src/lib/useAdminRole.js`** (new hook) - wraps `/api/admin/me`, returns `{ role, isAdmin, isSuperAdmin }`. Used by `DashboardShell.jsx` and the admin Users page.
 
 ### 3. Plan control + billing visibility - now super-admin only (new in this revision)
 
-- **`vault-main/src/app/api/admin/users/update-plan/route.js`**: change gate from `assertAdmin()` to `assertSuperAdmin()`. This is the "no authority to upgrade/downgrade" enforcement for regular admins.
-- **`vault-main/src/app/api/admin/users/route.js`** (GET, list users): still callable by both tiers (needed for "user details" access), but the response is now shaped by the *caller's* role:
+- **`apps/docs/src/app/api/admin/users/update-plan/route.js`**: change gate from `assertAdmin()` to `assertSuperAdmin()`. This is the "no authority to upgrade/downgrade" enforcement for regular admins.
+- **`apps/docs/src/app/api/admin/users/route.js`** (GET, list users): still callable by both tiers (needed for "user details" access), but the response is now shaped by the *caller's* role:
   - Always included: `id, email, name, imageUrl, joinedAt, plan (free/pro), role (super_admin/admin/null)`.
   - Only included when caller `isSuperAdmin`: `status, billingInterval, planValidUntil, razorpayCustomerId, razorpaySubscriptionId`.
   - This is a server-side redaction (not just hidden in the UI), so a regular admin can't read billing data by calling the API directly.
 
 ### 4. Billing & Revenue view - new, super-admin only
 
-- **`vault-main/src/app/api/admin/revenue/overview/route.js`** (new, GET) - gated `assertSuperAdmin()`. Queries `invoices` (excluding `is_test`, filtered to paid/captured status) and `subscriptions` to return: total revenue, current-month revenue, active Pro subscriber count, and an estimated MRR (active yearly/monthly subscriptions normalized to monthly value).
-- UI: a small stat-card row ("Total Revenue", "This Month", "Active Pro", "Est. MRR") added at the top of `vault-main/src/app/(app)/dashboard/admin/page.js`, rendered only when `isSuperAdmin` - reuses the existing stat-card visual pattern already on that page (the "X users · Y Pro · Z Free" line).
+- **`apps/docs/src/app/api/admin/revenue/overview/route.js`** (new, GET) - gated `assertSuperAdmin()`. Queries `invoices` (excluding `is_test`, filtered to paid/captured status) and `subscriptions` to return: total revenue, current-month revenue, active Pro subscriber count, and an estimated MRR (active yearly/monthly subscriptions normalized to monthly value).
+- UI: a small stat-card row ("Total Revenue", "This Month", "Active Pro", "Est. MRR") added at the top of `apps/docs/src/app/(app)/dashboard/admin/page.js`, rendered only when `isSuperAdmin` - reuses the existing stat-card visual pattern already on that page (the "X users · Y Pro · Z Free" line).
 - The existing per-user **Valid Until** and **Razorpay** table columns, plus the **Upgrade/Downgrade** action button, are now rendered only for `isSuperAdmin` viewers (backed by #3's server-side redaction, so this is UI-level hiding on top of an already-enforced boundary, not the only line of defense).
 
 ### 5. Admin (non-super) view of the Users page

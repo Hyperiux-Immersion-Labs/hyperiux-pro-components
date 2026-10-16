@@ -172,7 +172,7 @@
     {
       "name": "cardClassName",
       "type": "string",
-      "default": "max-md:w-[85vw]! max-md:h-[75vw]! max-lg:w-[85vw]! max-lg:h-[55vw]!",
+      "default": "max-md:w-[85vw]! max-md:h-[75vw]! max-[1024px]:w-[85vw]! max-[1024px]:h-[55vw]!",
       "description": "Extra classes appended to the card's own wrapper div."
     }
   ],

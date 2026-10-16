@@ -1,6 +1,6 @@
 import re
 
-with open('vault-main/src/components/LandpageV2/Tension.jsx', 'r') as f:
+with open('apps/docs/src/components/LandpageV2/Tension.jsx', 'r') as f:
     content = f.read()
 
 # 1. Add import motion
@@ -61,6 +61,6 @@ new_card = r'<motion.div\n              key={card.title}\n              whileHov
 content = re.sub(card_pattern, new_card, content)
 content = content.replace('</p>\n              </div>\n            </div>', '</p>\n              </div>\n            </motion.div>')
 
-with open('vault-main/src/components/LandpageV2/Tension.jsx', 'w') as f:
+with open('apps/docs/src/components/LandpageV2/Tension.jsx', 'w') as f:
     f.write(content)
 

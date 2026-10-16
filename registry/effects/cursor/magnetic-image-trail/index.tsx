@@ -638,7 +638,7 @@ interface MagneticImageTrailProps {
 const Content = () => (
   <main className="relative min-h-screen max-md:h-screen w-full overflow-hidden bg-[#f4f4f1] text-black">
 
-    <div className="absolute top-[30%] left-1/2 w-[50%] hidden max-lg:flex -translate-x-1/2 -translate-y-1/2 h-fit max-md:w-[70%] px-6 text-center">
+    <div className="absolute top-[30%] left-1/2 w-[50%] hidden max-[1025px]:flex -translate-x-1/2 -translate-y-1/2 h-fit max-md:w-[70%] px-6 text-center">
       <p className="rounded-xl bg-black/10 px-5 py-3 leading-[1.2] text-base text-black backdrop-blur-sm">
         Follow the motion. <br />
         Open on desktop for the full magnetic effect

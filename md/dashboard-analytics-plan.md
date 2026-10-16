@@ -1,6 +1,6 @@
 # Dashboard analytics - what exists, what to build next
 
-*Planning memo - hyperiux-pro-components / vault-main - draft, not yet started*
+*Planning memo - hyperiux-pro-components / apps/docs - draft, not yet started*
 
 A working plan for adding activity graphs and charts to the admin and user dashboards, grounded in the tables and rows that actually exist in Supabase today. Nothing here is built yet - this is the proposal to react to before anything gets scoped.
 

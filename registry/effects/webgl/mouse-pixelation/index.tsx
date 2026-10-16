@@ -622,9 +622,9 @@ function Pixelation({
 
       <section
         ref={textRef}
-        className="pointer-events-none relative z-10 flex h-screen w-full flex-col justify-center gap-[4vw] px-[5vw] pt-[6vw] max-lg:gap-[6vw] max-lg:pt-[14vw] max-md:pt-[24vw]"
+        className="pointer-events-none relative z-10 flex h-screen w-full flex-col justify-center gap-[4vw] px-[5vw] pt-[6vw] max-[1025px]:gap-[6vw] max-[1025px]:pt-[14vw] max-md:pt-[24vw]"
       >
-        <h1 className="flex flex-col text-[8vw] font-medium leading-[1.1] text-white max-lg:text-[12vw] max-md:text-[14vw]">
+        <h1 className="flex flex-col text-[8vw] font-medium leading-[1.1] text-white max-[1025px]:text-[12vw] max-md:text-[14vw]">
           <span data-v1-reveal className={firstLine.className}>
             {firstLine.prefix}
             <span className={firstLine.highlightClassName}>
@@ -639,11 +639,11 @@ function Pixelation({
           </span>
         </h1>
 
-        <p data-v1-reveal className="w-[32%] text-[1.4vw] leading-snug text-white/85 max-lg:w-[80%] max-lg:text-[3vw] max-md:w-full max-md:text-[4.5vw]">
+        <p data-v1-reveal className="w-[32%] text-[1.4vw] leading-snug text-white/85 max-[1025px]:w-[80%] max-[1025px]:text-[3vw] max-md:w-full max-md:text-[4.5vw]">
           {description}
         </p>
 
-        <p data-v1-reveal className="hidden font-medium tracking-wide text-white/60 max-lg:block max-lg:text-[2.6vw] max-md:text-[3.6vw]">
+        <p data-v1-reveal className="hidden font-medium tracking-wide text-white/60 max-[1025px]:block max-[1025px]:text-[2.6vw] max-md:text-[3.6vw]">
           {mobileNotice}
         </p>
       </section>
@@ -1058,8 +1058,8 @@ function PixelShift({
 
   return (
     <div ref={rootRef} className="relative h-screen w-full">
-      <div className="pointer-events-none absolute left-1/2 top-40 z-10 hidden w-full -translate-x-1/2 px-5 max-lg:flex max-lg:justify-center max-md:left-0 max-md:block max-md:translate-x-0 max-md:pt-5">
-        <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-lg:w-[80%] max-lg:text-center max-lg:text-[2.8vw] max-md:w-full max-md:text-[3.5vw]">
+      <div className="pointer-events-none absolute left-1/2 top-40 z-10 hidden w-full -translate-x-1/2 px-5 max-[1025px]:flex max-[1025px]:justify-center max-md:left-0 max-md:block max-md:translate-x-0 max-md:pt-5">
+        <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-[1025px]:w-[80%] max-[1025px]:text-center max-[1025px]:text-[2.8vw] max-md:w-full max-md:text-[3.5vw]">
           {notice}
         </p>
       </div>
@@ -1750,8 +1750,8 @@ function EnhancedPixelCube({
 
   return (
     <div ref={rootRef} style={{ width: "100vw", height: "100vh", background: "#000" }}>
-      <div className="pointer-events-none absolute left-1/2 top-30 z-10 hidden w-full -translate-x-1/2 px-5 pt-5 max-lg:flex max-lg:justify-center max-md:left-0 max-md:block max-md:translate-x-0">
-        <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-lg:text-center max-lg:text-[2.8vw] max-md:text-[3.5vw]">
+      <div className="pointer-events-none absolute left-1/2 top-30 z-10 hidden w-full -translate-x-1/2 px-5 pt-5 max-[1025px]:flex max-[1025px]:justify-center max-md:left-0 max-md:block max-md:translate-x-0">
+        <p className="inline-flex max-w-[92vw] rounded-sm border border-white/15 bg-black/40 px-4 py-2 font-medium text-white/75 backdrop-blur max-[1025px]:text-center max-[1025px]:text-[2.8vw] max-md:text-[3.5vw]">
           {notice}
         </p>
       </div>
@@ -1907,7 +1907,7 @@ export default function MousePixelation({
 
 function CursorMoveCue() {
   return (
-    <div className="pointer-events-none fixed bottom-6 right-[-10%] z-9999 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/15 bg-black/35 px-6 py-2 text-md font-medium text-white/80 max-lg:hidden backdrop-blur-md max-md:bottom-5 max-md:text-xs">
+    <div className="pointer-events-none fixed bottom-6 right-[-10%] z-9999 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/15 bg-black/35 px-6 py-2 text-md font-medium text-white/80 max-[1025px]:hidden backdrop-blur-md max-md:bottom-5 max-md:text-xs">
 
       <span>Move your cursor to see the pixelated effects</span>
     </div>
@@ -1918,7 +1918,7 @@ export { PixelCircle, PixelShift, EnhancedPixelCube };
 
 function VersionNav({ activeVariant, onVariantChange }: { activeVariant: string, onVariantChange: (value: MousePixelationVariant) => void }) {
   return (
-    <nav className="fixed top-4 max-lg:top-5 max-md:top-18 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-white/10 px-1.5 py-1.5 backdrop-blur-md  max-lg:px-3 max-lg:py-2  max-md:px-2 max-md:py-1.5">
+    <nav className="fixed top-4 max-[1025px]:top-5 max-md:top-18 left-1/2 z-9999 flex -translate-x-1/2 gap-1 rounded-full border border-white/20 bg-white/10 px-1.5 py-1.5 backdrop-blur-md  max-[1025px]:px-3 max-[1025px]:py-2  max-md:px-2 max-md:py-1.5">
       {MOUSE_DEMO_VERSIONS.map((variant) => {
         const isActive = activeVariant === variant.value;
 
@@ -1927,7 +1927,7 @@ function VersionNav({ activeVariant, onVariantChange }: { activeVariant: string,
             key={variant.value}
             type="button"
             onClick={() => onVariantChange(variant.value)}
-            className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-lg:text-lg max-md:text-sm ${
+            className={`rounded-full px-5 py-1.5 text-sm font-semibold tracking-widest transition-all duration-200 max-[1025px]:text-lg max-md:text-sm ${
               isActive
                 ? "bg-white text-black"
                 : "text-white/70 hover:text-white"

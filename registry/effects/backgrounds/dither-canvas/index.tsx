@@ -1152,12 +1152,12 @@ export default function DitherCanvas({
         className={`absolute inset-0 block h-full w-full bg-black ${className}`.trim()}
       />
 
-      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-lg:hidden">
+      <p className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 select-none rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-white/80 backdrop-blur-sm max-[1025px]:hidden">
         {cursorHint}
       </p>
 
       {showMobileMessage && (
-        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-lg:text-sm max-lg:text-lg text-white/50 max-lg:block">
+        <p className="pointer-events-none absolute bottom-4 left-1/2 hidden -translate-x-1/2 select-none px-4 text-center max-[1025px]:text-sm max-[1025px]:text-lg text-white/50 max-[1025px]:block">
           Open on desktop for the full experience - cursor effect included.
         </p>
       )}

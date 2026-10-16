@@ -1039,7 +1039,7 @@ function ContactForm({
  <div className="w-full flex flex-col gap-[2vw]">
  <form
  autoComplete="off"
- className="space-y-[1.2vw] max-md:space-y-[4vw] max-lg:space-y-[4vw]"
+ className="space-y-[1.2vw] max-md:space-y-[4vw] max-[1025px]:space-y-[4vw]"
  onSubmit={handleSubmit}
  >
  {fields.map((field) => renderField(field))}
@@ -1049,7 +1049,7 @@ function ContactForm({
  type="submit"
  isLoading={isLoading}
  loadingText={loadingLabel}
- className="mt-[3vw]  max-md:mt-0 max-lg:mt-[3vw]"
+ className="mt-[3vw]  max-md:mt-0 max-[1025px]:mt-[3vw]"
  >
  {submitLabel}
  </Button>
@@ -1171,8 +1171,8 @@ export default function AnimatedForm({
  duration = 0.3,
 }) {
  return (
- <main className="w-full min-h-screen mx-auto py-20 max-lg:pt-28 px-6" style={{ backgroundColor }}>
-  <div className="w-[50%] max-lg:w-[90%] max-md:w-[95%] mx-auto">  <h1 className="text-3xl mb-8" style={{ color: textColor }}>Get in touch</h1>
+ <main className="w-full min-h-screen mx-auto py-20 max-[1025px]:pt-28 px-6" style={{ backgroundColor }}>
+  <div className="w-[50%] max-[1025px]:w-[90%] max-md:w-[95%] mx-auto">  <h1 className="text-3xl mb-8" style={{ color: textColor }}>Get in touch</h1>
  <ContactForm
  fields={FIELDS}
  schema={contactSchema}

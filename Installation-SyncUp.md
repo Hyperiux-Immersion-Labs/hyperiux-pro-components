@@ -26,11 +26,11 @@ Decisions taken (confirmed with the owner):
 
 | Capability | Where | State |
 |---|---|---|
-| **3/day free, 10/day pro limit** | `vault-main/src/app/api/copy-usage/route.js` | Working, for website copy only |
+| **3/day free, 10/day pro limit** | `apps/docs/src/app/api/copy-usage/route.js` | Working, for website copy only |
 | Quota ledger table | Supabase `copy_usage_effects` - unique `(clerk_user_id, usage_date, effect_slug)` | Working |
-| Limit UI: toast, "X of Y left", upgrade CTA, cross-block lock | `vault-main/src/app/(app)/effects/[slug]/useCopyLimit.js` → `components/ui/CopyBtn.jsx` (`onBeforeCopy` gate) | Working |
+| Limit UI: toast, "X of Y left", upgrade CTA, cross-block lock | `apps/docs/src/app/(app)/effects/[slug]/useCopyLimit.js` → `components/ui/CopyBtn.jsx` (`onBeforeCopy` gate) | Working |
 | Usage history page | `app/(app)/dashboard/usage/page.js` + `api/dashboard/usage/route.js` | Working |
-| **Single authorization decision point** | `vault-main/src/lib/effect-access.js` → `getEffectAccessDecision()` | Working, contract-tested |
+| **Single authorization decision point** | `apps/docs/src/lib/effect-access.js` → `getEffectAccessDecision()` | Working, contract-tested |
 | Pro source delivery chokepoint | `api/cli/effects/[effectSlug]/route.js` (+ legacy twin `api/effects/[slug]/route.js`) | Working |
 | CLI token lifecycle (`hpx_` + sha256) | `api/cli/{token,validate,revoke}`, `lib/cli-auth.js`, `lib/cli-token.js` | Working, **Pro-only** |
 | CLI token storage client-side | `packages/cli/src/utils/auth.js` (`~/.hyperiux/auth.json`, 0600) | Working |
@@ -51,7 +51,7 @@ This is the one thing that must change, and it drives everything else.
 
 ```
 Free effect  →  GET vault.hyperiux.com/r/<slug>.json   →  files[].content  ← FULL SOURCE
-                (static file in vault-main/public/r/, zero server code)
+                (static file in apps/docs/public/r/, zero server code)
 
 Pro effect   →  GET vault.hyperiux.com/api/cli/effects/<slug>  →  gated, authed, ours
 ```
@@ -108,7 +108,7 @@ Notes:
 
 No Redis/KV is provisioned and none is needed at this volume. There is **no migration
 tooling** in this repo - new SQL is hand-run in the Supabase editor and the test fixture
-is kept in sync by hand (precedent: `vault-main/test/fixtures/founding-slots-schema.sql`).
+is kept in sync by hand (precedent: `apps/docs/test/fixtures/founding-slots-schema.sql`).
 
 **`install_unlocks`** - the quota ledger. Small, uniquely-constrained, one row per
 (identity, day, effect).
@@ -160,7 +160,7 @@ real-Postgres concurrency test harness to copy (`founding-slots.concurrency.test
 
 ## 5. The decision module
 
-New: **`vault-main/src/lib/install-limit.js`** - sibling to `effect-access.js`, same
+New: **`apps/docs/src/lib/install-limit.js`** - sibling to `effect-access.js`, same
 single-decision-point discipline (this mirrors the F-040 consolidation the existing
 comments describe).
 
@@ -257,7 +257,7 @@ These are pre-existing and currently make CLI install data **completely empty**:
 
 ## 8. Files to modify
 
-**`hyperiux-pro-components/vault-main/`**
+**`hyperiux-pro-components/apps/docs/`**
 - `src/lib/install-limit.js` - **new**, the decision point
 - `src/lib/supabase-rpc` usage - new `claim_install_slot` RPC (SQL run by hand + fixture)
 - `src/app/api/cli/effects/[effectSlug]/route.js` - record + (later) enforce
@@ -266,7 +266,7 @@ These are pre-existing and currently make CLI install data **completely empty**:
 - `src/app/api/cli/telemetry/route.js` - fix slug parsing + auth; write `install_events`
 - `src/app/api/dashboard/usage/route.js` - import shared constants
 - `src/app/api/admin/installs/route.js` + `src/app/(app)/dashboard/admin/` - **new** analytics
-- `scripts/build-registry.js` + `vault-main/scripts/build-registry.js` - Stage 3 only:
+- `scripts/build-registry.js` + `apps/docs/scripts/build-registry.js` - Stage 3 only:
   stop embedding `content` for free effects
 
 **`hyperiux-components/packages/cli/src/`**
@@ -286,11 +286,11 @@ These are pre-existing and currently make CLI install data **completely empty**:
 
 - **Unit** - `install-limit.js` decision matrix across all identity × plan × tier ×
   shadow/enforce combinations. Mirror the existing
-  `vault-main/src/lib/effect-access.test.js`.
+  `apps/docs/src/lib/effect-access.test.js`.
 - **Concurrency** - `claim_install_slot` against real Postgres, N parallel claims on the
   4th effect must yield exactly one winner. Copy `founding-slots.concurrency.test.js`
   (harness + disposable-Postgres fixture already exist).
-- **Contract** - extend `vault-main/src/app/api/effect-delivery-contract.test.js` so the
+- **Contract** - extend `apps/docs/src/app/api/effect-delivery-contract.test.js` so the
   CLI route and its legacy twin stay locked to one status/reason matrix.
 - **CLI** - mock `../utils/registry.js` to reject with a `{ status: 429 }`-shaped error
   and assert the message + exit. Note `process.exit` is spied to *throw*, so use

@@ -453,16 +453,16 @@ function DepthCardStackComp({
  }, [reduceMotion, isStackReady, mouseInteraction, pointerDuration, safeSmoothness]);
 
  return (
- <section ref={sectionRef} className="flex flex-col items-center px-6 pt-20 max-lg:pt-40 max-md:pt-20 h-screen max-md:w-screen max-md:overflow-x-hidden pb-5 select-none bg-white max-md:h-full max-md:min-h-dvh">
-<p className="text-sm max-md:text-sm max-lg:text-lg font-medium text-blue-500 mb-1 max-lg:mb-3">
+ <section ref={sectionRef} className="flex flex-col items-center px-6 pt-20 max-[1025px]:pt-40 max-md:pt-20 h-screen max-md:w-screen max-md:overflow-x-hidden pb-5 select-none bg-white max-md:h-full max-md:min-h-dvh">
+<p className="text-sm max-md:text-sm max-[1025px]:text-lg font-medium text-blue-500 mb-1 max-[1025px]:mb-3">
   Hyperiux-UI Library
 </p>
 
-<h3 className="text-5xl max-lg:text-4xl max-md:text-2xl font-medium text-center mb-0.5 leading-none tracking-tight text-gray-400">
+<h3 className="text-5xl max-[1025px]:text-4xl max-md:text-2xl font-medium text-center mb-0.5 leading-none tracking-tight text-gray-400">
   Build futuristic interfaces.
 </h3>
 
-<p className="text-5xl text-center max-lg:text-4xl max-md:text-2xl text-gray-400 leading-none tracking-tight mb-4 max-lg:mb-10">
+<p className="text-5xl text-center max-[1025px]:text-4xl max-md:text-2xl text-gray-400 leading-none tracking-tight mb-4 max-[1025px]:mb-10">
   Crafted for modern web experiences.
 </p>
 
@@ -472,7 +472,7 @@ function DepthCardStackComp({
  navigate(-1);
  setAutoplayResetKey((value) => value + 1);
  }}
- className="max-md:hidden w-9 h-9 max-lg:h-15 max-lg:w-15 rounded-full border cursor-pointer border-gray-400 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shrink-0 relative z-30"
+ className="max-md:hidden w-9 h-9 max-[1025px]:h-15 max-[1025px]:w-15 rounded-full border cursor-pointer border-gray-400 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shrink-0 relative z-30"
  aria-label="Previous card"
  >
  <ChevronLeft size={20} strokeWidth={2} />
@@ -509,7 +509,7 @@ function DepthCardStackComp({
  navigate(1);
  setAutoplayResetKey((value) => value + 1);
  }}
- className="max-md:hidden w-9 h-9 max-lg:h-15 max-lg:w-15 cursor-pointer rounded-full border border-gray-400 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shrink-0 relative z-30"
+ className="max-md:hidden w-9 h-9 max-[1025px]:h-15 max-[1025px]:w-15 cursor-pointer rounded-full border border-gray-400 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors shrink-0 relative z-30"
  aria-label="Next card"
  >
  <ChevronRight size={20} strokeWidth={2} />
@@ -541,7 +541,7 @@ function DepthCardStackComp({
 
  <p
  key={claimedText}
- className="mt-4 max-lg:mt-8 max-md:mt-3 max-md:order-1 text-xs max-lg:text-lg max-md:text-base text-gray-400 h-5"
+ className="mt-4 max-[1025px]:mt-8 max-md:mt-3 max-md:order-1 text-xs max-[1025px]:text-lg max-md:text-base text-gray-400 h-5"
  style={{ animation:"fadeUp 0.4s ease forwards" }}
  >
  {claimedText}

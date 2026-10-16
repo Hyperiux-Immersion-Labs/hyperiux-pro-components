@@ -2394,15 +2394,15 @@ export default function BorderBeam({
         style={{ backgroundColor }}
       >
         <div className="relative z-10 flex flex-col">
-          <p className="text-[0.9vw] max-md:text-[3vw] font-bold uppercase tracking-[0.12em] text-[#66D933] max-lg:text-[3vw]">
+          <p className="text-[0.9vw] max-md:text-[3vw] font-bold uppercase tracking-[0.12em] text-[#66D933] max-[1025px]:text-[3vw]">
             {cardData.label}
           </p>
-          <h2 className="mt-4 text-[4.5vw] max-w-[60%] font-normal leading-[1.14] text-white max-sm:text-[6vw] max-lg:text-[7vw]">
+          <h2 className="mt-4 text-[4.5vw] max-w-[60%] font-normal leading-[1.14] text-white max-sm:text-[6vw] max-[1025px]:text-[7vw]">
             {cardData.title}
           </h2>
         </div>
 
-        <div className="absolute bottom-0 right-[-20%] h-[30vw] w-[40vw]  max-sm:right-[-44px] max-sm:scale-90 max-md:h-[50vw] max-md:w-[60vw] max-lg:h-[50vw] max-lg:w-[60vw] max-lg:right-[-10%]">
+        <div className="absolute bottom-0 right-[-20%] h-[30vw] w-[40vw]  max-sm:right-[-44px] max-sm:scale-90 max-md:h-[50vw] max-md:w-[60vw] max-[1025px]:h-[50vw] max-[1025px]:w-[60vw] max-[1025px]:right-[-10%]">
           <img
             src="/assets/img/earbud.png"
             alt="earbud"
@@ -2412,10 +2412,10 @@ export default function BorderBeam({
 
         <button className="absolute bottom-8 left-9 z-10 flex min-w-[158px] items-center justify-between rounded-[12px] bg-white px-4 py-3 text-left text-black shadow-[0_18px_35px_rgba(0,0,0,0.16)] max-sm:left-7">
           <span>
-            <span className="block text-[0.75vw] uppercase tracking-[0.04em] text-[#8E8E93] max-md:text-[2.5vw] max-lg:text-[1.5vw]">
+            <span className="block text-[0.75vw] uppercase tracking-[0.04em] text-[#8E8E93] max-md:text-[2.5vw] max-[1025px]:text-[1.5vw]">
               {cardData.buttonLabel}
             </span>
-            <span className="block text-[1.5vw] leading-tight text-[#1C1C1E] max-md:text-[3vw] max-lg:text-[2.5vw]">
+            <span className="block text-[1.5vw] leading-tight text-[#1C1C1E] max-md:text-[3vw] max-[1025px]:text-[2.5vw]">
               {cardData.buttonValue}
             </span>
           </span>

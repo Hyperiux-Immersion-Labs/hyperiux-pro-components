@@ -489,12 +489,12 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
 
   return (
     <div
-      className={`relative flex h-fit w-full items-center justify-center box-border p-10 max-lg:p-8 max-md:p-5 antialiased ${className}`}
+      className={`relative flex h-fit w-full items-center justify-center box-border p-10 max-[1025px]:p-8 max-md:p-5 antialiased ${className}`}
       style={{ backgroundColor: bgColor, fontFamily: '"Switzer", -apple-system, BlinkMacSystemFont, sans-serif' }}
     >
       <style>{LINE_STYLE}</style>
       <div
-        className="relative w-full max-w-140 max-lg:max-w-[92vw] max-md:max-w-full"
+        className="relative w-full max-w-140 max-[1025px]:max-w-[92vw] max-md:max-w-full"
         ref={stageRef}
       >
         <svg
@@ -554,7 +554,7 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
                 </div>
 
                 <button
-                  className="flx_head relative z-4 flex w-full min-h-14 cursor-pointer items-center gap-3.5 border-0 bg-transparent py-4 px-5.5 text-left box-border font-[inherit] outline-none max-lg:min-h-16 max-lg:gap-4 max-lg:py-[2vw] max-lg:px-[2.5vw] max-md:min-h-14 max-md:gap-3 max-md:py-[4vw] max-md:px-[5vw] focus-visible:outline-2 focus-visible:outline-[#fd551d] focus-visible:outline-offset-2 focus-visible:rounded-full"
+                  className="flx_head relative z-4 flex w-full min-h-14 cursor-pointer items-center gap-3.5 border-0 bg-transparent py-4 px-5.5 text-left box-border font-[inherit] outline-none max-[1025px]:min-h-16 max-[1025px]:gap-4 max-[1025px]:py-[2vw] max-[1025px]:px-[2.5vw] max-md:min-h-14 max-md:gap-3 max-md:py-[4vw] max-md:px-[5vw] focus-visible:outline-2 focus-visible:outline-[#fd551d] focus-visible:outline-offset-2 focus-visible:rounded-full"
                   style={{ color: textColor }}
                   data-fx-head
                   id={tid}
@@ -563,19 +563,19 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
                   type="button"
                 >
                   <span
-                    className="block max-md:hidden shrink-0 min-w-6 text-xs max-lg:text-[1.4vw] font-medium"
+                    className="block max-md:hidden shrink-0 min-w-6 text-xs max-[1025px]:text-[1.4vw] font-medium"
                     style={{ color: textColor, opacity: 0.55 }}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
-                    className="flex-1 text-base max-lg:text-[2.5vw]  max-md:text-[4.2vw] leading-snug tracking-tight"
+                    className="flex-1 text-base max-[1025px]:text-[2.5vw]  max-md:text-[4.2vw] leading-snug tracking-tight"
                     style={{ color: textColor, fontWeight: 380 }}
                   >
                     {item.question}
                   </span>
                   <svg
-                    className="flx_mark size-4 max-lg:size-5 max-md:size-5 shrink-0 origin-center will-change-transform"
+                    className="flx_mark size-4 max-[1025px]:size-5 max-md:size-5 shrink-0 origin-center will-change-transform"
                     style={{ color: textColor, opacity: 0.78 }}
                     data-fx-mark
                     viewBox="0 0 16 16"
@@ -616,9 +616,9 @@ const ElasticAccordion: React.FC<ElasticAccordionProps> = ({
                   aria-labelledby={tid}
                   aria-hidden="true"
                 >
-                  <div className="flx_drawer_pad mt-2.5 px-5.5 py-5 max-lg:px-[6vw] max-lg:py-[2.2vw] max-md:px-[5vw] max-md:py-[4.5vw]">
+                  <div className="flx_drawer_pad mt-2.5 px-5.5 py-5 max-[1025px]:px-[6vw] max-[1025px]:py-[2.2vw] max-md:px-[5vw] max-md:py-[4.5vw]">
                     <p
-                      className="flx_body m-0 text-sm max-lg:text-[2vw] max-md:text-[3.8vw] leading-relaxed tracking-tight"
+                      className="flx_body m-0 text-sm max-[1025px]:text-[2vw] max-md:text-[3.8vw] leading-relaxed tracking-tight"
                       style={{ color: textColor, opacity: 0.78, fontWeight: 380 }}
                       data-fx-body
                       aria-label={item.answer}

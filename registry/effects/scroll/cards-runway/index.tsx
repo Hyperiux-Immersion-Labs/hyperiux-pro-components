@@ -84,10 +84,10 @@ function CardsRunwayComponent({
     <section
       ref={root}
       style={{ color: textColor }}
-      className="w-full h-[350vh] bg-black max-lg:overflow-hidden max-lg:h-screen max-md:py-[25%] max-lg:py-[12%] relative z-20"
+      className="w-full h-[350vh] bg-black max-[1025px]:overflow-hidden max-[1025px]:h-screen max-md:py-[25%] max-[1025px]:py-[12%] relative z-20"
     >
       {/* Cards Runway */}
-      <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-lg:h-fit max-lg:static pb-5  max-lg:mt-[40vw] max-lg:pb-[4vw] max-lg:overflow-x-scroll mobile-scrollbar max-lg:pr-[7vw] z-15 cards-runway-viewport">
+      <div className="w-screen h-screen sticky top-0 overflow-hidden px-[3vw] max-[1025px]:h-fit max-[1025px]:static pb-5  max-[1025px]:mt-[40vw] max-[1025px]:pb-[4vw] max-[1025px]:overflow-x-scroll mobile-scrollbar max-[1025px]:pr-[7vw] z-15 cards-runway-viewport">
         <div
           className="w-fit h-full flex items-end cards-runway-container"
           style={{ gap: `${safeGap}px` }}
@@ -95,22 +95,22 @@ function CardsRunwayComponent({
           {data.map((card: any) => (
             <div
               key={card.id}
-              className="h-fit w-[28vw] flex flex-col relative cards-runway-card justify-between max-md:w-[70vw]! max-lg:w-[45vw]! opacity-0"
+              className="h-fit w-[28vw] flex flex-col relative cards-runway-card justify-between max-md:w-[70vw]! max-[1025px]:w-[45vw]! opacity-0"
             >
               {/* Always visible top accent bar */}
               <div
                 style={{ backgroundColor: accentColor }}
-                className="w-full h-[0.5vw] max-lg:h-[1vw] max-md:h-[1.5vw] shrink-0"
+                className="w-full h-[0.5vw] max-[1025px]:h-[1vw] max-md:h-[1.5vw] shrink-0"
               />
 
               {/* Card content */}
               <div
                 style={{ backgroundColor: cardColor }}
-                className="w-full h-[37vw] cards-runway-content overflow-hidden max-md:h-[40vh] max-lg:h-[55vw]"
+                className="w-full h-[37vw] cards-runway-content overflow-hidden max-md:h-[40vh] max-[1025px]:h-[55vw]"
               >
-                <div className="p-[2vw] flex flex-col justify-between h-full max-lg:p-[5vw]">
-                  <h3 className="text-[2.8vw] leading-[1.2] max-md:text-[6vw] max-lg:text-[4vw] max-md:w-[80%]">{card.title}</h3>
-                  <p className="text-[1.25vw] max-lg:text-[2.6vw] max-md:text-[4.4vw] max-md:leading-[1.2]">{card.text}</p>
+                <div className="p-[2vw] flex flex-col justify-between h-full max-[1025px]:p-[5vw]">
+                  <h3 className="text-[2.8vw] leading-[1.2] max-md:text-[6vw] max-[1025px]:text-[4vw] max-md:w-[80%]">{card.title}</h3>
+                  <p className="text-[1.25vw] max-[1025px]:text-[2.6vw] max-md:text-[4.4vw] max-md:leading-[1.2]">{card.text}</p>
                 </div>
               </div>
             </div>

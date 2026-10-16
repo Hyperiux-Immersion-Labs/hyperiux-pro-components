@@ -110,11 +110,11 @@ const ScrollStackComp = ({ cards = [], sectionBgColor = "#ffffff", cardRadius = 
  <section
  id={sectionId}
  ref={sectionRef}
- className={`main py-[7%] max-lg:py-[15%] max-md:py-[15%]`}
+ className={`main py-[7%] max-[1025px]:py-[15%] max-md:py-[15%]`}
  style={{ backgroundColor: sectionBgColor }}
  >
 
-    <h1 className="text-center text-[4vw] max-lg:text-[5vw] max-md:text-[6.5vw] text-black">
+    <h1 className="text-center text-[4vw] max-[1025px]:text-[5vw] max-md:text-[6.5vw] text-black">
         Scroll Stack
     </h1>
  <div className="wrap flex w-full flex-col items-center px-[5%] py-[10vw] tablet:gap-[5vw] max-md:gap-[6vw]">
@@ -165,21 +165,21 @@ const Card = ({ title, description, bgColor, textColor, cardRef, cardRadius }: C
  return (
  <div
  ref={cardRef}
- className="fadeUp mx-auto flex min-h-[32vw] max-lg:h-[50vh] max-md:min-h-[65vh] w-[80%] max-md:w-full items-center justify-between gap-[4vw] rounded-[var(--card-radius)] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-lg:py-[8vw] max-md:py-[15vw] max-md:px-[8vw] max-lg:flex-col max-md:rounded-[9vw] "
+ className="fadeUp mx-auto flex min-h-[32vw] max-[1025px]:h-[50vh] max-md:min-h-[65vh] w-[80%] max-md:w-full items-center justify-between gap-[4vw] rounded-[var(--card-radius)] px-[4vw] py-[3vw] tablet:h-[65vh] tablet:flex-col tablet:justify-center tablet:gap-[4vw] tablet:rounded-[4vw] tablet:py-[5vw] max-[1025px]:py-[8vw] max-md:py-[15vw] max-md:px-[8vw] max-[1025px]:flex-col max-md:rounded-[9vw] "
  style={{ backgroundColor: bgColor, "--card-radius": `${cardRadius}px` } as React.CSSProperties}
  >
- <div className="w-[48%] tablet:w-full max-md:w-full max-lg:w-[80%] max-lg:mx-auto">
+ <div className="w-[48%] tablet:w-full max-md:w-full max-[1025px]:w-[80%] max-[1025px]:mx-auto">
  <h2
- className="para-animation max-lg:text-center w-full text-[5.1vw] font-medium leading-[1.1] tablet:text-[5vw] max-md:text-[10vw]"
+ className="para-animation max-[1025px]:text-center w-full text-[5.1vw] font-medium leading-[1.1] tablet:text-[5vw] max-md:text-[10vw]"
  style={{ color: textColor }}
  >
  {title}
  </h2>
  </div>
 
- <div className="flex w-[48%] flex-col items-left justify-center gap-[2vw] font-light tablet:w-full max-md:w-full max-lg:w-[90%] max-lg:mx-auto max-md:gap-[7vw]">
+ <div className="flex w-[48%] flex-col items-left justify-center gap-[2vw] font-light tablet:w-full max-md:w-full max-[1025px]:w-[90%] max-[1025px]:mx-auto max-md:gap-[7vw]">
  <p
- className="w-full text-justify text-[1.3vw] leading-normal max-lg:leading-[1.2] tablet:text-[2.2vw] max-md:w-full max-lg:text-center max-md:text-[4.5vw] max-lg:text-[3vw]"
+ className="w-full text-justify text-[1.3vw] leading-normal max-[1025px]:leading-[1.2] tablet:text-[2.2vw] max-md:w-full max-[1025px]:text-center max-md:text-[4.5vw] max-[1025px]:text-[3vw]"
  style={{ color: textColor }}
  >
  {description}

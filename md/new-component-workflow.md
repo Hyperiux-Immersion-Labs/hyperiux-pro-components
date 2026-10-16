@@ -42,12 +42,12 @@ walk through each phase by hand a second time.
 
 ## Phase 0 - Developer scaffold (manual)
 
-- [ ] Component folder created at `vault-main/src/components/{slug}/`,
+- [ ] Component folder created at `apps/docs/src/components/{slug}/`,
   lowercase-hyphen name, `index.tsx` with a default export, accepts
   `className`, no hardcoded colors, no `@/` imports between own files.
-- [ ] Preview page created at `vault-main/src/app/(marketing)/demo/{slug}/page.tsx`.
+- [ ] Preview page created at `apps/docs/src/app/(marketing)/demo/{slug}/page.tsx`.
 - [ ] The preview page wires the component up to
-  **`LocalRemixerDemo`** (`vault-main/src/components/local-remixer/`) - a
+  **`LocalRemixerDemo`** (`apps/docs/src/components/local-remixer/`) - a
   single shared component, reused across every effect's demo, that wraps
   the same production `RegistryRemixerDemo`/`RemixerPanel` machinery every
   shipped demo uses, but takes a draft `{ name, props, remixer }` object
@@ -126,7 +126,7 @@ that would each re-sync the same files:
    local remixer.
 2. **Registry-side re-sync - only if something actually differs.** Before
    writing anything, diffs the current source in
-   `vault-main/src/components/{slug}/` against what's already copied into
+   `apps/docs/src/components/{slug}/` against what's already copied into
    `registry/effects/{category}/{slug}/`. If nothing differs (ignoring the
    Vault header line), this step is a no-op - `registry.json`,
    `package.json`, and the copied files are left untouched, no version
@@ -226,7 +226,7 @@ a component intentionally has no props).
 
 - The effect-scoped `public/r` rebuild in Phase 1/`update` replaces the
   current behavior of shelling out to the full `build:registry` script for
-  both `vault-main` and root - it needs its own targeted logic that writes
+  both `apps/docs` and root - it needs its own targeted logic that writes
   one `public/r/{slug}.json` and patches one entry into `public/r/index.json`
   without regenerating every other effect's file.
 - Phase 2's automated demo rewrite needs a defined contract for what the
@@ -234,7 +234,7 @@ a component intentionally has no props).
   object literal in the demo file) so the script can extract them
   mechanically rather than guessing from arbitrary JSX.
 - The shared local remixer component now exists at
-  `vault-main/src/components/local-remixer/LocalRemixerDemo.tsx` (barrel at
+  `apps/docs/src/components/local-remixer/LocalRemixerDemo.tsx` (barrel at
   `local-remixer/index.ts`) - a normal source component the developer
   imports into a demo page, not something `component-ship.mjs` generates.
   It wraps `RegistryRemixerDemo` from `remixer-panel/`, so Phase 2's

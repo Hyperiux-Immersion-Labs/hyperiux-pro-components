@@ -655,13 +655,13 @@ function ClippathSliderComp({ slides = [], clueText, showClue = true, cursorBg =
         className="absolute inset-0 text-white pointer-events-none"
         style={{ zIndex: 50 }}
       >
-        <h2 className="absolute left-[5%] max-md:left-[1%] top-[50%] max-lg:text-[3vw] w-[20vw] max-md:w-[27vw] text-right -translate-y-1/2 text-[2.5vw] max-md:text-[4vw] font-medium about-slider-text">
+        <h2 className="absolute left-[5%] max-md:left-[1%] top-[50%] max-[1025px]:text-[3vw] w-[20vw] max-md:w-[27vw] text-right -translate-y-1/2 text-[2.5vw] max-md:text-[4vw] font-medium about-slider-text">
           {slides[currentSlide].name}
         </h2>
 
-        <div className="absolute right-[5%] max-md:right-[5%] max-lg:right-[10%] top-[50%] max-lg:w-[40vw] max-md:top-[50%] w-[30vw] max-md:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-[1.1]">
+        <div className="absolute right-[5%] max-md:right-[5%] max-[1025px]:right-[10%] top-[50%] max-[1025px]:w-[40vw] max-md:top-[50%] w-[30vw] max-md:w-[50vw] -translate-y-1/2 flex flex-col items-start leading-[1.1]">
 
-            <p className="text-[1.5vw] max-lg:text-[2.5vw] max-md:text-[4vw] font-light about-slider-text text-shadow-black">
+            <p className="text-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[4vw] font-light about-slider-text text-shadow-black">
                {slides[currentSlide].description}
             </p>
 
@@ -671,10 +671,10 @@ function ClippathSliderComp({ slides = [], clueText, showClue = true, cursorBg =
 
       <div
         ref={cursorRef}
-        className="fixed max-lg:hidden  top-0 left-0 pointer-events-none z-100"
+        className="fixed max-[1025px]:hidden  top-0 left-0 pointer-events-none z-100"
       >
         <div
-          className="w-15 h-15 max-lg:hidden  rounded-full flex items-center justify-center relative"
+          className="w-15 h-15 max-[1025px]:hidden  rounded-full flex items-center justify-center relative"
           style={{ backgroundColor: cursorBg }}
         >
           <div className="relative w-7.5 h-7.5">
@@ -696,7 +696,7 @@ function ClippathSliderComp({ slides = [], clueText, showClue = true, cursorBg =
       </div>
 
       {showClue && clueText && (
-        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border max-md:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-lg:text-base max-md:text-sm leading-relaxed text-white/80  backdrop-blur-md max-md:bottom-6 ">
+        <p className="pointer-events-none absolute bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-full border max-md:w-[70%] border-white/15 bg-black/35 px-6 py-3 text-center font-mono text-sm max-[1025px]:text-base max-md:text-sm leading-relaxed text-white/80  backdrop-blur-md max-md:bottom-6 ">
           {clueText}
         </p>
       )}
