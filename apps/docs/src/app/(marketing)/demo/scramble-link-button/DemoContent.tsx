@@ -10,11 +10,9 @@ export default function DemoContent({ registry }: { registry: any }) {
     <RegistryRemixerDemo
       registry={registry}
       render={(values: any) => {
-        const { btnText, ...buttonProps } = values;
         return (
           <ScrambleLinkButton
-            {...buttonProps}
-            text={btnText}
+            {...values}
             className="scale-150 text-[2vw] max-sm:text-[4.5vw]"
           />
         );

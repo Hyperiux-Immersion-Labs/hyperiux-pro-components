@@ -79,6 +79,22 @@
         "max": 800,
         "step": 10
       }
+    },
+    {
+      "name": "src",
+      "type": "string",
+      "default": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      "description": "Video or image URL drawn under the pixel bloom grid."
+    },
+    {
+      "name": "type",
+      "type": "enum",
+      "options": [
+        "video",
+        "image"
+      ],
+      "default": "video",
+      "description": "Media kind for src; any value other than video renders an image."
     }
   ],
   "remixer": {

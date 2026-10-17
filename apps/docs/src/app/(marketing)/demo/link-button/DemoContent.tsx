@@ -11,11 +11,9 @@ export default function DemoContent({ registry }: { registry: any }) {
       registry={registry}
       component={LinkButton}
       render={(values: any) => {
-        const { btnText, ...buttonProps } = values;
         return (
           <LinkButton
-            {...buttonProps}
-            text={btnText}
+            {...values}
             clickedColor={values.hoverColor}
             iconClassName="size-[2vw] mt-[0.2vw] max-sm:size-[4vw]"
             className="text-[2vw] max-sm:text-[4.5vw]"

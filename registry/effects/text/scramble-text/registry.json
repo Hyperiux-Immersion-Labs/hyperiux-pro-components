@@ -157,6 +157,7 @@
       }
     }
   ],
+  "fixedText": true,
   "remixer": {
     "enabled": true,
     "defaultOpenGroupId": "motion",

@@ -11,10 +11,11 @@ export const INTERNAL_NOTE = /verify the shipped component api|implementation gu
 
 // Imports every project has, so they're never a missing dependency
 const BUILT_IN = /^(react|react-dom|next)(\/|$)/;
-// Props every component takes without documenting them
+// Props every component takes without documenting them (plus any *ClassName styling hook)
 const IMPLICIT_PROPS = new Set(["className", "style", "children", "key", "ref", "id"]);
+const isImplicitProp = (name) => IMPLICIT_PROPS.has(name) || /ClassName$/.test(name);
 // Prop names that let a user set the text of a text effect
-const TEXT_PROPS = /^(text|children|label|content|words|lines|title|heading|value|phrase|items)$/i;
+const TEXT_PROPS = /^(text|children|label|content|words|lines|title|heading|value|phrase|phrases|items|stats)$/i;
 
 const packageOf = (spec) => (spec.startsWith("@") ? spec.split("/").slice(0, 2).join("/") : spec.split("/")[0]);
 
@@ -27,13 +28,46 @@ function readImports(usage) {
   return imports;
 }
 
-// Attributes passed to <Name ...> in the usage snippet: [{ name, value }]
+// End of a {...} expression starting at `from` (the "{"), skipping strings and nested braces
+function braceEnd(source, from) {
+  let depth = 0;
+  for (let i = from; i < source.length; i++) {
+    const ch = source[i];
+    if (ch === '"' || ch === "'" || ch === "`") {
+      for (i++; i < source.length && source[i] !== ch; i++) if (source[i] === "\\") i++;
+    } else if (ch === "{") depth++;
+    else if (ch === "}" && --depth === 0) return i;
+  }
+  return source.length - 1;
+}
+
+// Attributes passed to <Name ...> in the usage snippet: [{ name, value }]. Scans the
+// opening tag so values with nested braces, arrays of objects or arrow functions are read
+// whole; spreads ({...props}) aren't attributes and are skipped.
 function readJsxProps(usage, componentName) {
   const props = [];
-  const open = new RegExp(`<${componentName}(?=[\\s/>])([^>]*?)/?>`, "g");
-  for (const [, attrs] of usage.matchAll(open)) {
-    for (const [, name, value] of attrs.matchAll(/([A-Za-z_$][\w$-]*)(?:\s*=\s*("[^"]*"|'[^']*'|\{(?:[^{}]|\{[^{}]*\})*\}))?/g)) {
-      props.push({ name, value: value ?? null });
+  const open = new RegExp(`<${componentName}(?=[\\s/>])`, "g");
+  for (const match of usage.matchAll(open)) {
+    let i = match.index + match[0].length;
+    while (i < usage.length) {
+      while (/\s/.test(usage[i] || "")) i++;
+      const ch = usage[i];
+      if (ch === undefined || ch === ">" || (ch === "/" && usage[i + 1] === ">")) break;
+      if (ch === "{") { i = braceEnd(usage, i) + 1; continue; }
+      const name = /^[A-Za-z_$][\w$-]*/.exec(usage.slice(i))?.[0];
+      if (!name) { i++; continue; }
+      i += name.length;
+      while (/\s/.test(usage[i] || "")) i++;
+      let value = null;
+      if (usage[i] === "=") {
+        i++;
+        while (/\s/.test(usage[i] || "")) i++;
+        const q = usage[i];
+        const end = q === '"' || q === "'" ? usage.indexOf(q, i + 1) : q === "{" ? braceEnd(usage, i) : i;
+        value = usage.slice(i, end + 1);
+        i = end + 1;
+      }
+      props.push({ name, value });
     }
   }
   return props;
@@ -48,6 +82,8 @@ export function checkEffect(effect) {
   const add = (kind, message) => issues.push({ kind, message });
   const deps = new Set(effect.dependencies || []);
   const documented = new Map((effect.props || []).map((prop) => [prop.name, prop]));
+  // Props left out of the docs on purpose (registry.json undocumentedProps)
+  const hidden = new Set(effect.undocumentedProps || []);
 
   // Copy that was never meant to ship, and stray whitespace
   for (const [field, value] of Object.entries(effect)) {
@@ -79,7 +115,7 @@ export function checkEffect(effect) {
     const componentName = own?.defaultName;
     if (componentName) {
       for (const { name, value } of readJsxProps(usage, componentName)) {
-        if (IMPLICIT_PROPS.has(name)) continue;
+        if (isImplicitProp(name) || hidden.has(name)) continue;
         const prop = documented.get(name);
         if (!prop) {
           add("undocumented-prop", `usage passes ${name}, which isn't a documented prop`);
@@ -93,7 +129,8 @@ export function checkEffect(effect) {
       const isText = effect.category?.id === "text";
       const settable = [...documented.keys()].some((name) => TEXT_PROPS.test(name));
       const passesChildren = new RegExp(`<${componentName}(\\s[^>]*[^/])?>[\\s\\S]*?</${componentName}>`).test(usage);
-      if (isText && !settable && !passesChildren) add("no-text-prop", "a text effect with no documented text/children prop - users can't set the text");
+      // fixedText: the text is part of the component by design (registry.json)
+      if (isText && !effect.fixedText && !settable && !passesChildren) add("no-text-prop", "a text effect with no documented text/children prop - users can't set the text");
     }
   }
 

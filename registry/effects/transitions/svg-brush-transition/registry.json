@@ -61,6 +61,9 @@
       }
     }
   ],
+  "undocumentedProps": [
+    "config"
+  ],
   "remixer": {
     "enabled": true,
     "defaultOpenGroupId": "brush",

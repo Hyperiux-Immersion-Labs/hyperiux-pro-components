@@ -166,6 +166,10 @@ export function buildAiCatalogue({ registryItems = [], guides = [], getRegistryE
       install: `npx hyperiux add ${slug}`,
       usage: sections.usage,
       props: propsOf(registryEffect),
+      // The text is part of the component; no prop sets it
+      ...(registryEffect.fixedText ? { fixedText: true } : {}),
+      // Props the component takes that are left out of the docs on purpose
+      ...(registryEffect.undocumentedProps?.length ? { undocumentedProps: registryEffect.undocumentedProps } : {}),
       overview: sections.overview || [],
       exampleUseCase: sections.exampleUseCase || [],
       bestFor: sections.bestFor || [],

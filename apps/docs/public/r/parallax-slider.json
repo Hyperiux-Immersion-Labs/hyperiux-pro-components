@@ -67,6 +67,19 @@
         "max": 3,
         "step": 0.05
       }
+    },
+    {
+      "name": "images",
+      "type": "string[]",
+      "default": [
+        "https://picsum.photos/seed/h01/1600/1200",
+        "https://picsum.photos/seed/h02/1600/1200",
+        "https://picsum.photos/seed/h03/1600/1200",
+        "https://picsum.photos/seed/h07/1600/1200",
+        "https://picsum.photos/seed/h05/1600/1200",
+        "https://picsum.photos/seed/h06/1600/1200"
+      ],
+      "description": "Image URLs for the slides; even-indexed slides render wide, odd ones narrow."
     }
   ],
   "remixer": {

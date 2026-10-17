@@ -73,6 +73,18 @@
           "eq": false
         }
       }
+    },
+    {
+      "name": "src",
+      "type": "string",
+      "default": "https://picsum.photos/seed/v01/1600/1200",
+      "description": "Image URL to pixelate and reveal."
+    },
+    {
+      "name": "alt",
+      "type": "string",
+      "default": "Image",
+      "description": "Alt text for the revealed image."
     }
   ],
   "remixer": {

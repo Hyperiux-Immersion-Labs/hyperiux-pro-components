@@ -79,6 +79,10 @@
       }
     ]
   },
+  "undocumentedProps": [
+    "iChannel0",
+    "iChannel1"
+  ],
   "files": [
     {
       "path": "index.tsx",

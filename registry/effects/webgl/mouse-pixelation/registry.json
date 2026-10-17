@@ -87,6 +87,23 @@
       "type": "number",
       "default": 1,
       "description": "V3 · Pixel Cube: depth of the extruded grid."
+    },
+    {
+      "name": "variant",
+      "type": "enum",
+      "options": [
+        "pixel-circle",
+        "pixel-shift",
+        "enhanced-pixel-cube"
+      ],
+      "default": "pixel-shift",
+      "description": "Initial version shown: V1 Pixel Circles, V2 Pixel Shift, V3 Pixel Cube."
+    },
+    {
+      "name": "imageUrl",
+      "type": "string",
+      "default": "https://picsum.photos/seed/h02/1600/1200",
+      "description": "V2 · Pixel Shift: image URL rendered as the pixel grid."
     }
   ],
   "remixer": {

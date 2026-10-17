@@ -225,6 +225,7 @@
       "includeOnlyPublicProps": true
     }
   },
+  "fixedText": true,
   "files": [
     {
       "path": "index.tsx",

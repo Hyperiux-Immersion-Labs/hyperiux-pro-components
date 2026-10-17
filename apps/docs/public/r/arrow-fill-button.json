@@ -124,6 +124,12 @@
         "group": "hover",
         "groupTitle": "Hover"
       }
+    },
+    {
+      "name": "href",
+      "type": "string",
+      "default": "#",
+      "description": "Link destination URL for the anchor."
     }
   ],
   "remixer": {

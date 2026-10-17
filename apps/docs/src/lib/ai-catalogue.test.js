@@ -144,6 +144,21 @@ describe("ai catalogue checks", () => {
     const text = { category: { id: "text" }, props: [{ name: "speed", type: "number" }] };
     expect(kinds(effect({ ...text, usage: 'import DotFill from "@/components/effects/dot-fill";\n<DotFill />' }))).toContain("no-text-prop");
     expect(kinds(effect({ ...text, usage: 'import DotFill from "@/components/effects/dot-fill";\n<DotFill>Hello</DotFill>' }))).not.toContain("no-text-prop");
+    // Text built into the component on purpose (registry.json fixedText)
+    expect(kinds(effect({ ...text, fixedText: true, usage: 'import DotFill from "@/components/effects/dot-fill";\n<DotFill />' }))).not.toContain("no-text-prop");
+  });
+
+  it("reads nested values, arrow functions and spreads without inventing props", () => {
+    const usage = 'import DotFill from "@/components/effects/dot-fill";\n<DotFill items={[{ href: "/a", text: "A" }]} onDone={() => n > 1} {...rest} dotColor="#fff" />';
+    expect(checkEffect(effect({ usage, props: [{ name: "items", type: "object[]" }, { name: "dotColor", type: "string" }] }))).toEqual([
+      { kind: "undocumented-prop", message: "usage passes onDone, which isn't a documented prop" },
+    ]);
+  });
+
+  it("skips *ClassName hooks and props left out of the docs on purpose", () => {
+    const usage = 'import DotFill from "@/components/effects/dot-fill";\n<DotFill textClassName="x" shaderConfig={{ a: 1 }} />';
+    expect(kinds(effect({ usage }))).toEqual(["undocumented-prop"]);
+    expect(kinds(effect({ usage, undocumentedProps: ["shaderConfig"] }))).toEqual([]);
   });
 });
 

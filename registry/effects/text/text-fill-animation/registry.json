@@ -116,6 +116,42 @@
         "max": 3,
         "step": 0.05
       }
+    },
+    {
+      "name": "textSize",
+      "type": "string",
+      "default": "5vw",
+      "description": "Desktop font size as a CSS length."
+    },
+    {
+      "name": "textWidth",
+      "type": "string",
+      "default": "80%",
+      "description": "Desktop text block width as a CSS length."
+    },
+    {
+      "name": "tabletTextSize",
+      "type": "string",
+      "default": "6.5vw",
+      "description": "Font size as a CSS length at 768-1024px."
+    },
+    {
+      "name": "tabletTextWidth",
+      "type": "string",
+      "default": "88%",
+      "description": "Text block width as a CSS length at 768-1024px."
+    },
+    {
+      "name": "mobileTextSize",
+      "type": "string",
+      "default": "8vw",
+      "description": "Font size as a CSS length below 768px."
+    },
+    {
+      "name": "mobileTextWidth",
+      "type": "string",
+      "default": "95%",
+      "description": "Text block width as a CSS length below 768px."
     }
   ],
   "remixer": {

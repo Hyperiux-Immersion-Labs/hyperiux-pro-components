@@ -226,7 +226,35 @@
           }
         ]
       }
+    },
+    {
+      "name": "sections",
+      "type": "object[]",
+      "default": [
+        {
+          "text": "SHADOW",
+          "src": "https://picsum.photos/seed/h02/1600/1200"
+        },
+        {
+          "text": "FLOWER",
+          "src": "https://picsum.photos/seed/h03/1600/1200"
+        },
+        {
+          "text": "RUN",
+          "src": "https://picsum.photos/seed/h05/1600/1200"
+        }
+      ],
+      "description": "Slides as { text, src }: headline text and CORS-enabled image URL."
+    },
+    {
+      "name": "displacementSrc",
+      "type": "string",
+      "default": "https://picsum.photos/seed/distortionnoise/1600/1200",
+      "description": "Displacement map image URL; its red channel drives the transition warp."
     }
+  ],
+  "undocumentedProps": [
+    "shaderConfig"
   ],
   "remixer": {
     "enabled": true,

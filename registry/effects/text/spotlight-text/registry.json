@@ -90,8 +90,15 @@
         "max": 1,
         "step": 0.01
       }
+    },
+    {
+      "name": "size",
+      "type": "string",
+      "default": "text-3xl md:text-5xl",
+      "description": "Tailwind font-size classes for the text."
     }
   ],
+  "fixedText": true,
   "remixer": {
     "enabled": true,
     "defaultOpenGroupId": "motion",

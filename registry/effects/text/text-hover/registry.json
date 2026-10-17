@@ -85,6 +85,7 @@
       }
     }
   ],
+  "fixedText": true,
   "remixer": {
     "enabled": true,
     "defaultOpenGroupId": "style",

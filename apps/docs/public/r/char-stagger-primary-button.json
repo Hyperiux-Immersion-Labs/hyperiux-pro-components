@@ -27,7 +27,7 @@
   ],
   "props": [
     {
-      "name": "btnText",
+      "name": "text",
       "type": "string",
       "default": "Hover me",
       "description": "Button label text.",
@@ -84,6 +84,12 @@
         "group": "appearance",
         "groupTitle": "Appearance"
       }
+    },
+    {
+      "name": "href",
+      "type": "string",
+      "default": "#",
+      "description": "Link destination URL for the anchor."
     }
   ],
   "remixer": {

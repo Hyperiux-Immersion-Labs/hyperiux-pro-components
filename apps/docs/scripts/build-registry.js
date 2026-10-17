@@ -369,6 +369,12 @@ async function buildRegistry() {
           ? { props: registryJson.props }
           : {}),
         ...(registryJson.remixer ? { remixer: registryJson.remixer } : {}),
+        // Text built into the component (no prop sets it), and props left out of the
+        // docs on purpose - both read by the AI catalogue and the admin Effect Health checks
+        ...(registryJson.fixedText ? { fixedText: true } : {}),
+        ...(Array.isArray(registryJson.undocumentedProps) && registryJson.undocumentedProps.length
+          ? { undocumentedProps: registryJson.undocumentedProps }
+          : {}),
         files: publicFiles,
       };
 

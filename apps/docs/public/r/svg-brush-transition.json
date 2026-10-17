@@ -64,6 +64,9 @@
       "includeOnlyPublicProps": true
     }
   },
+  "undocumentedProps": [
+    "config"
+  ],
   "files": [
     {
       "path": "index.tsx",

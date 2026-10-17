@@ -84,6 +84,12 @@
         "group": "colors",
         "groupTitle": "Colors"
       }
+    },
+    {
+      "name": "href",
+      "type": "string",
+      "default": "#",
+      "description": "Link destination URL for the anchor."
     }
   ],
   "remixer": {

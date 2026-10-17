@@ -10,11 +10,9 @@ export default function DemoContent({ registry }: { registry: any }) {
     <RegistryRemixerDemo
       registry={registry}
       render={(values: any) => {
-        const { btnText, ...buttonProps } = values;
         return (
           <CharStaggerPrimaryButton
-            {...buttonProps}
-            text={btnText}
+            {...values}
             bgClassName="rounded-full"
             className="text-[1.2vw] max-sm:text-[4.5vw]"
           />
