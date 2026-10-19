@@ -55,7 +55,7 @@ const listEffectsResult = `{
   "count": 12,
   "offset": 0,
   "effects": [
-    { "name": "dotted-grid", "category": "backgrounds", "categories": ["backgrounds"], "dependencies": [], "version": "1.1.1" }
+    { "name": "dotted-grid", "category": "backgrounds", "categories": ["backgrounds"], "dependencies": [], "version": "1.0.1" }
   ],
   "has_more": false
 }`;
@@ -65,28 +65,36 @@ const getEffectResult = `{
   "title": "Dotted Grid",
   "description": "Canvas 2D fullscreen dot grid that autonomously cycles through five geometric shapes...",
   "tier": "free",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "dependencies": [],
   "changelog": [
-    { "version": "1.1.1", "date": "2026-07-22", "summary": "Added a reduced-motion notice...", "breaking": false }
+    { "version": "1.0.1", "date": "2026-07-22", "summary": "Added prefers-reduced-motion support with a static canvas fallback.", "breaking": false },
+    { "version": "1.0.0", "date": "2026-02-10", "summary": "Initial release", "breaking": false }
   ],
   "install_command": "npx hyperiux add dotted-grid",
   "preview_url": "/demo/dotted-grid",
   "import_path": "@/components/effects/dotted-grid",
   "target": "src/components/effects/dotted-grid",
-  "main": "index.jsx",
-  "import_statement": "import { DottedGrid } from \\"@/components/effects/dotted-grid\\";",
+  "main": "index.tsx",
+  "import_statement": "import DottedGrid from \\"@/components/effects/dotted-grid\\";",
   "files": [
-    { "path": "index.jsx" },
-    { "path": "createSuspendedRaf.js" }
+    { "path": "index.tsx" }
   ]
 }`;
 
 const listCategoriesResult = `{
   "categories": [
+    { "category": "text", "count": 25 },
     { "category": "scroll", "count": 24 },
+    { "category": "components", "count": 20 },
     { "category": "webgl", "count": 17 },
-    { "category": "cursor", "count": 16 }
+    { "category": "cursor", "count": 17 },
+    { "category": "carousels", "count": 11 },
+    { "category": "buttons", "count": 10 },
+    { "category": "transitions", "count": 10 },
+    { "category": "navigation", "count": 9 },
+    { "category": "backgrounds", "count": 5 },
+    { "category": "loaders", "count": 3 }
   ]
 }`;
 
@@ -159,7 +167,7 @@ export default function DocsMcp() {
 
       <DocsList>
         <DocsListItem>
-          Node.js 18 or later (Codex CLI itself additionally requires Node.js
+          Node.js 18.17 or later (Codex CLI itself additionally requires Node.js
           22+)
         </DocsListItem>
         <DocsListItem>
@@ -177,7 +185,8 @@ export default function DocsMcp() {
           .)
         </DocsListItem>
         <DocsListItem>
-          A free Hyperiux account covers free effects. A{" "}
+          A free Hyperiux account to retrieve source for free effects
+          (browsing metadata needs no account). A{" "}
           <DocsLink href="https://vault.hyperiux.com/pricing">Pro or Pro+</DocsLink>{" "}
           plan is only needed to retrieve Pro effect source code.
         </DocsListItem>
@@ -635,8 +644,8 @@ export default function DocsMcp() {
       <Heading2 id="authentication-and-pro-effects">Authentication and Pro effects</Heading2>
 
       <Para>
-        No setup is required to query metadata or source for any of the{" "}
-        <strong>free</strong> effects in the catalog.
+        Querying metadata (names, descriptions, dependencies, versions) is
+        open to anyone - no account needed.
       </Para>
 
       <Para>
@@ -648,14 +657,14 @@ export default function DocsMcp() {
 
       <DocsList>
         <DocsListItem>
+          A <code>HYPERIUX_TOKEN</code> environment variable - checked first,
+          and useful for CI or scripted environments.
+        </DocsListItem>
+        <DocsListItem>
           A saved session from running <code>hyperiux login</code> (the same
           login the <code>hyperiux</code> CLI itself uses) - this is the
           recommended way, since it&apos;s a one-time setup done directly in
           your own terminal.
-        </DocsListItem>
-        <DocsListItem>
-          A <code>HYPERIUX_TOKEN</code> environment variable - useful for CI
-          or scripted environments.
         </DocsListItem>
       </DocsList>
 
@@ -803,10 +812,10 @@ export default function DocsMcp() {
           known before that install happens.
         </DocsListItem>
         <DocsListItem>
-          <strong>It does not expose component props.</strong> There is
-          currently no structured props schema in the registry, so the
-          server cannot yet answer &quot;what props does this component
-          accept?&quot; in a reliable, structured way.
+          <strong>It does not expose component props.</strong> The tools
+          don&apos;t return props yet, so the server cannot yet answer
+          &quot;what props does this component accept?&quot; in a reliable,
+          structured way.
         </DocsListItem>
         <DocsListItem>
           <strong>It does not currently report tier at the list level.</strong>{" "}
@@ -1022,7 +1031,7 @@ export default function DocsMcp() {
 
       <Heading2 id="license">License</Heading2>
 
-      <Para>MPL 2.0.</Para>
+      <Para>MIT.</Para>
     </DocsContent>
   );
 }

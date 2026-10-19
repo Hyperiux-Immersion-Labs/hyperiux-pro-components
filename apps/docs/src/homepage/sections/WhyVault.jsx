@@ -18,7 +18,7 @@ import { MEDIA } from "@/lib/breakpoints";
 const WHY_VAULT_ITEMS = [
     {
         id: "moments",
-        nav: `${TOTAL_LABEL} components`,
+        nav: `${TOTAL_LABEL} effects`,
         title: "Every moment, already built.",
         body: "Scroll systems, cursor presence, text reveals, transitions, loaders and WebGL scenes. Preview exactly how each one behaves before it touches your project.",
     },

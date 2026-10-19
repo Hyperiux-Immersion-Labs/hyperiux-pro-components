@@ -60,7 +60,7 @@ export const templatesFaqItems = [
     question: "Are Vault Templates included with Pro and Pro+?",
     answer: (
       <>
-        Yes, through template credits: each credit unlocks one Template. Pro includes 3 credits a year on yearly billing (none on quarterly), for the selected catalogue. Pro+ includes 1 credit every quarter or 5 a year on yearly billing, for the full catalogue.
+        Yes, through template credits: each credit unlocks one Template. Pro includes 3 credits a year on yearly billing (none on quarterly), for the selected catalogue. Pro+ includes 1 credit every quarter or 5 a year on yearly billing, for the full catalogue. You can also buy any Template individually.
 
       </>
     ),
@@ -81,7 +81,7 @@ Yes. Each Template can also be purchased individually, without a plan. Pricing i
     question: "What licence do Vault Templates use?",
     answer: (
       <>
-Vault Templates are Pro items, licensed under Hyperiux&apos;s commercial terms in the Vault License Agreement: use them in your projects, but don&apos;t redistribute or resell them. See the License Agreement for the full terms.
+Vault Templates are proprietary, licensed under the Hyperiux Pro License in the Vault License Agreement: use them in your projects, but don&apos;t redistribute or resell them. See the License Agreement for the full terms.
       </>
     ),
     defaultOpen: false,

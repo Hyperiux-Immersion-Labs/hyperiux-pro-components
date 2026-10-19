@@ -692,7 +692,7 @@
       "dependencies": [],
       "registryDependencies": [],
       "exportName": "DottedGrid",
-      "exportKind": "named",
+      "exportKind": "default",
       "version": "1.0.1",
       "tier": "free"
     },

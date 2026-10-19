@@ -126,8 +126,8 @@ const DOC_SEARCH_ITEMS = [
     title: "Hyperiux Vault CLI",
     icon: DOC_ICON_BY_HREF["/docs/cli"] || FALLBACK_DOC_ICON,
     description:
-      "CLI commands for adding, upgrading, uninstalling, and managing effects.",
-    keywords: ["cli", "command", "add", "upgrade", "doctor"],
+      "CLI commands for adding, updating, and managing effects.",
+    keywords: ["cli", "command", "add", "outdated", "diff", "login"],
   },
   {
     href: "/docs/dependencies",

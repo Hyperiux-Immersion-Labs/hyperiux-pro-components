@@ -10,9 +10,10 @@ import Heading3 from "@/components/DocsContent/Heading3New";
 
 
 const cliCommands = `npx hyperiux init
+npx hyperiux login
 npx hyperiux add phantom-image-trail`;
 
-const usageCode = `import PhantomImageTrail from "@/components/phantom-image-trail";
+const usageCode = `import PhantomImageTrail from "@/components/effects/phantom-image-trail";
 
 export default function Page() {
   const images = [
@@ -473,7 +474,8 @@ export default function DocsIntro() {
       <Heading2 id="free-core-and-licensing">Free Core and Licensing</Heading2>
 
       <Para>
-        Vault includes a free core of creative interaction patterns. For the free core:
+        Vault includes a free core of creative interaction patterns. Free effects are open
+        source under the Mozilla Public License 2.0 (MPL 2.0). For the free core:
       </Para>
 
       <DocsList>
@@ -484,40 +486,33 @@ export default function DocsIntro() {
           Agencies can use free effects in client work.
         </DocsListItem>
         <DocsListItem>
-          You can modify generated code inside your own projects.
+          You can modify the code and adapt styling, motion, layout, and behavior.
         </DocsListItem>
         <DocsListItem>
-          You can adapt styling, motion, layout, and behavior.
+          No attribution is required.
         </DocsListItem>
         <DocsListItem>
-          Attribution is appreciated, but not required unless stated in the license.
+          Installing a free effect needs a free Hyperiux account.
         </DocsListItem>
       </DocsList>
 
-      <Para>You cannot:</Para>
+      <Para>Under MPL 2.0, you should:</Para>
 
       <DocsList>
         <DocsListItem>
-          resell Vault effects as standalone products
+          keep the license notice in the effect&rsquo;s source files
         </DocsListItem>
         <DocsListItem>
-          redistribute Vault patterns as a competing library
-        </DocsListItem>
-        <DocsListItem>
-            package free or paid effects into templates, themes, starters, or resale
-            bundles without permission
-        </DocsListItem>
-        <DocsListItem>
-          claim original ownership of Vault source patterns
-        </DocsListItem>
-        <DocsListItem>
-          remove license notices where they are required
+          share changes under MPL 2.0 if you distribute modified versions of those files
         </DocsListItem>
       </DocsList>
 
       <Para>
-        Premium effects, Pro packs, templates, bundles, team usage, and implementation
-        support may use separate commercial terms.
+        Pro effects are not open source. They use the proprietary Hyperiux Pro License,
+        which covers active Pro and Pro+ subscribers. You can use them in personal,
+        commercial, and client projects, but not redistribute, resell, or share the source,
+        or build a competing component library from it. See the License page for the full
+        terms.
       </Para>
 
       <Para>
@@ -527,7 +522,7 @@ export default function DocsIntro() {
       <Heading2 id="built-by-hyperiux">Built by Hyperiux</Heading2>
 
       <Para>
-        Vault is built by Hyperiux as a public library of creative frontend thinking. It is
+        Vault is built by Hyperiux as a library of creative frontend thinking. It is
         for the details users may not describe, but absolutely feel.
       </Para>
 

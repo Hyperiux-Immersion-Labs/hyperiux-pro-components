@@ -7,7 +7,7 @@
 
 **A collection of high-quality animation effects and interactive components for Next.js - designed by [Hyperiux](https://hyperiux.com).**
 
-Hyperiux Vault includes 147 effects total: 55 free effects are open source and install instantly, and 92 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
+Hyperiux Vault includes 151 effects total: 56 free effects are open source (MPL 2.0) and install with a free Hyperiux account, and 95 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
 
 ---
 
@@ -21,13 +21,21 @@ npx hyperiux init
 
 This creates a `hyperiux.json` config at your project root that tells the CLI where to install files and how your project is structured.
 
-### 2. Add a free effect
+### 2. Log in
+
+```bash
+npx hyperiux login
+```
+
+Installing any effect, free or pro, needs a free Hyperiux account. Browsing and previewing on the site doesn't.
+
+### 3. Add a free effect
 
 ```bash
 npx hyperiux add phantom-image-trail
 ```
 
-### 3. Use it
+### 4. Use it
 
 ```jsx
 import PhantomImageTrail from "@/components/effects/phantom-image-trail";
@@ -103,26 +111,24 @@ export default function Page() {
 
 | Command | Description |
 |---|---|
-| `npx hyperiux init` | Initialize config in your project |
+| `npx hyperiux init` | Initialize config in your project (`-y, --yes` skips prompts and uses defaults) |
 | `npx hyperiux add <effect>` | Add an effect to your project |
-| `npx hyperiux list` | List all available effects |
+| `npx hyperiux list` | List all available effects, grouped by tier |
 | `npx hyperiux outdated` | Check installed effects for available updates |
 | `npx hyperiux versions` | List every installed effect and its version |
 | `npx hyperiux diff [effect]` | Show what changed upstream for an installed effect (all installed effects if omitted) |
-| `npx hyperiux login` | Connect your Pro account |
+| `npx hyperiux login` | Log in to your Hyperiux account (required before `add`) |
 | `npx hyperiux logout` | Remove saved credentials |
 | `npx hyperiux whoami` | Show current login status |
 
-> **Note:** `outdated`/`versions`/`diff` read from a local lockfile that `add` does not
-> currently write to - until that's fixed, they'll report no effects installed even in
-> a project with effects already added. Tracked in [`md/versioning.md`](md/versioning.md).
+Global flags: `-V, --version` and `-h, --help`.
 
 ### Options for `add`
 
 | Flag | Description |
 |---|---|
-| `--overwrite` | Replace existing files. **Required** to overwrite anything already on disk - nothing is overwritten without it |
-| `--yes` | Skip interactive prompts. This does **not** permit overwriting: if files already exist and `--overwrite` was not passed, they are left untouched and the effect is skipped |
+| `-o, --overwrite` | Replace existing files. **Required** to overwrite anything already on disk - nothing is overwritten without it |
+| `-y, --yes` | Skip interactive prompts. This does **not** permit overwriting: if files already exist and `--overwrite` was not passed, they are left untouched and the effect is skipped |
 | `--dry-run` | Preview what would be installed without writing files |
 
 > **Note:** `--yes` only skips prompts; it never grants permission to overwrite. To replace a file you have already installed (and possibly customized), pass `--overwrite` explicitly. Run `npx hyperiux diff <effect>` first to preview exactly what would change.
@@ -131,7 +137,7 @@ export default function Page() {
 
 ## Free Effects
 
-All 55 free effects install without an account. Browse and preview them at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 56 free effects install with a free Hyperiux account (`npx hyperiux login` first). Browse and preview them at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
 
 ```bash
 # Backgrounds
@@ -165,6 +171,7 @@ npx hyperiux add interactive-list-preview
 npx hyperiux add timeline
 
 # Cursor
+npx hyperiux add dotted-trail
 npx hyperiux add liquid-glass-cursor
 npx hyperiux add phantom-image-trail
 npx hyperiux add pixelated-image-effect
@@ -222,7 +229,7 @@ npx hyperiux add milky-way
 
 **Components** - `animated-faq` · `border-beam` · `gooey-counter` · `gsap-flip-card` · `hover-stack` · `information-drawer` · `interactive-list-preview` · `timeline`
 
-**Cursor** - `liquid-glass-cursor` · `phantom-image-trail` · `pixelated-image-effect`
+**Cursor** - `dotted-trail` · `liquid-glass-cursor` · `phantom-image-trail` · `pixelated-image-effect`
 
 **Loaders** - `numeric-tunnel` · `stack-loader`
 
@@ -240,13 +247,13 @@ npx hyperiux add milky-way
 
 ## Pro Effects
 
-92 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
+95 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
 
 ### Getting started with Pro
 
 **Step 1 - Get a Pro subscription**
 
-Visit [vault.hyperiux.com/pricing](https://vault.hyperiux.com/pricing) and subscribe. Monthly and yearly plans are available.
+Visit [vault.hyperiux.com/pricing](https://vault.hyperiux.com/pricing) and subscribe. Quarterly and yearly plans are available.
 
 **Step 2 - Generate a CLI token**
 
@@ -286,23 +293,23 @@ Or add `HYPERIUX_TOKEN` to your CI secrets and the CLI will pick it up automatic
 
 ### Browse Pro effects
 
-All 92 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 95 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
 
 ### Pro effects by category
 
-**Backgrounds** - `dither-canvas` · `dotted-trail` · `grid-lift`
+**Backgrounds** - `dither-canvas` · `grid-lift`
 
-**Buttons** - `animated-toggle` · `char-stagger-button` · `char-stagger-primary-button` · `dot-fill-button`
+**Buttons** - `animated-toggle` · `char-stagger-button` · `char-stagger-primary-button` · `dot-fill-button` · `spotlight-button`
 
 **Carousels** - `clippath-slider` · `depth-card-stack` · `infinite-carousel` · `ring-carousel` · `webgl-slider`
 
-**Components** - `animated-form` · `animated-modal` · `animated-tabs` · `card-drift` · `draggable-marquee` · `elastic-accordion` · `infinite-grid-gallery` · `shear-wipe` · `testimonial-swiper` · `video-player`
+**Components** - `animated-form` · `animated-modal` · `animated-tabs` · `card-drift` · `draggable-marquee` · `elastic-accordion` · `globe` · `infinite-grid-gallery` · `liquid-shatter` · `shear-wipe` · `testimonial-swiper` · `video-player`
 
 **Cursor** - `butterfly-trail-cursor` · `character-trail` · `coffee-bean-cursor` · `colorful-cursor-aura` · `cursor-move` · `fish-eye` · `full-screen-crosshair` · `inertia-img` · `interactive-arrows` · `magnetic-image-trail` · `noise-ripple-cursor` · `pixel-bloom` · `rope-cursor`
 
 **Loaders** - `lines-loader`
 
-**Navigation** - `displacement-navbar` · `expanding-navbar` · `morphing-dock` · `side-navbar` · `unfold-navbar`
+**Navigation** - `displacement-navbar` · `expanding-navbar` · `morphing-dock` · `perspective-shift-menu` · `side-navbar` · `unfold-navbar`
 
 **Scroll** - `cards-runway` · `circular-slider` · `grid-scale` · `helix-slider` · `parallax-footer` · `parallax-gallery` · `parallax-image-animation` · `parallax-slider` · `ribbon-drift` · `scroll-distortion` · `scroll-shuffled-cards` · `scroll-stack` · `square-translate` · `stacking-cards` · `svg-path` · `svg-pixel-reveal`
 
@@ -320,7 +327,7 @@ The CLI **copies source code** into your project. There is no `hyperiux` import 
 
 - No vendor lock-in
 - Customize any component freely after installing
-- Works with any Next.js App Router project
+- Works with React 18+ and Next.js 14+ projects (App Router or Pages Router), and Vite + React
 
 When you run `npx hyperiux add <effect>`, the CLI:
 
@@ -338,6 +345,8 @@ When you run `npx hyperiux add <effect>`, the CLI:
 ```json
 {
   "$schema": "https://vault.hyperiux.com/schema.json",
+  "framework": "next",
+  "router": "app",
   "tailwind": {
     "config": "tailwind.config.js",
     "css": "src/app/globals.css"
@@ -347,7 +356,8 @@ When you run `npx hyperiux add <effect>`, the CLI:
     "effects": "@/components/effects",
     "hooks": "@/hooks",
     "lib": "@/lib"
-  }
+  },
+  "installedEffects": {}
 }
 ```
 
@@ -357,11 +367,14 @@ Adjust `aliases` to match your project's path aliases.
 
 ## Requirements
 
-- **Node.js** 18+
-- **Next.js** 14+ (App Router)
+- **React** 18+ or **Next.js** 14+ (App Router or Pages Router). Vite + React projects work too.
+- **WebGL / 3D effects** use React Three Fiber 9, which needs React 19 (Next.js 15+).
+- **Page transitions** built on `next-transition-router` need the Next.js App Router.
 - **Tailwind CSS** v3 or v4
+- **Node.js** 18.17+ (20+ recommended)
+- **npm**, **pnpm**, **yarn** or **bun**
 
-Most effects depend on **GSAP**. The CLI installs it automatically. Note that GSAP's premium plugins (SplitText, ScrollTrigger, etc.) require a GSAP license for commercial use - see [gsap.com/licensing](https://gsap.com/licensing/).
+Most effects depend on **GSAP**. The CLI installs it automatically. GSAP is free to use, including all of its plugins (SplitText, ScrollTrigger, etc.), since its acquisition by Webflow - see [gsap.com/licensing](https://gsap.com/licensing/).
 
 ---
 
@@ -374,6 +387,8 @@ Most effects depend on **GSAP**. The CLI installs it automatically. Note that GS
 | `HYPERIUX_API_URL` | Override the API URL independently |
 | `HYPERIUX_REGISTRY_URL` | Override the registry URL for local development |
 | `HYPERIUX_DEBUG` | Set to `1` for verbose request logs |
+| `HYPERIUX_TELEMETRY_DISABLED` | Set to `1` to opt out of anonymous usage telemetry (on by default) |
+| `DO_NOT_TRACK` | Set to `1` to opt out of anonymous usage telemetry |
 
 ---
 
@@ -392,8 +407,7 @@ The CLI itself (`npx hyperiux`, published to npm as `hyperiux`) and the MCP serv
 (`hyperiux-mcp-server`) live in the separate, public
 [`hyperiux-components`](https://github.com/Hyperiux-Immersion-Labs/hyperiux-components)
 repo - they're API clients of this repo's `apps/docs`, not part of it. Free effects
-are additionally mirrored into that public repo so they're installable and browsable
-without authentication.
+are additionally mirrored into that public repo so their source is browsable publicly.
 
 ---
 
@@ -442,4 +456,4 @@ mirror the same source into the public `hyperiux-components` repo.
 
 ## License
 
-Free effects are MPL 2.0 licensed. Pro effects require an active subscription and are not redistributable.
+Free effects are open source under the Mozilla Public License 2.0 (MPL 2.0). Pro effects are under the proprietary Hyperiux Pro License: they require an active Pro or Pro+ subscription and are not redistributable. The CLI (`hyperiux`) and MCP server (`hyperiux-mcp-server`) are MIT.

@@ -41,7 +41,7 @@ export const effectsOverviewContent = {
     },
     {
       question: "Are free effects really free for commercial use?",
-      answer: "Yes. Free effects are commercial-friendly where marked in the license, so you can ship them on client sites and products without paying."
+      answer: "Yes. Free effects are open source under the Mozilla Public License 2.0 (MPL 2.0), so you can ship them on client sites and products without paying, and no attribution is required."
     },
     {
       question: "What's the difference between Free and Pro?",
@@ -100,12 +100,12 @@ export const freeEffectsContent = {
     description: `Browse ${FREE_LABEL} free Hyperiux Vault effects for React and Next.js - real scroll, button, and text animations you can install, remix, and ship today.`,
   },
   description: [
-    `The Free tier includes ${FREE_LABEL} production-ready Hyperiux Vault effects - text animations, buttons, and core scroll interactions that are free to use forever, no account required to preview. Upgrade to Pro or Pro+ when you need cursor effects, WebGL scenes, or the full ${TOTAL_LABEL} effect library.`,
+    `The Free tier includes ${FREE_LABEL} production-ready Hyperiux Vault effects - text animations, buttons, and core scroll interactions, open source under MPL 2.0 and free to use forever. Previewing needs no account; installing needs a free one. Upgrade to Pro or Pro+ when you need cursor effects, WebGL scenes, or the full ${TOTAL_LABEL} effect library.`,
   ],
   faqs: [
     {
       question: "Are free effects really free for commercial use?",
-      answer: "Yes. Free effects are commercial-friendly where marked in the license, so you can ship them on client sites and products without paying."
+      answer: "Yes. Free effects are open source under the Mozilla Public License 2.0 (MPL 2.0), so you can ship them on client sites and products without paying, and no attribution is required."
     },
     {
       question: "What's the difference between Free and Pro?",
@@ -142,7 +142,7 @@ export const proEffectsContent = {
     },
     {
       question: "Do I own the code?",
-      answer: "The effect source is installed inside your project and can be inspected and modified locally. Usage rights follow the Free Core or Pro license attached to the effect."
+      answer: "The effect source is installed inside your project and can be inspected and modified locally. Usage rights follow the effect's license: MPL 2.0 for free effects, the proprietary Hyperiux Pro License for Pro effects."
     },
     {
       question: "How do I upgrade from free to Pro effects?",
@@ -150,7 +150,7 @@ export const proEffectsContent = {
     },
     {
       question: "What do I keep if I cancel Pro?",
-      answer: "Code already installed in your project stays there. Access to new Pro downloads, updates, and future Pro releases follows the current subscription and license terms."
+      answer: "Pro code you installed while subscribed stays in those projects, and you can keep using it there. New downloads, updates, and using Pro effects in new client projects need an active plan. Free effects are unaffected."
     }
   ],
 };

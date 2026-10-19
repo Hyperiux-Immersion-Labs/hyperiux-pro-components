@@ -20,7 +20,7 @@ import {
 
 const REASON_COPY = {
   "pro-effect": "This is a Pro effect. Pick a plan to copy, install and use every effect in the vault.",
-  limit: "You've used today's free installs. Pro gives you 5 a day, Pro+ 10.",
+  limit: `You've used today's free installs. Pro gives you ${PLANS.pro.installsPerDay} a day, Pro+ ${PLANS.pro_plus.installsPerDay}.`,
   "limit-pro": `You've used today's ${PLANS.pro.installsPerDay} Pro installs. Pro+ gives you ${PLANS.pro_plus.installsPerDay} a day.`,
 };
 

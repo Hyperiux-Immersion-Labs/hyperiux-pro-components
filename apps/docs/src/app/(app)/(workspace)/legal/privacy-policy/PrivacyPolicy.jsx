@@ -65,8 +65,8 @@ export default function PrivacyPolicy() {
         </DocsListItem>
         <DocsListItem>
           CLI usage data: authentication events, access-token issuance, and which Effects
-          you install via the Hyperiux CLI, to the extent needed to enforce your License
-          Tier and provide the Service. The CLI installs Effect files into your project; it
+          you install via the Hyperiux CLI, to the extent needed to enforce your plan&apos;s
+          access and daily install limits and provide the Service. The CLI installs Effect files into your project; it
           does not read, scan, or transmit the application source code you have written. It
           may read minimal project configuration, for example, detecting your framework or
           package manager, solely to install Effects correctly.
@@ -414,7 +414,7 @@ export default function PrivacyPolicy() {
           {
             field: "Address",
             details:
-              "312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh, India",
+              "312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh 201301, India",
           },
         ]}
       />
@@ -440,8 +440,8 @@ export default function PrivacyPolicy() {
       {/* <Para>Phone: <a href="tel:+91 81780 26136" className="text-primary underline">+91 81780 26136</a></Para> */}
 
       <Para>
-        Address: 312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh,
-        India
+        Address: 312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh
+        201301, India
       </Para>
     </DocsContent>
   );

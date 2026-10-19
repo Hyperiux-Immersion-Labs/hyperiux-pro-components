@@ -6,6 +6,7 @@ import { effectCategories, getEffectCategoryBySlug } from "@/lib/categories";
 import { getEffectRouteSlug } from "@/lib/effect-slugs";
 import { TEMPLATES } from "@/lib/mock-templates";
 import { INTERNAL_NOTE } from "@/lib/ai-catalogue-checks";
+import { PLANS, GST_RATE, formatPrice, getPrice } from "@/lib/plans";
 
 // One catalogue of every Vault effect for people, crawlers and AI tools:
 // /ai-components (the page), /ai-components.json, /llms.txt and /llms-full.txt.
@@ -35,9 +36,12 @@ export const MCP = {
 };
 
 export const REQUIREMENTS = [
-  ["Framework", "React 18+ or Next.js 14+"],
+  ["Framework", "React 18+ or Next.js 14+ (App Router or Pages Router); Vite + React projects work too"],
+  ["WebGL / 3D", "WebGL and 3D effects use React Three Fiber 9, which needs React 19 (Next.js 15+)"],
+  ["Page transitions", "Effects built on next-transition-router need the Next.js App Router"],
   ["Styling", "Tailwind CSS v3 or v4"],
   ["Runtime", "Node.js 18.17+ (20+ recommended)"],
+  ["Package manager", "npm, pnpm, yarn or bun"],
   ["Language", "JavaScript or TypeScript (every effect ships .jsx and .tsx)"],
 ];
 
@@ -182,8 +186,8 @@ export function buildAiCatalogue({ registryItems = [], guides = [], getRegistryE
         .map((qa) => ({ question: clean(qa.question), answer: clean(qa.answer) })),
       relatedTitles: guide.relatedEffectNames || [],
       access: tier === "free"
-        ? "Free Core: full source with a free account."
-        : "Pro: full source on a Pro or Pro+ plan (run npx hyperiux login first).",
+        ? "Free Core (open source, MPL 2.0): full source with a free account (CLI: run npx hyperiux login first)."
+        : "Pro (proprietary Hyperiux Pro License): full source on a Pro or Pro+ plan (run npx hyperiux login first).",
       docsUrl: `${SITE}/effects/${categorySlug}/${slug}`,
       demoUrl: `${SITE}/demo/${slug}`,
     };
@@ -273,7 +277,7 @@ const MAIN_PAGES = [
   ["AI component catalogue", "/ai-components", "Every effect with use cases, dependencies and accessibility notes (usage code and props: JSON and per-category text files)"],
   ["All effects", "/effects", "Browse and search the full library"],
   ["Pricing", "/pricing", "Free plan, plus Pro and Pro+ billed quarterly or yearly"],
-  ["Templates", "/templates", "Complete interactive website templates, unlocked with template credits on Pro and Pro+"],
+  ["Templates", "/templates", "Complete interactive website templates, unlocked with template credits on Pro and Pro+ or bought individually"],
   ["Docs", "/docs", "Overview of how the Vault and CLI work"],
   ["Blog", "/blog", "Notes on building React and Next.js interaction effects"],
   ["Community", "/community", "Waitlist for the Vault community - live teardowns, early access, critique"],
@@ -285,7 +289,7 @@ const DOCS = [
   ["CLI reference", "/docs/cli", "CLI commands, Pro authentication, and tokens"],
   ["MCP server", "/docs/mcp", "Hyperiux MCP server for AI coding assistants (Claude Code, Cursor, Codex CLI)"],
   ["Dependencies", "/docs/dependencies", "Peer dependencies effects rely on (GSAP, Motion, Three.js)"],
-  ["License", "/docs/license", "Free Core and Pro usage terms"],
+  ["License", "/docs/license", "Free effects (MPL 2.0) and Pro effects (Hyperiux Pro License) usage terms"],
 ];
 
 const LEGAL = [
@@ -294,6 +298,10 @@ const LEGAL = [
   ["Refund Policy", "/legal/refund-policy"],
   ["Terms of Service", "/legal/terms-of-service"],
 ];
+
+// "Pro $27/quarter or $79/year" from the plan config
+const planPrices = (tier) =>
+  `${PLANS[tier].name} ${formatPrice(getPrice(tier, "quarterly"))}/quarter or ${formatPrice(getPrice(tier, "yearly"))}/year`;
 
 const tierLabel = (tier) => (tier === "pro" ? "Pro" : "Free");
 const oneLine = (text) => String(text || "").replace(/\s+/g, " ").trim();
@@ -304,15 +312,18 @@ function header(c) {
     "",
     `> ${c.description}`,
     "",
-    `${c.name} is built by ${c.company} (Noida, India). Free effects can be installed by anyone with a free account; the full library needs a Pro or Pro+ plan. Every effect ships as real source code (React components using GSAP, Motion, Three.js, or CSS) that developers own and customize - not a locked-in package import.`,
+    `${c.name} is built by ${c.company} (Noida, India). Browsing and previewing need no account; copying or installing any effect, free or Pro, needs a free account, and the full library needs a Pro or Pro+ plan. Every effect ships as real source code (React components using GSAP, Motion, Three.js, or CSS) that developers own and customize - not a locked-in package import.`,
     "",
     "Key facts:",
     `- Website: ${c.site}`,
     `- Official information for AI assistants: ${c.site}/llm-info`,
     `- Component catalogue: ${c.url} (JSON: ${c.site}/ai-components.json)`,
-    `- Install CLI: \`${c.install.init}\`, then \`${c.install.add}\` (Pro effects: \`${c.install.login}\` first)`,
+    `- Install CLI: \`${c.install.init}\`, then \`${c.install.add}\` (every install needs a free account: \`${c.install.login}\` first)`,
     `- MCP server for AI coding tools: \`${c.mcp.command}\` (Claude Code: \`${c.mcp.claudeCode}\`)`,
     `- npm package: ${c.install.npm}`,
+    `- Pricing: Free; ${planPrices("pro")}; ${planPrices("pro_plus")}. Billed quarterly or yearly (no monthly plan); INR prices plus ${Math.round(GST_RATE * 100)}% GST`,
+    "- Templates: unlocked with template credits on Pro and Pro+, or bought individually",
+    "- Licence: free effects are open source under MPL 2.0 (no attribution required); Pro effects use the proprietary Hyperiux Pro License. Each Pro or Pro+ subscription covers one seat",
     `- Requirements: ${c.requirements.map((r) => r.value).join("; ")}`,
     "",
     `Library size: ${c.totals.effects} effects (${c.totals.free} free, ${c.totals.pro} Pro) in ${c.totals.categories} categories, and ${c.totals.templates} templates.`,
@@ -417,7 +428,7 @@ export function toLlmsCategoryTxt(c, categorySlug) {
     "",
     `> The ${category.count} effects in ${category.name} (${category.free} free) from ${c.name}, a library of React and Next.js interaction effects installed as source code with the hyperiux CLI.`,
     "",
-    `- Install: \`${c.install.init}\`, then \`${c.install.add}\` (Pro effects: \`${c.install.login}\` first)`,
+    `- Install: \`${c.install.init}\`, then \`${c.install.add}\` (every install needs a free account: \`${c.install.login}\` first)`,
     `- Category page: ${category.url}`,
     `- Every category: ${SITE}/llms.txt`,
     "",

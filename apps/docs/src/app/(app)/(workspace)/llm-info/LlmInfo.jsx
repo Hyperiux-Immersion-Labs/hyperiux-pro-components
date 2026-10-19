@@ -7,7 +7,7 @@ import DocsList from "@/components/DocsContent/List";
 import DocsTable from "@/components/DocsContent/Table";
 import { PLANS, formatPrice, getCreditsPerYear, getMonthlyEquivalent, getPrice } from "@/lib/plans";
 
-const LAST_UPDATED = "October 16, 2026";
+const LAST_UPDATED = "October 19, 2026";
 const SITE = "https://vault.hyperiux.com";
 
 // Prices, install limits and credits come from the plan config, like the pricing page
@@ -94,14 +94,17 @@ export default function LlmInfo({ counts }) {
         items={[
           <span key="browse">Browse and preview effects at <Url href={`${SITE}/effects`} />.</span>,
           <span key="code">Get the code from any effect page as JSX, TSX, a CLI command, an MCP prompt or an AI prompt.</span>,
-          <span key="cli">Install with the Hyperiux CLI: <code>npx hyperiux init</code> once per project, then <code>npx hyperiux add &lt;effect-name&gt;</code>. Pro effects need <code>npx hyperiux login</code> with a token from the dashboard. The npm package is <code>hyperiux</code>.</span>,
-          <span key="mcp">Use the Hyperiux MCP server (<code>npx -y hyperiux-mcp-server</code>) to let AI coding tools such as Claude Code, Claude Desktop, Cursor and Codex CLI list effects and fetch an effect&apos;s installable source, which the assistant then adds to the project. Each effect fetched counts toward the plan&apos;s daily installs, the same as a site copy or a CLI install.</span>,
+          <span key="cli">Install with the Hyperiux CLI: <code>npx hyperiux init</code> once per project, then <code>npx hyperiux add &lt;effect-name&gt;</code>. Every install, free or Pro, needs a free account: run <code>npx hyperiux login</code> first, with a token from the dashboard. The npm package is <code>hyperiux</code>.</span>,
+          <span key="mcp">Use the Hyperiux MCP server (<code>npx -y hyperiux-mcp-server</code>) to let AI coding tools such as Claude Code, Claude Desktop, Cursor and Codex CLI list effects and fetch an effect&apos;s installable source, which the assistant then adds to the project. It signs in with the <code>HYPERIUX_TOKEN</code> environment variable or the saved <code>hyperiux login</code> session. Each effect fetched counts toward the plan&apos;s daily installs, the same as a site copy or a CLI install.</span>,
+          "Browsing and previewing need no account; copying or installing any effect needs a free account.",
           "The installed files are ordinary React components the user owns and edits; there is no runtime connection to Hyperiux.",
         ]}
       />
       <Para>
         Requirements: React 18+ or Next.js 14+, Tailwind CSS v3 or v4, and Node.js 18.17+ (20+ recommended). Works with
-        npm, pnpm, yarn and bun, in the App Router, the Pages Router and Vite React projects.
+        npm, pnpm, yarn and bun, in the App Router, the Pages Router and Vite React projects. WebGL and 3D effects use
+        React Three Fiber 9, which needs React 19 (Next.js 15+). Page transitions built on next-transition-router need
+        the Next.js App Router.
       </Para>
 
       <Heading2 id="technology">Technology</Heading2>
@@ -114,19 +117,21 @@ export default function LlmInfo({ counts }) {
       <Heading2 id="plans-and-pricing">Plans and Pricing</Heading2>
       <Para>
         There is a free plan and two paid plans, Pro and Pro+, each billed quarterly or yearly. Visitors from India see
-        INR prices, with 18% GST added at checkout. Plans can be cancelled at any time, and everything already installed
-        stays in the user&apos;s project. See <Url href={`${SITE}/pricing`} /> for the latest prices.
+        INR prices, with 18% GST added at checkout. Plans can be cancelled at any time: Pro code installed while subscribed
+        stays in those projects and can keep being used there, while new downloads and new client projects need an
+        active plan. See <Url href={`${SITE}/pricing`} /> for the latest prices.
       </Para>
       <DocsTable
         headers={["Plan", "Price", "What it includes"]}
         rows={[
-          ["Free", "$0, free account required", `${counts.free} free effects, CLI install, commercial use, code you own`],
-          [PLANS.pro.name, planPrice("pro"), `Every component in the vault; ${PLANS.pro.installsPerDay} installs a day (site copies, CLI and MCP); ${creditsLine("pro")} for the selected template catalogue; Hyperiux CLI install and auth; code you own, commercial use`],
-          [PLANS.pro_plus.name, planPrice("pro_plus"), `Every component and the full template catalogue; ${PLANS.pro_plus.installsPerDay} installs a day (site copies, CLI and MCP); ${creditsLine("pro_plus")} for the full template catalogue; occasional freebies; priority access to new drops; code you own, commercial use`],
+          ["Free", "$0, free account required", `${counts.free} free effects, open source under MPL 2.0; 3 installs a day (site copies, CLI and MCP); CLI install; commercial use, code you own`],
+          [PLANS.pro.name, planPrice("pro"), `Every effect in the vault; ${PLANS.pro.installsPerDay} installs a day (site copies, CLI and MCP); ${creditsLine("pro")} for the selected template catalogue; Hyperiux CLI install and auth; one seat; commercial and client use`],
+          [PLANS.pro_plus.name, planPrice("pro_plus"), `Every effect and the full template catalogue; ${PLANS.pro_plus.installsPerDay} installs a day (site copies, CLI and MCP); ${creditsLine("pro_plus")} for the full template catalogue; occasional freebies; priority access to new drops; one seat; commercial and client use`],
         ]}
       />
       <Para>
-        Agency and multi-seat licensing is available on request through <Url href="mailto:hello@hyperiux.com" />.
+        Each Pro or Pro+ subscription covers one person (one seat). Teams and agencies that need more seats contact{" "}
+        <Url href="mailto:hello@hyperiux.com" />.
       </Para>
       <Para>
         Refunds follow the Refund Policy: payments are not refunded once access has been granted, except for duplicate
@@ -138,17 +143,18 @@ export default function LlmInfo({ counts }) {
       <Para>
         Vault also offers complete website templates built with the same effects, each with its source code and Figma
         file: Elena Voss (portfolio), Oris Dental (healthcare), Lumera (real estate) and Kyntra (app). Templates are
-        unlocked with template credits on Pro and Pro+. Browse them at <Url href={`${SITE}/templates`} />.
+        unlocked with template credits on Pro and Pro+, or bought individually. Browse them at <Url href={`${SITE}/templates`} />.
       </Para>
 
       <Heading2 id="licensing">Licensing</Heading2>
       <DocsList
         items={[
-          "Free effects: worldwide, royalty-free use in unlimited personal and commercial projects. Some files may be under MPL 2.0 where marked.",
-          "Pro effects: a non-exclusive, non-transferable licence for use in the customer's own projects while their plan covers them.",
-          "Code installed during an active plan keeps working after cancellation; starting new projects with Pro effects needs active access.",
+          "Free effects: open source under the Mozilla Public License 2.0 (MPL 2.0), for personal and commercial projects including client work. Keep the licence notice in the source files, and share changes to those files under MPL 2.0 if you distribute modified versions.",
+          "Pro effects: proprietary Hyperiux Pro License (not open source), for active Pro and Pro+ subscribers, in personal, commercial and client projects.",
+          "Seats: each Pro or Pro+ subscription covers one person; teams and agencies that need more seats contact hello@hyperiux.com.",
+          "After cancelling: Pro code installed while subscribed stays in those projects and can keep being used there; new downloads, and using Pro effects in new client projects, need an active plan. Free (MPL) effects are unaffected.",
           "No attribution is required.",
-          "Not allowed: redistributing or reselling the effects as a library, kit, template or marketplace item, or using them to train AI code-generation models.",
+          "Not allowed with Pro effects: redistributing, reselling or sharing the source, building a competing component library from it, or using it to train AI code-generation models.",
         ]}
       />
       <Para>

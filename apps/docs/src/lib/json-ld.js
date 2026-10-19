@@ -20,17 +20,18 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     '@id': `${homepage}#organization`,
     name: "Hyperiux",
+    legalName: "Hyperiux Immersion Labs Private Limited",
     description: `Start with ${FREE_LABEL} free source-first effects. Join Pro for ${TOTAL_LABEL} effects.`,
     url: homepage,
     telephone: "+91 8178 026 136",
     email: "hello@hyperiux.com",
    "address": {
       "@type": "PostalAddress",
-      "streetAddress": "#312, Tower A, Grandslam Ithum",
-      "addressLocality": "Sector-62",
+      "streetAddress": "312, Tower A, Grandslam iThum, A-40, Sector 62",
+      "addressLocality": "Noida",
+      "addressRegion": "Uttar Pradesh",
       "postalCode": "201301",
-      "addressCountry": "IN",
-      "addressRegion": "India"
+      "addressCountry": "IN"
     },
     logo: `${homepage}/favicon.ico`,
     sameAs: [
@@ -80,7 +81,6 @@ export function SoftwareApplicationJsonLd() {
     applicationSubCategory: "UI component library",
     isAccessibleForFree: true,
     operatingSystem: "Web-based (React and Next.js)",
-    softwareVersion: "1.1.1",
     featureList: [
       `${TOTAL_LABEL} interactive effects (${FREE_LABEL} free)`,
       "Copy-paste React and Next.js components",
@@ -138,17 +138,18 @@ export function LocalBusiness() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Hyperiux",
+    "legalName": "Hyperiux Immersion Labs Private Limited",
     "image": `https://vault.hyperiux.com/hyperiux.png`,
     "@id": "",
     "url": `${homepage}`,
     "telephone": "+91 8178 026 136",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "#312, Tower A, Grandslam Ithum",
-      "addressLocality": "Sector-62",
+      "streetAddress": "312, Tower A, Grandslam iThum, A-40, Sector 62",
+      "addressLocality": "Noida",
+      "addressRegion": "Uttar Pradesh",
       "postalCode": "201301",
-      "addressCountry": "IN",
-      "addressRegion": "India"
+      "addressCountry": "IN"
     },
     "sameAs": [
       "https://www.facebook.com/p/Hyperiux-Immersion-Labs-61591884027517/",

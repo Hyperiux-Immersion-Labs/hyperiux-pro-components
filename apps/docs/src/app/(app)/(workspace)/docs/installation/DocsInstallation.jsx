@@ -10,27 +10,29 @@ import Heading3 from "@/components/DocsContent/Heading3New";
 
 const initCommand = `npx hyperiux init`;
 
+const loginCommand = `npx hyperiux login`;
+
 const addPhantomImageTrailCommand = `npx hyperiux add phantom-image-trail`;
 
 const addEffectCommand = `npx hyperiux add [effect-name]`;
 
 const devCommand = `npm run dev`;
 
-const registryConfig = `{
-  "style": "default",
+const projectConfig = `{
+  "$schema": "https://vault.hyperiux.com/schema.json",
+  "framework": "next",
+  "router": "app",
   "tailwind": {
     "config": "tailwind.config.js",
-    "css": "app/globals.css",
-    "baseColor": "slate",
-    "cssVariables": true
+    "css": "src/app/globals.css"
   },
   "aliases": {
     "components": "@/components",
-    "utils": "@/lib/utils"
+    "effects": "@/components/effects",
+    "hooks": "@/hooks",
+    "lib": "@/lib"
   },
-  "registries": {
-    "@hyperiux": "https://vault.hyperiux.com/r/{name}.json"
-  }
+  "installedEffects": {}
 }`;
 
 const npmInstallGsapMotionCommand = `npm install gsap motion`;
@@ -39,9 +41,9 @@ const pnpmAddGsapMotionCommand = `pnpm add gsap motion`;
 
 const npmInstallGsapCommand = `npm install gsap`;
 
-const phantomImageTrailPath = `components/phantom-image-trail`;
+const phantomImageTrailPath = `src/components/effects/phantom-image-trail/`;
 
-const usageCode = `import PhantomImageTrail from "@/components/phantom-image-trail";
+const usageCode = `import PhantomImageTrail from "@/components/effects/phantom-image-trail";
 
 const images = [
    { src: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-11.jpg", alt: "Gradient 1" },
@@ -64,7 +66,7 @@ const useClientCode = `"use client";`;
 const dynamicImportCode = `import dynamic from "next/dynamic";
 
 const PhantomImageTrail = dynamic(
-  () => import("@/components/phantom-image-trail"),
+  () => import("@/components/effects/phantom-image-trail"),
   { ssr: false }
 );`;
 
@@ -73,7 +75,7 @@ const tailwindConfigCode = `export default {
     "./app/**/*.{ts,tsx}",
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
-    "./components/hyperiux/**/*.{ts,tsx}"
+    "./src/components/effects/**/*.{ts,tsx}"
   ],
   theme: {
     extend: {}
@@ -108,6 +110,12 @@ export default function DocsInstallation() {
 
       <CodeBlock code={initCommand} language="bash" />
 
+      <Para>
+        Log in. Installing any effect, free or Pro, needs a free Hyperiux account.
+      </Para>
+
+      <CodeBlock code={loginCommand} language="bash" />
+
       <Para>Then add an effect.</Para>
 
       <CodeBlock code={addPhantomImageTrailCommand} language="bash" />
@@ -129,11 +137,19 @@ export default function DocsInstallation() {
         rows={[
           {
             requirement: "Runtime",
-            supportedSetup: "Node.js 18.17+ or 20+ recommended",
+            supportedSetup: "Node.js 18.17+ (20+ recommended)",
           },
           {
             requirement: "Framework",
-            supportedSetup: "React 18+ or Next.js 14/15",
+            supportedSetup: "React 18+ or Next.js 14+",
+          },
+          {
+            requirement: "WebGL / 3D effects",
+            supportedSetup: "React Three Fiber 9, which needs React 19 (Next.js 15+)",
+          },
+          {
+            requirement: "Page transitions",
+            supportedSetup: "Effects built on next-transition-router need the Next.js App Router",
           },
           {
             requirement: "Styling",
@@ -149,7 +165,7 @@ export default function DocsInstallation() {
           },
           {
             requirement: "Project structure",
-            supportedSetup: "App Router, Pages Router, or modern Vite React setup",
+            supportedSetup: "App Router, Pages Router, or a Vite + React setup",
           },
         ]}
       />
@@ -200,7 +216,9 @@ export default function DocsInstallation() {
       </Heading2>
       <Para>
         The Hyperiux CLI adds effect source files directly into your workspace. It adds the
-        selected effect files and prompts before installing any required dependencies.
+        selected effect files and installs any required packages your project is missing.
+        Run <code>add</code> with <code>--dry-run</code> to see the files and packages
+        first.
       </Para>
 
       <Para>No surprise machinery.</Para>
@@ -214,10 +232,22 @@ export default function DocsInstallation() {
       <Para>This prepares your project for Vault effects.</Para>
 
       <Para>
-        Depending on your setup, it may create or update configuration used to place
-        components, utilities, styles, and generated files in the right folders.
+        It writes a <code>hyperiux.json</code> file at your project root, which tells the
+        CLI where to place effects and which aliases and styles to use.
       </Para>
-<Heading3>2. Add an Effect</Heading3>
+<Heading3>2. Log In</Heading3>
+
+      <Para>
+        An account is required before you can add effects. Installing any effect, free or
+        Pro, needs a free Hyperiux account.
+      </Para>
+
+      <CodeBlock code={loginCommand} language="bash" />
+
+      <Para>
+        Browsing and previewing effects on the site does not need an account.
+      </Para>
+<Heading3>3. Add an Effect</Heading3>
     
       <Para>Install the effect you want.</Para>
 
@@ -235,7 +265,7 @@ export default function DocsInstallation() {
         A text reveal should not need the same machinery as a WebGL scene. That would be
         suspicious.
       </Para>
-<Heading3>3. Verify Installation</Heading3>
+<Heading3>4. Verify Installation</Heading3>
       
       <Para>After adding an effect, run your project locally.</Para>
 
@@ -263,12 +293,16 @@ export default function DocsInstallation() {
       <Para>Depending on the pattern, files may be added to:</Para>
 
       <DocsList>
-        <DocsListItem>components/hyperiux/</DocsListItem>
+        <DocsListItem>src/components/effects/&lt;slug&gt;/</DocsListItem>
         <DocsListItem>hooks/</DocsListItem>
         <DocsListItem>lib/</DocsListItem>
         <DocsListItem>styles/</DocsListItem>
         <DocsListItem>shaders/</DocsListItem>
       </DocsList>
+
+      <Para>
+        Effects import from <code>@/components/effects/&lt;slug&gt;</code>.
+      </Para>
 
       <Para>An effect may include:</Para>
 
@@ -285,21 +319,16 @@ export default function DocsInstallation() {
 
       <Para>Small effects stay small. Heavier effects bring the files they need.</Para>
 
-      <Heading2 id="optional-registry-configuration">
-        Optional: Registry Configuration
+      <Heading2 id="project-configuration">
+        Project Configuration
       </Heading2>
 
       <Para>
-        You only need this section if your project uses a registry-based component
-        workflow, such as a components.json setup.
+        <code>npx hyperiux init</code> writes a <code>hyperiux.json</code> file at your
+        project root. The CLI reads it on every <code>add</code>.
       </Para>
 
-      <Para>
-        If your project uses a shadcn-style registry model, add the Hyperiux registry so
-        Vault can resolve effect source from the remote registry.
-      </Para>
-
-      <CodeBlock code={registryConfig} language="json" />
+      <CodeBlock code={projectConfig} language="json" />
 
       <Para>
         Adjust aliases to match your project. If your components live somewhere else, tell
@@ -436,7 +465,10 @@ export default function DocsInstallation() {
 
 <Heading3>4. Copy the Source Files</Heading3>
 
-      <Para>Copy the component and supporting files into your project.</Para>
+      <Para>
+        Copy the component and supporting files into your project. Copying code from the
+        site needs a free Hyperiux account, the same as the CLI.
+      </Para>
 
       <Para>Example path:</Para>
 
@@ -445,7 +477,6 @@ export default function DocsInstallation() {
       <Para>Some effects may also include:</Para>
 
       <DocsList>
-        <DocsListItem>components/hyperiux/</DocsListItem>
         <DocsListItem>lib/</DocsListItem>
         <DocsListItem>hooks/</DocsListItem>
         <DocsListItem>styles/</DocsListItem>
@@ -467,8 +498,8 @@ export default function DocsInstallation() {
       <Para>Common aliases include:</Para>
 
       <DocsList>
-        <DocsListItem>@/components</DocsListItem>
-        <DocsListItem>@/lib/utils</DocsListItem>
+        <DocsListItem>@/components/effects</DocsListItem>
+        <DocsListItem>@/lib</DocsListItem>
         <DocsListItem>@/hooks</DocsListItem>
       </DocsList>
 
@@ -660,6 +691,7 @@ export default function DocsInstallation() {
 
       <DocsList>
         <DocsListItem>Initialize Vault.</DocsListItem>
+        <DocsListItem>Log in.</DocsListItem>
         <DocsListItem>Add one effect.</DocsListItem>
         <DocsListItem>Verify the installation.</DocsListItem>
         <DocsListItem>Read the implementation notes.</DocsListItem>

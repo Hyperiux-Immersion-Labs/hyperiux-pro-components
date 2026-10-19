@@ -16,7 +16,7 @@ export default function TermsOfService() {
         These Terms of Service (&quot;Terms&quot;) are a legal agreement between Hyperiux
         Immersion Labs Private Limited, a company incorporated under the Companies Act, 2013,
         with its principal place of business at 312, Tower A, Grandslam iThum, A-40, Sector
-        62, Noida, Uttar Pradesh, India (&quot;Hyperiux,&quot; &quot;we,&quot;
+        62, Noida, Uttar Pradesh 201301, India (&quot;Hyperiux,&quot; &quot;we,&quot;
         &quot;us,&quot; &quot;our&quot;), the operator of vault.hyperiux.com and the
         Hyperiux Vault product, collectively, the &quot;Service,&quot; and you
         (&quot;you,&quot; &quot;your&quot;).
@@ -84,9 +84,10 @@ export default function TermsOfService() {
       <Heading2 id="accounts">3. Accounts</Heading2>
 
       <Para>
-        Some features, including installing Vault Pro Effects and managing your subscription,
-        require authenticating via the Hyperiux CLI, such as npx hyperiux login, or a linked
-        account.
+        Installing or copying any Effect, free or Pro, and managing your subscription
+        require a free Hyperiux account, signed in on the website or authenticated via the
+        Hyperiux CLI, such as npx hyperiux login. Browsing and previewing Effects do not
+        require an account.
       </Para>
 
       <Para>You are responsible for:</Para>
@@ -117,16 +118,16 @@ export default function TermsOfService() {
       </Para>
 
       <Para>
-        4.2 Vault Pro. Vault Pro is a paid subscription, billed either monthly or annually at
-        the price shown on our Pricing page at the time of purchase, plus applicable taxes.
-        Subscribing unlocks access to Vault Pro Effects within the scope of the License Tier
-        you purchase, as described in the License Agreement, including new Effects released
-        during your active subscription.
+        4.2 Vault Pro. Vault Pro (Pro or Pro+) is a paid subscription, billed either
+        quarterly or annually at the price shown on our Pricing page at the time of purchase,
+        plus applicable taxes. Each subscription covers one seat (one person). Subscribing
+        unlocks access to Vault Pro Effects as described in the License Agreement, including
+        new Effects released during your active subscription.
       </Para>
 
       <Para>
         4.3 Auto-renewal. Vault Pro subscriptions automatically renew at the end of each
-        billing period, monthly or annually, matching your selected plan, at the then-current
+        billing period, quarterly or annually, matching your selected plan, at the then-current
         price, unless you cancel before the renewal date. We will not increase your price
         mid-term without notice, but renewal pricing may differ from your original price if
         our published pricing has changed.
@@ -142,8 +143,10 @@ export default function TermsOfService() {
       <Para>
         Your access to Vault Pro, including downloading new Effects and updates, continues
         until the end of the period you&apos;ve already paid for, after which it reverts to
-        Free Core access. Source Files you already downloaded and installed remain usable
-        under the License Agreement regardless of cancellation.
+        Free Core access. Vault Pro Source Files you installed while subscribed stay in
+        those Projects, and you may keep using them there under the License Agreement; new
+        downloads, and using Vault Pro Effects in new Projects, including new client
+        projects, require an active plan. Free Core Effects are unaffected.
       </Para>
 
       <Para>
@@ -209,8 +212,8 @@ export default function TermsOfService() {
           outside normal CLI/website use;
         </DocsListItem>
         <DocsListItem>
-          share Vault Pro credentials or access tokens beyond what your License Tier permits,
-          including any seats it includes, as described in the License Agreement;
+          share Vault Pro credentials or access tokens beyond the one seat your subscription
+          covers, as described in the License Agreement;
         </DocsListItem>
         <DocsListItem>
           interfere with or disrupt the integrity or performance of the Service, including
@@ -288,7 +291,7 @@ export default function TermsOfService() {
       <Para>
         Support is provided on a best-effort basis as described on our pricing and
         documentation pages, unless a specific response time or support tier is set out in a
-        signed Enterprise agreement.
+        separate signed agreement.
       </Para>
 
       <Para>
@@ -422,7 +425,7 @@ export default function TermsOfService() {
           {
             field: "Address",
             details:
-              "312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh, India",
+              "312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh 201301, India",
           },
         ]}
       />
@@ -456,7 +459,7 @@ export default function TermsOfService() {
 
       <DocsList>
         <DocsListItem>
-          A signed Enterprise Agreement or Order Form specific to you, where one exists;
+          A separate signed agreement or Order Form specific to you, where one exists;
         </DocsListItem>
         <DocsListItem>
           The License Agreement, for questions of code usage rights;

@@ -26,20 +26,20 @@ const bunAddGsapCommand = `bun add gsap`;
 
 const recommendedVersionsCode = `{
   "dependencies": {
-    "gsap": "^3.12.5",
-    "motion": "^12.0.0",
-    "three": "^0.160.0",
-    "@react-three/fiber": "^8.15.0",
-    "@react-three/drei": "^9.90.0"
+    "gsap": "^3.15.0",
+    "motion": "^12.40.0",
+    "three": "^0.182.0",
+    "@react-three/fiber": "^9.6.0",
+    "@react-three/drei": "^10.7.7"
   }
 }`;
 
-const directImportCode = `import PhantomImageTrail from "@/components/phantom-image-trail";`;
+const directImportCode = `import PhantomImageTrail from "@/components/effects/phantom-image-trail";`;
 
 const dynamicImportCode = `import dynamic from "next/dynamic";
 
 const PhantomImageTrail = dynamic(
-  () => import("@/components/phantom-image-trail"),
+  () => import("@/components/effects/phantom-image-trail"),
   { ssr: false }
 );`;
 
@@ -48,7 +48,7 @@ const tailwindConfigCode = `export default {
     "./app/**/*.{ts,tsx}",
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
-    "./components/hyperiux/**/*.{ts,tsx}"
+    "./src/components/effects/**/*.{ts,tsx}"
   ],
   theme: {
     extend: {}
@@ -75,21 +75,10 @@ const reducedMotionJsCode = `const prefersReducedMotion =
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;`;
 
-const doctorCommand = `npx hyperiux doctor`;
-
-const doctorOutput = `Hyperiux Doctor
-Project detected: Next.js
-Tailwind config found
-Components alias resolved
-Missing dependency: gsap
-phantom-image-trail uses browser APIs and should be rendered inside a client boundary
-
-Next steps:
-npm install gsap
-Add "use client" to the component entry file.`;
+const dryRunCommand = `npx hyperiux add phantom-image-trail --dry-run`;
 
 const tailwindContentPathCode = `content: [
-  "./components/hyperiux/**/*.{ts,tsx}"
+  "./src/components/effects/**/*.{ts,tsx}"
 ]`;
 
 export default function DocsDependencies() {
@@ -164,11 +153,19 @@ export default function DocsDependencies() {
         rows={[
           {
             requirement: "Runtime",
-            supportedSetup: "Node.js 18.17+ or 20+ recommended",
+            supportedSetup: "Node.js 18.17+ (20+ recommended)",
           },
           {
             requirement: "Framework",
-            supportedSetup: "React 18+ or Next.js 14/15",
+            supportedSetup: "React 18+ or Next.js 14+",
+          },
+          {
+            requirement: "WebGL / 3D effects",
+            supportedSetup: "React Three Fiber 9, which needs React 19 (Next.js 15+)",
+          },
+          {
+            requirement: "Page transitions",
+            supportedSetup: "Effects built on next-transition-router need the Next.js App Router",
           },
           {
             requirement: "Styling",
@@ -184,7 +181,7 @@ export default function DocsDependencies() {
           },
           {
             requirement: "Project structure",
-            supportedSetup: "App Router, Pages Router, or modern Vite React setup",
+            supportedSetup: "App Router, Pages Router, or a Vite + React setup",
           },
         ]}
       />
@@ -311,22 +308,13 @@ export default function DocsDependencies() {
       </DocsList>
 
       <Para>
-        If a dependency is required, the CLI makes it visible during installation.
+        If a required package is missing from your project, the CLI installs it with the
+        package manager it detects, then writes the effect files.
       </Para>
 
-      <Para>
-        Depending on your CLI configuration, Vault either prompts before installing missing
-        packages or prints the exact package-manager command so you can install them
-        manually.
-      </Para>
+      <Para>To see the files and missing packages before anything is installed, do a dry run:</Para>
 
-      <Para>Example:</Para>
-
-      <CodeBlock code={npmInstallGsapCommand} language="bash" />
-
-      <Para>Or:</Para>
-
-      <CodeBlock code={pnpmAddGsapCommand} language="bash" />
+      <CodeBlock code={dryRunCommand} language="bash" />
 
       <Para>
         The point is simple: dependencies should be attached to the effect that uses them.
@@ -379,6 +367,12 @@ export default function DocsDependencies() {
       </Para>
 
       <CodeBlock code={recommendedVersionsCode} language="json" />
+
+      <Para>
+        WebGL and 3D effects use React Three Fiber 9 and drei 10, which need React 19. On
+        Next.js, that means Next.js 15 or later. React 18 projects can use the other
+        effects, but not the React Three Fiber ones.
+      </Para>
 
       <Para>Use the versions listed by the effect you install.</Para>
 
@@ -648,43 +642,6 @@ export default function DocsDependencies() {
 
       <Para>For deeper implementation guidance, see Accessibility.</Para>
 
-      <Heading2 id="checking-dependencies-with-doctor">
-        Checking Dependencies with Doctor
-      </Heading2>
-
-      <Para>Use the CLI doctor command to inspect your setup.</Para>
-
-      <CodeBlock code={doctorCommand} language="bash" />
-
-      <Para>The doctor command checks common dependency and setup issues.</Para>
-
-      <Para>It can report:</Para>
-
-      <DocsList>
-        <DocsListItem>missing packages</DocsListItem>
-        <DocsListItem>broken import aliases</DocsListItem>
-        <DocsListItem>missing Tailwind content paths</DocsListItem>
-        <DocsListItem>missing CSS entry files</DocsListItem>
-        <DocsListItem>client-component requirements</DocsListItem>
-        <DocsListItem>browser-only code in server components</DocsListItem>
-        <DocsListItem>duplicate effect files</DocsListItem>
-        <DocsListItem>registry access issues</DocsListItem>
-        <DocsListItem>WebGL or canvas setup warnings</DocsListItem>
-      </DocsList>
-
-      <Para>Example output:</Para>
-
-      <CodeBlock code={doctorOutput} language="text" />
-
-      <Para>
-        Run it after adding effects, moving files, upgrading effects, or changing
-        dependencies.
-      </Para>
-
-      <Para>
-        It will not fix your taste. It will fix a surprising number of setup issues.
-      </Para>
-
       <Heading2 id="dependency-troubleshooting">
         Dependency Troubleshooting
       </Heading2>
@@ -694,10 +651,6 @@ export default function DocsDependencies() {
       <Para>Install the package listed by the effect page or CLI output.</Para>
 
       <CodeBlock code={npmInstallGsapCommand} language="bash" />
-
-      <Para>Then run:</Para>
-
-      <CodeBlock code={doctorCommand} language="bash" />
 <Heading3>Duplicate Animation Packages</Heading3>
      
       <Para>Check whether the project uses both framer-motion and motion.</Para>
@@ -779,7 +732,6 @@ export default function DocsDependencies() {
         <DocsListItem>Test mobile behavior.</DocsListItem>
         <DocsListItem>Remove unused dependencies.</DocsListItem>
         <DocsListItem>Check production builds.</DocsListItem>
-        <DocsListItem>Run npx hyperiux doctor after changes.</DocsListItem>
       </DocsList>
 
       <Para>Small motion. Big signal. Small bundle. Better signal.</Para>

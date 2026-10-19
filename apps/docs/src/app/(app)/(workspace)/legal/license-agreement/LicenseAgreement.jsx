@@ -16,7 +16,7 @@ export default function LicenseAgreement() {
         This License Agreement (&quot;Agreement,&quot; &quot;License&quot;) is a legal
         agreement between Hyperiux Immersion Labs Private Limited, a company incorporated
         under the Companies Act, 2013, with its principal place of business at 312, Tower A,
-        Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh, India (&quot;Hyperiux,&quot;
+        Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh 201301, India (&quot;Hyperiux,&quot;
         &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), and you, the individual or
         entity accessing, installing, or using any part of Hyperiux Vault (&quot;you,&quot;
         &quot;your,&quot; or &quot;Licensee&quot;).
@@ -50,11 +50,14 @@ export default function LicenseAgreement() {
         </DocsListItem>
         <DocsListItem>
           &quot;Free Core&quot; means Effects marked as free in the Vault catalog, available
-          at no charge.
+          at no charge and released as open source under the Mozilla Public License 2.0
+          (&quot;MPL 2.0&quot;).
         </DocsListItem>
         <DocsListItem>
           &quot;Vault Pro&quot; means Effects, packs, templates, variants, and commercial
-          systems that require an active paid subscription or purchase to access.
+          systems that require an active paid subscription (Pro or Pro+) or purchase to
+          access. Vault Pro Effects are proprietary and licensed under the Hyperiux Pro
+          License set out in this Agreement; they are not open source and are not MPL 2.0.
         </DocsListItem>
         <DocsListItem>
           &quot;Source Files&quot; means the actual code React/Next.js components, styles,
@@ -74,8 +77,8 @@ export default function LicenseAgreement() {
           the client will run, host, or maintain the Project going forward.
         </DocsListItem>
         <DocsListItem>
-          &quot;License Tier&quot; means the scope of your Vault Pro access as defined by
-          your plan at checkout: Single-project, Multi-project, Team, or Enterprise.
+          &quot;Seat&quot; means the one named individual covered by a Vault Pro
+          subscription. Each Pro or Pro+ subscription covers one Seat.
         </DocsListItem>
         <DocsListItem>
           &quot;Redistribute&quot; or &quot;Redistribution&quot; means making Source Files,
@@ -89,8 +92,8 @@ export default function LicenseAgreement() {
       <Heading2 id="grant-of-license-free-core">2. Grant of License - Free Core</Heading2>
 
       <Para>
-        Subject to this Agreement, Hyperiux grants you a worldwide, non-exclusive,
-        royalty-free license to:
+        Free Core Effects are open source, released under the Mozilla Public License 2.0.
+        Under that license, you may:
       </Para>
 
       <DocsList>
@@ -113,86 +116,49 @@ export default function LicenseAgreement() {
       </DocsList>
 
       <Para>
-        MPL 2.0 licensed files. Some Free Core files may be separately marked as released
-        under the Mozilla Public License 2.0, with a corresponding notice or header in the
-        file itself. Where a file carries an MPL 2.0 notice, the terms of the MPL 2.0
-        License govern that specific file, including your right to use, copy, modify, and
-        distribute that file, provided the required copyright and license notice is
-        preserved and covered source-file changes remain available under MPL 2.0.
-      </Para>
-
-      <Para>
-        Where no such notice is present, the Free Core terms in this Section 2 apply
-        instead. Hyperiux is responsible for marking MPL 2.0 licensed files clearly; if you are
-        unsure whether a specific file is MPL 2.0 licensed, treat it as standard Free Core
-        unless a notice states otherwise, or confirm with us at <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>.
+        MPL 2.0 terms. The MPL 2.0 governs each Free Core file, including your right to use,
+        copy, modify, and distribute it. You must keep the license notice in the
+        Effect&apos;s Source Files, and if you distribute modified versions of those files,
+        you must make those changes available under MPL 2.0. Where this Agreement and the
+        MPL 2.0 differ for a Free Core file, the MPL 2.0 controls. Questions:{" "}
+        <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>.
       </Para>
 
       <Para>
         No attribution required. Public attribution (&quot;Built with Hyperiux Vault&quot;)
-        is not required unless a specific Effect&apos;s license notice says otherwise. Where
-        a file includes a license or copyright header that must legally be preserved, you
-        must keep that notice intact in the Source Files.
+        is not required. The MPL 2.0 license notice in the Source Files must stay intact.
       </Para>
 
       <Heading2 id="grant-of-license-vault-pro">3. Grant of License - Vault Pro</Heading2>
 
       <Para>
-        Subject to this Agreement, an active Vault Pro subscription or purchase, and your
-        selected License Tier, Hyperiux grants you a non-exclusive, non-transferable,
-        revocable right to:
+        Vault Pro Effects are proprietary and licensed under the Hyperiux Pro License set
+        out in this Agreement. Subject to this Agreement and an active Vault Pro
+        subscription (Pro or Pro+) or purchase, Hyperiux grants you, for one Seat, a
+        non-exclusive, non-transferable, revocable right to:
       </Para>
 
       <DocsList>
         <DocsListItem>
-          access, download, and install Vault Pro Effects within the scope of your License
-          Tier;
+          access, download, and install Vault Pro Effects;
         </DocsListItem>
         <DocsListItem>
           modify, adapt, restyle, and reconfigure the Source Files as needed for your
           Project(s);
         </DocsListItem>
         <DocsListItem>
-          use Vault Pro Effects in commercial websites, client work, and SaaS/product
-          interfaces, subject to Section 5 and Section 6.
+          use Vault Pro Effects in personal and commercial websites, client work, and
+          SaaS/product interfaces, subject to Section 5 and Section 6.
         </DocsListItem>
       </DocsList>
 
       <Para>
-        License Tiers. Your billing frequency, monthly or annual as set out in the Terms of
-        Service, determines how often you&apos;re charged. Your License Tier, shown at
-        checkout, determines the scope of what you&apos;re licensed to do with that access:
-      </Para>
-
-      <DocsTable
-        columns={[
-          { key: "licenseTier", header: "License Tier" },
-          { key: "usageScope", header: "Usage scope" },
-        ]}
-        rows={[
-          {
-            licenseTier: "Single-project",
-            usageScope: "Use within one production Project or web application",
-          },
-          {
-            licenseTier: "Multi-project",
-            usageScope: "Use across multiple production Projects covered by your specific plan",
-          },
-          {
-            licenseTier: "Team",
-            usageScope: "Use by an approved team within one organization",
-          },
-          {
-            licenseTier: "Enterprise",
-            usageScope: "Custom scope defined in a separate signed agreement",
-          },
-        ]}
-      />
-
-      <Para>
-        If your License Tier covers one Project, use it in one Project. If your client needs
-        it across five brands, purchase the tier that covers five brands. Usage beyond your
-        licensed scope is a breach of this Agreement.
+        Billing and Seats. Your billing frequency, quarterly or annual as set out in the
+        Terms of Service, determines how often you&apos;re charged. Each Vault Pro
+        subscription, Pro or Pro+, covers one Seat: one person. Agencies and teams that need
+        more Seats should contact us at{" "}
+        <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>.
+        Use by anyone beyond your Seat(s) is a breach of this Agreement - see Section 7.
       </Para>
 
       <Para>
@@ -204,18 +170,20 @@ export default function LicenseAgreement() {
 
       <Para>
         Effect of cancellation on already-installed code. If your subscription lapses or you
-        cancel, the Project Source Copies you have already installed into a Project remain
-        yours to use, run, and maintain under the terms of this Agreement - we do not revoke
-        your right to use code already installed in the Project(s) it was installed into
-        while your subscription was active.
+        cancel, the Vault Pro Project Source Copies you installed while subscribed stay in
+        those Projects, and you may keep using, running, and maintaining them there under
+        the terms of this Agreement - we do not revoke your right to use code already
+        installed in the Project(s) it was installed into while your subscription was
+        active.
       </Para>
 
       <Para>
         What ends is: (a) your ability to download new Effects or updates, and (b) your
         ability to extend that same Effect into a new Project you start after cancellation -
-        starting a new Project with a previously-downloaded Pro Effect counts as new usage
-        requiring active access, even if the underlying file was downloaded while you were
-        subscribed.
+        starting a new Project, including a new Client Project, with a previously-downloaded
+        Pro Effect counts as new usage requiring active access, even if the underlying file
+        was downloaded while you were subscribed. Free Core Effects are unaffected by
+        cancellation and remain available under MPL 2.0.
       </Para>
 
       <Heading2 id="project-source-copy">4. Project Source Copy - Use, Not Catalog Ownership</Heading2>
@@ -255,8 +223,9 @@ export default function LicenseAgreement() {
       <Heading2 id="client-work">5. Client Work</Heading2>
 
       <Para>
-        You may use licensed Vault Effects in Client Projects where your License Tier
-        permits it. Some worked examples:
+        You may use Free Core Effects in Client Projects under MPL 2.0, and Vault Pro Effects
+        in Client Projects while your Vault Pro subscription is active. Some worked
+        examples:
       </Para>
 
       <DocsList>
@@ -289,29 +258,27 @@ export default function LicenseAgreement() {
       </DocsList>
 
       <Para>
-        If a single License Tier does not cover the number of client brands or Projects you
-        intend to serve, purchase a License Tier that does, or contact us about Team or
-        Enterprise terms.
+        Each subscription covers one Seat. If more people at your agency or team will
+        install or work with Vault Pro Effects, contact us about additional Seats.
       </Para>
 
       <Heading2 id="restrictions">6. Restrictions</Heading2>
 
       <Para>
-        Unless a specific, separate written agreement with Hyperiux expressly permits it, you
-        may not:
+        These restrictions apply to Vault Pro Assets; Free Core Effects are governed by the
+        MPL 2.0 as set out in Section 2. Unless a specific, separate written agreement with
+        Hyperiux expressly permits it, you may not:
       </Para>
 
       <DocsList>
         <DocsListItem>Redistribute Vault Pro Source Files to any third party;</DocsListItem>
         <DocsListItem>Sublicense Vault Pro Assets to a third party;</DocsListItem>
         <DocsListItem>
-          Resell Vault Pro Effects, or any Free Core Effect not marked MPL 2.0, as standalone raw
-          assets;
+          Resell Vault Pro Effects as standalone raw assets;
         </DocsListItem>
         <DocsListItem>
           Upload Vault Pro Source Files to public code repositories. Free Core Source Files
-          marked under this Agreement&apos;s standard terms, and any MPL 2.0 licensed files, are
-          not subject to this specific restriction - see Section 2;
+          are MPL 2.0 licensed and not subject to this restriction - see Section 2;
         </DocsListItem>
         <DocsListItem>
           Include Vault Pro Assets in public boilerplates, starter kits, or no-code builder
@@ -323,20 +290,20 @@ export default function LicenseAgreement() {
         </DocsListItem>
         <DocsListItem>
           Upload Vault Pro Assets to third-party marketplaces or competing effect/component
-          libraries;
+          libraries, or use them to build a competing component library;
         </DocsListItem>
         <DocsListItem>
           Offer Vault Pro Assets as downloadable source outside the licensed Project context;
         </DocsListItem>
         <DocsListItem>
           Share Vault Pro access credentials, API tokens, or CLI authentication tokens with
-          any person or team outside your licensed seats;
+          any person outside your Seat(s);
         </DocsListItem>
         <DocsListItem>
-          Use Vault Assets, Free Core or Vault Pro, to train, fine-tune, or build a machine
-          learning or AI code-generation model, to construct a dataset for that purpose, or
-          to systematically or automatically scrape or bulk-extract the Vault catalog,
-          without Hyperiux&apos;s prior written permission.
+          Use Vault Pro Assets to train, fine-tune, or build a machine learning or AI
+          code-generation model, or to construct a dataset for that purpose, or
+          systematically or automatically scrape or bulk-extract the Vault catalog, without
+          Hyperiux&apos;s prior written permission.
         </DocsListItem>
       </DocsList>
 
@@ -355,7 +322,7 @@ export default function LicenseAgreement() {
         rows={[
           {
             scenario: "Using a Vault Pro effect inside a client's marketing website",
-            allowed: "Yes, within your License Tier",
+            allowed: "Yes, while your Vault Pro subscription is active",
           },
           {
             scenario: "Committing that installed effect to a private repo for the client's project",
@@ -379,7 +346,7 @@ export default function LicenseAgreement() {
           },
           {
             scenario: "Using a Vault Pro effect in an open-source project's public repo",
-            allowed: "No, unless the specific file is separately MPL 2.0 licensed",
+            allowed: "No - Vault Pro effects are proprietary, not open source",
           },
         ]}
       />
@@ -390,7 +357,7 @@ export default function LicenseAgreement() {
       </Para>
 
       <Para>
-        If you want to include Vault Effects inside a website template, theme, starter kit,
+        If you want to include Vault Pro Effects inside a website template, theme, starter kit,
         boilerplate, no-code builder block, or any other downloadable, resellable, or
         freely-redistributable design/engineering pack, you need a license that explicitly
         authorizes that use. A standard Project license does not cover this by default -
@@ -400,17 +367,17 @@ export default function LicenseAgreement() {
       <Heading2 id="seats-and-team-usage">7. Seats and Team Usage</Heading2>
 
       <Para>
-        Where your Vault Pro plan is licensed by seat, team, organization, or workspace,
-        only individually authorized users may access the Pro registry, private packages,
-        premium Source Files, or downloadable Assets under that plan.
+        Each Vault Pro subscription, Pro or Pro+, covers one Seat. Only the person holding
+        that Seat may access the Pro registry, private packages, premium Source Files, or
+        downloadable Assets under that subscription.
       </Para>
 
       <Para>
-        Where your plan is not seat-based, for example, a Single-project license used by one
-        person, this section does not create seats that don&apos;t otherwise exist under your
-        plan. You are responsible for ensuring access tokens and credentials are not shared
-        beyond what your License Tier permits, including with contractors, clients, or third
-        parties not covered by your plan.
+        You are responsible for ensuring access tokens and credentials are not shared beyond
+        your Seat(s), including with colleagues, contractors, clients, or third parties.
+        Agencies and teams that need more Seats should contact us at{" "}
+        <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com</a>;
+        additional Seats are set out in a separate written agreement.
       </Para>
 
       <Heading2 id="term-suspension-and-termination">8. Term, Suspension, and Termination</Heading2>
@@ -466,7 +433,7 @@ export default function LicenseAgreement() {
 
       <DocsList>
         <DocsListItem>terminate access tokens and CLI authentication;</DocsListItem>
-        <DocsListItem>revoke Vault Pro or Enterprise access;</DocsListItem>
+        <DocsListItem>revoke Vault Pro access, including any additional Seats;</DocsListItem>
         <DocsListItem>block registry pulls;</DocsListItem>
         <DocsListItem>remove access to premium Assets;</DocsListItem>
         <DocsListItem>
@@ -495,7 +462,7 @@ export default function LicenseAgreement() {
         implementation notes, and support depends on maintaining an active Vault Pro
         subscription and the scope of your plan. Support is provided on a best-effort basis
         as described on our pricing and documentation pages, unless a specific response time
-        or support tier is set out in a signed Enterprise agreement.
+        or support tier is set out in a separate signed agreement.
       </Para>
 
       <Para>
@@ -582,7 +549,7 @@ export default function LicenseAgreement() {
           {
             field: "Address",
             details:
-              "312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh, India",
+              "312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh 201301, India",
           },
         ]}
       />
@@ -603,7 +570,7 @@ export default function LicenseAgreement() {
 
       <DocsList>
         <DocsListItem>
-          A signed Enterprise Agreement or Order Form specific to you, where one exists;
+          A separate signed agreement or Order Form specific to you, where one exists;
         </DocsListItem>
         <DocsListItem>
           This License Agreement, for questions of code usage rights;
@@ -635,7 +602,7 @@ export default function LicenseAgreement() {
       <Heading2 id="contact">18. Contact</Heading2>
 
       <Para>
-        Questions about licensing, commercial use, enterprise agreements, or unusual
+        Questions about licensing, commercial use, additional Seats, or unusual
         deployment scenarios: <a href="mailto:hello@hyperiux.com" className="text-primary underline">hello@hyperiux.com </a>
       </Para>
 

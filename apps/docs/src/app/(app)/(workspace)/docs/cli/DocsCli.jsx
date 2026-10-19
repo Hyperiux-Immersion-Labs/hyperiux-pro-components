@@ -22,28 +22,47 @@ const logoutCommand = `npx hyperiux logout`;
 
 const whoamiCommand = `npx hyperiux whoami`;
 
+const outdatedCommand = `npx hyperiux outdated`;
+
+const versionsCommand = `npx hyperiux versions`;
+
+const diffCommand = `npx hyperiux diff [effect-name]`;
+
+const addFlagsCommands = `npx hyperiux add [effect-name] --dry-run
+npx hyperiux add [effect-name] --overwrite
+npx hyperiux add [effect-name] --yes`;
+
+const telemetryOptOut = `HYPERIUX_TELEMETRY_DISABLED=1 npx hyperiux add [effect-name]
+
+# or, respected by many CLIs
+DO_NOT_TRACK=1 npx hyperiux add [effect-name]`;
+
 const helpCommands = `npx hyperiux --help
+npx hyperiux init --help
 npx hyperiux add --help
 npx hyperiux list --help
+npx hyperiux outdated --help
+npx hyperiux versions --help
+npx hyperiux diff --help
 npx hyperiux login --help
 npx hyperiux logout --help
 npx hyperiux whoami --help`;
 
 const initConfig = `{
-  "style": "default",
+  "$schema": "https://vault.hyperiux.com/schema.json",
+  "framework": "next",
+  "router": "app",
   "tailwind": {
     "config": "tailwind.config.js",
-    "css": "app/globals.css",
-    "baseColor": "slate",
-    "cssVariables": true
+    "css": "src/app/globals.css"
   },
   "aliases": {
     "components": "@/components",
-    "utils": "@/lib/utils"
+    "effects": "@/components/effects",
+    "hooks": "@/hooks",
+    "lib": "@/lib"
   },
-  "registries": {
-    "@hyperiux": "https://vault.hyperiux.com/r/{name}.json"
-  }
+  "installedEffects": {}
 }`;
 
 const listOutput = `Available Effects
@@ -89,10 +108,10 @@ Webgl
 ... (effects are grouped by tier, then category - run the command yourself for the full, up-to-date list)`;
 
 const recommendedWorkflowCommands = `npx hyperiux init
-npx hyperiux add [effect-name]
-npx hyperiux list
 npx hyperiux login
-npx hyperiux whoami`;
+npx hyperiux list
+npx hyperiux add [effect-name]
+npx hyperiux outdated`;
 
 export default function DocsCli() {
   useFadeUp()
@@ -137,21 +156,20 @@ export default function DocsCli() {
 
       <CodeBlock code={initCommand}  />
 
-      <Para>Add an effect.</Para>
-
-      <CodeBlock code={addCommand}  />
-
-      <Para>List all available effects</Para>
-
-      <CodeBlock code={listCommand}  />
-
-      <Para>Connect your account.</Para>
+      <Para>
+        Connect your account. Installing any effect, free or Pro, needs a free Hyperiux
+        account, so log in before you run <code>add</code>.
+      </Para>
 
       <CodeBlock code={loginCommand}  />
 
-      <Para>
-        Then verify your identity and continue with the effect you need.
-      </Para>
+      <Para>List all available effects.</Para>
+
+      <CodeBlock code={listCommand}  />
+
+      <Para>Add an effect.</Para>
+
+      <CodeBlock code={addCommand}  />
 
       <Heading2 id="requirements">Requirements</Heading2>
 
@@ -163,7 +181,15 @@ export default function DocsCli() {
         rows={[
           {
             requirement: "Framework",
-            supportedSetup: "React 18+ or Next.js 14/15",
+            supportedSetup: "React 18+ or Next.js 14+",
+          },
+          {
+            requirement: "WebGL / 3D effects",
+            supportedSetup: "React Three Fiber 9, which needs React 19 (Next.js 15+)",
+          },
+          {
+            requirement: "Page transitions",
+            supportedSetup: "Effects built on next-transition-router need the Next.js App Router",
           },
           {
             requirement: "Styling",
@@ -174,12 +200,16 @@ export default function DocsCli() {
             supportedSetup: "TypeScript recommended, modern JavaScript supported",
           },
           {
+            requirement: "Node.js",
+            supportedSetup: "18.17+ (20+ recommended)",
+          },
+          {
             requirement: "Package manager",
             supportedSetup: "npm, pnpm, yarn, or bun",
           },
           {
             requirement: "Project structure",
-            supportedSetup: "App Router, Pages Router, or modern Vite React setup",
+            supportedSetup: "App Router, Pages Router, or a Vite + React setup",
           },
         ]}
       />
@@ -204,12 +234,24 @@ export default function DocsCli() {
             purpose: "Prepares the project for Vault effects",
           },
           {
-            command: "add",
-            purpose: "Adds an effect to the workspace",
+            command: "add <effect>",
+            purpose: "Adds an effect to the workspace (-o/--overwrite, -y/--yes, --dry-run)",
           },
           {
             command: "list",
-            purpose: "Lists installed Vault effects",
+            purpose: "Lists all available effects, grouped by tier",
+          },
+          {
+            command: "outdated",
+            purpose: "Checks installed effects for available updates",
+          },
+          {
+            command: "versions",
+            purpose: "Lists every installed effect and its version",
+          },
+          {
+            command: "diff [effect]",
+            purpose: "Shows what changed upstream for an installed effect (all installed effects if omitted)",
           },
           {
             command: "login",
@@ -245,28 +287,26 @@ export default function DocsCli() {
             description: "Prints help for the CLI or a specific command",
           },
           {
-            option: "-v, --version",
+            option: "-V, --version",
             description: "Prints the installed CLI version",
-          },
-          {
-            option: "--cwd <path>",
-            description: "Runs the command against a specific working directory",
-          },
-          {
-            option: "--verbose",
-            description: "Prints detailed logs for debugging",
-          },
-          {
-            option: "--no-color",
-            description: "Disables colored terminal output",
           },
         ]}
       />
 
       <Para>
-        Use --verbose when reporting issues or debugging registry, dependency, or
-        file-generation problems.
+        The CLI runs against the current working directory, so run it from your project
+        root.
       </Para>
+
+      <Heading2 id="telemetry">Telemetry</Heading2>
+
+      <Para>
+        The CLI sends anonymous usage telemetry by default. To opt out, set{" "}
+        <code>HYPERIUX_TELEMETRY_DISABLED=1</code> or <code>DO_NOT_TRACK=1</code> in your
+        environment.
+      </Para>
+
+      <CodeBlock code={telemetryOptOut} />
 
       <Heading2 id="exit-behavior">Exit Behavior</Heading2>
 
@@ -281,10 +321,11 @@ export default function DocsCli() {
         <DocsListItem>invalid effect name</DocsListItem>
         <DocsListItem>missing package manager</DocsListItem>
         <DocsListItem>registry request failure</DocsListItem>
-        <DocsListItem>missing Pro authentication</DocsListItem>
+        <DocsListItem>not logged in, or missing Pro access</DocsListItem>
+        <DocsListItem>daily install limit reached</DocsListItem>
         <DocsListItem>dependency installation failure</DocsListItem>
         <DocsListItem>unsupported project structure</DocsListItem>
-        <DocsListItem>file conflict during install or upgrade</DocsListItem>
+        <DocsListItem>file conflict during install</DocsListItem>
         <DocsListItem>missing write permission in the target directory</DocsListItem>
       </DocsList>
 
@@ -311,13 +352,18 @@ export default function DocsCli() {
       <Para>Typical configuration includes:</Para>
 
       <DocsList>
-        <DocsListItem>component output path</DocsListItem>
-        <DocsListItem>utility alias</DocsListItem>
-        <DocsListItem>Tailwind CSS entry path</DocsListItem>
-        <DocsListItem>package manager detection</DocsListItem>
-        <DocsListItem>registry configuration</DocsListItem>
+        <DocsListItem>effect output alias</DocsListItem>
+        <DocsListItem>component, hook and lib aliases</DocsListItem>
+        <DocsListItem>Tailwind CSS config and entry path</DocsListItem>
         <DocsListItem>project framework detection</DocsListItem>
+        <DocsListItem>Next.js router detection</DocsListItem>
+        <DocsListItem>installed effects</DocsListItem>
       </DocsList>
+
+      <Para>
+        It writes a <code>hyperiux.json</code> file at your project root. Pass{" "}
+        <code>-y, --yes</code> to skip prompts and use defaults.
+      </Para>
 
       <Para>Example configuration:</Para>
 
@@ -333,9 +379,36 @@ export default function DocsCli() {
 
       <CodeBlock code={addCommand} />
 
-      <Para>Example:</Para>
+      <Para>
+        You need to be logged in first (<code>npx hyperiux login</code>). Files land in{" "}
+        <code>src/components/effects/&lt;slug&gt;/</code> and import from{" "}
+        <code>@/components/effects/&lt;slug&gt;</code>.
+      </Para>
 
-      <CodeBlock code={addCommand} />
+      <Para>Options:</Para>
+
+      <DocsTable
+        columns={[
+          { key: "option", header: "Option" },
+          { key: "description", header: "Description" },
+        ]}
+        rows={[
+          {
+            option: "-o, --overwrite",
+            description: "Replaces existing files (required to overwrite anything already on disk)",
+          },
+          {
+            option: "-y, --yes",
+            description: "Skips interactive prompts. Existing files are left untouched unless --overwrite is also passed",
+          },
+          {
+            option: "--dry-run",
+            description: "Shows the files and dependencies that would be installed, without installing",
+          },
+        ]}
+      />
+
+      <CodeBlock code={addFlagsCommands} />
 
       <Para>
         Each effect includes a manifest. The CLI reads that manifest and adds only the
@@ -359,7 +432,8 @@ export default function DocsCli() {
 
       <Para>
         If the selected effect requires packages such as GSAP, Motion, Three.js, or React
-        Three Fiber, the CLI makes those requirements visible during installation.
+        Three Fiber, the CLI installs the missing ones with your package manager. Use{" "}
+        <code>--dry-run</code> to see them first.
       </Para>
 
       <Para>No drive-by Three.js.</Para>
@@ -374,7 +448,38 @@ export default function DocsCli() {
 
       <CodeBlock code={listOutput} language="text" />
 
-      <Para>Use this when you want to confirm what the CLI has already added.</Para>
+      <Para>
+        This lists the whole library, not just what you have installed. To see the
+        effects already in your project, use <code>versions</code>.
+      </Para>
+
+      <Heading2 id="outdated">outdated</Heading2>
+
+      <Para>Check installed effects for available updates.</Para>
+
+      <CodeBlock code={outdatedCommand} />
+
+      <Para>
+        Compares the version of each installed effect with the latest one in the
+        registry.
+      </Para>
+
+      <Heading2 id="versions">versions</Heading2>
+
+      <Para>List every installed effect and its version.</Para>
+
+      <CodeBlock code={versionsCommand} />
+
+      <Heading2 id="diff">diff</Heading2>
+
+      <Para>Show what changed upstream for an installed effect.</Para>
+
+      <CodeBlock code={diffCommand} />
+
+      <Para>
+        Leave out the effect name to diff every installed effect. Use it before
+        reinstalling with <code>--overwrite</code>, so local edits do not get lost.
+      </Para>
 
       <Heading2 id="login">login</Heading2>
 
@@ -453,8 +558,24 @@ export default function DocsCli() {
             command: "npx hyperiux add [effect-name]",
           },
           {
-            task: "List installed effects",
+            task: "Preview an install",
+            command: "npx hyperiux add [effect-name] --dry-run",
+          },
+          {
+            task: "List all available effects",
             command: "npx hyperiux list",
+          },
+          {
+            task: "Check for updates",
+            command: "npx hyperiux outdated",
+          },
+          {
+            task: "List installed effects",
+            command: "npx hyperiux versions",
+          },
+          {
+            task: "See upstream changes",
+            command: "npx hyperiux diff [effect-name]",
           },
           {
             task: "Login",

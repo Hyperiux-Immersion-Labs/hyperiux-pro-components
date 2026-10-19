@@ -10,15 +10,21 @@ import LinkButton from "@/components/WebsiteComps/LinkButton";
 
 const licenseTiersCode = `Hyperiux Vault
 ├── Free Core
-│   └── Free effects for personal and commercial use
-└── Vault Pro
-    └── Paid effects, packs, templates, variants, and commercial systems`;
+│   └── Free effects, open source under MPL 2.0
+├── Vault Pro
+│   └── Pro effects under the proprietary Hyperiux Pro License
+└── Tooling
+    └── hyperiux CLI and hyperiux-mcp-server, under MIT`;
 
 export default function DocsLicense() {
 
   return (
     <DocsContent>
-      <Para>Code already installed remains in project, new Pro downloads and new client-project usage require active access.</Para>
+      <Para>
+        If you cancel Pro or Pro+, Pro code you installed while subscribed stays in those
+        projects and you can keep using it there. New Pro downloads and new client-project
+        usage need an active plan.
+      </Para>
 
       <Para>
         Hyperiux Vault is built around a simple licensing idea: developers should know what
@@ -42,6 +48,16 @@ export default function DocsLicense() {
         ]}
         rows={[
           {
+            useCase: "License",
+            freeCore: "MPL 2.0 (open source)",
+            vaultPro: "Hyperiux Pro License (proprietary)",
+          },
+          {
+            useCase: "Account to install",
+            freeCore: "Free Hyperiux account required",
+            vaultPro: "Active Pro or Pro+ subscription required",
+          },
+          {
             useCase: "Personal projects",
             freeCore: "Allowed",
             vaultPro: "Allowed",
@@ -49,17 +65,17 @@ export default function DocsLicense() {
           {
             useCase: "Commercial websites",
             freeCore: "Allowed",
-            vaultPro: "Allowed under your plan",
+            vaultPro: "Allowed",
           },
           {
             useCase: "Client work",
             freeCore: "Allowed",
-            vaultPro: "Allowed under your plan",
+            vaultPro: "Allowed",
           },
           {
             useCase: "SaaS and product interfaces",
             freeCore: "Allowed",
-            vaultPro: "Allowed under your plan",
+            vaultPro: "Allowed",
           },
           {
             useCase: "Modify generated source",
@@ -68,29 +84,29 @@ export default function DocsLicense() {
           },
           {
             useCase: "Public attribution",
-            freeCore: "Not required unless stated",
-            vaultPro: "Not required unless stated",
+            freeCore: "Not required",
+            vaultPro: "Not required",
           },
           {
-            useCase: "Redistribute as a competing library",
-            freeCore: "Not allowed for Pro assets",
+            useCase: "Redistribute or resell the source",
+            freeCore: "Allowed under MPL 2.0 terms",
             vaultPro: "Not allowed",
           },
           {
-            useCase: "Resell as templates, themes, or asset packs",
-            freeCore: "Depends on the Free Core license",
-            vaultPro: "Not allowed without permission",
+            useCase: "Build a competing component library",
+            freeCore: "Allowed under MPL 2.0 terms",
+            vaultPro: "Not allowed",
           },
           {
-            useCase: "Share raw Pro source files",
+            useCase: "Seats",
             freeCore: "Not applicable",
-            vaultPro: "Not allowed",
+            vaultPro: "One person per subscription",
           },
         ]}
       />
 
       <Para>
-        Build with Vault. Ship with Vault. Do not turn Vault into your own component
+        Build with Vault. Ship with Vault. Do not turn Vault Pro into your own component
         marketplace. That is the line.
       </Para>
 
@@ -109,8 +125,8 @@ export default function DocsLicense() {
       <Para>That is source ownership in practice.</Para>
 
       <Para>
-        It does not mean you own the Hyperiux Vault catalog, brand, registry, paid packs,
-        templates, examples, or source assets as a competing product.
+        It does not mean you own the Hyperiux Vault catalog, brand, registry, Pro effects,
+        templates, or examples as a competing product.
       </Para>
 
       <Para>You can make the code fit your website. You cannot make Vault your inventory.</Para>
@@ -119,20 +135,21 @@ export default function DocsLicense() {
 
       <Heading2 id="license-tiers">License Tiers</Heading2>
 
-      <Para>Hyperiux Vault has two main licensing groups.</Para>
+      <Para>Hyperiux Vault has two licensing groups for effects, plus MIT tooling.</Para>
 
       <CodeBlock code={licenseTiersCode} language="text" />
 
       <Para>
-        Always check the license attached to the specific effect, pack, or plan you are
-        using. A free scroll reveal and a paid WebGL template may not carry the same terms.
+        Free effects are open source. Pro effects are not. A free scroll reveal and a Pro
+        WebGL scene do not carry the same terms.
       </Para>
 
       <Heading2 id="free-core">Free Core</Heading2>
 
       <Para>
-        The Free Core includes effects marked as free in the Vault catalog. Free Core
-        effects can be used in personal and commercial projects, including:
+        The Free Core includes effects marked as free in the Vault catalog. Installing them
+        needs a free Hyperiux account. Free Core effects can be used in personal and
+        commercial projects, including:
       </Para>
 
       <DocsList>
@@ -157,116 +174,68 @@ export default function DocsLicense() {
       <Heading2 id="mpl-licensed-files">MPL 2.0 Licensed Files</Heading2>
 
       <Para>
-        Some Free Core files may be released under the Mozilla Public License 2.0. If a file
-        is marked as MPL 2.0, the MPL 2.0 terms apply to that file.
+        Free Core effects are open source under the Mozilla Public License 2.0 (MPL 2.0).
       </Para>
 
       <Para>
-        That usually means you can use, copy, modify, and distribute the software, as long as
-        the required copyright and license notice is preserved and covered source-file
-        changes remain available under MPL 2.0.
+        That means you can use, copy, modify, and distribute them, as long as the license
+        notice is preserved and changes to those source files stay available under MPL 2.0
+        when you distribute them.
       </Para>
 
       <Para>In plain English:</Para>
 
       <DocsList>
-        <DocsListItem>You can use MPL 2.0 files in personal work.</DocsListItem>
-        <DocsListItem>You can use MPL 2.0 files in commercial work.</DocsListItem>
-        <DocsListItem>You can use MPL 2.0 files in client projects.</DocsListItem>
-        <DocsListItem>You can modify MPL 2.0 files.</DocsListItem>
+        <DocsListItem>You can use free effects in personal work.</DocsListItem>
+        <DocsListItem>You can use free effects in commercial work.</DocsListItem>
+        <DocsListItem>You can use free effects in client projects.</DocsListItem>
+        <DocsListItem>You can modify free effects.</DocsListItem>
+        <DocsListItem>No attribution is required.</DocsListItem>
         <DocsListItem>
-          You must preserve required license notices where the license requires it.
+          Keep the license notice in the effect&rsquo;s source files.
+        </DocsListItem>
+        <DocsListItem>
+          If you distribute modified versions of those files, share those changes under MPL
+          2.0.
         </DocsListItem>
       </DocsList>
-
-      <Para>
-        If Hyperiux wants to restrict redistribution, template resale, competing libraries,
-        or marketplace packaging for certain free assets, those assets should not be
-        published under standard MPL 2.0 terms.
-      </Para>
-
-      <Para>
-        Use a custom Free Core license for those assets instead. Legal precision is not
-        boring. Legal precision is how people ship without sweating.
-      </Para>
 
       <Heading2 id="vault-pro">Vault Pro</Heading2>
 
       <Para>
-        Vault Pro includes paid effects, advanced variants, templates, motion systems,
-        WebGL configurations, implementation notes, commercial packs, and team-focused
-        assets.
+        Vault Pro includes the Pro effects in the catalog, available on the Pro and Pro+
+        plans.
       </Para>
-
-      <Para>Vault Pro is licensed under Hyperiux commercial terms.</Para>
 
       <Para>
-        When you purchase a Pro pack or maintain an active subscription, you receive a
-        non-exclusive right to use the licensed assets according to your selected plan.
+        Pro effects are licensed under the proprietary Hyperiux Pro License. They are not
+        MPL 2.0 and they are not open source.
       </Para>
 
-      <Para>Your plan may define:</Para>
+      <Para>
+        While you have an active Pro or Pro+ subscription, you can use Pro effects in:
+      </Para>
 
       <DocsList>
-        <DocsListItem>number of projects</DocsListItem>
-        <DocsListItem>number of users or seats</DocsListItem>
-        <DocsListItem>organization usage</DocsListItem>
-        <DocsListItem>client usage</DocsListItem>
-        <DocsListItem>update access</DocsListItem>
-        <DocsListItem>support access</DocsListItem>
-        <DocsListItem>redistribution limits</DocsListItem>
-        <DocsListItem>template and resale restrictions</DocsListItem>
-        <DocsListItem>enterprise terms</DocsListItem>
+        <DocsListItem>personal projects</DocsListItem>
+        <DocsListItem>commercial projects</DocsListItem>
+        <DocsListItem>client projects</DocsListItem>
+      </DocsList>
+
+      <Para>You cannot:</Para>
+
+      <DocsList>
+        <DocsListItem>redistribute, resell, or share Pro source</DocsListItem>
+        <DocsListItem>build a competing component library from Pro source</DocsListItem>
       </DocsList>
 
       <Para>Check your plan before shipping. The checkout page is not decoration.</Para>
 
-      <Heading2 id="project-usage">Project Usage</Heading2>
-
-      <Para>Vault Pro usage depends on your license scope.</Para>
-
-      <DocsTable
-        columns={[
-          { key: "licenseType", header: "License type" },
-          { key: "usageScope", header: "Usage scope" },
-        ]}
-        rows={[
-          {
-            licenseType: "Single-project license",
-            usageScope: "Use within one production project or web application",
-          },
-          {
-            licenseType: "Multi-project license",
-            usageScope: "Use across multiple production projects covered by your plan",
-          },
-          {
-            licenseType: "Team license",
-            usageScope: "Use by an approved team within one organization",
-          },
-          {
-            licenseType: "Enterprise license",
-            usageScope: "Custom scope based on a signed agreement",
-          },
-        ]}
-      />
-
-      <Para>
-        If your license says one project, use it in one project. If your client needs it
-        across five brands, buy the license that covers five brands.
-      </Para>
-
-      <Para>Simple rules age well.</Para>
-
       <Heading2 id="client-work">Client Work</Heading2>
 
       <Para>
-        You can use licensed Vault effects in client projects if your license allows client
-        work.
-      </Para>
-
-      <Para>
-        For Free Core effects, check the specific license attached to the file. For Vault
-        Pro effects, check your selected plan.
+        You can use Vault effects in client projects. Free Core effects are covered by MPL
+        2.0. Vault Pro effects are covered while your Pro or Pro+ plan is active.
       </Para>
 
       <Para>In most client work, the safest model is:</Para>
@@ -276,10 +245,10 @@ export default function DocsLicense() {
         <DocsListItem>the generated source is shipped as part of that project</DocsListItem>
         <DocsListItem>the client can run and maintain the project</DocsListItem>
         <DocsListItem>
-          the raw Vault asset is not extracted and resold as a standalone product
+          the raw Pro source is not extracted and resold as a standalone product
         </DocsListItem>
         <DocsListItem>
-          the effect is not added to a public template, marketplace pack, or competing
+          Pro effects are not added to a public template, marketplace pack, or competing
           library
         </DocsListItem>
       </DocsList>
@@ -288,7 +257,7 @@ export default function DocsLicense() {
 
       <Heading2 id="saas-and-product-platforms">SaaS and Product Platforms</Heading2>
 
-      <Para>Vault can be used inside monetized products when your license allows it.</Para>
+      <Para>Vault can be used inside monetized products.</Para>
 
       <Para>That includes:</Para>
 
@@ -305,17 +274,17 @@ export default function DocsLicense() {
       <Para>The restriction is not about making money with your product.</Para>
 
       <Para>
-        You can. The restriction is about reselling Vault source assets as assets.
+        You can. The restriction is about reselling Pro source as source.
       </Para>
 
       <Para>
-        A paid SaaS interface using a Vault transition is fine under the right license. A
-        marketplace pack selling that transition as your own is not.
+        A paid SaaS interface using a Pro transition is fine. A marketplace pack selling
+        that transition as your own is not.
       </Para>
 
       <Heading2 id="redistribution-and-resale">Redistribution and Resale</Heading2>
 
-      <Para>Unless your license explicitly allows it, you may not:</Para>
+      <Para>Under the Hyperiux Pro License, you may not:</Para>
 
       <DocsList>
         <DocsListItem>redistribute Vault Pro source files</DocsListItem>
@@ -336,6 +305,11 @@ export default function DocsLicense() {
         does not make it your motorcycle.
       </Para>
 
+      <Para>
+        Free Core effects follow MPL 2.0 instead: you can redistribute them, as long as you
+        keep the license notice and share changes to those files under MPL 2.0.
+      </Para>
+
       <Heading2 id="templates-themes-and-starters">Templates, Themes, and Starters</Heading2>
 
       <Para>Templates are different from websites.</Para>
@@ -345,7 +319,7 @@ export default function DocsLicense() {
         part of a product someone else can reuse. That matters.
       </Para>
 
-      <Para>If you want to include Vault effects inside:</Para>
+      <Para>Vault Pro effects cannot be included inside:</Para>
 
       <DocsList>
         <DocsListItem>website templates</DocsListItem>
@@ -358,33 +332,33 @@ export default function DocsLicense() {
       </DocsList>
 
       <Para>
-        you need a license that explicitly allows that use. Do not assume a normal project
-        license covers resale packaging. It probably does not.
+        That is redistributing Pro source, and the Hyperiux Pro License does not allow it.
+        Free Core effects can go into these under MPL 2.0 terms.
       </Para>
 
       <Heading2 id="attribution">Attribution</Heading2>
 
       <Para>
-        Public attribution is not required unless the specific license says otherwise. You
-        do not need to place a “Built with Hyperiux Vault” badge on your client’s homepage.
+        No attribution is required. You do not need to place a “Built with Hyperiux Vault”
+        badge on your client’s homepage.
       </Para>
 
       <Para>
-        The footer has suffered enough. If a file includes a license notice or copyright
-        header that must be preserved, keep it in the source.
+        The footer has suffered enough. Free Core files are covered by MPL 2.0; keep any
+        license notice in the source.
       </Para>
 
       <Para>Private source notices are not visual clutter. They are receipts.</Para>
 
       <Heading2 id="seats-and-team-usage">Seats and Team Usage</Heading2>
 
-      <Para>Some Pro plans may be licensed by seat, team, organization, or workspace.</Para>
+      <Para>Each Pro or Pro+ subscription covers one person: one seat.</Para>
 
       <Para>
-        If your plan includes seats, only authorized users should access the Pro registry,
-        private packages, premium source files, or downloadable assets. Do not share private
-        access tokens across teams, clients, contractors, or public repositories. Use the
-        right license for the number of people using the assets.
+        Only the subscriber should access Pro source through the site, CLI, or MCP server.
+        Do not share private access tokens across teams, clients, contractors, or public
+        repositories. Teams and agencies that need more seats can contact us at
+        hello@hyperiux.com.
       </Para>
 
       <Para>
@@ -392,57 +366,34 @@ export default function DocsLicense() {
         incident report.
       </Para>
 
-      <Heading2 id="updates-and-support">Updates and Support</Heading2>
+      <Heading2 id="cancelling-pro">Cancelling Pro or Pro+</Heading2>
 
-      <Para>
-        Access to future updates, premium variants, implementation notes, and support
-        depends on your plan. Some licenses may include:
-      </Para>
+      <Para>If you cancel your Pro or Pro+ plan:</Para>
 
       <DocsList>
-        <DocsListItem>lifetime use of downloaded assets</DocsListItem>
-        <DocsListItem>updates while subscribed</DocsListItem>
-        <DocsListItem>access to new Pro effects</DocsListItem>
-        <DocsListItem>support windows</DocsListItem>
-        <DocsListItem>enterprise implementation help</DocsListItem>
-        <DocsListItem>private registry access</DocsListItem>
-        <DocsListItem>team onboarding</DocsListItem>
+        <DocsListItem>
+          Pro code you installed while subscribed stays in those projects, and you can keep
+          using it there.
+        </DocsListItem>
+        <DocsListItem>New Pro downloads need an active plan.</DocsListItem>
+        <DocsListItem>
+          Using Pro effects in new client projects needs an active plan.
+        </DocsListItem>
+        <DocsListItem>Free Core (MPL 2.0) effects are unaffected.</DocsListItem>
       </DocsList>
 
-      <Para>
-        Read the plan details before assuming update access. A license to use an asset is
-        not always a license to receive every future asset.
-      </Para>
-
-      <Heading2 id="enterprise-licensing">Enterprise Licensing</Heading2>
-
-      <Para>Enterprise teams may need custom terms.</Para>
-
-      <Para>That can include:</Para>
-
-      <DocsList>
-        <DocsListItem>custom deployment scope</DocsListItem>
-        <DocsListItem>multi-brand usage</DocsListItem>
-        <DocsListItem>custom seat structures</DocsListItem>
-        <DocsListItem>security review</DocsListItem>
-        <DocsListItem>procurement documentation</DocsListItem>
-        <DocsListItem>IP warranties</DocsListItem>
-        <DocsListItem>indemnity terms</DocsListItem>
-        <DocsListItem>private implementation support</DocsListItem>
-        <DocsListItem>locked version access</DocsListItem>
-        <DocsListItem>internal distribution rules</DocsListItem>
-        <DocsListItem>custom template or platform rights</DocsListItem>
-      </DocsList>
+      <Heading2 id="cli-and-mcp-server">CLI and MCP Server</Heading2>
 
       <Para>
-        If your legal, security, or procurement team needs special terms, use an enterprise
-        agreement. Big organizations need clean paper trails. The motion can be playful.
-        The paperwork should not be.
+        The Hyperiux CLI (<code>hyperiux</code>) and the MCP server (
+        <code>hyperiux-mcp-server</code>) are licensed under MIT. That covers the tooling,
+        not the effects it installs. Each effect keeps its own license: MPL 2.0 for Free
+        Core, the Hyperiux Pro License for Vault Pro.
       </Para>
 
       <Heading2 id="compliance">Compliance</Heading2>
 
-      <Para>Hyperiux Vault is generous for builders and firms with bad actors.</Para>
+      <Para>Hyperiux Vault is generous with builders and firm with bad actors.</Para>
 
       <Para>
         If a user, team, or organization scrapes, republishes, resells, sublicenses, or
@@ -455,7 +406,7 @@ export default function DocsLicense() {
 
       <DocsList>
         <DocsListItem>terminating access tokens</DocsListItem>
-        <DocsListItem>revoking Pro or Enterprise access</DocsListItem>
+        <DocsListItem>revoking Pro or Pro+ access</DocsListItem>
         <DocsListItem>blocking registry pulls through the CLI</DocsListItem>
         <DocsListItem>removing access to premium assets</DocsListItem>
         <DocsListItem>requesting takedown</DocsListItem>
@@ -470,14 +421,12 @@ export default function DocsLicense() {
 
       <DocsList>
         <DocsListItem>which effect you are using</DocsListItem>
-        <DocsListItem>whether it is Free Core or Pro</DocsListItem>
-        <DocsListItem>which license applies</DocsListItem>
-        <DocsListItem>whether client work is allowed</DocsListItem>
-        <DocsListItem>whether SaaS/product use is allowed</DocsListItem>
-        <DocsListItem>whether redistribution is restricted</DocsListItem>
-        <DocsListItem>whether template or theme usage is allowed</DocsListItem>
-        <DocsListItem>whether source notices must be preserved</DocsListItem>
-        <DocsListItem>whether your team has the right seat or project scope</DocsListItem>
+        <DocsListItem>whether it is Free Core (MPL 2.0) or Pro (Hyperiux Pro License)</DocsListItem>
+        <DocsListItem>whether your Pro or Pro+ plan is active for new Pro installs</DocsListItem>
+        <DocsListItem>whether Pro source would end up redistributed</DocsListItem>
+        <DocsListItem>whether template or theme usage involves Pro effects</DocsListItem>
+        <DocsListItem>whether MPL 2.0 license notices are preserved</DocsListItem>
+        <DocsListItem>whether everyone using Pro effects has their own seat</DocsListItem>
       </DocsList>
 
       <Para>This takes five minutes. It can save five weeks of procurement theatre.</Para>
@@ -485,22 +434,21 @@ export default function DocsLicense() {
       <Heading2 id="questions">Questions</Heading2>
 
       <Para>
-        For licensing questions, commercial use clarification, enterprise agreements, or
-        unusual deployment environments, contact:
+        For licensing questions, commercial use clarification, extra seats for teams and
+        agencies, or unusual deployment environments, contact:
       </Para>
-      
-     
+
+
        <LinkButton href={"mailto:hello@hyperiux.com"} shimmer={false} tilted={false} showArrow={false}  text={"hello@hyperiux.com"} className="text-primary!"/>
-       
+
 
       <Para>Useful details to include:</Para>
 
       <DocsList>
         <DocsListItem>your company name</DocsListItem>
-        <DocsListItem>the effect or pack you want to use</DocsListItem>
+        <DocsListItem>the effect you want to use</DocsListItem>
         <DocsListItem>whether it is for your own product or client work</DocsListItem>
-        <DocsListItem>number of projects</DocsListItem>
-        <DocsListItem>number of users or seats</DocsListItem>
+        <DocsListItem>number of people who need seats</DocsListItem>
         <DocsListItem>
           whether the work will be redistributed as a template, starter, or asset pack
         </DocsListItem>

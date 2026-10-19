@@ -106,8 +106,10 @@ export default function RefundPolicy() {
           which your account reverts to Free Core; and
         </DocsListItem>
         <DocsListItem>
-          does not affect Source Files you&apos;ve already downloaded and installed into a
-          Project, which remain usable under the License Agreement.
+          does not affect Vault Pro Source Files you installed into a Project while
+          subscribed, which stay in that Project and remain usable there under the License
+          Agreement. New downloads, and using Vault Pro Effects in new client projects, need
+          an active plan; Free Core Effects are unaffected.
         </DocsListItem>
       </DocsList>
 
@@ -203,7 +205,7 @@ export default function RefundPolicy() {
           {
             field: "Address",
             details:
-              "312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh, India",
+              "312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh 201301, India",
           },
         ]}
       />
@@ -243,8 +245,8 @@ export default function RefundPolicy() {
       {/* <Para>Phone: <a href="tel:+91 81780 26136" className="text-primary underline">+91 81780 26136 </a> </Para> */}
 
       <Para>
-        Address: 312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh,
-        India
+        Address: 312, Tower A, Grandslam iThum, A-40, Sector 62, Noida, Uttar Pradesh
+        201301, India
       </Para>
     </DocsContent>
   );

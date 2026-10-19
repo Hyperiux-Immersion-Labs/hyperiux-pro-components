@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { PLANS } from "@/lib/plans";
+
+// Free accounts' daily limit. LIMITS.free in lib/install-limit.js is the
+// source of truth, but that module is server-only, so it can't be imported here.
+const FREE_INSTALLS_PER_DAY = 3;
 
 export function CliAuthClient({ plan }) {
   const isPro = plan === "pro";
@@ -46,10 +51,12 @@ export function CliAuthClient({ plan }) {
           </p>
           {!isPro && (
             <p className="text-white/40 text-xs leading-relaxed">
-              Logging in raises your daily CLI/MCP limit from 1 to 3 effects, shared with
-              your website usage. Pro effects and a 10/day limit need{" "}
+              Every CLI/MCP install needs an account. Free accounts get{" "}
+              {FREE_INSTALLS_PER_DAY} effects a day, shared with your website usage. Pro
+              effects and a higher limit ({PLANS.pro.installsPerDay}/day on Pro,{" "}
+              {PLANS.pro_plus.installsPerDay}/day on Pro+) need{" "}
               <Link href="/pricing" className="text-white/70 underline hover:text-white">
-                a Pro subscription
+                a paid plan
               </Link>
               .
             </p>

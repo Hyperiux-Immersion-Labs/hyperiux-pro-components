@@ -51,6 +51,34 @@
         }
       },
       "additionalProperties": false
+    },
+    "framework": {
+      "type": "string",
+      "enum": [
+        "next",
+        "react",
+        "unknown"
+      ],
+      "description": "Detected project framework, written by init"
+    },
+    "router": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "app",
+        "pages",
+        null
+      ],
+      "description": "Next.js router (app or pages), or null outside Next.js"
+    },
+    "installedEffects": {
+      "type": "object",
+      "description": "Effects installed with hyperiux add, keyed by effect name",
+      "additionalProperties": {
+        "type": "object"
+      }
     }
   },
   "additionalProperties": false

@@ -135,7 +135,7 @@ function FadeSwap({ children, swapKey }) {
 
 const ASSURANCES = [
     "Cancel anytime",
-    "Everything you copy stays in your repo",
+    "Installed code stays in its projects if you cancel",
     "INR pricing for India, plus GST",
     "Secure self-serve checkout",
 ];
