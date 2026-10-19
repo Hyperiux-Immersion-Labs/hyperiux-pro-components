@@ -475,7 +475,7 @@ export default function Footer() {
                       "--input-autofill-bg": "#111210",
                       "--input-autofill-text": "#ffffff",
                     }}
-                    className="h-auto min-w-0 flex-1 rounded-none border-0 bg-transparent! px-0 py-[calc(var(--cvw)*0.9)] max-md:py-3 text24 text-foreground! caret-foreground shadow-none! outline-none ring-0! placeholder:text-light-grey disabled:opacity-50"
+                    className="h-auto min-w-0 flex-1 rounded-none border-0 bg-transparent! px-0! py-[calc(var(--cvw)*0.9)] max-md:py-3 text24 max-md:text-[3.5vw]! text-foreground! caret-foreground shadow-none! outline-none ring-0! placeholder:text-light-grey disabled:opacity-50"
                   />
                   <button
                     type="submit"

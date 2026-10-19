@@ -7,6 +7,7 @@ import { buttonClassName, ButtonChrome } from "@/homepage/components/Button";
 import { useCopyLimit } from "./useCopyLimit";
 import { getLimitNudge } from "@/lib/limitNudge";
 import { AnimatePresence, motion } from "motion/react";
+import { MEDIA } from "@/lib/breakpoints";
 
 // The trigger's text rolls like the code block's Copy -> Copied label
 const ROLL_EASE = [0.65, 0, 0.35, 1];
@@ -45,6 +46,7 @@ const TRIGGER_LABELS = {
   mcp: { copying: "Copying MCP Prompt", copied: "MCP Prompt Copied" },
   prompt: { copying: "Copying AI Prompt", copied: "AI Prompt Copied" },
 };
+const MOBILE_TRIGGER_LABELS = { copying: "Copying", copied: "Copied" };
 
 function buildMcpPrompt(slug, title) {
   return `Use the Hyperiux MCP to add the "${title}" effect to this project.
@@ -396,7 +398,15 @@ export default function GetCodeMenu({
   const codeLocked = isLocked;
   const codeLimited = !isLocked && isLimitReached;
   const busy = copyStatus?.phase === "copying";
-  const statusLabel = copyStatus ? TRIGGER_LABELS[copyStatus.key]?.[copyStatus.phase] : null;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(MEDIA.mobile);
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  const statusLabel = copyStatus ? (isMobile ? MOBILE_TRIGGER_LABELS : TRIGGER_LABELS[copyStatus.key])?.[copyStatus.phase] : null;
 
   // The trigger label's width, measured from a hidden copy of the label it's moving to
   const labelSizerRef = useRef(null);

@@ -18,7 +18,7 @@ if (typeof window !== "undefined") {
 // resets a scrubbed tween to its start (scaled down) - so everything deep in the overlay
 // was measured hundreds of px too early, on load and again on any later refresh. Here
 // the overlay is put back to full size for every refresh and re-scaled after it.
-export function useSectionOverlay(ref, { scale = 0.88 } = {}) {
+export function useSectionOverlay(ref, { scale = 0.88, lag = 0.8 } = {}) {
     useGSAP(() => {
         const root = ref.current;
         if (!root || prefersReducedMotion()) return undefined;
@@ -35,7 +35,7 @@ export function useSectionOverlay(ref, { scale = 0.88 } = {}) {
                 gsap.set(root, { scale: target, transformOrigin: "50% 0%" });
                 done();
             } else {
-                gsap.to(root, { scale: target, transformOrigin: "50% 0%", duration: 0.8, ease: "power3.out", overwrite: true, onComplete: done });
+                gsap.to(root, { scale: target, transformOrigin: "50% 0%", duration: lag, ease: "power2.out", overwrite: true, onComplete: done });
             }
         };
 
@@ -43,7 +43,8 @@ export function useSectionOverlay(ref, { scale = 0.88 } = {}) {
             trigger: root,
             start: "top 100%",
             end: "top 15%",
-            onUpdate: (self) => apply(self.progress),
+            // markers: true,
+            onUpdate: (self) => apply(self.progress, lag === 0),
         });
 
         let measuredCount = 0;

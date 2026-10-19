@@ -93,7 +93,7 @@ export default function WhyVault() {
     }, { scope: rootRef });
 
 
-    useSectionOverlay(rootRef);
+    useSectionOverlay(rootRef, { lag: 0 });
 
     const goTo = (index) => {
         const panel = rootRef.current.querySelector(`[data-wv-panel="${index}"]`);

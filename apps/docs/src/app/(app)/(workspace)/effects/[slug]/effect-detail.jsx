@@ -495,8 +495,8 @@ export function EffectDetailContent({
                 {/* FAQ + custom animation block - the same components as the effects listing */}
                 <div className="flex h-full w-full flex-col gap-[calc(var(--cvw)*2)]">
                   {faqItems.length > 0 && <FAQ faqItems={faqItems} translateTop={false} bgClassName="bg-light" />}
-                  <div className="mx-auto w-full section-x">
-                    <CustomAnimationCta cta={safeContent?.ctaBanner} sectionRef={ctaSectionRef} headingClassName="type-h1 text-[calc(var(--cvw)*3.6)] max-lg:text-[5.5vw] max-md:text-[min(11vw,46px)]" />
+                  <div className="mx-auto w-full section-x max-md:px-[5vw]">
+                    <CustomAnimationCta cta={safeContent?.ctaBanner} sectionRef={ctaSectionRef} headingClassName="type-h1 text-[calc(var(--cvw)*3.6)] max-lg:text-[5.5vw] max-md:text-[9vw]" />
                   </div>
                 </div>
 

@@ -57,7 +57,7 @@ const NOISE_PERIOD = 12 / 3;
 const COUNT = 6000;
 const COUNT_SMALL = 2600;
 const MAX_DT = 0.05;
-const MAX_PIXEL_RATIO = 1.75;
+const MAX_PIXEL_RATIO = 1.8;
 const MAX_PIXEL_RATIO_SMALL = 1.25;
 
 // Blobmixer's displacement shader, verbatim (Gustavson's periodic Perlin noise + f())
@@ -194,10 +194,10 @@ varying float vR, vA;
 void main() {
   float d = length(gl_PointCoord - .5);
   if (d > .5) discard;
-  float s = smoothstep(.5, 0., d);
-  vec3 base = mix(vec3(.78, .74, .7), vec3(1., .36, .05), step(.62, vR));
+  float s = smoothstep(.5, .2, d);
+  vec3 base = mix(vec3(.9, .8, .7), vec3(1., .36, .05), step(.62, vR));
   // Opacity follows brightness: the canvas is transparent, and an opaque dark rim would ring each dot
-  vec3 col = base * s * vA * .95;
+  vec3 col = base * s * vA * .8;
   gl_FragColor = vec4(col, max(col.r, max(col.g, col.b)));
 }`;
 
@@ -321,12 +321,11 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
   const mat = new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
-    // Additive, for alpha too, so the dots light the page behind the transparent canvas
     blending: THREE.CustomBlending,
     blendSrc: THREE.OneFactor,
-    blendDst: THREE.OneFactor,
+    blendDst: THREE.OneMinusSrcAlphaFactor,
     blendSrcAlpha: THREE.OneFactor,
-    blendDstAlpha: THREE.OneFactor,
+    blendDstAlpha: THREE.OneMinusSrcAlphaFactor,
     uniforms,
     vertexShader: VERTEX_SHADER,
     fragmentShader: FRAGMENT_SHADER,

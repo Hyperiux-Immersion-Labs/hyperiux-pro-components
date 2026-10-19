@@ -549,7 +549,7 @@ export function EffectsListing({
             {/* A div, not a p: RollText renders a div, which a <p> can't contain. */}
             <div aria-live="polite" className={`${DISPLAY} ${T20} flex max-md:px-[7vw] max-lg:px-[5vw] flex-wrap items-baseline font-aeonik tracking-tight`}>
               {/* Fixed-width slots, so nothing beside them moves when the count or page name changes */}
-              <span className="flex w-[calc(var(--cvw)*6)] shrink-0 items-baseline gap-x-[calc(var(--cvw)*0.4)] max-lg:w-[14vw] max-md:w-[32vw] max-md:gap-x-[1.5vw]">
+              <span className="flex w-[calc(var(--cvw)*6)] shrink-0 items-baseline gap-x-[calc(var(--cvw)*0.4)] max-lg:w-[12vw] max-md:w-[24vw] max-md:gap-x-[1.5vw]">
                 <span className="relative -top-[0.05em] tabular-nums">
                   <RollNumber value={filtered.length} values={[0, effects.length]} />
                 </span>
