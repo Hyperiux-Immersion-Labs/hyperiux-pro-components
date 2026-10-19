@@ -255,7 +255,8 @@ export default function PixelPageTransition() {
         duration: DURATION_LEAVE,
         isEnter: false,
         onComplete: () => {
-          setLoaderVisible(true)
+          // The homepage has its own loader, so no dot grid on the way there
+          setLoaderVisible(targetPath !== '/')
           router.push(href)
         },
       })
@@ -296,7 +297,7 @@ export default function PixelPageTransition() {
       window.setTimeout(resetScroll, 150)
     }
 
-    setLoaderVisible(true)
+    setLoaderVisible(pathname !== '/')
     animateGrid({
       duration: DURATION_ENTER,
       isEnter: true,

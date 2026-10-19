@@ -209,12 +209,12 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
             <div id={HERO_ASIDE_ID} className="flex shrink-0 items-end empty:hidden" />
           </header>
 
-          {/* the tabs, one row */}
+          {/* the tabs, one row (click sound only, no hover sound) */}
           <TabRow activeKey={current?.key} tabsKey={tabs.map((tab) => tab.key).join()}>
             {tabs.map((tab) => {
               const active = tab.key === current?.key;
               return (
-                <Link key={tab.key} href={dashboardPath(username, tab.sub)} aria-current={active ? "page" : undefined} className={`${TAB} ${active ? TAB_ON : TAB_OFF}`}>
+                <Link key={tab.key} href={dashboardPath(username, tab.sub)} aria-current={active ? "page" : undefined} data-sound-hover="off" className={`${TAB} ${active ? TAB_ON : TAB_OFF}`}>
                   {tab.label}
                 </Link>
               );

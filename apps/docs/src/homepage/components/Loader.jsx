@@ -444,25 +444,26 @@ export default function Loader() {
               ))}
             </div>
           </div>
-          {/* Sits just under the counter, so the counter itself stays centred */}
-          <div
-            ref={enterBtnRef}
-            className="invisible absolute top-full left-1/2 flex w-max justify-center text-center pt-[2.5vw] opacity-0 max-lg:pt-[5vw] max-md:pt-[8vw]"
-          >
-            <Button
-              text="Enter the Vault"
-              variant="outline"
-              preventDefault
-              onClick={() => {
-                // The click is the user gesture browsers need before audio can start.
-                // Entering always turns sound on, even if it was muted on an earlier visit.
-                setSound(true);
-                enterRef.current?.();
-              }}
-              className="mx-auto"
-            />
-          </div>
         </div>
+      </div>
+      {/* Centred near the bottom of the screen, below the rings */}
+      <div
+        ref={enterBtnRef}
+        className="invisible absolute bottom-[20vh] left-1/2 z-10 flex w-max justify-center opacity-0 max-md:bottom-[11svh]"
+      >
+        <Button
+          text="Enter the Vault"
+          variant="outline"
+          // Border, text, square and arrow turn primary on hover
+          className="font-medium hover:border-primary hover:text-primary"
+          preventDefault
+          onClick={() => {
+            // The click is the user gesture browsers need before audio can start.
+            // Entering always turns sound on, even if it was muted on an earlier visit.
+            setSound(true);
+            enterRef.current?.();
+          }}
+        />
       </div>
     </div>
   );

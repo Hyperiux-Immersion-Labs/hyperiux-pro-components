@@ -172,12 +172,12 @@ export default function ProblemFixes() {
       className="section-x relative z-200 w-full overflow-hidden py-[7%] text-foreground"
     >
       <div className="site-container relative z-200 flex flex-col items-center gap-[calc(var(--cvw)*8)] max-md:gap-20">
-        <div className="flex w-[55%] flex-col gap-[calc(var(--cvw)*3.5)] text-center max-lg:w-[85%] max-md:w-full max-md:gap-[calc(var(--cvw)*5)]">
+        <div className="flex w-[58%] flex-col gap-[calc(var(--cvw)*3.5)] text-center max-lg:w-[85%] max-md:w-full max-md:gap-[calc(var(--cvw)*5)]">
           <LineReveal as='h2' className="type-h1 w-full">
             Good Motion is{' '}
             <span className="gradient-text-animate">Harder</span> Than it Looks
           </LineReveal>
-          <p data-fadeup-delay="0.2" className="type-body-lg fadeup mx-auto max-w-[calc(var(--cvw)*60)] max-lg:max-w-[90%] max-md:w-full max-md:max-w-full">
+          <p data-fadeup-delay="0.2" className="type-body-lg fadeup mx-auto max-w-[calc(var(--cvw)*65)] max-lg:max-w-[95%] max-md:w-full max-md:max-w-full">
           Anyone can add a fade. What&apos;s hard is everything around it. Get timing, restraint, or performance wrong, and the moment meant to impress becomes the reason the site feels worse. Most teams see that risk and drop their ambitions to play it safe. And your interface ends up looking like everyone else&apos;s. Vault is engineered around that discipline by default, not as an afterthought.
           </p>
         </div>

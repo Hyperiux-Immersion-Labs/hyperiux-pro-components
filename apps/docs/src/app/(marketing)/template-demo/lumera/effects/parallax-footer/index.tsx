@@ -106,7 +106,7 @@ const ParallaxFooter = () => {
         </div>
 
         <div className="fadeup flex items-center justify-between pt-[7vw] max-md:gap-[5vw] max-lg:flex-col max-lg:gap-[3vw]">
-          <div className="max-lg:order-1 max-lg:w-[70%]">
+          <div className="max-lg:order-1 max-lg:w-[70%] max-md:order-3 max-md:pt-[5vh]">
             <p className="text-[1vw] text-[#1C1B1A] normal-case max-md:text-[3.5vw] max-lg:text-center max-lg:text-[2.5vw]">
               <Link
                 href="https://vault.hyperiux.com/"
@@ -118,16 +118,11 @@ const ParallaxFooter = () => {
               2026 Lumera. All Rights Reserved
             </p>
           </div>
-          <div className="absolute bottom-[7%] max-lg:bottom-[20%] -translate-x-1/2 left-1/2 w-[35%] max-lg:ml-0 max-lg:w-[80%]">
-            <p className="text-center text-[#1C1B1A] text-[1vw] leading-[1.2] max-md:text-[3.5vw] max-lg:text-center max-lg:text-[2.5vw]">
-              Sheikh Mohammed Bin Rashid Blvd Dubai, United Arab Emirates
-            </p>
-          </div>
           <CharStaggerButton
             showArrow={false}
             href="#"
             text="Privacy Policy"
-            className="max-lg:order-3 max-lg:pt-[8vh] text-[#1C1B1A]"
+            className="max-lg:order-3 max-lg:pt-[8vh] max-md:order-1 max-md:pt-0 text-[#1C1B1A]"
             textClassName="text-[1vw] max-md:text-[3.2vw] max-lg:text-[2.5vw]"
           />
         </div>

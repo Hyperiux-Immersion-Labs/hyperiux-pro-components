@@ -869,11 +869,12 @@ function SanityBodyBlock({ block }) {
 
     return (
       <div className="fadeup">
+        {/* TypeScript only, no JS / TS switch (JS shows only if there's no TS version) */}
         <CodeBlock
-          code={normalizeCodeString(block.code)}
-          tsxCode={block.tsxCode ? normalizeCodeString(block.tsxCode) : undefined}
-          language={block.language || "jsx"}
-          filename={block.filename}
+          code={normalizeCodeString(block.tsxCode || block.code)}
+          language={block.tsxCode ? "tsx" : block.language || "jsx"}
+          filename={block.tsxCode && block.filename ? block.filename.replace(/\.jsx$/, ".tsx").replace(/\.js$/, ".ts") : block.filename}
+          showLanguageToggle={false}
         />
       </div>
     );
