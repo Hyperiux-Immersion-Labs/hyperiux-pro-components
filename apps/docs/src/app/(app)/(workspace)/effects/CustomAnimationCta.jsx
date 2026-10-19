@@ -34,7 +34,7 @@ export function CustomAnimationCta({ cta, sectionRef, className = "", headingCla
         <CustomAnimationFormTrigger>
         
           <div className="pt-5 max-md:w-full max-md:[&_a]:px-[5vw]">
-            <Button preventDefault={false} text={cta.buttonText} href={cta.buttonLink || "#"} className="w-fit max-md:w-full" />
+            <Button preventDefault={false} text={"Send Request"} href={cta.buttonLink || "#"} className="w-fit max-md:w-full" />
           </div>
         </CustomAnimationFormTrigger>
       )}

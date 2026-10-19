@@ -266,7 +266,7 @@ export default function PricingPlansHome({ currency: initialCurrency, checkout =
                             >
                                 {b.label}
                                 {b.save && (
-                                    <span className={`px-[7px] py-[3px] max-md:px-[2vw] max-md:py-[1vw] transition-colors duration-700 ${on ? "bg-primary text-black" : "bg-primary/40 text-primary"}`}>{b.save}</span>
+                                    <span className={`px-[7px] py-[3px] max-md:px-[2vw] max-md:py-[1vw] transition-colors duration-700 ${on ? "bg-primary text-black" : "text-primary"}`}>{b.save}</span>
                                 )}
                             </button>
                         );

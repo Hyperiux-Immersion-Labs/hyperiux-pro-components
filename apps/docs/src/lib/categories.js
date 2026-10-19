@@ -15,7 +15,7 @@ export const effectsOverviewContent = {
   cta: {
     heading: "Request a Custom Animation",
     description: "Need a custom effect? Tell us what to create.",
-    buttonText: "Request Custom Animation",
+    buttonText: "Send Request",
     buttonLink: "#",
   },
   faqs: [
@@ -171,7 +171,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Animation",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -223,7 +223,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Text Animation",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: " Request Custom Animation",
+      buttonText: " Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -275,7 +275,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Background Animation",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -326,7 +326,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Button Animation",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -375,7 +375,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Carousel Animation",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -430,7 +430,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Scroll Animation",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -485,7 +485,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Creative Component",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -532,7 +532,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Navigation",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -579,7 +579,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Cursor Effect",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -626,7 +626,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Page Transition",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -679,7 +679,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom Loader",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
@@ -727,7 +727,7 @@ export const effectCategories = [
     cta: {
       heading: "Request a Custom WebGL Effect",
       description: "Need a custom effect? Tell us what to create.",
-      buttonText: "Request Custom Animation",
+      buttonText: "Send Request",
       buttonLink: "#",
     },
     faqs: [
