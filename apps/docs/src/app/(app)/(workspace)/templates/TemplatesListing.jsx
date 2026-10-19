@@ -195,7 +195,7 @@ export function TemplatesListing({ templates: baseTemplates = [], description = 
 
         {/* view on the left · category + catalogue on the right */}
         <motion.div {...heroFadeUp(1.2)} className="flex flex-wrap items-center justify-between gap-3.5 pt-7 max-md:pt-3">
-          <DarkSegment label="View" items={viewItems} value={view} onChange={setChosenView} itemClassName="w-[calc(var(--cvw)*5.5)] max-lg:w-20" />
+          {canChooseView && <DarkSegment label="View" items={viewItems} value={view} onChange={setChosenView} itemClassName="w-[calc(var(--cvw)*5.5)] max-lg:w-20" />}
           <div className="ml-auto flex flex-wrap items-center gap-3.5 max-md:ml-0">
             <div role="group" aria-label="Category" className="flex flex-wrap gap-1.5">
               {categories.map((c) => (

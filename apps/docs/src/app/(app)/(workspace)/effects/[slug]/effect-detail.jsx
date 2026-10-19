@@ -14,7 +14,7 @@ import {
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
-import { EffectCard } from "../EffectCard";
+import { EffectCard, resolveCover } from "../EffectCard";
 import { CustomAnimationCta } from "../CustomAnimationCta";
 import FAQ from "@/homepage/sections/FAQ";
 import { CodeBlock, CodeBlockLanguageProvider } from "@/components/ui/CodeBlock";
@@ -464,6 +464,9 @@ export function EffectDetailContent({
                   effect={effect}
                   title={pageTitle}
                   previewHref={previewHref}
+                  // Phones show this video and cover (the same media as the effect cards)
+                  videoSrc={videoPreviewUrl}
+                  coverSrc={resolveCover({ coverImage: content?.coverImage || safeEffect.coverImage || slug })}
                   getCode={<GetCodeMenu effectSlug={slug} effectTitle={pageTitle || safeEffect.title} effectTier={effectTier} />}
                 />
               </section>

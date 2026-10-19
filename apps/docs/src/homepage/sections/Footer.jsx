@@ -312,13 +312,13 @@ export default function Footer() {
       {/* Pinned to the footer's bottom edge but inside the same 1536px container
           (and side padding) as the rest of the footer, so it lines up on wide screens */}
       <div className="absolute inset-x-0 bottom-[calc(var(--cvw)*2)] z-4 section-x max-lg:bottom-[4vw] max-md:bottom-[calc(var(--cvw)*10)]">
-        <div className="site-container flex items-center justify-between gap-4 type-small text-light-grey max-md:flex-col max-md:gap-2 max-md:text-center">
+        <div className="site-container flex items-center justify-between gap-4 type-small text-light-grey max-md:flex-col-reverse max-md:gap-5 max-md:text-center">
           <p>
             © 2026 Hyperiux. All Rights Reserved.
             {/* <EggHint className="ml-2" /> */}
           </p>
           {/* For AI assistants: official facts (like Wingify's footer link) and the component catalogue */}
-          <div className="flex items-center gap-6 whitespace-nowrap max-md:gap-4 max-md:text-[3.2vw]">
+          <div className="flex items-center gap-6 whitespace-nowrap max-md:flex-col max-md:gap-2">
             <Link href="/ai-components" className="transition-colors duration-300 hover:text-foreground">
               AI Component Catalogue
             </Link>

@@ -133,7 +133,8 @@ export function VaultLayout({
 
   const startNavigation = useCallback(
     (targetHref) => {
-      if (targetHref && targetHref !== "#" && targetHref !== pathname) {
+      // The homepage has its own loader, so it skips the grid one
+      if (targetHref && targetHref !== "#" && targetHref !== "/" && targetHref !== pathname) {
         setIsNavigating(true);
       }
     },

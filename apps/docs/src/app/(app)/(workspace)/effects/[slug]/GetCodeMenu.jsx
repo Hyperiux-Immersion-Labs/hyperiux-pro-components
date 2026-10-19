@@ -149,7 +149,7 @@ function ProLockOverlay({ onUpgrade }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-dark-card/75 px-6 text-center backdrop-blur-lg">
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-dark-card/75 px-6 text-center backdrop-blur-lg max-md:static max-md:px-4 max-md:py-8">
       <LockKeyhole className="size-5 text-primary" aria-hidden="true" />
       <p className="type-small leading-snug text-foreground/80">
         Pro effect - upgrade to copy or install it.
@@ -511,7 +511,11 @@ export default function GetCodeMenu({
             />
           )}
           {view === "menu" ? (
-            <div className="space-y-1" aria-hidden={codeLocked || undefined}>
+            <div
+              // Phones: the locked rows are dropped, so the panel is just the lock message
+              className={`space-y-1 ${codeLocked ? "max-md:hidden" : ""}`}
+              aria-hidden={codeLocked || undefined}
+            >
               <div className="flex items-center gap-2 px-3 py-2 type-small text-foreground">
                 Copy Code
                 {codeLocked && (

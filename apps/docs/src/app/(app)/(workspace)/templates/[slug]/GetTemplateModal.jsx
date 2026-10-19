@@ -241,12 +241,13 @@ export function GetTemplateModal({ template, open, tab = "buy", onTab, onClose, 
               </span>
             </button>
 
-            <div ref={thumbRef} className="relative h-[28vw] w-[45%] shrink-0 overflow-hidden bg-grey max-md:aspect-video max-md:w-full">
+            {/* Phones: 20% taller than the 28vw desktop height */}
+            <div ref={thumbRef} className="relative h-[28vw] w-[45%] shrink-0 overflow-hidden bg-grey max-md:h-[43vw] max-md:w-full">
               {shot && <Image src={shot} alt={`${template.title} homepage`} fill sizes="(max-width: 767px) 90vw, 26vw" quality={75} className="object-cover object-top" />}
               
             </div>
 
-            <div className="flex min-w-0 flex-1 flex-col justify-center gap-4">
+            <div className="flex min-w-0 flex-1 flex-col justify-center gap-3">
               <p className={`${LABEL} text-foreground/50`}>Get this template</p>
               <h3 id="get-template-title" className="type-h1 leading-none">
                 {template.title}

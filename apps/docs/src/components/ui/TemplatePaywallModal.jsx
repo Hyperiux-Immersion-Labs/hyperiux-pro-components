@@ -114,7 +114,7 @@ export function TemplatePaywallModal({
       onClick={onClose}
     >
       <div
-        className="relative w-[40vw] max-h-[90vh] overflow-y-auto border border-white/15 bg-background px-9 py-9 max-lg:w-[85%] max-lg:px-7 max-lg:py-8 max-md:h-[80vh] max-md:max-h-none  max-md:border-x-0 max-md:border-b-0 max-md:px-5 max-md:py-12"
+        className="relative w-[40vw] max-h-[90vh] overflow-y-auto border border-white/15 bg-background px-9 py-9 max-lg:w-[85%] max-lg:px-7 max-lg:py-8 max-md:h-fit max-md:max-h-[90svh] max-md:border-x-0 max-md:border-b-0 max-md:px-5 max-md:py-12"
         onClick={(event) => event.stopPropagation()}
       >
         <button

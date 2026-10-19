@@ -22,9 +22,8 @@ import {
 } from "./loader-scene";
 import { lockScroll, resetScrollTop, useScrollLockLenis } from "./scroll-lock";
 import { MEDIA } from "@/lib/breakpoints";
-import LinkButton from "@/components/WebsiteComps/LinkButton";
+import Button from "./Button";
 import { useInteraction } from "./InteractionProvider";
-import { readSoundPreference } from "./SoundToggle";
 
 // ── Build: the rings follow real loading ─────────────────────────────────────
 // The pace is the counter's roll (ROLL / STAGGER below), so the rings never
@@ -450,20 +449,17 @@ export default function Loader() {
             ref={enterBtnRef}
             className="invisible absolute top-full left-1/2 flex w-max justify-center text-center pt-[2.5vw] opacity-0 max-lg:pt-[5vw] max-md:pt-[8vw]"
           >
-            <LinkButton
-              href="#"
+            <Button
               text="Enter the Vault"
+              variant="outline"
+              preventDefault
               onClick={() => {
                 // The click is the user gesture browsers need before audio can start.
-                // Turns sound on unless the visitor muted it on an earlier visit.
-                if (readSoundPreference() !== false) setSound(true);
+                // Entering always turns sound on, even if it was muted on an earlier visit.
+                setSound(true);
                 enterRef.current?.();
               }}
-              data-sound-kind="primary"
-              underline
-              tilted={false}
-              underlineClassName="mt-0"
-              className="mx-auto cursor-pointer text-[1.2vw] text-foreground transition-colors duration-300 hover:text-primary max-md:type-body"
+              className="mx-auto"
             />
           </div>
         </div>

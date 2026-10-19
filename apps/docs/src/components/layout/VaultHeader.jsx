@@ -479,18 +479,19 @@ export function VaultHeader({
           href="/"
           onClick={close}
           aria-label="Hyperiux Vault home"
-          className="w-[calc(var(--hx-vw,1vw)*36)] max-lg:w-[15vw] max-md:w-[36vw]"
+          className="w-[calc(var(--hx-vw,1vw)*30)] max-lg:w-[12vw] max-md:w-[30vw]"
         >
           <HyperiuxLogo className="size-full text-primary" />
         </Link>
 
         <div className="flex items-center gap-[calc(var(--hx-vw,1vw)*3)] max-lg:gap-[2vw] max-md:gap-[3vw]">
+          <SoundToggle size={40} className="bg-dark-card! text-primary!" />
           {showSearch && (
             <button
               type="button"
               onClick={handleSearch}
               aria-label="Search effects"
-              className="relative flex size-[calc(var(--hx-vw,1vw)*10)] shrink-0 items-center justify-center bg-dark-card text-primary max-lg:size-[5vw] max-md:size-[10vw]"
+              className="relative flex size-[calc(var(--hx-vw,1vw)*10)] shrink-0 items-center justify-center border border-foreground/20 bg-dark-card text-primary max-lg:size-[5vw] max-md:size-[10vw]"
             >
               <svg
                 className="size-[calc(var(--hx-vw,1vw)*4.5)] shrink-0 max-lg:size-[2.4vw] max-md:size-[4.5vw]"
@@ -514,7 +515,7 @@ export function VaultHeader({
             onClick={() => setOpen((current) => !current)}
             aria-label={open ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={open}
-            className="relative flex size-[calc(var(--hx-vw,1vw)*10)] shrink-0 items-center justify-center bg-dark-card text-primary max-lg:size-[5vw] max-md:size-[10vw]"
+            className="relative flex size-[calc(var(--hx-vw,1vw)*10)] shrink-0 items-center justify-center border border-foreground/20 bg-dark-card text-primary max-lg:size-[5vw] max-md:size-[10vw]"
           >
             <span
               aria-hidden="true"

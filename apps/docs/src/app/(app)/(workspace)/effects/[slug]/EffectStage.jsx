@@ -13,6 +13,7 @@ import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { resolveCover } from "../EffectCard";
 import { T16 } from "../../templates/tokens";
 import { prefersReducedMotion } from "@/lib/motion";
+import { resolveEffectVideoUrl } from "@/lib/media";
 
 // Same message the preview chrome sends its device iframe (onEmbedValues)
 const MSG = "vault-preview:values";
@@ -36,7 +37,7 @@ function cloneable(values) {
  * remixer, and its values are posted straight into the stage.
  */
 // getCode: the "Get code" dropdown (GetCodeMenu), shown beside Live Preview.
-export default function EffectStage({ effect, title, previewHref, getCode = null }) {
+export default function EffectStage({ effect, title, previewHref, getCode = null, videoSrc = null, coverSrc = null }) {
   const remixer = effect?.remixer ?? {};
   const remixerGroups = remixer.groups ?? getGroupsFromRemixerControls(remixer.controls);
   const { groups, values, updateValue, resetValues } = useRemixerControls({
@@ -57,7 +58,21 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSkipDemo(isLighthouseOrHeadless() || isSoftwareRenderer());
   }, []);
-  const cover = useMemo(() => resolveCover(effect), [effect]);
+  const cover = useMemo(() => coverSrc || resolveCover(effect), [coverSrc, effect]);
+  // Phones play the effect's video instead of loading the live demo iframe
+  const video = useMemo(() => videoSrc || resolveEffectVideoUrl(effect), [videoSrc, effect]);
+  const [isPhone, setIsPhone] = useState(false);
+  useEffect(() => {
+    const phone = window.matchMedia(MEDIA.mobile);
+    const update = () => setIsPhone(phone.matches);
+    update();
+    phone.addEventListener("change", update);
+    return () => phone.removeEventListener("change", update);
+  }, []);
+  const showVideo = isPhone && !!video;
+  // Never the live demo on phones: the video, or the cover if there's no video
+  // On phones the cover also sits under the video, so it shows while the video loads
+  const showCover = (skipDemo === true || isPhone) && !!cover;
 
   // Click to interact: until the visitor clicks the stage, a transparent layer sits
   // over the iframe so wheel / touch scrolling keeps moving the page instead of being
@@ -186,7 +201,7 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
   );
 
   return (
-    <section aria-label="Interactive preview" className="flex w-full flex-col gap-[calc(var(--cvw)*1)] max-md:gap-[3.5vw]">
+    <section aria-label="Interactive preview" className="flex w-full flex-col gap-[calc(var(--cvw)*1)] max-md:gap-[7vw]">
       {/* Get Code + Demo (the Preview / Playground tabs and Replay were removed). */}
       <div className="flex flex-wrap items-center justify-end gap-[calc(var(--cvw)*1)] max-md:justify-start max-md:gap-[3vw]">
         {/* items-stretch: Get Code takes Demo's height. */}
@@ -215,12 +230,24 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
           style={play ? { top: stickyTop } : undefined}
           onPointerLeave={(event) => event.pointerType === "mouse" && setInteractive(false)}
           // Phones get a taller (4:5) stage: the demo renders its mobile layout there.
-          className={`${play ? "sticky" : "relative"} isolate aspect-video w-full min-w-0 flex-1 overflow-hidden bg-black max-lg:relative max-lg:top-auto! max-md:aspect-4/5`}
+          className={`${play ? "sticky" : "relative"} isolate aspect-video w-full min-w-0 flex-1 overflow-hidden bg-black max-lg:relative max-lg:top-auto! `}
         >
-          {skipDemo === true && cover && (
+          {showCover && (
             <Image src={cover} alt={`${title || "Effect"} preview`} fill sizes="100vw" className="object-cover" />
           )}
-          {skipDemo === false && <iframe
+          {showVideo && (
+            <video
+              src={video}
+              poster={cover || undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-label={`${title || "Effect"} preview`}
+              className="absolute inset-0 size-full object-cover"
+            />
+          )}
+          {skipDemo === false && !isPhone && <iframe
             key={frameKey}
             ref={frameRef}
             src={src}
@@ -229,7 +256,7 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
             style={frameBox ? { width: frameBox.width, height: frameBox.height, transform: `scale(${frameBox.scale})`, transformOrigin: "0 0" } : undefined}
             className={`absolute inset-0 size-full border-0 transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
           />}
-          {!interactive && (
+          {!interactive && !isPhone && (
             <button
               type="button"
               aria-label="Click to interact with the preview"
@@ -248,7 +275,7 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
               </span>
             </button>
           )}
-          {!loaded && !skipDemo && (
+          {!loaded && !skipDemo && !isPhone && (
             <div className="absolute bottom-4 right-4 z-10">
               <div aria-label="Loading preview" role="status" className="size-8 animate-spin rounded-full border-2 border-foreground/25 border-t-foreground" />
             </div>

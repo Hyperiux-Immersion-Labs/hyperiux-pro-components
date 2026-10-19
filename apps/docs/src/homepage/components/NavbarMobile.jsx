@@ -299,7 +299,7 @@ export default function NavbarMobile({
           )}
           <SoundToggle
             size={40}
-            className={`bg-dark-card! transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${intro ? "opacity-100" : "opacity-0"}`}
+            className={`bg-dark-card! text-primary! transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${intro ? "opacity-100" : "opacity-0"}`}
           />
           {SHOW_HEADER_SEARCH && (
             <button
@@ -332,7 +332,7 @@ export default function NavbarMobile({
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             // Trails the logo on the way in, the way the desktop bar's links do.
-            className={`relative flex size-[5vw] max-md:size-[10vw] shrink-0 items-center justify-center bg-dark-card text-primary transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${intro ? "opacity-100" : "opacity-0"}`}
+            className={`relative flex size-[5vw] max-md:size-[10vw] shrink-0 items-center justify-center border border-foreground/20 bg-dark-card text-primary transition-opacity duration-500 delay-200 ease-out motion-reduce:transition-none ${intro ? "opacity-100" : "opacity-0"}`}
           >
             <span
               aria-hidden="true"

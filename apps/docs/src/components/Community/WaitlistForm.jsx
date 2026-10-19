@@ -3,6 +3,7 @@
 import { useId, useRef, useState } from "react";
 import { buttonClassName, ButtonChrome } from "@/homepage/components/Button";
 import { useInteraction } from "@/homepage/components/InteractionProvider";
+import DrawCheck from "@/homepage/components/DrawCheck";
 import { markJoined, useCommunity } from "./community-store"; // + getCrowd when the launch below is back
 
 const WAITLIST_ROUTE = "/api/community/waitlist";
@@ -61,7 +62,12 @@ export default function WaitlistForm({ className = "" }) {
 
   let label = "Join the Waitlist";
   if (sending) label = "Saving your Seat…";
-  if (joined) label = "You’re in ✓";
+  if (joined) label = (
+    <span className="inline-flex items-center gap-2">
+      You’re in
+      <DrawCheck active className="size-[1.1em] shrink-0" />
+    </span>
+  );
 
   return (
     <form
@@ -69,9 +75,9 @@ export default function WaitlistForm({ className = "" }) {
       noValidate
       className={`relative flex w-full items-center gap-1.5 bg-background/60 px-1.5 py-1.5 ring-1 ring-inset backdrop-blur-lg transition-shadow duration-700 ease-[cubic-bezier(.16,1,.3,1)] max-md:flex-col max-md:items-stretch max-md:gap-2 max-md:p-2 ${
         joined
-          ? "ring-success/60"
+          ? "ring-[#00E05A]/60"
           : error
-            ? "ring-danger/60"
+            ? "ring-[#FF0B0B]/60"
             : "shadow-2xl ring-foreground/10 focus-within:ring-primary/60"
       } ${className}`}
     >
@@ -88,7 +94,7 @@ export default function WaitlistForm({ className = "" }) {
         onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
         aria-invalid={!!error}
         aria-describedby={`${inputId}-msg`}
-        className={`type-body h-11 min-w-0  flex-1 border-0 bg-transparent px-[calc(var(--cvw)*1.2)] text-foreground outline-none [--input-autofill-bg:var(--background)] [--input-autofill-text:var(--foreground)] max-md:h-12 max-md:flex-none max-md:bg-foreground/5 max-md:px-3 max-md:text-[16px] ${joined ? "placeholder:text-success" : "placeholder:text-foreground/60"}`}
+        className={`type-body h-11 min-w-0  flex-1 border-0 bg-transparent px-[calc(var(--cvw)*1.2)] text-foreground outline-none [--input-autofill-bg:var(--background)] [--input-autofill-text:var(--foreground)] max-md:h-12 max-md:flex-none max-md:bg-foreground/5 max-md:px-3 max-md:text-[16px] ${joined ? "placeholder:text-[#00E05A]" : "placeholder:text-foreground/60"}`}
       />
       <button
         ref={buttonRef}
@@ -101,7 +107,7 @@ export default function WaitlistForm({ className = "" }) {
       >
         <ButtonChrome label={label} hovered={hovered} />
       </button>
-      <p id={`${inputId}-msg`} className="type-label absolute top-[calc(100%+var(--cvw)*0.7)] left-[calc(var(--cvw)*1.2)] min-h-[1em] text-left text-danger max-md:static max-md:min-h-0 max-md:px-1 max-md:empty:hidden" aria-live="polite">{error}</p>
+      <p id={`${inputId}-msg`} className="type-label absolute top-[calc(100%+var(--cvw)*0.7)] left-[calc(var(--cvw)*1.2)] min-h-[1em] text-left text-[#FF0B0B] max-md:static max-md:min-h-0 max-md:px-1 max-md:empty:hidden" aria-live="polite">{error}</p>
     </form>
   );
 }

@@ -132,13 +132,36 @@ export function FilterMenu({
   // than snapping), then its rows fade in.
   useLayoutEffect(() => {
     const panel = panelRef.current;
-    if (!open || !panel || prefersReducedMotion()) return undefined;
+    if (!open || !panel) return undefined;
+
+    // Keep the panel on screen: inside the viewport sideways, and opening upwards when
+    // there isn't room for it below the button (but there is above)
+    const btn = buttonRef.current?.getBoundingClientRect();
+    let up = false;
+    if (btn) {
+      const gap = 8;
+      const margin = 16;
+      const { offsetWidth: pw, offsetHeight: ph } = panel;
+      up = btn.bottom + gap + ph > window.innerHeight - margin && btn.top - gap - ph >= margin;
+      if (menuPos) {
+        const left = Math.min(Math.max(btn.left, margin), window.innerWidth - margin - pw);
+        panel.style.setProperty("left", `${Math.max(margin, left)}px`, "important");
+        panel.style.setProperty("right", "auto", "important");
+        panel.style.setProperty("top", `${up ? btn.top - gap - ph : btn.bottom + gap}px`, "important");
+      } else if (up) {
+        panel.style.setProperty("top", "auto", "important");
+        panel.style.setProperty("bottom", "calc(100% + var(--cvw) * 0.5)", "important");
+      }
+    }
+
+    if (prefersReducedMotion()) return undefined;
     const rows = Array.from(panel.children);
     const tl = gsap.timeline();
-    tl.fromTo(panel, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 0.45, ease: "power2.out", clearProps: "clipPath" });
+    // From and to keep the same units in the same slots, so GSAP tweens instead of jumping
+    tl.fromTo(panel, { clipPath: up ? "inset(100% 0% 0% 0%)" : "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.45, ease: "power2.out", clearProps: "clipPath" });
     tl.fromTo(rows, { opacity: 0 }, { opacity: 1, duration: 0.28, ease: "power1.out", stagger: 0.028, clearProps: "opacity" }, 0.14);
     return () => tl.kill();
-  }, [open]);
+  }, [open, menuPos]);
 
   const panel = open ? (
     // data-lenis-prevent: a panel capped in height scrolls itself, not the page
