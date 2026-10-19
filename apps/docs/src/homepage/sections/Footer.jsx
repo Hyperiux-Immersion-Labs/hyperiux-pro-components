@@ -252,7 +252,7 @@ export default function Footer() {
     <footer
       ref={footerRef}
       id="footer"
-      className="relative z-200 py-[calc(var(--cvw)*7)] max-lg:py-[10vw] w-full overflow-x-clip section-x max-md:py-[calc(var(--cvw)*15)] max-md:bg-background max-md:mt-16"
+      className="relative z-200 py-[calc(var(--cvw)*7)] max-lg:py-[10vw] w-full overflow-x-clip section-x max-md:py-[calc(var(--cvw)*15)] max-md:bg-background max-md:pt-22"
     >
       {isDesktop ? (
         <canvas

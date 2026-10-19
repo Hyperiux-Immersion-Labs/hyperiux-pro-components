@@ -72,8 +72,9 @@ export default function PricingHero() {
       aria-label="Pricing"
       className="home-type relative isolate flex min-h-[115vh] max-lg:min-h-svh max-md:min-h-[115vh] w-full flex-col justify-end overflow-hidden bg-transparent text-foreground select-none [touch-action:pan-y] pb-30"
     >
-      <div className="absolute inset-0 z-0 max-lg:top-0 max-lg:bottom-auto max-lg:h-svh max-md:top-0" aria-hidden="true">
+      <div className="absolute inset-0 z-0 max-lg:bg-background max-lg:[clip-path:inset(0)]" aria-hidden="true">
         {isDesktop && !audit && <ParticleBlob preset="slinky" phoneTop={0.35} scrollDrop />}
+        <div className="absolute inset-x-0 top-0 h-screen max-lg:fixed">
         {/* Tablet and mobile: a looping video instead of the WebGL blob */}
         {isDesktop === false && !audit && (
           <video
@@ -84,7 +85,7 @@ export default function PricingHero() {
             playsInline
             preload="auto"
             onPlaying={() => setVideoPlaying(true)}
-            className="absolute inset-0 h-full w-full object-cover max-lg:object-top max-md:object-center"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
         )}
         {/* Poster: in the server HTML below desktop, so it shows from the first
@@ -98,7 +99,8 @@ export default function PricingHero() {
           media={MEDIA.tablet}
           fetchPriority="high"
         />
-        {!videoPlaying && <Image {...POSTER} alt="poster" className="hidden object-cover max-lg:object-top max-md:object-center max-lg:block" />}
+        {!videoPlaying && <Image {...POSTER} alt="poster" className="hidden h-full w-full object-cover object-center max-lg:block" />}
+        </div>
       </div>
       <div className="pointer-events-none relative z-2 site-container section-x flex flex-col pt-[calc(var(--cvw)*8)] pb-[calc(var(--cvw)*8)] max-lg:pt-[12vw] max-md:pt-[48svh] max-md:pb-10 [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
         <div className="flex w-full justify-start max-md:flex-col max-md:items-stretch">

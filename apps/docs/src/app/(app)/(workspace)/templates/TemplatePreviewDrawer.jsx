@@ -7,7 +7,7 @@ import gsap from "gsap";
 import { prefersReducedMotion } from "@/lib/motion";
 import { useLenisLock } from "@/hooks/useLenisLock";
 import { Download, Heart } from "lucide-react";
-import Button from "@/homepage/components/Button";
+import Button, { ButtonChrome, buttonClassName } from "@/homepage/components/Button";
 import { BADGE, DISPLAY, PRICE, T11, T14, T16, T18, T24, catalogueLabel, catalogueOf, priceOf } from "./tokens";
 
 // Off-screen panel: slid out to the right, or (reduced motion) faded out in place.
@@ -46,6 +46,7 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
   const open = !!template;
 
   const [shown, setShown] = useState(null);
+  const [buyHovered, setBuyHovered] = useState(false);
   const shownRef = useRef(null);
   const wasOpenRef = useRef(false);
   const closingRef = useRef(false);
@@ -273,11 +274,11 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
                 <button
                   type="button"
                   onClick={() => onBuy(shown)}
-                  // Same text size and font as the Button component beside it
-                  className="inline-flex cursor-pointer items-center gap-2 bg-primary px-4 max-md:hidden font-avenir text-[calc(var(--hx-vw,1vw)*1.15)] max-lg:text-[clamp(13px,calc(var(--hx-vw,1vw)*1.6),15px)] text-background transition-colors duration-500 hover:bg-primary-hover max-md:text-[clamp(14px,calc(var(--hx-vw,1vw)*4),16px)]"
+                  onPointerEnter={() => setBuyHovered(true)}
+                  onPointerLeave={() => setBuyHovered(false)}
+                  className={buttonClassName({ className: "tracking-normal! border border-primary max-md:hidden [--btn-square:calc(var(--hx-vw,1vw)*1.1)]" })}
                 >
-                  <Download className="size-4" aria-hidden="true" />
-                  {owned ? "Download" : "Buy Template"}
+                  <ButtonChrome label={owned ? "Download" : "Buy Template"} hovered={buyHovered} icon={<Download aria-hidden="true" />} />
                 </button>
             </div>
           </div>

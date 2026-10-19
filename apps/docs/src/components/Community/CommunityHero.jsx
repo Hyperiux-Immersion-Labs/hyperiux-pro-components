@@ -39,7 +39,8 @@ export default function CommunityHero() {
       >
         {/* Tablet and mobile: a looping video instead of the WebGL crowd,
             pinned to the first screen */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-1 hidden h-svh max-lg:top-[1vw] max-lg:block max-md:top-0" aria-hidden="true">
+        <div className="pointer-events-none absolute inset-0 -z-1 hidden bg-background [clip-path:inset(0)] max-lg:block" aria-hidden="true">
+          <div className="fixed inset-x-0 top-0 h-screen">
           {isDesktop === false && !audit && (
             <video
               src="/assets/hero-videos/commmunity-hero.mp4"
@@ -49,7 +50,7 @@ export default function CommunityHero() {
               playsInline
               preload="auto"
               onPlaying={() => setVideoPlaying(true)}
-              className="absolute inset-0 h-full w-full object-cover max-lg:object-top max-md:object-center"
+              className="absolute inset-0 h-full w-full object-cover object-center"
             />
           )}
           {/* Poster: in the server HTML, so it shows from the first paint and
@@ -61,9 +62,10 @@ export default function CommunityHero() {
               fill
               sizes="100vw"
               quality={90}
-              className="object-cover max-lg:object-top max-md:object-center"
+              className="object-cover object-center"
             />
           )}
+          </div>
         </div>
         {/* Copy on the left, stacked; the crowd's blob sits on the right */}
         <div className="site-container section-x flex pb-[calc(var(--cvw)*3)] max-lg:pt-36 max-lg:pb-[5vw] max-md:pt-[48svh] max-md:pb-[12%]">

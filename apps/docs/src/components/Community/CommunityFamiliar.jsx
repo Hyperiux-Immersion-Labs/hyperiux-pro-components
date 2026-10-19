@@ -10,6 +10,7 @@ import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import { useSectionOverlay } from "@/components/Animations/useSectionOverlay";
 import { useInteraction } from "@/homepage/components/InteractionProvider";
 import { prefersReducedMotion } from "@/lib/motion";
+import { MEDIA } from "@/lib/breakpoints";
 import { useCommunity } from "./community-store";
 import { CritiqueCard, FeaturedCard, TeardownCard, VoteCard } from "./WhyJoinPanels";
 
@@ -117,6 +118,30 @@ export default function CommunityFamiliar() {
       gsap.from(card, { opacity: 0, y: 60, duration: 2, ease: "expo.out", scrollTrigger: { trigger: card, start: "top 90%" } });
     });
   }, { scope: rootRef, dependencies: [sound] });
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add(`(not ${MEDIA.tablet})`, () => {
+      if (prefersReducedMotion()) return;
+      const panels = [...rootRef.current.querySelectorAll("[data-panel]")];
+      if (panels.length < 2) return;
+      const tops = () => panels.map((panel) => window.scrollY + panel.getBoundingClientRect().top - SPY_OFFSET);
+      ScrollTrigger.create({
+        start: () => tops()[0],
+        end: () => tops()[panels.length - 1] + panels[panels.length - 1].offsetHeight * 0.5,
+        invalidateOnRefresh: true,
+        snap: {
+          snapTo: (progress, self) => {
+            const points = tops().map((top) => (top - self.start) / (self.end - self.start));
+            return points.reduce((nearest, p) => (Math.abs(p - progress) < Math.abs(nearest - progress) ? p : nearest));
+          },
+          duration: { min: 0.3, max: 0.9 },
+          delay: 0.03,
+          ease: "power2.inOut",
+        },
+      });
+    });
+  }, { scope: rootRef });
 
   const goToPanel = (i) => {
     const panel = rootRef.current.querySelector(`[data-panel="${i}"]`);

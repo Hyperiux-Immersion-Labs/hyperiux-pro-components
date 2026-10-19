@@ -186,7 +186,7 @@ export const BUTTON_TEXT =
 export const BUTTON_SIZE = `py-2 max-md:py-3 ${BUTTON_TEXT}`;
 
 export function buttonClassName({ variant = "orange", disabled = false, className = "" } = {}) {
-  return `group relative flex cursor-pointer font-avenir shrink-0 items-center overflow-hidden text-nowrap max-md:justify-between max-md:gap-(--btn-gap) max-md:px-[calc(var(--hx-vw,1vw)*10)] px-(--btn-pad) py-2 text-[calc(var(--hx-vw,1vw)*1.15)] max-lg:text-[clamp(13px,calc(var(--hx-vw,1vw)*1.6),15px)] tracking-wide transition-colors duration-300 max-md:py-3 max-md:text-[clamp(14px,calc(var(--hx-vw,1vw)*4),16px)] motion-reduce:transition-none [--btn-pad:calc(var(--hx-vw,1vw)*1.2)] [--btn-gap:calc(var(--hx-vw,1vw)*.5)] [--btn-square:0.5rem] [--btn-arrow:calc(var(--hx-vw,1vw)*1)] max-md:[--btn-pad:24px] max-md:[--btn-gap:14px] max-md:[--btn-square:8px] max-md:[--btn-arrow:18px] [--btn-slot:calc(var(--btn-square)+var(--btn-gap))] [--btn-room:max(0px,var(--btn-arrow)+var(--btn-gap)-var(--btn-slot))] [--btn-inset:calc((var(--btn-pad)*1.8+var(--btn-slot)+var(--btn-room)-var(--btn-arrow)-var(--btn-gap))*.5)] [--btn-shift:calc(var(--btn-pad)+var(--btn-slot)-var(--btn-inset))] ${variant === "outline" ? "border border-current/20 bg-dark-card text-foreground [--btn-flash:var(--primary)] [--btn-pre:#6f6f6f] [--btn-square-scale:.85]" : "bg-primary text-black [--btn-flash:#ffffff] [--btn-pre:#ffffff]"} ${disabled ? "pointer-events-none opacity-60" : ""} ${className}`;
+  return `group relative flex cursor-pointer font-avenir font-medium shrink-0 items-center overflow-hidden text-nowrap max-md:justify-between max-md:gap-(--btn-gap) max-md:px-[calc(var(--hx-vw,1vw)*10)] px-(--btn-pad) py-2 text-[calc(var(--hx-vw,1vw)*1.15)] max-lg:text-[clamp(13px,calc(var(--hx-vw,1vw)*1.6),15px)] tracking-wide transition-colors duration-300 max-md:py-3 max-md:text-[clamp(14px,calc(var(--hx-vw,1vw)*4),16px)] motion-reduce:transition-none [--btn-pad:calc(var(--hx-vw,1vw)*1.2)] [--btn-gap:calc(var(--hx-vw,1vw)*.5)] [--btn-square:0.5rem] [--btn-arrow:calc(var(--hx-vw,1vw)*1)] max-md:[--btn-pad:24px] max-md:[--btn-gap:14px] max-md:[--btn-square:8px] max-md:[--btn-arrow:18px] [--btn-slot:calc(var(--btn-square)+var(--btn-gap))] [--btn-room:max(0px,var(--btn-arrow)+var(--btn-gap)-var(--btn-slot))] [--btn-inset:calc((var(--btn-pad)*1.8+var(--btn-slot)+var(--btn-room)-var(--btn-arrow)-var(--btn-gap))*.5)] [--btn-shift:calc(var(--btn-pad)+var(--btn-slot)-var(--btn-inset))] ${variant === "outline" ? "border border-current/20 bg-dark-card text-foreground [--btn-flash:var(--primary)] [--btn-pre:#6f6f6f] [--btn-square-scale:.85]" : "bg-primary text-black [--btn-flash:#ffffff] [--btn-pre:#ffffff]"} ${disabled ? "pointer-events-none opacity-60" : ""} ${className}`;
 }
 
 // The label/square/arrow markup that lives inside Button's <Link> below -
@@ -194,7 +194,7 @@ export function buttonClassName({ variant = "orange", disabled = false, classNam
 // render the identical chrome around its own click handler. `hovered` must
 // be tracked by the caller (pointer enter/leave) since this has no <Link>
 // of its own to attach that to.
-export function ButtonChrome({ label, hovered = false, innerClassName = "" }) {
+export function ButtonChrome({ label, hovered = false, innerClassName = "", icon = null }) {
   return (
     <>
       <span
@@ -203,7 +203,9 @@ export function ButtonChrome({ label, hovered = false, innerClassName = "" }) {
       >
         {/* Light-on-dark reads larger than dark-on-orange, so the outline variant
             scales its square down a touch (--btn-square-scale) to look the same size. */}
-        <span className="block size-(--btn-square) scale-[var(--btn-square-scale,1)] bg-current transition-transform duration-300 md:motion-safe:group-hover:-rotate-90 md:motion-safe:group-hover:translate-x-[calc((100%+var(--btn-pad))*-1.2)]" />
+        <span className={`block size-(--btn-square) scale-[var(--btn-square-scale,1)] transition-transform duration-300 md:motion-safe:group-hover:-rotate-90 md:motion-safe:group-hover:translate-x-[calc((100%+var(--btn-pad))*-1.2)] ${icon ? "[&_svg]:size-full" : "bg-current"}`}>
+          {icon}
+        </span>
       </span>
       <span
         className={`relative z-10 pl-(--btn-slot) pr-(--btn-room) max-md:pl-0! max-md:pr-0! transition-transform duration-300 md:motion-safe:group-hover:-translate-x-(--btn-shift) ${innerClassName}`}
@@ -235,6 +237,7 @@ export default function Button({
   children,
   ariaLabel,
   scrollOffset = 0,
+  icon = null,
 }) {
   const lenis = useLenis();
   const [hovered, setHovered] = useState(false);
@@ -313,7 +316,7 @@ export default function Button({
       tabIndex={disabled ? -1 : undefined}
       className={buttonClassName({ variant, disabled, className })}
     >
-      <ButtonChrome label={label} hovered={hovered} innerClassName={innerClassName} />
+      <ButtonChrome label={label} hovered={hovered} innerClassName={innerClassName} icon={icon} />
     </Link>
   );
 }

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Eye, Heart } from "lucide-react";
+import { ArrowUpRight, Download, Eye, Heart } from "lucide-react";
 import Button from "@/homepage/components/Button";
 import { Tooltip } from "@/components/ui/Tooltip";
 // Same hover-action slide and button style as the effect cards.
@@ -206,7 +206,8 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
               text={hasAccess ? "Download" : "Buy Template"}
               preventDefault
               onClick={() => buy(template, hasAccess)}
-              className="shrink-0 max-md:w-fit"
+              icon={<Download aria-hidden="true" />}
+              className="shrink-0 max-md:w-fit [--btn-square:calc(var(--hx-vw,1vw)*1.1)] max-md:[--btn-square:4vw]!"
             />
           )}
         </div>
