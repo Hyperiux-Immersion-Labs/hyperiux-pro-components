@@ -35,13 +35,15 @@ function ResumeSavedSound() {
             removeListeners();
             setSound(true);
         };
+        // Only these count as a user gesture that may start audio. A touch's
+        // pointerdown doesn't (phones only allow it once the finger lifts), so
+        // listening for it left mobile silent after a reload.
+        const EVENTS = ["touchend", "click", "keydown"];
         const removeListeners = () => {
-            window.removeEventListener("pointerdown", onFirstGesture, true);
-            window.removeEventListener("keydown", onFirstGesture, true);
+            EVENTS.forEach((type) => window.removeEventListener(type, onFirstGesture, true));
         };
 
-        window.addEventListener("pointerdown", onFirstGesture, true);
-        window.addEventListener("keydown", onFirstGesture, true);
+        EVENTS.forEach((type) => window.addEventListener(type, onFirstGesture, true));
         return removeListeners;
     }, [setSound]);
 

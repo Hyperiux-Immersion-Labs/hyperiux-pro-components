@@ -17,7 +17,7 @@ export function readSoundPreference() {
     }
 }
 
-function writeSoundPreference(isOn) {
+export function writeSoundPreference(isOn) {
     try {
         window.localStorage.setItem(SOUND_PREFERENCE_KEY, isOn ? "1" : "0");
     } catch {

@@ -24,6 +24,7 @@ import { lockScroll, resetScrollTop, useScrollLockLenis } from "./scroll-lock";
 import { MEDIA } from "@/lib/breakpoints";
 import Button from "./Button";
 import { useInteraction } from "./InteractionProvider";
+import { writeSoundPreference } from "./SoundToggle";
 
 // ── Build: the rings follow real loading ─────────────────────────────────────
 // The pace is the counter's roll (ROLL / STAGGER below), so the rings never
@@ -461,6 +462,8 @@ export default function Loader() {
             // The click is the user gesture browsers need before audio can start.
             // Entering always turns sound on, even if it was muted on an earlier visit.
             setSound(true);
+            // Remembered, so a reload turns sound back on at the first tap / click
+            writeSoundPreference(true);
             enterRef.current?.();
           }}
         />
