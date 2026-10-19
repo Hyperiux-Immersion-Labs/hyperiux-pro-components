@@ -27,8 +27,24 @@ function countByUser(rows, key = "clerk_user_id") {
 // included), in total and by where they happened: web (the website), cli
 // (`npx hyperiux add`), mcp (the Hyperiux MCP); plus saves (wishlisted_effects).
 // All-time, like the per-user page - the Joined filter decides who's listed, not how
-// much history counts. Every row, not the first 1000.
-async function activityCounts() {
+// much history counts. Every row, not the first 1000 - so it's two whole-table reads,
+// kept for a minute per server instance: searching, paging and sorting the table reuse
+// them instead of reading both tables again on every keystroke.
+const COUNTS_TTL_MS = 60_000;
+let countsCache = null;
+
+function activityCounts() {
+  if (countsCache && Date.now() - countsCache.at < COUNTS_TTL_MS) return countsCache.counts;
+  const counts = readActivityCounts();
+  countsCache = { at: Date.now(), counts };
+  // A failed read isn't kept
+  counts.catch(() => {
+    if (countsCache?.counts === counts) countsCache = null;
+  });
+  return counts;
+}
+
+async function readActivityCounts() {
   const [installs, saveRows] = await Promise.all([
     fetchInstalls().then((rows) => rows.filter((row) => row.clerkUserId)),
     fetchAllRows(() => supabase.from("wishlisted_effects").select("clerk_user_id")),

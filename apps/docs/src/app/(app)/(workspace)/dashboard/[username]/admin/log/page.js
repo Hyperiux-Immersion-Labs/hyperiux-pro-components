@@ -3,12 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import {
-  CARD,
-  CARD_PAD,
-  FILTER_WIDTH,
-  Pager,
-} from "@/components/Dashboard/DashboardUI";
+import { CARD, CARD_PAD, EMPTY_TABLE, FILTER_WIDTH, Pager } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import {
@@ -210,7 +205,7 @@ export default function AdminLogPage() {
           ))}
         </SkeletonCard>
       ) : items.length === 0 ? (
-        <p className="type-body py-10 text-center text-black/60">
+        <p className={EMPTY_TABLE}>
           {log === "changes" ? "No changes yet." : "No Razorpay events yet."}
         </p>
       ) : log === "changes" ? (

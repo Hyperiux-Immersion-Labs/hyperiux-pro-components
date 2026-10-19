@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, LoaderCircle } from "lucide-react";
-import { ACTION_PRIMARY, CARD_PAD } from "@/components/Dashboard/DashboardUI";
+import { ACTION_PRIMARY, CARD_PAD, TextButton } from "@/components/Dashboard/DashboardUI";
 import { BUTTON_SIZE } from "@/homepage/components/Button";
 
 // Building blocks of the admin Manage drawer (ManageUserDrawer, ManageUserBilling).
@@ -38,9 +38,9 @@ export function Confirm({ lines, busy, onConfirm, onCancel }) {
           {busy ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Check aria-hidden="true" />}
           {busy ? "Saving…" : "Confirm"}
         </button>
-        <button type="button" onClick={onCancel} disabled={busy} className="type-label cursor-pointer text-foreground/80 underline underline-offset-3 transition-colors duration-300 hover:text-primary">
+        <TextButton onClick={onCancel} disabled={busy}>
           Cancel
-        </button>
+        </TextButton>
       </div>
     </div>
   );

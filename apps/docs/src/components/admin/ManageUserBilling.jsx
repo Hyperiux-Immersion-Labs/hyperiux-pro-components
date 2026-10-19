@@ -103,15 +103,20 @@ export function BillingSection({ user, post, onSaved, onChanged, onBusyChange })
     }
   }
 
-  // The plan as Billing now shows it, for the Users row - once per load, so a change made
-  // in Plan & access since (which Billing hasn't reloaded for) isn't put back
+  // The plan and subscription status as Billing now shows them, for the Users row and
+  // Plan & access (which is locked while Razorpay bills them) - once per load, so a change
+  // made in Plan & access since (which Billing hasn't reloaded for) isn't put back
   const syncedData = useRef(null);
   useEffect(() => {
     if (!data?.account || syncedData.current === data) return;
     syncedData.current = data;
     const plan = data.account.plan === "free" ? "free" : "pro";
-    if (plan !== user.plan) onSaved?.({ plan, tier: plan === "pro" ? data.account.plan : null });
-  }, [data, user.plan, onSaved]);
+    const patch = {
+      ...(plan !== user.plan && { plan, tier: plan === "pro" ? data.account.plan : null }),
+      ...(data.account.status && data.account.status !== user.status && { status: data.account.status }),
+    };
+    if (Object.keys(patch).length) onSaved?.(patch);
+  }, [data, user.plan, user.status, onSaved]);
 
   if (loadError) {
     return (
@@ -231,10 +236,10 @@ export function BillingSection({ user, post, onSaved, onChanged, onBusyChange })
             ) : (
               <div className="flex flex-wrap items-center gap-3">
                 <button type="button" disabled={locked} onClick={() => setPending("cancel_period_end")} className={LINE_BUTTON}>
-                  Cancel at period end
+                  Cancel at Period End
                 </button>
                 <button type="button" disabled={locked} onClick={() => setPending("cancel_now")} className={`${LINE_BUTTON} text-danger hover:text-danger hover:ring-danger`}>
-                  Cancel now
+                  Cancel Now
                 </button>
               </div>
             ))}

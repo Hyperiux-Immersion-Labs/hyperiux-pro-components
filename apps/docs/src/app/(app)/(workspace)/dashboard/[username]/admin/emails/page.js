@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Eye } from "lucide-react";
-import { ACTION_LINE, CARD, CARD_PAD, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
+import { ACTION_LINE, CARD, CARD_PAD, EMPTY_CELL, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { useLenisLock } from "@/hooks/useLenisLock";
@@ -269,7 +269,7 @@ export default function AdminEmailsPage() {
                 <RowsSkeleton count={pageSize} />
               ) : emails.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="type-body py-10 text-center text-black/60">
+                  <td colSpan={6} className={EMPTY_CELL}>
                     No emails match these filters.
                   </td>
                 </tr>

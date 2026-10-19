@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { useUser } from "@clerk/nextjs";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, FILTER_WIDTH, FilteredCount, inDateRange, resolveDateRange } from "@/components/Dashboard/DashboardUI";
+import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, FilteredCount, inDateRange, resolveDateRange } from "@/components/Dashboard/DashboardUI";
 import { COLUMN_ITEMS, SlidingSegment } from "@/components/ui/SlidingSegment";
 import { Bar } from "@/components/Dashboard/DashboardSkeletons";
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
@@ -18,6 +17,7 @@ import { effectCategories, getEffectHref, getQuickCategoryLabel, resolveEffectCa
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
 import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
 import { useGridColumns } from "@/hooks/useGridColumns";
+import { useUserPlan } from "@/lib/useUserPlan";
 
 const TIERS = [
   { id: "all", label: "All" },
@@ -33,13 +33,15 @@ const titleOf = (effect) => effect.title || effect.name;
 
 export default function SavedEffectsPage() {
   const router = useRouter();
-  const { user } = useUser();
-  const { catalog, effectBySlug, username } = useDashboard();
-  const { cardActions, overlays } = useEffectCardActions({ userPlan: user?.publicMetadata?.plan || "free" });
+  const { catalog, effectBySlug, username, isAdmin } = useDashboard();
+  // The plan from the server (lib/useUserPlan), not Clerk metadata, which can lag behind
+  // the subscription; admins get every effect
+  const { plan } = useUserPlan();
+  const { cardActions, overlays } = useEffectCardActions({ userPlan: isAdmin ? "pro" : plan });
 
   // Saved rows, newest first: { name, created_at, ... }; null on the first load only
   // (cached across tabs, refreshed on every save or unsave)
-  const { data: rows, mutate } = useDashboardData(`saved:${username}`, async () => {
+  const { data: rows, failed, retry, mutate } = useDashboardData(`saved:${username}`, async () => {
     // Development preview: the first nine effects in the catalogue, a day apart
     if (getDashboardPreview()) return catalog.slice(0, 9).map((effect, i) => ({ name: effect.name, created_at: new Date(Date.now() - i * 86400000).toISOString() }));
     const res = await fetch("/api/dashboard/saved", { cache: "no-store" });
@@ -95,7 +97,13 @@ export default function SavedEffectsPage() {
     <div className="flex flex-col gap-[calc(var(--cvw)*1.6)] max-lg:gap-6">
       {overlays}
 
-      {rows === null ? (
+      {failed ? (
+        <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
+          <p className="type-h3">We couldn’t load your saved effects.</p>
+          <p className="type-body text-black/60">Check your connection and try again.</p>
+          <Button text="Try again" preventDefault onClick={retry} />
+        </div>
+      ) : rows === null ? (
         <div aria-busy="true" aria-label="Loading your saved effects" className="flex flex-col gap-[calc(var(--cvw)*1.6)] max-lg:gap-6">
           {/* the count and the filters, then cards: cover, title, category line */}
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -159,7 +167,7 @@ export default function SavedEffectsPage() {
           </div>
 
           {shown.length === 0 ? (
-            <p className="type-body text-black/60">No saved effects match these filters.</p>
+            <p className={EMPTY_TABLE}>No saved effects match these filters.</p>
           ) : (
             <div className={`flex flex-wrap ${EFFECT_GRID}`}>
               {/* the cards glide to their new slots on a column switch or filter, as on /effects */}

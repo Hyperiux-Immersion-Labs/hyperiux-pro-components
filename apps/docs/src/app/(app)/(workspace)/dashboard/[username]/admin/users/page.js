@@ -11,14 +11,14 @@ import { ToastViewport, useToastQueue } from "@/components/ui/Toast";
 import { getDashboardPreview, sampleAdminUsers } from "@/lib/dev/dashboardPreview";
 import Button from "@/homepage/components/Button";
 import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
-import { ACTION_LINE, ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
+import { ACTION_LINE, ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_CELL, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
 import { StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ManageUserDrawer } from "@/components/admin/ManageUserDrawer";
 import { UserAvatar } from "@/components/admin/UserAvatar";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
-import { buildUserActivitySlug } from "@/lib/user-slug";
+import { buildUserActivityPath } from "@/lib/user-slug";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -757,7 +757,7 @@ export default function AdminPage() {
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={columns} className="type-body py-10 text-center text-black/60">
+                  <td colSpan={columns} className={EMPTY_CELL}>
                     No users match these filters.
                   </td>
                 </tr>
@@ -769,7 +769,7 @@ export default function AdminPage() {
                         <UserAvatar name={user.name} email={user.email} imageUrl={user.imageUrl} className="size-9" />
                         <div className="flex min-w-0 flex-col">
                           <span className="flex items-center gap-1.5">
-                            <Link href={path(`admin/activity/${buildUserActivitySlug(user)}`)} className="type-body truncate transition-colors duration-300 hover:text-primary">
+                            <Link href={path(buildUserActivityPath(user))} className="type-body truncate transition-colors duration-300 hover:text-primary">
                               {displayName(user)}
                             </Link>
                             {user.role && user.role !== "user" && <span className="type-small shrink-0 bg-black/5 px-1.5 text-black/60">{user.role === "super_admin" ? "Super admin" : "Admin"}</span>}
@@ -833,7 +833,7 @@ export default function AdminPage() {
     <ManageUserDrawer
       user={manageUser}
       isOwnRow={manageUser?.id === viewer?.id}
-      activityHref={manageUser ? path(`admin/activity/${buildUserActivitySlug(manageUser)}`) : "#"}
+      activityHref={manageUser ? path(buildUserActivityPath(manageUser)) : "#"}
       onClose={() => setManageUser(null)}
       onSaved={(patch) => {
         applyManageChanges(manageUser.id, patch);

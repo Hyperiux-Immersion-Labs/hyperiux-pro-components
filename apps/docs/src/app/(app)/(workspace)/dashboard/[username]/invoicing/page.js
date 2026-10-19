@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { CARD, CARD_PAD, DetailRows } from "@/components/Dashboard/DashboardUI";
+import { CARD, CARD_PAD, DetailRows, EMPTY_TABLE, TextButton } from "@/components/Dashboard/DashboardUI";
 import { Bar, ButtonBar, SkeletonCard, useAccountHint } from "@/components/Dashboard/DashboardSkeletons";
 import { refreshDashboard, useDashboardData } from "@/components/Dashboard/useDashboardData";
 import { Modal } from "@/components/ui/SignInRequiredModal";
 import Button from "@/homepage/components/Button";
 import { PLANS, formatPrice, getMonthlyEquivalent } from "@/lib/plans";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
+import { useCurrency } from "@/lib/useCurrency";
 import { getDashboardPreview, sampleInvoices } from "@/lib/dev/dashboardPreview";
 
 const subscribeNever = () => () => {};
@@ -34,7 +34,13 @@ function money(amount, currency, minorUnits = false) {
 }
 
 // The next plan up, with what it adds - Pro for free accounts, Pro+ for Pro
-function nextPlan(plan, tier) {
+// A yearly price in the visitor's currency: "$79 a year · about $6.58/mo" (INR + GST)
+function yearlyPrice(tier, currency) {
+  const gst = currency === "INR" ? " + GST" : "";
+  return `${formatPrice(PLANS[tier].prices.yearly[currency], currency)}${gst} a year · about ${formatPrice(getMonthlyEquivalent(tier, "yearly", currency), currency)}/mo`;
+}
+
+function nextPlan(plan, tier, currency) {
   if (plan !== "pro") {
     const pro = PLANS.pro;
     return {
@@ -42,7 +48,7 @@ function nextPlan(plan, tier) {
       lead: "Go",
       accent: "Pro.",
       ticks: ["Every effect, free and Pro", `${pro.installsPerDay} effects a day across web, CLI and MCP`, `${pro.credits.yearly.amount} template credits a year`],
-      price: `${formatPrice(pro.prices.yearly.USD)} a year · about ${formatPrice(getMonthlyEquivalent("pro", "yearly"))}/mo`,
+      price: yearlyPrice("pro", currency),
       cta: "Upgrade to Pro",
     };
   }
@@ -53,7 +59,7 @@ function nextPlan(plan, tier) {
     lead: "Go",
     accent: "further.",
     ticks: [`${plus.installsPerDay} effects a day across web, CLI and MCP`, `${plus.credits.yearly.amount} template credits a year, full catalogue`, "Everything in Pro"],
-    price: `${formatPrice(plus.prices.yearly.USD)} a year · about ${formatPrice(getMonthlyEquivalent("pro_plus", "yearly"))}/mo`,
+    price: yearlyPrice("pro_plus", currency),
     cta: "Upgrade to Pro+",
   };
 }
@@ -61,9 +67,10 @@ function nextPlan(plan, tier) {
 // Loading: the dark current-plan card (its detail rows on Pro), the next-plan card beside it
 // (not on Pro+), then the receipts table
 function InvoicingSkeleton() {
-  const { plan, tier } = useAccountHint();
+  const { isAdmin, plan, tier } = useAccountHint();
   const isPro = plan === "pro";
-  const upsell = tier !== "pro_plus";
+  // no next-plan card on Pro+, or for an admin without a paid plan
+  const upsell = tier !== "pro_plus" && !(isAdmin && !isPro);
   return (
     <div aria-busy="true" aria-label="Loading your billing" className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
       <div className="flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-col max-lg:gap-3">
@@ -125,10 +132,10 @@ function InvoicingSkeleton() {
 }
 
 export default function InvoicingPage() {
-  const { path, isAdmin, username } = useDashboard();
-  const router = useRouter();
+  const { isAdmin, username } = useDashboard();
+  const currency = useCurrency();
   // Cached across tabs: the skeleton shows on the first load only
-  const { data, failed, mutate } = useDashboardData(`invoices:${username}`, async () => {
+  const { data, failed, retry, mutate } = useDashboardData(`invoices:${username}`, async () => {
     const preview = getDashboardPreview();
     if (preview) return sampleInvoices(preview);
     const res = await fetch("/api/dashboard/invoices", { cache: "no-store" });
@@ -164,16 +171,12 @@ export default function InvoicingPage() {
     }
   }
 
-  // Personal billing: an admin account has none, so it goes back to the overview
-  useEffect(() => {
-    if (isAdmin) router.replace(path());
-  }, [isAdmin, router, path]);
-
   if (failed) {
     return (
       <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
         <p className="type-h3">We couldn’t load your billing.</p>
-        <p className="type-body text-black/60">Check your connection and reload the page.</p>
+        <p className="type-body text-black/60">Check your connection and try again.</p>
+        <Button text="Try again" preventDefault onClick={retry} />
       </div>
     );
   }
@@ -185,8 +188,11 @@ export default function InvoicingPage() {
   // Cancelled: already ended at Razorpay, or cancelled here and running to the period's end
   const cancelled = subscription?.status === "cancelled" || Boolean(data.cancelAtPeriodEnd);
   const interval = INTERVAL_LABEL[subscription?.billing_interval];
-  const planName = isPro ? (data.tier === "pro_plus" ? "Pro+" : "Pro") : "Free";
-  const upsell = nextPlan(data.plan, data.tier);
+  // An admin with no paid plan of their own: full access that isn't billed - no upsell.
+  // An admin who does pay sees their subscription like anyone else (and can cancel it).
+  const adminAccess = (isAdmin || data.isAdmin) && !isPro;
+  const planName = isPro ? (data.tier === "pro_plus" ? "Pro+" : "Pro") : adminAccess ? "Admin" : "Free";
+  const upsell = adminAccess ? null : nextPlan(data.plan, data.tier, currency);
 
   // Subscription and template payments together, newest first
   const receipts = [
@@ -235,14 +241,19 @@ export default function InvoicingPage() {
               ]}
             />
           )}
-          {!isPro && <p className="type-body text-foreground/80">Free accounts get the free effects and 3 a day. Upgrade for every effect and template credits.</p>}
+          {adminAccess && <p className="type-body text-foreground/80">Admin accounts get every effect with no daily limit. Nothing is billed unless you subscribe.</p>}
+          {!isPro && !adminAccess && (
+            <p className="type-body text-foreground/80">
+              Free accounts get the free effects{data.freeDailyLimit ? ` and ${data.freeDailyLimit} a day` : ""}. Upgrade for every effect and template credits.
+            </p>
+          )}
 
           {/* free accounts upgrade from the Pro card beside this one */}
           {/* manage at Razorpay, and cancel (only a paid subscription that's still renewing) */}
           {isPro && (subscription?.razorpay_short_url || (subscription?.razorpay_subscription_id && !cancelled)) && (
             <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
-              {subscription?.razorpay_short_url && <Button text="Manage subscription" href={subscription.razorpay_short_url} target_blank className="w-fit" />}
-              {subscription?.razorpay_subscription_id && !cancelled && <Button text="Cancel subscription" variant="outline" preventDefault onClick={() => setCancelOpen(true)} className="w-fit" />}
+              {subscription?.razorpay_short_url && <Button text="Manage Subscription" href={subscription.razorpay_short_url} target_blank className="w-fit" />}
+              {subscription?.razorpay_subscription_id && !cancelled && <Button text="Cancel Subscription" variant="outline" preventDefault onClick={() => setCancelOpen(true)} className="w-fit" />}
             </div>
           )}
           {isPro && cancelled && (
@@ -257,10 +268,10 @@ export default function InvoicingPage() {
                 {`You keep ${planName} until ${formatDate(subscription?.current_period_end)}. After that your account moves to Free and you won’t be charged again. The rest of this period isn’t refunded.`}
                 <div className="flex flex-col items-center gap-3">
                   <div className="flex flex-wrap items-center justify-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
-                    <Button text={cancelling ? "Cancelling…" : "Cancel subscription"} preventDefault disabled={cancelling} onClick={cancelSubscription} />
-                    <button type="button" disabled={cancelling} onClick={() => setCancelOpen(false)} className="type-label cursor-pointer text-foreground underline underline-offset-3 transition-colors duration-300 hover:text-primary disabled:opacity-60">
-                      Keep it
-                    </button>
+                    <Button text={cancelling ? "Cancelling…" : "Cancel Subscription"} preventDefault disabled={cancelling} onClick={cancelSubscription} />
+                    <TextButton disabled={cancelling} onClick={() => setCancelOpen(false)}>
+                      Keep It
+                    </TextButton>
                   </div>
                   {cancelError && (
                     <p role="alert" className="type-small text-primary">
@@ -304,7 +315,7 @@ export default function InvoicingPage() {
           <p className="type-small text-black/60">Subscription and template payments</p>
         </div>
         {receipts.length === 0 ? (
-          <p className="type-body text-black/60">No payments yet. Your receipts show up here once a payment goes through.</p>
+          <p className={EMPTY_TABLE}>No payments yet. Your receipts show up here once a payment goes through.</p>
         ) : (
           <div className="flex flex-col">
             <div className="type-label flex items-center gap-4 border-b border-black/10 pb-3 text-black/60 max-md:hidden">

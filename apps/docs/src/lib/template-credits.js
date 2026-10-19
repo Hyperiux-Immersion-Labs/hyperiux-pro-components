@@ -62,6 +62,26 @@ export async function grantCreditsForCharge({ clerkUserId, subscription, payment
   return credits;
 }
 
+// Pro given from the admin dashboard (api/admin/users/update-plan): the credits the same
+// paid plan's first charge earns (plans.js - yearly Pro 3, quarterly Pro+ 1, yearly Pro+ 5,
+// quarterly Pro and a 1-month grant none). Tops the balance up to that amount rather than
+// adding it, so re-granting or changing the length never stacks credits. Returns the
+// credits added.
+export async function grantCreditsForAdminGrant({ clerkUserId, tier, interval }) {
+  const target = getCreditsForCharge(tier, interval, 1);
+  if (!clerkUserId || target < 1) return 0;
+
+  const credits = target - Math.max(await getCreditBalance(clerkUserId), 0);
+  if (credits < 1) return 0;
+
+  const { error } = await supabase.from("template_credits").insert({ clerk_user_id: clerkUserId, delta: credits, reason: "grant" });
+  if (error) {
+    console.error("ADMIN_GRANT_TEMPLATE_CREDITS_ERROR:", error);
+    throw error;
+  }
+  return credits;
+}
+
 export async function getCreditBalance(clerkUserId) {
   if (!clerkUserId) return 0;
 

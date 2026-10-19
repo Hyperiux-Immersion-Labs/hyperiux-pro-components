@@ -41,6 +41,9 @@ export default function LinkButton({
   shimmerColor = "var(--foreground)",
   onClick,
   id,
+  // "button": a <button type="button"> with the same look, for actions that aren't
+  // navigation (a modal's "Keep it" / "Cancel"); `href` and `target` are ignored
+  as = "link",
   underline = 'w-full',
   underlineClassName = "mt-1",
   ...props
@@ -134,19 +137,7 @@ export default function LinkButton({
   };
 
   // Spans only inside the link (no divs), so it can sit inside a sentence's <p>.
-  return (
-    <Link
-      {...props}
-      id={id ?? autoId}
-      href={href}
-      prefetch={props.prefetch ?? prefetchFor(href)}
-      target={resolvedTarget}
-      rel={isExternal ? "noopener noreferrer" : undefined}
-      className={`relative ${colorClassName} group w-fit inline-block pb-1 ${className}`}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      onClick={handleClick}
-    >
+  const inner = (
       <span className="flex items-center gap-[calc(var(--cvw)*0.5)] max-lg:gap-2 w-fit cursor-pointer">
         <span className="relative">
           <span className="relative overflow-hidden inline-flex h-[1.4em]">
@@ -198,6 +189,38 @@ export default function LinkButton({
           </span>
         )}
       </span>
+  );
+
+  if (as === "button") {
+    return (
+      <button
+        {...props}
+        type="button"
+        id={id ?? autoId}
+        className={`relative ${colorClassName} group w-fit inline-block pb-1 cursor-pointer disabled:cursor-default disabled:opacity-60 ${className}`}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
+        onClick={onClick}
+      >
+        {inner}
+      </button>
+    );
+  }
+
+  return (
+    <Link
+      {...props}
+      id={id ?? autoId}
+      href={href}
+      prefetch={props.prefetch ?? prefetchFor(href)}
+      target={resolvedTarget}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+      className={`relative ${colorClassName} group w-fit inline-block pb-1 ${className}`}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      onClick={handleClick}
+    >
+      {inner}
     </Link>
   );
 }

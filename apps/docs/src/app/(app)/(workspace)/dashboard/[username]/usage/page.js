@@ -3,13 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 import { Search } from "lucide-react";
 import { CopyButtonContent } from "@/components/ui/CodeBlock";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { ALL_DATES, CARD, CARD_PAD, CardLink, DATE_PRESETS, DateRangeFilter, Pager, PerPageMenu, SourceChip, inDateRange, resolveDateRange } from "@/components/Dashboard/DashboardUI";
+import { ALL_DATES, CARD, CARD_PAD, CardLink, DATE_PRESETS, DateRangeFilter, EMPTY_TABLE, inDateRange, Pager, PerPageMenu, resolveDateRange, SourceChip } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard, useAccountHint } from "@/components/Dashboard/DashboardSkeletons";
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
+import { useUserPlan } from "@/lib/useUserPlan";
 import { RingMeter } from "@/components/Dashboard/RingMeter";
 import { SOURCE_BARS, UsageBars } from "@/components/Dashboard/UsageBars";
 import { SlidingSegment } from "@/components/ui/SlidingSegment";
@@ -18,6 +18,7 @@ import { resolveCover } from "@/app/(app)/(workspace)/effects/EffectCard";
 import { useEffectCardActions } from "@/app/(app)/(workspace)/effects/useEffectCardActions";
 import { getEffectHref } from "@/lib/categories";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
+import { PLANS } from "@/lib/plans";
 import { getDashboardPreview, sampleUsage } from "@/lib/dev/dashboardPreview";
 
 const SOURCES = [
@@ -41,6 +42,14 @@ function untilReset(now) {
   next.setUTCHours(24, 0, 0, 0);
   const minutes = Math.ceil((next - now) / 60000);
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+}
+
+// Midnight UTC on the visitor's clock ("5:30 AM" in India): the chart's bars are local
+// days, so this says where the limit's day actually turns over
+function resetClock(now) {
+  const next = new Date(now);
+  next.setUTCHours(24, 0, 0, 0);
+  return new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(next);
 }
 
 // Copies `npx hyperiux add …` through the effect cards' copy - just the command; the
@@ -128,13 +137,15 @@ function UsageSkeleton() {
 }
 
 export default function UsagePage() {
-  const { user } = useUser();
   const { effectBySlug, catalog, isAdmin, username } = useDashboard();
-  const { copyInstall, overlays } = useEffectCardActions({ userPlan: user?.publicMetadata?.plan || "free" });
+  // The plan from the server (lib/useUserPlan), not Clerk metadata, which can lag behind
+  // the subscription; admins get every effect
+  const { plan } = useUserPlan();
+  const { copyInstall, overlays } = useEffectCardActions({ userPlan: isAdmin ? "pro" : plan });
 
   // Cached across tabs (skeleton on the first load only), refreshed after every copy or
   // install here or elsewhere, on focus and every 30s - the table and chart stay live
-  const { data, failed } = useDashboardData(
+  const { data, failed, retry } = useDashboardData(
     `usage:${username}`,
     async () => {
       const preview = getDashboardPreview();
@@ -216,7 +227,8 @@ export default function UsagePage() {
     return (
       <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
         <p className="type-h3">We couldn’t load your usage.</p>
-        <p className="type-body text-black/60">Check your connection and reload the page.</p>
+        <p className="type-body text-black/60">Check your connection and try again.</p>
+        <Button text="Try again" preventDefault onClick={retry} />
       </div>
     );
   }
@@ -248,11 +260,11 @@ export default function UsagePage() {
                 <span className="type-h3 text-foreground/80"> / {data.limit}</span>
               </p>
               <p className="type-body text-foreground/80">
-                Effects today across web, CLI and MCP.{now ? ` Resets in ${untilReset(now)}.` : ""}
+                Effects today across web, CLI and MCP.{now ? ` Resets at ${resetClock(now)} your time, in ${untilReset(now)}.` : ""}
               </p>
               {data.tier !== "pro_plus" && (
                 <CardLink tone="dark" href="/pricing#plans" onClick={markScrollToPricingCards}>
-                  {data.plan === "pro" ? "Need more? Pro+ gives you 10 a day" : "Upgrade to Pro for 5 a day"}
+                  {data.plan === "pro" ? `Need More? Pro+ Gives You ${PLANS.pro_plus.installsPerDay} a Day` : `Upgrade to Pro for ${PLANS.pro.installsPerDay} a Day`}
                 </CardLink>
               )}
             </div>
@@ -283,9 +295,12 @@ export default function UsagePage() {
       {/* every effect taken, newest first */}
       <section aria-labelledby="history-h" className={`${CARD} ${CARD_PAD} gap-[calc(var(--cvw)*1.2)] max-lg:gap-4`}>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="history-h" className="type-h3">
-            Installs
-          </h2>
+          <div className="flex flex-col gap-1">
+            <h2 id="history-h" className="type-h3">
+              Installs
+            </h2>
+            {data.truncated && <p className="type-small text-black/60">Your latest {data.events.length} installs. Older ones aren’t shown.</p>}
+          </div>
           <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
             <label className="type-small flex h-9.5 items-center gap-2 bg-light px-3 text-black/60 ring-1 ring-inset ring-black/10 focus-within:ring-primary">
               <Search className="size-3.5 shrink-0" aria-hidden="true" />
@@ -298,12 +313,12 @@ export default function UsagePage() {
         </div>
 
         {data.events.length === 0 ? (
-          <div className="flex flex-col items-start gap-4">
-            <p className="type-body text-black/60">Nothing yet. Effects you install - copied on the website, or with the CLI or MCP - show up here.</p>
+          <div className={EMPTY_TABLE}>
+            <p>Nothing yet. Effects you install - copied on the website, or with the CLI or MCP - show up here.</p>
             <Button href="/effects" text="Browse All Effects" />
           </div>
         ) : events.length === 0 ? (
-          <p className="type-body text-black/60">No effects match these filters.</p>
+          <p className={EMPTY_TABLE}>No effects match these filters.</p>
         ) : (
           <>
             <div className="flex flex-col">

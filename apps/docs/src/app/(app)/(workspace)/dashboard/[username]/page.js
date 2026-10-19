@@ -15,7 +15,7 @@ import { TierBadge, effectCategoryLabel, resolveCover } from "@/app/(app)/(works
 import { getEffectHref } from "@/lib/categories";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 import { getDashboardPreview, sampleDashboard } from "@/lib/dev/dashboardPreview";
-import { getCreditsPerYear } from "@/lib/plans";
+import { PLANS, getCreditsPerYear } from "@/lib/plans";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const PERIOD_MONTHS = { monthly: 1, quarterly: 3, yearly: 12 };
@@ -245,7 +245,7 @@ export default function DashboardOverviewPage() {
       <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
         <p className="type-h3">We couldn’t load your dashboard.</p>
         <p className="type-body text-black/60">Check your connection and try again.</p>
-        <Button text="Try again" preventDefault onClick={retry} />
+        <Button text="Try Again" preventDefault onClick={retry} />
       </div>
     );
   }
@@ -333,8 +333,9 @@ export default function DashboardOverviewPage() {
             <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
               {isPro ? (
                 <>
-                  <Button text="Manage plan" href={data.manageSubscriptionUrl || path("invoicing")} target_blank={Boolean(data.manageSubscriptionUrl)} />
-                  {data.tier === "pro" && <CardLink tone="dark" href="/pricing#plans" onClick={markScrollToPricingCards}>See what Pro+ adds</CardLink>}
+                  {/* Invoicing has the details, receipts, Razorpay's page and Cancel in one place */}
+                  <Button text="Manage Plan" href={path("invoicing")} />
+                  {data.tier === "pro" && <CardLink tone="dark" href="/pricing#plans" onClick={markScrollToPricingCards}>See What Pro+ Adds</CardLink>}
                 </>
               ) : (
                 <Button text="Upgrade to Pro" href="/pricing#plans" onClick={markScrollToPricingCards} />
@@ -367,11 +368,11 @@ export default function DashboardOverviewPage() {
             ) : (
               <>
                 <p className="type-h3">{credits} credits</p>
-                <p className="type-small text-black/60">Yearly Pro adds 3 template credits a year, and Pro+ adds them on every plan. Redeem a credit for a whole template.</p>
+                <p className="type-small text-black/60">Yearly Pro adds {PLANS.pro.credits.yearly.amount} template credits a year, and Pro+ adds them on every plan. Redeem a credit for a whole template.</p>
               </>
             )}
             <div className="mt-auto">
-              <CardLink href={path("templates")}>Your templates</CardLink>
+              <CardLink href={path("templates")}>Your Templates</CardLink>
             </div>
           </section>
         </div>

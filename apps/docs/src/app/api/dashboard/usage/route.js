@@ -39,13 +39,14 @@ export async function GET() {
   // (lib/admin-data fetchInstalls - the count every admin page uses; admins included)
   let rows;
   try {
-    rows = (await fetchInstalls({ clerkUserId: userId })).slice(0, MAX_EVENTS);
+    rows = await fetchInstalls({ clerkUserId: userId });
   } catch (error) {
     console.error("DASHBOARD_USAGE_ERROR:", error);
     return NextResponse.json({ error: "Failed to load usage" }, { status: 500 });
   }
 
-  const events = rows.map((row) => ({
+  const truncated = rows.length > MAX_EVENTS;
+  const events = rows.slice(0, MAX_EVENTS).map((row) => ({
     name: row.effectSlug,
     title: titleOf(row.effectSlug),
     source: row.source,
@@ -64,5 +65,7 @@ export async function GET() {
     count,
     remaining: isAdmin ? null : Math.max(0, limit - count),
     events,
+    // More history than MAX_EVENTS: the page says it shows the latest only
+    truncated,
   });
 }

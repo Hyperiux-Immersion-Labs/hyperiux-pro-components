@@ -13,6 +13,8 @@ const OUTPUT_PATH = path.join(__dirname, "../public/r");
 // leaves OUTPUT_PATH itself in a partial state.
 const TMP_OUTPUT_PATH = path.join(__dirname, "../public/r.tmp");
 const PUBLIC_PATH = path.join(__dirname, "../public");
+// What a free effect's code files hold in the public JSON (see the files map below)
+const SIGN_IN_STUB = "// Sign in to install this effect: npx hyperiux@latest login, then npx hyperiux@latest add <effect>\n";
 const PUBLIC_ASSET_REGEX =
   /(?<![\w])["'`]((?:\/(?:assets|models|valley|601|svgs|img)\/[^"'`)\s]+)|(?:\/(?:showreel|eye-loop|hyperiux-wordmark|hyperiux)\.(?:mp4|svg)))["'`]/g;
 
@@ -342,11 +344,15 @@ async function buildRegistry() {
       const tier = registryJson.tier;
       const isPro = tier === "pro" || tier === "paid";
 
-      // For pro effects, strip file content from the public JSON.
-      // The CLI fetches full source via the authenticated /api/cli/effects/[slug] route.
-      const publicFiles = isPro
-        ? [...fileContents, ...assetFiles].map(({ content: _content, ...rest }) => rest)
-        : [...fileContents, ...assetFiles];
+      // No source in the public JSON, free effects included: every install needs an account
+      // (NO_ANONYMOUS_INSTALLS.md), and the CLI / MCP fetch the code through the signed-in
+      // /api/cli/effects/[slug] route. Pro files carry no content at all; free code files
+      // carry a one-line stub, so an old CLI (<= 1.1.4) or MCP (<= 0.2.1) that still falls
+      // back to this file - or `npx shadcn add <this url>` - writes a file saying what to
+      // do instead of the effect's code. Asset files keep their public `source` URL.
+      const publicFiles = [...fileContents, ...assetFiles].map(({ content: _content, ...rest }) =>
+        isPro || rest.type === "registry:asset" ? rest : { ...rest, content: SIGN_IN_STUB }
+      );
 
       // title and description kept as fallbacks for the detail page when Sanity content is absent.
       // coverImage/videoUrl/previewUrl/addedAt now live in Sanity, but `tier` and `version` must

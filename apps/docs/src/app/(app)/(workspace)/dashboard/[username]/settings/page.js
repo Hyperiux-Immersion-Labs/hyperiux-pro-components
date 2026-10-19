@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { LoaderCircle, Trash2, Upload, User, X } from "lucide-react";
+import { KeyRound, LoaderCircle, Trash2, Upload, User, X } from "lucide-react";
 import { PasswordEye } from "@/components/ui/PasswordEye";
 import { createPortal } from "react-dom";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { ACTION_LINE, ACTION_PRIMARY, CARD, CARD_PAD, CardLink, FIELD, FIELD_LABEL, SubmitButton, Toggle } from "@/components/Dashboard/DashboardUI";
+import { ACTION_LINE, ACTION_PRIMARY, CARD, CARD_PAD, CardLink, FIELD, FIELD_LABEL, SubmitButton, TextButton, Toggle } from "@/components/Dashboard/DashboardUI";
 import { Bar, ButtonBar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { getDashboardPreview, samplePreviewUser } from "@/lib/dev/dashboardPreview";
 
@@ -271,7 +271,9 @@ export default function SettingsPage() {
         return;
       }
 
-      setPwMessage("Password reset successfully.");
+      setPwMessage(user?.passwordEnabled ? "Password reset successfully." : "Password set. You can now sign in with your email too.");
+      // A first password changes passwordEnabled - show the change-password form from now on
+      await user?.reload().catch(() => {});
       setOtpStep("idle");
       setOtpCode("");
       setResetNewPassword("");
@@ -486,10 +488,32 @@ export default function SettingsPage() {
             <h2 id="password-h" className="type-h3">
               Password
             </h2>
-            <p className="type-small text-black/60">{otpStep === "idle" ? "Use at least 8 characters with a number or symbol." : `We sent a code to ${email}. Enter it with your new password.`}</p>
+            <p className="type-small text-black/60">
+              {otpStep !== "idle"
+                ? `We sent a code to ${email}. Enter it with your new password.`
+                : user.passwordEnabled
+                  ? "Use at least 8 characters with a number or symbol."
+                  : "You sign in with Google or another provider. Set a password to sign in with your email too."}
+            </p>
           </div>
 
-          {otpStep === "idle" ? (
+          {/* no password yet (a social sign-up): there's no current one to type, so it's set
+              with an emailed code - the same flow as Forgot It */}
+          {otpStep === "idle" && !user.passwordEnabled ? (
+            <div className="flex flex-col gap-[calc(var(--cvw)*1)] max-lg:gap-4">
+              {(pwMessage || pwError) && (
+                <p role="status" className={`type-small ${pwError ? "text-primary" : "text-black/60"}`}>
+                  {pwError || pwMessage}
+                </p>
+              )}
+              <div>
+                <button type="button" onClick={handleForgotPassword} disabled={sendingOtp} className={ACTION_PRIMARY}>
+                  {sendingOtp ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <KeyRound aria-hidden="true" />}
+                  {sendingOtp ? "Sending a Code…" : "Set a Password"}
+                </button>
+              </div>
+            </div>
+          ) : otpStep === "idle" ? (
             <form onSubmit={handlePasswordChange} className="flex flex-col gap-[calc(var(--cvw)*1)] max-lg:gap-4">
               <PasswordField label="Current password" name="currentPassword" autoComplete="current-password" shown={showCurrentPw} onToggle={() => setShowCurrentPw((v) => !v)} />
               <PasswordField label="New password" name="newPassword" autoComplete="new-password" shown={showNewPw} onToggle={() => setShowNewPw((v) => !v)} />
@@ -501,7 +525,7 @@ export default function SettingsPage() {
               <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
                 <SubmitButton label="Update Password" busy={savingPw} />
                 <CardLink href="#" arrow={false} onClick={() => !sendingOtp && handleForgotPassword()}>
-                  {sendingOtp ? "Sending a code…" : "Forgot it?"}
+                  {sendingOtp ? "Sending a Code…" : "Forgot It?"}
                 </CardLink>
               </div>
             </form>
@@ -518,19 +542,18 @@ export default function SettingsPage() {
                 </p>
               )}
               <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
-                <SubmitButton label="Reset password" busy={resettingPw} />
-                <button
-                  type="button"
+                <SubmitButton label="Reset Password" busy={resettingPw} />
+                <TextButton
+                  tone="light"
                   onClick={() => {
                     setOtpStep("idle");
                     setOtpCode("");
                     setResetNewPassword("");
                     setPwError("");
                   }}
-                  className="type-label cursor-pointer text-black/60 underline underline-offset-3 transition-colors duration-300 hover:text-primary"
                 >
                   Cancel
-                </button>
+                </TextButton>
               </div>
             </form>
           )}
@@ -647,11 +670,11 @@ export default function SettingsPage() {
                 <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
                   <button type="button" onClick={deleteAccount} disabled={confirmText !== "DELETE" || deleting} className={ACTION_PRIMARY}>
                     {deleting ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Trash2 aria-hidden="true" />}
-                    {deleting ? "Deleting…" : "Delete account"}
+                    {deleting ? "Deleting…" : "Delete Account"}
                   </button>
-                  <button type="button" onClick={closeDelete} disabled={deleting} className="type-label cursor-pointer text-foreground underline underline-offset-3 transition-colors duration-300 hover:text-primary disabled:opacity-60">
-                    Keep it
-                  </button>
+                  <TextButton onClick={closeDelete} disabled={deleting}>
+                    Keep It
+                  </TextButton>
                 </div>
               </div>
             </div>,

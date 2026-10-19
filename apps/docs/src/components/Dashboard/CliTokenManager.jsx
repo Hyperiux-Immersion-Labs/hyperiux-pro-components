@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { CardLink } from "./DashboardUI";
+import { CardLink, TextButton } from "./DashboardUI";
 import Button from "@/homepage/components/Button";
 import { CopyButtonContent } from "@/components/ui/CodeBlock";
 import { Modal } from "@/components/ui/SignInRequiredModal";
@@ -217,9 +217,7 @@ export default function CliTokenManager({ plan, hasToken = false }) {
                   generateToken();
                 }}
               />
-              <button type="button" onClick={() => setConfirmOpen(false)} className="type-label cursor-pointer text-foreground underline underline-offset-3 transition-colors duration-300 hover:text-primary">
-                Keep it
-              </button>
+              <TextButton onClick={() => setConfirmOpen(false)}>Keep It</TextButton>
             </div>
           </Modal>,
           document.body,

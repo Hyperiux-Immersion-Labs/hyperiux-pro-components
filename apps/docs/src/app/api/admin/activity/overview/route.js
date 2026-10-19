@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertAdmin } from "@/lib/admin";
+import { ROLES, getRequestRole } from "@/lib/admin";
 import { getEffectMetadata } from "@/lib/registry";
 import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
 import { buildDailyBucketsForRange, compareStat, comparisonWindows, fillDailyBuckets, resolveDateBounds } from "@/lib/admin-activity";
@@ -26,9 +26,12 @@ function topSlugCounts(rows, limit) {
 }
 
 export async function GET(request) {
-  if (!(await assertAdmin())) {
+  const role = await getRequestRole();
+  if (!role) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+  // Revenue is super admin only - left out of the response, not just hidden on the page
+  const showRevenue = role === ROLES.SUPER_ADMIN;
 
   try {
     const { searchParams } = new URL(request.url);
@@ -248,11 +251,13 @@ export async function GET(request) {
       comparison: windows.label,
       signups: card(signupItems),
       templateViews: card(viewItems),
-      revenue: {
-        ...card(moneyItems.filter((item) => item.currency === primaryCurrency)),
-        currency: primaryCurrency,
-        byCurrency: currencies.map((currency) => ({ currency, amount: revenueTotals[currency] })),
-      },
+      ...(showRevenue && {
+        revenue: {
+          ...card(moneyItems.filter((item) => item.currency === primaryCurrency)),
+          currency: primaryCurrency,
+          byCurrency: currencies.map((currency) => ({ currency, amount: revenueTotals[currency] })),
+        },
+      }),
       installs: {
         ...installCard,
         bySource: Object.fromEntries(INSTALL_SOURCES.map((source) => [source, installItems.filter((item) => item.source === source && inWindow(item.at)).length])),
@@ -275,13 +280,12 @@ export async function GET(request) {
         totalInstalls: windowInstalls.length,
         totalSaved: (allSavedRows || []).length,
         totalSavedTemplates: (savedTemplateRows || []).length,
-        revenueByCurrency,
+        ...(showRevenue && { revenueByCurrency }),
         totalViews,
       },
       kpis,
       signupTrend,
-      revenueTrendINR,
-      revenueTrendUSD,
+      ...(showRevenue && { revenueTrendINR, revenueTrendUSD }),
       templatePurchaseTrend,
       planDistribution,
       topSavedEffects,

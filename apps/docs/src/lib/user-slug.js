@@ -12,16 +12,21 @@ function slugify(text) {
 }
 
 // Purely a readable slug - the user's name, or the part of their email
-// before "@" when they have no name set. No id embedded by design, so two
-// users sharing a name (or the same email local-part on different domains)
-// can produce the same slug - the [userSlug] route resolves that by
-// matching against the full user list and taking the first hit, which
-// degrades a rare collision to "shows one of the matching users" rather
-// than breaking.
+// before "@" when they have no name set. Two users sharing a name (or the
+// same email local-part on different domains) get the same slug, so links
+// go through buildUserActivityPath, which adds the account id.
 export function buildUserActivitySlug({ name, email }) {
   const base = name || email?.split("@")[0];
 
   return base ? slugify(base) : "user";
+}
+
+// The per-user Activity page's path below /dashboard/{username}: the readable slug, plus
+// the Clerk id as ?u= so the [userSlug] route opens exactly that account. A URL without
+// it (typed or old) still works by slug, taking the first account that matches.
+export function buildUserActivityPath({ id, name, email }) {
+  const slug = buildUserActivitySlug({ name, email });
+  return `admin/activity/${slug}${id ? `?u=${encodeURIComponent(id)}` : ""}`;
 }
 
 // The tab names under /dashboard; a username equal to one would be read as the old

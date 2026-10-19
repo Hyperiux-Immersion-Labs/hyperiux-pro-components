@@ -1,6 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { assertSuperAdmin, ROLES } from "@/lib/admin";
+import { assertSuperAdmin, REVOKED_ROLE, ROLES } from "@/lib/admin";
+import { clearClerkUsersCache } from "@/lib/admin-data";
 import { recordAdminAction } from "@/lib/admin-audit";
 
 const VALID_ROLES = new Set([ROLES.SUPER_ADMIN, ROLES.ADMIN, null]);
@@ -35,10 +36,13 @@ export async function POST(request) {
 
     // publicMetadata.role is a sibling key to plan/proAccess/billingInterval
     // (see update-plan/route.js) - updateUserMetadata merges at the top
-    // level, so this can't clobber a user's plan and vice versa.
+    // level, so this can't clobber a user's plan and vice versa. No access
+    // is stored as REVOKED_ROLE, not null (lib/admin getRole).
     await clerk.users.updateUserMetadata(clerkUserId, {
-      publicMetadata: { role },
+      publicMetadata: { role: role ?? REVOKED_ROLE },
     });
+    // An admin role makes an account internal (lib/admin-data internalReason)
+    clearClerkUsersCache();
 
     await recordAdminAction({ action: "role.update", targetClerkUserId: clerkUserId, details: { role } });
     return NextResponse.json({ success: true, role });

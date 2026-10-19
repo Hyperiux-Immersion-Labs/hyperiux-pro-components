@@ -31,7 +31,8 @@ export async function GET() {
       limit: null,
       count: 0,
       remaining: null,
-      effectSlugs: [],
+      // Taken today - copying one again needn't be logged again
+      effectSlugs: await getUnlockedEffectSlugsToday({ clerkUserId: userId, isAdmin: true }),
     });
   }
 
@@ -89,7 +90,7 @@ export async function POST(request) {
     );
   }
 
-  const effectSlugs = await getUnlockedEffectSlugsToday({ clerkUserId: userId });
+  const effectSlugs = await getUnlockedEffectSlugsToday({ clerkUserId: userId, isAdmin: result.reason === "admin" });
 
   return NextResponse.json({
     allowed: result.allowed,

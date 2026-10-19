@@ -87,14 +87,15 @@ export function CopyLimitProvider({ children, onRequireSignIn, onRequireUpgrade,
       return false;
     }
 
-    if (usage?.isAdmin) return true;
     // Already used a slot on this effect today - copy freely, no need to
     // round-trip to the server.
     if (effectAlreadyUnlocked) {
       notifyUsage(usage);
       return true;
     }
-    if (usage && usage.remaining <= 0) {
+    // Admins have no limit, but their first copy of an effect each day still goes to the
+    // server, which logs it for their dashboard's Usage tab
+    if (usage && !usage.isAdmin && usage.remaining <= 0) {
       notifyUsage(usage);
       return false;
     }

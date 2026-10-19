@@ -13,10 +13,13 @@ import { SupportSection } from "@/components/admin/ManageUserSupport";
 import { useLenisLock } from "@/hooks/useLenisLock";
 import { prefersReducedMotion } from "@/lib/motion";
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
+import { getCreditsForCharge } from "@/lib/plans";
 
 const LEVELS = { free: "Free", pro: "Pro", pro_plus: "Pro+" };
 const LENGTHS = { monthly: "1 month", quarterly: "3 months", yearly: "1 year" };
 const ROLES = { "": "No access", admin: "Admin", super_admin: "Super Admin" };
+// subscriptions.status values that mean Razorpay is still charging them
+const BILLED_STATUSES = new Set(["authenticated", "active", "pending", "halted"]);
 
 // "free" | "pro" | "pro_plus" (Pro+ is plan "pro", tier "pro_plus"; old rows have no tier)
 const levelOf = (user) => (user.plan === "pro" ? user.tier || "pro_plus" : "free");
@@ -183,6 +186,9 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
   const [level, setLevel] = useState(currentLevel);
   const [length, setLength] = useState(user.plan === "pro" ? user.billingInterval || "monthly" : "monthly");
   const [role, setRole] = useState(roleOf(user));
+  // Paying through Razorpay: the plan follows the subscription, so it's cancelled under
+  // Billing before the plan changes here (api/admin/users/update-plan refuses otherwise)
+  const razorpayBilled = Boolean(user.razorpaySubscriptionId) && BILLED_STATUSES.has(user.status);
   const planChanged = level !== currentLevel || (level !== "free" && length !== (user.billingInterval || "monthly"));
   const roleChanged = role !== roleOf(user);
 
@@ -245,12 +251,15 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
       : { text: `Mark ${user.name || user.email} as internal: their payments, installs and signup leave the customer numbers and show under Internal.` },
   ];
 
+  // A grant tops their template credits up to what the same paid plan earns
+  const grantCredits = level === "free" ? 0 : getCreditsForCharge(level, length, 1);
   const planLines = [
     level === "free"
-      ? { text: "Move to Free: Pro access and any CLI token for it stop straight away.", danger: currentLevel !== "free" }
+      ? { text: "Move to Free: Pro access, any CLI token and unused template credits stop straight away.", danger: currentLevel !== "free" }
       : level !== currentLevel
         ? { text: `Give ${LEVELS[level]} for ${LENGTHS[length]}, free of charge.` }
         : { text: `Change the access length to ${LENGTHS[length]}.` },
+    ...(grantCredits > 0 ? [{ text: `Tops their template credits up to ${grantCredits}, as a paid ${LEVELS[level]} ${LENGTHS[length]} plan earns.` }] : []),
   ];
   const roleLines = [
     role === "super_admin"
@@ -342,6 +351,8 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
               run("plan", async () => {
                 const plan = level === "free" ? "free" : "pro";
                 const json = await post("/api/admin/users/update-plan", { clerkUserId: user.id, plan, tier: plan === "pro" ? level : null, billingInterval: plan === "pro" ? length : null });
+                if (json.creditsError) setError(json.creditsError);
+                else if (json.creditsAdded) setNotice(`${json.creditsAdded} template credit${json.creditsAdded === 1 ? "" : "s"} added.`);
                 return { plan, tier: json.tier, status: json.status, billingInterval: json.billingInterval, planValidUntil: json.currentPeriodEnd };
               })
             }
@@ -350,11 +361,12 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           <div className="flex flex-wrap items-center gap-3">
             <Picker label="Plan" value={level} options={LEVELS} onChange={setLevel} />
             {level !== "free" && <Picker label="Access length" value={length} options={LENGTHS} onChange={setLength} />}
-            <button type="button" disabled={!planChanged} onClick={() => setPending("plan")} className={`${ACTION_PRIMARY} ml-auto`}>
+            <button type="button" disabled={!planChanged || razorpayBilled} onClick={() => setPending("plan")} className={`${ACTION_PRIMARY} ml-auto`}>
               Apply
             </button>
           </div>
         )}
+        {razorpayBilled && <p className="type-small text-foreground/80">Paid through Razorpay. Cancel the subscription under Billing before changing the plan here.</p>}
       </section>
 
       <BillingSection user={user} post={post} onSaved={onSaved} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setBillingBusy} />
@@ -384,7 +396,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           <div className="flex flex-wrap items-center gap-3">
             <Picker label="Role" value={role} options={ROLES} onChange={setRole} />
             <button type="button" disabled={!roleChanged} onClick={() => setPending("role")} className={`${LINE_BUTTON} ml-auto`}>
-              Save role
+              Save Role
             </button>
           </div>
         )}
@@ -413,7 +425,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
             <p className="type-small min-w-0 flex-1 text-foreground/80">{INTERNAL_STATUS[user.internal || "customer"]}</p>
             {(!user.internal || user.internal === "marked") && (
               <button type="button" onClick={() => setPending("internal")} className={`${LINE_BUTTON} ml-auto`}>
-                {user.internal ? "Count as a customer" : "Mark as internal"}
+                {user.internal ? "Count as a Customer" : "Mark as Internal"}
               </button>
             )}
           </div>
@@ -427,7 +439,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
             Recent activity
           </h3>
           <CardLink href={activityHref} tone="dark">
-            All activity
+            All Activity
           </CardLink>
         </div>
         {recent === null ? (
@@ -481,11 +493,11 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
               className={LINE_BUTTON}
             >
               {busy === "reset" ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <KeyRound aria-hidden="true" />}
-              Send password reset
+              Send Password Reset
             </button>
             <button type="button" onClick={copyEmail} disabled={!user.email} className={LINE_BUTTON}>
               {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-              {copied ? "Copied" : "Copy email"}
+              {copied ? "Copied" : "Copy Email"}
             </button>
             {!isOwnRow && (
               <button
@@ -494,7 +506,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
                 className={`${LINE_BUTTON} ${user.suspended ? "" : "text-danger hover:text-danger hover:ring-danger"}`}
               >
                 {user.suspended ? <RotateCcw aria-hidden="true" /> : <Ban aria-hidden="true" />}
-                {user.suspended ? "Restore account" : "Suspend"}
+                {user.suspended ? "Restore Account" : "Suspend"}
               </button>
             )}
           </div>

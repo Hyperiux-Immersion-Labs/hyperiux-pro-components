@@ -6,10 +6,12 @@ import { isAdminUser } from "@/lib/admin";
 import { getTemplateBySlug } from "@/lib/mock-templates";
 import { isCancelScheduled } from "@/lib/subscription-events";
 import { razorpay } from "@/lib/razorpay";
+import { LIMITS } from "@/lib/install-limit";
 
 // Payments with no Razorpay invoice to link to (older checkouts, or not found with these
 // keys): remembered for this server's lifetime so they aren't looked up on every load
 const NO_RECEIPT = new Set();
+const RECEIPT_LOOKUP_BUDGET_MS = 2500;
 
 export async function GET() {
   const { userId } = await auth();
@@ -20,18 +22,9 @@ export async function GET() {
 
   const [user, { plan, tier }] = await Promise.all([currentUser(), getUserPlanInfo(userId)]);
 
-  // Admins have no personal billing to review - their Pro-equivalent access
-  // (if any) isn't a paid subscription, so there's nothing to list here.
-  if (isAdminUser(user)) {
-    return NextResponse.json({
-      isAdmin: true,
-      plan,
-      tier,
-      subscription: null,
-      invoices: [],
-      templatePurchases: [],
-    });
-  }
+  // Admins get their real billing too: an admin can also be a paying subscriber, and
+  // this is where they'd see receipts and cancel. With none, the page says so.
+  const isAdmin = isAdminUser(user);
 
   const [
     { data: subscriptionRow, error: subscriptionError },
@@ -84,11 +77,13 @@ export async function GET() {
 
   // Paid template purchases recorded before their receipt link was kept: every one was
   // paid through a Razorpay invoice, so the link is looked up once (payment -> invoice)
-  // and saved. A failed lookup just leaves it for next time.
+  // and saved. A failed lookup just leaves it for next time. The page waits at most
+  // RECEIPT_LOOKUP_BUDGET_MS for them: a slow Razorpay shows the row without its link
+  // this time (it's saved when the lookup lands, and shown on the next load).
   const missingReceipts = (templatePurchaseRows || [])
     .filter((row) => row.razorpay_payment_id && !row.invoice_url && !NO_RECEIPT.has(row.razorpay_payment_id))
-    .slice(0, 10);
-  await Promise.all(
+    .slice(0, 5);
+  const lookups = Promise.all(
     missingReceipts.map(async (row) => {
       try {
         const payment = await razorpay.payments.fetch(row.razorpay_payment_id);
@@ -106,6 +101,9 @@ export async function GET() {
       }
     }),
   );
+  if (missingReceipts.length) {
+    await Promise.race([lookups, new Promise((resolve) => setTimeout(resolve, RECEIPT_LOOKUP_BUDGET_MS))]);
+  }
 
   const templatePurchases = (templatePurchaseRows || []).map((row) => ({
     id: row.id,
@@ -122,8 +120,10 @@ export async function GET() {
   }));
 
   return NextResponse.json({
-    isAdmin: false,
+    isAdmin,
     plan,
+    // For the Free plan's line ("3 a day"), from the one limits table
+    freeDailyLimit: LIMITS.free,
     tier,
     subscription: subscriptionRow || null,
     // Cancelled from the dashboard: active until the period ends, then Free

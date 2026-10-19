@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
-import { ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, FILTER_WIDTH, Pager, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
+import { ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_CELL, FILTER_WIDTH, Pager, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
 import { refreshDashboard, useDashboardData } from "@/components/Dashboard/useDashboardData";
@@ -459,7 +459,7 @@ export default function AdminInvoicingPage() {
                 </tr>
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="type-body py-10 text-center text-black/60">
+                  <td colSpan={7} className={EMPTY_CELL}>
                     No payments in this window.
                   </td>
                 </tr>

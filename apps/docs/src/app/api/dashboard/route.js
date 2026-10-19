@@ -35,13 +35,13 @@ export async function GET() {
   ] = await Promise.all([
     supabase
       .from("wishlisted_effects")
-      .select("*")
+      .select("effect_slug, title, cover_image, tier, created_at")
       .eq("clerk_user_id", userId),
 
     supabase
       .from("subscriptions")
       .select(
-        "plan,status,billing_interval,current_period_end,razorpay_subscription_id,razorpay_plan_id,razorpay_short_url,cli_token_hash,cli_token_revoked_at"
+        "plan,status,billing_interval,current_period_end,razorpay_subscription_id,cli_token_hash,cli_token_revoked_at"
       )
       .eq("clerk_user_id", userId)
       .maybeSingle(),
@@ -54,8 +54,9 @@ export async function GET() {
   ]);
 
   // Fallback: if no subscription row exists (webhook missed), provision one now
+  // (ignoreDuplicates: a row the webhook writes meanwhile is never overwritten with Free)
   if (!subscriptionError && !subscription) {
-    await supabase
+    const { error: provisionError } = await supabase
       .from("subscriptions")
       .upsert(
         {
@@ -64,8 +65,9 @@ export async function GET() {
           status: "inactive",
           updated_at: new Date().toISOString(),
         },
-        { onConflict: "clerk_user_id" }
+        { onConflict: "clerk_user_id", ignoreDuplicates: true }
       );
+    if (provisionError) console.error("DASHBOARD_PROVISION_SUBSCRIPTION_ERROR:", userId, provisionError);
   }
 
   if (wishlistError) {
@@ -91,10 +93,6 @@ export async function GET() {
 
   const totalEffects = registry.items?.length || 0;
   const totalFreeEffects = getFreeEffectsCount();
-  const totalEffectsAccess =
-    plan === "pro"
-      ? totalEffects
-      : Math.min(totalFreeEffects, totalEffects);
 
   // Installs through each surface
   const bySource = { web: 0, cli: 0, mcp: 0 };
@@ -112,7 +110,6 @@ export async function GET() {
 
   return NextResponse.json({
     savedCount: wishlist?.length || 0,
-    savedEffects: wishlist || [],
     // Installs from the website, the CLI and MCP
     webCount: bySource.web,
     cliCount: bySource.cli,
@@ -138,7 +135,6 @@ export async function GET() {
     templateCredits,
     dailyInstallLimit: getLimitForTier(tier, { isAdmin: isAdminUser(user) }),
     totalEffects,
-    totalEffectsAccess,
     totalFreeEffects,
 
     subscriptionStatus: subscription?.status || "inactive",
@@ -147,9 +143,6 @@ export async function GET() {
     billingInterval: subscription?.billing_interval || null,
     planValidUntil: subscription?.current_period_end || null,
     creditsPerYear: plan === "pro" ? getCreditsPerYear(tier, subscription?.billing_interval) : 0,
-    razorpaySubscriptionId: subscription?.razorpay_subscription_id || null,
-    razorpayPlanId: subscription?.razorpay_plan_id || null,
-    manageSubscriptionUrl: subscription?.razorpay_short_url || null,
     // Whether a CLI token is live (the button says "Regenerate"); the hash never leaves here
     hasCliToken: Boolean(subscription?.cli_token_hash && !subscription?.cli_token_revoked_at),
   });

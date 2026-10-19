@@ -23,8 +23,9 @@ export { fetchAllRows };
 // marked it internal (publicMetadata.internal, set from the Users tab's Manage
 // drawer).
 export const INTERNAL_EMAIL_DOMAINS = ["weareenigma.com"];
-// Team members' personal accounts used for testing
-export const INTERNAL_EMAILS = ["harshgoyalrss7@gmail.com"];
+// Team members' personal accounts used for testing: listed in the admin Settings tab
+// (app_settings internal_emails), not here, so no one's address lives in the source
+export const INTERNAL_EMAILS = [];
 
 // Why an account is internal: "marked" (by a super admin), "role" (an admin),
 // "email" (listed above), "domain" (a team domain) - or null for a customer.

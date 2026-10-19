@@ -1,8 +1,23 @@
 import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { assertAdmin } from "@/lib/admin";
+import { ROLES, getRequestRole } from "@/lib/admin";
 import { redactEmailLogRow } from "@/lib/email-redaction";
+
+// Payment emails carry amounts (in the subject too: "receipt ($79.00)"), which are super
+// admin only, like revenue - a regular admin sees that one was sent, not what it says
+const PAYMENT_EMAIL_TYPES = new Set(["subscription_invoice"]);
+const PAYMENT_BODY_NOTE = "Hidden: payment details are for super admins.";
+
+function hidePaymentDetails(row) {
+  if (!row || !PAYMENT_EMAIL_TYPES.has(row.email_type)) return row;
+  return {
+    ...row,
+    subject: typeof row.subject === "string" ? row.subject.replace(/\s*\([^)]*\)/g, "") : row.subject,
+    ...("html_content" in row ? { html_content: null } : {}),
+    ...("text_content" in row ? { text_content: PAYMENT_BODY_NOTE } : {}),
+  };
+}
 
 // Resend's status column only tells us the invite email was delivered -
 // it says nothing about whether the invitation itself is still pending,
@@ -30,7 +45,8 @@ async function getInvitationStatusByEmail() {
 }
 
 export async function GET(request) {
-  if (!(await assertAdmin())) {
+  const role = await getRequestRole();
+  if (!role) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -50,7 +66,8 @@ export async function GET(request) {
       if (!data) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
       // Rows logged before codes were masked at write time still hold them
-      return NextResponse.json(redactEmailLogRow(data));
+      const row = redactEmailLogRow(data);
+      return NextResponse.json(role === ROLES.SUPER_ADMIN ? row : hidePaymentDetails(row));
     }
 
     // List with filters
@@ -101,7 +118,10 @@ export async function GET(request) {
       ? await getInvitationStatusByEmail()
       : new Map();
 
-    const emails = (data || []).map(redactEmailLogRow).map((row) => {
+    const emails = (data || [])
+      .map(redactEmailLogRow)
+      .map((row) => (role === ROLES.SUPER_ADMIN ? row : hidePaymentDetails(row)))
+      .map((row) => {
       if (row.email_type !== "invitations") return row;
 
       return {

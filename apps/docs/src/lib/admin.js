@@ -3,6 +3,10 @@ import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 
 export const ROLES = { SUPER_ADMIN: "super_admin", ADMIN: "admin" };
 
+// Stored as publicMetadata.role when access is taken away. Clerk deletes a metadata key
+// set to null, which would let the ADMIN_EMAIL fallback below hand the role straight back.
+export const REVOKED_ROLE = "none";
+
 // No hardcoded fallback: if ADMIN_EMAIL is unset, email-based admin access
 // is simply unavailable - only an explicit publicMetadata.role still works.
 // Fails closed instead of granting a literal hardcoded account admin access
@@ -10,13 +14,14 @@ export const ROLES = { SUPER_ADMIN: "super_admin", ADMIN: "admin" };
 //
 // The ADMIN_EMAIL fallback only applies when metadata hasn't already set an
 // explicit role, so a super admin can later demote that account by giving it
-// a metadata role of its own (including revoking it outright).
+// a metadata role of its own, or revoke it outright (REVOKED_ROLE).
 export function getRole(user) {
   if (!user) return null;
 
   const metaRole = user.publicMetadata?.role;
   if (metaRole === ROLES.SUPER_ADMIN) return ROLES.SUPER_ADMIN;
   if (metaRole === ROLES.ADMIN) return ROLES.ADMIN;
+  if (metaRole === REVOKED_ROLE) return null;
 
   const adminEmail = process.env.ADMIN_EMAIL;
   if (adminEmail && user.emailAddresses?.[0]?.emailAddress === adminEmail) {
@@ -54,6 +59,16 @@ export async function assertAdmin() {
   const user = await clerk.users.getUser(userId);
 
   return isAdminUser(user);
+}
+
+// For API routes open to every admin that show more to super admins: the
+// signed-in account's role (ROLES.*), or null - one Clerk read for both checks.
+export async function getRequestRole() {
+  const { userId } = await auth();
+  if (!userId) return null;
+
+  const clerk = await clerkClient();
+  return getRole(await clerk.users.getUser(userId));
 }
 
 // Gates role management, plan changes, and billing/revenue - anything a

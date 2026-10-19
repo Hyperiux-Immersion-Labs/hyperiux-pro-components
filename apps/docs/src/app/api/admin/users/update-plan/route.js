@@ -10,9 +10,13 @@ import {
   proUnlockedText,
 } from "@/lib/emails/pro-unlocked-email";
 import { getPlanLabel, isValidTier } from "@/lib/plans";
-import { expireCredits } from "@/lib/template-credits";
+import { expireCredits, grantCreditsForAdminGrant } from "@/lib/template-credits";
+import { razorpay, withRazorpayRetry } from "@/lib/razorpay";
 
 const GRANT_INTERVALS = ["monthly", "quarterly", "yearly"];
+
+// Razorpay subscription states that are (or can resume) charging the customer
+const BILLING_STATUSES = new Set(["authenticated", "active", "pending", "halted"]);
 
 // Manually-granted pro (no real Razorpay subscription behind it) has no
 // webhook to ever expire it - it must carry its own period_end so
@@ -61,6 +65,35 @@ export async function POST(request) {
       );
     }
 
+    // A paying subscriber's plan belongs to Razorpay: moving them to Free here would
+    // leave them being charged (and the next subscription.charged webhook puts Pro back),
+    // and a grant would overwrite their paid period. End the subscription first (Billing →
+    // Cancel subscription), then change the plan. Fails closed if Razorpay can't be read.
+    const { data: existing, error: existingError } = await supabase
+      .from("subscriptions")
+      .select("razorpay_subscription_id")
+      .eq("clerk_user_id", clerkUserId)
+      .maybeSingle();
+    if (existingError) {
+      console.error("ADMIN_UPDATE_PLAN_READ_ERROR:", existingError);
+      return NextResponse.json({ error: "Couldn't read their subscription." }, { status: 500 });
+    }
+    if (existing?.razorpay_subscription_id) {
+      let live;
+      try {
+        live = await withRazorpayRetry(() => razorpay.subscriptions.fetch(existing.razorpay_subscription_id));
+      } catch (fetchError) {
+        console.error("ADMIN_UPDATE_PLAN_RAZORPAY_ERROR:", existing.razorpay_subscription_id, fetchError);
+        return NextResponse.json({ error: "Couldn't check their Razorpay subscription, so nothing was changed. Try again." }, { status: 502 });
+      }
+      if (BILLING_STATUSES.has(live?.status)) {
+        return NextResponse.json(
+          { error: `They have a ${live.status} Razorpay subscription. Cancel it under Billing first (Cancel now, to end it today), then change the plan here.` },
+          { status: 409 }
+        );
+      }
+    }
+
     const grantedTier = plan === "pro" ? tier : null;
 
     const newStatus = plan === "pro" ? "active" : "inactive";
@@ -100,8 +133,20 @@ export async function POST(request) {
       return NextResponse.json({ error: supabaseError.message }, { status: 500 });
     }
 
-    // Moving someone to Free ends their plan, and its template credits with it
-    if (plan === "free") await expireCredits(clerkUserId);
+    // Moving someone to Free ends their plan, and its template credits with it. A grant
+    // comes with the credits the same paid plan earns (lib/template-credits); the plan
+    // is already given, so a failure here is reported to the admin, not undone.
+    let creditsAdded = 0;
+    let creditsError = null;
+    if (plan === "free") {
+      await expireCredits(clerkUserId);
+    } else {
+      try {
+        creditsAdded = await grantCreditsForAdminGrant({ clerkUserId, tier, interval: billingInterval });
+      } catch {
+        creditsError = "Plan given, but its template credits couldn't be added. Add them under Support → Template credits.";
+      }
+    }
 
     // Update Clerk publicMetadata - mirrors the shape markUserProFromSubscription
     // writes for real subscriptions, so both grant paths look the same downstream.
@@ -143,7 +188,7 @@ export async function POST(request) {
     await recordAdminAction({
       action: "plan.update",
       targetClerkUserId: clerkUserId,
-      details: { plan, tier: grantedTier, billingInterval: plan === "pro" ? billingInterval : null, currentPeriodEnd },
+      details: { plan, tier: grantedTier, billingInterval: plan === "pro" ? billingInterval : null, currentPeriodEnd, creditsAdded },
     });
 
     return NextResponse.json({
@@ -153,6 +198,8 @@ export async function POST(request) {
       status: newStatus,
       billingInterval: plan === "pro" ? billingInterval : null,
       currentPeriodEnd,
+      creditsAdded,
+      creditsError,
     });
   } catch (error) {
     console.error("ADMIN_UPDATE_PLAN_ERROR:", error);

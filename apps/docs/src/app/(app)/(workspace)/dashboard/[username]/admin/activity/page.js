@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, Pager, PerPageMenu, SourceChip } from "@/components/Dashboard/DashboardUI";
+import { CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_TABLE, Pager, PerPageMenu, SourceChip } from "@/components/Dashboard/DashboardUI";
 import { StatCard, StatCardSkeleton, TWO_OF_THREE } from "@/components/Dashboard/TrendStat";
 import { SOURCE_BARS, UsageBars } from "@/components/Dashboard/UsageBars";
 import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
@@ -12,7 +12,7 @@ import { SlidingSegment } from "@/components/ui/SlidingSegment";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
 import { getDashboardPreview, sampleAdminActivity } from "@/lib/dev/dashboardPreview";
-import { buildUserActivitySlug } from "@/lib/user-slug";
+import { buildUserActivityPath } from "@/lib/user-slug";
 import { UserAvatar } from "@/components/admin/UserAvatar";
 
 // The page's window: the dashboard's date filter (all time to start with)
@@ -220,7 +220,8 @@ export default function AdminActivityPage() {
       active = false;
       clearTimeout(timer);
     };
-  }, [query, audience, feedQuery, feedSource, feedPage, feedPerPage, catalog]);
+    // `data` too: the feed refreshes with the rest of the page (focus, every 30s, a copy)
+  }, [query, audience, feedQuery, feedSource, feedPage, feedPerPage, catalog, data]);
 
   // The window and whose accounts, at the top right of the sheet (above the stats)
   const header = (
@@ -278,7 +279,7 @@ export default function AdminActivityPage() {
     id: u.clerkUserId,
     name: u.name || u.email || "Unnamed",
     count: u.count,
-    href: path(`admin/activity/${buildUserActivitySlug({ name: u.name, email: u.email })}`),
+    href: path(buildUserActivityPath({ id: u.clerkUserId, name: u.name, email: u.email })),
     lead: <Avatar name={u.name} email={u.email} />,
   }));
 
@@ -292,7 +293,8 @@ export default function AdminActivityPage() {
       <div className="flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-col max-lg:gap-3">
         <StatCard className="flex-1" label="Signups" value={number(kpis.signups.value)} note="New accounts" stat={kpis.signups} comparison={kpis.comparison} />
         <StatCard className="flex-1" label="Template views" value={number(kpis.templateViews.value)} note="Template pages opened" stat={kpis.templateViews} comparison={kpis.comparison} />
-        {isSuperAdmin && (
+        {/* the API sends revenue to super admins only */}
+        {isSuperAdmin && kpis.revenue && (
           <StatCard
             className="flex-1"
             label="Revenue"
@@ -525,7 +527,7 @@ export default function AdminActivityPage() {
             ))}
           </div>
         ) : feed.events.length === 0 ? (
-          <p className="type-body text-black/60">No installs match.</p>
+          <p className={EMPTY_TABLE}>No installs match.</p>
         ) : (
           <>
             <div className="flex flex-col">

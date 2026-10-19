@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, FILTER_WIDTH, FilteredCount, inDateRange, resolveDateRange } from "@/components/Dashboard/DashboardUI";
+import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, FilteredCount, inDateRange, resolveDateRange } from "@/components/Dashboard/DashboardUI";
 import { Bar } from "@/components/Dashboard/DashboardSkeletons";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
@@ -38,7 +38,7 @@ export function MyTemplates({ templates }) {
   // What's this account's: { owned: slug -> when it became theirs (bought or redeemed; null
   // if its plan includes it), savedAt: slug -> when it was saved, credits }. Cached across
   // tabs (skeleton on the first load only) and refreshed after every save.
-  const { data } = useDashboardData(`templates:${username}`, async () => {
+  const { data, failed, retry } = useDashboardData(`templates:${username}`, async () => {
     if (getDashboardPreview()) {
       const day = (n) => new Date(Date.now() - n * 86400000).toISOString();
       return {
@@ -47,11 +47,17 @@ export function MyTemplates({ templates }) {
         credits: 1,
       };
     }
+    // What they own must load (a failure would read as "you own nothing"); saves and
+    // credits fall back to none
     const json = (url, fallback) =>
       fetch(url, { cache: "no-store" })
         .then((res) => (res.ok ? res.json() : fallback))
         .catch(() => fallback);
-    const [purchases, saved, credits] = await Promise.all([json("/api/dashboard/template-purchases", { templates: [] }), json("/api/wishlist-templates", []), json("/api/templates/credits", null)]);
+    const ownedTemplates = fetch("/api/dashboard/template-purchases", { cache: "no-store" }).then((res) => {
+      if (!res.ok) throw new Error(`template-purchases ${res.status}`);
+      return res.json();
+    });
+    const [purchases, saved, credits] = await Promise.all([ownedTemplates, json("/api/wishlist-templates", []), json("/api/templates/credits", null)]);
     return {
       owned: Object.fromEntries((purchases.templates || []).map((t) => [t.slug, t.purchasedAt])),
       savedAt: Array.isArray(saved) ? Object.fromEntries(saved.map((row) => [row.template_slug, row.created_at])) : {},
@@ -153,7 +159,13 @@ export function MyTemplates({ templates }) {
       )}
 
       {/* owned and saved together, one grid */}
-      {owned === null ? (
+      {failed ? (
+        <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
+          <p className="type-h3">We couldn’t load your templates.</p>
+          <p className="type-body text-black/60">Check your connection and try again.</p>
+          <Button text="Try again" preventDefault onClick={retry} />
+        </div>
+      ) : owned === null ? (
         // the template cards' shape: cover, then title and meta beside the price, tagline
         <div aria-busy="true" aria-label="Loading your templates" className={TEMPLATE_GRID}>
           {[0, 1].map((i) => (
@@ -177,7 +189,7 @@ export function MyTemplates({ templates }) {
           <Button href="/templates" text="Browse Templates" />
         </div>
       ) : shown.length === 0 ? (
-        <p className="type-body text-black/60">No templates match these filters.</p>
+        <p className={EMPTY_TABLE}>No templates match these filters.</p>
       ) : (
         <div className={TEMPLATE_GRID}>
           {shown.map((template) => (

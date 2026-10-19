@@ -12,36 +12,22 @@ import {
 } from "@/lib/admin-activity";
 import { buildUserActivitySlug } from "@/lib/user-slug";
 import { getTemplateBySlug } from "@/lib/mock-templates";
-import { INSTALL_SOURCES, fetchInstalls } from "@/lib/admin-data";
+import { INSTALL_SOURCES, fetchInstalls, getAllClerkUsers } from "@/lib/admin-data";
 
-// Matches the bounded-fetch approach already used for the signups trend in
-// /api/admin/activity/overview - fine at this product's current scale;
-// would need real pagination past this many registered users.
-const MAX_USERS_FOR_SLUG_LOOKUP = 500;
-
-// The slug carries no id (by design - readable name/email only), so it has
-// to be resolved by computing every candidate's slug and matching, rather
-// than looked up directly. clerk_user_id list comes from Supabase since
-// that's the same source /api/admin/users already treats as the user list.
-async function findUserBySlug(clerk, slug) {
-  const { data: subscriptionRows } = await supabase
-    .from("subscriptions")
-    .select("clerk_user_id")
-    .limit(MAX_USERS_FOR_SLUG_LOOKUP);
-
-  const clerkUserIds = (subscriptionRows || [])
-    .map((row) => row.clerk_user_id)
-    .filter(Boolean);
-
-  if (!clerkUserIds.length) return null;
-
-  const { data: clerkUsers } = await clerk.users.getUserList({
-    userId: clerkUserIds,
-    limit: clerkUserIds.length,
-  });
+// The account behind the page: the Clerk id from ?u= (what every link carries - the
+// slug alone can be two people, lib/user-slug), else the first account whose slug
+// matches, searched across every Clerk account (lib/admin-data getAllClerkUsers).
+async function findUser(clerk, slug, clerkUserId) {
+  if (clerkUserId) {
+    try {
+      return await clerk.users.getUser(clerkUserId);
+    } catch {
+      return null;
+    }
+  }
 
   return (
-    (clerkUsers || []).find(
+    (await getAllClerkUsers()).find(
       (user) =>
         buildUserActivitySlug({
           name: displayName(user),
@@ -60,7 +46,7 @@ export async function GET(request, { params }) {
 
   try {
     const clerk = await clerkClient();
-    const clerkUser = await findUserBySlug(clerk, userSlug);
+    const clerkUser = await findUser(clerk, userSlug, new URL(request.url).searchParams.get("u"));
 
     if (!clerkUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });

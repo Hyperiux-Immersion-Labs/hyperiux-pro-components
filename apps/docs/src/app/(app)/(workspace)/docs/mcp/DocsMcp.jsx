@@ -640,9 +640,10 @@ export default function DocsMcp() {
       </Para>
 
       <Para>
-        To retrieve source code for a <strong>Pro</strong> effect, the server
-        needs a Pro or Pro+ CLI token. It automatically picks one up from
-        either of these, in order:
+        To retrieve source code for any effect, <strong>free ones
+        included</strong>, the server needs a CLI token from a signed-in
+        Hyperiux account (Pro effects also need Pro or Pro+). It
+        automatically picks one up from either of these, in order:
       </Para>
 
       <DocsList>
@@ -665,10 +666,11 @@ export default function DocsMcp() {
       </Para>
 
       <Para>
-        Without a valid token, Pro effect lookups still return full metadata
-        - description, dependencies, version, changelog - just not the
-        source code itself, along with a clear explanation of why. This is
-        expected behavior for an unauthenticated Pro lookup, not an error.
+        Without a valid token, lookups still return full metadata -
+        description, dependencies, version, changelog - just not the source
+        code, with <code>&quot;sign_in_required&quot;: true</code> and a note
+        asking you to run <code>npx hyperiux login</code>. Browsing and
+        details lookups never need a token and never count as installs.
       </Para>
 
       <Heading2 id="available-tools">Available tools</Heading2>
@@ -730,16 +732,19 @@ export default function DocsMcp() {
 
       <Para>
         When <code>include_source: true</code> and you&apos;re entitled to
-        the source (always true for free effects; for Pro effects, only with
-        a valid token), each file in <code>files[]</code> also includes a{" "}
-        <code>content</code> field with the full source.
+        the source (signed in for free effects; signed in on Pro for Pro
+        effects), each file in <code>files[]</code> also includes a{" "}
+        <code>content</code> field with the full source. Each effect fetched
+        this way counts toward your daily install limit.
       </Para>
 
       <Para>
-        If a Pro effect is requested without a valid token, the response
+        Signed out (no token, or one that&apos;s been revoked), the response
+        includes <code>&quot;sign_in_required&quot;: true</code> and a{" "}
+        <code>sign_in_required_reason</code>. A Pro effect on a free account
         includes <code>&quot;source_locked&quot;: true</code> and a{" "}
-        <code>source_locked_reason</code> explaining why - metadata is still
-        returned in full.
+        <code>source_locked_reason</code> instead. Either way the metadata is
+        still returned in full.
       </Para>
 
       <Heading3 id="hyperiux-list-categories"><code>hyperiux_list_categories</code></Heading3>

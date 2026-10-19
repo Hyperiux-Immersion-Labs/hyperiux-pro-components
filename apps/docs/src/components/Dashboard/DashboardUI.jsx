@@ -22,6 +22,11 @@ export const TABLE = "w-full min-w-max border-collapse text-left [&_td]:whitespa
 export const STICKY_END =
   "sticky right-0 z-1 bg-foreground pl-4 transition-shadow duration-300 group-data-[clipped]/scroll:shadow-[-14px_0_14px_-14px_rgba(0,0,0,0.3)]";
 
+// A table with nothing to show ("No users match these filters.") keeps at least 20vh, its
+// message centred - as a block, or as the one <td> of an empty <tbody>
+export const EMPTY_TABLE = "type-body flex min-h-[20vh] flex-col items-center justify-center gap-4 text-center text-black/60";
+export const EMPTY_CELL = "type-body h-[20vh] text-center align-middle text-black/60";
+
 export function TableScroll({ children, className = "" }) {
   const ref = useRef(null);
   const [clipped, setClipped] = useState(false);
@@ -63,7 +68,12 @@ export function SourceChip({ source, dark = false }) {
 // "All usage", "Your templates". `tone`: "light" (dark text on the white cards), "dark"
 // (white text on the dark plan card) or "accent" (orange, inline in a sentence - no
 // arrow there). `arrow={false}` drops the arrow, keeping the underline animation.
-const LINK_TONES = { light: "text-ink", dark: "text-foreground", accent: "text-primary" };
+// On hover the label, its line and the arrow all turn orange.
+const LINK_TONES = {
+  light: "text-ink transition-colors duration-300 hover:text-primary",
+  dark: "text-foreground transition-colors duration-300 hover:text-primary",
+  accent: "text-primary",
+};
 
 export function CardLink({ href, children, tone = "light", onClick, arrow = true, className = "" }) {
   const inline = tone === "accent";
@@ -78,6 +88,23 @@ export function CardLink({ href, children, tone = "light", onClick, arrow = true
       underlineClassName="mt-0.5"
       colorClassName={LINK_TONES[tone]}
       className={[inline ? "" : "type-label", className].filter(Boolean).join(" ")}
+    />
+  );
+}
+
+// CardLink's look on a <button>, no arrow: a modal's quiet way out ("Keep It", "Cancel").
+// `tone`: "dark" (on the dark modals and drawers) or "light" (on the white cards).
+export function TextButton({ children, onClick, disabled = false, tone = "dark", className = "" }) {
+  return (
+    <LinkButton
+      as="button"
+      text={children}
+      onClick={onClick}
+      disabled={disabled}
+      tilted={false}
+      underlineClassName="mt-0.5"
+      colorClassName={LINK_TONES[tone]}
+      className={`type-label ${className}`}
     />
   );
 }

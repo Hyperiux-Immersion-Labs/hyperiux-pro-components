@@ -223,7 +223,7 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
                       }
                       className="type-small cursor-pointer text-foreground/80 underline underline-offset-3 hover:text-primary"
                     >
-                      Remove today’s extra
+                      Remove Today’s Extra
                     </button>
                   )}
                 </div>
@@ -247,7 +247,7 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
               }
               className={LINE_BUTTON}
             >
-              Save note
+              Save Note
             </button>
             {notes?.length > 0 && (
               <ul className="flex flex-col">

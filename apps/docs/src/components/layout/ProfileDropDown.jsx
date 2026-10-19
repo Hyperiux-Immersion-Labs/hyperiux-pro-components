@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { User } from "lucide-react";
-import { ADMIN_HIDDEN_TABS, ADMIN_TABS, USER_TABS, dashboardPath, isAdminPath } from "@/components/Dashboard/dashboardRoutes";
+import { ADMIN_TABS, USER_TABS, dashboardPath, isAdminPath } from "@/components/Dashboard/dashboardRoutes";
 import { DarkSegment } from "@/components/ui/DarkSegment";
 import { displayName } from "@/lib/display-name";
 import { useAdminRole } from "@/lib/useAdminRole";
@@ -81,7 +81,7 @@ export default function ProfileDropdown({ savedCount = 0, usage = null, plan = "
   const links =
     view === "admin"
       ? ADMIN_TABS.filter((tab) => !tab.hidden && (!tab.superAdmin || isSuperAdmin))
-      : USER_TABS.filter((tab) => !(isAdmin && ADMIN_HIDDEN_TABS.has(tab.key)));
+      : USER_TABS;
   const name = displayName(user);
 
   return (

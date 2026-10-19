@@ -13,7 +13,7 @@ import { BUTTON_SIZE } from "@/homepage/components/Button";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { DarkSegment } from "@/components/ui/DarkSegment";
-import { ADMIN_HIDDEN_TABS, ADMIN_TABS, USER_TABS, activeTab, dashboardPath, isAdminPath } from "./dashboardRoutes";
+import { ADMIN_TABS, USER_TABS, activeTab, dashboardPath, isAdminPath } from "./dashboardRoutes";
 import { DashboardProvider, HERO_ASIDE_ID } from "./DashboardContext";
 
 // Each tab's header: the heading (its last words orange) and the line under it.
@@ -147,7 +147,7 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
   };
   const tabs = adminView
     ? ADMIN_TABS.filter((tab) => !tab.hidden && (!tab.superAdmin || isSuperAdmin))
-    : USER_TABS.filter((tab) => !(isAdmin && ADMIN_HIDDEN_TABS.has(tab.key)));
+    : USER_TABS;
   const current = activeTab(adminView ? ADMIN_TABS : USER_TABS, username, pathname);
 
   // The account's first name, else the first word of its email (lib/display-name)

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, RefreshCw, Search } from "lucide-react";
-import { CARD, CARD_PAD, FILTER_WIDTH, Pager } from "@/components/Dashboard/DashboardUI";
+import { CARD, CARD_PAD, EMPTY_TABLE, FILTER_WIDTH, Pager } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { SlidingSegment } from "@/components/ui/SlidingSegment";
@@ -11,7 +11,7 @@ import { getDashboardPreview, sampleEffectHealth } from "@/lib/dev/dashboardPrev
 
 // The admin Effects tab: every effect whose Sanity guide and registry entry disagree, or
 // whose guide is incomplete (api/admin/effects/health) - worst first, filterable - with a
-// link to the page, to its Sanity document and a "Refresh page" for its cache.
+// link to the page, to its Sanity document and a "Refresh Page" for its cache.
 
 const PER_PAGE = 20;
 const SEVERITIES = [
@@ -39,7 +39,7 @@ function RefreshButton({ path }) {
   return (
     <button type="button" onClick={refresh} disabled={state === "busy"} className={`${LINK} cursor-pointer`} title="Rebuild this effect's cached page on its next visit">
       <RefreshCw aria-hidden="true" />
-      {state === "done" ? "Refreshed" : state === "error" ? "Didn’t refresh" : state === "busy" ? "Refreshing…" : "Refresh page"}
+      {state === "done" ? "Refreshed" : state === "error" ? "Didn’t Refresh" : state === "busy" ? "Refreshing…" : "Refresh Page"}
     </button>
   );
 }
@@ -143,7 +143,7 @@ export default function AdminEffectsPage() {
       </div>
 
       {visible.length === 0 ? (
-        <p className="type-body py-10 text-center text-black/60">{data.effects.length ? "Nothing matches these filters." : "Every effect is in good shape."}</p>
+        <p className={EMPTY_TABLE}>{data.effects.length ? "Nothing matches these filters." : "Every effect is in good shape."}</p>
       ) : (
         <ul className="flex flex-col">
           {visible.map((effect) => (

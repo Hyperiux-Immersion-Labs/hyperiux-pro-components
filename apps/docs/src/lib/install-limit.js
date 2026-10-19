@@ -164,19 +164,29 @@ async function logInstallEvent(row) {
 // Read-only: which effects has this identity already unlocked today. No
 // claim, no event log - for rendering current usage (e.g. copy-usage's GET),
 // not for deciding whether a new install should be allowed.
-export async function getUnlockedEffectSlugsToday({ clerkUserId }) {
-  const { data, error } = await supabase
-    .from("install_unlocks")
-    .select("effect_slug")
-    .eq("identity_key", `user:${clerkUserId}`)
-    .eq("usage_date", todayUTC());
+// Admins have no ledger rows: theirs are today's logged admin installs (install_events,
+// plan "admin"), so the site still knows which effects they've already taken today.
+export async function getUnlockedEffectSlugsToday({ clerkUserId, isAdmin = false }) {
+  const { data, error } = isAdmin
+    ? await supabase
+        .from("install_events")
+        .select("effect_slug")
+        .eq("clerk_user_id", clerkUserId)
+        .eq("plan", "admin")
+        .eq("decision", "allowed")
+        .gte("occurred_at", `${todayUTC()}T00:00:00.000Z`)
+    : await supabase
+        .from("install_unlocks")
+        .select("effect_slug")
+        .eq("identity_key", `user:${clerkUserId}`)
+        .eq("usage_date", todayUTC());
 
   if (error) {
     console.error("GET_UNLOCKED_EFFECT_SLUGS_ERROR:", error);
     return [];
   }
 
-  return (data || []).map((row) => row.effect_slug);
+  return [...new Set((data || []).map((row) => row.effect_slug))];
 }
 
 /**

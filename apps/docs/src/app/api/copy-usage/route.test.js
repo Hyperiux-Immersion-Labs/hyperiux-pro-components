@@ -52,9 +52,10 @@ describe("copy-usage route", () => {
       expect(resolveSignedInIdentity).not.toHaveBeenCalled();
     });
 
-    it("returns isAdmin shape for an admin, without querying unlocked slugs", async () => {
+    it("returns isAdmin shape for an admin, with the effects they've already taken today", async () => {
       authResult = { userId: "admin_1" };
       identityResult = { isAdmin: true, plan: "admin", limit: null };
+      unlockedSlugsResult = ["dotted-grid"];
 
       const res = await GET();
       const body = await res.json();
@@ -66,11 +67,12 @@ describe("copy-usage route", () => {
         limit: null,
         count: 0,
         remaining: null,
-        effectSlugs: [],
+        effectSlugs: ["dotted-grid"],
       });
 
+      // Admins have no ledger rows: today's slugs come from their logged admin installs
       const { getUnlockedEffectSlugsToday } = await import("@/lib/install-limit");
-      expect(getUnlockedEffectSlugsToday).not.toHaveBeenCalled();
+      expect(getUnlockedEffectSlugsToday).toHaveBeenCalledWith({ clerkUserId: "admin_1", isAdmin: true });
     });
 
     it("returns the full usage shape for a free user", async () => {

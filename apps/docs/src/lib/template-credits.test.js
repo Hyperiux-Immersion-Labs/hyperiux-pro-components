@@ -30,7 +30,7 @@ process.env.RAZORPAY_PRO_YEARLY_PLAN_ID = "plan_legacy_yearly";
 
 process.env.RAZORPAY_PLAN_PLUS_YEARLY_USD = "plan_plus_y";
 
-const { grantCreditsForCharge, expireCredits } = await import("./template-credits.js");
+const { grantCreditsForCharge, grantCreditsForAdminGrant, expireCredits } = await import("./template-credits.js");
 
 const payment = { id: "pay_1" };
 
@@ -116,6 +116,45 @@ describe("expireCredits", () => {
   it("does nothing with no balance", async () => {
     balanceRows = [{ delta: 3 }, { delta: -3 }];
     expect(await expireCredits("u")).toBe(0);
+    expect(insert).not.toHaveBeenCalled();
+  });
+});
+
+// Pro given from the admin dashboard: the same paid plan's first-charge credits, topped
+// up to rather than added, so re-granting never stacks them
+describe("grantCreditsForAdminGrant", () => {
+  beforeEach(() => {
+    insert.mockClear();
+    balanceRows = [];
+  });
+
+  it.each([
+    ["pro", "yearly", 3],
+    ["pro_plus", "quarterly", 1],
+    ["pro_plus", "yearly", 5],
+  ])("gives %s %s its %i credits", async (tier, interval, expected) => {
+    expect(await grantCreditsForAdminGrant({ clerkUserId: "user_1", tier, interval })).toBe(expected);
+    expect(insert).toHaveBeenCalledWith({ clerk_user_id: "user_1", delta: expected, reason: "grant" });
+  });
+
+  it.each([
+    ["pro", "quarterly"],
+    ["pro", "monthly"],
+    ["pro_plus", "monthly"],
+  ])("gives %s %s none", async (tier, interval) => {
+    expect(await grantCreditsForAdminGrant({ clerkUserId: "user_1", tier, interval })).toBe(0);
+    expect(insert).not.toHaveBeenCalled();
+  });
+
+  it("tops up to the plan's amount instead of stacking", async () => {
+    balanceRows = [{ delta: 3 }];
+    expect(await grantCreditsForAdminGrant({ clerkUserId: "user_1", tier: "pro_plus", interval: "yearly" })).toBe(2);
+    expect(insert).toHaveBeenCalledWith({ clerk_user_id: "user_1", delta: 2, reason: "grant" });
+  });
+
+  it("adds nothing when they already have that many", async () => {
+    balanceRows = [{ delta: 5 }];
+    expect(await grantCreditsForAdminGrant({ clerkUserId: "user_1", tier: "pro", interval: "yearly" })).toBe(0);
     expect(insert).not.toHaveBeenCalled();
   });
 });

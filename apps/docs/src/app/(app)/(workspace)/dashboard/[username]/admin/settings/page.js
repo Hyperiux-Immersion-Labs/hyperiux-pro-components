@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { ACTION_LINE, ACTION_PRIMARY, CARD, CARD_PAD, DetailRows } from "@/components/Dashboard/DashboardUI";
+import { ACTION_LINE, ACTION_PRIMARY, CARD, CARD_PAD, DetailRows, TextButton } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { useAdminRole } from "@/lib/useAdminRole";
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
@@ -16,7 +16,7 @@ import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
 
 const PREVIEW = {
   installLimit: { enforced: false, source: "environment", limits: { free: 3, pro: 5, pro_plus: 10 } },
-  internal: { builtInEmails: ["harshgoyalrss7@gmail.com"], builtInDomains: ["weareenigma.com"], emails: ["qa@example.com"], domains: [] },
+  internal: { builtInEmails: [], builtInDomains: ["weareenigma.com"], emails: ["qa@example.com"], domains: [] },
 };
 const FIELD = "type-body min-h-28 w-full resize-y bg-black/3 px-3 py-2 text-ink ring-1 ring-inset ring-black/10 outline-none placeholder:text-black/40 focus:ring-primary";
 const lines = (text) => text.split(/[\n,]/).map((item) => item.trim()).filter(Boolean);
@@ -155,14 +155,14 @@ export default function AdminSettingsPage() {
               >
                 {busy === "install_limit_enforced" ? "Saving…" : "Confirm"}
               </button>
-              <button type="button" onClick={() => setAsking(false)} className="type-label cursor-pointer text-black/60 underline underline-offset-3 hover:text-primary">
+              <TextButton tone="light" onClick={() => setAsking(false)}>
                 Cancel
-              </button>
+              </TextButton>
             </div>
           </div>
         ) : (
           <button type="button" onClick={() => setAsking(true)} className={`${ACTION_LINE} w-fit`}>
-            {installLimit.enforced ? "Stop enforcing" : "Start enforcing"}
+            {installLimit.enforced ? "Stop Enforcing" : "Start Enforcing"}
           </button>
         )}
       </section>
@@ -194,7 +194,7 @@ export default function AdminSettingsPage() {
               onClick={() => save("internal_emails", lines(emails), (value) => setEmails(value.join("\n")))}
               className={`${ACTION_LINE} w-fit`}
             >
-              {busy === "internal_emails" ? "Saving…" : "Save emails"}
+              {busy === "internal_emails" ? "Saving…" : "Save Emails"}
             </button>
           </label>
           <label className="flex flex-col gap-2">
@@ -206,7 +206,7 @@ export default function AdminSettingsPage() {
               onClick={() => save("internal_domains", lines(domains), (value) => setDomains(value.join("\n")))}
               className={`${ACTION_LINE} w-fit`}
             >
-              {busy === "internal_domains" ? "Saving…" : "Save domains"}
+              {busy === "internal_domains" ? "Saving…" : "Save Domains"}
             </button>
           </label>
         </div>

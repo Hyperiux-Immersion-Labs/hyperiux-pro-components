@@ -92,7 +92,7 @@ export async function POST(request, { params }) {
     return NextResponse.json({ allowed: false, ...usageFields(result, []) }, { status: 500 });
   }
 
-  const effectSlugs = await getUnlockedEffectSlugsToday({ clerkUserId: userId });
+  const effectSlugs = await getUnlockedEffectSlugsToday({ clerkUserId: userId, isAdmin: result.reason === "admin" });
 
   if (!result.allowed) {
     return NextResponse.json({ allowed: false, ...usageFields(result, effectSlugs) }, { status: 429 });

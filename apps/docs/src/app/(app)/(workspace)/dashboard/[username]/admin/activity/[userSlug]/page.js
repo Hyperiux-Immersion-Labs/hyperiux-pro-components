@@ -1,12 +1,12 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { ACTION_LINE, ALL_DATES, CARD, CARD_PAD, DateRangeFilter } from "@/components/Dashboard/DashboardUI";
+import { ACTION_LINE, ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE } from "@/components/Dashboard/DashboardUI";
 import { SOURCE_BARS, UsageBars } from "@/components/Dashboard/UsageBars";
 import { SlidingSegment } from "@/components/ui/SlidingSegment";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -72,6 +72,7 @@ function BackButton() {
 
 export default function AdminUserActivityPage({ params }) {
   const { userSlug } = use(params);
+  const clerkUserId = useSearchParams().get("u");
   const { effectBySlug, catalog } = useDashboard();
 
   const [dates, setDates] = useState(ALL_DATES);
@@ -91,14 +92,17 @@ export default function AdminUserActivityPage({ params }) {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setData(null);
     // The API route turns the slug back into the Clerk user
-    fetch(`/api/admin/activity/${userSlug}?${rangeParams(dates)}`)
+    // ?u= (the account's id, on every link) goes along so two people sharing a name can't mix
+    const query = rangeParams(dates);
+    if (clerkUserId) query.set("u", clerkUserId);
+    fetch(`/api/admin/activity/${userSlug}?${query}`)
       .then((res) => res.json().then((json) => (res.ok ? json : Promise.reject(new Error(json.error || "Failed to load user activity")))))
       .then((json) => active && setData(json))
       .catch((err) => active && setError(err.message));
     return () => {
       active = false;
     };
-  }, [userSlug, dates, catalog]);
+  }, [userSlug, clerkUserId, dates, catalog]);
 
   if (error) {
     return (
@@ -283,7 +287,7 @@ export default function AdminUserActivityPage({ params }) {
           Payments
         </h2>
         {payments.length === 0 ? (
-          <p className="type-body text-black/60">No payments.</p>
+          <p className={EMPTY_TABLE}>No payments.</p>
         ) : (
           <div className="flex flex-col">
             {payments.map((payment) => (
