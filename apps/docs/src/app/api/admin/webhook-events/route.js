@@ -3,12 +3,14 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertSuperAdmin } from "@/lib/admin";
 import { displayName } from "@/lib/display-name";
+import { resolveDateBounds } from "@/lib/admin-activity";
 import { WEBHOOK_OUTCOMES } from "@/lib/webhook-log";
 
 // The Razorpay webhook log, newest first: the Log tab's Razorpay events (?outcome= to
 // filter) and an account's Billing section (?userId=). Payments and amounts, so super
 // admins only.
-const MAX_LIMIT = 100;
+// The Log tab's per-page choices go up to 200
+const MAX_LIMIT = 200;
 
 export async function GET(request) {
   if (!(await assertSuperAdmin())) {
@@ -21,6 +23,12 @@ export async function GET(request) {
     const outcome = searchParams.get("outcome");
     const limit = Math.min(Math.max(parseInt(searchParams.get("limit") || "20", 10) || 20, 1), MAX_LIMIT);
     const offset = Math.max(parseInt(searchParams.get("offset") || "0", 10) || 0, 0);
+    // The window: ?range= (today / 7d / 30d / 90d / all) or a custom ?from=&to= (YYYY-MM-DD)
+    const { startISO, endISO } = resolveDateBounds({
+      range: searchParams.get("range") || "all",
+      from: searchParams.get("from"),
+      to: searchParams.get("to"),
+    });
 
     let query = supabase
       .from("razorpay_webhook_events")
@@ -28,6 +36,8 @@ export async function GET(request) {
       .order("received_at", { ascending: false });
     if (userId) query = query.eq("clerk_user_id", userId);
     if (outcome && WEBHOOK_OUTCOMES[outcome]) query = query.eq("outcome", outcome);
+    if (startISO) query = query.gte("received_at", startISO);
+    if (endISO) query = query.lt("received_at", endISO);
     const { data, error, count } = await query.range(offset, offset + limit - 1);
     if (error) throw error;
 

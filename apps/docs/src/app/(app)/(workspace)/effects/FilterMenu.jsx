@@ -141,9 +141,11 @@ export function FilterMenu({
   }, [open]);
 
   const panel = open ? (
+    // data-lenis-prevent: a panel capped in height scrolls itself, not the page
     <div
       ref={panelRef}
       role="menu"
+      data-lenis-prevent
       style={
         menuPos
           ? {

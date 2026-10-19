@@ -3,11 +3,13 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 import { assertSuperAdmin } from "@/lib/admin";
 import { displayName } from "@/lib/display-name";
+import { resolveDateBounds } from "@/lib/admin-activity";
 import { ADMIN_ACTIONS } from "@/lib/admin-audit";
 
 // The admin audit log, newest first: the Log tab (every change) and the Manage drawer's
 // History (one account, ?userId=). It names refunds and amounts, so super admins only.
-const MAX_LIMIT = 100;
+// The Log tab's per-page choices go up to 200
+const MAX_LIMIT = 200;
 
 export async function GET(request) {
   if (!(await assertSuperAdmin())) {
@@ -20,12 +22,20 @@ export async function GET(request) {
     const action = searchParams.get("action");
     const limit = Math.min(Math.max(parseInt(searchParams.get("limit") || "20", 10) || 20, 1), MAX_LIMIT);
     const offset = Math.max(parseInt(searchParams.get("offset") || "0", 10) || 0, 0);
+    // The window: ?range= (today / 7d / 30d / 90d / all) or a custom ?from=&to= (YYYY-MM-DD)
+    const { startISO, endISO } = resolveDateBounds({
+      range: searchParams.get("range") || "all",
+      from: searchParams.get("from"),
+      to: searchParams.get("to"),
+    });
 
     let query = supabase
       .from("admin_audit_log")
       .select("id, created_at, actor_email, action, target_clerk_user_id, details", { count: "exact" }).order("created_at", { ascending: false });
     if (userId) query = query.eq("target_clerk_user_id", userId);
     if (action && ADMIN_ACTIONS[action]) query = query.eq("action", action);
+    if (startISO) query = query.gte("created_at", startISO);
+    if (endISO) query = query.lt("created_at", endISO);
     const { data, error, count } = await query.range(offset, offset + limit - 1);
     if (error) throw error;
 

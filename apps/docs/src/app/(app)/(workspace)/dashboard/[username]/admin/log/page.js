@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { CARD, CARD_PAD, EMPTY_TABLE, FILTER_WIDTH, Pager } from "@/components/Dashboard/DashboardUI";
+import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, Pager, PerPageMenu } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import {
@@ -24,7 +24,8 @@ import {
 //     syncs, invites), who made it and when (lib/admin-audit)
 //   Razorpay events - every webhook delivery and what we did with it: applied, skipped and
 //     why, ignored, failed with the error, or rejected (lib/webhook-log)
-const PER_PAGE = 20;
+// The dropdowns' panels stop at a fixed height and scroll inside (the change list is long)
+const MENU_PANEL = "left-auto! right-0 max-h-[20vw] overflow-y-auto max-lg:max-h-[50vh]";
 const LOGS = [
   { id: "changes", label: "Admin changes" },
   { id: "razorpay", label: "Razorpay events" },
@@ -68,7 +69,9 @@ export default function AdminLogPage() {
   const [log, setLog] = useState("changes");
   const [action, setAction] = useState("all");
   const [outcome, setOutcome] = useState("all");
+  const [dates, setDates] = useState(ALL_DATES);
   const [page, setPage] = useState(0);
+  const [perPage, setPerPage] = useState(10);
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
 
@@ -93,9 +96,19 @@ export default function AdminLogPage() {
       };
     }
     const params = new URLSearchParams({
-      limit: String(PER_PAGE),
-      offset: String(page * PER_PAGE),
+      limit: String(perPage),
+      offset: String(page * perPage),
     });
+    // The window, as the admin Activity page sends it: a preset, or a custom from / to
+    // (one day while only a start is picked)
+    if (dates.preset === "custom") {
+      if (dates.from) {
+        params.set("from", dates.from);
+        params.set("to", dates.to || dates.from);
+      }
+    } else if (dates.preset !== "all") {
+      params.set("range", dates.preset);
+    }
     if (log === "changes" && action !== "all") params.set("action", action);
     if (log === "razorpay" && outcome !== "all") params.set("outcome", outcome);
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -115,7 +128,7 @@ export default function AdminLogPage() {
     return () => {
       active = false;
     };
-  }, [isSuperAdmin, log, action, outcome, page]);
+  }, [isSuperAdmin, log, action, outcome, dates, page, perPage]);
 
   if (failed) {
     return (
@@ -131,14 +144,19 @@ export default function AdminLogPage() {
   // The list for the log on screen - right after switching logs, `data` still holds the
   // other log's response until the effect clears it, so that counts as loading
   const items = log === "changes" ? data?.entries : data?.events;
-  const pages = Math.max(1, Math.ceil((data?.total || 0) / PER_PAGE));
+  const pages = Math.max(1, Math.ceil((data?.total || 0) / perPage));
+  // Any filter change starts again from the first page
+  const filter = (set) => (value) => {
+    set(value);
+    setPage(0);
+  };
 
   return (
     <section
       aria-labelledby="log-h"
       className={`${CARD} ${CARD_PAD} gap-[calc(var(--cvw)*1.2)] max-lg:gap-4`}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-6">
         <div className="flex flex-col gap-1">
           <h2 id="log-h" className="type-h3">
             {log === "changes" ? "Admin Changes" : "Razorpay Events"}
@@ -157,7 +175,7 @@ export default function AdminLogPage() {
               alignRight
               label="Change"
               widthClassName={FILTER_WIDTH}
-              panelClassName="left-auto! right-0"
+              panelClassName={MENU_PANEL}
               options={Object.keys(ACTIONS)}
               categoryFilter={action}
               activeFilter={action === "all" ? null : action}
@@ -174,7 +192,7 @@ export default function AdminLogPage() {
               alignRight
               label="Outcome"
               widthClassName={FILTER_WIDTH}
-              panelClassName="left-auto! right-0"
+              panelClassName={MENU_PANEL}
               options={Object.keys(OUTCOMES)}
               categoryFilter={outcome}
               activeFilter={outcome === "all" ? null : outcome}
@@ -195,6 +213,8 @@ export default function AdminLogPage() {
             }}
             itemClassName="w-36"
           />
+          <DateRangeFilter label={log === "changes" ? "Changed" : "Received"} value={dates} onChange={filter(setDates)} />
+          <PerPageMenu value={perPage} onChange={filter(setPerPage)} />
         </div>
       </div>
 
@@ -206,7 +226,11 @@ export default function AdminLogPage() {
         </SkeletonCard>
       ) : items.length === 0 ? (
         <p className={EMPTY_TABLE}>
-          {log === "changes" ? "No changes yet." : "No Razorpay events yet."}
+          {dates.preset !== "all" || (log === "changes" ? action !== "all" : outcome !== "all")
+            ? "Nothing matches these filters."
+            : log === "changes"
+              ? "No changes yet."
+              : "No Razorpay events yet."}
         </p>
       ) : log === "changes" ? (
         <AuditList entries={items} showTarget tone="light" />

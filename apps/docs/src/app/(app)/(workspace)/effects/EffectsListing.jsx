@@ -24,6 +24,7 @@ import FAQ from "@/homepage/sections/FAQ";
 import Button from "@/homepage/components/Button";
 import { FilterMenu } from "./FilterMenu";
 import { useGridColumns } from "@/hooks/useGridColumns";
+import { useGridMorph } from "@/hooks/useGridMorph";
 import { COLUMN_ITEMS, SlidingSegment } from "@/components/ui/SlidingSegment";
 import { usePromiseValue } from "@/lib/usePromiseValue";
 import { useUserPlan } from "@/lib/useUserPlan";
@@ -156,6 +157,8 @@ export function EffectsListing({
 
   const rootRef = useRef(null);
   const gridRef = useRef(null);
+  // A column switch eases each card's real width to its new slot (no scale, no snap)
+  const { capture: captureGrid, morphing } = useGridMorph(gridRef);
   const sheetRef = useRef(null);
   const trendRef = useRef(null);
   const [trendEdges, setTrendEdges] = useState({ start: true, end: false });
@@ -588,7 +591,10 @@ export function EffectsListing({
                 label="Columns"
                 items={COLUMN_ITEMS}
                 value={shownCols}
-                onChange={chooseCols}
+                onChange={(n) => {
+                  captureGrid();
+                  chooseCols(n);
+                }}
                 itemClassName="w-8.5"
                 className="max-lg:hidden"
               />
@@ -690,7 +696,9 @@ export function EffectsListing({
           ) : (
             <div ref={gridRef} className={EFFECT_GRID}>
               {visible.map((effect, index) => (
-                <motion.div key={effect.name} layout transition={CARD_LAYOUT_TRANSITION} className={EFFECT_GRID_COLS[cols]}>
+                // layout="position": cards glide to new slots on a filter, and their size is never
+                // animated as a scale (it stretched the padding); a column switch is useGridMorph's
+                <motion.div key={effect.name} data-morph-key={effect.name} layout={morphing ? false : "position"} transition={CARD_LAYOUT_TRANSITION} className={EFFECT_GRID_COLS[cols]}>
                   <EffectCard {...cardProps(effect, index)} tagClassName="border-black/20" />
                 </motion.div>
               ))}

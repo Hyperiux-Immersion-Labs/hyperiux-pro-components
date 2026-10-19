@@ -36,6 +36,11 @@ function computePeriodEnd(billingInterval) {
   return end.toISOString();
 }
 
+// Razorpay's answer for an id it doesn't have: 400 BAD_REQUEST_ERROR, "The id provided does not exist"
+function isRazorpayNotFound(error) {
+  return error?.statusCode === 400 && /does not exist/i.test(error?.error?.description || "");
+}
+
 export async function POST(request) {
   if (!(await assertSuperAdmin())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -68,10 +73,13 @@ export async function POST(request) {
     // A paying subscriber's plan belongs to Razorpay: moving them to Free here would
     // leave them being charged (and the next subscription.charged webhook puts Pro back),
     // and a grant would overwrite their paid period. End the subscription first (Billing →
-    // Cancel subscription), then change the plan. Fails closed if Razorpay can't be read.
+    // Cancel subscription), then change the plan. Fails closed if Razorpay can't be read -
+    // except when Razorpay says the subscription doesn't exist: one it no longer has, or a
+    // live-mode id read with test keys (local dev reads the production database). Then the
+    // status saved in our row decides instead.
     const { data: existing, error: existingError } = await supabase
       .from("subscriptions")
-      .select("razorpay_subscription_id")
+      .select("razorpay_subscription_id, status")
       .eq("clerk_user_id", clerkUserId)
       .maybeSingle();
     if (existingError) {
@@ -79,16 +87,20 @@ export async function POST(request) {
       return NextResponse.json({ error: "Couldn't read their subscription." }, { status: 500 });
     }
     if (existing?.razorpay_subscription_id) {
-      let live;
+      let status;
       try {
-        live = await withRazorpayRetry(() => razorpay.subscriptions.fetch(existing.razorpay_subscription_id));
+        status = (await withRazorpayRetry(() => razorpay.subscriptions.fetch(existing.razorpay_subscription_id)))?.status;
       } catch (fetchError) {
-        console.error("ADMIN_UPDATE_PLAN_RAZORPAY_ERROR:", existing.razorpay_subscription_id, fetchError);
-        return NextResponse.json({ error: "Couldn't check their Razorpay subscription, so nothing was changed. Try again." }, { status: 502 });
+        if (!isRazorpayNotFound(fetchError)) {
+          console.error("ADMIN_UPDATE_PLAN_RAZORPAY_ERROR:", existing.razorpay_subscription_id, fetchError);
+          return NextResponse.json({ error: "Couldn't check their Razorpay subscription, so nothing was changed. Try again." }, { status: 502 });
+        }
+        console.warn("ADMIN_UPDATE_PLAN_RAZORPAY_NOT_FOUND:", existing.razorpay_subscription_id, "- using the saved status:", existing.status);
+        status = existing.status;
       }
-      if (BILLING_STATUSES.has(live?.status)) {
+      if (BILLING_STATUSES.has(status)) {
         return NextResponse.json(
-          { error: `They have a ${live.status} Razorpay subscription. Cancel it under Billing first (Cancel now, to end it today), then change the plan here.` },
+          { error: `They have a ${status} Razorpay subscription. Cancel it under Billing first (Cancel now, to end it today), then change the plan here.` },
           { status: 409 }
         );
       }

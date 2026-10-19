@@ -75,6 +75,23 @@ describe("POST /api/admin/users/update-plan", () => {
     expect(upsert).not.toHaveBeenCalled();
   });
 
+  it("uses the saved status when Razorpay doesn't have the subscription (e.g. a live id read with test keys)", async () => {
+    const notFound = Object.assign(new Error("not found"), {
+      statusCode: 400,
+      error: { code: "BAD_REQUEST_ERROR", description: "The id provided does not exist" },
+    });
+
+    subscriptionRow = { razorpay_subscription_id: "sub_1", status: "cancelled" };
+    razorpayStatus = notFound;
+    expect((await post(grantPro)).status).toBe(200);
+    expect(upsert).toHaveBeenCalledOnce();
+
+    upsert.mockClear();
+    subscriptionRow = { razorpay_subscription_id: "sub_1", status: "active" };
+    expect((await post(grantPro)).status).toBe(409);
+    expect(upsert).not.toHaveBeenCalled();
+  });
+
   it("goes ahead once the subscription has ended", async () => {
     subscriptionRow = { razorpay_subscription_id: "sub_1" };
     razorpayStatus = "cancelled";

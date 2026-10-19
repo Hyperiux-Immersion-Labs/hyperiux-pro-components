@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
@@ -17,6 +17,7 @@ import { effectCategories, getEffectHref, getQuickCategoryLabel, resolveEffectCa
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
 import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
 import { useGridColumns } from "@/hooks/useGridColumns";
+import { useGridMorph } from "@/hooks/useGridMorph";
 import { useUserPlan } from "@/lib/useUserPlan";
 
 const TIERS = [
@@ -54,6 +55,9 @@ export default function SavedEffectsPage() {
   const [dates, setDates] = useState(ALL_DATES);
   // 2 / 3 per row, in step with the sidebar like /effects (picking 3 closes it)
   const { cols, shownCols, chooseCols } = useGridColumns("hyperiux-dashboard-saved-cols");
+  // A column switch eases each card's real width to its new slot (no scale, no snap)
+  const gridRef = useRef(null);
+  const { capture: captureGrid, morphing } = useGridMorph(gridRef);
 
   // Unsaving a card here takes it off the grid straight away (the refetch confirms it)
   useEffect(() => {
@@ -162,21 +166,24 @@ export default function SavedEffectsPage() {
                 onClear={() => setSort("recent")}
               />
               <DateRangeFilter label="Saved" value={dates} onChange={setDates} />
-              <SlidingSegment label="Columns" items={COLUMN_ITEMS} value={shownCols} onChange={chooseCols} itemClassName="w-8.5" className="max-lg:hidden" />
+              <SlidingSegment label="Columns" items={COLUMN_ITEMS} value={shownCols} onChange={(n) => { captureGrid(); chooseCols(n); }} itemClassName="w-8.5" className="max-lg:hidden" />
             </div>
           </div>
 
           {shown.length === 0 ? (
             <p className={EMPTY_TABLE}>No saved effects match these filters.</p>
           ) : (
-            <div className={`flex flex-wrap ${EFFECT_GRID}`}>
+            <div ref={gridRef} className={`flex flex-wrap ${EFFECT_GRID}`}>
               {/* the cards glide to their new slots on a column switch or filter, as on /effects */}
               {/* an unsaved card fades out and the rest close the gap */}
               <AnimatePresence initial={false}>
                 {shown.map((effect) => (
                   <motion.div
                     key={effect.name}
-                    layout
+                    data-morph-key={effect.name}
+                    // position only: animating the size as a scale stretches the card's padding;
+                    // a column switch is useGridMorph's
+                    layout={morphing ? false : "position"}
                     exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.25 } }}
                     transition={CARD_LAYOUT_TRANSITION}
                     className={EFFECT_GRID_COLS[cols]}
