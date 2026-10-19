@@ -96,7 +96,7 @@ const RIBBON_VERT_DISPLACE = /* glsl */ `
   float dh = distance(wp, uHit);
   float rip = sin(dh * 1.8 - uHitT * 4.2) * exp(-dh * .2) * exp(-uHitT * .6) * uHitA
     * smoothstep(uHitT * 4.2 + 1., uHitT * 4.2 - 2., dh * 1.8);
-  float idle = sin(wp.x * .35 + uTime * .5) * sin(wp.y * .3 + uTime * .37) * .14;
+  float idle = sin(wp.x * .35 + uTime * 1.0472) * sin(wp.y * .3 + uTime * 2.0944) * .14;
   float trem = sin(uTime * 36. + wp.x * 3. + wp.y * 2.) * uCharge * uCharge * .07;
   float sang = atan(position.y, position.x);
   float swave = sin(sang * 7. - uTime * 3.2) * uScrollV * .32;
@@ -235,7 +235,7 @@ export function mountThereminRibbons(
   };
 
   // Renderer and scene
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !small, alpha: true, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = TONE_EXPOSURE;
   renderer.setClearColor(0x000000, 0);
@@ -629,7 +629,7 @@ export function mountThereminRibbons(
   const onResize = () => {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
-    const pr = Math.min(devicePixelRatio || 1, small ? 1.25 : 1.75);
+    const pr = Math.min(devicePixelRatio || 1, small ? 2 : 1.75);
     renderer.setPixelRatio(pr);
     SU.uPR.value = pr;
     renderer.setSize(w, h, false);

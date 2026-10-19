@@ -318,7 +318,7 @@ export default function Footer() {
             {/* <EggHint className="ml-2" /> */}
           </p>
           {/* For AI assistants: official facts (like Wingify's footer link) and the component catalogue */}
-          <div className="flex items-center gap-6 max-md:gap-4">
+          <div className="flex items-center gap-6 whitespace-nowrap max-md:gap-4 max-md:text-[3.2vw]">
             <Link href="/ai-components" className="transition-colors duration-300 hover:text-foreground">
               AI Component Catalogue
             </Link>

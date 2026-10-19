@@ -12,6 +12,8 @@ const LenisSmoothScroll = ({
   smoothWheel = true,
   wheelMultiplier = 0.8,
   touchMultiplier = .8,
+  syncTouch = true,
+  syncTouchLerp = 0.075,
   allowNestedScroll = false,
 }) => {
   const lenisRef = useRef(null);
@@ -53,7 +55,8 @@ const LenisSmoothScroll = ({
         duration: duration,
         lerp: lerp,
         smoothWheel: smoothWheel,
-        // syncTouch:true,
+        syncTouch: syncTouch,
+        syncTouchLerp: syncTouchLerp,
         wheelMultiplier: wheelMultiplier,
         touchMultiplier: touchMultiplier,
         // Nested overflow areas (e.g. code blocks) scroll natively while they

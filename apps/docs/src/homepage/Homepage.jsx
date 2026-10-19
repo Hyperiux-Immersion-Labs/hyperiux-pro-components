@@ -22,7 +22,7 @@ export default function Homepage({ faqItems, effects = [] }) {
     <div className="home-type">
       <Loader />
       <Navbar effects={effects} introOnLoader />
-      <LenisSmoothScroll lerp={0.065} wheelMultiplier={0.85} />
+      <LenisSmoothScroll lerp={0.065} wheelMultiplier={0.85} syncTouchLerp={0.12} touchMultiplier={1.6} />
       <ScrollTopOnLoad />
       {/* Sections (not the header) cap Button's vw sizing at the 1536px container */}
       <div className="relative [--hx-vw:var(--cvw)]">

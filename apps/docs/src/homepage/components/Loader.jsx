@@ -65,7 +65,7 @@ const ENTER_AT = 0.85;
 
 // ── Tablet / mobile: no rings - the counter rolls on the dark backdrop, and the
 // hero's still fades in behind it as the counter is about to leave
-const MOBILE_IMAGE = "/assets/img/hero-mobile.webp";
+const MOBILE_IMAGE = "/assets/hero-videos/posters/homepage-hero.webp";
 const MOBILE_ROLL = 1.2;
 const MOBILE_STAGGER = 0.1;
 // The still starts fading in at this share of the count, a beat after

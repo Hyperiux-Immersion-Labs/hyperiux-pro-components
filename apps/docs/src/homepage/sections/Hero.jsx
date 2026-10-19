@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import HeroToolsStrip from "../components/HeroToolsStrip";
@@ -14,8 +14,8 @@ import { prefersReducedMotion } from "@/lib/motion";
 import { isLighthouseOrHeadless, isSoftwareRenderer, shouldSkipRealtimeGPU } from "@/lib/audit";
 import { unlockScroll, useScrollLockLenis } from "../components/scroll-lock";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
-import { EasterEggDot } from "../components/easter-egg/EasterEgg";
 import { MEDIA } from "@/lib/breakpoints";
+import { EasterEggDot } from "../components/easter-egg/EasterEgg";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -52,6 +52,10 @@ const HeroRibbons = dynamic(
     { ssr: false, loading: () => BACKGROUND_FALLBACK },
 );
 
+const POSTER = { src: "/assets/hero-videos/posters/homepage-hero.webp", alt: "hero", fill: true, sizes: "100vw", unoptimized: true };
+
+const posterImg = getImageProps(POSTER).props;
+
 function shouldBypassHeroIntroForAudit() {
     return isLighthouseOrHeadless() || isSoftwareRenderer();
 }
@@ -66,11 +70,16 @@ export default function Hero() {
     const loaderComplete = useLoaderComplete();
     const [playIntro, setPlayIntro] = useState(false);
     const [skipGPU, setSkipGPU] = useState(true);
-    const [isDesktop, setIsDesktop] = useState(false);
+    const [isDesktop, setIsDesktop] = useState(null);
+    const [videoPlaying, setVideoPlaying] = useState(false);
+    const [audit, setAudit] = useState(true);
 
     useEffect(() => {
         const mq = window.matchMedia(MEDIA.tablet);
-        const sync = () => setIsDesktop(!mq.matches);
+        const sync = () => {
+            setAudit(shouldBypassHeroIntroForAudit());
+            setIsDesktop(!mq.matches);
+        };
         sync();
         mq.addEventListener("change", sync);
         return () => mq.removeEventListener("change", sync);
@@ -203,22 +212,39 @@ export default function Hero() {
     return (
         <main ref={rootRef} id="hero-v3" className="relative w-full overflow-x-clip">
             <div ref={canvasRef} className="pointer-events-auto sticky top-0 mb-[-100dvh] h-dvh w-full">
-                {isDesktop ? (
-                    skipGPU ? (
+                {isDesktop &&
+                    (skipGPU ? (
                         BACKGROUND_FALLBACK
                     ) : (
                         <HeroRibbons play={playIntro && loaderComplete} />
-                    )
-                ) : (
+                    ))}
+                {isDesktop === false && !audit && (
+                    <video
+                        src="/assets/hero-videos/homepage-hero.mp4"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="auto"
+                        onPlaying={() => setVideoPlaying(true)}
+                        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
+                    />
+                )}
+                <link
+                    rel="preload"
+                    as="image"
+                    href={posterImg.src}
+                    imageSrcSet={posterImg.srcSet}
+                    imageSizes={posterImg.sizes}
+                    media={MEDIA.tablet}
+                    fetchPriority="high"
+                />
+                {!videoPlaying && (
                     <Image
-                        src="/assets/img/hero-mobile.webp"
-                        alt="hero mobile"
-                        fill
+                        {...POSTER}
+                        alt="hero"
                         priority
-                        sizes="100vw"
-                        unoptimized
-                        draggable={false}
-                        className="pointer-events-none object-cover select-none"
+                        className="pointer-events-none hidden object-cover object-center select-none max-lg:block"
                     />
                 )}
             </div>
