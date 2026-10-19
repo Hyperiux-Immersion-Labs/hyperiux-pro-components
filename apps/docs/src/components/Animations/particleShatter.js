@@ -80,10 +80,15 @@ export function createShatter(N, initialScale = 1, { onHoldStart, onReady, onRef
   const charge = { v: 0 };
   let press = null, out = null;
 
+  // Already in pieces (burst, linger, reform, settle): no hold until the dots are home
+  // again - release() never shatters then, so the charge, shake and hold sound would
+  // build up for nothing. Returns whether a hold started.
   const press_ = () => {
+    if (SH.mode !== 0) return false;
     press = { t: performance.now(), ready: false, started: false };
     out = null;
     charge.v = 0;
+    return true;
   };
   // Hold released: what it was, and the charge eases back out (expo.out over 1.4s)
   const release = () => {

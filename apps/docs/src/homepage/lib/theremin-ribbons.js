@@ -543,6 +543,10 @@ export function mountThereminRibbons(
   const onPointerDown = (e) => {
     if (!overOk || e.button !== 0) return;
     e.preventDefault(); // no text selection while holding
+    // Already in pieces (burst, linger, reform, crossfade): no hold until the ribbons
+    // are whole again - release() ignores it, so the charge, camera push and hold
+    // sound would build up for nothing
+    if (SH.mode !== 0) return;
     chargeTween?.kill();
     charge.v = 0;
     const p = { t: performance.now(), sounding: false, ready: false, tw: null };
