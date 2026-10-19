@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ImmersiveFullscreenNav",
   "exportKind": "default",
+  "importPath": "@/components/effects/immersive-full-screen-nav",
   "tier": "free",
   "version": "1.1.0",
   "changelog": [

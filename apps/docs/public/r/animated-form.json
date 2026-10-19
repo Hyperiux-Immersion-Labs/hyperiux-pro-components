@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedForm",
   "exportKind": "default",
+  "importPath": "@/components/effects/animated-form",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

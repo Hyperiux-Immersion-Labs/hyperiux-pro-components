@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "TextCloning",
   "exportKind": "default",
+  "importPath": "@/components/effects/text-cloning",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "TextConvergence",
   "exportKind": "default",
+  "importPath": "@/components/effects/text-convergence",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

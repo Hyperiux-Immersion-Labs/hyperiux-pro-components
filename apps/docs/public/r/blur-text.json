@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "BlurText",
   "exportKind": "default",
+  "importPath": "@/components/effects/blur-text",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

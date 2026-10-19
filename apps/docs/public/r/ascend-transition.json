@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "AscendTransition",
   "exportKind": "default",
+  "importPath": "@/components/effects/ascend-transition",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "NumberCounter",
   "exportKind": "default",
+  "importPath": "@/components/effects/number-counter",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

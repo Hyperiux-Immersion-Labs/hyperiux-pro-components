@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "HorizontalFeatureReveal",
   "exportKind": "default",
+  "importPath": "@/components/effects/horizontal-feature-reveal",
   "tier": "free",
   "version": "1.1.0",
   "changelog": [

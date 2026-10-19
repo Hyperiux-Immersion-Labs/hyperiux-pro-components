@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "SpotlightText",
   "exportKind": "default",
+  "importPath": "@/components/effects/spotlight-text",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

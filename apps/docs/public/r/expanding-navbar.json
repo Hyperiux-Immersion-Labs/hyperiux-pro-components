@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "ExpandingNavbar",
   "exportKind": "default",
+  "importPath": "@/components/effects/expanding-navbar",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

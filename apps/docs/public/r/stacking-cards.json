@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "StackingCards",
   "exportKind": "default",
+  "importPath": "@/components/effects/stacking-cards",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

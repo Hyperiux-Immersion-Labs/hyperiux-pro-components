@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ZoomSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/zoom-slider",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

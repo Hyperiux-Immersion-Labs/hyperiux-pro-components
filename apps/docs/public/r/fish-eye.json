@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "exportName": "FishEye",
   "exportKind": "default",
+  "importPath": "@/components/effects/fish-eye",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

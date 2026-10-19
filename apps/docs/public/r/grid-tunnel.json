@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "exportName": "GridTunnel",
   "exportKind": "default",
+  "importPath": "@/components/effects/grid-tunnel",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

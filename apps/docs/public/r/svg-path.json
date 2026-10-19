@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "SVGPath",
   "exportKind": "default",
+  "importPath": "@/components/effects/svg-path",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

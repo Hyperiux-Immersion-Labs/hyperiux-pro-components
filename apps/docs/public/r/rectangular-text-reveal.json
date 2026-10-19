@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "RectangularTextReveal",
   "exportKind": "default",
+  "importPath": "@/components/effects/rectangular-text-reveal",
   "tier": "free",
   "version": "1.1.0",
   "changelog": [

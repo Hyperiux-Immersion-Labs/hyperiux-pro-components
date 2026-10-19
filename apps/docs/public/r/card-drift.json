@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "CardDrift",
   "exportKind": "default",
+  "importPath": "@/components/effects/card-drift",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

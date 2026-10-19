@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "FractalGlass",
   "exportKind": "default",
+  "importPath": "@/components/effects/fractal-glass",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

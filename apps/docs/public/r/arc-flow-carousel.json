@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ArcFlowCarousel",
   "exportKind": "default",
+  "importPath": "@/components/effects/arc-flow-carousel",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

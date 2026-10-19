@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "ParallaxGallery",
   "exportKind": "default",
+  "importPath": "@/components/effects/parallax-gallery",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

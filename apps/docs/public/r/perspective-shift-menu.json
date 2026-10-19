@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "PerspectiveShiftMenu",
   "exportKind": "default",
+  "importPath": "@/components/effects/perspective-shift-menu",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

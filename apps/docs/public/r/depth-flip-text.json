@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "DepthFlipText",
   "exportKind": "default",
+  "importPath": "@/components/effects/depth-flip-text",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

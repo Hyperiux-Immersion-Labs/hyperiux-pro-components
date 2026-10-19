@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "GlitchyText",
   "exportKind": "default",
+  "importPath": "@/components/effects/glitchy-text",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

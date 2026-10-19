@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "CircularSplitRoll",
   "exportKind": "default",
+  "importPath": "@/components/effects/circular-split-roll",
   "tier": "free",
   "version": "1.0.2",
   "changelog": [

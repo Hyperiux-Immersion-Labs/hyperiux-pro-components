@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ElasticAccordion",
   "exportKind": "default",
+  "importPath": "@/components/effects/elastic-accordion",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

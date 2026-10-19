@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "FocusText",
   "exportKind": "default",
+  "importPath": "@/components/effects/focus-text",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

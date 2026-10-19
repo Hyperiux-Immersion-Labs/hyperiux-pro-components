@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "LiquidShatter",
   "exportKind": "default",
+  "importPath": "@/components/effects/liquid-shatter",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

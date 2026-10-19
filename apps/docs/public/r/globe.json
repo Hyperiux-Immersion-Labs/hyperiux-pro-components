@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "Globe",
   "exportKind": "default",
+  "importPath": "@/components/effects/globe",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

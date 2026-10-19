@@ -16,6 +16,7 @@
   "registryDependencies": [],
   "exportName": "HeroBannerAnimated",
   "exportKind": "default",
+  "importPath": "@/components/effects/hero-banner-animated",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

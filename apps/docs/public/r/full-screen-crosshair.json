@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "FullScreenCrosshair",
   "exportKind": "default",
+  "importPath": "@/components/effects/full-screen-crosshair",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

@@ -12,6 +12,7 @@
   "registryDependencies": [],
   "exportName": "HyperiuxGlitter",
   "exportKind": "default",
+  "importPath": "@/components/effects/hyperiux-glitter",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

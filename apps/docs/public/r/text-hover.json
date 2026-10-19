@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "TextHover",
   "exportKind": "default",
+  "importPath": "@/components/effects/text-hover",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

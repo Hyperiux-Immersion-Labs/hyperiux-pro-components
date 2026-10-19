@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "VariableTextProximity",
   "exportKind": "default",
+  "importPath": "@/components/effects/variable-text-proximity",
   "tier": "free",
   "version": "1.0.5",
   "changelog": [

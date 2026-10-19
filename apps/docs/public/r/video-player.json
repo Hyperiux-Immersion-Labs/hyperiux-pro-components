@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "VideoPlayer",
   "exportKind": "default",
+  "importPath": "@/components/effects/video-player",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

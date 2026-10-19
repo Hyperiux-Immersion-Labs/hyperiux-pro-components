@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "GooeyCounter",
   "exportKind": "default",
+  "importPath": "@/components/effects/gooey-counter",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

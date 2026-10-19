@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "StackLoader",
   "exportKind": "default",
+  "importPath": "@/components/effects/stack-loader",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

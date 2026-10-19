@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "DitherCanvas",
   "exportKind": "default",
+  "importPath": "@/components/effects/dither-canvas",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

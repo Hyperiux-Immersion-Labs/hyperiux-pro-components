@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ShearWipe",
   "exportKind": "default",
+  "importPath": "@/components/effects/shear-wipe",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

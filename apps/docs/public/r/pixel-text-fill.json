@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "PixelTextFill",
   "exportKind": "default",
+  "importPath": "@/components/effects/pixel-text-fill",
   "tier": "free",
   "version": "1.1.0",
   "changelog": [

@@ -13,6 +13,7 @@
   "registryDependencies": [],
   "exportName": "ProgressiveBloomValley",
   "exportKind": "default",
+  "importPath": "@/components/effects/progressive-bloom-valley",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

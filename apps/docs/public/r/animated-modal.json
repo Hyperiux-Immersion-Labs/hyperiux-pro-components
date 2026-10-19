@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedModal",
   "exportKind": "default",
+  "importPath": "@/components/effects/animated-modal",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

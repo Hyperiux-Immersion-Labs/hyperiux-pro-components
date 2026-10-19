@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ClipPathSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/clippath-slider",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

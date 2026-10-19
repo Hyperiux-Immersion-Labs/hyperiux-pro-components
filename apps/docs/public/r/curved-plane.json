@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "CurvedPlane",
   "exportKind": "default",
+  "importPath": "@/components/effects/curved-plane",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

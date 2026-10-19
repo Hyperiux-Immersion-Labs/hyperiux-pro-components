@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "SlideTextReveal",
   "exportKind": "default",
+  "importPath": "@/components/effects/slide-text-reveal",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

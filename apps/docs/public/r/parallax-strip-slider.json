@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ParallaxStripSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/parallax-strip-slider",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

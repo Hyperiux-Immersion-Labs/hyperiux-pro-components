@@ -12,6 +12,7 @@
   "registryDependencies": [],
   "exportName": "NumericTunnel",
   "exportKind": "default",
+  "importPath": "@/components/effects/numeric-tunnel",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

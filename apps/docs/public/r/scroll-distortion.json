@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "ScrollDistortion",
   "exportKind": "default",
+  "importPath": "@/components/effects/scroll-distortion",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

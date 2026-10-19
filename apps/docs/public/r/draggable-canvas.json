@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "DraggableCanvas",
   "exportKind": "default",
+  "importPath": "@/components/effects/draggable-canvas",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

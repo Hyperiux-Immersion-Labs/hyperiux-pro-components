@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "CardsRunway",
   "exportKind": "default",
+  "importPath": "@/components/effects/cards-runway",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

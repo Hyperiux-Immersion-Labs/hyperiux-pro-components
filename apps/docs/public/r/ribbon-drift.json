@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "RibbonDrift",
   "exportKind": "default",
+  "importPath": "@/components/effects/ribbon-drift",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

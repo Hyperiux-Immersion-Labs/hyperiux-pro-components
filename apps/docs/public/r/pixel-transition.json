@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "PixelTransition",
   "exportKind": "default",
+  "importPath": "@/components/effects/pixel-transition",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "MorphingDock",
   "exportKind": "default",
+  "importPath": "@/components/effects/morphing-dock",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

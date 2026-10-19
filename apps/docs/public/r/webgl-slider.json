@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "exportName": "WebGLSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/webgl-slider",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

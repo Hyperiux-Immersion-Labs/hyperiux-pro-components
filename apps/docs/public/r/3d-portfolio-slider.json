@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "exportName": "PortfolioSlider3D",
   "exportKind": "default",
+  "importPath": "@/components/effects/3d-portfolio-slider",
   "tier": "pro",
   "version": "1.0.2",
   "changelog": [

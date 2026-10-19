@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "HoverSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/hover-slider",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

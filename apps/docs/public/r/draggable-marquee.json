@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "DraggableMarquee",
   "exportKind": "default",
+  "importPath": "@/components/effects/draggable-marquee",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

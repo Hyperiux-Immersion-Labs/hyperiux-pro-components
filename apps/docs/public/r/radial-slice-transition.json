@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "RadialSliceTransition",
   "exportKind": "default",
+  "importPath": "@/components/effects/radial-slice-transition",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

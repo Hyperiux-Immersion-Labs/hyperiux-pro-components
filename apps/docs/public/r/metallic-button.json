@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "MetallicButton",
   "exportKind": "default",
+  "importPath": "@/components/effects/metallic-button",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

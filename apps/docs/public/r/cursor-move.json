@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "CursorMove",
   "exportKind": "default",
+  "importPath": "@/components/effects/cursor-move",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

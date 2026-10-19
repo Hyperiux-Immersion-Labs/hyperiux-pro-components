@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "NoiseRippleCursor",
   "exportKind": "default",
+  "importPath": "@/components/effects/noise-ripple-cursor",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

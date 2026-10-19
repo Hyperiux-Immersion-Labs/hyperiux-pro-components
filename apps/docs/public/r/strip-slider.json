@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "StripSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/strip-slider",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

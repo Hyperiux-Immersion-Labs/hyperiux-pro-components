@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "DropText",
   "exportKind": "default",
+  "importPath": "@/components/effects/drop-text",
   "tier": "free",
   "version": "2.0.0",
   "changelog": [

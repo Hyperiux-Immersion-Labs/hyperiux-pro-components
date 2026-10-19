@@ -368,6 +368,9 @@ async function buildRegistry() {
         registryDependencies: registryJson.registryDependencies || [],
         exportName,
         exportKind,
+        // Where `hyperiux add` installs it by default - the MCP server builds its
+        // import_statement from this plus exportName/exportKind
+        importPath: registryJson.importPath || `@/components/effects/${registryJson.name}`,
         tier,
         version: registryJson.version || "1.0.0",
         changelog: registryJson.changelog || [],

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ParallaxFooter",
   "exportKind": "default",
+  "importPath": "@/components/effects/parallax-footer",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

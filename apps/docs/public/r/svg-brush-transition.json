@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "SVGBrushTransition",
   "exportKind": "default",
+  "importPath": "@/components/effects/svg-brush-transition",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

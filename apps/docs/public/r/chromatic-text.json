@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ChromaticText",
   "exportKind": "default",
+  "importPath": "@/components/effects/chromatic-text",
   "tier": "free",
   "version": "1.1.3",
   "changelog": [

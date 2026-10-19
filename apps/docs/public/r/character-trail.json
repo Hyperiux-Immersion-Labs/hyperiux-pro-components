@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "CharacterTrail",
   "exportKind": "default",
+  "importPath": "@/components/effects/character-trail",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

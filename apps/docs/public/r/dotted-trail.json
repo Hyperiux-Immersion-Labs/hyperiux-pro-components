@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "DottedTrail",
   "exportKind": "default",
+  "importPath": "@/components/effects/dotted-trail",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

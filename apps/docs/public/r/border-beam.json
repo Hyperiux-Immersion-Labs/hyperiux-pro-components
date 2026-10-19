@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "BorderBeam",
   "exportKind": "default",
+  "importPath": "@/components/effects/border-beam",
   "tier": "free",
   "version": "1.0.2",
   "changelog": [

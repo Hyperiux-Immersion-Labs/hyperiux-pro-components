@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "StickyContentWrapper",
   "exportKind": "default",
+  "importPath": "@/components/effects/sticky-content-wrapper",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

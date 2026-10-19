@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "EllipseCarousel",
   "exportKind": "default",
+  "importPath": "@/components/effects/ellipse-carousel",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "InteractiveListPreview",
   "exportKind": "default",
+  "importPath": "@/components/effects/interactive-list-preview",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

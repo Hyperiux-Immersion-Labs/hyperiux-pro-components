@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "LinesLoader",
   "exportKind": "default",
+  "importPath": "@/components/effects/lines-loader",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

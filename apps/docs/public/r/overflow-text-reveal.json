@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "OverflowTextReveal",
   "exportKind": "default",
+  "importPath": "@/components/effects/overflow-text-reveal",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

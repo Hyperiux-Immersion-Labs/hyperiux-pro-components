@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "TestimonialSwiper",
   "exportKind": "default",
+  "importPath": "@/components/effects/testimonial-swiper",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

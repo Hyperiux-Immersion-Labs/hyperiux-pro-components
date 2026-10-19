@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "SweepLiftTransition",
   "exportKind": "default",
+  "importPath": "@/components/effects/sweep-lift-transition",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

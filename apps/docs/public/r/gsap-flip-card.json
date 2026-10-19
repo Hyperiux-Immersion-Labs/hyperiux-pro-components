@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "GsapFlipCard",
   "exportKind": "default",
+  "importPath": "@/components/effects/gsap-flip-card",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

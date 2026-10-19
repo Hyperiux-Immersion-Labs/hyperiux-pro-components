@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "SpiderParticles",
   "exportKind": "default",
+  "importPath": "@/components/effects/spider-particles",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

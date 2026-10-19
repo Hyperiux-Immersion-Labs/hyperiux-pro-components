@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "InteractiveBlurReveal",
   "exportKind": "default",
+  "importPath": "@/components/effects/interactive-blur-reveal",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

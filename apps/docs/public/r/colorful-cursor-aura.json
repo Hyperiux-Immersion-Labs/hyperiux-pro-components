@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "ColorfulCursorAura",
   "exportKind": "default",
+  "importPath": "@/components/effects/colorful-cursor-aura",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

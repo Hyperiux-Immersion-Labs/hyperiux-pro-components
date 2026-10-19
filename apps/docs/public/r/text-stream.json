@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "TextStream",
   "exportKind": "default",
+  "importPath": "@/components/effects/text-stream",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "StackSpread",
   "exportKind": "default",
+  "importPath": "@/components/effects/stack-spread",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

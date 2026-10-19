@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "DonutParticles",
   "exportKind": "default",
+  "importPath": "@/components/effects/donut-particles",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

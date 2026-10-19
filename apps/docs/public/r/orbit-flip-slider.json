@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "OrbitFlipSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/orbit-flip-slider",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

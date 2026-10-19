@@ -7,6 +7,7 @@
   "registryDependencies": [],
   "exportName": "DottedGrid",
   "exportKind": "default",
+  "importPath": "@/components/effects/dotted-grid",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

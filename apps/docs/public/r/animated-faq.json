@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedFaq",
   "exportKind": "default",
+  "importPath": "@/components/effects/animated-faq",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

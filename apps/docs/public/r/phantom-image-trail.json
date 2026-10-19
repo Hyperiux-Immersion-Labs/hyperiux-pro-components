@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "PhantomImageTrail",
   "exportKind": "default",
+  "importPath": "@/components/effects/phantom-image-trail",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "TextFillAnimation",
   "exportKind": "default",
+  "importPath": "@/components/effects/text-fill-animation",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

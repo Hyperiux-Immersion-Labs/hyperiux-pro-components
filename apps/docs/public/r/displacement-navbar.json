@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "DisplacementNavbar",
   "exportKind": "default",
+  "importPath": "@/components/effects/displacement-navbar",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

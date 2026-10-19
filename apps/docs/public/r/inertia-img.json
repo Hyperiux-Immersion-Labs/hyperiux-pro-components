@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "InertiaImage",
   "exportKind": "default",
+  "importPath": "@/components/effects/inertia-img",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

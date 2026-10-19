@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "exportName": "SplitCanvas",
   "exportKind": "default",
+  "importPath": "@/components/effects/split-canvas",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

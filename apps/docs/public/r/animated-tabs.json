@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedTabs",
   "exportKind": "default",
+  "importPath": "@/components/effects/animated-tabs",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

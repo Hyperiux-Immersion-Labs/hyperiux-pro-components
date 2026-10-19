@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "ApertureTransition",
   "exportKind": "default",
+  "importPath": "@/components/effects/aperture-transition",
   "tier": "pro",
   "version": "1.0.0",
   "changelog": [

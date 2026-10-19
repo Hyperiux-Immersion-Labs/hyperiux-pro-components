@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "RingCarousel",
   "exportKind": "default",
+  "importPath": "@/components/effects/ring-carousel",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

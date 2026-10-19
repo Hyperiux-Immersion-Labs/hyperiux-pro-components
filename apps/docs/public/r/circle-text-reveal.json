@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "CircleTextReveal",
   "exportKind": "default",
+  "importPath": "@/components/effects/circle-text-reveal",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

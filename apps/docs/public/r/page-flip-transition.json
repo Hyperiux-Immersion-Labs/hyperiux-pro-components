@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "FlipTransition",
   "exportKind": "default",
+  "importPath": "@/components/effects/page-flip-transition",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

@@ -11,6 +11,7 @@
   "registryDependencies": [],
   "exportName": "ButterflyTrailCursor",
   "exportKind": "default",
+  "importPath": "@/components/effects/butterfly-trail-cursor",
   "tier": "pro",
   "version": "1.1.0",
   "changelog": [

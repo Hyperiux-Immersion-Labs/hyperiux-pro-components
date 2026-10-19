@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "RotationSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/rotation-slider",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [

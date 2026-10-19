@@ -10,6 +10,7 @@
   "registryDependencies": [],
   "exportName": "FlickeringText",
   "exportKind": "default",
+  "importPath": "@/components/effects/flickering-text",
   "tier": "free",
   "version": "1.0.0",
   "changelog": [

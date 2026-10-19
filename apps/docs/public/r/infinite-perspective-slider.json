@@ -9,6 +9,7 @@
   "registryDependencies": [],
   "exportName": "InfinitePerspectiveSlider",
   "exportKind": "default",
+  "importPath": "@/components/effects/infinite-perspective-slider",
   "tier": "free",
   "version": "1.0.1",
   "changelog": [
