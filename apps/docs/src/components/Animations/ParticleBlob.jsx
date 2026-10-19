@@ -16,6 +16,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { prefersReducedMotion } from "@/lib/motion";
 import { MEDIA } from "@/lib/breakpoints";
+import { onViewportResize } from "@/lib/viewport";
 import { createHover } from "./particleHover";
 import { createShatter, screenBounds, shockwave } from "./particleShatter";
 import { useInteraction } from "@/homepage/components/InteractionProvider";
@@ -588,7 +589,8 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
     layout();
     if (!running) render();
   };
-  window.addEventListener("resize", onResize);
+  // Not on a phone's address bar showing / hiding mid-scroll (lib/viewport)
+  const offResize = onViewportResize(onResize);
   layout();
   render();
 
@@ -600,7 +602,7 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
       turnTween?.scrollTrigger?.kill();
       turnTween?.kill();
       if (press && shatter.cancel()) sound?.holdEnd?.(false);
-      window.removeEventListener("resize", onResize);
+      offResize();
       window.removeEventListener("pointermove", onPointerMove);
       document.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("pointerdown", onPointerDown);

@@ -62,7 +62,9 @@ const remoteImageHosts = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  allowedDevOrigins: ["local.vault.hyperiux.com"],
+  // Dev only: also this Mac's address on the local network, so a phone on the same
+  // Wi-Fi can open the dev server (http://10.5.48.56:3400) to test real mobile behaviour
+  allowedDevOrigins: ["local.vault.hyperiux.com", "10.5.48.56"],
 
   // No X-Powered-By: Next.js banner (audit L13)
   poweredByHeader: false,

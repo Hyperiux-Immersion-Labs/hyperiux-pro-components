@@ -94,7 +94,7 @@ function NotFoundShimmerText({ children, className = "" }) {
 
 export default function NotFoundContent() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-background px-6 text-foreground">
+    <main className="flex min-h-svh items-center justify-center bg-background px-6 text-foreground">
       <div className="max-w-2xl text-center">
         <NotFoundShimmerText className="text-[20vw] text-center font-semibold font-laygrotesk leading-none max-md:text-[34vw] max-lg:text-[25vw] fadeup">
           404

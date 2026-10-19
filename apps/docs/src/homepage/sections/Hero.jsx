@@ -211,7 +211,11 @@ export default function Hero() {
 
     return (
         <main ref={rootRef} id="hero-v3" className="relative w-full overflow-x-clip">
-            <div ref={canvasRef} className="pointer-events-auto sticky top-0 mb-[-100dvh] h-dvh w-full">
+            {/* lvh / svh, not dvh: dvh follows a phone's address bar as it shows and hides
+                mid-scroll, which resized the canvas (and moved everything below) every time.
+                The canvas fills the bars-hidden height so no strip shows; the copy fits the
+                bars-shown height. */}
+            <div ref={canvasRef} className="pointer-events-auto sticky top-0 mb-[-100lvh] h-lvh w-full">
                 {isDesktop &&
                     (skipGPU ? (
                         BACKGROUND_FALLBACK
@@ -248,7 +252,7 @@ export default function Hero() {
                     />
                 )}
             </div>
-            <div className="pointer-events-none relative z-10 mx-auto flex min-h-dvh w-full max-w-384 flex-col justify-end px-[calc(var(--cvw)*4.5)] pt-[calc(var(--cvw)*8)] max-lg:px-[calc(var(--cvw)*7)] max-md:px-5! pb-[calc(var(--cvw)*5)] max-lg:pt-32 max-lg:pb-[12vw] max-md:pt-32 max-md:pb-10">
+            <div className="pointer-events-none relative z-10 mx-auto flex min-h-svh w-full max-w-384 flex-col justify-end px-[calc(var(--cvw)*4.5)] pt-[calc(var(--cvw)*8)] max-lg:px-[calc(var(--cvw)*7)] max-md:px-5! pb-[calc(var(--cvw)*5)] max-lg:pt-32 max-lg:pb-[12vw] max-md:pt-32 max-md:pb-10">
                 <div className="flex items-end justify-between gap-[calc(var(--cvw)*6)] max-lg:flex-col max-lg:items-stretch max-lg:gap-[6vw] max-md:items-stretch max-md:gap-5">
                    
                     <h1 ref={headingRef} className="relative min-w-0 flex-[1.5] type-display leading-[1.12] max-w-[calc(var(--cvw)*53)] max-lg:max-w-full max-md:max-w-full text-white">

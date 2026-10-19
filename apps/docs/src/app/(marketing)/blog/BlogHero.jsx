@@ -64,7 +64,7 @@ export default function BlogHero() {
           />
         )}
       </div>
-      <div className="pointer-events-none relative z-10 site-container section-x flex min-h-dvh flex-col justify-end pt-[calc(var(--cvw)*8)] pb-[calc(var(--cvw)*5)] max-lg:pt-[12vw] max-md:pt-[48svh] max-md:pb-10 [&_a]:pointer-events-auto">
+      <div className="pointer-events-none relative z-10 site-container section-x flex min-h-svh flex-col justify-end pt-[calc(var(--cvw)*8)] pb-[calc(var(--cvw)*5)] max-lg:pt-[12vw] max-md:pt-[48svh] max-md:pb-10 [&_a]:pointer-events-auto">
         <div className="flex w-[46%] flex-col gap-[calc(var(--cvw)*3)] max-lg:w-[75%] max-lg:gap-[4vw] max-md:w-full max-md:gap-[5vw]">
           <LineReveal as="h1" className="type-display relative w-full text-foreground">
             Ideas, Craft, and Code From The <span className="gradient-text-animate">Vault.</span>

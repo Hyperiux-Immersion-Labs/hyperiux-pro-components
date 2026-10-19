@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { ReactLenis } from "lenis/react";
 import "lenis/dist/lenis.css";
 import { prefersReducedMotion } from "@/lib/motion";
+import { isTouchOnlyDevice } from "@/lib/viewport";
 
 const LenisSmoothScroll = ({
   duration = 1.35,
@@ -17,8 +18,11 @@ const LenisSmoothScroll = ({
   allowNestedScroll = false,
 }) => {
   const lenisRef = useRef(null);
+  // Phones and tablets scroll natively (see below)
+  const enabled = !prefersReducedMotion() && !isTouchOnlyDevice();
 
   useEffect(() => {
+    if (!enabled) return undefined;
     function update(time) {
       lenisRef.current?.lenis?.raf(time * 1000);
     }
@@ -36,14 +40,19 @@ const LenisSmoothScroll = ({
       gsap.ticker.lagSmoothing(500, 33); // GSAP's default
       lenis?.off("scroll", ScrollTrigger.update);
     };
-  }, []);
+  }, [enabled]);
 
   // Reduced motion: don't mount Lenis at all - lerp tuning still routes
   // wheel/touch input through Lenis's own virtual-scroll interpolation,
   // which isn't identical to native scrolling. Rendering nothing here means
   // the page falls back to plain native scroll, exactly as if this
   // component weren't present.
-  if (prefersReducedMotion()) {
+  //
+  // Touch-only devices get native scroll too: the browser's own momentum, and
+  // its address bar / toolbars collapse as the page scrolls (syncTouch kept
+  // them from ever collapsing). Pages size full-screen sections in svh / lvh,
+  // not dvh, so the bars showing and hiding doesn't move the layout.
+  if (!enabled) {
     return null;
   }
 

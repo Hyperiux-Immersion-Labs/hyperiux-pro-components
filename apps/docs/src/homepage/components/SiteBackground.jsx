@@ -39,7 +39,10 @@ export default function SiteBackground() {
     }, []);
 
     return (
-        <div className="pointer-events-none fixed inset-0 -z-1" aria-hidden="true">
+        // h-lvh, not inset-0: a fixed layer pinned to the bottom edge grows and shrinks
+        // with a phone's address bar, and every size change reallocates the dot field
+        // (a visible jump mid-scroll). The bars-hidden height never changes.
+        <div className="pointer-events-none fixed inset-x-0 top-0 h-lvh -z-1" aria-hidden="true">
             <canvas ref={dotsRef} className="absolute inset-0 block size-full" />
             {/* The fluid is simulated at ~16px cells; the blur makes it silky */}
             <canvas
