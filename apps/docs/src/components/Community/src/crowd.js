@@ -1,6 +1,10 @@
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MEDIA } from "@/lib/breakpoints";
 import { createHover } from "../../Animations/particleHover";
 import { createShatter, screenBounds, shockwave } from "../../Animations/particleShatter";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Particle counts
 const COUNT = 6000;
@@ -13,15 +17,18 @@ const CENTER_NARROW = { crowd: [0, 4.6, -3], crowd2: [0, 0, -4], ring: [0, 0.2, 
 // Hero blob: particles spread evenly over a sphere whose surface wobbles and slowly turns
 const BLOB_RADIUS = 3.2;
 const BLOB_RADIUS_NARROW = 2.5;
+const BLOB_SCROLL_TURN = Math.PI/2;
 const BLOB_TILT = 0.45; // radians: the blob tips toward the viewer
 // "What do you build with": the blob spreads into a rolling sheet of dots
-const SHEET_W = 34;
-const SHEET_DEPTH = 26;
-const SHEET_BACK = -22;
+const SHEET_W = 80;
+const SHEET_DEPTH = 34;
+const SHEET_BACK = -30;
+const SHEET_YAW = 0.3;
 const SHEET_Y = -5.4; // low: the sheet lies along the bottom of the section
 
 const SHEET_W_NARROW = 14;
 const SHEET_BACK_NARROW = -16;
+const SHEET_DEPTH_NARROW = 26;
 // Blob + sheet animation speed (1 = the first version)
 const SHAPE_SPEED = 2.4;
 
@@ -29,6 +36,7 @@ const SHAPE_SPEED = 2.4;
 const RIBBON_RINGS = 2;
 const RIBBON_R0 = 0.62;
 const RIBBON_GAP = 0.26;
+const RIBBON_TUBE = 0.2;
 const RIBBON_ARC = 0.7; // each ribbon is an open arc, this share of a full circle
 const RIBBON_TILT_X = -0.28;
 const RIBBON_TILT_Y = -0.42;
@@ -51,7 +59,7 @@ const RIBBON_RADIUS = 6.2;
 export const CROWD_GROUPS = 10;
 
 const MAX_DT = 0.05;
-const MAX_PIXEL_RATIO = 1.75;
+const MAX_PIXEL_RATIO = 1.8;
 const MAX_PIXEL_RATIO_SMALL = 1.25;
 
 const VERTEX_SHADER = /* glsl */ `
@@ -81,13 +89,14 @@ void main() {
   }
   float d = length(gl_PointCoord - .5);
   if (d > .5) discard;
-  float s = smoothstep(.5, 0., d);
-  vec3 base = mix(vec3(.78, .74, .7), vec3(1., .36, .05), step(.62, vR));
+  float s = smoothstep(.5, .2, d);
+  vec3 base = mix(vec3(.9, .8, .7), vec3(1., .36, .05), step(.62, vR));
   // The Join ribbons: the second ribbon is all orange
   base = mix(base, vec3(1., .36, .05), vSolid);
   vec3 hotc = mix(vec3(1., .42, 0.), vec3(1., .95, .9), clamp(vHot - 1., 0., 1.));
   vec3 c = mix(base, hotc, clamp(vHot, 0., 1.));
-  gl_FragColor = vec4(c * s * vA * (.95 + clamp(vHot, 0., 2.) * .7), 1.);
+  vec3 o = c * s * vA * (.8 + clamp(vHot, 0., 2.) * .7);
+  gl_FragColor = vec4(o, clamp(max(o.r, max(o.g, o.b)), 0., 1.));
 }`;
 
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -149,12 +158,12 @@ export function mountCrowd(canvas, opts = {}) {
   // Renderer and scene
   let renderer;
   try {
-    renderer = new T.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance" });
+    renderer = new T.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "high-performance" });
   } catch {
     return NOOP_API;
   }
   // As the prototype: an opaque #111 canvas behind the page, the dots add light onto it
-  renderer.setClearColor(0x111111);
+  renderer.setClearColor(0x000000, 0);
   const scene = new T.Scene();
   const camera = new T.PerspectiveCamera(32, 1, 0.1, 200);
   camera.position.set(0, 0, 20);
@@ -222,6 +231,13 @@ export function mountCrowd(canvas, opts = {}) {
   const rib = new Float32Array(N);
   for (let i = 0; i < N; i++) rib[i] = Math.min(RIBBON_RINGS - 1, Math.floor(gv[i] * RIBBON_RINGS)) === 1 ? 1 : 0;
   geo.setAttribute("aRib", new T.BufferAttribute(rib, 1));
+  const ringJit = new Float32Array(N), tubeX = new Float32Array(N), tubeZ = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
+    const a = Math.random() * 6.283, d = Math.sqrt(Math.random()) * RIBBON_TUBE;
+    ringJit[i] = (Math.random() - 0.5) / (COLS - 1);
+    tubeX[i] = Math.cos(a) * d;
+    tubeZ[i] = Math.sin(a) * d;
+  }
   // The cursor's hover, eased (particleHover.js, shared with the pricing and blog blobs)
   const hover = createHover(N);
   // Press and hold explodes the particles like the homepage hero (particleShatter.js); its offset
@@ -238,7 +254,12 @@ export function mountCrowd(canvas, opts = {}) {
     transparent: true,
     depthWrite: false,
     // Prototype material + shader verbatim
-    blending: T.AdditiveBlending,
+    blending: T.CustomBlending,
+    blendEquation: T.AddEquation,
+    blendSrc: T.OneFactor,
+    blendDst: T.OneMinusSrcAlphaFactor,
+    blendSrcAlpha: T.OneFactor,
+    blendDstAlpha: T.OneMinusSrcAlphaFactor,
     uniforms,
     vertexShader: VERTEX_SHADER,
     fragmentShader: FRAGMENT_SHADER,
@@ -258,6 +279,12 @@ export function mountCrowd(canvas, opts = {}) {
   const center = new T.Vector3(3.6, reducedMotion ? 0.9 : -6, 0);
   let ringMix = 0;
   let blobMix = 0;
+  const blobTurn = { v: 0 };
+  let lastTurn = 0;
+  const heroZone = zones.find((el) => el.dataset.zone === "crowd");
+  const turnTween = heroZone && !reducedMotion
+    ? gsap.to(blobTurn, { v: BLOB_SCROLL_TURN, ease: "none", scrollTrigger: { trigger: heroZone, start: "top top", end: "bottom top", scrub: true } })
+    : null;
   let sheetMix = 0;
 
   // Pointer, projected onto the z = 0 plane
@@ -395,6 +422,21 @@ export function mountCrowd(canvas, opts = {}) {
     ringMix += (target.ring - ringMix) * k;
     blobMix += (target.crowd - blobMix) * k;
     sheetMix += (target.crowd2 - sheetMix) * k;
+    const yc = Math.cos(blobTurn.v), ys = Math.sin(blobTurn.v);
+    const dTurn = (blobTurn.v - lastTurn) * blobMix;
+    lastTurn = blobTurn.v;
+    if (Math.abs(dTurn) > 1e-5) {
+      const dc = Math.cos(dTurn), ds = Math.sin(dTurn);
+      for (let i = 0; i < N; i++) {
+        const q = i * 3;
+        const x = pos[q] - center.x, z = pos[q + 2] - center.z;
+        pos[q] = center.x + x * dc + z * ds;
+        pos[q + 2] = center.z + z * dc - x * ds;
+        const vx = vel[q], vz = vel[q + 2];
+        vel[q] = vx * dc + vz * ds;
+        vel[q + 2] = vz * dc - vx * ds;
+      }
+    }
     const st = time * SHAPE_SPEED;
     const rcx = Math.cos(RIBBON_TILT_X), rsx = Math.sin(RIBBON_TILT_X), rcy = Math.cos(RIBBON_TILT_Y), rsy = Math.sin(RIBBON_TILT_Y);
     const blobR = narrow ? BLOB_RADIUS_NARROW : BLOB_RADIUS;
@@ -450,17 +492,21 @@ export function mountCrowd(canvas, opts = {}) {
         const px = cl * Math.cos(lo), py = Math.sin(la), pz = cl * Math.sin(lo);
         const rr = blobR * blobShape(la, lo, cl, px, py, pz, st);
         const ty = py * tc - pz * ts, tz = py * ts + pz * tc;
-        hx = lerp(hx, center.x + px * rr, blobMix);
+        hx = lerp(hx, center.x + (px * yc + tz * ys) * rr, blobMix);
         hy = lerp(hy, center.y + ty * rr, blobMix);
-        hz = lerp(hz, center.z + tz * rr, blobMix);
+        hz = lerp(hz, center.z + (tz * yc - px * ys) * rr, blobMix);
       }
       if (sheetMix > 0.01) {
         // A wide sheet in perspective (back rows far, front rows close), rolling in slow waves
-        const sx = (gu[i] - 0.5) * (narrow ? SHEET_W_NARROW : SHEET_W);
-        const sz = (narrow ? SHEET_BACK_NARROW : SHEET_BACK) + gv[i] * SHEET_DEPTH;
+        const lx = (gu[i] - 0.5) * (narrow ? SHEET_W_NARROW : SHEET_W);
+        const back = narrow ? SHEET_BACK_NARROW : SHEET_BACK;
+        const depth = narrow ? SHEET_DEPTH_NARROW : SHEET_DEPTH;
+        const lz = (gv[i] - 0.5) * depth;
+        const sx = lx * Math.cos(SHEET_YAW) - lz * Math.sin(SHEET_YAW);
+        const sz = back + depth / 2 + lx * Math.sin(SHEET_YAW) + lz * Math.cos(SHEET_YAW);
         const sy = SHEET_Y +
-          Math.sin(sx * 0.32 + st * 0.8) * Math.cos(sz * 0.25 - st * 0.6) * 1.1 +
-          Math.sin((sx + sz) * 0.18 - st) * 0.5;
+          Math.sin(sx * 0.28 - st * 0.8) * Math.cos(sz * 0.22 + st * 0.6) * 1.1 +
+          Math.sin((sx - sz) * 0.16 + st) * 0.5;
         hx = lerp(hx, sx, sheetMix);
         hy = lerp(hy, sy, sheetMix);
         hz = lerp(hz, sz, sheetMix);
@@ -470,9 +516,9 @@ export function mountCrowd(canvas, opts = {}) {
         // tilted like the site's footer ribbons: two open arcs (not full circles), turning in
         // opposite directions, each a band with some width
         const j = Math.min(RIBBON_RINGS - 1, Math.floor(gv[i] * RIBBON_RINGS));
-        const an = j * 2.4 + gu[i] * 6.283 * RIBBON_ARC + st * 0.12 * (j % 2 ? -1 : 1);
-        const rr = ringR * (RIBBON_R0 + j * RIBBON_GAP) + Math.sin(an * 3 + st * 0.8 + j) * 0.12 + (rnd[i] - 0.5) * 0.4;
-        const rx = Math.cos(an) * rr, ry = Math.sin(an) * rr, rz = (rnd[i] - 0.5) * 0.15;
+        const an = j * 2.4 + (gu[i] + ringJit[i]) * 6.283 * RIBBON_ARC + st * 0.12 * (j % 2 ? -1 : 1);
+        const rr = ringR * (RIBBON_R0 + j * RIBBON_GAP) + Math.sin(an * 3 + st * 0.8 + j) * 0.12 + tubeX[i];
+        const rx = Math.cos(an) * rr, ry = Math.sin(an) * rr, rz = tubeZ[i];
         const y1 = ry * rcx - rz * rsx, z1 = ry * rsx + rz * rcx;
         hx = lerp(hx, center.x + rx * rcy + z1 * rsy, ringMix);
         hy = lerp(hy, center.y + y1, ringMix);
@@ -668,6 +714,8 @@ export function mountCrowd(canvas, opts = {}) {
     },
     destroy() {
       stop();
+      turnTween?.scrollTrigger?.kill();
+      turnTween?.kill();
       window.removeEventListener("pointermove", onPointerMove);
       document.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("resize", onResize);

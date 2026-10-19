@@ -69,7 +69,6 @@ export default function TuneCard({ replayKey }) {
     // Live values live in a ref, not state, so slider drags cause no renders
     const tune = useRef({ duration: 1.4, stagger: 0.06, ease: "expo.out" });
     const [ease, setEase] = useState("expo.out"); // drives the pill and aria-pressed
-    const [leaving, setLeaving] = useState(null); // the easing just switched away from
     const easeBarRef = useRef(null);
     const pillRef = useRef(null);
 
@@ -154,11 +153,10 @@ export default function TuneCard({ replayKey }) {
                                 onClick={() => {
                                     if (value === ease) return;
                                     tune.current.ease = value;
-                                    setLeaving(ease);
                                     setEase(value);
                                     replay();
                                 }}
-                                className={`relative z-1 h-8 px-3.5 type-small transition-colors duration-[600ms] ease-[cubic-bezier(.16,1,.3,1)] ${ease === value ? "text-ink" : "text-foreground"} ${leaving === value && ease !== value ? "motion-safe:animate-[hx-tab-release_.9s_ease-out_both]" : ""}`}
+                                className={`relative z-1 h-8 px-3.5 type-small transition-colors duration-100 ease-out ${ease === value ? "text-ink" : "text-foreground"}`}
                             >
                                 {name}
                             </button>

@@ -107,7 +107,7 @@ export function TeardownCard() {
     const gp = easeOutExpo(clamp01((t - 1) / 0.9));
     if (gp > 0) {
       const rg = g.createRadialGradient(W / 2, cy + ch * 0.3, 0, W / 2, cy + ch * 0.3, cw * 0.9 * (0.6 + 0.4 * gp));
-      rg.addColorStop(0, withAlpha(primary, 0.35 * gp));
+      rg.addColorStop(0, withAlpha(primary, 0.12 * gp));
       rg.addColorStop(1, withAlpha(primary, 0));
       g.fillStyle = rg;
       g.fillRect(0, 0, W, H);
@@ -286,14 +286,14 @@ export function VoteCard() {
     <div className={`${CARD} gap-[calc(var(--cvw)*1)] p-[calc(var(--cvw)*2)] max-md:aspect-auto! max-md:gap-[5vw] max-md:p-[5vw] max-md:py-[8vw]`}>
       <CardFluid />
       <p className={`${LABEL} relative text-foreground/80`}>Up next in the vault · you decide</p>
-      <ul ref={listRef} className="relative flex flex-col gap-[calc(var(--cvw)*0.6)] max-md:gap-[2vw]">
+      <ul ref={listRef} className="relative flex flex-col gap-[calc(var(--cvw)*1.2)] max-md:gap-[2vw] mt-5">
         {order.map((i) => {
           const on = voted.includes(i);
           return (
             <li
               key={i}
               data-idea={i}
-              className={`flex items-center justify-between gap-[calc(var(--cvw)*1)] px-[calc(var(--cvw)*1.1)] py-[calc(var(--cvw)*1)] ring-1 ring-inset transition-[background-color,box-shadow] duration-700 ease-[cubic-bezier(.16,1,.3,1)] max-md:gap-[3.5vw] max-md:px-[4vw] max-md:py-[3.5vw] ${on ? "bg-primary/10 ring-primary/45" : "bg-black/20 ring-foreground/10 backdrop-blur-lg"}`}
+              className={`flex items-center justify-between gap-[calc(var(--cvw)*1)] px-[calc(var(--cvw)*1.1)] py-[calc(var(--cvw)*1)] ring-1 ring-inset backdrop-blur-md transition-[background-color,box-shadow] duration-700 ease-[cubic-bezier(.16,1,.3,1)] max-md:gap-[3.5vw] max-md:px-[4vw] max-md:py-[3.5vw] ${on ? "bg-primary/10 ring-primary/45" : "bg-glass/60 ring-foreground/15"}`}
             >
               <div className="flex min-w-0 flex-col gap-0.5">
                 <span className="type-h3 text-foreground">{VOTE_IDEAS[i].title}</span>

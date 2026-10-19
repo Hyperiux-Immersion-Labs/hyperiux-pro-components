@@ -532,7 +532,7 @@ export function EffectsListing({
             className="mx-[calc(var(--cvw)*-1)] my-[calc(var(--cvw)*-1)] flex cursor-grab select-none gap-[calc(var(--cvw)*1.3)] overflow-x-hidden overflow-y-hidden px-[calc(var(--cvw)*1)] py-[calc(var(--cvw)*1)] max-lg:px-[5vw] scrollbar-none max-md:px-8! max-lg:gap-[1.4vw] max-lg:overflow-x-auto max-md:mr-0 max-md:gap-[3.6vw] max-md:pr-[8vw]"
           >
             {trendingEffects.map((effect, index) => (
-              <EffectCard key={effect.name} {...cardProps(effect, index, true)} small dark className="w-[calc((100%-var(--cvw)*1.8)/3)] shrink-0 max-lg:w-[45%] max-md:w-[82%]" tagClassName="text-foreground border-foreground/30" metaClassName="text-foreground/80" />
+              <EffectCard key={effect.name} {...cardProps(effect, index, true)} small dark className="w-[calc((100%-var(--cvw)*1.8)/3)] shrink-0 hover:shadow-none! max-lg:w-[45%] max-md:w-[82%]" tagClassName="text-foreground border-foreground/30" metaClassName="text-foreground/80" />
             ))}
           </div>
           {/* Phones: arrows below the slider, on the left. */}

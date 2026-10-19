@@ -91,7 +91,7 @@ export default function CommunityCrowd() {
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-0 size-full bg-[radial-gradient(50%_45%_at_72%_42%,color-mix(in_srgb,var(--primary)_16%,transparent),transparent_70%),radial-gradient(35%_30%_at_70%_45%,color-mix(in_srgb,var(--light)_5%,transparent),transparent_70%)]"
       />}
-      {isDesktop && !skipGPU && createPortal(<canvas ref={canvasRef} className="pointer-events-none fixed inset-0 -z-2 size-full opacity-0 transition-opacity duration-[1400ms] ease-out" aria-hidden="true" />, document.body)}
+      {isDesktop && !skipGPU && createPortal(<canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-0 size-full opacity-0 transition-opacity duration-[1400ms] ease-out" aria-hidden="true" />, document.body)}
       {/* The prototype's toast (a full hold explodes the wordmark) */}
       <div
         role="status"

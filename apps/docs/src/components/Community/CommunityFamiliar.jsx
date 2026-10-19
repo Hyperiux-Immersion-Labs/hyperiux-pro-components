@@ -154,7 +154,7 @@ export default function CommunityFamiliar() {
         </div>
       </section>
 
-      <section id="why" className="section-x mt-20 pb-[calc(var(--cvw)*10)] max-md:mt-0 max-md:py-[12%]">
+      <section id="why" className="section-x mt- pb-[calc(var(--cvw)*10)] max-md:mt-0 max-md:py-[12%]">
         <div className="site-container flex justify-between gap-[calc(var(--cvw)*2)] max-lg:flex-col max-lg:gap-[6vw] max-md:gap-[2vw]">
         <div className="sticky top-[35vh] flex w-[32%] flex-col items-start gap-[calc(var(--cvw)*1)] self-start max-lg:hidden">
           {PANELS.map((p, i) => (

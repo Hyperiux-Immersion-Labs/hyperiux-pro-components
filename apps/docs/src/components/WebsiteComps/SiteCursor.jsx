@@ -382,7 +382,7 @@ export default function SiteCursor() {
         <svg viewBox={`0 0 ${BALL} ${BALL}`} className="absolute inset-0 size-full overflow-visible">
           <circle ref={ringRef} cx={BALL / 2} cy={BALL / 2} r={(BALL - RING_WIDTH) / 2} strokeWidth={RING_WIDTH} className="fill-none stroke-light-grey transition-colors duration-300 group-data-[tone=light]/cursor:stroke-black/40" />
         </svg>
-        <div ref={chevronWrapRef} className="absolute inset-0 flex items-center justify-between px-3 text-foreground">
+        <div ref={chevronWrapRef} className="absolute inset-0 flex items-center justify-between px-3 text-light-grey">
           {["M10 3 5 8l5 5", "M6 3l5 5-5 5"].map((d, i) => (
             <svg key={d} ref={(el) => { chevronsRef.current[i] = el; }} viewBox="0 0 16 16" className="size-4 fill-none stroke-current stroke-2">
               <path d={d} />

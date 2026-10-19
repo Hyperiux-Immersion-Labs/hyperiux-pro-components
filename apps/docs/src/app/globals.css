@@ -1059,7 +1059,7 @@ html.lenis.lenis-stopped[data-v4-drawer-open] {
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: border-beam 5s linear infinite;
+  animation: border-beam 9s linear infinite;
   pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {

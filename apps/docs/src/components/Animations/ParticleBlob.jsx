@@ -11,12 +11,19 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { prefersReducedMotion } from "@/lib/motion";
 import { MEDIA } from "@/lib/breakpoints";
 import { createHover } from "./particleHover";
 import { createShatter, screenBounds, shockwave } from "./particleShatter";
 import { useInteraction } from "@/homepage/components/InteractionProvider";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const BLOB_SCROLL_TURN = Math.PI / 2;
+const BLOB_SCROLL_DROP = 0.5;
 
 // Blobify's presets (utils/blobSetting.js): the displacement values only
 const PRESETS = {
@@ -249,7 +256,7 @@ const RIBBON_RADIUS = 6.2;
 const PULL = 1.4 + 6; // crowd.js pull with the blob fully formed
 const DRIFT = 0.02; // crowd.js: the drifting current is 98% calmed on the blob
 
-function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reducedMotion }) {
+function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reducedMotion, scrollDrop = false }) {
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "high-performance" });
@@ -330,7 +337,7 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
 
   // The hero is taller than the screen: the blob sits in the first screenful, right of the copy
   // (above it on narrow screens)
-  const view = { w: 1, h: 1, x: 0, y: 0, s: 1 };
+  const view = { w: 1, h: 1, x: 0, y: 0, s: 1, travel: 0 };
   const layout = () => {
     const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
     const pr = Math.min(devicePixelRatio || 1, small ? MAX_PIXEL_RATIO_SMALL : MAX_PIXEL_RATIO);
@@ -361,6 +368,7 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
     view.x = points.position.x;
     view.y = points.position.y;
     view.s = points.scale.x;
+    view.travel = h * unit;
     shatter.setScale(view.s / RIBBON_RADIUS);
     // The burst spreads over the hero's first screenful
     shatter.setBounds(screenBounds(visW, Math.min(innerHeight, h) * unit, screenMid));
@@ -409,12 +417,18 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
   const home = new Float32Array(N * 3);
   const surfaceNoise = new Float32Array(N);
   let surfaceCached = false;
+  const turn = { v: 0, p: 0 };
+  const hero = canvas.closest("section");
+  const turnTween = hero && !reducedMotion
+    ? gsap.to(turn, { v: BLOB_SCROLL_TURN, p: 1, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true } })
+    : null;
   const computeHomes = () => {
     const t = glslMod(uniforms.time.value, NOISE_PERIOD);
     const st = glslMod(uniforms.surfaceTime.value, NOISE_PERIOD);
     const cacheSurface = P.surfaceSpeed === 0;
     const s = points.scale.x, ox = points.position.x, oy = points.position.y, oz = points.position.z;
     const goo2 = P.distort * P.distort, wave = 0.01 * P.surfaceDistort * P.surfaceDistort;
+    const yc = Math.cos(turn.v), ys = Math.sin(turn.v);
     for (let i = 0; i < N; i++) {
       const q = i * 3, px = pos[q], py = pos[q + 1], pz = pos[q + 2];
       const amount = Math.sin(smoothstep(-1, 1, py) * Math.PI);
@@ -427,9 +441,9 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
       const ph = (py + sn) * Math.PI * P.numberOfWaves;
       const waves = (px * Math.sin(ph) + pz * Math.cos(ph)) * wave;
       const d = 1 + waves * mix(amount, 1, P.surfacePoleAmount) + goo * mix(amount, 1, P.gooPoleAmount);
-      home[q] = ox + px * d * s;
+      home[q] = ox + (px * yc + pz * ys) * d * s;
       home[q + 1] = oy + py * d * s;
-      home[q + 2] = oz + pz * d * s;
+      home[q + 2] = oz + (pz * yc - px * ys) * d * s;
     }
     surfaceCached = true;
   };
@@ -441,8 +455,9 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
     const ch = shatter.charge.v;
     points.scale.setScalar(view.s * (1 - ch * 0.09));
     points.position.x = view.x + Math.sin(time * 40) * ch * ch * 0.04;
-    points.position.y = view.y;
+    points.position.y = view.y - (scrollDrop ? turn.p * view.travel * BLOB_SCROLL_DROP : 0);
     points.rotation.z = ch * 0.12;
+    points.rotation.y = turn.v;
     camera.position.z += (20 - ch * 1.8 - camera.position.z) * 0.06;
     computeHomes();
     const pointerOn = mouse.on && toWorld(mouse.cx, mouse.cy);
@@ -452,7 +467,7 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
     // In pieces, the cursor stirs the shards instead of the hover
     hover.frame(dt, pointerOn && !shatter.active, mouse.x, mouse.y);
     // The page's cursor label (SiteCursor): "Click & Hold" near the blob, nothing once in pieces
-    markZone(pointerOn && Math.hypot(mouse.x - view.x, mouse.y - view.y) < view.s * 1.3, shatter.active);
+    markZone(pointerOn && Math.hypot(mouse.x - view.x, mouse.y - points.position.y) < view.s * 1.3, shatter.active);
     shatter.frame(dt, time, pointerOn, mouse.x, mouse.y, moved, camera.position.z);
     state.pulse *= Math.pow(0.2, dt);
     uniforms.uPulse.value = state.pulse;
@@ -582,6 +597,8 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
     stop,
     destroy() {
       stop();
+      turnTween?.scrollTrigger?.kill();
+      turnTween?.kill();
       if (press && shatter.cancel()) sound?.holdEnd?.(false);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("pointermove", onPointerMove);
@@ -604,7 +621,7 @@ function mountBlob(canvas, { preset, phoneTop = 0.29, sound = null, small, reduc
 }
 
 // phoneTop: how far down the screen the blob's centre sits on phones (share of the screen height)
-export default function ParticleBlob({ preset = "slinky", phoneTop }) {
+export default function ParticleBlob({ preset = "slinky", phoneTop, scrollDrop = false }) {
   const wrapRef = useRef(null);
   const { sound } = useInteraction() ?? {};
 
@@ -618,7 +635,7 @@ export default function ParticleBlob({ preset = "slinky", phoneTop }) {
     canvas.className = "pointer-events-none block size-full opacity-0 transition-opacity duration-1000 ease-out";
     wrap.appendChild(canvas);
     const small = window.matchMedia(MEDIA.mobile).matches || (navigator.hardwareConcurrency || 8) <= 4;
-    const blob = mountBlob(canvas, { preset: PRESETS[preset] ?? PRESETS.slinky, phoneTop, sound, small, reducedMotion: prefersReducedMotion() });
+    const blob = mountBlob(canvas, { preset: PRESETS[preset] ?? PRESETS.slinky, phoneTop, sound, small, reducedMotion: prefersReducedMotion(), scrollDrop });
     if (!blob) {
       canvas.remove();
       return undefined;
@@ -637,7 +654,7 @@ export default function ParticleBlob({ preset = "slinky", phoneTop }) {
       blob.destroy();
       canvas.remove();
     };
-  }, [preset, phoneTop, sound]);
+  }, [preset, phoneTop, sound, scrollDrop]);
 
   return <div ref={wrapRef} aria-hidden="true" className="pointer-events-none size-full" />;
 }
