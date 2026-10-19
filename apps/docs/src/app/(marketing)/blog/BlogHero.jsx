@@ -41,7 +41,7 @@ export default function BlogHero() {
         {/* Tablet and mobile: a looping video instead of the WebGL blob */}
         {isDesktop === false && !audit && (
           <video
-            src="/assets/hero-videos/blog.mp4"
+            src="/assets/hero-videos/blog-hero.mp4"
             autoPlay
             muted
             loop
@@ -55,7 +55,7 @@ export default function BlogHero() {
             paint and stays until the video is actually playing */}
         {!videoPlaying && (
           <Image
-            src="/assets/hero-videos/posters/blog-hero.webp"
+            src="/assets/hero-videos/posters/blog.webp"
             alt="blog hero poster"
             fill
             sizes="100vw"

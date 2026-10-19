@@ -16,7 +16,7 @@ const ParticleBlob = dynamic(() => import("@/components/Animations/ParticleBlob"
 
 const HEADER_OFFSET = 96; // keeps the target section's title clear of the fixed header
 
-const POSTER = { src: "/assets/hero-videos/posters/pricing-hero.webp", alt: "", fill: true, sizes: "100vw", quality: 90 };
+const POSTER = { src: "/assets/hero-videos/posters/pricing.webp", alt: "", fill: true, sizes: "100vw", quality: 90 };
 
 const posterImg = getImageProps(POSTER).props;
 
@@ -77,7 +77,7 @@ export default function PricingHero() {
         {/* Tablet and mobile: a looping video instead of the WebGL blob */}
         {isDesktop === false && !audit && (
           <video
-            src="/assets/hero-videos/pricing.mp4"
+            src="/assets/hero-videos/pricing-hero.mp4"
             autoPlay
             muted
             loop

@@ -42,7 +42,7 @@ export default function CommunityHero() {
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-1 hidden h-svh max-lg:top-[1vw] max-lg:block max-md:top-0" aria-hidden="true">
           {isDesktop === false && !audit && (
             <video
-              src="/assets/hero-videos/community.mp4"
+              src="/assets/hero-videos/commmunity-hero.mp4"
               autoPlay
               muted
               loop
@@ -56,7 +56,7 @@ export default function CommunityHero() {
               stays until the video is actually playing */}
           {!videoPlaying && (
             <Image
-              src="/assets/hero-videos/posters/community-hero.webp"
+              src="/assets/hero-videos/posters/community.webp"
               alt="community-hero"
               fill
               sizes="100vw"
