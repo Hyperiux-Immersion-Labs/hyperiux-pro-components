@@ -15,11 +15,20 @@ import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { EffectCard, resolveCover } from "../EffectCard";
+import { useGlideRow } from "@/hooks/useGlideRow";
 import { CustomAnimationCta } from "../CustomAnimationCta";
+
+// The same CTA on every effect page (no longer read from Sanity)
+const EFFECT_CTA = {
+  heading: "Request a Custom Animation",
+  description: "Need a custom effect? Tell us what to create.",
+  buttonText: "Send Request",
+};
 import FAQ from "@/homepage/sections/FAQ";
 import { CodeBlock, CodeBlockLanguageProvider } from "@/components/ui/CodeBlock";
 import { TableOfContents } from "@/components/ui/TableOfContents";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { ArrowLeft } from "lucide-react";
 import {
   FAQContent,
   FAQGroup,
@@ -183,6 +192,12 @@ export function EffectDetailContent({
 
   const router = useRouter();
   const pathname = usePathname();
+  // Came from this effect's category listing (see VaultLayout's __hxPrevPath)
+  const [fromCategory, setFromCategory] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFromCategory(Boolean(categorySlug) && window.__hxPrevPath === `/effects/${categorySlug}`);
+  }, [categorySlug]);
 
   const [showSignInToCopyModal, setShowSignInToCopyModal] = useState(false);
   // "Get code" asks for Pro (a Pro effect, or the daily copy limit) through this modal.
@@ -198,17 +213,6 @@ export function EffectDetailContent({
   const contentRef = useRef(null);
   const ctaSectionRef = useRef(null);
   const relatedEffectsRef = useRef(null);
-  const relatedSliderRef = useRef(null);
-
-  const relatedSliderDragRef = useRef({
-    isPointerDown: false,
-    isDragging: false,
-    startX: 0,
-    startY: 0,
-    scrollLeft: 0,
-  });
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
 
 
   //testing purpose
@@ -260,17 +264,8 @@ export function EffectDetailContent({
     effectSlug: slug,
   });
 
-  const updateRelatedScrollState = useCallback(() => {
-    const slider = relatedSliderRef.current;
-
-    if (!slider) return;
-
-    const { scrollLeft, scrollWidth, clientWidth } = slider;
-
-    setCanScrollPrev(scrollLeft > 8);
-    setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 8);
-  }, []);
-
+  // Related effects: the same free, smooth slider as the listing's Trending row
+  const { ref: relatedRowRef, edges: relatedEdges, step: stepRelated, handlers: relatedRowHandlers } = useGlideRow([safeRelatedEffects.length]);
 
   const showVideo = videoPreviewUrl && !videoError && videoReady;
   const showRelatedSliderControls = safeRelatedEffects.length > 2;
@@ -291,93 +286,6 @@ export function EffectDetailContent({
     safeEffect.updatedAt
   );
   const shouldShowEffectDates = Boolean(addedAtLabel && lastUpdatedLabel);
-
-  const scrollRelatedEffects = (direction) => {
-    const slider = relatedSliderRef.current;
-
-    if (!slider) return;
-
-    const scrollAmount = slider.clientWidth * 0.86;
-
-    slider.scrollBy({
-      left: direction === "next" ? scrollAmount : -scrollAmount,
-      behavior: "smooth",
-    });
-
-    requestAnimationFrame(updateRelatedScrollState);
-    setTimeout(updateRelatedScrollState, 250);
-  };
-
-  useEffect(() => {
-    const slider = relatedSliderRef.current;
-
-    if (!slider) return;
-
-    queueMicrotask(() => {
-      updateRelatedScrollState();
-    });
-
-    slider.addEventListener("scroll", updateRelatedScrollState, {
-      passive: true,
-    });
-
-    return () => {
-      slider.removeEventListener("scroll", updateRelatedScrollState);
-    };
-  }, [updateRelatedScrollState, safeRelatedEffects.length]);
-
-  const handleRelatedPointerDown = (event) => {
-    const slider = relatedSliderRef.current;
-
-    if (!slider) return;
-
-    relatedSliderDragRef.current = {
-      isPointerDown: true,
-      isDragging: false,
-      startX: event.clientX,
-      startY: event.clientY,
-      scrollLeft: slider.scrollLeft,
-    };
-  };
-
-  const handleRelatedPointerMove = (event) => {
-    const slider = relatedSliderRef.current;
-    const dragState = relatedSliderDragRef.current;
-
-    if (!slider || !dragState.isPointerDown) return;
-
-    const deltaX = event.clientX - dragState.startX;
-    const deltaY = event.clientY - dragState.startY;
-
-    const isHorizontalDrag =
-      Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY);
-
-    if (!isHorizontalDrag && !dragState.isDragging) return;
-
-    dragState.isDragging = true;
-
-    event.preventDefault();
-
-    slider.scrollLeft = dragState.scrollLeft - deltaX;
-  };
-
-  const handleRelatedPointerEnd = () => {
-    const dragState = relatedSliderDragRef.current;
-
-    dragState.isPointerDown = false;
-
-    window.setTimeout(() => {
-      dragState.isDragging = false;
-    }, 0);
-  };
-
-  // A drag across the slider ends in a click on whichever card is under the pointer;
-  // swallow it (capture phase, before the card or its buttons see it).
-  const blockClickAfterDrag = useCallback((event) => {
-    if (!relatedSliderDragRef.current.isDragging) return;
-    event.preventDefault();
-    event.stopPropagation();
-  }, []);
 
   const handleVideoReady = () => {
     const video = videoRef.current;
@@ -426,11 +334,30 @@ export function EffectDetailContent({
             <div className="flex flex-col gap-[calc(var(--cvw)*5.5)] max-md:gap-[15vw]">
               <div className="flex flex-col gap-7">
               <section id="effect-hero" className="mx-auto w-full section-x flex flex-col gap-[calc(var(--cvw)*1.4)] max-md:gap-[5vw]">
-                <Breadcrumb />
+                {/* Back + breadcrumb, as on the dashboard: Home / effect, or category / effect
+                    when the visitor came from that category's listing */}
+                <div className="flex min-w-0 items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => router.back()}
+                    aria-label="Go back"
+                    className="fadeup grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
+                  >
+                    <ArrowLeft className="size-4" aria-hidden="true" />
+                  </button>
+                  <Breadcrumb
+                    items={[
+                      fromCategory
+                        ? { label: categorySlug.replace(/-/g, " "), href: `/effects/${categorySlug}` }
+                        : { label: "Home", href: "/" },
+                      { label: pageTitle || safeEffect.title || slug, href: pathname },
+                    ]}
+                  />
+                </div>
 
                 {pageTitle && (
                   <HeadAnim rotate={0}>
-                    <h1 className="type-h1 w-full text-foreground max-lg:w-[90%] max-md:w-[80%]">
+                    <h1 className="type-h1 w-full text-foreground max-lg:w-[90%] max-md:w-full">
                       {pageTitle}
                     </h1>
                   </HeadAnim>
@@ -494,9 +421,9 @@ export function EffectDetailContent({
 
                 {/* FAQ + custom animation block - the same components as the effects listing */}
                 <div className="flex h-full w-full flex-col gap-[calc(var(--cvw)*2)]">
-                  {faqItems.length > 0 && <FAQ faqItems={faqItems} translateTop={false} bgClassName="bg-light" />}
+                  {faqItems.length > 0 && <FAQ faqItems={faqItems} translateTop={false} bgClassName="bg-light" titleLeftOnMobile />}
                   <div className="mx-auto w-full section-x max-md:px-[5vw]">
-                    <CustomAnimationCta cta={safeContent?.ctaBanner} sectionRef={ctaSectionRef} headingClassName="type-h1 text-[calc(var(--cvw)*3.6)] max-lg:text-[5.5vw] max-md:text-[9vw]" />
+                    <CustomAnimationCta cta={EFFECT_CTA} sectionRef={ctaSectionRef} headingClassName="type-h1 text-[calc(var(--cvw)*3.6)] max-lg:text-[5.5vw] max-md:text-[9vw]" />
                   </div>
                 </div>
 
@@ -506,9 +433,9 @@ export function EffectDetailContent({
                     id="related-effects"
                     className="mx-auto w-full section-x relative flex flex-col gap-[calc(var(--cvw)*2.8)] py-[7%] max-md:gap-[10vw] max-lg:pt-20"
                   >
-                    <div className="flex items-center justify-between gap-[calc(var(--cvw)*1.4)] max-lg:flex-col max-lg:gap-[5vw]">
+                    <div className="flex items-center justify-between gap-[calc(var(--cvw)*1.4)] max-lg:flex-col max-lg:gap-[5vw] max-md:items-start">
                       <HeadAnim rotate={0}>
-                        <h2 className="type-h1 text-[calc(var(--cvw)*3.6)] max-lg:text-[5.5vw] max-md:text-[min(11vw,46px)] text-center text-ink">
+                        <h2 className="type-h1 text-[calc(var(--cvw)*3.6)] max-lg:text-[5.5vw] max-md:text-[min(11vw,46px)] text-center text-ink max-md:text-left">
                           Related Effects
                         </h2>
                       </HeadAnim>
@@ -517,10 +444,10 @@ export function EffectDetailContent({
                         exploreText="Explore All Effects"
                         exploreHref="/effects"
                         showArrows={showRelatedSliderControls}
-                        onPrev={() => scrollRelatedEffects("previous")}
-                        onNext={() => scrollRelatedEffects("next")}
-                        canPrev={canScrollPrev}
-                        canNext={canScrollNext}
+                        onPrev={() => stepRelated(-1)}
+                        onNext={() => stepRelated(1)}
+                        canPrev={!relatedEdges.start}
+                        canNext={!relatedEdges.end}
                         prevLabel="Show previous related effects"
                         nextLabel="Show next related effects"
                       />
@@ -530,22 +457,19 @@ export function EffectDetailContent({
 
                     <div className="fadeup">
                       <div
-                        ref={relatedSliderRef}
-                        onPointerDown={handleRelatedPointerDown}
-                        onPointerMove={handleRelatedPointerMove}
-                        onPointerUp={handleRelatedPointerEnd}
-                        onPointerLeave={handleRelatedPointerEnd}
-                        onPointerCancel={handleRelatedPointerEnd}
-                        onDragStart={(event) => event.preventDefault()}
-                        className="flex cursor-grab snap-x snap-mandatory select-none gap-[calc(var(--cvw)*1.5)] overflow-x-auto scroll-smooth pb-4 active:cursor-grabbing max-lg:gap-[2vw] max-md:gap-[4vw]"
+                        ref={relatedRowRef}
+                        {...relatedRowHandlers}
+                        // data-cursor-drag: the site cursor shows its drag state over the row.
+                        // overflow-y set explicitly so Lenis doesn't treat the row as a vertical scroller.
+                        data-cursor-drag
+                        className="flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden pb-4 scrollbar-none max-lg:gap-[2vw] max-lg:overflow-x-auto max-md:gap-[4vw]"
                       >
                         {safeRelatedEffects.map((relatedEffect) => (
                           <div
                             key={relatedEffect.name}
-                            onClickCapture={blockClickAfterDrag}
                             // Three fill the row exactly, gaps included (32% each overshot by a
                             // couple of px, enough to show a scrollbar with only three cards)
-                            className="w-[calc((100%-var(--cvw)*3)/3)] shrink-0 cursor-pointer snap-start max-lg:w-[60%] max-md:w-full"
+                            className="w-[calc((100%-var(--cvw)*3)/3)] shrink-0 cursor-pointer max-lg:w-[60%] max-md:w-full"
                           >
                             <EffectCard
                               effect={relatedEffect}
@@ -562,19 +486,19 @@ export function EffectDetailContent({
 
                     <div className="hidden max-lg:block">
                       {showRelatedSliderControls && (
-                        <div className="flex items-center justify-center gap-[calc(var(--cvw)*2)]">
+                        <div className="flex items-center justify-center gap-[calc(var(--cvw)*2)] max-md:justify-start">
                           <SliderArrowButton
                             direction="prev"
                             tone="light"
-                            onClick={() => scrollRelatedEffects("previous")}
-                            disabled={!canScrollPrev}
+                            onClick={() => stepRelated(-1)}
+                            disabled={relatedEdges.start}
                             ariaLabel="Show previous related effects"
                           />
                           <SliderArrowButton
                             direction="next"
                             tone="light"
-                            onClick={() => scrollRelatedEffects("next")}
-                            disabled={!canScrollNext}
+                            onClick={() => stepRelated(1)}
+                            disabled={relatedEdges.end}
                             ariaLabel="Show next related effects"
                           />
                         </div>

@@ -519,12 +519,12 @@ export function VaultHeader({
           >
             <span
               aria-hidden="true"
-              className={`absolute h-px w-[calc(var(--hx-vw,1vw)*4.5)] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none max-lg:w-[2.4vw] max-md:w-[4.5vw] ${open ? "rotate-45" : "-translate-y-[calc(var(--hx-vw,1vw)*1.2)] max-lg:translate-y-[-0.6vw] max-md:-translate-y-[1.2vw]"
+              className={`absolute h-px max-md:h-[1.75px] w-[calc(var(--hx-vw,1vw)*4.5)] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none max-lg:w-[2.4vw] max-md:w-[4.5vw] ${open ? "rotate-45" : "-translate-y-[calc(var(--hx-vw,1vw)*1.2)] max-lg:translate-y-[-0.6vw] max-md:-translate-y-[1.2vw]"
                 }`}
             />
             <span
               aria-hidden="true"
-              className={`absolute h-px w-[calc(var(--hx-vw,1vw)*4.5)] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none max-lg:w-[2.4vw] max-md:w-[4.5vw] ${open ? "-rotate-45" : "translate-y-[calc(var(--hx-vw,1vw)*1.2)] max-lg:translate-y-[0.6vw] max-md:translate-y-[1.2vw]"
+              className={`absolute h-px max-md:h-[1.75px] w-[calc(var(--hx-vw,1vw)*4.5)] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none max-lg:w-[2.4vw] max-md:w-[4.5vw] ${open ? "-rotate-45" : "translate-y-[calc(var(--hx-vw,1vw)*1.2)] max-lg:translate-y-[0.6vw] max-md:translate-y-[1.2vw]"
                 }`}
             />
           </button>

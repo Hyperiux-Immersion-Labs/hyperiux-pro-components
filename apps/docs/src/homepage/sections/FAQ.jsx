@@ -157,7 +157,8 @@ export function FAQRow({ item, isOpen, onToggle, index }) {
 
 
 // bgClassName: the full-width section's background (white by default; light-grey pages pass bg-light)
-export default function FAQ({ faqItems, translateTop = true, inline = false, bgClassName = "bg-light" }) {
+// titleLeftOnMobile: the centred heading sits left on phones (effect detail page)
+export default function FAQ({ faqItems, translateTop = true, inline = false, bgClassName = "bg-light", titleLeftOnMobile = false }) {
   const container = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [openId, setOpenId] = useState(faqItems[0].id);
@@ -224,7 +225,7 @@ export default function FAQ({ faqItems, translateTop = true, inline = false, bgC
 
       <LineReveal
         as="h2"
-        className={`type-h1 relative z-110 max-md:w-full ${inline ? "text64 text-left mb-[3vw] max-md:mb-[8vw]" : "text-center mb-[calc(var(--cvw)*7)] max-md:mb-[calc(var(--cvw)*12)]"}`}
+        className={`type-h1 relative z-110 max-md:w-full ${inline ? "text64 text-left mb-[3vw] max-md:mb-[8vw]" : `text-center mb-[calc(var(--cvw)*7)] max-md:mb-[calc(var(--cvw)*12)] ${titleLeftOnMobile ? "max-md:text-left" : ""}`}`}
       >
         Questions, <span className="gradient-text-animate">Answered.</span>
       </LineReveal>

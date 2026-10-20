@@ -38,7 +38,6 @@ function getFallbackContent(effect, effectSlug) {
       secondaryKeywords: [],
     },
     body: [],
-    ctaBanner: null,
     coverImage: effect.coverImage || effectSlug,
     videoUrl: effect.videoUrl || `${effectSlug}.mp4`,
     tier: effect.tier || "pro",

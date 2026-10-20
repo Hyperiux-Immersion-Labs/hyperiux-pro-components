@@ -364,51 +364,6 @@ const faqAccordion = defineType({
   },
 })
 
-const ctaBanner = defineType({
-  name: 'effectCtaBanner',
-  title: 'CTA Section',
-  type: 'object',
-  fields: [
-    defineField({
-      name: 'heading',
-      title: 'Heading',
-      type: 'string',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'text',
-      rows: 4,
-    }),
-    defineField({
-      name: 'buttonText',
-      title: 'Button Text',
-      type: 'string',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'buttonLink',
-      title: 'Button Link',
-      description: 'Use an internal path like /pricing or a full URL like https://example.com',
-      type: 'string',
-      validation: (rule) => rule.required(),
-    }),
-  ],
-  preview: {
-    select: {
-      title: 'heading',
-      subtitle: 'buttonText',
-    },
-    prepare({title, subtitle}) {
-      return {
-        title: title || 'CTA Section',
-        subtitle,
-      }
-    },
-  },
-})
-
 const bodyBlock = defineType({
   name: 'effectBody',
   title: 'Body',
@@ -570,11 +525,6 @@ export const effectContent = defineType({
       of: [defineArrayMember({type: 'string'})],
     }),
     defineField({
-      name: 'ctaBanner',
-      title: 'CTA Section',
-      type: 'effectCtaBanner',
-    }),
-    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'effectSeo',
@@ -606,7 +556,6 @@ export const effectContentSchemaTypes = [
   horizontalRule,
   faqAccordionItem,
   faqAccordion,
-  ctaBanner,
   bodyBlock,
   effectContent,
 ]

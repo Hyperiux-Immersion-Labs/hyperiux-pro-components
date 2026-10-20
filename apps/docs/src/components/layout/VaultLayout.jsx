@@ -131,6 +131,10 @@ export function VaultLayout({
     return () => window.cancelAnimationFrame(frameId);
   }, [pathname]);
 
+  // The page the visitor came from inside the vault (the effect page's breadcrumb
+  // reads it). On cleanup, so it holds the outgoing path when the next page mounts.
+  useEffect(() => () => { window.__hxPrevPath = pathname; }, [pathname]);
+
   const startNavigation = useCallback(
     (targetHref) => {
       // The homepage has its own loader, so it skips the grid one

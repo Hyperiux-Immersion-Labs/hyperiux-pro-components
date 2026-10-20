@@ -167,9 +167,9 @@ export function EffectCard({
           </div>
         )}
 
-        {/* Tech tags, bottom left (the hover actions come in on the right) */}
+        {/* Tech tags, bottom left (the hover actions come in on the right); hidden on phones */}
         {deps.length > 0 && (
-          <div className="pointer-events-none absolute bottom-3 left-3 flex max-w-[45%] flex-wrap gap-1">
+          <div className="pointer-events-none absolute bottom-3 left-3 flex max-w-[45%] flex-wrap gap-1 max-md:hidden">
             {deps.map((dep) => (
               <span
                 key={dep}

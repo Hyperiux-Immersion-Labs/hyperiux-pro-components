@@ -173,11 +173,6 @@ export const blogPost = defineType({
       validation: (rule) => rule.required().min(1),
     }),
     defineField({
-      name: 'ctaBanner',
-      title: 'CTA Section',
-      type: 'effectCtaBanner',
-    }),
-    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'effectSeo',

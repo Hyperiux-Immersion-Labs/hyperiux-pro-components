@@ -285,7 +285,8 @@ export default function NavbarMobile({
           href="/"
           onClick={close}
           aria-label="Hyperiux Vault home"
-          className="w-[15vw] max-md:w-[36vw]"
+          // Same logo size as the vault header's mobile bar
+          className="w-[12vw] max-md:w-[30vw]"
         >
           <HyperiuxLogo className="size-full text-primary" />
         </Link>
@@ -336,12 +337,12 @@ export default function NavbarMobile({
           >
             <span
               aria-hidden="true"
-              className={`absolute h-px w-[2.4vw] max-md:w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none ${open ? "rotate-45" : "translate-y-[-0.6vw] max-md:-translate-y-[1.2vw]"
+              className={`absolute h-px max-md:h-[1.75px] w-[2.4vw] max-md:w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none ${open ? "rotate-45" : "translate-y-[-0.6vw] max-md:-translate-y-[1.2vw]"
                 }`}
             />
             <span
               aria-hidden="true"
-              className={`absolute h-px w-[2.4vw] max-md:w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none ${open ? "-rotate-45" : "translate-y-[0.6vw] max-md:translate-y-[1.2vw]"
+              className={`absolute h-px max-md:h-[1.75px] w-[2.4vw] max-md:w-[4.5vw] bg-current transition-transform duration-300 ease-out motion-reduce:transition-none ${open ? "-rotate-45" : "translate-y-[0.6vw] max-md:translate-y-[1.2vw]"
                 }`}
             />
           </button>

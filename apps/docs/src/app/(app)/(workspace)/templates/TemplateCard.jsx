@@ -115,9 +115,9 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
             </span>
           </span>
 
-          {/* tech tags, bottom left */}
+          {/* tech tags, bottom left; hidden on phones */}
           {(template.tags || []).length > 0 && (
-            <span className="pointer-events-none absolute bottom-3 left-3 z-1 flex max-w-[55%] flex-wrap gap-1">
+            <span className="pointer-events-none absolute bottom-3 left-3 z-1 flex max-w-[55%] flex-wrap gap-1 max-md:hidden">
               {template.tags.map((tag) => (
                 <span key={tag} className={`inline-flex items-center bg-background/80 px-1.5 py-0.5 font-avenir ${T11} text-foreground/85 backdrop-blur-lg`}>
                   {tag}

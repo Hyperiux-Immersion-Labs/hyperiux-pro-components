@@ -796,6 +796,26 @@
   background: none;
 }
 
+/* Effect pages, phones: the last column (the description in API Reference) gets
+   half the table, and the table runs wider than the screen (the wrap scrolls) */
+@media (max-width: 767px) {
+  #effect-content .blog-content .blog-table-wrap table {
+    min-width: 40rem;
+  }
+
+  #effect-content .blog-content .blog-table-wrap :is(th, td):last-child {
+    width: 40%;
+  }
+}
+
+/* Blog posts, phones: every table runs wider than the screen, so all its
+   columns get more room (the wrap scrolls sideways) */
+@media (max-width: 767px) {
+  #blog-content .blog-content .blog-table-wrap table {
+    min-width: 50rem;
+  }
+}
+
 /* FAQ / changelog section wrapper */
 .blog-content .blog-faq-section {
   margin-top: 3.5rem;
