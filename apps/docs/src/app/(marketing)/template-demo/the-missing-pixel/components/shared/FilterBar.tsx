@@ -1,0 +1,44 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
+
+"use client";
+
+type Option = { value: string; label: string; count?: number };
+
+type FilterBarProps = {
+  label: string;
+  options: Option[];
+  value: string;
+  onChange: (value: string) => void;
+  countText: string;
+};
+
+const FilterBar = ({ label, options, value, onChange, countText }: FilterBarProps) => (
+  <div className="flex flex-wrap items-center justify-between gap-5 max-md:flex-col max-md:items-start max-md:gap-6">
+    <div role="group" aria-label={label} className="flex flex-wrap gap-2 max-lg:gap-3">
+      {options.map((option) => {
+        const active = option.value === value;
+        return (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={active}
+            onClick={() => onChange(option.value)}
+            className={`font-mpx-head flex h-[5vh] items-center gap-1 rounded-full border px-[1.2vw] text-22 transition-colors duration-300 max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw] ${
+              active
+                ? "border-[#0a0a0a] bg-[#0a0a0a] text-[#fafafa]"
+                : "border-black/30 text-[#0a0a0a] hover:border-[#0a0a0a]"
+            }`}
+          >
+            {option.label}
+            {option.count !== undefined && <sup className="text-14 opacity-60">{option.count}</sup>}
+          </button>
+        );
+      })}
+    </div>
+    <p aria-live="polite" className="text-28 text-mpx-muted">
+      {countText}
+    </p>
+  </div>
+);
+
+export default FilterBar;
